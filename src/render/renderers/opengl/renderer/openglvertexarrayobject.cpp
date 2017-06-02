@@ -40,7 +40,7 @@
 #include "openglvertexarrayobject_p.h"
 #include <Qt3DRender/private/submissioncontext_p.h>
 #include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/glresourcemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -71,7 +71,7 @@ void OpenGLVertexArrayObject::bind()
         for (const SubmissionContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
             m_ctx->enableAttribute(attr);
         if (!m_indexAttribute.isNull())
-            m_ctx->bindGLBuffer(m_ctx->m_renderer->nodeManagers()->glBufferManager()->data(m_indexAttribute),
+            m_ctx->bindGLBuffer(m_ctx->m_renderer->glResourceManagers()->glBufferManager()->data(m_indexAttribute),
                                 GLBuffer::IndexBuffer);
     }
 }

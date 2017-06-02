@@ -5,6 +5,7 @@ include (io/io.pri)
 include (textures/textures.pri)
 include (graphicshelpers/graphicshelpers.pri)
 include (renderstates/renderstates.pri)
+include (managers/managers.pri)
 
 gcov {
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage

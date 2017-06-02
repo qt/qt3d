@@ -42,9 +42,7 @@
 #include <private/nodemanagers_p.h>
 #include <private/texture_p.h>
 #include <private/rendertargetoutput_p.h>
-#include <private/gltexturemanager_p.h>
 #include <private/managers_p.h>
-#include <private/gltexture_p.h>
 
 #include <QtCore/qmutex.h>
 
@@ -59,10 +57,10 @@ RenderBackendResourceAccessor::~RenderBackendResourceAccessor()
 }
 
 ResourceAccessor::ResourceAccessor(NodeManagers *mgr)
-    : m_glTextureManager(mgr->glTextureManager())
-    , m_textureManager(mgr->textureManager())
-    , m_attachmentManager(mgr->attachmentManager())
-    , m_entityManager(mgr->renderNodesManager())
+//    : m_glTextureManager(mgr->glTextureManager())
+//    , m_textureManager(mgr->textureManager())
+//    , m_attachmentManager(mgr->attachmentManager())
+//    , m_entityManager(mgr->renderNodesManager())
 {
 
 }
@@ -70,58 +68,58 @@ ResourceAccessor::ResourceAccessor(NodeManagers *mgr)
 // called by render plugins from arbitrary thread
 bool ResourceAccessor::accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock)
 {
-    switch (type) {
+//    switch (type) {
 
-    case RenderBackendResourceAccessor::OGLTextureWrite:
-        Q_FALLTHROUGH();
-    case RenderBackendResourceAccessor::OGLTextureRead:
-    {
-        Texture *tex = m_textureManager->lookupResource(nodeId);
-        if (!tex)
-            return false;
+//    case RenderBackendResourceAccessor::OGLTextureWrite:
+//        Q_FALLTHROUGH();
+//    case RenderBackendResourceAccessor::OGLTextureRead:
+//    {
+//        Texture *tex = m_textureManager->lookupResource(nodeId);
+//        if (!tex)
+//            return false;
 
-        GLTexture *glTex = m_glTextureManager->lookupResource(tex->peerId());
-        if (!glTex)
-            return false;
+//        GLTexture *glTex = m_glTextureManager->lookupResource(tex->peerId());
+//        if (!glTex)
+//            return false;
 
-        if (glTex->isDirty())
-            return false;
+//        if (glTex->isDirty())
+//            return false;
 
-        if (type == RenderBackendResourceAccessor::OGLTextureWrite)
-            glTex->setExternalRenderingEnabled(true);
+//        if (type == RenderBackendResourceAccessor::OGLTextureWrite)
+//            glTex->setExternalRenderingEnabled(true);
 
-        QOpenGLTexture **glTextureHandle = reinterpret_cast<QOpenGLTexture **>(handle);
-        *glTextureHandle = glTex->getGLTexture();
+//        QOpenGLTexture **glTextureHandle = reinterpret_cast<QOpenGLTexture **>(handle);
+//        *glTextureHandle = glTex->getGLTexture();
 
-        if (type == RenderBackendResourceAccessor::OGLTextureWrite)
-            *lock = glTex->externalRenderingLock();
+//        if (type == RenderBackendResourceAccessor::OGLTextureWrite)
+//            *lock = glTex->externalRenderingLock();
 
-        return true;
-    }
+//        return true;
+//    }
 
-    case RenderBackendResourceAccessor::OutputAttachment: {
-        RenderTargetOutput *output = m_attachmentManager->lookupResource(nodeId);
-        if (output) {
-            Attachment **attachmentData = reinterpret_cast<Attachment **>(handle);
-            *attachmentData = output->attachment();
-            return true;
-        }
-        break;
-    }
+//    case RenderBackendResourceAccessor::OutputAttachment: {
+//        RenderTargetOutput *output = m_attachmentManager->lookupResource(nodeId);
+//        if (output) {
+//            Attachment **attachmentData = reinterpret_cast<Attachment **>(handle);
+//            *attachmentData = output->attachment();
+//            return true;
+//        }
+//        break;
+//    }
 
-    case RenderBackendResourceAccessor::EntityHandle: {
-        Entity *entity = m_entityManager->lookupResource(nodeId);
-        if (entity) {
-            Entity **pEntity = reinterpret_cast<Entity **>(handle);
-            *pEntity = entity;
-            return true;
-        }
-        break;
-    }
+//    case RenderBackendResourceAccessor::EntityHandle: {
+//        Entity *entity = m_entityManager->lookupResource(nodeId);
+//        if (entity) {
+//            Entity **pEntity = reinterpret_cast<Entity **>(handle);
+//            *pEntity = entity;
+//            return true;
+//        }
+//        break;
+//    }
 
-    default:
-        break;
-    }
+//    default:
+//        break;
+//    }
     return false;
 }
 

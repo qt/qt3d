@@ -56,7 +56,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/private/gltexturemanager_p.h>
+#include <Qt3DRender/private/glresourcemanagers_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/renderbuffer_p.h>

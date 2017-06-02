@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2018 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RESOURCEACCESSOR_P_H
-#define QT3DRENDER_RENDER_RESOURCEACCESSOR_P_H
+#ifndef QT3DRENDER_RENDER_OPENGL_HANDLE_TYPES_P_H
+#define QT3DRENDER_RENDER_OPENGL_HANDLE_TYPES_P_H
 
 //
 //  W A R N I N G
@@ -51,53 +51,26 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qnodeid.h>
-
-#include <private/qt3drender_global_p.h>
+#include <Qt3DCore/private/qhandle_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class QMutex;
+namespace Qt3DRender {
 
-namespace Qt3DRender
-{
 namespace Render {
 
-class TextureManager;
-class AttachmentManager;
-class GLTextureManager;
-class EntityManager;
-class NodeManagers;
+class GLBuffer;
+class GLTexture;
+class OpenGLVertexArrayObject;
 
-class RenderBackendResourceAccessor
-{
-public:
-    enum ResourceType {
-        OGLTextureWrite,
-        OGLTextureRead,
-        OutputAttachment,
-        EntityHandle,
-    };
-
-    virtual ~RenderBackendResourceAccessor();
-    virtual bool accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) = 0;
-};
-
-class Q_3DRENDERSHARED_PRIVATE_EXPORT ResourceAccessor : public RenderBackendResourceAccessor
-{
-public:
-    ResourceAccessor(NodeManagers *mgr);
-    bool accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) final;
-private:
-//    GLTextureManager *m_glTextureManager;
-//    TextureManager *m_textureManager;
-//    AttachmentManager *m_attachmentManager;
-//    EntityManager *m_entityManager;
-};
+typedef Qt3DCore::QHandle<GLBuffer> HGLBuffer;
+typedef Qt3DCore::QHandle<OpenGLVertexArrayObject> HVao;
+typedef Qt3DCore::QHandle<GLTexture> HGLTexture;
 
 } // namespace Render
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RESOURCEACCESSOR_P_H
+#endif // QT3DRENDER_RENDER_OPENGL_HANDLE_TYPES_P_H

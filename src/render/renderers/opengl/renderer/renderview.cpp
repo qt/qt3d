@@ -68,6 +68,7 @@
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
 #include <algorithm>

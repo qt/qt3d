@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GLTEXTUREMANAGER_H
-#define QT3DRENDER_RENDER_GLTEXTUREMANAGER_H
+#ifndef QT3DRENDER_RENDER_GLRESOURCEMANAGERS_P_H
+#define QT3DRENDER_RENDER_GLRESOURCEMANAGERS_P_H
 
 //
 //  W A R N I N G
@@ -51,13 +51,38 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRender/private/gltexture_p.h>
+#include <Qt3DRender/private/glbuffer_p.h>
+#include <Qt3DRender/private/glfence_p.h>
+#include <Qt3DRender/private/openglvertexarrayobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
 namespace Render {
+
+class Q_AUTOTEST_EXPORT GLFenceManager : public QHash<Qt3DCore::QNodeId, GLFence>
+{
+};
+
+class Q_AUTOTEST_EXPORT VAOManager : public Qt3DCore::QResourceManager<
+        OpenGLVertexArrayObject,
+        VAOIdentifier,
+        Qt3DCore::NonLockingPolicy>
+{
+public:
+    VAOManager() {}
+};
+
+class Q_AUTOTEST_EXPORT GLBufferManager : public Qt3DCore::QResourceManager<
+        GLBuffer,
+        Qt3DCore::QNodeId,
+        Qt3DCore::NonLockingPolicy>
+{
+};
 
 class Q_AUTOTEST_EXPORT GLTextureManager : public Qt3DCore::QResourceManager<
         GLTexture,
@@ -68,11 +93,31 @@ public:
     QHash<GLTexture *, Qt3DCore::QNodeId> texNodeIdForGLTexture;
 };
 
-} // namespace Render
-} // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::GLTexture, Q_REQUIRES_CLEANUP)
+class Q_AUTOTEST_EXPORT GLResourceManagers
+{
+public:
+    GLResourceManagers();
+    ~GLResourceManagers();
+
+    inline VAOManager *vaoManager() const noexcept { return m_vaoManager; }
+    inline GLTextureManager *glTextureManager() const noexcept { return m_glTextureManager; }
+    inline GLBufferManager *glBufferManager() const noexcept { return m_glBufferManager; }
+    inline GLFenceManager *glFenceManager() const noexcept { return m_glFenceManager; }
+
+private:
+    GLBufferManager *m_glBufferManager;
+    GLTextureManager *m_glTextureManager;
+    GLFenceManager *m_glFenceManager;
+    VAOManager *m_vaoManager;
+};
+
+} // Render
+
+} // Qt3DRender
+
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_GLTEXTUREMANAGER_H
+#endif // QT3DRENDER_RENDER_GLRESOURCEMANAGERS_P_H

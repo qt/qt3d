@@ -47,7 +47,7 @@
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <Qt3DRender/private/texture_p.h>
-#include <Qt3DRender/private/gltexturemanager_p.h>
+#include <Qt3DRender/private/glresourcemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
