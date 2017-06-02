@@ -547,6 +547,8 @@ void QRenderAspect::onRegistered()
     // and started.
     Q_D(QRenderAspect);
     d->m_nodeManagers = new Render::NodeManagers();
+
+    // TO DO: Load proper Renderer class based on Qt configuration preferences
     d->m_renderer = new Render::Renderer(d->m_renderType);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 

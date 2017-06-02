@@ -2,15 +2,9 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/renderthread_p.h \
-    $$PWD/renderconfiguration_p.h \
-    $$PWD/renderer_p.h \
-    $$PWD/renderview_p.h \
-    $$PWD/rendercommand_p.h \
-    $$PWD/renderqueue_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/attachmentpack_p.h \
-    $$PWD/shadervariables_p.h \
     $$PWD/qgraphicsutils_p.h \
     $$PWD/managers_p.h \
     $$PWD/handle_types_p.h \
@@ -24,7 +18,6 @@ HEADERS += \
     $$PWD/boundingvolumedebug_p.h \
     $$PWD/nodemanagers_p.h \
     $$PWD/triangleboundingvolume_p.h \
-    $$PWD/openglvertexarrayobject_p.h \
     $$PWD/trianglesextractor_p.h \
     $$PWD/buffervisitor_p.h \
     $$PWD/bufferutils_p.h \
@@ -36,25 +29,15 @@ HEADERS += \
     $$PWD/backendnode_p.h \
     $$PWD/rendertargetoutput_p.h \
     $$PWD/uniform_p.h \
-    $$PWD/shaderparameterpack_p.h \
-    $$PWD/renderviewbuilder_p.h \
     $$PWD/frameprofiler_p.h \
     $$PWD/offscreensurfacehelper_p.h \
     $$PWD/resourceaccessor_p.h \
-    $$PWD/commandthread_p.h \
     $$PWD/visitorutils_p.h \
     $$PWD/segmentsvisitor_p.h \
-    $$PWD/pointsvisitor_p.h \
-    $$PWD/renderercache_p.h \
-    $$PWD/glcommands_p.h
+    $$PWD/pointsvisitor_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
-    $$PWD/renderconfiguration.cpp \
-    $$PWD/renderer.cpp \
-    $$PWD/renderview.cpp \
-    $$PWD/rendercommand.cpp \
-    $$PWD/renderqueue.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/managers.cpp \
@@ -75,16 +58,11 @@ SOURCES += \
     $$PWD/backendnode.cpp \
     $$PWD/rendertargetoutput.cpp \
     $$PWD/attachmentpack.cpp \
-    $$PWD/openglvertexarrayobject.cpp \
     $$PWD/uniform.cpp \
-    $$PWD/shaderparameterpack.cpp \
-    $$PWD/renderviewbuilder.cpp \
     $$PWD/offscreensurfacehelper.cpp \
     $$PWD/resourceaccessor.cpp \
     $$PWD/segmentsvisitor.cpp \
-    $$PWD/commandthread.cpp \
-    $$PWD/pointsvisitor.cpp \
-    $$PWD/glcommands.cpp
+    $$PWD/pointsvisitor.cpp
 
 include($$QT3D_BUILD_ROOT/src/core/qt3dcore-config.pri)
 QT_FOR_CONFIG += 3dcore-private

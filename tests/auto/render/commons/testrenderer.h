@@ -72,7 +72,9 @@ public:
 
     void markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) override;
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet dirtyBits() override;
+#if defined(QT_BUILD_INTERNAL)
     void clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes) override;
+#endif
 
     void resetDirty();
     QVariant executeCommand(const QStringList &args) override;

@@ -51,10 +51,12 @@ Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet TestRenderer::dirtyBit
     return m_changes;
 }
 
+#if defined(QT_BUILD_INTERNAL)
 void TestRenderer::clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes)
 {
     m_changes &= changes;
 }
+#endif
 
 void TestRenderer::resetDirty()
 {

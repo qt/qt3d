@@ -2,7 +2,6 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/updateworldtransformjob_p.h \
-    $$PWD/renderviewjobutils_p.h \
     $$PWD/loadscenejob_p.h \
     $$PWD/framecleanupjob_p.h \
     $$PWD/loadtexturedatajob_p.h \
@@ -15,10 +14,7 @@ HEADERS += \
     $$PWD/job_common_p.h \
     $$PWD/filterlayerentityjob_p.h \
     $$PWD/filterentitybycomponentjob_p.h \
-    $$PWD/materialparametergathererjob_p.h \
     $$PWD/genericlambdajob_p.h \
-    $$PWD/renderviewbuilderjob_p.h \
-    $$PWD/renderviewinitializerjob_p.h \
     $$PWD/frustumcullingjob_p.h \
     $$PWD/lightgatherer_p.h \
     $$PWD/expandboundingvolumejob_p.h \
@@ -28,7 +24,6 @@ HEADERS += \
     $$PWD/updatelevelofdetailjob_p.h \
     $$PWD/updatemeshtrianglelistjob_p.h \
     $$PWD/pickboundingvolumeutils_p.h \
-    $$PWD/filtercompatibletechniquejob_p.h \
     $$PWD/updatetreeenabledjob_p.h \
     $$PWD/sendbuffercapturejob_p.h \
     $$PWD/loadskeletonjob_p.h \
@@ -39,7 +34,6 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
-    $$PWD/renderviewjobutils.cpp \
     $$PWD/loadscenejob.cpp \
     $$PWD/framecleanupjob.cpp \
     $$PWD/loadtexturedatajob.cpp \
@@ -50,9 +44,6 @@ SOURCES += \
     $$PWD/calcgeometrytrianglevolumes.cpp \
     $$PWD/computefilteredboundingvolumejob.cpp \
     $$PWD/filterlayerentityjob.cpp \
-    $$PWD/materialparametergathererjob.cpp \
-    $$PWD/renderviewbuilderjob.cpp \
-    $$PWD/renderviewinitializerjob.cpp \
     $$PWD/frustumcullingjob.cpp \
     $$PWD/lightgatherer.cpp \
     $$PWD/expandboundingvolumejob.cpp \
@@ -62,7 +53,6 @@ SOURCES += \
     $$PWD/updatemeshtrianglelistjob.cpp \
     $$PWD/updatelevelofdetailjob.cpp \
     $$PWD/pickboundingvolumeutils.cpp \
-    $$PWD/filtercompatibletechniquejob.cpp \
     $$PWD/updatetreeenabledjob.cpp \
     $$PWD/sendbuffercapturejob.cpp \
     $$PWD/loadskeletonjob.cpp \

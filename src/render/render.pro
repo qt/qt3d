@@ -7,7 +7,6 @@ QT_FOR_PRIVATE = concurrent
 
 include (backend/render-backend.pri)
 include (geometry/geometry.pri)
-include (graphicshelpers/graphicshelpers.pri)
 include (framegraph/framegraph.pri)
 include (frontend/render-frontend.pri)
 include (jobs/jobs.pri)
@@ -19,6 +18,7 @@ include (picking/picking.pri)
 include (raycasting/raycasting.pri)
 include (services/services.pri)
 include (texture/texture.pri)
+include (renderers/renderers.pri)
 
 # Qt3D is free of Q_FOREACH - make sure it stays that way:
 DEFINES += QT_NO_FOREACH
