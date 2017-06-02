@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
+#include <Qt3DRender/private/gl_handle_types_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>

@@ -5,6 +5,7 @@ include (io/io.pri)
 include (textures/textures.pri)
 include (graphicshelpers/graphicshelpers.pri)
 include (renderstates/renderstates.pri)
+include (managers/managers.pri)
 
 !integrity: include (debug/debug.pri)
 

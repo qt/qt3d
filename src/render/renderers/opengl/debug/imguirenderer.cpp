@@ -48,6 +48,7 @@
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 
 #include <QDateTime>
 #include <QGuiApplication>

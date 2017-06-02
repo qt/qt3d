@@ -645,6 +645,8 @@ void QRenderAspect::onUnregistered()
 
     d->unregisterBackendTypes();
 
+    d->m_renderer->releaseGraphicsResources();
+
     delete d->m_nodeManagers;
     d->m_nodeManagers = nullptr;
 

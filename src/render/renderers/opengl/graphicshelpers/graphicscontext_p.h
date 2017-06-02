@@ -72,6 +72,7 @@
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/graphicshelperinterface_p.h>
 #include <Qt3DRender/private/qblitframebuffer_p.h>
+#include <Qt3DRender/private/gl_handle_types_p.h>
 #include <qmath.h>
 
 QT_BEGIN_NAMESPACE

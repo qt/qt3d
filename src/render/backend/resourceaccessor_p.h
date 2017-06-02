@@ -89,10 +89,10 @@ public:
     ResourceAccessor(NodeManagers *mgr);
     bool accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) final;
 private:
-    GLTextureManager *m_glTextureManager;
-    TextureManager *m_textureManager;
-    AttachmentManager *m_attachmentManager;
-    EntityManager *m_entityManager;
+//    GLTextureManager *m_glTextureManager;
+//    TextureManager *m_textureManager;
+//    AttachmentManager *m_attachmentManager;
+//    EntityManager *m_entityManager;
 };
 
 } // namespace Render

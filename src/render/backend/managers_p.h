@@ -71,15 +71,12 @@
 #include <Qt3DRender/private/parameter_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/private/glbuffer_p.h>
-#include <Qt3DRender/private/glfence_p.h>
 #include <Qt3DRender/private/textureimage_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/raycaster_p.h>
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
-#include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
@@ -266,15 +263,6 @@ public:
     TransformManager() {}
 };
 
-class VAOManager : public Qt3DCore::QResourceManager<
-        OpenGLVertexArrayObject,
-        VAOIdentifier,
-        Qt3DCore::NonLockingPolicy>
-{
-public:
-    VAOManager() {}
-};
-
 class RenderTargetManager : public Qt3DCore::QResourceManager<
         RenderTarget,
         Qt3DCore::QNodeId,
@@ -319,17 +307,6 @@ class ShaderDataManager : public Qt3DCore::QResourceManager<
 {
 public:
     ShaderDataManager() {}
-};
-
-class GLBufferManager : public Qt3DCore::QResourceManager<
-        GLBuffer,
-        Qt3DCore::QNodeId,
-        Qt3DCore::NonLockingPolicy>
-{
-};
-
-class GLFenceManager : public QHash<Qt3DCore::QNodeId, GLFence>
-{
 };
 
 class TextureImageManager : public Qt3DCore::QResourceManager<
@@ -471,7 +448,6 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::BoundingVolumeDebug, Q_REQUIRES_CLEA
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ComputeCommand, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Parameter, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Transform, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Armature, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Skeleton, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Joint, Q_REQUIRES_CLEANUP)
