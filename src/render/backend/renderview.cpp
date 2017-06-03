@@ -585,6 +585,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
             BlockToUBO uniformBlockUBO;
             uniformBlockUBO.m_blockIndex = block.m_index;
             uniformBlockUBO.m_bufferID = buffer->peerId();
+            uniformBlockUBO.m_needsUpdate = false;
             uniformPack.setUniformBuffer(std::move(uniformBlockUBO));
             // Buffer update to GL buffer will be done at render time
         }
