@@ -70,7 +70,7 @@ void EventSourceSetterHelper::setEventSource(QObject *eventSource)
         QMetaObject::invokeMethod(this,
                                   "setEventSourceHelper",
                                   Qt::BlockingQueuedConnection,
-                                  Q_ARG(QObject *, eventSource));
+                                  Q_ARG(QObject*, eventSource));
     }
 }
 
