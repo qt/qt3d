@@ -62,6 +62,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
+class EntityManager;
 class CameraManager;
 class Sphere;
 
@@ -79,7 +80,7 @@ private:
     QRenderAspect *m_renderAspect;
 };
 
-class CameraLens : public BackendNode
+class QT3DRENDERSHARED_PRIVATE_EXPORT CameraLens : public BackendNode
 {
 public:
     CameraLens();
@@ -96,6 +97,9 @@ public:
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void notifySceneBoundingVolume(const Sphere &sphere, Qt3DCore::QNodeCommand::CommandId commandId);
+
+    static bool viewMatrixForCamera(EntityManager *manager, Qt3DCore::QNodeId cameraId,
+                                    QMatrix4x4 &viewMatrix, QMatrix4x4 &projectionMatrix);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

@@ -445,20 +445,6 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
     }
 }
 
-void PickBoundingVolumeJob::viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
-                                                QMatrix4x4 &viewMatrix,
-                                                QMatrix4x4 &projectionMatrix) const
-{
-    Render::CameraLens *lens = nullptr;
-    Entity *camNode = m_manager->renderNodesManager()->lookupResource(cameraId);
-    if (camNode != nullptr &&
-            (lens = camNode->renderComponent<CameraLens>()) != nullptr &&
-            lens->isEnabled()) {
-        viewMatrix = *camNode->worldTransform();
-        projectionMatrix = lens->projection();
-    }
-}
-
 QRect PickBoundingVolumeJob::windowViewport(const QSize &area, const QRectF &relativeViewport) const
 {
     if (area.isValid()) {
@@ -479,7 +465,7 @@ RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &a
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
-    viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
+    Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), cameraId, viewMatrix, projectionMatrix);
     const QRect viewport = windowViewport(area, relativeViewport);
 
     // In GL the y is inverted compared to Qt

@@ -84,7 +84,6 @@ private:
     void updateEntityLod(Entity *entity);
     void updateEntityLodByDistance(Entity *entity, LevelOfDetail *lod);
     void updateEntityLodByScreenArea(Entity *entity, LevelOfDetail *lod);
-    bool viewMatrixForCamera(const Qt3DCore::QNodeId &cameraId, QMatrix4x4 &viewMatrix, QMatrix4x4 &projectionMatrix) const;
     QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
 
     NodeManagers *m_manager;

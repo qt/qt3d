@@ -199,6 +199,21 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     BackendNode::sceneChangeEvent(e);
 }
 
+bool CameraLens::viewMatrixForCamera(EntityManager* manager, Qt3DCore::QNodeId cameraId,
+                                     QMatrix4x4 &viewMatrix, QMatrix4x4 &projectionMatrix)
+{
+    Entity *camNode = manager->lookupResource(cameraId);
+    if (!camNode)
+        return false;
+    Render::CameraLens *lens = camNode->renderComponent<CameraLens>();
+    if (!lens || !lens->isEnabled())
+        return false;
+
+    viewMatrix = *camNode->worldTransform();
+    projectionMatrix = lens->projection();
+    return true;
+}
+
 CameraLensFunctor::CameraLensFunctor(AbstractRenderer *renderer, QRenderAspect *renderAspect)
     : m_manager(renderer->nodeManagers()->manager<CameraLens, CameraManager>())
     , m_renderer(renderer)

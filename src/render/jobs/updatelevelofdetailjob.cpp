@@ -96,22 +96,6 @@ void UpdateLevelOfDetailJob::run()
     updateEntityLod(m_root);
 }
 
-bool UpdateLevelOfDetailJob::viewMatrixForCamera(const Qt3DCore::QNodeId &cameraId,
-                                                 QMatrix4x4 &viewMatrix,
-                                                 QMatrix4x4 &projectionMatrix) const
-{
-    Render::CameraLens *lens = nullptr;
-    Entity *camNode = m_manager->renderNodesManager()->lookupResource(cameraId);
-    if (camNode != nullptr &&
-            (lens = camNode->renderComponent<CameraLens>()) != nullptr &&
-            lens->isEnabled()) {
-        viewMatrix = *camNode->worldTransform();
-        projectionMatrix = lens->projection();
-        return true;
-    }
-    return false;
-}
-
 QRect UpdateLevelOfDetailJob::windowViewport(const QSize &area, const QRectF &relativeViewport) const
 {
     if (area.isValid()) {
@@ -158,7 +142,7 @@ void UpdateLevelOfDetailJob::updateEntityLodByDistance(Entity *entity, LevelOfDe
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
-    if (!viewMatrixForCamera(lod->camera(), viewMatrix, projectionMatrix))
+    if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
         return;
 
     const QVector<qreal> thresholds = lod->thresholds();
@@ -187,7 +171,7 @@ void UpdateLevelOfDetailJob::updateEntityLodByScreenArea(Entity *entity, LevelOf
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
-    if (!viewMatrixForCamera(lod->camera(), viewMatrix, projectionMatrix))
+    if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
         return;
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer(lod->camera());

@@ -124,9 +124,6 @@ private:
 
     QList<QKeyEvent> m_pendingKeyEvents;
 
-    void viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
-                             QMatrix4x4 &viewMatrix,
-                             QMatrix4x4 &projectionMatrix) const;
     QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
     RayCasting::QRay3D rayForViewportAndCamera(const QSize &area,
                                                const QPoint &pos,
