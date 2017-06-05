@@ -113,7 +113,7 @@ void QDownloadHelperServicePrivate::init()
 
 void QDownloadHelperServicePrivate::shutdown()
 {
-    m_downloadWorker->cancelAllRequests();
+    emit m_downloadWorker->cancelAllRequests();
     m_downloadThread->exit();
     m_downloadThread->wait();
     m_downloadWorker->deleteLater();
