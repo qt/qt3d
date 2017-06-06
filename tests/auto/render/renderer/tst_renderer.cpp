@@ -90,12 +90,25 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  singleRenderViewJobCount); // Only valid for the first call to renderBinJobs(), since subsequent calls won't have the renderqueue reset
 
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
+        // WHEN
+        renderer.addRenderCaptureSendRequest(Qt3DCore::QNodeId::createId());
+        jobs = renderer.renderBinJobs();
+
+        // THEN
+        QCOMPARE(jobs.size(),
+                 1 + // updateLevelOfDetailJob
+                 1 + // cleanupJob
+                 1 + // sendBufferCaptureJob
+                 1 + // sendRenderCaptureJob
+                 1 + // VAOGatherer
+                 1); // updateSkinningPaletteJob
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::EntityEnabledDirty, nullptr);
@@ -105,7 +118,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
@@ -121,7 +133,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // WorldTransformJob
@@ -140,7 +151,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // CalculateBoundingVolumeJob
@@ -158,7 +168,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
@@ -174,7 +183,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // TexturesGathererJob
@@ -200,7 +208,6 @@ private Q_SLOTS:
                  1 + // updateSkinningPaletteJob
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // BufferGathererJob

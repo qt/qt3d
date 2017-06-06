@@ -180,7 +180,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
-    , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
+    , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create())
     , m_sendBufferCaptureJob(Render::SendBufferCaptureJobPtr::create())
     , m_updateSkinningPaletteJob(Render::UpdateSkinningPaletteJobPtr::create())
     , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
@@ -1565,7 +1565,14 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_updateSkinningPaletteJob);
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_cleanupJob);
-    renderBinJobs.push_back(m_sendRenderCaptureJob);
+
+    const QVector<Qt3DCore::QNodeId> pendingCaptureIds = takePendingRenderCaptureSendRequests();
+    if (pendingCaptureIds.size() > 0) {
+        m_sendRenderCaptureJob->setPendingCaptureRequests(pendingCaptureIds);
+        renderBinJobs.push_back(m_sendRenderCaptureJob);
+    }
+
+
     renderBinJobs.push_back(m_sendBufferCaptureJob);
     renderBinJobs.append(bufferJobs);
 

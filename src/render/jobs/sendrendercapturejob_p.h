@@ -50,6 +50,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 
@@ -61,21 +62,21 @@ namespace Render {
 
 class NodeManagers;
 class Entity;
-class Renderer;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT SendRenderCaptureJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit SendRenderCaptureJob(Renderer *renderer);
+    SendRenderCaptureJob();
     ~SendRenderCaptureJob();
 
+    void setPendingCaptureRequests(const QVector<Qt3DCore::QNodeId> &requests);
     void setManagers(NodeManagers *managers);
 
     void run() final;
 
 private:
-    Renderer *m_renderer;
     NodeManagers *m_managers;
+    QVector<Qt3DCore::QNodeId> m_pendingCaptures;
 };
 
 typedef QSharedPointer<SendRenderCaptureJob> SendRenderCaptureJobPtr;
