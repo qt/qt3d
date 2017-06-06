@@ -402,8 +402,11 @@ void addToRenderStateSet(RenderStateSet *stateSet,
                          const QVector<Qt3DCore::QNodeId> stateIds,
                          RenderStateManager *manager)
 {
-    for (const Qt3DCore::QNodeId &stateId : stateIds)
-        stateSet->addState(manager->lookupResource(stateId)->impl());
+    for (const Qt3DCore::QNodeId &stateId : stateIds) {
+        RenderStateNode *node = manager->lookupResource(stateId);
+        if (node->isEnabled())
+            stateSet->addState(node->impl());
+    }
 }
 
 namespace {
