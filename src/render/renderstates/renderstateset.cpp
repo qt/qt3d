@@ -249,7 +249,7 @@ StateVariant RenderStateSet::initializeStateFromPeer(const Qt3DRender::QRenderSt
 {
     switch (change->renderStateType()) {
     case AlphaCoverageStateMask: {
-        return RenderStateSet::createState<AlphaCoverage>(change->isNodeEnabled());
+        return RenderStateSet::createState<AlphaCoverage>();
     }
 
     case AlphaTestMask: {
@@ -347,7 +347,7 @@ StateVariant RenderStateSet::initializeStateFromPeer(const Qt3DRender::QRenderSt
     }
 
     case SeamlessCubemapMask: {
-        return RenderStateSet::createState<SeamlessCubemap>(change->isNodeEnabled());
+        return RenderStateSet::createState<SeamlessCubemap>();
     }
 
     case StencilOpMask: {
