@@ -71,6 +71,7 @@
 #include <Qt3DRender/qlevelofdetail.h>
 #include <Qt3DRender/qlevelofdetailboundingsphere.h>
 #include <Qt3DRender/qlevelofdetailswitch.h>
+#include <Qt3DRender/qlinewidth.h>
 #include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qmultisampleantialiasing.h>
@@ -284,6 +285,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QSeamlessCubemap>(uri, 2, 0, "SeamlessCubemap");
     qmlRegisterType<Qt3DRender::QStencilOperation>(uri, 2, 0, "StencilOperation");
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
+    qmlRegisterType<Qt3DRender::QLineWidth>(uri, 2, 10, "LineWidth");
 }
 
 QT_END_NAMESPACE

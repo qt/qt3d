@@ -280,6 +280,17 @@ void StencilMask::updateProperty(const char *name, const QVariant &value)
     else if (name == QByteArrayLiteral("backMask")) std::get<1>(m_values) = value.toInt();
 }
 
+void LineWidth::apply(GraphicsContext *gc) const
+{
+    gc->openGLContext()->functions()->glLineWidth(std::get<0>(m_values));
+}
+
+void LineWidth::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("value"))
+        std::get<0>(m_values) = value.toFloat();
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

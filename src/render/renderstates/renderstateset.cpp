@@ -86,6 +86,8 @@
 #include <Qt3DRender/private/qstenciloperationarguments_p.h>
 #include <Qt3DRender/qstencilmask.h>
 #include <Qt3DRender/private/qstencilmask_p.h>
+#include <Qt3DRender/qlinewidth.h>
+#include <Qt3DRender/private/qlinewidth_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -230,6 +232,9 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, GraphicsConte
 
     if (maskOfStatesToReset & StencilOpMask)
         funcs->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+    if (maskOfStatesToReset & LineWidthMask)
+        funcs->glLineWidth(1.0f);
 }
 
 bool RenderStateSet::contains(const StateVariant &ds) const
@@ -366,6 +371,12 @@ StateVariant RenderStateSet::initializeStateFromPeer(const Qt3DRender::QRenderSt
         const auto &data = typedChange->data;
         return RenderStateSet::createState<StencilMask>(data.frontOutputMask,
                                                         data.backOutputMask);
+    }
+
+    case LineWidthMask: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QLineWidthData>>(change);
+        const auto &data = typedChange->data;
+        return RenderStateSet::createState<LineWidth>(data.value);
     }
 
         // TODO: Fix Dithering state

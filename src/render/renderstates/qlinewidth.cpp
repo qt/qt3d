@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,55 +37,73 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_STATEMASK_P_H
-#define QT3DRENDER_RENDER_STATEMASK_P_H
+#include "qlinewidth.h"
+#include "qlinewidth_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
+/*!
+    \class Qt3DRender::QLineWidth
+    \inmodule Qt3DRender
+    \since 5.10
+    \brief Specifies the width of rasterized lines.
+ */
 
-enum StateMask
+/*!
+    \qmltype LineWidth
+    \since 5.10
+    \inherits RenderState
+    \instantiates Qt3DRender::QLineWidth
+    \inqmlmodule Qt3D.Render
+
+    \brief Specifies the width of rasterized lines.
+ */
+
+/*!
+    \qmlproperty real LineWidth::value
+    Specifies the width value to be used.
+*/
+
+/*!
+    \property  QLineWidth::value
+    Specifies the width value to be used.
+*/
+
+QLineWidth::QLineWidth(Qt3DCore::QNode *parent)
+    : QRenderState(*new QLineWidthPrivate(1.0f), parent)
 {
-    BlendStateMask          = 1 << 0,
-    StencilWriteStateMask   = 1 << 1,
-    StencilTestStateMask    = 1 << 2,
-    ScissorStateMask        = 1 << 3,
-    DepthTestStateMask      = 1 << 4,
-    DepthWriteStateMask     = 1 << 5,
-    CullFaceStateMask       = 1 << 6,
-    AlphaTestMask           = 1 << 7,
-    FrontFaceStateMask      = 1 << 8,
-    DitheringStateMask      = 1 << 9,
-    AlphaCoverageStateMask  = 1 << 10,
-    PolygonOffsetStateMask  = 1 << 11,
-    ColorStateMask          = 1 << 12,
-    ClipPlaneMask           = 1 << 13,
-    StencilOpMask           = 1 << 14,
-    PointSizeMask           = 1 << 15,
-    SeamlessCubemapMask     = 1 << 16,
-    MSAAEnabledStateMask    = 1 << 17,
-    BlendEquationArgumentsMask  = 1 << 18,
-    LineWidthMask           = 1 << 19,
-};
+}
 
-} // namespace Render
+QLineWidth::~QLineWidth()
+{
+}
+
+float QLineWidth::value() const
+{
+    Q_D(const QLineWidth);
+    return d->m_value;
+}
+
+void QLineWidth::setValue(float width)
+{
+    Q_D(QLineWidth);
+    d->m_value = width;
+    emit valueChanged(width);
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QLineWidth::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QLineWidthData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QLineWidth);
+    data.value = d->m_value;
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_STATEMASK_P_H

@@ -105,6 +105,9 @@ void StateVariant::apply(GraphicsContext *gc) const
     case StencilWriteStateMask:
         data.stencilMask.apply(gc);
         return;
+    case LineWidthMask:
+        data.lineWidth.apply(gc);
+        return;
     default:
         Q_UNREACHABLE();
     }
@@ -136,6 +139,7 @@ RenderStateImpl *StateVariant::state()
     case SeamlessCubemapMask:
     case StencilOpMask:
     case StencilWriteStateMask:
+    case LineWidthMask:
         return &data.blendEquationArguments;
     default:
         Q_UNREACHABLE();
@@ -168,6 +172,7 @@ const RenderStateImpl *StateVariant::constState() const
     case SeamlessCubemapMask:
     case StencilOpMask:
     case StencilWriteStateMask:
+    case LineWidthMask:
         return &data.blendEquationArguments;
     default:
         Q_UNREACHABLE();

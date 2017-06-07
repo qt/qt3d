@@ -83,6 +83,7 @@ struct StateVariant
         SeamlessCubemap seamlessCubemap;
         StencilOp stencilOp;
         StencilMask stencilMask;
+        LineWidth lineWidth;
 
         u_Data()
         {

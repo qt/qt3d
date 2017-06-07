@@ -27,6 +27,7 @@ HEADERS += \
     $$PWD/qseamlesscubemap.h \
     $$PWD/qdepthtest.h \
     $$PWD/qnodepthmask.h \
+    $$PWD/qlinewidth.h \
     $$PWD/qalphatest_p.h \
     $$PWD/qblendequation_p.h \
     $$PWD/qblendequationarguments_p.h \
@@ -43,6 +44,7 @@ HEADERS += \
     $$PWD/qstenciloperationarguments_p.h \
     $$PWD/qstenciltest_p.h \
     $$PWD/qstenciltestarguments_p.h \
+    $$PWD/qlinewidth_p.h \
     $$PWD/renderstatenode_p.h \
     $$PWD/qmultisampleantialiasing.h \
     $$PWD/statemask_p.h \
@@ -73,6 +75,7 @@ SOURCES += \
     $$PWD/qpointsize.cpp \
     $$PWD/qseamlesscubemap.cpp \
     $$PWD/qnodepthmask.cpp \
+    $$PWD/qlinewidth.cpp \
     $$PWD/qrenderstatecreatedchange.cpp \
     $$PWD/renderstatenode.cpp \
     $$PWD/qmultisampleantialiasing.cpp \
