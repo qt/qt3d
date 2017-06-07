@@ -349,7 +349,7 @@ void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::
                 for (const Render::RenderCommand &c : v->commands()) {
                     QJsonObject commandObj;
                     Render::NodeManagers *nodeManagers = m_renderer->nodeManagers();
-                    commandObj.insert(QLatin1String("shader"), backendNodeToJSon(c.m_shader, nodeManagers->shaderManager()));
+                    commandObj.insert(QLatin1String("shader"), int(c.m_shaderId.id()));
                     commandObj.insert(QLatin1String("vao"),  double(c.m_vao.handle()));
                     commandObj.insert(QLatin1String("instanceCount"), c.m_instanceCount);
                     commandObj.insert(QLatin1String("geometry"),  backendNodeToJSon(c.m_geometry, nodeManagers->geometryManager()));

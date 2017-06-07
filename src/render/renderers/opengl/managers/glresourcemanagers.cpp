@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "glresourcemanagers_p.h"
+#include <Qt3DRender/private/glbuffer_p.h>
 #include <QOpenGLVertexArrayObject>
 
 QT_BEGIN_NAMESPACE
@@ -49,6 +50,7 @@ namespace Render {
 
 GLResourceManagers::GLResourceManagers()
     : m_glBufferManager(new GLBufferManager())
+    , m_glShaderManager(new GLShaderManager())
     , m_glTextureManager(new GLTextureManager())
     , m_glFenceManager(new GLFenceManager())
     , m_vaoManager(new VAOManager())
@@ -60,6 +62,7 @@ GLResourceManagers::~GLResourceManagers()
     delete m_vaoManager;
     delete m_glFenceManager;
     delete m_glTextureManager;
+    delete m_glShaderManager;
     delete m_glBufferManager;
 }
 

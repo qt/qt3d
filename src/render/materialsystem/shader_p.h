@@ -52,11 +52,8 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/shaderparameterpack_p.h>
-#include <Qt3DRender/private/shadervariables_p.h>
-#include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <QMutex>
+#include <Qt3DRender/qshaderprogram.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -69,8 +66,6 @@ namespace Render {
 
 class ShaderManager;
 class AttachmentPack;
-
-typedef uint ProgramDNA;
 
 class Q_AUTOTEST_EXPORT Shader : public BackendNode
 {
@@ -104,92 +99,28 @@ public:
 
     void cleanup();
 
-    void setGraphicsContext(GraphicsContext *context);
-    GraphicsContext *graphicsContext();
-
-    void prepareUniforms(ShaderParameterPack &pack);
-    void setFragOutputs(const QHash<QString, int> &fragOutputs);
-    const QHash<QString, int> fragOutputs() const;
-
-    inline QVector<int> uniformsNamesIds() const { return m_uniformsNamesIds; }
-    inline QVector<int> standardUniformNameIds() const { return m_standardUniformNamesIds; }
-    inline QVector<int> uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
-    inline QVector<int> storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
-    inline QVector<int> attributeNamesIds() const { return m_attributeNamesIds; }
-
-    QVector<QString> uniformsNames() const;
-    QVector<QString> attributesNames() const;
-    QVector<QString> uniformBlockNames() const;
-    QVector<QString> storageBlockNames() const;
     QVector<QByteArray> shaderCode() const;
     void setShaderCode(QShaderProgram::ShaderType type, const QByteArray &code);
 
-    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
-    bool isLoaded() const { QMutexLocker lock(&m_mutex); return m_isLoaded; }
-    void setLoaded(bool loaded) { QMutexLocker lock(&m_mutex); m_isLoaded = loaded; }
-    ProgramDNA dna() const Q_DECL_NOTHROW { return m_dna; }
-
-    inline QVector<ShaderUniform> uniforms() const { return m_uniforms; }
-    inline QVector<ShaderAttribute> attributes() const { return m_attributes; }
-    inline QVector<ShaderUniformBlock> uniformBlocks() const { return m_uniformBlocks; }
-    inline QVector<ShaderStorageBlock> storageBlocks() const { return m_shaderStorageBlocks; }
-
-    QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
-
-    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId);
-    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex);
-    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName);
-
-    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex);
-    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId);
-    ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
 
     inline QString log() const { return m_log; }
     inline QShaderProgram::Status status() const { return m_status; }
+    bool isDirty() const { return m_dirty; }
+    void unsetDirty() { m_dirty = false; }
 
     inline bool requiresFrontendSync() const { return m_requiresFrontendSync; }
     inline void unsetRequiresFrontendSync() { m_requiresFrontendSync = false; }
 
 private:
-    QVector<QString> m_uniformsNames;
-    QVector<int> m_uniformsNamesIds;
-    QVector<int> m_standardUniformNamesIds;
-    QVector<ShaderUniform> m_uniforms;
-
-    QVector<QString> m_attributesNames;
-    QVector<int> m_attributeNamesIds;
-    QVector<ShaderAttribute> m_attributes;
-
-    QVector<QString> m_uniformBlockNames;
-    QVector<int> m_uniformBlockNamesIds;
-    QVector<ShaderUniformBlock> m_uniformBlocks;
-    QHash<int, QHash<QString, ShaderUniform> > m_uniformBlockIndexToShaderUniforms;
-
-    QVector<QString> m_shaderStorageBlockNames;
-    QVector<int> m_shaderStorageBlockNamesIds;
-    QVector<ShaderStorageBlock> m_shaderStorageBlocks;
-
-    QHash<QString, int> m_fragOutputs;
-
     QVector<QByteArray> m_shaderCode;
 
-    bool m_isLoaded;
-    ProgramDNA m_dna;
-    ProgramDNA m_oldDna;
-    mutable QMutex m_mutex;
-    GraphicsContext *m_graphicsContext;
-    QMetaObject::Connection m_contextConnection;
     QString m_log;
     QShaderProgram::Status m_status;
     bool m_requiresFrontendSync;
+    bool m_dirty;
 
-    void updateDNA();
-
-    // Private so that only GraphicContext can call it
-    void initializeUniforms(const QVector<ShaderUniform> &uniformsDescription);
-    void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
-    void initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription);
-    void initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
+    QVector<Qt3DCore::QPropertyUpdatedChangePtr> m_pendingNotifications;
 
     void initializeFromReference(const Shader &other);
     void setLog(const QString &log);
@@ -202,10 +133,24 @@ private:
 inline QDebug operator<<(QDebug dbg, const Shader &shader)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "QNodeId =" << shader.peerId() << "dna =" << shader.dna() << Qt::endl;
+    dbg << "QNodeId =" << shader.peerId() << Qt::endl;
     return dbg;
 }
 #endif
+
+class ShaderFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit ShaderFunctor(AbstractRenderer *renderer,
+                           ShaderManager *manager);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
+    void destroy(Qt3DCore::QNodeId id) const final;
+
+private:
+    AbstractRenderer *m_renderer;
+    ShaderManager *m_shaderManager;
+};
 
 } // namespace Render
 } // namespace Qt3DRender

@@ -38,7 +38,8 @@ HEADERS += \
     $$PWD/visitorutils_p.h \
     $$PWD/segmentsvisitor_p.h \
     $$PWD/pointsvisitor_p.h \
-    $$PWD/commandexecuter_p.h
+    $$PWD/commandexecuter_p.h \
+    $$PWD/apishadermanager_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \

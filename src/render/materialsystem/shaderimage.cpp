@@ -103,7 +103,6 @@ void ShaderImage::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTi
         m_format = node->format();
         markDirty(AbstractRenderer::ParameterDirty);
     }
-
     if (node->access() != m_access) {
         m_access = node->access();
         markDirty(AbstractRenderer::ParameterDirty);

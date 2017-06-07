@@ -69,6 +69,7 @@
 #include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/private/submissioncontext_p.h>
+#include <Qt3DRender/private/glresourcemanagers_p.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
 #include <algorithm>
@@ -321,7 +322,7 @@ struct AdjacentSubRangeFinder<QSortPolicy::Material>
 {
     static bool adjacentSubRange(const RenderCommand &a, const RenderCommand &b)
     {
-        return a.m_shaderDna == b.m_shaderDna;
+        return a.m_glShader == b.m_glShader;
     }
 };
 
@@ -409,9 +410,9 @@ struct SubRangeSorter<QSortPolicy::Material>
 {
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
-        // First we sort by shaderDNA
+        // First we sort by shader
         std::stable_sort(begin, end, [] (const RenderCommand &a, const RenderCommand &b) {
-            return a.m_shaderDna > b.m_shaderDna;
+            return a.m_glShader > b.m_glShader;
         });
     }
 };
@@ -532,7 +533,9 @@ void sortCommandRange(QVector<RenderCommand> &commands, int begin, const int end
 
 void RenderView::sort()
 {
-     sortCommandRange(m_commands, 0, m_commands.size(), 0, m_data.m_sortingTypes);
+    // Compares the bitsetKey of the RenderCommands
+    // Key[Depth | StateCost | Shader]
+    sortCommandRange(m_commands, 0, m_commands.size(), 0, m_data.m_sortingTypes);
 
     // For RenderCommand with the same shader
     // We compute the adjacent change cost
@@ -544,7 +547,8 @@ void RenderView::sort()
         int j = i;
 
         // Advance while commands share the same shader
-        while (i < commandSize && m_commands[j].m_shaderDna == m_commands[i].m_shaderDna)
+        while (i < commandSize &&
+               m_commands[j].m_glShader == m_commands[i].m_glShader)
             ++i;
 
         if (i - j > 0) { // Several commands have the same shader, so we minimize uniform changes
@@ -626,6 +630,7 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
 EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities,
                                                             int offset, int count) const
 {
+    GLShaderManager *glShaderManager = m_renderer->glResourceManagers()->glShaderManager();
     EntityRenderCommandData commands;
 
     commands.reserve(count);
@@ -668,7 +673,13 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
                         command.m_stateSet->merge(m_stateSet);
                     command.m_changeCost = m_renderer->defaultRenderState()->changeCost(command.m_stateSet.data());
                 }
-                command.m_shader = m_manager->lookupHandle<Shader, ShaderManager, HShader>(pass->shaderProgram());
+                command.m_shaderId = pass->shaderProgram();
+                command.m_glShader = glShaderManager->lookupResource(command.m_shaderId);
+
+                // It takes two frames to have a valid command as we can only
+                // reference a glShader at frame n if it has been loaded at frame n - 1
+                if (!command.m_glShader)
+                    continue;
 
                 { // Scoped to show extent
 
@@ -754,6 +765,7 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
     // layer component
     // material/effect/technique/parameters/filters/
     EntityRenderCommandData commands;
+    GLShaderManager *glShaderManager = m_renderer->glResourceManagers()->glShaderManager();
 
     commands.reserve(count);
 
@@ -784,7 +796,14 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
                         command.m_stateSet->merge(m_stateSet);
                     command.m_changeCost = m_renderer->defaultRenderState()->changeCost(command.m_stateSet.data());
                 }
-                command.m_shader = m_manager->lookupHandle<Shader, ShaderManager, HShader>(pass->shaderProgram());
+                command.m_shaderId = pass->shaderProgram();
+                command.m_glShader = glShaderManager->lookupResource(command.m_shaderId);
+
+                // It takes two frames to have a valid command as we can only
+                // reference a glShader at frame n if it has been loaded at frame n - 1
+                if (!command.m_glShader)
+                    continue;
+
                 command.m_computeCommand = computeCommandHandle;
                 command.m_type = RenderCommand::Compute;
                 command.m_workGroups[0] = std::max(m_workGroups[0], computeJob->x());
@@ -856,6 +875,7 @@ void RenderView::updateRenderCommand(EntityRenderCommandData *renderCommandData,
         ParameterInfoList globalParameters = passData.parameterInfo;
         // setShaderAndUniforms can initialize a localData
         // make sure this is cleared before we leave this function
+
         setShaderAndUniforms(&command,
                              globalParameters,
                              entity,
@@ -935,7 +955,7 @@ void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack,
 }
 
 void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
-                                      Shader *shader,
+                                      GLShader *shader,
                                       const ShaderUniformBlock &block,
                                       const UniformValue &value) const
 {
@@ -956,7 +976,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
 }
 
 void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
-                                       Shader *shader,
+                                       GLShader *shader,
                                        const ShaderStorageBlock &block,
                                        const UniformValue &value) const
 {
@@ -974,7 +994,7 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
     }
 }
 
-void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, Shader *shader, ShaderData *shaderData, const QString &structName) const
+void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, GLShader *shader, ShaderData *shaderData, const QString &structName) const
 {
     UniformBlockValueBuilder *builder = m_localData.localData();
     builder->activeUniformNamesToValue.clear();
@@ -1014,10 +1034,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
     // For each ParameterBinder in the RenderPass -> create a QUniformPack
     // Once that works, improve that to try and minimize QUniformPack updates
 
-    // Index Shader by Shader UUID
-    Shader *shader = m_manager->data<Shader, ShaderManager>(command->m_shader);
+    GLShader *shader = command->m_glShader;
     if (shader != nullptr && shader->isLoaded()) {
-        command->m_shaderDna = shader->dna();
 
         // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
         // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name

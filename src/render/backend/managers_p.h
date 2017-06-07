@@ -204,6 +204,21 @@ class ShaderManager : public Qt3DCore::QResourceManager<
 {
 public:
     ShaderManager() {}
+
+    // Called in AspectThread by Shader node functor destroy
+    void addShaderIdToCleanup(Qt3DCore::QNodeId id)
+    {
+        m_shaderIdsToCleanup.push_back(id);
+    }
+
+    // Called by RenderThread in updateGLResources (locked)
+    QVector<Qt3DCore::QNodeId> takeShaderIdsToCleanup()
+    {
+        return std::move(m_shaderIdsToCleanup);
+    }
+
+private:
+    QVector<Qt3DCore::QNodeId> m_shaderIdsToCleanup;
 };
 
 class ShaderBuilderManager : public Qt3DCore::QResourceManager<

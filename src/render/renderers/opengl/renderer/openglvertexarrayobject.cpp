@@ -133,7 +133,7 @@ void OpenGLVertexArrayObject::cleanup()
 }
 
 // called from job
-bool OpenGLVertexArrayObject::isAbandoned(GeometryManager *geomMgr, ShaderManager *shaderMgr)
+bool OpenGLVertexArrayObject::isAbandoned(GeometryManager *geomMgr, GLShaderManager *shaderMgr)
 {
     QMutexLocker lock(&m_mutex);
 
@@ -141,7 +141,7 @@ bool OpenGLVertexArrayObject::isAbandoned(GeometryManager *geomMgr, ShaderManage
         return false;
 
     const bool geometryExists = (geomMgr->data(m_owners.first) != nullptr);
-    const bool shaderExists = (shaderMgr->data(m_owners.second) != nullptr);
+    const bool shaderExists = (shaderMgr->lookupResource(m_owners.second) != nullptr);
 
     return !geometryExists || !shaderExists;
 }

@@ -45,10 +45,10 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderCommand::RenderCommand()
-    : m_stateSet(nullptr)
+    : m_glShader(nullptr)
+    , m_stateSet(nullptr)
     , m_depth(0.0f)
     , m_changeCost(0)
-    , m_shaderDna(0)
     , m_type(RenderCommand::Draw)
     , m_primitiveCount(0)
     , m_primitiveType(QGeometryRenderer::Triangles)
@@ -73,10 +73,10 @@ RenderCommand::RenderCommand()
 
 bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept
 {
-    return (a.m_vao == b.m_vao && a.m_shader == b.m_shader && a.m_material == b.m_material &&
+    return (a.m_vao == b.m_vao && a.m_glShader == b.m_glShader && a.m_material == b.m_material &&
             a.m_stateSet == b.m_stateSet && a.m_geometry == b.m_geometry && a.m_geometryRenderer == b.m_geometryRenderer &&
             a.m_indirectDrawBuffer == b.m_indirectDrawBuffer && a.m_activeAttributes == b.m_activeAttributes &&
-            a.m_depth == b.m_depth && a.m_changeCost == b.m_changeCost && a.m_shaderDna == b.m_shaderDna &&
+            a.m_depth == b.m_depth && a.m_changeCost == b.m_changeCost && a.m_shaderId == b.m_shaderId &&
             a.m_workGroups[0] == b.m_workGroups[0] && a.m_workGroups[1] == b.m_workGroups[1] && a.m_workGroups[2] == b.m_workGroups[2] &&
             a.m_primitiveCount == b.m_primitiveCount && a.m_primitiveType == b.m_primitiveType && a.m_restartIndexValue == b.m_restartIndexValue &&
             a.m_firstInstance == b.m_firstInstance && a.m_firstVertex == b.m_firstVertex && a.m_verticesPerPatch == b.m_verticesPerPatch &&

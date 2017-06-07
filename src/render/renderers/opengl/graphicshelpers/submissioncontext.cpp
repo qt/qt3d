@@ -62,6 +62,7 @@
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/renderbuffer_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DRender/private/glshader_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <QOpenGLShaderProgram>
 
@@ -363,7 +364,6 @@ SubmissionContext::SubmissionContext()
     , m_id(nextFreeContextId())
     , m_surface(nullptr)
     , m_activeShader(nullptr)
-    , m_activeShaderDNA(0)
     , m_renderTargetFormat(QAbstractTexture::NoFormat)
     , m_currClearStencilValue(0)
     , m_currClearDepthValue(1.f)
@@ -460,17 +460,9 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
     if (m_activeShader) {
         m_activeShader = nullptr;
-        m_activeShaderDNA = 0;
     }
 
     m_boundArrayBuffer = nullptr;
-
-    static int callCount = 0;
-    ++callCount;
-    const int shaderPurgePeriod = 600;
-    if (callCount % shaderPurgePeriod == 0)
-        m_shaderCache->purge();
-
     return true;
 }
 
@@ -766,7 +758,6 @@ void SubmissionContext::setViewport(const QRectF &viewport, const QSize &surface
 
 void SubmissionContext::releaseOpenGL()
 {
-    m_shaderCache->clear();
     m_renderBufferHash.clear();
 
     // Stop and destroy the OpenGL logger
@@ -779,27 +770,25 @@ void SubmissionContext::releaseOpenGL()
 // The OpenGLContext is not current on any surface at this point
 void SubmissionContext::setOpenGLContext(QOpenGLContext* ctx)
 {
-    Q_ASSERT(ctx && m_shaderCache);
+    Q_ASSERT(ctx);
 
     releaseOpenGL();
     m_gl = ctx;
 }
 
 // Called only from RenderThread
-bool SubmissionContext::activateShader(ProgramDNA shaderDNA)
+bool SubmissionContext::activateShader(GLShader *shader)
 {
-    if (shaderDNA != m_activeShaderDNA) {
+    if (shader->shaderProgram() != m_activeShader) {
         // Ensure material uniforms are re-applied
         m_material = nullptr;
 
-        m_activeShader = m_shaderCache->getShaderProgramForDNA(shaderDNA);
+        m_activeShader = shader->shaderProgram();
         if (Q_LIKELY(m_activeShader != nullptr)) {
             m_activeShader->bind();
-            m_activeShaderDNA = shaderDNA;
         } else {
             m_glHelper->useProgram(0);
-            qCWarning(Backend) << "No shader program found for DNA";
-            m_activeShaderDNA = 0;
+            qWarning() << "No shader program found";
             return false;
         }
     }
@@ -1334,6 +1323,7 @@ void SubmissionContext::specifyAttribute(const Attribute *attribute,
         Q_UNREACHABLE();
     }
 
+    Q_ASSERT(!glBufferHandle.isNull());
     VAOVertexAttribute attr;
     attr.bufferHandle = glBufferHandle;
     attr.attributeType = attributeType;
