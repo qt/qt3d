@@ -169,6 +169,9 @@ public:
 
     virtual QVariant executeCommand(const QStringList &args) = 0;
 
+    // For QtQuick rendering
+    virtual void setOpenGLContext(QOpenGLContext *ctx) = 0;
+
     virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
     virtual QSurfaceFormat format() = 0;
     virtual QOpenGLContext *shareContext() const = 0;

@@ -249,7 +249,7 @@ public:
     bool requiresVAOAttributeUpdate(Geometry *geometry,
                                     RenderCommand *command) const;
 
-    void setOpenGLContext(QOpenGLContext *context);
+    void setOpenGLContext(QOpenGLContext *context) override;
     const GraphicsApiFilterData *contextInfo() const;
     SubmissionContext *submissionContext() const;
 

@@ -410,7 +410,7 @@ QRenderAspect::~QRenderAspect()
 void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 {
     if (m_renderer->api() == Render::AbstractRenderer::OpenGL)
-        static_cast<Render::Renderer *>(m_renderer)->setOpenGLContext(context);
+        m_renderer->setOpenGLContext(context);
     m_renderer->initialize();
 }
 

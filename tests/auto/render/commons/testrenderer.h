@@ -83,6 +83,7 @@ public:
     void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) override;
     QSurfaceFormat format() override;
 
+    void setOpenGLContext(QOpenGLContext *) override {}
 
     void loadShader(Qt3DRender::Render::Shader *) const override {}
 
