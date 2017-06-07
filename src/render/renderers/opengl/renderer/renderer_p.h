@@ -153,8 +153,8 @@ class RenderStateSet;
 class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
-class ShaderCache;
 class GLResourceManagers;
+class GLShader;
 
 class UpdateLevelOfDetailJob;
 typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
@@ -267,6 +267,7 @@ public:
     void updateGLResources();
     void updateTexture(Texture *texture);
     void cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId);
+    void cleanupShader(const Shader *shader);
     void downloadGLBuffers();
     void blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
                          Qt3DCore::QNodeId outputRenderTargetId,
@@ -278,7 +279,7 @@ public:
     bool executeCommandsSubmission(const RenderView *rv);
     bool updateVAOWithAttributes(Geometry *geometry,
                                  const RenderCommand *command,
-                                 Shader *shader,
+                                 GLShader *shader,
                                  bool forceUpdate);
 
     bool requiresVAOAttributeUpdate(Geometry *geometry,
@@ -365,7 +366,6 @@ private:
     QOpenGLContext *m_glContext;
     QOpenGLContext *m_shareContext;
     mutable QMutex m_shareContextMutex;
-    ShaderCache *m_shaderCache;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
     RayCastingJobPtr m_rayCastingJob;
 

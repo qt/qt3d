@@ -68,7 +68,6 @@
 #include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
-#include <Qt3DRender/private/shadercache_p.h>
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/graphicshelperinterface_p.h>
 #include <Qt3DRender/private/qblitframebuffer_p.h>
@@ -89,6 +88,8 @@ class GraphicsHelperInterface;
 class RenderTarget;
 class AttachmentPack;
 class ShaderManager;
+class GLShader;
+class GLShaderManager;
 
 typedef QPair<QString, int> NamedUniformLocation;
 
@@ -98,9 +99,6 @@ public:
     GraphicsContext();
     ~GraphicsContext();
 
-    void setShaderCache(ShaderCache *shaderCache) { m_shaderCache = shaderCache; }
-    ShaderCache *shaderCache() const { return m_shaderCache; }
-
     void setOpenGLContext(QOpenGLContext* ctx);
     QOpenGLContext *openGLContext() { return m_gl; }
     bool makeCurrent(QSurface *surface);
@@ -109,10 +107,15 @@ public:
     bool isInitialized() const;
 
     // Shaders
-    QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
-    void introspectShaderInterface(Shader *shader, QOpenGLShaderProgram *shaderProgram);
-    void loadShader(Shader* shader, ShaderManager *manager);
-    void removeShaderProgramReference(Shader *shaderNode);
+    struct ShaderCreationInfo
+    {
+        bool linkSucceeded = false;
+        QString logs;
+    };
+
+    ShaderCreationInfo createShaderProgram(GLShader *shaderNode);
+    void introspectShaderInterface(GLShader *shader);
+    void loadShader(Shader* shader, ShaderManager *shaderManager, GLShaderManager *glShaderManager);
 
     GLuint defaultFBO() const { return m_defaultFBO; }
 
@@ -195,7 +198,6 @@ public:
 
     QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
     GraphicsApiFilterData m_contextInfo;
-    ShaderCache *m_shaderCache;
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
 
     friend class OpenGLVertexArrayObject;

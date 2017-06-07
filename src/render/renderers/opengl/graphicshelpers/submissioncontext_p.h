@@ -60,7 +60,6 @@
 #include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/private/shadercache_p.h>
 #include <Qt3DRender/private/glfence_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -105,7 +104,7 @@ public:
     QRectF viewport() const { return m_viewport; }
 
     // Shaders
-    bool activateShader(ProgramDNA shaderDNA);
+    bool activateShader(GLShader *shader);
     QOpenGLShaderProgram *activeShader() const { return m_activeShader; }
 
     // FBO
@@ -183,7 +182,6 @@ private:
     QSize m_surfaceSize;
 
     QOpenGLShaderProgram *m_activeShader;
-    ProgramDNA m_activeShaderDNA;
 
     QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;

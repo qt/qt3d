@@ -57,6 +57,8 @@
 #include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/private/glfence_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
+#include <Qt3DRender/private/glshader_p.h>
+#include <Qt3DRender/private/apishadermanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -93,6 +95,14 @@ public:
     QHash<GLTexture *, Qt3DCore::QNodeId> texNodeIdForGLTexture;
 };
 
+class Q_AUTOTEST_EXPORT GLShaderManager : public APIShaderManager<GLShader>
+{
+public:
+    explicit GLShaderManager()
+        : APIShaderManager<GLShader>()
+    {}
+};
+
 
 class Q_AUTOTEST_EXPORT GLResourceManagers
 {
@@ -101,12 +111,14 @@ public:
     ~GLResourceManagers();
 
     inline VAOManager *vaoManager() const noexcept { return m_vaoManager; }
+    inline GLShaderManager *glShaderManager() const noexcept { return m_glShaderManager; }
     inline GLTextureManager *glTextureManager() const noexcept { return m_glTextureManager; }
     inline GLBufferManager *glBufferManager() const noexcept { return m_glBufferManager; }
     inline GLFenceManager *glFenceManager() const noexcept { return m_glFenceManager; }
 
 private:
     GLBufferManager *m_glBufferManager;
+    GLShaderManager *m_glShaderManager;
     GLTextureManager *m_glTextureManager;
     GLFenceManager *m_glFenceManager;
     VAOManager *m_vaoManager;

@@ -36,6 +36,9 @@
 #include <private/rendercommand_p.h>
 #include <testpostmanarbiter.h>
 #include <testrenderer.h>
+#include <private/shader_p.h>
+#include <private/glresourcemanagers_p.h>
+#include <Qt3DRender/qshaderprogram.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,6 +67,7 @@ void compareShaderParameterPacks(const ShaderParameterPack &t1,
 class tst_RenderViews : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+
 private Q_SLOTS:
 
     void checkRenderViewSizeFitsWithAllocator()
@@ -132,9 +136,14 @@ private Q_SLOTS:
     void checkRenderCommandBackToFrontSorting()
     {
         // GIVEN
+        Qt3DRender::Render::NodeManagers nodeManagers;
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
         QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
+
+        renderer.setNodeManagers(&nodeManagers);
+        renderView.setRenderer(&renderer);
 
         sortTypes.push_back(QSortPolicy::BackToFront);
 
@@ -156,28 +165,34 @@ private Q_SLOTS:
             QVERIFY(sortedCommands.at(j - 1).m_depth > sortedCommands.at(j).m_depth);
 
         // RenderCommands are deleted by RenderView dtor
+        renderer.shutdown();
     }
 
     void checkRenderCommandMaterialSorting()
     {
         // GIVEN
+        Qt3DRender::Render::NodeManagers nodeManagers;
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
         QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
 
+        renderer.setNodeManagers(&nodeManagers);
+        renderView.setRenderer(&renderer);
+
         sortTypes.push_back(QSortPolicy::Material);
 
-        ProgramDNA dnas[5] = {
-            ProgramDNA(250),
-            ProgramDNA(500),
-            ProgramDNA(1000),
-            ProgramDNA(1500),
-            ProgramDNA(2000),
+        GLShader *dnas[5] = {
+            reinterpret_cast<GLShader *>(0x250),
+            reinterpret_cast<GLShader *>(0x500),
+            reinterpret_cast<GLShader *>(0x1000),
+            reinterpret_cast<GLShader *>(0x1500),
+            reinterpret_cast<GLShader *>(0x2000)
         };
 
         for (int i = 0; i < 20; ++i) {
             RenderCommand c;
-            c.m_shaderDna = dnas[i % 5];
+            c.m_glShader = dnas[i % 5];
             rawCommands.push_back(c);
         }
 
@@ -189,24 +204,25 @@ private Q_SLOTS:
         // THEN
         const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands.size(), sortedCommands.size());
-        ProgramDNA targetDNA;
+        GLShader *targetShader;
 
         for (int j = 0; j < sortedCommands.size(); ++j) {
 
             if (j % 4 == 0) {
-                targetDNA = sortedCommands.at(j).m_shaderDna;
+                targetShader = sortedCommands.at(j).m_glShader;
                 if (j > 0)
-                    QVERIFY(targetDNA != sortedCommands.at(j - 1).m_shaderDna);
+                    QVERIFY(targetShader != sortedCommands.at(j - 1).m_glShader);
             }
-            QCOMPARE(targetDNA, sortedCommands.at(j).m_shaderDna);
+            QCOMPARE(targetShader, sortedCommands.at(j).m_glShader);
         }
 
         // RenderCommands are deleted by RenderView dtor
+        renderer.shutdown();
     }
 
     void checkRenderViewUniformMinification_data()
     {
-        QTest::addColumn<QVector<ProgramDNA>>("programDNAs");
+        QTest::addColumn<QVector<QShaderProgram*>>("shaders");
         QTest::addColumn<QVector<ShaderParameterPack>>("rawParameters");
         QTest::addColumn<QVector<ShaderParameterPack>>("expectedMinimizedParameters");
 
@@ -217,36 +233,56 @@ private Q_SLOTS:
         pack1.setUniform(2, UniformValue(1584.0f));
         pack1.setTexture(3, 0, fakeTextureNodeId);
 
+        QShaderProgram *shader1 = new QShaderProgram();
+        QShaderProgram *shader2 = new QShaderProgram();
+
+        shader1->setShaderCode(QShaderProgram::Vertex, QByteArrayLiteral("1"));
+        shader2->setShaderCode(QShaderProgram::Vertex, QByteArrayLiteral("2"));
+
         ShaderParameterPack minifiedPack1;
 
         QTest::newRow("NoMinification")
-                << (QVector<ProgramDNA>() << ProgramDNA(883) << ProgramDNA(1584))
+                << (QVector<QShaderProgram*>() << shader1 << shader2)
                 << (QVector<ShaderParameterPack>() << pack1 << pack1)
                 << (QVector<ShaderParameterPack>() << pack1 << pack1);
 
         QTest::newRow("SingleShaderMinified")
-                << (QVector<ProgramDNA>() << ProgramDNA(883) << ProgramDNA(883) << ProgramDNA(883))
+                << (QVector<QShaderProgram*>() << shader1 << shader1 << shader1)
                 << (QVector<ShaderParameterPack>() << pack1 << pack1 << pack1)
                 << (QVector<ShaderParameterPack>() << pack1 << minifiedPack1 << minifiedPack1);
 
         QTest::newRow("MultipleShadersMinified")
-                << (QVector<ProgramDNA>() << ProgramDNA(883) << ProgramDNA(883) << ProgramDNA(883) << ProgramDNA(1584) << ProgramDNA(1584) << ProgramDNA(1584))
+                << (QVector<QShaderProgram*>() << shader1 << shader1 << shader1 << shader2 << shader2 << shader2)
                 << (QVector<ShaderParameterPack>() << pack1 << pack1 << pack1 << pack1 << pack1 << pack1)
                 << (QVector<ShaderParameterPack>() << pack1 << minifiedPack1 << minifiedPack1 << pack1 << minifiedPack1 << minifiedPack1);
     }
 
     void checkRenderViewUniformMinification()
     {
-        QFETCH(QVector<ProgramDNA>, programDNAs);
+        QFETCH(QVector<QShaderProgram*>, shaders);
         QFETCH(QVector<ShaderParameterPack>, rawParameters);
         QFETCH(QVector<ShaderParameterPack>, expectedMinimizedParameters);
 
+        Qt3DRender::Render::NodeManagers nodeManagers;
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        renderer.setNodeManagers(&nodeManagers);
+
+        GLShaderManager *shaderManager = renderer.glResourceManagers()->glShaderManager();
+        for (int i = 0, m = shaders.size(); i < m; ++i) {
+            Shader* backend = new Shader();
+            backend->setRenderer(&renderer);
+            simulateInitializationSync(shaders.at(i), backend);
+            shaderManager->createOrAdoptExisting(backend);
+        }
+
         RenderView renderView;
         QVector<RenderCommand> rawCommands;
+        renderView.setRenderer(&renderer);
 
-        for (int i = 0, m = programDNAs.size(); i < m; ++i) {
+        for (int i = 0, m = shaders.size(); i < m; ++i) {
             RenderCommand c;
-            c.m_shaderDna = programDNAs.at(i);
+            c.m_shaderId = shaders.at(i)->id();
+            c.m_glShader = shaderManager->lookupResource(c.m_shaderId);
             c.m_parameterPack = rawParameters.at(i);
             rawCommands.push_back(c);
         }
@@ -260,20 +296,27 @@ private Q_SLOTS:
         const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands, sortedCommands);
 
-        for (int i = 0, m = programDNAs.size(); i < m; ++i) {
+        for (int i = 0, m = shaders.size(); i < m; ++i) {
             const RenderCommand c = sortedCommands.at(i);
-            QCOMPARE(c.m_shaderDna, programDNAs.at(i));
+            QCOMPARE(c.m_shaderId, shaders.at(i)->id());
             compareShaderParameterPacks(c.m_parameterPack, expectedMinimizedParameters.at(i));
         }
+
+        renderer.shutdown();
     }
 
 
     void checkRenderCommandFrontToBackSorting()
     {
         // GIVEN
+        Qt3DRender::Render::NodeManagers nodeManagers;
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
         QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
+
+        renderer.setNodeManagers(&nodeManagers);
+        renderView.setRenderer(&renderer);
 
         sortTypes.push_back(QSortPolicy::FrontToBack);
 
@@ -295,14 +338,20 @@ private Q_SLOTS:
             QVERIFY(sortedCommands.at(j - 1).m_depth < sortedCommands.at(j).m_depth);
 
         // RenderCommands are deleted by RenderView dtor
+        renderer.shutdown();
     }
 
     void checkRenderCommandStateCostSorting()
     {
         // GIVEN
+        Qt3DRender::Render::NodeManagers nodeManagers;
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
         QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
+
+        renderer.setNodeManagers(&nodeManagers);
+        renderView.setRenderer(&renderer);
 
         sortTypes.push_back(QSortPolicy::StateChangeCost);
 
@@ -324,24 +373,31 @@ private Q_SLOTS:
             QVERIFY(sortedCommands.at(j - 1).m_changeCost > sortedCommands.at(j).m_changeCost);
 
         // RenderCommands are deleted by RenderView dtor
+        renderer.shutdown();
     }
 
     void checkRenderCommandCombinedStateMaterialDepthSorting()
     {
         // GIVEN
+        Qt3DRender::Render::NodeManagers nodeManagers;
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
         QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
+
+        renderer.setNodeManagers(&nodeManagers);
+        renderView.setRenderer(&renderer);
 
         sortTypes.push_back(QSortPolicy::StateChangeCost);
         sortTypes.push_back(QSortPolicy::Material);
         sortTypes.push_back(QSortPolicy::BackToFront);
 
-        ProgramDNA dna[4] = {
-            ProgramDNA(250),
-            ProgramDNA(500),
-            ProgramDNA(1000),
-            ProgramDNA(1500)
+        GLShader *dna[5] = {
+            reinterpret_cast<GLShader *>(0x250),
+            reinterpret_cast<GLShader *>(0x500),
+            reinterpret_cast<GLShader *>(0x1000),
+            reinterpret_cast<GLShader *>(0x1500),
+            reinterpret_cast<GLShader *>(0x2000)
         };
 
         float depth[3] = {
@@ -355,9 +411,9 @@ private Q_SLOTS:
             200
         };
 
-        auto buildRC = [] (ProgramDNA dna, float depth, int changeCost) {
+        auto buildRC = [] (GLShader *dna, float depth, int changeCost) {
             RenderCommand c;
-            c.m_shaderDna = dna;
+            c.m_glShader = dna;
             c.m_depth = depth;
             c.m_changeCost = changeCost;
             return c;
@@ -400,6 +456,7 @@ private Q_SLOTS:
         QCOMPARE(c9, sortedCommands.at(6));
 
         // RenderCommands are deleted by RenderView dtor
+        renderer.shutdown();
     }
 
     void checkRenderCommandTextureSorting()

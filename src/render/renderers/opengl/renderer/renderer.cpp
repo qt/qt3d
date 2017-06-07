@@ -244,7 +244,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
     , m_shareContext(nullptr)
-    , m_shaderCache(new ShaderCache())
     , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create())
     , m_rayCastingJob(RayCastingJobPtr::create())
     , m_time(0)
@@ -333,7 +332,6 @@ Renderer::~Renderer()
 
     delete m_renderQueue;
     delete m_defaultRenderStateSet;
-    delete m_shaderCache;
     delete m_glResourceManagers;
 
     if (!m_ownedContext)
@@ -431,8 +429,9 @@ QOpenGLContext *Renderer::shareContext() const
 // Executed in the reloadDirtyShader job
 void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
-    Q_UNUSED(shader)
-    m_dirtyShaders.push_back(shaderHandle);
+    Q_UNUSED(shader);
+    if (!m_dirtyShaders.contains(shaderHandle))
+        m_dirtyShaders.push_back(shaderHandle);
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -507,9 +506,6 @@ void Renderer::initialize()
             m_shareContext->setShareContext(ctx);
             m_shareContext->create();
         }
-
-        // Set shader cache on submission context and command thread
-        m_submissionContext->setShaderCache(m_shaderCache);
 
         // Note: we don't have a surface at this point
         // The context will be made current later on (at render time)
@@ -621,6 +617,10 @@ void Renderer::releaseGraphicsResources()
             GLBuffer *buffer = m_glResourceManagers->glBufferManager()->data(bufferHandle);
             buffer->destroy(m_submissionContext.data());
         }
+
+        // Do the same thing with shaders
+        const QVector<GLShader *> shaders = m_glResourceManagers->glShaderManager()->takeActiveResources();
+        qDeleteAll(shaders);
 
         // Do the same thing with VAOs
         const QVector<HVao> activeVaos = m_glResourceManagers->vaoManager()->activeHandles();
@@ -788,6 +788,13 @@ void Renderer::doRender(bool swapBuffers)
                         // 2) Update VAO and copy data into commands to allow concurrent submission
                         prepareCommandsSubmission(renderViews);
                         preprocessingComplete = true;
+
+                        // Purge shader which aren't used any longer
+                        static int callCount = 0;
+                        ++callCount;
+                        const int shaderPurgePeriod = 600;
+                        if (callCount % shaderPurgePeriod == 0)
+                            m_glResourceManagers->glShaderManager()->purge();
                     }
                 }
             }
@@ -956,7 +963,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
             if (command.m_type == RenderCommand::Draw) {
                 Geometry *rGeometry = m_nodesManager->data<Geometry, GeometryManager>(command.m_geometry);
                 GeometryRenderer *rGeometryRenderer = m_nodesManager->data<GeometryRenderer, GeometryRendererManager>(command.m_geometryRenderer);
-                Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command.m_shader);
+                GLShader *shader = command.m_glShader;
 
                 // We should never have inserted a command for which these are null
                 // in the first place
@@ -991,7 +998,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                     if (!command.m_activeAttributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
                         Profiling::GLTimeRecorder recorder(Profiling::VAOUpload, activeProfiler());
                         // Activate shader
-                        m_submissionContext->activateShader(shader->dna());
+                        m_submissionContext->activateShader(shader);
                         // Bind VAO
                         vao->bind();
                         // Update or set Attributes and Buffers for the given rGeometry and Command
@@ -1011,7 +1018,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 shader->prepareUniforms(command.m_parameterPack);
 
             } else if (command.m_type == RenderCommand::Compute) {
-                Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command.m_shader);
+                GLShader *shader = command.m_glShader;
                 Q_ASSERT(shader);
 
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
@@ -1045,7 +1052,7 @@ void Renderer::lookForAbandonedVaos()
 
         // Make sure to only mark VAOs for deletion that were already created
         // (ignore those that might be currently under construction in the render thread)
-        if (vao && vao->isAbandoned(m_nodesManager->geometryManager(), m_nodesManager->shaderManager())) {
+        if (vao && vao->isAbandoned(m_nodesManager->geometryManager(), m_glResourceManagers->glShaderManager())) {
             m_abandonedVaosMutex.lock();
             m_abandonedVaos.push_back(handle);
             m_abandonedVaosMutex.unlock();
@@ -1161,8 +1168,7 @@ void Renderer::reloadDirtyShaders()
                     }
                 }
 
-                // If the shader hasn't been loaded, load it
-                if (shader != nullptr && !shader->isLoaded())
+                if (shader != nullptr && shader->isDirty())
                     loadShader(shader, shaderHandle);
             }
         }
@@ -1334,7 +1340,7 @@ void Renderer::updateGLResources()
                 continue;
 
             // Compile shader
-            m_submissionContext->loadShader(shader, shaderManager);
+            m_submissionContext->loadShader(shader, shaderManager, m_glResourceManagers->glShaderManager());
         }
     }
 #endif
@@ -1464,6 +1470,16 @@ void Renderer::cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId)
         glTextureManager->releaseResource(cleanedUpTextureId);
         glTextureManager->texNodeIdForGLTexture.remove(glTexture);
     }
+}
+
+// Render Thread
+void Renderer::cleanupShader(const Shader *shader)
+{
+    GLShaderManager *glShaderManager = m_glResourceManagers->glShaderManager();
+    GLShader *glShader = glShaderManager->lookupResource(shader->peerId());
+
+    if (glShader != nullptr)
+        glShaderManager->abandon(glShader, shader);
 }
 
 // Called by SubmitRenderView
@@ -2106,7 +2122,8 @@ void Renderer::performCompute(const RenderView *, RenderCommand *command)
 {
     {
         Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate, activeProfiler());
-        m_submissionContext->activateShader(command->m_shaderDna);
+        GLShader *shader = m_glResourceManagers->glShaderManager()->lookupResource(command->m_shaderId);
+        m_submissionContext->activateShader(shader);
     }
     {
         Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate, activeProfiler());
@@ -2132,7 +2149,7 @@ void Renderer::createOrUpdateVAO(RenderCommand *command,
                                  HVao *previousVaoHandle,
                                  OpenGLVertexArrayObject **vao)
 {
-    const VAOIdentifier vaoKey(command->m_geometry, command->m_shader);
+    const VAOIdentifier vaoKey(command->m_geometry, command->m_shaderId);
 
     VAOManager *vaoManager = m_glResourceManagers->vaoManager();
     command->m_vao = vaoManager->lookupHandle(vaoKey);
@@ -2188,7 +2205,8 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             {
                 Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate, activeProfiler());
                 //// We activate the shader here
-                if (!m_submissionContext->activateShader(command.m_shaderDna)) {
+                GLShader *shader = command.m_glShader;
+                if (!m_submissionContext->activateShader(shader)) {
                     allCommandsIssued = false;
                     continue;
                 }
@@ -2250,7 +2268,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
 
 bool Renderer::updateVAOWithAttributes(Geometry *geometry,
                                        const RenderCommand *command,
-                                       Shader *shader,
+                                       GLShader *shader,
                                        bool forceUpdate)
 {
     m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
@@ -2354,6 +2372,16 @@ void Renderer::cleanGraphicsResources()
             // We remove VAO from manager using its VAOIdentifier
             m_glResourceManagers->vaoManager()->release(vaoHandle);
         }
+    }
+
+    // Abandon GL shaders when a Shader node is destroyed Note: We are sure
+    // that when this gets executed, all scene changes have been received and
+    // shader nodes updated
+    const QVector<Qt3DCore::QNodeId> cleanedUpShaderIds = m_nodesManager->shaderManager()->takeShaderIdsToCleanup();
+    for (const Qt3DCore::QNodeId shaderCleanedUpId: cleanedUpShaderIds) {
+        cleanupShader(m_nodesManager->shaderManager()->lookupResource(shaderCleanedUpId));
+        // We can really release the texture at this point
+        m_nodesManager->shaderManager()->releaseResource(shaderCleanedUpId);
     }
 }
 

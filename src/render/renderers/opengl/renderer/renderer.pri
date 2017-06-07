@@ -7,7 +7,8 @@ SOURCES += \
     $$PWD/renderqueue.cpp \
     $$PWD/renderview.cpp \
     $$PWD/renderviewbuilder.cpp \
-    $$PWD/shaderparameterpack.cpp
+    $$PWD/shaderparameterpack.cpp \
+    $$PWD/glshader.cpp
 
 HEADERS += \
     $$PWD/openglvertexarrayobject_p.h \
@@ -18,6 +19,6 @@ HEADERS += \
     $$PWD/renderview_p.h \
     $$PWD/renderviewbuilder_p.h \
     $$PWD/shaderparameterpack_p.h \
-    $$PWD/shadervariables_p.h
-
+    $$PWD/shadervariables_p.h \
+    $$PWD/glshader_p.h
 

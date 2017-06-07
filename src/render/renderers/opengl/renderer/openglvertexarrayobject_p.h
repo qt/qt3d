@@ -60,9 +60,9 @@ namespace Qt3DRender {
 namespace Render {
 
 class GeometryManager;
-class ShaderManager;
+class GLShaderManager;
 
-typedef QPair<HGeometry, HShader> VAOIdentifier;
+typedef QPair<HGeometry, Qt3DCore::QNodeId> VAOIdentifier;
 
 class OpenGLVertexArrayObject
 {
@@ -77,7 +77,7 @@ public:
     void destroy();
     void cleanup();
 
-    bool isAbandoned(GeometryManager *geomMgr, ShaderManager *shaderMgr);
+    bool isAbandoned(GeometryManager *geomMgr, GLShaderManager *shaderMgr);
 
     QOpenGLVertexArrayObject *vao() { return m_vao.data(); }
     const QOpenGLVertexArrayObject *vao() const { return m_vao.data(); }
