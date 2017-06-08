@@ -98,7 +98,8 @@ Quick3DNodeInstantiatorPrivate::Quick3DNodeInstantiatorPrivate()
 
 Quick3DNodeInstantiatorPrivate::~Quick3DNodeInstantiatorPrivate()
 {
-    qDeleteAll(m_objects);
+    if (m_ownModel)
+        delete m_instanceModel;
 }
 
 void Quick3DNodeInstantiatorPrivate::clear()
