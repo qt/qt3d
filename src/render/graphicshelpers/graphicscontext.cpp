@@ -403,6 +403,8 @@ void GraphicsContext::releaseOpenGL()
         m_debugLogger->stopLogging();
         m_debugLogger.reset(nullptr);
     }
+
+    qDeleteAll(m_glHelpers);
 }
 
 // The OpenGLContext is not current on any surface at this point
