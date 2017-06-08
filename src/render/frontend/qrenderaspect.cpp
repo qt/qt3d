@@ -119,6 +119,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/qsceneimportfactory_p.h>
+#include <Qt3DRender/private/qsceneimporter_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/environmentlight_p.h>
@@ -184,6 +185,7 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
         qWarning() << Q_FUNC_INFO << "The renderer should have been deleted when reaching this point (this warning may be normal when running tests)";
     delete m_nodeManagers;
     m_instances.removeAll(this);
+    qDeleteAll(m_sceneImporter);
 }
 
 /*! \internal */
