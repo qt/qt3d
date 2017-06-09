@@ -51,6 +51,7 @@
 //
 
 #include <QtCore/qflags.h>
+#include <QtCore/qmutex.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>

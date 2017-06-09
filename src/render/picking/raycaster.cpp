@@ -39,7 +39,7 @@
 
 #include "raycaster_p.h"
 #include "qpickevent.h"
-#include "renderer_p.h"
+#include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/qabstractraycaster.h>
 #include <Qt3DRender/private/qabstractraycaster_p.h>
 #include <Qt3DRender/private/raycastingjob_p.h>

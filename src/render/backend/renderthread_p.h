@@ -61,24 +61,24 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
+class AbstractRenderer;
 
 class Q_AUTOTEST_EXPORT RenderThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit RenderThread(Renderer *renderer);
+    explicit RenderThread(AbstractRenderer *renderer);
     ~RenderThread();
 
     void waitForStart( Priority priority = InheritPriority );
 
-    Render::Renderer* renderer() const { return m_renderer; }
+    Render::AbstractRenderer* renderer() const { return m_renderer; }
 
 protected:
     void run() override;
 
 private:
-    Renderer* m_renderer;
+    AbstractRenderer* m_renderer;
     QSemaphore m_semaphore;
 };
 

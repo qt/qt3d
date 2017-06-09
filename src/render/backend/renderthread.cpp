@@ -38,9 +38,7 @@
 ****************************************************************************/
 
 #include "renderthread_p.h"
-#include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DRender/private/renderview_p.h>
-
+#include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QEventLoop>
 #include <QTime>
@@ -52,7 +50,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-RenderThread::RenderThread(Renderer *renderer)
+RenderThread::RenderThread(AbstractRenderer *renderer)
     : QThread(),
       m_renderer(renderer),
       m_semaphore(0)
