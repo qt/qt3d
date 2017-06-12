@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QTest>
+#include <QtTest/QtTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
@@ -104,7 +104,7 @@ Qt3DCore::QEntity *buildTestScene(int layersCount,
         Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(root);
 
         if (layersCount > 0)
-            entity->addComponent(layers.at(qrand() % layersCount));
+            entity->addComponent(layers.at(QRandomGenerator::bounded(layersCount)));
 
         if (!alwaysEnabled && i % 128 == 0)
             entity->setEnabled(false);
