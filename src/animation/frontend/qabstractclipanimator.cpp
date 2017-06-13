@@ -119,15 +119,14 @@ QAbstractClipAnimator::~QAbstractClipAnimator()
 }
 
 /*!
-    \qmlproperty bool running
+    \qmlproperty bool QAbstractClipAnimator::running
 
     This property holds whether the animation is currently running.
 */
 
 /*!
-    \property running
-
-    This property holds whether the animation is currently running.
+    \property QAbstractClipAnimator::isRunning
+    Returns a boolean indicating whether the animation is currently running.
 */
 bool QAbstractClipAnimator::isRunning() const
 {
@@ -136,18 +135,12 @@ bool QAbstractClipAnimator::isRunning() const
 }
 
 /*!
-    \property ChannelMapper channelMapper
+    \property ChannelMapper QAbstractClipAnimator::channelMapper
 
     This property holds the ChannelMapper that controls how the channels in
     the animation clip map onto the properties of the target objects.
 */
 
-/*!
-    \property channelMapper
-
-    This property holds the QChannelMapper that controls how the channels in
-    the animation clip map onto the properties of the target objects.
-*/
 QChannelMapper *QAbstractClipAnimator::channelMapper() const
 {
     Q_D(const QAbstractClipAnimator);
@@ -155,7 +148,7 @@ QChannelMapper *QAbstractClipAnimator::channelMapper() const
 }
 
 /*!
-    \qmlproperty int loops
+    \qmlproperty int QAbstractClipAnimator::loops
 
     This property holds the number of times the animation should play.
 
@@ -166,11 +159,11 @@ QChannelMapper *QAbstractClipAnimator::channelMapper() const
 */
 
 /*!
-    \property loops
+    \property int QAbstractClipAnimator::loopCount
 
     This property holds the number of times the animation should play.
 
-    By default, loops is 1: the animation will play through once and then stop.
+    The value is 1 by default: the animation will play through once and then stop.
 
     If set to QAbstractClipAnimator::Infinite, the animation will continuously
     repeat until it is explicitly stopped.

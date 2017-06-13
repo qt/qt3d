@@ -51,11 +51,12 @@ namespace Animation {
     interpolate for example.
  */
 
-/*!
+/*
     \internal
-    \fn findLowerBound
 
-    Finds the lower bound index of a range that encloses the requested value.
+    int findLowerBound (float x)
+
+    Finds the lower bound index of a range that encloses the requested value \a x.
 
     We use a technique which tries to be better than a simple bisection. Often when
     performing interpolations, subsequent points are correlated with earlier calls.
