@@ -126,16 +126,21 @@ void FCurve::read(const QJsonObject &json)
         float localTime = keyframeCoords.at(0).toDouble();
 
         Keyframe keyframe;
-        keyframe.interpolation = QKeyFrame::BezierInterpolation;
         keyframe.value = keyframeCoords.at(1).toDouble();
 
-        const QJsonArray leftHandle = keyframeData[QLatin1String("leftHandle")].toArray();
-        keyframe.leftControlPoint[0] = leftHandle.at(0).toDouble();
-        keyframe.leftControlPoint[1] = leftHandle.at(1).toDouble();
+        if (keyframeData.contains(QLatin1String("leftHandle"))) {
+            keyframe.interpolation = QKeyFrame::BezierInterpolation;
 
-        const QJsonArray rightHandle = keyframeData[QLatin1String("rightHandle")].toArray();
-        keyframe.rightControlPoint[0] = rightHandle.at(0).toDouble();
-        keyframe.rightControlPoint[1] = rightHandle.at(1).toDouble();
+            const QJsonArray leftHandle = keyframeData[QLatin1String("leftHandle")].toArray();
+            keyframe.leftControlPoint[0] = leftHandle.at(0).toDouble();
+            keyframe.leftControlPoint[1] = leftHandle.at(1).toDouble();
+
+            const QJsonArray rightHandle = keyframeData[QLatin1String("rightHandle")].toArray();
+            keyframe.rightControlPoint[0] = rightHandle.at(0).toDouble();
+            keyframe.rightControlPoint[1] = rightHandle.at(1).toDouble();
+        } else {
+            keyframe.interpolation = QKeyFrame::LinearInterpolation;
+        }
 
         appendKeyframe(localTime, keyframe);
     }
