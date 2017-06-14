@@ -76,10 +76,10 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
         type = mp.userType();
         if (type == QMetaType::QVariant) {
             QVariant currentValue = m_target->property(mp.name());
-            if (!currentValue.isNull()) {
+            if (currentValue.isValid()) {
                 type = currentValue.userType();
             } else {
-                qWarning("QChannelMapping: Attempted to target QVariant property with no value set."
+                qWarning("QChannelMapping: Attempted to target QVariant property with no value set. "
                          "Set a value first in order to be able to determine the type.");
             }
         }
