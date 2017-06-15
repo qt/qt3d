@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,59 +34,33 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QCHANNELMAPPING_P_H
-#define QT3DANIMATION_QCHANNELMAPPING_P_H
+#ifndef QT3DANIMATION_QANIMATIONCALLBACK_H
+#define QT3DANIMATION_QANIMATIONCALLBACK_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DAnimation/qanimationcallback.h>
+#include <Qt3DAnimation/qt3danimation_global.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QChannelMappingPrivate : public Qt3DCore::QNodePrivate
+class QT3DANIMATIONSHARED_EXPORT QAnimationCallback
 {
 public:
-    QChannelMappingPrivate();
+    enum Flag {
+        OnThreadPool = 0x01
+    };
+    Q_DECLARE_FLAGS(Flags, Flag)
 
-    Q_DECLARE_PUBLIC(QChannelMapping)
+    virtual ~QAnimationCallback() { }
 
-    void updatePropertyNameAndType();
-
-    QString m_channelName;
-    Qt3DCore::QNode *m_target;
-    QString m_property;
-    const char *m_propertyName;
-    int m_type;
-    QAnimationCallback *m_callback;
-    QAnimationCallback::Flags m_callbackFlags;
-};
-
-struct QChannelMappingData
-{
-    QString channelName;
-    Qt3DCore::QNodeId targetId;
-    QString property;
-    int type;
-    const char *propertyName;
-    QAnimationCallback *callback;
-    QAnimationCallback::Flags callbackFlags;
+    virtual void valueChanged(const QVariant &value) = 0;
 };
 
 } // namespace Qt3DAnimation
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(Qt3DAnimation::QAnimationCallback::Flags)
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QCHANNELMAPPING_P_H
+#endif // QT3DANIMATION_QANIMATIONCALLBACK_H

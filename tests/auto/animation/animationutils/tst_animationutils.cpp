@@ -61,6 +61,7 @@ Q_DECLARE_METATYPE(ClipEvaluationData)
 Q_DECLARE_METATYPE(ClipAnimator *)
 Q_DECLARE_METATYPE(BlendedClipAnimator *)
 Q_DECLARE_METATYPE(QVector<ChannelNameAndType>)
+Q_DECLARE_METATYPE(QVector<AnimationCallbackAndValue>)
 
 namespace {
 
@@ -121,6 +122,12 @@ bool fuzzyCompare(float x1, float x2)
         return qFuzzyCompare(x1, x2);
     }
 }
+
+class DummyCallback : public Qt3DAnimation::QAnimationCallback
+{
+public:
+    void valueChanged(const QVariant &) override { }
+};
 
 } // anonymous
 
@@ -1102,6 +1109,117 @@ private Q_SLOTS:
             QCOMPARE(actualChange->deliveryFlags(), expectedChange->deliveryFlags());
             QCOMPARE(actualChange->propertyName(), expectedChange->propertyName());
             QCOMPARE(actualChange->value(), expectedChange->value());
+        }
+    }
+
+    void checkPrepareCallbacks_data()
+    {
+        QTest::addColumn<QVector<MappingData>>("mappingData");
+        QTest::addColumn<QVector<float>>("channelResults");
+        QTest::addColumn<QVector<AnimationCallbackAndValue> >("expectedValues");
+
+        QVector<MappingData> mappingData;
+        QVector<float> channelResults;
+        QVector<AnimationCallbackAndValue> expectedValues;
+
+        // vec3
+        {
+            DummyCallback callback; // safe since the object is never used, just the address
+            MappingData mapping;
+            mapping.targetId = Qt3DCore::QNodeId::createId();
+            mapping.propertyName = "translation";
+            mapping.type = static_cast<int>(QVariant::Vector3D);
+            mapping.channelIndices = QVector<int>() << 0 << 1 << 2;
+            mapping.callback = &callback;
+            mapping.callbackFlags = 0;
+            mappingData.push_back(mapping);
+            channelResults = QVector<float>() << 1.0f << 2.0f << 3.0f;
+
+            AnimationCallbackAndValue cbv;
+            cbv.callback = mapping.callback;
+            cbv.flags = mapping.callbackFlags;
+            cbv.value = QVariant::fromValue<QVector3D>(QVector3D(1.0f, 2.0f, 3.0f));
+            expectedValues.push_back(cbv);
+
+            QTest::newRow("vec3 translation, no flags") << mappingData << channelResults << expectedValues;
+
+            mappingData.clear();
+            channelResults.clear();
+            expectedValues.clear();
+        }
+
+        // double
+        {
+            DummyCallback callback;
+            MappingData mapping;
+            mapping.targetId = Qt3DCore::QNodeId::createId();
+            mapping.propertyName = "something";
+            mapping.type = static_cast<int>(QVariant::Double);
+            mapping.channelIndices = QVector<int>() << 0;
+            mapping.callback = &callback;
+            mapping.callbackFlags = 0;
+            mappingData.push_back(mapping);
+            channelResults = QVector<float>() << 1.0f;
+
+            AnimationCallbackAndValue cbv;
+            cbv.callback = mapping.callback;
+            cbv.flags = mapping.callbackFlags;
+            cbv.value = QVariant(double(1.0));
+            expectedValues.push_back(cbv);
+
+            QTest::newRow("double, no flags") << mappingData << channelResults << expectedValues;
+
+            mappingData.clear();
+            channelResults.clear();
+            expectedValues.clear();
+        }
+
+        // float, set a flag
+        {
+            DummyCallback callback;
+            MappingData mapping;
+            mapping.targetId = Qt3DCore::QNodeId::createId();
+            mapping.propertyName = "opacity";
+            mapping.type = static_cast<int>(QMetaType::Float);
+            mapping.channelIndices = QVector<int>() << 0;
+            mapping.callback = &callback;
+            mapping.callbackFlags = Qt3DAnimation::QAnimationCallback::OnThreadPool;
+            mappingData.push_back(mapping);
+            channelResults = QVector<float>() << 0.5f;
+
+            AnimationCallbackAndValue cbv;
+            cbv.callback = mapping.callback;
+            cbv.flags = mapping.callbackFlags;
+            cbv.value = QVariant(float(0.5f));
+            expectedValues.push_back(cbv);
+
+            QTest::newRow("float, OnThreadPool") << mappingData << channelResults << expectedValues;
+
+            mappingData.clear();
+            channelResults.clear();
+            expectedValues.clear();
+        }
+    }
+
+    void checkPrepareCallbacks()
+    {
+        // GIVEN
+        QFETCH(QVector<MappingData>, mappingData);
+        QFETCH(QVector<float>, channelResults);
+        QFETCH(QVector<AnimationCallbackAndValue>, expectedValues);
+
+        // WHEN
+        QVector<AnimationCallbackAndValue> callbacks = prepareCallbacks(mappingData, channelResults);
+
+        // THEN
+        QCOMPARE(callbacks.size(), expectedValues.size());
+        for (int i = 0; i < callbacks.size(); ++i) {
+            auto expected = expectedValues[i];
+            auto actual = callbacks[i];
+
+            QCOMPARE(actual.callback, expected.callback);
+            QCOMPARE(actual.flags, expected.flags);
+            QCOMPARE(actual.value, expected.value);
         }
     }
 

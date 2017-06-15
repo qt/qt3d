@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,70 +37,18 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENECHANGE_H
-#define QT3DCORE_QSCENECHANGE_H
-
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QtCore/QSharedPointer>
+#include "qanimationcallbacktrigger_p.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DAnimation {
 
-enum ChangeFlag {
-    NodeCreated             = 1 << 0,
-    NodeDeleted             = 1 << 1,
-    PropertyUpdated         = 1 << 2,
-    PropertyValueAdded      = 1 << 3,
-    PropertyValueRemoved    = 1 << 4,
-    ComponentAdded          = 1 << 5,
-    ComponentRemoved        = 1 << 6,
-    CommandRequested        = 1 << 7,
-    CallbackTriggered       = 1 << 8,
-    AllChanges              = 0xFFFFFFFF
-};
-Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
-Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
-
-class QSceneChangePrivate;
-
-class QT3DCORESHARED_EXPORT QSceneChange
+QAnimationCallbackTrigger::QAnimationCallbackTrigger(Qt3DCore::QNodeId subjectId)
+    : Qt3DCore::QSceneChange(Qt3DCore::CallbackTriggered, subjectId),
+      m_callback(nullptr)
 {
-public:
-    enum DeliveryFlag {
-        BackendNodes = 0x0001,
-        Nodes = 0x0010,
-        DeliverToAll = BackendNodes | Nodes
-    };
-    Q_DECLARE_FLAGS(DeliveryFlags, DeliveryFlag)
+}
 
-    virtual ~QSceneChange();
-
-    ChangeFlag type() const Q_DECL_NOTHROW;
-
-    void setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOTHROW;
-    DeliveryFlags deliveryFlags() const Q_DECL_NOTHROW;
-
-    QNodeId subjectId() const Q_DECL_NOTHROW;
-
-protected:
-    Q_DECLARE_PRIVATE(QSceneChange)
-    explicit QSceneChange(ChangeFlag type, QNodeId subjectId);
-    explicit QSceneChange(QSceneChangePrivate &dd,
-                 ChangeFlag type, QNodeId subjectId);
-    QSceneChangePrivate *d_ptr;
-
-private:
-    Q_DISABLE_COPY(QSceneChange)
-};
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(QSceneChange::DeliveryFlags)
-
-typedef QSharedPointer<QSceneChange> QSceneChangePtr;
-
-} // namespace Qt3DCore
+} // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QSCENECHANGE_H

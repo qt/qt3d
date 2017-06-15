@@ -115,6 +115,10 @@ void EvaluateBlendClipAnimatorJob::run()
                                                                               finalFrame);
     // Send the property changes
     blendedClipAnimator->sendPropertyChanges(changes);
+
+    // Trigger callbacks either on this thread or by notifying the gui thread.
+    const QVector<AnimationCallbackAndValue> callbacks = prepareCallbacks(mappingData, blendedResults);
+    blendedClipAnimator->sendCallbacks(callbacks);
 }
 
 } // Animation

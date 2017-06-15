@@ -44,7 +44,9 @@ HEADERS += \
     $$PWD/qchannelcomponent.h \
     $$PWD/qkeyframe.h \
     $$PWD/qanimationclip.h \
-    $$PWD/qanimationclip_p.h
+    $$PWD/qanimationclip_p.h \
+    $$PWD/qanimationcallback.h \
+    $$PWD/qanimationcallbacktrigger_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -71,6 +73,7 @@ SOURCES += \
     $$PWD/qchannel.cpp \
     $$PWD/qchannelcomponent.cpp \
     $$PWD/qkeyframe.cpp \
-    $$PWD/qanimationclip.cpp
+    $$PWD/qanimationclip.cpp \
+    $$PWD/qanimationcallbacktrigger.cpp
 
 INCLUDEPATH += $$PWD

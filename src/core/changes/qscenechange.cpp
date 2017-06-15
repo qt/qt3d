@@ -58,6 +58,7 @@ namespace Qt3DCore {
  * \value PropertyValueRemoved A QNode has been removed from the scene.
  * \value ComponentAdded A QComponent has been added to a QEntity.
  * \value ComponentRemoved A QComponent has been removed from a QEntity.
+ * \value CallbackTriggered A QNode triggered a callback.
  * \value AllChanges Allows an observer to monitor for any of the above changes.
  */
 

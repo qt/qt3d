@@ -50,6 +50,7 @@
 
 #include <Qt3DAnimation/private/backendnode_p.h>
 #include <Qt3DAnimation/private/fcurve_p.h>
+#include <Qt3DAnimation/qanimationcallback.h>
 
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/QMetaProperty>
@@ -57,6 +58,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
+
 namespace Animation {
 
 class Handler;
@@ -85,6 +87,12 @@ public:
     void setPropertyName(const char *propertyName) { m_propertyName = propertyName; }
     const char *propertyName() const { return m_propertyName; }
 
+    void setCallback(QAnimationCallback *callback) { m_callback = callback; }
+    QAnimationCallback *callback() const { return m_callback; }
+
+    void setCallbackFlags(QAnimationCallback::Flags flags) { m_callbackFlags = flags; }
+    QAnimationCallback::Flags callbackFlags() const { return m_callbackFlags; }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
@@ -93,6 +101,8 @@ private:
     QString m_property;
     int m_type;
     const char *m_propertyName;
+    QAnimationCallback *m_callback;
+    QAnimationCallback::Flags m_callbackFlags;
 };
 
 } // namespace Animation

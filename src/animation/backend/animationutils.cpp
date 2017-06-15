@@ -225,6 +225,67 @@ ClipResults evaluateClipAtPhase(AnimationClip *clip, float phase)
     return evaluateClipAtLocalTime(clip, localTime);
 }
 
+QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float> &channelResults)
+{
+    QVariant v;
+
+    switch (mappingData.type) {
+    case QMetaType::Float:
+    case QVariant::Double: {
+        v = QVariant::fromValue(channelResults[mappingData.channelIndices[0]]);
+        break;
+    }
+
+    case QVariant::Vector2D: {
+        const QVector2D vector(channelResults[mappingData.channelIndices[0]],
+                channelResults[mappingData.channelIndices[1]]);
+        v = QVariant::fromValue(vector);
+        break;
+    }
+
+    case QVariant::Vector3D: {
+        const QVector3D vector(channelResults[mappingData.channelIndices[0]],
+                channelResults[mappingData.channelIndices[1]],
+                channelResults[mappingData.channelIndices[2]]);
+        v = QVariant::fromValue(vector);
+        break;
+    }
+
+    case QVariant::Vector4D: {
+        const QVector4D vector(channelResults[mappingData.channelIndices[0]],
+                channelResults[mappingData.channelIndices[1]],
+                channelResults[mappingData.channelIndices[2]],
+                channelResults[mappingData.channelIndices[3]]);
+        v = QVariant::fromValue(vector);
+        break;
+    }
+
+    case QVariant::Quaternion: {
+        QQuaternion q(channelResults[mappingData.channelIndices[0]],
+                channelResults[mappingData.channelIndices[1]],
+                channelResults[mappingData.channelIndices[2]],
+                channelResults[mappingData.channelIndices[3]]);
+        q.normalize();
+        v = QVariant::fromValue(q);
+        break;
+    }
+
+    case QVariant::Color: {
+        const QColor color = QColor::fromRgbF(channelResults[mappingData.channelIndices[0]],
+                channelResults[mappingData.channelIndices[1]],
+                channelResults[mappingData.channelIndices[2]]);
+        v = QVariant::fromValue(color);
+        break;
+    }
+
+    default:
+        qWarning() << "Unhandled animation type" << mappingData.type;
+        break;
+    }
+
+    return v;
+}
+
 QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
                                                           const QVector<MappingData> &mappingDataVec,
                                                           const QVector<float> &channelResults,
@@ -233,73 +294,21 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
     QVector<Qt3DCore::QSceneChangePtr> changes;
     // Iterate over the mappings
     for (const MappingData &mappingData : mappingDataVec) {
-        // Construct a property update change, set target, property and delivery options
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(mappingData.targetId);
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName(mappingData.propertyName);
-
-        // Handle intermediate updates vs final flag properly
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isIntermediate = !finalFrame;
-
-        // Build the new value from the channel/fcurve evaluation results
-        QVariant v;
-        switch (mappingData.type) {
-        case QMetaType::Float:
-        case QVariant::Double: {
-            v = QVariant::fromValue(channelResults[mappingData.channelIndices[0]]);
-            break;
-        }
-
-        case QVariant::Vector2D: {
-            const QVector2D vector(channelResults[mappingData.channelIndices[0]],
-                    channelResults[mappingData.channelIndices[1]]);
-            v = QVariant::fromValue(vector);
-            break;
-        }
-
-        case QVariant::Vector3D: {
-            const QVector3D vector(channelResults[mappingData.channelIndices[0]],
-                    channelResults[mappingData.channelIndices[1]],
-                    channelResults[mappingData.channelIndices[2]]);
-            v = QVariant::fromValue(vector);
-            break;
-        }
-
-        case QVariant::Vector4D: {
-            const QVector4D vector(channelResults[mappingData.channelIndices[0]],
-                    channelResults[mappingData.channelIndices[1]],
-                    channelResults[mappingData.channelIndices[2]],
-                    channelResults[mappingData.channelIndices[3]]);
-            v = QVariant::fromValue(vector);
-            break;
-        }
-
-        case QVariant::Quaternion: {
-            QQuaternion q(channelResults[mappingData.channelIndices[0]],
-                    channelResults[mappingData.channelIndices[1]],
-                    channelResults[mappingData.channelIndices[2]],
-                    channelResults[mappingData.channelIndices[3]]);
-            q.normalize();
-            v = QVariant::fromValue(q);
-            break;
-        }
-
-        case QVariant::Color: {
-            const QColor color = QColor::fromRgbF(channelResults[mappingData.channelIndices[0]],
-                    channelResults[mappingData.channelIndices[1]],
-                    channelResults[mappingData.channelIndices[2]]);
-            v = QVariant::fromValue(color);
-            break;
-        }
-
-        default:
-            qWarning() << "Unhandled animation type";
+        if (!mappingData.propertyName)
             continue;
+        // Build the new value from the channel/fcurve evaluation results
+        const QVariant v = buildPropertyValue(mappingData, channelResults);
+        if (v.isValid()) {
+            // Construct a property update change, set target, property and delivery options
+            auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(mappingData.targetId);
+            e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+            e->setPropertyName(mappingData.propertyName);
+            // Handle intermediate updates vs final flag properly
+            Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isIntermediate = !finalFrame;
+            // Assign new value and send
+            e->setValue(v);
+            changes.push_back(e);
         }
-
-        // Assign new value and send
-        e->setValue(v);
-        changes.push_back(e);
     }
 
 
@@ -312,6 +321,25 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
         changes.push_back(e);
     }
     return changes;
+}
+
+QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &mappingDataVec,
+                                                    const QVector<float> &channelResults)
+{
+    QVector<AnimationCallbackAndValue> callbacks;
+    for (const MappingData &mappingData : mappingDataVec) {
+        if (!mappingData.callback)
+            continue;
+        const QVariant v = buildPropertyValue(mappingData, channelResults);
+        if (v.isValid()) {
+            AnimationCallbackAndValue callback;
+            callback.callback = mappingData.callback;
+            callback.flags = mappingData.callbackFlags;
+            callback.value = v;
+            callbacks.append(callback);
+        }
+    }
+    return callbacks;
 }
 
 //TODO: Remove this and use new implementation below for both the unblended
@@ -336,10 +364,13 @@ QVector<MappingData> buildPropertyMappings(Handler *handler,
         mappingData.targetId = mapping->targetId();
         mappingData.propertyName = mapping->propertyName();
         mappingData.type = mapping->type();
+        mappingData.callback = mapping->callback();
+        mappingData.callbackFlags = mapping->callbackFlags();
 
         if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
             qWarning() << "Unknown type for node id =" << mappingData.targetId
-                       << "and property =" << mapping->property();
+                       << "and property =" << mapping->property()
+                       << "and callback =" << mapping->callback();
             continue;
         }
 
@@ -384,10 +415,13 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
         mappingData.targetId = mapping->targetId();
         mappingData.propertyName = mapping->propertyName();
         mappingData.type = mapping->type();
+        mappingData.callback = mapping->callback();
+        mappingData.callbackFlags = mapping->callbackFlags();
 
         if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
             qWarning() << "Unknown type for node id =" << mappingData.targetId
-                       << "and property =" << mapping->property();
+                       << "and property =" << mapping->property()
+                       << "and callback =" << mapping->callback();
             continue;
         }
 

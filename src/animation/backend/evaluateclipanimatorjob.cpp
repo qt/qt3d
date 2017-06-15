@@ -84,6 +84,9 @@ void EvaluateClipAnimatorJob::run()
     // Send the property changes
     clipAnimator->sendPropertyChanges(changes);
 
+    // Trigger callbacks either on this thread or by notifying the gui thread.
+    const QVector<AnimationCallbackAndValue> callbacks = prepareCallbacks(clipAnimator->mappingData(), channelResults);
+    clipAnimator->sendCallbacks(callbacks);
 }
 
 } // namespace Animation

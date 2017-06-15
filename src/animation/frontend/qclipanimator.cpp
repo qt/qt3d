@@ -41,6 +41,7 @@
 #include "qclipanimator_p.h"
 #include <Qt3DAnimation/qabstractanimationclip.h>
 #include <Qt3DAnimation/qchannelmapper.h>
+#include <Qt3DAnimation/private/qanimationcallbacktrigger_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -163,6 +164,16 @@ Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() co
     data.running = d->m_running;
     data.loops = d->m_loops;
     return creationChange;
+}
+
+/*! \internal */
+void QClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    if (change->type() == Qt3DCore::CallbackTriggered) {
+        QAnimationCallbackTriggerPtr callbackTrigger = qSharedPointerCast<Qt3DAnimation::QAnimationCallbackTrigger>(change);
+        if (callbackTrigger->callback())
+            callbackTrigger->callback()->valueChanged(callbackTrigger->value());
+    }
 }
 
 } // namespace Qt3DAnimation

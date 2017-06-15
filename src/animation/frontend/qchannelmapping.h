@@ -38,6 +38,7 @@
 #define QT3DANIMATION_QCHANNELMAPPING_H
 
 #include <Qt3DAnimation/qt3danimation_global.h>
+#include <Qt3DAnimation/qanimationcallback.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,6 +61,9 @@ public:
     QString channelName() const;
     Qt3DCore::QNode *target() const;
     QString property() const;
+    QAnimationCallback *callback() const;
+
+    void setCallback(int type, QAnimationCallback *callback, QAnimationCallback::Flags flags);
 
 public Q_SLOTS:
     void setChannelName(const QString &channelName);

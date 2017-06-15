@@ -91,6 +91,7 @@ public:
     void setCurrentLoop(int currentLoop) { m_currentLoop = currentLoop; }
 
     void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
+    void sendCallbacks(const QVector<AnimationCallbackAndValue> &callbacks);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

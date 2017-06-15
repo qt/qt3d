@@ -49,12 +49,14 @@
 //
 
 #include <Qt3DAnimation/private/qt3danimation_global_p.h>
+#include <Qt3DAnimation/qanimationcallback.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
+class QAnimationCallback;
 namespace Animation {
 
 struct Channel;
@@ -70,6 +72,8 @@ struct MappingData
 {
     Qt3DCore::QNodeId targetId;
     const char *propertyName;
+    QAnimationCallback *callback;
+    QAnimationCallback::Flags callbackFlags;
     int type;
     ComponentIndices channelIndices;
 };
@@ -100,6 +104,13 @@ struct ChannelNameAndType
     {
         return name == rhs.name && type == rhs.type;
     }
+};
+
+struct AnimationCallbackAndValue
+{
+    QAnimationCallback *callback;
+    QAnimationCallback::Flags flags;
+    QVariant value;
 };
 
 template<typename Animator>
@@ -152,9 +163,13 @@ ClipResults evaluateClipAtPhase(AnimationClip *clip,
 
 Q_AUTOTEST_EXPORT
 QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
-                                                          const QVector<MappingData> &mappingData,
+                                                          const QVector<MappingData> &mappingDataVec,
                                                           const QVector<float> &channelResults,
                                                           bool finalFrame);
+
+Q_AUTOTEST_EXPORT
+QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &mappingDataVec,
+                                                    const QVector<float> &channelResults);
 
 Q_AUTOTEST_EXPORT
 QVector<MappingData> buildPropertyMappings(Handler *handler,
