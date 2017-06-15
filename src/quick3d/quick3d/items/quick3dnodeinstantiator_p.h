@@ -113,6 +113,9 @@ Q_SIGNALS:
     void objectAdded(int index, QObject *object);
     void objectRemoved(int index, QObject *object);
 
+private slots:
+    void onParentChanged(QObject *parent);
+
 private:
     Q_DISABLE_COPY(Quick3DNodeInstantiator)
     Q_DECLARE_PRIVATE(Quick3DNodeInstantiator)
