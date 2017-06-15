@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include "qcameralens.h"
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -62,7 +63,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QCameraLensPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QCameraLensPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QCameraLensPrivate();

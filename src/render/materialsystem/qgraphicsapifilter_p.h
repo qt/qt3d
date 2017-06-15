@@ -42,6 +42,7 @@
 
 #include <private/qobject_p.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 //
 //  W A R N I N G
@@ -74,7 +75,7 @@ struct Q_AUTOTEST_EXPORT GraphicsApiFilterData
     bool operator <(const GraphicsApiFilterData &other) const;
 };
 
-class Q_AUTOTEST_EXPORT QGraphicsApiFilterPrivate : public QObjectPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QGraphicsApiFilterPrivate : public QObjectPrivate
 {
 public:
     QGraphicsApiFilterPrivate()

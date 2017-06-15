@@ -50,12 +50,13 @@
 
 #include <Qt3DRender/private/qrenderstate_p.h>
 #include <Qt3DRender/qpointsize.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QPointSizePrivate : public QRenderStatePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QPointSizePrivate : public QRenderStatePrivate
 {
 public:
     QPointSizePrivate(QPointSize::SizeMode sizeMode, float value)

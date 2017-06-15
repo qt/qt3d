@@ -53,6 +53,7 @@
 
 #include <private/qnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +63,7 @@ class QEffect;
 class QParameter;
 class QTechnique;
 
-class QEffectPrivate : public Qt3DCore::QNodePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QEffectPrivate : public Qt3DCore::QNodePrivate
 {
 public :
     QEffectPrivate();
