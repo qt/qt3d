@@ -225,8 +225,16 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
         break;
     }
 
-    default:
+    default: {
+        if (variant.typeName() == QLatin1Literal("QMatrix3x3")) {
+            const QMatrix3x3 mat33 = variant.value<QMatrix3x3>();
+            // Use constData because we want column-major layout
+            v.m_data.resize(9);
+            memcpy(v.data<float>(), mat33.constData(), 9 * sizeof(float));
+            break;
+        }
         qWarning() << "Unknown uniform type or value:" << variant << "Please check your QParameters";
+    }
     }
     return v;
 }

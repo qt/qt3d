@@ -43,6 +43,7 @@
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qmaterial.h>
 #include <QVector2D>
+#include <QMatrix3x3>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,20 +62,24 @@ class QT3DEXTRASSHARED_EXPORT QTextureMaterial : public Qt3DRender::QMaterial
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)
     Q_PROPERTY(QVector2D textureOffset READ textureOffset WRITE setTextureOffset NOTIFY textureOffsetChanged)
+    Q_PROPERTY(QMatrix3x3 textureTransform READ textureTransform WRITE setTextureTransform NOTIFY textureTransformChanged REVISION 10)
 public:
     explicit QTextureMaterial(Qt3DCore::QNode *parent = nullptr);
     ~QTextureMaterial();
 
     Qt3DRender::QAbstractTexture *texture() const;
     QVector2D textureOffset() const;
+    QMatrix3x3 textureTransform() const;
 
 public Q_SLOTS:
     void setTexture(Qt3DRender::QAbstractTexture *texture);
     void setTextureOffset(QVector2D textureOffset);
+    void setTextureTransform(const QMatrix3x3 &matrix);
 
 Q_SIGNALS:
     void textureChanged(Qt3DRender::QAbstractTexture *texture);
     void textureOffsetChanged(QVector2D textureOffset);
+    void textureTransformChanged(const QMatrix3x3 &textureTransform);
 
 private:
     Q_DECLARE_PRIVATE(QTextureMaterial)

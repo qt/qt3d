@@ -40,6 +40,8 @@
 #ifndef QT3DEXTRAS_QTEXTUREMATERIAL_P_H
 #define QT3DEXTRAS_QTEXTUREMATERIAL_P_H
 
+#include <QMatrix3x3>
+
 //
 //  W A R N I N G
 //  -------------
@@ -78,11 +80,11 @@ class QTextureMaterialPrivate : public Qt3DRender::QMaterialPrivate
     void init();
 
     void handleTextureChanged(const QVariant &var);
-    void handleTextureOffsetChanged(const QVariant &var);
+    void handleTextureTransformChanged(const QVariant &var);
 
     Qt3DRender::QEffect *m_textureEffect;
     Qt3DRender::QParameter *m_textureParameter;
-    Qt3DRender::QParameter *m_textureOffsetParameter;
+    Qt3DRender::QParameter *m_textureTransformParameter;
     Qt3DRender::QTechnique *m_textureGL3Technique;
     Qt3DRender::QTechnique *m_textureGL2Technique;
     Qt3DRender::QTechnique *m_textureES2Technique;

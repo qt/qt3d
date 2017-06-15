@@ -60,7 +60,7 @@ QTextureMaterialPrivate::QTextureMaterialPrivate()
     : QMaterialPrivate()
     , m_textureEffect(new QEffect)
     , m_textureParameter(new QParameter(QStringLiteral("diffuseTexture"), new QTexture2D))
-    , m_textureOffsetParameter(new QParameter(QStringLiteral("texCoordOffset"), QVector2D(0.0f, 0.0f)))
+    , m_textureTransformParameter(new QParameter(QStringLiteral("texCoordTransform"), qVariantFromValue(QMatrix3x3())))
     , m_textureGL3Technique(new QTechnique)
     , m_textureGL2Technique(new QTechnique)
     , m_textureES2Technique(new QTechnique)
@@ -77,8 +77,8 @@ void QTextureMaterialPrivate::init()
 {
     connect(m_textureParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QTextureMaterialPrivate::handleTextureChanged);
-    connect(m_textureOffsetParameter, &Qt3DRender::QParameter::valueChanged,
-            this, &QTextureMaterialPrivate::handleTextureOffsetChanged);
+    connect(m_textureTransformParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QTextureMaterialPrivate::handleTextureTransformChanged);
 
     m_textureGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/unlittexture.vert"))));
     m_textureGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/unlittexture.frag"))));
@@ -122,7 +122,7 @@ void QTextureMaterialPrivate::init()
     m_textureEffect->addTechnique(m_textureES2Technique);
 
     m_textureEffect->addParameter(m_textureParameter);
-    m_textureEffect->addParameter(m_textureOffsetParameter);
+    m_textureEffect->addParameter(m_textureTransformParameter);
 
     q->setEffect(m_textureEffect);
 }
@@ -133,10 +133,12 @@ void QTextureMaterialPrivate::handleTextureChanged(const QVariant &var)
     emit q->textureChanged(var.value<QAbstractTexture *>());
 }
 
-void QTextureMaterialPrivate::handleTextureOffsetChanged(const QVariant &var)
+void QTextureMaterialPrivate::handleTextureTransformChanged(const QVariant &var)
 {
     Q_Q(QTextureMaterial);
-    emit q->textureOffsetChanged(var.value<QVector2D>());
+    const QMatrix3x3 matrix = var.value<QMatrix3x3>();
+    emit q->textureTransformChanged(matrix);
+    emit q->textureOffsetChanged(QVector2D(matrix(0, 2), matrix(1, 2)));
 }
 
 /*!
@@ -182,14 +184,29 @@ QAbstractTexture *QTextureMaterial::texture() const
 /*!
     \property QTextureMaterial::textureOffset
 
-    Holds the current texture offset. It is applied to texture
-    coordinates at render time. Defaults to (0.0, 0.0).
+    This is a utility property. It sets the translation component of the general
+    texture transform matrix
 
 */
 QVector2D QTextureMaterial::textureOffset() const
 {
     Q_D(const QTextureMaterial);
-    return d->m_textureOffsetParameter->value().value<QVector2D>();
+    const QMatrix3x3 matrix = d->m_textureTransformParameter->value().value<QMatrix3x3>();
+    return QVector2D(matrix(0, 2), matrix(1, 2));
+}
+
+
+/*!
+    \property QTextureMaterial::textureTransform
+
+    Holds the current texture transform. It is applied to texture
+    coordinates at render time. Defaults to identity matrix.
+
+*/
+QMatrix3x3 QTextureMaterial::textureTransform() const
+{
+    Q_D(const QTextureMaterial);
+    return d->m_textureTransformParameter->value().value<QMatrix3x3>();
 }
 
 void QTextureMaterial::setTexture(QAbstractTexture *texture)
@@ -201,7 +218,16 @@ void QTextureMaterial::setTexture(QAbstractTexture *texture)
 void QTextureMaterial::setTextureOffset(QVector2D textureOffset)
 {
     Q_D(QTextureMaterial);
-    d->m_textureOffsetParameter->setValue(QVariant::fromValue(textureOffset));
+    QMatrix3x3 matrix = d->m_textureTransformParameter->value().value<QMatrix3x3>();
+    matrix(0, 2) = textureOffset.x();
+    matrix(1, 2) = textureOffset.y();
+    d->m_textureTransformParameter->setValue(qVariantFromValue(matrix));
+}
+
+void QTextureMaterial::setTextureTransform(const QMatrix3x3 &matrix)
+{
+    Q_D(QTextureMaterial);
+    d->m_textureTransformParameter->setValue(qVariantFromValue(matrix));
 }
 
 } // namespace Qt3DExtras
