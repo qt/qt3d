@@ -1522,6 +1522,34 @@ private Q_SLOTS:
             suffixes.clear();
             expectedResults.clear();
         }
+
+        // color with and without offset
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Color");
+            channel.channelComponents.resize(3);
+            channel.channelComponents[0].name = QLatin1String("Color R");
+            channel.channelComponents[1].name = QLatin1String("Color G");
+            channel.channelComponents[2].name = QLatin1String("Color B");
+
+            dataType = static_cast<int>(QVariant::Color);
+            offset = 0;
+            suffixes = (QVector<char>() << 'R' << 'G' << 'B');
+            expectedResults = (QVector<int>() << 0 << 1 << 2);
+
+            QTest::newRow("QColor Color, offset = 0")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 10;
+            expectedResults = (QVector<int>() << 10 << 11 << 12);
+            QTest::newRow("QColor Color, offset = 10")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            suffixes.clear();
+            expectedResults.clear();
+        }
     }
 
     void checkChannelComponentsToIndicesHelper()
@@ -1604,6 +1632,32 @@ private Q_SLOTS:
             offset = 4;
             expectedResults = (QVector<int>() << 4 << 5 << 6);
             QTest::newRow("vec3 location, offset = 4")
+                    << channel << dataType << offset << expectedResults;
+
+            expectedResults.clear();
+        }
+
+        // QColor
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Color");
+            channel.channelComponents.resize(3);
+            channel.channelComponents[0].name = QLatin1String("Color R");
+            channel.channelComponents[1].name = QLatin1String("Color G");
+            channel.channelComponents[2].name = QLatin1String("Color B");
+
+            dataType = static_cast<int>(QVariant::Color);
+            offset = 0;
+            expectedResults = (QVector<int>() << 0 << 1 << 2);
+
+            QTest::newRow("QColor Color, offset = 0")
+                    << channel << dataType << offset << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 10;
+            expectedResults = (QVector<int>() << 10 << 11 << 12);
+            QTest::newRow("QColor Color, offset = 10")
                     << channel << dataType << offset << expectedResults;
 
             expectedResults.clear();
