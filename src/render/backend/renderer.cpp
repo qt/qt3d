@@ -883,7 +883,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                     // Update the draw command with all the information required for the drawing
                     if (command->m_drawIndexed) {
                         command->m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
-                        command->m_indexAttributeByteOffset = indexAttribute->byteOffset();
+                        command->m_indexAttributeByteOffset = indexAttribute->byteOffset() + rGeometryRenderer->indexBufferByteOffset();
                     }
 
                     // Note: we only care about the primitiveCount when using direct draw calls

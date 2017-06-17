@@ -75,6 +75,7 @@ public:
     int m_indexOffset;
     int m_firstInstance;
     int m_firstVertex;
+    int m_indexBufferByteOffset;
     int m_restartIndexValue;
     int m_verticesPerPatch;
     bool m_primitiveRestart;
@@ -90,6 +91,7 @@ struct QGeometryRendererData
     int indexOffset;
     int firstInstance;
     int firstVertex;
+    int indexBufferByteOffset;
     int restartIndexValue;
     int verticesPerPatch;
     bool primitiveRestart;

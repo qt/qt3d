@@ -64,6 +64,7 @@ GeometryRenderer::GeometryRenderer()
     , m_indexOffset(0)
     , m_firstInstance(0)
     , m_firstVertex(0)
+    , m_indexBufferByteOffset(0)
     , m_restartIndexValue(-1)
     , m_verticesPerPatch(0)
     , m_primitiveRestartEnabled(false)
@@ -85,6 +86,7 @@ void GeometryRenderer::cleanup()
     m_indexOffset = 0;
     m_firstInstance = 0;
     m_firstVertex = 0;
+    m_indexBufferByteOffset = 0;
     m_restartIndexValue = -1;
     m_verticesPerPatch = 0;
     m_primitiveRestartEnabled = false;
@@ -111,6 +113,7 @@ void GeometryRenderer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBase
     m_indexOffset = data.indexOffset;
     m_firstInstance = data.firstInstance;
     m_firstVertex = data.firstVertex;
+    m_indexBufferByteOffset = data.indexBufferByteOffset;
     m_restartIndexValue = data.restartIndexValue;
     m_verticesPerPatch = data.verticesPerPatch;
     m_primitiveRestartEnabled = data.primitiveRestart;
@@ -145,6 +148,9 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("firstVertex")) {
             m_firstVertex = propertyChange->value().value<int>();
+            m_dirty = true;
+        } else if (propertyName == QByteArrayLiteral("indexBufferByteOffset")) {
+            m_indexBufferByteOffset = propertyChange->value().value<int>();
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("restartIndexValue")) {
             m_restartIndexValue = propertyChange->value().value<int>();

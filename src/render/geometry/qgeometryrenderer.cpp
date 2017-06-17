@@ -58,6 +58,7 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
     , m_indexOffset(0)
     , m_firstInstance(0)
     , m_firstVertex(0)
+    , m_indexBufferByteOffset(0)
     , m_restartIndexValue(-1)
     , m_verticesPerPatch(0)
     , m_primitiveRestart(false)
@@ -142,6 +143,12 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
     \qmlproperty int GeometryRenderer::firstVertex
 
     Holds the base instance.
+ */
+
+/*!
+    \qmlproperty int GeometryRenderer::indexBufferByteOffset
+
+    Holds the byte offset into the index buffer.
  */
 
 /*!
@@ -269,6 +276,17 @@ int QGeometryRenderer::firstVertex() const
 }
 
 /*!
+    \property QGeometryRenderer::indexBufferByteOffset
+
+    Holds the byte offset into the index buffer.
+ */
+int QGeometryRenderer::indexBufferByteOffset() const
+{
+    Q_D(const QGeometryRenderer);
+    return d->m_indexBufferByteOffset;
+}
+
+/*!
     \property QGeometryRenderer::restartIndexValue
 
     Holds the restart index.
@@ -382,6 +400,16 @@ void QGeometryRenderer::setFirstVertex(int firstVertex)
     emit firstVertexChanged(firstVertex);
 }
 
+void QGeometryRenderer::setIndexBufferByteOffset(int offset)
+{
+    Q_D(QGeometryRenderer);
+    if (d->m_indexBufferByteOffset == offset)
+        return;
+
+    d->m_indexBufferByteOffset = offset;
+    emit indexBufferByteOffsetChanged(offset);
+}
+
 void QGeometryRenderer::setRestartIndexValue(int index)
 {
     Q_D(QGeometryRenderer);
@@ -482,6 +510,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QGeometryRenderer::createNodeCreationChange(
     data.indexOffset = d->m_indexOffset;
     data.firstInstance = d->m_firstInstance;
     data.firstVertex = d->m_firstVertex;
+    data.indexBufferByteOffset = d->m_indexBufferByteOffset;
     data.restartIndexValue = d->m_restartIndexValue;
     data.verticesPerPatch = d->m_verticesPerPatch;
     data.primitiveRestart = d->m_primitiveRestart;

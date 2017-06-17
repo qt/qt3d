@@ -88,6 +88,7 @@ private Q_SLOTS:
         geometry1->setInstanceCount(1);
         geometry1->setIndexOffset(0);
         geometry1->setFirstInstance(55);
+        geometry1->setIndexBufferByteOffset(48);
         geometry1->setRestartIndexValue(-1);
         geometry1->setPrimitiveRestartEnabled(false);
         geometry1->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
@@ -101,6 +102,7 @@ private Q_SLOTS:
         geometry2->setInstanceCount(200);
         geometry2->setIndexOffset(58);
         geometry2->setFirstInstance(10);
+        geometry2->setIndexBufferByteOffset(96);
         geometry2->setRestartIndexValue(65535);
         geometry2->setVertexCount(2056);
         geometry2->setPrimitiveRestartEnabled(true);
@@ -134,6 +136,7 @@ private Q_SLOTS:
         QCOMPARE(cloneData.vertexCount, geometryRenderer->vertexCount());
         QCOMPARE(cloneData.indexOffset, geometryRenderer->indexOffset());
         QCOMPARE(cloneData.firstInstance, geometryRenderer->firstInstance());
+        QCOMPARE(cloneData.indexBufferByteOffset, geometryRenderer->indexBufferByteOffset());
         QCOMPARE(cloneData.restartIndexValue, geometryRenderer->restartIndexValue());
         QCOMPARE(cloneData.primitiveRestart, geometryRenderer->primitiveRestartEnabled());
         QCOMPARE(cloneData.primitiveType, geometryRenderer->primitiveType());
@@ -202,6 +205,19 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "firstInstance");
         QCOMPARE(change->value().value<int>(), 1200);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        geometryRenderer->setIndexBufferByteOffset(91);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "indexBufferByteOffset");
+        QCOMPARE(change->value().value<int>(), 91);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();

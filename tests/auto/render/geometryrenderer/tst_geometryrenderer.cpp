@@ -90,6 +90,7 @@ private Q_SLOTS:
         geometryRenderer.setVertexCount(1609);
         geometryRenderer.setIndexOffset(750);
         geometryRenderer.setFirstInstance(883);
+        geometryRenderer.setIndexBufferByteOffset(96);
         geometryRenderer.setRestartIndexValue(65536);
         geometryRenderer.setPrimitiveRestartEnabled(true);
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
@@ -108,6 +109,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.vertexCount(), geometryRenderer.vertexCount());
         QCOMPARE(renderGeometryRenderer.indexOffset(), geometryRenderer.indexOffset());
         QCOMPARE(renderGeometryRenderer.firstInstance(), geometryRenderer.firstInstance());
+        QCOMPARE(renderGeometryRenderer.indexBufferByteOffset(), geometryRenderer.indexBufferByteOffset());
         QCOMPARE(renderGeometryRenderer.restartIndexValue(), geometryRenderer.restartIndexValue());
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), geometryRenderer.primitiveRestartEnabled());
         QCOMPARE(renderGeometryRenderer.primitiveType(), geometryRenderer.primitiveType());
@@ -131,6 +133,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.vertexCount(), 0);
         QCOMPARE(renderGeometryRenderer.indexOffset(), 0);
         QCOMPARE(renderGeometryRenderer.firstInstance(), 0);
+        QCOMPARE(renderGeometryRenderer.indexBufferByteOffset(), 0);
         QCOMPARE(renderGeometryRenderer.restartIndexValue(), -1);
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
@@ -147,6 +150,7 @@ private Q_SLOTS:
         geometryRenderer.setVertexCount(350);
         geometryRenderer.setIndexOffset(427);
         geometryRenderer.setFirstInstance(383);
+        geometryRenderer.setIndexBufferByteOffset(96);
         geometryRenderer.setRestartIndexValue(555);
         geometryRenderer.setPrimitiveRestartEnabled(true);
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
@@ -166,6 +170,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.vertexCount(), 0);
         QCOMPARE(renderGeometryRenderer.indexOffset(), 0);
         QCOMPARE(renderGeometryRenderer.firstInstance(), 0);
+        QCOMPARE(renderGeometryRenderer.indexBufferByteOffset(), 0);
         QCOMPARE(renderGeometryRenderer.restartIndexValue(), -1);
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
@@ -237,6 +242,22 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderGeometryRenderer.firstInstance(), 82);
+        QVERIFY(renderGeometryRenderer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
+        renderGeometryRenderer.unsetDirty();
+        QVERIFY(!renderGeometryRenderer.isDirty());
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setPropertyName("indexBufferByteOffset");
+        updateChange->setValue(96);
+        renderGeometryRenderer.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(renderGeometryRenderer.indexBufferByteOffset(), 96);
         QVERIFY(renderGeometryRenderer.isDirty());
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
