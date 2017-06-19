@@ -72,7 +72,7 @@ QClipAnimatorPrivate::QClipAnimatorPrivate()
     The properties for controlling the animator are provided by the AbstractClipAnimator base
     class.
 
-    \sa AbstractClipAnimator, AbstractAnimationClip, ChannelMapper, BlendedClipAnimator
+    \sa {Qt3DAnimation::QAbstractClipAnimator}{AbstractClipAnimator}, {Qt3DAnimation::QAbstractAnimationClip}{AbstractAnimationClip}, {Qt3DAnimation::QChannelMapper}{ChannelMapper}, {Qt3DAnimation::QBlendedClipAnimator}{BlendedClipAnimator}
 */
 
 /*!
