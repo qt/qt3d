@@ -60,12 +60,35 @@ float FCurve::evaluateAtTime(float localTime) const
         return m_keyframes.last().value;
     } else {
         // Find keyframes that sandwich the requested localTime
-        int keyframe0 = m_rangeFinder.findLowerBound(localTime);
+        const int idx = m_rangeFinder.findLowerBound(localTime);
 
-        BezierEvaluator evaluator(m_localTimes[keyframe0], m_keyframes[keyframe0],
-                                  m_localTimes[keyframe0 + 1], m_keyframes[keyframe0 + 1]);
-        return evaluator.valueForTime(localTime);
+        const float t0 = m_localTimes[idx];
+        const float t1 = m_localTimes[idx + 1];
+        const Keyframe &keyframe0(m_keyframes[idx]);
+        const Keyframe &keyframe1(m_keyframes[idx + 1]);
+
+        switch (keyframe0.interpolation) {
+        case QKeyFrame::ConstantInterpolation:
+            qWarning("Constant interpolation not implemented yet");
+            break;
+        case QKeyFrame::LinearInterpolation:
+            if (localTime >= t0 && localTime <= t1 && t1 > t0) {
+                float t = (localTime - t0) / (t1 - t0);
+                return (1 - t) * keyframe0.value + t * keyframe1.value;
+            }
+            break;
+        case QKeyFrame::BezierInterpolation:
+        {
+            BezierEvaluator evaluator(t0, keyframe0, t1, keyframe1);
+            return evaluator.valueForTime(localTime);
+        }
+        default:
+            qWarning("Unknown interpolation type %d", keyframe0.interpolation);
+            break;
+        }
     }
+
+    return m_keyframes.first().value;
 }
 
 float FCurve::startTime() const
@@ -103,16 +126,21 @@ void FCurve::read(const QJsonObject &json)
         float localTime = keyframeCoords.at(0).toDouble();
 
         Keyframe keyframe;
-        keyframe.interpolation = QKeyFrame::BezierInterpolation;
         keyframe.value = keyframeCoords.at(1).toDouble();
 
-        const QJsonArray leftHandle = keyframeData[QLatin1String("leftHandle")].toArray();
-        keyframe.leftControlPoint[0] = leftHandle.at(0).toDouble();
-        keyframe.leftControlPoint[1] = leftHandle.at(1).toDouble();
+        if (keyframeData.contains(QLatin1String("leftHandle"))) {
+            keyframe.interpolation = QKeyFrame::BezierInterpolation;
 
-        const QJsonArray rightHandle = keyframeData[QLatin1String("rightHandle")].toArray();
-        keyframe.rightControlPoint[0] = rightHandle.at(0).toDouble();
-        keyframe.rightControlPoint[1] = rightHandle.at(1).toDouble();
+            const QJsonArray leftHandle = keyframeData[QLatin1String("leftHandle")].toArray();
+            keyframe.leftControlPoint[0] = leftHandle.at(0).toDouble();
+            keyframe.leftControlPoint[1] = leftHandle.at(1).toDouble();
+
+            const QJsonArray rightHandle = keyframeData[QLatin1String("rightHandle")].toArray();
+            keyframe.rightControlPoint[0] = rightHandle.at(0).toDouble();
+            keyframe.rightControlPoint[1] = rightHandle.at(1).toDouble();
+        } else {
+            keyframe.interpolation = QKeyFrame::LinearInterpolation;
+        }
 
         appendKeyframe(localTime, keyframe);
     }

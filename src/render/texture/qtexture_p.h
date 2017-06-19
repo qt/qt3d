@@ -54,12 +54,13 @@
 #include <Qt3DRender/private/qabstracttexture_p.h>
 #include <Qt3DRender/qtexturegenerator.h>
 #include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTextureLoaderPrivate : public QAbstractTexturePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QTextureLoaderPrivate : public QAbstractTexturePrivate
 {
 public:
     QTextureLoaderPrivate();

@@ -42,6 +42,7 @@
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector4d.h>
 #include <QtGui/qquaternion.h>
+#include <QtGui/qcolor.h>
 
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>
@@ -1000,7 +1001,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "foo";
-            mapping.type = static_cast<int>(QVariant::Vector2D);
+            mapping.type = static_cast<int>(QVariant::Vector4D);
             mapping.channelIndices = QVector<int>() << 0 << 1 << 2 << 3;
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 4.0f << 3.0f << 2.0f << 1.0f;
@@ -1036,7 +1037,7 @@ private Q_SLOTS:
             auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(mapping.targetId);
             change->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
             change->setPropertyName(mapping.propertyName);
-            change->setValue(QVariant::fromValue(QQuaternion(1.0f, 0.0f, 0.0f, 1.0f)));
+            change->setValue(QVariant::fromValue(QQuaternion(1.0f, 0.0f, 0.0f, 1.0f).normalized()));
             expectedChanges.push_back(change);
 
             QTest::newRow("quaternion rotation")
@@ -1047,6 +1048,34 @@ private Q_SLOTS:
             channelResults.clear();
             expectedChanges.clear();
         }
+
+        // Single property, QColor
+        {
+            animatorId = Qt3DCore::QNodeId::createId();
+            MappingData mapping;
+            mapping.targetId = Qt3DCore::QNodeId::createId();
+            mapping.propertyName = "color";
+            mapping.type = static_cast<int>(QVariant::Color);
+            mapping.channelIndices = QVector<int>() << 0 << 1 << 2;
+            mappingData.push_back(mapping);
+            channelResults = QVector<float>() << 0.5f << 0.4f << 0.3f;
+            finalFrame = false;
+
+            auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(mapping.targetId);
+            change->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+            change->setPropertyName(mapping.propertyName);
+            change->setValue(QVariant::fromValue(QColor::fromRgbF(0.5f, 0.4f, 0.3f)));
+            expectedChanges.push_back(change);
+
+            QTest::newRow("QColor color")
+                    << animatorId << mappingData << channelResults << finalFrame
+                    << expectedChanges;
+
+            mappingData.clear();
+            channelResults.clear();
+            expectedChanges.clear();
+        }
+
     }
 
     void checkPreparePropertyChanges()
@@ -1067,7 +1096,7 @@ private Q_SLOTS:
         for (int i = 0; i < actualChanges.size(); ++i) {
             auto expectedChange = expectedChanges[i];
             auto actualChange
-                    = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(expectedChanges[i]);
+                    = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(actualChanges[i]);
 
             QCOMPARE(actualChange->subjectId(), expectedChange->subjectId());
             QCOMPARE(actualChange->deliveryFlags(), expectedChange->deliveryFlags());
@@ -1154,6 +1183,28 @@ private Q_SLOTS:
                     << 0.5f << 0.0f << -0.5f << 0.0f;   // Rotation
 
             QTest::newRow("clip2.json, t = duration/2")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
+        {
+            // a clip with linear interpolation
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip4.json"));
+            localTime = clip->duration();
+            expectedResults = QVector<float>() << 5.0 << -2.0f << 6.0f;
+
+            QTest::newRow("clip4.json, linear, t = duration")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
+        {
+            // a clip with linear interpolation
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip4.json"));
+            localTime = clip->duration() / 2.0f;
+            expectedResults = QVector<float>() << 2.5f << -1.0f << 3.0f;
+
+            QTest::newRow("clip4.json, linear, t = duration/2")
                     << handler << clip << localTime << expectedResults;
             expectedResults.clear();
         }

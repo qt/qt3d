@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +61,7 @@ namespace Qt3DRender {
 
 class QMesh;
 
-class QMeshPrivate : public QGeometryRendererPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QMeshPrivate : public QGeometryRendererPrivate
 {
 public:
     QMeshPrivate();

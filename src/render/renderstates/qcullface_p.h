@@ -50,12 +50,13 @@
 
 #include <Qt3DRender/private/qrenderstate_p.h>
 #include <Qt3DRender/qcullface.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QCullFacePrivate : public QRenderStatePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QCullFacePrivate : public QRenderStatePrivate
 {
 public:
     QCullFacePrivate()

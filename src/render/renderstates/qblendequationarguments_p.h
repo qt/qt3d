@@ -50,12 +50,13 @@
 
 #include <Qt3DRender/private/qrenderstate_p.h>
 #include <Qt3DRender/qblendequationarguments.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QBlendEquationArgumentsPrivate : public QRenderStatePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QBlendEquationArgumentsPrivate : public QRenderStatePrivate
 {
 public:
     QBlendEquationArgumentsPrivate(Render::StateMask type = Render::BlendEquationArgumentsMask)

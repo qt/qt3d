@@ -98,7 +98,8 @@ Quick3DNodeInstantiatorPrivate::Quick3DNodeInstantiatorPrivate()
 
 Quick3DNodeInstantiatorPrivate::~Quick3DNodeInstantiatorPrivate()
 {
-    qDeleteAll(m_objects);
+    if (m_ownModel)
+        delete m_instanceModel;
 }
 
 void Quick3DNodeInstantiatorPrivate::clear()
@@ -244,6 +245,7 @@ void Quick3DNodeInstantiatorPrivate::makeModel()
 Quick3DNodeInstantiator::Quick3DNodeInstantiator(QNode *parent)
     : QNode(*new Quick3DNodeInstantiatorPrivate, parent)
 {
+    connect(this, &QNode::parentChanged, this, &Quick3DNodeInstantiator::onParentChanged);
 }
 
 /*!
@@ -498,6 +500,17 @@ void Quick3DNodeInstantiator::componentComplete()
         setModel(realModel); //If realModel == d->m_model this won't do anything, but that's fine since the model's 0
         //setModel calls regenerate
     }
+}
+
+/*!
+ \internal
+*/
+void Quick3DNodeInstantiator::onParentChanged(QObject *parent)
+{
+    Q_D(const Quick3DNodeInstantiator);
+    auto parentNode = static_cast<QNode *>(parent);
+    for (auto obj : d->m_objects)
+        static_cast<QNode *>(obj.data())->setParent(parentNode);
 }
 
 // TODO: Avoid cloning here

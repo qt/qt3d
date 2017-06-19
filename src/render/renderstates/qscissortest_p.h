@@ -50,12 +50,13 @@
 
 #include <Qt3DRender/private/qrenderstate_p.h>
 #include <Qt3DRender/qscissortest.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QScissorTestPrivate : public QRenderStatePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QScissorTestPrivate : public QRenderStatePrivate
 {
 public:
     QScissorTestPrivate()

@@ -54,6 +54,7 @@
 #include <Qt3DRender/private/qabstracttextureimage_p.h>
 #include <Qt3DRender/qtextureimagedatagenerator.h>
 #include <Qt3DRender/qpaintedtextureimage.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +63,7 @@ class QPainter;
 
 namespace Qt3DRender {
 
-class QPaintedTextureImagePrivate : public QAbstractTextureImagePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QPaintedTextureImagePrivate : public QAbstractTextureImagePrivate
 {
 public:
     QPaintedTextureImagePrivate();
