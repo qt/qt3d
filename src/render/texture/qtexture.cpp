@@ -777,6 +777,10 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
         textureData = TextureLoadingHelper::loadTextureData(m_url, true, m_mirrored);
     }
 
+    // Update any properties explicitly set by the user
+    if (m_format != QAbstractTexture::NoFormat && m_format != QAbstractTexture::Automatic)
+        textureData->setFormat(static_cast<QOpenGLTexture::TextureFormat>(m_format));
+
     if (textureData && textureData->data().length() > 0) {
         generatedData->setTarget(static_cast<QAbstractTexture::Target>(textureData->target()));
         generatedData->setFormat(static_cast<QAbstractTexture::TextureFormat>(textureData->format()));
@@ -785,7 +789,6 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
         generatedData->setDepth(textureData->depth());
         generatedData->setLayers(textureData->layers());
         generatedData->addImageData(textureData);
-        // TO DO: Check that we aren't forgetting to set something here
         m_status = QAbstractTexture::Ready;
     } else {
         m_status = QAbstractTexture::Error;
@@ -822,24 +825,6 @@ void TextureDownloadRequest::onCompleted()
 
     // mark the component as dirty so that the functor runs again in the correct job
     texture->addDirtyFlag(Render::Texture::DirtyDataGenerator);
-}
-
-QTextureLoaderPrivate::QTextureLoaderPrivate()
-    : QAbstractTexturePrivate()
-    , m_mirrored(true)
-{
-}
-
-void QTextureLoaderPrivate::setScene(Qt3DCore::QScene *scene)
-{
-    QAbstractTexturePrivate::setScene(scene);
-    updateFunctor();
-}
-
-void QTextureLoaderPrivate::updateFunctor()
-{
-    Qt3DCore::QAspectEngine *engine = m_scene ? m_scene->engine() : nullptr;
-    setDataFunctor(QTextureFromSourceGeneratorPtr::create(m_id, m_source, m_mirrored, engine));
 }
 
 /*!
@@ -1062,6 +1047,25 @@ QTextureBuffer::~QTextureBuffer()
 {
 }
 
+QTextureLoaderPrivate::QTextureLoaderPrivate()
+    : QAbstractTexturePrivate()
+    , m_mirrored(true)
+{
+}
+
+void QTextureLoaderPrivate::setScene(Qt3DCore::QScene *scene)
+{
+    QAbstractTexturePrivate::setScene(scene);
+    updateGenerator();
+}
+
+void QTextureLoaderPrivate::updateGenerator()
+{
+    Q_Q(QTextureLoader);
+    Qt3DCore::QAspectEngine *engine = m_scene ? m_scene->engine() : nullptr;
+    setDataFunctor(QTextureFromSourceGeneratorPtr::create(q, engine, m_id));
+}
+
 /*!
  * Constructs a new Qt3DRender::QTextureLoader instance with \a parent as parent.
  *
@@ -1084,6 +1088,12 @@ QTextureLoader::QTextureLoader(QNode *parent)
     d_func()->m_autoMipMap = true;
     d_func()->m_maximumAnisotropy = 16.0f;
     d_func()->m_target = TargetAutomatic;
+
+    // Regenerate the texture functor when properties we support overriding
+    // from QAbstractTexture get changed.
+    Q_D(QTextureLoader);
+    auto regenerate = [=] () { d->updateGenerator(); };
+    connect(this, &QAbstractTexture::formatChanged, regenerate);
 }
 
 /*! \internal */
@@ -1115,7 +1125,7 @@ void QTextureLoader::setSource(const QUrl& source)
     Q_D(QTextureLoader);
     if (source != d->m_source) {
         d->m_source = source;
-        d->updateFunctor();
+        d->updateGenerator();
         const bool blocked = blockNotifications(true);
         emit sourceChanged(source);
         blockNotifications(blocked);
@@ -1163,11 +1173,43 @@ void QTextureLoader::setMirrored(bool mirrored)
     Q_D(QTextureLoader);
     if (mirrored != d->m_mirrored) {
         d->m_mirrored = mirrored;
-        d->updateFunctor();
+        d->updateGenerator();
         const bool blocked = blockNotifications(true);
         emit mirroredChanged(mirrored);
         blockNotifications(blocked);
     }
+}
+
+/*!
+ * Constructs a new QTextureFromSourceGenerator::QTextureFromSourceGenerator
+ * instance with properties passed in via \a textureLoader
+ * \param url
+ */
+QTextureFromSourceGenerator::QTextureFromSourceGenerator(QTextureLoader *textureLoader,
+                                                         Qt3DCore::QAspectEngine *engine,
+                                                         Qt3DCore::QNodeId textureId)
+    : QTextureGenerator()
+    , m_url()
+    , m_status(QAbstractTexture::None)
+    , m_mirrored()
+    , m_texture(textureId)
+    , m_engine(engine)
+    , m_format(QAbstractTexture::RGBA8_UNorm)
+{
+    Q_ASSERT(textureLoader);
+
+    // We always get QTextureLoader's "own" additional properties
+    m_url = textureLoader->source();
+    m_mirrored = textureLoader->isMirrored();
+
+    // For the properties on the base QAbstractTexture we only apply
+    // those that have been explicitly set and which we support here.
+    // For more control, the user can themselves use a QTexture2D and
+    // create the texture images themselves, or even better, go create
+    // proper texture files themselves (dds/ktx etc). This is purely a
+    // convenience for some common use cases and will always be less
+    // ideal than using compressed textures and generating mips offline.
+    m_format = textureLoader->format();
 }
 
 /*!
@@ -1180,7 +1222,8 @@ bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) co
     return (otherFunctor != nullptr &&
             otherFunctor->m_url == m_url &&
             otherFunctor->m_mirrored == m_mirrored &&
-            otherFunctor->m_engine == m_engine);
+            otherFunctor->m_engine == m_engine &&
+            otherFunctor->m_format == m_format);
 }
 
 QUrl QTextureFromSourceGenerator::url() const
@@ -1191,23 +1234,6 @@ QUrl QTextureFromSourceGenerator::url() const
 bool QTextureFromSourceGenerator::isMirrored() const
 {
     return m_mirrored;
-}
-
-/*!
- * Constructs a new QTextureFromSourceGenerator::QTextureFromSourceGenerator
- * instance with \a url.
- * \param url
- */
-QTextureFromSourceGenerator::QTextureFromSourceGenerator(Qt3DCore::QNodeId texture,
-                                                         const QUrl &url, bool mirrored,
-                                                         Qt3DCore::QAspectEngine *engine)
-    : QTextureGenerator()
-    , m_url(url)
-    , m_status(QAbstractTexture::None)
-    , m_mirrored(mirrored)
-    , m_texture(texture)
-    , m_engine(engine)
-{
 }
 
 } // namespace Qt3DRender

@@ -290,7 +290,7 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "registerAspect",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3DCore::QAbstractAspect *, aspect));
+                              Q_ARG(Qt3DCore::QAbstractAspect*, aspect));
 }
 
 /*!
@@ -330,7 +330,7 @@ void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "unregisterAspect",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3DCore::QAbstractAspect *, aspect));
+                              Q_ARG(Qt3DCore::QAbstractAspect*, aspect));
 
     // Remove from our collection of named aspects (if present)
     const auto it = std::find_if(d->m_namedAspects.begin(), d->m_namedAspects.end(),
@@ -458,7 +458,7 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setRootEntity",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3DCore::QEntity *, root.data()),
+                              Q_ARG(Qt3DCore::QEntity*, root.data()),
                               Q_ARG(QVector<Qt3DCore::QNodeCreatedChangeBasePtr>, d->m_creationChanges));
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
 

@@ -300,7 +300,7 @@ NodeManagers *Renderer::nodeManagers() const
 */
 QOpenGLContext *Renderer::shareContext() const
 {
-    return m_shareContext ? m_shareContext : m_graphicsContext->openGLContext();
+    return m_shareContext ? m_shareContext : m_graphicsContext->openGLContext()->shareContext();
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -344,9 +344,12 @@ void Renderer::initialize()
         // Context is not owned by us, so we need to know if it gets destroyed
         m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
                                                [this] { releaseGraphicsResources(); });
+    }
+
+    if (!ctx->shareContext()) {
         m_shareContext = new QOpenGLContext;
-        m_shareContext->setFormat(m_glContext->format());
-        m_shareContext->setShareContext(m_glContext);
+        m_shareContext->setFormat(ctx->format());
+        m_shareContext->setShareContext(ctx);
         m_shareContext->create();
     }
 
@@ -470,7 +473,9 @@ void Renderer::setSurfaceExposed(bool exposed)
 Render::FrameGraphNode *Renderer::frameGraphRoot() const
 {
     Q_ASSERT(m_settings);
-    return m_nodesManager->frameGraphManager()->lookupNode(m_settings->activeFrameGraphID());
+    if (m_nodesManager && m_nodesManager->frameGraphManager() && m_settings)
+        return m_nodesManager->frameGraphManager()->lookupNode(m_settings->activeFrameGraphID());
+    return nullptr;
 }
 
 // QAspectThread context
@@ -1395,12 +1400,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     for (const QAspectJobPtr &bufferJob : bufferJobs)
         m_calculateBoundingVolumeJob->addDependency(bufferJob);
 
-    // Set values on pickBoundingVolumeJob
-    m_pickBoundingVolumeJob->setFrameGraphRoot(frameGraphRoot());
-    m_pickBoundingVolumeJob->setRenderSettings(settings());
-    m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
-    m_pickBoundingVolumeJob->setKeyEvents(pendingKeyEvents());
-
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
 
     // Add jobs
@@ -1480,6 +1479,15 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
 QAspectJobPtr Renderer::pickBoundingVolumeJob()
 {
+    // Set values on pickBoundingVolumeJob
+    RenderSettings *renderSetting = settings();
+    if (renderSetting != nullptr) {
+        m_pickBoundingVolumeJob->setRenderSettings(renderSetting);
+        m_pickBoundingVolumeJob->setFrameGraphRoot(frameGraphRoot());
+        m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
+        m_pickBoundingVolumeJob->setKeyEvents(pendingKeyEvents());
+    }
+
     return m_pickBoundingVolumeJob;
 }
 

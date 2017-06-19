@@ -120,6 +120,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/qsceneimportfactory_p.h>
+#include <Qt3DRender/private/qsceneimporter_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/environmentlight_p.h>
@@ -186,6 +187,7 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
         qWarning() << Q_FUNC_INFO << "The renderer should have been deleted when reaching this point (this warning may be normal when running tests)";
     delete m_nodeManagers;
     m_instances.removeAll(this);
+    qDeleteAll(m_sceneImporter);
 }
 
 QRenderAspectPrivate *QRenderAspectPrivate::findPrivate(Qt3DCore::QAspectEngine *engine)
@@ -268,7 +270,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
 
     // Plugins
-    for (const QString &plugin : m_pluginConfig)
+    for (const QString &plugin : qAsConst(m_pluginConfig))
         loadRenderPlugin(plugin);
 }
 
@@ -418,12 +420,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // asked for jobs to execute (this function). If that is the case, the RenderSettings will
     // be null and we should not generate any jobs.
     if (d->m_renderer->isRunning() && d->m_renderer->settings()) {
-        // don't spawn any jobs, if the renderer decides to skip this frame
-        if (!d->m_renderer->shouldRender()) {
-            d->m_renderer->skipNextFrame();
-            QThread::msleep(1);
-            return jobs;
-        }
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
         QAspectJobPtr textureLoadingSync = d->m_renderer->syncTextureLoadingJob();
@@ -461,7 +457,18 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
         // Add all jobs to queue
         const Qt3DCore::QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
+        // Note: the getter is also responsible for returning a job ready to run
         jobs.append(pickBoundingVolumeJob);
+
+
+        // Don't spawn any rendering jobs, if the renderer decides to skip this frame
+        // Note: this only affects rendering jobs (jobs that load buffers,
+        // perform picking,... must still be run)
+        if (!d->m_renderer->shouldRender()) {
+            d->m_renderer->skipNextFrame();
+            QThread::msleep(1);
+            return jobs;
+        }
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands

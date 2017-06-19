@@ -47,6 +47,12 @@ QTextureGenerator::~QTextureGenerator()
 {
 }
 
+/*!
+   \class QTextureGenerator
+   \inherits QAbstractFunctor
+   \inmodule Qt3DRender
+   \brief Provides the image data for a texture.
+*/
 } // Qt3DRender
 
 QT_END_NAMESPACE

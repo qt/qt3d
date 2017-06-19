@@ -97,7 +97,7 @@ void CommandThread::executeCommand(Command *command)
     QMetaObject::invokeMethod(this,
                               "executeCommandInternal",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Command *, command));
+                              Q_ARG(Command*, command));
 }
 
 void CommandThread::run()

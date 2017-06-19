@@ -133,7 +133,7 @@ void QKeyboardHandlerPrivate::keyEvent(QKeyEvent *event)
             // That's what QQ2 does but since it accesses QML private classes to do so, that may not be
             // applicable in our case
             int idx = QKeyboardHandler::staticMetaObject.indexOfSignal(keySignal);
-            q->metaObject()->method(idx).invoke(q, Qt::DirectConnection, Q_ARG(QKeyEvent *, event));
+            q->metaObject()->method(idx).invoke(q, Qt::DirectConnection, Q_ARG(QKeyEvent*, event));
         }
     } else if (event->type() == QEvent::KeyRelease) {
         emit q->released(event);

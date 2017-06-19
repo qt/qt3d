@@ -402,7 +402,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                     if ((objectPicker->isPressed() || objectPicker->isHoverEnabled()) && objectPicker->isDragEnabled()) {
                         objectPicker->onMoved(pickEvent);
                     }
-                    // fallthrough
+                    Q_FALLTHROUGH(); // fallthrough
                 }
                 case QEvent::HoverMove: {
                     if (!m_hoveredPickers.contains(objectPickerHandle)) {

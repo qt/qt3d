@@ -46,6 +46,7 @@
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector4d.h>
 #include <QtGui/qquaternion.h>
+#include <QtGui/qcolor.h>
 #include <QtCore/qvariant.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 
@@ -60,6 +61,7 @@ int componentsForType(int type)
 {
     int componentCount = 1;
     switch (type) {
+    case QMetaType::Float:
     case QVariant::Double:
         componentCount = 1;
         break;
@@ -69,6 +71,7 @@ int componentsForType(int type)
         break;
 
     case QVariant::Vector3D:
+    case QVariant::Color:
         componentCount = 3;
         break;
 
@@ -108,7 +111,7 @@ double localTimeFromGlobalTime(double t_global,
     double loopNumber = 0;
     if (loopCount == 1) {
         t_local = qBound(0.0, t_local, duration);
-    } else if (loopCount == 0) {
+    } else if (loopCount < 0) {
         // Loops forever
         (void) std::modf(t_local / duration, &loopNumber);
         t_local = std::fmod(t_local, duration);
@@ -149,15 +152,21 @@ ComponentIndices channelComponentsToIndices(const Channel &channel, int dataType
 #if defined Q_COMPILER_UNIFORM_INIT
     static const QVector<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
     static const QVector<char> quaternionSuffixes = { 'W', 'X', 'Y', 'Z' };
+    static const QVector<char> colorSuffixes = { 'R', 'G', 'B' };
 #else
     static const QVector<char> standardSuffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
     static const QVector<char> quaternionSuffixes = (QVector<char>() << 'W' << 'X' << 'Y' << 'Z');
+    static const QVector<char> colorSuffixes = (QVector<char>() << 'R' << 'G' << 'B');
 #endif
 
-    if (dataType != QVariant::Quaternion)
-        return channelComponentsToIndicesHelper(channel, dataType, offset, standardSuffixes);
-    else
+    switch (dataType) {
+    case QVariant::Quaternion:
         return channelComponentsToIndicesHelper(channel, dataType, offset, quaternionSuffixes);
+    case QVariant::Color:
+        return channelComponentsToIndicesHelper(channel, dataType, offset, colorSuffixes);
+    default:
+        return channelComponentsToIndicesHelper(channel, dataType, offset, standardSuffixes);
+    }
 }
 
 ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
@@ -229,6 +238,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
         // Build the new value from the channel/fcurve evaluation results
         QVariant v;
         switch (mappingData.type) {
+        case QMetaType::Float:
         case QVariant::Double: {
             v = QVariant::fromValue(channelResults[mappingData.channelIndices[0]]);
             break;
@@ -268,6 +278,14 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
             break;
         }
 
+        case QVariant::Color: {
+            const QColor color = QColor::fromRgbF(channelResults[mappingData.channelIndices[0]],
+                    channelResults[mappingData.channelIndices[1]],
+                    channelResults[mappingData.channelIndices[2]]);
+            v = QVariant::fromValue(color);
+            break;
+        }
+
         default:
             qWarning() << "Unhandled animation type";
             continue;
@@ -301,7 +319,8 @@ QVector<MappingData> buildPropertyMappings(Handler *handler,
     const QVector<Channel> &channels = clip->channels();
 
     // Iterate over the mappings in the mapper object
-    for (const Qt3DCore::QNodeId mappingId : mapper->mappingIds()) {
+    const auto mappingIds = mapper->mappingIds();
+    for (const Qt3DCore::QNodeId mappingId : mappingIds) {
         // Get the mapping object
         ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
         Q_ASSERT(mapping);
@@ -474,7 +493,7 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
 
     // Reserve enough storage for all the format indices
     int indexCount = 0;
-    for (const auto targetIndexVec : targetIndices)
+    for (const auto targetIndexVec : qAsConst(targetIndices))
         indexCount += targetIndexVec.size();
     ComponentIndices format;
     format.resize(indexCount);

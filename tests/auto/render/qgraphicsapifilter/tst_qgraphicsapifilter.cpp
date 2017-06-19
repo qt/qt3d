@@ -241,6 +241,6 @@ private Q_SLOTS:
 };
 
 
-QTEST_APPLESS_MAIN(tst_QGraphicsApiFilter)
+QTEST_MAIN(tst_QGraphicsApiFilter)
 
 #include "tst_qgraphicsapifilter.moc"

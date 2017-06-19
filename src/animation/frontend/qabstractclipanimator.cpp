@@ -54,7 +54,7 @@ QAbstractClipAnimatorPrivate::QAbstractClipAnimatorPrivate()
 }
 
 /*!
-    \qmltype AbsractClipAnimator
+    \qmltype AbstractClipAnimator
     \instantiates Qt3DAnimation::QAbstractClipAnimator
     \inqmlmodule Qt3D.Animation
     \since 5.9

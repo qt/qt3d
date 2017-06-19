@@ -50,12 +50,13 @@
 
 #include <QtCore/private/qobject_p.h>
 #include <Qt3DRender/qstenciltestarguments.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QStencilTestArgumentsPrivate : public QObjectPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QStencilTestArgumentsPrivate : public QObjectPrivate
 {
 public:
     QStencilTestArgumentsPrivate(QStencilTestArguments::StencilFaceMode face)

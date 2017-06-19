@@ -54,12 +54,13 @@
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/qtransform.h>
 #include <private/qentity_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QCameraPrivate : public Qt3DCore::QEntityPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QCameraPrivate : public Qt3DCore::QEntityPrivate
 {
 public:
     QCameraPrivate();

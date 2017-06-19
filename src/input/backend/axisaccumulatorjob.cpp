@@ -61,7 +61,8 @@ AxisAccumulatorJob::AxisAccumulatorJob(AxisAccumulatorManager *axisAccumulatorma
 void AxisAccumulatorJob::run()
 {
     // Iterate over the accumulators and ask each to step the integrations
-    for (auto accumulatorHandle : m_axisAccumulatorManager->activeHandles()) {
+    const auto activeHandles = m_axisAccumulatorManager->activeHandles();
+    for (auto accumulatorHandle : activeHandles) {
         AxisAccumulator *accumulator = m_axisAccumulatorManager->data(accumulatorHandle);
         if (accumulator->isEnabled())
             accumulator->stepIntegration(m_axisManager, m_dt);

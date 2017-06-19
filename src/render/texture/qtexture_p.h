@@ -56,18 +56,21 @@
 #include <Qt3DRender/private/qabstracttexture_p.h>
 #include <Qt3DRender/qtexturegenerator.h>
 #include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTextureLoaderPrivate : public QAbstractTexturePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QTextureLoaderPrivate : public QAbstractTexturePrivate
 {
 public:
     QTextureLoaderPrivate();
 
+    Q_DECLARE_PUBLIC(QTextureLoader)
+
     void setScene(Qt3DCore::QScene *scene) override;
-    void updateFunctor();
+    void updateGenerator();
 
     QUrl m_source;
     bool m_mirrored;
@@ -88,8 +91,10 @@ private:
 class Q_AUTOTEST_EXPORT QTextureFromSourceGenerator : public QTextureGenerator
 {
 public:
-    explicit QTextureFromSourceGenerator(Qt3DCore::QNodeId texture, const QUrl &url,
-                                         bool mirrored, Qt3DCore::QAspectEngine *engine);
+    explicit QTextureFromSourceGenerator(QTextureLoader *textureLoader,
+                                         Qt3DCore::QAspectEngine *engine,
+                                         Qt3DCore::QNodeId textureId);
+
     QTextureDataPtr operator ()() Q_DECL_OVERRIDE;
     bool operator ==(const QTextureGenerator &other) const Q_DECL_OVERRIDE;
     inline QAbstractTexture::Status status() const { return m_status; }
@@ -105,9 +110,13 @@ private:
     QUrl m_url;
     QAbstractTexture::Status m_status;
     bool m_mirrored;
+
     QByteArray m_sourceData;
     Qt3DCore::QNodeId m_texture;
     Qt3DCore::QAspectEngine *m_engine;
+
+    // Options that can be overridden on TextureLoader when loading
+    QAbstractTexture::TextureFormat m_format;
 };
 typedef QSharedPointer<QTextureFromSourceGenerator> QTextureFromSourceGeneratorPtr;
 

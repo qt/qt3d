@@ -50,6 +50,7 @@ private slots:
     void createNone();
     void createSingle();
     void createMultiple();
+    void createNested();
     void stringModel();
     void activeProperty();
     void intModelChange();
@@ -106,6 +107,34 @@ void tst_quick3dnodeinstantiator::createMultiple()
         QCOMPARE(object->parent(), root);
         QCOMPARE(object->property("success").toBool(), true);
         QCOMPARE(object->property("idx").toInt(), i);
+    }
+}
+
+void tst_quick3dnodeinstantiator::createNested()
+{
+    QQmlEngine engine;
+    QQmlComponent component(&engine, testFileUrl("createNested.qml"));
+    const auto root = qobject_cast<Qt3DCore::QNode*>(component.create());
+    QVERIFY(root != 0);
+
+    auto instantiators = root->findChildren<Quick3DNodeInstantiator*>();
+    QCOMPARE(instantiators.count(), 4);
+
+    const auto outerInstantiator = instantiators.takeFirst();
+    QCOMPARE(outerInstantiator->isActive(), true);
+    QCOMPARE(outerInstantiator->count(), 3);
+
+    for (const auto instantiator : instantiators) {
+        QCOMPARE(instantiator->isActive(), true);
+        QCOMPARE(instantiator->count(), 4);
+
+        for (int i = 0; i < 4; i++) {
+            auto object = instantiator->objectAt(i);
+            QVERIFY(object);
+            QCOMPARE(object->parent(), root);
+            QCOMPARE(object->property("success").toBool(), true);
+            QCOMPARE(object->property("idx").toInt(), i);
+        }
     }
 }
 

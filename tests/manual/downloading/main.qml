@@ -92,7 +92,7 @@ Entity {
 
     DiffuseMapMaterial {
         id: material
-        diffuse: TextureLoader { source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;hb=refs/heads/dev;f=examples/qt3d/planets-qml/images/earthmap1k.jpg" }
+        diffuse: TextureLoader { source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;hb=refs/heads/dev;f=examples/qt3d/planets-qml/images/solarsystemscope/earthmap2k.jpg" }
         specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
         shininess: 2.0
     }

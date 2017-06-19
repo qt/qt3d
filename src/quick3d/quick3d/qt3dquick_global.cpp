@@ -659,10 +659,12 @@ public:
 #undef ASSERT_VALID_SIZE
 };
 
-static Quick3DValueTypeProvider valueTypeProvider;
+Quick3DValueTypeProvider *valueTypeProvider = nullptr;
 static Quick3DValueTypeProvider *getValueTypeProvider()
 {
-    return &valueTypeProvider;
+    if (valueTypeProvider == nullptr)
+        valueTypeProvider = new Quick3DValueTypeProvider();
+    return valueTypeProvider;
 }
 
 static Quick3DColorProvider *getColorProvider()
@@ -708,7 +710,8 @@ void Quick3D_initialize()
 
 void Quick3D_uninitialize()
 {
-    QQml_removeValueTypeProvider(&valueTypeProvider);
+    delete valueTypeProvider;
+    valueTypeProvider = nullptr;
 }
 
 void Quick3D_registerType(const char *className, const char *quickName, int major, int minor)

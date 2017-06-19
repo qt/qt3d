@@ -50,6 +50,7 @@
 
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,7 +59,7 @@ namespace Qt3DRender {
 /*!
     \internal
 */
-class QObjectPickerPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QObjectPickerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QObjectPickerPrivate()

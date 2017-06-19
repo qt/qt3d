@@ -66,18 +66,34 @@ QVector<Qt3DCore::QNodeId> BufferManager::dirtyBuffers()
 }
 
 // Called in QAspectThread::syncChanges
-void BufferManager::addBufferToRelease(Qt3DCore::QNodeId bufferId)
+void BufferManager::removeBufferReference(Qt3DCore::QNodeId bufferId)
 {
     QMutexLocker lock(&m_mutex);
-    m_buffersToRelease.push_back(bufferId);
+    Q_ASSERT(m_bufferReferences.contains(bufferId) && m_bufferReferences[bufferId] > 0);
+    m_bufferReferences[bufferId]--;
+}
+
+// Called in QAspectThread
+void BufferManager::addBufferReference(Qt3DCore::QNodeId bufferId)
+{
+    QMutexLocker lock(&m_mutex);
+    m_bufferReferences[bufferId]++;
 }
 
 // Called in Render thread
 QVector<Qt3DCore::QNodeId> BufferManager::takeBuffersToRelease()
 {
     QMutexLocker lock(&m_mutex);
-    // Clears the m_buffersToRelease vector
-    return std::move(m_buffersToRelease);
+    QVector<Qt3DCore::QNodeId> buffersToRelease;
+    QMutableHashIterator<Qt3DCore::QNodeId, int> it(m_bufferReferences);
+    while (it.hasNext()) {
+        it.next();
+        if (it.value() == 0) {
+            buffersToRelease.append(it.key());
+            it.remove();
+        }
+    }
+    return buffersToRelease;
 }
 
 } // namespace Render

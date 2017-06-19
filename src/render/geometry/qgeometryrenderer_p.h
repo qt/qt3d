@@ -54,6 +54,7 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometryfactory.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/private/qtypedpropertyupdatechange_p.h>
 #include <memory>
 
@@ -61,7 +62,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QGeometryRendererPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QGeometryRendererPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QGeometryRendererPrivate();

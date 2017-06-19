@@ -52,6 +52,7 @@
 //
 
 #include <private/qcomponent_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <qshaderdata.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +62,7 @@ namespace Qt3DRender {
 class QAbstractTexture;
 class QEnvironmentLight;
 
-class Q_AUTOTEST_EXPORT QEnvironmentLightPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QEnvironmentLightPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     explicit QEnvironmentLightPrivate();

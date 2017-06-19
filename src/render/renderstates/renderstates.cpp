@@ -194,13 +194,7 @@ void StencilTest::apply(GraphicsContext *gc) const
 
 void AlphaCoverage::apply(GraphicsContext *gc) const
 {
-    gc->setAlphaCoverageEnabled(std::get<0>(m_values));
-}
-
-void AlphaCoverage::updateProperty(const char *name, const QVariant &value)
-{
-    if (name == QByteArrayLiteral("enabled"))
-        std::get<0>(m_values) = value.toBool();
+    gc->setAlphaCoverageEnabled(true);
 }
 
 void PointSize::apply(GraphicsContext *gc) const
@@ -254,12 +248,7 @@ void ClipPlane::updateProperty(const char *name, const QVariant &value)
 
 void SeamlessCubemap::apply(GraphicsContext *gc) const
 {
-    gc->setSeamlessCubemap(std::get<0>(m_values));
-}
-
-void SeamlessCubemap::updateProperty(const char *name, const QVariant &value)
-{
-    if (name == QByteArrayLiteral("enabled")) std::get<0>(m_values) = value.toBool();
+    gc->setSeamlessCubemap(true);
 }
 
 void StencilOp::apply(GraphicsContext *gc) const

@@ -74,6 +74,15 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
         QMetaProperty mp = mo->property(propertyIndex);
         propertyName = mp.name();
         type = mp.userType();
+        if (type == QMetaType::QVariant) {
+            QVariant currentValue = m_target->property(mp.name());
+            if (currentValue.isValid()) {
+                type = currentValue.userType();
+            } else {
+                qWarning("QChannelMapping: Attempted to target QVariant property with no value set. "
+                         "Set a value first in order to be able to determine the type.");
+            }
+        }
     }
 
     if (m_type != type) {
@@ -98,6 +107,14 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
         notifyObservers(e);
     }
 }
+/*!
+    \class QChannelMapping
+    \inherits Qt3DCore::QNode
+    \inmodule Qt3DAnimation
+    \brief Allows to map the channels within the clip onto properties of
+           objects in the application
+
+*/
 
 QChannelMapping::QChannelMapping(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QChannelMappingPrivate, parent)

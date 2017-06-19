@@ -133,6 +133,8 @@ void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
     Q_ASSERT(m_manager);
     if (m_functor)
         m_manager->addDirtyBuffer(peerId());
+
+    m_manager->addBufferReference(peerId());
 }
 
 void Buffer::forceDataUpload()
@@ -210,7 +212,7 @@ Qt3DCore::QBackendNode *BufferFunctor::get(Qt3DCore::QNodeId id) const
 
 void BufferFunctor::destroy(Qt3DCore::QNodeId id) const
 {
-    m_manager->addBufferToRelease(id);
+    m_manager->removeBufferReference(id);
     return m_manager->releaseResource(id);
 }
 

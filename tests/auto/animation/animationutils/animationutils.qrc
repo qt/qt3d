@@ -3,5 +3,6 @@
         <file>clip1.json</file>
         <file>clip2.json</file>
         <file>clip3.json</file>
+        <file>clip4.json</file>
     </qresource>
 </RCC>

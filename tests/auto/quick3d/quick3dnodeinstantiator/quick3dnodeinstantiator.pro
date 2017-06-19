@@ -12,6 +12,7 @@ OTHER_FILES = \
     data/createMultiple.qml \
     data/createNone.qml \
     data/createSingle.qml \
+    data/createNested.qml \
     data/inactive.qml \
     data/stringModel.qml
 

@@ -192,7 +192,7 @@ void QAnimationGroup::removeAnimation(Qt3DAnimation::QAbstractAnimation *animati
         d->m_animations.removeAll(animation);
         if (qFuzzyCompare(d->m_duration, animation->duration())) {
             d->m_duration = 0.0f;
-            for (const Qt3DAnimation::QAbstractAnimation *a : d->m_animations)
+            for (const Qt3DAnimation::QAbstractAnimation *a : qAsConst(d->m_animations))
                 d->m_duration = qMax(d->m_duration, a->duration());
         }
     }

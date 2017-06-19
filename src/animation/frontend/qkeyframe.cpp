@@ -43,6 +43,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
+/*!
+    \class QKeyframe
+    \inmodule Qt3DAnimation
+    \brief A base class for handling keyframes
+*/
 
 } // namespace Qt3DAnimation
 

@@ -48,6 +48,12 @@ QClipBlendNodeCreatedChangeBasePrivate::QClipBlendNodeCreatedChangeBasePrivate(c
 {
 }
 
+/*!
+   \class QClipBlendNodeCreateChangeBase
+   \inherits Qt3DCore::QNodeCreatedChangeBase
+   \inmodule Qt3DAnimation
+   \brief Base class for changes in QClipBlendNode
+*/
 QClipBlendNodeCreatedChangeBase::QClipBlendNodeCreatedChangeBase(const QAbstractClipBlendNode *node)
     : Qt3DCore::QNodeCreatedChangeBase(*new QClipBlendNodeCreatedChangeBasePrivate(node), node)
 {
@@ -56,6 +62,11 @@ QClipBlendNodeCreatedChangeBase::QClipBlendNodeCreatedChangeBase(const QAbstract
 QClipBlendNodeCreatedChangeBase::~QClipBlendNodeCreatedChangeBase()
 {
 }
+/*!
+    typedef Qt3DAnimation::QClipBlendNodeCreatedChangeBasePtr
+
+    A shared pointer for QClipBlendNodeCreatedChangeBase
+*/
 
 } // Qt3DAnimation
 

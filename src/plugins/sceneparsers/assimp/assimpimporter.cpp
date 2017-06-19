@@ -989,7 +989,7 @@ void AssimpImporter::loadEmbeddedTexture(uint textureIndex)
 
     bool isCompressed = assimpTexture->mHeight == 0;
     uint textureSize = assimpTexture->mWidth *
-            (isCompressed ? assimpTexture->mHeight : 1);
+            (isCompressed ? 1 : assimpTexture->mHeight);
     // Set texture to RGBA8888
     QByteArray textureContent;
     textureContent.reserve(textureSize * 4);

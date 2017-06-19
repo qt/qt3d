@@ -52,12 +52,13 @@
 #include <Qt3DRender/qstenciltest.h>
 #include <Qt3DRender/qstenciltestarguments.h>
 #include <Qt3DRender/private/qstenciltestarguments_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QStencilTestPrivate : public QRenderStatePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QStencilTestPrivate : public QRenderStatePrivate
 {
 public:
     QStencilTestPrivate()

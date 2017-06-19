@@ -254,14 +254,7 @@ void Scene2D::initializeRender()
             return;
         }
         m_context = new QOpenGLContext();
-#ifdef Q_OS_MACOS
         m_context->setFormat(m_shareContext->format());
-#else
-        QSurfaceFormat format;
-        format.setDepthBufferSize(24);
-        format.setStencilBufferSize(8);
-        m_context->setFormat(format);
-#endif
         m_context->setShareContext(m_shareContext);
         m_context->create();
 
