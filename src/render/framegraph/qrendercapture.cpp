@@ -41,6 +41,7 @@
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 #include <QPointer>
+#include <QMutexLocker>
 
 QT_BEGIN_NAMESPACE
 
@@ -240,8 +241,19 @@ QRenderCapturePrivate::QRenderCapturePrivate()
 /*!
  * \internal
  */
+QRenderCapturePrivate::~QRenderCapturePrivate()
+{
+    Q_Q(QRenderCapture);
+    for (QRenderCaptureReply *reply : m_waitingReplies)
+        reply->disconnect(q);
+}
+
+/*!
+ * \internal
+ */
 QRenderCaptureReply *QRenderCapturePrivate::createReply(int captureId)
 {
+    QMutexLocker lock(&m_mutex);
     QRenderCaptureReply *reply = new QRenderCaptureReply();
     reply->d_func()->m_captureId = captureId;
     m_waitingReplies.push_back(reply);
@@ -254,6 +266,7 @@ QRenderCaptureReply *QRenderCapturePrivate::createReply(int captureId)
 QRenderCaptureReply *QRenderCapturePrivate::takeReply(int captureId)
 {
     QRenderCaptureReply *reply = nullptr;
+    QMutexLocker lock(&m_mutex);
     for (int i = 0; i < m_waitingReplies.size(); ++i) {
         if (m_waitingReplies[i]->d_func()->m_captureId == captureId) {
             reply = m_waitingReplies[i];
@@ -271,6 +284,15 @@ void QRenderCapturePrivate::setImage(QRenderCaptureReply *reply, const QImage &i
 {
     reply->d_func()->m_complete = true;
     reply->d_func()->m_image = image;
+}
+
+/*!
+ * \internal
+ */
+void QRenderCapturePrivate::replyDestroyed(QRenderCaptureReply *reply)
+{
+    QMutexLocker lock(&m_mutex);
+    m_waitingReplies.removeAll(reply);
 }
 
 /*!
@@ -293,6 +315,10 @@ QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
 {
     Q_D(QRenderCapture);
     QRenderCaptureReply *reply = d->createReply(captureId);
+    reply->setParent(this);
+    QObject::connect(reply, &QObject::destroyed, this, [&, reply, d] (QObject *) {
+        d->replyDestroyed(reply);
+    });
 
     Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(id()));
     change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));
@@ -313,6 +339,10 @@ QRenderCaptureReply *QRenderCapture::requestCapture()
     Q_D(QRenderCapture);
     static int captureId = 1;
     QRenderCaptureReply *reply = d->createReply(captureId);
+    reply->setParent(this);
+    QObject::connect(reply, &QObject::destroyed, this, [&, reply, d] (QObject *) {
+        d->replyDestroyed(reply);
+    });
 
     Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(id()));
     change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));

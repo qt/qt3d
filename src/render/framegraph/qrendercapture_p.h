@@ -51,6 +51,8 @@
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/private/qframegraphnode_p.h>
 
+#include <QtCore/qmutex.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -59,11 +61,14 @@ class QRenderCapturePrivate : public QFrameGraphNodePrivate
 {
 public:
     QRenderCapturePrivate();
+    ~QRenderCapturePrivate();
     QVector<QRenderCaptureReply *> m_waitingReplies;
+    QMutex m_mutex;
 
     QRenderCaptureReply *createReply(int captureId);
     QRenderCaptureReply *takeReply(int captureId);
     void setImage(QRenderCaptureReply *reply, const QImage &image);
+    void replyDestroyed(QRenderCaptureReply *reply);
 
     Q_DECLARE_PUBLIC(QRenderCapture)
 };
