@@ -1355,6 +1355,31 @@ private Q_SLOTS:
         QVector<char> suffixes;
         QVector<int> expectedResults;
 
+        // already sorted vec3, no component names, with and without offset
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Location");
+            channel.channelComponents.resize(3);
+            // leave 'name' empty
+
+            dataType = static_cast<int>(QVariant::Vector3D);
+            offset = 0;
+            // suffixes expected to be ignored
+            expectedResults = (QVector<int>() << 0 << 1 << 2);
+
+            QTest::newRow("vec3 location, pre-sorted, no component names, offset = 0")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 4;
+            expectedResults = (QVector<int>() << 4 << 5 << 6);
+            QTest::newRow("vec3 location, pre-sorted, no component names, offset = 4")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+        }
+
         // vec3 with and without offset
         {
             channel = Channel();

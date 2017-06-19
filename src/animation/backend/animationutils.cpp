@@ -184,6 +184,12 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
     ComponentIndices indices(expectedComponentCount);
     for (int i = 0; i < expectedComponentCount; ++i) {
         const QString &componentName = channel.channelComponents[i].name;
+        // An unset component name indicates that the no mapping is necessary
+        // and the index can be used as-is.
+        if (componentName.isEmpty()) {
+            indices[i] = i + offset;
+            continue;
+        }
         char suffix = componentName.at(componentName.length() - 1).toLatin1();
         int index = suffixes.indexOf(suffix);
         if (index != -1)
