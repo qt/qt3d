@@ -122,7 +122,7 @@ QClipAnimator::~QClipAnimator()
 */
 
 /*!
-    \property clip
+    \property QClipAnimator::clip
 
     This property holds the animation clip which contains the key frame data to be played back.
     The key frame data can be specified in either a QAnimationClip or QAnimationClipLoader.
