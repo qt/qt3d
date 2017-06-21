@@ -84,12 +84,18 @@ public:
         MapBuffer
     };
 
+    enum FBOBindMode {
+        FBODraw,
+        FBORead,
+        FBOReadAndDraw
+    };
+
     virtual ~GraphicsHelperInterface() {}
     virtual void    alphaTest(GLenum mode1, GLenum mode2) = 0;
     virtual void    bindBufferBase(GLenum target, GLuint index, GLuint buffer) = 0;
     virtual void    bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) = 0;
     virtual void    bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) = 0;
-    virtual void    bindFrameBufferObject(GLuint frameBufferId) = 0;
+    virtual void    bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode) = 0;
     virtual void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) = 0;
     virtual void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) = 0;
     virtual void    blendEquation(GLenum mode) = 0;

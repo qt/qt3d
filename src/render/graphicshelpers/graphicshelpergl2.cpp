@@ -374,12 +374,24 @@ void GraphicsHelperGL2::bindFragDataLocation(GLuint, const QHash<QString, int> &
     qCritical() << "bindFragDataLocation is not supported by GL 2.0";
 }
 
-void GraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode)
 {
-    if (m_fboFuncs != nullptr)
-        m_fboFuncs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
-    else
+    if (m_fboFuncs != nullptr) {
+        switch (mode) {
+        case FBODraw:
+            m_fboFuncs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
+            return;
+        case FBORead:
+            m_fboFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
+            return;
+        case FBOReadAndDraw:
+        default:
+            m_fboFuncs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+            return;
+        }
+    } else {
         qWarning() << "FBO not supported by your OpenGL hardware";
+    }
 }
 
 GLuint GraphicsHelperGL2::boundFrameBufferObject()

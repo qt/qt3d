@@ -70,6 +70,7 @@
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
 #include <Qt3DRender/private/shadercache_p.h>
 #include <Qt3DRender/private/uniform_p.h>
+#include <Qt3DRender/private/graphicshelperinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -191,7 +192,7 @@ public:
 
     // Wrapper methods
     void    alphaTest(GLenum mode1, GLenum mode2);
-    void    bindFramebuffer(GLuint fbo);
+    void    bindFramebuffer(GLuint fbo, GraphicsHelperInterface::FBOBindMode mode);
     void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
     void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
     void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);

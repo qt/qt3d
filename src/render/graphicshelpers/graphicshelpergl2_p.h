@@ -73,7 +73,7 @@ public:
     void bindBufferBase(GLenum target, GLuint index, GLuint buffer) Q_DECL_OVERRIDE;
     void bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) Q_DECL_OVERRIDE;
     void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
-    void bindFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
+    void bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode) Q_DECL_OVERRIDE;
     void bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) Q_DECL_OVERRIDE;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
     void blendEquation(GLenum mode) Q_DECL_OVERRIDE;

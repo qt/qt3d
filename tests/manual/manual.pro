@@ -47,7 +47,8 @@ SUBDIRS += \
     distancefieldtext \
     mesh-morphing \
     anim-viewer \
-    animation-keyframe-programmatic
+    animation-keyframe-programmatic \
+    rendercapture-qml-fbo
 
 qtHaveModule(widgets): {
     SUBDIRS += \
