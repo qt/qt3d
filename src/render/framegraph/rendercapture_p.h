@@ -76,7 +76,7 @@ private:
     QVector<int> m_requestedCaptures;
     QVector<int> m_acknowledgedCaptures;
     QVector<RenderCaptureDataPtr> m_renderCaptureData;
-    QMutex m_mutex;
+    mutable QMutex m_mutex;
 };
 
 } // Render

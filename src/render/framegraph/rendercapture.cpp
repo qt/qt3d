@@ -50,6 +50,7 @@ RenderCapture::RenderCapture()
 
 }
 
+// called by aspect thread
 void RenderCapture::requestCapture(int captureId)
 {
     QMutexLocker lock(&m_mutex);
@@ -58,11 +59,13 @@ void RenderCapture::requestCapture(int captureId)
 
 bool RenderCapture::wasCaptureRequested() const
 {
+    QMutexLocker lock(&m_mutex);
     return m_requestedCaptures.size() > 0 && isEnabled();
 }
 
 void RenderCapture::acknowledgeCaptureRequest()
 {
+    QMutexLocker lock(&m_mutex);
     m_acknowledgedCaptures.push_back(m_requestedCaptures.takeFirst());
 }
 
