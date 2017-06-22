@@ -55,8 +55,10 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
 {
     const Qt3DRender::QAbstractTexture::TextureFormat formats[AttachmentsCount] = {
         Qt3DRender::QAbstractTexture::RGBA32F,
-        Qt3DRender::QAbstractTexture::RGB32F,
-        Qt3DRender::QAbstractTexture::RGB16F,
+        // We use RGBA32F for the following two instead of a more fitting format because
+        // OpenGL vendors might not support other formats
+        Qt3DRender::QAbstractTexture::RGBA32F,
+        Qt3DRender::QAbstractTexture::RGBA32F,
         Qt3DRender::QAbstractTexture::D32F
     };
 

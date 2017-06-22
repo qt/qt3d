@@ -5,12 +5,12 @@ in vec3 position0;
 in vec3 normal0;
 
 out vec4 color;
-out vec3 position;
-out vec3 normal;
+out vec4 position;
+out vec4 normal;
 
 void main()
 {
     color = color0;
-    position = position0;
-    normal = normal0;
+    position = vec4(position0, 0.0);
+    normal = vec4(normal0, 0.0);
 }

@@ -32,7 +32,7 @@ void main()
     vec3 pos = texture2D(position, texCoord).xyz;
     vec3 norm = texture2D(normal, texCoord).xyz;
 
-    vec3 lightColor;
+    vec3 lightColor = vec3(0.0);
     vec3 s;
 
     for (int i = 0; i < lightCount; ++i) {
