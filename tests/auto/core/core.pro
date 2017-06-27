@@ -12,7 +12,8 @@ SUBDIRS = \
     qaspectjob \
     qchangearbiter \
     qscene \
-    qservicelocator
+    qservicelocator \
+    qjoint
 
 qtConfig(private_tests) {
     SUBDIRS += \

@@ -1,0 +1,252 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the Qt3D module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:LGPL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL3 included in the
+** packaging of this file. Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 2.0 or (at your option) the GNU General
+** Public license version 3 or any later version approved by the KDE Free
+** Qt Foundation. The licenses are as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-2.0.html and
+** https://www.gnu.org/licenses/gpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+#include "qjoint.h"
+#include "qjoint_p.h"
+
+#include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
+QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+
+QJointPrivate::QJointPrivate()
+    : QNodePrivate()
+    , m_rotation()
+    , m_translation()
+    , m_scale(1.0f)
+{
+}
+
+/*!
+    \qmltype Joint
+    \inqmlmodule Qt3D.Core
+    \inherits Node
+    \instantiates Qt3DCore::QJoint
+    \since 5.10
+    \brief Used to transforms parts of skinned meshes
+
+    The Joint node is used to build skeletons as part of the skinned mesh
+    support in Qt 3D. A joint can be transformed by way of its scale, rotation
+    and translation properties. Any mesh vertices that are bound to the joint
+    will have their transformations updated accordingly.
+*/
+
+/*!
+    \qmlproperty real Joint::scale
+
+    Holds the uniform scale of the joint.
+*/
+
+/*!
+    \qmlproperty quaternion Joint::rotation
+
+    Holds the rotation of the joint as quaternion.
+*/
+
+/*!
+    \qmlproperty vector3d Joint::translation
+
+    Holds the translation of the joint as vector3d.
+*/
+
+/*!
+    \class Qt3DCore::QJoint
+    \inmodule Qt3DCore
+    \inherits Qt3DCore::QNode
+    \since 5.10
+    \brief Used to transforms parts of skinned meshes
+
+    The QJoint node is used to build skeletons as part of the skinned mesh
+    support in Qt 3D. A joint can be transformed by way of its scale, rotation
+    and translation properties. Any mesh vertices that are bound to the joint
+    will have their transformations updated accordingly.
+*/
+
+/*!
+    Constructs a new QJoint with \a parent.
+*/
+QJoint::QJoint(Qt3DCore::QNode *parent)
+    : QNode(*new QJointPrivate, parent)
+{
+}
+
+/*! \internal */
+QJoint::~QJoint()
+{
+}
+
+/*!
+    \property Qt3DCore::QJoint::scale
+
+    Holds the uniform scale of the joint.
+*/
+float QJoint::scale() const
+{
+    Q_D(const QJoint);
+    return d->m_scale;
+}
+
+/*!
+    \property Qt3DCore::QJoint::rotation
+
+    Holds the rotation of the joint as QQuaternion.
+*/
+QQuaternion QJoint::rotation() const
+{
+    Q_D(const QJoint);
+    return d->m_rotation;
+}
+
+/*!
+    \property Qt3DCore::QJoint::translation
+
+    Holds the translation of the joint as QVector3D.
+*/
+QVector3D QJoint::translation() const
+{
+    Q_D(const QJoint);
+    return d->m_translation;
+}
+
+void QJoint::setScale(float scale)
+{
+    Q_D(QJoint);
+    if (scale == d->m_scale)
+        return;
+
+    d->m_scale = scale;
+    emit scaleChanged(scale);
+}
+
+void QJoint::setRotation(const QQuaternion &rotation)
+{
+    Q_D(QJoint);
+    if (rotation == d->m_rotation)
+        return;
+
+    d->m_rotation = rotation;
+    emit rotationChanged(rotation);
+}
+
+void QJoint::setTranslation(const QVector3D &translation)
+{
+    Q_D(QJoint);
+    if (translation == d->m_translation)
+        return;
+
+    d->m_translation = translation;
+    emit translationChanged(translation);
+}
+
+/*!
+    Adds \a joint as a child of this joint. If \a joint has no parent, then
+    this joint takes ownership of it. Child joints are in the coordinate system
+    of their parent joint.
+*/
+void QJoint::addChildJoint(QJoint *joint)
+{
+    Q_D(QJoint);
+    if (!d->m_childJoints.contains(joint)) {
+        d->m_childJoints.push_back(joint);
+        // Force creation in backend by setting parent
+        if (!joint->parent())
+            joint->setParent(this);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(joint, &QJoint::removeChildJoint, d->m_childJoints);
+
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), joint);
+            change->setPropertyName("childJoint");
+            d->notifyObservers(change);
+        }
+    }
+}
+
+/*!
+    Removes \a joint from this joint's list of children. The child joint is not
+    destroyed.
+*/
+void QJoint::removeChildJoint(QJoint *joint)
+{
+    Q_D(QJoint);
+    if (d->m_childJoints.contains(joint)) {
+
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeRemovedChangePtr::create(id(), joint);
+            change->setPropertyName("childJoint");
+            d->notifyObservers(change);
+        }
+
+        d->m_childJoints.removeOne(joint);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(joint);
+    }
+}
+
+/*!
+    The vector of joints this joint has as children.
+*/
+QVector<QJoint *> QJoint::childJoints() const
+{
+    Q_D(const QJoint);
+    return d->m_childJoints;
+}
+
+/*! \internal */
+Qt3DCore::QNodeCreatedChangeBasePtr QJoint::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QJointData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QJoint);
+    data.childJointIds = qIdsForNodes(d->m_childJoints);
+    data.rotation = d->m_rotation;
+    data.scale = d->m_scale;
+    data.translation = d->m_translation;
+    return creationChange;
+}
+
+} // namespace Qt3DCore
+
+QT_END_NAMESPACE
