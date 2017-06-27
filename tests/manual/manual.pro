@@ -35,6 +35,7 @@ SUBDIRS += \
     skybox \
     tessellation-modes \
     transforms-qml \
+    spritegrid \
     transparency-qml \
     transparency-qml-scene3d \
     rendercapture-qml \
