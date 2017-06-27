@@ -146,6 +146,13 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
                   fractionalViewport.height() * surfaceSize.height());
 }
 
+static QMatrix4x4 getProjectionMatrix(const CameraLens *lens)
+{
+    if (!lens)
+        qWarning() << "[Qt3D Renderer] No Camera Lens found. Add a CameraSelector to your Frame Graph or make sure that no entities will be rendered.";
+    return lens ? lens->projection() : QMatrix4x4();
+}
+
 UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standardUniformType, const QMatrix4x4 &model) const
 {
     switch (standardUniformType) {
@@ -154,11 +161,11 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
     case ViewMatrix:
         return UniformValue(m_data.m_viewMatrix);
     case ProjectionMatrix:
-        return UniformValue(m_data.m_renderCameraLens->projection());
+        return UniformValue(getProjectionMatrix(m_data.m_renderCameraLens));
     case ModelViewMatrix:
         return UniformValue(m_data.m_viewMatrix * model);
     case ViewProjectionMatrix:
-        return UniformValue(m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix);
+        return UniformValue(getProjectionMatrix(m_data.m_renderCameraLens) * m_data.m_viewMatrix);
     case ModelViewProjectionMatrix:
         return UniformValue(m_data.m_viewProjectionMatrix * model);
     case InverseModelMatrix:
@@ -166,15 +173,12 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
     case InverseViewMatrix:
         return UniformValue(m_data.m_viewMatrix.inverted());
     case InverseProjectionMatrix: {
-        QMatrix4x4 projection;
-        if (m_data.m_renderCameraLens)
-            projection = m_data.m_renderCameraLens->projection();
-        return UniformValue(projection.inverted());
+        return UniformValue(getProjectionMatrix(m_data.m_renderCameraLens).inverted());
     }
     case InverseModelViewMatrix:
         return UniformValue((m_data.m_viewMatrix * model).inverted());
     case InverseViewProjectionMatrix: {
-        const QMatrix4x4 viewProjectionMatrix = m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix;
+        const QMatrix4x4 viewProjectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens) * m_data.m_viewMatrix;
         return UniformValue(viewProjectionMatrix.inverted());
     }
     case InverseModelViewProjectionMatrix:
@@ -194,7 +198,7 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
         return UniformValue(viewportMatrix.inverted());
     }
     case Exposure:
-        return UniformValue(m_data.m_renderCameraLens->exposure());
+        return UniformValue(m_data.m_renderCameraLens ? m_data.m_renderCameraLens->exposure() : 0.0f);
     case Gamma:
         return UniformValue(m_gamma);
     case Time:
