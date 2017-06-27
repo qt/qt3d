@@ -741,6 +741,11 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
     m_status = QAbstractTexture::Loading;
     QTextureImageDataPtr textureData;
 
+    QRenderAspectPrivate *d_aspect = QRenderAspectPrivate::findPrivate(m_engine);
+    Render::Texture *texture = d_aspect ? d_aspect->m_nodeManagers->textureManager()->lookupResource(m_texture) : nullptr;
+    if (texture)
+        texture->notifyStatus(m_status);
+
     if (!Qt3DCore::QDownloadHelperService::isLocal(m_url)) {
         if (m_sourceData.isEmpty()) {
             // first time around, trigger a download
@@ -789,10 +794,17 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
         generatedData->setDepth(textureData->depth());
         generatedData->setLayers(textureData->layers());
         generatedData->addImageData(textureData);
+
+        if (texture)
+            texture->updateFromData(generatedData);
+
         m_status = QAbstractTexture::Ready;
     } else {
         m_status = QAbstractTexture::Error;
     }
+
+    if (texture)
+        texture->notifyStatus(m_status);
     return generatedData;
 }
 

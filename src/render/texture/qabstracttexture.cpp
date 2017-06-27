@@ -608,6 +608,41 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange()
     return creationChange;
 }
 
+void QAbstractTexture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    switch (change->type()) {
+    case PropertyUpdated: {
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
+            bool blocked = blockNotifications(true);
+            setWidth(propertyChange->value().toInt());
+            blockNotifications(blocked);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
+            bool blocked = blockNotifications(true);
+            setHeight(propertyChange->value().toInt());
+            blockNotifications(blocked);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
+            bool blocked = blockNotifications(true);
+            setDepth(propertyChange->value().toInt());
+            blockNotifications(blocked);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("layers")) {
+            bool blocked = blockNotifications(true);
+            setLayers(propertyChange->value().toInt());
+            blockNotifications(blocked);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
+            bool blocked = blockNotifications(true);
+            setFormat(static_cast<QAbstractTexture::TextureFormat>(propertyChange->value().toInt()));
+            blockNotifications(blocked);
+        }
+        // TODO handle target changes, it's a CONSTANT property but can be affected by loader
+        break;
+    }
+    default:
+        break;
+    };
+}
+
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

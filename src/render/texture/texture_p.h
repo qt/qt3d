@@ -54,7 +54,7 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/qtextureimagedata.h>
+#include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qtexturegenerator.h>
 #include <QOpenGLContext>
 #include <QMutex>
@@ -156,6 +156,9 @@ public:
     inline const TextureParameters& parameters() const { return m_parameters; }
     inline const QVector<HTextureImage>& textureImages() const { return m_textureImages; }
     inline const QTextureGeneratorPtr& dataGenerator() const { return m_dataFunctor; }
+
+    void notifyStatus(QAbstractTexture::Status status);
+    void updateFromData(QTextureDataPtr data);
 
     bool isValid() const;
 private:

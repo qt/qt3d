@@ -254,6 +254,73 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     BackendNode::sceneChangeEvent(e);
 }
 
+void Texture::notifyStatus(QAbstractTexture::Status status)
+{
+    auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+    change->setPropertyName("status");
+    change->setValue(status);
+    notifyObservers(change);
+}
+
+void Texture::updateFromData(QTextureDataPtr data)
+{
+    if (data->width() != m_properties.width) {
+        m_properties.width = data->width();
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("width");
+        change->setValue(data->width());
+        notifyObservers(change);
+    }
+
+    if (data->height() != m_properties.height) {
+        m_properties.height = data->height();
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("height");
+        change->setValue(data->height());
+        notifyObservers(change);
+    }
+
+    if (data->depth() != m_properties.depth) {
+        m_properties.depth = data->depth();
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("depth");
+        change->setValue(data->depth());
+        notifyObservers(change);
+    }
+
+    if (data->layers() != m_properties.layers) {
+        m_properties.layers = data->layers();
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("layers");
+        change->setValue(data->layers());
+        notifyObservers(change);
+    }
+
+    if (data->format() != m_properties.format) {
+        m_properties.format = data->format();
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("format");
+        change->setValue(data->format());
+        notifyObservers(change);
+    }
+
+    if (data->target() != m_properties.target) {
+        // TODO frontend property is actually constant
+        m_properties.target = data->target();
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("target");
+        change->setValue(data->target());
+        notifyObservers(change);
+    }
+}
+
 bool Texture::isValid() const
 {
     for (const auto handle : m_textureImages) {

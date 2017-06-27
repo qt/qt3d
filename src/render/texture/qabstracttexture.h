@@ -332,6 +332,7 @@ protected:
     explicit QAbstractTexture(Qt3DCore::QNode *parent = nullptr);
     explicit QAbstractTexture(Target target, Qt3DCore::QNode *parent = nullptr);
     explicit QAbstractTexture(QAbstractTexturePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
     void setStatus(Status status);
 
