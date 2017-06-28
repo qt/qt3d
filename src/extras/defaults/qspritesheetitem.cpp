@@ -37,46 +37,91 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QSPRITEGRID_H
-#define QT3DEXTRAS_QSPRITEGRID_H
-
-#include <Qt3DExtras/qabstractspritesheet.h>
-#include <Qt3DCore/qcomponent.h>
-#include <QVector2D>
-#include <QMatrix3x3>
+#include "qspritesheetitem.h"
+#include "qspritesheetitem_p.h"
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt3DCore;
+
 namespace Qt3DExtras {
 
-class QSpriteGridPrivate;
-
-class QT3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
+QSpriteSheetItemPrivate::QSpriteSheetItemPrivate()
+    : QNodePrivate()
+    , m_x(0)
+    , m_y(0)
+    , m_width(0)
+    , m_height(0)
 {
-    Q_OBJECT
-    Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)
-    Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
-public:
-    explicit QSpriteGrid(Qt3DCore::QNode *parent = nullptr);
-    ~QSpriteGrid();
 
-    int rows() const;
-    int columns() const;
+}
 
-public Q_SLOTS:
-    void setRows(int rows);
-    void setColumns(int columns);
+QSpriteSheetItem::QSpriteSheetItem(QNode *parent)
+    : Qt3DCore::QNode(* new QSpriteSheetItemPrivate(), parent)
+{
 
-Q_SIGNALS:
-    void rowsChanged(int rows);
-    void columnsChanged(int columns);
+}
 
-private:
-    Q_DECLARE_PRIVATE(QSpriteGrid)
-};
+int QSpriteSheetItem::x() const
+{
+    Q_D(const QSpriteSheetItem);
+    return d->m_x;
+}
 
-} // Qt3DExtras
+void QSpriteSheetItem::setX(int x)
+{
+    Q_D(QSpriteSheetItem);
+    if (x != d->m_x) {
+        d->m_x = x;
+        emit xChanged(x);
+    }
+}
+
+int QSpriteSheetItem::y() const
+{
+    Q_D(const QSpriteSheetItem);
+    return d->m_y;
+}
+
+void QSpriteSheetItem::setY(int y)
+{
+    Q_D(QSpriteSheetItem);
+    if (y != d->m_y) {
+        d->m_y = y;
+        emit yChanged(y);
+    }
+}
+
+int QSpriteSheetItem::width() const
+{
+    Q_D(const QSpriteSheetItem);
+    return d->m_width;
+}
+
+void QSpriteSheetItem::setWidth(int width)
+{
+    Q_D(QSpriteSheetItem);
+    if (width != d->m_width) {
+        d->m_width = width;
+        emit widthChanged(width);
+    }
+}
+
+int QSpriteSheetItem::height() const
+{
+    Q_D(const QSpriteSheetItem);
+    return d->m_height;
+}
+
+void QSpriteSheetItem::setHeight(int height)
+{
+    Q_D(QSpriteSheetItem);
+    if (height != d->m_height) {
+        d->m_height = height;
+        emit heightChanged(height);
+    }
+}
+
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
-
-#endif // QT3DEXTRAS_QSPRITEGRID_H

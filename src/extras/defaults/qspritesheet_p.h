@@ -37,46 +37,47 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QSPRITEGRID_H
-#define QT3DEXTRAS_QSPRITEGRID_H
+#ifndef QT3DEXTRAS_QSPRITESHEET_P_H
+#define QT3DEXTRAS_QSPRITESHEET_P_H
+#include <QRect>
+#include <QVector>
 
-#include <Qt3DExtras/qabstractspritesheet.h>
-#include <Qt3DCore/qcomponent.h>
-#include <QVector2D>
-#include <QMatrix3x3>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DExtras/private/qabstractspritesheet_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QSpriteGridPrivate;
+class QSpriteSheetItem;
+class QSpriteSheet;
 
-class QT3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
+class QSpriteSheetPrivate : public QAbstractSpriteSheetPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)
-    Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
-public:
-    explicit QSpriteGrid(Qt3DCore::QNode *parent = nullptr);
-    ~QSpriteGrid();
+    QSpriteSheetPrivate();
 
-    int rows() const;
-    int columns() const;
+    int maxIndex() const override;
+    void updateSizes() override;
+    void updateTransform() override;
 
-public Q_SLOTS:
-    void setRows(int rows);
-    void setColumns(int columns);
+    QVector<QSpriteSheetItem *> m_sprites;
 
-Q_SIGNALS:
-    void rowsChanged(int rows);
-    void columnsChanged(int columns);
-
-private:
-    Q_DECLARE_PRIVATE(QSpriteGrid)
+    Q_DECLARE_PUBLIC(QSpriteSheet)
 };
 
 } // Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QSPRITEGRID_H
+#endif // QT3DEXTRAS_QSPRITESHEET_P_H
+

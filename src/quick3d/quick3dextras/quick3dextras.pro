@@ -14,12 +14,15 @@ gcov {
 }
 
 SOURCES += \
+    qt3dquickextras_global.cpp \
+    qt3dquickextrasnodefactory.cpp \
     qt3dquickwindow.cpp \
     qt3dquickwindowlogging.cpp
 
 HEADERS += \
     qt3dquickextras_global.h \
     qt3dquickextras_global_p.h \
+    qt3dquickextrasnodefactory_p.h \
     qt3dquickwindow.h \
     qt3dquickwindow_p.h \
     qt3dquickwindowlogging_p.h

@@ -37,46 +37,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QSPRITEGRID_H
-#define QT3DEXTRAS_QSPRITEGRID_H
+#ifndef QUICKEXTRASERNODEFACTORY_H
+#define QUICKEXTRASERNODEFACTORY_H
 
-#include <Qt3DExtras/qabstractspritesheet.h>
-#include <Qt3DCore/qcomponent.h>
-#include <QVector2D>
-#include <QMatrix3x3>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qabstractnodefactory_p.h>
+#include <QtCore/qhash.h>
 
 QT_BEGIN_NAMESPACE
 
+class QQmlType;
+
 namespace Qt3DExtras {
 
-class QSpriteGridPrivate;
-
-class QT3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
+class QuickExtrasNodeFactory : public Qt3DCore::QAbstractNodeFactory
 {
-    Q_OBJECT
-    Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)
-    Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
 public:
-    explicit QSpriteGrid(Qt3DCore::QNode *parent = nullptr);
-    ~QSpriteGrid();
+    Qt3DCore::QNode *createNode(const char *type) Q_DECL_OVERRIDE;
 
-    int rows() const;
-    int columns() const;
+    void registerType(const char *className, const char *quickName, int major, int minor);
 
-public Q_SLOTS:
-    void setRows(int rows);
-    void setColumns(int columns);
-
-Q_SIGNALS:
-    void rowsChanged(int rows);
-    void columnsChanged(int columns);
+    static QuickExtrasNodeFactory *instance();
 
 private:
-    Q_DECLARE_PRIVATE(QSpriteGrid)
+    struct Type {
+        Type() : t(nullptr), resolved(false) { }
+        Type(const char *quickName, int major, int minor)
+            : quickName(quickName), version(major, minor), t(nullptr), resolved(false) { }
+        QByteArray quickName;
+        QPair<int, int> version;
+        QQmlType *t;
+        bool resolved;
+    };
+    QHash<QByteArray, Type> m_types;
 };
 
-} // Qt3DExtras
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QSPRITEGRID_H
+#endif // QUICKEXTRASERNODEFACTORY_H

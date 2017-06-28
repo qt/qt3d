@@ -75,7 +75,7 @@ Entity {
         id : external_forward_renderer
         activeFrameGraph : ForwardRenderer {
             camera: camera
-            clearColor: "white"
+            clearColor: "lightgrey"
         }
     }
 
@@ -88,43 +88,95 @@ Entity {
         id: mesh
     }
 
-    Transform {
-        id: transform
-        scale: 8
-        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
-    }
-
     SpriteGrid {
-        id: sprites
+        id: spriteGrid
         rows: 2
         columns: 6
         texture: textureLoader
     }
 
+    SpriteSheet {
+        id:spriteSheet
+        texture: textureLoader
+
+        SpriteItem { x:    0; y:   0; width: 250; height: 172 }
+        SpriteItem { x:  276; y:   0; width: 250; height: 172 }
+        SpriteItem { x:  550; y:   0; width: 250; height: 172 }
+        SpriteItem { x:  826; y:   0; width: 250; height: 172 }
+        SpriteItem { x: 1100; y:   0; width: 250; height: 172 }
+        SpriteItem { x: 1376; y:   0; width: 250; height: 172 }
+        SpriteItem { x:    0; y: 198; width: 250; height: 172 }
+        SpriteItem { x:  276; y: 198; width: 250; height: 172 }
+        SpriteItem { x:  550; y: 198; width: 250; height: 172 }
+        SpriteItem { x:  826; y: 198; width: 250; height: 172 }
+        SpriteItem { x: 1100; y: 198; width: 250; height: 172 }
+        SpriteItem { x: 1376; y: 198; width: 250; height: 172 }
+    }
+
+    Transform {
+        id: transform1
+        scale: 8
+        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
+        translation: Qt.vector3d(-6, 0, 0)
+    }
+
     TextureMaterial {
-        id: material
+        id: material1
         texture: TextureLoader {
             id: textureLoader
             source: "spritegrid.png"
             mirrored: false
         }
-        textureTransform: sprites.textureTransform
+        textureTransform: spriteGrid.textureTransform
     }
 
     Entity {
-        id: mainEntity
-        objectName: "mainEntity"
-        components: [ mesh, material, transform ]
+        components: [ mesh, material1, transform1 ]
     }
+
+
+    Transform {
+        id: transform2
+        scale: 8
+        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
+        translation: Qt.vector3d(6, 0, 0)
+    }
+
+    TextureMaterial {
+        id: material2
+        texture: material1.texture
+        textureTransform: spriteSheet.textureTransform
+    }
+
+    Entity {
+        components: [ mesh, material2, transform2 ]
+    }
+
+
+    Transform {
+        id: transform3
+        scale3D: Qt.vector3d(12, 4, 4)
+        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
+        translation: Qt.vector3d(0, -6, 0)
+    }
+
+    TextureMaterial {
+        id: material3
+        texture: material1.texture
+    }
+
+    Entity {
+        components: [ mesh, material3, transform3 ]
+    }
+
 
     Timer {
         interval: 1000
         repeat: true
         running: true
         onTriggered: {
-            var n = sprites.currentIndex + 1
-            n = (n >= sprites.rows * sprites.columns) ? 0 : n
-            sprites.currentIndex = n
+            spriteGrid.currentIndex = (spriteGrid.currentIndex + 1) % (spriteGrid.rows * spriteGrid.columns)
+            spriteSheet.currentIndex = (spriteSheet.currentIndex + 1) % (spriteSheet.sprites.length)
         }
     }
 }

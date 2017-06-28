@@ -37,46 +37,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QSPRITEGRID_H
-#define QT3DEXTRAS_QSPRITEGRID_H
-
-#include <Qt3DExtras/qabstractspritesheet.h>
-#include <Qt3DCore/qcomponent.h>
-#include <QVector2D>
-#include <QMatrix3x3>
+#include "qt3dquickextrasnodefactory_p.h"
+#include <private/qqmlmetatype_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QSpriteGridPrivate;
+Q_GLOBAL_STATIC(QuickExtrasNodeFactory, quick_extras_node_factory)
 
-class QT3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
+QuickExtrasNodeFactory *QuickExtrasNodeFactory::instance()
 {
-    Q_OBJECT
-    Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)
-    Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
-public:
-    explicit QSpriteGrid(Qt3DCore::QNode *parent = nullptr);
-    ~QSpriteGrid();
+    return quick_extras_node_factory();
+}
 
-    int rows() const;
-    int columns() const;
+void QuickExtrasNodeFactory::registerType(const char *className, const char *quickName, int major, int minor)
+{
+    m_types.insert(className, Type(quickName, major, minor));
+}
 
-public Q_SLOTS:
-    void setRows(int rows);
-    void setColumns(int columns);
+Qt3DCore::QNode *QuickExtrasNodeFactory::createNode(const char *type)
+{
+    if (!m_types.contains(type))
+        return nullptr;
 
-Q_SIGNALS:
-    void rowsChanged(int rows);
-    void columnsChanged(int columns);
+    Type &typeInfo(m_types[type]);
 
-private:
-    Q_DECLARE_PRIVATE(QSpriteGrid)
-};
+    if (!typeInfo.resolved) {
+        typeInfo.resolved = true;
+        typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName), typeInfo.version.first, typeInfo.version.second);
+    }
 
-} // Qt3DExtras
+    return typeInfo.t ? qobject_cast<Qt3DCore::QNode *>(typeInfo.t->create()) : nullptr;
+}
+
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
-
-#endif // QT3DEXTRAS_QSPRITEGRID_H

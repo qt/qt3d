@@ -37,46 +37,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QSPRITEGRID_H
-#define QT3DEXTRAS_QSPRITEGRID_H
+#ifndef QT3DEXTRAS_QSPRITESHEET_H
+#define QT3DEXTRAS_QSPRITESHEET_H
 
 #include <Qt3DExtras/qabstractspritesheet.h>
-#include <Qt3DCore/qcomponent.h>
-#include <QVector2D>
-#include <QMatrix3x3>
+#include <QRect>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QSpriteGridPrivate;
+class QSpriteSheetItem;
+class QSpriteSheetPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
+class QT3DEXTRASSHARED_EXPORT QSpriteSheet : public QAbstractSpriteSheet
 {
     Q_OBJECT
-    Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)
-    Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
+    Q_PROPERTY(QVector<QSpriteSheetItem *> sprites READ sprites WRITE setSprites NOTIFY spritesChanged)
 public:
-    explicit QSpriteGrid(Qt3DCore::QNode *parent = nullptr);
-    ~QSpriteGrid();
+    explicit QSpriteSheet(Qt3DCore::QNode *parent = nullptr);
+    ~QSpriteSheet();
 
-    int rows() const;
-    int columns() const;
+    QVector<QSpriteSheetItem *> sprites() const;
+    QSpriteSheetItem *addSprite(int x, int y, int width, int height);
+    void addSprite(QSpriteSheetItem *sprite);
+    void removeSprite(QSpriteSheetItem *sprite);
 
 public Q_SLOTS:
-    void setRows(int rows);
-    void setColumns(int columns);
+    void setSprites(QVector<QSpriteSheetItem *> sprites);
 
 Q_SIGNALS:
-    void rowsChanged(int rows);
-    void columnsChanged(int columns);
+    void spritesChanged(QVector<QSpriteSheetItem *> sprites);
 
 private:
-    Q_DECLARE_PRIVATE(QSpriteGrid)
+    Q_DECLARE_PRIVATE(QSpriteSheet)
 };
 
 } // Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QSPRITEGRID_H
+#endif // QT3DEXTRAS_QSPRITESHEET_H

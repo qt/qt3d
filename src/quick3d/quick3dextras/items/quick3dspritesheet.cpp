@@ -37,43 +37,64 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DQUICKEXTRAS_GLOBAL_P_H
-#define QT3DQUICKEXTRAS_GLOBAL_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DQuickExtras/qt3dquickextras_global.h>
-#include <QtQml/qqml.h>
-
-#define QT3DQUICKEXTRASSHARED_PRIVATE_EXPORT QT3DQUICKEXTRASSHARED_EXPORT
+#include "quick3dspritesheet_p.h"
+#include <Qt3DExtras/qspritesheetitem.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
+namespace Extras {
 namespace Quick {
 
-QT3DQUICKEXTRASSHARED_PRIVATE_EXPORT void Quick3DExtras_initialize();
-QT3DQUICKEXTRASSHARED_PRIVATE_EXPORT void Quick3DExtras_registerType(const char *className, const char *quickName, int major, int minor);
-
-template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
-                                                     const char *uri, int major, int minor, const char *name)
+Quick3DSpriteSheet::Quick3DSpriteSheet(QObject *parent)
+    : QObject(parent)
 {
-    qmlRegisterExtendedType<T, E>(uri, major, minor, name);
-    Quick3DExtras_registerType(className, quickName, major, minor);
 }
 
-} // Quick
-} // Qt3DExtras
+Quick3DSpriteSheet::~Quick3DSpriteSheet()
+{
+}
+
+QQmlListProperty<Qt3DExtras::QSpriteSheetItem> Quick3DSpriteSheet::sprites()
+{
+    return QQmlListProperty<Qt3DExtras::QSpriteSheetItem>(this, 0,
+                                                          &Quick3DSpriteSheet::appendSprite,
+                                                          &Quick3DSpriteSheet::spriteCount,
+                                                          &Quick3DSpriteSheet::spriteAt,
+                                                          &Quick3DSpriteSheet::clearSprites);
+
+}
+
+void Quick3DSpriteSheet::appendSprite(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list,
+                                      Qt3DExtras::QSpriteSheetItem *sprite)
+{
+    Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
+    spritesheet->parentSpriteSheet()->addSprite(sprite);
+}
+
+Qt3DExtras::QSpriteSheetItem *Quick3DSpriteSheet::spriteAt(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, int index)
+{
+    Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
+    return spritesheet->parentSpriteSheet()->sprites().at(index);
+}
+
+int Quick3DSpriteSheet::spriteCount(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list)
+{
+    Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
+    return spritesheet->parentSpriteSheet()->sprites().count();
+}
+
+void Quick3DSpriteSheet::clearSprites(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list)
+{
+    Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
+    const auto sprites = spritesheet->parentSpriteSheet()->sprites();
+    for (QSpriteSheetItem *sprite : sprites)
+        spritesheet->parentSpriteSheet()->removeSprite(sprite);
+}
+
+} // namespace Quick
+} // namespace Extras
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DQUICKEXTRAS_GLOBAL_P_H

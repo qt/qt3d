@@ -37,46 +37,27 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QSPRITEGRID_H
-#define QT3DEXTRAS_QSPRITEGRID_H
+#include "qt3dquickextras_global_p.h"
 
-#include <Qt3DExtras/qabstractspritesheet.h>
-#include <Qt3DCore/qcomponent.h>
-#include <QVector2D>
-#include <QMatrix3x3>
+#include <Qt3DQuickExtras/private/qt3dquickextrasnodefactory_p.h>
+#include <QtQml/private/qqmlglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
+namespace Quick {
 
-class QSpriteGridPrivate;
-
-class QT3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
+void Quick3DExtras_initialize()
 {
-    Q_OBJECT
-    Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)
-    Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
-public:
-    explicit QSpriteGrid(Qt3DCore::QNode *parent = nullptr);
-    ~QSpriteGrid();
+    Qt3DCore::QAbstractNodeFactory::registerNodeFactory(QuickExtrasNodeFactory::instance());
+}
 
-    int rows() const;
-    int columns() const;
+void Quick3DExtras_registerType(const char *className, const char *quickName, int major, int minor)
+{
+    QuickExtrasNodeFactory::instance()->registerType(className, quickName, major, minor);
+}
 
-public Q_SLOTS:
-    void setRows(int rows);
-    void setColumns(int columns);
-
-Q_SIGNALS:
-    void rowsChanged(int rows);
-    void columnsChanged(int columns);
-
-private:
-    Q_DECLARE_PRIVATE(QSpriteGrid)
-};
-
-} // Qt3DExtras
+} // namespace Quick
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
-
-#endif // QT3DEXTRAS_QSPRITEGRID_H

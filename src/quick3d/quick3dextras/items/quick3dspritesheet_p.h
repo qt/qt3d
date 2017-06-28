@@ -37,46 +37,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QSPRITEGRID_H
-#define QT3DEXTRAS_QSPRITEGRID_H
+#ifndef QT3DEXTRAS_EXTRAS_QUICK_QUICK3DSPRITESHEET_P_H
+#define QT3DEXTRAS_EXTRAS_QUICK_QUICK3DSPRITESHEET_P_H
 
-#include <Qt3DExtras/qabstractspritesheet.h>
-#include <Qt3DCore/qcomponent.h>
-#include <QVector2D>
-#include <QMatrix3x3>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickExtras/qt3dquickextras_global.h>
+#include <Qt3DExtras/qspritesheet.h>
+#include <QtQml/QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
+namespace Extras {
+namespace Quick {
 
-class QSpriteGridPrivate;
-
-class QT3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
+class QT3DQUICKEXTRASSHARED_EXPORT Quick3DSpriteSheet : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)
-    Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
+    Q_PROPERTY(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> sprites READ sprites CONSTANT)
+    Q_CLASSINFO("DefaultProperty", "sprites")
 public:
-    explicit QSpriteGrid(Qt3DCore::QNode *parent = nullptr);
-    ~QSpriteGrid();
+    explicit Quick3DSpriteSheet(QObject *parent = 0);
+    ~Quick3DSpriteSheet();
 
-    int rows() const;
-    int columns() const;
-
-public Q_SLOTS:
-    void setRows(int rows);
-    void setColumns(int columns);
-
-Q_SIGNALS:
-    void rowsChanged(int rows);
-    void columnsChanged(int columns);
+    QQmlListProperty<Qt3DExtras::QSpriteSheetItem> sprites();
+    inline QSpriteSheet *parentSpriteSheet() const { return qobject_cast<QSpriteSheet *>(parent()); }
 
 private:
-    Q_DECLARE_PRIVATE(QSpriteGrid)
+    static void appendSprite(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, Qt3DExtras::QSpriteSheetItem *state);
+    static Qt3DExtras::QSpriteSheetItem *spriteAt(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, int index);
+    static int spriteCount(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list);
+    static void clearSprites(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list);
 };
 
-} // Qt3DExtras
+} // namespace Quick
+} // namespace Extras
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QSPRITEGRID_H
+#endif // QT3DEXTRAS_EXTRAS_QUICK_QUICK3DSPRITESHEET_P_H

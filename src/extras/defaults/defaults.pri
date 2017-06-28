@@ -29,10 +29,14 @@ HEADERS += \
     $$PWD/qfirstpersoncameracontroller_p.h \
     $$PWD/qorbitcameracontroller.h \
     $$PWD/qorbitcameracontroller_p.h \
-    $$PWD/qspritegrid.h \
-    $$PWD/qspritegrid_p.h \
     $$PWD/qabstractspritesheet.h \
     $$PWD/qabstractspritesheet_p.h \
+    $$PWD/qspritegrid.h \
+    $$PWD/qspritegrid_p.h \
+    $$PWD/qspritesheet.h \
+    $$PWD/qspritesheet_p.h \
+    $$PWD/qspritesheetitem.h \
+    $$PWD/qspritesheetitem_p.h \
     $$PWD/qtexturematerial.h \
     $$PWD/qtexturematerial_p.h \
     $$PWD/qmetalroughmaterial.h \
@@ -57,8 +61,10 @@ SOURCES += \
     $$PWD/qt3dwindow.cpp \
     $$PWD/qfirstpersoncameracontroller.cpp \
     $$PWD/qorbitcameracontroller.cpp \
-    $$PWD/qspritegrid.cpp \
     $$PWD/qabstractspritesheet.cpp \
+    $$PWD/qspritegrid.cpp \
+    $$PWD/qspritesheet.cpp \
+    $$PWD/qspritesheetitem.cpp \
     $$PWD/qtexturematerial.cpp \
     $$PWD/qmetalroughmaterial.cpp \
     $$PWD/qtexturedmetalroughmaterial.cpp \
