@@ -13,7 +13,9 @@ SUBDIRS = \
     qchangearbiter \
     qscene \
     qservicelocator \
-    qjoint
+    qjoint \
+    qskeletonloader \
+    qskeleton
 
 qtConfig(private_tests) {
     SUBDIRS += \
