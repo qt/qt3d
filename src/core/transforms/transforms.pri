@@ -4,7 +4,8 @@ SOURCES += \
     $$PWD/qjoint.cpp \
     $$PWD/qabstractskeleton.cpp \
     $$PWD/qskeleton.cpp \
-    $$PWD/qskeletonloader.cpp
+    $$PWD/qskeletonloader.cpp \
+    $$PWD/qarmature.cpp
 
 HEADERS += \
     $$PWD/qtransform.h \
@@ -17,6 +18,8 @@ HEADERS += \
     $$PWD/qskeleton.h \
     $$PWD/qskeleton_p.h \
     $$PWD/qskeletonloader.h \
-    $$PWD/qskeletonloader_p.h
+    $$PWD/qskeletonloader_p.h \
+    $$PWD/qarmature.h \
+    $$PWD/qarmature_p.h
 
 INCLUDEPATH += $$PWD

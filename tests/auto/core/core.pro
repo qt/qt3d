@@ -15,7 +15,8 @@ SUBDIRS = \
     qservicelocator \
     qjoint \
     qskeletonloader \
-    qskeleton
+    qskeleton \
+    qarmature
 
 qtConfig(private_tests) {
     SUBDIRS += \
