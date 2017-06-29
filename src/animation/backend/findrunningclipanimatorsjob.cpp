@@ -64,6 +64,7 @@ void FindRunningClipAnimatorsJob::run()
     ClipAnimatorManager *clipAnimatorManager = m_handler->clipAnimatorManager();
     for (const auto clipAnimatorHandle : qAsConst(m_clipAnimatorHandles)) {
         ClipAnimator *clipAnimator = clipAnimatorManager->data(clipAnimatorHandle);
+        Q_ASSERT(clipAnimator);
         const bool canRun = clipAnimator->canRun();
         m_handler->setClipAnimatorRunning(clipAnimatorHandle, canRun);
 
