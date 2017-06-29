@@ -187,7 +187,7 @@ public:
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT LineWidth : public GenericState<LineWidth, LineWidthMask, GLfloat>
+class Q_AUTOTEST_EXPORT LineWidth : public GenericState<LineWidth, LineWidthMask, GLfloat, bool>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_FINAL;

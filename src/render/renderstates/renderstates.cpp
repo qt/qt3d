@@ -269,8 +269,18 @@ void StencilMask::updateProperty(const char *name, const QVariant &value)
     else if (name == QByteArrayLiteral("backMask")) std::get<1>(m_values) = value.toInt();
 }
 
+#ifndef GL_LINE_SMOOTH
+#define GL_LINE_SMOOTH 0x0B20
+#endif
+
 void LineWidth::apply(GraphicsContext *gc) const
 {
+    if (std::get<1>(m_values))
+        gc->openGLContext()->functions()->glEnable(GL_LINE_SMOOTH);
+    else
+        gc->openGLContext()->functions()->glDisable(GL_LINE_SMOOTH);
+
+    gc->activateGLHelper();
     gc->openGLContext()->functions()->glLineWidth(std::get<0>(m_values));
 }
 
@@ -278,6 +288,8 @@ void LineWidth::updateProperty(const char *name, const QVariant &value)
 {
     if (name == QByteArrayLiteral("value"))
         std::get<0>(m_values) = value.toFloat();
+    else if (name == QByteArrayLiteral("smooth"))
+        std::get<1>(m_values) = value.toBool();
 }
 
 } // namespace Render

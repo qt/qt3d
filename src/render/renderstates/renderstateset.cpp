@@ -376,7 +376,7 @@ StateVariant RenderStateSet::initializeStateFromPeer(const Qt3DRender::QRenderSt
     case LineWidthMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QLineWidthData>>(change);
         const auto &data = typedChange->data;
-        return RenderStateSet::createState<LineWidth>(data.value);
+        return RenderStateSet::createState<LineWidth>(data.value, data.smooth);
     }
 
         // TODO: Fix Dithering state

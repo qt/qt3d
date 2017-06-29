@@ -61,9 +61,11 @@ public:
     QLineWidthPrivate(float value)
         : QRenderStatePrivate(Render::LineWidthMask)
         , m_value(value)
+        , m_smooth(false)
     {}
 
     float m_value;
+    bool m_smooth;
 
     Q_DECLARE_PUBLIC(QLineWidth)
 };
@@ -71,6 +73,7 @@ public:
 struct QLineWidthData
 {
     float value;
+    bool smooth;
 };
 
 } // namespace Qt3DRender

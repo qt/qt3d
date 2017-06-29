@@ -95,12 +95,28 @@ void QLineWidth::setValue(float width)
     emit valueChanged(width);
 }
 
+bool QLineWidth::smooth() const
+{
+    Q_D(const QLineWidth);
+    return d->m_smooth;
+}
+
+void QLineWidth::setSmooth(bool enabled)
+{
+    Q_D(QLineWidth);
+    if (d->m_smooth != enabled) {
+        d->m_smooth = enabled;
+        emit smoothChanged(enabled);
+    }
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QLineWidth::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QLineWidthData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QLineWidth);
     data.value = d->m_value;
+    data.smooth = d->m_smooth;
     return creationChange;
 }
 
