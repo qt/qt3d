@@ -63,16 +63,23 @@ class GraphicsHelperES3 : public GraphicsHelperES2
 {
 public:
     GraphicsHelperES3();
-    virtual ~GraphicsHelperES3();
+    ~GraphicsHelperES3();
 
     // QGraphicHelperInterface interface
-    virtual void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
-    virtual void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) Q_DECL_OVERRIDE;
-    virtual void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
-    virtual void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
-    virtual void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
-    virtual bool supportsFeature(Feature feature) const Q_DECL_OVERRIDE;
-    virtual void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
+    void bindBufferBase(GLenum target, GLuint index, GLuint buffer) Q_DECL_OVERRIDE;
+    void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
+    void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
+    void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) Q_DECL_OVERRIDE;
+    void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
+    void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
+    void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
+    void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
+    char *mapBuffer(GLenum target, GLsizeiptr size) Q_DECL_OVERRIDE;
+    QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
+    QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) Q_DECL_OVERRIDE;
+    bool supportsFeature(Feature feature) const Q_DECL_OVERRIDE;
+    GLboolean unmapBuffer(GLenum target) Q_DECL_OVERRIDE;
+    void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
 
     UniformType uniformTypeFromGLType(GLenum glType) Q_DECL_OVERRIDE;
 

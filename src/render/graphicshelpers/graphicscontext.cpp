@@ -1105,9 +1105,9 @@ GLboolean GraphicsContext::unmapBuffer(GLenum target)
     return m_glHelper->unmapBuffer(target);
 }
 
-char *GraphicsContext::mapBuffer(GLenum target)
+char *GraphicsContext::mapBuffer(GLenum target, GLsizeiptr size)
 {
-    return m_glHelper->mapBuffer(target);
+    return m_glHelper->mapBuffer(target, size);
 }
 
 void GraphicsContext::enablei(GLenum cap, GLuint index)

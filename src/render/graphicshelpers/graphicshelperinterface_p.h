@@ -110,7 +110,7 @@ public:
     virtual void    disablei(GLenum cap, GLuint index) = 0;
     virtual void    disablePrimitiveRestart() = 0;
     virtual void    dispatchCompute(GLuint wx, GLuint wy, GLuint wz) = 0;
-    virtual char   *mapBuffer(GLenum target) = 0;
+    virtual char   *mapBuffer(GLenum target, GLsizeiptr size) = 0;
     virtual GLboolean unmapBuffer(GLenum target) = 0;
     virtual void    drawArrays(GLenum primitiveType, GLint first, GLsizei count) = 0;
     virtual void    drawArraysIndirect(GLenum mode,void *indirect) = 0;

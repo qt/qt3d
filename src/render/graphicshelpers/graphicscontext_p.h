@@ -211,7 +211,7 @@ public:
     void    disablei(GLenum cap, GLuint index);
     void    disablePrimitiveRestart();
     void    dispatchCompute(int x, int y, int z);
-    char *  mapBuffer(GLenum target);
+    char *  mapBuffer(GLenum target, GLsizeiptr size);
     GLboolean unmapBuffer(GLenum target);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
     void    drawArraysIndirect(GLenum mode,void *indirect);

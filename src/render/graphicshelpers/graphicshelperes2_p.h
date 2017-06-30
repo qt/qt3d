@@ -93,7 +93,7 @@ public:
     void disablei(GLenum cap, GLuint index) Q_DECL_OVERRIDE;
     void disablePrimitiveRestart() Q_DECL_OVERRIDE;
     void dispatchCompute(GLuint wx, GLuint wy, GLuint wz) Q_DECL_OVERRIDE;
-    char *mapBuffer(GLenum target) Q_DECL_OVERRIDE;
+    char *mapBuffer(GLenum target, GLsizeiptr size) Q_DECL_OVERRIDE;
     GLboolean unmapBuffer(GLenum target) Q_DECL_OVERRIDE;
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
     void drawArraysIndirect(GLenum mode,void *indirect) Q_DECL_OVERRIDE;

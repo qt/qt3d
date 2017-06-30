@@ -895,9 +895,9 @@ void GraphicsHelperGL3_2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     qWarning() << "Compute Shaders are not supported by OpenGL 3.2 (since OpenGL 4.3)";
 }
 
-char *GraphicsHelperGL3_2::mapBuffer(GLenum target)
+char *GraphicsHelperGL3_2::mapBuffer(GLenum target, GLsizeiptr size)
 {
-    return static_cast<char*>(m_funcs->glMapBuffer(target, GL_READ_WRITE));
+    return static_cast<char*>(m_funcs->glMapBufferRange(target, 0, size, GL_MAP_READ_BIT | GL_MAP_WRITE_BIT));
 }
 
 GLboolean GraphicsHelperGL3_2::unmapBuffer(GLenum target)

@@ -142,7 +142,7 @@ void GLBuffer::update(GraphicsContext *ctx, const void *data, uint size, int off
 
 QByteArray GLBuffer::download(GraphicsContext *ctx, uint size)
 {
-    char *gpu_ptr = ctx->mapBuffer(m_lastTarget);
+    char *gpu_ptr = ctx->mapBuffer(m_lastTarget, size);
     QByteArray data;
     if (gpu_ptr != nullptr) {
         data.resize(size);

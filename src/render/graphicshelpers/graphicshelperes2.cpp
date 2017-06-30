@@ -603,9 +603,10 @@ void GraphicsHelperES2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     qWarning() << "Compute Shaders are not supported by ES 2.0 (since ES 3.1)";
 }
 
-char *GraphicsHelperES2::mapBuffer(GLenum target)
+char *GraphicsHelperES2::mapBuffer(GLenum target, GLsizeiptr size)
 {
     Q_UNUSED(target);
+    Q_UNUSED(size);
     qWarning() << "Map buffer is not a core requirement for ES 2.0";
     return nullptr;
 }

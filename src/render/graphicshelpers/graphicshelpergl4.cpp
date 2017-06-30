@@ -1141,9 +1141,9 @@ void GraphicsHelperGL4::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     m_funcs->glDispatchCompute(wx, wy, wz);
 }
 
-char *GraphicsHelperGL4::mapBuffer(GLenum target)
+char *GraphicsHelperGL4::mapBuffer(GLenum target, GLsizeiptr size)
 {
-    return static_cast<char*>(m_funcs->glMapBuffer(target, GL_READ_WRITE));
+    return static_cast<char*>(m_funcs->glMapBufferRange(target, 0, size, GL_MAP_READ_BIT | GL_MAP_WRITE_BIT));
 }
 
 GLboolean GraphicsHelperGL4::unmapBuffer(GLenum target)
