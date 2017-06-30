@@ -74,6 +74,7 @@
 #endif
 #include <Qt3DRender/private/graphicshelperes2_p.h>
 #include <Qt3DRender/private/graphicshelperes3_p.h>
+#include <Qt3DRender/private/graphicshelperes3_2_p.h>
 
 #include <QSurface>
 #include <QWindow>
@@ -747,8 +748,13 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
 
     if (m_gl->isOpenGLES()) {
         if (m_gl->format().majorVersion() >= 3) {
-            glHelper = new GraphicsHelperES3();
-            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES3 Helper";
+            if (m_gl->format().minorVersion() >= 2) {
+                glHelper = new GraphicsHelperES3_2;
+                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.2 Helper";
+            } else {
+                glHelper = new GraphicsHelperES3();
+                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.0 Helper";
+            }
         } else {
             glHelper = new GraphicsHelperES2();
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES2 Helper";
