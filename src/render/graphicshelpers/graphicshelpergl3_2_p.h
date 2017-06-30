@@ -74,7 +74,9 @@ public:
     void alphaTest(GLenum mode1, GLenum mode2) Q_DECL_OVERRIDE;
     void bindBufferBase(GLenum target, GLuint index, GLuint buffer) Q_DECL_OVERRIDE;
     void bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) Q_DECL_OVERRIDE;
+    bool frameBufferNeedsRenderBuffer(const Attachment &attachment) Q_DECL_OVERRIDE;
     void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
+    void bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment) Q_DECL_OVERRIDE;
     void bindFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
     void bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) Q_DECL_OVERRIDE;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;

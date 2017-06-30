@@ -364,6 +364,12 @@ bool GraphicsHelperGL3_3::checkFrameBufferComplete()
     return (m_funcs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 }
 
+bool GraphicsHelperGL3_3::frameBufferNeedsRenderBuffer(const Attachment &attachment)
+{
+    Q_UNUSED(attachment);
+    return false;
+}
+
 void GraphicsHelperGL3_3::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
@@ -387,6 +393,13 @@ void GraphicsHelperGL3_3::bindFrameBufferAttachment(QOpenGLTexture *texture, con
     else
         m_funcs->glFramebufferTexture(GL_DRAW_FRAMEBUFFER, attr, texture->textureId(), attachment.m_mipLevel);
     texture->release();
+}
+
+void GraphicsHelperGL3_3::bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment)
+{
+    Q_UNUSED(renderBuffer);
+    Q_UNUSED(attachment);
+    Q_UNREACHABLE();
 }
 
 bool GraphicsHelperGL3_3::supportsFeature(GraphicsHelperInterface::Feature feature) const

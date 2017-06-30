@@ -72,6 +72,7 @@ namespace Render {
 class TextureImageManager;
 class TextureDataManager;
 class TextureImageDataManager;
+class RenderBuffer;
 
 /**
  * @brief
@@ -85,6 +86,12 @@ class TextureImageDataManager;
  *
  *   A GLTexture can be unique though. In that case, it will not be shared
  *   between QTextures, but private to one QTexture only.
+ *
+ *   A GLTexture can also represent an OpenGL renderbuffer object. This is used
+ *   only in certain special cases, mainly to provide a packed depth-stencil
+ *   renderbuffer suitable as an FBO attachment with OpenGL ES 3.1 and earlier.
+ *   Such a GLTexture will have no texture object under the hood, and therefore
+ *   the only valid operation is getOrCreateRenderBuffer().
  */
 class Q_AUTOTEST_EXPORT GLTexture
 {
@@ -134,6 +141,13 @@ public:
      *   will be applied to the resulting OpenGL texture.
      */
     QOpenGLTexture* getOrCreateGLTexture();
+
+    /**
+     * @brief
+     *   Returns the RenderBuffer for this GLTexture. If this is the first
+     *   call, the OpenGL renderbuffer object will be created.
+     */
+    RenderBuffer *getOrCreateRenderBuffer();
 
     /**
      * @brief Make sure to call this before calling the dtor
@@ -195,6 +209,7 @@ private:
     DirtyFlags m_dirty;
     QMutex m_dirtyFlagMutex;
     QOpenGLTexture *m_gl;
+    RenderBuffer *m_renderBuffer;
 
     TextureDataManager *m_textureDataManager;
     TextureImageDataManager *m_textureImageDataManager;

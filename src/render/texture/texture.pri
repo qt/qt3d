@@ -23,7 +23,8 @@ HEADERS += \
     $$PWD/qpaintedtextureimage_p.h \
     $$PWD/gltexture_p.h \
     $$PWD/gltexturemanager_p.h \
-    $$PWD/apitexturemanager_p.h
+    $$PWD/apitexturemanager_p.h \
+    $$PWD/renderbuffer_p.h
 
 SOURCES += \
     $$PWD/qabstracttextureimage.cpp \
@@ -37,4 +38,5 @@ SOURCES += \
     $$PWD/qtexturedata.cpp \
     $$PWD/qtexturegenerator.cpp \
     $$PWD/qpaintedtextureimage.cpp \
-    $$PWD/gltexture.cpp
+    $$PWD/gltexture.cpp \
+    $$PWD/renderbuffer.cpp

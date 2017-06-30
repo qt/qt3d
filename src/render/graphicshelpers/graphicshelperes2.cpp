@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
+#include <private/renderbuffer_p.h>
 #include <QtGui/private/qopenglextensions_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -335,6 +336,13 @@ bool GraphicsHelperES2::checkFrameBufferComplete()
     return (m_funcs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 }
 
+bool GraphicsHelperES2::frameBufferNeedsRenderBuffer(const Attachment &attachment)
+{
+    // Use a renderbuffer for combined depth+stencil attachments since this is
+    // problematic before GLES 3.2. Keep using textures for everything else.
+    return attachment.m_point == QRenderTargetOutput::DepthStencil;
+}
+
 void GraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     GLenum attr = GL_COLOR_ATTACHMENT0;
@@ -363,6 +371,20 @@ void GraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
     else
         qCritical() << "Unsupported Texture FBO attachment format";
     texture->release();
+}
+
+void GraphicsHelperES2::bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment)
+{
+    if (attachment.m_point != QRenderTargetOutput::DepthStencil) {
+        qCritical() << "Renderbuffers only supported for combined depth-stencil, but got attachment point"
+                    << attachment.m_point;
+        return;
+    }
+
+    renderBuffer->bind();
+    m_funcs->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->renderBufferId());
+    m_funcs->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->renderBufferId());
+    renderBuffer->release();
 }
 
 bool GraphicsHelperES2::supportsFeature(GraphicsHelperInterface::Feature feature) const

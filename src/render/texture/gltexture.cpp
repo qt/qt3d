@@ -50,6 +50,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
+#include <Qt3DRender/private/renderbuffer_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
@@ -67,6 +68,7 @@ GLTexture::GLTexture(TextureDataManager *texDataMgr,
                      bool unique)
     : m_unique(unique)
     , m_gl(nullptr)
+    , m_renderBuffer(nullptr)
     , m_textureDataManager(texDataMgr)
     , m_textureImageDataManager(texImgDataMgr)
     , m_dataFunctor(texGen)
@@ -97,6 +99,9 @@ void GLTexture::destroyGLTexture()
 {
     delete m_gl;
     m_gl = nullptr;
+    delete m_renderBuffer;
+    m_renderBuffer = nullptr;
+
     QMutexLocker locker(&m_dirtyFlagMutex);
     m_dirty = 0;
 
@@ -210,6 +215,40 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
     m_dirty = 0;
 
     return m_gl;
+}
+
+RenderBuffer *GLTexture::getOrCreateRenderBuffer()
+{
+    QMutexLocker locker(&m_dirtyFlagMutex);
+
+    if (m_dataFunctor && !m_textureData) {
+        m_textureData = m_textureDataManager->getData(m_dataFunctor);
+        if (m_textureData) {
+            if (m_properties.target != QAbstractTexture::TargetAutomatic)
+                qWarning() << "[Qt3DRender::GLTexture] [renderbuffer] When a texture provides a generator, it's target is expected to be TargetAutomatic";
+
+            m_properties.width = m_textureData->width();
+            m_properties.height = m_textureData->height();
+            m_properties.format = m_textureData->format();
+
+            m_dirty |= Properties;
+        } else {
+            qWarning() << "[Qt3DRender::GLTexture] [renderbuffer] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+            return nullptr;
+        }
+    }
+
+    if (m_dirty.testFlag(Properties)) {
+        delete m_renderBuffer;
+        m_renderBuffer = nullptr;
+    }
+
+    if (!m_renderBuffer)
+        m_renderBuffer = new RenderBuffer(m_properties.width, m_properties.height, m_properties.format);
+
+    m_dirty = 0;
+
+    return m_renderBuffer;
 }
 
 void GLTexture::setParameters(const TextureParameters &params)

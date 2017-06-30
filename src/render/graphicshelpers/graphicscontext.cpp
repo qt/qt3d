@@ -59,6 +59,7 @@
 #include <Qt3DRender/private/gltexturemanager_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
+#include <Qt3DRender/private/renderbuffer_p.h>
 #include <QOpenGLShaderProgram>
 
 #if !defined(QT_OPENGL_ES_2)
@@ -627,20 +628,35 @@ void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
 
 void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
 {
-    // Set FBO attachments
+    // Set FBO attachments. These are normally textures, except that on Open GL
+    // ES <= 3.1 we must use a renderbuffer if a combined depth+stencil is
+    // desired since this cannot be achieved neither with a single texture (not
+    // before GLES 3.2) nor with separate textures (no suitable format for
+    // stencil before 3.1 with the appropriate extension).
 
     QSize fboSize;
     GLTextureManager *glTextureManager = m_renderer->nodeManagers()->glTextureManager();
     const auto attachments_ = attachments.attachments();
     for (const Attachment &attachment : attachments_) {
         GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
-        QOpenGLTexture *glTex = rTex ? rTex->getOrCreateGLTexture() : nullptr;
-        if (glTex != nullptr) {
-            if (fboSize.isEmpty())
-                fboSize = QSize(glTex->width(), glTex->height());
-            else
-                fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
-            m_glHelper->bindFrameBufferAttachment(glTex, attachment);
+        if (!m_glHelper->frameBufferNeedsRenderBuffer(attachment)) {
+            QOpenGLTexture *glTex = rTex ? rTex->getOrCreateGLTexture() : nullptr;
+            if (glTex != nullptr) {
+                if (fboSize.isEmpty())
+                    fboSize = QSize(glTex->width(), glTex->height());
+                else
+                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
+                m_glHelper->bindFrameBufferAttachment(glTex, attachment);
+            }
+        } else {
+            RenderBuffer *renderBuffer = rTex ? rTex->getOrCreateRenderBuffer() : nullptr;
+            if (renderBuffer) {
+                if (fboSize.isEmpty())
+                    fboSize = QSize(renderBuffer->width(), renderBuffer->height());
+                else
+                    fboSize = QSize(qMin(fboSize.width(), renderBuffer->width()), qMin(fboSize.height(), renderBuffer->height()));
+                m_glHelper->bindFrameBufferAttachment(renderBuffer, attachment);
+            }
         }
     }
     m_renderTargetsSize.insert(fboId, fboSize);

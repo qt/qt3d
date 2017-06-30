@@ -312,6 +312,12 @@ bool GraphicsHelperGL2::checkFrameBufferComplete()
     return false;
 }
 
+bool GraphicsHelperGL2::frameBufferNeedsRenderBuffer(const Attachment &attachment)
+{
+    Q_UNUSED(attachment);
+    return false;
+}
+
 void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     if (m_fboFuncs != nullptr) {
@@ -346,6 +352,13 @@ void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
             qCritical() << "Texture format not supported for Attachment on OpenGL 2.0";
         texture->release();
     }
+}
+
+void GraphicsHelperGL2::bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment)
+{
+    Q_UNUSED(renderBuffer);
+    Q_UNUSED(attachment);
+    Q_UNREACHABLE();
 }
 
 bool GraphicsHelperGL2::supportsFeature(GraphicsHelperInterface::Feature feature) const
