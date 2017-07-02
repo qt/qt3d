@@ -52,10 +52,11 @@ public:
 
     void setData(const QByteArray& data, const QString &basePath) Q_DECL_OVERRIDE
     {
-
+        Q_UNUSED(data);
+        Q_UNUSED(basePath);
     }
 
-    bool areFileTypesSupported(const QStringList &extensions) const
+    bool areFileTypesSupported(const QStringList &extensions) const Q_DECL_OVERRIDE
     {
         Q_UNUSED(extensions);
         return m_supportsFormat;
