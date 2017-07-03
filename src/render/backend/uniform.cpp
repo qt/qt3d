@@ -226,7 +226,7 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
     }
 
     default: {
-        if (variant.typeName() == QLatin1Literal("QMatrix3x3")) {
+        if (variant.userType() == qMetaTypeId<QMatrix3x3>()) {
             const QMatrix3x3 mat33 = variant.value<QMatrix3x3>();
             // Use constData because we want column-major layout
             v.m_data.resize(9);
