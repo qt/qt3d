@@ -426,7 +426,7 @@ enum CompressedFormatExtension {
 
 CompressedFormatExtension texturedCompressedFormat(const QString &source)
 {
-    const QString suffix = QFileInfo(source).suffix();
+    const QString suffix = QFileInfo(source).suffix().toLower();
     if (suffix == QStringLiteral("pkm"))
         return PKM;
     if (suffix == QStringLiteral("dds"))
