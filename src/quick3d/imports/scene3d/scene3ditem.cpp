@@ -39,11 +39,19 @@
 
 #include "scene3ditem_p.h"
 
-#include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/QAspectEngine>
+
+#if QT_CONFIG(qt3d_input)
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/qinputsettings.h>
+#endif
+
+#if QT_CONFIG(qt3d_logic)
 #include <Qt3DLogic/qlogicaspect.h>
+#endif
+
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -121,12 +129,20 @@ void Scene3DItem::setAspects(const QStringList &aspects)
         if (aspect == QLatin1String("render")) // This one is hardwired anyway
             continue;
         if (aspect == QLatin1String("input"))  {
+#if QT_CONFIG(qt3d_input)
             m_aspectEngine->registerAspect(new Qt3DInput::QInputAspect);
             continue;
+#else
+            qFatal("Scene3D requested the Qt 3D input aspect but Qt 3D wasn't configured to build the Qt 3D Input aspect");
+#endif
         }
         if (aspect == QLatin1String("logic"))  {
+#if QT_CONFIG(qt3d_logic)
             m_aspectEngine->registerAspect(new Qt3DLogic::QLogicAspect);
             continue;
+#else
+            qFatal("Scene3D requested the Qt 3D input aspect but Qt 3D wasn't configured to build the Qt 3D Input aspect");
+#endif
         }
         m_aspectEngine->registerAspect(aspect);
     }
@@ -189,6 +205,7 @@ void Scene3DItem::applyRootEntityChange()
             }
         }
 
+#if QT_CONFIG(qt3d_input)
         // Set ourselves up as a source of input events for the input aspect
         Qt3DInput::QInputSettings *inputSettings = m_entity->findChild<Qt3DInput::QInputSettings *>();
         if (inputSettings) {
@@ -196,6 +213,7 @@ void Scene3DItem::applyRootEntityChange()
         } else {
             qCDebug(Scene3D) << "No Input Settings found, keyboard and mouse events won't be handled";
         }
+#endif
     }
 }
 

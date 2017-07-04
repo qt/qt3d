@@ -81,7 +81,6 @@ SOURCES += \
     $$PWD/segmentsvisitor.cpp \
     $$PWD/commandthread.cpp
 
-include($$OUT_PWD/../core/qt3dcore-config.pri)
 QT_FOR_CONFIG += 3dcore-private
 qtConfig(qt3d-profile-jobs): {
   HEADERS += $$PWD/commandexecuter_p.h

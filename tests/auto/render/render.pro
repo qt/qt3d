@@ -14,7 +14,6 @@ qtConfig(private_tests) {
         material \
         vsyncframeadvanceservice \
         meshfunctors \
-        qmaterial \
         qattribute \
         qbuffer \
         qgeometry \
@@ -24,7 +23,6 @@ qtConfig(private_tests) {
         buffer \
         attribute \
         geometry \
-        geometryloaders \
         geometryrenderer \
         raycasting \
         qcameraselector \
@@ -44,11 +42,8 @@ qtConfig(private_tests) {
         framegraphnode \
         qobjectpicker \
         objectpicker \
-        picking \
 #        qboundingvolumedebug \
 #        boundingvolumedebug \
-        boundingsphere \
-        qdefaultmeshes \
         trianglesextractor \
         triangleboundingvolume \
         ddstextures \
@@ -70,8 +65,6 @@ qtConfig(private_tests) {
         graphicshelpergl3_3 \
         graphicshelpergl3_2 \
         graphicshelpergl2 \
-        gltfplugins \
-        pickboundingvolumejob \
         sendrendercapturejob \
         textures \
         qparameter \
@@ -81,8 +74,6 @@ qtConfig(private_tests) {
         qabstracttexture \
         qabstracttextureimage \
         qrendersettings \
-        updatemeshtrianglelistjob \
-        updateshaderdatatransformjob \
         texturedatamanager \
         rendertarget \
         transform \
@@ -107,11 +98,29 @@ qtConfig(private_tests) {
         memorybarrier \
         qshaderprogram \
         qshaderprogrambuilder \
-        qscene2d \
-        scene2d \
         coordinatereader \
         framegraphvisitor \
         renderer
+
+    QT_FOR_CONFIG = 3dcore-private
+    qtConfig(qt3d-extras) {
+        SUBDIRS += \
+            qmaterial \
+            geometryloaders \
+            picking \
+            boundingsphere \
+            qdefaultmeshes \
+            pickboundingvolumejob \
+            gltfplugins \
+            updatemeshtrianglelistjob \
+            updateshaderdatatransformjob
+    }
+
+    qtConfig(qt3d-input) {
+        SUBDIRS += \
+            qscene2d \
+            scene2d
+    }
 
     !macos: SUBDIRS += graphicshelpergl4
 }

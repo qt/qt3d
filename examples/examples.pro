@@ -1,2 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS += qt3d
+
+QT_FOR_CONFIG += 3dcore
+
+qtConfig(qt3d-extras): SUBDIRS += qt3d

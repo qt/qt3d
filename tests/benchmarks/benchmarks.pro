@@ -1,4 +1,7 @@
 TEMPLATE = subdirs
 SUBDIRS = \
-    core \
-    render
+    core
+
+QT_FOR_CONFIG += 3dcore
+
+qtConfig(qt3d-render): SUBDIRS += render

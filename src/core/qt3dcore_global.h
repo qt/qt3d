@@ -41,6 +41,7 @@
 #define QT3DCORE_GLOBAL_H
 
 #include <QtCore/qglobal.h>
+#include <Qt3DCore/qt3dcore-config.h>
 
 QT_BEGIN_NAMESPACE
 
