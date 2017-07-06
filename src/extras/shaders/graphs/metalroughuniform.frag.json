@@ -2,11 +2,17 @@
     "nodes": [
         {
             "uuid": "{00000000-0000-0000-0000-000000000001}",
-            "type": "worldPosition"
+            "type": "inputVec3",
+            "parameters": {
+                "name": "worldPosition"
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000002}",
-            "type": "worldNormal"
+            "type": "inputVec3",
+            "parameters": {
+                "name": "worldNormal"
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000003}",
@@ -14,19 +20,31 @@
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000004}",
-            "type": "baseColor"
+            "type": "uniformVec4",
+            "parameters": {
+                "name": "baseColor"
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000005}",
-            "type": "metalness"
+            "type": "uniformFloat",
+            "parameters": {
+                "name": "metalness"
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000006}",
-            "type": "roughness"
+            "type": "uniformFloat",
+            "parameters": {
+                "name": "roughness"
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000007}",
-            "type": "ambientOcclusion"
+            "type": "constantFloat",
+            "parameters": {
+                "constant": "1.0"
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000008}",
@@ -52,19 +70,19 @@
     "edges": [
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000001}",
-            "sourcePort": "worldPosition",
+            "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
             "targetPort": "worldPosition"
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000001}",
-            "sourcePort": "worldPosition",
+            "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000009}",
             "targetPort": "substrahend"
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000002}",
-            "sourcePort": "worldNormal",
+            "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000008}",
             "targetPort": "input"
         },
@@ -76,25 +94,25 @@
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000004}",
-            "sourcePort": "baseColor",
+            "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
             "targetPort": "baseColor"
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000005}",
-            "sourcePort": "metalness",
+            "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
             "targetPort": "metalness"
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000006}",
-            "sourcePort": "roughness",
+            "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
             "targetPort": "roughness"
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000007}",
-            "sourcePort": "ambientOcclusion",
+            "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
             "targetPort": "ambientOcclusion"
         },

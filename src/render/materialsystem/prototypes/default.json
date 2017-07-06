@@ -1,8 +1,11 @@
 {
-    "worldPosition": {
+    "inputVec2": {
         "outputs": [
-            "worldPosition"
+            "value"
         ],
+        "parameters": {
+            "name": "defaultName"
+        },
         "rules": [
             {
                 "format": {
@@ -10,8 +13,8 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec3 $worldPosition = worldPosition;",
-                "headerSnippets": [ "varying highp vec3 worldPosition;" ]
+                "substitution": "highp vec2 $value = $name;",
+                "headerSnippets": [ "varying highp vec2 $name;" ]
             },
             {
                 "format": {
@@ -19,15 +22,18 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec3 $worldPosition = worldPosition;",
-                "headerSnippets": [ "in vec3 worldPosition;" ]
+                "substitution": "vec2 $value = $name;",
+                "headerSnippets": [ "in vec2 $name;" ]
             }
         ]
     },
-    "worldNormal": {
+    "inputVec3": {
         "outputs": [
-            "worldNormal"
+            "value"
         ],
+        "parameters": {
+            "name": "defaultName"
+        },
         "rules": [
             {
                 "format": {
@@ -35,8 +41,8 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec3 $worldNormal = worldNormal;",
-                "headerSnippets": [ "varying highp vec3 worldNormal;" ]
+                "substitution": "highp vec3 $value = $name;",
+                "headerSnippets": [ "varying highp vec3 $name;" ]
             },
             {
                 "format": {
@@ -44,15 +50,18 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec3 $worldNormal = worldNormal;",
-                "headerSnippets": [ "in vec3 worldNormal;" ]
+                "substitution": "vec3 $value = $name;",
+                "headerSnippets": [ "in vec3 $name;" ]
             }
         ]
     },
-    "worldTangent": {
+    "inputVec4": {
         "outputs": [
-            "worldTangent"
+            "value"
         ],
+        "parameters": {
+            "name": "defaultName"
+        },
         "rules": [
             {
                 "format": {
@@ -60,8 +69,8 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec4 $worldTangent = worldTangent;",
-                "headerSnippets": [ "varying highp vec4 worldTangent;" ]
+                "substitution": "highp vec4 $value = $name;",
+                "headerSnippets": [ "varying highp vec4 $name;" ]
             },
             {
                 "format": {
@@ -69,15 +78,18 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec4 $worldTangent = worldTangent;",
-                "headerSnippets": [ "in vec4 worldTangent;" ]
+                "substitution": "vec4 $value = $name;",
+                "headerSnippets": [ "in vec4 $name;" ]
             }
         ]
     },
-    "texCoord": {
+    "uniformFloat": {
         "outputs": [
-            "texCoord"
+            "value"
         ],
+        "parameters": {
+            "name": "defaultName"
+        },
         "rules": [
             {
                 "format": {
@@ -85,8 +97,8 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec2 $texCoord = texCoord;",
-                "headerSnippets": [ "varying highp vec2 texCoord;" ]
+                "substitution": "highp float $value = $name;",
+                "headerSnippets": [ "uniform highp float $name;" ]
             },
             {
                 "format": {
@@ -94,8 +106,147 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec2 $texCoord = texCoord;",
-                "headerSnippets": [ "in vec2 texCoord;" ]
+                "substitution": "float $value = $name;",
+                "headerSnippets": [ "uniform float $name;" ]
+            }
+        ]
+    },
+    "uniformVec3": {
+        "outputs": [
+            "value"
+        ],
+        "parameters": {
+            "name": "defaultName"
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $value = $name;",
+                "headerSnippets": [ "uniform highp vec3 $name;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $value = $name;",
+                "headerSnippets": [ "uniform vec3 $name;" ]
+            }
+        ]
+    },
+    "uniformVec4": {
+        "outputs": [
+            "value"
+        ],
+        "parameters": {
+            "name": "defaultName"
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $value = $name;",
+                "headerSnippets": [ "uniform highp vec4 $name;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $value = $name;",
+                "headerSnippets": [ "uniform vec4 $name;" ]
+            }
+        ]
+    },
+    "constantFloat": {
+        "outputs": [
+            "value"
+        ],
+        "parameters": {
+            "constant": "0.0"
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp float $value = $constant;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "float $value = $constant;"
+            }
+        ]
+    },
+    "constantVec3": {
+        "outputs": [
+            "value"
+        ],
+        "parameters": {
+            "constant": "0.0"
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $value = vec3($constant);"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $value = vec3($constant);"
+            }
+        ]
+    },
+    "sampleTexture": {
+        "inputs": [
+            "coord"
+        ],
+        "outputs": [
+            "color"
+        ],
+        "parameters": {
+            "name": "defaultName"
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $color = texture2D($name, $coord);",
+                "headerSnippets": [ "uniform sampler2D $name;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $color = texture2D($name, $coord);",
+                "headerSnippets": [ "uniform sampler2D $name;" ]
             }
         ]
     },
@@ -170,290 +321,6 @@
                 },
                 "substitution": "float $time = time;",
                 "headerSnippets": [ "uniform float time;" ]
-            }
-        ]
-    },
-    "baseColor": {
-        "outputs": [
-            "baseColor"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec4 $baseColor = baseColor;",
-                "headerSnippets": [ "uniform highp vec4 baseColor;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec4 $baseColor = baseColor;",
-                "headerSnippets": [ "uniform vec4 baseColor;" ]
-            }
-        ]
-    },
-    "metalness": {
-        "outputs": [
-            "metalness"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp float $metalness = metalness;",
-                "headerSnippets": [ "uniform highp float metalness;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "float $metalness = metalness;",
-                "headerSnippets": [ "uniform float metalness;" ]
-            }
-        ]
-    },
-    "roughness": {
-        "outputs": [
-            "roughness"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp float $roughness = roughness;",
-                "headerSnippets": [ "uniform highp float roughness;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "float $roughness = roughness;",
-                "headerSnippets": [ "uniform float roughness;" ]
-            }
-        ]
-    },
-    "ambientOcclusion": {
-        "outputs": [
-            "ambientOcclusion"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp float $ambientOcclusion = 1.0;"
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "float $ambientOcclusion = 1.0;"
-            }
-        ]
-    },
-    "constantTwo": {
-        "outputs": [
-            "two"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp float $two = 2.0;"
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "float $two = 2.0;"
-            }
-        ]
-    },
-    "constantVec3One": {
-        "outputs": [
-            "one"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec3 $one = vec3(1.0);"
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec3 $one = vec3(1.0);"
-            }
-        ]
-    },
-    "sampleBaseColorMap": {
-        "inputs": [
-            "coord"
-        ],
-        "outputs": [
-            "color"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec4 $color = texture2D(baseColorMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D baseColorMap;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec4 $color = texture2D(baseColorMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D baseColorMap;" ]
-            }
-        ]
-    },
-    "sampleMetalnessMap": {
-        "inputs": [
-            "coord"
-        ],
-        "outputs": [
-            "color"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec4 $color = texture2D(metalnessMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D metalnessMap;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec4 $color = texture2D(metalnessMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D metalnessMap;" ]
-            }
-        ]
-    },
-    "sampleRoughnessMap": {
-        "inputs": [
-            "coord"
-        ],
-        "outputs": [
-            "color"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec4 $color = texture2D(roughnessMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D roughnessMap;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec4 $color = texture2D(roughnessMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D roughnessMap;" ]
-            }
-        ]
-    },
-    "sampleAmbientOcclusionMap": {
-        "inputs": [
-            "coord"
-        ],
-        "outputs": [
-            "color"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec4 $color = texture2D(ambientOcclusionMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D ambientOcclusionMap;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec4 $color = texture2D(ambientOcclusionMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D ambientOcclusionMap;" ]
-            }
-        ]
-    },
-    "sampleNormalMap": {
-        "inputs": [
-            "coord"
-        ],
-        "outputs": [
-            "color"
-        ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec4 $color = texture2D(normalMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D normalMap;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec4 $color = texture2D(normalMap, $coord);",
-                "headerSnippets": [ "uniform sampler2D normalMap;" ]
             }
         ]
     },
