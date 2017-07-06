@@ -97,15 +97,14 @@ void GLTexture::destroyGLTexture()
 {
     delete m_gl;
     m_gl = nullptr;
-    QMutexLocker locker(&m_dirtyFlagMutex);
-    m_dirty = 0;
+    m_dirtyFlags.store(0);
 
     destroyResources();
 }
 
 QOpenGLTexture* GLTexture::getOrCreateGLTexture()
 {
-    QMutexLocker locker(&m_dirtyFlagMutex);
+    QMutexLocker locker(&m_textureMutex);
     bool needUpload = false;
     bool texturedDataInvalid = false;
 
@@ -135,7 +134,7 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
                     m_properties.mipLevels = imageData.first()->mipLevels();
             }
 
-            m_dirty |= Properties;
+            setDirtyFlag(Properties, true);
             needUpload = true;
         } else {
             qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
@@ -144,7 +143,7 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
     }
 
     // additional texture images may be defined through image data generators
-    if (m_dirty.testFlag(TextureData)) {
+    if (testDirtyFlag(TextureData)) {
         m_imageData.clear();
         needUpload = true;
 
@@ -168,7 +167,7 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
                         m_properties.format = static_cast<QAbstractTexture::TextureFormat>(imgData->format());
                     }
 
-                    m_dirty |= Properties;
+                    setDirtyFlag(Properties, true);
                 }
             } else {
                 qWarning() << "[Qt3DRender::GLTexture] No QTextureImageData generated from functor yet, texture will be invalid for this frame";
@@ -185,7 +184,7 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
         return nullptr;
 
     // if the properties changed, we need to re-allocate the texture
-    if (m_dirty.testFlag(Properties)) {
+    if (testDirtyFlag(Properties)) {
         delete m_gl;
         m_gl = nullptr;
     }
@@ -207,31 +206,34 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
     }
 
     // need to set texture parameters?
-    if (m_dirty.testFlag(Properties) || m_dirty.testFlag(Parameters)) {
+    if (testDirtyFlag(Properties) || testDirtyFlag(Parameters)) {
         updateGLTextureParameters();
     }
 
-    m_dirty = 0;
+    // un-set properties and parameters. The TextureData flag might have been set by another thread
+    // in the meantime, so don't clear that.
+    setDirtyFlag(Properties, false);
+    setDirtyFlag(Parameters, false);
 
     return m_gl;
 }
 
 void GLTexture::setParameters(const TextureParameters &params)
 {
+    QMutexLocker locker(&m_textureMutex);
     if (m_parameters != params) {
         m_parameters = params;
-        QMutexLocker locker(&m_dirtyFlagMutex);
-        m_dirty |= Parameters;
+        setDirtyFlag(Parameters);
     }
 }
 
 void GLTexture::setProperties(const TextureProperties &props)
 {
+    QMutexLocker locker(&m_textureMutex);
     if (m_properties != props) {
         m_properties = props;
-        QMutexLocker locker(&m_dirtyFlagMutex);
         m_actualTarget = props.target;
-        m_dirty |= Properties;
+        setDirtyFlag(Properties);
     }
 }
 
