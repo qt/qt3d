@@ -140,6 +140,29 @@ void Handler::setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, 
     }
 }
 
+// The vectors may get outdated when the application removes/deletes an
+// animator component in the meantime. Recognize this. This should be
+// relatively infrequent so in most cases the vectors will not change at all.
+void Handler::cleanupHandleList(QVector<HClipAnimator> *animators)
+{
+    for (auto it = animators->begin(); it != animators->end(); ) {
+        if (!m_clipAnimatorManager->data(*it))
+            animators->erase(it);
+        else
+            ++it;
+    }
+}
+
+void Handler::cleanupHandleList(QVector<HBlendedClipAnimator> *animators)
+{
+    for (auto it = animators->begin(); it != animators->end(); ) {
+        if (!m_blendedClipAnimatorManager->data(*it))
+            animators->erase(it);
+        else
+            ++it;
+    }
+}
+
 QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
 {
     // Store the simulation time so we can mark the start time of
@@ -164,6 +187,7 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     if (!m_dirtyClipAnimators.isEmpty()) {
         qCDebug(HandlerLogic) << "Added FindRunningClipAnimatorsJob";
         m_findRunningClipAnimatorsJob->removeDependency(QWeakPointer<Qt3DCore::QAspectJob>());
+        cleanupHandleList(&m_dirtyClipAnimators);
         m_findRunningClipAnimatorsJob->setDirtyClipAnimators(m_dirtyClipAnimators);
         jobs.push_back(m_findRunningClipAnimatorsJob);
         if (jobs.contains(m_loadAnimationClipJob))
@@ -182,6 +206,7 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
 
     // If there are any running ClipAnimators, evaluate them for the current
     // time and send property changes
+    cleanupHandleList(&m_runningClipAnimators);
     if (!m_runningClipAnimators.isEmpty()) {
         qCDebug(HandlerLogic) << "Added EvaluateClipAnimatorJobs";
 
@@ -209,6 +234,7 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     }
 
     // BlendClipAnimator execution
+    cleanupHandleList(&m_runningBlendedClipAnimators);
     if (!m_runningBlendedClipAnimators.isEmpty()) {
         // Ensure we have a job per clip animator
         const int oldSize = m_evaluateBlendClipAnimatorJobs.size();

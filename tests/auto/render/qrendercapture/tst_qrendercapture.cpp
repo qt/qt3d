@@ -108,6 +108,27 @@ private Q_SLOTS:
         QCOMPARE(reply->image().height(), 20);
         QCOMPARE(reply->image().format(), QImage::Format_ARGB32);
     }
+
+    void checkRenderCaptureDestroy()
+    {
+        // GIVEN
+        QScopedPointer<MyRenderCapture> renderCapture(new MyRenderCapture());
+        QScopedPointer<Qt3DRender::QRenderCaptureReply> reply(renderCapture->requestCapture());
+        QImage img = QImage(20, 20, QImage::Format_ARGB32);
+        Qt3DRender::RenderCaptureDataPtr data = Qt3DRender::RenderCaptureDataPtr::create();
+        data.data()->captureId = 2;
+        data.data()->image = img;
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(renderCapture->id());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("renderCaptureData");
+        e->setValue(QVariant::fromValue(data));
+
+        // WHEN
+        reply.reset();
+
+        // THEN
+        renderCapture->sceneChangeEvent(e); // Should not reset
+    }
 };
 
 QTEST_MAIN(tst_QRenderCapture)

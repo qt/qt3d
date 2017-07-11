@@ -41,7 +41,7 @@ import QtQuick 2.0 as QQ2
 import QtQuick.Scene3D 2.0
 import QtQuick.Scene2D 2.9
 import QtQuick.Window 2.0 as QW2
-import Qt3D.Extras 2.0
+import Qt3D.Extras 2.9
 
 
 QQ2.Item {
@@ -120,6 +120,7 @@ QQ2.Item {
                 id: planeMesh
                 width: 4
                 height: 4
+                mirrored: true
             }
 
             Entity {
@@ -131,7 +132,7 @@ QQ2.Item {
                     rotation: fromAxisAndAngle(Qt.vector3d(1,0,0), 90)
                 }
 
-                property Material material: PlaneMaterial {
+                property Material material: TextureMaterial {
                     texture: offscreenTexture
                 }
 

@@ -1,4 +1,4 @@
-#version 150 core
+#version 130
 
 uniform sampler2D distanceFieldTexture;
 uniform float minAlpha;
@@ -6,8 +6,8 @@ uniform float maxAlpha;
 uniform float textureSize;
 uniform vec4 color;
 
-in vec3 position;
 in vec2 texCoord;
+in float zValue;
 
 out vec4 fragColor;
 
@@ -35,4 +35,5 @@ void main()
 
     float distVal = texture(distanceFieldTexture, texCoord).r;
     fragColor = color * smoothstep(minAlpha, maxAlpha, distVal);
+    gl_FragDepth = gl_FragCoord.z - zValue * 0.00001;
 }

@@ -75,7 +75,7 @@ private:
 
     QVector<QRenderCaptureRequest> m_requestedCaptures;
     QVector<RenderCaptureDataPtr> m_renderCaptureData;
-    QMutex m_mutex;
+    mutable QMutex m_mutex;
 };
 
 } // Render

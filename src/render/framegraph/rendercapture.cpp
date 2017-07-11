@@ -59,6 +59,7 @@ void RenderCapture::requestCapture(const QRenderCaptureRequest &request)
 // called by render view initializer job
 bool RenderCapture::wasCaptureRequested() const
 {
+    QMutexLocker lock(&m_mutex);
     return m_requestedCaptures.size() > 0 && isEnabled();
 }
 

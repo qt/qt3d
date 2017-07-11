@@ -274,7 +274,7 @@ QBlendedClipAnimator::~QBlendedClipAnimator()
 */
 
 /*!
-    \property blendTree
+    \property QBlendedClipAnimator::blendTree
 
     This property holds the root of the animation blend tree that will be evaluated before being
     interpolated by the animator.

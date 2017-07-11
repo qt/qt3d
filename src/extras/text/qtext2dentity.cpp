@@ -209,10 +209,10 @@ void QText2DEntityPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &runs)
                 texCoords.setWidth(texCoords.width() * insideRatio);
             }
 
-            data.vertex << x1 << y1 << 0.f << texCoords.left() << texCoords.bottom();
-            data.vertex << x1 << y2 << 0.f << texCoords.left() << texCoords.top();
-            data.vertex << x2 << y1 << 0.f << texCoords.right() << texCoords.bottom();
-            data.vertex << x2 << y2 << 0.f << texCoords.right() << texCoords.top();
+            data.vertex << x1 << y1 << i << texCoords.left() << texCoords.bottom();
+            data.vertex << x1 << y2 << i << texCoords.left() << texCoords.top();
+            data.vertex << x2 << y1 << i << texCoords.right() << texCoords.bottom();
+            data.vertex << x2 << y2 << i << texCoords.right() << texCoords.top();
 
             data.index << data.vertexCount << data.vertexCount+3 << data.vertexCount+1;
             data.index << data.vertexCount << data.vertexCount+2 << data.vertexCount+3;
