@@ -1834,8 +1834,11 @@ QImage GraphicsContext::readFramebuffer(const QRect &rect)
 
     GLint samples = 0;
     m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
-    if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer))
+    if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer)) {
+        qWarning () << Q_FUNC_INFO << "Unable to capture multisampled framebuffer; "
+                       "Required feature BlitFramebuffer is missing.";
         return img;
+    }
 
     img = QImage(rect.width(), rect.height(), imageFormat);
 
@@ -1856,6 +1859,7 @@ QImage GraphicsContext::readFramebuffer(const QRect &rect)
         if (status != GL_FRAMEBUFFER_COMPLETE) {
             gl->glDeleteRenderbuffers(1, &rb);
             gl->glDeleteFramebuffers(1, &fbo);
+            qWarning () << Q_FUNC_INFO << "Copy-framebuffer not complete: " << status;
             return img;
         }
 

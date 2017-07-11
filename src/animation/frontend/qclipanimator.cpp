@@ -73,7 +73,7 @@ QClipAnimatorPrivate::QClipAnimatorPrivate()
     The properties for controlling the animator are provided by the AbstractClipAnimator base
     class.
 
-    \sa AbstractClipAnimator, AbstractAnimationClip, ChannelMapper, BlendedClipAnimator
+    \sa {Qt3DAnimation::QAbstractClipAnimator}{AbstractClipAnimator}, {Qt3DAnimation::QAbstractAnimationClip}{AbstractAnimationClip}, {Qt3DAnimation::QChannelMapper}{ChannelMapper}, {Qt3DAnimation::QBlendedClipAnimator}{BlendedClipAnimator}
 */
 
 /*!
@@ -123,7 +123,7 @@ QClipAnimator::~QClipAnimator()
 */
 
 /*!
-    \property clip
+    \property QClipAnimator::clip
 
     This property holds the animation clip which contains the key frame data to be played back.
     The key frame data can be specified in either a QAnimationClip or QAnimationClipLoader.

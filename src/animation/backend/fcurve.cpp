@@ -61,6 +61,8 @@ float FCurve::evaluateAtTime(float localTime) const
     } else {
         // Find keyframes that sandwich the requested localTime
         const int idx = m_rangeFinder.findLowerBound(localTime);
+        if (idx < 0) // only one keyframe
+            return m_keyframes.first().value;
 
         const float t0 = m_localTimes[idx];
         const float t1 = m_localTimes[idx + 1];

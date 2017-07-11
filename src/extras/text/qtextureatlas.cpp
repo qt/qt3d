@@ -54,6 +54,7 @@ namespace Qt3DExtras {
 QTextureAtlasData::QTextureAtlasData(int w, int h, QImage::Format fmt)
     : m_image(w, h, fmt)
 {
+    m_image.fill(0);
 }
 
 QTextureAtlasData::~QTextureAtlasData()
@@ -94,27 +95,25 @@ QByteArray QTextureAtlasData::createUpdatedImageData()
         // copy image contents into texture image
         // use image border pixels to fill the padding region
         for (int y = alloc.top(); y <= alloc.bottom(); y++) {
-            const int ySrc = qBound(0, y - imgRect.top(), image.height()-1);
-
-            const uchar *srcLine = image.scanLine(ySrc);
-            const uchar *srcLastPx = &srcLine[bpp * (image.width()-1)];
-
             uchar *dstLine = m_image.scanLine(y);
 
             uchar *dstPadL = &dstLine[bpp * alloc.left()];
             uchar *dstPadR = &dstLine[bpp * imgRect.right()];
             uchar *dstImg  = &dstLine[bpp * imgRect.left()];
 
-            // copy left and right padding pixels
-            for (int pad = 0; pad < padding; pad++) {
-                for (int px = 0; px < bpp; px++) {
-                    dstPadL[bpp * pad + px] = srcLine[px];
-                    dstPadR[bpp * pad + px] = srcLastPx[px];
-                }
+            // do padding with 0 in the upper/lower padding parts around the actual image
+            if (y < imgRect.top() || y > imgRect.bottom()) {
+                memset(dstPadL, 0, bpp * (imgRect.width() + 2 * padding));
+                continue;
             }
 
+            // copy left and right padding pixels
+            memset(dstPadL, 0, bpp * padding);
+            memset(dstPadR, 0, bpp * padding);
+
             // copy image scanline
-            memcpy(dstImg, srcLine, bpp * imgRect.width());
+            const int ySrc = qBound(0, y - imgRect.top(), image.height()-1);
+            memcpy(dstImg, image.scanLine(ySrc), bpp * imgRect.width());
         }
     }
 

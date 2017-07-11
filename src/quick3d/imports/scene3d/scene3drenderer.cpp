@@ -255,6 +255,10 @@ void Scene3DRenderer::render()
 
     ContextSaver saver;
 
+    // The OpenGL state may be dirty from the previous QtQuick nodes, so reset
+    // it here to give Qt3D the clean state it expects
+    window->resetOpenGLState();
+
     const QSize boundingRectSize = m_item->boundingRect().size().toSize();
     const QSize currentSize = boundingRectSize * window->effectiveDevicePixelRatio();
     const bool sizeHasChanged = currentSize != m_lastSize;

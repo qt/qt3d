@@ -703,7 +703,7 @@ QTextureImageDataPtr TextureLoadingHelper::loadTextureData(const QUrl &url, bool
         if (!f.open(QIODevice::ReadOnly))
             qWarning() << "Failed to open" << source;
         else
-            textureData = loadTextureData(&f, QFileInfo(source).suffix(), allow3D, mirrored);
+            textureData = loadTextureData(&f, QFileInfo(source).suffix().toLower(), allow3D, mirrored);
     }
     return textureData;
 }

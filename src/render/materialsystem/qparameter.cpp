@@ -88,7 +88,7 @@
     \endcode
 
     When it comes to texture support, the Parameter value should be set to the
-    appropriate Texture subclass that matches the sampler type of the shader
+    appropriate \l {Qt3DRender::QAbstractTexture}{Texture} subclass that matches the sampler type of the shader
     uniform.
 
     \code
