@@ -2,16 +2,32 @@
     "nodes": [
         {
             "uuid": "{00000000-0000-0000-0000-000000000001}",
-            "type": "inputVec3",
+            "type": "input",
             "parameters": {
-                "name": "worldPosition"
+                "name": "worldPosition",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Input"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000002}",
-            "type": "inputVec3",
+            "type": "input",
             "parameters": {
-                "name": "worldNormal"
+                "name": "worldNormal",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Input"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
             }
         },
         {
@@ -20,43 +36,89 @@
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000004}",
-            "type": "uniformVec4",
+            "type": "input",
             "parameters": {
-                "name": "baseColor"
+                "name": "baseColor",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Uniform"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec4"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000005}",
-            "type": "uniformFloat",
+            "type": "input",
             "parameters": {
-                "name": "metalness"
+                "name": "metalness",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Uniform"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Float"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000006}",
-            "type": "uniformFloat",
+            "type": "input",
             "parameters": {
-                "name": "roughness"
+                "name": "roughness",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Uniform"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Float"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000007}",
-            "type": "constantFloat",
+            "type": "constant",
             "parameters": {
-                "constant": "1.0"
+                "constant": "1.0",
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Float"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000008}",
-            "type": "normalizeVec3"
+            "type": "normalize",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000009}",
-            "type": "substractVec3"
+            "type": "subtract",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-00000000000a}",
-            "type": "normalizeVec3"
+            "type": "normalize",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-00000000000b}",
@@ -78,7 +140,7 @@
             "sourceUuid": "{00000000-0000-0000-0000-000000000001}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000009}",
-            "targetPort": "substrahend"
+            "targetPort": "subtrahend"
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000002}",

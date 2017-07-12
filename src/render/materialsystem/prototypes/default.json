@@ -1,10 +1,18 @@
 {
-    "inputVec2": {
+    "input": {
         "outputs": [
             "value"
         ],
         "parameters": {
-            "name": "defaultName"
+            "name": "defaultName",
+            "qualifier": {
+                "type": "QShaderLanguage::StorageQualifier",
+                "value": "QShaderLanguage::Input"
+            },
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec3"
+            }
         },
         "rules": [
             {
@@ -13,8 +21,8 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec2 $value = $name;",
-                "headerSnippets": [ "varying highp vec2 $name;" ]
+                "substitution": "highp $type $value = $name;",
+                "headerSnippets": [ "$qualifier highp $type $name;" ]
             },
             {
                 "format": {
@@ -22,45 +30,21 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec2 $value = $name;",
-                "headerSnippets": [ "in vec2 $name;" ]
+                "substitution": "$type $value = $name;",
+                "headerSnippets": [ "$qualifier $type $name;" ]
             }
         ]
     },
-    "inputVec3": {
+    "constant": {
         "outputs": [
             "value"
         ],
         "parameters": {
-            "name": "defaultName"
-        },
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec3 $value = $name;",
-                "headerSnippets": [ "varying highp vec3 $name;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec3 $value = $name;",
-                "headerSnippets": [ "in vec3 $name;" ]
+            "constant": "0.0",
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Float"
             }
-        ]
-    },
-    "inputVec4": {
-        "outputs": [
-            "value"
-        ],
-        "parameters": {
-            "name": "defaultName"
         },
         "rules": [
             {
@@ -69,8 +53,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec4 $value = $name;",
-                "headerSnippets": [ "varying highp vec4 $name;" ]
+                "substitution": "highp $type $value = $type($constant);"
             },
             {
                 "format": {
@@ -78,144 +61,7 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec4 $value = $name;",
-                "headerSnippets": [ "in vec4 $name;" ]
-            }
-        ]
-    },
-    "uniformFloat": {
-        "outputs": [
-            "value"
-        ],
-        "parameters": {
-            "name": "defaultName"
-        },
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp float $value = $name;",
-                "headerSnippets": [ "uniform highp float $name;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "float $value = $name;",
-                "headerSnippets": [ "uniform float $name;" ]
-            }
-        ]
-    },
-    "uniformVec3": {
-        "outputs": [
-            "value"
-        ],
-        "parameters": {
-            "name": "defaultName"
-        },
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec3 $value = $name;",
-                "headerSnippets": [ "uniform highp vec3 $name;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec3 $value = $name;",
-                "headerSnippets": [ "uniform vec3 $name;" ]
-            }
-        ]
-    },
-    "uniformVec4": {
-        "outputs": [
-            "value"
-        ],
-        "parameters": {
-            "name": "defaultName"
-        },
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec4 $value = $name;",
-                "headerSnippets": [ "uniform highp vec4 $name;" ]
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec4 $value = $name;",
-                "headerSnippets": [ "uniform vec4 $name;" ]
-            }
-        ]
-    },
-    "constantFloat": {
-        "outputs": [
-            "value"
-        ],
-        "parameters": {
-            "constant": "0.0"
-        },
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp float $value = $constant;"
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "float $value = $constant;"
-            }
-        ]
-    },
-    "constantVec3": {
-        "outputs": [
-            "value"
-        ],
-        "parameters": {
-            "constant": "0.0"
-        },
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec3 $value = vec3($constant);"
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec3 $value = vec3($constant);"
+                "substitution": "$type $value = $type($constant);"
             }
         ]
     },
@@ -324,13 +170,19 @@
             }
         ]
     },
-    "transposeMat3": {
+    "transpose": {
         "inputs": [
             "input"
         ],
         "outputs": [
             "output"
         ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Mat3"
+            }
+        },
         "rules": [
             {
                 "format": {
@@ -338,7 +190,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp mat3 $output = transpose($input);"
+                "substitution": "highp $type $output = transpose($input);"
             },
             {
                 "format": {
@@ -346,17 +198,23 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "mat3 $output = transpose($input);"
+                "substitution": "$type $output = transpose($input);"
             }
         ]
     },
-    "normalizeVec3": {
+    "normalize": {
         "inputs": [
             "input"
         ],
         "outputs": [
             "output"
         ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec3"
+            }
+        },
         "rules": [
             {
                 "format": {
@@ -364,7 +222,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec3 $output = normalize($input);"
+                "substitution": "highp $type $output = normalize($input);"
             },
             {
                 "format": {
@@ -372,18 +230,24 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec3 $output = normalize($input);"
+                "substitution": "$type $output = normalize($input);"
             }
         ]
     },
-    "substractVec3": {
+    "subtract": {
         "inputs": [
             "minuend",
-            "substrahend"
+            "subtrahend"
         ],
         "outputs": [
             "difference"
         ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec3"
+            }
+        },
         "rules": [
             {
                 "format": {
@@ -391,7 +255,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec3 $difference = $minuend - $substrahend;"
+                "substitution": "highp $type $difference = $minuend - $subtrahend;"
             },
             {
                 "format": {
@@ -399,11 +263,11 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec3 $difference = $minuend - $substrahend;"
+                "substitution": "$type $difference = $minuend - $subtrahend;"
             }
         ]
     },
-    "addVec3": {
+    "add": {
         "inputs": [
             "first",
             "second"
@@ -411,6 +275,12 @@
         "outputs": [
             "sum"
         ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec3"
+            }
+        },
         "rules": [
             {
                 "format": {
@@ -418,7 +288,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec3 $sum = $first + $second;"
+                "substitution": "highp $type $sum = $first + $second;"
             },
             {
                 "format": {
@@ -426,11 +296,11 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec3 $sum = $first + $second;"
+                "substitution": "$type $sum = $first + $second;"
             }
         ]
     },
-    "multiplyVec3": {
+    "multiply": {
         "inputs": [
             "first",
             "second"
@@ -438,6 +308,12 @@
         "outputs": [
             "product"
         ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec3"
+            }
+        },
         "rules": [
             {
                 "format": {
@@ -445,7 +321,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp vec3 $product = $first * $second;"
+                "substitution": "highp $type $product = $first * $second;"
             },
             {
                 "format": {
@@ -453,43 +329,24 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec3 $product = $first * $second;"
+                "substitution": "$type $product = $first * $second;"
             }
         ]
     },
-    "swizzleRGB": {
+    "swizzle": {
         "inputs": [
             "input"
         ],
         "outputs": [
             "output"
         ],
-        "rules": [
-            {
-                "format": {
-                    "api": "OpenGLES",
-                    "major": 2,
-                    "minor": 0
-                },
-                "substitution": "highp vec3 $output = $input.rgb;"
-            },
-            {
-                "format": {
-                    "api": "OpenGLCoreProfile",
-                    "major": 3,
-                    "minor": 0
-                },
-                "substitution": "vec3 $output = $input.rgb;"
+        "parameters": {
+            "fields": "x",
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec3"
             }
-        ]
-    },
-    "swizzleR": {
-        "inputs": [
-            "input"
-        ],
-        "outputs": [
-            "output"
-        ],
+        },
         "rules": [
             {
                 "format": {
@@ -497,7 +354,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "highp float $output = $input.r;"
+                "substitution": "highp $type $output = $input.$fields;"
             },
             {
                 "format": {
@@ -505,7 +362,7 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "float $output = $input.r;"
+                "substitution": "$type $output = $input.$fields;"
             }
         ]
     },

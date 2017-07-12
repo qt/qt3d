@@ -2,9 +2,17 @@
     "nodes": [
         {
             "uuid": "{00000000-0000-0000-0000-000000000001}",
-            "type": "inputVec3",
+            "type": "input",
             "parameters": {
-                "name": "worldPosition"
+                "name": "worldPosition",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Input"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
             }
         },
         {
@@ -13,23 +21,47 @@
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000003}",
-            "type": "inputVec3",
+            "type": "input",
             "parameters": {
-                "name": "worldNormal"
+                "name": "worldNormal",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Input"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000004}",
-            "type": "inputVec4",
+            "type": "input",
             "parameters": {
-                "name": "worldTangent"
+                "name": "worldTangent",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Input"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec4"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000005}",
-            "type": "inputVec2",
+            "type": "input",
             "parameters": {
-                "name": "texCoord"
+                "name": "texCoord",
+                "qualifier": {
+                    "type": "QShaderLanguage::StorageQualifier",
+                    "value": "QShaderLanguage::Input"
+                },
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec2"
+                }
             }
         },
         {
@@ -69,11 +101,23 @@
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000011}",
-            "type": "substractVec3"
+            "type": "subtract",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000012}",
-            "type": "normalizeVec3"
+            "type": "normalize",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000013}",
@@ -81,53 +125,119 @@
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000014}",
-            "type": "transposeMat3"
+            "type": "transpose",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Mat3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000015}",
-            "type": "multiplyVec3"
+            "type": "multiply",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000016}",
-            "type": "normalizeVec3"
+            "type": "normalize",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000017}",
-            "type": "swizzleR"
+            "type": "swizzle",
+            "parameters": {
+                "fields": "r",
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Float"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000018}",
-            "type": "swizzleR"
+            "type": "swizzle",
+            "parameters": {
+                "fields": "r",
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Float"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000019}",
-            "type": "swizzleR"
+            "type": "swizzle",
+            "parameters": {
+                "fields": "r",
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Float"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000020}",
-            "type": "swizzleRGB"
+            "type": "swizzle",
+            "parameters": {
+                "fields": "rgb",
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000021}",
-            "type": "constantFloat",
+            "type": "constant",
             "parameters": {
-                "constant": "2.0"
+                "constant": "2.0",
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Float"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000022}",
-            "type": "multiplyVec3"
+            "type": "multiply",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000023}",
-            "type": "constantVec3",
+            "type": "constant",
             "parameters": {
-                "constant": "1.0"
+                "constant": "1.0",
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000024}",
-            "type": "substractVec3"
+            "type": "subtract",
+            "parameters": {
+                "type": {
+                    "type": "QShaderLanguage::VariableType",
+                    "value": "QShaderLanguage::Vec3"
+                }
+            }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000025}",
@@ -149,7 +259,7 @@
             "sourceUuid": "{00000000-0000-0000-0000-000000000001}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000011}",
-            "targetPort": "substrahend"
+            "targetPort": "subtrahend"
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000002}",
@@ -227,7 +337,7 @@
             "sourceUuid": "{00000000-0000-0000-0000-000000000023}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000024}",
-            "targetPort": "substrahend"
+            "targetPort": "subtrahend"
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000024}",
