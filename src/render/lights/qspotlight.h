@@ -61,7 +61,6 @@ public:
     explicit QSpotLight(Qt3DCore::QNode *parent = nullptr);
     ~QSpotLight();
 
-    QVector3D attenuation() const;
     QVector3D localDirection() const;
     float cutOffAngle() const;
 
