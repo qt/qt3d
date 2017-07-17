@@ -219,8 +219,6 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChange
     QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
     backendPriv->setEnabled(change->isNodeEnabled());
 
-    backend->initializeFromPeer(change);
-
     // TO DO: Find a way to specify the changes to observe
     // Register backendNode with QChangeArbiter
     if (m_arbiter != nullptr) { // Unit tests may not have the arbiter registered
@@ -230,6 +228,9 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChange
         if (backend->mode() == QBackendNode::ReadWrite)
             m_arbiter->scene()->addObservable(backendPriv, backend->peerId());
     }
+
+    backend->initializeFromPeer(change);
+
     return backend;
 }
 
