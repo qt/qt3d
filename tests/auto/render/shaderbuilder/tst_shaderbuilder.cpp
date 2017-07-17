@@ -453,6 +453,6 @@ private slots:
     }
 };
 
-QTEST_APPLESS_MAIN(tst_ShaderBuilder)
+QTEST_MAIN(tst_ShaderBuilder)
 
 #include "tst_shaderbuilder.moc"
