@@ -88,6 +88,11 @@ void Manager::removeHandler(Qt3DCore::QNodeId id)
     m_logicHandlerManager->releaseResource(id);
 }
 
+bool Manager::hasFrameActions() const
+{
+    return m_logicHandlers.count() > 0;
+}
+
 void Manager::triggerLogicFrameUpdates()
 {
     Q_ASSERT(m_executor);

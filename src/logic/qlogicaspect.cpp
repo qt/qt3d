@@ -124,7 +124,10 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
 
     // Create jobs that will get executed by the threadpool
     QVector<QAspectJobPtr> jobs;
-    jobs.append(d->m_callbackJob);
+
+    if (d->m_manager->hasFrameActions())
+        jobs.append(d->m_callbackJob);
+
     return jobs;
 }
 

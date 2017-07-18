@@ -83,6 +83,7 @@ public:
 
     void appendHandler(Handler *handler);
     void removeHandler(Qt3DCore::QNodeId id);
+    bool hasFrameActions() const;
 
     void triggerLogicFrameUpdates();
 
