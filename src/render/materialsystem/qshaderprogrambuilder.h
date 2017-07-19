@@ -56,6 +56,7 @@ class QT3DRENDERSHARED_EXPORT QShaderProgramBuilder : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QShaderProgram* shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
+    Q_PROPERTY(QStringList enabledLayers READ enabledLayers WRITE setEnabledLayers NOTIFY enabledLayersChanged)
     Q_PROPERTY(QUrl vertexShaderGraph READ vertexShaderGraph WRITE setVertexShaderGraph NOTIFY vertexShaderGraphChanged)
     Q_PROPERTY(QUrl tessellationControlShaderGraph READ tessellationControlShaderGraph WRITE setTessellationControlShaderGraph NOTIFY tessellationControlShaderGraphChanged)
     Q_PROPERTY(QUrl tessellationEvaluationShaderGraph READ tessellationEvaluationShaderGraph WRITE setTessellationEvaluationShaderGraph NOTIFY tessellationEvaluationShaderGraphChanged)
@@ -68,6 +69,7 @@ public:
     ~QShaderProgramBuilder();
 
     QShaderProgram *shaderProgram() const;
+    QStringList enabledLayers() const;
     QUrl vertexShaderGraph() const;
     QUrl tessellationControlShaderGraph() const;
     QUrl tessellationEvaluationShaderGraph() const;
@@ -77,6 +79,7 @@ public:
 
 public Q_SLOTS:
     void setShaderProgram(Qt3DRender::QShaderProgram *program);
+    void setEnabledLayers(const QStringList &layers);
     void setVertexShaderGraph(const QUrl &vertexShaderGraph);
     void setTessellationControlShaderGraph(const QUrl &tessellationControlShaderGraph);
     void setTessellationEvaluationShaderGraph(const QUrl &tessellationEvaluationShaderGraph);
@@ -86,6 +89,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void shaderProgramChanged(Qt3DRender::QShaderProgram *shaderProgram);
+    void enabledLayersChanged(const QStringList &layers);
     void vertexShaderGraphChanged(const QUrl &vertexShaderGraph);
     void tessellationControlShaderGraphChanged(const QUrl &tessellationControlShaderGraph);
     void tessellationEvaluationShaderGraphChanged(const QUrl &tessellationEvaluationShaderGraph);
