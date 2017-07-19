@@ -73,6 +73,7 @@ private slots:
 
         // THEN
         QVERIFY(!shaderBuilder.isEnabled());
+        QVERIFY(shaderBuilder.enabledLayers().isEmpty());
         for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
             const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
             QCOMPARE(shaderBuilder.shaderGraph(type), QUrl());
@@ -94,6 +95,11 @@ private slots:
             auto program = new Qt3DRender::QShaderProgram(frontend);
             frontend->setShaderProgram(program);
             QTest::newRow("shaderProgram") << frontend;
+        }
+        {
+            auto frontend = new Qt3DRender::QShaderProgramBuilder;
+            frontend->setEnabledLayers({"foo", "bar"});
+            QTest::newRow("enabledLayers") << frontend;
         }
         {
             auto frontend = new Qt3DRender::QShaderProgramBuilder;
@@ -144,6 +150,8 @@ private slots:
         else
             QVERIFY(backend.shaderProgramId().isNull());
 
+        QCOMPARE(backend.enabledLayers(), frontend->enabledLayers());
+
         QCOMPARE(backend.shaderGraph(Qt3DRender::Render::ShaderBuilder::Vertex), frontend->vertexShaderGraph());
         QCOMPARE(backend.shaderCode(Qt3DRender::Render::ShaderBuilder::Vertex), QByteArray());
         QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::Render::ShaderBuilder::Vertex), !frontend->vertexShaderGraph().isEmpty());
@@ -173,6 +181,7 @@ private slots:
 
         // THEN
         QVERIFY(!backend.isEnabled());
+        QVERIFY(backend.enabledLayers().isEmpty());
         for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
             const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
             QCOMPARE(backend.shaderGraph(type), QUrl());
@@ -266,6 +275,87 @@ private slots:
 
         // THEN
         QVERIFY(backend.shaderProgramId().isNull());
+        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
+        renderer.resetDirty();
+    }
+
+    void shouldHandleEnabledLayersPropertyChange()
+    {
+        // GIVEN
+        Qt3DRender::Render::ShaderBuilder backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
+        const auto layers = QStringList() << "foo" << "bar";
+
+        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+            const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+            backend.setShaderGraph(type, graphUrl);
+        }
+
+        // WHEN
+        auto updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+        updateChange->setValue(layers);
+        updateChange->setPropertyName("enabledLayers");
+        backend.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(backend.enabledLayers(), layers);
+        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+            QVERIFY(backend.isShaderCodeDirty(type));
+            backend.generateCode(type); // Resets the dirty flag
+        }
+        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
+        renderer.resetDirty();
+
+        // WHEN
+        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+        updateChange->setValue(layers);
+        updateChange->setPropertyName("enabledLayers");
+        backend.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(backend.enabledLayers(), layers);
+        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+            QVERIFY(!backend.isShaderCodeDirty(type));
+            backend.generateCode(type); // Resets the dirty flag
+        }
+        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
+        renderer.resetDirty();
+
+        // WHEN
+        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+        updateChange->setValue(QStringList());
+        updateChange->setPropertyName("enabledLayers");
+        backend.sceneChangeEvent(updateChange);
+
+        // THEN
+        QVERIFY(backend.shaderProgramId().isNull());
+        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+            QVERIFY(backend.isShaderCodeDirty(type));
+            backend.generateCode(type); // Resets the dirty flag
+        }
+        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
+        renderer.resetDirty();
+
+        // WHEN
+        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+        updateChange->setValue(layers);
+        updateChange->setPropertyName("enabledLayers");
+        backend.sceneChangeEvent(updateChange);
+        // AND
+        backend.cleanup();
+
+        // THEN
+        QVERIFY(backend.enabledLayers().isEmpty());
+        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+            QVERIFY(!backend.isShaderCodeDirty(type));
+            backend.generateCode(type); // Resets the dirty flag
+        }
         QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
         renderer.resetDirty();
     }
