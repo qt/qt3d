@@ -13,7 +13,8 @@ SUBDIRS += \
     qkeyframeanimation \
     qmorphinganimation \
     qmorphtarget \
-    qvertexblendanimation
+    qvertexblendanimation \
+    qclock
 
 qtConfig(private_tests) {
     SUBDIRS += \
@@ -34,5 +35,6 @@ qtConfig(private_tests) {
         additiveclipblend \
         clipblendvalue \
         animationutils \
-        qabstractanimation
+        qabstractanimation \
+        clock
 }

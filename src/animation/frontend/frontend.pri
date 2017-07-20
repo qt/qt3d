@@ -46,7 +46,9 @@ HEADERS += \
     $$PWD/qanimationclip.h \
     $$PWD/qanimationclip_p.h \
     $$PWD/qanimationcallback.h \
-    $$PWD/qanimationcallbacktrigger_p.h
+    $$PWD/qanimationcallbacktrigger_p.h \
+    $$PWD/qclock.h \
+    $$PWD/qclock_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -74,6 +76,7 @@ SOURCES += \
     $$PWD/qchannelcomponent.cpp \
     $$PWD/qkeyframe.cpp \
     $$PWD/qanimationclip.cpp \
-    $$PWD/qanimationcallbacktrigger.cpp
+    $$PWD/qanimationcallbacktrigger.cpp \
+    $$PWD/qclock.cpp
 
 INCLUDEPATH += $$PWD
