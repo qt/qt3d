@@ -86,7 +86,7 @@ qtHaveModule(quick) {
 # Qt3D Scene Parser plugins
 src_plugins_sceneparsers.file = $$PWD/plugins/sceneparsers/sceneparsers.pro
 src_plugins_sceneparsers.target = sub-plugins-sceneparsers
-src_plugins_sceneparsers.depends = src_render src_extras
+src_plugins_sceneparsers.depends = src_render src_extras src_animation
 
 # Qt3D Geometry Loader plugins
 src_plugins_geometryloaders.file = $$PWD/plugins/geometryloaders/geometryloaders.pro
