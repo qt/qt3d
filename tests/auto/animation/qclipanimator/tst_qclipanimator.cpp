@@ -30,6 +30,7 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qchannelmapper.h>
+#include <Qt3DAnimation/qclock.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/private/qanimationclip_p.h>
 #include <Qt3DAnimation/private/qclipanimator_p.h>
@@ -49,6 +50,7 @@ private Q_SLOTS:
     {
         qRegisterMetaType<Qt3DAnimation::QAbstractAnimationClip*>();
         qRegisterMetaType<Qt3DAnimation::QChannelMapper*>();
+        qRegisterMetaType<Qt3DAnimation::QClock*>();
     }
 
     void checkDefaultConstruction()
@@ -59,6 +61,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(animator.clip(), static_cast<Qt3DAnimation::QAbstractAnimationClip *>(nullptr));
         QCOMPARE(animator.channelMapper(), static_cast<Qt3DAnimation::QChannelMapper *>(nullptr));
+        QCOMPARE(animator.clock(), static_cast<Qt3DAnimation::QClock*>(nullptr));
         QCOMPARE(animator.loopCount(), 1);
     }
 
@@ -111,6 +114,27 @@ private Q_SLOTS:
 
         {
             // WHEN
+            QSignalSpy spy(&animator, SIGNAL(clockChanged(Qt3DAnimation::QClock *)));
+            auto clock = new Qt3DAnimation::QClock();
+            animator.setClock(clock);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(animator.clock(), clock);
+            QCOMPARE(clock->parent(), &animator);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            animator.setClock(clock);
+
+            // THEN
+            QCOMPARE(animator.clock(), clock);
+            QCOMPARE(spy.count(), 0);
+        }
+
+        {
+            // WHEN
             QSignalSpy spy(&animator, SIGNAL(loopCountChanged(int)));
             const int newValue = 5;
             animator.setLoopCount(newValue);
@@ -138,6 +162,8 @@ private Q_SLOTS:
         animator.setClip(clip);
         auto mapper = new Qt3DAnimation::QChannelMapper();
         animator.setChannelMapper(mapper);
+        auto clock = new Qt3DAnimation::QClock();
+        animator.setClock(clock);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -148,7 +174,7 @@ private Q_SLOTS:
 
         // THEN
         {
-            QCOMPARE(creationChanges.size(), 3);
+            QCOMPARE(creationChanges.size(), 4);
 
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QClipAnimatorData>>(creationChanges.first());
             const Qt3DAnimation::QClipAnimatorData data = creationChangeData->data;
@@ -159,6 +185,7 @@ private Q_SLOTS:
             QCOMPARE(animator.metaObject(), creationChangeData->metaObject());
             QCOMPARE(animator.clip()->id(), data.clipId);
             QCOMPARE(animator.channelMapper()->id(), data.mapperId);
+            QCOMPARE(animator.clock()->id(), data.clockId);
             QCOMPARE(animator.loopCount(), data.loops);
         }
 
@@ -171,7 +198,7 @@ private Q_SLOTS:
 
         // THEN
         {
-            QCOMPARE(creationChanges.size(), 3);
+            QCOMPARE(creationChanges.size(), 4);
 
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QClipAnimatorData>>(creationChanges.first());
 
@@ -234,6 +261,32 @@ private Q_SLOTS:
         {
             // WHEN
             animator.setChannelMapper(mapper);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+        // GIVEN
+        auto clock = new Qt3DAnimation::QClock;
+        {
+            // WHEN
+            animator.setClock(clock);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "clock");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), clock->id());
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            animator.setClock(clock);
             QCoreApplication::processEvents();
 
             // THEN

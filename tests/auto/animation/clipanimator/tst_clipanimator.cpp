@@ -30,6 +30,7 @@
 #include <Qt3DAnimation/private/clipanimator_p.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qclipanimator.h>
+#include <Qt3DAnimation/qclock.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -50,8 +51,10 @@ private Q_SLOTS:
         backendAnimator.setHandler(&handler);
         Qt3DAnimation::QClipAnimator animator;
         auto clip = new Qt3DAnimation::QAnimationClipLoader();
+        auto clock = new Qt3DAnimation::QClock();
 
         animator.setClip(clip);
+        animator.setClock(clock);
         animator.setLoopCount(10);
 
         // WHEN
@@ -61,6 +64,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.peerId(), animator.id());
         QCOMPARE(backendAnimator.isEnabled(), animator.isEnabled());
         QCOMPARE(backendAnimator.clipId(), clip->id());
+        QCOMPARE(backendAnimator.clockId(), clock->id());
         QCOMPARE(backendAnimator.isRunning(), animator.isRunning());
         QCOMPARE(backendAnimator.loops(), animator.loopCount());
     }
@@ -76,23 +80,28 @@ private Q_SLOTS:
         QVERIFY(backendAnimator.peerId().isNull());
         QCOMPARE(backendAnimator.isEnabled(), false);
         QCOMPARE(backendAnimator.clipId(), Qt3DCore::QNodeId());
+        QCOMPARE(backendAnimator.clockId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAnimator.isRunning(), false);
         QCOMPARE(backendAnimator.loops(), 1);
 
         // GIVEN
         Qt3DAnimation::QClipAnimator animator;
         auto clip = new Qt3DAnimation::QAnimationClipLoader();
+        auto clock = new Qt3DAnimation::QClock();
         animator.setClip(clip);
+        animator.setClock(clock);
         animator.setRunning(true);
         animator.setLoopCount(25);
 
         // WHEN
         simulateInitialization(&animator, &backendAnimator);
         backendAnimator.setClipId(Qt3DCore::QNodeId::createId());
+        backendAnimator.setClockId(Qt3DCore::QNodeId::createId());
         backendAnimator.cleanup();
 
         // THEN
         QCOMPARE(backendAnimator.clipId(), Qt3DCore::QNodeId());
+        QCOMPARE(backendAnimator.clockId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAnimator.isEnabled(), false);
         QCOMPARE(backendAnimator.isRunning(), false);
         QCOMPARE(backendAnimator.loops(), 1);
@@ -124,6 +133,16 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAnimator.clipId(), newClip->id());
+
+        // WHEN
+        auto clock = new Qt3DAnimation::QClock();
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setPropertyName("clock");
+        updateChange->setValue(QVariant::fromValue(clock->id()));
+        backendAnimator.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(backendAnimator.clockId(), clock->id());
 
         // WHEN
         updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));

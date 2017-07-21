@@ -30,6 +30,7 @@
 #include <Qt3DAnimation/private/animationclip_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
+#include <Qt3DAnimation/private/clock_p.h>
 #include <Qt3DAnimation/private/channelmapper_p.h>
 #include <Qt3DAnimation/private/channelmapping_p.h>
 #include <Qt3DAnimation/private/clipblendvalue_p.h>
@@ -51,6 +52,7 @@ using namespace Qt3DAnimation::Animation;
 
 Q_DECLARE_METATYPE(Qt3DAnimation::Animation::Handler*)
 Q_DECLARE_METATYPE(QVector<ChannelMapping *>)
+Q_DECLARE_METATYPE(Clock *)
 Q_DECLARE_METATYPE(ChannelMapper *)
 Q_DECLARE_METATYPE(AnimationClip *)
 Q_DECLARE_METATYPE(QVector<MappingData>)
@@ -1836,6 +1838,7 @@ private Q_SLOTS:
         AnimationClip *clip;
         AnimatorEvaluationData animatorData;
         ClipEvaluationData clipData;
+        auto* clock = new Clock;
 
         {
             handler = new Handler();
@@ -1844,7 +1847,7 @@ private Q_SLOTS:
             const int loops = 1;
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
             const qint64 globalTimeNS = 0;
-            animatorData = evaluationDataForAnimator(animator, globalTimeNS); // Tested elsewhere
+            animatorData = evaluationDataForAnimator(animator, clock, globalTimeNS); // Tested elsewhere
 
             clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
                                                          animatorData.startTime,
@@ -1865,7 +1868,7 @@ private Q_SLOTS:
             const int loops = 1;
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
             const qint64 globalTimeNS = (clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
-            animatorData = evaluationDataForAnimator(animator, globalTimeNS); // Tested elsewhere
+            animatorData = evaluationDataForAnimator(animator, nullptr, globalTimeNS); // Tested elsewhere
 
             clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
                                                          animatorData.startTime,
@@ -1886,7 +1889,7 @@ private Q_SLOTS:
             const int loops = 0; // Infinite loops
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
             const qint64 globalTimeNS = 2.0 * clip->duration() * 1.0e9;
-            animatorData = evaluationDataForAnimator(animator, globalTimeNS); // Tested elsewhere
+            animatorData = evaluationDataForAnimator(animator, clock, globalTimeNS); // Tested elsewhere
 
             clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
                                                          animatorData.startTime,
@@ -1907,7 +1910,7 @@ private Q_SLOTS:
             const int loops = 2;
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
             const qint64 globalTimeNS = (2.0 * clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
-            animatorData = evaluationDataForAnimator(animator, globalTimeNS); // Tested elsewhere
+            animatorData = evaluationDataForAnimator(animator, nullptr, globalTimeNS); // Tested elsewhere
 
             clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
                                                          animatorData.startTime,
@@ -2028,7 +2031,7 @@ private Q_SLOTS:
         QFETCH(AnimatorEvaluationData, expectedAnimatorData);
 
         // WHEN
-        AnimatorEvaluationData actualAnimatorData = evaluationDataForAnimator(animator, globalTimeNS);
+        AnimatorEvaluationData actualAnimatorData = evaluationDataForAnimator(animator, nullptr, globalTimeNS);
 
         // THEN
         QCOMPARE(actualAnimatorData.loopCount, expectedAnimatorData.loopCount);

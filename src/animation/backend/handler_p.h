@@ -65,6 +65,7 @@ namespace Animation {
 
 class AnimationClip;
 class AnimationClipLoaderManager;
+class ClockManager;
 class ClipAnimator;
 class ClipAnimatorManager;
 class BlendedClipAnimator;
@@ -108,6 +109,7 @@ public:
     QVector<HBlendedClipAnimator> runningBlenndedClipAnimators() const { return m_runningBlendedClipAnimators; }
 
     AnimationClipLoaderManager *animationClipLoaderManager() const Q_DECL_NOTHROW { return m_animationClipLoaderManager.data(); }
+    ClockManager *clockManager() const Q_DECL_NOTHROW { return m_clockManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
     BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
     ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
@@ -121,6 +123,7 @@ public:
 
 private:
     QScopedPointer<AnimationClipLoaderManager> m_animationClipLoaderManager;
+    QScopedPointer<ClockManager> m_clockManager;
     QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
     QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
     QScopedPointer<ChannelMappingManager> m_channelMappingManager;

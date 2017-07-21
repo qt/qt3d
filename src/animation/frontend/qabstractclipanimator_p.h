@@ -58,6 +58,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 
 class QChannelMapper;
+class QClock;
 
 class QAbstractClipAnimatorPrivate : public Qt3DCore::QComponentPrivate
 {
@@ -67,6 +68,7 @@ public:
     Q_DECLARE_PUBLIC(QAbstractClipAnimator)
 
     Qt3DAnimation::QChannelMapper *m_mapper;
+    Qt3DAnimation::QClock *m_clock;
     bool m_running;
     int m_loops;
 };
@@ -74,6 +76,7 @@ public:
 struct QAbstractClipAnimatorData
 {
     Qt3DCore::QNodeId mapperId;
+    Qt3DCore::QNodeId clockId;
     bool running;
     int loops;
 };

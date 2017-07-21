@@ -40,6 +40,7 @@
 #include "qabstractclipanimator.h"
 #include "qabstractclipanimator_p.h"
 #include <Qt3DAnimation/qchannelmapper.h>
+#include <Qt3DAnimation/qclock.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,6 +49,7 @@ namespace Qt3DAnimation {
 QAbstractClipAnimatorPrivate::QAbstractClipAnimatorPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_mapper(nullptr)
+    , m_clock(nullptr)
     , m_running(false)
     , m_loops(1)
 {
@@ -174,6 +176,12 @@ int QAbstractClipAnimator::loopCount() const
     return d->m_loops;
 }
 
+QClock *QAbstractClipAnimator::clock() const
+{
+    Q_D(const QAbstractClipAnimator);
+    return d->m_clock;
+}
+
 void QAbstractClipAnimator::setRunning(bool running)
 {
     Q_D(QAbstractClipAnimator);
@@ -211,6 +219,24 @@ void QAbstractClipAnimator::setLoopCount(int loops)
 
     d->m_loops = loops;
     emit loopCountChanged(loops);
+}
+
+void QAbstractClipAnimator::setClock(QClock *clock)
+{
+    Q_D(QAbstractClipAnimator);
+    if (d->m_clock == clock)
+        return;
+
+    if (d->m_clock)
+        d->unregisterDestructionHelper(d->m_clock);
+
+    if (clock && !clock->parent())
+        clock->setParent(this);
+    d->m_clock = clock;
+
+    if (d->m_clock)
+        d->registerDestructionHelper(d->m_clock, &QAbstractClipAnimator::setClock, d->m_clock);
+    emit clockChanged(clock);
 }
 
 /*!

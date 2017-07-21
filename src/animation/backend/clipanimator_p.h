@@ -70,6 +70,8 @@ public:
     Qt3DCore::QNodeId clipId() const { return m_clipId; }
     void setMapperId(Qt3DCore::QNodeId mapperId);
     Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
+    void setClockId(Qt3DCore::QNodeId clockId);
+    Qt3DCore::QNodeId clockId() const { return m_clockId; }
 
     void setRunning(bool running);
     bool isRunning() const { return m_running; }
@@ -98,6 +100,7 @@ private:
 
     Qt3DCore::QNodeId m_clipId;
     Qt3DCore::QNodeId m_mapperId;
+    Qt3DCore::QNodeId m_clockId;
     bool m_running;
     int m_loops;
 

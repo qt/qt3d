@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DAnimation/private/qt3danimation_global_p.h>
+#include <Qt3DAnimation/private/clock_p.h>
 #include <Qt3DAnimation/qanimationcallback.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
@@ -114,11 +115,11 @@ struct AnimationCallbackAndValue
 };
 
 template<typename Animator>
-AnimatorEvaluationData evaluationDataForAnimator(Animator animator, qint64 globalTime)
+AnimatorEvaluationData evaluationDataForAnimator(Animator animator, Clock* clock, qint64 globalTime)
 {
     AnimatorEvaluationData data;
     data.loopCount = animator->loops();
-    data.playbackRate = 1.0; // should be a property on the animator
+    data.playbackRate = clock != nullptr ? clock->playbackRate() : 1.0;
     // Convert global time from nsec to sec
     data.startTime = double(animator->startTime()) / 1.0e9;
     data.globalTime = double(globalTime) / 1.0e9;

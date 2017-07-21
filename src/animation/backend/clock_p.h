@@ -49,7 +49,6 @@
 //
 
 #include <Qt3DAnimation/private/backendnode_p.h>
-#include <Qt3DAnimation/private/animationutils_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE

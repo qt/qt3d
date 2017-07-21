@@ -37,6 +37,7 @@
 #include "clock_p.h"
 #include <Qt3DAnimation/qclock.h>
 #include <Qt3DAnimation/private/qclock_p.h>
+#include <Qt3DAnimation/private/animationutils_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 

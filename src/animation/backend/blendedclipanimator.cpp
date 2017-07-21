@@ -60,6 +60,7 @@ void BlendedClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeB
     const QBlendedClipAnimatorData &data = typedChange->data;
     m_blendTreeRootId = data.blendTreeRootId;
     m_mapperId = data.mapperId;
+    m_clockId = data.clockId;
     m_running = data.running;
     m_loops = data.loops;
     setDirty(Handler::BlendedClipAnimatorDirty);
@@ -71,6 +72,7 @@ void BlendedClipAnimator::cleanup()
     m_handler = nullptr;
     m_blendTreeRootId = Qt3DCore::QNodeId();
     m_mapperId = Qt3DCore::QNodeId();
+    m_clockId = Qt3DCore::QNodeId();
     m_running = false;
     m_startGlobalTime = 0;
     m_currentLoop = 0;
@@ -86,6 +88,12 @@ void BlendedClipAnimator::setBlendTreeRootId(Qt3DCore::QNodeId blendTreeId)
 void BlendedClipAnimator::setMapperId(Qt3DCore::QNodeId mapperId)
 {
     m_mapperId = mapperId;
+    setDirty(Handler::BlendedClipAnimatorDirty);
+}
+
+void BlendedClipAnimator::setClockId(Qt3DCore::QNodeId clockId)
+{
+    m_clockId = clockId;
     setDirty(Handler::BlendedClipAnimatorDirty);
 }
 
@@ -130,6 +138,8 @@ void BlendedClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setBlendTreeRootId(change->value().value<Qt3DCore::QNodeId>());
         else if (change->propertyName() == QByteArrayLiteral("channelMapper"))
             setMapperId(change->value().value<Qt3DCore::QNodeId>());
+        else if (change->propertyName() == QByteArrayLiteral("clock"))
+            setClockId(change->value().value<Qt3DCore::QNodeId>());
         else if (change->propertyName() == QByteArrayLiteral("running"))
             setRunning(change->value().toBool());
         else if (change->propertyName() == QByteArrayLiteral("loops"))

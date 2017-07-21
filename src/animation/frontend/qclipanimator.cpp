@@ -41,6 +41,7 @@
 #include "qclipanimator_p.h"
 #include <Qt3DAnimation/qabstractanimationclip.h>
 #include <Qt3DAnimation/qchannelmapper.h>
+#include <Qt3DAnimation/qclock.h>
 #include <Qt3DAnimation/private/qanimationcallbacktrigger_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -161,6 +162,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() co
     Q_D(const QClipAnimator);
     data.clipId = Qt3DCore::qIdForNode(d->m_clip);
     data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
+    data.clockId = Qt3DCore::qIdForNode(d->m_clock);
     data.running = d->m_running;
     data.loops = d->m_loops;
     return creationChange;

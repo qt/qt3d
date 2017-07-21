@@ -54,6 +54,7 @@
 #include <QtGlobal>
 #include <Qt3DAnimation/private/handle_types_p.h>
 #include <Qt3DAnimation/private/animationclip_p.h>
+#include <Qt3DAnimation/private/clock_p.h>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
 #include <Qt3DAnimation/private/clipanimator_p.h>
 #include <Qt3DAnimation/private/channelmapping_p.h>
@@ -75,6 +76,16 @@ class AnimationClipLoaderManager : public Qt3DCore::QResourceManager<
 {
 public:
     AnimationClipLoaderManager() {}
+};
+
+class ClockManager : public Qt3DCore::QResourceManager<
+    Clock,
+    Qt3DCore::QNodeId,
+    16,
+    Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    ClockManager() {}
 };
 
 class ClipAnimatorManager : public Qt3DCore::QResourceManager<

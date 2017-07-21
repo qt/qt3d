@@ -68,6 +68,7 @@ public:
 
     Qt3DCore::QNodeId blendTreeRootId() const;
     Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
+    Qt3DCore::QNodeId clockId() const { return m_clockId; }
     bool isRunning() const { return m_running; }
 
     //  Called by BuildBlendTreeJob
@@ -75,6 +76,7 @@ public:
 
     void setBlendTreeRootId(Qt3DCore::QNodeId blendTreeRootId);
     void setMapperId(Qt3DCore::QNodeId mapperId);
+    void setClockId(Qt3DCore::QNodeId clockId);
     void setRunning(bool running);
 
     void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
@@ -96,6 +98,7 @@ private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     Qt3DCore::QNodeId m_blendTreeRootId;
     Qt3DCore::QNodeId m_mapperId;
+    Qt3DCore::QNodeId m_clockId;
     bool m_running;
 
     qint64 m_startGlobalTime;

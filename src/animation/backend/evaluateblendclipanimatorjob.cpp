@@ -72,9 +72,11 @@ void EvaluateBlendClipAnimatorJob::run()
     Q_ASSERT(blendTreeRootNode);
     const double duration = blendTreeRootNode->duration();
 
+    Clock *clock = m_handler->clockManager()->lookupResource(blendedClipAnimator->clockId());
+
     // Calculate the phase given the blend tree duration and global time
     const qint64 globalTime = m_handler->simulationTime();
-    const AnimatorEvaluationData animatorData = evaluationDataForAnimator(blendedClipAnimator, globalTime);
+    const AnimatorEvaluationData animatorData = evaluationDataForAnimator(blendedClipAnimator, clock, globalTime);
     int currentLoop = 0;
     const double phase = phaseFromGlobalTime(animatorData.globalTime,
                                              animatorData.startTime,
