@@ -344,13 +344,13 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
                 QPickEventPtr pickEvent;
                 if (trianglePickingRequested) {
-                    pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
+                    pickEvent = QSharedPointer<QPickTriangleEvent>::create(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
                                                            hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2],
-                            eventButton, eventButtons, eventModifiers, hit.m_uvw));
+                            eventButton, eventButtons, eventModifiers, hit.m_uvw);
                     QPickEventPrivate::get(pickEvent.data())->m_entity = hit.m_entityId;
                 } else {
-                    pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
-                                                   eventButton, eventButtons, eventModifiers));
+                    pickEvent = QSharedPointer<QPickEvent>::create(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
+                                                   eventButton, eventButtons, eventModifiers);
                 }
                 switch (event.type()) {
                 case QEvent::MouseButtonPress: {

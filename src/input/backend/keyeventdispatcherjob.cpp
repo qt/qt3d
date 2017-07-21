@@ -69,7 +69,7 @@ void KeyEventDispatcherJob::run()
     if (input)
         for (const QT_PREPEND_NAMESPACE(QKeyEvent) &e : qAsConst(m_events)) {
             // Send events to frontend
-            input->keyEvent(QKeyEventPtr(new QKeyEvent(e)));
+            input->keyEvent(QKeyEventPtr::create(e));
         }
 }
 

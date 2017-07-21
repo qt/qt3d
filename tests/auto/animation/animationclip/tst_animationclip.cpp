@@ -103,7 +103,7 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendClip.sceneChangeEvent(updateChange);
@@ -113,7 +113,7 @@ private Q_SLOTS:
 
         // WHEN
         const QUrl newSource = QUrl::fromLocalFile("fallover.qlip");
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("source");
         updateChange->setValue(newSource);
         backendClip.sceneChangeEvent(updateChange);

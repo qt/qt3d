@@ -186,7 +186,7 @@ private Q_SLOTS:
         QCOMPARE(velocity(), 0.0f);
 
         // WHEN
-        valueChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        valueChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         valueChange->setPropertyName("velocity");
         valueChange->setValue(123.0f);
         sceneChangeEvent(valueChange);

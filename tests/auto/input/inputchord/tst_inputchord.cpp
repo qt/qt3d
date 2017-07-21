@@ -113,7 +113,7 @@ private Q_SLOTS:
         QCOMPARE(backendInputChord.timeout(), 250000000);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendInputChord.sceneChangeEvent(updateChange);

@@ -181,7 +181,7 @@ private Q_SLOTS:
 
         // WHEN
         const Qt3DRender::QSceneLoader::Status newStatus = Qt3DRender::QSceneLoader::Ready;
-        valueChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        valueChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         valueChange->setPropertyName("status");
         valueChange->setValue(QVariant::fromValue(newStatus));
         sceneLoader->sceneChangeEvent(valueChange);

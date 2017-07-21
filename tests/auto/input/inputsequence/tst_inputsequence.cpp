@@ -118,7 +118,7 @@ private Q_SLOTS:
         QCOMPARE(backendInputSequence.timeout(), 250000000);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(150);
         updateChange->setPropertyName("buttonInterval");
         backendInputSequence.sceneChangeEvent(updateChange);
@@ -127,7 +127,7 @@ private Q_SLOTS:
         QCOMPARE(backendInputSequence.buttonInterval(), 150000000);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendInputSequence.sceneChangeEvent(updateChange);

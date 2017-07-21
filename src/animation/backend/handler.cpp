@@ -216,7 +216,7 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
         if (oldSize < newSize) {
             m_evaluateClipAnimatorJobs.resize(newSize);
             for (int i = oldSize; i < newSize; ++i) {
-                m_evaluateClipAnimatorJobs[i].reset(new EvaluateClipAnimatorJob());
+                m_evaluateClipAnimatorJobs[i] = QSharedPointer<EvaluateClipAnimatorJob>::create();
                 m_evaluateClipAnimatorJobs[i]->setHandler(this);
             }
         }
@@ -242,7 +242,7 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
         if (oldSize < newSize) {
             m_evaluateBlendClipAnimatorJobs.resize(newSize);
             for (int i = oldSize; i < newSize; ++i) {
-                m_evaluateBlendClipAnimatorJobs[i].reset(new EvaluateBlendClipAnimatorJob());
+                m_evaluateBlendClipAnimatorJobs[i] = QSharedPointer<EvaluateBlendClipAnimatorJob>::create();
                 m_evaluateBlendClipAnimatorJobs[i]->setHandler(this);
             }
         }

@@ -88,7 +88,7 @@ void QPaintedTextureImagePrivate::repaint()
     painter.end();
 
     ++m_generation;
-    m_currentGenerator.reset(new QPaintedTextureImageDataGenerator(*m_image.data(), m_generation, q_func()->id()));
+    m_currentGenerator = QSharedPointer<QPaintedTextureImageDataGenerator>::create(*m_image.data(), m_generation, q_func()->id());
     q_func()->notifyDataGeneratorChanged();
 }
 
