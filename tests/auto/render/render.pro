@@ -34,6 +34,7 @@ qtConfig(private_tests) {
         qenvironmentlight \
         qray3d \
         qrenderpassfilter \
+        qrenderstate \
         qrendertargetselector \
         qsortpolicy \
         qrenderstateset \
