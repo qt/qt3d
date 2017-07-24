@@ -53,7 +53,7 @@ private Q_SLOTS:
         Qt3DAnimation::QClock clock;
 
         // THEN
-        QCOMPARE(clock.playbackRate(), 1.f);
+        QCOMPARE(clock.playbackRate(), 1.0);
     }
 
     void checkPropertyChanges()
@@ -62,8 +62,8 @@ private Q_SLOTS:
         Qt3DAnimation::QClock clock;
 
         // WHEN
-        QSignalSpy spy(&clock, SIGNAL(playbackRateChanged(float)));
-        const float newValue = 5.f;
+        QSignalSpy spy(&clock, SIGNAL(playbackRateChanged(double)));
+        const double newValue = 5.5;
         clock.setPlaybackRate(newValue);
 
         // THEN
@@ -136,7 +136,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            clock.setPlaybackRate(10.f);
+            clock.setPlaybackRate(10.5);
             QCoreApplication::processEvents();
 
             // THEN
@@ -144,14 +144,14 @@ private Q_SLOTS:
             auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "playbackRate");
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().value<float>(), clock.playbackRate());
+            QCOMPARE(change->value().value<double>(), clock.playbackRate());
 
             arbiter.events.clear();
         }
 
         {
             // WHEN
-            clock.setPlaybackRate(10.f);
+            clock.setPlaybackRate(10.5f);
             QCoreApplication::processEvents();
 
             // THEN

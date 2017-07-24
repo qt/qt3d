@@ -47,7 +47,7 @@ private Q_SLOTS:
         Qt3DAnimation::Animation::Clock backendClock;
         Qt3DAnimation::QClock clock;
 
-        clock.setPlaybackRate(10.f);
+        clock.setPlaybackRate(10.5);
 
         // WHEN
         simulateInitialization(&clock, &backendClock);
@@ -62,18 +62,18 @@ private Q_SLOTS:
         Qt3DAnimation::Animation::Clock backendClock;
 
         // THEN
-        QCOMPARE(backendClock.playbackRate(), 1.f);
+        QCOMPARE(backendClock.playbackRate(), 1.0);
 
         // GIVEN
         Qt3DAnimation::QClock clock;
-        clock.setPlaybackRate(10.f);
+        clock.setPlaybackRate(10.5);
 
         // WHEN
         simulateInitialization(&clock, &backendClock);
         backendClock.cleanup();
 
         // THEN
-        QCOMPARE(backendClock.playbackRate(), 1.f);
+        QCOMPARE(backendClock.playbackRate(), 1.0);
     }
 };
 

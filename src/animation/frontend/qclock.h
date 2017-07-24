@@ -49,21 +49,20 @@ class QClockPrivate;
 class QT3DANIMATIONSHARED_EXPORT QClock : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(float playbackRate READ playbackRate WRITE setPlaybackRate NOTIFY playbackRateChanged)
+    Q_PROPERTY(double playbackRate READ playbackRate WRITE setPlaybackRate NOTIFY playbackRateChanged)
 
 public:
     explicit QClock(Qt3DCore::QNode *parent = nullptr);
     ~QClock();
 
-    float playbackRate() const;
-    void setPlaybackRate(float playbackRate);
+    double playbackRate() const;
+    void setPlaybackRate(double playbackRate);
 
 Q_SIGNALS:
-    void playbackRateChanged(float playbackRate);
+    void playbackRateChanged(double playbackRate);
 
 protected:
     QClock(QClockPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QClock)

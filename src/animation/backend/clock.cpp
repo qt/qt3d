@@ -48,7 +48,6 @@ namespace Animation {
 
 Clock::Clock()
     : BackendNode(ReadOnly)
-    , m_startGlobalTime(0)
     , m_playbackRate(1.f)
 {
 }
@@ -62,7 +61,6 @@ void Clock::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change
 
 void Clock::cleanup()
 {
-    m_startGlobalTime = 0;
     m_playbackRate = 1.f;
 }
 

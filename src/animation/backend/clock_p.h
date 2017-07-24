@@ -63,17 +63,13 @@ public:
 
     void cleanup();
 
-    void setPlaybackRate(float playbackRate) { m_playbackRate = playbackRate; }
-    int playbackRate() const { return m_playbackRate; }
-
-    void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
-    qint64 startTime() const { return m_startGlobalTime; }
+    void setPlaybackRate(double playbackRate) { m_playbackRate = playbackRate; }
+    double playbackRate() const { return m_playbackRate; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    qint64 m_startGlobalTime;
-    float m_playbackRate;
+    double m_playbackRate;
 };
 
 } // namespace Animation

@@ -48,16 +48,6 @@ QClockPrivate::QClockPrivate()
 {
 }
 
-void QClockPrivate::setPlaybackRate(float playbackRate)
-{
-    if (qFuzzyCompare(playbackRate, m_playbackRate))
-        return;
-
-    Q_Q(QClock);
-    m_playbackRate = playbackRate;
-    emit q->playbackRateChanged(playbackRate);
-}
-
 QClock::QClock(Qt3DCore::QNode* parent)
     : Qt3DCore::QNode(*new QClockPrivate, parent)
 {
@@ -72,27 +62,19 @@ QClock::~QClock()
 {
 }
 
-float QClock::playbackRate() const
+double QClock::playbackRate() const
 {
     Q_D(const QClock);
     return d->m_playbackRate;
 }
 
-void QClock::setPlaybackRate(float playbackRate)
+void QClock::setPlaybackRate(double playbackRate)
 {
     Q_D(QClock);
-    d->setPlaybackRate(playbackRate);
-}
-
-void QClock::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("playbackRate")) {
-            Q_D(QClock);
-            d->setPlaybackRate(e->value().toFloat());
-        }
-    }
+    if (qFuzzyCompare(playbackRate, d->m_playbackRate))
+        return;
+    d->m_playbackRate = playbackRate;
+    emit playbackRateChanged(playbackRate);
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QClock::createNodeCreationChange() const

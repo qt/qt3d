@@ -62,14 +62,12 @@ public:
 
     Q_DECLARE_PUBLIC(QClock)
 
-    void setPlaybackRate(float playbackRate);
-
-    float m_playbackRate;
+    double m_playbackRate;
 };
 
 struct QClockData
 {
-    float playbackRate;
+    double playbackRate;
 };
 
 } // namespace Qt3DAnimation
