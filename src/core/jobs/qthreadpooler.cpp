@@ -64,6 +64,13 @@ QThreadPooler::QThreadPooler(QObject *parent)
     , m_dependencyHandler(nullptr)
     , m_taskCount(0)
 {
+    const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
+    if (!maxThreadCount.isEmpty()) {
+        bool conversionOK = false;
+        const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
+        if (conversionOK)
+            m_threadPool.setMaxThreadCount(maxThreadCountValue);
+    }
     // Ensures that threads will never be recycled
     m_threadPool.setExpiryTimeout(-1);
 #ifdef QT3D_JOBS_RUN_STATS
