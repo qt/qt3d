@@ -60,7 +60,7 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT QStencilMaskPrivate : public QRenderStateP
 {
 public:
     QStencilMaskPrivate()
-        : QRenderStatePrivate(Render::StencilTestStateMask)
+        : QRenderStatePrivate(Render::StencilWriteStateMask)
         , m_frontOutputMask(0)
         , m_backOutputMask(0)
     {}

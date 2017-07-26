@@ -111,6 +111,14 @@ void AlphaFunc::apply(GraphicsContext* gc) const
     gc->alphaTest(std::get<0>(m_values), std::get<1>(m_values));
 }
 
+void AlphaFunc::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("alphaFunction"))
+        std::get<0>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("referenceValue"))
+        std::get<1>(m_values) = value.toFloat();
+}
+
 void MSAAEnabled::apply(GraphicsContext *gc) const
 {
     gc->setMSAAEnabled(std::get<0>(m_values));
