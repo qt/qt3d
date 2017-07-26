@@ -89,7 +89,8 @@ void QMeshPrivate::updateFunctor()
 {
     Q_Q(QMesh);
     Qt3DCore::QAspectEngine *engine = m_scene ? m_scene->engine() : nullptr;
-    q->setGeometryFactory(QGeometryFactoryPtr(new MeshLoaderFunctor(q, engine)));
+    if (engine)
+        q->setGeometryFactory(QGeometryFactoryPtr(new MeshLoaderFunctor(q, engine)));
 }
 
 /*!
@@ -310,6 +311,7 @@ bool MeshLoaderFunctor::operator ==(const QGeometryFactory &other) const
     if (otherFunctor != nullptr)
         return (otherFunctor->m_sourcePath == m_sourcePath &&
                 otherFunctor->m_sourceData.isEmpty() == m_sourceData.isEmpty() &&
+                otherFunctor->m_meshName == m_meshName &&
                 otherFunctor->m_engine == m_engine);
     return false;
 }
