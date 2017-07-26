@@ -167,10 +167,15 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("geometryFactory")) {
             QGeometryFactoryPtr newFunctor = propertyChange->value().value<QGeometryFactoryPtr>();
-            m_dirty |= !(newFunctor && m_geometryFactory && *newFunctor == *m_geometryFactory);
-            m_geometryFactory = newFunctor;
-            if (m_geometryFactory && m_manager != nullptr)
-                m_manager->addDirtyGeometryRenderer(peerId());
+            const bool functorDirty = ((m_geometryFactory && !newFunctor)
+                                    || (!m_geometryFactory && newFunctor)
+                                    || (m_geometryFactory && newFunctor && !(*newFunctor == *m_geometryFactory)));
+            m_dirty |= functorDirty;
+            if (functorDirty) {
+                m_geometryFactory = newFunctor;
+                if (m_geometryFactory && m_manager != nullptr)
+                    m_manager->addDirtyGeometryRenderer(peerId());
+            }
         } else if (propertyName == QByteArrayLiteral("geometry")) {
             m_geometryId = propertyChange->value().value<Qt3DCore::QNodeId>();
             m_dirty = true;

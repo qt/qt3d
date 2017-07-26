@@ -334,6 +334,17 @@ private Q_SLOTS:
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
 
+        // WHEN we set an identical factory again
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setPropertyName("geometryFactory");
+        Qt3DRender::QGeometryFactoryPtr factory2(new TestFactory(1450));
+        updateChange->setValue(QVariant::fromValue(factory2));
+        renderGeometryRenderer.sceneChangeEvent(updateChange);
+
+        // THEN not dirty and still uses original factory
+        QCOMPARE(renderGeometryRenderer.geometryFactory(), factory);
+        QVERIFY(!renderGeometryRenderer.isDirty());
+
         // WHEN
         DummyGeometry geometry;
         const Qt3DCore::QNodeId geometryId = geometry.id();
