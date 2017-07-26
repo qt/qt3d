@@ -85,6 +85,7 @@ private Q_SLOTS:
         Qt3DRender::QGeometry geometry;
         Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(1200));
         Qt3DRender::Render::GeometryRendererManager geometryRendererManager;
+        TestRenderer renderer;
 
         geometryRenderer.setInstanceCount(1584);
         geometryRenderer.setVertexCount(1609);
@@ -99,6 +100,7 @@ private Q_SLOTS:
         geometryRenderer.setEnabled(false);
 
         // WHEN
+        renderGeometryRenderer.setRenderer(&renderer);
         renderGeometryRenderer.setManager(&geometryRendererManager);
         simulateInitialization(&geometryRenderer, &renderGeometryRenderer);
 
@@ -144,7 +146,7 @@ private Q_SLOTS:
         Qt3DRender::QGeometryRenderer geometryRenderer;
         Qt3DRender::QGeometry geometry;
         Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(1200));
-
+        TestRenderer renderer;
 
         geometryRenderer.setInstanceCount(454);
         geometryRenderer.setVertexCount(350);
@@ -159,6 +161,7 @@ private Q_SLOTS:
         geometryRenderer.setEnabled(true);
 
         // WHEN
+        renderGeometryRenderer.setRenderer(&renderer);
         renderGeometryRenderer.setManager(&geometryRendererManager);
         simulateInitialization(&geometryRenderer, &renderGeometryRenderer);
         renderGeometryRenderer.cleanup();
@@ -374,6 +377,27 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometryRenderer.isEnabled(), true);
         QVERIFY(!renderGeometryRenderer.isDirty());
+    }
+
+    void checkSetRendererDirtyOnInitialization()
+    {
+        // GIVEN
+        Qt3DRender::Render::GeometryRendererManager geometryRendererManager;
+        Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
+        Qt3DRender::QGeometryRenderer geometryRenderer;
+        TestRenderer renderer;
+
+        renderGeometryRenderer.setRenderer(&renderer);
+        renderGeometryRenderer.setManager(&geometryRendererManager);
+
+        // THEN
+        QCOMPARE(renderer.dirtyBits(), 0);
+
+        // WHEN
+        simulateInitialization(&geometryRenderer, &renderGeometryRenderer);
+
+        // THEN
+        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::GeometryDirty);
     }
 };
 

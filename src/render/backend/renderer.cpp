@@ -1461,8 +1461,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
 
     // Add jobs
-    if (dirtyBits() & AbstractRenderer::EntityEnabledDirty)
+    if (dirtyBits() & AbstractRenderer::EntityEnabledDirty) {
         renderBinJobs.push_back(m_updateTreeEnabledJob);
+        m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
+    }
 
     if (dirtyBits() & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_worldTransformJob);

@@ -117,6 +117,7 @@ void Shader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
     m_shaderCode[QShaderProgram::Compute] = data.computeShaderCode;
     m_isLoaded = false;
     updateDNA();
+    markDirty(AbstractRenderer::ShadersDirty);
 }
 
 void Shader::setGraphicsContext(GraphicsContext *context)

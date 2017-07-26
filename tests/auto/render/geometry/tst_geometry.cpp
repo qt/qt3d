@@ -54,6 +54,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Geometry renderGeometry;
+        TestRenderer renderer;
 
         Qt3DRender::QGeometry geometry;
         Qt3DRender::QAttribute attr1;
@@ -66,6 +67,7 @@ private Q_SLOTS:
         geometry.addAttribute(&attr3);
         geometry.addAttribute(&attr4);
         geometry.setBoundingVolumePositionAttribute(&attr1);
+        renderGeometry.setRenderer(&renderer);
 
         // WHEN
         simulateInitialization(&geometry, &renderGeometry);
@@ -80,10 +82,31 @@ private Q_SLOTS:
             QCOMPARE(geometry.attributes().at(i)->id(), renderGeometry.attributes().at(i));
     }
 
-    void checkInitialAndCleanedUpState()
+    void checkSetRendererDirtyOnInitialization()
     {
         // GIVEN
         Qt3DRender::Render::Geometry renderGeometry;
+        Qt3DRender::QGeometry geometry;
+        TestRenderer renderer;
+
+        renderGeometry.setRenderer(&renderer);
+
+        // THEN
+        QCOMPARE(renderer.dirtyBits(), 0);
+
+        // WHEN
+        simulateInitialization(&geometry, &renderGeometry);
+
+        // THEN
+        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+    }
+
+    void checkInitialAndCleanedUpState()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        Qt3DRender::Render::Geometry renderGeometry;
+        renderGeometry.setRenderer(&renderer);
 
         // THEN
         QCOMPARE(renderGeometry.isDirty(), false);

@@ -125,6 +125,7 @@ void GeometryRenderer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBase
         m_manager->addDirtyGeometryRenderer(peerId());
 
     m_dirty = true;
+    markDirty(AbstractRenderer::GeometryDirty);
 }
 
 void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

@@ -1412,6 +1412,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
 
     const GLint attributeDataType = glDataTypeFromAttributeDataType(attribute->vertexBaseType());
     const HGLBuffer glBufferHandle = m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
+    Q_ASSERT(!glBufferHandle.isNull());
     const GLBuffer::Type bufferType = bufferTypeToGLBufferType(buffer->type());
 
     int typeSize = 0;

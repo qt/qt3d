@@ -135,6 +135,7 @@ void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
         m_manager->addDirtyBuffer(peerId());
 
     m_manager->addBufferReference(peerId());
+    markDirty(AbstractRenderer::BuffersDirty);
 }
 
 void Buffer::forceDataUpload()

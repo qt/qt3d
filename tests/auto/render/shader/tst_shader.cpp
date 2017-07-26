@@ -42,6 +42,7 @@ private slots:
     void cleanupLeavesACoherentState();
     void dealWithPropertyChanges_data();
     void dealWithPropertyChanges();
+    void checkSetRendererDirtyOnInitialization();
     void allowToChangeShaderCode_data();
     void allowToChangeShaderCode();
 };
@@ -91,36 +92,40 @@ void tst_RenderShader::hasCoherentInitialState()
 
 void tst_RenderShader::matchesFrontendPeer()
 {
-    Qt3DRender::QShaderProgram *frontend = createFrontendShader();
-    Qt3DRender::Render::Shader *backend = new Qt3DRender::Render::Shader();
+    QScopedPointer<Qt3DRender::QShaderProgram> frontend(createFrontendShader());
+    TestRenderer renderer;
+    Qt3DRender::Render::Shader backend;
 
-    simulateInitialization(frontend, backend);
-    QCOMPARE(backend->isLoaded(), false);
-    QVERIFY(backend->dna() != 0U);
+    backend.setRenderer(&renderer);
+    simulateInitialization(frontend.data(), &backend);
+    QCOMPARE(backend.isLoaded(), false);
+    QVERIFY(backend.dna() != 0U);
 
     for (int i = Qt3DRender::QShaderProgram::Vertex; i <= Qt3DRender::QShaderProgram::Compute; ++i)
-        QCOMPARE(backend->shaderCode()[i],
+        QCOMPARE(backend.shaderCode()[i],
                  frontend->shaderCode( static_cast<const Qt3DRender::QShaderProgram::ShaderType>(i)));
 }
 
 void tst_RenderShader::cleanupLeavesACoherentState()
 {
-    Qt3DRender::QShaderProgram *frontend = createFrontendShader();
-    Qt3DRender::Render::Shader *shader = new Qt3DRender::Render::Shader();
+    QScopedPointer<Qt3DRender::QShaderProgram> frontend(createFrontendShader());
+    TestRenderer renderer;
+    Qt3DRender::Render::Shader shader;
 
-    simulateInitialization(frontend, shader);
+    shader.setRenderer(&renderer);
+    simulateInitialization(frontend.data(), &shader);
 
-    shader->cleanup();
+    shader.cleanup();
 
-    QCOMPARE(shader->isLoaded(), false);
-    QCOMPARE(shader->dna(), 0U);
-    QVERIFY(shader->uniformsNames().isEmpty());
-    QVERIFY(shader->attributesNames().isEmpty());
-    QVERIFY(shader->uniformBlockNames().isEmpty());
-    QVERIFY(shader->uniforms().isEmpty());
-    QVERIFY(shader->attributes().isEmpty());
-    QVERIFY(shader->uniformBlocks().isEmpty());
-    QCOMPARE(shader->status(), Qt3DRender::QShaderProgram::NotReady);
+    QCOMPARE(shader.isLoaded(), false);
+    QCOMPARE(shader.dna(), 0U);
+    QVERIFY(shader.uniformsNames().isEmpty());
+    QVERIFY(shader.attributesNames().isEmpty());
+    QVERIFY(shader.uniformBlockNames().isEmpty());
+    QVERIFY(shader.uniforms().isEmpty());
+    QVERIFY(shader.attributes().isEmpty());
+    QVERIFY(shader.uniformBlocks().isEmpty());
+    QCOMPARE(shader.status(), Qt3DRender::QShaderProgram::NotReady);
 }
 
 void tst_RenderShader::dealWithPropertyChanges_data()
@@ -196,6 +201,25 @@ void tst_RenderShader::dealWithPropertyChanges()
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
     backend.setLoaded(true);
+}
+
+void tst_RenderShader::checkSetRendererDirtyOnInitialization()
+{
+    // GIVEN
+    QScopedPointer<Qt3DRender::QShaderProgram> frontend(createFrontendShader());
+    Qt3DRender::Render::Shader shader;
+    TestRenderer renderer;
+
+    shader.setRenderer(&renderer);
+
+    // THEN
+    QCOMPARE(renderer.dirtyBits(), 0);
+
+    // WHEN
+    simulateInitialization(frontend.data(), &shader);
+
+    // THEN
+    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
 }
 
 void tst_RenderShader::allowToChangeShaderCode_data()
