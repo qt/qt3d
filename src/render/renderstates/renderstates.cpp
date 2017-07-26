@@ -46,6 +46,8 @@
 #include <Qt3DRender/qpointsize.h>
 
 #include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/qstenciloperation_p.h>
+#include <Qt3DRender/private/qstenciltest_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -201,6 +203,19 @@ void StencilTest::apply(GraphicsContext *gc) const
     gc->openGLContext()->functions()->glStencilFuncSeparate(GL_BACK, std::get<3>(m_values), std::get<4>(m_values), std::get<5>(m_values));
 }
 
+void StencilTest::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("arguments")) {
+        const QStencilTestData data = value.value<QStencilTestData>();
+        std::get<0>(m_values) = data.front.stencilFunction;
+        std::get<1>(m_values) = data.front.referenceValue;
+        std::get<2>(m_values) = data.front.comparisonMask;
+        std::get<3>(m_values) = data.back.stencilFunction;
+        std::get<4>(m_values) = data.back.referenceValue;
+        std::get<5>(m_values) = data.back.comparisonMask;
+    }
+}
+
 void AlphaCoverage::apply(GraphicsContext *gc) const
 {
     gc->setAlphaCoverageEnabled(true);
@@ -264,6 +279,19 @@ void StencilOp::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glStencilOpSeparate(GL_FRONT, std::get<0>(m_values), std::get<1>(m_values), std::get<2>(m_values));
     gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, std::get<3>(m_values), std::get<4>(m_values), std::get<5>(m_values));
+}
+
+void StencilOp::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("arguments")) {
+        const QStencilOperationData data = value.value<QStencilOperationData>();
+        std::get<0>(m_values) = data.front.stencilTestFailureOperation;
+        std::get<1>(m_values) = data.front.depthTestFailureOperation;
+        std::get<2>(m_values) = data.front.allTestsPassOperation;
+        std::get<3>(m_values) = data.back.stencilTestFailureOperation;
+        std::get<4>(m_values) = data.back.depthTestFailureOperation;
+        std::get<5>(m_values) = data.back.allTestsPassOperation;
+    }
 }
 
 void StencilMask::apply(GraphicsContext *gc) const

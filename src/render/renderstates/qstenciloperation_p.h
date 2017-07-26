@@ -58,6 +58,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+struct QStencilOperationData
+{
+    QStencilOperationArgumentsData front;
+    QStencilOperationArgumentsData back;
+};
+
 class QT3DRENDERSHARED_PRIVATE_EXPORT QStencilOperationPrivate : public QRenderStatePrivate
 {
 public:
@@ -69,16 +75,15 @@ public:
 
     QStencilOperationArguments *m_front;
     QStencilOperationArguments *m_back;
-};
 
-struct QStencilOperationData
-{
-    QStencilOperationArgumentsData front;
-    QStencilOperationArgumentsData back;
+    void resendArguments();
+    void fillData(QStencilOperationData &data) const;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DRender::QStencilOperationData)
 
 #endif // QT3DRENDER_QSTENCILOPERATION_P_H
