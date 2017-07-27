@@ -165,8 +165,8 @@ class PropertyData:
     def generateKeyframesData(self, outputComponentIndex):
         outputKeyframes = []
 
+        print("generateKeyframesData: fcurveIndices: " + str(self.m_fcurveIndices) + " curve index: " + str(outputComponentIndex))
         # Lookup fcurve index for this component
-        fcurveIndex = self.m_fcurveIndices[outputComponentIndex]
 
         # Invert the sign of the 2nd component of quaternions for rotations
         # We already swap the Y and Z components in the componentSuffix function
@@ -175,6 +175,7 @@ class PropertyData:
             axisOrientationfactor = -1.0
 
         if self.m_dataType == self.m_outputDataType:
+            fcurveIndex = self.m_fcurveIndices[outputComponentIndex]
             # We can take easy route if no data type conversion is needed
             # Iterate over keyframes
             fcurve = self.m_action.fcurves[fcurveIndex]
@@ -300,7 +301,7 @@ class Qt3DAnimationConverter:
 
             lastTitle = ""
             property = PropertyData()
-            for fcurveIndex,fcurve in enumerate(action.fcurves):
+            for fcurveIndex, fcurve in enumerate(action.fcurves):
                 title = fcurve.data_path.title()
 
                 # For debugging
@@ -310,12 +311,6 @@ class Qt3DAnimationConverter:
                 dataPath = fcurve.data_path
                 type = resolveDataType(resolverObject, dataPath)
                 labelSuffix = componentSuffix("Vector", fcurve.array_index)
-                print("        " + str(fcurveIndex) + ": Group: " + groupName \
-                    + ", Title = " + title \
-                    + ", Component:" + str(fcurve.array_index) \
-                    + ", Data Path: " + dataPath \
-                    + ", Data Type: " + type \
-                    + ", Label: " + labelSuffix)
 
                 # Create a new PropertyData if this fcurve is for a new property
                 if title != lastTitle:
@@ -332,11 +327,19 @@ class Qt3DAnimationConverter:
                     property.m_componentIndices.append(fcurve.array_index)
                     property.m_fcurveIndices.append(fcurveIndex)
 
+                print("        " + str(fcurveIndex) + ": Group: " + groupName \
+                    + ", Title = " + title \
+                    + ", Component:" + str(fcurve.array_index) \
+                    + ", Data Path: " + dataPath \
+                    + ", Data Type: " + type \
+                    + ", Label: " + labelSuffix \
+                    + ", fCurveIndices: " + str(property.m_fcurveIndices))
+
                 lastTitle = title
             print("")
 
         # For debugging
-        print("Pass 1 - Collected data for " + str(len(propertyDataMap)) + " actions")
+        print("animationsToJson: Pass 1 - Collected data for " + str(len(propertyDataMap)) + " actions")
         actionIndex = 0
         for key in propertyDataMap:
             print(str(actionIndex) + ": " + key + " has " + str(len(propertyDataMap[key])) + " properties")
@@ -345,6 +348,7 @@ class Qt3DAnimationConverter:
             actionIndex =  actionIndex + 1
 
         # Pass 2
+        print("animationsToJson: Pass 2")
 
         # The data structure that will be exported
         output = {"animations": []}
@@ -370,6 +374,7 @@ class Qt3DAnimationConverter:
             output["animations"].append(outputAction)
             actionIndex =  actionIndex + 1
 
+        print("animationsToJson: Generating JSON data")
         jsonData = json.dumps(output, indent=2, sort_keys=True, separators=(',', ': '))
         return jsonData
 
