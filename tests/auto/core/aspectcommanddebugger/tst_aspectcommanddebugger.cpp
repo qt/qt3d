@@ -29,16 +29,13 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
 
-#ifdef QT3D_JOBS_RUN_STATS
 using namespace Qt3DCore::Debug;
-#endif
 
 class tst_AspectCommandDebugger : public QObject
 {
     Q_OBJECT
 
 private slots:
-#ifdef QT3D_JOBS_RUN_STATS
     void checkReadBufferInitialState()
     {
         // GIVEN
@@ -92,7 +89,6 @@ private slots:
         QCOMPARE(buffer.size(), 16 * 1024);
         QCOMPARE(hugeFakeData, QByteArray(buffer.buffer.constData(), 1024 * 16));
     }
-#endif
 };
 
 QTEST_APPLESS_MAIN(tst_AspectCommandDebugger)

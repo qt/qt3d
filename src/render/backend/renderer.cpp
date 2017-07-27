@@ -90,12 +90,11 @@
 #include <Qt3DRender/private/renderviewbuilder_p.h>
 
 #include <Qt3DRender/qcameralens.h>
-#include <Qt3DCore/qt3dcore-config.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
-#if defined(QT3D_JOBS_RUN_STATS)
+#if QT_CONFIG(qt3d_profile_jobs)
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
 #endif
 
@@ -116,7 +115,7 @@
 #include <QThread>
 
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
 #include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/commandexecuter_p.h>
@@ -188,7 +187,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
-    #ifdef QT3D_JOBS_RUN_STATS
+    #if QT_CONFIG(qt3d_profile_jobs)
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
 {
@@ -574,7 +573,7 @@ void Renderer::doRender()
     if (canSubmit && (queueIsComplete && !queueIsEmpty)) {
         const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
         // Save start of frame
         JobRunStats submissionStatsPart1;
         JobRunStats submissionStatsPart2;
@@ -618,7 +617,7 @@ void Renderer::doRender()
             m_vsyncFrameAdvanceService->proceedToNextFrame();
             hasCleanedQueueAndProceeded = true;
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
             if (preprocessingComplete) {
                 submissionStatsPart2.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
                 submissionStatsPart1.endTime = submissionStatsPart2.startTime;
@@ -636,7 +635,7 @@ void Renderer::doRender()
             }
         }
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
         // Execute the pending shell commands
         m_commandExecuter->performAsynchronousCommandExecution(renderViews);
 #endif
@@ -645,7 +644,7 @@ void Renderer::doRender()
         // that were used for their allocation
         qDeleteAll(renderViews);
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
         if (preprocessingComplete) {
             // Save submission elapsed time
             submissionStatsPart2.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
@@ -754,7 +753,7 @@ bool Renderer::isReadyToSubmit()
 // Main thread
 QVariant Renderer::executeCommand(const QStringList &args)
 {
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
     return m_commandExecuter->executeCommand(args);
 #else
     Q_UNUSED(args);

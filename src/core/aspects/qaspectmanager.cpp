@@ -289,7 +289,7 @@ void QAspectManager::exec()
             //
             // Doing this as the first call in the new frame ensures the lock free approach works
             // without any such data race.
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
             const quint32 arbiterId = 4096;
             JobRunStats changeArbiterStats;
             changeArbiterStats.jobId.typeAndInstance[0] = arbiterId;
@@ -298,7 +298,7 @@ void QAspectManager::exec()
             changeArbiterStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
 #endif
             m_changeArbiter->syncChanges();
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
             changeArbiterStats.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
             QThreadPooler::addJobLogStatsEntry(changeArbiterStats);
 #endif

@@ -42,6 +42,7 @@
 
 #include <QOpenGLTimeMonitor>
 #include <Qt3DCore/private/qthreadpooler_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <memory>
 
 QT_BEGIN_NAMESPACE
@@ -69,7 +70,7 @@ enum RecordingType
     RenderTargetUpdate
 };
 
-#ifdef QT3D_OPENGL_RUN_STATS
+#if QT_CONFIG(qt3d_profile_gl)
 
 class FrameTimeRecorder
 {
@@ -218,14 +219,14 @@ public:
     explicit GLTimeRecorder(RecordingType type)
         : m_type(type)
     {
-#ifdef QT3D_OPENGL_RUN_STATS
+#if QT_CONFIG(qt3d_profile_gl)
         frameProfiler.startRecordEvent();
 #endif
     }
 
     ~GLTimeRecorder()
     {
-#ifdef QT3D_OPENGL_RUN_STATS
+#if QT_CONFIG(qt3d_profile_gl)
         frameProfiler.recordEvent(m_type);
 #else
         Q_UNUSED(m_type);
@@ -234,19 +235,19 @@ public:
 
     static void writeResults()
     {
-#ifdef QT3D_OPENGL_RUN_STATS
+#if QT_CONFIG(qt3d_profile_gl)
         frameProfiler.writeResults();
 #endif
     }
 
 private:
-#ifdef QT3D_OPENGL_RUN_STATS
+#if QT_CONFIG(qt3d_profile_gl)
     static FrameProfiler frameProfiler;
 #endif
     RecordingType m_type;
 };
 
-#ifdef QT3D_OPENGL_RUN_STATS
+#if QT_CONFIG(qt3d_profile_gl)
 FrameProfiler GLTimeRecorder::frameProfiler;
 #endif
 

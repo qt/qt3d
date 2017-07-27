@@ -38,10 +38,10 @@
 ****************************************************************************/
 
 #include "qthreadpooler_p.h"
-#include <Qt3DCore/qt3dcore-config.h>
 #include <QtCore/QDebug>
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
+#include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
 #include <QtCore/QThreadStorage>
 #include <QtCore/QDateTime>
@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
 QElapsedTimer QThreadPooler::m_jobsStatTimer;
 #endif
 
@@ -73,7 +73,7 @@ QThreadPooler::QThreadPooler(QObject *parent)
     }
     // Ensures that threads will never be recycled
     m_threadPool.setExpiryTimeout(-1);
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
     QThreadPooler::m_jobsStatTimer.start();
 #endif
 }
@@ -178,7 +178,7 @@ int QThreadPooler::maxThreadCount() const
     return m_threadPool.maxThreadCount();
 }
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
 
 QThreadStorage<QVector<JobRunStats> *> jobStatsCached;
 

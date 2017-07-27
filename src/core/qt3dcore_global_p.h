@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/private/qt3dcore-config_p.h>
 
 #define QT3DCORE_PRIVATE_EXPORT QT3DCORESHARED_EXPORT
 

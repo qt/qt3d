@@ -20,6 +20,8 @@ qtConfig(private_tests) {
     qframeallocator \
     qtransform \
     threadpooler \
-    aspectcommanddebugger \
     qpostman
+
+    QT_FOR_CONFIG += 3dcore-private
+    qtConfig(qt3d-profile-jobs): SUBDIRS += aspectcommanddebugger
 }

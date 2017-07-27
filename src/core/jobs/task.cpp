@@ -70,7 +70,7 @@ AspectTaskRunnable::~AspectTaskRunnable()
 void AspectTaskRunnable::run()
 {
     if (m_job) {
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
         QAspectJobPrivate *jobD = QAspectJobPrivate::get(m_job.data());
         if (m_pooler) {
             jobD->m_stats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
@@ -78,7 +78,7 @@ void AspectTaskRunnable::run()
         }
 #endif
         m_job->run();
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
         if (m_pooler) {
             jobD->m_stats.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
             // Add current job's stats to log output

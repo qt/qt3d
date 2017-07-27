@@ -41,18 +41,12 @@
         "qt3d-profile-jobs": {
             "label": "Output Qt3D Job traces",
             "autoDetect": false,
-            "output": [
-                "privateFeature",
-                { "type": "define", "name": "QT3D_JOBS_RUN_STATS", "value": 1 }
-            ]
+            "output": [ "privateFeature" ]
         },
         "qt3d-profile-gl": {
             "label": "Output Qt3D GL traces",
             "autoDetect": false,
-            "output": [
-                "privateFeature",
-                { "type": "define", "name": "QT3D_OPENGL_RUN_STATS", "value": 1 }
-            ]
+            "output": [ "privateFeature" ]
         },
         "qt3d-render": {
             "label": "Render aspect",

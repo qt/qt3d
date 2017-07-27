@@ -62,7 +62,7 @@ namespace Qt3DCore {
 
 class QAspectJob;
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
 struct FrameHeader
 {
     FrameHeader()
@@ -111,14 +111,14 @@ public:
     static QAspectJobPrivate *get(QAspectJob *job);
 
     QVector<QWeakPointer<QAspectJob> > m_dependencies;
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
     JobRunStats m_stats;
 #endif
 };
 
 } // Qt3D
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
 
 #include <Qt3DCore/private/qaspectjob_p.h>
 

@@ -61,7 +61,7 @@
 #include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/private/task_p.h>
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
 #include <QtCore/QElapsedTimer>
 #endif
 
@@ -84,7 +84,7 @@ public:
     void setDependencyHandler(DependencyHandler *handler);
 
     int maxThreadCount() const;
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
     static QElapsedTimer m_jobsStatTimer;
 
     // Aspects + Job threads

@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore-config.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <QtCore/qsharedpointer.h>
 
@@ -69,11 +69,11 @@ class QAspectThread;
 class QPostman;
 class QScene;
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
 namespace Debug {
 class AspectCommandDebugger;
 } // Debug
-#endif // QT3D_JOBS_RUN_STATS
+#endif
 
 class QT3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate
 {
@@ -92,9 +92,9 @@ public:
     QHash<QString, QAbstractAspect *> m_namedAspects;
     bool m_initialized;
 
-#ifdef QT3D_JOBS_RUN_STATS
+#if QT_CONFIG(qt3d_profile_jobs)
     Debug::AspectCommandDebugger *m_commandDebugger;
-#endif // QT3D_JOBS_RUN_STATS
+#endif
 
     void initialize();
     void shutdown();
