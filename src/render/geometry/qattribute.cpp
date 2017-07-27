@@ -450,6 +450,24 @@ QString QAttribute::defaultTangentAttributeName()
     return QStringLiteral("vertexTangent");
 }
 
+/*!
+ * \brief QAttribute::defaultJointIndicesAttributeName
+ * \return the name of the default joint indices attribute
+ */
+QString QAttribute::defaultJointIndicesAttributeName()
+{
+    return QStringLiteral("vertexJointIndices");
+}
+
+/*!
+ * \brief QAttribute::defaultJointIndicesAttributeName
+ * \return the name of the default joint weights attribute
+ */
+QString QAttribute::defaultJointWeightsAttributeName()
+{
+    return QStringLiteral("vertexJointWeights");
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QAttribute::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAttributeData>::create(this);

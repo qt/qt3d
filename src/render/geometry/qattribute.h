@@ -70,6 +70,8 @@ class QT3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
     Q_PROPERTY(QString defaultColorAttributeName READ defaultColorAttributeName CONSTANT)
     Q_PROPERTY(QString defaultTextureCoordinateAttributeName READ defaultTextureCoordinateAttributeName CONSTANT)
     Q_PROPERTY(QString defaultTangentAttributeName READ defaultTangentAttributeName CONSTANT)
+    Q_PROPERTY(QString defaultJointIndicesAttributeName READ defaultJointIndicesAttributeName CONSTANT REVISION 10)
+    Q_PROPERTY(QString defaultJointWeightsAttributeName READ defaultJointWeightsAttributeName CONSTANT REVISION 10)
 
 public:
     enum AttributeType {
@@ -113,6 +115,8 @@ public:
     Q_INVOKABLE static QString defaultColorAttributeName();
     Q_INVOKABLE static QString defaultTextureCoordinateAttributeName();
     Q_INVOKABLE static QString defaultTangentAttributeName();
+    static QString defaultJointIndicesAttributeName();
+    static QString defaultJointWeightsAttributeName();
 
 public Q_SLOTS:
     void setBuffer(QBuffer *buffer);

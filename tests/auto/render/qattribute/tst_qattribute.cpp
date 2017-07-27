@@ -58,6 +58,8 @@ private Q_SLOTS:
         QCOMPARE(Qt3DRender::QAttribute::defaultColorAttributeName(), QStringLiteral("vertexColor"));
         QCOMPARE(Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(), QStringLiteral("vertexTexCoord"));
         QCOMPARE(Qt3DRender::QAttribute::defaultTangentAttributeName(), QStringLiteral("vertexTangent"));
+        QCOMPARE(Qt3DRender::QAttribute::defaultJointIndicesAttributeName(), QStringLiteral("vertexJointIndices"));
+        QCOMPARE(Qt3DRender::QAttribute::defaultJointWeightsAttributeName(), QStringLiteral("vertexJointWeights"));
 
         QCOMPARE(attribute.property("defaultPositionAttributeName").toString(),
                  Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -69,6 +71,10 @@ private Q_SLOTS:
                  Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName());
         QCOMPARE(attribute.property("defaultTangentAttributeName").toString(),
                  Qt3DRender::QAttribute::defaultTangentAttributeName());
+        QCOMPARE(attribute.property("defaultJointIndicesAttributeName").toString(),
+                 Qt3DRender::QAttribute::defaultJointIndicesAttributeName());
+        QCOMPARE(attribute.property("defaultJointWeightsAttributeName").toString(),
+                 Qt3DRender::QAttribute::defaultJointWeightsAttributeName());
     }
 
     void checkCloning_data()
