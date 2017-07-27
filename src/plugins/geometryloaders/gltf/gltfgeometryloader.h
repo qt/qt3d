@@ -110,11 +110,26 @@ class GLTFGeometryLoader : public QGeometryLoaderInterface
         explicit AccessorData(const QJsonObject &json);
 
         QString bufferViewName;
+        int bufferViewIndex;
         QAttribute::VertexBaseType type;
         uint dataSize;
         int count;
         int offset;
         int stride;
+    };
+
+    struct Gltf1
+    {
+        QHash<QString, AccessorData> m_accessorDict;
+        QHash<QString, BufferData> m_bufferDatas;
+        QHash<QString, Qt3DRender::QBuffer*> m_buffers;
+    };
+
+    struct Gltf2
+    {
+        QVector<BufferData> m_bufferDatas;
+        QVector<Qt3DRender::QBuffer*> m_buffers;
+        QVector<AccessorData> m_accessors;
     };
 
     Q_OBJECT
@@ -133,6 +148,8 @@ protected:
     static QString standardAttributeNameFromSemantic(const QString &semantic);
 
     void parse();
+    void parseGLTF1();
+    void parseGLTF2();
     void cleanup();
 
     void processJSONBuffer(const QString &id, const QJsonObject &json);
@@ -142,6 +159,14 @@ protected:
 
     void loadBufferData();
     void unloadBufferData();
+
+    void processJSONBufferV2(const QJsonObject &json);
+    void processJSONBufferViewV2(const QJsonObject &json);
+    void processJSONAccessorV2(const QJsonObject &json);
+    void processJSONMeshV2(const QJsonObject &json);
+
+    void loadBufferDataV2();
+    void unloadBufferDataV2();
 
     QByteArray resolveLocalData(const QString &path) const;
 
@@ -153,10 +178,8 @@ private:
     QString m_basePath;
     QString m_mesh;
 
-    QHash<QString, AccessorData> m_accessorDict;
-
-    QHash<QString, BufferData> m_bufferDatas;
-    QHash<QString, Qt3DRender::QBuffer*> m_buffers;
+    Gltf1 m_gltf1;
+    Gltf2 m_gltf2;
 
     QGeometry *m_geometry;
 };

@@ -42,6 +42,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
+#include <QtCore/QVersionNumber>
 
 #include <QtGui/QOpenGLTexture>
 
@@ -59,6 +60,7 @@ namespace Qt3DRender {
 
 Q_LOGGING_CATEGORY(GLTFGeometryLoaderLog, "Qt3D.GLTFGeometryLoader", QtWarningMsg)
 
+#define KEY_ASSET        QLatin1String("asset")
 #define KEY_ACCESSORS    QLatin1String("accessors")
 #define KEY_ATTRIBUTES   QLatin1String("attributes")
 #define KEY_BUFFER       QLatin1String("buffer")
@@ -75,6 +77,7 @@ Q_LOGGING_CATEGORY(GLTFGeometryLoaderLog, "Qt3D.GLTFGeometryLoader", QtWarningMs
 #define KEY_TARGET       QLatin1String("target")
 #define KEY_TYPE         QLatin1String("type")
 #define KEY_URI          QLatin1String("uri")
+#define KEY_VERSION      QLatin1String("version")
 
 #define KEY_BUFFER_VIEW         QLatin1String("bufferView")
 #define KEY_BUFFER_VIEWS        QLatin1String("bufferViews")
@@ -147,6 +150,7 @@ GLTFGeometryLoader::AccessorData::AccessorData()
 
 GLTFGeometryLoader::AccessorData::AccessorData(const QJsonObject &json)
     : bufferViewName(json.value(KEY_BUFFER_VIEW).toString())
+    , bufferViewIndex(json.value(KEY_BUFFER_VIEW).toInt(-1))
     , type(accessorTypeFromJSON(json.value(KEY_COMPONENT_TYPE).toInt()))
     , dataSize(accessorDataSizeFromJson(json.value(KEY_TYPE).toString()))
     , count(json.value(KEY_COUNT).toInt())
@@ -192,10 +196,32 @@ QString GLTFGeometryLoader::standardAttributeNameFromSemantic(const QString &sem
     if (semantic.startsWith(QLatin1String("TANGENT")))
         return QAttribute::defaultTangentAttributeName();
 
+    // TODO: Support skins
+
     return QString();
 }
 
 void GLTFGeometryLoader::parse()
+{
+    // Find the glTF version
+    const QJsonObject asset = m_json.object().value(KEY_ASSET).toObject();
+    const QString versionString = asset.value(KEY_VERSION).toString();
+    const auto version = QVersionNumber::fromString(versionString);
+    switch (version.majorVersion()) {
+    case 1:
+        parseGLTF1();
+        break;
+
+    case 2:
+        parseGLTF2();
+        break;
+
+    default:
+        qWarning() << "Unsupported version of glTF" << versionString;
+    }
+}
+
+void GLTFGeometryLoader::parseGLTF1()
 {
     const QJsonObject buffers = m_json.object().value(KEY_BUFFERS).toObject();
     for (auto it = buffers.begin(), end = buffers.end(); it != end; ++it)
@@ -220,24 +246,54 @@ void GLTFGeometryLoader::parse()
     }
 }
 
+void GLTFGeometryLoader::parseGLTF2()
+{
+    const QJsonArray buffers = m_json.object().value(KEY_BUFFERS).toArray();
+    for (auto it = buffers.begin(), end = buffers.end(); it != end; ++it)
+        processJSONBufferV2(it->toObject());
+
+    const QJsonArray views = m_json.object().value(KEY_BUFFER_VIEWS).toArray();
+    loadBufferDataV2();
+    for (auto it = views.begin(), end = views.end(); it != end; ++it)
+        processJSONBufferViewV2(it->toObject());
+    unloadBufferDataV2();
+
+    const QJsonArray attrs = m_json.object().value(KEY_ACCESSORS).toArray();
+    for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it)
+        processJSONAccessorV2(it->toObject());
+
+    const QJsonArray meshes = m_json.object().value(KEY_MESHES).toArray();
+    for (auto it = meshes.begin(), end = meshes.end(); it != end && !m_geometry; ++it) {
+        const QJsonObject &mesh = it->toObject();
+        if (m_mesh.isEmpty() || m_mesh.compare(mesh.value(KEY_NAME).toString(), Qt::CaseInsensitive) == 0)
+            processJSONMeshV2(mesh);
+    }
+}
+
 void GLTFGeometryLoader::cleanup()
 {
     m_geometry = nullptr;
-    m_accessorDict.clear();
-    m_buffers.clear();
+    m_gltf1.m_accessorDict.clear();
+    m_gltf1.m_buffers.clear();
 }
 
 void GLTFGeometryLoader::processJSONBuffer(const QString &id, const QJsonObject &json)
 {
     // simply cache buffers for lookup by buffer-views
-    m_bufferDatas[id] = BufferData(json);
+    m_gltf1.m_bufferDatas[id] = BufferData(json);
+}
+
+void GLTFGeometryLoader::processJSONBufferV2(const QJsonObject &json)
+{
+    // simply cache buffers for lookup by buffer-views
+    m_gltf2.m_bufferDatas.push_back(BufferData(json));
 }
 
 void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObject &json)
 {
     QString bufName = json.value(KEY_BUFFER).toString();
-    const auto it = qAsConst(m_bufferDatas).find(bufName);
-    if (Q_UNLIKELY(it == m_bufferDatas.cend())) {
+    const auto it = qAsConst(m_gltf1.m_bufferDatas).find(bufName);
+    if (Q_UNLIKELY(it == m_gltf1.m_bufferDatas.cend())) {
         qCWarning(GLTFGeometryLoaderLog, "unknown buffer: %ls processing view: %ls",
                   qUtf16PrintableImpl(bufName), qUtf16PrintableImpl(id));
         return;
@@ -273,12 +329,57 @@ void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObj
 
     Qt3DRender::QBuffer *b(new Qt3DRender::QBuffer(ty));
     b->setData(bytes);
-    m_buffers[id] = b;
+    m_gltf1.m_buffers[id] = b;
+}
+
+void GLTFGeometryLoader::processJSONBufferViewV2(const QJsonObject &json)
+{
+    const int bufferIndex = json.value(KEY_BUFFER).toInt();
+    if (Q_UNLIKELY(bufferIndex) >= m_gltf2.m_bufferDatas.size()) {
+        qCWarning(GLTFGeometryLoaderLog, "unknown buffer: %d processing view", bufferIndex);
+        return;
+    }
+    const auto bufferData = m_gltf2.m_bufferDatas[bufferIndex];
+
+    int target = json.value(KEY_TARGET).toInt();
+    Qt3DRender::QBuffer::BufferType ty(Qt3DRender::QBuffer::VertexBuffer);
+
+    switch (target) {
+    case GL_ARRAY_BUFFER:           ty = Qt3DRender::QBuffer::VertexBuffer; break;
+    case GL_ELEMENT_ARRAY_BUFFER:   ty = Qt3DRender::QBuffer::IndexBuffer; break;
+    default:
+        qCWarning(GLTFGeometryLoaderLog, "buffer %d unsupported target: %d",
+                  bufferIndex, target);
+        return;
+    }
+
+    quint64 offset = 0;
+    const auto byteOffset = json.value(KEY_BYTE_OFFSET);
+    if (!byteOffset.isUndefined()) {
+        offset = byteOffset.toInt();
+        qCDebug(GLTFGeometryLoaderLog, "bufferview has offset: %lld", offset);
+    }
+
+    const quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
+    QByteArray bytes = bufferData.data->mid(offset, len);
+    if (Q_UNLIKELY(bytes.count() != int(len))) {
+        qCWarning(GLTFGeometryLoaderLog, "failed to read sufficient bytes from: %ls for view",
+                  qUtf16PrintableImpl(bufferData.path));
+    }
+
+    Qt3DRender::QBuffer *b(new Qt3DRender::QBuffer(ty));
+    b->setData(bytes);
+    m_gltf2.m_buffers.push_back(b);
 }
 
 void GLTFGeometryLoader::processJSONAccessor(const QString &id, const QJsonObject &json)
 {
-    m_accessorDict[id] = AccessorData(json);
+    m_gltf1.m_accessorDict[id] = AccessorData(json);
+}
+
+void GLTFGeometryLoader::processJSONAccessorV2(const QJsonObject &json)
+{
+    m_gltf2.m_accessors.push_back(AccessorData(json));
 }
 
 void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &json)
@@ -299,8 +400,8 @@ void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &j
         const QJsonObject attrs = primitiveObject.value(KEY_ATTRIBUTES).toObject();
         for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it) {
             QString k = it.value().toString();
-            const auto accessorIt = qAsConst(m_accessorDict).find(k);
-            if (Q_UNLIKELY(accessorIt == m_accessorDict.cend())) {
+            const auto accessorIt = qAsConst(m_gltf1.m_accessorDict).find(k);
+            if (Q_UNLIKELY(accessorIt == m_gltf1.m_accessorDict.cend())) {
                 qCWarning(GLTFGeometryLoaderLog, "unknown attribute accessor: %ls on mesh %ls",
                           qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
                 continue;
@@ -312,7 +413,7 @@ void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &j
                 attributeName = attrName;
 
             //Get buffer handle for accessor
-            Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
+            Qt3DRender::QBuffer *buffer = m_gltf1.m_buffers.value(accessorIt->bufferViewName, nullptr);
             if (Q_UNLIKELY(!buffer)) {
                 qCWarning(GLTFGeometryLoaderLog, "unknown buffer-view: %ls processing accessor: %ls",
                           qUtf16PrintableImpl(accessorIt->bufferViewName), qUtf16PrintableImpl(id));
@@ -333,13 +434,13 @@ void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &j
         const auto indices = primitiveObject.value(KEY_INDICES);
         if (!indices.isUndefined()) {
             QString k = indices.toString();
-            const auto accessorIt = qAsConst(m_accessorDict).find(k);
-            if (Q_UNLIKELY(accessorIt == m_accessorDict.cend())) {
+            const auto accessorIt = qAsConst(m_gltf1.m_accessorDict).find(k);
+            if (Q_UNLIKELY(accessorIt == m_gltf1.m_accessorDict.cend())) {
                 qCWarning(GLTFGeometryLoaderLog, "unknown index accessor: %ls on mesh %ls",
                           qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
             } else {
                 //Get buffer handle for accessor
-                Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
+                Qt3DRender::QBuffer *buffer = m_gltf1.m_buffers.value(accessorIt->bufferViewName, nullptr);
                 if (Q_UNLIKELY(!buffer)) {
                     qCWarning(GLTFGeometryLoaderLog, "unknown buffer-view: %ls processing accessor: %ls",
                               qUtf16PrintableImpl(accessorIt->bufferViewName), qUtf16PrintableImpl(id));
@@ -363,9 +464,85 @@ void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &j
     } // of primitives iteration
 }
 
+void GLTFGeometryLoader::processJSONMeshV2(const QJsonObject &json)
+{
+    const QJsonArray primitivesArray = json.value(KEY_PRIMITIVES).toArray();
+    for (const QJsonValue &primitiveValue : primitivesArray) {
+        QJsonObject primitiveObject = primitiveValue.toObject();
+
+        QGeometry *meshGeometry = new QGeometry;
+
+        const QJsonObject attrs = primitiveObject.value(KEY_ATTRIBUTES).toObject();
+        for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it) {
+            const int accessorIndex = it.value().toInt();
+            if (Q_UNLIKELY(accessorIndex >= m_gltf2.m_accessors.size())) {
+                qCWarning(GLTFGeometryLoaderLog, "unknown attribute accessor: %d on mesh %ls",
+                          accessorIndex, qUtf16PrintableImpl(json.value(KEY_NAME).toString()));
+                continue;
+            }
+            const auto &accessor = m_gltf2.m_accessors[accessorIndex];
+
+            const QString attrName = it.key();
+            QString attributeName = standardAttributeNameFromSemantic(attrName);
+            if (attributeName.isEmpty())
+                attributeName = attrName;
+
+            // Get buffer handle for accessor
+            if (Q_UNLIKELY(accessor.bufferViewIndex >= m_gltf2.m_buffers.size())) {
+                qCWarning(GLTFGeometryLoaderLog, "unknown buffer-view: %d processing accessor: %ls",
+                          accessor.bufferViewIndex, qUtf16PrintableImpl(json.value(KEY_NAME).toString()));
+                continue;
+            }
+            Qt3DRender::QBuffer *buffer = m_gltf2.m_buffers[accessor.bufferViewIndex];
+
+            QAttribute *attribute = new QAttribute(buffer,
+                                                   attributeName,
+                                                   accessor.type,
+                                                   accessor.dataSize,
+                                                   accessor.count,
+                                                   accessor.offset,
+                                                   accessor.stride);
+            attribute->setAttributeType(QAttribute::VertexAttribute);
+            meshGeometry->addAttribute(attribute);
+        }
+
+        const auto indices = primitiveObject.value(KEY_INDICES);
+        if (!indices.isUndefined()) {
+            const int accessorIndex = indices.toInt();
+            if (Q_UNLIKELY(accessorIndex >= m_gltf2.m_accessors.size())) {
+                qCWarning(GLTFGeometryLoaderLog, "unknown index accessor: %d on mesh %ls",
+                          accessorIndex, qUtf16PrintableImpl(json.value(KEY_NAME).toString()));
+            } else {
+                const auto &accessor = m_gltf2.m_accessors[accessorIndex];
+
+                //Get buffer handle for accessor
+                if (Q_UNLIKELY(accessor.bufferViewIndex >= m_gltf2.m_buffers.size())) {
+                    qCWarning(GLTFGeometryLoaderLog, "unknown buffer-view: %d processing accessor: %ls",
+                              accessor.bufferViewIndex, qUtf16PrintableImpl(json.value(KEY_NAME).toString()));
+                    continue;
+                }
+                Qt3DRender::QBuffer *buffer = m_gltf2.m_buffers[accessor.bufferViewIndex];
+
+                QAttribute *attribute = new QAttribute(buffer,
+                                                       accessor.type,
+                                                       accessor.dataSize,
+                                                       accessor.count,
+                                                       accessor.offset,
+                                                       accessor.stride);
+                attribute->setAttributeType(QAttribute::IndexAttribute);
+                meshGeometry->addAttribute(attribute);
+            }
+        } // of has indices
+
+        m_geometry = meshGeometry;
+
+        break;
+    } // of primitives iteration
+}
+
 void GLTFGeometryLoader::loadBufferData()
 {
-    for (auto &bufferData : m_bufferDatas) {
+    for (auto &bufferData : m_gltf1.m_bufferDatas) {
         if (!bufferData.data) {
             bufferData.data = new QByteArray(resolveLocalData(bufferData.path));
         }
@@ -374,7 +551,23 @@ void GLTFGeometryLoader::loadBufferData()
 
 void GLTFGeometryLoader::unloadBufferData()
 {
-    for (const auto &bufferData : qAsConst(m_bufferDatas)) {
+    for (const auto &bufferData : qAsConst(m_gltf1.m_bufferDatas)) {
+        QByteArray *data = bufferData.data;
+        delete data;
+    }
+}
+
+void GLTFGeometryLoader::loadBufferDataV2()
+{
+    for (auto &bufferData : m_gltf2.m_bufferDatas) {
+        if (!bufferData.data)
+            bufferData.data = new QByteArray(resolveLocalData(bufferData.path));
+    }
+}
+
+void GLTFGeometryLoader::unloadBufferDataV2()
+{
+    for (const auto &bufferData : qAsConst(m_gltf2.m_bufferDatas)) {
         QByteArray *data = bufferData.data;
         delete data;
     }
