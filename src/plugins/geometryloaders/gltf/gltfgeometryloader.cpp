@@ -195,8 +195,10 @@ QString GLTFGeometryLoader::standardAttributeNameFromSemantic(const QString &sem
         return QAttribute::defaultColorAttributeName();
     if (semantic.startsWith(QLatin1String("TANGENT")))
         return QAttribute::defaultTangentAttributeName();
-
-    // TODO: Support skins
+    if (semantic.startsWith(QLatin1String("JOINTS")))
+        return QAttribute::defaultJointIndicesAttributeName();
+    if (semantic.startsWith(QLatin1String("WEIGHTS")))
+        return QAttribute::defaultJointWeightsAttributeName();
 
     return QString();
 }
