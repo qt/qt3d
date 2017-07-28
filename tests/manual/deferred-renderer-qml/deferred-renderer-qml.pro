@@ -12,6 +12,8 @@ OTHER_FILES += \
     DeferredRenderer.qml \
     FinalEffect.qml \
     SceneEffect.qml \
+    SceneEntity.qml \
+    ScreenQuadEntity.qml \
     GBuffer.qml
 
 RESOURCES += \
