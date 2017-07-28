@@ -51,7 +51,8 @@ SUBDIRS += \
     mesh-morphing \
     anim-viewer \
     animation-keyframe-programmatic \
-    layerfilter-qml
+    layerfilter-qml \
+    skinned-mesh
 
 qtHaveModule(widgets): {
     SUBDIRS += \
