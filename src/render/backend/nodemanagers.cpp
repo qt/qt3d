@@ -47,6 +47,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/armature_p.h>
+#include <Qt3DRender/private/skeleton_p.h>
 #include <private/resourceaccessor_p.h>
 
 #include <QOpenGLVertexArrayObject>
@@ -95,6 +96,7 @@ NodeManagers::NodeManagers()
     , m_computeJobManager(new ComputeCommandManager())
     , m_renderStateManager(new RenderStateManager())
     , m_armatureManager(new ArmatureManager())
+    , m_skeletonManager(new SkeletonManager())
     , m_resourceAccessor(new ResourceAccessor(this))
 {
 }
@@ -356,6 +358,12 @@ template<>
 ArmatureManager *NodeManagers::manager<Armature>() const Q_DECL_NOTHROW
 {
     return m_armatureManager;
+}
+
+template<>
+SkeletonManager *NodeManagers::manager<Skeleton>() const Q_DECL_NOTHROW
+{
+    return m_skeletonManager;
 }
 
 } // Render

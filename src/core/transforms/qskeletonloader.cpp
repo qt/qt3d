@@ -40,6 +40,7 @@
 #include "qskeletonloader.h"
 #include "qskeletonloader_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/private/qskeletoncreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,6 +51,7 @@ QSkeletonLoaderPrivate::QSkeletonLoaderPrivate()
     , m_source()
     , m_status(QSkeletonLoader::NotReady)
 {
+    m_type = QSkeletonCreatedChangeBase::SkeletonLoader;
 }
 
 void QSkeletonLoaderPrivate::setStatus(QSkeletonLoader::Status status)
@@ -190,7 +192,7 @@ void QSkeletonLoader::sceneChangeEvent(const QSceneChangePtr &change)
 /*! \internal */
 Qt3DCore::QNodeCreatedChangeBasePtr QSkeletonLoader::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QSkeletonLoaderData>::create(this);
+    auto creationChange = QSkeletonCreatedChangePtr<QSkeletonLoaderData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QSkeletonLoader);
     data.source = d->m_source;

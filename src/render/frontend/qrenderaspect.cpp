@@ -85,6 +85,7 @@
 #include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/qshaderprogrambuilder.h>
 #include <Qt3DCore/qarmature.h>
+#include <Qt3DCore/qskeletonloader.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -138,6 +139,7 @@
 #include <Qt3DRender/private/memorybarrier_p.h>
 #include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/private/armature_p.h>
+#include <Qt3DRender/private/skeleton_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -236,6 +238,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QGeometry>(QSharedPointer<Render::NodeFunctor<Render::Geometry, Render::GeometryManager> >::create(m_renderer));
     q->registerBackendType<QGeometryRenderer>(QSharedPointer<Render::GeometryRendererFunctor>::create(m_renderer, m_nodeManagers->geometryRendererManager()));
     q->registerBackendType<Qt3DCore::QArmature>(QSharedPointer<Render::NodeFunctor<Render::Armature, Render::ArmatureManager>>::create(m_renderer));
+    q->registerBackendType<Qt3DCore::QSkeletonLoader>(QSharedPointer<Render::NodeFunctor<Render::Skeleton, Render::SkeletonManager>>::create(m_renderer));
 
     // Textures
     q->registerBackendType<QAbstractTexture>(QSharedPointer<Render::TextureFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager()));

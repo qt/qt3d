@@ -81,6 +81,7 @@
 #include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
 #include <Qt3DRender/private/armature_p.h>
+#include <Qt3DRender/private/skeleton_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -435,6 +436,15 @@ class ArmatureManager : public Qt3DCore::QResourceManager<
 {
 };
 
+class SkeletonManager : public Qt3DCore::QResourceManager<
+        Skeleton,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::NonLockingPolicy>
+{
+};
+
 
 } // namespace Render
 } // namespace Qt3DRender
@@ -458,6 +468,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Parameter, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Transform, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Armature, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Skeleton, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

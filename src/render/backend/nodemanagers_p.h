@@ -101,6 +101,7 @@ class EnvironmentLightManager;
 class ComputeCommandManager;
 class RenderStateManager;
 class ArmatureManager;
+class SkeletonManager;
 
 class FrameGraphNode;
 class Entity;
@@ -135,6 +136,7 @@ class EnvironmentLight;
 class ComputeCommand;
 class RenderStateNode;
 class Armature;
+class Skeleton;
 class OpenGLVertexArrayObject;
 
 class ResourceAccessor;
@@ -257,6 +259,7 @@ private:
     ComputeCommandManager *m_computeJobManager;
     RenderStateManager *m_renderStateManager;
     ArmatureManager *m_armatureManager;
+    SkeletonManager *m_skeletonManager;
 
     QSharedPointer<ResourceAccessor> m_resourceAccessor;
 };
@@ -367,6 +370,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT RenderStateManager *NodeManagers::manager<Render
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ArmatureManager *NodeManagers::manager<Armature>() const Q_DECL_NOEXCEPT;
+
+template<>
+QT3DRENDERSHARED_PRIVATE_EXPORT SkeletonManager *NodeManagers::manager<Skeleton>() const Q_DECL_NOEXCEPT;
 
 } // Render
 

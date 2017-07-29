@@ -101,7 +101,8 @@ qtConfig(private_tests) {
         coordinatereader \
         framegraphvisitor \
         renderer \
-        armature
+        armature \
+        skeleton
 
     QT_FOR_CONFIG = 3dcore-private
     qtConfig(qt3d-extras) {
