@@ -39,6 +39,7 @@
 
 #include "qt3dquick3dcoreplugin.h"
 
+#include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qtransform.h>
 #include <QtCore/qvariantanimation.h>
 
@@ -61,6 +62,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
     qmlRegisterType<Qt3DCore::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
     qmlRegisterType<Qt3DCore::QTransform>(uri, 2, 0, "Transform");
+    qmlRegisterType<Qt3DCore::QArmature>(uri, 2, 10, "Armature");
 
     qmlRegisterType<Qt3DCore::Quick::QQuaternionAnimation>(uri, 2, 0, "QuaternionAnimation");
     qRegisterAnimationInterpolator<QQuaternion>(Qt3DCore::Quick::q_quaternionInterpolator);

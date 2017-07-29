@@ -29,6 +29,7 @@
 
 import Qt3D.Core 2.0 as QQ3Core20
 import Qt3D.Core 2.9 as QQ3Core29
+import Qt3D.Core 2.10 as QQ3Core210
 import QtQuick 2.0
 
 Item {
@@ -42,4 +43,6 @@ Item {
     QQ3Core20.QuaternionAnimation {}         //Qt3DCore::Quick::QQuaternionAnimation
 
     QQ3Core29.Entity {}                      //Qt3DCore::QEntity, Qt3DCore::Quick::Quick3DEntity
+
+    QQ3Core210.Armature {}
 }
