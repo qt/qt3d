@@ -45,4 +45,5 @@ Item {
     QQ3Core29.Entity {}                      //Qt3DCore::QEntity, Qt3DCore::Quick::Quick3DEntity
 
     QQ3Core210.Armature {}
+    QQ3Core210.SkeletonLoader {}
 }
