@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/qmesh_p.h \
     $$PWD/qattribute_p.h \
     $$PWD/qattribute.h \
-    $$PWD/qbufferdatagenerator.h
+    $$PWD/qbufferdatagenerator.h \
+    $$PWD/armature_p.h
 
 SOURCES += \
     $$PWD/attribute.cpp \
@@ -31,5 +32,6 @@ SOURCES += \
     $$PWD/qgeometry.cpp \
     $$PWD/qgeometryrenderer.cpp \
     $$PWD/qmesh.cpp \
-    $$PWD/qattribute.cpp
+    $$PWD/qattribute.cpp \
+    $$PWD/armature.cpp
 

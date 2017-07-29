@@ -46,6 +46,7 @@
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
+#include <Qt3DRender/private/armature_p.h>
 #include <private/resourceaccessor_p.h>
 
 #include <QOpenGLVertexArrayObject>
@@ -93,6 +94,7 @@ NodeManagers::NodeManagers()
     , m_environmentLightManager(new EnvironmentLightManager())
     , m_computeJobManager(new ComputeCommandManager())
     , m_renderStateManager(new RenderStateManager())
+    , m_armatureManager(new ArmatureManager())
     , m_resourceAccessor(new ResourceAccessor(this))
 {
 }
@@ -138,6 +140,7 @@ NodeManagers::~NodeManagers()
     delete m_computeJobManager;
     delete m_renderStateManager;
     delete m_renderNodesManager;
+    delete m_armatureManager;
 }
 
 QSharedPointer<ResourceAccessor> NodeManagers::resourceAccessor()
@@ -347,6 +350,12 @@ template<>
 RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOTHROW
 {
     return m_renderStateManager;
+}
+
+template<>
+ArmatureManager *NodeManagers::manager<Armature>() const Q_DECL_NOTHROW
+{
+    return m_armatureManager;
 }
 
 } // Render

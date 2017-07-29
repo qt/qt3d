@@ -95,6 +95,7 @@ class EnvironmentLight;
 class ComputeCommand;
 class GLBuffer;
 class RenderStateNode;
+class Armature;
 
 typedef Qt3DCore::QHandle<RenderTargetOutput, 16> HAttachment;
 typedef Qt3DCore::QHandle<CameraLens, 8> HCamera;
@@ -129,6 +130,7 @@ typedef Qt3DCore::QHandle<EnvironmentLight, 16> HEnvironmentLight;
 typedef Qt3DCore::QHandle<ComputeCommand, 16> HComputeCommand;
 typedef Qt3DCore::QHandle<GLBuffer, 16> HGLBuffer;
 typedef Qt3DCore::QHandle<RenderStateNode, 16> HRenderState;
+typedef Qt3DCore::QHandle<Armature, 16> HArmature;
 
 } // namespace Render
 

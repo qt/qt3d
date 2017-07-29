@@ -100,7 +100,8 @@ qtConfig(private_tests) {
         qshaderprogrambuilder \
         coordinatereader \
         framegraphvisitor \
-        renderer
+        renderer \
+        armature
 
     QT_FOR_CONFIG = 3dcore-private
     qtConfig(qt3d-extras) {
