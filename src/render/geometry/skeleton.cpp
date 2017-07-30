@@ -38,8 +38,15 @@
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
+#include <QFile>
+#include <QFileInfo>
+
 #include <Qt3DRender/private/abstractrenderer_p.h>
+#include <Qt3DRender/private/gltfskeletonloader_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/private/qskeletoncreatedchange_p.h>
 #include <Qt3DCore/private/qskeletonloader_p.h>
 
@@ -66,6 +73,7 @@ void Skeleton::cleanup()
 
 void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
+    m_skeletonManager = m_renderer->nodeManagers()->skeletonManager();
     const auto skeletonCreatedChange = qSharedPointerCast<QSkeletonCreatedChangeBase>(change);
     switch (skeletonCreatedChange->type()) {
     case QSkeletonCreatedChangeBase::SkeletonLoader: {
@@ -73,8 +81,10 @@ void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
         const auto &data = loaderTypedChange->data;
         m_dataType = File;
         m_source = data.source;
-        if (!m_source.isEmpty())
-            markDirty(AbstractRenderer::SkeletonsDirty);
+        if (!m_source.isEmpty()) {
+            markDirty(AbstractRenderer::SkeletonDataDirty);
+            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
+        }
         break;
     }
 
@@ -94,7 +104,8 @@ void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             const auto source = change->value().toUrl();
             if (source != m_source) {
                 m_source = source;
-                markDirty(AbstractRenderer::SkeletonsDirty);
+                markDirty(AbstractRenderer::SkeletonDataDirty);
+                m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
             }
         }
 
@@ -142,7 +153,7 @@ void Skeleton::loadSkeleton()
 
     // If using a loader inform the frontend of the status change
     if (m_dataType == File) {
-        if (m_jointCount == 0)
+        if (jointCount() == 0)
             setStatus(QSkeletonLoader::Error);
         else
             setStatus(QSkeletonLoader::Ready);
@@ -153,7 +164,35 @@ void Skeleton::loadSkeleton()
 
 void Skeleton::loadSkeletonFromUrl()
 {
+    // TODO: Handle remote files
+    QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_source);
+    QFileInfo info(filePath);
+    if (!info.exists()) {
+        qWarning() << "Could not open skeleton file:" << filePath;
+        setStatus(Qt3DCore::QSkeletonLoader::Error);
+        return;
+    }
 
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Could not open skeleton file:" << filePath;
+        setStatus(Qt3DCore::QSkeletonLoader::Error);
+        return;
+    }
+
+    // TODO: Make plugin based for more file type support. For now gltf or native
+    const QString ext = info.suffix();
+    if (ext == QLatin1String("gltf")) {
+        GLTFSkeletonLoader loader;
+        loader.load(&file);
+        m_skeletonData = loader.createSkeleton(m_name);
+    } else if (ext == QLatin1String("json")) {
+        // TODO: Support native skeleton type
+    } else {
+        qWarning() << "Unknown skeleton file type:" << ext;
+        setStatus(Qt3DCore::QSkeletonLoader::Error);
+        return;
+    }
 }
 
 void Skeleton::loadSkeletonFromData()
@@ -164,7 +203,7 @@ void Skeleton::loadSkeletonFromData()
 void Skeleton::clearData()
 {
     m_name.clear();
-    m_jointCount = 0;
+    m_skeletonData.joints.clear();
 }
 
 } // namespace Render

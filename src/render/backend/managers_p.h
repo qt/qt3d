@@ -443,6 +443,18 @@ class SkeletonManager : public Qt3DCore::QResourceManager<
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::NonLockingPolicy>
 {
+public:
+    enum DirtyFlag {
+        SkeletonDataDirty,
+        SkeletonTransformsDirty
+    };
+
+    void addDirtySkeleton(DirtyFlag dirtyFlag, Qt3DCore::QNodeId skeletonId);
+    QVector<HSkeleton> dirtySkeletons(DirtyFlag dirtyFlag);
+
+private:
+    QVector<HSkeleton> m_dirtyDataSkeletons;
+    QVector<HSkeleton> m_dirtyTransformSkeletons;
 };
 
 

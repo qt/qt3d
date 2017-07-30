@@ -30,7 +30,8 @@ HEADERS += \
     $$PWD/pickboundingvolumeutils_p.h \
     $$PWD/filtercompatibletechniquejob_p.h \
     $$PWD/updatetreeenabledjob_p.h \
-    $$PWD/sendbuffercapturejob_p.h
+    $$PWD/sendbuffercapturejob_p.h \
+    $$PWD/loadskeletonjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -59,5 +60,6 @@ SOURCES += \
     $$PWD/pickboundingvolumeutils.cpp \
     $$PWD/filtercompatibletechniquejob.cpp \
     $$PWD/updatetreeenabledjob.cpp \
-    $$PWD/sendbuffercapturejob.cpp
+    $$PWD/sendbuffercapturejob.cpp \
+    $$PWD/loadskeletonjob.cpp
 

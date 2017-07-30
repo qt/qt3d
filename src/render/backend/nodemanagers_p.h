@@ -218,6 +218,7 @@ public:
     inline ComputeCommandManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
     inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
     inline ArmatureManager *armatureManager() const Q_DECL_NOEXCEPT { return m_armatureManager; }
+    inline SkeletonManager *skeletonManager() const Q_DECL_NOEXCEPT { return m_skeletonManager; }
 
     QSharedPointer<ResourceAccessor> resourceAccessor();
 

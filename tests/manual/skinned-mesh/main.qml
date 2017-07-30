@@ -67,6 +67,7 @@ DefaultSceneEntity {
             Armature {
                 skeleton: SkeletonLoader {
                     source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
+                    onStatusChanged: console.log("skeleton loader status: " + status)
                 }
             },
             MetalRoughMaterial {

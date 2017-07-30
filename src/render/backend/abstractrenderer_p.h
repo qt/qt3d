@@ -105,7 +105,7 @@ public:
         BuffersDirty        = 1 << 7,
         TexturesDirty       = 1 << 8,
         ShadersDirty        = 1 << 9,
-        SkeletonsDirty      = 1 << 10,
+        SkeletonDataDirty   = 1 << 10,
         AllDirty            = 0xffffff
     };
     Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)

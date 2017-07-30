@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_SKELETON_H
-#define QT3DRENDER_RENDER_SKELETON_H
+#ifndef QT3DRENDER_RENDER_SKELETONDATA_P_H
+#define QT3DRENDER_RENDER_SKELETONDATA_P_H
 
 //
 //  W A R N I N G
@@ -48,86 +48,39 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/skeletondata_p.h>
-
-#include <Qt3DCore/qskeletonloader.h>
-
 #include <QtGui/qmatrix4x4.h>
-#include <QDebug>
+#include <QtCore/qstring.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-class SkeletonManager;
-
-class Q_AUTOTEST_EXPORT Skeleton : public BackendNode
+struct JointInfo
 {
-public:
-    Skeleton();
+    JointInfo()
+        : parentIndex(-1)
+    {
+    }
 
-    void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void setStatus(Qt3DCore::QSkeletonLoader::Status status);
-    Qt3DCore::QSkeletonLoader::Status status() const { return m_status; }
-
-    QUrl source() const { return m_source; }
-
-    void setName(const QString &name) { m_name = name; }
-    QString name() const { return m_name; }
-
-    int jointCount() const { return m_skeletonData.joints.size(); }
-    QVector<JointInfo> joints() const { return m_skeletonData.joints; }
-
-    // Called from jobs
-    void loadSkeleton();
-
-    // Allow unit tests to set the data type
-#if !defined(QT_BUILD_INTERNAL)
-private:
-#endif
-    enum SkeletonDataType {
-        Unknown,
-        File,
-        Data
-    };
-#if defined(QT_BUILD_INTERNAL)
-public:
-    void setDataType(SkeletonDataType dataType) { m_dataType = dataType; }
-#endif
-
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-    void loadSkeletonFromUrl();
-    void loadSkeletonFromData();
-    void clearData();
-
-    QUrl m_source;
-    Qt3DCore::QSkeletonLoader::Status m_status;
-
-    SkeletonDataType m_dataType;
-
-    QString m_name;
-    SkeletonData m_skeletonData;
-    SkeletonManager *m_skeletonManager;
+    QMatrix4x4 inverseBindPose;
+    QMatrix4x4 localPose;
+    QMatrix4x4 globalPose;
+    int parentIndex;
+    QString name;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
-inline QDebug operator<<(QDebug dbg, const Skeleton &skeleton)
+struct SkeletonData
 {
-    QDebugStateSaver saver(dbg);
-    dbg << "QNodeId =" << skeleton.peerId() << endl
-        << "Name =" << skeleton.name() << endl;
-    return dbg;
-}
-#endif
+    SkeletonData();
+
+    QVector<JointInfo> joints;
+};
 
 } // namespace Render
 } // namespace Qt3DRender
 
-
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_SKELETON_H
+#endif // QT3DRENDER_RENDER_SKELETONDATA_P_H

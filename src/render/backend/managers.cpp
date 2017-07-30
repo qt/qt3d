@@ -75,6 +75,32 @@ void FrameGraphManager::releaseNode(Qt3DCore::QNodeId id)
     delete m_nodes.take(id);
 }
 
+void SkeletonManager::addDirtySkeleton(DirtyFlag dirtyFlag, Qt3DCore::QNodeId skeletonId)
+{
+    const HSkeleton skeletonHandle = lookupHandle(skeletonId);
+    switch (dirtyFlag) {
+    case SkeletonDataDirty:
+        m_dirtyDataSkeletons.push_back(skeletonHandle);
+        break;
+
+    case SkeletonTransformsDirty:
+        m_dirtyTransformSkeletons.push_back(skeletonHandle);
+        break;
+    }
+}
+
+QVector<HSkeleton> SkeletonManager::dirtySkeletons(DirtyFlag dirtyFlag)
+{
+    switch (dirtyFlag) {
+    case SkeletonDataDirty:
+        return std::move(m_dirtyDataSkeletons);
+
+    case SkeletonTransformsDirty:
+        return std::move(m_dirtyTransformSkeletons);
+    }
+    return QVector<HSkeleton>();
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

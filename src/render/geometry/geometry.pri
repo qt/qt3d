@@ -20,7 +20,9 @@ HEADERS += \
     $$PWD/qattribute.h \
     $$PWD/qbufferdatagenerator.h \
     $$PWD/armature_p.h \
-    $$PWD/skeleton_p.h
+    $$PWD/skeleton_p.h \
+    $$PWD/gltfskeletonloader_p.h \
+    $$PWD/skeletondata_p.h
 
 SOURCES += \
     $$PWD/attribute.cpp \
@@ -35,5 +37,7 @@ SOURCES += \
     $$PWD/qmesh.cpp \
     $$PWD/qattribute.cpp \
     $$PWD/armature.cpp \
-    $$PWD/skeleton.cpp
+    $$PWD/skeleton.cpp \
+    $$PWD/gltfskeletonloader.cpp \
+    $$PWD/skeletondata.cpp
 

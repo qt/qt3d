@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_SKELETON_H
-#define QT3DRENDER_RENDER_SKELETON_H
+#ifndef QT3DRENDER_RENDER_LOADSKELETONJOB_P_H
+#define QT3DRENDER_RENDER_LOADSKELETONJOB_P_H
 
 //
 //  W A R N I N G
@@ -48,86 +48,38 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/skeletondata_p.h>
+#include <Qt3DCore/qaspectjob.h>
 
-#include <Qt3DCore/qskeletonloader.h>
+#include <QtCore/qsharedpointer.h>
 
-#include <QtGui/qmatrix4x4.h>
-#include <QDebug>
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-class SkeletonManager;
+class NodeManagers;
 
-class Q_AUTOTEST_EXPORT Skeleton : public BackendNode
+class LoadSkeletonJob : public Qt3DCore::QAspectJob
 {
 public:
-    Skeleton();
+    explicit LoadSkeletonJob(const HSkeleton &handle);
+    ~LoadSkeletonJob();
 
-    void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void setStatus(Qt3DCore::QSkeletonLoader::Status status);
-    Qt3DCore::QSkeletonLoader::Status status() const { return m_status; }
+    void setNodeManagers(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
 
-    QUrl source() const { return m_source; }
-
-    void setName(const QString &name) { m_name = name; }
-    QString name() const { return m_name; }
-
-    int jointCount() const { return m_skeletonData.joints.size(); }
-    QVector<JointInfo> joints() const { return m_skeletonData.joints; }
-
-    // Called from jobs
-    void loadSkeleton();
-
-    // Allow unit tests to set the data type
-#if !defined(QT_BUILD_INTERNAL)
-private:
-#endif
-    enum SkeletonDataType {
-        Unknown,
-        File,
-        Data
-    };
-#if defined(QT_BUILD_INTERNAL)
-public:
-    void setDataType(SkeletonDataType dataType) { m_dataType = dataType; }
-#endif
-
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-    void loadSkeletonFromUrl();
-    void loadSkeletonFromData();
-    void clearData();
-
-    QUrl m_source;
-    Qt3DCore::QSkeletonLoader::Status m_status;
-
-    SkeletonDataType m_dataType;
-
-    QString m_name;
-    SkeletonData m_skeletonData;
-    SkeletonManager *m_skeletonManager;
+protected:
+    void run() override;
+    HSkeleton m_handle;
+    NodeManagers *m_nodeManagers;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
-inline QDebug operator<<(QDebug dbg, const Skeleton &skeleton)
-{
-    QDebugStateSaver saver(dbg);
-    dbg << "QNodeId =" << skeleton.peerId() << endl
-        << "Name =" << skeleton.name() << endl;
-    return dbg;
-}
-#endif
+typedef QSharedPointer<LoadSkeletonJob> LoadSkeletonJobPtr;
 
 } // namespace Render
 } // namespace Qt3DRender
 
-
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_SKELETON_H
+#endif // QT3DRENDER_RENDER_LOADSKELETONJOB_P_H

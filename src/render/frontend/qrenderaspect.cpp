@@ -140,6 +140,7 @@
 #include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/private/armature_p.h>
 #include <Qt3DRender/private/skeleton_p.h>
+#include <Qt3DRender/private/loadskeletonjob_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -450,6 +451,18 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             textureLoadingSync->addDependency(loadTextureJob);
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
+        }
+
+        // Launch skeleton loader jobs. We join on the syncTextureLoadingJob for now
+        // which should likely be renamed to something more generic or we introduce
+        // another synchronizing job for skeleton loading
+        const QVector<Render::HSkeleton> skeletonsToLoad =
+                manager->skeletonManager()->dirtySkeletons(Render::SkeletonManager::SkeletonDataDirty);
+        for (const auto skeletonHandle : skeletonsToLoad) {
+            auto loadSkeletonJob = Render::LoadSkeletonJobPtr::create(skeletonHandle);
+            loadSkeletonJob->setNodeManagers(manager);
+            textureLoadingSync->addDependency(loadSkeletonJob);
+            jobs.append(loadSkeletonJob);
         }
 
         // TO DO: Have 2 jobs queue
