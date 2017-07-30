@@ -18,7 +18,7 @@ HEADERS += \
 
 INCLUDEPATH += $$PWD
 
-include($$OUT_PWD/../core/qt3dcore-config.pri)
+include($$QT3D_BUILD_ROOT/src/core/qt3dcore-config.pri)
 QT_FOR_CONFIG += 3dcore-private
 qtConfig(qt3d-profile-jobs): {
     HEADERS += $$PWD/aspectcommanddebugger_p.h
