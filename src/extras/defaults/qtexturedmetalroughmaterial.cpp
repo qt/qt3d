@@ -145,6 +145,11 @@ void QTexturedMetalRoughMaterialPrivate::init()
     m_metalRoughGL3ShaderBuilder->setParent(q);
     m_metalRoughGL3ShaderBuilder->setShaderProgram(m_metalRoughGL3Shader);
     m_metalRoughGL3ShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/metalrough.frag.json")));
+    m_metalRoughGL3ShaderBuilder->setEnabledLayers({QStringLiteral("baseColorMap"),
+                                                    QStringLiteral("metalnessMap"),
+                                                    QStringLiteral("roughnessMap"),
+                                                    QStringLiteral("ambientOcclusionMap"),
+                                                    QStringLiteral("normalMap")});
 
     m_metalRoughGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_metalRoughGL3Technique->graphicsApiFilter()->setMajorVersion(3);
