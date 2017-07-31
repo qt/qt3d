@@ -69,8 +69,8 @@
 #include <Qt3DExtras/qspritegrid.h>
 #include <Qt3DExtras/qspritesheetitem.h>
 #include <Qt3DExtras/qtext2dentity.h>
-#include <Qt3DExtras/qtexturedmetalroughmaterial.h>
 #include <Qt3DExtras/qtexturematerial.h>
+#include <Qt3DExtras/qtexturedmetalroughmaterial.h>
 #include <Qt3DExtras/qtorusgeometry.h>
 #include <Qt3DExtras/qtorusmesh.h>
 

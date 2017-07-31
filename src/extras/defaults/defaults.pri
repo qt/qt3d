@@ -42,7 +42,6 @@ HEADERS += \
     $$PWD/qmetalroughmaterial.h \
     $$PWD/qmetalroughmaterial_p.h \
     $$PWD/qtexturedmetalroughmaterial.h \
-    $$PWD/qtexturedmetalroughmaterial_p.h \
     $$PWD/qmorphphongmaterial.h \
     $$PWD/qmorphphongmaterial_p.h
 
