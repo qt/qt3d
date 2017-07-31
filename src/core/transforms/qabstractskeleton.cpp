@@ -39,6 +39,7 @@
 
 #include "qabstractskeleton.h"
 #include "qabstractskeleton_p.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,6 +47,7 @@ namespace Qt3DCore {
 
 QAbstractSkeletonPrivate::QAbstractSkeletonPrivate()
     : Qt3DCore::QNodePrivate()
+    , m_jointCount(0)
 {
 }
 
@@ -93,6 +95,38 @@ QAbstractSkeleton::QAbstractSkeleton(QAbstractSkeletonPrivate &dd, Qt3DCore::QNo
 /*! \internal */
 QAbstractSkeleton::~QAbstractSkeleton()
 {
+}
+
+/*!
+    \property Qt3DCore::QAbstractSkeleton::jointCount
+
+    Holds the number of joints contained in the skeleton
+*/
+int QAbstractSkeleton::jointCount() const
+{
+    Q_D(const QAbstractSkeleton);
+    return d->m_jointCount;
+}
+
+void QAbstractSkeletonPrivate::setJointCount(int jointCount)
+{
+    Q_Q(QAbstractSkeleton);
+    if (m_jointCount == jointCount)
+        return;
+    m_jointCount = jointCount;
+    const bool block = q->blockNotifications(true);
+    emit q->jointCountChanged(jointCount);
+    q->blockNotifications(block);
+}
+
+void QAbstractSkeleton::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    Q_D(QAbstractSkeleton);
+    if (change->type() == Qt3DCore::PropertyUpdated) {
+        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        if (e->propertyName() == QByteArrayLiteral("jointCount"))
+            d->setJointCount(e->value().toInt());
+    }
 }
 
 } // namespace Qt3DCore

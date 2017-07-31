@@ -79,6 +79,7 @@ public:
     QString name() const { return m_name; }
 
     int jointCount() const { return m_skeletonData.joints.size(); }
+    void notifyJointCount();
     QVector<JointInfo> joints() const { return m_skeletonData.joints; }
 
     // Called from jobs

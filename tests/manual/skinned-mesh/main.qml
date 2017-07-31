@@ -68,6 +68,7 @@ DefaultSceneEntity {
                 skeleton: SkeletonLoader {
                     source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
                     onStatusChanged: console.log("skeleton loader status: " + status)
+                    onJointCountChanged: console.log("skeleton has " + jointCount + " joints")
                 }
             },
             MetalRoughMaterial {

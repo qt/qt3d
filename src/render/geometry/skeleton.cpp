@@ -132,6 +132,15 @@ void Skeleton::setStatus(QSkeletonLoader::Status status)
     }
 }
 
+void Skeleton::notifyJointCount()
+{
+    Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    e->setPropertyName("jointCount");
+    e->setValue(jointCount());
+    notifyObservers(e);
+}
+
 void Skeleton::loadSkeleton()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_source;
@@ -158,6 +167,7 @@ void Skeleton::loadSkeleton()
         else
             setStatus(QSkeletonLoader::Ready);
     }
+    notifyJointCount();
 
     qCDebug(Jobs) << "Loaded skeleton data:" << *this;
 }

@@ -187,6 +187,7 @@ void QSkeletonLoader::sceneChangeEvent(const QSceneChangePtr &change)
         if (e->propertyName() == QByteArrayLiteral("status"))
             d->setStatus(static_cast<QSkeletonLoader::Status>(e->value().toInt()));
     }
+    QAbstractSkeleton::sceneChangeEvent(change);
 }
 
 /*! \internal */

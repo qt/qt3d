@@ -38,11 +38,12 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
-#include "testpostmanarbiter.h"
+#include <QSignalSpy>
+#include <testpostmanarbiter.h>
 
 using namespace Qt3DCore;
 
-class tst_QSkeleton: public QObject
+class tst_QSkeleton: public QSkeleton
 {
     Q_OBJECT
 public:
@@ -52,6 +53,14 @@ public:
     }
 
 private Q_SLOTS:
+    void checkDefaultConstruction()
+    {
+        // GIVEN
+        QSkeleton skeleton;
+
+        // THEN
+        QCOMPARE(skeleton.jointCount(), 0);
+    }
 
     void checkCreationChange_data()
     {
@@ -161,6 +170,38 @@ private Q_SLOTS:
 
             // THEN Should not crash when the joint is destroyed (tests for failed removal of destruction helper)
         }
+    }
+
+    void checkJointCountPropertyUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        arbiter.setArbiterOnNode(this);
+        QSignalSpy spy(this, SIGNAL(jointCountChanged(int)));
+        const int newJointCount = 99;
+
+        // THEN
+        QVERIFY(spy.isValid());
+
+        // WHEN
+        auto valueChange = QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+        valueChange->setPropertyName("jointCount");
+        valueChange->setValue(QVariant(newJointCount));
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(jointCount(), newJointCount);
+
+        // WHEN
+        spy.clear();
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spy.count(), 0);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(jointCount(), newJointCount);
     }
 };
 

@@ -52,12 +52,19 @@ class QAbstractSkeletonPrivate;
 class QT3DCORESHARED_EXPORT QAbstractSkeleton : public Qt3DCore::QNode
 {
     Q_OBJECT
+    Q_PROPERTY(int jointCount READ jointCount NOTIFY jointCountChanged)
 
 public:
     ~QAbstractSkeleton();
 
+    int jointCount() const;
+
+Q_SIGNALS:
+    void jointCountChanged(int jointCount);
+
 protected:
     QAbstractSkeleton(QAbstractSkeletonPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    void sceneChangeEvent(const QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QAbstractSkeleton)

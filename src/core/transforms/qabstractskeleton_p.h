@@ -63,10 +63,14 @@ class QAbstractSkeletonPrivate : public Qt3DCore::QNodePrivate
 public:
     QAbstractSkeletonPrivate();
 
+    void setJointCount(int jointCount);
+
     Q_DECLARE_PUBLIC(QAbstractSkeleton)
     static const QAbstractSkeletonPrivate *get(const QAbstractSkeleton *q);
 
     QSkeletonCreatedChangeBase::SkeletonType m_type;
+
+    int m_jointCount;
 };
 
 } // namespace Qt3DCore
