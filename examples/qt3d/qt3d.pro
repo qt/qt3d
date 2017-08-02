@@ -20,7 +20,8 @@ SUBDIRS += \
     qardboard \
     advancedcustommaterial \
     simplecustommaterial \
-    scene2d
+    scene2d \
+    phong-cubes
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 
