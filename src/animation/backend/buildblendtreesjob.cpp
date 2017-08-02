@@ -95,7 +95,7 @@ void BuildBlendTreesJob::run()
             Q_ASSERT(valueNode);
 
             const Qt3DCore::QNodeId clipId = valueNode->clipId();
-            const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipId);
+            AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipId);
             Q_ASSERT(clip);
 
             const ComponentIndices formatIndices
@@ -103,6 +103,9 @@ void BuildBlendTreesJob::run()
                                                 channelComponentIndices,
                                                 clip);
             valueNode->setFormatIndices(blendClipAnimator->peerId(), formatIndices);
+
+            // this BlendClipAnimator needs to be notified when the clip has been loaded
+            clip->addDependingBlendedClipAnimator(blendClipAnimator->peerId());
         }
 
         // Finally, build the mapping data vector for this blended clip animator. This

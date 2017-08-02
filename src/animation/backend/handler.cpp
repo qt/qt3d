@@ -75,24 +75,28 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
 {
     switch (flag) {
     case AnimationClipDirty: {
+        QMutexLocker lock(&m_mutex);
         const auto handle = m_animationClipLoaderManager->lookupHandle(nodeId);
         m_dirtyAnimationClips.push_back(handle);
         break;
     }
 
     case ChannelMappingsDirty: {
+        QMutexLocker lock(&m_mutex);
         const auto handle = m_channelMapperManager->lookupHandle(nodeId);
         m_dirtyChannelMappers.push_back(handle);
         break;
     }
 
     case ClipAnimatorDirty: {
+        QMutexLocker lock(&m_mutex);
         const auto handle = m_clipAnimatorManager->lookupHandle(nodeId);
         m_dirtyClipAnimators.push_back(handle);
         break;
     }
 
     case BlendedClipAnimatorDirty: {
+        QMutexLocker lock(&m_mutex);
         const HBlendedClipAnimator handle = m_blendedClipAnimatorManager->lookupHandle(nodeId);
         m_dirtyBlendedAnimators.push_back(handle);
         break;
@@ -171,6 +175,8 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     m_simulationTime = time;
 
     QVector<Qt3DCore::QAspectJobPtr> jobs;
+
+    QMutexLocker lock(&m_mutex);
 
     // If there are any dirty animation clips that need loading,
     // queue up a job for them
