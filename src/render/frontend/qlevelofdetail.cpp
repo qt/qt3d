@@ -277,7 +277,7 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * If this value to nullptr, the bounding volume of the entity is used. Care must be
  * taken that this bounding volume never becomes invalid.
  *
- * \sa Qt3dRender::QLevelOfDetailBoundingSphere
+ * \sa Qt3DRender::QLevelOfDetailBoundingSphere
  */
 
 
