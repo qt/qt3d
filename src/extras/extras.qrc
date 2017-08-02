@@ -19,10 +19,8 @@
         <file>shaders/es2/diffusemap.frag</file>
         <file>shaders/es2/normaldiffusemap.vert</file>
         <file>shaders/es2/normaldiffusemap.frag</file>
-        <file>shaders/es2/normaldiffusemapalpha.frag</file>
         <file>shaders/gl3/normaldiffusemap.frag</file>
         <file>shaders/gl3/normaldiffusemap.vert</file>
-        <file>shaders/gl3/normaldiffusemapalpha.frag</file>
         <file>shaders/es2/diffusespecularmap.frag</file>
         <file>shaders/gl3/diffusespecularmap.frag</file>
         <file>shaders/gl3/pervertexcolor.frag</file>
@@ -37,8 +35,6 @@
         <file>shaders/gl3/gooch.frag</file>
         <file>shaders/es2/gooch.frag</file>
         <file>shaders/es2/gooch.vert</file>
-        <file>shaders/gl3/phongalpha.frag</file>
-        <file>shaders/es2/phongalpha.frag</file>
         <file>shaders/gl3/unlittexture.vert</file>
         <file>shaders/gl3/unlittexture.frag</file>
         <file>shaders/es2/unlittexture.frag</file>
