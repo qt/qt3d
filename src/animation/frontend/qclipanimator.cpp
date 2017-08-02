@@ -115,12 +115,11 @@ QClipAnimator::~QClipAnimator()
 }
 
 /*!
-    \qmlproperty AbstractAnimationClip clip
+    \qmlproperty var Qt3D.Animation::ClipAnimator::clip
 
     This property holds the animation clip which contains the key frame data to be played back.
     The key frame data can be specified in either an AnimationClip or AnimationClipLoader.
 */
-
 /*!
     \property QClipAnimator::clip
 
