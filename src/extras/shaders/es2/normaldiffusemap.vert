@@ -4,6 +4,8 @@ attribute vec2 vertexTexCoord;
 attribute vec4 vertexTangent;
 
 varying vec3 worldPosition;
+varying vec3 worldNormal;
+varying vec4 worldTangent;
 varying vec2 texCoord;
 varying mat3 tangentMatrix;
 
@@ -20,9 +22,13 @@ void main()
     texCoord = vertexTexCoord * texCoordScale;
 
     // Transform position, normal, and tangent to world coords
+    worldPosition = vec3(modelMatrix * vec4(vertexPosition, 1.0));
+    worldNormal = normalize(modelNormalMatrix * vertexNormal);
+    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(vertexTangent.xyz, 0.0)));
+    worldTangent.w = vertexTangent.w;
+
     vec3 normal = normalize( modelNormalMatrix * vertexNormal );
     vec3 tangent = normalize( modelNormalMatrix * vertexTangent.xyz );
-    worldPosition = vec3( modelMatrix * vec4( vertexPosition, 1.0 ) );
 
     // Calculate binormal vector
     vec3 binormal = normalize( cross( normal, tangent ) );

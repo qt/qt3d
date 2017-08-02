@@ -1,8 +1,9 @@
 #version 150 core
 
 in vec3 worldPosition;
+in vec3 worldNormal;
+in vec4 worldTangent;
 in vec2 texCoord;
-in mat3 tangentMatrix;
 
 uniform sampler2D diffuseTexture;
 uniform sampler2D normalTexture;
@@ -17,16 +18,22 @@ uniform vec3 eyePosition;
 out vec4 fragColor;
 
 #pragma include light.inc.frag
+#pragma include coordinatesystems.inc
 
 void main()
 {
     // Sample the textures at the interpolated texCoords
     vec4 diffuseTextureColor = texture( diffuseTexture, texCoord );
-    vec3 normal = 2.0 * texture( normalTexture, texCoord ).rgb - vec3( 1.0 );
+    vec3 tNormal = 2.0 * texture( normalTexture, texCoord ).rgb - vec3( 1.0 );
+
+    mat3 tangentMatrix = calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent);
+    mat3 invertTangentMatrix = transpose(tangentMatrix);
+
+    vec3 wNormal = normalize(invertTangentMatrix * tNormal);
 
     // Calculate the lighting model, keeping the specular component separate
     vec3 diffuseColor, specularColor;
-    adsModelNormalMapped(worldPosition, normal, eyePosition, shininess, tangentMatrix, diffuseColor, specularColor);
+    adsModel(worldPosition, wNormal, eyePosition, shininess, diffuseColor, specularColor);
 
     // Combine spec with ambient+diffuse for final fragment color
     // Use the alpha from the diffuse texture (for alpha to coverage)

@@ -1,6 +1,8 @@
 #version 150 core
 
 in vec3 worldPosition;
+in vec3 worldNormal;
+in vec4 worldTangent;
 in vec2 texCoord;
 in vec2 waveTexCoord;
 in vec2 movtexCoord;
@@ -9,7 +11,6 @@ in vec2 skyTexCoord;
 
 in vec3 vpos;
 
-in mat3 tangentMatrix;
 in vec3 color;
 
 uniform sampler2D diffuseTexture;
@@ -32,6 +33,7 @@ uniform vec3 eyePosition;
 out vec4 fragColor;
 
 #pragma include light.inc.frag
+#pragma include coordinatesystems.inc
 
 void main()
 {
@@ -52,16 +54,22 @@ void main()
     // 2 Animated Layers of specularTexture mixed with the newCoord
     vec4 specularTextureColor = texture( specularTexture, multexCoord+newCoord) + (texture( specularTexture, movtexCoord+newCoord ));
     // 2 Animated Layers of normalTexture mixed with the newCoord
-    vec3 normal = normalAmount * texture( normalTexture, movtexCoord+newCoord ).rgb - vec3( 1.0 )+(normalAmount * texture( normalTexture, multexCoord+newCoord ).rgb - vec3( 1.0 ));
+    vec3 tNormal = normalAmount * texture( normalTexture, movtexCoord+newCoord ).rgb - vec3( 1.0 )+(normalAmount * texture( normalTexture, multexCoord+newCoord ).rgb - vec3( 1.0 ));
     // Animated skyTexture layer
     vec4 skycolor = texture(skyTexture, skyTexCoord);
     skycolor = skycolor * 0.4;
     //Animated foamTexture layer
     vec4 foamTextureColor = texture(foamTexture, texCoord);
 
+    mat3 tangentMatrix = calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent);
+    mat3 invertTangentMatrix = transpose(tangentMatrix);
+
+    vec3 wNormal = normalize(invertTangentMatrix * tNormal);
+
+
     // Calculate the lighting model, keeping the specular component separate
     vec3 diffuseColor, specularColor;
-    adsModelNormalMapped(worldPosition, normal, eyePosition, shininess, tangentMatrix, diffuseColor, specularColor);
+    adsModel(worldPosition, wNormal, eyePosition, shininess, diffuseColor, specularColor);
 
     // Combine final fragment color
     vec4 outputColor = vec4(((skycolor.rgb + ka + diffuseTextureColor.rgb * (diffuseColor))+(specularColor * specularTextureColor.a*specularity)), vpos.y );
