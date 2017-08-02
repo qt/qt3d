@@ -9,8 +9,8 @@ uniform sampler2D diffuseTexture;
 uniform sampler2D normalTexture;
 
 // TODO: Replace with a struct
-uniform FP vec3 ka;            // Ambient reflectivity
-uniform FP vec3 ks;            // Specular reflectivity
+uniform FP vec4 ka;            // Ambient reflectivity
+uniform FP vec4 ks;            // Specular reflectivity
 uniform FP float shininess;    // Specular shininess factor
 
 uniform FP vec3 eyePosition;
@@ -28,12 +28,7 @@ void main()
     FP mat3 invertTangentMatrix = transpose(tangentMatrix);
 
     FP vec3 wNormal = normalize(invertTangentMatrix * tNormal);
+    FP vec3 worldView = normalize(eyePosition - worldPosition);
 
-    // Calculate the lighting model, keeping the specular component separate
-    FP vec3 diffuseColor, specularColor;
-    adsModel(worldPosition, wNormal, eyePosition, shininess, diffuseColor, specularColor);
-
-    // Combine spec with ambient+diffuse for final fragment color
-    // Use the alpha from the diffuse texture (for alpha to coverage)
-    gl_FragColor = vec4( ka + diffuseTextureColor.rgb * diffuseColor + ks * specularColor, diffuseTextureColor.a );
+    gl_FragColor = phongFunction(ka, diffuseTextureColor, ks, shininess, worldPosition, worldView, wNormal);
 }

@@ -26,7 +26,7 @@ uniform int envLightCount = 0;
 
 void adsModel(const in vec3 worldPos,
               const in vec3 worldNormal,
-              const in vec3 worldEye,
+              const in vec3 worldView,
               const in float shininess,
               out vec3 diffuseColor,
               out vec3 specularColor)
@@ -36,7 +36,6 @@ void adsModel(const in vec3 worldPos,
 
     // We perform all work in world space
     vec3 n = normalize(worldNormal);
-    vec3 v = normalize(worldEye - worldPos);
     vec3 s = vec3(0.0);
 
     for (int i = 0; i < lightCount; ++i) {
@@ -84,11 +83,30 @@ void adsModel(const in vec3 worldPos,
         if (diffuse > 0.0 && shininess > 0.0) {
             float normFactor = (shininess + 2.0) / 2.0;
             vec3 r = reflect(-s, n);   // Reflection direction in world space
-            specular = normFactor * pow(max(dot(r, v), 0.0), shininess);
+            specular = normFactor * pow(max(dot(r, worldView), 0.0), shininess);
         }
 
         // Accumulate the diffuse and specular contributions
         diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
         specularColor += att * lights[i].intensity * specular * lights[i].color;
     }
+}
+
+vec4 phongFunction(const in vec4 ambient,
+                   const in vec4 diffuse,
+                   const in vec4 specular,
+                   const in float shininess,
+                   const in vec3 worldPosition,
+                   const in vec3 worldView,
+                   const in vec3 worldNormal)
+{
+    // Calculate the lighting model, keeping the specular component separate
+    vec3 diffuseColor, specularColor;
+    adsModel(worldPosition, worldNormal, worldView, shininess, diffuseColor, specularColor);
+
+    // Combine spec with ambient+diffuse for final fragment color
+    vec3 color = (ambient.rgb + diffuseColor) * diffuse.rgb
+               + specularColor * specular.rgb;
+
+    return vec4(color, diffuse.a);
 }

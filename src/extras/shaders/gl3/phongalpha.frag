@@ -1,9 +1,9 @@
 #version 150 core
 
 // TODO: Replace with a struct
-uniform vec3 ka;            // Ambient reflectivity
-uniform vec3 kd;            // Diffuse reflectivity
-uniform vec3 ks;            // Specular reflectivity
+uniform vec4 ka;            // Ambient reflectivity
+uniform vec4 kd;            // Diffuse reflectivity
+uniform vec4 ks;            // Specular reflectivity
 uniform float shininess;    // Specular shininess factor
 uniform float alpha;
 
@@ -18,7 +18,6 @@ out vec4 fragColor;
 
 void main()
 {
-    vec3 diffuseColor, specularColor;
-    adsModel(worldPosition, worldNormal, eyePosition, shininess, diffuseColor, specularColor);
-    fragColor = vec4( ka + kd * diffuseColor + ks * specularColor, alpha );
+    vec3 worldView = normalize(eyePosition - worldPosition);
+    fragColor = phongFunction(ka, vec4(kd.rgb, alpha), ks, shininess, worldPosition, worldView, worldNormal);
 }

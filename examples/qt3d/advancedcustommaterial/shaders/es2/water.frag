@@ -24,8 +24,7 @@ uniform FP float offsetx;
 uniform FP float offsety;
 uniform FP float specularity;
 uniform FP float waveStrenght;
-uniform FP vec3 ka;
-uniform FP vec3 specularColor;
+uniform FP vec4 ka;
 uniform FP float shininess;
 uniform FP float normalAmount;
 uniform FP vec3 eyePosition;
@@ -61,16 +60,15 @@ void main()
 
     FP mat3 tangentMatrix = calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent);
     FP mat3 invertTangentMatrix = transpose(tangentMatrix);
+
     FP vec3 wNormal = normalize(invertTangentMatrix * tNormal);
+    FP vec3 worldView = normalize(eyePosition - worldPosition);
 
-    // Calculate the lighting model, keeping the specular component separate
-    FP vec3 diffuseColor, specularColor;
-    adsModel(worldPosition, wNormal, eyePosition, shininess, diffuseColor, specularColor);
+    FP vec4 diffuse = vec4(diffuseTextureColor.rgb, vpos.y);
+    FP vec4 specular = vec4(specularTextureColor.a*specularity);
+    FP vec4 outputColor = phongFunction(ka, diffuse, specular, shininess, worldPosition, worldView, wNormal);
 
-    // Combine final fragment color
-    FP vec4 outputColor = vec4(((skycolor.rgb + ka + diffuseTextureColor.rgb * (diffuseColor))+(specularColor * specularTextureColor.a*specularity)), vpos.y );
-
-
+    outputColor += vec4(skycolor.rgb, vpos.y);
     outputColor += (foamTextureColor.rgba*vpos.y);
 
     gl_FragColor = vec4(outputColor.rgb,1.0);

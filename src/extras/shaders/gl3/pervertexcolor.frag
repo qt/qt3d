@@ -2,7 +2,7 @@
 
 in vec3 worldPosition;
 in vec3 worldNormal;
-in vec3 color;
+in vec4 color;
 
 out vec4 fragColor;
 
@@ -12,8 +12,6 @@ uniform vec3 eyePosition;
 
 void main()
 {
-    vec3 diffuseColor;
-    vec3 specularColor;
-    adsModel(worldPosition, worldNormal, eyePosition, 0.0, diffuseColor, specularColor);
-    fragColor = vec4( color + color * diffuseColor, 1.0 );
+    vec3 worldView = normalize(eyePosition - worldPosition);
+    fragColor = phongFunction(color, color, vec4(0.0), 0.0, worldPosition, worldView, worldNormal);
 }

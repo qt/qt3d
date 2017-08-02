@@ -2,7 +2,7 @@
 
 varying FP vec3 worldPosition;
 varying FP vec3 worldNormal;
-varying FP vec3 color;
+varying FP vec4 color;
 
 uniform FP vec3 eyePosition;
 
@@ -10,8 +10,6 @@ uniform FP vec3 eyePosition;
 
 void main()
 {
-    FP vec3 diffuseColor;
-    FP vec3 specularColor;
-    adsModel(worldPosition, worldNormal, eyePosition, 0.0, diffuseColor, specularColor);
-    gl_FragColor = vec4( color + color * diffuseColor, 1.0 );
+    FP vec3 worldView = normalize(eyePosition - worldPosition);
+    gl_FragColor = phongFunction(color, color, vec4(0.0), 0.0, worldPosition, worldView, worldNormal);
 }

@@ -24,7 +24,7 @@ uniform float offsetx;
 uniform float offsety;
 uniform float specularity;
 uniform float waveStrenght;
-uniform vec3 ka;
+uniform vec4 ka;
 uniform vec3 specularColor;
 uniform float shininess;
 uniform float normalAmount;
@@ -65,16 +65,13 @@ void main()
     mat3 invertTangentMatrix = transpose(tangentMatrix);
 
     vec3 wNormal = normalize(invertTangentMatrix * tNormal);
+    vec3 worldView = normalize(eyePosition - worldPosition);
 
+    vec4 diffuse = vec4(diffuseTextureColor.rgb, vpos.y);
+    vec4 specular = vec4(specularTextureColor.a*specularity);
+    vec4 outputColor = phongFunction(ka, diffuse, specular, shininess, worldPosition, worldView, wNormal);
 
-    // Calculate the lighting model, keeping the specular component separate
-    vec3 diffuseColor, specularColor;
-    adsModel(worldPosition, wNormal, eyePosition, shininess, diffuseColor, specularColor);
-
-    // Combine final fragment color
-    vec4 outputColor = vec4(((skycolor.rgb + ka + diffuseTextureColor.rgb * (diffuseColor))+(specularColor * specularTextureColor.a*specularity)), vpos.y );
-
-
+    outputColor += vec4(skycolor.rgb, vpos.y);
     outputColor += (foamTextureColor.rgba*vpos.y);
 
     fragColor = vec4(outputColor.rgb,1.0);

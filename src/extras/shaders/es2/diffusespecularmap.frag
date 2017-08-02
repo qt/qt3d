@@ -1,7 +1,7 @@
 #define FP highp
 
 // TODO: Replace with a struct
-uniform FP vec3 ka;            // Ambient reflectivity
+uniform FP vec4 ka;            // Ambient reflectivity
 uniform FP float shininess;    // Specular shininess factor
 
 uniform FP vec3 eyePosition;
@@ -17,11 +17,8 @@ varying FP vec2 texCoord;
 
 void main()
 {
-    FP vec3 diffuseTextureColor = texture2D( diffuseTexture, texCoord ).rgb;
-    FP vec3 specularTextureColor = texture2D( specularTexture, texCoord ).rgb;
-
-    FP vec3 diffuseColor, specularColor;
-    adsModel(worldPosition, worldNormal, eyePosition, shininess, diffuseColor, specularColor);
-
-    gl_FragColor = vec4( diffuseTextureColor * ( ka + diffuseColor ) + specularTextureColor * specularColor, 1.0 );
+    FP vec4 diffuseTextureColor = texture2D( diffuseTexture, texCoord );
+    FP vec4 specularTextureColor = texture2D( specularTexture, texCoord );
+    FP vec3 worldView = normalize(eyePosition - worldPosition);
+    gl_FragColor = phongFunction(ka, diffuseTextureColor, specularTextureColor, shininess, worldPosition, worldView, worldNormal);
 }
