@@ -48,32 +48,33 @@
 **
 ****************************************************************************/
 
-#version 150
+attribute vec3 vertexPosition;
+attribute vec3 vertexNormal;
+attribute vec4 vertexTangent;
+attribute vec2 vertexTexCoord;
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
-in vec4 vertexTangent;
-in vec2 vertexTexCoord;
-
-out vec3 worldPosition;
-out vec3 worldNormal;
-out vec4 worldTangent;
-out vec2 texCoord;
+varying vec3 worldPosition;
+varying vec3 worldNormal;
+varying vec4 worldTangent;
+varying vec2 texCoord;
 
 uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
-uniform mat4 mvp;
+uniform mat4 modelViewProjection;
+
+uniform float texCoordScale;
 
 void main()
 {
-    // Pass the texture coordinates through
-    texCoord = vertexTexCoord;
+    // Pass through texture coordinates
+    texCoord = vertexTexCoord * texCoordScale;
 
-    // Transform position, normal, and tangent to world space
+    // Transform position, normal, and tangent to world coords
     worldPosition = vec3(modelMatrix * vec4(vertexPosition, 1.0));
     worldNormal = normalize(modelNormalMatrix * vertexNormal);
     worldTangent.xyz = normalize(vec3(modelMatrix * vec4(vertexTangent.xyz, 0.0)));
     worldTangent.w = vertexTangent.w;
 
-    gl_Position = mvp * vec4(vertexPosition, 1.0);
+    // Calculate vertex position in clip coordinates
+    gl_Position = modelViewProjection * vec4(vertexPosition, 1.0);
 }

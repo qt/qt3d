@@ -108,7 +108,7 @@ void QMetalRoughMaterialPrivate::init()
     QObject::connect(m_normalMapParameter, &Qt3DRender::QParameter::valueChanged,
                      q, &QMetalRoughMaterial::roughnessChanged);
 
-    m_metalRoughGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/metalrough.vert"))));
+    m_metalRoughGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/default.vert"))));
 
     m_metalRoughGL3ShaderBuilder->setParent(q);
     m_metalRoughGL3ShaderBuilder->setShaderProgram(m_metalRoughGL3Shader);
