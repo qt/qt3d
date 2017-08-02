@@ -643,18 +643,23 @@ void GLTFExporter::parseMaterials()
                 for (auto param : parameters) {
                     if (param->value().type() == QVariant::Color) {
                         QColor color = param->value().value<QColor>();
-                        if (param->name() == MATERIAL_AMBIENT_COLOR)
+                        if (param->name() == MATERIAL_AMBIENT_COLOR) {
                             matInfo.colors.insert(QStringLiteral("ambient"), color);
-                        else if (param->name() == MATERIAL_DIFFUSE_COLOR)
+                        } else if (param->name() == MATERIAL_DIFFUSE_COLOR) {
+                            if (matInfo.type == MaterialInfo::TypePhongAlpha) {
+                                matInfo.values.insert(QStringLiteral("transparency"), float(color.alphaF()));
+                                color.setAlphaF(1.0f);
+                            }
                             matInfo.colors.insert(QStringLiteral("diffuse"), color);
-                        else if (param->name() == MATERIAL_SPECULAR_COLOR)
+                        } else if (param->name() == MATERIAL_SPECULAR_COLOR) {
                             matInfo.colors.insert(QStringLiteral("specular"), color);
-                        else if (param->name() == MATERIAL_COOL_COLOR) // Custom Qt3D gooch
+                        } else if (param->name() == MATERIAL_COOL_COLOR) { // Custom Qt3D gooch
                             matInfo.colors.insert(QStringLiteral("cool"), color);
-                        else if (param->name() == MATERIAL_WARM_COLOR) // Custom Qt3D gooch
+                        } else if (param->name() == MATERIAL_WARM_COLOR) { // Custom Qt3D gooch
                             matInfo.colors.insert(QStringLiteral("warm"), color);
-                        else
+                        } else {
                             matInfo.colors.insert(param->name(), color);
+                        }
                     } else if (param->value().canConvert<QAbstractTexture *>()) {
                         const QString urlString = textureVariantToUrl(param->value());
                         if (param->name() == MATERIAL_DIFFUSE_TEXTURE)

@@ -5,7 +5,6 @@ uniform FP vec4 ka;            // Ambient reflectivity
 uniform FP vec4 kd;            // Diffuse reflectivity
 uniform FP vec4 ks;            // Specular reflectivity
 uniform FP float shininess;    // Specular shininess factor
-uniform FP float alpha;
 
 uniform FP vec3 eyePosition;
 
@@ -17,5 +16,5 @@ varying FP vec3 worldNormal;
 void main()
 {
     FP vec3 worldView = normalize(eyePosition - worldPosition);
-    gl_FragColor = phongFunction(ka, vec4(kd.rgb, alpha), ks, shininess, worldPosition, worldView, worldNormal);
+    gl_FragColor = phongFunction(ka, kd, ks, shininess, worldPosition, worldView, worldNormal);
 }

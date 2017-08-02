@@ -5,7 +5,6 @@ uniform vec4 ka;            // Ambient reflectivity
 uniform vec4 kd;            // Diffuse reflectivity
 uniform vec4 ks;            // Specular reflectivity
 uniform float shininess;    // Specular shininess factor
-uniform float alpha;
 
 uniform vec3 eyePosition;
 
@@ -19,5 +18,5 @@ out vec4 fragColor;
 void main()
 {
     vec3 worldView = normalize(eyePosition - worldPosition);
-    fragColor = phongFunction(ka, vec4(kd.rgb, alpha), ks, shininess, worldPosition, worldView, worldNormal);
+    fragColor = phongFunction(ka, kd, ks, shininess, worldPosition, worldView, worldNormal);
 }

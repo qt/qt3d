@@ -84,14 +84,12 @@ public:
     void handleDiffuseChanged(const QVariant &var);
     void handleSpecularChanged(const QVariant &var);
     void handleShininessChanged(const QVariant &var);
-    void handleAlphaChanged(const QVariant &var);
 
     Qt3DRender::QEffect *m_phongEffect;
     Qt3DRender::QParameter *m_ambientParameter;
     Qt3DRender::QParameter *m_diffuseParameter;
     Qt3DRender::QParameter *m_specularParameter;
     Qt3DRender::QParameter *m_shininessParameter;
-    Qt3DRender::QParameter *m_alphaParameter;
     Qt3DRender::QTechnique *m_phongAlphaGL3Technique;
     Qt3DRender::QTechnique *m_phongAlphaGL2Technique;
     Qt3DRender::QTechnique *m_phongAlphaES2Technique;
