@@ -102,7 +102,6 @@ qtHaveModule(quick) {
 
 SUBDIRS += \
     src_core \
-    src_animation \
     doc
 
 QT_FOR_CONFIG += 3dcore
