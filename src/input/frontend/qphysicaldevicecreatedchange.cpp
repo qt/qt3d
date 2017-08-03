@@ -68,6 +68,9 @@ QPhysicalDeviceCreatedChangeBase::~QPhysicalDeviceCreatedChangeBase()
 {
 }
 
+/*!
+    Returns a list of node ids.
+*/
 Qt3DCore::QNodeIdVector QPhysicalDeviceCreatedChangeBase::axisSettingIds() const
 {
     Q_D(const QPhysicalDeviceCreatedChangeBase);

@@ -148,7 +148,7 @@ QChannelMapper *QAbstractClipAnimator::channelMapper() const
 }
 
 /*!
-    \qmlproperty int QAbstractClipAnimator::loops
+    \qmlproperty int AbstractClipAnimator::loops
 
     This property holds the number of times the animation should play.
 
