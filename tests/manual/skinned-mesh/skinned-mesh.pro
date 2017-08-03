@@ -16,3 +16,6 @@ RESOURCES += \
     ../../../examples/qt3d/exampleresources/cubemaps.qrc \
     ../../../examples/qt3d/exampleresources/envmaps.qrc \
     ../../../examples/qt3d/exampleresources/gltf.qrc
+
+DISTFILES += \
+    skinnedPbr.vert

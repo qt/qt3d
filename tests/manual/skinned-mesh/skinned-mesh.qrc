@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>DefaultSceneEntity.qml</file>
+        <file>skinnedPbr.vert</file>
     </qresource>
 </RCC>

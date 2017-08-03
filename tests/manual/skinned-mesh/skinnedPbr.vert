@@ -48,64 +48,32 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.10
-import Qt3D.Render 2.10
-import Qt3D.Input 2.0
-import Qt3D.Extras 2.10
+#version 150
 
-DefaultSceneEntity {
-    id: scene
+in vec3 vertexPosition;
+in vec3 vertexNormal;
+in vec4 vertexTangent;
+in vec2 vertexTexCoord;
 
-    Entity {
-        components: [
-            Transform {
-                rotationX: -90
-            },
-            Mesh {
-                source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
-            },
-            Armature {
-                skeleton: SkeletonLoader {
-                    source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
-                    onStatusChanged: console.log("skeleton loader status: " + status)
-                    onJointCountChanged: console.log("skeleton has " + jointCount + " joints")
-                }
-            },
-            Material {
-               effect: Effect {
-                   id: skinnedPbrEffect
-                   parameters: [
-                       Parameter { name: "baseColor"; value: "red" },
-                       Parameter { name: "metalness"; value: 0.1 },
-                       Parameter { name: "roughness"; value: 0.2 }
-                   ]
+out vec3 worldPosition;
+out vec3 worldNormal;
+out vec4 worldTangent;
+out vec2 texCoord;
 
-                   techniques: [
-                       Technique {
-                           filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
+uniform mat4 modelMatrix;
+uniform mat3 modelNormalMatrix;
+uniform mat4 mvp;
 
-                           graphicsApiFilter {
-                               api: GraphicsApiFilter.OpenGL
-                               majorVersion: 3
-                               minorVersion: 2
-                               profile: GraphicsApiFilter.CoreProfile
-                           }
+void main()
+{
+    // Pass the texture coordinates through
+    texCoord = vertexTexCoord;
 
-                           renderPasses: RenderPass {
-                               shaderProgram: ShaderProgram {
-                                   id: prog
-                                   vertexShaderCode: loadSource("qrc:/skinnedPbr.vert")
-                               }
+    // Transform position, normal, and tangent to world space
+    worldPosition = vec3(modelMatrix * vec4(vertexPosition, 1.0));
+    worldNormal = normalize(modelNormalMatrix * vertexNormal);
+    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(vertexTangent.xyz, 0.0)));
+    worldTangent.w = vertexTangent.w;
 
-                               ShaderProgramBuilder {
-                                   shaderProgram: prog
-                                   fragmentShaderGraph: "qrc:/shaders/graphs/metalroughuniform.frag.json"
-                               }
-                           }
-                       }
-                   ]
-               }
-           }
-        ]
-    }
+    gl_Position = mvp * vec4(vertexPosition, 1.0);
 }
