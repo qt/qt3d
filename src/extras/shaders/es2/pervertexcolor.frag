@@ -6,7 +6,7 @@ varying FP vec4 color;
 
 uniform FP vec3 eyePosition;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 
 void main()
 {

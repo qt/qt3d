@@ -8,7 +8,7 @@ out vec4 fragColor;
 
 uniform vec3 eyePosition;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 
 void main()
 {

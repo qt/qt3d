@@ -10,7 +10,7 @@ uniform FP vec3 eyePosition;
 varying FP vec3 worldPosition;
 varying FP vec3 worldNormal;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 
 void main()
 {

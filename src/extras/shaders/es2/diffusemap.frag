@@ -12,7 +12,7 @@ varying FP vec3 worldPosition;
 varying FP vec3 worldNormal;
 varying FP vec2 texCoord;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 
 void main()
 {

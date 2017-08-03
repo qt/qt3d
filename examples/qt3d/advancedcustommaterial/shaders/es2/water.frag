@@ -29,7 +29,7 @@ uniform FP float shininess;
 uniform FP float normalAmount;
 uniform FP vec3 eyePosition;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 #pragma include coordinatesystems.inc
 
 void main()

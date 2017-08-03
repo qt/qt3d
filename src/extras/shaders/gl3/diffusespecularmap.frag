@@ -15,7 +15,7 @@ in vec2 texCoord;
 
 out vec4 fragColor;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 
 void main()
 {

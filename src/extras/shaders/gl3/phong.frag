@@ -12,7 +12,7 @@ in vec3 worldNormal;
 
 out vec4 fragColor;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 
 void main()
 {

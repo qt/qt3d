@@ -15,7 +15,7 @@ uniform vec4 ka;            // Ambient reflectivity
 uniform float shininess;    // Specular shininess factor
 uniform vec3 eyePosition;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 #pragma include coordinatesystems.inc
 
 void main()
