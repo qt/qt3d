@@ -107,7 +107,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "gl_fragColor = $fragColor;"
+                "substitution": "gl_FragColor = $fragColor;"
             },
             {
                 "format": {
