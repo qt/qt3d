@@ -377,6 +377,15 @@
         "rules": [
             {
                 "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp mat3 $matrix = calcWorldSpaceToTangentSpaceMatrix($worldNormal, $worldTangent);",
+                "headerSnippets": [ "#pragma include :/shaders/es2/coordinatesystems.inc" ]
+            },
+            {
+                "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
                     "minor": 0
