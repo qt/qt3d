@@ -46,6 +46,7 @@
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/qshaderprogrambuilder.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <QtCore/QUrl>
@@ -76,7 +77,9 @@ QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
     , m_normalDiffuseGL2RenderPass(new QRenderPass())
     , m_normalDiffuseES2RenderPass(new QRenderPass())
     , m_normalDiffuseGL3Shader(new QShaderProgram())
+    , m_normalDiffuseGL3ShaderBuilder(new QShaderProgramBuilder())
     , m_normalDiffuseGL2ES2Shader(new QShaderProgram())
+    , m_normalDiffuseGL2ES2ShaderBuilder(new QShaderProgramBuilder())
     , m_filterKey(new QFilterKey)
 {
     m_diffuseTexture->setMagnificationFilter(QAbstractTexture::Linear);
@@ -94,6 +97,8 @@ QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
 
 void QNormalDiffuseMapMaterialPrivate::init()
 {
+    Q_Q(QNormalDiffuseMapMaterial);
+
     connect(m_ambientParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QNormalDiffuseMapMaterialPrivate::handleAmbientChanged);
     connect(m_diffuseParameter, &Qt3DRender::QParameter::valueChanged,
@@ -108,9 +113,20 @@ void QNormalDiffuseMapMaterialPrivate::init()
             this, &QNormalDiffuseMapMaterialPrivate::handleTextureScaleChanged);
 
     m_normalDiffuseGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/default.vert"))));
-    m_normalDiffuseGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/normaldiffusemap.frag"))));
+    m_normalDiffuseGL3ShaderBuilder->setParent(q);
+    m_normalDiffuseGL3ShaderBuilder->setShaderProgram(m_normalDiffuseGL3Shader);
+    m_normalDiffuseGL3ShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_normalDiffuseGL3ShaderBuilder->setEnabledLayers({QStringLiteral("diffuseTexture"),
+                                                       QStringLiteral("specular"),
+                                                       QStringLiteral("normalTexture")});
+
     m_normalDiffuseGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/default.vert"))));
-    m_normalDiffuseGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/normaldiffusemap.frag"))));
+    m_normalDiffuseGL2ES2ShaderBuilder->setParent(q);
+    m_normalDiffuseGL2ES2ShaderBuilder->setShaderProgram(m_normalDiffuseGL2ES2Shader);
+    m_normalDiffuseGL2ES2ShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_normalDiffuseGL2ES2ShaderBuilder->setEnabledLayers({QStringLiteral("diffuseTexture"),
+                                                          QStringLiteral("specular"),
+                                                          QStringLiteral("normalTexture")});
 
     m_normalDiffuseGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_normalDiffuseGL3Technique->graphicsApiFilter()->setMajorVersion(3);
@@ -127,7 +143,6 @@ void QNormalDiffuseMapMaterialPrivate::init()
     m_normalDiffuseES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_normalDiffuseES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    Q_Q(QNormalDiffuseMapMaterial);
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
     m_filterKey->setValue(QStringLiteral("forward"));

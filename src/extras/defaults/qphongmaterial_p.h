@@ -62,6 +62,7 @@ class QEffect;
 class QTechnique;
 class QParameter;
 class QShaderProgram;
+class QShaderProgramBuilder;
 class QRenderPass;
 
 } // namespace Qt3DRender
@@ -94,7 +95,9 @@ public:
     Qt3DRender::QRenderPass *m_phongGL2RenderPass;
     Qt3DRender::QRenderPass *m_phongES2RenderPass;
     Qt3DRender::QShaderProgram *m_phongGL3Shader;
+    Qt3DRender::QShaderProgramBuilder *m_phongGL3ShaderBuilder;
     Qt3DRender::QShaderProgram *m_phongGL2ES2Shader;
+    Qt3DRender::QShaderProgramBuilder *m_phongGL2ES2ShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QPhongMaterial)
