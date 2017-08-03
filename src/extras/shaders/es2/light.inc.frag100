@@ -1,3 +1,5 @@
+#define FP highp
+
 const int MAX_LIGHTS = 2; // RPi: cannot use more than two as we run out of uniforms
 const int TYPE_POINT = 0;
 const int TYPE_DIRECTIONAL = 1;

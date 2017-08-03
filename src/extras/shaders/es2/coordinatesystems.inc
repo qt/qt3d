@@ -48,6 +48,8 @@
 **
 ****************************************************************************/
 
+#define FP highp
+
 FP mat3 transpose(const in FP mat3 inputMatrix)
 {
     FP vec3 i0 = inputMatrix[0];
