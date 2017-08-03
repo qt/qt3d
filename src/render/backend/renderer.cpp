@@ -177,6 +177,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
     , m_sendBufferCaptureJob(Render::SendBufferCaptureJobPtr::create())
+    , m_updateSkinningPaletteJob(Render::UpdateSkinningPaletteJobPtr::create())
     , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
@@ -208,6 +209,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     // Dirty texture gathering depends on m_syncTextureLoadingJob
     // m_syncTextureLoadingJob will depend on the texture loading jobs
     m_textureGathererJob->addDependency(m_syncTextureLoadingJob);
+
+    // Ensures all skeletons are loaded before we try to update them
+    m_updateSkinningPaletteJob->addDependency(m_syncTextureLoadingJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_updateLevelOfDetailJob->addDependency(m_updateMeshTriangleListJob);
@@ -275,6 +279,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
     m_sendBufferCaptureJob->setManagers(m_nodesManager);
     m_updateLevelOfDetailJob->setManagers(m_nodesManager);
+    m_updateSkinningPaletteJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
 }
@@ -504,6 +509,7 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_cleanupJob->setRoot(m_renderSceneRoot);
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_updateLevelOfDetailJob->setRoot(m_renderSceneRoot);
+    m_updateSkinningPaletteJob->setRoot(m_renderSceneRoot);
     m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
 
     // Set all flags to dirty
@@ -1481,6 +1487,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         renderBinJobs.push_back(m_expandBoundingVolumeJob);
     }
 
+    renderBinJobs.push_back(m_updateSkinningPaletteJob);
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_cleanupJob);
     renderBinJobs.push_back(m_sendRenderCaptureJob);

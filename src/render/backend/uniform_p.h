@@ -183,6 +183,15 @@ public:
     ValueType valueType() const { return m_valueType; }
     UniformType storedType() const { return m_storedType; }
 
+    template<typename T>
+    void setData(const QVector<T> &v)
+    {
+        m_data.resize(v.size() * sizeof(T) / sizeof(float));
+        m_valueType = ScalarValue;
+        float *data = m_data.data();
+        memcpy(data, v.constData(), v.size() * sizeof(T));
+    }
+
     static UniformValue fromVariant(const QVariant &variant);
 
     template<typename T>
@@ -216,6 +225,9 @@ private:
     // TODO: Replace this hack see QTBUG-57510
     UniformType m_storedType = Unknown;
 };
+
+template<>
+Q_AUTOTEST_EXPORT void UniformValue::setData<QMatrix4x4>(const QVector<QMatrix4x4> &v);
 
 } // namespace Render
 } // namespace Qt3DRender

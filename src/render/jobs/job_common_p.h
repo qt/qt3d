@@ -100,7 +100,8 @@ namespace JobTypes {
         FilterCompatibleTechniques,
         UpdateLevelOfDetail,
         SyncTextureLoading,
-        LoadSkeleton
+        LoadSkeleton,
+        UpdateSkinningPalette
     };
 
 } // JobTypes

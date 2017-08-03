@@ -239,6 +239,20 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
     return v;
 }
 
+template<>
+void UniformValue::setData<QMatrix4x4>(const QVector<QMatrix4x4> &v)
+{
+    m_data.resize(16 * v.size());
+    m_valueType = ScalarValue;
+    int offset = 0;
+    const int byteSize = 16 * sizeof(float);
+    float *data = m_data.data();
+    for (const auto m : v) {
+        memcpy(data + offset, m.constData(), byteSize);
+        offset += 16;
+    }
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

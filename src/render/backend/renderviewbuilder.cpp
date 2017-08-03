@@ -419,6 +419,11 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     jobs.reserve(m_materialGathererJobs.size() + m_renderViewBuilderJobs.size() + 11);
 
     // Set dependencies
+
+    // Finish the skinning palette job before processing renderviews
+    // TODO: Maybe only update skinning palettes for non-culled entities
+    m_renderViewJob->addDependency(m_renderer->updateSkinningPaletteJob());
+
     m_syncFrustumCullingJob->addDependency(m_renderer->updateWorldTransformJob());
     m_syncFrustumCullingJob->addDependency(m_renderer->updateShaderDataTransformJob());
     m_syncFrustumCullingJob->addDependency(m_syncRenderViewInitializationJob);

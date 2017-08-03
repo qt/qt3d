@@ -203,6 +203,7 @@ void Skeleton::loadSkeletonFromUrl()
         setStatus(Qt3DCore::QSkeletonLoader::Error);
         return;
     }
+    m_skinningPalette.resize(m_skeletonData.joints.size());
 }
 
 void Skeleton::loadSkeletonFromData()
@@ -214,6 +215,23 @@ void Skeleton::clearData()
 {
     m_name.clear();
     m_skeletonData.joints.clear();
+}
+
+QVector<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()
+{
+    for (int i = 0; i < m_skeletonData.joints.size(); ++i) {
+        // Calculate the global pose of this joint
+        JointInfo &joint = m_skeletonData.joints[i];
+        if (joint.parentIndex == -1) {
+            joint.globalPose = joint.localPose;
+        } else {
+            JointInfo &parentJoint = m_skeletonData.joints[joint.parentIndex];
+            joint.globalPose = parentJoint.globalPose * joint.localPose;
+        }
+
+        m_skinningPalette[i] = joint.globalPose * joint.inverseBindPose;
+    }
+    return m_skinningPalette;
 }
 
 } // namespace Render

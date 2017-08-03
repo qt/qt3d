@@ -75,6 +75,7 @@
 #include <Qt3DRender/private/genericlambdajob_p.h>
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
+#include <Qt3DRender/private/updateskinningpalettejob_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -203,6 +204,7 @@ public:
     inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
     inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
+    inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -320,6 +322,7 @@ private:
     UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
     SendRenderCaptureJobPtr m_sendRenderCaptureJob;
     SendBufferCaptureJobPtr m_sendBufferCaptureJob;
+    UpdateSkinningPaletteJobPtr m_updateSkinningPaletteJob;
     UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;

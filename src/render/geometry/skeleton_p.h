@@ -84,6 +84,7 @@ public:
 
     // Called from jobs
     void loadSkeleton();
+    QVector<QMatrix4x4> calculateSkinningMatrixPalette();
 
     // Allow unit tests to set the data type
 #if !defined(QT_BUILD_INTERNAL)
@@ -105,6 +106,7 @@ private:
     void loadSkeletonFromData();
     void clearData();
 
+    QVector<QMatrix4x4> m_skinningPalette;
     QUrl m_source;
     Qt3DCore::QSkeletonLoader::Status m_status;
 

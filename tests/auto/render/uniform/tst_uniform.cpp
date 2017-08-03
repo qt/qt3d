@@ -365,6 +365,51 @@ private Q_SLOTS:
         QVERIFY(!(v1 == v2));
         QVERIFY(v1 != v2);
     }
+
+    void checkSetData()
+    {
+        // GIVEN
+        const QMatrix4x4 m1;
+        QMatrix4x4 m2;
+        m2.rotate(90.0f, 1.0f, 0.0f, 0.0f);
+        QMatrix4x4 m3;
+        m3.scale(2.5f);
+        QMatrix4x4 m4;
+        m4.translate(1.0f, 2.0f, 3.0f);
+
+        const QVector<QMatrix4x4> matrices1 = (QVector<QMatrix4x4>() << m1 << m2 << m3 << m4);
+        UniformValue v(matrices1);
+
+        // WHEN
+        const QVector<QMatrix4x4> matrices2 = (QVector<QMatrix4x4>() << m4 << m3 << m2 << m1 << m4);
+        v.setData(matrices2);
+
+        // THEN
+        for (int j = 0; j < matrices2.size(); ++j) {
+            for (int i = 0; i < 16; ++i) {
+                QCOMPARE(v.constData<float>()[16 * j + i], matrices2[j].constData()[i]);
+            }
+        }
+
+        // GIVEN
+        const int positionCount = 10;
+        QVector<QVector3D> positions(positionCount);
+        for (int i = 0; i < positionCount; ++i) {
+            const QVector3D p(float(i), 10.0f * i, 100.0f * i);
+            positions[i] = p;
+        }
+
+        UniformValue positionsUniform;
+
+        // WHEN
+        positionsUniform.setData(positions);
+
+        // THEN
+        const QVector3D *data = positionsUniform.constData<QVector3D>();
+        for (int i = 0; i < positionCount; ++i) {
+            QCOMPARE(*(data + i), positions[i]);
+        }
+    }
 };
 
 

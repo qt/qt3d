@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_ARMATURE_H
-#define QT3DRENDER_RENDER_ARMATURE_H
+#ifndef QT3DRENDER_RENDER_UPDATESKINNINGPALETTEJOB_P_H
+#define QT3DRENDER_RENDER_UPDATESKINNINGPALETTEJOB_P_H
 
 //
 //  W A R N I N G
@@ -48,39 +48,40 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/uniform_p.h>
-#include <Qt3DCore/qnodeid.h>
-#include <QtGui/qmatrix4x4.h>
+#include <Qt3DCore/qaspectjob.h>
+
+#include <QtCore/qsharedpointer.h>
+
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Armature : public BackendNode
+class NodeManagers;
+
+class UpdateSkinningPaletteJob : public Qt3DCore::QAspectJob
 {
 public:
-    Armature();
+    explicit UpdateSkinningPaletteJob();
+    ~UpdateSkinningPaletteJob();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void cleanup();
+    void setRoot(Entity *root) { m_root = root; }
+    void setManagers(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
 
-    Qt3DCore::QNodeId skeletonId() const { return m_skeletonId; }
-
-    // Called from jobs
-    UniformValue &skinningPaletteUniform() { return m_skinningPaletteUniform; }
-
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    Qt3DCore::QNodeId m_skeletonId;
-    UniformValue m_skinningPaletteUniform;
+protected:
+    void run() override;
+    void findDirtyArmatures(Entity *entity, QVector<HArmature> &armatures) const;
+    NodeManagers *m_nodeManagers;
+    Entity *m_root;
 };
+
+typedef QSharedPointer<UpdateSkinningPaletteJob> UpdateSkinningPaletteJobPtr;
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_ARMATURE_H
+#endif // QT3DRENDER_RENDER_UPDATESKINNINGPALETTEJOB_P_H

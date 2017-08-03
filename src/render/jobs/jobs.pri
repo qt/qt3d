@@ -31,7 +31,8 @@ HEADERS += \
     $$PWD/filtercompatibletechniquejob_p.h \
     $$PWD/updatetreeenabledjob_p.h \
     $$PWD/sendbuffercapturejob_p.h \
-    $$PWD/loadskeletonjob_p.h
+    $$PWD/loadskeletonjob_p.h \
+    $$PWD/updateskinningpalettejob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -61,5 +62,6 @@ SOURCES += \
     $$PWD/filtercompatibletechniquejob.cpp \
     $$PWD/updatetreeenabledjob.cpp \
     $$PWD/sendbuffercapturejob.cpp \
-    $$PWD/loadskeletonjob.cpp
+    $$PWD/loadskeletonjob.cpp \
+    $$PWD/updateskinningpalettejob.cpp
 

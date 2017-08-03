@@ -219,7 +219,7 @@ private Q_SLOTS:
 
         // THEN
         // Step 1
-        QCOMPARE(renderViewBuilder.renderViewJob()->dependencies().size(), 0);
+        QCOMPARE(renderViewBuilder.renderViewJob()->dependencies().size(), 1); // Depends upon skinning palette update
         QCOMPARE(renderViewBuilder.lightGathererJob()->dependencies().size(), 0);
         QCOMPARE(renderViewBuilder.renderableEntityFilterJob()->dependencies().size(),0);
         QCOMPARE(renderViewBuilder.computableEntityFilterJob()->dependencies().size(), 0);
