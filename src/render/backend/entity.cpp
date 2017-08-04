@@ -53,8 +53,10 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/armature_p.h>
 
 #include <Qt3DRender/qcameralens.h>
+#include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qentity.h>
@@ -114,6 +116,7 @@ void Entity::cleanup()
     m_objectPickerComponent = QNodeId();
     m_boundingVolumeDebugComponent = QNodeId();
     m_computeComponent = QNodeId();
+    m_armatureComponent = QNodeId();
     m_childrenHandles.clear();
     m_layerComponents.clear();
     m_levelOfDetailComponents.clear();
@@ -324,6 +327,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
 //        m_boundingVolumeDebugComponent = component->id();
     } else if (qobject_cast<QComputeCommand *>(component) != nullptr) {
         m_computeComponent = component->id();
+    }  else if (qobject_cast<QArmature *>(component) != nullptr) {
+        m_armatureComponent = component->id();
     }
 }
 
@@ -359,6 +364,8 @@ void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
 //        m_boundingVolumeDebugComponent = id;
     } else if (type->inherits(&QComputeCommand::staticMetaObject)) {
         m_computeComponent = id;
+    } else if (type->inherits(&QArmature::staticMetaObject)) {
+        m_armatureComponent = id;
     }
 }
 
@@ -389,6 +396,8 @@ void Entity::removeComponent(Qt3DCore::QNodeId nodeId)
         m_environmentLightComponents.removeAll(nodeId);
     } else if (m_computeComponent == nodeId) {
         m_computeComponent = QNodeId();
+    } else if (m_armatureComponent == nodeId) {
+        m_armatureComponent = QNodeId();
     }
 }
 
@@ -496,6 +505,12 @@ HComputeCommand Entity::componentHandle<ComputeCommand>() const
     return m_nodeManagers->computeJobManager()->lookupHandle(m_computeComponent);
 }
 
+template<>
+HArmature Entity::componentHandle<Armature>() const
+{
+    return m_nodeManagers->armatureManager()->lookupHandle(m_armatureComponent);
+}
+
 // Render components
 
 template<>
@@ -590,6 +605,12 @@ ComputeCommand *Entity::renderComponent<ComputeCommand>() const
     return m_nodeManagers->computeJobManager()->lookupResource(m_computeComponent);
 }
 
+template<>
+Armature *Entity::renderComponent<Armature>() const
+{
+    return m_nodeManagers->armatureManager()->lookupResource(m_armatureComponent);
+}
+
 // Uuid
 
 template<>
@@ -621,6 +642,9 @@ QNodeId Entity::componentUuid<BoundingVolumeDebug>() const { return m_boundingVo
 
 template<>
 QNodeId Entity::componentUuid<ComputeCommand>() const { return m_computeComponent; }
+
+template<>
+QNodeId Entity::componentUuid<Armature>() const { return m_armatureComponent; }
 
 template<>
 QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const { return m_lightComponents; }

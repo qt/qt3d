@@ -195,6 +195,7 @@ private:
     Qt3DCore::QNodeId m_objectPickerComponent;
     Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
     Qt3DCore::QNodeId m_computeComponent;
+    Qt3DCore::QNodeId m_armatureComponent;
 
     QString m_objectName;
     bool m_boundingDirty;
@@ -239,6 +240,9 @@ QVector<HEnvironmentLight> Entity::componentsHandle<EnvironmentLight>() const;
 template<>
 Q_AUTOTEST_EXPORT HComputeCommand Entity::componentHandle<ComputeCommand>() const;
 
+template<>
+Q_AUTOTEST_EXPORT HArmature Entity::componentHandle<Armature>() const;
+
 // Render components
 template<>
 Material *Entity::renderComponent<Material>() const;
@@ -276,6 +280,9 @@ QVector<EnvironmentLight *> Entity::renderComponents<EnvironmentLight>() const;
 template<>
 Q_AUTOTEST_EXPORT ComputeCommand *Entity::renderComponent<ComputeCommand>() const;
 
+template<>
+Q_AUTOTEST_EXPORT Armature *Entity::renderComponent<Armature>() const;
+
 // UUid
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Transform>() const;
@@ -306,6 +313,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPi
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeCommand>() const;
+
+template<>
+Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Armature>() const;
 
 template<>
 Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
