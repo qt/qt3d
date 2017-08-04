@@ -152,6 +152,18 @@ public:
         memcpy(m_data.data(), mat44.constData(), 16 * sizeof(float));
     }
 
+    UniformValue(const QVector<QMatrix4x4> &v)
+        : m_data(16 * v.size())
+    {
+        int offset = 0;
+        const int byteSize = 16 * sizeof(float);
+        float *data = m_data.data();
+        for (const auto m : v) {
+            memcpy(data + offset, m.constData(), byteSize);
+            offset += 16;
+        }
+    }
+
     // For nodes which will later be replaced by a Texture or Buffer
     UniformValue(Qt3DCore::QNodeId id)
         : UniformValue()
