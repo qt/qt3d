@@ -70,6 +70,7 @@ public:
 
     // Called from jobs
     UniformValue &skinningPaletteUniform() { return m_skinningPaletteUniform; }
+    const UniformValue &skinningPaletteUniform() const { return m_skinningPaletteUniform; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

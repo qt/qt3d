@@ -261,8 +261,12 @@ public:
     void setIsDownloadBuffersEnable(bool isDownloadBuffersEnable);
 
 private:
-    void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
-                              const QVector<LightSource> &activeLightSources, EnvironmentLight *environmentLight) const;
+    void setShaderAndUniforms(RenderCommand *command,
+                              RenderPass *pass,
+                              ParameterInfoList &parameters,
+                              Entity *entity,
+                              const QVector<LightSource> &activeLightSources,
+                              EnvironmentLight *environmentLight) const;
 
     mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
 
@@ -324,17 +328,24 @@ private:
         Time,
         Exposure,
         Gamma,
-        EyePosition
+        EyePosition,
+        SkinningPalette
     };
 
     typedef QHash<int, StandardUniform> StandardUniformsNameToTypeHash;
     static StandardUniformsNameToTypeHash ms_standardUniformSetters;
     static StandardUniformsNameToTypeHash initializeStandardUniformSetters();
 
-    UniformValue standardUniformValue(StandardUniform standardUniformType, const QMatrix4x4 &model) const;
+    UniformValue standardUniformValue(StandardUniform standardUniformType,
+                                      Entity *entity,
+                                      const QMatrix4x4 &model) const;
 
     void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const UniformValue &value) const;
-    void setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform) const;
+    void setStandardUniformValue(ShaderParameterPack &uniformPack,
+                                 int glslNameId,
+                                 int nameId,
+                                 Entity *entity,
+                                 const QMatrix4x4 &worldTransform) const;
     void setUniformBlockValue(ShaderParameterPack &uniformPack,
                               Shader *shader,
                               const ShaderUniformBlock &block,

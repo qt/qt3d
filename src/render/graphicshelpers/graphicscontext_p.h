@@ -70,6 +70,7 @@
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
 #include <Qt3DRender/private/shadercache_p.h>
 #include <Qt3DRender/private/uniform_p.h>
+#include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -333,7 +334,7 @@ private:
     void applyUniform(const ShaderUniform &description, const UniformValue &v);
 
     template<UniformType>
-    void applyUniformHelper(int, int, const UniformValue &) const
+    void applyUniformHelper(const ShaderUniform &, const UniformValue &) const
     {
         Q_ASSERT_X(false, Q_FUNC_INFO, "Uniform: Didn't provide specialized apply() implementation");
     }
@@ -341,13 +342,14 @@ private:
 
 #define QT3D_UNIFORM_TYPE_PROTO(UniformTypeEnum, BaseType, Func) \
 template<> \
-void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, int count, const UniformValue &value) const;
+void GraphicsContext::applyUniformHelper<UniformTypeEnum>(const ShaderUniform &description, const UniformValue &value) const;
 
 #define QT3D_UNIFORM_TYPE_IMPL(UniformTypeEnum, BaseType, Func) \
     template<> \
-    void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, int count, const UniformValue &value) const \
+    void GraphicsContext::applyUniformHelper<UniformTypeEnum>(const ShaderUniform &description, const UniformValue &value) const \
 { \
-    m_glHelper->Func(location, count, value.constData<BaseType>()); \
+    const int count = qMin(description.m_size, int(value.byteSize() / description.m_rawByteSize)); \
+    m_glHelper->Func(description.m_location, count, value.constData<BaseType>()); \
 }
 
 
