@@ -107,7 +107,7 @@ void QMetalRoughMaterialPrivate::init()
     QObject::connect(m_ambientOcclusionMapParameter, &Qt3DRender::QParameter::valueChanged,
                      q, &QMetalRoughMaterial::roughnessChanged);
     QObject::connect(m_normalMapParameter, &Qt3DRender::QParameter::valueChanged,
-                     q, &QMetalRoughMaterial::roughnessChanged);
+                     q, &QMetalRoughMaterial::normalChanged);
     connect(m_textureScaleParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QMetalRoughMaterialPrivate::handleTextureScaleChanged);
 
