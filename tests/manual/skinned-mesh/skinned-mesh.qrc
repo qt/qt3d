@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>DefaultSceneEntity.qml</file>
         <file>skinnedPbr.vert</file>
+        <file>SkinnedEntity.qml</file>
+        <file>SkinnedPbrEffect.qml</file>
     </qresource>
 </RCC>

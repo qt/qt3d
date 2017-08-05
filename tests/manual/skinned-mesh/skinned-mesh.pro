@@ -9,7 +9,9 @@ SOURCES += \
 
 OTHER_FILES += \
     main.qml \
-    DefaultSceneEntity.qml
+    DefaultSceneEntity.qml \
+    SkinnedEntity.qml \
+    SkinnedPbrEffect.qml
 
 RESOURCES += \
     skinned-mesh.qrc \

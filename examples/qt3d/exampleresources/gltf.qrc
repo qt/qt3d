@@ -16,5 +16,7 @@
         <file>assets/gltf/wine/wine3VS.glsl</file>
         <file>assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf</file>
         <file>assets/gltf/2.0/RiggedFigure/RiggedFigure0.bin</file>
+        <file>assets/gltf/2.0/RiggedSimple/RiggedSimple.gltf</file>
+        <file>assets/gltf/2.0/RiggedSimple/RiggedSimple0.bin</file>
     </qresource>
 </RCC>

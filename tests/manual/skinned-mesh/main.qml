@@ -56,56 +56,22 @@ import Qt3D.Extras 2.10
 DefaultSceneEntity {
     id: scene
 
-    Entity {
-        components: [
-            Transform {
-                rotationX: -90
-            },
-            Mesh {
-                source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
-            },
-            Armature {
-                skeleton: SkeletonLoader {
-                    source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
-                    onStatusChanged: console.log("skeleton loader status: " + status)
-                    onJointCountChanged: console.log("skeleton has " + jointCount + " joints")
-                }
-            },
-            Material {
-               effect: Effect {
-                   id: skinnedPbrEffect
-                   parameters: [
-                       Parameter { name: "baseColor"; value: "red" },
-                       Parameter { name: "metalness"; value: 0.1 },
-                       Parameter { name: "roughness"; value: 0.2 }
-                   ]
+    SkinnedPbrEffect {
+        id: skinnedPbrEffect
+    }
 
-                   techniques: [
-                       Technique {
-                           filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
+    SkinnedEntity {
+        id: riggedFigure
+        effect: skinnedPbrEffect
+        source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
+    }
 
-                           graphicsApiFilter {
-                               api: GraphicsApiFilter.OpenGL
-                               majorVersion: 3
-                               minorVersion: 2
-                               profile: GraphicsApiFilter.CoreProfile
-                           }
-
-                           renderPasses: RenderPass {
-                               shaderProgram: ShaderProgram {
-                                   id: prog
-                                   vertexShaderCode: loadSource("qrc:/skinnedPbr.vert")
-                               }
-
-                               ShaderProgramBuilder {
-                                   shaderProgram: prog
-                                   fragmentShaderGraph: "qrc:/shaders/graphs/metalroughuniform.frag.json"
-                               }
-                           }
-                       }
-                   ]
-               }
-           }
-        ]
+    SkinnedEntity {
+        id: riggedSimple
+        effect: skinnedPbrEffect
+        source: "qrc:/assets/gltf/2.0/RiggedSimple/RiggedSimple.gltf"
+        baseColor: "blue"
+        transform.scale: 0.05
+        transform.translation: Qt.vector3d(0.5, 0.25, 0.0)
     }
 }
