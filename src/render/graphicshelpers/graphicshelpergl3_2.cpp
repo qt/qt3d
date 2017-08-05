@@ -279,6 +279,38 @@ void GraphicsHelperGL3_2::vertexAttribDivisor(GLuint index, GLuint divisor)
     qCWarning(Render::Rendering) << "Vertex attribute divisor not available with OpenGL 3.2 core";
 }
 
+void GraphicsHelperGL3_2::vertexAttributePointer(GLenum shaderDataType,
+                                                 GLuint index,
+                                                 GLint size,
+                                                 GLenum type,
+                                                 GLboolean normalized,
+                                                 GLsizei stride,
+                                                 const GLvoid *pointer)
+{
+    switch (shaderDataType) {
+    case GL_FLOAT:
+    case GL_FLOAT_VEC2:
+    case GL_FLOAT_VEC3:
+    case GL_FLOAT_VEC4:
+        m_funcs->glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+        break;
+
+    case GL_INT:
+    case GL_INT_VEC2:
+    case GL_INT_VEC3:
+    case GL_INT_VEC4:
+    case GL_UNSIGNED_INT:
+    case GL_UNSIGNED_INT_VEC2:
+    case GL_UNSIGNED_INT_VEC3:
+    case GL_UNSIGNED_INT_VEC4:
+        m_funcs->glVertexAttribIPointer(index, size, type, stride, pointer);
+        break;
+
+    default:
+        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+    }
+}
+
 void GraphicsHelperGL3_2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
@@ -820,6 +852,11 @@ void GraphicsHelperGL3_2::enablePrimitiveRestart(int primitiveRestartIndex)
 {
     m_funcs->glPrimitiveRestartIndex(primitiveRestartIndex);
     m_funcs->glEnable(GL_PRIMITIVE_RESTART);
+}
+
+void GraphicsHelperGL3_2::enableVertexAttributeArray(int location)
+{
+    m_funcs->glEnableVertexAttribArray(location);
 }
 
 void GraphicsHelperGL3_2::disablePrimitiveRestart()

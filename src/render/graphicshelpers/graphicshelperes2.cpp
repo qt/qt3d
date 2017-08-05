@@ -249,6 +249,27 @@ void GraphicsHelperES2::vertexAttribDivisor(GLuint index, GLuint divisor)
     Q_UNUSED(divisor);
 }
 
+void GraphicsHelperES2::vertexAttributePointer(GLenum shaderDataType,
+                                               GLuint index,
+                                               GLint size,
+                                               GLenum type,
+                                               GLboolean normalized,
+                                               GLsizei stride,
+                                               const GLvoid *pointer)
+{
+    switch (shaderDataType) {
+    case GL_FLOAT:
+    case GL_FLOAT_VEC2:
+    case GL_FLOAT_VEC3:
+    case GL_FLOAT_VEC4:
+        m_funcs->glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+        break;
+
+    default:
+        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+    }
+}
+
 void GraphicsHelperES2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
@@ -528,6 +549,11 @@ void GraphicsHelperES2::memoryBarrier(QMemoryBarrier::Operations barriers)
 
 void GraphicsHelperES2::enablePrimitiveRestart(int)
 {
+}
+
+void GraphicsHelperES2::enableVertexAttributeArray(int location)
+{
+    m_funcs->glEnableVertexAttribArray(location);
 }
 
 void GraphicsHelperES2::disablePrimitiveRestart()

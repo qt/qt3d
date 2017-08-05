@@ -123,6 +123,7 @@ public:
     virtual void    enableClipPlane(int clipPlane) = 0;
     virtual void    enablei(GLenum cap, GLuint index) = 0;
     virtual void    enablePrimitiveRestart(int primitiveRestartIndex) = 0;
+    virtual void    enableVertexAttributeArray(int location) = 0;
     virtual void    frontFace(GLenum mode) = 0;
     virtual QSize   getRenderBufferDimensions(GLuint renderBufferId) = 0;
     virtual QSize   getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) = 0;
@@ -144,6 +145,7 @@ public:
     virtual uint    uniformByteSize(const ShaderUniform &description) = 0;
     virtual void    useProgram(GLuint programId) = 0;
     virtual void    vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
+    virtual void    vertexAttributePointer(GLenum shaderDataType, GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) = 0;
 
     virtual void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) = 0;
     virtual void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) = 0;

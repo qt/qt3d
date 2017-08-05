@@ -184,6 +184,38 @@ void GraphicsHelperES3::vertexAttribDivisor(GLuint index, GLuint divisor)
     m_extraFuncs->glVertexAttribDivisor(index, divisor);
 }
 
+void GraphicsHelperES3::vertexAttributePointer(GLenum shaderDataType,
+                                               GLuint index,
+                                               GLint size,
+                                               GLenum type,
+                                               GLboolean normalized,
+                                               GLsizei stride,
+                                               const GLvoid *pointer)
+{
+    switch (shaderDataType) {
+    case GL_FLOAT:
+    case GL_FLOAT_VEC2:
+    case GL_FLOAT_VEC3:
+    case GL_FLOAT_VEC4:
+        m_funcs->glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+        break;
+
+    case GL_INT:
+    case GL_INT_VEC2:
+    case GL_INT_VEC3:
+    case GL_INT_VEC4:
+    case GL_UNSIGNED_INT:
+    case GL_UNSIGNED_INT_VEC2:
+    case GL_UNSIGNED_INT_VEC3:
+    case GL_UNSIGNED_INT_VEC4:
+        m_extraFuncs->glVertexAttribIPointer(index, size, type, stride, pointer);
+        break;
+
+    default:
+        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+    }
+}
+
 void GraphicsHelperES3::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     GLenum attr = GL_COLOR_ATTACHMENT0;

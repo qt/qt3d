@@ -80,6 +80,7 @@ public:
     bool supportsFeature(Feature feature) const Q_DECL_OVERRIDE;
     GLboolean unmapBuffer(GLenum target) Q_DECL_OVERRIDE;
     void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
+    void vertexAttributePointer(GLenum shaderDataType, GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) Q_DECL_OVERRIDE;
 
     UniformType uniformTypeFromGLType(GLenum glType) Q_DECL_OVERRIDE;
 

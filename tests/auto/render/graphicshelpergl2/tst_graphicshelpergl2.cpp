@@ -33,8 +33,10 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <QtOpenGLExtensions/QOpenGLExtensions>
 #include <QOpenGLContext>
+#include <QOpenGLBuffer>
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
 #include <QSurfaceFormat>
 
 #ifndef QT_OPENGL_ES_2
@@ -592,6 +594,33 @@ private Q_SLOTS:
         // Not supported by GL2
     }
 
+    void enableVertexAttribute()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+
+        // GIVEN
+        QOpenGLVertexArrayObject vao;
+        vao.create();
+        QOpenGLVertexArrayObject::Binder binder(&vao);
+
+        QOpenGLShaderProgram shaderProgram;
+        shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertCode);
+        shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragCodeSamplers);
+        QVERIFY(shaderProgram.link());
+        shaderProgram.bind();
+
+        // WHEN
+        GLint positionLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexPosition");
+        GLint texCoordLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexTexCoord");
+        m_glHelper.enableVertexAttributeArray(positionLocation);
+        m_glHelper.enableVertexAttributeArray(texCoordLocation);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+    }
+
     void frontFace()
     {
         if (!m_initializationSuccessful)
@@ -991,6 +1020,51 @@ private Q_SLOTS:
         if (!m_initializationSuccessful)
             QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
         // Not available in 3.2
+    }
+
+    void vertexAttributePointer()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        // GIVEN
+        QOpenGLVertexArrayObject vao;
+        vao.create();
+        QOpenGLVertexArrayObject::Binder binder(&vao);
+
+        QOpenGLShaderProgram shaderProgram;
+        shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertCode);
+        shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragCodeSamplers);
+        QVERIFY(shaderProgram.link());
+
+        GLint positionLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexPosition");
+        GLint texCoordLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexTexCoord");
+
+        const int vertexCount = 99;
+        QOpenGLBuffer positionBuffer(QOpenGLBuffer::VertexBuffer);
+        positionBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+        positionBuffer.create();
+        positionBuffer.bind();
+        positionBuffer.allocate(vertexCount * sizeof(QVector3D));
+
+        QOpenGLBuffer texCoordBuffer(QOpenGLBuffer::VertexBuffer);
+        texCoordBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+        texCoordBuffer.create();
+        texCoordBuffer.allocate(vertexCount * sizeof(QVector2D));
+
+        // WHEN
+        shaderProgram.bind();
+        positionBuffer.bind();
+        m_glHelper.enableVertexAttributeArray(positionLocation);
+        m_glHelper.vertexAttributePointer(GL_FLOAT_VEC3, positionLocation, 3, GL_FLOAT, GL_TRUE, 0, 0);
+
+        texCoordBuffer.bind();
+        m_glHelper.enableVertexAttributeArray(texCoordLocation);
+        m_glHelper.vertexAttributePointer(GL_FLOAT_VEC2, texCoordLocation, 2, GL_FLOAT, GL_TRUE, 0, 0);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
     }
 
     void glUniform1fv()

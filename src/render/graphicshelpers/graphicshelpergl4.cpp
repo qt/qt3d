@@ -338,6 +338,45 @@ void GraphicsHelperGL4::vertexAttribDivisor(GLuint index, GLuint divisor)
     m_funcs->glVertexAttribDivisor(index, divisor);
 }
 
+void GraphicsHelperGL4::vertexAttributePointer(GLenum shaderDataType,
+                                               GLuint index,
+                                               GLint size,
+                                               GLenum type,
+                                               GLboolean normalized,
+                                               GLsizei stride,
+                                               const GLvoid *pointer)
+{
+    switch (shaderDataType) {
+    case GL_FLOAT:
+    case GL_FLOAT_VEC2:
+    case GL_FLOAT_VEC3:
+    case GL_FLOAT_VEC4:
+        m_funcs->glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+        break;
+
+    case GL_INT:
+    case GL_INT_VEC2:
+    case GL_INT_VEC3:
+    case GL_INT_VEC4:
+    case GL_UNSIGNED_INT:
+    case GL_UNSIGNED_INT_VEC2:
+    case GL_UNSIGNED_INT_VEC3:
+    case GL_UNSIGNED_INT_VEC4:
+        m_funcs->glVertexAttribIPointer(index, size, type, stride, pointer);
+        break;
+
+    case GL_DOUBLE:
+    case GL_DOUBLE_VEC2:
+    case GL_DOUBLE_VEC3:
+    case GL_DOUBLE_VEC4:
+        m_funcs->glVertexAttribLPointer(index, size, type, stride, pointer);
+        break;
+
+    default:
+        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+    }
+}
+
 void GraphicsHelperGL4::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform1fv(location, count, values);
@@ -1069,6 +1108,11 @@ void GraphicsHelperGL4::enablePrimitiveRestart(int primitiveRestartIndex)
 {
     m_funcs->glPrimitiveRestartIndex(primitiveRestartIndex);
     m_funcs->glEnable(GL_PRIMITIVE_RESTART);
+}
+
+void GraphicsHelperGL4::enableVertexAttributeArray(int location)
+{
+    m_funcs->glEnableVertexAttribArray(location);
 }
 
 void GraphicsHelperGL4::disablePrimitiveRestart()

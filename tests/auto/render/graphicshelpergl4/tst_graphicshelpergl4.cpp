@@ -31,8 +31,10 @@
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/graphicshelpergl4_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
+#include <QOpenGLBuffer>
 #include <QOpenGLFunctions_4_3_Core>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
 #include <QSurfaceFormat>
 
 #if !defined(QT_OPENGL_ES_2) && defined(QT_OPENGL_4_3)
@@ -60,11 +62,12 @@ const QByteArray vertCodeUniformBuffer = QByteArrayLiteral(
             "layout(location = 1) in vec3 vertexPosition;\n" \
             "layout(location = 2) in vec2 vertexTexCoord;\n" \
             "layout(location = 3) in int vertexColorIndex;\n" \
+            "layout(location = 4) in double vertexTexCoordScale;\n" \
             "out vec2 texCoord;\n" \
             "flat out int colorIndex;\n" \
             "void main()\n" \
             "{\n" \
-            "   texCoord = vertexTexCoord;\n" \
+            "   texCoord = vec2(vertexTexCoordScale * vertexTexCoord);\n" \
             "   colorIndex = vertexColorIndex;\n" \
             "   gl_Position = vec4(vertexPosition, 1.0);\n" \
             "}\n");
@@ -139,6 +142,7 @@ const QByteArray fragCodeUniformsFloatMatrices = QByteArrayLiteral(
 const QByteArray fragCodeUniformBuffer = QByteArrayLiteral(
             "#version 430 core\n" \
             "out vec4 color;\n" \
+            "in vec2 texCoord;\n" \
             "flat in int colorIndex;\n" \
             "layout(binding = 2, std140) uniform ColorArray\n" \
             "{\n" \
@@ -146,7 +150,7 @@ const QByteArray fragCodeUniformBuffer = QByteArrayLiteral(
             "};\n" \
             "void main()\n" \
             "{\n" \
-            "   color = colors[colorIndex];\n" \
+            "   color = colors[colorIndex] + vec4(texCoord.s, texCoord.t, 0.0, 1.0);\n" \
             "}\n");
 
 const QByteArray fragCodeSamplers = QByteArrayLiteral(
@@ -1000,6 +1004,35 @@ private Q_SLOTS:
         m_func->glDisable(GL_PRIMITIVE_RESTART);
     }
 
+    void enableVertexAttribute()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        // GIVEN
+        QOpenGLVertexArrayObject vao;
+        vao.create();
+        QOpenGLVertexArrayObject::Binder binder(&vao);
+
+        QOpenGLShaderProgram shaderProgram;
+        shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertCodeUniformBuffer);
+        shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragCodeUniformBuffer);
+        QVERIFY(shaderProgram.link());
+        shaderProgram.bind();
+
+        // WHEN
+        GLint positionLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexPosition");
+        GLint texCoordLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexTexCoord");
+        GLint colorIndexLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexColorIndex");
+        m_glHelper.enableVertexAttributeArray(positionLocation);
+        m_glHelper.enableVertexAttributeArray(texCoordLocation);
+        m_glHelper.enableVertexAttributeArray(colorIndexLocation);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+    }
+
     void frontFace()
     {
         if (!m_initializationSuccessful)
@@ -1485,6 +1518,71 @@ private Q_SLOTS:
     {
         if (!m_initializationSuccessful)
             QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+    }
+
+    void vertexAttributePointer()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        // GIVEN
+        QOpenGLVertexArrayObject vao;
+        vao.create();
+        QOpenGLVertexArrayObject::Binder binder(&vao);
+
+        QOpenGLShaderProgram shaderProgram;
+        shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertCodeUniformBuffer);
+        shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragCodeUniformBuffer);
+        QVERIFY(shaderProgram.link());
+
+        GLint positionLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexPosition");
+        GLint texCoordLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexTexCoord");
+        GLint colorIndexLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexColorIndex");
+        GLint texCoordScaleLocation = m_func->glGetAttribLocation(shaderProgram.programId(), "vertexTexCoordScale");
+
+        const int vertexCount = 99;
+        QOpenGLBuffer positionBuffer(QOpenGLBuffer::VertexBuffer);
+        positionBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+        positionBuffer.create();
+        positionBuffer.bind();
+        positionBuffer.allocate(vertexCount * sizeof(QVector3D));
+
+        QOpenGLBuffer texCoordBuffer(QOpenGLBuffer::VertexBuffer);
+        texCoordBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+        texCoordBuffer.create();
+        texCoordBuffer.allocate(vertexCount * sizeof(QVector2D));
+
+        QOpenGLBuffer colorIndexBuffer(QOpenGLBuffer::VertexBuffer);
+        colorIndexBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+        colorIndexBuffer.create();
+        colorIndexBuffer.allocate(vertexCount * sizeof(int));
+
+        QOpenGLBuffer scaleBuffer(QOpenGLBuffer::VertexBuffer);
+        scaleBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+        scaleBuffer.create();
+        scaleBuffer.allocate(vertexCount * sizeof(double));
+
+        // WHEN
+        shaderProgram.bind();
+        positionBuffer.bind();
+        m_glHelper.enableVertexAttributeArray(positionLocation);
+        m_glHelper.vertexAttributePointer(GL_FLOAT_VEC3, positionLocation, 3, GL_FLOAT, GL_TRUE, 0, 0);
+
+        texCoordBuffer.bind();
+        m_glHelper.enableVertexAttributeArray(texCoordLocation);
+        m_glHelper.vertexAttributePointer(GL_FLOAT_VEC2, texCoordLocation, 2, GL_FLOAT, GL_TRUE, 0, 0);
+
+        colorIndexBuffer.bind();
+        m_glHelper.enableVertexAttributeArray(colorIndexLocation);
+        m_glHelper.vertexAttributePointer(GL_INT, colorIndexLocation, 1, GL_INT, GL_TRUE, 0, 0);
+
+        scaleBuffer.bind();
+        m_glHelper.enableVertexAttributeArray(colorIndexLocation);
+        m_glHelper.vertexAttributePointer(GL_DOUBLE, texCoordScaleLocation, 1, GL_DOUBLE, GL_TRUE, 0, 0);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
     }
 
     void glUniform1fv()

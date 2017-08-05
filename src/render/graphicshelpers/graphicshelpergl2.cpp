@@ -43,7 +43,7 @@
 #include <private/attachmentpack_p.h>
 #include <QtOpenGLExtensions/QOpenGLExtensions>
 #include <private/qgraphicsutils_p.h>
-#include <QDebug>
+#include <Qt3DRender/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -225,6 +225,27 @@ void GraphicsHelperGL2::vertexAttribDivisor(GLuint index,
 {
     Q_UNUSED(index);
     Q_UNUSED(divisor);
+}
+
+void GraphicsHelperGL2::vertexAttributePointer(GLenum shaderDataType,
+                                               GLuint index,
+                                               GLint size,
+                                               GLenum type,
+                                               GLboolean normalized,
+                                               GLsizei stride,
+                                               const GLvoid *pointer)
+{
+    switch (shaderDataType) {
+    case GL_FLOAT:
+    case GL_FLOAT_VEC2:
+    case GL_FLOAT_VEC3:
+    case GL_FLOAT_VEC4:
+        m_funcs->glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+        break;
+
+    default:
+        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+    }
 }
 
 void GraphicsHelperGL2::blendEquation(GLenum mode)
@@ -539,6 +560,11 @@ void GraphicsHelperGL2::memoryBarrier(QMemoryBarrier::Operations barriers)
 
 void GraphicsHelperGL2::enablePrimitiveRestart(int)
 {
+}
+
+void GraphicsHelperGL2::enableVertexAttributeArray(int location)
+{
+    m_funcs->glEnableVertexAttribArray(location);
 }
 
 void GraphicsHelperGL2::disablePrimitiveRestart()
