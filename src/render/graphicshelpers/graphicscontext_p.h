@@ -157,7 +157,9 @@ public:
 
     void setRenderer(Renderer *renderer);
 
-    void specifyAttribute(const Attribute *attribute, Buffer *buffer, int attributeLocation);
+    void specifyAttribute(const Attribute *attribute,
+                          Buffer *buffer,
+                          const ShaderAttribute *attributeDescription);
     void specifyIndices(Buffer *buffer);
     void updateBuffer(Buffer *buffer);
     QByteArray downloadBufferContent(Buffer *buffer);
@@ -324,6 +326,7 @@ private:
         uint vertexSize;
         uint byteStride;
         uint divisor;
+        GLenum shaderDataType;
     };
 
     using VAOIndexAttribute = HGLBuffer;

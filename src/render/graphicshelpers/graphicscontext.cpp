@@ -1272,13 +1272,17 @@ void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
     Q_ASSERT(buf);
     bindGLBuffer(buf, attr.bufferType);
 
-    QOpenGLShaderProgram *prog = activeShader();
-    prog->enableAttributeArray(attr.location);
-    prog->setAttributeBuffer(attr.location,
-                             attr.dataType,
-                             attr.byteOffset,
-                             attr.vertexSize,
-                             attr.byteStride);
+    // Don't use QOpenGLShaderProgram::setAttributeBuffer() because of QTBUG-43199.
+    // Use the introspection data and set the attribute explicitly
+    m_glHelper->enableVertexAttributeArray(attr.location);
+    m_glHelper->vertexAttributePointer(attr.shaderDataType,
+                                       attr.location,
+                                       attr.vertexSize,
+                                       attr.dataType,
+                                       GL_TRUE, // TODO: Support normalization property on QAttribute
+                                       attr.byteStride,
+                                       reinterpret_cast<const void *>(qintptr(attr.byteOffset)));
+
 
     // Done by the helper if it supports it
     if (attr.divisor != 0)
@@ -1403,8 +1407,11 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
 }
 
 // Note: needs to be called while VAO is bound
-void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, int location)
+void GraphicsContext::specifyAttribute(const Attribute *attribute,
+                                       Buffer *buffer,
+                                       const ShaderAttribute *attributeDescription)
 {
+    const int location = attributeDescription->m_location;
     if (location < 0) {
         qCWarning(Backend) << "failed to resolve location for attribute:" << attribute->name();
         return;
@@ -1440,6 +1447,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
         attr.vertexSize = attribute->vertexSize() / attrCount;
         attr.byteStride = attribute->byteStride() + (attrCount * attrCount * typeSize);
         attr.divisor = attribute->divisor();
+        attr.shaderDataType = attributeDescription->m_type;
 
         enableAttribute(attr);
 

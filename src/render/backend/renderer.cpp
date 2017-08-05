@@ -1820,16 +1820,16 @@ bool Renderer::updateVAOWithAttributes(Geometry *geometry,
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate) {
                 // Find the location for the attribute
                 const QVector<ShaderAttribute> shaderAttributes = shader->attributes();
-                int attributeLocation = -1;
+                const ShaderAttribute *attributeDescription = nullptr;
                 for (const ShaderAttribute &shaderAttribute : shaderAttributes) {
                     if (shaderAttribute.m_nameId == attribute->nameId()) {
-                        attributeLocation = shaderAttribute.m_location;
+                        attributeDescription = &shaderAttribute;
                         break;
                     }
                 }
-                if (attributeLocation < 0)
+                if (!attributeDescription || attributeDescription->m_location < 0)
                     return false;
-                m_graphicsContext->specifyAttribute(attribute, buffer, attributeLocation);
+                m_graphicsContext->specifyAttribute(attribute, buffer, attributeDescription);
             }
         }
 
