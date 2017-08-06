@@ -37,68 +37,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSKELETONLOADER_H
-#define QT3DCORE_QSKELETONLOADER_H
+#ifndef QT3DCORE_SQT_P_H
+#define QT3DCORE_SQT_P_H
 
-#include <Qt3DCore/qabstractskeleton.h>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QtCore/qurl.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <QtGui/qmatrix4x4.h>
+#include <QtGui/qquaternion.h>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QJoint;
-class QSkeletonLoaderPrivate;
-
-class QT3DCORESHARED_EXPORT QSkeletonLoader : public QAbstractSkeleton
+struct Sqt
 {
-    Q_OBJECT
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
-    Q_PROPERTY(bool createJointsEnabled READ isCreateJointsEnabled WRITE setCreateJointsEnabled NOTIFY createJointsEnabledChanged)
-    Q_PROPERTY(Qt3DCore::QJoint* rootJoint READ rootJoint NOTIFY rootJointChanged)
+    QQuaternion rotation;
+    QVector3D scale;
+    float pad1;
+    QVector3D translation;
+    float pad2;
 
-public:
-    explicit QSkeletonLoader(Qt3DCore::QNode *parent = nullptr);
-    explicit QSkeletonLoader(const QUrl &source,
-                             Qt3DCore::QNode *parent = nullptr);
-    ~QSkeletonLoader();
+    Sqt()
+        : rotation()
+        , scale(1.0f, 1.0f, 1.0f)
+        , translation()
+    {}
 
-    enum Status {
-        NotReady = 0,
-        Ready,
-        Error
-    };
-    Q_ENUM(Status) // LCOV_EXCL_LINE
-
-    QUrl source() const;
-    Status status() const;
-    bool isCreateJointsEnabled() const;
-    Qt3DCore::QJoint* rootJoint() const;
-
-public Q_SLOTS:
-    void setSource(const QUrl &source);
-    void setCreateJointsEnabled(bool enabled);
-
-Q_SIGNALS:
-    void sourceChanged(const QUrl &source);
-    void statusChanged(Status status);
-    void createJointsEnabledChanged(bool createJointsEnabled);
-    void rootJointChanged(Qt3DCore::QJoint* rootJoint);
-
-protected:
-    explicit QSkeletonLoader(QSkeletonLoaderPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
-private:
-    Q_DECLARE_PRIVATE(QSkeletonLoader)
-    QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
-    void setRootJoint(QJoint *rootJoint); // Needed for lifetime management of created joints
+    inline QMatrix4x4 toMatrix() const
+    {
+        QMatrix4x4 m;
+        m.translate(translation);
+        m.rotate(rotation);
+        m.scale(scale);
+        return m;
+    }
 };
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QSKELETONLOADER_H
+#endif // QT3DCORE_SQT_P_H

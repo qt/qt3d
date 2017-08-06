@@ -53,6 +53,7 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtGui/qquaternion.h>
 #include <QtGui/qvector3d.h>
+#include <Qt3DCore/private/sqt_p.h>
 
 #include <cmath>
 
@@ -187,6 +188,24 @@ inline void decomposeQMatrix4x4(const QMatrix4x4 &m, QVector3D &position, QQuate
     }
     orientation = QQuaternion::fromRotationMatrix(rot3x3);
     position = QVector3D(m(0, 3), m(1, 3), m(2, 3));
+}
+
+inline void decomposeQMatrix4x4(const QMatrix4x4 &m, Qt3DCore::Sqt &sqt)
+{
+    Q_ASSERT(m.isAffine());
+
+    const QMatrix3x3 m3x3(m.toGenericMatrix<3, 3>());
+
+    QMatrix3x3 rot3x3(Qt::Uninitialized);
+    if (hasScale(m)) {
+        decomposeQMatrix3x3(m3x3, rot3x3, sqt.scale, sqt.translation);
+    } else {
+        // we know there is no scaling part; no need for QDU decomposition
+        sqt.scale = QVector3D(1.0f, 1.0f, 1.0f);
+        rot3x3 = m3x3;
+    }
+    sqt.rotation = QQuaternion::fromRotationMatrix(rot3x3);
+    sqt.translation = QVector3D(m(0, 3), m(1, 3), m(2, 3));
 }
 
 QT_END_NAMESPACE

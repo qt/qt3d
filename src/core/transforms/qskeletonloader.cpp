@@ -39,6 +39,7 @@
 
 #include "qskeletonloader.h"
 #include "qskeletonloader_p.h"
+#include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qskeletoncreatedchange_p.h>
 
@@ -49,7 +50,9 @@ namespace Qt3DCore {
 QSkeletonLoaderPrivate::QSkeletonLoaderPrivate()
     : QAbstractSkeletonPrivate()
     , m_source()
+    , m_createJoints(false)
     , m_status(QSkeletonLoader::NotReady)
+    , m_rootJoint(nullptr)
 {
     m_type = QSkeletonCreatedChangeBase::SkeletonLoader;
 }
@@ -168,6 +171,18 @@ QSkeletonLoader::Status QSkeletonLoader::status() const
     return d->m_status;
 }
 
+bool QSkeletonLoader::isCreateJointsEnabled() const
+{
+    Q_D(const QSkeletonLoader);
+    return d->m_createJoints;
+}
+
+Qt3DCore::QJoint *QSkeletonLoader::rootJoint() const
+{
+    Q_D(const QSkeletonLoader);
+    return d->m_rootJoint;
+}
+
 void QSkeletonLoader::setSource(const QUrl &source)
 {
     Q_D(QSkeletonLoader);
@@ -178,14 +193,51 @@ void QSkeletonLoader::setSource(const QUrl &source)
     emit sourceChanged(source);
 }
 
+void QSkeletonLoader::setCreateJointsEnabled(bool createJoints)
+{
+    Q_D(QSkeletonLoader);
+    if (d->m_createJoints == createJoints)
+        return;
+
+    d->m_createJoints = createJoints;
+    emit createJointsEnabledChanged(createJoints);
+}
+
+void QSkeletonLoader::setRootJoint(QJoint *rootJoint)
+{
+    Q_D(QSkeletonLoader);
+    if (rootJoint == d->m_rootJoint)
+        return;
+
+    if (d->m_rootJoint)
+        d->unregisterDestructionHelper(d->m_rootJoint);
+
+    if (rootJoint && !rootJoint->parent())
+        rootJoint->setParent(this);
+
+    d->m_rootJoint = rootJoint;
+
+    // Ensures proper bookkeeping
+    if (d->m_rootJoint)
+        d->registerDestructionHelper(d->m_rootJoint, &QSkeletonLoader::setRootJoint, d->m_rootJoint);
+
+    emit rootJointChanged(d->m_rootJoint);
+}
+
 /*! \internal */
 void QSkeletonLoader::sceneChangeEvent(const QSceneChangePtr &change)
 {
     Q_D(QSkeletonLoader);
     if (change->type() == Qt3DCore::PropertyUpdated) {
-        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("status"))
+        auto propertyChange = qSharedPointerCast<QStaticPropertyUpdatedChangeBase>(change);
+        if (propertyChange->propertyName() == QByteArrayLiteral("status")) {
+            const auto e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
             d->setStatus(static_cast<QSkeletonLoader::Status>(e->value().toInt()));
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("rootJoint")) {
+            auto typedChange = qSharedPointerCast<QJointChange>(propertyChange);
+            auto rootJoint = std::move(typedChange->data);
+            setRootJoint(rootJoint.release());
+        }
     }
     QAbstractSkeleton::sceneChangeEvent(change);
 }
@@ -197,6 +249,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QSkeletonLoader::createNodeCreationChange() 
     auto &data = creationChange->data;
     Q_D(const QSkeletonLoader);
     data.source = d->m_source;
+    data.createJoints = d->m_createJoints;
     return creationChange;
 }
 

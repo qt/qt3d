@@ -29,6 +29,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DCore/qskeletonloader.h>
+#include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/private/qskeletonloader_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
@@ -52,6 +53,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(skeleton.source(), QUrl());
         QCOMPARE(skeleton.status(), QSkeletonLoader::NotReady);
+        QCOMPARE(skeleton.isCreateJointsEnabled(), false);
     }
 
     void checkPropertyChanges()
@@ -76,6 +78,26 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(skeleton.source(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
+
+        {
+            // WHEN
+            QSignalSpy spy(&skeleton, SIGNAL(createJointsEnabledChanged(bool)));
+            const bool newValue(true);
+            skeleton.setCreateJointsEnabled(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(skeleton.isCreateJointsEnabled(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            skeleton.setCreateJointsEnabled(newValue);
+
+            // THEN
+            QCOMPARE(skeleton.isCreateJointsEnabled(), newValue);
             QCOMPARE(spy.count(), 0);
         }
     }
@@ -107,6 +129,7 @@ private Q_SLOTS:
             QCOMPARE(skeleton.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(skeleton.metaObject(), creationChangeData->metaObject());
             QCOMPARE(skeleton.source(), data.source);
+            QCOMPARE(skeleton.isCreateJointsEnabled(), data.createJoints);
         }
 
         // WHEN
@@ -122,15 +145,18 @@ private Q_SLOTS:
             QCOMPARE(creationChanges.size(), 1);
 
             const auto creationChangeData = qSharedPointerCast<QNodeCreatedChange<QSkeletonLoaderData>>(creationChanges.first());
+            const QSkeletonLoaderData data = creationChangeData->data;
 
             QCOMPARE(skeleton.id(), creationChangeData->subjectId());
             QCOMPARE(skeleton.isEnabled(), false);
             QCOMPARE(skeleton.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(skeleton.metaObject(), creationChangeData->metaObject());
+            QCOMPARE(skeleton.source(), data.source);
+            QCOMPARE(skeleton.isCreateJointsEnabled(), data.createJoints);
         }
     }
 
-    void checkSourceUpdate()
+    void checkPropertyUpdates()
     {
         // GIVEN
         TestArbiter arbiter;
@@ -160,6 +186,29 @@ private Q_SLOTS:
             QCOMPARE(arbiter.events.size(), 0);
         }
 
+
+        {
+            // WHEN
+            skeleton.setCreateJointsEnabled(true);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "createJointsEnabled");
+            QCOMPARE(change->type(), PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            skeleton.setCreateJointsEnabled(true);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
     }
 
     void checkStatusPropertyUpdate()
@@ -193,6 +242,32 @@ private Q_SLOTS:
         QCOMPARE(spy.count(), 0);
         QCOMPARE(arbiter.events.size(), 0);
         QCOMPARE(status(), newStatus);
+    }
+
+    void checkRootJointPropertyUpdate()
+    {
+        // GIVEN
+        qRegisterMetaType<Qt3DCore::QJoint*>();
+        TestArbiter arbiter;
+        arbiter.setArbiterOnNode(this);
+        QSignalSpy spy(this, SIGNAL(rootJointChanged(Qt3DCore::QJoint*)));
+        std::unique_ptr<QJoint> root(new QJoint());
+
+        // THEN
+        QVERIFY(spy.isValid());
+        QVERIFY(rootJoint() == nullptr);
+
+        // WHEN
+        auto valueChange = QJointChangePtr::create(id());
+        valueChange->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        valueChange->setPropertyName("rootJoint");
+        valueChange->data = std::move(root);
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(arbiter.events.size(), 1);
+        QVERIFY(rootJoint() != nullptr);
     }
 };
 

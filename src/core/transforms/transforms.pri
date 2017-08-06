@@ -22,7 +22,8 @@ HEADERS += \
     $$PWD/qarmature_p.h \
     $$PWD/vector4d_p.h \
     $$PWD/vector3d_p.h \
-    $$PWD/matrix4x4_p.h
+    $$PWD/matrix4x4_p.h \
+    $$PWD/sqt_p.h
 
 INCLUDEPATH += $$PWD
 

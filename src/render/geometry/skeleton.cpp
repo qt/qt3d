@@ -36,8 +36,10 @@
 
 #include "skeleton_p.h"
 
+#include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
 
@@ -81,6 +83,7 @@ void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
         const auto &data = loaderTypedChange->data;
         m_dataType = File;
         m_source = data.source;
+        m_createJoints = data.createJoints;
         if (!m_source.isEmpty()) {
             markDirty(AbstractRenderer::SkeletonDataDirty);
             m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
@@ -107,6 +110,8 @@ void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
                 markDirty(AbstractRenderer::SkeletonDataDirty);
                 m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
             }
+        } else if (change->propertyName() == QByteArrayLiteral("createJointsEnabled")) {
+            m_createJoints = change->value().toBool();
         }
 
         // TODO: Handle QSkeleton case (non loaded)
@@ -160,8 +165,11 @@ void Skeleton::loadSkeleton()
         Q_UNREACHABLE();
     }
 
-    // If using a loader inform the frontend of the status change
-    if (m_dataType == File) {
+    // If using a loader inform the frontend of the status change.
+    // Don't bother if asked to create frontend joints though. When
+    // the backend gets notified of those joints we'll update the
+    // status at that point.
+    if (m_dataType == File && !m_createJoints) {
         if (jointCount() == 0)
             setStatus(QSkeletonLoader::Error);
         else
@@ -196,6 +204,34 @@ void Skeleton::loadSkeletonFromUrl()
         GLTFSkeletonLoader loader;
         loader.load(&file);
         m_skeletonData = loader.createSkeleton(m_name);
+
+        // If the user has requested it, create the frontend nodes for the joints
+        // and send them to the (soon to be owning) QSkeletonLoader.
+        if (m_createJoints) {
+            std::unique_ptr<QJoint> rootJoint(createFrontendJoints(m_skeletonData));
+            if (!rootJoint) {
+                qWarning() << "Failed to create frontend joints";
+                setStatus(Qt3DCore::QSkeletonLoader::Error);
+                return;
+            }
+
+            // Move the QJoint tree to the main thread and notify the
+            // corresponding QSkeletonLoader
+            const auto appThread = QCoreApplication::instance()->thread();
+            rootJoint->moveToThread(appThread);
+
+            auto e = QJointChangePtr::create(peerId());
+            e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+            e->setPropertyName("rootJoint");
+            e->data = std::move(rootJoint);
+            notifyObservers(e);
+
+            // Clear the skeleton data. It will be recreated from the
+            // frontend joints. A little bit inefficient but ensures
+            // that joints created this way and via QSkeleton go through
+            // the same code path.
+            m_skeletonData = SkeletonData();
+        }
     } else if (ext == QLatin1String("json")) {
         // TODO: Support native skeleton type
     } else {
@@ -211,6 +247,43 @@ void Skeleton::loadSkeletonFromData()
 
 }
 
+Qt3DCore::QJoint *Skeleton::createFrontendJoints(const SkeletonData &skeletonData) const
+{
+    if (skeletonData.joints.isEmpty())
+        return nullptr;
+
+    // Create frontend joints from the joint info objects
+    QVector<QJoint *> frontendJoints;
+    frontendJoints.reserve(skeletonData.joints.size());
+    for (const JointInfo &jointInfo : skeletonData.joints)
+        frontendJoints.push_back(createFrontendJoint(jointInfo));
+
+    // Now go through and resolve the parent for each joint
+    for (int i = 0; i < frontendJoints.size(); ++i) {
+        const auto parentIndex = skeletonData.joints[i].parentIndex;
+        if (parentIndex == -1)
+            continue;
+
+        // It's not enough to just set up the QObject parent-child relationship.
+        // We need to explicitly add the child to the parent's list of joints so
+        // that information is then propagated to the backend.
+        frontendJoints[parentIndex]->addChildJoint(frontendJoints[i]);
+    }
+
+    return frontendJoints[0];
+}
+
+Qt3DCore::QJoint *Skeleton::createFrontendJoint(const JointInfo &jointInfo) const
+{
+    auto joint = new QJoint();
+    joint->setTranslation(jointInfo.localPose.translation);
+    joint->setRotation(jointInfo.localPose.rotation);
+    joint->setScale(jointInfo.localPose.scale);
+    joint->setInverseBindMatrix(jointInfo.inverseBindPose);
+    // TODO: Add name property to joint
+    return joint;
+}
+
 void Skeleton::clearData()
 {
     m_name.clear();
@@ -223,10 +296,10 @@ QVector<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()
         // Calculate the global pose of this joint
         JointInfo &joint = m_skeletonData.joints[i];
         if (joint.parentIndex == -1) {
-            joint.globalPose = joint.localPose;
+            joint.globalPose = joint.localPose.toMatrix();
         } else {
             JointInfo &parentJoint = m_skeletonData.joints[joint.parentIndex];
-            joint.globalPose = parentJoint.globalPose * joint.localPose;
+            joint.globalPose = parentJoint.globalPose * joint.localPose.toMatrix();
         }
 
         m_skinningPalette[i] = joint.globalPose * joint.inverseBindPose;

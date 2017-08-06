@@ -73,5 +73,6 @@ DefaultSceneEntity {
         baseColor: "blue"
         transform.scale: 0.05
         transform.translation: Qt.vector3d(0.5, 0.25, 0.0)
+        createJointsEnabled: true
     }
 }

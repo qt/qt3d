@@ -54,9 +54,15 @@
 #include <Qt3DCore/private/qabstractskeleton_p.h>
 #include "qskeletonloader.h"
 
+#include <Qt3DCore/private/qtypedpropertyupdatechange_p.h>
+
+#include <memory>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
+
+class QJoint;
 
 class QSkeletonLoaderPrivate : public QAbstractSkeletonPrivate
 {
@@ -68,13 +74,22 @@ public:
     Q_DECLARE_PUBLIC(QSkeletonLoader)
 
     QUrl m_source;
+    bool m_createJoints;
+
+    // Set by the backend
     QSkeletonLoader::Status m_status;
+    Qt3DCore::QJoint* m_rootJoint;
 };
 
 struct QSkeletonLoaderData
 {
     QUrl source;
+    bool createJoints;
 };
+
+class QJoint;
+typedef QTypedPropertyUpdatedChange<std::unique_ptr<QJoint>> QJointChange;
+typedef QTypedPropertyUpdatedChangePtr<std::unique_ptr<QJoint>> QJointChangePtr;
 
 } // namespace Qt3DCore
 

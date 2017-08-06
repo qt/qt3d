@@ -56,7 +56,15 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QDebug>
 
+#if defined(QT_BUILD_INTERNAL)
+class tst_Skeleton;
+#endif
+
 QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+class QJoint;
+}
 
 namespace Qt3DRender {
 namespace Render {
@@ -104,17 +112,24 @@ private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     void loadSkeletonFromUrl();
     void loadSkeletonFromData();
+    Qt3DCore::QJoint *createFrontendJoints(const SkeletonData &skeletonData) const;
+    Qt3DCore::QJoint *createFrontendJoint(const JointInfo &jointInfo) const;
     void clearData();
 
     QVector<QMatrix4x4> m_skinningPalette;
     QUrl m_source;
     Qt3DCore::QSkeletonLoader::Status m_status;
+    bool m_createJoints;
 
     SkeletonDataType m_dataType;
 
     QString m_name;
     SkeletonData m_skeletonData;
     SkeletonManager *m_skeletonManager;
+
+#if defined(QT_BUILD_INTERNAL)
+    friend class ::tst_Skeleton;
+#endif
 };
 
 #ifndef QT_NO_DEBUG_STREAM

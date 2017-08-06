@@ -55,6 +55,7 @@
 #include <QtCore/qjsondocument.h>
 
 #include <Qt3DRender/private/skeletondata_p.h>
+#include <Qt3DCore/private/sqt_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -121,7 +122,7 @@ class GLTFSkeletonLoader
         Node();
         explicit Node(const QJsonObject &json);
 
-        QMatrix4x4 localTransform;
+        Qt3DCore::Sqt localTransform;
         QVector<int> childNodeIndices;
         QString name;
         int parentNodeIndex;

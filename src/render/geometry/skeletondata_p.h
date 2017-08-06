@@ -51,13 +51,14 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvector.h>
+#include <Qt3DCore/private/sqt_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-struct JointInfo
+struct Q_AUTOTEST_EXPORT JointInfo
 {
     JointInfo()
         : parentIndex(-1)
@@ -65,13 +66,13 @@ struct JointInfo
     }
 
     QMatrix4x4 inverseBindPose;
-    QMatrix4x4 localPose;
+    Qt3DCore::Sqt localPose;
     QMatrix4x4 globalPose;
     int parentIndex;
     QString name;
 };
 
-struct SkeletonData
+struct Q_AUTOTEST_EXPORT SkeletonData
 {
     SkeletonData();
 

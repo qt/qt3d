@@ -8,6 +8,7 @@ Entity {
 
     property Effect effect: skinnedPbrEffect
     property url source: ""
+    property alias createJointsEnabled: skeleton.createJointsEnabled
     property alias transform: transform
     property color baseColor: "red"
 
@@ -21,6 +22,7 @@ Entity {
         },
         Armature {
             skeleton: SkeletonLoader {
+                id: skeleton
                 source: root.source
                 onStatusChanged: console.log("skeleton loader status: " + status)
                 onJointCountChanged: console.log("skeleton has " + jointCount + " joints")

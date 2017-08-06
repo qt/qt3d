@@ -47,18 +47,22 @@
 #include <QtCore/qversionnumber.h>
 
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DCore/private/qmath3d_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace {
 
-void jsonArrayToMatrix4x4(const QJsonArray &jsonArray, QMatrix4x4 &m)
+void jsonArrayToSqt(const QJsonArray &jsonArray, Qt3DCore::Sqt &sqt)
 {
     Q_ASSERT(jsonArray.size() == 16);
+    QMatrix4x4 m;
     float *data = m.data();
     int i = 0;
     for (const auto element : jsonArray)
         *(data + i++) = static_cast<float>(element.toDouble());
+
+    decomposeQMatrix4x4(m, sqt);
 }
 
 void jsonArrayToVector3D(const QJsonArray &jsonArray, QVector3D &v)
@@ -214,7 +218,7 @@ GLTFSkeletonLoader::Node::Node(const QJsonObject &json)
     // Local transform - matrix or scale, rotation, translation
     const auto matrixValue = json.value(KEY_MATRIX);
     if (!matrixValue.isUndefined()) {
-        jsonArrayToMatrix4x4(matrixValue.toArray(), localTransform);
+        jsonArrayToSqt(matrixValue.toArray(), localTransform);
     } else {
         const auto scaleValue = json.value(KEY_SCALE);
         const auto rotationValue = json.value(KEY_ROTATION);
@@ -222,19 +226,15 @@ GLTFSkeletonLoader::Node::Node(const QJsonObject &json)
 
         QVector3D s(1.0f, 1.0f, 1.0f);
         if (!scaleValue.isUndefined())
-            jsonArrayToVector3D(scaleValue.toArray(), s);
+            jsonArrayToVector3D(scaleValue.toArray(), localTransform.scale);
 
         QQuaternion r;
         if (!rotationValue.isUndefined())
-            jsonArrayToQuaternion(json.value(KEY_ROTATION).toArray(), r);
+            jsonArrayToQuaternion(json.value(KEY_ROTATION).toArray(), localTransform.rotation);
 
         QVector3D t;
         if (!translationValue.isUndefined())
-            jsonArrayToVector3D(json.value(KEY_TRANSLATION).toArray(), t);
-
-        localTransform.translate(t);
-        localTransform.rotate(r);
-        localTransform.scale(s);
+            jsonArrayToVector3D(json.value(KEY_TRANSLATION).toArray(), localTransform.translation);
     }
 
     // Referenced objects

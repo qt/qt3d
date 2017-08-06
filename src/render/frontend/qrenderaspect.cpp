@@ -85,6 +85,7 @@
 #include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/qshaderprogrambuilder.h>
 #include <Qt3DCore/qarmature.h>
+#include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qskeletonloader.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
@@ -218,6 +219,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     qRegisterMetaType<Qt3DRender::QFrameGraphNode *>();
     qRegisterMetaType<Qt3DRender::QCamera*>();
     qRegisterMetaType<Qt3DRender::QShaderProgram*>();
+    qRegisterMetaType<Qt3DCore::QJoint*>();
 
     q->registerBackendType<Qt3DCore::QEntity>(QSharedPointer<Render::RenderEntityFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<Qt3DCore::QTransform>(QSharedPointer<Render::NodeFunctor<Render::Transform, Render::TransformManager> >::create(m_renderer));
