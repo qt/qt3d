@@ -69,7 +69,7 @@ public:
     QVector<QJoint *> m_childJoints;
     QQuaternion m_rotation;
     QVector3D m_translation;
-    float m_scale;
+    QVector3D m_scale;
 };
 
 struct QJointData
@@ -77,7 +77,7 @@ struct QJointData
     QNodeIdVector childJointIds;
     QQuaternion rotation;
     QVector3D translation;
-    float scale;
+    QVector3D scale;
 };
 
 } // namespace Qt3DCore

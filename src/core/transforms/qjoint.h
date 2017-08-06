@@ -55,7 +55,7 @@ class QJointPrivate;
 class QT3DCORESHARED_EXPORT QJoint : public QNode
 {
     Q_OBJECT
-    Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
+    Q_PROPERTY(QVector3D scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QQuaternion rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
     Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
 
@@ -63,7 +63,7 @@ public:
     explicit QJoint(Qt3DCore::QNode *parent = nullptr);
     ~QJoint();
 
-    float scale() const;
+    QVector3D scale() const;
     QQuaternion rotation() const;
     QVector3D translation() const;
 
@@ -72,12 +72,12 @@ public:
     QVector<QJoint *> childJoints() const;
 
 public Q_SLOTS:
-    void setScale(float scale);
+    void setScale(const QVector3D &scale);
     void setRotation(const QQuaternion &rotation);
     void setTranslation(const QVector3D &translation);
 
 Q_SIGNALS:
-    void scaleChanged(float scale);
+    void scaleChanged(const QVector3D &scale);
     void rotationChanged(const QQuaternion &rotation);
     void translationChanged(const QVector3D &translation);
 

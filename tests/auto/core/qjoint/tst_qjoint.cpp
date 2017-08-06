@@ -49,7 +49,7 @@ private Q_SLOTS:
         QJoint joint;
 
         // THEN
-        QCOMPARE(joint.scale(), 1.0f);
+        QCOMPARE(joint.scale(), QVector3D(1.0f, 1.0f, 1.0f));
         QCOMPARE(joint.rotation(), QQuaternion());
         QCOMPARE(joint.translation(), QVector3D(0.0f, 0.0f, 0.0f));
     }
@@ -61,8 +61,8 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&joint, SIGNAL(scaleChanged(float)));
-            const float newValue(2.5f);
+            QSignalSpy spy(&joint, SIGNAL(scaleChanged(QVector3D)));
+            const QVector3D newValue(2.5f, 2.0f, 1.3f);
             joint.setScale(newValue);
 
             // THEN
@@ -125,7 +125,7 @@ private Q_SLOTS:
         // GIVEN
         QJoint joint;
 
-        joint.setScale(3.5f);
+        joint.setScale(QVector3D(3.5f, 2.0f, 1.3f));
         joint.setRotation(QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 30.0f));
         joint.setTranslation(QVector3D(3.0f, 2.0f, 1.0f));
 
@@ -189,7 +189,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            joint.setScale(2.0f);
+            joint.setScale(QVector3D(2.0f, 1.0f, 3.0f));
             QCoreApplication::processEvents();
 
             // THEN
@@ -197,12 +197,12 @@ private Q_SLOTS:
             auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "scale");
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toFloat(), joint.scale());
+            QCOMPARE(change->value().value<QVector3D>(), joint.scale());
 
             arbiter.events.clear();
 
             // WHEN
-            joint.setScale(2.0f);
+            joint.setScale(QVector3D(2.0f, 1.0f, 3.0f));
             QCoreApplication::processEvents();
 
             // THEN

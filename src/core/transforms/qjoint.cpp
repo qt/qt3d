@@ -53,7 +53,7 @@ QJointPrivate::QJointPrivate()
     : QNodePrivate()
     , m_rotation()
     , m_translation()
-    , m_scale(1.0f)
+    , m_scale(1.0f, 1.0f, 1.0f)
 {
 }
 
@@ -72,7 +72,7 @@ QJointPrivate::QJointPrivate()
 */
 
 /*!
-    \qmlproperty real Joint::scale
+    \qmlproperty vector3d Joint::scale
 
     Holds the uniform scale of the joint.
 */
@@ -118,9 +118,9 @@ QJoint::~QJoint()
 /*!
     \property Qt3DCore::QJoint::scale
 
-    Holds the uniform scale of the joint.
+    Holds the scale of the joint.
 */
-float QJoint::scale() const
+QVector3D QJoint::scale() const
 {
     Q_D(const QJoint);
     return d->m_scale;
@@ -148,7 +148,7 @@ QVector3D QJoint::translation() const
     return d->m_translation;
 }
 
-void QJoint::setScale(float scale)
+void QJoint::setScale(const QVector3D &scale)
 {
     Q_D(QJoint);
     if (scale == d->m_scale)
