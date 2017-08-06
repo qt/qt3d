@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qjoint.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,6 +67,7 @@ public:
 
     Q_DECLARE_PUBLIC(QJoint)
 
+    QMatrix4x4 m_inverseBindMatrix;
     QVector<QJoint *> m_childJoints;
     QQuaternion m_rotation;
     QVector3D m_translation;
@@ -74,6 +76,7 @@ public:
 
 struct QJointData
 {
+    QMatrix4x4 inverseBindMatrix;
     QNodeIdVector childJointIds;
     QQuaternion rotation;
     QVector3D translation;

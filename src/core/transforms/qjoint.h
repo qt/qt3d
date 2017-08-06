@@ -43,6 +43,7 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
+#include <QtGui/qmatrix4x4.h>
 #include <QtGui/qquaternion.h>
 #include <QtGui/qvector3d.h>
 
@@ -58,6 +59,7 @@ class QT3DCORESHARED_EXPORT QJoint : public QNode
     Q_PROPERTY(QVector3D scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QQuaternion rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
     Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
+    Q_PROPERTY(QMatrix4x4 inverseBindMatrix READ inverseBindMatrix WRITE setInverseBindMatrix NOTIFY inverseBindMatrixChanged)
 
 public:
     explicit QJoint(Qt3DCore::QNode *parent = nullptr);
@@ -66,6 +68,7 @@ public:
     QVector3D scale() const;
     QQuaternion rotation() const;
     QVector3D translation() const;
+    QMatrix4x4 inverseBindMatrix() const;
 
     void addChildJoint(QJoint *joint);
     void removeChildJoint(QJoint *joint);
@@ -75,11 +78,13 @@ public Q_SLOTS:
     void setScale(const QVector3D &scale);
     void setRotation(const QQuaternion &rotation);
     void setTranslation(const QVector3D &translation);
+    void setInverseBindMatrix(const QMatrix4x4 &inverseBindMatrix);
 
 Q_SIGNALS:
     void scaleChanged(const QVector3D &scale);
     void rotationChanged(const QQuaternion &rotation);
     void translationChanged(const QVector3D &translation);
+    void inverseBindMatrixChanged(const QMatrix4x4 &inverseBindMatrix);
 
 private:
     Q_DECLARE_PRIVATE(QJoint)

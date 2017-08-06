@@ -51,6 +51,7 @@ namespace Qt3DCore {
 
 QJointPrivate::QJointPrivate()
     : QNodePrivate()
+    , m_inverseBindMatrix()
     , m_rotation()
     , m_translation()
     , m_scale(1.0f, 1.0f, 1.0f)
@@ -87,6 +88,15 @@ QJointPrivate::QJointPrivate()
     \qmlproperty vector3d Joint::translation
 
     Holds the translation of the joint as vector3d.
+*/
+
+/*!
+    \qmlproperty matrix4x4 inverseBindMatrix
+
+    Holds the inverse bind matrix of the joint. This is used to transform
+    vertices from model space into the space of this joint so they can
+    subsequently be multiplied by the joint's global transform to perform
+    the skinning operation.
 */
 
 /*!
@@ -148,6 +158,20 @@ QVector3D QJoint::translation() const
     return d->m_translation;
 }
 
+/*!
+    \property Qt3DCore::QJoint::inverseBindMatrix
+
+    Holds the inverse bind matrix of the joint. This is used to transform
+    vertices from model space into the space of this joint so they can
+    subsequently be multiplied by the joint's global transform to perform
+    the skinning operation.
+*/
+QMatrix4x4 QJoint::inverseBindMatrix() const
+{
+    Q_D(const QJoint);
+    return d->m_inverseBindMatrix;
+}
+
 void QJoint::setScale(const QVector3D &scale)
 {
     Q_D(QJoint);
@@ -176,6 +200,16 @@ void QJoint::setTranslation(const QVector3D &translation)
 
     d->m_translation = translation;
     emit translationChanged(translation);
+}
+
+void QJoint::setInverseBindMatrix(const QMatrix4x4 &inverseBindMatrix)
+{
+    Q_D(QJoint);
+    if (d->m_inverseBindMatrix == inverseBindMatrix)
+        return;
+
+    d->m_inverseBindMatrix = inverseBindMatrix;
+    emit inverseBindMatrixChanged(inverseBindMatrix);
 }
 
 /*!
@@ -240,6 +274,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QJoint::createNodeCreationChange() const
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QJointData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QJoint);
+    data.inverseBindMatrix = d->m_inverseBindMatrix;
     data.childJointIds = qIdsForNodes(d->m_childJoints);
     data.rotation = d->m_rotation;
     data.scale = d->m_scale;

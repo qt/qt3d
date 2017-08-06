@@ -52,6 +52,7 @@ private Q_SLOTS:
         QCOMPARE(joint.scale(), QVector3D(1.0f, 1.0f, 1.0f));
         QCOMPARE(joint.rotation(), QQuaternion());
         QCOMPARE(joint.translation(), QVector3D(0.0f, 0.0f, 0.0f));
+        QCOMPARE(joint.inverseBindMatrix(), QMatrix4x4());
     }
 
     void checkPropertyChanges()
@@ -118,6 +119,27 @@ private Q_SLOTS:
             QCOMPARE(joint.translation(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+
+        {
+            // WHEN
+            QSignalSpy spy(&joint, SIGNAL(inverseBindMatrixChanged(QMatrix4x4)));
+            QMatrix4x4 newValue;
+            newValue.scale(3.5f);
+            joint.setInverseBindMatrix(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(joint.inverseBindMatrix(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            joint.setInverseBindMatrix(newValue);
+
+            // THEN
+            QCOMPARE(joint.inverseBindMatrix(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -128,6 +150,9 @@ private Q_SLOTS:
         joint.setScale(QVector3D(3.5f, 2.0f, 1.3f));
         joint.setRotation(QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 30.0f));
         joint.setTranslation(QVector3D(3.0f, 2.0f, 1.0f));
+        QMatrix4x4 ibm;
+        ibm.scale(5.2f);
+        joint.setInverseBindMatrix(ibm);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -152,6 +177,7 @@ private Q_SLOTS:
             QCOMPARE(joint.scale(), data.scale);
             QCOMPARE(joint.rotation(), data.rotation);
             QCOMPARE(joint.translation(), data.translation);
+            QCOMPARE(joint.inverseBindMatrix(), data.inverseBindMatrix);
         }
 
         // WHEN
@@ -177,6 +203,7 @@ private Q_SLOTS:
             QCOMPARE(joint.scale(), data.scale);
             QCOMPARE(joint.rotation(), data.rotation);
             QCOMPARE(joint.translation(), data.translation);
+            QCOMPARE(joint.inverseBindMatrix(), data.inverseBindMatrix);
         }
     }
 
@@ -249,6 +276,30 @@ private Q_SLOTS:
 
             // WHEN
             joint.setTranslation(newValue);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+        {
+            // WHEN
+            QMatrix4x4 newValue;
+            newValue.rotate(90.0f, 1.0f, 0.0f, 0.0f);
+            joint.setInverseBindMatrix(newValue);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "inverseBindMatrix");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().value<QMatrix4x4>(), newValue);
+
+            arbiter.events.clear();
+
+            // WHEN
+            joint.setInverseBindMatrix(newValue);
             QCoreApplication::processEvents();
 
             // THEN
