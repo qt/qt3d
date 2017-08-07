@@ -82,10 +82,10 @@ namespace Qt3DRender {
 */
 
 /*!
- * \qmltype ObjectPicker
- * \instantiates Qt3DRender::QObjectPicker
- * \inqmlmodule Qt3D.Render
- * \brief The ObjectPicker class instantiates a component that can
+    \qmltype ObjectPicker
+    \instantiates Qt3DRender::QObjectPicker
+    \inqmlmodule Qt3D.Render
+    \brief The ObjectPicker class instantiates a component that can
     be used to interact with an Entity by a process known as picking.
 
     For every combination of viewport and camera, picking casts a ray through the scene to
@@ -109,80 +109,107 @@ namespace Qt3DRender {
 
     \note Instances of this component shouldn't be shared, not respecting that
     condition will most likely result in undefined behavior.
-
  */
 
 /*!
+    \qmlsignal Qt3D.Render::ObjectPicker::clicked(PickEvent pick)
+
+    This signal is emitted when the bounding volume defined by the pickAttribute
+    property intersects with a ray on a mouse click the PickEvent \a pick contains
+    details of the event.
+*/
+
+/*!
     \qmlsignal Qt3D.Render::ObjectPicker::pressed(PickEvent pick)
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on a mouse press.
+
+    This signal is emitted when the bounding volume defined by the
+    pickAttribute property intersects with a ray on a mouse press. Intersection
+    information are accessible through the \a pick parameter.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::released(PickEvent pick)
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on a mouse release.
+
+    This signal is emitted when the bounding volume defined by the
+    pickAttribute property intersects with a ray on a mouse release.
+    Intersection information are accessible through the \a pick parameter.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::clicked(PickEvent pick)
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on a mouse click.
+
+    This signal is emitted when the bounding volume defined by the
+    pickAttribute property intersects with a ray on a mouse click. Intersection
+    information are accessible through the pick \a parameter.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::moved(PickEvent pick)
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on a mouse move with a button pressed.
+
+    This signal is emitted when the bounding volume defined by the
+    pickAttribute property intersects with a ray on a mouse move with a button
+    pressed. Intersection information are accessible through the \a pick
+    parameter.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::entered()
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on the mouse entering the volume.
+
+    This signal is emitted when the bounding volume defined by the pickAttribute
+    property intersects with a ray on the mouse entering the volume.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::exited()
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on the ray exiting the volume.
+
+    This signal is emitted when the bounding volume defined by the pickAttribute
+    property intersects with a ray on the ray exiting the volume.
 */
 
 /*!
-  \fn QObjectPicker::clicked(Qt3DRender::QPickEvent *pick)
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on a mouse click the QPickEvent \a pick contains details of the event.
+    \fn QObjectPicker::clicked(Qt3DRender::QPickEvent *pick)
+
+    This signal is emitted when the bounding volume defined by the pickAttribute
+    property intersects with a ray on a mouse click the QPickEvent \a pick contains
+    details of the event.
 */
 
 /*!
-  \fn QObjectPicker::entered()
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on the mouse entering the volume.
+    \fn QObjectPicker::entered()
+
+    This signal is emitted when the bounding volume defined by the pickAttribute
+    property intersects with a ray on the mouse entering the volume.
 */
 
 /*!
-  \fn QObjectPicker::exited()
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on the ray exiting the volume.
+    \fn QObjectPicker::exited()
+
+    This signal is emitted when the bounding volume defined by the pickAttribute
+    property intersects with a ray on the ray exiting the volume.
 */
 
 /*!
-  \fn QObjectPicker::moved(Qt3DRender::QPickEvent *pick)
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on a mouse move with a button pressed the QPickEvent \a pick contains details of the event.
+    \fn QObjectPicker::moved(Qt3DRender::QPickEvent *pick)
 
+    This signal is emitted when the bounding volume defined by the
+    pickAttribute property intersects with a ray on a mouse move with a button
+    pressed the QPickEvent \a pick contains details of the event.
 */
 
 /*!
-  \fn QObjectPicker::pressed(Qt3DRender::QPickEvent *pick)
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on a mouse press the QPickEvent \a pick contains details of the event.
+    \fn QObjectPicker::pressed(Qt3DRender::QPickEvent *pick)
+
+    This signal is emitted when the bounding volume defined by the
+    pickAttribute property intersects with a ray on a mouse press the
+    QPickEvent \a pick contains details of the event.
 */
 
 /*!
-  \fn QObjectPicker::released(Qt3DRender::QPickEvent *pick)
-  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
-    with a ray on a mouse release the QPickEvent \a pick contains details of the event.
+    \fn QObjectPicker::released(Qt3DRender::QPickEvent *pick)
+
+    This signal is emitted when the bounding volume defined by the
+    pickAttribute property intersects with a ray on a mouse release the
+    QPickEvent \a pick contains details of the event.
 */
 
 QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
