@@ -107,7 +107,7 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
  * \brief Provides mouse event notification
  *
  * \TODO
- * \sa MouseDevice
+ * \sa MouseDevice, MouseEvent
  */
 
 /*!
@@ -123,28 +123,34 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
  * \note QMouseHandler components shouldn't be shared, not respecting that
  * condition will most likely result in undefined behaviors.
  *
- * \sa QMouseDevice
+ * \sa QMouseDevice, QMouseEvent
  */
 
 /*!
     \qmlproperty MouseDevice Qt3D.Input::MouseHandler::sourceDevice
+
     Holds the current mouse source device of the MouseHandler instance.
  */
 
 /*!
     \qmlproperty bool Qt3D.Input::MouseHandler::containsMouse
     \readonly
+
     Holds \c true if the QMouseHandler currently contains the mouse.
  */
 
 /*!
-    \qmlsignal Qt3D.Input::MouseHandler::clicked()
-    This signal is emitted when a mouse button is clicked
+    \qmlsignal Qt3D.Input::MouseHandler::clicked(MouseEvent mouse)
+
+    This signal is emitted when a mouse button is clicked with the event details
+    being contained within \a mouse
  */
 
 /*!
-    \qmlsignal Qt3D.Input::MouseHandler::doubleClicked()
-    This signal is emitted when a mouse button is double clicked
+    \qmlsignal Qt3D.Input::MouseHandler::doubleClicked(MouseEvent mouse)
+
+    This signal is emitted when a mouse button is double clicked with the event
+    details being contained within \a mouse
  */
 
 /*!
@@ -156,41 +162,52 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
  */
 
 /*!
-    \qmlsignal Qt3D.Input::MouseHandler::pressed()
-    This signal is emitted when a mouse button is pressed
+    \qmlsignal Qt3D.Input::MouseHandler::pressed(MouseEvent mouse)
+
+    This signal is emitted when a mouse button is pressed with the event details
+    being contained within \a mouse
  */
 
 /*!
-    \qmlsignal Qt3D.Input::MouseHandler::released()
-    This signal is emitted when a mouse button is released
+    \qmlsignal Qt3D.Input::MouseHandler::released(MouseEvent mouse)
+
+    This signal is emitted when a mouse button is released with the event
+    details being contained within \a mouse
  */
 
 /*!
-    \qmlsignal Qt3D.Input::MouseHandler::pressAndHold()
-    This signal is emitted when a mouse button is pressed and held down
+    \qmlsignal Qt3D.Input::MouseHandler::pressAndHold(MouseEvent mouse)
+
+    This signal is emitted when a mouse button is pressed and held down with the
+    event details being contained within \a mouse
  */
 
 /*!
-    \qmlsignal Qt3D.Input::MouseHandler::positionChanged()
-    This signal is emitted when the mouse position changes
+    \qmlsignal Qt3D.Input::MouseHandler::positionChanged(MouseEvent mouse)
+
+    This signal is emitted when the mouse position changes with the event
+    details being contained within \a mouse
  */
 
 /*!
-    \qmlsignal Qt3D.Input::MouseHandler::wheel()
-    This signal is emitted when the mouse wheel is used
+    \qmlsignal Qt3D.Input::MouseHandler::wheel(MouseEvent mouse)
+
+    This signal is emitted when the mouse wheel is used with the event details
+    being contained within \a wheel
  */
-
-
 
 /*!
     \fn QMouseHandler::clicked(Qt3DInput::QMouseEvent *mouse)
-    This signal is emitted when a mouse button is clicked with the event details being contained within \a mouse
+
+    This signal is emitted when a mouse button is clicked with the event details
+    being contained within \a mouse
  */
 
 /*!
     \fn QMouseHandler::doubleClicked(Qt3DInput::QMouseEvent *mouse)
-    This signal is emitted when a mouse button is double clicked with the event details being contained within \a mouse
 
+    This signal is emitted when a mouse button is double clicked with the event
+    details being contained within \a mouse
  */
 
 /*!
@@ -203,30 +220,37 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
 
 /*!
     \fn QMouseHandler::pressed(Qt3DInput::QMouseEvent *mouse)
-    This signal is emitted when a mouse button is pressed with the event details being contained within \a mouse
+
+    This signal is emitted when a mouse button is pressed with the event details
+    being contained within \a mouse
  */
 
 /*!
     \fn QMouseHandler::released(Qt3DInput::QMouseEvent *mouse)
-    This signal is emitted when a mouse button is released with the event details being contained within \a mouse
 
+    This signal is emitted when a mouse button is released with the event
+    details being contained within \a mouse
  */
 
 /*!
     \fn QMouseHandler::pressAndHold(Qt3DInput::QMouseEvent *mouse)
-    This signal is emitted when a mouse button is pressed and held down with the event details being contained within \a mouse
+
+    This signal is emitted when a mouse button is pressed and held down with the
+    event details being contained within \a mouse
  */
 
 /*!
     \fn QMouseHandler::positionChanged(Qt3DInput::QMouseEvent *mouse)
-    This signal is emitted when the mouse position changes with the event details being contained within \a mouse
 
+    This signal is emitted when the mouse position changes with the event
+    details being contained within \a mouse
  */
 
 /*!
     \fn QMouseHandler::wheel(Qt3DInput::QWheelEvent *wheel)
-    This signal is emitted when the mouse wheel is used with the event details being contained within \a wheel
 
+    This signal is emitted when the mouse wheel is used with the event details
+    being contained within \a wheel
  */
 
 /*!
