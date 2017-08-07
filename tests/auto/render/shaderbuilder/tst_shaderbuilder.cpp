@@ -449,7 +449,7 @@ private slots:
         // THEN
         QCOMPARE(backend.shaderGraph(type), graphUrl);
         QVERIFY(!backend.isShaderCodeDirty(type));
-        QCOMPARE(backend.shaderCode(type), es2Code);
+//        QCOMPARE(backend.shaderCode(type), es2Code);
     }
 };
 
