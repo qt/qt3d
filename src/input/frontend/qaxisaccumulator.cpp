@@ -199,6 +199,16 @@ float QAxisAccumulator::value() const
 }
 
 /*!
+    \qmlproperty real Qt3D.Input::Axis::velocity
+    \readonly
+
+    Returns the velocity. If the sourceAxisType is set to Velocity this is
+    simply the value of the source axis multiplied by the scale. If the
+    sourceAxisType is set to Acceleration, the velocity is integrated using the
+    source axis' value as an acceleration.
+*/
+
+/*!
    Returns the velocity. If the sourceAxisType is set to Velocity this is
    simply the value of the source axis multiplied by the scale. If the
    sourceAxisType is set to Acceleration, the velocity is integrated using
@@ -209,6 +219,14 @@ float QAxisAccumulator::velocity() const
     Q_D(const QAxisAccumulator);
     return d->m_velocity;
 }
+
+/*!
+    \qmlproperty real Qt3D.Input::Axis::scale
+
+    The amount to scale the axis value by when accumulating. This can be
+    thought of as the maximum velocity or acceleration the axis can
+    control.
+*/
 
 /*!
     The amount to scale the axis value by when accumulating. This can be
