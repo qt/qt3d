@@ -1,4 +1,4 @@
-#version 100 es
+#version 100
 
 varying highp vec3 worldPosition;
 uniform sampler2D texture;
