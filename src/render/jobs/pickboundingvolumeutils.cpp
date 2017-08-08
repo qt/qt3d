@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "pickboundingvolumeutils_p.h"
+#include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
@@ -49,6 +50,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/segmentsvisitor_p.h>
+#include <Qt3DRender/private/pointsvisitor_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -336,6 +338,57 @@ bool LineCollisionVisitor::rayToLineSegment(const QVector3D& lineStart,const QVe
     return false;
 }
 
+class PointCollisionVisitor : public PointsVisitor
+{
+public:
+    HitList hits;
+
+    PointCollisionVisitor(NodeManagers* manager, const Entity *root, const RayCasting::QRay3D& ray,
+                          float pickWorldSpaceTolerance)
+        : PointsVisitor(manager), m_root(root), m_ray(ray)
+        , m_pointIndex(0), m_pickWorldSpaceTolerance(pickWorldSpaceTolerance)
+    {
+    }
+
+private:
+    const Entity *m_root;
+    RayCasting::QRay3D m_ray;
+    uint m_pointIndex;
+    float m_pickWorldSpaceTolerance;
+
+    void visit(uint ndx, const QVector3D &p) Q_DECL_OVERRIDE;
+
+    double pointToRayDistance(const QVector3D &a, QVector3D &p)
+    {
+        const QVector3D v = a - m_ray.origin();
+        const double t = QVector3D::dotProduct(v, m_ray.direction());
+        p = m_ray.origin() + t * m_ray.direction();
+        return (p - a).length();
+    }
+};
+
+
+void PointCollisionVisitor::visit(uint ndx, const QVector3D &p)
+{
+    const QMatrix4x4 &mat = *m_root->worldTransform();
+    const QVector3D tP = mat * p;
+    QVector3D intersection;
+
+    float d = pointToRayDistance(tP, intersection);
+    if (d < m_pickWorldSpaceTolerance) {
+        QCollisionQueryResult::Hit queryResult;
+        queryResult.m_type = QCollisionQueryResult::Hit::Point;
+        queryResult.m_entityId = m_root->peerId();
+        queryResult.m_primitiveIndex = m_pointIndex;
+        queryResult.m_vertexIndex[0] = ndx;
+        queryResult.m_intersection = intersection;
+        queryResult.m_distance = d;
+        hits.push_back(queryResult);
+    }
+
+    m_pointIndex++;
+}
+
 HitList reduceToFirstHit(HitList &result, const HitList &intermediate)
 {
     if (!intermediate.empty()) {
@@ -465,6 +518,33 @@ HitList LineCollisionGathererFunctor::pick(const Entity *entity) const
 
     if (rayHitsEntity(entity)) {
         LineCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
+        visitor.apply(gRenderer, entity->peerId());
+        result = visitor.hits;
+        sortHits(result);
+    }
+
+    return result;
+}
+
+HitList PointCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
+{
+    const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+    return QtConcurrent::blockingMappedReduced<HitList>(entities, *this, reducerOp);
+}
+
+HitList PointCollisionGathererFunctor::pick(const Entity *entity) const
+{
+    HitList result;
+
+    GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
+    if (!gRenderer)
+        return result;
+
+    if (gRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Points)
+        return result;
+
+    if (rayHitsEntity(entity)) {
+        PointCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
         visitor.apply(gRenderer, entity->peerId());
         result = visitor.hits;
         sortHits(result);

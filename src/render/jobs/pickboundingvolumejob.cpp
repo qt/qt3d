@@ -40,6 +40,7 @@
 #include "pickboundingvolumejob_p.h"
 #include "qpicktriangleevent.h"
 #include "qpicklineevent.h"
+#include "qpickpointevent.h"
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
@@ -223,9 +224,9 @@ bool PickBoundingVolumeJob::runHelper()
     // If we have move or hover move events that someone cares about, we try to avoid expensive computations
     // by compressing them into a single one
 
-    const bool trianglePickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::TrianglePicking);
-    const bool edgePickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::LinePicking);
-    const bool pointPickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::PointPicking);
+    const bool trianglePickingRequested = (m_renderSettings->pickMethod() & QPickingSettings::TrianglePicking);
+    const bool edgePickingRequested = (m_renderSettings->pickMethod() & QPickingSettings::LinePicking);
+    const bool pointPickingRequested = (m_renderSettings->pickMethod() & QPickingSettings::PointPicking);
     const bool primitivePickingRequested = pointPickingRequested | edgePickingRequested | trianglePickingRequested;
     const bool allHitsRequested = (m_renderSettings->pickResultMode() == QPickingSettings::AllPicks);
     const bool frontFaceRequested =
@@ -261,6 +262,14 @@ bool PickBoundingVolumeJob::runHelper()
                 }
                 if (edgePickingRequested) {
                     PickingUtils::LineCollisionGathererFunctor gathererFunctor;
+                    gathererFunctor.m_manager = m_manager;
+                    gathererFunctor.m_ray = ray;
+                    gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), allHitsRequested);
+                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+                }
+                if (pointPickingRequested) {
+                    PickingUtils::PointCollisionGathererFunctor gathererFunctor;
                     gathererFunctor.m_manager = m_manager;
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
@@ -364,6 +373,12 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                        hit.m_primitiveIndex,
                                                        hit.m_vertexIndex[0], hit.m_vertexIndex[1],
                                                        eventButton, eventButtons, eventModifiers));
+                    break;
+                case QCollisionQueryResult::Hit::Point:
+                    pickEvent.reset(new QPickPointEvent(event.localPos(), hit.m_intersection,
+                                                        localIntersection, hit.m_distance,
+                                                        hit.m_vertexIndex[0],
+                                                        eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Entity:
                     pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection,

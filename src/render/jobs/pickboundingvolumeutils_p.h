@@ -167,6 +167,14 @@ struct Q_AUTOTEST_EXPORT LineCollisionGathererFunctor : public AbstractCollision
     HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
 };
 
+struct Q_AUTOTEST_EXPORT PointCollisionGathererFunctor : public AbstractCollisionGathererFunctor
+{
+    float m_pickWorldSpaceTolerance;
+
+    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
+    HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
+};
+
 } // PickingUtils
 
 } // Render
