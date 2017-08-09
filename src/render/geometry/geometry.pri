@@ -22,7 +22,8 @@ HEADERS += \
     $$PWD/armature_p.h \
     $$PWD/skeleton_p.h \
     $$PWD/gltfskeletonloader_p.h \
-    $$PWD/skeletondata_p.h
+    $$PWD/skeletondata_p.h \
+    $$PWD/joint_p.h
 
 SOURCES += \
     $$PWD/attribute.cpp \
@@ -39,5 +40,6 @@ SOURCES += \
     $$PWD/armature.cpp \
     $$PWD/skeleton.cpp \
     $$PWD/gltfskeletonloader.cpp \
-    $$PWD/skeletondata.cpp
+    $$PWD/skeletondata.cpp \
+    $$PWD/joint.cpp
 

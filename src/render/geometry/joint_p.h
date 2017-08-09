@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,82 +37,77 @@
 **
 ****************************************************************************/
 
-#include "managers_p.h"
+#ifndef QT3DRENDER_RENDER_JOINT_H
+#define QT3DRENDER_RENDER_JOINT_H
 
-#include <Qt3DRender/private/framegraphnode_p.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DCore/private/sqt_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-FrameGraphManager::~FrameGraphManager()
+class JointManager;
+
+class Q_AUTOTEST_EXPORT Joint : public BackendNode
 {
-    qDeleteAll(m_nodes);
-}
+public:
+    Joint();
 
-bool FrameGraphManager::containsNode(Qt3DCore::QNodeId id) const
+    void cleanup();
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+
+    Qt3DCore::Sqt localPose() const { return m_localPose; }
+    QMatrix4x4 inverseBindMatrix() const { return m_inverseBindMatrix; }
+    QString name() const { return m_name; }
+    QVector<Qt3DCore::QNodeId> childJointIds() const { return m_childJointIds; }
+
+    QVector3D translation() const { return m_localPose.translation; }
+    QQuaternion rotation() const { return m_localPose.rotation; }
+    QVector3D scale() const { return m_localPose.scale; }
+
+    void setJointManager(JointManager *jointManager) { m_jointManager = jointManager; }
+    JointManager *jointManager() const { return m_jointManager; }
+
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
+
+    QMatrix4x4 m_inverseBindMatrix;
+    Qt3DCore::Sqt m_localPose;
+    QVector<Qt3DCore::QNodeId> m_childJointIds;
+    QString m_name;
+    JointManager *m_jointManager;
+};
+
+class JointFunctor : public Qt3DCore::QBackendNodeMapper
 {
-    return m_nodes.contains(id);
-}
+public:
+    explicit JointFunctor(AbstractRenderer *renderer, JointManager *jointManager);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
+    void destroy(Qt3DCore::QNodeId id) const final;
 
-void FrameGraphManager::appendNode(Qt3DCore::QNodeId id, FrameGraphNode *node)
-{
-    m_nodes.insert(id, node);
-}
-
-FrameGraphNode* FrameGraphManager::lookupNode(Qt3DCore::QNodeId id) const
-{
-    const QHash<Qt3DCore::QNodeId, FrameGraphNode*>::const_iterator it = m_nodes.find(id);
-    if (it == m_nodes.end())
-        return nullptr;
-    else
-        return *it;
-}
-
-void FrameGraphManager::releaseNode(Qt3DCore::QNodeId id)
-{
-    delete m_nodes.take(id);
-}
-
-void SkeletonManager::addDirtySkeleton(DirtyFlag dirtyFlag, Qt3DCore::QNodeId skeletonId)
-{
-    const HSkeleton skeletonHandle = lookupHandle(skeletonId);
-    switch (dirtyFlag) {
-    case SkeletonDataDirty:
-        m_dirtyDataSkeletons.push_back(skeletonHandle);
-        break;
-
-    case SkeletonTransformsDirty:
-        m_dirtyTransformSkeletons.push_back(skeletonHandle);
-        break;
-    }
-}
-
-QVector<HSkeleton> SkeletonManager::dirtySkeletons(DirtyFlag dirtyFlag)
-{
-    switch (dirtyFlag) {
-    case SkeletonDataDirty:
-        return std::move(m_dirtyDataSkeletons);
-
-    case SkeletonTransformsDirty:
-        return std::move(m_dirtyTransformSkeletons);
-    }
-    return QVector<HSkeleton>();
-}
-
-void JointManager::addDirtyJoint(Qt3DCore::QNodeId jointId)
-{
-    const HJoint jointHandle = lookupHandle(jointId);
-    m_dirtyJoints.push_back(jointHandle);
-}
-
-QVector<HJoint> JointManager::dirtyJoints()
-{
-    return std::move(m_dirtyJoints);
-}
+private:
+    AbstractRenderer *m_renderer;
+    JointManager *m_jointManager;
+};
 
 } // namespace Render
 } // namespace Qt3DRender
 
+
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_JOINT_H

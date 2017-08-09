@@ -141,6 +141,7 @@
 #include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/private/armature_p.h>
 #include <Qt3DRender/private/skeleton_p.h>
+#include <Qt3DRender/private/joint_p.h>
 #include <Qt3DRender/private/loadskeletonjob_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
@@ -242,6 +243,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QGeometryRenderer>(QSharedPointer<Render::GeometryRendererFunctor>::create(m_renderer, m_nodeManagers->geometryRendererManager()));
     q->registerBackendType<Qt3DCore::QArmature>(QSharedPointer<Render::NodeFunctor<Render::Armature, Render::ArmatureManager>>::create(m_renderer));
     q->registerBackendType<Qt3DCore::QSkeletonLoader>(QSharedPointer<Render::NodeFunctor<Render::Skeleton, Render::SkeletonManager>>::create(m_renderer));
+    q->registerBackendType<Qt3DCore::QJoint>(QSharedPointer<Render::JointFunctor>::create(m_renderer, m_nodeManagers->jointManager()));
 
     // Textures
     q->registerBackendType<QAbstractTexture>(QSharedPointer<Render::TextureFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager()));

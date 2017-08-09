@@ -102,6 +102,7 @@ class ComputeCommandManager;
 class RenderStateManager;
 class ArmatureManager;
 class SkeletonManager;
+class JointManager;
 
 class FrameGraphNode;
 class Entity;
@@ -137,6 +138,7 @@ class ComputeCommand;
 class RenderStateNode;
 class Armature;
 class Skeleton;
+class Joint;
 class OpenGLVertexArrayObject;
 
 class ResourceAccessor;
@@ -219,6 +221,7 @@ public:
     inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
     inline ArmatureManager *armatureManager() const Q_DECL_NOEXCEPT { return m_armatureManager; }
     inline SkeletonManager *skeletonManager() const Q_DECL_NOEXCEPT { return m_skeletonManager; }
+    inline JointManager *jointManager() const Q_DECL_NOEXCEPT { return m_jointManager; }
 
     QSharedPointer<ResourceAccessor> resourceAccessor();
 
@@ -261,6 +264,7 @@ private:
     RenderStateManager *m_renderStateManager;
     ArmatureManager *m_armatureManager;
     SkeletonManager *m_skeletonManager;
+    JointManager *m_jointManager;
 
     QSharedPointer<ResourceAccessor> m_resourceAccessor;
 };
@@ -374,6 +378,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT ArmatureManager *NodeManagers::manager<Armature>
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT SkeletonManager *NodeManagers::manager<Skeleton>() const Q_DECL_NOEXCEPT;
+
+template<>
+QT3DRENDERSHARED_PRIVATE_EXPORT JointManager *NodeManagers::manager<Joint>() const Q_DECL_NOEXCEPT;
 
 } // Render
 

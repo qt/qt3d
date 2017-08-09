@@ -102,7 +102,8 @@ qtConfig(private_tests) {
         framegraphvisitor \
         renderer \
         armature \
-        skeleton
+        skeleton \
+        joint
 
     QT_FOR_CONFIG = 3dcore-private
     qtConfig(qt3d-extras) {

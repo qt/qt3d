@@ -82,6 +82,7 @@
 #include <Qt3DRender/private/computecommand_p.h>
 #include <Qt3DRender/private/armature_p.h>
 #include <Qt3DRender/private/skeleton_p.h>
+#include <Qt3DRender/private/joint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -457,6 +458,20 @@ private:
     QVector<HSkeleton> m_dirtyTransformSkeletons;
 };
 
+class JointManager : public Qt3DCore::QResourceManager<
+        Joint,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::NonLockingPolicy>
+{
+public:
+    void addDirtyJoint(Qt3DCore::QNodeId jointId);
+    QVector<HJoint> dirtyJoints();
+
+private:
+    QVector<HJoint> m_dirtyJoints;
+};
 
 } // namespace Render
 } // namespace Qt3DRender
@@ -481,6 +496,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Transform, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Armature, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Skeleton, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Joint, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 
