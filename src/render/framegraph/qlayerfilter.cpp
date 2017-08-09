@@ -59,23 +59,36 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \class Qt3DRender::QLayerFilter
     \inmodule Qt3DRender
     \since 5.5
-    \brief Controls layers Drawn in a frame graph branch.
+    \brief Controls layers drawn in a frame graph branch.
 
-    A Qt3DRender::QLayerFilter can be used to instruct the renderer as to which layer(s)
-    to draw in that branch of the frame graph. The Qt3DRender::QLayerFilter selects which
-    entities to draw based on the Qt3DRender::QLayer instances added to the QLayerFilter
-    and as components to the \l Qt3DCore::QEntity.
+    A Qt3DRender::QLayerFilter can be used to instruct the renderer as to
+    which layer(s) to draw in that branch of the frame graph. QLayerFilter
+    selects which entities to draw based on the QLayer instance(s) added to
+    the QLayerFilter and as components to Qt3DCore::QEntity.
 
-    The Qt3DRender::QLayerFilter can be configured to select entities with a specific
-    Qt3DRender::QLayer or to discard entities with a specific Qt3DRender::QLayer
-    depending on the property discard. By default, entities referencing a Qt3DRender::QLayer
-    component also added to the QLayerFilter are selected.
+    QLayerFilter can be configured to select or discard entities with a
+    specific QLayer depending on the filterMode property. By default, entities
+    referencing a QLayer that is also added to the QLayerFilter are selected.
 */
 
 /*!
-    \property bool Qt3DRender::QLayerFilter::discards
-    Specifies if the entities should be selected or discarded.
-    By default, entities are selected.
+    \enum QLayerFilter::FilterMode
+
+    Specifies the rules for selecting entities to draw.
+
+    \value AcceptMatchingLayers
+           Accept entities that reference a QLayer added to this QLayerFilter
+
+    \value DiscardMatchingLayers
+           Discard entities that reference a QLayer added to this QLayerFilter
+*/
+
+/*!
+    \property Qt3DRender::QLayerFilter::filterMode
+
+    Holds the filter mode specifying the entities to select for drawing.
+
+    The default value is AcceptMatchingLayers.
 */
 
 /*!
@@ -84,17 +97,17 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \inherits FrameGraphNode
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief Controls layers Drawn in a frame graph branch.
+    \brief Controls layers drawn in a frame graph branch.
 
     A LayerFilter can be used to instruct the renderer as to which layer(s)
     to draw in that branch of the frame graph. The LayerFilter selects which
     entities to draw based on the \l Layer instances added to the LayerFilter
     and as components to the \l Entity.
 
-    The LayerFilter can be configured to select entities with a specific
-    \l Layer or to discard entities with a specific \l Layer
-    depending on the property discard. By default, entities referencing a \Layer
-    component also added to the LayerFilter are selected.
+    The LayerFilter can be configured to select or discard entities with a
+    specific \l Layer depending on the filterMode property. By default,
+    entities referencing a \l Layer that is also added to the LayerFilter are
+    selected.
 */
 
 /*!
@@ -104,9 +117,17 @@ QLayerFilterPrivate::QLayerFilterPrivate()
  */
 
 /*!
-    \qmlproperty bool Qt3DRender::LayerFilter::discard
-    Specifies if entities should be selected or discarded.
-    By default, entities are selected.
+    \qmlproperty enumeration Qt3DRender::LayerFilter::filterMode
+
+    Holds the filter mode specifying the entities to select for drawing.
+
+    The default value is \c {LayerFilter.AcceptMatchingLayers}.
+
+    \value LayerFilter.AcceptMatchingLayers
+           Accept entities that reference a \l Layer added to this LayerFilter
+
+    \value LayerFilter.DiscardMatchingLayers
+           Discard entities that reference a \l Layer added to this LayerFilter
 */
 
 /*!
