@@ -284,6 +284,10 @@ void QText2DEntityPrivate::update()
     setCurrentGlyphRuns(glyphRuns);
 }
 
+/*!
+    Returns the font for the text item that is displayed
+    in the Qt Quick scene.
+*/
 QFont QText2DEntity::font() const
 {
     Q_D(const QText2DEntity);
@@ -308,6 +312,10 @@ void QText2DEntity::setFont(const QFont &font)
     }
 }
 
+/*!
+    Returns the color for the text item that is displayed in the Qt
+    Quick scene.
+*/
 QColor QText2DEntity::color() const
 {
     Q_D(const QText2DEntity);
@@ -327,6 +335,9 @@ void QText2DEntity::setColor(const QColor &color)
     }
 }
 
+/*!
+    Returns the text that is displayed in the Qt Quick scene.
+*/
 QString QText2DEntity::text() const
 {
     Q_D(const QText2DEntity);
@@ -344,12 +355,20 @@ void QText2DEntity::setText(const QString &text)
     }
 }
 
+/*!
+    Returns the width of the text item that is displayed in the
+    Qt Quick scene.
+*/
 float QText2DEntity::width() const
 {
     Q_D(const QText2DEntity);
     return d->m_width;
 }
 
+/*!
+    Returns the width of the text item that is displayed in the
+    Qt Quick scene.
+*/
 float QText2DEntity::height() const
 {
     Q_D(const QText2DEntity);
