@@ -48,10 +48,13 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qnodeid.h>
 #include <QtGui/qmatrix4x4.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvector.h>
 #include <Qt3DCore/private/sqt_p.h>
+
+#include <Qt3DRender/private/joint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,6 +65,14 @@ struct Q_AUTOTEST_EXPORT JointInfo
 {
     JointInfo()
         : parentIndex(-1)
+    {
+    }
+
+    explicit JointInfo(Joint *joint, int parentJointIndex)
+        : inverseBindPose(joint->inverseBindMatrix())
+        , localPose(joint->localPose())
+        , parentIndex(parentJointIndex)
+        , name(joint->name())
     {
     }
 
@@ -77,6 +88,7 @@ struct Q_AUTOTEST_EXPORT SkeletonData
     SkeletonData();
 
     QVector<JointInfo> joints;
+    QHash<Qt3DCore::QNodeId, int> jointIndices;
 };
 
 } // namespace Render

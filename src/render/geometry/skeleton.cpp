@@ -50,6 +50,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/private/qskeletoncreatedchange_p.h>
+#include <Qt3DCore/private/qskeleton_p.h>
 #include <Qt3DCore/private/qskeletonloader_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -69,6 +70,8 @@ void Skeleton::cleanup()
 {
     m_source.clear();
     m_status = Qt3DCore::QSkeletonLoader::NotReady;
+    m_createJoints = false;
+    m_rootJointId = Qt3DCore::QNodeId();
     clearData();
     setEnabled(false);
 }
@@ -76,6 +79,9 @@ void Skeleton::cleanup()
 void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     m_skeletonManager = m_renderer->nodeManagers()->skeletonManager();
+    Q_ASSERT(m_skeletonManager);
+    m_skeletonHandle = m_skeletonManager->lookupHandle(peerId());
+
     const auto skeletonCreatedChange = qSharedPointerCast<QSkeletonCreatedChangeBase>(change);
     switch (skeletonCreatedChange->type()) {
     case QSkeletonCreatedChangeBase::SkeletonLoader: {
@@ -92,7 +98,14 @@ void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
     }
 
     case QSkeletonCreatedChangeBase::Skeleton:
-        // TODO: Handle QSkeleton case (non loaded)
+        const auto typedChange = qSharedPointerCast<QSkeletonCreatedChange<QSkeletonData>>(change);
+        const auto &data = typedChange->data;
+        m_dataType = Data;
+        m_rootJointId = data.rootJointId;
+        if (!m_rootJointId.isNull()) {
+            markDirty(AbstractRenderer::SkeletonDataDirty);
+            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
+        }
         break;
     }
 }
@@ -112,9 +125,22 @@ void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             }
         } else if (change->propertyName() == QByteArrayLiteral("createJointsEnabled")) {
             m_createJoints = change->value().toBool();
-        }
+        } else if (change->propertyName() == QByteArrayLiteral("rootJoint")) {
+            m_rootJointId = change->value().value<QNodeId>();
 
-        // TODO: Handle QSkeleton case (non loaded)
+            // If using a QSkeletonLoader to create frontend QJoints, when those joints are
+            // set on the skeleton, we end up here. In order to allow the subsequent call
+            // to loadSkeleton(), see below, to build the internal data from the frontend
+            // joints rather than from the source url again, we need to change the data type
+            // to Data.
+            m_dataType = Data;
+
+            // If the joint changes, we need to rebuild our internal SkeletonData and
+            // the relationships between joints and skeleton. Mark the skeleton data as
+            // dirty so that we get a loadSkeletonJob executed to process this skeleton.
+            markDirty(AbstractRenderer::SkeletonDataDirty);
+            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
+        }
 
         break;
     }
@@ -244,7 +270,18 @@ void Skeleton::loadSkeletonFromUrl()
 
 void Skeleton::loadSkeletonFromData()
 {
-
+    // Recurse down through the joint hierarchy and process it into
+    // the vector of joints used within SkeletonData. The recursion
+    // ensures that a parent always appears before its children in
+    // the vector of JointInfo objects.
+    //
+    // In addition, we set up a mapping from the joint ids to the
+    // index of the corresponding JointInfo object in the vector.
+    // This will allow us to easily update entries in the vector of
+    // JointInfos when a Joint node marks itself as dirty.
+    const int rootParentIndex = -1;
+    processJointHierarchy(m_rootJointId, rootParentIndex, m_skeletonData);
+    m_skinningPalette.resize(m_skeletonData.joints.size());
 }
 
 Qt3DCore::QJoint *Skeleton::createFrontendJoints(const SkeletonData &skeletonData) const
@@ -284,10 +321,29 @@ Qt3DCore::QJoint *Skeleton::createFrontendJoint(const JointInfo &jointInfo) cons
     return joint;
 }
 
+void Skeleton::processJointHierarchy(Qt3DCore::QNodeId jointId,
+                                     int parentJointIndex,
+                                     SkeletonData &skeletonData)
+{
+    // Lookup the joint, create a JointInfo, and add an entry to the index map
+    Joint *joint = m_renderer->nodeManagers()->jointManager()->lookupResource(jointId);
+    Q_ASSERT(joint);
+    joint->setOwningSkeleton(m_skeletonHandle);
+    const JointInfo jointInfo(joint, parentJointIndex);
+    skeletonData.joints.push_back(jointInfo);
+    const int jointIndex = skeletonData.joints.size() - 1;
+    skeletonData.jointIndices.insert(jointId, jointIndex);
+
+    // Recurse to the children
+    for (const auto childJointId : joint->childJointIds())
+        processJointHierarchy(childJointId, jointIndex, skeletonData);
+}
+
 void Skeleton::clearData()
 {
     m_name.clear();
     m_skeletonData.joints.clear();
+    m_skeletonData.jointIndices.clear();
 }
 
 QVector<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()

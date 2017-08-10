@@ -30,6 +30,7 @@
 #include <Qt3DRender/private/skeleton_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DCore/qjoint.h>
+#include <Qt3DCore/qskeleton.h>
 #include <Qt3DCore/qskeletonloader.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -89,6 +90,24 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.peerId(), skeleton.id());
         QCOMPARE(backendSkeleton.isEnabled(), skeleton.isEnabled());
         QCOMPARE(backendSkeleton.source(), skeleton.source());
+        QCOMPARE(backendSkeleton.rootJointId(), QNodeId());
+
+        // GIVEN
+        Skeleton backendSkeleton2;
+        backendSkeleton2.setRenderer(&renderer);
+        QSkeleton skeleton2;
+
+        QJoint *joint = new QJoint();
+        skeleton2.setRootJoint(joint);
+
+        // WHEN
+        simulateInitialization(&skeleton2, &backendSkeleton2);
+
+        // THEN
+        QCOMPARE(backendSkeleton2.peerId(), skeleton2.id());
+        QCOMPARE(backendSkeleton2.isEnabled(), skeleton2.isEnabled());
+        QCOMPARE(backendSkeleton2.source(), QUrl());
+        QCOMPARE(backendSkeleton2.rootJointId(), joint->id());
     }
 
     void checkInitialAndCleanedUpState()
@@ -105,6 +124,7 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.isEnabled(), false);
         QCOMPARE(backendSkeleton.source(), QUrl());
         QCOMPARE(backendSkeleton.status(), QSkeletonLoader::NotReady);
+        QCOMPARE(backendSkeleton.rootJointId(), QNodeId());
 
         // GIVEN
         QSkeletonLoader skeleton;
@@ -118,6 +138,7 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.source(), QUrl());
         QCOMPARE(backendSkeleton.isEnabled(), false);
         QCOMPARE(backendSkeleton.status(), QSkeletonLoader::NotReady);
+        QCOMPARE(backendSkeleton.rootJointId(), QNodeId());
     }
 
     void checkPropertyChanges()
@@ -154,6 +175,16 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendSkeleton.source(), newSource);
+
+        // WHEN
+        const QNodeId newRootJointId = QNodeId::createId();
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setPropertyName("rootJoint");
+        updateChange->setValue(QVariant::fromValue(newRootJointId));
+        backendSkeleton.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(backendSkeleton.rootJointId(), newRootJointId);
     }
 
     void checkStatusPropertyBackendNotification()

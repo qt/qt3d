@@ -64,6 +64,7 @@ void Joint::cleanup()
     m_localPose = Sqt();
     m_childJointIds.clear();
     m_name.clear();
+    m_owningSkeleton = HSkeleton();
     setEnabled(false);
 }
 

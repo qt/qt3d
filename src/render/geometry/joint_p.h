@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DCore/private/sqt_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,6 +79,9 @@ public:
     QQuaternion rotation() const { return m_localPose.rotation; }
     QVector3D scale() const { return m_localPose.scale; }
 
+    void setOwningSkeleton(HSkeleton skeletonHandle) { m_owningSkeleton = skeletonHandle; }
+    HSkeleton owningSkeleton() const { return m_owningSkeleton; }
+
     void setJointManager(JointManager *jointManager) { m_jointManager = jointManager; }
     JointManager *jointManager() const { return m_jointManager; }
 
@@ -89,6 +93,7 @@ private:
     QVector<Qt3DCore::QNodeId> m_childJointIds;
     QString m_name;
     JointManager *m_jointManager;
+    HSkeleton m_owningSkeleton;
 };
 
 class JointFunctor : public Qt3DCore::QBackendNodeMapper

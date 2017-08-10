@@ -50,7 +50,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/skeletondata_p.h>
-
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DCore/qskeletonloader.h>
 
 #include <QtGui/qmatrix4x4.h>
@@ -90,6 +90,8 @@ public:
     void notifyJointCount();
     QVector<JointInfo> joints() const { return m_skeletonData.joints; }
 
+    Qt3DCore::QNodeId rootJointId() const { return m_rootJointId; }
+
     // Called from jobs
     void loadSkeleton();
     QVector<QMatrix4x4> calculateSkinningMatrixPalette();
@@ -114,18 +116,25 @@ private:
     void loadSkeletonFromData();
     Qt3DCore::QJoint *createFrontendJoints(const SkeletonData &skeletonData) const;
     Qt3DCore::QJoint *createFrontendJoint(const JointInfo &jointInfo) const;
+    void processJointHierarchy(Qt3DCore::QNodeId jointId, int parentJointIndex, SkeletonData &skeletonData);
     void clearData();
 
     QVector<QMatrix4x4> m_skinningPalette;
+
+    // QSkeletonLoader Properties
     QUrl m_source;
     Qt3DCore::QSkeletonLoader::Status m_status;
     bool m_createJoints;
+
+    // QSkeleton properties
+    Qt3DCore::QNodeId m_rootJointId;
 
     SkeletonDataType m_dataType;
 
     QString m_name;
     SkeletonData m_skeletonData;
     SkeletonManager *m_skeletonManager;
+    HSkeleton m_skeletonHandle; // Our own handle to set on joints
 
 #if defined(QT_BUILD_INTERNAL)
     friend class ::tst_Skeleton;

@@ -109,6 +109,7 @@ private Q_SLOTS:
         QCOMPARE(backendJoint.scale(), QVector3D(1.0f, 1.0f, 1.0f));
         QCOMPARE(backendJoint.inverseBindMatrix(), QMatrix4x4());
         QCOMPARE(backendJoint.childJointIds(), QNodeIdVector());
+        QCOMPARE(backendJoint.owningSkeleton(), HSkeleton());
 
         // GIVEN
         QJoint joint;
@@ -137,6 +138,7 @@ private Q_SLOTS:
         QCOMPARE(backendJoint.scale(), QVector3D(1.0f, 1.0f, 1.0f));
         QCOMPARE(backendJoint.inverseBindMatrix(), QMatrix4x4());
         QCOMPARE(backendJoint.childJointIds(), QNodeIdVector());
+        QCOMPARE(backendJoint.owningSkeleton(), HSkeleton());
     }
 
     void checkPropertyChanges()

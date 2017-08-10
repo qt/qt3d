@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/private/qabstractskeleton_p.h>
+#include <Qt3DCore/qskeleton.h>
 
 QT_BEGIN_NAMESPACE
 
