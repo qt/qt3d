@@ -52,6 +52,8 @@
 #include <Qt3DCore/private/qskeletoncreatedchange_p.h>
 #include <Qt3DCore/private/qskeleton_p.h>
 #include <Qt3DCore/private/qskeletonloader_p.h>
+#include <Qt3DCore/private/qmath3d_p.h>
+#include <Qt3DCore/private/qabstractnodefactory_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -313,7 +315,7 @@ Qt3DCore::QJoint *Skeleton::createFrontendJoints(const SkeletonData &skeletonDat
 
 Qt3DCore::QJoint *Skeleton::createFrontendJoint(const JointInfo &jointInfo) const
 {
-    auto joint = new QJoint();
+    auto joint = QAbstractNodeFactory::createNode<QJoint>("QJoint");
     joint->setTranslation(jointInfo.localPose.translation);
     joint->setRotation(jointInfo.localPose.rotation);
     joint->setScale(jointInfo.localPose.scale);
