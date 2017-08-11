@@ -77,10 +77,10 @@ DefaultSceneEntity {
         createJointsEnabled: true
 
         onRootJointChanged: {
-            console.log("Root joint: " + rootJoint)
             var animation = animationComp.createObject(rootJoint)
-            animation.target = rootJoint
-            animation.neutralPos = rootJoint.translation
+            var targetJoint = rootJoint.childJoints[0]
+            animation.target = targetJoint
+            animation.neutralPos = targetJoint.translation
             animation.running = true
         }
 
@@ -98,14 +98,14 @@ DefaultSceneEntity {
                     property: "translation"
                     from: sequentialAnimation.neutralPos.plus(Qt.vector3d(-sequentialAnimation.dx, 0.0, 0.0))
                     to: sequentialAnimation.neutralPos.plus(Qt.vector3d(sequentialAnimation.dx, 0.0, 0.0))
-                    duration: 1000
+                    duration: 500
                 }
                 Vector3dAnimation {
                     target: sequentialAnimation.target
                     property: "translation"
                     from: sequentialAnimation.neutralPos.plus(Qt.vector3d(sequentialAnimation.dx, 0.0, 0.0))
                     to: sequentialAnimation.neutralPos.plus(Qt.vector3d(-sequentialAnimation.dx, 0.0, 0.0))
-                    duration: 1000
+                    duration: 500
                 }
             }
         }
