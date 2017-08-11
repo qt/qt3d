@@ -52,6 +52,7 @@ import Qt3D.Core 2.10
 import Qt3D.Render 2.10
 import Qt3D.Input 2.0
 import Qt3D.Extras 2.10
+import QtQuick 2.9
 
 DefaultSceneEntity {
     id: scene
@@ -74,5 +75,39 @@ DefaultSceneEntity {
         transform.scale: 0.05
         transform.translation: Qt.vector3d(0.5, 0.25, 0.0)
         createJointsEnabled: true
+
+        onRootJointChanged: {
+            console.log("Root joint: " + rootJoint)
+            var animation = animationComp.createObject(rootJoint)
+            animation.target = rootJoint
+            animation.neutralPos = rootJoint.translation
+            animation.running = true
+        }
+
+        Component {
+            id: animationComp
+            SequentialAnimation {
+                id: sequentialAnimation
+                property variant target: null
+                property vector3d neutralPos: Qt.vector3d(0, 0, 0)
+                property real dx: 1.0
+                loops: Animation.Infinite
+
+                Vector3dAnimation {
+                    target: sequentialAnimation.target
+                    property: "translation"
+                    from: sequentialAnimation.neutralPos.plus(Qt.vector3d(-sequentialAnimation.dx, 0.0, 0.0))
+                    to: sequentialAnimation.neutralPos.plus(Qt.vector3d(sequentialAnimation.dx, 0.0, 0.0))
+                    duration: 1000
+                }
+                Vector3dAnimation {
+                    target: sequentialAnimation.target
+                    property: "translation"
+                    from: sequentialAnimation.neutralPos.plus(Qt.vector3d(sequentialAnimation.dx, 0.0, 0.0))
+                    to: sequentialAnimation.neutralPos.plus(Qt.vector3d(-sequentialAnimation.dx, 0.0, 0.0))
+                    duration: 1000
+                }
+            }
+        }
     }
 }
