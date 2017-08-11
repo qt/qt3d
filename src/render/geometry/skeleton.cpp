@@ -92,7 +92,7 @@ void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
         m_createJoints = data.createJoints;
         if (!m_source.isEmpty()) {
             markDirty(AbstractRenderer::SkeletonDataDirty);
-            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
+            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
         }
         break;
     }
@@ -104,7 +104,7 @@ void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
         m_rootJointId = data.rootJointId;
         if (!m_rootJointId.isNull()) {
             markDirty(AbstractRenderer::SkeletonDataDirty);
-            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
+            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
         }
         break;
     }
@@ -121,7 +121,7 @@ void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             if (source != m_source) {
                 m_source = source;
                 markDirty(AbstractRenderer::SkeletonDataDirty);
-                m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
+                m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
             }
         } else if (change->propertyName() == QByteArrayLiteral("createJointsEnabled")) {
             m_createJoints = change->value().toBool();
@@ -139,7 +139,7 @@ void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             // the relationships between joints and skeleton. Mark the skeleton data as
             // dirty so that we get a loadSkeletonJob executed to process this skeleton.
             markDirty(AbstractRenderer::SkeletonDataDirty);
-            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, peerId());
+            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
         }
 
         break;

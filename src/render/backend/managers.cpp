@@ -75,9 +75,8 @@ void FrameGraphManager::releaseNode(Qt3DCore::QNodeId id)
     delete m_nodes.take(id);
 }
 
-void SkeletonManager::addDirtySkeleton(DirtyFlag dirtyFlag, Qt3DCore::QNodeId skeletonId)
+void SkeletonManager::addDirtySkeleton(DirtyFlag dirtyFlag, HSkeleton skeletonHandle)
 {
-    const HSkeleton skeletonHandle = lookupHandle(skeletonId);
     switch (dirtyFlag) {
     case SkeletonDataDirty:
         m_dirtyDataSkeletons.push_back(skeletonHandle);

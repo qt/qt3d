@@ -450,7 +450,7 @@ public:
         SkeletonTransformsDirty
     };
 
-    void addDirtySkeleton(DirtyFlag dirtyFlag, Qt3DCore::QNodeId skeletonId);
+    void addDirtySkeleton(DirtyFlag dirtyFlag, HSkeleton skeletonHandle);
     QVector<HSkeleton> dirtySkeletons(DirtyFlag dirtyFlag);
 
 private:
