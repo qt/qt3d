@@ -91,6 +91,24 @@ QJointPrivate::QJointPrivate()
 */
 
 /*!
+    \qmlproperty real Joint::rotationX
+
+    Holds the x rotation of the joint as an Euler angle.
+*/
+
+/*!
+    \qmlproperty real Joint::rotationY
+
+    Holds the y rotation of the joint as an Euler angle.
+*/
+
+/*!
+    \qmlproperty real Joint::rotationZ
+
+    Holds the z rotation of the joint as an Euler angle.
+*/
+
+/*!
     \qmlproperty matrix4x4 inverseBindMatrix
 
     Holds the inverse bind matrix of the joint. This is used to transform
@@ -172,6 +190,39 @@ QMatrix4x4 QJoint::inverseBindMatrix() const
     return d->m_inverseBindMatrix;
 }
 
+/*!
+    \property Qt3DCore::QJoint::rotationX
+
+    Holds the x rotation of the joint as an Euler angle.
+*/
+float QJoint::rotationX() const
+{
+    Q_D(const QJoint);
+    return d->m_eulerRotationAngles.x();
+}
+
+/*!
+    \property Qt3DCore::QJoint::rotationY
+
+    Holds the y rotation of the joint as an Euler angle.
+*/
+float QJoint::rotationY() const
+{
+    Q_D(const QJoint);
+    return d->m_eulerRotationAngles.y();
+}
+
+/*!
+    \property Qt3DCore::QJoint::rotationZ
+
+    Holds the z rotation of the joint as an Euler angle.
+*/
+float QJoint::rotationZ() const
+{
+    Q_D(const QJoint);
+    return d->m_eulerRotationAngles.z();
+}
+
 void QJoint::setScale(const QVector3D &scale)
 {
     Q_D(QJoint);
@@ -210,6 +261,53 @@ void QJoint::setInverseBindMatrix(const QMatrix4x4 &inverseBindMatrix)
 
     d->m_inverseBindMatrix = inverseBindMatrix;
     emit inverseBindMatrixChanged(inverseBindMatrix);
+}
+
+void QJoint::setRotationX(float rotationX)
+{
+    Q_D(QJoint);
+
+    if (d->m_eulerRotationAngles.x() == rotationX)
+        return;
+
+    d->m_eulerRotationAngles.setX(rotationX);
+    const QQuaternion r = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    setRotation(r);
+
+    const bool wasBlocked = blockNotifications(true);
+    emit rotationXChanged(rotationX);
+    blockNotifications(wasBlocked);
+}
+
+void QJoint::setRotationY(float rotationY)
+{
+    Q_D(QJoint);
+
+    if (d->m_eulerRotationAngles.y() == rotationY)
+        return;
+
+    d->m_eulerRotationAngles.setY(rotationY);
+    const QQuaternion r = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    setRotation(r);
+
+    const bool wasBlocked = blockNotifications(true);
+    emit rotationYChanged(rotationY);
+    blockNotifications(wasBlocked);
+}
+
+void QJoint::setRotationZ(float rotationZ)
+{
+    Q_D(QJoint);
+    if (d->m_eulerRotationAngles.z() == rotationZ)
+        return;
+
+    d->m_eulerRotationAngles.setZ(rotationZ);
+    const QQuaternion r = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    setRotation(r);
+
+    const bool wasBlocked = blockNotifications(true);
+    emit rotationZChanged(rotationZ);
+    blockNotifications(wasBlocked);
 }
 
 /*!

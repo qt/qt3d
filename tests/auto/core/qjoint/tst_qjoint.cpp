@@ -53,6 +53,9 @@ private Q_SLOTS:
         QCOMPARE(joint.rotation(), QQuaternion());
         QCOMPARE(joint.translation(), QVector3D(0.0f, 0.0f, 0.0f));
         QCOMPARE(joint.inverseBindMatrix(), QMatrix4x4());
+        QCOMPARE(joint.rotationX(), 0.0f);
+        QCOMPARE(joint.rotationY(), 0.0f);
+        QCOMPARE(joint.rotationZ(), 0.0f);
     }
 
     void checkPropertyChanges()
@@ -139,6 +142,96 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(joint.inverseBindMatrix(), newValue);
             QCOMPARE(spy.count(), 0);
+        }
+
+        {
+            // WHEN
+            QSignalSpy spy(&joint, SIGNAL(rotationChanged(QQuaternion)));
+            QSignalSpy spyEuler(&joint, SIGNAL(rotationXChanged(float)));
+            const auto newValue = 45.0f;
+            const auto newValueAsQuaternion = QQuaternion::fromEulerAngles(newValue, 0.0f, 0.0f);
+            joint.setRotationX(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QVERIFY(spyEuler.isValid());
+            QCOMPARE(joint.rotationX(), newValue);
+            QCOMPARE(joint.rotation(), newValueAsQuaternion);
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spyEuler.count(), 1);
+
+            // WHEN
+            spy.clear();
+            spyEuler.clear();
+            joint.setRotationX(newValue);
+
+            // THEN
+            QCOMPARE(joint.rotationX(), newValue);
+            QCOMPARE(joint.rotation(), newValueAsQuaternion);
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spyEuler.count(), 0);
+
+            joint.setRotationX(0.0f);
+        }
+
+        {
+            // WHEN
+            QSignalSpy spy(&joint, SIGNAL(rotationChanged(QQuaternion)));
+            QSignalSpy spyEuler(&joint, SIGNAL(rotationYChanged(float)));
+            const auto newValue = 45.0f;
+            const auto newValueAsQuaternion = QQuaternion::fromEulerAngles(0.0f, newValue, 0.0f);
+            joint.setRotationY(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QVERIFY(spyEuler.isValid());
+            QCOMPARE(joint.rotationY(), newValue);
+            QCOMPARE(joint.rotation(), newValueAsQuaternion);
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spyEuler.count(), 1);
+
+            // WHEN
+            spy.clear();
+            spyEuler.clear();
+            joint.setRotationY(newValue);
+
+            // THEN
+            QCOMPARE(joint.rotationY(), newValue);
+            QCOMPARE(joint.rotation(), newValueAsQuaternion);
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spyEuler.count(), 0);
+
+            joint.setRotationY(0.0f);
+        }
+
+        {
+            // WHEN
+            QSignalSpy spy(&joint, SIGNAL(rotationChanged(QQuaternion)));
+            QSignalSpy spyEuler(&joint, SIGNAL(rotationZChanged(float)));
+            const auto newValue = 45.0f;
+            const auto newValueAsQuaternion = QQuaternion::fromEulerAngles(0.0f, 0.0f, newValue);
+            joint.setRotationZ(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QVERIFY(spyEuler.isValid());
+            QCOMPARE(joint.rotationZ(), newValue);
+            QCOMPARE(joint.rotation(), newValueAsQuaternion);
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spyEuler.count(), 1);
+
+            // WHEN
+            spy.clear();
+            spyEuler.clear();
+            joint.setRotationZ(newValue);
+
+            // THEN
+            QCOMPARE(joint.rotationZ(), newValue);
+            QCOMPARE(joint.rotation(), newValueAsQuaternion);
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spyEuler.count(), 0);
+
+            joint.setRotationZ(0.0f);
         }
     }
 

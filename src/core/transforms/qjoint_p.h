@@ -72,6 +72,9 @@ public:
     QQuaternion m_rotation;
     QVector3D m_translation;
     QVector3D m_scale;
+
+    // Not sent to backend. Purely internal convenience
+    QVector3D m_eulerRotationAngles;
 };
 
 struct QJointData
