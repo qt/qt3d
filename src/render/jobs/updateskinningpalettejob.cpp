@@ -58,6 +58,21 @@ UpdateSkinningPaletteJob::~UpdateSkinningPaletteJob()
 
 void UpdateSkinningPaletteJob::run()
 {
+    // TODO: Decompose this job across several jobs, say one per skeleton so
+    // that it can be done in parallel
+
+    // Update the local pose transforms of JointInfo's in Skeletons from
+    // the set of dirty joints.
+    for (const auto jointHandle : m_dirtyJoints) {
+        Joint *joint = m_nodeManagers->jointManager()->data(jointHandle);
+        Q_ASSERT(joint);
+        Skeleton *skeleton = m_nodeManagers->skeletonManager()->data(joint->owningSkeleton());
+        Q_ASSERT(skeleton);
+        if (skeleton->isEnabled() && joint->isEnabled())
+            skeleton->setLocalPose(jointHandle, joint->localPose());
+    }
+
+    // Find all the armature components and update their skinning palettes
     QVector<HArmature> dirtyArmatures;
     findDirtyArmatures(m_root, dirtyArmatures);
 

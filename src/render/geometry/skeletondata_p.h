@@ -54,6 +54,7 @@
 #include <QtCore/qvector.h>
 #include <Qt3DCore/private/sqt_p.h>
 
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/joint_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -88,7 +89,7 @@ struct Q_AUTOTEST_EXPORT SkeletonData
     SkeletonData();
 
     QVector<JointInfo> joints;
-    QHash<Qt3DCore::QNodeId, int> jointIndices;
+    QHash<HJoint, int> jointIndices;
 };
 
 } // namespace Render

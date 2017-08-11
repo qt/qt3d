@@ -63,6 +63,8 @@ namespace Render {
 Skeleton::Skeleton()
     : BackendNode(Qt3DCore::QBackendNode::ReadWrite)
     , m_status(Qt3DCore::QSkeletonLoader::NotReady)
+    , m_skeletonManager(nullptr)
+    , m_jointManager(nullptr)
 {
 }
 
@@ -330,8 +332,10 @@ void Skeleton::processJointHierarchy(Qt3DCore::QNodeId jointId,
     joint->setOwningSkeleton(m_skeletonHandle);
     const JointInfo jointInfo(joint, parentJointIndex);
     skeletonData.joints.push_back(jointInfo);
+
     const int jointIndex = skeletonData.joints.size() - 1;
-    skeletonData.jointIndices.insert(jointId, jointIndex);
+    const HJoint jointHandle = m_jointManager->lookupHandle(jointId);
+    skeletonData.jointIndices.insert(jointHandle, jointIndex);
 
     // Recurse to the children
     for (const auto childJointId : joint->childJointIds())
@@ -343,6 +347,16 @@ void Skeleton::clearData()
     m_name.clear();
     m_skeletonData.joints.clear();
     m_skeletonData.jointIndices.clear();
+}
+
+// Called from UpdateSkinningPaletteJob
+void Skeleton::setLocalPose(HJoint jointHandle, const Qt3DCore::Sqt &localPose)
+{
+    // Find the corresponding index into the JointInfo vector
+    // and set the local pose
+    const int jointIndex = m_skeletonData.jointIndices.value(jointHandle, -1);
+    Q_ASSERT(jointIndex != -1);
+    m_skeletonData.joints[jointIndex].localPose = localPose;
 }
 
 QVector<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()
@@ -363,9 +377,12 @@ QVector<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()
 }
 
 
-SkeletonFunctor::SkeletonFunctor(AbstractRenderer *renderer, SkeletonManager *skeletonManager)
+SkeletonFunctor::SkeletonFunctor(AbstractRenderer *renderer,
+                                 SkeletonManager *skeletonManager,
+                                 JointManager *jointManager)
     : m_renderer(renderer)
     , m_skeletonManager(skeletonManager)
+    , m_jointManager(jointManager)
 {
 }
 
@@ -374,6 +391,7 @@ Qt3DCore::QBackendNode *SkeletonFunctor::create(const Qt3DCore::QNodeCreatedChan
     Skeleton *backend = m_skeletonManager->getOrCreateResource(change->subjectId());
     backend->setRenderer(m_renderer);
     backend->setSkeletonManager(m_skeletonManager);
+    backend->setJointManager(m_jointManager);
     return backend;
 }
 

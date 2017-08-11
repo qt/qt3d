@@ -69,6 +69,7 @@ class QJoint;
 namespace Qt3DRender {
 namespace Render {
 
+class JointManager;
 class SkeletonManager;
 
 class Q_AUTOTEST_EXPORT Skeleton : public BackendNode
@@ -78,6 +79,9 @@ public:
 
     void setSkeletonManager(SkeletonManager *skeletonManager) { m_skeletonManager = skeletonManager; }
     SkeletonManager *skeletonManager() const { return m_skeletonManager; }
+
+    void setJointManager(JointManager *jointManager) { m_jointManager = jointManager; }
+    JointManager *jointManager() const { return m_jointManager; }
 
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -97,6 +101,7 @@ public:
 
     // Called from jobs
     void loadSkeleton();
+    void setLocalPose(HJoint jointHandle, const Qt3DCore::Sqt &localPose);
     QVector<QMatrix4x4> calculateSkinningMatrixPalette();
 
     // Allow unit tests to set the data type
@@ -137,6 +142,7 @@ private:
     QString m_name;
     SkeletonData m_skeletonData;
     SkeletonManager *m_skeletonManager;
+    JointManager *m_jointManager;
     HSkeleton m_skeletonHandle; // Our own handle to set on joints
 
 #if defined(QT_BUILD_INTERNAL)
@@ -157,7 +163,9 @@ inline QDebug operator<<(QDebug dbg, const Skeleton &skeleton)
 class SkeletonFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit SkeletonFunctor(AbstractRenderer *renderer, SkeletonManager *skeletonManager);
+    explicit SkeletonFunctor(AbstractRenderer *renderer,
+                             SkeletonManager *skeletonManager,
+                             JointManager *jointManager);
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
     void destroy(Qt3DCore::QNodeId id) const final;
@@ -165,6 +173,7 @@ public:
 private:
     AbstractRenderer *m_renderer;
     SkeletonManager *m_skeletonManager;
+    JointManager *m_jointManager;
 };
 
 } // namespace Render

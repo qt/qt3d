@@ -1487,6 +1487,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         renderBinJobs.push_back(m_expandBoundingVolumeJob);
     }
 
+    m_updateSkinningPaletteJob->setDirtyJoints(m_nodesManager->jointManager()->dirtyJoints());
     renderBinJobs.push_back(m_updateSkinningPaletteJob);
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_cleanupJob);
