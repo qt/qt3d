@@ -43,12 +43,14 @@
 #include <Qt3DCore/qabstractskeleton.h>
 #include <Qt3DCore/qskeletonloader.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/qjoint.h>
 #include <QtCore/qvariantanimation.h>
 
 #include <Qt3DQuick/private/quick3dnodev9_p.h>
 #include <Qt3DQuick/private/quick3dentity_p.h>
 #include <Qt3DQuick/private/quick3dentityloader_p.h>
 #include <Qt3DQuick/private/quick3dnodeinstantiator_p.h>
+#include <Qt3DQuick/private/quick3djoint_p.h>
 #include <Qt3DQuick/private/qquaternionanimation_p.h>
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 
@@ -75,6 +77,8 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     // We would need qmlRegisterUncreatableExtendedType for that
     qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));
     qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNodeV9, 9>(uri, 2, 9, "Node", QStringLiteral("Node is a base class"));
+
+    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QJoint, Qt3DCore::Quick::Quick3DJoint>("QJoint", "Qt3D.Core/Joint", uri, 2, 10, "Joint");
 }
 
 Qt3DQuick3DCorePlugin::~Qt3DQuick3DCorePlugin()

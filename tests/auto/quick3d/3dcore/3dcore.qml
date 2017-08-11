@@ -46,4 +46,5 @@ Item {
 
     QQ3Core210.Armature {}
     QQ3Core210.SkeletonLoader {}
+    QQ3Core210.Joint {}
 }
