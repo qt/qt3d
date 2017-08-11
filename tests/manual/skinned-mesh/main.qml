@@ -80,7 +80,6 @@ DefaultSceneEntity {
             var animation = animationComp.createObject(rootJoint)
             var targetJoint = rootJoint.childJoints[0]
             animation.target = targetJoint
-            animation.neutralPos = targetJoint.translation
             animation.running = true
         }
 
@@ -89,23 +88,24 @@ DefaultSceneEntity {
             SequentialAnimation {
                 id: sequentialAnimation
                 property variant target: null
-                property vector3d neutralPos: Qt.vector3d(0, 0, 0)
-                property real dx: 1.0
+                property real dz: 30.0
                 loops: Animation.Infinite
 
-                Vector3dAnimation {
+                NumberAnimation {
                     target: sequentialAnimation.target
-                    property: "translation"
-                    from: sequentialAnimation.neutralPos.plus(Qt.vector3d(-sequentialAnimation.dx, 0.0, 0.0))
-                    to: sequentialAnimation.neutralPos.plus(Qt.vector3d(sequentialAnimation.dx, 0.0, 0.0))
-                    duration: 500
+                    property: "rotationZ"
+                    from: -dz
+                    to: dz
+                    duration: 600
+                    easing.type: Easing.OutCubic
                 }
-                Vector3dAnimation {
+                NumberAnimation {
                     target: sequentialAnimation.target
-                    property: "translation"
-                    from: sequentialAnimation.neutralPos.plus(Qt.vector3d(sequentialAnimation.dx, 0.0, 0.0))
-                    to: sequentialAnimation.neutralPos.plus(Qt.vector3d(-sequentialAnimation.dx, 0.0, 0.0))
-                    duration: 500
+                    property: "rotationZ"
+                    from: dz
+                    to: -dz
+                    duration: 600
+                    easing.type: Easing.OutCubic
                 }
             }
         }
