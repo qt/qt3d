@@ -150,6 +150,7 @@ private Q_SLOTS:
         Joint backendJoint;
         backendJoint.setRenderer(&renderer);
         backendJoint.setJointManager(nodeManagers.jointManager());
+        backendJoint.setSkeletonManager(nodeManagers.skeletonManager());
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN

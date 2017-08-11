@@ -55,6 +55,7 @@ Joint::Joint()
     : BackendNode(Qt3DCore::QBackendNode::ReadOnly)
     , m_localPose()
     , m_jointManager(nullptr)
+    , m_skeletonManager(nullptr)
 {
 }
 
@@ -101,11 +102,12 @@ void Joint::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             markDirty(AbstractRenderer::JointDirty);
             m_jointManager->addDirtyJoint(peerId());
         } else if (propertyChange->propertyName() == QByteArrayLiteral("inverseBindMatrix")) {
+            // Setting the inverse bind matrix should be a rare operation. Usually it is
+            // set once and then remains constant for the duration of the skeleton. So just
+            // trigger a rebuild of the skeleton's SkeletonData which will include obtaining
+            // the inverse bind matrix.
             m_inverseBindMatrix = propertyChange->value().value<QMatrix4x4>();
-            markDirty(AbstractRenderer::JointDirty);
-            m_jointManager->addDirtyJoint(peerId());
-
-            // TODO: Mark just the inverse bind matrix as dirty
+            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_owningSkeleton);
         }
         // TODO: Add name property to QJoint
     } else if (e->type() == PropertyValueAdded) {
@@ -122,9 +124,12 @@ void Joint::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 }
 
 
-JointFunctor::JointFunctor(AbstractRenderer *renderer, JointManager *jointManager)
+JointFunctor::JointFunctor(AbstractRenderer *renderer,
+                           JointManager *jointManager,
+                           SkeletonManager *skeletonManager)
     : m_renderer(renderer)
     , m_jointManager(jointManager)
+    , m_skeletonManager(skeletonManager)
 {
 }
 
@@ -133,6 +138,7 @@ Qt3DCore::QBackendNode *JointFunctor::create(const Qt3DCore::QNodeCreatedChangeB
     Joint *backend = m_jointManager->getOrCreateResource(change->subjectId());
     backend->setRenderer(m_renderer);
     backend->setJointManager(m_jointManager);
+    backend->setSkeletonManager(m_skeletonManager);
     return backend;
 }
 

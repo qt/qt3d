@@ -61,6 +61,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class JointManager;
+class SkeletonManager;
 
 class Q_AUTOTEST_EXPORT Joint : public BackendNode
 {
@@ -85,6 +86,9 @@ public:
     void setJointManager(JointManager *jointManager) { m_jointManager = jointManager; }
     JointManager *jointManager() const { return m_jointManager; }
 
+    void setSkeletonManager(SkeletonManager *skeletonManager) { m_skeletonManager = skeletonManager; }
+    SkeletonManager *skeletonManager() const { return m_skeletonManager; }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
@@ -93,13 +97,16 @@ private:
     QVector<Qt3DCore::QNodeId> m_childJointIds;
     QString m_name;
     JointManager *m_jointManager;
+    SkeletonManager *m_skeletonManager;
     HSkeleton m_owningSkeleton;
 };
 
 class JointFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit JointFunctor(AbstractRenderer *renderer, JointManager *jointManager);
+    explicit JointFunctor(AbstractRenderer *renderer,
+                          JointManager *jointManager,
+                          SkeletonManager *skeletonManager);
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
     void destroy(Qt3DCore::QNodeId id) const final;
@@ -107,6 +114,7 @@ public:
 private:
     AbstractRenderer *m_renderer;
     JointManager *m_jointManager;
+    SkeletonManager *m_skeletonManager;
 };
 
 } // namespace Render
