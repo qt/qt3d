@@ -64,7 +64,7 @@ class VSyncFrameAdvanceServicePrivate;
 class Q_AUTOTEST_EXPORT VSyncFrameAdvanceService Q_DECL_FINAL : public Qt3DCore::QAbstractFrameAdvanceService
 {
 public:
-    VSyncFrameAdvanceService();
+    explicit VSyncFrameAdvanceService(bool drivenByRenderThread);
     ~VSyncFrameAdvanceService();
 
     qint64 waitForNextFrame() Q_DECL_FINAL;
