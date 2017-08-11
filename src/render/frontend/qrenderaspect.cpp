@@ -242,7 +242,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QGeometry>(QSharedPointer<Render::NodeFunctor<Render::Geometry, Render::GeometryManager> >::create(m_renderer));
     q->registerBackendType<QGeometryRenderer>(QSharedPointer<Render::GeometryRendererFunctor>::create(m_renderer, m_nodeManagers->geometryRendererManager()));
     q->registerBackendType<Qt3DCore::QArmature>(QSharedPointer<Render::NodeFunctor<Render::Armature, Render::ArmatureManager>>::create(m_renderer));
-    q->registerBackendType<Qt3DCore::QSkeletonLoader>(QSharedPointer<Render::NodeFunctor<Render::Skeleton, Render::SkeletonManager>>::create(m_renderer));
+    q->registerBackendType<Qt3DCore::QSkeletonLoader>(QSharedPointer<Render::SkeletonFunctor>::create(m_renderer, m_nodeManagers->skeletonManager()));
     q->registerBackendType<Qt3DCore::QJoint>(QSharedPointer<Render::JointFunctor>::create(m_renderer, m_nodeManagers->jointManager()));
 
     // Textures

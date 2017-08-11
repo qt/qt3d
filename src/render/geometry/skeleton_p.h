@@ -76,6 +76,9 @@ class Q_AUTOTEST_EXPORT Skeleton : public BackendNode
 public:
     Skeleton();
 
+    void setSkeletonManager(SkeletonManager *skeletonManager) { m_skeletonManager = skeletonManager; }
+    SkeletonManager *skeletonManager() const { return m_skeletonManager; }
+
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void setStatus(Qt3DCore::QSkeletonLoader::Status status);
@@ -150,6 +153,19 @@ inline QDebug operator<<(QDebug dbg, const Skeleton &skeleton)
     return dbg;
 }
 #endif
+
+class SkeletonFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit SkeletonFunctor(AbstractRenderer *renderer, SkeletonManager *skeletonManager);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
+    void destroy(Qt3DCore::QNodeId id) const final;
+
+private:
+    AbstractRenderer *m_renderer;
+    SkeletonManager *m_skeletonManager;
+};
 
 } // namespace Render
 } // namespace Qt3DRender

@@ -79,6 +79,7 @@ private Q_SLOTS:
         renderer.setNodeManagers(&nodeManagers);
         Skeleton backendSkeleton;
         backendSkeleton.setRenderer(&renderer);
+        backendSkeleton.setSkeletonManager(nodeManagers.skeletonManager());
         QSkeletonLoader skeleton;
 
         skeleton.setSource(QUrl::fromLocalFile("funnybones.json"));
@@ -95,6 +96,7 @@ private Q_SLOTS:
         // GIVEN
         Skeleton backendSkeleton2;
         backendSkeleton2.setRenderer(&renderer);
+        backendSkeleton2.setSkeletonManager(nodeManagers.skeletonManager());
         QSkeleton skeleton2;
 
         QJoint *joint = new QJoint();
@@ -118,6 +120,7 @@ private Q_SLOTS:
         renderer.setNodeManagers(&nodeManagers);
         Skeleton backendSkeleton;
         backendSkeleton.setRenderer(&renderer);
+        backendSkeleton.setSkeletonManager(nodeManagers.skeletonManager());
 
         // THEN
         QVERIFY(backendSkeleton.peerId().isNull());
@@ -149,6 +152,7 @@ private Q_SLOTS:
         renderer.setNodeManagers(&nodeManagers);
         Skeleton backendSkeleton;
         backendSkeleton.setRenderer(&renderer);
+        backendSkeleton.setSkeletonManager(nodeManagers.skeletonManager());
         backendSkeleton.setDataType(Skeleton::File);
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
@@ -196,6 +200,7 @@ private Q_SLOTS:
         TestArbiter arbiter;
         Skeleton backendSkeleton;
         backendSkeleton.setRenderer(&renderer);
+        backendSkeleton.setSkeletonManager(nodeManagers.skeletonManager());
         backendSkeleton.setEnabled(true);
         Qt3DCore::QBackendNodePrivate::get(&backendSkeleton)->setArbiter(&arbiter);
 

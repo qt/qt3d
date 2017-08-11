@@ -78,7 +78,6 @@ void Skeleton::cleanup()
 
 void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    m_skeletonManager = m_renderer->nodeManagers()->skeletonManager();
     Q_ASSERT(m_skeletonManager);
     m_skeletonHandle = m_skeletonManager->lookupHandle(peerId());
 
@@ -361,6 +360,31 @@ QVector<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()
         m_skinningPalette[i] = joint.globalPose * joint.inverseBindPose;
     }
     return m_skinningPalette;
+}
+
+
+SkeletonFunctor::SkeletonFunctor(AbstractRenderer *renderer, SkeletonManager *skeletonManager)
+    : m_renderer(renderer)
+    , m_skeletonManager(skeletonManager)
+{
+}
+
+Qt3DCore::QBackendNode *SkeletonFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    Skeleton *backend = m_skeletonManager->getOrCreateResource(change->subjectId());
+    backend->setRenderer(m_renderer);
+    backend->setSkeletonManager(m_skeletonManager);
+    return backend;
+}
+
+Qt3DCore::QBackendNode *SkeletonFunctor::get(Qt3DCore::QNodeId id) const
+{
+    return m_skeletonManager->lookupResource(id);
+}
+
+void SkeletonFunctor::destroy(Qt3DCore::QNodeId id) const
+{
+    m_skeletonManager->releaseResource(id);
 }
 
 } // namespace Render
