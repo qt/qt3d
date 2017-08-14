@@ -256,7 +256,12 @@ void QSkyboxEntity::setBaseName(const QString &baseName)
     }
 }
 /*!
- * Returns the base name.
+    \property QSkyboxEntity::baseName
+
+    Contains the base name of the Skybox.
+*/
+/*!
+ * Returns the base name of the Skybox.
  */
 QString QSkyboxEntity::baseName() const
 {
@@ -277,6 +282,11 @@ void QSkyboxEntity::setExtension(const QString &extension)
     }
 }
 
+/*!
+    \property QSkyboxEntity::extension
+
+    Contains the extension of the Skybox.
+*/
 /*!
  * Returns the extension
  */
@@ -311,4 +321,9 @@ bool QSkyboxEntity::isGammaCorrectEnabled() const
 
 } // namespace Qt3DExtras
 
+/*!
+    \property QSkyboxEntity::gammaCorrect
+
+    A boolean indicating whether gamma correction is enabled.
+*/
 QT_END_NAMESPACE
