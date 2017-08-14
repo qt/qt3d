@@ -108,6 +108,8 @@ void QTextureWrapMode::setX(WrapMode x)
 }
 
 /*!
+    \property QTextureWrapMode::x
+
     Returns the wrap mode of the x dimension.
  */
 QTextureWrapMode::WrapMode QTextureWrapMode::x() const
@@ -115,6 +117,19 @@ QTextureWrapMode::WrapMode QTextureWrapMode::x() const
     Q_D(const QTextureWrapMode);
     return d->m_x;
 }
+
+/*!
+    \enum Qt3DRender::QTextureWrapMode::WrapMode
+
+    Specifies the type of text wrapping.
+    Possible values:
+
+    \value Repeat
+    \value MirroredRepeat
+    \value ClampToEdge
+    \value ClampToBorder
+*/
+
 
 /*!
     Sets the wrap mode of the y dimension to \a y.
@@ -130,6 +145,8 @@ void QTextureWrapMode::setY(WrapMode y)
 }
 
 /*!
+    \property QTextureWrapMode::y
+
     Returns the wrap mode of the y dimension.
  */
 QTextureWrapMode::WrapMode QTextureWrapMode::y() const
@@ -152,6 +169,8 @@ void QTextureWrapMode::setZ(WrapMode z)
 }
 
 /*!
+    \property QTextureWrapMode::z
+
     Returns the wrap mode of the z dimension.
  */
 QTextureWrapMode::WrapMode QTextureWrapMode::z() const

@@ -948,8 +948,10 @@ QTextureLoader::~QTextureLoader()
 }
 
 /*!
- * \return the current texture source.
- */
+    \property QTextureLoader::source
+
+    Returns the current texture source.
+*/
 QUrl QTextureLoader::source() const
 {
     Q_D(const QTextureLoader);

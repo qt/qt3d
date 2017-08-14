@@ -115,6 +115,209 @@ void QAbstractTexturePrivate::setDataFunctor(const QTextureGeneratorPtr &generat
 */
 
 /*!
+    \enum Qt3DRender::QAbstractTexture::TextureFormat
+
+    This list describes all possible texture formats
+
+    \value NoFormat
+          GL_NONE
+    \value Automatic
+          automatically_determines_format
+    \value R8_UNorm
+          GL_R8
+    \value RG8_UNorm
+          GL_RG8
+    \value RGB8_UNorm
+          GL_RGB8
+    \value RGBA8_UNorm
+          GL_RGBA8
+    \value R16_UNorm
+          GL_R16
+    \value RG16_UNorm
+          GL_RG16
+    \value RGB16_UNorm
+          GL_RGB16
+    \value RGBA16_UNorm
+          GL_RGBA16
+    \value R8_SNorm
+          GL_R8_SNORM
+    \value RG8_SNorm
+          GL_RG8_SNORM
+    \value RGB8_SNorm
+          GL_RGB8_SNORM
+    \value RGBA8_SNorm
+          GL_RGBA8_SNORM
+    \value R16_SNorm
+          GL_R16_SNORM
+    \value RG16_SNorm
+          GL_RG16_SNORM
+    \value RGB16_SNorm
+          GL_RGB16_SNORM
+    \value RGBA16_SNorm
+          GL_RGBA16_SNORM
+    \value R8U
+          GL_R8UI
+    \value RG8U
+          GL_RG8UI
+    \value RGB8U
+          GL_RGB8UI
+    \value RGBA8U
+          GL_RGBA8UI
+    \value R16U
+          GL_R16UI
+    \value RG16U
+          GL_RG16UI
+    \value RGB16U
+          GL_RGB16UI
+    \value RGBA16U
+          GL_RGBA16UI
+    \value R32U
+          GL_R32UI
+    \value RG32U
+          GL_RG32UI
+    \value RGB32U
+          GL_RGB32UI
+    \value RGBA32U
+          GL_RGBA32UI
+    \value R8I
+          GL_R8I
+    \value RG8I
+          GL_RG8I
+    \value RGB8I
+          GL_RGB8I
+    \value RGBA8I
+          GL_RGBA8I
+    \value R16I
+          GL_R16I
+    \value RG16I
+          GL_RG16I
+    \value RGB16I
+          GL_RGB16I
+    \value RGBA16I
+          GL_RGBA16I
+    \value R32I
+          GL_R32I
+    \value RG32I
+          GL_RG32I
+    \value RGB32I
+          GL_RGB32I
+    \value RGBA32I
+          GL_RGBA32I
+    \value R16F
+          GL_R16F
+    \value RG16F
+          GL_RG16F
+    \value RGB16F
+          GL_RGB16F
+    \value RGBA16F
+          GL_RGBA16F
+    \value R32F
+          GL_R32F
+    \value RG32F
+          GL_RG32F
+    \value RGB32F
+          GL_RGB32F
+    \value RGBA32F
+          GL_RGBA32F
+    \value RGB9E5
+          GL_RGB9_E5
+    \value RG11B10F
+          GL_R11F_G11F_B10F
+    \value RG3B2
+          GL_R3_G3_B2
+    \value R5G6B5
+          GL_RGB565
+    \value RGB5A1
+          GL_RGB5_A1
+    \value RGBA4
+          GL_RGBA4
+    \value RGB10A2
+          GL_RGB10_A2UI
+    \value D16
+          GL_DEPTH_COMPONENT16
+    \value D24
+          GL_DEPTH_COMPONENT24
+    \value D24S8
+          GL_DEPTH24_STENCIL8
+    \value D32
+          GL_DEPTH_COMPONENT32
+    \value D32F
+          GL_DEPTH_COMPONENT32F
+    \value D32FS8X24
+          GL_DEPTH32F_STENCIL8
+    \value RGB_DXT1
+          GL_COMPRESSED_RGB_S3TC_DXT1_EXT
+    \value RGBA_DXT1
+          GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
+    \value RGBA_DXT3
+          GL_COMPRESSED_RGBA_S3TC_DXT3_EXT
+    \value RGBA_DXT5
+          GL_COMPRESSED_RGBA_S3TC_DXT5_EXT
+    \value R_ATI1N_UNorm
+          GL_COMPRESSED_RED_RGTC1
+    \value R_ATI1N_SNorm
+          GL_COMPRESSED_SIGNED_RED_RGTC1
+    \value RG_ATI2N_UNorm
+          GL_COMPRESSED_RG_RGTC2
+    \value RG_ATI2N_SNorm
+          GL_COMPRESSED_SIGNED_RG_RGTC2
+    \value RGB_BP_UNSIGNED_FLOAT
+          GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB
+    \value RGB_BP_SIGNED_FLOAT
+          GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB
+    \value RGB_BP_UNorm
+          GL_COMPRESSED_RGBA_BPTC_UNORM_ARB
+    \value R11_EAC_UNorm
+          GL_COMPRESSED_R11_EAC
+    \value R11_EAC_SNorm
+          GL_COMPRESSED_SIGNED_R11_EAC
+    \value RG11_EAC_UNorm
+          GL_COMPRESSED_RG11_EAC
+    \value RG11_EAC_SNorm
+          GL_COMPRESSED_SIGNED_RG11_EAC
+    \value RGB8_ETC2
+          GL_COMPRESSED_RGB8_ETC2
+    \value SRGB8_ETC2
+          GL_COMPRESSED_SRGB8_ETC2
+    \value RGB8_PunchThrough_Alpha1_ETC2
+          GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2
+    \value SRGB8_PunchThrough_Alpha1_ETC2
+          GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2
+    \value RGBA8_ETC2_EAC
+          GL_COMPRESSED_RGBA8_ETC2_EAC
+    \value SRGB8_Alpha8_ETC2_EAC
+          GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC
+    \value RGB8_ETC1
+          GL_ETC1_RGB8_OES
+    \value SRGB8
+          GL_SRGB8
+    \value SRGB8_Alpha8
+          GL_SRGB8_ALPHA8
+    \value SRGB_DXT1
+          GL_COMPRESSED_SRGB_S3TC_DXT1_EXT
+    \value SRGB_Alpha_DXT1
+          GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT
+    \value SRGB_Alpha_DXT3
+          GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT
+    \value SRGB_Alpha_DXT5
+          GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT
+    \value SRGB_BP_UNorm
+          GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB
+    \value DepthFormat
+          GL_DEPTH_COMPONENT
+    \value AlphaFormat
+          GL_ALPHA
+    \value RGBFormat
+          GL_RGB
+    \value RGBAFormat
+          GL_RGBA
+    \value LuminanceFormat
+          GL_LUMINANCE
+    \value LuminanceAlphaFormat
+          0x190A
+*/
+
+/*!
  * The constructor creates a new QAbstractTexture::QAbstractTexture
  * instance with the specified \a parent.
  */
@@ -159,6 +362,9 @@ void QAbstractTexture::setSize(int w, int h, int d)
 
     Holds the width of the texture provider.
  */
+/*!
+    Set the width of the texture provider to \a width.
+*/
 void QAbstractTexture::setWidth(int width)
 {
     Q_D(QAbstractTexture);
@@ -173,6 +379,9 @@ void QAbstractTexture::setWidth(int width)
 
     Holds the height of the texture provider.
  */
+/*!
+    Set the height to \a height.
+*/
 void QAbstractTexture::setHeight(int height)
 {
     Q_D(QAbstractTexture);
@@ -187,6 +396,9 @@ void QAbstractTexture::setHeight(int height)
 
     Holds the depth of the texture provider.
  */
+/*!
+    Set the depth of the texture to \a depth.
+*/
 void QAbstractTexture::setDepth(int depth)
 {
     Q_D(QAbstractTexture);
@@ -232,6 +444,9 @@ int QAbstractTexture::depth() const
     \note this has a meaning only for texture providers that have 3D or
     array target formats.
  */
+/*!
+    Set the maximum layer count to \a layers.
+*/
 void QAbstractTexture::setLayers(int layers)
 {
     Q_D(QAbstractTexture);
@@ -262,6 +477,9 @@ int QAbstractTexture::layers() const
     \note this has a meaning only for texture providers that have multisample
     formats.
  */
+/*!
+    Set the number of samples per texel to \a samples.
+*/
 void QAbstractTexture::setSamples(int samples)
 {
     Q_D(QAbstractTexture);
@@ -288,6 +506,9 @@ int QAbstractTexture::samples() const
 
     Holds the format of the texture provider.
  */
+/*!
+    Set the texture format to \a format.
+*/
 void QAbstractTexture::setFormat(TextureFormat format)
 {
     Q_D(QAbstractTexture);
@@ -298,7 +519,7 @@ void QAbstractTexture::setFormat(TextureFormat format)
 }
 
 /*!
-    \return the texture provider's format.
+    Returns the texture provider's format.
  */
 QAbstractTexture::TextureFormat QAbstractTexture::format() const
 {
@@ -311,6 +532,20 @@ QAbstractTexture::TextureFormat QAbstractTexture::format() const
 
     Holds the current status of the texture provider.
  */
+
+/*!
+    \enum Qt3DRender::QAbstractTexture::Status
+
+    Contains the status of the texture provider.
+
+    \value None
+    \value Loading
+    \value Ready
+    \value Error
+*/
+/*!
+    Set the status of the texture provider to the specified \a status.
+*/
 void QAbstractTexture::setStatus(Status status)
 {
     Q_D(QAbstractTexture);
@@ -321,7 +556,7 @@ void QAbstractTexture::setStatus(Status status)
 }
 
 /*!
- * \return the current status
+ * \return the current status of the texture provider.
  */
 QAbstractTexture::Status QAbstractTexture::status() const
 {
@@ -336,6 +571,38 @@ QAbstractTexture::Status QAbstractTexture::status() const
 
     \note The target format can only be set once.
  */
+/*!
+    \enum Qt3DRender::QAbstractTexture::Target
+
+    \value TargetAutomatic
+           Target will be determined by the Qt3D engine
+    \value Target1D
+           GL_TEXTURE_1D
+    \value Target1DArray
+           GL_TEXTURE_1D_ARRAY
+    \value Target2D
+           GL_TEXTURE_2D
+    \value Target2DArray
+           GL_TEXTURE_2D_ARRAY
+    \value Target3D
+           GL_TEXTURE_3D
+    \value TargetCubeMap
+           GL_TEXTURE_CUBE_MAP
+    \value TargetCubeMapArray
+           GL_TEXTURE_CUBE_MAP_ARRAY
+    \value Target2DMultisample
+           GL_TEXTURE_2D_MULTISAMPLE
+    \value Target2DMultisampleArray
+           GL_TEXTURE_2D_MULTISAMPLE_ARRAY
+    \value TargetRectangle
+           GL_TEXTURE_RECTANGLE
+    \value TargetBuffer
+           GL_TEXTURE_BUFFER
+*/
+
+/*!
+    Returns the target format of the texture provider.
+*/
 QAbstractTexture::Target QAbstractTexture::target() const
 {
     Q_D(const QAbstractTexture);
@@ -407,6 +674,10 @@ QVector<QAbstractTextureImage *> QAbstractTexture::textureImages() const
 
     Holds whether the texture provider should auto generate mipmaps.
  */
+/*!
+    Boolean parameter \a gen sets a flag indicating whether the
+    texture provider should generate mipmaps or not.
+*/
 void QAbstractTexture::setGenerateMipMaps(bool gen)
 {
     Q_D(QAbstractTexture);
@@ -427,6 +698,9 @@ bool QAbstractTexture::generateMipMaps() const
 
     Holds the minification filter of the texture provider.
  */
+/*!
+    Set the minification filter to the specified value \a f.
+*/
 void QAbstractTexture::setMinificationFilter(Filter f)
 {
     Q_D(QAbstractTexture);
@@ -435,12 +709,32 @@ void QAbstractTexture::setMinificationFilter(Filter f)
         emit minificationFilterChanged(f);
     }
 }
+/*!
+    \enum Qt3DRender::QAbstractTexture::Filter
 
+    Holds the filter type of the texture provider.
+
+    \value Nearest
+           GL_NEAREST
+    \value Linear
+           GL_LINEAR
+    \value NearestMipMapNearest
+           GL_NEAREST_MIPMAP_NEAREST
+    \value NearestMipMapLinear
+           GL_NEAREST_MIPMAP_LINEAR
+    \value LinearMipMapNearest
+           GL_LINEAR_MIPMAP_NEAREST
+    \value LinearMipMapLinear
+           GL_LINEAR_MIPMAP_LINEAR
+*/
 /*!
     \property Qt3DRender::QAbstractTexture::magnificationFilter
 
     Holds the magnification filter of the texture provider.
  */
+/*!
+    Set the magnification filter to \a f.
+*/
 void QAbstractTexture::setMagnificationFilter(Filter f)
 {
     Q_D(QAbstractTexture);
@@ -467,6 +761,9 @@ QAbstractTexture::Filter QAbstractTexture::magnificationFilter() const
 
     Holds the wrap mode of the texture provider.
  */
+/*!
+    Set the wrapmode to the value specified in \a wrapMode.
+*/
 void QAbstractTexture::setWrapMode(const QTextureWrapMode &wrapMode)
 {
     Q_D(QAbstractTexture);
@@ -504,6 +801,9 @@ QTextureWrapMode *QAbstractTexture::wrapMode()
 
     Holds the maximum anisotropy of the texture provider.
  */
+/*!
+    Sets the maximum anisotropy to \a anisotropy.
+*/
 void QAbstractTexture::setMaximumAnisotropy(float anisotropy)
 {
     Q_D(QAbstractTexture);
@@ -527,6 +827,9 @@ float QAbstractTexture::maximumAnisotropy() const
 
     Holds the comparison function of the texture provider.
  */
+/*!
+    Set the comparison function to \a function.
+*/
 void QAbstractTexture::setComparisonFunction(QAbstractTexture::ComparisonFunction function)
 {
     Q_D(QAbstractTexture);
@@ -550,6 +853,9 @@ QAbstractTexture::ComparisonFunction QAbstractTexture::comparisonFunction() cons
 
     Holds the comparison mode of the texture provider.
  */
+/*!
+    Set the comparison mode to \a mode.
+*/
 void QAbstractTexture::setComparisonMode(QAbstractTexture::ComparisonMode mode)
 {
     Q_D(QAbstractTexture);

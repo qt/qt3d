@@ -205,6 +205,11 @@ void QPaintedTextureImage::update(const QRect &rect)
     d->repaint();
 }
 
+/*!
+    \fn Qt3DRender::QPaintedTextureImage::paint(QPainter *painter)
+
+    Paints the texture image with the specified QPainter object \a painter.
+*/
 QTextureImageDataGeneratorPtr QPaintedTextureImage::dataGenerator() const
 {
     Q_D(const QPaintedTextureImage);
