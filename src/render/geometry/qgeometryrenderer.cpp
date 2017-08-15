@@ -175,6 +175,7 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
 
     \list
     \li QGeometryRenderer.Points
+    \li QGeometryRenderer.Lines
     \li QGeometryRenderer.LineLoop
     \li QGeometryRenderer.LineStrip
     \li QGeometryRenderer.Triangles
