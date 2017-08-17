@@ -86,7 +86,7 @@
             "purpose": "Use SSE2 SIMD instructions to accelerate matrix operations",
             "autoDetect": "features.sse2",
             "enable": "input.qt3d-simd == 'sse2' || input.qt3d-simd == 'avx2'",
-            "disable": "input.qt3d-simd == 'no'",
+            "disable": "input.qt3d-simd == 'no' || (config.win32-msvc2013 && arch.i386)",
             "output": [ "privateFeature" ]
         },
         "qt3d-simd-avx2": {
@@ -94,7 +94,7 @@
             "purpose": "Use AVX2 SIMD instructions to accelerate matrix operations",
             "autoDetect": false,
             "enable": "input.qt3d-simd == 'avx2'",
-            "disable": "input.qt3d-simd == 'sse2' || input.qt3d-simd == 'no'",
+            "disable": "input.qt3d-simd == 'sse2' || input.qt3d-simd == 'no' || (config.win32-msvc2013 && arch.i386)",
             "output": [ "privateFeature" ]
         }
     },
