@@ -110,7 +110,6 @@ public:
     Sphere *worldBoundingVolume() const { return m_worldBoundingVolume.data(); }
     Sphere *worldBoundingVolumeWithChildren() const { return m_worldBoundingVolumeWithChildren.data(); }
 
-    void addComponent(Qt3DCore::QComponent *component);
     void addComponent(Qt3DCore::QNodeIdTypePair idAndType);
     void removeComponent(Qt3DCore::QNodeId nodeId);
 

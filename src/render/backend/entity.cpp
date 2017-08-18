@@ -297,41 +297,6 @@ const QMatrix4x4 *Entity::worldTransform() const
     return m_nodeManagers->worldMatrixManager()->data(m_worldTransform);
 }
 
-void Entity::addComponent(Qt3DCore::QComponent *component)
-{
-    // The backend element is always created when this method is called
-    // If that's not the case something has gone wrong
-
-    if (qobject_cast<Qt3DCore::QTransform*>(component) != nullptr) {
-        m_transformComponent = component->id();
-    } else if (qobject_cast<QCameraLens *>(component) != nullptr) {
-        m_cameraComponent = component->id();
-    } else if (qobject_cast<QLayer *>(component) != nullptr) {
-        m_layerComponents.append(component->id());
-    } else if (qobject_cast<QLevelOfDetail *>(component) != nullptr) {
-        m_levelOfDetailComponents.append(component->id());
-    } else if (qobject_cast<QMaterial *>(component) != nullptr) {
-        m_materialComponent = component->id();
-    } else if (qobject_cast<QAbstractLight *>(component) != nullptr) {
-        m_lightComponents.append(component->id());
-    } else if (qobject_cast<QEnvironmentLight *>(component) != nullptr) {
-        m_environmentLightComponents.append(component->id());
-    } else if (qobject_cast<QShaderData *>(component) != nullptr) {
-        m_shaderDataComponents.append(component->id());
-    } else if (qobject_cast<QGeometryRenderer *>(component) != nullptr) {
-        m_geometryRendererComponent = component->id();
-        m_boundingDirty = true;
-    } else if (qobject_cast<QObjectPicker *>(component) != nullptr) {
-        m_objectPickerComponent = component->id();
-//    } else if (qobject_cast<QBoundingVolumeDebug *>(component) != nullptr) {
-//        m_boundingVolumeDebugComponent = component->id();
-    } else if (qobject_cast<QComputeCommand *>(component) != nullptr) {
-        m_computeComponent = component->id();
-    }  else if (qobject_cast<QArmature *>(component) != nullptr) {
-        m_armatureComponent = component->id();
-    }
-}
-
 void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
 {
     // The backend element is always created when this method is called
