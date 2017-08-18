@@ -210,125 +210,91 @@ private:
     bool m_treeEnabled;
 };
 
-// Handles
-template<>
-HMaterial Entity::componentHandle<Material>() const;
+#define ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(Type, Handle) \
+    /* Handle */ \
+    template<> \
+    QT3DRENDERSHARED_PRIVATE_EXPORT Handle Entity::componentHandle<Type>() const; \
+    /* Component */ \
+    template<> \
+    QT3DRENDERSHARED_PRIVATE_EXPORT Type *Entity::renderComponent<Type>() const; \
+    /* Uuid */ \
+    template<> \
+    QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Type>() const;
 
-template<>
-HCamera Entity::componentHandle<CameraLens>() const;
 
-template<>
-HTransform Entity::componentHandle<Transform>() const;
+#define ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(Type, Handle) \
+    /* Handle */ \
+    template<> \
+    QT3DRENDERSHARED_PRIVATE_EXPORT QVector<Handle> Entity::componentsHandle<Type>() const; \
+    /* Component */ \
+    template<> \
+    QT3DRENDERSHARED_PRIVATE_EXPORT QVector<Type *> Entity::renderComponents<Type>() const; \
+    /* Uuid */ \
+    template<> \
+    QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeIdVector Entity::componentsUuid<Type>() const;
 
-template<>
-Q_AUTOTEST_EXPORT HGeometryRenderer Entity::componentHandle<GeometryRenderer>() const;
+#define ENTITY_COMPONENT_TEMPLATE_IMPL(Type, Handle, Manager, variable) \
+    /* Handle */ \
+    template<> \
+    Handle Entity::componentHandle<Type>() const \
+    { \
+        return m_nodeManagers->lookupHandle<Type, Manager, Handle>(variable); \
+    } \
+    /* Component */ \
+    template<> \
+    Type *Entity::renderComponent<Type>() const \
+    { \
+        return m_nodeManagers->lookupResource<Type, Manager>(variable); \
+    } \
+    /* Uuid */ \
+    template<> \
+    Qt3DCore::QNodeId Entity::componentUuid<Type>() const \
+    { \
+        return variable; \
+    }
 
-template<>
-Q_AUTOTEST_EXPORT HObjectPicker Entity::componentHandle<ObjectPicker>() const;
+#define ENTITY_COMPONENT_LIST_TEMPLATE_IMPL(Type, Handle, Manager, variable) \
+    /* Handle */ \
+    template<> \
+    QVector<Handle> Entity::componentsHandle<Type>() const \
+    { \
+        Manager *manager = m_nodeManagers->manager<Type, Manager>(); \
+        QVector<Handle> entries; \
+        entries.reserve(variable.size()); \
+        for (const QNodeId id : variable) \
+            entries.push_back(manager->lookupHandle(id)); \
+        return entries; \
+        } \
+    /* Component */ \
+    template<> \
+    QVector<Type *> Entity::renderComponents<Type>() const \
+    { \
+        Manager *manager = m_nodeManagers->manager<Type, Manager>(); \
+        QVector<Type *> entries; \
+        entries.reserve(variable.size()); \
+        for (const QNodeId id : variable) \
+            entries.push_back(manager->lookupResource(id)); \
+        return entries; \
+    } \
+    /* Uuid */ \
+    template<> \
+    Qt3DCore::QNodeIdVector Entity::componentsUuid<Type>() const \
+    { \
+        return variable; \
+    }
 
-template<>
-QVector<HLayer> Entity::componentsHandle<Layer>() const;
-
-template<>
-QVector<HLevelOfDetail> Entity::componentsHandle<LevelOfDetail>() const;
-
-template<>
-QVector<HShaderData> Entity::componentsHandle<ShaderData>() const;
-
-//template<>
-//Q_AUTOTEST_EXPORT HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const;
-
-template<>
-QVector<HLight> Entity::componentsHandle<Light>() const;
-
-template<>
-QVector<HEnvironmentLight> Entity::componentsHandle<EnvironmentLight>() const;
-
-template<>
-Q_AUTOTEST_EXPORT HComputeCommand Entity::componentHandle<ComputeCommand>() const;
-
-template<>
-Q_AUTOTEST_EXPORT HArmature Entity::componentHandle<Armature>() const;
-
-// Render components
-template<>
-Material *Entity::renderComponent<Material>() const;
-
-template<>
-CameraLens *Entity::renderComponent<CameraLens>() const;
-
-template<>
-Transform *Entity::renderComponent<Transform>() const;
-
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
-
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
-
-template<>
-QVector<Layer *> Entity::renderComponents<Layer>() const;
-
-template<>
-QVector<LevelOfDetail *> Entity::renderComponents<LevelOfDetail>() const;
-
-template<>
-QVector<ShaderData *> Entity::renderComponents<ShaderData>() const;
-
-//template<>
-//Q_AUTOTEST_EXPORT BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const;
-
-template<>
-QVector<Light *> Entity::renderComponents<Light>() const;
-
-template<>
-QVector<EnvironmentLight *> Entity::renderComponents<EnvironmentLight>() const;
-
-template<>
-Q_AUTOTEST_EXPORT ComputeCommand *Entity::renderComponent<ComputeCommand>() const;
-
-template<>
-Q_AUTOTEST_EXPORT Armature *Entity::renderComponent<Armature>() const;
-
-// UUid
-template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Transform>() const;
-
-template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<CameraLens>() const;
-
-template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Material>() const;
-
-template<>
-Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const;
-
-template<>
-Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<LevelOfDetail>() const;
-
-template<>
-Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;
-
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
-
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
-
-//template<>
-//Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;
-
-template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeCommand>() const;
-
-template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Armature>() const;
-
-template<>
-Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
-
-template<>
-Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<EnvironmentLight>() const;
+ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(Material, HMaterial)
+ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(CameraLens, HCamera)
+ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(Transform, HTransform)
+ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(GeometryRenderer, HGeometryRenderer)
+ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(ObjectPicker, HObjectPicker)
+ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(ComputeCommand, HComputeCommand)
+ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(Armature, HArmature)
+ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(Layer, HLayer)
+ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(LevelOfDetail, HLevelOfDetail)
+ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(ShaderData, HShaderData)
+ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(Light, HLight)
+ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(EnvironmentLight, HEnvironmentLight)
 
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeMapper
 {
