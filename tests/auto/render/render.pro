@@ -103,7 +103,8 @@ qtConfig(private_tests) {
         renderer \
         armature \
         skeleton \
-        joint
+        joint \
+        qproximityfilter
 
     QT_FOR_CONFIG = 3dcore-private
     qtConfig(qt3d-extras) {

@@ -109,6 +109,7 @@
 #include <Qt3DRender/qtechniquefilter.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qviewport.h>
+#include <Qt3DRender/qproximityfilter.h>
 
 #include <QtGui/qwindow.h>
 
@@ -253,6 +254,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DRender::QRenderCaptureReply>(uri, 2, 1, "RenderCaptureReply", QStringLiteral("RenderCaptureReply is only instantiated by RenderCapture"));
     qmlRegisterType<Qt3DRender::QBufferCapture>(uri, 2, 9, "BufferCapture");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 9, "MemoryBarrier");
+    qmlRegisterType<Qt3DRender::QProximityFilter>(uri, 2, 10, "ProximityFilter");
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderTargetOutput>(uri, 2, 0, "RenderTargetOutput");
