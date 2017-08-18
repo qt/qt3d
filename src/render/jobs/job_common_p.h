@@ -101,7 +101,8 @@ namespace JobTypes {
         UpdateLevelOfDetail,
         SyncTextureLoading,
         LoadSkeleton,
-        UpdateSkinningPalette
+        UpdateSkinningPalette,
+        ProximityFiltering
     };
 
 } // JobTypes

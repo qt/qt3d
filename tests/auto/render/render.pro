@@ -105,7 +105,8 @@ qtConfig(private_tests) {
         skeleton \
         joint \
         qproximityfilter \
-        proximityfilter
+        proximityfilter \
+        proximityfiltering
 
     QT_FOR_CONFIG = 3dcore-private
     qtConfig(qt3d-extras) {
