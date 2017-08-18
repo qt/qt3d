@@ -150,12 +150,8 @@ public:
     inline void setEyePosition(const QVector3D &eyePos) Q_DECL_NOTHROW { m_data.m_eyePos = eyePos; }
     inline QVector3D eyePosition() const Q_DECL_NOTHROW { return m_data.m_eyePos; }
 
-    inline void setHasLayerFilter(bool filter) Q_DECL_NOTHROW { m_data.m_hasLayerFilter = filter; }
-    inline bool hasLayerFilter() const Q_DECL_NOTHROW { return m_data.m_hasLayerFilter; }
-    inline void appendLayerFilter(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOTHROW { m_data.m_layerIds << layerIds; }
-    inline Qt3DCore::QNodeIdVector layerFilter() const Q_DECL_NOTHROW { return m_data.m_layerIds; }
-    inline QLayerFilter::FilterMode layerFilterFilterMode() const Q_DECL_NOTHROW { return m_data.m_layerFilterFilterMode; }
-    inline void setLayerFilterFilterMode(QLayerFilter::FilterMode filterMode) Q_DECL_NOTHROW { m_data.m_layerFilterFilterMode = filterMode; }
+    inline void appendLayerFilter(const Qt3DCore::QNodeId layerFilterId) Q_DECL_NOTHROW { m_data.m_layerFilterIds.push_back(layerFilterId); }
+    inline Qt3DCore::QNodeIdVector layerFilters() const Q_DECL_NOTHROW { return m_data.m_layerFilterIds; }
 
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_data.m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_data.m_passFilter; }
@@ -240,8 +236,6 @@ public:
             , m_renderCameraNode(nullptr)
             , m_techniqueFilter(nullptr)
             , m_passFilter(nullptr)
-            , m_hasLayerFilter(false)
-            , m_layerFilterFilterMode(QLayerFilter::AcceptMatchingLayers)
         {
         }
         CameraLens *m_renderCameraLens;
@@ -250,9 +244,7 @@ public:
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 m_viewMatrix;
         QMatrix4x4 m_viewProjectionMatrix;
-        bool m_hasLayerFilter;
-        QLayerFilter::FilterMode m_layerFilterFilterMode;
-        Qt3DCore::QNodeIdVector m_layerIds;
+        Qt3DCore::QNodeIdVector m_layerFilterIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;
     };

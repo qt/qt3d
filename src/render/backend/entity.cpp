@@ -411,6 +411,17 @@ void Entity::unsetBoundingVolumeDirty()
     m_boundingDirty = false;
 }
 
+void Entity::addRecursiveLayerId(const QNodeId layerId)
+{
+    if (!m_recursiveLayerComponents.contains(layerId) && !m_layerComponents.contains(layerId))
+        m_recursiveLayerComponents.push_back(layerId);
+}
+
+void Entity::removeRecursiveLayerId(const QNodeId layerId)
+{
+    m_recursiveLayerComponents.removeOne(layerId);
+}
+
 // Handles
 
 template<>

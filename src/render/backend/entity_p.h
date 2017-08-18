@@ -120,6 +120,11 @@ public:
     void setTreeEnabled(bool enabled) { m_treeEnabled = enabled; }
     bool isTreeEnabled() const { return m_treeEnabled; }
 
+    Qt3DCore::QNodeIdVector layerIds() const { return m_layerComponents + m_recursiveLayerComponents; }
+    void addRecursiveLayerId(const Qt3DCore::QNodeId layerId);
+    void removeRecursiveLayerId(const Qt3DCore::QNodeId layerId);
+    void clearRecursiveLayerIds() { m_recursiveLayerComponents.clear(); }
+
     template<class Backend, uint INDEXBITS>
     Qt3DCore::QHandle<Backend, INDEXBITS> componentHandle() const
     {
@@ -196,6 +201,9 @@ private:
     Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
     Qt3DCore::QNodeId m_computeComponent;
     Qt3DCore::QNodeId m_armatureComponent;
+
+    // Includes recursive layers
+    Qt3DCore::QNodeIdVector m_recursiveLayerComponents;
 
     QString m_objectName;
     bool m_boundingDirty;

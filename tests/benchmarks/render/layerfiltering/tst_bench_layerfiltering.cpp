@@ -38,6 +38,7 @@
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/filterlayerentityjob_p.h>
 #include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/qlayerfilter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -85,19 +86,21 @@ namespace {
 
 Qt3DCore::QEntity *buildTestScene(int layersCount,
                                   int entityCount,
-                                  QVector<Qt3DCore::QNodeId> &layerIds,
+                                  QVector<Qt3DCore::QNodeId> &layerFilterIds,
                                   bool alwaysEnabled = true)
 {
     Qt3DCore::QEntity *root = new Qt3DCore::QEntity();
+    Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter(root);
+    layerFilterIds.push_back(layerFilter->id());
 
     QVector<Qt3DRender::QLayer *> layers;
     layers.reserve(layersCount);
-    layerIds.reserve(layersCount);
+
 
     for (int i = 0; i < layersCount; ++i) {
         Qt3DRender::QLayer *layer = new Qt3DRender::QLayer(root);
         layers.push_back(layer);
-        layerIds.push_back(layer->id());
+        layerFilter->addLayer(layer);
     }
 
     for (int i = 0; i < entityCount; ++i) {
@@ -123,43 +126,38 @@ private Q_SLOTS:
     void filterEntities_data()
     {
         QTest::addColumn<Qt3DCore::QEntity *>("entitySubtree");
-        QTest::addColumn<Qt3DCore::QNodeIdVector>("layerIds");
-        QTest::addColumn<bool>("hasLayerFilter");
+        QTest::addColumn<Qt3DCore::QNodeIdVector>("layerFilterIds");
 
 
         {
-            Qt3DCore::QNodeIdVector layerIds;
-            Qt3DCore::QEntity *rootEntity = buildTestScene(0, 5000, layerIds);
+            Qt3DCore::QNodeIdVector layerFilterIds;
+            Qt3DCore::QEntity *rootEntity = buildTestScene(0, 5000, layerFilterIds);
 
             QTest::newRow("Filter-NoLayerFilterAllEnabled") << rootEntity
-                                                            << layerIds
-                                                            << (layerIds.size() != 0);
+                                                            << layerFilterIds;
         }
 
         {
-            Qt3DCore::QNodeIdVector layerIds;
-            Qt3DCore::QEntity *rootEntity = buildTestScene(0, 5000, layerIds, false);
+            Qt3DCore::QNodeIdVector layerFilterIds;
+            Qt3DCore::QEntity *rootEntity = buildTestScene(0, 5000, layerFilterIds, false);
             QTest::newRow("Filter-NoLayerFilterSomeDisabled") << rootEntity
-                                                              << layerIds
-                                                              << (layerIds.size() != 0);
+                                                              << layerFilterIds;
         }
 
         {
-            Qt3DCore::QNodeIdVector layerIds;
-            Qt3DCore::QEntity *rootEntity = buildTestScene(10, 5000, layerIds);
+            Qt3DCore::QNodeIdVector layerFilterIds;
+            Qt3DCore::QEntity *rootEntity = buildTestScene(10, 5000, layerFilterIds);
 
             QTest::newRow("FilterLayerFilterAllEnabled") << rootEntity
-                                                         << layerIds
-                                                         << (layerIds.size() != 0);
+                                                         << layerFilterIds;
         }
 
         {
-            Qt3DCore::QNodeIdVector layerIds;
-            Qt3DCore::QEntity *rootEntity = buildTestScene(10, 5000, layerIds, false);
+            Qt3DCore::QNodeIdVector layerFilterIds;
+            Qt3DCore::QEntity *rootEntity = buildTestScene(10, 5000, layerFilterIds, false);
 
             QTest::newRow("FilterLayerFilterSomeDisabled") << rootEntity
-                                                         << layerIds
-                                                         << (layerIds.size() != 0);
+                                                         << layerFilterIds;
         }
 
     }
@@ -167,16 +165,14 @@ private Q_SLOTS:
     void filterEntities()
     {
         QFETCH(Qt3DCore::QEntity *, entitySubtree);
-        QFETCH(Qt3DCore::QNodeIdVector, layerIds);
-        QFETCH(bool, hasLayerFilter);
+        QFETCH(Qt3DCore::QNodeIdVector, layerFilterIds);
 
         // GIVEN
         QScopedPointer<Qt3DRender::TestAspect> aspect(new Qt3DRender::TestAspect(entitySubtree));
 
         // WHEN
         Qt3DRender::Render::FilterLayerEntityJob filterJob;
-        filterJob.setHasLayerFilter(hasLayerFilter);
-        filterJob.setLayers(layerIds);
+        filterJob.setLayerFilters(layerFilterIds);
         filterJob.setManager(aspect->nodeManagers());
 
         QBENCHMARK {

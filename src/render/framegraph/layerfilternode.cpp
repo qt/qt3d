@@ -53,7 +53,7 @@ namespace Render {
 
 LayerFilterNode::LayerFilterNode()
     : FrameGraphNode(FrameGraphNode::LayerFilter)
-    , m_filterMode(QLayerFilter::AcceptMatchingLayers)
+    , m_filterMode(QLayerFilter::AcceptAnyMatchingLayers)
 {
 }
 

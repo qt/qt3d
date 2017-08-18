@@ -122,6 +122,7 @@ private slots:
         QVERIFY(entity.componentUuid<Armature>().isNull());
         QVERIFY(!entity.isBoundingVolumeDirty());
         QVERIFY(entity.childrenHandles().isEmpty());
+        QVERIFY(entity.layerIds().isEmpty());
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
@@ -151,6 +152,7 @@ private slots:
         QVERIFY(!entity.componentUuid<Armature>().isNull());
         QVERIFY(entity.isBoundingVolumeDirty());
         QVERIFY(!entity.childrenHandles().isEmpty());
+        QVERIFY(!entity.layerIds().isEmpty());
         QVERIFY(renderer.dirtyBits() != 0);
         bool containsAll = entity.containsComponentsOfType<Transform,
                 CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand, Armature>();
@@ -172,6 +174,7 @@ private slots:
         QVERIFY(entity.componentUuid<Armature>().isNull());
         QVERIFY(!entity.isBoundingVolumeDirty());
         QVERIFY(entity.childrenHandles().isEmpty());
+        QVERIFY(entity.layerIds().isEmpty());
         containsAll = entity.containsComponentsOfType<Transform,
                 CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand, Armature>();
         QVERIFY(!containsAll);

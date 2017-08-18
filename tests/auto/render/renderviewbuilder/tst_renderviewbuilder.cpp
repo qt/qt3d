@@ -361,7 +361,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderViewBuilder.frustumCullingJob()->isActive(), false);
         QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->hasLayerFilter(), false);
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->layers().size(), 0);
+        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->layerFilters().size(), 0);
         for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
             QVERIFY(materialGatherer->techniqueFilter() == nullptr);
             QVERIFY(materialGatherer->renderPassFilter() == nullptr);
@@ -374,7 +374,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderViewBuilder.frustumCullingJob()->isActive(), true);
         QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->hasLayerFilter(), true);
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->layers().size(), 1);
+        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->layerFilters().size(), 1);
         for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
             QVERIFY(materialGatherer->techniqueFilter() != nullptr);
             QVERIFY(materialGatherer->renderPassFilter() != nullptr);

@@ -57,8 +57,10 @@ class QT3DRENDERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
 public:
     enum FilterMode
     {
-        AcceptMatchingLayers = 0,
-        DiscardMatchingLayers
+        AcceptAnyMatchingLayers = 0,
+        AcceptAllMatchingLayers,
+        DiscardAnyMatchingLayers,
+        DiscardAllMatchingLayers,
     };
     Q_ENUM(FilterMode) // LOVC_EXLC_LINE
 
