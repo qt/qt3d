@@ -121,6 +121,10 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 rv->appendLayerFilter(static_cast<const LayerFilterNode *>(node)->peerId());
                 break;
 
+            case FrameGraphNode::ProximityFilter: // Can be set multiple times in the tree
+                rv->appendProximityFilterId(node->peerId());
+                break;
+
             case FrameGraphNode::RenderPassFilter:
                 // Can be set once
                 // TODO: Amalgamate all render pass filters from leaf to root

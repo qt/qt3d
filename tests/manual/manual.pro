@@ -52,7 +52,8 @@ SUBDIRS += \
     anim-viewer \
     animation-keyframe-programmatic \
     layerfilter-qml \
-    skinned-mesh
+    skinned-mesh \
+    proximityfilter
 
 qtHaveModule(widgets): {
     SUBDIRS += \

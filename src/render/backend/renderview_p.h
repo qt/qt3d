@@ -153,6 +153,9 @@ public:
     inline void appendLayerFilter(const Qt3DCore::QNodeId layerFilterId) Q_DECL_NOTHROW { m_data.m_layerFilterIds.push_back(layerFilterId); }
     inline Qt3DCore::QNodeIdVector layerFilters() const Q_DECL_NOTHROW { return m_data.m_layerFilterIds; }
 
+    inline void appendProximityFilterId(const Qt3DCore::QNodeId proximityFilterId) { m_data.m_proximityFilterIds.push_back(proximityFilterId); }
+    inline Qt3DCore::QNodeIdVector proximityFilterIds() const { return m_data.m_proximityFilterIds; }
+
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_data.m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_data.m_passFilter; }
 
@@ -247,6 +250,7 @@ public:
         Qt3DCore::QNodeIdVector m_layerFilterIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;
+        Qt3DCore::QNodeIdVector m_proximityFilterIds;
     };
 
     bool isDownloadBuffersEnable() const;

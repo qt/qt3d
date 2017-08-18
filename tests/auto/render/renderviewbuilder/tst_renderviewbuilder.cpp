@@ -199,7 +199,7 @@ private Q_SLOTS:
         QCOMPARE(renderViewBuilder.renderViewBuilderJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
         QCOMPARE(renderViewBuilder.materialGathererJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
 
-        QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 11 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+        QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 12 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
     }
 
     void checkCheckJobDependencies()
@@ -233,6 +233,10 @@ private Q_SLOTS:
         QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
         QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(testAspect.renderer()->updateTreeEnabledJob()));
 
+        QCOMPARE(renderViewBuilder.filterProximityJob()->dependencies().size(), 2);
+        QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+        QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+
         QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
         QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());
 
@@ -252,7 +256,7 @@ private Q_SLOTS:
         QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(renderViewBuilder.syncFrustumCullingJob()));
         QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
 
-        QCOMPARE(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 6);
+        QCOMPARE(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 7);
         QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
         QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.renderableEntityFilterJob()));
         QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.computableEntityFilterJob()));

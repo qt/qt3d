@@ -62,6 +62,7 @@
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/frustumcullingjob_p.h>
 #include <Qt3DRender/private/lightgatherer_p.h>
+#include <Qt3DRender/private/filterproximitydistancejob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -93,6 +94,7 @@ public:
     SynchronizerJobPtr syncRenderCommandBuildingJob() const;
     SynchronizerJobPtr syncRenderViewCommandBuildersJob() const;
     SynchronizerJobPtr setClearDrawBufferIndexJob() const;
+    FilterProximityDistanceJobPtr filterProximityJob() const;
 
     QVector<Qt3DCore::QAspectJobPtr> buildJobHierachy() const;
 
@@ -120,6 +122,7 @@ private:
     SynchronizerJobPtr m_syncRenderCommandBuildingJob;
     SynchronizerJobPtr m_syncRenderViewCommandBuildersJob;
     SynchronizerJobPtr m_setClearDrawBufferIndexJob;
+    FilterProximityDistanceJobPtr m_filterProximityJob;
 
     static const int m_optimalParallelJobCount;
 };
