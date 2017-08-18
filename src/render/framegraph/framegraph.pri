@@ -54,7 +54,8 @@ HEADERS += \
     $$PWD/qmemorybarrier_p.h \
     $$PWD/memorybarrier_p.h \
     $$PWD/qproximityfilter.h \
-    $$PWD/qproximityfilter_p.h
+    $$PWD/qproximityfilter_p.h \
+    $$PWD/proximityfilter_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -93,4 +94,5 @@ SOURCES += \
     $$PWD/qframegraphnodecreatedchange.cpp \
     $$PWD/qmemorybarrier.cpp \
     $$PWD/memorybarrier.cpp \
-    $$PWD/qproximityfilter.cpp
+    $$PWD/qproximityfilter.cpp \
+    $$PWD/proximityfilter.cpp

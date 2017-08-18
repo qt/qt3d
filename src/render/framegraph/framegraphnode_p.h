@@ -99,7 +99,8 @@ public:
         Surface,
         RenderCapture,
         BufferCapture,
-        MemoryBarrier
+        MemoryBarrier,
+        ProximityFilter
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

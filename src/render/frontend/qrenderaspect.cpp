@@ -83,6 +83,7 @@
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
+#include <Qt3DRender/qproximityfilter.h>
 #include <Qt3DRender/qshaderprogrambuilder.h>
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qjoint.h>
@@ -143,6 +144,7 @@
 #include <Qt3DRender/private/skeleton_p.h>
 #include <Qt3DRender/private/joint_p.h>
 #include <Qt3DRender/private/loadskeletonjob_p.h>
+#include <Qt3DRender/private/proximityfilter_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -280,6 +282,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QRenderCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderCapture, QRenderCapture> >::create(m_renderer));
     q->registerBackendType<QBufferCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::BufferCapture, QBufferCapture> >::create(m_renderer));
     q->registerBackendType<QMemoryBarrier>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::MemoryBarrier, QMemoryBarrier> >::create(m_renderer));
+    q->registerBackendType<QProximityFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ProximityFilter, QProximityFilter> >::create(m_renderer));
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
