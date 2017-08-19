@@ -74,7 +74,14 @@ Entity {
 
     FirstPersonCameraController { camera: sceneEntity.camera }
 
-    ScreenQuadEntity { id: screenQuadEntity }
+    ScreenQuadEntity {
+        id: screenQuadEntity
+        baseLight: sceneEntity.light
+        light1Pos: sceneEntity.light1Pos
+        light2Pos: sceneEntity.light2Pos
+        light3Pos: sceneEntity.light3Pos
+        light4Pos: sceneEntity.light4Pos
+    }
     SceneEntity { id: sceneEntity }
     GBufferDebugger { id: debugEntity }
 }

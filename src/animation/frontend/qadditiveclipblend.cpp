@@ -165,7 +165,7 @@ float QAdditiveClipBlend::additiveFactor() const
 }
 
 /*!
-    \qmlproperty AbstractClipBlendNode baseClip
+    \qmlproperty AbstractClipBlendNode Qt3D.Animation::AdditiveClipBlend::baseClip
 
     This property holds the base animation clip. When the additiveFactor is zero the \a baseClip will
     also be the resulting clip of this blend node.
@@ -183,7 +183,7 @@ QAbstractClipBlendNode *QAdditiveClipBlend::baseClip() const
 }
 
 /*!
-    \qmlproperty AbstractClipBlendNode additiveClip
+    \qmlproperty AbstractClipBlendNode Qt3D.Animation::AdditiveClipBlend::additiveClip
 
     This property holds the additive clip to be blended with the baseClip. The amount of blending
     is controlled by the additiveFactor property.

@@ -72,15 +72,15 @@ Effect {
                         out vec3 normal0;
 
                         uniform mat4 mvp;
-                        uniform mat4 modelView;
-                        uniform mat3 modelViewNormal;
+                        uniform mat4 modelMatrix;
+                        uniform mat3 modelNormalMatrix;
                         uniform vec4 meshColor;
 
                         void main()
                         {
                             color0 = meshColor;
-                            position0 = vec3(modelView * vertexPosition);
-                            normal0 = normalize(modelViewNormal * vertexNormal);
+                            position0 = vec3(modelMatrix * vertexPosition);
+                            normal0 = normalize(modelNormalMatrix * vertexNormal);
                             gl_Position = mvp * vertexPosition;
                         }
                     "
@@ -123,15 +123,15 @@ Effect {
                         varying vec3 normal0;
 
                         uniform mat4 mvp;
-                        uniform mat4 modelView;
-                        uniform mat3 modelViewNormal;
+                        uniform mat4 modelMatrix;
+                        uniform mat3 modelNormalMatrix;
                         uniform vec4 meshColor;
 
                         void main()
                         {
                             color0 = meshColor;
-                            position0 = vec3(modelView * vertexPosition);
-                            normal0 = normalize(modelViewNormal * vertexNormal);
+                            position0 = vec3(modelMatrix * vertexPosition);
+                            normal0 = normalize(modelNormalMatrix * vertexNormal);
                             gl_Position = mvp * vertexPosition;
                         }
                     "

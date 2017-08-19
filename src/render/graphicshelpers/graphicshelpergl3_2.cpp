@@ -392,9 +392,20 @@ void GraphicsHelperGL3_2::releaseFrameBufferObject(GLuint frameBufferId)
     m_funcs->glDeleteFramebuffers(1, &frameBufferId);
 }
 
-void GraphicsHelperGL3_2::bindFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperGL3_2::bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode)
 {
-    m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
+    switch (mode) {
+    case FBODraw:
+        m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
+        return;
+    case FBORead:
+        m_funcs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
+        return;
+    case FBOReadAndDraw:
+    default:
+        m_funcs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+        return;
+    }
 }
 
 GLuint GraphicsHelperGL3_2::boundFrameBufferObject()

@@ -109,7 +109,7 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendMapping.sceneChangeEvent(updateChange);
@@ -119,7 +119,7 @@ private Q_SLOTS:
 
         // WHEN
         const QString channelName(QLatin1String("Rotation"));
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("channelName");
         updateChange->setValue(channelName);
         backendMapping.sceneChangeEvent(updateChange);
@@ -129,7 +129,7 @@ private Q_SLOTS:
 
         // WHEN
         const auto id = Qt3DCore::QNodeId::createId();
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("target");
         updateChange->setValue(QVariant::fromValue(id));
         backendMapping.sceneChangeEvent(updateChange);
@@ -139,7 +139,7 @@ private Q_SLOTS:
 
         // WHEN
         const QString property(QLatin1String("bar"));
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("property");
         updateChange->setValue(property);
         backendMapping.sceneChangeEvent(updateChange);

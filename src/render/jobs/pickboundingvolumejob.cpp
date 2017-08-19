@@ -358,32 +358,32 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 QPickEventPtr pickEvent;
                 switch (hit.m_type) {
                 case QCollisionQueryResult::Hit::Triangle:
-                    pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection,
-                                                           localIntersection, hit.m_distance,
-                                                           hit.m_primitiveIndex,
-                                                           hit.m_vertexIndex[0],
-                                                           hit.m_vertexIndex[1],
-                                                           hit.m_vertexIndex[2],
-                                                           eventButton, eventButtons,
-                                                           eventModifiers, hit.m_uvw));
+                    pickEvent = QPickTriangleEventPtr::create(event.localPos(), hit.m_intersection,
+                                                              localIntersection, hit.m_distance,
+                                                              hit.m_primitiveIndex,
+                                                              hit.m_vertexIndex[0],
+                                                              hit.m_vertexIndex[1],
+                                                              hit.m_vertexIndex[2],
+                                                              eventButton, eventButtons,
+                                                              eventModifiers, hit.m_uvw);
                     break;
                 case QCollisionQueryResult::Hit::Edge:
-                    pickEvent.reset(new QPickLineEvent(event.localPos(), hit.m_intersection,
-                                                       localIntersection, hit.m_distance,
-                                                       hit.m_primitiveIndex,
-                                                       hit.m_vertexIndex[0], hit.m_vertexIndex[1],
-                                                       eventButton, eventButtons, eventModifiers));
+                    pickEvent = QPickLineEventPtr::create(event.localPos(), hit.m_intersection,
+                                                          localIntersection, hit.m_distance,
+                                                          hit.m_primitiveIndex,
+                                                          hit.m_vertexIndex[0], hit.m_vertexIndex[1],
+                                                          eventButton, eventButtons, eventModifiers);
                     break;
                 case QCollisionQueryResult::Hit::Point:
-                    pickEvent.reset(new QPickPointEvent(event.localPos(), hit.m_intersection,
-                                                        localIntersection, hit.m_distance,
-                                                        hit.m_vertexIndex[0],
-                                                        eventButton, eventButtons, eventModifiers));
+                    pickEvent = QPickPointEventPtr::create(event.localPos(), hit.m_intersection,
+                                                           localIntersection, hit.m_distance,
+                                                           hit.m_vertexIndex[0],
+                                                           eventButton, eventButtons, eventModifiers);
                     break;
                 case QCollisionQueryResult::Hit::Entity:
-                    pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection,
-                                                   localIntersection, hit.m_distance,
-                                                   eventButton, eventButtons, eventModifiers));
+                    pickEvent = QPickEventPtr::create(event.localPos(), hit.m_intersection,
+                                                      localIntersection, hit.m_distance,
+                                                      eventButton, eventButtons, eventModifiers);
                     break;
                 default:
                     Q_UNREACHABLE();

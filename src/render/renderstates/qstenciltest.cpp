@@ -41,6 +41,7 @@
 #include "qstenciltest.h"
 #include "qstenciltest_p.h"
 #include "qstenciltestarguments.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -106,11 +107,48 @@ namespace Qt3DRender {
 QStencilTest::QStencilTest(QNode *parent)
     : QRenderState(*new QStencilTestPrivate, parent)
 {
+    Q_D(QStencilTest);
+
+    const auto resend = [d]() { d->resendArguments(); };
+
+    (void) connect(d->m_front, &QStencilTestArguments::comparisonMaskChanged, resend);
+    (void) connect(d->m_front, &QStencilTestArguments::faceModeChanged, resend);
+    (void) connect(d->m_front, &QStencilTestArguments::referenceValueChanged, resend);
+    (void) connect(d->m_front, &QStencilTestArguments::stencilFunctionChanged, resend);
+
+    (void) connect(d->m_back, &QStencilTestArguments::comparisonMaskChanged, resend);
+    (void) connect(d->m_back, &QStencilTestArguments::faceModeChanged, resend);
+    (void) connect(d->m_back, &QStencilTestArguments::referenceValueChanged, resend);
+    (void) connect(d->m_back, &QStencilTestArguments::stencilFunctionChanged, resend);
 }
 
 /*! \internal */
 QStencilTest::~QStencilTest()
 {
+}
+
+/*! \internal */
+void QStencilTestPrivate::resendArguments()
+{
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(m_id);
+    QStencilTestData data;
+    fillData(data);
+    e->setPropertyName("arguments");
+    e->setValue(QVariant::fromValue(data));
+    notifyObservers(e);
+}
+
+/*! \internal */
+void QStencilTestPrivate::fillData(QStencilTestData &data) const
+{
+    data.front.face = m_front->faceMode();
+    data.front.comparisonMask = m_front->comparisonMask();
+    data.front.referenceValue = m_front->referenceValue();
+    data.front.stencilFunction = m_front->stencilFunction();
+    data.back.face = m_back->faceMode();
+    data.back.comparisonMask = m_back->comparisonMask();
+    data.back.referenceValue = m_back->referenceValue();
+    data.back.stencilFunction = m_back->stencilFunction();
 }
 
 QStencilTestArguments *QStencilTest::front() const
@@ -128,16 +166,7 @@ QStencilTestArguments *QStencilTest::back() const
 Qt3DCore::QNodeCreatedChangeBasePtr QStencilTest::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QStencilTestData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QStencilTest);
-    data.front.face = d->m_front->faceMode();
-    data.front.comparisonMask = d->m_front->comparisonMask();
-    data.front.referenceValue = d->m_front->referenceValue();
-    data.front.stencilFunction = d->m_front->stencilFunction();
-    data.back.face = d->m_back->faceMode();
-    data.back.comparisonMask = d->m_back->comparisonMask();
-    data.back.referenceValue = d->m_back->referenceValue();
-    data.back.stencilFunction = d->m_back->stencilFunction();
+    d_func()->fillData(creationChange->data);
     return creationChange;
 }
 

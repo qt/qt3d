@@ -43,8 +43,11 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/qcullface.h>
+#include <Qt3DRender/qpointsize.h>
 
 #include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/qstenciloperation_p.h>
+#include <Qt3DRender/private/qstenciltest_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -102,12 +105,20 @@ void BlendEquation::apply(GraphicsContext *gc) const
 
 void BlendEquation::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("mode")) std::get<0>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("blendFunction")) std::get<0>(m_values) = value.toInt();
 }
 
 void AlphaFunc::apply(GraphicsContext* gc) const
 {
     gc->alphaTest(std::get<0>(m_values), std::get<1>(m_values));
+}
+
+void AlphaFunc::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("alphaFunction"))
+        std::get<0>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("referenceValue"))
+        std::get<1>(m_values) = value.toFloat();
 }
 
 void MSAAEnabled::apply(GraphicsContext *gc) const
@@ -128,7 +139,7 @@ void DepthTest::apply(GraphicsContext *gc) const
 
 void DepthTest::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("func")) std::get<0>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("depthFunction")) std::get<0>(m_values) = value.toInt();
 }
 
 void CullFace::apply(GraphicsContext *gc) const
@@ -192,6 +203,19 @@ void StencilTest::apply(GraphicsContext *gc) const
     gc->openGLContext()->functions()->glStencilFuncSeparate(GL_BACK, std::get<3>(m_values), std::get<4>(m_values), std::get<5>(m_values));
 }
 
+void StencilTest::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("arguments")) {
+        const QStencilTestData data = value.value<QStencilTestData>();
+        std::get<0>(m_values) = data.front.stencilFunction;
+        std::get<1>(m_values) = data.front.referenceValue;
+        std::get<2>(m_values) = data.front.comparisonMask;
+        std::get<3>(m_values) = data.back.stencilFunction;
+        std::get<4>(m_values) = data.back.referenceValue;
+        std::get<5>(m_values) = data.back.comparisonMask;
+    }
+}
+
 void AlphaCoverage::apply(GraphicsContext *gc) const
 {
     gc->setAlphaCoverageEnabled(true);
@@ -204,7 +228,7 @@ void PointSize::apply(GraphicsContext *gc) const
 
 void PointSize::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("specification")) std::get<0>(m_values) = value.toBool();
+    if (name == QByteArrayLiteral("sizeMode")) std::get<0>(m_values) = (value.toInt() == QPointSize::Programmable);
     else if (name == QByteArrayLiteral("value")) std::get<1>(m_values) = value.toFloat();
 }
 
@@ -216,8 +240,8 @@ void PolygonOffset::apply(GraphicsContext *gc) const
 
 void PolygonOffset::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("factor")) std::get<0>(m_values) = value.toFloat();
-    else if (name == QByteArrayLiteral("units")) std::get<1>(m_values) = value.toFloat();
+    if (name == QByteArrayLiteral("scaleFactor")) std::get<0>(m_values) = value.toFloat();
+    else if (name == QByteArrayLiteral("depthSteps")) std::get<1>(m_values) = value.toFloat();
 }
 
 void ColorMask::apply(GraphicsContext *gc) const
@@ -227,10 +251,10 @@ void ColorMask::apply(GraphicsContext *gc) const
 
 void ColorMask::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("red")) std::get<0>(m_values) = value.toBool();
-    else if (name == QByteArrayLiteral("green")) std::get<1>(m_values) = value.toBool();
-    else if (name == QByteArrayLiteral("blue")) std::get<2>(m_values) = value.toBool();
-    else if (name == QByteArrayLiteral("alpha")) std::get<3>(m_values) = value.toBool();
+    if (name == QByteArrayLiteral("redMasked")) std::get<0>(m_values) = value.toBool();
+    else if (name == QByteArrayLiteral("greenMasked")) std::get<1>(m_values) = value.toBool();
+    else if (name == QByteArrayLiteral("blueMasked")) std::get<2>(m_values) = value.toBool();
+    else if (name == QByteArrayLiteral("alphaMasked")) std::get<3>(m_values) = value.toBool();
 }
 
 void ClipPlane::apply(GraphicsContext *gc) const
@@ -257,6 +281,19 @@ void StencilOp::apply(GraphicsContext *gc) const
     gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, std::get<3>(m_values), std::get<4>(m_values), std::get<5>(m_values));
 }
 
+void StencilOp::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("arguments")) {
+        const QStencilOperationData data = value.value<QStencilOperationData>();
+        std::get<0>(m_values) = data.front.stencilTestFailureOperation;
+        std::get<1>(m_values) = data.front.depthTestFailureOperation;
+        std::get<2>(m_values) = data.front.allTestsPassOperation;
+        std::get<3>(m_values) = data.back.stencilTestFailureOperation;
+        std::get<4>(m_values) = data.back.depthTestFailureOperation;
+        std::get<5>(m_values) = data.back.allTestsPassOperation;
+    }
+}
+
 void StencilMask::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glStencilMaskSeparate(GL_FRONT, std::get<0>(m_values));
@@ -265,8 +302,8 @@ void StencilMask::apply(GraphicsContext *gc) const
 
 void StencilMask::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("frontMask")) std::get<0>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("backMask")) std::get<1>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("frontOutputMask")) std::get<0>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("backOutputMask")) std::get<1>(m_values) = value.toInt();
 }
 
 #ifndef GL_LINE_SMOOTH

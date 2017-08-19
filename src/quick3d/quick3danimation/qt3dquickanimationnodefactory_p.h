@@ -52,6 +52,7 @@
 //
 
 #include <private/qabstractnodefactory_p.h>
+#include <QtQml/private/qqmlmetatype_p.h>
 #include <QtCore/qhash.h>
 
 QT_BEGIN_NAMESPACE

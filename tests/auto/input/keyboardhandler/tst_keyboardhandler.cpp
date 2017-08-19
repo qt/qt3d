@@ -109,7 +109,7 @@ private Q_SLOTS:
         QCOMPARE(backendKeyboardHandler->keyboardDevice(), device.id());
 
         // WHEN (still disabled, nothing should happen)
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("focus");
         updateChange->setValue(true);
         backendKeyboardHandler->sceneChangeEvent(updateChange);
@@ -118,7 +118,7 @@ private Q_SLOTS:
         QVERIFY(backendKeyboardDevice->lastKeyboardInputRequester().isNull());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendKeyboardHandler->sceneChangeEvent(updateChange);
@@ -127,7 +127,7 @@ private Q_SLOTS:
         QCOMPARE(backendKeyboardHandler->isEnabled(), true);
 
         // WHEN (now enabled, should request focus)
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("focus");
         updateChange->setValue(true);
         backendKeyboardHandler->sceneChangeEvent(updateChange);

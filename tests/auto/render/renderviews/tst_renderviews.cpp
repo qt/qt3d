@@ -33,6 +33,7 @@
 #include <private/qframeallocator_p_p.h>
 #include <private/memorybarrier_p.h>
 #include <private/renderviewjobutils_p.h>
+#include <private/rendercommand_p.h>
 #include <testpostmanarbiter.h>
 
 QT_BEGIN_NAMESPACE
@@ -129,6 +130,189 @@ private Q_SLOTS:
         // TO DO: Complete tests for other framegraph node types
     }
 
+    void checkRenderCommandBackToFrontSorting()
+    {
+        // GIVEN
+        RenderView renderView;
+        QVector<RenderCommand *> rawCommands;
+        QVector<QSortPolicy::SortType> sortTypes;
+
+        sortTypes.push_back(QSortPolicy::BackToFront);
+
+        for (int i = 0; i < 200; ++i) {
+            RenderCommand *c = new RenderCommand();
+            c->m_depth = float(i);
+            rawCommands.push_back(c);
+        }
+
+        // WHEN
+        renderView.addSortType(sortTypes);
+        renderView.setCommands(rawCommands);
+        renderView.sort();
+
+        // THEN
+        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        QCOMPARE(rawCommands.size(), sortedCommands.size());
+        for (int j = 1; j < sortedCommands.size(); ++j)
+            QVERIFY(sortedCommands.at(j - 1)->m_depth > sortedCommands.at(j)->m_depth);
+
+        // RenderCommands are deleted by RenderView dtor
+    }
+
+    void checkRenderCommandMaterialSorting()
+    {
+        // GIVEN
+        RenderView renderView;
+        QVector<RenderCommand *> rawCommands;
+        QVector<QSortPolicy::SortType> sortTypes;
+
+        sortTypes.push_back(QSortPolicy::Material);
+
+        ProgramDNA dnas[5] = {
+            ProgramDNA(250),
+            ProgramDNA(500),
+            ProgramDNA(1000),
+            ProgramDNA(1500),
+            ProgramDNA(2000),
+        };
+
+        for (int i = 0; i < 20; ++i) {
+            RenderCommand *c = new RenderCommand();
+            c->m_shaderDna = dnas[i % 5];
+            rawCommands.push_back(c);
+        }
+
+        // WHEN
+        renderView.addSortType(sortTypes);
+        renderView.setCommands(rawCommands);
+        renderView.sort();
+
+        // THEN
+        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        QCOMPARE(rawCommands.size(), sortedCommands.size());
+        ProgramDNA targetDNA;
+
+        for (int j = 0; j < sortedCommands.size(); ++j) {
+
+            if (j % 4 == 0) {
+                targetDNA = sortedCommands.at(j)->m_shaderDna;
+                if (j > 0)
+                    QVERIFY(targetDNA != sortedCommands.at(j - 1)->m_shaderDna);
+            }
+            QCOMPARE(targetDNA, sortedCommands.at(j)->m_shaderDna);
+        }
+
+        // RenderCommands are deleted by RenderView dtor
+    }
+
+    void checkRenderCommandStateCostSorting()
+    {
+        // GIVEN
+        RenderView renderView;
+        QVector<RenderCommand *> rawCommands;
+        QVector<QSortPolicy::SortType> sortTypes;
+
+        sortTypes.push_back(QSortPolicy::StateChangeCost);
+
+        for (int i = 0; i < 200; ++i) {
+            RenderCommand *c = new RenderCommand();
+            c->m_changeCost = i;
+            rawCommands.push_back(c);
+        }
+
+        // WHEN
+        renderView.addSortType(sortTypes);
+        renderView.setCommands(rawCommands);
+        renderView.sort();
+
+        // THEN
+        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        QCOMPARE(rawCommands.size(), sortedCommands.size());
+        for (int j = 1; j < sortedCommands.size(); ++j)
+            QVERIFY(sortedCommands.at(j - 1)->m_changeCost > sortedCommands.at(j)->m_changeCost);
+
+        // RenderCommands are deleted by RenderView dtor
+    }
+
+    void checkRenderCommandCombinedStateMaterialDepthSorting()
+    {
+        // GIVEN
+        RenderView renderView;
+        QVector<RenderCommand *> rawCommands;
+        QVector<QSortPolicy::SortType> sortTypes;
+
+        sortTypes.push_back(QSortPolicy::StateChangeCost);
+        sortTypes.push_back(QSortPolicy::Material);
+        sortTypes.push_back(QSortPolicy::BackToFront);
+
+        ProgramDNA dna[4] = {
+            ProgramDNA(250),
+            ProgramDNA(500),
+            ProgramDNA(1000),
+            ProgramDNA(1500)
+        };
+
+        float depth[3] = {
+            10.0f,
+            25.0f,
+            30.0f
+        };
+
+        int stateChangeCost[2] = {
+            100,
+            200
+        };
+
+        auto buildRC = [] (ProgramDNA dna, float depth, int changeCost) {
+            RenderCommand *c = new RenderCommand();
+            c->m_shaderDna = dna;
+            c->m_depth = depth;
+            c->m_changeCost = changeCost;
+            return c;
+        };
+
+        RenderCommand *c5 = buildRC(dna[3], depth[1], stateChangeCost[1]);
+        RenderCommand *c3 = buildRC(dna[3], depth[0], stateChangeCost[1]);
+        RenderCommand *c4 = buildRC(dna[2], depth[1], stateChangeCost[1]);
+        RenderCommand *c8 = buildRC(dna[1], depth[1], stateChangeCost[1]);
+        RenderCommand *c0 = buildRC(dna[0], depth[2], stateChangeCost[1]);
+
+        RenderCommand *c2 = buildRC(dna[2], depth[2], stateChangeCost[0]);
+        RenderCommand *c9 = buildRC(dna[2], depth[0], stateChangeCost[0]);
+        RenderCommand *c1 = buildRC(dna[1], depth[0], stateChangeCost[0]);
+        RenderCommand *c7 = buildRC(dna[0], depth[2], stateChangeCost[0]);
+        RenderCommand *c6 = buildRC(dna[0], depth[1], stateChangeCost[0]);
+
+        rawCommands << c0 << c1 << c2 << c3 << c4 << c5 << c6 << c7 << c8 << c9;
+
+        // WHEN
+        renderView.addSortType(sortTypes);
+        renderView.setCommands(rawCommands);
+        renderView.sort();
+
+        // THEN
+        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        QCOMPARE(rawCommands.size(), sortedCommands.size());
+
+        for (RenderCommand *rc : sortedCommands)
+            qDebug() << rc->m_changeCost << rc->m_shaderDna << rc->m_depth;
+
+        // Ordered by higher state, higher shaderDNA and higher depth
+        QCOMPARE(c0, sortedCommands.at(4));
+        QCOMPARE(c3, sortedCommands.at(1));
+        QCOMPARE(c4, sortedCommands.at(2));
+        QCOMPARE(c5, sortedCommands.at(0));
+        QCOMPARE(c8, sortedCommands.at(3));
+
+        QCOMPARE(c1, sortedCommands.at(7));
+        QCOMPARE(c2, sortedCommands.at(5));
+        QCOMPARE(c6, sortedCommands.at(9));
+        QCOMPARE(c7, sortedCommands.at(8));
+        QCOMPARE(c9, sortedCommands.at(6));
+
+        // RenderCommands are deleted by RenderView dtor
+    }
+
 private:
 };
 
@@ -138,7 +322,7 @@ private:
 
 QT_END_NAMESPACE
 
-
-QTEST_APPLESS_MAIN(Qt3DRender::Render::tst_RenderViews)
+//APPLESS_
+QTEST_MAIN(Qt3DRender::Render::tst_RenderViews)
 
 #include "tst_renderviews.moc"

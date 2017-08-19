@@ -77,10 +77,10 @@ void MouseEventDispatcherJob::run()
     if (input) {
         // Send mouse and wheel events to frontend
         for (const QT_PREPEND_NAMESPACE(QMouseEvent) &e : m_mouseEvents)
-            input->mouseEvent(QMouseEventPtr(new QMouseEvent(e)));
+            input->mouseEvent(QMouseEventPtr::create(e));
 #if QT_CONFIG(wheelevent)
         for (const QT_PREPEND_NAMESPACE(QWheelEvent) &e : m_wheelEvents)
-            input->wheelEvent(QWheelEventPtr(new QWheelEvent(e)));
+            input->wheelEvent(QWheelEventPtr::create(e));
 #endif
     }
 }

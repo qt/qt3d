@@ -157,7 +157,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_graphicsContext(nullptr)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : nullptr)
-    , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
+    , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(m_renderThread != nullptr))
     , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
@@ -1364,10 +1364,13 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             if (!request.rect.isEmpty())
                 rect = rect.intersected(request.rect);
             QImage image;
-            if (!rect.isEmpty())
+            if (!rect.isEmpty()) {
+                // Bind fbo as read framebuffer
+                m_graphicsContext->bindFramebuffer(m_graphicsContext->activeFBO(), GraphicsHelperInterface::FBORead);
                 image = m_graphicsContext->readFramebuffer(rect);
-            else
+            } else {
                 qWarning() << "Requested capture rectangle is outside framebuffer";
+            }
             Render::RenderCapture *renderCapture =
                     static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderView->renderCaptureNodeId()));
             renderCapture->addRenderCapture(request.captureId, image);
@@ -1386,7 +1389,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     // lastBoundFBOId != m_graphicsContext->activeFBO() when the last FrameGraph leaf node/renderView
     // contains RenderTargetSelector/RenderTarget
     if (lastBoundFBOId != m_graphicsContext->activeFBO())
-        m_graphicsContext->bindFramebuffer(lastBoundFBOId);
+        m_graphicsContext->bindFramebuffer(lastBoundFBOId, GraphicsHelperInterface::FBOReadAndDraw);
 
     // Reset state and call doneCurrent if the surface
     // is valid and was actually activated

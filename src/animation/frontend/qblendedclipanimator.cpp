@@ -267,12 +267,11 @@ QBlendedClipAnimator::~QBlendedClipAnimator()
 }
 
 /*!
-    \qmlproperty AbstractClipBlendNode blendTree
+    \qmlproperty AbstractClipBlendNode Qt3D.Animation::BlendedClipAnimator::blendTree
 
-    This property holds the root of the animation blend tree that will be evaluated before being
-    interpolated by the animator.
+    This property holds the root of the animation blend tree that will
+    be evaluated before being interpolated by the animator.
 */
-
 /*!
     \property QBlendedClipAnimator::blendTree
 

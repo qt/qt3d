@@ -693,6 +693,13 @@ void AssimpImporter::loadMaterial(uint materialIndex)
     copyMaterialTextures(material, assimpMaterial);
 
     m_scene->m_materials.insert(materialIndex, material);
+
+    Qt3DRender::AssimpImporter::SceneImporter *scene = m_scene;
+    QObject::connect(material, &QObject::destroyed, [&, scene, materialIndex](QObject *object) {
+        QMaterial *r = static_cast<QMaterial *>(object);
+        if (scene->m_materials[materialIndex] == r)
+            scene->m_materials.remove(materialIndex);
+    });
 }
 
 /*!
@@ -843,6 +850,13 @@ void AssimpImporter::loadMesh(uint meshIndex)
     meshGeometry->addAttribute(indexAttribute);
 
     m_scene->m_meshes[meshIndex] = geometryRenderer;
+
+    Qt3DRender::AssimpImporter::SceneImporter *scene = m_scene;
+    QObject::connect(geometryRenderer, &QObject::destroyed, [&, scene, meshIndex](QObject *object) {
+        QGeometryRenderer *r = static_cast<QGeometryRenderer *>(object);
+        if (scene->m_meshes[meshIndex] == r)
+            scene->m_meshes.remove(meshIndex);
+    });
 
     if (mesh->mNumAnimMeshes > 0) {
 
@@ -1004,6 +1018,13 @@ void AssimpImporter::loadEmbeddedTexture(uint textureIndex)
     imageData->setData(textureContent);
     texture->addTextureImage(imageData);
     m_scene->m_embeddedTextures[textureIndex] = texture;
+
+    Qt3DRender::AssimpImporter::SceneImporter *scene = m_scene;
+    QObject::connect(texture, &QObject::destroyed, [&, scene, textureIndex](QObject *object) {
+        QAbstractTexture *r = static_cast<QAbstractTexture *>(object);
+        if (scene->m_embeddedTextures[textureIndex] == r)
+            scene->m_embeddedTextures.remove(textureIndex);
+    });
 }
 
 /*!
@@ -1047,6 +1068,13 @@ void AssimpImporter::loadCamera(uint cameraIndex)
     camera->addComponent(transform);
 
     m_scene->m_cameras[cameraNode] = camera;
+
+    Qt3DRender::AssimpImporter::SceneImporter *scene = m_scene;
+    QObject::connect(camera, &QObject::destroyed, [&, scene, cameraNode](QObject *object) {
+        QEntity *r = static_cast<QEntity *>(object);
+        if (scene->m_cameras[cameraNode] == r)
+            scene->m_cameras.remove(cameraNode);
+    });
 }
 
 int findTimeIndex(const QVector<float> &times, float time) {
@@ -1377,9 +1405,15 @@ AssimpImporter::SceneImporter::SceneImporter()
     // The Assimp::Importer manages the lifetime of the aiScene object
 }
 
+
+
 AssimpImporter::SceneImporter::~SceneImporter()
 {
     delete m_importer;
+    qDeleteAll(m_materials.values());
+    qDeleteAll(m_meshes.values());
+    qDeleteAll(m_embeddedTextures.values());
+    qDeleteAll(m_cameras.values());
 }
 
 } // namespace Qt3DRender

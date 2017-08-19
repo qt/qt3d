@@ -53,7 +53,8 @@ SUBDIRS += \
     animation-keyframe-programmatic \
     layerfilter-qml \
     skinned-mesh \
-    proximityfilter
+    proximityfilter \
+    rendercapture-qml-fbo
 
 qtHaveModule(widgets): {
     SUBDIRS += \

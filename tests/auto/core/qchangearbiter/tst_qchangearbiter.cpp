@@ -229,7 +229,7 @@ public:
     void sendReply()
     {
         Qt3DCore::QPropertyUpdatedChangePtr reply;
-        reply.reset(new Qt3DCore::QPropertyUpdatedChange(m_targetId));
+        reply = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(m_targetId);
         reply->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         reply->setPropertyName("Reply");
         notifyObservers(reply);

@@ -127,7 +127,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.buttons(), QVector<int>() << 64);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(0.5f);
         updateChange->setPropertyName("scale");
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -136,7 +136,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.scale(), 0.5f);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -146,7 +146,7 @@ private Q_SLOTS:
 
         // WHEN
         TestDevice device;
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("sourceDevice");
         updateChange->setValue(QVariant::fromValue(device.id()));
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -155,7 +155,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.sourceDevice(), device.id());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(0.42f);
         updateChange->setPropertyName("acceleration");
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -164,7 +164,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.acceleration(), 0.42f);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(-0.42f);
         updateChange->setPropertyName("acceleration");
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -173,7 +173,7 @@ private Q_SLOTS:
         QVERIFY(qIsInf(backendAxisInput.acceleration()));
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(0.43f);
         updateChange->setPropertyName("deceleration");
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -182,7 +182,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.deceleration(), 0.43f);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(-0.43f);
         updateChange->setPropertyName("deceleration");
         backendAxisInput.sceneChangeEvent(updateChange);

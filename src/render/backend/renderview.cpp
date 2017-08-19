@@ -267,11 +267,178 @@ RenderView::~RenderView()
     }
 }
 
+namespace {
+
+template<int SortType>
+struct AdjacentSubRangeFinder
+{
+    static bool adjacentSubRange(RenderCommand *, RenderCommand *)
+    {
+        Q_UNREACHABLE();
+        return false;
+    }
+};
+
+template<>
+struct AdjacentSubRangeFinder<QSortPolicy::StateChangeCost>
+{
+    static bool adjacentSubRange(RenderCommand *a, RenderCommand *b)
+    {
+        return a->m_changeCost == b->m_changeCost;
+    }
+};
+
+template<>
+struct AdjacentSubRangeFinder<QSortPolicy::BackToFront>
+{
+    static bool adjacentSubRange(RenderCommand *a, RenderCommand *b)
+    {
+        return a->m_depth == b->m_depth;
+    }
+};
+
+template<>
+struct AdjacentSubRangeFinder<QSortPolicy::Material>
+{
+    static bool adjacentSubRange(RenderCommand *a, RenderCommand *b)
+    {
+        return a->m_shaderDna == b->m_shaderDna;
+    }
+};
+
+template<typename Predicate>
+int advanceUntilNonAdjacent(const QVector<RenderCommand *> &commands,
+                            const int beg, const int end, Predicate pred)
+{
+    int i = beg + 1;
+    while (i < end) {
+        if (!pred(*(commands.begin() + beg), *(commands.begin() + i)))
+            break;
+        ++i;
+    }
+    return i;
+}
+
+
+using CommandIt = QVector<RenderCommand *>::iterator;
+
+template<int SortType>
+struct SubRangeSorter
+{
+    static void sortSubRange(CommandIt begin, const CommandIt end)
+    {
+        Q_UNREACHABLE();
+    }
+};
+
+template<>
+struct SubRangeSorter<QSortPolicy::StateChangeCost>
+{
+    static void sortSubRange(CommandIt begin, const CommandIt end)
+    {
+        std::stable_sort(begin, end, [] (RenderCommand *a, RenderCommand *b) {
+            return a->m_changeCost > b->m_changeCost;
+        });
+    }
+};
+
+template<>
+struct SubRangeSorter<QSortPolicy::BackToFront>
+{
+    static void sortSubRange(CommandIt begin, const CommandIt end)
+    {
+        std::stable_sort(begin, end, [] (RenderCommand *a, RenderCommand *b) {
+            return a->m_depth > b->m_depth;
+        });
+    }
+};
+
+template<>
+struct SubRangeSorter<QSortPolicy::Material>
+{
+    static void sortSubRange(CommandIt begin, const CommandIt end)
+    {
+        // First we sort by shaderDNA
+        std::stable_sort(begin, end, [] (RenderCommand *a, RenderCommand *b) {
+            return a->m_shaderDna > b->m_shaderDna;
+        });
+    }
+};
+
+
+int findSubRange(const QVector<RenderCommand *> &commands,
+                 const int begin, const int end,
+                 const QSortPolicy::SortType sortType)
+{
+    switch (sortType) {
+    case QSortPolicy::StateChangeCost:
+        return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::StateChangeCost>::adjacentSubRange);
+    case QSortPolicy::BackToFront:
+        return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::BackToFront>::adjacentSubRange);
+    case QSortPolicy::Material:
+        return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::Material>::adjacentSubRange);
+    default:
+        Q_UNREACHABLE();
+        return end;
+    }
+}
+
+void sortByMaterial(QVector<RenderCommand *> &commands, int begin, const int end)
+{
+    // We try to arrange elements so that their rendering cost is minimized for a given shader
+    int rangeEnd = advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::Material>::adjacentSubRange);
+    while (begin != end) {
+        if (begin + 1 < rangeEnd) {
+            std::stable_sort(commands.begin() + begin + 1, commands.begin() + rangeEnd, [] (RenderCommand *a, RenderCommand *b){
+                return a->m_material < b->m_material;
+            });
+        }
+        begin = rangeEnd;
+        rangeEnd = advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::Material>::adjacentSubRange);
+    }
+}
+
+void sortCommandRange(QVector<RenderCommand *> &commands, int begin, const int end, const int level,
+                      const QVector<Qt3DRender::QSortPolicy::SortType> &sortingTypes)
+{
+    if (level >= sortingTypes.size())
+        return;
+
+    switch (sortingTypes.at(level)) {
+    case QSortPolicy::StateChangeCost:
+        SubRangeSorter<QSortPolicy::StateChangeCost>::sortSubRange(commands.begin() + begin, commands.begin() + end);
+        break;
+    case QSortPolicy::BackToFront:
+        SubRangeSorter<QSortPolicy::BackToFront>::sortSubRange(commands.begin() + begin, commands.begin() + end);
+        break;
+    case QSortPolicy::Material:
+        // Groups all same shader DNA together
+        SubRangeSorter<QSortPolicy::Material>::sortSubRange(commands.begin() + begin, commands.begin() + end);
+        // Group all same material together (same parameters most likely)
+        sortByMaterial(commands, begin, end);
+        break;
+    default:
+        Q_UNREACHABLE();
+    }
+
+    // For all sub ranges of adjacent item for sortType[i]
+    // Perform filtering with sortType[i + 1]
+    int rangeEnd = findSubRange(commands, begin, end, sortingTypes.at(level));
+    while (begin != end) {
+        sortCommandRange(commands, begin, rangeEnd, level + 1, sortingTypes);
+        begin = rangeEnd;
+        rangeEnd = findSubRange(commands, begin, end, sortingTypes.at(level));
+    }
+}
+
+} // anonymous
+
 void RenderView::sort()
 {
-    // Compares the bitsetKey of the RenderCommands
-    // Key[Depth | StateCost | Shader]
-    std::sort(m_commands.begin(), m_commands.end(), compareCommands);
+     sortCommandRange(m_commands, 0, m_commands.size(), 0, m_data.m_sortingTypes);
+
+    // For RenderCommand with the same shader
+    // We compute the adjacent change cost
 
     // Minimize uniform changes
     int i = 0;
@@ -392,6 +559,7 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 && !geometryRenderer->geometryId().isNull()) {
 
             const Qt3DCore::QNodeId materialComponentId = entity->componentUuid<Material>();
+            const HMaterial materialHandle = entity->componentHandle<Material, 16>();
             const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
             HGeometry geometryHandle = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
             Geometry *geometry = m_manager->data<Geometry, GeometryManager>(geometryHandle);
@@ -403,6 +571,7 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 command->m_depth = m_data.m_eyePos.distanceToPoint(entity->worldBoundingVolume()->center());
                 command->m_geometry = geometryHandle;
                 command->m_geometryRenderer = geometryRendererHandle;
+                command->m_material = materialHandle;
                 // For RenderPass based states we use the globally set RenderState
                 // if no renderstates are defined as part of the pass. That means:
                 // RenderPass { renderStates: [] } will use the states defined by
@@ -482,7 +651,7 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                     command->m_verticesPerPatch = geometryRenderer->verticesPerPatch();
                 }
 
-                buildSortingKey(command);
+                prepareForSorting(command);
                 commands.append(command);
             }
         }
@@ -703,27 +872,21 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     }
 }
 
-void RenderView::buildSortingKey(RenderCommand *command) const
+void RenderView::prepareForSorting(RenderCommand *command) const
 {
     // Build a bitset key depending on the SortingCriterion
-    int sortCount = m_data.m_sortingTypes.count();
+    const int sortCount = m_data.m_sortingTypes.count();
 
     // If sortCount == 0, no sorting is applied
 
     // Handle at most 4 filters at once
     for (int i = 0; i < sortCount && i < 4; i++) {
         switch (m_data.m_sortingTypes.at(i)) {
-        case QSortPolicy::StateChangeCost:
-            command->m_sortingType.sorts[i] = command->m_changeCost; // State change cost
-            break;
         case QSortPolicy::BackToFront:
             command->m_sortBackToFront = true; // Depth value
             break;
-        case QSortPolicy::Material:
-            command->m_sortingType.sorts[i] = command->m_shaderDna; // Material
-            break;
         default:
-            Q_UNREACHABLE();
+            break;
         }
     }
 }

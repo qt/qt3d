@@ -592,7 +592,7 @@ void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
                 // Insert FBO into hash
                 m_renderTargets.insert(renderTargetNodeId, fboId);
                 // Bind FBO
-                m_glHelper->bindFrameBufferObject(fboId);
+                m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
                 bindFrameBufferAttachmentHelper(fboId, attachments);
             } else {
                 qCritical() << "Failed to create FBO";
@@ -616,13 +616,13 @@ void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
             }
 
             if (needsResize) {
-                m_glHelper->bindFrameBufferObject(fboId);
+                m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
                 bindFrameBufferAttachmentHelper(fboId, attachments);
             }
         }
     }
     m_activeFBO = fboId;
-    m_glHelper->bindFrameBufferObject(m_activeFBO);
+    m_glHelper->bindFrameBufferObject(m_activeFBO, GraphicsHelperInterface::FBODraw);
     // Set active drawBuffers
     activateDrawBuffers(attachments);
 }
@@ -972,9 +972,9 @@ void GraphicsContext::alphaTest(GLenum mode1, GLenum mode2)
     m_glHelper->alphaTest(mode1, mode2);
 }
 
-void GraphicsContext::bindFramebuffer(GLuint fbo)
+void GraphicsContext::bindFramebuffer(GLuint fbo, GraphicsHelperInterface::FBOBindMode mode)
 {
-    m_glHelper->bindFrameBufferObject(fbo);
+    m_glHelper->bindFrameBufferObject(fbo, mode);
 }
 
 void GraphicsContext::depthTest(GLenum mode)

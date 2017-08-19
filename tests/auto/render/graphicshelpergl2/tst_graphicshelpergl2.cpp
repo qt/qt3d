@@ -257,13 +257,33 @@ private Q_SLOTS:
         QVERIFY(fboId != 0);
 
         // WHEN
-        m_glHelper.bindFrameBufferObject(fboId);
+        m_glHelper.bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
 
         // THEN
-        const GLint error = m_func->glGetError();
+        GLint error = m_func->glGetError();
         QVERIFY(error == 0);
         GLint boundindFBOId = 0;
         m_func->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &boundindFBOId);
+        QVERIFY(GLuint(boundindFBOId) == fboId);
+
+        // WHEN
+        m_glHelper.bindFrameBufferObject(fboId, GraphicsHelperInterface::FBORead);
+
+        // THEN
+        error = m_func->glGetError();
+        QVERIFY(error == 0);
+        boundindFBOId = 0;
+        m_func->glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &boundindFBOId);
+        QVERIFY(GLuint(boundindFBOId) == fboId);
+
+        // WHEN
+        m_glHelper.bindFrameBufferObject(fboId, GraphicsHelperInterface::FBOReadAndDraw);
+
+        // THEN
+        error = m_func->glGetError();
+        QVERIFY(error == 0);
+        boundindFBOId = 0;
+        m_func->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &boundindFBOId);
         QVERIFY(GLuint(boundindFBOId) == fboId);
 
         // Cleanup

@@ -52,20 +52,22 @@ namespace Render {
 class VSyncFrameAdvanceServicePrivate Q_DECL_FINAL : public Qt3DCore::QAbstractFrameAdvanceServicePrivate
 {
 public:
-    VSyncFrameAdvanceServicePrivate()
+    explicit VSyncFrameAdvanceServicePrivate(bool drivenByRenderThread)
         : QAbstractFrameAdvanceServicePrivate(QStringLiteral("Renderer Aspect Frame Advance Service - aligned with vsync"))
         , m_semaphore(0)
         , m_elapsedTimeSincePreviousFrame(0)
+        , m_drivenByRenderThread(drivenByRenderThread)
     {
     }
 
     QSemaphore m_semaphore;
     QElapsedTimer m_elapsed;
     quint64 m_elapsedTimeSincePreviousFrame;
+    bool m_drivenByRenderThread;
 };
 
-VSyncFrameAdvanceService::VSyncFrameAdvanceService()
-    : QAbstractFrameAdvanceService(*new VSyncFrameAdvanceServicePrivate())
+VSyncFrameAdvanceService::VSyncFrameAdvanceService(bool drivenByRenderThread)
+    : QAbstractFrameAdvanceService(*new VSyncFrameAdvanceServicePrivate(drivenByRenderThread))
 {
 }
 
@@ -77,7 +79,17 @@ VSyncFrameAdvanceService::~VSyncFrameAdvanceService()
 qint64 VSyncFrameAdvanceService::waitForNextFrame()
 {
     Q_D(VSyncFrameAdvanceService);
-    d->m_semaphore.acquire(1);
+
+    // When rendering with Scene3D, we always want to acquire the available
+    // amount + 1 to handle the cases where for some reason proceedToNextFrame
+    // is being called more than once between calls to waitForNextFrame This
+    // could be the case when resizing the window
+
+    // When Qt3D is driving rendering however, this shouldn't happen
+    if (d->m_drivenByRenderThread)
+        d->m_semaphore.acquire(1);
+    else
+        d->m_semaphore.acquire(d->m_semaphore.available() + 1);
 
     const quint64 currentTime = d->m_elapsed.nsecsElapsed();
     qCDebug(VSyncAdvanceService) << "Elapsed nsecs since last call " << currentTime - d->m_elapsedTimeSincePreviousFrame;

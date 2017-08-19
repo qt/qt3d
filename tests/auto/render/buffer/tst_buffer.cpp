@@ -185,7 +185,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(static_cast<int>(Qt3DRender::QBuffer::DynamicRead));
         updateChange->setPropertyName("usage");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -201,7 +201,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(QByteArrayLiteral("LS9"));
         updateChange->setPropertyName("data");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -222,7 +222,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::QBufferDataGeneratorPtr functor(new TestFunctor(355));
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(QVariant::fromValue(functor));
         updateChange->setPropertyName("dataGenerator");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -238,7 +238,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(true);
         updateChange->setPropertyName("syncData");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -267,7 +267,7 @@ private Q_SLOTS:
         renderBuffer.pendingBufferUpdates().clear();
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         Qt3DRender::QBufferUpdate updateData;
         updateData.offset = 2;
         updateData.data = QByteArrayLiteral("LS5");

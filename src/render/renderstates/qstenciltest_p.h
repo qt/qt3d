@@ -58,6 +58,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+struct QStencilTestData
+{
+    QStencilTestArgumentsData front;
+    QStencilTestArgumentsData back;
+};
+
 class QT3DRENDERSHARED_PRIVATE_EXPORT QStencilTestPrivate : public QRenderStatePrivate
 {
 public:
@@ -71,16 +77,15 @@ public:
     Q_DECLARE_PUBLIC(QStencilTest)
     QStencilTestArguments *m_front;
     QStencilTestArguments *m_back;
-};
 
-struct QStencilTestData
-{
-    QStencilTestArgumentsData front;
-    QStencilTestArgumentsData back;
+    void resendArguments();
+    void fillData(QStencilTestData &data) const;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DRender::QStencilTestData)
 
 #endif // QT3DRENDER_QSTENCILTEST_P_H

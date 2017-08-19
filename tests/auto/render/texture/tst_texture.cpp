@@ -227,7 +227,7 @@ void tst_RenderTexture::checkPropertyChanges()
     renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
     // WHEN
-    updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
     updateChange->setValue(128);
     updateChange->setPropertyName("height");
     backend.sceneChangeEvent(updateChange);
@@ -238,7 +238,7 @@ void tst_RenderTexture::checkPropertyChanges()
     renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
     // WHEN
-    updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
     updateChange->setValue(16);
     updateChange->setPropertyName("depth");
     backend.sceneChangeEvent(updateChange);
@@ -249,7 +249,7 @@ void tst_RenderTexture::checkPropertyChanges()
     renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
     // WHEN
-    updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
     updateChange->setValue(32);
     updateChange->setPropertyName("layers");
     backend.sceneChangeEvent(updateChange);
@@ -260,7 +260,7 @@ void tst_RenderTexture::checkPropertyChanges()
     renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
     // WHEN
-    updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
     updateChange->setValue(64);
     updateChange->setPropertyName("samples");
     backend.sceneChangeEvent(updateChange);

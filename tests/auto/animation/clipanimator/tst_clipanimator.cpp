@@ -116,7 +116,7 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAnimator.sceneChangeEvent(updateChange);
@@ -126,7 +126,7 @@ private Q_SLOTS:
 
         // WHEN
         auto newClip = new Qt3DAnimation::QAnimationClipLoader();
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("clip");
         updateChange->setValue(QVariant::fromValue(newClip->id()));
         backendAnimator.sceneChangeEvent(updateChange);
@@ -136,7 +136,7 @@ private Q_SLOTS:
 
         // WHEN
         auto clock = new Qt3DAnimation::QClock();
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("clock");
         updateChange->setValue(QVariant::fromValue(clock->id()));
         backendAnimator.sceneChangeEvent(updateChange);
@@ -145,7 +145,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.clockId(), clock->id());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("running");
         updateChange->setValue(true);
         backendAnimator.sceneChangeEvent(updateChange);
@@ -154,7 +154,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.isRunning(), true);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("loops");
         updateChange->setValue(64);
         backendAnimator.sceneChangeEvent(updateChange);

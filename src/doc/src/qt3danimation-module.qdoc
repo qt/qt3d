@@ -213,7 +213,7 @@
 */
 
 /*!
-   \qmlmodule Qt3D.Animation 2.0
+   \qmlmodule Qt3D.Animation 2.9
    \title Qt 3D Qt3DAnimation QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
@@ -223,6 +223,6 @@
    To import and use the module's QML types, use the following statement:
 
    \badcode
-   import Qt3D.Animation 2.0
+   import Qt3D.Animation 2.9
    \endcode
 */

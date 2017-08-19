@@ -50,6 +50,63 @@ private:
     Qt3DRender::Render::VSyncFrameAdvanceService *m_tickService;
 };
 
+class FakeAspectThread Q_DECL_FINAL : public QThread
+{
+public:
+    FakeAspectThread(Qt3DRender::Render::VSyncFrameAdvanceService *tickService)
+        : m_tickService(tickService)
+        , m_count(0)
+        , m_running(true)
+        , m_waitForStarted(0)
+    {
+    }
+
+    int count() const { return m_count; }
+
+    void stopRunning()
+    {
+        QMutexLocker lock(&m_mutex);
+        m_running = false;
+    }
+
+    void waitForStarted()
+    {
+        m_waitForStarted.acquire(1);
+    }
+
+protected:
+    // QThread interface
+    void run() Q_DECL_FINAL
+    {
+        m_waitForStarted.release(1);
+        while (true) {
+
+            bool running = true;
+            {
+                QMutexLocker lock(&m_mutex);
+                running = m_running;
+            }
+
+            if (!running) {
+                qDebug() << "exiting";
+                return;
+            }
+
+            m_tickService->waitForNextFrame();
+            ++m_count;
+
+            QThread::msleep(100);
+        }
+    }
+
+private:
+    Qt3DRender::Render::VSyncFrameAdvanceService *m_tickService;
+    int m_count;
+    bool m_running;
+    QMutex m_mutex;
+    QSemaphore m_waitForStarted;
+};
+
 class tst_VSyncFrameAdvanceService : public QObject
 {
     Q_OBJECT
@@ -59,7 +116,7 @@ private Q_SLOTS:
     void checkSynchronisation()
     {
         // GIVEN
-        Qt3DRender::Render::VSyncFrameAdvanceService tickService;
+        Qt3DRender::Render::VSyncFrameAdvanceService tickService(true);
         FakeRenderThread renderThread(&tickService);
         QElapsedTimer t;
 
@@ -74,6 +131,31 @@ private Q_SLOTS:
         QVERIFY(t.elapsed() >= 950);
     }
 
+    void checkWaitForNextFrame()
+    {
+        // GIVEN
+        Qt3DRender::Render::VSyncFrameAdvanceService tickService(false);
+        FakeAspectThread aspectThread(&tickService);
+
+        // WHEN
+        aspectThread.start();
+        aspectThread.waitForStarted();
+
+        QElapsedTimer t;
+        t.start();
+
+        while (t.elapsed() < 1000)
+            tickService.proceedToNextFrame();
+
+        aspectThread.stopRunning();
+
+        // To make sure the aspectThread can finish
+        tickService.proceedToNextFrame();
+        aspectThread.wait();
+
+        // THEN
+        QCOMPARE(aspectThread.count(), 10);
+    }
 };
 
 QTEST_MAIN(tst_VSyncFrameAdvanceService)

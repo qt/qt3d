@@ -78,6 +78,7 @@ class Q_AUTOTEST_EXPORT AlphaFunc : public GenericState<AlphaFunc, AlphaTestMask
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT MSAAEnabled : public GenericState<MSAAEnabled, MSAAEnabledStateMask, GLboolean>
@@ -132,6 +133,7 @@ class Q_AUTOTEST_EXPORT StencilTest : public GenericState<StencilTest, StencilTe
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT AlphaCoverage : public GenericState<AlphaCoverage, AlphaCoverageStateMask>
@@ -178,6 +180,7 @@ class Q_AUTOTEST_EXPORT StencilOp : public GenericState<StencilOp, StencilOpMask
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_FINAL;
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT StencilMask : public GenericState<StencilMask, StencilWriteStateMask, uint, uint>

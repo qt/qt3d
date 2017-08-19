@@ -41,6 +41,7 @@
 #define QT3DRENDER_QPICKLINEEVENT_H
 
 #include <Qt3DRender/qpickevent.h>
+#include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +68,8 @@ public:
 private:
     Q_DECLARE_PRIVATE(QPickLineEvent)
 };
+
+typedef QSharedPointer<QPickLineEvent> QPickLineEventPtr;
 
 } // Qt3DRender
 

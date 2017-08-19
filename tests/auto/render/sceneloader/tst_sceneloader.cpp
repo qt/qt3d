@@ -119,7 +119,7 @@ private Q_SLOTS:
         QVERIFY(!sceneManager.pendingSceneLoaderJobs().isEmpty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setValue(false);
         updateChange->setPropertyName("enabled");
         sceneLoader.sceneChangeEvent(updateChange);

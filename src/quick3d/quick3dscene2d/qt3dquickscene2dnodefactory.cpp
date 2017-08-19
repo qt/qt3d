@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "qt3dquickscene2dnodefactory_p.h"
-#include <QtQml/private/qqmlmetatype_p.h>
 
 #include <private/qrenderaspect_p.h>
 
@@ -77,8 +76,10 @@ Qt3DCore::QNode *QuickScene2DNodeFactory::createNode(const char *type)
 
     if (!typeInfo.resolved) {
         typeInfo.resolved = true;
+#if 0
         typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName),
                                            typeInfo.version.first, typeInfo.version.second);
+#endif
     }
 
     return typeInfo.t ? qobject_cast<Qt3DCore::QNode *>(typeInfo.t->create()) : nullptr;

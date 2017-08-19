@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-struct StateVariant
+struct Q_AUTOTEST_EXPORT StateVariant
 {
     StateMask type;
 

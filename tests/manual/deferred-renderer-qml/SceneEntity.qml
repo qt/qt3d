@@ -48,14 +48,25 @@ Entity {
     readonly property Camera camera: camera
     readonly property Layer layer: sceneLayer
 
+    readonly property vector3d light1Pos : sphere1.transform.translation
+    readonly property vector3d light2Pos : sphere2.transform.translation
+    readonly property vector3d light3Pos : light3Transform.translation
+    readonly property vector3d light4Pos : Qt.vector3d(5, 2, 7)
+
     property PointLight light: PointLight {
         color : "white"
-        intensity : 4.0
+        intensity : 0.0
         QQ2.ColorAnimation on color { from: "white"; to: "blue"; duration: 4000; loops: 2 }
-        QQ2.NumberAnimation on intensity { from: 0; to: 5.0; duration: 1000; loops: QQ2.Animation.Infinite }
+        QQ2.SequentialAnimation on intensity {
+            QQ2.NumberAnimation {
+                from: 0; to: 3.0; duration: 500
+            }
+            QQ2.NumberAnimation {
+                from: 3.0; to: 0.0; duration: 500
+            }
+            loops: QQ2.Animation.Infinite
+        }
     }
-
-    components: [ root.light ]
 
     // Global elements
     Camera {
@@ -97,21 +108,15 @@ Entity {
 
         QQ2.SequentialAnimation {
             loops: QQ2.Animation.Infinite
-            running: false
-            QQ2.NumberAnimation { target: sphere1Transform; property: "x"; to: 6; duration: 2000 }
-            QQ2.NumberAnimation { target: sphere1Transform; property: "x"; to: -10; duration: 2000 }
-        }
-
-        property PointLight light : PointLight {
-            color : "green"
-            intensity : 0.3
+            running: true
+            QQ2.NumberAnimation { target: sphere1Transform; property: "x"; to: 3; duration: 2000 }
+            QQ2.NumberAnimation { target: sphere1Transform; property: "x"; to: -5; duration: 2000 }
         }
 
         components : [
             sphereMesh,
             sphere1.material,
             sphere1.transform,
-            sphere1.light,
             sceneLayer
         ]
     }
@@ -124,11 +129,6 @@ Entity {
             parameters : Parameter { name : "meshColor"; value : "green" }
         }
 
-        property PointLight light : PointLight {
-            color : "orange"
-            intensity : 0.7
-        }
-
         property Transform transform: Transform {
             translation: Qt.vector3d(5, 0, 5)
         }
@@ -137,17 +137,12 @@ Entity {
             sphereMesh,
             sphere2.transform,
             sphere2.material,
-            sphere2.light,
             sceneLayer
         ]
     }
 
     Entity {
         id: light3
-        property PointLight light : PointLight {
-            color : "white"
-            intensity : 0.5
-        }
 
         property Material material : Material {
             effect : sceneMaterialEffect
@@ -170,25 +165,7 @@ Entity {
         components: [
             sphereMesh,
             light3.material,
-            light3.light,
             light3.transform,
-            sceneLayer
-        ]
-    }
-
-    Entity {
-        id: light4
-        property PointLight light : PointLight {
-            color : "white"
-            intensity : 0.2
-        }
-        property Transform transform: Transform {
-            translation: Qt.vector3d(5, 2, 7)
-        }
-
-        components: [
-            light4.light,
-            light4.transform,
             sceneLayer
         ]
     }

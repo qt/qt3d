@@ -228,6 +228,9 @@ void QAbstractPhysicalDevicePrivate::postButtonEvent(int button, qreal value)
     notifyObservers(change);
 }
 
+/*!
+    \internal
+*/
 Qt3DCore::QNodeCreatedChangeBasePtr QAbstractPhysicalDevice::createNodeCreationChange() const
 {
     auto creationChange = QPhysicalDeviceCreatedChangeBasePtr::create(this);

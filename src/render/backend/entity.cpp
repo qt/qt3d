@@ -180,9 +180,9 @@ void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     m_shaderDataComponents.clear();
     m_lightComponents.clear();
     m_environmentLightComponents.clear();
-    m_localBoundingVolume.reset(new Sphere(peerId()));
-    m_worldBoundingVolume.reset(new Sphere(peerId()));
-    m_worldBoundingVolumeWithChildren.reset(new Sphere(peerId()));
+    m_localBoundingVolume = QSharedPointer<Sphere>::create(peerId());
+    m_worldBoundingVolume = QSharedPointer<Sphere>::create(peerId());
+    m_worldBoundingVolumeWithChildren = QSharedPointer<Sphere>::create(peerId());
 
     for (const auto &idAndType : qAsConst(data.componentIdsAndTypes))
         addComponent(idAndType);
