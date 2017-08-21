@@ -36,6 +36,13 @@
 class tst_QGraphicsApiFilter : public QObject
 {
     Q_OBJECT
+public:
+    tst_QGraphicsApiFilter() : QObject()
+    {
+        qRegisterMetaType<Qt3DRender::QGraphicsApiFilter::Api>();
+        qRegisterMetaType<Qt3DRender::QGraphicsApiFilter::OpenGLProfile>();
+    }
+
 private Q_SLOTS:
     void defaultConstruction()
     {
