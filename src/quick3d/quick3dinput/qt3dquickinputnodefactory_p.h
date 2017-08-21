@@ -77,7 +77,7 @@ private:
             : quickName(quickName), version(major, minor), t(nullptr), resolved(false) { }
         QByteArray quickName;
         QPair<int, int> version;
-        QQmlType *t;
+        QQmlType t;
         bool resolved;
     };
     QHash<QByteArray, Type> m_types;
