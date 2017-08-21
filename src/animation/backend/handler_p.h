@@ -75,6 +75,7 @@ class ChannelMappingManager;
 class ChannelMapper;
 class ChannelMapperManager;
 class ClipBlendNodeManager;
+class SkeletonManager;
 
 class FindRunningClipAnimatorsJob;
 class LoadAnimationClipJob;
@@ -115,6 +116,7 @@ public:
     ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
     ChannelMapperManager *channelMapperManager() const Q_DECL_NOTHROW { return m_channelMapperManager.data(); }
     ClipBlendNodeManager *clipBlendNodeManager() const Q_DECL_NOTHROW { return m_clipBlendNodeManager.data(); }
+    SkeletonManager *skeletonManager() const Q_DECL_NOTHROW { return m_skeletonManager.data(); }
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
@@ -129,6 +131,7 @@ private:
     QScopedPointer<ChannelMappingManager> m_channelMappingManager;
     QScopedPointer<ChannelMapperManager> m_channelMapperManager;
     QScopedPointer<ClipBlendNodeManager> m_clipBlendNodeManager;
+    QScopedPointer<SkeletonManager> m_skeletonManager;
 
     QVector<HAnimationClip> m_dirtyAnimationClips;
     QVector<HChannelMapper> m_dirtyChannelMappers;

@@ -54,6 +54,8 @@
 #include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DAnimation/private/clipblendvalue_p.h>
 #include <Qt3DAnimation/private/additiveclipblend_p.h>
+#include <Qt3DAnimation/private/skeleton_p.h>
+#include <Qt3DCore/qabstractskeleton.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -121,6 +123,9 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QClipBlendValue>(
                 QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::ClipBlendValue, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                    d->m_handler->clipBlendNodeManager()));
+    registerBackendType<Qt3DCore::QAbstractSkeleton>(
+        QSharedPointer<Animation::NodeFunctor<Animation::Skeleton, Animation::SkeletonManager>>::create(d->m_handler.data(),
+                                                                                                        d->m_handler->skeletonManager()));
 }
 
 /*! \internal */

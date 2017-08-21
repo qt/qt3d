@@ -59,6 +59,7 @@
 #include <Qt3DAnimation/private/clipanimator_p.h>
 #include <Qt3DAnimation/private/channelmapping_p.h>
 #include <Qt3DAnimation/private/channelmapper_p.h>
+#include <Qt3DAnimation/private/skeleton_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -143,6 +144,16 @@ private:
     QHash<Qt3DCore::QNodeId, ClipBlendNode *> m_nodes;
 };
 
+class SkeletonManager : public Qt3DCore::QResourceManager<
+        Skeleton,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    SkeletonManager() {}
+};
+
 } // namespace Animation
 } // namespace Qt3DAnimation
 
@@ -151,6 +162,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ClipAnimator, Q_REQUIRES_CLEAN
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::BlendedClipAnimator, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ChannelMapping, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ChannelMapper, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::Skeleton, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

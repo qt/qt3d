@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -58,6 +58,7 @@ Handler::Handler()
     , m_channelMappingManager(new ChannelMappingManager)
     , m_channelMapperManager(new ChannelMapperManager)
     , m_clipBlendNodeManager(new ClipBlendNodeManager)
+    , m_skeletonManager(new SkeletonManager)
     , m_loadAnimationClipJob(new LoadAnimationClipJob)
     , m_findRunningClipAnimatorsJob(new FindRunningClipAnimatorsJob)
     , m_buildBlendTreesJob(new BuildBlendTreesJob)
