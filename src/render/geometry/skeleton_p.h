@@ -123,7 +123,7 @@ private:
     void loadSkeletonFromUrl();
     void loadSkeletonFromData();
     Qt3DCore::QJoint *createFrontendJoints(const SkeletonData &skeletonData) const;
-    Qt3DCore::QJoint *createFrontendJoint(const JointInfo &jointInfo) const;
+    Qt3DCore::QJoint *createFrontendJoint(const QString &jointName, const JointInfo &jointInfo) const;
     void processJointHierarchy(Qt3DCore::QNodeId jointId, int parentJointIndex, SkeletonData &skeletonData);
     void clearData();
 

@@ -294,9 +294,13 @@ Qt3DCore::QJoint *Skeleton::createFrontendJoints(const SkeletonData &skeletonDat
 
     // Create frontend joints from the joint info objects
     QVector<QJoint *> frontendJoints;
-    frontendJoints.reserve(skeletonData.joints.size());
-    for (const JointInfo &jointInfo : skeletonData.joints)
-        frontendJoints.push_back(createFrontendJoint(jointInfo));
+    const int jointCount = skeletonData.joints.size();
+    frontendJoints.reserve(jointCount);
+    for (int i = 0; i < jointCount; ++i) {
+        const JointInfo &jointInfo = skeletonData.joints[i];
+        const QString &jointName = skeletonData.jointNames[i];
+        frontendJoints.push_back(createFrontendJoint(jointName, jointInfo));
+    }
 
     // Now go through and resolve the parent for each joint
     for (int i = 0; i < frontendJoints.size(); ++i) {
@@ -313,14 +317,14 @@ Qt3DCore::QJoint *Skeleton::createFrontendJoints(const SkeletonData &skeletonDat
     return frontendJoints[0];
 }
 
-Qt3DCore::QJoint *Skeleton::createFrontendJoint(const JointInfo &jointInfo) const
+Qt3DCore::QJoint *Skeleton::createFrontendJoint(const QString &jointName, const JointInfo &jointInfo) const
 {
     auto joint = QAbstractNodeFactory::createNode<QJoint>("QJoint");
     joint->setTranslation(jointInfo.localPose.translation);
     joint->setRotation(jointInfo.localPose.rotation);
     joint->setScale(jointInfo.localPose.scale);
     joint->setInverseBindMatrix(jointInfo.inverseBindPose);
-    // TODO: Add name property to joint
+    joint->setName(jointName);
     return joint;
 }
 

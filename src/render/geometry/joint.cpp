@@ -79,10 +79,9 @@ void Joint::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change
     m_localPose.scale = data.scale;
     m_localPose.translation = data.translation;
     m_childJointIds = data.childJointIds;
+    m_name = data.name;
     markDirty(AbstractRenderer::JointDirty);
     m_jointManager->addDirtyJoint(peerId());
-
-    // TODO: Add name property to QJoint
 }
 
 void Joint::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -108,8 +107,13 @@ void Joint::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             // the inverse bind matrix.
             m_inverseBindMatrix = propertyChange->value().value<QMatrix4x4>();
             m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_owningSkeleton);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
+            // Joint name doesn't affect anything in the render aspect so no need
+            // to mark anything as dirty.
+            m_name = propertyChange->value().toString();
+
+            // TODO: Notify other aspects (animation) about the name change.
         }
-        // TODO: Add name property to QJoint
     } else if (e->type() == PropertyValueAdded) {
         const auto addedChange = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (addedChange->propertyName() == QByteArrayLiteral("childJoint"))

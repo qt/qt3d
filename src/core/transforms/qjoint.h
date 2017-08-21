@@ -63,6 +63,7 @@ class QT3DCORESHARED_EXPORT QJoint : public QNode
     Q_PROPERTY(float rotationX READ rotationX WRITE setRotationX NOTIFY rotationXChanged)
     Q_PROPERTY(float rotationY READ rotationY WRITE setRotationY NOTIFY rotationYChanged)
     Q_PROPERTY(float rotationZ READ rotationZ WRITE setRotationZ NOTIFY rotationZChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
     explicit QJoint(Qt3DCore::QNode *parent = nullptr);
@@ -75,6 +76,7 @@ public:
     float rotationX() const;
     float rotationY() const;
     float rotationZ() const;
+    QString name() const;
 
     void addChildJoint(QJoint *joint);
     void removeChildJoint(QJoint *joint);
@@ -88,6 +90,7 @@ public Q_SLOTS:
     void setRotationX(float rotationX);
     void setRotationY(float rotationY);
     void setRotationZ(float rotationZ);
+    void setName(const QString &name);
 
 Q_SIGNALS:
     void scaleChanged(const QVector3D &scale);
@@ -97,6 +100,7 @@ Q_SIGNALS:
     void rotationXChanged(float rotationX);
     void rotationYChanged(float rotationY);
     void rotationZChanged(float rotationZ);
+    void nameChanged(const QString &name);
 
 private:
     Q_DECLARE_PRIVATE(QJoint)

@@ -231,9 +231,10 @@ private Q_SLOTS:
     void checkCreateFrontendJoint_data()
     {
         QTest::addColumn<JointInfo>("jointInfo");
+        QTest::addColumn<QString>("jointName");
         QTest::addColumn<QJoint *>("expectedJoint");
 
-        QTest::newRow("default") << JointInfo() << new QJoint();
+        QTest::newRow("default") << JointInfo() << QString() << new QJoint();
 
         const QVector3D t(1.0f, 2.0f, 3.0f);
         const QQuaternion r = QQuaternion::fromAxisAndAngle(1.0f, 0.0f, 0.0f, 45.0f);
@@ -243,24 +244,28 @@ private Q_SLOTS:
         jointInfo.localPose.rotation = r;
         jointInfo.localPose.translation = t;
 
+        QString name = QLatin1String("Foo");
         QJoint *joint = new QJoint();
         joint->setTranslation(t);
         joint->setRotation(r);
         joint->setScale(s);
-        QTest::newRow("localPose") << jointInfo << joint;
+        joint->setName(name);
+        QTest::newRow("localPose") << jointInfo << name << joint;
 
         QMatrix4x4 m;
         m.rotate(r);
         m.scale(QVector3D(1.0f, 1.0f, 1.0f) / s);
         m.translate(-t);
         jointInfo.inverseBindPose = m;
+        name = QLatin1String("Bar");
 
         joint = new QJoint();
         joint->setTranslation(t);
         joint->setRotation(r);
         joint->setScale(s);
         joint->setInverseBindMatrix(m);
-        QTest::newRow("inverseBind") << jointInfo << joint;
+        joint->setName(name);
+        QTest::newRow("inverseBind") << jointInfo << name << joint;
     }
 
     void checkCreateFrontendJoint()
@@ -268,16 +273,18 @@ private Q_SLOTS:
         // GIVEN
         Skeleton backendSkeleton;
         QFETCH(JointInfo, jointInfo);
+        QFETCH(QString, jointName);
         QFETCH(QJoint *, expectedJoint);
 
         // WHEN
-        const QJoint *actualJoint = backendSkeleton.createFrontendJoint(jointInfo);
+        const QJoint *actualJoint = backendSkeleton.createFrontendJoint(jointName, jointInfo);
 
         // THEN
         QCOMPARE(actualJoint->scale(), expectedJoint->scale());
         QCOMPARE(actualJoint->rotation(), expectedJoint->rotation());
         QCOMPARE(actualJoint->translation(), expectedJoint->translation());
         QCOMPARE(actualJoint->inverseBindMatrix(), expectedJoint->inverseBindMatrix());
+        QCOMPARE(actualJoint->name(), expectedJoint->name());
 
         // Cleanup
         delete actualJoint;
@@ -294,6 +301,7 @@ private Q_SLOTS:
         SkeletonData skeletonData;
         JointInfo rootJointInfo;
         skeletonData.joints.push_back(rootJointInfo);
+        skeletonData.jointNames.push_back(QLatin1String("rootJoint"));
         const int childCount = 10;
         for (int i = 0; i < childCount; ++i) {
             JointInfo childJointInfo;
@@ -301,6 +309,7 @@ private Q_SLOTS:
             childJointInfo.localPose.translation = QVector3D(x, x, x);
             childJointInfo.parentIndex = 0;
             skeletonData.joints.push_back(childJointInfo);
+            skeletonData.jointNames.push_back(QString("Child-%1").arg(i));
         }
 
         QJoint *rootJoint = new QJoint();
@@ -321,6 +330,7 @@ private Q_SLOTS:
             childJointInfo.localPose.translation = QVector3D(x, x, x);
             childJointInfo.parentIndex = i;
             skeletonData.joints.push_back(childJointInfo);
+            skeletonData.jointNames.push_back(QString("Child-%1").arg(i));
         }
 
         rootJoint = new QJoint();

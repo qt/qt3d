@@ -310,6 +310,16 @@ void QJoint::setRotationZ(float rotationZ)
     blockNotifications(wasBlocked);
 }
 
+void QJoint::setName(const QString &name)
+{
+    Q_D(QJoint);
+    if (d->m_name == name)
+        return;
+
+    d->m_name = name;
+    emit nameChanged(name);
+}
+
 /*!
     Adds \a joint as a child of this joint. If \a joint has no parent, then
     this joint takes ownership of it. Child joints are in the coordinate system
@@ -366,6 +376,12 @@ QVector<QJoint *> QJoint::childJoints() const
     return d->m_childJoints;
 }
 
+QString QJoint::name() const
+{
+    Q_D(const QJoint);
+    return d->m_name;
+}
+
 /*! \internal */
 Qt3DCore::QNodeCreatedChangeBasePtr QJoint::createNodeCreationChange() const
 {
@@ -377,6 +393,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QJoint::createNodeCreationChange() const
     data.rotation = d->m_rotation;
     data.scale = d->m_scale;
     data.translation = d->m_translation;
+    data.name = d->m_name;
     return creationChange;
 }
 
