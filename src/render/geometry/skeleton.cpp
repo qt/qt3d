@@ -334,6 +334,7 @@ void Skeleton::processJointHierarchy(Qt3DCore::QNodeId jointId,
     joint->setOwningSkeleton(m_skeletonHandle);
     const JointInfo jointInfo(joint, parentJointIndex);
     skeletonData.joints.push_back(jointInfo);
+    skeletonData.jointNames.push_back(joint->name());
 
     const int jointIndex = skeletonData.joints.size() - 1;
     const HJoint jointHandle = m_jointManager->lookupHandle(jointId);
@@ -348,6 +349,7 @@ void Skeleton::clearData()
 {
     m_name.clear();
     m_skeletonData.joints.clear();
+    m_skeletonData.jointNames.clear();
     m_skeletonData.jointIndices.clear();
 }
 

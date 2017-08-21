@@ -362,7 +362,7 @@ SkeletonData GLTFSkeletonLoader::createSkeletonFromSkin(Skin *skin) const
     SkeletonData skel;
 
     const int jointCount = skin->jointNodeIndices.size();
-    skel.joints.reserve(jointCount);
+    skel.reserve(jointCount);
 
     QHash<const Node *, int> jointIndexMap;
     for (int i = 0; i < jointCount; ++i) {
@@ -373,7 +373,6 @@ SkeletonData GLTFSkeletonLoader::createSkeletonFromSkin(Skin *skin) const
         jointIndexMap.insert(node, i);
 
         JointInfo joint;
-        joint.name = node->name;
         joint.localPose = node->localTransform;
         joint.inverseBindPose = inverseBindMatrix(skin, i);
         joint.parentIndex = jointIndexMap.value(&m_nodes[node->parentNodeIndex], -1);
@@ -381,6 +380,7 @@ SkeletonData GLTFSkeletonLoader::createSkeletonFromSkin(Skin *skin) const
             qCDebug(Jobs) << "Cannot find parent joint for joint" << i;
 
         skel.joints.push_back(joint);
+        skel.jointNames.push_back(node->name);
     }
 
     return skel;
