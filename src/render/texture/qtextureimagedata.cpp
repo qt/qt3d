@@ -370,7 +370,7 @@ void QTextureImageData::setImage(const QImage &image)
     Q_ASSERT_X(glImage.bytesPerLine() == (glImage.width() * glImage.depth() + 7) / 8,
                "QTextureImageData::setImage", "glImage is not packed"); // QTBUG-48330
     d->m_blockSize = 4;
-    QByteArray imageBytes((const char*) glImage.constBits(), glImage.byteCount());
+    QByteArray imageBytes((const char*) glImage.constBits(), glImage.sizeInBytes());
     setData(imageBytes, d->m_blockSize, false);
     d->m_format = QOpenGLTexture::RGBA8_UNorm;
     d->m_pixelFormat = QOpenGLTexture::RGBA;

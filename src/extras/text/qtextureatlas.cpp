@@ -117,7 +117,7 @@ QByteArray QTextureAtlasData::createUpdatedImageData()
         }
     }
 
-    return QByteArray(reinterpret_cast<const char*>(m_image.constBits()), m_image.byteCount());
+    return QByteArray(reinterpret_cast<const char*>(m_image.constBits()), m_image.sizeInBytes());
 }
 
 QTextureAtlasPrivate::QTextureAtlasPrivate()
