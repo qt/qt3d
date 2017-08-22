@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-class Skeleton : public BackendNode
+class Q_AUTOTEST_EXPORT Skeleton : public BackendNode
 {
 public:
     Skeleton();
@@ -64,11 +64,19 @@ public:
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+#if defined(QT_BUILD_INTERNAL)
+    void setJointNames(const QVector<QString> &names) { m_jointNames = names; }
+    QVector<QString> jointNames() const { return m_jointNames; }
+    void setJointLocalPoses(const QVector<Qt3DCore::Sqt> &localPoses) { m_jointLocalPoses = localPoses; }
+    QVector<Qt3DCore::Sqt> jointLocalPoses() const { return m_jointLocalPoses; }
+#endif
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     QVector<QString> m_jointNames;
-    QVector<Qt3DCore::Sqt> m_jointLocalPoses; };
+    QVector<Qt3DCore::Sqt> m_jointLocalPoses;
+};
 
 } // namespace Animation
 } // namespace Qt3DAnimation

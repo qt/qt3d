@@ -35,8 +35,11 @@
 ****************************************************************************/
 
 #include "skeleton_p.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
+
+using namespace Qt3DCore;
 
 namespace Qt3DAnimation {
 namespace Animation {
@@ -69,8 +72,28 @@ void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
 
 void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    // TODO: Get the joint names and initial local poses from a change sent
+    // Get the joint names and initial local poses from a change sent
     // by the render aspect when the skeleton has been loaded.
+    switch (e->type()) {
+    case PropertyUpdated: {
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("jointNamesAndLocalPoses")) {
+            const auto payload = change->value().value<JointNamesAndLocalPoses>();
+            m_jointNames = payload.names;
+            m_jointLocalPoses = payload.localPoses;
+
+            // TODO: Mark joint info as dirty so we can rebuild any indexes used
+            // by the animators and channel mappings.
+        }
+
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Animation

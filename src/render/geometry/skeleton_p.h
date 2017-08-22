@@ -95,6 +95,7 @@ public:
 
     int jointCount() const { return m_skeletonData.joints.size(); }
     void notifyJointCount();
+    void notifyJointNamesAndPoses();
     QVector<JointInfo> joints() const { return m_skeletonData.joints; }
 
     Qt3DCore::QNodeId rootJointId() const { return m_rootJointId; }

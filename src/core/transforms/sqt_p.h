@@ -54,6 +54,7 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtGui/qquaternion.h>
 #include <QtGui/qvector3d.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,10 +82,25 @@ struct Sqt
         m.scale(scale);
         return m;
     }
+
+    bool operator == (const Sqt &rhs) const
+    {
+        return rotation == rhs.rotation
+                && scale == rhs.scale
+                && translation == rhs.translation;
+    }
+};
+
+struct JointNamesAndLocalPoses
+{
+    QVector<QString> names;
+    QVector<Sqt> localPoses;
 };
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DCore::JointNamesAndLocalPoses)
 
 #endif // QT3DCORE_SQT_P_H

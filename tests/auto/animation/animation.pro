@@ -36,5 +36,6 @@ qtConfig(private_tests) {
         clipblendvalue \
         animationutils \
         qabstractanimation \
-        clock
+        clock \
+        skeleton
 }

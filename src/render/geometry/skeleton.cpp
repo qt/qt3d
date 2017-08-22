@@ -175,6 +175,16 @@ void Skeleton::notifyJointCount()
     notifyObservers(e);
 }
 
+void Skeleton::notifyJointNamesAndPoses()
+{
+    auto e = QPropertyUpdatedChangePtr::create(peerId());
+    JointNamesAndLocalPoses payload{m_skeletonData.jointNames, m_skeletonData.localPoses};
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::BackendNodes);
+    e->setPropertyName("jointNamesAndLocalPoses");
+    e->setValue(QVariant::fromValue(payload));
+    notifyObservers(e);
+}
+
 void Skeleton::loadSkeleton()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_source;
@@ -205,6 +215,7 @@ void Skeleton::loadSkeleton()
             setStatus(QSkeletonLoader::Ready);
     }
     notifyJointCount();
+    notifyJointNamesAndPoses();
 
     qCDebug(Jobs) << "Loaded skeleton data:" << *this;
 }
