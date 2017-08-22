@@ -128,6 +128,17 @@ QGeometry::QGeometry(QNode *parent)
     : QGeometry(*new QGeometryPrivate(), parent) {}
 
 /*!
+    \fn QGeometryFactory::operator()()
+
+     Returns the generated geometry.
+*/
+/*!
+    \fn bool QGeometryFactory::operator==(const QGeometryFactory &other) const = 0
+
+    Compares the factory with the factory specified in \a other.
+    Returns true if they are equal.
+*/
+/*!
     \internal
  */
 QGeometry::~QGeometry()
@@ -143,6 +154,7 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
+    \fn void Qt3DRender::QGeometry::addAttribute(Qt3DRender::QAttribute *attribute)
     Adds an \a attribute to this geometry.
  */
 void QGeometry::addAttribute(QAttribute *attribute)
@@ -171,6 +183,12 @@ void QGeometry::addAttribute(QAttribute *attribute)
 }
 
 /*!
+    \fn Qt3DRender::QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent)
+
+    \internal
+*/
+/*!
+    \fn void Qt3DRender::QGeometry::removeAttribute(Qt3DRender::QAttribute *attribute)
     Removes the given \a attribute from this geometry.
  */
 void QGeometry::removeAttribute(QAttribute *attribute)
