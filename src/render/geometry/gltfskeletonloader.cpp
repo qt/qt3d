@@ -373,13 +373,13 @@ SkeletonData GLTFSkeletonLoader::createSkeletonFromSkin(Skin *skin) const
         jointIndexMap.insert(node, i);
 
         JointInfo joint;
-        joint.localPose = node->localTransform;
         joint.inverseBindPose = inverseBindMatrix(skin, i);
         joint.parentIndex = jointIndexMap.value(&m_nodes[node->parentNodeIndex], -1);
         if (joint.parentIndex == -1 && i != 0)
             qCDebug(Jobs) << "Cannot find parent joint for joint" << i;
 
         skel.joints.push_back(joint);
+        skel.localPoses.push_back(node->localTransform);
         skel.jointNames.push_back(node->name);
     }
 
