@@ -82,10 +82,8 @@ class QMorphingAnimation;
 namespace Qt3DRender {
 
 class QMaterial;
-class QShaderProgram;
-class QEffect;
 class QAbstractTexture;
-class QMesh;
+class QAbstractLight;
 class QGeometryRenderer;
 
 Q_DECLARE_LOGGING_CATEGORY(AssimpImporterLog)
@@ -115,11 +113,11 @@ private:
     void cleanup();
     void parse();
 
-    void loadMaterial(uint materialIndex);
-    void loadMesh(uint meshIndex);
-    void loadEmbeddedTexture(uint textureIndex);
-    void loadLight(uint lightIndex);
-    void loadCamera(uint cameraIndex);
+    QMaterial *loadMaterial(uint materialIndex);
+    QGeometryRenderer *loadMesh(uint meshIndex);
+    QAbstractTexture *loadEmbeddedTexture(uint textureIndex);
+    QAbstractLight *loadLight(uint lightIndex);
+    Qt3DCore::QEntity *loadCamera(aiNode *node);
     void loadAnimation(uint animationIndex);
 
     void copyMaterialName(QMaterial *material, aiMaterial *assimpMaterial);
@@ -139,11 +137,7 @@ private:
         Assimp::Importer *m_importer;
         mutable const aiScene *m_aiScene;
 
-        QMap<uint, QGeometryRenderer *> m_meshes;
-        QMap<uint, QMaterial*> m_materials;
-        QMap<uint, QEffect *> m_effects;
         QMap<uint, QAbstractTexture *> m_embeddedTextures;
-        QMap<aiNode*, Qt3DCore::QEntity*> m_cameras;
         QHash<aiTextureType, QString> m_textureToParameterName;
         QVector<Qt3DAnimation::QKeyframeAnimation *> m_animations;
         QVector<Qt3DAnimation::QMorphingAnimation *> m_morphAnimations;
