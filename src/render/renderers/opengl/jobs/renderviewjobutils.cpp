@@ -168,7 +168,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Make it so that the new viewport is actually
                 // a subregion relative to that of the parent viewport
                 const ViewportNode *vpNode = static_cast<const ViewportNode *>(node);
-                rv->setViewport(computeViewport(rv->viewport(), vpNode));
+                rv->setViewport(ViewportNode::computeViewport(rv->viewport(), vpNode));
                 rv->setGamma(vpNode->gamma());
                 break;
             }

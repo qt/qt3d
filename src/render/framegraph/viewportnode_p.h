@@ -86,6 +86,8 @@ public:
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
+    static QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport);
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
@@ -96,7 +98,6 @@ private:
     float m_gamma;
 };
 
-QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport);
 
 } // namespace Render
 } // namespace Qt3DRender

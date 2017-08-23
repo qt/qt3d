@@ -136,7 +136,7 @@ void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     FrameGraphNode::sceneChangeEvent(e);
 }
 
-QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport)
+QRectF ViewportNode::computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport)
 {
     QRectF vp(parentViewport->xMin(),
               parentViewport->yMin(),
