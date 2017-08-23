@@ -51,6 +51,7 @@
 import Qt3D.Core 2.10
 import Qt3D.Render 2.10
 import Qt3D.Input 2.0
+import Qt3D.Animation 2.10
 import Qt3D.Extras 2.10
 import QtQuick 2.9
 
@@ -61,10 +62,150 @@ DefaultSceneEntity {
         id: skinnedPbrEffect
     }
 
+    Timer {
+        interval: 2000
+        running: true
+        repeat: false
+        onTriggered: {
+            animator1.running = true
+            animator2.running = true
+            animator3.running = true
+            animator4.running = true
+            animator5.running = true
+        }
+    }
+
     SkinnedEntity {
-        id: riggedFigure
+        id: riggedFigure1
         effect: skinnedPbrEffect
         source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
+        baseColor: "red"
+
+        components: [
+//            ClipAnimator {
+//                loops: 3
+//                clip: AnimationClipLoader { source: "qrc:/jump.json" }
+//                channelMapper: ChannelMapper {
+//                    mappings: [
+//                        SkeletonChannelMapping { target: riggedFigure.skeleton }
+//                    ]
+//                }
+//            }
+            BlendedClipAnimator {
+                id: animator1
+                loops: 5
+                blendTree: ClipBlendValue {
+                    clip: AnimationClipLoader { source: "qrc:/jump.json" }
+                }
+                channelMapper: ChannelMapper {
+                    mappings: [
+                        SkeletonMapping { skeleton: riggedFigure1.skeleton }
+                    ]
+                }
+
+                onRunningChanged: console.log("running = " + running)
+            }
+        ]
+    }
+
+    SkinnedEntity {
+        id: riggedFigure2
+        effect: skinnedPbrEffect
+        source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
+        baseColor: "purple"
+        transform.translation: Qt.vector3d(0.0, 0.0, -1.0);
+
+        components: [
+            BlendedClipAnimator {
+                id: animator2
+                loops: 5
+                blendTree: ClipBlendValue {
+                    clip: AnimationClipLoader { source: "qrc:/jump.json" }
+                }
+                channelMapper: ChannelMapper {
+                    mappings: [
+                        SkeletonMapping { skeleton: riggedFigure2.skeleton }
+                    ]
+                }
+
+                onRunningChanged: console.log("running = " + running)
+            }
+        ]
+    }
+
+    SkinnedEntity {
+        id: riggedFigure3
+        effect: skinnedPbrEffect
+        source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
+        baseColor: "blue"
+        transform.translation: Qt.vector3d(0.0, 0.0, -2.0);
+
+        components: [
+            BlendedClipAnimator {
+                id: animator3
+                loops: 5
+                blendTree: ClipBlendValue {
+                    clip: AnimationClipLoader { source: "qrc:/jump.json" }
+                }
+                channelMapper: ChannelMapper {
+                    mappings: [
+                        SkeletonMapping { skeleton: riggedFigure3.skeleton }
+                    ]
+                }
+
+                onRunningChanged: console.log("running = " + running)
+            }
+        ]
+    }
+
+    SkinnedEntity {
+        id: riggedFigure4
+        effect: skinnedPbrEffect
+        source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
+        baseColor: "green"
+        transform.translation: Qt.vector3d(0.0, 0.0, -3.0);
+
+        components: [
+            BlendedClipAnimator {
+                id: animator4
+                loops: 5
+                blendTree: ClipBlendValue {
+                    clip: AnimationClipLoader { source: "qrc:/jump.json" }
+                }
+                channelMapper: ChannelMapper {
+                    mappings: [
+                        SkeletonMapping { skeleton: riggedFigure4.skeleton }
+                    ]
+                }
+
+                onRunningChanged: console.log("running = " + running)
+            }
+        ]
+    }
+
+    SkinnedEntity {
+        id: riggedFigure5
+        effect: skinnedPbrEffect
+        source: "qrc:/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
+        baseColor: "orange"
+        transform.translation: Qt.vector3d(0.0, 0.0, -4.0);
+
+        components: [
+            BlendedClipAnimator {
+                id: animator5
+                loops: 5
+                blendTree: ClipBlendValue {
+                    clip: AnimationClipLoader { source: "qrc:/jump.json" }
+                }
+                channelMapper: ChannelMapper {
+                    mappings: [
+                        SkeletonMapping { skeleton: riggedFigure5.skeleton }
+                    ]
+                }
+
+                onRunningChanged: console.log("running = " + running)
+            }
+        ]
     }
 
     SkinnedEntity {

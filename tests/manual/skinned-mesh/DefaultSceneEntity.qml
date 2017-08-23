@@ -68,8 +68,8 @@ Entity {
 
     Camera {
         id: mainCamera
-        position: Qt.vector3d(0, 0.8, 2)
-        viewCenter: Qt.vector3d(0, 0.8, 0)
+        position: Qt.vector3d(2.5, 0.8, 5)
+        viewCenter: Qt.vector3d(2.5, 0.8, 0)
         fieldOfView: 60
     }
 

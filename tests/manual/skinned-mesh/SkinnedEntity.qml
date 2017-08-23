@@ -12,6 +12,7 @@ Entity {
     property alias transform: transform
     property color baseColor: "red"
     property alias rootJoint: skeleton.rootJoint
+    property alias skeleton: skeleton
 
     components: [
         Transform {
