@@ -48,14 +48,14 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DAnimation/private/qabstractchannelmapping_p.h>
 #include <Qt3DAnimation/qanimationcallback.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QChannelMappingPrivate : public Qt3DCore::QNodePrivate
+class QChannelMappingPrivate : public QAbstractChannelMappingPrivate
 {
 public:
     QChannelMappingPrivate();

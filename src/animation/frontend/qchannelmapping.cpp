@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 
 QChannelMappingPrivate::QChannelMappingPrivate()
-    : Qt3DCore::QNodePrivate()
+    : QAbstractChannelMappingPrivate()
     , m_channelName()
     , m_target(nullptr)
     , m_property()
@@ -119,12 +119,12 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
 */
 
 QChannelMapping::QChannelMapping(Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(*new QChannelMappingPrivate, parent)
+    : QAbstractChannelMapping(*new QChannelMappingPrivate, parent)
 {
 }
 
 QChannelMapping::QChannelMapping(QChannelMappingPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(dd, parent)
+    : QAbstractChannelMapping(dd, parent)
 {
 }
 
