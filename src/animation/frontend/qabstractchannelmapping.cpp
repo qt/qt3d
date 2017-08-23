@@ -49,6 +49,12 @@ QAbstractChannelMappingPrivate::QAbstractChannelMappingPrivate()
 {
 }
 
+/*! \internal */
+const QAbstractChannelMappingPrivate *QAbstractChannelMappingPrivate::get(const QAbstractChannelMapping *q)
+{
+    return q->d_func();
+}
+
 QAbstractChannelMapping::QAbstractChannelMapping(QAbstractChannelMappingPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(dd, parent)
 {

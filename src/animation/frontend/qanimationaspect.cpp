@@ -40,10 +40,10 @@
 #include "qanimationaspect.h"
 #include "qanimationaspect_p.h"
 #include <Qt3DAnimation/qabstractanimationclip.h>
+#include <Qt3DAnimation/qabstractchannelmapping.h>
 #include <Qt3DAnimation/qclock.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DAnimation/qclipanimator.h>
-#include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qadditiveclipblend.h>
@@ -108,7 +108,7 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QBlendedClipAnimator>(
         QSharedPointer<Animation::NodeFunctor<Animation::BlendedClipAnimator, Animation::BlendedClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                               d->m_handler->blendedClipAnimatorManager()));
-    registerBackendType<QChannelMapping>(
+    registerBackendType<QAbstractChannelMapping>(
         QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapping, Animation::ChannelMappingManager>>::create(d->m_handler.data(),
                                                                                                                     d->m_handler->channelMappingManager()));
     registerBackendType<QChannelMapper>(

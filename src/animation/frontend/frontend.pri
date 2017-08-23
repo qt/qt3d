@@ -50,7 +50,9 @@ HEADERS += \
     $$PWD/qclock.h \
     $$PWD/qclock_p.h \
     $$PWD/qabstractchannelmapping.h \
-    $$PWD/qabstractchannelmapping_p.h
+    $$PWD/qabstractchannelmapping_p.h \
+    $$PWD/qchannelmappingcreatedchange_p.h \
+    $$PWD/qchannelmappingcreatedchange_p_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -80,6 +82,7 @@ SOURCES += \
     $$PWD/qanimationclip.cpp \
     $$PWD/qanimationcallbacktrigger.cpp \
     $$PWD/qclock.cpp \
-    $$PWD/qabstractchannelmapping.cpp
+    $$PWD/qabstractchannelmapping.cpp \
+    $$PWD/qchannelmappingcreatedchange.cpp \
 
 INCLUDEPATH += $$PWD

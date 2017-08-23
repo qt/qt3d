@@ -29,6 +29,7 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/private/qchannelmapping_p.h>
+#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qnodecreatedchange.h>
@@ -142,13 +143,14 @@ private Q_SLOTS:
         {
             QCOMPARE(creationChanges.size(), 2); // 1 for mapping, 1 for target
 
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QChannelMappingData>>(creationChanges.first());
+            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QChannelMappingCreatedChange<Qt3DAnimation::QChannelMappingData>>(creationChanges.first());
             const Qt3DAnimation::QChannelMappingData data = creationChangeData->data;
 
             QCOMPARE(mapping.id(), creationChangeData->subjectId());
             QCOMPARE(mapping.isEnabled(), true);
             QCOMPARE(mapping.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(mapping.metaObject(), creationChangeData->metaObject());
+            QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::ChannelMapping);
             QCOMPARE(mapping.channelName(), data.channelName);
             QCOMPARE(mapping.target()->id(), data.targetId);
             QCOMPARE(mapping.property(), data.property);
@@ -166,13 +168,14 @@ private Q_SLOTS:
         {
             QCOMPARE(creationChanges.size(), 2); // 1 for mapping, 1 for target
 
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QChannelMappingData>>(creationChanges.first());
+            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QChannelMappingCreatedChange<Qt3DAnimation::QChannelMappingData>>(creationChanges.first());
             const Qt3DAnimation::QChannelMappingData data = creationChangeData->data;
 
             QCOMPARE(mapping.id(), creationChangeData->subjectId());
             QCOMPARE(mapping.isEnabled(), false);
             QCOMPARE(mapping.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(mapping.metaObject(), creationChangeData->metaObject());
+            QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::ChannelMapping);
             QCOMPARE(mapping.channelName(), data.channelName);
             QCOMPARE(mapping.target()->id(), data.targetId);
             QCOMPARE(mapping.property(), data.property);
