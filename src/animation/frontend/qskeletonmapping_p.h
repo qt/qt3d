@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DAnimation//private/qabstractchannelmapping_p.h>
+#include <Qt3DAnimation/qskeletonmapping.h>
 
 QT_BEGIN_NAMESPACE
 

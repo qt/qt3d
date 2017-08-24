@@ -93,16 +93,25 @@ public:
     void setCallbackFlags(QAnimationCallback::Flags flags) { m_callbackFlags = flags; }
     QAnimationCallback::Flags callbackFlags() const { return m_callbackFlags; }
 
+    void setSkeletonId(Qt3DCore::QNodeId skeletonId) { m_skeletonId = skeletonId; }
+    Qt3DCore::QNodeId skeletonId() const { return m_skeletonId; }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
+    // Properties from QChannelMapping
     QString m_channelName;
     Qt3DCore::QNodeId m_targetId;
     QString m_property;
     int m_type;
     const char *m_propertyName;
+
+    // TODO: Properties from QCallbackMapping
     QAnimationCallback *m_callback;
     QAnimationCallback::Flags m_callbackFlags;
+
+    // Properties from QSkeletonMapping
+    Qt3DCore::QNodeId m_skeletonId;
 };
 
 } // namespace Animation
