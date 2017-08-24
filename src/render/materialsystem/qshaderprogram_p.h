@@ -73,6 +73,7 @@ public:
     QByteArray m_computeShaderCode;
     QString m_log;
     QShaderProgram::Status m_status;
+    QShaderProgram::Format m_format;
 
     void setLog(const QString &log);
     void setStatus(QShaderProgram::Status status);
@@ -89,6 +90,7 @@ struct QShaderProgramData
     QByteArray geometryShaderCode;
     QByteArray fragmentShaderCode;
     QByteArray computeShaderCode;
+    QShaderProgram::Format format;
 };
 
 } // namespace Qt3DRender
