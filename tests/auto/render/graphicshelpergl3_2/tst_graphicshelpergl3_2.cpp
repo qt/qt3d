@@ -2130,7 +2130,7 @@ private Q_SLOTS:
         // THEN
         GLint p;
         m_func->glGetIntegerv(GL_DRAW_BUFFER, &p);
-        QCOMPARE((GLenum)p, GL_FRONT);
+        QCOMPARE(p, GL_FRONT);
     }
 
     void readBuffer()
@@ -2148,7 +2148,7 @@ private Q_SLOTS:
         QVERIFY(error == 0);
         GLint p;
         m_func->glGetIntegerv(GL_READ_BUFFER, &p);
-        QCOMPARE((GLenum)p, GL_FRONT);
+        QCOMPARE(p, GL_FRONT);
     }
 
 private:
