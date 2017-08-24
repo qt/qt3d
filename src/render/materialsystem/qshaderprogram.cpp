@@ -332,6 +332,17 @@
     \value Error                 An error occurred while compiling the shader
 */
 
+/*!
+    \enum QShaderProgram::Format
+
+    This enum identifies the format of the shader code used.
+
+    \value GLSL              OpenGL
+    \value SPIRV             Vulkan, OpenGL 5
+
+    \since 5.15
+*/
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -339,6 +350,7 @@ namespace Qt3DRender {
 QShaderProgramPrivate::QShaderProgramPrivate()
     : QNodePrivate()
     , m_status(QShaderProgram::NotReady)
+    , m_format(QShaderProgram::GLSL)
 {
 }
 
@@ -617,7 +629,7 @@ QString QShaderProgram::log() const
 }
 
 /*!
-    \qmlproperty string ShaderProgram::status
+    \qmlproperty enumeration ShaderProgram::status
 
     Holds the status of the current shader program.
 */
@@ -633,6 +645,35 @@ QShaderProgram::Status QShaderProgram::status() const
 {
     Q_D(const QShaderProgram);
     return d->m_status;
+}
+
+void QShaderProgram::setFormat(QShaderProgram::Format format)
+{
+    Q_D(QShaderProgram);
+    if (format != d->m_format) {
+        d->m_format = format;
+        emit formatChanged(format);
+    }
+}
+
+/*!
+    \qmlproperty enumeration ShaderProgram::format
+    \since 5.15
+
+    Holds the format of the code provided on the ShaderProgram.
+    The default is ShaderProgram.GLSL
+*/
+/*!
+    \property QShaderProgram::format
+    \since 5.15
+
+    Holds the format of the code provided on the ShaderProgram.
+    The default is ShaderProgram.GLSL
+*/
+QShaderProgram::Format QShaderProgram::format() const
+{
+    Q_D(const QShaderProgram);
+    return d->m_format;
 }
 
 QByteArray QShaderProgramPrivate::deincludify(const QString &filePath)
@@ -699,6 +740,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QShaderProgram::createNodeCreationChange() c
     data.geometryShaderCode = d->m_geometryShaderCode;
     data.fragmentShaderCode = d->m_fragmentShaderCode;
     data.computeShaderCode = d->m_computeShaderCode;
+    data.format = d->m_format;
     return creationChange;
 }
 

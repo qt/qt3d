@@ -45,6 +45,13 @@ class tst_QShaderProgram : public Qt3DRender::QShaderProgram
 {
     Q_OBJECT
 
+public:
+    tst_QShaderProgram()
+        : Qt3DRender::QShaderProgram()
+    {
+        qRegisterMetaType<Qt3DRender::QShaderProgram::Format>("Format");
+    }
+
 private Q_SLOTS:
 
     void checkDefaultConstruction()
@@ -61,6 +68,7 @@ private Q_SLOTS:
         QCOMPARE(shaderProgram.computeShaderCode(), QByteArray());
         QCOMPARE(shaderProgram.log(), QString());
         QCOMPARE(shaderProgram.status(), Qt3DRender::QShaderProgram::NotReady);
+        QCOMPARE(shaderProgram.format(), Qt3DRender::QShaderProgram::GLSL);
     }
 
     void checkPropertyChanges()
@@ -182,6 +190,25 @@ private Q_SLOTS:
             QCOMPARE(shaderProgram.computeShaderCode(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+        {
+            // WHEN
+            QSignalSpy spy(&shaderProgram, SIGNAL(formatChanged(Format)));
+            const QShaderProgram::Format newValue = QShaderProgram::SPIRV;
+            shaderProgram.setFormat(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(shaderProgram.format(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            shaderProgram.setFormat(newValue);
+
+            // THEN
+            QCOMPARE(shaderProgram.format(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -195,6 +222,7 @@ private Q_SLOTS:
         shaderProgram.setGeometryShaderCode(QByteArrayLiteral("Geometry"));
         shaderProgram.setFragmentShaderCode(QByteArrayLiteral("Fragment"));
         shaderProgram.setComputeShaderCode(QByteArrayLiteral("Compute"));
+        shaderProgram.setFormat(QShaderProgram::SPIRV);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -217,6 +245,7 @@ private Q_SLOTS:
             QCOMPARE(shaderProgram.geometryShaderCode(), cloneData.geometryShaderCode);
             QCOMPARE(shaderProgram.fragmentShaderCode(), cloneData.fragmentShaderCode);
             QCOMPARE(shaderProgram.computeShaderCode(), cloneData.computeShaderCode);
+            QCOMPARE(shaderProgram.format(), cloneData.format);
             QCOMPARE(shaderProgram.id(), creationChangeData->subjectId());
             QCOMPARE(shaderProgram.isEnabled(), true);
             QCOMPARE(shaderProgram.isEnabled(), creationChangeData->isNodeEnabled());
@@ -532,6 +561,42 @@ private Q_SLOTS:
         // THEN
         QVERIFY(mainContent.indexOf(includedContent) == 0);
     }
+
+    void checkFormatPropertyUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::QShaderProgram shaderProgram;
+        arbiter.setArbiterOnNode(&shaderProgram);
+
+        QSignalSpy spy(&shaderProgram, SIGNAL(formatChanged(Format)));
+
+        // THEN
+        QVERIFY(spy.isValid());
+
+        {
+            // WHEN
+            shaderProgram.setFormat(QShaderProgram::SPIRV);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+
+            spy.clear();
+        }
+
+        {
+            // WHEN
+            shaderProgram.setFormat(QShaderProgram::SPIRV);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+    }
+
 };
 
 QTEST_MAIN(tst_QShaderProgram)

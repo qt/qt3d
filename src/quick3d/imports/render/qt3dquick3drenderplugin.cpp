@@ -187,6 +187,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderPass, Qt3DRender::Render::Quick::Quick3DRenderPass>("QRenderPass", "Qt3D.Render/RenderPass", uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3DRender::QShaderProgram>(uri, 2, 0, "ShaderProgram");
     qmlRegisterType<Qt3DRender::QShaderProgram, 9>(uri, 2, 9, "ShaderProgram");
+    qmlRegisterType<Qt3DRender::QShaderProgram, 15>(uri, 2, 15, "ShaderProgram");
     qmlRegisterType<Qt3DRender::QShaderProgramBuilder>(uri, 2, 10, "ShaderProgramBuilder");
     qmlRegisterType<Qt3DRender::QShaderProgramBuilder, 13>(uri, 2, 13, "ShaderProgramBuilder");
     qmlRegisterUncreatableType<Qt3DRender::QShaderData>(uri, 2, 0, "QShaderData", "Quick3D should instantiate Quick3DShaderData only");

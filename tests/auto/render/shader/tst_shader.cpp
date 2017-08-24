@@ -42,15 +42,17 @@ private slots:
     void cleanupLeavesACoherentState();
     void dealWithPropertyChanges_data();
     void dealWithPropertyChanges();
+    void dealWithFormatChanges();
     void checkSetRendererDirtyOnInitialization();
     void allowToChangeShaderCode_data();
     void allowToChangeShaderCode();
 };
 
 
-Qt3DRender::QShaderProgram *createFrontendShader()
+Qt3DRender::QShaderProgram *createFrontendShader(Qt3DRender::QShaderProgram::Format format = Qt3DRender::QShaderProgram::GLSL)
 {
     Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram();
+    shader->setFormat(format);
 
     shader->setVertexShaderCode(QByteArrayLiteral(
                                     "#version 150"\
@@ -80,6 +82,7 @@ void tst_RenderShader::hasCoherentInitialState()
     Qt3DRender::Render::Shader *shader = new Qt3DRender::Render::Shader();
 
     QCOMPARE(shader->status(), Qt3DRender::QShaderProgram::NotReady);
+    QCOMPARE(shader->format(), Qt3DRender::QShaderProgram::GLSL);
     QVERIFY(shader->log().isEmpty());
     QCOMPARE(shader->isDirty(), false);
 }
@@ -97,11 +100,12 @@ void tst_RenderShader::matchesFrontendPeer()
     for (int i = Qt3DRender::QShaderProgram::Vertex; i <= Qt3DRender::QShaderProgram::Compute; ++i)
         QCOMPARE(backend.shaderCode()[i],
                  frontend->shaderCode(static_cast<Qt3DRender::QShaderProgram::ShaderType>(i)));
+    QCOMPARE(backend.format(), frontend->format());
 }
 
 void tst_RenderShader::cleanupLeavesACoherentState()
 {
-    QScopedPointer<Qt3DRender::QShaderProgram> frontend(createFrontendShader());
+    QScopedPointer<Qt3DRender::QShaderProgram> frontend(createFrontendShader(Qt3DRender::QShaderProgram::SPIRV));
     TestRenderer renderer;
     Qt3DRender::Render::Shader shader;
 
@@ -112,6 +116,7 @@ void tst_RenderShader::cleanupLeavesACoherentState()
 
     QCOMPARE(shader.isDirty(), false);
     QCOMPARE(shader.status(), Qt3DRender::QShaderProgram::NotReady);
+    QCOMPARE(shader.format(), Qt3DRender::QShaderProgram::GLSL);
 }
 
 void tst_RenderShader::dealWithPropertyChanges_data()
@@ -174,6 +179,45 @@ void tst_RenderShader::dealWithPropertyChanges()
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
     QCOMPARE(backend.isDirty(), true);
+}
+
+void tst_RenderShader::dealWithFormatChanges()
+{
+    // GIVEN
+    Qt3DRender::Render::Shader backend;
+    Qt3DRender::QShaderProgram shader;
+    TestRenderer renderer;
+    backend.setRenderer(&renderer);
+    simulateInitializationSync(&shader, &backend);
+
+    // WHEN
+    shader.setFormat(Qt3DRender::QShaderProgram::GLSL);
+    backend.syncFromFrontEnd(&shader, false);
+
+    // THEN
+    QCOMPARE(backend.format(), Qt3DRender::QShaderProgram::GLSL);
+    QCOMPARE(backend.isDirty(), false);
+    QCOMPARE(renderer.dirtyBits(), 0);
+
+    // WHEN
+    shader.setFormat(Qt3DRender::QShaderProgram::SPIRV);
+    backend.syncFromFrontEnd(&shader, false);
+
+    // THEN
+    QCOMPARE(backend.format(), Qt3DRender::QShaderProgram::SPIRV);
+    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
+    QCOMPARE(backend.isDirty(), true);
+
+    renderer.resetDirty();
+    backend.unsetDirty();
+
+    // WHEN
+    shader.setFormat(Qt3DRender::QShaderProgram::SPIRV);
+    backend.syncFromFrontEnd(&shader, false);
+
+    // THEN
+    QCOMPARE(backend.isDirty(), false);
+    QCOMPARE(renderer.dirtyBits(), 0);
 }
 
 void tst_RenderShader::checkSetRendererDirtyOnInitialization()

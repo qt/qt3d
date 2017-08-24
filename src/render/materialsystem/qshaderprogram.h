@@ -60,6 +60,7 @@ class Q_3DRENDERSHARED_EXPORT QShaderProgram : public Qt3DCore::QNode
     Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
     Q_PROPERTY(QString log READ log NOTIFY logChanged REVISION 9)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged REVISION 9)
+    Q_PROPERTY(Format format READ format WRITE setFormat NOTIFY formatChanged REVISION 15)
 
 public:
     explicit QShaderProgram(Qt3DCore::QNode *parent = nullptr);
@@ -82,6 +83,12 @@ public:
     };
     Q_ENUM(Status) // LCOV_EXCL_LINE
 
+    enum Format {
+        GLSL = 0,
+        SPIRV
+    };
+    Q_ENUM(Format) // LCOV_EXCL_LINE
+
     // Source code in-line
     QByteArray vertexShaderCode() const;
     QByteArray tessellationControlShaderCode() const;
@@ -95,6 +102,9 @@ public:
 
     QString log() const;
     Status status() const;
+
+    void setFormat(Format format);
+    Format format() const;
 
     Q_INVOKABLE static QByteArray loadSource(const QUrl &sourceUrl);
 
@@ -115,6 +125,7 @@ Q_SIGNALS:
     void computeShaderCodeChanged(const QByteArray &computeShaderCode);
     void logChanged(const QString &log);
     void statusChanged(Status status);
+    void formatChanged(Format format);
 
 protected:
     explicit QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = nullptr);

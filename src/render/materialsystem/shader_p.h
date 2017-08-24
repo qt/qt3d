@@ -105,6 +105,9 @@ public:
 
     inline QString log() const { return m_log; }
     inline QShaderProgram::Status status() const { return m_status; }
+
+    void setFormat(QShaderProgram::Format format);
+    QShaderProgram::Format format() const { return m_format; }
     bool isDirty() const { return m_dirty; }
     void unsetDirty() { m_dirty = false; }
 
@@ -117,6 +120,7 @@ private:
     QString m_log;
     QShaderProgram::Status m_status;
     bool m_requiresFrontendSync;
+    QShaderProgram::Format m_format;
     bool m_dirty;
 
     void initializeFromReference(const Shader &other);

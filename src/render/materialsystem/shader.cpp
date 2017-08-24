@@ -86,6 +86,7 @@ Shader::Shader()
     : BackendNode(ReadWrite)
     , m_requiresFrontendSync(false)
     , m_status(QShaderProgram::NotReady)
+    , m_format(QShaderProgram::GLSL)
     , m_dirty(false)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
@@ -99,6 +100,7 @@ void Shader::cleanup()
 {
     QBackendNode::setEnabled(false);
     m_status = QShaderProgram::NotReady;
+    m_format = QShaderProgram::GLSL;
     m_log.clear();
     m_dirty = false;
 }
@@ -121,6 +123,7 @@ void Shader::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         if (code != m_shaderCode.value(shaderType))
             setShaderCode(shaderType, code);
     }
+    setFormat(node->format());
 }
 
 void Shader::setShaderCode(QShaderProgram::ShaderType type, const QByteArray &code)
@@ -130,6 +133,16 @@ void Shader::setShaderCode(QShaderProgram::ShaderType type, const QByteArray &co
 
     m_shaderCode[type] = code;
     m_requiresFrontendSync = true;
+    m_dirty = true;
+    setStatus(QShaderProgram::NotReady);
+    markDirty(AbstractRenderer::ShadersDirty);
+}
+
+void Shader::setFormat(QShaderProgram::Format format)
+{
+    if (format == m_format)
+        return;
+    m_format = format;
     m_dirty = true;
     setStatus(QShaderProgram::NotReady);
     markDirty(AbstractRenderer::ShadersDirty);
