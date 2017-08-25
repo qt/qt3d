@@ -69,6 +69,11 @@ QMouseHandlerPrivate::~QMouseHandlerPrivate()
 {
 }
 
+void QMouseHandlerPrivate::init(QObject *parent)
+{
+    m_pressAndHoldTimer->setParent(parent);
+}
+
 void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
 {
     Q_Q(QMouseHandler);
@@ -259,6 +264,8 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
 QMouseHandler::QMouseHandler(QNode *parent)
     : QComponent(*new QMouseHandlerPrivate, parent)
 {
+    Q_D(QMouseHandler);
+    d->init(this);
 }
 
 QMouseHandler::~QMouseHandler()
