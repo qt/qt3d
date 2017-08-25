@@ -27,7 +27,9 @@ void adsModelNormalMapped(const in FP vec3 vpos, const in FP vec3 vnormal, const
 
     FP vec3 s, ts;
     Light light;
-    for (int i = 0; i < lightCount; ++i) {
+    for (int i = 0; i < MAX_LIGHTS; ++i) {
+        if (i >= lightCount) // Make brcm happy with the for loop
+            break;
         if (i == 0)
             light = lights[0];
         else if (i == 1)
@@ -94,7 +96,9 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
 
     FP vec3 s;
     Light light;
-    for (int i = 0; i < lightCount; ++i) {
+    for (int i = 0; i < MAX_LIGHTS; ++i) {
+        if (i >= lightCount) // Make brcm happy with the for loop
+            break;
         if (i == 0)
             light = lights[0];
         else if (i == 1)
@@ -151,7 +155,9 @@ void adModel(const in FP vec3 vpos, const in FP vec3 vnormal, out FP vec3 diffus
 
     FP vec3 s;
     Light light;
-    for (int i = 0; i < lightCount; ++i) {
+    for (int i = 0; i < MAX_LIGHTS; ++i) {
+        if (i >= lightCount) // Make brcm happy with the for loop
+            break;
         if (i == 0)
             light = lights[0];
         else if (i == 1)
