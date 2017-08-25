@@ -57,7 +57,6 @@
 #include <QtCore/QSharedPointer>
 #include <QtCore/QThreadPool>
 
-#include <Qt3DCore/private/dependencyhandler_p.h>
 #include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/private/task_p.h>
 
@@ -81,8 +80,6 @@ public:
     void taskFinished(RunnableInterface *task);
     QFuture<void> future();
 
-    void setDependencyHandler(DependencyHandler *handler);
-
     int maxThreadCount() const;
 #ifdef QT3D_JOBS_RUN_STATS
     static QElapsedTimer m_jobsStatTimer;
@@ -105,7 +102,6 @@ private:
 private:
     QFutureInterface<void> *m_futureInterface;
     QMutex m_mutex;
-    DependencyHandler *m_dependencyHandler;
     QAtomicInt m_taskCount;
     QThreadPool m_threadPool;
 };

@@ -45,7 +45,6 @@
 #include <QtCore/QThread>
 #include <QtCore/QFuture>
 
-#include <Qt3DCore/private/dependencyhandler_p.h>
 #include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DCore/private/task_p.h>
 
@@ -56,9 +55,7 @@ namespace Qt3DCore {
 QAspectJobManager::QAspectJobManager(QObject *parent)
     : QAbstractAspectJobManager(parent)
     , m_threadPooler(new QThreadPooler(this))
-    , m_dependencyHandler(new DependencyHandler)
 {
-    m_threadPooler->setDependencyHandler(m_dependencyHandler.data());
 }
 
 QAspectJobManager::~QAspectJobManager()
@@ -84,24 +81,23 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
         taskList << task;
     }
 
-    // Resolve dependencies
-    QVector<Dependency> dependencyList;
-
     for (const QSharedPointer<QAspectJob> &job : jobQueue) {
         const QVector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
+        AspectTaskRunnable *taskDepender = tasksMap.value(job.data());
 
+        int dependerCount = 0;
         for (const QWeakPointer<QAspectJob> &dep : deps) {
             AspectTaskRunnable *taskDependee = tasksMap.value(dep.data());
-
+            // The dependencies here are not hard requirements, i.e., the dependencies
+            // not in the jobQueue should already have their data ready.
             if (taskDependee) {
-                AspectTaskRunnable *taskDepender = tasksMap.value(job.data());
-                dependencyList.append(Dependency(taskDepender, taskDependee));
-                taskDepender->setDependencyHandler(m_dependencyHandler.data());
-                taskDependee->setDependencyHandler(m_dependencyHandler.data());
+                taskDependee->m_dependers.append(taskDepender);
+                ++dependerCount;
             }
         }
+
+        taskDepender->m_dependerCount += dependerCount;
     }
-    m_dependencyHandler->addDependencies(qMove(dependencyList));
 #ifdef QT3D_JOBS_RUN_STATS
     QThreadPooler::writeFrameJobLogStats();
 #endif

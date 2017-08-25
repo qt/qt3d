@@ -48,8 +48,6 @@
 #include <QtCore/QCoreApplication>
 #endif
 
-#include <Qt3DCore/private/dependencyhandler_p.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -62,7 +60,6 @@ QThreadPooler::QThreadPooler(QObject *parent)
     : QObject(parent)
     , m_futureInterface(nullptr)
     , m_mutex()
-    , m_dependencyHandler(nullptr)
     , m_taskCount(0)
 {
     // Ensures that threads will never be recycled
@@ -79,12 +76,6 @@ QThreadPooler::~QThreadPooler()
     locker.unlock();
 }
 
-void QThreadPooler::setDependencyHandler(DependencyHandler *handler)
-{
-    m_dependencyHandler = handler;
-    m_dependencyHandler->setMutex(&m_mutex);
-}
-
 void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
 {
     // The caller have to set the mutex
@@ -92,7 +83,14 @@ void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
 
     for (QVector<RunnableInterface *>::const_iterator it = tasks.cbegin();
          it != end; ++it) {
-        if (!m_dependencyHandler->hasDependency((*it)) && !(*it)->reserved()) {
+
+        // Only AspectTaskRunnables are checked for dependencies.
+        static const auto hasDependencies = [](RunnableInterface *task) -> bool {
+            return (task->type() == RunnableInterface::RunnableType::AspectTask)
+                    && (static_cast<AspectTaskRunnable *>(task)->m_dependerCount > 0);
+        };
+
+        if (!hasDependencies(*it) && !(*it)->reserved()) {
             (*it)->setReserved(true);
             (*it)->setPooler(this);
             m_threadPool.start((*it));
@@ -106,10 +104,19 @@ void QThreadPooler::taskFinished(RunnableInterface *task)
 
     release();
 
-    if (task->dependencyHandler()) {
-        const QVector<RunnableInterface *> freedTasks = m_dependencyHandler->freeDependencies(task);
-        if (!freedTasks.empty())
-            enqueueTasks(freedTasks);
+    if (task->type() == RunnableInterface::RunnableType::AspectTask) {
+        AspectTaskRunnable *aspectTask = static_cast<AspectTaskRunnable *>(task);
+        const auto &dependers = aspectTask->m_dependers;
+        for (auto it = dependers.begin(); it != dependers.end(); ++it) {
+            aspectTask = static_cast<AspectTaskRunnable *>(*it);
+            if (--aspectTask->m_dependerCount == 0) {
+                if (!aspectTask->reserved()) {
+                    aspectTask->setReserved(true);
+                    aspectTask->setPooler(this);
+                    m_threadPool.start(aspectTask);
+                }
+            }
+        }
     }
 
     if (currentCount() == 0) {

@@ -81,7 +81,6 @@ public:
 
 private:
     QThreadPooler *m_threadPooler;
-    QScopedPointer<DependencyHandler> m_dependencyHandler;
 };
 
 } // namespace Qt3DCore
