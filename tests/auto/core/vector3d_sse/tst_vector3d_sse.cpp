@@ -35,22 +35,6 @@ class tst_Vector3D_SSE: public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-
-    void checkAllocationAndAlignment()
-    {
-        // GIVEN
-        Vector3D_SSE *m = new Vector3D_SSE();
-
-        // THEN
-        QVERIFY((uintptr_t)m % 16 == 0);
-
-        // WHEN
-        delete m;
-
-        // THEN
-        // Should not crash
-    }
-
     void defaultConstruction()
     {
         // GIVEN
