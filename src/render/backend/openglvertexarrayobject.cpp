@@ -101,8 +101,10 @@ void OpenGLVertexArrayObject::create(GraphicsContext *ctx, const VAOIdentifier &
 
     m_ctx = ctx;
     m_supportsVao = m_ctx->supportsVAO();
-    m_vao.reset(m_supportsVao ? new QOpenGLVertexArrayObject() : nullptr);
-    m_vao->create();
+    if (m_supportsVao) {
+        m_vao.reset(new QOpenGLVertexArrayObject());
+        m_vao->create();
+    }
     m_owners = key;
 }
 
