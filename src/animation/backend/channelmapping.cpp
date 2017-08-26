@@ -74,6 +74,7 @@ void ChannelMapping::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
         m_propertyName = data.propertyName;
         m_callback = data.callback;
         m_callbackFlags = data.callbackFlags;
+        m_mappingType = ChannelMappingType;
         break;
     }
 
@@ -81,11 +82,13 @@ void ChannelMapping::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
         const auto typedChange = qSharedPointerCast<QChannelMappingCreatedChange<QSkeletonMappingData>>(change);
         const auto &data = typedChange->data;
         m_skeletonId = data.skeletonId;
+        m_mappingType = SkeletonMappingType;
         break;
     }
 
     case QChannelMappingCreatedChangeBase::CallbackMapping: {
         // TODO: Refactor callback support out of QChannelMapping and into its own type
+        m_mappingType = CallbackMappingType;
         break;
     }
     }

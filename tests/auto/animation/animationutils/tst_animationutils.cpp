@@ -154,6 +154,18 @@ public:
         channelMapping->setPropertyName(propertyName);
         channelMapping->setChannelName(channelName);
         channelMapping->setType(type);
+        channelMapping->setMappingType(ChannelMapping::ChannelMappingType);
+        return channelMapping;
+    }
+
+    ChannelMapping *createChannelMapping(Handler *handler,
+                                         const Qt3DCore::QNodeId skeletonId)
+    {
+        auto channelMappingId = Qt3DCore::QNodeId::createId();
+        ChannelMapping *channelMapping = handler->channelMappingManager()->getOrCreateResource(channelMappingId);
+        setPeerId(channelMapping, channelMappingId);
+        channelMapping->setSkeletonId(skeletonId);
+        channelMapping->setMappingType(ChannelMapping::SkeletonMappingType);
         return channelMapping;
     }
 
@@ -245,6 +257,15 @@ public:
         node->setHandler(handler);
         handler->clipBlendNodeManager()->appendNode(id, node);
         return node;
+    }
+
+    Skeleton *createSkeleton(Handler *handler, int jointCount)
+    {
+        auto skeletonId = Qt3DCore::QNodeId::createId();
+        Skeleton *skeleton = handler->skeletonManager()->getOrCreateResource(skeletonId);
+        setPeerId(skeleton, skeletonId);
+        skeleton->setJointCount(jointCount);
+        return skeleton;
     }
 
 private Q_SLOTS:
@@ -2508,6 +2529,27 @@ private Q_SLOTS:
             expectedResults.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
 
             QTest::addRow("Multiple channels with repeats") << handler << channelMapper << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            const int jointCount = 10;
+            auto skeleton = createSkeleton(handler, jointCount);
+            auto channelMapping = createChannelMapping(handler, skeleton->peerId());
+            QVector<ChannelMapping *> channelMappings;
+            channelMappings.push_back(channelMapping);
+
+            auto channelMapper = createChannelMapper(handler,
+                                                     QVector<Qt3DCore::QNodeId>() << channelMapping->peerId());
+
+            QVector<ChannelNameAndType> expectedResults;
+            for (int i = 0; i < jointCount; ++i) {
+                expectedResults.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), i });
+                expectedResults.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), i });
+                expectedResults.push_back({ QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), i });
+            }
+
+            QTest::addRow("Skeleton, 10 joints") << handler << channelMapper << expectedResults;
         }
     }
 

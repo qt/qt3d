@@ -64,7 +64,14 @@ public:
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    int jointCount() const { return m_jointLocalPoses.size(); }
+
 #if defined(QT_BUILD_INTERNAL)
+    void setJointCount(int jointCount)
+    {
+        m_jointNames.resize(jointCount);
+        m_jointLocalPoses.resize(jointCount);
+    }
     void setJointNames(const QVector<QString> &names) { m_jointNames = names; }
     QVector<QString> jointNames() const { return m_jointNames; }
     void setJointLocalPoses(const QVector<Qt3DCore::Sqt> &localPoses) { m_jointLocalPoses = localPoses; }

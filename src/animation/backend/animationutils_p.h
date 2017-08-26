@@ -100,10 +100,27 @@ struct ChannelNameAndType
 {
     QString name;
     int type;
+    int jointIndex;
+
+    static const int invalidIndex = -1;
+
+    ChannelNameAndType()
+        : name()
+        , type(-1)
+        , jointIndex(-1)
+    {}
+
+    ChannelNameAndType(const QString &_name, int _type, int _jointIndex = invalidIndex)
+        : name(_name)
+        , type(_type)
+        , jointIndex(_jointIndex)
+    {}
 
     bool operator==(const ChannelNameAndType &rhs) const
     {
-        return name == rhs.name && type == rhs.type;
+        return name == rhs.name
+            && type == rhs.type
+            && jointIndex == rhs.jointIndex;
     }
 };
 
