@@ -577,7 +577,8 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
     for (int i = 0; i < channelCount; ++i) {
         // Find the index of the channel from the clip
         const ChannelNameAndType &targetChannel = targetChannels[i];
-        const int clipChannelIndex = clip->channelIndex(targetChannel.name);
+        const int clipChannelIndex = clip->channelIndex(targetChannel.name,
+                                                        targetChannel.jointIndex);
 
         // TODO: Ensure channel in the clip has enough components to map to the type.
         //       Requires some improvements to the clip data structure first.

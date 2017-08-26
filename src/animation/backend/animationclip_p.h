@@ -80,7 +80,7 @@ public:
     void loadAnimation();
     void setDuration(float duration);
     float duration() const { return m_duration; }
-    int channelIndex(const QString &channelName) const;
+    int channelIndex(const QString &channelName, int jointIndex) const;
     int channelCount() const { return m_channelComponentCount; }
     int channelComponentBaseIndex(int channelGroupIndex) const;
 

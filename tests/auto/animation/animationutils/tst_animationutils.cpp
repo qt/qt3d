@@ -2793,6 +2793,54 @@ private Q_SLOTS:
             QTest::newRow("location, rotation, albedo (missing), metal-rough")
                     << targetChannels << targetIndices << clip << expectedResults;
         }
+
+        {
+            QVector<ChannelNameAndType> targetChannels;
+            const int jointCount = 4;
+            for (int i = 0; i < jointCount; ++i) {
+                targetChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), i });
+                targetChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), i });
+                targetChannels.push_back({ QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), i });
+            }
+
+            QVector<ComponentIndices> targetIndices;
+            targetIndices.push_back({ 0, 1, 2 });
+            targetIndices.push_back({ 3, 4, 5, 6 });
+            targetIndices.push_back({ 7, 8, 9 });
+
+            targetIndices.push_back({ 10, 11, 12 });
+            targetIndices.push_back({ 13, 14, 15, 16 });
+            targetIndices.push_back({ 17, 18, 19 });
+
+            targetIndices.push_back({ 20, 21, 22 });
+            targetIndices.push_back({ 23, 24, 25, 26 });
+            targetIndices.push_back({ 27, 28, 29 });
+
+            targetIndices.push_back({ 30, 31, 32 });
+            targetIndices.push_back({ 33, 34, 35, 36 });
+            targetIndices.push_back({ 37, 38, 39 });
+
+            auto *clip = new AnimationClip();
+            clip->setDataType(AnimationClip::File);
+            clip->setSource(QUrl("qrc:/clip5.json"));
+            clip->loadAnimation();
+
+            ComponentIndices expectedResults = { 4, 5, 6,           // Location, joint 0
+                                                 0, 1, 2, 3,        // Rotation, joint 0
+                                                 7, 8, 9,           // Scale,    joint 0
+                                                 14, 15, 16,        // Location, joint 1
+                                                 10, 11, 12, 13,    // Rotation, joint 1
+                                                 17, 18, 19,        // Scale,    joint 1
+                                                 24, 25, 26,        // Location, joint 2
+                                                 20, 21, 22, 23,    // Rotation, joint 2
+                                                 27, 28, 29,        // Scale,    joint 2
+                                                 34, 35, 36,        // Location, joint 3
+                                                 30, 31, 32, 33,    // Rotation, joint 3
+                                                 37, 38, 39 };      // Scale,    joint 3
+
+            QTest::newRow("skeleton (SQT), 4 joints")
+                    << targetChannels << targetIndices << clip << expectedResults;
+        }
     }
 
     void checkGenerateClipFormatIndices()

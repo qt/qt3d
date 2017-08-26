@@ -239,12 +239,14 @@ void AnimationClip::setDuration(float duration)
     notifyObservers(e);
 }
 
-int AnimationClip::channelIndex(const QString &channelName) const
+int AnimationClip::channelIndex(const QString &channelName, int jointIndex) const
 {
     const int channelCount = m_channels.size();
     for (int i = 0; i < channelCount; ++i) {
-        if (m_channels[i].name == channelName)
+        if (m_channels[i].name == channelName
+            && (jointIndex == -1 || m_channels[i].jointIndex == jointIndex)) {
             return i;
+        }
     }
     return -1;
 }
