@@ -2616,6 +2616,35 @@ private Q_SLOTS:
 
             QTest::newRow("vec3 location, quaterion rotation, pbr metal-rough") << allChannels << expectedResults;
         }
+
+        {
+            QVector<ChannelNameAndType> allChannels;
+            const int jointCount = 4;
+            for (int i = 0; i < jointCount; ++i) {
+                allChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), i });
+                allChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), i });
+                allChannels.push_back({ QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), i });
+            }
+
+            QVector<ComponentIndices> expectedResults;
+            expectedResults.push_back({ 0, 1, 2 });
+            expectedResults.push_back({ 3, 4, 5, 6 });
+            expectedResults.push_back({ 7, 8, 9 });
+
+            expectedResults.push_back({ 10, 11, 12 });
+            expectedResults.push_back({ 13, 14, 15, 16 });
+            expectedResults.push_back({ 17, 18, 19 });
+
+            expectedResults.push_back({ 20, 21, 22 });
+            expectedResults.push_back({ 23, 24, 25, 26 });
+            expectedResults.push_back({ 27, 28, 29 });
+
+            expectedResults.push_back({ 30, 31, 32 });
+            expectedResults.push_back({ 33, 34, 35, 36 });
+            expectedResults.push_back({ 37, 38, 39 });
+
+            QTest::newRow("skeleton, 4 joints") << allChannels << expectedResults;
+        }
     }
 
     void checkAssignChannelComponentIndices()
