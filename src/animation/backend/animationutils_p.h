@@ -72,6 +72,7 @@ typedef QVector<int> ComponentIndices;
 struct MappingData
 {
     Qt3DCore::QNodeId targetId;
+    int jointIndex = -1;
     const char *propertyName;
     QAnimationCallback *callback;
     QAnimationCallback::Flags callbackFlags;

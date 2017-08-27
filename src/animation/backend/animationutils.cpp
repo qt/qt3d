@@ -342,37 +342,100 @@ QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &
     return callbacks;
 }
 
+// TODO: Optimize this even more by combining the work done here with the functions:
+// buildRequiredChannelsAndTypes() and assignChannelComponentIndices(). We are
+// currently repeating the iteration over mappings and extracting/generating
+// channel names, types and joint indices.
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
                                            const QVector<ComponentIndices> &channelComponentIndices)
 {
+    // Accumulate the required number of mappings
+    int maxMappingDatas = 0;
+    for (const auto mapping : channelMappings) {
+        switch (mapping->mappingType()) {
+        case ChannelMapping::ChannelMappingType:
+        case ChannelMapping::CallbackMappingType:
+            ++maxMappingDatas;
+            break;
+
+        case ChannelMapping::SkeletonMappingType: {
+            Skeleton *skeleton = mapping->skeleton();
+            maxMappingDatas += 3 * skeleton->jointCount(); // S, R, T
+            break;
+        }
+        }
+    }
     QVector<MappingData> mappingDataVec;
-    mappingDataVec.reserve(channelMappings.size());
+    mappingDataVec.reserve(maxMappingDatas);
 
     // Iterate over the mappings
     for (const auto mapping : channelMappings) {
-        // Populate the data we need, easy stuff first
-        MappingData mappingData;
-        mappingData.targetId = mapping->targetId();
-        mappingData.propertyName = mapping->propertyName();
-        mappingData.type = mapping->type();
-        mappingData.callback = mapping->callback();
-        mappingData.callbackFlags = mapping->callbackFlags();
+        switch (mapping->mappingType()) {
+        case ChannelMapping::ChannelMappingType:
+        case ChannelMapping::CallbackMappingType: {
+            // Populate the data we need, easy stuff first
+            MappingData mappingData;
+            mappingData.targetId = mapping->targetId();
+            mappingData.propertyName = mapping->propertyName();
+            mappingData.type = mapping->type();
+            mappingData.callback = mapping->callback();
+            mappingData.callbackFlags = mapping->callbackFlags();
 
-        if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
-            qWarning() << "Unknown type for node id =" << mappingData.targetId
-                       << "and property =" << mapping->property()
-                       << "and callback =" << mapping->callback();
-            continue;
+            if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
+                qWarning() << "Unknown type for node id =" << mappingData.targetId
+                           << "and property =" << mapping->property()
+                           << "and callback =" << mapping->callback();
+                continue;
+            }
+
+            // Try to find matching channel name and type
+            const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type() };
+            const int index = channelNamesAndTypes.indexOf(nameAndType);
+            if (index != -1) {
+                // We got one!
+                mappingData.channelIndices = channelComponentIndices[index];
+                mappingDataVec.push_back(mappingData);
+            }
+            break;
         }
 
-        // Try to find matching channel name and type
-        const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type() };
-        const int index = channelNamesAndTypes.indexOf(nameAndType);
-        if (index != -1) {
-            // We got one!
-            mappingData.channelIndices = channelComponentIndices[index];
-            mappingDataVec.push_back(mappingData);
+        case ChannelMapping::SkeletonMappingType: {
+            const QVector<ChannelNameAndType> jointProperties
+                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) },
+                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) },
+                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D) } };
+            const QHash<QString, const char *> channelNameToPropertyName
+                    = { { QLatin1String("Location"), "translation" },
+                        { QLatin1String("Rotation"), "rotation" },
+                        { QLatin1String("Scale"), "scale" } };
+            Skeleton *skeleton = mapping->skeleton();
+            const int jointCount = skeleton->jointCount();
+            for (int jointIndex = 0; jointIndex < jointCount; ++jointIndex) {
+                // Populate the data we need, easy stuff first
+                MappingData mappingData;
+                mappingData.targetId = mapping->skeletonId();
+
+                const int propertyCount = jointProperties.size();
+                for (int propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex) {
+                    // Get the name, type and index
+                    ChannelNameAndType nameAndType = jointProperties[propertyIndex];
+                    nameAndType.jointIndex = jointIndex;
+
+                    // Try to find matching channel name and type
+                    const int index = channelNamesAndTypes.indexOf(nameAndType);
+                    if (index != -1) {
+                        // We got one!
+                        mappingData.propertyName = channelNameToPropertyName[nameAndType.name];
+                        mappingData.type = nameAndType.type;
+                        mappingData.channelIndices = channelComponentIndices[index];
+                        mappingData.jointIndex = jointIndex;
+                        mappingDataVec.push_back(mappingData);
+                    }
+                }
+            }
+            break;
+        }
         }
     }
 

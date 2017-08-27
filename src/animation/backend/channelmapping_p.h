@@ -101,6 +101,7 @@ public:
 
     void setSkeletonId(Qt3DCore::QNodeId skeletonId) { m_skeletonId = skeletonId; }
     Qt3DCore::QNodeId skeletonId() const { return m_skeletonId; }
+    Skeleton *skeleton() const;
 
     void setMappingType(MappingType mappingType) { m_mappingType = mappingType; }
     MappingType mappingType() const { return m_mappingType; }

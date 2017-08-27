@@ -40,6 +40,7 @@
 #include <Qt3DAnimation/private/qskeletonmapping_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -135,6 +136,11 @@ void ChannelMapping::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     QBackendNode::sceneChangeEvent(e);
+}
+
+Skeleton *ChannelMapping::skeleton() const
+{
+    return m_handler->skeletonManager()->lookupResource(m_skeletonId);
 }
 
 } // namespace Animation

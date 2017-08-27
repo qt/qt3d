@@ -149,6 +149,7 @@ public:
         auto channelMappingId = Qt3DCore::QNodeId::createId();
         ChannelMapping *channelMapping = handler->channelMappingManager()->getOrCreateResource(channelMappingId);
         setPeerId(channelMapping, channelMappingId);
+        channelMapping->setHandler(handler);
         channelMapping->setTargetId(targetId);
         channelMapping->setProperty(property);
         channelMapping->setPropertyName(propertyName);
@@ -164,6 +165,7 @@ public:
         auto channelMappingId = Qt3DCore::QNodeId::createId();
         ChannelMapping *channelMapping = handler->channelMappingManager()->getOrCreateResource(channelMappingId);
         setPeerId(channelMapping, channelMappingId);
+        channelMapping->setHandler(handler);
         channelMapping->setSkeletonId(skeletonId);
         channelMapping->setMappingType(ChannelMapping::SkeletonMappingType);
         return channelMapping;
@@ -271,6 +273,7 @@ public:
 private Q_SLOTS:
     void checkBuildPropertyMappings_data()
     {
+        QTest::addColumn<Handler *>("handler");
         QTest::addColumn<QVector<ChannelMapping *>>("channelMappings");
         QTest::addColumn<QVector<ChannelNameAndType>>("channelNamesAndTypes");
         QTest::addColumn<QVector<ComponentIndices>>("channelComponentIndices");
@@ -278,12 +281,14 @@ private Q_SLOTS:
 
         // Single ChannelMapping
         {
-            auto channelMapping = new ChannelMapping();
-            channelMapping->setChannelName("Location");
-            channelMapping->setTargetId(Qt3DCore::QNodeId::createId());
-            channelMapping->setProperty(QLatin1String("translation"));
-            channelMapping->setPropertyName("translation");
-            channelMapping->setType(static_cast<int>(QVariant::Vector3D));
+            Handler *handler = new Handler();
+
+            auto channelMapping = createChannelMapping(handler,
+                                                       QLatin1String("Location"),
+                                                       Qt3DCore::QNodeId::createId(),
+                                                       QLatin1String("translation"),
+                                                       "translation",
+                                                       static_cast<int>(QVariant::Vector3D));
 
             QVector<ChannelMapping *> channelMappings = { channelMapping };
 
@@ -319,6 +324,7 @@ private Q_SLOTS:
             QVector<MappingData> expectedResults = { expectedMapping };
 
             QTest::newRow("single mapping")
+                    << handler
                     << channelMappings
                     << channelNamesAndTypes
                     << channelComponentIndices
@@ -327,40 +333,42 @@ private Q_SLOTS:
 
         // Multiple ChannelMappings
         {
-            auto locationMapping = new ChannelMapping();
-            locationMapping->setChannelName("Location");
-            locationMapping->setTargetId(Qt3DCore::QNodeId::createId());
-            locationMapping->setProperty(QLatin1String("translation"));
-            locationMapping->setPropertyName("translation");
-            locationMapping->setType(static_cast<int>(QVariant::Vector3D));
+            Handler *handler = new Handler();
 
-            auto metalnessMapping = new ChannelMapping();
-            metalnessMapping->setChannelName("Metalness");
-            metalnessMapping->setTargetId(Qt3DCore::QNodeId::createId());
-            metalnessMapping->setProperty(QLatin1String("metalness"));
-            metalnessMapping->setPropertyName("metalness");
-            metalnessMapping->setType(static_cast<int>(QVariant::Double));
+            auto locationMapping = createChannelMapping(handler,
+                                                        QLatin1String("Location"),
+                                                        Qt3DCore::QNodeId::createId(),
+                                                        QLatin1String("translation"),
+                                                        "translation",
+                                                        static_cast<int>(QVariant::Vector3D));
 
-            auto baseColorMapping = new ChannelMapping();
-            baseColorMapping->setChannelName("BaseColor");
-            baseColorMapping->setTargetId(Qt3DCore::QNodeId::createId());
-            baseColorMapping->setProperty(QLatin1String("baseColor"));
-            baseColorMapping->setPropertyName("baseColor");
-            baseColorMapping->setType(static_cast<int>(QVariant::Vector3D));
+            auto metalnessMapping = createChannelMapping(handler,
+                                                         QLatin1String("Metalness"),
+                                                         Qt3DCore::QNodeId::createId(),
+                                                         QLatin1String("metalness"),
+                                                         "metalness",
+                                                         static_cast<int>(QVariant::Double));
 
-            auto roughnessMapping = new ChannelMapping();
-            roughnessMapping->setChannelName("Roughness");
-            roughnessMapping->setTargetId(Qt3DCore::QNodeId::createId());
-            roughnessMapping->setProperty(QLatin1String("roughness"));
-            roughnessMapping->setPropertyName("roughness");
-            roughnessMapping->setType(static_cast<int>(QVariant::Double));
+            auto baseColorMapping = createChannelMapping(handler,
+                                                         QLatin1String("BaseColor"),
+                                                         Qt3DCore::QNodeId::createId(),
+                                                         QLatin1String("baseColor"),
+                                                         "baseColor",
+                                                         static_cast<int>(QVariant::Vector3D));
 
-            auto rotationMapping = new ChannelMapping();
-            rotationMapping->setChannelName("Rotation");
-            rotationMapping->setTargetId(Qt3DCore::QNodeId::createId());
-            rotationMapping->setProperty(QLatin1String("rotation"));
-            rotationMapping->setPropertyName("rotation");
-            rotationMapping->setType(static_cast<int>(QVariant::Quaternion));
+            auto roughnessMapping = createChannelMapping(handler,
+                                                         QLatin1String("Roughness"),
+                                                         Qt3DCore::QNodeId::createId(),
+                                                         QLatin1String("roughness"),
+                                                         "roughness",
+                                                         static_cast<int>(QVariant::Double));
+
+            auto rotationMapping = createChannelMapping(handler,
+                                                        QLatin1String("Rotation"),
+                                                        Qt3DCore::QNodeId::createId(),
+                                                        QLatin1String("rotation"),
+                                                        "rotation",
+                                                        static_cast<int>(QVariant::Quaternion));
 
             QVector<ChannelMapping *> channelMappings
                     = { locationMapping, metalnessMapping,
@@ -429,6 +437,77 @@ private Q_SLOTS:
                         expectedRotationMapping };
 
             QTest::newRow("multiple mappings")
+                    << handler
+                    << channelMappings
+                    << channelNamesAndTypes
+                    << channelComponentIndices
+                    << expectedResults;
+        }
+
+        // Single skeleton mapping
+        {
+            Handler *handler = new Handler();
+            const int jointCount = 4;
+            auto skeleton = createSkeleton(handler, jointCount);
+            auto channelMapping = createChannelMapping(handler, skeleton->peerId());
+
+            QVector<ChannelMapping *> channelMappings = { channelMapping };
+
+            // Create a few channels in the format description
+            QVector<ChannelNameAndType> channelNamesAndTypes;
+            for (int i = 0; i < jointCount; ++i) {
+                channelNamesAndTypes.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), i });
+                channelNamesAndTypes.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), i });
+                channelNamesAndTypes.push_back({ QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), i });
+            }
+
+            // And the matching indices
+            QVector<ComponentIndices> channelComponentIndices;
+            channelComponentIndices.push_back({ 0, 1, 2 });
+            channelComponentIndices.push_back({ 3, 4, 5, 6 });
+            channelComponentIndices.push_back({ 7, 8, 9 });
+
+            channelComponentIndices.push_back({ 10, 11, 12 });
+            channelComponentIndices.push_back({ 13, 14, 15, 16 });
+            channelComponentIndices.push_back({ 17, 18, 19 });
+
+            channelComponentIndices.push_back({ 20, 21, 22 });
+            channelComponentIndices.push_back({ 23, 24, 25, 26 });
+            channelComponentIndices.push_back({ 27, 28, 29 });
+
+            channelComponentIndices.push_back({ 30, 31, 32 });
+            channelComponentIndices.push_back({ 33, 34, 35, 36 });
+            channelComponentIndices.push_back({ 37, 38, 39 });
+
+            QVector<MappingData> expectedResults;
+            int componentIndicesIndex = 0;
+            for (int i = 0; i < jointCount; ++i) {
+                MappingData locationMapping;
+                locationMapping.targetId = channelMapping->skeletonId();
+                locationMapping.propertyName = "translation";
+                locationMapping.type = static_cast<int>(QVariant::Vector3D);
+                locationMapping.channelIndices = channelComponentIndices[componentIndicesIndex++];
+                locationMapping.jointIndex = i;
+
+                MappingData rotationMapping;
+                rotationMapping.targetId = channelMapping->skeletonId();
+                rotationMapping.propertyName = "rotation";
+                rotationMapping.type = static_cast<int>(QVariant::Quaternion);
+                rotationMapping.channelIndices = channelComponentIndices[componentIndicesIndex++];
+                rotationMapping.jointIndex = i;
+
+                MappingData scaleMapping;
+                scaleMapping.targetId = channelMapping->skeletonId();
+                scaleMapping.propertyName = "scale";
+                scaleMapping.type = static_cast<int>(QVariant::Vector3D);
+                scaleMapping.channelIndices = channelComponentIndices[componentIndicesIndex++];
+                scaleMapping.jointIndex = i;
+
+                expectedResults << locationMapping << rotationMapping << scaleMapping;
+            }
+
+            QTest::newRow("single skeleton mapping")
+                    << handler
                     << channelMappings
                     << channelNamesAndTypes
                     << channelComponentIndices
@@ -439,6 +518,7 @@ private Q_SLOTS:
     void checkBuildPropertyMappings()
     {
         // GIVEN
+        QFETCH(Handler *, handler);
         QFETCH(QVector<ChannelMapping *>, channelMappings);
         QFETCH(QVector<ChannelNameAndType>, channelNamesAndTypes);
         QFETCH(QVector<ComponentIndices>, channelComponentIndices);
@@ -456,6 +536,7 @@ private Q_SLOTS:
             const auto expectedMapping = expectedResults[i];
 
             QCOMPARE(actualMapping.targetId, expectedMapping.targetId);
+            QCOMPARE(actualMapping.jointIndex, expectedMapping.jointIndex);
             QCOMPARE(actualMapping.propertyName, expectedMapping.propertyName);
             QCOMPARE(actualMapping.type, expectedMapping.type);
             QCOMPARE(actualMapping.channelIndices.size(), expectedMapping.channelIndices.size());
@@ -463,6 +544,9 @@ private Q_SLOTS:
                 QCOMPARE(actualMapping.channelIndices[j], expectedMapping.channelIndices[j]);
             }
         }
+
+        // Cleanup
+        delete handler;
     }
 
     void checkLocalTimeFromGlobalTime_data()
