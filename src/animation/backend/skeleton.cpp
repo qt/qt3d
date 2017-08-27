@@ -96,6 +96,15 @@ void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     BackendNode::sceneChangeEvent(e);
 }
 
+void Skeleton::sendLocalPoses()
+{
+    auto e = QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::BackendNodes);
+    e->setPropertyName("localPoses");
+    e->setValue(QVariant::fromValue(m_jointLocalPoses));
+    notifyObservers(e);
+}
+
 } // namespace Animation
 } // namespace Qt3DAnimation
 

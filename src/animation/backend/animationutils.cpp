@@ -48,6 +48,7 @@
 #include <QtGui/qquaternion.h>
 #include <QtGui/qcolor.h>
 #include <QtCore/qvariant.h>
+#include <QtCore/qvarlengtharray.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 
 #include <numeric>
@@ -292,13 +293,45 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
                                                           bool finalFrame)
 {
     QVector<Qt3DCore::QSceneChangePtr> changes;
+    QVarLengthArray<Skeleton *, 4> dirtySkeletons;
+
     // Iterate over the mappings
     for (const MappingData &mappingData : mappingDataVec) {
         if (!mappingData.propertyName)
             continue;
+
         // Build the new value from the channel/fcurve evaluation results
         const QVariant v = buildPropertyValue(mappingData, channelResults);
-        if (v.isValid()) {
+        if (!v.isValid())
+            continue;
+
+        // TODO: Avoid wrapping joint transform components up in a variant, just
+        // to immediately unwrap them again. Refactor buildPropertyValue() to call
+        // helper functions that we can call directly here for joints.
+        if (mappingData.skeleton && mappingData.jointIndex != -1) {
+            // Remember that this skeleton is dirty. We will ask each dirty skeleton
+            // to send its set of local poses to observers below.
+            if (!dirtySkeletons.contains(mappingData.skeleton))
+                dirtySkeletons.push_back(mappingData.skeleton);
+
+            switch (mappingData.jointTransformComponent) {
+            case MappingData::Scale:
+                mappingData.skeleton->setJointScale(mappingData.jointIndex, v.value<QVector3D>());
+                break;
+
+            case MappingData::Rotation:
+                mappingData.skeleton->setJointRotation(mappingData.jointIndex, v.value<QQuaternion>());
+                break;
+
+            case MappingData::Translation:
+                mappingData.skeleton->setJointTranslation(mappingData.jointIndex, v.value<QVector3D>());
+                break;
+
+            default:
+                Q_UNREACHABLE();
+                break;
+            }
+        } else {
             // Construct a property update change, set target, property and delivery options
             auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(mappingData.targetId);
             e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -311,6 +344,8 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
         }
     }
 
+    for (const auto skeleton : dirtySkeletons)
+        skeleton->sendLocalPoses();
 
     // If it's the final frame, notify the frontend that we've stopped
     if (finalFrame) {
@@ -415,6 +450,7 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
                 // Populate the data we need, easy stuff first
                 MappingData mappingData;
                 mappingData.targetId = mapping->skeletonId();
+                mappingData.skeleton = mapping->skeleton();
 
                 const int propertyCount = jointProperties.size();
                 for (int propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex) {
@@ -430,6 +466,17 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
                         mappingData.type = nameAndType.type;
                         mappingData.channelIndices = channelComponentIndices[index];
                         mappingData.jointIndex = jointIndex;
+
+                        // Convert property name for joint transform components to
+                        // an enumerated type so we can avoid the string comparisons
+                        // when sending the change events after evaluation.
+                        if (qstrcmp(mappingData.propertyName, "scale") == 0)
+                            mappingData.jointTransformComponent = MappingData::Scale;
+                        else if (qstrcmp(mappingData.propertyName, "rotation") == 0)
+                            mappingData.jointTransformComponent = MappingData::Rotation;
+                        else if (qstrcmp(mappingData.propertyName, "translation") == 0)
+                            mappingData.jointTransformComponent = MappingData::Translation;
+
                         mappingDataVec.push_back(mappingData);
                     }
                 }

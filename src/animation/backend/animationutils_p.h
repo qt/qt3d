@@ -71,8 +71,17 @@ typedef QVector<int> ComponentIndices;
 
 struct MappingData
 {
+    enum JointTransformComponent {
+        NoTransformComponent = 0,
+        Scale,
+        Rotation,
+        Translation
+    };
+
     Qt3DCore::QNodeId targetId;
+    Skeleton *skeleton = nullptr;
     int jointIndex = -1;
+    JointTransformComponent jointTransformComponent = NoTransformComponent;
     const char *propertyName;
     QAnimationCallback *callback;
     QAnimationCallback::Flags callbackFlags;
