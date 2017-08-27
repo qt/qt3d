@@ -81,7 +81,7 @@ void FindRunningClipAnimatorsJob::run()
 
         const QVector<ChannelNameAndType> channelNamesAndTypes
                 = buildRequiredChannelsAndTypes(m_handler, mapper);
-        const QVector<ComponentIndices> channelComponentIndices
+        QVector<ComponentIndices> channelComponentIndices
                 = assignChannelComponentIndices(channelNamesAndTypes);
 
         const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());

@@ -460,6 +460,12 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
 
                     // Try to find matching channel name and type
                     const int index = channelNamesAndTypes.indexOf(nameAndType);
+
+                    // Do we have any animation data for this channel? If not, don't bother
+                    // adding a mapping for it.
+                    if (channelComponentIndices[index].isEmpty())
+                        continue;
+
                     if (index != -1) {
                         // We got one!
                         mappingData.propertyName = channelNameToPropertyName[nameAndType.name];
@@ -613,7 +619,7 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
 }
 
 ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
-                                           const QVector<ComponentIndices> &targetIndices,
+                                           QVector<ComponentIndices> &targetIndices,
                                            const AnimationClip *clip)
 {
     Q_ASSERT(targetChannels.size() == targetIndices.size());
@@ -650,6 +656,7 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
             // No such channel in this clip. We'll use default values when
             // mapping from the clip to the formatted clip results.
             std::fill(formatIt, formatIt + componentCount, -1);
+            targetIndices[i].clear();
         }
 
         formatIt += componentCount;

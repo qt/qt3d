@@ -227,7 +227,7 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
 
 Q_AUTOTEST_EXPORT
 ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
-                                           const QVector<ComponentIndices> &targetIndices,
+                                           QVector<ComponentIndices> &targetIndices,
                                            const AnimationClip *clip);
 
 Q_AUTOTEST_EXPORT
