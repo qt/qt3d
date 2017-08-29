@@ -25,6 +25,8 @@ HEADERS += \
     $$PWD/qphongalphamaterial_p.h \
     $$PWD/qt3dwindow.h \
     $$PWD/qt3dwindow_p.h \
+    $$PWD/qabstractcameracontroller.h \
+    $$PWD/qabstractcameracontroller_p.h \
     $$PWD/qfirstpersoncameracontroller.h \
     $$PWD/qfirstpersoncameracontroller_p.h \
     $$PWD/qorbitcameracontroller.h \
@@ -58,6 +60,7 @@ SOURCES += \
     $$PWD/qgoochmaterial.cpp \
     $$PWD/qphongalphamaterial.cpp \
     $$PWD/qt3dwindow.cpp \
+    $$PWD/qabstractcameracontroller.cpp \
     $$PWD/qfirstpersoncameracontroller.cpp \
     $$PWD/qorbitcameracontroller.cpp \
     $$PWD/qabstractspritesheet.cpp \

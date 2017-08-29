@@ -37,53 +37,22 @@
 #ifndef QT3DEXTRAS_QFIRSTPERSONCAMERACONTROLLER_H
 #define QT3DEXTRAS_QFIRSTPERSONCAMERACONTROLLER_H
 
-#include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/qabstractcameracontroller.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-class QCamera;
-}
-
 namespace Qt3DExtras {
 
-class QFirstPersonCameraControllerPrivate;
-
-class QT3DEXTRASSHARED_EXPORT QFirstPersonCameraController : public Qt3DCore::QEntity
+class QT3DEXTRASSHARED_EXPORT QFirstPersonCameraController : public QAbstractCameraController
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
-    Q_PROPERTY(float linearSpeed READ linearSpeed WRITE setLinearSpeed NOTIFY linearSpeedChanged)
-    Q_PROPERTY(float lookSpeed READ lookSpeed WRITE setLookSpeed NOTIFY lookSpeedChanged)
-    Q_PROPERTY(float acceleration READ acceleration WRITE setAcceleration NOTIFY accelerationChanged)
-    Q_PROPERTY(float deceleration READ deceleration WRITE setDeceleration NOTIFY decelerationChanged)
+
 public:
     explicit QFirstPersonCameraController(Qt3DCore::QNode *parent = nullptr);
     ~QFirstPersonCameraController();
 
-    Qt3DRender::QCamera *camera() const;
-    float linearSpeed() const;
-    float lookSpeed() const;
-    float acceleration() const;
-    float deceleration() const;
-
-    void setCamera(Qt3DRender::QCamera *camera);
-    void setLinearSpeed(float linearSpeed);
-    void setLookSpeed(float lookSpeed);
-    void setAcceleration(float acceleration);
-    void setDeceleration(float deceleration);
-
-Q_SIGNALS:
-    void cameraChanged();
-    void linearSpeedChanged();
-    void lookSpeedChanged();
-    void accelerationChanged(float acceleration);
-    void decelerationChanged(float deceleration);
-
 private:
-    Q_DECLARE_PRIVATE(QFirstPersonCameraController)
-    Q_PRIVATE_SLOT(d_func(), void _q_onTriggered(float))
+    void moveCamera(const QAbstractCameraController::InputState &state, float dt) override;
 };
 
 } // Qt3DExtras
