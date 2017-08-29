@@ -1239,7 +1239,14 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     for (const ShaderUniform &uniform : activeUniforms) {
         // We can use [] as we are sure the the uniform wouldn't
         // be un activeUniforms if there wasn't a matching value
-        applyUniform(uniform, values[uniform.m_nameId]);
+        const auto &v = values[uniform.m_nameId];
+
+        // skip invalid textures
+        if (v.valueType() == UniformValue::TextureValue &&
+                v.constData<UniformValue::Texture>()->textureId == -1)
+            continue;
+
+        applyUniform(uniform, v);
     }
 }
 

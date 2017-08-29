@@ -177,6 +177,10 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
         }
     }
 
+    // don't try to create the texture if the format was not set
+    if (m_properties.format == QAbstractTexture::Automatic)
+        return nullptr;
+
     if (texturedDataInvalid)
         return nullptr;
 
