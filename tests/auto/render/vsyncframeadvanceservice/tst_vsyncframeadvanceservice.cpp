@@ -35,76 +35,49 @@ class FakeRenderThread Q_DECL_FINAL : public QThread
 public:
     FakeRenderThread(Qt3DRender::Render::VSyncFrameAdvanceService *tickService)
         : m_tickService(tickService)
+        , m_running(1)
+        , m_submitCount(0)
     {
     }
 
-    // QThread interface
-protected:
-    void run() Q_DECL_FINAL
-    {
-        QThread::msleep(1000);
-        m_tickService->proceedToNextFrame();
-    }
-
-private:
-    Qt3DRender::Render::VSyncFrameAdvanceService *m_tickService;
-};
-
-class FakeAspectThread Q_DECL_FINAL : public QThread
-{
-public:
-    FakeAspectThread(Qt3DRender::Render::VSyncFrameAdvanceService *tickService)
-        : m_tickService(tickService)
-        , m_count(0)
-        , m_running(true)
-        , m_waitForStarted(0)
-    {
-    }
-
-    int count() const { return m_count; }
+    int submitCount() const { return m_submitCount; }
 
     void stopRunning()
     {
-        QMutexLocker lock(&m_mutex);
-        m_running = false;
+        m_running.fetchAndStoreOrdered(0);
+        m_submitSemaphore.release(1);
     }
 
-    void waitForStarted()
+    void enqueueRenderView()
     {
-        m_waitForStarted.acquire(1);
+        m_submitSemaphore.release(1);
     }
 
 protected:
     // QThread interface
     void run() Q_DECL_FINAL
     {
-        m_waitForStarted.release(1);
+        m_tickService->proceedToNextFrame();
+
         while (true) {
-
-            bool running = true;
-            {
-                QMutexLocker lock(&m_mutex);
-                running = m_running;
-            }
-
-            if (!running) {
-                qDebug() << "exiting";
-                return;
-            }
-
-            m_tickService->waitForNextFrame();
-            ++m_count;
-
-            QThread::msleep(100);
+            if (!isReadyToSubmit())
+                break;
+            ++m_submitCount;
+            m_tickService->proceedToNextFrame();
         }
     }
 
 private:
+    bool isReadyToSubmit()
+    {
+        m_submitSemaphore.acquire(1);
+        return m_running.load() == 1;
+    }
+
     Qt3DRender::Render::VSyncFrameAdvanceService *m_tickService;
-    int m_count;
-    bool m_running;
-    QMutex m_mutex;
-    QSemaphore m_waitForStarted;
+    QAtomicInt m_running;
+    QSemaphore m_submitSemaphore;
+    int m_submitCount;
 };
 
 class tst_VSyncFrameAdvanceService : public QObject
@@ -118,43 +91,22 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::VSyncFrameAdvanceService tickService(true);
         FakeRenderThread renderThread(&tickService);
-        QElapsedTimer t;
 
         // WHEN
-        t.start();
         renderThread.start();
+
+        for (int i = 0; i < 10; ++i) {
+            tickService.waitForNextFrame();
+            renderThread.enqueueRenderView();
+        }
+
         tickService.waitForNextFrame();
 
-        // THEN
-        // we allow for a little margin by checking for 950
-        // instead of 1000
-        QVERIFY(t.elapsed() >= 950);
-    }
-
-    void checkWaitForNextFrame()
-    {
-        // GIVEN
-        Qt3DRender::Render::VSyncFrameAdvanceService tickService(false);
-        FakeAspectThread aspectThread(&tickService);
-
-        // WHEN
-        aspectThread.start();
-        aspectThread.waitForStarted();
-
-        QElapsedTimer t;
-        t.start();
-
-        while (t.elapsed() < 1000)
-            tickService.proceedToNextFrame();
-
-        aspectThread.stopRunning();
-
-        // To make sure the aspectThread can finish
-        tickService.proceedToNextFrame();
-        aspectThread.wait();
+        renderThread.stopRunning();
+        renderThread.wait();
 
         // THEN
-        QCOMPARE(aspectThread.count(), 10);
+        QCOMPARE(renderThread.submitCount(), 10);
     }
 };
 
