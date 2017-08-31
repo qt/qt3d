@@ -1921,6 +1921,18 @@ private Q_SLOTS:
 
             QTest::newRow("simple lerp") << handler << lerp->peerId() << expectedIds;
         }
+
+        {
+            Handler *handler = new Handler;
+
+            const auto value1 = createClipBlendValue(handler);
+            const auto clip1Id = Qt3DCore::QNodeId::createId();
+            value1->setClipId(clip1Id);
+
+            QVector<Qt3DCore::QNodeId> expectedIds = { value1->peerId() };
+
+            QTest::newRow("value only") << handler << value1->peerId() << expectedIds;
+        }
     }
 
     void checkGatherValueNodesToEvaluate()
