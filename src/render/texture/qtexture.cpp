@@ -440,19 +440,22 @@ struct PkmHeader
     quint16 height;
 };
 
-enum CompressedFormatExtension {
-    None = 0,
+enum ImageFormat {
+    GenericImageFormat = 0,
     DDS,
-    PKM
+    PKM,
+    HDR
 };
 
-CompressedFormatExtension texturedCompressedFormat(const QString &suffix)
+ImageFormat imageFormatFromSuffix(const QString &suffix)
 {
     if (suffix == QStringLiteral("pkm"))
         return PKM;
     if (suffix == QStringLiteral("dds"))
         return DDS;
-    return None;
+    if (suffix == QStringLiteral("hdr"))
+        return HDR;
+    return GenericImageFormat;
 }
 
 QTextureImageDataPtr setPkmFile(QIODevice *source)
@@ -688,6 +691,161 @@ QTextureImageDataPtr setDdsFile(QIODevice *source)
     return imageData;
 }
 
+// Loads Radiance RGBE images into RGBA32F image data. RGBA is chosen over RGB
+// because this allows passing such images to compute shaders (image2D).
+QTextureImageDataPtr setHdrFile(QIODevice *source)
+{
+    QTextureImageDataPtr imageData;
+    char sig[256];
+    source->read(sig, 11);
+    if (strncmp(sig, "#?RADIANCE\n", 11))
+        return imageData;
+
+    QByteArray buf = source->readAll();
+    const char *p = buf.constData();
+    const char *pEnd = p + buf.size();
+
+    // Process lines until the empty one.
+    QByteArray line;
+    while (p < pEnd) {
+        char c = *p++;
+        if (c == '\n') {
+            if (line.isEmpty())
+                break;
+            if (line.startsWith(QByteArrayLiteral("FORMAT="))) {
+                const QByteArray format = line.mid(7).trimmed();
+                if (format != QByteArrayLiteral("32-bit_rle_rgbe")) {
+                    qWarning("HDR format '%s' is not supported", format.constData());
+                    return imageData;
+                }
+            }
+            line.clear();
+        } else {
+            line.append(c);
+        }
+    }
+    if (p == pEnd) {
+        qWarning("Malformed HDR image data at property strings");
+        return imageData;
+    }
+
+    // Get the resolution string.
+    while (p < pEnd) {
+        char c = *p++;
+        if (c == '\n')
+            break;
+        line.append(c);
+    }
+    if (p == pEnd) {
+        qWarning("Malformed HDR image data at resolution string");
+        return imageData;
+    }
+
+    int w = 0, h = 0;
+    // We only care about the standard orientation.
+    if (!sscanf(line.constData(), "-Y %d +X %d", &h, &w)) {
+        qWarning("Unsupported HDR resolution string '%s'", line.constData());
+        return imageData;
+    }
+    if (w <= 0 || h <= 0) {
+        qWarning("Invalid HDR resolution");
+        return imageData;
+    }
+
+    const QOpenGLTexture::TextureFormat textureFormat = QOpenGLTexture::RGBA32F;
+    const QOpenGLTexture::PixelFormat pixelFormat = QOpenGLTexture::RGBA;
+    const QOpenGLTexture::PixelType pixelType = QOpenGLTexture::Float32;
+    const int blockSize = 4 * sizeof(float);
+    QByteArray data;
+    data.resize(w * h * blockSize);
+
+    typedef unsigned char RGBE[4];
+    RGBE *scanline = new RGBE[w];
+
+    for (int y = 0; y < h; ++y) {
+        if (pEnd - p < 4) {
+            qWarning("Unexpected end of HDR data");
+            return imageData;
+        }
+
+        scanline[0][0] = *p++;
+        scanline[0][1] = *p++;
+        scanline[0][2] = *p++;
+        scanline[0][3] = *p++;
+
+        if (scanline[0][0] == 2 && scanline[0][1] == 2 && scanline[0][2] < 128) {
+            // new rle, the first pixel was a dummy
+            for (int channel = 0; channel < 4; ++channel) {
+                for (int x = 0; x < w && p < pEnd; ) {
+                    unsigned char c = *p++;
+                    if (c > 128) { // run
+                        if (p < pEnd) {
+                            int repCount = c & 127;
+                            c = *p++;
+                            while (repCount--)
+                                scanline[x++][channel] = c;
+                        }
+                    } else { // not a run
+                        while (c-- && p < pEnd)
+                            scanline[x++][channel] = *p++;
+                    }
+                }
+            }
+        } else {
+            // old rle
+            scanline[0][0] = 2;
+            int bitshift = 0;
+            int x = 1;
+            while (x < w && pEnd - p >= 4) {
+                scanline[x][0] = *p++;
+                scanline[x][1] = *p++;
+                scanline[x][2] = *p++;
+                scanline[x][3] = *p++;
+
+                if (scanline[x][0] == 1 && scanline[x][1] == 1 && scanline[x][2] == 1) { // run
+                    int repCount = scanline[x][3] << bitshift;
+                    while (repCount--) {
+                        memcpy(scanline[x], scanline[x - 1], 4);
+                        ++x;
+                    }
+                    bitshift += 8;
+                } else { // not a run
+                    ++x;
+                    bitshift = 0;
+                }
+            }
+        }
+
+        // adjust for -Y orientation
+        float *fp = reinterpret_cast<float *>(data.data() + (h - 1 - y) * blockSize * w);
+        for (int x = 0; x < w; ++x) {
+            float d = qPow(2.0f, float(scanline[x][3]) - 128.0f);
+            // r, g, b, a
+            *fp++ = scanline[x][0] / 256.0f * d;
+            *fp++ = scanline[x][1] / 256.0f * d;
+            *fp++ = scanline[x][2] / 256.0f * d;
+            *fp++ = 1.0f;
+        }
+    }
+
+    delete[] scanline;
+
+    imageData = QTextureImageDataPtr::create();
+    imageData->setTarget(QOpenGLTexture::Target2D);
+    imageData->setFormat(textureFormat);
+    imageData->setWidth(w);
+    imageData->setHeight(h);
+    imageData->setLayers(1);
+    imageData->setDepth(1);
+    imageData->setFaces(1);
+    imageData->setMipLevels(1);
+    imageData->setPixelFormat(pixelFormat);
+    imageData->setPixelType(pixelType);
+    imageData->setData(data, blockSize, false);
+
+    return imageData;
+}
+
 } // anonynous
 
 QTextureImageDataPtr TextureLoadingHelper::loadTextureData(const QUrl &url, bool allow3D, bool mirrored)
@@ -712,13 +870,16 @@ QTextureImageDataPtr TextureLoadingHelper::loadTextureData(QIODevice *data, cons
                                                            bool allow3D, bool mirrored)
 {
     QTextureImageDataPtr textureData;
-    const CompressedFormatExtension formatExtension = texturedCompressedFormat(suffix);
-    switch (formatExtension) {
+    ImageFormat fmt = imageFormatFromSuffix(suffix);
+    switch (fmt) {
     case DDS:
         textureData = setDdsFile(data);
         break;
     case PKM:
         textureData = setPkmFile(data);
+        break;
+    case HDR:
+        textureData = setHdrFile(data);
         break;
     default: {
         QImage img;
