@@ -190,6 +190,7 @@ QAxisAccumulator::SourceAxisType QAxisAccumulator::sourceAxisType() const
  */
 
 /*!
+   \property Qt3DInput::QAxisAccumulator::value
    Returns the accumulated (integrated) value.
  */
 float QAxisAccumulator::value() const

@@ -40,6 +40,7 @@
 #include "pickeventfilter_p.h"
 
 #include <QtCore/QMutexLocker>
+#include <QtGui/QHoverEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,10 +88,16 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
     switch (e->type()) {
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
-    case QEvent::MouseMove:
-    case QEvent::HoverMove: {
+    case QEvent::MouseMove: {
         QMutexLocker locker(&m_mutex);
         m_pendingMouseEvents.push_back(QMouseEvent(*static_cast<QMouseEvent *>(e)));
+    } break;
+    case QEvent::HoverMove: {
+        QMutexLocker locker(&m_mutex);
+        QHoverEvent *he = static_cast<QHoverEvent *>(e);
+        m_pendingMouseEvents.push_back(QMouseEvent(QEvent::MouseMove,
+                                                   he->pos(), Qt::NoButton, Qt::NoButton,
+                                                   he->modifiers()));
     } break;
     case QEvent::KeyPress:
     case QEvent::KeyRelease: {

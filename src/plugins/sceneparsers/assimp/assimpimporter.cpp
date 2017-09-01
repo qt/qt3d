@@ -492,14 +492,11 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
 
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
-        uint meshIdx = node->mMeshes[i];
-        QMaterial *material = nullptr;
-        QGeometryRenderer *mesh = m_scene->m_meshes[meshIdx];
-        // mesh material
-        uint materialIndex = m_scene->m_aiScene->mMeshes[meshIdx]->mMaterialIndex;
+        uint meshIndex = node->mMeshes[i];
+        QGeometryRenderer *mesh = loadMesh(meshIndex);
 
-        if (m_scene->m_materials.contains(materialIndex))
-            material = m_scene->m_materials[materialIndex];
+        // mesh material
+        QMaterial *material;
 
         QList<Qt3DAnimation::QMorphingAnimation *> morphingAnimations
                 = mesh->findChildren<Qt3DAnimation::QMorphingAnimation *>();
@@ -523,6 +520,9 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
                                  &Qt3DExtras::QMorphPhongMaterial::setInterpolator);
             }
             morphingAnimations[0]->deleteLater();
+        } else {
+            uint materialIndex = m_scene->m_aiScene->mMeshes[meshIndex]->mMaterialIndex;
+            material = loadMaterial(materialIndex);
         }
 
         if (node->mNumMeshes == 1) {
@@ -570,8 +570,9 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
     }
 
     // Add Camera
-    if (m_scene->m_cameras.contains(node))
-        m_scene->m_cameras[node]->setParent(entityNode);
+    auto camera = loadCamera(node);
+    if (camera)
+        camera->setParent(entityNode);
 
     // TO DO : Add lights ....
 
@@ -658,16 +659,6 @@ void AssimpImporter::parse()
         // Set parsed flags
         m_sceneParsed = !m_sceneParsed;
 
-        for (uint i = 0; i < m_scene->m_aiScene->mNumTextures; i++)
-            loadEmbeddedTexture(i);
-        for (uint i = 0; i < m_scene->m_aiScene->mNumMaterials; i++)
-            loadMaterial(i);
-        for (uint i = 0; i < m_scene->m_aiScene->mNumMeshes; i++)
-            loadMesh(i);
-        for (uint i = 0; i < m_scene->m_aiScene->mNumCameras; i++)
-            loadCamera(i);
-        for (uint i = 0; i < m_scene->m_aiScene->mNumLights; i++)
-            loadLight(i);
         for (uint i = 0; i < m_scene->m_aiScene->mNumAnimations; i++)
             loadAnimation(i);
     }
@@ -675,10 +666,10 @@ void AssimpImporter::parse()
 
 /*!
  * Converts the provided Assimp aiMaterial identified by \a materialIndex to a
- * Qt3D material and adds it to a dictionary of materials.
+ * Qt3D material
  * \sa Material
  */
-void AssimpImporter::loadMaterial(uint materialIndex)
+QMaterial *AssimpImporter::loadMaterial(uint materialIndex)
 {
     // Generates default material based on what the assimp material contains
     aiMaterial *assimpMaterial = m_scene->m_aiScene->mMaterials[materialIndex];
@@ -692,22 +683,14 @@ void AssimpImporter::loadMaterial(uint materialIndex)
     // Add textures to materials dict
     copyMaterialTextures(material, assimpMaterial);
 
-    m_scene->m_materials.insert(materialIndex, material);
-
-    Qt3DRender::AssimpImporter::SceneImporter *scene = m_scene;
-    QObject::connect(material, &QObject::destroyed, [&, scene, materialIndex](QObject *object) {
-        QMaterial *r = static_cast<QMaterial *>(object);
-        if (scene->m_materials[materialIndex] == r)
-            scene->m_materials.remove(materialIndex);
-    });
+    return material;
 }
 
 /*!
  * Converts the Assimp aiMesh mesh identified by \a meshIndex to a QGeometryRenderer
- * and adds it to a dictionary of meshes.
  * \sa QGeometryRenderer
  */
-void AssimpImporter::loadMesh(uint meshIndex)
+QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
 {
     aiMesh *mesh = m_scene->m_aiScene->mMeshes[meshIndex];
 
@@ -849,21 +832,12 @@ void AssimpImporter::loadMesh(uint meshIndex)
 
     meshGeometry->addAttribute(indexAttribute);
 
-    m_scene->m_meshes[meshIndex] = geometryRenderer;
-
-    Qt3DRender::AssimpImporter::SceneImporter *scene = m_scene;
-    QObject::connect(geometryRenderer, &QObject::destroyed, [&, scene, meshIndex](QObject *object) {
-        QGeometryRenderer *r = static_cast<QGeometryRenderer *>(object);
-        if (scene->m_meshes[meshIndex] == r)
-            scene->m_meshes.remove(meshIndex);
-    });
-
     if (mesh->mNumAnimMeshes > 0) {
 
         aiAnimMesh *animesh = mesh->mAnimMeshes[0];
 
         if (animesh->mNumVertices != mesh->mNumVertices)
-            return;
+            return geometryRenderer;
 
         Qt3DAnimation::QMorphingAnimation *morphingAnimation
                 = new Qt3DAnimation::QMorphingAnimation(geometryRenderer);
@@ -988,14 +962,15 @@ void AssimpImporter::loadMesh(uint meshIndex)
     qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Mesh " << aiStringToQString(mesh->mName)
                                << " Vertices " << mesh->mNumVertices << " Faces "
                                << mesh->mNumFaces << " Indices " << indices;
+
+    return geometryRenderer;
 }
 
 /*!
- * Converts the provided Assimp aiTexture at \a textureIndex to a Texture and
- * adds it to a dictionary of textures.
+ * Converts the provided Assimp aiTexture at \a textureIndex to a Texture
  * \sa Texture
  */
-void AssimpImporter::loadEmbeddedTexture(uint textureIndex)
+QAbstractTexture *AssimpImporter::loadEmbeddedTexture(uint textureIndex)
 {
     aiTexture *assimpTexture = m_scene->m_aiScene->mTextures[textureIndex];
     QAbstractTexture *texture = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
@@ -1017,37 +992,38 @@ void AssimpImporter::loadEmbeddedTexture(uint textureIndex)
     }
     imageData->setData(textureContent);
     texture->addTextureImage(imageData);
-    m_scene->m_embeddedTextures[textureIndex] = texture;
 
-    Qt3DRender::AssimpImporter::SceneImporter *scene = m_scene;
-    QObject::connect(texture, &QObject::destroyed, [&, scene, textureIndex](QObject *object) {
-        QAbstractTexture *r = static_cast<QAbstractTexture *>(object);
-        if (scene->m_embeddedTextures[textureIndex] == r)
-            scene->m_embeddedTextures.remove(textureIndex);
-    });
+    return texture;
 }
 
 /*!
  * Loads the light in the current scene located at \a lightIndex.
  */
-void AssimpImporter::loadLight(uint lightIndex)
+QAbstractLight *AssimpImporter::loadLight(uint lightIndex)
 {
     aiLight *light = m_scene->m_aiScene->mLights[lightIndex];
     // TODO: Implement me!
     Q_UNUSED(light);
+    return nullptr;
 }
 
 /*!
- * Parses the camera at cameraIndex and saves it to a dictionary of cameras.
+ * Converts the provided Assimp aiCamera in a node to a camera entity
  */
-void AssimpImporter::loadCamera(uint cameraIndex)
+Qt3DCore::QEntity *AssimpImporter::loadCamera(aiNode *node)
 {
-    aiCamera *assimpCamera = m_scene->m_aiScene->mCameras[cameraIndex];
-    aiNode *cameraNode = m_scene->m_aiScene->mRootNode->FindNode(assimpCamera->mName);
+    aiCamera *assimpCamera = nullptr;
 
-    // If no node is associated to the camera in the scene, camera not saved
-    if (cameraNode == nullptr)
-        return ;
+    for (uint i = 0; i < m_scene->m_aiScene->mNumCameras; ++i) {
+        auto camera = m_scene->m_aiScene->mCameras[i];
+        if (camera->mName == node->mName) {
+            assimpCamera = camera;
+            break;
+        }
+    }
+
+    if (assimpCamera == nullptr)
+        return nullptr;
 
     QEntity *camera = QAbstractNodeFactory::createNode<Qt3DCore::QEntity>("QEntity");
     QCameraLens *lens = QAbstractNodeFactory::createNode<QCameraLens>("QCameraLens");
@@ -1067,14 +1043,7 @@ void AssimpImporter::loadCamera(uint cameraIndex)
     transform->setMatrix(m);
     camera->addComponent(transform);
 
-    m_scene->m_cameras[cameraNode] = camera;
-
-    Qt3DRender::AssimpImporter::SceneImporter *scene = m_scene;
-    QObject::connect(camera, &QObject::destroyed, [&, scene, cameraNode](QObject *object) {
-        QEntity *r = static_cast<QEntity *>(object);
-        if (scene->m_cameras[cameraNode] == r)
-            scene->m_cameras.remove(cameraNode);
-    });
+    return camera;
 }
 
 int findTimeIndex(const QVector<float> &times, float time) {
@@ -1410,10 +1379,6 @@ AssimpImporter::SceneImporter::SceneImporter()
 AssimpImporter::SceneImporter::~SceneImporter()
 {
     delete m_importer;
-    qDeleteAll(m_materials.values());
-    qDeleteAll(m_meshes.values());
-    qDeleteAll(m_embeddedTextures.values());
-    qDeleteAll(m_cameras.values());
 }
 
 } // namespace Qt3DRender

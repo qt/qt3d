@@ -53,15 +53,6 @@ namespace Qt3DRender
  * \since 5.6
  */
 
-/*!
-    \enum QAbstractLight::Type
-
-    This enum type identifies the particular type of light.
-    \value PointLight
-    \value DirectionalLight
-    \value SpotLight
-*/
-
 QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight::Type type)
     : m_type(type)
     , m_shaderData(new QShaderData)
@@ -75,6 +66,20 @@ QAbstractLightPrivate::~QAbstractLightPrivate()
 {
 }
 
+/*!
+    \property Qt3DRender::QAbstractLight::type
+
+    Contains the type of light.
+*/
+/*!
+    \enum Qt3DRender::QAbstractLight::Type
+
+    Identifies the particular type of light.
+
+    \value PointLight
+    \value DirectionalLight
+    \value SpotLight
+*/
 Qt3DCore::QNodeCreatedChangeBasePtr QAbstractLight::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractLightData>::create(this);
@@ -104,8 +109,6 @@ QAbstractLight::~QAbstractLight()
 }
 
 /*!
-    \property Qt3DRender::QAbstractLight::type
-
     Holds the current QAbstractLight type.
 */
 QAbstractLight::Type QAbstractLight::type() const

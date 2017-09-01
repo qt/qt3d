@@ -236,6 +236,13 @@ uint QPickTriangleEvent::vertex3Index() const
     return d->m_vertex3Index;
 }
 
+/*!
+    \property Qt3DRender::QPickTriangleEvent::uvw
+
+*/
+/*!
+    Returns the 3D coordinates u,v, and w.
+*/
 QVector3D QPickTriangleEvent::uvw() const
 {
     Q_D(const QPickTriangleEvent);
