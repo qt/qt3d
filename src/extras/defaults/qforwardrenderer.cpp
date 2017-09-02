@@ -270,6 +270,13 @@ QObject *QForwardRenderer::surface() const
     return d->m_surfaceSelector->surface();
 }
 
+/*!
+    \property QForwardRenderer::externalRenderTargetSize
+
+    Contains the size of the external render target. External render
+    targets are relevant when rendering does not target a window
+    surface (as set in \l {QForwardRenderer::surface()}{surface()}).
+*/
 QSize QForwardRenderer::externalRenderTargetSize() const
 {
     Q_D(const QForwardRenderer);

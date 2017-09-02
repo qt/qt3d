@@ -250,6 +250,11 @@ float QMorphPhongMaterial::shininess() const
     return d->m_shininessParameter->value().toFloat();
 }
 
+/*!
+    \property QMorphPhongMaterial::interpolator
+
+    Contains the interpolation method of the Phong lighting effect.
+*/
 float QMorphPhongMaterial::interpolator() const
 {
     Q_D(const QMorphPhongMaterial);

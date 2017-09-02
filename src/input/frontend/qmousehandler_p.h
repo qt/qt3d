@@ -70,6 +70,8 @@ public:
     QMouseHandlerPrivate();
     ~QMouseHandlerPrivate();
 
+    void init(QObject *parent);
+
     QMouseDevice *m_mouseDevice;
     bool m_containsMouse;
     QScopedPointer<QTimer> m_pressAndHoldTimer;

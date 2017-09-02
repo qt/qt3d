@@ -81,7 +81,7 @@
 */
 
 /*!
-    \enum QShaderProgram::ShaderStatus
+    \enum QShaderProgram::Status
 
     This enum identifies the status of shader used.
 
@@ -137,6 +137,9 @@ QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+    Posts a scene change with parameter \a change.
+*/
 void QShaderProgram::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QShaderProgram);
@@ -380,6 +383,9 @@ QString QShaderProgram::log() const
     \property QShaderProgram::status
 
     Holds the status of the current shader program.
+*/
+/*!
+    Returns the status of the current shader program.
 */
 QShaderProgram::Status QShaderProgram::status() const
 {

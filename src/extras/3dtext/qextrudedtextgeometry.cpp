@@ -433,7 +433,7 @@ void QExtrudedTextGeometry::setDepth(float depth)
 }
 
 /*!
- * \property QString QExtrudedTextGeometry::text
+ * \property QExtrudedTextGeometry::text
  *
  * Holds the text used for the mesh.
  */
@@ -444,7 +444,7 @@ QString QExtrudedTextGeometry::text() const
 }
 
 /*!
- * \property QFont QExtrudedTextGeometry::font
+ * \property QExtrudedTextGeometry::font
  *
  * Holds the font of the text.
  */
@@ -455,7 +455,7 @@ QFont QExtrudedTextGeometry::font() const
 }
 
 /*!
- * \property float QExtrudedTextGeometry::extrusionLength
+ * \property QExtrudedTextGeometry::extrusionLength
  *
  * Holds the extrusion length of the text.
  */
@@ -477,7 +477,7 @@ Qt3DRender::QAttribute *QExtrudedTextGeometry::positionAttribute() const
 }
 
 /*!
- * \property QExtrudedTextMesh::normalAttribute
+ * \property QExtrudedTextGeometry::normalAttribute
  *
  * Holds the geometry normal attribute.
  */
@@ -488,7 +488,7 @@ Qt3DRender::QAttribute *QExtrudedTextGeometry::normalAttribute() const
 }
 
 /*!
- * \property QExtrudedTextMesh::indexAttribute
+ * \property QExtrudedTextGeometry::indexAttribute
  *
  * Holds the geometry index attribute.
  */

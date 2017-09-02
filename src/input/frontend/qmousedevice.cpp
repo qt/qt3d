@@ -183,6 +183,11 @@ int QMouseDevice::axisIdentifier(const QString &name) const
     return -1;
 }
 
+/*!
+    Returns the button identifier that corresponds with
+    the specified \a name. The possible return values are
+    documented in \l {Qt3DInput::}{QMouseEvent::Buttons}.
+*/
 int QMouseDevice::buttonIdentifier(const QString &name) const
 {
     if (name == QLatin1String("Left"))
