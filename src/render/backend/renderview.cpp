@@ -652,7 +652,6 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                     command->m_verticesPerPatch = geometryRenderer->verticesPerPatch();
                 }
 
-                prepareForSorting(command);
                 commands.append(command);
             }
         }
@@ -870,25 +869,6 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     while (activeValuesIt != activeValuesEnd) {
         setUniformValue(uniformPack, activeValuesIt.key(), UniformValue::fromVariant(activeValuesIt.value()));
         ++activeValuesIt;
-    }
-}
-
-void RenderView::prepareForSorting(RenderCommand *command) const
-{
-    // Build a bitset key depending on the SortingCriterion
-    const int sortCount = m_data.m_sortingTypes.count();
-
-    // If sortCount == 0, no sorting is applied
-
-    // Handle at most 4 filters at once
-    for (int i = 0; i < sortCount && i < 4; i++) {
-        switch (m_data.m_sortingTypes.at(i)) {
-        case QSortPolicy::BackToFront:
-            command->m_sortBackToFront = true; // Depth value
-            break;
-        default:
-            break;
-        }
     }
 }
 

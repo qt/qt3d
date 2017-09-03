@@ -101,8 +101,6 @@ public:
     };
 
     CommandType m_type;
-
-    bool m_sortBackToFront;
     int m_workGroups[3];
 
     // Values filled for draw calls
