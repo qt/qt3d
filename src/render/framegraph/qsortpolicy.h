@@ -59,7 +59,8 @@ public:
     enum SortType {
         StateChangeCost = (1 << 0),
         BackToFront = (1 << 1),
-        Material = (1 << 2)
+        Material = (1 << 2),
+        FrontToBack = (1 << 3)
     };
     Q_ENUM(SortType) // LCOV_EXCL_LINE
 

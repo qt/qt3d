@@ -92,6 +92,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     \value StateChangeCost sort the objects so as to minimize the cost of changing from the currently rendered state
     \value BackToFront sort the objects from back to front inverted z order
     \value Material sort the objects based on their material value
+    \value FrontToBack sort the objects from front to back
 */
 
 /*!

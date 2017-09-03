@@ -64,7 +64,8 @@ private Q_SLOTS:
 
         Qt3DRender::QSortPolicy *sortPolicyWithSortTypes = new Qt3DRender::QSortPolicy();
         auto sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>() << Qt3DRender::QSortPolicy::BackToFront
-                                                                      << Qt3DRender::QSortPolicy::Material;
+                                                                      << Qt3DRender::QSortPolicy::Material
+                                                                      << Qt3DRender::QSortPolicy::FrontToBack;
         sortPolicyWithSortTypes->setSortTypes(sortTypes);
         QTest::newRow("sortPolicyWithSortTypes") << sortPolicyWithSortTypes << sortTypes ;
     }
@@ -108,7 +109,8 @@ private Q_SLOTS:
         // WHEN
         auto sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>() << Qt3DRender::QSortPolicy::BackToFront
                                                                       << Qt3DRender::QSortPolicy::Material
-                                                                      << Qt3DRender::QSortPolicy::Material;
+                                                                      << Qt3DRender::QSortPolicy::Material
+                                                                      << Qt3DRender::QSortPolicy::FrontToBack;
         auto sortTypesInt = QVector<int>();
         transformVector(sortTypes, sortTypesInt);
         sortPolicy->setSortTypes(sortTypes);

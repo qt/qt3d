@@ -205,6 +205,35 @@ private Q_SLOTS:
         // RenderCommands are deleted by RenderView dtor
     }
 
+    void checkRenderCommandFrontToBackSorting()
+    {
+        // GIVEN
+        RenderView renderView;
+        QVector<RenderCommand *> rawCommands;
+        QVector<QSortPolicy::SortType> sortTypes;
+
+        sortTypes.push_back(QSortPolicy::FrontToBack);
+
+        for (int i = 0; i < 200; ++i) {
+            RenderCommand *c = new RenderCommand();
+            c->m_depth = float(i);
+            rawCommands.push_back(c);
+        }
+
+        // WHEN
+        renderView.addSortType(sortTypes);
+        renderView.setCommands(rawCommands);
+        renderView.sort();
+
+        // THEN
+        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        QCOMPARE(rawCommands.size(), sortedCommands.size());
+        for (int j = 1; j < sortedCommands.size(); ++j)
+            QVERIFY(sortedCommands.at(j - 1)->m_depth < sortedCommands.at(j)->m_depth);
+
+        // RenderCommands are deleted by RenderView dtor
+    }
+
     void checkRenderCommandStateCostSorting()
     {
         // GIVEN

@@ -307,6 +307,15 @@ struct AdjacentSubRangeFinder<QSortPolicy::Material>
     }
 };
 
+template<>
+struct AdjacentSubRangeFinder<QSortPolicy::FrontToBack>
+{
+    static bool adjacentSubRange(RenderCommand *a, RenderCommand *b)
+    {
+        return a->m_depth == b->m_depth;
+    }
+};
+
 template<typename Predicate>
 int advanceUntilNonAdjacent(const QVector<RenderCommand *> &commands,
                             const int beg, const int end, Predicate pred)
@@ -366,6 +375,16 @@ struct SubRangeSorter<QSortPolicy::Material>
     }
 };
 
+template<>
+struct SubRangeSorter<QSortPolicy::FrontToBack>
+{
+    static void sortSubRange(CommandIt begin, const CommandIt end)
+    {
+        std::stable_sort(begin, end, [] (RenderCommand *a, RenderCommand *b) {
+            return a->m_depth < b->m_depth;
+        });
+    }
+};
 
 int findSubRange(const QVector<RenderCommand *> &commands,
                  const int begin, const int end,
@@ -378,6 +397,8 @@ int findSubRange(const QVector<RenderCommand *> &commands,
         return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::BackToFront>::adjacentSubRange);
     case QSortPolicy::Material:
         return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::Material>::adjacentSubRange);
+    case QSortPolicy::FrontToBack:
+        return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::FrontToBack>::adjacentSubRange);
     default:
         Q_UNREACHABLE();
         return end;
@@ -417,6 +438,9 @@ void sortCommandRange(QVector<RenderCommand *> &commands, int begin, const int e
         SubRangeSorter<QSortPolicy::Material>::sortSubRange(commands.begin() + begin, commands.begin() + end);
         // Group all same material together (same parameters most likely)
         sortByMaterial(commands, begin, end);
+        break;
+    case QSortPolicy::FrontToBack:
+        SubRangeSorter<QSortPolicy::FrontToBack>::sortSubRange(commands.begin() + begin, commands.begin() + end);
         break;
     default:
         Q_UNREACHABLE();
