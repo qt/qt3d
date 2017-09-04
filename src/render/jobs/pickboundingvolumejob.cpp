@@ -388,6 +388,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 default:
                     Q_UNREACHABLE();
                 }
+                Qt3DRender::QPickEventPrivate::get(pickEvent.data())->m_entity = hit.m_entityId;
                 switch (event.type()) {
                 case QEvent::MouseButtonPress: {
                     // Store pressed object handle
