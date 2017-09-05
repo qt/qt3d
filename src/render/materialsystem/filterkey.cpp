@@ -73,16 +73,6 @@ void FilterKey::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_value = data.value;
 }
 
-QVariant FilterKey::value() const
-{
-    return m_value;
-}
-
-QString FilterKey::name() const
-{
-    return m_name;
-}
-
 void FilterKey::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
@@ -106,8 +96,14 @@ bool FilterKey::operator ==(const FilterKey &other)
 {
     if (&other == this)
         return true;
-    return ((other.name() == name()) &&
-            (other.value() == value()));
+    // TODO create a QVaraint::fastCompare function that returns false
+    // if types are not equal. For now, applying
+    // https://codereview.qt-project.org/#/c/204484/
+    // and adding the following early comparison of the types should give
+    // an equivalent performance gain:
+    return (other.value().type() == value().type() &&
+            other.name() == name() &&
+            other.value() == value());
 }
 
 bool FilterKey::operator !=(const FilterKey &other)
