@@ -67,11 +67,6 @@ public:
     static int lookupId(const QString &str);
     static int lookupId(QLatin1String str);
     static QString lookupString(int idx);
-
-private:
-    static QVector<QString> m_stringsArray;
-    static QVector<QString> m_pendingStringsArray;
-    static int m_calls;
 };
 
 } // Render

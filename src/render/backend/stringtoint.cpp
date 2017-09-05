@@ -40,6 +40,7 @@
 #include "stringtoint_p.h"
 #include <QMutex>
 #include <QReadWriteLock>
+#include <QHash>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,14 +50,11 @@ namespace Render {
 
 namespace {
 
-QMutex mutex;
-QReadWriteLock readLock;
+QReadWriteLock lock;
+QHash<QString, int> map = QHash<QString, int>();
+QVector<QString> reverseMap = QVector<QString>();
 
 } // anonymous
-
-QVector<QString> StringToInt::m_stringsArray = QVector<QString>();
-QVector<QString> StringToInt::m_pendingStringsArray = QVector<QString>();
-int StringToInt::m_calls = 0;
 
 int StringToInt::lookupId(QLatin1String str)
 {
@@ -66,36 +64,20 @@ int StringToInt::lookupId(QLatin1String str)
 
 int StringToInt::lookupId(const QString &str)
 {
-    // Note: how do we protect against the case where
-    // we are synching the two arrays ?
-    QReadLocker readLocker(&readLock);
-    int idx = StringToInt::m_stringsArray.indexOf(str);
+    int idx;
+    {
+        QReadLocker readLocker(&lock);
+        idx = map.value(str, -1);
+    }
 
     if (Q_UNLIKELY(idx < 0)) {
-        QMutexLocker lock(&mutex);
-
-        // If not found in m_stringsArray, maybe it's in the pending array
-        if ((idx = StringToInt::m_pendingStringsArray.indexOf(str)) >= 0) {
-            idx += StringToInt::m_stringsArray.size();
-        } else {
-            // If not, we add it to the m_pendingStringArray
-            StringToInt::m_pendingStringsArray.push_back(str);
-            idx = StringToInt::m_stringsArray.size() + m_pendingStringsArray.size() - 1;
-        }
-
-        // We sync the two arrays every 20 calls
-        if (StringToInt::m_calls % 20 == 0 && StringToInt::m_pendingStringsArray.size() > 0) {
-            // Unlock reader to writeLock
-            // since a read lock cannot be locked for writing
-            lock.unlock();
-            readLocker.unlock();
-
-            QWriteLocker writeLock(&readLock);
-            lock.relock();
-
-            StringToInt::m_stringsArray += StringToInt::m_pendingStringsArray;
-            StringToInt::m_pendingStringsArray.clear();
-            StringToInt::m_calls = 0;
+        QWriteLocker writeLocker(&lock);
+        idx = map.value(str, -1);
+        if (idx < 0) {
+            idx = reverseMap.size();
+            Q_ASSERT(map.size() == reverseMap.size());
+            map.insert(str, idx);
+            reverseMap.append(str);
         }
     }
     return idx;
@@ -103,14 +85,9 @@ int StringToInt::lookupId(const QString &str)
 
 QString StringToInt::lookupString(int idx)
 {
-    QReadLocker readLocker(&readLock);
-    if (Q_LIKELY(StringToInt::m_stringsArray.size() > idx))
-        return StringToInt::m_stringsArray.at(idx);
-
-    // Maybe it's in the pending array then
-    QMutexLocker lock(&mutex);
-    if (StringToInt::m_stringsArray.size() + StringToInt::m_pendingStringsArray.size() > idx)
-        return StringToInt::m_pendingStringsArray.at(idx - StringToInt::m_stringsArray.size());
+    QReadLocker readLocker(&lock);
+    if (Q_LIKELY(reverseMap.size() > idx))
+        return reverseMap.at(idx);
 
     return QString();
 }
