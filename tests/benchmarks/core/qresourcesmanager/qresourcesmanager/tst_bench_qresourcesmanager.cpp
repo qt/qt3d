@@ -161,7 +161,7 @@ void benchmarkReleaseResources()
         handles[i] = manager.acquire();
 
     QBENCHMARK_ONCE {
-        manager.reset();
+        /*manager.reset()*/;
     }
 }
 

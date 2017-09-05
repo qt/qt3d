@@ -1,5 +1,4 @@
 HEADERS += \
-    $$PWD/qhandlemanager_p.h \
     $$PWD/qresourcemanager_p.h \
     $$PWD/qcircularbuffer_p.h \
     $$PWD/qboundedcircularbuffer_p.h \

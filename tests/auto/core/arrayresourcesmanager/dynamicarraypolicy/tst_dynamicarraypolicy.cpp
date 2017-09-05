@@ -44,7 +44,6 @@ private slots:
     void getResources();
     void registerResourcesResize();
     void removeResource();
-    void resetResource();
     void lookupResource();
     void releaseResource();
     void heavyDutyMultiThreadedAccess();
@@ -185,36 +184,6 @@ void tst_DynamicArrayPolicy::removeResource()
 
     tHandle nHandle = manager.acquire();
     QVERIFY(manager.data(nHandle) != nullptr);
-}
-
-/*!
- * Checks that reset behaves correctly.
- */
-void tst_DynamicArrayPolicy::resetResource()
-{
-    Qt3DCore::QResourceManager<tst_ArrayResource, uint> manager;
-
-    QList<tst_ArrayResource *> resources;
-    QList<tHandle16> handles;
-
-    for (int i = 0; i < 5; i++) {
-        handles << manager.acquire();
-        resources << manager.data(handles.at(i));
-        resources.at(i)->m_value = 4;
-    }
-    manager.reset();
-    for (uint i = 0; i < 5; i++) {
-        QVERIFY(manager.data(handles.at(i)) == nullptr);
-    }
-    handles.clear();
-    for (uint i = 0; i < 5; i++)
-        handles << manager.acquire();
-
-    for (uint i = 0; i < 5; i++) {
-        QVERIFY(handles.at(i).index() == i);
-        QVERIFY(handles.at(i).counter() == 1);
-        QVERIFY(manager.data(handles.at(i))->m_value != 4);
-    }
 }
 
 void tst_DynamicArrayPolicy::lookupResource()

@@ -142,11 +142,10 @@ public:
     EntityManager() {}
     ~EntityManager()
     {
-        const auto entries = m_handleManager.entries();
-        for (Entity *e : entries) {
+        Allocator::for_each([](Entity *e) {
             if (e)
                 e->setNodeManagers(nullptr);
-        }
+        });
     }
 };
 
