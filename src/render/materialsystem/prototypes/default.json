@@ -410,5 +410,140 @@
                 "headerSnippets": [ "#pragma include :/shaders/gl3/metalrough.inc.frag" ]
             }
         ]
+    },
+    "join2": {
+        "inputs": [
+            "first",
+            "second"
+        ],
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec2"
+            }
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp $type $output = $type($first, $second);"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $type($first, $second);"
+            }
+        ]
+    },
+    "join3": {
+        "inputs": [
+            "first",
+            "second",
+            "third"
+        ],
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec3"
+            }
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp $type $output = $type($first, $second, $third);"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $type($first, $second, $third);"
+            }
+        ]
+    },
+    "join4": {
+        "inputs": [
+            "first",
+            "second",
+            "third",
+            "fourth"
+        ],
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec4"
+            }
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp $type $output = $type($first, $second, $third, $fourth);"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $type($first, $second, $third, $fourth);"
+            }
+        ]
+    },
+    "cast": {
+        "inputs": [
+            "input"
+        ],
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "type": {
+                "type": "QShaderLanguage::VariableType",
+                "value": "QShaderLanguage::Vec3"
+            }
+        },
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp $type $output = $type($input);"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $type($input);"
+            }
+        ]
     }
 }
+
