@@ -101,16 +101,6 @@ QString Parameter::name() const
     return m_name;
 }
 
-int Parameter::nameId() const Q_DECL_NOTHROW
-{
-    return m_nameId;
-}
-
-UniformValue Parameter::uniformValue() const
-{
-    return m_uniformValue;
-}
-
 } // namespace Render
 } // namespace Qt3DRender
 
