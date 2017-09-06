@@ -178,6 +178,7 @@ QVector<ShaderUniform> GraphicsHelperGL2::programUniformsAndLocations(GLuint pro
         uniformName[sizeof(uniformName) - 1] = '\0';
         uniform.m_location = m_funcs->glGetUniformLocation(programId, uniformName);
         uniform.m_name = QString::fromUtf8(uniformName, uniformNameLength);
+        uniform.m_rawByteSize = uniformByteSize(uniform);
         uniforms.append(uniform);
     }
     return uniforms;
@@ -460,12 +461,36 @@ uint GraphicsHelperGL2::uniformByteSize(const ShaderUniform &description)
         rawByteSize = matrixStride ? 2 * matrixStride : 16;
         break;
 
+    case GL_FLOAT_MAT2x4:
+        rawByteSize = matrixStride ? 2 * matrixStride : 32;
+        break;
+
+    case GL_FLOAT_MAT4x2:
+        rawByteSize = matrixStride ? 4 * matrixStride : 32;
+        break;
+
     case GL_FLOAT_MAT3:
         rawByteSize = matrixStride ? 3 * matrixStride : 36;
         break;
 
+    case GL_FLOAT_MAT2x3:
+        rawByteSize = matrixStride ? 2 * matrixStride : 24;
+        break;
+
+    case GL_FLOAT_MAT3x2:
+        rawByteSize = matrixStride ? 3 * matrixStride : 24;
+        break;
+
     case GL_FLOAT_MAT4:
         rawByteSize = matrixStride ? 4 * matrixStride : 64;
+        break;
+
+    case GL_FLOAT_MAT4x3:
+        rawByteSize = matrixStride ? 4 * matrixStride : 48;
+        break;
+
+    case GL_FLOAT_MAT3x4:
+        rawByteSize = matrixStride ? 3 * matrixStride : 48;
         break;
 
     case GL_BOOL:

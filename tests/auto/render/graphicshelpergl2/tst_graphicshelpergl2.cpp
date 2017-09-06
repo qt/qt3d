@@ -922,7 +922,13 @@ private Q_SLOTS:
         ADD_UNIFORM_ENTRY(fragCodeUniformsInt, "multiplierVec4", GL_INT_VEC4, 1, 4 * 4);
 
         ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m2",  GL_FLOAT_MAT2, 1, 4 * 2 * 2);
+        ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m23", GL_FLOAT_MAT2x3, 1, 4 * 2 * 3);
+        ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m32", GL_FLOAT_MAT3x2, 1, 4 * 3 * 2);
+        ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m24", GL_FLOAT_MAT2x4, 1, 4 * 2 * 4);
+        ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m42", GL_FLOAT_MAT4x2, 1, 4 * 4 * 2);
         ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m3", GL_FLOAT_MAT3, 1, 4 * 3 * 3);
+        ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m34", GL_FLOAT_MAT3x4, 1, 4 * 3 * 4);
+        ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m43", GL_FLOAT_MAT4x3, 1, 4 * 4 * 3);
         ADD_UNIFORM_ENTRY(fragCodeUniformsFloatMatrices, "m4", GL_FLOAT_MAT4, 1, 4 * 4 * 4);
 
         ADD_UNIFORM_ENTRY(fragCodeSamplers, "s1", GL_SAMPLER_1D, 1, 4);
