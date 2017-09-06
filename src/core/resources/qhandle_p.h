@@ -53,9 +53,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/QDebug>
-#include <limits.h>
-
-class tst_Handle;  // needed for friend class declaration below
+#include <QtCore/qhashfunctions.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,69 +63,72 @@ template <typename T, uint INDEXBITS = 16>
 class QHandle
 {
 public:
+    struct Data {
+        union {
+            quintptr counter;
+            Data *nextFree;
+        };
+    };
     QHandle()
-        : m_handle(0)
+        : d(nullptr),
+          counter(0)
     {}
-
-
-    quint32 index() const { return d.m_index; }
-    quint32 counter() const { return d.m_counter; }
-    quint32 handle() const { return m_handle; }
-    bool isNull() const { return !m_handle; }
-
-    operator quint32() const { return m_handle; }
-
-    static quint32 maxIndex() { return MaxIndex; }
-    static quint32 maxCounter() { return MaxCounter; }
-
-    QHandle(quint32 i, quint32 count)
+    QHandle(Data *d)
+        : d(d),
+          counter(d->counter)
     {
-        d.m_index = i;
-        d.m_counter = count;
-        d.m_unused = 0;
-        Q_ASSERT(i < MaxIndex);
-        Q_ASSERT(count < MaxCounter);
+    }
+    QHandle(const QHandle &other)
+        : d(other.d),
+          counter(other.counter)
+    {
+    }
+    QHandle &operator=(const QHandle &other)
+    {
+        d = other.d;
+        counter = other.counter;
+        return *this;
     }
 
-    enum {
-        // Sizes to use for bit fields
-        IndexBits = INDEXBITS,
-        CounterBits = 32 - INDEXBITS - 2, // We use 2 bits for book-keeping in QHandleManager
+    inline T *operator->() const;
+    T *data() const;
 
-        // Sizes to compare against for asserting dereferences
-        MaxIndex = (1 << IndexBits) - 1,
-        MaxCounter = ((1 << CounterBits) - 1 > SHRT_MAX) ? SHRT_MAX - 1 : (1 << CounterBits) - 1
-    };
+    quintptr handle() const { return reinterpret_cast<quintptr>(d); }
+    bool isNull() const { return !d; }
 
+    Data *data_ptr() const { return d; }
+
+    bool operator==(const QHandle &other) const { return d == other.d && counter == other.counter; }
+    bool operator!=(const QHandle &other) const { return !operator==(other); }
 private:
-    struct Data {
-        quint32 m_index : IndexBits;
-        quint32 m_counter : CounterBits;
-        quint32 m_unused : 2;
-    };
-    union {
-        Data d;
-        quint32 m_handle;
-    };
+    Data *d;
+    quintptr counter;
 };
+
 
 template <typename T, uint INDEXBITS>
 QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
 {
     QDebugStateSaver saver(dbg);
     QString binNumber = QString::number(h.handle(), 2).rightJustified(32, QChar::fromLatin1('0'));
-    dbg.nospace() << "index = " << h.index()
-                  << " magic/counter = " << h.counter()
-                  << " m_handle = " << h.handle()
+    dbg.nospace() << " m_handle = " << h.handle()
                   << " = " << binNumber;
     return dbg;
 }
 
+template <typename T, uint INDEXBITS = 16>
+uint qHash(const QHandle<T, INDEXBITS> &h, uint seed)
+{
+    using QT_PREPEND_NAMESPACE(qHash);
+    return qHash(h.handle(), seed);
+}
+
 } // Qt3DCore
 
+// simpler than fighting the Q_DECLARE_TYPEINFO macro, use QString as a dummy to get movable semantics
 template <typename T, uint I>
-class QTypeInfo<Qt3DCore::QHandle<T,I> > // simpler than fighting the Q_DECLARE_TYPEINFO macro
-    : public QTypeInfoMerger<Qt3DCore::QHandle<T,I>, quint32> {};
+class QTypeInfo<Qt3DCore::QHandle<T,I> >
+    : public QTypeInfoMerger<Qt3DCore::QHandle<T,I>, QString> {};
 
 QT_END_NAMESPACE
 

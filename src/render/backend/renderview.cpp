@@ -379,7 +379,7 @@ void sortByMaterial(QVector<RenderCommand *> &commands, int begin, const int end
     while (begin != end) {
         if (begin + 1 < rangeEnd) {
             std::stable_sort(commands.begin() + begin + 1, commands.begin() + rangeEnd, [] (RenderCommand *a, RenderCommand *b){
-                return a->m_material < b->m_material;
+                return a->m_material.handle() < b->m_material.handle();
             });
         }
         begin = rangeEnd;
