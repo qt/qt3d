@@ -38,11 +38,6 @@ private Q_SLOTS:
     void benchmarkDynamicReleaseSmallResources();
     void benchmarkDynamicAllocateBigResources();
     void benchmarkDynamicReleaseBigResources();
-
-    void benchmarkPreallocatedAllocateSmallResources();
-    void benchmarkPreallocatedReleaseSmallResources();
-    void benchmarkPreallocatedAllocateBigResources();
-    void benchmarkPreallocatedReleaseBigResources();
 };
 
 struct SmallType
@@ -55,33 +50,32 @@ struct BigType
     QMatrix4x4 a;
 };
 
-template<typename C, typename T>
+template<typename T>
 void benchmarkAllocateResources()
 {
-    C allocator;
+    Qt3DCore::ArrayAllocatingPolicy<T> allocator;
 
     const int max = (1 << 16) - 1;
     QBENCHMARK_ONCE {
         for (int i = 0; i < max; i++) {
-            T* ptr = allocator.allocateResource();
-            Q_UNUSED(ptr);
+            (void) allocator.allocateResource();
         }
     }
 }
 
-template<typename C, typename T>
+template<typename T>
 void benchmarkReleaseResources()
 {
-    C allocator;
+    Qt3DCore::ArrayAllocatingPolicy<T> allocator;
 
     const int max = (1 << 16) - 1;
-    QVector<T*> resources(max);
+    QVector<T *> resources(max);
     for (int i = 0; i < max; i++) {
         resources[i] = allocator.allocateResource();
     }
 
     QBENCHMARK_ONCE {
-        foreach (T* ptr, resources) {
+        foreach (auto ptr, resources) {
             allocator.releaseResource(ptr);
         }
     }
@@ -89,42 +83,22 @@ void benchmarkReleaseResources()
 
 void tst_ArrayPolicy::benchmarkDynamicAllocateSmallResources()
 {
-    benchmarkAllocateResources<Qt3DCore::ArrayAllocatingPolicy<SmallType, 16>, SmallType>();
+    benchmarkAllocateResources<SmallType>();
 }
 
 void tst_ArrayPolicy::benchmarkDynamicReleaseSmallResources()
 {
-    benchmarkReleaseResources<Qt3DCore::ArrayAllocatingPolicy<SmallType, 16>, SmallType>();
+    benchmarkReleaseResources<SmallType>();
 }
 
 void tst_ArrayPolicy::benchmarkDynamicAllocateBigResources()
 {
-    benchmarkAllocateResources<Qt3DCore::ArrayAllocatingPolicy<BigType, 16>, BigType>();
+    benchmarkAllocateResources<BigType>();
 }
 
 void tst_ArrayPolicy::benchmarkDynamicReleaseBigResources()
 {
-    benchmarkReleaseResources<Qt3DCore::ArrayAllocatingPolicy<BigType, 16>, BigType>();
-}
-
-void tst_ArrayPolicy::benchmarkPreallocatedAllocateSmallResources()
-{
-    benchmarkAllocateResources<Qt3DCore::ArrayPreallocationPolicy<SmallType, 16>, SmallType>();
-}
-
-void tst_ArrayPolicy::benchmarkPreallocatedReleaseSmallResources()
-{
-    benchmarkReleaseResources<Qt3DCore::ArrayPreallocationPolicy<SmallType, 16>, SmallType>();
-}
-
-void tst_ArrayPolicy::benchmarkPreallocatedAllocateBigResources()
-{
-    benchmarkAllocateResources<Qt3DCore::ArrayPreallocationPolicy<BigType, 16>, BigType>();
-}
-
-void tst_ArrayPolicy::benchmarkPreallocatedReleaseBigResources()
-{
-    benchmarkReleaseResources<Qt3DCore::ArrayPreallocationPolicy<BigType, 16>, BigType>();
+    benchmarkReleaseResources<BigType>();
 }
 
 QTEST_APPLESS_MAIN(tst_ArrayPolicy)

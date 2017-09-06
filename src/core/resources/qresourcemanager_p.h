@@ -220,7 +220,7 @@ struct Int2Type
     };
 };
 
-template <typename T, uint INDEXBITS>
+template <typename T, uint INDEXBITS = 16>
 class ArrayAllocatingPolicy
 {
 public:
@@ -320,59 +320,6 @@ private:
     QVector<int> m_freeList;
     int m_numBuckets;
     int m_numConstructed;
-
-    void performCleanup(T *r, Int2Type<true>)
-    {
-        r->cleanup();
-    }
-
-    void performCleanup(T *, Int2Type<false>)
-    {}
-
-};
-
-template <typename T, uint INDEXBITS>
-class ArrayPreallocationPolicy
-{
-public:
-    ArrayPreallocationPolicy()
-    {
-        reset();
-    }
-
-    T* allocateResource()
-    {
-        Q_ASSERT(!m_freeList.isEmpty());
-        int idx = m_freeList.last();
-        m_freeList.pop_back();
-        return m_bucket.data() + idx;
-    }
-
-    void releaseResource(T *r)
-    {
-        Q_ASSERT(m_bucket.data() <= r && r < m_bucket.data() + MaxSize);
-        int idx = r - m_bucket.data();
-        m_freeList.append(idx);
-        performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
-        *r = T();
-    }
-
-    void reset()
-    {
-        m_bucket.clear();
-        m_bucket.resize(MaxSize);
-        m_freeList.resize(MaxSize);
-        for (int i = 0; i < MaxSize; i++)
-            m_freeList[i] = MaxSize - (i + 1);
-    }
-
-private:
-    enum {
-        MaxSize = 1 << INDEXBITS
-    };
-
-    QVector<T> m_bucket;
-    QVector<int> m_freeList;
 
     void performCleanup(T *r, Int2Type<true>)
     {
