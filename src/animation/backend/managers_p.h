@@ -70,8 +70,7 @@ class ClipBlendNode;
 class AnimationClipLoaderManager : public Qt3DCore::QResourceManager<
         AnimationClip,
         Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
+        16>
 {
 public:
     AnimationClipLoaderManager() {}
@@ -80,8 +79,7 @@ public:
 class ClipAnimatorManager : public Qt3DCore::QResourceManager<
         ClipAnimator,
         Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
+        16>
 {
 public:
     ClipAnimatorManager() {}
@@ -90,8 +88,7 @@ public:
 class BlendedClipAnimatorManager : public Qt3DCore::QResourceManager<
         BlendedClipAnimator,
         Qt3DCore::QNodeId,
-        12,
-        Qt3DCore::ArrayAllocatingPolicy>
+        12>
 {
 public:
     BlendedClipAnimatorManager() {}
@@ -100,8 +97,7 @@ public:
 class ChannelMappingManager : public Qt3DCore::QResourceManager<
         ChannelMapping,
         Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
+        16>
 {
 public:
     ChannelMappingManager() {}
@@ -110,8 +106,7 @@ public:
 class ChannelMapperManager : public Qt3DCore::QResourceManager<
         ChannelMapper,
         Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
+        16>
 {
 public:
     ChannelMapperManager() {}

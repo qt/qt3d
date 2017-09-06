@@ -346,28 +346,25 @@ private:
 
 #ifndef QT_NO_DEBUG_STREAM
 template <typename ValueType, typename KeyType, uint INDEXBITS,
-          template <typename, uint> class AllocatingPolicy,
           template <class> class LockingPolicy
           >
 class QResourceManager;
 
 template <typename ValueType, typename KeyType, uint INDEXBITS = 16,
-          template <typename, uint> class AllocatingPolicy = ArrayAllocatingPolicy,
           template <class> class LockingPolicy = NonLockingPolicy
           >
-QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, AllocatingPolicy, LockingPolicy> &manager);
+QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> &manager);
 #endif
 
 template <typename ValueType, typename KeyType, uint INDEXBITS = 16,
-          template <typename, uint> class AllocatingPolicy = ArrayAllocatingPolicy,
           template <class> class LockingPolicy = NonLockingPolicy
           >
 class QResourceManager
-        : public AllocatingPolicy<ValueType, INDEXBITS>
-        , public LockingPolicy< QResourceManager<ValueType, KeyType, INDEXBITS, AllocatingPolicy, LockingPolicy> >
+        : public ArrayAllocatingPolicy<ValueType, INDEXBITS>
+        , public LockingPolicy< QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> >
 {
 public:
-    typedef AllocatingPolicy<ValueType, INDEXBITS> Allocator;
+    typedef ArrayAllocatingPolicy<ValueType, INDEXBITS> Allocator;
     typedef QHandle<ValueType, INDEXBITS> Handle;
 
     QResourceManager() :
@@ -474,15 +471,14 @@ private:
         Allocator::releaseResource(handle);
     }
 
-    friend QDebug operator<< <>(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, AllocatingPolicy, LockingPolicy> &manager);
+    friend QDebug operator<< <>(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> &manager);
 };
 
 #ifndef QT_NO_DEBUG_STREAM
 template <typename ValueType, typename KeyType, uint INDEXBITS,
-          template <typename, uint> class AllocatingPolicy,
           template <class> class LockingPolicy
           >
-QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, AllocatingPolicy, LockingPolicy> &manager)
+QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> &manager)
 {
     QDebugStateSaver saver(dbg);
     dbg << "Contains" << manager.count() << "items" << "of a maximum" << manager.maximumSize() << endl;

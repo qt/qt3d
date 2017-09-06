@@ -238,7 +238,6 @@ public:
     typedef Qt3DCore::QResourceManager<tst_ArrayResource,
     int,
     16,
-    Qt3DCore::ArrayAllocatingPolicy,
     Qt3DCore::ObjectLevelLockingPolicy> Manager;
 
     tst_Thread()
@@ -309,7 +308,6 @@ public:
     typedef Qt3DCore::QResourceManager<tst_ArrayResource,
     int,
     16,
-    Qt3DCore::ArrayAllocatingPolicy,
     Qt3DCore::ObjectLevelLockingPolicy> Manager;
 
     tst_Thread2(int releaseAbove = 7)
@@ -435,4 +433,4 @@ void tst_DynamicArrayPolicy::activeHandles()
 
 QTEST_APPLESS_MAIN(tst_DynamicArrayPolicy)
 
-#include "tst_dynamicarraypolicy.moc"
+#include "tst_qresourcemanager.moc"

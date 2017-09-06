@@ -64,7 +64,6 @@ class Q_AUTOTEST_EXPORT TechniqueManager : public Qt3DCore::QResourceManager<
         Technique,
         Qt3DCore::QNodeId,
         16,
-        Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::NonLockingPolicy>
 {
 public:
