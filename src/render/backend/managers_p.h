@@ -89,7 +89,6 @@ namespace Render {
 class AttachmentManager : public Qt3DCore::QResourceManager<
         RenderTargetOutput,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -99,7 +98,6 @@ public:
 class CameraManager : public Qt3DCore::QResourceManager<
         CameraLens,
         Qt3DCore::QNodeId,
-        8,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -109,7 +107,6 @@ public:
 class FilterKeyManager : public Qt3DCore::QResourceManager<
         FilterKey,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 
 {
@@ -120,7 +117,6 @@ public:
 class EffectManager : public Qt3DCore::QResourceManager<
         Effect,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -130,7 +126,6 @@ public:
 class Q_AUTOTEST_EXPORT EntityManager : public Qt3DCore::QResourceManager<
         Entity,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -164,7 +159,6 @@ private:
 class LayerManager : public Qt3DCore::QResourceManager<
         Layer,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -174,7 +168,6 @@ public:
 class LevelOfDetailManager : public Qt3DCore::QResourceManager<
         LevelOfDetail,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -184,7 +177,6 @@ public:
 class MaterialManager : public Qt3DCore::QResourceManager<
         Material,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -194,7 +186,6 @@ public:
 class MatrixManager : public Qt3DCore::QResourceManager<
         QMatrix4x4,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -204,7 +195,6 @@ public:
 class ShaderManager : public Qt3DCore::QResourceManager<
         Shader,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -214,7 +204,6 @@ public:
 class TextureManager : public Qt3DCore::QResourceManager<
         Texture,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -239,7 +228,6 @@ private:
 class TransformManager : public Qt3DCore::QResourceManager<
         Transform,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -249,7 +237,6 @@ public:
 class VAOManager : public Qt3DCore::QResourceManager<
         OpenGLVertexArrayObject,
         VAOIdentifier,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -259,7 +246,6 @@ public:
 class RenderTargetManager : public Qt3DCore::QResourceManager<
         RenderTarget,
         Qt3DCore::QNodeId,
-        8,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -269,7 +255,6 @@ public:
 class RenderPassManager : public Qt3DCore::QResourceManager<
         RenderPass,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -280,7 +265,6 @@ public:
 class ParameterManager : public Qt3DCore::QResourceManager<
         Parameter,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -290,7 +274,6 @@ public:
 class ShaderDataManager : public Qt3DCore::QResourceManager<
         ShaderData,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -300,7 +283,6 @@ public:
 class GLBufferManager : public Qt3DCore::QResourceManager<
         GLBuffer,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 };
@@ -308,7 +290,6 @@ class GLBufferManager : public Qt3DCore::QResourceManager<
 class TextureImageManager : public Qt3DCore::QResourceManager<
         TextureImage,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 };
@@ -316,7 +297,6 @@ class TextureImageManager : public Qt3DCore::QResourceManager<
 class AttributeManager : public Qt3DCore::QResourceManager<
         Attribute,
         Qt3DCore::QNodeId,
-        20,
         Qt3DCore::NonLockingPolicy>
 {
 };
@@ -324,7 +304,6 @@ class AttributeManager : public Qt3DCore::QResourceManager<
 class GeometryManager : public Qt3DCore::QResourceManager<
         Geometry,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 };
@@ -332,7 +311,6 @@ class GeometryManager : public Qt3DCore::QResourceManager<
 class ObjectPickerManager : public Qt3DCore::QResourceManager<
         ObjectPicker,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 };
@@ -341,7 +319,6 @@ class ObjectPickerManager : public Qt3DCore::QResourceManager<
 class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
         BoundingVolumeDebug,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::ObjectLevelLockingPolicy>
 {
 };
@@ -350,7 +327,6 @@ class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
 class LightManager : public Qt3DCore::QResourceManager<
         Light,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -360,7 +336,6 @@ public:
 class EnvironmentLightManager : public Qt3DCore::QResourceManager<
         EnvironmentLight,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -370,7 +345,6 @@ public:
 class ComputeCommandManager : public Qt3DCore::QResourceManager<
         ComputeCommand,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 public:
@@ -380,7 +354,6 @@ public:
 class RenderStateManager : public Qt3DCore::QResourceManager<
         RenderStateNode,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::NonLockingPolicy>
 {
 };

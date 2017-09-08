@@ -317,14 +317,14 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
         for (const QCollisionQueryResult::Hit &hit : qAsConst(sphereHits)) {
             Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
-            HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+            HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker>();
 
             // If the Entity which actually received the hit doesn't have
             // an object picker component, we need to check the parent if it has one ...
             while (objectPickerHandle.isNull() && entity != nullptr) {
                 entity = entity->parent();
                 if (entity != nullptr)
-                    objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+                    objectPickerHandle = entity->componentHandle<ObjectPicker>();
             }
 
             ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);

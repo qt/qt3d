@@ -59,7 +59,7 @@ namespace Qt3DLogic {
 namespace Logic {
 
 class Handler;
-typedef Qt3DCore::QHandle<Handler, 16> HHandler;
+typedef Qt3DCore::QHandle<Handler> HHandler;
 
 } // namespace Logic
 } // namespace Qt3DLogic

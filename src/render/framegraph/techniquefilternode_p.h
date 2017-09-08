@@ -65,7 +65,7 @@ namespace Qt3DRender {
 class QFilterKey;
 class QTechniqueFilter;
 
-template <typename T, uint INDEXBITS>
+template <typename T>
 class QHandle;
 
 namespace Render {
