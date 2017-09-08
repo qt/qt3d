@@ -133,7 +133,7 @@ void Entity::setParentHandle(HEntity parentHandle)
     // Remove ourselves from previous parent children list
     Entity *parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
     if (parent != nullptr && parent->m_childrenHandles.contains(m_handle))
-        parent->m_childrenHandles.remove(m_handle);
+        parent->m_childrenHandles.removeAll(m_handle);
     m_parentHandle = parentHandle;
     parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
     if (parent != nullptr && !parent->m_childrenHandles.contains(m_handle))
