@@ -59,6 +59,23 @@ void Clock::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change
     m_playbackRate = data.playbackRate;
 }
 
+void Clock::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    switch (e->type()) {
+    case Qt3DCore::PropertyUpdated: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("playbackRate")) {
+            m_playbackRate = change.data()->value().toDouble();
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+    QBackendNode::sceneChangeEvent(e);
+}
+
 void Clock::cleanup()
 {
     m_playbackRate = 1.f;

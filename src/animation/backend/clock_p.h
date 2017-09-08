@@ -61,6 +61,7 @@ class Q_AUTOTEST_EXPORT Clock : public BackendNode
 public:
     Clock();
 
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e);
     void cleanup();
 
     void setPlaybackRate(double playbackRate) { m_playbackRate = playbackRate; }
