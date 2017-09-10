@@ -102,7 +102,7 @@ QColor Entity::diffuseColor() const
 
 void Entity::setTheta(float theta)
 {
-    if (m_theta == theta)
+    if (qFuzzyCompare(m_theta, theta))
         return;
 
     m_theta = theta;
@@ -114,7 +114,7 @@ void Entity::setTheta(float theta)
 
 void Entity::setPhi(float phi)
 {
-    if (m_phi == phi)
+    if (qFuzzyCompare(m_phi, phi))
         return;
 
     m_phi = phi;
