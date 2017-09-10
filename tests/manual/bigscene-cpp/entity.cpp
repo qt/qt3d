@@ -58,15 +58,8 @@
 Entity::Entity(Qt3DCore::QNode *parent)
     : QEntity(parent)
     , m_transform(new Qt3DCore::QTransform())
-    , m_mesh(new Qt3DExtras::QCylinderMesh())
     , m_material(new Qt3DExtras::QPhongMaterial())
 {
-    m_mesh->setRings(50.0f);
-    m_mesh->setSlices(30.0f);
-    m_mesh->setRadius(2.5f);
-    m_mesh->setLength(5.0f);
-
-    addComponent(m_mesh);
     addComponent(m_transform);
     addComponent(m_material);
 }

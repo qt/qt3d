@@ -61,6 +61,10 @@ namespace Qt3DCore {
 class QTransform;
 }
 
+namespace Qt3DRender {
+class QGeometryRenderer;
+}
+
 namespace Qt3DExtras {
 class QCylinderMesh;
 class QPhongMaterial;
@@ -101,7 +105,6 @@ private:
 
 private:
     Qt3DCore::QTransform *m_transform;
-    Qt3DExtras::QCylinderMesh *m_mesh;
     Qt3DExtras::QPhongMaterial *m_material;
     float m_theta;
     float m_phi;

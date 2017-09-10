@@ -81,6 +81,13 @@ int main(int ac, char **av)
 
     QEntity *root = new QEntity();
 
+    // Mesh
+    auto *mesh = new Qt3DExtras::QCylinderMesh(root);
+    mesh->setRings(50.0f);
+    mesh->setSlices(30.0f);
+    mesh->setRadius(2.5f);
+    mesh->setLength(5.0f);
+
     // Camera
     QCamera *cameraEntity = view.camera();
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
@@ -99,6 +106,7 @@ int main(int ac, char **av)
     // Scene
     for (int i = 0; i < max; i++) {
         Entity *e = new Entity();
+        e->addComponent(mesh);
         const float angle = M_PI * 2.0f * i * det * 10.;
 
         e->setDiffuseColor(QColor(qFabs(qCos(angle)) * 255, 204, 75));
