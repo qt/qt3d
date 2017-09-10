@@ -48,7 +48,8 @@ namespace Animation {
 BlendedClipAnimator::BlendedClipAnimator()
     : BackendNode(ReadWrite)
     , m_running(false)
-    , m_startGlobalTime(0)
+    , m_lastGlobalTimeNS(0)
+    , m_lastLocalTime(0.0)
     , m_currentLoop(0)
     , m_loops(1)
 {
@@ -66,6 +67,26 @@ void BlendedClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeB
     setDirty(Handler::BlendedClipAnimatorDirty);
 }
 
+double BlendedClipAnimator::lastLocalTime() const
+{
+    return m_lastLocalTime;
+}
+
+void BlendedClipAnimator::setLastLocalTime(double lastLocalTime)
+{
+    m_lastLocalTime = lastLocalTime;
+}
+
+void BlendedClipAnimator::setLastGlobalTimeNS(const qint64 &lastGlobalTimeNS)
+{
+    m_lastGlobalTimeNS = lastGlobalTimeNS;
+}
+
+qint64 BlendedClipAnimator::nsSincePreviousFrame(qint64 currentGlobalTimeNS)
+{
+    return currentGlobalTimeNS - m_lastGlobalTimeNS;
+}
+
 void BlendedClipAnimator::cleanup()
 {
     setEnabled(false);
@@ -74,7 +95,8 @@ void BlendedClipAnimator::cleanup()
     m_mapperId = Qt3DCore::QNodeId();
     m_clockId = Qt3DCore::QNodeId();
     m_running = false;
-    m_startGlobalTime = 0;
+    m_lastGlobalTimeNS = 0;
+    m_lastLocalTime = 0.0;
     m_currentLoop = 0;
     m_loops = 1;
 }
@@ -123,6 +145,7 @@ void BlendedClipAnimator::sendCallbacks(const QVector<AnimationCallbackAndValue>
         }
     }
 }
+
 
 Qt3DCore::QNodeId BlendedClipAnimator::blendTreeRootId() const
 {

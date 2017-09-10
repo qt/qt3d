@@ -82,6 +82,9 @@ protected:
 private:
     HClipAnimator m_clipAnimatorHandle;
     Handler *m_handler;
+
+    qint64 m_currentGlobalTime;
+    qint64 m_lastGlobalTime;
 };
 
 } // namespace Animation

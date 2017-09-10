@@ -79,8 +79,7 @@ public:
     void setClockId(Qt3DCore::QNodeId clockId);
     void setRunning(bool running);
 
-    void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
-    qint64 startTime() const { return m_startGlobalTime; }
+    void setStartTime(qint64 globalTime) { m_lastGlobalTimeNS = globalTime; }
 
     void setLoops(int loops) { m_loops = loops; }
     int loops() const { return m_loops; }
@@ -96,6 +95,12 @@ public:
 
     void animationClipMarkedDirty() { setDirty(Handler::BlendedClipAnimatorDirty); }
 
+    qint64 nsSincePreviousFrame(qint64 currentGlobalTimeNS);
+    void setLastGlobalTimeNS(const qint64 &lastGlobalTimeNS);
+
+    double lastLocalTime() const;
+    void setLastLocalTime(double lastLocalTime);
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     Qt3DCore::QNodeId m_blendTreeRootId;
@@ -103,7 +108,9 @@ private:
     Qt3DCore::QNodeId m_clockId;
     bool m_running;
 
-    qint64 m_startGlobalTime;
+    qint64 m_lastGlobalTimeNS;
+    double m_lastLocalTime;
+
     int m_currentLoop;
     int m_loops;
 

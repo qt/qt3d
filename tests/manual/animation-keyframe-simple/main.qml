@@ -75,12 +75,32 @@ DefaultSceneEntity {
                 shininess: 50
             },
             ObjectPicker {
-                onClicked: animator.running = true
+                onClicked: {
+                    if (animator.running == false) {
+                        animator.running = true;
+                    } else {
+                        switch (pick.button) {
+                        case PickEvent.RightButton:
+                            animationClock.playbackRate *= 2.0;
+                            break;
+                        case PickEvent.LeftButton:
+                            animationClock.playbackRate /= 2.0;
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                }
             },
             ClipAnimator {
                 id: animator
                 loops: 3
                 onRunningChanged: console.log("running = " + running)
+
+                clock: Clock {
+                    id: animationClock
+                    playbackRate: 1
+                }
 
                 clip: AnimationClipLoader {
                     source: "cubeanimation.json"

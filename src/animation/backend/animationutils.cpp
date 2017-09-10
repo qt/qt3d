@@ -93,22 +93,26 @@ ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
 {
     // global time values expected in seconds
     ClipEvaluationData result;
-    result.localTime = localTimeFromGlobalTime(animatorData.globalTime, animatorData.startTime,
-                                               animatorData.playbackRate, clip->duration(),
-                                               animatorData.loopCount, result.currentLoop);
+    result.currentLoop = animatorData.currentLoop;
+    result.localTime = localTimeFromElapsedTime(animatorData.currentTime, animatorData.elapsedTime,
+                                                animatorData.playbackRate, clip->duration(),
+                                                animatorData.loopCount, result.currentLoop);
     result.isFinalFrame = isFinalFrame(result.localTime, clip->duration(),
                                        result.currentLoop, animatorData.loopCount);
     return result;
 }
 
-double localTimeFromGlobalTime(double t_global,
-                               double t_start_global,
-                               double playbackRate,
-                               double duration,
-                               int loopCount,
-                               int &currentLoop)
+double localTimeFromElapsedTime(double t_current_local,
+                                double t_elapsed_global,
+                                double playbackRate,
+                                double duration,
+                                int loopCount,
+                                int &currentLoop)
 {
-    double t_local = playbackRate * (t_global - t_start_global);
+    // Calculate the new local time.
+    // playhead + rate * dt
+    // where playhead is completed loops * duration + current loop local time
+    double t_local = currentLoop * duration + t_current_local + playbackRate * t_elapsed_global;
     double loopNumber = 0;
     if (loopCount == 1) {
         t_local = qBound(0.0, t_local, duration);
@@ -123,28 +127,30 @@ double localTimeFromGlobalTime(double t_global,
         t_local = std::fmod(t_local, duration);
 
         // Ensure we clamp to end of final loop
-        if (loopNumber == loopCount) {
+        if (int(loopNumber) == loopCount) {
             loopNumber = loopCount - 1;
             t_local = duration;
         }
     }
 
-    qCDebug(Jobs) << "t_global - t_start =" << t_global - t_start_global
-                  << "current loop =" << loopNumber
+    qCDebug(Jobs) << "current loop =" << loopNumber
                   << "t =" << t_local
                   << "duration =" << duration;
 
-    currentLoop = loopNumber;
+    currentLoop = int(loopNumber);
 
     return t_local;
 }
 
-double phaseFromGlobalTime(double t_global, double t_start_global,
-                           double playbackRate, double duration,
-                           int loopCount, int &currentLoop)
+double phaseFromElapsedTime(double t_current_local,
+                            double t_elapsed_global,
+                            double playbackRate,
+                            double duration,
+                            int loopCount,
+                            int &currentLoop)
 {
-    const double t_local = localTimeFromGlobalTime(t_global, t_start_global, playbackRate,
-                                                   duration, loopCount, currentLoop);
+    const double t_local = localTimeFromElapsedTime(t_current_local, t_elapsed_global, playbackRate,
+                                                    duration, loopCount, currentLoop);
     return t_local / duration;
 }
 
@@ -455,6 +461,11 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
             const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type() };
             const int index = channelNamesAndTypes.indexOf(nameAndType);
             if (index != -1) {
+                // Do we have any animation data for this channel? If not, don't bother
+                // adding a mapping for it.
+                if (channelComponentIndices[index].isEmpty())
+                    continue;
+
                 // We got one!
                 mappingData.channelIndices = channelComponentIndices[index];
                 mappingDataVec.push_back(mappingData);
