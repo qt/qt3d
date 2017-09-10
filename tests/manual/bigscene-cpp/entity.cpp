@@ -106,7 +106,9 @@ void Entity::setTheta(float theta)
         return;
 
     m_theta = theta;
+    const bool wasBlocked = blockNotifications(true);
     emit thetaChanged(theta);
+    blockNotifications(wasBlocked);
     updateTransform();
 }
 
@@ -116,7 +118,9 @@ void Entity::setPhi(float phi)
         return;
 
     m_phi = phi;
+    const bool wasBlocked = blockNotifications(true);
     emit phiChanged(phi);
+    blockNotifications(wasBlocked);
     updateTransform();
 }
 
