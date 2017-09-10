@@ -51,15 +51,21 @@
 #include "entity.h"
 
 #include <Qt3DExtras/QCylinderMesh>
-#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
 #include <Qt3DCore/QTransform>
 #include <QMatrix4x4>
 
-Entity::Entity(Qt3DCore::QNode *parent)
+Entity::Entity(Qt3DRender::QEffect *effect, Qt3DCore::QNode *parent)
     : QEntity(parent)
     , m_transform(new Qt3DCore::QTransform())
-    , m_material(new Qt3DExtras::QPhongMaterial())
+    , m_material(new Qt3DRender::QMaterial())
+    , m_diffuseColorParam(new Qt3DRender::QParameter())
 {
+    m_diffuseColorParam->setName(QLatin1String("kd"));
+    m_material->addParameter(m_diffuseColorParam);
+    m_material->setEffect(effect);
+
     addComponent(m_transform);
     addComponent(m_material);
 }
@@ -90,7 +96,7 @@ QVector3D Entity::position() const
 
 QColor Entity::diffuseColor() const
 {
-    return m_material->diffuse();
+    return m_diffuseColorParam->value().value<QColor>();
 }
 
 void Entity::setTheta(float theta)
@@ -129,9 +135,11 @@ void Entity::setPosition(QVector3D position)
 
 void Entity::setDiffuseColor(QColor diffuseColor)
 {
-    if (m_material->diffuse() == diffuseColor)
+    if (m_diffuseColorParam->value().value<QColor>() == diffuseColor)
         return;
 
-    m_material->setDiffuse(diffuseColor);
+    m_diffuseColorParam->setValue(QVariant::fromValue(diffuseColor));
+    const bool wasBlocked = blockNotifications(true);
     emit diffuseColorChanged(diffuseColor);
+    blockNotifications(wasBlocked);
 }
