@@ -1155,6 +1155,56 @@ private Q_SLOTS:
         arbiter1.events.clear();
         arbiter2.events.clear();
     }
+
+    void checkParentNoPickerChildPicker()
+    {
+        // GIVEN
+        QmlSceneReader sceneReader(QUrl("qrc:/testscene_parententity.qml"));
+        QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
+        QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        settings->setPickMethod(Qt3DRender::QPickingSettings::BoundingVolumePicking);
+        settings->setPickResultMode(Qt3DRender::QPickingSettings::NearestPick);
+        settings->setFaceOrientationPickingMode(Qt3DRender::QPickingSettings::FrontFace);
+
+        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
+        TestArbiter arbiter;
+
+        // Runs Required jobs
+        runRequiredJobs(test.data());
+
+        // THEN
+        // large no pickable object encapsing child and camera should not interfere with smaller picking object
+        QList<Qt3DRender::QObjectPicker *> pickers = root->findChildren<Qt3DRender::QObjectPicker *>();
+        QCOMPARE(pickers.size(), 1);
+
+        Qt3DRender::QObjectPicker *picker = pickers.first();
+        QCOMPARE(pickers.first()->objectName(), QLatin1String("Picker"));
+
+        Qt3DRender::Render::ObjectPicker *backendPicker = test->nodeManagers()->objectPickerManager()->lookupResource(picker->id());
+        QVERIFY(backendPicker);
+        Qt3DCore::QBackendNodePrivate::get(backendPicker)->setArbiter(&arbiter);
+
+        // WHEN -> Pressed on object
+        Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
+        initializePickBoundingVolumeJob(&pickBVJob, test.data());
+
+        QList<QMouseEvent> events;
+        events.push_back(QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400.0f, 300.0f), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
+        pickBVJob.setMouseEvents(events);
+        bool earlyReturn = !pickBVJob.runHelper();
+
+        // THEN -> Pressed
+        QVERIFY(!earlyReturn);
+        QVERIFY(backendPicker->isPressed());
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "pressed");
+    }
 };
 
 QTEST_MAIN(tst_PickBoundingVolumeJob)
