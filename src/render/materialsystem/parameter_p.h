@@ -74,8 +74,8 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QString name() const;
-    int nameId() const Q_DECL_NOTHROW;
-    UniformValue uniformValue() const;
+    int nameId() const Q_DECL_NOTHROW { return m_nameId; }
+    const UniformValue &uniformValue() const { return m_uniformValue; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

@@ -52,6 +52,8 @@
 #include <Qt3DRender/private/segmentsvisitor_p.h>
 #include <Qt3DRender/private/pointsvisitor_p.h>
 
+#include <vector>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -565,27 +567,29 @@ bool HierarchicalEntityPicker::collectHits(Entity *root)
     m_entities.clear();
 
     QRayCastingService rayCasting;
-    QVector<Entity *> worklist;
-    worklist << root;
+    std::vector<std::pair<Entity *, bool>> worklist;
+    worklist.push_back({root, !root->componentHandle<ObjectPicker, 16>().isNull()});
 
     while (!worklist.empty()) {
-        Entity *current = worklist.takeLast();
+        auto current = worklist.back();
+        worklist.pop_back();
 
         // first pick entry sub-scene-graph
         QCollisionQueryResult::Hit queryResult =
-                rayCasting.query(m_ray, current->worldBoundingVolumeWithChildren());
+                rayCasting.query(m_ray, current.first->worldBoundingVolumeWithChildren());
         if (queryResult.m_distance < 0.f)
             continue;
 
         // if we get a hit, we check again for this specific entity
-        queryResult = rayCasting.query(m_ray, current->worldBoundingVolume());
-        if (queryResult.m_distance >= 0.f) {
-            m_entities.push_back(current);
+        queryResult = rayCasting.query(m_ray, current.first->worldBoundingVolume());
+        if (queryResult.m_distance >= 0.f && current.second) {
+            m_entities.push_back(current.first);
             m_hits.push_back(queryResult);
         }
 
         // and pick children
-        worklist << current->children();
+        for (auto child: current.first->children())
+            worklist.push_back({child, current.second || !child->componentHandle<ObjectPicker, 16>().isNull()});
     }
 
     return !m_hits.empty();

@@ -158,19 +158,17 @@ public:
     // a generator that needs to be uploaded.
     void requestUpload()
     {
-        QMutexLocker locker(&m_dirtyFlagMutex);
-        m_dirty |= TextureData;
+        setDirtyFlag(TextureData, true);
     }
 
     bool isDirty()
     {
-        QMutexLocker locker(&m_dirtyFlagMutex);
-        return m_dirty == 0 ? false : true;
+        return m_dirtyFlags.load() != 0;
     }
 
     QMutex *textureLock()
     {
-        return &m_dirtyFlagMutex;
+        return &m_textureMutex;
     }
 protected:
 
@@ -198,7 +196,19 @@ private:
         Parameters   = 0x04      // texture parameters need to be (re-)set
 
     };
-    Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
+
+    bool testDirtyFlag(DirtyFlag flag)
+    {
+        return m_dirtyFlags.load() & flag;
+    }
+
+    void setDirtyFlag(DirtyFlag flag, bool value = true)
+    {
+        if (value)
+            m_dirtyFlags |= flag;
+        else
+            m_dirtyFlags &= ~static_cast<int>(flag);
+    }
 
     QOpenGLTexture *buildGLTexture();
     void uploadGLTextureData();
@@ -206,8 +216,8 @@ private:
     void destroyResources();
 
     bool m_unique;
-    DirtyFlags m_dirty;
-    QMutex m_dirtyFlagMutex;
+    QAtomicInt m_dirtyFlags;
+    QMutex m_textureMutex;
     QOpenGLTexture *m_gl;
     RenderBuffer *m_renderBuffer;
 

@@ -131,10 +131,10 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     setFormat(format);
     QSurfaceFormat::setDefaultFormat(format);
 
-    d->m_engine = new Qt3DCore::Quick::QQmlAspectEngine;
     d->m_renderAspect = new Qt3DRender::QRenderAspect;
     d->m_inputAspect = new Qt3DInput::QInputAspect;
     d->m_logicAspect = new Qt3DLogic::QLogicAspect;
+    d->m_engine = new Qt3DCore::Quick::QQmlAspectEngine;
 
     d->m_engine->aspectEngine()->registerAspect(d->m_renderAspect);
     d->m_engine->aspectEngine()->registerAspect(d->m_inputAspect);

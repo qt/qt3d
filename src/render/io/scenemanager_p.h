@@ -86,7 +86,6 @@ class Q_AUTOTEST_EXPORT SceneManager : public Qt3DCore::QResourceManager<
         Scene,
         Qt3DCore::QNodeId,
         8,
-        Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:

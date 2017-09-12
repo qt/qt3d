@@ -1462,7 +1462,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute,
         attr.dataType = attributeDataType;
         attr.byteOffset = attribute->byteOffset() + (i * attrCount * typeSize);
         attr.vertexSize = attribute->vertexSize() / attrCount;
-        attr.byteStride = attribute->byteStride() + (attrCount * attrCount * typeSize);
+        attr.byteStride = (attribute->byteStride() != 0) ? attribute->byteStride() : (attrCount * attrCount * typeSize);
         attr.divisor = attribute->divisor();
         attr.shaderDataType = attributeDescription->m_type;
 

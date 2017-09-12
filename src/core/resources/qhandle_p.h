@@ -53,15 +53,13 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/QDebug>
+#include <limits.h>
 
 class tst_Handle;  // needed for friend class declaration below
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-
-template <typename T, uint INDEXBITS>
-class QHandleManager;
 
 template <typename T, uint INDEXBITS = 16>
 class QHandle
@@ -82,18 +80,6 @@ public:
     static quint32 maxIndex() { return MaxIndex; }
     static quint32 maxCounter() { return MaxCounter; }
 
-
-private:
-    enum {
-        // Sizes to use for bit fields
-        IndexBits = INDEXBITS,
-        CounterBits = 32 - INDEXBITS - 2, // We use 2 bits for book-keeping in QHandleManager
-
-        // Sizes to compare against for asserting dereferences
-        MaxIndex = (1 << IndexBits) - 1,
-        MaxCounter = (1 << CounterBits) - 1
-    };
-
     QHandle(quint32 i, quint32 count)
     {
         d.m_index = i;
@@ -103,10 +89,17 @@ private:
         Q_ASSERT(count < MaxCounter);
     }
 
+    enum {
+        // Sizes to use for bit fields
+        IndexBits = INDEXBITS,
+        CounterBits = 32 - INDEXBITS - 2, // We use 2 bits for book-keeping in QHandleManager
 
-    friend class QHandleManager<T, INDEXBITS>;
-    friend class ::tst_Handle;
+        // Sizes to compare against for asserting dereferences
+        MaxIndex = (1 << IndexBits) - 1,
+        MaxCounter = ((1 << CounterBits) - 1 > SHRT_MAX) ? SHRT_MAX - 1 : (1 << CounterBits) - 1
+    };
 
+private:
     struct Data {
         quint32 m_index : IndexBits;
         quint32 m_counter : CounterBits;
