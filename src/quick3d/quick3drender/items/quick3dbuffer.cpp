@@ -61,7 +61,7 @@ const int jsValueTypeId = qMetaTypeId<QJSValue>();
 }
 
 Quick3DBuffer::Quick3DBuffer(Qt3DCore::QNode *parent)
-    : Qt3DRender::QBuffer(QBuffer::VertexBuffer, parent)
+    : Qt3DRender::QBuffer(parent)
     , m_engine(nullptr)
     , m_v4engine(nullptr)
 {
