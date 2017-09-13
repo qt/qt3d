@@ -78,7 +78,6 @@ public:
     void setManager(BufferManager *manager);
     void executeFunctor();
     void updateDataFromGPUToCPU(QByteArray data);
-    inline QBuffer::BufferType type() const { return m_type; }
     inline QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
     inline QVector<Qt3DRender::QBufferUpdate> &pendingBufferUpdates() { return m_bufferUpdates; }
@@ -92,7 +91,6 @@ private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     void forceDataUpload();
 
-    QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
     QByteArray m_data;
     QVector<Qt3DRender::QBufferUpdate> m_bufferUpdates;

@@ -112,7 +112,6 @@ private Q_SLOTS:
         QCOMPARE(buffer->metaObject(), creationChangeData->metaObject());
         QCOMPARE(buffer->data(), cloneData.data);
         QCOMPARE(buffer->usage(), cloneData.usage);
-        QCOMPARE(buffer->type(), cloneData.type);
         QCOMPARE(buffer->dataGenerator(), cloneData.functor);
         QCOMPARE(buffer->isSyncData(), cloneData.syncData);
         if (buffer->dataGenerator()) {

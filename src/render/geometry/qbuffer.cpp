@@ -77,6 +77,8 @@ QBufferPrivate::QBufferPrivate()
  * \qmlproperty QBuffer::BufferType Buffer::type
  *
  * Holds the buffer type.
+ *
+ * \deprecated
  */
 
 /*!
@@ -220,6 +222,8 @@ QBufferPrivate::QBufferPrivate()
  *        GL_SHADER_STORAGE_BUFFER
  * \value DrawIndirectBuffer
  *        GL_DRAW_INDIRECT_BUFFER
+ *
+ * \deprecated
  */
 
 /*!
@@ -253,7 +257,17 @@ QBufferPrivate::QBufferPrivate()
  */
 
 /*!
+ * Constructs a new QBuffer with \a parent.
+ */
+QBuffer::QBuffer(QNode *parent)
+    : QNode(*new QBufferPrivate(), parent)
+{
+}
+
+/*!
  * Constructs a new QBuffer of buffer type \a ty with \a parent.
+ *
+ * \deprecated
  */
 QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
     : QNode(*new QBufferPrivate(), parent)
@@ -360,6 +374,8 @@ void QBuffer::setUsage(QBuffer::UsageType usage)
  * \property QBuffer::type
  *
  * Holds the buffer type.
+ *
+ * \deprecated
  */
 QBuffer::BufferType QBuffer::type() const
 {
@@ -448,7 +464,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBuffer::createNodeCreationChange() const
     auto &data = creationChange->data;
     Q_D(const QBuffer);
     data.data = d->m_data;
-    data.type = d->m_type;
     data.usage = d->m_usage;
     data.functor = d->m_functor;
     data.syncData = d->m_syncData;

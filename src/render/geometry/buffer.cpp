@@ -51,7 +51,6 @@ namespace Render {
 
 Buffer::Buffer()
     : BackendNode(QBackendNode::ReadWrite)
-    , m_type(QBuffer::VertexBuffer)
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)
     , m_syncData(false)
@@ -68,7 +67,6 @@ Buffer::~Buffer()
 
 void Buffer::cleanup()
 {
-    m_type = QBuffer::VertexBuffer;
     m_usage = QBuffer::StaticDraw;
     m_data.clear();
     m_bufferUpdates.clear();
@@ -120,7 +118,6 @@ void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QBufferData>>(change);
     const auto &data = typedChange->data;
     m_data = data.data;
-    m_type = data.type;
     m_usage = data.usage;
     m_syncData = data.syncData;
     m_access = data.access;
@@ -163,9 +160,6 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("updateData")) {
             Qt3DRender::QBufferUpdate updateData = propertyChange->value().value<Qt3DRender::QBufferUpdate>();
             m_bufferUpdates.push_back(updateData);
-            m_bufferDirty = true;
-        } else if (propertyName == QByteArrayLiteral("type")) {
-            m_type = static_cast<QBuffer::BufferType>(propertyChange->value().value<int>());
             m_bufferDirty = true;
         } else if (propertyName == QByteArrayLiteral("usage")) {
             m_usage = static_cast<QBuffer::UsageType>(propertyChange->value().value<int>());
