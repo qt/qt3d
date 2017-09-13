@@ -331,7 +331,7 @@ private:
     struct VAOVertexAttribute
     {
         HGLBuffer bufferHandle;
-        GLBuffer::Type bufferType;
+        GLBuffer::Type attributeType;
         int location;
         GLint dataType;
         uint byteOffset;

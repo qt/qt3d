@@ -120,22 +120,14 @@ static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 
 namespace {
 
-GLBuffer::Type bufferTypeToGLBufferType(QBuffer::BufferType type)
+GLBuffer::Type attributeTypeToGLBufferType(QAttribute::AttributeType type)
 {
     switch (type) {
-    case QBuffer::VertexBuffer:
+    case QAttribute::VertexAttribute:
         return GLBuffer::ArrayBuffer;
-    case QBuffer::IndexBuffer:
+    case QAttribute::IndexAttribute:
         return GLBuffer::IndexBuffer;
-    case QBuffer::PixelPackBuffer:
-        return GLBuffer::PixelPackBuffer;
-    case QBuffer::PixelUnpackBuffer:
-        return GLBuffer::PixelUnpackBuffer;
-    case QBuffer::UniformBuffer:
-        return GLBuffer::UniformBuffer;
-    case QBuffer::ShaderStorageBuffer:
-        return GLBuffer::ShaderStorageBuffer;
-    case QBuffer::DrawIndirectBuffer:
+    case QAttribute::DrawIndirectAttribute:
         return GLBuffer::DrawIndirectBuffer;
     default:
         Q_UNREACHABLE();
@@ -1287,7 +1279,7 @@ void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
     // Bind buffer within the current VAO
     GLBuffer *buf = m_renderer->nodeManagers()->glBufferManager()->data(attr.bufferHandle);
     Q_ASSERT(buf);
-    bindGLBuffer(buf, attr.bufferType);
+    bindGLBuffer(buf, attr.attributeType);
 
     // Don't use QOpenGLShaderProgram::setAttributeBuffer() because of QTBUG-43199.
     // Use the introspection data and set the attribute explicitly
@@ -1437,7 +1429,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute,
     const GLint attributeDataType = glDataTypeFromAttributeDataType(attribute->vertexBaseType());
     const HGLBuffer glBufferHandle = m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
     Q_ASSERT(!glBufferHandle.isNull());
-    const GLBuffer::Type bufferType = bufferTypeToGLBufferType(buffer->type());
+    const GLBuffer::Type attributeType = attributeTypeToGLBufferType(attribute->attributeType());
 
     int typeSize = 0;
     int attrCount = 0;
@@ -1457,7 +1449,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute,
     for (int i = 0; i < attrCount; i++) {
         VAOVertexAttribute attr;
         attr.bufferHandle = glBufferHandle;
-        attr.bufferType = bufferType;
+        attr.attributeType = attributeType;
         attr.location = location + i;
         attr.dataType = attributeDataType;
         attr.byteOffset = attribute->byteOffset() + (i * attrCount * typeSize);
