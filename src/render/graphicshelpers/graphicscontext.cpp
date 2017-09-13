@@ -1621,7 +1621,7 @@ bool GraphicsContext::bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type)
 
 void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer)
 {
-    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+    if (!bindGLBuffer(b, GLBuffer::ArrayBuffer)) // We're uploading, the type doesn't matter here
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
     // If the buffer is dirty (hence being called here)
     // there are two possible cases
@@ -1663,8 +1663,7 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
 
     if (releaseBuffer) {
         b->release(this);
-        if (bufferTypeToGLBufferType(buffer->type()) == GLBuffer::ArrayBuffer)
-            m_boundArrayBuffer = nullptr;
+        m_boundArrayBuffer = nullptr;
     }
     qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
 }
