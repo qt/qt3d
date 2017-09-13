@@ -188,7 +188,7 @@ public:
      * @param buf
      * @return
      */
-    GLBuffer *glBufferForRenderBuffer(Buffer *buf);
+    GLBuffer *glBufferForRenderBuffer(Buffer *buf, GLBuffer::Type type);
 
     /**
      * @brief activateTexture - make a texture active on a hardware unit
@@ -270,7 +270,7 @@ private:
 
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
-    HGLBuffer createGLBufferFor(Buffer *buffer);
+    HGLBuffer createGLBufferFor(Buffer *buffer, GLBuffer::Type type);
     void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
     QByteArray downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b);
     bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);

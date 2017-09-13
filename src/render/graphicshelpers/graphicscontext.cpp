@@ -1220,7 +1220,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     int ssboIndex = 0;
     for (const BlockToSSBO b : blockToSSBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
-        GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer);
+        GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer, GLBuffer::ShaderStorageBuffer);
         bindShaderStorageBlock(shader->programId(), b.m_blockIndex, ssboIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
@@ -1240,7 +1240,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     int uboIndex = 0;
     for (const BlockToUBO &b : blockToUBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
-        GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer);
+        GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer, GLBuffer::UniformBuffer);
         bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
@@ -1476,9 +1476,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute,
 
 void GraphicsContext::specifyIndices(Buffer *buffer)
 {
-    Q_ASSERT(buffer->type() == QBuffer::IndexBuffer);
-
-    GLBuffer *buf = glBufferForRenderBuffer(buffer);
+    GLBuffer *buf = glBufferForRenderBuffer(buffer, GLBuffer::IndexBuffer);
     if (!bindGLBuffer(buf, GLBuffer::IndexBuffer))
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
@@ -1585,14 +1583,14 @@ void GraphicsContext::memoryBarrier(QMemoryBarrier::Operations barriers)
     m_glHelper->memoryBarrier(barriers);
 }
 
-GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
+GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf, GLBuffer::Type type)
 {
     if (!m_renderBufferHash.contains(buf->peerId()))
-        m_renderBufferHash.insert(buf->peerId(), createGLBufferFor(buf));
+        m_renderBufferHash.insert(buf->peerId(), createGLBufferFor(buf, type));
     return m_renderer->nodeManagers()->glBufferManager()->data(m_renderBufferHash.value(buf->peerId()));
 }
 
-HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
+HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer, GLBuffer::Type type)
 {
     GLBuffer *b = m_renderer->nodeManagers()->glBufferManager()->getOrCreateResource(buffer->peerId());
     //    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
@@ -1600,7 +1598,7 @@ HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
     if (!b->create(this))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
 
-    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+    if (!bindGLBuffer(b, type))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
     return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
