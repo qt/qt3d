@@ -1670,7 +1670,7 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
 
 QByteArray GraphicsContext::downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b)
 {
-    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+    if (!bindGLBuffer(b, GLBuffer::ArrayBuffer)) // We're downloading, the type doesn't matter here
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
 
     QByteArray data = b->download(this, buffer->data().size());
