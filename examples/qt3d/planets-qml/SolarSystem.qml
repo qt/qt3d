@@ -395,7 +395,10 @@ Entity {
             var v = Math.atan2(yv, xv)
 
             // Calculate the distance (radius)
-            var r = Math.hypot(xv, yv)
+            // TODO: Math.hypot() is ES6 and QML JS is only ES5 currently. A patch to QtQml is
+            // required to get Math.hypot() to work.
+            //var r = Math.hypot(xv, yv)
+            var r = Math.sqrt(Math.pow(xv, 2) + Math.pow(yv, 2))
 
             // From http://www.davidcolarusso.com/astro/
             // Modified to compensate for the right handed coordinate system of OpenGL
