@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,70 +37,47 @@
 **
 ****************************************************************************/
 
-#include "layerfilternode_p.h"
-#include "qlayerfilter.h"
-#include <Qt3DRender/private/qlayerfilter_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
+#ifndef QT3DRENDER_RENDER_RENDERERCACHE_P_H
+#define QT3DRENDER_RENDER_RENDERERCACHE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/QFrameGraphNode>
+
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
+
 namespace Render {
 
-LayerFilterNode::LayerFilterNode()
-    : FrameGraphNode(FrameGraphNode::LayerFilter)
+struct RendererCache
 {
-}
+    using FilterEntityByLayerData = QVector<Entity *>;
 
-void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerFilterData>>(change);
-    const auto &data = typedChange->data;
-    setLayerIds(data.layerIds);
-}
+    struct LeafNodeData
+    {
+         FilterEntityByLayerData filterEntityByLayerData;
+    };
 
-void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("layer"))
-            m_layerIds.append(change->addedNodeId());
-        markDirty(AbstractRenderer::LayersDirty);
-        break;
-    }
-
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("layer"))
-            m_layerIds.removeOne(change->removedNodeId());
-        markDirty(AbstractRenderer::LayersDirty);
-        break;
-    }
-
-    default:
-        break;
-    }
-
-    FrameGraphNode::sceneChangeEvent(e);
-}
-
-QNodeIdVector LayerFilterNode::layerIds() const
-{
-    return m_layerIds;
-}
-
-void LayerFilterNode::setLayerIds(const QNodeIdVector &list)
-{
-    m_layerIds = list;
-}
+    QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
+};
 
 } // namespace Render
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_RENDERERCACHE_P_H

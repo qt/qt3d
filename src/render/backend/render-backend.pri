@@ -41,7 +41,8 @@ HEADERS += \
     $$PWD/frameprofiler_p.h \
     $$PWD/offscreensurfacehelper_p.h \
     $$PWD/resourceaccessor_p.h \
-    $$PWD/commandthread_p.h
+    $$PWD/commandthread_p.h \
+    $$PWD/renderercache_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \

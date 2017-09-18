@@ -71,6 +71,8 @@ public:
     Layer();
     ~Layer();
     void cleanup();
+protected:
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 };
 
 } // namespace Render

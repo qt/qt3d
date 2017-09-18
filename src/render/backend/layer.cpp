@@ -66,6 +66,17 @@ void Layer::cleanup()
     QBackendNode::setEnabled(false);
 }
 
+void Layer::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    if (e->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        QByteArray propertyName = propertyChange->propertyName();
+        if (propertyName == QByteArrayLiteral("enabled"))
+            markDirty(AbstractRenderer::LayersDirty);
+    }
+    BackendNode::sceneChangeEvent(e);
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

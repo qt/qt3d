@@ -199,6 +199,10 @@ private Q_SLOTS:
         QCOMPARE(renderViewBuilder.renderViewBuilderJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
         QCOMPARE(renderViewBuilder.materialGathererJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
 
+        QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 10 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+
+        // mark jobs dirty and recheck
+        testAspect.renderer()->markDirty(Qt3DRender::Render::AbstractRenderer::LayersDirty, nullptr);
         QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 11 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
     }
 

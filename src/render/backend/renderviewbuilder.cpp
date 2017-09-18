@@ -170,7 +170,9 @@ public:
                                        const RenderableEntityFilterPtr &renderableEntityFilterJob,
                                        const ComputableEntityFilterPtr &computableEntityFilterJob,
                                        const QVector<MaterialParameterGathererJobPtr> &materialGathererJobs,
-                                       const QVector<RenderViewBuilderJobPtr> &renderViewBuilderJobs)
+                                       const QVector<RenderViewBuilderJobPtr> &renderViewBuilderJobs,
+                                       Renderer *renderer,
+                                       FrameGraphNode *leafNode)
         : m_renderViewJob(renderViewJob)
         , m_frustumCullingJob(frustumCullingJob)
         , m_filterEntityByLayerJob(filterEntityByLayerJob)
@@ -179,6 +181,8 @@ public:
         , m_computableEntityFilterJob(computableEntityFilterJob)
         , m_materialGathererJobs(materialGathererJobs)
         , m_renderViewBuilderJobs(renderViewBuilderJobs)
+        , m_renderer(renderer)
+        , m_leafNode(leafNode)
     {}
 
     void operator()()
@@ -202,14 +206,18 @@ public:
             // Filter out entities that weren't selected by the layer filters
             std::sort(renderableEntities.begin(), renderableEntities.end());
 
+            auto &filterEntityByLayerCache = m_renderer->m_cache.leafNodeCache[m_leafNode].filterEntityByLayerData;
+
             // Remove all entities from the compute and renderable vectors that aren't in the filtered layer vector
-            QVector<Entity *> filteredEntities = m_filterEntityByLayerJob->filteredEntities();
-            RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, filteredEntities);
+            if (m_renderer->dirtyBits() & AbstractRenderer::LayersDirty)
+                 filterEntityByLayerCache = m_filterEntityByLayerJob->filteredEntities();
+
+            RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, filterEntityByLayerCache);
 
             // Set the light sources, with layer filters applied.
             QVector<LightSource> lightSources = m_lightGathererJob->lights();
             for (int i = 0; i < lightSources.count(); ++i) {
-                if (!filteredEntities.contains(lightSources[i].entity))
+                if (!filterEntityByLayerCache.contains(lightSources[i].entity))
                     lightSources.removeAt(i--);
             }
             rv->setLightSources(lightSources);
@@ -247,6 +255,8 @@ private:
     ComputableEntityFilterPtr m_computableEntityFilterJob;
     QVector<MaterialParameterGathererJobPtr> m_materialGathererJobs;
     QVector<RenderViewBuilderJobPtr> m_renderViewBuilderJobs;
+    Renderer *m_renderer;
+    FrameGraphNode *m_leafNode;
 };
 
 class SetClearDrawBufferIndex
@@ -335,7 +345,9 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
                                                                                           m_renderableEntityFilterJob,
                                                                                           m_computableEntityFilterJob,
                                                                                           m_materialGathererJobs,
-                                                                                          m_renderViewBuilderJobs),
+                                                                                          m_renderViewBuilderJobs,
+                                                                                          m_renderer,
+                                                                                          leafNode),
                                                                 JobTypes::SyncRenderViewCommandBuilding);
 
     m_syncRenderViewCommandBuildersJob = SynchronizerJobPtr::create(SyncRenderViewCommandBuilders(m_renderViewJob,
@@ -461,7 +473,9 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     jobs.push_back(m_syncRenderViewInitializationJob); // Step 2
 
     jobs.push_back(m_syncFrustumCullingJob); // Step 3
-    jobs.push_back(m_filterEntityByLayerJob); // Step 3
+    if (m_renderer->dirtyBits() & AbstractRenderer::LayersDirty)
+        jobs.push_back(m_filterEntityByLayerJob); // Step 3
+
     jobs.push_back(m_setClearDrawBufferIndexJob); // Step 3
 
     for (const auto &materialGatherer : qAsConst(m_materialGathererJobs)) // Step3

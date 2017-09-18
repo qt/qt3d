@@ -1437,6 +1437,14 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
         const QVector<FrameGraphNode *> fgLeaves = visitor.traverse(frameGraphRoot());
 
+        // Remove leaf nodes that no longer exist from cache
+        const auto keys = m_cache.leafNodeCache.keys();
+        for (auto *leafNode : keys) {
+            if (!fgLeaves.contains(leafNode)) {
+                m_cache.leafNodeCache.remove(leafNode);
+            }
+        }
+
         const int fgBranchCount = fgLeaves.size();
         for (int i = 0; i < fgBranchCount; ++i) {
             RenderViewBuilder builder(fgLeaves.at(i), i, this);
