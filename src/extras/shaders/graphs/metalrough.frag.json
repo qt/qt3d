@@ -53,7 +53,7 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000005}",
             "type": "input",
-            "layers": ["baseColorMap", "metalnessMap", "roughnessMap", "ambienOcclusionMap", "normalMap"],
+            "layers": ["baseColorMap", "metalnessMap", "roughnessMap", "ambientOcclusionMap", "normalMap"],
             "parameters": {
                 "name": "texCoord",
                 "qualifier": {
