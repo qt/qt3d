@@ -49,14 +49,14 @@ public:
         : Qt3DInput::QAbstractPhysicalDeviceBackendNode(mode)
     {}
 
-    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE
+    float axisValue(int axisIdentifier) const override
     {
         if (axisIdentifier == 883)
             return 883.0f;
         return 0.0f;
     }
 
-    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE
+    bool isButtonPressed(int buttonIdentifier) const override
     {
         if (buttonIdentifier == 454)
             return true;

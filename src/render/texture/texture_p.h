@@ -150,7 +150,7 @@ public:
     void removeTextureImage(Qt3DCore::QNodeId id);
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     inline const TextureProperties& properties() const { return m_properties; }
     inline const TextureParameters& parameters() const { return m_parameters; }

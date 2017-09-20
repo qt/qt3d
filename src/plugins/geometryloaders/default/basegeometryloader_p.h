@@ -96,9 +96,9 @@ public:
     QVector<QVector4D> tangents() const { return m_tangents; }
     QVector<unsigned int> indices() const { return m_indices; }
 
-    QGeometry *geometry() const Q_DECL_OVERRIDE;
+    QGeometry *geometry() const override;
 
-    bool load(QIODevice *ioDev, const QString &subMesh = QString()) Q_DECL_OVERRIDE;
+    bool load(QIODevice *ioDev, const QString &subMesh = QString()) override;
 
 protected:
     virtual bool doLoad(QIODevice *ioDev, const QString &subMesh = QString()) = 0;

@@ -53,7 +53,7 @@ public:
     inline bool hasReceivedChange() const { return m_hasReceivedChange; }
 
 protected:
-    void sceneChangeEvent(const QSceneChangePtr &) Q_DECL_OVERRIDE
+    void sceneChangeEvent(const QSceneChangePtr &) override
     {
         m_hasReceivedChange = true;
     }

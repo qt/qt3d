@@ -50,7 +50,7 @@ class Scene2DPlugin : public Qt3DRender::Render::QRenderPluginFactoryIf
     Q_PLUGIN_METADATA(IID QRenderPluginFactoryInterface_iid FILE "scene2dplugin.json")
 
     Qt3DRender::Render::QRenderPlugin *create(const QString &key,
-                                              const QStringList &paramList) Q_DECL_OVERRIDE
+                                              const QStringList &paramList) override
     {
         Q_UNUSED(key)
         Q_UNUSED(paramList)

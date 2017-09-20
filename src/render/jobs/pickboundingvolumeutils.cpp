@@ -176,7 +176,7 @@ private:
 
     void visit(uint andx, const QVector3D &a,
                uint bndx, const QVector3D &b,
-               uint cndx, const QVector3D &c) Q_DECL_OVERRIDE;
+               uint cndx, const QVector3D &c) override;
     bool intersectsSegmentTriangle(uint andx, const QVector3D &a,
                                    uint bndx, const QVector3D &b,
                                    uint cndx, const QVector3D &c);
@@ -238,7 +238,7 @@ private:
     float m_pickWorldSpaceTolerance;
 
     void visit(uint andx, const QVector3D &a,
-               uint bndx, const QVector3D &b) Q_DECL_OVERRIDE;
+               uint bndx, const QVector3D &b) override;
     bool intersectsSegmentSegment(uint andx, const QVector3D &a,
                                   uint bndx, const QVector3D &b);
     bool rayToLineSegment(const QVector3D& lineStart,const QVector3D& lineEnd,
@@ -358,7 +358,7 @@ private:
     uint m_pointIndex;
     float m_pickWorldSpaceTolerance;
 
-    void visit(uint ndx, const QVector3D &p) Q_DECL_OVERRIDE;
+    void visit(uint ndx, const QVector3D &p) override;
 
     double pointToRayDistance(const QVector3D &a, QVector3D &p)
     {

@@ -72,7 +72,7 @@ public:
     QUrl source() const { return m_source; }
     void setStatus(QAnimationClipLoader::Status status);
     QAnimationClipLoader::Status status() const { return m_status; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     void addDependingClipAnimator(const Qt3DCore::QNodeId &id);
     void addDependingBlendedClipAnimator(const Qt3DCore::QNodeId &id);

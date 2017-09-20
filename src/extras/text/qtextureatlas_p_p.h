@@ -118,8 +118,8 @@ class QTextureAtlasGenerator : public Qt3DRender::QTextureGenerator
 public:
     QTextureAtlasGenerator(const QTextureAtlasPrivate *texAtlas);
     ~QTextureAtlasGenerator();
-    Qt3DRender::QTextureDataPtr operator()() Q_DECL_OVERRIDE;
-    bool operator==(const QTextureGenerator &other) const Q_DECL_OVERRIDE;
+    Qt3DRender::QTextureDataPtr operator()() override;
+    bool operator==(const QTextureGenerator &other) const override;
 
     QT3D_FUNCTOR(QTextureAtlasGenerator)
 

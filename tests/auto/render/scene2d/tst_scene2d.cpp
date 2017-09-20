@@ -62,7 +62,7 @@ public:
 
     }
 
-    bool event(QEvent *e) Q_DECL_OVERRIDE
+    bool event(QEvent *e) override
     {
         if (e->type() >= QEvent::MouseButtonPress &&
                 e->type() <= QEvent::MouseMove) {

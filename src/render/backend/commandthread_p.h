@@ -85,7 +85,7 @@ public:
     void executeCommand(Command *command);
 
 private:
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
     Q_INVOKABLE void executeCommandInternal(Command *command);
 
 private:

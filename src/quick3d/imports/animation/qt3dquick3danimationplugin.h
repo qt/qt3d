@@ -57,7 +57,7 @@ class Qt3DQuick3DAnimationPlugin : public QQmlExtensionPlugin
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
     Qt3DQuick3DAnimationPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { initResources(); }
-    void registerTypes(const char *uri) Q_DECL_OVERRIDE;
+    void registerTypes(const char *uri) override;
 };
 
 QT_END_NAMESPACE

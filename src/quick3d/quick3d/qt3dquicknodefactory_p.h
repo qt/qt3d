@@ -64,7 +64,7 @@ namespace Qt3DCore {
 class QuickNodeFactory : public QAbstractNodeFactory
 {
 public:
-    QNode *createNode(const char *type) Q_DECL_OVERRIDE;
+    QNode *createNode(const char *type) override;
 
     void registerType(const char *className, const char *quickName, int major, int minor);
 

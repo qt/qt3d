@@ -71,7 +71,7 @@ public:
     inline QVector<Qt3DCore::QNodeId> axes() const { return m_axes; }
     inline QVector<Qt3DCore::QNodeId> actions() const { return m_actions; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

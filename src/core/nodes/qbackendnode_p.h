@@ -70,9 +70,9 @@ class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
 public:
     QBackendNodePrivate(QBackendNode::Mode mode);
 
-    void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
-    void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void setArbiter(QLockableObserverInterface *arbiter) override;
+    void notifyObservers(const QSceneChangePtr &e) override;
+    void sceneChangeEvent(const QSceneChangePtr &e) override;
     void setEnabled(bool enabled);
 
     static QBackendNodePrivate *get(QBackendNode *n);

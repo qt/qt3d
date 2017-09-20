@@ -146,7 +146,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QAttribute)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // Qt3DRender

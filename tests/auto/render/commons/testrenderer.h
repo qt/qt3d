@@ -39,46 +39,46 @@ public:
     TestRenderer();
     ~TestRenderer();
 
-    void dumpInfo() const Q_DECL_OVERRIDE {}
-    API api() const Q_DECL_OVERRIDE { return AbstractRenderer::OpenGL; }
-    qint64 time() const Q_DECL_OVERRIDE { return 0; }
-    void setTime(qint64 time) Q_DECL_OVERRIDE { Q_UNUSED(time); }
-    void setNodeManagers(Qt3DRender::Render::NodeManagers *m) Q_DECL_OVERRIDE { m_managers = m; }
-    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { Q_UNUSED(services); }
-    void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE { Q_UNUSED(exposed); }
-    Qt3DRender::Render::NodeManagers *nodeManagers() const Q_DECL_OVERRIDE { return m_managers; }
-    Qt3DCore::QServiceLocator *services() const Q_DECL_OVERRIDE { return nullptr; }
-    void initialize() Q_DECL_OVERRIDE {}
-    void shutdown() Q_DECL_OVERRIDE {}
-    void releaseGraphicsResources() Q_DECL_OVERRIDE {}
-    void render() Q_DECL_OVERRIDE {}
-    void doRender() Q_DECL_OVERRIDE {}
-    void cleanGraphicsResources() Q_DECL_OVERRIDE {}
-    bool isRunning() const Q_DECL_OVERRIDE { return true; }
-    bool shouldRender() Q_DECL_OVERRIDE { return true; }
-    void skipNextFrame() Q_DECL_OVERRIDE {}
-    QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE { return QVector<Qt3DCore::QAspectJobPtr>(); }
-    Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
-    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
-    Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
-    void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Qt3DRender::Render::Entity *root) Q_DECL_OVERRIDE { Q_UNUSED(factory);  Q_UNUSED(root); }
-    Qt3DRender::Render::Entity *sceneRoot() const Q_DECL_OVERRIDE { return nullptr; }
-    Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE { return nullptr; }
-    Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE { return nullptr; }
-    void registerEventFilter(Qt3DCore::QEventFilterService *service) Q_DECL_OVERRIDE { Q_UNUSED(service); }
-    void setSettings(Qt3DRender::Render::RenderSettings *settings) Q_DECL_OVERRIDE { Q_UNUSED(settings); }
-    Qt3DRender::Render::RenderSettings *settings() const Q_DECL_OVERRIDE { return nullptr; }
+    void dumpInfo() const override {}
+    API api() const override { return AbstractRenderer::OpenGL; }
+    qint64 time() const override { return 0; }
+    void setTime(qint64 time) override { Q_UNUSED(time); }
+    void setNodeManagers(Qt3DRender::Render::NodeManagers *m) override { m_managers = m; }
+    void setServices(Qt3DCore::QServiceLocator *services) override { Q_UNUSED(services); }
+    void setSurfaceExposed(bool exposed) override { Q_UNUSED(exposed); }
+    Qt3DRender::Render::NodeManagers *nodeManagers() const override { return m_managers; }
+    Qt3DCore::QServiceLocator *services() const override { return nullptr; }
+    void initialize() override {}
+    void shutdown() override {}
+    void releaseGraphicsResources() override {}
+    void render() override {}
+    void doRender() override {}
+    void cleanGraphicsResources() override {}
+    bool isRunning() const override { return true; }
+    bool shouldRender() override { return true; }
+    void skipNextFrame() override {}
+    QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
+    Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() override { return Qt3DCore::QAspectJobPtr(); }
+    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() override { return Qt3DCore::QAspectJobPtr(); }
+    Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() override { return Qt3DCore::QAspectJobPtr(); }
+    void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Qt3DRender::Render::Entity *root) override { Q_UNUSED(factory);  Q_UNUSED(root); }
+    Qt3DRender::Render::Entity *sceneRoot() const override { return nullptr; }
+    Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const override { return nullptr; }
+    Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override { return nullptr; }
+    void registerEventFilter(Qt3DCore::QEventFilterService *service) override { Q_UNUSED(service); }
+    void setSettings(Qt3DRender::Render::RenderSettings *settings) override { Q_UNUSED(settings); }
+    Qt3DRender::Render::RenderSettings *settings() const override { return nullptr; }
 
-    void markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) Q_DECL_OVERRIDE;
-    Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet dirtyBits() Q_DECL_OVERRIDE;
-    void clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes) Q_DECL_OVERRIDE;
+    void markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) override;
+    Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet dirtyBits() override;
+    void clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes) override;
 
     void resetDirty();
-    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
-    QOpenGLContext *shareContext() const Q_DECL_OVERRIDE;
+    QVariant executeCommand(const QStringList &args) override;
+    QOpenGLContext *shareContext() const override;
 
-    void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) Q_DECL_OVERRIDE;
-    QSurfaceFormat format() Q_DECL_OVERRIDE;
+    void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) override;
+    QSurfaceFormat format() override;
 
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;

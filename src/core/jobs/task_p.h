@@ -95,15 +95,15 @@ public:
     AspectTaskRunnable();
     ~AspectTaskRunnable();
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
-    void setPooler(QThreadPooler *pooler) Q_DECL_OVERRIDE { m_pooler = pooler; }
+    void setPooler(QThreadPooler *pooler) override { m_pooler = pooler; }
 
-    void setReserved(bool reserved) Q_DECL_OVERRIDE { m_reserved = reserved; }
-    bool reserved() Q_DECL_OVERRIDE { return m_reserved; }
+    void setReserved(bool reserved) override { m_reserved = reserved; }
+    bool reserved() override { return m_reserved; }
 
-    int id() Q_DECL_OVERRIDE { return m_id; }
-    void setId(int id) Q_DECL_OVERRIDE { m_id = id; }
+    int id() override { return m_id; }
+    void setId(int id) override { m_id = id; }
 
     RunnableType type() const Q_DECL_OVERRIDE { return RunnableType::AspectTask; }
 
@@ -125,15 +125,15 @@ public:
                               QAtomicInt *atomicCount);
     ~SyncTaskRunnable();
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
-    void setPooler(QThreadPooler *pooler) Q_DECL_OVERRIDE { m_pooler = pooler; }
+    void setPooler(QThreadPooler *pooler) override { m_pooler = pooler; }
 
-    void setReserved(bool reserved) Q_DECL_OVERRIDE { m_reserved = reserved; }
-    bool reserved() Q_DECL_OVERRIDE { return m_reserved; }
+    void setReserved(bool reserved) override { m_reserved = reserved; }
+    bool reserved() override { return m_reserved; }
 
-    int id() Q_DECL_OVERRIDE { return m_id; }
-    void setId(int id) Q_DECL_OVERRIDE { m_id = id; }
+    int id() override { return m_id; }
+    void setId(int id) override { m_id = id; }
 
     RunnableType type() const Q_DECL_OVERRIDE { return RunnableType::SyncTask; }
 

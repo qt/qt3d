@@ -67,7 +67,7 @@ const int qVectorShaderDataTypeId = qMetaTypeId<QVector<QShaderData*> >();
 
 class QShaderDataPropertyReader: public PropertyReaderInterface
 {
-    QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
+    QVariant readProperty(const QVariant &v) override
     {
         const auto node = v.value<Qt3DCore::QNode *>();
 

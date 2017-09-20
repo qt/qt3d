@@ -63,7 +63,7 @@ public:
     RenderStateNode();
     virtual ~RenderStateNode();
 
-    virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     StateMaskSet mask() const { return m_impl.type; }
     StateVariant impl() const { return m_impl; }

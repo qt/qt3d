@@ -70,9 +70,9 @@ class CameraLensFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit CameraLensFunctor(AbstractRenderer *renderer, QRenderAspect *renderAspect);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
+    void destroy(Qt3DCore::QNodeId id) const override;
 
 private:
     CameraManager *m_manager;
@@ -95,7 +95,7 @@ public:
     void setExposure(float exposure);
     inline float exposure() const { return m_exposure; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void notifySceneBoundingVolume(const Sphere &sphere, Qt3DCore::QNodeCommand::CommandId commandId);
 
     static bool viewMatrixForCamera(EntityManager *manager, Qt3DCore::QNodeId cameraId,

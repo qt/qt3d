@@ -70,7 +70,7 @@ public:
     void setDirtyClipAnimators(const QVector<HClipAnimator> &animationClipHandles);
 
 protected:
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     QVector<HClipAnimator> m_clipAnimatorHandles;

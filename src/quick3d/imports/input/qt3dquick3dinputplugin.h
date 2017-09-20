@@ -57,7 +57,7 @@ class Qt3DQuick3DInputPlugin : public QQmlExtensionPlugin
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
     Qt3DQuick3DInputPlugin(QObject *parent = nullptr) : QQmlExtensionPlugin(parent) { initResources(); }
-    void registerTypes(const char *uri) Q_DECL_OVERRIDE;
+    void registerTypes(const char *uri) override;
 };
 
 QT_END_NAMESPACE

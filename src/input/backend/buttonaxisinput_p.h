@@ -80,7 +80,7 @@ public:
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
-    float process(InputHandler *inputHandler, qint64 currentTime) Q_DECL_OVERRIDE;
+    float process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
     void updateSpeedRatio(qint64 currentTime, UpdateType type);

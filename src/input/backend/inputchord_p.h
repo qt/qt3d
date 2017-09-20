@@ -73,9 +73,9 @@ public:
     void setStartTime(qint64 time);
     void reset();
     bool actionTriggered(Qt3DCore::QNodeId input);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
-    bool process(InputHandler *inputHandler, qint64 currentTime) Q_DECL_OVERRIDE;
+    bool process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

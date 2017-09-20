@@ -146,8 +146,8 @@ struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
 
 struct Q_AUTOTEST_EXPORT EntityCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 {
-    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
-    HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
+    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) override;
+    HitList pick(const Entity *entity) const override;
 };
 
 struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractCollisionGathererFunctor
@@ -155,24 +155,24 @@ struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractColli
     bool m_frontFaceRequested;
     bool m_backFaceRequested;
 
-    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
-    HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
+    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) override;
+    HitList pick(const Entity *entity) const override;
 };
 
 struct Q_AUTOTEST_EXPORT LineCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 {
     float m_pickWorldSpaceTolerance;
 
-    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
-    HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
+    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) override;
+    HitList pick(const Entity *entity) const override;
 };
 
 struct Q_AUTOTEST_EXPORT PointCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 {
     float m_pickWorldSpaceTolerance;
 
-    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
-    HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
+    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) override;
+    HitList pick(const Entity *entity) const override;
 };
 
 } // PickingUtils

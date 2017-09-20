@@ -86,7 +86,7 @@ public:
 
     void setMutex(QMutex *mutex);
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     TestFunction m_func;
@@ -119,7 +119,7 @@ class MassAspectJob : public Qt3DCore::QAspectJob
 public:
     MassAspectJob(MassFunction func, QVector3D *data);
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     MassFunction m_func;

@@ -76,7 +76,7 @@ public:
 
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     void setChannelName(const QString &channelName) { m_channelName = channelName; }
     QString channelName() const { return m_channelName; }

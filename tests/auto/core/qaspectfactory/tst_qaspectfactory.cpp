@@ -41,11 +41,11 @@ public: \
         : QAbstractAspect(parent) {} \
 \
 private: \
-    void onRegistered() Q_DECL_OVERRIDE {} \
-    void onEngineStartup() Q_DECL_OVERRIDE {} \
-    void onEngineShutdown() Q_DECL_OVERRIDE {} \
+    void onRegistered() override {} \
+    void onEngineStartup() override {} \
+    void onEngineShutdown() override {} \
 \
-    QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
+    QVector<QAspectJobPtr> jobsToExecute(qint64) override \
     { \
         return QVector<QAspectJobPtr>(); \
     } \

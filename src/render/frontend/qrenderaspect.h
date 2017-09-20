@@ -83,14 +83,14 @@ protected:
     Q_DECLARE_PRIVATE(QRenderAspect)
 
 private:
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
 
-    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
+    QVariant executeCommand(const QStringList &args) override;
 
-    void onRegistered() Q_DECL_OVERRIDE;
-    void onUnregistered() Q_DECL_OVERRIDE;
+    void onRegistered() override;
+    void onUnregistered() override;
 
-    void onEngineStartup() Q_DECL_OVERRIDE;
+    void onEngineStartup() override;
 
     friend class Render::Renderer;
     friend class Render::QRenderPlugin;

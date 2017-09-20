@@ -51,14 +51,14 @@ class DefaultGeometryLoaderPlugin : public Qt3DRender::QGeometryLoaderFactory
     Q_PLUGIN_METADATA(IID QGeometryLoaderFactory_iid FILE "default.json")
 public:
 
-    QStringList keys() const Q_DECL_OVERRIDE
+    QStringList keys() const override
     {
         return QStringList() << OBJGEOMETRYLOADER_EXT
                              << PLYGEOMETRYLOADER_EXT
                              << STLGEOMETRYLOADER_EXT;
     }
 
-    Qt3DRender::QGeometryLoaderInterface *create(const QString &ext) Q_DECL_OVERRIDE
+    Qt3DRender::QGeometryLoaderInterface *create(const QString &ext) override
     {
         if (ext.compare(OBJGEOMETRYLOADER_EXT, Qt::CaseInsensitive) == 0)
             return new Qt3DRender::ObjGeometryLoader;

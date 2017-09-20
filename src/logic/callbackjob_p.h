@@ -66,7 +66,7 @@ public:
     CallbackJob();
     void setManager(Manager *manager);
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     Manager *m_logicManager;

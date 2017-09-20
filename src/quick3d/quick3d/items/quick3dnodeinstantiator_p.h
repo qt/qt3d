@@ -99,8 +99,8 @@ public:
     QObject *object() const;
     Q_INVOKABLE QObject *objectAt(int index) const;
 
-    void classBegin() Q_DECL_OVERRIDE;
-    void componentComplete() Q_DECL_OVERRIDE;
+    void classBegin() override;
+    void componentComplete() override;
 
 Q_SIGNALS:
     void modelChanged();

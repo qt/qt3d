@@ -99,7 +99,7 @@ public:
     QVector<QByteArray> shaderCode() const;
     void setShaderCode(QShaderProgram::ShaderType type, const QByteArray &code);
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     bool isLoaded() const { QMutexLocker lock(&m_mutex); return m_isLoaded; }
     void setLoaded(bool loaded) { QMutexLocker lock(&m_mutex); m_isLoaded = loaded; }
     ProgramDNA dna() const Q_DECL_NOTHROW { return m_dna; }

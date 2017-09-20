@@ -72,7 +72,7 @@ class Q_AUTOTEST_EXPORT Scene : public BackendNode
 public:
     Scene();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     QUrl source() const;
     void setSceneSubtree(Qt3DCore::QEntity *subTree);
     void setSceneManager(SceneManager *manager);
@@ -91,9 +91,9 @@ class RenderSceneFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit RenderSceneFunctor(AbstractRenderer *renderer, SceneManager *sceneManager);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
+    void destroy(Qt3DCore::QNodeId id) const override;
 
 private:
     SceneManager *m_sceneManager;

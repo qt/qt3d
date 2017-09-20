@@ -71,7 +71,7 @@ public:
 
     void setRoot(Entity *root);
     void ignoreSubTree(Entity *node);
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 protected:
     virtual void finished(const Qt3DRender::Render::Sphere &sphere);

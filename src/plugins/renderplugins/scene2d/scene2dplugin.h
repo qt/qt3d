@@ -77,8 +77,8 @@ class Scene2DPlugin : public QRenderPlugin
 public:
     Scene2DPlugin();
     ~Scene2DPlugin();
-    bool registerBackendTypes(QRenderAspect *aspect, AbstractRenderer *renderer) Q_DECL_OVERRIDE;
-    bool unregisterBackendTypes(QRenderAspect *aspect) Q_DECL_OVERRIDE;
+    bool registerBackendTypes(QRenderAspect *aspect, AbstractRenderer *renderer) override;
+    bool unregisterBackendTypes(QRenderAspect *aspect) override;
 private:
     Render::Scene2DNodeManager *m_scene2dNodeManager;
 };

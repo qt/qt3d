@@ -64,7 +64,7 @@ public:
     {
     }
 
-    QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
+    QVariant readProperty(const QVariant &v) override
     {
         // qjsValueTypeId are not compile time constant (no switch)
         if (v.userType() == qjsValueTypeId) {

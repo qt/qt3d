@@ -82,7 +82,7 @@ class Q_AUTOTEST_EXPORT MeshDownloadRequest : public Qt3DCore::QDownloadRequest
 public:
     MeshDownloadRequest(Qt3DCore::QNodeId mesh, QUrl source, Qt3DCore::QAspectEngine *engine);
 
-    void onCompleted() Q_DECL_OVERRIDE;
+    void onCompleted() override;
 
 private:
     Qt3DCore::QNodeId m_mesh;
@@ -93,8 +93,8 @@ class Q_AUTOTEST_EXPORT MeshLoaderFunctor : public QGeometryFactory
 {
 public :
     MeshLoaderFunctor(QMesh *mesh, Qt3DCore::QAspectEngine *engine, const QByteArray &sourceData = QByteArray());
-    QGeometry *operator()() Q_DECL_OVERRIDE;
-    bool operator ==(const QGeometryFactory &other) const Q_DECL_OVERRIDE;
+    QGeometry *operator()() override;
+    bool operator ==(const QGeometryFactory &other) const override;
     QT3D_FUNCTOR(MeshLoaderFunctor)
 
     Qt3DCore::QNodeId m_mesh;

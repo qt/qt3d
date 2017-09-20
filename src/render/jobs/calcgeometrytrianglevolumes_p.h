@@ -67,7 +67,7 @@ class Q_AUTOTEST_EXPORT CalcGeometryTriangleVolumes : public Qt3DCore::QAspectJo
 {
 public:
     explicit CalcGeometryTriangleVolumes(const Qt3DCore::QNodeId geometryRendererId, NodeManagers *manager);
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     Qt3DCore::QNodeId m_geometryRendererId;

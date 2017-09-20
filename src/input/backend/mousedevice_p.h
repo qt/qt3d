@@ -95,8 +95,8 @@ public:
     void setInputHandler(InputHandler *handler);
     InputHandler *inputHandler() const;
 
-    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
-    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
+    float axisValue(int axisIdentifier) const override;
+    bool isButtonPressed(int buttonIdentifier) const override;
 
     void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
 #if QT_CONFIG(wheelevent)
@@ -108,7 +108,7 @@ public:
     bool wasPressed() const;
     float sensitivity() const;
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
@@ -126,9 +126,9 @@ class MouseDeviceFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit MouseDeviceFunctor(Qt3DInput::QInputAspect *inputAspect, InputHandler *handler);
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
+    void destroy(Qt3DCore::QNodeId id) const override;
 
 private:
     QInputAspect *m_inputAspect;

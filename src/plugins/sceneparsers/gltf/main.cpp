@@ -49,7 +49,7 @@ class GLTFSceneImportPlugin : public Qt3DRender::QSceneImportPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QSceneImportFactoryInterface_iid FILE "gltf.json")
 
-    Qt3DRender::QSceneImporter *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
+    Qt3DRender::QSceneImporter *create(const QString &key, const QStringList &paramList) override
     {
         Q_UNUSED(key)
         Q_UNUSED(paramList)

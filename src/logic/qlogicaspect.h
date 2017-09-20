@@ -57,9 +57,9 @@ public:
     ~QLogicAspect();
 
 private:
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
-    void onRegistered() Q_DECL_OVERRIDE;
-    void onEngineStartup() Q_DECL_OVERRIDE;
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
+    void onRegistered() override;
+    void onEngineStartup() override;
 
     Q_DECLARE_PRIVATE(QLogicAspect)
     explicit QLogicAspect(QLogicAspectPrivate &dd, QObject *parent);

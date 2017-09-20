@@ -45,29 +45,29 @@ public:
         , m_shouldFail(shouldFail)
     {}
 
-    void setSource(const QUrl &source) Q_DECL_OVERRIDE
+    void setSource(const QUrl &source) override
     {
         m_source = source;
     }
 
-    void setData(const QByteArray& data, const QString &basePath) Q_DECL_OVERRIDE
+    void setData(const QByteArray& data, const QString &basePath) override
     {
         Q_UNUSED(data);
         Q_UNUSED(basePath);
     }
 
-    bool areFileTypesSupported(const QStringList &extensions) const Q_DECL_OVERRIDE
+    bool areFileTypesSupported(const QStringList &extensions) const override
     {
         Q_UNUSED(extensions);
         return m_supportsFormat;
     }
 
-    Qt3DCore::QEntity *scene(const QString &) Q_DECL_OVERRIDE
+    Qt3DCore::QEntity *scene(const QString &) override
     {
         return m_shouldFail ? nullptr : new Qt3DCore::QEntity();
     }
 
-    Qt3DCore::QEntity *node(const QString &) Q_DECL_OVERRIDE
+    Qt3DCore::QEntity *node(const QString &) override
     {
         return m_shouldFail ? nullptr : new Qt3DCore::QEntity();
     }

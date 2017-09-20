@@ -99,7 +99,7 @@ public:
 
     void setItem(QQuickItem *item);
 
-    bool event(QEvent *e) Q_DECL_OVERRIDE;
+    bool event(QEvent *e) override;
 
     void cleanup();
 };

@@ -34,7 +34,7 @@ using namespace Qt3DCore;
 class FakeAspectJob : public QAspectJob
 {
 public:
-    void run() Q_DECL_OVERRIDE {}
+    void run() override {}
 };
 
 class tst_QAspectJob : public QObject

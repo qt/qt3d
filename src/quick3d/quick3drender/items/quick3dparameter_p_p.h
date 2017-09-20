@@ -70,7 +70,7 @@ public:
 
     Q_DECLARE_PUBLIC(Quick3DParameter)
 
-    void setValue(const QVariant &value) Q_DECL_OVERRIDE;
+    void setValue(const QVariant &value) override;
 };
 
 } // namespace Quick

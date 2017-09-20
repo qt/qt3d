@@ -77,7 +77,7 @@ public:
     }
 
 protected:
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     HClipAnimator m_clipAnimatorHandle;

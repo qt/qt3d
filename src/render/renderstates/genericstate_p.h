@@ -94,13 +94,13 @@ public:
         return this;
     }
 
-    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
+    bool equalTo(const RenderStateImpl &renderState) const override
     {
         const GenericState *other = static_cast<const GenericState*>(&renderState);
         return (other != NULL && other->m_values == m_values);
     }
 
-    StateMask mask() const Q_DECL_OVERRIDE
+    StateMask mask() const override
     {
         return GenericState::type();
     }

@@ -48,7 +48,7 @@ class GLTFSceneExportPlugin : public Qt3DRender::QSceneExportPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QSceneExportFactoryInterface_iid FILE "gltfexport.json")
 
-    Qt3DRender::QSceneExporter *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
+    Qt3DRender::QSceneExporter *create(const QString &key, const QStringList &paramList) override
     {
         Q_UNUSED(key)
         Q_UNUSED(paramList)

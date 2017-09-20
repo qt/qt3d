@@ -286,7 +286,7 @@ public:
         return QMatrix4x4(matVals);
     }
 
-    const QMetaObject *getMetaObjectForMetaType(int type) Q_DECL_OVERRIDE
+    const QMetaObject *getMetaObjectForMetaType(int type) override
     {
         switch (type) {
         case QMetaType::QColor:
@@ -308,7 +308,7 @@ public:
         return nullptr;
     }
 
-    bool init(int type, QVariant& dst) Q_DECL_OVERRIDE
+    bool init(int type, QVariant& dst) override
     {
         switch (type) {
         case QMetaType::QColor:
@@ -335,7 +335,7 @@ public:
         return false;
     }
 
-    bool create(int type, int argc, const void *argv[], QVariant *v) Q_DECL_OVERRIDE
+    bool create(int type, int argc, const void *argv[], QVariant *v) override
     {
         switch (type) {
         case QMetaType::QVector2D:
@@ -400,7 +400,7 @@ public:
         return true;
     }
 
-    bool createFromString(int type, const QString &s, void *data, size_t dataSize) Q_DECL_OVERRIDE
+    bool createFromString(int type, const QString &s, void *data, size_t dataSize) override
     {
         bool ok = false;
 
@@ -423,7 +423,7 @@ public:
         return false;
     }
 
-    bool createStringFrom(int type, const void *data, QString *s) Q_DECL_OVERRIDE
+    bool createStringFrom(int type, const void *data, QString *s) override
     {
         if (type == QMetaType::QColor) {
             const QColor *color = reinterpret_cast<const QColor *>(data);
@@ -434,7 +434,7 @@ public:
         return false;
     }
 
-    bool variantFromString(const QString &s, QVariant *v) Q_DECL_OVERRIDE
+    bool variantFromString(const QString &s, QVariant *v) override
     {
         QColor c(s);
         if (c.isValid()) {
@@ -477,7 +477,7 @@ public:
         return false;
     }
 
-    bool variantFromString(int type, const QString &s, QVariant *v) Q_DECL_OVERRIDE
+    bool variantFromString(int type, const QString &s, QVariant *v) override
     {
         bool ok = false;
 
@@ -520,7 +520,7 @@ public:
         return false;
     }
 
-    bool variantFromJsObject(int type, QQmlV4Handle object, QV4::ExecutionEngine *v4, QVariant *v) Q_DECL_OVERRIDE
+    bool variantFromJsObject(int type, QQmlV4Handle object, QV4::ExecutionEngine *v4, QVariant *v) override
     {
         QV4::Scope scope(v4);
 #ifndef QT_NO_DEBUG
@@ -543,7 +543,7 @@ public:
         return (*(reinterpret_cast<const T *>(lhs)) == rhs.value<T>());
     }
 
-    bool equal(int type, const void *lhs, const QVariant &rhs) Q_DECL_OVERRIDE
+    bool equal(int type, const void *lhs, const QVariant &rhs) override
     {
         switch (type) {
         case QMetaType::QColor:
@@ -574,7 +574,7 @@ public:
         return true;
     }
 
-    bool store(int type, const void *src, void *dst, size_t dstSize) Q_DECL_OVERRIDE
+    bool store(int type, const void *src, void *dst, size_t dstSize) override
     {
         switch (type) {
         case QMetaType::QColor:
@@ -604,7 +604,7 @@ public:
         return true;
     }
 
-    bool read(const QVariant &src, void *dst, int dstType) Q_DECL_OVERRIDE
+    bool read(const QVariant &src, void *dst, int dstType) override
     {
         switch (dstType) {
         case QMetaType::QColor:
@@ -636,7 +636,7 @@ public:
         return false;
     }
 
-    bool write(int type, const void *src, QVariant& dst) Q_DECL_OVERRIDE
+    bool write(int type, const void *src, QVariant& dst) override
     {
         switch (type) {
         case QMetaType::QColor:

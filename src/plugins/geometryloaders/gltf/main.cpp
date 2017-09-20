@@ -49,14 +49,14 @@ class GLTFGeometryLoaderPlugin : public Qt3DRender::QGeometryLoaderFactory
     Q_PLUGIN_METADATA(IID QGeometryLoaderFactory_iid FILE "gltf.json")
 public:
 
-    QStringList keys() const Q_DECL_OVERRIDE
+    QStringList keys() const override
     {
         return QStringList() << GLTFGEOMETRYLOADER_EXT
                              << JSONGEOMETRYLOADER_EXT
                              << QGLTFGEOMETRYLOADER_EXT;
     }
 
-    Qt3DRender::QGeometryLoaderInterface *create(const QString &ext) Q_DECL_OVERRIDE
+    Qt3DRender::QGeometryLoaderInterface *create(const QString &ext) override
     {
         if ((ext.compare(GLTFGEOMETRYLOADER_EXT, Qt::CaseInsensitive) == 0) ||
             (ext.compare(JSONGEOMETRYLOADER_EXT, Qt::CaseInsensitive) == 0) ||

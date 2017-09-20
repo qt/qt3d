@@ -97,11 +97,11 @@ public:
     ~AssimpImporter();
 
     // SceneParserInterface interface
-    void setSource(const QUrl& source) Q_DECL_OVERRIDE;
-    void setData(const QByteArray& data, const QString &basePath) Q_DECL_OVERRIDE;
-    bool areFileTypesSupported(const QStringList &extensions) const Q_DECL_OVERRIDE;
-    Qt3DCore::QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
-    Qt3DCore::QEntity *node(const QString &id) Q_DECL_OVERRIDE;
+    void setSource(const QUrl& source) override;
+    void setData(const QByteArray& data, const QString &basePath) override;
+    bool areFileTypesSupported(const QStringList &extensions) const override;
+    Qt3DCore::QEntity *scene(const QString &id = QString()) override;
+    Qt3DCore::QEntity *node(const QString &id) override;
 
 private:
     static bool areAssimpExtensions(const QStringList &extensions);

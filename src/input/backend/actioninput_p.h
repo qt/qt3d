@@ -69,9 +69,9 @@ public:
 
     inline QVector<int> buttons() const { return m_buttons; }
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
-    bool process(InputHandler *inputHandler, qint64 currentTime) Q_DECL_OVERRIDE;
+    bool process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

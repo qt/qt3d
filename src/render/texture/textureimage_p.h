@@ -80,7 +80,7 @@ public:
 
     void setTextureManager(TextureManager *manager);
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     inline int layer() const { return m_layer; }
     inline int mipLevel() const { return m_mipLevel; }

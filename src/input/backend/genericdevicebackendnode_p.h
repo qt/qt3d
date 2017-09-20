@@ -73,10 +73,10 @@ public:
     void updateEvents();
 
     // QAbstractPhysicalDeviceBackendNode interface
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void cleanup() Q_DECL_OVERRIDE;
-    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
-    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void cleanup() override;
+    float axisValue(int axisIdentifier) const override;
+    bool isButtonPressed(int buttonIdentifier) const override;
 
 private:
     QHash<int, qreal> m_axesValues;
@@ -89,9 +89,9 @@ class GenericDeviceBackendFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit GenericDeviceBackendFunctor(QInputAspect *inputaspect, InputHandler *handler);
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
+    void destroy(Qt3DCore::QNodeId id) const override;
 
 private:
     QInputAspect *m_inputAspect;

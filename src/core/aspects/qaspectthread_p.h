@@ -74,7 +74,7 @@ public:
     QAspectManager *aspectManager() const { return m_aspectManager; }
 
 protected:
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     QAspectManager *m_aspectManager;

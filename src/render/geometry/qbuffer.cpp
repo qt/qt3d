@@ -153,12 +153,12 @@ QBufferPrivate::QBufferPrivate()
             , m_radius(radius)
         {}
 
-        QByteArray operator ()() Q_DECL_OVERRIDE
+        QByteArray operator ()() override
         {
             return createSphereMeshVertexData(m_radius, m_rings, m_slices);
         }
 
-        bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
+        bool operator ==(const QBufferDataGenerator &other) const override
         {
             const SphereVertexDataFunctor *otherFunctor = functor_cast<SphereVertexDataFunctor>(&other);
             if (otherFunctor != nullptr)

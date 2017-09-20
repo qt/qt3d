@@ -50,7 +50,7 @@ public:
         , m_duration(duration)
     {}
 
-    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const Q_DECL_OVERRIDE
+    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const override
     {
         return currentDependencyIds();
     }

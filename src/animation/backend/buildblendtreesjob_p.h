@@ -69,7 +69,7 @@ public:
     void setBlendedClipAnimators(const QVector<HBlendedClipAnimator> &blendedClipAnimatorHandles);
 
 protected:
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     QVector<HBlendedClipAnimator> m_blendedClipAnimatorHandles;

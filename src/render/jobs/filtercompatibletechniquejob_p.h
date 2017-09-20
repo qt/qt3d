@@ -75,7 +75,7 @@ public:
     void setRenderer(Renderer *renderer);
     Renderer *renderer() const;
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     TechniqueManager *m_manager;

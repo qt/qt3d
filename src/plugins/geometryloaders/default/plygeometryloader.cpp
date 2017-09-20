@@ -66,14 +66,14 @@ public:
         : m_stream(ioDev)
     { }
 
-    int readIntValue(PlyGeometryLoader::DataType) Q_DECL_OVERRIDE
+    int readIntValue(PlyGeometryLoader::DataType) override
     {
         int value;
         m_stream >> value;
         return value;
     }
 
-    float readFloatValue(PlyGeometryLoader::DataType) Q_DECL_OVERRIDE
+    float readFloatValue(PlyGeometryLoader::DataType) override
     {
         float value;
         m_stream >> value;
@@ -94,12 +94,12 @@ public:
         m_stream.setByteOrder(byteOrder);
     }
 
-    int readIntValue(PlyGeometryLoader::DataType type) Q_DECL_OVERRIDE
+    int readIntValue(PlyGeometryLoader::DataType type) override
     {
         return readValue<int>(type);
     }
 
-    float readFloatValue(PlyGeometryLoader::DataType type) Q_DECL_OVERRIDE
+    float readFloatValue(PlyGeometryLoader::DataType type) override
     {
         return readValue<float>(type);
     }

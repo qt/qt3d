@@ -72,7 +72,7 @@ public:
     void setNodeManagers(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
 
 protected:
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
     HGeometryRenderer m_handle;
     NodeManagers *m_nodeManagers;
 };

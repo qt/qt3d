@@ -46,23 +46,23 @@ public:
     }
 
 private:
-    void onRegistered() Q_DECL_OVERRIDE
+    void onRegistered() override
     {
         qDebug() << Q_FUNC_INFO;
     }
 
-    void onEngineStartup() Q_DECL_OVERRIDE
+    void onEngineStartup() override
     {
         qDebug() << Q_FUNC_INFO;
         m_rootEntityId = rootEntityId();
     }
 
-    void onEngineShutdown() Q_DECL_OVERRIDE
+    void onEngineShutdown() override
     {
         qDebug() << Q_FUNC_INFO;
     }
 
-    QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
+    QVector<QAspectJobPtr> jobsToExecute(qint64) override \
     {
         if (m_rootEntityId)
             qDebug() << Q_FUNC_INFO << m_rootEntityId;
@@ -81,16 +81,16 @@ public: \
         : QAbstractAspect(parent) {} \
     \
 private: \
-    void onRegistered() Q_DECL_OVERRIDE {} \
-    void onEngineStartup() Q_DECL_OVERRIDE {} \
-    void onEngineShutdown() Q_DECL_OVERRIDE {} \
+    void onRegistered() override {} \
+    void onEngineStartup() override {} \
+    void onEngineShutdown() override {} \
     \
-    QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
+    QVector<QAspectJobPtr> jobsToExecute(qint64) override \
     { \
         return QVector<QAspectJobPtr>(); \
     } \
     \
-    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE \
+    QVariant executeCommand(const QStringList &args) override \
     { \
         if (args.size() >= 2 && args.first() == QLatin1Literal("echo")) { \
             QStringList list = args; \

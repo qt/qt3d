@@ -81,7 +81,7 @@ class Q_AUTOTEST_EXPORT TextureDownloadRequest : public Qt3DCore::QDownloadReque
 public:
     TextureDownloadRequest(Qt3DCore::QNodeId texture, const QUrl &url, Qt3DCore::QAspectEngine *engine);
 
-    void onCompleted() Q_DECL_OVERRIDE;
+    void onCompleted() override;
 
 private:
     Qt3DCore::QNodeId m_texture;
@@ -95,8 +95,8 @@ public:
                                          Qt3DCore::QAspectEngine *engine,
                                          Qt3DCore::QNodeId textureId);
 
-    QTextureDataPtr operator ()() Q_DECL_OVERRIDE;
-    bool operator ==(const QTextureGenerator &other) const Q_DECL_OVERRIDE;
+    QTextureDataPtr operator ()() override;
+    bool operator ==(const QTextureGenerator &other) const override;
     inline QAbstractTexture::Status status() const { return m_status; }
 
     QT3D_FUNCTOR(QTextureFromSourceGenerator)

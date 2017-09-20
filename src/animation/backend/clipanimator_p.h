@@ -78,7 +78,7 @@ public:
     void setLoops(int loops) { m_loops = loops; }
     int loops() const { return m_loops; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void setHandler(Handler *handler) { m_handler = handler; }
 
     // Called by jobs

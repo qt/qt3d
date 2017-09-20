@@ -67,7 +67,7 @@ class ClearBuffers : public FrameGraphNode
 public:
     ClearBuffers();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     QClearBuffers::BufferType type() const;
     float clearDepthValue() const;

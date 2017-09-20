@@ -79,7 +79,7 @@ public:
 
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     Qt3DCore::QNodeId shaderProgram() const;
     QVector<Qt3DCore::QNodeId> filterKeys() const;

@@ -76,7 +76,7 @@ public:
     QString name() const;
     QAbstractTexture::CubeMapFace face() const;
     QRenderTargetOutput::AttachmentPoint point() const;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     Attachment *attachment();
     const Attachment *attachment() const;
 

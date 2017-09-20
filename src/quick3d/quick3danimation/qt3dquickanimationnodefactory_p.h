@@ -64,7 +64,7 @@ namespace Qt3DAnimation {
 class QuickAnimationNodeFactory : public Qt3DCore::QAbstractNodeFactory
 {
 public:
-    Qt3DCore::QNode *createNode(const char *type) Q_DECL_OVERRIDE;
+    Qt3DCore::QNode *createNode(const char *type) override;
 
     void registerType(const char *className, const char *quickName, int major, int minor);
 

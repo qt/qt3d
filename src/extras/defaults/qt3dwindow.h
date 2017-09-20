@@ -110,8 +110,8 @@ public Q_SLOTS:
 Q_SIGNALS:
 
 protected:
-    void showEvent(QShowEvent *e) Q_DECL_OVERRIDE;
-    void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
+    void showEvent(QShowEvent *e) override;
+    void resizeEvent(QResizeEvent *) override;
 
 private:
     Q_DECLARE_PRIVATE(Qt3DWindow)

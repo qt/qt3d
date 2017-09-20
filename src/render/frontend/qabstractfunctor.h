@@ -68,7 +68,7 @@ qintptr functorTypeId()
 }
 
 #define QT3D_FUNCTOR(Class)                     \
-   qintptr id() const Q_DECL_OVERRIDE {         \
+   qintptr id() const override {         \
         return Qt3DRender::functorTypeId<Class>();    \
    }
 

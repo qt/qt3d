@@ -47,7 +47,7 @@ public:
     }
 
 private:
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override
     {
         auto creationChange = Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAbstractAxisInputData>::create(this);
         auto &data = creationChange->data;
@@ -64,7 +64,7 @@ public:
     {
     }
 
-    float process(Qt3DInput::Input::InputHandler *inputHandler, qint64 currentTime) Q_DECL_OVERRIDE
+    float process(Qt3DInput::Input::InputHandler *inputHandler, qint64 currentTime) override
     {
         Q_UNUSED(inputHandler);
         Q_UNUSED(currentTime);

@@ -72,7 +72,7 @@ public:
 
     void setRoot(Entity *node);
     void setManagers(NodeManagers *manager);
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     NodeManagers *m_manager;

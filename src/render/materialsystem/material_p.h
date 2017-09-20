@@ -79,7 +79,7 @@ public:
     ~Material();
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     QVector<Qt3DCore::QNodeId> parameters() const;
     Qt3DCore::QNodeId effect() const;

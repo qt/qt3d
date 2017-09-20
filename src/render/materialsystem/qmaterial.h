@@ -80,7 +80,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QMaterial)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 }

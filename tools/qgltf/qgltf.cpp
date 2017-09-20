@@ -69,12 +69,12 @@ public:
     AssimpIOStream(QIODevice *device);
     ~AssimpIOStream();
 
-    size_t Read(void *pvBuffer, size_t pSize, size_t pCount) Q_DECL_OVERRIDE;
-    size_t Write(const void *pvBuffer, size_t pSize, size_t pCount) Q_DECL_OVERRIDE;
-    aiReturn Seek(size_t pOffset, aiOrigin pOrigin) Q_DECL_OVERRIDE;
-    size_t Tell() const Q_DECL_OVERRIDE;
-    size_t FileSize() const Q_DECL_OVERRIDE;
-    void Flush() Q_DECL_OVERRIDE;
+    size_t Read(void *pvBuffer, size_t pSize, size_t pCount) override;
+    size_t Write(const void *pvBuffer, size_t pSize, size_t pCount) override;
+    aiReturn Seek(size_t pOffset, aiOrigin pOrigin) override;
+    size_t Tell() const override;
+    size_t FileSize() const override;
+    void Flush() override;
 
 private:
     QIODevice *m_device;
@@ -84,10 +84,10 @@ class AssimpIOSystem : public Assimp::IOSystem
 {
 public:
     AssimpIOSystem();
-    bool Exists(const char *pFile) const Q_DECL_OVERRIDE;
-    char getOsSeparator() const Q_DECL_OVERRIDE;
-    Assimp::IOStream *Open(const char *pFile, const char *pMode) Q_DECL_OVERRIDE;
-    void Close(Assimp::IOStream *pFile) Q_DECL_OVERRIDE;
+    bool Exists(const char *pFile) const override;
+    char getOsSeparator() const override;
+    Assimp::IOStream *Open(const char *pFile, const char *pMode) override;
+    void Close(Assimp::IOStream *pFile) override;
 
 private:
     QHash<QByteArray, QIODevice::OpenMode> m_openModeMap;
@@ -491,7 +491,7 @@ class AssimpImporter : public Importer
 public:
     AssimpImporter();
 
-    bool load(const QString &filename) Q_DECL_OVERRIDE;
+    bool load(const QString &filename) override;
 
 private:
     const aiScene *scene() const;
@@ -1262,7 +1262,7 @@ class GltfExporter : public Exporter
 {
 public:
     GltfExporter(Importer *importer);
-    void save(const QString &inputFilename) Q_DECL_OVERRIDE;
+    void save(const QString &inputFilename) override;
 
 private:
     struct ProgramInfo {

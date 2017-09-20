@@ -88,7 +88,7 @@ public:
 
 protected:
     explicit ClipBlendNode(BlendType blendType);
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
     virtual ClipResults doBlend(const QVector<ClipResults> &blendData) const = 0;
 
 private:

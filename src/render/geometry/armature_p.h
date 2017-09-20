@@ -63,7 +63,7 @@ class Q_AUTOTEST_EXPORT Armature : public BackendNode
 public:
     Armature();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void cleanup();
 
     Qt3DCore::QNodeId skeletonId() const { return m_skeletonId; }

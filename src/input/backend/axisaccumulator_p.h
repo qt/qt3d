@@ -78,7 +78,7 @@ public:
     float velocity() const Q_DECL_NOTHROW { return  m_velocity; }
     void setVelocity(float velocity);
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     void stepIntegration(AxisManager *axisManager, float dt);
 

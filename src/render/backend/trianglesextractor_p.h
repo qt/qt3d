@@ -73,7 +73,7 @@ public:
 private:
     void visit(uint andx, const QVector3D &a,
                uint bndx, const QVector3D &b,
-               uint cndx, const QVector3D &c) Q_DECL_OVERRIDE;
+               uint cndx, const QVector3D &c) override;
 
     GeometryRenderer *m_renderer;
     QVector<RayCasting::QBoundingVolume *> m_volumes;

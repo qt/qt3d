@@ -71,15 +71,15 @@ class Q_AUTOTEST_EXPORT KeyboardDevice : public Qt3DInput::QAbstractPhysicalDevi
 {
 public:
     KeyboardDevice();
-    void cleanup() Q_DECL_OVERRIDE;
+    void cleanup() override;
 
     void requestFocusForInput(Qt3DCore::QNodeId inputId);
     void setInputHandler(InputHandler *handler);
 
     void setCurrentFocusItem(Qt3DCore::QNodeId input);
 
-    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
-    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
+    float axisValue(int axisIdentifier) const override;
+    bool isButtonPressed(int buttonIdentifier) const override;
 
     void updateKeyEvents(const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events);
 
@@ -87,7 +87,7 @@ public:
     inline Qt3DCore::QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) override;
 
 private:
     void setButtonValue(int key, bool value);
@@ -268,9 +268,9 @@ class KeyboardDeviceFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit KeyboardDeviceFunctor(QInputAspect *inputaspect, InputHandler *handler);
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
+    void destroy(Qt3DCore::QNodeId id) const override;
 
 private:
     QInputAspect *m_inputAspect;

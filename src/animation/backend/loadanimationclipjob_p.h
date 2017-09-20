@@ -72,7 +72,7 @@ public:
     void clearDirtyAnimationClips();
 
 protected:
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     QVector<HAnimationClip> m_animationClipHandles;

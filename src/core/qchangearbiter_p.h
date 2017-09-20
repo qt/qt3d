@@ -105,9 +105,9 @@ public:
     void registerSceneObserver(QSceneObserverInterface *observer);
     void unregisterSceneObserver(QSceneObserverInterface *observer);
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;         // QLockableObserverInterface impl
-    void sceneChangeEventWithLock(const QSceneChangePtr &e) Q_DECL_OVERRIDE; // QLockableObserverInterface impl
-    void sceneChangeEventWithLock(const QSceneChangeList &e) Q_DECL_OVERRIDE; // QLockableObserverInterface impl
+    void sceneChangeEvent(const QSceneChangePtr &e) override;         // QLockableObserverInterface impl
+    void sceneChangeEventWithLock(const QSceneChangePtr &e) override; // QLockableObserverInterface impl
+    void sceneChangeEventWithLock(const QSceneChangeList &e) override; // QLockableObserverInterface impl
 
     Q_INVOKABLE void setPostman(Qt3DCore::QAbstractPostman *postman);
     Q_INVOKABLE void setScene(Qt3DCore::QScene *scene);

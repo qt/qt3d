@@ -71,7 +71,7 @@ class QNormalDiffuseMapAlphaMaterialPrivate: public QNormalDiffuseMapMaterialPri
 public:
     QNormalDiffuseMapAlphaMaterialPrivate();
 
-    void init() Q_DECL_OVERRIDE;
+    void init() override;
 
     Qt3DRender::QAlphaCoverage *m_alphaCoverage;
     Qt3DRender::QDepthTest *m_depthTest;

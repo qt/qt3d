@@ -71,7 +71,7 @@ public:
     ~LoadBufferJob();
 
     void setNodeManager(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 protected:
     HBuffer m_handle;

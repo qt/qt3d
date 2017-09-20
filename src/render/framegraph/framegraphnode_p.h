@@ -118,11 +118,11 @@ public:
     FrameGraphNode *parent() const;
     QVector<FrameGraphNode *> children() const;
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
 protected:
     FrameGraphNode(FrameGraphNodeType nodeType, QBackendNode::Mode mode = QBackendNode::ReadOnly);
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
 
 private:
     FrameGraphNodeType m_nodeType;
@@ -143,17 +143,17 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override
     {
         return createBackendFrameGraphNode(change);
     }
 
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override
     {
         return m_manager->lookupNode(id);
     }
 
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE
+    void destroy(Qt3DCore::QNodeId id) const override
     {
         m_manager->releaseNode(id);
     }

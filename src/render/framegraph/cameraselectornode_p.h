@@ -69,7 +69,7 @@ class CameraSelector : public FrameGraphNode
 public:
     CameraSelector();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     Qt3DCore::QNodeId cameraUuid() const;
 
 private:

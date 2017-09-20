@@ -86,7 +86,7 @@ public:
         startTimer(QGuiApplication::primaryScreen()->refreshRate());
     }
 
-    void timerEvent(QTimerEvent *) Q_DECL_OVERRIDE
+    void timerEvent(QTimerEvent *) override
     {
         incubateFor(m_incubationTime);
     }

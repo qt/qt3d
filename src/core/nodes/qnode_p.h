@@ -79,11 +79,11 @@ public:
     virtual void setScene(QScene *scene);
     QScene *scene() const;
 
-    void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
+    void setArbiter(QLockableObserverInterface *arbiter) override;
 
     void notifyPropertyChange(const char *name, const QVariant &value);
     void notifyDynamicPropertyChange(const QByteArray &name, const QVariant &value);
-    void notifyObservers(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void notifyObservers(const QSceneChangePtr &change) override;
 
     void insertTree(QNode *treeRoot, int depth = 0);
     void updatePropertyTrackMode();

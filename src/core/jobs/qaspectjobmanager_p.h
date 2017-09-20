@@ -71,13 +71,13 @@ public:
     explicit QAspectJobManager(QObject *parent = 0);
     ~QAspectJobManager();
 
-    void initialize() Q_DECL_OVERRIDE;
+    void initialize() override;
 
-    void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) Q_DECL_OVERRIDE;
+    void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) override;
 
-    void waitForAllJobs() Q_DECL_OVERRIDE;
+    void waitForAllJobs() override;
 
-    void waitForPerThreadFunction(JobFunction func, void *arg) Q_DECL_OVERRIDE;
+    void waitForPerThreadFunction(JobFunction func, void *arg) override;
 
 private:
     QThreadPooler *m_threadPooler;

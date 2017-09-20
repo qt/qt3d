@@ -73,17 +73,17 @@ public:
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
-    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const Q_DECL_OVERRIDE
+    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const override
     {
         return currentDependencyIds();
     }
 
-    inline QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_OVERRIDE
+    inline QVector<Qt3DCore::QNodeId> currentDependencyIds() const override
     {
         return { m_baseClipId, m_additiveClipId };
     }
 
-    inline double duration() const Q_DECL_OVERRIDE
+    inline double duration() const override
     {
         ClipBlendNode *node = clipBlendNodeManager()->lookupNode(m_baseClipId);
         Q_ASSERT(node);

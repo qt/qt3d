@@ -65,7 +65,7 @@ class Q_AUTOTEST_EXPORT SortPolicy : public FrameGraphNode
 public:
     SortPolicy();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     QVector<Qt3DRender::QSortPolicy::SortType> sortTypes() const;
 

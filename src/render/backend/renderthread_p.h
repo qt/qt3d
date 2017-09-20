@@ -75,7 +75,7 @@ public:
     Render::Renderer* renderer() const { return m_renderer; }
 
 protected:
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     Renderer* m_renderer;

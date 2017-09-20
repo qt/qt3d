@@ -43,7 +43,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(%{CN})
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 @endif
 };
 %{JS: Cpp.closeNamespaces('%{Class}')}

@@ -80,12 +80,12 @@ public:
     {}
 
     void setCenter(const QVector3D &c);
-    QVector3D center() const Q_DECL_OVERRIDE;
+    QVector3D center() const override;
 
     inline bool isNull() { return m_center == QVector3D() && m_radius == 0.0f; }
 
     void setRadius(float r);
-    float radius() const Q_DECL_OVERRIDE;
+    float radius() const override;
 
     void clear();
     void initializeFromPoints(const QVector<QVector3D> &points);

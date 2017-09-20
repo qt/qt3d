@@ -84,7 +84,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QTechnique)
     Q_PRIVATE_SLOT(d_func(), void _q_graphicsApiFilterChanged())
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 }

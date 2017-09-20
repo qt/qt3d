@@ -117,13 +117,13 @@ public:
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 
-    QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+    QVector<QAspectJobPtr> jobsToExecute(qint64 time) override;
 
-    QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const override;
     void clearBackendNode(const QNodeDestroyedChangePtr &change) const;
 
-    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) override;
+    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) override;
 
     virtual void onEngineAboutToShutdown();
 

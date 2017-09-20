@@ -101,7 +101,7 @@ protected:
     Q_DECLARE_PRIVATE(QScene2D)
 
 private:
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Quick

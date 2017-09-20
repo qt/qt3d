@@ -63,9 +63,9 @@ private slots:
 class tst_LockableObserver : public Qt3DCore::QLockableObserverInterface
 {
 public:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_OVERRIDE {}
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &) Q_DECL_OVERRIDE {}
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &) Q_DECL_OVERRIDE {}
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) override {}
+    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &) override {}
+    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &) override {}
 };
 
 class tst_Observable : public Qt3DCore::QObservableInterface

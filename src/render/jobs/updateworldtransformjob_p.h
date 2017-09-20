@@ -69,7 +69,7 @@ public:
     UpdateWorldTransformJob();
 
     void setRoot(Entity *root);
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     Entity *m_node;

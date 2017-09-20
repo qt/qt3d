@@ -66,7 +66,7 @@ class AssignKeyboardFocusJob : public Qt3DCore::QAspectJob
 public:
     explicit AssignKeyboardFocusJob(Qt3DCore::QNodeId keyboardDevice);
     void setInputHandler(InputHandler *handler);
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     InputHandler *m_inputHandler;

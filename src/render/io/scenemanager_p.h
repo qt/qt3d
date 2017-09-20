@@ -72,7 +72,7 @@ class SceneDownloader : public Qt3DCore::QDownloadRequest {
 public:
     SceneDownloader(const QUrl &source, Qt3DCore::QNodeId sceneComponent, SceneManager* manager);
 
-    void onCompleted() Q_DECL_OVERRIDE;
+    void onCompleted() override;
 
 private:
     Qt3DCore::QNodeId m_sceneComponent;

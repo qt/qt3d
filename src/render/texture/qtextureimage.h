@@ -82,11 +82,11 @@ Q_SIGNALS:
     void mirroredChanged(bool mirrored);
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
     void setStatus(Status status);
 
 private:
-    QTextureImageDataGeneratorPtr dataGenerator() const Q_DECL_OVERRIDE;
+    QTextureImageDataGeneratorPtr dataGenerator() const override;
     Q_DECLARE_PRIVATE(QTextureImage)
 };
 

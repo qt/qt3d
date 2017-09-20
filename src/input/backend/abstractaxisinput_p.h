@@ -70,13 +70,13 @@ public:
     virtual void cleanup();
 
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     virtual float process(InputHandler *inputHandler, qint64 currentTime) = 0;
 
 protected:
     AbstractAxisInput();
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
 
     Qt3DCore::QNodeId m_sourceDevice;
 };

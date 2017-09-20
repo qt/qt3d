@@ -58,7 +58,7 @@ class Qt3DQuick3DCorePlugin : public QQmlExtensionPlugin
 public:
     Qt3DQuick3DCorePlugin(QObject *parent = nullptr) : QQmlExtensionPlugin(parent) { initResources(); }
     ~Qt3DQuick3DCorePlugin();
-    void registerTypes(const char *uri) Q_DECL_OVERRIDE;
+    void registerTypes(const char *uri) override;
 };
 
 QT_END_NAMESPACE

@@ -76,7 +76,7 @@ private Q_SLOTS:
 /*
 protected:
 
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
+    Qt3DCore::QNode *doClone() const override
     {
         return Q_NULLPTR;
     }

@@ -56,7 +56,7 @@ public:
 
 protected:
     explicit QLevelOfDetailSwitch(QLevelOfDetailPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QLevelOfDetail)

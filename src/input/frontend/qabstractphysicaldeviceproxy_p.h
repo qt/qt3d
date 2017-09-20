@@ -77,21 +77,21 @@ public:
     QString deviceName() const;
     DeviceStatus status() const;
 
-    int axisCount() const Q_DECL_OVERRIDE;
-    int buttonCount() const Q_DECL_OVERRIDE;
-    QStringList axisNames() const Q_DECL_OVERRIDE;
-    QStringList buttonNames() const Q_DECL_OVERRIDE;
-    int axisIdentifier(const QString &name) const Q_DECL_OVERRIDE;
-    int buttonIdentifier(const QString &name) const Q_DECL_OVERRIDE;
+    int axisCount() const override;
+    int buttonCount() const override;
+    QStringList axisNames() const override;
+    QStringList buttonNames() const override;
+    int axisIdentifier(const QString &name) const override;
+    int buttonIdentifier(const QString &name) const override;
 
 Q_SIGNALS:
     void statusChanged(QAbstractPhysicalDeviceProxy::DeviceStatus status);
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
     QAbstractPhysicalDeviceProxy(QAbstractPhysicalDeviceProxyPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 
 private:
     void setDevice(QAbstractPhysicalDevice *device);

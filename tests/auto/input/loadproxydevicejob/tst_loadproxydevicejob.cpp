@@ -47,35 +47,35 @@ public:
         , m_name(name)
     {}
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64) override
     {
         return QVector<Qt3DCore::QAspectJobPtr>();
     }
 
-    Qt3DInput::QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) Q_DECL_OVERRIDE
+    Qt3DInput::QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) override
     {
         if (name == m_name)
             return new TestPhysicalDevice();
         return nullptr;
     }
 
-    Qt3DInput::QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId) const Q_DECL_OVERRIDE
+    Qt3DInput::QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId) const override
     {
         return nullptr;
     }
 
-    QVector<Qt3DCore::QNodeId> physicalDevices() const Q_DECL_OVERRIDE
+    QVector<Qt3DCore::QNodeId> physicalDevices() const override
     {
         return QVector<Qt3DCore::QNodeId>();
     }
 
-    QStringList deviceNames() const Q_DECL_OVERRIDE
+    QStringList deviceNames() const override
     {
         return QStringList() << m_name;
     }
 
 private:
-    void onInitialize() Q_DECL_OVERRIDE {}
+    void onInitialize() override {}
     QString m_name;
 };
 

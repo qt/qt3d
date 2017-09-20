@@ -68,7 +68,7 @@ public:
     inline int axis() const { return m_axis; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
-    float process(InputHandler *inputHandler, qint64 currentTime) Q_DECL_OVERRIDE;
+    float process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

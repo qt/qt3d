@@ -88,7 +88,7 @@ public:
     inline void setSubmitOrderIndex(int index) { m_index = index; }
     inline int submitOrderIndex() const { return m_index; }
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     Renderer *m_renderer;

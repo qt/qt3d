@@ -296,7 +296,7 @@ public:
         return m_inner;
     }
 
-    QHash<QString, Qt3DRender::Render::ShaderUniform> buildUniformMap(const QString &blockName) Q_DECL_OVERRIDE
+    QHash<QString, Qt3DRender::Render::ShaderUniform> buildUniformMap(const QString &blockName) override
     {
         QHash<QString, Qt3DRender::Render::ShaderUniform> innerUniforms;
 
@@ -315,7 +315,7 @@ public:
         return uniforms;
     }
 
-    QHash<QString, QVariant> buildUniformMapValues(const QString &blockName) Q_DECL_OVERRIDE
+    QHash<QString, QVariant> buildUniformMapValues(const QString &blockName) override
     {
         QHash<QString, QVariant> innerUniformsValues;
 

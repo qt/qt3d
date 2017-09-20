@@ -79,7 +79,7 @@ public:
     QUrl source() const;
     Qt3DCore::QNodeId sceneComponentId() const;
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 private:
     QUrl m_source;

@@ -69,7 +69,7 @@ public:
     inline InputHandler *inputHandler() const { return m_inputHandler; }
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_OVERRIDE;
+    bool eventFilter(QObject *obj, QEvent *e) override;
 
 private:
     InputHandler *m_inputHandler;

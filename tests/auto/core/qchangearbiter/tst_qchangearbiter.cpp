@@ -117,7 +117,7 @@ public:
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override
     {
         QVERIFY(!change.isNull());
         m_lastChanges << change;
@@ -182,7 +182,7 @@ class tst_SimpleObserver : public Qt3DCore::QObserverInterface
 public:
 
     // QObserverInterface interface
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override
     {
         QVERIFY(!e.isNull());
         m_lastChanges.append(e);
@@ -218,7 +218,7 @@ public:
     {}
 
     // QObserverInterface interface
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override
     {
         QVERIFY(!e.isNull());
         m_lastChanges << e;
@@ -271,7 +271,7 @@ public:
 
     ~ThreadedAnswer() { qDebug() << this; }
 
-    void run() Q_DECL_OVERRIDE
+    void run() override
     {
         // create backend change queue on QChangeArbiter
         Qt3DCore::QChangeArbiter::createThreadLocalChangeQueue(m_arbiter);

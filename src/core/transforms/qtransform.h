@@ -117,7 +117,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QTransform)
-    QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DCore

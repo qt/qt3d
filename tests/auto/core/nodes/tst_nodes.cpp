@@ -138,19 +138,19 @@ public:
     {
     }
 
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE
+    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e) override
     {
         events << ChangeRecord(e, true);
     }
 
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e) Q_DECL_OVERRIDE
+    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e) override
     {
         for (size_t i = 0, m = e.size(); i < m; ++i) {
             events << ChangeRecord(e.at(i), false);
         }
     }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override
     {
         events << ChangeRecord(e, false);
     }

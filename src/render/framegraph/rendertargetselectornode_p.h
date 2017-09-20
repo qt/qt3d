@@ -66,7 +66,7 @@ class RenderTargetSelector : public FrameGraphNode
 public:
     RenderTargetSelector();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     Qt3DCore::QNodeId renderTargetUuid() const { return m_renderTargetUuid; }
     QVector<QRenderTargetOutput::AttachmentPoint> outputs() const { return m_outputs; }

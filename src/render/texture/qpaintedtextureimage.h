@@ -83,7 +83,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QPaintedTextureImage)
 
-    QTextureImageDataGeneratorPtr dataGenerator() const Q_DECL_OVERRIDE;
+    QTextureImageDataGeneratorPtr dataGenerator() const override;
 };
 
 } // namespace Qt3DRender

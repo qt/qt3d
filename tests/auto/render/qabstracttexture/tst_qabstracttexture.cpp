@@ -47,7 +47,7 @@ class FakeTexture : public Qt3DRender::QAbstractTexture
 class FakeTextureImage : public Qt3DRender::QAbstractTextureImage
 {
 protected:
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const Q_DECL_OVERRIDE
+    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
     {
         return Qt3DRender::QTextureImageDataGeneratorPtr();
     }

@@ -80,7 +80,7 @@ public:
     ~Technique();
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     QVector<Qt3DCore::QNodeId> parameters() const;
 
     void appendRenderPass(Qt3DCore::QNodeId renderPassId);
@@ -116,9 +116,9 @@ class TechniqueFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit TechniqueFunctor(AbstractRenderer *renderer, NodeManagers *manager);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
+    void destroy(Qt3DCore::QNodeId id) const override;
 private:
     NodeManagers *m_manager;
     AbstractRenderer *m_renderer;

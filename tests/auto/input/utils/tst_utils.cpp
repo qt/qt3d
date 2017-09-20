@@ -56,12 +56,12 @@ public:
         , m_device(device)
     {}
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE { return QVector<Qt3DCore::QAspectJobPtr>(); }
-    Qt3DInput::QAbstractPhysicalDevice *createPhysicalDevice(const QString &) Q_DECL_OVERRIDE { return nullptr; }
-    QVector<Qt3DCore::QNodeId> physicalDevices() const Q_DECL_OVERRIDE { return QVector<Qt3DCore::QNodeId>(); }
-    QStringList deviceNames() const Q_DECL_OVERRIDE { return QStringList(); }
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64) override { return QVector<Qt3DCore::QAspectJobPtr>(); }
+    Qt3DInput::QAbstractPhysicalDevice *createPhysicalDevice(const QString &) override { return nullptr; }
+    QVector<Qt3DCore::QNodeId> physicalDevices() const override { return QVector<Qt3DCore::QNodeId>(); }
+    QStringList deviceNames() const override { return QStringList(); }
 
-    Qt3DInput::QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId deviceId) const Q_DECL_OVERRIDE
+    Qt3DInput::QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId deviceId) const override
     {
         if (m_device->id() == deviceId)
             return new FakeBackendDevice();
@@ -69,7 +69,7 @@ public:
     }
 
 private:
-    void onInitialize() Q_DECL_OVERRIDE {}
+    void onInitialize() override {}
     Qt3DInput::QAbstractPhysicalDevice *m_device;
 };
 

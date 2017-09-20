@@ -73,7 +73,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QEntity)
 
-    QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 typedef QSharedPointer<QEntity> QEntityPtr;

@@ -78,7 +78,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquation)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DRender
