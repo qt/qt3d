@@ -57,6 +57,7 @@
 #include <QtCore/qvariant.h>
 #include <QMatrix4x4>
 #include <Qt3DRender/private/uniform_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -109,10 +110,10 @@ Q_AUTOTEST_EXPORT inline T variant_value(const QVariant &v)
 
 struct ParameterInfo
 {
-    explicit ParameterInfo(const int nameId = -1, const UniformValue &value = UniformValue());
+    explicit ParameterInfo(const int nameId = -1, const HParameter &handle = HParameter());
 
     int nameId;
-    UniformValue value;
+    HParameter handle;
 
     bool operator<(const int otherNameId) const Q_DECL_NOEXCEPT;
     bool operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT;

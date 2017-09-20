@@ -978,17 +978,18 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 const ParameterInfoList::const_iterator parametersEnd = parameters.cend();
 
                 while (it != parametersEnd) {
+                    Parameter *param = m_manager->data<Parameter, ParameterManager>(it->handle);
+                    const UniformValue &uniformValue = param->uniformValue();
                     if (uniformNamesIds.contains(it->nameId)) { // Parameter is a regular uniform
-                        setUniformValue(command->m_parameterPack, it->nameId, it->value);
+                        setUniformValue(command->m_parameterPack, it->nameId, uniformValue);
                     } else if (uniformBlockNamesIds.indexOf(it->nameId) != -1) { // Parameter is a uniform block
-                        setUniformBlockValue(command->m_parameterPack, shader, shader->uniformBlockForBlockNameId(it->nameId), it->value);
+                        setUniformBlockValue(command->m_parameterPack, shader, shader->uniformBlockForBlockNameId(it->nameId), uniformValue);
                     } else if (shaderStorageBlockNamesIds.indexOf(it->nameId) != -1) { // Parameters is a SSBO
-                        setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(it->nameId), it->value);
+                        setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(it->nameId), uniformValue);
                     } else { // Parameter is a struct
-                        const UniformValue &v = it->value;
                         ShaderData *shaderData = nullptr;
-                        if (v.valueType() == UniformValue::NodeId &&
-                                (shaderData = m_manager->shaderDataManager()->lookupResource(*v.constData<Qt3DCore::QNodeId>())) != nullptr) {
+                        if (uniformValue.valueType() == UniformValue::NodeId &&
+                                (shaderData = m_manager->shaderDataManager()->lookupResource(*uniformValue.constData<Qt3DCore::QNodeId>())) != nullptr) {
                             // Try to check if we have a struct or array matching a QShaderData parameter
                             setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(it->nameId));
                         }

@@ -392,10 +392,11 @@ void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                          const Qt3DCore::QNodeIdVector &parameterIds)
 {
     for (const QNodeId paramId : parameterIds) {
-        Parameter *param = manager->lookupResource(paramId);
+        const HParameter parameterHandle = manager->lookupHandle(paramId);
+        const Parameter *param = manager->data(parameterHandle);
         ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());
         if (it == params->end() || it->nameId != param->nameId())
-            params->insert(it, ParameterInfo(param->nameId(), param->uniformValue()));
+            params->insert(it, ParameterInfo(param->nameId(), parameterHandle));
     }
 }
 
@@ -518,9 +519,9 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(Shader
     }
 }
 
-ParameterInfo::ParameterInfo(const int nameId, const UniformValue &value)
+ParameterInfo::ParameterInfo(const int nameId, const HParameter &handle)
     : nameId(nameId)
-    , value(value)
+    , handle(handle)
 {}
 
 bool ParameterInfo::operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT
