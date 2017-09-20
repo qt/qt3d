@@ -342,6 +342,7 @@ private:
         ModelViewNormalMatrix,
         ViewportMatrix,
         InverseViewportMatrix,
+        AspectRatio,
         Time,
         Exposure,
         Gamma,

@@ -129,6 +129,7 @@ RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniform
     setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), ModelViewNormalMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), ViewportMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), InverseViewportMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("aspectRatio")), AspectRatio);
     setters.insert(StringToInt::lookupId(QLatin1String("exposure")), Exposure);
     setters.insert(StringToInt::lookupId(QLatin1String("gamma")), Gamma);
     setters.insert(StringToInt::lookupId(QLatin1String("time")), Time);
@@ -200,6 +201,8 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
         viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
         return UniformValue(viewportMatrix.inverted());
     }
+    case AspectRatio:
+        return float(m_surfaceSize.width()) / float(m_surfaceSize.height());
     case Exposure:
         return UniformValue(m_data.m_renderCameraLens ? m_data.m_renderCameraLens->exposure() : 0.0f);
     case Gamma:
