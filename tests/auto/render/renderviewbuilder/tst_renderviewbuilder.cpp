@@ -187,6 +187,7 @@ private Q_SLOTS:
             QCOMPARE(renderViewBuilder.renderViewIndex(), 0);
             QCOMPARE(renderViewBuilder.renderer(), testAspect.renderer());
             QCOMPARE(renderViewBuilder.layerCacheNeedsToBeRebuilt(), false);
+            QCOMPARE(renderViewBuilder.materialGathererCacheNeedsToBeRebuilt(), false);
             QVERIFY(!renderViewBuilder.renderViewJob().isNull());
             QVERIFY(!renderViewBuilder.lightGathererJob().isNull());
             QVERIFY(!renderViewBuilder.renderableEntityFilterJob().isNull());
@@ -215,8 +216,8 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob().isNull());
 
             QCOMPARE(renderViewBuilder.renderViewBuilderJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
-            QCOMPARE(renderViewBuilder.materialGathererJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 11 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.materialGathererJobs().size(), 0);
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 11 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
         }
 
         {
@@ -231,7 +232,22 @@ private Q_SLOTS:
             QVERIFY(!renderViewBuilder.syncFilterEntityByLayerJob().isNull());
 
             // mark jobs dirty and recheck
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 13 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 13 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+        }
+
+        {
+            // WHEN
+            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+            renderViewBuilder.setMaterialGathererCacheNeedsToBeRebuilt(true);
+            renderViewBuilder.prepareJobs();
+
+            // THEN
+            QCOMPARE(renderViewBuilder.materialGathererCacheNeedsToBeRebuilt(), true);
+            QCOMPARE(renderViewBuilder.materialGathererJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+            QVERIFY(!renderViewBuilder.syncMaterialGathererJob().isNull());
+
+            // mark jobs dirty and recheck
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 12 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
         }
     }
 

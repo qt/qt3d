@@ -1539,6 +1539,9 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty;
     bool layersCacheRebuilt = false;
 
+    const bool materialDirty = changesToUnset & AbstractRenderer::MaterialDirty;
+    bool materialGathererCacheRebuilt = false;
+
     QMutexLocker lock(m_renderQueue->mutex());
     if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
         // Traverse the current framegraph. For each leaf node create a
@@ -1560,20 +1563,24 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         for (int i = 0; i < fgBranchCount; ++i) {
             RenderViewBuilder builder(fgLeaves.at(i), i, this);
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt);
+            builder.setMaterialGathererCacheNeedsToBeRebuilt(materialDirty);
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
         }
         layersCacheRebuilt = true;
+        materialGathererCacheRebuilt = true;
 
         // Set target number of RenderViews
         m_renderQueue->setTargetRenderViewCount(fgBranchCount);
     }
 
-    // Only reset LayersDirty flag once we have really rebuilt the caches
+    // Only reset dirty flags once we have really rebuilt the caches
     if (layersDirty && !layersCacheRebuilt)
         changesToUnset.setFlag(AbstractRenderer::LayersDirty, false);
     if (entitiesEnabledDirty && !layersCacheRebuilt)
         changesToUnset.setFlag(AbstractRenderer::EntityEnabledDirty, false);
+    if (materialDirty && !materialGathererCacheRebuilt)
+        changesToUnset.setFlag(AbstractRenderer::MaterialDirty, false);
 
     // Clear dirty bits
     // TO DO: When secondary GL thread is integrated, the following line can be removed

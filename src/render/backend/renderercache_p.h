@@ -66,7 +66,8 @@ struct RendererCache
 {
     struct LeafNodeData
     {
-         QVector<Entity *> filterEntitiesByLayer;
+        QVector<Entity *> filterEntitiesByLayer;
+        MaterialParameterGathererData materialParameterGatherer;
     };
 
     QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;

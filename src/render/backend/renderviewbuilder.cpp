@@ -246,13 +246,10 @@ public:
                 ++i;
             }
             m_renderViewBuilderJobs.at(i)->setRenderables(renderableEntities.mid(i * packetSize, packetSize + renderableEntities.size() % (m + 1)));
-
-            // Reduction
-            QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> params;
-            for (const auto &materialGatherer : qAsConst(m_materialGathererJobs))
-                params.unite(materialGatherer->materialToPassAndParameter());
-            // Set all required data on the RenderView for final processing
-            rv->setMaterialParameterTable(std::move(params));
+            {
+                QMutexLocker rendererCacheLock(m_renderer->cache()->mutex());
+                rv->setMaterialParameterTable(m_renderer->cache()->leafNodeCache.value(m_leafNode).materialParameterGatherer);
+            }
         }
     }
 
@@ -317,6 +314,34 @@ private:
     FrameGraphNode *m_leafNode;
 };
 
+class SyncMaterialParameterGatherer
+{
+public:
+    explicit SyncMaterialParameterGatherer(const QVector<MaterialParameterGathererJobPtr> &materialParameterGathererJobs,
+                                           Renderer *renderer,
+                                           FrameGraphNode *leafNode)
+        : m_materialParameterGathererJobs(materialParameterGathererJobs)
+        , m_renderer(renderer)
+        , m_leafNode(leafNode)
+    {
+    }
+
+    void operator()()
+    {
+        QMutexLocker lock(m_renderer->cache()->mutex());
+        RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
+        dataCacheForLeaf.materialParameterGatherer.clear();
+
+        for (const auto &materialGatherer : qAsConst(m_materialParameterGathererJobs))
+            dataCacheForLeaf.materialParameterGatherer.unite(materialGatherer->materialToPassAndParameter());
+    }
+
+private:
+    QVector<MaterialParameterGathererJobPtr> m_materialParameterGathererJobs;
+    Renderer *m_renderer;
+    FrameGraphNode *m_leafNode;
+};
+
 } // anonymous
 
 RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int renderViewIndex, Renderer *renderer)
@@ -324,6 +349,7 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     , m_renderViewIndex(renderViewIndex)
     , m_renderer(renderer)
     , m_layerCacheNeedsToBeRebuilt(false)
+    , m_materialGathererCacheNeedsToBeRebuilt(false)
     , m_renderViewJob(RenderViewInitializerJobPtr::create())
     , m_filterEntityByLayerJob()
     , m_lightGathererJob(Render::LightGathererPtr::create())
@@ -407,6 +433,11 @@ SynchronizerJobPtr RenderViewBuilder::syncFilterEntityByLayerJob() const
     return m_syncFilterEntityByLayerJob;
 }
 
+SynchronizerJobPtr RenderViewBuilder::syncMaterialGathererJob() const
+{
+    return m_syncMaterialGathererJob;
+}
+
 FilterProximityDistanceJobPtr RenderViewBuilder::filterProximityJob() const
 {
     return m_filterProximityJob;
@@ -435,20 +466,26 @@ void RenderViewBuilder::prepareJobs()
         m_renderViewBuilderJobs.push_back(renderViewCommandBuilder);
     }
 
-    // Since Material gathering is an heavy task, we split it
-    const QVector<HMaterial> materialHandles = m_renderer->nodeManagers()->materialManager()->activeHandles();
-    const int elementsPerJob =  materialHandles.size() / RenderViewBuilder::m_optimalParallelJobCount;
-    const int lastRemaingElements = materialHandles.size() % RenderViewBuilder::m_optimalParallelJobCount;
-    m_materialGathererJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
-    for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
-        auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
-        materialGatherer->setNodeManagers(m_renderer->nodeManagers());
-        materialGatherer->setRenderer(m_renderer);
-        if (i == RenderViewBuilder::m_optimalParallelJobCount - 1)
-            materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob + lastRemaingElements));
-        else
-            materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob));
-        m_materialGathererJobs.push_back(materialGatherer);
+    if (m_materialGathererCacheNeedsToBeRebuilt) {
+        // Since Material gathering is an heavy task, we split it
+        const QVector<HMaterial> materialHandles = m_renderer->nodeManagers()->materialManager()->activeHandles();
+        const int elementsPerJob =  materialHandles.size() / RenderViewBuilder::m_optimalParallelJobCount;
+        const int lastRemaingElements = materialHandles.size() % RenderViewBuilder::m_optimalParallelJobCount;
+        m_materialGathererJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
+        for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
+            auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
+            materialGatherer->setNodeManagers(m_renderer->nodeManagers());
+            materialGatherer->setRenderer(m_renderer);
+            if (i == RenderViewBuilder::m_optimalParallelJobCount - 1)
+                materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob + lastRemaingElements));
+            else
+                materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob));
+            m_materialGathererJobs.push_back(materialGatherer);
+        }
+        m_syncMaterialGathererJob = SynchronizerJobPtr::create(SyncMaterialParameterGatherer(m_materialGathererJobs,
+                                                                                             m_renderer,
+                                                                                             m_leafNode),
+                                                                  JobTypes::SyncMaterialGatherer);
     }
 
     if (m_layerCacheNeedsToBeRebuilt) {
@@ -514,11 +551,6 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_filterProximityJob->addDependency(m_syncRenderViewInitializationJob);
 
     m_syncRenderCommandBuildingJob->addDependency(m_syncRenderViewInitializationJob);
-    for (const auto &materialGatherer : qAsConst(m_materialGathererJobs)) {
-        materialGatherer->addDependency(m_syncRenderViewInitializationJob);
-        materialGatherer->addDependency(m_renderer->filterCompatibleTechniqueJob());
-        m_syncRenderCommandBuildingJob->addDependency(materialGatherer);
-    }
     m_syncRenderCommandBuildingJob->addDependency(m_renderableEntityFilterJob);
     m_syncRenderCommandBuildingJob->addDependency(m_computableEntityFilterJob);
     m_syncRenderCommandBuildingJob->addDependency(m_filterProximityJob);
@@ -557,8 +589,17 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     jobs.push_back(m_filterProximityJob); // Step 3
     jobs.push_back(m_setClearDrawBufferIndexJob); // Step 3
 
-    for (const auto &materialGatherer : qAsConst(m_materialGathererJobs)) // Step3
-        jobs.push_back(materialGatherer);
+    if (m_materialGathererCacheNeedsToBeRebuilt) {
+        for (const auto &materialGatherer : qAsConst(m_materialGathererJobs))  {
+            materialGatherer->addDependency(m_syncRenderViewInitializationJob);
+            materialGatherer->addDependency(m_renderer->filterCompatibleTechniqueJob());
+            jobs.push_back(materialGatherer); // Step3
+            m_syncMaterialGathererJob->addDependency(materialGatherer);
+        }
+        m_syncRenderCommandBuildingJob->addDependency(m_syncMaterialGathererJob);
+
+        jobs.push_back(m_syncMaterialGathererJob); // Step 3
+    }
 
     jobs.push_back(m_frustumCullingJob); // Step 4
     jobs.push_back(m_syncRenderCommandBuildingJob); // Step 5
@@ -589,6 +630,16 @@ void RenderViewBuilder::setLayerCacheNeedsToBeRebuilt(bool needsToBeRebuilt)
 bool RenderViewBuilder::layerCacheNeedsToBeRebuilt() const
 {
     return m_layerCacheNeedsToBeRebuilt;
+}
+
+void RenderViewBuilder::setMaterialGathererCacheNeedsToBeRebuilt(bool needsToBeRebuilt)
+{
+    m_materialGathererCacheNeedsToBeRebuilt = needsToBeRebuilt;
+}
+
+bool RenderViewBuilder::materialGathererCacheNeedsToBeRebuilt() const
+{
+    return m_materialGathererCacheNeedsToBeRebuilt;
 }
 
 int RenderViewBuilder::optimalJobCount()

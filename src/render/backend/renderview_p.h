@@ -191,7 +191,7 @@ public:
     inline bool frustumCulling() const Q_DECL_NOTHROW { return m_frustumCulling; }
     void setFrustumCulling(bool frustumCulling) Q_DECL_NOTHROW { m_frustumCulling = frustumCulling; }
 
-    inline void setMaterialParameterTable(const QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &parameters) Q_DECL_NOTHROW { m_parameters = parameters; }
+    inline void setMaterialParameterTable(const MaterialParameterGathererData &parameters) Q_DECL_NOTHROW { m_parameters = parameters; }
 
     // TODO: Get rid of this overly complex memory management by splitting out the
     // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
@@ -326,7 +326,7 @@ private:
     mutable QVector<LightSource> m_lightSources;
     EnvironmentLight *m_environmentLight;
 
-    QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
+    MaterialParameterGathererData m_parameters;
 
     enum StandardUniform
     {

@@ -127,6 +127,7 @@ struct RenderPassParameterData
 };
 QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, RenderPassParameterData, Q_MOVABLE_TYPE)
 
+using MaterialParameterGathererData = QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>>;
 
 Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                                              ParameterManager *manager,

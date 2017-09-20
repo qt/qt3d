@@ -96,6 +96,7 @@ public:
     SynchronizerJobPtr setClearDrawBufferIndexJob() const;
     SynchronizerJobPtr syncFilterEntityByLayerJob() const;
     FilterProximityDistanceJobPtr filterProximityJob() const;
+    SynchronizerJobPtr syncMaterialGathererJob() const;
 
     void prepareJobs();
     QVector<Qt3DCore::QAspectJobPtr> buildJobHierachy() const;
@@ -105,6 +106,8 @@ public:
 
     void setLayerCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
     bool layerCacheNeedsToBeRebuilt() const;
+    void setMaterialGathererCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
+    bool materialGathererCacheNeedsToBeRebuilt() const;
 
     static int optimalJobCount();
     static void removeEntitiesNotInSubset(QVector<Entity *> &entities, QVector<Entity *> subset);
@@ -114,6 +117,7 @@ private:
     const int m_renderViewIndex;
     Renderer *m_renderer;
     bool m_layerCacheNeedsToBeRebuilt;
+    bool m_materialGathererCacheNeedsToBeRebuilt;
 
     RenderViewInitializerJobPtr m_renderViewJob;
     FilterLayerEntityJobPtr m_filterEntityByLayerJob;
@@ -130,6 +134,7 @@ private:
     SynchronizerJobPtr m_syncRenderViewCommandBuildersJob;
     SynchronizerJobPtr m_setClearDrawBufferIndexJob;
     SynchronizerJobPtr m_syncFilterEntityByLayerJob;
+    SynchronizerJobPtr m_syncMaterialGathererJob;
     FilterProximityDistanceJobPtr m_filterProximityJob;
 
     static const int m_optimalParallelJobCount;
