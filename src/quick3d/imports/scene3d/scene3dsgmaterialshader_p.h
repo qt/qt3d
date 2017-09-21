@@ -61,15 +61,15 @@ class Scene3DSGMaterialShader : public QSGMaterialShader
 {
 public:
     Scene3DSGMaterialShader();
-    void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) Q_DECL_FINAL;
-    const char * const *attributeNames() const Q_DECL_FINAL;
+    void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
+    const char * const *attributeNames() const final;
 
     static QSGMaterialType type;
 
 protected:
-    const char *vertexShader() const Q_DECL_FINAL;
-    const char *fragmentShader() const Q_DECL_FINAL;
-    void initialize() Q_DECL_FINAL;
+    const char *vertexShader() const final;
+    const char *fragmentShader() const final;
+    void initialize() final;
 
 private:
     int m_matrixId;

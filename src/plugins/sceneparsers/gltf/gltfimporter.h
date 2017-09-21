@@ -97,11 +97,11 @@ public:
     bool setJSON( const QJsonDocument &json );
 
     // SceneParserInterface interface
-    void setSource(const QUrl &source) Q_DECL_FINAL;
-    void setData(const QByteArray& data, const QString &basePath) Q_DECL_FINAL;
-    bool areFileTypesSupported(const QStringList &extensions) const Q_DECL_FINAL;
-    Qt3DCore::QEntity *node(const QString &id) Q_DECL_FINAL;
-    Qt3DCore::QEntity *scene(const QString &id = QString()) Q_DECL_FINAL;
+    void setSource(const QUrl &source) final;
+    void setData(const QByteArray& data, const QString &basePath) final;
+    bool areFileTypesSupported(const QStringList &extensions) const final;
+    Qt3DCore::QEntity *node(const QString &id) final;
+    Qt3DCore::QEntity *scene(const QString &id = QString()) final;
 
 private:
     class BufferData

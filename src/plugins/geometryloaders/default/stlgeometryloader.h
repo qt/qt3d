@@ -62,7 +62,7 @@ namespace Qt3DRender {
 class StlGeometryLoader : public BaseGeometryLoader
 {
 protected:
-    bool doLoad(QIODevice *ioDev, const QString &subMesh) Q_DECL_FINAL;
+    bool doLoad(QIODevice *ioDev, const QString &subMesh) final;
 
 private:
     bool loadAscii(QIODevice *ioDev);

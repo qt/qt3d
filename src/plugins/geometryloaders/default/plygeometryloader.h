@@ -115,7 +115,7 @@ public:
     };
 
 protected:
-    bool doLoad(QIODevice *ioDev, const QString &subMesh) Q_DECL_FINAL;
+    bool doLoad(QIODevice *ioDev, const QString &subMesh) final;
 
 private:
     bool parseHeader(QIODevice *ioDev);

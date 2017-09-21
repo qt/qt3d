@@ -67,7 +67,7 @@ public:
     Qt3DCore::QNodeId shaderData() const;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     Qt3DCore::QNodeId m_shaderDataId;
 };
@@ -78,8 +78,8 @@ public:
     explicit RenderLightFunctor(AbstractRenderer *renderer, NodeManagers *managers);
 
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
+    void destroy(Qt3DCore::QNodeId id) const final;
 
 private:
     NodeManagers *m_managers;

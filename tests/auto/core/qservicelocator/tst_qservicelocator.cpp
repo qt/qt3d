@@ -55,8 +55,8 @@ public:
         : QSystemInformationService(QStringLiteral("Dummy System Information Service"))
     {}
 
-    QStringList aspectNames() const Q_DECL_FINAL { return QStringList(); }
-    int threadPoolThreadCount() const Q_DECL_FINAL { return 4; }
+    QStringList aspectNames() const final { return QStringList(); }
+    int threadPoolThreadCount() const final { return 4; }
 };
 
 

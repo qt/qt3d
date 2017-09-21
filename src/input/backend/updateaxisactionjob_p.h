@@ -72,7 +72,7 @@ class UpdateAxisActionJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit UpdateAxisActionJob(qint64 currentTime, InputHandler *handler, HLogicalDevice handle);
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     void updateAction(LogicalDevice *device);

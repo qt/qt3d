@@ -81,7 +81,7 @@ public:
     void setStatus(QSceneLoader::Status status);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     SceneManager *m_sceneManager;
     QUrl m_source;

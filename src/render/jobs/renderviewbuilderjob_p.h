@@ -75,7 +75,7 @@ public:
     inline void setRenderables(const QVector<Entity *> &renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
     QVector<RenderCommand *> &commands() Q_DECL_NOTHROW { return m_commands; }
 
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     RenderView *m_renderView;

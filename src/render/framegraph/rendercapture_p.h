@@ -69,7 +69,7 @@ public:
     void sendRenderCaptures();
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
 
 private:
 

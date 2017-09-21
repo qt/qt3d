@@ -74,7 +74,7 @@ public:
     bool process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     QVector<int> m_buttons;
     Qt3DCore::QNodeId m_sourceDevice;

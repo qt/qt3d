@@ -336,7 +336,7 @@ class AssimpRawTextureImage : public QAbstractTextureImage
 public:
     explicit AssimpRawTextureImage(QNode *parent = 0);
 
-    QTextureImageDataGeneratorPtr dataGenerator() const Q_DECL_FINAL;
+    QTextureImageDataGeneratorPtr dataGenerator() const final;
 
     void setData(const QByteArray &data);
 
@@ -348,8 +348,8 @@ private:
     public:
         explicit AssimpRawTextureImageFunctor(const QByteArray &data);
 
-        QTextureImageDataPtr operator()() Q_DECL_FINAL;
-        bool operator ==(const QTextureImageDataGenerator &other) const Q_DECL_FINAL;
+        QTextureImageDataPtr operator()() final;
+        bool operator ==(const QTextureImageDataGenerator &other) const final;
 
         QT3D_FUNCTOR(AssimpRawTextureImageFunctor)
     private:

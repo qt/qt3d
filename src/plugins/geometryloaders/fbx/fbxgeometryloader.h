@@ -70,9 +70,9 @@ public:
     FbxGeometryLoader();
     ~FbxGeometryLoader();
 
-    QGeometry *geometry() const Q_DECL_FINAL;
+    QGeometry *geometry() const final;
 
-    bool load(QIODevice *ioDev, const QString &subMesh = QString()) Q_DECL_FINAL;
+    bool load(QIODevice *ioDev, const QString &subMesh = QString()) final;
 
 protected:
     void recurseNodes();

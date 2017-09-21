@@ -44,7 +44,7 @@ public:
         : Qt3DRender::QRenderCapture(parent)
     {}
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_FINAL
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) final
     {
         Qt3DRender::QRenderCapture::sceneChangeEvent(change);
     }

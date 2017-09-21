@@ -42,10 +42,10 @@ class TestPostman : public Qt3DCore::QAbstractPostman
 {
 public:
     explicit TestPostman(TestArbiter *arbiter);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_FINAL;
-    void setScene(Qt3DCore::QScene *) Q_DECL_FINAL;
-    void notifyBackend(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) final;
+    void setScene(Qt3DCore::QScene *) final;
+    void notifyBackend(const Qt3DCore::QSceneChangePtr &e) final;
+    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &e) final;
 
 private:
     TestArbiter *m_arbiter;
@@ -57,13 +57,13 @@ public:
     TestArbiter();
     ~TestArbiter();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
 
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e) final;
 
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e) Q_DECL_FINAL;
+    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e) final;
 
-    Qt3DCore::QAbstractPostman *postman() const Q_DECL_FINAL;
+    Qt3DCore::QAbstractPostman *postman() const final;
 
     QVector<Qt3DCore::QSceneChangePtr> events;
 

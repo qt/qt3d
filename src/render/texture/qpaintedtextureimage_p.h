@@ -89,8 +89,8 @@ public:
     ~QPaintedTextureImageDataGenerator();
 
     // Will be executed from within a QAspectJob
-    QTextureImageDataPtr operator ()() Q_DECL_FINAL;
-    bool operator ==(const QTextureImageDataGenerator &other) const Q_DECL_FINAL;
+    QTextureImageDataPtr operator ()() final;
+    bool operator ==(const QTextureImageDataGenerator &other) const final;
 
     QT3D_FUNCTOR(QPaintedTextureImageDataGenerator)
 

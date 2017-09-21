@@ -103,7 +103,7 @@ public:
 #endif
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void loadAnimationFromUrl();
     void loadAnimationFromData();
     void clearData();

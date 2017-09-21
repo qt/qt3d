@@ -77,7 +77,7 @@ public:
     QVector<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     QVector<Qt3DCore::QNodeId> m_techniques;
     ParameterPack m_parameterPack;

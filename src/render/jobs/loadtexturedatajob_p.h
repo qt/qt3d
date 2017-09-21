@@ -74,7 +74,7 @@ public:
     inline void setNodeManagers(NodeManagers *manager) { m_manager = manager; }
 
 protected:
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     QTextureGeneratorPtr m_texGen;

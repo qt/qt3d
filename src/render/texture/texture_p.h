@@ -162,7 +162,7 @@ public:
 
     bool isValid() const;
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     DirtyFlags m_dirty;
     TextureProperties m_properties;
@@ -181,9 +181,9 @@ public:
     explicit TextureFunctor(AbstractRenderer *renderer,
                             TextureManager *textureNodeManager,
                             TextureImageManager *textureImageManager);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
+    void destroy(Qt3DCore::QNodeId id) const final;
 
 private:
     AbstractRenderer *m_renderer;

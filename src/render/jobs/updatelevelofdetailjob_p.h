@@ -75,7 +75,7 @@ public:
     void setManagers(NodeManagers *manager);
     void setFrameGraphRoot(FrameGraphNode *frameGraphRoot);
     void setRoot(Entity *root);
-    void run() Q_DECL_FINAL;
+    void run() final;
 
     NodeManagers *managers() const { return m_manager; }
     Entity *root() const { return m_root; }

@@ -98,7 +98,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void setEnabledLayers(const QStringList &layers);
 
     GraphicsApiFilterData m_graphicsApi;

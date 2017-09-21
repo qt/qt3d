@@ -85,7 +85,7 @@ public:
     inline TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_techniqueFilter; }
     inline RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_renderPassFilter; }
 
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     NodeManagers *m_manager;

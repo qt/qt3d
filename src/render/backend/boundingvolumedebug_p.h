@@ -69,8 +69,8 @@ public:
     ~BoundingVolumeDebug();
 
     void cleanup();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_FINAL;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    void updateFromPeer(Qt3DCore::QNode *peer) final;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
 
     inline bool isRecursive() const { return m_recursive; }
     inline float radius() const { return m_radius; }

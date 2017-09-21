@@ -74,7 +74,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     QVector<Qt3DCore::QNodeId> m_axes;
     QVector<Qt3DCore::QNodeId> m_actions;
@@ -86,9 +86,9 @@ class LogicalDeviceNodeFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit LogicalDeviceNodeFunctor(LogicalDeviceManager *manager);
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
+    void destroy(Qt3DCore::QNodeId id) const final;
 
 private:
     LogicalDeviceManager *m_manager;

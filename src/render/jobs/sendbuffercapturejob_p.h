@@ -78,7 +78,7 @@ public:
 
     void addRequest(QPair<Buffer*, QByteArray> request);
 
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     NodeManagers *m_managers;

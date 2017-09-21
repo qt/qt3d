@@ -72,7 +72,7 @@ public:
     }
 
     // QAspectJob interface
-    void run() Q_DECL_FINAL
+    void run() final
     {
         m_callable();
     }

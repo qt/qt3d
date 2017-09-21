@@ -102,7 +102,7 @@ public:
     NodeManagers *nodeManager() const;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     GraphicsApiFilterData m_graphicsApiFilterData;
     ParameterPack m_parameterPack;

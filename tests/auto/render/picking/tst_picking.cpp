@@ -54,7 +54,7 @@ public:
         : Qt3DRender::QObjectPicker(parent)
     {}
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_FINAL
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) final
     {
         Qt3DRender::QObjectPicker::sceneChangeEvent(change);
     }

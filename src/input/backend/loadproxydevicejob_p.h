@@ -73,7 +73,7 @@ public:
     InputHandler *inputHandler() const;
     QVector<Qt3DCore::QNodeId> proxies() const;
 
-    void run() Q_DECL_FINAL;
+    void run() final;
 private:
     InputHandler *m_inputHandler;
     QVector<Qt3DCore::QNodeId> m_proxies;

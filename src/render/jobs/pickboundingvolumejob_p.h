@@ -104,7 +104,7 @@ public:
     bool runHelper();
 
 protected:
-    void run() Q_DECL_FINAL;
+    void run() final;
     void dispatchPickEvents(const QMouseEvent &event,
                             const PickingUtils::HitList &sphereHits,
                             QPickEvent::Buttons eventButton,

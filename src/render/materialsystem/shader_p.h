@@ -126,7 +126,7 @@ public:
     inline bool hasPendingNotifications() const { return !m_pendingNotifications.empty(); }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     QVector<QString> m_uniformsNames;
     QVector<int> m_uniformsNamesIds;

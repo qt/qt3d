@@ -148,7 +148,7 @@ public:
 
 public Q_SLOTS:
 
-    void run() Q_DECL_FINAL // In Thread
+    void run() final // In Thread
     {
         for (int i = 0; i < 5; i++) {
             m_waitQueue.acquire();

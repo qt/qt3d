@@ -73,7 +73,7 @@ public:
     QList<QKeyEvent> pendingKeyEvents();
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_FINAL;
+    bool eventFilter(QObject *obj, QEvent *e) final;
 
 private:
     QList<QMouseEvent> m_pendingMouseEvents;

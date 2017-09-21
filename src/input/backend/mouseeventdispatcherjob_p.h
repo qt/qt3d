@@ -72,7 +72,7 @@ public:
 #endif
                                                                                                 );
     void setInputHandler(InputHandler *handler);
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     InputHandler *m_inputHandler;

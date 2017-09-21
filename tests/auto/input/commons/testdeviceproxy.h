@@ -56,12 +56,12 @@ public:
         Right
     };
 
-    int axisCount() const Q_DECL_FINAL { return 3; }
-    int buttonCount() const Q_DECL_FINAL { return 2; }
-    QStringList axisNames() const Q_DECL_FINAL { return QStringList() << QStringLiteral("x") << QStringLiteral("y") << QStringLiteral("z"); }
-    QStringList buttonNames() const Q_DECL_FINAL { return QStringList() << QStringLiteral("Left") << QStringLiteral("Right"); }
+    int axisCount() const final { return 3; }
+    int buttonCount() const final { return 2; }
+    QStringList axisNames() const final { return QStringList() << QStringLiteral("x") << QStringLiteral("y") << QStringLiteral("z"); }
+    QStringList buttonNames() const final { return QStringList() << QStringLiteral("Left") << QStringLiteral("Right"); }
 
-    int axisIdentifier(const QString &name) const Q_DECL_FINAL
+    int axisIdentifier(const QString &name) const final
     {
         if (name == QLatin1String("x"))
             return TestPhysicalDevice::X;
@@ -71,7 +71,7 @@ public:
             return TestPhysicalDevice::Z;
         return -1;
     }
-    int buttonIdentifier(const QString &name) const Q_DECL_FINAL
+    int buttonIdentifier(const QString &name) const final
     {
         if (name == QLatin1String("Left"))
             return TestPhysicalDevice::Left;

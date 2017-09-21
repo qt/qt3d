@@ -158,12 +158,12 @@ public:
 
     ~PlaneVertexBufferFunctor() {}
 
-    QByteArray operator()() Q_DECL_FINAL
+    QByteArray operator()() final
     {
         return createPlaneVertexData(m_width, m_height, m_resolution, m_mirrored);
     }
 
-    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
+    bool operator ==(const QBufferDataGenerator &other) const final
     {
         const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>(&other);
         if (otherFunctor != nullptr)
@@ -192,12 +192,12 @@ public:
 
     ~PlaneIndexBufferFunctor() {}
 
-    QByteArray operator()() Q_DECL_FINAL
+    QByteArray operator()() final
     {
         return createPlaneIndexData(m_resolution);
     }
 
-    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
+    bool operator ==(const QBufferDataGenerator &other) const final
     {
         const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>(&other);
         if (otherFunctor != nullptr)

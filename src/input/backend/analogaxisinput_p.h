@@ -63,15 +63,15 @@ class Q_AUTOTEST_EXPORT AnalogAxisInput : public AbstractAxisInput
 {
 public:
     AnalogAxisInput();
-    void cleanup() Q_DECL_FINAL;
+    void cleanup() final;
 
     inline int axis() const { return m_axis; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
 
     float process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     int m_axis;
 };

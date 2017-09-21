@@ -69,7 +69,7 @@ public:
     virtual bool shouldNotifyFrontend(const QSceneChangePtr &change) = 0;
 };
 
-class Q_AUTOTEST_EXPORT QPostman Q_DECL_FINAL
+class Q_AUTOTEST_EXPORT QPostman final
         : public QObject
         , public QAbstractPostman
 {
@@ -78,10 +78,10 @@ public:
     explicit QPostman(QObject *parent = 0);
     ~QPostman();
 
-    void setScene(QScene *sceneLookup) Q_DECL_FINAL;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_FINAL;
-    void notifyBackend(const QSceneChangePtr &change) Q_DECL_FINAL;
-    bool shouldNotifyFrontend(const QSceneChangePtr &e) Q_DECL_FINAL;
+    void setScene(QScene *sceneLookup) final;
+    void sceneChangeEvent(const QSceneChangePtr &e) final;
+    void notifyBackend(const QSceneChangePtr &change) final;
+    bool shouldNotifyFrontend(const QSceneChangePtr &e) final;
 
 public Q_SLOTS:
     void submitChangeBatch();

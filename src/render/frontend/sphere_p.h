@@ -105,9 +105,9 @@ public:
         return *this;
     }
 
-    Qt3DCore::QNodeId id() const Q_DECL_FINAL;
-    bool intersects(const RayCasting::QRay3D &ray, QVector3D *q, QVector3D *uvw = nullptr) const Q_DECL_FINAL;
-    Type type() const Q_DECL_FINAL;
+    Qt3DCore::QNodeId id() const final;
+    bool intersects(const RayCasting::QRay3D &ray, QVector3D *q, QVector3D *uvw = nullptr) const final;
+    Type type() const final;
 
     static Sphere fromPoints(const QVector<QVector3D> &points);
 

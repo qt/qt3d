@@ -86,7 +86,7 @@ public:
     }
 
 protected:
-    void statusChanged(Status status) Q_DECL_FINAL
+    void statusChanged(Status status) final
     {
         Quick3DEntityLoaderPrivate *priv = Quick3DEntityLoaderPrivate::get(m_loader);
 

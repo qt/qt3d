@@ -71,19 +71,19 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final
     {
         Backend *backend = m_manager->getOrCreateResource(change->subjectId());
         backend->setHandler(m_handler);
         return backend;
     }
 
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final
     {
         return m_manager->lookupResource(id);
     }
 
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    void destroy(Qt3DCore::QNodeId id) const final
     {
         m_manager->releaseResource(id);
     }

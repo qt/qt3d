@@ -71,7 +71,7 @@ class InternalEventListener : public QObject
     Q_OBJECT
 public:
     explicit InternalEventListener(QEventFilterServicePrivate *filterService, QObject *parent = nullptr);
-    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_FINAL;
+    bool eventFilter(QObject *obj, QEvent *e) final;
     QEventFilterServicePrivate* m_filterService;
 };
 

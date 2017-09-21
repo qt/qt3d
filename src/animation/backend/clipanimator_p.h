@@ -98,7 +98,7 @@ public:
     void animationClipMarkedDirty() { setDirty(Handler::ClipAnimatorDirty); }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     Qt3DCore::QNodeId m_clipId;
     Qt3DCore::QNodeId m_mapperId;

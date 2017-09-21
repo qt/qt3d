@@ -78,7 +78,7 @@ public:
     inline Qt3DCore::QNodeIdVector layerFilters() const { return m_layerFilterIds; }
 
     // QAspectJob interface
-    void run() Q_DECL_FINAL;
+    void run() final;
 
     void filterAcceptAnyMatchingLayers(Entity *entity, const Qt3DCore::QNodeIdVector &layerIds);
     void filterAcceptAllMatchingLayers(Entity *entity, const Qt3DCore::QNodeIdVector &layerIds);

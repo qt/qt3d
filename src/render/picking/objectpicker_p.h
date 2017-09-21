@@ -69,7 +69,7 @@ public:
     ~ObjectPicker();
 
     void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
     bool isPressed() const;
     bool isHoverEnabled() const;
     bool isDragEnabled() const;
@@ -82,7 +82,7 @@ public:
     void onExited();
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void notifyJob();
 
     bool m_isPressed;

@@ -301,7 +301,7 @@ public:
         , m_allowFrontendNotifications(false)
     {}
 
-    void setScene(Qt3DCore::QScene *scene) Q_DECL_FINAL
+    void setScene(Qt3DCore::QScene *scene) final
     {
         m_sceneInterface = scene;
     }
@@ -334,7 +334,7 @@ public:
         return m_lastChanges;
     }
 
-    void notifyBackend(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL
+    void notifyBackend(const Qt3DCore::QSceneChangePtr &e) final
     {
         m_sceneInterface->arbiter()->sceneChangeEventWithLock(e);
     }

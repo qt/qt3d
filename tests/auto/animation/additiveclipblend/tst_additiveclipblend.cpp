@@ -55,17 +55,17 @@ public:
         return currentDependencyIds();
     }
 
-    QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_FINAL
+    QVector<Qt3DCore::QNodeId> currentDependencyIds() const final
     {
         return QVector<Qt3DCore::QNodeId>();
     }
 
     using ClipBlendNode::setClipResults;
 
-    double duration() const Q_DECL_FINAL { return m_duration; }
+    double duration() const final { return m_duration; }
 
 protected:
-    ClipResults doBlend(const QVector<ClipResults> &) const Q_DECL_FINAL { return ClipResults(); }
+    ClipResults doBlend(const QVector<ClipResults> &) const final { return ClipResults(); }
 
 private:
     double m_duration;

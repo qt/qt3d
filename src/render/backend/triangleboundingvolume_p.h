@@ -77,9 +77,9 @@ public:
                                     const QVector3D &b,
                                     const QVector3D &c);
 
-    Qt3DCore::QNodeId id() const Q_DECL_FINAL;
-    bool intersects(const RayCasting::QRay3D &ray, QVector3D *q, QVector3D *uvw) const Q_DECL_FINAL;
-    Type type() const  Q_DECL_FINAL;
+    Qt3DCore::QNodeId id() const final;
+    bool intersects(const RayCasting::QRay3D &ray, QVector3D *q, QVector3D *uvw) const final;
+    Type type() const  final;
 
     QVector3D a() const;
     QVector3D b() const;

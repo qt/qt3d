@@ -62,7 +62,7 @@ public:
     inline bool hasProximityFilter() const { return !m_proximityFilterIds.empty(); }
 
     // QAspectJob interface
-    void run() Q_DECL_FINAL;
+    void run() final;
     QVector<Entity *> filteredEntities() const { return m_filteredEntities; }
 
 #if defined (QT_BUILD_INTERNAL)

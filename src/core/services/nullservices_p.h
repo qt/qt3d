@@ -68,8 +68,8 @@ public:
     {}
     ~NullSystemInformationService() {}
 
-    QStringList aspectNames() const Q_DECL_FINAL { return QStringList(); }
-    int threadPoolThreadCount() const Q_DECL_FINAL { return 0; }
+    QStringList aspectNames() const final { return QStringList(); }
+    int threadPoolThreadCount() const final { return 0; }
 };
 
 
@@ -81,7 +81,7 @@ public:
     {}
     ~NullOpenGLInformationService() {}
 
-    QSurfaceFormat format() const Q_DECL_FINAL { return QSurfaceFormat(); }
+    QSurfaceFormat format() const final { return QSurfaceFormat(); }
 };
 
 } // namespace Qt3DCore

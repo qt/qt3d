@@ -82,7 +82,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     void appendFilter(Qt3DCore::QNodeId criterionId);
     void removeFilter(Qt3DCore::QNodeId criterionId);

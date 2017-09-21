@@ -102,7 +102,7 @@ public:
                                     QMatrix4x4 &viewMatrix, QMatrix4x4 &projectionMatrix);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void computeSceneBoundingVolume(Qt3DCore::QNodeId entityId,
                                     Qt3DCore::QNodeId cameraId,
                                     Qt3DCore::QNodeCommand::CommandId commandId);

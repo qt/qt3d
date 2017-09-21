@@ -43,12 +43,12 @@ public:
         : Qt3DInput::QAbstractPhysicalDevice(parent)
     {}
 
-    int axisCount() const Q_DECL_FINAL { return 0; }
-    int buttonCount() const Q_DECL_FINAL { return 0; }
-    QStringList axisNames() const Q_DECL_FINAL { return QStringList(); }
-    QStringList buttonNames() const Q_DECL_FINAL { return QStringList(); }
-    int axisIdentifier(const QString &name) const Q_DECL_FINAL { Q_UNUSED(name) return 0; }
-    int buttonIdentifier(const QString &name) const Q_DECL_FINAL { Q_UNUSED(name) return 0; }
+    int axisCount() const final { return 0; }
+    int buttonCount() const final { return 0; }
+    QStringList axisNames() const final { return QStringList(); }
+    QStringList buttonNames() const final { return QStringList(); }
+    int axisIdentifier(const QString &name) const final { Q_UNUSED(name) return 0; }
+    int buttonIdentifier(const QString &name) const final { Q_UNUSED(name) return 0; }
 
 private:
     friend class TestDeviceBackendNode;
@@ -63,7 +63,7 @@ public:
         Qt3DCore::QBackendNodeTester().simulateInitialization(device, this);
     }
 
-    float axisValue(int axisIdentifier) const Q_DECL_FINAL
+    float axisValue(int axisIdentifier) const final
     {
         return m_axisValues.value(axisIdentifier);
     }
@@ -73,7 +73,7 @@ public:
         m_axisValues.insert(axisIdentifier, value);
     }
 
-    bool isButtonPressed(int buttonIdentifier) const Q_DECL_FINAL
+    bool isButtonPressed(int buttonIdentifier) const final
     {
         return m_buttonStates.value(buttonIdentifier);
     }
@@ -103,13 +103,13 @@ public:
         qDeleteAll(m_deviceBackendNodes);
     }
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_FINAL
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) final
     {
         Q_UNUSED(time);
         return QVector<Qt3DCore::QAspectJobPtr>();
     }
 
-    TestDevice *createPhysicalDevice(const QString &name) Q_DECL_FINAL
+    TestDevice *createPhysicalDevice(const QString &name) final
     {
         Q_ASSERT(!deviceNames().contains(name));
         auto device = new TestDevice(m_devicesParent.data()); // Avoids unwanted reparenting
@@ -119,7 +119,7 @@ public:
         return device;
     }
 
-    QVector<Qt3DCore::QNodeId> physicalDevices() const Q_DECL_FINAL
+    QVector<Qt3DCore::QNodeId> physicalDevices() const final
     {
         QVector<Qt3DCore::QNodeId> ids;
         std::transform(m_devices.constBegin(), m_devices.constEnd(),
@@ -128,7 +128,7 @@ public:
         return ids;
     }
 
-    TestDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    TestDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const final
     {
         auto it = std::find_if(m_deviceBackendNodes.constBegin(), m_deviceBackendNodes.constEnd(),
                                [id] (TestDeviceBackendNode *node) { return node->peerId() == id; });
@@ -138,7 +138,7 @@ public:
             return *it;
     }
 
-    QStringList deviceNames() const Q_DECL_FINAL
+    QStringList deviceNames() const final
     {
         QStringList names;
         std::transform(m_devices.constBegin(), m_devices.constEnd(),
@@ -148,7 +148,7 @@ public:
     }
 
 private:
-    void onInitialize() Q_DECL_FINAL {}
+    void onInitialize() final {}
 
     QScopedPointer<Qt3DCore::QNode> m_devicesParent;
     QVector<TestDevice*> m_devices;

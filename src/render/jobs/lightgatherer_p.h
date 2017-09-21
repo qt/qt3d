@@ -77,7 +77,7 @@ public:
         return envLight;
     }
 
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     EntityManager *m_manager;

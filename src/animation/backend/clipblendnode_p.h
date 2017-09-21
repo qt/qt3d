@@ -110,7 +110,7 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final
     {
         if (m_manager->containsNode(change->subjectId()))
             return static_cast<Backend *>(m_manager->lookupNode(change->subjectId()));
@@ -121,12 +121,12 @@ public:
         return backend;
     }
 
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final
     {
         return m_manager->lookupNode(id);
     }
 
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    void destroy(Qt3DCore::QNodeId id) const final
     {
         m_manager->releaseNode(id);
     }

@@ -68,7 +68,7 @@ public:
     };
 
     ButtonAxisInput();
-    void cleanup() Q_DECL_FINAL;
+    void cleanup() final;
 
     inline float scale() const { return m_scale; }
     inline QVector<int> buttons() const { return m_buttons; }
@@ -78,13 +78,13 @@ public:
     inline float speedRatio() const { return m_speedRatio; }
     inline qint64 lastUpdateTime() const { return m_lastUpdateTime; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
 
     float process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
     void updateSpeedRatio(qint64 currentTime, UpdateType type);
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     QVector<int> m_buttons;
     float m_scale;

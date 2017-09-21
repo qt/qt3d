@@ -86,7 +86,7 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT ResourceAccessor : public RenderBackendRes
 {
 public:
     ResourceAccessor(NodeManagers *mgr);
-    bool accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) Q_DECL_FINAL;
+    bool accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) final;
 private:
     GLTextureManager *m_glTextureManager;
     TextureManager *m_textureManager;

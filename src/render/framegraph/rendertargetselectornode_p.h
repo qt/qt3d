@@ -72,7 +72,7 @@ public:
     QVector<QRenderTargetOutput::AttachmentPoint> outputs() const { return m_outputs; }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     Qt3DCore::QNodeId m_renderTargetUuid;
     QVector<QRenderTargetOutput::AttachmentPoint> m_outputs;

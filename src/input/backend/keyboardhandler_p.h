@@ -82,7 +82,7 @@ protected:
     void setSourcerDevice(Qt3DCore::QNodeId device);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     InputHandler *m_inputHandler;
     Qt3DCore::QNodeId m_keyboardDevice;

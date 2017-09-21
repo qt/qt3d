@@ -72,8 +72,8 @@ public:
     }
 
     QSGTexture *texture() const Q_DECL_NOTHROW { return m_texture; }
-    QSGMaterialType *type() const Q_DECL_FINAL { return &Scene3DSGMaterialShader::type; }
-    QSGMaterialShader *createShader() const Q_DECL_FINAL { return new Scene3DSGMaterialShader(); }
+    QSGMaterialType *type() const final { return &Scene3DSGMaterialShader::type; }
+    QSGMaterialShader *createShader() const final { return new Scene3DSGMaterialShader(); }
 
 private:
     QSGTexture *m_texture;

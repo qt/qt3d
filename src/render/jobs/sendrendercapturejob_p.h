@@ -71,7 +71,7 @@ public:
 
     void setManagers(NodeManagers *managers);
 
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     Renderer *m_renderer;

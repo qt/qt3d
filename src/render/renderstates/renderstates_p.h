@@ -159,14 +159,14 @@ public:
 class Q_AUTOTEST_EXPORT ColorMask : public GenericState<ColorMask, ColorStateMask, GLboolean, GLboolean, GLboolean, GLboolean>
 {
 public:
-    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT ClipPlane : public GenericState<ClipPlane, ClipPlaneMask, int, QVector3D, float>
 {
 public:
-    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
@@ -179,21 +179,21 @@ public:
 class Q_AUTOTEST_EXPORT StencilOp : public GenericState<StencilOp, StencilOpMask, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>
 {
 public:
-    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT StencilMask : public GenericState<StencilMask, StencilWriteStateMask, uint, uint>
 {
 public:
-    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT LineWidth : public GenericState<LineWidth, LineWidthMask, GLfloat, bool>
 {
 public:
-    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 

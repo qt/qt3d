@@ -44,12 +44,12 @@ public:
         : m_size(size)
     {}
 
-    Qt3DRender::QGeometry *operator ()() Q_DECL_FINAL
+    Qt3DRender::QGeometry *operator ()() final
     {
         return nullptr;
     }
 
-    bool operator ==(const Qt3DRender::QGeometryFactory &other) const Q_DECL_FINAL
+    bool operator ==(const Qt3DRender::QGeometryFactory &other) const final
     {
         const TestFactory *otherFactory = Qt3DRender::functor_cast<TestFactory>(&other);
         if (otherFactory != nullptr)

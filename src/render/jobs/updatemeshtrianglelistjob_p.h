@@ -69,7 +69,7 @@ public:
     ~UpdateMeshTriangleListJob();
 
     void setManagers(NodeManagers *manager);
-    void run() Q_DECL_FINAL;
+    void run() final;
 
     NodeManagers *managers() const;
 

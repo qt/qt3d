@@ -405,13 +405,13 @@ public:
 
     ~CuboidVertexBufferFunctor() {}
 
-    QByteArray operator()() Q_DECL_FINAL
+    QByteArray operator()() final
     {
         return createCuboidVertexData(m_xExtent, m_yExtent, m_zExtent,
                                       m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution);
     }
 
-    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
+    bool operator ==(const QBufferDataGenerator &other) const final
     {
         const CuboidVertexBufferFunctor *otherFunctor = functor_cast<CuboidVertexBufferFunctor>(&other);
         if (otherFunctor != nullptr)
@@ -448,12 +448,12 @@ public:
 
     ~CuboidIndexBufferFunctor() {}
 
-    QByteArray operator()() Q_DECL_FINAL
+    QByteArray operator()() final
     {
         return createCuboidIndexData(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution);
     }
 
-    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
+    bool operator ==(const QBufferDataGenerator &other) const final
     {
         const CuboidIndexBufferFunctor *otherFunctor = functor_cast<CuboidIndexBufferFunctor>(&other);
         if (otherFunctor != nullptr)

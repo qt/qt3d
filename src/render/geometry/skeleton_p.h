@@ -120,7 +120,7 @@ public:
 #endif
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void loadSkeletonFromUrl();
     void loadSkeletonFromData();
     Qt3DCore::QJoint *createFrontendJoints(const SkeletonData &skeletonData) const;

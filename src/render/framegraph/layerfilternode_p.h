@@ -75,7 +75,7 @@ public:
     QLayerFilter::FilterMode filterMode() const;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     Qt3DCore::QNodeIdVector m_layerIds;
     QLayerFilter::FilterMode m_filterMode;

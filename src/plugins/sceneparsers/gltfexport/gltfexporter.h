@@ -91,7 +91,7 @@ public:
     ~GLTFExporter();
 
     bool exportScene(Qt3DCore::QEntity *sceneRoot, const QString &outDir,
-                     const QString &exportName, const QVariantHash &options) Q_DECL_FINAL;
+                     const QString &exportName, const QVariantHash &options) final;
 
     struct GltfOptions {
         bool binaryJson;

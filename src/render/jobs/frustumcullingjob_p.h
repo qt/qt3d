@@ -77,7 +77,7 @@ public:
 
     QVector<Entity *> visibleEntities() const Q_DECL_NOTHROW { return m_visibleEntities; }
 
-    void run() Q_DECL_FINAL;
+    void run() final;
 
 private:
     void cullScene(Entity *e, const Plane *planes);

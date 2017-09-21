@@ -30,7 +30,7 @@
 
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
 
-class FakeRenderThread Q_DECL_FINAL : public QThread
+class FakeRenderThread final : public QThread
 {
 public:
     FakeRenderThread(Qt3DRender::Render::VSyncFrameAdvanceService *tickService)
@@ -55,7 +55,7 @@ public:
 
 protected:
     // QThread interface
-    void run() Q_DECL_FINAL
+    void run() final
     {
         m_tickService->proceedToNextFrame();
 
