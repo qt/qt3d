@@ -83,7 +83,7 @@ struct MappingData
     int jointIndex = -1;
     JointTransformComponent jointTransformComponent = NoTransformComponent;
     const char *propertyName;
-    QAnimationCallback *callback;
+    QAnimationCallback *callback = nullptr;
     QAnimationCallback::Flags callbackFlags;
     int type;
     ComponentIndices channelIndices;
