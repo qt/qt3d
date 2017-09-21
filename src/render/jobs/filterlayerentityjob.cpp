@@ -113,6 +113,9 @@ void FilterLayerEntityJob::run()
     } else { // No LayerFilter set -> retrieve all
         selectAllEntities();
     }
+
+    // sort needed for set_intersection in RenderViewBuilder
+    std::sort(m_filteredEntities.begin(), m_filteredEntities.end());
 }
 
 // We accept the entity if it contains any of the layers that are in the layer filter

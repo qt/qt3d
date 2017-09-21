@@ -591,7 +591,7 @@ private Q_SLOTS:
         std::sort(renderableEntity.begin(), renderableEntity.end());
 
         // WHEN
-        Qt3DRender::Render::RenderViewBuilder::removeEntitiesNotInSubset(renderableEntity, filteredEntity);
+        renderableEntity = Qt3DRender::Render::RenderViewBuilder::entitiesInSubset(renderableEntity, filteredEntity);
 
         // THEN
         QCOMPARE(renderableEntity.size(), 100);

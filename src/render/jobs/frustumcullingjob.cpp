@@ -76,6 +76,9 @@ void FrustumCullingJob::run()
     };
 
     cullScene(m_root, planes);
+
+    // sort needed for set_intersection in RenderViewBuilder
+    std::sort(m_visibleEntities.begin(), m_visibleEntities.end());
 }
 
 void FrustumCullingJob::cullScene(Entity *e, const Plane *planes)
