@@ -2489,8 +2489,8 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 0, 1, 2, 3,    // Rotation
-                                                 4, 5, 6,       // Location
+            ComponentIndices expectedResults = { 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
+                                                 4, 6, 5,       // Location (y/z swapped in clip3.json)
                                                  7, 8, 9,       // Base Color
                                                  10,            // Metalness
                                                  11 };          // Roughness
@@ -2519,8 +2519,8 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 4, 5, 6,       // Location
-                                                 0, 1, 2, 3,    // Rotation
+            ComponentIndices expectedResults = { 4, 6, 5,       // Location (y/z swapped in clip3.json)
+                                                 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
                                                  7, 8, 9,       // Base Color
                                                  10,            // Metalness
                                                  11 };          // Roughness
@@ -2549,8 +2549,8 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 0, 1, 2, 3,    // Rotation
-                                                 4, 5, 6,       // Location
+            ComponentIndices expectedResults = { 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
+                                                 4, 6, 5,       // Location (y/z swapped in clip3.json)
                                                  -1, -1, -1,    // Albedo (missing from clip)
                                                  10,            // Metalness
                                                  11 };          // Roughness
@@ -2579,8 +2579,8 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 4, 5, 6,       // Location
-                                                 0, 1, 2, 3,    // Rotation
+            ComponentIndices expectedResults = { 4, 6, 5,       // Location (y/z swapped in clip3.json)
+                                                 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
                                                  -1, -1, -1,    // Albedo (missing from clip)
                                                  10,            // Metalness
                                                  11 };          // Roughness

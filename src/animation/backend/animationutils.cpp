@@ -502,7 +502,6 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
     ComponentIndices format;
     format.resize(indexCount);
 
-
     // Iterate through the target channels
     const int channelCount = targetChannels.size();
     auto formatIt = format.begin();
@@ -510,18 +509,18 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
         // Find the index of the channel from the clip
         const ChannelNameAndType &targetChannel = targetChannels[i];
         const int clipChannelIndex = clip->channelIndex(targetChannel.name);
-
-        // TODO: Ensure channel in the clip has enough components to map to the type.
-        //       Requires some improvements to the clip data structure first.
-        // TODO: I don't think we need the targetIndices, only the number of components
-        //       for each target channel. Check once blend tree is complete.
         const int componentCount = targetIndices[i].size();
 
         if (clipChannelIndex != -1) {
             // Found a matching channel in the clip. Get the base channel
             // component index and populate the format indices for this channel.
             const int baseIndex = clip->channelComponentBaseIndex(clipChannelIndex);
-            std::iota(formatIt, formatIt + componentCount, baseIndex);
+
+            // Within this group, match channel names with index ordering
+            const auto channelIndices = channelComponentsToIndices(clip->channels()[clipChannelIndex],
+                                                                   targetChannel.type,
+                                                                   baseIndex);
+            std::copy(channelIndices.begin(), channelIndices.end(), formatIt);
 
         } else {
             // No such channel in this clip. We'll use default values when
