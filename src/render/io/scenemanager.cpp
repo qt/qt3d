@@ -44,12 +44,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-SceneManager::SceneManager()
-    : Qt3DCore::QResourceManager<Scene,
-                                 Qt3DCore::QNodeId,
-                                 8,
-                                 Qt3DCore::ArrayAllocatingPolicy,
-                                 Qt3DCore::ObjectLevelLockingPolicy>()
+SceneManager::SceneManager() : Qt3DCore::QResourceManager<Scene,
+                                                          Qt3DCore::QNodeId,
+                                                          8,
+                                                          Qt3DCore::ObjectLevelLockingPolicy>()
     , m_service(nullptr)
 {
 }

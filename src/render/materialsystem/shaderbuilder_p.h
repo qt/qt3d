@@ -82,6 +82,7 @@ public:
     void cleanup();
 
     Qt3DCore::QNodeId shaderProgramId() const;
+    QStringList enabledLayers() const;
 
     GraphicsApiFilterData graphicsApi() const;
     void setGraphicsApi(const GraphicsApiFilterData &graphicsApi);
@@ -98,9 +99,11 @@ public:
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void setEnabledLayers(const QStringList &layers);
 
     GraphicsApiFilterData m_graphicsApi;
     Qt3DCore::QNodeId m_shaderProgramId;
+    QStringList m_enabledLayers;
     QHash<ShaderType, QUrl> m_graphs;
     QHash<ShaderType, QByteArray> m_codes;
     QSet<ShaderType> m_dirtyTypes;

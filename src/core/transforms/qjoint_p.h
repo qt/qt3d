@@ -72,6 +72,7 @@ public:
     QQuaternion m_rotation;
     QVector3D m_translation;
     QVector3D m_scale;
+    QString m_name;
 
     // Not sent to backend. Purely internal convenience
     QVector3D m_eulerRotationAngles;
@@ -84,6 +85,7 @@ struct QJointData
     QQuaternion rotation;
     QVector3D translation;
     QVector3D scale;
+    QString name;
 };
 
 } // namespace Qt3DCore

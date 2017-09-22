@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 
 class QChannelMapperPrivate;
-class QChannelMapping;
+class QAbstractChannelMapping;
 
 class QT3DANIMATIONSHARED_EXPORT QChannelMapper : public Qt3DCore::QNode
 {
@@ -55,9 +55,9 @@ public:
     explicit QChannelMapper(Qt3DCore::QNode *parent = nullptr);
     ~QChannelMapper();
 
-    void addMapping(QChannelMapping *mapping);
-    void removeMapping(QChannelMapping *mapping);
-    QVector<QChannelMapping *> mappings() const;
+    void addMapping(QAbstractChannelMapping *mapping);
+    void removeMapping(QAbstractChannelMapping *mapping);
+    QVector<QAbstractChannelMapping *> mappings() const;
 
 protected:
     explicit QChannelMapper(QChannelMapperPrivate &dd, Qt3DCore::QNode *parent = nullptr);

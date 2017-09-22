@@ -53,6 +53,7 @@
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/fcurve_p.h>
 #include <QtCore/qurl.h>
+#include <QtCore/qmutex.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +74,9 @@ public:
     QAnimationClipLoader::Status status() const { return m_status; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    void addDependingClipAnimator(const Qt3DCore::QNodeId &id);
+    void addDependingBlendedClipAnimator(const Qt3DCore::QNodeId &id);
+
     QString name() const { return m_name; }
     const QVector<Channel> &channels() const { return m_channels; }
 
@@ -80,7 +84,7 @@ public:
     void loadAnimation();
     void setDuration(float duration);
     float duration() const { return m_duration; }
-    int channelIndex(const QString &channelName) const;
+    int channelIndex(const QString &channelName, int jointIndex) const;
     int channelCount() const { return m_channelComponentCount; }
     int channelComponentBaseIndex(int channelGroupIndex) const;
 
@@ -106,6 +110,8 @@ private:
     float findDuration();
     int findChannelComponentCount();
 
+    QMutex m_mutex;
+
     QUrl m_source;
     QAnimationClipLoader::Status m_status;
     QAnimationClipData m_clipData;
@@ -115,6 +121,9 @@ private:
     QVector<Channel> m_channels;
     float m_duration;
     int m_channelComponentCount;
+
+    Qt3DCore::QNodeIdVector m_dependingAnimators;
+    Qt3DCore::QNodeIdVector m_dependingBlendedAnimators;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

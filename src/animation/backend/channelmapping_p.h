@@ -66,6 +66,12 @@ class Handler;
 class Q_AUTOTEST_EXPORT ChannelMapping : public BackendNode
 {
 public:
+    enum MappingType {
+        ChannelMappingType = 0,
+        SkeletonMappingType,
+        CallbackMappingType
+    };
+
     ChannelMapping();
 
     void cleanup();
@@ -93,16 +99,30 @@ public:
     void setCallbackFlags(QAnimationCallback::Flags flags) { m_callbackFlags = flags; }
     QAnimationCallback::Flags callbackFlags() const { return m_callbackFlags; }
 
+    void setSkeletonId(Qt3DCore::QNodeId skeletonId) { m_skeletonId = skeletonId; }
+    Qt3DCore::QNodeId skeletonId() const { return m_skeletonId; }
+
+    void setMappingType(MappingType mappingType) { m_mappingType = mappingType; }
+    MappingType mappingType() const { return m_mappingType; }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
+    // Properties from QChannelMapping
     QString m_channelName;
     Qt3DCore::QNodeId m_targetId;
     QString m_property;
     int m_type;
     const char *m_propertyName;
+
+    // TODO: Properties from QCallbackMapping
     QAnimationCallback *m_callback;
     QAnimationCallback::Flags m_callbackFlags;
+
+    // Properties from QSkeletonMapping
+    Qt3DCore::QNodeId m_skeletonId;
+
+    MappingType m_mappingType;
 };
 
 } // namespace Animation

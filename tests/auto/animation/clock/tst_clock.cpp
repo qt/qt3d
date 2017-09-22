@@ -75,6 +75,35 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendClock.playbackRate(), 1.0);
     }
+
+    void checkSceneChangeEvents()
+    {
+        // GIVEN
+        Qt3DAnimation::Animation::Clock backendClock;
+
+        {
+            // WHEN
+            const bool newValue = false;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("enabled");
+            change->setValue(newValue);
+            backendClock.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendClock.isEnabled(), newValue);
+        }
+        {
+            // WHEN
+            const double newPlaybackRateValue = 2.0;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("playbackRate");
+            change->setValue(newPlaybackRateValue);
+            backendClock.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendClock.playbackRate(), newPlaybackRateValue);
+        }
+    }
 };
 
 QTEST_APPLESS_MAIN(tst_Clock)

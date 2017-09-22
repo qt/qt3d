@@ -45,6 +45,13 @@ SkeletonData::SkeletonData()
 {
 }
 
+void SkeletonData::reserve(int size)
+{
+    joints.reserve(size);
+    localPoses.reserve(size);
+    jointNames.reserve(size);
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

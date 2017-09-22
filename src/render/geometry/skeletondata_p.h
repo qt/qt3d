@@ -71,24 +71,24 @@ struct Q_AUTOTEST_EXPORT JointInfo
 
     explicit JointInfo(Joint *joint, int parentJointIndex)
         : inverseBindPose(joint->inverseBindMatrix())
-        , localPose(joint->localPose())
         , parentIndex(parentJointIndex)
-        , name(joint->name())
     {
     }
 
     QMatrix4x4 inverseBindPose;
-    Qt3DCore::Sqt localPose;
     QMatrix4x4 globalPose;
     int parentIndex;
-    QString name;
 };
 
 struct Q_AUTOTEST_EXPORT SkeletonData
 {
     SkeletonData();
 
+    void reserve(int size);
+
     QVector<JointInfo> joints;
+    QVector<Qt3DCore::Sqt> localPoses;
+    QVector<QString> jointNames;
     QHash<HJoint, int> jointIndices;
 };
 

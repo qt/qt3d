@@ -53,6 +53,7 @@
 
 #include <private/qabstractnodefactory_p.h>
 #include <QtCore/qhash.h>
+#include <QtQml/private/qqmlmetatype_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,7 +77,7 @@ private:
             : quickName(quickName), version(major, minor), t(nullptr), resolved(false) { }
         QByteArray quickName;
         QPair<int, int> version;
-        QQmlType *t;
+        QQmlType t;
         bool resolved;
     };
     QHash<QByteArray, Type> m_types;

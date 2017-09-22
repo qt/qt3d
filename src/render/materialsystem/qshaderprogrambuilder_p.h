@@ -67,6 +67,7 @@ public:
 
     Q_DECLARE_PUBLIC(QShaderProgramBuilder)
     QShaderProgram *m_shaderProgram;
+    QStringList m_enabledLayers;
     QUrl m_vertexShaderGraph;
     QUrl m_tessControlShaderGraph;
     QUrl m_tessEvalShaderGraph;
@@ -78,6 +79,7 @@ public:
 struct QShaderProgramBuilderData
 {
     Qt3DCore::QNodeId shaderProgramId;
+    QStringList enabledLayers;
     QUrl vertexShaderGraph;
     QUrl tessellationControlShaderGraph;
     QUrl tessellationEvaluationShaderGraph;

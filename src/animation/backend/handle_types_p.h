@@ -63,12 +63,14 @@ class ClipAnimator;
 class BlendedClipAnimator;
 class ChannelMapping;
 class ChannelMapper;
+class Skeleton;
 
 typedef Qt3DCore::QHandle<AnimationClip, 16> HAnimationClip;
 typedef Qt3DCore::QHandle<ClipAnimator, 16> HClipAnimator;
 typedef Qt3DCore::QHandle<BlendedClipAnimator, 12> HBlendedClipAnimator;
 typedef Qt3DCore::QHandle<ChannelMapping, 16> HChannelMapping;
 typedef Qt3DCore::QHandle<ChannelMapper, 16> HChannelMapper;
+typedef Qt3DCore::QHandle<Skeleton, 16> HSkeleton;
 
 } // namespace Animation
 } // namespace Qt3DAnimation

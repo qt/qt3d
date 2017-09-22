@@ -43,7 +43,6 @@
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QMutexLocker>
 
-#include <Qt3DCore/private/dependencyhandler_p.h>
 #include <Qt3DCore/private/qthreadpooler_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,8 +56,7 @@ RunnableInterface::~RunnableInterface()
 // Aspect task
 
 AspectTaskRunnable::AspectTaskRunnable()
-    : m_dependencyHandler(nullptr)
-    , m_pooler(nullptr)
+    : m_pooler(nullptr)
     , m_reserved(false)
 {
 }
@@ -94,16 +92,6 @@ void AspectTaskRunnable::run()
         m_pooler->taskFinished(this);
 }
 
-void AspectTaskRunnable::setDependencyHandler(DependencyHandler *handler)
-{
-    m_dependencyHandler = handler;
-}
-
-DependencyHandler *AspectTaskRunnable::dependencyHandler()
-{
-    return m_dependencyHandler;
-}
-
 // Synchronized task
 
 SyncTaskRunnable::SyncTaskRunnable(QAbstractAspectJobManager::JobFunction func,
@@ -135,16 +123,6 @@ void SyncTaskRunnable::run()
 
     if (m_pooler)
         m_pooler->taskFinished(this);
-}
-
-void SyncTaskRunnable::setDependencyHandler(DependencyHandler *handler)
-{
-    Q_UNUSED(handler);
-}
-
-DependencyHandler *SyncTaskRunnable::dependencyHandler()
-{
-    return nullptr;
 }
 
 } // namespace Qt3DCore {

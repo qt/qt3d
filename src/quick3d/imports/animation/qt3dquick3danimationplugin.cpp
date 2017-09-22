@@ -45,11 +45,11 @@
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/qchannelmapping.h>
+#include <Qt3DAnimation/qskeletonmapping.h>
 #include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qadditiveclipblend.h>
 #include <Qt3DAnimation/qclipblendvalue.h>
 #include <Qt3DAnimation/qclock.h>
-
 #include <Qt3DAnimation/qkeyframeanimation.h>
 #include <Qt3DAnimation/qanimationcontroller.h>
 #include <Qt3DAnimation/qabstractanimation.h>
@@ -97,6 +97,9 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3DAnimation::QMorphingAnimation, Qt3DAnimation::Quick::QQuick3DMorphingAnimation>(uri, 2, 9, "MorphingAnimation");
     qmlRegisterExtendedType<Qt3DAnimation::QMorphTarget, Qt3DAnimation::Quick::QQuick3DMorphTarget>(uri, 2, 9, "MorphTarget");
     qmlRegisterExtendedType<Qt3DAnimation::QVertexBlendAnimation, Qt3DAnimation::Quick::QQuick3DVertexBlendAnimation>(uri, 2, 9, "VertexBlendAnimation");
+
+    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractChannelMapping>(uri, 2, 10, "AbstractChannelMapping", QStringLiteral("QAbstractChannelMapping is abstract"));
+    qmlRegisterType<Qt3DAnimation::QSkeletonMapping>(uri, 2, 10, "SkeletonMapping");
 }
 
 QT_END_NAMESPACE

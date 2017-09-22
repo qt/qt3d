@@ -2,8 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS = \
     handle \
-    handlemanager \
-    arrayresourcesmanager \
+    qresourcemanager \
     qcircularbuffer \
     qboundedcircularbuffer \
     nodes \

@@ -50,6 +50,7 @@ class QChannelPrivate
 public:
     QVector<QChannelComponent> m_channelComponents;
     QString m_name;
+    int m_jointIndex = -1;
 };
 
 QChannel::QChannel()
@@ -88,6 +89,16 @@ void QChannel::setName(const QString &name)
 QString QChannel::name() const
 {
     return d->m_name;
+}
+
+void QChannel::setJointIndex(int jointIndex)
+{
+    d->m_jointIndex = jointIndex;
+}
+
+int QChannel::jointIndex() const
+{
+    return d->m_jointIndex;
 }
 
 int QChannel::channelComponentCount() const

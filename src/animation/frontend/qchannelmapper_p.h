@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QChannelMapping;
+class QAbstractChannelMapping;
 
 class QChannelMapperPrivate : public Qt3DCore::QNodePrivate
 {
@@ -63,7 +63,7 @@ public:
 
     Q_DECLARE_PUBLIC(QChannelMapper)
 
-    QVector<QChannelMapping *> m_mappings;
+    QVector<QAbstractChannelMapping *> m_mappings;
 };
 
 struct QChannelMapperData

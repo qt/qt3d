@@ -458,12 +458,44 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
         ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
         Q_ASSERT(mapping);
 
-        // Get the name and type
-        const ChannelNameAndType nameAndType{ mapping->channelName(), mapping->type() };
+        switch (mapping->mappingType()) {
+        case ChannelMapping::ChannelMappingType:
+        case ChannelMapping::CallbackMappingType: {
+            // Get the name and type
+            const ChannelNameAndType nameAndType{ mapping->channelName(), mapping->type() };
 
-        // Add if not already contained
-        if (!namesAndTypes.contains(nameAndType))
-            namesAndTypes.push_back(nameAndType);
+            // Add if not already contained
+            if (!namesAndTypes.contains(nameAndType))
+                namesAndTypes.push_back(nameAndType);
+
+            break;
+        }
+
+        case ChannelMapping::SkeletonMappingType: {
+            // Add an entry for each scale/rotation/translation property of each joint index
+            // of the target skeleton.
+            const QVector<ChannelNameAndType> jointProperties
+                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) },
+                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) },
+                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D) } };
+            Skeleton *skeleton = handler->skeletonManager()->lookupResource(mapping->skeletonId());
+            const int jointCount = skeleton->jointCount();
+            for (int jointIndex = 0; jointIndex < jointCount; ++jointIndex) {
+                const int propertyCount = jointProperties.size();
+                for (int propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex) {
+                    // Get the name, type and index
+                    ChannelNameAndType nameAndType = jointProperties[propertyIndex];
+                    nameAndType.jointIndex = jointIndex;
+
+                    // Add if not already contained
+                    if (!namesAndTypes.contains(nameAndType))
+                        namesAndTypes.push_back(nameAndType);
+                }
+            }
+
+            break;
+        }
+        }
     }
 
     return namesAndTypes;
@@ -545,7 +577,8 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
     for (int i = 0; i < channelCount; ++i) {
         // Find the index of the channel from the clip
         const ChannelNameAndType &targetChannel = targetChannels[i];
-        const int clipChannelIndex = clip->channelIndex(targetChannel.name);
+        const int clipChannelIndex = clip->channelIndex(targetChannel.name,
+                                                        targetChannel.jointIndex);
 
         // TODO: Ensure channel in the clip has enough components to map to the type.
         //       Requires some improvements to the clip data structure first.

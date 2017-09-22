@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,80 +37,49 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_DEPENDENCYHANDLER_P_H
-#define QT3DCORE_DEPENDENCYHANDLER_P_H
+#ifndef QT3DANIMATION_QSKELETONMAPPING_H
+#define QT3DANIMATION_QSKELETONMAPPING_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtCore/QMutex>
-#include <QtCore/QVector>
-
-#include <Qt3DCore/private/task_p.h>
+#include <Qt3DAnimation/qabstractchannelmapping.h>
+#include <Qt3DAnimation/qt3danimation_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-
-struct Dependency
-{
-    Dependency()
-        : depender(nullptr)
-        , dependee(nullptr)
-    {}
-    Dependency(RunnableInterface *depender, RunnableInterface *dependee)
-        : depender(qMove(depender)),
-          dependee(qMove(dependee)) {}
-
-    RunnableInterface *depender;
-    RunnableInterface *dependee;
-};
-
-} // namespace Qt3DCore
-
-template <>
-class QTypeInfo<Qt3DCore::Dependency> : public QTypeInfoMerger<Qt3DCore::Dependency, Qt3DCore::RunnableInterface *> {};
-
-namespace Qt3DCore {
-
-inline bool operator==(const Dependency &left, const Dependency &right)
-{
-    return left.depender == right.depender && left.dependee == right.dependee;
+class QAbstractSkeleton;
 }
 
-inline bool operator!=(const Dependency &left, const Dependency &right)
-{
-    return !operator==(left, right);
-}
+namespace Qt3DAnimation {
 
-class DependencyHandler
+class QSkeletonMappingPrivate;
+
+class QT3DANIMATIONSHARED_EXPORT QSkeletonMapping : public QAbstractChannelMapping
 {
+    Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QAbstractSkeleton* skeleton READ skeleton WRITE setSkeleton NOTIFY skeletonChanged)
+
 public:
-    DependencyHandler();
+    explicit QSkeletonMapping(Qt3DCore::QNode *parent = nullptr);
+    ~QSkeletonMapping();
 
-    void addDependencies(QVector<Dependency> dependencies);
-    bool hasDependency(const RunnableInterface *depender);
-    QVector<RunnableInterface *> freeDependencies(const RunnableInterface *task);
-    void setMutex(QMutex *mutex) { m_mutex = mutex; }
+    Qt3DCore::QAbstractSkeleton *skeleton() const;
+
+public Q_SLOTS:
+    void setSkeleton(Qt3DCore::QAbstractSkeleton *skeleton);
+
+Q_SIGNALS:
+    void skeletonChanged(Qt3DCore::QAbstractSkeleton *skeleton);
+
+protected:
+    QSkeletonMapping(QSkeletonMappingPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
-    Q_DISABLE_COPY(DependencyHandler)
-
-    QVector<Dependency> m_dependencyMap;
-    QMutex *m_mutex;
+    Q_DECLARE_PRIVATE(QSkeletonMapping)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
-} // namespace Qt3DCore
+} // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_DEPENDENCYHANDLER_P_H
-
+#endif // QT3DANIMATION_QSKELETONMAPPING_H

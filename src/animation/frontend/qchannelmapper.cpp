@@ -70,7 +70,7 @@ QChannelMapper::~QChannelMapper()
 {
 }
 
-void QChannelMapper::addMapping(QChannelMapping *mapping)
+void QChannelMapper::addMapping(QAbstractChannelMapping *mapping)
 {
     Q_ASSERT(mapping);
     Q_D(QChannelMapper);
@@ -95,7 +95,7 @@ void QChannelMapper::addMapping(QChannelMapping *mapping)
     }
 }
 
-void QChannelMapper::removeMapping(QChannelMapping *mapping)
+void QChannelMapper::removeMapping(QAbstractChannelMapping *mapping)
 {
     Q_ASSERT(mapping);
     Q_D(QChannelMapper);
@@ -109,7 +109,7 @@ void QChannelMapper::removeMapping(QChannelMapping *mapping)
     d->unregisterDestructionHelper(mapping);
 }
 
-QVector<QChannelMapping *> QChannelMapper::mappings() const
+QVector<QAbstractChannelMapping *> QChannelMapper::mappings() const
 {
     Q_D(const QChannelMapper);
     return d->m_mappings;

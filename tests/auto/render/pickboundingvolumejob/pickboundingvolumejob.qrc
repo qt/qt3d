@@ -7,5 +7,6 @@
         <file>testscene_dragenabledhoverenabled.qml</file>
         <file>testscene_pickersdisabled.qml</file>
         <file>testscene_dragenabledoverlapping.qml</file>
+        <file>testscene_parententity.qml</file>
     </qresource>
 </RCC>

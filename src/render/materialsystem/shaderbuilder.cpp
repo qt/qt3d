@@ -130,6 +130,7 @@ ShaderBuilder::~ShaderBuilder()
 void ShaderBuilder::cleanup()
 {
     m_shaderProgramId = Qt3DCore::QNodeId();
+    m_enabledLayers.clear();
     m_graphs.clear();
     m_dirtyTypes.clear();
     QBackendNode::setEnabled(false);
@@ -138,6 +139,25 @@ void ShaderBuilder::cleanup()
 Qt3DCore::QNodeId ShaderBuilder::shaderProgramId() const
 {
     return m_shaderProgramId;
+}
+
+QStringList ShaderBuilder::enabledLayers() const
+{
+    return m_enabledLayers;
+}
+
+
+void ShaderBuilder::setEnabledLayers(const QStringList &layers)
+{
+    if (m_enabledLayers == layers)
+        return;
+
+    m_enabledLayers = layers;
+
+    for (const auto type : m_graphs.keys()) {
+        if (!m_graphs.value(type).isEmpty())
+            m_dirtyTypes.insert(type);
+    }
 }
 
 GraphicsApiFilterData ShaderBuilder::graphicsApi() const
@@ -253,7 +273,7 @@ void ShaderBuilder::generateCode(ShaderBuilder::ShaderType type)
     generator.format = format;
     generator.graph = graph;
 
-    const auto code = generator.createShaderCode();
+    const auto code = generator.createShaderCode(m_enabledLayers);
     m_codes.insert(type, deincludify(code, graphPath + QStringLiteral(".glsl")));
     m_dirtyTypes.remove(type);
 }
@@ -266,6 +286,8 @@ void ShaderBuilder::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
         if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram"))
             m_shaderProgramId = propertyValue.value<Qt3DCore::QNodeId>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("enabledLayers"))
+            setEnabledLayers(propertyValue.toStringList());
         else if (propertyChange->propertyName() == QByteArrayLiteral("vertexShaderGraph"))
             setShaderGraph(Vertex, propertyValue.toUrl());
         else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlShaderGraph"))
@@ -290,6 +312,7 @@ void ShaderBuilder::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     const auto &data = typedChange->data;
 
     m_shaderProgramId = data.shaderProgramId;
+    m_enabledLayers = data.enabledLayers;
     setShaderGraph(Vertex, data.vertexShaderGraph);
     setShaderGraph(TessellationControl, data.tessellationControlShaderGraph);
     setShaderGraph(TessellationEvaluation, data.tessellationEvaluationShaderGraph);

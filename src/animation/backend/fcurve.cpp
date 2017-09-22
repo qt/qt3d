@@ -186,6 +186,9 @@ void ChannelComponent::setFromQChannelComponent(const QChannelComponent &qcc)
 void Channel::read(const QJsonObject &json)
 {
     name = json[QLatin1String("channelName")].toString();
+    const auto jointIndexValue = json[QLatin1String("jointIndex")];
+    if (!jointIndexValue.isUndefined())
+        jointIndex = jointIndexValue.toInt();
     const QJsonArray channelComponentsArray = json[QLatin1String("channelComponents")].toArray();
     const int channelCount = channelComponentsArray.size();
     channelComponents.resize(channelCount);
@@ -199,6 +202,7 @@ void Channel::read(const QJsonObject &json)
 void Channel::setFromQChannel(const QChannel &qch)
 {
     name = qch.name();
+    jointIndex = qch.jointIndex();
     channelComponents.resize(qch.channelComponentCount());
     int i = 0;
     for (const auto &frontendChannelComponent : qch)

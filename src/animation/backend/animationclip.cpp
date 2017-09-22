@@ -40,6 +40,7 @@
 #include <Qt3DAnimation/private/qanimationclip_p.h>
 #include <Qt3DAnimation/private/qanimationcliploader_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
@@ -176,6 +177,24 @@ void AnimationClip::loadAnimation()
             setStatus(QAnimationClipLoader::Ready);
     }
 
+    // notify all ClipAnimators and BlendedClipAnimators that depend on this clip,
+    // that the clip has changed and that they are now dirty
+    {
+        QMutexLocker lock(&m_mutex);
+        for (const Qt3DCore::QNodeId id : qAsConst(m_dependingAnimators)) {
+            ClipAnimator *animator = m_handler->clipAnimatorManager()->lookupResource(id);
+            if (animator)
+                animator->animationClipMarkedDirty();
+        }
+        for (const Qt3DCore::QNodeId id : qAsConst(m_dependingBlendedAnimators)) {
+            BlendedClipAnimator *animator = m_handler->blendedClipAnimatorManager()->lookupResource(id);
+            if (animator)
+                animator->animationClipMarkedDirty();
+        }
+        m_dependingAnimators.clear();
+        m_dependingBlendedAnimators.clear();
+    }
+
     qCDebug(Jobs) << "Loaded animation data:" << *this;
 }
 
@@ -224,6 +243,18 @@ void AnimationClip::loadAnimationFromData()
         m_channels[i++].setFromQChannel(frontendChannel);
 }
 
+void AnimationClip::addDependingClipAnimator(const Qt3DCore::QNodeId &id)
+{
+    QMutexLocker lock(&m_mutex);
+    m_dependingAnimators.push_back(id);
+}
+
+void AnimationClip::addDependingBlendedClipAnimator(const Qt3DCore::QNodeId &id)
+{
+    QMutexLocker lock(&m_mutex);
+    m_dependingBlendedAnimators.push_back(id);
+}
+
 void AnimationClip::setDuration(float duration)
 {
     if (qFuzzyCompare(duration, m_duration))
@@ -239,12 +270,14 @@ void AnimationClip::setDuration(float duration)
     notifyObservers(e);
 }
 
-int AnimationClip::channelIndex(const QString &channelName) const
+int AnimationClip::channelIndex(const QString &channelName, int jointIndex) const
 {
     const int channelCount = m_channels.size();
     for (int i = 0; i < channelCount; ++i) {
-        if (m_channels[i].name == channelName)
+        if (m_channels[i].name == channelName
+            && (jointIndex == -1 || m_channels[i].jointIndex == jointIndex)) {
             return i;
+        }
     }
     return -1;
 }

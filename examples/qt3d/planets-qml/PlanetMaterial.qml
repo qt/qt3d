@@ -115,7 +115,8 @@ Material {
                 TextureImage {
                     id: specularTextureImage
                     // Get rid of runtime warnings. It's safe, as the texture just isn't used
-                    source: specularMap !== "" ? specularMap : "qrc:/images/uranusmap.jpg"
+                    source: specularMap !== "" ? specularMap
+                                               : "qrc:/images/solarsystemscope/uranusmap.jpg"
                 }
             }
         },
@@ -133,7 +134,8 @@ Material {
                 TextureImage {
                     id: normalTextureImage
                     // Get rid of runtime warnings. It's safe, as the texture just isn't used
-                    source: normalMap !== "" ? normalMap : "qrc:/images/uranusmap.jpg"
+                    source: normalMap !== "" ? normalMap
+                                             : "qrc:/images/solarsystemscope/uranusmap.jpg"
                 }
             }
         },

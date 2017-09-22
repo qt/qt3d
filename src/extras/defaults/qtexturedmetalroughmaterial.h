@@ -40,53 +40,24 @@
 #ifndef QT3DEXTRAS_QTEXTUREDMETALROUGHMATERIAL_H
 #define QT3DEXTRAS_QTEXTUREDMETALROUGHMATERIAL_H
 
-#include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qmaterial.h>
+#include <Qt3DExtras/qmetalroughmaterial.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QTexturedMetalRoughMaterialPrivate;
-
-class QT3DEXTRASSHARED_EXPORT QTexturedMetalRoughMaterial : public Qt3DRender::QMaterial
+class QT_DEPRECATED_X("Use Qt3DExtras::QMetalRoughMaterial") QT3DEXTRASSHARED_EXPORT QTexturedMetalRoughMaterial : public QMetalRoughMaterial
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *baseColor READ baseColor WRITE setBaseColor NOTIFY baseColorChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *metalness READ metalness WRITE setMetalness NOTIFY metalnessChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *roughness READ roughness WRITE setRoughness NOTIFY roughnessChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *ambientOcclusion READ ambientOcclusion WRITE setAmbientOcclusion NOTIFY ambientOcclusionChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *normal READ normal WRITE setNormal NOTIFY normalChanged)
+    Q_PROPERTY(QVariant ambientOcclusion READ ambientOcclusion WRITE setAmbientOcclusion NOTIFY ambientOcclusionChanged)
+    Q_PROPERTY(QVariant normal READ normal WRITE setNormal NOTIFY normalChanged)
 
 public:
     explicit QTexturedMetalRoughMaterial(Qt3DCore::QNode *parent = nullptr);
-    ~QTexturedMetalRoughMaterial();
-
-    Qt3DRender::QAbstractTexture *baseColor() const;
-    Qt3DRender::QAbstractTexture *metalness() const;
-    Qt3DRender::QAbstractTexture *roughness() const;
-    Qt3DRender::QAbstractTexture *ambientOcclusion() const;
-    Qt3DRender::QAbstractTexture *normal() const;
-
-public Q_SLOTS:
-    void setBaseColor(Qt3DRender::QAbstractTexture *baseColor);
-    void setMetalness(Qt3DRender::QAbstractTexture *metalness);
-    void setRoughness(Qt3DRender::QAbstractTexture *roughness);
-    void setAmbientOcclusion(Qt3DRender::QAbstractTexture *ambientOcclusion);
-    void setNormal(Qt3DRender::QAbstractTexture *normal);
 
 Q_SIGNALS:
-    void baseColorChanged(Qt3DRender::QAbstractTexture *baseColor);
-    void metalnessChanged(Qt3DRender::QAbstractTexture *metalness);
-    void roughnessChanged(Qt3DRender::QAbstractTexture *roughness);
-    void ambientOcclusionChanged(Qt3DRender::QAbstractTexture *ambientOcclusion);
-    void normalChanged(Qt3DRender::QAbstractTexture *normal);
-
-protected:
-    explicit QTexturedMetalRoughMaterial(QTexturedMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-
-private:
-    Q_DECLARE_PRIVATE(QTexturedMetalRoughMaterial)
+    void ambientOcclusionChanged(const QVariant &ambientOcclusion);
+    void normalChanged(const QVariant &normal);
 };
 
 } // namespace Qt3DExtras

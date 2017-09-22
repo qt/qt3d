@@ -135,6 +135,33 @@ QShaderProgram *QShaderProgramBuilder::shaderProgram() const
 }
 
 /*!
+    \qmlproperty stringlist ShaderProgramBuilder::enabledLayers
+
+    Holds the list of layers this builder will activate on the shader graphs
+    during code generation.
+*/
+/*!
+    \property QShaderProgramBuilder::enabledLayers
+
+    Holds the list of layers this builder will activate on the shader graphs
+    during code generation.
+*/
+void QShaderProgramBuilder::setEnabledLayers(const QStringList &layers)
+{
+    Q_D(QShaderProgramBuilder);
+    if (layers != d->m_enabledLayers) {
+        d->m_enabledLayers = layers;
+        emit enabledLayersChanged(layers);
+    }
+}
+
+QStringList QShaderProgramBuilder::enabledLayers() const
+{
+    Q_D(const QShaderProgramBuilder);
+    return d->m_enabledLayers;
+}
+
+/*!
     \qmlproperty string ShaderProgram::vertexShaderGraph
 
     Holds the URL to the vertex shader graph used by this shader program builder.
@@ -290,6 +317,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QShaderProgramBuilder::createNodeCreationCha
     auto &data = creationChange->data;
     Q_D(const QShaderProgramBuilder);
     data.shaderProgramId = d->m_shaderProgram ? d->m_shaderProgram->id() : Qt3DCore::QNodeId();
+    data.enabledLayers = d->m_enabledLayers;
     data.vertexShaderGraph = d->m_vertexShaderGraph;
     data.tessellationControlShaderGraph = d->m_tessControlShaderGraph;
     data.tessellationEvaluationShaderGraph = d->m_tessEvalShaderGraph;

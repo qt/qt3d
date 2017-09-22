@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QTEXTUREDMETALROUGHMATERIAL_P_H
-#define QT3DEXTRAS_QTEXTUREDMETALROUGHMATERIAL_P_H
+#ifndef QT3DANIMATION_QABSTRACTCHANNELMAPPING_P_H
+#define QT3DANIMATION_QABSTRACTCHANNELMAPPING_P_H
 
 //
 //  W A R N I N G
@@ -51,67 +51,35 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/qmaterial_p.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DAnimation {
 
-class QFilterKey;
-class QEffect;
-class QAbstractTexture;
-class QTechnique;
-class QParameter;
-class QShaderProgram;
-class QShaderProgramBuilder;
-class QRenderPass;
+class QAbstractChannelMapping;
 
-} // namespace Qt3DRender
-
-namespace Qt3DExtras {
-
-class QTexturedMetalRoughMaterial;
-
-class QTexturedMetalRoughMaterialPrivate : public Qt3DRender::QMaterialPrivate
+class QAbstractChannelMappingPrivate : public Qt3DCore::QNodePrivate
 {
 public:
-    QTexturedMetalRoughMaterialPrivate();
+    QAbstractChannelMappingPrivate();
 
-    void init();
+    static const QAbstractChannelMappingPrivate *get(const Qt3DAnimation::QAbstractChannelMapping *q);
 
-    void handleBaseColorChanged(const QVariant &var);
-    void handleMetallicChanged(const QVariant &var);
-    void handleRoughnessChanged(const QVariant &var);
-    void handleAmbientOcclusionChanged(const QVariant &var);
-    void handleNormalChanged(const QVariant &var);
+    Q_DECLARE_PUBLIC(QAbstractChannelMapping)
 
-    Qt3DRender::QAbstractTexture *m_baseColorTexture;
-    Qt3DRender::QAbstractTexture *m_metalnessTexture;
-    Qt3DRender::QAbstractTexture *m_roughnessTexture;
-    Qt3DRender::QAbstractTexture *m_ambientOcclusionTexture;
-    Qt3DRender::QAbstractTexture *m_normalTexture;
-    Qt3DRender::QAbstractTexture *m_environmentIrradianceTexture;
-    Qt3DRender::QAbstractTexture *m_environmentSpecularTexture;
-    Qt3DRender::QParameter *m_baseColorParameter;
-    Qt3DRender::QParameter *m_metalnessParameter;
-    Qt3DRender::QParameter *m_roughnessParameter;
-    Qt3DRender::QParameter *m_ambientOcclusionParameter;
-    Qt3DRender::QParameter *m_normalParameter;
-    Qt3DRender::QParameter *m_environmentIrradianceParameter;
-    Qt3DRender::QParameter *m_environmentSpecularParameter;
-    Qt3DRender::QEffect *m_metalRoughEffect;
-    Qt3DRender::QTechnique *m_metalRoughGL3Technique;
-    Qt3DRender::QRenderPass *m_metalRoughGL3RenderPass;
-    Qt3DRender::QShaderProgram *m_metalRoughGL3Shader;
-    Qt3DRender::QShaderProgramBuilder *m_metalRoughGL3ShaderBuilder;
-    Qt3DRender::QFilterKey *m_filterKey;
-
-    Q_DECLARE_PUBLIC(QTexturedMetalRoughMaterial)
+    QChannelMappingCreatedChangeBase::MappingType m_mappingType;
 };
 
-} // Qt3DExtras
+struct QAbstractChannelMappingData
+{
+    // TODO: Add members that should be sent to the backend
+};
+
+} // namespace Qt3DAnimation
+
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QTEXTUREDMETALROUGHMATERIAL_P_H
-
+#endif // QT3DANIMATION_QABSTRACTCHANNELMAPPING_P_H

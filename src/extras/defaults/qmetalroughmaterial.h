@@ -57,27 +57,35 @@ class QMetalRoughMaterialPrivate;
 class QT3DEXTRASSHARED_EXPORT QMetalRoughMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
-    Q_PROPERTY(QColor baseColor READ baseColor WRITE setBaseColor NOTIFY baseColorChanged)
-    Q_PROPERTY(float metalness READ metalness WRITE setMetalness NOTIFY metalnessChanged)
-    Q_PROPERTY(float roughness READ roughness WRITE setRoughness NOTIFY roughnessChanged)
+    Q_PROPERTY(QVariant baseColor READ baseColor WRITE setBaseColor NOTIFY baseColorChanged)
+    Q_PROPERTY(QVariant metalness READ metalness WRITE setMetalness NOTIFY metalnessChanged)
+    Q_PROPERTY(QVariant roughness READ roughness WRITE setRoughness NOTIFY roughnessChanged)
+    Q_PROPERTY(QVariant ambientOcclusion READ ambientOcclusion WRITE setAmbientOcclusion NOTIFY ambientOcclusionChanged REVISION 10)
+    Q_PROPERTY(QVariant normal READ normal WRITE setNormal NOTIFY normalChanged REVISION 10)
 
 public:
     explicit QMetalRoughMaterial(Qt3DCore::QNode *parent = nullptr);
     ~QMetalRoughMaterial();
 
-    QColor baseColor() const;
-    float metalness() const;
-    float roughness() const;
+    QVariant baseColor() const;
+    QVariant metalness() const;
+    QVariant roughness() const;
+    QVariant ambientOcclusion() const;
+    QVariant normal() const;
 
 public Q_SLOTS:
-    void setBaseColor(const QColor &baseColor);
-    void setMetalness(float metalness);
-    void setRoughness(float roughness);
+    void setBaseColor(const QVariant &baseColor);
+    void setMetalness(const QVariant &metalness);
+    void setRoughness(const QVariant &roughness);
+    void setAmbientOcclusion(const QVariant &ambientOcclusion);
+    void setNormal(const QVariant &normal);
 
 Q_SIGNALS:
-    void baseColorChanged(const QColor &baseColor);
-    void metalnessChanged(float metalness);
-    void roughnessChanged(float roughness);
+    void baseColorChanged(const QVariant &baseColor);
+    void metalnessChanged(const QVariant &metalness);
+    void roughnessChanged(const QVariant &roughness);
+    void ambientOcclusionChanged(const QVariant &ambientOcclusion);
+    void normalChanged(const QVariant &normal);
 
 protected:
     explicit QMetalRoughMaterial(QMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);

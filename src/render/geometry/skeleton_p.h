@@ -95,6 +95,7 @@ public:
 
     int jointCount() const { return m_skeletonData.joints.size(); }
     void notifyJointCount();
+    void notifyJointNamesAndPoses();
     QVector<JointInfo> joints() const { return m_skeletonData.joints; }
 
     Qt3DCore::QNodeId rootJointId() const { return m_rootJointId; }
@@ -123,7 +124,9 @@ private:
     void loadSkeletonFromUrl();
     void loadSkeletonFromData();
     Qt3DCore::QJoint *createFrontendJoints(const SkeletonData &skeletonData) const;
-    Qt3DCore::QJoint *createFrontendJoint(const JointInfo &jointInfo) const;
+    Qt3DCore::QJoint *createFrontendJoint(const QString &jointName,
+                                          const Qt3DCore::Sqt &localPose,
+                                          const QMatrix4x4 &inverseBindMatrix) const;
     void processJointHierarchy(Qt3DCore::QNodeId jointId, int parentJointIndex, SkeletonData &skeletonData);
     void clearData();
 

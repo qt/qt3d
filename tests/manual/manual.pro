@@ -55,8 +55,7 @@ SUBDIRS += \
     skinned-mesh \
     proximityfilter \
     rendercapture-qml-fbo \
-    blitframebuffer-qml \
-    skinned-mesh
+    blitframebuffer-qml
 
 qtHaveModule(widgets): {
     SUBDIRS += \

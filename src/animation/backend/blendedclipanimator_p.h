@@ -94,6 +94,8 @@ public:
     void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
     void sendCallbacks(const QVector<AnimationCallbackAndValue> &callbacks);
 
+    void animationClipMarkedDirty() { setDirty(Handler::BlendedClipAnimatorDirty); }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     Qt3DCore::QNodeId m_blendTreeRootId;

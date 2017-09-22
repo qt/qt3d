@@ -64,7 +64,6 @@ class Q_AUTOTEST_EXPORT BufferManager : public Qt3DCore::QResourceManager<
         Buffer,
         Qt3DCore::QNodeId,
         16,
-        Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:

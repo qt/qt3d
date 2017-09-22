@@ -56,6 +56,7 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(!builder.shaderProgram());
+        QVERIFY(builder.enabledLayers().isEmpty());
         QCOMPARE(builder.vertexShaderGraph(), QUrl());
         QCOMPARE(builder.tessellationControlShaderGraph(), QUrl());
         QCOMPARE(builder.tessellationEvaluationShaderGraph(), QUrl());
@@ -86,6 +87,25 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.shaderProgram(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&builder, SIGNAL(enabledLayersChanged(QStringList)));
+            const auto newValue = QStringList() << "foo" << "bar";
+            builder.setEnabledLayers(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(builder.enabledLayers(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            builder.setEnabledLayers(newValue);
+
+            // THEN
+            QCOMPARE(builder.enabledLayers(), newValue);
             QCOMPARE(spy.count(), 0);
         }
         {
@@ -244,6 +264,7 @@ private Q_SLOTS:
         Qt3DRender::QShaderProgramBuilder builder;
 
         builder.setShaderProgram(new Qt3DRender::QShaderProgram(&builder));
+        builder.setEnabledLayers({"foo", "bar"});
         builder.setVertexShaderGraph(QUrl::fromEncoded("qrc:/vertex.json"));
         builder.setTessellationControlShaderGraph(QUrl::fromEncoded("qrc:/tesscontrol.json"));
         builder.setTessellationEvaluationShaderGraph(QUrl::fromEncoded("qrc:/tesseval.json"));
@@ -267,6 +288,7 @@ private Q_SLOTS:
             const Qt3DRender::QShaderProgramBuilderData cloneData = creationChangeData->data;
 
             QCOMPARE(builder.shaderProgram()->id(), cloneData.shaderProgramId);
+            QCOMPARE(builder.enabledLayers(), cloneData.enabledLayers);
             QCOMPARE(builder.vertexShaderGraph(), cloneData.vertexShaderGraph);
             QCOMPARE(builder.tessellationControlShaderGraph(), cloneData.tessellationControlShaderGraph);
             QCOMPARE(builder.tessellationEvaluationShaderGraph(), cloneData.tessellationEvaluationShaderGraph);
@@ -295,6 +317,7 @@ private Q_SLOTS:
             const Qt3DRender::QShaderProgramBuilderData cloneData = creationChangeData->data;
 
             QCOMPARE(builder.shaderProgram()->id(), cloneData.shaderProgramId);
+            QCOMPARE(builder.enabledLayers(), cloneData.enabledLayers);
             QCOMPARE(builder.vertexShaderGraph(), cloneData.vertexShaderGraph);
             QCOMPARE(builder.tessellationControlShaderGraph(), cloneData.tessellationControlShaderGraph);
             QCOMPARE(builder.tessellationEvaluationShaderGraph(), cloneData.tessellationEvaluationShaderGraph);
@@ -334,6 +357,39 @@ private Q_SLOTS:
         {
             // WHEN
             builder.setShaderProgram(program);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+    }
+
+    void checkEnabledLayersUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::QShaderProgramBuilder builder;
+        arbiter.setArbiterOnNode(&builder);
+        const auto layers = QStringList() << "foo" << "bar";
+
+        {
+            // WHEN
+            builder.setEnabledLayers(layers);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "enabledLayers");
+            QCOMPARE(change->value().toStringList(), layers);
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            builder.setEnabledLayers(layers);
             QCoreApplication::processEvents();
 
             // THEN

@@ -175,6 +175,16 @@ void Skeleton::notifyJointCount()
     notifyObservers(e);
 }
 
+void Skeleton::notifyJointNamesAndPoses()
+{
+    auto e = QPropertyUpdatedChangePtr::create(peerId());
+    JointNamesAndLocalPoses payload{m_skeletonData.jointNames, m_skeletonData.localPoses};
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::BackendNodes);
+    e->setPropertyName("jointNamesAndLocalPoses");
+    e->setValue(QVariant::fromValue(payload));
+    notifyObservers(e);
+}
+
 void Skeleton::loadSkeleton()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_source;
@@ -205,6 +215,7 @@ void Skeleton::loadSkeleton()
             setStatus(QSkeletonLoader::Ready);
     }
     notifyJointCount();
+    notifyJointNamesAndPoses();
 
     qCDebug(Jobs) << "Loaded skeleton data:" << *this;
 }
@@ -294,9 +305,14 @@ Qt3DCore::QJoint *Skeleton::createFrontendJoints(const SkeletonData &skeletonDat
 
     // Create frontend joints from the joint info objects
     QVector<QJoint *> frontendJoints;
-    frontendJoints.reserve(skeletonData.joints.size());
-    for (const JointInfo &jointInfo : skeletonData.joints)
-        frontendJoints.push_back(createFrontendJoint(jointInfo));
+    const int jointCount = skeletonData.joints.size();
+    frontendJoints.reserve(jointCount);
+    for (int i = 0; i < jointCount; ++i) {
+        const QMatrix4x4 &inverseBindMatrix = skeletonData.joints[i].inverseBindPose;
+        const QString &jointName = skeletonData.jointNames[i];
+        const Qt3DCore::Sqt &localPose = skeletonData.localPoses[i];
+        frontendJoints.push_back(createFrontendJoint(jointName, localPose, inverseBindMatrix));
+    }
 
     // Now go through and resolve the parent for each joint
     for (int i = 0; i < frontendJoints.size(); ++i) {
@@ -313,14 +329,16 @@ Qt3DCore::QJoint *Skeleton::createFrontendJoints(const SkeletonData &skeletonDat
     return frontendJoints[0];
 }
 
-Qt3DCore::QJoint *Skeleton::createFrontendJoint(const JointInfo &jointInfo) const
+Qt3DCore::QJoint *Skeleton::createFrontendJoint(const QString &jointName,
+                                                const Qt3DCore::Sqt &localPose,
+                                                const QMatrix4x4 &inverseBindMatrix) const
 {
     auto joint = QAbstractNodeFactory::createNode<QJoint>("QJoint");
-    joint->setTranslation(jointInfo.localPose.translation);
-    joint->setRotation(jointInfo.localPose.rotation);
-    joint->setScale(jointInfo.localPose.scale);
-    joint->setInverseBindMatrix(jointInfo.inverseBindPose);
-    // TODO: Add name property to joint
+    joint->setTranslation(localPose.translation);
+    joint->setRotation(localPose.rotation);
+    joint->setScale(localPose.scale);
+    joint->setInverseBindMatrix(inverseBindMatrix);
+    joint->setName(jointName);
     return joint;
 }
 
@@ -334,6 +352,8 @@ void Skeleton::processJointHierarchy(Qt3DCore::QNodeId jointId,
     joint->setOwningSkeleton(m_skeletonHandle);
     const JointInfo jointInfo(joint, parentJointIndex);
     skeletonData.joints.push_back(jointInfo);
+    skeletonData.localPoses.push_back(joint->localPose());
+    skeletonData.jointNames.push_back(joint->name());
 
     const int jointIndex = skeletonData.joints.size() - 1;
     const HJoint jointHandle = m_jointManager->lookupHandle(jointId);
@@ -348,6 +368,8 @@ void Skeleton::clearData()
 {
     m_name.clear();
     m_skeletonData.joints.clear();
+    m_skeletonData.localPoses.clear();
+    m_skeletonData.jointNames.clear();
     m_skeletonData.jointIndices.clear();
 }
 
@@ -358,19 +380,21 @@ void Skeleton::setLocalPose(HJoint jointHandle, const Qt3DCore::Sqt &localPose)
     // and set the local pose
     const int jointIndex = m_skeletonData.jointIndices.value(jointHandle, -1);
     Q_ASSERT(jointIndex != -1);
-    m_skeletonData.joints[jointIndex].localPose = localPose;
+    m_skeletonData.localPoses[jointIndex] = localPose;
 }
 
 QVector<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()
 {
+    const QVector<Sqt> &localPoses = m_skeletonData.localPoses;
+    QVector<JointInfo> &joints = m_skeletonData.joints;
     for (int i = 0; i < m_skeletonData.joints.size(); ++i) {
         // Calculate the global pose of this joint
-        JointInfo &joint = m_skeletonData.joints[i];
+        JointInfo &joint = joints[i];
         if (joint.parentIndex == -1) {
-            joint.globalPose = joint.localPose.toMatrix();
+            joint.globalPose = localPoses[i].toMatrix();
         } else {
-            JointInfo &parentJoint = m_skeletonData.joints[joint.parentIndex];
-            joint.globalPose = parentJoint.globalPose * joint.localPose.toMatrix();
+            JointInfo &parentJoint = joints[joint.parentIndex];
+            joint.globalPose = parentJoint.globalPose * localPoses[i].toMatrix();
         }
 
         m_skinningPalette[i] = joint.globalPose * joint.inverseBindPose;

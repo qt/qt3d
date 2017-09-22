@@ -59,6 +59,7 @@
 #include <Qt3DAnimation/private/clipanimator_p.h>
 #include <Qt3DAnimation/private/channelmapping_p.h>
 #include <Qt3DAnimation/private/channelmapper_p.h>
+#include <Qt3DAnimation/private/skeleton_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -71,8 +72,7 @@ class ClipBlendNode;
 class AnimationClipLoaderManager : public Qt3DCore::QResourceManager<
         AnimationClip,
         Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
+        16>
 {
 public:
     AnimationClipLoaderManager() {}
@@ -81,8 +81,7 @@ public:
 class ClockManager : public Qt3DCore::QResourceManager<
     Clock,
     Qt3DCore::QNodeId,
-    16,
-    Qt3DCore::ArrayAllocatingPolicy>
+    16>
 {
 public:
     ClockManager() {}
@@ -91,8 +90,7 @@ public:
 class ClipAnimatorManager : public Qt3DCore::QResourceManager<
         ClipAnimator,
         Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
+        16>
 {
 public:
     ClipAnimatorManager() {}
@@ -101,8 +99,7 @@ public:
 class BlendedClipAnimatorManager : public Qt3DCore::QResourceManager<
         BlendedClipAnimator,
         Qt3DCore::QNodeId,
-        12,
-        Qt3DCore::ArrayAllocatingPolicy>
+        12>
 {
 public:
     BlendedClipAnimatorManager() {}
@@ -111,8 +108,7 @@ public:
 class ChannelMappingManager : public Qt3DCore::QResourceManager<
         ChannelMapping,
         Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
+        16>
 {
 public:
     ChannelMappingManager() {}
@@ -121,8 +117,7 @@ public:
 class ChannelMapperManager : public Qt3DCore::QResourceManager<
         ChannelMapper,
         Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
+        16>
 {
 public:
     ChannelMapperManager() {}
@@ -143,6 +138,15 @@ private:
     QHash<Qt3DCore::QNodeId, ClipBlendNode *> m_nodes;
 };
 
+class SkeletonManager : public Qt3DCore::QResourceManager<
+        Skeleton,
+        Qt3DCore::QNodeId,
+        16>
+{
+public:
+    SkeletonManager() {}
+};
+
 } // namespace Animation
 } // namespace Qt3DAnimation
 
@@ -151,6 +155,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ClipAnimator, Q_REQUIRES_CLEAN
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::BlendedClipAnimator, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ChannelMapping, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ChannelMapper, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::Skeleton, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

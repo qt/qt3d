@@ -47,6 +47,7 @@ using namespace Qt3DRender::Render;
 
 Q_DECLARE_METATYPE(Qt3DRender::Render::JointInfo)
 Q_DECLARE_METATYPE(Qt3DRender::Render::SkeletonData)
+Q_DECLARE_METATYPE(Qt3DCore::Sqt)
 
 namespace {
 
@@ -230,54 +231,64 @@ private Q_SLOTS:
 
     void checkCreateFrontendJoint_data()
     {
-        QTest::addColumn<JointInfo>("jointInfo");
+        QTest::addColumn<QMatrix4x4>("inverseBindMatrix");
+        QTest::addColumn<Qt3DCore::Sqt>("localPose");
+        QTest::addColumn<QString>("jointName");
         QTest::addColumn<QJoint *>("expectedJoint");
 
-        QTest::newRow("default") << JointInfo() << new QJoint();
+        QMatrix4x4 m;
+        Qt3DCore::Sqt localPose;
+        QTest::newRow("default") << m << localPose << QString() << new QJoint();
 
         const QVector3D t(1.0f, 2.0f, 3.0f);
         const QQuaternion r = QQuaternion::fromAxisAndAngle(1.0f, 0.0f, 0.0f, 45.0f);
         const QVector3D s(1.5f, 2.5f, 3.5f);
-        JointInfo jointInfo;
-        jointInfo.localPose.scale = s;
-        jointInfo.localPose.rotation = r;
-        jointInfo.localPose.translation = t;
+        localPose.scale = s;
+        localPose.rotation = r;
+        localPose.translation = t;
 
+
+        QString name = QLatin1String("Foo");
         QJoint *joint = new QJoint();
         joint->setTranslation(t);
         joint->setRotation(r);
         joint->setScale(s);
-        QTest::newRow("localPose") << jointInfo << joint;
+        joint->setName(name);
+        joint->setInverseBindMatrix(m);
+        QTest::newRow("localPose") << m << localPose << name << joint;
 
-        QMatrix4x4 m;
         m.rotate(r);
         m.scale(QVector3D(1.0f, 1.0f, 1.0f) / s);
         m.translate(-t);
-        jointInfo.inverseBindPose = m;
+        name = QLatin1String("Bar");
 
         joint = new QJoint();
         joint->setTranslation(t);
         joint->setRotation(r);
         joint->setScale(s);
         joint->setInverseBindMatrix(m);
-        QTest::newRow("inverseBind") << jointInfo << joint;
+        joint->setName(name);
+        QTest::newRow("inverseBind") << m << localPose << name << joint;
     }
 
     void checkCreateFrontendJoint()
     {
         // GIVEN
         Skeleton backendSkeleton;
-        QFETCH(JointInfo, jointInfo);
+        QFETCH(QMatrix4x4, inverseBindMatrix);
+        QFETCH(Qt3DCore::Sqt, localPose);
+        QFETCH(QString, jointName);
         QFETCH(QJoint *, expectedJoint);
 
         // WHEN
-        const QJoint *actualJoint = backendSkeleton.createFrontendJoint(jointInfo);
+        const QJoint *actualJoint = backendSkeleton.createFrontendJoint(jointName, localPose, inverseBindMatrix);
 
         // THEN
         QCOMPARE(actualJoint->scale(), expectedJoint->scale());
         QCOMPARE(actualJoint->rotation(), expectedJoint->rotation());
         QCOMPARE(actualJoint->translation(), expectedJoint->translation());
         QCOMPARE(actualJoint->inverseBindMatrix(), expectedJoint->inverseBindMatrix());
+        QCOMPARE(actualJoint->name(), expectedJoint->name());
 
         // Cleanup
         delete actualJoint;
@@ -294,13 +305,20 @@ private Q_SLOTS:
         SkeletonData skeletonData;
         JointInfo rootJointInfo;
         skeletonData.joints.push_back(rootJointInfo);
+        skeletonData.jointNames.push_back(QLatin1String("rootJoint"));
+        skeletonData.localPoses.push_back(Qt3DCore::Sqt());
         const int childCount = 10;
         for (int i = 0; i < childCount; ++i) {
             JointInfo childJointInfo;
-            const float x = static_cast<float>(i);
-            childJointInfo.localPose.translation = QVector3D(x, x, x);
             childJointInfo.parentIndex = 0;
             skeletonData.joints.push_back(childJointInfo);
+
+            const float x = static_cast<float>(i);
+            Qt3DCore::Sqt localPose;
+            localPose.translation = QVector3D(x, x, x);
+            skeletonData.localPoses.push_back(localPose);
+
+            skeletonData.jointNames.push_back(QString("Child-%1").arg(i));
         }
 
         QJoint *rootJoint = new QJoint();
@@ -317,10 +335,15 @@ private Q_SLOTS:
         skeletonData.joints.push_back(rootJointInfo);
         for (int i = 0; i < childCount; ++i) {
             JointInfo childJointInfo;
-            const float x = static_cast<float>(i);
-            childJointInfo.localPose.translation = QVector3D(x, x, x);
             childJointInfo.parentIndex = i;
             skeletonData.joints.push_back(childJointInfo);
+
+            const float x = static_cast<float>(i);
+            Qt3DCore::Sqt localPose;
+            localPose.translation = QVector3D(x, x, x);
+            skeletonData.localPoses.push_back(localPose);
+
+            skeletonData.jointNames.push_back(QString("Child-%1").arg(i));
         }
 
         rootJoint = new QJoint();
@@ -357,7 +380,7 @@ private Q_SLOTS:
         QCOMPARE(joints.size(), skeletonData.joints.size());
         for (int i = 0; i < joints.size(); ++i) {
             // Check the translations match
-            QCOMPARE(joints[i]->translation(), skeletonData.joints[i].localPose.translation);
+            QCOMPARE(joints[i]->translation(), skeletonData.localPoses[i].translation);
         }
 
         // Now we know the order of Joints match. Check the parents match too

@@ -64,7 +64,6 @@ class Q_AUTOTEST_EXPORT GeometryRendererManager : public Qt3DCore::QResourceMana
         GeometryRenderer,
         Qt3DCore::QNodeId,
         16,
-        Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:

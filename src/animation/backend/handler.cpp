@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -58,6 +58,7 @@ Handler::Handler()
     , m_channelMappingManager(new ChannelMappingManager)
     , m_channelMapperManager(new ChannelMapperManager)
     , m_clipBlendNodeManager(new ClipBlendNodeManager)
+    , m_skeletonManager(new SkeletonManager)
     , m_loadAnimationClipJob(new LoadAnimationClipJob)
     , m_findRunningClipAnimatorsJob(new FindRunningClipAnimatorsJob)
     , m_buildBlendTreesJob(new BuildBlendTreesJob)
@@ -76,24 +77,28 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
 {
     switch (flag) {
     case AnimationClipDirty: {
+        QMutexLocker lock(&m_mutex);
         const auto handle = m_animationClipLoaderManager->lookupHandle(nodeId);
         m_dirtyAnimationClips.push_back(handle);
         break;
     }
 
     case ChannelMappingsDirty: {
+        QMutexLocker lock(&m_mutex);
         const auto handle = m_channelMapperManager->lookupHandle(nodeId);
         m_dirtyChannelMappers.push_back(handle);
         break;
     }
 
     case ClipAnimatorDirty: {
+        QMutexLocker lock(&m_mutex);
         const auto handle = m_clipAnimatorManager->lookupHandle(nodeId);
         m_dirtyClipAnimators.push_back(handle);
         break;
     }
 
     case BlendedClipAnimatorDirty: {
+        QMutexLocker lock(&m_mutex);
         const HBlendedClipAnimator handle = m_blendedClipAnimatorManager->lookupHandle(nodeId);
         m_dirtyBlendedAnimators.push_back(handle);
         break;
@@ -172,6 +177,8 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     m_simulationTime = time;
 
     QVector<Qt3DCore::QAspectJobPtr> jobs;
+
+    QMutexLocker lock(&m_mutex);
 
     // If there are any dirty animation clips that need loading,
     // queue up a job for them

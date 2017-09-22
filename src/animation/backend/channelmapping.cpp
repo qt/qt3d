@@ -37,7 +37,9 @@
 #include "channelmapping_p.h"
 #include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/private/qchannelmapping_p.h>
+#include <Qt3DAnimation/private/qskeletonmapping_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
+#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -54,20 +56,42 @@ ChannelMapping::ChannelMapping()
     , m_propertyName(nullptr)
     , m_callback(nullptr)
     , m_callbackFlags(0)
+    , m_skeletonId()
 {
 }
 
 void ChannelMapping::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QChannelMappingData>>(change);
-    const auto &data = typedChange->data;
-    m_channelName = data.channelName;
-    m_targetId = data.targetId;
-    m_property = data.property;
-    m_type = data.type;
-    m_propertyName = data.propertyName;
-    m_callback = data.callback;
-    m_callbackFlags = data.callbackFlags;
+    const auto createdChange = qSharedPointerCast<QChannelMappingCreatedChangeBase>(change);
+    switch (createdChange->type()) {
+    case QChannelMappingCreatedChangeBase::ChannelMapping: {
+        const auto typedChange = qSharedPointerCast<QChannelMappingCreatedChange<QChannelMappingData>>(change);
+        const auto &data = typedChange->data;
+        m_channelName = data.channelName;
+        m_targetId = data.targetId;
+        m_property = data.property;
+        m_type = data.type;
+        m_propertyName = data.propertyName;
+        m_callback = data.callback;
+        m_callbackFlags = data.callbackFlags;
+        m_mappingType = ChannelMappingType;
+        break;
+    }
+
+    case QChannelMappingCreatedChangeBase::SkeletonMapping: {
+        const auto typedChange = qSharedPointerCast<QChannelMappingCreatedChange<QSkeletonMappingData>>(change);
+        const auto &data = typedChange->data;
+        m_skeletonId = data.skeletonId;
+        m_mappingType = SkeletonMappingType;
+        break;
+    }
+
+    case QChannelMappingCreatedChangeBase::CallbackMapping: {
+        // TODO: Refactor callback support out of QChannelMapping and into its own type
+        m_mappingType = CallbackMappingType;
+        break;
+    }
+    }
 }
 
 void ChannelMapping::cleanup()
@@ -80,6 +104,7 @@ void ChannelMapping::cleanup()
     m_propertyName = nullptr;
     m_callback = nullptr;
     m_callbackFlags = 0;
+    m_skeletonId = Qt3DCore::QNodeId();
 }
 
 void ChannelMapping::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -101,6 +126,8 @@ void ChannelMapping::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_callback = static_cast<QAnimationCallback *>(change->value().value<void *>());
         else if (change->propertyName() == QByteArrayLiteral("callbackFlags"))
             m_callbackFlags = QAnimationCallback::Flags(change->value().toInt());
+        else if (change->propertyName() == QByteArrayLiteral("skeleton"))
+            m_skeletonId = change->value().value<Qt3DCore::QNodeId>();
         break;
     }
 

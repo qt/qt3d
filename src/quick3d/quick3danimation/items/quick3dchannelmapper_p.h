@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
-#include <Qt3DAnimation/qchannelmapping.h>
+#include <Qt3DAnimation/qabstractchannelmapping.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <QQmlListProperty>
 
@@ -65,20 +65,20 @@ namespace Quick {
 class QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT Quick3DChannelMapper  : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DAnimation::QChannelMapping> mappings READ qmlMappings CONSTANT)
+    Q_PROPERTY(QQmlListProperty<Qt3DAnimation::QAbstractChannelMapping> mappings READ qmlMappings CONSTANT)
     Q_CLASSINFO("DefaultProperty", "mappings")
 
 public:
     explicit Quick3DChannelMapper(QObject *parent = nullptr);
 
     inline QChannelMapper *parentMapper() const { return qobject_cast<QChannelMapper *>(parent()); }
-    QQmlListProperty<QChannelMapping> qmlMappings();
+    QQmlListProperty<QAbstractChannelMapping> qmlMappings();
 
 private:
-    static void appendMapping(QQmlListProperty<QChannelMapping> *list, QChannelMapping *mapping);
-    static QChannelMapping *mappingAt(QQmlListProperty<QChannelMapping> *list, int index);
-    static int mappingCount(QQmlListProperty<QChannelMapping> *list);
-    static void clearMappings(QQmlListProperty<QChannelMapping> *list);
+    static void appendMapping(QQmlListProperty<QAbstractChannelMapping> *list, QAbstractChannelMapping *mapping);
+    static QAbstractChannelMapping *mappingAt(QQmlListProperty<QAbstractChannelMapping> *list, int index);
+    static int mappingCount(QQmlListProperty<QAbstractChannelMapping> *list);
+    static void clearMappings(QQmlListProperty<QAbstractChannelMapping> *list);
 };
 
 } // namespace Quick

@@ -188,8 +188,8 @@ private Q_SLOTS:
     void checkCreationData()
     {
         // GIVEN
-        Qt3DRender::QRenderSurfaceSelector renderSurfaceSelector;
         QWindow newValue;
+        Qt3DRender::QRenderSurfaceSelector renderSurfaceSelector;
 
         renderSurfaceSelector.setSurface(&newValue);
         renderSurfaceSelector.setExternalRenderTargetSize(QSize(128, 128));
@@ -250,10 +250,10 @@ private Q_SLOTS:
     void checkSurfaceUpdate()
     {
         // GIVEN
+        QWindow newWindow;
         TestArbiter arbiter;
         Qt3DRender::QRenderSurfaceSelector renderSurfaceSelector;
         arbiter.setArbiterOnNode(&renderSurfaceSelector);
-        QWindow newWindow;
 
         {
             // WHEN

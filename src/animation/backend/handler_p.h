@@ -53,6 +53,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qscopedpointer.h>
+#include <QtCore/qmutex.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,6 +76,7 @@ class ChannelMappingManager;
 class ChannelMapper;
 class ChannelMapperManager;
 class ClipBlendNodeManager;
+class SkeletonManager;
 
 class FindRunningClipAnimatorsJob;
 class LoadAnimationClipJob;
@@ -115,6 +117,7 @@ public:
     ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
     ChannelMapperManager *channelMapperManager() const Q_DECL_NOTHROW { return m_channelMapperManager.data(); }
     ClipBlendNodeManager *clipBlendNodeManager() const Q_DECL_NOTHROW { return m_clipBlendNodeManager.data(); }
+    SkeletonManager *skeletonManager() const Q_DECL_NOTHROW { return m_skeletonManager.data(); }
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
@@ -122,6 +125,7 @@ public:
     void cleanupHandleList(QVector<HBlendedClipAnimator> *animators);
 
 private:
+    QMutex m_mutex;
     QScopedPointer<AnimationClipLoaderManager> m_animationClipLoaderManager;
     QScopedPointer<ClockManager> m_clockManager;
     QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
@@ -129,6 +133,7 @@ private:
     QScopedPointer<ChannelMappingManager> m_channelMappingManager;
     QScopedPointer<ChannelMapperManager> m_channelMapperManager;
     QScopedPointer<ClipBlendNodeManager> m_clipBlendNodeManager;
+    QScopedPointer<SkeletonManager> m_skeletonManager;
 
     QVector<HAnimationClip> m_dirtyAnimationClips;
     QVector<HChannelMapper> m_dirtyChannelMappers;
