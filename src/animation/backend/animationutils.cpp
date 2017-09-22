@@ -497,7 +497,7 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
 
     // Reserve enough storage for all the format indices
     int indexCount = 0;
-    for (const auto targetIndexVec : qAsConst(targetIndices))
+    for (const auto &targetIndexVec : qAsConst(targetIndices))
         indexCount += targetIndexVec.size();
     ComponentIndices format;
     format.resize(indexCount);
