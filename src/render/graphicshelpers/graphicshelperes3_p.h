@@ -87,7 +87,7 @@ public:
     UniformType uniformTypeFromGLType(GLenum glType) override;
 
 protected:
-    QOpenGLExtraFunctions *m_extraFuncs = Q_NULLPTR;
+    QOpenGLExtraFunctions *m_extraFuncs = nullptr;
 };
 
 } // namespace Render

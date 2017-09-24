@@ -233,7 +233,7 @@ QTextureImageDataPtr QPaintedTextureImageDataGenerator::operator ()()
 bool QPaintedTextureImageDataGenerator::operator ==(const QTextureImageDataGenerator &other) const
 {
     const QPaintedTextureImageDataGenerator *otherFunctor = functor_cast<QPaintedTextureImageDataGenerator>(&other);
-    return (otherFunctor != Q_NULLPTR && otherFunctor->m_generation == m_generation && otherFunctor->m_paintedTextureImageId == m_paintedTextureImageId);
+    return (otherFunctor != nullptr && otherFunctor->m_generation == m_generation && otherFunctor->m_paintedTextureImageId == m_paintedTextureImageId);
 }
 
 } // namespace Qt3DRender

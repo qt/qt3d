@@ -87,7 +87,7 @@ QClearBuffersPrivate::QClearBuffersPrivate()
     , m_buffersType(QClearBuffers::None)
     , m_clearDepthValue(1.f)
     , m_clearStencilValue(0)
-    , m_buffer(Q_NULLPTR)
+    , m_buffer(nullptr)
 {
 }
 

@@ -196,7 +196,7 @@ void QInputAspectPrivate::loadInputDevicePlugins()
 
 /*!
     Create a physical device identified by \a name using the input device integrations present
-    returns a Q_NULLPTR if it is not found.
+    returns a nullptr if it is not found.
     \note caller is responsible for ownership
 */
 // Note: caller is responsible for ownership

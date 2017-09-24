@@ -110,7 +110,7 @@ QInputAspect *QInputDeviceIntegration::inputAspect() const
 
   Create the Physical device identified by \a name.
 
-  If not recognized return Q_NULLPTR
+  If not recognized return nullptr
 */
 
 /*!
