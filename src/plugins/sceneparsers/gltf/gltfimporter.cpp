@@ -268,11 +268,23 @@ GLTFImporter::~GLTFImporter()
 
 }
 
+/*!
+    \class Qt3DRender::GLTFImporter
+    \inmodule Qt3DRender
+    \brief Handles importing of gltf files
+*/
+/*!
+    Set the base \a path for importing scenes.
+*/
 void GLTFImporter::setBasePath(const QString& path)
 {
     m_basePath = path;
 }
 
+/*!
+    Set a \a json document as the file used for importing a scene.
+    Returns true if the operation is successful.
+*/
 bool GLTFImporter::setJSON(const QJsonDocument &json )
 {
     if ( !json.isObject() ) {
@@ -286,7 +298,8 @@ bool GLTFImporter::setJSON(const QJsonDocument &json )
 }
 
 /*!
- * Sets the \a path used by the parser to load the scene file.
+ * Sets the path based on parameter \a source. The path is
+ * used by the parser to load the scene file.
  * If the file is valid, parsing is automatically triggered.
  */
 void GLTFImporter::setSource(const QUrl &source)
@@ -314,8 +327,9 @@ void GLTFImporter::setSource(const QUrl &source)
 }
 
 /*!
- * Sets the \a path used by the parser to load the scene file.
- * If the file is valid, parsing is automatically triggered.
+ * Sets the \a basePath used by the parser to load the scene file.
+ * If the file derived from \a data is valid, parsing is automatically
+ * triggered.
  */
 void GLTFImporter::setData(const QByteArray& data, const QString &basePath)
 {
@@ -332,7 +346,7 @@ void GLTFImporter::setData(const QByteArray& data, const QString &basePath)
 }
 
 /*!
- * Returns true if the extensions are supported by the
+ * Returns true if the \a extensions are supported by the
  * GLTF parser.
  */
 bool GLTFImporter::areFileTypesSupported(const QStringList &extensions) const
@@ -340,6 +354,9 @@ bool GLTFImporter::areFileTypesSupported(const QStringList &extensions) const
     return GLTFImporter::isGLTFSupported(extensions);
 }
 
+/*!
+    Imports the node specified in \a id from the GLTF file.
+*/
 Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
 {
     QJsonObject nodes = m_json.object().value(KEY_NODES).toObject();
@@ -507,6 +524,9 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
     return result;
 }
 
+/*!
+    Imports the scene specified in parameter \a id.
+*/
 Qt3DCore::QEntity* GLTFImporter::scene(const QString &id)
 {
     parse();
@@ -1656,6 +1676,9 @@ void GLTFImporter::processJSONRenderPass(const QString &id, const QJsonObject &j
     m_renderPasses[id] = pass;
 }
 
+/*!
+    Loads raw data from the GLTF file into the buffer.
+*/
 void GLTFImporter::loadBufferData()
 {
     for (auto &bufferData : m_bufferDatas) {
@@ -1665,6 +1688,9 @@ void GLTFImporter::loadBufferData()
     }
 }
 
+/*!
+    Removes all data from the buffer.
+*/
 void GLTFImporter::unloadBufferData()
 {
     for (const auto &bufferData : qAsConst(m_bufferDatas)) {

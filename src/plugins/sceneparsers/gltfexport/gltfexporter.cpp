@@ -266,6 +266,13 @@ GLTFExporter::~GLTFExporter()
 {
 }
 
+/*!
+    \class Qt3DRender::GLTFExporter
+    \inmodule Qt3DRender
+    \brief Manages the export of a 3D scene to the GLTF format.
+
+    Handles the export of a 3D scene to the GLTF format.
+*/
 // sceneRoot  : The root entity that contains the exported scene. If the sceneRoot doesn't have
 //              any exportable components, it is not exported itself. This is because importing a
 //              scene creates an empty top level entity to hold the scene.
@@ -278,6 +285,23 @@ GLTFExporter::~GLTFExporter()
 // "binaryJson"  (bool): Generates a binary JSON file, which is more efficient to parse.
 // "compactJson" (bool): Removes unnecessary whitespace from the generated JSON file.
 //                       Ignored if "binaryJson" option is true.
+
+/*!
+    Exports the scene to the GLTF format
+
+    \a sceneRoot is the root entity that will be exported.
+    If the sceneRoot does not have any exportable components, it is not exported itself.
+
+    \a outDir is the directory in which the scene export is created.
+
+    \a exportName is the name of the directory created in \c outDir that will hold
+       the exported scene.
+
+    \a options contain the export options.
+
+    Returns true if the export was carried out successfully.
+*/
+
 bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
                                const QString &exportName, const QVariantHash &options)
 {
