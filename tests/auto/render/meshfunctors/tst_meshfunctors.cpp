@@ -27,8 +27,11 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/private/qmesh_p.h>
 
 class MeshFunctorA : public Qt3DRender::QGeometryFactory
 {
@@ -116,6 +119,31 @@ private Q_SLOTS:
         QVERIFY(*functorA == *functorA);
         QVERIFY(*functorB == *functorB);
         QVERIFY(*functorASub == *functorASub);
+    }
+
+    void checkMeshFunctorEquality()
+    {
+        // GIVEN
+        const Qt3DRender::MeshFunctor functorA(QUrl::fromLocalFile(QLatin1String("/foo")),
+                                               QLatin1String("bar"));
+        const Qt3DRender::MeshFunctor functorB(QUrl::fromLocalFile(QLatin1String("/foo")),
+                                               QLatin1String("baz"));
+        const Qt3DRender::MeshFunctor functorC(QUrl::fromLocalFile(QLatin1String("/baz")),
+                                               QLatin1String("bar"));
+        const Qt3DRender::MeshFunctor functorD(QUrl::fromLocalFile(QLatin1String("/foo")),
+                                               QLatin1String("bar"));
+
+        // WHEN
+        const bool selfEquality = (functorA == functorA);
+        const bool sameSource = (functorA == functorB);
+        const bool sameMeshName = (functorA == functorC);
+        const bool perfectMatch = (functorA == functorD);
+
+        // THEN
+        QCOMPARE(selfEquality, true);
+        QCOMPARE(sameSource, false);
+        QCOMPARE(sameMeshName, false);
+        QCOMPARE(perfectMatch, true);
     }
 };
 

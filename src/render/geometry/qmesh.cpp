@@ -261,8 +261,10 @@ QGeometry *MeshFunctor::operator()()
 bool MeshFunctor::operator ==(const QGeometryFactory &other) const
 {
     const MeshFunctor *otherFunctor = functor_cast<MeshFunctor>(&other);
-    if (otherFunctor != nullptr)
-        return (otherFunctor->m_sourcePath == m_sourcePath);
+    if (otherFunctor != nullptr) {
+        return (otherFunctor->m_sourcePath == m_sourcePath
+                && otherFunctor->m_meshName == m_meshName);
+    }
     return false;
 }
 
