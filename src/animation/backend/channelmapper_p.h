@@ -74,10 +74,22 @@ public:
     void setMappingIds(const QVector<Qt3DCore::QNodeId> &mappingIds) { m_mappingIds = mappingIds; }
     QVector<Qt3DCore::QNodeId> mappingIds() const { return m_mappingIds; }
 
+    QVector<ChannelMapping*> mappings() const
+    {
+        if (m_isDirty)
+            updateMappings();
+        return m_mappings;
+    }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void updateMappings() const;
 
     QVector<Qt3DCore::QNodeId> m_mappingIds;
+
+    // Cached data
+    mutable QVector<ChannelMapping*> m_mappings;
+    mutable bool m_isDirty;
 };
 
 } // namespace Animation
