@@ -241,77 +241,6 @@ public:
 private Q_SLOTS:
     void checkBuildPropertyMappings_data()
     {
-        QTest::addColumn<Handler *>("handler");
-        QTest::addColumn<QVector<ChannelMapping *>>("channelMappings");
-        QTest::addColumn<ChannelMapper *>("channelMapper");
-        QTest::addColumn<AnimationClip *>("clip");
-        QTest::addColumn<QVector<MappingData>>("expectedMappingData");
-
-        auto handler = new Handler;
-        auto channelMapping = createChannelMapping(handler,
-                                                   QLatin1String("Location"),
-                                                   Qt3DCore::QNodeId::createId(),
-                                                   QLatin1String("translation"),
-                                                   "translation",
-                                                   static_cast<int>(QVariant::Vector3D));
-        QVector<ChannelMapping *> channelMappings;
-        channelMappings.push_back(channelMapping);
-
-        // ... a channel mapper...
-        auto channelMapper = createChannelMapper(handler, QVector<Qt3DCore::QNodeId>() << channelMapping->peerId());
-
-        // ...and an animation clip
-        auto clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
-
-        QVector<MappingData> mappingData;
-        MappingData mapping;
-        mapping.targetId = channelMapping->targetId();
-        mapping.propertyName = channelMapping->propertyName(); // Location
-        mapping.type = channelMapping->type();
-        mapping.channelIndices = QVector<int>() << 0 << 1 << 2; // Location X, Y, Z
-        mappingData.push_back(mapping);
-
-        QTest::newRow("clip1.json") << handler
-                                    << channelMappings
-                                    << channelMapper
-                                    << clip
-                                    << mappingData;
-    }
-
-    void checkBuildPropertyMappings()
-    {
-        // GIVEN
-        QFETCH(Handler *, handler);
-        QFETCH(QVector<ChannelMapping *>, channelMappings);
-        QFETCH(ChannelMapper *, channelMapper);
-        QFETCH(AnimationClip *, clip);
-        QFETCH(QVector<MappingData>, expectedMappingData);
-
-        // WHEN
-        // Build the mapping data for the above configuration
-        QVector<MappingData> mappingData = buildPropertyMappings(handler, clip, channelMapper);
-
-        // THEN
-        QCOMPARE(mappingData.size(), expectedMappingData.size());
-        for (int i = 0; i < mappingData.size(); ++i) {
-            const auto mapping = mappingData[i];
-            const auto expectedMapping = expectedMappingData[i];
-
-            QCOMPARE(mapping.targetId, expectedMapping.targetId);
-            QCOMPARE(mapping.propertyName, expectedMapping.propertyName);
-            QCOMPARE(mapping.type, expectedMapping.type);
-            QCOMPARE(mapping.channelIndices.size(), expectedMapping.channelIndices.size());
-            for (int j = 0; j < mapping.channelIndices.size(); ++j) {
-                QCOMPARE(mapping.channelIndices[j], expectedMapping.channelIndices[j]);
-            }
-        }
-
-        // Cleanup
-        delete handler;
-    }
-
-    void checkBuildPropertyMappings2_data()
-    {
         QTest::addColumn<QVector<ChannelMapping *>>("channelMappings");
         QTest::addColumn<QVector<ChannelNameAndType>>("channelNamesAndTypes");
         QTest::addColumn<QVector<ComponentIndices>>("channelComponentIndices");
@@ -477,7 +406,7 @@ private Q_SLOTS:
         }
     }
 
-    void checkBuildPropertyMappings2()
+    void checkBuildPropertyMappings()
     {
         // GIVEN
         QFETCH(QVector<ChannelMapping *>, channelMappings);

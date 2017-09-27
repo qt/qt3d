@@ -308,62 +308,6 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
     return changes;
 }
 
-//TODO: Remove this and use new implementation below for both the unblended
-//      and blended animation cases.
-QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                           const AnimationClip *clip,
-                                           const ChannelMapper *mapper)
-{
-    QVector<MappingData> mappingDataVec;
-    ChannelMappingManager *mappingManager = handler->channelMappingManager();
-    const QVector<Channel> &channels = clip->channels();
-
-    // Iterate over the mappings in the mapper object
-    const auto mappingIds = mapper->mappingIds();
-    for (const Qt3DCore::QNodeId mappingId : mappingIds) {
-        // Get the mapping object
-        ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
-        Q_ASSERT(mapping);
-
-        // Populate the data we need, easy stuff first
-        MappingData mappingData;
-        mappingData.targetId = mapping->targetId();
-        mappingData.propertyName = mapping->propertyName();
-        mappingData.type = mapping->type();
-
-        if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
-            qWarning() << "Unknown type for node id =" << mappingData.targetId
-                       << "and property =" << mapping->property();
-            continue;
-        }
-
-        // Now the tricky part. Mapping the channel indices onto the property type.
-        // Try to find a ChannelGroup with matching name
-        const QString channelName = mapping->channelName();
-        int channelGroupIndex = 0;
-        bool foundMatch = false;
-        for (const Channel &channel : channels) {
-            if (channel.name == channelName) {
-                foundMatch = true;
-                const int channelBaseIndex = clip->channelComponentBaseIndex(channelGroupIndex);
-
-                // Within this group, match channel names with index ordering
-                mappingData.channelIndices = channelComponentsToIndices(channel, mappingData.type, channelBaseIndex);
-
-                // Store the mapping data
-                mappingDataVec.push_back(mappingData);
-
-                if (foundMatch)
-                    break;
-            }
-
-            ++channelGroupIndex;
-        }
-    }
-
-    return mappingDataVec;
-}
-
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
                                            const QVector<ComponentIndices> &channelComponentIndices)

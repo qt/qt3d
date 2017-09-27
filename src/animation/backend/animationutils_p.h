@@ -157,11 +157,6 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
                                                           bool finalFrame);
 
 Q_AUTOTEST_EXPORT
-QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                           const AnimationClip *clip,
-                                           const ChannelMapper *mapper);
-
-Q_AUTOTEST_EXPORT
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
                                            const QVector<ComponentIndices> &channelComponentIndices);
