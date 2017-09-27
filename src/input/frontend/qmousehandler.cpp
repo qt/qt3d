@@ -60,7 +60,7 @@ QMouseHandlerPrivate::QMouseHandlerPrivate()
     m_shareable = false;
     m_pressAndHoldTimer->setSingleShot(true);
     m_pressAndHoldTimer->setInterval(500);
-    QObject::connect(m_pressAndHoldTimer.data(), &QTimer::timeout, [this] {
+    QObject::connect(m_pressAndHoldTimer, &QTimer::timeout, [this] {
         emit q_func()->pressAndHold(m_lastPressedEvent.data());
     });
 }
