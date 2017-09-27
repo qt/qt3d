@@ -40,6 +40,7 @@
 #include "qblendedclipanimator_p.h"
 #include <Qt3DAnimation/qabstractclipblendnode.h>
 #include <Qt3DAnimation/qchannelmapper.h>
+#include <Qt3DAnimation/qclock.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -312,6 +313,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBlendedClipAnimator::createNodeCreationChan
     Q_D(const QBlendedClipAnimator);
     data.blendTreeRootId = Qt3DCore::qIdForNode(d->m_blendTreeRoot);
     data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
+    data.clockId = Qt3DCore::qIdForNode(d->m_clock);
     data.running = d->m_running;
     data.loops = d->m_loops;
     return creationChange;
