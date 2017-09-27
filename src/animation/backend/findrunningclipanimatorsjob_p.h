@@ -52,6 +52,10 @@
 #include <Qt3DAnimation/private/handle_types_p.h>
 #include <QtCore/qvector.h>
 
+#if defined(QT_BUILD_INTERNAL)
+class tst_FindRunningClipAnimatorsJob;
+#endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
@@ -59,7 +63,7 @@ namespace Animation {
 
 class Handler;
 
-class FindRunningClipAnimatorsJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT FindRunningClipAnimatorsJob : public Qt3DCore::QAspectJob
 {
 public:
     FindRunningClipAnimatorsJob();
@@ -75,6 +79,10 @@ protected:
 private:
     QVector<HClipAnimator> m_clipAnimatorHandles;
     Handler *m_handler;
+
+#if defined(QT_BUILD_INTERNAL)
+    friend class ::tst_FindRunningClipAnimatorsJob;
+#endif
 };
 
 } // namespace Animation
