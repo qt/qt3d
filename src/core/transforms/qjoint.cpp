@@ -240,7 +240,18 @@ void QJoint::setRotation(const QQuaternion &rotation)
         return;
 
     d->m_rotation = rotation;
+    const QVector3D oldRotation = d->m_eulerRotationAngles;
+    d->m_eulerRotationAngles = d->m_rotation.toEulerAngles();
     emit rotationChanged(rotation);
+
+    const bool wasBlocked = blockNotifications(true);
+    if (!qFuzzyCompare(d->m_eulerRotationAngles.x(), oldRotation.x()))
+        emit rotationXChanged(d->m_eulerRotationAngles.x());
+    if (!qFuzzyCompare(d->m_eulerRotationAngles.y(), oldRotation.y()))
+        emit rotationYChanged(d->m_eulerRotationAngles.y());
+    if (!qFuzzyCompare(d->m_eulerRotationAngles.z(), oldRotation.z()))
+        emit rotationZChanged(d->m_eulerRotationAngles.z());
+    blockNotifications(wasBlocked);
 }
 
 void QJoint::setTranslation(const QVector3D &translation)
@@ -267,47 +278,41 @@ void QJoint::setRotationX(float rotationX)
 {
     Q_D(QJoint);
 
-    if (d->m_eulerRotationAngles.x() == rotationX)
+    if (qFuzzyCompare(d->m_eulerRotationAngles.x(), rotationX))
         return;
 
-    d->m_eulerRotationAngles.setX(rotationX);
-    const QQuaternion r = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    const auto eulers = QVector3D(rotationX,
+                                  d->m_eulerRotationAngles.y(),
+                                  d->m_eulerRotationAngles.z());
+    const QQuaternion r = QQuaternion::fromEulerAngles(eulers);
     setRotation(r);
-
-    const bool wasBlocked = blockNotifications(true);
-    emit rotationXChanged(rotationX);
-    blockNotifications(wasBlocked);
 }
 
 void QJoint::setRotationY(float rotationY)
 {
     Q_D(QJoint);
 
-    if (d->m_eulerRotationAngles.y() == rotationY)
+    if (qFuzzyCompare(d->m_eulerRotationAngles.y(), rotationY))
         return;
 
-    d->m_eulerRotationAngles.setY(rotationY);
-    const QQuaternion r = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    const auto eulers = QVector3D(d->m_eulerRotationAngles.x(),
+                                  rotationY,
+                                  d->m_eulerRotationAngles.z());
+    const QQuaternion r = QQuaternion::fromEulerAngles(eulers);
     setRotation(r);
-
-    const bool wasBlocked = blockNotifications(true);
-    emit rotationYChanged(rotationY);
-    blockNotifications(wasBlocked);
 }
 
 void QJoint::setRotationZ(float rotationZ)
 {
     Q_D(QJoint);
-    if (d->m_eulerRotationAngles.z() == rotationZ)
+    if (qFuzzyCompare(d->m_eulerRotationAngles.z(), rotationZ))
         return;
 
-    d->m_eulerRotationAngles.setZ(rotationZ);
-    const QQuaternion r = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    const auto eulers = QVector3D(d->m_eulerRotationAngles.x(),
+                                  d->m_eulerRotationAngles.y(),
+                                  rotationZ);
+    const QQuaternion r = QQuaternion::fromEulerAngles(eulers);
     setRotation(r);
-
-    const bool wasBlocked = blockNotifications(true);
-    emit rotationZChanged(rotationZ);
-    blockNotifications(wasBlocked);
 }
 
 void QJoint::setName(const QString &name)
@@ -318,6 +323,13 @@ void QJoint::setName(const QString &name)
 
     d->m_name = name;
     emit nameChanged(name);
+}
+
+void QJoint::setToIdentity()
+{
+    setScale(QVector3D(1.0f, 1.0f, 1.0f));
+    setRotation(QQuaternion());
+    setTranslation(QVector3D());
 }
 
 /*!

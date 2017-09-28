@@ -65,6 +65,7 @@ private Q_SLOTS:
 
         {
             // WHEN
+            joint.setToIdentity();
             QSignalSpy spy(&joint, SIGNAL(scaleChanged(QVector3D)));
             const QVector3D newValue(2.5f, 2.0f, 1.3f);
             joint.setScale(newValue);
@@ -85,6 +86,7 @@ private Q_SLOTS:
 
         {
             // WHEN
+            joint.setToIdentity();
             QSignalSpy spy(&joint, SIGNAL(rotationChanged(QQuaternion)));
             const auto newValue = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 45.0f);
             joint.setRotation(newValue);
@@ -105,6 +107,7 @@ private Q_SLOTS:
 
         {
             // WHEN
+            joint.setToIdentity();
             QSignalSpy spy(&joint, SIGNAL(translationChanged(QVector3D)));
             const QVector3D newValue(1.0f, 2.0f, 3.0f);
             joint.setTranslation(newValue);
@@ -125,6 +128,7 @@ private Q_SLOTS:
 
         {
             // WHEN
+            joint.setToIdentity();
             QSignalSpy spy(&joint, SIGNAL(inverseBindMatrixChanged(QMatrix4x4)));
             QMatrix4x4 newValue;
             newValue.scale(3.5f);
@@ -146,6 +150,7 @@ private Q_SLOTS:
 
         {
             // WHEN
+            joint.setToIdentity();
             QSignalSpy spy(&joint, SIGNAL(rotationChanged(QQuaternion)));
             QSignalSpy spyEuler(&joint, SIGNAL(rotationXChanged(float)));
             const auto newValue = 45.0f;
@@ -176,6 +181,7 @@ private Q_SLOTS:
 
         {
             // WHEN
+            joint.setToIdentity();
             QSignalSpy spy(&joint, SIGNAL(rotationChanged(QQuaternion)));
             QSignalSpy spyEuler(&joint, SIGNAL(rotationYChanged(float)));
             const auto newValue = 45.0f;
@@ -206,6 +212,7 @@ private Q_SLOTS:
 
         {
             // WHEN
+            joint.setToIdentity();
             QSignalSpy spy(&joint, SIGNAL(rotationChanged(QQuaternion)));
             QSignalSpy spyEuler(&joint, SIGNAL(rotationZChanged(float)));
             const auto newValue = 45.0f;
