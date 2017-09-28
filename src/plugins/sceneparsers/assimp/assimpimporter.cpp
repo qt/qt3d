@@ -403,8 +403,8 @@ void AssimpImporter::setSource(const QUrl &source)
 }
 
 /*!
- * Sets the \a source used by the parser to load the asset file.
- * If the file is valid, this will trigger parsing of the file.
+ * Sets the \a basePath used by the parser to load the asset file.
+ * If the file specified in \a data is valid, this will trigger parsing of the file.
  */
 void AssimpImporter::setData(const QByteArray &data, const QString &basePath)
 {
@@ -412,7 +412,7 @@ void AssimpImporter::setData(const QByteArray &data, const QString &basePath)
 }
 
 /*!
- * Returns \c true if the extension of \a source is supported by
+ * Returns \c true if the extension in QStringList \a extensions is supported by
  * the assimp parser.
  */
 bool AssimpImporter::areFileTypesSupported(const QStringList &extensions) const
