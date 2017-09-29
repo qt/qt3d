@@ -41,6 +41,7 @@
 #include <Qt3DAnimation/private/qanimationcliploader_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/gltfimporter_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
@@ -209,28 +210,43 @@ void AnimationClip::loadAnimationFromUrl()
         return;
     }
 
-    QByteArray animationData = file.readAll();
-    QJsonDocument document = QJsonDocument::fromJson(animationData);
-    QJsonObject rootObject = document.object();
+    // TODO: Convert to plugins
+    // Load glTF or "native"
+    if (filePath.endsWith(QLatin1String("gltf"))) {
+        qCDebug(Jobs) << "Loading glTF animation from" << filePath;
+        GLTFImporter gltf;
+        gltf.load(&file);
+        // TODO: Allow loading of a named animation from a file containing many
+        m_name = gltf.animations().first().name;
+        m_channels = gltf.createAnimationData();
+    } else if (filePath.endsWith(QLatin1String("json"))) {
+        // Native format
+        QByteArray animationData = file.readAll();
+        QJsonDocument document = QJsonDocument::fromJson(animationData);
+        QJsonObject rootObject = document.object();
 
-    // TODO: Allow loading of a named animation from a file containing many
-    QJsonArray animationsArray = rootObject[QLatin1String("animations")].toArray();
-    qCDebug(Jobs) << "Found" << animationsArray.size() << "animations:";
-    for (int i = 0; i < animationsArray.size(); ++i) {
-        QJsonObject animation = animationsArray.at(i).toObject();
-        qCDebug(Jobs) << "Animation Name:" << animation[QLatin1String("animationName")].toString();
-    }
+        // TODO: Allow loading of a named animation from a file containing many
+        QJsonArray animationsArray = rootObject[QLatin1String("animations")].toArray();
+        qCDebug(Jobs) << "Found" << animationsArray.size() << "animations:";
+        for (int i = 0; i < animationsArray.size(); ++i) {
+            QJsonObject animation = animationsArray.at(i).toObject();
+            qCDebug(Jobs) << "Animation Name:" << animation[QLatin1String("animationName")].toString();
+        }
 
-    // For now just load the first animation
-    // TODO: Allow loading a named animation from within the file analogous to QMesh
-    QJsonObject animation = animationsArray.at(0).toObject();
-    m_name = animation[QLatin1String("animationName")].toString();
-    QJsonArray channelsArray = animation[QLatin1String("channels")].toArray();
-    const int channelCount = channelsArray.size();
-    m_channels.resize(channelCount);
-    for (int i = 0; i < channelCount; ++i) {
-        const QJsonObject group = channelsArray.at(i).toObject();
-        m_channels[i].read(group);
+        // For now just load the first animation
+        // TODO: Allow loading a named animation from within the file analogous to QMesh
+        QJsonObject animation = animationsArray.at(0).toObject();
+        m_name = animation[QLatin1String("animationName")].toString();
+        QJsonArray channelsArray = animation[QLatin1String("channels")].toArray();
+        const int channelCount = channelsArray.size();
+        m_channels.resize(channelCount);
+        for (int i = 0; i < channelCount; ++i) {
+            const QJsonObject group = channelsArray.at(i).toObject();
+            m_channels[i].read(group);
+        }
+    } else {
+        qWarning() << "Unknown animation clip type. Please use json or glTF 2.0";
+        setStatus(QAnimationClipLoader::Error);
     }
 }
 
