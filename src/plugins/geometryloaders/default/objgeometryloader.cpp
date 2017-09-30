@@ -144,7 +144,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
                         ++normalsOffset;
                     }
                 }
-            } else if (!skipping && qstrncmp(tokens.charPtrAt(0), "f ", 2) == 0) {
+            } else if (!skipping && tokens.size() >= 4 && qstrncmp(tokens.charPtrAt(0), "f ", 2) == 0) {
                 // Process face
                 ++faceCount;
 

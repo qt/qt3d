@@ -62,24 +62,39 @@ void FindRunningClipAnimatorsJob::run()
     Q_ASSERT(m_handler);
 
     ClipAnimatorManager *clipAnimatorManager = m_handler->clipAnimatorManager();
-    for (const auto clipAnimatorHandle : qAsConst(m_clipAnimatorHandles)) {
+    for (const auto &clipAnimatorHandle : qAsConst(m_clipAnimatorHandles)) {
         ClipAnimator *clipAnimator = clipAnimatorManager->data(clipAnimatorHandle);
         Q_ASSERT(clipAnimator);
         const bool canRun = clipAnimator->canRun();
         m_handler->setClipAnimatorRunning(clipAnimatorHandle, canRun);
 
-        // The clip animator needs to know how to map fcurve values through to
-        // properties on QNodes. Now we know this animator can run, build the mapping
-        // table.
-        // TODO: Should be possible to parallelise this with the fcurve evaluation as
-        //       sending the property change events doesn't happen until after evaluation
-        if (canRun) {
-            const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
-            const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(clipAnimator->mapperId());
-            Q_ASSERT(clip && mapper);
-            const QVector<MappingData> mappingData = buildPropertyMappings(m_handler, clip, mapper);
-            clipAnimator->setMappingData(mappingData);
-        }
+        if (!canRun)
+            continue;
+
+        // The clip animator needs to know how to map fcurve values through to properties on QNodes.
+        // Now we know this animator can run, build the mapping table. Even though this could be
+        // done a little simpler in the non-blended case, we follow the same code path as the
+        // blended clip animator for consistency and ease of maintenance.
+        const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(clipAnimator->mapperId());
+        Q_ASSERT(mapper);
+        const QVector<ChannelMapping *> channelMappings = mapper->mappings();
+
+        const QVector<ChannelNameAndType> channelNamesAndTypes
+                = buildRequiredChannelsAndTypes(m_handler, mapper);
+        const QVector<ComponentIndices> channelComponentIndices
+                = assignChannelComponentIndices(channelNamesAndTypes);
+
+        const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
+        Q_ASSERT(clip);
+        const ComponentIndices formatIndices = generateClipFormatIndices(channelNamesAndTypes,
+                                                                         channelComponentIndices,
+                                                                         clip);
+        clipAnimator->setFormatIndices(formatIndices);
+
+        const QVector<MappingData> mappingData = buildPropertyMappings(channelMappings,
+                                                                       channelNamesAndTypes,
+                                                                       channelComponentIndices);
+        clipAnimator->setMappingData(mappingData);
     }
 
     qCDebug(Jobs) << "Running clip animators =" << m_handler->runningClipAnimators();

@@ -70,7 +70,11 @@ void EvaluateClipAnimatorJob::run()
     // Prepare for evaluation (convert global time to local time ....)
     const AnimatorEvaluationData animatorEvaluationData = evaluationDataForAnimator(clipAnimator, clock, globalTime);
     const ClipEvaluationData preEvaluationDataForClip = evaluationDataForClip(clip, animatorEvaluationData);
-    const ClipResults channelResults = evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
+    const ClipResults rawClipResults = evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
+
+    // Reformat the clip results into the layout used by this animator/blend tree
+    ComponentIndices format = clipAnimator->formatIndices();
+    ClipResults formattedClipResults = formatClipResults(rawClipResults, format);
 
     if (preEvaluationDataForClip.isFinalFrame)
         clipAnimator->setRunning(false);
@@ -80,14 +84,15 @@ void EvaluateClipAnimatorJob::run()
     // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
     const QVector<Qt3DCore::QSceneChangePtr> changes = preparePropertyChanges(clipAnimator->peerId(),
                                                                               clipAnimator->mappingData(),
-                                                                              channelResults,
+                                                                              formattedClipResults,
                                                                               preEvaluationDataForClip.isFinalFrame);
 
     // Send the property changes
     clipAnimator->sendPropertyChanges(changes);
 
     // Trigger callbacks either on this thread or by notifying the gui thread.
-    const QVector<AnimationCallbackAndValue> callbacks = prepareCallbacks(clipAnimator->mappingData(), channelResults);
+    const QVector<AnimationCallbackAndValue> callbacks = prepareCallbacks(clipAnimator->mappingData(),
+                                                                          formattedClipResults);
     clipAnimator->sendCallbacks(callbacks);
 }
 

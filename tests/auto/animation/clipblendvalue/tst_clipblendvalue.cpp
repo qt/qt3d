@@ -137,8 +137,7 @@ private Q_SLOTS:
         QVector<Qt3DCore::QNodeId> actualIds = clipNode.currentDependencyIds();
 
         // THEN
-        QCOMPARE(actualIds.size(), 1);
-        QCOMPARE(actualIds[0], clipId);
+        QCOMPARE(actualIds.size(), 0);
 
         // WHEN
         auto anotherClipId = Qt3DCore::QNodeId::createId();
@@ -146,8 +145,7 @@ private Q_SLOTS:
         actualIds = clipNode.currentDependencyIds();
 
         // THEN
-        QCOMPARE(actualIds.size(), 1);
-        QCOMPARE(actualIds[0], anotherClipId);
+        QCOMPARE(actualIds.size(), 0);
     }
 
     void checkDuration()

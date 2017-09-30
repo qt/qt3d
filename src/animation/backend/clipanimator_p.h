@@ -97,6 +97,9 @@ public:
 
     void animationClipMarkedDirty() { setDirty(Handler::ClipAnimatorDirty); }
 
+    void setFormatIndices(const ComponentIndices &formatIndices) { m_formatIndices = formatIndices; }
+    ComponentIndices formatIndices() const { return m_formatIndices; }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
@@ -111,6 +114,7 @@ private:
     QVector<MappingData> m_mappingData;
 
     int m_currentLoop;
+    ComponentIndices m_formatIndices;
 };
 
 } // namespace Animation

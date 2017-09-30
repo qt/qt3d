@@ -342,65 +342,6 @@ QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &
     return callbacks;
 }
 
-//TODO: Remove this and use new implementation below for both the unblended
-//      and blended animation cases.
-QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                           const AnimationClip *clip,
-                                           const ChannelMapper *mapper)
-{
-    QVector<MappingData> mappingDataVec;
-    ChannelMappingManager *mappingManager = handler->channelMappingManager();
-    const QVector<Channel> &channels = clip->channels();
-
-    // Iterate over the mappings in the mapper object
-    const auto mappingIds = mapper->mappingIds();
-    for (const Qt3DCore::QNodeId mappingId : mappingIds) {
-        // Get the mapping object
-        ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
-        Q_ASSERT(mapping);
-
-        // Populate the data we need, easy stuff first
-        MappingData mappingData;
-        mappingData.targetId = mapping->targetId();
-        mappingData.propertyName = mapping->propertyName();
-        mappingData.type = mapping->type();
-        mappingData.callback = mapping->callback();
-        mappingData.callbackFlags = mapping->callbackFlags();
-
-        if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
-            qWarning() << "Unknown type for node id =" << mappingData.targetId
-                       << "and property =" << mapping->property()
-                       << "and callback =" << mapping->callback();
-            continue;
-        }
-
-        // Now the tricky part. Mapping the channel indices onto the property type.
-        // Try to find a ChannelGroup with matching name
-        const QString channelName = mapping->channelName();
-        int channelGroupIndex = 0;
-        bool foundMatch = false;
-        for (const Channel &channel : channels) {
-            if (channel.name == channelName) {
-                foundMatch = true;
-                const int channelBaseIndex = clip->channelComponentBaseIndex(channelGroupIndex);
-
-                // Within this group, match channel names with index ordering
-                mappingData.channelIndices = channelComponentsToIndices(channel, mappingData.type, channelBaseIndex);
-
-                // Store the mapping data
-                mappingDataVec.push_back(mappingData);
-
-                if (foundMatch)
-                    break;
-            }
-
-            ++channelGroupIndex;
-        }
-    }
-
-    return mappingDataVec;
-}
-
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
                                            const QVector<ComponentIndices> &channelComponentIndices)
@@ -539,6 +480,10 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                  ClipBlendNodeVisitor::VisitOnlyDependencies);
 
     auto func = [&clipIds, nodeManager] (ClipBlendNode *blendNode) {
+        // Check if this is a value node itself
+        if (blendNode->blendType() == ClipBlendNode::ValueType)
+            clipIds.append(blendNode->peerId());
+
         const auto dependencyIds = blendNode->currentDependencyIds();
         for (const auto dependencyId : dependencyIds) {
             // Look up the blend node and if it's a value type (clip),
@@ -565,11 +510,10 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
 
     // Reserve enough storage for all the format indices
     int indexCount = 0;
-    for (const auto targetIndexVec : qAsConst(targetIndices))
+    for (const auto &targetIndexVec : qAsConst(targetIndices))
         indexCount += targetIndexVec.size();
     ComponentIndices format;
     format.resize(indexCount);
-
 
     // Iterate through the target channels
     const int channelCount = targetChannels.size();
@@ -579,18 +523,18 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
         const ChannelNameAndType &targetChannel = targetChannels[i];
         const int clipChannelIndex = clip->channelIndex(targetChannel.name,
                                                         targetChannel.jointIndex);
-
-        // TODO: Ensure channel in the clip has enough components to map to the type.
-        //       Requires some improvements to the clip data structure first.
-        // TODO: I don't think we need the targetIndices, only the number of components
-        //       for each target channel. Check once blend tree is complete.
         const int componentCount = targetIndices[i].size();
 
         if (clipChannelIndex != -1) {
             // Found a matching channel in the clip. Get the base channel
             // component index and populate the format indices for this channel.
             const int baseIndex = clip->channelComponentBaseIndex(clipChannelIndex);
-            std::iota(formatIt, formatIt + componentCount, baseIndex);
+
+            // Within this group, match channel names with index ordering
+            const auto channelIndices = channelComponentsToIndices(clip->channels()[clipChannelIndex],
+                                                                   targetChannel.type,
+                                                                   baseIndex);
+            std::copy(channelIndices.begin(), channelIndices.end(), formatIt);
 
         } else {
             // No such channel in this clip. We'll use default values when

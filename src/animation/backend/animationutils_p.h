@@ -190,11 +190,6 @@ QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &
                                                     const QVector<float> &channelResults);
 
 Q_AUTOTEST_EXPORT
-QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                           const AnimationClip *clip,
-                                           const ChannelMapper *mapper);
-
-Q_AUTOTEST_EXPORT
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
                                            const QVector<ComponentIndices> &channelComponentIndices);
