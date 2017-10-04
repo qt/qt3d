@@ -98,14 +98,27 @@ private:
 inline QDebug operator<<(QDebug dbg, const FCurve &fcurve)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "Keyframe Count =" << fcurve.keyframeCount() << endl;
+    dbg << "Keyframe Count = " << fcurve.keyframeCount() << endl;
     for (int i = 0; i < fcurve.keyframeCount(); ++i) {
         const Keyframe &kf = fcurve.keyframe(i);
-        dbg << "t =" << fcurve.localTime(i)
-            << "value =" << kf.value
-            << "leftHandle =" << kf.leftControlPoint
-            << "rightHandle =" << kf.rightControlPoint
-            << endl;
+        switch (kf.interpolation) {
+        case QKeyFrame::BezierInterpolation: {
+            dbg << "t = " << fcurve.localTime(i)
+                << ", value = " << kf.value
+                << ", leftHandle = " << kf.leftControlPoint
+                << ", rightHandle = " << kf.rightControlPoint
+                << endl;
+            break;
+        }
+
+        case QKeyFrame::ConstantInterpolation:
+        case QKeyFrame::LinearInterpolation: {
+            dbg << "t = " << fcurve.localTime(i)
+                << ", value = " << kf.value
+                << endl;
+            break;
+        }
+        }
     }
     return dbg;
 }
