@@ -54,6 +54,8 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
 
+#include <QtCore/qdebug.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
@@ -88,6 +90,19 @@ struct MappingData
     int type;
     ComponentIndices channelIndices;
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const MappingData &mapping)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "targetId =" << mapping.targetId << endl
+        << "jointIndex =" << mapping.jointIndex << endl
+        << "jointTransformComponent: " << mapping.jointTransformComponent << endl
+        << "propertyName:" << mapping.propertyName << endl
+        << "channelIndices:" << mapping.channelIndices;
+    return dbg;
+}
+#endif
 
 struct AnimatorEvaluationData
 {
