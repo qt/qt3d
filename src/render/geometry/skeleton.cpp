@@ -118,7 +118,12 @@ void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     switch (e->type()) {
     case Qt3DCore::PropertyUpdated: {
         const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("source")) {
+        if (change->propertyName() == QByteArrayLiteral("localPoses")) {
+            // When the animation aspect sends us a new set of local poses, all we
+            // need to do is copy them into place. The existing jobs will then update
+            // the skinning matrix palette.
+            m_skeletonData.localPoses = change->value().value<QVector<Qt3DCore::Sqt>>();
+        } else if (change->propertyName() == QByteArrayLiteral("source")) {
             Q_ASSERT(m_dataType == File);
             const auto source = change->value().toUrl();
             if (source != m_source) {

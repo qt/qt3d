@@ -37,50 +37,38 @@
 #ifndef QT3DEXTRAS_QORBITCAMERACONTROLLER_H
 #define QT3DEXTRAS_QORBITCAMERACONTROLLER_H
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/qt3dextras_global.h>
+#include <Qt3DExtras/qabstractcameracontroller.h>
 
 QT_BEGIN_NAMESPACE
-
-namespace Qt3DRender {
-class QCamera;
-}
 
 namespace Qt3DExtras {
 
 class QOrbitCameraControllerPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QOrbitCameraController : public Qt3DCore::QEntity
+class QT3DEXTRASSHARED_EXPORT QOrbitCameraController : public QAbstractCameraController
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
-    Q_PROPERTY(float linearSpeed READ linearSpeed WRITE setLinearSpeed NOTIFY linearSpeedChanged)
-    Q_PROPERTY(float lookSpeed READ lookSpeed WRITE setLookSpeed NOTIFY lookSpeedChanged)
     Q_PROPERTY(float zoomInLimit READ zoomInLimit WRITE setZoomInLimit NOTIFY zoomInLimitChanged)
 
 public:
     explicit QOrbitCameraController(Qt3DCore::QNode *parent = nullptr);
     ~QOrbitCameraController();
 
-    Qt3DRender::QCamera *camera() const;
-    float linearSpeed() const;
-    float lookSpeed() const;
     float zoomInLimit() const;
 
-    void setCamera(Qt3DRender::QCamera *camera);
-    void setLinearSpeed(float linearSpeed);
-    void setLookSpeed(float lookSpeed);
     void setZoomInLimit(float zoomInLimit);
 
 Q_SIGNALS:
-    void cameraChanged();
-    void linearSpeedChanged();
-    void lookSpeedChanged();
     void zoomInLimitChanged();
+
+protected:
+    QOrbitCameraController(QOrbitCameraControllerPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    void moveCamera(const QAbstractCameraController::InputState &state, float dt) override;
 
 private:
     Q_DECLARE_PRIVATE(QOrbitCameraController)
-    Q_PRIVATE_SLOT(d_func(),  void _q_onTriggered(float))
 };
 
 }   // Qt3DExtras

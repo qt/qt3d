@@ -27,8 +27,12 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/private/qmesh_p.h>
+#include <Qt3DCore/qaspectengine.h>
 
 class MeshFunctorA : public Qt3DRender::QGeometryFactory
 {
@@ -117,8 +121,46 @@ private Q_SLOTS:
         QVERIFY(*functorB == *functorB);
         QVERIFY(*functorASub == *functorASub);
     }
+
+    void checkMeshFunctorEquality()
+    {
+        // GIVEN
+        Qt3DCore::QAspectEngine engine;
+        auto meshA = new Qt3DRender::QMesh();
+        meshA->setSource(QUrl::fromLocalFile(QLatin1String("/foo")));
+        meshA->setMeshName(QLatin1String("bar"));
+
+        auto meshB = new Qt3DRender::QMesh();
+        meshB->setSource(QUrl::fromLocalFile(QLatin1String("/foo")));
+        meshB->setMeshName(QLatin1String("baz"));
+
+        auto meshC = new Qt3DRender::QMesh();
+        meshC->setSource(QUrl::fromLocalFile(QLatin1String("/baz")));
+        meshC->setMeshName(QLatin1String("bar"));
+
+        auto meshD = new Qt3DRender::QMesh();
+        meshD->setSource(QUrl::fromLocalFile(QLatin1String("/foo")));
+        meshD->setMeshName(QLatin1String("bar"));
+
+        const Qt3DRender::MeshLoaderFunctor functorA(meshA, &engine);
+        const Qt3DRender::MeshLoaderFunctor functorB(meshB, &engine);
+        const Qt3DRender::MeshLoaderFunctor functorC(meshC, &engine);
+        const Qt3DRender::MeshLoaderFunctor functorD(meshD, &engine);
+
+        // WHEN
+        const bool selfEquality = (functorA == functorA);
+        const bool sameSource = (functorA == functorB);
+        const bool sameMeshName = (functorA == functorC);
+        const bool perfectMatch = (functorA == functorD);
+
+        // THEN
+        QCOMPARE(selfEquality, true);
+        QCOMPARE(sameSource, false);
+        QCOMPARE(sameMeshName, false);
+        QCOMPARE(perfectMatch, true);
+    }
 };
 
-QTEST_APPLESS_MAIN(tst_MeshFunctors)
+QTEST_MAIN(tst_MeshFunctors)
 
 #include "tst_meshfunctors.moc"

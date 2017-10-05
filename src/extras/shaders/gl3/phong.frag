@@ -1,8 +1,8 @@
 #version 150 core
 
-uniform vec3 ka;            // Ambient reflectivity
-uniform vec3 kd;            // Diffuse reflectivity
-uniform vec3 ks;            // Specular reflectivity
+uniform vec4 ka;            // Ambient reflectivity
+uniform vec4 kd;            // Diffuse reflectivity
+uniform vec4 ks;            // Specular reflectivity
 uniform float shininess;    // Specular shininess factor
 
 uniform vec3 eyePosition;
@@ -12,11 +12,10 @@ in vec3 worldNormal;
 
 out vec4 fragColor;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 
 void main()
 {
-    vec3 diffuseColor, specularColor;
-    adsModel(worldPosition, worldNormal, eyePosition, shininess, diffuseColor, specularColor);
-    fragColor = vec4( ka + kd * diffuseColor + ks * specularColor, 1.0 );
+    vec3 worldView = normalize(eyePosition - worldPosition);
+    fragColor = phongFunction(ka, kd, ks, shininess, worldPosition, worldView, worldNormal);
 }

@@ -73,7 +73,7 @@ public:
 
     inline QVector<Qt3DCore::QNodeId> currentDependencyIds() const override
     {
-        return { m_clipId };
+        return {};
     }
 
     double duration() const override;

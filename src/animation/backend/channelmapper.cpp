@@ -38,6 +38,7 @@
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/private/qchannelmapper_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
@@ -50,6 +51,7 @@ namespace Animation {
 ChannelMapper::ChannelMapper()
     : BackendNode(ReadOnly)
     , m_mappingIds()
+    , m_isDirty(true)
 {
 }
 
@@ -58,12 +60,15 @@ void ChannelMapper::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QChannelMapperData>>(change);
     const auto &data = typedChange->data;
     m_mappingIds = data.mappingIds;
+    m_isDirty = true;
 }
 
 void ChannelMapper::cleanup()
 {
     setEnabled(false);
     m_mappingIds.clear();
+    m_mappings.clear();
+    m_isDirty = true;
 }
 
 void ChannelMapper::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -74,6 +79,7 @@ void ChannelMapper::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (change->propertyName() == QByteArrayLiteral("mappings")) {
             m_mappingIds.push_back(change->addedNodeId());
             setDirty(Handler::ChannelMappingsDirty);
+            m_isDirty = true;
         }
         break;
     }
@@ -83,6 +89,7 @@ void ChannelMapper::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (change->propertyName() == QByteArrayLiteral("mappings")) {
             m_mappingIds.removeOne(change->removedNodeId());
             setDirty(Handler::ChannelMappingsDirty);
+            m_isDirty = true;
         }
         break;
     }
@@ -91,6 +98,19 @@ void ChannelMapper::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     QBackendNode::sceneChangeEvent(e);
+}
+
+void ChannelMapper::updateMappings() const
+{
+    m_mappings.clear();
+    m_mappings.reserve(m_mappingIds.size());
+    const auto mappingManager = m_handler->channelMappingManager();
+    for (const auto &mappingId : m_mappingIds) {
+        const auto mapping = mappingManager->lookupResource(mappingId);
+        Q_ASSERT(mapping);
+        m_mappings.push_back(mapping);
+    }
+    m_isDirty = false;
 }
 
 } // namespace Animation

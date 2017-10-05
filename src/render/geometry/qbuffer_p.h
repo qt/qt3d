@@ -80,7 +80,6 @@ public:
 struct QBufferData
 {
     QByteArray data;
-    QBuffer::BufferType type;
     QBuffer::UsageType usage;
     QBufferDataGeneratorPtr functor;
     bool syncData;

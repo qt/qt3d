@@ -208,6 +208,7 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
     // need to (re-)upload texture data?
     if (needUpload && !texturedDataInvalid) {
         uploadGLTextureData();
+        setDirtyFlag(TextureData, false);
     }
 
     // need to set texture parameters?

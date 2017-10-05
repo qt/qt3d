@@ -223,7 +223,7 @@ QBuffer *QItemModelBuffer::buffer()
         m_attributes.clear();
         m_itemStride = 0;
 
-        m_buffer = new QBuffer(QBuffer::VertexBuffer);
+        m_buffer = new QBuffer;
         // assume model will change
         m_buffer->setUsage(QBuffer::DynamicDraw);
 

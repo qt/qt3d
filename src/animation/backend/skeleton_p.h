@@ -66,6 +66,23 @@ public:
 
     int jointCount() const { return m_jointLocalPoses.size(); }
 
+    void setJointScale(int jointIndex, const QVector3D &scale)
+    {
+        m_jointLocalPoses[jointIndex].scale = scale;
+    }
+
+    void setJointRotation(int jointIndex, const QQuaternion &rotation)
+    {
+        m_jointLocalPoses[jointIndex].rotation = rotation;
+    }
+
+    void setJointTranslation(int jointIndex, const QVector3D &translation)
+    {
+        m_jointLocalPoses[jointIndex].translation = translation;
+    }
+
+    void sendLocalPoses();
+
 #if defined(QT_BUILD_INTERNAL)
     void setJointCount(int jointCount)
     {

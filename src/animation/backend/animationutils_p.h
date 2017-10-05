@@ -71,9 +71,19 @@ typedef QVector<int> ComponentIndices;
 
 struct MappingData
 {
+    enum JointTransformComponent {
+        NoTransformComponent = 0,
+        Scale,
+        Rotation,
+        Translation
+    };
+
     Qt3DCore::QNodeId targetId;
+    Skeleton *skeleton = nullptr;
+    int jointIndex = -1;
+    JointTransformComponent jointTransformComponent = NoTransformComponent;
     const char *propertyName;
-    QAnimationCallback *callback;
+    QAnimationCallback *callback = nullptr;
     QAnimationCallback::Flags callbackFlags;
     int type;
     ComponentIndices channelIndices;
@@ -190,11 +200,6 @@ QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &
                                                     const QVector<float> &channelResults);
 
 Q_AUTOTEST_EXPORT
-QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                           const AnimationClip *clip,
-                                           const ChannelMapper *mapper);
-
-Q_AUTOTEST_EXPORT
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
                                            const QVector<ComponentIndices> &channelComponentIndices);
@@ -222,7 +227,7 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
 
 Q_AUTOTEST_EXPORT
 ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
-                                           const QVector<ComponentIndices> &targetIndices,
+                                           QVector<ComponentIndices> &targetIndices,
                                            const AnimationClip *clip);
 
 Q_AUTOTEST_EXPORT

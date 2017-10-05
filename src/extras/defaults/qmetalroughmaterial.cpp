@@ -71,6 +71,7 @@ QMetalRoughMaterialPrivate::QMetalRoughMaterialPrivate()
     , m_roughnessMapParameter(new QParameter(QStringLiteral("roughnessMap"), QVariant()))
     , m_ambientOcclusionMapParameter(new QParameter(QStringLiteral("ambientOcclusionMap"), QVariant()))
     , m_normalMapParameter(new QParameter(QStringLiteral("normalMap"), QVariant()))
+    , m_textureScaleParameter(new QParameter(QStringLiteral("texCoordScale"), 1.0f))
     , m_environmentIrradianceParameter(new QParameter(QStringLiteral("envLight.irradiance"), m_environmentIrradianceTexture))
     , m_environmentSpecularParameter(new QParameter(QStringLiteral("envLight.specular"), m_environmentSpecularTexture))
     , m_metalRoughEffect(new QEffect())
@@ -107,8 +108,10 @@ void QMetalRoughMaterialPrivate::init()
                      q, &QMetalRoughMaterial::roughnessChanged);
     QObject::connect(m_normalMapParameter, &Qt3DRender::QParameter::valueChanged,
                      q, &QMetalRoughMaterial::roughnessChanged);
+    connect(m_textureScaleParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QMetalRoughMaterialPrivate::handleTextureScaleChanged);
 
-    m_metalRoughGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/metalrough.vert"))));
+    m_metalRoughGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/default.vert"))));
 
     m_metalRoughGL3ShaderBuilder->setParent(q);
     m_metalRoughGL3ShaderBuilder->setShaderProgram(m_metalRoughGL3Shader);
@@ -136,6 +139,7 @@ void QMetalRoughMaterialPrivate::init()
     m_metalRoughEffect->addParameter(m_baseColorParameter);
     m_metalRoughEffect->addParameter(m_metalnessParameter);
     m_metalRoughEffect->addParameter(m_roughnessParameter);
+    m_metalRoughEffect->addParameter(m_textureScaleParameter);
 
     // Note that even though those parameters are not exposed in the API,
     // they need to be kept around for now due to a bug in some drivers/GPUs
@@ -147,6 +151,12 @@ void QMetalRoughMaterialPrivate::init()
     m_metalRoughEffect->addParameter(m_environmentSpecularParameter);
 
     q->setEffect(m_metalRoughEffect);
+}
+
+void QMetalRoughMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
+{
+    Q_Q(QMetalRoughMaterial);
+    emit q->textureScaleChanged(var.toFloat());
 }
 
 /*!
@@ -249,6 +259,18 @@ QVariant QMetalRoughMaterial::normal() const
     return d->m_normalMapParameter->value();
 }
 
+/*!
+    \property QMetalRoughMaterial::textureScale
+
+    Holds the current texture scale. It is applied as a multiplier to texture
+    coordinates at render time. Defaults to 1.0.
+*/
+float QMetalRoughMaterial::textureScale() const
+{
+    Q_D(const QMetalRoughMaterial);
+    return d->m_textureScaleParameter->value().toFloat();
+}
+
 void QMetalRoughMaterial::setBaseColor(const QVariant &baseColor)
 {
     Q_D(QMetalRoughMaterial);
@@ -346,6 +368,12 @@ void QMetalRoughMaterial::setNormal(const QVariant &normal)
         d->m_metalRoughEffect->removeParameter(d->m_normalMapParameter);
     }
     d->m_metalRoughGL3ShaderBuilder->setEnabledLayers(layers);
+}
+
+void QMetalRoughMaterial::setTextureScale(float textureScale)
+{
+    Q_D(QMetalRoughMaterial);
+    d->m_textureScaleParameter->setValue(textureScale);
 }
 
 } // namespace Qt3DExtras

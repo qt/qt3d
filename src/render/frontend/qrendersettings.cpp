@@ -217,8 +217,11 @@ void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
     if (d->m_activeFrameGraph && activeFrameGraph) {
         Qt3DRender::QRenderSurfaceSelector *oldSurfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(d->m_activeFrameGraph);
         Qt3DRender::QRenderSurfaceSelector *newSurfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(activeFrameGraph);
-        if (oldSurfaceSelector && newSurfaceSelector && oldSurfaceSelector->surface())
+        if (oldSurfaceSelector && newSurfaceSelector && oldSurfaceSelector->surface()) {
+            newSurfaceSelector->setExternalRenderTargetSize(oldSurfaceSelector->externalRenderTargetSize());
+            newSurfaceSelector->setSurfacePixelRatio(oldSurfaceSelector->surfacePixelRatio());
             newSurfaceSelector->setSurface(oldSurfaceSelector->surface());
+        }
     }
 
     if (d->m_activeFrameGraph)

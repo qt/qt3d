@@ -65,10 +65,9 @@ QPhongAlphaMaterialPrivate::QPhongAlphaMaterialPrivate()
     : QMaterialPrivate()
     , m_phongEffect(new QEffect())
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
-    , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.7f, 0.7f, 0.7f, 1.0f)))
+    , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.7f, 0.7f, 0.7f, 0.5f)))
     , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.01f, 0.01f, 0.01f, 1.0f)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
-    , m_alphaParameter(new QParameter(QStringLiteral("alpha"), 0.5f))
     , m_phongAlphaGL3Technique(new QTechnique())
     , m_phongAlphaGL2Technique(new QTechnique())
     , m_phongAlphaES2Technique(new QTechnique())
@@ -95,13 +94,11 @@ void QPhongAlphaMaterialPrivate::init()
             this, &QPhongAlphaMaterialPrivate::handleSpecularChanged);
     connect(m_shininessParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QPhongAlphaMaterialPrivate::handleShininessChanged);
-    connect(m_alphaParameter, &Qt3DRender::QParameter::valueChanged,
-            this, &QPhongAlphaMaterialPrivate::handleAlphaChanged);
 
-    m_phongAlphaGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/phong.vert"))));
-    m_phongAlphaGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/phongalpha.frag"))));
-    m_phongAlphaGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/phong.vert"))));
-    m_phongAlphaGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/phongalpha.frag"))));
+    m_phongAlphaGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/default.vert"))));
+    m_phongAlphaGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/phong.frag"))));
+    m_phongAlphaGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/default.vert"))));
+    m_phongAlphaGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/phong.frag"))));
 
     m_phongAlphaGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_phongAlphaGL3Technique->graphicsApiFilter()->setMajorVersion(3);
@@ -159,7 +156,6 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongEffect->addParameter(m_diffuseParameter);
     m_phongEffect->addParameter(m_specularParameter);
     m_phongEffect->addParameter(m_shininessParameter);
-    m_phongEffect->addParameter(m_alphaParameter);
 
     q->setEffect(m_phongEffect);
 }
@@ -174,6 +170,7 @@ void QPhongAlphaMaterialPrivate::handleDiffuseChanged(const QVariant &var)
 {
     Q_Q(QPhongAlphaMaterial);
     emit q->diffuseChanged(var.value<QColor>());
+    emit q->alphaChanged(var.value<QColor>().alphaF());
 }
 
 void QPhongAlphaMaterialPrivate::handleSpecularChanged(const QVariant &var)
@@ -186,12 +183,6 @@ void QPhongAlphaMaterialPrivate::handleShininessChanged(const QVariant &var)
 {
     Q_Q(QPhongAlphaMaterial);
     emit q->shininessChanged(var.toFloat());
-}
-
-void QPhongAlphaMaterialPrivate::handleAlphaChanged(const QVariant &var)
-{
-    Q_Q(QPhongAlphaMaterial);
-    emit q->alphaChanged(var.toFloat());
 }
 
 /*!
@@ -301,7 +292,7 @@ float QPhongAlphaMaterial::shininess() const
 float QPhongAlphaMaterial::alpha() const
 {
     Q_D(const QPhongAlphaMaterial);
-    return d->m_alphaParameter->value().toFloat();
+    return d->m_diffuseParameter->value().value<QColor>().alphaF();
 }
 
 /*!
@@ -378,7 +369,10 @@ void QPhongAlphaMaterial::setAmbient(const QColor &ambient)
 void QPhongAlphaMaterial::setDiffuse(const QColor &diffuse)
 {
     Q_D(QPhongAlphaMaterial);
-    d->m_diffuseParameter->setValue(diffuse);
+    QColor currentDiffuse = d->m_diffuseParameter->value().value<QColor>();
+    QColor newDiffuse = diffuse;
+    newDiffuse.setAlphaF(currentDiffuse.alphaF());
+    d->m_diffuseParameter->setValue(newDiffuse);
 }
 
 void QPhongAlphaMaterial::setSpecular(const QColor &specular)
@@ -396,7 +390,9 @@ void QPhongAlphaMaterial::setShininess(float shininess)
 void QPhongAlphaMaterial::setAlpha(float alpha)
 {
     Q_D(QPhongAlphaMaterial);
-    d->m_alphaParameter->setValue(alpha);
+    QColor diffuse = d->m_diffuseParameter->value().value<QColor>();
+    diffuse.setAlphaF(alpha);
+    d->m_diffuseParameter->setValue(diffuse);
 }
 
 void QPhongAlphaMaterial::setSourceRgbArg(QBlendEquationArguments::Blending sourceRgbArg)

@@ -166,8 +166,8 @@ void QExtrudedTextGeometryPrivate::init()
     m_positionAttribute = new Qt3DRender::QAttribute(q);
     m_normalAttribute = new Qt3DRender::QAttribute(q);
     m_indexAttribute = new Qt3DRender::QAttribute(q);
-    m_vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, q);
-    m_indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, q);
+    m_vertexBuffer = new Qt3DRender::QBuffer(q);
+    m_indexBuffer = new Qt3DRender::QBuffer(q);
 
     const quint32 elementSize = 3 + 3;
     const quint32 stride = elementSize * sizeof(float);

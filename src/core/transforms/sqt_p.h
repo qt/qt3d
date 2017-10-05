@@ -101,6 +101,7 @@ struct JointNamesAndLocalPoses
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(QVector<Qt3DCore::Sqt>)
 Q_DECLARE_METATYPE(Qt3DCore::JointNamesAndLocalPoses)
 
 #endif // QT3DCORE_SQT_P_H

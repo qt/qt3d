@@ -6,12 +6,13 @@ attribute FP vec2 vertexTexCoord;
 attribute FP vec4 vertexTangent;
 
 varying FP vec3 worldPosition;
+varying FP vec3 worldNormal;
+varying FP vec4 worldTangent;
 varying FP vec2 texCoord;
 varying FP vec2 movtexCoord;
 varying FP vec2 multexCoord;
 varying FP vec2 waveTexCoord;
 varying FP vec2 skyTexCoord;
-varying FP mat3 tangentMatrix;
 varying FP vec3 vpos;
 
 uniform FP mat4 modelMatrix;
@@ -42,25 +43,9 @@ void main()
 
     // Transform position, normal, and tangent to world coords
     worldPosition = vec3(modelMatrix * vec4(vertexPosition, 1.0));
-    FP vec3 normal = normalize(modelNormalMatrix * vertexNormal);
-    FP vec3 tangent = normalize(vec3(modelMatrix * vec4(vertexTangent.xyz, 0.0)));
-
-    // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
-    // This allows to build the tangentMatrix below by simply transposing the
-    // tangent -> world space matrix (which would now be orthogonal)
-    tangent = normalize(tangent - dot(tangent, normal) * normal);
-
-    // Calculate binormal vector. No "real" need to renormalize it,
-    // as built by crossing two normal vectors.
-    // To orient the binormal correctly, use the fourth coordinate of the tangent,
-    // which is +1 for a right hand system, and -1 for a left hand system.
-    FP vec3 binormal = cross(normal, tangent) * vertexTangent.w;
-
-    // Construct matrix to transform from eye coords to tangent space
-    tangentMatrix = mat3(
-        tangent.x, binormal.x, normal.x,
-        tangent.y, binormal.y, normal.y,
-        tangent.z, binormal.z, normal.z);
+    worldNormal = normalize(modelNormalMatrix * vertexNormal);
+    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(vertexTangent.xyz, 0.0)));
+    worldTangent.w = vertexTangent.w;
 
     // Calculate animated vertex positions
 

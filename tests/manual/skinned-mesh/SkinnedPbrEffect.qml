@@ -30,7 +30,8 @@ Effect {
 
                 ShaderProgramBuilder {
                     shaderProgram: prog
-                    fragmentShaderGraph: "qrc:/shaders/graphs/metalroughuniform.frag.json"
+                    fragmentShaderGraph: "qrc:/shaders/graphs/metalrough.frag.json"
+                    enabledLayers: ["baseColor", "metalness", "roughness", "ambientOcclusion", "normal"]
                 }
             }
         }

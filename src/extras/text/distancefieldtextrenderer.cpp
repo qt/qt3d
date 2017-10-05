@@ -80,8 +80,8 @@ void DistanceFieldTextRendererPrivate::init()
     m_geometry = new Qt3DRender::QGeometry(m_renderer);
     m_renderer->setGeometry(m_geometry);
 
-    m_vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, m_geometry);
-    m_indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, m_geometry);
+    m_vertexBuffer = new Qt3DRender::QBuffer(m_geometry);
+    m_indexBuffer = new Qt3DRender::QBuffer(m_geometry);
 
     m_positionAttr = new Qt3DRender::QAttribute(m_geometry);
     m_positionAttr->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());

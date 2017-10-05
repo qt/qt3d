@@ -38,5 +38,6 @@ qtConfig(private_tests) {
         animationutils \
         qabstractanimation \
         clock \
-        skeleton
+        skeleton \
+        findrunningclipanimatorsjob
 }

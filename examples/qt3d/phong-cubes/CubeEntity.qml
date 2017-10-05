@@ -48,32 +48,34 @@
 **
 ****************************************************************************/
 
-#version 150
+import QtQuick 2.0 as Quick
+import Qt3D.Core 2.0
+import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
-in vec4 vertexTangent;
-in vec2 vertexTexCoord;
+Entity {
+    id: root
+    property vector3d position: Qt.vector3d()
+    property Material material
 
-out vec3 worldPosition;
-out vec3 worldNormal;
-out vec4 worldTangent;
-out vec2 texCoord;
+    components: [mesh, material, transform]
 
-uniform mat4 modelMatrix;
-uniform mat3 modelNormalMatrix;
-uniform mat4 mvp;
+    CuboidMesh {
+        id: mesh
+        xExtent: 0.5
+        yExtent: xExtent
+        zExtent: xExtent
+    }
 
-void main()
-{
-    // Pass the texture coordinates through
-    texCoord = vertexTexCoord;
+    Transform {
+        id: transform
+        translation: root.position
+        rotationZ: 45
 
-    // Transform position, normal, and tangent to world space
-    worldPosition = vec3(modelMatrix * vec4(vertexPosition, 1.0));
-    worldNormal = normalize(modelNormalMatrix * vertexNormal);
-    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(vertexTangent.xyz, 0.0)));
-    worldTangent.w = vertexTangent.w;
-
-    gl_Position = mvp * vec4(vertexPosition, 1.0);
+        Quick.NumberAnimation on rotationY {
+            from: 0; to: 360
+            loops: Quick.Animation.Infinite
+            duration: 5000
+        }
+    }
 }

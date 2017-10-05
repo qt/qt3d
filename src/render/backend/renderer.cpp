@@ -64,6 +64,7 @@
 #include <Qt3DRender/private/renderqueue_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/renderthread_p.h>
@@ -1078,8 +1079,9 @@ void Renderer::updateGLResources()
         for (HBuffer handle: dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
             // Forces creation if it doesn't exit
+            // Also note the binding point doesn't really matter here, we just upload data
             if (!m_graphicsContext->hasGLBufferForBuffer(buffer))
-                m_graphicsContext->glBufferForRenderBuffer(buffer);
+                m_graphicsContext->glBufferForRenderBuffer(buffer, GLBuffer::ArrayBuffer);
             // Update the glBuffer data
             m_graphicsContext->updateBuffer(buffer);
             buffer->unsetDirty();
@@ -1604,7 +1606,7 @@ void Renderer::performDraw(RenderCommand *command)
         }
 
         // Get GLBuffer from Buffer;
-        GLBuffer *indirectDrawGLBuffer = m_graphicsContext->glBufferForRenderBuffer(indirectDrawBuffer);
+        GLBuffer *indirectDrawGLBuffer = m_graphicsContext->glBufferForRenderBuffer(indirectDrawBuffer, GLBuffer::DrawIndirectBuffer);
         if (Q_UNLIKELY(indirectDrawGLBuffer == nullptr)) {
             qWarning() << "Invalid Indirect Draw Buffer - failed to retrieve GLBuffer";
             return;

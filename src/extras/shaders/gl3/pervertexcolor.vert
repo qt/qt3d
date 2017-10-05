@@ -2,11 +2,11 @@
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
-in vec3 vertexColor;
+in vec4 vertexColor;
 
 out vec3 worldPosition;
 out vec3 worldNormal;
-out vec3 color;
+out vec4 color;
 
 uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;

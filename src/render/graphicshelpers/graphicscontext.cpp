@@ -120,22 +120,14 @@ static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 
 namespace {
 
-GLBuffer::Type bufferTypeToGLBufferType(QBuffer::BufferType type)
+GLBuffer::Type attributeTypeToGLBufferType(QAttribute::AttributeType type)
 {
     switch (type) {
-    case QBuffer::VertexBuffer:
+    case QAttribute::VertexAttribute:
         return GLBuffer::ArrayBuffer;
-    case QBuffer::IndexBuffer:
+    case QAttribute::IndexAttribute:
         return GLBuffer::IndexBuffer;
-    case QBuffer::PixelPackBuffer:
-        return GLBuffer::PixelPackBuffer;
-    case QBuffer::PixelUnpackBuffer:
-        return GLBuffer::PixelUnpackBuffer;
-    case QBuffer::UniformBuffer:
-        return GLBuffer::UniformBuffer;
-    case QBuffer::ShaderStorageBuffer:
-        return GLBuffer::ShaderStorageBuffer;
-    case QBuffer::DrawIndirectBuffer:
+    case QAttribute::DrawIndirectAttribute:
         return GLBuffer::DrawIndirectBuffer;
     default:
         Q_UNREACHABLE();
@@ -1220,7 +1212,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     int ssboIndex = 0;
     for (const BlockToSSBO b : blockToSSBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
-        GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer);
+        GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer, GLBuffer::ShaderStorageBuffer);
         bindShaderStorageBlock(shader->programId(), b.m_blockIndex, ssboIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
@@ -1240,7 +1232,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     int uboIndex = 0;
     for (const BlockToUBO &b : blockToUBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
-        GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer);
+        GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer, GLBuffer::UniformBuffer);
         bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
@@ -1287,7 +1279,7 @@ void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
     // Bind buffer within the current VAO
     GLBuffer *buf = m_renderer->nodeManagers()->glBufferManager()->data(attr.bufferHandle);
     Q_ASSERT(buf);
-    bindGLBuffer(buf, attr.bufferType);
+    bindGLBuffer(buf, attr.attributeType);
 
     // Don't use QOpenGLShaderProgram::setAttributeBuffer() because of QTBUG-43199.
     // Use the introspection data and set the attribute explicitly
@@ -1437,7 +1429,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute,
     const GLint attributeDataType = glDataTypeFromAttributeDataType(attribute->vertexBaseType());
     const HGLBuffer glBufferHandle = m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
     Q_ASSERT(!glBufferHandle.isNull());
-    const GLBuffer::Type bufferType = bufferTypeToGLBufferType(buffer->type());
+    const GLBuffer::Type attributeType = attributeTypeToGLBufferType(attribute->attributeType());
 
     int typeSize = 0;
     int attrCount = 0;
@@ -1457,7 +1449,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute,
     for (int i = 0; i < attrCount; i++) {
         VAOVertexAttribute attr;
         attr.bufferHandle = glBufferHandle;
-        attr.bufferType = bufferType;
+        attr.attributeType = attributeType;
         attr.location = location + i;
         attr.dataType = attributeDataType;
         attr.byteOffset = attribute->byteOffset() + (i * attrCount * typeSize);
@@ -1476,9 +1468,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute,
 
 void GraphicsContext::specifyIndices(Buffer *buffer)
 {
-    Q_ASSERT(buffer->type() == QBuffer::IndexBuffer);
-
-    GLBuffer *buf = glBufferForRenderBuffer(buffer);
+    GLBuffer *buf = glBufferForRenderBuffer(buffer, GLBuffer::IndexBuffer);
     if (!bindGLBuffer(buf, GLBuffer::IndexBuffer))
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
@@ -1585,14 +1575,14 @@ void GraphicsContext::memoryBarrier(QMemoryBarrier::Operations barriers)
     m_glHelper->memoryBarrier(barriers);
 }
 
-GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
+GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf, GLBuffer::Type type)
 {
     if (!m_renderBufferHash.contains(buf->peerId()))
-        m_renderBufferHash.insert(buf->peerId(), createGLBufferFor(buf));
+        m_renderBufferHash.insert(buf->peerId(), createGLBufferFor(buf, type));
     return m_renderer->nodeManagers()->glBufferManager()->data(m_renderBufferHash.value(buf->peerId()));
 }
 
-HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
+HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer, GLBuffer::Type type)
 {
     GLBuffer *b = m_renderer->nodeManagers()->glBufferManager()->getOrCreateResource(buffer->peerId());
     //    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
@@ -1600,7 +1590,7 @@ HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
     if (!b->create(this))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
 
-    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+    if (!bindGLBuffer(b, type))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
     return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
@@ -1621,7 +1611,7 @@ bool GraphicsContext::bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type)
 
 void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer)
 {
-    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+    if (!bindGLBuffer(b, GLBuffer::ArrayBuffer)) // We're uploading, the type doesn't matter here
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
     // If the buffer is dirty (hence being called here)
     // there are two possible cases
@@ -1663,15 +1653,14 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
 
     if (releaseBuffer) {
         b->release(this);
-        if (bufferTypeToGLBufferType(buffer->type()) == GLBuffer::ArrayBuffer)
-            m_boundArrayBuffer = nullptr;
+        m_boundArrayBuffer = nullptr;
     }
     qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
 }
 
 QByteArray GraphicsContext::downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b)
 {
-    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+    if (!bindGLBuffer(b, GLBuffer::ArrayBuffer)) // We're downloading, the type doesn't matter here
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
 
     QByteArray data = b->download(this, buffer->data().size());

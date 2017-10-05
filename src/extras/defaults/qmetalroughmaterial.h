@@ -62,6 +62,7 @@ class QT3DEXTRASSHARED_EXPORT QMetalRoughMaterial : public Qt3DRender::QMaterial
     Q_PROPERTY(QVariant roughness READ roughness WRITE setRoughness NOTIFY roughnessChanged)
     Q_PROPERTY(QVariant ambientOcclusion READ ambientOcclusion WRITE setAmbientOcclusion NOTIFY ambientOcclusionChanged REVISION 10)
     Q_PROPERTY(QVariant normal READ normal WRITE setNormal NOTIFY normalChanged REVISION 10)
+    Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged REVISION 10)
 
 public:
     explicit QMetalRoughMaterial(Qt3DCore::QNode *parent = nullptr);
@@ -72,6 +73,7 @@ public:
     QVariant roughness() const;
     QVariant ambientOcclusion() const;
     QVariant normal() const;
+    float textureScale() const;
 
 public Q_SLOTS:
     void setBaseColor(const QVariant &baseColor);
@@ -79,6 +81,7 @@ public Q_SLOTS:
     void setRoughness(const QVariant &roughness);
     void setAmbientOcclusion(const QVariant &ambientOcclusion);
     void setNormal(const QVariant &normal);
+    void setTextureScale(float textureScale);
 
 Q_SIGNALS:
     void baseColorChanged(const QVariant &baseColor);
@@ -86,6 +89,7 @@ Q_SIGNALS:
     void roughnessChanged(const QVariant &roughness);
     void ambientOcclusionChanged(const QVariant &ambientOcclusion);
     void normalChanged(const QVariant &normal);
+    void textureScaleChanged(float textureScale);
 
 protected:
     explicit QMetalRoughMaterial(QMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);

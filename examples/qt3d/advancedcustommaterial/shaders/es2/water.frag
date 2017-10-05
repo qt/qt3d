@@ -1,6 +1,8 @@
 #define FP highp
 
 varying FP vec3 worldPosition;
+varying FP vec3 worldNormal;
+varying FP vec4 worldTangent;
 varying FP vec2 texCoord;
 varying FP vec2 waveTexCoord;
 varying FP vec2 movtexCoord;
@@ -9,7 +11,6 @@ varying FP vec2 skyTexCoord;
 
 varying FP vec3 vpos;
 
-varying FP mat3 tangentMatrix;
 varying FP vec3 color;
 
 uniform FP sampler2D diffuseTexture;
@@ -23,13 +24,13 @@ uniform FP float offsetx;
 uniform FP float offsety;
 uniform FP float specularity;
 uniform FP float waveStrenght;
-uniform FP vec3 ka;
-uniform FP vec3 specularColor;
+uniform FP vec4 ka;
 uniform FP float shininess;
 uniform FP float normalAmount;
 uniform FP vec3 eyePosition;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
+#pragma include coordinatesystems.inc
 
 void main()
 {
@@ -50,21 +51,24 @@ void main()
     // 2 Animated Layers of specularTexture mixed with the newCoord
     FP vec4 specularTextureColor = texture2D( specularTexture, multexCoord+newCoord) + (texture2D( specularTexture, movtexCoord+newCoord ));
     // 2 Animated Layers of normalTexture mixed with the newCoord
-    FP vec3 normal = normalAmount * texture2D( normalTexture, movtexCoord+newCoord ).rgb - vec3( 1.0 )+(normalAmount * texture2D( normalTexture, multexCoord+newCoord ).rgb - vec3( 1.0 ));
+    FP vec3 tNormal = normalAmount * texture2D( normalTexture, movtexCoord+newCoord ).rgb - vec3( 1.0 )+(normalAmount * texture2D( normalTexture, multexCoord+newCoord ).rgb - vec3( 1.0 ));
     // Animated skyTexture layer
     FP vec4 skycolor = texture2D(skyTexture, skyTexCoord);
     skycolor = skycolor * 0.4;
     //Animated foamTexture layer
     FP vec4 foamTextureColor = texture2D(foamTexture, texCoord);
 
-    // Calculate the lighting model, keeping the specular component separate
-    FP vec3 diffuseColor, specularColor;
-    adsModelNormalMapped(worldPosition, normal, eyePosition, shininess, tangentMatrix, diffuseColor, specularColor);
+    FP mat3 tangentMatrix = calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent);
+    FP mat3 invertTangentMatrix = transpose(tangentMatrix);
 
-    // Combine final fragment color
-    FP vec4 outputColor = vec4(((skycolor.rgb + ka + diffuseTextureColor.rgb * (diffuseColor))+(specularColor * specularTextureColor.a*specularity)), vpos.y );
+    FP vec3 wNormal = normalize(invertTangentMatrix * tNormal);
+    FP vec3 worldView = normalize(eyePosition - worldPosition);
 
+    FP vec4 diffuse = vec4(diffuseTextureColor.rgb, vpos.y);
+    FP vec4 specular = vec4(specularTextureColor.a*specularity);
+    FP vec4 outputColor = phongFunction(ka, diffuse, specular, shininess, worldPosition, worldView, wNormal);
 
+    outputColor += vec4(skycolor.rgb, vpos.y);
     outputColor += (foamTextureColor.rgba*vpos.y);
 
     gl_FragColor = vec4(outputColor.rgb,1.0);

@@ -107,7 +107,7 @@
                     "major": 2,
                     "minor": 0
                 },
-                "substitution": "gl_fragColor = $fragColor;"
+                "substitution": "gl_FragColor = $fragColor;"
             },
             {
                 "format": {
@@ -377,12 +377,55 @@
         "rules": [
             {
                 "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp mat3 $matrix = calcWorldSpaceToTangentSpaceMatrix($worldNormal, $worldTangent);",
+                "headerSnippets": [ "#pragma include :/shaders/es2/coordinatesystems.inc" ]
+            },
+            {
+                "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
                     "minor": 0
                 },
                 "substitution": "mat3 $matrix = calcWorldSpaceToTangentSpaceMatrix($worldNormal, $worldTangent);",
                 "headerSnippets": [ "#pragma include :/shaders/gl3/coordinatesystems.inc" ]
+            }
+        ]
+    },
+    "phongFunction": {
+        "inputs": [
+            "ambient",
+            "diffuse",
+            "specular",
+            "shininess",
+            "worldPosition",
+            "worldView",
+            "worldNormal"
+        ],
+        "outputs": [
+            "outputColor"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $outputColor = phongFunction($ambient, $diffuse, $specular, $shininess, $worldPosition, $worldView, $worldNormal);",
+                "headerSnippets": [ "#pragma include :/shaders/es2/phong.inc.frag" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $outputColor = phongFunction($ambient, $diffuse, $specular, $shininess, $worldPosition, $worldView, $worldNormal);",
+                "headerSnippets": [ "#pragma include :/shaders/gl3/phong.inc.frag" ]
             }
         ]
     },

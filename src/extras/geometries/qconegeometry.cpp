@@ -368,8 +368,8 @@ void QConeGeometryPrivate::init()
     m_normalAttribute = new QAttribute(q);
     m_texCoordAttribute = new QAttribute(q);
     m_indexAttribute = new QAttribute(q);
-    m_vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, q);
-    m_indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, q);
+    m_vertexBuffer = new Qt3DRender::QBuffer(q);
+    m_indexBuffer = new Qt3DRender::QBuffer(q);
 
     // vec3 pos, vec2 tex, vec3 normal
     const quint32 elementSize = 3 + 2 + 3;

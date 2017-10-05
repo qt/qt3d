@@ -48,6 +48,7 @@
 #include <QtGui/qquaternion.h>
 #include <QtGui/qcolor.h>
 #include <QtCore/qvariant.h>
+#include <QtCore/qvarlengtharray.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 
 #include <numeric>
@@ -292,13 +293,45 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
                                                           bool finalFrame)
 {
     QVector<Qt3DCore::QSceneChangePtr> changes;
+    QVarLengthArray<Skeleton *, 4> dirtySkeletons;
+
     // Iterate over the mappings
     for (const MappingData &mappingData : mappingDataVec) {
         if (!mappingData.propertyName)
             continue;
+
         // Build the new value from the channel/fcurve evaluation results
         const QVariant v = buildPropertyValue(mappingData, channelResults);
-        if (v.isValid()) {
+        if (!v.isValid())
+            continue;
+
+        // TODO: Avoid wrapping joint transform components up in a variant, just
+        // to immediately unwrap them again. Refactor buildPropertyValue() to call
+        // helper functions that we can call directly here for joints.
+        if (mappingData.skeleton && mappingData.jointIndex != -1) {
+            // Remember that this skeleton is dirty. We will ask each dirty skeleton
+            // to send its set of local poses to observers below.
+            if (!dirtySkeletons.contains(mappingData.skeleton))
+                dirtySkeletons.push_back(mappingData.skeleton);
+
+            switch (mappingData.jointTransformComponent) {
+            case MappingData::Scale:
+                mappingData.skeleton->setJointScale(mappingData.jointIndex, v.value<QVector3D>());
+                break;
+
+            case MappingData::Rotation:
+                mappingData.skeleton->setJointRotation(mappingData.jointIndex, v.value<QQuaternion>());
+                break;
+
+            case MappingData::Translation:
+                mappingData.skeleton->setJointTranslation(mappingData.jointIndex, v.value<QVector3D>());
+                break;
+
+            default:
+                Q_UNREACHABLE();
+                break;
+            }
+        } else {
             // Construct a property update change, set target, property and delivery options
             auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(mappingData.targetId);
             e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -311,6 +344,8 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
         }
     }
 
+    for (const auto skeleton : dirtySkeletons)
+        skeleton->sendLocalPoses();
 
     // If it's the final frame, notify the frontend that we've stopped
     if (finalFrame) {
@@ -342,96 +377,118 @@ QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &
     return callbacks;
 }
 
-//TODO: Remove this and use new implementation below for both the unblended
-//      and blended animation cases.
-QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                           const AnimationClip *clip,
-                                           const ChannelMapper *mapper)
-{
-    QVector<MappingData> mappingDataVec;
-    ChannelMappingManager *mappingManager = handler->channelMappingManager();
-    const QVector<Channel> &channels = clip->channels();
-
-    // Iterate over the mappings in the mapper object
-    const auto mappingIds = mapper->mappingIds();
-    for (const Qt3DCore::QNodeId mappingId : mappingIds) {
-        // Get the mapping object
-        ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
-        Q_ASSERT(mapping);
-
-        // Populate the data we need, easy stuff first
-        MappingData mappingData;
-        mappingData.targetId = mapping->targetId();
-        mappingData.propertyName = mapping->propertyName();
-        mappingData.type = mapping->type();
-        mappingData.callback = mapping->callback();
-        mappingData.callbackFlags = mapping->callbackFlags();
-
-        if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
-            qWarning() << "Unknown type for node id =" << mappingData.targetId
-                       << "and property =" << mapping->property()
-                       << "and callback =" << mapping->callback();
-            continue;
-        }
-
-        // Now the tricky part. Mapping the channel indices onto the property type.
-        // Try to find a ChannelGroup with matching name
-        const QString channelName = mapping->channelName();
-        int channelGroupIndex = 0;
-        bool foundMatch = false;
-        for (const Channel &channel : channels) {
-            if (channel.name == channelName) {
-                foundMatch = true;
-                const int channelBaseIndex = clip->channelComponentBaseIndex(channelGroupIndex);
-
-                // Within this group, match channel names with index ordering
-                mappingData.channelIndices = channelComponentsToIndices(channel, mappingData.type, channelBaseIndex);
-
-                // Store the mapping data
-                mappingDataVec.push_back(mappingData);
-
-                if (foundMatch)
-                    break;
-            }
-
-            ++channelGroupIndex;
-        }
-    }
-
-    return mappingDataVec;
-}
-
+// TODO: Optimize this even more by combining the work done here with the functions:
+// buildRequiredChannelsAndTypes() and assignChannelComponentIndices(). We are
+// currently repeating the iteration over mappings and extracting/generating
+// channel names, types and joint indices.
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
                                            const QVector<ComponentIndices> &channelComponentIndices)
 {
+    // Accumulate the required number of mappings
+    int maxMappingDatas = 0;
+    for (const auto mapping : channelMappings) {
+        switch (mapping->mappingType()) {
+        case ChannelMapping::ChannelMappingType:
+        case ChannelMapping::CallbackMappingType:
+            ++maxMappingDatas;
+            break;
+
+        case ChannelMapping::SkeletonMappingType: {
+            Skeleton *skeleton = mapping->skeleton();
+            maxMappingDatas += 3 * skeleton->jointCount(); // S, R, T
+            break;
+        }
+        }
+    }
     QVector<MappingData> mappingDataVec;
-    mappingDataVec.reserve(channelMappings.size());
+    mappingDataVec.reserve(maxMappingDatas);
 
     // Iterate over the mappings
     for (const auto mapping : channelMappings) {
-        // Populate the data we need, easy stuff first
-        MappingData mappingData;
-        mappingData.targetId = mapping->targetId();
-        mappingData.propertyName = mapping->propertyName();
-        mappingData.type = mapping->type();
-        mappingData.callback = mapping->callback();
-        mappingData.callbackFlags = mapping->callbackFlags();
+        switch (mapping->mappingType()) {
+        case ChannelMapping::ChannelMappingType:
+        case ChannelMapping::CallbackMappingType: {
+            // Populate the data we need, easy stuff first
+            MappingData mappingData;
+            mappingData.targetId = mapping->targetId();
+            mappingData.propertyName = mapping->propertyName();
+            mappingData.type = mapping->type();
+            mappingData.callback = mapping->callback();
+            mappingData.callbackFlags = mapping->callbackFlags();
 
-        if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
-            qWarning() << "Unknown type for node id =" << mappingData.targetId
-                       << "and property =" << mapping->property()
-                       << "and callback =" << mapping->callback();
-            continue;
+            if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
+                qWarning() << "Unknown type for node id =" << mappingData.targetId
+                           << "and property =" << mapping->property()
+                           << "and callback =" << mapping->callback();
+                continue;
+            }
+
+            // Try to find matching channel name and type
+            const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type() };
+            const int index = channelNamesAndTypes.indexOf(nameAndType);
+            if (index != -1) {
+                // We got one!
+                mappingData.channelIndices = channelComponentIndices[index];
+                mappingDataVec.push_back(mappingData);
+            }
+            break;
         }
 
-        // Try to find matching channel name and type
-        const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type() };
-        const int index = channelNamesAndTypes.indexOf(nameAndType);
-        if (index != -1) {
-            // We got one!
-            mappingData.channelIndices = channelComponentIndices[index];
-            mappingDataVec.push_back(mappingData);
+        case ChannelMapping::SkeletonMappingType: {
+            const QVector<ChannelNameAndType> jointProperties
+                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) },
+                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) },
+                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D) } };
+            const QHash<QString, const char *> channelNameToPropertyName
+                    = { { QLatin1String("Location"), "translation" },
+                        { QLatin1String("Rotation"), "rotation" },
+                        { QLatin1String("Scale"), "scale" } };
+            Skeleton *skeleton = mapping->skeleton();
+            const int jointCount = skeleton->jointCount();
+            for (int jointIndex = 0; jointIndex < jointCount; ++jointIndex) {
+                // Populate the data we need, easy stuff first
+                MappingData mappingData;
+                mappingData.targetId = mapping->skeletonId();
+                mappingData.skeleton = mapping->skeleton();
+
+                const int propertyCount = jointProperties.size();
+                for (int propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex) {
+                    // Get the name, type and index
+                    ChannelNameAndType nameAndType = jointProperties[propertyIndex];
+                    nameAndType.jointIndex = jointIndex;
+
+                    // Try to find matching channel name and type
+                    const int index = channelNamesAndTypes.indexOf(nameAndType);
+
+                    // Do we have any animation data for this channel? If not, don't bother
+                    // adding a mapping for it.
+                    if (channelComponentIndices[index].isEmpty())
+                        continue;
+
+                    if (index != -1) {
+                        // We got one!
+                        mappingData.propertyName = channelNameToPropertyName[nameAndType.name];
+                        mappingData.type = nameAndType.type;
+                        mappingData.channelIndices = channelComponentIndices[index];
+                        mappingData.jointIndex = jointIndex;
+
+                        // Convert property name for joint transform components to
+                        // an enumerated type so we can avoid the string comparisons
+                        // when sending the change events after evaluation.
+                        if (qstrcmp(mappingData.propertyName, "scale") == 0)
+                            mappingData.jointTransformComponent = MappingData::Scale;
+                        else if (qstrcmp(mappingData.propertyName, "rotation") == 0)
+                            mappingData.jointTransformComponent = MappingData::Rotation;
+                        else if (qstrcmp(mappingData.propertyName, "translation") == 0)
+                            mappingData.jointTransformComponent = MappingData::Translation;
+
+                        mappingDataVec.push_back(mappingData);
+                    }
+                }
+            }
+            break;
+        }
         }
     }
 
@@ -539,6 +596,10 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                  ClipBlendNodeVisitor::VisitOnlyDependencies);
 
     auto func = [&clipIds, nodeManager] (ClipBlendNode *blendNode) {
+        // Check if this is a value node itself
+        if (blendNode->blendType() == ClipBlendNode::ValueType)
+            clipIds.append(blendNode->peerId());
+
         const auto dependencyIds = blendNode->currentDependencyIds();
         for (const auto dependencyId : dependencyIds) {
             // Look up the blend node and if it's a value type (clip),
@@ -558,18 +619,17 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
 }
 
 ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
-                                           const QVector<ComponentIndices> &targetIndices,
+                                           QVector<ComponentIndices> &targetIndices,
                                            const AnimationClip *clip)
 {
     Q_ASSERT(targetChannels.size() == targetIndices.size());
 
     // Reserve enough storage for all the format indices
     int indexCount = 0;
-    for (const auto targetIndexVec : qAsConst(targetIndices))
+    for (const auto &targetIndexVec : qAsConst(targetIndices))
         indexCount += targetIndexVec.size();
     ComponentIndices format;
     format.resize(indexCount);
-
 
     // Iterate through the target channels
     const int channelCount = targetChannels.size();
@@ -579,23 +639,24 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
         const ChannelNameAndType &targetChannel = targetChannels[i];
         const int clipChannelIndex = clip->channelIndex(targetChannel.name,
                                                         targetChannel.jointIndex);
-
-        // TODO: Ensure channel in the clip has enough components to map to the type.
-        //       Requires some improvements to the clip data structure first.
-        // TODO: I don't think we need the targetIndices, only the number of components
-        //       for each target channel. Check once blend tree is complete.
         const int componentCount = targetIndices[i].size();
 
         if (clipChannelIndex != -1) {
             // Found a matching channel in the clip. Get the base channel
             // component index and populate the format indices for this channel.
             const int baseIndex = clip->channelComponentBaseIndex(clipChannelIndex);
-            std::iota(formatIt, formatIt + componentCount, baseIndex);
+
+            // Within this group, match channel names with index ordering
+            const auto channelIndices = channelComponentsToIndices(clip->channels()[clipChannelIndex],
+                                                                   targetChannel.type,
+                                                                   baseIndex);
+            std::copy(channelIndices.begin(), channelIndices.end(), formatIt);
 
         } else {
             // No such channel in this clip. We'll use default values when
             // mapping from the clip to the formatted clip results.
             std::fill(formatIt, formatIt + componentCount, -1);
+            targetIndices[i].clear();
         }
 
         formatIt += componentCount;

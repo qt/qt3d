@@ -48,88 +48,25 @@
 // We mean it.
 //
 
-#include <Qt3DExtras/qorbitcameracontroller.h>
-#include <QtGui/QVector3D>
-
-#include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DExtras/private/qabstractcameracontroller_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-class QCamera;
-}
-
-namespace Qt3DLogic {
-class QFrameAction;
-}
-
-namespace Qt3DInput {
-
-class QKeyboardDevice;
-class QMouseDevice;
-class QLogicalDevice;
-class QAction;
-class QActionInput;
-class QAxis;
-class QAnalogAxisInput;
-class QButtonAxisInput;
-class QAxisActionHandler;
-
-}
-
 namespace Qt3DExtras {
 
-class QOrbitCameraControllerPrivate : public Qt3DCore::QEntityPrivate
+class QOrbitCameraControllerPrivate : public QAbstractCameraControllerPrivate
 {
+    Q_DECLARE_PUBLIC(QOrbitCameraController)
+
 public:
     QOrbitCameraControllerPrivate();
 
     void init();
 
-    Qt3DRender::QCamera *m_camera;
-
-    Qt3DInput::QAction *m_leftMouseButtonAction;
-    Qt3DInput::QAction *m_rightMouseButtonAction;
-    Qt3DInput::QAction *m_altButtonAction;
-    Qt3DInput::QAction *m_shiftButtonAction;
-
-    Qt3DInput::QAxis *m_rxAxis;
-    Qt3DInput::QAxis *m_ryAxis;
-    Qt3DInput::QAxis *m_txAxis;
-    Qt3DInput::QAxis *m_tyAxis;
-    Qt3DInput::QAxis *m_tzAxis;
-
-    Qt3DInput::QActionInput *m_leftMouseButtonInput;
-    Qt3DInput::QActionInput *m_rightMouseButtonInput;
-    Qt3DInput::QActionInput *m_altButtonInput;
-    Qt3DInput::QActionInput *m_shiftButtonInput;
-
-    Qt3DInput::QAnalogAxisInput *m_mouseRxInput;
-    Qt3DInput::QAnalogAxisInput *m_mouseRyInput;
-    Qt3DInput::QAnalogAxisInput *m_mouseTzXInput;
-    Qt3DInput::QAnalogAxisInput *m_mouseTzYInput;
-    Qt3DInput::QButtonAxisInput *m_keyboardTxPosInput;
-    Qt3DInput::QButtonAxisInput *m_keyboardTyPosInput;
-    Qt3DInput::QButtonAxisInput *m_keyboardTzPosInput;
-    Qt3DInput::QButtonAxisInput *m_keyboardTxNegInput;
-    Qt3DInput::QButtonAxisInput *m_keyboardTyNegInput;
-    Qt3DInput::QButtonAxisInput *m_keyboardTzNegInput;
-
-    Qt3DInput::QKeyboardDevice *m_keyboardDevice;
-    Qt3DInput::QMouseDevice *m_mouseDevice;
-
-    Qt3DInput::QLogicalDevice *m_logicalDevice;
-
-    Qt3DLogic::QFrameAction *m_frameAction;
-
-    float m_linearSpeed;
-    float m_lookSpeed;
     float m_zoomInLimit;
-    QVector3D m_cameraUp;
 
-    void _q_onTriggered(float);
-
-    Q_DECLARE_PUBLIC(QOrbitCameraController)
+private:
+    QOrbitCameraController *q_ptr;
 };
 
 } // namespace Qt3DExtras
