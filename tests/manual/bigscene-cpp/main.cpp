@@ -81,6 +81,17 @@ int main(int ac, char **av)
 
     QEntity *root = new QEntity();
 
+    // Mesh
+    auto *mesh = new Qt3DExtras::QCylinderMesh(root);
+    mesh->setRings(50.0f);
+    mesh->setSlices(30.0f);
+    mesh->setRadius(2.5f);
+    mesh->setLength(5.0f);
+
+    // Material
+    auto phongMaterial = new Qt3DExtras::QPhongMaterial(root);
+    auto effect = phongMaterial->effect();
+
     // Camera
     QCamera *cameraEntity = view.camera();
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
@@ -92,17 +103,20 @@ int main(int ac, char **av)
     Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(root);
     camController->setCamera(cameraEntity);
 
-    const float radius = 100.0f;
+    const double radius = 100.0;
     const int max = 1000;
-    const float det = 1.0f / max;
+    const double det = 1.0 / max;
 
     // Scene
     for (int i = 0; i < max; i++) {
-        Entity *e = new Entity();
-        const float angle = M_PI * 2.0f * i * det * 10.;
+        Entity *e = new Entity(effect, root);
+        e->addComponent(mesh);
+        const double angle = M_PI * 2.0 * double(i) * det * 10.;
 
-        e->setDiffuseColor(QColor(qFabs(qCos(angle)) * 255, 204, 75));
-        e->setPosition(QVector3D(radius * qCos(angle), -200.* i * det, radius * qSin(angle)));
+        e->setDiffuseColor(QColor(int(qFabs(qCos(angle)) * 255.0), 204, 75));
+        e->setPosition(QVector3D(float(radius * qCos(angle)),
+                                 float(-200.0 * i * det),
+                                 float(radius * qSin(angle))));
         e->setTheta(30.0f * i);
         e->setPhi(45.0f * i);
 
@@ -119,8 +133,6 @@ int main(int ac, char **av)
         animZ->setEndValue(QVariant::fromValue((i + 1) * 380.0f));
         animZ->setLoopCount(-1);
         animZ->start();
-
-        e->setParent(root);
     }
 
     view.setRootEntity(root);
