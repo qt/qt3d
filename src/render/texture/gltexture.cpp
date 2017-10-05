@@ -175,7 +175,8 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
                     setDirtyFlag(Properties, true);
                 }
             } else {
-                qWarning() << "[Qt3DRender::GLTexture] No QTextureImageData generated from functor yet, texture will be invalid for this frame";
+                // No QTextureImageData generated from functor yet, texture will be invalid for this frame
+                // but will be correctly loaded at frame n+1
                 texturedDataInvalid = true;
             }
         }
