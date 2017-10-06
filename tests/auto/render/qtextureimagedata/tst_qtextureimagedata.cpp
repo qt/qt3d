@@ -78,7 +78,7 @@ protected:
 
     Qt3DCore::QNode *doClone() const override
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
     */
 

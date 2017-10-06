@@ -41,7 +41,7 @@ class MyBoundingVolumeDebug : public Qt3DRender::QBoundingVolumeDebug
 {
     Q_OBJECT
 public:
-    MyBoundingVolumeDebug(Qt3DCore::QNode *parent = Q_NULLPTR)
+    MyBoundingVolumeDebug(Qt3DCore::QNode *parent = nullptr)
         : Qt3DRender::QBoundingVolumeDebug(parent)
     {}
 
@@ -94,7 +94,7 @@ private Q_SLOTS:
 //        QCoreApplication::processEvents();
 
 //        // THEN
-//        QVERIFY(clone != Q_NULLPTR);
+//        QVERIFY(clone != nullptr);
 //        QCOMPARE(bvD->id(), clone->id());
 //        QCOMPARE(bvD->recursive(), clone->recursive());
 //    }

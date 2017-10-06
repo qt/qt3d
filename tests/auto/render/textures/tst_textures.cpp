@@ -58,7 +58,7 @@ public:
 
     bool operator ==(const Qt3DRender::QTextureImageDataGenerator &other) const override {
         const TestImageDataGenerator *otherFunctor = Qt3DRender::functor_cast<TestImageDataGenerator>(&other);
-        return (otherFunctor != Q_NULLPTR && otherFunctor->m_id == m_id);
+        return (otherFunctor != nullptr && otherFunctor->m_id == m_id);
     }
 
     QT3D_FUNCTOR(TestImageDataGenerator)
@@ -79,7 +79,7 @@ public:
 
     bool operator ==(const Qt3DRender::QTextureGenerator &other) const override {
         const TestTextureGenerator *otherFunctor = Qt3DRender::functor_cast<TestTextureGenerator>(&other);
-        return (otherFunctor != Q_NULLPTR && otherFunctor->m_id == m_id);
+        return (otherFunctor != nullptr && otherFunctor->m_id == m_id);
     }
 
     QT3D_FUNCTOR(TestTextureGenerator)
