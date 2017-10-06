@@ -1204,11 +1204,6 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         // be bound as a VertexArray
         bindGLBuffer(ssbo, GLBuffer::ShaderStorageBuffer);
         ssbo->bindBufferBase(this, ssboIndex++, GLBuffer::ShaderStorageBuffer);
-        // Perform update if required
-        if (cpuBuffer->isDirty()) {
-            uploadDataToGLBuffer(cpuBuffer, ssbo);
-            cpuBuffer->unsetDirty();
-        }
         // TO DO: Make sure that there's enough binding points
     }
 
@@ -1224,11 +1219,6 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         // be bound as a VertexArray
         bindGLBuffer(ubo, GLBuffer::UniformBuffer);
         ubo->bindBufferBase(this, uboIndex++, GLBuffer::UniformBuffer);
-        if (cpuBuffer->isDirty()) {
-            // Perform update if required
-            uploadDataToGLBuffer(cpuBuffer, ubo);
-            cpuBuffer->unsetDirty();
-        }
         // TO DO: Make sure that there's enough binding points
     }
 
