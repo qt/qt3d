@@ -501,7 +501,14 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
 
                     // Do we have any animation data for this channel? If not, don't bother
                     // adding a mapping for it.
-                    if (channelComponentIndices[index].isEmpty())
+                    bool hasChannelIndices = false;
+                    for (const auto componentIndex : channelComponentIndices[index]) {
+                        if (componentIndex != -1) {
+                            hasChannelIndices = true;
+                            break;
+                        }
+                    }
+                    if (!hasChannelIndices)
                         continue;
 
                     if (index != -1) {
@@ -692,7 +699,7 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
             // No such channel in this clip. We'll use default values when
             // mapping from the clip to the formatted clip results.
             std::fill(formatIt, formatIt + componentCount, -1);
-            targetIndices[i].clear();
+            std::fill(targetIndices[i].begin(), targetIndices[i].end(), -1);
         }
 
         formatIt += componentCount;
