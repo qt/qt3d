@@ -78,8 +78,8 @@ public:
 
     double duration() const Q_DECL_OVERRIDE;
 
-    void setFormatIndices(Qt3DCore::QNodeId animatorId, const ComponentIndices &formatIndices);
-    ComponentIndices formatIndices(Qt3DCore::QNodeId animatorId);
+    void setClipFormat(Qt3DCore::QNodeId animatorId, const ClipFormat &formatIndices);
+    ClipFormat clipFormat(Qt3DCore::QNodeId animatorId);
 
 protected:
     ClipResults doBlend(const QVector<ClipResults> &blendData) const Q_DECL_OVERRIDE;
@@ -90,7 +90,7 @@ private:
     Qt3DCore::QNodeId m_clipId;
 
     QVector<Qt3DCore::QNodeId> m_animatorIds;
-    QVector<ComponentIndices> m_formatIndicies;
+    QVector<ClipFormat> m_clipFormats;
 };
 
 } // namespace Animation

@@ -44,6 +44,7 @@
 #include <QtGui/qvector4d.h>
 #include <QtGui/qquaternion.h>
 #include <QtGui/qcolor.h>
+#include <QtCore/qbitarray.h>
 
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>
@@ -64,6 +65,7 @@ Q_DECLARE_METATYPE(ClipAnimator *)
 Q_DECLARE_METATYPE(BlendedClipAnimator *)
 Q_DECLARE_METATYPE(QVector<ChannelNameAndType>)
 Q_DECLARE_METATYPE(QVector<AnimationCallbackAndValue>)
+Q_DECLARE_METATYPE(ClipFormat)
 
 namespace {
 
@@ -277,6 +279,7 @@ private Q_SLOTS:
         QTest::addColumn<QVector<ChannelMapping *>>("channelMappings");
         QTest::addColumn<QVector<ChannelNameAndType>>("channelNamesAndTypes");
         QTest::addColumn<QVector<ComponentIndices>>("channelComponentIndices");
+        QTest::addColumn<QVector<QBitArray>>("sourceClipMask");
         QTest::addColumn<QVector<MappingData>>("expectedResults");
 
         // Single ChannelMapping
@@ -316,6 +319,12 @@ private Q_SLOTS:
                     = { rotationIndices, locationIndices, baseColorIndices,
                         metalnessIndices, roughnessIndices };
 
+            QVector<QBitArray> sourceClipMask = { QBitArray(4, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(1, true),
+                                                  QBitArray(1, true) };
+
             MappingData expectedMapping;
             expectedMapping.targetId = channelMapping->targetId();
             expectedMapping.propertyName = channelMapping->propertyName();
@@ -328,6 +337,7 @@ private Q_SLOTS:
                     << channelMappings
                     << channelNamesAndTypes
                     << channelComponentIndices
+                    << sourceClipMask
                     << expectedResults;
         }
 
@@ -399,6 +409,12 @@ private Q_SLOTS:
                     = { rotationIndices, locationIndices, baseColorIndices,
                         metalnessIndices, roughnessIndices };
 
+            QVector<QBitArray> sourceClipMask = { QBitArray(4, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(1, true),
+                                                  QBitArray(1, true) };
+
             MappingData expectedLocationMapping;
             expectedLocationMapping.targetId = locationMapping->targetId();
             expectedLocationMapping.propertyName = locationMapping->propertyName();
@@ -441,6 +457,7 @@ private Q_SLOTS:
                     << channelMappings
                     << channelNamesAndTypes
                     << channelComponentIndices
+                    << sourceClipMask
                     << expectedResults;
         }
 
@@ -479,6 +496,19 @@ private Q_SLOTS:
             channelComponentIndices.push_back({ 33, 34, 35, 36 });
             channelComponentIndices.push_back({ 37, 38, 39 });
 
+            QVector<QBitArray> sourceClipMask = { QBitArray(3, true),
+                                                  QBitArray(4, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(4, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(4, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(4, true),
+                                                  QBitArray(3, true) };
+
             QVector<MappingData> expectedResults;
             int componentIndicesIndex = 0;
             for (int i = 0; i < jointCount; ++i) {
@@ -511,6 +541,7 @@ private Q_SLOTS:
                     << channelMappings
                     << channelNamesAndTypes
                     << channelComponentIndices
+                    << sourceClipMask
                     << expectedResults;
         }
     }
@@ -522,12 +553,14 @@ private Q_SLOTS:
         QFETCH(QVector<ChannelMapping *>, channelMappings);
         QFETCH(QVector<ChannelNameAndType>, channelNamesAndTypes);
         QFETCH(QVector<ComponentIndices>, channelComponentIndices);
+        QFETCH(QVector<QBitArray>, sourceClipMask);
         QFETCH(QVector<MappingData>, expectedResults);
 
         // WHEN
         const QVector<MappingData> actualResults = buildPropertyMappings(channelMappings,
                                                                          channelNamesAndTypes,
-                                                                         channelComponentIndices);
+                                                                         channelComponentIndices,
+                                                                         sourceClipMask);
 
         // THEN
         QCOMPARE(actualResults.size(), expectedResults.size());
@@ -2524,7 +2557,7 @@ private Q_SLOTS:
         QTest::addColumn<QVector<ChannelNameAndType>>("targetChannels");
         QTest::addColumn<QVector<ComponentIndices>>("targetIndices");
         QTest::addColumn<AnimationClip *>("clip");
-        QTest::addColumn<ComponentIndices>("expectedResults");
+        QTest::addColumn<ClipFormat>("expectedResults");
 
         {
             QVector<ChannelNameAndType> targetChannels;
@@ -2546,11 +2579,19 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
-                                                 4, 6, 5,       // Location (y/z swapped in clip3.json)
-                                                 7, 8, 9,       // Base Color
-                                                 10,            // Metalness
-                                                 11 };          // Roughness
+            ClipFormat expectedResults;
+            expectedResults.sourceClipIndices = { 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
+                                                  4, 6, 5,       // Location (y/z swapped in clip3.json)
+                                                  7, 8, 9,       // Base Color
+                                                  10,            // Metalness
+                                                  11 };          // Roughness
+            expectedResults.sourceClipMask = { QBitArray(4, true),
+                                               QBitArray(3, true),
+                                               QBitArray(3, true),
+                                               QBitArray(1, true),
+                                               QBitArray(1, true) };
+            expectedResults.namesAndTypes = targetChannels;
+            expectedResults.formattedComponentIndices = targetIndices;
 
             QTest::newRow("rotation, location, pbr metal-rough")
                     << targetChannels << targetIndices << clip << expectedResults;
@@ -2576,11 +2617,19 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 4, 6, 5,       // Location (y/z swapped in clip3.json)
-                                                 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
-                                                 7, 8, 9,       // Base Color
-                                                 10,            // Metalness
-                                                 11 };          // Roughness
+            ClipFormat expectedResults;
+            expectedResults.sourceClipIndices = { 4, 6, 5,       // Location (y/z swapped in clip3.json)
+                                                  0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
+                                                  7, 8, 9,       // Base Color
+                                                  10,            // Metalness
+                                                  11 };          // Roughness
+            expectedResults.sourceClipMask = { QBitArray(3, true),
+                                               QBitArray(4, true),
+                                               QBitArray(3, true),
+                                               QBitArray(1, true),
+                                               QBitArray(1, true) };
+            expectedResults.namesAndTypes = targetChannels;
+            expectedResults.formattedComponentIndices = targetIndices;
 
             QTest::newRow("location, rotation, pbr metal-rough")
                     << targetChannels << targetIndices << clip << expectedResults;
@@ -2606,11 +2655,19 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
-                                                 4, 6, 5,       // Location (y/z swapped in clip3.json)
-                                                 -1, -1, -1,    // Albedo (missing from clip)
-                                                 10,            // Metalness
-                                                 11 };          // Roughness
+            ClipFormat expectedResults;
+            expectedResults.sourceClipIndices = { 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
+                                                  4, 6, 5,       // Location (y/z swapped in clip3.json)
+                                                  -1, -1, -1,    // Albedo (missing from clip)
+                                                  10,            // Metalness
+                                                  11 };          // Roughness
+            expectedResults.sourceClipMask = { QBitArray(4, true),
+                                               QBitArray(3, true),
+                                               QBitArray(3, false),
+                                               QBitArray(1, true),
+                                               QBitArray(1, true) };
+            expectedResults.namesAndTypes = targetChannels;
+            expectedResults.formattedComponentIndices = targetIndices;
 
             QTest::newRow("rotation, location, albedo (missing), metal-rough")
                     << targetChannels << targetIndices << clip << expectedResults;
@@ -2636,11 +2693,19 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 4, 6, 5,       // Location (y/z swapped in clip3.json)
-                                                 0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
-                                                 -1, -1, -1,    // Albedo (missing from clip)
-                                                 10,            // Metalness
-                                                 11 };          // Roughness
+            ClipFormat expectedResults;
+            expectedResults.sourceClipIndices = { 4, 6, 5,       // Location (y/z swapped in clip3.json)
+                                                  0, 1, 3, 2,    // Rotation (y/z swapped in clip3.json)
+                                                  -1, -1, -1,    // Albedo (missing from clip)
+                                                  10,            // Metalness
+                                                  11 };          // Roughness
+            expectedResults.sourceClipMask = { QBitArray(3, true),
+                                               QBitArray(4, true),
+                                               QBitArray(3, false),
+                                               QBitArray(1, true),
+                                               QBitArray(1, true) };
+            expectedResults.namesAndTypes = targetChannels;
+            expectedResults.formattedComponentIndices = targetIndices;
 
             QTest::newRow("location, rotation, albedo (missing), metal-rough")
                     << targetChannels << targetIndices << clip << expectedResults;
@@ -2677,18 +2742,33 @@ private Q_SLOTS:
             clip->setSource(QUrl("qrc:/clip5.json"));
             clip->loadAnimation();
 
-            ComponentIndices expectedResults = { 4, 6, 5,           // Location, joint 0 (y/z swapped in clip5.json)
-                                                 0, 1, 3, 2,        // Rotation, joint 0 (y/z swapped in clip5.json)
-                                                 7, 8, 9,           // Scale,    joint 0
-                                                 14, 16, 15,        // Location, joint 1 (y/z swapped in clip5.json)
-                                                 10, 11, 13, 12,    // Rotation, joint 1 (y/z swapped in clip5.json)
-                                                 17, 18, 19,        // Scale,    joint 1
-                                                 24, 26, 25,        // Location, joint 2 (y/z swapped in clip5.json)
-                                                 20, 21, 23, 22,    // Rotation, joint 2 (y/z swapped in clip5.json)
-                                                 27, 28, 29,        // Scale,    joint 2
-                                                 34, 36, 35,        // Location, joint 3 (y/z swapped in clip5.json)
-                                                 30, 31, 33, 32,    // Rotation, joint 3 (y/z swapped in clip5.json)
-                                                 37, 38, 39 };      // Scale,    joint 3
+            ClipFormat expectedResults;
+            expectedResults.sourceClipIndices = { 4, 6, 5,           // Location, joint 0 (y/z swapped in clip5.json)
+                                                  0, 1, 3, 2,        // Rotation, joint 0 (y/z swapped in clip5.json)
+                                                  7, 8, 9,           // Scale,    joint 0
+                                                  14, 16, 15,        // Location, joint 1 (y/z swapped in clip5.json)
+                                                  10, 11, 13, 12,    // Rotation, joint 1 (y/z swapped in clip5.json)
+                                                  17, 18, 19,        // Scale,    joint 1
+                                                  24, 26, 25,        // Location, joint 2 (y/z swapped in clip5.json)
+                                                  20, 21, 23, 22,    // Rotation, joint 2 (y/z swapped in clip5.json)
+                                                  27, 28, 29,        // Scale,    joint 2
+                                                  34, 36, 35,        // Location, joint 3 (y/z swapped in clip5.json)
+                                                  30, 31, 33, 32,    // Rotation, joint 3 (y/z swapped in clip5.json)
+                                                  37, 38, 39 };      // Scale,    joint 3
+            expectedResults.sourceClipMask = { QBitArray(3, true),
+                                               QBitArray(4, true),
+                                               QBitArray(3, true),
+                                               QBitArray(3, true),
+                                               QBitArray(4, true),
+                                               QBitArray(3, true),
+                                               QBitArray(3, true),
+                                               QBitArray(4, true),
+                                               QBitArray(3, true),
+                                               QBitArray(3, true),
+                                               QBitArray(4, true),
+                                               QBitArray(3, true) };
+            expectedResults.namesAndTypes = targetChannels;
+            expectedResults.formattedComponentIndices = targetIndices;
 
             QTest::newRow("skeleton (SQT), 4 joints")
                     << targetChannels << targetIndices << clip << expectedResults;
@@ -2701,17 +2781,29 @@ private Q_SLOTS:
         QFETCH(QVector<ChannelNameAndType>, targetChannels);
         QFETCH(QVector<ComponentIndices>, targetIndices);
         QFETCH(AnimationClip *, clip);
-        QFETCH(ComponentIndices, expectedResults);
+        QFETCH(ClipFormat, expectedResults);
 
         // WHEN
-        const ComponentIndices actualResults = generateClipFormatIndices(targetChannels,
-                                                                         targetIndices,
-                                                                         clip);
+        const ClipFormat actualResults = generateClipFormatIndices(targetChannels,
+                                                                   targetIndices,
+                                                                   clip);
 
         // THEN
-        QCOMPARE(actualResults.size(), expectedResults.size());
-        for (int i = 0; i < actualResults.size(); ++i)
-            QCOMPARE(actualResults[i], expectedResults[i]);
+        QCOMPARE(actualResults.sourceClipIndices.size(), expectedResults.sourceClipIndices.size());
+        for (int i = 0; i < actualResults.sourceClipIndices.size(); ++i)
+            QCOMPARE(actualResults.sourceClipIndices[i], expectedResults.sourceClipIndices[i]);
+
+        QCOMPARE(actualResults.sourceClipMask.size(), expectedResults.sourceClipMask.size());
+        for (int i = 0; i < actualResults.sourceClipMask.size(); ++i)
+            QCOMPARE(actualResults.sourceClipMask[i], expectedResults.sourceClipMask[i]);
+
+        QCOMPARE(actualResults.formattedComponentIndices.size(), expectedResults.formattedComponentIndices.size());
+        for (int i = 0; i < actualResults.formattedComponentIndices.size(); ++i)
+            QCOMPARE(actualResults.formattedComponentIndices[i], expectedResults.formattedComponentIndices[i]);
+
+        QCOMPARE(actualResults.namesAndTypes.size(), expectedResults.namesAndTypes.size());
+        for (int i = 0; i < actualResults.namesAndTypes.size(); ++i)
+            QCOMPARE(actualResults.namesAndTypes[i], expectedResults.namesAndTypes[i]);
 
         // Cleanup
         delete clip;

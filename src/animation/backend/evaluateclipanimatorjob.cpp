@@ -75,8 +75,8 @@ void EvaluateClipAnimatorJob::run()
     const ClipResults rawClipResults = evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
 
     // Reformat the clip results into the layout used by this animator/blend tree
-    ComponentIndices format = clipAnimator->formatIndices();
-    ClipResults formattedClipResults = formatClipResults(rawClipResults, format);
+    const ClipFormat clipFormat = clipAnimator->clipFormat();
+    ClipResults formattedClipResults = formatClipResults(rawClipResults, clipFormat.sourceClipIndices);
 
     if (preEvaluationDataForClip.isFinalFrame)
         clipAnimator->setRunning(false);

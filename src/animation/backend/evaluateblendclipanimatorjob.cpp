@@ -103,8 +103,8 @@ void EvaluateBlendClipAnimatorJob::run()
         ClipResults rawClipResults = evaluateClipAtPhase(clip, phase);
 
         // Reformat the clip results into the layout used by this animator/blend tree
-        ComponentIndices format = valueNode->formatIndices(blendedClipAnimator->peerId());
-        ClipResults formattedClipResults = formatClipResults(rawClipResults, format);
+        const ClipFormat format = valueNode->clipFormat(blendedClipAnimator->peerId());
+        ClipResults formattedClipResults = formatClipResults(rawClipResults, format.sourceClipIndices);
         valueNode->setClipResults(blendedClipAnimator->peerId(), formattedClipResults);
     }
 

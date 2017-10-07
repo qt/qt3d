@@ -416,7 +416,8 @@ QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &
 // channel names, types and joint indices.
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
-                                           const QVector<ComponentIndices> &channelComponentIndices)
+                                           const QVector<ComponentIndices> &channelComponentIndices,
+                                           const QVector<QBitArray> &sourceClipMask)
 {
     // Accumulate the required number of mappings
     int maxMappingDatas = 0;
@@ -463,7 +464,8 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
             if (index != -1) {
                 // Do we have any animation data for this channel? If not, don't bother
                 // adding a mapping for it.
-                if (channelComponentIndices[index].isEmpty())
+                const bool hasChannelIndices = sourceClipMask[index].count(true) != 0;
+                if (!hasChannelIndices)
                     continue;
 
                 // We got one!
@@ -501,13 +503,7 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
 
                     // Do we have any animation data for this channel? If not, don't bother
                     // adding a mapping for it.
-                    bool hasChannelIndices = false;
-                    for (const auto componentIndex : channelComponentIndices[index]) {
-                        if (componentIndex != -1) {
-                            hasChannelIndices = true;
-                            break;
-                        }
-                    }
+                    const bool hasChannelIndices = sourceClipMask[index].count(true) != 0;
                     if (!hasChannelIndices)
                         continue;
 
@@ -587,6 +583,7 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
                 for (int propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex) {
                     // Get the name, type and index
                     ChannelNameAndType nameAndType = jointProperties[propertyIndex];
+                    nameAndType.jointName = skeleton->jointName(jointIndex);
                     nameAndType.jointIndex = jointIndex;
 
                     // Add if not already contained
@@ -663,22 +660,26 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
     return clipIds;
 }
 
-ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
-                                           QVector<ComponentIndices> &targetIndices,
-                                           const AnimationClip *clip)
+ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
+                                     const QVector<ComponentIndices> &targetIndices,
+                                     const AnimationClip *clip)
 {
     Q_ASSERT(targetChannels.size() == targetIndices.size());
 
     // Reserve enough storage for all the format indices
+    const int channelCount = targetChannels.size();
+    ClipFormat f;
+    f.namesAndTypes.resize(channelCount);
+    f.formattedComponentIndices.resize(channelCount);
+    f.sourceClipMask.resize(channelCount);
     int indexCount = 0;
     for (const auto &targetIndexVec : qAsConst(targetIndices))
         indexCount += targetIndexVec.size();
-    ComponentIndices format;
-    format.resize(indexCount);
+    ComponentIndices &sourceIndices = f.sourceClipIndices;
+    sourceIndices.resize(indexCount);
 
     // Iterate through the target channels
-    const int channelCount = targetChannels.size();
-    auto formatIt = format.begin();
+    auto formatIt = sourceIndices.begin();
     for (int i = 0; i < channelCount; ++i) {
         // Find the index of the channel from the clip
         const ChannelNameAndType &targetChannel = targetChannels[i];
@@ -695,17 +696,23 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
                                                                    targetChannel.type,
                                                                    baseIndex);
             std::copy(channelIndices.begin(), channelIndices.end(), formatIt);
+
+            f.sourceClipMask[i].resize(componentCount);
+            for (int j = 0; j < componentCount; ++j)
+                f.sourceClipMask[i].setBit(j, channelIndices[j] != -1);
         } else {
             // No such channel in this clip. We'll use default values when
             // mapping from the clip to the formatted clip results.
             std::fill(formatIt, formatIt + componentCount, -1);
-            std::fill(targetIndices[i].begin(), targetIndices[i].end(), -1);
+            f.sourceClipMask[i].fill(false, componentCount);
         }
 
+        f.formattedComponentIndices[i] = targetIndices[i];
+        f.namesAndTypes[i] = targetChannels[i];
         formatIt += componentCount;
     }
 
-    return format;
+    return f;
 }
 
 ClipResults formatClipResults(const ClipResults &rawClipResults,
