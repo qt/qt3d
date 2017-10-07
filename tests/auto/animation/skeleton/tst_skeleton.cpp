@@ -70,6 +70,24 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.jointLocalPoses().size(), 0);
     }
 
+    void checkJointName()
+    {
+        // GIVEN
+        Skeleton backendSkeleton;
+        const QVector<QString> jointNames = { QLatin1String("rootJoint"),
+                                              QLatin1String("child1Joint"),
+                                              QLatin1String("child2Joint") };
+
+        // WHEN
+        backendSkeleton.setJointNames(jointNames);
+
+        // THEN
+        const int jointNameCount = jointNames.size();
+        for (int i = 0; i < jointNameCount; ++i) {
+            QCOMPARE(jointNames[i], backendSkeleton.jointName(i));
+        }
+    }
+
     void checkInitialAndCleanedUpState()
     {
         // GIVEN

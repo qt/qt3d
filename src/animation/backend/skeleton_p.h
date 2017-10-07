@@ -65,6 +65,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     int jointCount() const { return m_jointLocalPoses.size(); }
+    QString jointName(int jointIndex) const { return m_jointNames.at(jointIndex); }
 
     void setJointScale(int jointIndex, const QVector3D &scale)
     {
