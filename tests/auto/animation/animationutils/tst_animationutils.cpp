@@ -66,6 +66,7 @@ Q_DECLARE_METATYPE(BlendedClipAnimator *)
 Q_DECLARE_METATYPE(QVector<ChannelNameAndType>)
 Q_DECLARE_METATYPE(QVector<AnimationCallbackAndValue>)
 Q_DECLARE_METATYPE(ClipFormat)
+Q_DECLARE_METATYPE(ChannelNameAndType)
 
 namespace {
 
@@ -2883,6 +2884,169 @@ private Q_SLOTS:
 
         // Cleanup
         delete clip;
+    }
+
+    void checkDefaultValueForChannel_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<ChannelNameAndType>("channelDescription");
+        QTest::addColumn<QVector<float>>("expectedResults");
+
+        {
+            auto handler = new Handler();
+            auto channelMapping = createChannelMapping(handler,
+                                                       QLatin1String("Location"),
+                                                       Qt3DCore::QNodeId::createId(),
+                                                       QLatin1String("translation"),
+                                                       "translation",
+                                                       static_cast<int>(QVariant::Vector3D));
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.name = QLatin1String("translation");
+            const QVector<float> expectedResults = { 0.0f, 0.0f, 0.0f };
+            QTest::newRow("translation") << handler << channelDescription << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto channelMapping = createChannelMapping(handler,
+                                                       QLatin1String("Rotation"),
+                                                       Qt3DCore::QNodeId::createId(),
+                                                       QLatin1String("rotation"),
+                                                       "rotation",
+                                                       static_cast<int>(QVariant::Quaternion));
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Quaternion);
+            channelDescription.name = QLatin1String("rotation");
+            const QVector<float> expectedResults = { 1.0f, 0.0f, 0.0f, 0.0f };
+            QTest::newRow("rotation") << handler << channelDescription << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto channelMapping = createChannelMapping(handler,
+                                                       QLatin1String("Scale"),
+                                                       Qt3DCore::QNodeId::createId(),
+                                                       QLatin1String("scale"),
+                                                       "scale",
+                                                       static_cast<int>(QVariant::Vector3D));
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.name = QLatin1String("scale");
+            const QVector<float> expectedResults = { 1.0f, 1.0f, 1.0f };
+            QTest::newRow("scale") << handler << channelDescription << expectedResults;
+        }
+
+        // Test skeleton cases
+        {
+            auto handler = new Handler();
+            auto skeleton = createSkeleton(handler, 2);
+            skeleton->setJointScale(0, QVector3D(2.0f, 3.0f, 4.0f));
+
+            auto channelMapping = createChannelMapping(handler, skeleton->peerId());
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.jointIndex = 0;
+            channelDescription.jointTransformComponent = Scale;
+            const QVector<float> expectedResults = { 2.0f, 3.0f, 4.0f };
+            QTest::newRow("joint 0 scale") << handler << channelDescription << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto skeleton = createSkeleton(handler, 2);
+            skeleton->setJointRotation(0, QQuaternion(1.0f, 0.0f, 0.0f, 0.0f));
+
+            auto channelMapping = createChannelMapping(handler, skeleton->peerId());
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.jointIndex = 0;
+            channelDescription.jointTransformComponent = Rotation;
+            const QVector<float> expectedResults = { 1.0f, 0.0f, 0.0f, 0.0f };
+            QTest::newRow("joint 0 rotation") << handler << channelDescription << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto skeleton = createSkeleton(handler, 2);
+            skeleton->setJointTranslation(0, QVector3D(2.0f, 3.0f, 4.0f));
+
+            auto channelMapping = createChannelMapping(handler, skeleton->peerId());
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.jointIndex = 0;
+            channelDescription.jointTransformComponent = Translation;
+            const QVector<float> expectedResults = { 2.0f, 3.0f, 4.0f };
+            QTest::newRow("joint 0 translation") << handler << channelDescription << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto skeleton = createSkeleton(handler, 2);
+            skeleton->setJointScale(1, QVector3D(20.0f, 30.0f, 40.0f));
+
+            auto channelMapping = createChannelMapping(handler, skeleton->peerId());
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.jointIndex = 1;
+            channelDescription.jointTransformComponent = Scale;
+            const QVector<float> expectedResults = { 20.0f, 30.0f, 40.0f };
+            QTest::newRow("joint 1 scale") << handler << channelDescription << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto skeleton = createSkeleton(handler, 2);
+            skeleton->setJointRotation(1, QQuaternion(1.0f, 0.0f, 0.0f, 0.0f));
+
+            auto channelMapping = createChannelMapping(handler, skeleton->peerId());
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.jointIndex = 1;
+            channelDescription.jointTransformComponent = Rotation;
+            const QVector<float> expectedResults = { 1.0f, 0.0f, 0.0f, 0.0f };
+            QTest::newRow("joint 1 rotation") << handler << channelDescription << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto skeleton = createSkeleton(handler, 2);
+            skeleton->setJointTranslation(1, QVector3D(4.0f, 5.0f, 6.0f));
+
+            auto channelMapping = createChannelMapping(handler, skeleton->peerId());
+            ChannelNameAndType channelDescription;
+            channelDescription.mappingId = channelMapping->peerId();
+            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.jointIndex = 1;
+            channelDescription.jointTransformComponent = Translation;
+            const QVector<float> expectedResults = { 4.0f, 5.0f, 6.0f };
+            QTest::newRow("joint 1 translation") << handler << channelDescription << expectedResults;
+        }
+    }
+
+    void checkDefaultValueForChannel()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(ChannelNameAndType, channelDescription);
+        QFETCH(QVector<float>, expectedResults);
+
+        // WHEN
+        auto actualResults = defaultValueForChannel(handler, channelDescription);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i) {
+            QCOMPARE(actualResults[i], expectedResults[i]);
+        }
     }
 };
 

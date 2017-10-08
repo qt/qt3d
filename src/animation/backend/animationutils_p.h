@@ -335,6 +335,9 @@ ClipResults evaluateBlendTree(Handler *handler,
                               BlendedClipAnimator *animator,
                               Qt3DCore::QNodeId blendNodeId);
 
+Q_AUTOTEST_EXPORT
+QVector<float> defaultValueForChannel(Handler *handler, const ChannelNameAndType &channelDescription);
+
 } // Animation
 } // Qt3DAnimation
 

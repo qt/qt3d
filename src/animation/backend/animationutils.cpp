@@ -88,6 +88,16 @@ int componentsForType(int type)
     return componentCount;
 }
 
+inline QVector<float> valueToVector(const QVector3D &value)
+{
+    return { value.x(), value.y(), value.z() };
+}
+
+inline QVector<float> valueToVector(const QQuaternion &value)
+{
+    return { value.scalar(), value.x(), value.y(), value.z() };
+}
+
 ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
                                          const AnimatorEvaluationData &animatorData)
 {
@@ -777,6 +787,65 @@ ClipResults evaluateBlendTree(Handler *handler,
     ClipBlendNode *blendTreeRootNode = nodeManager->lookupNode(blendTreeRootId);
     Q_ASSERT(blendTreeRootNode);
     return blendTreeRootNode->clipResults(animatorId);
+}
+
+QVector<float> defaultValueForChannel(Handler *handler,
+                                      const ChannelNameAndType &channelDescription)
+{
+    QVector<float> result;
+
+    // Does the channel repesent a joint in a skeleton or is it a general channel?
+    ChannelMappingManager *mappingManager = handler->channelMappingManager();
+    const ChannelMapping *mapping = mappingManager->lookupResource(channelDescription.mappingId);
+    switch (mapping->mappingType()) {
+    case ChannelMapping::SkeletonMappingType: {
+        // Default channel values for a joint in a skeleton, should be taken
+        // from the default pose of the joint itself. I.e. if a joint is not
+        // explicitly animated, then it should retain it's initial rest pose.
+        Skeleton *skeleton = mapping->skeleton();
+        const int jointIndex = channelDescription.jointIndex;
+        switch (channelDescription.jointTransformComponent) {
+        case Translation:
+            result = valueToVector(skeleton->jointTranslation(jointIndex));
+            break;
+
+        case Rotation:
+            result = valueToVector(skeleton->jointRotation(jointIndex));
+            break;
+
+        case Scale:
+            result = valueToVector(skeleton->jointScale(jointIndex));
+            break;
+
+        case NoTransformComponent:
+            Q_UNREACHABLE();
+            break;
+        }
+        break;
+    }
+
+    case ChannelMapping::ChannelMappingType:
+    case ChannelMapping::CallbackMappingType: {
+        // Do our best to provide a sensible default value.
+        if (channelDescription.type == QMetaType::QQuaternion) {
+            result = valueToVector(QQuaternion()); // (1, 0, 0, 0)
+            break;
+        }
+
+        if (channelDescription.name.toLower() == QLatin1String("scale")) {
+            result = valueToVector(QVector3D(1.0f, 1.0f, 1.0f));
+            break;
+        }
+
+        // Everything else gets all zeros
+        const int componentCount = componentsForType(channelDescription.type);
+        result = QVector<float>(componentCount, 0.0f);
+        break;
+    }
+
+    }
+
+    return result;
 }
 
 } // Animation
