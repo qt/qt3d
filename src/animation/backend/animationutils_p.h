@@ -346,6 +346,10 @@ ClipResults evaluateBlendTree(Handler *handler,
 Q_AUTOTEST_EXPORT
 QVector<float> defaultValueForChannel(Handler *handler, const ChannelNameAndType &channelDescription);
 
+Q_AUTOTEST_EXPORT
+void applyComponentDefaultValues(const QVector<ComponentValue> &componentDefaults,
+                                 ClipResults &formattedClipResults);
+
 } // Animation
 } // Qt3DAnimation
 

@@ -848,6 +848,13 @@ QVector<float> defaultValueForChannel(Handler *handler,
     return result;
 }
 
+void applyComponentDefaultValues(const QVector<ComponentValue> &componentDefaults,
+                                 ClipResults &formattedClipResults)
+{
+    for (const auto &componentDefault : componentDefaults)
+        formattedClipResults[componentDefault.componentIndex] = componentDefault.value;
+}
+
 } // Animation
 } // Qt3DAnimation
 
