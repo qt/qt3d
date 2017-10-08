@@ -166,7 +166,7 @@ public:
 
     void memoryBarrier(QMemoryBarrier::Operations barriers);
 
-    void setParameters(ShaderParameterPack &parameterPack);
+    bool setParameters(ShaderParameterPack &parameterPack);
 
     /**
      * @brief glBufferFor - given a client-side (CPU) buffer, provide the

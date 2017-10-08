@@ -1650,7 +1650,8 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             {
                 Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate);
                 //// Update program uniforms
-                m_graphicsContext->setParameters(command->m_parameterPack);
+                if (!m_graphicsContext->setParameters(command->m_parameterPack))
+                    allCommandsIssued = false;
             }
 
             //// OpenGL State
