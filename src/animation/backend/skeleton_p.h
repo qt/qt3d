@@ -72,14 +72,29 @@ public:
         m_jointLocalPoses[jointIndex].scale = scale;
     }
 
+    QVector3D jointScale(int jointIndex) const
+    {
+        return m_jointLocalPoses[jointIndex].scale;
+    }
+
     void setJointRotation(int jointIndex, const QQuaternion &rotation)
     {
         m_jointLocalPoses[jointIndex].rotation = rotation;
     }
 
+    QQuaternion jointRotation(int jointIndex) const
+    {
+        return m_jointLocalPoses[jointIndex].rotation;
+    }
+
     void setJointTranslation(int jointIndex, const QVector3D &translation)
     {
         m_jointLocalPoses[jointIndex].translation = translation;
+    }
+
+    QVector3D jointTranslation(int jointIndex) const
+    {
+        return m_jointLocalPoses[jointIndex].translation;
     }
 
     void sendLocalPoses();
