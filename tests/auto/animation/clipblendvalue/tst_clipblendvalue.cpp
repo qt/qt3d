@@ -195,25 +195,6 @@ private Q_SLOTS:
                     << blendNode << indexes << animatorIds << expectedClipFormat;
         }
 
-        // No data
-        {
-            auto blendNode = new ClipBlendValue;
-            QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ClipFormat> expectedClipFormat;
-
-            auto animatorId = Qt3DCore::QNodeId::createId();
-            animatorIds.push_back(animatorId);
-
-            ClipFormat clipFormat;
-            expectedClipFormat.push_back(clipFormat);
-
-            // Don't set any data
-            QVector<int> indexes = QVector<int>() << 0;
-
-            QTest::newRow("no entries")
-                    << blendNode << indexes << animatorIds << expectedClipFormat;
-        }
-
         // Multiple entries, ordered
         {
             auto blendNode = new ClipBlendValue;

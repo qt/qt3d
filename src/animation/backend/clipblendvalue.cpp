@@ -102,12 +102,16 @@ void ClipBlendValue::setClipFormat(Qt3DCore::QNodeId animatorId, const ClipForma
     }
 }
 
-ClipFormat ClipBlendValue::clipFormat(Qt3DCore::QNodeId animatorId)
+ClipFormat &ClipBlendValue::clipFormat(Qt3DCore::QNodeId animatorId)
 {
     const int animatorIndex = m_animatorIds.indexOf(animatorId);
-    if (animatorIndex != -1)
-        return m_clipFormats[animatorIndex];
-    return ClipFormat();
+    return m_clipFormats[animatorIndex];
+}
+
+const ClipFormat &ClipBlendValue::clipFormat(Qt3DCore::QNodeId animatorId) const
+{
+    const int animatorIndex = m_animatorIds.indexOf(animatorId);
+    return m_clipFormats[animatorIndex];
 }
 
 } // namespace Animation
