@@ -348,15 +348,15 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
                 dirtySkeletons.push_back(mappingData.skeleton);
 
             switch (mappingData.jointTransformComponent) {
-            case MappingData::Scale:
+            case Scale:
                 mappingData.skeleton->setJointScale(mappingData.jointIndex, v.value<QVector3D>());
                 break;
 
-            case MappingData::Rotation:
+            case Rotation:
                 mappingData.skeleton->setJointRotation(mappingData.jointIndex, v.value<QQuaternion>());
                 break;
 
-            case MappingData::Translation:
+            case Translation:
                 mappingData.skeleton->setJointTranslation(mappingData.jointIndex, v.value<QVector3D>());
                 break;
 
@@ -459,7 +459,7 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
             }
 
             // Try to find matching channel name and type
-            const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type() };
+            const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type(), mapping->peerId() };
             const int index = channelNamesAndTypes.indexOf(nameAndType);
             if (index != -1) {
                 // Do we have any animation data for this channel? If not, don't bother
@@ -477,9 +477,9 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
 
         case ChannelMapping::SkeletonMappingType: {
             const QVector<ChannelNameAndType> jointProperties
-                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) },
-                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) },
-                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D) } };
+                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), Translation },
+                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), Rotation },
+                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), Scale } };
             const QHash<QString, const char *> channelNameToPropertyName
                     = { { QLatin1String("Location"), "translation" },
                         { QLatin1String("Rotation"), "rotation" },
@@ -497,9 +497,12 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
                     // Get the name, type and index
                     ChannelNameAndType nameAndType = jointProperties[propertyIndex];
                     nameAndType.jointIndex = jointIndex;
+                    nameAndType.mappingId = mapping->peerId();
 
                     // Try to find matching channel name and type
                     const int index = channelNamesAndTypes.indexOf(nameAndType);
+                    if (index == -1)
+                        continue;
 
                     // Do we have any animation data for this channel? If not, don't bother
                     // adding a mapping for it.
@@ -517,12 +520,13 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
                         // Convert property name for joint transform components to
                         // an enumerated type so we can avoid the string comparisons
                         // when sending the change events after evaluation.
+                        // TODO: Replace this logic as we now do it in buildRequiredChannelsAndTypes()
                         if (qstrcmp(mappingData.propertyName, "scale") == 0)
-                            mappingData.jointTransformComponent = MappingData::Scale;
+                            mappingData.jointTransformComponent = Scale;
                         else if (qstrcmp(mappingData.propertyName, "rotation") == 0)
-                            mappingData.jointTransformComponent = MappingData::Rotation;
+                            mappingData.jointTransformComponent = Rotation;
                         else if (qstrcmp(mappingData.propertyName, "translation") == 0)
-                            mappingData.jointTransformComponent = MappingData::Translation;
+                            mappingData.jointTransformComponent = Translation;
 
                         mappingDataVec.push_back(mappingData);
                     }
@@ -560,7 +564,7 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
         case ChannelMapping::ChannelMappingType:
         case ChannelMapping::CallbackMappingType: {
             // Get the name and type
-            const ChannelNameAndType nameAndType{ mapping->channelName(), mapping->type() };
+            const ChannelNameAndType nameAndType{ mapping->channelName(), mapping->type(), mappingId };
 
             // Add if not already contained
             if (!namesAndTypes.contains(nameAndType))
@@ -573,9 +577,9 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
             // Add an entry for each scale/rotation/translation property of each joint index
             // of the target skeleton.
             const QVector<ChannelNameAndType> jointProperties
-                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) },
-                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) },
-                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D) } };
+                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), Translation },
+                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), Rotation },
+                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), Scale } };
             Skeleton *skeleton = handler->skeletonManager()->lookupResource(mapping->skeletonId());
             const int jointCount = skeleton->jointCount();
             for (int jointIndex = 0; jointIndex < jointCount; ++jointIndex) {
@@ -585,6 +589,7 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
                     ChannelNameAndType nameAndType = jointProperties[propertyIndex];
                     nameAndType.jointName = skeleton->jointName(jointIndex);
                     nameAndType.jointIndex = jointIndex;
+                    nameAndType.mappingId = mappingId;
 
                     // Add if not already contained
                     if (!namesAndTypes.contains(nameAndType))

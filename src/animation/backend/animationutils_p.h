@@ -72,15 +72,15 @@ class ChannelMapping;
 
 typedef QVector<int> ComponentIndices;
 
+enum JointTransformComponent {
+    NoTransformComponent = 0,
+    Scale,
+    Rotation,
+    Translation
+};
+
 struct MappingData
 {
-    enum JointTransformComponent {
-        NoTransformComponent = 0,
-        Scale,
-        Rotation,
-        Translation
-    };
-
     Qt3DCore::QNodeId targetId;
     Skeleton *skeleton = nullptr;
     int jointIndex = -1;
@@ -129,6 +129,9 @@ struct ChannelNameAndType
     QString name;
     int type;
     int jointIndex;
+    Qt3DCore::QNodeId mappingId;
+    JointTransformComponent jointTransformComponent;
+    float pad; // Unused
 
     static const int invalidIndex = -1;
 
@@ -137,20 +140,40 @@ struct ChannelNameAndType
         , name()
         , type(-1)
         , jointIndex(-1)
+        , mappingId()
+        , jointTransformComponent(NoTransformComponent)
     {}
 
-    ChannelNameAndType(const QString &_name, int _type, int _jointIndex = invalidIndex)
+    ChannelNameAndType(const QString &_name,
+                       int _type,
+                       Qt3DCore::QNodeId _mappingId = Qt3DCore::QNodeId(),
+                       int _jointIndex = invalidIndex)
         : jointName()
         , name(_name)
         , type(_type)
         , jointIndex(_jointIndex)
+        , mappingId(_mappingId)
+        , jointTransformComponent(NoTransformComponent)
+    {}
+
+    ChannelNameAndType(const QString &_name,
+                       int _type,
+                       JointTransformComponent _jointTransformComponent)
+        : jointName()
+        , name(_name)
+        , type(_type)
+        , jointIndex(invalidIndex)
+        , mappingId()
+        , jointTransformComponent(_jointTransformComponent)
     {}
 
     bool operator==(const ChannelNameAndType &rhs) const
     {
         return name == rhs.name
             && type == rhs.type
-            && jointIndex == rhs.jointIndex;
+            && jointIndex == rhs.jointIndex
+            && mappingId == rhs.mappingId
+            && jointTransformComponent == rhs.jointTransformComponent;
     }
 };
 
@@ -158,8 +181,12 @@ struct ChannelNameAndType
 inline QDebug operator<<(QDebug dbg, const ChannelNameAndType &nameAndType)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "jointIndex =" << nameAndType.jointIndex << nameAndType.jointName
-        << nameAndType.type << nameAndType.type;
+    dbg << "name =" << nameAndType.name
+        << "type =" << nameAndType.type
+        << "mappingId =" << nameAndType.mappingId
+        << "jointIndex =" << nameAndType.jointIndex
+        << "jointName =" << nameAndType.jointName
+        << "jointTransformComponent =" << nameAndType.jointTransformComponent;
     return dbg;
 }
 #endif

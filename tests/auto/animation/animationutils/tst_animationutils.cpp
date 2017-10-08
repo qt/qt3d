@@ -297,15 +297,20 @@ private Q_SLOTS:
 
             // Create a few channels in the format description
             ChannelNameAndType rotation = { QLatin1String("Rotation"),
-                                            static_cast<int>(QVariant::Quaternion) };
+                                            static_cast<int>(QVariant::Quaternion),
+                                            channelMapping->peerId() };
             ChannelNameAndType location = { QLatin1String("Location"),
-                                            static_cast<int>(QVariant::Vector3D) };
+                                            static_cast<int>(QVariant::Vector3D),
+                                            channelMapping->peerId() };
             ChannelNameAndType baseColor = { QLatin1String("BaseColor"),
-                                             static_cast<int>(QVariant::Vector3D) };
+                                             static_cast<int>(QVariant::Vector3D),
+                                             channelMapping->peerId() };
             ChannelNameAndType metalness = { QLatin1String("Metalness"),
-                                             static_cast<int>(QVariant::Double) };
+                                             static_cast<int>(QVariant::Double),
+                                             channelMapping->peerId() };
             ChannelNameAndType roughness = { QLatin1String("Roughness"),
-                                             static_cast<int>(QVariant::Double) };
+                                             static_cast<int>(QVariant::Double),
+                                             channelMapping->peerId() };
             QVector<ChannelNameAndType> channelNamesAndTypes
                     = { rotation, location, baseColor, metalness, roughness };
 
@@ -387,15 +392,20 @@ private Q_SLOTS:
 
             // Create a few channels in the format description
             ChannelNameAndType rotation = { QLatin1String("Rotation"),
-                                            static_cast<int>(QVariant::Quaternion) };
+                                            static_cast<int>(QVariant::Quaternion),
+                                            rotationMapping->peerId() };
             ChannelNameAndType location = { QLatin1String("Location"),
-                                            static_cast<int>(QVariant::Vector3D) };
+                                            static_cast<int>(QVariant::Vector3D),
+                                            locationMapping->peerId() };
             ChannelNameAndType baseColor = { QLatin1String("BaseColor"),
-                                             static_cast<int>(QVariant::Vector3D) };
+                                             static_cast<int>(QVariant::Vector3D),
+                                             baseColorMapping->peerId() };
             ChannelNameAndType metalness = { QLatin1String("Metalness"),
-                                             static_cast<int>(QVariant::Double) };
+                                             static_cast<int>(QVariant::Double),
+                                             metalnessMapping->peerId() };
             ChannelNameAndType roughness = { QLatin1String("Roughness"),
-                                             static_cast<int>(QVariant::Double) };
+                                             static_cast<int>(QVariant::Double),
+                                             roughnessMapping->peerId() };
             QVector<ChannelNameAndType> channelNamesAndTypes
                     = { rotation, location, baseColor, metalness, roughness };
 
@@ -473,9 +483,26 @@ private Q_SLOTS:
             // Create a few channels in the format description
             QVector<ChannelNameAndType> channelNamesAndTypes;
             for (int i = 0; i < jointCount; ++i) {
-                channelNamesAndTypes.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), i });
-                channelNamesAndTypes.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), i });
-                channelNamesAndTypes.push_back({ QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), i });
+                ChannelNameAndType locationDescription = { QLatin1String("Location"),
+                                                           static_cast<int>(QVariant::Vector3D),
+                                                           channelMapping->peerId() };
+                locationDescription.jointIndex = i;
+                locationDescription.jointTransformComponent = Translation;
+                channelNamesAndTypes.push_back(locationDescription);
+
+                ChannelNameAndType rotationDescription = { QLatin1String("Rotation"),
+                                                           static_cast<int>(QVariant::Quaternion),
+                                                           channelMapping->peerId() };
+                rotationDescription.jointIndex = i;
+                rotationDescription.jointTransformComponent = Rotation;
+                channelNamesAndTypes.push_back(rotationDescription);
+
+                ChannelNameAndType scaleDescription = { QLatin1String("Scale"),
+                                                        static_cast<int>(QVariant::Vector3D),
+                                                        channelMapping->peerId() };
+                scaleDescription.jointIndex = i;
+                scaleDescription.jointTransformComponent = Scale;
+                channelNamesAndTypes.push_back(scaleDescription);
             }
 
             // And the matching indices
@@ -2332,7 +2359,9 @@ private Q_SLOTS:
                                                      QVector<Qt3DCore::QNodeId>() << channelMapping->peerId());
 
             QVector<ChannelNameAndType> expectedResults;
-            expectedResults.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            expectedResults.push_back({ QLatin1String("Location"),
+                                        static_cast<int>(QVariant::Vector3D),
+                                        channelMapping->peerId() });
 
             QTest::addRow("Location, vec3") << handler << channelMapper << expectedResults;
         }
@@ -2362,8 +2391,12 @@ private Q_SLOTS:
             auto channelMapper = createChannelMapper(handler, channelMappingIds);
 
             QVector<ChannelNameAndType> expectedResults;
-            expectedResults.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
-            expectedResults.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+            expectedResults.push_back({ QLatin1String("Location"),
+                                        static_cast<int>(QVariant::Vector3D),
+                                        channelMapping1->peerId() });
+            expectedResults.push_back({ QLatin1String("Rotation"),
+                                        static_cast<int>(QVariant::Quaternion),
+                                        channelMapping2->peerId() });
 
             QTest::addRow("Multiple unique channels") << handler << channelMapper << expectedResults;
         }
@@ -2410,8 +2443,18 @@ private Q_SLOTS:
             auto channelMapper = createChannelMapper(handler, channelMappingIds);
 
             QVector<ChannelNameAndType> expectedResults;
-            expectedResults.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
-            expectedResults.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+            expectedResults.push_back({ QLatin1String("Location"),
+                                        static_cast<int>(QVariant::Vector3D),
+                                        channelMapping1->peerId() });
+            expectedResults.push_back({ QLatin1String("Rotation"),
+                                        static_cast<int>(QVariant::Quaternion),
+                                        channelMapping2->peerId() });
+            expectedResults.push_back({ QLatin1String("Location"),
+                                        static_cast<int>(QVariant::Vector3D),
+                                        channelMapping3->peerId() });
+            expectedResults.push_back({ QLatin1String("Location"),
+                                        static_cast<int>(QVariant::Vector3D),
+                                        channelMapping4->peerId() });
 
             QTest::addRow("Multiple channels with repeats") << handler << channelMapper << expectedResults;
         }
@@ -2429,9 +2472,26 @@ private Q_SLOTS:
 
             QVector<ChannelNameAndType> expectedResults;
             for (int i = 0; i < jointCount; ++i) {
-                expectedResults.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), i });
-                expectedResults.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), i });
-                expectedResults.push_back({ QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), i });
+                ChannelNameAndType locationDescription = { QLatin1String("Location"),
+                                                           static_cast<int>(QVariant::Vector3D),
+                                                           channelMapping->peerId() };
+                locationDescription.jointIndex = i;
+                locationDescription.jointTransformComponent = Translation;
+                expectedResults.push_back(locationDescription);
+
+                ChannelNameAndType rotationDescription = { QLatin1String("Rotation"),
+                                                           static_cast<int>(QVariant::Quaternion),
+                                                           channelMapping->peerId() };
+                rotationDescription.jointIndex = i;
+                rotationDescription.jointTransformComponent = Rotation;
+                expectedResults.push_back(rotationDescription);
+
+                ChannelNameAndType scaleDescription = { QLatin1String("Scale"),
+                                                        static_cast<int>(QVariant::Vector3D),
+                                                        channelMapping->peerId() };
+                scaleDescription.jointIndex = i;
+                scaleDescription.jointTransformComponent = Scale;
+                expectedResults.push_back(scaleDescription);
             }
 
             QTest::addRow("Skeleton, 10 joints") << handler << channelMapper << expectedResults;
@@ -2506,9 +2566,17 @@ private Q_SLOTS:
             QVector<ChannelNameAndType> allChannels;
             const int jointCount = 4;
             for (int i = 0; i < jointCount; ++i) {
-                allChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), i });
-                allChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), i });
-                allChannels.push_back({ QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), i });
+                ChannelNameAndType locationDescription = { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) };
+                locationDescription.jointIndex = i;
+                allChannels.push_back(locationDescription);
+
+                ChannelNameAndType rotationDescription = { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) };
+                rotationDescription.jointIndex = i;
+                allChannels.push_back(rotationDescription);
+
+                ChannelNameAndType scaleDescription = { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D) };
+                scaleDescription.jointIndex = i;
+                allChannels.push_back(scaleDescription);
             }
 
             QVector<ComponentIndices> expectedResults;
@@ -2715,9 +2783,17 @@ private Q_SLOTS:
             QVector<ChannelNameAndType> targetChannels;
             const int jointCount = 4;
             for (int i = 0; i < jointCount; ++i) {
-                targetChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), i });
-                targetChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), i });
-                targetChannels.push_back({ QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), i });
+                ChannelNameAndType locationDescription = { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) };
+                locationDescription.jointIndex = i;
+                targetChannels.push_back(locationDescription);
+
+                ChannelNameAndType rotationDescription = { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) };
+                rotationDescription.jointIndex = i;
+                targetChannels.push_back(rotationDescription);
+
+                ChannelNameAndType scaleDescription = { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D) };
+                scaleDescription.jointIndex = i;
+                targetChannels.push_back(scaleDescription);
             }
 
             QVector<ComponentIndices> targetIndices;
