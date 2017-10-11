@@ -217,6 +217,11 @@ bool PlyGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
     return true;
 }
 
+/*!
+    Read and parse the header of the PLY format file.
+    Returns \c false if one of the lines is wrongly
+    formatted.
+*/
 bool PlyGeometryLoader::parseHeader(QIODevice *ioDev)
 {
     Format format = FormatUnknown;
@@ -424,6 +429,59 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
     return true;
 }
 
+/*!
+   \enum Qt3DRender::PlyGeometryLoader::DataType
+
+   Specifies the data type specified in the parsed file.
+
+   \value Int8
+   \value Uint8
+   \value Int16
+   \value Uint16
+   \value Int32
+   \value Uint32
+   \value Float32
+   \value Float64
+   \value TypeList
+   \value TypeUnknown
+*/
+/*!
+    \enum Qt3DRender::PlyGeometryLoader::Format
+
+    Specifies the format mentioned in the header of the parsed file.
+
+    \value FormatAscii
+    \value FormatBinaryLittleEndian
+    \value FormatBinaryBigEndian
+    \value FormatUnknown
+*/
+/*!
+    \enum Qt3DRender::PlyGeometryLoader::ElementType
+
+    Specifies the element type mentioned in the header of the file.
+
+    \value ElementVertex
+    \value ElementFace
+    \value ElementUnknown
+
+*/
+/*!
+    \enum Qt3DRender::PlyGeometryLoader::PropertyType
+
+    Specifies the property type from the PLY format file that has been loaded.
+
+    \value PropertyVertexIndex Property name in header is \c vertex_index
+    \value PropertyX Property name in header is \c X
+    \value PropertyY Property name in header is \c Y
+    \value PropertyZ Property name in header is \c Z
+    \value PropertyNormalX Property name in header is \c NormalX
+    \value PropertyNormalY Property name in header is \c NormalY
+    \value PropertyNormalZ Property name in header is \c NormalZ
+    \value PropertyTextureU Property name in header is \c TextureU
+    \value PropertyTextureV Property name in header is \c TextureV
+    \value PropertyUnknown Property name in header is unknown
+
+*/
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -234,12 +234,20 @@ FbxGeometryLoader::~FbxGeometryLoader()
         m_manager->Destroy();
 }
 
-QGeometry *FbxGeometryLoader::geometry() const
+/*!
+    Give the list of attributes that can be used to render
+    a 3D form.
+    Returns a pointer to the geometry object.
+*/
+QGeometry *Qt3DRender::FbxGeometryLoader::geometry() const
 {
     return m_geometry;
 }
 
-bool FbxGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
+/*!
+    Load the specified \a subMesh using device \a ioDev.
+*/
+bool Qt3DRender::FbxGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
 {
     if (m_scene)
         m_scene->Destroy();
@@ -310,6 +318,10 @@ bool FbxGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
     return wasImported;
 }
 
+/*!
+    Traverse the node hierarchy and process the children of each
+    node.
+*/
 void FbxGeometryLoader::recurseNodes()
 {
     Q_ASSERT(m_scene);
@@ -323,8 +335,12 @@ void FbxGeometryLoader::recurseNodes()
             processNode(node->GetChild(i));
     }
 }
-
-void FbxGeometryLoader::processNode(FbxNode *node)
+/*!
+    If the parameter \a node has the attribute eMesh,
+    process the Mesh. If not, process the children
+    of that node.
+*/
+void Qt3DRender::FbxGeometryLoader::processNode(FbxNode *node)
 {
     auto attr = node->GetNodeAttribute();
     if (!attr)
@@ -347,8 +363,10 @@ void FbxGeometryLoader::processNode(FbxNode *node)
     for (int i = 0; i < node->GetChildCount(); ++i)
         processNode(node->GetChild(i));
 }
-
-void FbxGeometryLoader::processMesh(FbxMesh *mesh)
+/*!
+    Process all vertices of the specified \a mesh.
+*/
+void Qt3DRender::FbxGeometryLoader::processMesh(FbxMesh *mesh)
 {
     const int normalCount = mesh->GetElementNormalCount();
     const int polygonCount = mesh->GetPolygonCount();
