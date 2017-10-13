@@ -85,6 +85,7 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000007}",
             "type": "sampleTexture",
+            "layers": ["baseColorMap"],
             "parameters": {
                 "name": "baseColorMap"
             }
