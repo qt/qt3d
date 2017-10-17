@@ -130,7 +130,7 @@ public:
     QByteArray downloadBufferContent(Buffer *buffer);
     void releaseBuffer(Qt3DCore::QNodeId bufferId);
     bool hasGLBufferForBuffer(Buffer *buffer);
-    GLBuffer *glBufferForRenderBuffer(Buffer *buf, GLBuffer::Type type);
+    GLBuffer *glBufferForRenderBuffer(Buffer *buf);
 
     // Parameters
     bool setParameters(ShaderParameterPack &parameterPack);
@@ -171,7 +171,7 @@ private:
     GLuint updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, bool isActiveRenderTarget);
 
     // Buffers
-    HGLBuffer createGLBufferFor(Buffer *buffer, GLBuffer::Type type);
+    HGLBuffer createGLBufferFor(Buffer *buffer);
     void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
     QByteArray downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b);
     bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);
