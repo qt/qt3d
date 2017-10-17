@@ -1320,7 +1320,7 @@ void Renderer::updateGLResources()
             // Forces creation if it doesn't exit
             // Also note the binding point doesn't really matter here, we just upload data
             if (!m_submissionContext->hasGLBufferForBuffer(buffer))
-                m_submissionContext->glBufferForRenderBuffer(buffer, GLBuffer::ArrayBuffer);
+                m_submissionContext->glBufferForRenderBuffer(buffer);
             // Update the glBuffer data
             m_submissionContext->updateBuffer(buffer);
             buffer->unsetDirty();
@@ -2056,7 +2056,7 @@ void Renderer::performDraw(RenderCommand *command)
         }
 
         // Get GLBuffer from Buffer;
-        GLBuffer *indirectDrawGLBuffer = m_submissionContext->glBufferForRenderBuffer(indirectDrawBuffer, GLBuffer::DrawIndirectBuffer);
+        GLBuffer *indirectDrawGLBuffer = m_submissionContext->glBufferForRenderBuffer(indirectDrawBuffer);
         if (Q_UNLIKELY(indirectDrawGLBuffer == nullptr)) {
             qWarning() << "Invalid Indirect Draw Buffer - failed to retrieve GLBuffer";
             return;

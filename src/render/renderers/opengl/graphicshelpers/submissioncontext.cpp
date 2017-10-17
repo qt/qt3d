@@ -1212,13 +1212,12 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     const QVector<BlockToSSBO> blockToSSBOs = parameterPack.shaderStorageBuffers();
     for (const BlockToSSBO b : blockToSSBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
-        GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer, GLBuffer::ShaderStorageBuffer);
-
+        GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer);
         // bindShaderStorageBlock
         // This is currently not required as we are introspecting the bindingIndex
         // value from the shaders and not replacing them, making such a call useless
         // bindShaderStorageBlock(shader->programId(), b.m_blockIndex, b.m_bindingIndex);
-
+        bindShaderStorageBlock(shader->programId(), b.m_blockIndex, b.m_bindingIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
         bindGLBuffer(ssbo, GLBuffer::ShaderStorageBuffer);
@@ -1232,7 +1231,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     int uboIndex = 0;
     for (const BlockToUBO &b : blockToUBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
-        GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer, GLBuffer::UniformBuffer);
+        GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer);
         bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
@@ -1347,7 +1346,7 @@ void SubmissionContext::specifyAttribute(const Attribute *attribute,
 
 void SubmissionContext::specifyIndices(Buffer *buffer)
 {
-    GLBuffer *buf = glBufferForRenderBuffer(buffer, GLBuffer::IndexBuffer);
+    GLBuffer *buf = glBufferForRenderBuffer(buffer);
     if (!bindGLBuffer(buf, GLBuffer::IndexBuffer))
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
@@ -1395,23 +1394,20 @@ bool SubmissionContext::hasGLBufferForBuffer(Buffer *buffer)
     return (it != m_renderBufferHash.end());
 }
 
-GLBuffer *SubmissionContext::glBufferForRenderBuffer(Buffer *buf, GLBuffer::Type type)
+GLBuffer *SubmissionContext::glBufferForRenderBuffer(Buffer *buf)
 {
     if (!m_renderBufferHash.contains(buf->peerId()))
-        m_renderBufferHash.insert(buf->peerId(), createGLBufferFor(buf, type));
+        m_renderBufferHash.insert(buf->peerId(), createGLBufferFor(buf));
     return m_renderer->glResourceManagers()->glBufferManager()->data(m_renderBufferHash.value(buf->peerId()));
 }
 
-HGLBuffer SubmissionContext::createGLBufferFor(Buffer *buffer, GLBuffer::Type type)
+HGLBuffer SubmissionContext::createGLBufferFor(Buffer *buffer)
 {
     GLBuffer *b = m_renderer->glResourceManagers()->glBufferManager()->getOrCreateResource(buffer->peerId());
     //    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
     Q_ASSERT(b);
     if (!b->create(this))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
-
-    if (!bindGLBuffer(b, type))
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
     return m_renderer->glResourceManagers()->glBufferManager()->lookupHandle(buffer->peerId());
 }
