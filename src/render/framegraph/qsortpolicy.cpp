@@ -88,10 +88,20 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 /*!
     \enum QSortPolicy::SortType
 
-    This enum type describes sort types that can be employed
-    \value StateChangeCost sort the objects so as to minimize the cost of changing from the currently rendered state
-    \value BackToFront sort the objects from back to front inverted z order
+    This enum type describes the available sort types.
+
+    \value StateChangeCost sort the objects so as to minimize the cost of
+    changing from the currently rendered state
+
+    \value BackToFront sort the objects from back to front based on inverted z
+    order. More accurately, the sorting key is the z component of the
+    projection of the camera-to-object-center vector onto the camera's view
+    vector.
+
     \value Material sort the objects based on their material value
+
+    \value FrontToBack sort the objects from front to back. The opposite of
+    BackToFront.
 */
 
 /*!

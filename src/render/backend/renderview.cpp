@@ -557,7 +557,12 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
             for (const RenderPassParameterData &passData : renderPassData) {
                 // Add the RenderPass Parameters
                 RenderCommand *command = new RenderCommand();
-                command->m_depth = m_data.m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
+
+                // Project the camera-to-object-center vector onto the camera
+                // view vector. This gives a depth value suitable as the key
+                // for BackToFront sorting.
+                command->m_depth = QVector3D::dotProduct(node->worldBoundingVolume()->center() - m_data.m_eyePos, m_data.m_eyeViewDir);
+
                 command->m_geometry = geometryHandle;
                 command->m_geometryRenderer = geometryRendererHandle;
                 command->m_material = materialHandle;
@@ -716,6 +721,12 @@ void RenderView::updateMatrices()
         const QMatrix4x4 inverseWorldTransform = viewMatrix().inverted();
         const QVector3D eyePosition(inverseWorldTransform.column(3));
         setEyePosition(eyePosition);
+
+        // Get the viewing direction of the camera. Use the normal matrix to
+        // ensure non-uniform scale works too.
+        QMatrix3x3 normalMat = m_data.m_viewMatrix.normalMatrix();
+        // dir = normalize(QVector3D(0, 0, -1) * normalMat)
+        setEyeViewDirection(QVector3D(-normalMat(2, 0), -normalMat(2, 1), -normalMat(2, 2)).normalized());
     }
 }
 
