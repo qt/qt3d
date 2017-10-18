@@ -85,7 +85,8 @@ public:
 
     Qt3DRender::Render::NodeManagers *nodeManagers() const
     {
-        return d_func()->m_renderer->nodeManagers();
+        return d_func()->m_renderer
+            ? d_func()->m_renderer->nodeManagers() : nullptr;
     }
 
     void initializeRenderer()
@@ -198,7 +199,11 @@ private Q_SLOTS:
         Qt3DRender::TestAspect testAspect(buildTestScene());
 
         // WHEN
-        backendFilterCompatibleTechniqueJob.setManager(testAspect.nodeManagers()->techniqueManager());
+        Qt3DRender::Render::NodeManagers *nodeManagers = testAspect.nodeManagers();
+        QVERIFY(nodeManagers);
+        Qt3DRender::Render::TechniqueManager *techniqueManager = nodeManagers->techniqueManager();
+        QVERIFY(techniqueManager);
+        backendFilterCompatibleTechniqueJob.setManager(techniqueManager);
         backendFilterCompatibleTechniqueJob.setRenderer(testAspect.renderer());
         testAspect.initializeRenderer();
         testAspect.renderer()->shutdown();
@@ -223,7 +228,11 @@ private Q_SLOTS:
         Qt3DRender::TestAspect testAspect(buildTestScene());
 
         // WHEN
-        backendFilterCompatibleTechniqueJob.setManager(testAspect.nodeManagers()->techniqueManager());
+        Qt3DRender::Render::NodeManagers *nodeManagers = testAspect.nodeManagers();
+        QVERIFY(nodeManagers);
+        Qt3DRender::Render::TechniqueManager *techniqueManager = nodeManagers->techniqueManager();
+        QVERIFY(techniqueManager);
+        backendFilterCompatibleTechniqueJob.setManager(techniqueManager);
         backendFilterCompatibleTechniqueJob.setRenderer(testAspect.renderer());
         testAspect.initializeRenderer();
 
