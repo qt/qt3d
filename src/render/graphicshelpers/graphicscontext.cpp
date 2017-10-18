@@ -1185,7 +1185,7 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
                 UniformValue &texUniform = uniformValues[namedTex.glslNameId];
                 Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
                 const int texUnit = activateTexture(TextureScopeMaterial, t);
-                texUniform.data<UniformValue::Texture>()->textureId = texUnit;
+                texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
                 // if the texture data from generators may not be available yet,
                 // make sure that the next frame is rendered
                 if (texUnit == -1)
@@ -1235,11 +1235,10 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     for (const ShaderUniform &uniform : activeUniforms) {
         // We can use [] as we are sure the the uniform wouldn't
         // be un activeUniforms if there wasn't a matching value
-        const auto &v = values[uniform.m_nameId];
+        const UniformValue &v = values[uniform.m_nameId];
 
         // skip invalid textures
-        if (v.valueType() == UniformValue::TextureValue &&
-                v.constData<UniformValue::Texture>()->textureId == -1)
+        if (v.valueType() == UniformValue::TextureValue && *v.constData<int>() == -1)
             continue;
 
         applyUniform(uniform, v);

@@ -51,6 +51,9 @@ const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 // glUniform*fv/glUniform*iv/glUniform*uiv -> only handles sizeof(float)/sizeof(int)
 int byteSizeForMetaType(int type)
 {
+    if (type == qNodeIdTypeId)
+        return sizeof(Qt3DCore::QNodeId);
+
     switch (type) {
     case QMetaType::Bool:
     case QMetaType::Int:
@@ -209,6 +212,11 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
             break;
 
         const int listEntryType = variants.first().userType();
+
+        // array of textures
+        if (listEntryType == qNodeIdTypeId)
+            v.m_valueType = NodeId;
+
         const int stride = byteSizeForMetaType(listEntryType) / sizeof(float);
         // Resize v.m_data
         v.m_data.resize(stride * variants.size());

@@ -741,14 +741,19 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
     // ShaderData/Buffers would be handled as UBO/SSBO and would therefore
     // not be in the default uniform block
     if (value.valueType() == UniformValue::NodeId) {
-        const Qt3DCore::QNodeId texId = *value.constData<Qt3DCore::QNodeId>();
-        const Texture *tex =  m_manager->textureManager()->lookupResource(texId);
-        if (tex != nullptr) {
-            uniformPack.setTexture(nameId, texId);
-            UniformValue::Texture textureValue;
-            textureValue.nodeId = texId;
-            uniformPack.setUniform(nameId, UniformValue(textureValue));
+        const Qt3DCore::QNodeId *nodeIds = value.constData<Qt3DCore::QNodeId>();
+
+        const int uniformArraySize = value.byteSize() / sizeof(Qt3DCore::QNodeId);
+        for (int i = 0; i < uniformArraySize; ++i) {
+            const Qt3DCore::QNodeId texId = nodeIds[i];
+            const Texture *tex =  m_manager->textureManager()->lookupResource(texId);
+            if (tex != nullptr)
+                uniformPack.setTexture(nameId, i, texId);
         }
+
+        UniformValue textureValue(uniformArraySize * sizeof(int), UniformValue::TextureValue);
+        std::fill(textureValue.data<int>(), textureValue.data<int>() + uniformArraySize, -1);
+        uniformPack.setUniform(nameId, textureValue);
     } else {
         uniformPack.setUniform(nameId, value);
     }

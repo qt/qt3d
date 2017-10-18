@@ -111,11 +111,6 @@ public:
         BufferValue
     };
 
-    struct Texture {
-        int textureId = 0; // Set first so that glUniform1iv will work
-        Qt3DCore::QNodeId nodeId;
-    };
-
     // UniformValue implicitely converts doubles to floats to ensure
     // correct rendering behavior for the cases where Qt3D parameters created from
     // a double or QVariant(double) are used to fill uniform values that in reality
@@ -152,6 +147,13 @@ public:
         memcpy(m_data.data(), mat44.constData(), 16 * sizeof(float));
     }
 
+    // Reserve data to be filled in later
+    UniformValue(int byteSize, ValueType valueType)
+        : m_data(byteSize / sizeof(float))
+        , m_valueType(valueType)
+    {
+    }
+
     // For nodes which will later be replaced by a Texture or Buffer
     UniformValue(Qt3DCore::QNodeId id)
         : UniformValue()
@@ -160,18 +162,12 @@ public:
         memcpy(m_data.data(), &id, sizeof(Qt3DCore::QNodeId));
     }
 
-    // For textures
-    UniformValue(UniformValue::Texture t)
-        : UniformValue()
-    {
-        m_valueType = TextureValue;
-        memcpy(m_data.data(), &t, sizeof(Texture));
-    }
-
     ValueType valueType() const { return m_valueType; }
     UniformType storedType() const { return m_storedType; }
 
     static UniformValue fromVariant(const QVariant &variant);
+
+    int byteSize() const { return m_data.size() * sizeof(float); }
 
     template<typename T>
     const T *constData() const
