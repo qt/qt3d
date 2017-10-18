@@ -97,10 +97,10 @@ Entity {
 
         PhongMaterial {
             id: logoMaterial
-            ambient: Qt.rgba( logoControls.colorR/255,
+            diffuse: Qt.rgba( logoControls.colorR/255,
                               logoControls.colorG/255,
                               logoControls.colorB/255, 1.0 )
-            diffuse: Qt.rgba( 0.1, 0.1, 0.1, 0.5 )
+            ambient: Qt.rgba( 0.1, 0.1, 0.1, 1.0 )
             shininess: logoControls.shininess
         }
 
