@@ -765,6 +765,7 @@ QTextureImageDataPtr setHdrFile(QIODevice *source)
     for (int y = 0; y < h; ++y) {
         if (pEnd - p < 4) {
             qWarning("Unexpected end of HDR data");
+            delete[] scanline;
             return imageData;
         }
 
