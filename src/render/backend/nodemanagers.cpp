@@ -144,6 +144,7 @@ NodeManagers::~NodeManagers()
     delete m_renderStateManager;
     delete m_renderNodesManager;
     delete m_armatureManager;
+    delete m_skeletonManager;
     delete m_jointManager;
 }
 
