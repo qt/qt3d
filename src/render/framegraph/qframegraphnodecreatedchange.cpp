@@ -48,6 +48,12 @@ QFrameGraphNodeCreatedChangeBasePrivate::QFrameGraphNodeCreatedChangeBasePrivate
 {
 }
 
+/*!
+    \class Qt3DRender::QFrameGraphNodeCreatedChangeBase
+    \inmodule Qt3DRender
+
+    \brief A base class for changes in the FrameGraphNode.
+*/
 QFrameGraphNodeCreatedChangeBase::QFrameGraphNodeCreatedChangeBase(const QFrameGraphNode *node)
     : Qt3DCore::QNodeCreatedChangeBase(*new QFrameGraphNodeCreatedChangeBasePrivate(node), node)
 {

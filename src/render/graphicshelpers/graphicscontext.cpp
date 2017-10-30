@@ -1175,10 +1175,11 @@ void GraphicsContext::setRenderer(Renderer *renderer)
 
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
-void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
+bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
+    bool allValid = true;
 
     // Set the pinned texture of the previous material texture
     // to pinable so that we should easily find an available texture unit
@@ -1198,6 +1199,10 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
                 Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
                 const int texUnit = activateTexture(TextureScopeMaterial, t);
                 texUniform.data<UniformValue::Texture>()->textureId = texUnit;
+                // if the texture data from generators may not be available yet,
+                // make sure that the next frame is rendered
+                if (texUnit == -1)
+                    allValid = false;
             }
         }
     }
@@ -1218,11 +1223,6 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         // be bound as a VertexArray
         bindGLBuffer(ssbo, GLBuffer::ShaderStorageBuffer);
         ssbo->bindBufferBase(this, ssboIndex++, GLBuffer::ShaderStorageBuffer);
-        // Perform update if required
-        if (cpuBuffer->isDirty()) {
-            uploadDataToGLBuffer(cpuBuffer, ssbo);
-            cpuBuffer->unsetDirty();
-        }
         // TO DO: Make sure that there's enough binding points
     }
 
@@ -1238,11 +1238,6 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         // be bound as a VertexArray
         bindGLBuffer(ubo, GLBuffer::UniformBuffer);
         ubo->bindBufferBase(this, uboIndex++, GLBuffer::UniformBuffer);
-        if (cpuBuffer->isDirty()) {
-            // Perform update if required
-            uploadDataToGLBuffer(cpuBuffer, ubo);
-            cpuBuffer->unsetDirty();
-        }
         // TO DO: Make sure that there's enough binding points
     }
 
@@ -1262,6 +1257,8 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 
         applyUniform(uniform, v);
     }
+    // if not all data is valid, the next frame will be rendered immediately
+    return allValid;
 }
 
 void GraphicsContext::readBuffer(GLenum mode)

@@ -70,12 +70,18 @@ QAnimationClip::~QAnimationClip()
 {
 }
 
+/*!
+    Returns the data describing the animation clip.
+*/
 QAnimationClipData QAnimationClip::clipData() const
 {
     Q_D(const QAnimationClip);
     return d->m_clipData;
 }
 
+/*!
+    Set the parameters of the clip according to the \a clipData provided.
+*/
 void QAnimationClip::setClipData(const Qt3DAnimation::QAnimationClipData &clipData)
 {
     Q_D(QAnimationClip);

@@ -162,6 +162,9 @@ public:
     inline void setEyePosition(const QVector3D &eyePos) Q_DECL_NOTHROW { m_data.m_eyePos = eyePos; }
     inline QVector3D eyePosition() const Q_DECL_NOTHROW { return m_data.m_eyePos; }
 
+    inline void setEyeViewDirection(const QVector3D &dir) Q_DECL_NOTHROW { m_data.m_eyeViewDir = dir; }
+    inline QVector3D eyeViewDirection() const Q_DECL_NOTHROW { return m_data.m_eyeViewDir; }
+
     inline void appendLayerFilter(const Qt3DCore::QNodeId layerFilterId) Q_DECL_NOTHROW { m_data.m_layerFilterIds.push_back(layerFilterId); }
     inline Qt3DCore::QNodeIdVector layerFilters() const Q_DECL_NOTHROW { return m_data.m_layerFilterIds; }
 
@@ -262,6 +265,7 @@ public:
         Qt3DCore::QNodeIdVector m_layerFilterIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;
+        QVector3D m_eyeViewDir;
         Qt3DCore::QNodeIdVector m_proximityFilterIds;
     };
 
