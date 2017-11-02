@@ -77,12 +77,14 @@ public:
     bool isRunning() const { return m_running; }
     void setLoops(int loops) { m_loops = loops; }
     int loops() const { return m_loops; }
+    void setNormalizedLocalTime(float normalizedLocalTime);
+    float normalizedLocalTime() const { return m_normalizedLocalTime; }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void setHandler(Handler *handler) { m_handler = handler; }
 
     // Called by jobs
-    bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull() && m_running; }
+    bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull(); }
     void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
     QVector<MappingData> mappingData() const { return m_mappingData; }
 
@@ -105,6 +107,14 @@ public:
     double lastLocalTime() const;
     void setLastLocalTime(double lastLocalTime);
 
+    float lastNormalizedLocalTime() { return m_lastNormalizedLocalTime; }
+    void setLastNormalizedLocalTime(float normalizedLocalTime);
+    bool isSeeking() const
+    {
+        return isValidNormalizedTime(m_normalizedLocalTime)
+                && !qFuzzyCompare(m_lastNormalizedLocalTime, m_normalizedLocalTime);
+    }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
@@ -121,6 +131,9 @@ private:
 
     int m_currentLoop;
     ClipFormat m_clipFormat;
+
+    float m_normalizedLocalTime;
+    float m_lastNormalizedLocalTime;
 };
 
 } // namespace Animation

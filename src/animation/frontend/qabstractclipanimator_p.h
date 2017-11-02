@@ -71,6 +71,7 @@ public:
     Qt3DAnimation::QClock *m_clock;
     bool m_running;
     int m_loops;
+    float m_normalizedTime;
 };
 
 struct QAbstractClipAnimatorData
@@ -78,6 +79,7 @@ struct QAbstractClipAnimatorData
     Qt3DCore::QNodeId mapperId;
     Qt3DCore::QNodeId clockId;
     bool running;
+    float normalizedTime;
     int loops;
 };
 

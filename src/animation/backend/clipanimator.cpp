@@ -60,6 +60,8 @@ ClipAnimator::ClipAnimator()
     , m_lastLocalTime(0.0)
     , m_mappingData()
     , m_currentLoop(0)
+    , m_normalizedLocalTime(-1.0f)
+    , m_lastNormalizedLocalTime(-1.0f)
 {
 }
 
@@ -72,6 +74,7 @@ void ClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     m_clockId = data.clockId;
     m_running = data.running;
     m_loops = data.loops;
+    m_normalizedLocalTime = data.normalizedTime;
     setDirty(Handler::ClipAnimatorDirty);
 }
 
@@ -106,6 +109,13 @@ void ClipAnimator::setRunning(bool running)
     setDirty(Handler::ClipAnimatorDirty);
 }
 
+void ClipAnimator::setNormalizedLocalTime(float normalizedTime)
+{
+    m_normalizedLocalTime = normalizedTime;
+    if (isValidNormalizedTime(normalizedTime))
+        setDirty(Handler::ClipAnimatorDirty);
+}
+
 void ClipAnimator::cleanup()
 {
     setEnabled(false);
@@ -116,6 +126,7 @@ void ClipAnimator::cleanup()
     m_running = false;
     m_loops = 1;
     m_clipFormat = ClipFormat();
+    m_normalizedLocalTime = m_lastNormalizedLocalTime = -1.0f;
 }
 
 void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -133,6 +144,8 @@ void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setRunning(change->value().toBool());
         else if (change->propertyName() == QByteArrayLiteral("loops"))
             m_loops = change->value().toInt();
+        else if (change->propertyName() == QByteArrayLiteral("normalizedTime"))
+            setNormalizedLocalTime(change->value().toFloat());
         break;
     }
 
@@ -181,6 +194,11 @@ double ClipAnimator::lastLocalTime() const
 void ClipAnimator::setLastLocalTime(double lastLocalTime)
 {
     m_lastLocalTime = lastLocalTime;
+}
+
+void ClipAnimator::setLastNormalizedLocalTime(float normalizedTime)
+{
+    m_lastNormalizedLocalTime = normalizedTime;
 }
 
 } // namespace Animation

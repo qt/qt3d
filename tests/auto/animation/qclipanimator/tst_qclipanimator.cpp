@@ -63,6 +63,7 @@ private Q_SLOTS:
         QCOMPARE(animator.channelMapper(), static_cast<Qt3DAnimation::QChannelMapper *>(nullptr));
         QCOMPARE(animator.clock(), static_cast<Qt3DAnimation::QClock*>(nullptr));
         QCOMPARE(animator.loopCount(), 1);
+        QCOMPARE(animator.normalizedTime(), 0.0f);
     }
 
     void checkPropertyChanges()

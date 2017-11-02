@@ -109,6 +109,9 @@ ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
                                                 animatorData.loopCount, result.currentLoop);
     result.isFinalFrame = isFinalFrame(result.localTime, clip->duration(),
                                        result.currentLoop, animatorData.loopCount);
+    const bool hasNormalizedTime = isValidNormalizedTime(animatorData.normalizedLocalTime);
+    result.normalizedLocalTime = hasNormalizedTime ? animatorData.normalizedLocalTime
+                                                   : result.localTime / clip->duration();
     return result;
 }
 
@@ -333,7 +336,8 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float>
 QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
                                                           const QVector<MappingData> &mappingDataVec,
                                                           const QVector<float> &channelResults,
-                                                          bool finalFrame)
+                                                          bool finalFrame,
+                                                          float normalizedLocalTime)
 {
     QVector<Qt3DCore::QSceneChangePtr> changes;
     QVarLengthArray<Skeleton *, 4> dirtySkeletons;
@@ -390,6 +394,15 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
     for (const auto skeleton : dirtySkeletons)
         skeleton->sendLocalPoses();
 
+    if (isValidNormalizedTime(normalizedLocalTime)) {
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("normalizedTime");
+        e->setValue(normalizedLocalTime);
+        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isIntermediate = !finalFrame;
+        changes.push_back(e);
+    }
+
     // If it's the final frame, notify the frontend that we've stopped
     if (finalFrame) {
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
@@ -398,6 +411,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
         e->setValue(false);
         changes.push_back(e);
     }
+
     return changes;
 }
 

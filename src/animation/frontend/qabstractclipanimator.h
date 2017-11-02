@@ -59,6 +59,7 @@ class QT3DANIMATIONSHARED_EXPORT QAbstractClipAnimator : public Qt3DCore::QCompo
     Q_PROPERTY(int loops READ loopCount WRITE setLoopCount NOTIFY loopCountChanged)
     Q_PROPERTY(Qt3DAnimation::QChannelMapper *channelMapper READ channelMapper WRITE setChannelMapper NOTIFY channelMapperChanged)
     Q_PROPERTY(Qt3DAnimation::QClock *clock READ clock WRITE setClock NOTIFY clockChanged)
+    Q_PROPERTY(float normalizedTime READ normalizedTime WRITE setNormalizedTime NOTIFY normalizedTimeChanged)
 
 public:
     enum Loops { Infinite = -1 };
@@ -70,12 +71,14 @@ public:
     Qt3DAnimation::QChannelMapper *channelMapper() const;
     int loopCount() const;
     Qt3DAnimation::QClock *clock() const;
+    float normalizedTime() const;
 
 public Q_SLOTS:
     void setRunning(bool running);
     void setChannelMapper(Qt3DAnimation::QChannelMapper *channelMapper);
     void setLoopCount(int loops);
     void setClock(Qt3DAnimation::QClock *clock);
+    void setNormalizedTime(float timeFraction);
 
     void start();
     void stop();
@@ -85,6 +88,7 @@ Q_SIGNALS:
     void channelMapperChanged(Qt3DAnimation::QChannelMapper *channelMapper);
     void loopCountChanged(int loops);
     void clockChanged(Qt3DAnimation::QClock *clock);
+    void normalizedTimeChanged(float index);
 
 protected:
     explicit QAbstractClipAnimator(Qt3DCore::QNode *parent = nullptr);

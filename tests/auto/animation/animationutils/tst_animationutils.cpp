@@ -746,6 +746,7 @@ private Q_SLOTS:
         QTest::addColumn<Qt3DCore::QNodeId>("animatorId");
         QTest::addColumn<QVector<MappingData>>("mappingData");
         QTest::addColumn<QVector<float>>("channelResults");
+        QTest::addColumn<float>("normalizedTime");
         QTest::addColumn<bool>("finalFrame");
         QTest::addColumn<QVector<Qt3DCore::QPropertyUpdatedChangePtr>>("expectedChanges");
 
@@ -753,6 +754,7 @@ private Q_SLOTS:
         QVector<MappingData> mappingData;
         QVector<float> channelResults;
         bool finalFrame;
+        float normalizedTime;
         QVector<Qt3DCore::QPropertyUpdatedChangePtr> expectedChanges;
 
         // Single property, vec3
@@ -766,6 +768,7 @@ private Q_SLOTS:
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 1.0f << 2.0f << 3.0f;
             finalFrame = false;
+            normalizedTime = 1.1f; // Invalid
 
             auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(mapping.targetId);
             change->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -774,8 +777,15 @@ private Q_SLOTS:
             expectedChanges.push_back(change);
 
             QTest::newRow("vec3 translation, final = false")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
+
+            normalizedTime = 1.0f;
+            auto normalizedTimeChange = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
+            normalizedTimeChange->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+            normalizedTimeChange->setPropertyName("normalizedTime");
+            normalizedTimeChange->setValue(normalizedTime);
+            expectedChanges.push_back(normalizedTimeChange);
 
             finalFrame = true;
             auto animatorChange = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
@@ -784,9 +794,9 @@ private Q_SLOTS:
             animatorChange->setValue(false);
             expectedChanges.push_back(animatorChange);
 
-            QTest::newRow("vec3 translation, final = true")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+            QTest::newRow("vec3 translation, final = true, normalizedTime = 1.0f")
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
 
             mappingData.clear();
             channelResults.clear();
@@ -813,6 +823,7 @@ private Q_SLOTS:
             channelResults = QVector<float>() << 1.0f << 2.0f << 3.0f
                                               << 4.0f << 5.0f << 6.0f;
             finalFrame = false;
+            normalizedTime = -0.1f; // Invalid
 
             auto translationChange = Qt3DCore::QPropertyUpdatedChangePtr::create(translationMapping.targetId);
             translationChange->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -827,8 +838,15 @@ private Q_SLOTS:
             expectedChanges.push_back(scaleChange);
 
             QTest::newRow("vec3 translation, vec3 scale, final = false")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
+
+            normalizedTime = 0.5f;
+            auto normalizedTimeChange = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
+            normalizedTimeChange->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+            normalizedTimeChange->setPropertyName("normalizedTime");
+            normalizedTimeChange->setValue(normalizedTime);
+            expectedChanges.push_back(normalizedTimeChange);
 
             finalFrame = true;
             auto animatorChange = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
@@ -838,8 +856,8 @@ private Q_SLOTS:
             expectedChanges.push_back(animatorChange);
 
             QTest::newRow("vec3 translation, vec3 scale, final = true")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
 
             mappingData.clear();
             channelResults.clear();
@@ -857,6 +875,7 @@ private Q_SLOTS:
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 3.5f;
             finalFrame = false;
+            normalizedTime = -1.0f; // Invalid
 
             auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(mapping.targetId);
             change->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -865,8 +884,8 @@ private Q_SLOTS:
             expectedChanges.push_back(change);
 
             QTest::newRow("double mass")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
 
             mappingData.clear();
             channelResults.clear();
@@ -884,6 +903,7 @@ private Q_SLOTS:
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 2.0f << 1.0f;
             finalFrame = false;
+            normalizedTime = 1.1f; // Invalid
 
             auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(mapping.targetId);
             change->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -892,8 +912,8 @@ private Q_SLOTS:
             expectedChanges.push_back(change);
 
             QTest::newRow("vec2 pos")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
 
             mappingData.clear();
             channelResults.clear();
@@ -911,6 +931,7 @@ private Q_SLOTS:
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 4.0f << 3.0f << 2.0f << 1.0f;
             finalFrame = false;
+            normalizedTime = 1.1f; // Invalid
 
             auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(mapping.targetId);
             change->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -919,8 +940,8 @@ private Q_SLOTS:
             expectedChanges.push_back(change);
 
             QTest::newRow("vec4 foo")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
 
             mappingData.clear();
             channelResults.clear();
@@ -938,6 +959,7 @@ private Q_SLOTS:
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 1.0f << 0.0f << 0.0f << 1.0f;
             finalFrame = false;
+            normalizedTime = -0.1f; // Invalid
 
             auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(mapping.targetId);
             change->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -946,8 +968,8 @@ private Q_SLOTS:
             expectedChanges.push_back(change);
 
             QTest::newRow("quaternion rotation")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
 
             mappingData.clear();
             channelResults.clear();
@@ -965,6 +987,7 @@ private Q_SLOTS:
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 0.5f << 0.4f << 0.3f;
             finalFrame = false;
+            normalizedTime = 1.1f; // Invalid
 
             auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(mapping.targetId);
             change->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -973,8 +996,8 @@ private Q_SLOTS:
             expectedChanges.push_back(change);
 
             QTest::newRow("QColor color")
-                    << animatorId << mappingData << channelResults << finalFrame
-                    << expectedChanges;
+                    << animatorId << mappingData << channelResults << normalizedTime
+                    << finalFrame << expectedChanges;
 
             mappingData.clear();
             channelResults.clear();
@@ -989,12 +1012,13 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QNodeId, animatorId);
         QFETCH(QVector<MappingData>, mappingData);
         QFETCH(QVector<float>, channelResults);
+        QFETCH(float, normalizedTime);
         QFETCH(bool, finalFrame);
         QFETCH(QVector<Qt3DCore::QPropertyUpdatedChangePtr>, expectedChanges);
 
         // WHEN
         QVector<Qt3DCore::QSceneChangePtr> actualChanges
-                = preparePropertyChanges(animatorId, mappingData, channelResults, finalFrame);
+                = preparePropertyChanges(animatorId, mappingData, channelResults, finalFrame, normalizedTime);
 
         // THEN
         QCOMPARE(actualChanges.size(), expectedChanges.size());

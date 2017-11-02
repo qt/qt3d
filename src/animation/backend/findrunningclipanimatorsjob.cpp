@@ -65,10 +65,15 @@ void FindRunningClipAnimatorsJob::run()
     for (const auto &clipAnimatorHandle : qAsConst(m_clipAnimatorHandles)) {
         ClipAnimator *clipAnimator = clipAnimatorManager->data(clipAnimatorHandle);
         Q_ASSERT(clipAnimator);
-        const bool canRun = clipAnimator->canRun();
-        m_handler->setClipAnimatorRunning(clipAnimatorHandle, canRun);
 
-        if (!canRun)
+        const bool canRun = clipAnimator->canRun();
+        const bool running = clipAnimator->isRunning();
+        const bool seeking = clipAnimator->isSeeking();
+        m_handler->setClipAnimatorRunning(clipAnimatorHandle, canRun && (seeking || running));
+
+        // TODO: Actually check if this is needed first, currently we re-build this every time
+        // canRun (or the normalized time) is true.
+        if (!canRun && !(seeking || running))
             continue;
 
         // The clip animator needs to know how to map fcurve values through to properties on QNodes.

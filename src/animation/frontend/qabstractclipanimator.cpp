@@ -53,6 +53,7 @@ QAbstractClipAnimatorPrivate::QAbstractClipAnimatorPrivate()
     , m_clock(nullptr)
     , m_running(false)
     , m_loops(1)
+    , m_normalizedTime(0.0f)
 {
 }
 
@@ -195,6 +196,17 @@ QClock *QAbstractClipAnimator::clock() const
     return d->m_clock;
 }
 
+/*!
+    \property int QAbstractClipAnimator::normalizedTime
+
+    This property holds the clips normalized time.
+*/
+float QAbstractClipAnimator::normalizedTime() const
+{
+    Q_D(const QAbstractClipAnimator);
+    return d->m_normalizedTime;
+}
+
 void QAbstractClipAnimator::setRunning(bool running)
 {
     Q_D(QAbstractClipAnimator);
@@ -250,6 +262,20 @@ void QAbstractClipAnimator::setClock(QClock *clock)
     if (d->m_clock)
         d->registerDestructionHelper(d->m_clock, &QAbstractClipAnimator::setClock, d->m_clock);
     emit clockChanged(clock);
+}
+
+void QAbstractClipAnimator::setNormalizedTime(float timeFraction)
+{
+    Q_D(QAbstractClipAnimator);
+    const float adjustedFraction = qBound(0.0f, timeFraction, 1.0f);
+    if (!qFuzzyCompare(timeFraction, adjustedFraction))
+        qWarning("time fraction value clipped to : %f", double(adjustedFraction));
+
+    if (qFuzzyCompare(d->m_normalizedTime, adjustedFraction))
+        return;
+
+    d->m_normalizedTime = adjustedFraction;
+    emit normalizedTimeChanged(adjustedFraction);
 }
 
 /*!

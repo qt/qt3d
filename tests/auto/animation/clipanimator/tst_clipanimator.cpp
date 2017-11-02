@@ -56,6 +56,7 @@ private Q_SLOTS:
         animator.setClip(clip);
         animator.setClock(clock);
         animator.setLoopCount(10);
+        animator.setNormalizedTime(0.5f);
 
         // WHEN
         simulateInitialization(&animator, &backendAnimator);
@@ -67,6 +68,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.clockId(), clock->id());
         QCOMPARE(backendAnimator.isRunning(), animator.isRunning());
         QCOMPARE(backendAnimator.loops(), animator.loopCount());
+        QCOMPARE(backendAnimator.normalizedLocalTime(), animator.normalizedTime());
     }
 
     void checkInitialAndCleanedUpState()
@@ -83,6 +85,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.clockId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAnimator.isRunning(), false);
         QCOMPARE(backendAnimator.loops(), 1);
+        QCOMPARE(backendAnimator.normalizedLocalTime(), -1.0);
 
         // GIVEN
         Qt3DAnimation::QClipAnimator animator;
@@ -92,6 +95,7 @@ private Q_SLOTS:
         animator.setClock(clock);
         animator.setRunning(true);
         animator.setLoopCount(25);
+        animator.setNormalizedTime(1.0f);
 
         // WHEN
         simulateInitialization(&animator, &backendAnimator);
@@ -105,6 +109,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.isEnabled(), false);
         QCOMPARE(backendAnimator.isRunning(), false);
         QCOMPARE(backendAnimator.loops(), 1);
+        QCOMPARE(backendAnimator.normalizedLocalTime(), -1.0f);
     }
 
     void checkPropertyChanges()
@@ -161,6 +166,15 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAnimator.loops(), 64);
+
+        // WHEN
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
+        updateChange->setPropertyName("normalizedTime");
+        updateChange->setValue(0.5f);
+        backendAnimator.sceneChangeEvent(updateChange);
+
+        // THEN
+        QVERIFY(qFuzzyCompare(backendAnimator.normalizedLocalTime(), 0.5f));
     }
 };
 
