@@ -68,6 +68,10 @@ void QForwardRendererPrivate::init()
 {
     Q_Q(QForwardRenderer);
 
+#ifdef QT_STATIC
+    Q_INIT_RESOURCE(extras);
+#endif
+
     m_frustumCulling->setParent(m_clearBuffer);
     m_clearBuffer->setParent(m_cameraSelector);
     m_cameraSelector->setParent(m_viewport);

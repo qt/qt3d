@@ -58,6 +58,9 @@ class GlobalShaderPrototypes
 public:
     GlobalShaderPrototypes()
     {
+#ifdef QT_STATIC
+        Q_INIT_RESOURCE(materialsystem);
+#endif
         setPrototypesFile(QStringLiteral(":/prototypes/default.json"));
     }
 

@@ -86,6 +86,10 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
 {
     Q_D(Qt3DWindow);
 
+#ifdef QT_STATIC
+    Q_INIT_RESOURCE(extras);
+#endif
+
     if (!d->parentWindow)
         d->connectToScreen(screen ? screen : d->topLevelScreen.data());
 
