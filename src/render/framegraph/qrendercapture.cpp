@@ -149,6 +149,15 @@ namespace Qt3DRender {
  */
 
 /*!
+ * \qmlmethod RenderCaptureReply Qt3D.Render::RenderCapture::requestCapture(Rect rect)
+ *
+ * Used to request render capture from a specified \a rect. Only one render capture
+ * result is produced per requestCapture call even if the frame graph has multiple leaf nodes.
+ * The function returns a QRenderCaptureReply object, which receives the captured image
+ * when it is done. The user is responsible for deallocating the returned object.
+ */
+
+/*!
  * \internal
  */
 QRenderCaptureReplyPrivate::QRenderCaptureReplyPrivate()
@@ -311,7 +320,7 @@ QRenderCapture::QRenderCapture(Qt3DCore::QNode *parent)
  * The function returns a QRenderCaptureReply object, which receives the captured image
  * when it is done. The user is responsible for deallocating the returned object.
  */
-QRenderCaptureReply *QRenderCapture::requestCapture(int captureId, const QRect &rect)
+QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
 {
     Q_D(QRenderCapture);
     QRenderCaptureReply *reply = d->createReply(captureId);
@@ -322,7 +331,7 @@ QRenderCaptureReply *QRenderCapture::requestCapture(int captureId, const QRect &
 
     Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(id()));
     change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));
-    const QRenderCaptureRequest request = { captureId, rect };
+    const QRenderCaptureRequest request = { captureId, QRect() };
     change->setValue(QVariant::fromValue(request));
     d->notifyObservers(change);
 
@@ -330,8 +339,8 @@ QRenderCaptureReply *QRenderCapture::requestCapture(int captureId, const QRect &
 }
 
 /*!
- * Used to request render capture. Only one render capture result is produced per
- * requestCapture call even if the frame graph has multiple leaf nodes.
+ * Used to request render capture from a specified \a rect. Only one render capture result
+ * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
  * The function returns a QRenderCaptureReply object, which receives the captured image
  * when it is done. The user is responsible for deallocating the returned object.
  */
@@ -354,6 +363,17 @@ QRenderCaptureReply *QRenderCapture::requestCapture(const QRect &rect)
     captureId++;
 
     return reply;
+}
+
+/*!
+ * Used to request render capture. Only one render capture result is produced per
+ * requestCapture call even if the frame graph has multiple leaf nodes.
+ * The function returns a QRenderCaptureReply object, which receives the captured image
+ * when it is done. The user is responsible for deallocating the returned object.
+ */
+Qt3DRender::QRenderCaptureReply *QRenderCapture::requestCapture()
+{
+    return requestCapture(QRect());
 }
 
 /*!
