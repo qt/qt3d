@@ -86,8 +86,7 @@ public:
     void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
     QVector<MappingData> mappingData() const { return m_mappingData; }
 
-    void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
-    qint64 startTime() const { return m_startGlobalTime; }
+    void setStartTime(qint64 globalTime) { m_lastGlobalTimeNS = globalTime; }
 
     int currentLoop() const { return m_currentLoop; }
     void setCurrentLoop(int currentLoop) { m_currentLoop = currentLoop; }
@@ -100,6 +99,12 @@ public:
     void setFormatIndices(const ComponentIndices &formatIndices) { m_formatIndices = formatIndices; }
     ComponentIndices formatIndices() const { return m_formatIndices; }
 
+    qint64 nsSincePreviousFrame(qint64 currentGlobalTimeNS);
+    void setLastGlobalTimeNS(qint64 lastGlobalTimeNS);
+
+    double lastLocalTime() const;
+    void setLastLocalTime(double lastLocalTime);
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
@@ -110,7 +115,8 @@ private:
     int m_loops;
 
     // Working state
-    qint64 m_startGlobalTime;
+    qint64 m_lastGlobalTimeNS;
+    double m_lastLocalTime;
     QVector<MappingData> m_mappingData;
 
     int m_currentLoop;

@@ -56,7 +56,8 @@ ClipAnimator::ClipAnimator()
     , m_clockId()
     , m_running(false)
     , m_loops(1)
-    , m_startGlobalTime(0)
+    , m_lastGlobalTimeNS(0)
+    , m_lastLocalTime(0.0)
     , m_mappingData()
     , m_currentLoop(0)
 {
@@ -160,6 +161,26 @@ void ClipAnimator::sendCallbacks(const QVector<AnimationCallbackAndValue> &callb
             notifyObservers(e);
         }
     }
+}
+
+qint64 ClipAnimator::nsSincePreviousFrame(qint64 currentGlobalTimeNS)
+{
+    return currentGlobalTimeNS - m_lastGlobalTimeNS;
+}
+
+void ClipAnimator::setLastGlobalTimeNS(qint64 lastGlobalTimeNS)
+{
+    m_lastGlobalTimeNS = lastGlobalTimeNS;
+}
+
+double ClipAnimator::lastLocalTime() const
+{
+    return m_lastLocalTime;
+}
+
+void ClipAnimator::setLastLocalTime(double lastLocalTime)
+{
+    m_lastLocalTime = lastLocalTime;
 }
 
 } // namespace Animation

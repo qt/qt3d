@@ -54,6 +54,8 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
 
+#include <QtCore/qdebug.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
@@ -89,11 +91,25 @@ struct MappingData
     ComponentIndices channelIndices;
 };
 
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const MappingData &mapping)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "targetId =" << mapping.targetId << endl
+        << "jointIndex =" << mapping.jointIndex << endl
+        << "jointTransformComponent: " << mapping.jointTransformComponent << endl
+        << "propertyName:" << mapping.propertyName << endl
+        << "channelIndices:" << mapping.channelIndices;
+    return dbg;
+}
+#endif
+
 struct AnimatorEvaluationData
 {
-    double globalTime;
-    double startTime;
+    double elapsedTime;
+    double currentTime;
     int loopCount;
+    int currentLoop;
     double playbackRate;
 };
 
@@ -142,14 +158,15 @@ struct AnimationCallbackAndValue
 };
 
 template<typename Animator>
-AnimatorEvaluationData evaluationDataForAnimator(Animator animator, Clock* clock, qint64 globalTime)
+AnimatorEvaluationData evaluationDataForAnimator(Animator animator, Clock* clock, qint64 nsSincePreviousFrame)
 {
     AnimatorEvaluationData data;
     data.loopCount = animator->loops();
+    data.currentLoop = animator->currentLoop();
     data.playbackRate = clock != nullptr ? clock->playbackRate() : 1.0;
     // Convert global time from nsec to sec
-    data.startTime = double(animator->startTime()) / 1.0e9;
-    data.globalTime = double(globalTime) / 1.0e9;
+    data.elapsedTime = double(nsSincePreviousFrame) / 1.0e9;
+    data.currentTime = animator->lastLocalTime();
     return data;
 }
 
@@ -212,12 +229,12 @@ Q_AUTOTEST_EXPORT
 QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNameAndType> &namesAndTypes);
 
 Q_AUTOTEST_EXPORT
-double localTimeFromGlobalTime(double t_global, double t_start_global,
-                               double playbackRate, double duration,
-                               int loopCount, int &currentLoop);
+double localTimeFromElapsedTime(double t_current_local, double t_elapsed_global,
+                                double playbackRate, double duration,
+                                int loopCount, int &currentLoop);
 
 Q_AUTOTEST_EXPORT
-double phaseFromGlobalTime(double t_global, double t_start_global,
+double phaseFromElapsedTime(double t_current_local, double t_elapsed_global,
                            double playbackRate, double duration,
                            int loopCount, int &currentLoop);
 

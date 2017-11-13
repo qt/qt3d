@@ -91,6 +91,7 @@ public Q_SLOTS:
     void setRotationY(float rotationY);
     void setRotationZ(float rotationZ);
     void setName(const QString &name);
+    void setToIdentity();
 
 Q_SIGNALS:
     void scaleChanged(const QVector3D &scale);

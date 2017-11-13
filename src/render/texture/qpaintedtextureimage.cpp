@@ -51,7 +51,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QPaintedTextureImage
     \inmodule Qt3DRender
     \since 5.8
-    \brief A QAbstractTextureImage that can be written through a QPainter
+    \brief A QAbstractTextureImage that can be written through a QPainter.
 
     A QPaintedTextureImage provides a way to specify a texture image
     (and thus an OpenGL texture) through a QPainter. The width and height of the
@@ -205,6 +205,11 @@ void QPaintedTextureImage::update(const QRect &rect)
     d->repaint();
 }
 
+/*!
+    \fn Qt3DRender::QPaintedTextureImage::paint(QPainter *painter)
+
+    Paints the texture image with the specified QPainter object \a painter.
+*/
 QTextureImageDataGeneratorPtr QPaintedTextureImage::dataGenerator() const
 {
     Q_D(const QPaintedTextureImage);

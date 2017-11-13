@@ -63,7 +63,8 @@ private Q_SLOTS:
         QCOMPARE(backendBlendedClipAnimator.blendTreeRootId(), Qt3DCore::QNodeId());
         QCOMPARE(backendBlendedClipAnimator.mapperId(), Qt3DCore::QNodeId());
         QCOMPARE(backendBlendedClipAnimator.isRunning(), false);
-        QCOMPARE(backendBlendedClipAnimator.startTime(), 0);
+        QCOMPARE(backendBlendedClipAnimator.lastLocalTime(), 0.0);
+        QCOMPARE(backendBlendedClipAnimator.nsSincePreviousFrame(0), 0);
         QCOMPARE(backendBlendedClipAnimator.currentLoop(), 0);
         QCOMPARE(backendBlendedClipAnimator.loops(), 1);
 
@@ -82,6 +83,7 @@ private Q_SLOTS:
         backendBlendedClipAnimator.setMapperId(Qt3DCore::QNodeId::createId());
         backendBlendedClipAnimator.setRunning(true);
         backendBlendedClipAnimator.setStartTime(28);
+        backendBlendedClipAnimator.setLastLocalTime(0.28);
         backendBlendedClipAnimator.cleanup();
 
         // THEN
@@ -89,7 +91,8 @@ private Q_SLOTS:
         QCOMPARE(backendBlendedClipAnimator.blendTreeRootId(), Qt3DCore::QNodeId());
         QCOMPARE(backendBlendedClipAnimator.mapperId(), Qt3DCore::QNodeId());
         QCOMPARE(backendBlendedClipAnimator.isRunning(), false);
-        QCOMPARE(backendBlendedClipAnimator.startTime(), 0);
+        QCOMPARE(backendBlendedClipAnimator.lastLocalTime(), 0.0);
+        QCOMPARE(backendBlendedClipAnimator.nsSincePreviousFrame(0), 0);
         QCOMPARE(backendBlendedClipAnimator.currentLoop(), 0);
         QCOMPARE(backendBlendedClipAnimator.loops(), 1);
     }

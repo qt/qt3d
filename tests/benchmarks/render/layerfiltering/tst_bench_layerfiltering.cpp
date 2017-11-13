@@ -107,7 +107,7 @@ Qt3DCore::QEntity *buildTestScene(int layersCount,
         Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(root);
 
         if (layersCount > 0)
-            entity->addComponent(layers.at(QRandomGenerator::bounded(layersCount)));
+            entity->addComponent(layers.at(QRandomGenerator::global()->bounded(layersCount)));
 
         if (!alwaysEnabled && i % 128 == 0)
             entity->setEnabled(false);

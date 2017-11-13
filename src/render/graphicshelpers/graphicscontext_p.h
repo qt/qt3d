@@ -177,7 +177,7 @@ public:
 
     void memoryBarrier(QMemoryBarrier::Operations barriers);
 
-    void setParameters(ShaderParameterPack &parameterPack);
+    bool setParameters(ShaderParameterPack &parameterPack);
 
     void readBuffer(GLenum mode);
     void drawBuffer(GLenum mode);

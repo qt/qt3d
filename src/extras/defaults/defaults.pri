@@ -28,7 +28,6 @@ HEADERS += \
     $$PWD/qabstractcameracontroller.h \
     $$PWD/qabstractcameracontroller_p.h \
     $$PWD/qfirstpersoncameracontroller.h \
-    $$PWD/qfirstpersoncameracontroller_p.h \
     $$PWD/qorbitcameracontroller.h \
     $$PWD/qorbitcameracontroller_p.h \
     $$PWD/qabstractspritesheet.h \

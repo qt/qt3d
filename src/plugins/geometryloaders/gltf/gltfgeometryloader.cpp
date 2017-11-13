@@ -350,8 +350,6 @@ void GLTFGeometryLoader::processJSONBufferViewV2(const QJsonObject &json)
     case GL_ARRAY_BUFFER:           ty = Qt3DRender::QBuffer::VertexBuffer; break;
     case GL_ELEMENT_ARRAY_BUFFER:   ty = Qt3DRender::QBuffer::IndexBuffer; break;
     default:
-        qCWarning(GLTFGeometryLoaderLog, "buffer %d unsupported target: %d",
-                  bufferIndex, target);
         return;
     }
 

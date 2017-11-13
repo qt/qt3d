@@ -63,6 +63,7 @@ class QAbstractTexture;
 class QTechnique;
 class QParameter;
 class QShaderProgram;
+class QShaderProgramBuilder;
 class QRenderPass;
 
 } // namespace Qt3DRender
@@ -101,7 +102,9 @@ public:
     Qt3DRender::QRenderPass *m_normalDiffuseGL2RenderPass;
     Qt3DRender::QRenderPass *m_normalDiffuseES2RenderPass;
     Qt3DRender::QShaderProgram *m_normalDiffuseGL3Shader;
+    Qt3DRender::QShaderProgramBuilder *m_normalDiffuseGL3ShaderBuilder;
     Qt3DRender::QShaderProgram *m_normalDiffuseGL2ES2Shader;
+    Qt3DRender::QShaderProgramBuilder *m_normalDiffuseGL2ES2ShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QNormalDiffuseMapMaterial)

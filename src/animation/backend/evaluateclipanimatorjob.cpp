@@ -48,6 +48,8 @@ namespace Animation {
 
 EvaluateClipAnimatorJob::EvaluateClipAnimatorJob()
     : Qt3DCore::QAspectJob()
+    , m_currentGlobalTime(0.0)
+    , m_lastGlobalTime(0.0)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateClipAnimator, 0);
 }
@@ -56,11 +58,13 @@ void EvaluateClipAnimatorJob::run()
 {
     Q_ASSERT(m_handler);
 
-    const qint64 globalTime = m_handler->simulationTime();
-    //qDebug() << Q_FUNC_INFO << "t_global =" << globalTime;
-
     ClipAnimator *clipAnimator = m_handler->clipAnimatorManager()->data(m_clipAnimatorHandle);
     Q_ASSERT(clipAnimator);
+    if (!clipAnimator->isRunning())
+        return;
+
+    qint64 globalTimeNS = m_handler->simulationTime();
+    qint64 nsSincePreviousFrame = clipAnimator->nsSincePreviousFrame(globalTimeNS);
 
     Clock *clock = m_handler->clockManager()->lookupResource(clipAnimator->clockId());
 
@@ -68,7 +72,7 @@ void EvaluateClipAnimatorJob::run()
     AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
     Q_ASSERT(clip);
     // Prepare for evaluation (convert global time to local time ....)
-    const AnimatorEvaluationData animatorEvaluationData = evaluationDataForAnimator(clipAnimator, clock, globalTime);
+    const AnimatorEvaluationData animatorEvaluationData = evaluationDataForAnimator(clipAnimator, clock, nsSincePreviousFrame);
     const ClipEvaluationData preEvaluationDataForClip = evaluationDataForClip(clip, animatorEvaluationData);
     const ClipResults rawClipResults = evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
 
@@ -80,6 +84,8 @@ void EvaluateClipAnimatorJob::run()
         clipAnimator->setRunning(false);
 
     clipAnimator->setCurrentLoop(preEvaluationDataForClip.currentLoop);
+    clipAnimator->setLastGlobalTimeNS(globalTimeNS);
+    clipAnimator->setLastLocalTime(preEvaluationDataForClip.localTime);
 
     // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
     const QVector<Qt3DCore::QSceneChangePtr> changes = preparePropertyChanges(clipAnimator->peerId(),

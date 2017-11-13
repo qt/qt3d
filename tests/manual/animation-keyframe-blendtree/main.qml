@@ -75,16 +75,36 @@ DefaultSceneEntity {
                 shininess: 50
             },
             ObjectPicker {
-                onClicked: blendedAnimator.running = true
+                onClicked: {
+                    if (blendedAnimator.running == false) {
+                        blendedAnimator.running = true;
+                    } else {
+                        switch (pick.button) {
+                        case PickEvent.RightButton:
+                            animatorClock.playbackRate *= 2.0;
+                            break;
+                        case PickEvent.LeftButton:
+                            animatorClock.playbackRate /= 2.0;
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                }
             },
             BlendedClipAnimator {
                 id: blendedAnimator
-                loops: 2
+                loops: 3
+
+                clock: Clock {
+                    id: animatorClock
+                    playbackRate: 0.5
+                }
 
                 onRunningChanged: console.log("running = " + running)
 
                 blendTree: LerpClipBlend {
-                    blendFactor: 0.2
+                    blendFactor: 0.8
                     startClip: ClipBlendValue {
                         clip: AnimationClipLoader { source: "sliding-cube.json" }
                     }

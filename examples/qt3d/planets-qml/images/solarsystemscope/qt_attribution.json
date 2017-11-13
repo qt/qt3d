@@ -6,7 +6,7 @@
     "Description": "Solar System Scope provides high quality, free to use textures for objects in the solar system.",
     "QtUsage": "Used in Qt 3D planets-qml example.",
 
-    "Homepage": "www.solarsystemscope.com/textures",
+    "Homepage": "https://www.solarsystemscope.com/textures",
     "License": "Creative Commons Attribution 4.0",
     "LicenseId": "CC-BY-4.0",
     "LicenseFile": "license.txt",

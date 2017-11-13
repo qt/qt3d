@@ -224,7 +224,7 @@ void QAbstractCameraControllerPrivate::applyInputAccelerations()
 }
 
 /*!
-    \class QAbstractCameraController
+    \class Qt3DExtras::QAbstractCameraController
 
     \brief The QAbstractCameraController class provides basic
     functionality for camera controllers.

@@ -74,7 +74,7 @@ public:
 
     QMouseDevice *m_mouseDevice;
     bool m_containsMouse;
-    QScopedPointer<QTimer> m_pressAndHoldTimer;
+    QTimer *m_pressAndHoldTimer = nullptr;
     QMouseEventPtr m_lastPressedEvent;
 
     void mouseEvent(const QMouseEventPtr &event);

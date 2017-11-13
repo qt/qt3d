@@ -549,334 +549,135 @@ private Q_SLOTS:
         delete handler;
     }
 
-    void checkLocalTimeFromGlobalTime_data()
+    void checkLocalTimeFromElapsedTime_data()
     {
-        QTest::addColumn<double>("globalTime");
-        QTest::addColumn<double>("globalStartTime");
+        QTest::addColumn<double>("elapsedTime");
+        QTest::addColumn<double>("currentTime");
         QTest::addColumn<double>("playbackRate");
         QTest::addColumn<double>("duration");
         QTest::addColumn<int>("loopCount");
+        QTest::addColumn<int>("currentLoop");
         QTest::addColumn<double>("expectedLocalTime");
         QTest::addColumn<int>("expectedCurrentLoop");
 
-        double globalTime;
-        double globalStartTime;
+        double elapsedTime;
+        double currentTime;
         double playbackRate;
         double duration;
         int loopCount;
+        int currentLoop;
         double expectedLocalTime;
         int expectedCurrentLoop;
 
-        globalTime = 0.0;
-        globalStartTime = 0.0;
+        elapsedTime = 0.0;
+        currentTime = 0.0;
         playbackRate = 1.0;
         duration = 1.0;
         loopCount = 1;
+        currentLoop = 0;
         expectedLocalTime = 0.0;
         expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = 0")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
+        QTest::newRow("simple, t_current = 0, t_elapsed = 0, loop_current = 0")
+                << elapsedTime << currentTime << playbackRate << duration << loopCount << currentLoop
                 << expectedLocalTime << expectedCurrentLoop;
 
-        globalTime = 0.5;
-        globalStartTime = 0.0;
+        elapsedTime = 0.5;
+        currentTime = 0.0;
         playbackRate = 1.0;
         duration = 1.0;
         loopCount = 1;
+        currentLoop = 0;
         expectedLocalTime = 0.5;
         expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = 0.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
+        QTest::newRow("simple, t_current = 0, t_elapsed = 0.5, loop_current = 0")
+                << elapsedTime << currentTime << playbackRate << duration << loopCount << currentLoop
                 << expectedLocalTime << expectedCurrentLoop;
 
-        globalTime = 1.0;
-        globalStartTime = 0.0;
+        elapsedTime = 1.5;
+        currentTime = 0.0;
         playbackRate = 1.0;
         duration = 1.0;
         loopCount = 1;
+        currentLoop = 0;
         expectedLocalTime = 1.0;
         expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = 1.0")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
+        QTest::newRow("simple, t_current = 0, t_elapsed = 1.5, loop_current = 0")
+                << elapsedTime << currentTime << playbackRate << duration << loopCount << currentLoop
                 << expectedLocalTime << expectedCurrentLoop;
 
-        globalTime = -0.5;
-        globalStartTime = 0.0;
+        elapsedTime = 0.5;
+        currentTime = 0.6;
         playbackRate = 1.0;
         duration = 1.0;
         loopCount = 1;
-        expectedLocalTime = 0.0;
-        expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = -0.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedLocalTime << expectedCurrentLoop;
-
-        globalTime = 1.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = 1;
+        currentLoop = 0;
         expectedLocalTime = 1.0;
         expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = 1.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
+        QTest::newRow("simple, t_current = 0.5, t_elapsed = 0.6, loop_current = 0")
+                << elapsedTime << currentTime << playbackRate << duration << loopCount << currentLoop
                 << expectedLocalTime << expectedCurrentLoop;
 
-        globalTime = 0.5;
-        globalStartTime = 0.0;
+        elapsedTime = 0.5;
+        currentTime = 0.6;
         playbackRate = 1.0;
         duration = 1.0;
         loopCount = 2;
-        expectedLocalTime = 0.5;
-        expectedCurrentLoop = 0;
-        QTest::newRow("simple, loopCount = 2, t_global = 0.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
+        currentLoop = 0;
+        expectedLocalTime = 0.1;
+        expectedCurrentLoop = 1;
+        QTest::newRow("simple, t_current = 0.5, t_elapsed = 0.6, loop_current = 0, loop_count = 2")
+                << elapsedTime << currentTime << playbackRate << duration << loopCount << currentLoop
                 << expectedLocalTime << expectedCurrentLoop;
 
-        globalTime = 1.5;
-        globalStartTime = 0.0;
+        elapsedTime = 0.5;
+        currentTime = 0.6;
         playbackRate = 1.0;
         duration = 1.0;
         loopCount = 2;
-        expectedLocalTime = 0.5;
-        expectedCurrentLoop = 1;
-        QTest::newRow("simple, loopCount = 2, t_global = 1.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
+        currentLoop = 1;
+        expectedLocalTime = 1.0;
+        expectedCurrentLoop = 1; // We clamp at end of final loop
+        QTest::newRow("simple, t_current = 0.5, t_elapsed = 0.6, loop_current = 1, loop_count = 2")
+                << elapsedTime << currentTime << playbackRate << duration << loopCount << currentLoop
                 << expectedLocalTime << expectedCurrentLoop;
 
-        globalTime = 3.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 2.0;
-        loopCount = 2;
-        expectedLocalTime = 1.5;
-        expectedCurrentLoop = 1;
-        QTest::newRow("duration = 2, loopCount = 2, t_global = 3.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedLocalTime << expectedCurrentLoop;
-
-        globalTime = 4.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 2.0;
-        loopCount = 2;
-        expectedLocalTime = 2.0;
-        expectedCurrentLoop = 1;
-        QTest::newRow("duration = 2, loopCount = 2, t_global = 4.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedLocalTime << expectedCurrentLoop;
-
-        globalTime = 1.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
+        elapsedTime = 0.5;
+        currentTime = 0.6;
+        playbackRate = 0.1;
         duration = 1.0;
-        loopCount = -1;
-        expectedLocalTime = 0.5;
+        loopCount = 2;
+        currentLoop = 1;
+        expectedLocalTime = 0.65;
         expectedCurrentLoop = 1;
-        QTest::newRow("simple, loopCount = inf, t_global = 1.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedLocalTime << expectedCurrentLoop;
-
-        globalTime = 10.2;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = -1;
-        expectedLocalTime = 0.2;
-        expectedCurrentLoop = 10;
-        QTest::newRow("simple, loopCount = inf, t_global = 10.2")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
+        QTest::newRow("simple, t_current = 0.5, t_elapsed = 0.6, loop_current = 1, loop_count = 2")
+                << elapsedTime << currentTime << playbackRate << duration << loopCount << currentLoop
                 << expectedLocalTime << expectedCurrentLoop;
     }
 
-    void checkLocalTimeFromGlobalTime()
+    void checkLocalTimeFromElapsedTime()
     {
         // GIVEN
-        QFETCH(double, globalTime);
-        QFETCH(double, globalStartTime);
+        QFETCH(double, elapsedTime);
+        QFETCH(double, currentTime);
         QFETCH(double, playbackRate);
         QFETCH(double, duration);
         QFETCH(int, loopCount);
+        QFETCH(int, currentLoop);
         QFETCH(double, expectedLocalTime);
         QFETCH(int, expectedCurrentLoop);
 
         // WHEN
-        int actualCurrentLoop = 0;
-        double actualLocalTime = localTimeFromGlobalTime(globalTime,
-                                                         globalStartTime,
-                                                         playbackRate,
-                                                         duration,
-                                                         loopCount,
-                                                         actualCurrentLoop);
+        int actualCurrentLoop = currentLoop;
+        double actualLocalTime = localTimeFromElapsedTime(currentTime,
+                                                          elapsedTime,
+                                                          playbackRate,
+                                                          duration,
+                                                          loopCount,
+                                                          actualCurrentLoop);
 
         // THEN
         QCOMPARE(actualCurrentLoop, expectedCurrentLoop);
         QCOMPARE(actualLocalTime, expectedLocalTime);
-    }
-
-    void checkPhaseFromGlobalTime_data()
-    {
-        QTest::addColumn<double>("globalTime");
-        QTest::addColumn<double>("globalStartTime");
-        QTest::addColumn<double>("playbackRate");
-        QTest::addColumn<double>("duration");
-        QTest::addColumn<int>("loopCount");
-        QTest::addColumn<double>("expectedPhase");
-        QTest::addColumn<int>("expectedCurrentLoop");
-
-        double globalTime;
-        double globalStartTime;
-        double playbackRate;
-        double duration;
-        int loopCount;
-        double expectedPhase;
-        int expectedCurrentLoop;
-
-        globalTime = 0.0;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = 1;
-        expectedPhase = 0.0;
-        expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = 0")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 0.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = 1;
-        expectedPhase = 0.5;
-        expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = 0.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 1.0;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = 1;
-        expectedPhase = 1.0;
-        expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = 1.0")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = -0.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = 1;
-        expectedPhase = 0.0;
-        expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = -0.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 1.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = 1;
-        expectedPhase = 1.0;
-        expectedCurrentLoop = 0;
-        QTest::newRow("simple, t_global = 1.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 0.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = 2;
-        expectedPhase = 0.5;
-        expectedCurrentLoop = 0;
-        QTest::newRow("simple, loopCount = 2, t_global = 0.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 1.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = 2;
-        expectedPhase = 0.5;
-        expectedCurrentLoop = 1;
-        QTest::newRow("simple, loopCount = 2, t_global = 1.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 3.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 2.0;
-        loopCount = 2;
-        expectedPhase = 0.75;
-        expectedCurrentLoop = 1;
-        QTest::newRow("duration = 2, loopCount = 2, t_global = 3.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 4.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 2.0;
-        loopCount = 2;
-        expectedPhase = 1.0;
-        expectedCurrentLoop = 1;
-        QTest::newRow("duration = 2, loopCount = 2, t_global = 4.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 1.5;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = -1;
-        expectedPhase = 0.5;
-        expectedCurrentLoop = 1;
-        QTest::newRow("simple, loopCount = inf, t_global = 1.5")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-
-        globalTime = 10.2;
-        globalStartTime = 0.0;
-        playbackRate = 1.0;
-        duration = 1.0;
-        loopCount = -1;
-        expectedPhase = 0.2;
-        expectedCurrentLoop = 10;
-        QTest::newRow("simple, loopCount = inf, t_global = 10.2")
-                << globalTime << globalStartTime << playbackRate << duration << loopCount
-                << expectedPhase << expectedCurrentLoop;
-    }
-
-    void checkPhaseFromGlobalTime()
-    {
-        // GIVEN
-        QFETCH(double, globalTime);
-        QFETCH(double, globalStartTime);
-        QFETCH(double, playbackRate);
-        QFETCH(double, duration);
-        QFETCH(int, loopCount);
-        QFETCH(double, expectedPhase);
-        QFETCH(int, expectedCurrentLoop);
-
-        // WHEN
-        int actualCurrentLoop = 0;
-        double actualPhase = phaseFromGlobalTime(globalTime,
-                                                 globalStartTime,
-                                                 playbackRate,
-                                                 duration,
-                                                 loopCount,
-                                                 actualCurrentLoop);
-
-        // THEN
-        QCOMPARE(actualCurrentLoop, expectedCurrentLoop);
-        QCOMPARE(actualPhase, expectedPhase);
     }
 
     void checkPreparePropertyChanges_data()
@@ -1880,11 +1681,13 @@ private Q_SLOTS:
             const qint64 globalStartTimeNS = 0;
             const int loops = 1;
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
-            const qint64 globalTimeNS = 0;
-            animatorData = evaluationDataForAnimator(animator, clock, globalTimeNS); // Tested elsewhere
+            animator->setCurrentLoop(0);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = 0;
+            animatorData = evaluationDataForAnimator(animator, clock, elapsedTimeNS); // Tested elsewhere
 
-            clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
-                                                         animatorData.startTime,
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                         animatorData.elapsedTime,
                                                          animatorData.playbackRate,
                                                          clip->duration(),
                                                          animatorData.loopCount,
@@ -1901,18 +1704,20 @@ private Q_SLOTS:
             const qint64 globalStartTimeNS = 0;
             const int loops = 1;
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
-            const qint64 globalTimeNS = (clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
-            animatorData = evaluationDataForAnimator(animator, nullptr, globalTimeNS); // Tested elsewhere
+            animator->setCurrentLoop(0);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = (clip->duration()+1)*1e09; // +1 to ensure beyond end
+            animatorData = evaluationDataForAnimator(animator, nullptr, elapsedTimeNS); // Tested elsewhere
 
-            clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
-                                                         animatorData.startTime,
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                         animatorData.elapsedTime,
                                                          animatorData.playbackRate,
                                                          clip->duration(),
                                                          animatorData.loopCount,
                                                          clipData.currentLoop); // Tested elsewhere
             clipData.isFinalFrame = true;
 
-            QTest::newRow("clip1.json, globalTime = duration")
+            QTest::newRow("clip1.json, elapsedTime = duration + 1")
                     << handler << clip << animatorData << clipData;
         }
 
@@ -1922,18 +1727,20 @@ private Q_SLOTS:
             const qint64 globalStartTimeNS = 0;
             const int loops = 0; // Infinite loops
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
-            const qint64 globalTimeNS = 2.0 * clip->duration() * 1.0e9;
-            animatorData = evaluationDataForAnimator(animator, clock, globalTimeNS); // Tested elsewhere
+            animator->setCurrentLoop(0);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = 2.0 * clip->duration() * 1.0e9;
+            animatorData = evaluationDataForAnimator(animator, clock, elapsedTimeNS); // Tested elsewhere
 
-            clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
-                                                         animatorData.startTime,
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                         animatorData.elapsedTime,
                                                          animatorData.playbackRate,
                                                          clip->duration(),
                                                          animatorData.loopCount,
                                                          clipData.currentLoop); // Tested elsewhere
             clipData.isFinalFrame = false;
 
-            QTest::newRow("clip1.json, globalTime = 2 * duration, loops = infinite")
+            QTest::newRow("clip1.json, elapsedTime = 2 * duration, loops = infinite")
                     << handler << clip << animatorData << clipData;
         }
 
@@ -1943,18 +1750,43 @@ private Q_SLOTS:
             const qint64 globalStartTimeNS = 0;
             const int loops = 2;
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
-            const qint64 globalTimeNS = (2.0 * clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
-            animatorData = evaluationDataForAnimator(animator, nullptr, globalTimeNS); // Tested elsewhere
+            animator->setCurrentLoop(0);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = (2.0 * clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
+            animatorData = evaluationDataForAnimator(animator, nullptr, elapsedTimeNS); // Tested elsewhere
 
-            clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
-                                                         animatorData.startTime,
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                         animatorData.elapsedTime,
                                                          animatorData.playbackRate,
                                                          clip->duration(),
                                                          animatorData.loopCount,
                                                          clipData.currentLoop); // Tested elsewhere
             clipData.isFinalFrame = true;
 
-            QTest::newRow("clip1.json, globalTime = 2 * duration + 1, loops = 2")
+            QTest::newRow("clip1.json, elapsedTime = 2 * duration + 1, loops = 2")
+                    << handler << clip << animatorData << clipData;
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = 0;
+            const int loops = 2;
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            animator->setCurrentLoop(1);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = (clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
+            animatorData = evaluationDataForAnimator(animator, nullptr, elapsedTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                         animatorData.elapsedTime,
+                                                         animatorData.playbackRate,
+                                                         clip->duration(),
+                                                         animatorData.loopCount,
+                                                         clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = true;
+
+            QTest::newRow("clip1.json, elapsedTime = duration + 1, loops = 2, current_loop = 1")
                     << handler << clip << animatorData << clipData;
         }
     }
@@ -1983,12 +1815,12 @@ private Q_SLOTS:
     {
         QTest::addColumn<Handler *>("handler");
         QTest::addColumn<ClipAnimator *>("animator");
-        QTest::addColumn<qint64>("globalTimeNS");
+        QTest::addColumn<qint64>("elapsedTime");
         QTest::addColumn<AnimatorEvaluationData>("expectedAnimatorData");
 
         Handler *handler;
         ClipAnimator *animator;
-        qint64 globalTimeNS;
+        qint64 elapsedTimeNS;
         AnimatorEvaluationData expectedAnimatorData;
 
         {
@@ -1996,15 +1828,14 @@ private Q_SLOTS:
             const qint64 globalStartTimeNS = 0;
             const int loops = 1;
             animator = createClipAnimator(handler, globalStartTimeNS, loops);
-            globalTimeNS = 0;
+            elapsedTimeNS = 0;
 
             expectedAnimatorData.loopCount = loops;
             expectedAnimatorData.playbackRate = 1.0; // hard-wired for now
-            expectedAnimatorData.startTime = 0.0;
-            expectedAnimatorData.globalTime = 0.0;
+            expectedAnimatorData.elapsedTime = 0.0;
 
-            QTest::newRow("globalStartTime = 0, globalTime = 0, loops = 1")
-                    << handler << animator << globalTimeNS << expectedAnimatorData;
+            QTest::newRow("globalStartTime = 0, elapsedTime = 0, loops = 1")
+                    << handler << animator << elapsedTimeNS << expectedAnimatorData;
         }
 
         {
@@ -2012,15 +1843,14 @@ private Q_SLOTS:
             const qint64 globalStartTimeNS = 0;
             const int loops = 5;
             animator = createClipAnimator(handler, globalStartTimeNS, loops);
-            globalTimeNS = 0;
+            elapsedTimeNS = 0;
 
             expectedAnimatorData.loopCount = loops;
             expectedAnimatorData.playbackRate = 1.0; // hard-wired for now
-            expectedAnimatorData.startTime = 0.0;
-            expectedAnimatorData.globalTime = 0.0;
+            expectedAnimatorData.elapsedTime = 0.0;
 
-            QTest::newRow("globalStartTime = 0, globalTime = 0, loops = 5")
-                    << handler << animator << globalTimeNS << expectedAnimatorData;
+            QTest::newRow("globalStartTime = 0, elapsedTime = 0, loops = 5")
+                    << handler << animator << elapsedTimeNS << expectedAnimatorData;
         }
 
         {
@@ -2028,15 +1858,14 @@ private Q_SLOTS:
             const qint64 globalStartTimeNS = 0;
             const int loops = 1;
             animator = createClipAnimator(handler, globalStartTimeNS, loops);
-            globalTimeNS = 5000000000;
+            elapsedTimeNS = 5000000000;
 
             expectedAnimatorData.loopCount = loops;
             expectedAnimatorData.playbackRate = 1.0; // hard-wired for now
-            expectedAnimatorData.startTime = 0.0;
-            expectedAnimatorData.globalTime = 5.0;
+            expectedAnimatorData.elapsedTime = 5.0;
 
-            QTest::newRow("globalStartTime = 0, globalTime = 5, loops = 1")
-                    << handler << animator << globalTimeNS << expectedAnimatorData;
+            QTest::newRow("globalStartTime = 0, elapsedTime = 5, loops = 1")
+                    << handler << animator << elapsedTimeNS << expectedAnimatorData;
         }
 
         {
@@ -2044,15 +1873,14 @@ private Q_SLOTS:
             const qint64 globalStartTimeNS = 3000000000;
             const int loops = 1;
             animator = createClipAnimator(handler, globalStartTimeNS, loops);
-            globalTimeNS = 5000000000;
+            elapsedTimeNS = 2000000000;
 
             expectedAnimatorData.loopCount = loops;
             expectedAnimatorData.playbackRate = 1.0; // hard-wired for now
-            expectedAnimatorData.startTime = 3.0;
-            expectedAnimatorData.globalTime = 5.0;
+            expectedAnimatorData.elapsedTime = 2.0;
 
-            QTest::newRow("globalStartTime = 3, globalTime = 5, loops = 1")
-                    << handler << animator << globalTimeNS << expectedAnimatorData;
+            QTest::newRow("globalStartTime = 3, elapsedTime = 2, loops = 1")
+                    << handler << animator << elapsedTimeNS << expectedAnimatorData;
         }
     }
 
@@ -2061,17 +1889,16 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(Handler *, handler);
         QFETCH(ClipAnimator *, animator);
-        QFETCH(qint64, globalTimeNS);
+        QFETCH(qint64, elapsedTime);
         QFETCH(AnimatorEvaluationData, expectedAnimatorData);
 
         // WHEN
-        AnimatorEvaluationData actualAnimatorData = evaluationDataForAnimator(animator, nullptr, globalTimeNS);
+        AnimatorEvaluationData actualAnimatorData = evaluationDataForAnimator(animator, nullptr, elapsedTime);
 
         // THEN
         QCOMPARE(actualAnimatorData.loopCount, expectedAnimatorData.loopCount);
         QVERIFY(fuzzyCompare(actualAnimatorData.playbackRate, expectedAnimatorData.playbackRate) == true);
-        QVERIFY(fuzzyCompare(actualAnimatorData.startTime, expectedAnimatorData.startTime) == true);
-        QVERIFY(fuzzyCompare(actualAnimatorData.globalTime, expectedAnimatorData.globalTime) == true);
+        QVERIFY(fuzzyCompare(actualAnimatorData.elapsedTime, expectedAnimatorData.elapsedTime) == true);
 
         // Cleanup
         delete handler;

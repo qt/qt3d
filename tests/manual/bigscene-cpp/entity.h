@@ -61,9 +61,11 @@ namespace Qt3DCore {
 class QTransform;
 }
 
-namespace Qt3DExtras {
-class QCylinderMesh;
-class QPhongMaterial;
+namespace Qt3DRender {
+class QEffect;
+class QGeometryRenderer;
+class QMaterial;
+class QParameter;
 }
 
 QT_END_NAMESPACE
@@ -77,7 +79,7 @@ class Entity : public Qt3DCore::QEntity
     Q_PROPERTY(QColor diffuseColor READ diffuseColor WRITE setDiffuseColor NOTIFY diffuseColorChanged)
 
 public:
-    Entity(Qt3DCore::QNode *parent = 0);
+    Entity(Qt3DRender::QEffect *effect, Qt3DCore::QNode *parent = 0);
 
     float theta() const;
     float phi() const;
@@ -101,8 +103,8 @@ private:
 
 private:
     Qt3DCore::QTransform *m_transform;
-    Qt3DExtras::QCylinderMesh *m_mesh;
-    Qt3DExtras::QPhongMaterial *m_material;
+    Qt3DRender::QMaterial *m_material;
+    Qt3DRender::QParameter *m_diffuseColorParam;
     float m_theta;
     float m_phi;
     QVector3D m_position;
