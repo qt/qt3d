@@ -117,6 +117,7 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
+    void cleanupHandleList(QVector<HAnimationClip> *clips);
     void cleanupHandleList(QVector<HClipAnimator> *animators);
     void cleanupHandleList(QVector<HBlendedClipAnimator> *animators);
 
