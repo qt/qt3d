@@ -48,6 +48,13 @@
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 
+static void initResources()
+{
+#ifdef QT_STATIC
+    Q_INIT_RESOURCE(extras);
+#endif
+}
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DRender;
@@ -68,9 +75,7 @@ void QForwardRendererPrivate::init()
 {
     Q_Q(QForwardRenderer);
 
-#ifdef QT_STATIC
-    Q_INIT_RESOURCE(extras);
-#endif
+    initResources();
 
     m_frustumCulling->setParent(m_clearBuffer);
     m_clearBuffer->setParent(m_cameraSelector);
