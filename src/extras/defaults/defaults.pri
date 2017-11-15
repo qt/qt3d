@@ -1,6 +1,8 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+    $$PWD/qdiffusespecularmaterial.h \
+    $$PWD/qdiffusespecularmaterial_p.h \
     $$PWD/qphongmaterial.h \
     $$PWD/qphongmaterial_p.h \
     $$PWD/qdiffusemapmaterial_p.h \
@@ -47,6 +49,7 @@ HEADERS += \
     $$PWD/qmorphphongmaterial_p.h
 
 SOURCES += \
+    $$PWD/qdiffusespecularmaterial.cpp \
     $$PWD/qphongmaterial.cpp \
     $$PWD/qdiffusemapmaterial.cpp \
     $$PWD/qnormaldiffusespecularmapmaterial.cpp \
