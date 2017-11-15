@@ -1767,7 +1767,7 @@ private Q_SLOTS:
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
             animator->setCurrentLoop(0);
             clipData.currentLoop = animator->currentLoop();
-            const qint64 elapsedTimeNS = (clip->duration()+1)*1e09; // +1 to ensure beyond end
+            const qint64 elapsedTimeNS = toNsecs(clip->duration()+1); // +1 to ensure beyond end
             animatorData = evaluationDataForAnimator(animator, nullptr, elapsedTimeNS); // Tested elsewhere
 
             clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
@@ -1790,7 +1790,7 @@ private Q_SLOTS:
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
             animator->setCurrentLoop(0);
             clipData.currentLoop = animator->currentLoop();
-            const qint64 elapsedTimeNS = 2.0 * clip->duration() * 1.0e9;
+            const qint64 elapsedTimeNS = toNsecs(2.0 * clip->duration());
             animatorData = evaluationDataForAnimator(animator, clock, elapsedTimeNS); // Tested elsewhere
 
             clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
@@ -1813,7 +1813,7 @@ private Q_SLOTS:
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
             animator->setCurrentLoop(0);
             clipData.currentLoop = animator->currentLoop();
-            const qint64 elapsedTimeNS = (2.0 * clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
+            const qint64 elapsedTimeNS = toNsecs(2.0 * clip->duration() + 1.0); // +1 to ensure beyond end of clip
             animatorData = evaluationDataForAnimator(animator, nullptr, elapsedTimeNS); // Tested elsewhere
 
             clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
@@ -1836,7 +1836,7 @@ private Q_SLOTS:
             auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
             animator->setCurrentLoop(1);
             clipData.currentLoop = animator->currentLoop();
-            const qint64 elapsedTimeNS = (clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
+            const qint64 elapsedTimeNS = toNsecs(clip->duration() + 1.0); // +1 to ensure beyond end of clip
             animatorData = evaluationDataForAnimator(animator, nullptr, elapsedTimeNS); // Tested elsewhere
 
             clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,

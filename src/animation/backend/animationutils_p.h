@@ -56,6 +56,7 @@
 
 #include <QtCore/qbitarray.h>
 #include <QtCore/qdebug.h>
+#include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -243,6 +244,9 @@ struct AnimationCallbackAndValue
     QVariant value;
 };
 
+inline constexpr double toSecs(qint64 nsecs) { return nsecs / 1.0e9; }
+inline qint64 toNsecs(double seconds) { return qRound64(seconds * 1.0e9); }
+
 template<typename Animator>
 AnimatorEvaluationData evaluationDataForAnimator(Animator animator, Clock* clock, qint64 nsSincePreviousFrame)
 {
@@ -251,7 +255,7 @@ AnimatorEvaluationData evaluationDataForAnimator(Animator animator, Clock* clock
     data.currentLoop = animator->currentLoop();
     data.playbackRate = clock != nullptr ? clock->playbackRate() : 1.0;
     // Convert global time from nsec to sec
-    data.elapsedTime = double(nsSincePreviousFrame) / 1.0e9;
+    data.elapsedTime = toSecs(nsSincePreviousFrame);
     data.currentTime = animator->lastLocalTime();
     return data;
 }
