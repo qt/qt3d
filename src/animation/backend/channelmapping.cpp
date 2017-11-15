@@ -36,6 +36,7 @@
 
 #include "channelmapping_p.h"
 #include <Qt3DAnimation/qchannelmapping.h>
+#include <Qt3DAnimation/private/qcallbackmapping_p.h>
 #include <Qt3DAnimation/private/qchannelmapping_p.h>
 #include <Qt3DAnimation/private/qskeletonmapping_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
@@ -74,8 +75,6 @@ void ChannelMapping::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
         m_property = data.property;
         m_type = data.type;
         m_propertyName = data.propertyName;
-        m_callback = data.callback;
-        m_callbackFlags = data.callbackFlags;
         m_mappingType = ChannelMappingType;
         break;
     }
@@ -89,8 +88,13 @@ void ChannelMapping::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
     }
 
     case QChannelMappingCreatedChangeBase::CallbackMapping: {
-        // TODO: Refactor callback support out of QChannelMapping and into its own type
-        m_mappingType = CallbackMappingType;
+        const auto typedChange = qSharedPointerCast<QChannelMappingCreatedChange<QCallbackMappingData>>(change);
+        const auto &data = typedChange->data;
+        m_channelName = data.channelName;
+        m_type = data.type;
+        m_callback = data.callback;
+        m_callbackFlags = data.callbackFlags;
+        m_mappingType = ChannelMappingType;
         break;
     }
     }

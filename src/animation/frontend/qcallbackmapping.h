@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,34 +34,49 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONCALLBACK_H
-#define QT3DANIMATION_QANIMATIONCALLBACK_H
+#ifndef QT3DANIMATION_QCALLBACKMAPPING_H
+#define QT3DANIMATION_QCALLBACKMAPPING_H
 
 #include <Qt3DAnimation/qt3danimation_global.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DAnimation/qanimationcallback.h>
+#include <Qt3DAnimation/qabstractchannelmapping.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationCallback
+class QCallbackMappingPrivate;
+
+class QT3DANIMATIONSHARED_EXPORT QCallbackMapping : public QAbstractChannelMapping
 {
+    Q_OBJECT
+    Q_PROPERTY(QString channelName READ channelName WRITE setChannelName NOTIFY channelNameChanged)
+
 public:
-    enum Flag {
-        OnOwningThread = 0x0,
-        OnThreadPool = 0x01
-    };
-    Q_DECLARE_FLAGS(Flags, Flag)
+    explicit QCallbackMapping(Qt3DCore::QNode *parent = nullptr);
+    ~QCallbackMapping();
 
-    virtual ~QAnimationCallback() { }
+    QString channelName() const;
+    QAnimationCallback *callback() const;
 
-    virtual void valueChanged(const QVariant &value) = 0;
+    void setCallback(int type, QAnimationCallback *callback, QAnimationCallback::Flags flags = QAnimationCallback::OnOwningThread);
+
+public Q_SLOTS:
+    void setChannelName(const QString &channelName);
+
+Q_SIGNALS:
+    void channelNameChanged(QString channelName);
+
+protected:
+    explicit QCallbackMapping(QCallbackMappingPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QCallbackMapping)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DAnimation
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Qt3DAnimation::QAnimationCallback::Flags)
-
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONCALLBACK_H
+#endif // QT3DANIMATION_QCALLBACKMAPPING_H
