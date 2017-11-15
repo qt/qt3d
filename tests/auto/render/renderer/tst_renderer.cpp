@@ -60,7 +60,7 @@ private Q_SLOTS:
         renderer.setSettings(&settings);
         renderer.initialize();
 
-        const int singleRenderViewJobCount = 12 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
+        const int singleRenderViewJobCount = 11 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
         // RenderViewBuilder renderViewJob,
         //                   renderableEntityFilterJob,
         //                   lightGatherJob,

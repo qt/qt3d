@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QHANDLE_P_H
-#define QT3DCORE_QHANDLE_P_H
+#ifndef QT3DRENDER_RENDER_RENDERERCACHE_P_H
+#define QT3DRENDER_RENDER_RENDERERCACHE_P_H
 
 //
 //  W A R N I N G
@@ -51,85 +51,33 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QtCore/QDebug>
-#include <QtCore/qhashfunctions.h>
+#include <Qt3DRender/QFrameGraphNode>
+
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-template <typename T, uint INDEXBITS = 16>
-class QHandle
+namespace Render {
+
+struct RendererCache
 {
-public:
-    struct Data {
-        union {
-            quintptr counter;
-            Data *nextFree;
-        };
+    using FilterEntityByLayerData = QVector<Entity *>;
+
+    struct LeafNodeData
+    {
+         FilterEntityByLayerData filterEntityByLayerData;
     };
-    QHandle()
-        : d(nullptr),
-          counter(0)
-    {}
-    QHandle(Data *d)
-        : d(d),
-          counter(d->counter)
-    {
-    }
-    QHandle(const QHandle &other)
-        : d(other.d),
-          counter(other.counter)
-    {
-    }
-    QHandle &operator=(const QHandle &other)
-    {
-        d = other.d;
-        counter = other.counter;
-        return *this;
-    }
 
-    inline T *operator->() const;
-    T *data() const;
-
-    quintptr handle() const { return reinterpret_cast<quintptr>(d); }
-    bool isNull() const { return !d; }
-
-    Data *data_ptr() const { return d; }
-
-    bool operator==(const QHandle &other) const { return d == other.d && counter == other.counter; }
-    bool operator!=(const QHandle &other) const { return !operator==(other); }
-private:
-    Data *d;
-    quintptr counter;
+    QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
 };
 
+} // namespace Render
 
-template <typename T, uint INDEXBITS>
-QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
-{
-    QDebugStateSaver saver(dbg);
-    QString binNumber = QString::number(h.handle(), 2).rightJustified(32, QChar::fromLatin1('0'));
-    dbg.nospace() << " m_handle = " << h.handle()
-                  << " = " << binNumber;
-    return dbg;
-}
-
-template <typename T, uint INDEXBITS = 16>
-uint qHash(const QHandle<T, INDEXBITS> &h, uint seed)
-{
-    using QT_PREPEND_NAMESPACE(qHash);
-    return qHash(h.handle(), seed);
-}
-
-} // Qt3DCore
-
-// simpler than fighting the Q_DECLARE_TYPEINFO macro, use QString as a dummy to get movable semantics
-template <typename T, uint I>
-class QTypeInfo<Qt3DCore::QHandle<T,I> >
-    : public QTypeInfoMerger<Qt3DCore::QHandle<T,I>, QString> {};
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QRHANDLE_H
+#endif // QT3DRENDER_RENDER_RENDERERCACHE_P_H

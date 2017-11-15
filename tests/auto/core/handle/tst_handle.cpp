@@ -28,12 +28,7 @@
 
 #include <QtTest/QtTest>
 #include <Qt3DCore/private/qhandle_p.h>
-
-#if Q_BYTE_ORDER == Q_BIG_ENDIAN
-#define GET_EXPECTED_HANDLE(qHandle) ((qHandle.index() << (qHandle.CounterBits + 2)) + (qHandle.counter() << 2))
-#else /* Q_LITTLE_ENDIAN */
-#define GET_EXPECTED_HANDLE(qHandle) (qHandle.index() + (qHandle.counter() << qHandle.IndexBits))
-#endif
+#include <Qt3DCore/private/qresourcemanager_p.h>
 
 class tst_Handle : public QObject
 {
@@ -49,8 +44,6 @@ private slots:
     void assignment();
     void equality();
     void inequality();
-    void staticLimits();
-    void bigHandle();
 };
 
 class SimpleResource
@@ -64,107 +57,60 @@ public:
 };
 
 typedef Qt3DCore::QHandle<SimpleResource> Handle;
-typedef Qt3DCore::QHandle<SimpleResource, 22> BigHandle;
+typedef Qt3DCore::QHandleData<SimpleResource> HandleData;
 
 void tst_Handle::defaultConstruction()
 {
     Handle h;
     QVERIFY(h.isNull() == true);
-    QVERIFY(h.index() == 0);
-    QVERIFY(h.counter() == 0);
     QVERIFY(h.handle() == 0);
 }
 
 void tst_Handle::construction()
 {
-    Handle h(0, 1);
+    HandleData d;
+    Handle h(&d);
     QVERIFY(h.isNull() == false);
-    QVERIFY(h.index() == 0);
-    QVERIFY(h.counter() == 1);
     qDebug() << h;
-    QVERIFY(h.handle() == GET_EXPECTED_HANDLE(h));
-
-    Handle h2(1, 1);
-    QVERIFY(h2.isNull() == false);
-    QVERIFY(h2.index() == 1);
-    QVERIFY(h2.counter() == 1);
-    qDebug() << h2;
-    QVERIFY(h2.handle() == GET_EXPECTED_HANDLE(h2));
+    QVERIFY(h.handle() == reinterpret_cast<quintptr>(&d));
 }
 
 void tst_Handle::copyConstruction()
 {
-    Handle h1(0, 1);
-    Handle h2(h1);
+    HandleData d;
+    Handle h(&d);
+    Handle h2(h);
     QVERIFY(h2.isNull() == false);
-    QVERIFY(h2.index() == 0);
-    QVERIFY(h2.counter() == 1);
-    QVERIFY(h2.handle() == GET_EXPECTED_HANDLE(h2));
+    QVERIFY(h2.handle() == h.handle());
 }
 
 void tst_Handle::assignment()
 {
-    Handle h1(0, 1);
-    Handle h2 = h1;
+    HandleData d;
+    Handle h(&d);
+    Handle h2;
+    h2 = h;
     QVERIFY(h2.isNull() == false);
-    QVERIFY(h2.index() == 0);
-    QVERIFY(h2.counter() == 1);
-    QVERIFY(h2.handle() == GET_EXPECTED_HANDLE(h2));
+    QVERIFY(h2.handle() == h.handle());
 }
 
 void tst_Handle::equality()
 {
-    Handle h1(2, 1);
-    Handle h2(2, 1);
+    HandleData d;
+    Handle h1(&d);
+    Handle h2(&d);
     QVERIFY(h1.isNull() == false);
-    QVERIFY(h1.index() == 2);
-    QVERIFY(h1.counter() == 1);
-    QVERIFY(h1.handle() == GET_EXPECTED_HANDLE(h1));
     QVERIFY(h1 == h2);
 }
 
 void tst_Handle::inequality()
 {
-    Handle h1(2, 1);
-    Handle h2(3, 1);
+    HandleData d1;
+    HandleData d2;
+    Handle h1(&d1);
+    Handle h2(&d2);
     QVERIFY(h1.isNull() == false);
-    QVERIFY(h1.index() == 2);
-    QVERIFY(h1.counter() == 1);
-    QVERIFY(h1.handle() == GET_EXPECTED_HANDLE(h1));
     QVERIFY(h1 != h2);
-
-    Handle h3(2, 2);
-    QVERIFY(h1 != h3);
-}
-
-void tst_Handle::staticLimits()
-{
-    QVERIFY(Handle::maxIndex() == (1 << 16) - 1);
-    QVERIFY(Handle::maxCounter() == (1 << (32 - 16 - 2)) - 1);
-}
-
-void tst_Handle::bigHandle()
-{
-    BigHandle h;
-    QVERIFY(h.isNull() == true);
-    QVERIFY(h.index() == 0);
-    QVERIFY(h.counter() == 0);
-    QVERIFY(h.handle() == 0);
-
-    BigHandle h1(0, 1);
-    QVERIFY(h1.isNull() == false);
-    QVERIFY(h1.index() == 0);
-    QVERIFY(h1.counter() == 1);
-    QVERIFY(h1.handle() == GET_EXPECTED_HANDLE(h1));
-
-    BigHandle h2(1, 1);
-    QVERIFY(h2.isNull() == false);
-    QVERIFY(h2.index() == 1);
-    QVERIFY(h2.counter() == 1);
-    QVERIFY(h2.handle() == GET_EXPECTED_HANDLE(h2));
-
-    QVERIFY(BigHandle::maxIndex() == (1 << 22) - 1);
-    QVERIFY(BigHandle::maxCounter() == (1 << (32 - 22 - 2)) - 1);
 }
 
 QTEST_APPLESS_MAIN(tst_Handle)

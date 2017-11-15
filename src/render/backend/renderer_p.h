@@ -76,6 +76,7 @@
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <Qt3DRender/private/updateskinningpalettejob_p.h>
+#include <Qt3DRender/private/renderercache_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -265,6 +266,9 @@ public:
     };
 
     ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
+
+    RendererCache m_cache;
+
 
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
