@@ -97,8 +97,9 @@ void tst_DynamicArrayPolicy::acquireResources()
     }
 
     for (uint i = 0; i < 5; i++) {
-        QVERIFY(handles.at(i).index() == i);
-        QVERIFY(handles.at(i).counter() == 1);
+        QVERIFY(!handles.at(i).isNull());
+        if (i > 0)
+            QVERIFY(handles.at(i) != handles.at(i-1));
     }
 }
 
@@ -117,8 +118,6 @@ void tst_DynamicArrayPolicy::getResources()
     }
 
     for (uint i = 0; i < 5; i++) {
-        QVERIFY(handles.at(i).index() == i);
-        QVERIFY(handles.at(i).counter() == 1);
         resources << manager.data(handles.at(i));
         QVERIFY(resources.at(i) != nullptr);
         resources.at(i)->m_value = i;
@@ -153,8 +152,6 @@ void tst_DynamicArrayPolicy::registerResourcesResize()
     }
 
     for (int i = 0; i < 7; i++) {
-        QVERIFY(handles.at(i).index() == static_cast<uint>(i));
-        QVERIFY(handles.at(i).counter() == 1);
         if (i < 2)
             QVERIFY(manager.data(handles.at(i))->m_value == i + 2);
         else
@@ -169,13 +166,15 @@ void tst_DynamicArrayPolicy::removeResource()
 {
     Qt3DCore::QResourceManager<tst_ArrayResource, int> manager;
 
-    QList<tst_ArrayResource *> resources;
     QList<tHandle> handles;
 
     for (int i = 0; i < 32; i++) {
         handles << manager.acquire();
-        resources << manager.data(handles.at(i));
     }
+
+
+    tst_ArrayResource *resource = handles.at(2).data();
+    QVERIFY(resource != nullptr);
 
     manager.release(handles.at(2));
     QVERIFY(manager.data(handles.at(2)) == nullptr);
@@ -255,7 +254,7 @@ protected:
     void run()
     {
         int i = 0;
-        int max = tHandle::maxIndex();
+        int max = 65535;
         while (i < max) {
             tst_ArrayResource *r = m_manager->getOrCreateResource(i);
             i++;
@@ -275,7 +274,7 @@ void tst_DynamicArrayPolicy::heavyDutyMultiThreadedAccess()
     QList<tst_Thread *> threads;
 
     int iterations = 8;
-    int max = tHandle16::maxIndex();
+    int max = 65535;
 
     for (int i = 0; i < iterations; i++) {
         tst_Thread *thread = new tst_Thread();
@@ -326,7 +325,7 @@ protected:
     void run()
     {
         int i = 0;
-        int max = tHandle::maxIndex();
+        int max = 65535;
         while (i < max) {
             tst_ArrayResource *r = m_manager->getOrCreateResource(i);
             QVERIFY(r != nullptr);
@@ -349,7 +348,7 @@ void tst_DynamicArrayPolicy::heavyDutyMultiThreadedAccessRelease()
     QList<tst_Thread2 *> threads;
 
     int iterations = 8;
-    int max = tHandle16::maxIndex();
+    int max = 65535;
 
     for (int u = 0; u < 2; u++) {
 
@@ -384,8 +383,6 @@ void tst_DynamicArrayPolicy::maximumNumberOfResources()
 
     QList<tst_ArrayResource *> resources;
     QList<tHandle16> handles;
-
-    QCOMPARE(tHandle16::maxIndex(), (uint)manager.maximumSize());
 
     for (int i = 0; i < manager.maximumSize(); i++) {
         handles << manager.acquire();

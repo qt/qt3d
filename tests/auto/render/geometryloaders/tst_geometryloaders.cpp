@@ -60,6 +60,7 @@ class tst_geometryloaders : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void testOBJLoader_data();
     void testOBJLoader();
     void testPLYLoader();
     void testSTLLoader();
@@ -69,6 +70,12 @@ private Q_SLOTS:
 #endif
 };
 
+void tst_geometryloaders::testOBJLoader_data()
+{
+    QTest::addColumn<QString>("fileName");
+    QTest::newRow("nominal case") << QStringLiteral(":/cube.obj");
+    QTest::newRow("trailing space + crlf") << QStringLiteral(":/cube2.obj");
+}
 void tst_geometryloaders::testOBJLoader()
 {
     QScopedPointer<QGeometryLoaderInterface> loader;
@@ -77,7 +84,8 @@ void tst_geometryloaders::testOBJLoader()
     if (!loader)
         return;
 
-    QFile file(QStringLiteral(":/cube.obj"));
+    QFETCH(QString, fileName);
+    QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug("Could not open test file for reading");
         return;
