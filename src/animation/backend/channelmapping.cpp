@@ -58,6 +58,7 @@ ChannelMapping::ChannelMapping()
     , m_callback(nullptr)
     , m_callbackFlags(0)
     , m_skeletonId()
+    , m_mappingType(MappingType::ChannelMappingType)
 {
 }
 
