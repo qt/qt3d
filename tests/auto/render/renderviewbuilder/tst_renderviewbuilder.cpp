@@ -179,31 +179,60 @@ private Q_SLOTS:
         Qt3DRender::Render::FrameGraphNode *leafNode = testAspect.nodeManagers()->frameGraphManager()->lookupNode(clearBuffer->id());
         QVERIFY(leafNode != nullptr);
 
-        // WHEN
-        Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+        {
+            // WHEN
+            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
 
-        // THEN
-        QCOMPARE(renderViewBuilder.renderViewIndex(), 0);
-        QCOMPARE(renderViewBuilder.renderer(), testAspect.renderer());
-        QVERIFY(!renderViewBuilder.renderViewJob().isNull());
-        QVERIFY(!renderViewBuilder.filterEntityByLayerJob().isNull());
-        QVERIFY(!renderViewBuilder.lightGathererJob().isNull());
-        QVERIFY(!renderViewBuilder.renderableEntityFilterJob().isNull());
-        QVERIFY(!renderViewBuilder.computableEntityFilterJob().isNull());
-        QVERIFY(!renderViewBuilder.frustumCullingJob().isNull());
-        QVERIFY(!renderViewBuilder.syncRenderViewInitializationJob().isNull());
-        QVERIFY(!renderViewBuilder.syncFrustumCullingJob().isNull());
-        QVERIFY(!renderViewBuilder.syncRenderCommandBuildingJob().isNull());
-        QVERIFY(!renderViewBuilder.syncRenderViewCommandBuildersJob().isNull());
-        QVERIFY(!renderViewBuilder.setClearDrawBufferIndexJob().isNull());
-        QCOMPARE(renderViewBuilder.renderViewBuilderJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
-        QCOMPARE(renderViewBuilder.materialGathererJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+            // THEN
+            QCOMPARE(renderViewBuilder.renderViewIndex(), 0);
+            QCOMPARE(renderViewBuilder.renderer(), testAspect.renderer());
+            QCOMPARE(renderViewBuilder.layerCacheNeedsToBeRebuilt(), false);
+            QVERIFY(!renderViewBuilder.renderViewJob().isNull());
+            QVERIFY(!renderViewBuilder.lightGathererJob().isNull());
+            QVERIFY(!renderViewBuilder.renderableEntityFilterJob().isNull());
+            QVERIFY(!renderViewBuilder.computableEntityFilterJob().isNull());
+            QVERIFY(!renderViewBuilder.frustumCullingJob().isNull());
+            QVERIFY(!renderViewBuilder.syncFrustumCullingJob().isNull());
+            QVERIFY(!renderViewBuilder.setClearDrawBufferIndexJob().isNull());
 
-        QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 11 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+            QVERIFY(renderViewBuilder.filterEntityByLayerJob().isNull());
+            QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob().isNull());
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob().isNull());
+            QVERIFY(renderViewBuilder.syncRenderViewCommandBuildersJob().isNull());
+            QVERIFY(renderViewBuilder.syncRenderViewInitializationJob().isNull());
 
-        // mark jobs dirty and recheck
-        testAspect.renderer()->markDirty(Qt3DRender::Render::AbstractRenderer::LayersDirty, nullptr);
-        QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 12 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.renderViewBuilderJobs().size(), 0);
+            QCOMPARE(renderViewBuilder.materialGathererJobs().size(), 0);
+
+            // WHEN
+            renderViewBuilder.prepareJobs();
+
+            // THEN
+            QVERIFY(!renderViewBuilder.syncRenderCommandBuildingJob().isNull());
+            QVERIFY(!renderViewBuilder.syncRenderViewCommandBuildersJob().isNull());
+            QVERIFY(!renderViewBuilder.syncRenderViewInitializationJob().isNull());
+            QVERIFY(renderViewBuilder.filterEntityByLayerJob().isNull());
+            QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob().isNull());
+
+            QCOMPARE(renderViewBuilder.renderViewBuilderJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.materialGathererJobs().size(), Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 11 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+        }
+
+        {
+            // WHEN
+            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+            renderViewBuilder.setLayerCacheNeedsToBeRebuilt(true);
+            renderViewBuilder.prepareJobs();
+
+            // THEN
+            QCOMPARE(renderViewBuilder.layerCacheNeedsToBeRebuilt(), true);
+            QVERIFY(!renderViewBuilder.filterEntityByLayerJob().isNull());
+            QVERIFY(!renderViewBuilder.syncFilterEntityByLayerJob().isNull());
+
+            // mark jobs dirty and recheck
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 13 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
+        }
     }
 
     void checkCheckJobDependencies()
@@ -217,70 +246,145 @@ private Q_SLOTS:
         Qt3DRender::Render::FrameGraphNode *leafNode = testAspect.nodeManagers()->frameGraphManager()->lookupNode(clearBuffer->id());
         QVERIFY(leafNode != nullptr);
 
-        // WHEN
-        Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
-        renderViewBuilder.buildJobHierachy();
+        {
+            // WHEN
+            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+            renderViewBuilder.prepareJobs();
+            renderViewBuilder.buildJobHierachy();
 
-        // THEN
-        // Step 1
-        QCOMPARE(renderViewBuilder.renderViewJob()->dependencies().size(), 1); // Depends upon skinning palette update
-        QCOMPARE(renderViewBuilder.lightGathererJob()->dependencies().size(), 0);
-        QCOMPARE(renderViewBuilder.renderableEntityFilterJob()->dependencies().size(),0);
-        QCOMPARE(renderViewBuilder.computableEntityFilterJob()->dependencies().size(), 0);
+            // THEN
+            // Step 1
+            QCOMPARE(renderViewBuilder.renderViewJob()->dependencies().size(), 1); // Depends upon skinning palette update
+            QCOMPARE(renderViewBuilder.lightGathererJob()->dependencies().size(), 0);
+            QCOMPARE(renderViewBuilder.renderableEntityFilterJob()->dependencies().size(),0);
+            QCOMPARE(renderViewBuilder.computableEntityFilterJob()->dependencies().size(), 0);
 
-        // Step 2
-        QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().size(), 1);
-        QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().first().data(), renderViewBuilder.renderViewJob().data());
+            // Step 2
+            QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().size(), 1);
+            QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().first().data(), renderViewBuilder.renderViewJob().data());
 
-        // Step 3
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->dependencies().size(), 2);
-        QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
-        QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(testAspect.renderer()->updateTreeEnabledJob()));
+            // Step 3
+            QVERIFY(renderViewBuilder.filterEntityByLayerJob().isNull());
+            QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob().isNull());
 
-        QCOMPARE(renderViewBuilder.filterProximityJob()->dependencies().size(), 2);
-        QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
-        QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+            QCOMPARE(renderViewBuilder.filterProximityJob()->dependencies().size(), 2);
+            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
 
-        QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
-        QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());
+            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
+            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());
 
-        QCOMPARE(renderViewBuilder.syncFrustumCullingJob()->dependencies().size(), 3);
-        QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
-        QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateWorldTransformJob()));
-        QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
+            QCOMPARE(renderViewBuilder.syncFrustumCullingJob()->dependencies().size(), 3);
+            QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+            QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateWorldTransformJob()));
+            QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
 
-        for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
-            QCOMPARE(materialGatherer->dependencies().size(), 2);
-            QVERIFY(materialGatherer->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
-            QVERIFY(materialGatherer->dependencies().contains(testAspect.renderer()->filterCompatibleTechniqueJob()));
+            for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
+                QCOMPARE(materialGatherer->dependencies().size(), 2);
+                QVERIFY(materialGatherer->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+                QVERIFY(materialGatherer->dependencies().contains(testAspect.renderer()->filterCompatibleTechniqueJob()));
+            }
+
+            // Step 4
+            QCOMPARE(renderViewBuilder.frustumCullingJob()->dependencies().size(), 2);
+            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(renderViewBuilder.syncFrustumCullingJob()));
+            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+
+            QCOMPARE(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 6);
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.renderableEntityFilterJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.computableEntityFilterJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.filterProximityJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.lightGathererJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.frustumCullingJob()));
+            for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
+                QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(materialGatherer));
+            }
+
+            // Step 5
+            for (const auto renderViewBuilderJob : renderViewBuilder.renderViewBuilderJobs()) {
+                QCOMPARE(renderViewBuilderJob->dependencies().size(), 1);
+                QCOMPARE(renderViewBuilderJob->dependencies().first().data(), renderViewBuilder.syncRenderCommandBuildingJob().data());
+            }
+
+            // Step 6
+            QCOMPARE(renderViewBuilder.syncRenderViewCommandBuildersJob()->dependencies().size(), renderViewBuilder.renderViewBuilderJobs().size());
+            for (const auto renderViewBuilderJob : renderViewBuilder.renderViewBuilderJobs()) {
+                QVERIFY(renderViewBuilder.syncRenderViewCommandBuildersJob()->dependencies().contains(renderViewBuilderJob));
+            }
         }
+        {
+            // WHEN
+            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+            renderViewBuilder.setLayerCacheNeedsToBeRebuilt(true);
+            renderViewBuilder.prepareJobs();
+            renderViewBuilder.buildJobHierachy();
 
-        // Step 4
-        QCOMPARE(renderViewBuilder.frustumCullingJob()->dependencies().size(), 2);
-        QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(renderViewBuilder.syncFrustumCullingJob()));
-        QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+            // THEN
+            // Step 1
+            QCOMPARE(renderViewBuilder.renderViewJob()->dependencies().size(), 1); // Depends upon skinning palette update
+            QCOMPARE(renderViewBuilder.lightGathererJob()->dependencies().size(), 0);
+            QCOMPARE(renderViewBuilder.renderableEntityFilterJob()->dependencies().size(),0);
+            QCOMPARE(renderViewBuilder.computableEntityFilterJob()->dependencies().size(), 0);
 
-        QCOMPARE(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 7);
-        QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
-        QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.renderableEntityFilterJob()));
-        QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.computableEntityFilterJob()));
-        QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.filterEntityByLayerJob()));
-        QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.lightGathererJob()));
-        QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.frustumCullingJob()));
-        for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
-            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(materialGatherer));
-        }
+            // Step 2
+            QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().size(), 1);
+            QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().first().data(), renderViewBuilder.renderViewJob().data());
 
-        // Step 5
-        for (const auto renderViewBuilderJob : renderViewBuilder.renderViewBuilderJobs()) {
-            QCOMPARE(renderViewBuilderJob->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilderJob->dependencies().first().data(), renderViewBuilder.syncRenderCommandBuildingJob().data());
-        }
+            // Step 3
+            QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->dependencies().size(), 2);
+            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(testAspect.renderer()->updateTreeEnabledJob()));
 
-        // Step 6
-        QCOMPARE(renderViewBuilder.syncRenderViewCommandBuildersJob()->dependencies().size(), renderViewBuilder.renderViewBuilderJobs().size());
-        for (const auto renderViewBuilderJob : renderViewBuilder.renderViewBuilderJobs()) {
-            QVERIFY(renderViewBuilder.syncRenderViewCommandBuildersJob()->dependencies().contains(renderViewBuilderJob));
+            QCOMPARE(renderViewBuilder.syncFilterEntityByLayerJob()->dependencies().size(), 1);
+            QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob()->dependencies().contains(renderViewBuilder.filterEntityByLayerJob()));
+
+            QCOMPARE(renderViewBuilder.filterProximityJob()->dependencies().size(), 2);
+            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+
+            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
+            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());
+
+            QCOMPARE(renderViewBuilder.syncFrustumCullingJob()->dependencies().size(), 3);
+            QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+            QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateWorldTransformJob()));
+            QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
+
+            for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
+                QCOMPARE(materialGatherer->dependencies().size(), 2);
+                QVERIFY(materialGatherer->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+                QVERIFY(materialGatherer->dependencies().contains(testAspect.renderer()->filterCompatibleTechniqueJob()));
+            }
+
+            // Step 4
+            QCOMPARE(renderViewBuilder.frustumCullingJob()->dependencies().size(), 2);
+            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(renderViewBuilder.syncFrustumCullingJob()));
+            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+
+            QCOMPARE(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 7);
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.renderableEntityFilterJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.computableEntityFilterJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.syncFilterEntityByLayerJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.lightGathererJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.frustumCullingJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.filterProximityJob()));
+            for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
+                QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(materialGatherer));
+            }
+
+            // Step 5
+            for (const auto renderViewBuilderJob : renderViewBuilder.renderViewBuilderJobs()) {
+                QCOMPARE(renderViewBuilderJob->dependencies().size(), 1);
+                QCOMPARE(renderViewBuilderJob->dependencies().first().data(), renderViewBuilder.syncRenderCommandBuildingJob().data());
+            }
+
+            // Step 6
+            QCOMPARE(renderViewBuilder.syncRenderViewCommandBuildersJob()->dependencies().size(), renderViewBuilder.renderViewBuilderJobs().size());
+            for (const auto renderViewBuilderJob : renderViewBuilder.renderViewBuilderJobs()) {
+                QVERIFY(renderViewBuilder.syncRenderViewCommandBuildersJob()->dependencies().contains(renderViewBuilderJob));
+            }
         }
     }
 
@@ -297,6 +401,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+        renderViewBuilder.prepareJobs();
         renderViewBuilder.buildJobHierachy();
         renderViewBuilder.renderViewJob()->run();
 
@@ -317,6 +422,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+        renderViewBuilder.prepareJobs();
         renderViewBuilder.buildJobHierachy();
         renderViewBuilder.renderableEntityFilterJob()->run();
 
@@ -337,6 +443,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+        renderViewBuilder.prepareJobs();
         renderViewBuilder.buildJobHierachy();
         renderViewBuilder.computableEntityFilterJob()->run();
 
@@ -362,30 +469,58 @@ private Q_SLOTS:
         Qt3DRender::Render::FrameGraphNode *leafNode = testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFilter->id());
         QVERIFY(leafNode != nullptr);
 
-        // WHEN
-        Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
-        renderViewBuilder.buildJobHierachy();
+        {
+            // WHEN
+            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+            renderViewBuilder.prepareJobs();
+            renderViewBuilder.buildJobHierachy();
 
-        // THEN
-        QCOMPARE(renderViewBuilder.frustumCullingJob()->isActive(), false);
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->hasLayerFilter(), false);
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->layerFilters().size(), 0);
-        for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
-            QVERIFY(materialGatherer->techniqueFilter() == nullptr);
-            QVERIFY(materialGatherer->renderPassFilter() == nullptr);
+            // THEN
+            QCOMPARE(renderViewBuilder.frustumCullingJob()->isActive(), false);
+            for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
+                QVERIFY(materialGatherer->techniqueFilter() == nullptr);
+                QVERIFY(materialGatherer->renderPassFilter() == nullptr);
+            }
+
+            // WHEN
+            renderViewBuilder.renderViewJob()->run();
+            renderViewBuilder.syncRenderViewInitializationJob()->run();
+
+            // THEN
+            QCOMPARE(renderViewBuilder.frustumCullingJob()->isActive(), true);
+            for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
+                QVERIFY(materialGatherer->techniqueFilter() != nullptr);
+                QVERIFY(materialGatherer->renderPassFilter() != nullptr);
+            }
         }
+        {
+            // WHEN
+            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+            renderViewBuilder.setLayerCacheNeedsToBeRebuilt(true);
+            renderViewBuilder.prepareJobs();
+            renderViewBuilder.buildJobHierachy();
 
-        // WHEN
-        renderViewBuilder.renderViewJob()->run();
-        renderViewBuilder.syncRenderViewInitializationJob()->run();
+            // THEN
+            QCOMPARE(renderViewBuilder.frustumCullingJob()->isActive(), false);
+            QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->hasLayerFilter(), false);
+            QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->layerFilters().size(), 0);
+            for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
+                QVERIFY(materialGatherer->techniqueFilter() == nullptr);
+                QVERIFY(materialGatherer->renderPassFilter() == nullptr);
+            }
 
-        // THEN
-        QCOMPARE(renderViewBuilder.frustumCullingJob()->isActive(), true);
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->hasLayerFilter(), true);
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->layerFilters().size(), 1);
-        for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
-            QVERIFY(materialGatherer->techniqueFilter() != nullptr);
-            QVERIFY(materialGatherer->renderPassFilter() != nullptr);
+            // WHEN
+            renderViewBuilder.renderViewJob()->run();
+            renderViewBuilder.syncRenderViewInitializationJob()->run();
+
+            // THEN
+            QCOMPARE(renderViewBuilder.frustumCullingJob()->isActive(), true);
+            QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->hasLayerFilter(), true);
+            QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->layerFilters().size(), 1);
+            for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
+                QVERIFY(materialGatherer->techniqueFilter() != nullptr);
+                QVERIFY(materialGatherer->renderPassFilter() != nullptr);
+            }
         }
     }
 
@@ -407,6 +542,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+        renderViewBuilder.prepareJobs();
         renderViewBuilder.buildJobHierachy();
 
         // THEN
@@ -436,6 +572,8 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+        renderViewBuilder.setLayerCacheNeedsToBeRebuilt(true);
+        renderViewBuilder.prepareJobs();
         renderViewBuilder.buildJobHierachy();
 
         renderViewBuilder.renderViewJob()->run();

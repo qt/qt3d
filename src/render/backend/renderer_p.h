@@ -267,8 +267,7 @@ public:
 
     ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
-    RendererCache m_cache;
-
+    RendererCache *cache() { return &m_cache; }
 
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
@@ -372,6 +371,7 @@ private:
 #endif
 
     QMetaObject::Connection m_contextConnection;
+    RendererCache m_cache;
 };
 
 } // namespace Render

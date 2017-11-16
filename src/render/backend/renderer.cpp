@@ -1484,25 +1484,27 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
 
+    BackendNodeDirtySet changesToUnset = dirtyBits();
+
     // Add jobs
-    if (dirtyBits() & AbstractRenderer::EntityEnabledDirty) {
+    if (changesToUnset & AbstractRenderer::EntityEnabledDirty) {
         renderBinJobs.push_back(m_updateTreeEnabledJob);
         m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     }
 
-    if (dirtyBits() & AbstractRenderer::TransformDirty) {
+    if (changesToUnset & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_worldTransformJob);
         renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
         renderBinJobs.push_back(m_updateShaderDataTransformJob);
     }
 
-    if (dirtyBits() & AbstractRenderer::GeometryDirty) {
+    if (changesToUnset & AbstractRenderer::GeometryDirty) {
         renderBinJobs.push_back(m_calculateBoundingVolumeJob);
         renderBinJobs.push_back(m_updateMeshTriangleListJob);
     }
 
-    if (dirtyBits() & AbstractRenderer::GeometryDirty ||
-            dirtyBits() & AbstractRenderer::TransformDirty) {
+    if (changesToUnset & AbstractRenderer::GeometryDirty ||
+        changesToUnset & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_expandBoundingVolumeJob);
     }
 
@@ -1518,16 +1520,19 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Jobs to prepare GL Resource upload
     renderBinJobs.push_back(m_vaoGathererJob);
 
-    if (dirtyBits() & AbstractRenderer::BuffersDirty)
+    if (changesToUnset & AbstractRenderer::BuffersDirty)
         renderBinJobs.push_back(m_bufferGathererJob);
 
-    if (dirtyBits() & AbstractRenderer::ShadersDirty)
+    if (changesToUnset & AbstractRenderer::ShadersDirty)
         renderBinJobs.push_back(m_shaderGathererJob);
 
-    if (dirtyBits() & AbstractRenderer::TexturesDirty) {
+    if (changesToUnset & AbstractRenderer::TexturesDirty) {
         renderBinJobs.push_back(m_syncTextureLoadingJob);
         renderBinJobs.push_back(m_textureGathererJob);
     }
+
+    const bool layersCacheNeedsToBeRebuilt = changesToUnset & AbstractRenderer::LayersDirty;
+    bool layersCacheRebuilt = false;
 
     QMutexLocker lock(m_renderQueue->mutex());
     if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
@@ -1540,25 +1545,31 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         const QVector<FrameGraphNode *> fgLeaves = visitor.traverse(frameGraphRoot());
 
         // Remove leaf nodes that no longer exist from cache
-        const auto keys = m_cache.leafNodeCache.keys();
-        for (auto *leafNode : keys) {
-            if (!fgLeaves.contains(leafNode)) {
+        const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
+        for (FrameGraphNode *leafNode : keys) {
+            if (!fgLeaves.contains(leafNode))
                 m_cache.leafNodeCache.remove(leafNode);
-            }
         }
 
         const int fgBranchCount = fgLeaves.size();
         for (int i = 0; i < fgBranchCount; ++i) {
             RenderViewBuilder builder(fgLeaves.at(i), i, this);
+            builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt);
+            builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
+
         }
+        layersCacheRebuilt = true;
 
         // Set target number of RenderViews
         m_renderQueue->setTargetRenderViewCount(fgBranchCount);
     }
 
+    // Only reset LayersDirty flag once we have really rebuilt the caches
+    if (layersCacheNeedsToBeRebuilt && !layersCacheRebuilt)
+        changesToUnset.setFlag(AbstractRenderer::LayersDirty, false);
+
     // Clear dirty bits
-    BackendNodeDirtySet changesToUnset = dirtyBits();
     // TO DO: When secondary GL thread is integrated, the following line can be removed
     changesToUnset.setFlag(AbstractRenderer::ShadersDirty, false);
 

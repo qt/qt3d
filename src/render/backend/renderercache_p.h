@@ -64,14 +64,17 @@ namespace Render {
 
 struct RendererCache
 {
-    using FilterEntityByLayerData = QVector<Entity *>;
-
     struct LeafNodeData
     {
-         FilterEntityByLayerData filterEntityByLayerData;
+         QVector<Entity *> filterEntitiesByLayer;
     };
 
     QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
+
+    QMutex *mutex() { return &m_mutex; }
+
+private:
+    QMutex m_mutex;
 };
 
 } // namespace Render

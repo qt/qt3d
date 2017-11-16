@@ -102,7 +102,8 @@ namespace JobTypes {
         SyncTextureLoading,
         LoadSkeleton,
         UpdateSkinningPalette,
-        ProximityFiltering
+        ProximityFiltering,
+        SyncFilterEntityByLayer
     };
 
 } // JobTypes
