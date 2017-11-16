@@ -1487,7 +1487,8 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     BackendNodeDirtySet changesToUnset = dirtyBits();
 
     // Add jobs
-    if (changesToUnset & AbstractRenderer::EntityEnabledDirty) {
+    const bool entitiesEnabledDirty = changesToUnset & AbstractRenderer::EntityEnabledDirty;
+    if (entitiesEnabledDirty) {
         renderBinJobs.push_back(m_updateTreeEnabledJob);
         m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     }
@@ -1531,7 +1532,11 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         renderBinJobs.push_back(m_textureGathererJob);
     }
 
-    const bool layersCacheNeedsToBeRebuilt = changesToUnset & AbstractRenderer::LayersDirty;
+
+    // Layer cache is dependent on layers, layer filters and the enabled flag
+    // on entities
+    const bool layersDirty = changesToUnset & AbstractRenderer::LayersDirty;
+    const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty;
     bool layersCacheRebuilt = false;
 
     QMutexLocker lock(m_renderQueue->mutex());
@@ -1557,7 +1562,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt);
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
-
         }
         layersCacheRebuilt = true;
 
@@ -1566,8 +1570,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
     // Only reset LayersDirty flag once we have really rebuilt the caches
-    if (layersCacheNeedsToBeRebuilt && !layersCacheRebuilt)
+    if (layersDirty && !layersCacheRebuilt)
         changesToUnset.setFlag(AbstractRenderer::LayersDirty, false);
+    if (entitiesEnabledDirty && !layersCacheRebuilt)
+        changesToUnset.setFlag(AbstractRenderer::EntityEnabledDirty, false);
 
     // Clear dirty bits
     // TO DO: When secondary GL thread is integrated, the following line can be removed
