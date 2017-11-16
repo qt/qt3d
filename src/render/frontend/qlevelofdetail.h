@@ -78,7 +78,7 @@ public:
     QVector<qreal> thresholds() const;
     QLevelOfDetailBoundingSphere volumeOverride() const;
 
-    Q_INVOKABLE QLevelOfDetailBoundingSphere createBoundingSphere(const QVector3D &center, float radius);
+    Q_INVOKABLE Qt3DRender::QLevelOfDetailBoundingSphere createBoundingSphere(const QVector3D &center, float radius);
 
 public Q_SLOTS:
     void setCamera(QCamera *camera);
