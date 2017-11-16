@@ -40,6 +40,7 @@
 #include "qskyboxentity.h"
 #include "qskyboxentity_p.h"
 
+#include <QtCore/qtimer.h>
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtexture.h>
@@ -86,6 +87,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_negYImage(new QTextureImage())
     , m_negZImage(new QTextureImage())
     , m_extension(QStringLiteral(".png"))
+    , m_hasPendingReloadTextureCall(false)
 {
     m_loadedTexture->setGenerateMipMaps(false);
 }
@@ -191,17 +193,23 @@ void QSkyboxEntityPrivate::init()
  */
 void QSkyboxEntityPrivate::reloadTexture()
 {
-    if (m_extension == QStringLiteral(".dds")) {
-        m_loadedTexture->setSource(QUrl(m_baseName + m_extension));
-        m_textureParameter->setValue(QVariant::fromValue(m_loadedTexture));
-    } else {
-        m_posXImage->setSource(QUrl(m_baseName + QStringLiteral("_posx") + m_extension));
-        m_posYImage->setSource(QUrl(m_baseName + QStringLiteral("_posy") + m_extension));
-        m_posZImage->setSource(QUrl(m_baseName + QStringLiteral("_posz") + m_extension));
-        m_negXImage->setSource(QUrl(m_baseName + QStringLiteral("_negx") + m_extension));
-        m_negYImage->setSource(QUrl(m_baseName + QStringLiteral("_negy") + m_extension));
-        m_negZImage->setSource(QUrl(m_baseName + QStringLiteral("_negz") + m_extension));
-        m_textureParameter->setValue(QVariant::fromValue(m_skyboxTexture));
+    if (!m_hasPendingReloadTextureCall) {
+        m_hasPendingReloadTextureCall = true;
+        QTimer::singleShot(0, [this] {
+            if (m_extension == QStringLiteral(".dds")) {
+                m_loadedTexture->setSource(QUrl(m_baseName + m_extension));
+                m_textureParameter->setValue(QVariant::fromValue(m_loadedTexture));
+            } else {
+                m_posXImage->setSource(QUrl(m_baseName + QStringLiteral("_posx") + m_extension));
+                m_posYImage->setSource(QUrl(m_baseName + QStringLiteral("_posy") + m_extension));
+                m_posZImage->setSource(QUrl(m_baseName + QStringLiteral("_posz") + m_extension));
+                m_negXImage->setSource(QUrl(m_baseName + QStringLiteral("_negx") + m_extension));
+                m_negYImage->setSource(QUrl(m_baseName + QStringLiteral("_negy") + m_extension));
+                m_negZImage->setSource(QUrl(m_baseName + QStringLiteral("_negz") + m_extension));
+                m_textureParameter->setValue(QVariant::fromValue(m_skyboxTexture));
+            }
+            m_hasPendingReloadTextureCall = false;
+        });
     }
 }
 
