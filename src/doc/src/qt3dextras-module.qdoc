@@ -67,41 +67,15 @@
 
     \section2 Materials
 
-    \list
-    \li Qt3DExtras::QDiffuseMapMaterial
-    \li Qt3DExtras::QDiffuseSpecularMapMaterial
-    \li Qt3DExtras::QGoochMaterial
-    \li Qt3DExtras::QNormalDiffuseMapMaterial
-    \li Qt3DExtras::QNormalDiffuseMapAlphaMaterial
-    \li Qt3DExtras::QNormalDiffuseSpecularMapMaterial
-    \li Qt3DExtras::QPerVertexColorMaterial
-    \li Qt3DExtras::QPhongMaterial
-    \li Qt3DExtras::QPhongAlphaMaterial
-    \endlist
+    \annotatedlist qt3d-extras-materials
 
     \section2 Meshes and Geometries
 
-    \list
-    \li Qt3DExtras::QConeGeometry
-    \li Qt3DExtras::QConeMesh
-    \li Qt3DExtras::QCuboidGeometry
-    \li Qt3DExtras::QCuboidMesh
-    \li Qt3DExtras::QCylinderGeometry
-    \li Qt3DExtras::QCylinderMesh
-    \li Qt3DExtras::QPlaneGeometry
-    \li Qt3DExtras::QPlaneMesh
-    \li Qt3DExtras::QSphereGeometry
-    \li Qt3DExtras::QSphereMesh
-    \li Qt3DExtras::QTorusGeometry
-    \li Qt3DExtras::QTorusMesh
-    \endlist
+    \annotatedlist qt3d-extras-geometries
 
     \section2 Camera Controllers
 
-    \list
-    \li Qt3DExtras::QFirstPersonCameraController
-    \li Qt3DExtras::QOrbitCameraController
-    \endlist
+    \annotatedlist qt3d-extras-cameracontrollers
 
     \section2 Entities
 

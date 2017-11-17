@@ -75,6 +75,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
 
 /*!
     \class Qt3DExtras::QPerVertexColorMaterial
+    \ingroup qt3d-extras-materials
     \brief The QPerVertexColorMaterial class provides a default implementation for rendering the
     color properties set for each vertex.
     \inmodule Qt3DExtras

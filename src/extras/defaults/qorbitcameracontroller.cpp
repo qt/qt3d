@@ -49,6 +49,7 @@ QOrbitCameraControllerPrivate::QOrbitCameraControllerPrivate()
 
 /*!
     \class Qt3DExtras::QOrbitCameraController
+    \ingroup qt3d-extras-cameracontrollers
     \brief The QOrbitCameraController class allows controlling the scene camera along orbital path.
     \inmodule Qt3DExtras
     \since 5.7

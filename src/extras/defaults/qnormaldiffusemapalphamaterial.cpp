@@ -166,7 +166,7 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     \inherits Qt3DExtras::QNormalDiffuseMapMaterial
 
     \deprecated
-    \see Qt3DExtras::QDiffuseSpecularMaterial
+    This class is deprecated; use Qt3DExtras::QDiffuseSpecularMaterial instead.
 
     The specular lighting effect is based on the combination of 3 lighting components ambient,
     diffuse and specular. The relative strengths of these components are controlled by means of

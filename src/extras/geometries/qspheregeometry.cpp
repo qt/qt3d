@@ -382,6 +382,7 @@ void QSphereGeometryPrivate::init()
 
 /*!
  * \class Qt3DExtras::QSphereGeometry
+   \ingroup qt3d-extras-geometries
  * \inheaderfile Qt3DExtras/QSphereGeometry
  * \inmodule Qt3DExtras
  * \brief The QSphereGeometry class allows creation of a sphere in 3D space.

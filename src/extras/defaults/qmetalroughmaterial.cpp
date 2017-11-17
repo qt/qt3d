@@ -161,6 +161,7 @@ void QMetalRoughMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
 
 /*!
     \class Qt3DExtras::QMetalRoughMaterial
+    \ingroup qt3d-extras-materials
     \brief The QMetalRoughMaterial provides a default implementation of PBR
     lighting.
     \inmodule Qt3DExtras

@@ -169,6 +169,7 @@ void QMorphPhongMaterialPrivate::handleInterpolatorChanged(const QVariant &var)
 
 /*!
     \class Qt3DExtras::QMorphPhongMaterial
+    \ingroup qt3d-extras-materials
     \brief The QMorphPhongMaterial class provides a default implementation of the phong lighting effect.
     \inmodule Qt3DExtras
     \since 5.7
