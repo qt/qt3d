@@ -131,6 +131,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_texture(nullptr)
     , m_node(nullptr)
     , m_cleaner(nullptr)
+    , m_window(nullptr)
     , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
     , m_lastMultisample(false)
     , m_needsShutdown(true)
@@ -138,9 +139,16 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     Q_CHECK_PTR(m_item);
     Q_CHECK_PTR(m_item->window());
 
+    m_window = m_item->window();
     QObject::connect(m_item->window(), &QQuickWindow::beforeRendering, this, &Scene3DRenderer::render, Qt::DirectConnection);
     QObject::connect(m_item->window(), &QQuickWindow::sceneGraphInvalidated, this, &Scene3DRenderer::onSceneGraphInvalidated, Qt::DirectConnection);
+    // So that we can schedule the cleanup
     QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChanged, Qt::QueuedConnection);
+    // Main thread -> updates the rendering window
+    QObject::connect(m_item, &QQuickItem::windowChanged, [this] (QQuickWindow *w) {
+        QMutexLocker l(&m_windowMutex);
+        m_window = w;
+    });
 
     Q_ASSERT(QOpenGLContext::currentContext());
     ContextSaver saver;
@@ -245,10 +253,10 @@ void Scene3DRenderer::setSGNode(Scene3DSGNode *node)
 
 void Scene3DRenderer::render()
 {
-    if (!m_item || !m_item->window())
+    QMutexLocker l(&m_windowMutex);
+    // Lock to ensure the window doesn't change while we are rendering
+    if (!m_item || !m_window)
         return;
-
-    QQuickWindow *window = m_item->window();
 
     if (m_aspectEngine->rootEntity() != m_item->entity())
         scheduleRootEntityChange();
@@ -257,10 +265,10 @@ void Scene3DRenderer::render()
 
     // The OpenGL state may be dirty from the previous QtQuick nodes, so reset
     // it here to give Qt3D the clean state it expects
-    window->resetOpenGLState();
+    m_window->resetOpenGLState();
 
     const QSize boundingRectSize = m_item->boundingRect().size().toSize();
-    const QSize currentSize = boundingRectSize * window->effectiveDevicePixelRatio();
+    const QSize currentSize = boundingRectSize * m_window->effectiveDevicePixelRatio();
     const bool sizeHasChanged = currentSize != m_lastSize;
     const bool multisampleHasChanged = m_multisample != m_lastMultisample;
     const bool forceRecreate = sizeHasChanged || multisampleHasChanged;
@@ -282,7 +290,7 @@ void Scene3DRenderer::render()
 
     if (m_finalFBO.isNull() || forceRecreate) {
         m_finalFBO.reset(createFramebufferObject(currentSize));
-        m_texture.reset(window->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
+        m_texture.reset(m_window->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
         m_node->setTexture(m_texture.data());
     }
 
@@ -322,13 +330,13 @@ void Scene3DRenderer::render()
 
     // Reset the state used by the Qt Quick scenegraph to avoid any
     // interference when rendering the rest of the UI.
-    window->resetOpenGLState();
+    m_window->resetOpenGLState();
 
     // Mark material as dirty to request a new frame
     m_node->markDirty(QSGNode::DirtyMaterial);
 
     // Request next frame
-    window->update();
+    m_window->update();
 }
 
 } // namespace Qt3DRender
