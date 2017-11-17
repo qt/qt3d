@@ -206,6 +206,9 @@ QVector<ShaderUniform> GraphicsHelperGL3_3::programUniformsAndLocations(GLuint p
         uniformName[sizeof(uniformName) - 1] = '\0';
         uniform.m_location = m_funcs->glGetUniformLocation(programId, uniformName);
         uniform.m_name = QString::fromUtf8(uniformName, uniformNameLength);
+        // Work around for uniform array names that aren't returned with [0] by some drivers
+        if (uniform.m_size > 1 && !uniform.m_name.endsWith(QLatin1String("[0]")))
+            uniform.m_name.append(QLatin1String("[0]"));
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_BLOCK_INDEX, &uniform.m_blockIndex);
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_OFFSET, &uniform.m_offset);
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_ARRAY_STRIDE, &uniform.m_arrayStride);

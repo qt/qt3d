@@ -149,6 +149,16 @@ void Handler::setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, 
 // The vectors may get outdated when the application removes/deletes an
 // animator component in the meantime. Recognize this. This should be
 // relatively infrequent so in most cases the vectors will not change at all.
+void Handler::cleanupHandleList(QVector<HAnimationClip> *clips)
+{
+    for (auto it = clips->begin(); it != clips->end(); ) {
+        if (!m_animationClipLoaderManager->data(*it))
+            clips->erase(it);
+        else
+            ++it;
+    }
+}
+
 void Handler::cleanupHandleList(QVector<HClipAnimator> *animators)
 {
     for (auto it = animators->begin(); it != animators->end(); ) {
@@ -185,6 +195,7 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     const bool hasLoadAnimationClipJob = !m_dirtyAnimationClips.isEmpty();
     if (hasLoadAnimationClipJob) {
         qCDebug(HandlerLogic) << "Added LoadAnimationClipJob";
+        cleanupHandleList(&m_dirtyAnimationClips);
         m_loadAnimationClipJob->addDirtyAnimationClips(m_dirtyAnimationClips);
         jobs.push_back(m_loadAnimationClipJob);
         m_dirtyAnimationClips.clear();
