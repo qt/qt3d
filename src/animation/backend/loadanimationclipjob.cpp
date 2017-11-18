@@ -72,6 +72,7 @@ void LoadAnimationClipJob::run()
     AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();
     for (const auto animationClipHandle : qAsConst(m_animationClipHandles)) {
         AnimationClip *animationClip = animationClipManager->data(animationClipHandle);
+        Q_ASSERT(animationClip);
         animationClip->loadAnimation();
     }
 
