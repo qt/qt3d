@@ -72,6 +72,7 @@ public:
         channelMapping->setPropertyName(propertyName);
         channelMapping->setChannelName(channelName);
         channelMapping->setType(type);
+        channelMapping->setMappingType(ChannelMapping::ChannelMappingType);
         return channelMapping;
     }
 

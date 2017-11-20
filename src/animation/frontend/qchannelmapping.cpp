@@ -54,8 +54,6 @@ QChannelMappingPrivate::QChannelMappingPrivate()
     , m_property()
     , m_propertyName(nullptr)
     , m_type(static_cast<int>(QVariant::Invalid))
-    , m_callback(nullptr)
-    , m_callbackFlags(0)
 {
     m_mappingType = QChannelMappingCreatedChangeBase::ChannelMapping;
 }
@@ -152,12 +150,6 @@ QString QChannelMapping::property() const
     return d->m_property;
 }
 
-QAnimationCallback *QChannelMapping::callback() const
-{
-    Q_D(const QChannelMapping);
-    return d->m_callback;
-}
-
 void QChannelMapping::setChannelName(const QString &channelName)
 {
     Q_D(QChannelMapping);
@@ -200,56 +192,6 @@ void QChannelMapping::setProperty(const QString &property)
     d->updatePropertyNameAndType();
 }
 
-/*!
-    Associates a \a callback object with this channel mapping.
-
-    Such mappings do not have to have a target object and property name. When
-    the \a callback object is set, every change in the animated value will lead
-    to invoking the callback's
-    \l{QAnimationCallback::onValueChanged()}{onValueChanged()} function either
-    on the gui/main thread, or directly on one of the thread pool's worker
-    thread. This is controlled by \a flags.
-
-    \a type specifies the type (for example, QVariant::Vector3D,
-    QVariant::Color, or QMetaType::Float) of the animated value. When animating
-    node properties this does not need to be provided separately, however it
-    becomes important to supply this when there is only a callback.
-
-    \note A mapping can be associated both with a node property and a
-    callback. It is important however that \a type matches the type of the
-    property in this case. Note also that for properties of type QVariant (for
-    example, QParameter::value), the \a type is the type of the value stored in
-    the QVariant.
-
-    \note The \a callback pointer is expected to stay valid while any
-    associated animators are running.
- */
-void QChannelMapping::setCallback(int type, QAnimationCallback *callback, QAnimationCallback::Flags flags)
-{
-    Q_D(QChannelMapping);
-    if (d->m_type != type) {
-        d->m_type = type;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
-        e->setPropertyName("type");
-        e->setValue(QVariant(d->m_type));
-        notifyObservers(e);
-    }
-    if (d->m_callback != callback) {
-        d->m_callback = callback;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
-        e->setPropertyName("callback");
-        e->setValue(QVariant::fromValue(static_cast<void *>(d->m_callback)));
-        notifyObservers(e);
-    }
-    if (d->m_callbackFlags != flags) {
-        d->m_callbackFlags = flags;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
-        e->setPropertyName("callbackFlags");
-        e->setValue(QVariant::fromValue(int(d->m_callbackFlags)));
-        notifyObservers(e);
-    }
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() const
 {
     auto creationChange = QChannelMappingCreatedChangePtr<QChannelMappingData>::create(this);
@@ -260,8 +202,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() 
     data.property = d->m_property;
     data.type = d->m_type;
     data.propertyName = d->m_propertyName;
-    data.callback = d->m_callback;
-    data.callbackFlags = d->m_callbackFlags;
     return creationChange;
 }
 

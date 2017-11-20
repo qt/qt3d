@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QHANDLE_P_H
-#define QT3DCORE_QHANDLE_P_H
+#ifndef QT3DEXTRAS_QDIFFUSESPECULARMATERIAL_P_H
+#define QT3DEXTRAS_QDIFFUSESPECULARMATERIAL_P_H
 
 //
 //  W A R N I N G
@@ -51,85 +51,70 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QtCore/QDebug>
-#include <QtCore/qhashfunctions.h>
+#include <Qt3DRender/private/qmaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-template <typename T, uint INDEXBITS = 16>
-class QHandle
+class QFilterKey;
+class QEffect;
+class QTechnique;
+class QParameter;
+class QShaderProgram;
+class QShaderProgramBuilder;
+class QRenderPass;
+class QNoDepthMask;
+class QBlendEquationArguments;
+class QBlendEquation;
+
+} // namespace Qt3DRender
+
+namespace Qt3DExtras {
+
+class QDiffuseSpecularMaterial;
+
+class QDiffuseSpecularMaterialPrivate : public Qt3DRender::QMaterialPrivate
 {
 public:
-    struct Data {
-        union {
-            quintptr counter;
-            Data *nextFree;
-        };
-    };
-    QHandle()
-        : d(nullptr),
-          counter(0)
-    {}
-    QHandle(Data *d)
-        : d(d),
-          counter(d->counter)
-    {
-    }
-    QHandle(const QHandle &other)
-        : d(other.d),
-          counter(other.counter)
-    {
-    }
-    QHandle &operator=(const QHandle &other)
-    {
-        d = other.d;
-        counter = other.counter;
-        return *this;
-    }
+    QDiffuseSpecularMaterialPrivate();
 
-    inline T *operator->() const;
-    T *data() const;
+    void init();
 
-    quintptr handle() const { return reinterpret_cast<quintptr>(d); }
-    bool isNull() const { return !d; }
+    void handleAmbientChanged(const QVariant &var);
+    void handleShininessChanged(const QVariant &var);
+    void handleTextureScaleChanged(const QVariant &var);
 
-    Data *data_ptr() const { return d; }
+    Qt3DRender::QEffect *m_effect;
+    Qt3DRender::QParameter *m_ambientParameter;
+    Qt3DRender::QParameter *m_diffuseParameter;
+    Qt3DRender::QParameter *m_specularParameter;
+    Qt3DRender::QParameter *m_diffuseTextureParameter;
+    Qt3DRender::QParameter *m_specularTextureParameter;
+    Qt3DRender::QParameter *m_shininessParameter;
+    Qt3DRender::QParameter *m_normalTextureParameter;
+    Qt3DRender::QParameter *m_textureScaleParameter;
+    Qt3DRender::QTechnique *m_gl3Technique;
+    Qt3DRender::QTechnique *m_gl2Technique;
+    Qt3DRender::QTechnique *m_es2Technique;
+    Qt3DRender::QRenderPass *m_gl3RenderPass;
+    Qt3DRender::QRenderPass *m_gl2RenderPass;
+    Qt3DRender::QRenderPass *m_es2RenderPass;
+    Qt3DRender::QShaderProgram *m_gl3Shader;
+    Qt3DRender::QShaderProgramBuilder *m_gl3ShaderBuilder;
+    Qt3DRender::QShaderProgram *m_gl2es2Shader;
+    Qt3DRender::QShaderProgramBuilder *m_gl2es2ShaderBuilder;
+    Qt3DRender::QNoDepthMask *m_noDepthMask;
+    Qt3DRender::QBlendEquationArguments *m_blendState;
+    Qt3DRender::QBlendEquation *m_blendEquation;
+    Qt3DRender::QFilterKey *m_filterKey;
 
-    bool operator==(const QHandle &other) const { return d == other.d && counter == other.counter; }
-    bool operator!=(const QHandle &other) const { return !operator==(other); }
-private:
-    Data *d;
-    quintptr counter;
+    Q_DECLARE_PUBLIC(QDiffuseSpecularMaterial)
 };
 
-
-template <typename T, uint INDEXBITS>
-QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
-{
-    QDebugStateSaver saver(dbg);
-    QString binNumber = QString::number(h.handle(), 2).rightJustified(32, QChar::fromLatin1('0'));
-    dbg.nospace() << " m_handle = " << h.handle()
-                  << " = " << binNumber;
-    return dbg;
-}
-
-template <typename T, uint INDEXBITS = 16>
-uint qHash(const QHandle<T, INDEXBITS> &h, uint seed)
-{
-    using QT_PREPEND_NAMESPACE(qHash);
-    return qHash(h.handle(), seed);
-}
-
-} // Qt3DCore
-
-// simpler than fighting the Q_DECLARE_TYPEINFO macro, use QString as a dummy to get movable semantics
-template <typename T, uint I>
-class QTypeInfo<Qt3DCore::QHandle<T,I> >
-    : public QTypeInfoMerger<Qt3DCore::QHandle<T,I>, QString> {};
+} // Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QRHANDLE_H
+#endif // QT3DEXTRAS_QDIFFUSESPECULARMATERIAL_P_H
+

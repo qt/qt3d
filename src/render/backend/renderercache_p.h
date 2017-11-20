@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,64 +37,50 @@
 **
 ****************************************************************************/
 
-#include "buffermanager_p.h"
+#ifndef QT3DRENDER_RENDER_RENDERERCACHE_P_H
+#define QT3DRENDER_RENDER_RENDERERCACHE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/QFrameGraphNode>
+
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
 namespace Render {
 
-BufferManager::BufferManager()
+struct RendererCache
 {
-}
+    struct LeafNodeData
+    {
+         QVector<Entity *> filterEntitiesByLayer;
+    };
 
-BufferManager::~BufferManager()
-{
-}
+    QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
 
-void BufferManager::addDirtyBuffer(Qt3DCore::QNodeId bufferId)
-{
-    if (!m_dirtyBuffers.contains(bufferId))
-        m_dirtyBuffers.push_back(bufferId);
-}
+    QMutex *mutex() { return &m_mutex; }
 
-QVector<Qt3DCore::QNodeId> BufferManager::dirtyBuffers()
-{
-    return qMove(m_dirtyBuffers);
-}
-
-// Called in QAspectThread::syncChanges
-void BufferManager::removeBufferReference(Qt3DCore::QNodeId bufferId)
-{
-    QMutexLocker lock(&m_mutex);
-    Q_ASSERT(m_bufferReferences.contains(bufferId) && m_bufferReferences[bufferId] > 0);
-    m_bufferReferences[bufferId]--;
-}
-
-// Called in QAspectThread
-void BufferManager::addBufferReference(Qt3DCore::QNodeId bufferId)
-{
-    QMutexLocker lock(&m_mutex);
-    m_bufferReferences[bufferId]++;
-}
-
-// Called in Render thread
-QVector<Qt3DCore::QNodeId> BufferManager::takeBuffersToRelease()
-{
-    QMutexLocker lock(&m_mutex);
-    QVector<Qt3DCore::QNodeId> buffersToRelease;
-    QMutableHashIterator<Qt3DCore::QNodeId, int> it(m_bufferReferences);
-    while (it.hasNext()) {
-        it.next();
-        if (it.value() == 0) {
-            buffersToRelease.append(it.key());
-            it.remove();
-        }
-    }
-    return buffersToRelease;
-}
+private:
+    QMutex m_mutex;
+};
 
 } // namespace Render
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_RENDERERCACHE_P_H

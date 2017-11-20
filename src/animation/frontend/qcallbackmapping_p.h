@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,34 +34,52 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONCALLBACK_H
-#define QT3DANIMATION_QANIMATIONCALLBACK_H
+#ifndef QT3DANIMATION_QCALLBACKMAPPING_P_H
+#define QT3DANIMATION_QCALLBACKMAPPING_P_H
 
-#include <Qt3DAnimation/qt3danimation_global.h>
-#include <Qt3DCore/qnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DAnimation/private/qabstractchannelmapping_p.h>
+#include <Qt3DAnimation/qanimationcallback.h>
+#include <Qt3DAnimation/qcallbackmapping.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationCallback
+class QCallbackMappingPrivate : public QAbstractChannelMappingPrivate
 {
 public:
-    enum Flag {
-        OnOwningThread = 0x0,
-        OnThreadPool = 0x01
-    };
-    Q_DECLARE_FLAGS(Flags, Flag)
+    QCallbackMappingPrivate();
 
-    virtual ~QAnimationCallback() { }
+    Q_DECLARE_PUBLIC(QCallbackMapping)
 
-    virtual void valueChanged(const QVariant &value) = 0;
+    QString m_channelName;
+    int m_type;
+    QAnimationCallback *m_callback;
+    QAnimationCallback::Flags m_callbackFlags;
+};
+
+struct QCallbackMappingData
+{
+    QString channelName;
+    int type;
+    QAnimationCallback *callback;
+    QAnimationCallback::Flags callbackFlags;
 };
 
 } // namespace Qt3DAnimation
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Qt3DAnimation::QAnimationCallback::Flags)
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONCALLBACK_H
+#endif // QT3DANIMATION_QCALLBACKMAPPING_P_H

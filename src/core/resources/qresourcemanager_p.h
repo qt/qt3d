@@ -220,119 +220,114 @@ struct Int2Type
     };
 };
 
+template<typename T, uint INDEXBITS = 16>
+class QHandleData : public QHandle<T, INDEXBITS>::Data
+{
+public:
+    T data;
+};
+
+template<typename T, uint INDEXBITS>
+inline T *QHandle<T, INDEXBITS>::operator->() const { return (d && counter == d->counter) ? &static_cast<QHandleData<T, INDEXBITS> *>(d)->data : nullptr; }
+template<typename T, uint INDEXBITS>
+inline T *QHandle<T, INDEXBITS>::data() const { return (d && counter == d->counter) ? &static_cast<QHandleData<T, INDEXBITS> *>(d)->data : nullptr; }
+
 template <typename T, uint INDEXBITS = 16>
 class ArrayAllocatingPolicy
 {
 public:
+    typedef QHandleData<T, INDEXBITS> HandleData;
     typedef QHandle<T, INDEXBITS> Handle;
     ArrayAllocatingPolicy()
     {
-        m_freeList.resize(MaxSize);
-        for (int i = 0; i < MaxSize; i++)
-            m_freeList[i] = MaxSize - (i + 1);
     }
 
     ~ArrayAllocatingPolicy()
     {
+        m_activeHandles.clear();
         deallocateBuckets();
     }
 
     Handle allocateResource()
     {
-        Q_ASSERT(!m_freeList.isEmpty());
-        int idx = m_freeList.takeLast();
-        int bucketIdx = idx / BucketSize;
-        int localIdx = idx % BucketSize;
-        Q_ASSERT(bucketIdx <= m_numBuckets);
-        if (bucketIdx == m_numBuckets) {
-            m_bucketDataPtrs[bucketIdx] = static_cast<T*>(malloc(sizeof(T) * BucketSize));
-            m_counters[bucketIdx] = static_cast<short *>(malloc(sizeof(short) * BucketSize));
-            // ### memset is only needed as long as we also use this for primitive types (see FrameGraphManager)
-            // ### remove once this is fixed, add a static_assert on T instead
-            memset((void *)m_bucketDataPtrs[bucketIdx], 0, sizeof(T) * BucketSize);
-            memset(m_counters[bucketIdx], 0, sizeof(short) * BucketSize);
-            ++m_numBuckets;
-        }
-
-        Q_ASSERT(idx <= m_numConstructed);
-        if (idx == m_numConstructed) {
-            new (m_bucketDataPtrs[bucketIdx] + localIdx) T;
-            ++m_numConstructed;
-        }
-        Q_STATIC_ASSERT(Handle::MaxCounter < USHRT_MAX);
-        Q_ASSERT(m_counters[bucketIdx][localIdx] <= 0);
-        m_counters[bucketIdx][localIdx] *= -1;
-        ++m_counters[bucketIdx][localIdx];
-        if (m_counters[bucketIdx][localIdx] >= Handle::MaxCounter)
-            m_counters[bucketIdx][localIdx] = 1;
-
-        return Handle(idx, m_counters[bucketIdx][localIdx]);
+        if (!freeList)
+            allocateBucket();
+        typename Handle::Data *d = freeList;
+        freeList = freeList->nextFree;
+        d->counter = allocCounter;
+        allocCounter += 2; // ensure this will never clash with a pointer in nextFree by keeping the lowest bit set
+        Handle handle(d);
+        m_activeHandles.push_back(handle);
+        return handle;
     }
 
-    void releaseResource(Handle h)
+    void releaseResource(const Handle &handle)
     {
-        int idx = h.index();
-        int bucketIdx = idx / BucketSize;
-        int localIdx = idx % BucketSize;
-
-        Q_ASSERT(h.counter() == static_cast<quint32>(m_counters[bucketIdx][localIdx]));
-        T *r = m_bucketDataPtrs[bucketIdx] + localIdx;
-
-        m_freeList.append(idx);
-        m_counters[bucketIdx][localIdx] *= -1;
-        performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
+        m_activeHandles.removeOne(handle);
+        typename Handle::Data *d = handle.data_ptr();
+        d->nextFree = freeList;
+        freeList = d;
+        performCleanup(&static_cast<QHandleData<T, INDEXBITS> *>(d)->data, Int2Type<QResourceInfo<T>::needsCleanup>());
     }
 
-    T *data(Handle h/*, bool *ok = 0*/) {
-        int bucketIdx = h.index() / BucketSize;
-        int localIdx = h.index() % BucketSize;
-
-        if (h.counter() != static_cast<quint32>(m_counters[bucketIdx][localIdx])) {
-            return nullptr;
-        }
-        return m_bucketDataPtrs[bucketIdx] + localIdx;
+    T *data(Handle h) {
+        return h.operator->();
     }
 
     void for_each(std::function<void(T*)> f) {
-        for (int idx = 0; idx < m_numConstructed; ++idx) {
-            int bucketIdx = idx / BucketSize;
-            int localIdx = idx % BucketSize;
-            T * t = m_bucketDataPtrs[bucketIdx] + localIdx;
-            f(t);
+        Bucket *b = firstBucket;
+        while (b) {
+            for (int idx = 0; idx < Bucket::NumEntries; ++idx) {
+                T *t = &b->data[idx].data;
+                f(t);
+            }
+            b = b->header.next;
         }
     }
+
+    int count() const { return m_activeHandles.size(); }
+    QVector<Handle> activeHandles() const { return m_activeHandles; }
 
 private:
     Q_DISABLE_COPY(ArrayAllocatingPolicy)
-
-    enum {
-        MaxSize = (1 << INDEXBITS),
-        // use at most 1024 items per bucket, or put all items into a single
-        // bucket if MaxSize is small enough
-        BucketSize = (1 << (INDEXBITS < 10 ? INDEXBITS : 10))
+    struct Bucket {
+        struct Header {
+            Bucket *next;
+        } header;
+        enum {
+            Size = 4096,
+            NumEntries = (Size - sizeof(Header))/sizeof(HandleData)
+        };
+        HandleData data[NumEntries];
     };
+
+    Bucket *firstBucket = 0;
+    QVector<Handle > m_activeHandles;
+    typename Handle::Data *freeList = 0;
+    int allocCounter = 1;
+
+    void allocateBucket() {
+        // no free handle, allocate a new
+        Bucket *b = new Bucket;
+
+        b->header.next = firstBucket;
+        firstBucket = b;
+        for (int i = 0; i < Bucket::NumEntries - 1; ++i) {
+            b->data[i].nextFree = &b->data[i + 1];
+        }
+        b->data[Bucket::NumEntries - 1].nextFree = nullptr;
+        freeList = &b->data[0];
+    }
 
     void deallocateBuckets()
     {
-        while (m_numConstructed > 0) {
-            --m_numConstructed;
-            int bucketIdx = m_numConstructed / BucketSize;
-            int localIdx = m_numConstructed % BucketSize;
-            (m_bucketDataPtrs[bucketIdx] + localIdx)->~T();
-        }
-
-        while (m_numBuckets > 0) {
-            --m_numBuckets;
-            free(m_bucketDataPtrs[m_numBuckets]);
-            free(m_counters[m_numBuckets]);
+        Bucket *b = firstBucket;
+        while (b) {
+            Bucket *n = b->header.next;
+            delete b;
+            b = n;
         }
     }
-
-    T* m_bucketDataPtrs[MaxSize / BucketSize];
-    short *m_counters[MaxSize / BucketSize];
-    QVector<int> m_freeList;
-    int m_numBuckets = 0;
-    int m_numConstructed = 0;
 
     void performCleanup(T *r, Int2Type<true>)
     {
@@ -379,21 +374,18 @@ public:
     Handle acquire()
     {
         typename LockingPolicy<QResourceManager>::WriteLocker lock(this);
-        Handle handle = Allocator::allocateResource();
-        m_activeHandles.push_back(handle);
-        return handle;
+        return Allocator::allocateResource();
     }
 
     ValueType* data(const Handle &handle)
     {
-        typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
-        return Allocator::data(handle);
+        return handle.operator->();
     }
 
     void release(const Handle &handle)
     {
         typename LockingPolicy<QResourceManager>::WriteLocker lock(this);
-        releaseLocked(handle);
+        Allocator::releaseResource(handle);
     }
 
     bool contains(const KeyType &id) const
@@ -413,7 +405,6 @@ public:
             Handle &handleToSet = m_keyToHandleMap[id];
             if (handleToSet.isNull()) {
                 handleToSet = Allocator::allocateResource();
-                m_activeHandles.push_back(handleToSet);
             }
             return handleToSet;
         }
@@ -441,8 +432,7 @@ public:
     ValueType *getOrCreateResource(const KeyType &id)
     {
         const Handle handle = getOrAcquireHandle(id);
-        typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
-        return Allocator::data(handle);
+        return handle.operator->();
     }
 
     void releaseResource(const KeyType &id)
@@ -450,27 +440,16 @@ public:
         typename LockingPolicy<QResourceManager>::WriteLocker lock(this);
         Handle handle = m_keyToHandleMap.take(id);
         if (!handle.isNull())
-            releaseLocked(handle);
+            Allocator::releaseResource(handle);
     }
 
     int maximumSize() const { return m_maxSize; }
 
-    int count() const Q_DECL_NOEXCEPT { return m_activeHandles.size(); }
-
-    inline QVector<Handle > activeHandles() const Q_DECL_NOEXCEPT { return m_activeHandles; }
-
 protected:
     QHash<KeyType, Handle > m_keyToHandleMap;
-    QVector<Handle > m_activeHandles;
     const int m_maxSize;
 
 private:
-    void releaseLocked(const Handle &handle)
-    {
-        m_activeHandles.removeOne(handle);
-        Allocator::releaseResource(handle);
-    }
-
     friend QDebug operator<< <>(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> &manager);
 };
 

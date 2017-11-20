@@ -1,4 +1,5 @@
-[checkRunRendererNotRunning]
-windows
-[checkRunRendererRunning]
+#[checkRunRendererNotRunning]
+#windows
+#[checkRunRendererRunning]
+#QTBUG-64271
 windows

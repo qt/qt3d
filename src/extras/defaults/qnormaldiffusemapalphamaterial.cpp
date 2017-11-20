@@ -165,6 +165,9 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     \since 5.7
     \inherits Qt3DExtras::QNormalDiffuseMapMaterial
 
+    \deprecated
+    \see Qt3DExtras::QDiffuseSpecularMaterial
+
     The specular lighting effect is based on the combination of 3 lighting components ambient,
     diffuse and specular. The relative strengths of these components are controlled by means of
     their reflectivity coefficients which are modelled as RGB triplets:

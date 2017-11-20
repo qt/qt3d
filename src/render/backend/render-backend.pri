@@ -44,7 +44,8 @@ HEADERS += \
     $$PWD/commandthread_p.h \
     $$PWD/visitorutils_p.h \
     $$PWD/segmentsvisitor_p.h \
-    $$PWD/pointsvisitor_p.h
+    $$PWD/pointsvisitor_p.h \
+    $$PWD/renderercache_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \

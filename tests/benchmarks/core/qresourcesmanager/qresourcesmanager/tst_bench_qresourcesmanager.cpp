@@ -159,9 +159,14 @@ void benchmarkReleaseResources()
     QVector<Qt3DCore::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
         handles[i] = manager.acquire();
+    for (int i = 0; i < max; i++)
+        manager.release(handles.at(i));
+    handles.clear();
 
     QBENCHMARK_ONCE {
-        /*manager.reset()*/;
+        // the release/clear should have left many unused handled in the resourcemanager,
+        // so the next acquire will trigger a collection of all freed resources
+        manager.acquire();
     }
 }
 

@@ -69,8 +69,6 @@ public:
     QString m_property;
     const char *m_propertyName;
     int m_type;
-    QAnimationCallback *m_callback;
-    QAnimationCallback::Flags m_callbackFlags;
 };
 
 struct QChannelMappingData
@@ -80,8 +78,6 @@ struct QChannelMappingData
     QString property;
     int type;
     const char *propertyName;
-    QAnimationCallback *callback;
-    QAnimationCallback::Flags callbackFlags;
 };
 
 } // namespace Qt3DAnimation

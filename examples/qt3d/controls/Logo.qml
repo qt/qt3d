@@ -91,8 +91,8 @@ Entity {
 
     PhongMaterial {
         id: material
-        ambient: Qt.rgba( color_r.value/255, color_g.value/255, color_b.value/255, 1.0 )
-        diffuse: Qt.rgba( 0.1, 0.1, 0.1, 0.5 )
+        diffuse: Qt.rgba( color_r.value/255, color_g.value/255, color_b.value/255, 1.0 )
+        ambient: Qt.rgba( 0.1, 0.1, 0.1, 1.0 )
         shininess: shining.value
     }
 
@@ -109,5 +109,17 @@ Entity {
     Entity {
         id: logoEntity
         components: [ logoMesh, material, logoTransform ]
+    }
+
+    Entity {
+        components: [
+            PointLight {
+                color: "white"
+                intensity: 0.6
+            },
+            Transform {
+                translation: Qt.vector3d(0, 0, 10)
+            }
+        ]
     }
 }
