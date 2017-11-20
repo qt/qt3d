@@ -68,6 +68,7 @@ private Q_SLOTS:
         QCOMPARE(backendMapping.channelName(), mapping.channelName());
         QCOMPARE(backendMapping.targetId(), mapping.target()->id());
         QCOMPARE(backendMapping.property(), mapping.property());
+        QCOMPARE(backendMapping.mappingType(), Qt3DAnimation::Animation::ChannelMapping::ChannelMappingType);
 
         // GIVEN
         Qt3DAnimation::Animation::ChannelMapping backendSkeletonMapping;
@@ -83,6 +84,7 @@ private Q_SLOTS:
         QCOMPARE(backendSkeletonMapping.peerId(), skeletonMapping.id());
         QCOMPARE(backendSkeletonMapping.isEnabled(), skeletonMapping.isEnabled());
         QCOMPARE(backendSkeletonMapping.skeletonId(), skeletonMapping.skeleton()->id());
+        QCOMPARE(backendSkeletonMapping.mappingType(), Qt3DAnimation::Animation::ChannelMapping::SkeletonMappingType);
     }
 
     void checkInitialAndCleanedUpState()
@@ -99,6 +101,7 @@ private Q_SLOTS:
         QCOMPARE(backendMapping.targetId(), Qt3DCore::QNodeId());
         QCOMPARE(backendMapping.property(), QString());
         QCOMPARE(backendMapping.skeletonId(), Qt3DCore::QNodeId());
+        QCOMPARE(backendMapping.mappingType(), Qt3DAnimation::Animation::ChannelMapping::ChannelMappingType);
 
         // GIVEN
         Qt3DAnimation::QChannelMapping mapping;
@@ -118,6 +121,7 @@ private Q_SLOTS:
         QCOMPARE(backendMapping.targetId(), Qt3DCore::QNodeId());
         QCOMPARE(backendMapping.property(), QString());
         QCOMPARE(backendMapping.skeletonId(), Qt3DCore::QNodeId());
+        QCOMPARE(backendMapping.mappingType(), Qt3DAnimation::Animation::ChannelMapping::ChannelMappingType);
     }
 
     void checkPropertyChanges()

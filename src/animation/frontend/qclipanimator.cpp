@@ -174,8 +174,9 @@ void QClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         QAnimationCallbackTriggerPtr callbackTrigger = qSharedPointerCast<Qt3DAnimation::QAnimationCallbackTrigger>(change);
         if (callbackTrigger->callback())
             callbackTrigger->callback()->valueChanged(callbackTrigger->value());
+    } else if (change->type() == Qt3DCore::PropertyUpdated) {
+        QAbstractClipAnimator::sceneChangeEvent(change);
     }
-    QAbstractClipAnimator::sceneChangeEvent(change);
 }
 
 } // namespace Qt3DAnimation

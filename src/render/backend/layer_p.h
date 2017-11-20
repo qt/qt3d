@@ -77,7 +77,7 @@ public:
     void setRecursive(bool recursive);
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change);

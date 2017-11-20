@@ -15,7 +15,8 @@ SUBDIRS += \
     qmorphtarget \
     qvertexblendanimation \
     qclock \
-    qskeletonmapping
+    qskeletonmapping \
+    qcallbackmapping
 
 qtConfig(private_tests) {
     SUBDIRS += \

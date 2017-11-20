@@ -61,9 +61,6 @@ public:
     QString channelName() const;
     Qt3DCore::QNode *target() const;
     QString property() const;
-    QAnimationCallback *callback() const;
-
-    void setCallback(int type, QAnimationCallback *callback, QAnimationCallback::Flags flags);
 
 public Q_SLOTS:
     void setChannelName(const QString &channelName);

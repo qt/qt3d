@@ -74,8 +74,10 @@ void Layer::sceneChangeEvent(const QSceneChangePtr &e)
         QByteArray propertyName = propertyChange->propertyName();
         if (propertyName == QByteArrayLiteral("recursive")) {
             m_recursive = propertyChange->value().toBool();
+            markDirty(AbstractRenderer::LayersDirty);
         }
-        markDirty(AbstractRenderer::AllDirty);
+        if (propertyName == QByteArrayLiteral("enabled"))
+            markDirty(AbstractRenderer::LayersDirty);
     }
     BackendNode::sceneChangeEvent(e);
 }

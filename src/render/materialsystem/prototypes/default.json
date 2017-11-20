@@ -91,7 +91,7 @@
                     "major": 3,
                     "minor": 0
                 },
-                "substitution": "vec4 $color = texture2D($name, $coord);",
+                "substitution": "vec4 $color = texture($name, $coord);",
                 "headerSnippets": [ "uniform sampler2D $name;" ]
             }
         ]

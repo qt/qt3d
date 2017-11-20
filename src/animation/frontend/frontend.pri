@@ -54,7 +54,9 @@ HEADERS += \
     $$PWD/qchannelmappingcreatedchange_p.h \
     $$PWD/qchannelmappingcreatedchange_p_p.h \
     $$PWD/qskeletonmapping.h \
-    $$PWD/qskeletonmapping_p.h
+    $$PWD/qskeletonmapping_p.h \
+    $$PWD/qcallbackmapping.h \
+    $$PWD/qcallbackmapping_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -86,6 +88,7 @@ SOURCES += \
     $$PWD/qclock.cpp \
     $$PWD/qabstractchannelmapping.cpp \
     $$PWD/qchannelmappingcreatedchange.cpp \
-    $$PWD/qskeletonmapping.cpp
+    $$PWD/qskeletonmapping.cpp \
+    $$PWD/qcallbackmapping.cpp
 
 INCLUDEPATH += $$PWD
