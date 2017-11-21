@@ -57,6 +57,15 @@ import Qt3D.Extras 2.0
 DefaultSceneEntity {
     id: scene
 
+    KeyboardDevice { id: kyb }
+    KeyboardHandler {
+        id: keyboardHandler
+        sourceDevice: kyb
+        focus: true
+        onLeftPressed:blendedAnimator.normalizedTime -= 0.02
+        onRightPressed: blendedAnimator.normalizedTime += 0.02
+    }
+
     Entity {
         id: cube
 
@@ -95,7 +104,6 @@ DefaultSceneEntity {
             BlendedClipAnimator {
                 id: blendedAnimator
                 loops: 3
-
                 clock: Clock {
                     id: animatorClock
                     playbackRate: 0.5
@@ -126,11 +134,5 @@ DefaultSceneEntity {
     camera: Camera {
         position: Qt.vector3d(10, 3, 15)
         viewCenter: Qt.vector3d(2.5, 1, 0)
-    }
-
-    OrbitCameraController {
-        camera: scene.camera
-        linearSpeed: 8
-        lookSpeed: 180
     }
 }

@@ -267,15 +267,17 @@ void QAbstractClipAnimator::setClock(QClock *clock)
 void QAbstractClipAnimator::setNormalizedTime(float timeFraction)
 {
     Q_D(QAbstractClipAnimator);
-    const float adjustedFraction = qBound(0.0f, timeFraction, 1.0f);
-    if (!qFuzzyCompare(timeFraction, adjustedFraction))
-        qWarning("time fraction value clipped to : %f", double(adjustedFraction));
+    const bool validTime = !(timeFraction < 0.0f) && !(timeFraction > 1.0f);
+    if (!validTime) {
+        qWarning("Time value %f is not valid, needs to be in the range 0.0 to 1.0", timeFraction);
+        return;
+    }
 
-    if (qFuzzyCompare(d->m_normalizedTime, adjustedFraction))
+    if (qFuzzyCompare(d->m_normalizedTime, timeFraction))
         return;
 
-    d->m_normalizedTime = adjustedFraction;
-    emit normalizedTimeChanged(adjustedFraction);
+    d->m_normalizedTime = timeFraction;
+    emit normalizedTimeChanged(timeFraction);
 }
 
 /*!

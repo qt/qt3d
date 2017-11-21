@@ -316,6 +316,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBlendedClipAnimator::createNodeCreationChan
     data.clockId = Qt3DCore::qIdForNode(d->m_clock);
     data.running = d->m_running;
     data.loops = d->m_loops;
+    data.normalizedTime = d->m_normalizedTime;
     return creationChange;
 }
 

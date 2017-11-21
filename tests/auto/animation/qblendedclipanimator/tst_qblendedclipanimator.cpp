@@ -145,6 +145,47 @@ private Q_SLOTS:
             QCOMPARE(blendedClipAnimator.loopCount(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+
+        {
+            // WHEN
+            QSignalSpy spy(&blendedClipAnimator, SIGNAL(normalizedTimeChanged(float)));
+            const float newValue = 0.5;
+            blendedClipAnimator.setNormalizedTime(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(blendedClipAnimator.normalizedTime(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            blendedClipAnimator.setNormalizedTime(newValue);
+
+            // THEN
+            QCOMPARE(blendedClipAnimator.normalizedTime(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
+
+        {
+            // WHEN
+            QSignalSpy spy(&blendedClipAnimator, SIGNAL(normalizedTimeChanged(float)));
+            const float newValue = -0.01f; // Invalid
+            blendedClipAnimator.setNormalizedTime(newValue);
+            const float oldValue = blendedClipAnimator.normalizedTime();
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(blendedClipAnimator.normalizedTime(), oldValue);
+            QCOMPARE(spy.count(), 0);
+
+            // WHEN
+            spy.clear();
+            blendedClipAnimator.setNormalizedTime(1.01f); // Invalid
+
+            // THEN
+            QCOMPARE(blendedClipAnimator.normalizedTime(), oldValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -181,6 +222,7 @@ private Q_SLOTS:
             QCOMPARE(blendedClipAnimator.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(blendedClipAnimator.metaObject(), creationChangeData->metaObject());
             QCOMPARE(blendedClipAnimator.loopCount(), cloneData.loops);
+            QCOMPARE(blendedClipAnimator.normalizedTime(), cloneData.normalizedTime);
         }
 
         // WHEN
@@ -368,6 +410,39 @@ private Q_SLOTS:
         {
             // WHEN
             blendedClipAnimator.setLoopCount(1584);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+    }
+
+    void checkNormalizedTimeUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
+        arbiter.setArbiterOnNode(&blendedClipAnimator);
+
+        {
+            // WHEN
+            blendedClipAnimator.setNormalizedTime(0.5f);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "normalizedTime");
+            QCOMPARE(change->value().value<float>(), blendedClipAnimator.normalizedTime());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            blendedClipAnimator.setNormalizedTime(0.5f);
             QCoreApplication::processEvents();
 
             // THEN

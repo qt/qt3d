@@ -57,6 +57,12 @@ BuildBlendTreesJob::BuildBlendTreesJob()
 void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnimator> &blendedClipAnimatorHandles)
 {
     m_blendedClipAnimatorHandles = blendedClipAnimatorHandles;
+    BlendedClipAnimatorManager *blendedClipAnimatorManager = m_handler->blendedClipAnimatorManager();
+    BlendedClipAnimator *blendedClipAnimator = nullptr;
+    for (const auto &blendedClipAnimatorHandle : qAsConst(m_blendedClipAnimatorHandles)) {
+        blendedClipAnimator = blendedClipAnimatorManager->data(blendedClipAnimatorHandle);
+        Q_ASSERT(blendedClipAnimator);
+    }
 }
 
 // Note this job is run once for all stopped blended animators that have been marked dirty
@@ -68,10 +74,13 @@ void BuildBlendTreesJob::run()
         BlendedClipAnimator *blendClipAnimator = m_handler->blendedClipAnimatorManager()->data(blendedClipAnimatorHandle);
         Q_ASSERT(blendClipAnimator);
 
-        const bool canRun = blendClipAnimator->canRun();
-        m_handler->setBlendedClipAnimatorRunning(blendedClipAnimatorHandle, canRun);
 
-        if (!canRun)
+        const bool canRun = blendClipAnimator->canRun();
+        const bool running = blendClipAnimator->isRunning();
+        const bool seeking = blendClipAnimator->isSeeking();
+        m_handler->setBlendedClipAnimatorRunning(blendedClipAnimatorHandle, canRun && (seeking || running));
+
+        if (!canRun && !(seeking || running))
             continue;
 
         // Build the format for clip results that should be used by nodes in the blend

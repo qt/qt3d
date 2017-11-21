@@ -65,11 +65,12 @@ void EvaluateBlendClipAnimatorJob::run()
 
     BlendedClipAnimator *blendedClipAnimator = m_handler->blendedClipAnimatorManager()->data(m_blendClipAnimatorHandle);
     Q_ASSERT(blendedClipAnimator);
-    if (!blendedClipAnimator->isRunning())
+    const bool running = blendedClipAnimator->isRunning();
+    const bool seeking = blendedClipAnimator->isSeeking();
+    if (!running && !seeking) {
+        m_handler->setBlendedClipAnimatorRunning(m_blendClipAnimatorHandle, false);
         return;
-
-    qint64 globalTimeNS = m_handler->simulationTime();
-    qint64 nsSincePreviousFrame = blendedClipAnimator->nsSincePreviousFrame(globalTimeNS);
+    }
 
     Qt3DCore::QNodeId blendTreeRootId = blendedClipAnimator->blendTreeRootId();
     const QVector<Qt3DCore::QNodeId> valueNodeIdsToEvaluate = gatherValueNodesToEvaluate(m_handler, blendTreeRootId);
@@ -81,6 +82,10 @@ void EvaluateBlendClipAnimatorJob::run()
     const double duration = blendTreeRootNode->duration();
 
     Clock *clock = m_handler->clockManager()->lookupResource(blendedClipAnimator->clockId());
+
+    qint64 globalTimeNS = m_handler->simulationTime();
+    qint64 nsSincePreviousFrame = seeking ? toNsecs(duration * blendedClipAnimator->normalizedLocalTime())
+                                          : blendedClipAnimator->nsSincePreviousFrame(globalTimeNS);
 
     // Calculate the phase given the blend tree duration and global time
     AnimatorEvaluationData animatorData = evaluationDataForAnimator(blendedClipAnimator, clock, nsSincePreviousFrame);
@@ -115,6 +120,8 @@ void EvaluateBlendClipAnimatorJob::run()
     const double localTime = phase * duration;
     blendedClipAnimator->setLastGlobalTimeNS(globalTimeNS);
     blendedClipAnimator->setLastLocalTime(localTime);
+    blendedClipAnimator->setLastNormalizedLocalTime(phase);
+    blendedClipAnimator->setNormalizedLocalTime(-1.0f); // Re-set to something invalid.
     blendedClipAnimator->setCurrentLoop(animatorData.currentLoop);
     const bool finalFrame = isFinalFrame(localTime, duration, animatorData.currentLoop, animatorData.loopCount);
 
@@ -123,7 +130,8 @@ void EvaluateBlendClipAnimatorJob::run()
     const QVector<Qt3DCore::QSceneChangePtr> changes = preparePropertyChanges(blendedClipAnimator->peerId(),
                                                                               mappingData,
                                                                               blendedResults,
-                                                                              finalFrame);
+                                                                              finalFrame,
+                                                                              phase);
     // Send the property changes
     blendedClipAnimator->sendPropertyChanges(changes);
 

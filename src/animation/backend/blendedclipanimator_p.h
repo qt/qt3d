@@ -70,9 +70,11 @@ public:
     Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
     Qt3DCore::QNodeId clockId() const { return m_clockId; }
     bool isRunning() const { return m_running; }
+    void setNormalizedLocalTime(float normalizedTime);
+    float normalizedLocalTime() const { return m_normalizedLocalTime; }
 
     //  Called by BuildBlendTreeJob
-    bool canRun() const { return !m_mapperId.isNull() && !m_blendTreeRootId.isNull() && m_running; }
+    bool canRun() const { return !m_mapperId.isNull() && !m_blendTreeRootId.isNull(); }
 
     void setBlendTreeRootId(Qt3DCore::QNodeId blendTreeRootId);
     void setMapperId(Qt3DCore::QNodeId mapperId);
@@ -101,6 +103,14 @@ public:
     double lastLocalTime() const;
     void setLastLocalTime(double lastLocalTime);
 
+    float lastNormalizedLocalTime() { return m_lastNormalizedLocalTime; }
+    void setLastNormalizedLocalTime(float normalizedTime);
+    bool isSeeking() const
+    {
+        return isValidNormalizedTime(m_normalizedLocalTime)
+                && !qFuzzyCompare(m_lastNormalizedLocalTime, m_normalizedLocalTime);
+    }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     Qt3DCore::QNodeId m_blendTreeRootId;
@@ -113,6 +123,9 @@ private:
 
     int m_currentLoop;
     int m_loops;
+
+    float m_normalizedLocalTime;
+    float m_lastNormalizedLocalTime;
 
     QVector<MappingData> m_mappingData;
 };

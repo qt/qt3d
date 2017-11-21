@@ -110,7 +110,6 @@ inline QDebug operator<<(QDebug dbg, const FCurve &fcurve)
                 << endl;
             break;
         }
-
         case QKeyFrame::ConstantInterpolation:
         case QKeyFrame::LinearInterpolation: {
             dbg << "t = " << fcurve.localTime(i)

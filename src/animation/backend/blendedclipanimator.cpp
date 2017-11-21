@@ -52,6 +52,8 @@ BlendedClipAnimator::BlendedClipAnimator()
     , m_lastLocalTime(0.0)
     , m_currentLoop(0)
     , m_loops(1)
+    , m_normalizedLocalTime(-1.0f)
+    , m_lastNormalizedLocalTime(-1.0)
 {
 }
 
@@ -64,6 +66,7 @@ void BlendedClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeB
     m_clockId = data.clockId;
     m_running = data.running;
     m_loops = data.loops;
+    m_normalizedLocalTime = data.normalizedTime;
     setDirty(Handler::BlendedClipAnimatorDirty);
 }
 
@@ -75,6 +78,11 @@ double BlendedClipAnimator::lastLocalTime() const
 void BlendedClipAnimator::setLastLocalTime(double lastLocalTime)
 {
     m_lastLocalTime = lastLocalTime;
+}
+
+void BlendedClipAnimator::setLastNormalizedLocalTime(float normalizedTime)
+{
+    m_lastNormalizedLocalTime = normalizedTime;
 }
 
 void BlendedClipAnimator::setLastGlobalTimeNS(const qint64 &lastGlobalTimeNS)
@@ -152,6 +160,13 @@ Qt3DCore::QNodeId BlendedClipAnimator::blendTreeRootId() const
     return m_blendTreeRootId;
 }
 
+void BlendedClipAnimator::setNormalizedLocalTime(float normalizedTime)
+{
+    m_normalizedLocalTime = normalizedTime;
+    if (isValidNormalizedTime(m_normalizedLocalTime))
+        setDirty(Handler::BlendedClipAnimatorDirty);
+}
+
 void BlendedClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
@@ -167,6 +182,8 @@ void BlendedClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setRunning(change->value().toBool());
         else if (change->propertyName() == QByteArrayLiteral("loops"))
             m_loops = change->value().toInt();
+        else if (change->propertyName() == QByteArrayLiteral("normalizedTime"))
+            setNormalizedLocalTime(change->value().toFloat());
         break;
     }
 

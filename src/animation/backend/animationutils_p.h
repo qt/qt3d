@@ -315,7 +315,7 @@ Q_AUTOTEST_EXPORT
 QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
                                                           const QVector<MappingData> &mappingDataVec,
                                                           const QVector<float> &channelResults,
-                                                          bool finalFrame, float normalizedLocalTime = -1.0f);
+                                                          bool finalFrame, float normalizedLocalTime);
 
 Q_AUTOTEST_EXPORT
 QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &mappingDataVec,
