@@ -43,8 +43,8 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qcomponent.h>
 
-#include <QVector3D>
-#include <QColor>
+#include <QtGui/QVector3D>
+#include <QtGui/QColor>
 
 QT_BEGIN_NAMESPACE
 

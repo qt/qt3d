@@ -43,7 +43,7 @@
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
 
-#include <QVector3D>
+#include <QtGui/QVector3D>
 
 QT_BEGIN_NAMESPACE
 

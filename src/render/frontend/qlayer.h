@@ -42,7 +42,7 @@
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <QStringList>
+#include <QtCore/QStringList>
 
 QT_BEGIN_NAMESPACE
 

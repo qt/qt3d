@@ -41,7 +41,7 @@
 #define QT3DRENDER_QTEXTUREWRAPMODE_H
 
 #include <Qt3DRender/qt3drender_global.h>
-#include <QObject>
+#include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 

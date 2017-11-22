@@ -53,8 +53,8 @@
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <QString>
-#include <QFont>
+#include <QtCore/QString>
+#include <QtGui/QFont>
 
 QT_BEGIN_NAMESPACE
 

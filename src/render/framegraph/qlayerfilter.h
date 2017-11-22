@@ -41,7 +41,7 @@
 #define QT3DRENDER_QLAYERFILTER_H
 
 #include <Qt3DRender/qframegraphnode.h>
-#include <QStringList>
+#include <QtCore/QStringList>
 
 QT_BEGIN_NAMESPACE
 
