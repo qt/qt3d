@@ -475,7 +475,6 @@ void RenderViewBuilder::prepareJobs()
         for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
             auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
             materialGatherer->setNodeManagers(m_renderer->nodeManagers());
-            materialGatherer->setRenderer(m_renderer);
             if (i == RenderViewBuilder::m_optimalParallelJobCount - 1)
                 materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob + lastRemaingElements));
             else

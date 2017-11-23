@@ -92,7 +92,7 @@ class RenderStateCollection;
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
 
-Q_AUTOTEST_EXPORT Technique *findTechniqueForEffect(Renderer *renderer,
+Q_AUTOTEST_EXPORT Technique *findTechniqueForEffect(NodeManagers *manager,
                                                     const TechniqueFilter *techniqueFilter,
                                                     Effect *effect);
 

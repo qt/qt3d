@@ -283,17 +283,15 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
 /*!
     \internal
-    Searches the \a renderer for the best matching Technique from
-    \a effect specified by the \a renderView.
+    Searches the best matching Technique from \a effect specified.
 */
-Technique *findTechniqueForEffect(Renderer *renderer,
+Technique *findTechniqueForEffect(NodeManagers *manager,
                                   const TechniqueFilter *techniqueFilter,
                                   Effect *effect)
 {
     if (!effect)
         return nullptr;
 
-    NodeManagers *manager = renderer->nodeManagers();
     QVector<Technique*> matchingTechniques;
     const bool hasInvalidTechniqueFilter = (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
 
