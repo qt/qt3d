@@ -127,7 +127,7 @@
     \row
         \li {1, 1} ModelNormalMatrix
         \li {2, 1} modelNormalMatrix
-        \li {3, 1} uniform mat3 inverseViewProjectionMatrix;
+        \li {3, 1} uniform mat3 modelNormalMatrix;
 
     \row
         \li {1, 1} ModelViewNormalMatrix
@@ -259,7 +259,7 @@
     \row
         \li {1, 1} ModelNormalMatrix
         \li {2, 1} modelNormalMatrix
-        \li {3, 1} uniform mat3 inverseViewProjectionMatrix;
+        \li {3, 1} uniform mat3 modelNormalMatrix;
 
     \row
         \li {1, 1} ModelViewNormalMatrix
