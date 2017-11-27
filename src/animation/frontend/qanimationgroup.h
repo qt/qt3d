@@ -37,7 +37,7 @@
 #ifndef QT3DANIMATION_QANIMATIONGROUP_H
 #define QT3DANIMATION_QANIMATIONGROUP_H
 
-#include <qobject.h>
+#include <QtCore/qobject.h>
 
 #include <Qt3DAnimation/qabstractanimation.h>
 
