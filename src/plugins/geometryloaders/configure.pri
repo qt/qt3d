@@ -8,12 +8,6 @@ defineTest(qtConfLibrary_fbx) {
     }
 
     prefix = $$getenv(FBXSDK)
-
-    unix:isEmpty(prefix) {
-        libs += "-L/usr/local/lib"
-        libs += "-L/usr/lib"
-    }
-
     !isEmpty(prefix) {
         includedir += $${prefix}/include
         !win32:libs += -L$${prefix}/lib
