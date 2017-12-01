@@ -135,7 +135,8 @@ void Quick3DNodeInstantiatorPrivate::regenerate()
     }
 
     for (int i = 0; i < m_instanceModel->count(); i++) {
-        QObject *object = m_instanceModel->object(i, m_async);
+        QObject *object = m_instanceModel->object(i, m_async ?
+            QQmlIncubator::Asynchronous : QQmlIncubator::AsynchronousIfNested);
         // If the item was already created we won't get a createdItem
         if (object)
             _q_createdItem(i, object);
@@ -202,7 +203,8 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
             m_objects = m_objects.mid(0, index) + movedObjects + m_objects.mid(index);
         } else for (int i = 0; i < insert.count; ++i) {
             int modelIndex = index + i;
-            QObject *obj = m_instanceModel->object(modelIndex, m_async);
+            QObject *obj = m_instanceModel->object(modelIndex, m_async ?
+                QQmlIncubator::Asynchronous : QQmlIncubator::AsynchronousIfNested);
             if (obj)
                 _q_createdItem(modelIndex, obj);
         }
