@@ -51,6 +51,13 @@
 #include <QFileInfo>
 #include <QUrl>
 
+static void initResources()
+{
+#ifdef QT_STATIC
+    Q_INIT_RESOURCE(materialsystem);
+#endif
+}
+
 QT_BEGIN_NAMESPACE
 
 class GlobalShaderPrototypes
@@ -58,6 +65,7 @@ class GlobalShaderPrototypes
 public:
     GlobalShaderPrototypes()
     {
+        initResources();
         setPrototypesFile(QStringLiteral(":/prototypes/default.json"));
     }
 
