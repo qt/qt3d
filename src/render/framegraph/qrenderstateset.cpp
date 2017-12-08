@@ -71,6 +71,31 @@ QRenderStateSetPrivate::QRenderStateSetPrivate()
     executed. Adding a QRenderState state explicitly enables that render
     state at runtime.
 
+    The RenderStateSet is enabled when added to the active frame graph:
+
+    \code
+    // using namespace Qt3DRender;
+
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+
+    QRenderSettings *renderSettings = new QRenderSettings();
+
+    QViewport *viewport = new QViewport();
+    QCameraSelector *cameraSelector = new QCameraSelector(viewport);
+
+    QClearBuffers *clearBuffers = new QClearBuffers(cameraSelector);
+    clearBuffers->setBuffers(QClearBuffers::ColorDepthBuffer);
+
+    QRenderStateSet *renderStateSet = new QRenderStateSet(cameraSelector);
+    QCullFace *cullFace = new QCullFace(renderStateSet);
+    cullFace->setMode(QCullFace::Front);
+    renderStateSet->addRenderState(cullFace);
+
+    renderSettings->setActiveFrameGraph(viewport);
+
+    rootEntity->addComponent(renderSettings);
+    \endcode
+
     \sa QRenderState, QRenderPass
  */
 
@@ -89,6 +114,47 @@ QRenderStateSetPrivate::QRenderStateSetPrivate()
     RenderStateSet will result in all render states being disabled when
     executed. Adding a RenderState state explicitly enables that render
     state at runtime.
+
+    The RenderStateSet is enabled when added to the active frame graph:
+
+    \qml
+    import Qt3D.Core 2.0
+    import Qt3D.Render 2.0
+    import Qt3D.Extras 2.0
+
+    Entity {
+        id: rootNode
+        components: [
+            RenderSettings {
+                activeFrameGraph: RenderSurfaceSelector {
+                    ClearBuffers {
+                        buffers : ClearBuffers.ColorDepthBuffer
+
+                        CameraSelector {
+                            camera: Camera {
+                                position: Qt.vector3d(10, 0, 0)
+                                viewCenter: Qt.vector3d(0, 0, 0)
+                            }
+                            RenderStateSet {
+                                renderStates: [
+                                    CullFace { mode: CullFace.Back }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+
+        Entity {
+            id: sphereEntity
+            components: [
+                SphereMesh {},
+                PhongMaterial {}
+            ]
+        }
+    }
+    \endqml
 
     \sa RenderState, RenderPass
  */

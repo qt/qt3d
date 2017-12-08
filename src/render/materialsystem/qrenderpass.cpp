@@ -87,23 +87,33 @@ QRenderPassPrivate::QRenderPassPrivate()
     FrameGraph branch. Each RenderPass can overload this base render state by
     specifying its own RenderState nodes.
 
-    \code
-    RenderPass {
-        id: pass
-        shaderProgram: ShaderProgram {
-            ...
-        }
-        parameters: [
-            Parameters { name: "color"; value: "red" }
-        ]
+    \qml
+    Technique {
         filterKeys: [
-            FilterKey { name: "name"; value: "zFillPass" }
+            FilterKey { name: "renderingStyle"; value: "forward" }
         ]
-        renderStates: [
-            DepthTest { }
+        graphicsApiFilter: {
+            api: GraphicsApiFilter.OpenGL
+            profile: GraphicsApiFilter.CoreProfile
+            majorVersion: 3
+            minorVersion: 1
+        }
+        renderPasses: [
+            RenderPass {
+                id: pass
+                shaderProgram: ShaderProgram {
+                    // ...
+                }
+                parameters: [
+                    Parameter { name: "color"; value: "red" }
+                ]
+                renderStates: [
+                    DepthTest {}
+                ]
+            }
         ]
     }
-    \endcode
+    \endqml
 
     \sa RenderPassFilter, FilterKey, Parameter, RenderState, Effect, Technique
  */

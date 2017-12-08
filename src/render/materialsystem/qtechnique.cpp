@@ -90,16 +90,16 @@ QTechniquePrivate::~QTechniquePrivate()
     QSurfaceFormat::setDefaultFormat(). Setting the QSurfaceFormat on the view
     will likely have no effect on Qt3D related rendering.
 
-    \code
+    \qml
     Technique {
         id: gl3Technique
         parameters: [
             Parameter { name: "color"; value: "orange" }
         ]
         filterKeys: [
-            FilterKey { name: "name"; value: "zFillTechnique" }
+            FilterKey { name: "renderingStyle"; value: "forward" }
         ]
-        graphicsApiFilter {
+        graphicsApiFilter: {
             api: GraphicsApiFilter.OpenGL
             profile: GraphicsApiFilter.CoreProfile
             majorVersion: 3
@@ -109,18 +109,18 @@ QTechniquePrivate::~QTechniquePrivate()
             RenderPass {
                 id: firstPass
                 shaderProgram: ShaderProgram {
-                    ...
+                    // ...
                 }
             },
             RenderPass {
                 id: secondPass
                 shaderProgram: ShaderProgram {
-                    ...
+                    // ...
                 }
             }
         ]
     }
-    \endcode
+    \endqml
 
     \sa Effect, RenderPass, TechniqueFilter
  */

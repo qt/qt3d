@@ -59,6 +59,34 @@ namespace Qt3DRender {
     order independent blending is required, for example when rendering leaves,
     grass and other rich vegetation.
 
+    It can be added to a QRenderPass by calling QRenderPass::addRenderState():
+
+    \code
+    QRenderPass *renderPass = new QRenderPass();
+
+    // Create a alpha coverage render state
+    QAlphaCoverage *alphaCoverage = new QAlphaCoverage();
+    QMultiSampleAntiAliasing *multiSampleAntialiasing = new QMultiSampleAntiAliasing();
+
+    // Add the render states to the render pass
+    renderPass->addRenderState(alphaCoverage);
+    renderPass->addRenderState(multiSampleAntialiasing);
+    \endcode
+
+    Or to a QRenderStateSet by calling QRenderStateSet::addRenderState():
+
+    \code
+    QRenderStateSet *renderStateSet = new QRenderStateSet();
+
+    // Create a alpha coverage render state
+    QAlphaCoverage *alphaCoverage = new QAlphaCoverage();
+    QMultiSampleAntiAliasing *multiSampleAntialiasing = new QMultiSampleAntiAliasing();
+
+    // Add the render states to the render state set
+    renderStateSet->addRenderState(alphaCoverage);
+    renderStateSet->addRenderState(multiSampleAntialiasing);
+    \endcode
+
     \sa Qt3DRender::QMultiSampleAntiAliasing
  */
 
@@ -77,6 +105,31 @@ namespace Qt3DRender {
     multisampling is disabled. Alpha-to-coverage is most useful when
     order independent blending is required, for example when rendering leaves,
     grass and other rich vegetation.
+
+    It can be added to a RenderPass:
+
+    \qml
+    RenderPass {
+        shaderProgram: ShaderProgram {
+            // ...
+        }
+        renderStates: [
+            AlphaCoverage {},
+            MultiSampleAntiAliasing {}
+        ]
+    }
+    \endqml
+
+    Or to a RenderStateSet:
+
+    \qml
+    RenderStateSet {
+        renderStates: [
+            AlphaCoverage {},
+            MultiSampleAntiAliasing {}
+        ]
+    }
+    \endqml
 
     \sa MultiSampleAntiAliasing
  */
