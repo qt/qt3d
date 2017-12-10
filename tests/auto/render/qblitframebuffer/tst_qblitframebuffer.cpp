@@ -85,7 +85,7 @@ private Q_SLOTS:
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QCOMPARE(creationChanges.size(), 1);
+        QCOMPARE(creationChanges.size(), 3); // 3 due to automatic parenting
 
         const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QBlitFramebufferData> creationChangeData =
                 qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QBlitFramebufferData>>(creationChanges.first());
@@ -330,6 +330,33 @@ private Q_SLOTS:
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
+    }
+
+    void checkSourceDestReset()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        QScopedPointer<Qt3DRender::QBlitFramebuffer> blitFramebuffer(new Qt3DRender::QBlitFramebuffer());
+        arbiter.setArbiterOnNode(blitFramebuffer.data());
+
+        Qt3DRender::QRenderTarget *sourceRenderTarget = new Qt3DRender::QRenderTarget; // no parent
+        Qt3DRender::QRenderTarget *destinationRenderTarget = new Qt3DRender::QRenderTarget(sourceRenderTarget); // have a parent
+
+        // WHEN
+        blitFramebuffer->setSource(sourceRenderTarget);
+        blitFramebuffer->setDestination(destinationRenderTarget);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(sourceRenderTarget->parent(), blitFramebuffer.data());
+        QCOMPARE(destinationRenderTarget->parent(), sourceRenderTarget); // already set parent must not change
+
+        // WHEN
+        delete sourceRenderTarget;
+
+        // THEN
+        QVERIFY(!blitFramebuffer->source());
+        QVERIFY(!blitFramebuffer->destination()); // gone too since destinationRenderTarget was parented to sourceRenderTarget
     }
 };
 

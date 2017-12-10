@@ -121,7 +121,21 @@ void QBlitFramebuffer::setSource(QRenderTarget *source)
 {
     Q_D(QBlitFramebuffer);
     if (d->m_source != source) {
+        if (d->m_source) {
+            // Remove bookkeeping connection
+            d->unregisterDestructionHelper(d->m_source);
+        }
+
         d->m_source = source;
+
+        if (d->m_source) {
+            // Ensures proper bookkeeping. Calls us back with nullptr in case the rt gets destroyed.
+            d->registerDestructionHelper(d->m_source, &QBlitFramebuffer::setSource, d->m_source);
+
+            if (!d->m_source->parent())
+                d->m_source->setParent(this);
+        }
+
         emit sourceChanged();
     }
 }
@@ -130,7 +144,21 @@ void QBlitFramebuffer::setDestination(QRenderTarget *destination)
 {
     Q_D(QBlitFramebuffer);
     if (d->m_destination != destination) {
+        if (d->m_destination) {
+            // Remove bookkeeping connection
+            d->unregisterDestructionHelper(d->m_destination);
+        }
+
         d->m_destination = destination;
+
+        if (d->m_destination) {
+            // Ensures proper bookkeeping. Calls us back with nullptr in case the rt gets destroyed.
+            d->registerDestructionHelper(d->m_destination, &QBlitFramebuffer::setDestination, d->m_destination);
+
+            if (!d->m_destination->parent())
+                d->m_destination->setParent(this);
+        }
+
         emit destinationChanged();
     }
 }
