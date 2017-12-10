@@ -145,7 +145,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
                     RenderTarget *renderTarget = manager->renderTargetManager()->data(renderTargetHandle);
                     if (renderTarget)
-                        rv->setAttachmentPack(AttachmentPack(targetSelector, renderTarget, manager->attachmentManager()));
+                        rv->setAttachmentPack(AttachmentPack(renderTarget, manager->attachmentManager(), targetSelector->outputs()));
                 }
                 break;
             }
