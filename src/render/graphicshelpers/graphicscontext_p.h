@@ -293,6 +293,7 @@ private:
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
     QAbstractTexture::TextureFormat m_renderTargetFormat;
+    QSize m_surfaceSize;
 
     QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
 

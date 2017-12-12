@@ -366,6 +366,10 @@ QSize GraphicsContext::renderTargetSize(const QSize &surfaceSize) const
 
 void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSize)
 {
+    // save for later use; this has nothing to do with the viewport but it is
+    // here that we get to know the surfaceSize from the RenderView.
+    m_surfaceSize = surfaceSize;
+
     m_viewport = viewport;
     QSize size = renderTargetSize(surfaceSize);
 
@@ -1572,13 +1576,17 @@ void GraphicsContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
         outputBufferIsDefault = false;
     }
 
+    // Up until this point the input and output rects are normal Qt rectangles.
+    // Convert them to GL rectangles (Y at bottom).
+    const int inputFboHeight = inputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[inputFboId].height();
     const GLint srcX0 = inputRect.left();
-    const GLint srcY0 = inputRect.top();
+    const GLint srcY0 = inputFboHeight - (inputRect.top() + inputRect.height());
     const GLint srcX1 = srcX0 + inputRect.width();
     const GLint srcY1 = srcY0 + inputRect.height();
 
+    const int outputFboHeight = outputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[outputFboId].height();
     const GLint dstX0 = outputRect.left();
-    const GLint dstY0 = outputRect.top();
+    const GLint dstY0 = outputFboHeight - (outputRect.top() + outputRect.height());
     const GLint dstX1 = dstX0 + outputRect.width();
     const GLint dstY1 = dstY0 + outputRect.height();
 
