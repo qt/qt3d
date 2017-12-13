@@ -59,9 +59,9 @@ namespace Qt3DRender {
 
 namespace {
 
-inline QMetaMethod setItemAreaMethod()
+inline QMetaMethod setItemAreaAndDevicePixelRatioMethod()
 {
-    const int idx = Scene3DItem::staticMetaObject.indexOfMethod("setItemArea(QSize)");
+    const int idx = Scene3DItem::staticMetaObject.indexOfMethod("setItemAreaAndDevicePixelRatio(QSize,qreal)");
     Q_ASSERT(idx != -1);
     return Scene3DItem::staticMetaObject.method(idx);
 }
@@ -267,8 +267,9 @@ void Scene3DRenderer::render()
 
     if (sizeHasChanged) {
         // We are in the QSGRenderThread (doing a direct call would result in a race)
-        static const QMetaMethod setItemArea = setItemAreaMethod();
-        setItemArea.invoke(m_item, Qt::QueuedConnection, Q_ARG(QSize, boundingRectSize));
+        static const QMetaMethod setItemAreaAndDevicePixelRatio = setItemAreaAndDevicePixelRatioMethod();
+        setItemAreaAndDevicePixelRatio.invoke(m_item, Qt::QueuedConnection, Q_ARG(QSize, boundingRectSize),
+                                              Q_ARG(qreal, window->effectiveDevicePixelRatio()));
     }
 
     // Rebuild FBO and textures if never created or a resize has occurred
