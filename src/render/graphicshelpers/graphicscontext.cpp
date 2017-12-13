@@ -366,6 +366,10 @@ QSize GraphicsContext::renderTargetSize(const QSize &surfaceSize) const
 
 void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSize)
 {
+    // save for later use; this has nothing to do with the viewport but it is
+    // here that we get to know the surfaceSize from the RenderView.
+    m_surfaceSize = surfaceSize;
+
     m_viewport = viewport;
     QSize size = renderTargetSize(surfaceSize);
 
@@ -579,44 +583,65 @@ void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
                 // this is the default fbo that some platforms create (iOS), we just register it
                 // Insert FBO into hash
                 m_renderTargets.insert(renderTargetNodeId, fboId);
-            } else if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
-                // The FBO is created and its attachments are set once
-                // Insert FBO into hash
-                m_renderTargets.insert(renderTargetNodeId, fboId);
-                // Bind FBO
-                m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
-                bindFrameBufferAttachmentHelper(fboId, attachments);
             } else {
-                qCritical() << "Failed to create FBO";
+                fboId = createRenderTarget(renderTargetNodeId, attachments);
             }
         } else {
-            fboId = m_renderTargets.value(renderTargetNodeId);
-
-            // We need to check if  one of the attachment was resized
-            bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
-            if (!needsResize) {
-                // render target exists, has attachment been resized?
-                GLTextureManager *glTextureManager = m_renderer->nodeManagers()->glTextureManager();
-                const QSize s = m_renderTargetsSize[fboId];
-                const auto attachments_ = attachments.attachments();
-                for (const Attachment &attachment : attachments_) {
-                    GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
-                    needsResize |= (rTex != nullptr && rTex->size() != s);
-                    if (attachment.m_point == QRenderTargetOutput::Color0)
-                        m_renderTargetFormat = rTex->properties().format;
-                }
-            }
-
-            if (needsResize) {
-                m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
-                bindFrameBufferAttachmentHelper(fboId, attachments);
-            }
+            fboId = updateRenderTarget(renderTargetNodeId, attachments, true);
         }
     }
     m_activeFBO = fboId;
     m_glHelper->bindFrameBufferObject(m_activeFBO, GraphicsHelperInterface::FBODraw);
     // Set active drawBuffers
     activateDrawBuffers(attachments);
+}
+
+GLuint GraphicsContext::createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments)
+{
+    const GLuint fboId = m_glHelper->createFrameBufferObject();
+    if (fboId) {
+        // The FBO is created and its attachments are set once
+        // Insert FBO into hash
+        m_renderTargets.insert(renderTargetNodeId, fboId);
+        // Bind FBO
+        m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
+        bindFrameBufferAttachmentHelper(fboId, attachments);
+    } else {
+        qCritical("Failed to create FBO");
+    }
+    return fboId;
+}
+
+GLuint GraphicsContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, bool isActiveRenderTarget)
+{
+    const GLuint fboId = m_renderTargets.value(renderTargetNodeId);
+
+    // We need to check if  one of the attachment was resized
+    bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
+    if (!needsResize) {
+        // render target exists, has attachment been resized?
+        GLTextureManager *glTextureManager = m_renderer->nodeManagers()->glTextureManager();
+        const QSize s = m_renderTargetsSize[fboId];
+        const auto attachments_ = attachments.attachments();
+        for (const Attachment &attachment : attachments_) {
+            GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
+            // ### TODO QTBUG-64757 this check is insufficient since the
+            // texture may have changed to another one with the same size. That
+            // case is not handled atm.
+            needsResize |= (rTex != nullptr && rTex->size() != s);
+            if (isActiveRenderTarget) {
+                if (attachment.m_point == QRenderTargetOutput::Color0)
+                    m_renderTargetFormat = rTex->properties().format;
+            }
+        }
+    }
+
+    if (needsResize) {
+        m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
+        bindFrameBufferAttachmentHelper(fboId, attachments);
+    }
+
+    return fboId;
 }
 
 void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
@@ -1515,30 +1540,53 @@ bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
     return (it != m_renderBufferHash.end());
 }
 
-void GraphicsContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTarget,
-                                      Qt3DCore::QNodeId outputRenderTarget,
+void GraphicsContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
+                                      Qt3DCore::QNodeId outputRenderTargetId,
                                       QRect inputRect, QRect outputRect,
                                       uint defaultFboId,
                                       QRenderTargetOutput::AttachmentPoint inputAttachmentPoint,
                                       QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
                                       QBlitFramebuffer::InterpolationMethod interpolationMethod)
 {
-    //Find the context side name for the render targets
-    const GLuint inputFboId = m_renderTargets[inputRenderTarget];
+    GLuint inputFboId = defaultFboId;
+    bool inputBufferIsDefault = true;
+    if (!inputRenderTargetId.isNull()) {
+        RenderTarget *renderTarget = m_renderer->nodeManagers()->renderTargetManager()->lookupResource(inputRenderTargetId);
+        if (renderTarget) {
+            AttachmentPack attachments(renderTarget, m_renderer->nodeManagers()->attachmentManager());
+            if (m_renderTargets.contains(inputRenderTargetId))
+                inputFboId = updateRenderTarget(inputRenderTargetId, attachments, false);
+            else
+                inputFboId = createRenderTarget(inputRenderTargetId, attachments);
+        }
+        inputBufferIsDefault = false;
+    }
+
     GLuint outputFboId = defaultFboId;
     bool outputBufferIsDefault = true;
-    if (!outputRenderTarget.isNull() && m_renderTargets.contains(outputRenderTarget)) {
-        outputFboId = m_renderTargets[outputRenderTarget];
+    if (!outputRenderTargetId.isNull()) {
+        RenderTarget *renderTarget = m_renderer->nodeManagers()->renderTargetManager()->lookupResource(outputRenderTargetId);
+        if (renderTarget) {
+            AttachmentPack attachments(renderTarget, m_renderer->nodeManagers()->attachmentManager());
+            if (m_renderTargets.contains(outputRenderTargetId))
+                outputFboId = updateRenderTarget(outputRenderTargetId, attachments, false);
+            else
+                outputFboId = createRenderTarget(outputRenderTargetId, attachments);
+        }
         outputBufferIsDefault = false;
     }
 
+    // Up until this point the input and output rects are normal Qt rectangles.
+    // Convert them to GL rectangles (Y at bottom).
+    const int inputFboHeight = inputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[inputFboId].height();
     const GLint srcX0 = inputRect.left();
-    const GLint srcY0 = inputRect.top();
+    const GLint srcY0 = inputFboHeight - (inputRect.top() + inputRect.height());
     const GLint srcX1 = srcX0 + inputRect.width();
     const GLint srcY1 = srcY0 + inputRect.height();
 
+    const int outputFboHeight = outputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[outputFboId].height();
     const GLint dstX0 = outputRect.left();
-    const GLint dstY0 = outputRect.top();
+    const GLint dstY0 = outputFboHeight - (outputRect.top() + outputRect.height());
     const GLint dstX1 = dstX0 + outputRect.width();
     const GLint dstY1 = dstY0 + outputRect.height();
 
@@ -1552,7 +1600,8 @@ void GraphicsContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTarget,
     bindFramebuffer(outputFboId, GraphicsHelperInterface::FBODraw);
 
     //Bind texture
-    readBuffer(GL_COLOR_ATTACHMENT0 + inputAttachmentPoint);
+    if (!inputBufferIsDefault)
+        readBuffer(GL_COLOR_ATTACHMENT0 + inputAttachmentPoint);
 
     if (!outputBufferIsDefault)
         drawBuffer(GL_COLOR_ATTACHMENT0 + outputAttachmentPoint);

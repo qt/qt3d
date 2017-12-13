@@ -45,13 +45,12 @@ namespace Qt3DExtras {
 
 /*!
     \class Qt3DExtras::QTexturedMetalRoughMaterial
-    \brief This is deprecated, please use QMetalRoughMaterial instead.
+    \brief This class is deprecated; use QMetalRoughMaterial instead.
     \inmodule Qt3DExtras
     \since 5.9
     \inherits Qt3DExtras::QMetalRoughMaterial
 
     \deprecated
-    \see Qt3DExtras::QMetalRoughMaterial
 */
 
 /*!

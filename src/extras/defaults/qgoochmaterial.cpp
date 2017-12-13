@@ -188,6 +188,7 @@ void QGoochMaterialPrivate::handleShininessChanged(const QVariant &var)
 
 /*!
     \class Qt3DExtras::QGoochMaterial
+    \ingroup qt3d-extras-materials
     \brief The QGoochMaterial provides a material that implements the Gooch
     shading model, popular in CAD and CAM applications.
     \inmodule Qt3DExtras

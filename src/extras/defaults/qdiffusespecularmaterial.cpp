@@ -211,6 +211,7 @@ void QDiffuseSpecularMaterialPrivate::handleTextureScaleChanged(const QVariant &
 
 /*!
     \class Qt3DExtras::QDiffuseSpecularMaterial
+    \ingroup qt3d-extras-materials
     \brief The QDiffuseSpecularMaterial class provides a default implementation
     of the phong lighting effect.
     \inmodule Qt3DExtras

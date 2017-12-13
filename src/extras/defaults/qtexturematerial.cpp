@@ -143,6 +143,7 @@ void QTextureMaterialPrivate::handleTextureTransformChanged(const QVariant &var)
 
 /*!
     \class Qt3DExtras::QTextureMaterial
+    \ingroup qt3d-extras-materials
     \brief The QTextureMaterial provides a default implementation of a simple unlit
     texture material.
     \inmodule Qt3DExtras

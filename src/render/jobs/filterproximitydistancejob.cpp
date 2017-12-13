@@ -82,6 +82,9 @@ void FilterProximityDistanceJob::run()
         }
         m_filteredEntities = std::move(entitiesToFilter);
     }
+
+    // sort needed for set_intersection in RenderViewBuilder
+    std::sort(m_filteredEntities.begin(), m_filteredEntities.end());
 }
 
 void FilterProximityDistanceJob::selectAllEntities()

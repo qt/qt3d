@@ -62,6 +62,13 @@
 #include <Qt3DRender/qcamera.h>
 #include <QtGui/qopenglcontext.h>
 
+static void initResources()
+{
+#ifdef QT_STATIC
+    Q_INIT_RESOURCE(extras);
+#endif
+}
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
@@ -85,6 +92,8 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     : QWindow(*new Qt3DWindowPrivate(), nullptr)
 {
     Q_D(Qt3DWindow);
+
+    initResources();
 
     if (!d->parentWindow)
         d->connectToScreen(screen ? screen : d->topLevelScreen.data());

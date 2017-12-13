@@ -168,7 +168,7 @@ public:
     void releaseBuffer(Qt3DCore::QNodeId bufferId);
     bool hasGLBufferForBuffer(Buffer *buffer);
 
-    void blitFramebuffer(Qt3DCore::QNodeId outputRenderTarget, Qt3DCore::QNodeId inputRenderTarget,
+    void blitFramebuffer(Qt3DCore::QNodeId outputRenderTargetId, Qt3DCore::QNodeId inputRenderTargetId,
                          QRect inputRect,
                          QRect outputRect, uint defaultFboId,
                          QRenderTargetOutput::AttachmentPoint inputAttachmentPoint,
@@ -268,6 +268,8 @@ private:
 
     GraphicsHelperInterface *resolveHighestOpenGLFunctions();
 
+    GLuint createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments);
+    GLuint updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, bool isActiveRenderTarget);
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
     HGLBuffer createGLBufferFor(Buffer *buffer, GLBuffer::Type type);
@@ -291,6 +293,7 @@ private:
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
     QAbstractTexture::TextureFormat m_renderTargetFormat;
+    QSize m_surfaceSize;
 
     QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
 

@@ -58,7 +58,7 @@ void BufferManager::addDirtyBuffer(Qt3DCore::QNodeId bufferId)
         m_dirtyBuffers.push_back(bufferId);
 }
 
-QVector<Qt3DCore::QNodeId> BufferManager::dirtyBuffers()
+QVector<Qt3DCore::QNodeId> BufferManager::takeDirtyBuffers()
 {
     return qMove(m_dirtyBuffers);
 }

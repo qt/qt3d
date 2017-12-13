@@ -110,7 +110,7 @@ public:
     bool materialGathererCacheNeedsToBeRebuilt() const;
 
     static int optimalJobCount();
-    static void removeEntitiesNotInSubset(QVector<Entity *> &entities, QVector<Entity *> subset);
+    static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset);
 
 private:
     Render::FrameGraphNode *m_leafNode;

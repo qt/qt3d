@@ -51,8 +51,6 @@ namespace Animation {
 
 EvaluateBlendClipAnimatorJob::EvaluateBlendClipAnimatorJob()
     : Qt3DCore::QAspectJob()
-    , m_currentGlobalTime(0.0)
-    , m_lastGlobalTime(0.0)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateBlendClipAnimator, 0);
 }

@@ -278,6 +278,7 @@ public:
 
 /*!
  * \class Qt3DExtras::QPlaneGeometry
+   \ingroup qt3d-extras-geometries
  * \inheaderfile Qt3DExtras/QPlaneGeometry
  * \inmodule Qt3DExtras
  * \brief The QPlaneGeometry class allows creation of a plane in 3D space.

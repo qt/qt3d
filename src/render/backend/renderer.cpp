@@ -1985,7 +1985,7 @@ const QVector<Qt3DCore::QNodeId> Renderer::takePendingRenderCaptureSendRequests(
 // 1 dirty buffer == 1 job, all job can be performed in parallel
 QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBufferJobs() const
 {
-    const QVector<QNodeId> dirtyBuffers = m_nodesManager->bufferManager()->dirtyBuffers();
+    const QVector<QNodeId> dirtyBuffers = m_nodesManager->bufferManager()->takeDirtyBuffers();
     QVector<QAspectJobPtr> dirtyBuffersJobs;
     dirtyBuffersJobs.reserve(dirtyBuffers.size());
 

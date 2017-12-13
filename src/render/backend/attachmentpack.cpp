@@ -50,11 +50,10 @@ AttachmentPack::AttachmentPack()
 {
 }
 
-AttachmentPack::AttachmentPack(const RenderTargetSelector *selector, const RenderTarget *target, AttachmentManager *attachmentManager)
+AttachmentPack::AttachmentPack(const RenderTarget *target,
+                               AttachmentManager *attachmentManager,
+                               const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers)
 {
-    // Cache draw buffers list
-    const QVector<QRenderTargetOutput::AttachmentPoint> selectedAttachmentPoints = selector->outputs();
-
     // Copy attachments
     const auto outputIds = target->renderOutputs();
     for (Qt3DCore::QNodeId outputId : outputIds) {
@@ -66,15 +65,15 @@ AttachmentPack::AttachmentPack(const RenderTargetSelector *selector, const Rende
     // Create actual DrawBuffers list that is used for glDrawBuffers
 
     // If nothing is specified, use all the attachments as draw buffers
-    if (selectedAttachmentPoints.isEmpty()) {
+    if (drawBuffers.isEmpty()) {
         m_drawBuffers.reserve(m_attachments.size());
         for (const Attachment &attachment : qAsConst(m_attachments))
             // only consider Color Attachments
             if (attachment.m_point <= QRenderTargetOutput::Color15)
                 m_drawBuffers.push_back((int) attachment.m_point);
     } else {
-        m_drawBuffers.reserve(selectedAttachmentPoints.size());
-        for (QRenderTargetOutput::AttachmentPoint drawBuffer : selectedAttachmentPoints)
+        m_drawBuffers.reserve(drawBuffers.size());
+        for (QRenderTargetOutput::AttachmentPoint drawBuffer : drawBuffers)
             if (drawBuffer <= QRenderTargetOutput::Color15)
                 m_drawBuffers.push_back((int) drawBuffer);
     }

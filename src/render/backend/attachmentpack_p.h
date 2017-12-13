@@ -84,7 +84,9 @@ class AttachmentPack
 {
 public:
     AttachmentPack();
-    AttachmentPack(const RenderTargetSelector *selector, const RenderTarget *target, AttachmentManager *attachmentManager);
+    AttachmentPack(const RenderTarget *target,
+                   AttachmentManager *attachmentManager,
+                   const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers = QVector<QRenderTargetOutput::AttachmentPoint>());
 
     QVector<Attachment> attachments() const { return m_attachments; }
     QVector<int> getGlDrawBuffers() const { return m_drawBuffers; }

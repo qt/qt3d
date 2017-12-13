@@ -91,6 +91,7 @@ namespace Qt3DExtras {
 
 /*!
  * \class Qt3DExtras::QCylinderMesh
+   \ingroup qt3d-extras-geometries
  * \inheaderfile Qt3DExtras/QCylinderMesh
  * \inmodule Qt3DExtras
  *

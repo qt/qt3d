@@ -218,7 +218,7 @@ public:
             const QVector<Entity *> filteredEntities = m_renderer->cache()->leafNodeCache.value(m_leafNode).filterEntitiesByLayer;
             lock.unlock();
             // Remove all entities from the compute and renderable vectors that aren't in the filtered layer vector
-            RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, filteredEntities);
+            renderableEntities = RenderViewBuilder::entitiesInSubset(renderableEntities, filteredEntities);
 
             // Set the light sources, with layer filters applied.
             QVector<LightSource> lightSources = m_lightGathererJob->lights();
@@ -231,9 +231,9 @@ public:
             if (isDraw) {
                 // Filter out frustum culled entity for drawable entities
                 if (rv->frustumCulling())
-                    RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, m_frustumCullingJob->visibleEntities());
+                    renderableEntities = RenderViewBuilder::entitiesInSubset(renderableEntities, m_frustumCullingJob->visibleEntities());
                 // Filter out entities which didn't satisfy proximity filtering
-                RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, m_filterProximityJob->filteredEntities());
+                renderableEntities = RenderViewBuilder::entitiesInSubset(renderableEntities, m_filterProximityJob->filteredEntities());
             }
 
             // Split among the number of command builders
@@ -647,17 +647,15 @@ int RenderViewBuilder::optimalJobCount()
     return RenderViewBuilder::m_optimalParallelJobCount;
 }
 
-void RenderViewBuilder::removeEntitiesNotInSubset(QVector<Entity *> &entities, QVector<Entity *> subset)
+QVector<Entity *> RenderViewBuilder::entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset)
 {
-    // Note: assumes entities was sorted already
-    std::sort(subset.begin(), subset.end());
+    QVector<Entity *> intersection;
+    intersection.reserve(qMin(entities.size(), subset.size()));
+    std::set_intersection(entities.begin(), entities.end(),
+                          subset.begin(), subset.end(),
+                          std::back_inserter(intersection));
 
-    for (auto i = entities.size() - 1, j = subset.size() - 1; i >= 0; --i) {
-        while (j >= 0 && subset.at(j) > entities.at(i))
-            --j;
-        if (j < 0 || entities.at(i) != subset.at(j))
-            entities.removeAt(i);
-    }
+    return intersection;
 }
 
 } // Render

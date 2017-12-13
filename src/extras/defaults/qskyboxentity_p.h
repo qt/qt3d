@@ -111,6 +111,7 @@ class QSkyboxEntityPrivate : public Qt3DCore::QEntityPrivate
     QString m_extension;
     QString m_baseName;
     QVector3D m_position;
+    bool m_hasPendingReloadTextureCall;
 };
 
 } // Qt3DExtras
