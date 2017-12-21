@@ -331,6 +331,8 @@ struct SubRangeSorter
 {
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
+        Q_UNUSED(begin);
+        Q_UNUSED(end);
         Q_UNREACHABLE();
     }
 };
