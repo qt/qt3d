@@ -79,9 +79,9 @@ int main(int argc, char *argv[])
     auto *textMaterial = new Qt3DExtras::QPhongMaterial(root);
     { // text
         int i = 0;
-        QStringList fonts = QFontDatabase().families();
+        const QStringList fonts = QFontDatabase().families();
 
-        for (QString family : fonts)
+        for (const QString &family : fonts)
         {
             auto *text = new Qt3DCore::QEntity(root);
             auto *textMesh = new Qt3DExtras::QExtrudedTextMesh();
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
             textTransform->setScale(.2f);
             textMesh->setDepth(.45f);
             textMesh->setFont(font);
-            textMesh->setText(QString(family));
+            textMesh->setText(family);
             textMaterial->setDiffuse(QColor(111, 150, 255));
 
             text->addComponent(textMaterial);
