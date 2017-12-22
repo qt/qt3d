@@ -539,7 +539,7 @@ void Renderer::render()
     }
 }
 
-void Renderer::doRender()
+void Renderer::doRender(bool scene3dBlocking)
 {
     Renderer::ViewSubmissionResultData submissionData;
     bool hasCleanedQueueAndProceeded = false;
@@ -549,8 +549,21 @@ void Renderer::doRender()
 
     // Lock the mutex to protect access to the renderQueue while we look for its state
     QMutexLocker locker(&m_renderQueueMutex);
-    const bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
+    bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
     const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
+
+    // Scene3D Blocking Mode
+    if (scene3dBlocking && !queueIsComplete && !queueIsEmpty) {
+        int i = 0;
+        // We wait at most 10ms to avoid a case we could never recover from
+        while (!queueIsComplete && i++ < 10) {
+            QThread::msleep(1);
+            qCDebug(Backend) << Q_FUNC_INFO << "Waiting for ready queue (try:" << i << "/ 10)";
+            locker.unlock();
+            queueIsComplete = m_renderQueue->isFrameQueueComplete();
+            locker.relock();
+        }
+    }
 
     // When using synchronous rendering (QtQuick)
     // We are not sure that the frame queue is actually complete

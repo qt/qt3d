@@ -169,7 +169,7 @@ public:
     void releaseGraphicsResources() Q_DECL_OVERRIDE;
 
     void render() Q_DECL_OVERRIDE;
-    void doRender() Q_DECL_OVERRIDE;
+    void doRender(bool scene3dBlocking = false) Q_DECL_OVERRIDE;
     void cleanGraphicsResources() Q_DECL_OVERRIDE;
 
     bool isRunning() const Q_DECL_OVERRIDE { return m_running.load(); }

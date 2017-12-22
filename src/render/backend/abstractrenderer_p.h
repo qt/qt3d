@@ -133,7 +133,7 @@ public:
     // Threaded renderer
     virtual void render() = 0;
     // Synchronous renderer
-    virtual void doRender() = 0;
+    virtual void doRender(bool scene3dBlocking = false) = 0;
 
     virtual void cleanGraphicsResources() = 0;
 
