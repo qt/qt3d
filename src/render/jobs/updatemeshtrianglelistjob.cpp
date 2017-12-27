@@ -81,7 +81,7 @@ void UpdateMeshTriangleListJob::run()
 
     const QVector<HGeometryRenderer> handles = geomRenderermanager->activeHandles();
 
-    for (const HGeometryRenderer handle : handles) {
+    for (const HGeometryRenderer &handle : handles) {
         // Look if for the GeometryRender/Geometry the attributes and or buffers are dirty
         // in which case we need to recompute the triangle list
         const GeometryRenderer *geomRenderer = geomRenderermanager->data(handle);

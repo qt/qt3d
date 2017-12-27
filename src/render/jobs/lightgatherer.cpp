@@ -61,7 +61,7 @@ void LightGatherer::run()
     const QVector<HEntity> handles = m_manager->activeHandles();
     int envLightCount = 0;
 
-    for (const HEntity handle : handles) {
+    for (const HEntity &handle : handles) {
         Entity *node = m_manager->data(handle);
         const QVector<Light *> lights = node->renderComponents<Light>();
         if (!lights.isEmpty())

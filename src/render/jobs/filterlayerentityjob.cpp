@@ -71,7 +71,7 @@ void updateEntityLayers(NodeManagers *manager)
     const QVector<HEntity> handles = entityManager->activeHandles();
 
     // Clear list of recursive layerIds
-    for (const HEntity handle : handles) {
+    for (const HEntity &handle : handles) {
         Entity *entity = entityManager->data(handle);
         entity->clearRecursiveLayerIds();
     }
@@ -79,7 +79,7 @@ void updateEntityLayers(NodeManagers *manager)
     LayerManager *layerManager = manager->layerManager();
 
     // Set recursive layerIds on children
-    for (const HEntity handle : handles) {
+    for (const HEntity &handle : handles) {
         Entity *entity = entityManager->data(handle);
         const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
 
@@ -200,7 +200,7 @@ void FilterLayerEntityJob::filterLayerAndEntity()
     QVector<Entity *> entitiesToFilter;
     entitiesToFilter.reserve(handles.size());
 
-    for (const HEntity handle : handles) {
+    for (const HEntity &handle : handles) {
         Entity *entity = entityManager->data(handle);
 
         if (entity->isTreeEnabled())
@@ -261,7 +261,7 @@ void FilterLayerEntityJob::selectAllEntities()
     const QVector<HEntity> handles = entityManager->activeHandles();
 
     m_filteredEntities.reserve(handles.size());
-    for (const HEntity handle : handles) {
+    for (const HEntity &handle : handles) {
         Entity *e = entityManager->data(handle);
         if (e->isTreeEnabled())
             m_filteredEntities.push_back(e);

@@ -258,7 +258,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     const auto devHandles = d->m_inputHandler->logicalDeviceManager()->activeDevices();
     QVector<QAspectJobPtr> axisActionJobs;
     axisActionJobs.reserve(devHandles.size());
-    for (Input::HLogicalDevice devHandle : devHandles) {
+    for (const Input::HLogicalDevice &devHandle : devHandles) {
         const auto device = d->m_inputHandler->logicalDeviceManager()->data(devHandle);
         if (!device->isEnabled())
             continue;

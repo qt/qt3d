@@ -323,7 +323,7 @@ void Texture::updateFromData(QTextureDataPtr data)
 
 bool Texture::isValid() const
 {
-    for (const auto handle : m_textureImages) {
+    for (const auto &handle : m_textureImages) {
         TextureImage *img = m_textureImageManager->data(handle);
         if (img == nullptr)
             return false;

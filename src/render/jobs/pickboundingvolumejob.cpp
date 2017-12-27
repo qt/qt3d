@@ -169,7 +169,7 @@ bool PickBoundingVolumeJob::runHelper()
         m_oneHoverAtLeast = false;
 
         const auto activeHandles = m_manager->objectPickerManager()->activeHandles();
-        for (auto handle : activeHandles) {
+        for (const auto &handle : activeHandles) {
             auto picker = m_manager->objectPickerManager()->data(handle);
             m_oneEnabledAtLeast |= picker->isEnabled();
             m_oneHoverAtLeast |= picker->isHoverEnabled();
@@ -492,7 +492,7 @@ RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &a
 
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
 {
-    for (const HObjectPicker pickHandle : qAsConst(m_hoveredPickersToClear)) {
+    for (const HObjectPicker &pickHandle : qAsConst(m_hoveredPickersToClear)) {
         ObjectPicker *pick = m_manager->objectPickerManager()->data(pickHandle);
         if (pick)
             pick->onExited();
