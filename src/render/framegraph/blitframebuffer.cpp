@@ -69,9 +69,9 @@ void BlitFramebuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationRenderTarget")) {
             m_destinationRenderTargetId = propertyChange->value().value<QNodeId>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("sourceRect")) {
-            m_sourceRect = propertyChange->value().value<QRect>();
+            m_sourceRect = propertyChange->value().toRect();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationRect")) {
-            m_destinationRect = propertyChange->value().value<QRect>();
+            m_destinationRect = propertyChange->value().toRect();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("sourceAttachmentPoint")) {
             m_sourceAttachmentPoint = propertyChange->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationAttachmentPoint")) {
