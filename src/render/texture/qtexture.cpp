@@ -775,7 +775,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
             }
 
             for (QString s: qAsConst(ext)) {
-                textureData = TextureLoadingHelper::loadTextureData(&buffer, suffix, true, m_mirrored);
+                textureData = TextureLoadingHelper::loadTextureData(&buffer, s, true, m_mirrored);
                 if (textureData && textureData->data().length() > 0)
                     break;
             }
