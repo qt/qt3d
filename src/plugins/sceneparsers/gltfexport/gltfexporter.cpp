@@ -394,7 +394,7 @@ bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
     QFile::Permissions targetPermissions = gltfFile.permissions();
 
     // Copy exported scene to actual export directory
-    for (const auto &sourceFileStr : m_exportedFiles) {
+    for (const auto &sourceFileStr : qAsConst(m_exportedFiles)) {
         QFileInfo fiSource(m_exportDir + sourceFileStr);
         QFileInfo fiDestination(finalExportDir + sourceFileStr);
         if (fiDestination.exists()) {
@@ -548,7 +548,7 @@ void GLTFExporter::copyTextures()
 void GLTFExporter::createShaders()
 {
     qCDebug(GLTFExporterLog, "Creating shaders...");
-    for (const auto &si : m_shaderInfo) {
+    for (const auto &si : qAsConst(m_shaderInfo)) {
         const QString fileName = m_exportDir + si.uri;
         QFile f(fileName);
         if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
@@ -571,7 +571,8 @@ void GLTFExporter::parseEntities(const QEntity *entity, Node *parentNode)
         node->uniqueName = newNodeName();
 
         int irrelevantComponents = 0;
-        for (auto component : entity->components()) {
+        const auto components = entity->components();
+        for (auto component : components) {
             if (auto mesh = qobject_cast<QGeometryRenderer *>(component))
                 m_meshMap.insert(node, mesh);
             else if (auto material = qobject_cast<QMaterial *>(component))
@@ -812,7 +813,8 @@ void GLTFExporter::parseMeshes()
 
             uint stride(0);
 
-            for (QAttribute *att : meshGeometry->attributes()) {
+            const auto attributes = meshGeometry->attributes();
+            for (QAttribute *att : attributes) {
                 if (att->attributeType() == QAttribute::IndexAttribute) {
                     indexAttrib = att;
                     indexPtr = reinterpret_cast<const quint16 *>(att->buffer()->data().constData());
@@ -969,11 +971,12 @@ void GLTFExporter::parseMeshes()
                 qCDebug(GLTFExporterLog, "    Vertex buffer size (bytes): %i", vertexBuf.size());
                 qCDebug(GLTFExporterLog, "    Index buffer size (bytes): %i", indexBuf.size());
                 QStringList sl;
-                for (const auto &bv : meshInfo.views)
+                const auto views = meshInfo.views;
+                for (const auto &bv : views)
                     sl << bv.name;
                 qCDebug(GLTFExporterLog) << "    buffer views:" << sl;
                 sl.clear();
-                for (const auto &acc : meshInfo.accessors)
+                for (const auto &acc : qAsConst(meshInfo.accessors))
                     sl << acc.name;
                 qCDebug(GLTFExporterLog) << "    accessors:" << sl;
                 qCDebug(GLTFExporterLog, "    material: '%ls'",
@@ -1091,7 +1094,8 @@ void GLTFExporter::parseTechniques(QMaterial *material)
     int techniqueCount = 0;
     qCDebug(GLTFExporterLog, "  Parsing material techniques...");
 
-    for (auto technique : material->effect()->techniques()) {
+    const auto techniques = material->effect()->techniques();
+    for (auto technique : techniques) {
         QString techName;
         if (m_techniqueIdMap.contains(technique)) {
             techName = m_techniqueIdMap.value(technique);
@@ -1116,7 +1120,8 @@ void GLTFExporter::parseRenderPasses(QTechnique *technique)
     int passCount = 0;
     qCDebug(GLTFExporterLog, "    Parsing render passes for technique...");
 
-    for (auto pass : technique->renderPasses()) {
+    const auto renderPasses = technique->renderPasses();
+    for (auto pass : renderPasses) {
         QString name;
         if (m_renderPassIdMap.contains(pass)) {
             name = m_renderPassIdMap.value(pass);
@@ -1158,7 +1163,7 @@ QString GLTFExporter::addShaderInfo(QShaderProgram::ShaderType type, QByteArray 
     if (code.isEmpty())
         return QString();
 
-    for (const auto &si : m_shaderInfo) {
+    for (const auto &si : qAsConst(m_shaderInfo)) {
         if (si.type == QShaderProgram::Vertex && code == si.code)
             return si.name;
     }
@@ -1223,7 +1228,7 @@ bool GLTFExporter::saveScene()
     m_obj["buffers"] = buffers;
 
     QJsonObject bufferViews;
-    for (const auto &bv : bvList) {
+    for (const auto &bv : qAsConst(bvList)) {
         QJsonObject bufferView;
         bufferView["buffer"] = QStringLiteral("buf");
         bufferView["byteLength"] = int(bv.length);
@@ -1236,7 +1241,7 @@ bool GLTFExporter::saveScene()
         m_obj["bufferViews"] = bufferViews;
 
     QJsonObject accessors;
-    for (const auto &acc : accList) {
+    for (const auto &acc : qAsConst(accList)) {
         QJsonObject accessor;
         accessor["bufferView"] = acc.bufferView;
         accessor["byteOffset"] = int(acc.offset);
@@ -1265,7 +1270,8 @@ bool GLTFExporter::saveScene()
             QJsonObject prim;
             prim["mode"] = 4; // triangles
             QJsonObject attrs;
-            for (const auto &acc : meshInfo.accessors) {
+            const auto meshAccessors = meshInfo.accessors;
+            for (const auto &acc : meshAccessors) {
                 if (acc.usage != QStringLiteral("INDEX"))
                     attrs[acc.usage] = acc.name;
                 else
@@ -1282,7 +1288,7 @@ bool GLTFExporter::saveScene()
         m_obj["meshes"] = meshes;
 
     QJsonObject cameras;
-    for (auto camInfo : qAsConst(m_cameraInfo)) {
+    for (const auto &camInfo : qAsConst(m_cameraInfo)) {
         QJsonObject camera;
         QJsonObject proj;
         proj["znear"] = camInfo.znear;
@@ -1394,14 +1400,16 @@ bool GLTFExporter::saveScene()
         QJsonObject effectObj;
         QJsonObject paramObj;
 
-        for (QParameter *param : effect->parameters())
+        const auto effectParameters = effect->parameters();
+        for (QParameter *param : effectParameters)
             exportParameter(paramObj, param->name(), param->value());
         if (!effect->objectName().isEmpty())
             effectObj["name"] = effect->objectName();
         if (!paramObj.isEmpty())
             effectObj["parameters"] = paramObj;
         QJsonArray techs;
-        for (auto tech : effect->techniques())
+        const auto effectTechniques = effect->techniques();
+        for (auto tech : effectTechniques)
             techs << m_techniqueIdMap.value(tech);
         effectObj["techniques"] = techs;
         effects[effectName] = effectObj;
@@ -1419,13 +1427,16 @@ bool GLTFExporter::saveScene()
         QJsonObject paramObj;
         QJsonArray renderPassArr;
 
-        for (QFilterKey *filterKey : technique->filterKeys())
+        const auto techniqueFilterKeys = technique->filterKeys();
+        for (QFilterKey *filterKey : techniqueFilterKeys)
             setVarToJSonObject(filterKeyObj, filterKey->name(), filterKey->value());
 
-        for (QRenderPass *pass : technique->renderPasses())
+        const auto techniqueRenderPasses = technique->renderPasses();
+        for (QRenderPass *pass : techniqueRenderPasses)
             renderPassArr << m_renderPassIdMap.value(pass);
 
-        for (QParameter *param : technique->parameters())
+        const auto techniqueParameters = technique->parameters();
+        for (QParameter *param : techniqueParameters)
             exportParameter(paramObj, param->name(), param->value());
 
         const QGraphicsApiFilter *gFilter = technique->graphicsApiFilter();
@@ -1517,7 +1528,7 @@ bool GLTFExporter::saveScene()
 
     // Save shaders for custom materials
     QJsonObject shaders;
-    for (const auto &si : m_shaderInfo) {
+    for (const auto &si : qAsConst(m_shaderInfo)) {
         QJsonObject shaderObj;
         shaderObj["uri"] = si.uri;
         shaders[si.name] = shaderObj;
@@ -1885,7 +1896,8 @@ void GLTFExporter::exportRenderStates(QJsonObject &jsonObj, const QRenderPass *p
 {
     QJsonArray enableStates;
     QJsonObject funcObj;
-    for (QRenderState *state : pass->renderStates()) {
+    const auto renderStates = pass->renderStates();
+    for (QRenderState *state : renderStates) {
         QJsonArray arr;
         if (qobject_cast<QAlphaCoverage *>(state)) {
             enableStates << GL_SAMPLE_ALPHA_TO_COVERAGE;

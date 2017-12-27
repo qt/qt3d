@@ -784,7 +784,7 @@ bool GLTFImporter::processJSONSkin(const QJsonObject &json)
 
 bool GLTFImporter::processJSONAnimation(const QJsonObject &json)
 {
-    Animation animation(json);
+    const Animation animation(json);
 
     for (const auto &channel : animation.channels) {
         if (channel.samplerIndex == -1)

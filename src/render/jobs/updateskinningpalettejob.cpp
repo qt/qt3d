@@ -103,7 +103,8 @@ void UpdateSkinningPaletteJob::findDirtyArmatures(Entity *entity,
     if (!armatureHandle.isNull() && !armatures.contains(armatureHandle))
         armatures.push_back(armatureHandle);
 
-    for (const auto child : entity->children())
+    const auto children = entity->children();
+    for (const auto child : children)
         findDirtyArmatures(child, armatures);
 }
 

@@ -238,7 +238,8 @@ void QAbstractAspectPrivate::clearBackendNode(const QNodeDestroyedChangePtr &cha
 {
     // Each QNodeDestroyedChange may contain info about a whole sub-tree of nodes that
     // are being destroyed. Iterate over them and process each in turn
-    for (const auto &idAndType : change->subtreeIdsAndTypes()) {
+    const auto subTree = change->subtreeIdsAndTypes();
+    for (const auto &idAndType : subTree) {
         const QMetaObject *metaObj = idAndType.type;
         QBackendNodeMapperPtr backendNodeMapper;
 

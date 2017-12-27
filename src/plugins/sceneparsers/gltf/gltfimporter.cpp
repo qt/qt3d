@@ -1581,7 +1581,8 @@ void GLTFImporter::processJSONExtensions(const QString &id, const QJsonObject &j
     // level GLTF item.
     if (id == KEY_COMMON_MAT) {
         const auto lights = jsonObject.value(KEY_LIGHTS).toObject();
-        for (const auto &lightKey : lights.keys()) {
+        const auto keys = lights.keys();
+        for (const auto &lightKey : keys) {
             const auto light = lights.value(lightKey).toObject();
             auto lightType = light.value(KEY_TYPE).toString();
             const auto lightValues = light.value(lightType).toObject();

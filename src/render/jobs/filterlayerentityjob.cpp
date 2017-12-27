@@ -210,7 +210,7 @@ void FilterLayerEntityJob::filterLayerAndEntity()
     FrameGraphManager *frameGraphManager = m_manager->frameGraphManager();
     LayerManager *layerManager = m_manager->layerManager();
 
-    for (const Qt3DCore::QNodeId layerFilterId : m_layerFilterIds) {
+    for (const Qt3DCore::QNodeId layerFilterId : qAsConst(m_layerFilterIds)) {
         LayerFilterNode *layerFilter = static_cast<LayerFilterNode *>(frameGraphManager->lookupNode(layerFilterId));
         Qt3DCore::QNodeIdVector layerIds = layerFilter->layerIds();
 

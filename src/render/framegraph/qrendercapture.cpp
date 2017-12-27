@@ -253,7 +253,7 @@ QRenderCapturePrivate::QRenderCapturePrivate()
 QRenderCapturePrivate::~QRenderCapturePrivate()
 {
     Q_Q(QRenderCapture);
-    for (QRenderCaptureReply *reply : m_waitingReplies)
+    for (QRenderCaptureReply *reply : qAsConst(m_waitingReplies))
         reply->disconnect(q);
 }
 

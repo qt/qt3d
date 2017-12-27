@@ -588,7 +588,8 @@ bool HierarchicalEntityPicker::collectHits(Entity *root)
         }
 
         // and pick children
-        for (auto child: current.first->children())
+        const auto children = current.first->children();
+        for (auto child: children)
             worklist.push_back({child, current.second || !child->componentHandle<ObjectPicker>().isNull()});
     }
 
