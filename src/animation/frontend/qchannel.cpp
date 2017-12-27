@@ -128,12 +128,12 @@ void QChannel::clearChannelComponents()
 
 QChannel::const_iterator QChannel::begin() const Q_DECL_NOTHROW
 {
-    return d->m_channelComponents.begin();
+    return d->m_channelComponents.cbegin();
 }
 
 QChannel::const_iterator QChannel::end() const Q_DECL_NOTHROW
 {
-    return d->m_channelComponents.end();
+    return d->m_channelComponents.cend();
 }
 
 bool operator==(const QChannel &lhs, const QChannel &rhs) Q_DECL_NOTHROW

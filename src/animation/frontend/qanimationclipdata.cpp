@@ -122,12 +122,12 @@ bool QAnimationClipData::isValid() const Q_DECL_NOTHROW
 
 QAnimationClipData::const_iterator QAnimationClipData::begin() const Q_DECL_NOTHROW
 {
-    return d->m_channels.begin();
+    return d->m_channels.cbegin();
 }
 
 QAnimationClipData::const_iterator QAnimationClipData::end() const Q_DECL_NOTHROW
 {
-    return d->m_channels.end();
+    return d->m_channels.cend();
 }
 
 
