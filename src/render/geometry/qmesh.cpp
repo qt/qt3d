@@ -286,7 +286,7 @@ QGeometry *MeshLoaderFunctor::operator()()
     }
 
     QScopedPointer<QGeometryLoaderInterface> loader;
-    for (QString e: qAsConst(ext)) {
+    for (const QString &e: qAsConst(ext)) {
         loader.reset(qLoadPlugin<QGeometryLoaderInterface, QGeometryLoaderFactory>(geometryLoader(), e));
         if (loader)
             break;

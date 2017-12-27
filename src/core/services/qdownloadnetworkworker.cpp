@@ -91,7 +91,7 @@ void QDownloadNetworkWorker::onRequestCancelled(const QDownloadRequestPtr &reque
 void QDownloadNetworkWorker::onAllRequestsCancelled()
 {
     QMutexLocker l(&m_mutex);
-    for (auto e: qAsConst(m_requests)) {
+    for (auto &e: qAsConst(m_requests)) {
         e.first->m_cancelled = true;
         e.second->abort();
     }

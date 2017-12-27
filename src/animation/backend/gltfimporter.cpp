@@ -94,7 +94,7 @@ void jsonArrayToSqt(const QJsonArray &jsonArray, Qt3DCore::Sqt &sqt)
     QMatrix4x4 m;
     float *data = m.data();
     int i = 0;
-    for (const auto element : jsonArray)
+    for (const auto &element : jsonArray)
         *(data + i++) = static_cast<float>(element.toDouble());
 
     decomposeQMatrix4x4(m, sqt);
