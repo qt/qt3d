@@ -566,19 +566,19 @@ void tst_QFrameAllocator::testAllocationComposedValues()
         t.list.append(i);
     }
 
-    QList<composed *> composedValues;
+    composed *composedValues[30];
 
-    for (int i = 0; i < 30; i++) {
-        composed *v = f.allocate<composed>();
+    for (auto &v : composedValues) {
+        v = f.allocate<composed>();
         QVERIFY(v);
-        for (int j = 0; j < 1; j++) {
+        for (int j = 0; j < 100; j++) {
             v->vec.append(j);
             v->list.append(j);
             v->t = 100;
         }
     }
 
-    Q_FOREACH (composed *c, composedValues) {
+    for (composed *c : composedValues) {
         QCOMPARE(c->vec.size(), 100);
         QCOMPARE(c->list.size(), 100);
         QCOMPARE(c->t, 100);
