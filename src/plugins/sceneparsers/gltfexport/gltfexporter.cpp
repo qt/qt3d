@@ -1680,7 +1680,6 @@ void GLTFExporter::exportMaterials(QJsonObject &materials)
 {
     QHash<QString, bool> imageHasAlpha;
 
-    QHashIterator<QMaterial *, MaterialInfo> matIt(m_materialInfo);
     for (auto matIt = m_materialInfo.constBegin(); matIt != m_materialInfo.constEnd(); ++matIt) {
         const QMaterial *material = matIt.key();
         const MaterialInfo &matInfo = matIt.value();
