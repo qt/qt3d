@@ -46,7 +46,6 @@ namespace Render {
 
 void StateVariant::apply(GraphicsContext *gc) const
 {
-#if !defined(_MSC_VER) || (_MSC_VER > 1800)
     switch (type) {
     case BlendEquationArgumentsMask:
         data.blendEquationArguments.apply(gc);
@@ -111,14 +110,10 @@ void StateVariant::apply(GraphicsContext *gc) const
     default:
         Q_UNREACHABLE();
     }
-#else
-    m_impl->apply(gc);
-#endif
 }
 
 RenderStateImpl *StateVariant::state()
 {
-#if !defined(_MSC_VER) || (_MSC_VER > 1800)
     switch (type) {
     case BlendEquationArgumentsMask:
     case BlendStateMask:
@@ -144,14 +139,10 @@ RenderStateImpl *StateVariant::state()
     default:
         Q_UNREACHABLE();
     }
-#else
-    return m_impl.data();
-#endif
 }
 
 const RenderStateImpl *StateVariant::constState() const
 {
-#if !defined(_MSC_VER) || (_MSC_VER > 1800)
     switch (type) {
     case BlendEquationArgumentsMask:
     case BlendStateMask:
@@ -177,9 +168,6 @@ const RenderStateImpl *StateVariant::constState() const
     default:
         Q_UNREACHABLE();
     }
-#else
-   return m_impl.data();
-#endif
 }
 
 bool StateVariant::operator ==(const StateVariant &other) const
