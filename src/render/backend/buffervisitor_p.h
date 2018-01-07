@@ -95,39 +95,7 @@ public:
         Q_UNUSED(ndx); Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z); Q_UNUSED(w);
     }
 
-    bool apply(const GeometryRenderer *renderer, const QString &attributeName)
-    {
-        if (renderer == nullptr || renderer->instanceCount() != 1) {
-            return false;
-        }
-
-        Geometry *geom = m_manager->lookupResource<Geometry, GeometryManager>(renderer->geometryId());
-
-        if (!geom)
-            return false;
-
-        Attribute *attribute = nullptr;
-
-        const auto attrIds = geom->attributes();
-        for (const Qt3DCore::QNodeId attrId : attrIds) {
-            attribute = m_manager->lookupResource<Attribute, AttributeManager>(attrId);
-            if (attribute){
-                if (attribute->name() == attributeName
-                        || (attributeName == QStringLiteral("default")
-                            && attribute->name() == QAttribute::defaultTextureCoordinateAttributeName())) {
-                    break;
-                }
-            }
-            attribute = nullptr;
-        }
-
-        if (!attribute)
-            return false;
-
-        return apply(attribute);
-    }
-
-    bool apply(Qt3DRender::Render::Attribute *attribute)
+    bool apply(Qt3DRender::Render::Attribute *attribute, Qt3DRender::Render::Attribute *indexAttribute, int drawVertexCount)
     {
         if (attribute->vertexBaseType() != VertexBaseType)
             return false;
@@ -136,12 +104,36 @@ public:
 
         auto data = m_manager->lookupResource<Buffer, BufferManager>(attribute->bufferId())->data();
         auto buffer = BufferTypeInfo::castToType<VertexBaseType>(data, attribute->byteOffset());
-        switch (dataSize) {
-        case 1: traverseCoordinates1(buffer, attribute->byteStride(), attribute->count()); break;
-        case 2: traverseCoordinates2(buffer, attribute->byteStride(), attribute->count()); break;
-        case 3: traverseCoordinates3(buffer, attribute->byteStride(), attribute->count()); break;
-        case 4: traverseCoordinates4(buffer, attribute->byteStride(), attribute->count()); break;
-        default: Q_UNREACHABLE();
+
+        if (indexAttribute) {
+            auto indexData = m_manager->lookupResource<Buffer, BufferManager>(indexAttribute->bufferId())->data();
+            if (indexAttribute->vertexBaseType() == QAttribute::UnsignedShort) {
+                auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedShort>(indexData, indexAttribute->byteOffset());
+                switch (dataSize) {
+                case 1: traverseCoordinates1Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                case 2: traverseCoordinates2Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                case 3: traverseCoordinates3Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                case 4: traverseCoordinates4Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                default: Q_UNREACHABLE();
+                }
+            } else {
+                auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedInt>(indexData, indexAttribute->byteOffset());
+                switch (dataSize) {
+                case 1: traverseCoordinates1Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                case 2: traverseCoordinates2Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                case 3: traverseCoordinates3Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                case 4: traverseCoordinates4Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                default: Q_UNREACHABLE();
+                }
+            }
+        } else {
+            switch (dataSize) {
+            case 1: traverseCoordinates1(buffer, attribute->byteStride(), drawVertexCount); break;
+            case 2: traverseCoordinates2(buffer, attribute->byteStride(), drawVertexCount); break;
+            case 3: traverseCoordinates3(buffer, attribute->byteStride(), drawVertexCount); break;
+            case 4: traverseCoordinates4(buffer, attribute->byteStride(), drawVertexCount); break;
+            default: Q_UNREACHABLE();
+            }
         }
 
         return true;
@@ -161,6 +153,19 @@ protected:
         }
     }
 
+    template <typename Coordinate, typename IndexElem>
+    void traverseCoordinates1Indexed(Coordinate *coordinates,
+                                     const uint byteStride,
+                                     IndexElem *indices,
+                                     const uint count)
+    {
+        const uint stride = byteStride / sizeof(Coordinate);
+        for (uint i = 0; i < count; ++i) {
+            const uint n = stride * indices[i];
+            visit(i, coordinates[n]);
+        }
+    }
+
     template <typename Coordinate>
     void traverseCoordinates2(Coordinate *coordinates,
                               const uint byteStride,
@@ -170,6 +175,20 @@ protected:
         for (uint ndx = 0; ndx < count; ++ndx) {
             visit(ndx, coordinates[0], coordinates[1]);
             coordinates += stride;
+        }
+    }
+
+
+    template <typename Coordinate, typename IndexElem>
+    void traverseCoordinates2Indexed(Coordinate *coordinates,
+                                     const uint byteStride,
+                                     IndexElem *indices,
+                                     const uint count)
+    {
+        const uint stride = byteStride / sizeof(Coordinate);
+        for (uint i = 0; i < count; ++i) {
+            const uint n = stride * indices[i];
+            visit(i, coordinates[n], coordinates[n + 1]);
         }
     }
 
@@ -185,6 +204,19 @@ protected:
         }
     }
 
+    template <typename Coordinate, typename IndexElem>
+    void traverseCoordinates3Indexed(Coordinate *coordinates,
+                                     const uint byteStride,
+                                     IndexElem *indices,
+                                     const uint count)
+    {
+        const uint stride = byteStride / sizeof(Coordinate);
+        for (uint i = 0; i < count; ++i) {
+            const uint n = stride * indices[i];
+            visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2]);
+        }
+    }
+
     template <typename Coordinate>
     void traverseCoordinates4(Coordinate *coordinates,
                               const uint byteStride,
@@ -194,6 +226,19 @@ protected:
         for (uint ndx = 0; ndx < count; ++ndx) {
             visit(ndx, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
             coordinates += stride;
+        }
+    }
+
+    template <typename Coordinate, typename IndexElem>
+    void traverseCoordinates4Indexed(Coordinate *coordinates,
+                                     const uint byteStride,
+                                     IndexElem *indices,
+                                     const uint count)
+    {
+        const uint stride = byteStride / sizeof(Coordinate);
+        for (uint i = 0; i < count; ++i) {
+            const uint n = stride * indices[i];
+            visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2], coordinates[n + 3]);
         }
     }
 

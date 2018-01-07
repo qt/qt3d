@@ -81,10 +81,10 @@ public:
 
     const Sphere& result() { return m_volume; }
 
-    bool apply(Qt3DRender::Render::Attribute *positionAttribute)
+    bool apply(Qt3DRender::Render::Attribute *positionAttribute, Qt3DRender::Render::Attribute *indexAttribute, int drawVertexCount)
     {
         FindExtremePoints findExtremePoints(m_manager);
-        if (!findExtremePoints.apply(positionAttribute))
+        if (!findExtremePoints.apply(positionAttribute, indexAttribute, drawVertexCount))
             return false;
 
         // Calculate squared distance for the pairs of points
@@ -109,7 +109,7 @@ public:
         m_volume.setRadius((q - c).length());
 
         ExpandSphere expandSphere(m_manager, m_volume);
-        if (!expandSphere.apply(positionAttribute))
+        if (!expandSphere.apply(positionAttribute, indexAttribute, drawVertexCount))
             return false;
 
         return true;
@@ -195,6 +195,8 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
         Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(gRenderer->geometryId());
 
         if (geom) {
+            int drawVertexCount = gRenderer->vertexCount(); // may be 0, gets changed below if so
+
             Qt3DRender::Render::Attribute *positionAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
 
             // Use the default position attribute if attribute is null
@@ -212,34 +214,64 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                     || positionAttribute->attributeType() != QAttribute::VertexAttribute
                     || positionAttribute->vertexBaseType() != QAttribute::Float
                     || positionAttribute->vertexSize() < 3) {
-                qWarning() << "QGeometry::boundingVolumePositionAttribute position Attribute not suited for bounding volume computation";
+                qWarning("calculateLocalBoundingVolume: Position attribute not suited for bounding volume computation");
                 return;
             }
 
-            if (positionAttribute) {
-                Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
-                // No point in continuing if the positionAttribute doesn't have a suitable buffer
-                if (!buf) {
-                    qWarning() << "ObjectPicker position Attribute not referencing a valid buffer";
-                    return;
-                }
+            Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
+            // No point in continuing if the positionAttribute doesn't have a suitable buffer
+            if (!buf) {
+                qWarning("calculateLocalBoundingVolume: Position attribute not referencing a valid buffer");
+                return;
+            }
 
-                // Buf will be set to not dirty once it's loaded
-                // in a job executed after this one
-                // We need to recompute the bounding volume
-                // If anything in the GeometryRenderer has changed
-                if (buf->isDirty() ||
-                        node->isBoundingVolumeDirty() ||
-                        positionAttribute->isDirty() ||
-                        geom->isDirty() ||
-                        gRenderer->isDirty()) {
+            // Check if there is an index attribute.
+            Qt3DRender::Render::Attribute *indexAttribute = nullptr;
+            Buffer *indexBuf = nullptr;
+            const QVector<Qt3DCore::QNodeId> attributes = geom->attributes();
 
-                    BoundingVolumeCalculator reader(manager);
-                    if (reader.apply(positionAttribute)) {
-                        node->localBoundingVolume()->setCenter(reader.result().center());
-                        node->localBoundingVolume()->setRadius(reader.result().radius());
-                        node->unsetBoundingVolumeDirty();
+            for (Qt3DCore::QNodeId attrNodeId : attributes) {
+                Qt3DRender::Render::Attribute *attr = manager->lookupResource<Attribute, AttributeManager>(attrNodeId);
+                if (attr && attr->attributeType() == Qt3DRender::QAttribute::IndexAttribute) {
+                    indexBuf = manager->lookupResource<Buffer, BufferManager>(attr->bufferId());
+                    if (indexBuf) {
+                        indexAttribute = attr;
+
+                        if (!drawVertexCount)
+                            drawVertexCount = indexAttribute->count();
+
+                        if (indexAttribute->vertexBaseType() != QAttribute::UnsignedShort
+                                && indexAttribute->vertexBaseType() != QAttribute::UnsignedInt)
+                        {
+                            qWarning("calculateLocalBoundingVolume: Unsupported index attribute type");
+                            return;
+                        }
+
+                        break;
                     }
+                }
+            }
+
+            if (!indexAttribute && !drawVertexCount)
+                drawVertexCount = positionAttribute->count();
+
+            // Buf will be set to not dirty once it's loaded
+            // in a job executed after this one
+            // We need to recompute the bounding volume
+            // If anything in the GeometryRenderer has changed
+            if (buf->isDirty() ||
+                    node->isBoundingVolumeDirty() ||
+                    positionAttribute->isDirty() ||
+                    geom->isDirty() ||
+                    gRenderer->isDirty() ||
+                    (indexAttribute && indexAttribute->isDirty()) ||
+                    (indexBuf && indexBuf->isDirty()))
+            {
+                BoundingVolumeCalculator reader(manager);
+                if (reader.apply(positionAttribute, indexAttribute, drawVertexCount)) {
+                    node->localBoundingVolume()->setCenter(reader.result().center());
+                    node->localBoundingVolume()->setRadius(reader.result().radius());
+                    node->unsetBoundingVolumeDirty();
                 }
             }
         }
