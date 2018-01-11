@@ -27,9 +27,6 @@ HEADERS += \
     qt3dquickwindow_p.h \
     qt3dquickwindowlogging_p.h
 
-# otherwise mingw headers do not declare common functions like ::strcasecmp
-win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
-
 include(./items/items.pri)
 
 load(qt_module)
