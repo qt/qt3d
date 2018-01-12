@@ -558,14 +558,15 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
 
     for (Entity *entity : entities) {
         GeometryRenderer *geometryRenderer = nullptr;
-        HGeometryRenderer geometryRendererHandle = entity->componentHandle<GeometryRenderer, 16>();
+        HGeometryRenderer geometryRendererHandle = entity->componentHandle<GeometryRenderer>();
+
         // There is a geometry renderer with geometry
         if ((geometryRenderer = m_manager->geometryRendererManager()->data(geometryRendererHandle)) != nullptr
                 && geometryRenderer->isEnabled()
                 && !geometryRenderer->geometryId().isNull()) {
 
             const Qt3DCore::QNodeId materialComponentId = entity->componentUuid<Material>();
-            const HMaterial materialHandle = entity->componentHandle<Material, 16>();
+            const HMaterial materialHandle = entity->componentHandle<Material>();
             const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
             HGeometry geometryHandle = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
             Geometry *geometry = m_manager->data<Geometry, GeometryManager>(geometryHandle);

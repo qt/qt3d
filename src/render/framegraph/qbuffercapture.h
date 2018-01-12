@@ -42,7 +42,7 @@
 
 #include <Qt3DRender/QFrameGraphNode>
 #include <Qt3DRender/QBuffer>
-#include <QByteArray>
+#include <QtCore/QByteArray>
 
 QT_BEGIN_NAMESPACE
 

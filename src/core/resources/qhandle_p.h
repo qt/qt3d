@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-template <typename T, uint INDEXBITS = 16>
+template <typename T>
 class QHandle
 {
 public:
@@ -106,8 +106,8 @@ private:
 };
 
 
-template <typename T, uint INDEXBITS>
-QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
+template <typename T>
+QDebug operator<<(QDebug dbg, const QHandle<T> &h)
 {
     QDebugStateSaver saver(dbg);
     QString binNumber = QString::number(h.handle(), 2).rightJustified(32, QChar::fromLatin1('0'));
@@ -116,8 +116,8 @@ QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
     return dbg;
 }
 
-template <typename T, uint INDEXBITS = 16>
-uint qHash(const QHandle<T, INDEXBITS> &h, uint seed)
+template <typename T>
+uint qHash(const QHandle<T> &h, uint seed)
 {
     using QT_PREPEND_NAMESPACE(qHash);
     return qHash(h.handle(), seed);
@@ -126,9 +126,9 @@ uint qHash(const QHandle<T, INDEXBITS> &h, uint seed)
 } // Qt3DCore
 
 // simpler than fighting the Q_DECLARE_TYPEINFO macro, use QString as a dummy to get movable semantics
-template <typename T, uint I>
-class QTypeInfo<Qt3DCore::QHandle<T,I> >
-    : public QTypeInfoMerger<Qt3DCore::QHandle<T,I>, QString> {};
+template <typename T>
+class QTypeInfo<Qt3DCore::QHandle<T> >
+    : public QTypeInfoMerger<Qt3DCore::QHandle<T>, QString> {};
 
 QT_END_NAMESPACE
 

@@ -99,7 +99,7 @@ void UpdateSkinningPaletteJob::findDirtyArmatures(Entity *entity,
     // TODO: Be smarter about limiting which armatures we update. For e.g. only
     // those with skeletons that have changed and only those that are within view
     // of one or more renderviews.
-    const auto armatureHandle = entity->componentHandle<Armature, 16>();
+    const auto armatureHandle = entity->componentHandle<Armature>();
     if (!armatureHandle.isNull() && !armatures.contains(armatureHandle))
         armatures.push_back(armatureHandle);
 

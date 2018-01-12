@@ -64,8 +64,7 @@ namespace Logic {
 
 class HandlerManager : public Qt3DCore::QResourceManager<
         Handler,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     HandlerManager() {}

@@ -47,7 +47,7 @@
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/qfilterkey.h>
 
-#include <QHash>
+#include <QtCore/QHash>
 
 QT_BEGIN_NAMESPACE
 

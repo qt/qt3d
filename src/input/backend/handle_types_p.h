@@ -75,22 +75,22 @@ class GenericDeviceBackendNode;
 class PhysicalDeviceProxy;
 class AxisAccumulator;
 
-typedef Qt3DCore::QHandle<KeyboardDevice, 8> HKeyboardDevice;
-typedef Qt3DCore::QHandle<KeyboardHandler, 16> HKeyboardHandler;
-typedef Qt3DCore::QHandle<MouseHandler, 16> HMouseHandler;
-typedef Qt3DCore::QHandle<MouseDevice, 8> HMouseDevice;
-typedef Qt3DCore::QHandle<Axis, 16> HAxis;
-typedef Qt3DCore::QHandle<AxisActionHandler, 16> HAxisActionHandler;
-typedef Qt3DCore::QHandle<AxisSetting, 16> HAxisSetting;
-typedef Qt3DCore::QHandle<Action, 16> HAction;
-typedef Qt3DCore::QHandle<AbstractAxisInput, 16> HAxisInput;
-typedef Qt3DCore::QHandle<ActionInput, 16> HActionInput;
-typedef Qt3DCore::QHandle<InputSequence, 16> HInputSequence;
-typedef Qt3DCore::QHandle<InputChord, 16> HInputChord;
-typedef Qt3DCore::QHandle<LogicalDevice, 16> HLogicalDevice;
-typedef Qt3DCore::QHandle<GenericDeviceBackendNode, 8> HGenericDeviceBackendNode;
-typedef Qt3DCore::QHandle<PhysicalDeviceProxy, 16> HPhysicalDeviceProxy;
-typedef Qt3DCore::QHandle<AxisAccumulator, 16> HAxisAccumulator;
+typedef Qt3DCore::QHandle<KeyboardDevice> HKeyboardDevice;
+typedef Qt3DCore::QHandle<KeyboardHandler> HKeyboardHandler;
+typedef Qt3DCore::QHandle<MouseHandler> HMouseHandler;
+typedef Qt3DCore::QHandle<MouseDevice> HMouseDevice;
+typedef Qt3DCore::QHandle<Axis> HAxis;
+typedef Qt3DCore::QHandle<AxisActionHandler> HAxisActionHandler;
+typedef Qt3DCore::QHandle<AxisSetting> HAxisSetting;
+typedef Qt3DCore::QHandle<Action> HAction;
+typedef Qt3DCore::QHandle<AbstractAxisInput> HAxisInput;
+typedef Qt3DCore::QHandle<ActionInput> HActionInput;
+typedef Qt3DCore::QHandle<InputSequence> HInputSequence;
+typedef Qt3DCore::QHandle<InputChord> HInputChord;
+typedef Qt3DCore::QHandle<LogicalDevice> HLogicalDevice;
+typedef Qt3DCore::QHandle<GenericDeviceBackendNode> HGenericDeviceBackendNode;
+typedef Qt3DCore::QHandle<PhysicalDeviceProxy> HPhysicalDeviceProxy;
+typedef Qt3DCore::QHandle<AxisAccumulator> HAxisAccumulator;
 
 } // namespace Input
 } // namespace Qt3DInput

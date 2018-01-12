@@ -426,7 +426,7 @@ AbstractCollisionGathererFunctor::~AbstractCollisionGathererFunctor()
 
 HitList AbstractCollisionGathererFunctor::operator ()(const Entity *entity) const
 {
-    HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+    HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker>();
 
     // If the Entity which actually received the hit doesn't have
     // an object picker component, we need to check the parent if it has one ...
@@ -434,7 +434,7 @@ HitList AbstractCollisionGathererFunctor::operator ()(const Entity *entity) cons
     while (objectPickerHandle.isNull() && parentEntity != nullptr) {
         parentEntity = parentEntity->parent();
         if (parentEntity != nullptr)
-            objectPickerHandle = parentEntity->componentHandle<ObjectPicker, 16>();
+            objectPickerHandle = parentEntity->componentHandle<ObjectPicker>();
     }
 
     ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
@@ -568,7 +568,7 @@ bool HierarchicalEntityPicker::collectHits(Entity *root)
 
     QRayCastingService rayCasting;
     std::vector<std::pair<Entity *, bool>> worklist;
-    worklist.push_back({root, !root->componentHandle<ObjectPicker, 16>().isNull()});
+    worklist.push_back({root, !root->componentHandle<ObjectPicker>().isNull()});
 
     while (!worklist.empty()) {
         auto current = worklist.back();
@@ -589,7 +589,7 @@ bool HierarchicalEntityPicker::collectHits(Entity *root)
 
         // and pick children
         for (auto child: current.first->children())
-            worklist.push_back({child, current.second || !child->componentHandle<ObjectPicker, 16>().isNull()});
+            worklist.push_back({child, current.second || !child->componentHandle<ObjectPicker>().isNull()});
     }
 
     return !m_hits.empty();

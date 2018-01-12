@@ -220,24 +220,24 @@ struct Int2Type
     };
 };
 
-template<typename T, uint INDEXBITS = 16>
-class QHandleData : public QHandle<T, INDEXBITS>::Data
+template<typename T>
+class QHandleData : public QHandle<T>::Data
 {
 public:
     T data;
 };
 
-template<typename T, uint INDEXBITS>
-inline T *QHandle<T, INDEXBITS>::operator->() const { return (d && counter == d->counter) ? &static_cast<QHandleData<T, INDEXBITS> *>(d)->data : nullptr; }
-template<typename T, uint INDEXBITS>
-inline T *QHandle<T, INDEXBITS>::data() const { return (d && counter == d->counter) ? &static_cast<QHandleData<T, INDEXBITS> *>(d)->data : nullptr; }
+template<typename T>
+inline T *QHandle<T>::operator->() const { return (d && counter == d->counter) ? &static_cast<QHandleData<T> *>(d)->data : nullptr; }
+template<typename T>
+inline T *QHandle<T>::data() const { return (d && counter == d->counter) ? &static_cast<QHandleData<T> *>(d)->data : nullptr; }
 
-template <typename T, uint INDEXBITS = 16>
+template <typename T>
 class ArrayAllocatingPolicy
 {
 public:
-    typedef QHandleData<T, INDEXBITS> HandleData;
-    typedef QHandle<T, INDEXBITS> Handle;
+    typedef QHandleData<T> HandleData;
+    typedef QHandle<T> Handle;
     ArrayAllocatingPolicy()
     {
     }
@@ -267,7 +267,7 @@ public:
         typename Handle::Data *d = handle.data_ptr();
         d->nextFree = freeList;
         freeList = d;
-        performCleanup(&static_cast<QHandleData<T, INDEXBITS> *>(d)->data, Int2Type<QResourceInfo<T>::needsCleanup>());
+        performCleanup(&static_cast<QHandleData<T> *>(d)->data, Int2Type<QResourceInfo<T>::needsCleanup>());
     }
 
     T *data(Handle h) {
@@ -340,31 +340,30 @@ private:
 };
 
 #ifndef QT_NO_DEBUG_STREAM
-template <typename ValueType, typename KeyType, uint INDEXBITS,
+template <typename ValueType, typename KeyType,
           template <class> class LockingPolicy
           >
 class QResourceManager;
 
-template <typename ValueType, typename KeyType, uint INDEXBITS = 16,
+template <typename ValueType, typename KeyType,
           template <class> class LockingPolicy = NonLockingPolicy
           >
-QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> &manager);
+QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, LockingPolicy> &manager);
 #endif
 
-template <typename ValueType, typename KeyType, uint INDEXBITS = 16,
+template <typename ValueType, typename KeyType,
           template <class> class LockingPolicy = NonLockingPolicy
           >
 class QResourceManager
-        : public ArrayAllocatingPolicy<ValueType, INDEXBITS>
-        , public LockingPolicy< QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> >
+        : public ArrayAllocatingPolicy<ValueType>
+        , public LockingPolicy< QResourceManager<ValueType, KeyType, LockingPolicy> >
 {
 public:
-    typedef ArrayAllocatingPolicy<ValueType, INDEXBITS> Allocator;
-    typedef QHandle<ValueType, INDEXBITS> Handle;
+    typedef ArrayAllocatingPolicy<ValueType> Allocator;
+    typedef QHandle<ValueType> Handle;
 
     QResourceManager() :
-        Allocator(),
-        m_maxSize((1 << INDEXBITS) - 1)
+        Allocator()
     {
     }
 
@@ -443,24 +442,21 @@ public:
             Allocator::releaseResource(handle);
     }
 
-    int maximumSize() const { return m_maxSize; }
-
 protected:
     QHash<KeyType, Handle > m_keyToHandleMap;
-    const int m_maxSize;
 
 private:
-    friend QDebug operator<< <>(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> &manager);
+    friend QDebug operator<< <>(QDebug dbg, const QResourceManager<ValueType, KeyType, LockingPolicy> &manager);
 };
 
 #ifndef QT_NO_DEBUG_STREAM
-template <typename ValueType, typename KeyType, uint INDEXBITS,
+template <typename ValueType, typename KeyType,
           template <class> class LockingPolicy
           >
-QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBITS, LockingPolicy> &manager)
+QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, LockingPolicy> &manager)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "Contains" << manager.count() << "items" << "of a maximum" << manager.maximumSize() << endl;
+    dbg << "Contains" << manager.count() << "items" << endl;
 
     dbg << "Key to Handle Map:" << endl;
     const auto end = manager.m_keyToHandleMap.cend();

@@ -40,10 +40,10 @@
 #ifndef QT3DRENDER_QGRAPHICSAPIFILTER_H
 #define QT3DRENDER_QGRAPHICSAPIFILTER_H
 
-#include <QObject>
-#include <QStringList>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 #include <Qt3DRender/qt3drender_global.h>
-#include <QSurfaceFormat>
+#include <QtGui/QSurfaceFormat>
 
 QT_BEGIN_NAMESPACE
 

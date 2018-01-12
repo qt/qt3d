@@ -43,7 +43,7 @@
 #include <Qt3DRender/qabstractfunctor.h>
 #include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qtexturewrapmode.h>
-#include <QSharedPointer>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 

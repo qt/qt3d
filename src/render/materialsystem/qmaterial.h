@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QMATERIAL_H
 #define QT3DRENDER_QMATERIAL_H
 
-#include <QVariant>
+#include <QtCore/QVariant>
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>

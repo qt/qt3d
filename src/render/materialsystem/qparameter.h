@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QPARAMETER_H
 #define QT3DRENDER_QPARAMETER_H
 
-#include <QVariant>
+#include <QtCore/QVariant>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qt3drender_global.h>
 

@@ -241,11 +241,13 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
     }
 }
 
-void Scene3DItem::setItemArea(QSize area)
+void Scene3DItem::setItemAreaAndDevicePixelRatio(QSize area, qreal devicePixelRatio)
 {
     Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(m_entity);
-    if (surfaceSelector)
+    if (surfaceSelector) {
         surfaceSelector->setExternalRenderTargetSize(area);
+        surfaceSelector->setSurfacePixelRatio(devicePixelRatio);
+    }
 }
 
 bool Scene3DItem::isHoverEnabled() const

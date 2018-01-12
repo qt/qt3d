@@ -42,7 +42,7 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <QSharedPointer>
+#include <QtCore/QSharedPointer>
 
 
 QT_BEGIN_NAMESPACE
