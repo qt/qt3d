@@ -192,6 +192,7 @@ private:
     Qt3DCore::QNodeId m_cameraComponent;
     QVector<Qt3DCore::QNodeId> m_layerComponents;
     QVector<Qt3DCore::QNodeId> m_levelOfDetailComponents;
+    QVector<Qt3DCore::QNodeId> m_rayCasterComponents;
     QVector<Qt3DCore::QNodeId> m_shaderDataComponents;
     QVector<Qt3DCore::QNodeId> m_lightComponents;
     QVector<Qt3DCore::QNodeId> m_environmentLightComponents;
@@ -292,6 +293,7 @@ ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(ComputeCommand, HComputeCommand)
 ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(Armature, HArmature)
 ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(Layer, HLayer)
 ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(LevelOfDetail, HLevelOfDetail)
+ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(RayCaster, HRayCaster)
 ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(ShaderData, HShaderData)
 ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(Light, HLight)
 ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(EnvironmentLight, HEnvironmentLight)

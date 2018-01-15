@@ -9,7 +9,11 @@ HEADERS += \
     $$PWD/qpicktriangleevent.h \
     $$PWD/objectpicker_p.h \
     $$PWD/pickeventfilter_p.h \
-    $$PWD/qobjectpicker_p.h
+    $$PWD/qobjectpicker_p.h \
+    $$PWD/qraycasterhit.h \
+    $$PWD/qraycaster.h \
+    $$PWD/qraycaster_p.h \
+    $$PWD/raycaster_p.h
 
 SOURCES += \
     $$PWD/qobjectpicker.cpp \
@@ -18,4 +22,7 @@ SOURCES += \
     $$PWD/qpickpointevent.cpp \
     $$PWD/qpicktriangleevent.cpp \
     $$PWD/objectpicker.cpp \
-    $$PWD/pickeventfilter.cpp
+    $$PWD/pickeventfilter.cpp \
+    $$PWD/qraycasterhit.cpp \
+    $$PWD/qraycaster.cpp \
+    $$PWD/raycaster.cpp

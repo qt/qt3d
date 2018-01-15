@@ -90,6 +90,7 @@ NodeManagers::NodeManagers()
     , m_geometryManager(new GeometryManager())
     , m_geometryRendererManager(new GeometryRendererManager)
     , m_objectPickerManager(new ObjectPickerManager())
+    , m_rayCasterManager(new RayCasterManager())
 //    , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
     , m_lightManager(new LightManager())
     , m_environmentLightManager(new EnvironmentLightManager())
@@ -133,6 +134,7 @@ NodeManagers::~NodeManagers()
     delete m_geometryManager;
     delete m_geometryRendererManager;
     delete m_objectPickerManager;
+    delete m_rayCasterManager;
 
     // Delete after m_objectPickerManager as that manager's shutdown needs to access
     // the frame graph manager still.
@@ -325,6 +327,12 @@ template<>
 ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOTHROW
 {
     return m_objectPickerManager;
+}
+
+template<>
+RayCasterManager *NodeManagers::manager<RayCaster>() const Q_DECL_NOTHROW
+{
+    return m_rayCasterManager;
 }
 
 //template<>
