@@ -113,7 +113,7 @@ typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
 class Q_AUTOTEST_EXPORT HierarchicalEntityPicker
 {
 public:
-    explicit HierarchicalEntityPicker(const RayCasting::QRay3D &ray);
+    explicit HierarchicalEntityPicker(const RayCasting::QRay3D &ray, bool requireObjectPicker = true);
 
     bool collectHits(Entity *root);
     inline HitList hits() const { return m_hits; }
@@ -123,6 +123,7 @@ private:
     RayCasting::QRay3D m_ray;
     HitList m_hits;
     QVector<Entity *> m_entities;
+    bool m_objectPickersRequired;
 };
 
 struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
@@ -130,7 +131,8 @@ struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
     AbstractCollisionGathererFunctor();
     virtual ~AbstractCollisionGathererFunctor();
 
-    NodeManagers *m_manager;
+    bool m_objectPickersRequired = true;
+    NodeManagers *m_manager = nullptr;
     RayCasting::QRay3D m_ray;
 
     virtual HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) = 0;

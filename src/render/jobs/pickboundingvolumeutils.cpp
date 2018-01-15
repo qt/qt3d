@@ -426,21 +426,23 @@ AbstractCollisionGathererFunctor::~AbstractCollisionGathererFunctor()
 
 HitList AbstractCollisionGathererFunctor::operator ()(const Entity *entity) const
 {
-    HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker>();
+    if (m_objectPickersRequired) {
+        HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker>();
 
-    // If the Entity which actually received the hit doesn't have
-    // an object picker component, we need to check the parent if it has one ...
-    auto parentEntity = entity;
-    while (objectPickerHandle.isNull() && parentEntity != nullptr) {
-        parentEntity = parentEntity->parent();
-        if (parentEntity != nullptr)
-            objectPickerHandle = parentEntity->componentHandle<ObjectPicker>();
+        // If the Entity which actually received the hit doesn't have
+        // an object picker component, we need to check the parent if it has one ...
+        auto parentEntity = entity;
+        while (objectPickerHandle.isNull() && parentEntity != nullptr) {
+            parentEntity = parentEntity->parent();
+            if (parentEntity != nullptr)
+                objectPickerHandle = parentEntity->componentHandle<ObjectPicker>();
+        }
+
+        ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
+        if (objectPicker == nullptr || !objectPicker->isEnabled())
+            return {};   // don't bother picking entities that don't
+                         // have an object picker, or if it's disabled
     }
-
-    ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
-    if (objectPicker == nullptr || !objectPicker->isEnabled())
-        return {};   // don't bother picking entities that don't
-                     // have an object picker, or if it's disabled
 
     return pick(entity);
 }
@@ -555,8 +557,9 @@ HitList PointCollisionGathererFunctor::pick(const Entity *entity) const
     return result;
 }
 
-HierarchicalEntityPicker::HierarchicalEntityPicker(const QRay3D &ray)
+HierarchicalEntityPicker::HierarchicalEntityPicker(const QRay3D &ray, bool requireObjectPicker)
     : m_ray(ray)
+    , m_objectPickersRequired(requireObjectPicker)
 {
 
 }
@@ -582,7 +585,7 @@ bool HierarchicalEntityPicker::collectHits(Entity *root)
 
         // if we get a hit, we check again for this specific entity
         queryResult = rayCasting.query(m_ray, current.first->worldBoundingVolume());
-        if (queryResult.m_distance >= 0.f && current.second) {
+        if (queryResult.m_distance >= 0.f && (current.second || !m_objectPickersRequired)) {
             m_entities.push_back(current.first);
             m_hits.push_back(queryResult);
         }
