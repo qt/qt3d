@@ -42,6 +42,7 @@
 #include "renderer_p.h"
 #include <Qt3DRender/qraycaster.h>
 #include <Qt3DRender/private/qraycaster_p.h>
+#include <Qt3DRender/private/raycastingjob_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
@@ -58,6 +59,7 @@ RayCaster::RayCaster()
 
 RayCaster::~RayCaster()
 {
+    notifyJob();
 }
 
 QRayCaster::RunMode RayCaster::runMode() const
@@ -87,6 +89,7 @@ void RayCaster::cleanup()
     m_direction = QVector3D(0.f, 0.f, 1.f);
     m_origin = {};
     m_length = 0.f;
+    notifyJob();
 }
 
 void RayCaster::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -114,6 +117,7 @@ void RayCaster::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_runMode = propertyChange->value().value<QRayCaster::RunMode>();
         }
 
+        notifyJob();
         markDirty(AbstractRenderer::AllDirty);
     }
 
@@ -136,6 +140,12 @@ void RayCaster::dispatchHits(const QRayCaster::Hits &hits)
         e->setValue(false);
         notifyObservers(e);
     }
+}
+
+void RayCaster::notifyJob()
+{
+    if (m_renderer && m_renderer->rayCastingJob())
+        qSharedPointerCast<RayCastingJob>(m_renderer->rayCastingJob())->markCastersDirty();
 }
 
 } // Render

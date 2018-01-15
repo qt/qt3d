@@ -33,7 +33,8 @@ HEADERS += \
     $$PWD/sendbuffercapturejob_p.h \
     $$PWD/loadskeletonjob_p.h \
     $$PWD/updateskinningpalettejob_p.h \
-    $$PWD/filterproximitydistancejob_p.h
+    $$PWD/filterproximitydistancejob_p.h \
+    $$PWD/raycastingjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -65,5 +66,6 @@ SOURCES += \
     $$PWD/sendbuffercapturejob.cpp \
     $$PWD/loadskeletonjob.cpp \
     $$PWD/updateskinningpalettejob.cpp \
-    $$PWD/filterproximitydistancejob.cpp
+    $$PWD/filterproximitydistancejob.cpp \
+    $$PWD/raycastingjob.cpp
 

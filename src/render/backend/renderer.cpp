@@ -167,6 +167,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_glContext(nullptr)
     , m_shareContext(nullptr)
     , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create())
+    , m_rayCastingJob(RayCastingJobPtr::create())
     , m_time(0)
     , m_settings(nullptr)
     , m_updateShaderDataTransformJob(Render::UpdateShaderDataTransformJobPtr::create())
@@ -217,6 +218,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_updateLevelOfDetailJob->addDependency(m_updateMeshTriangleListJob);
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
+    m_rayCastingJob->addDependency(m_updateMeshTriangleListJob);
 
     m_filterCompatibleTechniqueJob->setRenderer(this);
 
@@ -276,6 +278,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_cleanupJob->setManagers(m_nodesManager);
     m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
+    m_rayCastingJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
     m_sendBufferCaptureJob->setManagers(m_nodesManager);
@@ -509,6 +512,7 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_cleanupJob->setRoot(m_renderSceneRoot);
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    m_rayCastingJob->setRoot(m_renderSceneRoot);
     m_updateLevelOfDetailJob->setRoot(m_renderSceneRoot);
     m_updateSkinningPaletteJob->setRoot(m_renderSceneRoot);
     m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
@@ -1620,6 +1624,18 @@ QAspectJobPtr Renderer::pickBoundingVolumeJob()
     }
 
     return m_pickBoundingVolumeJob;
+}
+
+QAspectJobPtr Renderer::rayCastingJob()
+{
+    // Set values on rayCastingJob
+    RenderSettings *renderSetting = settings();
+    if (renderSetting != nullptr) {
+        m_rayCastingJob->setRenderSettings(renderSetting);
+        m_rayCastingJob->setFrameGraphRoot(frameGraphRoot());
+    }
+
+    return m_rayCastingJob;
 }
 
 QAspectJobPtr Renderer::syncTextureLoadingJob()

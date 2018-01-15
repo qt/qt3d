@@ -80,6 +80,7 @@ public:
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
+    void notifyJob();
 
     QRayCaster::RunMode m_runMode = QRayCaster::SingleShot;
     QVector3D m_origin;

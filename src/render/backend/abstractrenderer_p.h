@@ -147,6 +147,7 @@ public:
 
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
     virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;
+    virtual Qt3DCore::QAspectJobPtr rayCastingJob() = 0;
     virtual Qt3DCore::QAspectJobPtr syncTextureLoadingJob() = 0;
     virtual Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() = 0;
 

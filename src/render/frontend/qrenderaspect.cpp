@@ -493,12 +493,10 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
-
         // Add all jobs to queue
-        const Qt3DCore::QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
         // Note: the getter is also responsible for returning a job ready to run
-        jobs.append(pickBoundingVolumeJob);
-
+        jobs.append(d->m_renderer->pickBoundingVolumeJob());
+        jobs.append(d->m_renderer->rayCastingJob());
 
         // Don't spawn any rendering jobs, if the renderer decides to skip this frame
         // Note: this only affects rendering jobs (jobs that load buffers,

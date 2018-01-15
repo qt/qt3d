@@ -60,6 +60,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
+#include <Qt3DRender/private/raycastingjob_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/renderviewinitializerjob_p.h>
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
@@ -190,6 +191,7 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() override;
+    Qt3DCore::QAspectJobPtr rayCastingJob() override;
     Qt3DCore::QAspectJobPtr syncTextureLoadingJob() override;
     Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() override;
 
@@ -312,6 +314,7 @@ private:
     QOpenGLContext *m_glContext;
     QOpenGLContext *m_shareContext;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
+    RayCastingJobPtr m_rayCastingJob;
 
     qint64 m_time;
 
