@@ -42,8 +42,8 @@
 
 #include <Qt3DExtras/qabstractspritesheet.h>
 #include <Qt3DCore/qcomponent.h>
-#include <QVector2D>
-#include <QMatrix3x3>
+#include <QtGui/QVector2D>
+#include <QtGui/QMatrix3x3>
 
 QT_BEGIN_NAMESPACE
 

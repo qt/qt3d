@@ -41,8 +41,8 @@
 #define QT3DEXTRAS_QSPRITESHEET_H
 
 #include <Qt3DExtras/qabstractspritesheet.h>
-#include <QRect>
-#include <QVector>
+#include <QtCore/QRect>
+#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 
