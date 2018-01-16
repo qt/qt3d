@@ -41,15 +41,16 @@
     \module Qt3DScene2D
     \title Qt 3D Scene2D C++ Classes
     \keyword Qt 3D Scene2D
+    \preliminary
 
     \brief The Qt 3D Scene2D module provides a way to render Quick2 qml content
     to a Qt 3D texture.
 
-    This module is still in tech preview. This means it is unstable, likely to
-    change and provided as a convenience only.
+    This module is still in development but is available as a technology preview.
+    This means it is unstable, likely to change and provided as a convenience only.
 
     \ingroup modules
-    \ingroup qt3d-modules
+    \ingroup qt3d-modules-preliminary
     \qtvariable 3dquickscene2d
 
     \code
@@ -81,9 +82,10 @@
 
 /*!
    \qmlmodule Qt3D.Scene2D 2.9
+   \preliminary
    \title Qt 3D Scene2D QML Types
    \ingroup qmlmodules
-   \ingroup qt3d-qmlmodules
+   \ingroup qt3d-qmlmodules-preliminary
 
    \brief Provides Qt 3D QML types for the scene2d module.
 

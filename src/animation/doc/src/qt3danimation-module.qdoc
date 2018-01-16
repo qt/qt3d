@@ -29,16 +29,17 @@
 /*!
     \module Qt3DAnimation
     \title Qt 3D Animation C++ Classes
+    \preliminary
 
     \keyword Qt 3D Animation
     \brief The Qt 3D Animation module provides a set of prebuilt elements to help
     you get started with Qt 3D.
 
-    This module is still in tech preview. This means it is unstable, likely to
-    change and provided as a convenience only.
+    This module is still in development but is available as a technology preview.
+    This means it is unstable, likely to change and provided as a convenience only.
 
     \ingroup modules
-    \ingroup qt3d-modules
+    \ingroup qt3d-modules-preliminary
     \qtvariable 3danimation
 
     \code
@@ -216,8 +217,10 @@
 /*!
    \qmlmodule Qt3D.Animation 2.9
    \title Qt 3D Qt3DAnimation QML Types
+   \preliminary
+
    \ingroup qmlmodules
-   \ingroup qt3d-qmlmodules
+   \ingroup qt3d-qmlmodules-preliminary
 
    \brief Provides Qt 3D QML types for the animation module.
 

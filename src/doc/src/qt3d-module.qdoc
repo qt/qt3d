@@ -41,6 +41,7 @@
     \page qt3d-cpp.html
     \title Qt 3D C++ Classes
     \brief The Qt 3D module contains functionality to support near-realtime simulation systems.
+    \since 5.7
 
     The Qt 3D module provides the foundations and core types used for near-realtime
     simulations built on the Qt 3D framework.
@@ -76,6 +77,7 @@
    \page qt3d-qml.html
    \title Qt 3D QML Types
    \brief QML Types for the Qt 3D module.
+   \since 5.7
 
    The Qt 3D core QML types are imported with
 
