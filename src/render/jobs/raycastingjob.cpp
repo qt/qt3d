@@ -101,44 +101,15 @@ private:
 
 
 RayCastingJob::RayCastingJob()
-    : m_manager(nullptr)
-    , m_node(nullptr)
-    , m_frameGraphRoot(nullptr)
-    , m_renderSettings(nullptr)
+    : AbstractPickingJob()
     , m_castersDirty(true)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RayCasting, 0);
 }
 
-void RayCastingJob::setRoot(Entity *root)
-{
-    m_node = root;
-}
-
-void RayCastingJob::setFrameGraphRoot(FrameGraphNode *frameGraphRoot)
-{
-    m_frameGraphRoot = frameGraphRoot;
-}
-
-void RayCastingJob::setRenderSettings(RenderSettings *settings)
-{
-    m_renderSettings = settings;
-}
-
-void RayCastingJob::setManagers(NodeManagers *manager)
-{
-    m_manager = manager;
-}
-
 void RayCastingJob::markCastersDirty()
 {
     m_castersDirty = true;
-}
-
-void RayCastingJob::run()
-{
-    Q_ASSERT(m_frameGraphRoot && m_renderSettings && m_node && m_manager);
-    runHelper();
 }
 
 bool RayCastingJob::runHelper()
@@ -175,47 +146,65 @@ bool RayCastingJob::runHelper()
 
     EntityCasterGatherer gatherer(m_node);
     const EntityCasterGatherer::EntityCasterList &entities = gatherer.result();
-    for (const EntityCasterGatherer::EntityCasterList::value_type &pair: entities) {
-        QRay3D ray(pair.second->origin(), pair.second->direction(), pair.second->length());
-        ray.transform(*pair.first->worldTransform());
 
-        PickingUtils::HitList sphereHits;
-        PickingUtils::HierarchicalEntityPicker entityPicker(ray, false);
-        if (entityPicker.collectHits(m_node)) {
-            if (trianglePickingRequested) {
-                PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
-                gathererFunctor.m_frontFaceRequested = frontFaceRequested;
-                gathererFunctor.m_backFaceRequested = backFaceRequested;
-                gathererFunctor.m_manager = m_manager;
-                gathererFunctor.m_ray = ray;
-                gathererFunctor.m_objectPickersRequired = false;
-                sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
-            }
-            if (edgePickingRequested) {
-                PickingUtils::LineCollisionGathererFunctor gathererFunctor;
-                gathererFunctor.m_manager = m_manager;
-                gathererFunctor.m_ray = ray;
-                gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
-                gathererFunctor.m_objectPickersRequired = false;
-                sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
-                PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
-            }
-            if (pointPickingRequested) {
-                PickingUtils::PointCollisionGathererFunctor gathererFunctor;
-                gathererFunctor.m_manager = m_manager;
-                gathererFunctor.m_ray = ray;
-                gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
-                gathererFunctor.m_objectPickersRequired = false;
-                sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
-                PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
-            }
-            if (!primitivePickingRequested) {
-                sphereHits << entityPicker.hits();
-                PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
-            }
+    PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
+    const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+
+    for (const EntityCasterGatherer::EntityCasterList::value_type &pair: entities) {
+        QVector<QRay3D> rays;
+
+        switch (pair.second->type()) {
+        case QAbstractRayCasterPrivate::WorldSpaceRayCaster:
+            rays << QRay3D(pair.second->origin(), pair.second->direction(), pair.second->length());
+            rays.back().transform(*pair.first->worldTransform());
+            break;
+        case QAbstractRayCasterPrivate::ScreenScapeRayCaster:
+            for (const PickingUtils::ViewportCameraAreaTriplet &vca : vcaTriplets)
+                rays << rayForViewportAndCamera(vca.area, pair.second->position(), vca.viewport, vca.cameraId);
+            break;
+        default:
+            Q_UNREACHABLE();
         }
 
-        dispatchHits(pair.second, sphereHits);
+        for (const QRay3D &ray: qAsConst(rays)) {
+            PickingUtils::HitList sphereHits;
+            PickingUtils::HierarchicalEntityPicker entityPicker(ray, false);
+            if (entityPicker.collectHits(m_node)) {
+                if (trianglePickingRequested) {
+                    PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
+                    gathererFunctor.m_frontFaceRequested = frontFaceRequested;
+                    gathererFunctor.m_backFaceRequested = backFaceRequested;
+                    gathererFunctor.m_manager = m_manager;
+                    gathererFunctor.m_ray = ray;
+                    gathererFunctor.m_objectPickersRequired = false;
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
+                }
+                if (edgePickingRequested) {
+                    PickingUtils::LineCollisionGathererFunctor gathererFunctor;
+                    gathererFunctor.m_manager = m_manager;
+                    gathererFunctor.m_ray = ray;
+                    gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
+                    gathererFunctor.m_objectPickersRequired = false;
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
+                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+                }
+                if (pointPickingRequested) {
+                    PickingUtils::PointCollisionGathererFunctor gathererFunctor;
+                    gathererFunctor.m_manager = m_manager;
+                    gathererFunctor.m_ray = ray;
+                    gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
+                    gathererFunctor.m_objectPickersRequired = false;
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
+                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+                }
+                if (!primitivePickingRequested) {
+                    sphereHits << entityPicker.hits();
+                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+                }
+            }
+
+            dispatchHits(pair.second, sphereHits);
+        }
     }
 
     return true;
@@ -223,7 +212,7 @@ bool RayCastingJob::runHelper()
 
 void RayCastingJob::dispatchHits(RayCaster *rayCaster, const PickingUtils::HitList &sphereHits)
 {
-    QRayCaster::Hits hits;
+    QAbstractRayCaster::Hits hits;
     for (const PickingUtils::HitList::value_type &sphereHit: sphereHits) {
         Entity *entity = m_manager->renderNodesManager()->lookupResource(sphereHit.m_entityId);
         QVector3D localIntersection = sphereHit.m_intersection;

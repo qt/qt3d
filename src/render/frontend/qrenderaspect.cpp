@@ -74,6 +74,7 @@
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qraycaster.h>
+#include <Qt3DRender/qscreenraycaster.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qenvironmentlight.h>
@@ -292,6 +293,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
     q->registerBackendType<QRayCaster>(QSharedPointer<Render::NodeFunctor<Render::RayCaster, Render::RayCasterManager> >::create(m_renderer));
+    q->registerBackendType<QScreenRayCaster>(QSharedPointer<Render::NodeFunctor<Render::RayCaster, Render::RayCasterManager> >::create(m_renderer));
 
     // Plugins
     for (const QString &plugin : qAsConst(m_pluginConfig))
@@ -358,6 +360,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     // Picking
     unregisterBackendType<QObjectPicker>();
     unregisterBackendType<QRayCaster>();
+    unregisterBackendType<QScreenRayCaster>();
 
     // Plugins
     for (Render::QRenderPlugin *plugin : qAsConst(m_renderPlugins))

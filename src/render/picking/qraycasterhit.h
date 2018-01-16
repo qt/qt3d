@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QRayCasterHitData;
-class QRayCasterPrivate;
+class QAbstractRayCasterPrivate;
 
 class QT3DRENDERSHARED_EXPORT QRayCasterHit
 {
@@ -86,7 +86,7 @@ public:
     uint vertex3Index() const;
 
 private:
-    friend class QRayCasterPrivate;
+    friend class QAbstractRayCasterPrivate;
     void setEntity(Qt3DCore::QEntity *entity) const;
 
     QSharedDataPointer<QRayCasterHitData> d;

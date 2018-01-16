@@ -52,7 +52,9 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/qraycaster.h>
+#include <Qt3DRender/qabstractraycaster.h>
+#include <Qt3DRender/private/qabstractraycaster_p.h>
+
 
 QT_BEGIN_NAMESPACE
 
@@ -68,24 +70,28 @@ public:
     RayCaster();
     ~RayCaster();
 
-    QRayCaster::RunMode runMode() const;
+    QAbstractRayCasterPrivate::RayCasterType type() const;
+    QAbstractRayCaster::RunMode runMode() const;
     QVector3D origin() const;
     QVector3D direction() const;
     float length() const;
+    QPoint position() const;
 
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
 
-    void dispatchHits(const QRayCaster::Hits &hits);
+    void dispatchHits(const QAbstractRayCaster::Hits &hits);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void notifyJob();
 
-    QRayCaster::RunMode m_runMode = QRayCaster::SingleShot;
+    QAbstractRayCasterPrivate::RayCasterType m_type = QAbstractRayCasterPrivate::WorldSpaceRayCaster;
+    QAbstractRayCaster::RunMode m_runMode = QAbstractRayCaster::SingleShot;
     QVector3D m_origin;
     QVector3D m_direction = {0.f, 0.f, 1.f};
     float m_length = 0.f;
+    QPoint m_position;
 };
 
 } // Render

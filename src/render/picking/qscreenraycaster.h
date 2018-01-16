@@ -37,59 +37,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RAYCASTINGJOB_H
-#define QT3DRENDER_RENDER_RAYCASTINGJOB_H
+#ifndef QT3DRENDER_QSCREENRAYCASTER_H
+#define QT3DRENDER_QSCREENRAYCASTER_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/QAbstractRayCaster>
 
-#include "abstractpickingjob_p.h"
-#include <Qt3DRender/qpickevent.h>
-#include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/private/qcollisionqueryresult_p.h>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QSharedPointer>
+#include <QtGui/QVector3D>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-namespace PickingUtils {
-typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
-}
-
-class Q_AUTOTEST_EXPORT RayCastingJob : public AbstractPickingJob
+class QT3DRENDERSHARED_EXPORT QScreenRayCaster : public QAbstractRayCaster
 {
-public:
-    RayCastingJob();
+    Q_OBJECT
 
-    void markCastersDirty();
-    bool runHelper() override;
+    Q_PROPERTY(QPoint position READ position WRITE setPosition NOTIFY positionChanged)
+public:
+    explicit QScreenRayCaster(QNode *parent = nullptr);
+    ~QScreenRayCaster();
+
+    QPoint position() const;
+
+public Q_SLOTS:
+    void setPosition(const QPoint &position);
+
+    void trigger();
+    void trigger(const QPoint &position);
+
+Q_SIGNALS:
+    void positionChanged(const QPoint &position);
 
 protected:
-    void dispatchHits(RayCaster *rayCaster, const PickingUtils::HitList &sphereHits);
-
-private:
-    bool m_castersDirty;
-    bool m_oneEnabledAtLeast;
+    explicit QScreenRayCaster(QAbstractRayCasterPrivate &dd, QNode *parent = nullptr);
 };
 
-typedef QSharedPointer<RayCastingJob> RayCastingJobPtr;
-
-} // namespace Render
-
-} // namespace Qt3DRender
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RAYCASTINGJOB_H
+#endif // QT3DRENDER_QSCREENRAYCASTER_H

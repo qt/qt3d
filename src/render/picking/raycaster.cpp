@@ -40,8 +40,8 @@
 #include "raycaster_p.h"
 #include "qpickevent.h"
 #include "renderer_p.h"
-#include <Qt3DRender/qraycaster.h>
-#include <Qt3DRender/private/qraycaster_p.h>
+#include <Qt3DRender/qabstractraycaster.h>
+#include <Qt3DRender/private/qabstractraycaster_p.h>
 #include <Qt3DRender/private/raycastingjob_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -62,7 +62,12 @@ RayCaster::~RayCaster()
     notifyJob();
 }
 
-QRayCaster::RunMode RayCaster::runMode() const
+QAbstractRayCasterPrivate::RayCasterType RayCaster::type() const
+{
+    return m_type;
+}
+
+QAbstractRayCaster::RunMode RayCaster::runMode() const
 {
     return m_runMode;
 }
@@ -82,24 +87,33 @@ float RayCaster::length() const
     return m_length;
 }
 
+QPoint RayCaster::position() const
+{
+    return m_position;
+}
+
 void RayCaster::cleanup()
 {
     BackendNode::setEnabled(false);
-    m_runMode = QRayCaster::SingleShot;
+    m_type = QAbstractRayCasterPrivate::WorldSpaceRayCaster;
+    m_runMode = QAbstractRayCaster::SingleShot;
     m_direction = QVector3D(0.f, 0.f, 1.f);
     m_origin = {};
     m_length = 0.f;
+    m_position = {};
     notifyJob();
 }
 
 void RayCaster::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRayCasterData>>(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractRayCasterData>>(change);
     const auto &data = typedChange->data;
+    m_type = data.casterType;
     m_runMode = data.runMode;
     m_origin = data.origin;
     m_direction = data.direction;
     m_length = data.length;
+    m_position = data.position;
 }
 
 void RayCaster::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -113,8 +127,10 @@ void RayCaster::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_direction = propertyChange->value().value<QVector3D>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("length")) {
             m_length = propertyChange->value().toFloat();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("position")) {
+            m_position = propertyChange->value().toPoint();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("runMode")) {
-            m_runMode = propertyChange->value().value<QRayCaster::RunMode>();
+            m_runMode = propertyChange->value().value<QAbstractRayCaster::RunMode>();
         }
 
         notifyJob();
@@ -124,7 +140,7 @@ void RayCaster::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     BackendNode::sceneChangeEvent(e);
 }
 
-void RayCaster::dispatchHits(const QRayCaster::Hits &hits)
+void RayCaster::dispatchHits(const QAbstractRayCaster::Hits &hits)
 {
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -132,7 +148,7 @@ void RayCaster::dispatchHits(const QRayCaster::Hits &hits)
     e->setValue(QVariant::fromValue(hits));
     notifyObservers(e);
 
-    if (m_runMode == QRayCaster::SingleShot) {
+    if (m_runMode == QAbstractRayCaster::SingleShot) {
         setEnabled(false);
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);

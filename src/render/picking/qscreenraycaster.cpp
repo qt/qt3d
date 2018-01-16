@@ -37,59 +37,80 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RAYCASTINGJOB_H
-#define QT3DRENDER_RENDER_RAYCASTINGJOB_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include "abstractpickingjob_p.h"
-#include <Qt3DRender/qpickevent.h>
-#include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/private/qcollisionqueryresult_p.h>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QSharedPointer>
+#include "qscreenraycaster.h"
+#include "qabstractraycaster_p.h"
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-namespace PickingUtils {
-typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
+/*!
+    \class Qt3DRender::QScreenRayCaster
+    \inmodule Qt3DRender
+
+    \brief The QScreenRayCaster...
+
+    \sa Qt3DRender::QPickingSettings, Qt3DRender::QObjectPicker
+
+    \since 5.11
+*/
+
+/*!
+    \qmltype ScreenRayCaster
+    \instantiates Qt3DRender::QScreenRayCaster
+    \inqmlmodule Qt3D.Render
+    \brief The ScreenRayCaster
+    \sa PickingSettings, ObjectPicker
+ */
+
+
+QScreenRayCaster::QScreenRayCaster(Qt3DCore::QNode *parent)
+    : QAbstractRayCaster(parent)
+{
+    QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::ScreenScapeRayCaster;
 }
 
-class Q_AUTOTEST_EXPORT RayCastingJob : public AbstractPickingJob
+QScreenRayCaster::QScreenRayCaster(QAbstractRayCasterPrivate &dd, Qt3DCore::QNode *parent)
+    : QAbstractRayCaster(dd, parent)
 {
-public:
-    RayCastingJob();
+    QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::ScreenScapeRayCaster;
+}
 
-    void markCastersDirty();
-    bool runHelper() override;
+/*! \internal */
+QScreenRayCaster::~QScreenRayCaster()
+{
+}
 
-protected:
-    void dispatchHits(RayCaster *rayCaster, const PickingUtils::HitList &sphereHits);
+QPoint QScreenRayCaster::position() const
+{
+    auto d = QAbstractRayCasterPrivate::get(this);
+    return d->m_position;
+}
 
-private:
-    bool m_castersDirty;
-    bool m_oneEnabledAtLeast;
-};
+void QScreenRayCaster::setPosition(const QPoint &position)
+{
+    auto d = QAbstractRayCasterPrivate::get(this);
+    if (d->m_position != position) {
+        d->m_position = position;
+        emit positionChanged(d->m_position);
+    }
+}
 
-typedef QSharedPointer<RayCastingJob> RayCastingJobPtr;
+void QScreenRayCaster::trigger()
+{
+    setEnabled(true);
+}
 
-} // namespace Render
+void QScreenRayCaster::trigger(const QPoint &position)
+{
+    setPosition(position);
+    setEnabled(true);
+}
 
-} // namespace Qt3DRender
+} // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_RAYCASTINGJOB_H

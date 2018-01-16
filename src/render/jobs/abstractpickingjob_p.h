@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RAYCASTINGJOB_H
-#define QT3DRENDER_RENDER_RAYCASTINGJOB_H
+#ifndef QT3DRENDER_RENDER_ABSTRACTPICKINGJOB_P_H
+#define QT3DRENDER_RENDER_ABSTRACTPICKINGJOB_P_H
 
 //
 //  W A R N I N G
@@ -51,40 +51,59 @@
 // We mean it.
 //
 
-#include "abstractpickingjob_p.h"
-#include <Qt3DRender/qpickevent.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/qcollisionqueryresult_p.h>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+class QNodeId;
+}
 
 namespace Qt3DRender {
 namespace Render {
 
-namespace PickingUtils {
-typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
-}
+class Entity;
+class Renderer;
+class NodeManagers;
+class RenderSettings;
 
-class Q_AUTOTEST_EXPORT RayCastingJob : public AbstractPickingJob
+class Q_AUTOTEST_EXPORT AbstractPickingJob : public Qt3DCore::QAspectJob
 {
 public:
-    RayCastingJob();
+    AbstractPickingJob();
 
-    void markCastersDirty();
-    bool runHelper() override;
+    void setRoot(Entity *root);
+    void setFrameGraphRoot(FrameGraphNode *frameGraphRoot);
+    void setRenderSettings(RenderSettings *settings);
+    void setManagers(NodeManagers *manager);
+
+    // public for unit tests
+    virtual bool runHelper() = 0;
+    static RayCasting::QRay3D intersectionRay(const QPoint &pos,
+                                              const QMatrix4x4 &viewMatrix,
+                                              const QMatrix4x4 &projectionMatrix,
+                                              const QRect &viewport);
 
 protected:
-    void dispatchHits(RayCaster *rayCaster, const PickingUtils::HitList &sphereHits);
+    void run() final;
 
-private:
-    bool m_castersDirty;
+    NodeManagers *m_manager;
+    Entity *m_node;
+    FrameGraphNode *m_frameGraphRoot;
+    RenderSettings *m_renderSettings;
+
     bool m_oneEnabledAtLeast;
-};
 
-typedef QSharedPointer<RayCastingJob> RayCastingJobPtr;
+    QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
+    RayCasting::QRay3D rayForViewportAndCamera(const QSize &area,
+                                               const QPoint &pos,
+                                               const QRectF &relativeViewport,
+                                               const Qt3DCore::QNodeId cameraId) const;
+};
 
 } // namespace Render
 
@@ -92,4 +111,4 @@ typedef QSharedPointer<RayCastingJob> RayCastingJobPtr;
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RAYCASTINGJOB_H
+#endif // QT3DRENDER_RENDER_ABSTRACTPICKINGJOB_P_H

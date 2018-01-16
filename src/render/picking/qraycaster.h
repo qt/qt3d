@@ -40,9 +40,8 @@
 #ifndef QT3DRENDER_QRAYCASTER_H
 #define QT3DRENDER_QRAYCASTER_H
 
-#include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DRender/qraycasterhit.h>
+#include <Qt3DRender/QAbstractRayCaster>
 
 #include <QtGui/QVector3D>
 
@@ -50,37 +49,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QRayCasterPrivate;
-
-class QT3DRENDERSHARED_EXPORT QRayCaster : public Qt3DCore::QComponent
+class QT3DRENDERSHARED_EXPORT QRayCaster : public QAbstractRayCaster
 {
     Q_OBJECT
-    Q_PROPERTY(RunMode runMode READ runMode WRITE setRunMode NOTIFY runModeChanged)
     Q_PROPERTY(QVector3D origin READ origin WRITE setOrigin NOTIFY originChanged)
     Q_PROPERTY(QVector3D direction READ direction WRITE setDirection NOTIFY directionChanged)
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
-    Q_PROPERTY(Hits hits READ hits NOTIFY hitsChanged)
 
 public:
-    enum RunMode {
-        Continuous,
-        SingleShot
-    };
-    Q_ENUM(RunMode)
-
-    using Hits = QVector<QRayCasterHit>;
-
     explicit QRayCaster(QNode *parent = nullptr);
     ~QRayCaster();
 
-    RunMode runMode() const;
     QVector3D origin() const;
     QVector3D direction() const;
     float length() const;
-    Hits hits() const;
 
 public Q_SLOTS:
-    void setRunMode(RunMode runMode);
     void setOrigin(const QVector3D& origin);
     void setDirection(const QVector3D& direction);
     void setLength(float length);
@@ -89,25 +73,16 @@ public Q_SLOTS:
     void trigger(const QVector3D& origin, const QVector3D& direction, float length = -1.f);
 
 Q_SIGNALS:
-    void runModeChanged(RunMode runMode);
     void originChanged(const QVector3D &origin);
     void directionChanged(const QVector3D &direction);
     void lengthChanged(float length);
-    void hitsChanged(const Hits &hits);
 
 protected:
-    explicit QRayCaster(QRayCasterPrivate &dd, QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
-private:
-    Q_DECLARE_PRIVATE(QRayCaster)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
+    explicit QRayCaster(QAbstractRayCasterPrivate &dd, QNode *parent = nullptr);
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3DRender::QRayCaster::Hits) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QRAYCASTER_H

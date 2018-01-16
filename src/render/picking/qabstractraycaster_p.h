@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRAYCASTER_P_H
-#define QT3DRENDER_QRAYCASTER_P_H
+#ifndef QT3DRENDER_QABSTRACTRAYCASTER_P_H
+#define QT3DRENDER_QABSTRACTRAYCASTER_P_H
 
 //
 //  W A R N I N G
@@ -50,7 +50,7 @@
 
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DRender/QRayCaster>
+#include <Qt3DRender/QAbstractRayCaster>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 
 #include <QtGui/QVector3D>
@@ -62,28 +62,38 @@ namespace Qt3DRender {
 /*!
     \internal
 */
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRayCasterPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QAbstractRayCasterPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
-    QRayCasterPrivate()
-        : QComponentPrivate()
-    {
-    }
+    QAbstractRayCasterPrivate();
 
-    QRayCaster::RunMode m_runMode = QRayCaster::SingleShot;
+    enum RayCasterType {
+        WorldSpaceRayCaster,
+        ScreenScapeRayCaster
+    };
+
+    static QAbstractRayCasterPrivate *get(QAbstractRayCaster *obj);
+    static const QAbstractRayCasterPrivate *get(const QAbstractRayCaster *obj);
+    static void updateHitEntites(QAbstractRayCaster::Hits &hits, Qt3DCore::QScene *scene);
+
+    RayCasterType m_rayCasterType = WorldSpaceRayCaster;
+    QAbstractRayCaster::RunMode m_runMode = QAbstractRayCaster::SingleShot;
+    QAbstractRayCaster::Hits m_hits;
+    QPoint m_position;
     QVector3D m_origin;
-    QVector3D m_direction = QVector3D(0.f, 0.f, 1.f);
+    QVector3D m_direction = QVector3D(0., 0., 1.f);
     float m_length = 0.f;
-    QRayCaster::Hits m_hits;
 
-    virtual void dispatchHits(const QRayCaster::Hits &hits);
+    virtual void dispatchHits(const QAbstractRayCaster::Hits &hits);
 
-    Q_DECLARE_PUBLIC(QRayCaster)
+    Q_DECLARE_PUBLIC(QAbstractRayCaster)
 };
 
-struct QRayCasterData
+struct QAbstractRayCasterData
 {
-    QRayCaster::RunMode runMode;
+    QAbstractRayCaster::RunMode runMode;
+    QAbstractRayCasterPrivate::RayCasterType casterType;
+    QPoint position;
     QVector3D origin;
     QVector3D direction;
     float length = 0.f;
@@ -93,4 +103,4 @@ struct QRayCasterData
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRAYCASTER_P_H
+#endif // QT3DRENDER_QABSTRACTRAYCASTER_P_H

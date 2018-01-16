@@ -37,59 +37,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RAYCASTINGJOB_H
-#define QT3DRENDER_RENDER_RAYCASTINGJOB_H
+#ifndef QT3DRENDER_QABSTRACTRAYCASTER_H
+#define QT3DRENDER_QABSTRACTRAYCASTER_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DRender/qraycasterhit.h>
+#include <Qt3DRender/qt3drender_global.h>
 
-#include "abstractpickingjob_p.h"
-#include <Qt3DRender/qpickevent.h>
-#include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/private/qcollisionqueryresult_p.h>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QSharedPointer>
+#include <QtGui/QVector3D>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-namespace PickingUtils {
-typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
-}
+class QAbstractRayCasterPrivate;
 
-class Q_AUTOTEST_EXPORT RayCastingJob : public AbstractPickingJob
+class QT3DRENDERSHARED_EXPORT QAbstractRayCaster : public Qt3DCore::QComponent
 {
-public:
-    RayCastingJob();
+    Q_OBJECT
+    Q_PROPERTY(RunMode runMode READ runMode WRITE setRunMode NOTIFY runModeChanged)
+    Q_PROPERTY(Hits hits READ hits NOTIFY hitsChanged)
 
-    void markCastersDirty();
-    bool runHelper() override;
+public:
+    enum RunMode {
+        Continuous,
+        SingleShot
+    };
+    Q_ENUM(RunMode)
+
+    using Hits = QVector<QRayCasterHit>;
+
+    explicit QAbstractRayCaster(QNode *parent = nullptr);
+    ~QAbstractRayCaster();
+
+    RunMode runMode() const;
+    Hits hits() const;
+
+public Q_SLOTS:
+    void setRunMode(RunMode runMode);
+
+Q_SIGNALS:
+    void runModeChanged(RunMode runMode);
+    void hitsChanged(const Hits &hits);
 
 protected:
-    void dispatchHits(RayCaster *rayCaster, const PickingUtils::HitList &sphereHits);
+    explicit QAbstractRayCaster(QAbstractRayCasterPrivate &dd, QNode *parent = nullptr);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 
 private:
-    bool m_castersDirty;
-    bool m_oneEnabledAtLeast;
+    Q_DECLARE_PRIVATE(QAbstractRayCaster)
 };
 
-typedef QSharedPointer<RayCastingJob> RayCastingJobPtr;
-
-} // namespace Render
-
-} // namespace Qt3DRender
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RAYCASTINGJOB_H
+Q_DECLARE_METATYPE(Qt3DRender::QAbstractRayCaster::Hits) // LCOV_EXCL_LINE
+
+#endif // QT3DRENDER_QABSTRACTRAYCASTER_H

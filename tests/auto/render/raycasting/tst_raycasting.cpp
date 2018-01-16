@@ -31,7 +31,7 @@
 #include <Qt3DRender/private/qraycastingservice_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/private/pickboundingvolumejob_p.h>
+#include <Qt3DRender/private/abstractpickingjob_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/qcamera.h>
@@ -324,7 +324,7 @@ void tst_RayCasting::mousePicking()
     const QRectF viewport(0.0f, 0.0f, 800.0f, 600.0f);
 
     // Window center on near plane
-    QRay3D ray = Qt3DRender::Render::PickBoundingVolumeJob::intersectionRay(viewport.center().toPoint(),
+    QRay3D ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.center().toPoint(),
                                                                             camera.viewMatrix(),
                                                                             camera.projectionMatrix(),
                                                                             viewport.toRect());
@@ -337,7 +337,7 @@ void tst_RayCasting::mousePicking()
     QVERIFY(intersects);
 
     // WHEN
-    ray = Qt3DRender::Render::PickBoundingVolumeJob::intersectionRay(viewport.topLeft().toPoint(),
+    ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.topLeft().toPoint(),
                                                                      camera.viewMatrix(),
                                                                      camera.projectionMatrix(),
                                                                      viewport.toRect());
@@ -347,7 +347,7 @@ void tst_RayCasting::mousePicking()
     QVERIFY(!intersects);
 
     // WHEN
-    ray = Qt3DRender::Render::PickBoundingVolumeJob::intersectionRay(viewport.topRight().toPoint(),
+    ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.topRight().toPoint(),
                                                                      camera.viewMatrix(),
                                                                      camera.projectionMatrix(),
                                                                      viewport.toRect());
@@ -357,7 +357,7 @@ void tst_RayCasting::mousePicking()
     QVERIFY(!intersects);
 
     // WHEN
-    ray = Qt3DRender::Render::PickBoundingVolumeJob::intersectionRay(viewport.bottomLeft().toPoint(),
+    ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.bottomLeft().toPoint(),
                                                                      camera.viewMatrix(),
                                                                      camera.projectionMatrix(),
                                                                      viewport.toRect());
@@ -367,7 +367,7 @@ void tst_RayCasting::mousePicking()
     QVERIFY(!intersects);
 
     // WHEN
-    ray = Qt3DRender::Render::PickBoundingVolumeJob::intersectionRay(viewport.bottomRight().toPoint(),
+    ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.bottomRight().toPoint(),
                                                                      camera.viewMatrix(),
                                                                      camera.projectionMatrix(),
                                                                      viewport.toRect());

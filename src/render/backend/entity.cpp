@@ -45,6 +45,7 @@
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlevelofdetail.h>
 #include <Qt3DRender/qraycaster.h>
+#include <Qt3DRender/qscreenraycaster.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/private/renderlogging_p.h>
@@ -316,6 +317,8 @@ void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
     } else if (type->inherits(&QLevelOfDetail::staticMetaObject)) {
         m_levelOfDetailComponents.append(id);
     } else if (type->inherits(&QRayCaster::staticMetaObject)) {
+        m_rayCasterComponents.append(id);
+    } else if (type->inherits(&QScreenRayCaster::staticMetaObject)) {
         m_rayCasterComponents.append(id);
     } else if (type->inherits(&QMaterial::staticMetaObject)) {
         m_materialComponent = id;

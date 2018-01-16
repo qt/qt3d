@@ -34,6 +34,7 @@ HEADERS += \
     $$PWD/loadskeletonjob_p.h \
     $$PWD/updateskinningpalettejob_p.h \
     $$PWD/filterproximitydistancejob_p.h \
+    $$PWD/abstractpickingjob_p.h \
     $$PWD/raycastingjob_p.h
 
 SOURCES += \
@@ -67,5 +68,6 @@ SOURCES += \
     $$PWD/loadskeletonjob.cpp \
     $$PWD/updateskinningpalettejob.cpp \
     $$PWD/filterproximitydistancejob.cpp \
+    $$PWD/abstractpickingjob.cpp \
     $$PWD/raycastingjob.cpp
 

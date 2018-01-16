@@ -105,18 +105,10 @@ void setEventButtonAndModifiers(const QMouseEvent &event, QPickEvent::Buttons &e
 } // anonymous
 
 PickBoundingVolumeJob::PickBoundingVolumeJob()
-    : m_manager(nullptr)
-    , m_node(nullptr)
-    , m_frameGraphRoot(nullptr)
-    , m_renderSettings(nullptr)
+    : AbstractPickingJob()
     , m_pickersDirty(true)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0);
-}
-
-void PickBoundingVolumeJob::setRoot(Entity *root)
-{
-    m_node = root;
 }
 
 void PickBoundingVolumeJob::setMouseEvents(const QList<QMouseEvent> &pendingEvents)
@@ -129,27 +121,9 @@ void PickBoundingVolumeJob::setKeyEvents(const QList<QKeyEvent> &pendingEvents)
     m_pendingKeyEvents = pendingEvents;
 }
 
-void PickBoundingVolumeJob::setFrameGraphRoot(FrameGraphNode *frameGraphRoot)
+void PickBoundingVolumeJob::markPickersDirty()
 {
-    m_frameGraphRoot = frameGraphRoot;
-}
-
-void PickBoundingVolumeJob::setRenderSettings(RenderSettings *settings)
-{
-    m_renderSettings = settings;
-}
-
-RayCasting::QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix,
-                                                          const QMatrix4x4 &projectionMatrix, const QRect &viewport)
-{
-    QVector3D nearPos = QVector3D(pos.x(), pos.y(), 0.0f);
-    nearPos = nearPos.unproject(viewMatrix, projectionMatrix, viewport);
-    QVector3D farPos = QVector3D(pos.x(), pos.y(), 1.0f);
-    farPos = farPos.unproject(viewMatrix, projectionMatrix, viewport);
-
-    return RayCasting::QRay3D(nearPos,
-                              (farPos - nearPos).normalized(),
-                              (farPos - nearPos).length());
+    m_pickersDirty = true;
 }
 
 bool PickBoundingVolumeJob::runHelper()
@@ -295,22 +269,6 @@ bool PickBoundingVolumeJob::runHelper()
     // and that aren't being hovered any longer
     clearPreviouslyHoveredPickers();
     return true;
-}
-
-void PickBoundingVolumeJob::setManagers(NodeManagers *manager)
-{
-    m_manager = manager;
-}
-
-void PickBoundingVolumeJob::markPickersDirty()
-{
-    m_pickersDirty = true;
-}
-
-void PickBoundingVolumeJob::run()
-{
-    Q_ASSERT(m_frameGraphRoot && m_renderSettings && m_node && m_manager);
-    runHelper();
 }
 
 void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
@@ -459,35 +417,6 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
             break;
         }
     }
-}
-
-QRect PickBoundingVolumeJob::windowViewport(const QSize &area, const QRectF &relativeViewport) const
-{
-    if (area.isValid()) {
-        const int areaWidth = area.width();
-        const int areaHeight = area.height();
-        return QRect(relativeViewport.x() * areaWidth,
-                     (1.0 - relativeViewport.y() - relativeViewport.height()) * areaHeight,
-                     relativeViewport.width() * areaWidth,
-                     relativeViewport.height() * areaHeight);
-    }
-    return relativeViewport.toRect();
-}
-
-RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
-                                                                  const QPoint &pos,
-                                                                  const QRectF &relativeViewport,
-                                                                  const Qt3DCore::QNodeId cameraId) const
-{
-    QMatrix4x4 viewMatrix;
-    QMatrix4x4 projectionMatrix;
-    Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), cameraId, viewMatrix, projectionMatrix);
-    const QRect viewport = windowViewport(area, relativeViewport);
-
-    // In GL the y is inverted compared to Qt
-    const QPoint glCorrectPos = QPoint(pos.x(), area.isValid() ? area.height() - pos.y() : pos.y());
-    const auto ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
-    return ray;
 }
 
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()

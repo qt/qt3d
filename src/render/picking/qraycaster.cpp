@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "qraycaster.h"
-#include "qraycaster_p.h"
+#include "qabstractraycaster_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qcomponent_p.h>
@@ -47,17 +47,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-void QRayCasterPrivate::dispatchHits(const QRayCaster::Hits &hits)
-{
-    Q_Q(QRayCaster);
-    m_hits = hits;
-    for (int i = 0; i < m_hits.size(); i++)
-        m_hits[i].setEntity(qobject_cast<Qt3DCore::QEntity *>(m_scene->lookupNode(m_hits[i].entityId())));
-    bool v = q->blockNotifications(true);
-    emit q->hitsChanged(m_hits);
-    q->blockNotifications(v);
-}
 
 /*!
     \class Qt3DRender::QRayCaster
@@ -80,13 +69,15 @@ void QRayCasterPrivate::dispatchHits(const QRayCaster::Hits &hits)
 
 
 QRayCaster::QRayCaster(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QRayCasterPrivate(), parent)
+    : QAbstractRayCaster(parent)
 {
+    QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::WorldSpaceRayCaster;
 }
 
-QRayCaster::QRayCaster(QRayCasterPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(dd, parent)
+QRayCaster::QRayCaster(QAbstractRayCasterPrivate &dd, Qt3DCore::QNode *parent)
+    : QAbstractRayCaster(dd, parent)
 {
+    QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::WorldSpaceRayCaster;
 }
 
 /*! \internal */
@@ -94,30 +85,15 @@ QRayCaster::~QRayCaster()
 {
 }
 
-QRayCaster::RunMode QRayCaster::runMode() const
-{
-    Q_D(const QRayCaster);
-    return d->m_runMode;
-}
-
-void QRayCaster::setRunMode(QRayCaster::RunMode runMode)
-{
-    Q_D(QRayCaster);
-    if (d->m_runMode != runMode) {
-        d->m_runMode = runMode;
-        emit runModeChanged(d->m_runMode);
-    }
-}
-
 QVector3D QRayCaster::origin() const
 {
-    Q_D(const QRayCaster);
+    auto d = QAbstractRayCasterPrivate::get(this);
     return d->m_origin;
 }
 
 void QRayCaster::setOrigin(const QVector3D &origin)
 {
-    Q_D(QRayCaster);
+    auto d = QAbstractRayCasterPrivate::get(this);
     if (d->m_origin != origin) {
         d->m_origin = origin;
         emit originChanged(d->m_origin);
@@ -126,13 +102,13 @@ void QRayCaster::setOrigin(const QVector3D &origin)
 
 QVector3D QRayCaster::direction() const
 {
-    Q_D(const QRayCaster);
+    auto d = QAbstractRayCasterPrivate::get(this);
     return d->m_direction;
 }
 
 void QRayCaster::setDirection(const QVector3D &direction)
 {
-    Q_D(QRayCaster);
+    auto d = QAbstractRayCasterPrivate::get(this);
     if (d->m_direction != direction) {
         d->m_direction = direction;
         emit directionChanged(d->m_direction);
@@ -141,23 +117,17 @@ void QRayCaster::setDirection(const QVector3D &direction)
 
 float QRayCaster::length() const
 {
-    Q_D(const QRayCaster);
+    auto d = QAbstractRayCasterPrivate::get(this);
     return d->m_length;
 }
 
 void QRayCaster::setLength(float length)
 {
-    Q_D(QRayCaster);
+    auto d = QAbstractRayCasterPrivate::get(this);
     if (!qFuzzyCompare(d->m_length, length)) {
         d->m_length = length;
         emit lengthChanged(d->m_length);
     }
-}
-
-QRayCaster::Hits QRayCaster::hits() const
-{
-    Q_D(const QRayCaster);
-    return d->m_hits;
 }
 
 void QRayCaster::trigger()
@@ -172,35 +142,6 @@ void QRayCaster::trigger(const QVector3D &origin, const QVector3D &direction, fl
     if (length >= 0.f)
         setLength(length);
     setEnabled(true);
-}
-
-/*! \internal */
-void QRayCaster::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QRayCaster);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        const QByteArray propertyName = e->propertyName();
-        if (propertyName == QByteArrayLiteral("hits")) {
-            Hits hits = e->value().value<Hits>();
-            d->dispatchHits(hits);
-        }
-    }
-
-    QComponent::sceneChangeEvent(change);
-}
-
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QRayCaster::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRayCasterData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRayCaster);
-    data.runMode = d->m_runMode;
-    data.origin = d->m_origin;
-    data.direction = d->m_direction;
-    data.length = d->m_length;
-    return creationChange;
 }
 
 } // Qt3DRender
