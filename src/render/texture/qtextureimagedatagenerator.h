@@ -41,7 +41,7 @@
 #define QT3DRENDER_QTEXTUREIMAGEDATAGENERATOR_H
 
 #include <Qt3DRender/qabstractfunctor.h>
-#include <QSharedPointer>
+#include <QtCore/QSharedPointer>
 
 // TO DO TexImageDataPtr -> QImageDataPtr + d_ptr
 // We might also get rid of the layer, face, mipmap level from

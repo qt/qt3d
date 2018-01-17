@@ -44,8 +44,8 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qfilterkey.h>
-#include <QVector>
-#include <QSharedPointer>
+#include <QtCore/QVector>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 

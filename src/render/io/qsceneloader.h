@@ -43,7 +43,7 @@
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <QUrl>
+#include <QtCore/QUrl>
 
 QT_BEGIN_NAMESPACE
 

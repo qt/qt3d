@@ -162,9 +162,9 @@ void ShaderBuilder::setEnabledLayers(const QStringList &layers)
 
     m_enabledLayers = layers;
 
-    for (const auto type : m_graphs.keys()) {
-        if (!m_graphs.value(type).isEmpty())
-            m_dirtyTypes.insert(type);
+    for (QHash<ShaderType, QUrl>::const_iterator it = m_graphs.cbegin(); it != m_graphs.cend(); ++it) {
+        if (!it.value().isEmpty())
+            m_dirtyTypes.insert(it.key());
     }
 }
 
@@ -179,9 +179,9 @@ void ShaderBuilder::setGraphicsApi(const GraphicsApiFilterData &graphicsApi)
         return;
 
     m_graphicsApi = graphicsApi;
-    for (const auto type : m_graphs.keys()) {
-        if (!m_graphs.value(type).isEmpty())
-            m_dirtyTypes.insert(type);
+    for (QHash<ShaderType, QUrl>::const_iterator it = m_graphs.cbegin(); it != m_graphs.cend(); ++it) {
+        if (!it.value().isEmpty())
+            m_dirtyTypes.insert(it.key());
     }
 }
 

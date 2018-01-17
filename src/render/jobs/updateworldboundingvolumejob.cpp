@@ -59,7 +59,7 @@ void UpdateWorldBoundingVolumeJob::run()
 {
     const QVector<HEntity> handles = m_manager->activeHandles();
 
-    for (const HEntity handle : handles) {
+    for (const HEntity &handle : handles) {
         Entity *node = m_manager->data(handle);
         *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(*(node->worldTransform()));
         *(node->worldBoundingVolumeWithChildren()) = *(node->worldBoundingVolume()); // expanded in UpdateBoundingVolumeJob

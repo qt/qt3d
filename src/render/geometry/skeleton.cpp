@@ -365,7 +365,8 @@ void Skeleton::processJointHierarchy(Qt3DCore::QNodeId jointId,
     skeletonData.jointIndices.insert(jointHandle, jointIndex);
 
     // Recurse to the children
-    for (const auto childJointId : joint->childJointIds())
+    const auto childIds = joint->childJointIds();
+    for (const auto childJointId : childIds)
         processJointHierarchy(childJointId, jointIndex, skeletonData);
 }
 

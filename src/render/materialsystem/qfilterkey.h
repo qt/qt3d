@@ -42,7 +42,7 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
-#include <QVariant>
+#include <QtCore/QVariant>
 
 QT_BEGIN_NAMESPACE
 

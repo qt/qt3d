@@ -38,7 +38,7 @@
 #define QRENDERCAPTURE_H
 
 #include <Qt3DRender/QFrameGraphNode>
-#include <QImage>
+#include <QtGui/QImage>
 
 QT_BEGIN_NAMESPACE
 

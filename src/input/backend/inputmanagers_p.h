@@ -79,8 +79,7 @@ namespace Input {
 
 class KeyboardInputManager : public Qt3DCore::QResourceManager<
         KeyboardHandler,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     KeyboardInputManager() {}
@@ -88,8 +87,7 @@ public:
 
 class KeyboardDeviceManager : public Qt3DCore::QResourceManager<
         KeyboardDevice,
-        Qt3DCore::QNodeId,
-        8>
+        Qt3DCore::QNodeId>
 {
 public:
     KeyboardDeviceManager() {}
@@ -97,8 +95,7 @@ public:
 
 class MouseDeviceManager : public Qt3DCore::QResourceManager<
         MouseDevice,
-        Qt3DCore::QNodeId,
-        8>
+        Qt3DCore::QNodeId>
 {
 public:
     MouseDeviceManager() {}
@@ -106,8 +103,7 @@ public:
 
 class MouseInputManager : public Qt3DCore::QResourceManager<
         MouseHandler,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     MouseInputManager() {}
@@ -115,8 +111,7 @@ public:
 
 class AxisManager : public Qt3DCore::QResourceManager<
         Axis,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     AxisManager() {}
@@ -124,8 +119,7 @@ public:
 
 class AxisSettingManager : public Qt3DCore::QResourceManager<
         AxisSetting,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     AxisSettingManager() {}
@@ -133,8 +127,7 @@ public:
 
 class ActionManager : public Qt3DCore::QResourceManager<
         Action,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     ActionManager() {}
@@ -142,8 +135,7 @@ public:
 
 class ActionInputManager : public Qt3DCore::QResourceManager<
         ActionInput,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     ActionInputManager() {}
@@ -151,8 +143,7 @@ public:
 
 class AnalogAxisInputManager : public Qt3DCore::QResourceManager<
         AnalogAxisInput,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     AnalogAxisInputManager() {}
@@ -160,8 +151,7 @@ public:
 
 class ButtonAxisInputManager : public Qt3DCore::QResourceManager<
         ButtonAxisInput,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     ButtonAxisInputManager() {}
@@ -169,8 +159,7 @@ public:
 
 class InputChordManager : public Qt3DCore::QResourceManager<
         InputChord,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     InputChordManager() {}
@@ -178,8 +167,7 @@ public:
 
 class InputSequenceManager : public Qt3DCore::QResourceManager<
         InputSequence,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     InputSequenceManager() {}
@@ -187,8 +175,7 @@ public:
 
 class LogicalDeviceManager : public Qt3DCore::QResourceManager<
         LogicalDevice,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     LogicalDeviceManager() {}
@@ -203,8 +190,7 @@ private:
 
 class GenericDeviceBackendNodeManager : public Qt3DCore::QResourceManager<
         GenericDeviceBackendNode,
-        Qt3DCore::QNodeId,
-        8>
+        Qt3DCore::QNodeId>
 {
 public:
     GenericDeviceBackendNodeManager() {}
@@ -212,8 +198,7 @@ public:
 
 class Q_AUTOTEST_EXPORT PhysicalDeviceProxyManager : public Qt3DCore::QResourceManager<
         PhysicalDeviceProxy,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     PhysicalDeviceProxyManager() {}
@@ -227,8 +212,7 @@ private:
 
 class AxisAccumulatorManager : public Qt3DCore::QResourceManager<
         AxisAccumulator,
-        Qt3DCore::QNodeId,
-        16>
+        Qt3DCore::QNodeId>
 {
 public:
     AxisAccumulatorManager() {}

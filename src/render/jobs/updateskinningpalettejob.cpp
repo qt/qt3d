@@ -63,7 +63,7 @@ void UpdateSkinningPaletteJob::run()
 
     // Update the local pose transforms of JointInfo's in Skeletons from
     // the set of dirty joints.
-    for (const auto jointHandle : m_dirtyJoints) {
+    for (const auto &jointHandle : qAsConst(m_dirtyJoints)) {
         Joint *joint = m_nodeManagers->jointManager()->data(jointHandle);
         Q_ASSERT(joint);
         Skeleton *skeleton = m_nodeManagers->skeletonManager()->data(joint->owningSkeleton());
@@ -79,7 +79,7 @@ void UpdateSkinningPaletteJob::run()
     // Update the skeleton for each dirty armature
     auto armatureManager = m_nodeManagers->armatureManager();
     auto skeletonManager = m_nodeManagers->skeletonManager();
-    for (const auto armatureHandle : qAsConst(dirtyArmatures)) {
+    for (const auto &armatureHandle : qAsConst(dirtyArmatures)) {
         auto armature = armatureManager->data(armatureHandle);
         Q_ASSERT(armature);
 
@@ -99,11 +99,12 @@ void UpdateSkinningPaletteJob::findDirtyArmatures(Entity *entity,
     // TODO: Be smarter about limiting which armatures we update. For e.g. only
     // those with skeletons that have changed and only those that are within view
     // of one or more renderviews.
-    const auto armatureHandle = entity->componentHandle<Armature, 16>();
+    const auto armatureHandle = entity->componentHandle<Armature>();
     if (!armatureHandle.isNull() && !armatures.contains(armatureHandle))
         armatures.push_back(armatureHandle);
 
-    for (const auto child : entity->children())
+    const auto children = entity->children();
+    for (const auto child : children)
         findDirtyArmatures(child, armatures);
 }
 

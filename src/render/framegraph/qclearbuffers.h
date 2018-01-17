@@ -42,8 +42,8 @@
 
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/qrendertargetoutput.h>
-#include <QColor>
-#include <QFlags>
+#include <QtGui/QColor>
+#include <QtCore/QFlags>
 
 QT_BEGIN_NAMESPACE
 

@@ -98,6 +98,7 @@ public Q_SLOTS:
     void exec();
     void quit();
 
+public:
     const QVector<QAbstractAspect *> &aspects() const;
     QAbstractAspectJobManager *jobManager() const;
     QChangeArbiter *changeArbiter() const;

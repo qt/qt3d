@@ -67,7 +67,6 @@ class Scene2DNode;
 class Scene2DNodeManager : public Qt3DCore::QResourceManager<
         Render::Quick::Scene2D,
         Qt3DCore::QNodeId,
-        16,
         Qt3DCore::ObjectLevelLockingPolicy>
 {
 };

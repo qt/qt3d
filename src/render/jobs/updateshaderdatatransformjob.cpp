@@ -83,7 +83,7 @@ void UpdateShaderDataTransformJob::run()
     EntityManager *manager = m_manager->renderNodesManager();
     const QVector<HEntity> handles = manager->activeHandles();
 
-    for (const HEntity handle : handles) {
+    for (const HEntity &handle : handles) {
         Entity *node = manager->data(handle);
         // Update transform properties in ShaderDatas and Lights
         const QVector<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();

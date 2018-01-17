@@ -124,16 +124,16 @@ public:
     void removeRecursiveLayerId(const Qt3DCore::QNodeId layerId);
     void clearRecursiveLayerIds() { m_recursiveLayerComponents.clear(); }
 
-    template<class Backend, uint INDEXBITS>
-    Qt3DCore::QHandle<Backend, INDEXBITS> componentHandle() const
+    template<class Backend>
+    Qt3DCore::QHandle<Backend> componentHandle() const
     {
-        return Qt3DCore::QHandle<Backend, INDEXBITS>();
+        return Qt3DCore::QHandle<Backend>();
     }
 
-    template<class Backend, uint INDEXBITS>
-    QVector<Qt3DCore::QHandle<Backend, INDEXBITS> > componentsHandle() const
+    template<class Backend>
+    QVector<Qt3DCore::QHandle<Backend> > componentsHandle() const
     {
-        return QVector<Qt3DCore::QHandle<Backend, INDEXBITS> >();
+        return QVector<Qt3DCore::QHandle<Backend> >();
     }
 
     template<class Backend>

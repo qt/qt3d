@@ -948,7 +948,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
 void Renderer::lookForAbandonedVaos()
 {
     const QVector<HVao> activeVaos = m_nodesManager->vaoManager()->activeHandles();
-    for (HVao handle : activeVaos) {
+    for (const HVao &handle : activeVaos) {
         OpenGLVertexArrayObject *vao = m_nodesManager->vaoManager()->data(handle);
 
         // Make sure to only mark VAOs for deletion that were already created
@@ -965,7 +965,7 @@ void Renderer::lookForAbandonedVaos()
 void Renderer::lookForDirtyBuffers()
 {
     const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
-    for (HBuffer handle: activeBufferHandles) {
+    for (const HBuffer &handle: activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         if (buffer->isDirty())
             m_dirtyBuffers.push_back(handle);
@@ -976,7 +976,7 @@ void Renderer::lookForDownloadableBuffers()
 {
     m_downloadableBuffers.clear();
     const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
-    for (HBuffer handle : activeBufferHandles) {
+    for (const HBuffer &handle : activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         if (buffer->access() & QBuffer::Read)
             m_downloadableBuffers.push_back(handle);
@@ -987,7 +987,7 @@ void Renderer::lookForDownloadableBuffers()
 void Renderer::lookForDirtyTextures()
 {
     const QVector<HTexture> activeTextureHandles = m_nodesManager->textureManager()->activeHandles();
-    for (HTexture handle: activeTextureHandles) {
+    for (const HTexture &handle: activeTextureHandles) {
         Texture *texture = m_nodesManager->textureManager()->data(handle);
         // Dirty meaning that something has changed on the texture
         // either properties, parameters, generator or a texture image
@@ -1002,7 +1002,7 @@ void Renderer::lookForDirtyShaders()
     if (isRunning()) {
         const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
         const QVector<HShaderBuilder> activeBuilders = m_nodesManager->shaderBuilderManager()->activeHandles();
-        for (HTechnique techniqueHandle : activeTechniques) {
+        for (const HTechnique &techniqueHandle : activeTechniques) {
             Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
             // If api of the renderer matches the one from the technique
             if (technique->isCompatibleWithRenderer()) {
@@ -1013,7 +1013,7 @@ void Renderer::lookForDirtyShaders()
                     Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
 
                     ShaderBuilder *shaderBuilder = nullptr;
-                    for (HShaderBuilder builderHandle : activeBuilders) {
+                    for (const HShaderBuilder &builderHandle : activeBuilders) {
                         ShaderBuilder *builder = m_nodesManager->shaderBuilderManager()->data(builderHandle);
                         if (builder->shaderProgramId() == shader->peerId()) {
                             shaderBuilder = builder;
@@ -1076,7 +1076,7 @@ void Renderer::updateGLResources()
     {
         Profiling::GLTimeRecorder recorder(Profiling::BufferUpload);
         const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
-        for (HBuffer handle: dirtyBufferHandles) {
+        for (const HBuffer &handle: dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
             // Forces creation if it doesn't exit
             // Also note the binding point doesn't really matter here, we just upload data
@@ -1092,7 +1092,7 @@ void Renderer::updateGLResources()
         Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
         const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
-        for (HShader handle: dirtyShaderHandles) {
+        for (const HShader &handle: dirtyShaderHandles) {
             Shader *shader = shaderManager->data(handle);
             // Compile shader
             m_graphicsContext->loadShader(shader, shaderManager);
@@ -1102,7 +1102,7 @@ void Renderer::updateGLResources()
     {
         Profiling::GLTimeRecorder recorder(Profiling::TextureUpload);
         const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
-        for (HTexture handle: activeTextureHandles) {
+        for (const HTexture &handle: activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
             // Upload/Update texture
             updateTexture(texture);
@@ -1136,7 +1136,7 @@ void Renderer::updateTexture(Texture *texture)
     // TO DO: Update the vector once per frame (or in a job)
     const QVector<HAttachment> activeRenderTargetOutputs = m_nodesManager->attachmentManager()->activeHandles();
     // A texture is unique if it's being reference by a render target output
-    for (const HAttachment attachmentHandle : activeRenderTargetOutputs) {
+    for (const HAttachment &attachmentHandle : activeRenderTargetOutputs) {
         RenderTargetOutput *attachment = m_nodesManager->attachmentManager()->data(attachmentHandle);
         if (attachment->textureUuid() == texture->peerId()) {
             isUnique = true;
@@ -1222,7 +1222,7 @@ void Renderer::downloadGLBuffers()
 {
     lookForDownloadableBuffers();
     const QVector<HBuffer> downloadableHandles = std::move(m_downloadableBuffers);
-    for (HBuffer handle : downloadableHandles) {
+    for (const HBuffer &handle : downloadableHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         QByteArray content = m_graphicsContext->downloadBufferContent(buffer);
         m_sendBufferCaptureJob->addRequest(QPair<Buffer*, QByteArray>(buffer, content));
@@ -1939,7 +1939,7 @@ void Renderer::cleanGraphicsResources()
     m_abandonedVaosMutex.lock();
     const QVector<HVao> abandonedVaos = std::move(m_abandonedVaos);
     m_abandonedVaosMutex.unlock();
-    for (HVao vaoHandle : abandonedVaos) {
+    for (const HVao &vaoHandle : abandonedVaos) {
         // might have already been destroyed last frame, but added by the cleanup job before, so
         // check if the VAO is really still existent
         OpenGLVertexArrayObject *vao = m_nodesManager->vaoManager()->data(vaoHandle);

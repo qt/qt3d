@@ -41,8 +41,8 @@
 #define QT3DRENDER_QVIEWPORT_H
 
 #include <Qt3DRender/qframegraphnode.h>
-#include <QRectF>
-#include <QColor>
+#include <QtCore/QRectF>
+#include <QtGui/QColor>
 
 QT_BEGIN_NAMESPACE
 

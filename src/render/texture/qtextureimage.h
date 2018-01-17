@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QTEXTUREIMAGE_H
 #define QT3DRENDER_QTEXTUREIMAGE_H
 
-#include <QUrl>
+#include <QtCore/QUrl>
 #include <Qt3DRender/qabstracttextureimage.h>
 
 QT_BEGIN_NAMESPACE

@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QSTENCILTESTARGUMENTS_H
 #define QT3DRENDER_QSTENCILTESTARGUMENTS_H
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE

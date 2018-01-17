@@ -117,12 +117,12 @@ void QChannelComponent::clearKeyFrames()
 
 QChannelComponent::const_iterator QChannelComponent::begin() const Q_DECL_NOTHROW
 {
-    return d->m_keyFrames.begin();
+    return d->m_keyFrames.cbegin();
 }
 
 QChannelComponent::const_iterator QChannelComponent::end() const Q_DECL_NOTHROW
 {
-    return d->m_keyFrames.end();
+    return d->m_keyFrames.cend();
 }
 
 bool operator==(const QChannelComponent &lhs, const QChannelComponent &rhs) Q_DECL_NOTHROW

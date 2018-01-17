@@ -40,9 +40,9 @@
 #ifndef QT3DRENDER_QPICKEVENT_H
 #define QT3DRENDER_QPICKEVENT_H
 
-#include <QObject>
-#include <QVector3D>
-#include <QPointF>
+#include <QtCore/QObject>
+#include <QtGui/QVector3D>
+#include <QtCore/QPointF>
 #include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE

@@ -42,7 +42,7 @@
 
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/qrendertargetoutput.h>
-#include <QRect>
+#include <QtCore/QRect>
 
 QT_BEGIN_NAMESPACE
 

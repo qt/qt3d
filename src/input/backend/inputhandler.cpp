@@ -221,7 +221,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
     QVector<QAspectJobPtr> jobs;
     const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> events = pendingKeyEvents();
 
-    for (const HKeyboardDevice cHandle : qAsConst(m_activeKeyboardDevices)) {
+    for (const HKeyboardDevice &cHandle : qAsConst(m_activeKeyboardDevices)) {
         KeyboardDevice *keyboardDevice = m_keyboardDeviceManager->data(cHandle);
         if (keyboardDevice) {
             keyboardDevice->updateKeyEvents(events);
@@ -254,7 +254,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
     const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> wheelEvents = pendingWheelEvents();
 #endif
 
-    for (const HMouseDevice cHandle : qAsConst(m_activeMouseDevices)) {
+    for (const HMouseDevice &cHandle : qAsConst(m_activeMouseDevices)) {
         MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
 
         controller->updateMouseEvents(mouseEvents);
@@ -269,7 +269,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
                                     ) {
             // Send the events to the mouse handlers that have for sourceDevice controller
             const QVector<HMouseHandler> activeMouseHandlers = m_mouseInputManager->activeHandles();
-            for (HMouseHandler mouseHandlerHandle : activeMouseHandlers) {
+            for (const HMouseHandler &mouseHandlerHandle : activeMouseHandlers) {
 
                 MouseHandler *mouseHandler = m_mouseInputManager->data(mouseHandlerHandle);
                 Q_ASSERT(mouseHandler);

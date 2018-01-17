@@ -279,7 +279,7 @@ QVector<Entity *> Entity::children() const
 {
     QVector<Entity *> childrenVector;
     childrenVector.reserve(m_childrenHandles.size());
-    for (HEntity handle : m_childrenHandles) {
+    for (const HEntity &handle : m_childrenHandles) {
         Entity *child = m_nodeManagers->renderNodesManager()->data(handle);
         if (child != nullptr)
             childrenVector.append(child);

@@ -380,7 +380,7 @@ AssimpImporter::~AssimpImporter()
  */
 bool AssimpImporter::areAssimpExtensions(const QStringList &extensions)
 {
-    for (const auto ext : qAsConst(extensions))
+    for (const auto &ext : qAsConst(extensions))
         if (AssimpImporter::assimpSupportedFormatsList.contains(ext.toLower()))
             return true;
     return false;

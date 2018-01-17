@@ -80,7 +80,7 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change);
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
     bool m_recursive;
 };
 

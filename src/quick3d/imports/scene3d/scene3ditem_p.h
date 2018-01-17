@@ -88,7 +88,7 @@ public:
 
     bool multisample() const;
     void setMultisample(bool enable);
-    Q_INVOKABLE void setItemArea(QSize area);
+    Q_INVOKABLE void setItemAreaAndDevicePixelRatio(QSize area, qreal devicePixelRatio);
     bool isHoverEnabled() const;
 
     enum CameraAspectRatioMode {

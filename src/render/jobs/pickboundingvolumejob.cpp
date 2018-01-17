@@ -169,7 +169,7 @@ bool PickBoundingVolumeJob::runHelper()
         m_oneHoverAtLeast = false;
 
         const auto activeHandles = m_manager->objectPickerManager()->activeHandles();
-        for (auto handle : activeHandles) {
+        for (const auto &handle : activeHandles) {
             auto picker = m_manager->objectPickerManager()->data(handle);
             m_oneEnabledAtLeast |= picker->isEnabled();
             m_oneHoverAtLeast |= picker->isHoverEnabled();
@@ -330,14 +330,14 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
         for (const QCollisionQueryResult::Hit &hit : qAsConst(sphereHits)) {
             Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
-            HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+            HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker>();
 
             // If the Entity which actually received the hit doesn't have
             // an object picker component, we need to check the parent if it has one ...
             while (objectPickerHandle.isNull() && entity != nullptr) {
                 entity = entity->parent();
                 if (entity != nullptr)
-                    objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+                    objectPickerHandle = entity->componentHandle<ObjectPicker>();
             }
 
             ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
@@ -492,7 +492,7 @@ RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &a
 
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
 {
-    for (const HObjectPicker pickHandle : qAsConst(m_hoveredPickersToClear)) {
+    for (const HObjectPicker &pickHandle : qAsConst(m_hoveredPickersToClear)) {
         ObjectPicker *pick = m_manager->objectPickerManager()->data(pickHandle);
         if (pick)
             pick->onExited();

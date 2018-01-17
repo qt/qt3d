@@ -43,9 +43,9 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qcameralens.h>
-#include <QMatrix4x4>
-#include <QQuaternion>
-#include <QVector3D>
+#include <QtGui/QMatrix4x4>
+#include <QtGui/QQuaternion>
+#include <QtGui/QVector3D>
 
 QT_BEGIN_NAMESPACE
 

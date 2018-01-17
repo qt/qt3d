@@ -887,6 +887,8 @@ QTextureImageDataPtr TextureLoadingHelper::loadTextureData(QIODevice *data, cons
         if (img.load(data, suffix.toLatin1())) {
             textureData = QTextureImageDataPtr::create();
             textureData->setImage(mirrored ? img.mirrored() : img);
+        } else {
+            qWarning() << "Failed to load textureImage data using QImage";
         }
         break;
     }
@@ -935,7 +937,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
             }
 
             for (QString s: qAsConst(ext)) {
-                textureData = TextureLoadingHelper::loadTextureData(&buffer, suffix, true, m_mirrored);
+                textureData = TextureLoadingHelper::loadTextureData(&buffer, s, true, m_mirrored);
                 if (textureData && textureData->data().length() > 0)
                     break;
             }
