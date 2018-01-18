@@ -57,7 +57,28 @@ QCameraPrivate::QCameraPrivate()
     , m_lens(new QCameraLens())
     , m_transform(new Qt3DCore::QTransform())
 {
-    updateViewMatrix();
+    updateViewMatrixAndTransform(false);
+}
+
+void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
+{
+    Q_Q(QCamera);
+
+    const QVector3D viewDirection = (m_viewCenter - m_position).normalized();
+
+    QMatrix4x4 transformMatrix;
+    transformMatrix.translate(m_position);
+
+    // Negative viewDirection because OpenGL convention is looking down -Z
+    transformMatrix.rotate(QQuaternion::fromDirection(-viewDirection, m_upVector.normalized()));
+
+    m_transform->setMatrix(transformMatrix);
+
+    QMatrix4x4 viewMatrix;
+    viewMatrix.lookAt(m_position, m_viewCenter, m_upVector);
+    m_viewMatrix = viewMatrix;
+    if (doEmit)
+        emit q->viewMatrixChanged();
 }
 
 /*!
@@ -260,29 +281,34 @@ QCameraPrivate::QCameraPrivate()
 
 /*!
  * \qmlproperty vector3d Qt3D.Render::Camera::position
- * Holds the current position of the camera.
+ * Holds the current position of the camera in coordinates relative to
+ * the parent entity.
  */
 
 /*!
  * \qmlproperty vector3d Qt3D.Render::Camera::upVector
- * Holds the current up vector of the camera.
+ * Holds the current up vector of the camera in coordinates relative to
+ * the parent entity.
  */
 
 /*!
  * \qmlproperty vector3d Qt3D.Render::Camera::viewCenter
- * Holds the current view center of the camera.
+ * Holds the current view center of the camera in coordinates relative to
+ * the parent entity.
  * \readonly
  */
 
 /*!
  * \qmlproperty vector3d Qt3D.Render::Camera::viewVector
- * Holds the camera's view vector.
+ * Holds the camera's view vector in coordinates relative to
+ * the parent entity.
  * \readonly
  */
 
 /*!
  * \qmlproperty matrix4x4 Qt3D.Render::Camera::viewMatrix
- * Holds the camera's view matrix.
+ * Holds the camera's view matrix in coordinates relative
+ * to the parent entity.
  * \readonly
  */
 
@@ -352,27 +378,32 @@ QCameraPrivate::QCameraPrivate()
 
 /*!
  * \property QCamera::position
- * Holds the camera's position.
+ * Holds the camera's position in coordinates relative to
+ * the parent entity.
  */
 
 /*!
  * \property QCamera::upVector
- * Holds the camera's up vector.
+ * Holds the camera's up vector in coordinates relative to
+ * the parent entity.
  */
 
 /*!
  * \property QCamera::viewCenter
- * Holds the camera's view center.
+ * Holds the camera's view center in coordinates relative to
+ * the parent entity.
  */
 
 /*!
  * \property QCamera::viewVector
- * Holds the camera's view vector.
+ * Holds the camera's view vector in coordinates relative to
+ * the parent entity.
  */
 
 /*!
  * \property QCamera::viewMatrix
- * Holds the camera's view matrix.
+ * Holds the camera's view matrix in coordinates relative to
+ * the parent entity.
  */
 
 /*!
@@ -393,7 +424,6 @@ QCamera::QCamera(Qt3DCore::QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
     QObject::connect(d_func()->m_lens, SIGNAL(exposureChanged(float)), this, SIGNAL(exposureChanged(float)));
-    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
 }
@@ -421,7 +451,6 @@ QCamera::QCamera(QCameraPrivate &dd, Qt3DCore::QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged(float)), this, SIGNAL(bottomChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
-    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
 }
@@ -812,7 +841,7 @@ void QCamera::setPosition(const QVector3D &position)
         d->m_viewMatrixDirty = true;
         emit positionChanged(position);
         emit viewVectorChanged(d->m_cameraToCenter);
-        d->updateViewMatrix();
+        d->updateViewMatrixAndTransform();
     }
 }
 
@@ -832,7 +861,7 @@ void QCamera::setUpVector(const QVector3D &upVector)
         d->m_upVector = upVector;
         d->m_viewMatrixDirty = true;
         emit upVectorChanged(upVector);
-        d->updateViewMatrix();
+        d->updateViewMatrixAndTransform();
     }
 }
 
@@ -854,7 +883,7 @@ void QCamera::setViewCenter(const QVector3D &viewCenter)
         d->m_viewMatrixDirty = true;
         emit viewCenterChanged(viewCenter);
         emit viewVectorChanged(d->m_cameraToCenter);
-        d->updateViewMatrix();
+        d->updateViewMatrixAndTransform();
     }
 }
 
@@ -873,7 +902,7 @@ QVector3D QCamera::viewVector() const
 QMatrix4x4 QCamera::viewMatrix() const
 {
     Q_D(const QCamera);
-    return d->m_transform->matrix();
+    return d->m_viewMatrix;
 }
 
 } // Qt3DRender

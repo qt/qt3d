@@ -67,12 +67,7 @@ public:
 
     Q_DECLARE_PUBLIC(QCamera)
 
-    void updateViewMatrix()
-    {
-        QMatrix4x4 m;
-        m.lookAt(m_position, m_viewCenter, m_upVector);
-        m_transform->setMatrix(m);
-    }
+    void updateViewMatrixAndTransform(bool doEmit = true);
 
     QVector3D m_position;
     QVector3D m_viewCenter;
@@ -84,6 +79,7 @@ public:
     // Components
     QCameraLens *m_lens;
     Qt3DCore::QTransform *m_transform;
+    QMatrix4x4 m_viewMatrix;
 };
 
 } // namespace Qt3DRender

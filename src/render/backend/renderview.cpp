@@ -716,7 +716,18 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
 void RenderView::updateMatrices()
 {
     if (m_data.m_renderCameraNode && m_data.m_renderCameraLens && m_data.m_renderCameraLens->isEnabled()) {
-        setViewMatrix(*m_data.m_renderCameraNode->worldTransform());
+        const QMatrix4x4 cameraWorld = *(m_data.m_renderCameraNode->worldTransform());
+
+        const QVector4D position = cameraWorld * QVector4D(0.0f, 0.0f, 0.0f, 1.0f);
+        // OpenGL convention is looking down -Z
+        const QVector4D viewDirection = cameraWorld * QVector4D(0.0f, 0.0f, -1.0f, 0.0f);
+        const QVector4D upVector = cameraWorld * QVector4D(0.0f, 1.0f, 0.0f, 0.0f);
+
+        QMatrix4x4 m;
+        m.lookAt(position.toVector3D(), (position + viewDirection).toVector3D(), upVector.toVector3D());
+
+        setViewMatrix(m);
+
         setViewProjectionMatrix(m_data.m_renderCameraLens->projection() * viewMatrix());
         //To get the eyePosition of the camera, we need to use the inverse of the
         //camera's worldTransform matrix.
