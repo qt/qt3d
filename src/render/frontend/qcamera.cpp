@@ -307,6 +307,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 
 /*!
  * \qmlproperty matrix4x4 Qt3D.Render::Camera::viewMatrix
+ * \deprecated
  * Holds the camera's view matrix in coordinates relative
  * to the parent entity.
  * \readonly
@@ -402,6 +403,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 
 /*!
  * \property QCamera::viewMatrix
+ * \deprecated
  * Holds the camera's view matrix in coordinates relative to
  * the parent entity.
  */
