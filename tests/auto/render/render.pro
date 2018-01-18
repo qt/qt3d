@@ -110,6 +110,8 @@ qtConfig(private_tests) {
         proximityfiltering \
         qblitframebuffer \
         blitframebuffer \
+        qraycaster \
+        raycaster \
         qcamera
 
     QT_FOR_CONFIG = 3dcore-private
