@@ -54,13 +54,16 @@
 #include <Qt3DCore/private/qdownloadhelperservice_p.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/qmesh.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QMesh;
+namespace Render {
+class NodeManagers;
+}
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT QMeshPrivate : public QGeometryRendererPrivate
 {
@@ -80,28 +83,44 @@ public:
 class Q_AUTOTEST_EXPORT MeshDownloadRequest : public Qt3DCore::QDownloadRequest
 {
 public:
-    MeshDownloadRequest(Qt3DCore::QNodeId mesh, QUrl source, Qt3DCore::QAspectEngine *engine);
+    MeshDownloadRequest(Qt3DCore::QNodeId mesh, QUrl source, Render::NodeManagers *managers);
 
     void onCompleted() Q_DECL_OVERRIDE;
 
 private:
     Qt3DCore::QNodeId m_mesh;
-    Qt3DCore::QAspectEngine *m_engine;
+    Render::NodeManagers *m_nodeManagers;
 };
 
 class Q_AUTOTEST_EXPORT MeshLoaderFunctor : public QGeometryFactory
 {
 public :
-    MeshLoaderFunctor(QMesh *mesh, Qt3DCore::QAspectEngine *engine, const QByteArray &sourceData = QByteArray());
-    QGeometry *operator()() Q_DECL_OVERRIDE;
-    bool operator ==(const QGeometryFactory &other) const Q_DECL_OVERRIDE;
+    MeshLoaderFunctor(QMesh *mesh, const QByteArray &sourceData = QByteArray());
+
+    void setNodeManagers(Render::NodeManagers *managers) { m_nodeManagers = managers; }
+    Render::NodeManagers *nodeManagers() const { return m_nodeManagers; }
+
+    void setDownloaderService(Qt3DCore::QDownloadHelperService *service) { m_downloaderService = service; }
+    Qt3DCore::QDownloadHelperService *downloaderService() const { return m_downloaderService; }
+
+    void setSourceData(const QByteArray &data) { m_sourceData = data; }
+    QByteArray sourceData() const { return m_sourceData; }
+
+    QUrl sourcePath() const { return m_sourcePath; }
+    Qt3DCore::QNodeId mesh() const { return m_mesh; }
+    QString meshName() const { return m_meshName; }
+
+    QGeometry *operator()() override;
+    bool operator ==(const QGeometryFactory &other) const override;
     QT3D_FUNCTOR(MeshLoaderFunctor)
 
+private:
     Qt3DCore::QNodeId m_mesh;
     QUrl m_sourcePath;
     QString m_meshName;
-    Qt3DCore::QAspectEngine *m_engine;
     QByteArray m_sourceData;
+    Render::NodeManagers *m_nodeManagers;
+    Qt3DCore::QDownloadHelperService *m_downloaderService;
 };
 
 
