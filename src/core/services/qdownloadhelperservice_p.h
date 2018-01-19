@@ -83,7 +83,7 @@ public:
     bool cancelled() const { return m_cancelled; }
 
     virtual void onDownloaded();         // this is called in dl thread
-    virtual void onCompleted() = 0;      // this is called in job thread
+    virtual void onCompleted() = 0;      // this is called in the aspect thread
 
 protected:
     QUrl m_url;
