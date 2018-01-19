@@ -54,13 +54,12 @@
 #include <Qt3DCore/private/qdownloadhelperservice_p.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/qmesh.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QMesh;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT QMeshPrivate : public QGeometryRendererPrivate
 {
@@ -72,9 +71,11 @@ public:
 
     void setScene(Qt3DCore::QScene *scene) override;
     void updateFunctor();
+    void setStatus(QMesh::Status status);
 
     QUrl m_source;
     QString m_meshName;
+    QMesh::Status m_status;
 };
 
 class Q_AUTOTEST_EXPORT MeshDownloadRequest : public Qt3DCore::QDownloadRequest
