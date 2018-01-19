@@ -1254,6 +1254,7 @@ void AssimpImporter::copyMaterialTextures(QMaterial *material, aiMaterial *assim
             QAbstractTexture *tex = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
             QTextureImage *texImage = QAbstractNodeFactory::createNode<QTextureImage>("QTextureImage");
             texImage->setSource(QUrl::fromLocalFile(fullPath));
+            texImage->setMirrored(false);
             tex->addTextureImage(texImage);
 
             // Set proper wrapping mode
