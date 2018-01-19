@@ -288,12 +288,21 @@ void QParameter::setValue(const QVariant &dv)
     Q_D(QParameter);
     if (d->m_value != dv) {
 
+        QNode *oldNodeValue = d->m_value.value<QNode *>();
+        if (oldNodeValue != nullptr)
+            d->unregisterDestructionHelper(oldNodeValue);
+
         // In case node values are declared inline
         QNode *nodeValue = dv.value<QNode *>();
         if (nodeValue != nullptr && !nodeValue->parent())
             nodeValue->setParent(this);
 
         d->setValue(dv);
+
+        // Ensures proper bookkeeping
+        if (nodeValue != nullptr)
+            d->registerDestructionHelper(nodeValue, &QParameter::setValue, nodeValue, QVariant());
+
         emit valueChanged(dv);
     }
 }

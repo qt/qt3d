@@ -249,6 +249,28 @@ private Q_SLOTS:
 
     }
 
+    void checkBookeeping()
+    {
+        // GIVEN
+        Qt3DRender::QParameter parameter;
+        QSignalSpy spy(&parameter, SIGNAL(valueChanged(QVariant)));
+
+        {
+            // WHEN
+            QScopedPointer<Qt3DCore::QNode> node(new Qt3DCore::QNode());
+            parameter.setValue(QVariant::fromValue(node.data()));
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(parameter.value(), QVariant::fromValue(node.data()));
+            spy.clear();
+        }
+
+        // THEN
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(parameter.value(), QVariant());
+    }
+
 };
 
 QTEST_MAIN(tst_QParameter)
