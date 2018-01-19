@@ -89,9 +89,7 @@ void QMeshPrivate::setScene(Qt3DCore::QScene *scene)
 void QMeshPrivate::updateFunctor()
 {
     Q_Q(QMesh);
-    Qt3DCore::QAspectEngine *engine = m_scene ? m_scene->engine() : nullptr;
-    if (engine)
-        q->setGeometryFactory(QGeometryFactoryPtr(new MeshLoaderFunctor(q, engine)));
+    q->setGeometryFactory(QGeometryFactoryPtr(new MeshLoaderFunctor(q)));
 }
 
 void QMeshPrivate::setStatus(QMesh::Status status)
@@ -226,6 +224,7 @@ void QMesh::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         if (e->propertyName() == QByteArrayLiteral("status"))
             d->setStatus(e->value().value<QMesh::Status>());
     }
+    Qt3DRender::QGeometryRenderer::sceneChangeEvent(change);
 }
 
 void QMesh::setSource(const QUrl& source)
@@ -289,13 +288,14 @@ QMesh::Status QMesh::status() const
 /*!
  * \internal
  */
-MeshLoaderFunctor::MeshLoaderFunctor(QMesh *mesh, Qt3DCore::QAspectEngine *engine, const QByteArray &sourceData)
+MeshLoaderFunctor::MeshLoaderFunctor(QMesh *mesh, const QByteArray &sourceData)
     : QGeometryFactory()
     , m_mesh(mesh->id())
     , m_sourcePath(mesh->source())
     , m_meshName(mesh->meshName())
-    , m_engine(engine)
     , m_sourceData(sourceData)
+    , m_nodeManagers(nullptr)
+    , m_downloaderService(nullptr)
 {
 }
 
@@ -313,9 +313,14 @@ QGeometry *MeshLoaderFunctor::operator()()
     if (!Qt3DCore::QDownloadHelperService::isLocal(m_sourcePath)) {
         if (m_sourceData.isEmpty()) {
             if (m_mesh) {
-                auto downloadService = Qt3DCore::QDownloadHelperService::getService(m_engine);
-                Qt3DCore::QDownloadRequestPtr request(new MeshDownloadRequest(m_mesh, m_sourcePath, m_engine));
-                downloadService->submitRequest(request);
+                // Output a warning in the case a user is calling the functor directly
+                // in the frontend
+                if (m_nodeManagers == nullptr || m_downloaderService == nullptr) {
+                    qWarning() << "Mesh source points to a remote URL. Remotes meshes can only be loaded if the geometry is processed by the Qt3DRender backend";
+                    return nullptr;
+                }
+                Qt3DCore::QDownloadRequestPtr request(new MeshDownloadRequest(m_mesh, m_sourcePath, m_nodeManagers));
+                m_downloaderService->submitRequest(request);
             }
             return nullptr;
         }
@@ -386,39 +391,48 @@ bool MeshLoaderFunctor::operator ==(const QGeometryFactory &other) const
         return (otherFunctor->m_sourcePath == m_sourcePath &&
                 otherFunctor->m_sourceData.isEmpty() == m_sourceData.isEmpty() &&
                 otherFunctor->m_meshName == m_meshName &&
-                otherFunctor->m_engine == m_engine);
+                otherFunctor->m_downloaderService == m_downloaderService &&
+                otherFunctor->m_nodeManagers == m_nodeManagers);
     return false;
 }
 
 /*!
  * \internal
  */
-MeshDownloadRequest::MeshDownloadRequest(Qt3DCore::QNodeId mesh, QUrl source, Qt3DCore::QAspectEngine *engine)
+MeshDownloadRequest::MeshDownloadRequest(Qt3DCore::QNodeId mesh, QUrl source, Render::NodeManagers *managers)
     : Qt3DCore::QDownloadRequest(source)
     , m_mesh(mesh)
-    , m_engine(engine)
+    , m_nodeManagers(managers)
 {
-
 }
 
+// Called in Aspect Thread context (not a Qt3D AspectJob)
+// We are sure that when this is called, no AspectJob are running
 void MeshDownloadRequest::onCompleted()
 {
     if (cancelled() || !succeeded())
         return;
 
-    QRenderAspectPrivate* d_aspect = QRenderAspectPrivate::findPrivate(m_engine);
-    if (!d_aspect)
+    if (!m_nodeManagers)
         return;
 
-    Render::GeometryRenderer *renderer = d_aspect->m_nodeManagers->geometryRendererManager()->lookupResource(m_mesh);
+    Render::GeometryRenderer *renderer = m_nodeManagers->geometryRendererManager()->lookupResource(m_mesh);
     if (!renderer)
         return;
 
-    QSharedPointer<MeshLoaderFunctor> functor = qSharedPointerCast<MeshLoaderFunctor>(renderer->geometryFactory());
-    functor->m_sourceData = m_data;
+    QGeometryFactoryPtr geometryFactory = renderer->geometryFactory();
+    if (!geometryFactory.isNull() && geometryFactory->id() == Qt3DRender::functorTypeId<MeshLoaderFunctor>()) {
+        QSharedPointer<MeshLoaderFunctor> functor = qSharedPointerCast<MeshLoaderFunctor>(geometryFactory);
 
-    // mark the component as dirty so that the functor runs again in the correct job
-    d_aspect->m_nodeManagers->geometryRendererManager()->addDirtyGeometryRenderer(m_mesh);
+        // We make sure we are setting the result for the right request
+        // (the functor for the mesh could have changed in the meantime)
+        if (m_url == functor->sourcePath()) {
+            functor->setSourceData(m_data);
+
+            // mark the component as dirty so that the functor runs again in the correct job
+            m_nodeManagers->geometryRendererManager()->addDirtyGeometryRenderer(m_mesh);
+        }
+    }
 }
 
 } // namespace Qt3DRender

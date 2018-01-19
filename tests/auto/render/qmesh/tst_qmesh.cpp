@@ -137,8 +137,8 @@ private Q_SLOTS:
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QGeometryRendererData>>(creationChanges.first());
             const Qt3DRender::QGeometryRendererData cloneData = creationChangeData->data;
 
-            // Geometry factory is null until the engine becomes available
-            QVERIFY(cloneData.geometryFactory == nullptr);
+            // Geometry factory shouldn't be null
+            QVERIFY(cloneData.geometryFactory != nullptr);
             QCOMPARE(mesh.id(), creationChangeData->subjectId());
             QCOMPARE(mesh.isEnabled(), true);
             QCOMPARE(mesh.isEnabled(), creationChangeData->isNodeEnabled());
@@ -194,8 +194,8 @@ private Q_SLOTS:
             Qt3DRender::QGeometryFactoryPtr factory = change->value().value<Qt3DRender::QGeometryFactoryPtr>();
             QSharedPointer<Qt3DRender::MeshLoaderFunctor> meshFunctor = qSharedPointerCast<Qt3DRender::MeshLoaderFunctor>(factory);
             QVERIFY(meshFunctor != nullptr);
-            QCOMPARE(meshFunctor->m_mesh, mesh.id());
-            QCOMPARE(meshFunctor->m_sourcePath, mesh.source());
+            QCOMPARE(meshFunctor->mesh(), mesh.id());
+            QCOMPARE(meshFunctor->sourcePath(), mesh.source());
 
             arbiter.events.clear();
         }
@@ -239,8 +239,8 @@ private Q_SLOTS:
             Qt3DRender::QGeometryFactoryPtr factory = change->value().value<Qt3DRender::QGeometryFactoryPtr>();
             QSharedPointer<Qt3DRender::MeshLoaderFunctor> meshFunctor = qSharedPointerCast<Qt3DRender::MeshLoaderFunctor>(factory);
             QVERIFY(meshFunctor != nullptr);
-            QCOMPARE(meshFunctor->m_mesh, mesh.id());
-            QCOMPARE(meshFunctor->m_meshName, mesh.meshName());
+            QCOMPARE(meshFunctor->mesh(), mesh.id());
+            QCOMPARE(meshFunctor->meshName(), mesh.meshName());
 
             arbiter.events.clear();
         }
@@ -278,6 +278,17 @@ private Q_SLOTS:
         QCOMPARE(spy.count(), 1);
     }
 
+    void checkGeometryFactoryIsAccessibleEvenWithNoScene() // QTBUG-65506
+    {
+        // GIVEN
+        Qt3DRender::QMesh mesh;
+
+        // WHEN
+        mesh.setSource(QUrl(QStringLiteral("some_path")));
+
+        // THEN
+        QVERIFY(!mesh.geometryFactory().isNull());
+    }
 };
 
 QTEST_MAIN(tst_QMesh)
