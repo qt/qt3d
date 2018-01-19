@@ -82,6 +82,7 @@ Entity {
     Mesh {
         id: mesh
         source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;hb=refs/heads/dev;f=examples/qt3d/exampleresources/assets/chest/Chest.obj"
+        onStatusChanged: console.log("Status " + status)
     }
 
     Transform {

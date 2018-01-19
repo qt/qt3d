@@ -221,21 +221,29 @@ void GeometryRenderer::executeFunctor()
 
     // If the geometry is null, then we were either unable to load it (Error)
     // or the mesh is located at a remote url and needs to be downloaded first (Loading)
-    if (!geometry)
-        return;
+    if (geometry != nullptr) {
+        // Move the QGeometry object to the main thread and notify the
+        // corresponding QGeometryRenderer
+        const auto appThread = QCoreApplication::instance()->thread();
+        geometry->moveToThread(appThread);
 
-    // Move the QGeometry object to the main thread and notify the
-    // corresponding QGeometryRenderer
-    const auto appThread = QCoreApplication::instance()->thread();
-    geometry->moveToThread(appThread);
+        auto e = QGeometryChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        e->setPropertyName("geometry");
+        e->data = std::move(geometry);
+        notifyObservers(e);
+    }
 
-    auto e = QGeometryChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-    e->setPropertyName("geometry");
-    e->data = std::move(geometry);
-    notifyObservers(e);
+    // Send Status
+    if (isQMeshFunctor) {
+        QSharedPointer<MeshLoaderFunctor> meshLoader = qSharedPointerCast<MeshLoaderFunctor>(m_geometryFactory);
 
-    // TODO: Maybe we could also send a status to help troubleshoot errors
+        auto e = QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        e->setPropertyName("status");
+        e->setValue(meshLoader->status());
+        notifyObservers(e);
+    }
 }
 
 void GeometryRenderer::unsetDirty()

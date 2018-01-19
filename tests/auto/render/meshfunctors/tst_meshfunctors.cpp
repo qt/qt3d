@@ -116,6 +116,7 @@ private Q_SLOTS:
         QVERIFY(functor.sourceData().isEmpty());
         QCOMPARE(functor.mesh(), mesh.id());
         QCOMPARE(functor.sourcePath(), mesh.source());
+        QCOMPARE(functor.status(), Qt3DRender::QMesh::None);
     }
 
     void functorComparison()
@@ -189,6 +190,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(g == nullptr);
+            QCOMPARE(functor.status(), Qt3DRender::QMesh::Error);
         }
 
         {
@@ -202,6 +204,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(g == nullptr);
+            QCOMPARE(functor.status(), Qt3DRender::QMesh::Error);
         }
 
         {
@@ -215,6 +218,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(g == nullptr);
+            QCOMPARE(functor.status(), Qt3DRender::QMesh::Error);
         }
     }
 };

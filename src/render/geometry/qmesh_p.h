@@ -116,6 +116,8 @@ public :
     Qt3DCore::QNodeId mesh() const { return m_mesh; }
     QString meshName() const { return m_meshName; }
 
+    QMesh::Status status() const { return m_status; }
+
     QGeometry *operator()() override;
     bool operator ==(const QGeometryFactory &other) const override;
     QT3D_FUNCTOR(MeshLoaderFunctor)
@@ -127,6 +129,7 @@ private:
     QByteArray m_sourceData;
     Render::NodeManagers *m_nodeManagers;
     Qt3DCore::QDownloadHelperService *m_downloaderService;
+    QMesh::Status m_status;
 };
 
 
