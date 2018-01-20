@@ -96,8 +96,8 @@ public:
 
     void animationClipMarkedDirty() { setDirty(Handler::ClipAnimatorDirty); }
 
-    void setFormatIndices(const ComponentIndices &formatIndices) { m_formatIndices = formatIndices; }
-    ComponentIndices formatIndices() const { return m_formatIndices; }
+    void setClipFormat(const ClipFormat &clipFormat) { m_clipFormat = clipFormat; }
+    ClipFormat clipFormat() const { return m_clipFormat; }
 
     qint64 nsSincePreviousFrame(qint64 currentGlobalTimeNS);
     void setLastGlobalTimeNS(qint64 lastGlobalTimeNS);
@@ -120,7 +120,7 @@ private:
     QVector<MappingData> m_mappingData;
 
     int m_currentLoop;
-    ComponentIndices m_formatIndices;
+    ClipFormat m_clipFormat;
 };
 
 } // namespace Animation

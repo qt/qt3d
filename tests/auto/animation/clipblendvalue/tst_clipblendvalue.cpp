@@ -41,6 +41,7 @@
 using namespace Qt3DAnimation::Animation;
 
 Q_DECLARE_METATYPE(ClipBlendValue *)
+Q_DECLARE_METATYPE(QVector<ClipFormat>)
 
 class tst_ClipBlendValue : public Qt3DCore::QBackendNodeTester
 {
@@ -171,90 +172,91 @@ private Q_SLOTS:
         QTest::addColumn<ClipBlendValue *>("blendNode");
         QTest::addColumn<QVector<int>>("indexes");
         QTest::addColumn<QVector<Qt3DCore::QNodeId>>("animatorIds");
-        QTest::addColumn<QVector<ComponentIndices>>("expectedFormatIndices");
+        QTest::addColumn<QVector<ClipFormat>>("expectedClipFormat");
 
         // Single entry
         {
             auto blendNode = new ClipBlendValue;
             QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ComponentIndices> expectedFormatIndices;
+            QVector<ClipFormat> expectedClipFormat;
 
             const auto animatorId = Qt3DCore::QNodeId::createId();
             animatorIds.push_back(animatorId);
 
-            ComponentIndices formatIndices = { 0, 1, 2 };
-            expectedFormatIndices.push_back(formatIndices);
+            ClipFormat clipFormat;
+            clipFormat.sourceClipIndices = { 0, 1, 2 };
+            expectedClipFormat.push_back(clipFormat);
 
             // Set data and indexes
-            blendNode->setFormatIndices(animatorId, formatIndices);
+            blendNode->setClipFormat(animatorId, clipFormat);
             QVector<int> indexes = QVector<int>() << 0;
 
             QTest::newRow("single entry")
-                    << blendNode << indexes << animatorIds << expectedFormatIndices;
+                    << blendNode << indexes << animatorIds << expectedClipFormat;
         }
 
         // No data
         {
             auto blendNode = new ClipBlendValue;
             QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ComponentIndices> expectedFormatIndices;
+            QVector<ClipFormat> expectedClipFormat;
 
             auto animatorId = Qt3DCore::QNodeId::createId();
             animatorIds.push_back(animatorId);
 
-            ComponentIndices formatIndices;
-            expectedFormatIndices.push_back(formatIndices);
+            ClipFormat clipFormat;
+            expectedClipFormat.push_back(clipFormat);
 
             // Don't set any data
             QVector<int> indexes = QVector<int>() << 0;
 
             QTest::newRow("no entries")
-                    << blendNode << indexes << animatorIds << expectedFormatIndices;
+                    << blendNode << indexes << animatorIds << expectedClipFormat;
         }
 
         // Multiple entries, ordered
         {
             auto blendNode = new ClipBlendValue;
             QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ComponentIndices> expectedFormatIndices;
+            QVector<ClipFormat> expectedClipFormat;
 
             const int animatorCount = 10;
             for (int j = 0; j < animatorCount; ++j) {
                 auto animatorId = Qt3DCore::QNodeId::createId();
                 animatorIds.push_back(animatorId);
 
-                ComponentIndices formatIndices;
+                ClipFormat clipFormat;
                 for (int i = 0; i < j + 5; ++i)
-                    formatIndices.push_back(i + j);
-                expectedFormatIndices.push_back(formatIndices);
+                    clipFormat.sourceClipIndices.push_back(i + j);
+                expectedClipFormat.push_back(clipFormat);
 
-                blendNode->setFormatIndices(animatorId, formatIndices);
+                blendNode->setClipFormat(animatorId, clipFormat);
             }
 
             QVector<int> indexes(animatorCount);
             std::iota(indexes.begin(), indexes.end(), 0);
 
             QTest::newRow("multiple entries, ordered")
-                    << blendNode << indexes << animatorIds << expectedFormatIndices;
+                    << blendNode << indexes << animatorIds << expectedClipFormat;
         }
 
         // Multiple entries, unordered
         {
             auto blendNode = new ClipBlendValue;
             QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ComponentIndices> expectedFormatIndices;
+            QVector<ClipFormat> expectedClipFormat;
 
             const int animatorCount = 10;
             for (int j = 0; j < animatorCount; ++j) {
                 auto animatorId = Qt3DCore::QNodeId::createId();
                 animatorIds.push_back(animatorId);
 
-                ComponentIndices formatIndices;
+                ClipFormat clipFormat;
                 for (int i = 0; i < j + 5; ++i)
-                    formatIndices.push_back(i + j);
-                expectedFormatIndices.push_back(formatIndices);
+                    clipFormat.sourceClipIndices.push_back(i + j);
+                expectedClipFormat.push_back(clipFormat);
 
-                blendNode->setFormatIndices(animatorId, formatIndices);
+                blendNode->setClipFormat(animatorId, clipFormat);
             }
 
             // Shuffle the animatorIds to randomise the lookups
@@ -265,7 +267,7 @@ private Q_SLOTS:
             std::shuffle(indexes.begin(), indexes.end(), generator);
 
             QTest::newRow("multiple entries, unordered")
-                    << blendNode << indexes << animatorIds << expectedFormatIndices;
+                    << blendNode << indexes << animatorIds << expectedClipFormat;
         }
     }
 
@@ -275,17 +277,17 @@ private Q_SLOTS:
         QFETCH(ClipBlendValue *, blendNode);
         QFETCH(QVector<int>, indexes);
         QFETCH(QVector<Qt3DCore::QNodeId>, animatorIds);
-        QFETCH(QVector<ComponentIndices>, expectedFormatIndices);
+        QFETCH(QVector<ClipFormat>, expectedClipFormat);
 
         for (int i = 0; i < indexes.size(); ++i) {
             // WHEN
             const int index = indexes[i];
-            const ComponentIndices actualFormatIndices = blendNode->formatIndices(animatorIds[index]);
+            const ClipFormat actualClipFormat = blendNode->clipFormat(animatorIds[index]);
 
             // THEN
-            QCOMPARE(actualFormatIndices.size(), expectedFormatIndices[index].size());
-            for (int j = 0; j < actualFormatIndices.size(); ++j)
-                QCOMPARE(actualFormatIndices[j], expectedFormatIndices[index][j]);
+            QCOMPARE(actualClipFormat.sourceClipIndices.size(), expectedClipFormat[index].sourceClipIndices.size());
+            for (int j = 0; j < actualClipFormat.sourceClipIndices.size(); ++j)
+                QCOMPARE(actualClipFormat.sourceClipIndices[j], expectedClipFormat[index].sourceClipIndices[j]);
         }
 
         delete blendNode;

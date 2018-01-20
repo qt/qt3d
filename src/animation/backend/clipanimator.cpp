@@ -115,7 +115,7 @@ void ClipAnimator::cleanup()
     m_clockId = Qt3DCore::QNodeId();
     m_running = false;
     m_loops = 1;
-    m_formatIndices.clear();
+    m_clipFormat = ClipFormat();
 }
 
 void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

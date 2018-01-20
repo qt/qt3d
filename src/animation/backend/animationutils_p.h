@@ -54,6 +54,7 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
 
+#include <QtCore/qbitarray.h>
 #include <QtCore/qdebug.h>
 
 QT_BEGIN_NAMESPACE
@@ -71,15 +72,15 @@ class ChannelMapping;
 
 typedef QVector<int> ComponentIndices;
 
+enum JointTransformComponent {
+    NoTransformComponent = 0,
+    Scale,
+    Rotation,
+    Translation
+};
+
 struct MappingData
 {
-    enum JointTransformComponent {
-        NoTransformComponent = 0,
-        Scale,
-        Rotation,
-        Translation
-    };
-
     Qt3DCore::QNodeId targetId;
     Skeleton *skeleton = nullptr;
     int jointIndex = -1;
@@ -124,31 +125,108 @@ typedef QVector<float> ClipResults;
 
 struct ChannelNameAndType
 {
+    QString jointName;
     QString name;
     int type;
     int jointIndex;
+    Qt3DCore::QNodeId mappingId;
+    JointTransformComponent jointTransformComponent;
+    float pad; // Unused
 
     static const int invalidIndex = -1;
 
     ChannelNameAndType()
-        : name()
+        : jointName()
+        , name()
         , type(-1)
         , jointIndex(-1)
+        , mappingId()
+        , jointTransformComponent(NoTransformComponent)
     {}
 
-    ChannelNameAndType(const QString &_name, int _type, int _jointIndex = invalidIndex)
-        : name(_name)
+    ChannelNameAndType(const QString &_name,
+                       int _type,
+                       Qt3DCore::QNodeId _mappingId = Qt3DCore::QNodeId(),
+                       int _jointIndex = invalidIndex)
+        : jointName()
+        , name(_name)
         , type(_type)
         , jointIndex(_jointIndex)
+        , mappingId(_mappingId)
+        , jointTransformComponent(NoTransformComponent)
+    {}
+
+    ChannelNameAndType(const QString &_name,
+                       int _type,
+                       JointTransformComponent _jointTransformComponent)
+        : jointName()
+        , name(_name)
+        , type(_type)
+        , jointIndex(invalidIndex)
+        , mappingId()
+        , jointTransformComponent(_jointTransformComponent)
     {}
 
     bool operator==(const ChannelNameAndType &rhs) const
     {
         return name == rhs.name
             && type == rhs.type
-            && jointIndex == rhs.jointIndex;
+            && jointIndex == rhs.jointIndex
+            && mappingId == rhs.mappingId
+            && jointTransformComponent == rhs.jointTransformComponent;
     }
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const ChannelNameAndType &nameAndType)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "name =" << nameAndType.name
+        << "type =" << nameAndType.type
+        << "mappingId =" << nameAndType.mappingId
+        << "jointIndex =" << nameAndType.jointIndex
+        << "jointName =" << nameAndType.jointName
+        << "jointTransformComponent =" << nameAndType.jointTransformComponent;
+    return dbg;
+}
+#endif
+
+struct ClipFormat
+{
+    // TODO: Remove the mask and store both the sourceClipIndices and
+    // formattedComponentIndices in flat vectors. This will require a
+    // way to look up the offset and number of elements for each channel.
+    ComponentIndices sourceClipIndices;
+    QVector<QBitArray> sourceClipMask;
+    QVector<ComponentIndices> formattedComponentIndices;
+    QVector<ChannelNameAndType> namesAndTypes;
+};
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const ClipFormat &format)
+{
+    QDebugStateSaver saver(dbg);
+    int sourceIndex = 0;
+    for (int i = 0; i < format.namesAndTypes.size(); ++i) {
+        dbg << i
+            << format.namesAndTypes[i].jointIndex
+            << format.namesAndTypes[i].jointName
+            << format.namesAndTypes[i].name
+            << format.namesAndTypes[i].type
+            << "formatted results dst indices =" << format.formattedComponentIndices[i];
+        const int componentCount = format.formattedComponentIndices[i].size();
+
+        dbg << "clip src indices =";
+        for (int j = sourceIndex; j < sourceIndex + componentCount; ++j)
+            dbg << format.sourceClipIndices[j] << "";
+
+        dbg << "src clip mask =" << format.sourceClipMask[i];
+        dbg << endl;
+        sourceIndex += componentCount;
+    }
+    return dbg;
+}
+#endif
 
 struct AnimationCallbackAndValue
 {
@@ -219,7 +297,8 @@ QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &
 Q_AUTOTEST_EXPORT
 QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &channelMappings,
                                            const QVector<ChannelNameAndType> &channelNamesAndTypes,
-                                           const QVector<ComponentIndices> &channelComponentIndices);
+                                           const QVector<ComponentIndices> &channelComponentIndices,
+                                           const QVector<QBitArray> &sourceClipMask);
 
 Q_AUTOTEST_EXPORT
 QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
@@ -243,9 +322,9 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                                       Qt3DCore::QNodeId blendTreeRootId);
 
 Q_AUTOTEST_EXPORT
-ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
-                                           QVector<ComponentIndices> &targetIndices,
-                                           const AnimationClip *clip);
+ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
+                                     const QVector<ComponentIndices> &targetIndices,
+                                     const AnimationClip *clip);
 
 Q_AUTOTEST_EXPORT
 ClipResults formatClipResults(const ClipResults &rawClipResults,
@@ -255,6 +334,9 @@ Q_AUTOTEST_EXPORT
 ClipResults evaluateBlendTree(Handler *handler,
                               BlendedClipAnimator *animator,
                               Qt3DCore::QNodeId blendNodeId);
+
+Q_AUTOTEST_EXPORT
+QVector<float> defaultValueForChannel(Handler *handler, const ChannelNameAndType &channelDescription);
 
 } // Animation
 } // Qt3DAnimation

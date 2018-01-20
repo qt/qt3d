@@ -270,11 +270,13 @@ public:
         performCleanup(&static_cast<QHandleData<T> *>(d)->data, Int2Type<QResourceInfo<T>::needsCleanup>());
     }
 
-    T *data(Handle h) {
+    T *data(Handle h)
+    {
         return h.operator->();
     }
 
-    void for_each(std::function<void(T*)> f) {
+    void for_each(std::function<void(T*)> f)
+    {
         Bucket *b = firstBucket;
         while (b) {
             for (int idx = 0; idx < Bucket::NumEntries; ++idx) {
@@ -290,13 +292,15 @@ public:
 
 private:
     Q_DISABLE_COPY(ArrayAllocatingPolicy)
-    struct Bucket {
-        struct Header {
+    struct Bucket
+    {
+        struct Header
+        {
             Bucket *next;
         } header;
         enum {
             Size = 4096,
-            NumEntries = (Size - sizeof(Header))/sizeof(HandleData)
+            NumEntries = (Size - sizeof(Header)) / sizeof(HandleData)
         };
         HandleData data[NumEntries];
     };
@@ -306,7 +310,8 @@ private:
     typename Handle::Data *freeList = 0;
     int allocCounter = 1;
 
-    void allocateBucket() {
+    void allocateBucket()
+    {
         // no free handle, allocate a new
         Bucket *b = new Bucket;
 

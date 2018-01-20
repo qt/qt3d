@@ -41,6 +41,8 @@ using namespace Qt3DCore;
 using namespace Qt3DAnimation;
 using namespace Qt3DAnimation::Animation;
 
+Q_DECLARE_METATYPE(Skeleton*)
+
 class tst_Skeleton : public QBackendNodeTester
 {
     Q_OBJECT
@@ -68,6 +70,24 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.isEnabled(), skeleton.isEnabled());
         QCOMPARE(backendSkeleton.jointNames().size(), 0);
         QCOMPARE(backendSkeleton.jointLocalPoses().size(), 0);
+    }
+
+    void checkJointName()
+    {
+        // GIVEN
+        Skeleton backendSkeleton;
+        const QVector<QString> jointNames = { QLatin1String("rootJoint"),
+                                              QLatin1String("child1Joint"),
+                                              QLatin1String("child2Joint") };
+
+        // WHEN
+        backendSkeleton.setJointNames(jointNames);
+
+        // THEN
+        const int jointNameCount = jointNames.size();
+        for (int i = 0; i < jointNameCount; ++i) {
+            QCOMPARE(jointNames[i], backendSkeleton.jointName(i));
+        }
     }
 
     void checkInitialAndCleanedUpState()
@@ -138,6 +158,62 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendSkeleton.jointNames(), names);
         QCOMPARE(backendSkeleton.jointLocalPoses(), localPoses);
+    }
+
+    void checkJointTransforms_data()
+    {
+        QTest::addColumn<Skeleton*>("skeleton");
+        QTest::addColumn<QVector<Sqt>>("jointTransforms");
+
+        const int count = 5;
+        auto skeleton = new Skeleton;
+        skeleton->setJointCount(count);
+        QVector<Sqt> jointTransforms;
+        jointTransforms.reserve(count);
+        for (int i = 0; i < count; ++i) {
+            const float f = float(i);
+            Sqt transform;
+            transform.scale = QVector3D(f, f, f);
+            transform.rotation = QQuaternion(f, 1.0f, 0.0f, 0.0f).normalized();
+            transform.translation = QVector3D(1.0 * f, 2.0 * f, 3.0 * f);
+            skeleton->setJointScale(i, transform.scale);
+            skeleton->setJointRotation(i, transform.rotation);
+            skeleton->setJointTranslation(i, transform.translation);
+            jointTransforms.push_back(transform);
+        }
+
+        QTest::newRow("5 joints") << skeleton << jointTransforms;
+    }
+
+    void checkJointTransforms()
+    {
+        // GIVEN
+        QFETCH(Skeleton*, skeleton);
+        QFETCH(QVector<Sqt>, jointTransforms);
+
+        const int count = skeleton->jointCount();
+        for (int i = 0; i < count; ++i) {
+            // WHEN
+            const QVector3D s = skeleton->jointScale(i);
+
+            // THEN
+            QCOMPARE(s, jointTransforms[i].scale);
+
+            // WHEN
+            const QQuaternion q = skeleton->jointRotation(i);
+
+            // THEN
+            QCOMPARE(q, jointTransforms[i].rotation);
+
+            // WHEN
+            const QVector3D t = skeleton->jointTranslation(i);
+
+            // THEN
+            QCOMPARE(t, jointTransforms[i].translation);
+        }
+
+        // Cleanup
+        delete skeleton;
     }
 };
 

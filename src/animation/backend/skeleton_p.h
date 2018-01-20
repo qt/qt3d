@@ -65,10 +65,16 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     int jointCount() const { return m_jointLocalPoses.size(); }
+    QString jointName(int jointIndex) const { return m_jointNames.at(jointIndex); }
 
     void setJointScale(int jointIndex, const QVector3D &scale)
     {
         m_jointLocalPoses[jointIndex].scale = scale;
+    }
+
+    QVector3D jointScale(int jointIndex) const
+    {
+        return m_jointLocalPoses[jointIndex].scale;
     }
 
     void setJointRotation(int jointIndex, const QQuaternion &rotation)
@@ -76,9 +82,19 @@ public:
         m_jointLocalPoses[jointIndex].rotation = rotation;
     }
 
+    QQuaternion jointRotation(int jointIndex) const
+    {
+        return m_jointLocalPoses[jointIndex].rotation;
+    }
+
     void setJointTranslation(int jointIndex, const QVector3D &translation)
     {
         m_jointLocalPoses[jointIndex].translation = translation;
+    }
+
+    QVector3D jointTranslation(int jointIndex) const
+    {
+        return m_jointLocalPoses[jointIndex].translation;
     }
 
     void sendLocalPoses();
