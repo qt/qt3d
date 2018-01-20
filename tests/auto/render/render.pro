@@ -112,6 +112,7 @@ qtConfig(private_tests) {
         blitframebuffer \
         qraycaster \
         raycaster \
+        raycastingjob \
         qcamera
 
     QT_FOR_CONFIG = 3dcore-private
