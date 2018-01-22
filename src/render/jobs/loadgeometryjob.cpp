@@ -51,6 +51,7 @@ namespace Render {
 LoadGeometryJob::LoadGeometryJob(const HGeometryRenderer &handle)
     : QAspectJob()
     , m_handle(handle)
+    , m_nodeManagers(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadGeometry, 0);
 }
