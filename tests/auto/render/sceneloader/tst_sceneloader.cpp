@@ -52,7 +52,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(sceneLoader.source().isEmpty());
         QVERIFY(sceneLoader.peerId().isNull());
-        QVERIFY(sceneManager.pendingSceneLoaderJobs().isEmpty());
+        QVERIFY(sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
 
         // GIVEN
@@ -91,7 +91,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(sceneLoader.peerId(), frontendSceneLoader.id());
         QCOMPARE(sceneLoader.source(), frontendSceneLoader.source());
-        QVERIFY(!sceneManager.pendingSceneLoaderJobs().isEmpty());
+        QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
     }
 
     void checkPropertyChanges()
@@ -105,7 +105,7 @@ private Q_SLOTS:
         sceneLoader.setSceneManager(&sceneManager);
 
         // THEN
-        QVERIFY(sceneManager.pendingSceneLoaderJobs().isEmpty());
+        QVERIFY(sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
         // WHEN
         Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -116,7 +116,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(sceneLoader.source(), newUrl);
-        QVERIFY(!sceneManager.pendingSceneLoaderJobs().isEmpty());
+        QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
         // WHEN
         updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
