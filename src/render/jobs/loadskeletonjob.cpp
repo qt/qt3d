@@ -47,6 +47,7 @@ namespace Render {
 LoadSkeletonJob::LoadSkeletonJob(const HSkeleton &handle)
     : QAspectJob()
     , m_handle(handle)
+    , m_nodeManagers(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadSkeleton, 0);
 }
