@@ -141,7 +141,9 @@ public:
 
     virtual void markDirty(BackendNodeDirtySet changes, BackendNode *node) = 0;
     virtual BackendNodeDirtySet dirtyBits() = 0;
+#if defined(QT_BUILD_INTERNAL)
     virtual void clearDirtyBits(BackendNodeDirtySet changes) = 0;
+#endif
     virtual bool shouldRender() = 0;
     virtual void skipNextFrame() = 0;
 

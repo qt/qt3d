@@ -162,7 +162,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
-    , m_changeSet(0)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
     , m_shareContext(nullptr)
@@ -514,7 +513,7 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
 
     // Set all flags to dirty
-    m_changeSet |= AbstractRenderer::AllDirty;
+    m_dirtyBits.marked |= AbstractRenderer::AllDirty;
 }
 
 void Renderer::registerEventFilter(QEventFilterService *service)
@@ -1445,25 +1444,29 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 void Renderer::markDirty(BackendNodeDirtySet changes, BackendNode *node)
 {
     Q_UNUSED(node);
-    m_changeSet |= changes;
+    m_dirtyBits.marked |= changes;
 }
 
 Renderer::BackendNodeDirtySet Renderer::dirtyBits()
 {
-    return m_changeSet;
+    return m_dirtyBits.marked;
 }
 
+#if defined(QT_BUILD_INTERNAL)
 void Renderer::clearDirtyBits(BackendNodeDirtySet changes)
 {
-    m_changeSet &= ~changes;
+    m_dirtyBits.remaining &= ~changes;
+    m_dirtyBits.marked &= ~changes;
 }
+#endif
 
 bool Renderer::shouldRender()
 {
     // Only render if something changed during the last frame, or the last frame
     // was not rendered successfully (or render-on-demand is disabled)
     return (m_settings->renderPolicy() == QRenderSettings::Always
-            || m_changeSet != 0
+            || m_dirtyBits.marked != 0
+            || m_dirtyBits.remaining != 0
             || !m_lastFrameCorrect.load());
 }
 
@@ -1497,28 +1500,31 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
 
-    BackendNodeDirtySet changesToUnset = dirtyBits();
+    const BackendNodeDirtySet dirtyBitsForFrame = m_dirtyBits.marked | m_dirtyBits.remaining;
+    m_dirtyBits.marked = 0;
+    m_dirtyBits.remaining = 0;
+    BackendNodeDirtySet notCleared = 0;
 
     // Add jobs
-    const bool entitiesEnabledDirty = changesToUnset & AbstractRenderer::EntityEnabledDirty;
+    const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
     if (entitiesEnabledDirty) {
         renderBinJobs.push_back(m_updateTreeEnabledJob);
         m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     }
 
-    if (changesToUnset & AbstractRenderer::TransformDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_worldTransformJob);
         renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
         renderBinJobs.push_back(m_updateShaderDataTransformJob);
     }
 
-    if (changesToUnset & AbstractRenderer::GeometryDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty) {
         renderBinJobs.push_back(m_calculateBoundingVolumeJob);
         renderBinJobs.push_back(m_updateMeshTriangleListJob);
     }
 
-    if (changesToUnset & AbstractRenderer::GeometryDirty ||
-        changesToUnset & AbstractRenderer::TransformDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
+        dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_expandBoundingVolumeJob);
     }
 
@@ -1534,13 +1540,13 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Jobs to prepare GL Resource upload
     renderBinJobs.push_back(m_vaoGathererJob);
 
-    if (changesToUnset & AbstractRenderer::BuffersDirty)
+    if (dirtyBitsForFrame & AbstractRenderer::BuffersDirty)
         renderBinJobs.push_back(m_bufferGathererJob);
 
-    if (changesToUnset & AbstractRenderer::ShadersDirty)
+    if (dirtyBitsForFrame & AbstractRenderer::ShadersDirty)
         renderBinJobs.push_back(m_shaderGathererJob);
 
-    if (changesToUnset & AbstractRenderer::TexturesDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::TexturesDirty) {
         renderBinJobs.push_back(m_syncTextureLoadingJob);
         renderBinJobs.push_back(m_textureGathererJob);
     }
@@ -1548,7 +1554,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     // Layer cache is dependent on layers, layer filters and the enabled flag
     // on entities
-    const bool layersDirty = changesToUnset & AbstractRenderer::LayersDirty;
+    const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty;
     bool layersCacheRebuilt = false;
 
@@ -1584,19 +1590,19 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     // Only reset LayersDirty flag once we have really rebuilt the caches
     if (layersDirty && !layersCacheRebuilt)
-        changesToUnset.setFlag(AbstractRenderer::LayersDirty, false);
+        notCleared |= AbstractRenderer::LayersDirty;
     if (entitiesEnabledDirty && !layersCacheRebuilt)
-        changesToUnset.setFlag(AbstractRenderer::EntityEnabledDirty, false);
+        notCleared |= AbstractRenderer::EntityEnabledDirty;
 
     // Clear dirty bits
     // TO DO: When secondary GL thread is integrated, the following line can be removed
-    changesToUnset.setFlag(AbstractRenderer::ShadersDirty, false);
+    notCleared |= AbstractRenderer::ShadersDirty;
 
     // Clear all dirty flags but Compute so that
     // we still render every frame when a compute shader is used in a scene
-    if (changesToUnset.testFlag(Renderer::ComputeDirty))
-        changesToUnset.setFlag(Renderer::ComputeDirty, false);
-    clearDirtyBits(changesToUnset);
+    notCleared |= Renderer::ComputeDirty;
+
+    m_dirtyBits.remaining = dirtyBitsForFrame & notCleared;
 
     return renderBinJobs;
 }
@@ -1722,7 +1728,7 @@ void Renderer::performCompute(const RenderView *, RenderCommand *command)
                 command->m_workGroups[2]);
     }
     // HACK: Reset the compute flag to dirty
-    m_changeSet |= AbstractRenderer::ComputeDirty;
+    m_dirtyBits.marked |= AbstractRenderer::ComputeDirty;
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     int err = m_graphicsContext->openGLContext()->functions()->glGetError();
