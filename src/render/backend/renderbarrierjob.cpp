@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
@@ -37,54 +37,75 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H
-#define QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H
+#include "renderbarrierjob_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DRender/private/renderlogging_p.h>
 
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRender/qtexturegenerator.h>
-#include <Qt3DRender/qtextureimagedatagenerator.h>
+#include <QtCore/QThread>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
 namespace Render {
 
-class NodeManagers;
-
-class LoadTextureDataJob : public Qt3DCore::QAspectJob
+QDebug operator<<(QDebug debug, JobTypes::JobType type)
 {
-public:
-    LoadTextureDataJob();
-    ~LoadTextureDataJob();
+    switch (type) {
+    case JobTypes::ReadRenderQueueSizeBarrier:
+        debug << "ReadRenderQueueSize";
+        break;
+    case JobTypes::BeginDrawingBarrier:
+        debug << "BeginDrawing";
+        break;
+    case JobTypes::UpdateGLResourcesBarrier:
+        debug << "UpdateGLResources";
+        break;
+    case JobTypes::PrepareCommandSubmissionBarrier:
+        debug << "PrepareCommandSubmission";
+        break;
+    case JobTypes::EndDrawingBarrier:
+        debug << "EndDrawing";
+        break;
+    default:
+        break;
+    }
+    return debug;
+}
 
-    inline void setNodeManagers(NodeManagers *manager) { m_manager = manager; }
+RenderBarrierJob::RenderBarrierJob(JobTypes::JobType type)
+    : QAspectJob()
+    , m_type(type)
+    , m_begin(0)
+    , m_end(0)
+{
+    SET_JOB_RUN_STAT_TYPE(this, type, 0);
+}
 
-protected:
-    void run() Q_DECL_FINAL;
+void RenderBarrierJob::waitForDependencies()
+{
+    qCDebug(Jobs) << Q_FUNC_INFO << m_type << "waiting for job on" << QThread::currentThread();
+    m_begin.acquire();
+    qCDebug(Jobs) << Q_FUNC_INFO << m_type << "done waiting for job on" << QThread::currentThread();
+    Q_ASSERT(m_begin.available() == 0);
+}
 
-private:
-    NodeManagers *m_manager;
-};
+void RenderBarrierJob::allowToProceed()
+{
+    qCDebug(Jobs) << Q_FUNC_INFO << m_type << "releasing job on" << QThread::currentThread();
+    m_end.release();
+}
 
-typedef QSharedPointer<LoadTextureDataJob> LoadTextureDataJobPtr;
+void RenderBarrierJob::run()
+{
+    qCDebug(Jobs) << Q_FUNC_INFO << m_type << "job releasing render thread on" << QThread::currentThread();
+    m_begin.release();
+    qCDebug(Jobs) << Q_FUNC_INFO << m_type << "job waiting for render thread on" << QThread::currentThread();
+    m_end.acquire();
+    qCDebug(Jobs) << Q_FUNC_INFO << m_type << "job done on" << QThread::currentThread();
+    Q_ASSERT(m_end.available() == 0);
+}
 
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H

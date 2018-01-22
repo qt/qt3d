@@ -52,14 +52,14 @@ public:
     void shutdown() Q_DECL_OVERRIDE {}
     void releaseGraphicsResources() Q_DECL_OVERRIDE {}
     void render() Q_DECL_OVERRIDE {}
-    void doRender(bool scene3dBlocking = false) Q_DECL_OVERRIDE { Q_UNUSED(scene3dBlocking); }
+    void doRender() Q_DECL_OVERRIDE {}
     void cleanGraphicsResources() Q_DECL_OVERRIDE {}
     bool isRunning() const Q_DECL_OVERRIDE { return true; }
     bool shouldRender() Q_DECL_OVERRIDE { return true; }
     void skipNextFrame() Q_DECL_OVERRIDE {}
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE { return QVector<Qt3DCore::QAspectJobPtr>(); }
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
-    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
+    Qt3DCore::QAspectJobPtr syncSkeletonLoadingJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
     Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
     void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Qt3DRender::Render::Entity *root) Q_DECL_OVERRIDE { Q_UNUSED(factory);  Q_UNUSED(root); }
     Qt3DRender::Render::Entity *sceneRoot() const Q_DECL_OVERRIDE { return nullptr; }
@@ -79,6 +79,12 @@ public:
 
     void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) Q_DECL_OVERRIDE;
     QSurfaceFormat format() Q_DECL_OVERRIDE;
+
+    void lockSurfaceAndRender() override {}
+    bool releaseRendererAndRequestPromiseToRender() override { return true; }
+    bool waitForRenderJobs() override { return true; }
+    bool tryWaitForRenderJobs(int timeout) override { Q_UNUSED(timeout); return true; }
+    void abortRenderJobs() override {}
 
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;

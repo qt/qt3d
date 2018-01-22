@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H
-#define QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H
+#ifndef QT3DRENDER_RENDER_RENDERBARRIERJOB_P_H
+#define QT3DRENDER_RENDER_RENDERBARRIERJOB_P_H
 
 //
 //  W A R N I N G
@@ -51,40 +51,41 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRender/qtexturegenerator.h>
-#include <Qt3DRender/qtextureimagedatagenerator.h>
+#include <Qt3DCore/QAspectJob>
+
+#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/job_common_p.h>
+
+#include <QtCore/qsemaphore.h>
+
+#include <functional>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
 namespace Render {
 
-class NodeManagers;
-
-class LoadTextureDataJob : public Qt3DCore::QAspectJob
+class QT3DRENDERSHARED_PRIVATE_EXPORT RenderBarrierJob : public Qt3DCore::QAspectJob
 {
 public:
-    LoadTextureDataJob();
-    ~LoadTextureDataJob();
+    RenderBarrierJob(JobTypes::JobType type);
+    // Called from render thread
+    void waitForDependencies();
+    // Called from render thread
+    void allowToProceed();
 
-    inline void setNodeManagers(NodeManagers *manager) { m_manager = manager; }
-
-protected:
-    void run() Q_DECL_FINAL;
-
+    void run() final;
 private:
-    NodeManagers *m_manager;
+    JobTypes::JobType m_type;
+    QSemaphore m_begin;
+    QSemaphore m_end;
 };
 
-typedef QSharedPointer<LoadTextureDataJob> LoadTextureDataJobPtr;
+using RenderBarrierJobPtr = QSharedPointer<RenderBarrierJob>;
 
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H
+#endif // QT3DRENDER_RENDER_RENDERBARRIERJOB_P_H

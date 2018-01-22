@@ -90,9 +90,10 @@ public:
     void loadSceneParsers();
     void loadRenderPlugin(const QString &pluginName);
     void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous(bool blocking = false);
+    void tryRenderSynchronous();
     void renderShutdown();
     void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
+    void abortRenderJobs();
     QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
 
     Render::NodeManagers *m_nodeManagers;
@@ -104,6 +105,7 @@ public:
     QVector<Render::QRenderPlugin *> m_renderPlugins;
     QRenderAspect::RenderType m_renderType;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;
+    bool m_blockingRendermode;
 
     static QMutex m_pluginLock;
     static QVector<QString> m_pluginConfig;

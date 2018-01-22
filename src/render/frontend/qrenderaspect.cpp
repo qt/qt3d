@@ -150,6 +150,8 @@
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
+#include <private/framegraphvisitor_p.h>
+#include <private/platformsurfacefilter_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -185,7 +187,12 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_initialized(false)
     , m_renderType(type)
     , m_offscreenHelper(nullptr)
+    , m_blockingRendermode(false)
 {
+    // The blocking mode can be enabled to make sure we render even while
+    // waiting for geometries to load. This is necessary if we want
+    // to call doRender for every QtQuick frame when using Scene3D frame.
+    m_blockingRendermode = !qgetenv("SCENE3D_BLOCKING_RENDERMODE").isEmpty();
     m_instances.append(this);
     loadSceneParsers();
 }
@@ -367,6 +374,11 @@ void QRenderAspectPrivate::registerBackendType(const QMetaObject &obj,
     q->registerBackendType(obj, functor);
 }
 
+void QRenderAspectPrivate::abortRenderJobs()
+{
+    m_renderer->abortRenderJobs();
+}
+
 /*!
  * The constructor creates a new QRenderAspect::QRenderAspect instance with the
  * specified \a parent.
@@ -405,9 +417,17 @@ void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 }
 
 /*! \internal */
-void QRenderAspectPrivate::renderSynchronous(bool blocking)
+void QRenderAspectPrivate::tryRenderSynchronous()
 {
-    m_renderer->doRender(blocking);
+    // If the render aspect is slow for some reason and does not build jobs
+    // immediately, we might want to wait for it to make sure we render
+    // one Qt3D frame for each QtQuick frame. If blocking mode is enabled,
+    // we will wait a short time.
+    // TODO By allowing the aspect thread to skip a couple of frames that
+    // are not rendered without being in sync with the QtQuick scene graph,
+    // we can make this into a blocking call and get rid of the timeout.
+    if (m_renderer->tryWaitForRenderJobs(m_blockingRendermode ? 20 : 0))
+        m_renderer->lockSurfaceAndRender();
 }
 
 /*!
@@ -443,36 +463,16 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // asked for jobs to execute (this function). If that is the case, the RenderSettings will
     // be null and we should not generate any jobs.
     if (d->m_renderer->isRunning() && d->m_renderer->settings()) {
-
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
-        QAspectJobPtr textureLoadingSync = d->m_renderer->syncTextureLoadingJob();
-        textureLoadingSync->removeDependency(QWeakPointer<QAspectJob>());
-
-        // Launch texture generator jobs
-        const QVector<QTextureImageDataGeneratorPtr> pendingImgGen = manager->textureImageDataManager()->pendingGenerators();
-        for (const QTextureImageDataGeneratorPtr &imgGen : pendingImgGen) {
-            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(imgGen);
-            textureLoadingSync->addDependency(loadTextureJob);
-            loadTextureJob->setNodeManagers(manager);
-            jobs.append(loadTextureJob);
-        }
-        const QVector<QTextureGeneratorPtr> pendingTexGen = manager->textureDataManager()->pendingGenerators();
-        for (const QTextureGeneratorPtr &texGen : pendingTexGen) {
-            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(texGen);
-            textureLoadingSync->addDependency(loadTextureJob);
-            loadTextureJob->setNodeManagers(manager);
-            jobs.append(loadTextureJob);
-        }
-
-        // Launch skeleton loader jobs. We join on the syncTextureLoadingJob for now
-        // which should likely be renamed to something more generic or we introduce
-        // another synchronizing job for skeleton loading
+        QAspectJobPtr assetLoadingSync = d->m_renderer->syncSkeletonLoadingJob();
+        assetLoadingSync->removeDependency(QWeakPointer<QAspectJob>());
+        // Launch skeleton loader jobs
         const QVector<Render::HSkeleton> skeletonsToLoad =
                 manager->skeletonManager()->dirtySkeletons(Render::SkeletonManager::SkeletonDataDirty);
         for (const auto &skeletonHandle : skeletonsToLoad) {
             auto loadSkeletonJob = Render::LoadSkeletonJobPtr::create(skeletonHandle);
             loadSkeletonJob->setNodeManagers(manager);
-            textureLoadingSync->addDependency(loadSkeletonJob);
+            assetLoadingSync->addDependency(loadSkeletonJob);
             jobs.append(loadSkeletonJob);
         }
 
@@ -489,7 +489,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
-
         // Add all jobs to queue
         const Qt3DCore::QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
         // Note: the getter is also responsible for returning a job ready to run
@@ -505,12 +504,16 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             return jobs;
         }
 
-        // Traverse the current framegraph and create jobs to populate
-        // RenderBins with RenderCommands
-        // All jobs needed to create the frame and their dependencies are set by
-        // renderBinJobs()
-        const QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
-        jobs.append(renderBinJobs);
+        // Let the rendering thread know that we are ready to spawn jobs if it
+        // can promise us that it will in fact call doRender.
+        if (d->m_renderer->releaseRendererAndRequestPromiseToRender()) {
+            // Traverse the current framegraph and create jobs to populate
+            // RenderBins with RenderCommands
+            // All jobs needed to create the frame and their dependencies are set by
+            // renderBinJobs()
+            const QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
+            jobs.append(renderBinJobs);
+        }
     }
     return jobs;
 }
