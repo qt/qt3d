@@ -172,6 +172,41 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkProcessEmptyPath()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        Qt3DRender::Render::Scene sceneLoader;
+        Qt3DRender::Render::SceneManager sceneManager;
+
+        sceneLoader.setRenderer(&renderer);
+        sceneLoader.setSceneManager(&sceneManager);
+
+        // THEN
+        QVERIFY(sceneManager.takePendingSceneLoaderJobs().isEmpty());
+
+        // WHEN
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        const QUrl newUrl(QStringLiteral("file:///Bownling_Green_KY"));
+        updateChange->setValue(newUrl);
+        updateChange->setPropertyName("source");
+        sceneLoader.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(sceneLoader.source(), newUrl);
+        QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setValue(QUrl());
+        updateChange->setPropertyName("source");
+        sceneLoader.sceneChangeEvent(updateChange);
+
+        // THEN -> we should still have generated a job to reset the scene (immediately)
+        QCOMPARE(sceneLoader.source(), QUrl());
+        QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
+    }
 };
 
 // Note: setSceneSubtree needs a QCoreApplication

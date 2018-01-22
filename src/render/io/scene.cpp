@@ -94,7 +94,14 @@ void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
             m_source = propertyChange->value().toUrl();
-            if (Qt3DCore::QDownloadHelperService::isLocal(m_source))
+
+            // If the source is empty -> we need to unload anything that was
+            // previously loaded and reset the status accordingly. This means
+            // we need to call addSceneData with the empty source to send a
+            // change to the frontend that will trigger the removal of the
+            // previous scene. The reason this scheme is employed is because
+            // the backend also takes care of updating the status.
+            if (m_source.isEmpty() || Qt3DCore::QDownloadHelperService::isLocal(m_source))
                 m_sceneManager->addSceneData(m_source, peerId());
             else
                 m_sceneManager->startSceneDownload(m_source, peerId());

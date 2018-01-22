@@ -118,6 +118,8 @@ void SceneDownloader::onCompleted()
         return;
     if (succeeded())
         m_manager->addSceneData(url(), m_sceneComponent, m_data);
+    else
+        qWarning() << "Failed to download scene at" << url();
     m_manager->clearSceneDownload(this);
 }
 
