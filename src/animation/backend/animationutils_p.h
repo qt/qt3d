@@ -191,6 +191,13 @@ inline QDebug operator<<(QDebug dbg, const ChannelNameAndType &nameAndType)
 }
 #endif
 
+struct ComponentValue
+{
+    int componentIndex;
+    float value;
+};
+QT3D_DECLARE_TYPEINFO_2(Qt3DAnimation, Animation, ComponentValue, Q_PRIMITIVE_TYPE)
+
 struct ClipFormat
 {
     // TODO: Remove the mask and store both the sourceClipIndices and
@@ -200,6 +207,7 @@ struct ClipFormat
     QVector<QBitArray> sourceClipMask;
     QVector<ComponentIndices> formattedComponentIndices;
     QVector<ChannelNameAndType> namesAndTypes;
+    QVector<ComponentValue> defaultComponentValues;
 };
 
 #ifndef QT_NO_DEBUG_STREAM
@@ -337,6 +345,10 @@ ClipResults evaluateBlendTree(Handler *handler,
 
 Q_AUTOTEST_EXPORT
 QVector<float> defaultValueForChannel(Handler *handler, const ChannelNameAndType &channelDescription);
+
+Q_AUTOTEST_EXPORT
+void applyComponentDefaultValues(const QVector<ComponentValue> &componentDefaults,
+                                 ClipResults &formattedClipResults);
 
 } // Animation
 } // Qt3DAnimation

@@ -105,6 +105,7 @@ void EvaluateBlendClipAnimatorJob::run()
         // Reformat the clip results into the layout used by this animator/blend tree
         const ClipFormat format = valueNode->clipFormat(blendedClipAnimator->peerId());
         ClipResults formattedClipResults = formatClipResults(rawClipResults, format.sourceClipIndices);
+        applyComponentDefaultValues(format.defaultComponentValues, formattedClipResults);
         valueNode->setClipResults(blendedClipAnimator->peerId(), formattedClipResults);
     }
 

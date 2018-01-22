@@ -79,7 +79,8 @@ public:
     double duration() const override;
 
     void setClipFormat(Qt3DCore::QNodeId animatorId, const ClipFormat &formatIndices);
-    ClipFormat clipFormat(Qt3DCore::QNodeId animatorId);
+    ClipFormat &clipFormat(Qt3DCore::QNodeId animatorId);
+    const ClipFormat &clipFormat(Qt3DCore::QNodeId animatorId) const;
 
 protected:
     ClipResults doBlend(const QVector<ClipResults> &blendData) const override;

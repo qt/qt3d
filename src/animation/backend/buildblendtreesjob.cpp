@@ -90,10 +90,17 @@ void BuildBlendTreesJob::run()
         QVector<QBitArray> blendTreeChannelMask;
         const QVector<Qt3DCore::QNodeId> valueNodeIds
                 = gatherValueNodesToEvaluate(m_handler, blendClipAnimator->blendTreeRootId());
+
+        // Store the clip value nodes to avoid further lookups below.
+        // TODO: Refactor this next block into a function in animationutils.cpp that takes
+        // a QVector<QClipBlendValue*> as input.
+        QVector<ClipBlendValue *> valueNodes;
+        valueNodes.reserve(valueNodeIds.size());
         for (const auto valueNodeId : valueNodeIds) {
             ClipBlendValue *valueNode
                     = static_cast<ClipBlendValue *>(m_handler->clipBlendNodeManager()->lookupNode(valueNodeId));
             Q_ASSERT(valueNode);
+            valueNodes.push_back(valueNode);
 
             const Qt3DCore::QNodeId clipId = valueNode->clipId();
             AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipId);
@@ -129,6 +136,34 @@ void BuildBlendTreesJob::run()
                 int channelIndex = 0;
                 for (const auto &channelMask : qAsConst(format.sourceClipMask))
                     blendTreeChannelMask[channelIndex++] |= channelMask;
+            }
+        }
+
+        // Now that we know the overall blend tree mask, go back and compare this to
+        // the masks from each of the value nodes. If the overall mask requires a
+        // channel but the value node does not provide it, we need to store default
+        // values to use for that channel so that the blending evaluation works as
+        // expected.
+        for (const auto valueNode : valueNodes) {
+            ClipFormat &f = valueNode->clipFormat(blendClipAnimator->peerId());
+
+            const int channelCount = blendTreeChannelMask.size();
+            for (int i = 0; i < channelCount; ++i) {
+                if (blendTreeChannelMask[i] == f.sourceClipMask[i])
+                    continue; // Masks match, nothing to do
+
+                // If we get to here then we need to obtain a default value
+                // for this channel and store it for later application to any
+                // missing components of this channel.
+                const QVector<float> defaultValue = defaultValueForChannel(m_handler,
+                                                                           f.namesAndTypes[i]);
+
+                // Find the indices where we later need to inject these default
+                // values and store them in the format.
+                const ComponentIndices &componentIndices = f.formattedComponentIndices[i];
+                Q_ASSERT(componentIndices.size() == defaultValue.size());
+                for (int j = 0; j < defaultValue.size(); ++j)
+                    f.defaultComponentValues.push_back({componentIndices[j], defaultValue[j]});
             }
         }
 

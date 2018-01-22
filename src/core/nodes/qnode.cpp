@@ -173,10 +173,20 @@ void QNodePrivate::_q_postConstructorInit()
 {
     Q_Q(QNode);
 
+    // If we've already done the work then bail out. This can happen if the
+    // user creates a QNode subclass with an explicit parent, then immediately
+    // sets the new QNode as a property on another node. In this case, the
+    // property setter will call this function directly, but as we can't
+    // un-schedule a deferred invocation, this function will be called again
+    // the next time the event loop spins. So, catch this case and abort.
+    if (m_hasBackendNode)
+        return;
+
     // Check that the parent hasn't been unset since this call was enqueued
     auto parentNode = q->parentNode();
     if (!parentNode)
         return;
+
 
     if (m_scene)
         m_scene->addObservable(q); // Sets the m_changeArbiter to that of the scene
@@ -369,7 +379,18 @@ void QNodePrivate::propertyChanged(int propertyIndex)
 
     const QVariant data = property.read(q);
     if (data.canConvert<QNode*>()) {
-        const QNode * const node = data.value<QNode*>();
+        QNode *node = data.value<QNode*>();
+
+        // Ensure the node has issued a node creation change. We can end
+        // up here if a newly created node with a parent is immediately set
+        // as a property on another node. In this case the deferred call to
+        // _q_postConstructorInit() will not have happened yet as the event
+        // loop will still be blocked. So force it here and we catch this
+        // eventuality in the _q_postConstructorInit() function so that we
+        // do not repeat the creation and new child scene change events.
+        if (node)
+            QNodePrivate::get(node)->_q_postConstructorInit();
+
         const QNodeId id = node ? node->id() : QNodeId();
         notifyPropertyChange(property.name(), QVariant::fromValue(id));
     } else {
