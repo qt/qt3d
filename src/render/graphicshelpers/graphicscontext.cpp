@@ -515,7 +515,8 @@ void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
         shaderProgram = createShaderProgram(shader);
 
         // Store in cache
-        m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
+        if (shaderProgram)
+            m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
     }
 
     // Ensure the Shader node knows about the program interface
