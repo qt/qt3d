@@ -192,35 +192,6 @@ private Q_SLOTS:
         QCOMPARE(backendFilterCompatibleTechniqueJob.renderer(), &renderer);
     }
 
-    void checkRunRendererNotRunning()
-    {
-        // GIVEN
-        Qt3DRender::Render::FilterCompatibleTechniqueJob backendFilterCompatibleTechniqueJob;
-        Qt3DRender::TestAspect testAspect(buildTestScene());
-
-        // WHEN
-        Qt3DRender::Render::NodeManagers *nodeManagers = testAspect.nodeManagers();
-        QVERIFY(nodeManagers);
-        Qt3DRender::Render::TechniqueManager *techniqueManager = nodeManagers->techniqueManager();
-        QVERIFY(techniqueManager);
-        backendFilterCompatibleTechniqueJob.setManager(techniqueManager);
-        backendFilterCompatibleTechniqueJob.setRenderer(testAspect.renderer());
-        testAspect.initializeRenderer();
-        testAspect.renderer()->shutdown();
-
-        // THEN
-        QCOMPARE(testAspect.renderer()->isRunning(), false);
-        QVector<Qt3DRender::Render::HTechnique> handles = testAspect.nodeManagers()->techniqueManager()->activeHandles();
-        QCOMPARE(handles.size(), 3);
-
-        // WHEN
-        backendFilterCompatibleTechniqueJob.run();
-
-        // THEN -> untouched since not running
-        const QVector<Qt3DCore::QNodeId> dirtyTechniquesId = testAspect.nodeManagers()->techniqueManager()->takeDirtyTechniques();
-        QCOMPARE(dirtyTechniquesId.size(), 3);
-    }
-
     void checkRunRendererRunning()
     {
         // GIVEN

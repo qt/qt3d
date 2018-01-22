@@ -108,6 +108,7 @@ public:
         SkeletonDataDirty   = 1 << 10,
         JointDirty          = 1 << 11,
         LayersDirty         = 1 << 12,
+        TechniquesDirty     = 1 << 13,
         AllDirty            = 0xffffff
     };
     Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
