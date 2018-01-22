@@ -80,6 +80,7 @@ private slots:
     void removingChildEntitiesFromNode();
 
     void checkConstructionSetParentMix(); // QTBUG-60612
+    void checkConstructionWithParent();
 
     void appendingComponentToEntity();
     void appendingParentlessComponentToEntity();
@@ -169,13 +170,17 @@ void SimplePostman::notifyBackend(const Qt3DCore::QSceneChangePtr &change)
     m_spy->sceneChangeEventWithLock(change);
 }
 
+
+
 class MyQNode : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString customProperty READ customProperty WRITE setCustomProperty NOTIFY customPropertyChanged)
+    Q_PROPERTY(MyQNode *nodeProperty READ nodeProperty WRITE setNodeProperty NOTIFY nodePropertyChanged)
 public:
     explicit MyQNode(Qt3DCore::QNode *parent = 0)
         : QNode(parent)
+        , m_nodeProperty(nullptr)
     {}
 
     ~MyQNode()
@@ -211,11 +216,37 @@ public:
         Qt3DCore::QNodePrivate::get(this)->m_hasBackendNode = created;
     }
 
+    MyQNode *nodeProperty() const { return m_nodeProperty; }
+
+public slots:
+    void setNodeProperty(MyQNode *node)
+    {
+        Qt3DCore::QNodePrivate *d = Qt3DCore::QNodePrivate::get(this);
+        if (m_nodeProperty == node)
+            return;
+
+        if (m_nodeProperty)
+            d->unregisterDestructionHelper(m_nodeProperty);
+
+        if (node && !node->parent())
+            node->setParent(this);
+
+        m_nodeProperty = node;
+
+        // Ensures proper bookkeeping
+        if (m_nodeProperty)
+            d->registerDestructionHelper(m_nodeProperty, &MyQNode::setNodeProperty, m_nodeProperty);
+
+        emit nodePropertyChanged(node);
+    }
+
 signals:
     void customPropertyChanged();
+    void nodePropertyChanged(MyQNode *node);
 
 protected:
     QString m_customProperty;
+    MyQNode *m_nodeProperty;
 };
 
 class MyQEntity : public Qt3DCore::QEntity
@@ -845,6 +876,49 @@ void tst_Nodes::checkConstructionSetParentMix()
     QCOMPARE(lastEvent->subjectId(), root->id());
     QCOMPARE(lastEvent->propertyName(), "children");
     QCOMPARE(lastEvent->addedNodeId(), subTreeRoot->id());
+}
+
+void tst_Nodes::checkConstructionWithParent()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QScene scene;
+    QScopedPointer<MyQNode> root(new MyQNode());
+
+    // WHEN
+    root->setArbiterAndScene(&spy, &scene);
+    root->setSimulateBackendCreated(true);
+
+    // THEN
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != nullptr);
+
+    // WHEN we create a child and then set it as a Node* property
+    auto *node = new MyQNode(root.data());
+    root->setNodeProperty(node);
+
+    // THEN we should get one creation change, one child added change
+    // and one property change event, in that order.
+    QCoreApplication::processEvents();
+    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(spy.events.size(), 3); // 1 creation change, 1 child added change, 1 property change
+
+    // Ensure first event is child node's creation change
+    const auto creationEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
+    QVERIFY(!creationEvent.isNull());
+    QCOMPARE(creationEvent->subjectId(), node->id());
+
+    const auto newChildEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+    QVERIFY(!newChildEvent.isNull());
+    QCOMPARE(newChildEvent->subjectId(), root->id());
+    QCOMPARE(newChildEvent->propertyName(), "children");
+    QCOMPARE(newChildEvent->addedNodeId(), node->id());
+
+    // Ensure second and last event is property set change
+    const auto propertyEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
+    QVERIFY(!propertyEvent.isNull());
+    QCOMPARE(propertyEvent->subjectId(), root->id());
+    QCOMPARE(propertyEvent->propertyName(), "nodeProperty");
+    QCOMPARE(propertyEvent->value().value<Qt3DCore::QNodeId>(), node->id());
 }
 
 void tst_Nodes::appendingParentlessComponentToEntity()
