@@ -71,7 +71,7 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT ShaderCache
 public:
     ~ShaderCache();
 
-    QOpenGLShaderProgram *getShaderProgramAndAddRef(ProgramDNA dna, Qt3DCore::QNodeId shaderPeerId);
+    QOpenGLShaderProgram *getShaderProgramAndAddRef(ProgramDNA dna, Qt3DCore::QNodeId shaderPeerId, bool *wasPresent = nullptr);
     void insert(ProgramDNA dna, Qt3DCore::QNodeId shaderPeerId, QOpenGLShaderProgram *program);
     void removeRef(ProgramDNA dna, Qt3DCore::QNodeId shaderPeerId);
     void purge();

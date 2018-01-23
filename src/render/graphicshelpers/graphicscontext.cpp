@@ -511,14 +511,14 @@ void GraphicsContext::introspectShaderInterface(Shader *shader, QOpenGLShaderPro
 
 void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
 {
-    QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId());
-    if (!shaderProgram) {
+    bool wasPresent = false;
+    QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId(), &wasPresent);
+    if (!shaderProgram && !wasPresent) {
         // No matching QOpenGLShader in the cache so create one
         shaderProgram = createShaderProgram(shader);
 
-        // Store in cache
-        if (shaderProgram)
-            m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
+        // Store in cache (even when failed and shaderProgram is null)
+        m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
     }
 
     // Ensure the Shader node knows about the program interface

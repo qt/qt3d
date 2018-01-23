@@ -62,18 +62,28 @@ ShaderCache::~ShaderCache()
  *
  * \return A pointer to the shader program if it is cached, nullptr otherwise
  */
-QOpenGLShaderProgram *ShaderCache::getShaderProgramAndAddRef(ProgramDNA dna, Qt3DCore::QNodeId shaderPeerId)
+QOpenGLShaderProgram *ShaderCache::getShaderProgramAndAddRef(ProgramDNA dna, Qt3DCore::QNodeId shaderPeerId, bool *wasPresent)
 {
-    auto shaderProgram = m_programHash.value(dna, nullptr);
-    if (shaderProgram) {
+    auto shaderProgram = m_programHash.constFind(dna);
+
+    // Some callers may wish to differentiate between a result of null due to
+    // not having anything in the cache and a result of null due to the cache
+    // containing a program the shaders of which failed to compile.
+    if (wasPresent)
+        *wasPresent = shaderProgram != m_programHash.constEnd();
+
+    if (shaderProgram != m_programHash.constEnd()) {
         // Ensure we store the fact that shaderPeerId references this shader
         QMutexLocker lock(&m_refsMutex);
         QVector<Qt3DCore::QNodeId> &programRefs = m_programRefs[dna];
         auto it = std::lower_bound(programRefs.begin(), programRefs.end(), shaderPeerId);
         if (*it != shaderPeerId)
             programRefs.insert(it, shaderPeerId);
+
+        return *shaderProgram;
     }
-    return shaderProgram;
+
+    return nullptr;
 }
 
 /*!
