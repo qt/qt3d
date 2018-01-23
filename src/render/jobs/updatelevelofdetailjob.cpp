@@ -104,7 +104,7 @@ bool UpdateLevelOfDetailJob::viewMatrixForCamera(const Qt3DCore::QNodeId &camera
     if (camNode != nullptr &&
             (lens = camNode->renderComponent<CameraLens>()) != nullptr &&
             lens->isEnabled()) {
-        viewMatrix = *camNode->worldTransform();
+        viewMatrix = lens->viewMatrix(*camNode->worldTransform());
         projectionMatrix = lens->projection();
         return true;
     }

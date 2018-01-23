@@ -63,12 +63,14 @@ namespace Render {
 
 class CameraManager;
 
-class CameraLens : public BackendNode
+class QT3DRENDERSHARED_PRIVATE_EXPORT CameraLens : public BackendNode
 {
 public:
     CameraLens();
     ~CameraLens();
     void cleanup();
+
+    QMatrix4x4 viewMatrix(const QMatrix4x4 &worldTransform);
 
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }

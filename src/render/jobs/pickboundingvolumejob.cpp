@@ -433,7 +433,7 @@ void PickBoundingVolumeJob::viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
     if (camNode != nullptr &&
             (lens = camNode->renderComponent<CameraLens>()) != nullptr &&
             lens->isEnabled()) {
-        viewMatrix = *camNode->worldTransform();
+        viewMatrix = lens->viewMatrix(*camNode->worldTransform());
         projectionMatrix = lens->projection();
     }
 }

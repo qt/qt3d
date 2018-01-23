@@ -68,6 +68,18 @@ void CameraLens::cleanup()
     QBackendNode::setEnabled(false);
 }
 
+QMatrix4x4 CameraLens::viewMatrix(const QMatrix4x4 &worldTransform)
+{
+    const QVector4D position = worldTransform * QVector4D(0.0f, 0.0f, 0.0f, 1.0f);
+    // OpenGL convention is looking down -Z
+    const QVector4D viewDirection = worldTransform * QVector4D(0.0f, 0.0f, -1.0f, 0.0f);
+    const QVector4D upVector = worldTransform * QVector4D(0.0f, 1.0f, 0.0f, 0.0f);
+
+    QMatrix4x4 m;
+    m.lookAt(position.toVector3D(), (position + viewDirection).toVector3D(), upVector.toVector3D());
+    return m;
+}
+
 void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraLensData>>(change);
