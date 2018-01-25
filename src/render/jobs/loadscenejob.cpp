@@ -46,7 +46,7 @@
 #include <Qt3DRender/private/qsceneimporter_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/qsceneloader.h>
-
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <QFileInfo>
 #include <QMimeDatabase>
 
@@ -93,7 +93,6 @@ void LoadSceneJob::run()
 {
     // Iterate scene IO handlers until we find one that can handle this file type
     Qt3DCore::QEntity *sceneSubTree = nullptr;
-
     Scene *scene = m_managers->sceneManager()->lookupResource(m_sceneComponent);
     Q_ASSERT(scene);
 
@@ -107,52 +106,37 @@ void LoadSceneJob::run()
 
         if (m_data.isEmpty()) {
             const QString path = QUrlHelper::urlToLocalFileOrQrc(m_source);
-            QFileInfo finfo(path);
+            const QFileInfo finfo(path);
+            qCDebug(SceneLoaders) << Q_FUNC_INFO << "Attempting to load" << finfo.filePath();
             if (finfo.exists()) {
-                QStringList extensions(finfo.suffix());
-
-                for (QSceneImporter *sceneImporter : qAsConst(m_sceneImporters)) {
-                    if (!sceneImporter->areFileTypesSupported(extensions))
-                        continue;
-
-                    // If the file type is supported -> enter Loading status
-                    scene->setStatus(QSceneLoader::Loading);
-
-                    // File type is supported, try to load it
-                    sceneImporter->setSource(m_source);
-                    sceneSubTree = sceneImporter->scene();
-                    if (sceneSubTree != nullptr) {
-                        // Successfully built a subtree
-                        finalStatus = QSceneLoader::Ready;
-                        break;
-                    }
-                }
+                const QStringList extensions(finfo.suffix());
+                sceneSubTree = tryLoadScene(scene,
+                                            finalStatus,
+                                            extensions,
+                                            [this] (QSceneImporter *importer) {
+                        importer->setSource(m_source);
+            });
+            } else {
+                qCWarning(SceneLoaders) << Q_FUNC_INFO << finfo.filePath() << "doesn't exist";
             }
         } else {
             QStringList extensions;
             QMimeDatabase db;
-            QMimeType mtype = db.mimeTypeForData(m_data);
-            if (mtype.isValid()) {
+            const QMimeType mtype = db.mimeTypeForData(m_data);
+
+            if (mtype.isValid())
                 extensions = mtype.suffixes();
-            }
+            else
+                qCWarning(SceneLoaders) << Q_FUNC_INFO << "Invalid mime type" << mtype;
 
-            QString basePath = m_source.adjusted(QUrl::RemoveFilename).toString();
-            for (QSceneImporter *sceneImporter : qAsConst(m_sceneImporters)) {
-                if (!sceneImporter->areFileTypesSupported(extensions))
-                    continue;
+            const QString basePath = m_source.adjusted(QUrl::RemoveFilename).toString();
 
-                // If the file type is supported -> enter Loading status
-                scene->setStatus(QSceneLoader::Loading);
-
-                // File type is supported, try to load it
-                sceneImporter->setData(m_data, basePath);
-                sceneSubTree = sceneImporter->scene();
-                if (sceneSubTree != nullptr) {
-                    // Successfully built a subtree
-                    finalStatus = QSceneLoader::Ready;
-                    break;
-                }
-            }
+            sceneSubTree = tryLoadScene(scene,
+                                        finalStatus,
+                                        extensions,
+                                        [this, basePath] (QSceneImporter *importer) {
+                importer->setData(m_data, basePath);
+            });
         }
     }
 
@@ -165,6 +149,43 @@ void LoadSceneJob::run()
     // Note: the status is set after the subtree so that bindinds depending on the status
     // in the frontend will be consistent
     scene->setStatus(finalStatus);
+}
+
+Qt3DCore::QEntity *LoadSceneJob::tryLoadScene(Scene *scene,
+                                              QSceneLoader::Status &finalStatus,
+                                              const QStringList &extensions,
+                                              const std::function<void (QSceneImporter *)> &importerSetupFunc)
+{
+    Qt3DCore::QEntity *sceneSubTree = nullptr;
+    bool foundSuitableLoggerPlugin = false;
+
+    for (QSceneImporter *sceneImporter : qAsConst(m_sceneImporters)) {
+        if (!sceneImporter->areFileTypesSupported(extensions))
+            continue;
+
+        foundSuitableLoggerPlugin = true;
+
+        // If the file type is supported -> enter Loading status
+        scene->setStatus(QSceneLoader::Loading);
+
+        // Set source file or data on importer
+        importerSetupFunc(sceneImporter);
+
+        // File type is supported, try to load it
+        sceneSubTree = sceneImporter->scene();
+        if (sceneSubTree != nullptr) {
+            // Successfully built a subtree
+            finalStatus = QSceneLoader::Ready;
+            break;
+        }
+
+        qCWarning(SceneLoaders) << Q_FUNC_INFO << "Failed to import" << m_source << "with errors" << sceneImporter->errors();
+    }
+
+    if (!foundSuitableLoggerPlugin)
+        qCWarning(SceneLoaders) << Q_FUNC_INFO << "Found not suitable importer plugin for" << m_source;
+
+    return sceneSubTree;
 }
 
 } // namespace Render
