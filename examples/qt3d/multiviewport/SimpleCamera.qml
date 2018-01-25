@@ -65,8 +65,15 @@ Entity {
         id: transform
         matrix: {
             var m = Qt.matrix4x4();
-            m.lookAt(root.position, root.viewCenter, root.upVector);
-            return m;
+            m.translate(root.position)
+            var zAxis = root.position.minus(root.viewCenter).normalized()
+            var xAxis = root.upVector.crossProduct(zAxis).normalized();
+            var yAxis = zAxis.crossProduct(xAxis);
+            var r = Qt.matrix4x4(xAxis.x, yAxis.x, zAxis.x, 0,
+                                 xAxis.y, yAxis.y, zAxis.y, 0,
+                                 xAxis.z, yAxis.z, zAxis.z, 0,
+                                 0, 0, 0, 1)
+            return m.times(r);
         }
     }
 }

@@ -51,7 +51,6 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
-import Qardboard 1.0
 
 Entity {
     id: root
@@ -75,31 +74,7 @@ Entity {
         }
     ]
 
-    DeviceOrientation {
-        id: orientation
-        enabled: true
-    }
-
     QardboardCamera {
         id: stereoCamera
-        viewMatrix: computeMatrix(orientation.roll, orientation.pitch, orientation.yaw)
-
-        property vector3d vc
-        property vector3d vd
-        property vector3d vu
-
-        function computeMatrix(roll, pitch, yaw) {
-            var m = Qt.matrix4x4()
-            m.rotate(-roll, Qt.vector3d(1, 0, 0))
-            m.rotate(yaw, Qt.vector3d(0, 1, 0))
-            vd = m.times(stereoCamera.viewDirection)
-            vu = m.times(stereoCamera.viewUp)
-            var r = Qt.matrix4x4()
-            vc = stereoCamera.position.minus(vd)
-            r.lookAt(stereoCamera.position, vc, vu)
-//            console.log(roll.toFixed(2), pitch.toFixed(2), yaw.toFixed(2), stereoCamera.position, vd, vc, vu)
-//            console.log(r)
-            return r
-        }
     }
 }
