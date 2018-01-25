@@ -79,11 +79,13 @@ public:
     Q_INVOKABLE static QQuaternion fromAxesAndAngles(const QVector3D &axis1, float angle1,
                                                      const QVector3D &axis2, float angle2,
                                                      const QVector3D &axis3, float angle3);
+    Q_INVOKABLE static QQuaternion fromAxes(const QVector3D &xAxis, const QVector3D &yAxis, const QVector3D &zAxis);
 
     Q_INVOKABLE static QQuaternion fromEulerAngles(const QVector3D &eulerAngles);
     Q_INVOKABLE static QQuaternion fromEulerAngles(float pitch, float yaw, float roll);
 
     Q_INVOKABLE static QMatrix4x4 rotateAround(const QVector3D &point, float angle, const QVector3D &axis);
+    Q_INVOKABLE static QMatrix4x4 rotateFromAxes(const QVector3D &xAxis, const QVector3D &yAxis, const QVector3D &zAxis);
 
     QMatrix4x4 matrix() const;
 

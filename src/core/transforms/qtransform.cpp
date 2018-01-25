@@ -514,6 +514,15 @@ QQuaternion QTransform::fromAxesAndAngles(const QVector3D &axis1, float angle1,
 }
 
 /*!
+    Creates a QQuaterniom definining a rotation from the axes \a xAxis, \a yAxis and \a zAxis.
+    \since 5.11
+ */
+QQuaternion QTransform::fromAxes(const QVector3D &xAxis, const QVector3D &yAxis, const QVector3D &zAxis)
+{
+    return QQuaternion::fromAxes(xAxis, yAxis, zAxis);
+}
+
+/*!
     Creates a QQuaternion from \a eulerAngles.
     Returns the resulting QQuaternion.
  */
@@ -542,6 +551,18 @@ QMatrix4x4 QTransform::rotateAround(const QVector3D &point, float angle, const Q
     m.rotate(angle, axis);
     m.translate(-point);
     return m;
+}
+
+/*!
+    Returns a rotation matrix defined from the axes \a xAxis, \a yAxis, \a zAxis.
+    \since 5.11
+ */
+QMatrix4x4 QTransform::rotateFromAxes(const QVector3D &xAxis, const QVector3D &yAxis, const QVector3D &zAxis)
+{
+    return QMatrix4x4(xAxis.x(), yAxis.x(), zAxis.x(), 0.0f,
+                      xAxis.y(), yAxis.y(), zAxis.y(), 0.0f,
+                      xAxis.z(), yAxis.z(), zAxis.z(), 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 QNodeCreatedChangeBasePtr QTransform::createNodeCreationChange() const
