@@ -141,7 +141,6 @@ private:
         QHash<aiTextureType, QString> m_textureToParameterName;
         QVector<Qt3DAnimation::QKeyframeAnimation *> m_animations;
         QVector<Qt3DAnimation::QMorphingAnimation *> m_morphAnimations;
-//    QMap<aiNode*, Light*> m_lights;
     };
 
     QDir     m_sceneDir;
