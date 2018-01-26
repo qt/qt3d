@@ -750,7 +750,7 @@ private Q_SLOTS:
         simulateInitialization(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
-        indexData.resize(sizeof(uint) * 2);
+        indexData.resize(sizeof(uint) * 4);
         uint *iDataPtr = reinterpret_cast<uint *>(indexData.data());
         iDataPtr[0] = 0;
         iDataPtr[1] = 1;

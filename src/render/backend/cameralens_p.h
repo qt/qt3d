@@ -89,6 +89,8 @@ public:
 
     void setRenderAspect(QRenderAspect* renderAspect);
 
+    QMatrix4x4 viewMatrix(const QMatrix4x4 &worldTransform);
+
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
 

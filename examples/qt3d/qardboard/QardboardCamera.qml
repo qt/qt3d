@@ -50,6 +50,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qardboard 1.0
 
 Entity {
     id: root
@@ -63,11 +64,16 @@ Entity {
     property vector3d position: Qt.vector3d(0.0, 0.0, 0.0)
     property vector3d viewDirection: Qt.vector3d(0.0, 0.0, 1.0)
     property vector3d viewUp: Qt.vector3d(0.0, 1.0, 0.0)
-    property alias viewMatrix: leftEyeTransform.matrix
+    property alias viewMatrix: eyeTransform.matrix
 
     readonly property real _fov2: Math.tan(fieldOfView * Math.PI / 180 * 0.5)
     readonly property real top: nearPlane * _fov2
     readonly property real a: aspectRatio * _fov2 * convergence
+
+    DeviceOrientation {
+        id: orientation
+        enabled: true
+    }
 
     CameraLens {
         id: leftEyeLens
@@ -92,33 +98,39 @@ Entity {
     }
 
     Transform {
-        id: leftEyeTransform
+        id: eyeTransform
 
-        matrix: {
+        function computeMatrix(roll, pitch, yaw) {
+            var n = Qt.matrix4x4()
+            n.rotate(-roll, Qt.vector3d(1, 0, 0))
+            n.rotate(yaw, Qt.vector3d(0, 1, 0))
+            var vd = n.times(stereoCamera.viewDirection)
+            var vu = n.times(stereoCamera.viewUp)
+            var vc = stereoCamera.position.minus(vd)
+
             var m = Qt.matrix4x4();
-            m.lookAt(root.position, root.position + root.viewDirection, root.viewUp);
-            return m;
+            m.translate(stereoCamera.position)
+            var zAxis = stereoCamera.position.minus(vc).normalized()
+            var xAxis = vu.crossProduct(zAxis).normalized();
+            var yAxis = zAxis.crossProduct(xAxis);
+            var r = Qt.matrix4x4(xAxis.x, yAxis.x, zAxis.x, 0,
+                                 xAxis.y, yAxis.y, zAxis.y, 0,
+                                 xAxis.z, yAxis.z, zAxis.z, 0,
+                                 0, 0, 0, 1)
+            return m.times(r);
         }
+
+        matrix: computeMatrix(orientation.roll, orientation.pitch, orientation.yaw)
     }
 
-    Transform {
-        id: rightEyeTransform
-
-        matrix: leftEyeTransform.matrix
-    }
+    components: [ eyeTransform ]
 
     property Entity leftCamera: Entity {
-        components: [
-            leftEyeLens,
-            leftEyeTransform
-        ]
+        components: [ leftEyeLens ]
     }
 
     property Entity rightCamera: Entity {
         id: rightCameraEntity
-        components: [
-            rightEyeLens,
-            rightEyeTransform
-        ]
+        components: [ rightEyeLens ]
     }
 }

@@ -52,7 +52,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(sceneLoader.source().isEmpty());
         QVERIFY(sceneLoader.peerId().isNull());
-        QVERIFY(sceneManager.pendingSceneLoaderJobs().isEmpty());
+        QVERIFY(sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
 
         // GIVEN
@@ -91,7 +91,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(sceneLoader.peerId(), frontendSceneLoader.id());
         QCOMPARE(sceneLoader.source(), frontendSceneLoader.source());
-        QVERIFY(!sceneManager.pendingSceneLoaderJobs().isEmpty());
+        QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
     }
 
     void checkPropertyChanges()
@@ -105,7 +105,7 @@ private Q_SLOTS:
         sceneLoader.setSceneManager(&sceneManager);
 
         // THEN
-        QVERIFY(sceneManager.pendingSceneLoaderJobs().isEmpty());
+        QVERIFY(sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
         // WHEN
         Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -116,7 +116,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(sceneLoader.source(), newUrl);
-        QVERIFY(!sceneManager.pendingSceneLoaderJobs().isEmpty());
+        QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
         // WHEN
         updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
@@ -171,6 +171,41 @@ private Q_SLOTS:
         QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Ready);
 
         arbiter.events.clear();
+    }
+
+    void checkProcessEmptyPath()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        Qt3DRender::Render::Scene sceneLoader;
+        Qt3DRender::Render::SceneManager sceneManager;
+
+        sceneLoader.setRenderer(&renderer);
+        sceneLoader.setSceneManager(&sceneManager);
+
+        // THEN
+        QVERIFY(sceneManager.takePendingSceneLoaderJobs().isEmpty());
+
+        // WHEN
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        const QUrl newUrl(QStringLiteral("file:///Bownling_Green_KY"));
+        updateChange->setValue(newUrl);
+        updateChange->setPropertyName("source");
+        sceneLoader.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(sceneLoader.source(), newUrl);
+        QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setValue(QUrl());
+        updateChange->setPropertyName("source");
+        sceneLoader.sceneChangeEvent(updateChange);
+
+        // THEN -> we should still have generated a job to reset the scene (immediately)
+        QCOMPARE(sceneLoader.source(), QUrl());
+        QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
     }
 };
 

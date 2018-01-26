@@ -292,6 +292,15 @@ void GraphicsHelperGL3_3::vertexAttributePointer(GLenum shaderDataType,
     case GL_FLOAT_VEC2:
     case GL_FLOAT_VEC3:
     case GL_FLOAT_VEC4:
+    case GL_FLOAT_MAT2:
+    case GL_FLOAT_MAT2x3:
+    case GL_FLOAT_MAT2x4:
+    case GL_FLOAT_MAT3:
+    case GL_FLOAT_MAT3x2:
+    case GL_FLOAT_MAT3x4:
+    case GL_FLOAT_MAT4x2:
+    case GL_FLOAT_MAT4x3:
+    case GL_FLOAT_MAT4:
         m_funcs->glVertexAttribPointer(index, size, type, normalized, stride, pointer);
         break;
 

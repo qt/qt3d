@@ -78,7 +78,7 @@ void SceneManager::addSceneData(const QUrl &source,
     m_pendingJobs.push_back(newJob);
 }
 
-QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
+QVector<LoadSceneJobPtr> SceneManager::takePendingSceneLoaderJobs()
 {
     // Explicitly use std::move to clear the m_pendingJobs vector
     return std::move(m_pendingJobs);
@@ -118,6 +118,8 @@ void SceneDownloader::onCompleted()
         return;
     if (succeeded())
         m_manager->addSceneData(url(), m_sceneComponent, m_data);
+    else
+        qWarning() << "Failed to download scene at" << url();
     m_manager->clearSceneDownload(this);
 }
 

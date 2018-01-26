@@ -52,8 +52,12 @@
 //
 
 #include <private/qsimd_p.h>
+#include <Qt3DCore/private/qt3dcore-config_p.h>
 
-#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+
+// We check if sse or avx config option was enabled as it could
+// be disabled even though a given platform supports SSE2 or AVX2 instructions
+#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
 
 #include <Qt3DCore/private/matrix4x4_avx2_p.h>
 
@@ -61,7 +65,7 @@ QT_BEGIN_NAMESPACE
 using Matrix4x4 = Qt3DCore::Matrix4x4_AVX2;
 QT_END_NAMESPACE
 
-#elif defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
+#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
 
 #include <Qt3DCore/private/matrix4x4_sse_p.h>
 

@@ -62,6 +62,7 @@ Entity {
 
     property vector3d viewCenter: Qt.vector3d(0.0, 0.0, 0.0)
     property vector3d position: Qt.vector3d(0.0, 0.0, 1.0)
+    property vector3d upVector: Qt.vector3d(0.0, 1.0, 0.0)
 
     readonly property real _fov2: Math.tan(fieldOfView * Math.PI / 180 * 0.5)
     readonly property real top: nearPlane * _fov2
@@ -94,23 +95,26 @@ Entity {
 
         matrix: {
             var m = Qt.matrix4x4();
-            m.lookAt(root.position, root.viewCenter, Qt.vector3d(0.0, 1.0, 0.0));
-            return m;
+            m.translate(root.position)
+            var zAxis = root.position.minus(root.viewCenter).normalized()
+            var xAxis = root.upVector.crossProduct(zAxis).normalized();
+            var yAxis = zAxis.crossProduct(xAxis);
+            var r = Qt.matrix4x4(xAxis.x, yAxis.x, zAxis.x, 0,
+                                 xAxis.y, yAxis.y, zAxis.y, 0,
+                                 xAxis.z, yAxis.z, zAxis.z, 0,
+                                 0, 0, 0, 1)
+            return m.times(r);
         }
     }
 
+    components: [ eyeTransform ]
+
     property Entity leftCamera: Entity {
-        components: [
-            leftEyeLens,
-            eyeTransform
-        ]
+        components: [ leftEyeLens ]
     }
 
     property Entity rightCamera: Entity {
         id: rightCameraEntity
-        components: [
-            rightEyeLens,
-            eyeTransform
-        ]
+        components: [ rightEyeLens ]
     }
 }

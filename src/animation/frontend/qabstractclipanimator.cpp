@@ -135,13 +135,12 @@ QAbstractClipAnimator::~QAbstractClipAnimator()
 }
 
 /*!
-    \qmlproperty bool QAbstractClipAnimator::running
+    \property Qt3DAnimation::QAbstractClipAnimator::running
 
-    This property holds whether the animation is currently running.
+    This property holds a boolean indicating whether the animation is currently running.
 */
 
 /*!
-    \property QAbstractClipAnimator::isRunning
     Returns a boolean indicating whether the animation is currently running.
 */
 bool QAbstractClipAnimator::isRunning() const
@@ -151,7 +150,7 @@ bool QAbstractClipAnimator::isRunning() const
 }
 
 /*!
-    \property ChannelMapper QAbstractClipAnimator::channelMapper
+    \property Qt3DAnimation::QAbstractClipAnimator::channelMapper
 
     This property holds the ChannelMapper that controls how the channels in
     the animation clip map onto the properties of the target objects.
@@ -164,7 +163,7 @@ QChannelMapper *QAbstractClipAnimator::channelMapper() const
 }
 
 /*!
-    \qmlproperty int AbstractClipAnimator::loops
+    \qmlproperty int Qt3DAnimation::AbstractClipAnimator::loops
 
     This property holds the number of times the animation should play.
 
@@ -173,11 +172,29 @@ QChannelMapper *QAbstractClipAnimator::channelMapper() const
     If set to QAbstractClipAnimator::Infinite, the animation will continuously
     repeat until it is explicitly stopped.
 */
+/*!
+    \enum QAbstractClipAnimator::Loops
+
+    Holds the number of times the animation should play.
+
+    \value Infinite
+         This will repeat the loop continuously until it is explicitly
+         stopped.
+
+*/
+/*!
+    \property Qt3DAnimation::QAbstractClipAnimator::loops
+
+    Holds the number of times the animation should play.
+
+    The value is 1 by default: the animation will be played once and then stop.
+
+    If set to QAbstractClipAnimator::Infinite, the animation will continuously
+    repeat until it is explicitly stopped.
+*/
 
 /*!
-    \property int QAbstractClipAnimator::loopCount
-
-    This property holds the number of times the animation should play.
+    Returns the number of times the animation should play.
 
     The value is 1 by default: the animation will play through once and then stop.
 
@@ -189,7 +206,11 @@ int QAbstractClipAnimator::loopCount() const
     Q_D(const QAbstractClipAnimator);
     return d->m_loops;
 }
+/*!
+    \property Qt3DAnimation::QAbstractClipAnimator::clock
 
+    The clock controls the speed with which an animation is played.
+*/
 QClock *QAbstractClipAnimator::clock() const
 {
     Q_D(const QAbstractClipAnimator);

@@ -32,6 +32,8 @@ qtConfig(private_tests) {
         qtConfig(qt3d-simd-sse2) {
             SUBDIRS += \
                 vector4d_sse \
-                vector3d_sse
+                vector3d_sse \
+                matrix4x4_sse
         }
+        qtConfig(qt3d-simd-avx2): SUBDIRS += matrix4x4_avx2
 }

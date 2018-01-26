@@ -95,7 +95,7 @@ public:
 
     void addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid,
                       const QByteArray &data = QByteArray());
-    QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
+    QVector<LoadSceneJobPtr> takePendingSceneLoaderJobs();
 
     void startSceneDownload(const QUrl &source, Qt3DCore::QNodeId sceneUuid);
     void clearSceneDownload(SceneDownloader *downloader);
