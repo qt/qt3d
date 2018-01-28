@@ -171,7 +171,7 @@ protected:
                               const uint byteStride,
                               const uint count)
     {
-        const uint stride = byteStride / sizeof(Coordinate);
+        const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 2;
         for (uint ndx = 0; ndx < count; ++ndx) {
             visit(ndx, coordinates[0], coordinates[1]);
             coordinates += stride;
@@ -185,7 +185,7 @@ protected:
                                      IndexElem *indices,
                                      const uint count)
     {
-        const uint stride = byteStride / sizeof(Coordinate);
+        const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 2;
         for (uint i = 0; i < count; ++i) {
             const uint n = stride * indices[i];
             visit(i, coordinates[n], coordinates[n + 1]);
@@ -197,7 +197,7 @@ protected:
                               const uint byteStride,
                               const uint count)
     {
-        const uint stride = byteStride / sizeof(Coordinate);
+        const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 3;
         for (uint ndx = 0; ndx < count; ++ndx) {
             visit(ndx, coordinates[0], coordinates[1], coordinates[2]);
             coordinates += stride;
@@ -210,7 +210,7 @@ protected:
                                      IndexElem *indices,
                                      const uint count)
     {
-        const uint stride = byteStride / sizeof(Coordinate);
+        const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 3;
         for (uint i = 0; i < count; ++i) {
             const uint n = stride * indices[i];
             visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2]);
@@ -222,7 +222,7 @@ protected:
                               const uint byteStride,
                               const uint count)
     {
-        const uint stride = byteStride / sizeof(Coordinate);
+        const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 4;
         for (uint ndx = 0; ndx < count; ++ndx) {
             visit(ndx, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
             coordinates += stride;
@@ -235,7 +235,7 @@ protected:
                                      IndexElem *indices,
                                      const uint count)
     {
-        const uint stride = byteStride / sizeof(Coordinate);
+        const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 4;
         for (uint i = 0; i < count; ++i) {
             const uint n = stride * indices[i];
             visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2], coordinates[n + 3]);
