@@ -205,6 +205,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
+    m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
 
     // Dirty texture gathering depends on m_syncTextureLoadingJob
     // m_syncTextureLoadingJob will depend on the texture loading jobs
