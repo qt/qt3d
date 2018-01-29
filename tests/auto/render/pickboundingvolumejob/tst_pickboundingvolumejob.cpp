@@ -1296,6 +1296,88 @@ private Q_SLOTS:
         QVERIFY(!backendPicker->isPressed());
         QCOMPARE(arbiter.events.count(), 0);
     }
+
+    void checkMultipleRayDirections_data()
+    {
+        QTest::addColumn<QVector3D>("cameraOrigin");
+        QTest::addColumn<QVector3D>("cameraUpVector");
+
+        int k = 0;
+        const int n = 10;
+        for (int j=0; j<n; j++) {
+            QMatrix4x4 m;
+            m.rotate(360.f / (float)n * (float)j, 0.f, 0.f, 1.f);
+            for (int i=0; i<n; i++) {
+                const double angle = M_PI * 2. / (double)n * i;
+                const double x = std::sin(angle) * 10.;
+                const double z = std::cos(angle) * 10.;
+                QVector3D pos(x, 0, z);
+                QVector3D up(0, 1, 0);
+                QTest::newRow(QString::number(k++).toLatin1().data()) << m * pos << m * up;
+            }
+        }
+    }
+
+    void checkMultipleRayDirections()
+    {
+        // GIVEN
+        QmlSceneReader sceneReader(QUrl("qrc:/testscene_cameraposition.qml"));
+        QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
+        QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        settings->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
+
+        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
+        TestArbiter arbiter;
+
+        QList<Qt3DRender::QCamera *> cameras = root->findChildren<Qt3DRender::QCamera *>();
+        QCOMPARE(cameras.size(), 1);
+        Qt3DRender::QCamera *camera = cameras.first();
+
+        QFETCH(QVector3D, cameraUpVector);
+        camera->setUpVector(cameraUpVector);
+
+        QFETCH(QVector3D, cameraOrigin);
+        camera->setPosition(cameraOrigin);
+
+        // Runs Required jobs
+        runRequiredJobs(test.data());
+
+        // THEN
+        QList<Qt3DRender::QObjectPicker *> pickers = root->findChildren<Qt3DRender::QObjectPicker *>();
+        QCOMPARE(pickers.size(), 1);
+
+        Qt3DRender::QObjectPicker *picker = pickers.front();
+
+        Qt3DRender::Render::ObjectPicker *backendPicker = test->nodeManagers()->objectPickerManager()->lookupResource(picker->id());
+        QVERIFY(backendPicker);
+        Qt3DCore::QBackendNodePrivate::get(backendPicker)->setArbiter(&arbiter);
+
+        // WHEN -> Pressed on object
+        Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
+        initializePickBoundingVolumeJob(&pickBVJob, test.data());
+
+        QList<QPair<QObject *, QMouseEvent>> events;
+        events.push_back({nullptr, QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(303.0f, 303.0f),
+                                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier)});
+        pickBVJob.setMouseEvents(events);
+        bool earlyReturn = !pickBVJob.runHelper();
+
+        // THEN -> Pressed
+        QVERIFY(!earlyReturn);
+        QVERIFY(backendPicker->isPressed());
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "pressed");
+        Qt3DRender::QPickEventPtr pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+
+        arbiter.events.clear();
+    }
+
 };
 
 QTEST_MAIN(tst_PickBoundingVolumeJob)
