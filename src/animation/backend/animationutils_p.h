@@ -142,6 +142,7 @@ struct ChannelNameAndType
         , jointIndex(-1)
         , mappingId()
         , jointTransformComponent(NoTransformComponent)
+        , pad(0)
     {}
 
     ChannelNameAndType(const QString &_name,
@@ -154,6 +155,7 @@ struct ChannelNameAndType
         , jointIndex(_jointIndex)
         , mappingId(_mappingId)
         , jointTransformComponent(NoTransformComponent)
+        , pad(0)
     {}
 
     ChannelNameAndType(const QString &_name,
@@ -165,6 +167,7 @@ struct ChannelNameAndType
         , jointIndex(invalidIndex)
         , mappingId()
         , jointTransformComponent(_jointTransformComponent)
+        , pad(0)
     {}
 
     bool operator==(const ChannelNameAndType &rhs) const
