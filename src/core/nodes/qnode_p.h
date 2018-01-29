@@ -100,6 +100,7 @@ public:
     bool m_blockNotifications;
     bool m_hasBackendNode;
     bool m_enabled;
+    bool m_notifiedParent;
     QNode::PropertyTrackingMode m_defaultPropertyTrackMode;
     QHash<QString, QNode::PropertyTrackingMode> m_trackedPropertiesOverrides;
 
@@ -137,10 +138,11 @@ public:
 
     static const QMetaObject *findStaticMetaObject(const QMetaObject *metaObject);
 
+    void _q_postConstructorInit();
+
 private:
     void notifyCreationChange();
     void notifyDestructionChangesAndRemoveFromScene();
-    void _q_postConstructorInit();
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);
     void _q_setParentHelper(QNode *parent);

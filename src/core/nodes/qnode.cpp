@@ -74,6 +74,7 @@ QNodePrivate::QNodePrivate()
     , m_blockNotifications(false)
     , m_hasBackendNode(false)
     , m_enabled(true)
+    , m_notifiedParent(false)
     , m_defaultPropertyTrackMode(QNode::TrackFinalValues)
     , m_propertyChangesSetup(false)
     , m_signals(this)
@@ -210,13 +211,19 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     Q_ASSERT(childNode);
     Q_ASSERT_X(childNode->parent() == q_func(), Q_FUNC_INFO,  "not a child of this node");
 
+    // Have we already notified the parent about its new child? If so, bail out
+    // early so that we do not send more than one new child event to the backend
+    QNodePrivate *childD = QNodePrivate::get(childNode);
+    if (childD->m_notifiedParent == true)
+        return;
+
     // Store our id as the parentId in the child so that even if the child gets
     // removed from the scene as part of the destruction of the parent, when the
     // parent's children are deleted in the QObject dtor, we still have access to
     // the parentId. If we didn't store this, we wouldn't have access at that time
     // because the parent would then only be a QObject, the QNode part would have
     // been destroyed already.
-    QNodePrivate::get(childNode)->m_parentId = m_id;
+    childD->m_parentId = m_id;
 
     if (!m_scene)
         return;
@@ -224,6 +231,11 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     // We need to send a QPropertyNodeAddedChange to the backend
     // to notify the backend that we have a new child
     if (m_changeArbiter != nullptr) {
+        // Flag that we have notified the parent. We do this immediately before
+        // creating the change because that recurses back into this function and
+        // we need to catch that to avoid sending more than one new child event
+        // to the backend.
+        childD->m_notifiedParent = true;
         const auto change = QPropertyNodeAddedChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
         notifyObservers(change);
@@ -298,6 +310,9 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
         if (!parent)
             notifyDestructionChangesAndRemoveFromScene();
     }
+
+    // Flag that we need to notify any new parent
+    m_notifiedParent = false;
 
     // Basically QObject::setParent but for QObjectPrivate
     QObjectPrivate::setParent_helper(parent);
