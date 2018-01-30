@@ -59,6 +59,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+class QLayer;
+
 /*!
     \internal
 */
@@ -82,7 +84,9 @@ public:
     QPoint m_position;
     QVector3D m_origin;
     QVector3D m_direction = QVector3D(0., 0., 1.f);
-    float m_length = 0.f;
+    float m_length = 1.f;
+    QAbstractRayCaster::FilterMode m_filterMode = QAbstractRayCaster::AcceptAnyMatchingLayers;
+    QVector<QLayer*> m_layers;
 
     virtual void dispatchHits(const QAbstractRayCaster::Hits &hits);
 
@@ -96,7 +100,9 @@ struct QAbstractRayCasterData
     QPoint position;
     QVector3D origin;
     QVector3D direction;
-    float length = 0.f;
+    float length = 1.f;
+    QAbstractRayCaster::FilterMode filterMode;
+    Qt3DCore::QNodeIdVector layerIds;
 };
 
 } // namespace Qt3DRender

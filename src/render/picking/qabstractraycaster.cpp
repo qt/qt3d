@@ -41,8 +41,11 @@
 #include "qabstractraycaster_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DRender/qlayer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -111,10 +114,70 @@ void QAbstractRayCaster::setRunMode(QAbstractRayCaster::RunMode runMode)
     }
 }
 
+QAbstractRayCaster::FilterMode QAbstractRayCaster::filterMode() const
+{
+    Q_D(const QAbstractRayCaster);
+    return d->m_filterMode;
+}
+
+void QAbstractRayCaster::setFilterMode(QAbstractRayCaster::FilterMode filterMode)
+{
+    Q_D(QAbstractRayCaster);
+    if (d->m_filterMode != filterMode) {
+        d->m_filterMode = filterMode;
+        emit filterModeChanged(d->m_filterMode);
+    }
+}
+
 QAbstractRayCaster::Hits QAbstractRayCaster::hits() const
 {
     Q_D(const QAbstractRayCaster);
     return d->m_hits;
+}
+
+void QAbstractRayCaster::addLayer(QLayer *layer)
+{
+    Q_ASSERT(layer);
+    Q_D(QAbstractRayCaster);
+    if (!d->m_layers.contains(layer)) {
+        d->m_layers.append(layer);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(layer, &QAbstractRayCaster::removeLayer, d->m_layers);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!layer->parent())
+            layer->setParent(this);
+
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), layer);
+            change->setPropertyName("layer");
+            d->notifyObservers(change);
+        }
+    }
+}
+
+void QAbstractRayCaster::removeLayer(QLayer *layer)
+{
+    Q_ASSERT(layer);
+    Q_D(QAbstractRayCaster);
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), layer);
+        change->setPropertyName("layer");
+        d->notifyObservers(change);
+    }
+    d->m_layers.removeOne(layer);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(layer);
+}
+
+QVector<QLayer *> QAbstractRayCaster::layers() const
+{
+    Q_D(const QAbstractRayCaster);
+    return d->m_layers;
 }
 
 /*! \internal */
@@ -145,6 +208,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractRayCaster::createNodeCreationChange
     data.direction = d->m_direction;
     data.length = d->m_length;
     data.position = d->m_position;
+    data.filterMode = d->m_filterMode;
+    data.layerIds = qIdsForNodes(d->m_layers);
     return creationChange;
 }
 

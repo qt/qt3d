@@ -161,19 +161,27 @@ private Q_SLOTS:
 
     void checkEarlyReturnWhenNoProperFrameGraph_data()
     {
+        QTest::addColumn<QUrl>("source");
         QTest::addColumn<QVector3D>("rayOrigin");
         QTest::addColumn<QVector3D>("rayDirection");
         QTest::addColumn<int>("numIntersections");
 
-        QTest::newRow("left entity") << QVector3D(-5, 0, 4) << QVector3D(0, 0, -1) << 1;
-        QTest::newRow("no entity") << QVector3D(0, 0, 4) << QVector3D(0, 0, -1) << 0;
-        QTest::newRow("both entities") << QVector3D(-8, 0, 0) << QVector3D(1, 0, 0) << 2;
+        QTest::newRow("left entity") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(-5, 0, 4) << QVector3D(0, 0, -1) << 1;
+        QTest::newRow("no entity") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(0, 0, 4) << QVector3D(0, 0, -1) << 0;
+        QTest::newRow("both entities") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(-8, 0, 0) << QVector3D(1, 0, 0) << 2;
+        QTest::newRow("discard filter - right entity") << QUrl("qrc:/testscene_worldraycastinglayer.qml") << QVector3D(5, 0, 4) << QVector3D(0, 0, -1) << 0;
+        QTest::newRow("discard filter - both entities") << QUrl("qrc:/testscene_worldraycastinglayer.qml") << QVector3D(-8, 0, 0) << QVector3D(1, 0, 0) << 1;
     }
 
     void checkEarlyReturnWhenNoProperFrameGraph()
     {
+        QFETCH(QUrl, source);
+        QFETCH(QVector3D, rayOrigin);
+        QFETCH(QVector3D, rayDirection);
+        QFETCH(int, numIntersections);
+
         // GIVEN
-        QmlSceneReader sceneReader(QUrl("qrc:/testscene_worldraycasting.qml"));
+        QmlSceneReader sceneReader(source);
         QScopedPointer<Qt3DCore::QEntity> root(qobject_cast<Qt3DCore::QEntity *>(sceneReader.root()));
         QVERIFY(root);
 
@@ -185,10 +193,6 @@ private Q_SLOTS:
                 break;
         }
         QVERIFY(rayCaster);
-
-        QFETCH(QVector3D, rayOrigin);
-        QFETCH(QVector3D, rayDirection);
-        QFETCH(int, numIntersections);
 
         rayCaster->trigger(rayOrigin, rayDirection);
 

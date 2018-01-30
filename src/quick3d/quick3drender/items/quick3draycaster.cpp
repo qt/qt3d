@@ -115,6 +115,39 @@ QJSValue Quick3DRayCasterPrivate::convertHits(const QAbstractRayCaster::Hits &hi
     return jsHits;
 }
 
+void Quick3DRayCasterPrivate::appendLayer(QQmlListProperty<QLayer> *list, QLayer *layer)
+{
+    QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
+    if (filter)
+        filter->addLayer(layer);
+}
+
+QLayer *Quick3DRayCasterPrivate::layerAt(QQmlListProperty<QLayer> *list, int index)
+{
+    QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
+    if (filter)
+        return filter->layers().at(index);
+    return nullptr;
+}
+
+int Quick3DRayCasterPrivate::layerCount(QQmlListProperty<QLayer> *list)
+{
+    QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
+    if (filter)
+        return filter->layers().count();
+    return 0;
+}
+
+void Quick3DRayCasterPrivate::clearLayers(QQmlListProperty<QLayer> *list)
+{
+    QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
+    if (filter) {
+        const auto layers = filter->layers();
+        for (QLayer *layer : layers)
+            filter->removeLayer(layer);
+    }
+}
+
 Quick3DRayCaster::Quick3DRayCaster(QObject *parent)
     : QRayCaster(*new Quick3DRayCasterPrivate(), qobject_cast<Qt3DCore::QNode *>(parent))
 {
@@ -124,6 +157,15 @@ QJSValue Quick3DRayCaster::hits() const
 {
     Q_D(const Quick3DRayCaster);
     return d->m_jsHits;
+}
+
+QQmlListProperty<Qt3DRender::QLayer> Qt3DRender::Render::Quick::Quick3DRayCaster::qmlLayers()
+{
+    return QQmlListProperty<QLayer>(this, 0,
+                                    &Quick3DRayCasterPrivate::appendLayer,
+                                    &Quick3DRayCasterPrivate::layerCount,
+                                    &Quick3DRayCasterPrivate::layerAt,
+                                    &Quick3DRayCasterPrivate::clearLayers);
 }
 
 } // namespace Quick

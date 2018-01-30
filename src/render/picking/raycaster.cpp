@@ -43,10 +43,13 @@
 #include <Qt3DRender/qabstractraycaster.h>
 #include <Qt3DRender/private/qabstractraycaster_p.h>
 #include <Qt3DRender/private/raycastingjob_p.h>
-#include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
+
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -92,6 +95,16 @@ QPoint RayCaster::position() const
     return m_position;
 }
 
+Qt3DCore::QNodeIdVector RayCaster::layerIds() const
+{
+    return m_layerIds;
+}
+
+QAbstractRayCaster::FilterMode RayCaster::filterMode() const
+{
+    return m_filterMode;
+}
+
 void RayCaster::cleanup()
 {
     BackendNode::setEnabled(false);
@@ -101,6 +114,8 @@ void RayCaster::cleanup()
     m_origin = {};
     m_length = 0.f;
     m_position = {};
+    m_filterMode = QAbstractRayCaster::AcceptAllMatchingLayers;
+    m_layerIds.clear();
     notifyJob();
 }
 
@@ -114,11 +129,34 @@ void RayCaster::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_direction = data.direction;
     m_length = data.length;
     m_position = data.position;
+    m_filterMode = data.filterMode;
+    m_layerIds = data.layerIds;
 }
 
 void RayCaster::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
+    switch (e->type()) {
+    case PropertyValueAdded: {
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("layer")) {
+            m_layerIds.append(change->addedNodeId());
+            markDirty(AbstractRenderer::LayersDirty);
+            notifyJob();
+        }
+        break;
+    }
+
+    case PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("layer")) {
+            m_layerIds.removeOne(change->removedNodeId());
+            markDirty(AbstractRenderer::LayersDirty);
+            notifyJob();
+        }
+        break;
+    }
+
+    case PropertyUpdated: {
         const Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
 
         if (propertyChange->propertyName() == QByteArrayLiteral("origin")) {
@@ -131,10 +169,17 @@ void RayCaster::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_position = propertyChange->value().toPoint();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("runMode")) {
             m_runMode = propertyChange->value().value<QAbstractRayCaster::RunMode>();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("filterMode")) {
+            m_filterMode = propertyChange->value().value<QAbstractRayCaster::FilterMode>();
         }
 
         notifyJob();
         markDirty(AbstractRenderer::AllDirty);
+        break;
+    }
+
+    default:
+        break;
     }
 
     BackendNode::sceneChangeEvent(e);

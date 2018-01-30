@@ -169,7 +169,8 @@ bool RayCastingJob::runHelper()
         for (const QRay3D &ray: qAsConst(rays)) {
             PickingUtils::HitList sphereHits;
             PickingUtils::HierarchicalEntityPicker entityPicker(ray, false);
-            if (entityPicker.collectHits(m_node)) {
+            entityPicker.setFilterLayers(pair.second->layerIds(), pair.second->filterMode());
+            if (entityPicker.collectHits(m_manager, m_node)) {
                 if (trianglePickingRequested) {
                     PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
                     gathererFunctor.m_frontFaceRequested = frontFaceRequested;

@@ -51,13 +51,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QAbstractRayCasterPrivate;
+class QLayer;
 
 class QT3DRENDERSHARED_EXPORT QAbstractRayCaster : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(RunMode runMode READ runMode WRITE setRunMode NOTIFY runModeChanged)
+    Q_PROPERTY(FilterMode filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)
     Q_PROPERTY(Hits hits READ hits NOTIFY hitsChanged)
-
 public:
     enum RunMode {
         Continuous,
@@ -65,20 +66,35 @@ public:
     };
     Q_ENUM(RunMode)
 
+    enum FilterMode {
+        AcceptAnyMatchingLayers = 0,
+        AcceptAllMatchingLayers,
+        DiscardAnyMatchingLayers,
+        DiscardAllMatchingLayers,
+    };
+    Q_ENUM(FilterMode) // LOVC_EXLC_LINE
+
     using Hits = QVector<QRayCasterHit>;
 
     explicit QAbstractRayCaster(QNode *parent = nullptr);
     ~QAbstractRayCaster();
 
     RunMode runMode() const;
+    FilterMode filterMode() const;
     Hits hits() const;
+
+    void addLayer(QLayer *layer);
+    void removeLayer(QLayer *layer);
+    QVector<QLayer *> layers() const;
 
 public Q_SLOTS:
     void setRunMode(RunMode runMode);
+    void setFilterMode(FilterMode filterMode);
 
 Q_SIGNALS:
-    void runModeChanged(RunMode runMode);
-    void hitsChanged(const Hits &hits);
+    void runModeChanged(Qt3DRender::QAbstractRayCaster::RunMode runMode);
+    void hitsChanged(const Qt3DRender::QAbstractRayCaster::Hits &hits);
+    void filterModeChanged(Qt3DRender::QAbstractRayCaster::FilterMode filterMode);
 
 protected:
     explicit QAbstractRayCaster(QAbstractRayCasterPrivate &dd, QNode *parent = nullptr);

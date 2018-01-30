@@ -75,6 +75,10 @@ public:
 
     void dispatchHits(const QAbstractRayCaster::Hits &hits) override;
     static QJSValue convertHits(const QAbstractRayCaster::Hits &hits, QQmlEngine *engine);
+    static void appendLayer(QQmlListProperty<QLayer> *list, QLayer *bar);
+    static QLayer *layerAt(QQmlListProperty<QLayer> *list, int index);
+    static int layerCount(QQmlListProperty<QLayer> *list);
+    static void clearLayers(QQmlListProperty<QLayer> *list);
 
     Q_DECLARE_PUBLIC(Quick3DRayCaster)
 };

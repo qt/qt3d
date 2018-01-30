@@ -225,7 +225,7 @@ bool PickBoundingVolumeJob::runHelper()
             QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
 
             PickingUtils::HierarchicalEntityPicker entityPicker(ray);
-            if (entityPicker.collectHits(m_node)) {
+            if (entityPicker.collectHits(m_manager, m_node)) {
                 if (trianglePickingRequested) {
                     PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
                     gathererFunctor.m_frontFaceRequested = frontFaceRequested;

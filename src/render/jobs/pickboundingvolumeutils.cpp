@@ -51,6 +51,7 @@
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/segmentsvisitor_p.h>
 #include <Qt3DRender/private/pointsvisitor_p.h>
+#include <Qt3DRender/private/layer_p.h>
 
 #include <vector>
 
@@ -560,40 +561,125 @@ HitList PointCollisionGathererFunctor::pick(const Entity *entity) const
 HierarchicalEntityPicker::HierarchicalEntityPicker(const QRay3D &ray, bool requireObjectPicker)
     : m_ray(ray)
     , m_objectPickersRequired(requireObjectPicker)
+    , m_filterMode(QAbstractRayCaster::AcceptAnyMatchingLayers)
 {
 
 }
 
-bool HierarchicalEntityPicker::collectHits(Entity *root)
+void HierarchicalEntityPicker::setFilterLayers(const Qt3DCore::QNodeIdVector &layerIds, QAbstractRayCaster::FilterMode mode)
+{
+    m_filterMode = mode;
+    m_layerIds = layerIds;
+    std::sort(m_layerIds.begin(), m_layerIds.end());
+}
+
+bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
 {
     m_hits.clear();
     m_entities.clear();
 
     QRayCastingService rayCasting;
-    std::vector<std::pair<Entity *, bool>> worklist;
-    worklist.push_back({root, !root->componentHandle<ObjectPicker>().isNull()});
+    struct EntityData {
+        Entity* entity;
+        bool hasObjectPicker;
+        Qt3DCore::QNodeIdVector recursiveLayers;
+    };
+    std::vector<EntityData> worklist;
+    worklist.push_back({root, !root->componentHandle<ObjectPicker>().isNull(), {}});
+
+    LayerManager *layerManager = manager->layerManager();
 
     while (!worklist.empty()) {
-        auto current = worklist.back();
+        EntityData current = worklist.back();
         worklist.pop_back();
+
+        if (m_layerIds.size()) {
+            // TODO investigate reusing logic from LayerFilter job
+            bool accepted = false;
+            Qt3DCore::QNodeIdVector filterLayers = current.recursiveLayers + current.entity->componentsUuid<Layer>();
+
+            // remove disabled layers
+            filterLayers.erase(std::remove_if(filterLayers.begin(), filterLayers.end(),
+                                              [layerManager](const Qt3DCore::QNodeId layerId) {
+                Layer *layer = layerManager->lookupResource(layerId);
+                return !layer || !layer->isEnabled();
+            }), filterLayers.end());
+
+            switch (m_filterMode) {
+            case QAbstractRayCaster::AcceptAnyMatchingLayers: {
+                for (auto id: qAsConst(filterLayers)) {
+                    if (m_layerIds.contains(id)) {
+                        accepted = true;
+                        break;
+                    }
+                }
+                break;
+            }
+            case QAbstractRayCaster::AcceptAllMatchingLayers: {
+                accepted = true;
+                for (auto id: qAsConst(filterLayers)) {
+                    if (!m_layerIds.contains(id)) {
+                        accepted = false;
+                        break;
+                    }
+                }
+                break;
+            }
+            case QAbstractRayCaster::DiscardAnyMatchingLayers: {
+                accepted = true;
+                for (auto id: qAsConst(filterLayers)) {
+                    if (m_layerIds.contains(id)) {
+                        accepted = false;
+                        break;
+                    }
+                }
+                break;
+            }
+            case QAbstractRayCaster::DiscardAllMatchingLayers: {
+                accepted = false;
+                for (auto id: qAsConst(filterLayers)) {
+                    if (!m_layerIds.contains(id)) {
+                        accepted = true;
+                        break;
+                    }
+                }
+                break;
+            }
+            default:
+                Q_UNREACHABLE();
+                break;
+            }
+
+            if (!accepted)
+                continue;
+        }
 
         // first pick entry sub-scene-graph
         QCollisionQueryResult::Hit queryResult =
-                rayCasting.query(m_ray, current.first->worldBoundingVolumeWithChildren());
+                rayCasting.query(m_ray, current.entity->worldBoundingVolumeWithChildren());
         if (queryResult.m_distance < 0.f)
             continue;
 
         // if we get a hit, we check again for this specific entity
-        queryResult = rayCasting.query(m_ray, current.first->worldBoundingVolume());
-        if (queryResult.m_distance >= 0.f && (current.second || !m_objectPickersRequired)) {
-            m_entities.push_back(current.first);
+        queryResult = rayCasting.query(m_ray, current.entity->worldBoundingVolume());
+        if (queryResult.m_distance >= 0.f && (current.hasObjectPicker || !m_objectPickersRequired)) {
+            m_entities.push_back(current.entity);
             m_hits.push_back(queryResult);
         }
 
+        Qt3DCore::QNodeIdVector recursiveLayers;
+        const Qt3DCore::QNodeIdVector entityLayers = current.entity->componentsUuid<Layer>();
+        for (const Qt3DCore::QNodeId layerId : entityLayers) {
+            Layer *layer = layerManager->lookupResource(layerId);
+            if (layer->recursive())
+                recursiveLayers << layerId;
+        }
+
         // and pick children
-        const auto children = current.first->children();
+        const auto children = current.entity->children();
         for (auto child: children)
-            worklist.push_back({child, current.second || !child->componentHandle<ObjectPicker>().isNull()});
+            worklist.push_back({child, current.hasObjectPicker || !child->componentHandle<ObjectPicker>().isNull(),
+                                current.recursiveLayers + recursiveLayers});
     }
 
     return !m_hits.empty();

@@ -77,6 +77,15 @@ QJSValue Quick3DScreenRayCaster::hits() const
     return d->m_jsHits;
 }
 
+QQmlListProperty<Qt3DRender::QLayer> Qt3DRender::Render::Quick::Quick3DScreenRayCaster::qmlLayers()
+{
+    return QQmlListProperty<QLayer>(this, 0,
+                                    &Quick3DRayCasterPrivate::appendLayer,
+                                    &Quick3DRayCasterPrivate::layerCount,
+                                    &Quick3DRayCasterPrivate::layerAt,
+                                    &Quick3DRayCasterPrivate::clearLayers);
+}
+
 } // namespace Quick
 } // namespace Render
 } // namespace Qt3DRender

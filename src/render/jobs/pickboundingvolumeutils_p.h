@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/QNodeId>
+#include <Qt3DRender/QAbstractRayCaster>
 #include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
 
@@ -115,7 +116,9 @@ class Q_AUTOTEST_EXPORT HierarchicalEntityPicker
 public:
     explicit HierarchicalEntityPicker(const RayCasting::QRay3D &ray, bool requireObjectPicker = true);
 
-    bool collectHits(Entity *root);
+    void setFilterLayers(const Qt3DCore::QNodeIdVector &layerIds, QAbstractRayCaster::FilterMode mode);
+
+    bool collectHits(NodeManagers *manager, Entity *root);
     inline HitList hits() const { return m_hits; }
     inline QVector<Entity *> entities() const { return m_entities; }
 
@@ -124,6 +127,8 @@ private:
     HitList m_hits;
     QVector<Entity *> m_entities;
     bool m_objectPickersRequired;
+    Qt3DCore::QNodeIdVector m_layerIds;
+    QAbstractRayCaster::FilterMode m_filterMode;
 };
 
 struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor

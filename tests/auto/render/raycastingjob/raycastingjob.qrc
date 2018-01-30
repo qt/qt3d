@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>testscene_worldraycasting.qml</file>
+        <file>testscene_worldraycastinglayer.qml</file>
     </qresource>
 </RCC>

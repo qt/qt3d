@@ -77,6 +77,9 @@ public:
     float length() const;
     QPoint position() const;
 
+    Qt3DCore::QNodeIdVector layerIds() const;
+    QAbstractRayCaster::FilterMode filterMode() const;
+
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
 
@@ -90,8 +93,10 @@ private:
     QAbstractRayCaster::RunMode m_runMode = QAbstractRayCaster::SingleShot;
     QVector3D m_origin;
     QVector3D m_direction = {0.f, 0.f, 1.f};
-    float m_length = 0.f;
+    float m_length = 1.f;
     QPoint m_position;
+    Qt3DCore::QNodeIdVector m_layerIds;
+    QAbstractRayCaster::FilterMode m_filterMode = QAbstractRayCaster::AcceptAnyMatchingLayers;
 };
 
 } // Render
