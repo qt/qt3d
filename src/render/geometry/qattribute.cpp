@@ -468,6 +468,26 @@ QString QAttribute::defaultJointWeightsAttributeName()
     return QStringLiteral("vertexJointWeights");
 }
 
+/*!
+ * \brief QAttribute::defaultTextureCoordinate1AttributeName
+ * \return the name of the default attribute for the second layer of texture
+ * coordinates
+ */
+QString QAttribute::defaultTextureCoordinate1AttributeName()
+{
+    return QStringLiteral("vertexTexCoord1");
+}
+
+/*!
+ * \brief QAttribute::defaultTextureCoordinate2AttributeName
+ * \return the name of the default attribute for the third layer of texture
+ * coordinates
+ */
+QString QAttribute::defaultTextureCoordinate2AttributeName()
+{
+    return QStringLiteral("vertexTexCoord2");
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QAttribute::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAttributeData>::create(this);
