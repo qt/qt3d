@@ -191,7 +191,7 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
         return;
 
     GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
-    if (gRenderer) {
+    if (gRenderer && gRenderer->primitiveType() != QGeometryRenderer::Patches) {
         Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(gRenderer->geometryId());
 
         if (geom) {
