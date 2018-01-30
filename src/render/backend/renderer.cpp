@@ -217,6 +217,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateLevelOfDetailJob->addDependency(m_updateMeshTriangleListJob);
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
 
+    m_shaderGathererJob->addDependency(m_filterCompatibleTechniqueJob);
+
     m_filterCompatibleTechniqueJob->setRenderer(this);
 
     m_defaultRenderStateSet = new RenderStateSet;
