@@ -102,7 +102,7 @@ void QFirstPersonCameraController::moveCamera(const QAbstractCameraController::I
             theLookSpeed *= 0.2f;
         }
 
-        const QVector3D upVector(0.0f, 1.0f, 0.0f);
+        const QVector3D upVector(theCamera->upVector());
 
         theCamera->pan(state.rxAxisValue * theLookSpeed * dt, upVector);
         theCamera->tilt(state.ryAxisValue * theLookSpeed * dt);

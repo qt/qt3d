@@ -150,7 +150,7 @@ void QOrbitCameraController::moveCamera(const QAbstractCameraController::InputSt
     if (theCamera == nullptr)
         return;
 
-    const QVector3D upVector(0.0f, 1.0f, 0.0f);
+    const QVector3D upVector(theCamera->upVector());
 
     // Mouse input
     if (state.leftMouseButtonActive) {
