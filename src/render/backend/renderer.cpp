@@ -215,12 +215,12 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
     // Create jobs to update transforms and bounding volumes
     // We can only update bounding volumes once all world transforms are known
-    m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
     m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
+    // m_calculateBoundingVolumeJob's dependency on m_updateTreeEnabledJob is set in renderBinJobs
 
     // Ensures all skeletons are loaded before we try to update them
     m_updateSkinningPaletteJob->addDependency(m_syncSkeletonLoadingJob);
@@ -1584,8 +1584,12 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_dirtyBits = 0;
 
     const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
-    if (entitiesEnabledDirty)
+    if (entitiesEnabledDirty) {
         renderBinJobs.push_back(m_updateTreeEnabledJob);
+        // This dependency is added here because we clear all dependencies
+        // at the start of this function.
+        m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
+    }
 
     if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_worldTransformJob);
