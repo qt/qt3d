@@ -77,6 +77,13 @@ namespace Qt3DCore {
     \sa Qt3DCore::QComponent, Qt3DCore::QTransform
  */
 
+/*!
+    \fn template<typename T> QVector<T *> QEntity::componentsOfType() const
+
+    Returns all the components added to this entity that can be cast to
+    type T or an empty vector if there are no such components.
+*/
+
 /*! \internal */
 QEntityPrivate::QEntityPrivate()
     : QNodePrivate()

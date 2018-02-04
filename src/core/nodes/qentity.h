@@ -62,6 +62,19 @@ public:
 
     QComponentVector components() const;
 
+    template<class T>
+    QVector<T *> componentsOfType() const
+    {
+        QVector<T*> matchComponents;
+        const QComponentVector components = this->components();
+        for (QComponent *component : components) {
+            T *typedComponent = qobject_cast<T*>(component);
+            if (typedComponent != nullptr)
+                matchComponents.append(typedComponent);
+        }
+        return matchComponents;
+    }
+
     void addComponent(QComponent *comp);
     void removeComponent(QComponent *comp);
 

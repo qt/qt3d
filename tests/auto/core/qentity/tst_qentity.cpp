@@ -53,6 +53,8 @@ private slots:
     void addComponentsSeveralParentsSingleAggregations();
     void addComponentsSeveralParentsSeveralAggregations();
 
+    void retrieveSingleComponent();
+
     void removeComponentSingleParentSingleAggregation();
     void removeComponentSingleParentSeveralAggregations();
     void removeComponentsSeveralParentsSingleAggreation();
@@ -76,6 +78,14 @@ public:
     {}
 };
 
+class MyQ2Component : public Qt3DCore::QComponent
+{
+    Q_OBJECT
+public:
+    explicit MyQ2Component(Qt3DCore::QNode *parent = 0)
+        : QComponent(parent)
+    {}
+};
 
 class MyEntity : public Qt3DCore::QEntity
 {
@@ -502,6 +512,29 @@ void tst_Entity::removeComponentsSeveralParentsSeveralAggregations()
     QCOMPARE(comp1->entities().size(), 0);
     QCOMPARE(comp2->entities().size(), 0);
     QCOMPARE(comp3->entities().size(), 0);
+}
+
+void tst_Entity::retrieveSingleComponent()
+{
+    // GIVEN
+    QScopedPointer<Qt3DCore::QEntity> entity1(new QEntity());
+
+    MyQComponent *comp1 = new MyQComponent(entity1.data());
+    MyQComponent *comp2 = new MyQComponent(entity1.data());
+    QCoreApplication::processEvents();
+    entity1->addComponent(comp1);
+    entity1->addComponent(comp2);
+
+    // WHEN
+    QVector<MyQComponent*> myQComponentsInEntity = entity1->componentsOfType<MyQComponent>();
+    QVector<MyQ2Component*> myQ2ComponentsInEntity = entity1->componentsOfType<MyQ2Component>();
+
+    // THEN
+    QVERIFY(myQComponentsInEntity.size() == 2);
+    QVERIFY(myQComponentsInEntity[0] == comp1);
+    QVERIFY(myQComponentsInEntity[1] == comp2);
+
+    QVERIFY(myQ2ComponentsInEntity.size() == 0);
 }
 
 void tst_Entity::addSeveralTimesSameComponent()
