@@ -47,6 +47,7 @@ namespace Render {
 
 UpdateSkinningPaletteJob::UpdateSkinningPaletteJob()
     : Qt3DCore::QAspectJob()
+    , m_nodeManagers(nullptr)
     , m_root()
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateSkinningPalette, 0);
