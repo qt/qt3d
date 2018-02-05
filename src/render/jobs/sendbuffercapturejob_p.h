@@ -74,14 +74,11 @@ public:
     explicit SendBufferCaptureJob();
     ~SendBufferCaptureJob();
 
-    void setManagers(NodeManagers *managers);
-
     void addRequest(QPair<Buffer*, QByteArray> request);
 
     void run() final;
 
 private:
-    NodeManagers *m_managers;
     QMutex m_mutex;
 
     QVector<QPair<Buffer*, QByteArray> > m_pendingSendBufferCaptures;

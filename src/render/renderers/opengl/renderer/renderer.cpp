@@ -288,7 +288,6 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_rayCastingJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
-    m_sendBufferCaptureJob->setManagers(m_nodesManager);
     m_updateLevelOfDetailJob->setManagers(m_nodesManager);
     m_updateSkinningPaletteJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);

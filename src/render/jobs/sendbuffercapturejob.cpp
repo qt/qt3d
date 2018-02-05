@@ -61,11 +61,6 @@ SendBufferCaptureJob::~SendBufferCaptureJob()
 {
 }
 
-void SendBufferCaptureJob::setManagers(NodeManagers *managers)
-{
-    m_managers = managers;
-}
-
 void SendBufferCaptureJob::addRequest(QPair<Buffer *, QByteArray> request)
 {
     QMutexLocker locker(&m_mutex);
