@@ -56,10 +56,12 @@ int byteSizeForMetaType(int type)
 {
     if (type == qMatrix4x4TypeId)
         return sizeof(Matrix4x4);
-    if (type ==  qVector3DTypeId)
+    if (type == qVector3DTypeId)
         return sizeof(Vector3D);
-    if (type ==  qVector4DTypeId)
+    if (type == qVector4DTypeId)
         return sizeof(Vector4D);
+    if (type == qNodeIdTypeId)
+        return sizeof(Qt3DCore::QNodeId);
 
     switch (type) {
     case QMetaType::Bool:
@@ -230,6 +232,11 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
             break;
 
         const int listEntryType = variants.first().userType();
+
+        // array of textures
+        if (listEntryType == qNodeIdTypeId)
+            v.m_valueType = NodeId;
+
         const int stride = byteSizeForMetaType(listEntryType) / sizeof(float);
         // Resize v.m_data
         v.m_data.resize(stride * variants.size());

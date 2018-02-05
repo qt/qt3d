@@ -72,9 +72,9 @@ void ViewportCameraAreaGatherer::visit(FrameGraphNode *node)
         m_leaves.push_back(node);
 }
 
-ViewportCameraAreaTriplet ViewportCameraAreaGatherer::gatherUpViewportCameraAreas(Render::FrameGraphNode *node) const
+ViewportCameraAreaDetails ViewportCameraAreaGatherer::gatherUpViewportCameraAreas(Render::FrameGraphNode *node) const
 {
-    ViewportCameraAreaTriplet vca;
+    ViewportCameraAreaDetails vca;
     vca.viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
 
     while (node) {
@@ -86,9 +86,12 @@ ViewportCameraAreaTriplet ViewportCameraAreaGatherer::gatherUpViewportCameraArea
             case FrameGraphNode::Viewport:
                 vca.viewport = computeViewport(vca.viewport, static_cast<const ViewportNode *>(node));
                 break;
-            case FrameGraphNode::Surface:
-                vca.area = static_cast<const RenderSurfaceSelector *>(node)->renderTargetSize();
+            case FrameGraphNode::Surface: {
+                auto selector = static_cast<const RenderSurfaceSelector *>(node);
+                vca.area = selector->renderTargetSize();
+                vca.surface = selector->surface();
                 break;
+            }
             default:
                 break;
             }
@@ -98,29 +101,32 @@ ViewportCameraAreaTriplet ViewportCameraAreaGatherer::gatherUpViewportCameraArea
     return vca;
 }
 
-QVector<ViewportCameraAreaTriplet> ViewportCameraAreaGatherer::gather(FrameGraphNode *root)
+QVector<ViewportCameraAreaDetails> ViewportCameraAreaGatherer::gather(FrameGraphNode *root)
 {
     // Retrieve all leaves
     visit(root);
-    QVector<ViewportCameraAreaTriplet> vcaTriplets;
+    QVector<ViewportCameraAreaDetails> vcaTriplets;
     vcaTriplets.reserve(m_leaves.count());
 
     // Find all viewport/camera pairs by traversing from leaf to root
     for (Render::FrameGraphNode *leaf : qAsConst(m_leaves)) {
-        ViewportCameraAreaTriplet vcaTriplet = gatherUpViewportCameraAreas(leaf);
-        if (!m_targetCamera.isNull() && vcaTriplet.cameraId != m_targetCamera)
+        ViewportCameraAreaDetails vcaDetails = gatherUpViewportCameraAreas(leaf);
+        if (!m_targetCamera.isNull() && vcaDetails.cameraId != m_targetCamera)
             continue;
-        if (!vcaTriplet.cameraId.isNull() && isUnique(vcaTriplets, vcaTriplet))
-            vcaTriplets.push_back(vcaTriplet);
+        if (!vcaDetails.cameraId.isNull() && isUnique(vcaTriplets, vcaDetails))
+            vcaTriplets.push_back(vcaDetails);
     }
     return vcaTriplets;
 }
 
-bool ViewportCameraAreaGatherer::isUnique(const QVector<ViewportCameraAreaTriplet> &vcaTriplets,
-                                          const ViewportCameraAreaTriplet &vca) const
+bool ViewportCameraAreaGatherer::isUnique(const QVector<ViewportCameraAreaDetails> &vcaList,
+                                          const ViewportCameraAreaDetails &vca) const
 {
-    for (const ViewportCameraAreaTriplet &triplet : vcaTriplets) {
-        if (vca.cameraId == triplet.cameraId && vca.viewport == triplet.viewport && vca.area == triplet.area)
+    for (const ViewportCameraAreaDetails &listItem : vcaList) {
+        if (vca.cameraId == listItem.cameraId &&
+                vca.viewport == listItem.viewport &&
+                vca.surface == listItem.surface &&
+                vca.area == listItem.area)
             return false;
     }
     return true;

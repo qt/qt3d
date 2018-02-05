@@ -93,6 +93,8 @@ public:
     bool operator==(const QRay3D &other) const;
     bool operator!=(const QRay3D &other) const;
 
+    bool isValid() const { return !m_direction.isNull() && !qFuzzyIsNull(m_distance); }
+
 private:
     Vector3D m_origin;
     Vector3D m_direction;

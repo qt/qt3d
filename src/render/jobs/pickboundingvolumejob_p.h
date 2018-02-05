@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/qcollisionqueryresult_p.h>
+#include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 #include <Qt3DRender/qpickevent.h>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -85,7 +86,7 @@ public:
     PickBoundingVolumeJob();
 
     void setRoot(Entity *root);
-    void setMouseEvents(const QList<QMouseEvent> &pendingEvents);
+    void setMouseEvents(const QList<QPair<QObject*, QMouseEvent>> &pendingEvents);
     void setKeyEvents(const QList<QKeyEvent> &pendingEvents);
     void setFrameGraphRoot(FrameGraphNode *frameGraphRoot);
     void setRenderSettings(RenderSettings *settings);
@@ -117,7 +118,7 @@ private:
     Entity *m_node;
     FrameGraphNode *m_frameGraphRoot;
     RenderSettings *m_renderSettings;
-    QList<QMouseEvent> m_pendingMouseEvents;
+    QList<QPair<QObject*, QMouseEvent>> m_pendingMouseEvents;
     bool m_pickersDirty;
     bool m_oneEnabledAtLeast;
     bool m_oneHoverAtLeast;
@@ -128,10 +129,9 @@ private:
                              Matrix4x4 &viewMatrix,
                              Matrix4x4 &projectionMatrix) const;
     QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
-    RayCasting::QRay3D rayForViewportAndCamera(const QSize &area,
-                                               const QPoint &pos,
-                                               const QRectF &relativeViewport,
-                                               const Qt3DCore::QNodeId cameraId) const;
+    RayCasting::QRay3D rayForViewportAndCamera(const PickingUtils::ViewportCameraAreaDetails &vca,
+                                               QObject *eventSource,
+                                               const QMouseEvent &event) const;
     void clearPreviouslyHoveredPickers();
     HObjectPicker m_currentPicker;
     QVector<HObjectPicker> m_hoveredPickers;

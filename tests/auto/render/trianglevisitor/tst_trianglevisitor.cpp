@@ -194,7 +194,7 @@ private Q_SLOTS:
         positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
         positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
-        positionAttribute->setByteStride(3*4);
+        positionAttribute->setByteStride(0);
         positionAttribute->setByteOffset(0);
         positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
         geometry->addAttribute(positionAttribute.data());

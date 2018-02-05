@@ -74,6 +74,7 @@ QNodePrivate::QNodePrivate()
     , m_blockNotifications(false)
     , m_hasBackendNode(false)
     , m_enabled(true)
+    , m_notifiedParent(false)
     , m_defaultPropertyTrackMode(QNode::TrackFinalValues)
     , m_propertyChangesSetup(false)
     , m_signals(this)
@@ -210,13 +211,19 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     Q_ASSERT(childNode);
     Q_ASSERT_X(childNode->parent() == q_func(), Q_FUNC_INFO,  "not a child of this node");
 
+    // Have we already notified the parent about its new child? If so, bail out
+    // early so that we do not send more than one new child event to the backend
+    QNodePrivate *childD = QNodePrivate::get(childNode);
+    if (childD->m_notifiedParent == true)
+        return;
+
     // Store our id as the parentId in the child so that even if the child gets
     // removed from the scene as part of the destruction of the parent, when the
     // parent's children are deleted in the QObject dtor, we still have access to
     // the parentId. If we didn't store this, we wouldn't have access at that time
     // because the parent would then only be a QObject, the QNode part would have
     // been destroyed already.
-    QNodePrivate::get(childNode)->m_parentId = m_id;
+    childD->m_parentId = m_id;
 
     if (!m_scene)
         return;
@@ -224,6 +231,11 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     // We need to send a QPropertyNodeAddedChange to the backend
     // to notify the backend that we have a new child
     if (m_changeArbiter != nullptr) {
+        // Flag that we have notified the parent. We do this immediately before
+        // creating the change because that recurses back into this function and
+        // we need to catch that to avoid sending more than one new child event
+        // to the backend.
+        childD->m_notifiedParent = true;
         const auto change = QPropertyNodeAddedChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
         notifyObservers(change);
@@ -299,6 +311,9 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
             notifyDestructionChangesAndRemoveFromScene();
     }
 
+    // Flag that we need to notify any new parent
+    m_notifiedParent = false;
+
     // Basically QObject::setParent but for QObjectPrivate
     QObjectPrivate::setParent_helper(parent);
     QNode *newParentNode = q->parentNode();
@@ -373,28 +388,43 @@ void QNodePrivate::propertyChanged(int propertyIndex)
     if (m_blockNotifications)
         return;
 
+    const auto toBackendValue = [this](const QVariant &data) -> QVariant
+    {
+        if (data.canConvert<QNode*>()) {
+            QNode *node = data.value<QNode*>();
+
+            // Ensure the node has issued a node creation change. We can end
+            // up here if a newly created node with a parent is immediately set
+            // as a property on another node. In this case the deferred call to
+            // _q_postConstructorInit() will not have happened yet as the event
+            // loop will still be blocked. So force it here and we catch this
+            // eventuality in the _q_postConstructorInit() function so that we
+            // do not repeat the creation and new child scene change events.
+            if (node)
+                QNodePrivate::get(node)->_q_postConstructorInit();
+
+            const QNodeId id = node ? node->id() : QNodeId();
+            return QVariant::fromValue(id);
+        }
+
+        return data;
+    };
+
     Q_Q(QNode);
 
     const QMetaProperty property = q->metaObject()->property(propertyIndex);
 
     const QVariant data = property.read(q);
-    if (data.canConvert<QNode*>()) {
-        QNode *node = data.value<QNode*>();
 
-        // Ensure the node has issued a node creation change. We can end
-        // up here if a newly created node with a parent is immediately set
-        // as a property on another node. In this case the deferred call to
-        // _q_postConstructorInit() will not have happened yet as the event
-        // loop will still be blocked. So force it here and we catch this
-        // eventuality in the _q_postConstructorInit() function so that we
-        // do not repeat the creation and new child scene change events.
-        if (node)
-            QNodePrivate::get(node)->_q_postConstructorInit();
-
-        const QNodeId id = node ? node->id() : QNodeId();
-        notifyPropertyChange(property.name(), QVariant::fromValue(id));
+    if (data.type() == QVariant::List) {
+        QSequentialIterable iterable = data.value<QSequentialIterable>();
+        QVariantList variants;
+        variants.reserve(iterable.size());
+        for (const auto &v : iterable)
+            variants.append(toBackendValue(v));
+        notifyPropertyChange(property.name(), variants);
     } else {
-        notifyPropertyChange(property.name(), data);
+        notifyPropertyChange(property.name(), toBackendValue(data));
     }
 }
 

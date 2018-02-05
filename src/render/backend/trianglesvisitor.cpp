@@ -85,8 +85,8 @@ void traverseTrianglesIndexed(index *indices,
                               TrianglesVisitor* visitor)
 {
     uint i = 0;
-    const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
+    const uint verticesStride = vertexInfo.byteStride ? vertexInfo.byteStride / sizeof(vertex) : maxVerticesDataSize;
 
     uint ndx[3];
     Vector3D abc[3];
@@ -111,8 +111,8 @@ void traverseTriangles(vertex *vertices,
 {
     uint i = 0;
 
-    const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
+    const uint verticesStride = vertexInfo.byteStride ? vertexInfo.byteStride / sizeof(vertex) : maxVerticesDataSize;
 
     uint ndx[3];
     Vector3D abc[3];
@@ -147,8 +147,8 @@ void traverseTriangleStripIndexed(index *indices,
                                   TrianglesVisitor* visitor)
 {
     uint i = 0;
-    const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
+    const uint verticesStride = vertexInfo.byteStride ? vertexInfo.byteStride / sizeof(vertex) : maxVerticesDataSize;
 
     uint ndx[3];
     Vector3D abc[3];
@@ -178,8 +178,8 @@ void traverseTriangleStrip(vertex *vertices,
 {
     uint i = 0;
 
-    const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
+    const uint verticesStride = vertexInfo.byteStride ? vertexInfo.byteStride / sizeof(vertex) : maxVerticesDataSize;
 
     uint ndx[3];
     Vector3D abc[3];
@@ -204,8 +204,8 @@ void traverseTriangleFanIndexed(index *indices,
                                 const BufferInfo &vertexInfo,
                                 TrianglesVisitor* visitor)
 {
-    const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
+    const uint verticesStride = vertexInfo.byteStride ? vertexInfo.byteStride / sizeof(vertex) : maxVerticesDataSize;
 
     uint ndx[3];
     Vector3D abc[3];
@@ -234,8 +234,8 @@ void traverseTriangleFan(vertex *vertices,
                          const BufferInfo &vertexInfo,
                          TrianglesVisitor* visitor)
 {
-    const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
+    const uint verticesStride = vertexInfo.byteStride ? vertexInfo.byteStride / sizeof(vertex) : maxVerticesDataSize;
 
     uint ndx[3];
     Vector3D abc[3];
@@ -268,8 +268,8 @@ void traverseTriangleAdjacencyIndexed(index *indices,
                                       TrianglesVisitor* visitor)
 {
     uint i = 0;
-    const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
+    const uint verticesStride = vertexInfo.byteStride ? vertexInfo.byteStride / sizeof(vertex) : maxVerticesDataSize;
 
     uint ndx[3];
     Vector3D abc[3];
@@ -294,8 +294,8 @@ void traverseTriangleAdjacency(Vertex *vertices,
 {
     uint i = 0;
 
-    const uint verticesStride = vertexInfo.byteStride / sizeof(Vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
+    const uint verticesStride = vertexInfo.byteStride ? vertexInfo.byteStride / sizeof(Vertex) : maxVerticesDataSize;
 
     uint ndx[3];
     Vector3D abc[3];
@@ -315,7 +315,7 @@ void traverseTriangleAdjacency(Vertex *vertices,
 template<typename Coordinate>
 Vector4D readCoordinate(const BufferInfo &info, Coordinate *coordinates, uint index)
 {
-    const uint stride = info.byteStride / sizeof(Coordinate);
+    const uint stride = info.byteStride ? info.byteStride / sizeof(Coordinate) : info.dataSize;
     Vector4D ret(0, 0, 0, 1.0f);
     coordinates += stride * index;
     for (uint e = 0; e < info.dataSize; ++e)

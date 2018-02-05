@@ -131,6 +131,19 @@ void tst_ShaderCache::value()
     auto dnaC = ProgramDNA(54321);
     auto uncachedProgram = cache.getShaderProgramAndAddRef(dnaC, nodeIdB);
     QVERIFY(uncachedProgram == nullptr);
+
+    cache.clear();
+    // Test inserting nullptr.
+    cache.insert(dnaA, nodeIdA, nullptr);
+    bool wasPresent = false;
+    cachedProgramA = cache.getShaderProgramAndAddRef(dnaA, nodeIdA, &wasPresent);
+    QCOMPARE(wasPresent, true);
+    QCOMPARE(cachedProgramA, nullptr);
+    cache.clear();
+    // Test wasPresent==false.
+    cachedProgramB = cache.getShaderProgramAndAddRef(dnaB, nodeIdB, &wasPresent);
+    QCOMPARE(wasPresent, false);
+    QCOMPARE(cachedProgramB, nullptr);
 }
 
 void tst_ShaderCache::removeRef()
