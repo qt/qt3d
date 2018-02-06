@@ -339,7 +339,11 @@ NodeManagers *Renderer::nodeManagers() const
 */
 QOpenGLContext *Renderer::shareContext() const
 {
-    return m_shareContext ? m_shareContext : m_graphicsContext->openGLContext()->shareContext();
+    QMutexLocker lock(&m_shareContextMutex);
+    return m_shareContext ? m_shareContext
+                          : (m_graphicsContext->openGLContext()
+                             ? m_graphicsContext->openGLContext()->shareContext()
+                             : nullptr);
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -357,44 +361,47 @@ void Renderer::initialize()
 
     QOpenGLContext* ctx = m_glContext;
 
-    // If we are using our own context (not provided by QtQuick),
-    // we need to create it
-    if (!m_glContext) {
-        ctx = new QOpenGLContext;
-        ctx->setShareContext(qt_gl_global_share_context());
+    {
+        QMutexLocker lock(&m_shareContextMutex);
+        // If we are using our own context (not provided by QtQuick),
+        // we need to create it
+        if (!m_glContext) {
+            ctx = new QOpenGLContext;
+            ctx->setShareContext(qt_gl_global_share_context());
 
-        // TO DO: Shouldn't we use the highest context available and trust
-        // QOpenGLContext to fall back on the best lowest supported ?
-        const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
+            // TO DO: Shouldn't we use the highest context available and trust
+            // QOpenGLContext to fall back on the best lowest supported ?
+            const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
 
-        if (!debugLoggingMode.isEmpty()) {
-            QSurfaceFormat sf = ctx->format();
-            sf.setOption(QSurfaceFormat::DebugContext);
-            ctx->setFormat(sf);
+            if (!debugLoggingMode.isEmpty()) {
+                QSurfaceFormat sf = ctx->format();
+                sf.setOption(QSurfaceFormat::DebugContext);
+                ctx->setFormat(sf);
+            }
+
+            // Create OpenGL context
+            if (ctx->create())
+                qCDebug(Backend) << "OpenGL context created with actual format" << ctx->format();
+            else
+                qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
+            m_ownedContext = true;
+        } else {
+            // Context is not owned by us, so we need to know if it gets destroyed
+            m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
+                                                   [this] { releaseGraphicsResources(); });
         }
 
-        // Create OpenGL context
-        if (ctx->create())
-            qCDebug(Backend) << "OpenGL context created with actual format" << ctx->format();
-        else
-            qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
-        m_ownedContext = true;
-    } else {
-        // Context is not owned by us, so we need to know if it gets destroyed
-        m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
-                                               [this] { releaseGraphicsResources(); });
-    }
+        if (!ctx->shareContext()) {
+            m_shareContext = new QOpenGLContext;
+            m_shareContext->setFormat(ctx->format());
+            m_shareContext->setShareContext(ctx);
+            m_shareContext->create();
+        }
 
-    if (!ctx->shareContext()) {
-        m_shareContext = new QOpenGLContext;
-        m_shareContext->setFormat(ctx->format());
-        m_shareContext->setShareContext(ctx);
-        m_shareContext->create();
+        // Note: we don't have a surface at this point
+        // The context will be made current later on (at render time)
+        m_graphicsContext->setOpenGLContext(ctx);
     }
-
-    // Note: we don't have a surface at this point
-    // The context will be made current later on (at render time)
-    m_graphicsContext->setOpenGLContext(ctx);
 
     // Store the format used by the context and queue up creating an
     // offscreen surface in the main thread so that it is available

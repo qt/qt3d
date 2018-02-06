@@ -330,6 +330,7 @@ private:
     QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
     QOpenGLContext *m_shareContext;
+    mutable QMutex m_shareContextMutex;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
 
     qint64 m_time;
