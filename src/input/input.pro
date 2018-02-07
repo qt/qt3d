@@ -17,4 +17,6 @@ HEADERS += \
     qt3dinput_global.h \
     qt3dinput_global_p.h
 
+QMAKE_DOCS = $$PWD/doc/qt3dinput.qdocconf
+
 load(qt_module)

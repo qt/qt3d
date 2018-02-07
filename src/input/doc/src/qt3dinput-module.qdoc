@@ -26,48 +26,49 @@
 ****************************************************************************/
 
 /*!
-    \module Qt3DLogic
-    \title Qt 3D Logic C++ Classes
-    \brief The Qt 3D Logic module enables synchronizing frames with the Qt 3D
-    backend.
+    \module Qt3DInput
+    \title Qt 3D Input C++ Classes
+    \keyword Qt 3D Input
+    \brief The Qt 3D Input module provides classes for handling user input in
+           applications using Qt3D.
+
     \ingroup modules
     \ingroup qt3d-modules
-    \qtvariable 3dlogic
+    \qtvariable 3dinput
 
     To use classes from this module, add this directive into the C++ files:
 
     \code
-       #include <Qt3DLogic>
+       #include <Qt3DInput>
     \endcode
 
     To link against the corresponding C++ libraries, add the following to your qmake project file:
 
     \badcode
-       QT += 3dLogic
+       QT += 3dinput
     \endcode
-
 */
 
 /*!
-    \namespace Qt3DLogic
-    \inmodule Qt3DLogic
+    \namespace Qt3DInput
+    \inmodule Qt3DInput
     \ingroup qt3d-namespaces
 
-    \brief Contains classes that enable frame synchronization.
+    \brief Contains classes that enable user input.
 */
 
 /*!
-   \qmlmodule Qt3D.Logic 2.0
-   \title Qt 3D Logic QML Types
+   \qmlmodule Qt3D.Input 2.0
+   \title Qt 3D Input QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
 
-   \brief Provides QML types to synchronize frames with the 3D backend.
+   \brief Provides QML types for Qt 3D user input.
 
    To import and use the module's QML types, use the following statement:
 
    \badcode
-   import Qt3D.Logic 2.0
+   import Qt3D.Input 2.0
    \endcode
 
    \section1 QML Types

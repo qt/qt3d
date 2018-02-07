@@ -7,6 +7,8 @@ DEFINES += QT3DEXTRAS_LIBRARY
 # Qt3D is free of Q_FOREACH - make sure it stays that way:
 DEFINES += QT_NO_FOREACH
 
+QMAKE_DOCS = $$PWD/doc/qt3dextras.qdocconf
+
 load(qt_module)
 
 include (geometries/geometries.pri)

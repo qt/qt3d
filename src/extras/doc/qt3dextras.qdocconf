@@ -1,0 +1,43 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+include(../../doc/qt3d-config.qdocconf)
+
+project                 = Qt3DExtras
+description             = Qt 3D Extras Reference Documentation
+version                 = $QT_VERSION
+
+qhp.projects            = Qt3DExtras
+
+qhp.Qt3DExtras.file                = qt3dextras.qhp
+qhp.Qt3DExtras.namespace           = org.qt-project.qt3dextras.$QT_VERSION_TAG
+qhp.Qt3DExtras.virtualFolder       = qt3dextras
+qhp.Qt3DExtras.indexTitle          = Qt 3D Extras
+qhp.Qt3DExtras.indexRoot           =
+
+qhp.Qt3DExtras.filterAttributes                   = qt3dextras $QT_VERSION qtrefdoc
+qhp.Qt3DExtras.customFilters.Qt.name              = Qt3DExtras $QT_VERSION
+qhp.Qt3DExtras.customFilters.Qt.filterAttributes  = qt3dextras $QT_VERSION
+
+qhp.Qt3DExtras.subprojects                    = classes qmltypes
+
+qhp.Qt3DExtras.subprojects.classes.title      = C++ Classes
+qhp.Qt3DExtras.subprojects.classes.indexTitle = Qt 3D Extras C++ Classes
+qhp.Qt3DExtras.subprojects.classes.selectors  = class doc:headerfile
+qhp.Qt3DExtras.subprojects.classes.sortPages  = true
+
+qhp.Qt3DExtras.subprojects.qmltypes.title      = QML Types
+qhp.Qt3DExtras.subprojects.qmltypes.indexTitle = Qt 3D Extras QML Types
+qhp.Qt3DExtras.subprojects.qmltypes.selectors  = qmltype
+qhp.Qt3DExtras.subprojects.qmltypes.sortPages  = true
+
+tagfile                 = qt3dextras.tags
+
+depends                 += qtcore qtgui qtqml qtquick qtdoc qmake
+
+# dependencies to other Qt 3D modules
+depends                 += qt3d qt3dcore qt3drender qt3dlogic \
+                           qt3dinput qt3danimation qt3dscene2d
+
+sourcedirs  += ..
+headerdirs  += ..
+imagedirs   += images
+exampledirs += snippets
