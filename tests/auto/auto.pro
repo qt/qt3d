@@ -8,7 +8,8 @@ SUBDIRS = \
     cmake \
     input \
     animation \
-    extras
+    extras \
+    geometryloaders
 
 installed_cmake.depends = cmake
 
