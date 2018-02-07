@@ -621,6 +621,11 @@ void Renderer::lockSurfaceAndRender()
     if (!createSurfaceLockAndMakeCurrent()) {
         m_surfaceLockers.clear();
         abortRenderJobs();
+        // We cannot render because we could not lock the surface or the surface is a nullptr.
+        // However, the surface might change in the next frontend/backend sync.
+        // We therefore need to make sure the aspect thread does not get stuck waiting for
+        // the next frame.
+        m_vsyncFrameAdvanceService->proceedToNextFrame();
         return;
     }
     // Let the aspect thread know that we promise to render
