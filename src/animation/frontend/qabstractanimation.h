@@ -52,7 +52,7 @@ class QT3DANIMATIONSHARED_EXPORT QAbstractAnimation : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString animationName READ animationName WRITE setAnimationName NOTIFY animationNameChanged)
-    Q_PROPERTY(QAbstractAnimation::AnimationType animationType READ animationType CONSTANT)
+    Q_PROPERTY(AnimationType animationType READ animationType CONSTANT)
     Q_PROPERTY(float position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(float duration READ duration NOTIFY durationChanged)
 

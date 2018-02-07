@@ -57,8 +57,8 @@ class QT3DANIMATIONSHARED_EXPORT QKeyframeAnimation : public QAbstractAnimation
     Q_PROPERTY(Qt3DCore::QTransform *target READ target WRITE setTarget NOTIFY targetChanged)
     Q_PROPERTY(QEasingCurve easing READ easing WRITE setEasing NOTIFY easingChanged)
     Q_PROPERTY(QString targetName READ targetName WRITE setTargetName NOTIFY targetNameChanged)
-    Q_PROPERTY(QKeyframeAnimation::RepeatMode startMode READ startMode WRITE setStartMode NOTIFY startModeChanged)
-    Q_PROPERTY(QKeyframeAnimation::RepeatMode endMode READ endMode WRITE setEndMode NOTIFY endModeChanged)
+    Q_PROPERTY(RepeatMode startMode READ startMode WRITE setStartMode NOTIFY startModeChanged)
+    Q_PROPERTY(RepeatMode endMode READ endMode WRITE setEndMode NOTIFY endModeChanged)
 
 public:
     explicit QKeyframeAnimation(QObject *parent = nullptr);
