@@ -43,10 +43,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class PropertyChangeHandlerBase
+/*
+    \internal
+    \class Qt3DCore::PropertyChangeHandlerBase
     \inmodule Qt3DCore
-    \brief Base class for the property change handler
+    \brief Base class for the property change handler.
 */
 PropertyChangeHandlerBase::PropertyChangeHandlerBase(QObject *parent) :
     QObject(parent)

@@ -96,14 +96,8 @@ void QAbstractAspectPrivate::unregisterBackendType(const QMetaObject &mo)
  */
 
 /*!
- * \fn void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
+ * \fn void Qt3DCore::QAbstractAspect::registerBackendType(const Qt3DCore::QBackendNodeMapperPtr &functor)
  * Registers backend with \a functor.
- */
-
-/*!
- * \internal
- * \fn void registerBackendType(const QBackendNodeMapperPtr &functor)
- * This is a workaround to fix an erroneous qdoc warning. KEEP IT INTERNAL
  */
 
 /*!

@@ -104,9 +104,9 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
  */
 
 /*!
- * \fn QBackendNode *QBackendNodeMapper::create(const QNodeCreatedChangeBasePtr &change) const
+ * \fn Qt3DCore::QBackendNode *Qt3DCore::QBackendNodeMapper::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
  *
- * TODO
+ * \TODO
  *
  * \a change
  *
@@ -114,13 +114,13 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
  */
 
 /*!
- * \fn QBackendNode *QBackendNodeMapper::get(QNodeId id) const
+ * \fn Qt3DCore::QBackendNode * Qt3DCore::QBackendNodeMapper::get(Qt3DCore::QNodeId id) const
  *
  * \return backend node for the given node \a id.
  */
 
 /*!
- * \fn void QBackendNodeMapper::destroy(QNodeId id) const
+ * \fn void Qt3DCore::QBackendNodeMapper::destroy(Qt3DCore::QNodeId id) const
  *
  * Destroys the backend node for the given node \a id.
  */

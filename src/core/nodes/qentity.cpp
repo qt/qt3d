@@ -210,7 +210,9 @@ QEntity *QEntity::parentEntity() const
     return parentEntity;
 }
 
-/*!
+/*
+    \internal
+
     Returns the Qt3DCore::QNodeId id of the parent Qt3DCore::QEntity instance of the
     current Qt3DCore::QEntity object. The QNodeId isNull method will return true if
     there is no Qt3DCore::QEntity parent of the current Qt3DCore::QEntity in the scene

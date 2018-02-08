@@ -198,6 +198,8 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCo
 }
 
 /*!
+ * \fn void Qt3DCore::QAspectManager::registerAspect(Qt3DCore::QAbstractAspect *aspect)
+ *
  * Registers a new \a aspect.
  */
 void QAspectManager::registerAspect(QAbstractAspect *aspect)

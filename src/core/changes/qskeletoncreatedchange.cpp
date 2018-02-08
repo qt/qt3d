@@ -49,10 +49,11 @@ QSkeletonCreatedChangeBasePrivate::QSkeletonCreatedChangeBasePrivate(const QAbst
 
 }
 
-/*!
-    \class QSkeletonCreatedChangeBase
+/*
+    \internal
+    \class Qt3DCore::QSkeletonCreatedChangeBase
     \inmodule Qt3DCore
-    \brief Base class for handling creation changes for QAbstractSkeleton sub-classes
+    \brief Base class for handling creation changes for QAbstractSkeleton sub-classes.
 */
 QSkeletonCreatedChangeBase::QSkeletonCreatedChangeBase(const QAbstractSkeleton *skeleton)
     : Qt3DCore::QNodeCreatedChangeBase(*new QSkeletonCreatedChangeBasePrivate(skeleton), skeleton)

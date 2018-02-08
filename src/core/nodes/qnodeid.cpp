@@ -54,12 +54,12 @@ namespace Qt3DCore {
  * \typedef Qt3DCore::QNodeIdVector
  * \relates Qt3DCore::QNodeId
  *
- * A vector of {QNodeId}s.
+ * A vector of \l {QNodeId}s.
  */
 
 /*!
- * \fn bool QNodeId::isNull() const
- * \return TODO
+ * \fn bool Qt3DCore::QNodeId::isNull() const
+ * \return \TODO
  */
 
 /*!
@@ -83,13 +83,13 @@ namespace Qt3DCore {
  */
 
 /*!
- * \fn quint64 QNodeId::id() const
- * \return TODO
+ * \fn quint64 Qt3DCore::QNodeId::id() const
+ * \return \TODO
  */
 
 /*!
  * \fn Qt3DCore::QNodeId::operator bool() const
- * TODO
+ * \TODO
  */
 
 /*!

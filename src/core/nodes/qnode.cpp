@@ -700,13 +700,13 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
 }
 
 /*!
-    \fn QNodeId qIdForNode(QNode *node)
+    \fn Qt3DCore::QNodeId Qt3DCore::qIdForNode(Qt3DCore::QNode *node)
     \relates Qt3DCore::QNode
     \return node id for \a node.
 */
 
 /*!
-    \fn QNodeIdVector qIdsForNodes(const T &nodes)
+    \fn template<typename T> Qt3DCore::QNodeIdVector Qt3DCore::qIdsForNodes(const T &nodes)
     \relates Qt3DCore::QNode
     \return vector of node ids for \a nodes.
 */
@@ -732,8 +732,8 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 }
 
 /*!
-    \fn QNode::nodeDestroyed()
-    emitted when the node is destroyed.
+    \fn Qt3DCore::QNode::nodeDestroyed()
+    Emitted when the node is destroyed.
 */
 
 /*! \internal */

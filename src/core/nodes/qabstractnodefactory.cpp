@@ -43,26 +43,26 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
+/*
+ * \internal
  * \class Qt3DCore::QAbstractNodeFactory
  * \inheaderfile Qt3DCore/QAbstractNodeFactory
  * \inmodule Qt3DCore
  *
- * TODO
+ * \TODO
  */
 
-/*!
- * \fn QNode *QAbstractNodeFactory::createNode(const char *type)
+/*
+ * \fn Qt3DCore::QNode * Qt3DCore::QAbstractNodeFactory::createNode(const char *type)
  * Creates a node of \a type.
  */
-
 QAbstractNodeFactory::~QAbstractNodeFactory()
 {
 }
 
 QVector<QAbstractNodeFactory *> node_factories;
 
-/*!
+/*
  * Registers the given \a factory
  */
 void QAbstractNodeFactory::registerNodeFactory(QAbstractNodeFactory *factory)
@@ -70,7 +70,7 @@ void QAbstractNodeFactory::registerNodeFactory(QAbstractNodeFactory *factory)
     node_factories << factory;
 }
 
-/*!
+/*
  * \return the node factories.
  */
 QVector<QAbstractNodeFactory *> QAbstractNodeFactory::nodeFactories()

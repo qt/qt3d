@@ -94,7 +94,8 @@ static inline QMetaMethod submitChangeBatchMethod()
     return QPostman::staticMetaObject.method(idx);
 }
 
-/*!
+/*
+ * \internal
  * This will start or append \a change to a batch of changes from frontend
  * nodes. Once the batch is complete, when the event loop returns, the batch is
  * sent to the QChangeArbiter to notify the backend aspects.
