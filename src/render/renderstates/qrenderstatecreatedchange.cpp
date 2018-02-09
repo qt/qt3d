@@ -42,6 +42,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
+ * \internal
  * \class Qt3DRender::QRenderStateCreatedChange
  * \inheaderfile Qt3DRender/QRenderStateCreatedChange
  * \brief The QRenderStateCreatedChange class

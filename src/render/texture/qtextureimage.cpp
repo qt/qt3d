@@ -271,7 +271,7 @@ void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         setStatus(static_cast<QTextureImage::Status>(e->value().toInt()));
 }
 
-/*!
+/*
     The constructor creates a new QImageTextureDataFunctor::QImageTextureDataFunctor
     instance with the specified \a url.
  */

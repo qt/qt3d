@@ -756,6 +756,7 @@ void GraphicsContext::deactivateTexturesWithScope(TextureScope ts)
 }
 
 /*!
+ * \internal
  * Finds the highest supported opengl version and internally use the most optimized
  * helper for a given version.
  */
@@ -881,6 +882,7 @@ bool GraphicsContext::supportsDrawBuffersBlend() const
 }
 
 /*!
+ * \internal
  * Wraps an OpenGL call to glDrawElementsInstanced.
  * If the call is not supported by the system's OpenGL version,
  * it is simulated with a loop.
@@ -903,6 +905,7 @@ void GraphicsContext::drawElementsInstancedBaseVertexBaseInstance(GLenum primiti
 }
 
 /*!
+ * \internal
  * Wraps an OpenGL call to glDrawArraysInstanced.
  */
 void GraphicsContext::drawArraysInstanced(GLenum primitiveType,
@@ -926,6 +929,7 @@ void GraphicsContext::drawArraysInstancedBaseInstance(GLenum primitiveType, GLin
 }
 
 /*!
+ * \internal
  * Wraps an OpenGL call to glDrawElements.
  */
 void GraphicsContext::drawElements(GLenum primitiveType,
@@ -949,6 +953,7 @@ void GraphicsContext::drawElementsIndirect(GLenum mode,
 }
 
 /*!
+ * \internal
  * Wraps an OpenGL call to glDrawArrays.
  */
 void GraphicsContext::drawArrays(GLenum primitiveType,

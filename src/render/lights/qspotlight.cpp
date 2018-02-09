@@ -116,12 +116,6 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 }
 
 /*!
-  \fn QVector3D Qt3DRender::QSpotLight::attenuation() const
-
-  Returns the attenuation of the spot light.
-*/
-
-/*!
   \qmlproperty float Qt3D.Render::SpotLight::constantAttenuation
     Specifies the constant attenuation of the spot light
 */

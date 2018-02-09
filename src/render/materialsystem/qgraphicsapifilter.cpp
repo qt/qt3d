@@ -123,15 +123,6 @@ QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(QGraphicsApiFilter *q)
     \brief For OpenGL identifies the API required for the attached technique
 */
 
-/*!
-    \enum QGraphicsApiFilter::OpenGLProfile
-
-    This enum identifies the type of profile required
-    \value NoProfile
-    \value CoreProfile
-    \value CompatibilityProfile
-*/
-
 /*! \fn Qt3DRender::QGraphicsApiFilter::QGraphicsApiFilter(QObject *parent)
   Constructs a new QGraphicsApiFilter with the specified \a parent.
  */
@@ -154,7 +145,9 @@ QGraphicsApiFilter::~QGraphicsApiFilter()
 */
 
 /*!
-  \enum Qt3DRender::QGraphicsApiFilter::Profile
+  \enum Qt3DRender::QGraphicsApiFilter::OpenGLProfile
+
+  This enum identifies the type of profile required.
 
   \value NoProfile QSurfaceFormat::NoProfile
   \value CoreProfile QSurfaceFormat::CoreProfile

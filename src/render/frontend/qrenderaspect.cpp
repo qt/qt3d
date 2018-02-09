@@ -420,7 +420,8 @@ void QRenderAspectPrivate::renderSynchronous(bool blocking)
     m_renderer->doRender(blocking);
 }
 
-/*!
+/*
+ * \internal
  * Only called when rendering with QtQuick 2 and a Scene3D item
  */
 void QRenderAspectPrivate::renderShutdown()

@@ -234,12 +234,12 @@ void QBlendEquationArguments::setDestinationAlpha(QBlendEquationArguments::Blend
 }
 
 /*!
-    \fn QBlendEquationArguments::sourceRgbaChanged(Blending sourceRgba)
+    \fn Qt3DRender::QBlendEquationArguments::sourceRgbaChanged(Blending sourceRgba)
 
     Notify that both sourceRgb and sourceAlpha properties have changed to \a sourceRgba.
 */
 /*!
-    \fn QBlendEquationArguments::destinationRgbaChanged(Blending destinationRgba)
+    \fn Qt3DRender::QBlendEquationArguments::destinationRgbaChanged(Blending destinationRgba)
 
     Notify that both destinationRgb and destinationAlpha properties have changed to
     \a destinationRgba.
