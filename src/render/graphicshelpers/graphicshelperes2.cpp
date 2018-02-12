@@ -212,6 +212,7 @@ QVector<ShaderUniform> GraphicsHelperES2::programUniformsAndLocations(GLuint pro
         // Work around for uniform array names that aren't returned with [0] by some drivers
         if (uniform.m_size > 1 && !uniform.m_name.endsWith(QLatin1String("[0]")))
             uniform.m_name.append(QLatin1String("[0]"));
+        uniform.m_rawByteSize = uniformByteSize(uniform);
         uniforms.append(uniform);
     }
     return uniforms;
