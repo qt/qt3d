@@ -597,11 +597,7 @@ void Renderer::doRender(bool scene3dBlocking)
         submissionStatsPart2.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
 #endif
         if (canRender()) {
-            // Clear all dirty flags but Compute so that
-            // we still render every frame when a compute shader is used in a scene
-            BackendNodeDirtySet changesToUnset = m_changeSet;
-            if (changesToUnset.testFlag(Renderer::ComputeDirty))
-                changesToUnset.setFlag(Renderer::ComputeDirty, false);
+            const BackendNodeDirtySet changesToUnset = m_changeSet;
             clearDirtyBits(changesToUnset);
 
             { // Scoped to destroy surfaceLock

@@ -55,6 +55,12 @@ namespace Qt3DRender {
     QComputeCommand is added to. The workGroupX, workGroupY and workGroupZ properties
     specify the work group sizes for the compute shader invocation. Qt3DRender::QDispatchCompute
     node needs to be present in the FrameGraph to actually issue the commands.
+
+    \note If the rendering policy is set to Qt3DRender::QRenderSettings::OnDemand and there are no
+    changes to the scene, the ComputeCommand will not be invoked repeatedly.
+    The Qt3DRender::QRenderSettings::Always render policy must be set for the ComputeCommand
+    to be repeatedly invoked if there are no other changes to the scene that triggers rendering a
+    new frame.
  */
 
 /*!
@@ -70,6 +76,12 @@ namespace Qt3DRender {
     ComputeCommand is added to. The workGroupX, workGroupY and workGroupZ properties
     specify the work group sizes for the compute shader invocation. DispatchCompute
     node needs to be present in the FrameGraph to actually issue the commands.
+
+    \note If the rendering policy is set to RenderSettings.OnDemand and there are no changes to the
+    scene, the ComputeCommand will not be invoked repeatedly.
+    The RenderSettings.Always render policy must be set for the ComputeCommand to be
+    repeatedly invoked if there are no other changes to the scene that triggers rendering a new
+    frame.
  */
 
 /*!
