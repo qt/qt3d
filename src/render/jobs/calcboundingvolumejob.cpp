@@ -81,10 +81,15 @@ public:
 
     const Sphere& result() { return m_volume; }
 
-    bool apply(Qt3DRender::Render::Attribute *positionAttribute, Qt3DRender::Render::Attribute *indexAttribute, int drawVertexCount)
+    bool apply(Qt3DRender::Render::Attribute *positionAttribute,
+               Qt3DRender::Render::Attribute *indexAttribute,
+               int drawVertexCount,
+               bool primitiveRestartEnabled,
+               int primitiveRestartIndex)
     {
         FindExtremePoints findExtremePoints(m_manager);
-        if (!findExtremePoints.apply(positionAttribute, indexAttribute, drawVertexCount))
+        if (!findExtremePoints.apply(positionAttribute, indexAttribute,
+                                     drawVertexCount, primitiveRestartEnabled, primitiveRestartIndex))
             return false;
 
         // Calculate squared distance for the pairs of points
@@ -109,7 +114,8 @@ public:
         m_volume.setRadius((q - c).length());
 
         ExpandSphere expandSphere(m_manager, m_volume);
-        if (!expandSphere.apply(positionAttribute, indexAttribute, drawVertexCount))
+        if (!expandSphere.apply(positionAttribute, indexAttribute,
+                                drawVertexCount, primitiveRestartEnabled, primitiveRestartIndex))
             return false;
 
         return true;
@@ -268,7 +274,9 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                     (indexBuf && indexBuf->isDirty()))
             {
                 BoundingVolumeCalculator reader(manager);
-                if (reader.apply(positionAttribute, indexAttribute, drawVertexCount)) {
+                if (reader.apply(positionAttribute, indexAttribute,
+                                 drawVertexCount, gRenderer->primitiveRestartEnabled(), gRenderer->restartIndexValue()))
+                {
                     node->localBoundingVolume()->setCenter(reader.result().center());
                     node->localBoundingVolume()->setRadius(reader.result().radius());
                     node->unsetBoundingVolumeDirty();

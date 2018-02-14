@@ -204,9 +204,13 @@ private Q_SLOTS:
         QTest::addColumn<int>("indexByteOffset");
         QTest::addColumn<QVector3D>("expectedCenter");
         QTest::addColumn<float>("expectedRadius");
-        QTest::newRow("all") << 0 << 0 << QVector3D(-0.488892f, 0.0192147f, -75.4804f) << 25.5442f;
-        QTest::newRow("first only") << 3 << 0 << QVector3D(0, 1, -100) << 1.0f;
-        QTest::newRow("second only") << 3 << int(3 * sizeof(ushort)) << QVector3D(0, -1, -50) << 1.0f;
+        QTest::addColumn<bool>("withPrimitiveRestart");
+        QTest::newRow("all") << 0 << 0 << QVector3D(-0.488892f, 0.0192147f, -75.4804f) << 25.5442f << false;
+        QTest::newRow("first only") << 3 << 0 << QVector3D(0, 1, -100) << 1.0f << false;
+        QTest::newRow("second only") << 3 << int(3 * sizeof(ushort)) << QVector3D(0, -1, -50) << 1.0f << false;
+        QTest::newRow("all with primitive restart") << 0 << 0 << QVector3D(-0.488892f, 0.0192147f, -75.4804f) << 25.5442f << true;
+        QTest::newRow("first only with primitive restart") << 4 << 0 << QVector3D(0, 1, -100) << 1.0f << true;
+        QTest::newRow("second only with primitive restart") << 4 << int(3 * sizeof(ushort)) << QVector3D(0, -1, -50) << 1.0f << true;
     }
 
     void checkCustomGeometry()
@@ -215,6 +219,7 @@ private Q_SLOTS:
         QFETCH(int, indexByteOffset);
         QFETCH(QVector3D, expectedCenter);
         QFETCH(float, expectedRadius);
+        QFETCH(bool, withPrimitiveRestart);
 
         // two triangles with different Z, and an index buffer
         QByteArray vdata;
@@ -241,11 +246,14 @@ private Q_SLOTS:
         *vp++ = -50.0f;
 
         QByteArray idata;
-        idata.resize(6 * sizeof(ushort));
+        const int indexCount = withPrimitiveRestart ? 7 : 6;
+        idata.resize(indexCount * sizeof(ushort));
         ushort *ip = reinterpret_cast<ushort *>(idata.data());
         *ip++ = 0;
         *ip++ = 1;
         *ip++ = 2;
+        if (withPrimitiveRestart)
+            *ip++ = 65535;
         *ip++ = 3;
         *ip++ = 4;
         *ip++ = 5;
@@ -286,11 +294,14 @@ private Q_SLOTS:
         attr->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
         attr->setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
         attr->setVertexSize(1);
-        attr->setCount(6);
+        attr->setCount(indexCount);
         attr->setByteOffset(indexByteOffset);
 
         Qt3DRender::QGeometryRenderer *gr = new Qt3DRender::QGeometryRenderer;
         gr->setVertexCount(drawVertexCount); // when 0, indexAttribute->count() is used instead
+        gr->setPrimitiveRestartEnabled(withPrimitiveRestart);
+        if (withPrimitiveRestart)
+            gr->setRestartIndexValue(65535);
         gr->setGeometry(g);
         entity->addComponent(gr);
 

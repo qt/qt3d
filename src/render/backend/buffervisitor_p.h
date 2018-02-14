@@ -95,7 +95,11 @@ public:
         Q_UNUSED(ndx); Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z); Q_UNUSED(w);
     }
 
-    bool apply(Qt3DRender::Render::Attribute *attribute, Qt3DRender::Render::Attribute *indexAttribute, int drawVertexCount)
+    bool apply(Qt3DRender::Render::Attribute *attribute,
+               Qt3DRender::Render::Attribute *indexAttribute,
+               int drawVertexCount,
+               bool primitiveRestartEnabled,
+               int primitiveRestartIndex)
     {
         if (attribute->vertexBaseType() != VertexBaseType)
             return false;
@@ -110,19 +114,35 @@ public:
             if (indexAttribute->vertexBaseType() == QAttribute::UnsignedShort) {
                 auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedShort>(indexData, indexAttribute->byteOffset());
                 switch (dataSize) {
-                case 1: traverseCoordinates1Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
-                case 2: traverseCoordinates2Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
-                case 3: traverseCoordinates3Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
-                case 4: traverseCoordinates4Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                case 1: traverseCoordinates1Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
+                                                    primitiveRestartEnabled, primitiveRestartIndex);
+                    break;
+                case 2: traverseCoordinates2Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
+                                                    primitiveRestartEnabled, primitiveRestartIndex);
+                    break;
+                case 3: traverseCoordinates3Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
+                                                    primitiveRestartEnabled, primitiveRestartIndex);
+                    break;
+                case 4: traverseCoordinates4Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
+                                                    primitiveRestartEnabled, primitiveRestartIndex);
+                    break;
                 default: Q_UNREACHABLE();
                 }
             } else {
                 auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedInt>(indexData, indexAttribute->byteOffset());
                 switch (dataSize) {
-                case 1: traverseCoordinates1Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
-                case 2: traverseCoordinates2Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
-                case 3: traverseCoordinates3Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
-                case 4: traverseCoordinates4Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount); break;
+                case 1: traverseCoordinates1Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
+                                                    primitiveRestartEnabled, primitiveRestartIndex);
+                    break;
+                case 2: traverseCoordinates2Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
+                                                    primitiveRestartEnabled, primitiveRestartIndex);
+                    break;
+                case 3: traverseCoordinates3Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
+                                                    primitiveRestartEnabled, primitiveRestartIndex);
+                    break;
+                case 4: traverseCoordinates4Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
+                                                    primitiveRestartEnabled, primitiveRestartIndex);
+                    break;
                 default: Q_UNREACHABLE();
                 }
             }
@@ -157,12 +177,16 @@ protected:
     void traverseCoordinates1Indexed(Coordinate *coordinates,
                                      const uint byteStride,
                                      IndexElem *indices,
-                                     const uint count)
+                                     const uint count,
+                                     bool primitiveRestartEnabled,
+                                     int primitiveRestartIndex)
     {
         const uint stride = byteStride / sizeof(Coordinate);
         for (uint i = 0; i < count; ++i) {
-            const uint n = stride * indices[i];
-            visit(i, coordinates[n]);
+            if (!primitiveRestartEnabled || indices[i] != primitiveRestartIndex) {
+                const uint n = stride * indices[i];
+                visit(i, coordinates[n]);
+            }
         }
     }
 
@@ -183,12 +207,16 @@ protected:
     void traverseCoordinates2Indexed(Coordinate *coordinates,
                                      const uint byteStride,
                                      IndexElem *indices,
-                                     const uint count)
+                                     const uint count,
+                                     bool primitiveRestartEnabled,
+                                     int primitiveRestartIndex)
     {
         const uint stride = byteStride / sizeof(Coordinate);
         for (uint i = 0; i < count; ++i) {
-            const uint n = stride * indices[i];
-            visit(i, coordinates[n], coordinates[n + 1]);
+            if (!primitiveRestartEnabled || indices[i] != primitiveRestartIndex) {
+                const uint n = stride * indices[i];
+                visit(i, coordinates[n], coordinates[n + 1]);
+            }
         }
     }
 
@@ -208,12 +236,16 @@ protected:
     void traverseCoordinates3Indexed(Coordinate *coordinates,
                                      const uint byteStride,
                                      IndexElem *indices,
-                                     const uint count)
+                                     const uint count,
+                                     bool primitiveRestartEnabled,
+                                     int primitiveRestartIndex)
     {
         const uint stride = byteStride / sizeof(Coordinate);
         for (uint i = 0; i < count; ++i) {
-            const uint n = stride * indices[i];
-            visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2]);
+            if (!primitiveRestartEnabled || indices[i] != primitiveRestartIndex) {
+                const uint n = stride * indices[i];
+                visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2]);
+            }
         }
     }
 
@@ -233,12 +265,16 @@ protected:
     void traverseCoordinates4Indexed(Coordinate *coordinates,
                                      const uint byteStride,
                                      IndexElem *indices,
-                                     const uint count)
+                                     const uint count,
+                                     bool primitiveRestartEnabled,
+                                     int primitiveRestartIndex)
     {
         const uint stride = byteStride / sizeof(Coordinate);
         for (uint i = 0; i < count; ++i) {
-            const uint n = stride * indices[i];
-            visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2], coordinates[n + 3]);
+            if (!primitiveRestartEnabled || indices[i] != primitiveRestartIndex) {
+                const uint n = stride * indices[i];
+                visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2], coordinates[n + 3]);
+            }
         }
     }
 
