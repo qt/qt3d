@@ -109,6 +109,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QGoochMaterial>(uri, 2, 0, "GoochMaterial");
     qmlRegisterType<Qt3DExtras::QTextureMaterial>(uri, 2, 0, "TextureMaterial");
     qmlRegisterRevision<Qt3DExtras::QTextureMaterial, 10>(uri, 2, 10);
+    qmlRegisterRevision<Qt3DExtras::QTextureMaterial, 11>(uri, 2, 11);
     qmlRegisterType<Qt3DExtras::QDiffuseSpecularMaterial>(uri, 2, 10, "DiffuseSpecularMaterial");
     qmlRegisterType<Qt3DExtras::QMetalRoughMaterial>(uri, 2, 9, "MetalRoughMaterial");
     qmlRegisterRevision<Qt3DExtras::QMetalRoughMaterial, 10>(uri, 2, 10);
