@@ -183,8 +183,10 @@ public:
 
     void markDirty(BackendNodeDirtySet changes, BackendNode *node) override;
     BackendNodeDirtySet dirtyBits() override;
-    void clearDirtyBits(BackendNodeDirtySet changes) override;
 
+#if defined(QT_BUILD_INTERNAL)
+    void clearDirtyBits(BackendNodeDirtySet changes) override;
+#endif
 
     bool shouldRender() override;
     void skipNextFrame() override;
@@ -309,10 +311,17 @@ private:
     QVector<Attribute *> m_dirtyAttributes;
     QVector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
-    BackendNodeDirtySet m_changeSet;
+
+    struct DirtyBits {
+        BackendNodeDirtySet marked = 0; // marked dirty since last job build
+        BackendNodeDirtySet remaining = 0; // remaining dirty after jobs have finished
+    };
+    DirtyBits m_dirtyBits;
+
     QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
     QOpenGLContext *m_shareContext;
+    mutable QMutex m_shareContextMutex;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
     RayCastingJobPtr m_rayCastingJob;
 

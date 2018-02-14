@@ -102,43 +102,53 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     switch (e->type()) {
     case PropertyUpdated: {
         const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
+        if (change->propertyName() == QByteArrayLiteral("enabled")) {
+            markDirty(AbstractRenderer::TechniquesDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
             GraphicsApiFilterData filterData = change->value().value<GraphicsApiFilterData>();
             m_graphicsApiFilterData = filterData;
             // Notify the manager that our graphicsApiFilterData has changed
             // and that we therefore need to be check for compatibility again
             m_isCompatibleWithRenderer = false;
             m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
+            markDirty(AbstractRenderer::TechniquesDirty);
         }
         break;
     }
 
     case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("pass"))
+        if (change->propertyName() == QByteArrayLiteral("pass")) {
             appendRenderPass(change->addedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            markDirty(AbstractRenderer::TechniquesDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(change->addedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("filterKeys"))
+            markDirty(AbstractRenderer::TechniquesDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("filterKeys")) {
             appendFilterKey(change->addedNodeId());
+            markDirty(AbstractRenderer::TechniquesDirty);
+        }
         break;
     }
 
     case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("pass"))
+        if (change->propertyName() == QByteArrayLiteral("pass")) {
             removeRenderPass(change->removedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            markDirty(AbstractRenderer::TechniquesDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.removeParameter(change->removedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("filterKeys"))
+            markDirty(AbstractRenderer::TechniquesDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("filterKeys")) {
             removeFilterKey(change->removedNodeId());
+            markDirty(AbstractRenderer::TechniquesDirty);
+        }
         break;
     }
 
     default:
         break;
     }
-    markDirty(AbstractRenderer::AllDirty);
     BackendNode::sceneChangeEvent(e);
 }
 

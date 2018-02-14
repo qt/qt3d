@@ -193,6 +193,8 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(backendTechnique.isEnabled(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
             // WHEN
@@ -217,6 +219,8 @@ private Q_SLOTS:
             QCOMPARE(dirtyTechniques.size(), 1);
             QCOMPARE(dirtyTechniques.first(), backendTechnique.peerId());
 
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
             Qt3DRender::QParameter parameter;
@@ -230,6 +234,8 @@ private Q_SLOTS:
                 // THEN
                 QCOMPARE(backendTechnique.parameters().size(), 1);
                 QCOMPARE(backendTechnique.parameters().first(), parameter.id());
+                QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
+                renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
             }
             {
                 // WHEN
@@ -239,6 +245,8 @@ private Q_SLOTS:
 
                 // THEN
                 QCOMPARE(backendTechnique.parameters().size(), 0);
+                QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
+                renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
             }
         }
         {
@@ -253,6 +261,8 @@ private Q_SLOTS:
                 // THEN
                 QCOMPARE(backendTechnique.filterKeys().size(), 1);
                 QCOMPARE(backendTechnique.filterKeys().first(), filterKey.id());
+                QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
+                renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
             }
             {
                 // WHEN
@@ -262,6 +272,8 @@ private Q_SLOTS:
 
                 // THEN
                 QCOMPARE(backendTechnique.filterKeys().size(), 0);
+                QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
+                renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
             }
         }
         {
@@ -276,6 +288,8 @@ private Q_SLOTS:
                 // THEN
                 QCOMPARE(backendTechnique.renderPasses().size(), 1);
                 QCOMPARE(backendTechnique.renderPasses().first(), pass.id());
+                QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
+                renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
             }
             {
                 // WHEN
@@ -285,6 +299,8 @@ private Q_SLOTS:
 
                 // THEN
                 QCOMPARE(backendTechnique.renderPasses().size(), 0);
+                QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
+                renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
             }
         }
     }

@@ -76,6 +76,16 @@ QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId, QNode *nod
 {
     Q_D(QPropertyNodeAddedChange);
     d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::findStaticMetaObject(node->metaObject()));
+
+    // Ensure the node has issued a node creation change. We can end
+    // up here if a newly created node with a parent is immediately set
+    // as a property on another node. In this case the deferred call to
+    // _q_postConstructorInit() will not have happened yet as the event
+    // loop will still be blocked. So force it here and we catch this
+    // eventuality in the _q_postConstructorInit() function so that we
+    // do not repeat the creation and new child scene change events.
+    if (node)
+        QNodePrivate::get(node)->_q_postConstructorInit();
 }
 
 /*! \internal */
