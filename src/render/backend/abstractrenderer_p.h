@@ -108,6 +108,7 @@ public:
         SkeletonDataDirty   = 1 << 10,
         JointDirty          = 1 << 11,
         LayersDirty         = 1 << 12,
+        TechniquesDirty     = 1 << 13,
         AllDirty            = 0xffffff
     };
     Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
@@ -141,7 +142,9 @@ public:
 
     virtual void markDirty(BackendNodeDirtySet changes, BackendNode *node) = 0;
     virtual BackendNodeDirtySet dirtyBits() = 0;
+#if defined(QT_BUILD_INTERNAL)
     virtual void clearDirtyBits(BackendNodeDirtySet changes) = 0;
+#endif
     virtual bool shouldRender() = 0;
     virtual void skipNextFrame() = 0;
 

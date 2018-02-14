@@ -616,6 +616,7 @@ void AssimpImporter::readSceneFile(const QString &path)
  */
 void AssimpImporter::readSceneData(const QByteArray& data, const QString &basePath)
 {
+    Q_UNUSED(basePath);
     cleanup();
 
     m_scene = new SceneImporter();

@@ -60,6 +60,9 @@ private Q_SLOTS:
         renderer.setSettings(&settings);
         renderer.initialize();
 
+        // NOTE: FilterCompatibleTechniqueJob and ShaderGathererJob cannot run because the context
+        // is not initialized in this test
+
         const int singleRenderViewJobCount = 11 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
         // RenderViewBuilder renderViewJob,
         //                   renderableEntityFilterJob,
@@ -84,7 +87,6 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
-                 1 + // filterCompatibleTechniquesJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  singleRenderViewJobCount); // Only valid for the first call to renderBinJobs(), since subsequent calls won't have the renderqueue reset
@@ -100,7 +102,6 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
-                 1 + // filterCompatibleTechniquesJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1); // EntityEnabledDirty
@@ -117,7 +118,6 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
-                 1 + // filterCompatibleTechniquesJob
                  1 + // VAOGatherer
                  1 + // WorldTransformJob
                  1 + // UpdateWorldBoundingVolume
@@ -137,7 +137,6 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
-                 1 + // filterCompatibleTechniquesJob
                  1 + // VAOGatherer
                  1 + // CalculateBoundingVolumeJob
                  1 + // UpdateMeshTriangleListJob
@@ -156,27 +155,9 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
-                 1 + // filterCompatibleTechniquesJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1); // BufferGathererJob
-
-        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-
-        // WHEN
-        renderer.markDirty(Qt3DRender::Render::AbstractRenderer::ShadersDirty, nullptr);
-        jobs = renderer.renderBinJobs();
-
-        // THEN (level
-        QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
-                 1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
-                 1 + // sendBufferCaptureJob
-                 1 + // filterCompatibleTechniquesJob
-                 1 + // VAOGatherer
-                 1 + // updateSkinningPaletteJob
-                 1); // ShaderGathererJob
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
@@ -190,7 +171,6 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
-                 1 + // filterCompatibleTechniquesJob
                  1 + // VAOGatherer
                  1 + // TexturesGathererJob
                  1 + // updateSkinningPaletteJob
@@ -208,7 +188,6 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
-                 1 + // filterCompatibleTechniquesJob
                  1 + // VAOGatherer
                  1 + // EntityEnabledDirty
                  1 + // WorldTransformJob
@@ -218,7 +197,6 @@ private Q_SLOTS:
                  1 + // CalculateBoundingVolumeJob
                  1 + // UpdateMeshTriangleListJob
                  1 + // BufferGathererJob
-                 1 + // ShaderGathererJob
                  1 + // TexturesGathererJob
                  1 + // updateSkinningPaletteJob
                  1); // SyncTexturesGathererJob

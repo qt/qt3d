@@ -162,7 +162,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
-    , m_changeSet(0)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
     , m_shareContext(nullptr)
@@ -207,6 +206,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
+    m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
 
     // Dirty texture gathering depends on m_syncTextureLoadingJob
     // m_syncTextureLoadingJob will depend on the texture loading jobs
@@ -219,6 +219,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateLevelOfDetailJob->addDependency(m_updateMeshTriangleListJob);
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
     m_rayCastingJob->addDependency(m_updateMeshTriangleListJob);
+
+    m_shaderGathererJob->addDependency(m_filterCompatibleTechniqueJob);
 
     m_filterCompatibleTechniqueJob->setRenderer(this);
 
@@ -308,7 +310,11 @@ NodeManagers *Renderer::nodeManagers() const
 */
 QOpenGLContext *Renderer::shareContext() const
 {
-    return m_shareContext ? m_shareContext : m_graphicsContext->openGLContext()->shareContext();
+    QMutexLocker lock(&m_shareContextMutex);
+    return m_shareContext ? m_shareContext
+                          : (m_graphicsContext->openGLContext()
+                             ? m_graphicsContext->openGLContext()->shareContext()
+                             : nullptr);
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -326,44 +332,47 @@ void Renderer::initialize()
 
     QOpenGLContext* ctx = m_glContext;
 
-    // If we are using our own context (not provided by QtQuick),
-    // we need to create it
-    if (!m_glContext) {
-        ctx = new QOpenGLContext;
-        ctx->setShareContext(qt_gl_global_share_context());
+    {
+        QMutexLocker lock(&m_shareContextMutex);
+        // If we are using our own context (not provided by QtQuick),
+        // we need to create it
+        if (!m_glContext) {
+            ctx = new QOpenGLContext;
+            ctx->setShareContext(qt_gl_global_share_context());
 
-        // TO DO: Shouldn't we use the highest context available and trust
-        // QOpenGLContext to fall back on the best lowest supported ?
-        const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
+            // TO DO: Shouldn't we use the highest context available and trust
+            // QOpenGLContext to fall back on the best lowest supported ?
+            const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
 
-        if (!debugLoggingMode.isEmpty()) {
-            QSurfaceFormat sf = ctx->format();
-            sf.setOption(QSurfaceFormat::DebugContext);
-            ctx->setFormat(sf);
+            if (!debugLoggingMode.isEmpty()) {
+                QSurfaceFormat sf = ctx->format();
+                sf.setOption(QSurfaceFormat::DebugContext);
+                ctx->setFormat(sf);
+            }
+
+            // Create OpenGL context
+            if (ctx->create())
+                qCDebug(Backend) << "OpenGL context created with actual format" << ctx->format();
+            else
+                qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
+            m_ownedContext = true;
+        } else {
+            // Context is not owned by us, so we need to know if it gets destroyed
+            m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
+                                                   [this] { releaseGraphicsResources(); });
         }
 
-        // Create OpenGL context
-        if (ctx->create())
-            qCDebug(Backend) << "OpenGL context created with actual format" << ctx->format();
-        else
-            qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
-        m_ownedContext = true;
-    } else {
-        // Context is not owned by us, so we need to know if it gets destroyed
-        m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
-                                               [this] { releaseGraphicsResources(); });
-    }
+        if (!ctx->shareContext()) {
+            m_shareContext = new QOpenGLContext;
+            m_shareContext->setFormat(ctx->format());
+            m_shareContext->setShareContext(ctx);
+            m_shareContext->create();
+        }
 
-    if (!ctx->shareContext()) {
-        m_shareContext = new QOpenGLContext;
-        m_shareContext->setFormat(ctx->format());
-        m_shareContext->setShareContext(ctx);
-        m_shareContext->create();
+        // Note: we don't have a surface at this point
+        // The context will be made current later on (at render time)
+        m_graphicsContext->setOpenGLContext(ctx);
     }
-
-    // Note: we don't have a surface at this point
-    // The context will be made current later on (at render time)
-    m_graphicsContext->setOpenGLContext(ctx);
 
     // Store the format used by the context and queue up creating an
     // offscreen surface in the main thread so that it is available
@@ -518,7 +527,7 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
 
     // Set all flags to dirty
-    m_changeSet |= AbstractRenderer::AllDirty;
+    m_dirtyBits.marked |= AbstractRenderer::AllDirty;
 }
 
 void Renderer::registerEventFilter(QEventFilterService *service)
@@ -1016,72 +1025,71 @@ void Renderer::lookForDirtyTextures()
 // Executed in a job
 void Renderer::lookForDirtyShaders()
 {
-    if (isRunning()) {
-        const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
-        const QVector<HShaderBuilder> activeBuilders = m_nodesManager->shaderBuilderManager()->activeHandles();
-        for (const HTechnique &techniqueHandle : activeTechniques) {
-            Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
-            // If api of the renderer matches the one from the technique
-            if (technique->isCompatibleWithRenderer()) {
-                const auto passIds = technique->renderPasses();
-                for (const QNodeId passId : passIds) {
-                    RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
-                    HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
-                    Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
+    Q_ASSERT(isRunning());
+    const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
+    const QVector<HShaderBuilder> activeBuilders = m_nodesManager->shaderBuilderManager()->activeHandles();
+    for (const HTechnique &techniqueHandle : activeTechniques) {
+        Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
+        // If api of the renderer matches the one from the technique
+        if (technique->isCompatibleWithRenderer()) {
+            const auto passIds = technique->renderPasses();
+            for (const QNodeId passId : passIds) {
+                RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
+                HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
+                Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
 
-                    ShaderBuilder *shaderBuilder = nullptr;
-                    for (const HShaderBuilder &builderHandle : activeBuilders) {
-                        ShaderBuilder *builder = m_nodesManager->shaderBuilderManager()->data(builderHandle);
-                        if (builder->shaderProgramId() == shader->peerId()) {
-                            shaderBuilder = builder;
+                ShaderBuilder *shaderBuilder = nullptr;
+                for (const HShaderBuilder &builderHandle : activeBuilders) {
+                    ShaderBuilder *builder = m_nodesManager->shaderBuilderManager()->data(builderHandle);
+                    if (builder->shaderProgramId() == shader->peerId()) {
+                        shaderBuilder = builder;
+                        break;
+                    }
+                }
+
+                if (shaderBuilder) {
+                    shaderBuilder->setGraphicsApi(*technique->graphicsApiFilter());
+
+                    for (int i = 0; i <= ShaderBuilder::Compute; i++) {
+                        const auto builderType = static_cast<ShaderBuilder::ShaderType>(i);
+                        if (!shaderBuilder->shaderGraph(builderType).isValid())
+                            continue;
+
+                        if (shaderBuilder->isShaderCodeDirty(builderType)) {
+                            shaderBuilder->generateCode(builderType);
+                        }
+
+                        QShaderProgram::ShaderType shaderType = QShaderProgram::Vertex;
+                        switch (builderType) {
+                        case ShaderBuilder::Vertex:
+                            shaderType = QShaderProgram::Vertex;
+                            break;
+                        case ShaderBuilder::TessellationControl:
+                            shaderType = QShaderProgram::TessellationControl;
+                            break;
+                        case ShaderBuilder::TessellationEvaluation:
+                            shaderType = QShaderProgram::TessellationEvaluation;
+                            break;
+                        case ShaderBuilder::Geometry:
+                            shaderType = QShaderProgram::Geometry;
+                            break;
+                        case ShaderBuilder::Fragment:
+                            shaderType = QShaderProgram::Fragment;
+                            break;
+                        case ShaderBuilder::Compute:
+                            shaderType = QShaderProgram::Compute;
                             break;
                         }
+
+                        const auto code = shaderBuilder->shaderCode(builderType);
+                        shader->setShaderCode(shaderType, code);
                     }
-
-                    if (shaderBuilder) {
-                        shaderBuilder->setGraphicsApi(*technique->graphicsApiFilter());
-
-                        for (int i = 0; i <= ShaderBuilder::Compute; i++) {
-                            const auto builderType = static_cast<ShaderBuilder::ShaderType>(i);
-                            if (!shaderBuilder->shaderGraph(builderType).isValid())
-                                continue;
-
-                            if (shaderBuilder->isShaderCodeDirty(builderType)) {
-                                shaderBuilder->generateCode(builderType);
-                            }
-
-                            QShaderProgram::ShaderType shaderType = QShaderProgram::Vertex;
-                            switch (builderType) {
-                            case ShaderBuilder::Vertex:
-                                shaderType = QShaderProgram::Vertex;
-                                break;
-                            case ShaderBuilder::TessellationControl:
-                                shaderType = QShaderProgram::TessellationControl;
-                                break;
-                            case ShaderBuilder::TessellationEvaluation:
-                                shaderType = QShaderProgram::TessellationEvaluation;
-                                break;
-                            case ShaderBuilder::Geometry:
-                                shaderType = QShaderProgram::Geometry;
-                                break;
-                            case ShaderBuilder::Fragment:
-                                shaderType = QShaderProgram::Fragment;
-                                break;
-                            case ShaderBuilder::Compute:
-                                shaderType = QShaderProgram::Compute;
-                                break;
-                            }
-
-                            const auto code = shaderBuilder->shaderCode(builderType);
-                            shader->setShaderCode(shaderType, code);
-                        }
-                    }
-
-                    if (Q_UNLIKELY(shader->hasPendingNotifications()))
-                        shader->submitPendingNotifications();
-                    if (shader != nullptr && !shader->isLoaded())
-                        m_dirtyShaders.push_back(shaderHandle);
                 }
+
+                if (Q_UNLIKELY(shader->hasPendingNotifications()))
+                    shader->submitPendingNotifications();
+                if (shader != nullptr && !shader->isLoaded())
+                    m_dirtyShaders.push_back(shaderHandle);
             }
         }
     }
@@ -1449,25 +1457,29 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 void Renderer::markDirty(BackendNodeDirtySet changes, BackendNode *node)
 {
     Q_UNUSED(node);
-    m_changeSet |= changes;
+    m_dirtyBits.marked |= changes;
 }
 
 Renderer::BackendNodeDirtySet Renderer::dirtyBits()
 {
-    return m_changeSet;
+    return m_dirtyBits.marked;
 }
 
+#if defined(QT_BUILD_INTERNAL)
 void Renderer::clearDirtyBits(BackendNodeDirtySet changes)
 {
-    m_changeSet &= ~changes;
+    m_dirtyBits.remaining &= ~changes;
+    m_dirtyBits.marked &= ~changes;
 }
+#endif
 
 bool Renderer::shouldRender()
 {
     // Only render if something changed during the last frame, or the last frame
     // was not rendered successfully (or render-on-demand is disabled)
     return (m_settings->renderPolicy() == QRenderSettings::Always
-            || m_changeSet != 0
+            || m_dirtyBits.marked != 0
+            || m_dirtyBits.remaining != 0
             || !m_lastFrameCorrect.load());
 }
 
@@ -1501,28 +1513,31 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
 
-    BackendNodeDirtySet changesToUnset = dirtyBits();
+    const BackendNodeDirtySet dirtyBitsForFrame = m_dirtyBits.marked | m_dirtyBits.remaining;
+    m_dirtyBits.marked = 0;
+    m_dirtyBits.remaining = 0;
+    BackendNodeDirtySet notCleared = 0;
 
     // Add jobs
-    const bool entitiesEnabledDirty = changesToUnset & AbstractRenderer::EntityEnabledDirty;
+    const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
     if (entitiesEnabledDirty) {
         renderBinJobs.push_back(m_updateTreeEnabledJob);
         m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     }
 
-    if (changesToUnset & AbstractRenderer::TransformDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_worldTransformJob);
         renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
         renderBinJobs.push_back(m_updateShaderDataTransformJob);
     }
 
-    if (changesToUnset & AbstractRenderer::GeometryDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty) {
         renderBinJobs.push_back(m_calculateBoundingVolumeJob);
         renderBinJobs.push_back(m_updateMeshTriangleListJob);
     }
 
-    if (changesToUnset & AbstractRenderer::GeometryDirty ||
-        changesToUnset & AbstractRenderer::TransformDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
+        dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_expandBoundingVolumeJob);
     }
 
@@ -1532,19 +1547,15 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_cleanupJob);
     renderBinJobs.push_back(m_sendRenderCaptureJob);
     renderBinJobs.push_back(m_sendBufferCaptureJob);
-    renderBinJobs.push_back(m_filterCompatibleTechniqueJob);
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
     renderBinJobs.push_back(m_vaoGathererJob);
 
-    if (changesToUnset & AbstractRenderer::BuffersDirty)
+    if (dirtyBitsForFrame & AbstractRenderer::BuffersDirty)
         renderBinJobs.push_back(m_bufferGathererJob);
 
-    if (changesToUnset & AbstractRenderer::ShadersDirty)
-        renderBinJobs.push_back(m_shaderGathererJob);
-
-    if (changesToUnset & AbstractRenderer::TexturesDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::TexturesDirty) {
         renderBinJobs.push_back(m_syncTextureLoadingJob);
         renderBinJobs.push_back(m_textureGathererJob);
     }
@@ -1552,12 +1563,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     // Layer cache is dependent on layers, layer filters and the enabled flag
     // on entities
-    const bool layersDirty = changesToUnset & AbstractRenderer::LayersDirty;
+    const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty;
-    bool layersCacheRebuilt = false;
 
-    const bool materialDirty = changesToUnset & AbstractRenderer::MaterialDirty;
-    bool materialGathererCacheRebuilt = false;
+    const bool materialDirty = dirtyBitsForFrame & AbstractRenderer::MaterialDirty;
 
     QMutexLocker lock(m_renderQueue->mutex());
     if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
@@ -1584,30 +1593,28 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
         }
-        layersCacheRebuilt = true;
-        materialGathererCacheRebuilt = true;
 
         // Set target number of RenderViews
         m_renderQueue->setTargetRenderViewCount(fgBranchCount);
+    } else {
+        // FilterLayerEntityJob is part of the RenderViewBuilder jobs and must be run later
+        // if none of those jobs are started this frame
+        notCleared |= AbstractRenderer::EntityEnabledDirty;
+        notCleared |= AbstractRenderer::LayersDirty;
     }
 
-    // Only reset dirty flags once we have really rebuilt the caches
-    if (layersDirty && !layersCacheRebuilt)
-        changesToUnset.setFlag(AbstractRenderer::LayersDirty, false);
-    if (entitiesEnabledDirty && !layersCacheRebuilt)
-        changesToUnset.setFlag(AbstractRenderer::EntityEnabledDirty, false);
-    if (materialDirty && !materialGathererCacheRebuilt)
-        changesToUnset.setFlag(AbstractRenderer::MaterialDirty, false);
+    if (isRunning() && m_graphicsContext->isInitialized()) {
+        if (dirtyBitsForFrame & AbstractRenderer::TechniquesDirty )
+            renderBinJobs.push_back(m_filterCompatibleTechniqueJob);
+        if (dirtyBitsForFrame & AbstractRenderer::ShadersDirty)
+            renderBinJobs.push_back(m_shaderGathererJob);
+    } else {
+        notCleared |= AbstractRenderer::TechniquesDirty;
+        notCleared |= AbstractRenderer::ShadersDirty;
+        notCleared |= AbstractRenderer::MaterialDirty;
+    }
 
-    // Clear dirty bits
-    // TO DO: When secondary GL thread is integrated, the following line can be removed
-    changesToUnset.setFlag(AbstractRenderer::ShadersDirty, false);
-
-    // Clear all dirty flags but Compute so that
-    // we still render every frame when a compute shader is used in a scene
-    if (changesToUnset.testFlag(Renderer::ComputeDirty))
-        changesToUnset.setFlag(Renderer::ComputeDirty, false);
-    clearDirtyBits(changesToUnset);
+    m_dirtyBits.remaining = dirtyBitsForFrame & notCleared;
 
     return renderBinJobs;
 }
@@ -1745,7 +1752,7 @@ void Renderer::performCompute(const RenderView *, RenderCommand *command)
                 command->m_workGroups[2]);
     }
     // HACK: Reset the compute flag to dirty
-    m_changeSet |= AbstractRenderer::ComputeDirty;
+    m_dirtyBits.marked |= AbstractRenderer::ComputeDirty;
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     int err = m_graphicsContext->openGLContext()->functions()->glGetError();
