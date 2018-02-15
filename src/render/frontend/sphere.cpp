@@ -53,18 +53,18 @@ namespace {
 
 // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting,
 // returns true and intersection point q; false otherwise
-bool intersectRaySphere(const Qt3DRender::RayCasting::QRay3D &ray, const Qt3DRender::Render::Sphere &s, QVector3D *q = nullptr)
+bool intersectRaySphere(const Qt3DRender::RayCasting::QRay3D &ray, const Qt3DRender::Render::Sphere &s, Vector3D *q = nullptr)
 {
-    const QVector3D p = ray.origin();
-    const QVector3D d = ray.direction();
-    const QVector3D m = p - s.center();
-    const float c = QVector3D::dotProduct(m, m) - s.radius() * s.radius();
+    const Vector3D p = ray.origin();
+    const Vector3D d = ray.direction();
+    const Vector3D m = p - s.center();
+    const float c = Vector3D::dotProduct(m, m) - s.radius() * s.radius();
 
     // If there is definitely at least one real root, there must be an intersection
     if (q == nullptr && c <= 0.0f)
         return true;
 
-    const float b = QVector3D::dotProduct(m, d);
+    const float b = Vector3D::dotProduct(m, d);
     // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0)
     if (c > 0.0f && b > 0.0f)
         return false;
@@ -89,12 +89,12 @@ bool intersectRaySphere(const Qt3DRender::RayCasting::QRay3D &ray, const Qt3DRen
     return true;
 }
 
-inline QPair<int, int> findExtremePoints(const QVector<QVector3D> &points)
+inline QPair<int, int> findExtremePoints(const QVector<Vector3D> &points)
 {
     // Find indices of extreme points along x, y, and z axes
     int xMin = 0, xMax = 0, yMin = 0, yMax = 0, zMin = 0, zMax = 0;
     for (int i = 1; i < points.size(); ++i) {
-        const QVector3D &p = points.at(i);
+        const Vector3D &p = points.at(i);
         if (p.x() < points[xMin].x())
             xMin = i;
         if (p.x() > points[xMax].x())
@@ -124,20 +124,20 @@ inline QPair<int, int> findExtremePoints(const QVector<QVector3D> &points)
     return extremeIndices;
 }
 
-inline void sphereFromExtremePoints(Qt3DRender::Render::Sphere &s, const QVector<QVector3D> &points)
+inline void sphereFromExtremePoints(Qt3DRender::Render::Sphere &s, const QVector<Vector3D> &points)
 {
     // Find two most separated points on any of the basis vectors
     QPair<int, int> extremeIndices = findExtremePoints(points);
 
     // Construct sphere to contain these two points
-    const QVector3D &p = points.at(extremeIndices.first);
-    const QVector3D &q = points.at(extremeIndices.second);
-    const QVector3D c = 0.5f * (p + q);
+    const Vector3D &p = points.at(extremeIndices.first);
+    const Vector3D &q = points.at(extremeIndices.second);
+    const Vector3D c = 0.5f * (p + q);
     s.setCenter(c);
     s.setRadius((q - c).length());
 }
 
-inline void constructRitterSphere(Qt3DRender::Render::Sphere &s, const QVector<QVector3D> &points)
+inline void constructRitterSphere(Qt3DRender::Render::Sphere &s, const QVector<Vector3D> &points)
 {
     // Calculate the sphere encompassing two axially extreme points
     sphereFromExtremePoints(s, points);
@@ -154,22 +154,22 @@ namespace Render {
 
 const float Sphere::ms_epsilon = 1.0e-7f;
 
-Sphere Sphere::fromPoints(const QVector<QVector3D> &points)
+Sphere Sphere::fromPoints(const QVector<Vector3D> &points)
 {
     Sphere s;
     s.initializeFromPoints(points);
     return s;
 }
 
-void Sphere::initializeFromPoints(const QVector<QVector3D> &points)
+void Sphere::initializeFromPoints(const QVector<Vector3D> &points)
 {
     if (!points.isEmpty())
         constructRitterSphere(*this, points);
 }
 
-void Sphere::expandToContain(const QVector3D &p)
+void Sphere::expandToContain(const Vector3D &p)
 {
-    const QVector3D d = p - m_center;
+    const Vector3D d = p - m_center;
     const float dist2 = d.lengthSquared();
 
     if (dist2 > m_radius * m_radius) {
@@ -184,7 +184,7 @@ void Sphere::expandToContain(const QVector3D &p)
 
 void Sphere::expandToContain(const Sphere &sphere)
 {
-    const QVector3D d(sphere.m_center - m_center);
+    const Vector3D d(sphere.m_center - m_center);
     const float dist2 = d.lengthSquared();
 
     const float dr = sphere.m_radius - m_radius;
@@ -204,16 +204,16 @@ void Sphere::expandToContain(const Sphere &sphere)
     }
 }
 
-Sphere Sphere::transformed(const QMatrix4x4 &mat) const
+Sphere Sphere::transformed(const Matrix4x4 &mat) const
 {
     // Transform extremities in x, y, and z directions to find extremities
     // of the resulting ellipsoid
-    QVector3D x = mat.map(m_center + QVector3D(m_radius, 0.0f, 0.0f));
-    QVector3D y = mat.map(m_center + QVector3D(0.0f, m_radius, 0.0f));
-    QVector3D z = mat.map(m_center + QVector3D(0.0f, 0.0f, m_radius));
+    Vector3D x = mat.map(m_center + Vector3D(m_radius, 0.0f, 0.0f));
+    Vector3D y = mat.map(m_center + Vector3D(0.0f, m_radius, 0.0f));
+    Vector3D z = mat.map(m_center + Vector3D(0.0f, 0.0f, m_radius));
 
     // Transform center and find maximum radius of ellipsoid
-    QVector3D c = mat.map(m_center);
+    Vector3D c = mat.map(m_center);
     float rSquared = qMax(qMax((x - c).lengthSquared(), (y - c).lengthSquared()), (z - c).lengthSquared());
     return Sphere(c, sqrt(rSquared), id());
 }
@@ -223,7 +223,7 @@ Qt3DCore::QNodeId Sphere::id() const
     return m_id;
 }
 
-bool Sphere::intersects(const RayCasting::QRay3D &ray, QVector3D *q, QVector3D *uvw) const
+bool Sphere::intersects(const RayCasting::QRay3D &ray, Vector3D *q, Vector3D *uvw) const
 {
     Q_UNUSED(uvw);
     return intersectRaySphere(ray, *this, q);

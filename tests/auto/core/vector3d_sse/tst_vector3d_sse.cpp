@@ -668,6 +668,14 @@ private Q_SLOTS:
             // THEN
             QVERIFY(v0 == v1);
         }
+        {
+            // GIVEN
+            Vector3D_SSE v0(6.0f, 6.0f, 6.0f);
+            Vector3D_SSE v1(6.0f, 6.0f, 6.0f);
+
+            // THEN
+            QVERIFY(v0 == v1);
+        }
     }
 
     void checkInequality()
@@ -785,11 +793,6 @@ private Q_SLOTS:
             Vector3D_SSE v2(0.707107f, 0.0f, 0.707107f);
             QCOMPARE(qFuzzyCompare(v0, v2), true);
         }
-    }
-
-    void checkNormalized()
-    {
-
     }
 
     void checkIsNull()

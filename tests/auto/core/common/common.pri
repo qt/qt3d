@@ -15,3 +15,13 @@ qtConfig(private_tests) {
 }
 
 QT += core-private 3dcore 3dcore-private
+
+qtConfig(qt3d-simd-avx2) {
+    CONFIG += simd
+    QMAKE_CXXFLAGS += $$QMAKE_CFLAGS_AVX2
+}
+
+qtConfig(qt3d-simd-sse2):!qtConfig(qt3d-simd-avx2) {
+    CONFIG += simd
+    QMAKE_CXXFLAGS += $$QMAKE_CFLAGS_SSE2
+}

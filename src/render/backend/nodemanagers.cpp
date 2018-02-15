@@ -174,7 +174,7 @@ MaterialManager *NodeManagers::manager<Material>() const Q_DECL_NOTHROW
 }
 
 template<>
-MatrixManager *NodeManagers::manager<QMatrix4x4*>() const Q_DECL_NOTHROW
+MatrixManager *NodeManagers::manager<Matrix4x4>() const Q_DECL_NOTHROW
 {
     return m_worldMatrixManager;
 }

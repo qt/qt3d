@@ -93,7 +93,7 @@ QRay3D::QRay3D()
     QRay3D thruAB(pointA, pointB - pointA);
     \endcode
 */
-QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction, float distance)
+QRay3D::QRay3D(const Vector3D &origin, const Vector3D &direction, float distance)
     : m_origin(origin)
     , m_direction(direction)
     , m_distance(distance)
@@ -110,7 +110,7 @@ QRay3D::~QRay3D()
 
     \sa setOrigin(), direction()
 */
-QVector3D QRay3D::origin() const
+Vector3D QRay3D::origin() const
 {
     return m_origin;
 }
@@ -122,7 +122,7 @@ QVector3D QRay3D::origin() const
 
     \sa origin(), setDirection()
  */
-void QRay3D::setOrigin(const QVector3D &value)
+void QRay3D::setOrigin(const Vector3D &value)
 {
     m_origin = value;
 }
@@ -134,7 +134,7 @@ void QRay3D::setOrigin(const QVector3D &value)
 
     \sa setDirection(), origin()
 */
-QVector3D QRay3D::direction() const
+Vector3D QRay3D::direction() const
 {
     return m_direction;
 }
@@ -146,7 +146,7 @@ QVector3D QRay3D::direction() const
 
     \sa direction(), setOrigin()
 */
-void QRay3D::setDirection(const QVector3D &value)
+void QRay3D::setDirection(const Vector3D &value)
 {
     if (value.isNull())
         return;
@@ -164,12 +164,12 @@ void QRay3D::setDistance(float distance)
     m_distance = distance;
 }
 
-QVector3D QRay3D::point(float t) const
+Vector3D QRay3D::point(float t) const
 {
     return m_origin + t * m_direction;
 }
 
-QRay3D &QRay3D::transform(const QMatrix4x4 &matrix)
+QRay3D &QRay3D::transform(const Matrix4x4 &matrix)
 {
     m_origin = matrix * m_origin;
     m_direction = matrix.mapVector(m_direction);
@@ -177,7 +177,7 @@ QRay3D &QRay3D::transform(const QMatrix4x4 &matrix)
     return *this;
 }
 
-QRay3D QRay3D::transformed(const QMatrix4x4 &matrix) const
+QRay3D QRay3D::transformed(const Matrix4x4 &matrix) const
 {
     return QRay3D(matrix * m_origin, matrix.mapVector(m_direction));
 }
@@ -195,12 +195,12 @@ bool QRay3D::operator!=(const QRay3D &other) const
 /*!
     Returns true if \a point lies on this ray; false otherwise.
 */
-bool QRay3D::contains(const QVector3D &point) const
+bool QRay3D::contains(const Vector3D &point) const
 {
-    QVector3D ppVec(point - m_origin);
+    Vector3D  ppVec(point - m_origin);
     if (ppVec.isNull()) // point coincides with origin
         return true;
-    const float dot = QVector3D::dotProduct(ppVec, m_direction);
+    const float dot = Vector3D ::dotProduct(ppVec, m_direction);
     if (qFuzzyIsNull(dot))
         return false;
     return qFuzzyCompare(dot*dot, ppVec.lengthSquared() * m_direction.lengthSquared());
@@ -213,7 +213,7 @@ bool QRay3D::contains(const QVector3D &point) const
 */
 bool QRay3D::contains(const QRay3D &ray) const
 {
-    const float dot = QVector3D::dotProduct(m_direction, ray.direction());
+    const float dot = Vector3D ::dotProduct(m_direction, ray.direction());
     if (!qFuzzyCompare(dot*dot, m_direction.lengthSquared() * ray.direction().lengthSquared()))
         return false;
     return contains(ray.origin());
@@ -247,11 +247,11 @@ bool QRay3D::contains(const QRay3D &ray) const
 
     \sa point(), project()
 */
-float QRay3D::projectedDistance(const QVector3D &point) const
+float QRay3D::projectedDistance(const Vector3D  &point) const
 {
     Q_ASSERT(!m_direction.isNull());
 
-    return QVector3D::dotProduct(point - m_origin, m_direction) /
+    return Vector3D ::dotProduct(point - m_origin, m_direction) /
                 m_direction.lengthSquared();
 }
 
@@ -264,10 +264,10 @@ float QRay3D::projectedDistance(const QVector3D &point) const
 
     \sa projectedDistance()
 */
-QVector3D QRay3D::project(const QVector3D &vector) const
+Vector3D  QRay3D::project(const Vector3D &vector) const
 {
-    QVector3D norm = m_direction.normalized();
-    return QVector3D::dotProduct(vector, norm) * norm;
+    Vector3D  norm = m_direction.normalized();
+    return Vector3D ::dotProduct(vector, norm) * norm;
 }
 
 /*!
@@ -277,7 +277,7 @@ QVector3D QRay3D::project(const QVector3D &vector) const
 
     \sa point()
 */
-float QRay3D::distance(const QVector3D &point) const
+float QRay3D::distance(const Vector3D  &point) const
 {
     float t = projectedDistance(point);
     return (point - (m_origin + t * m_direction)).length();
@@ -350,8 +350,8 @@ QDebug operator<<(QDebug dbg, const QRay3D &ray)
 */
 QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
 {
-    stream << ray.origin();
-    stream << ray.direction();
+    stream << convertToQVector3D(ray.origin());
+    stream << convertToQVector3D(ray.direction());
     return stream;
 }
 
@@ -364,9 +364,10 @@ QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
 QDataStream &operator>>(QDataStream &stream, QRay3D &ray)
 {
     QVector3D origin, direction;
+
     stream >> origin;
     stream >> direction;
-    ray = QRay3D(origin, direction);
+    ray = QRay3D(Vector3D(origin), Vector3D(direction));
     return stream;
 }
 

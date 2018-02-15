@@ -54,9 +54,9 @@ namespace Render {
 
 namespace {
 
-void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatrix4x4 &parentTransform)
+void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const Matrix4x4 &parentTransform)
 {
-    QMatrix4x4 worldTransform(parentTransform);
+    Matrix4x4 worldTransform(parentTransform);
     Transform *nodeTransform = node->renderComponent<Transform>();
 
     if (nodeTransform != nullptr && nodeTransform->isEnabled())
@@ -94,7 +94,7 @@ void UpdateWorldTransformJob::run()
 
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
-    QMatrix4x4 parentTransform;
+    Matrix4x4 parentTransform;
     Entity *parent = m_node->parent();
     if (parent != nullptr)
         parentTransform = *(parent->worldTransform());

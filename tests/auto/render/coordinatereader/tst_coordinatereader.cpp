@@ -67,7 +67,7 @@ public:
     {
         return m_bufferInfo;
     }
-    bool verifyCoordinate(uint index, QVector4D value)
+    bool verifyCoordinate(uint index, Vector4D value)
     {
         return qFuzzyCompare(getCoordinate(index), value);
     }
@@ -270,12 +270,12 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(ret, true);
 
-        QVERIFY(reader.verifyCoordinate(0, QVector4D(0, 0, 1, 1)));
-        QVERIFY(reader.verifyCoordinate(1, QVector4D(1, 0, 0, 1)));
-        QVERIFY(reader.verifyCoordinate(2, QVector4D(0, 1, 0, 1)));
-        QVERIFY(reader.verifyCoordinate(3, QVector4D(0, 0, 1, 1)));
-        QVERIFY(reader.verifyCoordinate(4, QVector4D(1, 0, 0, 1)));
-        QVERIFY(reader.verifyCoordinate(5, QVector4D(0, 1, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(0, Vector4D(0, 0, 1, 1)));
+        QVERIFY(reader.verifyCoordinate(1, Vector4D(1, 0, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(2, Vector4D(0, 1, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(3, Vector4D(0, 0, 1, 1)));
+        QVERIFY(reader.verifyCoordinate(4, Vector4D(1, 0, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(5, Vector4D(0, 1, 0, 1)));
     }
 
     void testReadCoordinateVec4()
@@ -364,12 +364,12 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(ret, true);
 
-        QVERIFY(reader.verifyCoordinate(0, QVector4D(0, 0, 1, 1)));
-        QVERIFY(reader.verifyCoordinate(1, QVector4D(1, 0, 0, 1)));
-        QVERIFY(reader.verifyCoordinate(2, QVector4D(0, 1, 0, 0)));
-        QVERIFY(reader.verifyCoordinate(3, QVector4D(0, 0, 1, 0)));
-        QVERIFY(reader.verifyCoordinate(4, QVector4D(1, 0, 0, 0)));
-        QVERIFY(reader.verifyCoordinate(5, QVector4D(0, 1, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(0, Vector4D(0, 0, 1, 1)));
+        QVERIFY(reader.verifyCoordinate(1, Vector4D(1, 0, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(2, Vector4D(0, 1, 0, 0)));
+        QVERIFY(reader.verifyCoordinate(3, Vector4D(0, 0, 1, 0)));
+        QVERIFY(reader.verifyCoordinate(4, Vector4D(1, 0, 0, 0)));
+        QVERIFY(reader.verifyCoordinate(5, Vector4D(0, 1, 0, 1)));
     }
 
     void testReadCoordinateFromAttribute()
@@ -468,9 +468,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(ret, true);
 
-        QVERIFY(reader.verifyCoordinate(0, QVector4D(0, 0, 1, 1)));
-        QVERIFY(reader.verifyCoordinate(1, QVector4D(0, 1, 0, 1)));
-        QVERIFY(reader.verifyCoordinate(2, QVector4D(1, 0, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(0, Vector4D(0, 0, 1, 1)));
+        QVERIFY(reader.verifyCoordinate(1, Vector4D(0, 1, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(2, Vector4D(1, 0, 0, 1)));
 
         // WHEN
         ret = reader.setGeometry(backendRenderer,
@@ -479,9 +479,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(ret, true);
 
-        QVERIFY(reader.verifyCoordinate(0, QVector4D(1, 0, 0, 1)));
-        QVERIFY(reader.verifyCoordinate(1, QVector4D(0, 0, 1, 1)));
-        QVERIFY(reader.verifyCoordinate(2, QVector4D(0, 1, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(0, Vector4D(1, 0, 0, 1)));
+        QVERIFY(reader.verifyCoordinate(1, Vector4D(0, 0, 1, 1)));
+        QVERIFY(reader.verifyCoordinate(2, Vector4D(0, 1, 0, 1)));
     }
 
 };

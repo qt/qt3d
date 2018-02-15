@@ -171,7 +171,7 @@ void ShaderData::cleanup(NodeManagers *managers)
     m_updatedShaderData.clear();
 }
 
-QVariant ShaderData::getTransformedProperty(const QString &name, const QMatrix4x4 &viewMatrix)
+QVariant ShaderData::getTransformedProperty(const QString &name, const Matrix4x4 &viewMatrix)
 {
     // Note protecting m_worldMatrix at this point as we assume all world updates
     // have been performed when reaching this point
@@ -180,11 +180,11 @@ QVariant ShaderData::getTransformedProperty(const QString &name, const QMatrix4x
         const TransformType transformType = it.value();
         switch (transformType) {
         case ModelToEye:
-            return QVariant::fromValue(viewMatrix * m_worldMatrix * m_originalProperties.value(name).value<QVector3D>());
+            return QVariant::fromValue(viewMatrix * m_worldMatrix * Vector3D(m_originalProperties.value(name).value<QVector3D>()));
         case ModelToWorld:
-            return QVariant::fromValue(m_worldMatrix * m_originalProperties.value(it.key()).value<QVector3D>());
+            return QVariant::fromValue(m_worldMatrix * Vector3D(m_originalProperties.value(it.key()).value<QVector3D>()));
         case ModelToWorldDirection:
-            return QVariant::fromValue((m_worldMatrix * QVector4D(m_originalProperties.value(it.key()).value<QVector3D>(), 0.0f)).toVector3D());
+            return QVariant::fromValue(Vector3D(m_worldMatrix * Vector4D(m_originalProperties.value(it.key()).value<QVector3D>(), 0.0f)));
         case NoTransform:
             break;
         }
@@ -193,7 +193,7 @@ QVariant ShaderData::getTransformedProperty(const QString &name, const QMatrix4x
 }
 
 // Called by FramePreparationJob or by RenderView when dealing with lights
-void ShaderData::updateWorldTransform(const QMatrix4x4 &worldMatrix)
+void ShaderData::updateWorldTransform(const Matrix4x4 &worldMatrix)
 {
     QMutexLocker lock(&m_mutex);
     if (m_worldMatrix != worldMatrix) {

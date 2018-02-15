@@ -72,7 +72,7 @@ void traverseCoordinatesIndexed(Index *indices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx;
-    QVector3D abc;
+    Vector3D abc;
     while (i < indexInfo.count) {
         ndx = indices[i];
         const uint idx = ndx * verticesStride;
@@ -94,7 +94,7 @@ void traverseCoordinates(Vertex *vertices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx = 0;
-    QVector3D abc;
+    Vector3D abc;
     while (ndx < vertexInfo.count) {
         const uint idx = ndx * verticesStride;
         for (uint j = 0; j < maxVerticesDataSize; ++j)

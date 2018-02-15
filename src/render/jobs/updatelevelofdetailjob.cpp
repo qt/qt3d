@@ -140,20 +140,20 @@ void UpdateLevelOfDetailJob::updateEntityLod(Entity *entity)
 
 void UpdateLevelOfDetailJob::updateEntityLodByDistance(Entity *entity, LevelOfDetail *lod)
 {
-    QMatrix4x4 viewMatrix;
-    QMatrix4x4 projectionMatrix;
+    Matrix4x4 viewMatrix;
+    Matrix4x4 projectionMatrix;
     if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
         return;
 
     const QVector<qreal> thresholds = lod->thresholds();
-    QVector3D center = lod->center();
+    Vector3D center(lod->center());
     if (lod->hasBoundingVolumeOverride() || entity->worldBoundingVolume() == nullptr) {
         center = *entity->worldTransform() * center;
     } else {
         center = entity->worldBoundingVolume()->center();
     }
 
-    const QVector3D tcenter = viewMatrix * center;
+    const Vector3D tcenter = viewMatrix * center;
     const float dist = tcenter.length();
     const int n = thresholds.size();
     for (int i=0; i<n; ++i) {
@@ -169,20 +169,20 @@ void UpdateLevelOfDetailJob::updateEntityLodByDistance(Entity *entity, LevelOfDe
 
 void UpdateLevelOfDetailJob::updateEntityLodByScreenArea(Entity *entity, LevelOfDetail *lod)
 {
-    QMatrix4x4 viewMatrix;
-    QMatrix4x4 projectionMatrix;
+    Matrix4x4 viewMatrix;
+    Matrix4x4 projectionMatrix;
     if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
         return;
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer(lod->camera());
-    const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+    const QVector<PickingUtils::ViewportCameraAreaDetails> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
     if (vcaTriplets.isEmpty())
         return;
 
-    const PickingUtils::ViewportCameraAreaTriplet &vca = vcaTriplets.front();
+    const PickingUtils::ViewportCameraAreaDetails &vca = vcaTriplets.front();
 
     const QVector<qreal> thresholds = lod->thresholds();
-    Sphere bv(lod->center(), lod->radius());
+    Sphere bv(Vector3D(lod->center()), lod->radius());
     if (!lod->hasBoundingVolumeOverride() && entity->worldBoundingVolume() != nullptr) {
         bv = *(entity->worldBoundingVolume());
     } else {

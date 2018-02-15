@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/private/vector3d_p.h>
 
 QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
@@ -72,8 +73,8 @@ public:
     };
 
     virtual Qt3DCore::QNodeId id() const = 0;
-    virtual bool intersects(const QRay3D &ray, QVector3D *q = nullptr,
-                            QVector3D *uvw = nullptr) const = 0;
+    virtual bool intersects(const QRay3D &ray, Vector3D *q = nullptr,
+                            Vector3D *uvw = nullptr) const = 0;
 
     virtual Type type() const = 0;
 };

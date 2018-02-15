@@ -49,7 +49,7 @@ public:
 
     }
 
-    virtual void visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
+    virtual void visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
     {
         m_triangles.push_back(TestTriangle(andx, a, bndx, b, cndx, c));
     }
@@ -69,7 +69,7 @@ public:
         return m_triangles.size();
     }
 
-    bool verifyTriangle(uint triangle, uint andx, uint bndx, uint cndx, QVector3D a, QVector3D b, QVector3D c) const
+    bool verifyTriangle(uint triangle, uint andx, uint bndx, uint cndx, Vector3D a, Vector3D b, Vector3D c) const
     {
         if (triangle >= uint(m_triangles.size()))
             return false;
@@ -89,13 +89,13 @@ private:
     struct TestTriangle
     {
         uint abcndx[3];
-        QVector3D abc[3];
+        Vector3D abc[3];
         TestTriangle()
         {
             abcndx[0] = abcndx[1] = abcndx[2] = uint(-1);
         }
 
-        TestTriangle(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
+        TestTriangle(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
         {
             abcndx[0] = andx;
             abcndx[1] = bndx;
@@ -194,7 +194,7 @@ private Q_SLOTS:
         positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
         positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
-        positionAttribute->setByteStride(3*4);
+        positionAttribute->setByteStride(0);
         positionAttribute->setByteOffset(0);
         positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
         geometry->addAttribute(positionAttribute.data());
@@ -220,8 +220,8 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 2);
-        QVERIFY(visitor.verifyTriangle(0, 2,1,0, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 5,4,3, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(0, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 5,4,3, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
     }
 
     void testVisitTrianglesIndexed()
@@ -331,11 +331,11 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 5);
-        QVERIFY(visitor.verifyTriangle(0, 2,1,0, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 5,4,3, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(2, 0,1,5, QVector3D(0,0,1), QVector3D(1,0,0), QVector3D(0,1,0)));
-        QVERIFY(visitor.verifyTriangle(3, 2,3,4, QVector3D(0,1,0), QVector3D(0,0,1), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifyTriangle(4, 4,2,0, QVector3D(1,0,0), QVector3D(0,1,0), QVector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(0, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 5,4,3, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(2, 0,1,5, Vector3D(0,0,1), Vector3D(1,0,0), Vector3D(0,1,0)));
+        QVERIFY(visitor.verifyTriangle(3, 2,3,4, Vector3D(0,1,0), Vector3D(0,0,1), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifyTriangle(4, 4,2,0, Vector3D(1,0,0), Vector3D(0,1,0), Vector3D(0,0,1)));
     }
 
     void testVisitTriangleStrip()
@@ -407,10 +407,10 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 4);
-        QVERIFY(visitor.verifyTriangle(0, 2,1,0, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 3,2,1, QVector3D(0,0,1), QVector3D(0,1,0), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifyTriangle(2, 4,3,2, QVector3D(1,0,0), QVector3D(0,0,1), QVector3D(0,1,0)));
-        QVERIFY(visitor.verifyTriangle(3, 5,4,3, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(0, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 3,2,1, Vector3D(0,0,1), Vector3D(0,1,0), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifyTriangle(2, 4,3,2, Vector3D(1,0,0), Vector3D(0,0,1), Vector3D(0,1,0)));
+        QVERIFY(visitor.verifyTriangle(3, 5,4,3, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
     }
 
     void testVisitTriangleStripIndexed()
@@ -517,14 +517,14 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 8);
-        QVERIFY(visitor.verifyTriangle(0, 2,1,0, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 3,2,1, QVector3D(0,0,1), QVector3D(0,1,0), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifyTriangle(2, 4,3,2, QVector3D(1,0,0), QVector3D(0,0,1), QVector3D(0,1,0)));
-        QVERIFY(visitor.verifyTriangle(3, 5,4,3, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(4, 0,1,5, QVector3D(0,0,1), QVector3D(1,0,0), QVector3D(0,1,0)));
-        QVERIFY(visitor.verifyTriangle(5, 4,0,1, QVector3D(1,0,0), QVector3D(0,0,1), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifyTriangle(6, 3,4,0, QVector3D(0,0,1), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(7, 2,3,4, QVector3D(0,1,0), QVector3D(0,0,1), QVector3D(1,0,0)));
+        QVERIFY(visitor.verifyTriangle(0, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 3,2,1, Vector3D(0,0,1), Vector3D(0,1,0), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifyTriangle(2, 4,3,2, Vector3D(1,0,0), Vector3D(0,0,1), Vector3D(0,1,0)));
+        QVERIFY(visitor.verifyTriangle(3, 5,4,3, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(4, 0,1,5, Vector3D(0,0,1), Vector3D(1,0,0), Vector3D(0,1,0)));
+        QVERIFY(visitor.verifyTriangle(5, 4,0,1, Vector3D(1,0,0), Vector3D(0,0,1), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifyTriangle(6, 3,4,0, Vector3D(0,0,1), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(7, 2,3,4, Vector3D(0,1,0), Vector3D(0,0,1), Vector3D(1,0,0)));
     }
 
     void testVisitTriangleFan()
@@ -596,10 +596,10 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 4);
-        QVERIFY(visitor.verifyTriangle(0, 2,1,0, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 3,2,0, QVector3D(0,0,1), QVector3D(0,1,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(2, 4,3,0, QVector3D(1,0,0), QVector3D(0,0,1), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(3, 5,4,0, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(0, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 3,2,0, Vector3D(0,0,1), Vector3D(0,1,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(2, 4,3,0, Vector3D(1,0,0), Vector3D(0,0,1), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(3, 5,4,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
     }
 
     void testVisitTriangleFanIndexed()
@@ -700,10 +700,10 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 4);
-        QVERIFY(visitor.verifyTriangle(0, 2,1,0, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 3,2,0, QVector3D(0,0,1), QVector3D(0,1,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(2, 4,3,0, QVector3D(1,0,0), QVector3D(0,0,1), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(3, 5,4,0, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(0, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 3,2,0, Vector3D(0,0,1), Vector3D(0,1,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(2, 4,3,0, Vector3D(1,0,0), Vector3D(0,0,1), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(3, 5,4,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
     }
 
     void testVisitTrianglesAdjacency()
@@ -775,7 +775,7 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 1);
-        QVERIFY(visitor.verifyTriangle(0, 4,2,0, QVector3D(1,0,0), QVector3D(0,1,0), QVector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(0, 4,2,0, Vector3D(1,0,0), Vector3D(0,1,0), Vector3D(0,0,1)));
     }
 
     void testVisitTrianglesAdjacencyIndexed()
@@ -883,8 +883,8 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 2);
-        QVERIFY(visitor.verifyTriangle(0, 4,2,0, QVector3D(1,0,0), QVector3D(0,1,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 3,0,5, QVector3D(0,0,1), QVector3D(0,0,1), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifyTriangle(0, 4,2,0, Vector3D(1,0,0), Vector3D(0,1,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 3,0,5, Vector3D(0,0,1), Vector3D(0,0,1), Vector3D(0,1,0)));
     }
 
     void testVisitTriangleStripAdjacency()
@@ -969,8 +969,8 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 2);
-        QVERIFY(visitor.verifyTriangle(0, 4,2,0, QVector3D(1,0,0), QVector3D(0,1,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 6,4,2, QVector3D(1,1,1), QVector3D(1,0,0), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifyTriangle(0, 4,2,0, Vector3D(1,0,0), Vector3D(0,1,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 6,4,2, Vector3D(1,1,1), Vector3D(1,0,0), Vector3D(0,1,0)));
     }
 
     void testVisitTriangleStripAdjacencyIndexed()
@@ -1074,8 +1074,8 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(visitor.triangleCount() == 2);
-        QVERIFY(visitor.verifyTriangle(0, 4,2,0, QVector3D(1,0,0), QVector3D(0,1,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifyTriangle(1, 5,4,2, QVector3D(0,1,0), QVector3D(1,0,0), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifyTriangle(0, 4,2,0, Vector3D(1,0,0), Vector3D(0,1,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(1, 5,4,2, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,1,0)));
     }
 };
 

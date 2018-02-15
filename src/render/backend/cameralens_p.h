@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DCore/private/qnodecommand_p.h>
-#include <QMatrix4x4>
+#include <Qt3DCore/private/matrix4x4_p.h>
 #include <QRectF>
 
 QT_BEGIN_NAMESPACE
@@ -89,10 +89,10 @@ public:
 
     void setRenderAspect(QRenderAspect* renderAspect);
 
-    QMatrix4x4 viewMatrix(const QMatrix4x4 &worldTransform);
+    Matrix4x4 viewMatrix(const Matrix4x4 &worldTransform);
 
-    void setProjection(const QMatrix4x4 &projection);
-    inline QMatrix4x4 projection() const { return m_projection; }
+    void setProjection(const Matrix4x4 &projection);
+    inline Matrix4x4 projection() const { return m_projection; }
 
     void setExposure(float exposure);
     inline float exposure() const { return m_exposure; }
@@ -101,7 +101,7 @@ public:
     void notifySceneBoundingVolume(const Sphere &sphere, Qt3DCore::QNodeCommand::CommandId commandId);
 
     static bool viewMatrixForCamera(EntityManager *manager, Qt3DCore::QNodeId cameraId,
-                                    QMatrix4x4 &viewMatrix, QMatrix4x4 &projectionMatrix);
+                                    Matrix4x4 &viewMatrix, Matrix4x4 &projectionMatrix);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
@@ -110,8 +110,8 @@ private:
                                     Qt3DCore::QNodeCommand::CommandId commandId);
 
     QRenderAspect *m_renderAspect;
-    QMatrix4x4 m_projection;
     Qt3DCore::QNodeCommand::CommandId m_pendingViewAllCommand;
+    Matrix4x4 m_projection;
     float m_exposure;
 };
 

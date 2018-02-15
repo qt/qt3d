@@ -711,17 +711,25 @@ void tst_RenderViewUtils::transformedProperties()
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
 
     // WHEN
-    const QVector3D position = QVector3D(15.0f, -5.0f, 10.0f);
-    QMatrix4x4 worldMatrix;
-    QMatrix4x4 viewMatrix;
+    const Vector3D position = Vector3D(15.0f, -5.0f, 10.0f);
+    const QVector3D positionQt = convertToQVector3D(position);
+    Matrix4x4 worldMatrix;
+    {
+        QMatrix4x4 m;
+        m.translate(-3.0f, 2.0f, 7.5f);
+        worldMatrix = Matrix4x4(m);
+    }
+    Matrix4x4 viewMatrix;
+    {
+        QMatrix4x4 m;
+        m.translate(9.0f, 6.0f, 12.0f);
+        viewMatrix = Matrix4x4(m);
+    }
 
-    worldMatrix.translate(-3.0f, 2.0f, 7.5f);
-    viewMatrix.translate(9.0f, 6.0f, 12.0f);
-
-    shaderData->setProperty("position0", position);
-    shaderData->setProperty("position1", position);
-    shaderData->setProperty("position2", position);
-    shaderData->setProperty("position3", position);
+    shaderData->setProperty("position0", positionQt);
+    shaderData->setProperty("position1", positionQt);
+    shaderData->setProperty("position2", positionQt);
+    shaderData->setProperty("position3", positionQt);
     shaderData->setProperty("position1Transformed", Qt3DRender::Render::ShaderData::ModelToEye);
     shaderData->setProperty("position2Transformed", Qt3DRender::Render::ShaderData::ModelToWorld);
     shaderData->setProperty("position3Transformed", Qt3DRender::Render::ShaderData::ModelToWorldDirection);
@@ -737,16 +745,16 @@ void tst_RenderViewUtils::transformedProperties()
 
     // WHEN
     backendShaderData->updateWorldTransform(worldMatrix);
-    const QVector3D position1Value = backendShaderData->getTransformedProperty(QStringLiteral("position1"), viewMatrix).value<QVector3D>();
-    const QVector3D position2Value = backendShaderData->getTransformedProperty(QStringLiteral("position2"), viewMatrix).value<QVector3D>();
-    const QVector3D position3Value = backendShaderData->getTransformedProperty(QStringLiteral("position3"), viewMatrix).value<QVector3D>();
+    const Vector3D position1Value = backendShaderData->getTransformedProperty(QStringLiteral("position1"), viewMatrix).value<Vector3D>();
+    const Vector3D position2Value = backendShaderData->getTransformedProperty(QStringLiteral("position2"), viewMatrix).value<Vector3D>();
+    const Vector3D position3Value = backendShaderData->getTransformedProperty(QStringLiteral("position3"), viewMatrix).value<Vector3D>();
     const QVariant position0Value = backendShaderData->getTransformedProperty(QStringLiteral("position0"), viewMatrix);
 
     // THEN
     QCOMPARE(position0Value, QVariant());
     QCOMPARE(position1Value, viewMatrix * worldMatrix * position);
     QCOMPARE(position2Value, worldMatrix * position);
-    QCOMPARE(position3Value, (worldMatrix * QVector4D(position, 0.0f)).toVector3D());
+    QCOMPARE(position3Value, Vector3D((worldMatrix * Vector4D(position, 0.0f))));
 }
 
 void tst_RenderViewUtils::shouldNotifyDynamicPropertyChanges()

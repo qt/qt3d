@@ -53,6 +53,9 @@
 
 #include <qt3drender_global.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/private/matrix4x4_p.h>
+#include <Qt3DCore/private/vector3d_p.h>
+#include <Qt3DCore/private/vector4d_p.h>
 
 #include <QMatrix4x4>
 #include <QVector2D>
@@ -111,11 +114,6 @@ public:
         BufferValue
     };
 
-    struct Texture {
-        int textureId = 0; // Set first so that glUniform1iv will work
-        Qt3DCore::QNodeId nodeId;
-    };
-
     // UniformValue implicitely converts doubles to floats to ensure
     // correct rendering behavior for the cases where Qt3D parameters created from
     // a double or QVariant(double) are used to fill uniform values that in reality
@@ -135,8 +133,8 @@ public:
     UniformValue(double d) : UniformValue() { data<float>()[0] = d; } // Double to float conversion
     UniformValue(bool b) : UniformValue() { data<bool>()[0] = b; }
     UniformValue(const QVector2D &vec2) : UniformValue() { memcpy(m_data.data(), &vec2, sizeof(QVector2D)); }
-    UniformValue(const QVector3D &vec3) : UniformValue() { memcpy(m_data.data(), &vec3, sizeof(QVector3D)); }
-    UniformValue(const QVector4D &vec4) : m_data(4) { memcpy(m_data.data(), &vec4, sizeof(QVector4D)); }
+    UniformValue(const Vector3D &vec3) : UniformValue() { memcpy(m_data.data(), &vec3, sizeof(Vector3D)); }
+    UniformValue(const Vector4D &vec4) : m_data(sizeof(Vector4D) / sizeof(float)) { memcpy(m_data.data(), &vec4, sizeof(Vector4D)); }
 
     UniformValue(const QMatrix3x3 &mat33)
         : m_data(9)
@@ -145,12 +143,22 @@ public:
         memcpy(m_data.data(), mat33.constData(), 9 * sizeof(float));
     }
 
+    // We don t want the QMatrix4x4 builder to use sizeof since QMatrix4x4 contains a type flag
+#if defined(__SSE2__) || defined(__AVX2__)
+    UniformValue(const Matrix4x4 &mat44)
+        : m_data(sizeof(Matrix4x4) / sizeof(float))
+    {
+        // Use constData because we want column-major layout
+        memcpy(m_data.data(), &mat44, sizeof(Matrix4x4));
+    }
+#else
     UniformValue(const QMatrix4x4 &mat44)
         : m_data(16)
     {
         // Use constData because we want column-major layout
         memcpy(m_data.data(), mat44.constData(), 16 * sizeof(float));
     }
+#endif
 
     UniformValue(const QVector<QMatrix4x4> &v)
         : m_data(16 * v.size())
@@ -164,20 +172,19 @@ public:
         }
     }
 
+    // Reserve data to be filled in later
+    UniformValue(int byteSize, ValueType valueType)
+        : m_data(byteSize / sizeof(float))
+        , m_valueType(valueType)
+    {
+    }
+
     // For nodes which will later be replaced by a Texture or Buffer
     UniformValue(Qt3DCore::QNodeId id)
         : UniformValue()
     {
         m_valueType = NodeId;
         memcpy(m_data.data(), &id, sizeof(Qt3DCore::QNodeId));
-    }
-
-    // For textures
-    UniformValue(UniformValue::Texture t)
-        : UniformValue()
-    {
-        m_valueType = TextureValue;
-        memcpy(m_data.data(), &t, sizeof(Texture));
     }
 
     ValueType valueType() const { return m_valueType; }

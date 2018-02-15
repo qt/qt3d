@@ -52,6 +52,12 @@
 //
 
 #include "abstractpickingjob_p.h"
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/qray3d_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/qboundingvolumeprovider_p.h>
+#include <Qt3DRender/private/qcollisionqueryresult_p.h>
+#include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 #include <Qt3DRender/qpickevent.h>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -71,7 +77,8 @@ class Q_AUTOTEST_EXPORT PickBoundingVolumeJob : public AbstractPickingJob
 public:
     PickBoundingVolumeJob();
 
-    void setMouseEvents(const QList<QMouseEvent> &pendingEvents);
+    void setRoot(Entity *root);
+    void setMouseEvents(const QList<QPair<QObject*, QMouseEvent>> &pendingEvents);
     void setKeyEvents(const QList<QKeyEvent> &pendingEvents);
     void markPickersDirty();
     bool pickersDirty() const { return m_pickersDirty; }
@@ -90,15 +97,15 @@ protected:
                             bool allHitsRequested);
 
 private:
-    QList<QMouseEvent> m_pendingMouseEvents;
+    void clearPreviouslyHoveredPickers();
+
+    QList<QPair<QObject*, QMouseEvent>> m_pendingMouseEvents;
     QList<QKeyEvent> m_pendingKeyEvents;
     bool m_pickersDirty;
     bool m_oneHoverAtLeast;
     HObjectPicker m_currentPicker;
     QVector<HObjectPicker> m_hoveredPickers;
     QVector<HObjectPicker> m_hoveredPickersToClear;
-
-    void clearPreviouslyHoveredPickers();
 };
 
 typedef QSharedPointer<PickBoundingVolumeJob> PickBoundingVolumeJobPtr;

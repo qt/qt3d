@@ -469,10 +469,10 @@ void Scene2D::handlePickEvent(int type, const Qt3DRender::QPickEventPtr &ev)
         CoordinateReader reader(renderer()->nodeManagers());
         if (reader.setGeometry(entity->renderComponent<GeometryRenderer>(),
                                QAttribute::defaultTextureCoordinateAttributeName())) {
-            QVector4D c0 = reader.getCoordinate(pickTriangle->vertex1Index());
-            QVector4D c1 = reader.getCoordinate(pickTriangle->vertex2Index());
-            QVector4D c2 = reader.getCoordinate(pickTriangle->vertex3Index());
-            QVector4D ci = c0 * pickTriangle->uvw().x()
+            Vector4D c0 = reader.getCoordinate(pickTriangle->vertex1Index());
+            Vector4D c1 = reader.getCoordinate(pickTriangle->vertex2Index());
+            Vector4D c2 = reader.getCoordinate(pickTriangle->vertex3Index());
+            Vector4D ci = c0 * pickTriangle->uvw().x()
                            + c1 * pickTriangle->uvw().y() + c2 * pickTriangle->uvw().z();
             ci.setW(1.0f);
 

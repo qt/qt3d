@@ -388,28 +388,43 @@ void QNodePrivate::propertyChanged(int propertyIndex)
     if (m_blockNotifications)
         return;
 
+    const auto toBackendValue = [this](const QVariant &data) -> QVariant
+    {
+        if (data.canConvert<QNode*>()) {
+            QNode *node = data.value<QNode*>();
+
+            // Ensure the node has issued a node creation change. We can end
+            // up here if a newly created node with a parent is immediately set
+            // as a property on another node. In this case the deferred call to
+            // _q_postConstructorInit() will not have happened yet as the event
+            // loop will still be blocked. So force it here and we catch this
+            // eventuality in the _q_postConstructorInit() function so that we
+            // do not repeat the creation and new child scene change events.
+            if (node)
+                QNodePrivate::get(node)->_q_postConstructorInit();
+
+            const QNodeId id = node ? node->id() : QNodeId();
+            return QVariant::fromValue(id);
+        }
+
+        return data;
+    };
+
     Q_Q(QNode);
 
     const QMetaProperty property = q->metaObject()->property(propertyIndex);
 
     const QVariant data = property.read(q);
-    if (data.canConvert<QNode*>()) {
-        QNode *node = data.value<QNode*>();
 
-        // Ensure the node has issued a node creation change. We can end
-        // up here if a newly created node with a parent is immediately set
-        // as a property on another node. In this case the deferred call to
-        // _q_postConstructorInit() will not have happened yet as the event
-        // loop will still be blocked. So force it here and we catch this
-        // eventuality in the _q_postConstructorInit() function so that we
-        // do not repeat the creation and new child scene change events.
-        if (node)
-            QNodePrivate::get(node)->_q_postConstructorInit();
-
-        const QNodeId id = node ? node->id() : QNodeId();
-        notifyPropertyChange(property.name(), QVariant::fromValue(id));
+    if (data.type() == QVariant::List) {
+        QSequentialIterable iterable = data.value<QSequentialIterable>();
+        QVariantList variants;
+        variants.reserve(iterable.size());
+        for (const auto &v : iterable)
+            variants.append(toBackendValue(v));
+        notifyPropertyChange(property.name(), variants);
     } else {
-        notifyPropertyChange(property.name(), data);
+        notifyPropertyChange(property.name(), toBackendValue(data));
     }
 }
 

@@ -67,8 +67,8 @@ struct Hit
     bool intersects;
     float distance;
     Qt3DCore::QNodeId id;
-    QVector3D intersection;
-    QVector3D uvw;
+    Vector3D intersection;
+    Vector3D uvw;
 };
 
 bool compareHitsDistance(const Hit &a, const Hit &b)

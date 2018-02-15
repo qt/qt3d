@@ -49,35 +49,35 @@ namespace Render {
 // Note: a, b, c in clockwise order
 // RealTime Collision Detection page 192
 bool intersectsSegmentTriangle(const RayCasting::QRay3D &ray,
-                               const QVector3D &a,
-                               const QVector3D &b,
-                               const QVector3D &c,
-                               QVector3D &uvw,
+                               const Vector3D &a,
+                               const Vector3D &b,
+                               const Vector3D &c,
+                               Vector3D &uvw,
                                float &t)
 {
-    const QVector3D ab = b - a;
-    const QVector3D ac = c - a;
-    const QVector3D qp = (ray.origin() - ray.point(ray.distance()));
+    const Vector3D ab = b - a;
+    const Vector3D ac = c - a;
+    const Vector3D qp = (ray.origin() - ray.point(ray.distance()));
 
-    const QVector3D n = QVector3D::crossProduct(ab, ac);
-    const float d = QVector3D::dotProduct(qp, n);
+    const Vector3D n = Vector3D::crossProduct(ab, ac);
+    const float d = Vector3D::dotProduct(qp, n);
 
     if (d <= 0.0f)
         return false;
 
-    const QVector3D ap = ray.origin() - a;
-    t = QVector3D::dotProduct(ap, n);
+    const Vector3D ap = ray.origin() - a;
+    t = Vector3D::dotProduct(ap, n);
 
     if (t < 0.0f || t > d)
         return false;
 
-    const QVector3D e = QVector3D::crossProduct(qp, ap);
-    uvw.setY(QVector3D::dotProduct(ac, e));
+    const Vector3D e = Vector3D::crossProduct(qp, ap);
+    uvw.setY(Vector3D::dotProduct(ac, e));
 
     if (uvw.y() < 0.0f || uvw.y() > d)
         return false;
 
-    uvw.setZ(-QVector3D::dotProduct(ab, e));
+    uvw.setZ(-Vector3D::dotProduct(ab, e));
 
     if (uvw.z() < 0.0f || uvw.y() + uvw.z() > d)
         return false;
@@ -99,7 +99,7 @@ TriangleBoundingVolume::TriangleBoundingVolume()
 /*!
     The vertices a, b, c are assumed to be in counter clockwise order.
  */
-TriangleBoundingVolume::TriangleBoundingVolume(Qt3DCore::QNodeId id, const QVector3D &a, const QVector3D &b, const QVector3D &c)
+TriangleBoundingVolume::TriangleBoundingVolume(Qt3DCore::QNodeId id, const Vector3D &a, const Vector3D &b, const Vector3D &c)
     : QBoundingVolume()
     , m_id(id)
     , m_a(a)
@@ -112,10 +112,10 @@ Qt3DCore::QNodeId TriangleBoundingVolume::id() const
     return m_id;
 }
 
-bool TriangleBoundingVolume::intersects(const RayCasting::QRay3D &ray, QVector3D *q, QVector3D *uvw) const
+bool TriangleBoundingVolume::intersects(const RayCasting::QRay3D &ray, Vector3D *q, Vector3D *uvw) const
 {
     float t = 0.0f;
-    QVector3D uvwr;
+    Vector3D uvwr;
     const float intersected = intersectsSegmentTriangle(ray, m_c, m_b, m_a, uvwr, t);
 
     if (intersected) {
@@ -132,41 +132,41 @@ TriangleBoundingVolume::Type TriangleBoundingVolume::type() const
     return RayCasting::QBoundingVolume::Triangle;
 }
 
-QVector3D TriangleBoundingVolume::a() const
+Vector3D TriangleBoundingVolume::a() const
 {
     return m_a;
 }
 
-QVector3D TriangleBoundingVolume::b() const
+Vector3D TriangleBoundingVolume::b() const
 {
     return m_b;
 }
 
-QVector3D TriangleBoundingVolume::c() const
+Vector3D TriangleBoundingVolume::c() const
 {
     return m_c;
 }
 
-void TriangleBoundingVolume::setA(const QVector3D &a)
+void TriangleBoundingVolume::setA(const Vector3D &a)
 {
     m_a = a;
 }
 
-void TriangleBoundingVolume::setB(const QVector3D &b)
+void TriangleBoundingVolume::setB(const Vector3D &b)
 {
     m_b = b;
 }
 
-void TriangleBoundingVolume::setC(const QVector3D &c)
+void TriangleBoundingVolume::setC(const Vector3D &c)
 {
     m_c = c;
 }
 
-TriangleBoundingVolume TriangleBoundingVolume::transformed(const QMatrix4x4 &mat) const
+TriangleBoundingVolume TriangleBoundingVolume::transformed(const Matrix4x4 &mat) const
 {
-    const QVector3D tA = mat * m_a;
-    const QVector3D tB = mat * m_b;
-    const QVector3D tC = mat * m_c;
+    const Vector3D tA = mat * m_a;
+    const Vector3D tB = mat * m_b;
+    const Vector3D tC = mat * m_c;
     return TriangleBoundingVolume(id(), tA, tB, tC);
 }
 

@@ -823,6 +823,98 @@ private Q_SLOTS:
             QCOMPARE(v0.w(), v1.w());
         }
     }
+
+    void checkLengthSquared()
+    {
+        {
+            // GIVEN
+            Vector4D_SSE v0(10.0f, 10.0f, 10.0f, 10.0f);
+
+            // THEN
+            QCOMPARE(v0.lengthSquared(), 400.0f);
+        }
+        {
+            // GIVEN
+            Vector4D_SSE v0(3.0f, 1.0f, 2.0f, 4.0f);
+
+            // THEN
+            QCOMPARE(v0.lengthSquared(), 30.0f);
+        }
+    }
+
+    void checkLength()
+    {
+        {
+            // GIVEN
+            Vector4D_SSE v0(3.0f, 0.0f, 0.0f, 0.0f);
+
+            // THEN
+            QCOMPARE(v0.length(), 3.0f);
+        }
+        {
+            // GIVEN
+            Vector4D_SSE v0(0.0f, 10.0f, 0.0f, 0.0f);
+
+            // THEN
+            QCOMPARE(v0.length(), 10.0f);
+        }
+        {
+            // GIVEN
+            Vector4D_SSE v0(0.0f, 0.0f, 9.0f, 0.0f);
+
+            // THEN
+            QCOMPARE(v0.length(), 9.0f);
+        }
+        {
+            // GIVEN
+            Vector4D_SSE v0(0.0f, 0.0f, 0.0f, 8.0f);
+
+            // THEN
+            QCOMPARE(v0.length(), 8.0f);
+        }
+    }
+
+    void checkNormalize()
+    {
+        {
+            // GIVEN
+            Vector4D_SSE v0(10.0f, 0.0f, 0.0f, 0.0f);
+
+            // WHEN
+            v0.normalize();
+
+            // THEN
+            QCOMPARE(v0, Vector4D_SSE(1.0f, 0.0f, 0.0f, 0.0f));
+        }
+        {
+            // GIVEN
+            Vector4D_SSE v0(0.0f, 0.0f, 3.0f, 0.0f);
+
+            // WHEN
+            v0.normalize();
+
+            // THEN
+            QCOMPARE(v0, Vector4D_SSE(0.0, 0.0f, 1.0f, 0.0f));
+        }
+    }
+
+    void checkIsNull()
+    {
+        {
+            // GIVEN
+            Vector4D_SSE v0;
+
+            // THEN
+            QVERIFY(v0.isNull());
+        }
+        {
+            // GIVEN
+            Vector4D_SSE v0(1.0f, 1.0f, 1.0f, 1.0f);
+
+            // THEN
+            QVERIFY(!v0.isNull());
+        }
+    }
 };
 
 QTEST_APPLESS_MAIN(tst_Vector4D_SSE)

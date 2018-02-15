@@ -107,7 +107,7 @@ private Q_SLOTS:
         }
         {
             // GIVEN
-            UniformValue v(QVector3D(572.0f, 355.0f, 383.0f));
+            UniformValue v(Vector3D(572.0f, 355.0f, 383.0f));
             // THEN
             QCOMPARE(v.constData<float>()[0], 572.0f);
             QCOMPARE(v.constData<float>()[1], 355.0f);
@@ -116,7 +116,7 @@ private Q_SLOTS:
         }
         {
             // GIVEN
-            UniformValue v(QVector4D(355.0f, 383.0f, 1340.0f, 1603.0f));
+            UniformValue v(Vector4D(355.0f, 383.0f, 1340.0f, 1603.0f));
             // THEN
             QCOMPARE(v.constData<float>()[0], 355.0f);
             QCOMPARE(v.constData<float>()[1], 383.0f);
@@ -340,7 +340,7 @@ private Q_SLOTS:
     void checkComparison()
     {
         // GIVEN
-        const UniformValue v1(QVector3D(454.0f, 883.0f, 572.0f));
+        const UniformValue v1(Vector3D(454.0f, 883.0f, 572.0f));
         UniformValue v2(454.0f);
 
         // THEN
@@ -348,13 +348,13 @@ private Q_SLOTS:
         QVERIFY(v1 != v2);
 
         // WHEN
-        v2 = UniformValue::fromVariant(QVector3D(454.0f, 883.0f, 572.0f));
+        v2 = UniformValue::fromVariant(QVariant::fromValue(Vector3D(454.0f, 883.0f, 572.0f)));
         // THEN
         QVERIFY(v1 == v2);
         QVERIFY(!(v1 != v2));
 
         // WHEN
-        v2 = UniformValue::fromVariant(QVector3D(454.0f, 883.0f, 572.0f));
+        v2 = UniformValue::fromVariant(QVariant::fromValue(Vector3D(454.0f, 883.0f, 572.0f)));
         // THEN
         QVERIFY(v1 == v2);
         QVERIFY(!(v1 != v2));

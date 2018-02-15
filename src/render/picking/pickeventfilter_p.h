@@ -69,14 +69,14 @@ public:
     explicit PickEventFilter(QObject *parent = nullptr);
     ~PickEventFilter();
 
-    QList<QMouseEvent> pendingMouseEvents();
+    QList<QPair<QObject*, QMouseEvent>> pendingMouseEvents();
     QList<QKeyEvent> pendingKeyEvents();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *e) final;
 
 private:
-    QList<QMouseEvent> m_pendingMouseEvents;
+    QList<QPair<QObject*, QMouseEvent>> m_pendingMouseEvents;
     QList<QKeyEvent> m_pendingKeyEvents;
     QMutex m_mutex;
 };

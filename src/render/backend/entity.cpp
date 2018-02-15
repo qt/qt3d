@@ -291,12 +291,12 @@ QVector<Entity *> Entity::children() const
     return childrenVector;
 }
 
-QMatrix4x4 *Entity::worldTransform()
+Matrix4x4 *Entity::worldTransform()
 {
     return m_nodeManagers->worldMatrixManager()->data(m_worldTransform);
 }
 
-const QMatrix4x4 *Entity::worldTransform() const
+const Matrix4x4 *Entity::worldTransform() const
 {
     return m_nodeManagers->worldMatrixManager()->data(m_worldTransform);
 }

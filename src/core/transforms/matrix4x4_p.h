@@ -83,4 +83,16 @@ QT_END_NAMESPACE
 
 #endif
 
+template<typename UsingType>
+Q_ALWAYS_INLINE QMatrix4x4 convertToQMatrix4x4(const UsingType &v)
+{
+    return v.toQMatrix4x4();
+}
+
+template<>
+Q_ALWAYS_INLINE QMatrix4x4 convertToQMatrix4x4<QMatrix4x4>(const QMatrix4x4 &v)
+{
+    return v;
+}
+
 #endif // QT3DCORE_MATRIX4X4_P_H
