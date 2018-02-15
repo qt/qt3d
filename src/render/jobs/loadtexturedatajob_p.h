@@ -67,8 +67,7 @@ class NodeManagers;
 class LoadTextureDataJob : public Qt3DCore::QAspectJob
 {
 public:
-    LoadTextureDataJob(const QTextureGeneratorPtr &texGen);
-    LoadTextureDataJob(const QTextureImageDataGeneratorPtr &imgDataGen);
+    LoadTextureDataJob();
     ~LoadTextureDataJob();
 
     inline void setNodeManagers(NodeManagers *manager) { m_manager = manager; }
@@ -77,9 +76,6 @@ protected:
     void run() final;
 
 private:
-    QTextureGeneratorPtr m_texGen;
-    QTextureImageDataGeneratorPtr  m_imgDataGen;
-
     NodeManagers *m_manager;
 };
 

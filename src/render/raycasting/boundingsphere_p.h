@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/qboundingvolume_p.h>
+#include <Qt3DCore/private/vector3d_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +66,7 @@ public:
     BoundingSphere();
     ~BoundingSphere();
 
-    virtual QVector3D center() const = 0;
+    virtual Vector3D center() const = 0;
     virtual float radius() const = 0;
 };
 

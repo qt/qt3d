@@ -49,16 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-LoadTextureDataJob::LoadTextureDataJob(const QTextureGeneratorPtr &texGen)
-    : m_texGen(texGen)
-    , m_imgDataGen(nullptr)
-{
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadTextureData, 0);
-}
-
-LoadTextureDataJob::LoadTextureDataJob(const QTextureImageDataGeneratorPtr &imgDataGen)
-    : m_texGen(nullptr)
-    , m_imgDataGen(imgDataGen)
+LoadTextureDataJob::LoadTextureDataJob()
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadTextureData, 0);
 }
@@ -69,13 +60,20 @@ LoadTextureDataJob::~LoadTextureDataJob()
 
 void LoadTextureDataJob::run()
 {
-    if (m_texGen) {
-        QTextureDataPtr texData = (*m_texGen)();
-        m_manager->textureDataManager()->assignData(m_texGen, texData);
+    // NOTE: This must run after Renderer::updateGLResources(),
+    // because that is where pendingGenerators is populated.
+    // We are therefore not able to create one job for each texture
+    // before we add the ability for running jobs (like this) to
+    // spawn new jobs.
+    const QVector<QTextureImageDataGeneratorPtr> pendingImgGen = m_manager->textureImageDataManager()->pendingGenerators();
+    for (const QTextureImageDataGeneratorPtr &imgGen : pendingImgGen) {
+        QTextureImageDataPtr imgData = (*imgGen)();
+        m_manager->textureImageDataManager()->assignData(imgGen, imgData);
     }
-    if (m_imgDataGen) {
-        QTextureImageDataPtr imgData = (*m_imgDataGen)();
-        m_manager->textureImageDataManager()->assignData(m_imgDataGen, imgData);
+    const QVector<QTextureGeneratorPtr> pendingTexGen = m_manager->textureDataManager()->pendingGenerators();
+    for (const QTextureGeneratorPtr &texGen : pendingTexGen) {
+        QTextureDataPtr texData = (*texGen)();
+        m_manager->textureDataManager()->assignData(texGen, texData);
     }
 }
 

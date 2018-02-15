@@ -90,7 +90,6 @@ bool RenderQueue::queueRenderView(RenderView *renderView, uint submissionOrderIn
     Q_ASSERT(!m_noRender);
     m_currentWorkQueue[submissionOrderIndex] = renderView;
     ++m_currentRenderViewCount;
-    Q_ASSERT(m_currentRenderViewCount <= m_targetRenderViewCount);
     return isFrameQueueComplete();
 }
 

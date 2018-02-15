@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/qcollisionqueryresult_p.h>
+#include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -84,8 +85,8 @@ public:
     // public for unit tests
     virtual bool runHelper() = 0;
     static RayCasting::QRay3D intersectionRay(const QPoint &pos,
-                                              const QMatrix4x4 &viewMatrix,
-                                              const QMatrix4x4 &projectionMatrix,
+                                              const Matrix4x4 &viewMatrix,
+                                              const Matrix4x4 &projectionMatrix,
                                               const QRect &viewport);
 
 protected:
@@ -99,10 +100,9 @@ protected:
     bool m_oneEnabledAtLeast;
 
     QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
-    RayCasting::QRay3D rayForViewportAndCamera(const QSize &area,
-                                               const QPoint &pos,
-                                               const QRectF &relativeViewport,
-                                               const Qt3DCore::QNodeId cameraId) const;
+    RayCasting::QRay3D rayForViewportAndCamera(const PickingUtils::ViewportCameraAreaDetails &vca,
+                                               QObject *eventSource,
+                                               const QPoint &pos) const;
 };
 
 } // namespace Render

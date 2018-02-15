@@ -72,15 +72,15 @@ void tst_RayCasting::shouldIntersect_data()
     QTest::addColumn<Sphere>("sphere");
     QTest::addColumn<bool>("shouldIntersect");
 
-    QRay3D ray(QVector3D(1, 1, 1), QVector3D(0, 0, 1));
+    QRay3D ray(Vector3D(1, 1, 1), Vector3D(0, 0, 1));
 
-    Sphere sphere1(QVector3D(1, 1, 1), 2);
-    Sphere sphere2(QVector3D(0, 0, 0), 3);
-    Sphere sphere3(QVector3D(0, 1, 3), 1);
-    Sphere sphere4(QVector3D(4, 4, 5), 1);
-    Sphere sphere5(QVector3D(2, 2, 11), 5);
-    Sphere sphere6(QVector3D(2, 2, 13), 1);
-    Sphere sphere7(QVector3D(2, 2, 15), 5);
+    Sphere sphere1(Vector3D(1, 1, 1), 2);
+    Sphere sphere2(Vector3D(0, 0, 0), 3);
+    Sphere sphere3(Vector3D(0, 1, 3), 1);
+    Sphere sphere4(Vector3D(4, 4, 5), 1);
+    Sphere sphere5(Vector3D(2, 2, 11), 5);
+    Sphere sphere6(Vector3D(2, 2, 13), 1);
+    Sphere sphere7(Vector3D(2, 2, 15), 5);
 
     QTest::newRow("Ray starts inside sphere") << ray << sphere1 << true;
     QTest::newRow("Ray starts inside sphere") << ray << sphere2 << true;
@@ -97,7 +97,7 @@ void tst_RayCasting::shouldIntersect()
     QFETCH(Sphere, sphere);
     QFETCH(bool, shouldIntersect);
 
-    QVector3D intersectionPoint;
+    Vector3D intersectionPoint;
 
     QCOMPARE(sphere.intersects(ray, &intersectionPoint), shouldIntersect);
 }
@@ -206,16 +206,16 @@ void tst_RayCasting::shouldReturnHits_data()
     QTest::addColumn<QVector<QNodeId> >("hits");
     QTest::addColumn<QAbstractCollisionQueryService::QueryMode >("queryMode");
 
-    QRay3D ray(QVector3D(1, 1, 1), QVector3D(0, 0, 1));
+    QRay3D ray(Vector3D(1, 1, 1), Vector3D(0, 0, 1));
 
     this->boundingVolumes.clear();
-    this->boundingVolumes.append(QVector<Sphere>() << Sphere(QVector3D(1, 1, 1), 3, QNodeId::createId())
-                                 << Sphere(QVector3D(0, 0, 0), 3, QNodeId::createId())
-                                 << Sphere(QVector3D(0, 1, 3), 1, QNodeId::createId())
-                                 << Sphere(QVector3D(4, 4, 5), 1, QNodeId::createId())
-                                 << Sphere(QVector3D(2, 2, 11), 5, QNodeId::createId())
-                                 << Sphere(QVector3D(2, 2, 13), 1, QNodeId::createId())
-                                 << Sphere(QVector3D(2, 2, 15), 5, QNodeId::createId()));
+    this->boundingVolumes.append(QVector<Sphere>() << Sphere(Vector3D(1, 1, 1), 3, QNodeId::createId())
+                                 << Sphere(Vector3D(0, 0, 0), 3, QNodeId::createId())
+                                 << Sphere(Vector3D(0, 1, 3), 1, QNodeId::createId())
+                                 << Sphere(Vector3D(4, 4, 5), 1, QNodeId::createId())
+                                 << Sphere(Vector3D(2, 2, 11), 5, QNodeId::createId())
+                                 << Sphere(Vector3D(2, 2, 13), 1, QNodeId::createId())
+                                 << Sphere(Vector3D(2, 2, 15), 5, QNodeId::createId()));
 
     QTest::newRow("All hits, One sphere intersect") << ray
                                                     << (QVector<QBoundingVolume *> () << volumeAt(0) << volumeAt(3))
@@ -276,11 +276,11 @@ void tst_RayCasting::shouldReturnHits()
 void tst_RayCasting::shouldUseProvidedBoudingVolumes()
 {
     // GIVEN
-    QRay3D ray(QVector3D(1, 1, 1), QVector3D(0, 0, 1));
+    QRay3D ray(Vector3D(1, 1, 1), Vector3D(0, 0, 1));
 
-    Sphere sphere1(QVector3D(1, 1, 1), 3);
-    Sphere sphere3(QVector3D(0, 1, 3), 1);
-    Sphere sphere4(QVector3D(4, 4, 5), 1);
+    Sphere sphere1(Vector3D(1, 1, 1), 3);
+    Sphere sphere3(Vector3D(0, 1, 3), 1);
+    Sphere sphere4(Vector3D(4, 4, 5), 1);
 
     MyBoudingVolumesProvider provider(QVector<QBoundingVolume *>() << &sphere1 << &sphere4 << &sphere3);
     QVector<QNodeId> hits(QVector<QNodeId>() << sphere1.id() << sphere3.id());
@@ -325,10 +325,10 @@ void tst_RayCasting::mousePicking()
 
     // Window center on near plane
     QRay3D ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.center().toPoint(),
-                                                                            camera.viewMatrix(),
-                                                                            camera.projectionMatrix(),
-                                                                            viewport.toRect());
-    Qt3DRender::Render::Sphere s(QVector3D(0.0f, 0.5f, 0.0f), 1.0f);
+                                                                         Matrix4x4(camera.viewMatrix()),
+                                                                         Matrix4x4(camera.projectionMatrix()),
+                                                                         viewport.toRect());
+    Qt3DRender::Render::Sphere s(Vector3D(0.0f, 0.5f, 0.0f), 1.0f);
 
     // WHEN
     bool intersects = s.intersects(ray, nullptr);
@@ -338,9 +338,9 @@ void tst_RayCasting::mousePicking()
 
     // WHEN
     ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.topLeft().toPoint(),
-                                                                     camera.viewMatrix(),
-                                                                     camera.projectionMatrix(),
-                                                                     viewport.toRect());
+                                                                  Matrix4x4(camera.viewMatrix()),
+                                                                  Matrix4x4(camera.projectionMatrix()),
+                                                                  viewport.toRect());
     intersects = s.intersects(ray, nullptr);
 
     // THEN
@@ -348,9 +348,9 @@ void tst_RayCasting::mousePicking()
 
     // WHEN
     ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.topRight().toPoint(),
-                                                                     camera.viewMatrix(),
-                                                                     camera.projectionMatrix(),
-                                                                     viewport.toRect());
+                                                                  Matrix4x4(camera.viewMatrix()),
+                                                                  Matrix4x4(camera.projectionMatrix()),
+                                                                  viewport.toRect());
     intersects = s.intersects(ray, nullptr);
 
     // THEN
@@ -358,9 +358,9 @@ void tst_RayCasting::mousePicking()
 
     // WHEN
     ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.bottomLeft().toPoint(),
-                                                                     camera.viewMatrix(),
-                                                                     camera.projectionMatrix(),
-                                                                     viewport.toRect());
+                                                                  Matrix4x4(camera.viewMatrix()),
+                                                                  Matrix4x4(camera.projectionMatrix()),
+                                                                  viewport.toRect());
     intersects = s.intersects(ray, nullptr);
 
     // THEN
@@ -368,9 +368,9 @@ void tst_RayCasting::mousePicking()
 
     // WHEN
     ray = Qt3DRender::Render::AbstractPickingJob::intersectionRay(viewport.bottomRight().toPoint(),
-                                                                     camera.viewMatrix(),
-                                                                     camera.projectionMatrix(),
-                                                                     viewport.toRect());
+                                                                  Matrix4x4(camera.viewMatrix()),
+                                                                  Matrix4x4(camera.projectionMatrix()),
+                                                                  viewport.toRect());
     intersects = s.intersects(ray, nullptr);
 
     // THEN

@@ -97,8 +97,8 @@ protected:
     QAbstractCollisionQueryService(QAbstractCollisionQueryServicePrivate &dd);
 
     void setResultHandle(QCollisionQueryResult &result, const QQueryHandle &handle);
-    void addEntityHit(QCollisionQueryResult &result, Qt3DCore::QNodeId entity, const QVector3D &intersection,
-                      float distance, const QVector3D &uvw);
+    void addEntityHit(QCollisionQueryResult &result, Qt3DCore::QNodeId entity, const Vector3D &intersection,
+                      float distance, const Vector3D &uvw);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractCollisionQueryService)

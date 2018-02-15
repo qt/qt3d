@@ -54,6 +54,10 @@
 #include <Qt3DRender/private/qpickevent_p.h>
 #include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 
+#include <QSurface>
+#include <QWindow>
+#include <QOffscreenSurface>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -111,7 +115,12 @@ PickBoundingVolumeJob::PickBoundingVolumeJob()
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0);
 }
 
-void PickBoundingVolumeJob::setMouseEvents(const QList<QMouseEvent> &pendingEvents)
+void PickBoundingVolumeJob::setRoot(Entity *root)
+{
+    m_node = root;
+}
+
+void PickBoundingVolumeJob::setMouseEvents(const QList<QPair<QObject*, QMouseEvent>> &pendingEvents)
 {
     m_pendingMouseEvents = pendingEvents;
 }
@@ -159,8 +168,8 @@ bool PickBoundingVolumeJob::runHelper()
     bool hasMoveEvent = false;
     bool hasOtherEvent = false;
     // Quickly look which types of events we've got
-    for (const QMouseEvent &event : mouseEvents) {
-        const bool isMove = (event.type() == QEvent::MouseMove);
+    for (const auto &event : mouseEvents) {
+        const bool isMove = (event.second.type() == QEvent::MouseMove);
         hasMoveEvent |= isMove;
         hasOtherEvent |= !isMove;
     }
@@ -188,10 +197,10 @@ bool PickBoundingVolumeJob::runHelper()
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
-    const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+    const QVector<PickingUtils::ViewportCameraAreaDetails> vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
 
     // If we have no viewport / camera or area, return early
-    if (vcaTriplets.empty())
+    if (vcaDetails.empty())
         return false;
 
     // TO DO:
@@ -210,19 +219,21 @@ bool PickBoundingVolumeJob::runHelper()
     const float pickWorldSpaceTolerance = m_renderSettings->pickWorldSpaceTolerance();
 
     // For each mouse event
-    for (const QMouseEvent &event : mouseEvents) {
+    for (const auto &event : mouseEvents) {
         m_hoveredPickersToClear = m_hoveredPickers;
 
         QPickEvent::Buttons eventButton = QPickEvent::NoButton;
         int eventButtons = 0;
         int eventModifiers = QPickEvent::NoModifier;
 
-        setEventButtonAndModifiers(event, eventButton, eventButtons, eventModifiers);
+        setEventButtonAndModifiers(event.second, eventButton, eventButtons, eventModifiers);
 
-        // For each triplet of Viewport / Camera and Area
-        for (const PickingUtils::ViewportCameraAreaTriplet &vca : vcaTriplets) {
+        // For each Viewport / Camera and Area entry
+        for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails) {
             PickingUtils::HitList sphereHits;
-            QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
+            QRay3D ray = rayForViewportAndCamera(vca, event.first, event.second.pos());
+            if (!ray.isValid())
+                continue;
 
             PickingUtils::HierarchicalEntityPicker entityPicker(ray);
             if (entityPicker.collectHits(m_manager, m_node)) {
@@ -259,7 +270,7 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, allHitsRequested);
+            dispatchPickEvents(event.second, sphereHits, eventButton, eventButtons, eventModifiers, allHitsRequested);
         }
     }
 
@@ -309,39 +320,48 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 }
 
                 // Send the corresponding event
-                QVector3D localIntersection = hit.m_intersection;
+                Vector3D localIntersection = hit.m_intersection;
                 if (entity && entity->worldTransform())
                     localIntersection = entity->worldTransform()->inverted() * hit.m_intersection;
 
                 QPickEventPtr pickEvent;
                 switch (hit.m_type) {
                 case QCollisionQueryResult::Hit::Triangle:
-                    pickEvent = QPickTriangleEventPtr::create(event.localPos(), hit.m_intersection,
-                                                              localIntersection, hit.m_distance,
-                                                              hit.m_primitiveIndex,
-                                                              hit.m_vertexIndex[0],
-                                                              hit.m_vertexIndex[1],
-                                                              hit.m_vertexIndex[2],
-                                                              eventButton, eventButtons,
-                                                              eventModifiers, hit.m_uvw);
+                    pickEvent.reset(new QPickTriangleEvent(event.localPos(),
+                                                           convertToQVector3D(hit.m_intersection),
+                                                           convertToQVector3D(localIntersection),
+                                                           hit.m_distance,
+                                                           hit.m_primitiveIndex,
+                                                           hit.m_vertexIndex[0],
+                                                           hit.m_vertexIndex[1],
+                                                           hit.m_vertexIndex[2],
+                                                           eventButton, eventButtons,
+                                                           eventModifiers,
+                                                           convertToQVector3D(hit.m_uvw)));
                     break;
                 case QCollisionQueryResult::Hit::Edge:
-                    pickEvent = QPickLineEventPtr::create(event.localPos(), hit.m_intersection,
-                                                          localIntersection, hit.m_distance,
-                                                          hit.m_primitiveIndex,
-                                                          hit.m_vertexIndex[0], hit.m_vertexIndex[1],
-                                                          eventButton, eventButtons, eventModifiers);
+                    pickEvent.reset(new QPickLineEvent(event.localPos(),
+                                                       convertToQVector3D(hit.m_intersection),
+                                                       convertToQVector3D(localIntersection),
+                                                       hit.m_distance,
+                                                       hit.m_primitiveIndex,
+                                                       hit.m_vertexIndex[0], hit.m_vertexIndex[1],
+                                                       eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Point:
-                    pickEvent = QPickPointEventPtr::create(event.localPos(), hit.m_intersection,
-                                                           localIntersection, hit.m_distance,
-                                                           hit.m_vertexIndex[0],
-                                                           eventButton, eventButtons, eventModifiers);
+                    pickEvent.reset(new QPickPointEvent(event.localPos(),
+                                                        convertToQVector3D(hit.m_intersection),
+                                                        convertToQVector3D(localIntersection),
+                                                        hit.m_distance,
+                                                        hit.m_vertexIndex[0],
+                                                        eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Entity:
-                    pickEvent = QPickEventPtr::create(event.localPos(), hit.m_intersection,
-                                                      localIntersection, hit.m_distance,
-                                                      eventButton, eventButtons, eventModifiers);
+                    pickEvent.reset(new QPickEvent(event.localPos(),
+                                                   convertToQVector3D(hit.m_intersection),
+                                                   convertToQVector3D(localIntersection),
+                                                   hit.m_distance,
+                                                   eventButton, eventButtons, eventModifiers));
                     break;
                 default:
                     Q_UNREACHABLE();

@@ -144,6 +144,10 @@ class NodeManagers;
 
 class UpdateLevelOfDetailJob;
 typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
+class LoadTextureDataJob;
+using LoadTextureDataJobPtr = QSharedPointer<LoadTextureDataJob>;
+class RenderBarrierJob;
+using RenderBarrierJobPtr = QSharedPointer<RenderBarrierJob>;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 
@@ -171,7 +175,7 @@ public:
     void releaseGraphicsResources() override;
 
     void render() override;
-    void doRender(bool scene3dBlocking = false) override;
+    void doRender() override;
     void cleanGraphicsResources() override;
 
     bool isRunning() const override { return m_running.load(); }
@@ -188,16 +192,28 @@ public:
     void clearDirtyBits(BackendNodeDirtySet changes) override;
 #endif
 
+    void lockSurfaceAndRender() override;
+    bool releaseRendererAndRequestPromiseToRender() override;
+    bool waitForRenderJobs() override;
+    bool tryWaitForRenderJobs(int timeout) override;
+    void abortRenderJobs() override;
+
     bool shouldRender() override;
     void skipNextFrame() override;
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() override;
     Qt3DCore::QAspectJobPtr rayCastingJob() override;
-    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() override;
+    Qt3DCore::QAspectJobPtr syncSkeletonLoadingJob() override;
     Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() override;
 
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
+
+    inline RenderBarrierJobPtr readRenderQueueSizeBarrierJob() const { return m_readRenderQueueSizeBarrierJob; }
+    inline RenderBarrierJobPtr beginDrawingBarrierJob() const { return m_beginDrawingBarrierJob; }
+    inline RenderBarrierJobPtr updateGLResourcesBarrierJob() const { return m_updateGLResourcesBarrierJob; }
+    inline RenderBarrierJobPtr prepareCommandSubmissionBarrierJob() const { return m_prepareCommandSubmissionBarrierJob; }
+    inline RenderBarrierJobPtr endDrawingBarrierJob() const { return m_endDrawingBarrierJob; }
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
     inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
@@ -208,8 +224,9 @@ public:
     inline UpdateLevelOfDetailJobPtr updateLevelOfDetailJob() const { return m_updateLevelOfDetailJob; }
     inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
-    inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
+    inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncSkeletonLoadingJob; }
     inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
+    inline LoadTextureDataJobPtr loadTextureJob() const {return m_loadTextureJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
 
@@ -245,14 +262,13 @@ public:
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
-    QList<QMouseEvent> pendingPickingEvents() const;
+    QList<QPair<QObject*, QMouseEvent>> pendingPickingEvents() const;
     QList<QKeyEvent> pendingKeyEvents() const;
 
     void addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId);
     const QVector<Qt3DCore::QNodeId> takePendingRenderCaptureSendRequests();
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
-    bool isReadyToSubmit();
 
     QVariant executeCommand(const QStringList &args) override;
     void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) override;
@@ -279,7 +295,7 @@ public:
 
 private:
 #endif
-    bool canRender() const;
+    bool hasBeenAskedToTerminate() const;
 
     Qt3DCore::QServiceLocator *m_services;
     NodeManagers *m_nodesManager;
@@ -301,7 +317,6 @@ private:
     QScopedPointer<RenderThread> m_renderThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
-    QSemaphore m_submitRenderViewsSemaphore;
     QSemaphore m_waitForInitializationToBeCompleted;
 
     QAtomicInt m_running;
@@ -312,11 +327,7 @@ private:
     QVector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
 
-    struct DirtyBits {
-        BackendNodeDirtySet marked = 0; // marked dirty since last job build
-        BackendNodeDirtySet remaining = 0; // remaining dirty after jobs have finished
-    };
-    DirtyBits m_dirtyBits;
+    BackendNodeDirtySet m_dirtyBits;
 
     QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
@@ -354,15 +365,18 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_vaoGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
+    LoadTextureDataJobPtr m_loadTextureJob;
+
     GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
 
-    SynchronizerJobPtr m_syncTextureLoadingJob;
+    SynchronizerJobPtr m_syncSkeletonLoadingJob;
 
     void lookForAbandonedVaos();
     void lookForDirtyBuffers();
     void lookForDownloadableBuffers();
     void lookForDirtyTextures();
     void lookForDirtyShaders();
+    bool createSurfaceLockAndMakeCurrent();
 
     QMutex m_abandonedVaosMutex;
     QVector<HVao> m_abandonedVaos;
@@ -384,6 +398,18 @@ private:
 
     QMetaObject::Connection m_contextConnection;
     RendererCache m_cache;
+
+    RenderBarrierJobPtr m_readRenderQueueSizeBarrierJob;
+    RenderBarrierJobPtr m_beginDrawingBarrierJob;
+    RenderBarrierJobPtr m_updateGLResourcesBarrierJob;
+    RenderBarrierJobPtr m_prepareCommandSubmissionBarrierJob;
+    RenderBarrierJobPtr m_endDrawingBarrierJob;
+
+    QAtomicInt m_willRenderPromise;
+    QSemaphore m_rendererReadySemaphore;
+    QSemaphore m_renderJobsReadySemaphore;
+
+    QVector<QSharedPointer<SurfaceLocker>> m_surfaceLockers;
 };
 
 } // namespace Render

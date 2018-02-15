@@ -179,13 +179,30 @@ QParameterPrivate::QParameterPrivate()
 {
 }
 
+namespace {
+
+/*! \internal */
+inline QVariant toBackendValue(const QVariant &v)
+{
+    if (auto nodeValue = v.value<Qt3DCore::QNode*>())
+        return QVariant::fromValue(nodeValue->id());
+    return v;
+}
+
+} // anonymous
+
 void QParameterPrivate::setValue(const QVariant &v)
 {
-    Qt3DCore::QNode *nodeValue = v.value<Qt3DCore::QNode *>();
-    if (nodeValue != nullptr)
-        m_backendValue = QVariant::fromValue(nodeValue->id());
-    else
-        m_backendValue = v;
+    if (v.type() == QVariant::List) {
+        QSequentialIterable iterable = v.value<QSequentialIterable>();
+        QVariantList variants;
+        variants.reserve(iterable.size());
+        for (const auto &v : iterable)
+            variants.append(toBackendValue(v));
+        m_backendValue = variants;
+    } else {
+        m_backendValue = toBackendValue(v);
+    }
     m_value = v;
 }
 

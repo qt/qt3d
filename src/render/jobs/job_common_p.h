@@ -100,12 +100,17 @@ namespace JobTypes {
         UpdateMeshTriangleList,
         FilterCompatibleTechniques,
         UpdateLevelOfDetail,
-        SyncTextureLoading,
+        SyncSkeletonLoading,
         LoadSkeleton,
         UpdateSkinningPalette,
         ProximityFiltering,
         SyncFilterEntityByLayer,
-        SyncMaterialGatherer
+        SyncMaterialGatherer,
+        ReadRenderQueueSizeBarrier,
+        BeginDrawingBarrier,
+        UpdateGLResourcesBarrier,
+        PrepareCommandSubmissionBarrier,
+        EndDrawingBarrier
     };
 
 } // JobTypes

@@ -54,6 +54,8 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/private/bufferutils_p.h>
+#include <Qt3DCore/private/vector3d_p.h>
+#include <Qt3DCore/private/vector4d_p.h>
 
 #include <private/qt3drender_global_p.h>
 
@@ -81,9 +83,9 @@ public:
     void apply(const Qt3DCore::QEntity *entity);
     void apply(const GeometryRenderer *renderer, const Qt3DCore::QNodeId id);
 
-    virtual void visit(uint andx, const QVector3D &a,
-                       uint bndx, const QVector3D &b,
-                       uint cndx, const QVector3D &c) = 0;
+    virtual void visit(uint andx, const Vector3D &a,
+                       uint bndx, const Vector3D &b,
+                       uint cndx, const Vector3D &c) = 0;
 
 protected:
     NodeManagers *m_manager;
@@ -102,7 +104,7 @@ public:
 
     bool setGeometry(const GeometryRenderer *renderer, const QString &attributeName);
 
-    QVector4D getCoordinate(uint vertexIndex);
+    Vector4D getCoordinate(uint vertexIndex);
 
 protected:
     NodeManagers *m_manager;

@@ -53,8 +53,8 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/private/vector3d_p.h>
 #include <QVector>
-#include <QVector3D>
 #include <QSharedData>
 
 QT_BEGIN_NAMESPACE
@@ -84,7 +84,7 @@ public:
             m_vertexIndex[0] = m_vertexIndex[1] = m_vertexIndex[2] = 0;
         }
 
-        Hit(Qt3DCore::QNodeId entity, const QVector3D &intersection, float distance, const QVector3D &uvw)
+        Hit(Qt3DCore::QNodeId entity, const Vector3D &intersection, float distance, const Vector3D &uvw)
             : m_entityId(entity)
             , m_intersection(intersection)
             , m_distance(distance)
@@ -94,11 +94,11 @@ public:
 
         Qt3DCore::QNodeId m_entityId;
         HitType m_type;
-        QVector3D m_intersection;
+        Vector3D m_intersection;
         float m_distance;
         uint m_primitiveIndex;
         uint m_vertexIndex[3];
-        QVector3D m_uvw;
+        Vector3D m_uvw;
     };
 
     QCollisionQueryResult();
@@ -146,8 +146,8 @@ public:
     explicit QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy);
 
     void setHandle(const QQueryHandle &handle);
-    void addEntityHit(Qt3DCore::QNodeId entity, const QVector3D& intersection, float distance,
-                      const QVector3D& uvw);
+    void addEntityHit(Qt3DCore::QNodeId entity, const Vector3D& intersection, float distance,
+                      const Vector3D& uvw);
 
     QQueryHandle m_handle;
     QVector<QCollisionQueryResult::Hit> m_hits;

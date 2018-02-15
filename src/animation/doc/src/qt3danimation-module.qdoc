@@ -29,8 +29,9 @@
 /*!
     \module Qt3DAnimation
     \title Qt 3D Animation C++ Classes
+
     \keyword Qt 3D Animation
-    \brief The Qt 3D Animation modules provides a set of prebuilt elements to help
+    \brief The Qt 3D Animation module provides a set of prebuilt elements to help
     you get started with Qt 3D.
 
     This module is still in tech preview. This means it is unstable, likely to

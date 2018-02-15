@@ -53,10 +53,10 @@
 
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/private/matrix4x4_p.h>
 #include <Qt3DRender/private/boundingsphere_p.h>
 
 #include <QMatrix4x4>
-#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,58 +73,58 @@ public:
         , m_id(i)
     {}
 
-    inline Sphere(const QVector3D &c, float r, Qt3DCore::QNodeId i = Qt3DCore::QNodeId())
+    inline Sphere(const Vector3D &c, float r, Qt3DCore::QNodeId i = Qt3DCore::QNodeId())
         : m_center(c)
         , m_radius(r)
         , m_id(i)
     {}
 
-    void setCenter(const QVector3D &c);
-    QVector3D center() const override;
+    void setCenter(const Vector3D &c);
+    Vector3D center() const override;
 
-    inline bool isNull() { return m_center == QVector3D() && m_radius == 0.0f; }
+    inline bool isNull() { return m_center == Vector3D() && m_radius == 0.0f; }
 
     void setRadius(float r);
     float radius() const override;
 
     void clear();
-    void initializeFromPoints(const QVector<QVector3D> &points);
-    void expandToContain(const QVector3D &point);
-    inline void expandToContain(const QVector<QVector3D> &points)
+    void initializeFromPoints(const QVector<Vector3D> &points);
+    void expandToContain(const Vector3D &point);
+    inline void expandToContain(const QVector<Vector3D> &points)
     {
-        for (const QVector3D &p : points)
+        for (const Vector3D &p : points)
             expandToContain(p);
     }
 
     void expandToContain(const Sphere &sphere);
 
-    Sphere transformed(const QMatrix4x4 &mat) const;
-    inline Sphere &transform(const QMatrix4x4 &mat)
+    Sphere transformed(const Matrix4x4 &mat) const;
+    inline Sphere &transform(const Matrix4x4 &mat)
     {
         *this = transformed(mat);
         return *this;
     }
 
     Qt3DCore::QNodeId id() const final;
-    bool intersects(const RayCasting::QRay3D &ray, QVector3D *q, QVector3D *uvw = nullptr) const final;
+    bool intersects(const RayCasting::QRay3D &ray, Vector3D *q, Vector3D *uvw = nullptr) const final;
     Type type() const final;
 
-    static Sphere fromPoints(const QVector<QVector3D> &points);
+    static Sphere fromPoints(const QVector<Vector3D> &points);
 
 private:
-    QVector3D m_center;
+    Vector3D m_center;
     float m_radius;
     Qt3DCore::QNodeId m_id;
 
     static const float ms_epsilon;
 };
 
-inline void Sphere::setCenter(const QVector3D &c)
+inline void Sphere::setCenter(const Vector3D &c)
 {
     m_center = c;
 }
 
-inline QVector3D Sphere::center() const
+inline Vector3D Sphere::center() const
 {
     return m_center;
 }
@@ -141,15 +141,15 @@ inline float Sphere::radius() const
 
 inline void Sphere::clear()
 {
-    m_center = QVector3D();
+    m_center = Vector3D();
     m_radius = 0.0f;
 }
 
 inline bool intersects(const Sphere &a, const Sphere &b)
 {
     // Calculate squared distance between sphere centers
-    const QVector3D d = a.center() - b.center();
-    const float distSq = QVector3D::dotProduct(d, d);
+    const Vector3D d = a.center() - b.center();
+    const float distSq = Vector3D::dotProduct(d, d);
 
     // Spheres intersect if squared distance is less than squared
     // sum of radii

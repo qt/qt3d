@@ -227,13 +227,13 @@ QAttribute *createAttribute(QBuffer *buffer,
     return attribute;
 }
 
-QAttribute *createAttribute(QBuffer *buffer,
-                            QAttribute::VertexBaseType vertexBaseType,
-                            uint vertexSize,
-                            uint count,
-                            uint byteOffset = 0,
-                            uint byteStride = 0,
-                            QNode *parent = nullptr)
+QAttribute *createIndexAttribute(QBuffer *buffer,
+                                 QAttribute::VertexBaseType vertexBaseType,
+                                 uint vertexSize,
+                                 uint count,
+                                 uint byteOffset = 0,
+                                 uint byteStride = 0,
+                                 QNode *parent = nullptr)
 {
     QAttribute *attribute = QAbstractNodeFactory::createNode<QAttribute>("QAttribute");
     attribute->setBuffer(buffer);
@@ -603,7 +603,8 @@ void AssimpImporter::readSceneFile(const QString &path)
                                                        aiProcess_GenSmoothNormals|
                                                        aiProcess_FlipUVs);
     if (m_scene->m_aiScene == nullptr) {
-        qCWarning(AssimpImporterLog) << "Assimp scene import failed";
+        qCWarning(AssimpImporterLog) << "Assimp scene import failed" << m_scene->m_importer->GetErrorString();
+        QSceneImporter::logError(QString::fromUtf8(m_scene->m_importer->GetErrorString()));
         return ;
     }
     parse();
@@ -828,7 +829,7 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
     indexBuffer->setData(ibufferContent);
 
     // Add indices attributes
-    QAttribute *indexAttribute = createAttribute(indexBuffer, indiceType, 1, indices);
+    QAttribute *indexAttribute = createIndexAttribute(indexBuffer, indiceType, 1, indices);
     indexAttribute->setAttributeType(QAttribute::IndexAttribute);
 
     meshGeometry->addAttribute(indexAttribute);

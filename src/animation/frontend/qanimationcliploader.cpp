@@ -61,7 +61,7 @@ void QAnimationClipLoaderPrivate::setStatus(QAnimationClipLoader::Status status)
 }
 
 /*!
-    \enum QAnimationClipLoader::Status
+    \enum Qt3DAnimation::QAnimationClipLoader::Status
 
     This enum identifies the status of animation clip.
 
@@ -70,7 +70,17 @@ void QAnimationClipLoaderPrivate::setStatus(QAnimationClipLoader::Status status)
     \value Error                 An error occurred while loading the clip
 */
 /*!
-    \class QAnimationClipLoader
+    \property Qt3DAnimation::QAnimationClipLoader::status
+
+    This property contains the status of the animation clip.
+*/
+/*!
+    \property Qt3DAnimation::QAnimationClipLoader::source
+
+    Holds the source URL from which to load the animation clip.
+*/
+/*!
+    \class Qt3DAnimation::QAnimationClipLoader
     \inherits QAbstractAnimationClip
     \inmodule Qt3DAnimation
     \brief Enables loading key frame animation data from a file
@@ -103,6 +113,9 @@ QUrl QAnimationClipLoader::source() const
     return d->m_source;
 }
 
+/*!
+    Returns the status of the animation clip.
+*/
 QAnimationClipLoader::Status QAnimationClipLoader::status() const
 {
     Q_D(const QAnimationClipLoader);
@@ -119,6 +132,9 @@ void QAnimationClipLoader::setSource(const QUrl &source)
     emit sourceChanged(source);
 }
 
+/*!
+    \internal
+*/
 void QAnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAnimationClipLoader);

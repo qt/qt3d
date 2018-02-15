@@ -48,6 +48,8 @@
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <QtGui/qoffscreensurface.h>
+#include <QtGui/qwindow.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -89,12 +91,12 @@ void AbstractPickingJob::run()
     runHelper();
 }
 
-RayCasting::QRay3D AbstractPickingJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix,
-                                                       const QMatrix4x4 &projectionMatrix, const QRect &viewport)
+RayCasting::QRay3D AbstractPickingJob::intersectionRay(const QPoint &pos, const Matrix4x4 &viewMatrix,
+                                                       const Matrix4x4 &projectionMatrix, const QRect &viewport)
 {
-    QVector3D nearPos = QVector3D(pos.x(), pos.y(), 0.0f);
+    Vector3D nearPos = Vector3D(pos.x(), pos.y(), 0.0f);
     nearPos = nearPos.unproject(viewMatrix, projectionMatrix, viewport);
-    QVector3D farPos = QVector3D(pos.x(), pos.y(), 1.0f);
+    Vector3D farPos = Vector3D(pos.x(), pos.y(), 1.0f);
     farPos = farPos.unproject(viewMatrix, projectionMatrix, viewport);
 
     return RayCasting::QRay3D(nearPos,
@@ -115,18 +117,39 @@ QRect AbstractPickingJob::windowViewport(const QSize &area, const QRectF &relati
     return relativeViewport.toRect();
 }
 
-RayCasting::QRay3D AbstractPickingJob::rayForViewportAndCamera(const QSize &area,
-                                                                  const QPoint &pos,
-                                                                  const QRectF &relativeViewport,
-                                                                  const Qt3DCore::QNodeId cameraId) const
+RayCasting::QRay3D AbstractPickingJob::rayForViewportAndCamera(const PickingUtils::ViewportCameraAreaDetails &vca,
+                                                               QObject *eventSource,
+                                                               const QPoint &pos) const
 {
-    QMatrix4x4 viewMatrix;
-    QMatrix4x4 projectionMatrix;
-    Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), cameraId, viewMatrix, projectionMatrix);
-    const QRect viewport = windowViewport(area, relativeViewport);
+    static RayCasting::QRay3D invalidRay({}, {}, 0.f);
+    Matrix4x4 viewMatrix;
+    Matrix4x4 projectionMatrix;
+    Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(),
+                                            vca.cameraId,
+                                            viewMatrix,
+                                            projectionMatrix);
+    const QRect viewport = windowViewport(vca.area, vca.viewport);
+
+    if (vca.area.isValid() && !viewport.contains(pos))
+        return invalidRay;
+    if (vca.surface) {
+        QSurface *surface = nullptr;
+        if (eventSource) {
+            QWindow *window = qobject_cast<QWindow *>(eventSource);
+            if (window) {
+                surface = static_cast<QSurface *>(window);
+            } else {
+                QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(eventSource);
+                if (offscreen)
+                    surface = static_cast<QSurface *>(offscreen);
+            }
+        }
+        if (surface && vca.surface != surface)
+            return invalidRay;
+    }
 
     // In GL the y is inverted compared to Qt
-    const QPoint glCorrectPos = QPoint(pos.x(), area.isValid() ? area.height() - pos.y() : pos.y());
+    const QPoint glCorrectPos = QPoint(pos.x(), vca.area.isValid() ? vca.area.height() - pos.y() : pos.y());
     const auto ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     return ray;
 }
