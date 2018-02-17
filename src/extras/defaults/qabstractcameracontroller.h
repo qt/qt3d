@@ -96,6 +96,7 @@ protected:
     Qt3DInput::QKeyboardDevice *keyboardDevice() const;
     Qt3DInput::QMouseDevice *mouseDevice() const;
 
+public:
     struct InputState
     {
         float rxAxisValue;

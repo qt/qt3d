@@ -52,6 +52,8 @@ namespace Quick {
 /*!
     \namespace Qt3DCore::Quick
     \inmodule Qt3DCore
+    \ingroup qt3d-namespaces
+
     \brief Contains classes used for implementing QML functionality into Qt3D
     applications.
 */

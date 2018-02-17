@@ -38,63 +38,44 @@
 ****************************************************************************/
 
 /*!
-    \module Qt3DRender
-    \title Qt 3D Render C++ Classes
-    \brief The Qt 3D Render module contains functionality to support 2D and 3D
-           rendering using Qt 3D.
+    \module Qt3DCore
+    \title Qt 3D Core C++ Classes
+    \keyword Qt 3D Core
+    \brief The Qt 3D module contains functionality to support near-realtime simulation systems.
 
     \ingroup modules
     \ingroup qt3d-modules
-    \qtvariable 3drender
+    \qtvariable 3dcore
 
-    The Qt 3D Render module provides an aspect, components, and other supporting types necessary
-    to implement 2D and 3D rendering as part of the Qt 3D framework.
-
-    To use classes from this module, add this directive into the C++ files:
-
-    \code
-       #include <Qt3DRender>
-    \endcode
-
-    To link against the corresponding C++ library, add the following to your qmake project file:
-
-    \badcode
-       QT += 3drender
-    \endcode
-
-    Classes, types, and functions are declared under the \l [Qt3DRender]{Qt3DRender} namespace.
-
-    \section1 Overview
-
-    The Qt 3D Render aspect offers support for data-driven configuration as described
-    in \l {Qt 3D Render Framegraph}.
-
-    \section1 Reference
-    \list
-    \li \l {Qt 3D Render C++ Classes}
-    \li \l {Qt 3D Examples}
-    \endlist
+    The Qt 3D module provides the foundations and core types used for near-realtime
+    simulations built on the Qt 3D framework.
 */
 
 /*!
-    \namespace Qt3DRender
-    \inmodule Qt3DRender
+    \namespace Qt3DCore
+    \inmodule Qt3DCore
     \ingroup qt3d-namespaces
 
-    \brief Contains classes that enable 2D and 3D rendering.
+    \brief Contains classes that are the foundation for Qt 3D simulation
+    framework, as well as classes that provide the ability to render using the
+    Qt 3D framework.
 */
 
 /*!
-   \qmlmodule Qt3D.Render 2.0
-   \title Qt 3D Render QML Types
+   \qmlmodule Qt3D.Core 2.0
+   \title Qt 3D Core QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
 
-   \brief Provides Qt 3D QML types for rendering.
+   \brief Provides core Qt 3D QML types.
 
    To import and use the module's QML types, use the following statement:
 
    \badcode
-   import Qt3D.Render 2.0
+   import Qt3D.Core 2.0
    \endcode
+
+   See \l {Qt 3D QML Types} for a list of all QML types in Qt 3D.
+
+   \section1 QML Types
 */

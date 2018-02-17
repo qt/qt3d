@@ -28,10 +28,21 @@ gcov {
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
 }
 
+qtConfig(qt3d-simd-avx2) {
+    CONFIG += simd
+    QMAKE_CXXFLAGS += $$QMAKE_CFLAGS_AVX2
+}
+
+qtConfig(qt3d-simd-sse2):!qtConfig(qt3d-simd-avx2) {
+    CONFIG += simd
+    QMAKE_CXXFLAGS += $$QMAKE_CFLAGS_SSE2
+}
+
 HEADERS += \
     renderlogging_p.h \
     qt3drender_global.h \
-    qt3drender_global_p.h
+    qt3drender_global_p.h \
+    aligned_malloc_p.h
 
 SOURCES += \
     renderlogging.cpp
@@ -40,5 +51,7 @@ MODULE_PLUGIN_TYPES = \
     sceneparsers \
     geometryloaders \
     renderplugins
+
+QMAKE_DOCS = $$PWD/doc/qt3drender.qdocconf
 
 load(qt_module)

@@ -58,6 +58,7 @@
 #include <QMatrix4x4>
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/aligned_malloc_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -160,6 +161,8 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     UniformBlockValueBuilder();
     ~UniformBlockValueBuilder();
 
+    QT3D_ALIGNED_MALLOC_AND_FREE()
+
     void buildActiveUniformNameValueMapHelper(ShaderData *currentShaderData,
                                               const QString &blockName,
                                               const QString &qmlPropertyName,
@@ -173,7 +176,7 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     UniformBlockValueBuilderHash activeUniformNamesToValue;
     ShaderDataManager *shaderDataManager;
     TextureManager *textureManager;
-    QMatrix4x4 viewMatrix;
+    Matrix4x4 viewMatrix;
 };
 
 } // namespace Render

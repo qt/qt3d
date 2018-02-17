@@ -232,12 +232,9 @@ void GraphicsContext::resolveRenderTargetFormat()
 #undef RGBA_BITS
 }
 
-bool GraphicsContext::beginDrawing(QSurface *surface)
+void GraphicsContext::beginDrawing()
 {
-    Q_ASSERT(surface);
     Q_ASSERT(m_gl);
-
-    m_surface = surface;
 
     // TO DO: Find a way to make to pause work if the window is not exposed
     //    if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
@@ -246,12 +243,6 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
     //            return false;
     //        qDebug() << Q_FUNC_INFO << 2;
     //    }
-
-    // Makes the surface current on the OpenGLContext
-    // and sets the right glHelper
-    m_ownCurrent = !(m_gl->surface() == m_surface);
-    if (m_ownCurrent && !makeCurrent(m_surface))
-        return false;
 
     // TODO: cache surface format somewhere rather than doing this every time render surface changes
     resolveRenderTargetFormat();
@@ -293,8 +284,6 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
     const int shaderPurgePeriod = 600;
     if (callCount % shaderPurgePeriod == 0)
         m_shaderCache.purge();
-
-    return true;
 }
 
 void GraphicsContext::clearBackBuffer(QClearBuffers::BufferTypeFlags buffers)
@@ -453,6 +442,7 @@ bool GraphicsContext::makeCurrent(QSurface *surface)
         m_glHelper = resolveHighestOpenGLFunctions();
         m_glHelpers.insert(surface, m_glHelper);
     }
+    m_surface = surface;
     return true;
 }
 
@@ -509,14 +499,14 @@ void GraphicsContext::introspectShaderInterface(Shader *shader, QOpenGLShaderPro
 
 void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
 {
-    QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId());
-    if (!shaderProgram) {
+    bool wasPresent = false;
+    QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId(), &wasPresent);
+    if (!shaderProgram && !wasPresent) {
         // No matching QOpenGLShader in the cache so create one
         shaderProgram = createShaderProgram(shader);
 
-        // Store in cache
-        if (shaderProgram)
-            m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
+        // Store in cache (even when failed and shaderProgram is null)
+        m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
     }
 
     // Ensure the Shader node knows about the program interface
@@ -544,7 +534,6 @@ void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
 
         shader->setGraphicsContext(this);
         shader->setLoaded(true);
-        shader->markDirty(AbstractRenderer::AllDirty);
     }
 }
 
@@ -1224,7 +1213,7 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
                 UniformValue &texUniform = uniformValues[namedTex.glslNameId];
                 Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
                 const int texUnit = activateTexture(TextureScopeMaterial, t);
-                texUniform.data<UniformValue::Texture>()->textureId = texUnit;
+                texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
                 // if the texture data from generators may not be available yet,
                 // make sure that the next frame is rendered
                 if (texUnit == -1)
@@ -1274,11 +1263,10 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     for (const ShaderUniform &uniform : activeUniforms) {
         // We can use [] as we are sure the the uniform wouldn't
         // be un activeUniforms if there wasn't a matching value
-        const auto &v = values[uniform.m_nameId];
+        const UniformValue &v = values[uniform.m_nameId];
 
         // skip invalid textures
-        if (v.valueType() == UniformValue::TextureValue &&
-                v.constData<UniformValue::Texture>()->textureId == -1)
+        if (v.valueType() == UniformValue::TextureValue && *v.constData<int>() == -1)
             continue;
 
         applyUniform(uniform, v);

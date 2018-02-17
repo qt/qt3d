@@ -81,11 +81,17 @@ public:
 
     const Sphere& result() { return m_volume; }
 
-    bool apply(Qt3DRender::Render::Attribute *positionAttribute, Qt3DRender::Render::Attribute *indexAttribute, int drawVertexCount)
+    bool apply(Qt3DRender::Render::Attribute *positionAttribute,
+               Qt3DRender::Render::Attribute *indexAttribute,
+               int drawVertexCount,
+               bool primitiveRestartEnabled,
+               int primitiveRestartIndex)
     {
         FindExtremePoints findExtremePoints(m_manager);
-        if (!findExtremePoints.apply(positionAttribute, indexAttribute, drawVertexCount))
+        if (!findExtremePoints.apply(positionAttribute, indexAttribute, drawVertexCount,
+                                     primitiveRestartEnabled, primitiveRestartIndex)) {
             return false;
+        }
 
         // Calculate squared distance for the pairs of points
         const float xDist2 = (findExtremePoints.xMaxPt - findExtremePoints.xMinPt).lengthSquared();
@@ -93,8 +99,8 @@ public:
         const float zDist2 = (findExtremePoints.zMaxPt - findExtremePoints.zMinPt).lengthSquared();
 
         // Select most distant pair
-        QVector3D p = findExtremePoints.xMinPt;
-        QVector3D q = findExtremePoints.xMaxPt;
+        Vector3D p = findExtremePoints.xMinPt;
+        Vector3D q = findExtremePoints.xMaxPt;
         if (yDist2 > xDist2 && yDist2 > zDist2) {
             p = findExtremePoints.yMinPt;
             q = findExtremePoints.yMaxPt;
@@ -104,12 +110,13 @@ public:
             q = findExtremePoints.zMaxPt;
         }
 
-        const QVector3D c = 0.5f * (p + q);
+        const Vector3D c = 0.5f * (p + q);
         m_volume.setCenter(c);
         m_volume.setRadius((q - c).length());
 
         ExpandSphere expandSphere(m_manager, m_volume);
-        if (!expandSphere.apply(positionAttribute, indexAttribute, drawVertexCount))
+        if (!expandSphere.apply(positionAttribute, indexAttribute, drawVertexCount,
+                                primitiveRestartEnabled, primitiveRestartIndex))
             return false;
 
         return true;
@@ -128,40 +135,40 @@ private:
         { }
 
         float xMin, xMax, yMin, yMax, zMin, zMax;
-        QVector3D xMinPt, xMaxPt, yMinPt, yMaxPt, zMinPt, zMaxPt;
+        Vector3D xMinPt, xMaxPt, yMinPt, yMaxPt, zMinPt, zMaxPt;
 
         void visit(uint ndx, float x, float y, float z) override
         {
             if (ndx) {
                 if (x < xMin) {
                     xMin = x;
-                    xMinPt = QVector3D(x, y, z);
+                    xMinPt = Vector3D(x, y, z);
                 }
                 if (x > xMax) {
                     xMax = x;
-                    xMaxPt = QVector3D(x, y, z);
+                    xMaxPt = Vector3D(x, y, z);
                 }
                 if (y < yMin) {
                     yMin = y;
-                    yMinPt = QVector3D(x, y, z);
+                    yMinPt = Vector3D(x, y, z);
                 }
                 if (y > yMax) {
                     yMax = y;
-                    yMaxPt = QVector3D(x, y, z);
+                    yMaxPt = Vector3D(x, y, z);
                 }
                 if (z < zMin) {
                     zMin = z;
-                    zMinPt = QVector3D(x, y, z);
+                    zMinPt = Vector3D(x, y, z);
                 }
                 if (z > zMax) {
                     zMax = z;
-                    zMaxPt = QVector3D(x, y, z);
+                    zMaxPt = Vector3D(x, y, z);
                 }
             } else {
                 xMin = xMax = x;
                 yMin = yMax = y;
                 zMin = zMax = z;
-                xMinPt = xMaxPt = yMinPt = yMaxPt = zMinPt = zMaxPt = QVector3D(x, y, z);
+                xMinPt = xMaxPt = yMinPt = yMaxPt = zMinPt = zMaxPt = Vector3D(x, y, z);
             }
         }
     };
@@ -177,7 +184,7 @@ private:
         void visit(uint ndx, float x, float y, float z) override
         {
             Q_UNUSED(ndx);
-            m_volume.expandToContain(QVector3D(x, y, z));
+            m_volume.expandToContain(Vector3D(x, y, z));
         }
     };
 };
@@ -191,7 +198,7 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
         return;
 
     GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
-    if (gRenderer) {
+    if (gRenderer && gRenderer->primitiveType() != QGeometryRenderer::Patches) {
         Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(gRenderer->geometryId());
 
         if (geom) {
@@ -259,16 +266,16 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
             // in a job executed after this one
             // We need to recompute the bounding volume
             // If anything in the GeometryRenderer has changed
-            if (buf->isDirty() ||
-                    node->isBoundingVolumeDirty() ||
-                    positionAttribute->isDirty() ||
-                    geom->isDirty() ||
-                    gRenderer->isDirty() ||
-                    (indexAttribute && indexAttribute->isDirty()) ||
-                    (indexBuf && indexBuf->isDirty()))
-            {
+            if (buf->isDirty()
+                || node->isBoundingVolumeDirty()
+                || positionAttribute->isDirty()
+                || geom->isDirty()
+                || gRenderer->isDirty()
+                || (indexAttribute && indexAttribute->isDirty())
+                || (indexBuf && indexBuf->isDirty())) {
                 BoundingVolumeCalculator reader(manager);
-                if (reader.apply(positionAttribute, indexAttribute, drawVertexCount)) {
+                if (reader.apply(positionAttribute, indexAttribute, drawVertexCount,
+                                 gRenderer->primitiveRestartEnabled(), gRenderer->restartIndexValue())) {
                     node->localBoundingVolume()->setCenter(reader.result().center());
                     node->localBoundingVolume()->setRadius(reader.result().radius());
                     node->unsetBoundingVolumeDirty();

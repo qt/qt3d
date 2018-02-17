@@ -86,7 +86,7 @@ void traverseSegmentsIndexed(Index *indices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[2];
-    QVector3D abc[2];
+    Vector3D abc[2];
     while (i < indexInfo.count) {
         for (uint u = 0; u < 2; ++u) {
             ndx[u] = indices[i + u];
@@ -112,7 +112,7 @@ void traverseSegments(Vertex *vertices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[2];
-    QVector3D abc[2];
+    Vector3D abc[2];
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 2; ++u) {
             ndx[u] = (i + u);
@@ -139,7 +139,7 @@ void traverseSegmentStripIndexed(Index *indices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[2];
-    QVector3D abc[2];
+    Vector3D abc[2];
     ndx[0] = indices[0];
     uint idx = ndx[0] * verticesStride;
     for (uint j = 0; j < maxVerticesDataSize; ++j)
@@ -180,7 +180,7 @@ void traverseSegmentStrip(Vertex *vertices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[2];
-    QVector3D abc[2];
+    Vector3D abc[2];
     ndx[0] = i;
     uint idx = ndx[0] * verticesStride;
     for (uint j = 0; j < maxVerticesDataSize; ++j)
@@ -218,7 +218,7 @@ void traverseSegmentAdjacencyIndexed(Index *indices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[2];
-    QVector3D abc[2];
+    Vector3D abc[2];
     while (i < n) {
         for (uint u = 0; u < 2; ++u) {
             ndx[u] = indices[i + u];
@@ -245,7 +245,7 @@ void traverseSegmentAdjacency(Vertex *vertices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[2];
-    QVector3D abc[2];
+    Vector3D abc[2];
     while (i < n) {
         for (uint u = 0; u < 2; ++u) {
             ndx[u] = (i + u);

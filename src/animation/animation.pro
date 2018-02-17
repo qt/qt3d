@@ -21,4 +21,6 @@ HEADERS += \
 SOURCES += \
     animationlogging.cpp
 
+QMAKE_DOCS = $$PWD/doc/qt3danimation.qdocconf
+
 load(qt_module)

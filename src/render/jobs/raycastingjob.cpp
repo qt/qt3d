@@ -148,19 +148,24 @@ bool RayCastingJob::runHelper()
     const EntityCasterGatherer::EntityCasterList &entities = gatherer.result();
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
-    const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+    const QVector<PickingUtils::ViewportCameraAreaDetails> vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
 
     for (const EntityCasterGatherer::EntityCasterList::value_type &pair: entities) {
         QVector<QRay3D> rays;
 
         switch (pair.second->type()) {
         case QAbstractRayCasterPrivate::WorldSpaceRayCaster:
-            rays << QRay3D(pair.second->origin(), pair.second->direction(), pair.second->length());
+            rays << QRay3D(Vector3D(pair.second->origin()),
+                           Vector3D(pair.second->direction()),
+                           pair.second->length());
             rays.back().transform(*pair.first->worldTransform());
             break;
         case QAbstractRayCasterPrivate::ScreenScapeRayCaster:
-            for (const PickingUtils::ViewportCameraAreaTriplet &vca : vcaTriplets)
-                rays << rayForViewportAndCamera(vca.area, pair.second->position(), vca.viewport, vca.cameraId);
+            for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails) {
+                // TODO: Fix this properly by not passing null for the eventSource
+                rays << rayForViewportAndCamera(vca, nullptr, pair.second->position());
+                //rays << rayForViewportAndCamera(vca.area, pair.second->position(), vca.viewport, vca.cameraId);
+            }
             break;
         default:
             Q_UNREACHABLE();
@@ -216,7 +221,7 @@ void RayCastingJob::dispatchHits(RayCaster *rayCaster, const PickingUtils::HitLi
     QAbstractRayCaster::Hits hits;
     for (const PickingUtils::HitList::value_type &sphereHit: sphereHits) {
         Entity *entity = m_manager->renderNodesManager()->lookupResource(sphereHit.m_entityId);
-        QVector3D localIntersection = sphereHit.m_intersection;
+        Vector3D localIntersection = sphereHit.m_intersection;
         if (entity && entity->worldTransform())
             localIntersection = entity->worldTransform()->inverted() * localIntersection;
 
@@ -240,8 +245,8 @@ void RayCastingJob::dispatchHits(RayCaster *rayCaster, const PickingUtils::HitLi
                 hitType,
                 sphereHit.m_entityId,
                 sphereHit.m_distance,
-                localIntersection,
-                sphereHit.m_intersection,
+                convertToQVector3D(localIntersection),
+                convertToQVector3D(sphereHit.m_intersection),
                 sphereHit.m_primitiveIndex,
                 sphereHit.m_vertexIndex[0],
                 sphereHit.m_vertexIndex[1],

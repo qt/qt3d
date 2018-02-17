@@ -47,43 +47,43 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::TriangleBoundingVolume volume = Qt3DRender::Render::TriangleBoundingVolume(Qt3DCore::QNodeId(),
-                                                                                                       QVector3D(),
-                                                                                                       QVector3D(),
-                                                                                                       QVector3D());
+                                                                                                       Vector3D(),
+                                                                                                       Vector3D(),
+                                                                                                       Vector3D());
 
         // THEN
         QCOMPARE(volume.id(), Qt3DCore::QNodeId());
-        QCOMPARE(volume.a(), QVector3D());
-        QCOMPARE(volume.b(), QVector3D());
-        QCOMPARE(volume.c(), QVector3D());
+        QCOMPARE(volume.a(), Vector3D());
+        QCOMPARE(volume.b(), Vector3D());
+        QCOMPARE(volume.c(), Vector3D());
         QCOMPARE(volume.type(), Qt3DRender::RayCasting::QBoundingVolume::Triangle);
     }
 
     void transformed_data()
     {
-        QTest::addColumn<QVector3D>("a");
-        QTest::addColumn<QVector3D>("b");
-        QTest::addColumn<QVector3D>("c");
+        QTest::addColumn<Vector3D>("a");
+        QTest::addColumn<Vector3D>("b");
+        QTest::addColumn<Vector3D>("c");
 
-        QTest::addColumn<QVector3D>("transformedA");
-        QTest::addColumn<QVector3D>("transformedB");
-        QTest::addColumn<QVector3D>("transformedC");
+        QTest::addColumn<Vector3D>("transformedA");
+        QTest::addColumn<Vector3D>("transformedB");
+        QTest::addColumn<Vector3D>("transformedC");
 
         QTest::newRow("onFarPlane")
-                << QVector3D(-1.0, 1.0, 0.0)
-                << QVector3D(0.0, -1.0, 0.0)
-                << QVector3D(1.0, 1.0, 0.0)
-                << QVector3D(-1.0, 1.0, -40.0)
-                << QVector3D(0.0, -1.0, -40.0)
-                << QVector3D(1.0, 1.0, -40.0);
+                << Vector3D(-1.0, 1.0, 0.0)
+                << Vector3D(0.0, -1.0, 0.0)
+                << Vector3D(1.0, 1.0, 0.0)
+                << Vector3D(-1.0, 1.0, -40.0)
+                << Vector3D(0.0, -1.0, -40.0)
+                << Vector3D(1.0, 1.0, -40.0);
 
         QTest::newRow("onNearPlane")
-                << QVector3D(-1.0, 1.0, 40.0)
-                << QVector3D(0.0, -1.0, 40.0)
-                << QVector3D(1.0, 1.0, 40.0)
-                << QVector3D(-1.0, 1.0, 0.0)
-                << QVector3D(0.0, -1.0, 0.0)
-                << QVector3D(1.0, 1.0, 0.0);
+                << Vector3D(-1.0, 1.0, 40.0)
+                << Vector3D(0.0, -1.0, 40.0)
+                << Vector3D(1.0, 1.0, 40.0)
+                << Vector3D(-1.0, 1.0, 0.0)
+                << Vector3D(0.0, -1.0, 0.0)
+                << Vector3D(1.0, 1.0, 0.0);
 
 
     }
@@ -91,12 +91,12 @@ private Q_SLOTS:
     void transformed()
     {
         // GIVEN
-        QFETCH(QVector3D, a);
-        QFETCH(QVector3D, b);
-        QFETCH(QVector3D, c);
-        QFETCH(QVector3D, transformedA);
-        QFETCH(QVector3D, transformedB);
-        QFETCH(QVector3D, transformedC);
+        QFETCH(Vector3D, a);
+        QFETCH(Vector3D, b);
+        QFETCH(Vector3D, c);
+        QFETCH(Vector3D, transformedA);
+        QFETCH(Vector3D, transformedB);
+        QFETCH(Vector3D, transformedC);
         Qt3DRender::Render::TriangleBoundingVolume volume(Qt3DCore::QNodeId(),
                                                           a,
                                                           b,
@@ -111,7 +111,7 @@ private Q_SLOTS:
         camera.setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
         camera.setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
 
-        const QMatrix4x4 viewMatrix = camera.viewMatrix();
+        const Matrix4x4 viewMatrix(camera.viewMatrix());
 
         // WHEN
         volume.transform(viewMatrix);
@@ -125,61 +125,61 @@ private Q_SLOTS:
     void intersects_data()
     {
         QTest::addColumn<Qt3DRender::RayCasting::QRay3D>("ray");
-        QTest::addColumn<QVector3D>("a");
-        QTest::addColumn<QVector3D>("b");
-        QTest::addColumn<QVector3D>("c");
-        QTest::addColumn<QVector3D>("uvw");
+        QTest::addColumn<Vector3D>("a");
+        QTest::addColumn<Vector3D>("b");
+        QTest::addColumn<Vector3D>("c");
+        QTest::addColumn<Vector3D>("uvw");
         QTest::addColumn<float>("t");
         QTest::addColumn<bool>("isIntersecting");
 
         const float farPlaneDistance = 40.0;
 
         QTest::newRow("halfway_center")
-                << Qt3DRender::RayCasting::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance)
-                << QVector3D(3.0, 1.5, 20.0)
-                << QVector3D(0.0, -1.5, 20.0)
-                << QVector3D(-3, 1.5, 20.0)
-                << QVector3D(0.25, 0.5, 0.25)
+                << Qt3DRender::RayCasting::QRay3D(Vector3D(), Vector3D(0.0, 0.0, 1.0), farPlaneDistance)
+                << Vector3D(3.0, 1.5, 20.0)
+                << Vector3D(0.0, -1.5, 20.0)
+                << Vector3D(-3, 1.5, 20.0)
+                << Vector3D(0.25, 0.5, 0.25)
                 << 0.5f
                 << true;
         QTest::newRow("miss_halfway_center_too_short")
-                << Qt3DRender::RayCasting::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance * 0.25f)
-                << QVector3D(3.0, 1.5, 20.0)
-                << QVector3D(0.0, -1.5, 20.0)
-                << QVector3D(-3, 1.5, 20.0)
-                << QVector3D()
+                << Qt3DRender::RayCasting::QRay3D(Vector3D(), Vector3D(0.0, 0.0, 1.0), farPlaneDistance * 0.25f)
+                << Vector3D(3.0, 1.5, 20.0)
+                << Vector3D(0.0, -1.5, 20.0)
+                << Vector3D(-3, 1.5, 20.0)
+                << Vector3D()
                 << 0.0f
                 << false;
         QTest::newRow("far_center")
-                << Qt3DRender::RayCasting::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance)
-                << QVector3D(3.0, 1.5, 40.0)
-                << QVector3D(0.0, -1.5, 40.0)
-                << QVector3D(-3, 1.5, 40.0)
-                << QVector3D(0.25, 0.5, 0.25)
+                << Qt3DRender::RayCasting::QRay3D(Vector3D(), Vector3D(0.0, 0.0, 1.0), farPlaneDistance)
+                << Vector3D(3.0, 1.5, 40.0)
+                << Vector3D(0.0, -1.5, 40.0)
+                << Vector3D(-3, 1.5, 40.0)
+                << Vector3D(0.25, 0.5, 0.25)
                 << 1.0f
                 << true;
         QTest::newRow("near_center")
-                << Qt3DRender::RayCasting::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), 1.0f)
-                << QVector3D(3.0, 1.5, 0.0)
-                << QVector3D(0.0, -1.5, 0.0)
-                << QVector3D(-3, 1.5, 0.0)
-                << QVector3D(0.25, 0.5, 0.25)
+                << Qt3DRender::RayCasting::QRay3D(Vector3D(), Vector3D(0.0, 0.0, 1.0), 1.0f)
+                << Vector3D(3.0, 1.5, 0.0)
+                << Vector3D(0.0, -1.5, 0.0)
+                << Vector3D(-3, 1.5, 0.0)
+                << Vector3D(0.25, 0.5, 0.25)
                 << 0.0f
                 << true;
         QTest::newRow("above_miss_center")
-                << Qt3DRender::RayCasting::QRay3D(QVector3D(0.0, 2.0, 0.0), QVector3D(0.0, 2.0, 1.0), 1.0f)
-                << QVector3D(3.0, 1.5, 0.0)
-                << QVector3D(0.0, -1.5, 0.0)
-                << QVector3D(-3, 1.5, 0.0)
-                << QVector3D()
+                << Qt3DRender::RayCasting::QRay3D(Vector3D(0.0, 2.0, 0.0), Vector3D(0.0, 2.0, 1.0), 1.0f)
+                << Vector3D(3.0, 1.5, 0.0)
+                << Vector3D(0.0, -1.5, 0.0)
+                << Vector3D(-3, 1.5, 0.0)
+                << Vector3D()
                 << 0.0f
                 << false;
         QTest::newRow("below_miss_center")
-                << Qt3DRender::RayCasting::QRay3D(QVector3D(0.0, -2.0, 0.0), QVector3D(0.0, -2.0, 1.0), 1.0f)
-                << QVector3D(3.0, 1.5, 0.0)
-                << QVector3D(0.0, -1.5, 0.0)
-                << QVector3D(-3, 1.5, 0.0)
-                << QVector3D()
+                << Qt3DRender::RayCasting::QRay3D(Vector3D(0.0, -2.0, 0.0), Vector3D(0.0, -2.0, 1.0), 1.0f)
+                << Vector3D(3.0, 1.5, 0.0)
+                << Vector3D(0.0, -1.5, 0.0)
+                << Vector3D(-3, 1.5, 0.0)
+                << Vector3D()
                 << 0.0f
                 << false;
     }
@@ -188,15 +188,15 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DRender::RayCasting::QRay3D, ray);
-        QFETCH(QVector3D, a);
-        QFETCH(QVector3D, b);
-        QFETCH(QVector3D, c);
-        QFETCH(QVector3D, uvw);
+        QFETCH(Vector3D, a);
+        QFETCH(Vector3D, b);
+        QFETCH(Vector3D, c);
+        QFETCH(Vector3D, uvw);
         QFETCH(float, t);
         QFETCH(bool, isIntersecting);
 
         // WHEN
-        QVector3D tmp_uvw;
+        Vector3D tmp_uvw;
         float tmp_t;
         const bool shouldBeIntersecting = Qt3DRender::Render::intersectsSegmentTriangle(ray,
                                                                                         a, b, c,

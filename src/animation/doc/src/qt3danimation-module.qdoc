@@ -30,7 +30,8 @@
     \module Qt3DAnimation
     \title Qt 3D Animation C++ Classes
 
-    \brief The Qt 3D Animation modules provides a set of prebuilt elements to help
+    \keyword Qt 3D Animation
+    \brief The Qt 3D Animation module provides a set of prebuilt elements to help
     you get started with Qt 3D.
 
     This module is still in tech preview. This means it is unstable, likely to
@@ -41,7 +42,7 @@
     \qtvariable 3danimation
 
     \code
-       #include <Qt3DAnimation>
+    #include <Qt3DAnimation>
     \endcode
 
     To link against the corresponding C++ library, add the following to your qmake project file:
@@ -225,4 +226,6 @@
    \badcode
    import Qt3D.Animation 2.9
    \endcode
+
+   \section1 QML Types
 */

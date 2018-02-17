@@ -53,10 +53,9 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/private/qhandle_p.h>
+#include <Qt3DCore/private/matrix4x4_p.h>
 
 QT_BEGIN_NAMESPACE
-
-class QMatrix4x4;
 
 namespace Qt3DRender {
 
@@ -109,7 +108,7 @@ typedef Qt3DCore::QHandle<FrameGraphNode *> HFrameGraphNode;
 typedef Qt3DCore::QHandle<Layer> HLayer;
 typedef Qt3DCore::QHandle<LevelOfDetail> HLevelOfDetail;
 typedef Qt3DCore::QHandle<Material> HMaterial;
-typedef Qt3DCore::QHandle<QMatrix4x4> HMatrix;
+typedef Qt3DCore::QHandle<Matrix4x4> HMatrix;
 typedef Qt3DCore::QHandle<OpenGLVertexArrayObject> HVao;
 typedef Qt3DCore::QHandle<Shader> HShader;
 typedef Qt3DCore::QHandle<ShaderBuilder> HShaderBuilder;

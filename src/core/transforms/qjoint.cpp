@@ -109,7 +109,7 @@ QJointPrivate::QJointPrivate()
 */
 
 /*!
-    \qmlproperty matrix4x4 inverseBindMatrix
+    \qmlproperty matrix4x4 Joint::inverseBindMatrix
 
     Holds the inverse bind matrix of the joint. This is used to transform
     vertices from model space into the space of this joint so they can

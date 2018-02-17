@@ -77,8 +77,8 @@ QAspectJob::QAspectJob()
  */
 
 /*!
- * \fn void QAspectJob::run()
- * Executes job.
+ * \fn void Qt3DCore::QAspectJob::run()
+ * Executes the job.
  */
 
 /*!

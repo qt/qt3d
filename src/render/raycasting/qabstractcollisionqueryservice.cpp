@@ -62,8 +62,8 @@ void QAbstractCollisionQueryService::setResultHandle(QCollisionQueryResult &resu
 }
 
 void QAbstractCollisionQueryService::addEntityHit(QCollisionQueryResult &result, Qt3DCore::QNodeId entity,
-                                                  const QVector3D& intersection, float distance,
-                                                  const QVector3D& uvw)
+                                                  const Vector3D& intersection, float distance,
+                                                  const Vector3D& uvw)
 {
     result.d_func()->addEntityHit(entity, intersection, distance, uvw);
 }

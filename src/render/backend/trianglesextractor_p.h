@@ -71,9 +71,9 @@ public:
     QVector<RayCasting::QBoundingVolume *> extract(const Qt3DCore::QNodeId id);
 
 private:
-    void visit(uint andx, const QVector3D &a,
-               uint bndx, const QVector3D &b,
-               uint cndx, const QVector3D &c) override;
+    void visit(uint andx, const Vector3D &a,
+               uint bndx, const Vector3D &b,
+               uint cndx, const Vector3D &c) override;
 
     GeometryRenderer *m_renderer;
     QVector<RayCasting::QBoundingVolume *> m_volumes;

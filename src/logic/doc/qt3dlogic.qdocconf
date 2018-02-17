@@ -1,0 +1,43 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+include(../../doc/qt3d-config.qdocconf)
+
+project                 = Qt3DLogic
+description             = Qt 3D Logic Reference Documentation
+version                 = $QT_VERSION
+
+qhp.projects            = Qt3DLogic
+
+qhp.Qt3DLogic.file                = qt3dlogic.qhp
+qhp.Qt3DLogic.namespace           = org.qt-project.qt3dlogic.$QT_VERSION_TAG
+qhp.Qt3DLogic.virtualFolder       = qt3dlogic
+qhp.Qt3DLogic.indexTitle          = Qt 3D Logic
+qhp.Qt3DLogic.indexRoot           =
+
+qhp.Qt3DLogic.filterAttributes                   = qt3dlogic $QT_VERSION qtrefdoc
+qhp.Qt3DLogic.customFilters.Qt.name              = Qt3DLogic $QT_VERSION
+qhp.Qt3DLogic.customFilters.Qt.filterAttributes  = qt3dlogic $QT_VERSION
+
+qhp.Qt3DLogic.subprojects                    = classes qmltypes
+
+qhp.Qt3DLogic.subprojects.classes.title      = C++ Classes
+qhp.Qt3DLogic.subprojects.classes.indexTitle = Qt 3D Logic C++ Classes
+qhp.Qt3DLogic.subprojects.classes.selectors  = class doc:headerfile
+qhp.Qt3DLogic.subprojects.classes.sortPages  = true
+
+qhp.Qt3DLogic.subprojects.qmltypes.title      = QML Types
+qhp.Qt3DLogic.subprojects.qmltypes.indexTitle = Qt 3D Logic QML Types
+qhp.Qt3DLogic.subprojects.qmltypes.selectors  = qmltype
+qhp.Qt3DLogic.subprojects.qmltypes.sortPages  = true
+
+tagfile                 = qt3dlogic.tags
+
+depends                 += qtcore qtgui qtqml qtquick qtdoc qmake
+
+# dependencies to other Qt 3D modules
+depends                 += qt3d qt3dcore qt3drender qt3dinput \
+                           qt3dextras qt3danimation qt3dscene2d
+
+sourcedirs  += ..
+headerdirs  += ..
+imagedirs   += images
+exampledirs += snippets

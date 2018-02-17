@@ -41,7 +41,8 @@
 #define QT3DRENDER_RENDER_FRUSTUMCULLINGJOB_P_H
 
 #include <Qt3DCore/qaspectjob.h>
-#include <QMatrix4x4>
+#include <Qt3DCore/private/matrix4x4_p.h>
+#include <Qt3DRender/private/aligned_malloc_p.h>
 
 //
 //  W A R N I N G
@@ -69,11 +70,13 @@ class FrustumCullingJob : public Qt3DCore::QAspectJob
 public:
     FrustumCullingJob();
 
+    QT3D_ALIGNED_MALLOC_AND_FREE()
+
     inline void setRoot(Entity *root) Q_DECL_NOTHROW { m_root = root; }
     inline void setActive(bool active) Q_DECL_NOTHROW { m_active = active; }
     inline bool isActive() const Q_DECL_NOTHROW { return m_active; }
-    inline void setViewProjection(const QMatrix4x4 &viewProjection) Q_DECL_NOTHROW { m_viewProjection = viewProjection; }
-    inline QMatrix4x4 viewProjection() const Q_DECL_NOTHROW { return m_viewProjection; }
+    inline void setViewProjection(const Matrix4x4 &viewProjection) Q_DECL_NOTHROW { m_viewProjection = viewProjection; }
+    inline Matrix4x4 viewProjection() const Q_DECL_NOTHROW { return m_viewProjection; }
 
     QVector<Entity *> visibleEntities() const Q_DECL_NOTHROW { return m_visibleEntities; }
 
@@ -81,7 +84,7 @@ public:
 
 private:
     void cullScene(Entity *e, const Plane *planes);
-    QMatrix4x4 m_viewProjection;
+    Matrix4x4 m_viewProjection;
     Entity *m_root;
     QVector<Entity *> m_visibleEntities;
     bool m_active;

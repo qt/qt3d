@@ -64,7 +64,7 @@ void Transform::cleanup()
     m_rotation = QQuaternion();
     m_scale = QVector3D();
     m_translation = QVector3D();
-    m_transformMatrix = QMatrix4x4();
+    m_transformMatrix = Matrix4x4();
     QBackendNode::setEnabled(false);
 }
 
@@ -78,7 +78,7 @@ void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     updateMatrix();
 }
 
-QMatrix4x4 Transform::transformMatrix() const
+Matrix4x4 Transform::transformMatrix() const
 {
     return m_transformMatrix;
 }
@@ -125,7 +125,7 @@ void Transform::updateMatrix()
     m.translate(m_translation);
     m.rotate(m_rotation);
     m.scale(m_scale);
-    m_transformMatrix = m;
+    m_transformMatrix = Matrix4x4(m);
 }
 
 } // namespace Render

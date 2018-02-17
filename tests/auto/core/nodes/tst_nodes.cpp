@@ -81,6 +81,7 @@ private slots:
 
     void checkConstructionSetParentMix(); // QTBUG-60612
     void checkConstructionWithParent();
+    void checkConstructionAsListElement();
 
     void appendingComponentToEntity();
     void appendingParentlessComponentToEntity();
@@ -240,6 +241,43 @@ public slots:
         emit nodePropertyChanged(node);
     }
 
+    void addAttribute(MyQNode *attribute)
+    {
+        Qt3DCore::QNodePrivate *d = Qt3DCore::QNodePrivate::get(this);
+        if (!m_attributes.contains(attribute)) {
+            m_attributes.append(attribute);
+
+            // Ensures proper bookkeeping
+            d->registerDestructionHelper(attribute, &MyQNode::removeAttribute, m_attributes);
+
+            // We need to add it as a child of the current node if it has been declared inline
+            // Or not previously added as a child of the current node so that
+            // 1) The backend gets notified about it's creation
+            // 2) When the current node is destroyed, it gets destroyed as well
+            if (!attribute->parent())
+                attribute->setParent(this);
+
+            if (d->m_changeArbiter != nullptr) {
+                const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), attribute);
+                change->setPropertyName("attribute");
+                d->notifyObservers(change);
+            }
+        }
+    }
+
+    void removeAttribute(MyQNode *attribute)
+    {
+        Qt3DCore::QNodePrivate *d = Qt3DCore::QNodePrivate::get(this);
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), attribute);
+            change->setPropertyName("attribute");
+            d->notifyObservers(change);
+        }
+        m_attributes.removeOne(attribute);
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(attribute);
+    }
+
 signals:
     void customPropertyChanged();
     void nodePropertyChanged(MyQNode *node);
@@ -247,6 +285,7 @@ signals:
 protected:
     QString m_customProperty;
     MyQNode *m_nodeProperty;
+    QVector<MyQNode *> m_attributes;
 };
 
 class MyQEntity : public Qt3DCore::QEntity
@@ -921,6 +960,50 @@ void tst_Nodes::checkConstructionWithParent()
     QCOMPARE(propertyEvent->value().value<Qt3DCore::QNodeId>(), node->id());
 }
 
+void tst_Nodes::checkConstructionAsListElement()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QScene scene;
+    QScopedPointer<MyQNode> root(new MyQNode());
+
+    // WHEN
+    root->setArbiterAndScene(&spy, &scene);
+    root->setSimulateBackendCreated(true);
+
+    // THEN
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != nullptr);
+
+    // WHEN we create a child and then set it as a Node* property
+    auto *node = new MyQNode(root.data());
+    root->addAttribute(node);
+
+    // THEN we should get one creation change, one child added change
+    // and one property change event, in that order.
+    QCoreApplication::processEvents();
+
+    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(spy.events.size(), 3); // 1 creation change, 1 child added change, 1 property change
+
+    // Ensure first event is child node's creation change
+    const auto creationEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
+    QVERIFY(!creationEvent.isNull());
+    QCOMPARE(creationEvent->subjectId(), node->id());
+
+    const auto newChildEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+    QVERIFY(!newChildEvent.isNull());
+    QCOMPARE(newChildEvent->subjectId(), root->id());
+    QCOMPARE(newChildEvent->propertyName(), "children");
+    QCOMPARE(newChildEvent->addedNodeId(), node->id());
+
+    // Ensure second and last event is property set change
+    const auto propertyEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+    QVERIFY(!propertyEvent.isNull());
+    QCOMPARE(propertyEvent->subjectId(), root->id());
+    QCOMPARE(propertyEvent->propertyName(), "attribute");
+    QCOMPARE(newChildEvent->addedNodeId(), node->id());
+}
+
 void tst_Nodes::appendingParentlessComponentToEntity()
 {
     // GIVEN
@@ -958,11 +1041,18 @@ void tst_Nodes::appendingParentlessComponentToEntity()
         // return early in such a case.
 
         // Check that we received ComponentAdded
-        for (const auto event: { entitySpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>(),
-                                 componentSpy.events.takeLast().change().dynamicCast<Qt3DCore::QComponentAddedChange>() })
         {
+            const auto event = entitySpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>();
             QCOMPARE(event->type(), Qt3DCore::ComponentAdded);
             QCOMPARE(event->subjectId(), entity->id());
+            QCOMPARE(event->entityId(), entity->id());
+            QCOMPARE(event->componentId(), comp->id());
+            QCOMPARE(event->componentMetaObject(), comp->metaObject());
+        }
+        {
+            const auto event = componentSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>();
+            QCOMPARE(event->type(), Qt3DCore::ComponentAdded);
+            QCOMPARE(event->subjectId(), comp->id());
             QCOMPARE(event->entityId(), entity->id());
             QCOMPARE(event->componentId(), comp->id());
             QCOMPARE(event->componentMetaObject(), comp->metaObject());
@@ -997,11 +1087,18 @@ void tst_Nodes::appendingComponentToEntity()
         QVERIFY(comp->parentNode() == entity.data());
         QCOMPARE(entitySpy.events.size(), 1);
         QVERIFY(entitySpy.events.first().wasLocked());
-        for (const auto event: { entitySpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>(),
-             componentSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>() })
         {
+            const auto event = entitySpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>();
             QCOMPARE(event->type(), Qt3DCore::ComponentAdded);
             QCOMPARE(event->subjectId(), entity->id());
+            QCOMPARE(event->entityId(), entity->id());
+            QCOMPARE(event->componentId(), comp->id());
+            QCOMPARE(event->componentMetaObject(), comp->metaObject());
+        }
+        {
+            const auto event = componentSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>();
+            QCOMPARE(event->type(), Qt3DCore::ComponentAdded);
+            QCOMPARE(event->subjectId(), comp->id());
             QCOMPARE(event->entityId(), entity->id());
             QCOMPARE(event->componentId(), comp->id());
             QCOMPARE(event->componentMetaObject(), comp->metaObject());
@@ -1040,10 +1137,18 @@ void tst_Nodes::removingComponentFromEntity()
         QCOMPARE(entitySpy.events.size(), 1);
         QVERIFY(entitySpy.events.first().wasLocked());
         QCOMPARE(componentSpy.events.size(), 1);
-        for (const auto event: { entitySpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentRemovedChange>(),
-                                 componentSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentRemovedChange>() }) {
+        {
+            const auto event = entitySpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentRemovedChange>();
             QCOMPARE(event->type(), Qt3DCore::ComponentRemoved);
             QCOMPARE(event->subjectId(), entity->id());
+            QCOMPARE(event->entityId(), entity->id());
+            QCOMPARE(event->componentId(), comp->id());
+            QCOMPARE(event->componentMetaObject(), comp->metaObject());
+        }
+        {
+            const auto event = componentSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentRemovedChange>();
+            QCOMPARE(event->type(), Qt3DCore::ComponentRemoved);
+            QCOMPARE(event->subjectId(), comp->id());
             QCOMPARE(event->entityId(), entity->id());
             QCOMPARE(event->componentId(), comp->id());
             QCOMPARE(event->componentMetaObject(), comp->metaObject());

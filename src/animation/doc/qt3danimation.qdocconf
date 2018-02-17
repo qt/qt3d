@@ -1,0 +1,43 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+include(../../doc/qt3d-config.qdocconf)
+
+project                 = Qt3DAnimation
+description             = Qt 3D Animation Reference Documentation
+version                 = $QT_VERSION
+
+qhp.projects            = Qt3DAnimation
+
+qhp.Qt3DAnimation.file                = qt3danimation.qhp
+qhp.Qt3DAnimation.namespace           = org.qt-project.qt3danimation.$QT_VERSION_TAG
+qhp.Qt3DAnimation.virtualFolder       = qt3danimation
+qhp.Qt3DAnimation.indexTitle          = Qt 3D Animation
+qhp.Qt3DAnimation.indexRoot           =
+
+qhp.Qt3DAnimation.filterAttributes                   = qt3danimation $QT_VERSION qtrefdoc
+qhp.Qt3DAnimation.customFilters.Qt.name              = Qt3DAnimation $QT_VERSION
+qhp.Qt3DAnimation.customFilters.Qt.filterAttributes  = qt3danimation $QT_VERSION
+
+qhp.Qt3DAnimation.subprojects                    = classes qmltypes
+
+qhp.Qt3DAnimation.subprojects.classes.title      = C++ Classes
+qhp.Qt3DAnimation.subprojects.classes.indexTitle = Qt 3D Animation C++ Classes
+qhp.Qt3DAnimation.subprojects.classes.selectors  = class doc:headerfile
+qhp.Qt3DAnimation.subprojects.classes.sortPages  = true
+
+qhp.Qt3DAnimation.subprojects.qmltypes.title      = QML Types
+qhp.Qt3DAnimation.subprojects.qmltypes.indexTitle = Qt 3D Animation QML Types
+qhp.Qt3DAnimation.subprojects.qmltypes.selectors  = qmltype
+qhp.Qt3DAnimation.subprojects.qmltypes.sortPages  = true
+
+tagfile                 = qt3danimation.tags
+
+depends                 += qtcore qtgui qtqml qtquick qtdoc qmake
+
+# dependencies to other Qt 3D modules
+depends                 += qt3d qt3dcore qt3drender qt3dlogic \
+                           qt3dinput qt3dextras qt3dscene2d
+
+sourcedirs  += ..
+headerdirs  += ..
+imagedirs   += images
+exampledirs += snippets

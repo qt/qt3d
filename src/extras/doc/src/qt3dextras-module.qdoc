@@ -40,8 +40,9 @@
 /*!
     \module Qt3DExtras
     \title Qt 3D Extras C++ Classes
+    \keyword Qt 3D Extras
 
-    \brief The Qt 3D Extras modules provides a set of prebuilt elements to help
+    \brief The Qt 3D Extras module provides a set of prebuilt elements to help
     you get started with Qt 3D.
 
     This module is still in tech preview. This means it is unstable, likely to
@@ -125,4 +126,6 @@
    \badcode
    import Qt3D.Extras 2.0
    \endcode
+
+   \section1 QML Types
 */

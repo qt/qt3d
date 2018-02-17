@@ -49,7 +49,7 @@ public:
 
     }
 
-    virtual void visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b)
+    virtual void visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b)
     {
         m_segments.push_back(TestSegment(andx, a, bndx, b));
     }
@@ -69,7 +69,7 @@ public:
         return m_segments.size();
     }
 
-    bool verifySegment(uint segment, uint andx, uint bndx, QVector3D a, QVector3D b) const
+    bool verifySegment(uint segment, uint andx, uint bndx, Vector3D a, Vector3D b) const
     {
         if (segment >= uint(m_segments.size()))
             return false;
@@ -87,13 +87,13 @@ private:
     struct TestSegment
     {
         uint abcndx[2];
-        QVector3D abc[2];
+        Vector3D abc[2];
         TestSegment()
         {
             abcndx[0] = abcndx[1] = uint(-1);
         }
 
-        TestSegment(uint andx, const QVector3D &a, uint bndx, const QVector3D &b)
+        TestSegment(uint andx, const Vector3D &a, uint bndx, const Vector3D &b)
         {
             abcndx[0] = andx;
             abcndx[1] = bndx;
@@ -218,9 +218,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(visitor.segmentCount(), uint(3));
-        QVERIFY(visitor.verifySegment(0, 0,1, QVector3D(0,0,1), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifySegment(1, 2,3, QVector3D(0,1,0), QVector3D(0,0,1)));
-        QVERIFY(visitor.verifySegment(2, 4,5, QVector3D(1,0,0), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(0, 0,1, Vector3D(0,0,1), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifySegment(1, 2,3, Vector3D(0,1,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifySegment(2, 4,5, Vector3D(1,0,0), Vector3D(0,1,0)));
     }
 
     void testVisitSegmentsIndexed()
@@ -318,11 +318,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(visitor.segmentCount(), uint(5));
-        QVERIFY(visitor.verifySegment(0, 0,1, QVector3D(0,0,0), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifySegment(1, 1,2, QVector3D(1,0,0), QVector3D(1,1,0)));
-        QVERIFY(visitor.verifySegment(2, 2,3, QVector3D(1,1,0), QVector3D(0,1,0)));
-        QVERIFY(visitor.verifySegment(3, 0,2, QVector3D(0,0,0), QVector3D(1,1,0)));
-        QVERIFY(visitor.verifySegment(4, 1,3, QVector3D(1,0,0), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(0, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifySegment(1, 1,2, Vector3D(1,0,0), Vector3D(1,1,0)));
+        QVERIFY(visitor.verifySegment(2, 2,3, Vector3D(1,1,0), Vector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(3, 0,2, Vector3D(0,0,0), Vector3D(1,1,0)));
+        QVERIFY(visitor.verifySegment(4, 1,3, Vector3D(1,0,0), Vector3D(0,1,0)));
     }
 
     void testVisitLineStrip()
@@ -387,9 +387,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(visitor.segmentCount(), uint(3));
-        QVERIFY(visitor.verifySegment(0, 0,1, QVector3D(0,0,0), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifySegment(1, 1,2, QVector3D(1,0,0), QVector3D(1,1,0)));
-        QVERIFY(visitor.verifySegment(2, 2,3, QVector3D(1,1,0), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(0, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifySegment(1, 1,2, Vector3D(1,0,0), Vector3D(1,1,0)));
+        QVERIFY(visitor.verifySegment(2, 2,3, Vector3D(1,1,0), Vector3D(0,1,0)));
     }
 
     void testVisitListStripIndexed()
@@ -481,9 +481,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(visitor.segmentCount(), uint(3));
-        QVERIFY(visitor.verifySegment(0, 0,1, QVector3D(0,0,0), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifySegment(1, 1,2, QVector3D(1,0,0), QVector3D(1,1,0)));
-        QVERIFY(visitor.verifySegment(2, 2,3, QVector3D(1,1,0), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(0, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifySegment(1, 1,2, Vector3D(1,0,0), Vector3D(1,1,0)));
+        QVERIFY(visitor.verifySegment(2, 2,3, Vector3D(1,1,0), Vector3D(0,1,0)));
     }
 
     void testVisitLineLoop()
@@ -548,10 +548,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(visitor.segmentCount(), uint(4));
-        QVERIFY(visitor.verifySegment(0, 0,1, QVector3D(0,0,0), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifySegment(1, 1,2, QVector3D(1,0,0), QVector3D(1,1,0)));
-        QVERIFY(visitor.verifySegment(2, 2,3, QVector3D(1,1,0), QVector3D(0,1,0)));
-        QVERIFY(visitor.verifySegment(3, 3,0, QVector3D(0,1,0), QVector3D(0,0,0)));
+        QVERIFY(visitor.verifySegment(0, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifySegment(1, 1,2, Vector3D(1,0,0), Vector3D(1,1,0)));
+        QVERIFY(visitor.verifySegment(2, 2,3, Vector3D(1,1,0), Vector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(3, 3,0, Vector3D(0,1,0), Vector3D(0,0,0)));
     }
 
     void testVisitLineLoopIndexed()
@@ -643,10 +643,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(visitor.segmentCount(), uint(4));
-        QVERIFY(visitor.verifySegment(0, 0,1, QVector3D(0,0,0), QVector3D(1,0,0)));
-        QVERIFY(visitor.verifySegment(1, 1,2, QVector3D(1,0,0), QVector3D(1,1,0)));
-        QVERIFY(visitor.verifySegment(2, 2,3, QVector3D(1,1,0), QVector3D(0,1,0)));
-        QVERIFY(visitor.verifySegment(3, 3,0, QVector3D(0,1,0), QVector3D(0,0,0)));
+        QVERIFY(visitor.verifySegment(0, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifySegment(1, 1,2, Vector3D(1,0,0), Vector3D(1,1,0)));
+        QVERIFY(visitor.verifySegment(2, 2,3, Vector3D(1,1,0), Vector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(3, 3,0, Vector3D(0,1,0), Vector3D(0,0,0)));
     }
 
     void testVisitLineAdjacency()
@@ -712,7 +712,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(visitor.segmentCount(), uint(1));
-        QVERIFY(visitor.verifySegment(0, 1, 2, QVector3D(1,0,0), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(0, 1, 2, Vector3D(1,0,0), Vector3D(0,1,0)));
     }
 
     void testVisitLinesAdjacencyIndexed()
@@ -805,7 +805,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(visitor.segmentCount(), uint(1));
-        QVERIFY(visitor.verifySegment(0, 1, 2, QVector3D(1,0,0), QVector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(0, 1, 2, Vector3D(1,0,0), Vector3D(0,1,0)));
     }
 };
 

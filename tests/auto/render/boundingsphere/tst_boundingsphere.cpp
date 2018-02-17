@@ -204,9 +204,13 @@ private Q_SLOTS:
         QTest::addColumn<int>("indexByteOffset");
         QTest::addColumn<QVector3D>("expectedCenter");
         QTest::addColumn<float>("expectedRadius");
-        QTest::newRow("all") << 0 << 0 << QVector3D(-0.488892f, 0.0192147f, -75.4804f) << 25.5442f;
-        QTest::newRow("first only") << 3 << 0 << QVector3D(0, 1, -100) << 1.0f;
-        QTest::newRow("second only") << 3 << int(3 * sizeof(ushort)) << QVector3D(0, -1, -50) << 1.0f;
+        QTest::addColumn<bool>("withPrimitiveRestart");
+        QTest::newRow("all") << 0 << 0 << QVector3D(-0.488892f, 0.0192147f, -75.4804f) << 25.5442f << false;
+        QTest::newRow("first only") << 3 << 0 << QVector3D(0, 1, -100) << 1.0f << false;
+        QTest::newRow("second only") << 3 << int(3 * sizeof(ushort)) << QVector3D(0, -1, -50) << 1.0f << false;
+        QTest::newRow("all with primitive restart") << 0 << 0 << QVector3D(-0.488892f, 0.0192147f, -75.4804f) << 25.5442f << true;
+        QTest::newRow("first only with primitive restart") << 4 << 0 << QVector3D(0, 1, -100) << 1.0f << true;
+        QTest::newRow("second only with primitive restart") << 4 << int(3 * sizeof(ushort)) << QVector3D(0, -1, -50) << 1.0f << true;
     }
 
     void checkCustomGeometry()
@@ -215,6 +219,7 @@ private Q_SLOTS:
         QFETCH(int, indexByteOffset);
         QFETCH(QVector3D, expectedCenter);
         QFETCH(float, expectedRadius);
+        QFETCH(bool, withPrimitiveRestart);
 
         // two triangles with different Z, and an index buffer
         QByteArray vdata;
@@ -241,11 +246,14 @@ private Q_SLOTS:
         *vp++ = -50.0f;
 
         QByteArray idata;
-        idata.resize(6 * sizeof(ushort));
+        const int indexCount = withPrimitiveRestart ? 7 : 6;
+        idata.resize(indexCount * sizeof(ushort));
         ushort *ip = reinterpret_cast<ushort *>(idata.data());
         *ip++ = 0;
         *ip++ = 1;
         *ip++ = 2;
+        if (withPrimitiveRestart)
+            *ip++ = 65535;
         *ip++ = 3;
         *ip++ = 4;
         *ip++ = 5;
@@ -286,11 +294,14 @@ private Q_SLOTS:
         attr->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
         attr->setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
         attr->setVertexSize(1);
-        attr->setCount(6);
+        attr->setCount(indexCount);
         attr->setByteOffset(indexByteOffset);
 
         Qt3DRender::QGeometryRenderer *gr = new Qt3DRender::QGeometryRenderer;
         gr->setVertexCount(drawVertexCount); // when 0, indexAttribute->count() is used instead
+        gr->setPrimitiveRestartEnabled(withPrimitiveRestart);
+        if (withPrimitiveRestart)
+            gr->setRestartIndexValue(65535);
         gr->setGeometry(g);
         entity->addComponent(gr);
 
@@ -319,7 +330,98 @@ private Q_SLOTS:
         calcBVolume.setRoot(test->sceneRoot());
         calcBVolume.run();
 
-        QVector3D center = entityBackend->localBoundingVolume()->center();
+        Vector3D center = entityBackend->localBoundingVolume()->center();
+        float radius = entityBackend->localBoundingVolume()->radius();
+        qDebug() << radius << center;
+
+        // truncate and compare integers only
+        QVERIFY(int(radius) == int(expectedRadius));
+        QVERIFY(int(center.x()) == int(expectedCenter.x()));
+        QVERIFY(int(center.y()) == int(expectedCenter.y()));
+        QVERIFY(int(center.z()) == int(expectedCenter.z()));
+    }
+
+    void checkCustomPackedGeometry()
+    {
+        int drawVertexCount = 6;
+        QVector3D expectedCenter(-0.488892f, 0.0192147f, -75.4804f);
+        float expectedRadius = 25.5442f;
+
+        // two triangles with different Z
+        QByteArray vdata;
+        vdata.resize(6 * 3 * sizeof(float));
+        float *vp = reinterpret_cast<float *>(vdata.data());
+        *vp++ = -1.0f;
+        *vp++ = 1.0f;
+        *vp++ = -100.0f;
+        *vp++ = 0.0f;
+        *vp++ = 0.0f;
+        *vp++ = -100.0f;
+        *vp++ = 1.0f;
+        *vp++ = 1.0f;
+        *vp++ = -100.0f;
+
+        *vp++ = -1.0f;
+        *vp++ = -1.0f;
+        *vp++ = -50.0f;
+        *vp++ = 0.0f;
+        *vp++ = 0.0f;
+        *vp++ = -50.0f;
+        *vp++ = 1.0f;
+        *vp++ = -1.0f;
+        *vp++ = -50.0f;
+
+        QScopedPointer<Qt3DCore::QEntity> entity(new Qt3DCore::QEntity);
+        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(entity.data()));
+        Qt3DRender::QBuffer *vbuffer = new Qt3DRender::QBuffer;
+
+        vbuffer->setData(vdata);
+        Qt3DRender::Render::Buffer *vbufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(vbuffer->id());
+        vbufferBackend->setRenderer(test->renderer());
+        vbufferBackend->setManager(test->nodeManagers()->bufferManager());
+        simulateInitialization(vbuffer, vbufferBackend);
+
+        Qt3DRender::QGeometry *g = new Qt3DRender::QGeometry;
+        g->addAttribute(new Qt3DRender::QAttribute);
+
+        const QVector<Qt3DRender::QAttribute *> attrs = g->attributes();
+        Qt3DRender::QAttribute *attr = attrs[0];
+        attr->setBuffer(vbuffer);
+        attr->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
+        attr->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        attr->setVertexSize(3);
+        attr->setCount(6);
+        attr->setByteOffset(0);
+        attr->setByteStride(0);
+
+        Qt3DRender::QGeometryRenderer *gr = new Qt3DRender::QGeometryRenderer;
+        gr->setVertexCount(drawVertexCount);
+        gr->setGeometry(g);
+        entity->addComponent(gr);
+
+        Qt3DRender::Render::Attribute *attr0Backend = test->nodeManagers()->attributeManager()->getOrCreateResource(attrs[0]->id());
+        attr0Backend->setRenderer(test->renderer());
+        simulateInitialization(attrs[0], attr0Backend);
+
+        Qt3DRender::Render::Geometry *gBackend = test->nodeManagers()->geometryManager()->getOrCreateResource(g->id());
+        gBackend->setRenderer(test->renderer());
+        simulateInitialization(g, gBackend);
+
+        Qt3DRender::Render::GeometryRenderer *grBackend = test->nodeManagers()->geometryRendererManager()->getOrCreateResource(gr->id());
+        grBackend->setRenderer(test->renderer());
+        grBackend->setManager(test->nodeManagers()->geometryRendererManager());
+        simulateInitialization(gr, grBackend);
+
+        Qt3DRender::Render::Entity *entityBackend = test->nodeManagers()->renderNodesManager()->getOrCreateResource(entity->id());
+        entityBackend->setRenderer(test->renderer());
+        simulateInitialization(entity.data(), entityBackend);
+
+        Qt3DRender::Render::CalculateBoundingVolumeJob calcBVolume;
+        calcBVolume.setManagers(test->nodeManagers());
+        calcBVolume.setRoot(test->sceneRoot());
+        calcBVolume.run();
+
+        Vector3D center = entityBackend->localBoundingVolume()->center();
         float radius = entityBackend->localBoundingVolume()->radius();
         qDebug() << radius << center;
 

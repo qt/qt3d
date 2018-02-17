@@ -109,7 +109,6 @@ private:
     bool m_multisample;
     bool m_lastMultisample;
     bool m_needsShutdown;
-    bool m_blocking;
 
     friend class Scene3DCleaner;
 };

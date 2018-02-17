@@ -60,6 +60,8 @@
 #include <limits>
 
 #include <Qt3DCore/private/qhandle_p.h>
+#include <QtCore/private/qsimd_p.h>
+#include <Qt3DCore/private/qt3dcore-config_p.h>
 
 // Silence complaints about unreferenced local variables in
 // ArrayAllocatingPolicy::deallocateBuckets() when the compiler
@@ -313,7 +315,17 @@ private:
     void allocateBucket()
     {
         // no free handle, allocate a new
-        Bucket *b = new Bucket;
+        Bucket *b = nullptr;
+        // allocate aligned memory
+#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+        b = static_cast<Bucket*>(_mm_malloc(sizeof(Bucket), 32));
+#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
+        b = static_cast<Bucket*>(_mm_malloc(sizeof(Bucket), 16));
+#else
+        b = static_cast<Bucket*>(malloc(sizeof(Bucket)));
+#endif
+        // placement new
+        new (b) Bucket;
 
         b->header.next = firstBucket;
         firstBucket = b;
@@ -329,7 +341,16 @@ private:
         Bucket *b = firstBucket;
         while (b) {
             Bucket *n = b->header.next;
-            delete b;
+            // Call dtor explicitly
+            b->~Bucket();
+            // Release aligned memory
+#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+            _mm_free(b);
+#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
+            _mm_free(b);
+#else
+            free(b);
+#endif
             b = n;
         }
     }

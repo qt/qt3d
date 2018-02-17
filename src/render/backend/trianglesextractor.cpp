@@ -68,7 +68,7 @@ QVector<RayCasting::QBoundingVolume *> TrianglesExtractor::extract(const Qt3DCor
     return m_volumes;
 }
 
-void TrianglesExtractor::visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
+void TrianglesExtractor::visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
 {
     Q_UNUSED(andx); Q_UNUSED(bndx); Q_UNUSED(cndx);
     m_volumes.push_back(new TriangleBoundingVolume(m_nodeId, a, b, c));

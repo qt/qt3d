@@ -248,9 +248,12 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
         for (int i = 0; i < newSize; ++i) {
             m_evaluateClipAnimatorJobs[i]->setClipAnimator(m_runningClipAnimators[i]);
             m_evaluateClipAnimatorJobs[i]->removeDependency(QWeakPointer<Qt3DCore::QAspectJob>());
-            if (hasLoadAnimationClipJob)
+            if (hasLoadAnimationClipJob &&
+                    !m_evaluateClipAnimatorJobs[i]->dependencies().contains(m_loadAnimationClipJob))
                 m_evaluateClipAnimatorJobs[i]->addDependency(m_loadAnimationClipJob);
-            if (hasFindRunningClipAnimatorsJob)
+
+            if (hasFindRunningClipAnimatorsJob &&
+                    !m_evaluateClipAnimatorJobs[i]->dependencies().contains(m_findRunningClipAnimatorsJob))
                 m_evaluateClipAnimatorJobs[i]->addDependency(m_findRunningClipAnimatorsJob);
             jobs.push_back(m_evaluateClipAnimatorJobs[i]);
         }

@@ -90,11 +90,6 @@ void Quick3DNodeV9::setPropertyTrackingOverrides(const QJSValue &value)
     emit propertyTrackingOverridesChanged(value);
 }
 
-/*!
-    \qmlproperty list<QtQml::QtObject> Qt3DCore::Node::data
-    \default
-*/
-
 QQmlListProperty<QObject> Quick3DNodeV9::data()
 {
     return QQmlListProperty<QObject>(this, 0,
@@ -103,11 +98,6 @@ QQmlListProperty<QObject> Quick3DNodeV9::data()
                                      Quick3DNodeV9::dataAt,
                                      Quick3DNodeV9::clearData);
 }
-
-/*!
-    \qmlproperty list<Node> Qt3DCore::Node::childNodes
-    \readonly
-*/
 
 QQmlListProperty<QNode> Quick3DNodeV9::childNodes()
 {

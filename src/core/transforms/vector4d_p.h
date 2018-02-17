@@ -74,4 +74,16 @@ QT_END_NAMESPACE
 
 #endif
 
+template<typename UsingType>
+Q_ALWAYS_INLINE QVector4D convertToQVector4D(const UsingType &v)
+{
+    return v.toQVector4D();
+}
+
+template<>
+Q_ALWAYS_INLINE QVector4D convertToQVector4D<QVector4D>(const QVector4D &v)
+{
+    return v;
+}
+
 #endif // QT3DCORE_VECTOR4D_P_H

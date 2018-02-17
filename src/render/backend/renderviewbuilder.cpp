@@ -39,6 +39,8 @@
 
 #include "renderviewbuilder_p.h"
 
+#include <Qt3DRender/private/renderbarrierjob_p.h>
+
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -81,9 +83,6 @@ public:
 
         // Sort the commands
         rv->sort();
-
-        // Enqueue our fully populated RenderView with the RenderThread
-        m_renderer->enqueueRenderView(rv, m_renderViewJob->submitOrderIndex());
     }
 
 private:
@@ -125,13 +124,15 @@ public:
                                           const FilterLayerEntityJobPtr &filterEntityByLayerJob,
                                           const FilterProximityDistanceJobPtr &filterProximityJob,
                                           const QVector<MaterialParameterGathererJobPtr> &materialGathererJobs,
-                                          const QVector<RenderViewBuilderJobPtr> &renderViewBuilderJobs)
+                                          const QVector<RenderViewBuilderJobPtr> &renderViewBuilderJobs,
+                                          Renderer *renderer)
         : m_renderViewJob(renderViewJob)
         , m_frustumCullingJob(frustumCullingJob)
         , m_filterEntityByLayerJob(filterEntityByLayerJob)
         , m_filterProximityJob(filterProximityJob)
         , m_materialGathererJobs(materialGathererJobs)
         , m_renderViewBuilderJobs(renderViewBuilderJobs)
+        , m_renderer(renderer)
     {}
 
     void operator()()
@@ -157,6 +158,9 @@ public:
 
         // Set whether frustum culling is enabled or not
         m_frustumCullingJob->setActive(rv->frustumCulling());
+
+        // Enqueue RenderView with the renderer
+        m_renderer->enqueueRenderView(rv, m_renderViewJob->submitOrderIndex());
     }
 
 private:
@@ -166,6 +170,7 @@ private:
     FilterProximityDistanceJobPtr m_filterProximityJob;
     QVector<MaterialParameterGathererJobPtr> m_materialGathererJobs;
     QVector<RenderViewBuilderJobPtr> m_renderViewBuilderJobs;
+    Renderer *m_renderer;
 };
 
 class SyncRenderCommandBuilding
@@ -355,7 +360,7 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     , m_lightGathererJob(Render::LightGathererPtr::create())
     , m_renderableEntityFilterJob(RenderableEntityFilterPtr::create())
     , m_computableEntityFilterJob(ComputableEntityFilterPtr::create())
-    , m_frustumCullingJob(Render::FrustumCullingJobPtr::create())
+    , m_frustumCullingJob(new Render::FrustumCullingJob())
     , m_syncFrustumCullingJob(SynchronizerJobPtr::create(SyncFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling))
     , m_setClearDrawBufferIndexJob(SynchronizerJobPtr::create(SetClearDrawBufferIndex(m_renderViewJob), JobTypes::ClearBufferDrawIndex))
     , m_syncFilterEntityByLayerJob()
@@ -519,7 +524,8 @@ void RenderViewBuilder::prepareJobs()
                                                                                                 m_filterEntityByLayerJob,
                                                                                                 m_filterProximityJob,
                                                                                                 m_materialGathererJobs,
-                                                                                                m_renderViewBuilderJobs),
+                                                                                                m_renderViewBuilderJobs,
+                                                                                                m_renderer),
                                                                    JobTypes::SyncRenderViewInitialization);
 
 }
@@ -545,11 +551,13 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
 
     m_setClearDrawBufferIndexJob->addDependency(m_syncRenderViewInitializationJob);
 
+    m_renderer->readRenderQueueSizeBarrierJob()->addDependency(m_syncRenderViewInitializationJob);
     m_syncRenderViewInitializationJob->addDependency(m_renderViewJob);
 
     m_filterProximityJob->addDependency(m_renderer->expandBoundingVolumeJob());
     m_filterProximityJob->addDependency(m_syncRenderViewInitializationJob);
 
+    m_syncRenderCommandBuildingJob->addDependency(m_renderer->updateGLResourcesBarrierJob());
     m_syncRenderCommandBuildingJob->addDependency(m_syncRenderViewInitializationJob);
     m_syncRenderCommandBuildingJob->addDependency(m_renderableEntityFilterJob);
     m_syncRenderCommandBuildingJob->addDependency(m_computableEntityFilterJob);
@@ -558,10 +566,15 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderCommandBuildingJob->addDependency(m_frustumCullingJob);
 
     for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) {
+        renderViewCommandBuilder->addDependency(m_renderer->updateSkinningPaletteJob());
+        renderViewCommandBuilder->addDependency(m_renderer->updateWorldBoundingVolumeJob());
+        renderViewCommandBuilder->addDependency(m_renderer->updateShaderDataTransformJob());
         renderViewCommandBuilder->addDependency(m_syncRenderCommandBuildingJob);
+
         m_syncRenderViewCommandBuildersJob->addDependency(renderViewCommandBuilder);
     }
 
+    m_renderer->prepareCommandSubmissionBarrierJob()->addDependency(m_syncRenderViewCommandBuildersJob);
     m_renderer->frameCleanupJob()->addDependency(m_syncRenderViewCommandBuildersJob);
     m_renderer->frameCleanupJob()->addDependency(m_setClearDrawBufferIndexJob);
 

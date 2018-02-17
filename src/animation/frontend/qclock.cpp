@@ -61,6 +61,11 @@ QClock::QClock(QClockPrivate &dd, Qt3DCore::QNode *parent)
 QClock::~QClock()
 {
 }
+/*!
+    \property Qt3DAnimation::QClock::playbackRate
+
+    The playback speed of the animation.
+*/
 
 double QClock::playbackRate() const
 {

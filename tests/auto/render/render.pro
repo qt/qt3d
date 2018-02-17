@@ -24,14 +24,12 @@ qtConfig(private_tests) {
         attribute \
         geometry \
         geometryrenderer \
-        raycasting \
         qcameraselector \
         qclearbuffers \
         qframegraphnode \
         qlayerfilter \
         qabstractlight \
         qenvironmentlight \
-        qray3d \
         qrenderpassfilter \
         qrenderstate \
         qrendertargetselector \
@@ -45,8 +43,6 @@ qtConfig(private_tests) {
         objectpicker \
 #        qboundingvolumedebug \
 #        boundingvolumedebug \
-        trianglesextractor \
-        triangleboundingvolume \
         ddstextures \
         shadercache \
         layerfiltering \
@@ -113,9 +109,20 @@ qtConfig(private_tests) {
         qraycaster \
         raycaster \
         raycastingjob \
-        qcamera
+        qcamera \
+        renderbarrierjob
 
     QT_FOR_CONFIG = 3dcore-private
+    # TO DO: These could be restored to be executed in all cases
+    # when aligned-malloc.pri becomes part of the test framework
+    !qtConfig(qt3d-simd-avx2): {
+      SUBDIRS += \
+        qray3d \
+        raycasting \
+        trianglesextractor \
+        triangleboundingvolume \
+    }
+
     qtConfig(qt3d-extras) {
         SUBDIRS += \
             qmaterial \
