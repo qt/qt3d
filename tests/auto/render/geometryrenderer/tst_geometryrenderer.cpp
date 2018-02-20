@@ -30,7 +30,6 @@
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
-#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -187,8 +186,6 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
         TestRenderer renderer;
-        Qt3DRender::Render::NodeManagers nodeManagers;
-
         renderGeometryRenderer.setRenderer(&renderer);
 
         QVERIFY(!renderGeometryRenderer.isDirty());

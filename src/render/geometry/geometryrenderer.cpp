@@ -42,8 +42,6 @@
 #include <Qt3DRender/private/qboundingvolume_p.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <Qt3DRender/private/qmesh_p.h>
-#include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
