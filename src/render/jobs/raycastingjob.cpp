@@ -46,6 +46,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 #include <Qt3DRender/private/qray3d_p.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/trianglesvisitor_p.h>
@@ -150,6 +151,8 @@ bool RayCastingJob::runHelper()
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     const QVector<PickingUtils::ViewportCameraAreaDetails> vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
 
+    const float sceneRayLength = m_node->worldBoundingVolumeWithChildren()->radius() * 3.f;
+
     for (const EntityCasterGatherer::EntityCasterList::value_type &pair: entities) {
         QVector<QRay3D> rays;
 
@@ -157,15 +160,12 @@ bool RayCastingJob::runHelper()
         case QAbstractRayCasterPrivate::WorldSpaceRayCaster:
             rays << QRay3D(Vector3D(pair.second->origin()),
                            Vector3D(pair.second->direction()),
-                           pair.second->length());
+                           pair.second->length() > 0.f ? pair.second->length() : sceneRayLength);
             rays.back().transform(*pair.first->worldTransform());
             break;
         case QAbstractRayCasterPrivate::ScreenScapeRayCaster:
-            for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails) {
-                // TODO: Fix this properly by not passing null for the eventSource
+            for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails)
                 rays << rayForViewportAndCamera(vca, nullptr, pair.second->position());
-                //rays << rayForViewportAndCamera(vca.area, pair.second->position(), vca.viewport, vca.cameraId);
-            }
             break;
         default:
             Q_UNREACHABLE();

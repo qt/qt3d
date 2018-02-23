@@ -139,8 +139,7 @@ void QRayCaster::trigger(const QVector3D &origin, const QVector3D &direction, fl
 {
     setOrigin(origin);
     setDirection(direction);
-    if (length >= 0.f)
-        setLength(length);
+    setLength(length);
     setEnabled(true);
 }
 
