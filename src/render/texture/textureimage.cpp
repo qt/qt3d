@@ -42,6 +42,7 @@
 #include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/qabstracttextureimage_p.h>
+#include <Qt3DRender/private/texturedatamanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,6 +57,7 @@ TextureImage::TextureImage()
     , m_mipLevel(0)
     , m_face(QAbstractTexture::CubeMapPositiveX)
     , m_textureManager(nullptr)
+    , m_textureImageDataManager(nullptr)
 {
 }
 
@@ -65,6 +67,13 @@ TextureImage::~TextureImage()
 
 void TextureImage::cleanup()
 {
+    if (m_generator) {
+        m_textureImageDataManager->releaseData(m_generator, peerId());
+        m_generator.reset();
+    }
+    m_layer = 0;
+    m_mipLevel = 0;
+    m_face = QAbstractTexture::CubeMapPositiveX;
 }
 
 void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -85,7 +94,11 @@ void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
         Q_ASSERT(texture);
         // Notify the Texture that it has a new TextureImage and needs an update
         texture->addTextureImage(peerId());
+
     }
+    // Request functor upload
+    if (m_generator)
+        m_textureImageDataManager->requestData(m_generator, peerId());
 }
 
 void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -100,30 +113,35 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
             m_face = static_cast<QAbstractTexture::CubeMapFace>(propertyChange->value().toInt());
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dataGenerator")) {
+            // Release ref to generator
+            if (m_generator)
+                m_textureImageDataManager->releaseData(m_generator, peerId());
             m_generator = propertyChange->value().value<QTextureImageDataGeneratorPtr>();
+            // Request functor upload
+            if (m_generator)
+                m_textureImageDataManager->requestData(m_generator, peerId());
         }
 
         // Notify the Texture that we were updated and request it to schedule an update job
         Texture *txt = m_textureManager->data(m_textureProvider);
         if (txt != nullptr)
             txt->addDirtyFlag(Texture::DirtyImageGenerators);
+
     }
 
     markDirty(AbstractRenderer::AllDirty);
     BackendNode::sceneChangeEvent(e);
 }
 
-void TextureImage::setTextureManager(TextureManager *manager)
-{
-    m_textureManager = manager;
-}
 
 TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer,
                                          TextureManager *textureManager,
-                                         TextureImageManager *textureImageManager)
+                                         TextureImageManager *textureImageManager,
+                                         TextureImageDataManager *textureImageDataManager)
     : m_renderer(renderer)
     , m_textureManager(textureManager)
     , m_textureImageManager(textureImageManager)
+    , m_textureImageDataManager(textureImageDataManager)
 {
 }
 
@@ -131,6 +149,7 @@ Qt3DCore::QBackendNode *TextureImageFunctor::create(const Qt3DCore::QNodeCreated
 {
     TextureImage *backend = m_textureImageManager->getOrCreateResource(change->subjectId());
     backend->setTextureManager(m_textureManager);
+    backend->setTextureImageDataManager(m_textureImageDataManager);
     backend->setRenderer(m_renderer);
     return backend;
 }

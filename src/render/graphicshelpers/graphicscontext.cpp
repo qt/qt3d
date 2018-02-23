@@ -1205,7 +1205,6 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
-    bool allValid = true;
 
     // Set the pinned texture of the previous material texture
     // to pinable so that we should easily find an available texture unit
@@ -1225,10 +1224,8 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
                 Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
                 const int texUnit = activateTexture(TextureScopeMaterial, t);
                 texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
-                // if the texture data from generators may not be available yet,
-                // make sure that the next frame is rendered
                 if (texUnit == -1)
-                    allValid = false;
+                    return false;
             }
         }
     }
@@ -1283,7 +1280,7 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         applyUniform(uniform, v);
     }
     // if not all data is valid, the next frame will be rendered immediately
-    return allValid;
+    return true;
 }
 
 void GraphicsContext::readBuffer(GLenum mode)

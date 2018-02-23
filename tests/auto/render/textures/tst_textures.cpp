@@ -43,6 +43,8 @@
 #include <Qt3DRender/private/gltexture_p.h>
 #include <Qt3DRender/private/qtexture_p.h>
 
+#include <testrenderer.h>
+
 /**
  * @brief Dummy QTextureImageDataGenerator
  */
@@ -122,12 +124,12 @@ public:
     {
     }
 
-protected:
-    int m_genId;
     Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const
     {
         return Qt3DRender::QTextureImageDataGeneratorPtr(new TestImageDataGenerator(m_genId));
     }
+protected:
+    int m_genId;
 };
 
 class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
@@ -149,7 +151,8 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
 
     Qt3DRender::Render::Texture *createBackendTexture(Qt3DRender::QAbstractTexture *frontend,
                                                       Qt3DRender::Render::TextureManager *texMgr,
-                                                      Qt3DRender::Render::TextureImageManager *texImgMgr)
+                                                      Qt3DRender::Render::TextureImageManager *texImgMgr,
+                                                      Qt3DRender::Render::TextureImageDataManager *texImgDataManager)
     {
         Qt3DRender::Render::Texture *backend = texMgr->getOrCreateResource(frontend->id());
         backend->setTextureImageManager(texImgMgr);
@@ -161,6 +164,7 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
             if (!texImgMgr->contains(texImgFrontend->id())) {
                 Qt3DRender::Render::TextureImage *texImgBackend = texImgMgr->getOrCreateResource(texImgFrontend->id());
                 texImgBackend->setTextureManager(texMgr);
+                texImgBackend->setTextureImageDataManager(texImgDataManager);
                 simulateInitialization(texImgFrontend, texImgBackend);
             }
             backend->addTextureImage(texImgFrontend->id());
@@ -182,8 +186,14 @@ private Q_SLOTS:
         Qt3DRender::QAbstractTexture *tex1b = createQTexture(-1, {1,2}, true);
 
         // WHEN
-        Qt3DRender::Render::Texture *bt1a = createBackendTexture(tex1a, mgrs->textureManager(), mgrs->textureImageManager());
-        Qt3DRender::Render::Texture *bt1b = createBackendTexture(tex1b, mgrs->textureManager(), mgrs->textureImageManager());
+        Qt3DRender::Render::Texture *bt1a = createBackendTexture(tex1a,
+                                                                 mgrs->textureManager(),
+                                                                 mgrs->textureImageManager(),
+                                                                 mgrs->textureImageDataManager());
+        Qt3DRender::Render::Texture *bt1b = createBackendTexture(tex1b,
+                                                                 mgrs->textureManager(),
+                                                                 mgrs->textureImageManager(),
+                                                                 mgrs->textureImageDataManager());
         renderer.updateTexture(bt1a);
         renderer.updateTexture(bt1b);
 
@@ -209,7 +219,10 @@ private Q_SLOTS:
         // WHEN
         QVector<Qt3DRender::Render::Texture*> backend;
         for (auto *t : textures) {
-            Qt3DRender::Render::Texture *backendTexture = createBackendTexture(t, mgrs->textureManager(), mgrs->textureImageManager());
+            Qt3DRender::Render::Texture *backendTexture = createBackendTexture(t,
+                                                                               mgrs->textureManager(),
+                                                                               mgrs->textureImageManager(),
+                                                                               mgrs->textureImageDataManager());
             backend.push_back(backendTexture);
             renderer.updateTexture(backendTexture);
         }
@@ -256,7 +269,10 @@ private Q_SLOTS:
         // WHEN
         QVector<Qt3DRender::Render::Texture*> backend;
         for (auto *t : textures) {
-            Qt3DRender::Render::Texture *backendTexture = createBackendTexture(t, mgrs->textureManager(), mgrs->textureImageManager());
+            Qt3DRender::Render::Texture *backendTexture = createBackendTexture(t,
+                                                                               mgrs->textureManager(),
+                                                                               mgrs->textureImageManager(),
+                                                                               mgrs->textureImageDataManager());
             backend.push_back(backendTexture);
             renderer.updateTexture(backendTexture);
         }
@@ -308,6 +324,265 @@ private Q_SLOTS:
         QVERIFY(texDataMgr->getData(tg1a) != texDataMgr->getData(tg2));
     }
 
+    void checkTextureImageInitialState()
+    {
+        // GIVEN
+        Qt3DRender::Render::TextureImage img;
+
+        // THEN
+        QCOMPARE(img.layer(), 0);
+        QCOMPARE(img.mipLevel(), 0);
+        QCOMPARE(img.face(), Qt3DRender::QAbstractTexture::CubeMapPositiveX);
+        QVERIFY(img.dataGenerator().isNull());
+        QVERIFY(img.textureManager() == nullptr);
+        QVERIFY(img.textureImageDataManager() == nullptr);
+    }
+
+    void checkTextureImageCleanupState()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::TextureManager *texMgr = mgrs->textureManager();
+        Qt3DRender::Render::TextureImageDataManager *texImgDataMgr = mgrs->textureImageDataManager();
+
+        TestTextureImage img(1);
+        img.setLayer(2);
+        img.setMipLevel(3);
+
+        // WHEN
+        Qt3DRender::Render::TextureImage texImgBackend;
+        texImgBackend.setTextureManager(texMgr);
+        texImgBackend.setTextureImageDataManager(texImgDataMgr);
+        simulateInitialization(&img, &texImgBackend);
+        texImgBackend.cleanup();
+
+        // THEN
+        QCOMPARE(texImgBackend.layer(), 0);
+        QCOMPARE(texImgBackend.mipLevel(), 0);
+        QCOMPARE(texImgBackend.face(), Qt3DRender::QAbstractTexture::CubeMapPositiveX);
+        QVERIFY(texImgBackend.dataGenerator().isNull());
+        QVERIFY(texImgBackend.textureManager() != nullptr);
+        QVERIFY(texImgBackend.textureImageDataManager() != nullptr);
+    }
+
+    void checkTextureImageInitializeFromPeer()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::TextureManager *texMgr = mgrs->textureManager();
+        Qt3DRender::Render::TextureImageDataManager *texImgDataMgr = mgrs->textureImageDataManager();
+
+        TestTextureImage img(1);
+
+        {
+            // WHEN
+            img.setLayer(2);
+            img.setMipLevel(3);
+
+            Qt3DRender::Render::TextureImage texImgBackend;
+            texImgBackend.setTextureManager(texMgr);
+            texImgBackend.setTextureImageDataManager(texImgDataMgr);
+            simulateInitialization(&img, &texImgBackend);
+
+            // THEN
+            QCOMPARE(texImgBackend.isEnabled(), true);
+            QCOMPARE(texImgBackend.peerId(), img.id());
+            QCOMPARE(texImgBackend.layer(), 2);
+            QCOMPARE(texImgBackend.mipLevel(), 3);
+            QCOMPARE(texImgBackend.face(), Qt3DRender::QAbstractTexture::CubeMapPositiveX);
+            QVERIFY(!texImgBackend.dataGenerator().isNull());
+        }
+
+        {
+            // WHEN
+            img.setEnabled(false);
+
+            Qt3DRender::Render::TextureImage texImgBackend;
+            texImgBackend.setTextureManager(texMgr);
+            texImgBackend.setTextureImageDataManager(texImgDataMgr);
+            simulateInitialization(&img, &texImgBackend);
+
+            // THEN
+            QCOMPARE(texImgBackend.isEnabled(), false);
+            QCOMPARE(texImgBackend.peerId(), img.id());
+        }
+    }
+
+    void checkTextureImageSceneChangeEvents()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::TextureManager *texMgr = mgrs->textureManager();
+        Qt3DRender::Render::TextureImageDataManager *texImgDataMgr = mgrs->textureImageDataManager();
+        Qt3DRender::Render::TextureImage backendImage;
+        TestRenderer renderer;
+        backendImage.setRenderer(&renderer);
+        backendImage.setTextureManager(texMgr);
+        backendImage.setTextureImageDataManager(texImgDataMgr);
+
+        {
+            // WHEN
+            const bool newValue = false;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("enabled");
+            change->setValue(newValue);
+            backendImage.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendImage.isEnabled(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        }
+
+        {
+            // WHEN
+            const int newValue = 7;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("layer");
+            change->setValue(newValue);
+            backendImage.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendImage.layer(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        }
+
+        {
+            // WHEN
+            const int newValue = 3;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("mipLevel");
+            change->setValue(newValue);
+            backendImage.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendImage.mipLevel(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        }
+
+        {
+            // WHEN
+            const Qt3DRender::QAbstractTexture::CubeMapFace newValue = Qt3DRender::QAbstractTexture::CubeMapNegativeX;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("face");
+            change->setValue(newValue);
+            backendImage.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendImage.face(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        }
+
+        {
+            // WHEN
+            Qt3DRender::QTextureImageDataGeneratorPtr generator1(new TestImageDataGenerator(883));
+            auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("dataGenerator");
+            change->setValue(QVariant::fromValue(generator1));
+            backendImage.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendImage.dataGenerator(), generator1);
+            QVERIFY(texImgDataMgr->contains(generator1));
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
+            // WHEN
+            Qt3DRender::QTextureImageDataGeneratorPtr generator2(new TestImageDataGenerator(1584));
+            change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("dataGenerator");
+            change->setValue(QVariant::fromValue(generator2));
+            backendImage.sceneChangeEvent(change);
+
+            // THEN
+            QVERIFY(!texImgDataMgr->contains(generator1));
+            QVERIFY(texImgDataMgr->contains(generator2));
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
+            // WHEN
+            Qt3DRender::QTextureImageDataGeneratorPtr generator3;
+            change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("dataGenerator");
+            change->setValue(QVariant::fromValue(generator3));
+            backendImage.sceneChangeEvent(change);
+
+            // THEN
+            QVERIFY(!texImgDataMgr->contains(generator1));
+            QVERIFY(!texImgDataMgr->contains(generator2));
+            QVERIFY(backendImage.dataGenerator().isNull());
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        }
+    }
+
+    void checkTextureImageProperlyReleaseGenerator()
+    {
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::TextureManager *texMgr = mgrs->textureManager();
+        Qt3DRender::Render::TextureImageManager *texImgMgr = mgrs->textureImageManager();
+        Qt3DRender::Render::TextureImageDataManager *texImgDataMgr = mgrs->textureImageDataManager();
+        renderer.setNodeManagers(mgrs.data());
+
+        // GIVEN
+        Qt3DRender::QAbstractTexture* frontendTexture = createQTexture(1, {1}, true);
+
+        Qt3DRender::Render::Texture *backendTexture = texMgr->getOrCreateResource(frontendTexture->id());
+        backendTexture->setTextureImageManager(texImgMgr);
+        simulateInitialization(frontendTexture, backendTexture);
+
+        // THEN
+        QCOMPARE(backendTexture->textureImages().size(), 0);
+        QCOMPARE(frontendTexture->textureImages().size(), 1);
+
+        // WHEN
+        TestTextureImage *texImgFrontend = static_cast<TestTextureImage *>(frontendTexture->textureImages().first());
+        const Qt3DRender::QTextureImageDataGeneratorPtr frontendGenerator = texImgFrontend->dataGenerator();
+
+        // THEN
+        QVERIFY(!frontendGenerator.isNull());
+        QCOMPARE(texImgDataMgr->pendingGenerators().size(), 0);
+        QVERIFY(!texImgDataMgr->contains(frontendGenerator));
+        QVERIFY(texImgDataMgr->getData(frontendGenerator).isNull());
+
+        // WHEN
+        Qt3DRender::Render::TextureImage *texImgBackend = texImgMgr->getOrCreateResource(texImgFrontend->id());
+        texImgBackend->setTextureManager(texMgr);
+        texImgBackend->setTextureImageDataManager(texImgDataMgr);
+        simulateInitialization(texImgFrontend, texImgBackend);
+
+        // THEN
+        qDebug() << frontendGenerator << texImgBackend->dataGenerator();
+        const Qt3DRender::QTextureImageDataGeneratorPtr backendGenerator = texImgFrontend->dataGenerator();
+        QVERIFY(frontendGenerator != backendGenerator);
+        QVERIFY(*frontendGenerator == *backendGenerator);
+        QVERIFY(texImgDataMgr->contains(frontendGenerator));
+        QVERIFY(texImgDataMgr->contains(backendGenerator));
+        QVERIFY(texImgDataMgr->getData(frontendGenerator).isNull());
+        QCOMPARE(texImgDataMgr->pendingGenerators().size(), 1);
+
+        // WHEN
+        texImgDataMgr->assignData(frontendGenerator, (*frontendGenerator)());
+
+        // THEN
+        QVERIFY(!texImgDataMgr->getData(frontendGenerator).isNull());
+        QVERIFY(!texImgDataMgr->getData(backendGenerator).isNull());
+        QVERIFY(texImgDataMgr->getData(backendGenerator) == texImgDataMgr->getData(frontendGenerator));
+
+        // WHEN
+        texImgBackend->cleanup();
+
+        // THEN
+        QVERIFY(!texImgDataMgr->contains(frontendGenerator));
+        QVERIFY(!texImgDataMgr->contains(backendGenerator));
+        QCOMPARE(texImgDataMgr->pendingGenerators().size(), 0);
+        QVERIFY(texImgDataMgr->getData(frontendGenerator).isNull());
+        QVERIFY(texImgDataMgr->getData(backendGenerator).isNull());
+    }
 };
 
 QTEST_MAIN(tst_RenderTextures)

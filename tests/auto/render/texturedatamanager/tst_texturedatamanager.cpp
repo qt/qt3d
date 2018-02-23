@@ -73,7 +73,7 @@ struct FakeAPITexture
     void requestUpload() {}
 };
 
-using Manager = Qt3DRender::Render::GeneratorDataManager<FakeGeneratorPtr, FakeDataPtr, FakeAPITexture>;
+using Manager = Qt3DRender::Render::GeneratorDataManager<FakeGeneratorPtr, FakeDataPtr, FakeAPITexture*>;
 
 } // anonymous
 

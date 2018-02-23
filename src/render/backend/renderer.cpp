@@ -1221,10 +1221,12 @@ void Renderer::updateTexture(Texture *texture)
             !glTextureManager->setParameters(glTexture, texture->parameters()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setParameters failed, should be non-shared";
 
+    // Will make the texture requestUpload
     if (dirtyFlags.testFlag(Texture::DirtyImageGenerators) &&
             !glTextureManager->setImages(glTexture, texture->textureImages()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
 
+    // Will make the texture requestUpload
     if (dirtyFlags.testFlag(Texture::DirtyDataGenerator) &&
             !glTextureManager->setGenerator(glTexture, texture->dataGenerator()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerator failed, should be non-shared";
@@ -1379,7 +1381,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         if (!executeCommandsSubmission(renderView))
             m_lastFrameCorrect.store(0);    // something went wrong; make sure to render the next frame!
 
-        // executeCommands takes care of restoring the stateset to the value
+        // executeCommandsSubmission takes care of restoring the stateset to the value
         // of gc->currentContext() at the moment it was called (either
         // renderViewStateSet or m_defaultRenderStateSet)
         if (!renderView->renderCaptureNodeId().isNull()) {
@@ -1836,8 +1838,12 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             {
                 Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate);
                 //// Update program uniforms
-                if (!m_graphicsContext->setParameters(command->m_parameterPack))
+                if (!m_graphicsContext->setParameters(command->m_parameterPack)) {
                     allCommandsIssued = false;
+                    // If we have failed to set uniform (e.g unable to bind a texture)
+                    // we won't perform the draw call which could show invalid content
+                    continue;
+                }
             }
 
             //// OpenGL State

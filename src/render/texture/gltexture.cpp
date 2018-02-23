@@ -87,10 +87,6 @@ GLTexture::~GLTexture()
 
 void GLTexture::destroyResources()
 {
-    // release texture data
-    for (const Image &img : qAsConst(m_images))
-        m_textureImageDataManager->releaseData(img.generator, this);
-
     if (m_dataFunctor)
         m_textureDataManager->releaseData(m_dataFunctor, this);
 }
@@ -111,7 +107,6 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
 {
     QMutexLocker locker(&m_textureMutex);
     bool needUpload = false;
-    bool texturedDataInvalid = false;
 
     // on the first invocation in the render thread, make sure to
     // evaluate the texture data generator output
@@ -156,31 +151,23 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
         for (const Image &img : qAsConst(m_images)) {
             const QTextureImageDataPtr imgData = m_textureImageDataManager->getData(img.generator);
 
-            if (imgData) {
-                m_imageData << imgData;
+            Q_ASSERT(imgData);
+            m_imageData.push_back(imgData);
+            maxMipLevel = qMax(maxMipLevel, img.mipLevel);
 
-                maxMipLevel = qMax(maxMipLevel, img.mipLevel);
-
-                // If the texture doesn't have a texture generator, we will
-                // derive some properties from the first TextureImage (layer=0, miplvl=0, face=0)
-                if (!m_textureData && img.layer == 0 && img.mipLevel == 0 && img.face == QAbstractTexture::CubeMapPositiveX) {
-                    if (imgData->width() != -1 && imgData->height() != -1 && imgData->depth() != -1) {
-                        m_properties.width = imgData->width();
-                        m_properties.height = imgData->height();
-                        m_properties.depth = imgData->depth();
-                    }
-
-                    // Set the format of the texture if the texture format is set to Automatic
-                    if (m_properties.format == QAbstractTexture::Automatic) {
-                        m_properties.format = static_cast<QAbstractTexture::TextureFormat>(imgData->format());
-                    }
-
-                    setDirtyFlag(Properties, true);
+            // If the texture doesn't have a texture generator, we will
+            // derive some properties from the first TextureImage (layer=0, miplvl=0, face=0)
+            if (!m_textureData && img.layer == 0 && img.mipLevel == 0 && img.face == QAbstractTexture::CubeMapPositiveX) {
+                if (imgData->width() != -1 && imgData->height() != -1 && imgData->depth() != -1) {
+                    m_properties.width = imgData->width();
+                    m_properties.height = imgData->height();
+                    m_properties.depth = imgData->depth();
                 }
-            } else {
-                // No QTextureImageData generated from functor yet, texture will be invalid for this frame
-                // but will be correctly loaded at frame n+1
-                texturedDataInvalid = true;
+                // Set the format of the texture if the texture format is set to Automatic
+                if (m_properties.format == QAbstractTexture::Automatic) {
+                    m_properties.format = static_cast<QAbstractTexture::TextureFormat>(imgData->format());
+                }
+                setDirtyFlag(Properties, true);
             }
         }
 
@@ -195,9 +182,6 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
     if (m_properties.format == QAbstractTexture::Automatic)
         return nullptr;
 
-    if (texturedDataInvalid)
-        return nullptr;
-
     // if the properties changed, we need to re-allocate the texture
     if (testDirtyFlag(Properties)) {
         delete m_gl;
@@ -210,13 +194,12 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
             return nullptr;
         m_gl->allocateStorage();
         if (!m_gl->isStorageAllocated()) {
-            qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
             return nullptr;
         }
     }
 
     // need to (re-)upload texture data?
-    if (needUpload && !texturedDataInvalid) {
+    if (needUpload) {
         uploadGLTextureData();
         setDirtyFlag(TextureData, false);
     }
@@ -294,47 +277,17 @@ void GLTexture::setImages(const QVector<Image> &images)
     bool same = (images.size() == m_images.size());
     if (same) {
         for (int i = 0; i < images.size(); i++) {
-            if (images[i] != m_images[i])
+            if (images[i] != m_images[i]) {
                 same = false;
+                break;
+            }
         }
     }
 
-    // de-reference all old texture image generators that will no longer be used.
-    // we need to check all generators against each other to make sure we don't
-    // de-ref a texture that would still be in use, thus maybe causing it to
-    // be deleted
+
     if (!same) {
-        for (const Image &oldImg : qAsConst(m_images)) {
-            bool stillHaveThatImage = false;
-
-            for (const Image &newImg : images) {
-                if (oldImg.generator == newImg.generator) {
-                    stillHaveThatImage = true;
-                    break;
-                }
-            }
-
-            if (!stillHaveThatImage)
-                m_textureImageDataManager->releaseData(oldImg.generator, this);
-        }
-
         m_images = images;
-
-        // Don't mark the texture data as dirty yet. We defer this until the
-        // generators have been executed and the data is made available to the
-        // TextureDataManager.
-
-        // make sure the generators are executed
-        bool newEntriesCreated = false;
-        for (const Image& img : qAsConst(images)) {
-            newEntriesCreated |= m_textureImageDataManager->requestData(img.generator, this);
-        }
-
-        if (!newEntriesCreated) {
-            // request a data upload (very important in case the image data already
-            // exists and wouldn't trigger an update)
-            requestUpload();
-        }
+        requestUpload();
     }
 }
 
