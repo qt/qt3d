@@ -234,6 +234,19 @@ Sphere::Type Sphere::type() const
     return RayCasting::QBoundingVolume::Sphere;
 }
 
+#ifndef QT_NO_DEBUG_STREAM
+
+QDebug operator<<(QDebug dbg, const Sphere &sphere)
+{
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << "Sphere(center("
+        << sphere.center().x() << ", " << sphere.center().y() << ", "
+        << sphere.center().z() << ") - radius(" << sphere.radius() << "))";
+    return dbg;
+}
+
+#endif
+
 } // Render
 
 } // Qt3DRender
