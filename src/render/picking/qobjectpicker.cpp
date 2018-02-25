@@ -72,6 +72,8 @@ namespace Qt3DRender {
     If drag is enabled, queries also happen on each mouse move while any button is pressed.
     If hover is enabled, queries happen on every mouse move even if no button is pressed.
 
+    For generalised ray casting queries, see Qt3DRender::QRayCaster and Qt3DRender::QScreenRayCaster.
+
     \sa Qt3DRender::QPickingSettings, Qt3DRender::QGeometry, Qt3DRender::QAttribute,
         Qt3DRender::QPickEvent, Qt3DRender::QPickTriangleEvent
 

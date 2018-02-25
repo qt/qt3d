@@ -52,12 +52,16 @@ namespace Qt3DRender {
     \inherits Qt3DCore::QNode
 
     The picking settings determine how the entity picking is handled. For more details about
-    entity picking, see QObjectPicker component documentation.
+    entity picking, see QObjectPicker and QRayCaster component documentation.
 
-    Picking is triggered by mouse events. It will cast a ray through the scene and look for
-    geometry intersecting the ray.
+    When using QObjectPicker components, picking is triggered by mouse events.
 
-    \sa QObjectPicker, QPickEvent, QPickTriangleEvent
+    When using QRayCaster or QScreenRayCaster components, picking can be explicitly triggered by
+    the application.
+
+    In both cases, a ray will be cast through the scene to find geometry intersecting the ray.
+
+    \sa QObjectPicker, QPickEvent, QPickTriangleEvent, QRayCaster, QScreenRayCaster.
  */
 
 /*!
@@ -68,12 +72,16 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QPickingSettings
 
     The picking settings determine how the entity picking is handled. For more details about
-    entity picking, see Qt3DRender::QObjectPicker component documentation.
+    entity picking, see Qt3D.Render::ObjectPicker or Qt3D.Render::RayCaster component documentation.
 
-    Picking is triggered by mouse events. It will cast a ray through the scene and look for
-    geometry intersecting the ray.
+    When using ObjectPicker components, picking is triggered by mouse events.
 
-    \sa ObjectPicker
+    When using RayCaster or ScreenRayCaster components, picking can be explicitly triggered by
+    the application.
+
+    In both cases, a ray will be cast through the scene to find geometry intersecting the ray.
+
+    \sa ObjectPicker, RayCaster, ScreenRayCaster
  */
 
 QPickingSettingsPrivate::QPickingSettingsPrivate()
@@ -139,6 +147,12 @@ float QPickingSettings::worldSpaceTolerance() const
  * the bounding volume of the entity (default).
  * \value TrianglePicking An entity is considered picked if the picking ray intersects with
  * any triangle of the entity's mesh component.
+ * \value LinePicking An entity is considered picked if the picking ray intersects with
+ * any edge of the entity's mesh component.
+ * \value PointPicking An entity is considered picked if the picking ray intersects with
+ * any point of the entity's mesh component.
+ * \value PrimitePicking An entity is considered picked if the picking ray intersects with
+ * any point, edge or triangle of the entity's mesh component.
  */
 
 /*!
@@ -149,6 +163,9 @@ float QPickingSettings::worldSpaceTolerance() const
     \list
         \li PickingSettings.BoundingVolumePicking
         \li PickingSettings.TrianglePicking
+        \li PickingSettings.LinePicking
+        \li PickingSettings.PointPicking
+        \li PickingSettings.PrimitivePicking: picks either points, lines or triangles
     \endlist
 
     \sa Qt3DRender::QPickingSettings::PickMethod

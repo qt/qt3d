@@ -156,7 +156,7 @@ void QPickEvent::setAccepted(bool accepted)
 }
 
 /*!
-    \qmlproperty bool Qt3D.Render::PickEvent::position
+    \qmlproperty Point2D Qt3D.Render::PickEvent::position
     Specifies the mouse position with respect to the render area (window or quick item)
 */
 /*!
@@ -174,7 +174,7 @@ QPointF QPickEvent::position() const
 }
 
 /*!
-    \qmlproperty bool Qt3D.Render::PickEvent::distance
+    \qmlproperty real Qt3D.Render::PickEvent::distance
     Specifies the distance of the hit to the camera
 */
 /*!
@@ -192,7 +192,7 @@ float QPickEvent::distance() const
 }
 
 /*!
-    \qmlproperty bool Qt3D.Render::PickEvent::worldIntersection
+    \qmlproperty Vector3D Qt3D.Render::PickEvent::worldIntersection
     Specifies the coordinates of the hit in world coordinate system
 */
 /*!
@@ -210,7 +210,7 @@ QVector3D QPickEvent::worldIntersection() const
 }
 
 /*!
-    \qmlproperty bool Qt3D.Render::PickEvent::localIntersection
+    \qmlproperty Vector3D Qt3D.Render::PickEvent::localIntersection
     Specifies the coordinates of the hit in the local coordinate system of the picked entity
 */
 /*!
@@ -238,7 +238,7 @@ QVector3D QPickEvent::localIntersection() const
  */
 
 /*!
-    \qmlproperty bool Qt3D.Render::PickEvent::button
+    \qmlproperty int Qt3D.Render::PickEvent::button
     Specifies mouse button that caused the event
 */
 /*!
@@ -256,7 +256,7 @@ QPickEvent::Buttons QPickEvent::button() const
 }
 
 /*!
-    \qmlproperty bool Qt3D.Render::PickEvent::buttons
+    \qmlproperty int Qt3D.Render::PickEvent::buttons
     Specifies state of the mouse buttons for the event
 */
 /*!
@@ -285,7 +285,7 @@ int QPickEvent::buttons() const
  */
 
 /*!
-    \qmlproperty bool Qt3D.Render::PickEvent::modifiers
+    \qmlproperty int Qt3D.Render::PickEvent::modifiers
     Specifies state of the mouse buttons for the event
 */
 /*!
