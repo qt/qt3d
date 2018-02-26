@@ -152,11 +152,14 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
         m_imageData.clear();
         needUpload = true;
 
+        int maxMipLevel = 0;
         for (const Image &img : qAsConst(m_images)) {
             const QTextureImageDataPtr imgData = m_textureImageDataManager->getData(img.generator);
 
             if (imgData) {
                 m_imageData << imgData;
+
+                maxMipLevel = qMax(maxMipLevel, img.mipLevel);
 
                 // If the texture doesn't have a texture generator, we will
                 // derive some properties from the first TextureImage (layer=0, miplvl=0, face=0)
@@ -179,6 +182,12 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
                 // but will be correctly loaded at frame n+1
                 texturedDataInvalid = true;
             }
+        }
+
+        // make sure the number of mip levels is set when there is no texture data generator
+        if (!m_dataFunctor) {
+            m_properties.mipLevels = maxMipLevel + 1;
+            setDirtyFlag(Properties, true);
         }
     }
 
