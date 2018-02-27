@@ -42,6 +42,29 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace {
+
+void compareShaderParameterPacks(const ShaderParameterPack &t1,
+                                 const ShaderParameterPack &t2)
+{
+    const PackUniformHash hash1 = t1.uniforms();
+    const PackUniformHash hash2 = t2.uniforms();
+
+    QCOMPARE(hash1.size(), hash2.size());
+
+    auto it = hash1.constBegin();
+    const auto end = hash1.constEnd();
+
+    while (it != end) {
+        const auto h2It = hash2.find(it.key());
+        QVERIFY(h2It != hash2.cend());
+        QCOMPARE(it.value(), h2It.value());
+        ++it;
+    }
+}
+
+} // anonymous
+
 class tst_RenderViews : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
@@ -52,11 +75,6 @@ private Q_SLOTS:
         QSKIP("Allocated Disabled");
         QVERIFY(sizeof(RenderView) <= 192);
         QVERIFY(sizeof(RenderView::InnerData) <= 192);
-    }
-
-    void testSort()
-    {
-
     }
 
     void checkRenderViewInitialState()
@@ -187,6 +205,69 @@ private Q_SLOTS:
 
         // RenderCommands are deleted by RenderView dtor
     }
+
+    void checkRenderViewUniformMinification_data()
+    {
+        QTest::addColumn<QVector<ProgramDNA>>("programDNAs");
+        QTest::addColumn<QVector<ShaderParameterPack>>("rawParameters");
+        QTest::addColumn<QVector<ShaderParameterPack>>("expectedMinimizedParameters");
+
+        Qt3DCore::QNodeId fakeTextureNodeId = Qt3DCore::QNodeId::createId();
+
+        ShaderParameterPack pack1;
+        pack1.setUniform(1, UniformValue(883));
+        pack1.setUniform(2, UniformValue(1584.0f));
+        pack1.setTexture(3, 0, fakeTextureNodeId);
+
+        ShaderParameterPack minifiedPack1;
+
+        QTest::newRow("NoMinification")
+                << (QVector<ProgramDNA>() << ProgramDNA(883) << ProgramDNA(1584))
+                << (QVector<ShaderParameterPack>() << pack1 << pack1)
+                << (QVector<ShaderParameterPack>() << pack1 << pack1);
+
+        QTest::newRow("SingleShaderMinified")
+                << (QVector<ProgramDNA>() << ProgramDNA(883) << ProgramDNA(883) << ProgramDNA(883))
+                << (QVector<ShaderParameterPack>() << pack1 << pack1 << pack1)
+                << (QVector<ShaderParameterPack>() << pack1 << minifiedPack1 << minifiedPack1);
+
+        QTest::newRow("MultipleShadersMinified")
+                << (QVector<ProgramDNA>() << ProgramDNA(883) << ProgramDNA(883) << ProgramDNA(883) << ProgramDNA(1584) << ProgramDNA(1584) << ProgramDNA(1584))
+                << (QVector<ShaderParameterPack>() << pack1 << pack1 << pack1 << pack1 << pack1 << pack1)
+                << (QVector<ShaderParameterPack>() << pack1 << minifiedPack1 << minifiedPack1 << pack1 << minifiedPack1 << minifiedPack1);
+    }
+
+    void checkRenderViewUniformMinification()
+    {
+        QFETCH(QVector<ProgramDNA>, programDNAs);
+        QFETCH(QVector<ShaderParameterPack>, rawParameters);
+        QFETCH(QVector<ShaderParameterPack>, expectedMinimizedParameters);
+
+        RenderView renderView;
+        QVector<RenderCommand *> rawCommands;
+
+        for (int i = 0, m = programDNAs.size(); i < m; ++i) {
+            RenderCommand *c = new RenderCommand();
+            c->m_shaderDna = programDNAs.at(i);
+            c->m_parameterPack = rawParameters.at(i);
+            rawCommands.push_back(c);
+        }
+
+        // WHEN
+        renderView.setCommands(rawCommands);
+        renderView.sort();
+
+        // THEN
+        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        QCOMPARE(rawCommands, sortedCommands);
+
+        for (int i = 0, m = programDNAs.size(); i < m; ++i) {
+            const RenderCommand *c = sortedCommands.at(i);
+            QCOMPARE(c->m_shaderDna, programDNAs.at(i));
+            compareShaderParameterPacks(c->m_parameterPack, expectedMinimizedParameters.at(i));
+        }
+    }
+
 
     void checkRenderCommandFrontToBackSorting()
     {

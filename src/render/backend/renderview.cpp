@@ -510,7 +510,6 @@ void RenderView::sort()
                 ++j;
             }
         }
-        ++i;
     }
 }
 
