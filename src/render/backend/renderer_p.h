@@ -210,6 +210,9 @@ public:
     inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
     inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
     inline Qt3DCore::QAspectJobPtr shaderGathererJob() const { return m_shaderGathererJob; }
+    inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
+    inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
+
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
 
     void registerEventFilter(Qt3DCore::QEventFilterService *service) override;

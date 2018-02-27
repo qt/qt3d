@@ -556,7 +556,12 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderCommandBuildingJob->addDependency(m_filterProximityJob);
     m_syncRenderCommandBuildingJob->addDependency(m_lightGathererJob);
     m_syncRenderCommandBuildingJob->addDependency(m_frustumCullingJob);
+
+    // Ensure the RenderThread won't be able to process dirtyResources
+    // before they have been completely gathered
     m_syncRenderCommandBuildingJob->addDependency(m_renderer->shaderGathererJob());
+    m_syncRenderCommandBuildingJob->addDependency(m_renderer->bufferGathererJob());
+    m_syncRenderCommandBuildingJob->addDependency(m_renderer->textureGathererJob());
 
     for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) {
         renderViewCommandBuilder->addDependency(m_syncRenderCommandBuildingJob);
