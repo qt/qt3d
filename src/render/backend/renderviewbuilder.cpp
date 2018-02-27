@@ -556,6 +556,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderCommandBuildingJob->addDependency(m_filterProximityJob);
     m_syncRenderCommandBuildingJob->addDependency(m_lightGathererJob);
     m_syncRenderCommandBuildingJob->addDependency(m_frustumCullingJob);
+    m_syncRenderCommandBuildingJob->addDependency(m_renderer->shaderGathererJob());
 
     for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) {
         renderViewCommandBuilder->addDependency(m_syncRenderCommandBuildingJob);

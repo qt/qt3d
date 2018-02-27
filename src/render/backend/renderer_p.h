@@ -209,7 +209,7 @@ public:
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
     inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
     inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
-
+    inline Qt3DCore::QAspectJobPtr shaderGathererJob() const { return m_shaderGathererJob; }
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
 
     void registerEventFilter(Qt3DCore::QEventFilterService *service) override;
