@@ -1829,9 +1829,9 @@ static void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint
                 uchar *dstScanline = img.scanLine(i);
                 float *pSrc = (float*)srcScanline;
                 for (uint j = 0; j < width; j++) {
-                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+2] / (1.0f + pSrc[4*j+2])));
-                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+1] / (1.0f + pSrc[4*j+1])));
-                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+0] / (1.0f + pSrc[4*j+0])));
+                    *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4*j+2], 1.0f));
+                    *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4*j+1], 1.0f));
+                    *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4*j+0], 1.0f));
                     *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4*j+3], 1.0f));
                 }
                 srcScanline -= stride;

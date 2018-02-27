@@ -108,13 +108,13 @@ public:
     static void nodePtrDeleter(QNode *q);
 
     template<typename Caller, typename NodeType>
-    using DestructionFunction = void (Caller::*)(NodeType *);
+    using DestructionFunctionPointer = void (Caller::*)(NodeType *);
 
     template<typename Caller, typename NodeType, typename PropertyType>
-    void registerDestructionHelper(NodeType *, DestructionFunction<Caller, NodeType>, PropertyType);
+    void registerDestructionHelper(NodeType *, DestructionFunctionPointer<Caller, NodeType>, PropertyType);
 
     template<typename Caller, typename NodeType>
-    void registerDestructionHelper(NodeType *node, DestructionFunction<Caller, NodeType> func, NodeType *&)
+    void registerDestructionHelper(NodeType *node, DestructionFunctionPointer<Caller, NodeType> func, NodeType *&)
     {
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
@@ -123,11 +123,24 @@ public:
     }
 
     template<typename Caller, typename NodeType>
-    void registerDestructionHelper(NodeType *node, DestructionFunction<Caller, NodeType> func, QVector<NodeType*> &)
+    void registerDestructionHelper(NodeType *node, DestructionFunctionPointer<Caller, NodeType> func, QVector<NodeType*> &)
     {
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
         auto f = [q, func, node]() { (static_cast<Caller *>(q)->*func)(node); };
+        m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
+    }
+
+    template<typename Caller, typename ValueType>
+    using DestructionFunctionValue = void (Caller::*)(const ValueType&);
+
+    template<typename Caller, typename NodeType, typename ValueType>
+    void registerDestructionHelper(NodeType *node, DestructionFunctionValue<Caller, ValueType> func, NodeType *&,
+                                   const ValueType &resetValue)
+    {
+        // If the node is destoyed, we make sure not to keep a dangling pointer to it
+        Q_Q(QNode);
+        auto f = [q, func, resetValue]() { (static_cast<Caller *>(q)->*func)(resetValue); };
         m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
     }
 

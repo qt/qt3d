@@ -334,7 +334,7 @@ QDebug operator<<(QDebug dbg, const QRay3D &ray)
         << ray.origin().x() << ", " << ray.origin().y() << ", "
         << ray.origin().z() << ") - direction("
         << ray.direction().x() << ", " << ray.direction().y() << ", "
-        << ray.direction().z() << "))";
+        << ray.direction().z() << ") - distance(" << ray.distance() << "))";
     return dbg;
 }
 
@@ -352,6 +352,8 @@ QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
 {
     stream << convertToQVector3D(ray.origin());
     stream << convertToQVector3D(ray.direction());
+    if (stream.version() >= QDataStream::Qt_5_11)
+        stream << ray.distance();
     return stream;
 }
 
@@ -364,10 +366,13 @@ QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
 QDataStream &operator>>(QDataStream &stream, QRay3D &ray)
 {
     QVector3D origin, direction;
+    float distance = 1.f;
 
     stream >> origin;
     stream >> direction;
-    ray = QRay3D(Vector3D(origin), Vector3D(direction));
+    if (stream.version() >= QDataStream::Qt_5_11)
+        stream >> distance;
+    ray = QRay3D(Vector3D(origin), Vector3D(direction), distance);
     return stream;
 }
 

@@ -108,6 +108,7 @@ qtConfig(private_tests) {
         blitframebuffer \
         qraycaster \
         raycaster \
+        qscreenraycaster \
         raycastingjob \
         qcamera \
         renderbarrierjob

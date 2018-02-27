@@ -157,6 +157,10 @@ inline bool intersects(const Sphere &a, const Sphere &b)
     return distSq <= sumRadii * sumRadii;
 }
 
+#ifndef QT_NO_DEBUG_STREAM
+QT3DRENDERSHARED_EXPORT QDebug operator<<(QDebug dbg, const Sphere &sphere);
+#endif
+
 } // Render
 
 } // Qt3DRender

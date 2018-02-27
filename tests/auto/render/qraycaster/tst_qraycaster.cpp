@@ -30,7 +30,10 @@
 #include <QtTest/QSignalSpy>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DRender/QRayCaster>
+#include <Qt3DRender/QLayer>
 
 #include "testpostmanarbiter.h"
 
@@ -115,6 +118,87 @@ private Q_SLOTS:
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
+
+        // WHEN
+        auto layer = new Qt3DRender::QLayer(rayCaster.data());
+        QCoreApplication::processEvents();
+        rayCaster->addLayer(layer);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        auto addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(addChange->propertyName(), "layer");
+        QCOMPARE(addChange->subjectId(), rayCaster->id());
+        QCOMPARE(addChange->addedNodeId(), rayCaster->layers().at(0)->id());
+        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
+
+        arbiter.events.clear();
+
+        // WHEN
+        layer = new Qt3DRender::QLayer(rayCaster.data());
+        QCoreApplication::processEvents();
+        rayCaster->addLayer(layer);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(addChange->propertyName(), "layer");
+        QCOMPARE(addChange->subjectId(), rayCaster->id());
+        QCOMPARE(addChange->addedNodeId(), rayCaster->layers().at(1)->id());
+        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
+
+        arbiter.events.clear();
+
+        // WHEN
+        layer = rayCaster->layers().at(0);
+        rayCaster->removeLayer(layer);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        auto removeChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
+        QCOMPARE(removeChange->propertyName(), "layer");
+        QCOMPARE(removeChange->subjectId(), rayCaster->id());
+        QCOMPARE(removeChange->removedNodeId(), layer->id());
+        QCOMPARE(removeChange->type(), Qt3DCore::PropertyValueRemoved);
+
+        arbiter.events.clear();
+    }
+
+    void checkLayerBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QRayCaster> rayCaster(new Qt3DRender::QRayCaster);
+        {
+            // WHEN
+            Qt3DRender::QLayer layer;
+            rayCaster->addLayer(&layer);
+
+            // THEN
+            QCOMPARE(layer.parent(), rayCaster.data());
+            QCOMPARE(rayCaster->layers().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(rayCaster->layers().empty());
+
+        {
+            // WHEN
+            Qt3DRender::QRayCaster someOtherRayCaster;
+            QScopedPointer<Qt3DRender::QLayer> layer(new Qt3DRender::QLayer(&someOtherRayCaster));
+            rayCaster->addLayer(layer.data());
+
+            // THEN
+            QCOMPARE(layer->parent(), &someOtherRayCaster);
+            QCOMPARE(rayCaster->layers().size(), 1);
+
+            // WHEN
+            rayCaster.reset();
+            layer.reset();
+
+            // THEN Should not crash when the layer is destroyed (tests for failed removal of destruction helper)
+        }
     }
 
     void checkBackendUpdates_data()

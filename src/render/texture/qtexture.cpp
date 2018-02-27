@@ -1321,7 +1321,12 @@ void QTextureLoader::setSource(const QUrl& source)
   This property specifies whether the texture should be mirrored when loaded. This
   is a convenience to avoid having to manipulate images to match the origin of
   the texture coordinates used by the rendering API. By default this property
-  is set to true. This has no effect when using compressed texture formats.
+  is set to true. This has no effect when using GPU compressed texture formats.
+
+  \warning This property results in a performance price payed at runtime when
+  loading uncompressed or CPU compressed image formats such as PNG. To avoid this
+  performance price it is better to set this property to false and load texture
+  assets that have been pre-mirrored.
 
   \note OpenGL specifies the origin of texture coordinates from the lower left
   hand corner whereas DirectX uses the the upper left hand corner.
@@ -1337,7 +1342,12 @@ void QTextureLoader::setSource(const QUrl& source)
   This property specifies whether the texture should be mirrored when loaded. This
   is a convenience to avoid having to manipulate images to match the origin of
   the texture coordinates used by the rendering API. By default this property
-  is set to true. This has no effect when using compressed texture formats.
+  is set to true. This has no effect when using GPU compressed texture formats.
+
+  \warning This property results in a performance price payed at runtime when
+  loading uncompressed or CPU compressed image formats such as PNG. To avoid this
+  performance price it is better to set this property to false and load texture
+  assets that have been pre-mirrored.
 
   \note OpenGL specifies the origin of texture coordinates from the lower left
   hand corner whereas DirectX uses the the upper left hand corner.
