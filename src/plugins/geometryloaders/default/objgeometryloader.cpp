@@ -159,8 +159,10 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
                     switch (indices.size()) {
                     case 3:
                         faceIndices.normalIndex = indices.intAt(2) - 1 - normalsOffset;  // fall through
+                        Q_FALLTHROUGH();
                     case 2:
                         faceIndices.texCoordIndex = indices.intAt(1) - 1 - texCoordsOffset; // fall through
+                        Q_FALLTHROUGH();
                     case 1:
                         faceIndices.positionIndex = indices.intAt(0) - 1 - positionsOffset;
                         break;
