@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_COMMANDTHREAD_P_H
-#define QT3DRENDER_RENDER_COMMANDTHREAD_P_H
+#ifndef QT3DRENDER_RENDER_GLCOMMANDS_P_H
+#define QT3DRENDER_RENDER_GLCOMMANDS_P_H
 
 //
 //  W A R N I N G
@@ -51,65 +51,39 @@
 // We mean it.
 //
 
-#include <QtCore/QThread>
-#include <QtCore/QSemaphore>
-#include <QtCore/QMutex>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLContext;
 
 namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
-class GLCommand;
-class OffscreenSurfaceHelper;
 class GraphicsContext;
-class ShaderCache;
+class Renderer;
+class Shader;
 
-class CommandThread : public QThread
+class GLCommand
 {
-    Q_OBJECT
 public:
-    explicit CommandThread(Renderer *renderer);
-    ~CommandThread();
-
-    Render::Renderer* renderer() const { return m_renderer; }
-
-    void setShaderCache(ShaderCache *shaderCache);
-    ShaderCache *shaderCache() const { return m_shaderCache; }
-
-    void initialize(QOpenGLContext *mainContext, OffscreenSurfaceHelper *offsreenSurfaceHelper);
-    void shutdown();
-
-    void executeCommand(GLCommand *command);
-
-private:
-    void run() override;
-    void executeCommandInternal(Qt3DRender::Render::GLCommand *command);
-
-private:
-    Renderer* m_renderer;
-    QSemaphore m_waitForStartSemaphore;
-    QSemaphore m_initializedSemaphore;
-    QSemaphore m_commandRequestedSemaphore;
-    QSemaphore m_commandExecutionSemaphore;
-    QMutex m_blockingCallerMutex;
-    QOpenGLContext *m_mainContext;
-    ShaderCache *m_shaderCache;
-    OffscreenSurfaceHelper *m_offsreenSurfaceHelper;
-    QScopedPointer<QOpenGLContext> m_localContext;
-    QScopedPointer<GraphicsContext> m_graphicsContext;
-    GLCommand *m_currentCommand;
-    QAtomicInt m_running;
+    virtual void execute(Renderer *renderer, GraphicsContext *ctx) = 0;
 };
 
+class Q_AUTOTEST_EXPORT LoadShaderCommand : public GLCommand
+{
+public:
+    explicit LoadShaderCommand(Shader *shader);
+    Shader *shader() const { return m_shader; }
+    void execute(Renderer *renderer, GraphicsContext *ctx) Q_DECL_OVERRIDE;
+
+private:
+    Shader *m_shader = nullptr;
+};
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_COMMANDTHREAD_P_H
+#endif // QT3DRENDER_RENDER_GLCOMMANDS_P_H

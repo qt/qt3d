@@ -45,7 +45,8 @@ HEADERS += \
     $$PWD/visitorutils_p.h \
     $$PWD/segmentsvisitor_p.h \
     $$PWD/pointsvisitor_p.h \
-    $$PWD/renderercache_p.h
+    $$PWD/renderercache_p.h \
+    $$PWD/glcommands_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -82,7 +83,8 @@ SOURCES += \
     $$PWD/resourceaccessor.cpp \
     $$PWD/segmentsvisitor.cpp \
     $$PWD/commandthread.cpp \
-    $$PWD/pointsvisitor.cpp
+    $$PWD/pointsvisitor.cpp \
+    $$PWD/glcommands.cpp
 
 include($$QT3D_BUILD_ROOT/src/core/qt3dcore-config.pri)
 QT_FOR_CONFIG += 3dcore-private

@@ -148,6 +148,7 @@ class UpdateLevelOfDetailJob;
 typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+using IntrospectShadersJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
@@ -211,7 +212,7 @@ public:
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
     inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
     inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
-    inline Qt3DCore::QAspectJobPtr shaderGathererJob() const { return m_shaderGathererJob; }
+    inline IntrospectShadersJobPtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
 
@@ -365,7 +366,7 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_vaoGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
-    GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
+    IntrospectShadersJobPtr m_introspectShaderJob;
 
     SynchronizerJobPtr m_syncTextureLoadingJob;
 
@@ -373,14 +374,13 @@ private:
     void lookForDirtyBuffers();
     void lookForDownloadableBuffers();
     void lookForDirtyTextures();
-    void lookForDirtyShaders();
+    void reloadDirtyShaders();
 
     QMutex m_abandonedVaosMutex;
     QVector<HVao> m_abandonedVaos;
 
     QVector<HBuffer> m_dirtyBuffers;
     QVector<HBuffer> m_downloadableBuffers;
-    QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
 
     bool m_ownedContext;

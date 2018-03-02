@@ -37,79 +37,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_COMMANDTHREAD_P_H
-#define QT3DRENDER_RENDER_COMMANDTHREAD_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtCore/QThread>
-#include <QtCore/QSemaphore>
-#include <QtCore/QMutex>
+#include "glcommands_p.h"
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
 QT_BEGIN_NAMESPACE
-
-class QOpenGLContext;
 
 namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
-class GLCommand;
-class OffscreenSurfaceHelper;
-class GraphicsContext;
-class ShaderCache;
-
-class CommandThread : public QThread
+LoadShaderCommand::LoadShaderCommand(Shader *shader)
+    : m_shader(shader)
 {
-    Q_OBJECT
-public:
-    explicit CommandThread(Renderer *renderer);
-    ~CommandThread();
+    Q_ASSERT(m_shader);
+}
 
-    Render::Renderer* renderer() const { return m_renderer; }
-
-    void setShaderCache(ShaderCache *shaderCache);
-    ShaderCache *shaderCache() const { return m_shaderCache; }
-
-    void initialize(QOpenGLContext *mainContext, OffscreenSurfaceHelper *offsreenSurfaceHelper);
-    void shutdown();
-
-    void executeCommand(GLCommand *command);
-
-private:
-    void run() override;
-    void executeCommandInternal(Qt3DRender::Render::GLCommand *command);
-
-private:
-    Renderer* m_renderer;
-    QSemaphore m_waitForStartSemaphore;
-    QSemaphore m_initializedSemaphore;
-    QSemaphore m_commandRequestedSemaphore;
-    QSemaphore m_commandExecutionSemaphore;
-    QMutex m_blockingCallerMutex;
-    QOpenGLContext *m_mainContext;
-    ShaderCache *m_shaderCache;
-    OffscreenSurfaceHelper *m_offsreenSurfaceHelper;
-    QScopedPointer<QOpenGLContext> m_localContext;
-    QScopedPointer<GraphicsContext> m_graphicsContext;
-    GLCommand *m_currentCommand;
-    QAtomicInt m_running;
-};
+void LoadShaderCommand::execute(Renderer *renderer, GraphicsContext *ctx)
+{
+    NodeManagers *nodeManagers = renderer->nodeManagers();
+    ctx->loadShader(m_shader, nodeManagers->shaderManager());
+}
 
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_COMMANDTHREAD_P_H

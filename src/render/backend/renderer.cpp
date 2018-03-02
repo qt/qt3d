@@ -90,6 +90,7 @@
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/renderviewbuilder_p.h>
 #include <Qt3DRender/private/commandthread_p.h>
+#include <Qt3DRender/private/glcommands_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -188,7 +189,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
-    , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
+    , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
@@ -223,7 +224,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
     m_rayCastingJob->addDependency(m_updateMeshTriangleListJob);
 
-    m_shaderGathererJob->addDependency(m_filterCompatibleTechniqueJob);
+    m_introspectShaderJob->addDependency(m_filterCompatibleTechniqueJob);
 
     m_filterCompatibleTechniqueJob->setRenderer(this);
 
@@ -321,9 +322,12 @@ QOpenGLContext *Renderer::shareContext() const
                              : nullptr);
 }
 
+// Executed in the command thread
 void Renderer::loadShader(Shader *shader) const
 {
-    Q_UNUSED(shader);
+    Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
+    LoadShaderCommand cmd(shader);
+    m_commandThread->executeCommand(&cmd);
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -380,6 +384,7 @@ void Renderer::initialize()
 
         // Set shader cache on submission context and command thread
         m_submissionContext->setShaderCache(m_shaderCache);
+        m_commandThread->setShaderCache(m_shaderCache);
 
         // Note: we don't have a surface at this point
         // The context will be made current later on (at render time)
@@ -392,6 +397,13 @@ void Renderer::initialize()
         // (MS Windows), an offscreen surface is just a hidden QWindow.
         m_format = ctx->format();
         QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
+
+        // Initialize command thread (uses the offscreen surface to make its own ctx current)
+        m_commandThread->initialize(ctx, m_offscreenHelper);
+        // Note: the offscreen surface is also used at shutdown time to release resources
+        // of the submission gl context (when the window is already gone).
+        // By that time (in releaseGraphicResources), the commandThread has been destroyed
+        // and the offscreenSurface can be reused
     }
 
     // Awake setScenegraphRoot in case it was waiting
@@ -1037,7 +1049,7 @@ void Renderer::lookForDirtyTextures()
 }
 
 // Executed in a job
-void Renderer::lookForDirtyShaders()
+void Renderer::reloadDirtyShaders()
 {
     Q_ASSERT(isRunning());
     const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
@@ -1102,8 +1114,9 @@ void Renderer::lookForDirtyShaders()
 
                 if (Q_UNLIKELY(shader->hasPendingNotifications()))
                     shader->submitPendingNotifications();
+                // If the shader hasn't be loaded, load it
                 if (shader != nullptr && !shader->isLoaded())
-                    m_dirtyShaders.push_back(shaderHandle);
+                    loadShader(shader);
             }
         }
     }
@@ -1124,17 +1137,6 @@ void Renderer::updateGLResources()
             // Update the glBuffer data
             m_submissionContext->updateBuffer(buffer);
             buffer->unsetDirty();
-        }
-    }
-
-    {
-        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
-        const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
-        ShaderManager *shaderManager = m_nodesManager->shaderManager();
-        for (const HShader &handle: dirtyShaderHandles) {
-            Shader *shader = shaderManager->data(handle);
-            // Compile shader
-            m_submissionContext->loadShader(shader, shaderManager);
         }
     }
 
@@ -1624,7 +1626,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         if (dirtyBitsForFrame & AbstractRenderer::TechniquesDirty )
             renderBinJobs.push_back(m_filterCompatibleTechniqueJob);
         if (dirtyBitsForFrame & AbstractRenderer::ShadersDirty)
-            renderBinJobs.push_back(m_shaderGathererJob);
+            renderBinJobs.push_back(m_introspectShaderJob);
     } else {
         notCleared |= AbstractRenderer::TechniquesDirty;
         notCleared |= AbstractRenderer::ShadersDirty;
