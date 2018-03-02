@@ -62,7 +62,7 @@ namespace Render {
 
 class AbstractRenderer;
 
-class OffscreenSurfaceHelper : public QObject
+class Q_AUTOTEST_EXPORT OffscreenSurfaceHelper : public QObject
 {
     Q_OBJECT
 public:

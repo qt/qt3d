@@ -34,6 +34,7 @@
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/renderviewbuilder_p.h>
+#include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 class tst_Renderer : public QObject
 {
@@ -48,6 +49,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
         Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
         Qt3DRender::Render::RenderSettings settings;
         // owned by FG manager
         Qt3DRender::Render::ViewportNode *fgRoot = new Qt3DRender::Render::ViewportNode();
@@ -58,7 +60,11 @@ private Q_SLOTS:
 
         renderer.setNodeManagers(&nodeManagers);
         renderer.setSettings(&settings);
+        renderer.setOffscreenSurfaceHelper(&offscreenHelper);
         renderer.initialize();
+
+        // Ensure invoke calls are performed
+        QCoreApplication::processEvents();
 
         // NOTE: FilterCompatibleTechniqueJob and ShaderGathererJob cannot run because the context
         // is not initialized in this test
@@ -204,7 +210,8 @@ private Q_SLOTS:
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
-
+        // Properly shutdown command thread
+        renderer.shutdown();
     }
 };
 

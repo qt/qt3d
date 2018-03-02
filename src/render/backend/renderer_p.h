@@ -125,7 +125,7 @@ class CommandExecuter;
 namespace Render {
 
 class CameraLens;
-class GraphicsContext;
+class SubmissionContext;
 class FrameGraphNode;
 class Material;
 class Technique;
@@ -142,6 +142,7 @@ class RenderStateSet;
 class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
+class ShaderCache;
 
 class UpdateLevelOfDetailJob;
 typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
@@ -249,7 +250,7 @@ public:
 
     void setOpenGLContext(QOpenGLContext *context);
     const GraphicsApiFilterData *contextInfo() const;
-    GraphicsContext *graphicsContext() const;
+    SubmissionContext *submissionContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
@@ -302,7 +303,7 @@ private:
     RenderStateSet *m_defaultRenderStateSet;
     ShaderParameterPack m_defaultUniformPack;
 
-    QScopedPointer<GraphicsContext> m_graphicsContext;
+    QScopedPointer<SubmissionContext> m_submissionContext;
     QSurfaceFormat m_format;
 
     RenderQueue *m_renderQueue;
@@ -331,6 +332,7 @@ private:
     QOpenGLContext *m_glContext;
     QOpenGLContext *m_shareContext;
     mutable QMutex m_shareContextMutex;
+    ShaderCache *m_shaderCache;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
     RayCastingJobPtr m_rayCastingJob;
 

@@ -52,7 +52,7 @@
 //
 
 #include <QtGui/qopenglvertexarrayobject.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,7 +72,7 @@ public:
     void bind();
     void release();
 
-    void create(GraphicsContext *ctx, const VAOIdentifier &key);
+    void create(SubmissionContext *ctx, const VAOIdentifier &key);
     void destroy();
     void cleanup();
 
@@ -87,19 +87,19 @@ public:
 
 private:
     QMutex m_mutex;
-    GraphicsContext *m_ctx;
+    SubmissionContext *m_ctx;
     QScopedPointer<QOpenGLVertexArrayObject> m_vao;
     bool m_specified;
     bool m_supportsVao;
     VAOIdentifier m_owners;
 
-    friend class GraphicsContext;
+    friend class SubmissionContext;
 
-    void saveVertexAttribute(const GraphicsContext::VAOVertexAttribute &attr);
+    void saveVertexAttribute(const SubmissionContext::VAOVertexAttribute &attr);
     inline void saveIndexAttribute(HGLBuffer glBufferHandle) { m_indexAttribute = glBufferHandle; }
 
-    QVector<GraphicsContext::VAOVertexAttribute> m_vertexAttributes;
-    GraphicsContext::VAOIndexAttribute m_indexAttribute;
+    QVector<SubmissionContext::VAOVertexAttribute> m_vertexAttributes;
+    SubmissionContext::VAOIndexAttribute m_indexAttribute;
 };
 
 } // namespace Render

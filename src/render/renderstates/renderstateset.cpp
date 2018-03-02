@@ -45,7 +45,7 @@
 #include <QDebug>
 #include <QOpenGLContext>
 
-#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/qrenderstate_p.h>
 
@@ -139,7 +139,7 @@ int RenderStateSet::changeCost(RenderStateSet *previousState)
     return cost;
 }
 
-void RenderStateSet::apply(GraphicsContext *gc)
+void RenderStateSet::apply(SubmissionContext *gc)
 {
     RenderStateSet* previousStates = gc->currentStateSet();
 
@@ -176,7 +176,7 @@ void RenderStateSet::merge(RenderStateSet *other)
     m_stateMask |= other->stateMask();
 }
 
-void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, GraphicsContext *gc)
+void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, SubmissionContext *gc)
 {
     // TO DO -> Call gcHelper methods instead of raw GL
     // QOpenGLFunctions shouldn't be used here directly

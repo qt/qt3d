@@ -65,7 +65,7 @@ class QRenderState;
 
 namespace Render {
 
-class GraphicsContext;
+class SubmissionContext;
 class RenderState;
 
 class RenderStateSet
@@ -89,11 +89,11 @@ public:
      */
     int changeCost(RenderStateSet* previousState);
 
-    void apply(GraphicsContext* gc);
+    void apply(SubmissionContext *gc);
 
     StateMaskSet stateMask() const;
     void merge(RenderStateSet *other);
-    void resetMasked(StateMaskSet maskOfStatesToReset, GraphicsContext* gc);
+    void resetMasked(StateMaskSet maskOfStatesToReset, SubmissionContext* gc);
 
     template<class State, typename ... Args>
     static StateVariant createState(Args... values)

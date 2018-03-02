@@ -317,7 +317,6 @@ void LineWidth::apply(GraphicsContext *gc) const
     else
         gc->openGLContext()->functions()->glDisable(GL_LINE_SMOOTH);
 
-    gc->activateGLHelper();
     gc->openGLContext()->functions()->glLineWidth(std::get<0>(m_values));
 }
 

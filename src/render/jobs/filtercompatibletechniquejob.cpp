@@ -42,7 +42,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/job_common_p.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,7 +79,7 @@ Renderer *FilterCompatibleTechniqueJob::renderer() const
 void FilterCompatibleTechniqueJob::run()
 {
     Q_ASSERT(m_manager != nullptr && m_renderer != nullptr);
-    Q_ASSERT(m_renderer->isRunning() && m_renderer->graphicsContext()->isInitialized());
+    Q_ASSERT(m_renderer->isRunning() && m_renderer->submissionContext()->isInitialized());
 
     const QVector<Qt3DCore::QNodeId> dirtyTechniqueIds = m_manager->takeDirtyTechniques();
     for (const Qt3DCore::QNodeId techniqueId : dirtyTechniqueIds) {

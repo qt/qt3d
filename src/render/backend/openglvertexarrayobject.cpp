@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "openglvertexarrayobject_p.h"
-#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
@@ -68,7 +68,7 @@ void OpenGLVertexArrayObject::bind()
 
         m_ctx->m_currentVAO = this;
         // We need to specify array and vertex attributes
-        for (const GraphicsContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
+        for (const SubmissionContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
             m_ctx->enableAttribute(attr);
         if (!m_indexAttribute.isNull())
             m_ctx->bindGLBuffer(m_ctx->m_renderer->nodeManagers()->glBufferManager()->data(m_indexAttribute),
@@ -85,7 +85,7 @@ void OpenGLVertexArrayObject::release()
         m_vao->release();
     } else {
         if (m_ctx->m_currentVAO == this) {
-            for (const GraphicsContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
+            for (const SubmissionContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
                 m_ctx->disableAttribute(attr);
             m_ctx->m_currentVAO = nullptr;
         }
@@ -93,7 +93,7 @@ void OpenGLVertexArrayObject::release()
 }
 
 // called from Render thread
-void OpenGLVertexArrayObject::create(GraphicsContext *ctx, const VAOIdentifier &key)
+void OpenGLVertexArrayObject::create(SubmissionContext *ctx, const VAOIdentifier &key)
 {
     QMutexLocker lock(&m_mutex);
 
@@ -123,7 +123,7 @@ void OpenGLVertexArrayObject::cleanup()
     m_ctx = nullptr;
     m_specified = false;
     m_supportsVao = false;
-    m_indexAttribute = GraphicsContext::VAOIndexAttribute();
+    m_indexAttribute = SubmissionContext::VAOIndexAttribute();
     m_vertexAttributes.clear();
 }
 
@@ -141,7 +141,7 @@ bool OpenGLVertexArrayObject::isAbandoned(GeometryManager *geomMgr, ShaderManage
     return !geometryExists || !shaderExists;
 }
 
-void OpenGLVertexArrayObject::saveVertexAttribute(const GraphicsContext::VAOVertexAttribute &attr)
+void OpenGLVertexArrayObject::saveVertexAttribute(const SubmissionContext::VAOVertexAttribute &attr)
 {
     // Remove any vertexAttribute already at location
     for (auto i = m_vertexAttributes.size() - 1; i >= 0; --i) {
