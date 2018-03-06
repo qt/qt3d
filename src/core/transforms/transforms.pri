@@ -31,8 +31,6 @@ qtConfig(qt3d-simd-sse2) {
     CONFIG += simd
 
     SSE2_HEADERS += \
-            $$PWD/vector4d_sse_p.h \
-            $$PWD/vector3d_sse_p.h \
             $$PWD/matrix4x4_sse_p.h
 
     SSE2_SOURCES += \
@@ -43,6 +41,9 @@ qtConfig(qt3d-simd-sse2) {
         SSE2_SOURCES += \
             $$PWD/vector4d_sse.cpp \
             $$PWD/vector3d_sse.cpp
+        SSE2_HEADERS += \
+            $$PWD/vector4d_sse_p.h \
+            $$PWD/vector3d_sse_p.h
     }
 }
 
@@ -50,7 +51,9 @@ qtConfig(qt3d-simd-avx2) {
     CONFIG += simd
 
     AVX2_HEADERS += \
-            $$PWD/matrix4x4_avx2_p.h
+            $$PWD/matrix4x4_avx2_p.h \
+            $$PWD/vector4d_sse_p.h \
+            $$PWD/vector3d_sse_p.h
     AVX2_SOURCES += \
             $$PWD/matrix4x4_avx2.cpp \
             $$PWD/vector4d_sse.cpp \

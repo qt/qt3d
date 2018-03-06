@@ -69,13 +69,13 @@ namespace Qt3DRender {
 */
 
 /*!
-    \fn QTextureImageDataPtr QTextureImageDataGenerator::operator()()
+    \fn Qt3DRender::QTextureImageDataPtr Qt3DRender::QTextureImageDataGenerator::operator()()
 
     Implement the method to return the texture image data.
 */
 
 /*!
-    \fn bool QTextureImageDataGenerator::operator ==(const QTextureImageDataGenerator &other) const
+    \fn bool Qt3DRender::QTextureImageDataGenerator::operator ==(const QTextureImageDataGenerator &other) const
 
     Implement the method to compare this texture data generator to \a other.
     Returns a boolean that indicates whether the \l QAbstractTextureImage needs to reload
@@ -124,7 +124,7 @@ QAbstractTextureImagePrivate::~QAbstractTextureImagePrivate()
  */
 
 /*!
-   \fn QTextureImageDataGeneratorPtr QAbstractTextureImage::dataGenerator() const
+   \fn Qt3DRender::QTextureImageDataGeneratorPtr Qt3DRender::QAbstractTextureImage::dataGenerator() const
 
     Implement this method to return the \l QTextureImageDataGeneratorPtr, which will
     provide the data for the texture image.

@@ -119,8 +119,9 @@ QPickTriangleEvent::QPickTriangleEvent()
  * \a vertex1Index,
  * \a vertex2Index and
  * \a vertex3Index
+
+//! NOTE: remove in Qt6
  */
-// NOTE: remove in Qt6
 QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &worldIntersection, const QVector3D &localIntersection, float distance,
                                        uint triangleIndex, uint vertex1Index, uint vertex2Index,
                                        uint vertex3Index)

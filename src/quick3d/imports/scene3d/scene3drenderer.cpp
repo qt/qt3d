@@ -135,6 +135,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
     , m_lastMultisample(false)
     , m_needsShutdown(true)
+    , m_blocking(false)
 {
     Q_CHECK_PTR(m_item);
     Q_CHECK_PTR(m_item->window());
@@ -154,6 +155,9 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     ContextSaver saver;
     static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderInitialize(saver.context());
     scheduleRootEntityChange();
+
+    const bool blockingRendermode = !qgetenv("SCENE3D_BLOCKING_RENDERMODE").isEmpty();
+    m_blocking = blockingRendermode;
 }
 
 Scene3DRenderer::~Scene3DRenderer()
@@ -202,8 +206,6 @@ void Scene3DRenderer::shutdown()
     // Set to null so that subsequent calls to render
     // would return early
     m_item = nullptr;
-
-    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->abortRenderJobs();
 
     // Exit the simulation loop so no more jobs are asked for. Once this
     // returns it is safe to shutdown the renderer.
@@ -309,7 +311,7 @@ void Scene3DRenderer::render()
         m_finalFBO->bind();
 
     // Render Qt3D Scene
-    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->tryRenderSynchronous();
+    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(m_blocking);
 
     // We may have called doneCurrent() so restore the context if the rendering surface was changed
     // Note: keep in mind that the ContextSave also restores the surface when destroyed

@@ -170,8 +170,8 @@ public:
     {
         return &m_textureMutex;
     }
-protected:
 
+protected:
     template<class APITexture, class APITextureImage>
     friend class APITextureManager;
 

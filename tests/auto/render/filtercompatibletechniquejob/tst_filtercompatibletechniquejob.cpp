@@ -93,8 +93,7 @@ public:
     {
         renderer()->setOpenGLContext(&m_glContext);
         d_func()->m_renderer->initialize();
-        renderer()->graphicsContext()->makeCurrent(m_window.data());
-        renderer()->graphicsContext()->beginDrawing();
+        renderer()->graphicsContext()->beginDrawing(m_window.data());
     }
 
     Render::Renderer *renderer() const

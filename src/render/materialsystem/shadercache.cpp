@@ -80,6 +80,8 @@ QOpenGLShaderProgram *ShaderCache::getShaderProgramAndAddRef(ProgramDNA dna, Qt3
         if (*it != shaderPeerId)
             programRefs.insert(it, shaderPeerId);
 
+        m_pendingRemoval.removeOne(dna);
+
         return *shaderProgram;
     }
 

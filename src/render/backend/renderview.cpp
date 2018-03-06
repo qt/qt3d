@@ -510,7 +510,6 @@ void RenderView::sort()
                 ++j;
             }
         }
-        ++i;
     }
 }
 
@@ -648,7 +647,6 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                     const QVector<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
                     for (Qt3DCore::QNodeId attributeId : attributeIds) {
                         Attribute *attribute = m_manager->attributeManager()->lookupResource(attributeId);
-                        Q_ASSERT(attribute != nullptr);
                         if (attribute->attributeType() == QAttribute::IndexAttribute)
                             indexAttribute = attribute;
                         else if (command->m_attributes.contains(attribute->nameId()))

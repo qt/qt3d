@@ -64,7 +64,7 @@ namespace Render {
 
 class TextureManager;
 class TextureImageManager;
-class TextureDataManager;
+class TextureImageDataManager;
 
 /**
  * Backend class for QAbstractTextureImage.
@@ -78,7 +78,11 @@ public:
 
     void cleanup();
 
-    void setTextureManager(TextureManager *manager);
+    void setTextureManager(TextureManager *manager) { m_textureManager = manager; }
+    void setTextureImageDataManager(TextureImageDataManager *dataManager) { m_textureImageDataManager = dataManager; }
+
+    TextureManager *textureManager() const { return m_textureManager; }
+    TextureImageDataManager *textureImageDataManager() const { return m_textureImageDataManager; }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
@@ -96,6 +100,7 @@ private:
     QTextureImageDataGeneratorPtr m_generator;
 
     TextureManager *m_textureManager;
+    TextureImageDataManager *m_textureImageDataManager;
     HTexture m_textureProvider;
 };
 
@@ -104,7 +109,8 @@ class TextureImageFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit TextureImageFunctor(AbstractRenderer *renderer,
                                  TextureManager *textureManager,
-                                 TextureImageManager *textureImageManager);
+                                 TextureImageManager *textureImageManager,
+                                 TextureImageDataManager *textureImageDataManager);
 
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
@@ -114,6 +120,7 @@ private:
     AbstractRenderer *m_renderer;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
+    TextureImageDataManager *m_textureImageDataManager;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

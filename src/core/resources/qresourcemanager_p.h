@@ -51,7 +51,6 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/QHash>
 #include <QtCore/QMutex>
 #include <QtCore/QReadLocker>
@@ -60,8 +59,7 @@
 #include <limits>
 
 #include <Qt3DCore/private/qhandle_p.h>
-#include <QtCore/private/qsimd_p.h>
-#include <Qt3DCore/private/qt3dcore-config_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 // Silence complaints about unreferenced local variables in
 // ArrayAllocatingPolicy::deallocateBuckets() when the compiler
@@ -234,6 +232,14 @@ inline T *QHandle<T>::operator->() const { return (d && counter == d->counter) ?
 template<typename T>
 inline T *QHandle<T>::data() const { return (d && counter == d->counter) ? &static_cast<QHandleData<T> *>(d)->data : nullptr; }
 
+
+class QT3DCORE_PRIVATE_EXPORT AlignedAllocator
+{
+public:
+    static void *allocate(uint size);
+    static void release(void *p);
+};
+
 template <typename T>
 class ArrayAllocatingPolicy
 {
@@ -315,15 +321,9 @@ private:
     void allocateBucket()
     {
         // no free handle, allocate a new
-        Bucket *b = nullptr;
         // allocate aligned memory
-#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
-        b = static_cast<Bucket*>(_mm_malloc(sizeof(Bucket), 32));
-#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
-        b = static_cast<Bucket*>(_mm_malloc(sizeof(Bucket), 16));
-#else
-        b = static_cast<Bucket*>(malloc(sizeof(Bucket)));
-#endif
+        Bucket *b = static_cast<Bucket *>(AlignedAllocator::allocate(sizeof(Bucket)));
+
         // placement new
         new (b) Bucket;
 
@@ -344,13 +344,7 @@ private:
             // Call dtor explicitly
             b->~Bucket();
             // Release aligned memory
-#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
-            _mm_free(b);
-#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
-            _mm_free(b);
-#else
-            free(b);
-#endif
+            AlignedAllocator::release(b);
             b = n;
         }
     }

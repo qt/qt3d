@@ -232,9 +232,12 @@ void GraphicsContext::resolveRenderTargetFormat()
 #undef RGBA_BITS
 }
 
-void GraphicsContext::beginDrawing()
+bool GraphicsContext::beginDrawing(QSurface *surface)
 {
+    Q_ASSERT(surface);
     Q_ASSERT(m_gl);
+
+    m_surface = surface;
 
     // TO DO: Find a way to make to pause work if the window is not exposed
     //    if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
@@ -243,6 +246,12 @@ void GraphicsContext::beginDrawing()
     //            return false;
     //        qDebug() << Q_FUNC_INFO << 2;
     //    }
+
+    // Makes the surface current on the OpenGLContext
+    // and sets the right glHelper
+    m_ownCurrent = !(m_gl->surface() == m_surface);
+    if (m_ownCurrent && !makeCurrent(m_surface))
+        return false;
 
     // TODO: cache surface format somewhere rather than doing this every time render surface changes
     resolveRenderTargetFormat();
@@ -284,6 +293,8 @@ void GraphicsContext::beginDrawing()
     const int shaderPurgePeriod = 600;
     if (callCount % shaderPurgePeriod == 0)
         m_shaderCache.purge();
+
+    return true;
 }
 
 void GraphicsContext::clearBackBuffer(QClearBuffers::BufferTypeFlags buffers)
@@ -442,7 +453,6 @@ bool GraphicsContext::makeCurrent(QSurface *surface)
         m_glHelper = resolveHighestOpenGLFunctions();
         m_glHelpers.insert(surface, m_glHelper);
     }
-    m_surface = surface;
     return true;
 }
 
@@ -534,6 +544,7 @@ void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
 
         shader->setGraphicsContext(this);
         shader->setLoaded(true);
+        shader->markDirty(AbstractRenderer::AllDirty);
     }
 }
 
@@ -745,6 +756,7 @@ void GraphicsContext::deactivateTexturesWithScope(TextureScope ts)
 }
 
 /*!
+ * \internal
  * Finds the highest supported opengl version and internally use the most optimized
  * helper for a given version.
  */
@@ -870,6 +882,7 @@ bool GraphicsContext::supportsDrawBuffersBlend() const
 }
 
 /*!
+ * \internal
  * Wraps an OpenGL call to glDrawElementsInstanced.
  * If the call is not supported by the system's OpenGL version,
  * it is simulated with a loop.
@@ -892,6 +905,7 @@ void GraphicsContext::drawElementsInstancedBaseVertexBaseInstance(GLenum primiti
 }
 
 /*!
+ * \internal
  * Wraps an OpenGL call to glDrawArraysInstanced.
  */
 void GraphicsContext::drawArraysInstanced(GLenum primitiveType,
@@ -915,6 +929,7 @@ void GraphicsContext::drawArraysInstancedBaseInstance(GLenum primitiveType, GLin
 }
 
 /*!
+ * \internal
  * Wraps an OpenGL call to glDrawElements.
  */
 void GraphicsContext::drawElements(GLenum primitiveType,
@@ -938,6 +953,7 @@ void GraphicsContext::drawElementsIndirect(GLenum mode,
 }
 
 /*!
+ * \internal
  * Wraps an OpenGL call to glDrawArrays.
  */
 void GraphicsContext::drawArrays(GLenum primitiveType,
@@ -1194,7 +1210,6 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
-    bool allValid = true;
 
     // Set the pinned texture of the previous material texture
     // to pinable so that we should easily find an available texture unit
@@ -1214,10 +1229,8 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
                 Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
                 const int texUnit = activateTexture(TextureScopeMaterial, t);
                 texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
-                // if the texture data from generators may not be available yet,
-                // make sure that the next frame is rendered
                 if (texUnit == -1)
-                    allValid = false;
+                    return false;
             }
         }
     }
@@ -1272,7 +1285,7 @@ bool GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         applyUniform(uniform, v);
     }
     // if not all data is valid, the next frame will be rendered immediately
-    return allValid;
+    return true;
 }
 
 void GraphicsContext::readBuffer(GLenum mode)

@@ -82,3 +82,37 @@
 
     It provides two convenience classes WriteLocker and ReadLocker that behave like QReadLocker and QWriteLocker.
 */
+
+#include "qresourcemanager_p.h"
+#include <QtCore/private/qsimd_p.h>
+#include <Qt3DCore/private/qt3dcore-config_p.h>
+
+QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+
+void *AlignedAllocator::allocate(uint size)
+{
+#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+    return _mm_malloc(size, 32);
+#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
+    return _mm_malloc(size, 16);
+#else
+    return malloc(size);
+#endif
+}
+
+void AlignedAllocator::release(void *p)
+{
+#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+    _mm_free(p);
+#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
+    _mm_free(p);
+#else
+    free(p);
+#endif
+}
+
+} // Qt3DCore
+
+QT_END_NAMESPACE

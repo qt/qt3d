@@ -90,7 +90,7 @@ QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, BlockToSSBO, Q_PRIMITIVE_TYPE)
 
 typedef QHash<int, UniformValue> PackUniformHash;
 
-class ShaderParameterPack
+class Q_AUTOTEST_EXPORT ShaderParameterPack
 {
 public:
     ~ShaderParameterPack();
@@ -139,5 +139,7 @@ QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderParameterPack::NamedTexture, Q
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DRender::Render::ShaderParameterPack)
 
 #endif // QT3DRENDER_RENDER_SHADERPARAMETERPACK_P_H

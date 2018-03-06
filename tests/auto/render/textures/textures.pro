@@ -9,3 +9,4 @@ CONFIG += testcase
 SOURCES += tst_textures.cpp
 
 include(../../core/common/common.pri)
+include(../commons/commons.pri)

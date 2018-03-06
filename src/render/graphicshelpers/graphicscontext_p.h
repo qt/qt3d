@@ -113,7 +113,7 @@ public:
 
     int id() const; // unique, small integer ID of this context
 
-    void beginDrawing();
+    bool beginDrawing(QSurface *surface);
     void clearBackBuffer(QClearBuffers::BufferTypeFlags buffers);
     void endDrawing(bool swapBuffers);
 

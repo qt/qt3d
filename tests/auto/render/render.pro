@@ -110,8 +110,7 @@ qtConfig(private_tests) {
         raycaster \
         qscreenraycaster \
         raycastingjob \
-        qcamera \
-        renderbarrierjob
+        qcamera
 
     QT_FOR_CONFIG = 3dcore-private
     # TO DO: These could be restored to be executed in all cases
@@ -144,4 +143,7 @@ qtConfig(private_tests) {
     }
 
     !macos: SUBDIRS += graphicshelpergl4
+
+    qtConfig(qt3d-simd-avx2): SUBDIRS += alignedresourcesmanagers-avx
+    qtConfig(qt3d-simd-sse2): SUBDIRS += alignedresourcesmanagers-sse
 }

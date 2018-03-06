@@ -134,7 +134,7 @@ public:
     // Threaded renderer
     virtual void render() = 0;
     // Synchronous renderer
-    virtual void doRender() = 0;
+    virtual void doRender(bool scene3dBlocking = false) = 0;
 
     virtual void cleanGraphicsResources() = 0;
 
@@ -151,7 +151,7 @@ public:
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
     virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;
     virtual Qt3DCore::QAspectJobPtr rayCastingJob() = 0;
-    virtual Qt3DCore::QAspectJobPtr syncSkeletonLoadingJob() = 0;
+    virtual Qt3DCore::QAspectJobPtr syncTextureLoadingJob() = 0;
     virtual Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() = 0;
 
     virtual void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *root) = 0;
@@ -170,12 +170,6 @@ public:
     virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
     virtual QSurfaceFormat format() = 0;
     virtual QOpenGLContext *shareContext() const = 0;
-
-    virtual void lockSurfaceAndRender() = 0;
-    virtual bool releaseRendererAndRequestPromiseToRender() = 0;
-    virtual bool waitForRenderJobs() = 0;
-    virtual bool tryWaitForRenderJobs(int timeout) = 0;
-    virtual void abortRenderJobs() = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)

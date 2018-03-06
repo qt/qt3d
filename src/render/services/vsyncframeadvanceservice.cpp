@@ -89,7 +89,7 @@ qint64 VSyncFrameAdvanceService::waitForNextFrame()
     if (d->m_drivenByRenderThread)
         d->m_semaphore.acquire(1);
     else
-        d->m_semaphore.acquire(d->m_semaphore.available());
+        d->m_semaphore.acquire(d->m_semaphore.available() + 1);
 
     const quint64 currentTime = d->m_elapsed.nsecsElapsed();
     qCDebug(VSyncAdvanceService) << "Elapsed nsecs since last call " << currentTime - d->m_elapsedTimeSincePreviousFrame;

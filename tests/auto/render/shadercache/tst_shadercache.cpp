@@ -46,6 +46,7 @@ class tst_ShaderCache : public QObject
 
 private Q_SLOTS:
     void insert();
+    void insertAfterRemoval();
     void value();
     void removeRef();
     void purge();
@@ -79,6 +80,32 @@ void tst_ShaderCache::insert()
     QCOMPARE(cache.m_programRefs.values().first().first(), nodeId);
 
     QCOMPARE(cache.m_pendingRemoval.isEmpty(), true);
+}
+
+void tst_ShaderCache::insertAfterRemoval()
+{
+    // GIVEN
+    ShaderCache cache;
+    auto dna = ProgramDNA(12345);
+    auto nodeId = QNodeId::createId();
+
+    // WHEN
+    QOpenGLShaderProgram *shaderProgram = new QOpenGLShaderProgram();
+    cache.insert(dna, nodeId, shaderProgram);
+    cache.getShaderProgramAndAddRef(dna, nodeId);
+    cache.removeRef(dna, nodeId);
+    shaderProgram = cache.getShaderProgramAndAddRef(dna, nodeId);
+
+    // THEN
+    QVERIFY(!cache.m_pendingRemoval.contains(dna));
+
+    // WHEN
+    cache.removeRef(dna, nodeId);
+    cache.getShaderProgramAndAddRef(dna, nodeId);
+    cache.purge();
+
+    // THEN
+    QCOMPARE(cache.m_programHash.size(), 1);
 }
 
 void tst_ShaderCache::value()

@@ -1373,7 +1373,7 @@ void QTextureLoader::setMirrored(bool mirrored)
     }
 }
 
-/*!
+/*
  * Constructs a new QTextureFromSourceGenerator::QTextureFromSourceGenerator
  * instance with properties passed in via \a textureLoader
  * \param url
@@ -1405,7 +1405,7 @@ QTextureFromSourceGenerator::QTextureFromSourceGenerator(QTextureLoader *texture
     m_format = textureLoader->format();
 }
 
-/*!
+/*
  * Takes in a TextureGenerator via \a other and
  * \return whether generators have the same source.
  */

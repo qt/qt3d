@@ -81,7 +81,7 @@ namespace Render {
  * If the last texture disassociates from a generator, the QTextureData will
  * be deleted.
  */
-template <class GeneratorPtr, class DataPtr, class APITexture>
+template <class GeneratorPtr, class DataPtr, class ReferencedType>
 class GeneratorDataManager
 {
 public:
@@ -94,7 +94,7 @@ public:
      *
      * Returns true if the Entry for a given generator had to be created
      */
-    bool requestData(const GeneratorPtr &generator, APITexture *tex)
+    bool requestData(const GeneratorPtr &generator, ReferencedType r)
     {
         QMutexLocker lock(&m_mutex);
 
@@ -103,8 +103,8 @@ public:
         if (needsToBeCreated)
             entry = createEntry(generator);
         Q_ASSERT(entry);
-        if (!entry->referencingTextures.contains(tex))
-            entry->referencingTextures.push_back(tex);
+        if (!entry->referencingObjects.contains(r))
+            entry->referencingObjects.push_back(r);
         return needsToBeCreated;
     }
 
@@ -112,7 +112,7 @@ public:
      * Dereference given generator from texture. If no other textures still reference
      * the generator, the associated data will be deleted
      */
-    void releaseData(const GeneratorPtr &generator, APITexture *tex)
+    void releaseData(const GeneratorPtr &generator, ReferencedType r)
     {
         QMutexLocker lock(&m_mutex);
 
@@ -120,9 +120,9 @@ public:
         for (auto it = m_data.begin(); it != end; ++it) {
             Entry &entry = *it;
             if (*entry.generator == *generator) {
-                entry.referencingTextures.removeAll(tex);
+                entry.referencingObjects.removeAll(r);
                 // delete, if that was the last reference
-                if (entry.referencingTextures.empty()) {
+                if (entry.referencingObjects.empty()) {
                     m_data.erase(it);
                     return;
                 }
@@ -166,22 +166,21 @@ public:
         Entry *entry = findEntry(generator);
         if (!entry) {
             qWarning() << "[TextureDataManager] assignData() called with non-existent generator";
-        } else {
-            entry->data = data;
-
-            // Mark each texture that references this data as being dirty
-            // so that the submission thread knows to upload
-            for (auto texture : qAsConst(entry->referencingTextures)) {
-                texture->requestUpload();
-            }
+            return;
         }
+        entry->data = data;
+    }
+
+    bool contains(const GeneratorPtr &generator)
+    {
+        return findEntry(generator) != nullptr;
     }
 
 private:
 
     struct Entry {
         GeneratorPtr generator;
-        QVector<APITexture*> referencingTextures;
+        QVector<ReferencedType> referencingObjects;
         DataPtr data;
     };
 
@@ -211,12 +210,12 @@ private:
 };
 
 class Q_AUTOTEST_EXPORT TextureDataManager
-        : public GeneratorDataManager<QTextureGeneratorPtr, QTextureDataPtr, GLTexture>
+        : public GeneratorDataManager<QTextureGeneratorPtr, QTextureDataPtr, GLTexture*>
 {
 };
 
 class Q_AUTOTEST_EXPORT TextureImageDataManager
-        : public GeneratorDataManager<QTextureImageDataGeneratorPtr, QTextureImageDataPtr, GLTexture>
+        : public GeneratorDataManager<QTextureImageDataGeneratorPtr, QTextureImageDataPtr, Qt3DCore::QNodeId>
 {
 };
 

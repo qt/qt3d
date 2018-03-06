@@ -69,15 +69,15 @@ public:
     \class Qt3DRender::QLevelOfDetailBoundingSphere
     \inmodule Qt3DRender
     \since 5.9
-    \brief The QLevelOfDetailBoundingSphere class provides a simple spherical volume, defined by it's center and radius.
+    \brief The QLevelOfDetailBoundingSphere class provides a simple spherical volume, defined by its center and radius.
 */
 
 /*!
-    \qmltype LevelOfDetail
+    \qmltype LevelOfDetailBoundingSphere
     \instantiates Qt3DRender::QLevelOfDetailBoundingSphere
     \inherits Component3D
     \inqmlmodule Qt3D.Render
-    \brief The LevelOfDetailBoundingSphere class provides a simple spherical volume, defined by it's center and radius.
+    \brief The LevelOfDetailBoundingSphere QML type provides a simple spherical volume, defined by its center and radius.
 */
 
 /*!
@@ -104,11 +104,9 @@ public:
  * Specifies the radius of the bounding sphere
  */
 
-/*! \fn Qt3DRender::QLevelOfDetailBoundingSphere::QLevelOfDetailBoundingSphere(const QVector3D &center = QVector3D(), float radius = -1.0f)
+/*!
   Constructs a new QLevelOfDetailBoundingSphere with the specified \a center and \a radius.
  */
-
-
 QLevelOfDetailBoundingSphere::QLevelOfDetailBoundingSphere(QVector3D center, float radius)
     : d_ptr(new QLevelOfDetailBoundingSpherePrivate(center, radius))
 {

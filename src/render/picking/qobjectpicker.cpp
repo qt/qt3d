@@ -167,7 +167,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \fn QObjectPicker::clicked(Qt3DRender::QPickEvent *pick)
+    \fn Qt3DRender::QObjectPicker::clicked(Qt3DRender::QPickEvent *pick)
 
     This signal is emitted when the bounding volume defined by the pickAttribute
     property intersects with a ray on a mouse click the QPickEvent \a pick contains
@@ -175,21 +175,21 @@ namespace Qt3DRender {
 */
 
 /*!
-    \fn QObjectPicker::entered()
+    \fn Qt3DRender::QObjectPicker::entered()
 
     This signal is emitted when the bounding volume defined by the pickAttribute
     property intersects with a ray on the mouse entering the volume.
 */
 
 /*!
-    \fn QObjectPicker::exited()
+    \fn Qt3DRender::QObjectPicker::exited()
 
     This signal is emitted when the bounding volume defined by the pickAttribute
     property intersects with a ray on the ray exiting the volume.
 */
 
 /*!
-    \fn QObjectPicker::moved(Qt3DRender::QPickEvent *pick)
+    \fn Qt3DRender::QObjectPicker::moved(Qt3DRender::QPickEvent *pick)
 
     This signal is emitted when the bounding volume defined by the
     pickAttribute property intersects with a ray on a mouse move with a button
@@ -197,7 +197,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \fn QObjectPicker::pressed(Qt3DRender::QPickEvent *pick)
+    \fn Qt3DRender::QObjectPicker::pressed(Qt3DRender::QPickEvent *pick)
 
     This signal is emitted when the bounding volume defined by the
     pickAttribute property intersects with a ray on a mouse press the
@@ -205,7 +205,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \fn QObjectPicker::released(Qt3DRender::QPickEvent *pick)
+    \fn Qt3DRender::QObjectPicker::released(Qt3DRender::QPickEvent *pick)
 
     This signal is emitted when the bounding volume defined by the
     pickAttribute property intersects with a ray on a mouse release the
