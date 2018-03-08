@@ -81,7 +81,7 @@ public:
     void setRenderer(AbstractRenderer *renderer);
     AbstractRenderer *renderer() const;
 
-    QSharedPointer<RenderBackendResourceAccessor> resourceAccessor();
+    QSharedPointer<RenderBackendResourceAccessor> resourceAccessor() const;
 
 protected:
     explicit BackendNode(Qt3DCore::QBackendNodePrivate &dd);

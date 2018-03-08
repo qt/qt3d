@@ -99,6 +99,7 @@
 #endif
 
 #include <Qt3DRender/private/glresourcemanagers_p.h>
+#include <Qt3DRender/private/resourceaccessor_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -378,6 +379,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
 {
     m_nodesManager = managers;
     m_glResourceManagers = new GLResourceManagers();
+    m_scene2DResourceAccessor.reset(new ResourceAccessor(this, m_nodesManager));
 
     m_updateShaderDataTransformJob->setManagers(m_nodesManager);
     m_cleanupJob->setManagers(m_nodesManager);
@@ -447,6 +449,39 @@ void Renderer::setScreen(QScreen *scr)
 QScreen *Renderer::screen() const
 {
     return m_screen;
+}
+
+bool Renderer::accessOpenGLTexture(Qt3DCore::QNodeId nodeId,
+                                   QOpenGLTexture **texture,
+                                   QMutex **lock,
+                                   bool readonly)
+{
+    Texture *tex = m_nodesManager->textureManager()->lookupResource(nodeId);
+    if (!tex)
+        return false;
+
+    GLTexture *glTex = m_glResourceManagers->glTextureManager()->lookupResource(tex->peerId());
+    if (!glTex)
+        return false;
+
+    if (glTex->isDirty())
+        return false;
+
+    if (!readonly)
+        glTex->setExternalRenderingEnabled(true);
+
+    GLTexture::TextureUpdateInfo texInfo = glTex->createOrUpdateGLTexture();
+    *texture = texInfo.texture;
+
+    if (!readonly)
+        *lock = glTex->externalRenderingLock();
+
+    return true;
+}
+
+QSharedPointer<RenderBackendResourceAccessor> Renderer::resourceAccessor() const
+{
+    return m_scene2DResourceAccessor;
 }
 
 // Called in RenderThread context by the run method of RenderThread
@@ -885,6 +920,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
 }
 
 bool Renderer::canRender() const
+
 {
     // Make sure that we've not been told to terminate
     if (m_renderThread && !m_running.loadRelaxed()) {

@@ -140,7 +140,6 @@ class Skeleton;
 class Joint;
 class ShaderImage;
 
-class ResourceAccessor;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
@@ -219,8 +218,6 @@ public:
     inline JointManager *jointManager() const noexcept { return m_jointManager; }
     inline ShaderImageManager *shaderImageManager() const noexcept { return m_shaderImageManager; }
 
-    QSharedPointer<ResourceAccessor> resourceAccessor();
-
 private:
     CameraManager *m_cameraManager;
     EntityManager *m_renderNodesManager;
@@ -258,8 +255,6 @@ private:
     SkeletonManager *m_skeletonManager;
     JointManager *m_jointManager;
     ShaderImageManager *m_shaderImageManager;
-
-    QSharedPointer<ResourceAccessor> m_resourceAccessor;
 };
 
 // Specializations
