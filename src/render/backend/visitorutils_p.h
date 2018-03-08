@@ -112,12 +112,14 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
     Buffer *indexBuffer = nullptr;
 
     if (geom) {
+        positionAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
+
         Qt3DRender::Render::Attribute *attribute = nullptr;
         const auto attrIds = geom->attributes();
         for (const Qt3DCore::QNodeId attrId : attrIds) {
             attribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
             if (attribute){
-                if (attribute->name() == QAttribute::defaultPositionAttributeName())
+                if (!positionAttribute && attribute->name() == QAttribute::defaultPositionAttributeName())
                     positionAttribute = attribute;
                 else if (attribute->attributeType() == QAttribute::IndexAttribute)
                     indexAttribute = attribute;
