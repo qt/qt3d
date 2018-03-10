@@ -82,7 +82,7 @@ Entity {
     Mesh {
         id: mesh
         source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;hb=refs/heads/dev;f=examples/qt3d/exampleresources/assets/chest/Chest.obj"
-        onStatusChanged: console.log("Status " + status)
+        onStatusChanged: console.log("Mesh status " + status)
     }
 
     Transform {
@@ -93,7 +93,10 @@ Entity {
 
     DiffuseMapMaterial {
         id: material
-        diffuse: TextureLoader { source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;hb=refs/heads/dev;f=examples/qt3d/planets-qml/images/solarsystemscope/earthmap2k.jpg" }
+        diffuse: TextureLoader {
+            source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;hb=refs/heads/dev;f=examples/qt3d/planets-qml/images/solarsystemscope/earthmap2k.jpg"
+            onStatusChanged: console.log("TextureLoader status " + status)
+        }
         specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
         shininess: 2.0
     }

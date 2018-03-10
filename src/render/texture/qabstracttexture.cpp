@@ -939,6 +939,10 @@ void QAbstractTexture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             bool blocked = blockNotifications(true);
             setFormat(static_cast<QAbstractTexture::TextureFormat>(propertyChange->value().toInt()));
             blockNotifications(blocked);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("status")) {
+            bool blocked = blockNotifications(true);
+            setStatus(static_cast<QAbstractTexture::Status>(propertyChange->value().toInt()));
+            blockNotifications(blocked);
         }
         // TODO handle target changes, it's a CONSTANT property but can be affected by loader
         break;
