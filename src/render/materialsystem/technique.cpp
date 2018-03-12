@@ -43,7 +43,6 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
-#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/private/qtechnique_p.h>
 #include <Qt3DRender/private/shader_p.h>

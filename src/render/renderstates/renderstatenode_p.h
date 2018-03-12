@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RenderStateNode : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderStateNode : public BackendNode
 {
 public:
     RenderStateNode();

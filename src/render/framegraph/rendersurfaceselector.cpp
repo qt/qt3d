@@ -40,7 +40,6 @@
 #include "rendersurfaceselector_p.h"
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
-
 #include <QtGui/qwindow.h>
 #include <QtGui/qscreen.h>
 #include <QtGui/qoffscreensurface.h>

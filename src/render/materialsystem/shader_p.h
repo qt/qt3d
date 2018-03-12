@@ -67,7 +67,7 @@ namespace Render {
 class ShaderManager;
 class AttachmentPack;
 
-class Q_AUTOTEST_EXPORT Shader : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Shader : public BackendNode
 {
 public:
     static const int modelMatrixNameId;

@@ -44,12 +44,9 @@
 #include <QMetaObject>
 #include <Qt3DCore/qdynamicpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <private/graphicscontext_p.h>
 #include <private/qbackendnode_p.h>
-#include <private/glbuffer_p.h>
 #include <private/managers_p.h>
 #include <private/nodemanagers_p.h>
-#include <private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -39,7 +39,6 @@
 
 #include "subtreeenabler_p.h"
 #include <Qt3DRender/private/qsubtreeenabler_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

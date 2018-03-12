@@ -62,7 +62,7 @@ typedef QSharedPointer<QPickEvent> QPickEventPtr;
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT ObjectPicker : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT ObjectPicker : public BackendNode
 {
 public:
     ObjectPicker();

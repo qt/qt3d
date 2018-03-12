@@ -49,6 +49,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DRender/private/updateworldtransformjob_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -34,7 +34,6 @@
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/private/qtechnique_p.h>
 #include <Qt3DRender/private/technique_p.h>
-#include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/filterkey_p.h>

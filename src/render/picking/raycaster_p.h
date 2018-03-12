@@ -64,7 +64,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RayCaster : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RayCaster : public BackendNode
 {
 public:
     RayCaster();

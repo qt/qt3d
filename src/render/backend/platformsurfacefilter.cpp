@@ -39,7 +39,7 @@
 
 #include "platformsurfacefilter_p.h"
 
-#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 
 #include <QMetaObject>
 #include <QPlatformSurfaceEvent>

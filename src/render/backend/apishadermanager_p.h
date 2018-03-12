@@ -169,7 +169,7 @@ public:
         return std::move(m_updatedShaders);
     }
 
-    QVector<Qt3DCore::QNodeId> shaderIdsForProgram(GLShader *glShader) const
+    QVector<Qt3DCore::QNodeId> shaderIdsForProgram(APIShader *glShader) const
     {
         QReadLocker lock(&m_readWriteLock);
         return m_apiShaders.value(glShader);

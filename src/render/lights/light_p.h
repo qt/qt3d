@@ -61,7 +61,7 @@ namespace Render {
 
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT Light : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Light : public BackendNode
 {
 public:
     Qt3DCore::QNodeId shaderData() const;

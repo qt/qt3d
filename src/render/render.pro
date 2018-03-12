@@ -1,8 +1,7 @@
 TARGET   = Qt3DRender
 MODULE   = 3drender
 
-QT = core-private gui-private 3dcore-private
-QT_PRIVATE = openglextensions
+QT = core-private 3dcore-private
 QT_FOR_PRIVATE = concurrent
 
 include (backend/render-backend.pri)
@@ -18,7 +17,6 @@ include (picking/picking.pri)
 include (raycasting/raycasting.pri)
 include (services/services.pri)
 include (texture/texture.pri)
-include (renderers/renderers.pri)
 
 gcov {
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
@@ -39,14 +37,19 @@ HEADERS += \
     renderlogging_p.h \
     qt3drender_global.h \
     qt3drender_global_p.h \
-    aligned_malloc_p.h
+    aligned_malloc_p.h \
+    qrendererplugin_p.h \
+    qrendererpluginfactory_p.h
 
 SOURCES += \
-    renderlogging.cpp
+    renderlogging.cpp \
+    qrendererplugin.cpp \
+    qrendererpluginfactory.cpp
 
 MODULE_PLUGIN_TYPES = \
     sceneparsers \
     geometryloaders \
-    renderplugins
+    renderplugins \
+    renderers
 
 load(qt_module)

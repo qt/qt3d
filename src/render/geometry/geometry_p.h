@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Geometry : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Geometry : public BackendNode
 {
 public:
     Geometry();

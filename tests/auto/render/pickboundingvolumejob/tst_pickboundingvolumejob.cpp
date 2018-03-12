@@ -45,10 +45,12 @@
 #include <Qt3DRender/QNoPicking>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickTriangleEvent>
+#include <Qt3DRender/QPickingSettings>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/pickboundingvolumeutils_p.h>

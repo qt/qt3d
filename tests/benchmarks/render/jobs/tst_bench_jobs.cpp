@@ -41,7 +41,6 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
-#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DQuick/QQmlAspectEngine>
@@ -50,6 +49,7 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <renderer_p.h>
 #include <QQmlComponent>
 #include <QScopedPointer>
 

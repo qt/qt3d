@@ -55,6 +55,7 @@
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qcollisionqueryresult_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QSharedPointer>
@@ -70,7 +71,7 @@ typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
 
 class RayCastingJobPrivate;
 
-class Q_AUTOTEST_EXPORT RayCastingJob : public AbstractPickingJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RayCastingJob : public AbstractPickingJob
 {
 public:
     RayCastingJob();

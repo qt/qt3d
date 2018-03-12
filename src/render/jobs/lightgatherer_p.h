@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/lightsource_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,7 +64,7 @@ namespace Render {
 class EntityManager;
 class EnvironmentLight;
 
-class Q_AUTOTEST_EXPORT LightGatherer : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT LightGatherer : public Qt3DCore::QAspectJob
 {
 public:
     LightGatherer();

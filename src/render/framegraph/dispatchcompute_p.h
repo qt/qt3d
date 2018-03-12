@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class DispatchCompute : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT DispatchCompute : public FrameGraphNode
 {
 public:
     DispatchCompute();

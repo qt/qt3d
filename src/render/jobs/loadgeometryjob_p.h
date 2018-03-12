@@ -54,6 +54,7 @@
 #include <QSharedPointer>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,7 +65,7 @@ namespace Render {
 class NodeManagers;
 class LoadGeometryJobPrivate;
 
-class Q_AUTOTEST_EXPORT LoadGeometryJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT LoadGeometryJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit LoadGeometryJob(const HGeometryRenderer &handle);

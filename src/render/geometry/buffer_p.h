@@ -66,7 +66,7 @@ namespace Render {
 
 class BufferManager;
 
-class Q_AUTOTEST_EXPORT Buffer : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Buffer : public BackendNode
 {
 public:
     Buffer();

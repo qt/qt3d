@@ -46,7 +46,6 @@
 #include <QMutexLocker>
 #include <qshaderprogram.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>

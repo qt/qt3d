@@ -5,7 +5,6 @@ HEADERS += \
     $$PWD/parameterpack_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/attachmentpack_p.h \
-    $$PWD/qgraphicsutils_p.h \
     $$PWD/managers_p.h \
     $$PWD/handle_types_p.h \
     $$PWD/platformsurfacefilter_p.h \
@@ -38,7 +37,6 @@ HEADERS += \
     $$PWD/visitorutils_p.h \
     $$PWD/segmentsvisitor_p.h \
     $$PWD/pointsvisitor_p.h \
-    $$PWD/commandexecuter_p.h \
     $$PWD/apishadermanager_p.h
 
 SOURCES += \
@@ -69,5 +67,4 @@ SOURCES += \
     $$PWD/offscreensurfacehelper.cpp \
     $$PWD/resourceaccessor.cpp \
     $$PWD/segmentsvisitor.cpp \
-    $$PWD/pointsvisitor.cpp \
-    $$PWD/commandexecuter.cpp
+    $$PWD/pointsvisitor.cpp

@@ -73,7 +73,7 @@ struct GeometryFunctorResult
     QMesh::Status status;
 };
 
-class Q_AUTOTEST_EXPORT GeometryRenderer : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT GeometryRenderer : public BackendNode
 {
 public:
     GeometryRenderer();

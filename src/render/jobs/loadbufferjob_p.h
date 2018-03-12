@@ -65,7 +65,7 @@ namespace Render {
 class NodeManagers;
 class LoadBufferJobPrivate;
 
-class Q_AUTOTEST_EXPORT LoadBufferJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT LoadBufferJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit LoadBufferJob(const HBuffer &handle);

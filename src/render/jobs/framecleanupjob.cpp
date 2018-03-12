@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "framecleanupjob_p.h"
-#include <private/renderer_p.h>
 #include <private/nodemanagers_p.h>
 #include <private/entity_p.h>
 #include <private/shaderdata_p.h>

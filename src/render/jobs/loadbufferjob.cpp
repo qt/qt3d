@@ -41,9 +41,9 @@
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
-#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

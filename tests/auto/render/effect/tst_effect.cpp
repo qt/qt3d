@@ -33,7 +33,6 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/private/qeffect_p.h>
 #include <Qt3DRender/private/effect_p.h>
-#include <Qt3DRender/private/shaderparameterpack_p.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 

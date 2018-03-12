@@ -47,6 +47,9 @@
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/private/gltfskeletonloader_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QFileInfo>
 
 QT_BEGIN_NAMESPACE
 

@@ -100,6 +100,11 @@ src_plugins_geometryloaders.file = $$PWD/plugins/geometryloaders/geometryloaders
 src_plugins_geometryloaders.target = sub-plugins-geometryloaders
 src_plugins_geometryloaders.depends = src_render src_extras
 
+# Qt3D Renderer plugins
+src_plugins_renderers.file = $$PWD/plugins/renderers/renderers.pro
+src_plugins_renderers.target = sub-plugins-renderers
+src_plugins_renderers.depends = src_render
+
 qtHaveModule(quick) {
     # Qt3D Render plugins
     src_plugins_render.file = $$PWD/plugins/renderplugins/renderplugins.pro
@@ -114,7 +119,11 @@ include($$OUT_PWD/core/qt3dcore-config.pri)
 
 qtConfig(qt3d-input): SUBDIRS += src_input
 qtConfig(qt3d-logic): SUBDIRS += src_logic
-qtConfig(qt3d-render): SUBDIRS += src_render
+qtConfig(qt3d-render) {
+    SUBDIRS += \
+        src_render \
+        src_plugins_renderers
+}
 qtConfig(qt3d-animation) {
     SUBDIRS += src_animation
     qtConfig(qt3d-input): SUBDIRS += src_doc

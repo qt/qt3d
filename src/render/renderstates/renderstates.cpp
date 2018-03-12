@@ -44,7 +44,6 @@
 #include <Qt3DRender/qcullface.h>
 #include <Qt3DRender/qpointsize.h>
 
-#include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/qstenciloperation_p.h>
 #include <Qt3DRender/private/qstenciltest_p.h>
 #include <Qt3DRender/qblendequationarguments.h>

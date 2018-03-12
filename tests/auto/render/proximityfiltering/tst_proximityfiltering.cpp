@@ -38,6 +38,10 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/filterproximitydistancejob_p.h>
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
+#include <Qt3DRender/private/updateworldtransformjob_p.h>
+#include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
+#include <Qt3DRender/private/calcboundingvolumejob_p.h>
+#include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/qproximityfilter.h>
 
 #include "testaspect.h"

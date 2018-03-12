@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT SortPolicy : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT SortPolicy : public FrameGraphNode
 {
 public:
     SortPolicy();

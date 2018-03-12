@@ -12,3 +12,6 @@ include(../../../auto/render/commons/commons.pri)
 
 # Needed to use the TestAspect
 DEFINES += QT_BUILD_INTERNAL
+
+# Link Against OpenGL Renderer Plugin
+include(../../../auto/render/opengl/opengl_render_plugin.pri)

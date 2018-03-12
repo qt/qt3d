@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/shadervariables_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <QMutex>
 #include <Qt3DCore/private/matrix4x4_p.h>
@@ -67,7 +66,7 @@ class GraphicsContext;
 class GLBuffer;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT ShaderData : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderData : public BackendNode
 {
 public:
     enum TransformType {
