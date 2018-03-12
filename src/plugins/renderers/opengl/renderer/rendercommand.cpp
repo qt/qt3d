@@ -43,6 +43,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 RenderCommand::RenderCommand()
     : m_glShader(nullptr)
@@ -85,6 +86,7 @@ bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept
             a.m_isValid == b.m_isValid && a.m_computeCommand == b.m_computeCommand);
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

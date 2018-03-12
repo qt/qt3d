@@ -69,6 +69,7 @@ QT_BEGIN_NAMESPACE
 using namespace Qt3DRender;
 using namespace Render;
 using namespace Render::Debug;
+using namespace Render::OpenGL;
 
 namespace {
 
@@ -135,7 +136,7 @@ namespace {
     }
 }
 
-ImGuiRenderer::ImGuiRenderer(Renderer *renderer)
+ImGuiRenderer::ImGuiRenderer(Qt3DRender::Render::OpenGL::Renderer *renderer)
     : m_renderer(renderer)
 {
     ImGui::CreateContext();

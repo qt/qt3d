@@ -42,6 +42,7 @@
 
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
+using namespace Qt3DRender::Render::OpenGL;
 
 namespace {
 

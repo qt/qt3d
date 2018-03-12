@@ -41,11 +41,13 @@
 
 #include <graphicscontext_p.h>
 #include <gltexture_p.h>
+#include <logging_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 class TextureExtRendererLocker
 {
@@ -219,6 +221,7 @@ void TextureSubmissionContext::decayTextureScores()
         m_activeTextures[u].score = qMax(m_activeTextures[u].score - 1, 0);
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender of namespace
 

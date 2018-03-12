@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GRAPHICSCONTEXT_H
-#define QT3DRENDER_RENDER_GRAPHICSCONTEXT_H
+#ifndef QT3DRENDER_RENDER_OPENGL_GRAPHICSCONTEXT_H
+#define QT3DRENDER_RENDER_OPENGL_GRAPHICSCONTEXT_H
 
 //
 //  W A R N I N G
@@ -84,10 +84,13 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class GraphicsHelperInterface;
 class RenderTarget;
 class AttachmentPack;
 class ShaderManager;
+
+namespace OpenGL {
+
+class GraphicsHelperInterface;
 class GLShader;
 class GLShaderManager;
 
@@ -256,9 +259,10 @@ QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat4x2, float, glUniformMatrix4x2fv)
 QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat3x4, float, glUniformMatrix3x4fv)
 QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat4x3, float, glUniformMatrix4x3fv)
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_GRAPHICSCONTEXT_H
+#endif // QT3DRENDER_RENDER_OPENGL_GRAPHICSCONTEXT_H

@@ -68,6 +68,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace OpenGL {
+
 // A UBO is created for each ShaderData Shader Pair
 // That means a UBO is unique to a shader/shaderdata
 
@@ -161,6 +163,8 @@ void GLBuffer::bindBufferBase(GraphicsContext *ctx, int bindingPoint)
 {
     ctx->bindBufferBase(m_lastTarget, bindingPoint, m_bufferId);
 }
+
+} // namespace OpenGL
 
 } // namespace Render
 

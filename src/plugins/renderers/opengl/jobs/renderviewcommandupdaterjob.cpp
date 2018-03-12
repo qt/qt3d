@@ -48,9 +48,12 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace OpenGL {
+
 namespace {
 int renderViewInstanceCounter = 0;
 } // anonymous
+
 
 RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
     : Qt3DCore::QAspectJob()
@@ -74,6 +77,8 @@ void RenderViewCommandUpdaterJob::run()
         m_renderView->updateRenderCommand(m_renderables.data(), m_offset, m_count);
     }
 }
+
+} // OpenGL
 
 } // Render
 

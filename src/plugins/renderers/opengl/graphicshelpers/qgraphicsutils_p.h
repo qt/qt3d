@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QGRAPHICSUTILS_P_H
-#define QT3DRENDER_RENDER_QGRAPHICSUTILS_P_H
+#ifndef QT3DRENDER_RENDER_OPENGL_QGRAPHICSUTILS_P_H
+#define QT3DRENDER_RENDER_OPENGL_QGRAPHICSUTILS_P_H
 
 //
 //  W A R N I N G
@@ -66,6 +66,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 namespace Render {
+
+namespace OpenGL {
 
 namespace {
 
@@ -401,10 +403,12 @@ public:
 
 };
 
+} // namespace OpenGL
+
 } // namespace Render
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QGRAPHICSUTILS_P_H
+#endif // QT3DRENDER_RENDER_OPENGL_QGRAPHICSUTILS_P_H

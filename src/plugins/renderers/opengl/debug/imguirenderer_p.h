@@ -72,9 +72,10 @@ class QServiceLocator;
 
 namespace Qt3DRender {
 namespace Render {
-
+namespace OpenGL {
 class RenderView;
 class Renderer;
+}
 
 namespace Debug {
 
@@ -83,21 +84,21 @@ namespace Debug {
 class ImGuiRenderer : public QObject {
     Q_OBJECT
 public:
-    ImGuiRenderer(Qt3DRender::Render::Renderer *renderer);
+    ImGuiRenderer(Qt3DRender::Render::OpenGL::Renderer *renderer);
 
     void processEvent(QEvent *event);
-    void renderDebugOverlay(const QVector<Render::RenderView *> &renderViews, const Render::RenderView *renderView, int jobsInLastFrame);
+    void renderDebugOverlay(const QVector<Render::OpenGL::RenderView *> &renderViews, const Render::OpenGL::RenderView *renderView, int jobsInLastFrame);
 
     void setCapabilities(const QString &capabilities);
 
 private:
-    bool newFrame(const RenderView *renderView);
+    bool newFrame(const Render::OpenGL::RenderView *renderView);
     void renderDrawList(ImDrawData *draw_data);
     void onMouseChange(QMouseEvent *event);
     void onWheel(QWheelEvent *event);
     void onKeyPressRelease(QKeyEvent *event);
     void showGLInfo();
-    void showRenderDetails(const QVector<Render::RenderView *> &renderViews);
+    void showRenderDetails(const QVector<Render::OpenGL::RenderView *> &renderViews);
 
     bool createFontsTexture();
     bool createDeviceObjects();
@@ -112,7 +113,7 @@ private:
     int          m_attribLocationPosition = 0, m_attribLocationUV = 0, m_attribLocationColor = 0;
     unsigned int m_vboHandle = 0, m_vaoHandle = 0, m_elementsHandle = 0;
 
-    Renderer     *m_renderer;
+    Render::OpenGL::Renderer *m_renderer;
     QOpenGLExtraFunctions *m_funcs = nullptr;
     QOpenGLShaderProgram *m_shader = nullptr;
 

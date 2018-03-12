@@ -42,6 +42,7 @@
 #include <Qt3DRender/qshaderimage.h>
 #include <graphicscontext_p.h>
 #include <gltexture_p.h>
+#include <logging_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,6 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 class GraphicsContext;
 class GLTexture;
@@ -299,7 +301,7 @@ int ImageSubmissionContext::assignUnitForImage(Qt3DCore::QNodeId shaderImageId)
     return lowestScoredUnit;
 }
 
-
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

@@ -50,7 +50,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::OpenGL::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
         Qt3DRender::Render::RenderSettings settings;
         // owned by FG manager
@@ -107,8 +107,8 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
-        Qt3DRender::Render::RenderQueue *renderQueue = renderer.renderQueue();
+        Qt3DRender::Render::OpenGL::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::OpenGL::RenderQueue *renderQueue = renderer.renderQueue();
         Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
         Qt3DRender::Render::RenderSettings settings;
         // owned by FG manager
@@ -129,16 +129,16 @@ private Q_SLOTS:
         // NOTE: FilterCompatibleTechniqueJob and ShaderGathererJob cannot run because the context
         // is not initialized in this test
 
-        const int renderViewBuilderMaterialCacheJobCount = 1 + Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
+        const int renderViewBuilderMaterialCacheJobCount = 1 + Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount();
         // syncMaterialGathererJob
         // n * materialGathererJob
         const int layerCacheJobCount = 2;
         // filterEntityByLayerJob,
         // syncFilterEntityByLayerJob
 
-        const int singleRenderViewCommandRebuildJobCount  = 1 + Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
+        const int singleRenderViewCommandRebuildJobCount  = 1 + Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount();
 
-        const int singleRenderViewJobCount = 8 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
+        const int singleRenderViewJobCount = 8 + 1 * Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount();
         // RenderViewBuilder renderViewJob,
         //                   syncRenderViewInitializationJob,
         //                   syncFrustumCullingJob,

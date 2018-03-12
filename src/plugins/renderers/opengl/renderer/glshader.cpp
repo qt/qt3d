@@ -41,12 +41,15 @@
 #include <QMutexLocker>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <graphicscontext_p.h>
+#include <logging_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
 namespace Render {
+
+namespace OpenGL {
 
 GLShader::GLShader()
     : m_isLoaded(false)
@@ -308,6 +311,8 @@ void GLShader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &
         qCDebug(Shaders) << "Initializing Shader Storage Block {" << m_shaderStorageBlockNames[i] << "}";
     }
 }
+
+} // OpenGL
 
 } // Render
 

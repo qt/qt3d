@@ -166,6 +166,12 @@ void Shader::initializeFromReference(const Shader &other)
     setLog(other.log());
 }
 
+// Called by renderer plugin when loading a GL Shader plugins
+void Shader::requestCacheRebuild()
+{
+    markDirty(AbstractRenderer::MaterialDirty);
+}
+
 void Shader::setLog(const QString &log)
 {
     m_log = log;

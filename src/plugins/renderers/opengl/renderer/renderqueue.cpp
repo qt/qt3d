@@ -47,6 +47,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace OpenGL {
+
 RenderQueue::RenderQueue()
     : m_noRender(false)
     , m_wasReset(true)
@@ -125,6 +127,8 @@ bool RenderQueue::isFrameQueueComplete() const
     return (m_noRender
             || (m_targetRenderViewCount > 0 && m_targetRenderViewCount == m_currentRenderViewCount));
 }
+
+} // namespace OpenGL
 
 } // namespace Render
 

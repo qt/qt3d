@@ -90,9 +90,9 @@ public:
         return d_func()->m_renderer->nodeManagers();
     }
 
-    Render::MaterialParameterGathererJobPtr materialGathererJob() const
+    Render::OpenGL::MaterialParameterGathererJobPtr materialGathererJob() const
     {
-        Render::MaterialParameterGathererJobPtr job = Render::MaterialParameterGathererJobPtr::create();
+        Render::OpenGL::MaterialParameterGathererJobPtr job = Render::OpenGL::MaterialParameterGathererJobPtr::create();
         job->setNodeManagers(nodeManagers());
         return job;
     }
@@ -136,7 +136,7 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::TestAspect> aspect(new Qt3DRender::TestAspect(buildTestScene(2000)));
 
         // WHEN
-        Qt3DRender::Render::MaterialParameterGathererJobPtr gatheringJob = aspect->materialGathererJob();
+        Qt3DRender::Render::OpenGL::MaterialParameterGathererJobPtr gatheringJob = aspect->materialGathererJob();
         gatheringJob->setHandles(aspect->nodeManagers()->materialManager()->activeHandles());
 
         QBENCHMARK {

@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERVIEW_H
-#define QT3DRENDER_RENDER_RENDERVIEW_H
+#ifndef QT3DRENDER_RENDER_OPENGL_RENDERVIEW_H
+#define QT3DRENDER_RENDER_OPENGL_RENDERVIEW_H
 
 //
 //  W A R N I N G
@@ -86,14 +86,17 @@ class QRenderPass;
 
 namespace Render {
 
-class Renderer;
 class NodeManagers;
-class RenderCommand;
 class RenderPassFilter;
 class TechniqueFilter;
 class ViewportNode;
 class Effect;
 class RenderPass;
+
+namespace OpenGL {
+
+class Renderer;
+class RenderCommand;
 
 typedef QPair<ShaderUniform, QVariant> ActivePropertyContent;
 typedef QPair<QString, ActivePropertyContent > ActiveProperty;
@@ -389,9 +392,10 @@ private:
                                                const QString &structName) const;
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERVIEW_H
+#endif // QT3DRENDER_RENDER_OPENGL_ENDERVIEW_H

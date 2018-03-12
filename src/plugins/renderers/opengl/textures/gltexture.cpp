@@ -66,6 +66,7 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 namespace {
 
@@ -766,6 +767,7 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
     gl->glBindTexture(m_properties.target, 0);
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

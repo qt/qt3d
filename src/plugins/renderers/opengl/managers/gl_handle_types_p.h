@@ -59,6 +59,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace OpenGL {
+
 class GLBuffer;
 class GLTexture;
 class OpenGLVertexArrayObject;
@@ -66,6 +68,8 @@ class OpenGLVertexArrayObject;
 typedef Qt3DCore::QHandle<GLBuffer> HGLBuffer;
 typedef Qt3DCore::QHandle<OpenGLVertexArrayObject> HVao;
 typedef Qt3DCore::QHandle<GLTexture> HGLTexture;
+
+} // namespace OpenGL
 
 } // namespace Render
 

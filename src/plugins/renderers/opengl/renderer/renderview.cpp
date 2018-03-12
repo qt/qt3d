@@ -85,6 +85,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 
 namespace  {
@@ -1232,6 +1233,7 @@ void RenderView::setIsDownloadBuffersEnable(bool isDownloadBuffersEnable)
     m_isDownloadBuffersEnable = isDownloadBuffersEnable;
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

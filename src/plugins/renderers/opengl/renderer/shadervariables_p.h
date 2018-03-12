@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_SHADERVARIABLES_P_H
-#define QT3DRENDER_RENDER_SHADERVARIABLES_P_H
+#ifndef QT3DRENDER_RENDER_OPENGL_SHADERVARIABLES_P_H
+#define QT3DRENDER_RENDER_OPENGL_SHADERVARIABLES_P_H
 
 //
 //  W A R N I N G
@@ -60,6 +60,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace OpenGL {
+
 struct ShaderAttribute
 {
     ShaderAttribute()
@@ -75,7 +77,7 @@ struct ShaderAttribute
     int m_size;
     int m_location;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderAttribute, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderAttribute, Q_MOVABLE_TYPE)
 
 struct Q_AUTOTEST_EXPORT ShaderUniform
 {
@@ -103,7 +105,7 @@ struct Q_AUTOTEST_EXPORT ShaderUniform
     uint m_rawByteSize; // contains byte size (size / type / strides)
     // size, offset and strides are in bytes
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderUniform, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderUniform, Q_MOVABLE_TYPE)
 
 struct Q_AUTOTEST_EXPORT ShaderUniformBlock
 {
@@ -122,7 +124,7 @@ struct Q_AUTOTEST_EXPORT ShaderUniformBlock
     int m_activeUniformsCount;
     int m_size;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderUniformBlock, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderUniformBlock, Q_MOVABLE_TYPE)
 
 struct Q_AUTOTEST_EXPORT ShaderStorageBlock
 {
@@ -141,7 +143,9 @@ struct Q_AUTOTEST_EXPORT ShaderStorageBlock
     int m_size;
     int m_activeVariablesCount;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderStorageBlock, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderStorageBlock, Q_MOVABLE_TYPE)
+
+} // namespace OpenGL
 
 } // namespace Render
 
@@ -149,4 +153,4 @@ QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderStorageBlock, Q_MOVABLE_TYPE)
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_SHADERVARIABLES_P_H
+#endif // QT3DRENDER_RENDER_OPENGL_SHADERVARIABLES_P_H

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_FILTERCOMPATIBLETECHNIQUEJOB_H
-#define QT3DRENDER_RENDER_FILTERCOMPATIBLETECHNIQUEJOB_H
+#ifndef QT3DRENDER_RENDER_OPENGL_FILTERCOMPATIBLETECHNIQUEJOB_H
+#define QT3DRENDER_RENDER_OPENGL_FILTERCOMPATIBLETECHNIQUEJOB_H
 
 //
 //  W A R N I N G
@@ -62,6 +62,9 @@ namespace Qt3DRender {
 namespace Render {
 
 class TechniqueManager;
+
+namespace OpenGL {
+
 class Renderer;
 
 class Q_AUTOTEST_EXPORT FilterCompatibleTechniqueJob : public Qt3DCore::QAspectJob
@@ -84,9 +87,10 @@ private:
 
 typedef QSharedPointer<FilterCompatibleTechniqueJob> FilterCompatibleTechniqueJobPtr;
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_FILTERCOMPATIBLETECHNIQUEJOB_H
+#endif // QT3DRENDER_RENDER_OPENGL_FILTERCOMPATIBLETECHNIQUEJOB_H

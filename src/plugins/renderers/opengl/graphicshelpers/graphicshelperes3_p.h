@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERES3_H
-#define QT3DRENDER_RENDER_GRAPHICSHELPERES3_H
+#ifndef QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERES3_H
+#define QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERES3_H
 
 //
 //  W A R N I N G
@@ -58,6 +58,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 class GraphicsHelperES3 : public GraphicsHelperES2
 {
@@ -100,9 +101,10 @@ protected:
     QOpenGLExtraFunctions *m_extraFuncs = nullptr;
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_GRAPHICSHELPERES3_H
+#endif // QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERES3_H

@@ -114,20 +114,22 @@ public:
     inline bool requiresFrontendSync() const { return m_requiresFrontendSync; }
     inline void unsetRequiresFrontendSync() { m_requiresFrontendSync = false; }
 
+    // Set by Renderer plugin
+    void setLog(const QString &log);
+    void setStatus(QShaderProgram::Status status);
+    void initializeFromReference(const Shader &other);
+
+    void requestCacheRebuild();
+
 private:
     QVector<QByteArray> m_shaderCode;
 
     QString m_log;
-    QShaderProgram::Status m_status;
     bool m_requiresFrontendSync;
+    QShaderProgram::Status m_status;
     QShaderProgram::Format m_format;
     bool m_dirty;
 
-    void initializeFromReference(const Shader &other);
-    void setLog(const QString &log);
-    void setStatus(QShaderProgram::Status status);
-
-    friend class GraphicsContext;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

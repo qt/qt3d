@@ -705,6 +705,7 @@ Render::AbstractRenderer *QRenderAspectPrivate::loadRendererPlugin()
         if (renderer)
             return renderer;
     }
+    qFatal("Unable to load a renderer plugin");
     return nullptr;
 }
 

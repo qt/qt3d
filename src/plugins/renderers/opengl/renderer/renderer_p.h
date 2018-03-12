@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERER_H
-#define QT3DRENDER_RENDER_RENDERER_H
+#ifndef QT3DRENDER_RENDER_OPENGL_RENDERER_H
+#define QT3DRENDER_RENDER_OPENGL_RENDERER_H
 
 //
 //  W A R N I N G
@@ -139,15 +139,11 @@ class FrameProfiler;
 }
 
 class CameraLens;
-class SubmissionContext;
 class FrameGraphNode;
 class Material;
 class Technique;
 class Shader;
 class Entity;
-class RenderCommand;
-class RenderQueue;
-class RenderView;
 class Effect;
 class RenderPass;
 class RenderThread;
@@ -155,15 +151,10 @@ class RenderStateSet;
 class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
-class GLResourceManagers;
-class GLShader;
 class ResourceAccessor;
 
 class UpdateLevelOfDetailJob;
 typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
-
-using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
-using SynchronizerPostFramePtr = GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>>;
 
 template<typename T, typename ... Ts>
 class FilterEntityByComponentJob;
@@ -172,9 +163,22 @@ using FilterEntityByComponentJobPtr = QSharedPointer<FilterEntityByComponentJob<
 using ComputableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::ComputeCommand, Render::Material>;
 using RenderableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::GeometryRenderer, Render::Material>;
 
+using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+using SynchronizerPostFramePtr = GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>>;
+
 namespace Debug {
 class ImGuiRenderer;
 }
+
+namespace OpenGL {
+
+class CommandThread;
+class SubmissionContext;
+class RenderCommand;
+class RenderQueue;
+class RenderView;
+class GLShader;
+class GLResourceManagers;
 
 class Q_AUTOTEST_EXPORT Renderer : public AbstractRenderer
 {
@@ -320,7 +324,7 @@ public:
         QSurface *surface;
     };
 
-    ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
+    ViewSubmissionResultData submitRenderViews(const QVector<RenderView *> &renderViews);
 
     RendererCache *cache() { return &m_cache; }
     void setScreen(QScreen *scr) override;
@@ -471,9 +475,10 @@ private:
     int m_jobsInLastFrame;
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERER_H
+#endif // QT3DRENDER_RENDER_OPENGL_RENDERER_H

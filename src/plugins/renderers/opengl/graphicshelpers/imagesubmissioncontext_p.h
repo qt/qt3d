@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_IMAGESUBMISSIONCONTEXT_P_H
-#define QT3DRENDER_RENDER_IMAGESUBMISSIONCONTEXT_P_H
+#ifndef QT3DRENDER_RENDER_OPENGL_IMAGESUBMISSIONCONTEXT_P_H
+#define QT3DRENDER_RENDER_OPENGL_IMAGESUBMISSIONCONTEXT_P_H
 
 //
 //  W A R N I N G
@@ -58,9 +58,12 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+class ShaderImage;
+
+namespace OpenGL {
+
 class GraphicsContext;
 class GLTexture;
-class ShaderImage;
 
 class Q_AUTOTEST_EXPORT ImageSubmissionContext
 {
@@ -87,9 +90,10 @@ private:
     GraphicsContext *m_ctx;
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_IMAGESUBMISSIONCONTEXT_P_H
+#endif // QT3DRENDER_RENDER_OPENGL_IMAGESUBMISSIONCONTEXT_P_H

@@ -38,11 +38,12 @@
 ****************************************************************************/
 
 #include "graphicshelperes2_p.h"
-#include <Qt3DRender/private/renderlogging_p.h>
 #include <private/attachmentpack_p.h>
 #include <qgraphicsutils_p.h>
 #include <renderbuffer_p.h>
+#include <logging_p.h>
 #include <QtGui/private/qopenglextensions_p.h>
+
 
 QT_BEGIN_NAMESPACE
 
@@ -65,6 +66,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 GraphicsHelperES2::GraphicsHelperES2()
     : m_funcs(0)
@@ -293,7 +295,7 @@ void GraphicsHelperES2::vertexAttributePointer(GLenum shaderDataType,
         break;
 
     default:
-        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+        qCWarning(Rendering) << "vertexAttribPointer: Unhandled type";
         Q_UNREACHABLE();
     }
 }
@@ -387,7 +389,7 @@ void GraphicsHelperES2::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB,
 
 void GraphicsHelperES2::alphaTest(GLenum, GLenum)
 {
-    qCWarning(Render::Rendering) << Q_FUNC_INFO << "AlphaTest not available with OpenGL ES 2.0";
+    qCWarning(Rendering) << Q_FUNC_INFO << "AlphaTest not available with OpenGL ES 2.0";
 }
 
 void GraphicsHelperES2::depthTest(GLenum mode)
@@ -1028,6 +1030,7 @@ void GraphicsHelperES2::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, G
         m_ext->glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

@@ -46,7 +46,7 @@ private Q_SLOTS:
 void tst_GLShaderManager::adopt()
 {
     // GIVEN
-    Qt3DRender::Render::GLShaderManager cache;
+    Qt3DRender::Render::OpenGL::GLShaderManager cache;
     Qt3DRender::QShaderProgram frontendShader1;
     Qt3DRender::QShaderProgram frontendShader2;
     TestRenderer renderer;
@@ -64,7 +64,7 @@ void tst_GLShaderManager::adopt()
     QVERIFY(backendShaderNode1.peerId() != backendShaderNode2.peerId());
 
     // WHEN
-    Qt3DRender::Render::GLShader *glShader1 = cache.createOrAdoptExisting(&backendShaderNode1);
+    Qt3DRender::Render::OpenGL::GLShader *glShader1 = cache.createOrAdoptExisting(&backendShaderNode1);
 
     // THEN
     QVERIFY(glShader1 != nullptr);
@@ -73,7 +73,7 @@ void tst_GLShaderManager::adopt()
     QCOMPARE(shaderNodeIds.first(), backendShaderNode1.peerId());
 
     // WHEN
-    Qt3DRender::Render::GLShader *glShader2 = cache.createOrAdoptExisting(&backendShaderNode2);
+    Qt3DRender::Render::OpenGL::GLShader *glShader2 = cache.createOrAdoptExisting(&backendShaderNode2);
 
     // THEN
     QCOMPARE(glShader1, glShader2);
@@ -87,7 +87,7 @@ void tst_GLShaderManager::adopt()
 void tst_GLShaderManager::lookupResource()
 {
     // GIVEN
-    Qt3DRender::Render::GLShaderManager cache;
+    Qt3DRender::Render::OpenGL::GLShaderManager cache;
     Qt3DRender::QShaderProgram frontendShader1;
     Qt3DRender::QShaderProgram frontendShader2;
     TestRenderer renderer;
@@ -104,8 +104,8 @@ void tst_GLShaderManager::lookupResource()
     cache.createOrAdoptExisting(&backendShaderNode2);
 
     // THEN
-    Qt3DRender::Render::GLShader *glShader1 = cache.lookupResource(backendShaderNode1.peerId());
-    Qt3DRender::Render::GLShader *glShader2 = cache.lookupResource(backendShaderNode2.peerId());
+    Qt3DRender::Render::OpenGL::GLShader *glShader1 = cache.lookupResource(backendShaderNode1.peerId());
+    Qt3DRender::Render::OpenGL::GLShader *glShader2 = cache.lookupResource(backendShaderNode2.peerId());
     QVERIFY(glShader1 != nullptr);
     QCOMPARE(glShader1, glShader2);
     const QVector<Qt3DCore::QNodeId> shaderNodeIds = cache.shaderIdsForProgram(glShader1);
@@ -117,7 +117,7 @@ void tst_GLShaderManager::lookupResource()
 void tst_GLShaderManager::abandon()
 {
     // GIVEN
-    Qt3DRender::Render::GLShaderManager cache;
+    Qt3DRender::Render::OpenGL::GLShaderManager cache;
     Qt3DRender::QShaderProgram frontendShader1;
     Qt3DRender::QShaderProgram frontendShader2;
     TestRenderer renderer;
@@ -132,7 +132,7 @@ void tst_GLShaderManager::abandon()
     cache.createOrAdoptExisting(&backendShaderNode2);
 
     // WHEN
-    Qt3DRender::Render::GLShader *glShader = cache.lookupResource(backendShaderNode1.peerId());
+    Qt3DRender::Render::OpenGL::GLShader *glShader = cache.lookupResource(backendShaderNode1.peerId());
     cache.abandon(glShader, &backendShaderNode1);
 
     // THEN
@@ -147,7 +147,7 @@ void tst_GLShaderManager::abandon()
     // THEN
     shaderNodeIds = cache.shaderIdsForProgram(glShader);
     QCOMPARE(shaderNodeIds.size(), 0);
-    const QVector<Qt3DRender::Render::GLShader *> releasedShaders = cache.takeAbandonned();
+    const QVector<Qt3DRender::Render::OpenGL::GLShader *> releasedShaders = cache.takeAbandonned();
     QCOMPARE(releasedShaders.size(), 1);
     QCOMPARE(releasedShaders.first(), glShader);
 }
@@ -155,7 +155,7 @@ void tst_GLShaderManager::abandon()
 void tst_GLShaderManager::insertAfterRemoval()
 {
     // GIVEN
-    Qt3DRender::Render::GLShaderManager cache;
+    Qt3DRender::Render::OpenGL::GLShaderManager cache;
     Qt3DRender::QShaderProgram frontendShader;
     TestRenderer renderer;
     Qt3DRender::Render::Shader backendShaderNode;
@@ -165,8 +165,8 @@ void tst_GLShaderManager::insertAfterRemoval()
     simulateInitialization(&frontendShader, &backendShaderNode);
 
     // WHEN
-    Qt3DRender::Render::GLShader *apiShader1 = cache.createOrAdoptExisting(&backendShaderNode);
-    const Qt3DRender::Render::GLShader *originalApiShader = apiShader1;
+    Qt3DRender::Render::OpenGL::GLShader *apiShader1 = cache.createOrAdoptExisting(&backendShaderNode);
+    const Qt3DRender::Render::OpenGL::GLShader *originalApiShader = apiShader1;
 
     // THEN
     auto apiShader2 = cache.lookupResource(frontendShader.id());
@@ -179,7 +179,7 @@ void tst_GLShaderManager::insertAfterRemoval()
     cache.abandon(apiShader1, &backendShaderNode);
 
     // THEN
-    Qt3DRender::Render::GLShader *apiShaderEmpty = cache.lookupResource(frontendShader.id());
+    Qt3DRender::Render::OpenGL::GLShader *apiShaderEmpty = cache.lookupResource(frontendShader.id());
     QVERIFY(apiShaderEmpty == nullptr);
 
     // WHEN

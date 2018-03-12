@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERCOMMAND_H
-#define QT3DRENDER_RENDER_RENDERCOMMAND_H
+#ifndef QT3DRENDER_RENDER_OPENGL_RENDERCOMMAND_H
+#define QT3DRENDER_RENDER_OPENGL_RENDERCOMMAND_H
 
 //
 //  W A R N I N G
@@ -72,6 +72,9 @@ namespace Render {
 
 class RenderStateSet;
 using RenderStateSetPtr = QSharedPointer<RenderStateSet>;
+
+namespace OpenGL {
+
 class GLShader;
 
 class Q_AUTOTEST_EXPORT RenderCommand
@@ -172,6 +175,7 @@ struct EntityRenderCommandData
 
 using EntityRenderCommandDataPtr = QSharedPointer<EntityRenderCommandData>;
 
+} // namespace OpenGL
 
 } // namespace Render
 
@@ -179,4 +183,4 @@ using EntityRenderCommandDataPtr = QSharedPointer<EntityRenderCommandData>;
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERCOMMAND_H
+#endif // QT3DRENDER_RENDER_OPENGL_RENDERCOMMAND_H

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDERVIEWJOBUTILS_P_H
-#define QT3DRENDER_RENDERVIEWJOBUTILS_P_H
+#ifndef QT3DRENDER_RENDER_OPENGL_RENDERVIEWJOBUTILS_P_H
+#define QT3DRENDER_RENDER_OPENGL_RENDERVIEWJOBUTILS_P_H
 
 //
 //  W A R N I N G
@@ -76,19 +76,21 @@ class Effect;
 class Entity;
 class Material;
 class RenderPass;
-class RenderStateSet;
 class Technique;
-class RenderView;
 class TechniqueFilter;
 class RenderPassFilter;
-class Renderer;
 class NodeManagers;
 class ShaderDataManager;
-struct ShaderUniform;
 class ShaderData;
 class TextureManager;
 class RenderStateManager;
 class RenderStateCollection;
+class RenderStateSet;
+
+namespace OpenGL {
+class Renderer;
+class RenderView;
+struct ShaderUniform;
 
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
@@ -127,7 +129,7 @@ struct RenderPassParameterData
     RenderPass *pass;
     ParameterInfoList parameterInfo;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, RenderPassParameterData, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, RenderPassParameterData, Q_MOVABLE_TYPE)
 
 using MaterialParameterGathererData = QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>>;
 
@@ -180,9 +182,10 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     Matrix4x4 viewMatrix;
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDERVIEWJOBUTILS_P_H
+#endif // QT3DRENDER_RENDER_OPENGL_RENDERVIEWJOBUTILS_P_H

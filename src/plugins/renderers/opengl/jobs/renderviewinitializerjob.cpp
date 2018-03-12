@@ -52,6 +52,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 namespace {
 // only accessed in ctor and dtor of RenderViewJob
@@ -98,6 +99,7 @@ void RenderViewInitializerJob::run()
 #endif
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

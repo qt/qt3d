@@ -47,6 +47,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 OpenGLVertexArrayObject::OpenGLVertexArrayObject()
     : m_ctx(nullptr)
@@ -159,6 +160,7 @@ void OpenGLVertexArrayObject::saveVertexAttribute(const SubmissionContext::VAOVe
 }
 
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

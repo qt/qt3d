@@ -65,8 +65,10 @@ class AsynchronousCommandReply;
 namespace Qt3DRender {
 
 namespace Render {
+namespace OpenGL {
 class Renderer;
 class RenderView;
+} // OpenGL
 } // Render
 
 namespace Debug {
@@ -74,14 +76,14 @@ namespace Debug {
 class CommandExecuter
 {
 public:
-    explicit CommandExecuter(Render::Renderer *renderer);
+    explicit CommandExecuter(Render::OpenGL::Renderer *renderer);
 
-    void performAsynchronousCommandExecution(const QVector<Render::RenderView *> &views);
+    void performAsynchronousCommandExecution(const QVector<Render::OpenGL::RenderView *> &views);
 
     QVariant executeCommand(const QStringList &args);
 
 private:
-    Render::Renderer *m_renderer;
+    Render::OpenGL::Renderer *m_renderer;
     QVector<Qt3DCore::Debug::AsynchronousCommandReply *> m_pendingCommands;
     QMutex m_pendingCommandsMutex;
 };

@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_SUBMISSIONCONTEXT_H
-#define QT3DRENDER_RENDER_SUBMISSIONCONTEXT_H
+#ifndef QT3DRENDER_RENDER_OPENGL_SUBMISSIONCONTEXT_H
+#define QT3DRENDER_RENDER_OPENGL_SUBMISSIONCONTEXT_H
 
 //
 //  W A R N I N G
@@ -70,18 +70,21 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
-class GraphicsHelperInterface;
-class RenderStateSet;
 class Material;
-class GLTexture;
-class RenderCommand;
-class RenderTarget;
 class AttachmentPack;
 class Attribute;
 class Buffer;
 class ShaderManager;
 struct StateVariant;
+class RenderTarget;
+class RenderStateSet;
+
+namespace OpenGL {
+
+class Renderer;
+class GraphicsHelperInterface;
+class GLTexture;
+class RenderCommand;
 
 typedef QPair<QString, int> NamedUniformLocation;
 
@@ -226,9 +229,10 @@ private:
     void disableAttribute(const VAOVertexAttribute &attr);
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_SUBMISSIONCONTEXT_H
+#endif // QT3DRENDER_RENDER_OPENGL_SUBMISSIONCONTEXT_H

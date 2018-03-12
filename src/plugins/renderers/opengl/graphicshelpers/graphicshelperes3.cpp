@@ -41,7 +41,7 @@
 #include "graphicshelperes3_p.h"
 #include <private/attachmentpack_p.h>
 #include <qgraphicsutils_p.h>
-#include <private/renderlogging_p.h>
+#include <logging_p.h>
 #include <QOpenGLExtraFunctions>
 
 QT_BEGIN_NAMESPACE
@@ -169,6 +169,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 GraphicsHelperES3::GraphicsHelperES3()
 {
@@ -249,7 +250,7 @@ void GraphicsHelperES3::vertexAttributePointer(GLenum shaderDataType,
         break;
 
     default:
-        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+        qCWarning(Rendering) << "vertexAttribPointer: Unhandled type";
         Q_UNREACHABLE();
     }
 }
@@ -733,7 +734,7 @@ QVector<ShaderUniform> GraphicsHelperES3::programUniformsAndLocations(GLuint pro
         m_extraFuncs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_MATRIX_STRIDE, &uniform.m_matrixStride);
         uniform.m_rawByteSize = uniformByteSize(uniform);
         uniforms.append(uniform);
-        qCDebug(Render::Rendering) << uniform.m_name << "size" << uniform.m_size
+        qCDebug(Rendering) << uniform.m_name << "size" << uniform.m_size
                                    << " offset" << uniform.m_offset
                                    << " rawSize" << uniform.m_rawByteSize;
     }
@@ -762,6 +763,7 @@ QVector<ShaderUniformBlock> GraphicsHelperES3::programUniformBlocks(GLuint progr
     return blocks;
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

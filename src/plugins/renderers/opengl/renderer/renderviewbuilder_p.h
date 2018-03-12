@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERVIEWBUILDER_H
-#define QT3DRENDER_RENDER_RENDERVIEWBUILDER_H
+#ifndef QT3DRENDER_RENDER_OPENGL_RENDERVIEWBUILDER_H
+#define QT3DRENDER_RENDER_OPENGL_RENDERVIEWBUILDER_H
 
 //
 //  W A R N I N G
@@ -69,6 +69,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 namespace Render {
+
+namespace OpenGL {
 
 class Renderer;
 
@@ -139,10 +141,12 @@ private:
     static const int m_optimalParallelJobCount;
 };
 
+} // OpenGL
+
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERVIEWBUILDER_H
+#endif // QT3DRENDER_RENDER_OPENGL_RENDERVIEWBUILDER_H

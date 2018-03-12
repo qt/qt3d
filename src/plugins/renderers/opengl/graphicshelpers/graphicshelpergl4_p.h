@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERGL4_H
-#define QT3DRENDER_RENDER_GRAPHICSHELPERGL4_H
+#ifndef QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERGL4_H
+#define QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERGL4_H
 
 //
 //  W A R N I N G
@@ -62,6 +62,7 @@ class QOpenGLFunctions_4_3_Core;
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 class Q_AUTOTEST_EXPORT GraphicsHelperGL4 : public GraphicsHelperInterface
 {
@@ -172,6 +173,7 @@ private:
     QOpenGLFunctions_4_3_Core *m_funcs;
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
@@ -179,4 +181,4 @@ QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QT3DRENDER_RENDER_GRAPHICSHELPERGL4_H
+#endif // QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERGL4_H
