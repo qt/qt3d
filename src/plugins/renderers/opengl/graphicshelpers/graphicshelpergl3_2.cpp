@@ -43,8 +43,8 @@
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QtOpenGLExtensions/qopenglextensions.h>
-#include <Qt3DRender/private/renderlogging_p.h>
 #include <private/attachmentpack_p.h>
+#include <logging_p.h>
 #include <qgraphicsutils_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -70,6 +70,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 GraphicsHelperGL3_2::GraphicsHelperGL3_2()
     : m_funcs(nullptr)
@@ -216,9 +217,9 @@ QVector<ShaderUniform> GraphicsHelperGL3_2::programUniformsAndLocations(GLuint p
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_MATRIX_STRIDE, &uniform.m_matrixStride);
         uniform.m_rawByteSize = uniformByteSize(uniform);
         uniforms.append(uniform);
-        qCDebug(Render::Rendering) << uniform.m_name << "size" << uniform.m_size
-                                   << " offset" << uniform.m_offset
-                                   << " rawSize" << uniform.m_rawByteSize;
+        qCDebug(Rendering) << uniform.m_name << "size" << uniform.m_size
+                           << " offset" << uniform.m_offset
+                           << " rawSize" << uniform.m_rawByteSize;
     }
 
     return uniforms;
@@ -279,7 +280,7 @@ void GraphicsHelperGL3_2::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
     Q_UNUSED(index);
     Q_UNUSED(divisor);
-    qCWarning(Render::Rendering) << "Vertex attribute divisor not available with OpenGL 3.2 core";
+    qCWarning(Rendering) << "Vertex attribute divisor not available with OpenGL 3.2 core";
 }
 
 void GraphicsHelperGL3_2::vertexAttributePointer(GLenum shaderDataType,
@@ -319,7 +320,7 @@ void GraphicsHelperGL3_2::vertexAttributePointer(GLenum shaderDataType,
         break;
 
     default:
-        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+        qCWarning(Rendering) << "vertexAttribPointer: Unhandled type";
         Q_UNREACHABLE();
     }
 }
@@ -397,7 +398,7 @@ void GraphicsHelperGL3_2::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRG
 
 void GraphicsHelperGL3_2::alphaTest(GLenum, GLenum)
 {
-    qCWarning(Render::Rendering) << "AlphaTest not available with OpenGL 3.2 core";
+    qCWarning(Rendering) << "AlphaTest not available with OpenGL 3.2 core";
 }
 
 void GraphicsHelperGL3_2::depthTest(GLenum mode)
@@ -1237,6 +1238,7 @@ void GraphicsHelperGL3_2::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1,
     m_funcs->glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

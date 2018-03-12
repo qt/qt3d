@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERINTERFACE_H
-#define QT3DRENDER_RENDER_GRAPHICSHELPERINTERFACE_H
+#ifndef QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERINTERFACE_H
+#define QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERINTERFACE_H
 
 //
 //  W A R N I N G
@@ -64,6 +64,9 @@ namespace Qt3DRender {
 namespace Render {
 
 struct Attachment;
+
+namespace OpenGL {
+
 class RenderBuffer;
 
 class GraphicsHelperInterface
@@ -194,10 +197,10 @@ public:
     virtual UniformType uniformTypeFromGLType(GLenum glType) = 0;
 };
 
-
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_GRAPHICSHELPERINTERFACE_H
+#endif // QT3DRENDER_RENDER_OPENGL_GRAPHICSHELPERINTERFACE_H

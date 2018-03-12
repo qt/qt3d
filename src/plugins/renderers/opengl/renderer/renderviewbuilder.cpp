@@ -46,6 +46,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 namespace Render {
+namespace OpenGL {
 
 // In some cases having less jobs is better (especially on fast cpus where
 // splitting just adds more overhead). Ideally, we should try to set the value
@@ -554,7 +555,7 @@ void RenderViewBuilder::prepareJobs()
 
         m_renderViewCommandBuilderJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
         for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
-            auto renderViewCommandBuilder = Render::RenderViewCommandBuilderJobPtr::create();
+            auto renderViewCommandBuilder = Render::OpenGL::RenderViewCommandBuilderJobPtr::create();
             m_renderViewCommandBuilderJobs.push_back(renderViewCommandBuilder);
         }
         m_syncRenderViewPreCommandBuildingJob = SynchronizerJobPtr::create(SyncPreCommandBuilding(m_renderViewJob,
@@ -572,7 +573,7 @@ void RenderViewBuilder::prepareJobs()
     // Estimate the number of jobs to create based on the number of entities
     m_renderViewCommandUpdaterJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
     for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
-        auto renderViewCommandUpdater = Render::RenderViewCommandUpdaterJobPtr::create();
+        auto renderViewCommandUpdater = Render::OpenGL::RenderViewCommandUpdaterJobPtr::create();
         renderViewCommandUpdater->setRenderer(m_renderer);
         m_renderViewCommandUpdaterJobs.push_back(renderViewCommandUpdater);
     }
@@ -584,7 +585,7 @@ void RenderViewBuilder::prepareJobs()
         const int lastRemaingElements = materialHandles.size() % RenderViewBuilder::m_optimalParallelJobCount;
         m_materialGathererJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
         for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
-            auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
+            auto materialGatherer = MaterialParameterGathererJobPtr::create();
             materialGatherer->setNodeManagers(m_renderer->nodeManagers());
             if (i == RenderViewBuilder::m_optimalParallelJobCount - 1)
                 materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob + lastRemaingElements));
@@ -795,6 +796,8 @@ QVector<Entity *> RenderViewBuilder::entitiesInSubset(const QVector<Entity *> &e
 
     return intersection;
 }
+
+} // OpenGL
 
 } // Render
 

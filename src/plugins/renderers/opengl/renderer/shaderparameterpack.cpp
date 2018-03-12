@@ -54,6 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 ShaderParameterPack::~ShaderParameterPack()
 {
@@ -106,6 +107,7 @@ void ShaderParameterPack::setSubmissionUniform(const ShaderUniform &uniform)
     m_submissionUniforms.push_back(uniform);
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

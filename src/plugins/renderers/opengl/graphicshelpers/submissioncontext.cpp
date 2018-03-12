@@ -97,6 +97,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 
 static QHash<unsigned int, SubmissionContext*> static_contexts;
@@ -1407,7 +1408,7 @@ HGLBuffer SubmissionContext::createGLBufferFor(Buffer *buffer)
     //    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
     Q_ASSERT(b);
     if (!b->create(this))
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
+        qCWarning(Io) << Q_FUNC_INFO << "buffer creation failed";
 
     return m_renderer->glResourceManagers()->glBufferManager()->lookupHandle(buffer->peerId());
 }
@@ -1428,7 +1429,7 @@ bool SubmissionContext::bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type)
 void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer)
 {
     if (!bindGLBuffer(b, GLBuffer::ArrayBuffer)) // We're uploading, the type doesn't matter here
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
+        qCWarning(Io) << Q_FUNC_INFO << "buffer bind failed";
     // If the buffer is dirty (hence being called here)
     // there are two possible cases
     // * setData was called changing the whole data or functor (or the usage pattern)
@@ -1471,13 +1472,13 @@ void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool r
         b->release(this);
         m_boundArrayBuffer = nullptr;
     }
-    qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
+    qCDebug(Io) << "uploaded buffer size=" << buffer->data().size();
 }
 
 QByteArray SubmissionContext::downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b)
 {
     if (!bindGLBuffer(b, GLBuffer::ArrayBuffer)) // We're downloading, the type doesn't matter here
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
+        qCWarning(Io) << Q_FUNC_INFO << "buffer bind failed";
 
     QByteArray data = b->download(this, buffer->data().size());
     return data;
@@ -1568,6 +1569,7 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
     }
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender of namespace
 

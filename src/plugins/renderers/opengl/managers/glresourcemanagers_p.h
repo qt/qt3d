@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GLRESOURCEMANAGERS_P_H
-#define QT3DRENDER_RENDER_GLRESOURCEMANAGERS_P_H
+#ifndef QT3DRENDER_RENDER_OPENGL_GLRESOURCEMANAGERS_P_H
+#define QT3DRENDER_RENDER_OPENGL_GLRESOURCEMANAGERS_P_H
 
 //
 //  W A R N I N G
@@ -65,6 +65,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 namespace Render {
+
+namespace OpenGL {
 
 class Q_AUTOTEST_EXPORT GLFenceManager : public QHash<Qt3DCore::QNodeId, GLFence>
 {
@@ -124,12 +126,14 @@ private:
     VAOManager *m_vaoManager;
 };
 
+} // OpenGL
+
 } // Render
 
 } // Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGL::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_GLRESOURCEMANAGERS_P_H
+#endif // QT3DRENDER_RENDER_OPENGL_GLRESOURCEMANAGERS_P_H

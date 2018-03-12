@@ -44,11 +44,11 @@
 
 
 // tst_Renderer is a friend class of Renderer
-class tst_Renderer : public Qt3DRender::Render::Renderer
+class tst_Renderer : public Qt3DRender::Render::OpenGL::Renderer
 {
 public:
     tst_Renderer()
-        : Qt3DRender::Render::Renderer(Qt3DRender::QRenderAspect::Synchronous)
+        : Qt3DRender::Render::OpenGL::Renderer(Qt3DRender::QRenderAspect::Synchronous)
     {}
 
     ~tst_Renderer() {

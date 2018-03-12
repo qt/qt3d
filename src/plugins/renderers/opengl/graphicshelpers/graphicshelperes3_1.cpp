@@ -150,6 +150,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 namespace {
 
@@ -361,6 +362,7 @@ void GraphicsHelperES3_1::buildUniformBuffer(const QVariant &v, const ShaderUnif
     }
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

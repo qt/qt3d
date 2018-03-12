@@ -48,6 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 FilterCompatibleTechniqueJob::FilterCompatibleTechniqueJob()
     : m_manager(nullptr)
@@ -89,6 +90,7 @@ void FilterCompatibleTechniqueJob::run()
     }
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

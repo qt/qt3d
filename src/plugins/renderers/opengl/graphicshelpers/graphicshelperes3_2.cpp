@@ -77,6 +77,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 GraphicsHelperES3_2::GraphicsHelperES3_2()
 {
@@ -187,6 +188,7 @@ uint GraphicsHelperES3_2::uniformByteSize(const ShaderUniform &description)
     return rawByteSize;
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

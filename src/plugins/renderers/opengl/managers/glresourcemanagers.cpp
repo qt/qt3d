@@ -45,6 +45,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace OpenGL {
 
 GLResourceManagers::GLResourceManagers()
     : m_glBufferManager(new GLBufferManager())
@@ -63,6 +64,8 @@ GLResourceManagers::~GLResourceManagers()
     delete m_glShaderManager;
     delete m_glBufferManager;
 }
+
+} // OpenGL
 
 } // Render
 

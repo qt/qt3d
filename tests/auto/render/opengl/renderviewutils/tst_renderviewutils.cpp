@@ -108,11 +108,11 @@ public:
         return m_scalar;
     }
 
-    QHash<QString, Qt3DRender::Render::ShaderUniform> buildUniformMap(const QString &blockName)
+    QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> buildUniformMap(const QString &blockName)
     {
-        QHash<QString, Qt3DRender::Render::ShaderUniform> uniforms;
+        QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> uniforms;
 
-        uniforms.insert(blockName + QStringLiteral(".scalar"), Qt3DRender::Render::ShaderUniform());
+        uniforms.insert(blockName + QStringLiteral(".scalar"), Qt3DRender::Render::OpenGL::ShaderUniform());
 
         return uniforms;
     }
@@ -149,11 +149,11 @@ public:
         return m_texture;
     }
 
-    QHash<QString, Qt3DRender::Render::ShaderUniform> buildUniformMap(const QString &blockName)
+    QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> buildUniformMap(const QString &blockName)
     {
-        QHash<QString, Qt3DRender::Render::ShaderUniform> uniforms;
+        QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> uniforms;
 
-        uniforms.insert(blockName + QStringLiteral(".texture"), Qt3DRender::Render::ShaderUniform());
+        uniforms.insert(blockName + QStringLiteral(".texture"), Qt3DRender::Render::OpenGL::ShaderUniform());
 
         return uniforms;
     }
@@ -190,11 +190,11 @@ public:
         return m_array;
     }
 
-    QHash<QString, Qt3DRender::Render::ShaderUniform> buildUniformMap(const QString &blockName)
+    QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> buildUniformMap(const QString &blockName)
     {
-        QHash<QString, Qt3DRender::Render::ShaderUniform> uniforms;
+        QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> uniforms;
 
-        uniforms.insert(blockName + QStringLiteral(".array[0]"), Qt3DRender::Render::ShaderUniform());
+        uniforms.insert(blockName + QStringLiteral(".array[0]"), Qt3DRender::Render::OpenGL::ShaderUniform());
 
         return uniforms;
     }
@@ -245,12 +245,12 @@ public:
         return m_array;
     }
 
-    virtual QHash<QString, Qt3DRender::Render::ShaderUniform> buildUniformMap(const QString &blockName)
+    virtual QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> buildUniformMap(const QString &blockName)
     {
-        QHash<QString, Qt3DRender::Render::ShaderUniform> uniforms;
+        QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> uniforms;
 
-        uniforms.insert(blockName + QStringLiteral(".scalar"), Qt3DRender::Render::ShaderUniform());
-        uniforms.insert(blockName + QStringLiteral(".array[0]"), Qt3DRender::Render::ShaderUniform());
+        uniforms.insert(blockName + QStringLiteral(".scalar"), Qt3DRender::Render::OpenGL::ShaderUniform());
+        uniforms.insert(blockName + QStringLiteral(".array[0]"), Qt3DRender::Render::OpenGL::ShaderUniform());
 
         return uniforms;
     }
@@ -299,17 +299,17 @@ public:
         return m_inner;
     }
 
-    QHash<QString, Qt3DRender::Render::ShaderUniform> buildUniformMap(const QString &blockName) override
+    QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> buildUniformMap(const QString &blockName) override
     {
-        QHash<QString, Qt3DRender::Render::ShaderUniform> innerUniforms;
+        QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> innerUniforms;
 
         StructShaderData *innerData = nullptr;
         if ((innerData = qobject_cast<StructShaderData *>(m_inner)) != nullptr)
             innerUniforms = innerData->buildUniformMap(QStringLiteral(".inner"));
 
-        QHash<QString, Qt3DRender::Render::ShaderUniform> uniforms = StructShaderData::buildUniformMap(blockName);
-        QHash<QString, Qt3DRender::Render::ShaderUniform>::const_iterator it = innerUniforms.begin();
-        const QHash<QString, Qt3DRender::Render::ShaderUniform>::const_iterator end = innerUniforms.end();
+        QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> uniforms = StructShaderData::buildUniformMap(blockName);
+        QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform>::const_iterator it = innerUniforms.begin();
+        const QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform>::const_iterator end = innerUniforms.end();
 
         while (it != end) {
             uniforms.insert(blockName + it.key(), it.value());
@@ -362,7 +362,7 @@ void tst_RenderViewUtils::topLevelScalarValueNoUniforms()
     QVERIFY(backendShaderData != nullptr);
 
     // WHEB
-    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.textureManager = textureManager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -391,7 +391,7 @@ void tst_RenderViewUtils::topLevelScalarValue()
     QVERIFY(backendShaderData != nullptr);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.textureManager = textureManager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -404,8 +404,8 @@ void tst_RenderViewUtils::topLevelScalarValue()
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
         // THEN
@@ -433,7 +433,7 @@ void tst_RenderViewUtils::topLevelTextureValueNoUniforms()
     QVERIFY(backendShaderData != nullptr);
 
     // WHEB
-    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.textureManager = textureManager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -464,7 +464,7 @@ void tst_RenderViewUtils::topLevelTextureValue()
     QVERIFY(backendShaderData != nullptr);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.textureManager = textureManager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -477,8 +477,8 @@ void tst_RenderViewUtils::topLevelTextureValue()
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
         // THEN
@@ -506,7 +506,7 @@ void tst_RenderViewUtils::topLevelArrayValue()
     QVERIFY(backendShaderData != nullptr);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.textureManager = textureManager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -519,8 +519,8 @@ void tst_RenderViewUtils::topLevelArrayValue()
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
         // THEN
@@ -571,13 +571,13 @@ void tst_RenderViewUtils::nestedShaderDataValue()
     QVERIFY(backendShaderData3 != nullptr);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.textureManager = textureManager.data();
     blockBuilder.updatedPropertiesOnly = false;
-    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[0].scalar"), Qt3DRender::Render::ShaderUniform());
-    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[1].scalar"), Qt3DRender::Render::ShaderUniform());
-    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[2].scalar"), Qt3DRender::Render::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[0].scalar"), Qt3DRender::Render::OpenGL::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[1].scalar"), Qt3DRender::Render::OpenGL::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[2].scalar"), Qt3DRender::Render::OpenGL::ShaderUniform());
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendArrayShaderData, QStringLiteral("MyBlock"));
 
@@ -647,7 +647,7 @@ void tst_RenderViewUtils::topLevelStructValue()
     QVERIFY(backendShaderData != nullptr);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.textureManager = textureManager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -660,8 +660,8 @@ void tst_RenderViewUtils::topLevelStructValue()
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), blockBuilder.uniforms.count());
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
         // THEN
@@ -693,13 +693,13 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
     QVERIFY(backendShaderData != nullptr);
 
     // WHEN
-    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.textureManager = textureManager.data();
     blockBuilder.updatedPropertiesOnly = false;
-    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.scalar"), Qt3DRender::Render::ShaderUniform());
-    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[0]"), Qt3DRender::Render::ShaderUniform());
-    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.texture"), Qt3DRender::Render::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.scalar"), Qt3DRender::Render::OpenGL::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[0]"), Qt3DRender::Render::OpenGL::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.texture"), Qt3DRender::Render::OpenGL::ShaderUniform());
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
 

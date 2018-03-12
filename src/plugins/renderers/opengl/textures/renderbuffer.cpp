@@ -45,6 +45,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 RenderBuffer::RenderBuffer(int width, int height, QAbstractTexture::TextureFormat format)
     : m_size(width, height),
@@ -106,6 +107,7 @@ void RenderBuffer::release()
     m_context->functions()->glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

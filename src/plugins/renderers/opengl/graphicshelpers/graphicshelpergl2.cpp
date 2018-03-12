@@ -43,12 +43,13 @@
 #include <private/attachmentpack_p.h>
 #include <QtOpenGLExtensions/QOpenGLExtensions>
 #include <qgraphicsutils_p.h>
-#include <Qt3DRender/private/renderlogging_p.h>
+#include <logging_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 GraphicsHelperGL2::GraphicsHelperGL2()
     : m_funcs(nullptr)
@@ -257,7 +258,7 @@ void GraphicsHelperGL2::vertexAttributePointer(GLenum shaderDataType,
         break;
 
     default:
-        qCWarning(Render::Rendering) << "vertexAttribPointer: Unhandled type";
+        qCWarning(Rendering) << "vertexAttribPointer: Unhandled type";
         Q_UNREACHABLE();
     }
 }
@@ -927,6 +928,7 @@ void GraphicsHelperGL2::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, G
     qWarning() << "Framebuffer blits are not supported by ES 2.0 (since ES 3.1)";
 }
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

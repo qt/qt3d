@@ -115,6 +115,13 @@ public:
     inline bool requiresFrontendSync() const { return m_requiresFrontendSync; }
     inline void unsetRequiresFrontendSync() { m_requiresFrontendSync = false; }
 
+    // Set by Renderer plugin
+    void setLog(const QString &log);
+    void setStatus(QShaderProgram::Status status);
+    void initializeFromReference(const Shader &other);
+
+    void requestCacheRebuild();
+
 private:
     QVector<QByteArray> m_shaderCode;
 
@@ -125,12 +132,6 @@ private:
     bool m_dirty;
 
     QVector<Qt3DCore::QPropertyUpdatedChangePtr> m_pendingNotifications;
-
-    void initializeFromReference(const Shader &other);
-    void setLog(const QString &log);
-    void setStatus(QShaderProgram::Status status);
-
-    friend class GraphicsContext;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

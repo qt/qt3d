@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_TEXTURESUBMISSIONCONTEXT_H
-#define QT3DRENDER_RENDER_TEXTURESUBMISSIONCONTEXT_H
+#ifndef QT3DRENDER_RENDER_OPENGL_TEXTURESUBMISSIONCONTEXT_H
+#define QT3DRENDER_RENDER_OPENGL_TEXTURESUBMISSIONCONTEXT_H
 
 //
 //  W A R N I N G
@@ -61,6 +61,7 @@ class QOpenGLContext;
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 class GraphicsContext;
 class GLTexture;
@@ -98,9 +99,10 @@ private:
     QVector<ActiveTexture> m_activeTextures;
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_TEXTURESUBMISSIONCONTEXT_H
+#endif // QT3DRENDER_RENDER_OPENGL_TEXTURESUBMISSIONCONTEXT_H

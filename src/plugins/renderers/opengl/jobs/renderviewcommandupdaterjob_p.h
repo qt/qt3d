@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H
-#define QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H
+#ifndef QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDUPDATEJOB_P_H
+#define QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDUPDATEJOB_P_H
 
 //
 //  W A R N I N G
@@ -60,6 +60,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 namespace Render {
+
+namespace OpenGL {
 
 class RenderView;
 class Renderer;
@@ -94,10 +96,12 @@ private:
 
 typedef QSharedPointer<RenderViewCommandUpdaterJob> RenderViewCommandUpdaterJobPtr;
 
+} // OpenGL
+
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H
+#endif // QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDUPDATEJOB_P_H

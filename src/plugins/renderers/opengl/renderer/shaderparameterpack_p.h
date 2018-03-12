@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_SHADERPARAMETERPACK_P_H
-#define QT3DRENDER_RENDER_SHADERPARAMETERPACK_P_H
+#ifndef QT3DRENDER_RENDER_OPENGL_SHADERPARAMETERPACK_P_H
+#define QT3DRENDER_RENDER_OPENGL_SHADERPARAMETERPACK_P_H
 
 //
 //  W A R N I N G
@@ -70,6 +70,7 @@ class QFrameAllocator;
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 class GraphicsContext;
 
@@ -79,14 +80,14 @@ struct BlockToUBO {
     bool m_needsUpdate;
     QHash<QString, QVariant> m_updatedProperties;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, BlockToUBO, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, BlockToUBO, Q_MOVABLE_TYPE)
 
 struct BlockToSSBO {
     int m_blockIndex;
     int m_bindingIndex;
     Qt3DCore::QNodeId m_bufferID;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, BlockToSSBO, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, BlockToSSBO, Q_PRIMITIVE_TYPE)
 
 
 struct PackUniformHash
@@ -209,13 +210,14 @@ private:
 
     friend class RenderView;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderParameterPack::NamedResource, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderParameterPack::NamedResource, Q_PRIMITIVE_TYPE)
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::ShaderParameterPack)
+Q_DECLARE_METATYPE(Qt3DRender::Render::OpenGL::ShaderParameterPack)
 
-#endif // QT3DRENDER_RENDER_SHADERPARAMETERPACK_P_H
+#endif // QT3DRENDER_RENDER_OPENGL_SHADERPARAMETERPACK_P_H

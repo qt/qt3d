@@ -118,6 +118,7 @@ QOpenGLShader::ShaderType shaderType(Qt3DRender::QShaderProgram::ShaderType type
 
 namespace Qt3DRender {
 namespace Render {
+namespace OpenGL {
 
 namespace {
 
@@ -320,7 +321,7 @@ void GraphicsContext::loadShader(Shader *shaderNode,
     }
     shaderNode->unsetDirty();
     // Ensure we will rebuilt material caches
-    shaderNode->markDirty(AbstractRenderer::AllDirty);
+    shaderNode->requestCacheRebuild();
 }
 
 void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
@@ -1018,6 +1019,7 @@ QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat4x2, float, glUniformMatrix4x2fv)
 QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat3x4, float, glUniformMatrix3x4fv)
 QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat4x3, float, glUniformMatrix4x3fv)
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender of namespace
 

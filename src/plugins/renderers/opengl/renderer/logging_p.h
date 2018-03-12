@@ -59,6 +59,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace OpenGL {
+
 Q_DECLARE_LOGGING_CATEGORY(Backend)
 Q_DECLARE_LOGGING_CATEGORY(Frontend)
 Q_DECLARE_LOGGING_CATEGORY(Io)
@@ -71,6 +73,8 @@ Q_DECLARE_LOGGING_CATEGORY(Memory)
 Q_DECLARE_LOGGING_CATEGORY(Shaders)
 Q_DECLARE_LOGGING_CATEGORY(RenderStates)
 Q_DECLARE_LOGGING_CATEGORY(VSyncAdvanceService)
+
+} // namespace OpenGL
 
 } // namespace Render
 

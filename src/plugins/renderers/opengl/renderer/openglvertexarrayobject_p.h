@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef OPENGLVERTEXARRAYOBJECT_H
-#define OPENGLVERTEXARRAYOBJECT_H
+#ifndef QT3DRENDER_RENDER_OPENGL_OPENGLVERTEXARRAYOBJECT_H
+#define QT3DRENDER_RENDER_OPENGL_OPENGLVERTEXARRAYOBJECT_H
 
 //
 //  W A R N I N G
@@ -60,9 +60,12 @@ namespace Qt3DRender {
 namespace Render {
 
 class GeometryManager;
-class GLShaderManager;
 
 typedef QPair<HGeometry, Qt3DCore::QNodeId> VAOIdentifier;
+
+namespace OpenGL {
+
+class GLShaderManager;
 
 class OpenGLVertexArrayObject
 {
@@ -103,9 +106,10 @@ private:
     SubmissionContext::VAOIndexAttribute m_indexAttribute;
 };
 
+} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // OPENGLVERTEXARRAYOBJECT_H
+#endif // QT3DRENDER_RENDER_OPENGL_OPENGLVERTEXARRAYOBJECT_H
