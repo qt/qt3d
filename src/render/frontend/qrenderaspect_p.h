@@ -99,6 +99,7 @@ public:
     void renderShutdown();
     void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
     QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
+    Render::AbstractRenderer *loadRendererPlugin();
 
     Render::NodeManagers *m_nodeManagers;
     Render::AbstractRenderer *m_renderer;

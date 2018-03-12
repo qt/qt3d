@@ -179,19 +179,7 @@ private:
 template <typename T>
 struct QResourceInfo
 {
-    enum
-    {
-        needsCleanup = false
-    };
-};
-
-template <>
-struct QResourceInfo<void>
-{
-    enum
-    {
-        needsCleanup = false
-    };
+    static const  bool needsCleanup = false;
 };
 
 enum
@@ -204,21 +192,9 @@ enum
     template<> \
     struct QResourceInfo<TYPE > \
 { \
-    enum \
-{ \
-    needsCleanup = ((FLAGS & Q_REQUIRES_CLEANUP) == 0) \
-}; \
+    static const  bool needsCleanup = (FLAGS & Q_REQUIRES_CLEANUP) == 0;\
 }; \
 } // namespace Qt3DCore
-
-template <int v>
-struct Int2Type
-{
-    enum
-    {
-        value = v
-    };
-};
 
 template<typename T>
 class QHandleData : public QHandle<T>::Data
@@ -275,7 +251,7 @@ public:
         typename Handle::Data *d = handle.data_ptr();
         d->nextFree = freeList;
         freeList = d;
-        performCleanup(&static_cast<QHandleData<T> *>(d)->data, Int2Type<QResourceInfo<T>::needsCleanup>());
+        performCleanup(&static_cast<QHandleData<T> *>(d)->data, std::integral_constant<bool, QResourceInfo<T>::needsCleanup>{});
     }
 
     T *data(Handle h)
@@ -349,13 +325,16 @@ private:
         }
     }
 
-    void performCleanup(T *r, Int2Type<true>)
+    template<typename Q = T>
+    void performCleanup(Q *r, std::integral_constant<bool, true>)
     {
         r->cleanup();
     }
 
-    void performCleanup(T *, Int2Type<false>)
-    {}
+    template<typename Q = T>
+    void performCleanup(Q *, std::integral_constant<bool, false>)
+    {
+    }
 
 };
 

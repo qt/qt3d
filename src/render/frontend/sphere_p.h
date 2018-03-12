@@ -56,8 +56,6 @@
 #include <Qt3DCore/private/matrix4x4_p.h>
 #include <Qt3DRender/private/boundingsphere_p.h>
 
-#include <QMatrix4x4>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {

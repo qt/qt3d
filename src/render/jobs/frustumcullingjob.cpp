@@ -41,7 +41,6 @@
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>

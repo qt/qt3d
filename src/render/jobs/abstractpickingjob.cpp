@@ -39,7 +39,6 @@
 
 #include "abstractpickingjob_p.h"
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>

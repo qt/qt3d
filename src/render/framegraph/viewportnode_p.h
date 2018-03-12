@@ -64,7 +64,7 @@ namespace Render {
 
 class Renderer;
 
-class Q_AUTOTEST_EXPORT ViewportNode : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT ViewportNode : public FrameGraphNode
 {
 public:
     ViewportNode();

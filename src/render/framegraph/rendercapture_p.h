@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RenderCapture : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderCapture : public FrameGraphNode
 {
 public:
     RenderCapture();

@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT BufferCapture : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT BufferCapture : public FrameGraphNode
 {
 public:
     BufferCapture();

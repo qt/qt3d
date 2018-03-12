@@ -40,7 +40,6 @@
 
 #include <private/qrendertargetoutput_p.h>
 #include <private/nodemanagers_p.h>
-#include <private/glresourcemanagers_p.h>
 #include <private/rendertargetoutput_p.h>
 #include <private/managers_p.h>
 

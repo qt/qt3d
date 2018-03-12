@@ -55,6 +55,7 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QtCore/qmutex.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +63,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class PickEventFilter : public QObject
+class Q_3DRENDERSHARED_PRIVATE_EXPORT PickEventFilter : public QObject
 {
     Q_OBJECT
 public:

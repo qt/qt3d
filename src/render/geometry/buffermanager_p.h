@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT BufferManager : public Qt3DCore::QResourceManager<
+class Q_3DRENDERSHARED_PRIVATE_EXPORT BufferManager : public Qt3DCore::QResourceManager<
         Buffer,
         Qt3DCore::QNodeId,
         Qt3DCore::ObjectLevelLockingPolicy>

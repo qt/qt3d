@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Attribute : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Attribute : public BackendNode
 {
 public:
     Attribute();

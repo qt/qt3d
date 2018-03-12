@@ -37,7 +37,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
-#include <Qt3DRender/private/materialparametergathererjob_p.h>
+#include <materialparametergathererjob_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DExtras/qphongmaterial.h>

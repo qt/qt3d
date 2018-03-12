@@ -64,7 +64,7 @@ namespace Render {
 
 class Renderer;
 
-class LayerFilterNode : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT LayerFilterNode : public FrameGraphNode
 {
 public:
     LayerFilterNode();

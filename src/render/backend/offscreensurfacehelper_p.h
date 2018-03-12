@@ -52,6 +52,7 @@
 //
 
 #include <QObject>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +63,7 @@ namespace Render {
 
 class AbstractRenderer;
 
-class Q_AUTOTEST_EXPORT OffscreenSurfaceHelper : public QObject
+class Q_3DRENDERSHARED_PRIVATE_EXPORT OffscreenSurfaceHelper : public QObject
 {
     Q_OBJECT
 public:

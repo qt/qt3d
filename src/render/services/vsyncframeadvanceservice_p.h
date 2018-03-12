@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,7 +62,7 @@ namespace Render {
 
 class VSyncFrameAdvanceServicePrivate;
 
-class Q_AUTOTEST_EXPORT VSyncFrameAdvanceService final : public Qt3DCore::QAbstractFrameAdvanceService
+class Q_3DRENDERSHARED_PRIVATE_EXPORT VSyncFrameAdvanceService final : public Qt3DCore::QAbstractFrameAdvanceService
 {
 public:
     explicit VSyncFrameAdvanceService(bool drivenByRenderThread);

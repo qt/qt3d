@@ -59,7 +59,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class StateSetNode : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT StateSetNode : public FrameGraphNode
 {
 public:
     StateSetNode();

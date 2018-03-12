@@ -30,7 +30,6 @@
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>

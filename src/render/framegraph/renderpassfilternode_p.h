@@ -67,7 +67,7 @@ class QHandle;
 
 namespace Render {
 
-class RenderPassFilter : public Render::FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderPassFilter : public Render::FrameGraphNode
 {
 public:
     RenderPassFilter();

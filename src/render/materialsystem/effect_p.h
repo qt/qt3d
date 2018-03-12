@@ -63,7 +63,7 @@ class QTechnique;
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Effect : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Effect : public BackendNode
 {
 public:
     Effect();

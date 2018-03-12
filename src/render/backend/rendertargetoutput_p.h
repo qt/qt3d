@@ -65,7 +65,7 @@ namespace Render {
 
 class AttachmentManager;
 
-class RenderTargetOutput : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderTargetOutput : public BackendNode
 {
 public:
     RenderTargetOutput();

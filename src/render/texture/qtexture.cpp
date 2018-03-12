@@ -57,7 +57,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
-#include <Qt3DRender/private/glresourcemanagers_p.h>
+#include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -82,7 +82,7 @@ private:
 typedef QSharedPointer<SceneDownloader> SceneDownloaderPtr;
 
 
-class Q_AUTOTEST_EXPORT SceneManager : public Qt3DCore::QResourceManager<
+class Q_3DRENDERSHARED_PRIVATE_EXPORT SceneManager : public Qt3DCore::QResourceManager<
         Scene,
         Qt3DCore::QNodeId,
         Qt3DCore::ObjectLevelLockingPolicy>

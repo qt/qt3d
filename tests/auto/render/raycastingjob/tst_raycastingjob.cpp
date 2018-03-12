@@ -38,6 +38,7 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/private/qaspectjob_p.h>
 #include <QtQuick/qquickwindow.h>
 
 #include <Qt3DRender/QCamera>

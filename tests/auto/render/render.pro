@@ -4,7 +4,6 @@ qtConfig(private_tests) {
     SUBDIRS += \
         entity \
         renderpass \
-        qgraphicsutils \
         shader \
         shaderbuilder \
         texture \
@@ -125,19 +124,8 @@ QT_FOR_CONFIG += 3drender-private
 qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
 
     SUBDIRS += \
-        filtercompatibletechniquejob \
-        graphicshelpergl3_3 \
-        graphicshelpergl3_2 \
-        graphicshelpergl2 \
-        glshadermanager \
-        materialparametergathererjob \
-        textures \
-        renderer \
-        renderviewutils \
-        renderviews \
-        renderqueue \
-        renderviewbuilder \
-        gltexture
+        opengl \
+        scene2d
 
     qtConfig(qt3d-extras) {
         SUBDIRS += \
@@ -157,8 +145,6 @@ qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
             qscene2d \
             scene2d
     }
-
-    !macos: SUBDIRS += graphicshelpergl4
 
     qtConfig(qt3d-simd-avx2): SUBDIRS += alignedresourcesmanagers-avx
     qtConfig(qt3d-simd-sse2):!qtConfig(qt3d-simd-avx2): SUBDIRS += alignedresourcesmanagers-sse

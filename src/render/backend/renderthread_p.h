@@ -52,7 +52,7 @@
 //
 
 #include <QThread>
-
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <QtCore/QSemaphore>
 
 QT_BEGIN_NAMESPACE
@@ -63,7 +63,7 @@ namespace Render {
 
 class AbstractRenderer;
 
-class Q_AUTOTEST_EXPORT RenderThread : public QThread
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderThread : public QThread
 {
     Q_OBJECT
 public:

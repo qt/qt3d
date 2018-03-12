@@ -67,7 +67,7 @@ namespace Render {
 
 class LevelOfDetailManager;
 
-class Q_AUTOTEST_EXPORT LevelOfDetail : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT LevelOfDetail : public BackendNode
 {
 public:
     LevelOfDetail();

@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT GeometryRendererManager : public Qt3DCore::QResourceManager<
+class Q_3DRENDERSHARED_PRIVATE_EXPORT GeometryRendererManager : public Qt3DCore::QResourceManager<
         GeometryRenderer,
         Qt3DCore::QNodeId,
         Qt3DCore::ObjectLevelLockingPolicy>
