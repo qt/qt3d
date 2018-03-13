@@ -70,7 +70,7 @@ public Q_SLOTS:
     void setLength(float length);
 
     void trigger();
-    void trigger(const QVector3D& origin, const QVector3D& direction, float length = -1.f);
+    void trigger(const QVector3D& origin, const QVector3D& direction, float length);
 
 Q_SIGNALS:
     void originChanged(const QVector3D &origin);

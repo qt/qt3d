@@ -54,6 +54,7 @@
 #include <Qt3DRender/private/layer_p.h>
 
 #include <vector>
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -624,9 +625,9 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
         EntityData current = worklist.back();
         worklist.pop_back();
 
+        bool accepted = true;
         if (m_layerIds.size()) {
             // TODO investigate reusing logic from LayerFilter job
-            bool accepted = false;
             Qt3DCore::QNodeIdVector filterLayers = current.recursiveLayers + current.entity->componentsUuid<Layer>();
 
             // remove disabled layers
@@ -636,53 +637,34 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
                 return !layer || !layer->isEnabled();
             }), filterLayers.end());
 
+            std::sort(filterLayers.begin(), filterLayers.end());
+
+            Qt3DCore::QNodeIdVector commonIds;
+            std::set_intersection(m_layerIds.cbegin(), m_layerIds.cend(),
+                                  filterLayers.cbegin(), filterLayers.cend(),
+                                  std::back_inserter(commonIds));
+
             switch (m_filterMode) {
             case QAbstractRayCaster::AcceptAnyMatchingLayers: {
-                for (auto id: qAsConst(filterLayers)) {
-                    if (m_layerIds.contains(id)) {
-                        accepted = true;
-                        break;
-                    }
-                }
+                accepted = !commonIds.empty();
                 break;
             }
             case QAbstractRayCaster::AcceptAllMatchingLayers: {
-                accepted = true;
-                for (auto id: qAsConst(filterLayers)) {
-                    if (!m_layerIds.contains(id)) {
-                        accepted = false;
-                        break;
-                    }
-                }
+                accepted = commonIds == m_layerIds;
                 break;
             }
             case QAbstractRayCaster::DiscardAnyMatchingLayers: {
-                accepted = true;
-                for (auto id: qAsConst(filterLayers)) {
-                    if (m_layerIds.contains(id)) {
-                        accepted = false;
-                        break;
-                    }
-                }
+                accepted = commonIds.empty();
                 break;
             }
             case QAbstractRayCaster::DiscardAllMatchingLayers: {
-                accepted = false;
-                for (auto id: qAsConst(filterLayers)) {
-                    if (!m_layerIds.contains(id)) {
-                        accepted = true;
-                        break;
-                    }
-                }
+                accepted = !(commonIds == m_layerIds);
                 break;
             }
             default:
                 Q_UNREACHABLE();
                 break;
             }
-
-            if (!accepted)
-                continue;
         }
 
         // first pick entry sub-scene-graph
@@ -693,7 +675,7 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
 
         // if we get a hit, we check again for this specific entity
         queryResult = rayCasting.query(m_ray, current.entity->worldBoundingVolume());
-        if (queryResult.m_distance >= 0.f && (current.hasObjectPicker || !m_objectPickersRequired)) {
+        if (accepted && queryResult.m_distance >= 0.f && (current.hasObjectPicker || !m_objectPickersRequired)) {
             m_entities.push_back(current.entity);
             m_hits.push_back(queryResult);
         }

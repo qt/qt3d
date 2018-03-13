@@ -42,6 +42,7 @@
     \title Qt 3D Core C++ Classes
     \keyword Qt 3D Core
     \brief The Qt 3D module contains functionality to support near-realtime simulation systems.
+    \since 5.7
 
     \ingroup modules
     \ingroup qt3d-modules
@@ -66,6 +67,7 @@
    \title Qt 3D Core QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
+   \since 5.7
 
    \brief Provides core Qt 3D QML types.
 

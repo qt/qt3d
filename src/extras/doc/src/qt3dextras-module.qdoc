@@ -41,15 +41,16 @@
     \module Qt3DExtras
     \title Qt 3D Extras C++ Classes
     \keyword Qt 3D Extras
+    \preliminary
 
     \brief The Qt 3D Extras module provides a set of prebuilt elements to help
     you get started with Qt 3D.
 
-    This module is still in tech preview. This means it is unstable, likely to
-    change and provided as a convenience only.
+    This module is still in development but is available as a technology preview.
+    This means it is unstable, likely to change and provided as a convenience only.
 
     \ingroup modules
-    \ingroup qt3d-modules
+    \ingroup qt3d-modules-preliminary
     \qtvariable 3dextras
 
     \code
@@ -116,8 +117,10 @@
 /*!
    \qmlmodule Qt3D.Extras 2.0
    \title Qt 3D Extras QML Types
+   \preliminary
+
    \ingroup qmlmodules
-   \ingroup qt3d-qmlmodules
+   \ingroup qt3d-qmlmodules-preliminary
 
    \brief Provides Qt 3D QML types for the extras module.
 

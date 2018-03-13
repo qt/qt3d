@@ -159,25 +159,32 @@ class tst_RayCastingJob : public QObject
     Q_OBJECT
 private Q_SLOTS:
 
-    void checkEarlyReturnWhenNoProperFrameGraph_data()
+    void worldSpaceRayCaster_data()
     {
         QTest::addColumn<QUrl>("source");
         QTest::addColumn<QVector3D>("rayOrigin");
         QTest::addColumn<QVector3D>("rayDirection");
+        QTest::addColumn<float>("rayLength");
         QTest::addColumn<int>("numIntersections");
 
-        QTest::newRow("left entity") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(-5, 0, 4) << QVector3D(0, 0, -1) << 1;
-        QTest::newRow("no entity") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(0, 0, 4) << QVector3D(0, 0, -1) << 0;
-        QTest::newRow("both entities") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(-8, 0, 0) << QVector3D(1, 0, 0) << 2;
-        QTest::newRow("discard filter - right entity") << QUrl("qrc:/testscene_worldraycastinglayer.qml") << QVector3D(5, 0, 4) << QVector3D(0, 0, -1) << 0;
-        QTest::newRow("discard filter - both entities") << QUrl("qrc:/testscene_worldraycastinglayer.qml") << QVector3D(-8, 0, 0) << QVector3D(1, 0, 0) << 1;
+        QTest::newRow("left entity") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(-5, 0, 4) << QVector3D(0, 0, -1) << 20.f << 1;
+        QTest::newRow("no entity") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(0, 0, 4) << QVector3D(0, 0, -1) << 20.f  << 0;
+        QTest::newRow("both entities") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(-8, 0, 0) << QVector3D(1, 0, 0) << 20.f  << 2;
+        QTest::newRow("infinite ray") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(-5, 0, 4) << QVector3D(0, 0, -1) << -1.f << 1;
+        QTest::newRow("short ray") << QUrl("qrc:/testscene_worldraycasting.qml") << QVector3D(-5, 0, 4) << QVector3D(0, 0, -1) << 2.f << 0;
+        QTest::newRow("discard filter - right entity") << QUrl("qrc:/testscene_worldraycastinglayer.qml") << QVector3D(5, 0, 4) << QVector3D(0, 0, -1) << 20.f  << 0;
+        QTest::newRow("discard filter - both entities") << QUrl("qrc:/testscene_worldraycastinglayer.qml") << QVector3D(-8, 0, 0) << QVector3D(1, 0, 0) << 20.f  << 1;
+        QTest::newRow("multi layer - left entity") << QUrl("qrc:/testscene_worldraycastingalllayers.qml") << QVector3D(-5, 0, 4) << QVector3D(0, 0, -1) << 20.f  << 0;
+        QTest::newRow("multi layer - right entity") << QUrl("qrc:/testscene_worldraycastingalllayers.qml") << QVector3D(5, 0, 4) << QVector3D(0, 0, -1) << 20.f  << 1;
+        QTest::newRow("parent layer") << QUrl("qrc:/testscene_worldraycastingparentlayer.qml") << QVector3D(-8, 0, 0) << QVector3D(1, 0, 0) << 20.f  << 1;
     }
 
-    void checkEarlyReturnWhenNoProperFrameGraph()
+    void worldSpaceRayCaster()
     {
         QFETCH(QUrl, source);
         QFETCH(QVector3D, rayOrigin);
         QFETCH(QVector3D, rayDirection);
+        QFETCH(float, rayLength);
         QFETCH(int, numIntersections);
 
         // GIVEN
@@ -194,7 +201,7 @@ private Q_SLOTS:
         }
         QVERIFY(rayCaster);
 
-        rayCaster->trigger(rayOrigin, rayDirection);
+        rayCaster->trigger(rayOrigin, rayDirection, rayLength);
 
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
         TestArbiter arbiter;
@@ -219,6 +226,67 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "hits");
         Qt3DRender::QRayCaster::Hits hits = change->value().value<Qt3DRender::QRayCaster::Hits>();
+        QCOMPARE(hits.size(), numIntersections);
+
+        if (numIntersections)
+            QVERIFY(hits.first().entityId());
+    }
+
+    void screenSpaceRayCaster_data()
+    {
+        QTest::addColumn<QUrl>("source");
+        QTest::addColumn<QPoint>("rayPosition");
+        QTest::addColumn<int>("numIntersections");
+
+        QTest::newRow("left entity") << QUrl("qrc:/testscene_screenraycasting.qml") << QPoint(200, 280) << 1;
+        QTest::newRow("no entity") << QUrl("qrc:/testscene_screenraycasting.qml") << QPoint(300, 300) << 0;
+    }
+
+    void screenSpaceRayCaster()
+    {
+        QFETCH(QUrl, source);
+        QFETCH(QPoint, rayPosition);
+        QFETCH(int, numIntersections);
+
+        // GIVEN
+        QmlSceneReader sceneReader(source);
+        QScopedPointer<Qt3DCore::QEntity> root(qobject_cast<Qt3DCore::QEntity *>(sceneReader.root()));
+        QVERIFY(root);
+
+        Qt3DCore::QComponentVector rootComponents = root->components();
+        Qt3DRender::QScreenRayCaster *rayCaster = nullptr;
+        for (Qt3DCore::QComponent *c: qAsConst(rootComponents)) {
+            rayCaster = qobject_cast<Qt3DRender::QScreenRayCaster *>(c);
+            if (rayCaster)
+                break;
+        }
+        QVERIFY(rayCaster);
+
+        rayCaster->trigger(rayPosition);
+
+        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
+        TestArbiter arbiter;
+
+        // Runs Required jobs
+        runRequiredJobs(test.data());
+
+        Qt3DRender::Render::RayCaster *backendRayCaster = test->nodeManagers()->rayCasterManager()->lookupResource(rayCaster->id());
+        QVERIFY(backendRayCaster);
+        Qt3DCore::QBackendNodePrivate::get(backendRayCaster)->setArbiter(&arbiter);
+
+        // WHEN
+        Qt3DRender::Render::RayCastingJob rayCastingJob;
+        initializeJob(&rayCastingJob, test.data());
+
+        bool earlyReturn = !rayCastingJob.runHelper();
+
+        // THEN
+        QVERIFY(!earlyReturn);
+        QVERIFY(!backendRayCaster->isEnabled());
+        QCOMPARE(arbiter.events.count(), 2); // hits & disable
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "hits");
+        Qt3DRender::QScreenRayCaster::Hits hits = change->value().value<Qt3DRender::QScreenRayCaster::Hits>();
         QCOMPARE(hits.size(), numIntersections);
 
         if (numIntersections)

@@ -50,23 +50,47 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::QScreenRayCaster
+    \brief Performe ray casting test based on screen coordinates
     \inmodule Qt3DRender
-
-    \brief The QScreenRayCaster...
-
-    \sa Qt3DRender::QPickingSettings, Qt3DRender::QObjectPicker
-
     \since 5.11
+    \inherits QAbstractRayCaster
+
+    QScreenRayCaster can be used to perform ray casting tests by specifying coordinates in
+    screen space, which will be used to construct an actual 3d ray between the near and
+    far planes.
+
+    \sa QRayCaster
+*/
+/*!
+    \qmltype ScreenRayCaster
+    \brief Performe ray casting test based on screen coordinates
+    \inqmlmodule Qt3D.Render
+    \since 5.11
+    \instantiates Qt3DRender::QScreenRayCaster
+
+    ScreenRayCaster can be used to perform ray casting tests by specifying coordinates in
+    screen space, which will be used to construct an actual 3d ray between the near and
+    far planes.
+
+    \sa RayCaster
 */
 
 /*!
-    \qmltype ScreenRayCaster
-    \instantiates Qt3DRender::QScreenRayCaster
-    \inqmlmodule Qt3D.Render
-    \brief The ScreenRayCaster
-    \sa PickingSettings, ObjectPicker
- */
+    \property QPoint position
 
+    Holds the screen space position used to compute the actual 3d ray for intersection tests.
+
+    Note: the coordinates will be used for every available render surface as long as they are
+    in the valid range.
+*/
+/*!
+    \qmlproperty Point2D position
+
+    Holds the length of the 3d ray.
+
+    Note: the coordinates will be used for every available render surface as long as they are
+    in the valid range.
+*/
 
 QScreenRayCaster::QScreenRayCaster(Qt3DCore::QNode *parent)
     : QAbstractRayCaster(parent)
@@ -74,6 +98,7 @@ QScreenRayCaster::QScreenRayCaster(Qt3DCore::QNode *parent)
     QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::ScreenScapeRayCaster;
 }
 
+/*! \internal */
 QScreenRayCaster::QScreenRayCaster(QAbstractRayCasterPrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractRayCaster(dd, parent)
 {
@@ -100,11 +125,17 @@ void QScreenRayCaster::setPosition(const QPoint &position)
     }
 }
 
+/*!
+  Convenience method to enable the component and trigger tests using the current coordinate value
+*/
 void QScreenRayCaster::trigger()
 {
     setEnabled(true);
 }
 
+/*!
+  Convenience method to set the coordinate value and enable the component to trigger tests
+*/
 void QScreenRayCaster::trigger(const QPoint &position)
 {
     setPosition(position);

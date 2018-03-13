@@ -50,9 +50,19 @@
 
     \annotatedlist qt3d-modules
 
+    The following C++ modules are in still development but are available
+    as technology previews:
+
+    \annotatedlist qt3d-modules-preliminary
+
     For Qt Quick applications, Qt 3D provides the following QML modules:
 
     \annotatedlist qt3d-qmlmodules
+
+    The following QML modules are in still development but are available
+    as technology previews:
+
+    \annotatedlist qt3d-qmlmodules-preliminary
 
     \section1 Getting Started
 

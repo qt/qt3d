@@ -52,20 +52,67 @@ namespace Qt3DRender {
     \class Qt3DRender::QRayCaster
     \inmodule Qt3DRender
 
-    \brief The QRayCaster...
-
-    \sa Qt3DRender::QPickingSettings, Qt3DRender::QObjectPicker
-
+    \brief Qt3DRender::QRayCaster is used to perform ray casting tests in 3d world coordinates.
+    \inmodule Qt3DRender
     \since 5.11
+    \inherits QAbstractRayCaster
+
+    The 3d ray is defined by its origin, direction and length. It will be affected by the
+    transformations applied to the entity it belongs to.
+
+    Ray casting tests will be performed every frame as long as the component is enabled.
+    The hits property will be updated with the list of intersections.
+
+    \sa QAbstractRayCaster, QScreenRayCaster
+*/
+/*!
+    \qmltype RayCaster
+    \brief used to perform ray casting tests in 3d world coordinates.
+    \inqmlmodule Qt3D.Render
+    \since 5.11
+    \instantiates Qt3DRender::QRayCaster
+
+    The 3d ray is defined by its origin, direction and length. It will be affected by the
+    transformations applied to the entity it belongs to.
+
+    Ray casting tests will be performed every frame as long as the component is enabled.
+    The hits property will be updated with the list of intersections.
+
+    \sa AbstractRayCaster, ScreenRayCaster
 */
 
 /*!
-    \qmltype RayCaster
-    \instantiates Qt3DRender::QRayCaster
-    \inqmlmodule Qt3D.Render
-    \brief The RayCaster
-    \sa PickingSettings, ObjectPicker
- */
+    \property QVector3D origin
+
+    Holds the origin of the 3d ray in local coordinates.
+*/
+/*!
+    \qmlproperty Vector3D origin
+
+    Holds the origin of the 3d ray in local coordinates.
+*/
+
+/*!
+    \property QVector3D direction
+
+    Holds the direction of the 3d ray. This should be a unit vector.
+*/
+/*!
+    \qmlproperty Vector3D direction
+
+    Holds the direction of the 3d ray. This should be a unit vector.
+*/
+
+/*!
+    \property float length
+
+    Holds the length of the 3d ray.
+*/
+/*!
+    \qmlproperty real direction
+
+    Holds the length of the 3d ray.
+*/
 
 
 QRayCaster::QRayCaster(Qt3DCore::QNode *parent)
@@ -121,6 +168,11 @@ float QRayCaster::length() const
     return d->m_length;
 }
 
+/*!
+ * \brief Set the length of the ray to \a length
+ *
+ * If the value is less than or equal to zero, the ray is concidered to be infinite.
+ */
 void QRayCaster::setLength(float length)
 {
     auto d = QAbstractRayCasterPrivate::get(this);
@@ -130,17 +182,22 @@ void QRayCaster::setLength(float length)
     }
 }
 
+/*!
+ * Convenience method to enable the component and trigger tests using the current ray
+ */
 void QRayCaster::trigger()
 {
     setEnabled(true);
 }
 
+/*!
+ * Convenience method to set the ray details and enable the component to trigger tests
+ */
 void QRayCaster::trigger(const QVector3D &origin, const QVector3D &direction, float length)
 {
     setOrigin(origin);
     setDirection(direction);
-    if (length >= 0.f)
-        setLength(length);
+    setLength(length);
     setEnabled(true);
 }
 

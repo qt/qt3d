@@ -183,7 +183,7 @@ protected:
     {
         const uint stride = byteStride / sizeof(Coordinate);
         for (uint i = 0; i < count; ++i) {
-            if (!primitiveRestartEnabled || indices[i] != primitiveRestartIndex) {
+            if (!primitiveRestartEnabled || (int) indices[i] != primitiveRestartIndex) {
                 const uint n = stride * indices[i];
                 visit(i, coordinates[n]);
             }
@@ -213,7 +213,7 @@ protected:
     {
         const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 2;
         for (uint i = 0; i < count; ++i) {
-            if (!primitiveRestartEnabled || indices[i] != primitiveRestartIndex) {
+            if (!primitiveRestartEnabled || (int) indices[i] != primitiveRestartIndex) {
                 const uint n = stride * indices[i];
                 visit(i, coordinates[n], coordinates[n + 1]);
             }
@@ -242,7 +242,7 @@ protected:
     {
         const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 3;
         for (uint i = 0; i < count; ++i) {
-            if (!primitiveRestartEnabled || indices[i] != primitiveRestartIndex) {
+            if (!primitiveRestartEnabled || (int) indices[i] != primitiveRestartIndex) {
                 const uint n = stride * indices[i];
                 visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2]);
             }
@@ -271,7 +271,7 @@ protected:
     {
         const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 4;
         for (uint i = 0; i < count; ++i) {
-            if (!primitiveRestartEnabled || indices[i] != primitiveRestartIndex) {
+            if (!primitiveRestartEnabled || (int) indices[i] != primitiveRestartIndex) {
                 const uint n = stride * indices[i];
                 visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2], coordinates[n + 3]);
             }

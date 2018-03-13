@@ -66,6 +66,9 @@ class QTechnique;
 class QParameter;
 class QShaderProgram;
 class QRenderPass;
+class QNoDepthMask;
+class QBlendEquationArguments;
+class QBlendEquation;
 
 } // namespace Qt3DRender
 
@@ -93,6 +96,9 @@ class QTextureMaterialPrivate : public Qt3DRender::QMaterialPrivate
     Qt3DRender::QRenderPass *m_textureES2RenderPass;
     Qt3DRender::QShaderProgram *m_textureGL3Shader;
     Qt3DRender::QShaderProgram *m_textureGL2ES2Shader;
+    Qt3DRender::QNoDepthMask *m_noDepthMask;
+    Qt3DRender::QBlendEquationArguments *m_blendState;
+    Qt3DRender::QBlendEquation *m_blendEquation;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QTextureMaterial)

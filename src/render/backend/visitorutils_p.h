@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_VISITORUTILS_P_H
-#define QT3DRENDER_VISITORUTILS_P_H
+#ifndef QT3DRENDER_RENDER_VISITORUTILS_P_H
+#define QT3DRENDER_RENDER_VISITORUTILS_P_H
 
 //
 //  W A R N I N G
@@ -112,12 +112,14 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
     Buffer *indexBuffer = nullptr;
 
     if (geom) {
+        positionAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
+
         Qt3DRender::Render::Attribute *attribute = nullptr;
         const auto attrIds = geom->attributes();
         for (const Qt3DCore::QNodeId attrId : attrIds) {
             attribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
             if (attribute){
-                if (attribute->name() == QAttribute::defaultPositionAttributeName())
+                if (!positionAttribute && attribute->name() == QAttribute::defaultPositionAttributeName())
                     positionAttribute = attribute;
                 else if (attribute->attributeType() == QAttribute::IndexAttribute)
                     indexAttribute = attribute;
@@ -176,4 +178,4 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_VISITORUTILS_P_H
+#endif // QT3DRENDER_RENDER_VISITORUTILS_P_H

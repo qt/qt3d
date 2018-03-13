@@ -48,6 +48,9 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
+#include <Qt3DRender/qblendequation.h>
+#include <Qt3DRender/qblendequationarguments.h>
+#include <Qt3DRender/qnodepthmask.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -69,6 +72,9 @@ QTextureMaterialPrivate::QTextureMaterialPrivate()
     , m_textureES2RenderPass(new QRenderPass)
     , m_textureGL3Shader(new QShaderProgram)
     , m_textureGL2ES2Shader(new QShaderProgram)
+    , m_noDepthMask(new QNoDepthMask())
+    , m_blendState(new QBlendEquationArguments())
+    , m_blendEquation(new QBlendEquation())
     , m_filterKey(new QFilterKey)
 {
 }
@@ -100,6 +106,13 @@ void QTextureMaterialPrivate::init()
     m_textureES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_textureES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_noDepthMask->setEnabled(false);
+    m_blendState->setEnabled(false);
+    m_blendState->setSourceRgb(QBlendEquationArguments::SourceAlpha);
+    m_blendState->setDestinationRgb(QBlendEquationArguments::OneMinusSourceAlpha);
+    m_blendEquation->setEnabled(false);
+    m_blendEquation->setBlendFunction(QBlendEquation::Add);
+
     Q_Q(QTextureMaterial);
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
@@ -112,6 +125,18 @@ void QTextureMaterialPrivate::init()
     m_textureGL3RenderPass->setShaderProgram(m_textureGL3Shader);
     m_textureGL2RenderPass->setShaderProgram(m_textureGL2ES2Shader);
     m_textureES2RenderPass->setShaderProgram(m_textureGL2ES2Shader);
+
+    m_textureGL3RenderPass->addRenderState(m_noDepthMask);
+    m_textureGL3RenderPass->addRenderState(m_blendState);
+    m_textureGL3RenderPass->addRenderState(m_blendEquation);
+
+    m_textureGL2RenderPass->addRenderState(m_noDepthMask);
+    m_textureGL2RenderPass->addRenderState(m_blendState);
+    m_textureGL2RenderPass->addRenderState(m_blendEquation);
+
+    m_textureES2RenderPass->addRenderState(m_noDepthMask);
+    m_textureES2RenderPass->addRenderState(m_blendState);
+    m_textureES2RenderPass->addRenderState(m_blendEquation);
 
     m_textureGL3Technique->addRenderPass(m_textureGL3RenderPass);
     m_textureGL2Technique->addRenderPass(m_textureGL2RenderPass);
@@ -229,6 +254,32 @@ void QTextureMaterial::setTextureTransform(const QMatrix3x3 &matrix)
 {
     Q_D(QTextureMaterial);
     d->m_textureTransformParameter->setValue(qVariantFromValue(matrix));
+}
+
+/*!
+    \property QTextureMaterial::alphaBlending
+
+    Indicates if the alpha information coming from the diffuse property will
+    be taken into account during rendering. Defaults to false.
+*/
+/*!
+    \qmlproperty bool TextureMaterial::alphaBlending
+
+    Indicates if the alpha information coming from the diffuse property will
+    be taken into account during rendering. Defaults to false.
+*/
+bool QTextureMaterial::isAlphaBlendingEnabled() const
+{
+    Q_D(const QTextureMaterial);
+    return d->m_noDepthMask->isEnabled();
+}
+
+void QTextureMaterial::setAlphaBlendingEnabled(bool enabled)
+{
+    Q_D(QTextureMaterial);
+    d->m_noDepthMask->setEnabled(enabled);
+    d->m_blendState->setEnabled(enabled);
+    d->m_blendEquation->setEnabled(enabled);
 }
 
 } // namespace Qt3DExtras
