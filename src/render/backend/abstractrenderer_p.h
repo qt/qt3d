@@ -92,7 +92,9 @@ public:
     virtual ~AbstractRenderer() {}
 
     enum API {
-        OpenGL
+        OpenGL,
+        Vulkan,
+        DirectX
     };
 
     // Changes made to backend nodes are reported to the Renderer
