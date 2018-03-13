@@ -97,6 +97,96 @@ private Q_SLOTS:
         roots[2] = 2.0f - std::sqrt(7.0f);
         QTest::newRow("a=1, b=-5, c=1, d=3") << a << b << c << d << rootCount << roots;
         roots.clear();
+
+        // quadratic equation
+        a = 0.0f;
+        b = 9.0f;
+        c = 11.0f;
+        d = 3.0f;
+        roots.resize(2);
+        roots[0] = -11.0f/18.0f + std::sqrt(13.0f) / 18.0f;
+        roots[1] = -11.0f/18.0f - std::sqrt(13.0f) / 18.0f;
+        QTest::newRow("a=0, b=9, c=11, d=3") << a << b << c << d << roots.size() << roots;
+        roots.clear();
+
+        // quadratic equation with discriminant = 0
+        a = 0.0f;
+        b = 1.0f;
+        c = 2.0f;
+        d = 1.0f;
+        roots.resize(1);
+        roots[0] = -1.f;
+        QTest::newRow("a=0, b=1, c=2, d=1") << a << b << c << d << roots.size() << roots;
+        roots.clear();
+
+        // quadratic equation with discriminant < 0
+        a = 0.0f;
+        b = 1.0f;
+        c = 4.0f;
+        d = 8.0f;
+        roots.resize(0);
+        QTest::newRow("a=0, b=1, c=4, d=8") << a << b << c << d << roots.size() << roots;
+        roots.clear();
+
+        // linear equation
+        a = 0.0f;
+        b = 0.0f;
+        c = 2.0f;
+        d = 1.0f;
+        roots.resize(1);
+        roots[0] = -0.5f;
+        QTest::newRow("a=0, b=0, c=2, d=1") << a << b << c << d << roots.size() << roots;
+        roots.clear();
+
+        // linear equation
+        a = 0.0f;
+        b = 0.0f;
+        c = 8.0f;
+        d = -5.0f;
+        roots.resize(1);
+        roots[0] = -d/c;
+        QTest::newRow("a=0, b=0, c=8, d=-5") << a << b << c << d << roots.size() << roots;
+        roots.clear();
+
+        // invalid equation
+        a = 0.0f;
+        b = 0.0f;
+        c = 0.0f;
+        d = -5.0f;
+        roots.resize(0);
+        QTest::newRow("a=0, b=0, c=0, d=-5") << a << b << c << d << roots.size() << roots;
+        roots.clear();
+
+        // Invalid equation
+        a = 0.0f;
+        b = 0.0f;
+        c = 0.0f;
+        d = 42.0f;
+        roots.resize(0);
+        QTest::newRow("a=0, b=0, c=0, d=42") << a << b << c << d << roots.size() << roots;
+        roots.clear();
+
+        // almost linear equation
+        a = 1.90735e-06f;
+        b = -2.86102e-06f;
+        c = 5.0;
+        d = 0.0;
+        roots.resize(1);
+        roots[0] = -d/c;
+        QTest::newRow("a=~0, b=~0, c=5, d=0") << a << b << c << d << roots.size() << roots;
+        roots.clear();
+
+        // case that produces a result just below zero, that should be evaluated as zero
+        a = -0.75f;
+        b = 0.75f;
+        c = 2.5;
+        d = 0.0;
+        roots.resize(3);
+        roots[0] = 2.39297f;
+        roots[1] = 0.f;
+        roots[2] = -1.39297f;
+        QTest::newRow("a=-0.75, b=0.75, c=2.5, d=0") << a << b << c << d << roots.size() << roots;
+        roots.clear();
     }
 
     void checkFindCubicRoots()
