@@ -699,13 +699,19 @@ Render::AbstractRenderer *QRenderAspectPrivate::loadRendererPlugin()
     // Note: for now we load the first renderer plugin that is successfully loaded
     // In the future we might want to offer the user a way to hint at which renderer
     // plugin would best be loaded
+
+    const QByteArray envTarget = qgetenv("QT3D_RENDERER");
+    const QString targetKey = !envTarget.isEmpty() ? QString::fromLatin1(envTarget) : QStringLiteral("opengl");
     const QStringList keys = Render::QRendererPluginFactory::keys();
     for (const QString &key : keys) {
+        if (key != targetKey)
+            continue;
         Render::AbstractRenderer *renderer = Render::QRendererPluginFactory::create(key, m_renderType);
         if (renderer)
             return renderer;
     }
-    qFatal("Unable to load a renderer plugin");
+    const QByteArray targetKeyName = targetKey.toLatin1();
+    qFatal("Unable to find renderer plugin for %s", targetKeyName.constData());
     return nullptr;
 }
 
