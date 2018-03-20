@@ -37,69 +37,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_COMMANDTHREAD_P_H
-#define QT3DRENDER_RENDER_COMMANDTHREAD_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtCore/QThread>
-#include <QtCore/QSemaphore>
+#include "glcommands_p.h"
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
 QT_BEGIN_NAMESPACE
-
-class QOpenGLContext;
 
 namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
-
-class Command
+LoadShaderCommand::LoadShaderCommand(Shader *shader)
+    : m_shader(shader)
 {
-public:
-    virtual void execute(Renderer *renderer, QOpenGLContext *localContext) = 0;
-};
+    Q_ASSERT(m_shader);
+}
 
-class CommandThread : public QThread
+void LoadShaderCommand::execute(Renderer *renderer, GraphicsContext *ctx)
 {
-    Q_OBJECT
-public:
-    explicit CommandThread(Renderer *renderer);
-    ~CommandThread();
-
-    Render::Renderer* renderer() const { return m_renderer; }
-
-    void initialize(QOpenGLContext *mainContext);
-    void shutdown();
-
-    void executeCommand(Command *command);
-
-private:
-    void run() override;
-    Q_INVOKABLE void executeCommandInternal(Command *command);
-
-private:
-    Renderer* m_renderer;
-    QSemaphore m_waitForStartSemaphore;
-    QSemaphore m_initializedSemaphore;
-    QOpenGLContext *m_mainContext;
-    QScopedPointer<QOpenGLContext> m_localContext;
-};
+    NodeManagers *nodeManagers = renderer->nodeManagers();
+    ctx->loadShader(m_shader, nodeManagers->shaderManager());
+}
 
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_COMMANDTHREAD_P_H

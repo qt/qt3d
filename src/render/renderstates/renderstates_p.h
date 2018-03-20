@@ -62,138 +62,115 @@ namespace Render {
 class Q_AUTOTEST_EXPORT BlendEquationArguments : public GenericState<BlendEquationArguments, BlendEquationArgumentsMask, GLenum, GLenum, GLenum, GLenum, bool, int>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT BlendEquation : public GenericState<BlendEquation, BlendStateMask, GLenum>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
-
 
 class Q_AUTOTEST_EXPORT AlphaFunc : public GenericState<AlphaFunc, AlphaTestMask, GLenum, GLclampf>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT MSAAEnabled : public GenericState<MSAAEnabled, MSAAEnabledStateMask, GLboolean>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT DepthTest : public GenericState<DepthTest, DepthTestStateMask, GLenum>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT NoDepthMask : public GenericState<NoDepthMask, DepthWriteStateMask, GLboolean>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT CullFace : public GenericState<CullFace, CullFaceStateMask, GLenum>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT FrontFace : public GenericState<FrontFace, FrontFaceStateMask, GLenum>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT Dithering : public GenericState<Dithering, DitheringStateMask>
 {
-public:
-    void apply(GraphicsContext *gc) const override;
 };
 
 class Q_AUTOTEST_EXPORT ScissorTest : public GenericState<ScissorTest, ScissorStateMask, int, int, int, int>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT StencilTest : public GenericState<StencilTest, StencilTestStateMask, GLenum, int, uint, GLenum, int, uint>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT AlphaCoverage : public GenericState<AlphaCoverage, AlphaCoverageStateMask>
 {
-public:
-    void apply(GraphicsContext *gc) const override;
 };
 
 class Q_AUTOTEST_EXPORT PointSize : public GenericState<PointSize, PointSizeMask, bool, GLfloat>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT PolygonOffset : public GenericState<PolygonOffset, PolygonOffsetStateMask, GLfloat, GLfloat>
 {
 public:
-    void apply(GraphicsContext *gc) const override;
+
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT ColorMask : public GenericState<ColorMask, ColorStateMask, GLboolean, GLboolean, GLboolean, GLboolean>
 {
 public:
-    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT ClipPlane : public GenericState<ClipPlane, ClipPlaneMask, int, QVector3D, float>
 {
 public:
-    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT SeamlessCubemap : public GenericState<SeamlessCubemap, SeamlessCubemapMask>
 {
-public:
-    void apply(GraphicsContext *gc) const override;
 };
 
 class Q_AUTOTEST_EXPORT StencilOp : public GenericState<StencilOp, StencilOpMask, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>
 {
 public:
-    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT StencilMask : public GenericState<StencilMask, StencilWriteStateMask, uint, uint>
 {
 public:
-    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
 class Q_AUTOTEST_EXPORT LineWidth : public GenericState<LineWidth, LineWidthMask, GLfloat, bool>
 {
 public:
-    void apply(GraphicsContext *gc) const final;
     void updateProperty(const char *name, const QVariant &value) override;
 };
 

@@ -83,6 +83,8 @@ void Texture::addDirtyFlag(DirtyFlags flags)
 {
     QMutexLocker lock(&m_flagsMutex);
     m_dirty |= flags;
+    if (m_renderer)
+        markDirty(AbstractRenderer::TexturesDirty);
 }
 
 Texture::DirtyFlags Texture::dirtyFlags()
@@ -249,8 +251,6 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     addDirtyFlag(dirty);
-
-    markDirty(AbstractRenderer::TexturesDirty);
     BackendNode::sceneChangeEvent(e);
 }
 

@@ -3,14 +3,11 @@ TEMPLATE = subdirs
 qtConfig(private_tests) {
     SUBDIRS += \
         entity \
-        renderqueue \
         renderpass \
         qgraphicsutils \
         shader \
         shaderbuilder \
         texture \
-        renderviewutils \
-        renderviews \
         material \
         vsyncframeadvanceservice \
         meshfunctors \
@@ -59,11 +56,6 @@ qtConfig(private_tests) {
         loadscenejob \
         qrendercapture \
         uniform \
-        graphicshelpergl3_3 \
-        graphicshelpergl3_2 \
-        graphicshelpergl2 \
-        sendrendercapturejob \
-        textures \
         qparameter \
         parameter \
         qtextureloader \
@@ -85,9 +77,6 @@ qtConfig(private_tests) {
         filterkey \
         qmesh \
         technique \
-        materialparametergathererjob \
-        renderviewbuilder \
-        filtercompatibletechniquejob \
         rendercapture \
         segmentvisitor \
         trianglevisitor \
@@ -97,7 +86,6 @@ qtConfig(private_tests) {
         qshaderprogrambuilder \
         coordinatereader \
         framegraphvisitor \
-        renderer \
         armature \
         skeleton \
         joint \
@@ -122,6 +110,27 @@ qtConfig(private_tests) {
         trianglesextractor \
         triangleboundingvolume \
     }
+}
+
+# Tests related to the OpenGL renderer
+QT_FOR_CONFIG += 3drender-private
+
+qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
+
+    SUBDIRS += \
+        filtercompatibletechniquejob \
+        graphicshelpergl3_3 \
+        graphicshelpergl3_2 \
+        graphicshelpergl2 \
+        materialparametergathererjob \
+        textures \
+        scene2d \
+        renderer \
+        renderviewutils \
+        renderviews \
+        renderqueue \
+        renderviewbuilder \
+        sendrendercapturejob
 
     qtConfig(qt3d-extras) {
         SUBDIRS += \

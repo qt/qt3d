@@ -76,32 +76,18 @@
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLDebugLogger;
 class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
+class QOpenGLDebugLogger;
 
 namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
 class GraphicsHelperInterface;
-class RenderStateSet;
-class Material;
-class GLTexture;
-class RenderCommand;
 class RenderTarget;
 class AttachmentPack;
-class Attribute;
-class Buffer;
 class ShaderManager;
-
-enum TextureScope
-{
-    TextureScopeMaterial = 0,
-    TextureScopeTechnique
-    // per-pass for deferred rendering?
-};
 
 typedef QPair<QString, int> NamedUniformLocation;
 
@@ -111,100 +97,28 @@ public:
     GraphicsContext();
     ~GraphicsContext();
 
-    int id() const; // unique, small integer ID of this context
+    void setShaderCache(ShaderCache *shaderCache) { m_shaderCache = shaderCache; }
+    ShaderCache *shaderCache() const { return m_shaderCache; }
 
-    bool beginDrawing(QSurface *surface);
-    void clearBackBuffer(QClearBuffers::BufferTypeFlags buffers);
-    void endDrawing(bool swapBuffers);
-
-    void setViewport(const QRectF &viewport, const QSize &surfaceSize);
-    QRectF viewport() const { return m_viewport; }
-
-    /**
-     * @brief releaseGL - release all OpenGL objects associated with
-     * this context
-     */
-    void releaseOpenGL();
     void setOpenGLContext(QOpenGLContext* ctx);
     QOpenGLContext *openGLContext() { return m_gl; }
     bool makeCurrent(QSurface *surface);
     void doneCurrent();
-    void activateGLHelper();
     bool hasValidGLHelper() const;
     bool isInitialized() const;
 
+    // Shaders
     QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
-    void loadShader(Shader* shader, ShaderManager *manager);
-    bool activateShader(ProgramDNA shaderDNA);
-    void removeShaderProgramReference(Shader *shaderNode);
     void introspectShaderInterface(Shader *shader, QOpenGLShaderProgram *shaderProgram);
+    void loadShader(Shader* shader, ShaderManager *manager);
+    void removeShaderProgramReference(Shader *shaderNode);
 
-    GLuint activeFBO() const { return m_activeFBO; }
     GLuint defaultFBO() const { return m_defaultFBO; }
-    void activateRenderTarget(const Qt3DCore::QNodeId id, const AttachmentPack &attachments, GLuint defaultFboId);
 
-    Material* activeMaterial() const { return m_material; }
-
-    void setActiveMaterial(Material* rmat);
-
-    void executeCommand(const RenderCommand *command);
-
-    QSize renderTargetSize(const QSize &surfaceSize) const;
-
-    /**
-     * @brief activeShader
-     * @return
-     */
-    QOpenGLShaderProgram* activeShader() const;
-
-    void setRenderer(Renderer *renderer);
-
-    void specifyAttribute(const Attribute *attribute,
-                          Buffer *buffer,
-                          const ShaderAttribute *attributeDescription);
-    void specifyIndices(Buffer *buffer);
-    void updateBuffer(Buffer *buffer);
-    QByteArray downloadBufferContent(Buffer *buffer);
-    void releaseBuffer(Qt3DCore::QNodeId bufferId);
-    bool hasGLBufferForBuffer(Buffer *buffer);
-
-    void blitFramebuffer(Qt3DCore::QNodeId outputRenderTargetId, Qt3DCore::QNodeId inputRenderTargetId,
-                         QRect inputRect,
-                         QRect outputRect, uint defaultFboId,
-                         QRenderTargetOutput::AttachmentPoint inputAttachmentPoint,
-                         QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
-                         QBlitFramebuffer::InterpolationMethod interpolationMethod);
-
-    void memoryBarrier(QMemoryBarrier::Operations barriers);
-
-    bool setParameters(ShaderParameterPack &parameterPack);
-
-    void readBuffer(GLenum mode);
-    void drawBuffer(GLenum mode);
-
-    /**
-     * @brief glBufferFor - given a client-side (CPU) buffer, provide the
-     * context-specific object. Initial call will create the buffer.
-     * @param buf
-     * @return
-     */
-    GLBuffer *glBufferForRenderBuffer(Buffer *buf, GLBuffer::Type type);
-
-    /**
-     * @brief activateTexture - make a texture active on a hardware unit
-     * @param tex - the texture to activate
-     * @param onUnit - option, specify the explicit unit to activate on
-     * @return - the unit the texture was activated on
-     */
-    int activateTexture(TextureScope scope, GLTexture* tex, int onUnit = -1);
-
-    void deactivateTexture(GLTexture *tex);
-
-    void setCurrentStateSet(RenderStateSet* ss);
-    RenderStateSet *currentStateSet() const;
     const GraphicsApiFilterData *contextInfo() const;
 
     // Wrapper methods
+    void    clearBackBuffer(QClearBuffers::BufferTypeFlags buffers);
     void    alphaTest(GLenum mode1, GLenum mode2);
     void    bindFramebuffer(GLuint fbo, GraphicsHelperInterface::FBOBindMode mode);
     void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
@@ -240,12 +154,17 @@ public:
     void    enablePrimitiveRestart(int restartIndex);
     void    frontFace(GLenum mode);
     GLint   maxClipPlaneCount();
+    GLint   maxTextureUnitsCount();
     void    pointSize(bool programmable, GLfloat value);
+    void    readBuffer(GLenum mode);
+    void    drawBuffer(GLenum mode);
     void    setMSAAEnabled(bool enabled);
     void    setAlphaCoverageEnabled(bool enabled);
     void    setClipPlane(int clipPlane, const QVector3D &normal, float distance);
     void    setSeamlessCubemap(bool enable);
     void    setVerticesPerPatch(GLint verticesPerPatch);
+    void    memoryBarrier(QMemoryBarrier::Operations barriers);
+    void    activateDrawBuffers(const AttachmentPack &attachments);
 
     // Helper methods
     static GLint elementType(GLint type);
@@ -256,98 +175,23 @@ public:
     bool supportsDrawBuffersBlend() const;
     bool supportsVAO() const { return m_supportsVAO; }
 
-    QImage readFramebuffer(const QRect &rect);
-
-private:
     void initialize();
-
-    void decayTextureScores();
-
-    GLint assignUnitForTexture(GLTexture* tex);
-    void deactivateTexturesWithScope(TextureScope ts);
-
     GraphicsHelperInterface *resolveHighestOpenGLFunctions();
 
-    GLuint createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments);
-    GLuint updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, bool isActiveRenderTarget);
-    void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
-    void activateDrawBuffers(const AttachmentPack &attachments);
-    HGLBuffer createGLBufferFor(Buffer *buffer, GLBuffer::Type type);
-    void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
-    QByteArray downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b);
-    bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);
-    void resolveRenderTargetFormat();
-
     bool m_initialized;
-    const unsigned int m_id;
+    bool m_supportsVAO;
+    GLint m_maxTextureUnits;
+    GLuint m_defaultFBO;
     QOpenGLContext *m_gl;
-    QSurface *m_surface;
     GraphicsHelperInterface *m_glHelper;
-    bool m_ownCurrent;
-
-    ShaderCache m_shaderCache;
-    QOpenGLShaderProgram *m_activeShader;
-    ProgramDNA m_activeShaderDNA;
-
-    QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
-    QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
-    QHash<GLuint, QSize> m_renderTargetsSize;
-    QAbstractTexture::TextureFormat m_renderTargetFormat;
-    QSize m_surfaceSize;
 
     QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
-
-    // active textures, indexed by texture unit
-    struct ActiveTexture {
-        GLTexture *texture = nullptr;
-        int score = 0;
-        TextureScope scope = TextureScopeMaterial;
-        bool pinned = false;
-    };
-    QVector<ActiveTexture> m_activeTextures;
-
-    // cache some current state, to make sure we don't issue unnecessary GL calls
-    int m_currClearStencilValue;
-    float m_currClearDepthValue;
-    QColor m_currClearColorValue;
-
-    Material* m_material;
-    QRectF m_viewport;
-    GLuint m_activeFBO;
-    GLuint m_defaultFBO;
-
-    GLBuffer *m_boundArrayBuffer;
-
-    RenderStateSet* m_stateSet;
-
-    Renderer *m_renderer;
     GraphicsApiFilterData m_contextInfo;
-
-    QByteArray m_uboTempArray;
-
-    bool m_supportsVAO;
+    ShaderCache *m_shaderCache;
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
 
     friend class OpenGLVertexArrayObject;
     OpenGLVertexArrayObject *m_currentVAO;
-
-    struct VAOVertexAttribute
-    {
-        HGLBuffer bufferHandle;
-        GLBuffer::Type attributeType;
-        int location;
-        GLint dataType;
-        uint byteOffset;
-        uint vertexSize;
-        uint byteStride;
-        uint divisor;
-        GLenum shaderDataType;
-    };
-
-    using VAOIndexAttribute = HGLBuffer;
-
-    void enableAttribute(const VAOVertexAttribute &attr);
-    void disableAttribute(const VAOVertexAttribute &attr);
 
     void applyUniform(const ShaderUniform &description, const UniformValue &v);
 

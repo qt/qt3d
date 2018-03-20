@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,59 +37,79 @@
 **
 ****************************************************************************/
 
-#include "filtercompatibletechniquejob_p.h"
-#include <Qt3DRender/private/techniquemanager_p.h>
-#include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DRender/private/job_common_p.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
+#ifndef QT3DRENDER_RENDER_COMMANDTHREAD_P_H
+#define QT3DRENDER_RENDER_COMMANDTHREAD_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <QtCore/QThread>
+#include <QtCore/QSemaphore>
+#include <QtCore/QMutex>
 
 QT_BEGIN_NAMESPACE
 
+class QOpenGLContext;
+
 namespace Qt3DRender {
+
 namespace Render {
 
-FilterCompatibleTechniqueJob::FilterCompatibleTechniqueJob()
-    : m_manager(nullptr)
-    , m_renderer(nullptr)
+class Renderer;
+class GLCommand;
+class OffscreenSurfaceHelper;
+class GraphicsContext;
+class ShaderCache;
+
+class CommandThread : public QThread
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FilterCompatibleTechniques, 0);
-}
+    Q_OBJECT
+public:
+    explicit CommandThread(Renderer *renderer);
+    ~CommandThread();
 
-void FilterCompatibleTechniqueJob::setManager(TechniqueManager *manager)
-{
-    m_manager = manager;
-}
+    Render::Renderer* renderer() const { return m_renderer; }
 
-TechniqueManager *FilterCompatibleTechniqueJob::manager() const
-{
-    return m_manager;
-}
+    void setShaderCache(ShaderCache *shaderCache);
+    ShaderCache *shaderCache() const { return m_shaderCache; }
 
-void FilterCompatibleTechniqueJob::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
+    void initialize(QOpenGLContext *mainContext, OffscreenSurfaceHelper *offsreenSurfaceHelper);
+    void shutdown();
 
-Renderer *FilterCompatibleTechniqueJob::renderer() const
-{
-    return m_renderer;
-}
+    void executeCommand(GLCommand *command);
 
-void FilterCompatibleTechniqueJob::run()
-{
-    Q_ASSERT(m_manager != nullptr && m_renderer != nullptr);
-    Q_ASSERT(m_renderer->isRunning() && m_renderer->graphicsContext()->isInitialized());
+private:
+    void run() override;
+    void executeCommandInternal(Qt3DRender::Render::GLCommand *command);
 
-    const QVector<Qt3DCore::QNodeId> dirtyTechniqueIds = m_manager->takeDirtyTechniques();
-    for (const Qt3DCore::QNodeId techniqueId : dirtyTechniqueIds) {
-        Technique *technique = m_manager->lookupResource(techniqueId);
-        if (Q_LIKELY(technique != nullptr))
-            technique->setCompatibleWithRenderer((*m_renderer->contextInfo() == *technique->graphicsApiFilter()));
-    }
-}
+private:
+    Renderer* m_renderer;
+    QSemaphore m_waitForStartSemaphore;
+    QSemaphore m_initializedSemaphore;
+    QSemaphore m_commandRequestedSemaphore;
+    QSemaphore m_commandExecutionSemaphore;
+    QMutex m_blockingCallerMutex;
+    QOpenGLContext *m_mainContext;
+    ShaderCache *m_shaderCache;
+    OffscreenSurfaceHelper *m_offsreenSurfaceHelper;
+    QScopedPointer<QOpenGLContext> m_localContext;
+    QScopedPointer<GraphicsContext> m_graphicsContext;
+    GLCommand *m_currentCommand;
+    QAtomicInt m_running;
+};
 
-} // namespace Render
-} // namespace Qt3DRender
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_COMMANDTHREAD_P_H

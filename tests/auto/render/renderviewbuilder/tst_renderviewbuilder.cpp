@@ -90,7 +90,6 @@ public:
     {
         Render::MaterialParameterGathererJobPtr job = Render::MaterialParameterGathererJobPtr::create();
         job->setNodeManagers(nodeManagers());
-        job->setRenderer(static_cast<Render::Renderer *>(d_func()->m_renderer));
         return job;
     }
 
@@ -296,7 +295,8 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
 
             for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
-                QCOMPARE(materialGatherer->dependencies().size(), 2);
+                QCOMPARE(materialGatherer->dependencies().size(), 3);
+                QVERIFY(materialGatherer->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
                 QVERIFY(materialGatherer->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
                 QVERIFY(materialGatherer->dependencies().contains(testAspect.renderer()->filterCompatibleTechniqueJob()));
             }
@@ -314,7 +314,7 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.filterProximityJob()));
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.lightGathererJob()));
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.frustumCullingJob()));
-            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(testAspect.renderer()->shaderGathererJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(testAspect.renderer()->bufferGathererJob()));
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(testAspect.renderer()->textureGathererJob()));
             for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
@@ -390,7 +390,7 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.lightGathererJob()));
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.frustumCullingJob()));
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(renderViewBuilder.filterProximityJob()));
-            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(testAspect.renderer()->shaderGathererJob()));
+            QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(testAspect.renderer()->bufferGathererJob()));
             QVERIFY(renderViewBuilder.syncRenderCommandBuildingJob()->dependencies().contains(testAspect.renderer()->textureGathererJob()));
             for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {

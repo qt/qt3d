@@ -65,7 +65,9 @@ public:
 
     enum Api {
         OpenGLES = QSurfaceFormat::OpenGLES,
-        OpenGL = QSurfaceFormat::OpenGL
+        OpenGL = QSurfaceFormat::OpenGL,
+        Vulkan,
+        DirectX
     };
     Q_ENUM(Api) // LCOV_EXCL_LINE
 

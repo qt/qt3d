@@ -47,9 +47,9 @@ namespace Qt3DRender {
 
 namespace Render {
 
-SendRenderCaptureJob::SendRenderCaptureJob(Renderer *renderer)
+SendRenderCaptureJob::SendRenderCaptureJob()
     : Qt3DCore::QAspectJob()
-    , m_renderer(renderer)
+    , m_managers(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendRenderCapture, 0);
 }
@@ -59,6 +59,11 @@ SendRenderCaptureJob::~SendRenderCaptureJob()
 
 }
 
+void SendRenderCaptureJob::setPendingCaptureRequests(const QVector<Qt3DCore::QNodeId> &requests)
+{
+    m_pendingCaptures = requests;
+}
+
 void SendRenderCaptureJob::setManagers(NodeManagers *managers)
 {
     m_managers = managers;
@@ -66,12 +71,12 @@ void SendRenderCaptureJob::setManagers(NodeManagers *managers)
 
 void SendRenderCaptureJob::run()
 {
-    const auto pendingCaptures = m_renderer->takePendingRenderCaptureSendRequests();
-    for (Qt3DCore::QNodeId id : pendingCaptures) {
+    for (const Qt3DCore::QNodeId id : qAsConst(m_pendingCaptures)) {
         auto *node = static_cast<Qt3DRender::Render::RenderCapture *>
                                     (m_managers->frameGraphManager()->lookupNode(id));
         node->sendRenderCaptures();
     }
+    m_pendingCaptures.clear();
 }
 
 } // Render

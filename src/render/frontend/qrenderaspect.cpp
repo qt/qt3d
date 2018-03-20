@@ -410,7 +410,7 @@ QRenderAspect::~QRenderAspect()
 void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 {
     if (m_renderer->api() == Render::AbstractRenderer::OpenGL)
-        static_cast<Render::Renderer *>(m_renderer)->setOpenGLContext(context);
+        m_renderer->setOpenGLContext(context);
     m_renderer->initialize();
 }
 
@@ -547,6 +547,8 @@ void QRenderAspect::onRegistered()
     // and started.
     Q_D(QRenderAspect);
     d->m_nodeManagers = new Render::NodeManagers();
+
+    // TO DO: Load proper Renderer class based on Qt configuration preferences
     d->m_renderer = new Render::Renderer(d->m_renderType);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 

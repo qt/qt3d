@@ -52,6 +52,7 @@
 //
 
 #include "qt3drender_global.h"
+#include <Qt3DRender/private/qt3drender-config_p.h>
 
 #define QT3DRENDERSHARED_PRIVATE_EXPORT QT3DRENDERSHARED_EXPORT
 

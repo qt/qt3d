@@ -82,7 +82,6 @@ public:
     {
         Render::MaterialParameterGathererJobPtr job = Render::MaterialParameterGathererJobPtr::create();
         job->setNodeManagers(nodeManagers());
-        job->setRenderer(static_cast<Render::Renderer *>(d_func()->m_renderer));
         return job;
     }
 

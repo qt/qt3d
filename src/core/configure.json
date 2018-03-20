@@ -92,7 +92,7 @@
         "qt3d-simd-avx2": {
             "label": "Use AVX2 instructions",
             "purpose": "Use AVX2 SIMD instructions to accelerate matrix operations",
-            "autoDetect": false,
+            "autoDetect": "subarch.avx2",
             "enable": "input.qt3d-simd == 'avx2'",
             "disable": "input.qt3d-simd == 'sse2' || input.qt3d-simd == 'no' || arch.i386",
             "output": [ "privateFeature" ]

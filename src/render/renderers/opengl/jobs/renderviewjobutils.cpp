@@ -168,7 +168,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Make it so that the new viewport is actually
                 // a subregion relative to that of the parent viewport
                 const ViewportNode *vpNode = static_cast<const ViewportNode *>(node);
-                rv->setViewport(computeViewport(rv->viewport(), vpNode));
+                rv->setViewport(ViewportNode::computeViewport(rv->viewport(), vpNode));
                 rv->setGamma(vpNode->gamma());
                 break;
             }
@@ -283,17 +283,15 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
 /*!
     \internal
-    Searches the \a renderer for the best matching Technique from
-    \a effect specified by the \a renderView.
+    Searches the best matching Technique from \a effect specified.
 */
-Technique *findTechniqueForEffect(Renderer *renderer,
+Technique *findTechniqueForEffect(NodeManagers *manager,
                                   const TechniqueFilter *techniqueFilter,
                                   Effect *effect)
 {
     if (!effect)
         return nullptr;
 
-    NodeManagers *manager = renderer->nodeManagers();
     QVector<Technique*> matchingTechniques;
     const bool hasInvalidTechniqueFilter = (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
 

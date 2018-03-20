@@ -107,7 +107,13 @@ struct Q_AUTOTEST_EXPORT StateVariant
         }
     } data;
 
-    void apply(GraphicsContext *gc) const;
+    template<class State, typename ... Args>
+    static StateVariant createState(Args... values)
+    {
+        State state;
+        state.set(values...);
+        return StateVariant::fromValue(state);
+    }
 
     template<typename GenericState>
     static StateVariant fromValue(const GenericState &state)

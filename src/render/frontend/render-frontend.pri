@@ -4,7 +4,6 @@ HEADERS += \
     $$PWD/qabstractfunctor.h \
     $$PWD/qrenderaspect.h \
     $$PWD/qrenderaspect_p.h \
-    $$PWD/qitemmodelbuffer_p.h \
     $$PWD/qlayer.h \
     $$PWD/qlayer_p.h \
     $$PWD/qlevelofdetail.h \
@@ -33,7 +32,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
     $$PWD/qrenderaspect.cpp \
-    $$PWD/qitemmodelbuffer.cpp \
     $$PWD/sphere.cpp \
     $$PWD/qlayer.cpp \
     $$PWD/qlevelofdetail.cpp \

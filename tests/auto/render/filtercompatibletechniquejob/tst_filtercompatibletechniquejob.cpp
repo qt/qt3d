@@ -37,7 +37,7 @@
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 
@@ -93,7 +93,7 @@ public:
     {
         renderer()->setOpenGLContext(&m_glContext);
         d_func()->m_renderer->initialize();
-        renderer()->graphicsContext()->beginDrawing(m_window.data());
+        renderer()->submissionContext()->beginDrawing(m_window.data());
     }
 
     Render::Renderer *renderer() const
@@ -209,7 +209,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(testAspect.renderer()->isRunning(), true);
-        QCOMPARE(testAspect.renderer()->graphicsContext()->isInitialized(), true);
+        QCOMPARE(testAspect.renderer()->submissionContext()->isInitialized(), true);
         const QVector<Qt3DRender::Render::HTechnique> handles = testAspect.nodeManagers()->techniqueManager()->activeHandles();
         QCOMPARE(handles.size(), 3);
 

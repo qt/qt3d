@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QITEMMODELBUFFER_P_H
-#define QT3DRENDER_QITEMMODELBUFFER_P_H
+#ifndef OPENGLVERTEXARRAYOBJECT_H
+#define OPENGLVERTEXARRAYOBJECT_H
 
 //
 //  W A R N I N G
@@ -51,69 +51,60 @@
 // We mean it.
 //
 
-#include <QObject>
-#include <Qt3DRender/private/qt3drender_global_p.h>
-
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qattribute.h>
-
-#include <QAbstractItemModel>
-#include <QMap>
+#include <QtGui/qopenglvertexarrayobject.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace Render {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QItemModelBuffer : public QObject
+class GeometryManager;
+class ShaderManager;
+
+typedef QPair<HGeometry, HShader> VAOIdentifier;
+
+class OpenGLVertexArrayObject
 {
-    Q_OBJECT
 public:
-    QItemModelBuffer();
+    OpenGLVertexArrayObject();
 
-    void setModel(QAbstractItemModel* model);
-    void setRoot(const QModelIndex& rootIndex);
+    void bind();
+    void release();
 
-    void mapRoleName(QByteArray roleName, int type);
-    void mapRoleName(QByteArray roleName, QString attributeName, int type);
+    void create(SubmissionContext *ctx, const VAOIdentifier &key);
+    void destroy();
+    void cleanup();
 
-    QBuffer *buffer();
+    bool isAbandoned(GeometryManager *geomMgr, ShaderManager *shaderMgr);
 
-    QStringList attributeNames() const;
-    QAttribute *attributeByName(QString nm) const;
+    QOpenGLVertexArrayObject *vao() { return m_vao.data(); }
+    const QOpenGLVertexArrayObject *vao() const { return m_vao.data(); }
 
-private Q_SLOTS:
+    void setSpecified(bool b) { m_specified = b; }
+    bool isSpecified() const { return m_specified; }
 
-    void onModelReset();
 
-    void onModelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 private:
-    QAbstractItemModel* m_model;
-    QModelIndex m_rootIndex;
+    QMutex m_mutex;
+    SubmissionContext *m_ctx;
+    QScopedPointer<QOpenGLVertexArrayObject> m_vao;
+    bool m_specified;
+    bool m_supportsVao;
+    VAOIdentifier m_owners;
 
-    struct RoleMapping {
-        RoleMapping(QByteArray role, QString attr, int ty);
+    friend class SubmissionContext;
 
-        QByteArray roleName;
-        int cachedRole;
-        QString attribute;
-        int type;
-        int byteSize;
-    };
+    void saveVertexAttribute(const SubmissionContext::VAOVertexAttribute &attr);
+    inline void saveIndexAttribute(HGLBuffer glBufferHandle) { m_indexAttribute = glBufferHandle; }
 
-    QList<RoleMapping> m_mappings;
-
-    QBuffer *m_buffer;
-    QMap<QString, QAttribute *> m_attributes;
-    int m_itemStride;
-
-    QByteArray computeBufferData();
-
-    void writeDataForIndex(const QModelIndex &index, int mappingCount, char *bufferPtr);
-    bool validateRoles();
+    QVector<SubmissionContext::VAOVertexAttribute> m_vertexAttributes;
+    SubmissionContext::VAOIndexAttribute m_indexAttribute;
 };
 
+} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QITEMMODELBUFFER_P_H
+#endif // OPENGLVERTEXARRAYOBJECT_H

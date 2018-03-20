@@ -65,7 +65,6 @@ class QRenderState;
 
 namespace Render {
 
-class GraphicsContext;
 class RenderState;
 
 class RenderStateSet
@@ -89,30 +88,18 @@ public:
      */
     int changeCost(RenderStateSet* previousState);
 
-    void apply(GraphicsContext* gc);
-
     StateMaskSet stateMask() const;
     void merge(RenderStateSet *other);
-    void resetMasked(StateMaskSet maskOfStatesToReset, GraphicsContext* gc);
 
-    template<class State, typename ... Args>
-    static StateVariant createState(Args... values)
-    {
-        State state;
-        state.set(values...);
-        return StateVariant::fromValue(state);
-    }
+    QVector<StateVariant> states() const { return m_states; }
 
-    static StateVariant initializeStateFromPeer(const Qt3DRender::QRenderStateCreatedChangeBasePtr change);
-
-private:
     /**
      * @brief contains - check if this set contains a matching piece of state
      * @param ds
      * @return
      */
     bool contains(const StateVariant &ds) const;
-
+private:
     StateMaskSet m_stateMask;
     QVector<StateVariant> m_states;
 };

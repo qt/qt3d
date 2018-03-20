@@ -934,8 +934,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
     if (rPass != nullptr) {
         // Index Shader by Shader UUID
         command->m_shader = m_manager->lookupHandle<Shader, ShaderManager, HShader>(rPass->shaderProgram());
-        Shader *shader = nullptr;
-        if ((shader = m_manager->data<Shader, ShaderManager>(command->m_shader)) != nullptr) {
+        Shader *shader = m_manager->data<Shader, ShaderManager>(command->m_shader);
+        if (shader != nullptr && shader->isLoaded()) {
             command->m_shaderDna = shader->dna();
 
             // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings

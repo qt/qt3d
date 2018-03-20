@@ -22,7 +22,6 @@ HEADERS += \
     $$PWD/qstenciltestarguments.h \
     $$PWD/qrenderstatecreatedchange_p.h \
     $$PWD/renderstates_p.h \
-    $$PWD/renderstateset_p.h \
     $$PWD/qpointsize.h \
     $$PWD/qseamlesscubemap.h \
     $$PWD/qdepthtest.h \
@@ -50,7 +49,6 @@ HEADERS += \
     $$PWD/statemask_p.h \
     $$PWD/statevariant_p.h
 
-
 SOURCES += \
     $$PWD/qalphacoverage.cpp \
     $$PWD/qalphatest.cpp \
@@ -71,12 +69,11 @@ SOURCES += \
     $$PWD/qstenciltest.cpp \
     $$PWD/qstenciltestarguments.cpp \
     $$PWD/renderstates.cpp \
-    $$PWD/renderstateset.cpp \
     $$PWD/qpointsize.cpp \
     $$PWD/qseamlesscubemap.cpp \
     $$PWD/qnodepthmask.cpp \
     $$PWD/qlinewidth.cpp \
     $$PWD/qrenderstatecreatedchange.cpp \
     $$PWD/renderstatenode.cpp \
-    $$PWD/qmultisampleantialiasing.cpp \
-    $$PWD/statevariant.cpp
+    $$PWD/statevariant.cpp \
+    $$PWD/qmultisampleantialiasing.cpp

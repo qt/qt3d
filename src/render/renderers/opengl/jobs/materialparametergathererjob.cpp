@@ -62,7 +62,6 @@ MaterialParameterGathererJob::MaterialParameterGathererJob()
     , m_manager(nullptr)
     , m_techniqueFilter(nullptr)
     , m_renderPassFilter(nullptr)
-    , m_renderer(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::MaterialParameterGathering, materialParameterGathererCounter++);
 }
@@ -86,7 +85,7 @@ void MaterialParameterGathererJob::run()
             continue;
 
         Effect *effect = m_manager->effectManager()->lookupResource(material->effect());
-        Technique *technique = findTechniqueForEffect(m_renderer, m_techniqueFilter, effect);
+        Technique *technique = findTechniqueForEffect(m_manager, m_techniqueFilter, effect);
 
         if (Q_LIKELY(technique != nullptr)) {
             RenderPassList passes = findRenderPassesForTechnique(m_manager, m_renderPassFilter, technique);

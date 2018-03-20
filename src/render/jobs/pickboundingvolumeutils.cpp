@@ -86,7 +86,7 @@ ViewportCameraAreaDetails ViewportCameraAreaGatherer::gatherUpViewportCameraArea
                 vca.cameraId = static_cast<const CameraSelector *>(node)->cameraUuid();
                 break;
             case FrameGraphNode::Viewport:
-                vca.viewport = computeViewport(vca.viewport, static_cast<const ViewportNode *>(node));
+                vca.viewport = ViewportNode::computeViewport(vca.viewport, static_cast<const ViewportNode *>(node));
                 break;
             case FrameGraphNode::Surface: {
                 auto selector = static_cast<const RenderSurfaceSelector *>(node);

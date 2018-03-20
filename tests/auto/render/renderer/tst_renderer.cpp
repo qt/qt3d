@@ -34,6 +34,7 @@
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/renderviewbuilder_p.h>
+#include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 class tst_Renderer : public QObject
 {
@@ -48,6 +49,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
         Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
         Qt3DRender::Render::RenderSettings settings;
         // owned by FG manager
         Qt3DRender::Render::ViewportNode *fgRoot = new Qt3DRender::Render::ViewportNode();
@@ -58,7 +60,11 @@ private Q_SLOTS:
 
         renderer.setNodeManagers(&nodeManagers);
         renderer.setSettings(&settings);
+        renderer.setOffscreenSurfaceHelper(&offscreenHelper);
         renderer.initialize();
+
+        // Ensure invoke calls are performed
+        QCoreApplication::processEvents();
 
         // NOTE: FilterCompatibleTechniqueJob and ShaderGathererJob cannot run because the context
         // is not initialized in this test
@@ -84,12 +90,25 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  singleRenderViewJobCount); // Only valid for the first call to renderBinJobs(), since subsequent calls won't have the renderqueue reset
 
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
+        // WHEN
+        renderer.addRenderCaptureSendRequest(Qt3DCore::QNodeId::createId());
+        jobs = renderer.renderBinJobs();
+
+        // THEN
+        QCOMPARE(jobs.size(),
+                 1 + // updateLevelOfDetailJob
+                 1 + // cleanupJob
+                 1 + // sendBufferCaptureJob
+                 1 + // sendRenderCaptureJob
+                 1 + // VAOGatherer
+                 1); // updateSkinningPaletteJob
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::EntityEnabledDirty, nullptr);
@@ -99,7 +118,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
@@ -115,7 +133,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // WorldTransformJob
@@ -134,7 +151,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // CalculateBoundingVolumeJob
@@ -152,7 +168,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
@@ -168,7 +183,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // TexturesGathererJob
@@ -194,7 +208,6 @@ private Q_SLOTS:
                  1 + // updateSkinningPaletteJob
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendRenderCaptureJob
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // BufferGathererJob
@@ -204,7 +217,8 @@ private Q_SLOTS:
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
-
+        // Properly shutdown command thread
+        renderer.shutdown();
     }
 };
 

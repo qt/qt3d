@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef OPENGLVERTEXARRAYOBJECT_H
-#define OPENGLVERTEXARRAYOBJECT_H
+#ifndef QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
+#define QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
 
 //
 //  W A R N I N G
@@ -51,60 +51,57 @@
 // We mean it.
 //
 
-#include <QtGui/qopenglvertexarrayobject.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
 namespace Render {
 
-class GeometryManager;
-class ShaderManager;
+class NodeManagers;
+class TechniqueFilter;
+class RenderPassFilter;
+class Renderer;
 
-typedef QPair<HGeometry, HShader> VAOIdentifier;
+// TO be executed for each FrameGraph branch with a given RenderPassFilter/TechniqueFilter
 
-class OpenGLVertexArrayObject
+class QT3DRENDERSHARED_PRIVATE_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
 {
 public:
-    OpenGLVertexArrayObject();
+    MaterialParameterGathererJob();
 
-    void bind();
-    void release();
+    inline void setNodeManagers(NodeManagers *manager) Q_DECL_NOTHROW { m_manager = manager; }
+    inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOTHROW { m_techniqueFilter = techniqueFilter; }
+    inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOTHROW { m_renderPassFilter = renderPassFilter; }
+    inline const QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &materialToPassAndParameter() Q_DECL_NOTHROW { return m_parameters; }
+    inline void setHandles(const QVector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
 
-    void create(GraphicsContext *ctx, const VAOIdentifier &key);
-    void destroy();
-    void cleanup();
+    inline TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_techniqueFilter; }
+    inline RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_renderPassFilter; }
 
-    bool isAbandoned(GeometryManager *geomMgr, ShaderManager *shaderMgr);
-
-    QOpenGLVertexArrayObject *vao() { return m_vao.data(); }
-    const QOpenGLVertexArrayObject *vao() const { return m_vao.data(); }
-
-    void setSpecified(bool b) { m_specified = b; }
-    bool isSpecified() const { return m_specified; }
-
+    void run() final;
 
 private:
-    QMutex m_mutex;
-    GraphicsContext *m_ctx;
-    QScopedPointer<QOpenGLVertexArrayObject> m_vao;
-    bool m_specified;
-    bool m_supportsVao;
-    VAOIdentifier m_owners;
+    NodeManagers *m_manager;
+    TechniqueFilter *m_techniqueFilter;
+    RenderPassFilter *m_renderPassFilter;
 
-    friend class GraphicsContext;
-
-    void saveVertexAttribute(const GraphicsContext::VAOVertexAttribute &attr);
-    inline void saveIndexAttribute(HGLBuffer glBufferHandle) { m_indexAttribute = glBufferHandle; }
-
-    QVector<GraphicsContext::VAOVertexAttribute> m_vertexAttributes;
-    GraphicsContext::VAOIndexAttribute m_indexAttribute;
+    // Material id to array of RenderPasse with parameters
+    MaterialParameterGathererData m_parameters;
+    QVector<HMaterial> m_handles;
 };
 
-} // namespace Render
-} // namespace Qt3DRender
+typedef QSharedPointer<MaterialParameterGathererJob> MaterialParameterGathererJobPtr;
+
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // OPENGLVERTEXARRAYOBJECT_H
+#endif // QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H

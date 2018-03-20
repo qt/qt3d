@@ -125,7 +125,7 @@ class CommandExecuter;
 namespace Render {
 
 class CameraLens;
-class GraphicsContext;
+class SubmissionContext;
 class FrameGraphNode;
 class Material;
 class Technique;
@@ -137,15 +137,18 @@ class RenderView;
 class Effect;
 class RenderPass;
 class RenderThread;
+class CommandThread;
 class RenderStateSet;
 class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
+class ShaderCache;
 
 class UpdateLevelOfDetailJob;
 typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+using IntrospectShadersJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
@@ -209,7 +212,7 @@ public:
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
     inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
     inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
-    inline Qt3DCore::QAspectJobPtr shaderGathererJob() const { return m_shaderGathererJob; }
+    inline IntrospectShadersJobPtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
 
@@ -220,6 +223,11 @@ public:
     void setSettings(RenderSettings *settings) override;
     RenderSettings *settings() const override;
     QOpenGLContext *shareContext() const override;
+
+
+    // Executed in secondary GL thread
+    void loadShader(Shader *shader) const override;
+
 
     void updateGLResources();
     void updateTexture(Texture *texture);
@@ -241,9 +249,9 @@ public:
     bool requiresVAOAttributeUpdate(Geometry *geometry,
                                     RenderCommand *command) const;
 
-    void setOpenGLContext(QOpenGLContext *context);
+    void setOpenGLContext(QOpenGLContext *context) override;
     const GraphicsApiFilterData *contextInfo() const;
-    GraphicsContext *graphicsContext() const;
+    SubmissionContext *submissionContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
@@ -296,11 +304,12 @@ private:
     RenderStateSet *m_defaultRenderStateSet;
     ShaderParameterPack m_defaultUniformPack;
 
-    QScopedPointer<GraphicsContext> m_graphicsContext;
+    QScopedPointer<SubmissionContext> m_submissionContext;
     QSurfaceFormat m_format;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
+    QScopedPointer<CommandThread> m_commandThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     QSemaphore m_submitRenderViewsSemaphore;
@@ -324,6 +333,7 @@ private:
     QOpenGLContext *m_glContext;
     QOpenGLContext *m_shareContext;
     mutable QMutex m_shareContextMutex;
+    ShaderCache *m_shaderCache;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
     RayCastingJobPtr m_rayCastingJob;
 
@@ -356,7 +366,7 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_vaoGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
-    GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
+    IntrospectShadersJobPtr m_introspectShaderJob;
 
     SynchronizerJobPtr m_syncTextureLoadingJob;
 
@@ -364,14 +374,13 @@ private:
     void lookForDirtyBuffers();
     void lookForDownloadableBuffers();
     void lookForDirtyTextures();
-    void lookForDirtyShaders();
+    void reloadDirtyShaders();
 
     QMutex m_abandonedVaosMutex;
     QVector<HVao> m_abandonedVaos;
 
     QVector<HBuffer> m_dirtyBuffers;
     QVector<HBuffer> m_downloadableBuffers;
-    QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
 
     bool m_ownedContext;

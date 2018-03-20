@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Paul Lemire
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
-#define QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
+#ifndef QT3DRENDER_RENDER_GLCOMMANDS_P_H
+#define QT3DRENDER_RENDER_GLCOMMANDS_P_H
 
 //
 //  W A R N I N G
@@ -51,59 +51,39 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/private/renderviewjobutils_p.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
+
 
 namespace Qt3DRender {
 
 namespace Render {
 
-class NodeManagers;
-class TechniqueFilter;
-class RenderPassFilter;
+class GraphicsContext;
 class Renderer;
+class Shader;
 
-// TO be executed for each FrameGraph branch with a given RenderPassFilter/TechniqueFilter
-
-class QT3DRENDERSHARED_PRIVATE_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
+class GLCommand
 {
 public:
-    MaterialParameterGathererJob();
-
-    inline void setNodeManagers(NodeManagers *manager) Q_DECL_NOTHROW { m_manager = manager; }
-    inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOTHROW { m_techniqueFilter = techniqueFilter; }
-    inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOTHROW { m_renderPassFilter = renderPassFilter; }
-    inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
-    inline const MaterialParameterGathererData &materialToPassAndParameter() Q_DECL_NOTHROW { return m_parameters; }
-    inline void setHandles(const QVector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
-
-    inline TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_techniqueFilter; }
-    inline RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_renderPassFilter; }
-
-    void run() final;
-
-private:
-    NodeManagers *m_manager;
-    TechniqueFilter *m_techniqueFilter;
-    RenderPassFilter *m_renderPassFilter;
-    Renderer *m_renderer;
-
-    // Material id to array of RenderPasse with parameters
-    MaterialParameterGathererData m_parameters;
-    QVector<HMaterial> m_handles;
+    virtual void execute(Renderer *renderer, GraphicsContext *ctx) = 0;
 };
 
-typedef QSharedPointer<MaterialParameterGathererJob> MaterialParameterGathererJobPtr;
+class Q_AUTOTEST_EXPORT LoadShaderCommand : public GLCommand
+{
+public:
+    explicit LoadShaderCommand(Shader *shader);
+    Shader *shader() const { return m_shader; }
+    void execute(Renderer *renderer, GraphicsContext *ctx) Q_DECL_OVERRIDE;
 
+private:
+    Shader *m_shader = nullptr;
+};
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
+#endif // QT3DRENDER_RENDER_GLCOMMANDS_P_H

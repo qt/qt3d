@@ -45,6 +45,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DRender/private/submissioncontext_p.h>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -310,7 +311,7 @@ void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::
     for (auto *reply : shellCommands) {
         if (reply->commandName() == QLatin1String("glinfo")) {
             QJsonObject replyObj;
-            const GraphicsApiFilterData *contextInfo = m_renderer->m_graphicsContext->contextInfo();
+            const GraphicsApiFilterData *contextInfo = m_renderer->submissionContext()->contextInfo();
             if (contextInfo != nullptr) {
                 replyObj.insert(QLatin1String("api"),
                                 contextInfo->m_api == QGraphicsApiFilter::OpenGL

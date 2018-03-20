@@ -475,7 +475,6 @@ void RenderViewBuilder::prepareJobs()
         for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
             auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
             materialGatherer->setNodeManagers(m_renderer->nodeManagers());
-            materialGatherer->setRenderer(m_renderer);
             if (i == RenderViewBuilder::m_optimalParallelJobCount - 1)
                 materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob + lastRemaingElements));
             else
@@ -559,7 +558,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
 
     // Ensure the RenderThread won't be able to process dirtyResources
     // before they have been completely gathered
-    m_syncRenderCommandBuildingJob->addDependency(m_renderer->shaderGathererJob());
+    m_syncRenderCommandBuildingJob->addDependency(m_renderer->introspectShadersJob());
     m_syncRenderCommandBuildingJob->addDependency(m_renderer->bufferGathererJob());
     m_syncRenderCommandBuildingJob->addDependency(m_renderer->textureGathererJob());
 
@@ -598,6 +597,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     if (m_materialGathererCacheNeedsToBeRebuilt) {
         for (const auto &materialGatherer : qAsConst(m_materialGathererJobs))  {
             materialGatherer->addDependency(m_syncRenderViewInitializationJob);
+            materialGatherer->addDependency(m_renderer->introspectShadersJob());
             materialGatherer->addDependency(m_renderer->filterCompatibleTechniqueJob());
             jobs.push_back(materialGatherer); // Step3
             m_syncMaterialGathererJob->addDependency(materialGatherer);

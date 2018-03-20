@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,36 +38,90 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERCONFIGURATION_H
-#define QT3DRENDER_RENDER_RENDERCONFIGURATION_H
+#include "renderstateset_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <bitset>
 
-#include <qglobal.h>
+#include <QDebug>
+#include <QOpenGLContext>
+
+#include <Qt3DRender/private/renderstates_p.h>
+#include <Qt3DRender/private/qrenderstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-class RenderConfiguration
+RenderStateSet::RenderStateSet()
+    : m_stateMask(0)
 {
-public:
-    RenderConfiguration();
-};
+}
+
+RenderStateSet::~RenderStateSet()
+{
+}
+
+template<>
+void RenderStateSet::addState<StateVariant>(const StateVariant &ds)
+{
+    m_states.push_back(ds);
+    m_stateMask |= ds.type;
+}
+
+int RenderStateSet::changeCost(RenderStateSet *previousState)
+{
+    if (previousState == this)
+        return 0;
+
+    int cost = 0;
+
+    // first, find cost of any resets
+    StateMaskSet invOurState = ~stateMask();
+    StateMaskSet stateToReset = previousState->stateMask() & invOurState;
+
+    std::bitset<64> bs(stateToReset);
+    cost += int(bs.count());
+
+    // now, find out how many states we're changing
+    for (const StateVariant &ds : qAsConst(m_states)) {
+        // if the other state contains matching, then doesn't
+        // contribute to cost at all
+        if (previousState->contains(ds))
+            continue;
+
+        // flat cost for now; could be replaced with a cost() method on
+        // RenderState
+        cost += 2;
+    }
+
+    return cost;
+}
+
+StateMaskSet RenderStateSet::stateMask() const
+{
+    return m_stateMask;
+}
+
+void RenderStateSet::merge(RenderStateSet *other)
+{
+    m_stateMask |= other->stateMask();
+}
+
+bool RenderStateSet::contains(const StateVariant &ds) const
+{
+    // trivial reject using the state mask bits
+    if (!(ds.type & stateMask()))
+        return false;
+
+    for (const StateVariant &rs : m_states) {
+        if (rs == ds)
+            return true;
+    }
+    return false;
+}
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_RENDERCONFIGURATION_H

@@ -72,7 +72,9 @@ public:
 
     void markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) override;
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet dirtyBits() override;
+#if defined(QT_BUILD_INTERNAL)
     void clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes) override;
+#endif
 
     void resetDirty();
     QVariant executeCommand(const QStringList &args) override;
@@ -80,6 +82,10 @@ public:
 
     void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) override;
     QSurfaceFormat format() override;
+
+    void setOpenGLContext(QOpenGLContext *) override {}
+
+    void loadShader(Qt3DRender::Render::Shader *) const override {}
 
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;
