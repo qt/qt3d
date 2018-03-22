@@ -163,6 +163,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_commandThread(new CommandThread(this))
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(m_renderThread != nullptr))
     , m_waitForInitializationToBeCompleted(0)
+    , m_hasBeenInitializedMutex()
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
     , m_lastFrameCorrect(0)
@@ -339,6 +340,7 @@ void Renderer::setOpenGLContext(QOpenGLContext *context)
 // method termintates
 void Renderer::initialize()
 {
+    QMutexLocker lock(&m_hasBeenInitializedMutex);
     m_submissionContext.reset(new SubmissionContext);
     m_submissionContext->setRenderer(this);
 
@@ -420,6 +422,10 @@ void Renderer::initialize()
  */
 void Renderer::shutdown()
 {
+    // Ensure we have waited to be fully initialized before trying to shut down
+    // (in case initialization is taking place at the same time)
+    QMutexLocker lock(&m_hasBeenInitializedMutex);
+
     qCDebug(Backend) << Q_FUNC_INFO << "Requesting renderer shutdown";
     m_running.store(0);
 
@@ -466,6 +472,8 @@ void Renderer::releaseGraphicsResources()
     QOffscreenSurface *offscreenSurface = m_offscreenHelper->offscreenSurface();
     if (!offscreenSurface) {
         qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+        // We still need to delete the submission context
+        m_submissionContext.reset(nullptr);
         return;
     }
 

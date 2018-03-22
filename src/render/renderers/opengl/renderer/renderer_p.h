@@ -314,6 +314,7 @@ private:
 
     QSemaphore m_submitRenderViewsSemaphore;
     QSemaphore m_waitForInitializationToBeCompleted;
+    QMutex m_hasBeenInitializedMutex;
 
     QAtomicInt m_running;
 

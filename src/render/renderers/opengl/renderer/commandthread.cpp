@@ -69,6 +69,7 @@ CommandThread::CommandThread(Renderer *renderer)
 
 CommandThread::~CommandThread()
 {
+    Q_ASSERT(!isRunning());
 }
 
 void CommandThread::setShaderCache(ShaderCache *shaderCache)
