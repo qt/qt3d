@@ -161,6 +161,13 @@ float BezierEvaluator::parameterForTime(float time) const
     return 0.0f;
 }
 
+bool almostZero(float value, float threshold=1e-3f)
+{
+    // 1e-3 might seem excessively fuzzy, but any smaller value will make the
+    // factors a, b, and c large enough to knock out the cubic solver.
+    return value > -threshold && value < threshold;
+}
+
 /*!
     \internal
 
@@ -171,17 +178,45 @@ float BezierEvaluator::parameterForTime(float time) const
  */
 int BezierEvaluator::findCubicRoots(const float coeffs[4], float roots[3])
 {
+    const float a = coeffs[3];
+    const float b = coeffs[2];
+    const float c = coeffs[1];
+    const float d = coeffs[0];
+
+    // Simple cases with linear, quadratic or invalid equations
+    if (almostZero(a)) {
+        if (almostZero(b)) {
+            if (almostZero(c))
+                return 0;
+
+            roots[0] = -d / c;
+            return 1;
+        }
+        const float discriminant = c * c - 4.f * b * d;
+        if (discriminant < 0.f)
+            return 0;
+
+        if (discriminant == 0.f) {
+            roots[0] = -c / (2.f * b);
+            return 1;
+        }
+
+        roots[0] = (-c + std::sqrt(discriminant)) / (2.f * b);
+        roots[1] = (-c - std::sqrt(discriminant)) / (2.f * b);
+        return 2;
+    }
+
     // See https://en.wikipedia.org/wiki/Cubic_function#General_solution_to_the_cubic_equation_with_real_coefficients
     // for a description. We depress the general cubic to a form that can more easily be solved. Solve it and then
     // substitue the results back to get the roots of the original cubic.
-    int numberOfRoots;
+    int numberOfRoots = 0;
     const double oneThird = 1.0 / 3.0;
     const double piByThree = M_PI / 3.0;
 
     // Put cubic into normal format: x^3 + Ax^2 + Bx + C = 0
-    const double A = coeffs[ 2 ] / coeffs[ 3 ];
-    const double B = coeffs[ 1 ] / coeffs[ 3 ];
-    const double C = coeffs[ 0 ] / coeffs[ 3 ];
+    const double A = double(b / a);
+    const double B = double(c / a);
+    const double C = double(d / a);
 
     // Substitute x = y - A/3 to eliminate quadratic term (depressed form):
     // x^3 + px + q = 0
@@ -226,8 +261,14 @@ int BezierEvaluator::findCubicRoots(const float coeffs[4], float roots[3])
 
     // Substitute back in
     const double sub = oneThird * A;
-    for (int i = 0; i < numberOfRoots; ++i)
+    for (int i = 0; i < numberOfRoots; ++i) {
         roots[i] -= sub;
+        // Take care of cases where we are close to zero or one
+        if (almostZero(roots[i], 1e-6f))
+            roots[i] = 0.f;
+        if (almostZero(roots[i] - 1.f, 1e-6f))
+            roots[i] = 1.f;
+    }
 
     return numberOfRoots;
 }

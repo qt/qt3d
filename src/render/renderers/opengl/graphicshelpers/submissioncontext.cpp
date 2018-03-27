@@ -1347,17 +1347,18 @@ void SubmissionContext::specifyAttribute(const Attribute *attribute,
         Q_UNREACHABLE();
     }
 
+    VAOVertexAttribute attr;
+    attr.bufferHandle = glBufferHandle;
+    attr.attributeType = attributeType;
+    attr.dataType = attributeDataType;
+    attr.divisor = attribute->divisor();
+    attr.vertexSize = attribute->vertexSize() / attrCount;
+    attr.byteStride = (attribute->byteStride() != 0) ? attribute->byteStride() : (attrCount * attrCount * typeSize);
+    attr.shaderDataType = attributeDescription->m_type;
+
     for (int i = 0; i < attrCount; i++) {
-        VAOVertexAttribute attr;
-        attr.bufferHandle = glBufferHandle;
-        attr.attributeType = attributeType;
         attr.location = location + i;
-        attr.dataType = attributeDataType;
         attr.byteOffset = attribute->byteOffset() + (i * attrCount * typeSize);
-        attr.vertexSize = attribute->vertexSize() / attrCount;
-        attr.byteStride = (attribute->byteStride() != 0) ? attribute->byteStride() : (attrCount * attrCount * typeSize);
-        attr.divisor = attribute->divisor();
-        attr.shaderDataType = attributeDescription->m_type;
 
         enableAttribute(attr);
 

@@ -39,10 +39,10 @@
 
 #include "objectpicker_p.h"
 #include "qpickevent.h"
-#include "renderer_p.h"
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
