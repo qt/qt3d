@@ -14,4 +14,4 @@ SOURCES += \
 RESOURCES += \
     assimp.qrc \
     ../../../examples/qt3d/exampleresources/test_scene.qrc \
-    ../../../examples/qt3d/exampleresources/chest.qrc
+    ../../../examples/qt3d/exampleresources/obj.qrc

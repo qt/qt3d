@@ -6,9 +6,7 @@ SUBDIRS += \
     multiviewport \
     wireframe \
     shadow-map-qml \
-    materials \
     wave \
-    materials-cpp \
     scene3d \
     controls \
     anaglyph-rendering \
@@ -21,7 +19,8 @@ SUBDIRS += \
     advancedcustommaterial \
     simplecustommaterial \
     scene2d \
-    phong-cubes
+    phong-cubes \
+    pbr-materials
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 
