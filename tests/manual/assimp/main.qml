@@ -208,7 +208,7 @@ Entity
                 translation: Qt.vector3d(0.0, -15.0, 0.0)
             },
             SceneLoader {
-                source: "qrc:/assets/chest/Chest.obj"
+                source: "qrc:/assets/obj/material-sphere.obj"
             }
         ]
     }
