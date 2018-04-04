@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2017, assimp team
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -43,94 +44,52 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "D3MFImporter.h"
 
 #include <assimp/scene.h>
-#include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
 #include <assimp/DefaultLogger.hpp>
-#include <contrib/unzip/unzip.h>
-#include "irrXMLWrapper.h"
+#include <assimp/importerdesc.h>
 #include "StringComparison.h"
 #include "StringUtils.h"
 
-
 #include <string>
-#include <sstream>
 #include <vector>
 #include <map>
-#include <algorithm>
 #include <cassert>
-#include <cstdlib>
 #include <memory>
 
-#include <assimp/ai_assert.h>
-
 #include "D3MFOpcPackage.h"
+#include <contrib/unzip/unzip.h>
+#include "irrXMLWrapper.h"
+#include "3MFXmlTags.h"
 
 namespace Assimp {
-
 namespace D3MF {
 
-
-namespace XmlTag {
-
-    const std::string model     = "model";
-    const std::string metadata  = "metadata";
-    const std::string resources = "resources";
-    const std::string object    = "object";
-    const std::string mesh      = "mesh";
-    const std::string vertices  = "vertices";
-    const std::string vertex    = "vertex";
-    const std::string triangles = "triangles";
-    const std::string triangle  = "triangle";
-    const std::string x         = "x";
-    const std::string y         = "y";
-    const std::string z         = "z";
-    const std::string v1        = "v1";
-    const std::string v2        = "v2";
-    const std::string v3        = "v3";
-    const std::string id        = "id";
-    const std::string name      = "name";
-    const std::string type      = "type";
-    const std::string build     = "build";
-    const std::string item      = "item";
-    const std::string objectid  = "objectid";
-    const std::string transform = "transform";
-
-}
-
-
-class XmlSerializer
-{
+class XmlSerializer {
 public:
     XmlSerializer(XmlReader* xmlReader)
-        : xmlReader(xmlReader)
-    {
-
+    : xmlReader(xmlReader) {
+		// empty
     }
 
-    void ImportXml(aiScene* scene)
-    {
+    ~XmlSerializer() {
+        // empty
+    }
 
-        scene->mFlags |= AI_SCENE_FLAGS_NON_VERBOSE_FORMAT;
-
+    void ImportXml(aiScene* scene) {
         scene->mRootNode = new aiNode();
         std::vector<aiNode*> children;
 
-        while(ReadToEndElement(D3MF::XmlTag::model))
-        {         
-
-            if(xmlReader->getNodeName() == D3MF::XmlTag::object)
-            {
+        while(ReadToEndElement(D3MF::XmlTag::model)) {
+            if(xmlReader->getNodeName() == D3MF::XmlTag::object) {
                 children.push_back(ReadObject(scene));
-            }
-            else if(xmlReader->getNodeName() == D3MF::XmlTag::build)
-            {
+            } else if(xmlReader->getNodeName() == D3MF::XmlTag::build) {
 
             }
-        }        
+        }
 
-        if(scene->mRootNode->mName.length == 0)
-            scene->mRootNode->mName.Set("3MF");
-
+        if ( scene->mRootNode->mName.length == 0 ) {
+            scene->mRootNode->mName.Set( "3MF" );
+        }
 
         scene->mNumMeshes = static_cast<unsigned int>(meshes.size());
         scene->mMeshes = new aiMesh*[scene->mNumMeshes]();
@@ -141,34 +100,40 @@ public:
         scene->mRootNode->mChildren = new aiNode*[scene->mRootNode->mNumChildren]();
 
         std::copy(children.begin(), children.end(), scene->mRootNode->mChildren);
-
     }
 
 private:
     aiNode* ReadObject(aiScene* scene)
-    {        
-        ScopeGuard<aiNode> node(new aiNode());
+    {
+        std::unique_ptr<aiNode> node(new aiNode());
 
         std::vector<unsigned long> meshIds;
 
-        int id = std::atoi(xmlReader->getAttributeValue(D3MF::XmlTag::id.c_str()));
-        std::string name(xmlReader->getAttributeValue(D3MF::XmlTag::name.c_str()));
-        std::string type(xmlReader->getAttributeValue(D3MF::XmlTag::type.c_str()));
+        const char *attrib( nullptr );
+        std::string name, type;
+        attrib = xmlReader->getAttributeValue( D3MF::XmlTag::name.c_str() );
+        if ( nullptr != attrib ) {
+            name = attrib;
+        }
+        attrib = xmlReader->getAttributeValue( D3MF::XmlTag::name.c_str() );
+        if ( nullptr != attrib ) {
+            type = attrib;
+        }
 
         node->mParent = scene->mRootNode;
-        node->mName.Set(name);        
+        node->mName.Set(name);
 
-        unsigned long meshIdx = meshes.size();
+        size_t meshIdx = meshes.size();
 
         while(ReadToEndElement(D3MF::XmlTag::object))
         {
             if(xmlReader->getNodeName() == D3MF::XmlTag::mesh)
-            {                
+            {
                 auto mesh = ReadMesh();
 
                 mesh->mName.Set(name);
                 meshes.push_back(mesh);
-                meshIds.push_back(meshIdx);
+                meshIds.push_back(static_cast<unsigned long>(meshIdx));
                 meshIdx++;
 
             }
@@ -180,16 +145,14 @@ private:
 
         std::copy(meshIds.begin(), meshIds.end(), node->mMeshes);
 
-        return node.dismiss();
+        return node.release();
 
     }
 
-    aiMesh* ReadMesh()
-    {
+    aiMesh* ReadMesh() {
         aiMesh* mesh = new aiMesh();
-
         while(ReadToEndElement(D3MF::XmlTag::mesh))
-        {            
+        {
             if(xmlReader->getNodeName() == D3MF::XmlTag::vertices)
             {
                 ImportVertices(mesh);
@@ -198,21 +161,19 @@ private:
             {
                 ImportTriangles(mesh);
             }
-
         }
-
 
         return mesh;
     }
 
     void ImportVertices(aiMesh* mesh)
     {
-        std::vector<aiVector3D> vertices;        
+        std::vector<aiVector3D> vertices;
 
         while(ReadToEndElement(D3MF::XmlTag::vertices))
-        {                        
+        {
             if(xmlReader->getNodeName() == D3MF::XmlTag::vertex)
-            {                
+            {
                 vertices.push_back(ReadVertex());
             }
         }
@@ -222,19 +183,21 @@ private:
         std::copy(vertices.begin(), vertices.end(), mesh->mVertices);
 
     }
+
     aiVector3D ReadVertex()
-    {        
+    {
         aiVector3D vertex;
+
         vertex.x = ai_strtof(xmlReader->getAttributeValue(D3MF::XmlTag::x.c_str()), nullptr);
         vertex.y = ai_strtof(xmlReader->getAttributeValue(D3MF::XmlTag::y.c_str()), nullptr);
-        vertex.z = ai_strtof>(xmlReader->getAttributeValue(D3MF::XmlTag::z.c_str()), nullptr);
+        vertex.z = ai_strtof(xmlReader->getAttributeValue(D3MF::XmlTag::z.c_str()), nullptr);
 
         return vertex;
     }
 
     void ImportTriangles(aiMesh* mesh)
     {
-         std::vector<aiFace> faces;         
+         std::vector<aiFace> faces;
 
 
          while(ReadToEndElement(D3MF::XmlTag::triangles))
@@ -249,9 +212,7 @@ private:
         mesh->mFaces = new aiFace[mesh->mNumFaces];
         mesh->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
 
-
         std::copy(faces.begin(), faces.end(), mesh->mFaces);
-
     }
 
     aiFace ReadTriangle()
@@ -268,7 +229,6 @@ private:
     }
 
 private:
-
     bool ReadToStartElement(const std::string& startTag)
     {
         while(xmlReader->read())
@@ -308,12 +268,11 @@ private:
 private:
     std::vector<aiMesh*> meshes;
     XmlReader* xmlReader;
-
-
 };
 
 } //namespace D3MF
 
+static const std::string Extension = "3mf";
 
 static const aiImporterDesc desc = {
     "3mf Importer",
@@ -325,51 +284,41 @@ static const aiImporterDesc desc = {
     0,
     0,
     0,
-    "3mf"
+    Extension.c_str()
 };
 
 
 D3MFImporter::D3MFImporter()
-{
-
+: BaseImporter() {
+    // empty
 }
 
-D3MFImporter::~D3MFImporter()
-{
-
+D3MFImporter::~D3MFImporter() {
+    // empty
 }
 
-bool D3MFImporter::CanRead(const std::string &pFile, IOSystem *pIOHandler, bool checkSig) const
-{    
+bool D3MFImporter::CanRead(const std::string &pFile, IOSystem *pIOHandler, bool checkSig) const {
     const std::string extension = GetExtension(pFile);
-
-    if(extension == "3mf")
-    {
+    if(extension == Extension ) {
         return true;
-    }
-    else if(!extension.length() || checkSig)
-    {
-        if(!pIOHandler)
+    } else if ( !extension.length() || checkSig ) {
+        if (nullptr == pIOHandler ) {
             return true;
+        }
     }
 
     return false;
 }
 
-void D3MFImporter::SetupProperties(const Importer *pImp)
-{
-
+void D3MFImporter::SetupProperties(const Importer * /*pImp*/) {
+    // empty
 }
 
-const aiImporterDesc *D3MFImporter::GetInfo() const
-{
+const aiImporterDesc *D3MFImporter::GetInfo() const {
     return &desc;
 }
 
-void D3MFImporter::InternReadFile(const std::string &pFile, aiScene *pScene, IOSystem *pIOHandler)
-{
-
-
+void D3MFImporter::InternReadFile(const std::string &pFile, aiScene *pScene, IOSystem *pIOHandler) {
     D3MF::D3MFOpcPackage opcPackage(pIOHandler, pFile);
 
     std::unique_ptr<CIrrXML_IOStreamReader> xmlStream(new CIrrXML_IOStreamReader(opcPackage.RootStream()));
@@ -377,12 +326,9 @@ void D3MFImporter::InternReadFile(const std::string &pFile, aiScene *pScene, IOS
 
     D3MF::XmlSerializer xmlSerializer(xmlReader.get());
 
-
     xmlSerializer.ImportXml(pScene);
-
-
 }
 
-}
+} // Namespace Assimp
 
 #endif // ASSIMP_BUILD_NO_3MF_IMPORTER

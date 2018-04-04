@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2017, assimp team
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -38,13 +39,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 */
 
-
 #ifndef ASSIMP_BUILD_NO_EXPORT
 #ifndef ASSIMP_BUILD_NO_3DS_EXPORTER
 
 #include "3DSExporter.h"
 #include "3DSLoader.h"
-#include "SceneCombiner.h"
+#include "3DSHelper.h"
+#include <assimp/SceneCombiner.h>
 #include "SplitLargeMeshes.h"
 #include "StringComparison.h"
 #include <assimp/IOSystem.hpp>
@@ -54,6 +55,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace Assimp;
 namespace Assimp    {
+using namespace D3DS;
 
 namespace {
 
@@ -85,7 +87,7 @@ namespace {
             const std::size_t chunk_size = head_pos - chunk_start_pos;
 
             writer.SetCurrentPos(chunk_start_pos + SIZE_OFFSET);
-            writer.PutU4(chunk_size);
+            writer.PutU4(static_cast<uint32_t>(chunk_size));
             writer.SetCurrentPos(head_pos);
         }
 
@@ -148,7 +150,7 @@ namespace {
 
 // ------------------------------------------------------------------------------------------------
 // Worker function for exporting a scene to 3DS. Prototyped and registered in Exporter.cpp
-void ExportScene3DS(const char* pFile, IOSystem* pIOSystem, const aiScene* pScene, const ExportProperties* pProperties)
+void ExportScene3DS(const char* pFile, IOSystem* pIOSystem, const aiScene* pScene, const ExportProperties* /*pProperties*/)
 {
     std::shared_ptr<IOStream> outfile (pIOSystem->Open(pFile, "wb"));
     if(!outfile) {
@@ -206,6 +208,12 @@ Discreet3DSExporter:: Discreet3DSExporter(std::shared_ptr<IOStream> outfile, con
         WriteHierarchy(*scene->mRootNode, -1, -1);
     }
 }
+
+// ------------------------------------------------------------------------------------------------
+Discreet3DSExporter::~Discreet3DSExporter() {
+    // empty
+}
+
 
 // ------------------------------------------------------------------------------------------------
 int Discreet3DSExporter::WriteHierarchy(const aiNode& node, int seq, int sibling_level)
@@ -365,7 +373,7 @@ void Discreet3DSExporter::WriteTexture(const aiMaterial& mat, aiTextureType type
     aiTextureMapMode map_mode[2] = {
         aiTextureMapMode_Wrap, aiTextureMapMode_Wrap
     };
-    float blend = 1.0f;
+    ai_real blend = 1.0;
     if (mat.GetTexture(type, 0, &path, NULL, NULL, &blend, NULL, map_mode) != AI_SUCCESS || !path.length) {
         return;
     }
@@ -558,6 +566,12 @@ void Discreet3DSExporter::WriteColor(const aiColor3D& color) {
 void Discreet3DSExporter::WritePercentChunk(float f) {
     ChunkWriter chunk(writer, Discreet3DS::CHUNK_PERCENTF);
     writer.PutF4(f);
+}
+
+// ------------------------------------------------------------------------------------------------
+void Discreet3DSExporter::WritePercentChunk(double f) {
+    ChunkWriter chunk(writer, Discreet3DS::CHUNK_PERCENTD);
+    writer.PutF8(f);
 }
 
 

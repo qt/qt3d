@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2017, assimp team
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -53,6 +54,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <map>
 
+#include "StringUtils.h"
+
 struct aiScene;
 struct aiNode;
 
@@ -99,30 +102,48 @@ protected:
     void WriteSpotLight(const aiLight *const light);
     void WriteAmbienttLight(const aiLight *const light);
 
+    /// Writes the controller library
+    void WriteControllerLibrary();
+
+    /// Writes a skin controller of the given mesh
+    void WriteController( size_t pIndex);
+
     /// Writes the geometry library
     void WriteGeometryLibrary();
 
     /// Writes the given mesh
     void WriteGeometry( size_t pIndex);
 
-    enum FloatDataType { FloatType_Vector, FloatType_TexCoord2, FloatType_TexCoord3, FloatType_Color };
+    //enum FloatDataType { FloatType_Vector, FloatType_TexCoord2, FloatType_TexCoord3, FloatType_Color, FloatType_Mat4x4, FloatType_Weight };
+    // customized to add animation related type
+	enum FloatDataType { FloatType_Vector, FloatType_TexCoord2, FloatType_TexCoord3, FloatType_Color, FloatType_Mat4x4, FloatType_Weight, FloatType_Time };
 
     /// Writes a float array of the given type
-    void WriteFloatArray( const std::string& pIdString, FloatDataType pType, const float* pData, size_t pElementCount);
+    void WriteFloatArray( const std::string& pIdString, FloatDataType pType, const ai_real* pData, size_t pElementCount);
 
     /// Writes the scene library
     void WriteSceneLibrary();
 
+	// customized, Writes the animation library
+	void WriteAnimationsLibrary();
+	void WriteAnimationLibrary( size_t pIndex);
+	std::string mFoundSkeletonRootNodeID = "skeleton_root";	 	// will be replaced by found node id in the WriteNode call.
+	
     /// Recursively writes the given node
     void WriteNode( const aiScene* scene, aiNode* pNode);
 
     /// Enters a new xml element, which increases the indentation
     void PushTag() { startstr.append( "  "); }
     /// Leaves an element, decreasing the indentation
-    void PopTag() { ai_assert( startstr.length() > 1); startstr.erase( startstr.length() - 2); }
+    void PopTag() { 
+        ai_assert( startstr.length() > 1); 
+        startstr.erase( startstr.length() - 2); 
+    }
 
     /// Creates a mesh ID for the given mesh
-    std::string GetMeshId( size_t pIndex) const { return std::string( "meshId" ) + std::to_string(pIndex); }
+    std::string GetMeshId( size_t pIndex) const {
+        return std::string( "meshId" ) + to_string(pIndex);
+    }
 
 public:
     /// Stringstream to write all output into
@@ -160,10 +181,10 @@ protected:
   struct Property
   {
     bool exist;
-     float value;
+     ai_real value;
      Property()
          : exist(false)
-         , value(0.0f)
+         , value(0.0)
      {}
   };
 

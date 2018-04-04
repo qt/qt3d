@@ -2,22 +2,29 @@
 ---------------------------------------------------------------------------
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
-Copyright (c) 2006-2016, assimp team
+
+Copyright (c) 2006-2017, assimp team
+
 All rights reserved.
+
 Redistribution and use of this software in source and binary forms,
 with or without modification, are permitted provided that the following
 conditions are met:
+
 * Redistributions of source code must retain the above
   copyright notice, this list of conditions and the
   following disclaimer.
+
 * Redistributions in binary form must reproduce the above
   copyright notice, this list of conditions and the
   following disclaimer in the documentation and/or other
   materials provided with the distribution.
+
 * Neither the name of the assimp team, nor the names of its
   contributors may be used to endorse or promote products
   derived from this software without specific prior
   written permission of the assimp team.
+
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -34,12 +41,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Actually just a dummy, used by the compiler to build the precompiled header.
 
-#include "./../include/assimp/version.h"
-#include "./../include/assimp/scene.h"
+#include <assimp/version.h>
+#include <assimp/scene.h>
 #include "ScenePrivate.h"
 
-static const unsigned int MajorVersion = 3;
-static const unsigned int MinorVersion = 3;
+static const unsigned int MajorVersion = 4;
+static const unsigned int MinorVersion = 1;
 
 // --------------------------------------------------------------------------------
 // Legal information string - dont't remove this.
@@ -48,7 +55,7 @@ static const char* LEGAL_INFORMATION =
 "Open Asset Import Library (Assimp).\n"
 "A free C/C++ library to import various 3D file formats into applications\n\n"
 
-"(c) 2008-2010, assimp team\n"
+"(c) 2008-2017, assimp team\n"
 "License under the terms and conditions of the 3-clause BSD license\n"
 "http://assimp.sourceforge.net\n"
 ;
@@ -100,34 +107,32 @@ ASSIMP_API unsigned int aiGetCompileFlags ()    {
 #include "revision.h"
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API unsigned int aiGetVersionRevision ()
-{
+ASSIMP_API unsigned int aiGetVersionRevision() {
     return GitVersion;
 }
 
 // ------------------------------------------------------------------------------------------------
 ASSIMP_API aiScene::aiScene()
-    : mFlags(0)
-    , mRootNode(NULL)
-    , mNumMeshes(0)
-    , mMeshes(NULL)
-    , mNumMaterials(0)
-    , mMaterials(NULL)
-    , mNumAnimations(0)
-    , mAnimations(NULL)
-    , mNumTextures(0)
-    , mTextures(NULL)
-    , mNumLights(0)
-    , mLights(NULL)
-    , mNumCameras(0)
-    , mCameras(NULL)
-    , mPrivate(new Assimp::ScenePrivateData())
-    {
-    }
+: mFlags(0)
+, mRootNode(NULL)
+, mNumMeshes(0)
+, mMeshes(NULL)
+, mNumMaterials(0)
+, mMaterials(NULL)
+, mNumAnimations(0)
+, mAnimations(NULL)
+, mNumTextures(0)
+, mTextures(NULL)
+, mNumLights(0)
+, mLights(NULL)
+, mNumCameras(0)
+, mCameras(NULL)
+, mPrivate(new Assimp::ScenePrivateData()) {
+	// empty
+}
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API aiScene::~aiScene()
-{
+ASSIMP_API aiScene::~aiScene() {
     // delete all sub-objects recursively
     delete mRootNode;
 

@@ -3,7 +3,8 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2017, assimp team
+
 
 All rights reserved.
 
@@ -43,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @brief Implementation of the Collada parser helper
  */
 
-
 #ifndef ASSIMP_BUILD_NO_COLLADA_IMPORTER
 
 #include <sstream>
@@ -58,7 +58,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "TinyFormatter.h"
 
 #include <memory>
-
 
 using namespace Assimp;
 using namespace Assimp::Collada;
@@ -128,7 +127,7 @@ bool ColladaParser::ReadBoolFromTextContent()
 
 // ------------------------------------------------------------------------------------------------
 // Read float from text contents of current element
-float ColladaParser::ReadFloatFromTextContent()
+ai_real ColladaParser::ReadFloatFromTextContent()
 {
     const char* cur = GetTextContent();
     return fast_atof(cur);
@@ -190,8 +189,8 @@ void ColladaParser::ReadStructure()
                 ReadAssetInfo();
             else if( IsElement( "library_animations"))
                 ReadAnimationLibrary();
-            else if (IsElement("library_animation_clips"))
-                ReadAnimationClipLibrary();
+			else if (IsElement("library_animation_clips"))
+				ReadAnimationClipLibrary();
             else if( IsElement( "library_controllers"))
                 ReadControllerLibrary();
             else if( IsElement( "library_images"))
@@ -221,11 +220,11 @@ void ColladaParser::ReadStructure()
         }
     }
 
-    PostProcessRootAnimations();
+	PostProcessRootAnimations();
 }
 
 // ------------------------------------------------------------------------------------------------
-// Reads asset informations such as coordinate system informations and legal blah
+// Reads asset information such as coordinate system information and legal blah
 void ColladaParser::ReadAssetInfo()
 {
     if( mReader->isEmptyElement())
@@ -300,7 +299,7 @@ void ColladaParser::ReadAnimationClipLibrary()
 				else if (indexID >= 0)
 					animName = mReader->getAttributeValue(indexID);
 				else
-					animName = std::string("animation_") + std::to_string(mAnimationClipLibrary.size());
+					animName = std::string("animation_") + to_string(mAnimationClipLibrary.size());
 
 				std::pair<std::string, std::vector<std::string> > clip;
 
@@ -450,7 +449,7 @@ void ColladaParser::ReadAnimation( Collada::Animation* pParent)
 
     // optional name given as an attribute
     std::string animName;
-    std::string animID;
+	std::string animID;
     int indexName = TestAttribute( "name");
     int indexID = TestAttribute( "id");
 
@@ -532,12 +531,12 @@ void ColladaParser::ReadAnimation( Collada::Animation* pParent)
     // it turned out to have channels - add them
     if( !channels.empty())
     {
-        // FIXME: Is this essentially doing the same as "single-anim-node" codepath in
-        //        ColladaLoader::StoreAnimations? For now, this has been deferred to after
-        //        all animations and all clips have been read. Due to handling of
-        //        <library_animation_clips> this cannot be done here, as the channel owner
-        //        is lost, and some exporters make up animations by referring to multiple
-        //        single-channel animations from an <instance_animation>.
+		// FIXME: Is this essentially doing the same as "single-anim-node" codepath in
+		//        ColladaLoader::StoreAnimations? For now, this has been deferred to after
+		//        all animations and all clips have been read. Due to handling of
+		//        <library_animation_clips> this cannot be done here, as the channel owner
+		//        is lost, and some exporters make up animations by referring to multiple
+		//        single-channel animations from an <instance_animation>.
 /*
         // special filtering for stupid exporters packing each channel into a separate animation
         if( channels.size() == 1)
@@ -560,8 +559,8 @@ void ColladaParser::ReadAnimation( Collada::Animation* pParent)
 			{
 				mAnimationLibrary[animID] = anim;
 			}
-		}
-	}
+        }
+    }
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -684,39 +683,39 @@ void ColladaParser::ReadController( Collada::Controller& pController)
             else if( IsElement( "bind_shape_matrix"))
             {
                 // content is 16 floats to define a matrix... it seems to be important for some models
-          const char* content = GetTextContent();
+                const char* content = GetTextContent();
 
-		  // read the 16 floats
-		  for( unsigned int a = 0; a < 16; a++)
-		  {
-			  // read a number
-			content = fast_atoreal_move<float>( content, pController.mBindShapeMatrix[a]);
-			  // skip whitespace after it
-			  SkipSpacesAndLineEnd( &content);
-		  }
+                // read the 16 floats
+                for( unsigned int a = 0; a < 16; a++)
+                {
+                    // read a number
+                    content = fast_atoreal_move<ai_real>( content, pController.mBindShapeMatrix[a]);
+                    // skip whitespace after it
+                    SkipSpacesAndLineEnd( &content);
+                }
 
-		TestClosing( "bind_shape_matrix");
-			}
-			else if( IsElement( "source"))
-			{
-				// data array - we have specialists to handle this
-				ReadSource();
-			}
-			else if( IsElement( "joints"))
-			{
-				ReadControllerJoints( pController);
-			}
-			else if( IsElement( "vertex_weights"))
-			{
-				ReadControllerWeights( pController);
-			}
-			else if ( IsElement( "targets" ))
-			{
-				while (mReader->read()) {
-					if( mReader->getNodeType() == irr::io::EXN_ELEMENT) {
-						if ( IsElement( "input")) {
-							int semanticsIndex = GetAttribute("semantic");
-							int sourceIndex = GetAttribute("source");
+                TestClosing( "bind_shape_matrix");
+            }
+            else if( IsElement( "source"))
+            {
+                // data array - we have specialists to handle this
+                ReadSource();
+            }
+            else if( IsElement( "joints"))
+            {
+                ReadControllerJoints( pController);
+            }
+            else if( IsElement( "vertex_weights"))
+            {
+                ReadControllerWeights( pController);
+            }
+            else if ( IsElement( "targets" ))
+            {
+                while (mReader->read()) {
+                    if( mReader->getNodeType() == irr::io::EXN_ELEMENT) {
+                        if ( IsElement( "input")) {
+                            int semanticsIndex = GetAttribute("semantic");
+                            int sourceIndex = GetAttribute("source");
 
                             const char *semantics = mReader->getAttributeValue(semanticsIndex);
                             const char *source = mReader->getAttributeValue(sourceIndex);
@@ -1221,13 +1220,13 @@ void ColladaParser::ReadLight( Collada::Light& pLight)
                 // text content contains 3 floats
                 const char* content = GetTextContent();
 
-                content = fast_atoreal_move<float>( content, (float&)pLight.mColor.r);
+                content = fast_atoreal_move<ai_real>( content, (ai_real&)pLight.mColor.r);
                 SkipSpacesAndLineEnd( &content);
 
-                content = fast_atoreal_move<float>( content, (float&)pLight.mColor.g);
+                content = fast_atoreal_move<ai_real>( content, (ai_real&)pLight.mColor.g);
                 SkipSpacesAndLineEnd( &content);
 
-                content = fast_atoreal_move<float>( content, (float&)pLight.mColor.b);
+                content = fast_atoreal_move<ai_real>( content, (ai_real&)pLight.mColor.b);
                 SkipSpacesAndLineEnd( &content);
 
                 TestClosing( "color");
@@ -1454,7 +1453,7 @@ void ColladaParser::ReadEffectProfileCommon( Collada::Effect& pEffect)
                     pEffect.mRGBTransparency = true;
                 }
 
-				// In RGB_ZERO mode, the transparency is interpreted in reverse, go figure...
+                // In RGB_ZERO mode, the transparency is interpreted in reverse, go figure...
 				if(::strcmp(opaque, "RGB_ZERO") == 0 || ::strcmp(opaque, "A_ZERO") == 0) {
 					pEffect.mInvertTransparency = true;
 				}
@@ -1620,22 +1619,22 @@ void ColladaParser::ReadEffectColor( aiColor4D& pColor, Sampler& pSampler)
                 // text content contains 4 floats
                 const char* content = GetTextContent();
 
-                content = fast_atoreal_move<float>( content, (float&)pColor.r);
+                content = fast_atoreal_move<ai_real>( content, (ai_real&)pColor.r);
                 SkipSpacesAndLineEnd( &content);
 
-                content = fast_atoreal_move<float>( content, (float&)pColor.g);
+                content = fast_atoreal_move<ai_real>( content, (ai_real&)pColor.g);
                 SkipSpacesAndLineEnd( &content);
 
-                content = fast_atoreal_move<float>( content, (float&)pColor.b);
+                content = fast_atoreal_move<ai_real>( content, (ai_real&)pColor.b);
                 SkipSpacesAndLineEnd( &content);
 
-                content = fast_atoreal_move<float>( content, (float&)pColor.a);
+                content = fast_atoreal_move<ai_real>( content, (ai_real&)pColor.a);
                 SkipSpacesAndLineEnd( &content);
                 TestClosing( "color");
             }
             else if( IsElement( "texture"))
             {
-                // get name of source textur/sampler
+                // get name of source texture/sampler
                 int attrTex = GetAttribute( "texture");
                 pSampler.mName = mReader->getAttributeValue( attrTex);
 
@@ -1678,7 +1677,7 @@ void ColladaParser::ReadEffectColor( aiColor4D& pColor, Sampler& pSampler)
 
 // ------------------------------------------------------------------------------------------------
 // Reads an effect entry containing a float
-void ColladaParser::ReadEffectFloat( float& pFloat)
+void ColladaParser::ReadEffectFloat( ai_real& pFloat)
 {
     while( mReader->read())
     {
@@ -1687,7 +1686,7 @@ void ColladaParser::ReadEffectFloat( float& pFloat)
             {
                 // text content contains a single floats
                 const char* content = GetTextContent();
-                content = fast_atoreal_move<float>( content, pFloat);
+                content = fast_atoreal_move<ai_real>( content, pFloat);
                 SkipSpacesAndLineEnd( &content);
 
                 TestClosing( "float");
@@ -1866,7 +1865,7 @@ void ColladaParser::ReadMesh( Mesh* pMesh)
                 ReadIndexData( pMesh);
             } else
             {
-                // ignore the rest
+                // ignore the restf
                 SkipElement();
             }
         }
@@ -1985,9 +1984,9 @@ void ColladaParser::ReadDataArray()
                 if( *content == 0)
                     ThrowException( "Expected more values while reading float_array contents.");
 
-                float value;
+                ai_real value;
                 // read a number
-                content = fast_atoreal_move<float>( content, value);
+                content = fast_atoreal_move<ai_real>( content, value);
                 data.mValues.push_back( value);
                 // skip whitespace after it
                 SkipSpacesAndLineEnd( &content);
@@ -2216,8 +2215,9 @@ void ColladaParser::ReadIndexData( Mesh* pMesh)
             else if (IsElement("extra"))
             {
                 SkipElement("extra");
-            } else
-            {
+            } else if ( IsElement("ph")) {                
+                SkipElement("ph");
+            } else {
                 ThrowException( format() << "Unexpected sub element <" << mReader->getNodeName() << "> in tag <" << elementName << ">" );
             }
         }
@@ -2231,7 +2231,7 @@ void ColladaParser::ReadIndexData( Mesh* pMesh)
     }
 
 #ifdef ASSIMP_BUILD_DEBUG
-    if (primType != Prim_TriFans && primType != Prim_TriStrips &&
+	if (primType != Prim_TriFans && primType != Prim_TriStrips && primType != Prim_LineStrip &&
         primType != Prim_Lines) { // this is ONLY to workaround a bug in SketchUp 15.3.331 where it writes the wrong 'count' when it writes out the 'lines'.
         ai_assert(actualPrimitives == numPrimitives);
     }
@@ -2341,7 +2341,7 @@ size_t ColladaParser::ReadPrimitives( Mesh* pMesh, std::vector<InputChannel>& pP
         }
     }
 
-    // complain if the index count doesn't fit
+	// complain if the index count doesn't fit
     if( expectedPointCount > 0 && indices.size() != expectedPointCount * numOffsets) {
         if (pPrimType == Prim_Lines) {
             // HACK: We just fix this number since SketchUp 15.3.331 writes the wrong 'count' for 'lines'
@@ -2350,13 +2350,13 @@ size_t ColladaParser::ReadPrimitives( Mesh* pMesh, std::vector<InputChannel>& pP
         } else
             ThrowException( "Expected different index count in <p> element.");
 
-	} else if( expectedPointCount == 0 && (indices.size() % numOffsets) != 0)
+    } else if( expectedPointCount == 0 && (indices.size() % numOffsets) != 0)
 		ThrowException( "Expected different index count in <p> element.");
 
-    // find the data for all sources
-  for( std::vector<InputChannel>::iterator it = pMesh->mPerVertexData.begin(); it != pMesh->mPerVertexData.end(); ++it)
+	// find the data for all sources
+    for( std::vector<InputChannel>::iterator it = pMesh->mPerVertexData.begin(); it != pMesh->mPerVertexData.end(); ++it)
     {
-    InputChannel& input = *it;
+        InputChannel& input = *it;
         if( input.mResolved)
             continue;
 
@@ -2368,9 +2368,9 @@ size_t ColladaParser::ReadPrimitives( Mesh* pMesh, std::vector<InputChannel>& pP
             acc->mData = &ResolveLibraryReference( mDataLibrary, acc->mSource);
     }
     // and the same for the per-index channels
-  for( std::vector<InputChannel>::iterator it = pPerIndexChannels.begin(); it != pPerIndexChannels.end(); ++it)
-  {
-    InputChannel& input = *it;
+    for( std::vector<InputChannel>::iterator it = pPerIndexChannels.begin(); it != pPerIndexChannels.end(); ++it)
+    {
+        InputChannel& input = *it;
         if( input.mResolved)
             continue;
 
@@ -2400,6 +2400,10 @@ size_t ColladaParser::ReadPrimitives( Mesh* pMesh, std::vector<InputChannel>& pP
         size_t numberOfVertices = indices.size() / numOffsets;
         numPrimitives = numberOfVertices - 2;
     }
+    if (pPrimType == Prim_LineStrip) {
+        size_t numberOfVertices = indices.size() / numOffsets;
+        numPrimitives = numberOfVertices - 1;
+    }
 
     pMesh->mFaceSize.reserve( numPrimitives);
     pMesh->mFacePosIndices.reserve( indices.size() / numOffsets);
@@ -2415,6 +2419,11 @@ size_t ColladaParser::ReadPrimitives( Mesh* pMesh, std::vector<InputChannel>& pP
                 numPoints = 2;
                 for (size_t currentVertex = 0; currentVertex < numPoints; currentVertex++)
                     CopyVertex(currentVertex, numOffsets, numPoints, perVertexOffset, pMesh, pPerIndexChannels, currentPrimitive, indices);
+                break;
+            case Prim_LineStrip:
+                numPoints = 2;
+                for (size_t currentVertex = 0; currentVertex < numPoints; currentVertex++)
+                    CopyVertex(currentVertex, numOffsets, 1, perVertexOffset, pMesh, pPerIndexChannels, currentPrimitive, indices);
                 break;
             case Prim_Triangles:
                 numPoints = 3;
@@ -2452,13 +2461,15 @@ size_t ColladaParser::ReadPrimitives( Mesh* pMesh, std::vector<InputChannel>& pP
     return numPrimitives;
 }
 
+///@note This function willn't work correctly if both PerIndex and PerVertex channels have same channels.
+///For example if TEXCOORD present in both <vertices> and <polylist> tags this function will create wrong uv coordinates.
+///It's not clear from COLLADA documentation is this allowed or not. For now only exporter fixed to avoid such behavior
 void ColladaParser::CopyVertex(size_t currentVertex, size_t numOffsets, size_t numPoints, size_t perVertexOffset, Mesh* pMesh, std::vector<InputChannel>& pPerIndexChannels, size_t currentPrimitive, const std::vector<size_t>& indices){
     // calculate the base offset of the vertex whose attributes we ant to copy
     size_t baseOffset = currentPrimitive * numOffsets * numPoints + currentVertex * numOffsets;
 
     // don't overrun the boundaries of the index list
-    size_t maxIndexRequested = baseOffset + numOffsets - 1;
-    ai_assert(maxIndexRequested < indices.size());
+    ai_assert((baseOffset + numOffsets - 1) < indices.size());
 
     // extract per-vertex channels using the global per-vertex offset
     for (std::vector<InputChannel>::iterator it = pMesh->mPerVertexData.begin(); it != pMesh->mPerVertexData.end(); ++it)
@@ -2498,11 +2509,11 @@ void ColladaParser::ExtractDataObjectFromChannel( const InputChannel& pInput, si
         ThrowException( format() << "Invalid data index (" << pLocalIndex << "/" << acc.mCount << ") in primitive specification" );
 
     // get a pointer to the start of the data object referred to by the accessor and the local index
-    const float* dataObject = &(acc.mData->mValues[0]) + acc.mOffset + pLocalIndex* acc.mStride;
+    const ai_real* dataObject = &(acc.mData->mValues[0]) + acc.mOffset + pLocalIndex* acc.mStride;
 
     // assemble according to the accessors component sub-offset list. We don't care, yet,
     // what kind of object exactly we're extracting here
-    float obj[4];
+    ai_real obj[4];
     for( size_t c = 0; c < 4; ++c)
         obj[c] = dataObject[acc.mSubOffset[c]];
 
@@ -2577,7 +2588,7 @@ void ColladaParser::ExtractDataObjectFromChannel( const InputChannel& pInput, si
                 aiColor4D result(0, 0, 0, 1);
                 for (size_t i = 0; i < pInput.mResolved->mSize; ++i)
                 {
-                    result[i] = obj[pInput.mResolved->mSubOffset[i]];
+                    result[static_cast<unsigned int>(i)] = obj[pInput.mResolved->mSubOffset[i]];
                 }
                 pMesh->mColors[pInput.mIndex].push_back(result);
             } else
@@ -2806,7 +2817,7 @@ void ColladaParser::ReadNodeTransformation( Node* pNode, TransformType pType)
     for( unsigned int a = 0; a < sNumParameters[pType]; a++)
     {
         // read a number
-        content = fast_atoreal_move<float>( content, tf.f[a]);
+        content = fast_atoreal_move<ai_real>( content, tf.f[a]);
         // skip whitespace after it
         SkipSpacesAndLineEnd( &content);
     }
@@ -2870,7 +2881,7 @@ void ColladaParser::ReadNodeGeometry( Node* pNode)
 
     if( !mReader->isEmptyElement())
     {
-        // read material associations. Ignore additional elements inbetween
+        // read material associations. Ignore additional elements in between
         while( mReader->read())
         {
             if( mReader->getNodeType() == irr::io::EXN_ELEMENT)
@@ -3117,7 +3128,7 @@ aiMatrix4x4 ColladaParser::CalculateResultTransform( const std::vector<Transform
             case TF_ROTATE:
             {
                 aiMatrix4x4 rot;
-                float angle = tf.f[3] * float( AI_MATH_PI) / 180.0f;
+                ai_real angle = tf.f[3] * ai_real( AI_MATH_PI) / ai_real( 180.0 );
                 aiVector3D axis( tf.f[0], tf.f[1], tf.f[2]);
                 aiMatrix4x4::Rotation( angle, axis, rot);
                 res *= rot;

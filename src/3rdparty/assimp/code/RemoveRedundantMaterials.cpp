@@ -3,7 +3,8 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2017, assimp team
+
 
 All rights reserved.
 
@@ -144,6 +145,7 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
             if (!abReferenced[i]) {
                 ++unreferencedRemoved;
                 delete pScene->mMaterials[i];
+                pScene->mMaterials[i] = nullptr;
                 continue;
             }
 
@@ -157,6 +159,7 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
                     me = 0;
                     aiMappingTable[i] = aiMappingTable[a];
                     delete pScene->mMaterials[i];
+                    pScene->mMaterials[i] = nullptr;
                     break;
                 }
             }
@@ -168,6 +171,7 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
         // If the new material count differs from the original,
         // we need to rebuild the material list and remap mesh material indexes.
         if (iNewNum != pScene->mNumMaterials) {
+            ai_assert(iNewNum > 0);
             aiMaterial** ppcMaterials = new aiMaterial*[iNewNum];
             ::memset(ppcMaterials,0,sizeof(void*)*iNewNum);
             for (unsigned int p = 0; p < pScene->mNumMaterials;++p)
@@ -177,12 +181,14 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
                     continue;
                 }
 
-                // generate new names for all modified materials
+                // generate new names for modified materials that had no names
                 const unsigned int idx = aiMappingTable[p];
                 if (ppcMaterials[idx]) {
                     aiString sz;
-                    sz.length = ::ai_snprintf(sz.data,MAXLEN,"JoinedMaterial_#%u",p);
-                    ((aiMaterial*)ppcMaterials[idx])->AddProperty(&sz,AI_MATKEY_NAME);
+                    if( ppcMaterials[idx]->Get(AI_MATKEY_NAME, sz) != AI_SUCCESS ) {
+                        sz.length = ::ai_snprintf(sz.data,MAXLEN,"JoinedMaterial_#%u",p);
+                        ((aiMaterial*)ppcMaterials[idx])->AddProperty(&sz,AI_MATKEY_NAME);
+                    }
                 } else {
                     ppcMaterials[idx] = pScene->mMaterials[p];
                 }
