@@ -89,6 +89,19 @@ void CommandThread::initialize(QOpenGLContext *mainContext, OffscreenSurfaceHelp
     m_mainContext = mainContext;
     m_offsreenSurfaceHelper = offsreenSurfaceHelper;
     Q_ASSERT(m_mainContext && offsreenSurfaceHelper);
+
+    // Initialize shared context and resources for the thread. This must be
+    // done here since some platforms do not allow context sharing to be set up
+    // with contexts created on different threads. (Windows with WGL, in
+    // particular; resource sharing works fine later on, what matters is the
+    // thread the wglShareLists call is made on)
+    m_localContext.reset(new QOpenGLContext());
+    m_localContext->setFormat(m_mainContext->format());
+    m_localContext->setShareContext(m_mainContext);
+    if (!m_localContext->create())
+        qWarning("CommandThread: Failed to create local context");
+    m_localContext->moveToThread(this);
+
     m_running.fetchAndStoreOrdered(1);
 
     // Allow thread to proceed
@@ -150,11 +163,6 @@ void CommandThread::run()
     m_initializedSemaphore.acquire();
 
     Q_ASSERT(m_mainContext && m_shaderCache);
-
-    // Initialize shared context and resources for the thread
-    m_localContext.reset(new QOpenGLContext());
-    m_localContext->setShareContext(m_mainContext);
-    m_localContext->create();
 
     // Initialize GraphicsContext
     m_graphicsContext.reset(new GraphicsContext());
