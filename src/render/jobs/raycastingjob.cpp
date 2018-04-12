@@ -59,7 +59,7 @@ using namespace Render;
 
 namespace {
 
-class Q_AUTOTEST_EXPORT EntityCasterGatherer
+class EntityCasterGatherer
 {
 public:
     using EntityCasterList = QVector<QPair<Entity *, RayCaster*>>;
