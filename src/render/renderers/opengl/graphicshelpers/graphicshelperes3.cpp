@@ -139,6 +139,14 @@ QT_BEGIN_NAMESPACE
 #define GL_UNIFORM_BLOCK_DATA_SIZE 0x8A40
 #endif
 
+#ifndef GL_DRAW_FRAMEBUFFER
+#define GL_DRAW_FRAMEBUFFER               0x8CA9
+#endif
+
+#ifndef GL_READ_FRAMEBUFFER
+#define GL_READ_FRAMEBUFFER               0x8CA8
+#endif
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -265,6 +273,22 @@ void GraphicsHelperES3::bindFrameBufferAttachment(QOpenGLTexture *texture, const
     else
         qCritical() << "Unsupported Texture FBO attachment format";
     texture->release();
+}
+
+void GraphicsHelperES3::bindFrameBufferObject(GLuint frameBufferId, GraphicsHelperInterface::FBOBindMode mode)
+{
+    switch (mode) {
+    case FBODraw:
+        m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
+        return;
+    case FBORead:
+        m_funcs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
+        return;
+    case FBOReadAndDraw:
+    default:
+        m_funcs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+        return;
+    }
 }
 
 bool GraphicsHelperES3::supportsFeature(GraphicsHelperInterface::Feature feature) const
