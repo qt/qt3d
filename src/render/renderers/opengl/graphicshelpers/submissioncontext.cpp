@@ -896,7 +896,7 @@ int SubmissionContext::activateTexture(TextureScope scope, GLTexture *tex, int o
     int err = m_gl->functions()->glGetError();
     if (err)
         qCWarning(Backend) << "GL error after activating texture" << QString::number(err, 16)
-                           << tex->textureId() << "on unit" << onUnit;
+                           << tex->getGLTexture()->textureId() << "on unit" << onUnit;
 #endif
 
     m_activeTextures[onUnit].score = 200;

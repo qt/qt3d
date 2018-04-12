@@ -1759,7 +1759,7 @@ void Renderer::performDraw(RenderCommand *command)
     }
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
-    int err = m_graphicsContext->openGLContext()->functions()->glGetError();
+    int err = m_submissionContext->openGLContext()->functions()->glGetError();
     if (err)
         qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 #endif
@@ -1788,7 +1788,7 @@ void Renderer::performCompute(const RenderView *, RenderCommand *command)
     m_dirtyBits.marked |= AbstractRenderer::ComputeDirty;
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
-    int err = m_graphicsContext->openGLContext()->functions()->glGetError();
+    int err = m_submissionContext->openGLContext()->functions()->glGetError();
     if (err)
         qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 #endif
