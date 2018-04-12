@@ -381,8 +381,10 @@ QOpenGLTexture *GLTexture::buildGLTexture()
         glTex->setMipLevels(glTex->maximumMipLevels());
     } else {
         glTex->setAutoMipMapGenerationEnabled(false);
-        glTex->setMipBaseLevel(0);
-        glTex->setMipMaxLevel(m_properties.mipLevels - 1);
+        if (glTex->hasFeature(QOpenGLTexture::TextureMipMapLevel)) {
+            glTex->setMipBaseLevel(0);
+            glTex->setMipMaxLevel(m_properties.mipLevels - 1);
+        }
         glTex->setMipLevels(m_properties.mipLevels);
     }
 
