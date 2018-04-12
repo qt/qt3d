@@ -314,6 +314,13 @@ void GraphicsHelperES3::bindBufferBase(GLenum target, GLuint index, GLuint buffe
     m_extraFuncs->glBindBufferBase(target, index, buffer);
 }
 
+bool GraphicsHelperES3::frameBufferNeedsRenderBuffer(const Attachment &attachment)
+{
+    // Use a renderbuffer for combined depth+stencil attachments since this is
+    // problematic before GLES 3.2. Keep using textures for everything else.
+    return attachment.m_point == QRenderTargetOutput::DepthStencil;
+}
+
 void GraphicsHelperES3::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     m_extraFuncs->glUniformBlockBinding(programId, uniformBlockIndex, uniformBlockBinding);
