@@ -63,15 +63,6 @@ QT_BEGIN_NAMESPACE
 #define GL_SAMPLER_2D_ARRAY_SHADOW        0x8DC4
 #endif
 
-// ES 2.0 FBO
-#ifndef GL_DRAW_FRAMEBUFFER
-#define GL_DRAW_FRAMEBUFFER               0x8CA9
-#endif
-
-#ifndef GL_READ_FRAMEBUFFER
-#define GL_READ_FRAMEBUFFER               0x8CA8
-#endif
-
 namespace Qt3DRender {
 namespace Render {
 
@@ -371,18 +362,10 @@ void GraphicsHelperES2::releaseFrameBufferObject(GLuint frameBufferId)
 
 void GraphicsHelperES2::bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode)
 {
-    switch (mode) {
-    case FBODraw:
-        m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
-        return;
-    case FBORead:
-        m_funcs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
-        return;
-    case FBOReadAndDraw:
-    default:
-        m_funcs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
-        return;
-    }
+    Q_UNUSED(mode)
+    // For ES2 the spec states for target: The symbolic constant must be GL_FRAMEBUFFER
+    // so mode is ignored and is always set to GL_FRAMEBUFFER
+    m_funcs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
 }
 
 GLuint GraphicsHelperES2::boundFrameBufferObject()
@@ -399,9 +382,13 @@ bool GraphicsHelperES2::checkFrameBufferComplete()
 
 bool GraphicsHelperES2::frameBufferNeedsRenderBuffer(const Attachment &attachment)
 {
-    // Use a renderbuffer for combined depth+stencil attachments since this is
+    // Use a renderbuffer for depth or stencil attachments since this is
     // problematic before GLES 3.2. Keep using textures for everything else.
-    return attachment.m_point == QRenderTargetOutput::DepthStencil;
+    // For ES2 individual Depth and Stencil buffers need to be an option because
+    // DepthStencil is an extension.
+    return attachment.m_point == QRenderTargetOutput::DepthStencil ||
+           attachment.m_point == QRenderTargetOutput::Depth ||
+           attachment.m_point == QRenderTargetOutput::Stencil;
 }
 
 void GraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
@@ -436,15 +423,21 @@ void GraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
 
 void GraphicsHelperES2::bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment)
 {
-    if (attachment.m_point != QRenderTargetOutput::DepthStencil) {
-        qCritical() << "Renderbuffers only supported for combined depth-stencil, but got attachment point"
+    if (attachment.m_point != QRenderTargetOutput::DepthStencil &&
+        attachment.m_point != QRenderTargetOutput::Depth &&
+        attachment.m_point != QRenderTargetOutput::Stencil) {
+        qCritical() << "Renderbuffers only supported for combined depth-stencil, depth, or stencil, but got attachment point"
                     << attachment.m_point;
         return;
     }
 
     renderBuffer->bind();
-    m_funcs->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->renderBufferId());
-    m_funcs->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->renderBufferId());
+    if (attachment.m_point == QRenderTargetOutput::DepthStencil ||
+        attachment.m_point == QRenderTargetOutput::Depth)
+        m_funcs->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->renderBufferId());
+    if (attachment.m_point == QRenderTargetOutput::DepthStencil ||
+        attachment.m_point == QRenderTargetOutput::Stencil)
+        m_funcs->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->renderBufferId());
     renderBuffer->release();
 }
 

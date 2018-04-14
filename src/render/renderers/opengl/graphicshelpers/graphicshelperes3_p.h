@@ -67,7 +67,9 @@ public:
 
     // QGraphicHelperInterface interface
     void bindBufferBase(GLenum target, GLuint index, GLuint buffer) override;
+    bool frameBufferNeedsRenderBuffer(const Attachment &attachment) override;
     void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) override;
+    void bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode) override;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) override;
     void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) override;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) override;

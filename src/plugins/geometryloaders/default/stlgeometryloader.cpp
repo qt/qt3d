@@ -50,24 +50,28 @@ Q_LOGGING_CATEGORY(StlGeometryLoaderLog, "Qt3D.StlGeometryLoader", QtWarningMsg)
 
 bool StlGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
 {
-    char signature[5];
-
     Q_UNUSED(subMesh);
 
-    if (ioDev->peek(signature, sizeof(signature)) != sizeof(signature))
-        return false;
+    if (loadBinary(ioDev))
+        return true;
 
-    if (!qstrncmp(signature, "solid", 5))
-        return loadAscii(ioDev);
-    else
-        return loadBinary(ioDev);
-
-    return true;
+    return loadAscii(ioDev);
 }
 
 bool StlGeometryLoader::loadAscii(QIODevice *ioDev)
 {
     // TODO stricter syntax checking
+
+    ioDev->setTextModeEnabled(true);
+    if (!ioDev->seek(0))
+        return false;
+
+    char signature[5];
+    if (ioDev->peek(signature, sizeof(signature)) != sizeof(signature))
+        return false;
+
+    if (qstrncmp(signature, "solid", 5) != 0)
+        return false;
 
     while (!ioDev->atEnd()) {
         QByteArray lineBuffer = ioDev->readLine();
@@ -108,6 +112,9 @@ bool StlGeometryLoader::loadBinary(QIODevice *ioDev)
 
     quint32 triangleCount;
     stream >> triangleCount;
+
+    if (ioDev->size() != headerSize + sizeof(quint32) + (triangleCount * 50))
+        return false;
 
     m_points.reserve(triangleCount * 3);
     m_indices.reserve(triangleCount * 3);

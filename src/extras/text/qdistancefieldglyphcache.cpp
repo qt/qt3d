@@ -76,7 +76,6 @@ public:
     QRectF texCoords() const;
 
 private:
-    quint32 m_glyph = (quint32) -1;
     quint32 m_ref = 0;
     QTextureAtlas *m_atlas = nullptr;
     QTextureAtlas::TextureId m_atlasEntry = QTextureAtlas::InvalidTexture;
@@ -111,8 +110,7 @@ private:
 };
 
 StoredGlyph::StoredGlyph(const QRawFont &font, quint32 glyph, bool doubleResolution)
-    : m_glyph(glyph)
-    , m_ref(1)
+    : m_ref(1)
     , m_atlas(nullptr)
     , m_atlasEntry(QTextureAtlas::InvalidTexture)
 {

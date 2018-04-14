@@ -139,6 +139,14 @@ QT_BEGIN_NAMESPACE
 #define GL_UNIFORM_BLOCK_DATA_SIZE 0x8A40
 #endif
 
+#ifndef GL_DRAW_FRAMEBUFFER
+#define GL_DRAW_FRAMEBUFFER               0x8CA9
+#endif
+
+#ifndef GL_READ_FRAMEBUFFER
+#define GL_READ_FRAMEBUFFER               0x8CA8
+#endif
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -267,6 +275,22 @@ void GraphicsHelperES3::bindFrameBufferAttachment(QOpenGLTexture *texture, const
     texture->release();
 }
 
+void GraphicsHelperES3::bindFrameBufferObject(GLuint frameBufferId, GraphicsHelperInterface::FBOBindMode mode)
+{
+    switch (mode) {
+    case FBODraw:
+        m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
+        return;
+    case FBORead:
+        m_funcs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
+        return;
+    case FBOReadAndDraw:
+    default:
+        m_funcs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+        return;
+    }
+}
+
 bool GraphicsHelperES3::supportsFeature(GraphicsHelperInterface::Feature feature) const
 {
     switch (feature) {
@@ -312,6 +336,13 @@ void GraphicsHelperES3::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, G
 void GraphicsHelperES3::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     m_extraFuncs->glBindBufferBase(target, index, buffer);
+}
+
+bool GraphicsHelperES3::frameBufferNeedsRenderBuffer(const Attachment &attachment)
+{
+    // Use a renderbuffer for combined depth+stencil attachments since this is
+    // problematic before GLES 3.2. Keep using textures for everything else.
+    return attachment.m_point == QRenderTargetOutput::DepthStencil;
 }
 
 void GraphicsHelperES3::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)

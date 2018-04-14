@@ -3,7 +3,8 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2017, assimp team
+
 
 All rights reserved.
 
@@ -58,9 +59,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/IOSystem.hpp>
 #include <assimp/scene.h>
 #include <assimp/DefaultLogger.hpp>
+#include <assimp/importerdesc.h>
 
 #include <memory>
-
 
 using namespace Assimp;
 
@@ -172,8 +173,7 @@ void MDLImporter::InternReadFile( const std::string& pFile,
     }
 
     // Allocate storage and copy the contents of the file to a memory buffer
-    std::vector<unsigned char> buffer(iFileSize+1);
-    mBuffer = &buffer[0];
+    mBuffer =new unsigned char[iFileSize+1];
     file->Read( (void*)mBuffer, 1, iFileSize);
 
     // Append a binary zero to the end of the buffer.
@@ -239,7 +239,8 @@ void MDLImporter::InternReadFile( const std::string& pFile,
         0.f,0.f,1.f,0.f,0.f,-1.f,0.f,0.f,0.f,0.f,0.f,1.f);
 
     // delete the file buffer and cleanup
-    AI_DEBUG_INVALIDATE_PTR(mBuffer);
+    delete [] mBuffer;
+    mBuffer= nullptr;
     AI_DEBUG_INVALIDATE_PTR(pIOHandler);
     AI_DEBUG_INVALIDATE_PTR(pScene);
 }
@@ -1131,7 +1132,9 @@ bool MDLImporter::ProcessFrames_3DGS_MDL7(const MDL::IntGroupInfo_MDL7& groupInf
     const unsigned char*     szCurrent,
     const unsigned char**    szCurrentOut)
 {
-    ai_assert(NULL != szCurrent && NULL != szCurrentOut);
+    ai_assert( nullptr != szCurrent );
+    ai_assert( nullptr != szCurrentOut);
+
     const MDL::Header_MDL7 *pcHeader = (const MDL::Header_MDL7*)mBuffer;
 
     // if we have no bones we can simply skip all frames,
@@ -1557,7 +1560,7 @@ void MDLImporter::InternReadFile_3DGS_MDL7( )
 			} else {
 				pcNode->mName.length = ::strlen(szBuffer);
 			}
-            ::strcpy(pcNode->mName.data,szBuffer);
+            ::strncpy(pcNode->mName.data,szBuffer,MAXLEN-1);
             ++p;
         }
     }

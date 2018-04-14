@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2017, assimp team
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -47,6 +48,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <vector>
 #include <list>
+#include <map>
+#include <memory>
 
 namespace ODDLParser {
     class DDLNode;
@@ -130,7 +133,7 @@ protected:
     void copyMeshes( aiScene *pScene );
     void copyCameras( aiScene *pScene );
     void copyLights( aiScene *pScene );
-
+    void copyMaterials( aiScene *pScene );
     void resolveReferences();
     void pushNode( aiNode *node, aiScene *pScene );
     aiNode *popNode();
@@ -142,6 +145,8 @@ private:
     struct VertexContainer {
         size_t m_numVerts;
         aiVector3D *m_vertices;
+        size_t m_numColors;
+        aiColor4D *m_colors;
         size_t m_numNormals;
         aiVector3D *m_normals;
         size_t m_numUVComps[ AI_MAX_NUMBER_OF_TEXTURECOORDS ];
@@ -150,9 +155,8 @@ private:
         VertexContainer();
         ~VertexContainer();
 
-    private:
-        VertexContainer( const VertexContainer & );
-        VertexContainer &operator = ( const VertexContainer & );
+        VertexContainer( const VertexContainer & ) = delete;
+        VertexContainer &operator = ( const VertexContainer & ) = delete;
     };
 
     struct RefInfo {
@@ -168,9 +172,8 @@ private:
         RefInfo( aiNode *node, Type type, std::vector<std::string> &names );
         ~RefInfo();
 
-    private:
-        RefInfo( const RefInfo & );
-        RefInfo &operator = ( const RefInfo & );
+        RefInfo( const RefInfo & ) = delete;
+        RefInfo &operator = ( const RefInfo & ) = delete;
     };
 
     struct ChildInfo {
@@ -178,12 +181,13 @@ private:
         std::list<aiNode*> m_children;
     };
     ChildInfo *m_root;
-    typedef std::map<aiNode*, ChildInfo*> NodeChildMap;
+    typedef std::map<aiNode*, std::unique_ptr<ChildInfo> > NodeChildMap;
     NodeChildMap m_nodeChildMap;
 
     std::vector<aiMesh*> m_meshCache;
     typedef std::map<std::string, size_t> ReferenceMap;
     std::map<std::string, size_t> m_mesh2refMap;
+    std::map<std::string, size_t> m_material2refMap;
 
     ODDLParser::Context *m_ctx;
     MetricInfo m_metrics[ MetricInfo::Max ];
@@ -198,7 +202,7 @@ private:
     std::vector<aiCamera*> m_cameraCache;
     std::vector<aiLight*> m_lightCache;
     std::vector<aiNode*> m_nodeStack;
-    std::vector<RefInfo*> m_unresolvedRefStack;
+    std::vector<std::unique_ptr<RefInfo> > m_unresolvedRefStack;
 };
 
 } // Namespace OpenGEX

@@ -388,7 +388,7 @@ void QNodePrivate::propertyChanged(int propertyIndex)
     if (m_blockNotifications)
         return;
 
-    const auto toBackendValue = [this](const QVariant &data) -> QVariant
+    const auto toBackendValue = [](const QVariant &data) -> QVariant
     {
         if (data.canConvert<QNode*>()) {
             QNode *node = data.value<QNode*>();
