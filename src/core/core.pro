@@ -20,6 +20,4 @@ include(transforms/transforms.pri)
 include(resources/resources.pri)
 include(services/services.pri)
 
-QMAKE_DOCS = $$PWD/doc/qt3dcore.qdocconf
-
 load(qt_module)

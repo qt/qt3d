@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -38,97 +38,66 @@
 ****************************************************************************/
 
 /*!
-    \module Qt3DExtras
-    \title Qt 3D Extras C++ Classes
-    \keyword Qt 3D Extras
-    \preliminary
-
-    \brief The Qt 3D Extras module provides a set of prebuilt elements to help
-    you get started with Qt 3D.
-
-    This module is still in development but is available as a technology preview.
-    This means it is unstable, likely to change and provided as a convenience only.
+    \module Qt3DRender
+    \title Qt 3D Render C++ Classes
+    \brief The Qt 3D Render module contains functionality to support 2D and 3D
+           rendering using Qt 3D.
+    \since 5.7
 
     \ingroup modules
-    \ingroup qt3d-modules-preliminary
-    \qtvariable 3dextras
+    \ingroup qt3d-modules
+    \qtvariable 3drender
+
+    The Qt 3D Render module provides an aspect, components, and other supporting types necessary
+    to implement 2D and 3D rendering as part of the Qt 3D framework.
+
+    To use classes from this module, add this directive into the C++ files:
 
     \code
-       #include <Qt3DExtras>
+       #include <Qt3DRender>
     \endcode
 
     To link against the corresponding C++ library, add the following to your qmake project file:
 
     \badcode
-       QT += 3dextras
+       QT += 3drender
     \endcode
 
-    Classes, types, and functions are declared under the \l [Qt3DExtras]{Qt3DExtras} namespace.
+    Classes, types, and functions are declared under the \l [Qt3DRender]{Qt3DRender} namespace.
 
     \section1 Overview
 
-    \section2 Materials
-
-    \annotatedlist qt3d-extras-materials
-
-    \section2 Meshes and Geometries
-
-    \annotatedlist qt3d-extras-geometries
-
-    \section2 Camera Controllers
-
-    \annotatedlist qt3d-extras-cameracontrollers
-
-    \section2 Entities
-
-    \list
-    \li Qt3DExtras::QSkyboxEntity
-    \endlist
-
-    \section2 FrameGraphs
-
-    \list
-    \li Qt3DExtras::QForwardRenderer
-    \endlist
-
-    \section2 Window
-
-    \list
-    \li Qt3DExtras::Qt3DWindow
-    \endlist
-
-    \note The Quick3DExtras module also specifies a Qt3DExtras::Quick::Qt3DQuickWindow.
+    The Qt 3D Render aspect offers support for data-driven configuration as described
+    in \l {Qt 3D Render Framegraph}.
 
     \section1 Reference
     \list
-    \li \l {Qt 3D Extras C++ Classes}
+    \li \l {Qt 3D Render C++ Classes}
     \li \l {Qt 3D Examples}
     \endlist
- */
-
-/*!
-    \namespace Qt3DExtras
-    \inmodule Qt3DExtras
-    \ingroup qt3d-namespaces
-
-    \brief Contains classes from the Qt3DExtras module.
 */
 
 /*!
-   \qmlmodule Qt3D.Extras 2.0
-   \title Qt 3D Extras QML Types
-   \preliminary
+    \namespace Qt3DRender
+    \inmodule Qt3DRender
+    \ingroup qt3d-namespaces
+
+    \brief Contains classes that enable 2D and 3D rendering.
+*/
+
+/*!
+   \qmlmodule Qt3D.Render 2.0
+   \title Qt 3D Render QML Types
+   \since 5.7
 
    \ingroup qmlmodules
-   \ingroup qt3d-qmlmodules-preliminary
+   \ingroup qt3d-qmlmodules
 
-   \brief Provides Qt 3D QML types for the extras module.
+   \brief Provides Qt 3D QML types for rendering.
 
    To import and use the module's QML types, use the following statement:
 
    \badcode
-   import Qt3D.Extras 2.0
+   import Qt3D.Render 2.0
    \endcode
-
-   \section1 QML Types
 */

@@ -28,7 +28,6 @@
 /*!
     \module Qt3DInput
     \title Qt 3D Input C++ Classes
-    \keyword Qt 3D Input
     \brief The Qt 3D Input module provides classes for handling user input in
            applications using Qt3D.
     \since 5.7

@@ -25,6 +25,4 @@ HEADERS += \
 
 include(./items/items.pri)
 
-QMAKE_DOCS = $$PWD/doc/qt3dscene2d.qdocconf
-
 load(qt_module)

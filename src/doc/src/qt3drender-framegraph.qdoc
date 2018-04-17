@@ -129,7 +129,7 @@
     example, if you want to use different rendering approaches for indoor and
     outdoor scenes or to enable or disable some special effect.
 
-    \code
+    \badcode
     Entity {
         id: sceneRoot
         components: RenderSettings {
@@ -141,7 +141,7 @@
     \note activeFrameGraph is the default property of the FrameGraph component
     in QML.
 
-    \code
+    \badcode
     Entity {
         id: sceneRoot
         components: RenderSettings {
@@ -150,7 +150,7 @@
     }
     \endcode
 
-    \section2 How the Framegraph is Used
+    \section2 How the Framegraph Is Used
 
     \list
         \li The Qt 3D renderer performs a \e{depth first traversal} of the
@@ -192,7 +192,7 @@
     we render to an intermediate \e G-buffer. Here is a simple FrameGraph that
     can be used for forward rendering:
 
-    \code
+    \badcode
     Viewport {
          rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
          property alias camera: cameraSelector.camera
@@ -231,7 +231,7 @@
     nearer to the root of the framegraph as this will result in fewer leaf
     nodes, and hence, fewer RenderViews overall.
 
-    \code
+    \badcode
     Viewport {
          rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
          property alias camera: cameraSelector.camera
@@ -246,7 +246,7 @@
     }
     \endcode
 
-    \code
+    \badcode
     CameraSelector {
           Viewport {
                rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
@@ -268,7 +268,7 @@
 
     \image multiviewport.png
 
-    \code
+    \badcode
     Viewport {
          id: mainViewport
          rect: Qt.rect(0, 0, 1, 1)
@@ -416,7 +416,7 @@
     many games due to the ability to use large numbers of dynamic lights at
     the expense of additional GPU memory usage.
 
-    \code
+    \badcode
     Viewport {
          rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 

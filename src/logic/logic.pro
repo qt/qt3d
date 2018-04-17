@@ -13,6 +13,4 @@ gcov {
 
 include(logic.pri)
 
-QMAKE_DOCS = $$PWD/doc/qt3dlogic.qdocconf
-
 load(qt_module)

@@ -52,6 +52,4 @@ MODULE_PLUGIN_TYPES = \
     geometryloaders \
     renderplugins
 
-QMAKE_DOCS = $$PWD/doc/qt3drender.qdocconf
-
 load(qt_module)
