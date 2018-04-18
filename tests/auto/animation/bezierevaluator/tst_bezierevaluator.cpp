@@ -221,42 +221,60 @@ private Q_SLOTS:
         QTest::addColumn<QVector<float>>("times");
         QTest::addColumn<QVector<float>>("bezierParamters");
 
-        float t0 = 0.0f;
-        Keyframe kf0{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, QKeyFrame::BezierInterpolation};
-        float t1 = 50.0f;
-        Keyframe kf1{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, QKeyFrame::BezierInterpolation};
-        const int count = 21;
-        QVector<float> times = (QVector<float>()
-            << 0.0f
-            << 1.00375f
-            << 2.48f
-            << 4.37625f
-            << 6.64f
-            << 9.21875f
-            << 12.06f
-            << 15.11125f
-            << 18.32f
-            << 21.63375f
-            << 25.0f
-            << 28.36625f
-            << 31.68f
-            << 34.88875f
-            << 37.94f
-            << 40.78125f
-            << 43.36f
-            << 45.62375f
-            << 47.52f
-            << 48.99625f
-            << 50.0f);
+        {
+            float t0 = 0.0f;
+            Keyframe kf0{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, QKeyFrame::BezierInterpolation};
+            float t1 = 50.0f;
+            Keyframe kf1{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, QKeyFrame::BezierInterpolation};
+            const int count = 21;
+            QVector<float> times = (QVector<float>()
+                                    << 0.0f
+                                    << 1.00375f
+                                    << 2.48f
+                                    << 4.37625f
+                                    << 6.64f
+                                    << 9.21875f
+                                    << 12.06f
+                                    << 15.11125f
+                                    << 18.32f
+                                    << 21.63375f
+                                    << 25.0f
+                                    << 28.36625f
+                                    << 31.68f
+                                    << 34.88875f
+                                    << 37.94f
+                                    << 40.78125f
+                                    << 43.36f
+                                    << 45.62375f
+                                    << 47.52f
+                                    << 48.99625f
+                                    << 50.0f);
 
-        QVector<float> bezierParameters;
-        float deltaU = 1.0f / float(count - 1);
-        for (int i = 0; i < count; ++i)
-            bezierParameters.push_back(float(i) * deltaU);
+            QVector<float> bezierParameters;
+            float deltaU = 1.0f / float(count - 1);
+            for (int i = 0; i < count; ++i)
+                bezierParameters.push_back(float(i) * deltaU);
 
-        QTest::newRow("t=0 to t=50, default easing") << t0 << kf0
+            QTest::newRow("t=0 to t=50, default easing") << t0 << kf0
+                                                         << t1 << kf1
+                                                         << times << bezierParameters;
+        }
+        {
+            // This test creates a case where the coefficients for finding
+            // the cubic roots will be a = 0, b = 0, c ~= 6.28557 d ~= -6.28557
+            // Because c ~= d, the answer should be one root = 1, but
+            // because of numerical imprecision, it will be slightly larger.
+            // We have a fuzzy check in parameterForTime that takes care of this.
+            float t0 = 3.71443009f;
+            Keyframe kf0{150.0f, {0.0f, 0.0f}, {5.80961999f, 150.0f}, QKeyFrame::BezierInterpolation};
+            float t1 = 10.0f;
+            Keyframe kf1{-150.0f, {7.904809959f, 150.0f}, {0.f, 0.f}, QKeyFrame::BezierInterpolation};
+            QVector<float> times = {10.f};
+            QVector<float> results = {1.0f};
+            QTest::newRow("t=0 to t=10, regression") << t0 << kf0
                                                      << t1 << kf1
-                                                     << times << bezierParameters;
+                                                     << times << results;
+        }
     }
 
     void checkParameterForTime()
