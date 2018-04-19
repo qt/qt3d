@@ -144,6 +144,8 @@ void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint stride
 template<typename GenericState>
 void applyStateHelper(const GenericState *state, SubmissionContext *gc)
 {
+    Q_UNUSED(state);
+    Q_UNUSED(gc);
 }
 
 template<>
