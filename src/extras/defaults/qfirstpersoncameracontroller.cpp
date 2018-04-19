@@ -73,6 +73,9 @@ namespace Qt3DExtras {
     \row
         \li Page up and page down keys
         \li Move the camera vertically relative to camera viewport.
+    \row
+        \li Escape
+        \li Moves the camera so that entire scene is visible in the camera viewport.
     \endtable
 */
 

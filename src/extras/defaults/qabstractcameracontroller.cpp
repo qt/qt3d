@@ -62,6 +62,7 @@ QAbstractCameraControllerPrivate::QAbstractCameraControllerPrivate()
     , m_rightMouseButtonAction(new Qt3DInput::QAction())
     , m_altButtonAction(new Qt3DInput::QAction())
     , m_shiftButtonAction(new Qt3DInput::QAction())
+    , m_escapeButtonAction(new Qt3DInput::QAction())
     , m_rxAxis(new Qt3DInput::QAxis())
     , m_ryAxis(new Qt3DInput::QAxis())
     , m_txAxis(new Qt3DInput::QAxis())
@@ -72,6 +73,7 @@ QAbstractCameraControllerPrivate::QAbstractCameraControllerPrivate()
     , m_rightMouseButtonInput(new Qt3DInput::QActionInput())
     , m_altButtonInput(new Qt3DInput::QActionInput())
     , m_shiftButtonInput(new Qt3DInput::QActionInput())
+    , m_escapeButtonInput(new Qt3DInput::QActionInput())
     , m_mouseRxInput(new Qt3DInput::QAnalogAxisInput())
     , m_mouseRyInput(new Qt3DInput::QAnalogAxisInput())
     , m_mouseTzXInput(new Qt3DInput::QAnalogAxisInput())
@@ -121,6 +123,11 @@ void QAbstractCameraControllerPrivate::init()
     m_shiftButtonInput->setButtons(QVector<int>() << Qt::Key_Shift);
     m_shiftButtonInput->setSourceDevice(m_keyboardDevice);
     m_shiftButtonAction->addInput(m_shiftButtonInput);
+
+    // Escape Button Action
+    m_escapeButtonInput->setButtons(QVector<int>() << Qt::Key_Escape);
+    m_escapeButtonInput->setSourceDevice(m_keyboardDevice);
+    m_escapeButtonAction->addInput(m_escapeButtonInput);
 
     //// Axes
 
@@ -187,6 +194,7 @@ void QAbstractCameraControllerPrivate::init()
     m_logicalDevice->addAction(m_rightMouseButtonAction);
     m_logicalDevice->addAction(m_altButtonAction);
     m_logicalDevice->addAction(m_shiftButtonAction);
+    m_logicalDevice->addAction(m_escapeButtonAction);
     m_logicalDevice->addAxis(m_rxAxis);
     m_logicalDevice->addAxis(m_ryAxis);
     m_logicalDevice->addAxis(m_txAxis);
@@ -201,6 +209,13 @@ void QAbstractCameraControllerPrivate::init()
     // Disable the logical device when the entity is disabled
     QObject::connect(q, &Qt3DCore::QEntity::enabledChanged,
                      m_logicalDevice, &Qt3DInput::QLogicalDevice::setEnabled);
+
+
+    QObject::connect(m_escapeButtonAction, &Qt3DInput::QAction::activeChanged,
+                     q, [this](bool isActive) {
+                         if (isActive && m_camera)
+                             m_camera->viewAll();
+                     });
 
     q->addComponent(m_frameAction);
     q->addComponent(m_logicalDevice);
