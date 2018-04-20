@@ -235,7 +235,7 @@ FbxGeometryLoader::~FbxGeometryLoader()
 }
 
 /*!
-    Give the list of attributes that can be used to render
+    Gives the list of attributes that can be used to render
     a 3D form.
     Returns a pointer to the geometry object.
 */
@@ -245,7 +245,8 @@ QGeometry *Qt3DRender::FbxGeometryLoader::geometry() const
 }
 
 /*!
-    Load the specified \a subMesh using device \a ioDev.
+    Loads the specified \a subMesh using a device \a ioDev. Returns \c true
+    on success, \c false otherwise.
 */
 bool Qt3DRender::FbxGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
 {

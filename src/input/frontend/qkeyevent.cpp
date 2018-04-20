@@ -167,7 +167,7 @@ QKeyEvent::~QKeyEvent()
 */
 
 /*!
-    \property QKeyEvent::key
+    \property Qt3DInput::QKeyEvent::key
     \readonly
 
     This property holds the code of the key that was pressed or released.
@@ -178,7 +178,7 @@ QKeyEvent::~QKeyEvent()
 */
 
 /*!
-     \property QKeyEvent::text
+    \property Qt3DInput::QKeyEvent::text
     \readonly
 
     This property holds the Unicode text that the key generated. The text
@@ -188,7 +188,7 @@ QKeyEvent::~QKeyEvent()
 */
 
 /*!
-    \property QKeyEvent::modifiers
+    \property Qt3DInput::QKeyEvent::modifiers
     \readonly
 
     This property holds the keyboard modifier flags that existed immediately
@@ -198,14 +198,14 @@ QKeyEvent::~QKeyEvent()
 */
 
 /*!
-    \property QKeyEvent::isAutoRepeat
+    \property Qt3DInput::QKeyEvent::isAutoRepeat
     \readonly
 
     Holds whether this event comes from an auto-repeating key.
 */
 
 /*!
-    \property QKeyEvent::count
+    \property Qt3DInput::QKeyEvent::count
     \readonly
 
     Holds the number of keys involved in this event. If \l text is not empty,
@@ -213,7 +213,7 @@ QKeyEvent::~QKeyEvent()
 */
 
 /*!
-    \property QKeyEvent::nativeScanCode
+    \property Qt3DInput::QKeyEvent::nativeScanCode
     \readonly
 
     This property contains the native scan code of the key that was pressed.
@@ -222,7 +222,7 @@ QKeyEvent::~QKeyEvent()
 */
 
 /*!
-    \property  QKeyEvent::accepted
+    \property  Qt3DInput::QKeyEvent::accepted
 
     Setting \e accepted to \c true prevents the key event from being propagated
     to the item's parent.
@@ -232,17 +232,17 @@ QKeyEvent::~QKeyEvent()
 */
 
 /*!
-    \fn bool QKeyEvent::matches(QKeySequence::StandardKey key_) const
+    \fn bool Qt3DInput::QKeyEvent::matches(QKeySequence::StandardKey key_) const
 
-    \return \c true if the key event matches the given standard key \a key_; otherwise
+    Returns \c true if the key event matches the given standard key \a key_; otherwise
     returns \c false.
 
     \sa QKeySequence::StandardKey
 */
 
 /*!
-    \fn QEvent::Type QKeyEvent::type() const
-    \return the type of event
+    \fn QEvent::Type Qt3DInput::QKeyEvent::type() const
+    Returns the type of the event.
 
 */
 

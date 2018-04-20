@@ -189,7 +189,7 @@ bool GLTFParser::setJSON(const QJsonDocument &json )
     return true;
 }
 
-/*!
+/*
  * Sets the \a path used by the parser to load the scene file.
  * If the file is valid, parsing is automatically triggered.
  */
@@ -215,7 +215,7 @@ void GLTFParser::setSource(const QUrl &source)
     setBasePath(QFileInfo(path).dir().absolutePath());
 }
 
-/*!
+/*
  * Returns true if the extension of \a path is supported by the
  * GLTF parser.
  */

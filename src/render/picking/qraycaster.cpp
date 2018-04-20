@@ -82,34 +82,36 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QVector3D origin
+    \property Qt3DRender::QRayCaster::origin
 
-    Holds the origin of the 3d ray in local coordinates.
+    Holds the origin of the 3D ray in local coordinates.
 */
 /*!
-    \qmlproperty Vector3D origin
+    \qmlproperty vector3d Qt3D.Render::RayCaster::origin
 
-    Holds the origin of the 3d ray in local coordinates.
-*/
-
-/*!
-    \property QVector3D direction
-
-    Holds the direction of the 3d ray. This should be a unit vector.
-*/
-/*!
-    \qmlproperty Vector3D direction
-
-    Holds the direction of the 3d ray. This should be a unit vector.
+    Holds the origin of the 3D ray in local coordinates.
 */
 
 /*!
-    \property float length
+    \property Qt3DRender::QRayCaster::direction
 
-    Holds the length of the 3d ray.
+    Holds the direction of the 3D ray. This should be a unit vector.
 */
+
 /*!
-    \qmlproperty real direction
+    \qmlproperty vector3D Qt3D.Render::RayCaster::direction
+
+    Holds the direction of the 3D ray. This should be a unit vector.
+*/
+
+/*!
+    \property Qt3DRender::QRayCaster::length
+
+    Holds the length of the 3D ray.
+*/
+
+/*!
+    \qmlproperty real Qt3D.Render::RayCaster::length
 
     Holds the length of the 3d ray.
 */
@@ -169,7 +171,7 @@ float QRayCaster::length() const
 }
 
 /*!
- * \brief Set the length of the ray to \a length
+ * \brief Sets the length of the ray to \a length.
  *
  * If the value is less than or equal to zero, the ray is concidered to be infinite.
  */
@@ -183,7 +185,7 @@ void QRayCaster::setLength(float length)
 }
 
 /*!
- * Convenience method to enable the component and trigger tests using the current ray
+ * Convenience method to enable the component and trigger tests using the current ray.
  */
 void QRayCaster::trigger()
 {
@@ -191,7 +193,8 @@ void QRayCaster::trigger()
 }
 
 /*!
- * Convenience method to set the ray details and enable the component to trigger tests
+ * Convenience method to set the ray details \a origin, \a direction, and \a length,
+ * and enable the component to trigger tests.
  */
 void QRayCaster::trigger(const QVector3D &origin, const QVector3D &direction, float length)
 {

@@ -284,13 +284,14 @@ public:
  * \brief The QPlaneGeometry class allows creation of a plane in 3D space.
  * \since 5.7
  * \ingroup geometries
- * \inherits Qt3DRender::QGeometry
  *
  * The QPlaneGeometry class is most commonly used internally by the QPlaneMesh
  * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
  */
 
 /*!
+ * \fn Qt3DExtras::QPlaneGeometry::QPlaneGeometry(QNode *parent)
+ *
  * Constructs a new QPlaneGeometry with \a parent.
  */
 QPlaneGeometry::QPlaneGeometry(QPlaneGeometry::QNode *parent)

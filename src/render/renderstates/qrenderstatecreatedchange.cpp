@@ -64,7 +64,7 @@ public:
     Render::StateMask m_type;
 };
 
-/*!
+/*
  * The constructor creates a new QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase
  * instance with the specified \a renderState.
  */
@@ -73,8 +73,8 @@ QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase(const QRenderState 
 {
 }
 
-/*!
- * \return the current render state type
+/*
+ * Returns the current render state type.
  */
 Render::StateMask QRenderStateCreatedChangeBase::renderStateType() const
 {

@@ -88,8 +88,12 @@
     variables in a GLSL shader program that is itself specified in the
     referenced effect property.
 
-    For examples of using materials, see the \l {Qt 3D: Materials C++ Example}
-    and \l {Qt 3D: Materials QML Example}.
+    For examples of using materials, see the following examples:
+    \list
+      \li \l {Qt 3D: Simple Custom Material QML Example}
+      \li \l {Qt 3D: Advanced Custom Material QML Example}
+      \li \l {Qt 3D: PBR Materials QML Example}
+    \endlist
 
     \section2 Shaders
 

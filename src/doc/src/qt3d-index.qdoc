@@ -68,7 +68,7 @@
 
     For a C++ application that performs 2D or 3D rendering, collision
     detection, and also handle user input, add the following line to its
-    \l qmake \c .pro file:
+    qmake \c .pro file:
 
     \badcode
     QT += 3dcore 3drender 3dinput 3dlogic 3dextras 3danimation

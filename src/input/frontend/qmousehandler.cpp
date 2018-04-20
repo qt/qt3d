@@ -202,57 +202,57 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
  */
 
 /*!
-    \fn QMouseHandler::clicked(Qt3DInput::QMouseEvent *mouse)
+    \fn Qt3DInput::QMouseHandler::clicked(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is clicked with the event details
     being contained within \a mouse
  */
 
 /*!
-    \fn QMouseHandler::doubleClicked(Qt3DInput::QMouseEvent *mouse)
+    \fn Qt3DInput::QMouseHandler::doubleClicked(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is double clicked with the event
     details being contained within \a mouse
  */
 
 /*!
-    \fn QMouseHandler::entered()
+    \fn Qt3DInput::QMouseHandler::entered()
  */
 
 /*!
-    \fn QMouseHandler::exited()
+    \fn Qt3DInput::QMouseHandler::exited()
  */
 
 /*!
-    \fn QMouseHandler::pressed(Qt3DInput::QMouseEvent *mouse)
+    \fn Qt3DInput::QMouseHandler::pressed(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is pressed with the event details
     being contained within \a mouse
  */
 
 /*!
-    \fn QMouseHandler::released(Qt3DInput::QMouseEvent *mouse)
+    \fn Qt3DInput::QMouseHandler::released(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is released with the event
     details being contained within \a mouse
  */
 
 /*!
-    \fn QMouseHandler::pressAndHold(Qt3DInput::QMouseEvent *mouse)
+    \fn Qt3DInput::QMouseHandler::pressAndHold(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is pressed and held down with the
     event details being contained within \a mouse
  */
 
 /*!
-    \fn QMouseHandler::positionChanged(Qt3DInput::QMouseEvent *mouse)
+    \fn Qt3DInput::QMouseHandler::positionChanged(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when the mouse position changes with the event
     details being contained within \a mouse
  */
 
 /*!
-    \fn QMouseHandler::wheel(Qt3DInput::QWheelEvent *wheel)
+    \fn Qt3DInput::QMouseHandler::wheel(Qt3DInput::QWheelEvent *wheel)
 
     This signal is emitted when the mouse wheel is used with the event details
     being contained within \a wheel
@@ -300,7 +300,7 @@ void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
 }
 
 /*!
- * \property QMouseHandler::sourceDevice
+ * \property Qt3DInput::QMouseHandler::sourceDevice
  *
  * Holds the current mouse source device of the QMouseHandler instance.
  */
@@ -311,7 +311,7 @@ QMouseDevice *QMouseHandler::sourceDevice() const
 }
 
 /*!
- * \property QMouseHandler::containsMouse
+ * \property Qt3DInput::QMouseHandler::containsMouse
  *
  * Holds \c true if the QMouseHandler currently contains the mouse.
  *

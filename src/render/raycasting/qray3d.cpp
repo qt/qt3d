@@ -47,6 +47,11 @@ namespace Qt3DRender {
 namespace RayCasting {
 
 /*!
+    \namespace Qt3DRender::RayCasting
+    \internal
+*/
+
+/*!
     \internal
     \class Qt3DRender::RayCasting::QRay3D
     \inmodule Qt3DRender
@@ -83,7 +88,7 @@ QRay3D::QRay3D()
 }
 
 /*!
-    \fn Qt3DRender::RayCasting::QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction, float distance)
+    \fn Qt3DRender::RayCasting::QRay3D::QRay3D(const Vector3D &origin, const Vector3D &direction, float distance)
 
     Construct a ray given its defining \a origin, \a direction and \a distance.
     The \a direction does not need to be normalized.
@@ -117,7 +122,7 @@ Vector3D QRay3D::origin() const
 }
 
 /*!
-    \fn void Qt3DRender::RayCasting::QRay3D::setOrigin(const QVector3D &value)
+    \fn void Qt3DRender::RayCasting::QRay3D::setOrigin(const Vector3D &value)
 
     Sets the origin point of this ray to \a value.
 
@@ -141,7 +146,7 @@ Vector3D QRay3D::direction() const
 }
 
 /*!
-    \fn void Qt3DRender::RayCasting::QRay3D::setDirection(const QVector3D &direction)
+    \fn void Qt3DRender::RayCasting::QRay3D::setDirection(const Vector3D &direction)
 
     Sets the direction vector of this ray to \a direction.
 
@@ -194,7 +199,7 @@ bool QRay3D::operator!=(const QRay3D &other) const
 }
 
 /*!
-    Returns true if \a point lies on this ray; false otherwise.
+    Returns \c true if \a point lies on this ray; \c false otherwise.
 */
 bool QRay3D::contains(const Vector3D &point) const
 {
@@ -208,7 +213,7 @@ bool QRay3D::contains(const Vector3D &point) const
 }
 
 /*!
-    Returns true if \a ray lies on this ray; false otherwise.  If true,
+    Returns \c true if \a ray lies on this ray; \c false otherwise. If true,
     this implies that the two rays are actually the same, but with
     different origin() points or an inverted direction().
 */
@@ -285,7 +290,7 @@ float QRay3D::distance(const Vector3D  &point) const
 }
 
 /*!
-    \fn Qt3DRender::RayCasting::QRay3D &Qt3DRender::RayCasting::QRay3D::transform(const QMatrix4x4 &matrix)
+    \fn Qt3DRender::RayCasting::QRay3D &Qt3DRender::RayCasting::QRay3D::transform(const Matrix4x4 &matrix)
 
     Transforms this ray using \a matrix, replacing origin() and
     direction() with the transformed versions.
@@ -294,7 +299,7 @@ float QRay3D::distance(const Vector3D  &point) const
 */
 
 /*!
-    \fn Qt3DRender::RayCasting::QRay3D Qt3DRender::RayCasting::QRay3D::transformed(const QMatrix4x4 &matrix) const
+    \fn Qt3DRender::RayCasting::QRay3D Qt3DRender::RayCasting::QRay3D::transformed(const Matrix4x4 &matrix) const
 
     Returns a new ray that is formed by transforming origin()
     and direction() using \a matrix.
@@ -344,7 +349,7 @@ QDebug operator<<(QDebug dbg, const QRay3D &ray)
 #ifndef QT_NO_DATASTREAM
 
 /*!
-    \relates Qt3DRender::QRay3D
+    \relates Qt3DRender::RayCasting::QRay3D
 
     Writes the given \a ray to the given \a stream and returns a
     reference to the stream.
@@ -359,7 +364,7 @@ QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
 }
 
 /*!
-    \relates Qt3DRender::QRay3D
+    \relates Qt3DRender::RayCasting::QRay3D
 
     Reads a 3D ray from the given \a stream into the given \a ray
     and returns a reference to the stream.

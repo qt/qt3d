@@ -4,13 +4,17 @@ project                 = Qt3D
 description             = Qt 3D Reference Documentation
 version                 = $QT_VERSION
 
-examplesinstallpath     = qt3d
+moduleheader            = Qt3DDoc
+includepaths            = -I . \
+                          -I $QT_INSTALL_HEADERS \
+                          -I $QT_INSTALL_HEADERS/Qt3DCore \
+                          -I $QT_INSTALL_HEADERS/Qt3DCore/$QT_VERSION \
+                          -I $QT_INSTALL_HEADERS/Qt3DAnimation \
+                          -I $QT_INSTALL_HEADERS/Qt3DAnimation/$QT_VERSION \
+                          -I $QT_INSTALL_HEADERS/Qt3DInput \
+                          -I $QT_INSTALL_HEADERS/Qt3DInput/$QT_VERSION
 
-indexes +=  $QT_INSTALL_DOCS/qtcore/qtcore.index \
-            $QT_INSTALL_DOCS/qtgui/qtgui.index \
-            $QT_INSTALL_DOCS/qtqml/qtqml.index \
-            $QT_INSTALL_DOCS/qtquick/qtquick.index \
-            $QT_INSTALL_DOCS/qmake/qmake.index
+examplesinstallpath     = qt3d
 
 qhp.projects            = Qt3D
 
@@ -24,17 +28,22 @@ qhp.Qt3D.filterAttributes                   = qt3d $QT_VERSION qtrefdoc
 qhp.Qt3D.customFilters.Qt.name              = Qt3D $QT_VERSION
 qhp.Qt3D.customFilters.Qt.filterAttributes  = qt3d $QT_VERSION
 
-qhp.Qt3D.subprojects                    = classes qmltypes
+qhp.Qt3D.subprojects                    = classes qmltypes examples
 
 qhp.Qt3D.subprojects.classes.title      = C++ Classes
 qhp.Qt3D.subprojects.classes.indexTitle = Qt 3D C++ Classes
-qhp.Qt3D.subprojects.classes.selectors  = class fake:headerfile
+qhp.Qt3D.subprojects.classes.selectors  = class doc:headerfile
 qhp.Qt3D.subprojects.classes.sortPages  = true
 
 qhp.Qt3D.subprojects.qmltypes.title      = QML Types
 qhp.Qt3D.subprojects.qmltypes.indexTitle = Qt 3D QML Types
 qhp.Qt3D.subprojects.qmltypes.selectors  = qmlclass
 qhp.Qt3D.subprojects.qmltypes.sortPages  = true
+
+qhp.Qt3D.subprojects.examples.title      = Examples
+qhp.Qt3D.subprojects.examples.indexTitle = Qt 3D Examples
+qhp.Qt3D.subprojects.examples.selectors  = doc:example
+qhp.Qt3D.subprojects.examples.sortPages  = true
 
 tagfile                 = qt3d.tags
 
@@ -53,6 +62,14 @@ headerdirs += . \
 
 # Exclude private header files from the documentation build
 excludefiles += "*_p.h"
+
+# Add some private headers explicitly to avoid documentation warnings
+headers       = ../core/transforms/matrix4x4_p.h \
+                ../core/transforms/vector3d_p.h \
+                ../render/raycasting/qray3d_p.h \
+                ../animation/frontend/qchannelmappingcreatedchange_p.h \
+                ../input/frontend/qabstractphysicaldeviceproxy_p.h \
+                ../input/frontend/qinputdeviceintegration_p.h
 
 sourcedirs += . \
               ../render \

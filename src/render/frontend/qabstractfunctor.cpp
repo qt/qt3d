@@ -72,7 +72,8 @@ namespace Qt3DRender {
 
     This method is used to cast functor \a other to type T if the other is of
     type T (or of subclass); otherwise returns 0. This method works similarly
-    to \l QObject::qobject_cast, except with functors derived from QAbstractFunctor.
+    to \l [QtCore] {qobject_cast(const QObject *object)}{qobject_cast()},
+    except with functors derived from QAbstractFunctor.
 
     \warning If T was not declared with \l QT3D_FUNCTOR macro, then the results are undefined.
   */

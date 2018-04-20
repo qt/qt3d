@@ -38,19 +38,6 @@
 ****************************************************************************/
 
 /*!
-    \module Qt3DCore
-    \title Qt 3D Core C++ Classes
-    \brief The Qt 3D module contains functionality to support near-realtime simulation systems.
-
-    \ingroup modules
-    \ingroup qt3d-modules
-    \qtvariable 3dcore
-
-    The Qt 3D module provides the foundations and core types used for near-realtime
-    simulations built on the Qt 3D framework.
-*/
-
-/*!
     \page qt3d-cpp.html
     \title Qt 3D C++ Classes
     \brief The Qt 3D module contains functionality to support near-realtime simulation systems.
@@ -87,38 +74,28 @@
 */
 
 /*!
-    \namespace Qt3DCore
-    \inmodule Qt3DCore
-    \ingroup qt3d-namespaces
-
-    \brief Contains classes that are the foundation for Qt 3D simulation
-    framework, as well as classes that provide the ability to render using the
-    Qt 3D framework.
-*/
-
-/*!
-   \qmlmodule Qt3D.Core 2.0
+   \page qt3d-qml.html
    \title Qt 3D QML Types
    \brief QML Types for the Qt 3D module.
    \since 5.7
-   \ingroup qmlmodules
-   \ingroup qt3d-qmlmodules
 
-   To import and use the module's QML types, use the following statement:
+   The Qt 3D core QML types are imported with
 
    \badcode
    import Qt3D.Core 2.0
    \endcode
 
-   For collision detection, renderer, and input-related QML types, use the
-   following import statements:
+   Other modules import functionality for collision detection, rendering, input,
+   and animation. The complete list of Qt 3D import statements:
 
    \badcode
+   import Qt3D.Core 2.0
    import Qt3D.Render 2.0
    import Qt3D.Input 2.0
    import Qt3D.Logic 2.0
    import Qt3D.Extras 2.0
    import Qt3D.Animation 2.9
+   import Qt3D.Scene2D 2.9
    \endcode
 
    \section1 QML Types

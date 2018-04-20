@@ -257,7 +257,7 @@ void QAbstractCameraControllerPrivate::applyInputAccelerations()
 */
 
 /*!
-    \fn void QAbstractCameraController::moveCamera(const InputState &state, float dt) = 0
+    \fn void Qt3DExtras::QAbstractCameraController::moveCamera(const InputState &state, float dt) = 0
 
     This method is called whenever a frame action is triggered. Derived
     classes must override this method to implement the camera movement
@@ -305,7 +305,7 @@ QAbstractCameraController::~QAbstractCameraController()
 }
 
 /*!
-    \property QAbstractCameraController::camera
+    \property Qt3DExtras::QAbstractCameraController::camera
 
     Holds the currently controlled camera.
 */
@@ -316,12 +316,12 @@ Qt3DRender::QCamera *QAbstractCameraController::camera() const
 }
 
 /*!
-    \property QAbstractCameraController::linearSpeed
+    \property Qt3DExtras::QAbstractCameraController::linearSpeed
 
     Holds the current linear speed of the camera controller. Linear speed determines the
     movement speed of the camera.
 
-    The default is 10.0.
+    The default is \c {10.0}.
 */
 float QAbstractCameraController::linearSpeed() const
 {
@@ -330,12 +330,12 @@ float QAbstractCameraController::linearSpeed() const
 }
 
 /*!
-    \property QAbstractCameraController::lookSpeed
+    \property Qt3DExtras::QAbstractCameraController::lookSpeed
 
     Holds the current look speed of the camera controller. The look speed determines the turn rate
     of the camera pan and tilt.
 
-    The default is 180.0.
+    The default is \c {180.0}.
 */
 float QAbstractCameraController::lookSpeed() const
 {
@@ -344,7 +344,7 @@ float QAbstractCameraController::lookSpeed() const
 }
 
 /*!
-    \property QAbstractCameraController::acceleration
+    \property Qt3DExtras::QAbstractCameraController::acceleration
 
     Holds the current acceleration of the camera controller.
 */
@@ -355,7 +355,7 @@ float QAbstractCameraController::acceleration() const
 }
 
 /*!
-    \property QAbstractCameraController::deceleration
+    \property Qt3DExtras::QAbstractCameraController::deceleration
 
     Holds the current deceleration of the camera controller.
 */

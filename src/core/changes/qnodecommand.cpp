@@ -83,7 +83,14 @@ QNodeCommand::CommandId QNodeCommandPrivate::createId()
  */
 
 /*!
- * Constructs a new QNodeCommand with \a node.
+ * \typedef QNodeCommand::CommandId
+ *
+ * Type of the command id, defined either as quint64 or quint32
+ * depending on the platform support.
+ */
+
+/*!
+ * Constructs a new QNodeCommand with \a id.
  */
 QNodeCommand::QNodeCommand(QNodeId id)
     : QSceneChange(*new QNodeCommandPrivate(), CommandRequested, id)

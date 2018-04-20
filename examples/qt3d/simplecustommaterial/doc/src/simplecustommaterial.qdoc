@@ -27,9 +27,9 @@
 
 /*!
     \example simplecustommaterial
-    \title Qt 3D: Simple custom material QML Example
+    \title Qt 3D: Simple Custom Material QML Example
     \ingroup qt3d-examples-qml
-    \brief Demonstrates creating a custom material in Qt3D
+    \brief Demonstrates creating a custom material in Qt 3D.
 
     \image simple-custom-material.jpg
 
@@ -37,7 +37,7 @@
 
     \include examples-run.qdocinc
 
-    \section1 Specifying the scene
+    \section1 Specifying the Scene
 
     The example uses \l Scene3D to render a scene which will use the custom material.
     The scene contains a plane model, which uses the custom material.
@@ -46,7 +46,7 @@
     \skipto Entity
     \printto
 
-    \section1 Specifying the material
+    \section1 Specifying the Material
 
     The material is specified in \l{simplecustommaterial/SimpleMaterial.qml}{SimpleMaterial.qml}
     using \l Material type. First the material specifies parameters,

@@ -69,12 +69,12 @@ namespace Qt3DAnimation {
     \inherits Qt3DAnimation::QAbstractClipBlendNode
 
     \brief Performs a linear interpolation of two animation clips based on a
-    normalized factor
+    normalized factor.
 
     \since 5.9
 
     QLerpClipBlend can be useful to create advanced animation effects based on
-    individual animation clips. For instance, given a player character,, lerp
+    individual animation clips. For instance, given a player character, lerp
     blending could be used to combine a walking animation clip with an injured
     animation clip based on a blend factor that increases the more the player
     gets injured. This would then allow with blend factor == 0 to have a non
@@ -223,32 +223,6 @@ void QLerpClipBlend::setEndClip(Qt3DAnimation::QAbstractClipBlendNode *endClip)
         d->registerDestructionHelper(d->m_endClip, &QLerpClipBlend::setEndClip, d->m_endClip);
     emit endClipChanged(endClip);
 }
-
-/*!
-    \qmlproperty list<AnimationClip> LerpBlend::clips
-
-    Holds the list of AnimationClip nodes against which the blending is performed.
-
-    \note Only the two first AnimationClip are used, subsequent ones are ignored
-*/
-
-
-/*!
-    \fn void QLerpClipBlend::addClip(QAbstractAnimationClip *clip);
-    Adds a \a clip to the blending node's clips list.
-
-    \note Only the two first AnimationClip are used, subsequent ones are ignored
- */
-
-/*!
-    \fn void QLerpClipBlend::removeClip(QAbstractAnimationClip *clip);
-    Removes a \a clip from the blending node's clips list.
- */
-
-/*!
-    \fn QVector<QAbstractAnimationClip *> QLerpClipBlend::clips() const;
-    Returns the list of QAnimationClip against which the blending is performed.
- */
 
 } // Qt3DAnimation
 

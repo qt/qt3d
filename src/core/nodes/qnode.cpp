@@ -984,9 +984,9 @@ QNodeCommand::CommandId QNode::sendCommand(const QString &name,
 }
 
 /*!
- * \brief Send a command back to the backend node
+ * \brief Send a \a command back to the backend node.
  *
- * Assumes the command is to be to sent back in reply to itself to the backend node
+ * Assumes the command is to be to sent back in reply to itself to the backend node.
  *
  * \sa QNodeCommand, QNode::sendCommand
  */
