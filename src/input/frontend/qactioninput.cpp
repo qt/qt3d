@@ -118,7 +118,7 @@ QVector<int> QActionInput::buttons() const
     The current source device of the QActionInput.
 */
 /*!
-  \fn QActionInput::sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice)
+  \fn Qt3DInput::QActionInput::sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice)
 
   This signal is emitted when the source device associated with the action input is changed to \a sourceDevice.
 */
@@ -166,7 +166,7 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 }
 
 /*!
-  \fn QActionInput::buttonsChanged(const QVector<int> &buttons)
+  \fn Qt3DInput::QActionInput::buttonsChanged(const QVector<int> &buttons)
 
   This signal is emitted when the buttons associated with the action input is changed.
   The buttons changed are \a buttons

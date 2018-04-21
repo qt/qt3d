@@ -56,7 +56,7 @@ namespace Qt3DRender {
     \inherits QAbstractRayCaster
 
     QScreenRayCaster can be used to perform ray casting tests by specifying coordinates in
-    screen space, which will be used to construct an actual 3d ray between the near and
+    screen space, which will be used to construct an actual 3D ray between the near and
     far planes.
 
     \sa QRayCaster
@@ -69,29 +69,28 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QScreenRayCaster
 
     ScreenRayCaster can be used to perform ray casting tests by specifying coordinates in
-    screen space, which will be used to construct an actual 3d ray between the near and
+    screen space, which will be used to construct an actual 3D ray between the near and
     far planes.
 
     \sa RayCaster
 */
 
 /*!
-    \property QPoint position
+    \property Qt3DRender::QScreenRayCaster::position
 
-    Holds the screen space position used to compute the actual 3d ray for intersection tests.
+    Holds the screen space position used to compute the actual 3D ray for intersection tests.
 
     Note: the coordinates will be used for every available render surface as long as they are
     in the valid range.
 */
 /*!
-    \qmlproperty Point2D position
+    \qmlproperty point Qt3D.Render::ScreenRayCaster::position
 
-    Holds the length of the 3d ray.
+    Holds the length of the 3D ray.
 
-    Note: the coordinates will be used for every available render surface as long as they are
+    \note The coordinates will be used for every available render surface as long as they are
     in the valid range.
 */
-
 QScreenRayCaster::QScreenRayCaster(Qt3DCore::QNode *parent)
     : QAbstractRayCaster(parent)
 {
@@ -126,7 +125,7 @@ void QScreenRayCaster::setPosition(const QPoint &position)
 }
 
 /*!
-  Convenience method to enable the component and trigger tests using the current coordinate value
+  Convenience method to enable the component and trigger tests using the current coordinate value.
 */
 void QScreenRayCaster::trigger()
 {
@@ -134,7 +133,7 @@ void QScreenRayCaster::trigger()
 }
 
 /*!
-  Convenience method to set the coordinate value and enable the component to trigger tests
+  Convenience method to set the coordinate value \a position and enable the component to trigger tests.
 */
 void QScreenRayCaster::trigger(const QPoint &position)
 {

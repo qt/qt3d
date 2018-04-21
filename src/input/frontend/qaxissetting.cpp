@@ -128,7 +128,7 @@ bool QAxisSetting::isSmoothEnabled() const
 
 
 /*!
-  \fn QAxisSetting::deadZoneRadiusChanged(float deadZoneRadius)
+  \fn Qt3DInput::QAxisSetting::deadZoneRadiusChanged(float deadZoneRadius)
 
   This signal is emitted when the Dead Zone radius associated with the axis setting is changed to \a deadZoneRadius.
 */
@@ -161,7 +161,7 @@ void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
 }
 
 /*!
-  \fn QAxisSetting::axesChanged(const QVector<int> &axes)
+  \fn Qt3DInput::QAxisSetting::axesChanged(const QVector<int> &axes)
 
   This signal is emitted when the axes associated with the axis setting is changed to \a axes.
 */
@@ -194,7 +194,7 @@ void QAxisSetting::setAxes(const QVector<int> &axes)
 }
 
 /*!
-  \fn QAxisSetting::smoothChanged(bool smooth)
+  \fn Qt3DInput::QAxisSetting::smoothChanged(bool smooth)
 
   This signal is emitted when the smoothing state is changed to \a smooth.
 */

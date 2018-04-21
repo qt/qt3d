@@ -93,7 +93,7 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
     return ClipResults();
 }
 
-/*!
+/*
     \fn QVector<Qt3DCore::QNodeId> ClipBlendNode::currentDependencyIds() const
     \internal
 
@@ -115,7 +115,7 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
     evaluated in one pass, and the tree in a subsequent pass.
 */
 
-/*!
+/*
     \fn QVector<Qt3DCore::QNodeId> ClipBlendNode::allDependencyIds() const
     \internal
 
@@ -126,7 +126,7 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
     parameter. Not just those bounding the current blend value.
 */
 
-/*!
+/*
     \internal
 
     Fetches the ClipResults from the nodes listed in the dependencyIds

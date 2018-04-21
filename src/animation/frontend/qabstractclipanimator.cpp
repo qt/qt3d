@@ -218,7 +218,7 @@ QClock *QAbstractClipAnimator::clock() const
 }
 
 /*!
-    \property int QAbstractClipAnimator::normalizedTime
+    \property Qt3DAnimation::QAbstractClipAnimator::normalizedTime
 
     This property holds the clips normalized time.
 */

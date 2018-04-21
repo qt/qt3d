@@ -111,9 +111,9 @@ void QAbstractRayCasterPrivate::dispatchHits(const QAbstractRayCaster::Hits &hit
     Furthermore, Qt3DRender::QLayer components can be used to control how entities, or entity
     sub-graphs, react to ray casting.
 
-    Note: components derived from QAbstractRayCaster should not be shared amount multiple entities.
+    \note Components derived from QAbstractRayCaster should not be shared amount multiple entities.
 
-    \sa Qt3DRender::QRayCaster, Qt3DRender::QScreenRayCaster, Qt3DRender::QObjectPicker, Qt3DRender::QPickSettings
+    \sa Qt3DRender::QRayCaster, Qt3DRender::QScreenRayCaster, Qt3DRender::QObjectPicker, Qt3DRender::QPickingSettings
 */
 /*!
     \qmltype AbstractRayCaster
@@ -144,7 +144,7 @@ void QAbstractRayCasterPrivate::dispatchHits(const QAbstractRayCaster::Hits &hit
 
     Note: components derived from AbstractRayCaster should not be shared amount multiple entities.
 
-    \sa Qt3D.Render::RayCaster, Qt3D.Render::ScreenRayCaster, Qt3D.Render::ObjectPicker, Qt3D.Render::PickSettings
+    \sa Qt3D.Render::RayCaster, Qt3D.Render::ScreenRayCaster, Qt3D.Render::ObjectPicker, Qt3D.Render::PickingSettings
 */
 
 /*!

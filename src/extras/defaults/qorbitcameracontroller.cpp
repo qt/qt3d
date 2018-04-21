@@ -90,6 +90,9 @@ QOrbitCameraControllerPrivate::QOrbitCameraControllerPrivate()
         \li Alt key
         \li Changes the behovior of the arrow keys to pan and tilt the camera around the view
         center. Disables the page up and page down keys.
+    \row
+        \li Escape
+        \li Moves the camera so that entire scene is visible in the camera viewport.
     \endtable
 */
 

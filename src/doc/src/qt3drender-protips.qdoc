@@ -49,6 +49,13 @@
     stages you may end up, in the best cases with something different than what
     you expected, in the worst cases with a black screen.
 
+    \list
+        \li \l {Technique Selection}
+        \li \l {Order Matters}
+        \li \l {Blending}
+        \li \l {Useful Tools}
+    \endlist
+
     \section2 Technique Selection
 
      Qt 3D provides a technique selection mechanism allowing you to provide
@@ -74,10 +81,10 @@
     \list
 
      \li Filtering with a Qt3DRender::QLayer component and
-     Qt3DRender::QLayerFilter in the FrameGraph.
+     Qt3DRender::QLayerFilter in the FrameGraph
 
      \li RenderPass or Technique filtering using Qt3DRender::QRenderPassFilter
-     or Qt3DRender::QTechniqueFilter in the FrameGraph.
+     or Qt3DRender::QTechniqueFilter in the FrameGraph
 
      \endlist
 
@@ -107,17 +114,17 @@
 
      Given the rather limited of troubleshooting given by Qt 3D in its first
      versions it sometimes helps to have tools to capture OpenGL draw calls and
-     get more clues about what's happening:
+     get more clues about what's happening
 
      \list
      \li \l {https://github.com/apitrace/apitrace}{apitrace}
      \li \l {https://github.com/ValveSoftware/vogl}{vogl}
      \endlist
 
-     These tools allow you to gather traces of all OpenGL calls being made
+     These tools allow you to gather traces of all the OpenGL calls being made
      by a Qt 3D application. Having a look at a generated trace file may help
-     you verify that draw calls are being made, textures are correctly uploaded,
-     uniforms are set with proper values, and so on.
+     you verify that draw calls are being made, textures correctly uploaded,
+     uniforms set with proper values, ...
 
      There are plans for Qt 3D tooling in later releases.
  */

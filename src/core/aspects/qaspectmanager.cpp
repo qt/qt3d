@@ -68,6 +68,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+/*!
+    \class Qt3DCore::QAspectManager
+    \internal
+*/
 QAspectManager::QAspectManager(QObject *parent)
     : QObject(parent)
     , m_root(nullptr)
@@ -198,7 +202,7 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCo
 }
 
 /*!
- * \fn void Qt3DCore::QAspectManager::registerAspect(Qt3DCore::QAbstractAspect *aspect)
+ * \internal
  *
  * Registers a new \a aspect.
  */

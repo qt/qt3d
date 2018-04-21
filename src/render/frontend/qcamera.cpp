@@ -735,11 +735,11 @@ void QCamera::viewSphere(const QVector3D &center, float radius)
 }
 
 /*!
- * Rotates and moves the camera so that it's viewCenter is the center of the entity's bounding volume
- * and the entire entity fits in the view port.
+ * Rotates and moves the camera so that it's viewCenter is the center of the
+ * \a {entity}'s bounding volume and the entire entity fits in the view port.
  *
  * \note Only works if the lens is in perspective projection mode.
- * \sa Qt3D.Render::Camera::projectionType
+ * \sa {Qt3D.Render::Camera::projectionType}{Camera.projectionType}
  */
 void QCamera::viewEntity(Qt3DCore::QEntity *entity)
 {

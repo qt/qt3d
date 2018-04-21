@@ -324,7 +324,7 @@ void QBlitFramebuffer::setSourceRect(const QRectF &inputRect)
 }
 
 /*!
-    Sets the destination rectangle to \a inputRect. The coordinates are assumed
+    Sets the destination rectangle to \a outputRect. The coordinates are assumed
     to follow the normal Qt coordinate system, meaning Y runs from top to
     bottom.
  */

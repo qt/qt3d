@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -38,69 +38,60 @@
 ****************************************************************************/
 
 /*!
-    \module Qt3DRender
-    \title Qt 3D Render C++ Classes
-    \keyword Qt 3D Render
-    \brief The Qt 3D Render module contains functionality to support 2D and 3D
-           rendering using Qt 3D.
-    \since 5.7
+    \module Qt3DScene2D
+    \title Qt 3D Scene2D C++ Classes
+    \keyword Qt 3D Scene2D
+    \preliminary
+
+    \brief The Qt 3D Scene2D module provides a way to render Quick2 qml content
+    to a Qt 3D texture.
+
+    This module is still in development but is available as a technology preview.
+    This means it is unstable, likely to change and provided as a convenience only.
 
     \ingroup modules
-    \ingroup qt3d-modules
-    \qtvariable 3drender
-
-    The Qt 3D Render module provides an aspect, components, and other supporting types necessary
-    to implement 2D and 3D rendering as part of the Qt 3D framework.
-
-    To use classes from this module, add this directive into the C++ files:
+    \ingroup qt3d-modules-preliminary
+    \qtvariable 3dquickscene2d
 
     \code
-       #include <Qt3DRender>
+       #include <Qt3DQuickScene2D>
     \endcode
 
     To link against the corresponding C++ library, add the following to your qmake project file:
 
     \badcode
-       QT += 3drender
+       QT += 3dquickscene2d
     \endcode
 
-    Classes, types, and functions are declared under the \l [Qt3DRender]{Qt3DRender} namespace.
+    Classes, types, and functions are declared under the \l [Qt3DScene2D]{Qt3DScene2D} namespace.
 
     \section1 Overview
 
-    The Qt 3D Render aspect offers support for data-driven configuration as described
-    in \l {Qt 3D Render Framegraph}.
+    \section2 Scene2D
+
+    \list
+    \li Qt3DRender::Quick::QScene2D
+    \endlist
 
     \section1 Reference
     \list
-    \li \l {Qt 3D Render C++ Classes}
+    \li \l {Qt 3D Extras C++ Classes}
     \li \l {Qt 3D Examples}
     \endlist
-*/
+ */
 
 /*!
-    \namespace Qt3DRender
-    \inmodule Qt3DRender
-    \ingroup qt3d-namespaces
-
-    \brief Contains classes that enable 2D and 3D rendering.
-*/
-
-/*!
-   \qmlmodule Qt3D.Render 2.0
-   \title Qt 3D Render QML Types
-   \since 5.7
-
+   \qmlmodule Qt3D.Scene2D 2.9
+   \preliminary
+   \title Qt 3D Scene2D QML Types
    \ingroup qmlmodules
-   \ingroup qt3d-qmlmodules
+   \ingroup qt3d-qmlmodules-preliminary
 
-   \brief Provides Qt 3D QML types for rendering.
+   \brief Provides Qt 3D QML types for the scene2d module.
 
    To import and use the module's QML types, use the following statement:
 
    \badcode
-   import Qt3D.Render 2.0
+   import Qt3D.Scene2D 2.9
    \endcode
-
-   \section1 QML Types
 */

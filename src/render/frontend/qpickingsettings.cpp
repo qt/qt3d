@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
     In both cases, a ray will be cast through the scene to find geometry intersecting the ray.
 
-    \sa QObjectPicker, QPickEvent, QPickTriangleEvent, QRayCaster, QScreenRayCaster.
+   \sa QObjectPicker, QPickEvent, QPickTriangleEvent, QRayCaster, QScreenRayCaster
  */
 
 /*!
@@ -151,7 +151,7 @@ float QPickingSettings::worldSpaceTolerance() const
  * any edge of the entity's mesh component.
  * \value PointPicking An entity is considered picked if the picking ray intersects with
  * any point of the entity's mesh component.
- * \value PrimitePicking An entity is considered picked if the picking ray intersects with
+ * \value PrimitivePicking An entity is considered picked if the picking ray intersects with
  * any point, edge or triangle of the entity's mesh component.
  */
 
@@ -285,7 +285,7 @@ void QPickingSettings::setFaceOrientationPickingMode(QPickingSettings::FaceOrien
     Holds the threshold, in model space coordinates, used to evaluate line and point picking.
 */
 /*!
- * Set the threshold used for line and point picking
+ * Sets the threshold used for line and point picking to \a worldSpaceTolerance.
  */
 void QPickingSettings::setWorldSpaceTolerance(float worldSpaceTolerance)
 {

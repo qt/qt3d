@@ -54,7 +54,7 @@
         \li \l {GeometryRenderer}
     \endlist
 
-    \section2 Buffer Object
+    \section2 Buffer
 
     The Qt3DRender::QBuffer class stores the raw data. This acts purely as an
     array of memory. In most cases a Qt3DRender::QBuffer will be used
@@ -71,7 +71,7 @@
     }
     \endcode
 
-    \section2 Attribute Object
+    \section2 Attribute
 
     Qt3DRender::QAttribute specifies how data contained in the referenced
     buffer should be extracted and passed to an input of a vertex shader. It
@@ -97,7 +97,7 @@
     }
     \endcode
 
-    \section2 Geometry Object
+    \section2 Geometry
 
     A Qt3DRender::QGeometry aggregates various attributes to form a piece of
     geometry. Usually a proper geometry will provide an attribute for vertex
@@ -131,7 +131,7 @@
     }
     \endcode
 
-    \section2 GeometryRenderer Object
+    \section2 GeometryRenderer
 
     Qt3DRender::QGeometryRenderer is a QComponent which when aggregated by a
     QEntity allows to draw the Qt3DRender::QGeometry it references. It provides

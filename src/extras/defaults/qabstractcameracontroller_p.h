@@ -92,6 +92,7 @@ public:
     Qt3DInput::QAction *m_rightMouseButtonAction;
     Qt3DInput::QAction *m_altButtonAction;
     Qt3DInput::QAction *m_shiftButtonAction;
+    Qt3DInput::QAction *m_escapeButtonAction;
 
     Qt3DInput::QAxis *m_rxAxis;
     Qt3DInput::QAxis *m_ryAxis;
@@ -104,6 +105,7 @@ public:
     Qt3DInput::QActionInput *m_rightMouseButtonInput;
     Qt3DInput::QActionInput *m_altButtonInput;
     Qt3DInput::QActionInput *m_shiftButtonInput;
+    Qt3DInput::QActionInput *m_escapeButtonInput;
 
     Qt3DInput::QAnalogAxisInput *m_mouseRxInput;
     Qt3DInput::QAnalogAxisInput *m_mouseRyInput;

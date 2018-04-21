@@ -61,7 +61,7 @@ QInputDeviceIntegrationPrivate::QInputDeviceIntegrationPrivate()
 */
 
 /*!
-   Create a new QInputDeviceIntegration with parent /a parent
+   Creates a new QInputDeviceIntegration with \a parent.
  */
 QInputDeviceIntegration::QInputDeviceIntegration(QObject *parent)
     : QObject(*new QInputDeviceIntegrationPrivate, parent)
@@ -75,7 +75,8 @@ QInputDeviceIntegration::QInputDeviceIntegration(QInputDeviceIntegrationPrivate 
 }
 
 /*!
-   Register a corresponding backend class for this front end implementation
+   Registers a corresponding backend class for this front end implementation
+   with \a metaObject and \a functor.
  */
 void QInputDeviceIntegration::registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeMapperPtr &functor)
 {
@@ -84,7 +85,7 @@ void QInputDeviceIntegration::registerBackendType(const QMetaObject &metaObject,
 }
 
 /*!
-   Called by the InputAspect object after the Integration has been created
+   Called by the InputAspect object after the integration has been created with \a aspect.
  */
 void QInputDeviceIntegration::initialize(QInputAspect *aspect)
 {
@@ -106,7 +107,7 @@ QInputAspect *QInputDeviceIntegration::inputAspect() const
 } // namespace Qt3DInput
 
 /*!
-  \fn QInputDeviceIntegration::createPhysicalDevice(const QString &name)
+  \fn Qt3DInput::QInputDeviceIntegration::createPhysicalDevice(const QString &name)
 
   Create the Physical device identified by \a name.
 
@@ -114,15 +115,15 @@ QInputAspect *QInputDeviceIntegration::inputAspect() const
 */
 
 /*!
-  \fn QInputDeviceIntegration::physicalDevices() const
+  \fn Qt3DInput::QInputDeviceIntegration::physicalDevices() const
 
- \return the list of node ids for physical devices associated with this QInputDeviceIntegration.
+ Returns the list of node ids for physical devices associated with this QInputDeviceIntegration.
 */
 
 /*!
-  \fn QInputDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
+  \fn Qt3DInput::QInputDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
 
-   \return the QAbstractPhysicalDevice identified by the given id if it is related to this QInputDeviceIntegration.
+  Returns the QAbstractPhysicalDevice identified by the given \a id if it is related to this QInputDeviceIntegration.
 */
 
 QT_END_NAMESPACE

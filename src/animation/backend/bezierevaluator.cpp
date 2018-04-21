@@ -101,6 +101,8 @@ float BezierEvaluator::valueForTime(float time) const
 }
 
 /*!
+    \internal
+
     Calculates the value of the Bezier parameter, u, for the
     requested time which is the x coordinate of the Keyframes.
 

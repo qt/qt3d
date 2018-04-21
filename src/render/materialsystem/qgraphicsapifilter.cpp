@@ -141,6 +141,8 @@ QGraphicsApiFilter::~QGraphicsApiFilter()
 
   \value OpenGLES QSurfaceFormat::OpenGLES
   \value OpenGL QSurfaceFormat::OpenGL
+  \value Vulkan Vulkan
+  \value DirectX DirectX
 
 */
 

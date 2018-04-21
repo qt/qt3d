@@ -49,9 +49,9 @@ QChannelMappingCreatedChangeBasePrivate::QChannelMappingCreatedChangeBasePrivate
 }
 
 /*!
-    \class QChannelmappingCreatedChangeBase
+    \class Qt3DAnimation::QChannelMappingCreatedChangeBase
     \inmodule Qt3DCore
-    \brief Base class for handling creation changes for QAbstractSkeleton sub-classes
+    \brief Base class for handling creation changes for QAbstractSkeleton sub-classes.
 */
 QChannelMappingCreatedChangeBase::QChannelMappingCreatedChangeBase(const QAbstractChannelMapping *mapping)
     : Qt3DCore::QNodeCreatedChangeBase(*new QChannelMappingCreatedChangeBasePrivate(mapping), mapping)

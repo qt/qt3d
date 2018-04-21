@@ -89,7 +89,7 @@ namespace Qt3DCore {
 
 /*!
  * \fn Qt3DCore::QNodeId::operator bool() const
- * \TODO
+ * Returns \TODO
  */
 
 /*!

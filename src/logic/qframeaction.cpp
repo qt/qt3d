@@ -125,7 +125,7 @@ void QFrameAction::onTriggered(float dt)
 */
 
 /*!
-    \fn QFrameAction::triggered(float dt)
+    \fn Qt3DLogic::QFrameAction::triggered(float dt)
     This signal is emitted each frame with \a dt being the time since the last triggering.
 */
 } // namespace Qt3DLogic

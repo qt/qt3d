@@ -128,7 +128,7 @@ const QString TANGENT_ATTRIBUTE_NAME = QAttribute::defaultTangentAttributeName()
 const QString TEXTCOORD_ATTRIBUTE_NAME = QAttribute::defaultTextureCoordinateAttributeName();
 const QString COLOR_ATTRIBUTE_NAME = QAttribute::defaultColorAttributeName();
 
-/*!
+/*
  * Returns a QMatrix4x4 from \a matrix;
  */
 QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOTHROW
@@ -139,7 +139,7 @@ QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOTHROW
                       matrix.d1, matrix.d2, matrix.d3, matrix.d4);
 }
 
-/*!
+/*
  * Returns a QString from \a str;
  */
 inline QString aiStringToQString(const aiString &str)
@@ -168,7 +168,7 @@ QString texturePath(const aiString &path)
     return p;
 }
 
-/*!
+/*
  * Returns the Qt3DRender::QParameter with named \a name if contained by the material
  * \a material. If the material doesn't contain the named parameter, a new
  * Qt3DRender::QParameter is created and inserted into the material.

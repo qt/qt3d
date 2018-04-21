@@ -196,7 +196,7 @@ void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 }
 
 /*!
-    \return the axisSettings associated with this device.
+    Returns the axisSettings associated with this device.
  */
 QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
 {
@@ -204,7 +204,7 @@ QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
     return d->m_axisSettings;
 }
 
-/*!
+/*
     Used to notify observers that an axis value has been changed.
  */
 void QAbstractPhysicalDevicePrivate::postAxisEvent(int axis, qreal value)
@@ -216,7 +216,7 @@ void QAbstractPhysicalDevicePrivate::postAxisEvent(int axis, qreal value)
     notifyObservers(change);
 }
 
-/*!
+/*
     Used to notify observers that an button value has been changed.
  */
 void QAbstractPhysicalDevicePrivate::postButtonEvent(int button, qreal value)

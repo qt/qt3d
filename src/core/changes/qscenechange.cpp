@@ -56,6 +56,7 @@ namespace Qt3DCore {
  * \value PropertyUpdated A QNode property has been updated.
  * \value PropertyValueAdded A QNode has been added to the scene.
  * \value PropertyValueRemoved A QNode has been removed from the scene.
+ * \value CommandRequested A QNodeCommand has been sent between a node and its backend.
  * \value ComponentAdded A QComponent has been added to a QEntity.
  * \value ComponentRemoved A QComponent has been removed from a QEntity.
  * \value CallbackTriggered A QNode triggered a callback.
@@ -78,7 +79,7 @@ QSceneChangePrivate::~QSceneChangePrivate()
  * \class Qt3DCore::QSceneChange
  * \inheaderfile Qt3DCore/QSceneChange
  * \inmodule Qt3DCore
- * \brief The base class for changes that can be sent and received by Qt3D's change notification system
+ * \brief The base class for changes that can be sent and received by Qt3D's change notification system.
  */
 
 /*!
@@ -127,7 +128,7 @@ QSceneChange::~QSceneChange()
 }
 
 /*!
- * \return scene change type.
+ * Returns the scene change type.
  */
 ChangeFlag QSceneChange::type() const Q_DECL_NOTHROW
 {
@@ -136,7 +137,7 @@ ChangeFlag QSceneChange::type() const Q_DECL_NOTHROW
 }
 
 /*!
-  Set the Delivery flags of the change to \a flags
+  Sets the delivery flags of the change to \a flags.
   */
 void QSceneChange::setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOTHROW
 {
@@ -145,7 +146,7 @@ void QSceneChange::setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOTHROW
 }
 
 /*!
- \return the set delivery flags
+ Returns the set delivery flags.
  */
 QSceneChange::DeliveryFlags QSceneChange::deliveryFlags() const Q_DECL_NOTHROW
 {
