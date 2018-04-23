@@ -74,7 +74,7 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
 
 /*!
     \qmltype TechniqueFilter
-    \inmodule Qt3D.Render
+    \inqmlmodule Qt3D.Render
     \instantiates Qt3DRender::QTechniqueFilter
     \inherits FrameGraphNode
     \since 5.7

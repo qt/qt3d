@@ -72,7 +72,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype RenderPassFilter
-    \inmodule Qt3D.Render
+    \inqmlmodule Qt3D.Render
     \since 5.7
     \instantiates Qt3DRender::QRenderPassFilter
     \inherits FrameGraphNode
