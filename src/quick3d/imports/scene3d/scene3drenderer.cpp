@@ -146,7 +146,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     // So that we can schedule the cleanup
     QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChanged, Qt::QueuedConnection);
     // Main thread -> updates the rendering window
-    QObject::connect(m_item, &QQuickItem::windowChanged, [this] (QQuickWindow *w) {
+    QObject::connect(m_item, &QQuickItem::windowChanged, this, [this] (QQuickWindow *w) {
         QMutexLocker l(&m_windowMutex);
         m_window = w;
     });
