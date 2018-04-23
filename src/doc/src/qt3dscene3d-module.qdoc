@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2018 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,32 +37,18 @@
 **
 ****************************************************************************/
 
-#include "scene3dsgmaterial_p.h"
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3DRender {
-
 /*!
-    \class Qt3DRender::Scene3DSGMaterial
-    \internal
-    \inherits QSGMaterial
+   \qmlmodule Qt3D.Scene3D 2.0
+   \preliminary
+   \title Qt 3D Scene3D QML Types
+   \ingroup qmlmodules
+   \ingroup qt3d-qmlmodules-preliminary
 
-    \brief The Scene3DSGMaterial class is a custom QSGMaterial subclass used to
-    render a Scene3DSGNode
+   \brief Provides Qt 3D QML types for the Scene3D module.
 
-    The Scene3DSGMaterial class renders a texture using premultiplied
-    alpha unlike the QSGSimpleTextureMaterial.
+   To import and use the module's QML types, use the following statement:
 
-    This is needed to properly integrate alpha blending from a Qt3D scene
-    within a QtQuick 2 scene.
- */
-Scene3DSGMaterial::Scene3DSGMaterial()
-    : QSGMaterial()
-    , m_texture(nullptr)
-{
-}
-
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE
+   \badcode
+   import Qt3D.Scene3D 2.0
+   \endcode
+*/

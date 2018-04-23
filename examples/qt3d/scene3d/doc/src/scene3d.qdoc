@@ -33,7 +33,7 @@
 
     \image scene3d.png
 
-    \e {Scene3D} demonstrates visualizing a 3D scene from a Qt Quick
+    This example demonstrates visualizing a 3D scene from a Qt Quick
     application. The 3D scene contains a single active camera and a single
     active light source. Visualized data is assumed to be at a fixed location.
 

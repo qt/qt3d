@@ -21,3 +21,4 @@
 #include "../animation/frontend/qchannelmappingcreatedchange_p.h"
 #include "../animation/frontend/qclipblendnodecreatedchange_p.h"
 #include "../animation/backend/clipblendnode_p.h"
+#include "../quick3d/imports/scene3d/scene3ditem_p.h"
