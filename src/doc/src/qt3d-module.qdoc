@@ -118,6 +118,8 @@
    import Qt3D.Logic 2.0
    import Qt3D.Extras 2.0
    import Qt3D.Animation 2.9
+   import Qt3D.Scene2D 2.9
+   import Qt3D.Scene3D 2.9
    \endcode
 
    \section1 QML Types
@@ -146,4 +148,7 @@
    \section2 Qt 3D Scene2D Module
    \generatelist {qmltypesbymodule Qt3D.Scene2D}
    \noautolist
+
+   \section2 Qt 3D Scene3D Module
+   \generatelist {qmltypesbymodule Qt3D.Scene3D}
 */

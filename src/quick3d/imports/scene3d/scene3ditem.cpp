@@ -64,16 +64,32 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DCore::Scene3DItem
+    \class Qt3DRender::Scene3DItem
     \internal
 
-    \brief The Qt3DCore::Scene3DItem class is a QQuickItem subclass used to integrate
+    \brief The Scene3DItem class is a QQuickItem subclass used to integrate
     a Qt3D scene into a QtQuick 2 scene.
 
-    The Qt3DCore::Scene3DItem class renders a Qt3D scene, provided by a Qt3DCore::QEntity
-    into a multisampled Framebuffer object that is later blitted into a non
-    multisampled Framebuffer object to be then renderer through the use of a
+    The Scene3DItem class renders a Qt3D scene, provided by a Qt3DCore::QEntity
+    into a multisampled Framebuffer object that is later blitted into a
+    non-multisampled Framebuffer object to be then rendered through the use of a
     Qt3DCore::Scene3DSGNode with premultiplied alpha.
+ */
+
+/*!
+    \qmltype Scene3D
+    \inherits Item
+    \inqmlmodule Qt3D.Scene3D
+
+    \preliminary
+
+    \brief The Scene3D type is used to integrate a Qt3D scene into a QtQuick 2
+    scene.
+
+    The Scene3D type renders a Qt3D scene, provided by an \l Entity, into a
+    multisampled Framebuffer object. This object is later blitted into a
+    non-multisampled Framebuffer object, which is then rendered with
+    premultiplied alpha.
  */
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
@@ -97,11 +113,23 @@ Scene3DItem::~Scene3DItem()
     // Scene3DSGNode still exist and will perform their cleanup on their own.
 }
 
+/*!
+    \qmlproperty list<string> Scene3D::aspects
+
+    \brief \TODO
+    */
 QStringList Scene3DItem::aspects() const
 {
     return m_aspects;
 }
 
+/*!
+    \qmlproperty Entity Scene3D::entity
+
+    \default
+
+    \brief \TODO
+ */
 Qt3DCore::QEntity *Scene3DItem::entity() const
 {
     return m_entity;
@@ -161,6 +189,16 @@ void Scene3DItem::setHoverEnabled(bool enabled)
     }
 }
 
+/*!
+    \qmlproperty enumeration Scene3D::cameraAspectRatioMode
+
+    \value Scene3D.AutomaticAspectRatio
+           Automatic aspect ratio.
+
+    \value Scene3D.UserAspectRatio
+           User defined aspect ratio.
+    \brief \TODO
+ */
 Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
 {
     return m_cameraAspectRatioMode;
@@ -222,7 +260,11 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
         }
     }
 }
+/*!
+    \qmlmethod void Scene3D::setItemAreaAndDevicePixelRatio(size area, real devicePixelRatio)
 
+    \brief \TODO
+ */
 void Scene3DItem::setItemAreaAndDevicePixelRatio(QSize area, qreal devicePixelRatio)
 {
     Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(m_entity);
@@ -232,6 +274,11 @@ void Scene3DItem::setItemAreaAndDevicePixelRatio(QSize area, qreal devicePixelRa
     }
 }
 
+/*!
+    \qmlproperty bool Scene3D::hoverEnabled
+
+    \c true if hover events are accepted.
+ */
 bool Scene3DItem::isHoverEnabled() const
 {
     return acceptHoverEvents();
@@ -261,6 +308,11 @@ void Scene3DItem::updateCameraAspectRatio()
     }
 }
 
+/*!
+    \qmlproperty bool Scene3D::multisample
+
+    \c true if a multi-sample render buffer is in use.
+ */
 /*!
     \return \c true if a multisample renderbuffer is in use.
  */

@@ -49,7 +49,8 @@ headerdirs += . \
               ../input \
               ../extras \
               ../animation \
-              ../quick3d/quick3dscene2d
+              ../quick3d/quick3dscene2d \
+              ../quick3d/imports/scene3d
 
 # Exclude private header files from the documentation build
 excludefiles += "*_p.h"
@@ -63,7 +64,9 @@ sourcedirs += . \
               ../input \
               ../extras \
               ../animation \
-              ../quick3d/quick3dscene2d
+              ../quick3d/quick3dscene2d \
+              ../quick3d/imports/scene3d
+
 
 exampledirs += ../../examples/qt3d \
                snippets
