@@ -25,4 +25,6 @@ information about a particular change.
    [QTBUG-66581] Add support for mapping fragment shader output variables
    names to color numbers / attachment points
  - Updated internal ASSIMP to 4.1
+ - The glTF SceneLoader backend no longer mirrors texture images by
+   default.
  - Numerous minor bug fixes and performance improvements

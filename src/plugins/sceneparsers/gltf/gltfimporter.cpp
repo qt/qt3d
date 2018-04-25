@@ -1549,6 +1549,7 @@ void GLTFImporter::processJSONTexture(const QString &id, const QJsonObject &json
     }
 
     QTextureImage *texImage = new QTextureImage(tex);
+    texImage->setMirrored(false);
     texImage->setSource(QUrl::fromLocalFile(imagIt.value()));
     tex->addTextureImage(texImage);
 
