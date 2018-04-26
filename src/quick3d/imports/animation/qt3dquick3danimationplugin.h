@@ -42,13 +42,6 @@
 
 #include <QtQml/qqmlextensionplugin.h>
 
-static void initResources()
-{
-#ifdef QT_STATIC
-    Q_INIT_RESOURCE(qmake_Qt3D_Animation);
-#endif
-}
-
 QT_BEGIN_NAMESPACE
 
 class Qt3DQuick3DAnimationPlugin : public QQmlExtensionPlugin
@@ -56,7 +49,7 @@ class Qt3DQuick3DAnimationPlugin : public QQmlExtensionPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    Qt3DQuick3DAnimationPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { initResources(); }
+    Qt3DQuick3DAnimationPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { }
     void registerTypes(const char *uri) override;
 };
 

@@ -39,13 +39,6 @@
 
 #include <QtQml/qqmlextensionplugin.h>
 
-static void initResources()
-{
-#ifdef QT_STATIC
-    Q_INIT_RESOURCE(qmake_QtQuick_Scene2D);
-#endif
-}
-
 QT_BEGIN_NAMESPACE
 
 class QtQuickScene2DPlugin : public QQmlExtensionPlugin
@@ -53,7 +46,7 @@ class QtQuickScene2DPlugin : public QQmlExtensionPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    QtQuickScene2DPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { initResources(); }
+    QtQuickScene2DPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { }
     void registerTypes(const char *uri) override;
 };
 

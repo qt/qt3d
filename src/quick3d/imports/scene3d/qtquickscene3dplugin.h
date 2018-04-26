@@ -42,13 +42,6 @@
 
 #include <QtQml/QQmlExtensionPlugin>
 
-static void initResources()
-{
-#ifdef QT_STATIC
-    Q_INIT_RESOURCE(qmake_QtQuick_Scene3D);
-#endif
-}
-
 QT_BEGIN_NAMESPACE
 
 class QtQuickScene3DPlugin : public QQmlExtensionPlugin
@@ -56,7 +49,7 @@ class QtQuickScene3DPlugin : public QQmlExtensionPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    QtQuickScene3DPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { initResources(); }
+    QtQuickScene3DPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { }
     void registerTypes(const char *uri) override;
 };
 

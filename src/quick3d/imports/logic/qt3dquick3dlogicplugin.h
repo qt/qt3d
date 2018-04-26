@@ -42,13 +42,6 @@
 
 #include <QtQml/QQmlExtensionPlugin>
 
-static void initResources()
-{
-#ifdef QT_STATIC
-    Q_INIT_RESOURCE(qmake_Qt3D_Logic);
-#endif
-}
-
 QT_BEGIN_NAMESPACE
 
 class Qt3DQuick3DLogicPlugin : public QQmlExtensionPlugin
@@ -56,7 +49,7 @@ class Qt3DQuick3DLogicPlugin : public QQmlExtensionPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    Qt3DQuick3DLogicPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { initResources(); }
+    Qt3DQuick3DLogicPlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { }
     void registerTypes(const char *uri) override;
 };
 

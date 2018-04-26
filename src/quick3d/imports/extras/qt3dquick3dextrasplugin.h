@@ -45,8 +45,7 @@
 static void initResources()
 {
 #ifdef QT_STATIC
-    Q_INIT_RESOURCE(qmake_Qt3D_Extras);
-    Q_INIT_RESOURCE(extras);
+    Q_INIT_RESOURCE(extras); // from the Qt3DQuickExtras module
 #endif
 }
 
