@@ -387,7 +387,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                     break;
                 }
 #if QT_CONFIG(gestures)
-                case Qt::TapGesture: {
+                case QEvent::Gesture: {
                     objectPicker->onClicked(pickEvent);
                     break;
                 }

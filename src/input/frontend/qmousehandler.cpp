@@ -89,7 +89,7 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
         emit q->released(event.data());
         break;
 #if QT_CONFIG(gestures)
-    case Qt::TapGesture:
+    case QEvent::Gesture:
         emit q->clicked(event.data());
         break;
 #endif
