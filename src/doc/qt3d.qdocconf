@@ -58,7 +58,8 @@ headerdirs += . \
               ../input \
               ../extras \
               ../animation \
-              ../quick3d/quick3dscene2d
+              ../quick3d/quick3dscene2d \
+              ../quick3d/imports/scene3d
 
 # Exclude private header files from the documentation build
 excludefiles += "*_p.h"
@@ -69,7 +70,8 @@ headers       = ../core/transforms/matrix4x4_p.h \
                 ../render/raycasting/qray3d_p.h \
                 ../animation/frontend/qchannelmappingcreatedchange_p.h \
                 ../input/frontend/qabstractphysicaldeviceproxy_p.h \
-                ../input/frontend/qinputdeviceintegration_p.h
+                ../input/frontend/qinputdeviceintegration_p.h \
+                ../quick3d/imports/scene3d/scene3ditem_p.h
 
 sourcedirs += . \
               ../render \
@@ -80,7 +82,9 @@ sourcedirs += . \
               ../input \
               ../extras \
               ../animation \
-              ../quick3d/quick3dscene2d
+              ../quick3d/quick3dscene2d \
+              ../quick3d/imports/scene3d
+
 
 exampledirs += ../../examples/qt3d \
                snippets

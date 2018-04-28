@@ -92,17 +92,18 @@ private:
 };
 
 /*!
-    \class Qt3DCore::Scene3DRenderer
+    \class Qt3DRender::Scene3DRenderer
     \internal
 
-    \brief The Qt3DCore::Scene3DRenderer class takes care of rendering a Qt3D scene
+    \brief The Scene3DRenderer class takes care of rendering a Qt3D scene
     within a Framebuffer object to be used by the QtQuick 2 renderer.
 
-    The Qt3DCore::Scene3DRenderer class renders a Qt3D scene as provided by a Qt3DCore::Scene3DItem.
+    The Scene3DRenderer class renders a Qt3D scene as provided by a Scene3DItem.
     It owns the aspectEngine even though it doesn't instantiate it.
 
     The shutdown procedure is a two steps process that goes as follow:
 
+    \list
     \li The window is closed
 
     \li This triggers the windowsChanged signal which the Scene3DRenderer
@@ -112,6 +113,7 @@ private:
     \li The destroyed signal of the window is also connected to the
     Scene3DRenderer. When triggered in the context of the main thread, the
     cleanup slot is called.
+    \endlist
 
     There is an alternate shutdown procedure in case the QQuickItem is
     destroyed with an active window which can happen in the case where the
@@ -146,7 +148,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     // So that we can schedule the cleanup
     QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChanged, Qt::QueuedConnection);
     // Main thread -> updates the rendering window
-    QObject::connect(m_item, &QQuickItem::windowChanged, [this] (QQuickWindow *w) {
+    QObject::connect(m_item, &QQuickItem::windowChanged, this, [this] (QQuickWindow *w) {
         QMutexLocker l(&m_windowMutex);
         m_window = w;
     });

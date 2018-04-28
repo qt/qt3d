@@ -132,6 +132,10 @@ namespace Qt3DRender {
 /*!
  * \qmlproperty matrix4x4 CameraLens::projectionMatrix
  * Holds the current projection matrix of the camera lens.
+ *
+ * \note This will set the projection type to
+ * Qt3DRender::QCameraLens::CustomProjection and thus ignore all other camera
+ * parameters that might have been specified.
  * \readonly
  */
 
