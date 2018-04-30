@@ -2,6 +2,7 @@
     "Id": "nasa-jpl",
     "Name": "Jet Propulsion Laboratory Photojournal",
     "QDocModule": "qt3d",
+    "QtParts": ["examples"],
     "Description": "The NASA/JPL Photojournal provides high quality images related to space research and exploration",
     "QtUsage": "Used in Qt 3D planets-qml example.",
 
