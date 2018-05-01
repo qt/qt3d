@@ -496,7 +496,15 @@ HitList EntityCollisionGathererFunctor::computeHits(const QVector<Entity *> &ent
 {
     const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
     const MapFunctorHolder holder(this);
+#if QT_CONFIG(concurrent)
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
+#else
+    HitList sphereHits;
+    QVector<PickingUtils::EntityCollisionGathererFunctor::result_type> results;
+    for (const Entity *entity : entities)
+        sphereHits = reducerOp(sphereHits, holder(entity));
+    return sphereHits;
+#endif
 }
 
 HitList EntityCollisionGathererFunctor::pick(const Entity *entity) const
@@ -515,7 +523,15 @@ HitList TriangleCollisionGathererFunctor::computeHits(const QVector<Entity *> &e
 {
     const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
     const MapFunctorHolder holder(this);
+#if QT_CONFIG(concurrent)
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
+#else
+    HitList sphereHits;
+    QVector<PickingUtils::TriangleCollisionGathererFunctor::result_type> results;
+    for (const Entity *entity : entities)
+        sphereHits = reducerOp(sphereHits, holder(entity));
+        return sphereHits;
+#endif
 }
 
 HitList TriangleCollisionGathererFunctor::pick(const Entity *entity) const
@@ -541,7 +557,15 @@ HitList LineCollisionGathererFunctor::computeHits(const QVector<Entity *> &entit
 {
     const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
     const MapFunctorHolder holder(this);
+#if QT_CONFIG(concurrent)
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
+#else
+    HitList sphereHits;
+    QVector<PickingUtils::LineCollisionGathererFunctor::result_type> results;
+    for (const Entity *entity : entities)
+        sphereHits = reducerOp(sphereHits, holder(entity));
+    return sphereHits;
+#endif
 }
 
 HitList LineCollisionGathererFunctor::pick(const Entity *entity) const
@@ -566,7 +590,15 @@ HitList PointCollisionGathererFunctor::computeHits(const QVector<Entity *> &enti
 {
     const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
     const MapFunctorHolder holder(this);
+#if QT_CONFIG(concurrent)
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
+#else
+    HitList sphereHits;
+    QVector<PickingUtils::PointCollisionGathererFunctor::result_type> results;
+    for (const Entity *entity : entities)
+        sphereHits = reducerOp(sphereHits, holder(entity));
+    return sphereHits;
+#endif
 }
 
 HitList PointCollisionGathererFunctor::pick(const Entity *entity) const

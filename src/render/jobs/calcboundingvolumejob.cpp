@@ -53,7 +53,9 @@
 #include <Qt3DRender/private/buffervisitor_p.h>
 
 #include <QtCore/qmath.h>
+#if QT_CONFIG(concurrent)
 #include <QtConcurrent/QtConcurrent>
+#endif
 #include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -284,12 +286,15 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
         }
     }
 
+#if QT_CONFIG(concurrent)
     const QVector<Qt3DRender::Render::Entity *> children = node->children();
     if (children.size() > 1) {
         UpdateBoundFunctor functor;
         functor.manager = manager;
         QtConcurrent::blockingMap(children, functor);
-    } else {
+    } else
+#endif
+    {
         const auto children = node->children();
         for (Entity *child : children)
             calculateLocalBoundingVolume(manager, child);

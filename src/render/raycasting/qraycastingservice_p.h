@@ -109,7 +109,11 @@ public:
         QRayCastingService::QueryMode mode;
     };
 
+#if QT_CONFIG(concurrent)
     QHash<QQueryHandle, FutureQueryResult> m_results;
+#else
+    QHash<QQueryHandle, QCollisionQueryResult> m_results;
+#endif
     QAtomicInt m_handlesCount;
 };
 

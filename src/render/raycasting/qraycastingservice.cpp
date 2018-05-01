@@ -133,11 +133,23 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBo
     gathererFunctor.ray = ray;
 
     if (mode == QAbstractCollisionQueryService::FirstHit) {
+#if QT_CONFIG(concurrent)
         Hit firstHit = QtConcurrent::blockingMappedReduced<Hit>(volumes, gathererFunctor, reduceToFirstHit);
+#else
+        Hit firstHit;
+        for (const QBoundingVolume *volume : volumes)
+            firstHit = reduceToFirstHit(firstHit, gathererFunctor(volume));
+#endif
         if (firstHit.intersects)
             q->addEntityHit(result, firstHit.id, firstHit.intersection, firstHit.distance, firstHit.uvw);
     } else {
+#if QT_CONFIG(concurrent)
         QVector<Hit> hits = QtConcurrent::blockingMappedReduced<QVector<Hit> >(volumes, gathererFunctor, reduceToAllHits);
+#else
+        QVector<Hit> hits;
+        for (const QBoundingVolume *volume : volumes)
+            hits = reduceToAllHits(hits, gathererFunctor(volume));
+#endif
         std::sort(hits.begin(), hits.end(), compareHitsDistance);
         for (const Hit &hit : qAsConst(hits))
             q->addEntityHit(result, hit.id, hit.intersection, hit.distance, hit.uvw);
@@ -182,9 +194,13 @@ QQueryHandle QRayCastingService::query(const QRay3D &ray,
 
     // Blocking mapReduce
 
+#if QT_CONFIG(concurrent)
     FutureQueryResult future = QtConcurrent::run(d, &QRayCastingServicePrivate::collides,
                                                  ray, provider, mode, handle);
     d->m_results.insert(handle, future);
+#else
+    d->m_results.insert(handle, d->collides(ray, provider, mode, handle));
+#endif
 
     return handle;
 }
@@ -200,7 +216,11 @@ QCollisionQueryResult QRayCastingService::fetchResult(const QQueryHandle &handle
 {
     Q_D(QRayCastingService);
 
+#if QT_CONFIG(concurrent)
     return d->m_results.value(handle).result();
+#else
+    return d->m_results.value(handle);
+#endif
 }
 
 QVector<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
@@ -210,8 +230,13 @@ QVector<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
     QVector<QCollisionQueryResult> results;
     results.reserve(d->m_results.size());
 
+#if QT_CONFIG(concurrent)
     for (const FutureQueryResult &future : d->m_results)
         results.append(future.result());
+#else
+    for (const QCollisionQueryResult &result : d->m_results)
+        results.append(result);
+#endif
 
     return results;
 }
