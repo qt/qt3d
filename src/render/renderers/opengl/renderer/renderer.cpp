@@ -128,6 +128,9 @@
 
 QT_BEGIN_NAMESPACE
 
+// Crashes on AMD Radeon drivers on Windows. Disable for now.
+//#define SHADER_LOADING_IN_COMMAND_THREAD
+
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
@@ -323,11 +326,17 @@ QOpenGLContext *Renderer::shareContext() const
 }
 
 // Executed in the command thread
-void Renderer::loadShader(Shader *shader) const
+void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
+#ifdef SHADER_LOADING_IN_COMMAND_THREAD
+    Q_UNUSED(shaderHandle);
     Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
     LoadShaderCommand cmd(shader);
     m_commandThread->executeCommand(&cmd);
+#else
+    Q_UNUSED(shader);
+    m_dirtyShaders.push_back(shaderHandle);
+#endif
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -1123,7 +1132,7 @@ void Renderer::reloadDirtyShaders()
                     shader->submitPendingNotifications();
                 // If the shader hasn't be loaded, load it
                 if (shader != nullptr && !shader->isLoaded())
-                    loadShader(shader);
+                    loadShader(shader, shaderHandle);
             }
         }
     }
@@ -1146,6 +1155,19 @@ void Renderer::updateGLResources()
             buffer->unsetDirty();
         }
     }
+
+#ifndef SHADER_LOADING_IN_COMMAND_THREAD
+    {
+        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
+        const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+        ShaderManager *shaderManager = m_nodesManager->shaderManager();
+        for (const HShader &handle: dirtyShaderHandles) {
+            Shader *shader = shaderManager->data(handle);
+            // Compile shader
+            m_submissionContext->loadShader(shader, shaderManager);
+        }
+    }
+#endif
 
     {
         Profiling::GLTimeRecorder recorder(Profiling::TextureUpload);

@@ -226,7 +226,7 @@ public:
 
 
     // Executed in secondary GL thread
-    void loadShader(Shader *shader) const override;
+    void loadShader(Shader *shader, Qt3DRender::Render::HShader shaderHandle) override;
 
 
     void updateGLResources();
@@ -382,6 +382,7 @@ private:
 
     QVector<HBuffer> m_dirtyBuffers;
     QVector<HBuffer> m_downloadableBuffers;
+    QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
 
     bool m_ownedContext;
