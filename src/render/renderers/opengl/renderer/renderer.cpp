@@ -1152,8 +1152,18 @@ void Renderer::updateGLResources()
         const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
         for (const HTexture &handle: activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
-            // Upload/Update texture
+            // Update texture properties
             updateTexture(texture);
+        }
+        // We want to upload textures data at this point as the SubmissionThread and
+        // AspectThread are locked ensuring no races between Texture/TextureImage and
+        // GLTexture
+        if (m_submissionContext != nullptr) {
+            GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
+            const QVector<GLTexture *> glTextures = glTextureManager->activeResources();
+            // Upload texture data
+            for (GLTexture *glTexture : glTextures)
+                glTexture->getOrCreateGLTexture();
         }
     }
     // When Textures are cleaned up, their id is saved
@@ -1196,13 +1206,18 @@ void Renderer::updateTexture(Texture *texture)
     GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
     GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
 
+    auto createOrUpdateGLTexture = [=] () {
+        GLTexture *newGLTexture = nullptr;
+        if (isUnique)
+            newGLTexture = glTextureManager->createUnique(texture);
+        else
+            newGLTexture = glTextureManager->getOrCreateShared(texture);
+        texture->unsetDirty();
+    };
+
     // No GLTexture associated yet -> create it
     if (glTexture == nullptr) {
-        if (isUnique)
-            glTextureManager->createUnique(texture);
-        else
-            glTextureManager->getOrCreateShared(texture);
-        texture->unsetDirty();
+        createOrUpdateGLTexture();
         return;
     }
 
@@ -1210,12 +1225,8 @@ void Renderer::updateTexture(Texture *texture)
     // and abandon the old one
     if (glTextureManager->isShared(glTexture)) {
         glTextureManager->abandon(glTexture, texture);
-        // Check if a shared texture should become unique
-        if (isUnique)
-            glTextureManager->createUnique(texture);
-        else
-            glTextureManager->getOrCreateShared(texture);
-        texture->unsetDirty();
+        // Note: if isUnique is true, a once shared texture will become unique
+        createOrUpdateGLTexture();
         return;
     }
 
