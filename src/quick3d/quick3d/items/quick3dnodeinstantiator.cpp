@@ -44,6 +44,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlError>
 #include <QtQml/QQmlInfo>
+#include <QQmlIncubator>
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <QtQml/private/qqmlchangeset_p.h>
