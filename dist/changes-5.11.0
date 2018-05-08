@@ -21,9 +21,6 @@ information about a particular change.
 
  - Qt3DRender::QRayCaster and Qt3DRender::QScreenRayCaster
    Add classes for generalised model space and screen space ray casting
- - Qt3DRender::QFragmentOutput
-   [QTBUG-66581] Add support for mapping fragment shader output variables
-   names to color numbers / attachment points
  - Updated internal ASSIMP to 4.1
  - The glTF SceneLoader backend no longer mirrors texture images by
    default.
