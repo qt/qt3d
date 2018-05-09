@@ -128,6 +128,9 @@
 
 QT_BEGIN_NAMESPACE
 
+// Crashes on AMD Radeon drivers on Windows. Disable for now.
+//#define SHADER_LOADING_IN_COMMAND_THREAD
+
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
@@ -323,11 +326,17 @@ QOpenGLContext *Renderer::shareContext() const
 }
 
 // Executed in the command thread
-void Renderer::loadShader(Shader *shader) const
+void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
+#ifdef SHADER_LOADING_IN_COMMAND_THREAD
+    Q_UNUSED(shaderHandle);
     Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
     LoadShaderCommand cmd(shader);
     m_commandThread->executeCommand(&cmd);
+#else
+    Q_UNUSED(shader);
+    m_dirtyShaders.push_back(shaderHandle);
+#endif
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -1123,7 +1132,7 @@ void Renderer::reloadDirtyShaders()
                     shader->submitPendingNotifications();
                 // If the shader hasn't be loaded, load it
                 if (shader != nullptr && !shader->isLoaded())
-                    loadShader(shader);
+                    loadShader(shader, shaderHandle);
             }
         }
     }
@@ -1147,13 +1156,36 @@ void Renderer::updateGLResources()
         }
     }
 
+#ifndef SHADER_LOADING_IN_COMMAND_THREAD
+    {
+        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
+        const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+        ShaderManager *shaderManager = m_nodesManager->shaderManager();
+        for (const HShader &handle: dirtyShaderHandles) {
+            Shader *shader = shaderManager->data(handle);
+            // Compile shader
+            m_submissionContext->loadShader(shader, shaderManager);
+        }
+    }
+#endif
+
     {
         Profiling::GLTimeRecorder recorder(Profiling::TextureUpload);
         const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
         for (const HTexture &handle: activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
-            // Upload/Update texture
+            // Update texture properties
             updateTexture(texture);
+        }
+        // We want to upload textures data at this point as the SubmissionThread and
+        // AspectThread are locked ensuring no races between Texture/TextureImage and
+        // GLTexture
+        if (m_submissionContext != nullptr) {
+            GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
+            const QVector<GLTexture *> glTextures = glTextureManager->activeResources();
+            // Upload texture data
+            for (GLTexture *glTexture : glTextures)
+                glTexture->getOrCreateGLTexture();
         }
     }
     // When Textures are cleaned up, their id is saved
@@ -1196,13 +1228,18 @@ void Renderer::updateTexture(Texture *texture)
     GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
     GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
 
+    auto createOrUpdateGLTexture = [=] () {
+        GLTexture *newGLTexture = nullptr;
+        if (isUnique)
+            newGLTexture = glTextureManager->createUnique(texture);
+        else
+            newGLTexture = glTextureManager->getOrCreateShared(texture);
+        texture->unsetDirty();
+    };
+
     // No GLTexture associated yet -> create it
     if (glTexture == nullptr) {
-        if (isUnique)
-            glTextureManager->createUnique(texture);
-        else
-            glTextureManager->getOrCreateShared(texture);
-        texture->unsetDirty();
+        createOrUpdateGLTexture();
         return;
     }
 
@@ -1210,12 +1247,8 @@ void Renderer::updateTexture(Texture *texture)
     // and abandon the old one
     if (glTextureManager->isShared(glTexture)) {
         glTextureManager->abandon(glTexture, texture);
-        // Check if a shared texture should become unique
-        if (isUnique)
-            glTextureManager->createUnique(texture);
-        else
-            glTextureManager->getOrCreateShared(texture);
-        texture->unsetDirty();
+        // Note: if isUnique is true, a once shared texture will become unique
+        createOrUpdateGLTexture();
         return;
     }
 

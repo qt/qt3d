@@ -53,6 +53,7 @@
 #include <QtCore/qflags.h>
 #include <QtCore/qmutex.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtGui/qsurfaceformat.h>
@@ -181,7 +182,7 @@ public:
 
     // These commands are executed in a dedicated command thread
     // More will be added later
-    virtual void loadShader(Shader *shader) const = 0;
+    virtual void loadShader(Shader *shader, Qt3DRender::Render::HShader shaderHandle) = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)

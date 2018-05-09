@@ -85,7 +85,7 @@ public:
 
     void setOpenGLContext(QOpenGLContext *) override {}
 
-    void loadShader(Qt3DRender::Render::Shader *) const override {}
+    void loadShader(Qt3DRender::Render::Shader *, Qt3DRender::Render::HShader) override {}
 
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;

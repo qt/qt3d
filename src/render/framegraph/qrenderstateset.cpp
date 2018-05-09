@@ -101,7 +101,7 @@ QRenderStateSetPrivate::QRenderStateSetPrivate()
 
 /*!
     \qmltype RenderStateSet
-    \inmodule Qt3D.Render
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \inherits FrameGraphNode
     \instantiates Qt3DRender::QRenderStateSet
