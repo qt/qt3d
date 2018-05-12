@@ -153,8 +153,8 @@ float BezierEvaluator::parameterForTime(float time) const
     float roots[3];
     const int numberOfRoots = findCubicRoots(coeffs, roots);
     for (int i = 0; i < numberOfRoots; ++i) {
-        if (roots[i] >= 0 && roots[i] <= 1)
-            return roots[i];
+        if (roots[i] >= -0.01f && roots[i] <= 1.01f)
+            return qMin(qMax(roots[i], 0.0f), 1.0f);
     }
 
     qWarning() << "Failed to find root of cubic bezier at time" << time

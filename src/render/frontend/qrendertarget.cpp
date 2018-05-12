@@ -70,7 +70,7 @@ namespace Qt3DRender {
     \brief The RenderTarget class encapsulates a target (usually a frame buffer
     object) which the renderer can render into.
     \since 5.7
-    \inmodule Qt3D.Render
+    \inqmlmodule Qt3D.Render
     \instantiates Qt3DRender::QRenderTarget
 
     A RenderTarget comprises of RenderTargetOutput objects, which specify the the buffers

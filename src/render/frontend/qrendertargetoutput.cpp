@@ -64,7 +64,7 @@ namespace Qt3DRender {
     \brief The RenderTargetOutput type allows the specification of an attachment
     of a render target (whether it is a color texture, a depth texture, etc... ).
     \since 5.7
-    \inmodule Qt3D.Render
+    \inqmlmodule Qt3D.Render
     \inherits Node
     \instantiates Qt3DRender::QRenderTargetOutput
 
