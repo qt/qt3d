@@ -48,7 +48,9 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <QtQml/private/qqmlchangeset_p.h>
+#if QT_CONFIG(qml_delegate_model)
 #include <QtQml/private/qqmldelegatemodel_p.h>
+#endif
 #include <QtQml/private/qqmlobjectmodel_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -66,7 +68,9 @@ public:
 
     void clear();
     void regenerate();
+#if QT_CONFIG(qml_delegate_model)
     void makeModel();
+#endif
     void _q_createdItem(int, QObject *);
     void _q_modelUpdated(const QQmlChangeSet &, bool);
 
@@ -74,7 +78,9 @@ public:
     bool m_effectiveReset:1;
     bool m_active:1;
     bool m_async:1;
+#if QT_CONFIG(qml_delegate_model)
     bool m_ownModel:1;
+#endif
     QVariant m_model;
     QQmlInstanceModel *m_instanceModel;
     QQmlComponent *m_delegate;
@@ -90,7 +96,9 @@ Quick3DNodeInstantiatorPrivate::Quick3DNodeInstantiatorPrivate()
     , m_effectiveReset(false)
     , m_active(true)
     , m_async(false)
+#if QT_CONFIG(qml_delegate_model)
     , m_ownModel(false)
+#endif
     , m_model(QVariant(1))
     , m_instanceModel(0)
     , m_delegate(0)
@@ -99,8 +107,10 @@ Quick3DNodeInstantiatorPrivate::Quick3DNodeInstantiatorPrivate()
 
 Quick3DNodeInstantiatorPrivate::~Quick3DNodeInstantiatorPrivate()
 {
+#if QT_CONFIG(qml_delegate_model)
     if (m_ownModel)
         delete m_instanceModel;
+#endif
 }
 
 void Quick3DNodeInstantiatorPrivate::clear()
@@ -216,6 +226,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
         emit q->countChanged();
 }
 
+#if QT_CONFIG(qml_delegate_model)
 void Quick3DNodeInstantiatorPrivate::makeModel()
 {
     Q_Q(Quick3DNodeInstantiator);
@@ -227,6 +238,7 @@ void Quick3DNodeInstantiatorPrivate::makeModel()
     if (m_componentComplete)
         delegateModel->componentComplete();
 }
+#endif
 
 /*!
     \qmltype NodeInstantiator
@@ -366,11 +378,13 @@ void Quick3DNodeInstantiator::setDelegate(QQmlComponent *c)
     d->m_delegate = c;
     emit delegateChanged();
 
+#if QT_CONFIG(qml_delegate_model)
     if (!d->m_ownModel)
         return;
 
     if (QQmlDelegateModel *dModel = qobject_cast<QQmlDelegateModel*>(d->m_instanceModel))
         dModel->setDelegate(c);
+#endif
     if (d->m_componentComplete)
         d->regenerate();
 }
@@ -415,13 +429,17 @@ void Quick3DNodeInstantiator::setModel(const QVariant &v)
     QObject *object = qvariant_cast<QObject*>(v);
     QQmlInstanceModel *vim = 0;
     if (object && (vim = qobject_cast<QQmlInstanceModel *>(object))) {
+#if QT_CONFIG(qml_delegate_model)
         if (d->m_ownModel) {
             delete d->m_instanceModel;
             prevModel = 0;
             d->m_ownModel = false;
         }
+#endif
         d->m_instanceModel = vim;
-    } else if (v != QVariant(0)){
+    }
+#if QT_CONFIG(qml_delegate_model)
+    else if (v != QVariant(0)) {
         if (!d->m_ownModel)
             d->makeModel();
 
@@ -431,6 +449,7 @@ void Quick3DNodeInstantiator::setModel(const QVariant &v)
             d->m_effectiveReset = false;
         }
     }
+#endif
 
     if (d->m_instanceModel != prevModel) {
         if (prevModel) {
@@ -494,10 +513,13 @@ void Quick3DNodeInstantiator::componentComplete()
 {
     Q_D(Quick3DNodeInstantiator);
     d->m_componentComplete = true;
+#if QT_CONFIG(qml_delegate_model)
     if (d->m_ownModel) {
         static_cast<QQmlDelegateModel *>(d->m_instanceModel)->componentComplete();
         d->regenerate();
-    } else {
+    } else
+#endif
+    {
         QVariant realModel = d->m_model;
         d->m_model = QVariant(0);
         setModel(realModel); //If realModel == d->m_model this won't do anything, but that's fine since the model's 0
