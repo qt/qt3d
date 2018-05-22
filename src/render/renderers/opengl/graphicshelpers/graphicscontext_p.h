@@ -158,6 +158,7 @@ public:
     void    pointSize(bool programmable, GLfloat value);
     void    readBuffer(GLenum mode);
     void    drawBuffer(GLenum mode);
+    void    drawBuffers(GLsizei n, const int *bufs);
     void    setMSAAEnabled(bool enabled);
     void    setAlphaCoverageEnabled(bool enabled);
     void    setClipPlane(int clipPlane, const QVector3D &normal, float distance);

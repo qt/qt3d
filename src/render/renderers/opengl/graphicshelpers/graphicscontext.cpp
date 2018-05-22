@@ -705,6 +705,11 @@ void GraphicsContext::drawBuffer(GLenum mode)
     m_glHelper->drawBuffer(mode);
 }
 
+void GraphicsContext::drawBuffers(GLsizei n, const int *bufs)
+{
+    m_glHelper->drawBuffers(n, bufs);
+}
+
 void GraphicsContext::applyUniform(const ShaderUniform &description, const UniformValue &v)
 {
     const UniformType type = m_glHelper->uniformTypeFromGLType(description.m_type);

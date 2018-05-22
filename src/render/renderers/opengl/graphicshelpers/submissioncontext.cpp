@@ -1618,8 +1618,12 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
     if (!inputBufferIsDefault)
         readBuffer(GL_COLOR_ATTACHMENT0 + inputAttachmentPoint);
 
-    if (!outputBufferIsDefault)
-        drawBuffer(GL_COLOR_ATTACHMENT0 + outputAttachmentPoint);
+    if (!outputBufferIsDefault) {
+        // Note that we use glDrawBuffers, not glDrawBuffer. The
+        // latter is not available with GLES.
+        const int buf = outputAttachmentPoint;
+        drawBuffers(1, &buf);
+    }
 
     // Blit framebuffer
     const GLenum mode = interpolationMethod ? GL_NEAREST : GL_LINEAR;
@@ -1629,6 +1633,10 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
 
     // Reset draw buffer
     bindFramebuffer(lastDrawFboId, GraphicsHelperInterface::FBOReadAndDraw);
+    if (outputAttachmentPoint != QRenderTargetOutput::Color0) {
+        const int buf = QRenderTargetOutput::Color0;
+        drawBuffers(1, &buf);
+    }
 }
 
 } // namespace Render
