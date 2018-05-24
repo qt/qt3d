@@ -113,7 +113,7 @@ bool StlGeometryLoader::loadBinary(QIODevice *ioDev)
     quint32 triangleCount;
     stream >> triangleCount;
 
-    if (ioDev->size() != headerSize + sizeof(quint32) + (triangleCount * 50))
+    if (quint64(ioDev->size()) != headerSize + sizeof(quint32) + (triangleCount * 50))
         return false;
 
     m_points.reserve(triangleCount * 3);

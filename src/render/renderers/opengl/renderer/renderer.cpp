@@ -1229,11 +1229,10 @@ void Renderer::updateTexture(Texture *texture)
     GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
 
     auto createOrUpdateGLTexture = [=] () {
-        GLTexture *newGLTexture = nullptr;
         if (isUnique)
-            newGLTexture = glTextureManager->createUnique(texture);
+            glTextureManager->createUnique(texture);
         else
-            newGLTexture = glTextureManager->getOrCreateShared(texture);
+            glTextureManager->getOrCreateShared(texture);
         texture->unsetDirty();
     };
 
