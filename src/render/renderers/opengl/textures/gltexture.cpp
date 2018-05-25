@@ -72,6 +72,7 @@ GLTexture::GLTexture(TextureDataManager *texDataMgr,
     , m_textureDataManager(texDataMgr)
     , m_textureImageDataManager(texImgDataMgr)
     , m_dataFunctor(texGen)
+    , m_externalRendering(false)
 {
     // make sure texture generator is executed
     // this is needed when Texture have the TargetAutomatic
