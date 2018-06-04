@@ -93,6 +93,40 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+
+class TextureExtRendererLocker
+{
+public:
+    static void lock(GLTexture *tex)
+    {
+        if (!tex->isExternalRenderingEnabled())
+            return;
+        if (s_lockHash.keys().contains(tex)) {
+            ++s_lockHash[tex];
+        } else {
+            tex->externalRenderingLock()->lock();
+            s_lockHash[tex] = 1;
+        }
+    }
+    static void unlock(GLTexture *tex)
+    {
+        if (!tex->isExternalRenderingEnabled())
+            return;
+        if (!s_lockHash.keys().contains(tex))
+            return;
+
+        --s_lockHash[tex];
+        if (s_lockHash[tex] == 0) {
+            s_lockHash.remove(tex);
+            tex->externalRenderingLock()->unlock();
+        }
+    }
+private:
+    static QHash<GLTexture*, int> s_lockHash;
+};
+
+QHash<GLTexture*, int> TextureExtRendererLocker::s_lockHash = QHash<GLTexture*, int>();
+
 static QHash<unsigned int, SubmissionContext*> static_contexts;
 
 namespace {
@@ -475,6 +509,9 @@ void SubmissionContext::endDrawing(bool swapBuffers)
     if (m_ownCurrent)
         m_gl->doneCurrent();
     decayTextureScores();
+    for (int i = 0; i < m_activeTextures.size(); ++i)
+        if (m_activeTextures[i].texture)
+            TextureExtRendererLocker::unlock(m_activeTextures[i].texture);
 }
 
 void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, GLuint defaultFboId)
@@ -827,6 +864,8 @@ void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Atta
         if (!m_glHelper->frameBufferNeedsRenderBuffer(attachment)) {
             QOpenGLTexture *glTex = rTex ? rTex->getOrCreateGLTexture() : nullptr;
             if (glTex != nullptr) {
+                // The texture can not be rendered simultaniously by another renderer
+                Q_ASSERT(!rTex->isExternalRenderingEnabled());
                 if (fboSize.isEmpty())
                     fboSize = QSize(glTex->width(), glTex->height());
                 else
@@ -892,7 +931,10 @@ int SubmissionContext::activateTexture(TextureScope scope, GLTexture *tex, int o
         if (glTex == nullptr)
             return -1;
         glTex->bind(onUnit);
+        if (m_activeTextures[onUnit].texture)
+            TextureExtRendererLocker::unlock(m_activeTextures[onUnit].texture);
         m_activeTextures[onUnit].texture = tex;
+        TextureExtRendererLocker::lock(tex);
     }
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
@@ -1576,8 +1618,12 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
     if (!inputBufferIsDefault)
         readBuffer(GL_COLOR_ATTACHMENT0 + inputAttachmentPoint);
 
-    if (!outputBufferIsDefault)
-        drawBuffer(GL_COLOR_ATTACHMENT0 + outputAttachmentPoint);
+    if (!outputBufferIsDefault) {
+        // Note that we use glDrawBuffers, not glDrawBuffer. The
+        // latter is not available with GLES.
+        const int buf = outputAttachmentPoint;
+        drawBuffers(1, &buf);
+    }
 
     // Blit framebuffer
     const GLenum mode = interpolationMethod ? GL_NEAREST : GL_LINEAR;
@@ -1587,6 +1633,10 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
 
     // Reset draw buffer
     bindFramebuffer(lastDrawFboId, GraphicsHelperInterface::FBOReadAndDraw);
+    if (outputAttachmentPoint != QRenderTargetOutput::Color0) {
+        const int buf = QRenderTargetOutput::Color0;
+        drawBuffers(1, &buf);
+    }
 }
 
 } // namespace Render

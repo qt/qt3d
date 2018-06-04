@@ -85,9 +85,10 @@ bool ResourceAccessor::accessResource(ResourceType type, Qt3DCore::QNodeId nodeI
         if (glTex->isDirty())
             return false;
 
+        glTex->setExternalRenderingEnabled(true);
         QOpenGLTexture **glTextureHandle = reinterpret_cast<QOpenGLTexture **>(handle);
         *glTextureHandle = glTex->getOrCreateGLTexture();
-        *lock = glTex->textureLock();
+        *lock = glTex->externalRenderingLock();
         return true;
     }
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,41 +37,88 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERES3_2_H
-#define QT3DRENDER_RENDER_GRAPHICSHELPERES3_2_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/graphicshelperes3_1_p.h>
+#include "graphicshelperes3_1_p.h"
+#include <private/qgraphicsutils_p.h>
+#include <QOpenGLExtraFunctions>
 
 QT_BEGIN_NAMESPACE
+
+// ES 3.1+
+#ifndef GL_SAMPLER_2D_MULTISAMPLE
+#define GL_SAMPLER_2D_MULTISAMPLE         0x9108
+#endif
+#ifndef GL_INT_SAMPLER_2D_MULTISAMPLE
+#define GL_INT_SAMPLER_2D_MULTISAMPLE     0x9109
+#endif
+#ifndef GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE
+#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE 0x910A
+#endif
 
 namespace Qt3DRender {
 namespace Render {
 
-class GraphicsHelperES3_2 : public GraphicsHelperES3_1
+GraphicsHelperES3_1::GraphicsHelperES3_1()
 {
-public:
-    GraphicsHelperES3_2();
-    ~GraphicsHelperES3_2();
+}
 
-    // QGraphicHelperInterface interface
-    void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) override;
-    bool frameBufferNeedsRenderBuffer(const Attachment &attachment) override;
-};
+GraphicsHelperES3_1::~GraphicsHelperES3_1()
+{
+}
+
+UniformType GraphicsHelperES3_1::uniformTypeFromGLType(GLenum glType)
+{
+    switch (glType) {
+    case GL_SAMPLER_2D_MULTISAMPLE:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
+        return UniformType::Sampler;
+
+    default:
+       return GraphicsHelperES3::uniformTypeFromGLType(glType);
+    }
+}
+
+uint GraphicsHelperES3_1::uniformByteSize(const ShaderUniform &description)
+{
+    uint rawByteSize = 0;
+
+    switch (description.m_type) {
+    case GL_SAMPLER_2D_MULTISAMPLE:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
+        rawByteSize = 4;
+        break;
+
+    default:
+        rawByteSize = GraphicsHelperES3::uniformByteSize(description);
+        break;
+    }
+
+    return rawByteSize;
+}
+
+void GraphicsHelperES3_1::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+{
+    char *bufferData = buffer.data();
+
+    switch (description.m_type) {
+    case GL_SAMPLER_2D_MULTISAMPLE:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
+    {
+        Q_ASSERT(description.m_size == 1);
+        int value = v.toInt();
+        QGraphicsUtils::fillDataArray<GLint>(bufferData, &value, description, 1);
+        break;
+    }
+
+    default:
+        GraphicsHelperES3::buildUniformBuffer(v, description, buffer);
+        break;
+    }
+}
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_GRAPHICSHELPERES3_2_H
