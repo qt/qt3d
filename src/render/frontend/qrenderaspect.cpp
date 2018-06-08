@@ -479,7 +479,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // which should likely be renamed to something more generic or we introduce
         // another synchronizing job for skeleton loading
         const QVector<Render::HSkeleton> skeletonsToLoad =
-                manager->skeletonManager()->dirtySkeletons(Render::SkeletonManager::SkeletonDataDirty);
+                manager->skeletonManager()->takeDirtySkeletons(Render::SkeletonManager::SkeletonDataDirty);
         for (const auto &skeletonHandle : skeletonsToLoad) {
             auto loadSkeletonJob = Render::LoadSkeletonJobPtr::create(skeletonHandle);
             loadSkeletonJob->setNodeManagers(manager);

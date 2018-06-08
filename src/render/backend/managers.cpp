@@ -88,7 +88,7 @@ void SkeletonManager::addDirtySkeleton(DirtyFlag dirtyFlag, HSkeleton skeletonHa
     }
 }
 
-QVector<HSkeleton> SkeletonManager::dirtySkeletons(DirtyFlag dirtyFlag)
+QVector<HSkeleton> SkeletonManager::takeDirtySkeletons(DirtyFlag dirtyFlag)
 {
     switch (dirtyFlag) {
     case SkeletonDataDirty:

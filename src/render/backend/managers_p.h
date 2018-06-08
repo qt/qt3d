@@ -399,7 +399,7 @@ public:
     };
 
     void addDirtySkeleton(DirtyFlag dirtyFlag, HSkeleton skeletonHandle);
-    QVector<HSkeleton> dirtySkeletons(DirtyFlag dirtyFlag);
+    QVector<HSkeleton> takeDirtySkeletons(DirtyFlag dirtyFlag);
 
 private:
     QVector<HSkeleton> m_dirtyDataSkeletons;
