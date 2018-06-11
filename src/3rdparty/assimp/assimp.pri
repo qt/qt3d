@@ -52,6 +52,9 @@ clang: {
     QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
 }
 
+# Prevents "catastrophic error: Too many segments for object format" for builds using Windows ICC
+msvc: QMAKE_CXXFLAGS += /bigobj
+
 CONFIG += warn_on
 
 VPATH += \
