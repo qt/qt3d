@@ -72,7 +72,7 @@ QGeometryPrivate::~QGeometryPrivate()
     \inqmlmodule Qt3D.Render
     \inherits Node
     \since 5.7
-    \brief Encapsulates geometry
+    \brief Encapsulates geometry.
 
     A Geometry type is used to group a list of Attribute objects together
     to form a geometric shape Qt3D is able to render using GeometryRenderer.
@@ -83,7 +83,7 @@ QGeometryPrivate::~QGeometryPrivate()
     \class Qt3DRender::QGeometry
     \inmodule Qt3DRender
     \since 5.7
-    \brief Encapsulates geometry
+    \brief Encapsulates geometry.
 
     A Qt3DRender::QGeometry class is used to group a list of Qt3DRender::QAttribute
     objects together to form a geometric shape Qt3D is able to render using

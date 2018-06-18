@@ -61,7 +61,7 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
     \class Qt3DRender::QTechniqueFilter
     \inmodule Qt3DRender
     \since 5.7
-    \brief A QFrameGraphNode used to select QTechniques to use
+    \brief A QFrameGraphNode used to select QTechniques to use.
 
     A Qt3DRender::QTechniqueFilter specifies which techniques are used
     by the FrameGraph when rendering the entities. QTechniqueFilter specifies
@@ -78,7 +78,7 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
     \instantiates Qt3DRender::QTechniqueFilter
     \inherits FrameGraphNode
     \since 5.7
-    \brief A FrameGraphNode used to select used Techniques
+    \brief A FrameGraphNode used to select used Techniques.
 
     A TechniqueFilter specifies which techniques are used by the FrameGraph
     when rendering the entities. TechniqueFilter specifies

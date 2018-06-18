@@ -30,7 +30,7 @@
     \inqmlmodule Qt3D.Render
     \inherits Entity
     \since 5.9
-    \brief An entity loader that changes depending on distance to camera or screen size
+    \brief An entity loader that changes depending on distance to camera or screen size.
 
     A LevelOfDetailLoader will load the entity matching the \l LevelOfDetail::currentIndex.
     The source is selected from the \l sources property.

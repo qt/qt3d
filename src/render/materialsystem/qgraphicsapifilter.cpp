@@ -111,7 +111,7 @@ QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(QGraphicsApiFilter *q)
     \class Qt3DRender::QGraphicsApiFilter
     \inmodule Qt3DRender
     \since 5.5
-    \brief The QGraphicsApiFilter class identifies the API required for the attached QTechnique
+    \brief The QGraphicsApiFilter class identifies the API required for the attached QTechnique.
 */
 
 /*!
@@ -120,7 +120,7 @@ QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(QGraphicsApiFilter *q)
     \inherits QtObject
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief For OpenGL identifies the API required for the attached technique
+    \brief For OpenGL identifies the API required for the attached technique.
 */
 
 /*! \fn Qt3DRender::QGraphicsApiFilter::QGraphicsApiFilter(QObject *parent)

@@ -42,7 +42,7 @@
  * \class Qt3DRender::QBlendEquation
  * \inheaderfile Qt3DRender/QBlendEquation
  * \brief The QBlendEquation class specifies the equation used for both the RGB
- *  blend equation and the Alpha blend equation
+ *  blend equation and the Alpha blend equation.
  * \inmodule Qt3DRender
  * \since 5.7
  * \ingroup renderstates
@@ -58,7 +58,7 @@
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief The BlendEquation class specifies the equation used for both the RGB
-     blend equation and the Alpha blend equation
+     blend equation and the Alpha blend equation.
 
     The blend equation is used to determine how a new pixel is combined with a pixel
     already in the framebuffer.

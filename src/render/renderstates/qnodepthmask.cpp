@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::QNoDepthMask
-    \brief Disable depth write
+    \brief Disable depth write.
     \since 5.7
     \ingroup renderstates
     \inmodule Qt3DRender
@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype NoDepthMask
-    \brief Disable depth write
+    \brief Disable depth write.
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render

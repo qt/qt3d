@@ -58,7 +58,7 @@ QPropertyUpdatedChangePrivate::~QPropertyUpdatedChangePrivate()
  * \inheaderfile Qt3DCore/QPropertyUpdatedChange
  * \inherits Qt3DCore::QStaticPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
- * \brief The QPropertyUpdatedChange class is used to notify when a property value is updated
+ * \brief The QPropertyUpdatedChange class is used to notify when a property value is updated.
  *
  */
 

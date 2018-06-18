@@ -66,7 +66,7 @@ QNodeCommand::CommandId QNodeCommandPrivate::createId()
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
  * \since 5.10
- * \brief The QNodeCommand class is the base class for all CommandRequested QSceneChange events
+ * \brief The QNodeCommand class is the base class for all CommandRequested QSceneChange events.
  *
  * The QNodeCommand class is the base class for all QSceneChange events that
  * have the changeType() CommandRequested.

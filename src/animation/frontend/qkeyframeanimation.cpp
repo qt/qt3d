@@ -45,7 +45,7 @@ namespace Qt3DAnimation {
 
 /*!
     \class Qt3DAnimation::QKeyframeAnimation
-    \brief A class implementing simple keyframe animation to a QTransform
+    \brief A class implementing simple keyframe animation to a QTransform.
     \inmodule Qt3DAnimation
     \since 5.9
     \inherits Qt3DAnimation::QAbstractAnimation
@@ -60,7 +60,7 @@ namespace Qt3DAnimation {
 
 /*!
     \qmltype KeyframeAnimation
-    \brief A type implementing simple keyframe animation to a Transform
+    \brief A type implementing simple keyframe animation to a Transform.
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits AbstractAnimation

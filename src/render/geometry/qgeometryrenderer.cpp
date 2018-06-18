@@ -77,7 +77,7 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
     \inqmlmodule Qt3D.Render
     \inherits Component3D
     \since 5.7
-    \brief Encapsulates geometry rendering
+    \brief Encapsulates geometry rendering.
 
     A GeometryRenderer holds all the information necessary to draw
     a Geometry. A Geometry holds the coordinates of the geometry data -
@@ -88,7 +88,7 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
     \class Qt3DRender::QGeometryRenderer
     \inmodule Qt3DRender
     \since 5.7
-    \brief Encapsulates geometry rendering
+    \brief Encapsulates geometry rendering.
 
     A Qt3DRender::QGeometryRenderer holds all the information necessary to draw
     a Qt3DRender::QGeometry. A QGeometry holds the coordinates of the geometry data -

@@ -57,7 +57,7 @@ QArmaturePrivate::QArmaturePrivate()
     \inherits Component3D
     \instantiates Qt3DCore::QArmature
     \since 5.10
-    \brief Used to calculate skinning transform matrices and set them on shaders
+    \brief Used to calculate skinning transform matrices and set them on shaders.
 
     The Armature component is aggregated by entities to give them the ability to
     calculate the palette of skinning transform matrices needed to properly
@@ -86,7 +86,7 @@ QArmaturePrivate::QArmaturePrivate()
     \inmodule Qt3DCore
     \inherits Qt3DCore::QComponent
     \since 5.10
-    \brief Used to calculate skinning transform matrices and set them on shaders
+    \brief Used to calculate skinning transform matrices and set them on shaders.
 
     The Armature component is aggregated by entities to give them the ability to
     calculate the palette of skinning transform matrices needed to properly

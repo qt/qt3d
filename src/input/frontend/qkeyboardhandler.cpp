@@ -144,7 +144,7 @@ void QKeyboardHandlerPrivate::keyEvent(QKeyEvent *event)
 /*!
     \class Qt3DInput::QKeyboardHandler
     \inmodule Qt3DInput
-    \brief Provides keyboard event notification
+    \brief Provides keyboard event notification.
     \since 5.5
 */
 

@@ -43,7 +43,7 @@ namespace Qt3DAnimation {
 
 /*!
     \class Qt3DAnimation::QMorphingAnimation
-    \brief A class implementing blend-shape morphing animation
+    \brief A class implementing blend-shape morphing animation.
     \inmodule Qt3DAnimation
     \since 5.9
     \inherits Qt3DAnimation::QAbstractAnimation
@@ -66,7 +66,7 @@ namespace Qt3DAnimation {
 */
 /*!
     \qmltype MorphingAnimation
-    \brief A type implementing blend-shape morphing animation
+    \brief A type implementing blend-shape morphing animation.
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits AbstractAnimation

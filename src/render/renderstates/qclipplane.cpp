@@ -50,7 +50,7 @@ namespace Qt3DRender {
     \inmodule Qt3DRender
     \since 5.5
     \brief Enables an additional OpenGL clipping plane that can be in shaders
-    using gl_ClipDistance
+    using gl_ClipDistance.
 
     By default, OpenGL supports up to 8 additional clipping planes.
     Qt3DCore::QClipPlane allows to enable one of these additional planes. These
@@ -66,7 +66,7 @@ namespace Qt3DRender {
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief Enables an additional OpenGL clipping plane that can be in shaders
-    using gl_ClipDistance
+    using gl_ClipDistance.
 
     By default, OpenGL supports up to 8 additional clipping planes. ClipPlane
     allows to enable one of these additional planes. These planes can then be

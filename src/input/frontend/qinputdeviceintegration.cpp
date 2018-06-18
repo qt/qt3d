@@ -56,7 +56,7 @@ QInputDeviceIntegrationPrivate::QInputDeviceIntegrationPrivate()
     \class Qt3DInput::QInputDeviceIntegration
     \inmodule Qt3DInput
     \since 5.5
-    \brief Abstract base class used to define new input methods such as game controllers
+    \brief Abstract base class used to define new input methods such as game controllers.
 
 */
 

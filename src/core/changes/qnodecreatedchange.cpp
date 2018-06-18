@@ -58,7 +58,7 @@ QNodeCreatedChangeBasePrivate::QNodeCreatedChangeBasePrivate(const QNode *node)
  * \inheaderfile Qt3DCore/QNodeCreatedChangeBase
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
- * \brief The QNodeCreatedChangeBase class is the base class for all NodeCreated QSceneChange events
+ * \brief The QNodeCreatedChangeBase class is the base class for all NodeCreated QSceneChange events.
  *
  * The QNodeCreatedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() NodeCreated. You should not need to instantiate this class.

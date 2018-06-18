@@ -61,7 +61,7 @@ public:
     \class Qt3DRender::QPickPointEvent
     \inmodule Qt3DRender
 
-    \brief The QPickPointEvent class holds information when a segment of a point cloud is picked
+    \brief The QPickPointEvent class holds information when a segment of a point cloud is picked.
 
     \sa QPickEvent
     \since 5.10

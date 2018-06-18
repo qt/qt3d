@@ -52,7 +52,7 @@ namespace Qt3DRender {
  * \inheaderfile Qt3DRender/QRenderCapture
  * \inmodule Qt3DRender
  *
- * \brief Frame graph node for render capture
+ * \brief Frame graph node for render capture.
  *
  * The QRenderCapture is used to capture rendering into an image at any render stage.
  * Capturing must be initiated by the user and one image is returned per capture request.
@@ -68,7 +68,7 @@ namespace Qt3DRender {
  * \inherits FrameGraphNode
  * \inqmlmodule Qt3D.Render
  * \since 5.8
- * \brief Capture rendering
+ * \brief Capture rendering.
  */
 
 /*!

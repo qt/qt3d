@@ -83,7 +83,7 @@ void QAnimationClipLoaderPrivate::setStatus(QAnimationClipLoader::Status status)
     \class Qt3DAnimation::QAnimationClipLoader
     \inherits QAbstractAnimationClip
     \inmodule Qt3DAnimation
-    \brief Enables loading key frame animation data from a file
+    \brief Enables loading key frame animation data from a file.
 */
 
 QAnimationClipLoader::QAnimationClipLoader(Qt3DCore::QNode *parent)

@@ -48,7 +48,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QComputeCommand
     \since 5.7
     \inmodule Qt3DRender
-    \brief QComponent to issue work for the compute shader on GPU
+    \brief QComponent to issue work for the compute shader on GPU.
 
     A Qt3DRender::QComputeCommand is used to issue work for the compute shader.
     The compute shader is specified in the QMaterial component of the same entity the
@@ -69,7 +69,7 @@ namespace Qt3DRender {
     \inmodule Qt3DRender
     \inherits Component3D
     \instantiates Qt3DRender::QComputeCommand
-    \brief Component to issue work for the compute shader on GPU
+    \brief Component to issue work for the compute shader on GPU.
 
     A ComputeCommand is used to issue work for the compute shader.
     The compute shader is specified in the Material component of the same entity the

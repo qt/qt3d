@@ -114,7 +114,7 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
     \inherits Qt3DCore::QNode
     \inmodule Qt3DAnimation
     \brief Allows to map the channels within the clip onto properties of
-           objects in the application
+           objects in the application.
 
 */
 

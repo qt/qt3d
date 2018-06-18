@@ -49,7 +49,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QPickEvent
     \inmodule Qt3DRender
 
-    \brief The QPickEvent class holds information when an object is picked
+    \brief The QPickEvent class holds information when an object is picked.
 
     This is received as a parameter in most of the QObjectPicker component signals when picking
     succeeds.

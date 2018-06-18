@@ -50,7 +50,7 @@ namespace Qt3DRender {
     \inmodule Qt3DRender
     \since 5.9
     \ingroup framegraph
-    \brief Class to emplace a memory barrier
+    \brief Class to emplace a memory barrier.
 
     A Qt3DRender::QMemoryBarrier FrameGraph node is used to emplace a specific
     memory barrier at a specific time of the rendering. This is required to
@@ -76,7 +76,7 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QMemoryBarrier
     \inherits FrameGraphNode
     \since 5.9
-    \brief Class to place a memory barrier
+    \brief Class to place a memory barrier.
 
     A MemoryBarrier FrameGraph node is used to emplace a specific
     memory barrier at a specific time of the rendering. This is required to

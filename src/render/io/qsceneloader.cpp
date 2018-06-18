@@ -65,7 +65,7 @@ namespace Qt3DRender {
     \since 5.7
     \ingroup io
 
-    \brief Provides the facility to load an existing Scene
+    \brief Provides the facility to load an existing Scene.
 
     Given a 3D source file, the Qt3DRender::QSceneLoader will try to parse it and
     build a tree of Qt3DCore::QEntity objects with proper Qt3DRender::QGeometryRenderer,
@@ -97,7 +97,7 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QSceneLoader
     \inherits Component
     \since 5.7
-    \brief Provides the facility to load an existing Scene
+    \brief Provides the facility to load an existing Scene.
 
     Given a 3D source file, the SceneLoader will try to parse it and build a
     tree of Entity objects with proper GeometryRenderer, Transform and Material

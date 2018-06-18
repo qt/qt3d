@@ -109,7 +109,7 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
  * \instantiates Qt3DInput::QMouseHandler
  * \inqmlmodule Qt3D.Input
  * \since 5.5
- * \brief Provides mouse event notification
+ * \brief Provides mouse event notification.
  *
  * \TODO
  * \sa MouseDevice, MouseEvent

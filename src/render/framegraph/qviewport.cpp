@@ -57,7 +57,7 @@ QViewportPrivate::QViewportPrivate()
 /*!
     \class Qt3DRender::QViewport
     \inmodule Qt3DRender
-    \brief A viewport on the Qt3D Scene
+    \brief A viewport on the Qt3D Scene.
     \since 5.7
 
     \inherits Qt3DRender::QFrameGraphNode
@@ -73,7 +73,7 @@ QViewportPrivate::QViewportPrivate()
     \since 5.7
     \inherits FrameGraphNode
     \instantiates Qt3DRender::QViewport
-    \brief A viewport on the Qt3D Scene
+    \brief A viewport on the Qt3D Scene.
 
     Viewport of the scene specifies at which portion of the render surface Qt3D is
     rendering to. Area outside the viewport is left untouched. It also controls global parameters

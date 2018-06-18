@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::QAlphaTest
-    \brief The QAlphaTest class specify alpha reference test
+    \brief The QAlphaTest class specify alpha reference test.
     \since 5.7
     \inmodule Qt3DRender
     \ingroup renderstates
@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype AlphaTest
-    \brief The AlphaTest class specify alpha reference test
+    \brief The AlphaTest class specify alpha reference test.
     \since 5.7
     \inqmlmodule Qt3D.Render
     \inherits RenderState

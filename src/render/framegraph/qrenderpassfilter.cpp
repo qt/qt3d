@@ -57,7 +57,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QRenderPassFilter
     \inmodule Qt3DRender
     \since 5.7
-    \brief Provides storage for vectors of Filter Keys and Parameters
+    \brief Provides storage for vectors of Filter Keys and Parameters.
 
     A Qt3DRender::QRenderPassFilter FrameGraph node is used to select which
     Qt3DRender::QRenderPass objects are selected for drawing. QRenderPassFilter
@@ -76,7 +76,7 @@ namespace Qt3DRender {
     \since 5.7
     \instantiates Qt3DRender::QRenderPassFilter
     \inherits FrameGraphNode
-    \brief Provides storage for vectors of Filter Keys and Parameters
+    \brief Provides storage for vectors of Filter Keys and Parameters.
 
     A RenderPassFilter FrameGraph node is used to select which RenderPass
     objects are selected for drawing. When RenderPassFilter is present in the FrameGraph,

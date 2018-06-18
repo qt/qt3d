@@ -53,7 +53,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QRenderTargetSelector
     \inmodule Qt3DRender
     \since 5.7
-    \brief Provides a way of specifying a render target
+    \brief Provides a way of specifying a render target.
 
     A Qt3DRender::QRenderTargetSelector is used to select active Qt3DRender::QRenderTarget
     for the FrameGraph. When QRenderTargetSelector is present in the FrameGraph,
@@ -70,7 +70,7 @@ namespace Qt3DRender {
     \since 5.7
     \instantiates Qt3DRender::QRenderTargetSelector
     \inherits FrameGraphNode
-    \brief Provides a way of specifying a render target
+    \brief Provides a way of specifying a render target.
 
     A RenderTargetSelector is used to select active RenderTarget
     for the FrameGraph. When RenderTargetSelector is present in the FrameGraph,

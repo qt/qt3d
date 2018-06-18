@@ -53,7 +53,7 @@ QChannelMapperPrivate::QChannelMapperPrivate()
     \class QChannelMapper
     \inmodule Qt3DAnimation
     \brief Allows to map the channels within the clip onto properties of
-    objects in the application
+    objects in the application.
 
 */
 QChannelMapper::QChannelMapper(Qt3DCore::QNode *parent)

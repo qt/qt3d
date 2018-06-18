@@ -58,7 +58,7 @@ QDynamicPropertyUpdatedChangePrivate::~QDynamicPropertyUpdatedChangePrivate()
  * \inheaderfile Qt3DCore/QDynamicPropertyUpdatedChange
  * \inherits Qt3DCore::QPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
- * \brief The QDynamicPropertyUpdatedChange class is used to notify when a dynamic property value is updated
+ * \brief The QDynamicPropertyUpdatedChange class is used to notify when a dynamic property value is updated.
  *
  */
 

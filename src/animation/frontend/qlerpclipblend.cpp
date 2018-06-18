@@ -48,7 +48,7 @@ namespace Qt3DAnimation {
     \inqmlmodule Qt3D.Animation
 
     \brief Performs a linear interpolation of two animation clips based on a
-    normalized factor
+    normalized factor.
 
     \since 5.9
 

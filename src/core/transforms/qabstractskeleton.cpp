@@ -65,7 +65,7 @@ const QAbstractSkeletonPrivate *QAbstractSkeletonPrivate::get(const QAbstractSke
     \inherits Node
     \instantiates Qt3DCore::QAbstractSkeleton
     \since 5.10
-    \brief A skeleton contains the joints for a skinned mesh
+    \brief A skeleton contains the joints for a skinned mesh.
 
     Do not use this class directly. You should use SkeletonLoader if loading
     skeleton data from a file (most likely) or Skeleton if creating the
@@ -78,7 +78,7 @@ const QAbstractSkeletonPrivate *QAbstractSkeletonPrivate::get(const QAbstractSke
     \inmodule Qt3DCore
     \inherits Qt3DCore::QNode
     \since 5.10
-    \brief A skeleton contains the joints for a skinned mesh
+    \brief A skeleton contains the joints for a skinned mesh.
 
     Do not use this class directly. You should use QSkeletonLoader if loading
     skeleton data from a file (most likely) or QSkeleton if creating the

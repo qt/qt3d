@@ -177,7 +177,7 @@ namespace Qt3DRender {
  * \inheaderfile Qt3DRender/QRenderAspect
  * \brief The QRenderAspect class
  * \since 5.7
- * \inmodule Qt3DRender
+ * \inmodule Qt3DRender.
  */
 
 /*! \internal */

@@ -63,7 +63,7 @@ QComponentAddedChangePrivate::QComponentAddedChangePrivate(const QEntity *entity
  * \inheaderfile Qt3DCore/QComponentAddedChange
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
- * \brief The QComponentAddedChange class is used to notify when a component is added to an entity
+ * \brief The QComponentAddedChange class is used to notify when a component is added to an entity.
  *
  */
 

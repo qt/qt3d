@@ -47,7 +47,7 @@ namespace Qt3DRender {
     \inmodule Qt3DRender
     \since 5.7
     \ingroup framegraph
-    \brief Enable frustum culling for the FrameGraph
+    \brief Enable frustum culling for the FrameGraph.
 
     A QFrustumCulling class enables frustum culling of the drawable entities based on
     the camera view and QGeometry bounds of the entities. If QFrustumCulling is present in
@@ -66,7 +66,7 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QFrustumCulling
     \inherits FrameGraphNode
     \since 5.7
-    \brief Enable frustum culling for the FrameGraph
+    \brief Enable frustum culling for the FrameGraph.
 
     A FrustumCulling type enables frustum culling of the drawable entities based on
     the camera view and Geometry bounds of the entities. If FrustumCulling is present in

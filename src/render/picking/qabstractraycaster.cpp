@@ -86,7 +86,7 @@ void QAbstractRayCasterPrivate::dispatchHits(const QAbstractRayCaster::Hits &hit
 
 /*!
     \class Qt3DRender::QAbstractRayCaster
-    \brief An abstract base class for ray casting in 3d scenes
+    \brief An abstract base class for ray casting in 3d scenes.
     \inmodule Qt3DRender
     \since 5.11
     \inherits QComponent
@@ -117,7 +117,7 @@ void QAbstractRayCasterPrivate::dispatchHits(const QAbstractRayCaster::Hits &hit
 */
 /*!
     \qmltype AbstractRayCaster
-    \brief An abstract base class for ray casting in 3d scenes
+    \brief An abstract base class for ray casting in 3d scenes.
     \inqmlmodule Qt3D.Render
     \since 5.11
     \instantiates Qt3DRender::QAbstractRayCaster
