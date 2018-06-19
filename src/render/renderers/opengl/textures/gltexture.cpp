@@ -151,8 +151,15 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
         int maxMipLevel = 0;
         for (const Image &img : qAsConst(m_images)) {
             const QTextureImageDataPtr imgData = m_textureImageDataManager->getData(img.generator);
+            // imgData may be null in the following cases:
+            // - Texture is created with TextureImages which have yet to be
+            // loaded (skybox where you don't yet know the path, source set by
+            // a property binding, queued connection ...)
+            // - TextureImage whose generator failed to return a valid data
+            // (invalid url, error opening file...)
+            if (imgData.isNull())
+                continue;
 
-            Q_ASSERT(imgData);
             m_imageData.push_back(imgData);
             maxMipLevel = qMax(maxMipLevel, img.mipLevel);
 

@@ -69,6 +69,7 @@ namespace Qt3DRender {
 
 QPaintedTextureImagePrivate::QPaintedTextureImagePrivate()
     : m_imageSize(256,256)
+    , m_devicePixelRatio(1.0)
     , m_generation(0)
 {
 }
@@ -80,8 +81,13 @@ QPaintedTextureImagePrivate::~QPaintedTextureImagePrivate()
 void QPaintedTextureImagePrivate::repaint()
 {
     // create or re-allocate QImage with current size
-    if (m_image.isNull() || (m_image->size() != m_imageSize))
+    if (m_image.isNull()
+            || m_image->size() != m_imageSize
+            || m_image->devicePixelRatio() != m_devicePixelRatio)
+    {
         m_image.reset(new QImage(m_imageSize, QImage::Format_RGBA8888));
+        m_image->setDevicePixelRatio(m_devicePixelRatio);
+    }
 
     QPainter painter(m_image.data());
     q_func()->paint(&painter);

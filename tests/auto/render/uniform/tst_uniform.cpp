@@ -143,6 +143,15 @@ private Q_SLOTS:
                 }
             }
         }
+        {
+            // GIVEN
+            const Qt3DCore::QNodeId nodeId = Qt3DCore::QNodeId::createId();
+            UniformValue v(nodeId);
+
+            // THEN
+            QCOMPARE(v.byteSize(), sizeof(Qt3DCore::QNodeId));
+            QCOMPARE(v.constData<Qt3DCore::QNodeId>()[0], nodeId);
+        }
     }
 
     void checkFromVariant()
