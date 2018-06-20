@@ -329,7 +329,8 @@ void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObj
                   qUtf16PrintableImpl(bufferData.path), qUtf16PrintableImpl(id));
     }
 
-    Qt3DRender::QBuffer *b(new Qt3DRender::QBuffer(ty));
+    Qt3DRender::QBuffer *b = new Qt3DRender::QBuffer();
+    b->setType(ty);
     b->setData(bytes);
     m_gltf1.m_buffers[id] = b;
 }

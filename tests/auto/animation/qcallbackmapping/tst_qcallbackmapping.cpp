@@ -125,7 +125,7 @@ private Q_SLOTS:
             QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::CallbackMapping);
             QCOMPARE(mapping.channelName(), data.channelName);
             QCOMPARE(mapping.callback(), data.callback);
-            QCOMPARE(QVariant::Vector3D, data.type);
+            QCOMPARE(int(QVariant::Vector3D), data.type);
         }
 
         // WHEN
@@ -194,7 +194,7 @@ private Q_SLOTS:
             auto change = arbiter.events.at(0).staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "type");
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toInt(), QVariant::Vector3D);
+            QCOMPARE(change->value().toInt(), int(QVariant::Vector3D));
 
             change = arbiter.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "callback");

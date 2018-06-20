@@ -1167,7 +1167,8 @@ void GLTFImporter::processJSONBufferView(const QString &id, const QJsonObject& j
                   qUtf16PrintableImpl(bufferData.path), qUtf16PrintableImpl(id));
     }
 
-    Qt3DRender::QBuffer *b(new Qt3DRender::QBuffer(ty));
+    Qt3DRender::QBuffer *b = new Qt3DRender::QBuffer();
+    b->setType(ty);
     b->setData(bytes);
     m_buffers[id] = b;
 }

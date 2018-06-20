@@ -149,7 +149,7 @@ private Q_SLOTS:
             UniformValue v(nodeId);
 
             // THEN
-            QCOMPARE(v.byteSize(), sizeof(Qt3DCore::QNodeId));
+            QCOMPARE(uint(v.byteSize()), sizeof(Qt3DCore::QNodeId));
             QCOMPARE(v.constData<Qt3DCore::QNodeId>()[0], nodeId);
         }
     }

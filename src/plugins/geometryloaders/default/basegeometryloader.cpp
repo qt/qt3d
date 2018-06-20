@@ -151,7 +151,8 @@ void BaseGeometryLoader::generateGeometry()
         }
     } // of buffer filling loop
 
-    QBuffer *buf(new QBuffer(QBuffer::VertexBuffer));
+    QBuffer *buf = new QBuffer();
+    buf->setType(QBuffer::VertexBuffer);
     buf->setData(bufferBytes);
 
     if (m_geometry)
@@ -197,7 +198,8 @@ void BaseGeometryLoader::generateGeometry()
         memcpy(indexBytes.data(), reinterpret_cast<const char*>(m_indices.data()), indexBytes.size());
     }
 
-    QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
+    QBuffer *indexBuffer = new QBuffer();
+    indexBuffer->setType(QBuffer::IndexBuffer);
     indexBuffer->setData(indexBytes);
     QAttribute *indexAttribute = new QAttribute(indexBuffer, ty, 1, m_indices.size());
     indexAttribute->setAttributeType(QAttribute::IndexAttribute);
