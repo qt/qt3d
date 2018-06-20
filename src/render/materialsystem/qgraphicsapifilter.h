@@ -64,10 +64,10 @@ class QT3DRENDERSHARED_EXPORT QGraphicsApiFilter : public QObject
 public:
 
     enum Api {
-        OpenGLES = QSurfaceFormat::OpenGLES,
-        OpenGL = QSurfaceFormat::OpenGL,
-        Vulkan,
-        DirectX
+        OpenGLES = QSurfaceFormat::OpenGLES, // 2
+        OpenGL = QSurfaceFormat::OpenGL,     // 1
+        Vulkan = 3,                          // 3
+        DirectX                              // 4
     };
     Q_ENUM(Api) // LCOV_EXCL_LINE
 
