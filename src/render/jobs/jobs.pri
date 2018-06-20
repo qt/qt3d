@@ -30,7 +30,8 @@ HEADERS += \
     $$PWD/updateskinningpalettejob_p.h \
     $$PWD/filterproximitydistancejob_p.h \
     $$PWD/abstractpickingjob_p.h \
-    $$PWD/raycastingjob_p.h
+    $$PWD/raycastingjob_p.h \
+    $$PWD/updateentitylayersjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -59,5 +60,6 @@ SOURCES += \
     $$PWD/updateskinningpalettejob.cpp \
     $$PWD/filterproximitydistancejob.cpp \
     $$PWD/abstractpickingjob.cpp \
-    $$PWD/raycastingjob.cpp
+    $$PWD/raycastingjob.cpp \
+    $$PWD/updateentitylayersjob.cpp
 
