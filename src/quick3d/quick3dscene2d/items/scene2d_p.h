@@ -123,6 +123,9 @@ public:
     Qt3DRender::Quick::QScene2D::RenderPolicy m_renderPolicy;
     QVector<Qt3DCore::QNodeId> m_entities;
     Qt3DRender::QPickEventPtr m_cachedPickEvent;
+#ifdef QT_OPENGL_ES_2_ANGLE
+    bool m_usingAngle;
+#endif
 };
 
 } // Quick
