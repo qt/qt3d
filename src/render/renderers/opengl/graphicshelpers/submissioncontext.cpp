@@ -60,6 +60,7 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/renderbuffer_p.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 #include <QOpenGLShaderProgram>
 
 #if !defined(QT_OPENGL_ES_2)
@@ -1251,6 +1252,8 @@ void SubmissionContext::clearStencilValue(int stencil)
 // than the other way around
 bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
 {
+    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight.irradiance"));
+    static const int specularId = StringToInt::lookupId(QLatin1String("envLight.specular"));
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
 
@@ -1272,8 +1275,13 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
                 Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
                 const int texUnit = activateTexture(TextureScopeMaterial, t);
                 texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
-                if (texUnit == -1)
-                    return false;
+                if (texUnit == -1) {
+                    if (namedTex.glslNameId != irradianceId &&
+                        namedTex.glslNameId != specularId) {
+                        // Only return false if we are not dealing with env light textures
+                        return false;
+                    }
+                }
             }
         }
     }
