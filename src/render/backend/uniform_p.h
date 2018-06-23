@@ -181,7 +181,7 @@ public:
 
     // For nodes which will later be replaced by a Texture or Buffer
     UniformValue(Qt3DCore::QNodeId id)
-        : UniformValue()
+        : m_data(sizeof(Qt3DCore::QNodeId) / sizeof(float))
     {
         m_valueType = NodeId;
         memcpy(m_data.data(), &id, sizeof(Qt3DCore::QNodeId));

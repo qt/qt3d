@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::QStencilOperation
-    \brief The QStencilOperation class specifies stencil operation
+    \brief The QStencilOperation class specifies stencil operation.
     \since 5.7
     \ingroup renderstates
     \inmodule Qt3DRender
@@ -63,7 +63,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype StencilOperation
-    \brief The StencilOperation type specifies stencil operation
+    \brief The StencilOperation type specifies stencil operation.
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render

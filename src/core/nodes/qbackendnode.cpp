@@ -100,7 +100,7 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
  * \inheaderfile Qt3DCore/QBackendNodeMapper
  * \inmodule Qt3DCore
  *
- * \brief Creates and maps backend nodes to their respective frontend nodes
+ * \brief Creates and maps backend nodes to their respective frontend nodes.
  */
 
 /*!
@@ -130,7 +130,7 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
  * \inheaderfile Qt3DCore/QBackendNode
  * \inmodule Qt3DCore
  *
- * \brief The base class for all Qt3D backend nodes
+ * \brief The base class for all Qt3D backend nodes.
  */
 
 /*!

@@ -59,7 +59,7 @@ QSkeletonPrivate::QSkeletonPrivate()
     \inherits AbstractSkeleton
     \instantiates Qt3DCore::QSkeleton
     \since 5.10
-    \brief Holds the data for a skeleton to be used with skinned meshes
+    \brief Holds the data for a skeleton to be used with skinned meshes.
 
     Use Skeleton if you wish to manually create the joints of a skeleton for
     use with skinned meshes. This is mainly of use to people creating editors,
@@ -80,7 +80,7 @@ QSkeletonPrivate::QSkeletonPrivate()
     \inmodule Qt3DCore
     \inherits Qt3DCore::QAbstractSkeleton
     \since 5.10
-    \brief Holds the data for a skeleton to be used with skinned meshes
+    \brief Holds the data for a skeleton to be used with skinned meshes.
 
     Use QSkeleton if you wish to manually create the joints of a skeleton for
     use with skinned meshes. This is mainly of use to people creating editors,

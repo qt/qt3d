@@ -69,7 +69,7 @@ QTransformPrivate::~QTransformPrivate()
     \inherits Component3D
     \instantiates Qt3DCore::QTransform
     \since 5.6
-    \brief Used to perform transforms on meshes
+    \brief Used to perform transforms on meshes.
 
     The Transform component is not shareable between multiple Entity's.
     The transformation is held as vector3d scale, quaternion rotation and
@@ -184,7 +184,7 @@ QTransformPrivate::~QTransformPrivate()
     \inmodule Qt3DCore
     \inherits Qt3DCore::QComponent
     \since 5.6
-    \brief Used to perform transforms on meshes
+    \brief Used to perform transforms on meshes.
 
     The QTransform component is not shareable between multiple QEntity's.
     The transformation is held as QVector3D scale, QQuaternion rotation and

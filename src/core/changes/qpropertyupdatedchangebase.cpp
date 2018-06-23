@@ -63,7 +63,7 @@ QPropertyUpdatedChangeBasePrivate *QPropertyUpdatedChangeBasePrivate::get(QPrope
  * \class Qt3DCore::QPropertyUpdatedChangeBase
  * \inheaderfile Qt3DCore/QPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
- * \brief The QPropertyUpdatedChangeBase class is the base class for all PropertyUpdated QSceneChange events
+ * \brief The QPropertyUpdatedChangeBase class is the base class for all PropertyUpdated QSceneChange events.
  *
  * The QPropertyUpdatedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() PropertyUpdated. You should not need to instantiate this class.

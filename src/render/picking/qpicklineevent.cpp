@@ -65,7 +65,7 @@ public:
     \class Qt3DRender::QPickLineEvent
     \inmodule Qt3DRender
 
-    \brief The QPickLineEvent class holds information when a segment of a line is picked
+    \brief The QPickLineEvent class holds information when a segment of a line is picked.
 
     \sa QPickEvent
     \since 5.10

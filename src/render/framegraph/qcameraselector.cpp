@@ -54,7 +54,7 @@ namespace Qt3DRender {
     \since 5.5
     \ingroup framegraph
 
-    \brief Class to allow for selection of camera to be used
+    \brief Class to allow for selection of camera to be used.
 
     A Qt3DRender::QCameraSelector can be used to select the camera, which is used
     by the FrameGraph when drawing the entities.
@@ -66,7 +66,7 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QCameraSelector
     \inherits FrameGraphNode
     \since 5.5
-    \brief Class to allow for selection of camera to be used
+    \brief Class to allow for selection of camera to be used.
 
     A CameraSelector can be used to select the camera, which is used
     by the FrameGraph when drawing the entities.

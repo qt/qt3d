@@ -43,7 +43,7 @@ namespace Qt3DAnimation {
 
 /*!
     \class Qt3DAnimation::QAnimationGroup
-    \brief A class grouping animations together
+    \brief A class grouping animations together.
     \inmodule Qt3DAnimation
     \since 5.9
     \inherits QObject
@@ -55,7 +55,7 @@ namespace Qt3DAnimation {
 */
 /*!
     \qmltype AnimationGroup
-    \brief A type grouping animations together
+    \brief A type grouping animations together.
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits QObject

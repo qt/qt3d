@@ -29,7 +29,7 @@
     \example advancedcustommaterial
     \title Qt 3D: Advanced Custom Material QML Example
     \ingroup qt3d-examples-qml
-    \brief Demonstrates creating advanced materials in Qt3D
+    \brief Demonstrates creating advanced materials in Qt3D.
 
     \image advanced-custom-material.jpg
 

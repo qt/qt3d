@@ -29,7 +29,7 @@
     \example scene2d
     \title Qt 3D: Scene2D QML Example
     \ingroup qt3d-examples-qml
-    \brief A QML application that demonstrates using Qt Quick 2 within a Qt 3D scene
+    \brief A QML application that demonstrates using Qt Quick 2 within a Qt 3D scene.
 
     \image scene2d.png
 

@@ -64,7 +64,7 @@ QJointPrivate::QJointPrivate()
     \inherits Node
     \instantiates Qt3DCore::QJoint
     \since 5.10
-    \brief Used to transforms parts of skinned meshes
+    \brief Used to transforms parts of skinned meshes.
 
     The Joint node is used to build skeletons as part of the skinned mesh
     support in Qt 3D. A joint can be transformed by way of its scale, rotation
@@ -122,7 +122,7 @@ QJointPrivate::QJointPrivate()
     \inmodule Qt3DCore
     \inherits Qt3DCore::QNode
     \since 5.10
-    \brief Used to transforms parts of skinned meshes
+    \brief Used to transforms parts of skinned meshes.
 
     The QJoint node is used to build skeletons as part of the skinned mesh
     support in Qt 3D. A joint can be transformed by way of its scale, rotation

@@ -128,7 +128,7 @@ private:
     \inqmlmodule Qt3D.Core
     \inherits Entity
     \since 5.5
-    \brief Provides a way to dynamically load an Entity subtree
+    \brief Provides a way to dynamically load an Entity subtree.
 
     An EntityLoader provides the facitily to load predefined set of entities
     from qml source file. EntityLoader itself is an entity and the loaded entity

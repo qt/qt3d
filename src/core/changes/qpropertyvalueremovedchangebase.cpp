@@ -58,7 +58,7 @@ QPropertyValueRemovedChangeBasePrivate::~QPropertyValueRemovedChangeBasePrivate(
  * \class Qt3DCore::QPropertyValueRemovedChangeBase
  * \inheaderfile Qt3DCore/QPropertyValueRemovedChangeBase
  * \inmodule Qt3DCore
- * \brief The QPropertyValueRemovedChangeBase class is the base class for all PropertyValueRemoved QSceneChange events
+ * \brief The QPropertyValueRemovedChangeBase class is the base class for all PropertyValueRemoved QSceneChange events.
  *
  * The QPropertyValueRemovedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() PropertyValueRemoved. You should not need to instantiate this class.

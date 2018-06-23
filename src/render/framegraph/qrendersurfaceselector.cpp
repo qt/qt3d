@@ -55,7 +55,7 @@ namespace Qt3DRender {
 /*!
     \class Qt3DRender::QRenderSurfaceSelector
     \inmodule Qt3DRender
-    \brief Provides a way of specifying the render surface
+    \brief Provides a way of specifying the render surface.
     \since 5.7
 
     The Qt3DRender::QRenderSurfaceSelector can be used to select the surface, where
@@ -77,7 +77,7 @@ namespace Qt3DRender {
     \since 5.7
     \instantiates Qt3DRender::QRenderSurfaceSelector
     \inherits FrameGraphNode
-    \brief Provides a way of specifying the render surface
+    \brief Provides a way of specifying the render surface.
 
     The RenderSurfaceSelector can be used to select the surface, where
     Qt3D renders the content. The surface can either be window surface or offscreen

@@ -50,7 +50,7 @@ namespace Qt3DRender {
     \inmodule Qt3DRender
     \since 5.7
     \ingroup framegraph
-    \brief Class to clear buffers
+    \brief Class to clear buffers.
 
     A Qt3DRender::QClearBuffers FrameGraph node enables clearing of the specific
     render target buffers with specific values.
@@ -62,7 +62,7 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QClearBuffers
     \inherits FrameGraphNode
     \since 5.7
-    \brief Class to clear buffers
+    \brief Class to clear buffers.
 
     A Qt3DRender::QClearBuffers FrameGraph node enables clearing of the specific
     render target buffers with specific values.

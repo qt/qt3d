@@ -49,7 +49,7 @@ namespace Qt3DRender {
     \inmodule Qt3DRender
     \since 5.7
     \ingroup framegraph
-    \brief FrameGraph node to issue work for the compute shader on GPU
+    \brief FrameGraph node to issue work for the compute shader on GPU.
 
     A Qt3DRender::QDispatchCompute allows work to be issued for the compute shader to
     run on the GPU. The workGroupX, workGroupY and workGroupZ properties specify the work group
@@ -66,7 +66,7 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QDispatchCompute
     \inherits FrameGraphNode
     \since 5.7
-    \brief FrameGraph node to issue work for the compute shader on GPU
+    \brief FrameGraph node to issue work for the compute shader on GPU.
 
     A DispatchCompute allows work to be issued for the compute shader to run on the GPU.
     The workGroupX, workGroupY and workGroupZ properties specify the work group sizes for

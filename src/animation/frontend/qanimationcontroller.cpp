@@ -45,7 +45,7 @@ namespace Qt3DAnimation {
 
 /*!
     \class Qt3DAnimation::QAnimationController
-    \brief A controller class for animations
+    \brief A controller class for animations.
     \inmodule Qt3DAnimation
     \since 5.9
     \inherits QObject
@@ -64,7 +64,7 @@ namespace Qt3DAnimation {
 
 /*!
     \qmltype AnimationController
-    \brief A controller type for animations
+    \brief A controller type for animations.
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \instantiates Qt3DAnimation::QAnimationController

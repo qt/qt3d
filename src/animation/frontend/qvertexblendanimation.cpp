@@ -44,7 +44,7 @@ namespace Qt3DAnimation {
 
 /*!
     \class Qt3DAnimation::QVertexBlendAnimation
-    \brief A class implementing vertex-blend morphing animation
+    \brief A class implementing vertex-blend morphing animation.
     \inmodule Qt3DAnimation
     \since 5.9
     \inherits Qt3DAnimation::QAbstractAnimation
@@ -69,7 +69,7 @@ namespace Qt3DAnimation {
 */
 /*!
     \qmltype VertexBlendAnimation
-    \brief A type implementing vertex-blend morphing animation
+    \brief A type implementing vertex-blend morphing animation.
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits AbstractAnimation

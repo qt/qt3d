@@ -177,7 +177,7 @@ namespace Qt3DRender {
  * \inheaderfile Qt3DRender/QRenderAspect
  * \brief The QRenderAspect class
  * \since 5.7
- * \inmodule Qt3DRender
+ * \inmodule Qt3DRender.
  */
 
 /*! \internal */
@@ -249,7 +249,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QGeometry>(QSharedPointer<Render::NodeFunctor<Render::Geometry, Render::GeometryManager> >::create(m_renderer));
     q->registerBackendType<QGeometryRenderer>(QSharedPointer<Render::GeometryRendererFunctor>::create(m_renderer, m_nodeManagers->geometryRendererManager()));
     q->registerBackendType<Qt3DCore::QArmature>(QSharedPointer<Render::NodeFunctor<Render::Armature, Render::ArmatureManager>>::create(m_renderer));
-    q->registerBackendType<Qt3DCore::QSkeletonLoader>(QSharedPointer<Render::SkeletonFunctor>::create(m_renderer, m_nodeManagers->skeletonManager(), m_nodeManagers->jointManager()));
+    q->registerBackendType<Qt3DCore::QAbstractSkeleton>(QSharedPointer<Render::SkeletonFunctor>::create(m_renderer, m_nodeManagers->skeletonManager(), m_nodeManagers->jointManager()));
     q->registerBackendType<Qt3DCore::QJoint>(QSharedPointer<Render::JointFunctor>::create(m_renderer, m_nodeManagers->jointManager(), m_nodeManagers->skeletonManager()));
 
     // Textures
@@ -324,6 +324,9 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QComputeCommand>();
     unregisterBackendType<QGeometry>();
     unregisterBackendType<QGeometryRenderer>();
+    unregisterBackendType<Qt3DCore::QArmature>();
+    unregisterBackendType<Qt3DCore::QAbstractSkeleton>();
+    unregisterBackendType<Qt3DCore::QJoint>();
 
     // Textures
     unregisterBackendType<QAbstractTexture>();

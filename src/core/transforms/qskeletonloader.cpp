@@ -74,7 +74,7 @@ void QSkeletonLoaderPrivate::setStatus(QSkeletonLoader::Status status)
     \inherits AbstractSkeleton
     \instantiates Qt3DCore::QSkeletonLoader
     \since 5.10
-    \brief Used to load a skeleton of joints from file
+    \brief Used to load a skeleton of joints from file.
 
     Use SkeletonLoader if you wish to load a whole skeleton from file rather
     than creating the joints yourself using Skeleton and Joints. Creating a
@@ -101,7 +101,7 @@ void QSkeletonLoaderPrivate::setStatus(QSkeletonLoader::Status status)
     \inmodule Qt3DCore
     \inherits Qt3DCore::QAbstractSkeleton
     \since 5.10
-    \brief Used to load a skeleton of joints from file
+    \brief Used to load a skeleton of joints from file.
 
     Use SkeletonLoader if you wish to load a whole skeleton from file rather
     than creating the joints yourself using Skeleton and Joints. Creating a

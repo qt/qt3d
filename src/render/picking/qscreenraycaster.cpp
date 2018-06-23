@@ -50,7 +50,7 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::QScreenRayCaster
-    \brief Performe ray casting test based on screen coordinates
+    \brief Performe ray casting test based on screen coordinates.
     \inmodule Qt3DRender
     \since 5.11
     \inherits QAbstractRayCaster
@@ -63,7 +63,7 @@ namespace Qt3DRender {
 */
 /*!
     \qmltype ScreenRayCaster
-    \brief Performe ray casting test based on screen coordinates
+    \brief Performe ray casting test based on screen coordinates.
     \inqmlmodule Qt3D.Render
     \since 5.11
     \instantiates Qt3DRender::QScreenRayCaster

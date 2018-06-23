@@ -73,7 +73,7 @@ QAspectJob::QAspectJob()
  * \class Qt3DCore::QAspectJob
  * \inheaderfile Qt3DCore/QAspectJob
  * \inmodule Qt3DCore
- * \brief The base class for jobs executed in an aspect
+ * \brief The base class for jobs executed in an aspect.
  */
 
 /*!

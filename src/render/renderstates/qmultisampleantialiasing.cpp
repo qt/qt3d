@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::QMultiSampleAntiAliasing
-    \brief Enable multisample antialiasing
+    \brief Enable multisample antialiasing.
     \since 5.7
     \ingroup renderstates
     \inmodule Qt3DRender
@@ -108,7 +108,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype MultiSampleAntiAliasing
-    \brief Enable multisample antialiasing
+    \brief Enable multisample antialiasing.
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render

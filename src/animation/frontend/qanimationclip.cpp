@@ -54,7 +54,7 @@ QAnimationClipPrivate::QAnimationClipPrivate()
     \class QAnimationClip
     \inherits QAbstractAnimationClip
     \inmodule Qt3DAnimation
-    \brief Specifies key frame animation data
+    \brief Specifies key frame animation data.
 */
 QAnimationClip::QAnimationClip(Qt3DCore::QNode *parent)
     : QAbstractAnimationClip(*new QAnimationClipPrivate, parent)

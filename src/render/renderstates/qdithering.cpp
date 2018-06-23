@@ -51,7 +51,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QDithering
     \since 5.7
     \inmodule Qt3DRender
-    \brief Enable dithering
+    \brief Enable dithering.
 
     A Qt3DRender::QDithering class enables dithering. Dithering adds noise to the
     color values to randomize quantization error in order to prevent large scale
@@ -65,7 +65,7 @@ namespace Qt3DRender {
     \inqmlmodule Qt3D.Render
     \inherits RenderState
     \instantiates Qt3DRender::QDithering
-    \brief Enable dithering
+    \brief Enable dithering.
 
     A Dithering type enables dithering. Dithering adds noise to the
     color values to randomize quantization error in order to prevent large scale

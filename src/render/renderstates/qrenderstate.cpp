@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::QRenderState
-    \brief An abstract base class for all render states
+    \brief An abstract base class for all render states.
     \since 5.7
     \ingroup renderstates
     \inmodule Qt3DRender
@@ -59,7 +59,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype RenderState
-    \brief An abstract base type for all render states
+    \brief An abstract base type for all render states.
     \since 5.7
     \inherits Node
     \instantiates Qt3DRender::QRenderState

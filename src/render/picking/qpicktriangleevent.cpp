@@ -68,7 +68,7 @@ public:
     \class Qt3DRender::QPickTriangleEvent
     \inmodule Qt3DRender
 
-    \brief The QPickTriangleEvent class holds information when a triangle is picked
+    \brief The QPickTriangleEvent class holds information when a triangle is picked.
 
     When QPickingSettings::pickMode() is set to QPickingSettings::TrianglePicking, the signals
     on QObjectPicker will carry an instance of QPickTriangleEvent.

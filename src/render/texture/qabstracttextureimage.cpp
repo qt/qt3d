@@ -52,7 +52,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QTextureImageDataGenerator
     \inmodule Qt3DRender
     \since 5.7
-    \brief Provides texture image data for QAbstractTextureImage
+    \brief Provides texture image data for QAbstractTextureImage.
 
     QTextureImageDataGenerator is a data provider for QAbstractTexture.
     QTextureImageDataGenerator can be used to expand Qt3D with more ways to load

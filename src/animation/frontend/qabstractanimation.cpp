@@ -43,7 +43,7 @@ namespace Qt3DAnimation {
 
 /*!
     \class Qt3DAnimation::QAbstractAnimation
-    \brief An abstract base class for Qt3D animations
+    \brief An abstract base class for Qt3D animations.
     \inmodule Qt3DAnimation
     \since 5.9
     \inherits QObject
@@ -57,7 +57,7 @@ namespace Qt3DAnimation {
 
 /*!
     \qmltype AbstractAnimation
-    \brief An abstract base type for Qt3D animations
+    \brief An abstract base type for Qt3D animations.
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \instantiates Qt3DAnimation::QAbstractAnimation

@@ -82,7 +82,7 @@ QRayCasterHitData::QRayCasterHitData(QRayCasterHit::HitType type, Qt3DCore::QNod
 
 /*!
     \class Qt3DRender::QRayCasterHit
-    \brief Details of a hit when casting a ray through a model
+    \brief Details of a hit when casting a ray through a model.
     \inmodule Qt3DRender
     \since 5.11
 

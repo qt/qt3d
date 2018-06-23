@@ -43,7 +43,7 @@ namespace Qt3DAnimation {
 
 /*!
     \class Qt3DAnimation::QMorphTarget
-    \brief A class providing morph targets to blend-shape animation
+    \brief A class providing morph targets to blend-shape animation.
     \inmodule Qt3DAnimation
     \since 5.9
     \inherits QObject
@@ -56,7 +56,7 @@ namespace Qt3DAnimation {
 */
 /*!
     \qmltype MorphTarget
-    \brief A type providing morph targets to blend-shape animation
+    \brief A type providing morph targets to blend-shape animation.
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits QtObject

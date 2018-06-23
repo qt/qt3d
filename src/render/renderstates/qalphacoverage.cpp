@@ -50,7 +50,7 @@ namespace Qt3DRender {
     \since 5.7
     \ingroup renderstates
     \inmodule Qt3DRender
-    \brief Enable alpha-to-coverage multisampling mode
+    \brief Enable alpha-to-coverage multisampling mode.
 
     A Qt3DRender::QAlphaCoverage class enables alpha-to-coverage multisampling mode.
     When enabled, the fragment alpha value is used as a coverage for the sample
@@ -97,7 +97,7 @@ namespace Qt3DRender {
     \inqmlmodule Qt3D.Render
     \instantiates Qt3DRender::QAlphaCoverage
     \inherits RenderState
-    \brief Enable alpha-to-coverage multisampling mode
+    \brief Enable alpha-to-coverage multisampling mode.
 
     An AlphaCoverage type enables alpha-to-coverage multisampling mode.
     When enabled, the fragment alpha value is used as a coverage for the sample

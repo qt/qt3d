@@ -56,7 +56,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 /*!
     \class Qt3DRender::QSortPolicy
     \inmodule Qt3DRender
-    \brief Provides storage for the sort types to be used
+    \brief Provides storage for the sort types to be used.
     \since 5.7
 
     \inherits Qt3DRender::QFrameGraphNode
@@ -75,7 +75,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     \since 5.7
     \instantiates Qt3DRender::QSortPolicy
     \inherits FrameGraphNode
-    \brief Provides storage for the sort types to be used
+    \brief Provides storage for the sort types to be used.
 
     A SortPolicy class stores the sorting type used by the FrameGraph.
     The sort types determine how drawable entities are sorted before drawing to

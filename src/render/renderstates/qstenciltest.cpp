@@ -53,7 +53,7 @@ namespace Qt3DRender {
     \since 5.7
     \ingroup renderstates
     \inmodule Qt3DRender
-    \brief The QStencilTest class specifies arguments for the stecil test
+    \brief The QStencilTest class specifies arguments for the stecil test.
 
     A Qt3DRender::QStencilTest class specifies argument for the stencil test.
     The stencil test comprises of three arguments: stencil test function,
@@ -68,7 +68,7 @@ namespace Qt3DRender {
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render
-    \brief The StencilTest type specifies arguments for the stecil test
+    \brief The StencilTest type specifies arguments for the stecil test.
     \inherits RenderState
     \instantiates Qt3DRender::QStencilTest
 
