@@ -51,6 +51,7 @@
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
 #include <Qt3DRender/private/renderbuffer_p.h>
+#include <Qt3DRender/private/qtextureimagedata_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
@@ -443,9 +444,10 @@ void GLTexture::uploadGLTextureData()
     // Upload all QTexImageData references by the TextureImages
     for (int i = 0; i < m_images.size(); i++) {
         const QTextureImageDataPtr &imgData = m_imageData.at(i);
-
-        // ensure we don't accidentally cause a detach / copy of the raw bytes
-        const QByteArray bytes(imgData->data());
+        // Here the bytes in the QTextureImageData contain data for a single
+        // layer, face or mip level, unlike the QTextureGenerator case where
+        // they are in a single blob. Hence QTextureImageData::data() is not suitable.
+        const QByteArray bytes(QTextureImageDataPrivate::get(imgData.get())->m_data);
         uploadGLData(m_gl, m_images[i].mipLevel, m_images[i].layer,
                      static_cast<QOpenGLTexture::CubeMapFace>(m_images[i].face),
                      bytes, imgData);
