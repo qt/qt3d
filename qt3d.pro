@@ -1,4 +1,4 @@
-requires(qtConfig(opengl))
+requires(qtConfig(opengl):!html5)
 
 CONFIG += examples_need_tools
 load(qt_parts)
