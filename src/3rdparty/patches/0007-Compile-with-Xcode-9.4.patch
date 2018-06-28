@@ -1,0 +1,93 @@
+diff -ur assimpGIT/code/BlenderModifier.cpp assimp/code/BlenderModifier.cpp
+--- assimpGIT/code/BlenderModifier.cpp		2018-07-19 13:49:03.000000000 +0200
++++ assimp/code/BlenderModifier.cpp	2018-07-19 13:49:40.000000000 +0200
+@@ -265,7 +265,7 @@
+ 
+     std::copy(out.mMeshes,out.mMeshes+out.mNumMeshes,nind);
+     std::transform(out.mMeshes,out.mMeshes+out.mNumMeshes,nind+out.mNumMeshes,
+-        std::bind1st(std::plus< unsigned int >(),out.mNumMeshes));
++        [&out](unsigned int n) { return out.mNumMeshes + n; });
+ 
+     delete[] out.mMeshes;
+     out.mMeshes = nind;
+
+diff -ur assimpGIT/code/OgreParsingUtils.h assimp/code/OgreParsingUtils.h
+--- assimpGIT/code/OgreParsingUtils.h	2018-07-19 13:48:34.000000000 +0200
++++ assimp/code/OgreParsingUtils.h	2018-07-19 13:49:40.000000000 +0200
+@@ -90,11 +90,11 @@
+ {
+     if (!newlines)
+     {
+-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun(Assimp::IsSpace<char>))));
++        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](char c) { return !Assimp::IsSpace<char>(c); }));
+     }
+     else
+     {
+-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun(Assimp::IsSpaceOrNewLine<char>))));
++        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](char c) { return !Assimp::IsSpaceOrNewLine<char>(c); }));
+     }
+     return s;
+ }
+@@ -104,11 +104,11 @@
+ {
+     if (!newlines)
+     {
+-        s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun(Assimp::IsSpace<char>))).base(),s.end());
++        s.erase(std::find_if(s.rbegin(), s.rend(), [](char c) { return !Assimp::IsSpace<char>(c); }).base(),s.end());
+     }
+     else
+     {
+-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun(Assimp::IsSpaceOrNewLine<char>))));
++        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](char c) { return !Assimp::IsSpaceOrNewLine<char>(c); }));
+     }
+     return s;
+ }
+
+diff -ur assimpGIT/code/LWOAnimation.cpp assimp/code/LWOAnimation.cpp
+--- assimpGIT/code/LWOAnimation.cpp	2018-07-19 13:48:40.000000000 +0200
++++ assimp/code/LWOAnimation.cpp	2018-07-19 13:49:40.000000000 +0200
+@@ -162,7 +162,7 @@
+                 {
+                 const double start_time = delta - fmod(my_first-first,delta);
+                 std::vector<LWO::Key>::iterator n = std::find_if((*it).keys.begin(),(*it).keys.end(),
+-                    std::bind1st(std::greater<double>(),start_time)),m;
++                    [start_time](double t) { return start_time > t; }),m;
+ 
+                 size_t ofs = 0;
+                 if (n != (*it).keys.end()) {
+
+diff -ru assimpGIT/code/FBXMeshGeometry.cpp assimp/code/FBXMeshGeometry.cpp
+--- assimpGIT/code/FBXMeshGeometry.cpp		2018-07-19 13:48:52.000000000 +0200
++++ assimp/code/FBXMeshGeometry.cpp	2018-07-19 13:49:40.000000000 +0200
+@@ -356,7 +356,7 @@
+         // avoids losing the material if there are more material layers
+         // coming of which at least one contains actual data (did observe
+         // that with one test file).
+-        const size_t count_neg = std::count_if(temp_materials.begin(),temp_materials.end(),std::bind2nd(std::less<int>(),0));
++        const size_t count_neg = std::count_if(temp_materials.begin(),temp_materials.end(),[](int n) { return n < 0; });
+         if(count_neg == temp_materials.size()) {
+             FBXImporter::LogWarn("ignoring dummy material layer (all entries -1)");
+             return;
+
+
+diff -ru assimpGIT/code/FBXDocument.cpp assimp/code/FBXDocument.cpp
+--- assimpGIT/code/FBXDocument.cpp	2018-07-19 13:49:11.000000000 +0200
++++ assimp/code/FBXDocument.cpp	2018-07-19 13:49:40.000000000 +0200
+@@ -574,7 +574,7 @@
+         temp.push_back((*it).second);
+     }
+ 
+-    std::sort(temp.begin(), temp.end(), std::mem_fun(&Connection::Compare));
++    std::sort(temp.begin(), temp.end(), std::mem_fn(&Connection::Compare));
+ 
+     return temp; // NRVO should handle this
+ }
+@@ -626,7 +626,7 @@
+         temp.push_back((*it).second);
+     }
+ 
+-    std::sort(temp.begin(), temp.end(), std::mem_fun(&Connection::Compare));
++    std::sort(temp.begin(), temp.end(), std::mem_fn(&Connection::Compare));
+     return temp; // NRVO should handle this
+ }
+ 
