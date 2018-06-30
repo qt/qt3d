@@ -52,47 +52,6 @@ namespace Render {
 
 namespace {
 int layerFilterJobCounter = 0;
-
-// TO DO: This will be moved to a dedicated job with smarter
-// heuristics in a later commit
-void addLayerIdToEntityChildren(const QVector<Entity *> &children,
-                                const Qt3DCore::QNodeId layerId)
-{
-    for (Entity *child : children) {
-        child->addRecursiveLayerId(layerId);
-        addLayerIdToEntityChildren(child->children(), layerId);
-    }
-}
-
-void updateEntityLayers(NodeManagers *manager)
-{
-    EntityManager *entityManager = manager->renderNodesManager();
-
-    const QVector<HEntity> handles = entityManager->activeHandles();
-
-    // Clear list of recursive layerIds
-    for (const HEntity &handle : handles) {
-        Entity *entity = entityManager->data(handle);
-        entity->clearRecursiveLayerIds();
-    }
-
-    LayerManager *layerManager = manager->layerManager();
-
-    // Set recursive layerIds on children
-    for (const HEntity &handle : handles) {
-        Entity *entity = entityManager->data(handle);
-        const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
-
-        for (const Qt3DCore::QNodeId layerId : entityLayers) {
-            Layer *layer = layerManager->lookupResource(layerId);
-            if (layer->recursive()) {
-                // Find all children of the entity and add the layers to them
-                addLayerIdToEntityChildren(entity->children(), layerId);
-            }
-        }
-    }
-}
-
 } // anonymous
 
 FilterLayerEntityJob::FilterLayerEntityJob()
@@ -107,12 +66,10 @@ void FilterLayerEntityJob::run()
 {
 
     m_filteredEntities.clear();
-    if (hasLayerFilter()) { // LayerFilter set -> filter
-        updateEntityLayers(m_manager);
+    if (hasLayerFilter()) // LayerFilter set -> filter
         filterLayerAndEntity();
-    } else { // No LayerFilter set -> retrieve all
+    else // No LayerFilter set -> retrieve all
         selectAllEntities();
-    }
 
     // sort needed for set_intersection in RenderViewBuilder
     std::sort(m_filteredEntities.begin(), m_filteredEntities.end());

@@ -46,9 +46,11 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::FilterLayerEntityJob filterJob;
+        Qt3DRender::Render::UpdateEntityLayersJob updateEntityLayerJob;
         Qt3DRender::QLayer frontendLayer;
 
         // THEN
+        QVERIFY(updateEntityLayerJob.manager() == nullptr);
         QCOMPARE(filterJob.hasLayerFilter(), false);
         QCOMPARE(filterJob.filteredEntities().size(), 0);
         QCOMPARE(filterJob.layerFilters().size(), 0);
@@ -635,6 +637,10 @@ private Q_SLOTS:
         updateTreeEnabledJob.run();
 
         // WHEN
+        Qt3DRender::Render::UpdateEntityLayersJob updateLayerEntityJob;
+        updateLayerEntityJob.setManager(aspect->nodeManagers());
+        updateLayerEntityJob.run();
+
         Qt3DRender::Render::FilterLayerEntityJob filterJob;
         filterJob.setLayerFilters(layerFilterIds);
         filterJob.setManager(aspect->nodeManagers());

@@ -77,6 +77,7 @@
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <Qt3DRender/private/updateskinningpalettejob_p.h>
+#include <Qt3DRender/private/updateentitylayersjob_p.h>
 #include <Qt3DRender/private/renderercache_p.h>
 
 #include <QHash>
@@ -215,6 +216,7 @@ public:
     inline IntrospectShadersJobPtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
+    inline UpdateEntityLayersJobPtr updateEntityLayersJob() const { return m_updateEntityLayersJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
 
@@ -355,6 +357,7 @@ private:
     UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
+    UpdateEntityLayersJobPtr m_updateEntityLayersJob;
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 

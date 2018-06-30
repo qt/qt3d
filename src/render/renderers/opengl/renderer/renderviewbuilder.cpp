@@ -581,6 +581,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     jobs.push_back(m_syncRenderViewInitializationJob); // Step 2
 
     if (m_layerCacheNeedsToBeRebuilt) {
+        m_filterEntityByLayerJob->addDependency(m_renderer->updateEntityLayersJob());
         m_filterEntityByLayerJob->addDependency(m_syncRenderViewInitializationJob);
         m_filterEntityByLayerJob->addDependency(m_renderer->updateTreeEnabledJob());
 

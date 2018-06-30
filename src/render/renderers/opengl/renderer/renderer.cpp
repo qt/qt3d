@@ -190,6 +190,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
+    , m_updateEntityLayersJob(Render::UpdateEntityLayersJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
@@ -297,6 +298,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateSkinningPaletteJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
+    m_updateEntityLayersJob->setManager(m_nodesManager);
 }
 
 void Renderer::setServices(QServiceLocator *services)
@@ -1633,6 +1635,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty;
     const bool materialDirty = dirtyBitsForFrame & AbstractRenderer::MaterialDirty;
+
+    // Rebuild Entity Layers list if layers are dirty
+    if (layersDirty)
+        renderBinJobs.push_back(m_updateEntityLayersJob);
 
     QMutexLocker lock(m_renderQueue->mutex());
     if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2018 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include "updateentitylayersjob_p.h"
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,62 +49,58 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+namespace {
 
-    enum JobType {
-        LoadBuffer = 1,
-        FrameCleanup,
-        UpdateShaderDataTransform,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RayCasting,
-        RenderView,
-        UpdateTransform,
-        UpdateTreeEnabled,
-        ExpandBoundingVolume,
-        FrameSubmissionPart1,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering,
-        UpdateWorldBoundingVolume,
-        FrameSubmissionPart2,
-        DirtyBufferGathering,
-        DirtyVaoGathering,
-        DirtyTextureGathering,
-        DirtyShaderGathering,
-        SendRenderCapture,
-        SendBufferCapture,
-        SyncRenderViewCommandBuilding,
-        SyncRenderViewInitialization,
-        SyncRenderViewCommandBuilder,
-        SyncFrustumCulling,
-        ClearBufferDrawIndex,
-        UpdateMeshTriangleList,
-        FilterCompatibleTechniques,
-        UpdateLevelOfDetail,
-        SyncTextureLoading,
-        LoadSkeleton,
-        UpdateSkinningPalette,
-        ProximityFiltering,
-        SyncFilterEntityByLayer,
-        SyncMaterialGatherer,
-        UpdateLayerEntity
-    };
+void addLayerIdToEntityChildren(const QVector<Entity *> &children,
+                                const Qt3DCore::QNodeId layerId)
+{
+    for (Entity *child : children) {
+        child->addRecursiveLayerId(layerId);
+        addLayerIdToEntityChildren(child->children(), layerId);
+    }
+}
 
-} // JobTypes
+} // anonymous
+
+UpdateEntityLayersJob::UpdateEntityLayersJob()
+    : m_manager(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateLayerEntity, 0);
+
+}
+
+void UpdateEntityLayersJob::run()
+{
+    Q_ASSERT(m_manager);
+    EntityManager *entityManager = m_manager->renderNodesManager();
+
+    const QVector<HEntity> handles = entityManager->activeHandles();
+
+    // Clear list of recursive layerIds
+    for (const HEntity &handle : handles) {
+        Entity *entity = entityManager->data(handle);
+        entity->clearRecursiveLayerIds();
+    }
+
+    LayerManager *layerManager = m_manager->layerManager();
+
+    // Set recursive layerIds on children
+    for (const HEntity &handle : handles) {
+        Entity *entity = entityManager->data(handle);
+        const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
+
+        for (const Qt3DCore::QNodeId layerId : entityLayers) {
+            Layer *layer = layerManager->lookupResource(layerId);
+            if (layer->recursive()) {
+                // Find all children of the entity and add the layers to them
+                addLayerIdToEntityChildren(entity->children(), layerId);
+            }
+        }
+    }
+}
 
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H

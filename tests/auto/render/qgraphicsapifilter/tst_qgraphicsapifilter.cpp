@@ -242,6 +242,15 @@ private Q_SLOTS:
         QCOMPARE(isCompatible, expected);
     }
 
+    void checkEnumTypeValues()
+    {
+        // THEN
+        QCOMPARE(int(Qt3DRender::QGraphicsApiFilter::OpenGL), 1);
+        QCOMPARE(int(Qt3DRender::QGraphicsApiFilter::OpenGLES), 2);
+        QCOMPARE(int(Qt3DRender::QGraphicsApiFilter::Vulkan), 3);
+        QCOMPARE(int(Qt3DRender::QGraphicsApiFilter::DirectX), 4);
+    }
+
     // TODO: Add equality test in 5.8 when we can add new api to
     // test for compatibility and properly use operator == to really
     // test for equality.

@@ -212,8 +212,8 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // BufferGathererJob
                  1 + // TexturesGathererJob
-                 1   // SyncTextureLoadingJob
-                 );
+                 1 + // SyncTextureLoadingJob
+                 1); // UpdateEntityLayersJob
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
