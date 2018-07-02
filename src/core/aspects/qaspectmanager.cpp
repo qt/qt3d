@@ -41,6 +41,7 @@
 
 #include <Qt3DCore/qabstractaspect.h>
 #include <Qt3DCore/qentity.h>
+#include <QtCore/QAbstractEventDispatcher>
 #include <QtCore/QEventLoop>
 #include <QtCore/QThread>
 #include <QtCore/QWaitCondition>
@@ -102,6 +103,9 @@ void QAspectManager::enterSimulationLoop()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
     m_runSimulationLoop.fetchAndStoreOrdered(1);
+
+    // Wake up QAspectThread's event loop
+    thread()->eventDispatcher()->wakeUp();
 
     // We wait for the setRootEntity on the aspectManager to have completed
     // This ensures we cannot shutdown before the aspects have had a chance
@@ -255,33 +259,29 @@ void QAspectManager::exec()
     // Enter the engine loop
     qCDebug(Aspects) << Q_FUNC_INFO << "***** Entering main loop *****";
     while (m_runMainLoop.load()) {
-        // Process any pending events, waiting for more to arrive if queue is empty
-        eventLoop.processEvents(QEventLoop::AllEvents, 16);
+        // Process events until we're told to start the simulation loop
+        while (m_runMainLoop.load() && !m_runSimulationLoop.load())
+            eventLoop.processEvents(QEventLoop::AllEvents | QEventLoop::WaitForMoreEvents);
+
+        if (!m_runSimulationLoop.load())
+            break;
 
         // Retrieve the frame advance service. Defaults to timer based if there is no renderer.
         QAbstractFrameAdvanceService *frameAdvanceService =
                 m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
 
-        // Start the frameAdvanceService if we're about to enter the simulation loop
-        bool needsShutdown = false;
-        if (m_runSimulationLoop.load()) {
-            needsShutdown = true;
-            frameAdvanceService->start();
+        // Start the frameAdvanceService
+        frameAdvanceService->start();
 
-            // We are about to enter the simulation loop. Give aspects a chance to do any last
-            // pieces of initialization
-            qCDebug(Aspects) << "Calling onEngineStartup() for each aspect";
-            for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
-                qCDebug(Aspects) << "\t" << aspect->objectName();
-                aspect->onEngineStartup();
-            }
-            qCDebug(Aspects) << "Done calling onEngineStartup() for each aspect";
-            m_waitForStartOfSimulationLoop.release(1);
-        } else {
-            continue;
-            // Ensure we won't enter the simulation loop (in case the atomic was changed between
-            // the last time we read it) without having performed the initialization first
+        // We are about to enter the simulation loop. Give aspects a chance to do any last
+        // pieces of initialization
+        qCDebug(Aspects) << "Calling onEngineStartup() for each aspect";
+        for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+            qCDebug(Aspects) << "\t" << aspect->objectName();
+            aspect->onEngineStartup();
         }
+        qCDebug(Aspects) << "Done calling onEngineStartup() for each aspect";
+        m_waitForStartOfSimulationLoop.release(1);
 
         // Only enter main simulation loop once the renderer and other aspects are initialized
         while (m_runSimulationLoop.load()) {
@@ -325,22 +325,20 @@ void QAspectManager::exec()
             eventLoop.processEvents();
         } // End of simulation loop
 
-        if (needsShutdown) {
-            // Process any pending changes from the frontend before we shut the aspects down
-            m_changeArbiter->syncChanges();
+        // Process any pending changes from the frontend before we shut the aspects down
+        m_changeArbiter->syncChanges();
 
-            // Give aspects a chance to perform any shutdown actions. This may include unqueuing
-            // any blocking work on the main thread that could potentially deadlock during shutdown.
-            qCDebug(Aspects) << "Calling onEngineShutdown() for each aspect";
-            for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
-                qCDebug(Aspects) << "\t" << aspect->objectName();
-                aspect->onEngineShutdown();
-            }
-            qCDebug(Aspects) << "Done calling onEngineShutdown() for each aspect";
-
-            // Wake up the main thread which is waiting for us inside of exitSimulationLoop()
-            m_waitForEndOfSimulationLoop.release(1);
+        // Give aspects a chance to perform any shutdown actions. This may include unqueuing
+        // any blocking work on the main thread that could potentially deadlock during shutdown.
+        qCDebug(Aspects) << "Calling onEngineShutdown() for each aspect";
+        for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+            qCDebug(Aspects) << "\t" << aspect->objectName();
+            aspect->onEngineShutdown();
         }
+        qCDebug(Aspects) << "Done calling onEngineShutdown() for each aspect";
+
+        // Wake up the main thread which is waiting for us inside of exitSimulationLoop()
+        m_waitForEndOfSimulationLoop.release(1);
     } // End of main loop
     qCDebug(Aspects) << Q_FUNC_INFO << "***** Exited main loop *****";
 
@@ -354,6 +352,9 @@ void QAspectManager::quit()
 
     Q_ASSERT_X(m_runSimulationLoop.load() == 0, "QAspectManagr::quit()", "Inner loop is still running");
     m_runMainLoop.fetchAndStoreOrdered(0);
+
+    // Wake up QAspectThread's event loop if needed
+    thread()->eventDispatcher()->wakeUp();
 
     // We need to wait for the QAspectManager exec loop to terminate
     m_waitForEndOfExecLoop.acquire(1);
