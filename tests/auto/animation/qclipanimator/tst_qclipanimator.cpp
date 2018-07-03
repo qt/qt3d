@@ -155,6 +155,33 @@ private Q_SLOTS:
         }
     }
 
+    void checkRunning()
+    {
+        // GIVEN
+        Qt3DAnimation::QClipAnimator animator;
+        animator.stop();
+
+        {
+            // WHEN
+            animator.setRunning(true);
+
+            // THEN
+            QCOMPARE(animator.isRunning(), false);
+        }
+
+        {
+            // WHEN
+            Qt3DAnimation::QChannelMapper *mapper = new Qt3DAnimation::QChannelMapper;
+            Qt3DAnimation::QAnimationClip *clip = new Qt3DAnimation::QAnimationClip;
+            animator.setClip(clip);
+            animator.setChannelMapper(mapper);
+            animator.setRunning(true);
+
+            // THEN
+            QCOMPARE(animator.isRunning(), true);
+        }
+    }
+
     void checkCreationData()
     {
         // GIVEN

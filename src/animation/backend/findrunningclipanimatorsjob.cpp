@@ -73,7 +73,7 @@ void FindRunningClipAnimatorsJob::run()
 
         // TODO: Actually check if this is needed first, currently we re-build this every time
         // canRun (or the normalized time) is true.
-        if (!canRun && !(seeking || running))
+        if (!canRun || !(seeking || running))
             continue;
 
         // The clip animator needs to know how to map fcurve values through to properties on QNodes.

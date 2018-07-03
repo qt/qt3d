@@ -65,6 +65,8 @@ class QAbstractClipAnimatorPrivate : public Qt3DCore::QComponentPrivate
 public:
     QAbstractClipAnimatorPrivate();
 
+    virtual bool canPlay() const;
+
     Q_DECLARE_PUBLIC(QAbstractClipAnimator)
 
     Qt3DAnimation::QChannelMapper *m_mapper;

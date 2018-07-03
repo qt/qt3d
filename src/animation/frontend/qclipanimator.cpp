@@ -53,6 +53,15 @@ QClipAnimatorPrivate::QClipAnimatorPrivate()
 {
 }
 
+bool QClipAnimatorPrivate::canPlay() const
+{
+    if (m_clip && m_mapper)
+        return true;
+
+    qWarning("ClipAnimators need a clip and a mapper to be played");
+    return false;
+}
+
 /*!
     \qmltype ClipAnimator
     \instantiates Qt3DAnimation::QClipAnimator
