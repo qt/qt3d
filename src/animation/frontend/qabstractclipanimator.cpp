@@ -57,6 +57,11 @@ QAbstractClipAnimatorPrivate::QAbstractClipAnimatorPrivate()
 {
 }
 
+bool QAbstractClipAnimatorPrivate::canPlay() const
+{
+    return true;
+}
+
 /*!
     \qmltype AbstractClipAnimator
     \instantiates Qt3DAnimation::QAbstractClipAnimator
@@ -232,6 +237,9 @@ void QAbstractClipAnimator::setRunning(bool running)
 {
     Q_D(QAbstractClipAnimator);
     if (d->m_running == running)
+        return;
+
+    if (running && !d->canPlay())
         return;
 
     d->m_running = running;

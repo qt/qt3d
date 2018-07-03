@@ -64,6 +64,8 @@ class QClipAnimatorPrivate : public Qt3DAnimation::QAbstractClipAnimatorPrivate
 public:
     QClipAnimatorPrivate();
 
+    bool canPlay() const override;
+
     Q_DECLARE_PUBLIC(QClipAnimator)
 
     QAbstractAnimationClip *m_clip;
