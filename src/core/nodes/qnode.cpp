@@ -293,21 +293,20 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
     Q_Q(QNode);
     QNode *oldParentNode = q->parentNode();
 
-    // We may get the situation where the QML engine has set the QObject
-    // parent but we have not yet set up the QNode parent requirements.
-    // This check handles this and means we propagate the scene and arbiter
-    // from the parent in the code below.
-    const bool needsSceneInit = !oldParentNode
-            || (oldParentNode && m_parentId != oldParentNode->id());
-
     // If we had a parent, we let him know that we are about to change
     // parent
     if (oldParentNode && m_hasBackendNode) {
         QNodePrivate::get(oldParentNode)->_q_removeChild(q);
 
-        // If we have an old parent but the new parent is null
-        // the backend node needs to be destroyed
-        if (!parent)
+        // If we have an old parent but the new parent is null or if the new
+        // parent hasn't yet been added to the backend the backend node needs
+        // to be destroyed
+        // e.g:
+        // QEntity *child = new QEntity(some_parent);
+        // After some time, in a later event loop
+        // QEntity *newSubTreeRoot = new QEntity(someGlobalExisitingRoot)
+        // child->setParent(newSubTreeRoot)
+        if (!parent || !QNodePrivate::get(parent)->m_hasBackendNode)
             notifyDestructionChangesAndRemoveFromScene();
     }
 
@@ -316,39 +315,36 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
 
     // Basically QObject::setParent but for QObjectPrivate
     QObjectPrivate::setParent_helper(parent);
-    QNode *newParentNode = q->parentNode();
 
-    if (newParentNode) {
+    if (parent) {
         // If we had no parent but are about to set one,
         // we need to send a QNodeCreatedChange
-        if (needsSceneInit) {
-            QNodePrivate *newParentPrivate = QNodePrivate::get(newParentNode);
+        QNodePrivate *newParentPrivate = QNodePrivate::get(parent);
 
-            // Set the scene helper / arbiter
-            if (newParentPrivate->m_scene) {
-                QNodeVisitor visitor;
-                visitor.traverse(q, newParentNode->d_func(), &QNodePrivate::setSceneHelper);
-            }
-
-            // We want to make sure that subTreeRoot is always created before
-            // child.
-            // Given a case such as below
-            // QEntity *subTreeRoot = new QEntity(someGlobalExisitingRoot)
-            // QEntity *child = new QEntity();
-            // child->setParent(subTreeRoot)
-            // We need to take into account that subTreeRoot needs to be
-            // created in the backend before the child.
-            // Therefore we only call notifyCreationChanges if the parent
-            // hasn't been created yet as we know that when the parent will be
-            // fully created, it will also send the changes for all of its
-            // children
-
-            if (QNodePrivate::get(newParentNode)->m_hasBackendNode)
-                notifyCreationChange();
+        // Set the scene helper / arbiter
+        if (newParentPrivate->m_scene) {
+            QNodeVisitor visitor;
+            visitor.traverse(q, parent->d_func(), &QNodePrivate::setSceneHelper);
         }
 
+        // We want to make sure that subTreeRoot is always created before
+        // child.
+        // Given a case such as below
+        // QEntity *subTreeRoot = new QEntity(someGlobalExisitingRoot)
+        // QEntity *child = new QEntity();
+        // child->setParent(subTreeRoot)
+        // We need to take into account that subTreeRoot needs to be
+        // created in the backend before the child.
+        // Therefore we only call notifyCreationChanges if the parent
+        // hasn't been created yet as we know that when the parent will be
+        // fully created, it will also send the changes for all of its
+        // children
+
+        if (newParentPrivate->m_hasBackendNode)
+            notifyCreationChange();
+
         // If we have a valid new parent, we let him know that we are its child
-        QNodePrivate::get(newParentNode)->_q_addChild(q);
+        QNodePrivate::get(parent)->_q_addChild(q);
     }
 }
 
