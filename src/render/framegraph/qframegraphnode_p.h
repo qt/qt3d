@@ -65,9 +65,12 @@ class QFrameGraphNodePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QFrameGraphNodePrivate();
+    QVector<QFrameGraphNode *> childFrameGraphNodes() const;
+
+    static QFrameGraphNodePrivate *get(QFrameGraphNode *node) { return node->d_func(); }
+    static const QFrameGraphNodePrivate *get(const QFrameGraphNode *node) { return node->d_func(); }
 
     Q_DECLARE_PUBLIC(QFrameGraphNode)
-    QList<QFrameGraphNode *> m_fgChildren;
 };
 
 } // namespace Qt3DRender

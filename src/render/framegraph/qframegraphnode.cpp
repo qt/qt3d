@@ -41,6 +41,12 @@
 #include "qframegraphnode_p.h"
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 
+#include <Qt3DCore/QNode>
+
+#include <QQueue>
+
+using namespace Qt3DCore;
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -190,7 +196,10 @@ QFrameGraphNode::~QFrameGraphNode()
 }
 
 /*!
-    Returns a pointer to the parent.
+    Returns a pointer to the parent frame graph node.
+
+    If the parent of this node is not a frame graph node,
+    this method will recursively look for a parent node that is a frame graph node.
  */
 QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
 {
@@ -203,6 +212,31 @@ QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
         parentN = parentN->parentNode();
     }
     return parentFGNode;
+}
+
+/*!
+ * Returns a list of the children that are frame graph nodes.
+ * If this function encounters a child node that is not a frame graph node,
+ * it will go through the children of the child node and look for frame graph nodes.
+ * If any of these are not frame graph nodes, they will be further searched as
+ * if they were direct children of this node.
+ */
+QVector<QFrameGraphNode *> QFrameGraphNodePrivate::childFrameGraphNodes() const
+{
+    Q_Q(const QFrameGraphNode);
+    QVector<QFrameGraphNode *> result;
+    QQueue<QNode *> queue;
+    queue.append(q->childNodes().toList());
+    result.reserve(queue.size());
+    while (!queue.isEmpty()) {
+        auto *child = queue.dequeue();
+        auto *childFGNode = qobject_cast<QFrameGraphNode *>(child);
+        if (childFGNode != nullptr)
+            result.push_back(childFGNode);
+        else
+            queue.append(child->childNodes().toList());
+    }
+    return result;
 }
 
 /*! \internal */
