@@ -52,6 +52,8 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
+#include <QQueue>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -233,6 +235,20 @@ QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
 
     Q_D(const QEntity);
     data.parentEntityId = parentEntity() ? parentEntity()->id() : Qt3DCore::QNodeId();
+
+    // Find all child entities
+    QQueue<QNode *> queue;
+    queue.append(childNodes().toList());
+    data.childEntityIds.reserve(queue.size());
+    while (!queue.isEmpty()) {
+        auto *child = queue.dequeue();
+        auto *childEntity = qobject_cast<QEntity *>(child);
+        if (childEntity != nullptr)
+            data.childEntityIds.push_back(childEntity->id());
+        else
+            queue.append(child->childNodes().toList());
+    }
+
     data.componentIdsAndTypes.reserve(d->m_components.size());
     const QComponentVector &components = d->m_components;
     for (QComponent *c : components) {

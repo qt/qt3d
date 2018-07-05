@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/private/qnodecreatedchange_p.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,6 +63,16 @@ public:
     QFrameGraphNodeCreatedChangeBasePrivate(const QFrameGraphNode *node);
 
     Qt3DCore::QNodeId m_parentFrameGraphNodeId;
+    Qt3DCore::QNodeIdVector m_childFrameGraphNodeIds;
+
+    static QFrameGraphNodeCreatedChangeBasePrivate *get(QFrameGraphNodeCreatedChangeBase *change)
+    {
+        return change->d_func();
+    }
+    static const QFrameGraphNodeCreatedChangeBasePrivate *get(const QFrameGraphNodeCreatedChangeBase *change)
+    {
+        return change->d_func();
+    }
 };
 
 } // Qt3DRender

@@ -91,6 +91,7 @@ struct QEntityData
 {
     Qt3DCore::QNodeId parentEntityId;
     QVector<QNodeIdTypePair> componentIdsAndTypes;
+    Qt3DCore::QNodeIdVector childEntityIds;
 };
 
 }

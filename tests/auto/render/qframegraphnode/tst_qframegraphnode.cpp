@@ -35,6 +35,8 @@
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/private/qframegraphnode_p.h>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
+#include <Qt3DRender/private/qframegraphnodecreatedchange_p.h>
+
 #include "testpostmanarbiter.h"
 
 class MyFrameGraphNode : public Qt3DRender::QFrameGraphNode
@@ -64,21 +66,48 @@ private Q_SLOTS:
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QFrameGraphNode *>("frameGraphNode");
+        QTest::addColumn<QVector<Qt3DCore::QNodeId>>("childFrameGraphNodeIds");
         QTest::addColumn<bool>("enabled");
+        QTest::addColumn<int>("creationChangeCount");
 
-        Qt3DRender::QFrameGraphNode *defaultConstructed = new MyFrameGraphNode();
-        QTest::newRow("defaultConstructed") << defaultConstructed << true;
+        QVector<Qt3DCore::QNodeId> noChildIds;
 
-        Qt3DRender::QFrameGraphNode *disabledFrameGraphNode = new MyFrameGraphNode();
-        disabledFrameGraphNode->setEnabled(false);
-        QTest::newRow("allBuffers") << disabledFrameGraphNode << false;
+        {
+            Qt3DRender::QFrameGraphNode *defaultConstructed = new MyFrameGraphNode();
+            QTest::newRow("defaultConstructed") << defaultConstructed << noChildIds << true << 1;
+        }
+
+        {
+            Qt3DRender::QFrameGraphNode *disabledFrameGraphNode = new MyFrameGraphNode();
+            disabledFrameGraphNode->setEnabled(false);
+            QTest::newRow("allBuffers") << disabledFrameGraphNode << noChildIds << false << 1;
+        }
+
+        {
+            Qt3DRender::QFrameGraphNode *nodeWithChildren = new MyFrameGraphNode();
+            Qt3DRender::QFrameGraphNode *child1 = new MyFrameGraphNode(nodeWithChildren);
+            Qt3DRender::QFrameGraphNode *child2 = new MyFrameGraphNode(nodeWithChildren);
+            QVector<Qt3DCore::QNodeId> childIds = {child1->id(), child2->id()};
+            QTest::newRow("nodeWithChildren") << nodeWithChildren << childIds << true << 3;
+        }
+
+        {
+            Qt3DRender::QFrameGraphNode *nodeWithNestedChildren = new MyFrameGraphNode();
+            Qt3DRender::QFrameGraphNode *child = new MyFrameGraphNode(nodeWithNestedChildren);
+            Qt3DCore::QNode *dummy = new Qt3DCore::QNode(nodeWithNestedChildren);
+            Qt3DRender::QFrameGraphNode *grandChild = new MyFrameGraphNode(nodeWithNestedChildren);
+            QVector<Qt3DCore::QNodeId> childIds = {child->id(), grandChild->id()};
+            QTest::newRow("nodeWithNestedChildren") << nodeWithNestedChildren << childIds << true << 4;
+        }
     }
 
     void checkCloning()
     {
         // GIVEN
         QFETCH(Qt3DRender::QFrameGraphNode *, frameGraphNode);
+        QFETCH(QVector<Qt3DCore::QNodeId>, childFrameGraphNodeIds);
         QFETCH(bool, enabled);
+        QFETCH(int, creationChangeCount);
 
         // THEN
         QCOMPARE(frameGraphNode->isEnabled(), enabled);
@@ -88,13 +117,19 @@ private Q_SLOTS:
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QCOMPARE(creationChanges.size(), 1);
+        QCOMPARE(creationChanges.size(), creationChangeCount);
         const Qt3DCore::QNodeCreatedChangeBasePtr creationChangeData = creationChanges.first();
 
         // THEN
         QCOMPARE(frameGraphNode->id(), creationChangeData->subjectId());
         QCOMPARE(frameGraphNode->isEnabled(), creationChangeData->isNodeEnabled());
         QCOMPARE(frameGraphNode->metaObject(), creationChangeData->metaObject());
+
+        // THEN
+        Qt3DRender::QFrameGraphNodeCreatedChangeBasePtr frameGraphNodeCreatedChange = qSharedPointerCast<Qt3DRender::QFrameGraphNodeCreatedChangeBase>(creationChangeData);
+        Qt3DRender::QFrameGraphNodeCreatedChangeBasePrivate *creationChangeDataPrivate = Qt3DRender::QFrameGraphNodeCreatedChangeBasePrivate::get(frameGraphNodeCreatedChange.get());
+        QCOMPARE(creationChangeDataPrivate->m_parentFrameGraphNodeId, frameGraphNode->parentNode() ? frameGraphNode->parentNode()->id() : Qt3DCore::QNodeId());
+        QCOMPARE(creationChangeDataPrivate->m_childFrameGraphNodeIds, childFrameGraphNodeIds);
 
         delete frameGraphNode;
     }
