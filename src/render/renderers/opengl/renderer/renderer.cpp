@@ -243,11 +243,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
 Renderer::~Renderer()
 {
-    // If using a threaded rendering approach, tell the thread to exit
-    // and wait for it to be done
-    m_running.fetchAndStoreOrdered(0);
+    Q_ASSERT(m_running.fetchAndStoreOrdered(0) == 0);
     if (m_renderThread)
-        m_renderThread->wait();
+        Q_ASSERT(m_renderThread->isFinished());
 
     delete m_renderQueue;
     delete m_defaultRenderStateSet;

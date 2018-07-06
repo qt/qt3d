@@ -190,6 +190,8 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendFilterCompatibleTechniqueJob.manager(), &techniqueManager);
         QCOMPARE(backendFilterCompatibleTechniqueJob.renderer(), &renderer);
+
+        renderer.shutdown();
     }
 
     void checkRunRendererRunning()

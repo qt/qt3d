@@ -76,6 +76,7 @@ private Q_SLOTS:
         QCOMPARE(data.data()->image.format(), QImage::Format_ARGB32);
 
         // renderCapture will be deallocated by the nodeManagers destructor
+        renderer.shutdown();
     }
 };
 

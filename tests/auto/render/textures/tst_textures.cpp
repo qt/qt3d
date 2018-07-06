@@ -211,6 +211,8 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(mgrs->glTextureManager()->lookupResource(bt1a->peerId()), mgrs->glTextureManager()->lookupResource(bt1b->peerId()));
+
+        renderer.shutdown();
     }
 
     void shouldCreateDifferentGLTexturess()
@@ -264,6 +266,8 @@ private Q_SLOTS:
         QCOMPARE(glTextures[0]->properties(), glTextures[2]->properties());
         QCOMPARE(glTextures[1]->properties(), glTextures[3]->properties());
         QVERIFY(glTextures[0]->properties() != glTextures[1]->properties());
+
+        renderer.shutdown();
     }
 
     void generatorsShouldCreateSameData()
@@ -334,6 +338,8 @@ private Q_SLOTS:
 
         QCOMPARE(texDataMgr->getData(tg1a), texDataMgr->getData(tg1b));
         QVERIFY(texDataMgr->getData(tg1a) != texDataMgr->getData(tg2));
+
+        renderer.shutdown();
     }
 
     void checkTextureImageInitialState()
@@ -538,6 +544,8 @@ private Q_SLOTS:
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
             backendImage.unsetDirty();
         }
+
+        renderer.shutdown();
     }
 
     void checkTextureImageProperlyReleaseGenerator()
@@ -601,6 +609,8 @@ private Q_SLOTS:
         QCOMPARE(texImgDataMgr->pendingGenerators().size(), 0);
         QVERIFY(texImgDataMgr->getData(frontendGenerator).isNull());
         QVERIFY(texImgDataMgr->getData(backendGenerator).isNull());
+
+        renderer.shutdown();
     }
 
     void checkTextureIsMarkedForDeletion()
@@ -632,6 +642,8 @@ private Q_SLOTS:
         QCOMPARE(texMgr->textureIdsToCleanup().size(), 1);
         QCOMPARE(texMgr->textureIdsToCleanup().first(), frontendTexture->id());
         QVERIFY(texMgr->lookupResource(frontendTexture->id()) == nullptr);
+
+        renderer.shutdown();
     }
 
     void checkTextureDestructionReconstructionWithinSameLoop()
@@ -666,6 +678,8 @@ private Q_SLOTS:
         QVERIFY(backendTexture != nullptr);
         QCOMPARE(texMgr->textureIdsToCleanup().size(), 0);
         QCOMPARE(texMgr->lookupResource(frontendTexture->id()), backendTexture);
+
+        renderer.shutdown();
     }
 
     void checkTextureImageDirtinessPropagatesToTextures()
@@ -777,6 +791,8 @@ private Q_SLOTS:
         QVERIFY(backendTexture1->dirtyFlags() == Qt3DRender::Render::Texture::NotDirty);
         QVERIFY(backendTexture2->dirtyFlags() & Qt3DRender::Render::Texture::DirtyImageGenerators);
         QVERIFY(backendTexture3->dirtyFlags() & Qt3DRender::Render::Texture::DirtyImageGenerators);
+
+        renderer.shutdown();
     }
 };
 

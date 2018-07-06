@@ -3,7 +3,8 @@ TEMPLATE = subdirs
 SUBDIRS = \
     coretest \
     core \
-    cmake
+    cmake \
+    global
 
 installed_cmake.depends = cmake
 
