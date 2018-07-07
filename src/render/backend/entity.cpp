@@ -98,10 +98,6 @@ void Entity::cleanup()
         Entity *parentEntity = parent();
         if (parentEntity != nullptr)
             parentEntity->removeChildHandle(m_handle);
-        for (int i = 0; i < m_childrenHandles.size(); ++i)
-            m_nodeManagers->renderNodesManager()->release(m_childrenHandles[i]);
-        // We need to release using peerId otherwise the handle will be cleared
-        // but would still remain in the Id to Handle table
         m_nodeManagers->worldMatrixManager()->releaseResource(peerId());
 
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
