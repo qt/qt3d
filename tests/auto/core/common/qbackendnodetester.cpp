@@ -68,6 +68,11 @@ void QBackendNodeTester::sceneChangeEvent(QBackendNode *backend, const Qt3DCore:
     backend->sceneChangeEvent(e);
 }
 
+QNodeCreatedChangeBasePtr QBackendNodeTester::creationChange(QNode *frontend) const
+{
+    return frontend->createNodeCreationChange();
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

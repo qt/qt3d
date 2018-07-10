@@ -583,6 +583,75 @@ private Q_SLOTS:
         QVERIFY(texImgDataMgr->getData(frontendGenerator).isNull());
         QVERIFY(texImgDataMgr->getData(backendGenerator).isNull());
     }
+
+    void checkTextureIsMarkedForDeletion()
+    {
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::TextureManager *texMgr = mgrs->textureManager();
+        Qt3DRender::Render::TextureImageManager *texImgMgr = mgrs->textureImageManager();
+        renderer.setNodeManagers(mgrs.data());
+
+        Qt3DRender::Render::TextureFunctor textureBackendNodeMapper(&renderer,
+                                                                    texMgr,
+                                                                    texImgMgr);
+
+        // GIVEN
+        Qt3DRender::QAbstractTexture* frontendTexture = createQTexture(1, {1}, true);
+
+        Qt3DRender::Render::Texture *backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(creationChange(frontendTexture)));
+        simulateInitialization(frontendTexture, backendTexture);
+
+        // THEN
+        QVERIFY(backendTexture != nullptr);
+        QCOMPARE(texMgr->textureIdsToCleanup().size(), 0);
+
+        QCOMPARE(texMgr->lookupResource(frontendTexture->id()), backendTexture);
+
+        // WHEN
+        textureBackendNodeMapper.destroy(frontendTexture->id());
+
+        // THEN
+        QCOMPARE(texMgr->textureIdsToCleanup().size(), 1);
+        QCOMPARE(texMgr->textureIdsToCleanup().first(), frontendTexture->id());
+        QVERIFY(texMgr->lookupResource(frontendTexture->id()) == nullptr);
+    }
+
+    void checkTextureDestructionReconstructionWithinSameLoop()
+    {
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::TextureManager *texMgr = mgrs->textureManager();
+        Qt3DRender::Render::TextureImageManager *texImgMgr = mgrs->textureImageManager();
+        renderer.setNodeManagers(mgrs.data());
+
+        Qt3DRender::Render::TextureFunctor textureBackendNodeMapper(&renderer,
+                                                                    texMgr,
+                                                                    texImgMgr);
+
+        // GIVEN
+        Qt3DRender::QAbstractTexture* frontendTexture = createQTexture(1, {1}, true);
+
+        Qt3DRender::Render::Texture *backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(creationChange(frontendTexture)));
+        simulateInitialization(frontendTexture, backendTexture);
+
+        // WHEN
+        textureBackendNodeMapper.destroy(frontendTexture->id());
+
+        // THEN
+        QCOMPARE(texMgr->textureIdsToCleanup().size(), 1);
+        QCOMPARE(texMgr->textureIdsToCleanup().first(), frontendTexture->id());
+        QVERIFY(texMgr->lookupResource(frontendTexture->id()) == nullptr);
+
+        // WHEN
+        backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(creationChange(frontendTexture)));
+        simulateInitialization(frontendTexture, backendTexture);
+
+        // THEN
+        QVERIFY(backendTexture != nullptr);
+        QCOMPARE(texMgr->textureIdsToCleanup().size(), 0);
+        QCOMPARE(texMgr->lookupResource(frontendTexture->id()), backendTexture);
+    }
 };
 
 QTEST_MAIN(tst_RenderTextures)
