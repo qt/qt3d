@@ -269,6 +269,7 @@ GLTFExporter::~GLTFExporter()
 /*!
     \class Qt3DRender::GLTFExporter
     \inmodule Qt3DRender
+    \internal
     \brief Manages the export of a 3D scene to the GLTF format.
 
     Handles the export of a 3D scene to the GLTF format.

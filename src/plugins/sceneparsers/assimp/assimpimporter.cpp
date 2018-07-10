@@ -81,6 +81,7 @@ namespace Qt3DRender {
     \class Qt3DRender::AssimpImporter
     \inmodule Qt3DRender
     \since 5.5
+    \internal
 
     \brief Provides a generic way of loading various 3D assets
     format into a Qt3D scene.

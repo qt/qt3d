@@ -93,7 +93,8 @@ examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
 
 excludedirs += \
-              ../plugins/renderplugins
+              ../plugins/renderplugins \
+              ../plugins/sceneparsers
 
 macro.TODO = " "
 imagedirs   += images \
