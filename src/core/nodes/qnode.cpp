@@ -188,9 +188,14 @@ void QNodePrivate::_q_postConstructorInit()
     if (!parentNode)
         return;
 
-
-    if (m_scene)
-        m_scene->addObservable(q); // Sets the m_changeArbiter to that of the scene
+    // Set the scene on this node and all children it references so that all
+    // children have a scene set since notifyCreationChanges will set
+    // m_hasBackendNode to true for all children, which would prevent them from
+    // ever having their scene set
+    if (m_scene) {
+        QNodeVisitor visitor;
+        visitor.traverse(q, parentNode->d_func(), &QNodePrivate::setSceneHelper);
+    }
 
     // Let the backend know we have been added to the scene
     notifyCreationChange();
