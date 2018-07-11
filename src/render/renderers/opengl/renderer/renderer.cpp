@@ -1057,13 +1057,42 @@ void Renderer::lookForDownloadableBuffers()
 // Executed in a job
 void Renderer::lookForDirtyTextures()
 {
-    const QVector<HTexture> activeTextureHandles = m_nodesManager->textureManager()->activeHandles();
+    // To avoid having Texture or TextureImage maintain relationships between
+    // one another, we instead perform a lookup here to check if a texture
+    // image has been updated to then notify textures referencing the image
+    // that they need to be updated
+    TextureImageManager *imageManager = m_nodesManager->textureImageManager();
+    const QVector<HTextureImage> activeTextureImageHandles = imageManager->activeHandles();
+    Qt3DCore::QNodeIdVector dirtyImageIds;
+    for (const HTextureImage &handle: activeTextureImageHandles) {
+        TextureImage *image = imageManager->data(handle);
+        if (image->isDirty()) {
+            dirtyImageIds.push_back(image->peerId());
+            image->unsetDirty();
+        }
+    }
+
+    TextureManager *textureManager = m_nodesManager->textureManager();
+    const QVector<HTexture> activeTextureHandles = textureManager->activeHandles();
     for (const HTexture &handle: activeTextureHandles) {
-        Texture *texture = m_nodesManager->textureManager()->data(handle);
+        Texture *texture = textureManager->data(handle);
+        const QNodeIdVector imageIds = texture->textureImageIds();
+
+        // Does the texture reference any of the dirty texture images?
+        for (const QNodeId imageId: imageIds) {
+            if (dirtyImageIds.contains(imageId)) {
+                texture->addDirtyFlag(Texture::DirtyImageGenerators);
+                break;
+            }
+        }
+
         // Dirty meaning that something has changed on the texture
         // either properties, parameters, generator or a texture image
         if (texture->dirtyFlags() != Texture::NotDirty)
             m_dirtyTextures.push_back(handle);
+        // Note: texture dirty flags are reset when actually updating the
+        // textures in updateGLResources() as resetting flags here would make
+        // us lose information about what was dirty exactly.
     }
 }
 
@@ -1204,7 +1233,7 @@ void Renderer::updateGLResources()
 void Renderer::updateTexture(Texture *texture)
 {
     // Check that the current texture images are still in place, if not, do not update
-    const bool isValid = texture->isValid();
+    const bool isValid = texture->isValid(m_nodesManager->textureImageManager());
     if (!isValid)
         return;
 
@@ -1278,7 +1307,7 @@ void Renderer::updateTexture(Texture *texture)
 
     // Will make the texture requestUpload
     if (dirtyFlags.testFlag(Texture::DirtyImageGenerators) &&
-            !glTextureManager->setImages(glTexture, texture->textureImages()))
+            !glTextureManager->setImages(glTexture, texture->textureImageIds()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
 
     // Will make the texture requestUpload

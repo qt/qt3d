@@ -62,7 +62,6 @@ Texture::Texture()
     // We need backend -> frontend notifications to update the status of the texture
     : BackendNode(ReadWrite)
     , m_dirty(DirtyImageGenerators|DirtyProperties|DirtyParameters|DirtyDataGenerator)
-    , m_textureImageManager(nullptr)
 {
 }
 
@@ -72,11 +71,6 @@ Texture::~Texture()
     // because if the dtor is called that means
     // the manager was destroyed otherwise cleanup
     // would have been called
-}
-
-void Texture::setTextureImageManager(TextureImageManager *manager)
-{
-    m_textureImageManager = manager;
 }
 
 void Texture::addDirtyFlag(DirtyFlags flags)
@@ -101,34 +95,16 @@ void Texture::unsetDirty()
 
 void Texture::addTextureImage(Qt3DCore::QNodeId id)
 {
-    if (!m_textureImageManager) {
-        qWarning() << "[Qt3DRender::TextureNode] addTextureImage: invalid TextureImageManager";
-        return;
-    }
-
-    const HTextureImage handle = m_textureImageManager->lookupHandle(id);
-    if (handle.isNull()) {
-        qWarning() << "[Qt3DRender::TextureNode] addTextureImage: image handle is NULL";
-    } else if (!m_textureImages.contains(handle)) {
-        m_textureImages << handle;
+    if (!m_textureImageIds.contains(id)) {
+        m_textureImageIds.push_back(id);
         addDirtyFlag(DirtyImageGenerators);
     }
 }
 
 void Texture::removeTextureImage(Qt3DCore::QNodeId id)
 {
-    if (!m_textureImageManager) {
-        qWarning() << "[Qt3DRender::TextureNode] removeTextureImage: invalid TextureImageManager";
-        return;
-    }
-
-    const HTextureImage handle = m_textureImageManager->lookupHandle(id);
-    if (handle.isNull()) {
-        qWarning() << "[Qt3DRender::TextureNode] removeTextureImage: image handle is NULL";
-    } else {
-        m_textureImages.removeAll(handle);
-        addDirtyFlag(DirtyImageGenerators);
-    }
+    m_textureImageIds.removeAll(id);
+    addDirtyFlag(DirtyImageGenerators);
 }
 
 // This is called by Renderer::updateGLResources
@@ -138,7 +114,7 @@ void Texture::cleanup()
     // Whoever calls this must make sure to also check if this
     // texture is being referenced by a shared API specific texture (GLTexture)
     m_dataFunctor.reset();
-    m_textureImages.clear();
+    m_textureImageIds.clear();
 
     // set default values
     m_properties.width = 1;
@@ -321,10 +297,10 @@ void Texture::updateFromData(QTextureDataPtr data)
     }
 }
 
-bool Texture::isValid() const
+bool Texture::isValid(TextureImageManager *manager) const
 {
-    for (const auto &handle : m_textureImages) {
-        TextureImage *img = m_textureImageManager->data(handle);
+    for (const QNodeId id : m_textureImageIds) {
+        TextureImage *img = manager->lookupResource(id);
         if (img == nullptr)
             return false;
     }
@@ -354,23 +330,23 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_parameters.comparisonMode = data.comparisonMode;
     m_dataFunctor = data.dataFunctor;
 
+    for (const QNodeId imgId : data.textureImageIds)
+        addTextureImage(imgId);
+
     addDirtyFlag(DirtyFlags(DirtyImageGenerators|DirtyProperties|DirtyParameters));
 }
 
 
 TextureFunctor::TextureFunctor(AbstractRenderer *renderer,
-                               TextureManager *textureNodeManager,
-                               TextureImageManager *textureImageManager)
+                               TextureManager *textureNodeManager)
     : m_renderer(renderer)
     , m_textureNodeManager(textureNodeManager)
-    , m_textureImageManager(textureImageManager)
 {
 }
 
 Qt3DCore::QBackendNode *TextureFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     Texture *backend = m_textureNodeManager->getOrCreateResource(change->subjectId());
-    backend->setTextureImageManager(m_textureImageManager);
     backend->setRenderer(m_renderer);
     // Remove id from cleanupList if for some reason we were in the dirty list of texture
     // (Can happen when a node destroyed is followed by a node created change

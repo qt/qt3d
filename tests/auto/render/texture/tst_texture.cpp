@@ -29,6 +29,8 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DCore/qdynamicpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DRender/private/texture_p.h>
 
 #include "testpostmanarbiter.h"
@@ -57,6 +59,7 @@ private slots:
     void checkFrontendPropertyNotifications();
     void checkPropertyMirroring();
     void checkPropertyChanges();
+    void checkTextureImageBookeeping();
 };
 
 void tst_RenderTexture::checkFrontendPropertyNotifications()
@@ -165,6 +168,31 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
 
     // THEN
     QCOMPARE(arbiter.events.size(), 0);
+
+    // WHEN
+    Qt3DRender::QTextureImage img;
+    texture.addTextureImage(&img);
+
+    // THEN
+    QCOMPARE(arbiter.events.size(), 1);
+    const auto addedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+    QCOMPARE(addedChange->propertyName(), "textureImage");
+    QCOMPARE(addedChange->addedNodeId(), img.id());
+    QCOMPARE(addedChange->type(), Qt3DCore::PropertyValueAdded);
+
+    arbiter.events.clear();
+
+    // WHEN
+    texture.removeTextureImage(&img);
+
+    // THEN
+    QCOMPARE(arbiter.events.size(), 1);
+    const auto removedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
+    QCOMPARE(removedChange->propertyName(), "textureImage");
+    QCOMPARE(removedChange->removedNodeId(), img.id());
+    QCOMPARE(removedChange->type(), Qt3DCore::PropertyValueRemoved);
+
+    arbiter.events.clear();
 }
 
 template <typename FrontendTextureType, Qt3DRender::QAbstractTexture::Target Target>
@@ -269,6 +297,44 @@ void tst_RenderTexture::checkPropertyChanges()
     QCOMPARE(backend.properties().samples, 64);
     QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
     renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
+    // WHEN
+    Qt3DRender::QTextureImage img;
+    const auto imageAddChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &img);
+    imageAddChange->setPropertyName("textureImage");
+    backend.sceneChangeEvent(imageAddChange);
+
+    // THEN
+    QCOMPARE(backend.textureImageIds().size(), 1);
+    QCOMPARE(backend.textureImageIds().first(), img.id());
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
+    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+}
+
+void tst_RenderTexture::checkTextureImageBookeeping()
+{
+    // GIVEN
+    TestArbiter arbiter;
+    DummyTexture texture;
+    arbiter.setArbiterOnNode(&texture);
+
+    QCoreApplication::processEvents();
+
+    {
+        // WHEN
+        Qt3DRender::QTextureImage img;
+        texture.addTextureImage(&img);
+
+        // THEN
+        QCOMPARE(img.parent(), &texture);
+        QCOMPARE(texture.textureImages().size(), 1);
+        QCOMPARE(texture.textureImages().first()->id(), img.id());
+    }
+    // WHEN -> img is destroyed
+
+    // THEN
+    QCOMPARE(texture.textureImages().size(), 0);
+
 }
 
 QTEST_APPLESS_MAIN(tst_RenderTexture)
