@@ -187,6 +187,19 @@ private Q_SLOTS:
         roots[2] = -1.39297f;
         QTest::newRow("a=-0.75, b=0.75, c=2.5, d=0") << a << b << c << d << roots.size() << roots;
         roots.clear();
+
+        // Case that produces a discriminant that is close enough to zero that it should be
+        // evaluated as zero.
+        // Expected roots = 0.0, ~1.5
+        a = -3.998f;
+        b = 5.997f;
+        c = 0.0f;
+        d = 0.0f;
+        roots.resize(2);
+        roots[0] = 1.5f;
+        roots[1] = 0.0f;
+        QTest::newRow("a=-3.998, b=5.997, c=0, d=0") << a << b << c << d << roots.size() << roots;
+        roots.clear();
     }
 
     void checkFindCubicRoots()

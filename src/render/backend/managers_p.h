@@ -230,11 +230,26 @@ public:
         m_textureIdsToCleanup.push_back(id);
     }
 
+    // Called in AspectThread by Texture node functor create
+    void removeTextureIdToCleanup(Qt3DCore::QNodeId id)
+    {
+        m_textureIdsToCleanup.removeAll(id);
+    }
+
     // Called by RenderThread in updateGLResources (locked)
     QVector<Qt3DCore::QNodeId> takeTexturesIdsToCleanup()
     {
         return std::move(m_textureIdsToCleanup);
     }
+
+#ifdef QT_BUILD_INTERNAL
+    // For unit testing purposes only
+    QVector<Qt3DCore::QNodeId> textureIdsToCleanup() const
+    {
+        return m_textureIdsToCleanup;
+    }
+
+#endif
 
 private:
     QVector<Qt3DCore::QNodeId> m_textureIdsToCleanup;

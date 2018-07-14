@@ -372,6 +372,10 @@ Qt3DCore::QBackendNode *TextureFunctor::create(const Qt3DCore::QNodeCreatedChang
     Texture *backend = m_textureNodeManager->getOrCreateResource(change->subjectId());
     backend->setTextureImageManager(m_textureImageManager);
     backend->setRenderer(m_renderer);
+    // Remove id from cleanupList if for some reason we were in the dirty list of texture
+    // (Can happen when a node destroyed is followed by a node created change
+    // in the same loop, when changing parent for instance)
+    m_textureNodeManager->removeTextureIdToCleanup(change->subjectId());
     return backend;
 }
 
@@ -383,9 +387,9 @@ Qt3DCore::QBackendNode *TextureFunctor::get(Qt3DCore::QNodeId id) const
 void TextureFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_textureNodeManager->addTextureIdToCleanup(id);
-    // We only add ourselves to the dirty list
-    // The actual removal needs to be performed after we have
-    // destroyed the associated APITexture in the RenderThread
+    // We add ourselves to the dirty list to tell the shared texture managers
+    // in the renderer that this texture has been destroyed
+    m_textureNodeManager->releaseResource(id);
 }
 
 

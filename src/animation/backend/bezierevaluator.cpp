@@ -230,7 +230,7 @@ int BezierEvaluator::findCubicRoots(const float coeffs[4], float roots[3])
     const double pCubed = p * p * p;
     const double discriminant = q * q + pCubed;
 
-    if (qIsNull(discriminant)) {
+    if (almostZero(discriminant, 1e-6f)) {
         if (qIsNull(q)) {
             // One repeated triple root
             roots[0] = 0.0;

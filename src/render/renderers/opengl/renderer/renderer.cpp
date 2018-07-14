@@ -1191,16 +1191,13 @@ void Renderer::updateGLResources()
                 glTexture->getOrCreateGLTexture();
         }
     }
-    // When Textures are cleaned up, their id is saved
-    // so that they can be cleaned up in the render thread
-    // Note: we perform this step in second so that the previous updateTexture call
-    // has a chance to find a shared texture
+    // When Textures are cleaned up, their id is saved so that they can be
+    // cleaned up in the render thread Note: we perform this step in second so
+    // that the previous updateTexture call has a chance to find a shared
+    // texture and avoid possible destroying recreating a new texture
     const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
-    for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds) {
+    for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds)
         cleanupTexture(m_nodesManager->textureManager()->lookupResource(textureCleanedUpId));
-        // We can really release the texture at this point
-        m_nodesManager->textureManager()->releaseResource(textureCleanedUpId);
-    }
 }
 
 // Render Thread

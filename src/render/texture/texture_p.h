@@ -175,7 +175,7 @@ private:
     QMutex m_flagsMutex;
 };
 
-class TextureFunctor : public Qt3DCore::QBackendNodeMapper
+class Q_AUTOTEST_EXPORT TextureFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit TextureFunctor(AbstractRenderer *renderer,

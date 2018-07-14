@@ -271,6 +271,7 @@ GLTFImporter::~GLTFImporter()
 /*!
     \class Qt3DRender::GLTFImporter
     \inmodule Qt3DRender
+    \internal
     \brief Handles importing of gltf files.
 */
 /*!
