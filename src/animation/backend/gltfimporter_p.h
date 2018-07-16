@@ -182,7 +182,12 @@ public:
     bool load(QIODevice *ioDev);
     const QVector<Animation> animations() const { return m_animations; }
 
-    QVector<Qt3DAnimation::Animation::Channel> createAnimationData(const QString &animationName = QString()) const;
+    struct AnimationNameAndChannels
+    {
+        QString name;
+        QVector<Qt3DAnimation::Animation::Channel> channels;
+    };
+    AnimationNameAndChannels createAnimationData(int animationIndex, const QString &animationName = QString()) const;
 
 private:
     static Qt3DRender::QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);

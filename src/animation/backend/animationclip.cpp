@@ -50,8 +50,12 @@
 #include <QtCore/qjsonarray.h>
 #include <QtCore/qjsondocument.h>
 #include <QtCore/qjsonobject.h>
+#include <QtCore/qurlquery.h>
 
 QT_BEGIN_NAMESPACE
+
+#define ANIMATION_INDEX_KEY     QLatin1String("animationIndex")
+#define ANIMATION_NAME_KEY      QLatin1String("animationName")
 
 namespace Qt3DAnimation {
 namespace Animation {
@@ -210,15 +214,36 @@ void AnimationClip::loadAnimationFromUrl()
         return;
     }
 
+    // Extract the animationName or animationIndex from the url query parameters.
+    // If both present, animationIndex wins.
+    int animationIndex = -1;
+    QString animationName;
+    if (m_source.hasQuery()) {
+        QUrlQuery query(m_source);
+        if (query.hasQueryItem(ANIMATION_INDEX_KEY)) {
+            bool ok = false;
+            int i = query.queryItemValue(ANIMATION_INDEX_KEY).toInt(&ok);
+            if (ok)
+                animationIndex = i;
+        }
+
+        if (animationIndex == -1 && query.hasQueryItem(ANIMATION_NAME_KEY)) {
+            animationName = query.queryItemValue(ANIMATION_NAME_KEY);
+        }
+
+        qCDebug(Jobs) << "animationIndex =" << animationIndex;
+        qCDebug(Jobs) << "animationName =" << animationName;
+    }
+
     // TODO: Convert to plugins
     // Load glTF or "native"
     if (filePath.endsWith(QLatin1String("gltf"))) {
         qCDebug(Jobs) << "Loading glTF animation from" << filePath;
         GLTFImporter gltf;
         gltf.load(&file);
-        // TODO: Allow loading of a named animation from a file containing many
-        m_name = gltf.animations().first().name;
-        m_channels = gltf.createAnimationData();
+        auto nameAndChannels = gltf.createAnimationData(animationIndex, animationName);
+        m_name = nameAndChannels.name;
+        m_channels = nameAndChannels.channels;
     } else if (filePath.endsWith(QLatin1String("json"))) {
         // Native format
         QByteArray animationData = file.readAll();
