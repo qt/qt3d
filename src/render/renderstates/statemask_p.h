@@ -82,6 +82,7 @@ enum StateMask
     BlendEquationArgumentsMask  = 1 << 18,
     LineWidthMask           = 1 << 19,
     DepthRangeMask          = 1 << 20,
+    RasterModeMask          = 1 << 21
 };
 
 } // namespace Render

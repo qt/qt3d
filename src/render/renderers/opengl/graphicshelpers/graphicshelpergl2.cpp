@@ -299,6 +299,11 @@ void GraphicsHelperGL2::deleteSync(void *)
     qWarning() << "Fences are not supported by OpenGL 2.0 (since OpenGL 3.2)";
 }
 
+void GraphicsHelperGL2::rasterMode(GLenum faceMode, GLenum rasterMode)
+{
+    m_funcs->glPolygonMode(faceMode, rasterMode);
+}
+
 void GraphicsHelperGL2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);

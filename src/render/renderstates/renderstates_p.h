@@ -95,6 +95,12 @@ public:
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
+class Q_AUTOTEST_EXPORT RasterMode : public GenericState<RasterMode, RasterModeMask, GLenum, GLenum>
+{
+public:
+    void updateProperty(const char *name, const QVariant &value) override;
+};
+
 class Q_AUTOTEST_EXPORT NoDepthMask : public GenericState<NoDepthMask, DepthWriteStateMask, GLboolean>
 {
 public:

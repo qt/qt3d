@@ -246,13 +246,17 @@ void applyStateHelper<DepthTest>(const DepthTest *state, SubmissionContext *gc)
     gc->depthTest(std::get<0>(state->values()));
 }
 
+template<>
+void applyStateHelper<RasterMode>(const RasterMode *state, SubmissionContext *gc)
+{
+    gc->rasterMode(std::get<0>(state->values()), std::get<1>(state->values()));
+}
 
 template<>
 void applyStateHelper<NoDepthMask>(const NoDepthMask *state, SubmissionContext *gc)
 {
     gc->depthMask(std::get<0>(state->values()));
 }
-
 
 template<>
 void applyStateHelper<CullFace>(const CullFace *state, SubmissionContext *gc)
@@ -1095,6 +1099,11 @@ void SubmissionContext::applyState(const StateVariant &stateVariant)
         break;
     }
 
+    case RasterModeMask: {
+        applyStateHelper<RasterMode>(static_cast<const RasterMode *>(stateVariant.constState()), this);
+        break;
+    }
+
     case FrontFaceStateMask: {
         applyStateHelper<FrontFace>(static_cast<const FrontFace *>(stateVariant.constState()), this);
         break;
@@ -1221,6 +1230,11 @@ void SubmissionContext::resetMasked(qint64 maskOfStatesToReset)
 
     if (maskOfStatesToReset & LineWidthMask)
         funcs->glLineWidth(1.0f);
+
+#ifndef QT_OPENGL_ES_2
+    if (maskOfStatesToReset & RasterModeMask)
+        m_glHelper->rasterMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
 }
 
 void SubmissionContext::applyStateSet(RenderStateSet *ss)

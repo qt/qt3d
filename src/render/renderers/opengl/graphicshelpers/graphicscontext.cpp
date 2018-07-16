@@ -329,6 +329,11 @@ void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
     }
 }
 
+void GraphicsContext::rasterMode(GLenum faceMode, GLenum rasterMode)
+{
+    m_glHelper->rasterMode(faceMode, rasterMode);
+}
+
 /*!
  * \internal
  * Finds the highest supported opengl version and internally use the most optimized

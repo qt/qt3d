@@ -49,7 +49,9 @@ HEADERS += \
     $$PWD/renderstatenode_p.h \
     $$PWD/qmultisampleantialiasing.h \
     $$PWD/statemask_p.h \
-    $$PWD/statevariant_p.h
+    $$PWD/statevariant_p.h \
+    $$PWD/qrastermode.h \
+    $$PWD/qrastermode_p.h
 
 SOURCES += \
     $$PWD/qalphacoverage.cpp \
@@ -79,4 +81,5 @@ SOURCES += \
     $$PWD/qrenderstatecreatedchange.cpp \
     $$PWD/renderstatenode.cpp \
     $$PWD/statevariant.cpp \
-    $$PWD/qmultisampleantialiasing.cpp
+    $$PWD/qmultisampleantialiasing.cpp \
+    $$PWD/qrastermode.cpp

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2018 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,86 +37,60 @@
 **
 ****************************************************************************/
 
-#include "statevariant_p.h"
+#ifndef QT3DRENDER_QRASTERMODE_H
+#define QT3DRENDER_QRASTERMODE_H
+
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-RenderStateImpl *StateVariant::state()
+class QRasterModePrivate;
+
+class QT3DRENDERSHARED_EXPORT QRasterMode : public QRenderState
 {
-    switch (type) {
-    case BlendEquationArgumentsMask:
-    case BlendStateMask:
-    case AlphaTestMask:
-    case MSAAEnabledStateMask:
-    case DepthRangeMask:
-    case DepthTestStateMask:
-    case DepthWriteStateMask:
-    case CullFaceStateMask:
-    case FrontFaceStateMask:
-    case DitheringStateMask:
-    case ScissorStateMask:
-    case StencilTestStateMask:
-    case AlphaCoverageStateMask:
-    case PointSizeMask:
-    case PolygonOffsetStateMask:
-    case ColorStateMask:
-    case ClipPlaneMask:
-    case SeamlessCubemapMask:
-    case StencilOpMask:
-    case StencilWriteStateMask:
-    case LineWidthMask:
-    case RasterModeMask:
-        return &data.blendEquationArguments;
-    default:
-        Q_UNREACHABLE();
-    }
-}
+    Q_OBJECT
+    Q_PROPERTY(RasterMode rasterMode READ rasterMode WRITE setRasterMode NOTIFY rasterModeChanged)
+    Q_PROPERTY(FaceMode faceMode READ faceMode WRITE setFaceMode NOTIFY faceModeChanged)
+public:
 
-const RenderStateImpl *StateVariant::constState() const
-{
-    switch (type) {
-    case BlendEquationArgumentsMask:
-    case BlendStateMask:
-    case AlphaTestMask:
-    case MSAAEnabledStateMask:
-    case DepthRangeMask:
-    case DepthTestStateMask:
-    case DepthWriteStateMask:
-    case CullFaceStateMask:
-    case FrontFaceStateMask:
-    case DitheringStateMask:
-    case ScissorStateMask:
-    case StencilTestStateMask:
-    case AlphaCoverageStateMask:
-    case PointSizeMask:
-    case PolygonOffsetStateMask:
-    case ColorStateMask:
-    case ClipPlaneMask:
-    case SeamlessCubemapMask:
-    case StencilOpMask:
-    case StencilWriteStateMask:
-    case LineWidthMask:
-    case RasterModeMask:
-        return &data.blendEquationArguments;
-    default:
-        Q_UNREACHABLE();
-    }
-}
+    enum RasterMode {
+        Points = 0x1B00,
+        Lines = 0x1B01,
+        Fill = 0x1B02,
+    };
+    Q_ENUM(RasterMode) // LCOV_EXCL_LINE
 
-bool StateVariant::operator ==(const StateVariant &other) const
-{
-    return (other.type == type && constState()->equalTo(*other.constState()));
-}
+    enum FaceMode
+    {
+        Front = 0x0404,
+        Back = 0x0405,
+        FrontAndBack = 0x0408
+    };
+    Q_ENUM(FaceMode) // LCOV_EXCL_LINE
 
-bool StateVariant::operator !=(const StateVariant &other) const
-{
-    return !(*this == other);
-}
+    explicit QRasterMode(Qt3DCore::QNode *parent = nullptr);
+    ~QRasterMode() = default;
 
-} // namespace Render
+    RasterMode rasterMode() const;
+    FaceMode faceMode() const;
+
+public Q_SLOTS:
+    void setRasterMode(RasterMode rasterMode);
+    void setFaceMode(FaceMode faceMode);
+
+Q_SIGNALS:
+    void rasterModeChanged(RasterMode rasterMode);
+    void faceModeChanged(FaceMode faceMode);
+
+private:
+    Q_DECLARE_PRIVATE(QRasterMode)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QRASTERMODE_H

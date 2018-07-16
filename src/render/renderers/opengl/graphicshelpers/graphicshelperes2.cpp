@@ -345,6 +345,13 @@ void GraphicsHelperES2::deleteSync(void *)
     qWarning() << "Fences are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
 }
 
+void GraphicsHelperES2::rasterMode(GLenum faceMode, GLenum rasterMode)
+{
+    Q_UNUSED(faceMode);
+    Q_UNUSED(rasterMode);
+    qWarning() << "glPolyonMode is not supported with OpenGL ES";
+}
+
 void GraphicsHelperES2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);

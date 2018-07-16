@@ -433,6 +433,11 @@ void GraphicsHelperGL4::deleteSync(void *sync)
     m_funcs->glDeleteSync(static_cast<GLsync>(sync));
 }
 
+void GraphicsHelperGL4::rasterMode(GLenum faceMode, GLenum rasterMode)
+{
+    m_funcs->glPolygonMode(faceMode, rasterMode);
+}
+
 void GraphicsHelperGL4::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform1fv(location, count, values);

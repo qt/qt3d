@@ -100,6 +100,12 @@ void DepthTest::updateProperty(const char *name, const QVariant &value)
     if (name == QByteArrayLiteral("depthFunction")) std::get<0>(m_values) = value.toInt();
 }
 
+void RasterMode::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("rasterMode")) std::get<0>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("faceMode")) std::get<1>(m_values) = value.toInt();
+}
+
 void CullFace::updateProperty(const char *name, const QVariant &value)
 {
     if (name == QByteArrayLiteral("mode")) std::get<0>(m_values) = value.toInt();

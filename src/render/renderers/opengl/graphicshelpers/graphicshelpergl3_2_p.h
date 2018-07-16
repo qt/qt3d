@@ -134,6 +134,7 @@ public:
     void vertexAttributePointer(GLenum shaderDataType, GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) override;
     void readBuffer(GLenum mode) override;
     void drawBuffer(GLenum mode) override;
+    void rasterMode(GLenum faceMode, GLenum rasterMode) override;
 
     void *fenceSync() override;
     void clientWaitSync(void *sync, GLuint64 nanoSecTimeout) override;

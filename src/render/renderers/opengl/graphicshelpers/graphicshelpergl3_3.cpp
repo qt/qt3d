@@ -361,6 +361,11 @@ void GraphicsHelperGL3_3::deleteSync(void *sync)
     m_funcs->glDeleteSync(static_cast<GLsync>(sync));
 }
 
+void GraphicsHelperGL3_3::rasterMode(GLenum faceMode, GLenum rasterMode)
+{
+    m_funcs->glPolygonMode(faceMode, rasterMode);
+}
+
 void GraphicsHelperGL3_3::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);

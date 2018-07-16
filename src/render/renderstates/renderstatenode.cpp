@@ -55,6 +55,8 @@
 #include <Qt3DRender/private/qdepthrange_p.h>
 #include <Qt3DRender/qdepthtest.h>
 #include <Qt3DRender/private/qdepthtest_p.h>
+#include <Qt3DRender/qrastermode.h>
+#include <Qt3DRender/private/qrastermode_p.h>
 #include <Qt3DRender/qdithering.h>
 #include <Qt3DRender/qfrontface.h>
 #include <Qt3DRender/private/qfrontface_p.h>
@@ -142,6 +144,12 @@ StateVariant createStateImplementation(const Qt3DRender::QRenderStateCreatedChan
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QDepthTestData>>(renderStateChange);
         const auto &data = typedChange->data;
         return StateVariant::createState<DepthTest>(data.depthFunction);
+    }
+
+    case RasterModeMask: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QRasterModeData>>(renderStateChange);
+        const auto &data = typedChange->data;
+        return StateVariant::createState<RasterMode>(data.faceMode, data.rasterMode);
     }
 
     case FrontFaceStateMask: {

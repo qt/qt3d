@@ -156,6 +156,7 @@ public:
     virtual void    vertexAttributePointer(GLenum shaderDataType, GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) = 0;
     virtual void    readBuffer(GLenum mode) = 0;
     virtual void    drawBuffer(GLenum mode) = 0;
+    virtual void    rasterMode(GLenum faceMode, GLenum rasterMode) = 0;
 
     virtual void    *fenceSync() = 0;
     virtual void    clientWaitSync(void *sync, GLuint64 nanoSecTimeout) = 0;

@@ -167,6 +167,7 @@ public:
     void    setVerticesPerPatch(GLint verticesPerPatch);
     void    memoryBarrier(QMemoryBarrier::Operations barriers);
     void    activateDrawBuffers(const AttachmentPack &attachments);
+    void    rasterMode(GLenum faceMode, GLenum rasterMode);
 
     // Helper methods
     static GLint elementType(GLint type);

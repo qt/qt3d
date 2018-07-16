@@ -59,7 +59,9 @@ SUBDIRS += \
     blitframebuffer-qml \
     raycasting-qml \
     shared_texture_image \
-    texture_property_updates
+    texture_property_updates \
+    raster-cpp \
+    raster-qml
 
 qtHaveModule(multimedia): {
     SUBDIRS += \

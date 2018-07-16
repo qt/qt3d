@@ -1557,6 +1557,24 @@ private Q_SLOTS:
         // Not supported by GL2
     }
 
+    void rasterMode()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+
+        m_func->glGetError();
+
+        // WHEN
+        m_glHelper.rasterMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+        GLint p;
+        m_func->glGetIntegerv(GL_POLYGON_MODE, &p);
+        QCOMPARE(p, GL_LINE);
+    }
+
 private:
     QScopedPointer<QWindow> m_window;
     QOpenGLContext m_glContext;
