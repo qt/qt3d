@@ -84,6 +84,10 @@ void QAnimationClipLoaderPrivate::setStatus(QAnimationClipLoader::Status status)
     to select which animation should be loaded by way of query parameters
     on the source url. The accepted query parameters are animationIndex and
     animationName. If both are specified, animationName is ignored.
+
+    If a file contains only a single animation, there is no need to specify
+    the animationIndex or animationName. We simply use the one available
+    animation.
 */
 /*!
     \class Qt3DAnimation::QAnimationClipLoader

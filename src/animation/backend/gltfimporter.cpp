@@ -474,7 +474,9 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
         return nameAndChannels;
     }
 
-    if (animationIndex == -1 && !animationName.isEmpty()) {
+    if (m_animations.size() == 1) {
+        animationIndex = 0;
+    } else if (animationIndex < 0 && !animationName.isEmpty()) {
         for (int i = 0; i < m_animations.size(); ++i) {
             if (m_animations[i].name == animationName) {
                 animationIndex = i;
@@ -483,7 +485,7 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
         }
     }
 
-    if (animationIndex >= m_animations.size()) {
+    if (animationIndex < 0 || animationIndex >= m_animations.size()) {
         qCWarning(Jobs) << "Invalid animation index. Skipping.";
         return nameAndChannels;
     }
