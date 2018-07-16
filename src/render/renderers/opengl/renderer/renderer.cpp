@@ -1197,7 +1197,7 @@ void Renderer::updateGLResources()
     // texture and avoid possible destroying recreating a new texture
     const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
     for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds)
-        cleanupTexture(m_nodesManager->textureManager()->lookupResource(textureCleanedUpId));
+        cleanupTexture(textureCleanedUpId);
 }
 
 // Render Thread
@@ -1245,7 +1245,7 @@ void Renderer::updateTexture(Texture *texture)
     // if this texture is a shared texture, we might need to look for a new TextureImpl
     // and abandon the old one
     if (glTextureManager->isShared(glTexture)) {
-        glTextureManager->abandon(glTexture, texture);
+        glTextureManager->abandon(glTexture, texture->peerId());
         // Note: if isUnique is true, a once shared texture will become unique
         createOrUpdateGLTexture();
         return;
@@ -1257,7 +1257,7 @@ void Renderer::updateTexture(Texture *texture)
     if (!isUnique) {
         GLTexture *newSharedTex = glTextureManager->findMatchingShared(texture);
         if (newSharedTex && newSharedTex != glTexture) {
-            glTextureManager->abandon(glTexture, texture);
+            glTextureManager->abandon(glTexture, texture->peerId());
             glTextureManager->adoptShared(newSharedTex, texture);
             texture->unsetDirty();
             return;
@@ -1291,13 +1291,13 @@ void Renderer::updateTexture(Texture *texture)
 }
 
 // Render Thread
-void Renderer::cleanupTexture(const Texture *texture)
+void Renderer::cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId)
 {
     GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
-    GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
+    GLTexture *glTexture = glTextureManager->lookupResource(cleanedUpTextureId);
 
     if (glTexture != nullptr)
-        glTextureManager->abandon(glTexture, texture);
+        glTextureManager->abandon(glTexture, cleanedUpTextureId);
 }
 
 void Renderer::downloadGLBuffers()

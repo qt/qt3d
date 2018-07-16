@@ -233,7 +233,7 @@ public:
 
     void updateGLResources();
     void updateTexture(Texture *texture);
-    void cleanupTexture(const Texture *texture);
+    void cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId);
     void downloadGLBuffers();
     void blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
                          Qt3DCore::QNodeId outputRenderTargetId,

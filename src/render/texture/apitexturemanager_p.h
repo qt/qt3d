@@ -161,9 +161,9 @@ public:
 
     // De-associate the given APITexture from the backend node. If the texture
     // is no longer referenced by any other node, it will be deleted.
-    void abandon(APITexture *tex, const Texture *node)
+    void abandon(APITexture *tex, const Qt3DCore::QNodeId nodeId)
     {
-        APITexture *apiTexture = m_nodeIdToGLTexture.take(node->peerId());
+        APITexture *apiTexture = m_nodeIdToGLTexture.take(nodeId);
         Q_ASSERT(tex == apiTexture);
 
         if (Q_UNLIKELY(!apiTexture)) {
@@ -176,7 +176,7 @@ public:
             m_abandonedTextures.push_back(apiTexture);
         } else {
             QVector<Qt3DCore::QNodeId> &referencedTextureNodes = m_sharedTextures[apiTexture];
-            referencedTextureNodes.removeAll(node->peerId());
+            referencedTextureNodes.removeAll(nodeId);
 
             // If no texture nodes is referencing the shared APITexture, remove it
             if (referencedTextureNodes.empty()) {
