@@ -95,6 +95,31 @@ public:
         Q_UNUSED(ndx); Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z); Q_UNUSED(w);
     }
 
+    template<typename VertexBufferType, typename IndexBufferType>
+    void traverseCoordinateIndexed(VertexBufferType *vertexBuffer,
+                                   IndexBufferType *indexBuffer,
+                                   int vertexByteStride,
+                                   int drawVertexCount,
+                                   bool primitiveRestartEnabled,
+                                   int primitiveRestartIndex)
+    {
+        switch (dataSize) {
+        case 1: traverseCoordinates1Indexed(vertexBuffer, vertexByteStride, indexBuffer, drawVertexCount,
+                                            primitiveRestartEnabled, primitiveRestartIndex);
+            break;
+        case 2: traverseCoordinates2Indexed(vertexBuffer, vertexByteStride, indexBuffer, drawVertexCount,
+                                            primitiveRestartEnabled, primitiveRestartIndex);
+            break;
+        case 3: traverseCoordinates3Indexed(vertexBuffer, vertexByteStride, indexBuffer, drawVertexCount,
+                                            primitiveRestartEnabled, primitiveRestartIndex);
+            break;
+        case 4: traverseCoordinates4Indexed(vertexBuffer, vertexByteStride, indexBuffer, drawVertexCount,
+                                            primitiveRestartEnabled, primitiveRestartIndex);
+            break;
+        default: Q_UNREACHABLE();
+        }
+    }
+
     bool apply(Qt3DRender::Render::Attribute *attribute,
                Qt3DRender::Render::Attribute *indexAttribute,
                int drawVertexCount,
@@ -107,51 +132,37 @@ public:
             return false;
 
         auto data = m_manager->lookupResource<Buffer, BufferManager>(attribute->bufferId())->data();
-        auto buffer = BufferTypeInfo::castToType<VertexBaseType>(data, attribute->byteOffset());
+        auto vertexBuffer = BufferTypeInfo::castToType<VertexBaseType>(data, attribute->byteOffset());
 
         if (indexAttribute) {
             auto indexData = m_manager->lookupResource<Buffer, BufferManager>(indexAttribute->bufferId())->data();
-            if (indexAttribute->vertexBaseType() == QAttribute::UnsignedShort) {
+            switch (indexAttribute->vertexBaseType()) {
+            case QAttribute::UnsignedShort: {
                 auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedShort>(indexData, indexAttribute->byteOffset());
-                switch (dataSize) {
-                case 1: traverseCoordinates1Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
-                                                    primitiveRestartEnabled, primitiveRestartIndex);
-                    break;
-                case 2: traverseCoordinates2Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
-                                                    primitiveRestartEnabled, primitiveRestartIndex);
-                    break;
-                case 3: traverseCoordinates3Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
-                                                    primitiveRestartEnabled, primitiveRestartIndex);
-                    break;
-                case 4: traverseCoordinates4Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
-                                                    primitiveRestartEnabled, primitiveRestartIndex);
-                    break;
-                default: Q_UNREACHABLE();
-                }
-            } else {
+                traverseCoordinateIndexed(vertexBuffer, indexBuffer, attribute->byteStride(), drawVertexCount,
+                                          primitiveRestartEnabled, primitiveRestartIndex);
+                break;
+            }
+            case QAttribute::UnsignedInt: {
                 auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedInt>(indexData, indexAttribute->byteOffset());
-                switch (dataSize) {
-                case 1: traverseCoordinates1Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
-                                                    primitiveRestartEnabled, primitiveRestartIndex);
-                    break;
-                case 2: traverseCoordinates2Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
-                                                    primitiveRestartEnabled, primitiveRestartIndex);
-                    break;
-                case 3: traverseCoordinates3Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
-                                                    primitiveRestartEnabled, primitiveRestartIndex);
-                    break;
-                case 4: traverseCoordinates4Indexed(buffer, attribute->byteStride(), indexBuffer, drawVertexCount,
-                                                    primitiveRestartEnabled, primitiveRestartIndex);
-                    break;
-                default: Q_UNREACHABLE();
-                }
+                traverseCoordinateIndexed(vertexBuffer, indexBuffer, attribute->byteStride(), drawVertexCount,
+                                          primitiveRestartEnabled, primitiveRestartIndex);
+                break;
+            }
+            case QAttribute::UnsignedByte: {
+                auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedByte>(indexData, indexAttribute->byteOffset());
+                traverseCoordinateIndexed(vertexBuffer, indexBuffer, attribute->byteStride(), drawVertexCount,
+                                          primitiveRestartEnabled, primitiveRestartIndex);
+                break;
+            }
+            default: Q_UNREACHABLE();
             }
         } else {
             switch (dataSize) {
-            case 1: traverseCoordinates1(buffer, attribute->byteStride(), drawVertexCount); break;
-            case 2: traverseCoordinates2(buffer, attribute->byteStride(), drawVertexCount); break;
-            case 3: traverseCoordinates3(buffer, attribute->byteStride(), drawVertexCount); break;
-            case 4: traverseCoordinates4(buffer, attribute->byteStride(), drawVertexCount); break;
+            case 1: traverseCoordinates1(vertexBuffer, attribute->byteStride(), drawVertexCount); break;
+            case 2: traverseCoordinates2(vertexBuffer, attribute->byteStride(), drawVertexCount); break;
+            case 3: traverseCoordinates3(vertexBuffer, attribute->byteStride(), drawVertexCount); break;
+            case 4: traverseCoordinates4(vertexBuffer, attribute->byteStride(), drawVertexCount); break;
             default: Q_UNREACHABLE();
             }
         }
