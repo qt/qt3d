@@ -1170,7 +1170,16 @@ void Renderer::reloadDirtyShaders()
     }
 }
 
-// Render Thread
+// Render Thread (or QtQuick RenderThread when using Scene3D)
+// Scene3D: When using Scene3D rendering, we can't assume that when
+// updateGLResources is called, the resource handles points to still existing
+// objects. This is because Scene3D calls doRender independently of whether all
+// jobs have completed or not which in turn calls proceedToNextFrame under some
+// conditions. Such conditions are usually met on startup to avoid deadlocks.
+// proceedToNextFrame triggers the syncChanges calls for the next frame, which
+// may contain destruction changes targeting resources. When the above
+// happens, this can result in the dirtyResource vectors containing handles of
+// objects that may already have been destroyed
 void Renderer::updateGLResources()
 {
     {
@@ -1178,6 +1187,11 @@ void Renderer::updateGLResources()
         const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
         for (const HBuffer &handle: dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
+
+            // Can be null when using Scene3D rendering
+            if (buffer == nullptr)
+                continue;
+
             // Forces creation if it doesn't exit
             // Also note the binding point doesn't really matter here, we just upload data
             if (!m_submissionContext->hasGLBufferForBuffer(buffer))
@@ -1195,6 +1209,11 @@ void Renderer::updateGLResources()
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
         for (const HShader &handle: dirtyShaderHandles) {
             Shader *shader = shaderManager->data(handle);
+
+            // Can be null when using Scene3D rendering
+            if (shader == nullptr)
+                continue;
+
             // Compile shader
             m_submissionContext->loadShader(shader, shaderManager);
         }
@@ -1206,6 +1225,11 @@ void Renderer::updateGLResources()
         const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
         for (const HTexture &handle: activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
+
+            // Can be null when using Scene3D rendering
+            if (texture ==  nullptr)
+                continue;
+
             // Update texture properties
             updateTexture(texture);
         }
