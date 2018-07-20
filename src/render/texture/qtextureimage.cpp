@@ -292,7 +292,17 @@ QTextureImageDataPtr QImageTextureDataFunctor::operator ()()
     // We assume that a texture image is going to contain a single image data
     // For compressed dds or ktx textures a warning should be issued if
     // there are layers or 3D textures
-    return TextureLoadingHelper::loadTextureData(m_url, false, m_mirrored);
+
+    if (!Qt3DCore::QDownloadHelperService::isLocal(m_url))
+        qWarning() << "QTextureImage only supports local url";
+
+    QTextureImageDataPtr data = TextureLoadingHelper::loadTextureData(m_url, false, m_mirrored);
+
+    // Data failed to load
+    // Still create an empty QTextureImage to avoid trying to reload it every frame
+    if (!data)
+        data = QTextureImageDataPtr::create();
+    return data;
 }
 
 bool QImageTextureDataFunctor::operator ==(const QTextureImageDataGenerator &other) const
