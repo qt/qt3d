@@ -106,6 +106,7 @@ void QDownloadHelperServicePrivate::init()
     m_downloadThread = new QThread(q);
     m_downloadWorker = new QDownloadNetworkWorker;
     m_downloadWorker->moveToThread(m_downloadThread);
+    // QueuedConnection
     QObject::connect(m_downloadWorker, SIGNAL(requestDownloaded(const Qt3DCore::QDownloadRequestPtr &)),
                      q, SLOT(_q_onRequestCompleted(const Qt3DCore::QDownloadRequestPtr &)));
     m_downloadThread->start();
@@ -119,6 +120,7 @@ void QDownloadHelperServicePrivate::shutdown()
     m_downloadWorker->deleteLater();
 }
 
+// Executed in AspectThread (queued signal connected to download thread)
 void QDownloadHelperServicePrivate::_q_onRequestCompleted(const Qt3DCore::QDownloadRequestPtr &request)
 {
     request->onCompleted();
