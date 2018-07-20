@@ -99,9 +99,14 @@ public:
         return m_sharedTextures.keys().toVector() + m_uniqueTextures + m_abandonedTextures;
     }
 
-    APITexture *lookupResource(Qt3DCore::QNodeId textureId)
+    APITexture *lookupResource(Qt3DCore::QNodeId textureId) const
     {
         return m_nodeIdToGLTexture.value(textureId);
+    }
+
+    Qt3DCore::QNodeIdVector referencedTextureIds(APITexture *apiTexture) const
+    {
+        return m_sharedTextures.value(apiTexture);
     }
 
     // Returns a APITexture that matches the given QTexture node. Will make sure

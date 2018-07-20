@@ -108,6 +108,17 @@ public:
         return needsToBeCreated;
     }
 
+    QVector<ReferencedType> referencesForGenerator(const GeneratorPtr &generator)
+    {
+        QMutexLocker lock(&m_mutex);
+
+        Entry *entry = findEntry(generator);
+        if (entry == nullptr)
+            return {};
+        return entry->referencingObjects;
+    }
+
+
     /*!
      * Dereference given generator from texture. If no other textures still reference
      * the generator, the associated data will be deleted

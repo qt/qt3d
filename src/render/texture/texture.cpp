@@ -199,8 +199,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_properties.samples = propertyChange->value().toInt();
             dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("generator")) {
-            m_dataFunctor = propertyChange->value().value<QTextureGeneratorPtr>();
-            dirty = DirtyDataGenerator;
+            setDataGenerator(propertyChange->value().value<QTextureGeneratorPtr>());
         }
     }
         break;
@@ -295,6 +294,13 @@ void Texture::updateFromData(QTextureDataPtr data)
         change->setValue(data->target());
         notifyObservers(change);
     }
+}
+
+// Called by sceneChangeEvent or TextureDownloadRequest (both in AspectThread context)
+void Texture::setDataGenerator(const QTextureGeneratorPtr &generator)
+{
+    m_dataFunctor = generator;
+    addDirtyFlag(DirtyDataGenerator);
 }
 
 bool Texture::isValid(TextureImageManager *manager) const

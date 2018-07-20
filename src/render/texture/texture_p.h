@@ -157,7 +157,7 @@ public:
 
     void notifyStatus(QAbstractTexture::Status status);
     void updateFromData(QTextureDataPtr data);
-
+    void setDataGenerator(const QTextureGeneratorPtr &generator);
     bool isValid(TextureImageManager *manager) const;
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
