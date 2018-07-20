@@ -79,6 +79,7 @@
 #include <Qt3DRender/private/updateskinningpalettejob_p.h>
 #include <Qt3DRender/private/updateentitylayersjob_p.h>
 #include <Qt3DRender/private/renderercache_p.h>
+#include <Qt3DRender/private/texture_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -216,6 +217,7 @@ public:
     inline IntrospectShadersJobPtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
+    inline Qt3DCore::QAspectJobPtr sendTextureChangesToFrontendJob() const { return m_sendTextureChangesToFrontendJob; }
     inline UpdateEntityLayersJobPtr updateEntityLayersJob() const { return m_updateEntityLayersJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
@@ -370,6 +372,7 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_vaoGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
+    GenericLambdaJobPtr<std::function<void ()>> m_sendTextureChangesToFrontendJob;
     IntrospectShadersJobPtr m_introspectShaderJob;
 
     SynchronizerJobPtr m_syncTextureLoadingJob;
@@ -379,6 +382,7 @@ private:
     void lookForDownloadableBuffers();
     void lookForDirtyTextures();
     void reloadDirtyShaders();
+    void sendTextureChangesToFrontend();
 
     QMutex m_abandonedVaosMutex;
     QVector<HVao> m_abandonedVaos;
@@ -387,6 +391,7 @@ private:
     QVector<HBuffer> m_downloadableBuffers;
     QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
+    QVector<QPair<TextureProperties, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
 
     bool m_ownedContext;
 

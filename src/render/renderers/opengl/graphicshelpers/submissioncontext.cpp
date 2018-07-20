@@ -863,7 +863,7 @@ void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Atta
     for (const Attachment &attachment : attachments_) {
         GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
         if (!m_glHelper->frameBufferNeedsRenderBuffer(attachment)) {
-            QOpenGLTexture *glTex = rTex ? rTex->getOrCreateGLTexture() : nullptr;
+            QOpenGLTexture *glTex = rTex ? rTex->getGLTexture() : nullptr;
             if (glTex != nullptr) {
                 // The texture can not be rendered simultaniously by another renderer
                 Q_ASSERT(!rTex->isExternalRenderingEnabled());

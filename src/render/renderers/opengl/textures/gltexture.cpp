@@ -105,10 +105,13 @@ void GLTexture::destroyGLTexture()
     destroyResources();
 }
 
-QOpenGLTexture* GLTexture::getOrCreateGLTexture()
+GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
 {
     QMutexLocker locker(&m_textureMutex);
     bool needUpload = false;
+    TextureUpdateInfo textureInfo;
+
+    m_properties.status = QAbstractTexture::Error;
 
     // on the first invocation in the render thread, make sure to
     // evaluate the texture data generator output
@@ -140,7 +143,8 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
             needUpload = true;
         } else {
             qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
-            return nullptr;
+            textureInfo.properties.status = QAbstractTexture::Loading;
+            return textureInfo;
         }
     }
 
@@ -188,8 +192,10 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
     }
 
     // don't try to create the texture if the format was not set
-    if (m_properties.format == QAbstractTexture::Automatic)
-        return nullptr;
+    if (m_properties.format == QAbstractTexture::Automatic) {
+        textureInfo.properties.status = QAbstractTexture::Error;
+        return textureInfo;
+    }
 
     // if the properties changed, we need to re-allocate the texture
     if (testDirtyFlag(Properties)) {
@@ -197,15 +203,24 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
         m_gl = nullptr;
     }
 
+
     if (!m_gl) {
         m_gl = buildGLTexture();
-        if (!m_gl)
-            return nullptr;
+        if (!m_gl) {
+            textureInfo.properties.status = QAbstractTexture::Error;
+            return textureInfo;
+        }
+
         m_gl->allocateStorage();
         if (!m_gl->isStorageAllocated()) {
-            return nullptr;
+            textureInfo.properties.status = QAbstractTexture::Error;
+            return textureInfo;
         }
     }
+    m_properties.status = QAbstractTexture::Ready;
+
+    textureInfo.properties = m_properties;
+    textureInfo.texture = m_gl;
 
     // need to (re-)upload texture data?
     if (needUpload) {
@@ -223,7 +238,7 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
     setDirtyFlag(Properties, false);
     setDirtyFlag(Parameters, false);
 
-    return m_gl;
+    return textureInfo;
 }
 
 RenderBuffer *GLTexture::getOrCreateRenderBuffer()
@@ -442,7 +457,7 @@ void GLTexture::uploadGLTextureData()
     }
 
     // Upload all QTexImageData references by the TextureImages
-    for (int i = 0; i < m_images.size(); i++) {
+    for (int i = 0; i < std::min(m_images.size(), m_imageData.size()); i++) {
         const QTextureImageDataPtr &imgData = m_imageData.at(i);
         // Here the bytes in the QTextureImageData contain data for a single
         // layer, face or mip level, unlike the QTextureGenerator case where

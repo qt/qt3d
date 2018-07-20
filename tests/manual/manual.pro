@@ -58,7 +58,8 @@ SUBDIRS += \
     rendercapture-qml-fbo \
     blitframebuffer-qml \
     raycasting-qml \
-    shared_texture_image
+    shared_texture_image \
+    texture_property_updates
 
 qtHaveModule(widgets): {
     SUBDIRS += \
