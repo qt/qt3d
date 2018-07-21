@@ -1057,13 +1057,42 @@ void Renderer::lookForDownloadableBuffers()
 // Executed in a job
 void Renderer::lookForDirtyTextures()
 {
-    const QVector<HTexture> activeTextureHandles = m_nodesManager->textureManager()->activeHandles();
+    // To avoid having Texture or TextureImage maintain relationships between
+    // one another, we instead perform a lookup here to check if a texture
+    // image has been updated to then notify textures referencing the image
+    // that they need to be updated
+    TextureImageManager *imageManager = m_nodesManager->textureImageManager();
+    const QVector<HTextureImage> activeTextureImageHandles = imageManager->activeHandles();
+    Qt3DCore::QNodeIdVector dirtyImageIds;
+    for (const HTextureImage &handle: activeTextureImageHandles) {
+        TextureImage *image = imageManager->data(handle);
+        if (image->isDirty()) {
+            dirtyImageIds.push_back(image->peerId());
+            image->unsetDirty();
+        }
+    }
+
+    TextureManager *textureManager = m_nodesManager->textureManager();
+    const QVector<HTexture> activeTextureHandles = textureManager->activeHandles();
     for (const HTexture &handle: activeTextureHandles) {
-        Texture *texture = m_nodesManager->textureManager()->data(handle);
+        Texture *texture = textureManager->data(handle);
+        const QNodeIdVector imageIds = texture->textureImageIds();
+
+        // Does the texture reference any of the dirty texture images?
+        for (const QNodeId imageId: imageIds) {
+            if (dirtyImageIds.contains(imageId)) {
+                texture->addDirtyFlag(Texture::DirtyImageGenerators);
+                break;
+            }
+        }
+
         // Dirty meaning that something has changed on the texture
         // either properties, parameters, generator or a texture image
         if (texture->dirtyFlags() != Texture::NotDirty)
             m_dirtyTextures.push_back(handle);
+        // Note: texture dirty flags are reset when actually updating the
+        // textures in updateGLResources() as resetting flags here would make
+        // us lose information about what was dirty exactly.
     }
 }
 
@@ -1141,7 +1170,16 @@ void Renderer::reloadDirtyShaders()
     }
 }
 
-// Render Thread
+// Render Thread (or QtQuick RenderThread when using Scene3D)
+// Scene3D: When using Scene3D rendering, we can't assume that when
+// updateGLResources is called, the resource handles points to still existing
+// objects. This is because Scene3D calls doRender independently of whether all
+// jobs have completed or not which in turn calls proceedToNextFrame under some
+// conditions. Such conditions are usually met on startup to avoid deadlocks.
+// proceedToNextFrame triggers the syncChanges calls for the next frame, which
+// may contain destruction changes targeting resources. When the above
+// happens, this can result in the dirtyResource vectors containing handles of
+// objects that may already have been destroyed
 void Renderer::updateGLResources()
 {
     {
@@ -1149,6 +1187,11 @@ void Renderer::updateGLResources()
         const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
         for (const HBuffer &handle: dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
+
+            // Can be null when using Scene3D rendering
+            if (buffer == nullptr)
+                continue;
+
             // Forces creation if it doesn't exit
             // Also note the binding point doesn't really matter here, we just upload data
             if (!m_submissionContext->hasGLBufferForBuffer(buffer))
@@ -1166,6 +1209,11 @@ void Renderer::updateGLResources()
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
         for (const HShader &handle: dirtyShaderHandles) {
             Shader *shader = shaderManager->data(handle);
+
+            // Can be null when using Scene3D rendering
+            if (shader == nullptr)
+                continue;
+
             // Compile shader
             m_submissionContext->loadShader(shader, shaderManager);
         }
@@ -1177,6 +1225,11 @@ void Renderer::updateGLResources()
         const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
         for (const HTexture &handle: activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
+
+            // Can be null when using Scene3D rendering
+            if (texture ==  nullptr)
+                continue;
+
             // Update texture properties
             updateTexture(texture);
         }
@@ -1197,14 +1250,14 @@ void Renderer::updateGLResources()
     // texture and avoid possible destroying recreating a new texture
     const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
     for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds)
-        cleanupTexture(m_nodesManager->textureManager()->lookupResource(textureCleanedUpId));
+        cleanupTexture(textureCleanedUpId);
 }
 
 // Render Thread
 void Renderer::updateTexture(Texture *texture)
 {
     // Check that the current texture images are still in place, if not, do not update
-    const bool isValid = texture->isValid();
+    const bool isValid = texture->isValid(m_nodesManager->textureImageManager());
     if (!isValid)
         return;
 
@@ -1245,7 +1298,7 @@ void Renderer::updateTexture(Texture *texture)
     // if this texture is a shared texture, we might need to look for a new TextureImpl
     // and abandon the old one
     if (glTextureManager->isShared(glTexture)) {
-        glTextureManager->abandon(glTexture, texture);
+        glTextureManager->abandon(glTexture, texture->peerId());
         // Note: if isUnique is true, a once shared texture will become unique
         createOrUpdateGLTexture();
         return;
@@ -1257,7 +1310,7 @@ void Renderer::updateTexture(Texture *texture)
     if (!isUnique) {
         GLTexture *newSharedTex = glTextureManager->findMatchingShared(texture);
         if (newSharedTex && newSharedTex != glTexture) {
-            glTextureManager->abandon(glTexture, texture);
+            glTextureManager->abandon(glTexture, texture->peerId());
             glTextureManager->adoptShared(newSharedTex, texture);
             texture->unsetDirty();
             return;
@@ -1278,7 +1331,7 @@ void Renderer::updateTexture(Texture *texture)
 
     // Will make the texture requestUpload
     if (dirtyFlags.testFlag(Texture::DirtyImageGenerators) &&
-            !glTextureManager->setImages(glTexture, texture->textureImages()))
+            !glTextureManager->setImages(glTexture, texture->textureImageIds()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
 
     // Will make the texture requestUpload
@@ -1291,13 +1344,13 @@ void Renderer::updateTexture(Texture *texture)
 }
 
 // Render Thread
-void Renderer::cleanupTexture(const Texture *texture)
+void Renderer::cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId)
 {
     GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
-    GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
+    GLTexture *glTexture = glTextureManager->lookupResource(cleanedUpTextureId);
 
     if (glTexture != nullptr)
-        glTextureManager->abandon(glTexture, texture);
+        glTextureManager->abandon(glTexture, cleanedUpTextureId);
 }
 
 void Renderer::downloadGLBuffers()

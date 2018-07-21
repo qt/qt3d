@@ -630,8 +630,6 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(textureImage, &QAbstractTexture::removeTextureImage, d->m_textureImages);
 
-        if (textureImage->parent() && textureImage->parent() != this)
-            qWarning() << "A QAbstractTextureImage was shared, expect a crash, undefined behavior at best";
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation

@@ -56,7 +56,8 @@ SUBDIRS += \
     proximityfilter \
     rendercapture-qml-fbo \
     blitframebuffer-qml \
-    raycasting-qml
+    raycasting-qml \
+    shared_texture_image
 
 qtHaveModule(widgets): {
     SUBDIRS += \

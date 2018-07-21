@@ -56,6 +56,8 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
+#include <Qt3DRender/private/texturedatamanager_p.h>
+#include <Qt3DRender/private/gltexturemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -902,20 +904,21 @@ QTextureImageDataPtr TextureLoadingHelper::loadTextureData(QIODevice *data, cons
 QTextureDataPtr QTextureFromSourceGenerator::operator ()()
 {
     QTextureDataPtr generatedData = QTextureDataPtr::create();
-    m_status = QAbstractTexture::Loading;
     QTextureImageDataPtr textureData;
 
-    QRenderAspectPrivate *d_aspect = QRenderAspectPrivate::findPrivate(m_engine);
-    Render::Texture *texture = d_aspect ? d_aspect->m_nodeManagers->textureManager()->lookupResource(m_texture) : nullptr;
-    if (texture)
-        texture->notifyStatus(m_status);
-
+    // Note: First and Second call can be seen as operator() being called twice
+    // on the same object but actually call 2 will be made on a new generator
+    // which is the copy of the generator used for call 1 but with m_sourceData
+    // set.
+    // This is required because updating the same functor wouldn't be picked up
+    // by the backend texture sharing system.
     if (!Qt3DCore::QDownloadHelperService::isLocal(m_url)) {
         if (m_sourceData.isEmpty()) {
             // first time around, trigger a download
             if (m_texture) {
                 auto downloadService = Qt3DCore::QDownloadHelperService::getService(m_engine);
-                Qt3DCore::QDownloadRequestPtr request(new TextureDownloadRequest(m_texture, m_url,
+                Qt3DCore::QDownloadRequestPtr request(new TextureDownloadRequest(sharedFromThis(),
+                                                                                 m_url,
                                                                                  m_engine));
                 downloadService->submitRequest(request);
             }
@@ -936,7 +939,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
                 ext << mtype.suffixes();
             }
 
-            for (QString s: qAsConst(ext)) {
+            for (const QString &s: qAsConst(ext)) {
                 textureData = TextureLoadingHelper::loadTextureData(&buffer, s, true, m_mirrored);
                 if (textureData && textureData->data().length() > 0)
                     break;
@@ -947,7 +950,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
     }
 
     // Update any properties explicitly set by the user
-    if (m_format != QAbstractTexture::NoFormat && m_format != QAbstractTexture::Automatic)
+    if (textureData && m_format != QAbstractTexture::NoFormat && m_format != QAbstractTexture::Automatic)
         textureData->setFormat(static_cast<QOpenGLTexture::TextureFormat>(m_format));
 
     if (textureData && textureData->data().length() > 0) {
@@ -958,30 +961,22 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
         generatedData->setDepth(textureData->depth());
         generatedData->setLayers(textureData->layers());
         generatedData->addImageData(textureData);
-
-        if (texture)
-            texture->updateFromData(generatedData);
-
-        m_status = QAbstractTexture::Ready;
-    } else {
-        m_status = QAbstractTexture::Error;
     }
 
-    if (texture)
-        texture->notifyStatus(m_status);
     return generatedData;
 }
 
-TextureDownloadRequest::TextureDownloadRequest(Qt3DCore::QNodeId texture, const QUrl& source,
+TextureDownloadRequest::TextureDownloadRequest(const QTextureFromSourceGeneratorPtr &functor,
+                                               const QUrl &source,
                                                Qt3DCore::QAspectEngine *engine)
     : Qt3DCore::QDownloadRequest(source)
-    , m_texture(texture)
+    , m_functor(functor)
     , m_engine(engine)
 {
 
 }
 
-// Executed in download thread
+// Executed in aspect thread
 void TextureDownloadRequest::onCompleted()
 {
     if (cancelled() || !succeeded())
@@ -991,16 +986,46 @@ void TextureDownloadRequest::onCompleted()
     if (!d_aspect)
         return;
 
-    Render::Texture *texture = d_aspect->m_nodeManagers->textureManager()->lookupResource(m_texture);
-    if (!texture)
+    // Find all textures which share the same functor
+    // Note: this should be refactored to not pull in API specific managers
+    // but texture sharing forces us to do that currently
+    Render::TextureDataManager *textureDataManager = d_aspect->m_nodeManagers->textureDataManager();
+    const QVector<Render::GLTexture *> referencedGLTextures = textureDataManager->referencesForGenerator(m_functor);
+
+    // We should have at most 1 GLTexture referencing this
+    // Since all textures having the same source should have the same functor == same GLTexture
+    Q_ASSERT(referencedGLTextures.size() <= 1);
+
+    Render::GLTexture *glTex = referencedGLTextures.size() > 0 ? referencedGLTextures.first() : nullptr;
+    if (glTex == nullptr)
         return;
 
-    QSharedPointer<QTextureFromSourceGenerator> functor =
-            qSharedPointerCast<QTextureFromSourceGenerator>(texture->dataGenerator());
-    functor->m_sourceData = m_data;
+    Render::GLTextureManager *glTextureManager = d_aspect->m_nodeManagers->glTextureManager();
+    Qt3DCore::QNodeIdVector referencingTexturesIds = glTextureManager->referencedTextureIds(glTex);
 
-    // mark the component as dirty so that the functor runs again in the correct job
-    texture->addDirtyFlag(Render::Texture::DirtyDataGenerator);
+
+    Render::TextureManager *textureManager = d_aspect->m_nodeManagers->textureManager();
+    for (const Qt3DCore::QNodeId texId : referencingTexturesIds) {
+        Render::Texture *texture = textureManager->lookupResource(texId);
+        if (texture != nullptr) {
+            // Each texture has a QTextureFunctor which matches m_functor;
+            // Update m_sourceData on each functor as we don't know which one
+            // is used as the reference for texture sharing
+
+            QTextureFromSourceGeneratorPtr oldGenerator = qSharedPointerCast<QTextureFromSourceGenerator>(texture->dataGenerator());
+
+            // We create a new functor
+            // Which is a copy of the old one + the downloaded sourceData
+            auto newGenerator = QTextureFromSourceGeneratorPtr::create(*oldGenerator);
+
+            // Set raw data on functor so that it can really load something
+           newGenerator->m_sourceData = m_data;
+
+           // Set new generator on texture
+           // it implictely marks the texture as dirty so that the functor runs again with the downloaded data
+           texture->setDataGenerator(newGenerator);
+        }
+    }
 }
 
 /*!
@@ -1382,6 +1407,7 @@ QTextureFromSourceGenerator::QTextureFromSourceGenerator(QTextureLoader *texture
                                                          Qt3DCore::QAspectEngine *engine,
                                                          Qt3DCore::QNodeId textureId)
     : QTextureGenerator()
+    , QEnableSharedFromThis<QTextureFromSourceGenerator>()
     , m_url()
     , m_status(QAbstractTexture::None)
     , m_mirrored()
@@ -1405,6 +1431,19 @@ QTextureFromSourceGenerator::QTextureFromSourceGenerator(QTextureLoader *texture
     m_format = textureLoader->format();
 }
 
+QTextureFromSourceGenerator::QTextureFromSourceGenerator(const QTextureFromSourceGenerator &other)
+    : QTextureGenerator()
+    , QEnableSharedFromThis<QTextureFromSourceGenerator>()
+    , m_url(other.m_url)
+    , m_status(other.m_status)
+    , m_mirrored(other.m_mirrored)
+    , m_sourceData(other.m_sourceData)
+    , m_texture(other.m_texture)
+    , m_engine(other.m_engine)
+    , m_format(other.m_format)
+{
+}
+
 /*
  * Takes in a TextureGenerator via \a other and
  * \return whether generators have the same source.
@@ -1416,7 +1455,8 @@ bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) co
             otherFunctor->m_url == m_url &&
             otherFunctor->m_mirrored == m_mirrored &&
             otherFunctor->m_engine == m_engine &&
-            otherFunctor->m_format == m_format);
+            otherFunctor->m_format == m_format &&
+            otherFunctor->m_sourceData == m_sourceData);
 }
 
 QUrl QTextureFromSourceGenerator::url() const

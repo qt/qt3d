@@ -104,17 +104,17 @@ void QSkyboxEntityPrivate::init()
 
     m_gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
-    m_gl3Technique->graphicsApiFilter()->setMajorVersion(1);
+    m_gl3Technique->graphicsApiFilter()->setMinorVersion(3);
     m_gl3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
     m_gl2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_gl2Technique->graphicsApiFilter()->setMajorVersion(2);
-    m_gl2Technique->graphicsApiFilter()->setMajorVersion(0);
+    m_gl2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_gl2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     m_es2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
     m_es2Technique->graphicsApiFilter()->setMajorVersion(2);
-    m_es2Technique->graphicsApiFilter()->setMajorVersion(0);
+    m_es2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_es2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     m_filterKey->setParent(m_effect);

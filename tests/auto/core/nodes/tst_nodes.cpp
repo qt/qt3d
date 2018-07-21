@@ -83,6 +83,7 @@ private slots:
     void checkConstructionSetParentMix(); // QTBUG-60612
     void checkConstructionWithParent();
     void checkConstructionAsListElement();
+    void checkSceneIsSetOnConstructionWithParent(); // QTBUG-69352
 
     void appendingComponentToEntity();
     void appendingParentlessComponentToEntity();
@@ -1162,6 +1163,52 @@ void tst_Nodes::checkConstructionAsListElement()
     QCOMPARE(newChildEvent->addedNodeId(), node->id());
 }
 
+void tst_Nodes::checkSceneIsSetOnConstructionWithParent()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QScene scene;
+    QScopedPointer<MyQNode> root(new MyQNode());
+
+    // WHEN
+    root->setArbiterAndScene(&spy, &scene);
+    root->setSimulateBackendCreated(true);
+
+    // THEN
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != nullptr);
+
+    // WHEN
+    Qt3DCore::QEntity *subTreeRoot = new Qt3DCore::QEntity(root.data());
+
+    QVector<Qt3DCore::QEntity *> children;
+    QVector<Qt3DCore::QComponent *> cmps;
+    children.reserve(5);
+    cmps.reserve(5);
+    for (int i = 0; i < 5; ++i) {
+        const auto cmp = new MyQComponent(subTreeRoot);
+        cmps << cmp;
+        children << new Qt3DCore::QEntity(cmp);
+
+        // When cmp is full created, it will also send the creation change for its child entity
+    }
+    QCoreApplication::processEvents();
+    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(subTreeRoot->children().count(), 5);
+    QCOMPARE(spy.events.size(), 12); // 1 subTreeRoot creation change, 5 child creation, 5 cmp creation, 1 child added (subTree to root)
+
+
+    spy.events.clear();
+
+    // Add component in a separate loop to ensure components are added after
+    // entities have been fully created
+    for (int i = 0; i < 5; ++i) {
+        children.at(i)->addComponent(cmps.at(i));
+    }
+
+    // THEN
+    QCOMPARE(spy.events.size(), 10); // 5 QComponentAddedChange(entity, cmp) and 5 QComponentAddedChange(cmp, entity)
+}
+
 void tst_Nodes::appendingParentlessComponentToEntity()
 {
     // GIVEN
@@ -1587,6 +1634,8 @@ void tst_Nodes::checkTrackedPropertyNamesUpdate()
     }
 
 }
+
+
 
 QTEST_MAIN(tst_Nodes)
 

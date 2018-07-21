@@ -99,9 +99,14 @@ public:
         return m_sharedTextures.keys().toVector() + m_uniqueTextures + m_abandonedTextures;
     }
 
-    APITexture *lookupResource(Qt3DCore::QNodeId textureId)
+    APITexture *lookupResource(Qt3DCore::QNodeId textureId) const
     {
         return m_nodeIdToGLTexture.value(textureId);
+    }
+
+    Qt3DCore::QNodeIdVector referencedTextureIds(APITexture *apiTexture) const
+    {
+        return m_sharedTextures.value(apiTexture);
     }
 
     // Returns a APITexture that matches the given QTexture node. Will make sure
@@ -161,9 +166,9 @@ public:
 
     // De-associate the given APITexture from the backend node. If the texture
     // is no longer referenced by any other node, it will be deleted.
-    void abandon(APITexture *tex, const Texture *node)
+    void abandon(APITexture *tex, const Qt3DCore::QNodeId nodeId)
     {
-        APITexture *apiTexture = m_nodeIdToGLTexture.take(node->peerId());
+        APITexture *apiTexture = m_nodeIdToGLTexture.take(nodeId);
         Q_ASSERT(tex == apiTexture);
 
         if (Q_UNLIKELY(!apiTexture)) {
@@ -176,7 +181,7 @@ public:
             m_abandonedTextures.push_back(apiTexture);
         } else {
             QVector<Qt3DCore::QNodeId> &referencedTextureNodes = m_sharedTextures[apiTexture];
-            referencedTextureNodes.removeAll(node->peerId());
+            referencedTextureNodes.removeAll(nodeId);
 
             // If no texture nodes is referencing the shared APITexture, remove it
             if (referencedTextureNodes.empty()) {
@@ -219,7 +224,7 @@ public:
 
     // Change the texture images of the given texture, if it is a non-shared texture
     // Return true, if it was changed successfully, false otherwise
-    bool setImages(APITexture *tex, const QVector<HTextureImage> &images)
+    bool setImages(APITexture *tex, const Qt3DCore::QNodeIdVector &imageIds)
     {
         Q_ASSERT(tex);
 
@@ -227,8 +232,8 @@ public:
             return false;
 
         // create Image structs
-        QVector<APITextureImage> texImgs = texImgsFromNodes(images);
-        if (texImgs.size() != images.size())
+        QVector<APITextureImage> texImgs = texImgsFromNodes(imageIds);
+        if (texImgs.size() != imageIds.size())
             return false;
 
         tex->setImages(texImgs);
@@ -293,11 +298,11 @@ private:
 
         // make sure the image generators are the same
         const QVector<APITextureImage> texImgGens = tex->images();
-        const QVector<HTextureImage> texImgs = texNode->textureImages();
+        const Qt3DCore::QNodeIdVector texImgs = texNode->textureImageIds();
         if (texImgGens.size() != texImgs.size())
             return false;
         for (int i = 0; i < texImgGens.size(); ++i) {
-            const TextureImage *img = m_textureImageManager->data(texImgs[i]);
+            const TextureImage *img = m_textureImageManager->lookupResource(texImgs[i]);
             Q_ASSERT(img != nullptr);
             if (!(*img->dataGenerator() == *texImgGens[i].generator)
                     || img->layer() != texImgGens[i].layer
@@ -330,8 +335,8 @@ private:
     APITexture *createTexture(const Texture *node, bool unique)
     {
         // create Image structs
-        const QVector<APITextureImage> texImgs = texImgsFromNodes(node->textureImages());
-        if (texImgs.empty() && !node->textureImages().empty())
+        const QVector<APITextureImage> texImgs = texImgsFromNodes(node->textureImageIds());
+        if (texImgs.empty() && !node->textureImageIds().empty())
             return nullptr;
 
         // no matching shared texture was found, create a new one
@@ -345,13 +350,13 @@ private:
         return newTex;
     }
 
-    QVector<APITextureImage> texImgsFromNodes(const QVector<HTextureImage> &images) const
+    QVector<APITextureImage> texImgsFromNodes(const Qt3DCore::QNodeIdVector &imageIds) const
     {
         QVector<APITextureImage> ret;
-        ret.resize(images.size());
+        ret.resize(imageIds.size());
 
-        for (int i = 0; i < images.size(); ++i) {
-            const TextureImage *img = m_textureImageManager->data(images[i]);
+        for (int i = 0; i < imageIds.size(); ++i) {
+            const TextureImage *img = m_textureImageManager->lookupResource(imageIds[i]);
             if (!img) {
                 qWarning() << "[Qt3DRender::TextureManager] invalid TextureImage handle";
                 return QVector<APITextureImage>();

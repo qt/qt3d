@@ -249,10 +249,16 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                         if (!drawVertexCount)
                             drawVertexCount = indexAttribute->count();
 
-                        if (indexAttribute->vertexBaseType() != QAttribute::UnsignedShort
-                                && indexAttribute->vertexBaseType() != QAttribute::UnsignedInt)
-                        {
-                            qWarning("calculateLocalBoundingVolume: Unsupported index attribute type");
+                        const QAttribute::VertexBaseType validIndexTypes[] = {
+                            QAttribute::UnsignedShort,
+                            QAttribute::UnsignedInt,
+                            QAttribute::UnsignedByte
+                        };
+
+                        if (std::find(std::begin(validIndexTypes),
+                                      std::end(validIndexTypes),
+                                      indexAttribute->vertexBaseType()) == std::end(validIndexTypes)) {
+                            qWarning() << "calculateLocalBoundingVolume: Unsupported index attribute type" << indexAttribute->name() << indexAttribute->vertexBaseType();
                             return;
                         }
 
