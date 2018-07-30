@@ -79,7 +79,8 @@
  */
 
 /*!
-   \qmlmodule Qt3D.Scene2D 2.9
+   \qmlmodule QtQuick.Scene2D 2.9
+   \preliminary
    \title Qt 3D Scene2D QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
@@ -89,6 +90,6 @@
    To import and use the module's QML types, use the following statement:
 
    \badcode
-   import Qt3D.Scene2D 2.9
+   import QtQuick.Scene2D 2.9
    \endcode
 */
