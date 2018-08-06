@@ -336,7 +336,7 @@ void Scene2D::render()
 
         if (resourceAccessor()->accessResource(RenderBackendResourceAccessor::OutputAttachment,
                                                m_outputId, (void**)&attachmentData, nullptr)) {
-            if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::OGLTexture,
+            if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::OGLTextureWrite,
                                                     attachmentData->m_textureUuid,
                                                        (void**)&texture, &textureLock)) {
                 // Need to call sync even if the texture is not in use
