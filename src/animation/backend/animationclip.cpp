@@ -50,8 +50,12 @@
 #include <QtCore/qjsonarray.h>
 #include <QtCore/qjsondocument.h>
 #include <QtCore/qjsonobject.h>
+#include <QtCore/qurlquery.h>
 
 QT_BEGIN_NAMESPACE
+
+#define ANIMATION_INDEX_KEY     QLatin1String("animationIndex")
+#define ANIMATION_NAME_KEY      QLatin1String("animationName")
 
 namespace Qt3DAnimation {
 namespace Animation {
@@ -210,15 +214,36 @@ void AnimationClip::loadAnimationFromUrl()
         return;
     }
 
+    // Extract the animationName or animationIndex from the url query parameters.
+    // If both present, animationIndex wins.
+    int animationIndex = -1;
+    QString animationName;
+    if (m_source.hasQuery()) {
+        QUrlQuery query(m_source);
+        if (query.hasQueryItem(ANIMATION_INDEX_KEY)) {
+            bool ok = false;
+            int i = query.queryItemValue(ANIMATION_INDEX_KEY).toInt(&ok);
+            if (ok)
+                animationIndex = i;
+        }
+
+        if (animationIndex == -1 && query.hasQueryItem(ANIMATION_NAME_KEY)) {
+            animationName = query.queryItemValue(ANIMATION_NAME_KEY);
+        }
+
+        qCDebug(Jobs) << "animationIndex =" << animationIndex;
+        qCDebug(Jobs) << "animationName =" << animationName;
+    }
+
     // TODO: Convert to plugins
     // Load glTF or "native"
     if (filePath.endsWith(QLatin1String("gltf"))) {
         qCDebug(Jobs) << "Loading glTF animation from" << filePath;
         GLTFImporter gltf;
         gltf.load(&file);
-        // TODO: Allow loading of a named animation from a file containing many
-        m_name = gltf.animations().first().name;
-        m_channels = gltf.createAnimationData();
+        auto nameAndChannels = gltf.createAnimationData(animationIndex, animationName);
+        m_name = nameAndChannels.name;
+        m_channels = nameAndChannels.channels;
     } else if (filePath.endsWith(QLatin1String("json"))) {
         // Native format
         QByteArray animationData = file.readAll();
@@ -226,17 +251,47 @@ void AnimationClip::loadAnimationFromUrl()
         QJsonObject rootObject = document.object();
 
         // TODO: Allow loading of a named animation from a file containing many
-        QJsonArray animationsArray = rootObject[QLatin1String("animations")].toArray();
+        const QJsonArray animationsArray = rootObject[QLatin1String("animations")].toArray();
         qCDebug(Jobs) << "Found" << animationsArray.size() << "animations:";
         for (int i = 0; i < animationsArray.size(); ++i) {
             QJsonObject animation = animationsArray.at(i).toObject();
             qCDebug(Jobs) << "Animation Name:" << animation[QLatin1String("animationName")].toString();
         }
 
-        // For now just load the first animation
-        // TODO: Allow loading a named animation from within the file analogous to QMesh
-        QJsonObject animation = animationsArray.at(0).toObject();
+        // Find which animation clip to load from the file.
+        // Give priority to animationIndex over animationName
+        if (animationIndex >= animationsArray.size()) {
+            qCWarning(Jobs) << "Invalid animation index. Skipping.";
+            return;
+        }
+
+        if (animationsArray.size() == 1) {
+            animationIndex = 0;
+        } else if (animationIndex < 0 && !animationName.isEmpty()) {
+            // Can we find an animation of the correct name?
+            bool foundAnimation = false;
+            for (int i = 0; i < animationsArray.size(); ++i) {
+                if (animationsArray.at(i)[ANIMATION_NAME_KEY].toString() == animationName) {
+                    animationIndex = i;
+                    foundAnimation = true;
+                    break;
+                }
+            }
+
+            if (!foundAnimation) {
+                qCWarning(Jobs) << "Invalid animation name. Skipping.";
+                return;
+            }
+        }
+
+        if (animationIndex < 0 || animationIndex >= animationsArray.size()) {
+            qCWarning(Jobs) << "Failed to find animation. Skipping.";
+            return;
+        }
+
+        QJsonObject animation = animationsArray.at(animationIndex).toObject();
         m_name = animation[QLatin1String("animationName")].toString();
+
         QJsonArray channelsArray = animation[QLatin1String("channels")].toArray();
         const int channelCount = channelsArray.size();
         m_channels.resize(channelCount);

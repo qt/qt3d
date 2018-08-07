@@ -53,6 +53,7 @@ SUBDIRS += \
     animation-keyframe-programmatic \
     layerfilter-qml \
     skinned-mesh \
+    rigged-simple \
     proximityfilter \
     rendercapture-qml-fbo \
     blitframebuffer-qml \

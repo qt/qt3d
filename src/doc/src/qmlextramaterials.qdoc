@@ -189,14 +189,14 @@
     Holds the current specular color.
 */
 /*!
-    \qmlproperty color GoochMaterial::coolColor
+    \qmlproperty color GoochMaterial::cool
 
-    Holds the current coolColor color.
+    Holds the current cool color.
 */
 /*!
-    \qmlproperty color GoochMaterial::warmColor
+    \qmlproperty color GoochMaterial::warm
 
-    Holds the current warmColor color.
+    Holds the current warm color.
 */
 /*!
     \qmlproperty real GoochMaterial::alpha

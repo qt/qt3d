@@ -77,7 +77,17 @@ void QAnimationClipLoaderPrivate::setStatus(QAnimationClipLoader::Status status)
 /*!
     \property Qt3DAnimation::QAnimationClipLoader::source
 
-    Holds the source URL from which to load the animation clip.
+    Holds the source URL from which to load the animation clip. Currently
+    glTF2 and the native Qt 3D json animation file formats are supported.
+
+    In the case where a file contains multiple animations, it is possible
+    to select which animation should be loaded by way of query parameters
+    on the source url. The accepted query parameters are animationIndex and
+    animationName. If both are specified, animationName is ignored.
+
+    If a file contains only a single animation, there is no need to specify
+    the animationIndex or animationName. We simply use the one available
+    animation.
 */
 /*!
     \class Qt3DAnimation::QAnimationClipLoader

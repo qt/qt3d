@@ -466,16 +466,17 @@ QHash<int, int> GLTFImporter::createNodeIndexToJointIndexMap(const Skin &skin) c
     return nodeIndexToJointIndexMap;
 }
 
-QVector<Qt3DAnimation::Animation::Channel> GLTFImporter::createAnimationData(const QString &animationName) const
+GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int animationIndex, const QString &animationName) const
 {
-    QVector<Qt3DAnimation::Animation::Channel> channels;
+    AnimationNameAndChannels nameAndChannels;
     if (m_animations.isEmpty()) {
         qCWarning(Jobs) << "File does not contain any animation data";
-        return channels;
+        return nameAndChannels;
     }
 
-    int animationIndex = 0;
-    if (!animationName.isEmpty()) {
+    if (m_animations.size() == 1) {
+        animationIndex = 0;
+    } else if (animationIndex < 0 && !animationName.isEmpty()) {
         for (int i = 0; i < m_animations.size(); ++i) {
             if (m_animations[i].name == animationName) {
                 animationIndex = i;
@@ -483,7 +484,13 @@ QVector<Qt3DAnimation::Animation::Channel> GLTFImporter::createAnimationData(con
             }
         }
     }
+
+    if (animationIndex < 0 || animationIndex >= m_animations.size()) {
+        qCWarning(Jobs) << "Invalid animation index. Skipping.";
+        return nameAndChannels;
+    }
     const Animation &animation = m_animations[animationIndex];
+    nameAndChannels.name = animation.name;
 
     // Create node index to joint index lookup tables for each skin
     QVector<QHash<int, int>> nodeIndexToJointIndexMaps;
@@ -621,11 +628,11 @@ QVector<Qt3DAnimation::Animation::Channel> GLTFImporter::createAnimationData(con
         } // case 4
         }
 
-        channels.push_back(outputChannel);
+        nameAndChannels.channels.push_back(outputChannel);
         ++channelIndex;
     }
 
-    return channels;
+    return nameAndChannels;
 }
 
 GLTFImporter::RawData GLTFImporter::accessorData(int accessorIndex, int index) const

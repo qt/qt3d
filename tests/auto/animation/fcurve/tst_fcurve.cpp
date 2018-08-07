@@ -90,9 +90,31 @@ private Q_SLOTS:
         QCOMPARE(fcurve.endTime(), 0.0f);
     }
 
-    void checkEvaluateAtTime()
+    void checkEvaluateAtTime_data()
     {
 
+        QTest::addColumn<float>("time");
+        QTest::addColumn<float>("expectedValue");
+
+        QTest::addRow("Constant_before_time") << 0.0f << 1.0f;
+        QTest::addRow("Constant_1.5") << 1.5f << 1.0f;
+        QTest::addRow("Constant_2.5") << 2.5f << 2.0f;
+        QTest::addRow("Constant_after_time") << 3.5f << 4.0f;
+    }
+
+    void checkEvaluateAtTime()
+    {
+        QFETCH(float, time);
+        QFETCH(float, expectedValue);
+
+        FCurve curve;
+        curve.appendKeyframe(1.0, Keyframe{1.0, {0.0, 0.0}, {0.0,0.0}, QKeyFrame::ConstantInterpolation});
+        curve.appendKeyframe(2.0, Keyframe{2.0, {0.0, 0.0}, {0.0,0.0}, QKeyFrame::ConstantInterpolation});
+        curve.appendKeyframe(3.0, Keyframe{4.0, {0.0, 0.0}, {0.0,0.0}, QKeyFrame::ConstantInterpolation});
+
+        float actualValue = curve.evaluateAtTime(time);
+
+        QCOMPARE(expectedValue, actualValue);
     }
 };
 

@@ -71,8 +71,7 @@ float FCurve::evaluateAtTime(float localTime) const
 
         switch (keyframe0.interpolation) {
         case QKeyFrame::ConstantInterpolation:
-            qWarning("Constant interpolation not implemented yet");
-            break;
+            return keyframe0.value;
         case QKeyFrame::LinearInterpolation:
             if (localTime >= t0 && localTime <= t1 && t1 > t0) {
                 float t = (localTime - t0) / (t1 - t0);
