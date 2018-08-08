@@ -2260,16 +2260,11 @@ private:
 
 #endif
 
-QT_BEGIN_NAMESPACE
-QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-QT_END_NAMESPACE
-
 int main(int argc, char *argv[])
 {
 #ifdef TEST_SHOULD_BE_PERFORMED
     QGuiApplication app(argc, argv);
     app.setAttribute(Qt::AA_Use96Dpi, true);
-    QTEST_ADD_GPU_BLACKLIST_SUPPORT
     tst_GraphicsHelperGL3_2 tc;
     QTEST_SET_MAIN_SOURCE_PATH
     return QTest::qExec(&tc, argc, argv);
