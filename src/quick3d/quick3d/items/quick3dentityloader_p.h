@@ -60,6 +60,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QQmlComponent;
+
 namespace Qt3DCore {
 
 class QEntity;
@@ -74,6 +76,7 @@ class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DEntityLoader : public QEntity
     Q_PROPERTY(QObject *entity READ entity NOTIFY entityChanged)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(QQmlComponent *sourceComponent WRITE setSourceComponent NOTIFY sourceComponentChanged REVISION 12)
 public:
     enum Status {
         Null = 0,
@@ -91,11 +94,15 @@ public:
     QUrl source() const;
     void setSource(const QUrl &url);
 
+    QQmlComponent *sourceComponent() const;
+    void setSourceComponent(QQmlComponent *components);
+
     Status status() const;
 
 Q_SIGNALS:
     void entityChanged();
     void sourceChanged();
+    void sourceComponentChanged();
     void statusChanged(Status status);
 
 private:

@@ -79,6 +79,7 @@ public:
     void clear();
     void loadFromSource();
     void loadComponent(const QUrl &source);
+    void loadComponent(QQmlComponent *component);
 
     void _q_componentStatusChanged(QQmlComponent::Status status);
     void setStatus(Quick3DEntityLoader::Status status);
@@ -89,6 +90,7 @@ public:
     Quick3DEntityLoaderIncubator *m_incubator;
     QQmlContext *m_context;
     QQmlComponent *m_component;
+    QQmlComponent *m_sourceComponent;
     QEntity *m_entity;
     Quick3DEntityLoader::Status m_status;
 };

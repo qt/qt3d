@@ -54,6 +54,8 @@
 #include <Qt3DQuick/private/qquaternionanimation_p.h>
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 
+#include <QtQml/qqml.h>
+
 QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
@@ -64,6 +66,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 
     Qt3DCore::Quick::registerExtendedType<Qt3DCore::QEntity, Qt3DCore::Quick::Quick3DEntity>("QEntity", "Qt3D.Core/Entity", uri, 2, 0, "Entity");
     qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
+    qmlRegisterRevision<Qt3DCore::Quick::Quick3DEntityLoader, 12>(uri, 2, 12);
     qmlRegisterType<Qt3DCore::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
     qmlRegisterType<Qt3DCore::QTransform>(uri, 2, 0, "Transform");
     qmlRegisterType<Qt3DCore::QArmature>(uri, 2, 10, "Armature");

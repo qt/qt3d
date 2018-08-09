@@ -49,7 +49,7 @@
 ****************************************************************************/
 
 import QtQuick 2.2 as QQ2
-import Qt3D.Core 2.0
+import Qt3D.Core 2.12
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
 import Qt3D.Extras 2.0
@@ -81,42 +81,25 @@ Entity {
         InputSettings { }
     ]
 
-
-    PhongMaterial {
-        id: material
-        diffuse: "yellow"
-    }
-
-    TorusMesh {
-        id: torusMesh
-        radius: 5
-        minorRadius: 1
-        rings: 100
-        slices: 20
-    }
-
-    Transform {
-        id: torusTransform
-        scale3D: Qt.vector3d(1.5, 1, 0.5)
-        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
-    }
-
-    Entity {
-        id: torusEntity
-        components: [ torusMesh, material, torusTransform ]
-    }
-
     QQ2.Timer {
+        id: timer
         interval: 1000
         running: true
         repeat: true
         property bool addMore: true
+        property bool odd: false
 
         onTriggered: {
             if (instantiator.model > 10 || instantiator.model < 2)
                 addMore = !addMore
             instantiator.model += (addMore ? 1 : -1)
+            odd = !odd
         }
+    }
+
+    PhongMaterial {
+        id: material
+        diffuse: "yellow"
     }
 
     NodeInstantiator {
@@ -135,6 +118,46 @@ Entity {
             }
             source: model.index % 2 === 0 ? "qrc:/CuboidEntity.qml" : "qrc:/SphereEntity.qml"
         }
+    }
+
+
+    EntityLoader {
+        sourceComponent: timer.odd ? cylEntityCmp : torusEntityCmp
+    }
+
+    QQ2.Component {
+        id: cylEntityCmp
+        Entity {
+            CylinderMesh {
+                id: cylMesh
+            }
+            PhongMaterial {
+                id: phong
+            }
+            components: [cylMesh, phong]
+        }
 
     }
+
+    QQ2.Component {
+        id: torusEntityCmp
+        Entity {
+            TorusMesh {
+                id: torusMesh
+                radius: 5
+                minorRadius: 1
+                rings: 100
+                slices: 20
+            }
+
+            Transform {
+                id: torusTransform
+                scale3D: Qt.vector3d(1.5, 1, 0.5)
+                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
+            }
+
+            components: [ torusMesh, material, torusTransform ]
+        }
+    }
+
 }
