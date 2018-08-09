@@ -227,6 +227,8 @@ private:
     }
 
     QOpenGLTexture *buildGLTexture();
+    bool loadTextureDataFromGenerator();
+    void loadTextureDataFromImages();
     void uploadGLTextureData();
     void updateGLTextureParameters();
     void destroyResources();
