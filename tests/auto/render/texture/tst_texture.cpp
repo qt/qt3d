@@ -483,6 +483,19 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
+    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
+    updateChange->setValue(883);
+    updateChange->setPropertyName("textureId");
+    backend.sceneChangeEvent(updateChange);
+
+    // THEN
+    QCOMPARE(backend.sharedTextureId(), 883);
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
+    QVERIFY(backend.dirtyFlags() == Qt3DRender::Render::Texture::DirtySharedTextureId);
+    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+    backend.unsetDirty();
+
+    // WHEN
     Qt3DRender::QTextureImage img;
     const auto imageAddChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &img);
     imageAddChange->setPropertyName("textureImage");

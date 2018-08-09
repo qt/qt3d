@@ -115,6 +115,7 @@ void Texture::cleanup()
     // texture is being referenced by a shared API specific texture (GLTexture)
     m_dataFunctor.reset();
     m_textureImageIds.clear();
+    m_sharedTextureId = -1;
 
     // set default values
     m_properties = {};
@@ -181,6 +182,9 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("generator")) {
             setDataGenerator(propertyChange->value().value<QTextureGeneratorPtr>());
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("textureId")) {
+            m_sharedTextureId = propertyChange->value().toInt();
+            dirty = DirtySharedTextureId;
         }
     }
         break;
@@ -315,6 +319,7 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_parameters.comparisonFunction = data.comparisonFunction;
     m_parameters.comparisonMode = data.comparisonMode;
     m_dataFunctor = data.dataFunctor;
+    m_sharedTextureId = data.sharedTextureId;
 
     for (const QNodeId imgId : data.textureImageIds)
         addTextureImage(imgId);

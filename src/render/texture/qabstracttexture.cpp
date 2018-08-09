@@ -66,6 +66,7 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
     , m_comparisonMode(QAbstractTexture::CompareNone)
     , m_layers(1)
     , m_samples(1)
+    , m_sharedTextureId(-1)
 {
 }
 
@@ -909,6 +910,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange()
     data.layers = d->m_layers;
     data.samples = d->m_samples;
     data.dataFunctor = d->m_dataFunctor;
+    data.sharedTextureId = d->m_sharedTextureId;
     return creationChange;
 }
 

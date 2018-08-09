@@ -137,7 +137,8 @@ public:
         DirtyProperties = 0x1,
         DirtyParameters = 0x2,
         DirtyImageGenerators = 0x4,
-        DirtyDataGenerator = 0x8
+        DirtyDataGenerator = 0x8,
+        DirtySharedTextureId = 0x16
     };
     Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
 
@@ -155,6 +156,7 @@ public:
     inline const TextureParameters& parameters() const { return m_parameters; }
     inline const Qt3DCore::QNodeIdVector textureImageIds() const { return m_textureImageIds; }
     inline const QTextureGeneratorPtr& dataGenerator() const { return m_dataFunctor; }
+    inline int sharedTextureId() const { return m_sharedTextureId; }
 
     void setDataGenerator(const QTextureGeneratorPtr &generator);
     void updatePropertiesAndNotify(const TextureProperties &propreties);
@@ -165,6 +167,7 @@ private:
     DirtyFlags m_dirty;
     TextureProperties m_properties;
     TextureParameters m_parameters;
+    int m_sharedTextureId;
 
     QTextureGeneratorPtr m_dataFunctor;
     Qt3DCore::QNodeIdVector m_textureImageIds;

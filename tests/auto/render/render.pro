@@ -59,6 +59,7 @@ qtConfig(private_tests) {
         qparameter \
         parameter \
         qtextureloader \
+        qsharedgltexture \
         qtextureimage \
         qabstracttexture \
         qabstracttextureimage \

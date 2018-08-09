@@ -169,6 +169,23 @@ private:
     Q_DECLARE_PRIVATE(QTextureLoader)
 };
 
+class QT3DRENDERSHARED_EXPORT QSharedGLTexture : public QAbstractTexture
+{
+    Q_OBJECT
+    Q_PROPERTY(int textureId READ textureId WRITE setTextureId NOTIFY textureIdChanged)
+public:
+    explicit QSharedGLTexture(Qt3DCore::QNode *parent = nullptr);
+    ~QSharedGLTexture();
+
+    int textureId() const;
+
+public Q_SLOTS:
+    void setTextureId(int id);
+
+Q_SIGNALS:
+    void textureIdChanged(int textureId);
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

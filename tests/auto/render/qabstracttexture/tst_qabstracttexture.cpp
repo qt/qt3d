@@ -42,6 +42,11 @@
 
 class FakeTexture : public Qt3DRender::QAbstractTexture
 {
+public:
+    int sharedTextureId() const
+    {
+        return static_cast<Qt3DRender::QAbstractTexturePrivate *>(d_ptr.get())->m_sharedTextureId;
+    }
 };
 
 class FakeTextureImage : public Qt3DRender::QAbstractTextureImage
@@ -91,6 +96,8 @@ private Q_SLOTS:
         QCOMPARE(abstractTexture.layers(), 1);
         QCOMPARE(abstractTexture.samples(), 1);
         QCOMPARE(abstractTexture.textureImages().size(), 0);
+        QCOMPARE(abstractTexture.samples(), 1);
+        QCOMPARE(abstractTexture.sharedTextureId(), -1);
     }
 
     void checkPropertyChanges()
@@ -383,6 +390,7 @@ private Q_SLOTS:
             QCOMPARE(abstractTexture.comparisonMode(), cloneData.comparisonMode);
             QCOMPARE(abstractTexture.layers(), cloneData.layers);
             QCOMPARE(abstractTexture.samples(), cloneData.samples);
+            QCOMPARE(abstractTexture.sharedTextureId(), cloneData.sharedTextureId);
             QCOMPARE(abstractTexture.textureImages().size(), cloneData.textureImageIds.size());
 
             for (int i = 0, m = abstractTexture.textureImages().size(); i < m; ++i)
@@ -425,6 +433,7 @@ private Q_SLOTS:
             QCOMPARE(abstractTexture.comparisonMode(), cloneData.comparisonMode);
             QCOMPARE(abstractTexture.layers(), cloneData.layers);
             QCOMPARE(abstractTexture.samples(), cloneData.samples);
+            QCOMPARE(abstractTexture.sharedTextureId(), cloneData.sharedTextureId);
             QCOMPARE(abstractTexture.textureImages().size(), cloneData.textureImageIds.size());
 
             for (int i = 0, m = abstractTexture.textureImages().size(); i < m; ++i)

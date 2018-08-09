@@ -1469,6 +1469,69 @@ bool QTextureFromSourceGenerator::isMirrored() const
     return m_mirrored;
 }
 
+/*!
+ * \class QSharedGLTexture
+ * \brief Allows to use a textureId from a separate OpenGL context in a Qt 3D scene.
+ *
+ * Depending on the rendering mode used by Qt 3D, the shared context will either be:
+ * \list
+ * \li qt_gl_global_share_context when letting Qt 3D drive the rendering. When
+ * setting the attribute Qt::AA_ShareOpenGLContexts on the QApplication class,
+ * this will automatically make QOpenGLWidget instances have their context shared
+ * with qt_gl_global_share_context.
+ * \li the shared context from the QtQuick scene. You might have to subclass
+ * QWindow or use QtQuickRenderControl to have control over what that shared
+ * context is though as of 5.13 it is qt_gl_global_share_context.
+ * \endlist
+ *
+ * \since 5.13
+ *
+ * Any 3rd party engine that shares its context with the Qt 3D renderer can now
+ * provide texture ids that will be referenced by the Qt 3D texture.
+ *
+ * You can omit specifying the texture properties, Qt 3D will try at runtime to
+ * determine what they are. If you know them, you can of course provide them,
+ * avoid additional work for Qt 3D.
+ *
+ * Keep in mind that if you are using custom materials and shaders, you need to
+ * specify the correct sampler type to be used.
+ */
+
+QSharedGLTexture::QSharedGLTexture(Qt3DCore::QNode *parent)
+    : QAbstractTexture(parent)
+{
+    QAbstractTexturePrivate *d = static_cast<QAbstractTexturePrivate *>(Qt3DCore::QNodePrivate::get(this));
+    d->m_target = TargetAutomatic;
+}
+
+QSharedGLTexture::~QSharedGLTexture()
+{
+}
+
+/*!
+ * \qmlproperty textureId
+ *
+ * The OpenGL texture id value that you want Qt3D to gain access to.
+ */
+/*!
+ *\property Qt3DRender::QSharedGLTexture::textureId
+ *
+ * The OpenGL texture id value that you want Qt3D to gain access to.
+ */
+int QSharedGLTexture::textureId() const
+{
+    return static_cast<QAbstractTexturePrivate *>(d_ptr.get())->m_sharedTextureId;
+}
+
+void QSharedGLTexture::setTextureId(int id)
+{
+    QAbstractTexturePrivate *d = static_cast<QAbstractTexturePrivate *>(Qt3DCore::QNodePrivate::get(this));
+    if (d->m_sharedTextureId != id) {
+        d->m_sharedTextureId = id;
+        emit textureIdChanged(id);
+    }
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

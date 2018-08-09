@@ -87,6 +87,8 @@ public :
     int m_layers;
     int m_samples;
 
+    int m_sharedTextureId;
+
     QTextureGeneratorPtr dataFunctor() const;
     void setDataFunctor(const QTextureGeneratorPtr &generator);
 
@@ -113,6 +115,7 @@ struct QAbstractTextureData
     Qt3DCore::QNodeIdVector textureImageIds;
     int layers;
     int samples;
+    int sharedTextureId;
     QTextureGeneratorPtr dataFunctor;
 };
 
