@@ -140,9 +140,6 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
             m_properties.depth = propertyChange->value().toInt();
             dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumLayers")) {
-            m_properties.layers = propertyChange->value().toInt();
-            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
             m_properties.format = static_cast<QAbstractTexture::TextureFormat>(propertyChange->value().toInt());
             dirty = DirtyProperties;
