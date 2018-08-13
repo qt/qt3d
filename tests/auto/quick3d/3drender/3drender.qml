@@ -30,6 +30,7 @@
 import Qt3D.Render 2.0 as QQ3Render20
 import Qt3D.Render 2.1 as QQ3Render21
 import Qt3D.Render 2.10 as QQ3Render210
+import Qt3D.Render 2.13 as QQ3Render213
 import QtQuick 2.0
 
 Item {
@@ -79,6 +80,7 @@ Item {
     QQ3Render20.TextureLoader {}               //Qt3DRender::QTextureLoader, Qt3DRender::Render::Quick::Quick3DTextureExtension
     //QQ3Render20.QAbstractTextureImage        // (uncreatable) Qt3DRender::QAbstractTextureImage
     QQ3Render20.TextureImage {}                //Qt3DRender::QTextureImage
+    QQ3Render213.SharedGLTexture {}            //Qt3DRender::QSharedGLTexture
 
     // Geometry
     QQ3Render20.Attribute {}                   //Qt3DRender::QAttribute

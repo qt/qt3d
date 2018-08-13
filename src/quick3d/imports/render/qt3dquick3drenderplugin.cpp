@@ -205,6 +205,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTextureLoader, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTextureLoader", "Qt3D.Render/TextureLoader", uri, 2, 0, "TextureLoader");
     qmlRegisterUncreatableType<Qt3DRender::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
     qmlRegisterType<Qt3DRender::QTextureImage>(uri, 2, 0, "TextureImage");
+    qmlRegisterType<Qt3DRender::QSharedGLTexture>(uri, 2, 13, "SharedGLTexture");
 
     // Geometry
     qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
