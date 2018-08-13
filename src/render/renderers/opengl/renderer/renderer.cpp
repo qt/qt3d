@@ -1271,7 +1271,8 @@ void Renderer::updateGLResources()
                 // Gather these information and store them to be distributed by a change next frame
                 const QNodeIdVector referenceTextureIds = glTextureManager->referencedTextureIds(glTexture);
                 // Store properties and referenceTextureIds
-                m_updatedTextureProperties.push_back({info.properties, referenceTextureIds});
+                if (info.wasUpdated)
+                    m_updatedTextureProperties.push_back({info.properties, referenceTextureIds});
             }
         }
     }

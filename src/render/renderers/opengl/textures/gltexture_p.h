@@ -143,6 +143,7 @@ public:
     struct TextureUpdateInfo
     {
         QOpenGLTexture *texture = nullptr;
+        bool wasUpdated = false;
         TextureProperties properties;
     };
 

@@ -211,6 +211,7 @@ GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
     if (testDirtyFlag(Properties)) {
         delete m_gl;
         m_gl = nullptr;
+        textureInfo.wasUpdated = true;
     }
 
 
