@@ -387,6 +387,9 @@ void Renderer::initialize()
                                                    [this] { releaseGraphicsResources(); });
         }
 
+        qCDebug(Backend) << "Qt3D shared context:" << ctx->shareContext();
+        qCDebug(Backend) << "Qt global shared context:" << qt_gl_global_share_context();
+
         if (!ctx->shareContext()) {
             m_shareContext = new QOpenGLContext;
             m_shareContext->setFormat(ctx->format());
@@ -1086,7 +1089,7 @@ void Renderer::lookForDirtyTextures()
         }
 
         // Dirty meaning that something has changed on the texture
-        // either properties, parameters, generator or a texture image
+        // either properties, parameters, shared texture id, generator or a texture image
         if (texture->dirtyFlags() != Texture::NotDirty)
             m_dirtyTextures.push_back(handle);
         // Note: texture dirty flags are reset when actually updating the
@@ -1292,18 +1295,21 @@ void Renderer::updateTexture(Texture *texture)
         return;
 
     // For implementing unique, non-shared, non-cached textures.
-    // for now, every texture is shared by default
+    // for now, every texture is shared by default except if:
+    // - texture is reference by a render attachment
+    // - texture is referencing a shared texture id
+    bool isUnique = texture->sharedTextureId() > 0;
 
-    bool isUnique = false;
-
-    // TO DO: Update the vector once per frame (or in a job)
-    const QVector<HAttachment> activeRenderTargetOutputs = m_nodesManager->attachmentManager()->activeHandles();
-    // A texture is unique if it's being reference by a render target output
-    for (const HAttachment &attachmentHandle : activeRenderTargetOutputs) {
-        RenderTargetOutput *attachment = m_nodesManager->attachmentManager()->data(attachmentHandle);
-        if (attachment->textureUuid() == texture->peerId()) {
-            isUnique = true;
-            break;
+    if (!isUnique) {
+        // TO DO: Update the vector once per frame (or in a job)
+        const QVector<HAttachment> activeRenderTargetOutputs = m_nodesManager->attachmentManager()->activeHandles();
+        // A texture is unique if it's being reference by a render target output
+        for (const HAttachment &attachmentHandle : activeRenderTargetOutputs) {
+            RenderTargetOutput *attachment = m_nodesManager->attachmentManager()->data(attachmentHandle);
+            if (attachment->textureUuid() == texture->peerId()) {
+                isUnique = true;
+                break;
+            }
         }
     }
 
@@ -1350,6 +1356,9 @@ void Renderer::updateTexture(Texture *texture)
     // we hold a reference to a unique or exclusive access to a shared texture
     // we can thus modify the texture directly.
     const Texture::DirtyFlags dirtyFlags = texture->dirtyFlags();
+    if (dirtyFlags.testFlag(Texture::DirtySharedTextureId) &&
+        !glTextureManager->setSharedTextureId(glTexture, texture->sharedTextureId()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setSharedTextureId failed, should be non-shared";
 
     if (dirtyFlags.testFlag(Texture::DirtyProperties) &&
             !glTextureManager->setProperties(glTexture, texture->properties()))

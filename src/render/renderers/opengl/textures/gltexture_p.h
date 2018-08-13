@@ -125,6 +125,7 @@ public:
     inline TextureProperties properties() const { return m_properties; }
     inline TextureParameters parameters() const { return m_parameters; }
     inline QTextureGeneratorPtr textureGenerator() const { return m_dataFunctor; }
+    inline int sharedTextureId() const { return m_sharedTextureId; }
     inline QVector<Image> images() const { return m_images; }
 
     inline QSize size() const { return QSize(m_properties.width, m_properties.height); }
@@ -204,14 +205,15 @@ protected:
     void setProperties(const TextureProperties &props);
     void setImages(const QVector<Image> &images);
     void setGenerator(const QTextureGeneratorPtr &generator);
+    void setSharedTextureId(int textureId);
 
 private:
 
     enum DirtyFlag {
         TextureData  = 0x01,     // one or more image generators have been executed, data needs uploading to GPU
         Properties   = 0x02,     // texture needs to be (re-)created
-        Parameters   = 0x04      // texture parameters need to be (re-)set
-
+        Parameters   = 0x04,     // texture parameters need to be (re-)set
+        SharedTextureId = 0x08   // texture id from shared context
     };
 
     bool testDirtyFlag(DirtyFlag flag)
@@ -232,6 +234,7 @@ private:
     void loadTextureDataFromImages();
     void uploadGLTextureData();
     void updateGLTextureParameters();
+    void introspectPropertiesFromSharedTextureId();
     void destroyResources();
 
     bool m_unique;
@@ -256,6 +259,7 @@ private:
     QTextureDataPtr m_textureData;
     QVector<QTextureImageDataPtr> m_imageData;
 
+    int m_sharedTextureId;
     bool m_externalRendering;
 };
 

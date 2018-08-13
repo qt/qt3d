@@ -325,6 +325,8 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
         addTextureImage(imgId);
 
     addDirtyFlag(DirtyFlags(DirtyImageGenerators|DirtyProperties|DirtyParameters));
+    if (m_sharedTextureId > 0)
+        addDirtyFlag(DirtySharedTextureId);
 }
 
 

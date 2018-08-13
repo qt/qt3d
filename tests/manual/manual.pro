@@ -61,6 +61,12 @@ SUBDIRS += \
     shared_texture_image \
     texture_property_updates
 
+qtHaveModule(multimedia): {
+    SUBDIRS += \
+        sharedtexture \
+        sharedtextureqml
+}
+
 qtHaveModule(widgets): {
     SUBDIRS += \
         assimp-cpp \

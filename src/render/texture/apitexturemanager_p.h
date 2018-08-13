@@ -257,6 +257,19 @@ public:
         return true;
     }
 
+    // Change the texture's referenced texture Id from a shared context
+    bool setSharedTextureId(APITexture *tex, int textureId)
+    {
+        Q_ASSERT(tex);
+
+        if (isShared(tex))
+            return false;
+
+        tex->setSharedTextureId(textureId);
+        m_updatedTextures.push_back(tex);
+        return true;
+    }
+
     // Retrieves abandoned textures. This should be regularly called from the OpenGL thread
     // to make sure needed GL resources are de-allocated.
     QVector<APITexture*> takeAbandonedTextures()
@@ -344,6 +357,7 @@ private:
         newTex->setProperties(node->properties());
         newTex->setParameters(node->parameters());
         newTex->setImages(texImgs);
+        newTex->setSharedTextureId(node->sharedTextureId());
 
         m_updatedTextures.push_back(newTex);
 

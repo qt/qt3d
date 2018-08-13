@@ -56,6 +56,11 @@
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 
+#if !defined(QT_OPENGL_ES_2)
+#include <QOpenGLFunctions_3_1>
+#include <QOpenGLFunctions_4_5_Core>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -73,6 +78,7 @@ GLTexture::GLTexture(TextureDataManager *texDataMgr,
     , m_textureDataManager(texDataMgr)
     , m_textureImageDataManager(texImgDataMgr)
     , m_dataFunctor(texGen)
+    , m_sharedTextureId(-1)
     , m_externalRendering(false)
 {
     // make sure texture generator is executed
@@ -179,75 +185,88 @@ GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
 
     m_properties.status = QAbstractTexture::Error;
 
-    // on the first invocation in the render thread, make sure to
-    // evaluate the texture data generator output
-    // (this might change some property values)
-    if (m_dataFunctor && !m_textureData) {
-        const bool successfullyLoadedTextureData = loadTextureDataFromGenerator();
-        if (successfullyLoadedTextureData) {
-            setDirtyFlag(Properties, true);
+    const bool hasSharedTextureId = m_sharedTextureId > 0;
+
+    // Only load texture data if we are not using a sharedTextureId
+    if (!hasSharedTextureId) {
+        // on the first invocation in the render thread, make sure to
+        // evaluate the texture data generator output
+        // (this might change some property values)
+        if (m_dataFunctor && !m_textureData) {
+            const bool successfullyLoadedTextureData = loadTextureDataFromGenerator();
+            if (successfullyLoadedTextureData) {
+                setDirtyFlag(Properties, true);
+                needUpload = true;
+            } else {
+                qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+                textureInfo.properties.status = QAbstractTexture::Loading;
+                return textureInfo;
+            }
+        }
+
+        // additional texture images may be defined through image data generators
+        if (testDirtyFlag(TextureData)) {
+            m_imageData.clear();
+            loadTextureDataFromImages();
             needUpload = true;
-        } else {
-            qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
-            textureInfo.properties.status = QAbstractTexture::Loading;
+        }
+
+        // don't try to create the texture if the format was not set
+        if (m_properties.format == QAbstractTexture::Automatic) {
+            textureInfo.properties.status = QAbstractTexture::Error;
             return textureInfo;
         }
     }
 
-    // additional texture images may be defined through image data generators
-    if (testDirtyFlag(TextureData)) {
-        m_imageData.clear();
-        loadTextureDataFromImages();
-        needUpload = true;
-    }
-
-    // don't try to create the texture if the format was not set
-    if (m_properties.format == QAbstractTexture::Automatic) {
-        textureInfo.properties.status = QAbstractTexture::Error;
-        return textureInfo;
-    }
-
     // if the properties changed, we need to re-allocate the texture
-    if (testDirtyFlag(Properties)) {
+    if (testDirtyFlag(Properties) || testDirtyFlag(SharedTextureId)) {
         delete m_gl;
         m_gl = nullptr;
         textureInfo.wasUpdated = true;
     }
 
-
-    if (!m_gl) {
-        m_gl = buildGLTexture();
-        if (!m_gl) {
-            textureInfo.properties.status = QAbstractTexture::Error;
-            return textureInfo;
-        }
-
-        m_gl->allocateStorage();
-        if (!m_gl->isStorageAllocated()) {
-            textureInfo.properties.status = QAbstractTexture::Error;
-            return textureInfo;
-        }
-    }
     m_properties.status = QAbstractTexture::Ready;
 
+    if (hasSharedTextureId && testDirtyFlag(SharedTextureId)) {
+        // Update m_properties by doing introspection on the texture
+        introspectPropertiesFromSharedTextureId();
+    } else {
+        // We only build a QOpenGLTexture if we have no shared textureId set
+        if (!m_gl) {
+            m_gl = buildGLTexture();
+            if (!m_gl) {
+                textureInfo.properties.status = QAbstractTexture::Error;
+                return textureInfo;
+            }
+
+            m_gl->allocateStorage();
+            if (!m_gl->isStorageAllocated()) {
+                textureInfo.properties.status = QAbstractTexture::Error;
+                return textureInfo;
+            }
+        }
+
+        textureInfo.texture = m_gl;
+
+        // need to (re-)upload texture data?
+        if (needUpload) {
+            uploadGLTextureData();
+            setDirtyFlag(TextureData, false);
+        }
+
+        // need to set texture parameters?
+        if (testDirtyFlag(Properties) || testDirtyFlag(Parameters)) {
+            updateGLTextureParameters();
+        }
+    }
+
     textureInfo.properties = m_properties;
-    textureInfo.texture = m_gl;
-
-    // need to (re-)upload texture data?
-    if (needUpload) {
-        uploadGLTextureData();
-        setDirtyFlag(TextureData, false);
-    }
-
-    // need to set texture parameters?
-    if (testDirtyFlag(Properties) || testDirtyFlag(Parameters)) {
-        updateGLTextureParameters();
-    }
 
     // un-set properties and parameters. The TextureData flag might have been set by another thread
     // in the meantime, so don't clear that.
     setDirtyFlag(Properties, false);
     setDirtyFlag(Parameters, false);
+    setDirtyFlag(SharedTextureId, false);
 
     return textureInfo;
 }
@@ -343,6 +362,14 @@ void GLTexture::setGenerator(const QTextureGeneratorPtr &generator)
     }
 }
 
+void GLTexture::setSharedTextureId(int textureId)
+{
+    if (m_sharedTextureId != textureId) {
+        m_sharedTextureId = textureId;
+        setDirtyFlag(SharedTextureId);
+    }
+}
+
 // Return nullptr if
 // - context cannot be obtained
 // - texture hasn't yet been loaded
@@ -389,8 +416,8 @@ QOpenGLTexture *GLTexture::buildGLTexture()
     // is written against GLES 1.0.
     if (m_properties.format == QAbstractTexture::RGB8_ETC1) {
         if ((ctx->isOpenGLES() && ctx->format().majorVersion() >= 3)
-                || ctx->hasExtension(QByteArrayLiteral("GL_OES_compressed_ETC2_RGB8_texture"))
-                || ctx->hasExtension(QByteArrayLiteral("GL_ARB_ES3_compatibility")))
+            || ctx->hasExtension(QByteArrayLiteral("GL_OES_compressed_ETC2_RGB8_texture"))
+            || ctx->hasExtension(QByteArrayLiteral("GL_ARB_ES3_compatibility")))
             format = m_properties.format = QAbstractTexture::RGB8_ETC2;
     }
 
@@ -400,15 +427,15 @@ QOpenGLTexture *GLTexture::buildGLTexture()
     glTex->setSize(m_properties.width, m_properties.height, m_properties.depth);
     // Set layers count if texture array
     if (m_actualTarget == QAbstractTexture::Target1DArray ||
-            m_actualTarget == QAbstractTexture::Target2DArray ||
-            m_actualTarget == QAbstractTexture::Target3D ||
-            m_actualTarget == QAbstractTexture::Target2DMultisampleArray ||
-            m_actualTarget == QAbstractTexture::TargetCubeMapArray) {
+        m_actualTarget == QAbstractTexture::Target2DArray ||
+        m_actualTarget == QAbstractTexture::Target3D ||
+        m_actualTarget == QAbstractTexture::Target2DMultisampleArray ||
+        m_actualTarget == QAbstractTexture::TargetCubeMapArray) {
         glTex->setLayers(m_properties.layers);
     }
 
     if (m_actualTarget == QAbstractTexture::Target2DMultisample ||
-            m_actualTarget == QAbstractTexture::Target2DMultisampleArray) {
+        m_actualTarget == QAbstractTexture::Target2DMultisampleArray) {
         // Set samples count if multisampled texture
         // (multisampled textures don't have mipmaps)
         glTex->setSamples(m_properties.samples);
@@ -484,8 +511,8 @@ void GLTexture::updateGLTextureParameters()
 {
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeX));
     if (m_actualTarget != QAbstractTexture::Target1D &&
-            m_actualTarget != QAbstractTexture::Target1DArray &&
-            m_actualTarget != QAbstractTexture::TargetBuffer)
+        m_actualTarget != QAbstractTexture::Target1DArray &&
+        m_actualTarget != QAbstractTexture::TargetBuffer)
         m_gl->setWrapMode(QOpenGLTexture::DirectionT, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeY));
     if (m_actualTarget == QAbstractTexture::Target3D)
         m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeZ));
@@ -499,6 +526,129 @@ void GLTexture::updateGLTextureParameters()
     }
 }
 
+void GLTexture::introspectPropertiesFromSharedTextureId()
+{
+    // We know that the context is active when this function is called
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
+    if (!ctx) {
+        qWarning() << Q_FUNC_INFO << "requires an OpenGL context";
+        return;
+    }
+    QOpenGLFunctions *gl = ctx->functions();
+
+    // If the user has set the target format himself, we won't try to deduce it
+    if (m_properties.target != QAbstractTexture::TargetAutomatic)
+        return;
+
+    const QAbstractTexture::Target targets[] = {
+        QAbstractTexture::Target2D,
+        QAbstractTexture::TargetCubeMap,
+#ifndef QT_OPENGL_ES_2
+        QAbstractTexture::Target1D,
+        QAbstractTexture::Target1DArray,
+        QAbstractTexture::Target3D,
+        QAbstractTexture::Target2DArray,
+        QAbstractTexture::TargetCubeMapArray,
+        QAbstractTexture::Target2DMultisample,
+        QAbstractTexture::Target2DMultisampleArray,
+        QAbstractTexture::TargetRectangle,
+        QAbstractTexture::TargetBuffer,
+#endif
+    };
+
+#ifndef QT_OPENGL_ES_2
+    // Try to find texture target with GL 4.5 functions
+    const QPair<int, int> ctxGLVersion = ctx->format().version();
+    if (ctxGLVersion.first > 4 || (ctxGLVersion.first == 4 && ctxGLVersion.second >= 5)) {
+        // Only for GL 4.5+
+        QOpenGLFunctions_4_5_Core *gl5 = ctx->versionFunctions<QOpenGLFunctions_4_5_Core>();
+#ifdef GL_TEXTURE_TARGET
+        if (gl5 != nullptr)
+            gl5->glGetTextureParameteriv(m_sharedTextureId, GL_TEXTURE_TARGET, reinterpret_cast<int *>(&m_properties.target));
+#endif
+    }
+#endif
+
+    // If GL 4.5 function unavailable or not working, try a slower way
+    if (m_properties.target == QAbstractTexture::TargetAutomatic) {
+        //    // OpenGL offers no proper way of querying for the target of a texture given its id
+        gl->glActiveTexture(GL_TEXTURE0);
+
+        const GLenum targetBindings[] = {
+            GL_TEXTURE_BINDING_2D,
+            GL_TEXTURE_BINDING_CUBE_MAP,
+#ifndef QT_OPENGL_ES_2
+            GL_TEXTURE_BINDING_1D,
+            GL_TEXTURE_BINDING_1D_ARRAY,
+            GL_TEXTURE_BINDING_3D,
+            GL_TEXTURE_BINDING_2D_ARRAY,
+            GL_TEXTURE_BINDING_CUBE_MAP_ARRAY,
+            GL_TEXTURE_BINDING_2D_MULTISAMPLE,
+            GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY,
+            GL_TEXTURE_BINDING_RECTANGLE,
+            GL_TEXTURE_BINDING_BUFFER
+#endif
+        };
+
+        Q_ASSERT(sizeof(targetBindings) / sizeof(targetBindings[0] == sizeof(targets) / sizeof(targets[0])));
+
+        for (uint i = 0; i < sizeof(targetBindings) / sizeof(targetBindings[0]); ++i) {
+            const int target = targets[i];
+            gl->glBindTexture(target, m_sharedTextureId);
+            int boundId = 0;
+            gl->glGetIntegerv(targetBindings[i], &boundId);
+            gl->glBindTexture(target, 0);
+            if (boundId == m_sharedTextureId) {
+                m_properties.target = static_cast<QAbstractTexture::Target>(target);
+                break;
+            }
+        }
+    }
+
+    // Return early if we weren't able to find texture target
+    if (std::find(std::begin(targets), std::end(targets), m_properties.target) == std::end(targets)) {
+        qWarning() << "Unable to determine texture target for shared GL texture";
+        return;
+    }
+
+    // Bind texture once we know its target
+    gl->glBindTexture(m_properties.target, m_sharedTextureId);
+
+    // TO DO: Improve by using glGetTextureParameters when available which
+    // support direct state access
+#ifndef GL_TEXTURE_MAX_LEVEL
+#define GL_TEXTURE_MAX_LEVEL        0x813D
+#endif
+
+#ifndef GL_TEXTURE_WRAP_R
+#define GL_TEXTURE_WRAP_R           0x8072
+#endif
+
+    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MAX_LEVEL, reinterpret_cast<int *>(&m_properties.mipLevels));
+    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MIN_FILTER, reinterpret_cast<int *>(&m_parameters.minificationFilter));
+    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MAG_FILTER, reinterpret_cast<int *>(&m_parameters.magnificationFilter));
+    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_R, reinterpret_cast<int *>(&m_parameters.wrapModeX));
+    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_S, reinterpret_cast<int *>(&m_parameters.wrapModeY));
+    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_T, reinterpret_cast<int *>(&m_parameters.wrapModeZ));
+
+#ifndef QT_OPENGL_ES_2
+    // Try to retrieve dimensions (not available on ES 2.0)
+    if (!ctx->isOpenGLES()) {
+        QOpenGLFunctions_3_1 *gl3 = ctx->versionFunctions<QOpenGLFunctions_3_1>();
+        if (!gl3) {
+            qWarning() << "Failed to retrieve shared texture dimensions";
+            return;
+        }
+
+        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_WIDTH, reinterpret_cast<int *>(&m_properties.width));
+        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_HEIGHT, reinterpret_cast<int *>(&m_properties.height));
+        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_DEPTH, reinterpret_cast<int *>(&m_properties.depth));
+        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_INTERNAL_FORMAT, reinterpret_cast<int *>(&m_properties.format));
+    }
+#endif
+
+    gl->glBindTexture(m_properties.target, 0);
+}
 
 } // namespace Render
 } // namespace Qt3DRender

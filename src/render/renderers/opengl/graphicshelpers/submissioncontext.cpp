@@ -926,10 +926,22 @@ int SubmissionContext::activateTexture(TextureScope scope, GLTexture *tex, int o
     // Note: tex->dna() could be 0 if the texture has not been created yet
     if (m_activeTextures[onUnit].texture != tex) {
         // Texture must have been created and updated at this point
-        QOpenGLTexture *glTex = tex->getGLTexture();
-        if (glTex == nullptr)
-            return -1;
-        glTex->bind(onUnit);
+
+        const int sharedTextureId = tex->sharedTextureId();
+
+        // We have a valid texture id provided by a shared context
+        if (sharedTextureId > 0) {
+            m_gl->functions()->glActiveTexture(GL_TEXTURE0 + onUnit);
+            const QAbstractTexture::Target target = tex->properties().target;
+            // For now we know that target values correspond to the GL values
+            m_gl->functions()->glBindTexture(target, tex->sharedTextureId());
+        } else {
+            QOpenGLTexture *glTex = tex->getGLTexture();
+            if (glTex == nullptr)
+                return -1;
+            glTex->bind(onUnit);
+        }
+
         if (m_activeTextures[onUnit].texture)
             TextureExtRendererLocker::unlock(m_activeTextures[onUnit].texture);
         m_activeTextures[onUnit].texture = tex;
