@@ -378,7 +378,6 @@ unsigned int nextFreeContextId()
 
 SubmissionContext::SubmissionContext()
     : GraphicsContext()
-    , m_initialized(false)
     , m_ownCurrent(true)
     , m_id(nextFreeContextId())
     , m_surface(nullptr)
@@ -473,9 +472,8 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     }
 #endif
 
-    if (!m_initialized) {
+    if (!isInitialized())
         initialize();
-    }
 
     // need to reset these values every frame, may get overwritten elsewhere
     m_gl->functions()->glClearColor(m_currClearColorValue.redF(), m_currClearColorValue.greenF(), m_currClearColorValue.blueF(), m_currClearColorValue.alphaF());
