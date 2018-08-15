@@ -104,7 +104,7 @@ Q_AUTOTEST_EXPORT RenderPassList findRenderPassesForTechnique(NodeManagers *mana
 // Extracts the type T from a QVariant v without using QVariant::value which is slow
 // Note: Assumes you are 100% sure about the type you requested
 template<typename T>
-Q_AUTOTEST_EXPORT inline T variant_value(const QVariant &v)
+inline T variant_value(const QVariant &v)
 {
     return *reinterpret_cast<const T *>(v.data());
 }
