@@ -73,7 +73,10 @@ bool ResourceAccessor::accessResource(ResourceType type, Qt3DCore::QNodeId nodeI
 {
     switch (type) {
 
-    case RenderBackendResourceAccessor::OGLTexture: {
+    case RenderBackendResourceAccessor::OGLTextureWrite:
+        Q_FALLTHROUGH();
+    case RenderBackendResourceAccessor::OGLTextureRead:
+    {
         Texture *tex = m_textureManager->lookupResource(nodeId);
         if (!tex)
             return false;
@@ -85,10 +88,15 @@ bool ResourceAccessor::accessResource(ResourceType type, Qt3DCore::QNodeId nodeI
         if (glTex->isDirty())
             return false;
 
-        glTex->setExternalRenderingEnabled(true);
+        if (type == RenderBackendResourceAccessor::OGLTextureWrite)
+            glTex->setExternalRenderingEnabled(true);
+
         QOpenGLTexture **glTextureHandle = reinterpret_cast<QOpenGLTexture **>(handle);
-        *glTextureHandle = glTex->getOrCreateGLTexture();
-        *lock = glTex->externalRenderingLock();
+        *glTextureHandle = glTex->getGLTexture();
+
+        if (type == RenderBackendResourceAccessor::OGLTextureWrite)
+            *lock = glTex->externalRenderingLock();
+
         return true;
     }
 

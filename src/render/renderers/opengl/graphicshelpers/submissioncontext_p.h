@@ -185,7 +185,6 @@ private:
     QByteArray downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b);
     bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);
 
-    bool m_initialized;
     bool m_ownCurrent;
     const unsigned int m_id;
     QSurface *m_surface;

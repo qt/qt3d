@@ -293,7 +293,7 @@ QSize QForwardRenderer::externalRenderTargetSize() const
 }
 
 /*!
-    \qmlproperty color ForwardRenderer::frustumCulling
+    \qmlproperty bool ForwardRenderer::frustumCulling
 
     Indicates if the renderer applies frustum culling to the scene.
 */
@@ -309,7 +309,7 @@ bool QForwardRenderer::isFrustumCullingEnabled() const
 }
 
 /*!
-    \qmlproperty color ForwardRenderer::gamma
+    \qmlproperty real ForwardRenderer::gamma
 
     Holds the gamma value the renderer applies to the scene.
 */

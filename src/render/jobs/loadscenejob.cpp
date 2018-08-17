@@ -183,7 +183,7 @@ Qt3DCore::QEntity *LoadSceneJob::tryLoadScene(Scene *scene,
     }
 
     if (!foundSuitableLoggerPlugin)
-        qCWarning(SceneLoaders) << Q_FUNC_INFO << "Found not suitable importer plugin for" << m_source;
+        qCWarning(SceneLoaders) << Q_FUNC_INFO << "Found no suitable importer plugin for" << m_source;
 
     return sceneSubTree;
 }

@@ -73,7 +73,8 @@ class RenderBackendResourceAccessor
 {
 public:
     enum ResourceType {
-        OGLTexture,
+        OGLTextureWrite,
+        OGLTextureRead,
         OutputAttachment,
         EntityHandle,
     };

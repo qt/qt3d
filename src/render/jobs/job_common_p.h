@@ -106,7 +106,8 @@ namespace JobTypes {
         ProximityFiltering,
         SyncFilterEntityByLayer,
         SyncMaterialGatherer,
-        UpdateLayerEntity
+        UpdateLayerEntity,
+        SendTextureChangesToFrontend
     };
 
 } // JobTypes

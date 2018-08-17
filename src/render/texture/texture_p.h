@@ -86,12 +86,13 @@ struct TextureProperties
     QAbstractTexture::Target target = QAbstractTexture::Target2D;
     QAbstractTexture::TextureFormat format = QAbstractTexture::RGBA8_UNorm;
     bool generateMipMaps = false;
+    QAbstractTexture::Status status = QAbstractTexture::None;
 
     bool operator==(const TextureProperties &o) const {
         return (width == o.width) && (height == o.height) && (depth == o.depth)
             && (layers == o.layers) && (mipLevels == o.mipLevels) && (target == o.target)
             && (format == o.format) && (generateMipMaps == o.generateMipMaps)
-            && (samples == o.samples);
+            && (samples == o.samples) && (status == o.status);
     }
     inline bool operator!=(const TextureProperties &o) const { return !(*this == o); }
 };
@@ -155,9 +156,8 @@ public:
     inline const Qt3DCore::QNodeIdVector textureImageIds() const { return m_textureImageIds; }
     inline const QTextureGeneratorPtr& dataGenerator() const { return m_dataFunctor; }
 
-    void notifyStatus(QAbstractTexture::Status status);
-    void updateFromData(QTextureDataPtr data);
     void setDataGenerator(const QTextureGeneratorPtr &generator);
+    void updatePropertiesAndNotify(const TextureProperties &propreties);
     bool isValid(TextureImageManager *manager) const;
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;

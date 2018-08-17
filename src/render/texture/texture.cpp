@@ -117,24 +117,8 @@ void Texture::cleanup()
     m_textureImageIds.clear();
 
     // set default values
-    m_properties.width = 1;
-    m_properties.height = 1;
-    m_properties.depth = 1;
-    m_properties.layers = 1;
-    m_properties.mipLevels = 1;
-    m_properties.samples = 1;
-    m_properties.generateMipMaps = false;
-    m_properties.format = QAbstractTexture::RGBA8_UNorm;
-    m_properties.target = QAbstractTexture::Target2D;
-
-    m_parameters.magnificationFilter = QAbstractTexture::Nearest;
-    m_parameters.minificationFilter = QAbstractTexture::Nearest;
-    m_parameters.wrapModeX = QTextureWrapMode::ClampToEdge;
-    m_parameters.wrapModeY = QTextureWrapMode::ClampToEdge;
-    m_parameters.wrapModeZ = QTextureWrapMode::ClampToEdge;
-    m_parameters.maximumAnisotropy = 1.0f;
-    m_parameters.comparisonFunction = QAbstractTexture::CompareLessEqual;
-    m_parameters.comparisonMode = QAbstractTexture::CompareNone;
+    m_properties = {};
+    m_parameters = {};
 
     m_dirty = NotDirty;
 }
@@ -155,9 +139,6 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
             m_properties.depth = propertyChange->value().toInt();
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumLayers")) {
-            m_properties.layers = propertyChange->value().toInt();
             dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
             m_properties.format = static_cast<QAbstractTexture::TextureFormat>(propertyChange->value().toInt());
@@ -229,78 +210,77 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     BackendNode::sceneChangeEvent(e);
 }
 
-void Texture::notifyStatus(QAbstractTexture::Status status)
-{
-    auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-    change->setPropertyName("status");
-    change->setValue(status);
-    notifyObservers(change);
-}
-
-void Texture::updateFromData(QTextureDataPtr data)
-{
-    if (data->width() != m_properties.width) {
-        m_properties.width = data->width();
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("width");
-        change->setValue(data->width());
-        notifyObservers(change);
-    }
-
-    if (data->height() != m_properties.height) {
-        m_properties.height = data->height();
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("height");
-        change->setValue(data->height());
-        notifyObservers(change);
-    }
-
-    if (data->depth() != m_properties.depth) {
-        m_properties.depth = data->depth();
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("depth");
-        change->setValue(data->depth());
-        notifyObservers(change);
-    }
-
-    if (data->layers() != m_properties.layers) {
-        m_properties.layers = data->layers();
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("layers");
-        change->setValue(data->layers());
-        notifyObservers(change);
-    }
-
-    if (data->format() != m_properties.format) {
-        m_properties.format = data->format();
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("format");
-        change->setValue(data->format());
-        notifyObservers(change);
-    }
-
-    if (data->target() != m_properties.target) {
-        // TODO frontend property is actually constant
-        m_properties.target = data->target();
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("target");
-        change->setValue(data->target());
-        notifyObservers(change);
-    }
-}
-
 // Called by sceneChangeEvent or TextureDownloadRequest (both in AspectThread context)
 void Texture::setDataGenerator(const QTextureGeneratorPtr &generator)
 {
     m_dataFunctor = generator;
     addDirtyFlag(DirtyDataGenerator);
+}
+
+// Called by sendTextureChangesToFrontendJob once GLTexture and sharing
+// has been performed
+void Texture::updatePropertiesAndNotify(const TextureProperties &properties)
+{
+    // If we are Dirty, some property has changed and the properties we have
+    // received are potentially already outdated
+    if (m_dirty != NotDirty)
+        return;
+
+    // Note we don't update target has it is constant for frontend nodes
+
+    if (properties.width != m_properties.width) {
+        m_properties.width = properties.width;
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("width");
+        change->setValue(properties.width);
+        notifyObservers(change);
+    }
+
+    if (properties.height != m_properties.height) {
+        m_properties.height = properties.height;
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("height");
+        change->setValue(properties.height);
+        notifyObservers(change);
+    }
+
+    if (properties.depth != m_properties.depth) {
+        m_properties.depth = properties.depth;
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("depth");
+        change->setValue(properties.depth);
+        notifyObservers(change);
+    }
+
+    if (properties.layers != m_properties.layers) {
+        m_properties.layers = properties.layers;
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("layers");
+        change->setValue(properties.layers);
+        notifyObservers(change);
+    }
+
+    if (properties.format != m_properties.format) {
+        m_properties.format = properties.format;
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("format");
+        change->setValue(properties.format);
+        notifyObservers(change);
+    }
+
+    if (properties.status != m_properties.status) {
+        m_properties.status = properties.status;
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("status");
+        change->setValue(properties.status);
+        notifyObservers(change);
+    }
 }
 
 bool Texture::isValid(TextureImageManager *manager) const

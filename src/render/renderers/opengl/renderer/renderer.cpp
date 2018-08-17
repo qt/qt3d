@@ -194,6 +194,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
+    , m_sendTextureChangesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendTextureChangesToFrontend(); }, JobTypes::SendTextureChangesToFrontend))
     , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
     , m_ownedContext(false)
@@ -1170,6 +1171,28 @@ void Renderer::reloadDirtyShaders()
     }
 }
 
+// Executed in a job
+void Renderer::sendTextureChangesToFrontend()
+{
+    const QVector<QPair<TextureProperties, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
+    for (const auto &pair : updateTextureProperties) {
+        // Prepare change notification
+
+        const Qt3DCore::QNodeIdVector targetIds = pair.second;
+        for (const Qt3DCore::QNodeId targetId: targetIds) {
+            // Lookup texture
+            Texture *t = m_nodesManager->textureManager()->lookupResource(targetId);
+
+            // Texture might have been deleted between previous and current frame
+            if (t == nullptr)
+                continue;
+
+            // Send change and update backend
+            t->updatePropertiesAndNotify(pair.first);
+        }
+    }
+}
+
 // Render Thread (or QtQuick RenderThread when using Scene3D)
 // Scene3D: When using Scene3D rendering, we can't assume that when
 // updateGLResources is called, the resource handles points to still existing
@@ -1230,7 +1253,7 @@ void Renderer::updateGLResources()
             if (texture ==  nullptr)
                 continue;
 
-            // Update texture properties
+            // Create or Update GLTexture
             updateTexture(texture);
         }
         // We want to upload textures data at this point as the SubmissionThread and
@@ -1240,8 +1263,17 @@ void Renderer::updateGLResources()
             GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
             const QVector<GLTexture *> glTextures = glTextureManager->activeResources();
             // Upload texture data
-            for (GLTexture *glTexture : glTextures)
-                glTexture->getOrCreateGLTexture();
+            for (GLTexture *glTexture : glTextures) {
+                const GLTexture::TextureUpdateInfo info = glTexture->createOrUpdateGLTexture();
+
+                // GLTexture creation provides us width/height/format ... information
+                // for textures which had not initially specified these information (TargetAutomatic...)
+                // Gather these information and store them to be distributed by a change next frame
+                const QNodeIdVector referenceTextureIds = glTextureManager->referencedTextureIds(glTexture);
+                // Store properties and referenceTextureIds
+                if (info.wasUpdated)
+                    m_updatedTextureProperties.push_back({info.properties, referenceTextureIds});
+            }
         }
     }
     // When Textures are cleaned up, their id is saved so that they can be
@@ -1664,6 +1696,9 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         renderBinJobs.push_back(m_sendRenderCaptureJob);
     }
 
+    // Do we need to notify any texture about property changes?
+    if (m_updatedTextureProperties.size() > 0)
+        renderBinJobs.push_back(m_sendTextureChangesToFrontendJob);
 
     renderBinJobs.push_back(m_sendBufferCaptureJob);
     renderBinJobs.append(bufferJobs);

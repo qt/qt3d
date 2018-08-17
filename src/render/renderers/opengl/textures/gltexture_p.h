@@ -140,7 +140,14 @@ public:
      *   If the texture properties or parameters have changed, these changes
      *   will be applied to the resulting OpenGL texture.
      */
-    QOpenGLTexture* getOrCreateGLTexture();
+    struct TextureUpdateInfo
+    {
+        QOpenGLTexture *texture = nullptr;
+        bool wasUpdated = false;
+        TextureProperties properties;
+    };
+
+    TextureUpdateInfo createOrUpdateGLTexture();
 
     /**
      * @brief
@@ -221,6 +228,8 @@ private:
     }
 
     QOpenGLTexture *buildGLTexture();
+    bool loadTextureDataFromGenerator();
+    void loadTextureDataFromImages();
     void uploadGLTextureData();
     void updateGLTextureParameters();
     void destroyResources();

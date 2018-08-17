@@ -105,107 +105,133 @@ void GLTexture::destroyGLTexture()
     destroyResources();
 }
 
-QOpenGLTexture* GLTexture::getOrCreateGLTexture()
+bool GLTexture::loadTextureDataFromGenerator()
+{
+    m_textureData = m_textureDataManager->getData(m_dataFunctor);
+    // if there is a texture generator, most properties will be defined by it
+    if (m_textureData) {
+        if (m_properties.target != QAbstractTexture::TargetAutomatic)
+            qWarning() << "[Qt3DRender::GLTexture] When a texture provides a generator, it's target is expected to be TargetAutomatic";
+
+        m_actualTarget = m_textureData->target();
+        m_properties.width = m_textureData->width();
+        m_properties.height = m_textureData->height();
+        m_properties.depth = m_textureData->depth();
+        m_properties.layers = m_textureData->layers();
+        m_properties.format = m_textureData->format();
+
+        const QVector<QTextureImageDataPtr> imageData = m_textureData->imageData();
+
+        if (imageData.size() > 0) {
+            // Set the mips level based on the first image if autoMipMapGeneration is disabled
+            if (!m_properties.generateMipMaps)
+                m_properties.mipLevels = imageData.first()->mipLevels();
+        }
+    }
+    return !m_textureData.isNull();
+}
+
+void GLTexture::loadTextureDataFromImages()
+{
+    int maxMipLevel = 0;
+    for (const Image &img : qAsConst(m_images)) {
+        const QTextureImageDataPtr imgData = m_textureImageDataManager->getData(img.generator);
+        // imgData may be null in the following cases:
+        // - Texture is created with TextureImages which have yet to be
+        // loaded (skybox where you don't yet know the path, source set by
+        // a property binding, queued connection ...)
+        // - TextureImage whose generator failed to return a valid data
+        // (invalid url, error opening file...)
+        if (imgData.isNull())
+            continue;
+
+        m_imageData.push_back(imgData);
+        maxMipLevel = qMax(maxMipLevel, img.mipLevel);
+
+        // If the texture doesn't have a texture generator, we will
+        // derive some properties from the first TextureImage (layer=0, miplvl=0, face=0)
+        if (!m_textureData && img.layer == 0 && img.mipLevel == 0 && img.face == QAbstractTexture::CubeMapPositiveX) {
+            if (imgData->width() != -1 && imgData->height() != -1 && imgData->depth() != -1) {
+                m_properties.width = imgData->width();
+                m_properties.height = imgData->height();
+                m_properties.depth = imgData->depth();
+            }
+            // Set the format of the texture if the texture format is set to Automatic
+            if (m_properties.format == QAbstractTexture::Automatic) {
+                m_properties.format = static_cast<QAbstractTexture::TextureFormat>(imgData->format());
+            }
+            setDirtyFlag(Properties, true);
+        }
+    }
+
+    // make sure the number of mip levels is set when there is no texture data generator
+    if (!m_dataFunctor) {
+        m_properties.mipLevels = maxMipLevel + 1;
+        setDirtyFlag(Properties, true);
+    }
+}
+
+GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
 {
     QMutexLocker locker(&m_textureMutex);
     bool needUpload = false;
+    TextureUpdateInfo textureInfo;
+
+    m_properties.status = QAbstractTexture::Error;
 
     // on the first invocation in the render thread, make sure to
     // evaluate the texture data generator output
     // (this might change some property values)
     if (m_dataFunctor && !m_textureData) {
-        m_textureData = m_textureDataManager->getData(m_dataFunctor);
-
-        // if there is a texture generator, most properties will be defined by it
-        if (m_textureData) {
-            if (m_properties.target != QAbstractTexture::TargetAutomatic)
-                qWarning() << "[Qt3DRender::GLTexture] When a texture provides a generator, it's target is expected to be TargetAutomatic";
-
-            m_actualTarget = m_textureData->target();
-            m_properties.width = m_textureData->width();
-            m_properties.height = m_textureData->height();
-            m_properties.depth = m_textureData->depth();
-            m_properties.layers = m_textureData->layers();
-            m_properties.format = m_textureData->format();
-
-            const QVector<QTextureImageDataPtr> imageData = m_textureData->imageData();
-
-            if (imageData.size() > 0) {
-                // Set the mips level based on the first image if autoMipMapGeneration is disabled
-                if (!m_properties.generateMipMaps)
-                    m_properties.mipLevels = imageData.first()->mipLevels();
-            }
-
+        const bool successfullyLoadedTextureData = loadTextureDataFromGenerator();
+        if (successfullyLoadedTextureData) {
             setDirtyFlag(Properties, true);
             needUpload = true;
         } else {
             qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
-            return nullptr;
+            textureInfo.properties.status = QAbstractTexture::Loading;
+            return textureInfo;
         }
     }
 
     // additional texture images may be defined through image data generators
     if (testDirtyFlag(TextureData)) {
         m_imageData.clear();
+        loadTextureDataFromImages();
         needUpload = true;
-
-        int maxMipLevel = 0;
-        for (const Image &img : qAsConst(m_images)) {
-            const QTextureImageDataPtr imgData = m_textureImageDataManager->getData(img.generator);
-            // imgData may be null in the following cases:
-            // - Texture is created with TextureImages which have yet to be
-            // loaded (skybox where you don't yet know the path, source set by
-            // a property binding, queued connection ...)
-            // - TextureImage whose generator failed to return a valid data
-            // (invalid url, error opening file...)
-            if (imgData.isNull())
-                continue;
-
-            m_imageData.push_back(imgData);
-            maxMipLevel = qMax(maxMipLevel, img.mipLevel);
-
-            // If the texture doesn't have a texture generator, we will
-            // derive some properties from the first TextureImage (layer=0, miplvl=0, face=0)
-            if (!m_textureData && img.layer == 0 && img.mipLevel == 0 && img.face == QAbstractTexture::CubeMapPositiveX) {
-                if (imgData->width() != -1 && imgData->height() != -1 && imgData->depth() != -1) {
-                    m_properties.width = imgData->width();
-                    m_properties.height = imgData->height();
-                    m_properties.depth = imgData->depth();
-                }
-                // Set the format of the texture if the texture format is set to Automatic
-                if (m_properties.format == QAbstractTexture::Automatic) {
-                    m_properties.format = static_cast<QAbstractTexture::TextureFormat>(imgData->format());
-                }
-                setDirtyFlag(Properties, true);
-            }
-        }
-
-        // make sure the number of mip levels is set when there is no texture data generator
-        if (!m_dataFunctor) {
-            m_properties.mipLevels = maxMipLevel + 1;
-            setDirtyFlag(Properties, true);
-        }
     }
 
     // don't try to create the texture if the format was not set
-    if (m_properties.format == QAbstractTexture::Automatic)
-        return nullptr;
+    if (m_properties.format == QAbstractTexture::Automatic) {
+        textureInfo.properties.status = QAbstractTexture::Error;
+        return textureInfo;
+    }
 
     // if the properties changed, we need to re-allocate the texture
     if (testDirtyFlag(Properties)) {
         delete m_gl;
         m_gl = nullptr;
+        textureInfo.wasUpdated = true;
     }
+
 
     if (!m_gl) {
         m_gl = buildGLTexture();
-        if (!m_gl)
-            return nullptr;
+        if (!m_gl) {
+            textureInfo.properties.status = QAbstractTexture::Error;
+            return textureInfo;
+        }
+
         m_gl->allocateStorage();
         if (!m_gl->isStorageAllocated()) {
-            return nullptr;
+            textureInfo.properties.status = QAbstractTexture::Error;
+            return textureInfo;
         }
     }
+    m_properties.status = QAbstractTexture::Ready;
+
+    textureInfo.properties = m_properties;
+    textureInfo.texture = m_gl;
 
     // need to (re-)upload texture data?
     if (needUpload) {
@@ -223,7 +249,7 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
     setDirtyFlag(Properties, false);
     setDirtyFlag(Parameters, false);
 
-    return m_gl;
+    return textureInfo;
 }
 
 RenderBuffer *GLTexture::getOrCreateRenderBuffer()
@@ -442,7 +468,7 @@ void GLTexture::uploadGLTextureData()
     }
 
     // Upload all QTexImageData references by the TextureImages
-    for (int i = 0; i < m_images.size(); i++) {
+    for (int i = 0; i < std::min(m_images.size(), m_imageData.size()); i++) {
         const QTextureImageDataPtr &imgData = m_imageData.at(i);
         // Here the bytes in the QTextureImageData contain data for a single
         // layer, face or mip level, unlike the QTextureGenerator case where
