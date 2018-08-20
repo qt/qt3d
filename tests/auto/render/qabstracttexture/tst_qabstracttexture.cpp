@@ -47,6 +47,12 @@ public:
     {
         return static_cast<Qt3DRender::QAbstractTexturePrivate *>(d_ptr.get())->m_sharedTextureId;
     }
+
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override
+    {
+        Qt3DRender::QAbstractTexture::sceneChangeEvent(change);
+    }
+
 };
 
 class FakeTextureImage : public Qt3DRender::QAbstractTextureImage
@@ -98,6 +104,8 @@ private Q_SLOTS:
         QCOMPARE(abstractTexture.textureImages().size(), 0);
         QCOMPARE(abstractTexture.samples(), 1);
         QCOMPARE(abstractTexture.sharedTextureId(), -1);
+        QCOMPARE(abstractTexture.handleType(), Qt3DRender::QAbstractTexture::NoHandle);
+        QCOMPARE(abstractTexture.handle(), QVariant());
     }
 
     void checkPropertyChanges()
@@ -888,6 +896,238 @@ private Q_SLOTS:
             QCOMPARE(change->removedNodeId(), image.id());
 
             arbiter.events.clear();
+        }
+    }
+
+    void checkSceneChangedEvent()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        FakeTexture abstractTexture;
+        arbiter.setArbiterOnNode(&abstractTexture);
+
+        qRegisterMetaType<Qt3DRender::QAbstractTexture::Status>("Status");
+        qRegisterMetaType<Qt3DRender::QAbstractTexture::TextureFormat>("TextureFormat");
+        qRegisterMetaType<Qt3DRender::QAbstractTexture::HandleType>("HandleType");
+
+
+        {
+            QSignalSpy spy(&abstractTexture, SIGNAL(widthChanged(int)));
+
+            // THEN
+            QVERIFY(spy.isValid());
+
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("width");
+            valueChange->setValue(883);
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.width(), 883);
+
+            // WHEN
+            spy.clear();
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.width(), 883);
+        }
+
+        {
+            QSignalSpy spy(&abstractTexture, SIGNAL(heightChanged(int)));
+
+            // THEN
+            QVERIFY(spy.isValid());
+
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("height");
+            valueChange->setValue(1584);
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.height(), 1584);
+
+            // WHEN
+            spy.clear();
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.height(), 1584);
+        }
+
+        {
+            QSignalSpy spy(&abstractTexture, SIGNAL(depthChanged(int)));
+
+            // THEN
+            QVERIFY(spy.isValid());
+
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("depth");
+            valueChange->setValue(8);
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.depth(), 8);
+
+            // WHEN
+            spy.clear();
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.depth(), 8);
+        }
+
+        {
+            QSignalSpy spy(&abstractTexture, SIGNAL(layersChanged(int)));
+
+            // THEN
+            QVERIFY(spy.isValid());
+
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("layers");
+            valueChange->setValue(256);
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.layers(), 256);
+
+            // WHEN
+            spy.clear();
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.layers(), 256);
+        }
+
+        {
+            QSignalSpy spy(&abstractTexture, SIGNAL(formatChanged(TextureFormat)));
+
+            // THEN
+            QVERIFY(spy.isValid());
+
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("format");
+            const auto newFormat = Qt3DRender::QAbstractTexture::R8I;
+            valueChange->setValue(QVariant::fromValue(newFormat));
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.format(), newFormat);
+
+            // WHEN
+            spy.clear();
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.format(), newFormat);
+        }
+
+        {
+            QSignalSpy spy(&abstractTexture, SIGNAL(statusChanged(Status)));
+
+            // THEN
+            QVERIFY(spy.isValid());
+
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("status");
+            const auto newStatus = Qt3DRender::QAbstractTexture::Error;
+            valueChange->setValue(QVariant::fromValue(newStatus));
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.status(), newStatus);
+
+            // WHEN
+            spy.clear();
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.status(), newStatus);
+        }
+
+        {
+            QSignalSpy spy(&abstractTexture, SIGNAL(handleTypeChanged(HandleType)));
+
+            // THEN
+            QVERIFY(spy.isValid());
+
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("handleType");
+            const auto newType = Qt3DRender::QAbstractTexture::OpenGLTextureId;
+            valueChange->setValue(QVariant::fromValue(newType));
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.handleType(), newType);
+
+            // WHEN
+            spy.clear();
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.handleType(), newType);
+        }
+
+        {
+            QSignalSpy spy(&abstractTexture, SIGNAL(handleChanged(QVariant)));
+
+            // THEN
+            QVERIFY(spy.isValid());
+
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("handle");
+            valueChange->setValue(QVariant(1));
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.handle(), QVariant(1));
+
+            // WHEN
+            spy.clear();
+            abstractTexture.sceneChangeEvent(valueChange);
+
+            // THEN
+            QCOMPARE(spy.count(), 0);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(abstractTexture.handle(), QVariant(1));
         }
     }
 

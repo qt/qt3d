@@ -73,6 +73,8 @@ class QT3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
     Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
     Q_PROPERTY(int layers READ layers WRITE setLayers NOTIFY layersChanged)
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
+    Q_PROPERTY(HandleType handleType READ handleType NOTIFY handleTypeChanged REVISION 13)
+    Q_PROPERTY(QVariant handle READ handle NOTIFY handleChanged REVISION 13)
 
 public:
 
@@ -268,6 +270,12 @@ public:
     };
     Q_ENUM(ComparisonMode) // LCOV_EXCL_LINE
 
+    enum HandleType {
+        NoHandle,
+        OpenGLTextureId
+    };
+    Q_ENUM(HandleType) // LCOV_EXCL_LINE
+
     ~QAbstractTexture();
 
     Target target() const;
@@ -298,6 +306,8 @@ public:
     int layers() const;
     int samples() const;
     QTextureGeneratorPtr dataGenerator() const;
+    HandleType handleType() const;
+    QVariant handle() const;
 
 public Q_SLOTS:
     void setFormat(TextureFormat format);
@@ -327,6 +337,8 @@ Q_SIGNALS:
     void comparisonModeChanged(ComparisonMode comparisonMode);
     void layersChanged(int layers);
     void samplesChanged(int samples);
+    void handleTypeChanged(HandleType handleType);
+    void handleChanged(QVariant handle);
 
 protected:
     explicit QAbstractTexture(Qt3DCore::QNode *parent = nullptr);
@@ -335,6 +347,8 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
     void setStatus(Status status);
+    void setHandle(const QVariant &handle);
+    void setHandleType(HandleType type);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTexture)

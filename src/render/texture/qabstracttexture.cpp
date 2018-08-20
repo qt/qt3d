@@ -67,6 +67,8 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
     , m_layers(1)
     , m_samples(1)
     , m_sharedTextureId(-1)
+    , m_handleType(QAbstractTexture::NoHandle)
+    , m_handle(QVariant())
 {
 }
 
@@ -562,6 +564,34 @@ void QAbstractTexture::setStatus(Status status)
 }
 
 /*!
+ * \internal
+ */
+void QAbstractTexture::setHandle(const QVariant &handle)
+{
+    Q_D(QAbstractTexture);
+    if (d->m_handle != handle) {
+        d->m_handle = handle;
+        const bool blocked = blockNotifications(true);
+        emit handleChanged(handle);
+        blockNotifications(blocked);
+    }
+}
+
+/*!
+ * \internal
+ */
+void QAbstractTexture::setHandleType(QAbstractTexture::HandleType type)
+{
+    Q_D(QAbstractTexture);
+    if (d->m_handleType != type) {
+        d->m_handleType = type;
+        const bool blocked = blockNotifications(true);
+        emit handleTypeChanged(type);
+        blockNotifications(blocked);
+    }
+}
+
+/*!
  * \return the current status of the texture provider.
  */
 QAbstractTexture::Status QAbstractTexture::status() const
@@ -887,6 +917,55 @@ QTextureGeneratorPtr QAbstractTexture::dataGenerator() const
     return d->m_dataFunctor;
 }
 
+/*!
+ * \property Qt3DRender::QAbstractTexture::handleType
+ *
+ * Holds the current texture handle type.
+ */
+
+/*!
+ * \qmlproperty handleType
+ *
+ * Holds the current texture handle type.
+ */
+
+/*!
+ * \return the current texture handle type.
+ * \since 5.12
+ */
+QAbstractTexture::HandleType QAbstractTexture::handleType() const
+{
+    Q_D(const QAbstractTexture);
+    return d->m_handleType;
+}
+
+
+/*!
+ * \property Qt3DRender::QAbstractTexture::handle
+ *
+ * Holds the current texture handle, if Qt 3D is using the OpenGL renderer,
+ * handle is a texture id integer.
+ */
+
+/*!
+ * \qmlproperty handle
+ *
+ * Holds the current texture handle, if Qt 3D is using the OpenGL renderer,
+ * handle is a texture id integer.
+ */
+
+/*!
+ * \return the current texture handle, if Qt 3D is using the OpenGL renderer,
+ * handle is a texture id integer.
+ *
+ * \since 5.12
+ */
+QVariant QAbstractTexture::handle() const
+{
+    Q_D(const QAbstractTexture);
+    return d->m_handle;
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractTextureData>::create(this);
@@ -943,6 +1022,10 @@ void QAbstractTexture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             bool blocked = blockNotifications(true);
             setStatus(static_cast<QAbstractTexture::Status>(propertyChange->value().toInt()));
             blockNotifications(blocked);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("handleType")) {
+            setHandleType(static_cast<QAbstractTexture::HandleType>(propertyChange->value().toInt()));
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("handle")) {
+            setHandle(propertyChange->value());
         }
         // TODO handle target changes, it's a CONSTANT property but can be affected by loader
         break;

@@ -89,6 +89,9 @@ public :
 
     int m_sharedTextureId;
 
+    QAbstractTexture::HandleType m_handleType;
+    QVariant m_handle;
+
     QTextureGeneratorPtr dataFunctor() const;
     void setDataFunctor(const QTextureGeneratorPtr &generator);
 
