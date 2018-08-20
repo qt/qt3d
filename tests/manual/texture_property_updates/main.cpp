@@ -77,11 +77,13 @@ public:
     Q_INVOKABLE QString statusName(int v) const { return m_statusMap.value(v); }
     Q_INVOKABLE QString formatName(int v) const { return m_formatMap.value(v); }
     Q_INVOKABLE QString targetName(int v) const { return m_targetMap.value(v); }
+    Q_INVOKABLE QString handleTypeName(int v) const { return m_handleTypeMap.value(v); }
 
 private:
     const QHash<int, QString> m_statusMap = enumToNameMap<Qt3DRender::QAbstractTexture>("Status");
     const QHash<int, QString> m_formatMap = enumToNameMap<Qt3DRender::QAbstractTexture>("TextureFormat");
     const QHash<int, QString> m_targetMap = enumToNameMap<Qt3DRender::QAbstractTexture>("Target");
+    const QHash<int, QString> m_handleTypeMap = enumToNameMap<Qt3DRender::QAbstractTexture>("HandleType");
 };
 
 int main(int argc, char* argv[])

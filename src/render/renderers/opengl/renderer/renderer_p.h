@@ -391,7 +391,7 @@ private:
     QVector<HBuffer> m_downloadableBuffers;
     QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
-    QVector<QPair<TextureProperties, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
+    QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
 
     bool m_ownedContext;
 

@@ -142,6 +142,13 @@ public:
     };
     Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
 
+    struct TextureUpdateInfo
+    {
+        TextureProperties properties;
+        QVariant handle;
+        QAbstractTexture::HandleType handleType;
+    };
+
     void addDirtyFlag(DirtyFlags flags);
     DirtyFlags dirtyFlags();
     void unsetDirty();
@@ -159,7 +166,7 @@ public:
     inline int sharedTextureId() const { return m_sharedTextureId; }
 
     void setDataGenerator(const QTextureGeneratorPtr &generator);
-    void updatePropertiesAndNotify(const TextureProperties &propreties);
+    void updatePropertiesAndNotify(const TextureUpdateInfo &updateInfo);
     bool isValid(TextureImageManager *manager) const;
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;

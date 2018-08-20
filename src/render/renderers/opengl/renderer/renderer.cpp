@@ -1175,7 +1175,7 @@ void Renderer::reloadDirtyShaders()
 // Executed in a job
 void Renderer::sendTextureChangesToFrontend()
 {
-    const QVector<QPair<TextureProperties, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
+    const QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
     for (const auto &pair : updateTextureProperties) {
         // Prepare change notification
 
@@ -1272,8 +1272,13 @@ void Renderer::updateGLResources()
                 // Gather these information and store them to be distributed by a change next frame
                 const QNodeIdVector referenceTextureIds = glTextureManager->referencedTextureIds(glTexture);
                 // Store properties and referenceTextureIds
-                if (info.wasUpdated)
-                    m_updatedTextureProperties.push_back({info.properties, referenceTextureIds});
+                if (info.wasUpdated) {
+                    Texture::TextureUpdateInfo updateInfo;
+                    updateInfo.properties = info.properties;
+                    updateInfo.handleType = QAbstractTexture::OpenGLTextureId;
+                    updateInfo.handle = info.texture ? QVariant(info.texture->textureId()) : QVariant();
+                    m_updatedTextureProperties.push_back({updateInfo, referenceTextureIds});
+                }
             }
         }
     }

@@ -51,7 +51,7 @@
 import QtQuick 2.2 as QQ2
 import QtQuick.Scene3D 2.0
 import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+import Qt3D.Render 2.12
 import Qt3D.Input 2.0
 import Qt3D.Extras 2.0
 
@@ -182,6 +182,8 @@ QQ2.Item {
             QQ2.Text { text: "Depth: " + model.modelData.depth}
             QQ2.Text { text: "Layers: " + model.modelData.layers}
             QQ2.Text { text: "Status: " + nameMapper.statusName(model.modelData.status.toString()) }
+            QQ2.Text { text: "HandleType: " + nameMapper.handleTypeName(model.modelData.handleType) }
+            QQ2.Text { text: "Handle: " + model.modelData.handle }
         }
     }
 }

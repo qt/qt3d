@@ -223,7 +223,7 @@ void Texture::setDataGenerator(const QTextureGeneratorPtr &generator)
 
 // Called by sendTextureChangesToFrontendJob once GLTexture and sharing
 // has been performed
-void Texture::updatePropertiesAndNotify(const TextureProperties &properties)
+void Texture::updatePropertiesAndNotify(const TextureUpdateInfo &updateInfo)
 {
     // If we are Dirty, some property has changed and the properties we have
     // received are potentially already outdated
@@ -232,57 +232,73 @@ void Texture::updatePropertiesAndNotify(const TextureProperties &properties)
 
     // Note we don't update target has it is constant for frontend nodes
 
-    if (properties.width != m_properties.width) {
-        m_properties.width = properties.width;
+    if (updateInfo.properties.width != m_properties.width) {
+        m_properties.width = updateInfo.properties.width;
         auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
         change->setPropertyName("width");
-        change->setValue(properties.width);
+        change->setValue(updateInfo.properties.width);
         notifyObservers(change);
     }
 
-    if (properties.height != m_properties.height) {
-        m_properties.height = properties.height;
+    if (updateInfo.properties.height != m_properties.height) {
+        m_properties.height = updateInfo.properties.height;
         auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
         change->setPropertyName("height");
-        change->setValue(properties.height);
+        change->setValue(updateInfo.properties.height);
         notifyObservers(change);
     }
 
-    if (properties.depth != m_properties.depth) {
-        m_properties.depth = properties.depth;
+    if (updateInfo.properties.depth != m_properties.depth) {
+        m_properties.depth = updateInfo.properties.depth;
         auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
         change->setPropertyName("depth");
-        change->setValue(properties.depth);
+        change->setValue(updateInfo.properties.depth);
         notifyObservers(change);
     }
 
-    if (properties.layers != m_properties.layers) {
-        m_properties.layers = properties.layers;
+    if (updateInfo.properties.layers != m_properties.layers) {
+        m_properties.layers = updateInfo.properties.layers;
         auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
         change->setPropertyName("layers");
-        change->setValue(properties.layers);
+        change->setValue(updateInfo.properties.layers);
         notifyObservers(change);
     }
 
-    if (properties.format != m_properties.format) {
-        m_properties.format = properties.format;
+    if (updateInfo.properties.format != m_properties.format) {
+        m_properties.format = updateInfo.properties.format;
         auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
         change->setPropertyName("format");
-        change->setValue(properties.format);
+        change->setValue(updateInfo.properties.format);
         notifyObservers(change);
     }
 
-    if (properties.status != m_properties.status) {
-        m_properties.status = properties.status;
+    if (updateInfo.properties.status != m_properties.status) {
+        m_properties.status = updateInfo.properties.status;
         auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
         change->setPropertyName("status");
-        change->setValue(properties.status);
+        change->setValue(updateInfo.properties.status);
+        notifyObservers(change);
+    }
+
+    {
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("handleType");
+        change->setValue(updateInfo.handleType);
+        notifyObservers(change);
+    }
+
+    {
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("handle");
+        change->setValue(updateInfo.handle);
         notifyObservers(change);
     }
 }
