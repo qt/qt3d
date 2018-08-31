@@ -53,6 +53,9 @@ Q_COREAPP_STARTUP_FUNCTION(initScene2dPlugin)
 void QtQuickScene2DPlugin::registerTypes(const char *uri)
 {
     qmlRegisterExtendedType<Qt3DRender::Quick::QScene2D, Qt3DRender::Render::Quick::QQuick3DScene2D>(uri, 2, 9, "Scene2D");
+
+    // Auto-increment the import to stay in sync with ALL future Qt minor versions
+    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
 }
 
 QT_END_NAMESPACE

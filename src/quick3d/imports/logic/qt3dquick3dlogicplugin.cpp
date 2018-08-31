@@ -47,6 +47,9 @@ QT_BEGIN_NAMESPACE
 void Qt3DQuick3DLogicPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<Qt3DLogic::QFrameAction>(uri, 2, 0, "FrameAction");
+
+    // Auto-increment the import to stay in sync with ALL future Qt minor versions
+    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
 }
 
 QT_END_NAMESPACE

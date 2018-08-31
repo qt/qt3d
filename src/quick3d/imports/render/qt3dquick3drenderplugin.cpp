@@ -296,6 +296,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QStencilOperation>(uri, 2, 0, "StencilOperation");
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
     qmlRegisterType<Qt3DRender::QLineWidth>(uri, 2, 10, "LineWidth");
+
+    // Auto-increment the import to stay in sync with ALL future Qt minor versions
+    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
 }
 
 QT_END_NAMESPACE
