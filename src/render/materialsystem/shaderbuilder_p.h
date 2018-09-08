@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT ShaderBuilder : public BackendNode
+class QT3DRENDERSHARED_PRIVATE_EXPORT ShaderBuilder : public BackendNode
 {
 public:
     enum ShaderType {

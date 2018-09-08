@@ -104,6 +104,9 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 #ifdef HAVE_QGAMEPAD
     qmlRegisterType<Qt3DInput::QGamepadInput>(uri, 2, 0, "GamepadInput");
 #endif
+
+    // Auto-increment the import to stay in sync with ALL future Qt minor versions
+    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
 }
 
 QT_END_NAMESPACE

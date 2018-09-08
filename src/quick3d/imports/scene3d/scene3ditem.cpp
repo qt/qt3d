@@ -87,7 +87,7 @@ namespace Qt3DRender {
 /*!
     \qmltype Scene3D
     \inherits Item
-    \inqmlmodule Qt3D.Scene3D
+    \inqmlmodule QtQuick.Scene3D
 
     \preliminary
 

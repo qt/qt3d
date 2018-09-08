@@ -116,7 +116,7 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
 
     resize(1024, 768);
 
-    QSurfaceFormat format;
+    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
 #ifdef QT_OPENGL_ES_2
     format.setRenderableType(QSurfaceFormat::OpenGLES);
 #else

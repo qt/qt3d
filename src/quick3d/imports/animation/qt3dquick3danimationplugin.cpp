@@ -100,6 +100,9 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
 
     qmlRegisterUncreatableType<Qt3DAnimation::QAbstractChannelMapping>(uri, 2, 10, "AbstractChannelMapping", QStringLiteral("QAbstractChannelMapping is abstract"));
     qmlRegisterType<Qt3DAnimation::QSkeletonMapping>(uri, 2, 10, "SkeletonMapping");
+
+    // Auto-increment the import to stay in sync with ALL future Qt minor versions
+    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
 }
 
 QT_END_NAMESPACE

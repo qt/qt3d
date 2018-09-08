@@ -226,7 +226,7 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
     const auto shaderCode = shaderNode->shaderCode();
     QString logs;
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
+        const QShaderProgram::ShaderType type = static_cast<QShaderProgram::ShaderType>(i);
         if (!shaderCode.at(i).isEmpty()) {
             // Note: logs only return the error but not all the shader code
             // we could append it

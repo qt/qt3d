@@ -82,6 +82,9 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNodeV9, 9>(uri, 2, 9, "Node", QStringLiteral("Node is a base class"));
 
     Qt3DCore::Quick::registerExtendedType<Qt3DCore::QJoint, Qt3DCore::Quick::Quick3DJoint>("QJoint", "Qt3D.Core/Joint", uri, 2, 10, "Joint");
+
+    // Auto-increment the import to stay in sync with ALL future Qt minor versions
+    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
 }
 
 Qt3DQuick3DCorePlugin::~Qt3DQuick3DCorePlugin()
