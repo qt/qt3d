@@ -103,7 +103,7 @@
 */
 
 /*!
-   \qmlmodule Qt3D.Extras 2.0
+   \qmlmodule Qt3D.Extras 2.\QtMinorVersion
    \title Qt 3D Extras QML Types
    \preliminary
 
@@ -114,7 +114,7 @@
 
    To import and use the module's QML types, use the following statement:
 
-   \badcode
-   import Qt3D.Extras 2.0
-   \endcode
+   \qml \QtMinorVersion
+   import Qt3D.Extras 2.\1
+   \endqml
 */

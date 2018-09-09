@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-   \qmlmodule QtQuick.Scene3D 2.0
+   \qmlmodule QtQuick.Scene3D 2.\QtMinorVersion
    \preliminary
    \title Qt 3D Scene3D QML Types
    \ingroup qmlmodules
@@ -36,7 +36,7 @@
 
    To import and use the module's QML types, use the following statement:
 
-   \badcode
-   import QtQuick.Scene3D 2.0
-   \endcode
+   \qml \QtMinorVersion
+   import QtQuick.Scene3D 2.\1
+   \endqml
 */

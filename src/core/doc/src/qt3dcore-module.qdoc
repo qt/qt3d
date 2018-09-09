@@ -51,7 +51,7 @@
 */
 
 /*!
-   \qmlmodule Qt3D.Core 2.0
+   \qmlmodule Qt3D.Core 2.\QtMinorVersion
    \title Qt 3D Core QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
@@ -61,9 +61,9 @@
 
    To import and use the module's QML types, use the following statement:
 
-   \badcode
-   import Qt3D.Core 2.0
-   \endcode
+   \qml \QtMinorVersion
+   import Qt3D.Core 2.\1
+   \endqml
 
    See \l {Qt 3D QML Types} for a list of all QML types in Qt 3D.
 
