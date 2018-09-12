@@ -293,8 +293,6 @@ void Quick3DEntityLoaderPrivate::loadComponent(const QUrl &source)
 
 void Quick3DEntityLoaderPrivate::loadComponent(QQmlComponent *component)
 {
-    Q_Q(Quick3DEntityLoader);
-
     Q_ASSERT(m_entity == nullptr);
     Q_ASSERT(m_component == nullptr);
     Q_ASSERT(m_context == nullptr);
