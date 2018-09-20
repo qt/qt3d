@@ -80,17 +80,21 @@ void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("buffers")) {
             m_type = static_cast<QClearBuffers::BufferType>(propertyChange->value().toInt());
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor")) {
             m_clearColorAsColor = propertyChange->value().value<QColor>();
             m_clearColor = vec4dFromColor(m_clearColorAsColor);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("clearDepthValue")) {
             m_clearDepthValue = propertyChange->value().toFloat();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("clearStencilValue")) {
             m_clearStencilValue = propertyChange->value().toInt();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("colorBuffer")) {
             m_colorBufferId = propertyChange->value().value<QNodeId>();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
-        markDirty(AbstractRenderer::AllDirty);
     }
     FrameGraphNode::sceneChangeEvent(e);
 }

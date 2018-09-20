@@ -84,7 +84,7 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("renderState")) {
             addRenderState(change->addedNodeId());
-            markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
         break;
     }
@@ -93,7 +93,7 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const auto propertyChange = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             removeRenderState(propertyChange->removedNodeId());
-            markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
         break;
     }

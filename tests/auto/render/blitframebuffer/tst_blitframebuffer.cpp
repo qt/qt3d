@@ -118,6 +118,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendBlitFramebuffer.isEnabled(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -130,6 +132,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendBlitFramebuffer.sourceRenderTargetId(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -142,6 +146,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendBlitFramebuffer.destinationRenderTargetId(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -153,6 +159,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendBlitFramebuffer.sourceRect(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -164,6 +172,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendBlitFramebuffer.destinationRect(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -175,6 +185,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendBlitFramebuffer.sourceAttachmentPoint(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -186,6 +198,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendBlitFramebuffer.destinationAttachmentPoint(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
     }
 

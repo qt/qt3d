@@ -76,6 +76,7 @@ void RenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderCaptureRequest")) {
             requestCapture(propertyChange->value().value<QRenderCaptureRequest>());
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
     }
     FrameGraphNode::sceneChangeEvent(e);

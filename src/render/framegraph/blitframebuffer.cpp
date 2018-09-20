@@ -66,20 +66,26 @@ void BlitFramebuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("sourceRenderTarget")) {
             m_sourceRenderTargetId = propertyChange->value().value<QNodeId>();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationRenderTarget")) {
             m_destinationRenderTargetId = propertyChange->value().value<QNodeId>();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("sourceRect")) {
             m_sourceRect = propertyChange->value().toRect();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationRect")) {
             m_destinationRect = propertyChange->value().toRect();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("sourceAttachmentPoint")) {
             m_sourceAttachmentPoint = propertyChange->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationAttachmentPoint")) {
             m_destinationAttachmentPoint = propertyChange->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("interpolationMethod")) {
             m_interpolationMethod = propertyChange->value().value<QBlitFramebuffer::InterpolationMethod>();
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
-        markDirty(AbstractRenderer::AllDirty);
     }
     FrameGraphNode::sceneChangeEvent(e);
 }

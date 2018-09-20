@@ -67,11 +67,13 @@ void ProximityFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("entity"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("entity")) {
             m_entityId = propertyChange->value().value<Qt3DCore::QNodeId>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("distanceThreshold"))
+            markDirty(AbstractRenderer::FrameGraphDirty);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("distanceThreshold")) {
             m_distanceThreshold = propertyChange->value().toFloat();
-        markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
+        }
     }
     FrameGraphNode::sceneChangeEvent(e);
 }

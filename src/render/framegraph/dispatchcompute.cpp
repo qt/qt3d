@@ -80,13 +80,16 @@ void DispatchCompute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX")) {
             m_workGroups[0] = propertyChange->value().toInt();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupY"))
+            markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupY")) {
             m_workGroups[1] = propertyChange->value().toInt();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupZ"))
+            markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupZ")) {
             m_workGroups[2] = propertyChange->value().toInt();
-        markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
+        }
     }
     FrameGraphNode::sceneChangeEvent(e);
 }

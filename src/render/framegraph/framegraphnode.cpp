@@ -157,23 +157,32 @@ void FrameGraphNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     case Qt3DCore::PropertyValueAdded: {
        Qt3DCore::QPropertyNodeAddedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->metaObject()->inherits(&QFrameGraphNode::staticMetaObject))
+        if (change->metaObject()->inherits(&QFrameGraphNode::staticMetaObject)) {
             appendChildId(change->addedNodeId());
+            markDirty(AbstractRenderer::FrameGraphDirty);
+        }
         break;
     }
 
     case Qt3DCore::PropertyValueRemoved: {
         Qt3DCore::QPropertyNodeRemovedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->metaObject()->inherits(&QFrameGraphNode::staticMetaObject))
+        if (change->metaObject()->inherits(&QFrameGraphNode::staticMetaObject)) {
             removeChildId(change->removedNodeId());
+            markDirty(AbstractRenderer::FrameGraphDirty);
+        }
+        break;
+    }
+    case Qt3DCore::PropertyUpdated: {
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
+            d_func()->m_enabled = propertyChange->value().toBool();
+            markDirty(AbstractRenderer::FrameGraphDirty);
+        }
         break;
     }
     default:
         break;
     }
-
-    markDirty(AbstractRenderer::AllDirty);
-    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

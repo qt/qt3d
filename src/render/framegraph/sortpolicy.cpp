@@ -61,9 +61,9 @@ void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             auto sortTypesInt = propertyChange->value().value<QVector<int>>();
             m_sortTypes.clear();
             transformVector(sortTypesInt, m_sortTypes);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
     }
-    markDirty(AbstractRenderer::AllDirty);
     FrameGraphNode::sceneChangeEvent(e);
 }
 

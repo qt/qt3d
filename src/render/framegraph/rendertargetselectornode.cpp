@@ -73,11 +73,13 @@ void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == PropertyUpdated) {
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("target"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
             m_renderTargetUuid = propertyChange->value().value<QNodeId>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("outputs"))
+            markDirty(AbstractRenderer::FrameGraphDirty);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("outputs")) {
             m_outputs = propertyChange->value().value<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >();
-        markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
+        }
     }
     FrameGraphNode::sceneChangeEvent(e);
 }

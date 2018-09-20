@@ -68,7 +68,7 @@ void MemoryBarrier::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("waitOperations")) {
             m_waitOperations = propertyChange->value().value<QMemoryBarrier::Operations>();
-            markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
     }
     FrameGraphNode::sceneChangeEvent(e);

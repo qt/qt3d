@@ -101,6 +101,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendProximityFilter.isEnabled(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -112,6 +114,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendProximityFilter.distanceThreshold(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -123,6 +127,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendProximityFilter.entityId(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
     }
 

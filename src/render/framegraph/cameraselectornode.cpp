@@ -70,9 +70,10 @@ void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == PropertyUpdated) {
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("camera"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("camera")) {
             m_cameraUuid = propertyChange->value().value<QNodeId>();
-        markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
+        }
     }
     FrameGraphNode::sceneChangeEvent(e);
 }

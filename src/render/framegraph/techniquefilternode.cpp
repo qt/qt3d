@@ -96,10 +96,10 @@ void TechniqueFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("matchAll")) {
             appendFilter(change->addedNodeId());
-            markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(change->addedNodeId());
-            markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
         break;
     }
@@ -108,10 +108,10 @@ void TechniqueFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("matchAll")) {
             removeFilter(change->removedNodeId());
-            markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.removeParameter(change->removedNodeId());
-            markDirty(AbstractRenderer::AllDirty);
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
         break;
     }

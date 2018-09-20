@@ -98,6 +98,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendMemoryBarrier.isEnabled(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
              // WHEN
@@ -109,6 +111,8 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendMemoryBarrier.waitOperations(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
     }
 

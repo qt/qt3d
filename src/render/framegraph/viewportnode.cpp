@@ -128,10 +128,11 @@ void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setYMin(normalizedRect.y());
             setXMax(normalizedRect.width());
             setYMax(normalizedRect.height());
+            markDirty(AbstractRenderer::FrameGraphDirty);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("gamma")) {
             setGamma(propertyChange->value().toFloat());
+            markDirty(AbstractRenderer::FrameGraphDirty);
         }
-        markDirty(AbstractRenderer::AllDirty);
     }
     FrameGraphNode::sceneChangeEvent(e);
 }
