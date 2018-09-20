@@ -112,6 +112,8 @@
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qproximityfilter.h>
 #include <Qt3DRender/qblitframebuffer.h>
+#include <Qt3DRender/qsetfence.h>
+#include <Qt3DRender/qwaitfence.h>
 
 #include <QtGui/qwindow.h>
 
@@ -263,6 +265,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 9, "MemoryBarrier");
     qmlRegisterType<Qt3DRender::QProximityFilter>(uri, 2, 10, "ProximityFilter");
     qmlRegisterType<Qt3DRender::QBlitFramebuffer>(uri, 2, 10, "BlitFramebuffer");
+    qmlRegisterType<Qt3DRender::QSetFence>(uri, 2, 13, "SetFence");
+    qmlRegisterType<Qt3DRender::QWaitFence>(uri, 2, 13, "WaitFence");
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderTargetOutput>(uri, 2, 0, "RenderTargetOutput");

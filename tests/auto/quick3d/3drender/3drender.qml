@@ -81,6 +81,8 @@ Item {
     //QQ3Render20.QAbstractTextureImage        // (uncreatable) Qt3DRender::QAbstractTextureImage
     QQ3Render20.TextureImage {}                //Qt3DRender::QTextureImage
     QQ3Render213.SharedGLTexture {}            //Qt3DRender::QSharedGLTexture
+    QQ3Render213.WaitFence {}                  //Qt3DRender::QWaitFence
+    QQ3Render213.SetFence {}                   //Qt3DRender::QSetFence
 
     // Geometry
     QQ3Render20.Attribute {}                   //Qt3DRender::QAttribute
