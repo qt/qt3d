@@ -101,7 +101,9 @@ public:
         BufferCapture,
         MemoryBarrier,
         ProximityFilter,
-        BlitFramebuffer
+        BlitFramebuffer,
+        SetFence,
+        WaitFence
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

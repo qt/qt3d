@@ -62,7 +62,9 @@ HEADERS += \
     $$PWD/qsetfence.h \
     $$PWD/qwaitfence.h \
     $$PWD/qwaitfence_p.h \
-    $$PWD/qsetfence_p.h
+    $$PWD/qsetfence_p.h \
+    $$PWD/setfence_p.h \
+    $$PWD/waitfence_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -106,4 +108,6 @@ SOURCES += \
     $$PWD/qblitframebuffer.cpp \
     $$PWD/blitframebuffer.cpp \
     $$PWD/qsetfence.cpp \
-    $$PWD/qwaitfence.cpp
+    $$PWD/qwaitfence.cpp \
+    $$PWD/setfence.cpp \
+    $$PWD/waitfence.cpp

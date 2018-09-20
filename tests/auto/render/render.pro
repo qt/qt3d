@@ -101,7 +101,9 @@ qtConfig(private_tests) {
         raycastingjob \
         qcamera \
         qsetfence \
-        qwaitfence
+        qwaitfence \
+        setfence \
+        waitfence
 
     QT_FOR_CONFIG = 3dcore-private
     # TO DO: These could be restored to be executed in all cases
