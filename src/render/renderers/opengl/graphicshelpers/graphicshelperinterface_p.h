@@ -82,7 +82,8 @@ public:
         DrawBuffersBlend,
         BlitFramebuffer,
         IndirectDrawing,
-        MapBuffer
+        MapBuffer,
+        Fences
     };
 
     enum FBOBindMode {
@@ -154,6 +155,12 @@ public:
     virtual void    vertexAttributePointer(GLenum shaderDataType, GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) = 0;
     virtual void    readBuffer(GLenum mode) = 0;
     virtual void    drawBuffer(GLenum mode) = 0;
+
+    virtual void    *fenceSync() = 0;
+    virtual void    clientWaitSync(void *sync, GLuint64 nanoSecTimeout) = 0;
+    virtual void    waitSync(void *sync) = 0;
+    virtual bool    wasSyncSignaled(void *sync) = 0;
+    virtual void    deleteSync(void *sync) = 0;
 
     virtual void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) = 0;
     virtual void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) = 0;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Juan José Casafranca
+** Copyright (C) 2018 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_SENDBUFFERCAPTUREJOB_P_H
-#define QT3DRENDER_SENDBUFFERCAPTUREJOB_P_H
+#ifndef GLFENCE_P_H
+#define GLFENCE_P_H
 
 //
 //  W A R N I N G
@@ -51,11 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
-#include <QMutex>
-
+#include <QtGlobal>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,35 +59,15 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class NodeManagers;
-class Entity;
-class Renderer;
-class Buffer;
+// GLsync is a pointer to a struct (unlike the rest of GL which used int ids)
+// We cannot reference GLsync as it's only available since 3.2 We use FenceId
+// to wrap that around and trust the GLHelpers will convert them accordingly.
+using GLFence = void *;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT SendBufferCaptureJob : public Qt3DCore::QAspectJob
-{
-public:
-    explicit SendBufferCaptureJob();
-    ~SendBufferCaptureJob();
-
-    void addRequest(QPair<Buffer*, QByteArray> request);
-    bool hasRequests() const;
-
-    void run() final;
-
-private:
-    QMutex m_mutex;
-
-    QVector<QPair<Buffer*, QByteArray> > m_pendingSendBufferCaptures;
-};
-
-typedef QSharedPointer<SendBufferCaptureJob> SendBufferCaptureJobPtr;
-
-} //Render
-
-} //Qt3DRender
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
 
-#endif // QT3DRENDER_SENDBUFFERCAPTUREJOB_P_H
+#endif // GLFENCE_P_H

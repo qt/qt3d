@@ -400,6 +400,39 @@ void GraphicsHelperGL4::drawBuffer(GLenum mode)
     m_funcs->glDrawBuffer(mode);
 }
 
+void *GraphicsHelperGL4::fenceSync()
+{
+    return m_funcs->glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+}
+
+void GraphicsHelperGL4::clientWaitSync(void *sync, GLuint64 nanoSecTimeout)
+{
+    qDebug() << Q_FUNC_INFO << sync << static_cast<GLsync>(sync);
+    GLenum e = m_funcs->glClientWaitSync(static_cast<GLsync>(sync), GL_SYNC_FLUSH_COMMANDS_BIT, nanoSecTimeout);
+    qDebug() << e;
+}
+
+void GraphicsHelperGL4::waitSync(void *sync)
+{
+    m_funcs->glWaitSync(static_cast<GLsync>(sync), 0, GL_TIMEOUT_IGNORED);
+}
+
+bool GraphicsHelperGL4::wasSyncSignaled(void *sync)
+{
+    GLint v = 0;
+    m_funcs->glGetSynciv(static_cast<GLsync>(sync),
+                         GL_SYNC_STATUS,
+                         sizeof(v),
+                         nullptr,
+                         &v);
+    return v == GL_SIGNALED;
+}
+
+void GraphicsHelperGL4::deleteSync(void *sync)
+{
+    m_funcs->glDeleteSync(static_cast<GLsync>(sync));
+}
+
 void GraphicsHelperGL4::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform1fv(location, count, values);
@@ -746,6 +779,8 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case DrawBuffersBlend:
     case BlitFramebuffer:
     case IndirectDrawing:
+    case MapBuffer:
+    case Fences:
         return true;
     default:
         return false;

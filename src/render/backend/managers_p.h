@@ -72,6 +72,7 @@
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/glbuffer_p.h>
+#include <Qt3DRender/private/glfence_p.h>
 #include <Qt3DRender/private/textureimage_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/geometry_p.h>
@@ -314,6 +315,10 @@ class GLBufferManager : public Qt3DCore::QResourceManager<
         GLBuffer,
         Qt3DCore::QNodeId,
         Qt3DCore::NonLockingPolicy>
+{
+};
+
+class GLFenceManager : public QHash<Qt3DCore::QNodeId, GLFence>
 {
 };
 

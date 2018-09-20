@@ -91,6 +91,7 @@
 #include <Qt3DRender/private/renderviewbuilder_p.h>
 #include <Qt3DRender/private/commandthread_p.h>
 #include <Qt3DRender/private/glcommands_p.h>
+#include <Qt3DRender/private/setfence_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -195,6 +196,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_sendTextureChangesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendTextureChangesToFrontend(); }, JobTypes::SendTextureChangesToFrontend))
+    , m_sendSetFenceHandlesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
     , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
     , m_ownedContext(false)
@@ -1194,6 +1196,22 @@ void Renderer::sendTextureChangesToFrontend()
     }
 }
 
+// Executed in a job
+void Renderer::sendSetFenceHandlesToFrontend()
+{
+    const QVector<QPair<Qt3DCore::QNodeId, GLFence>> updatedSetFence = std::move(m_updatedSetFences);
+    FrameGraphManager *fgManager = m_nodesManager->frameGraphManager();
+    for (const auto &pair : updatedSetFence) {
+        FrameGraphNode *fgNode = fgManager->lookupNode(pair.first);
+        if (fgNode != nullptr) { // Node could have been deleted before we got a chance to notify it
+            Q_ASSERT(fgNode->nodeType() == FrameGraphNode::SetFence);
+            SetFence *setFenceNode = static_cast<SetFence *>(fgNode);
+            setFenceNode->setHandleType(QSetFence::OpenGLFenceId);
+            setFenceNode->setHandle(QVariant::fromValue(pair.second));
+        }
+    }
+}
+
 // Render Thread (or QtQuick RenderThread when using Scene3D)
 // Scene3D: When using Scene3D rendering, we can't assume that when
 // updateGLResources is called, the resource handles points to still existing
@@ -1206,6 +1224,25 @@ void Renderer::sendTextureChangesToFrontend()
 // objects that may already have been destroyed
 void Renderer::updateGLResources()
 {
+    {
+        // Update active fence objects:
+        // - Destroy fences that have reached their signaled state
+        GLFenceManager *fenceManager = m_nodesManager->glFenceManager();
+        const auto end = fenceManager->end();
+        auto it = fenceManager->begin();
+        while (it != end) {
+            const GLFence fence = it.value();
+            if (m_submissionContext->wasSyncSignaled(fence)) {
+                // Fence was signaled, we delete it
+                // before removing the entry from the manager
+                m_submissionContext->deleteSync(fence);
+                it = fenceManager->erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+
     {
         Profiling::GLTimeRecorder recorder(Profiling::BufferUpload);
         const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
@@ -1397,6 +1434,7 @@ void Renderer::cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId)
         glTextureManager->abandon(glTexture, cleanedUpTextureId);
 }
 
+// Called by SubmitRenderView
 void Renderer::downloadGLBuffers()
 {
     lookForDownloadableBuffers();
@@ -1480,6 +1518,45 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         // Apply Memory Barrier if needed
         if (renderView->memoryBarrier() != QMemoryBarrier::None)
             m_submissionContext->memoryBarrier(renderView->memoryBarrier());
+
+
+        // Insert Fence into command stream if needed
+        const Qt3DCore::QNodeIdVector insertFenceIds = renderView->insertFenceIds();
+        GLFenceManager *fenceManager = m_nodesManager->glFenceManager();
+        for (const Qt3DCore::QNodeId insertFenceId : insertFenceIds) {
+            // If the fence is not in the manager, then it hasn't been inserted
+            // into the command stream yet.
+            if (fenceManager->find(insertFenceId) == fenceManager->end()) {
+                // Insert fence into command stream
+                GLFence glFence = m_submissionContext->fenceSync();
+                // Record glFence
+                fenceManager->insert(insertFenceId, glFence);
+                // Add entry for notification changes to be sent
+                m_updatedSetFences.push_back({insertFenceId, glFence});
+            }
+            // If it is in the manager, then it hasn't been signaled yet,
+            // nothing we can do but try at the next frame
+        }
+
+        // Wait for fences if needed
+        const QVector<QWaitFenceData> waitFences = renderView->waitFences();
+        for (const QWaitFenceData &waitFence : waitFences) {
+            // TO DO
+            if (waitFence.handleType != QWaitFence::OpenGLFenceId) {
+                qWarning() << "WaitFence handleType should be OpenGLFenceId when using the Qt 3D OpenGL renderer";
+                continue;
+            }
+            GLFence fence = reinterpret_cast<GLFence>(waitFence.handle.value<qintptr>());
+            if (fence == nullptr)
+                continue;
+
+            if (waitFence.waitOnCPU) {
+                m_submissionContext->clientWaitSync(fence,
+                                                    waitFence.timeout);
+            } else {
+                m_submissionContext->waitSync(fence);
+            }
+        }
 
         // Note: the RenderStateSet is allocated once per RV if needed
         // and it contains a list of StateVariant value types
@@ -1646,6 +1723,33 @@ void Renderer::skipNextFrame()
     m_submitRenderViewsSemaphore.release(1);
 }
 
+// Jobs we may have to run even if no rendering will happen
+QVector<QAspectJobPtr> Renderer::preRenderingJobs()
+{
+    QVector<QAspectJobPtr> jobs;
+
+    // Do we need to notify any texture about property changes?
+    if (m_updatedTextureProperties.size() > 0)
+        jobs.push_back(m_sendTextureChangesToFrontendJob);
+
+    // Do we need to notify frontend about fence change?
+    if (m_updatedSetFences.size() > 0)
+        jobs.push_back(m_sendSetFenceHandlesToFrontendJob);
+
+    const QVector<Qt3DCore::QNodeId> pendingCaptureIds = takePendingRenderCaptureSendRequests();
+    if (pendingCaptureIds.size() > 0) {
+        m_sendRenderCaptureJob->setPendingCaptureRequests(pendingCaptureIds);
+        jobs.push_back(m_sendRenderCaptureJob);
+    }
+    if (m_sendBufferCaptureJob->hasRequests())
+        jobs.push_back(m_sendBufferCaptureJob);
+
+    jobs.append(pickBoundingVolumeJob());
+    jobs.append(rayCastingJob());
+
+    return jobs;
+}
+
 // Waits to be told to create jobs for the next frame
 // Called by QRenderAspect jobsToExecute context of QAspectThread
 // Returns all the jobs (and with proper dependency chain) required
@@ -1702,17 +1806,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_cleanupJob);
 
-    const QVector<Qt3DCore::QNodeId> pendingCaptureIds = takePendingRenderCaptureSendRequests();
-    if (pendingCaptureIds.size() > 0) {
-        m_sendRenderCaptureJob->setPendingCaptureRequests(pendingCaptureIds);
-        renderBinJobs.push_back(m_sendRenderCaptureJob);
-    }
-
-    // Do we need to notify any texture about property changes?
-    if (m_updatedTextureProperties.size() > 0)
-        renderBinJobs.push_back(m_sendTextureChangesToFrontendJob);
-
-    renderBinJobs.push_back(m_sendBufferCaptureJob);
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload

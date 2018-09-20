@@ -57,6 +57,7 @@ public:
     bool isRunning() const override { return true; }
     bool shouldRender() override { return true; }
     void skipNextFrame() override {}
+    QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() override { return Qt3DCore::QAspectJobPtr(); }
     Qt3DCore::QAspectJobPtr rayCastingJob() override { return Qt3DCore::QAspectJobPtr(); }

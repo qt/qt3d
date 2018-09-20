@@ -1258,6 +1258,33 @@ void SubmissionContext::clearStencilValue(int stencil)
     }
 }
 
+GLFence SubmissionContext::fenceSync()
+{
+    return m_glHelper->fenceSync();
+}
+
+void SubmissionContext::clientWaitSync(GLFence sync, GLuint64 nanoSecTimeout)
+{
+    qDebug() << Q_FUNC_INFO << sync;
+    m_glHelper->clientWaitSync(sync, nanoSecTimeout);
+}
+
+void SubmissionContext::waitSync(GLFence sync)
+{
+    qDebug() << Q_FUNC_INFO << sync;
+    m_glHelper->waitSync(sync);
+}
+
+bool SubmissionContext::wasSyncSignaled(GLFence sync)
+{
+    return m_glHelper->wasSyncSignaled(sync);
+}
+
+void SubmissionContext::deleteSync(GLFence sync)
+{
+    m_glHelper->deleteSync(sync);
+}
+
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
 bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)

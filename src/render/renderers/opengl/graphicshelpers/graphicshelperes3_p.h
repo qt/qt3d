@@ -90,6 +90,12 @@ public:
     UniformType uniformTypeFromGLType(GLenum glType) override;
     uint uniformByteSize(const ShaderUniform &description) override;
 
+    void *fenceSync() override;
+    void clientWaitSync(void *sync, GLuint64 nanoSecTimeout) override;
+    void waitSync(void *sync) override;
+    bool wasSyncSignaled(void *sync) override;
+    void deleteSync(void *sync) override;
+
 protected:
     QOpenGLExtraFunctions *m_extraFuncs = nullptr;
 };

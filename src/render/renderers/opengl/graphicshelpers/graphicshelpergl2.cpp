@@ -272,6 +272,33 @@ void GraphicsHelperGL2::drawBuffer(GLenum mode)
     m_funcs->glDrawBuffer(mode);
 }
 
+void *GraphicsHelperGL2::fenceSync()
+{
+    qWarning() << "Fences are not supported by OpenGL 2.0 (since OpenGL 3.2)";
+    return nullptr;
+}
+
+void GraphicsHelperGL2::clientWaitSync(void *, GLuint64 )
+{
+    qWarning() << "Fences are not supported by OpenGL 2.0 (since OpenGL 3.2)";
+}
+
+void GraphicsHelperGL2::waitSync(void *)
+{
+    qWarning() << "Fences are not supported by OpenGL 2.0 (since OpenGL 3.2)";
+}
+
+bool GraphicsHelperGL2::wasSyncSignaled(void *)
+{
+    qWarning() << "Fences are not supported by OpenGL 2.0 (since OpenGL 3.2)";
+    return false;
+}
+
+void GraphicsHelperGL2::deleteSync(void *)
+{
+    qWarning() << "Fences are not supported by OpenGL 2.0 (since OpenGL 3.2)";
+}
+
 void GraphicsHelperGL2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
@@ -412,6 +439,7 @@ bool GraphicsHelperGL2::supportsFeature(GraphicsHelperInterface::Feature feature
     case MRT:
         return (m_fboFuncs != nullptr);
     case TextureDimensionRetrieval:
+    case MapBuffer:
         return true;
     default:
         return false;

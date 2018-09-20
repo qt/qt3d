@@ -1430,7 +1430,7 @@ private Q_SLOTS:
 
     void supportsFeature()
     {
-        for (int i = 0; i <= GraphicsHelperInterface::BlitFramebuffer; ++i)
+        for (int i = 0; i <= GraphicsHelperInterface::Fences; ++i)
             QVERIFY(m_glHelper.supportsFeature(static_cast<GraphicsHelperInterface::Feature>(i)));
     }
 
@@ -2347,6 +2347,105 @@ private Q_SLOTS:
         GLint p;
         m_func->glGetIntegerv(GL_READ_BUFFER, &p);
         QCOMPARE(p, GL_FRONT);
+    }
+
+    void fenceSync()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        m_func->glGetError();
+
+        // WHEN
+        GLsync sync = reinterpret_cast<GLsync>(m_glHelper.fenceSync());
+
+        // THEN
+        QVERIFY(sync != nullptr);
+        QCOMPARE(m_func->glIsSync(sync), GL_TRUE);
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+    }
+
+    void clientWaitSync()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        m_func->glGetError();
+
+        // WHEN
+        QElapsedTimer t;
+        t.start();
+
+        GLsync sync = reinterpret_cast<GLsync>(m_glHelper.fenceSync());
+
+        m_glHelper.clientWaitSync(sync, 1000000);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+        qDebug() << t.nsecsElapsed();
+    }
+
+    void waitSync()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        m_func->glGetError();
+
+        // WHEN
+        GLsync sync = reinterpret_cast<GLsync>(m_glHelper.fenceSync());
+        m_func->glFlush();
+        m_glHelper.waitSync(sync);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+    }
+
+    void wasSyncSignaled()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        m_func->glGetError();
+
+        // WHEN
+        GLsync sync = reinterpret_cast<GLsync>(m_glHelper.fenceSync());
+        m_func->glFlush();
+        m_glHelper.waitSync(sync);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+
+        // Shouldn't loop forever
+        while (!m_glHelper.wasSyncSignaled(sync))
+            ;
+    }
+
+    void deleteSync()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        m_func->glGetError();
+
+        // WHEN
+        GLsync sync = reinterpret_cast<GLsync>(m_glHelper.fenceSync());
+        m_glHelper.clientWaitSync(sync, GLuint64(-1));
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+        QVERIFY(m_glHelper.wasSyncSignaled(sync) == true);
+
+        // WHEN
+        m_glHelper.deleteSync(sync);
+
+        // THEN
+        QCOMPARE(m_func->glIsSync(sync), GL_FALSE);
     }
 
 private:

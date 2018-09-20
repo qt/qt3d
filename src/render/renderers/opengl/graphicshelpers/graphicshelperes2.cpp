@@ -290,6 +290,33 @@ void GraphicsHelperES2::drawBuffer(GLenum mode)
     qWarning() << "glDrawBuffer is not supported with OpenGL ES 2";
 }
 
+void *GraphicsHelperES2::fenceSync()
+{
+    qWarning() << "Fences are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
+    return nullptr;
+}
+
+void GraphicsHelperES2::clientWaitSync(void *, GLuint64 )
+{
+    qWarning() << "Fences are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
+}
+
+void GraphicsHelperES2::waitSync(void *)
+{
+    qWarning() << "Fences are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
+}
+
+bool GraphicsHelperES2::wasSyncSignaled(void *)
+{
+    qWarning() << "Fences are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
+    return false;
+}
+
+void GraphicsHelperES2::deleteSync(void *)
+{
+    qWarning() << "Fences are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
+}
+
 void GraphicsHelperES2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);

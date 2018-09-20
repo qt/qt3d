@@ -44,6 +44,88 @@ public :
     ~tst_Renderer() {}
 
 private Q_SLOTS:
+
+    void checkPreRenderBinJobs()
+    {
+        // GIVEN
+        Qt3DRender::Render::NodeManagers nodeManagers;
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
+        Qt3DRender::Render::RenderSettings settings;
+        // owned by FG manager
+        Qt3DRender::Render::ViewportNode *fgRoot = new Qt3DRender::Render::ViewportNode();
+        const Qt3DCore::QNodeId fgRootId = Qt3DCore::QNodeId::createId();
+
+        nodeManagers.frameGraphManager()->appendNode(fgRootId, fgRoot);
+        settings.setActiveFrameGraphId(fgRootId);
+
+        renderer.setNodeManagers(&nodeManagers);
+        renderer.setSettings(&settings);
+        renderer.setOffscreenSurfaceHelper(&offscreenHelper);
+        renderer.initialize();
+
+        // Ensure invoke calls are performed
+        QCoreApplication::processEvents();
+
+        // WHEN (nothing dirty, no buffers, no layers to be rebuilt, no materials to be rebuilt)
+        QVector<Qt3DCore::QAspectJobPtr> jobs = renderer.preRenderingJobs();
+
+        // THEN
+        QCOMPARE(jobs.size(),
+                 1 + // PickBoundingVolumeJob
+                 1); // RayCastingJob
+
+        // WHEN
+        renderer.addRenderCaptureSendRequest(Qt3DCore::QNodeId::createId());
+        jobs = renderer.preRenderingJobs();
+
+        // THEN
+        QCOMPARE(jobs.size(),
+                 1 + // PickBoundingVolumeJob
+                 1 + // RayCastingJob
+                 1); // SendRenderCaptureJob
+
+        // WHEN
+        renderer.m_sendBufferCaptureJob->addRequest({nullptr, {}});
+        jobs = renderer.preRenderingJobs();
+
+        // THEN
+        QCOMPARE(jobs.size(),
+                 1 + // PickBoundingVolumeJob
+                 1 + // RayCastingJob
+                 1); // SendBufferCaptureJob
+        // Note: pending render buffer captures are only cleared when the job is run
+
+        // WHEN
+        renderer.m_updatedSetFences.push_back({Qt3DCore::QNodeId(), nullptr});
+        jobs = renderer.preRenderingJobs();
+
+        // THEN
+        QCOMPARE(jobs.size(),
+                 1 + // PickBoundingVolumeJob
+                 1 + // RayCastingJob
+                 1 + // SendBufferCaptureJob
+                 1); // SendSetFenceHandlesJob
+        // Note: pending set fence handles are only cleared when the job is run
+
+        // WHEN
+        renderer.m_updatedTextureProperties.push_back({{}, {}});
+        jobs = renderer.preRenderingJobs();
+
+        // THEN
+        QCOMPARE(jobs.size(),
+                 1 + // PickBoundingVolumeJob
+                 1 + // RayCastingJob
+                 1 + // SendBufferCaptureJob
+                 1 + // SendSetFenceHandlesJob
+                 1); // SendTextureChangesToFrontend
+
+        // Note: pending texture changes are only cleared when the job is run
+
+        // Properly shutdown command thread
+        renderer.shutdown();
+    }
+
     void checkRenderBinJobs()
     {
         // GIVEN
@@ -90,25 +172,11 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  singleRenderViewJobCount); // Only valid for the first call to renderBinJobs(), since subsequent calls won't have the renderqueue reset
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-
-        // WHEN
-        renderer.addRenderCaptureSendRequest(Qt3DCore::QNodeId::createId());
-        jobs = renderer.renderBinJobs();
-
-        // THEN
-        QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
-                 1 + // cleanupJob
-                 1 + // sendBufferCaptureJob
-                 1 + // sendRenderCaptureJob
-                 1 + // VAOGatherer
-                 1); // updateSkinningPaletteJob
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::EntityEnabledDirty, nullptr);
@@ -118,7 +186,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1); // EntityEnabledDirty
@@ -133,7 +200,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // WorldTransformJob
                  1 + // UpdateWorldBoundingVolume
@@ -151,7 +217,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // CalculateBoundingVolumeJob
                  1 + // UpdateMeshTriangleListJob
@@ -168,7 +233,6 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1); // BufferGathererJob
@@ -183,11 +247,23 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // TexturesGathererJob
                  1 + // updateSkinningPaletteJob
                  1); // SyncTexturesGathererJob
+
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
+
+        // WHEN
+        renderer.markDirty(Qt3DRender::Render::AbstractRenderer::FrameGraphDirty, nullptr);
+        jobs = renderer.renderBinJobs();
+
+        QCOMPARE(jobs.size(),
+                 1 + // updateLevelOfDetailJob
+                 1 + // cleanupJob
+                 1 + // VAOGatherer
+                 1); // updateSkinningPaletteJob
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
@@ -208,7 +284,6 @@ private Q_SLOTS:
                  1 + // updateSkinningPaletteJob
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // BufferGathererJob
                  1 + // TexturesGathererJob

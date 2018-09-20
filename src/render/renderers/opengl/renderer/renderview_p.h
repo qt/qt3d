@@ -65,6 +65,7 @@
 #include <Qt3DRender/private/qmemorybarrier_p.h>
 #include <Qt3DRender/private/qrendercapture_p.h>
 #include <Qt3DRender/private/qblitframebuffer_p.h>
+#include <Qt3DRender/private/qwaitfence_p.h>
 
 #include <Qt3DCore/private/qframeallocator_p.h>
 #include <Qt3DRender/private/aligned_malloc_p.h>
@@ -173,6 +174,13 @@ public:
 
     inline void appendProximityFilterId(const Qt3DCore::QNodeId proximityFilterId) { m_data.m_proximityFilterIds.push_back(proximityFilterId); }
     inline Qt3DCore::QNodeIdVector proximityFilterIds() const { return m_data.m_proximityFilterIds; }
+
+    inline void appendInsertFenceId(const Qt3DCore::QNodeId setFenceId) { m_insertFenceIds.push_back(setFenceId); }
+    // We prefix with get to avoid confusion when it is called
+    inline Qt3DCore::QNodeIdVector insertFenceIds() const { return m_insertFenceIds; }
+
+    inline void appendWaitFence(const QWaitFenceData &data) { m_waitFences.push_back(data); }
+    inline QVector<QWaitFenceData> waitFences() const { return m_waitFences; }
 
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_data.m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_data.m_passFilter; }
@@ -320,6 +328,8 @@ private:
     bool m_frustumCulling:1;
     int m_workGroups[3];
     QMemoryBarrier::Operations m_memoryBarrier;
+    QVector<Qt3DCore::QNodeId> m_insertFenceIds;
+    QVector<QWaitFenceData> m_waitFences;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst

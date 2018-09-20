@@ -85,6 +85,7 @@ NodeManagers::NodeManagers()
     , m_parameterManager(new ParameterManager())
     , m_shaderDataManager(new ShaderDataManager())
     , m_glBufferManager(new GLBufferManager())
+    , m_glFenceManager(new GLFenceManager())
     , m_bufferManager(new BufferManager())
     , m_attributeManager(new AttributeManager())
     , m_geometryManager(new GeometryManager())
@@ -128,6 +129,7 @@ NodeManagers::~NodeManagers()
     delete m_parameterManager;
     delete m_shaderDataManager;
     delete m_glBufferManager;
+    delete m_glFenceManager;
     delete m_textureImageManager;
     delete m_bufferManager;
     delete m_attributeManager;

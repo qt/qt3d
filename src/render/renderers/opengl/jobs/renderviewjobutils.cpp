@@ -68,6 +68,7 @@
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
 #include <Qt3DRender/private/blitframebuffer_p.h>
+#include <Qt3DRender/private/waitfence_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -269,6 +270,17 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 bfbInfo.destinationAttachmentPoint = blitFramebufferNode->destinationAttachmentPoint();
                 bfbInfo.interpolationMethod = blitFramebufferNode->interpolationMethod();
                 rv->setBlitFrameBufferInfo(bfbInfo);
+                break;
+            }
+
+            case FrameGraphNode::WaitFence: {
+                const Render::WaitFence *waitFence = static_cast<const Render::WaitFence *>(node);
+                rv->appendWaitFence(waitFence->data());
+                break;
+            }
+
+            case FrameGraphNode::SetFence: {
+                rv->appendInsertFenceId(node->peerId());
                 break;
             }
 

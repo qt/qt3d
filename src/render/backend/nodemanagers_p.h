@@ -87,6 +87,7 @@ class AttachmentManager;
 class ParameterManager;
 class ShaderDataManager;
 class GLBufferManager;
+class GLFenceManager;
 class TextureImageManager;
 class FilterKeyManager;
 class FrameGraphManager;
@@ -210,6 +211,7 @@ public:
     inline ParameterManager *parameterManager() const Q_DECL_NOEXCEPT { return m_parameterManager; }
     inline ShaderDataManager *shaderDataManager() const Q_DECL_NOEXCEPT { return m_shaderDataManager; }
     inline GLBufferManager *glBufferManager() const Q_DECL_NOEXCEPT { return m_glBufferManager; }
+    inline GLFenceManager *glFenceManager() const Q_DECL_NOEXCEPT { return m_glFenceManager; }
     inline TextureImageManager *textureImageManager() const Q_DECL_NOEXCEPT { return m_textureImageManager; }
     inline BufferManager *bufferManager() const Q_DECL_NOEXCEPT { return m_bufferManager; }
     inline AttributeManager *attributeManager() const Q_DECL_NOEXCEPT { return m_attributeManager; }
@@ -255,6 +257,7 @@ private:
     ParameterManager *m_parameterManager;
     ShaderDataManager *m_shaderDataManager;
     GLBufferManager *m_glBufferManager;
+    GLFenceManager *m_glFenceManager;
     BufferManager *m_bufferManager;
     AttributeManager *m_attributeManager;
     GeometryManager *m_geometryManager;

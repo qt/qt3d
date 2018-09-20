@@ -67,6 +67,12 @@ void SendBufferCaptureJob::addRequest(QPair<Buffer *, QByteArray> request)
     m_pendingSendBufferCaptures.push_back(request);
 }
 
+// Called by aspect thread jobs to execute (no concurrency at that point)
+bool SendBufferCaptureJob::hasRequests() const
+{
+    return m_pendingSendBufferCaptures.size() > 0;
+}
+
 void SendBufferCaptureJob::run()
 {
     QMutexLocker locker(&m_mutex);

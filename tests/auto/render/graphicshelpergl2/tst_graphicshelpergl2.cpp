@@ -926,6 +926,9 @@ private Q_SLOTS:
         SUPPORTS_FEATURE(GraphicsHelperInterface::DrawBuffersBlend, false);
         SUPPORTS_FEATURE(GraphicsHelperInterface::Tessellation, false);
         SUPPORTS_FEATURE(GraphicsHelperInterface::BlitFramebuffer, false);
+        SUPPORTS_FEATURE(GraphicsHelperInterface::IndirectDrawing, false);
+        SUPPORTS_FEATURE(GraphicsHelperInterface::MapBuffer, true);
+        SUPPORTS_FEATURE(GraphicsHelperInterface::Fences, false);
     }
 
 
@@ -1519,6 +1522,36 @@ private Q_SLOTS:
     }
 
     void readBuffer()
+    {
+        QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+        // Not supported by GL2
+    }
+
+    void fenceSync()
+    {
+        QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+        // Not supported by GL2
+    }
+
+    void clientWaitSync()
+    {
+        QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+        // Not supported by GL2
+    }
+
+    void waitSync()
+    {
+        QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+        // Not supported by GL2
+    }
+
+    void wasSyncSignaled()
+    {
+        QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+        // Not supported by GL2
+    }
+
+    void deleteSync()
     {
         QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
         // Not supported by GL2

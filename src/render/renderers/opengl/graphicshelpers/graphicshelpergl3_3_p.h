@@ -134,6 +134,12 @@ public:
     void readBuffer(GLenum mode) override;
     void drawBuffer(GLenum mode) override;
 
+    void *fenceSync() override;
+    void clientWaitSync(void *sync, GLuint64 nanoSecTimeout) override;
+    void waitSync(void *sync) override;
+    bool wasSyncSignaled(void *sync) override;
+    void deleteSync(void *sync) override;
+
     void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) override;
     void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) override;
     void glUniform3fv(GLint location, GLsizei count, const GLfloat *value) override;

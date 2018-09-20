@@ -334,6 +334,37 @@ void GraphicsHelperGL3_2::drawBuffer(GLenum mode)
     m_funcs->glDrawBuffer(mode);
 }
 
+void *GraphicsHelperGL3_2::fenceSync()
+{
+    return m_funcs->glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+}
+
+void GraphicsHelperGL3_2::clientWaitSync(void *sync, GLuint64 nanoSecTimeout)
+{
+    m_funcs->glClientWaitSync(static_cast<GLsync>(sync), GL_SYNC_FLUSH_COMMANDS_BIT, nanoSecTimeout);
+}
+
+void GraphicsHelperGL3_2::waitSync(void *sync)
+{
+    m_funcs->glWaitSync(static_cast<GLsync>(sync), 0, GL_TIMEOUT_IGNORED);
+}
+
+bool GraphicsHelperGL3_2::wasSyncSignaled(void *sync)
+{
+    GLint v;
+    m_funcs->glGetSynciv(static_cast<GLsync>(sync),
+                         GL_SYNC_STATUS,
+                         sizeof(v),
+                         nullptr,
+                         &v);
+    return v == GL_SIGNALED;
+}
+
+void GraphicsHelperGL3_2::deleteSync(void *sync)
+{
+    m_funcs->glDeleteSync(static_cast<GLsync>(sync));
+}
+
 void GraphicsHelperGL3_2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
@@ -481,6 +512,7 @@ bool GraphicsHelperGL3_2::supportsFeature(GraphicsHelperInterface::Feature featu
     case TextureDimensionRetrieval:
     case BindableFragmentOutputs:
     case BlitFramebuffer:
+    case Fences:
         return true;
     case Tessellation:
         return !m_tessFuncs.isNull();
