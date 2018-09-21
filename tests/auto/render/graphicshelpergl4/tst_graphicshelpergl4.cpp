@@ -185,7 +185,7 @@ const QByteArray computeShader = QByteArrayLiteral(
             "    vec4 direction;\n" \
             "    vec4 color;\n" \
             "};\n" \
-            "layout (std140, binding = 0) coherent buffer Particles\n" \
+            "layout (std140, binding = 6) coherent buffer Particles\n" \
             "{\n" \
             "    ParticleData particles[];\n" \
             "} data;\n" \
@@ -508,11 +508,29 @@ private Q_SLOTS:
         GLint index = m_func->glGetProgramResourceIndex(shaderProgram.programId(),
                                                         GL_SHADER_STORAGE_BLOCK,
                                                         "Particles");
+        // THEN
+        GLint binding = -1;
+        GLenum prop = GL_BUFFER_BINDING;
+        m_func->glGetProgramResourceiv(shaderProgram.programId(),
+                                       GL_SHADER_STORAGE_BLOCK,
+                                       index,
+                                       1, &prop,
+                                       4, NULL, &binding);
+        QCOMPARE(binding, 6);
+
+        // WHEN
         m_glHelper.bindShaderStorageBlock(shaderProgram.programId(), index, 1);
 
         // THEN
         const GLint error = m_func->glGetError();
         QVERIFY(error == 0);
+
+        m_func->glGetProgramResourceiv(shaderProgram.programId(),
+                                       GL_SHADER_STORAGE_BLOCK,
+                                       index,
+                                       1, &prop,
+                                       4, NULL, &binding);
+        QCOMPARE(binding, 1);
     }
 
     void bindUniformBlock()
@@ -1286,6 +1304,7 @@ private Q_SLOTS:
         QCOMPARE(block.m_name, QStringLiteral("Particles"));
         QCOMPARE(block.m_activeVariablesCount, 3);
         QCOMPARE(block.m_index, 0);
+        QCOMPARE(block.m_binding, 6);
         QCOMPARE(block.m_size, (4 + 4 + 4) * 4);
     }
 
