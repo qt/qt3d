@@ -120,6 +120,15 @@
             },
             {
                 "format": {
+                    "api": "OpenGLES",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "fragColor = $fragColor;",
+                "headerSnippets": [ "out highp vec4 fragColor;" ]
+            },
+            {
+                "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
                     "minor": 0
