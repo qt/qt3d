@@ -463,6 +463,15 @@
         "rules": [
             {
                 "format": {
+                    "api": "OpenGLES",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $outputColor = metalRoughFunction($baseColor, $metalness, $roughness, $ambientOcclusion, $worldPosition, $worldView, $worldNormal);",
+                "headerSnippets": [ "#pragma include :/shaders/es3/metalrough.inc.frag" ]
+            },
+            {
+                "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
                     "minor": 1
