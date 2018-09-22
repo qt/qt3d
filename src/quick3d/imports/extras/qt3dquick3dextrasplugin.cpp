@@ -86,11 +86,11 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 {
     // Framegraphs
     qmlRegisterType<Qt3DExtras::QForwardRenderer>(uri, 2, 0, "ForwardRenderer");
-    qmlRegisterRevision<Qt3DExtras::QForwardRenderer, 9>(uri, 2, 9);
+    qmlRegisterType<Qt3DExtras::QForwardRenderer, 9>(uri, 2, 9, "ForwardRenderer");
 
     // Entities
     qmlRegisterType<Qt3DExtras::QSkyboxEntity>(uri, 2, 0, "SkyboxEntity");
-    qmlRegisterRevision<Qt3DExtras::QSkyboxEntity, 9>(uri, 2, 9);
+    qmlRegisterType<Qt3DExtras::QSkyboxEntity, 9>(uri, 2, 9, "SkyboxEntity");
     qmlRegisterType<Qt3DExtras::Extras::Quick::Quick3DLevelOfDetailLoader>(uri, 2, 9, "LevelOfDetailLoader");
 
     // Camera Controllers
@@ -108,11 +108,11 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QPerVertexColorMaterial>(uri, 2, 0, "PerVertexColorMaterial");
     qmlRegisterType<Qt3DExtras::QGoochMaterial>(uri, 2, 0, "GoochMaterial");
     qmlRegisterType<Qt3DExtras::QTextureMaterial>(uri, 2, 0, "TextureMaterial");
-    qmlRegisterRevision<Qt3DExtras::QTextureMaterial, 10>(uri, 2, 10);
-    qmlRegisterRevision<Qt3DExtras::QTextureMaterial, 11>(uri, 2, 11);
+    qmlRegisterType<Qt3DExtras::QTextureMaterial, 10>(uri, 2, 10, "TextureMaterial");
+    qmlRegisterType<Qt3DExtras::QTextureMaterial, 11>(uri, 2, 11, "TextureMaterial");
     qmlRegisterType<Qt3DExtras::QDiffuseSpecularMaterial>(uri, 2, 10, "DiffuseSpecularMaterial");
     qmlRegisterType<Qt3DExtras::QMetalRoughMaterial>(uri, 2, 9, "MetalRoughMaterial");
-    qmlRegisterRevision<Qt3DExtras::QMetalRoughMaterial, 10>(uri, 2, 10);
+    qmlRegisterType<Qt3DExtras::QMetalRoughMaterial, 10>(uri, 2, 10, "MetalRoughMaterial");
     qmlRegisterType<Qt3DExtras::QTexturedMetalRoughMaterial>(uri, 2, 9, "TexturedMetalRoughMaterial");
     qmlRegisterType<Qt3DExtras::QMorphPhongMaterial>(uri, 2, 9, "MorphPhongMaterial");
 
@@ -128,9 +128,9 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QCylinderMesh>(uri, 2, 0, "CylinderMesh");
     qmlRegisterType<Qt3DExtras::QCylinderGeometry>(uri, 2, 0, "CylinderGeometry");
     qmlRegisterType<Qt3DExtras::QPlaneMesh>(uri, 2, 0, "PlaneMesh");
-    qmlRegisterRevision<Qt3DExtras::QPlaneMesh, 9>(uri, 2, 9);
+    qmlRegisterType<Qt3DExtras::QPlaneMesh, 9>(uri, 2, 9, "PlaneMesh");
     qmlRegisterType<Qt3DExtras::QPlaneGeometry>(uri, 2, 0, "PlaneGeometry");
-    qmlRegisterRevision<Qt3DExtras::QPlaneGeometry, 9>(uri, 2, 9);
+    qmlRegisterType<Qt3DExtras::QPlaneGeometry, 9>(uri, 2, 9, "PlaneGeometry");
     qmlRegisterType<Qt3DExtras::QTorusMesh>(uri, 2, 0, "TorusMesh");
     qmlRegisterType<Qt3DExtras::QTorusGeometry>(uri, 2, 0, "TorusGeometry");
     qmlRegisterType<Qt3DExtras::QSphereMesh>(uri, 2, 0, "SphereMesh");

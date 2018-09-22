@@ -1291,15 +1291,19 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
 
     // Bind Shader Storage block to SSBO and update SSBO
     const QVector<BlockToSSBO> blockToSSBOs = parameterPack.shaderStorageBuffers();
-    int ssboIndex = 0;
     for (const BlockToSSBO b : blockToSSBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer, GLBuffer::ShaderStorageBuffer);
-        bindShaderStorageBlock(shader->programId(), b.m_blockIndex, ssboIndex);
+
+        // bindShaderStorageBlock
+        // This is currently not required as we are introspecting the bindingIndex
+        // value from the shaders and not replacing them, making such a call useless
+        // bindShaderStorageBlock(shader->programId(), b.m_blockIndex, b.m_bindingIndex);
+
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
         bindGLBuffer(ssbo, GLBuffer::ShaderStorageBuffer);
-        ssbo->bindBufferBase(this, ssboIndex++, GLBuffer::ShaderStorageBuffer);
+        ssbo->bindBufferBase(this, b.m_bindingIndex, GLBuffer::ShaderStorageBuffer);
         // TO DO: Make sure that there's enough binding points
     }
 

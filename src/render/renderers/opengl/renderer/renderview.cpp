@@ -884,6 +884,7 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
             BlockToSSBO shaderStorageBlock;
             shaderStorageBlock.m_blockIndex = block.m_index;
             shaderStorageBlock.m_bufferID = buffer->peerId();
+            shaderStorageBlock.m_bindingIndex = block.m_binding;
             uniformPack.setShaderStorageBuffer(shaderStorageBlock);
             // Buffer update to GL buffer will be done at render time
         }
