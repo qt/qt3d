@@ -28,6 +28,8 @@
 /*!
     \qmltype DiffuseMapMaterial
     \inqmlmodule Qt3D.Extras
+    \obsolete
+
     \brief The DiffuseMapMaterial provides a default implementation of the phong lighting effect
     where the diffuse light component is read from a texture map.
     \since 5.7
@@ -86,6 +88,8 @@
 /*!
     \qmltype DiffuseSpecularMapMaterial
     \inqmlmodule Qt3D.Extras
+    \obsolete
+
     \brief The DiffuseSpecularMapMaterial provides a default implementation of the phong lighting
     effect where the diffuse and specular light components are read from texture maps.
     \since 5.7
@@ -220,6 +224,8 @@
 /*!
     \qmltype NormalDiffuseMapAlphaMaterial
     \inqmlmodule Qt3D.Extras
+    \obsolete
+
     \brief The NormalDiffuseMapAlphaMaterial provides a specialization of NormalDiffuseMapMaterial
     with alpha coverage and a depth test performed in the rendering pass.
     \since 5.7
@@ -291,6 +297,8 @@
 /*!
     \qmltype NormalDiffuseMapMaterial
     \inqmlmodule Qt3D.Extras
+    \obsolete
+
     \brief The NormalDiffuseMapMaterial provides a default implementation of the phong lighting
     and bump effect where the diffuse light component is read from a texture map and the normals of
     the mesh being rendered from a normal texture map.
@@ -363,6 +371,8 @@
 /*!
     \qmltype NormalDiffuseSpecularMapMaterial
     \inqmlmodule Qt3D.Extras
+    \obsolete
+
     \brief The NormalDiffuseSpecularMapMaterial provides a default implementation of the phong
     lighting and bump effect where the diffuse and specular light components are read from texture
     maps and the normals of the mesh being rendered from a normal texture map.
@@ -465,6 +475,8 @@
 /*!
     \qmltype PhongAlphaMaterial
     \inqmlmodule Qt3D.Extras
+    \obsolete
+
     \brief The PhongAlphaMaterial class provides a default implementation of
     the phong lighting effect with alpha.
     \since 5.7
@@ -516,6 +528,8 @@
 /*!
     \qmltype PhongMaterial
     \inqmlmodule Qt3D.Extras
+    \obsolete
+
     \brief The PhongMaterial class provides a default implementation of the phong lighting effect.
     \since 5.7
     \inherits Qt3D.Render::Material
