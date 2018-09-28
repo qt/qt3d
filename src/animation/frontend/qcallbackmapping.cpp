@@ -107,7 +107,7 @@ void QCallbackMapping::setChannelName(const QString &channelName)
     Such mappings do not have to have a target object and property name. When
     the \a callback object is set, every change in the animated value will lead
     to invoking the callback's
-    \l{QAnimationCallback::onValueChanged()}{onValueChanged()} function either
+    \l {Qt3DAnimation::QAnimationCallback::valueChanged}{valueChanged} function either
     on the gui/main thread, or directly on one of the thread pool's worker
     thread. This is controlled by \a flags.
 
