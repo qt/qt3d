@@ -217,12 +217,15 @@ void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNodeId nodeId)
 {
     QMutexLocker locker(&m_mutex);
-    if (m_nodeObservations.contains(nodeId)) {
-        QObserverList &observers = m_nodeObservations[nodeId];
+    const auto it = m_nodeObservations.find(nodeId);
+    if (it != m_nodeObservations.end()) {
+        QObserverList &observers = it.value();
         for (int i = observers.count() - 1; i >= 0; i--) {
             if (observers[i].second == observer)
                 observers.removeAt(i);
         }
+        if (observers.isEmpty())
+            m_nodeObservations.erase(it);
     }
 }
 
