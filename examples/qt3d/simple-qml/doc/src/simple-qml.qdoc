@@ -65,20 +65,4 @@
 
     \skipto InputSettings
     \printuntil }
-
-    \section1
-
-    \section1 Specifying Settings and Axes
-
-    In the \e CameraController.qml file, we use the LogicalDevice type to define
-    a set of actions and axes to use within the application:
-
-    \quotefromfile simple-qml/CameraController.qml
-    \skipto LogicalDevice {
-    \printuntil ]
-    \dots
-    \skipto axes
-    \printuntil ]
-    \dots
-    \skipto /^\}/
 */
