@@ -73,6 +73,7 @@ public:
     void release();
 
     void create(SubmissionContext *ctx, const VAOIdentifier &key);
+    VAOIdentifier key() const;
     void destroy();
     void cleanup();
 

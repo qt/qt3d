@@ -2142,7 +2142,8 @@ void Renderer::cleanGraphicsResources()
         OpenGLVertexArrayObject *vao = m_nodesManager->vaoManager()->data(vaoHandle);
         if (vao) {
             vao->destroy();
-            m_nodesManager->vaoManager()->release(vaoHandle);
+            // We remove VAO from manager using its VAOIdentifier
+            m_nodesManager->vaoManager()->releaseResource(vao->key());
         }
     }
 }
