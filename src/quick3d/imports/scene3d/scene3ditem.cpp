@@ -372,9 +372,6 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         m_renderer->setCleanerHelper(m_rendererCleaner);
     }
 
-    // The main thread is blocked, it is now time to sync data between the renderer and the item.
-    m_renderer->synchronize();
-
     Scene3DSGNode *fboNode = static_cast<Scene3DSGNode *>(node);
     if (fboNode == nullptr) {
         fboNode = new Scene3DSGNode();

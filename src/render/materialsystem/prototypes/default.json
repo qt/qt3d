@@ -87,6 +87,15 @@
             },
             {
                 "format": {
+                    "api": "OpenGLES",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $color = texture($name, $coord);",
+                "headerSnippets": [ "uniform sampler2D $name;" ]
+            },
+            {
+                "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
                     "minor": 0
@@ -108,6 +117,15 @@
                     "minor": 0
                 },
                 "substitution": "gl_FragColor = $fragColor;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "fragColor = $fragColor;",
+                "headerSnippets": [ "out highp vec4 fragColor;" ]
             },
             {
                 "format": {
@@ -443,6 +461,15 @@
             "outputColor"
         ],
         "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $outputColor = metalRoughFunction($baseColor, $metalness, $roughness, $ambientOcclusion, $worldPosition, $worldView, $worldNormal);",
+                "headerSnippets": [ "#pragma include :/shaders/es3/metalrough.inc.frag" ]
+            },
             {
                 "format": {
                     "api": "OpenGLCoreProfile",

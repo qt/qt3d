@@ -104,6 +104,7 @@ public:
     float computeActualScale() const;
 
     void setCurrentGlyphRuns(const QVector<QGlyphRun> &runs);
+    void clearCurrentGlyphRuns();
     void update();
 
     struct CacheEntry

@@ -92,10 +92,17 @@ void QText2DEntityPrivate::setScene(Qt3DCore::QScene *scene)
 
     // Unref old glyph cache if it exists
     if (m_scene != nullptr) {
+        // Ensure we don't keep reference to glyphs
+        // if we are changing the cache
+        if (m_glyphCache != nullptr)
+            clearCurrentGlyphRuns();
+
         m_glyphCache = nullptr;
+
         QText2DEntityPrivate::CacheEntry &entry = QText2DEntityPrivate::m_glyphCacheInstances[m_scene];
         --entry.count;
         if (entry.count == 0 && entry.glyphCache != nullptr) {
+
             delete entry.glyphCache;
             entry.glyphCache = nullptr;
         }
@@ -149,7 +156,6 @@ void QText2DEntityPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &runs)
     // For each distinct texture, we need a separate DistanceFieldTextRenderer,
     // for which we need vertex and index data
     QHash<Qt3DRender::QAbstractTexture*, RenderData> renderData;
-
     const float scale = computeActualScale();
 
     // process glyph runs
@@ -246,6 +252,13 @@ void QText2DEntityPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &runs)
     for (int i = 0; i < m_currentGlyphRuns.size(); i++)
         m_glyphCache->derefGlyphs(m_currentGlyphRuns[i]);
     m_currentGlyphRuns = runs;
+}
+
+void QText2DEntityPrivate::clearCurrentGlyphRuns()
+{
+    for (int i = 0; i < m_currentGlyphRuns.size(); i++)
+        m_glyphCache->derefGlyphs(m_currentGlyphRuns[i]);
+    m_currentGlyphRuns.clear();
 }
 
 void QText2DEntityPrivate::update()

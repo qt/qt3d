@@ -108,6 +108,11 @@ void OpenGLVertexArrayObject::create(SubmissionContext *ctx, const VAOIdentifier
     m_owners = key;
 }
 
+VAOIdentifier OpenGLVertexArrayObject::key() const
+{
+    return m_owners;
+}
+
 // called from Render thread
 void OpenGLVertexArrayObject::destroy()
 {
