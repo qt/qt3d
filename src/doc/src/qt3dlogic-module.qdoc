@@ -60,7 +60,7 @@
 */
 
 /*!
-   \qmlmodule Qt3D.Logic 2.0
+   \qmlmodule Qt3D.Logic 2.\QtMinorVersion
    \title Qt 3D Logic QML Types
    \since 5.7
 
@@ -71,9 +71,9 @@
 
    To import and use the module's QML types, use the following statement:
 
-   \badcode
-   import Qt3D.Logic 2.0
-   \endcode
+   \qml \QtMinorVersion
+   import Qt3D.Logic 2.\1
+   \endqml
 
    \section1 QML Types
 */

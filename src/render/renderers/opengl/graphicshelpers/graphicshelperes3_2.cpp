@@ -52,6 +52,10 @@ QT_BEGIN_NAMESPACE
 #define GL_DEPTH_STENCIL_ATTACHMENT       0x821A
 #endif
 
+#ifndef GL_PATCH_VERTICES
+#define GL_PATCH_VERTICES 36466
+#endif
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -61,6 +65,17 @@ GraphicsHelperES3_2::GraphicsHelperES3_2()
 
 GraphicsHelperES3_2::~GraphicsHelperES3_2()
 {
+}
+
+bool GraphicsHelperES3_2::supportsFeature(GraphicsHelperInterface::Feature feature) const
+{
+    switch (feature) {
+    case GraphicsHelperInterface::Tessellation:
+        return true;
+    default:
+        break;
+    }
+    return GraphicsHelperES3_1::supportsFeature(feature);
 }
 
 bool GraphicsHelperES3_2::frameBufferNeedsRenderBuffer(const Attachment &attachment)
@@ -95,6 +110,11 @@ void GraphicsHelperES3_2::bindFrameBufferAttachment(QOpenGLTexture *texture, con
     else
         m_extraFuncs->glFramebufferTexture(GL_DRAW_FRAMEBUFFER, attr, texture->textureId(), attachment.m_mipLevel);
     texture->release();
+}
+
+void GraphicsHelperES3_2::setVerticesPerPatch(GLint verticesPerPatch)
+{
+    m_extraFuncs->glPatchParameteri(GL_PATCH_VERTICES, verticesPerPatch);
 }
 
 } // namespace Render

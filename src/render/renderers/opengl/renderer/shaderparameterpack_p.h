@@ -83,6 +83,7 @@ QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, BlockToUBO, Q_MOVABLE_TYPE)
 
 struct BlockToSSBO {
     int m_blockIndex;
+    int m_bindingIndex;
     Qt3DCore::QNodeId m_bufferID;
 };
 QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, BlockToSSBO, Q_PRIMITIVE_TYPE)
