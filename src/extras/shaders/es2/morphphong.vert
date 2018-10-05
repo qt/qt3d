@@ -25,7 +25,7 @@ void main()
         morphNormal = normalize(vertexNormal + vertexNormalTarget * abs(interpolator));
     }
 
-    worldNormal = normalize( modelNormalMatrix * morphPos );
+    worldNormal = normalize( modelNormalMatrix * morphNormal );
     worldPosition = vec3( modelMatrix * vec4( morphPos, 1.0 ) );
 
     gl_Position = modelViewProjection * vec4( morphPos, 1.0 );
