@@ -74,6 +74,12 @@ public:
     QUrl m_geometryShaderGraph;
     QUrl m_fragmentShaderGraph;
     QUrl m_computeShaderGraph;
+    QByteArray m_vertexShaderCode;
+    QByteArray m_tessControlShaderCode;
+    QByteArray m_tessEvalShaderCode;
+    QByteArray m_geometryShaderCode;
+    QByteArray m_fragmentShaderCode;
+    QByteArray m_computeShaderCode;
 };
 
 struct QShaderProgramBuilderData

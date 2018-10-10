@@ -40,6 +40,7 @@
 #include "shaderbuilder_p.h"
 
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
+#include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 
 #include <QtGui/private/qshaderformat_p.h>
@@ -110,6 +111,31 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
+
+
+namespace {
+
+QShaderProgram::ShaderType toQShaderProgramType(ShaderBuilder::ShaderType type)
+{
+    switch (type) {
+    case ShaderBuilder::ShaderType::Vertex:
+        return QShaderProgram::Vertex;
+    case ShaderBuilder::ShaderType::TessellationControl:
+        return QShaderProgram::TessellationControl;
+    case ShaderBuilder::ShaderType::TessellationEvaluation:
+        return QShaderProgram::TessellationEvaluation;
+    case ShaderBuilder::ShaderType::Geometry:
+        return QShaderProgram::Geometry;
+    case ShaderBuilder::ShaderType::Fragment:
+        return QShaderProgram::Fragment;
+    case ShaderBuilder::ShaderType::Compute:
+        return QShaderProgram::Compute;
+    default:
+        Q_UNREACHABLE();
+    }
+}
+
+} // anonymous
 
 QString ShaderBuilder::getPrototypesFile()
 {
@@ -284,6 +310,13 @@ void ShaderBuilder::generateCode(ShaderBuilder::ShaderType type)
     const auto code = generator.createShaderCode(m_enabledLayers);
     m_codes.insert(type, deincludify(code, graphPath + QStringLiteral(".glsl")));
     m_dirtyTypes.remove(type);
+
+    // Send notification to the frontend
+    Qt3DCore::QPropertyUpdatedChangePtr propertyChange = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    propertyChange->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    propertyChange->setPropertyName("generatedShaderCode");
+    propertyChange->setValue(QVariant::fromValue(qMakePair(int(toQShaderProgramType(type)), m_codes.value(type))));
+    notifyObservers(propertyChange);
 }
 
 void ShaderBuilder::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

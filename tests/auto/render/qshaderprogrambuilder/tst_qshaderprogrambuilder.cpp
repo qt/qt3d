@@ -38,12 +38,12 @@
 #include <Qt3DCore/qnodecreatedchange.h>
 #include "testpostmanarbiter.h"
 
-class tst_QShaderProgramBuilder : public QObject
+class tst_QShaderProgramBuilder : public Qt3DRender::QShaderProgramBuilder
 {
     Q_OBJECT
 public:
     tst_QShaderProgramBuilder()
-        : QObject()
+        : Qt3DRender::QShaderProgramBuilder()
     {
         qRegisterMetaType<Qt3DRender::QShaderProgram*>("Qt3DRender::QShaderProgram*");
     }
@@ -63,6 +63,12 @@ private Q_SLOTS:
         QCOMPARE(builder.geometryShaderGraph(), QUrl());
         QCOMPARE(builder.fragmentShaderGraph(), QUrl());
         QCOMPARE(builder.computeShaderGraph(), QUrl());
+        QCOMPARE(builder.vertexShaderCode(), QByteArray());
+        QCOMPARE(builder.fragmentShaderCode(), QByteArray());
+        QCOMPARE(builder.computeShaderCode(), QByteArray());
+        QCOMPARE(builder.geometryShaderCode(), QByteArray());
+        QCOMPARE(builder.tessellationEvaluationShaderCode(), QByteArray());
+        QCOMPARE(builder.tessellationControlShaderCode(), QByteArray());
     }
 
     void checkPropertyChanges()
@@ -592,8 +598,90 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
         }
-
     }
+
+    void checkGeneratedCodePropertyUpdates()
+    {
+        {
+            // WHEN
+            QSignalSpy spy(this, SIGNAL(vertexShaderCodeChanged(QByteArray)));
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("generatedShaderCode");
+            valueChange->setValue(QVariant::fromValue(QPair<int, QByteArray>(int(Qt3DRender::QShaderProgram::Vertex), QByteArrayLiteral("vertex"))));
+            sceneChangeEvent(valueChange);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(vertexShaderCode(), QByteArrayLiteral("vertex"));
+        }
+        {
+            // WHEN
+            QSignalSpy spy(this, SIGNAL(fragmentShaderCodeChanged(QByteArray)));
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("generatedShaderCode");
+            valueChange->setValue(QVariant::fromValue(QPair<int, QByteArray>(int(Qt3DRender::QShaderProgram::Fragment), QByteArrayLiteral("fragment"))));
+            sceneChangeEvent(valueChange);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(fragmentShaderCode(), QByteArrayLiteral("fragment"));
+        }
+        {
+            // WHEN
+            QSignalSpy spy(this, SIGNAL(geometryShaderCodeChanged(QByteArray)));
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("generatedShaderCode");
+            valueChange->setValue(QVariant::fromValue(QPair<int, QByteArray>(int(Qt3DRender::QShaderProgram::Geometry), QByteArrayLiteral("geometry"))));
+            sceneChangeEvent(valueChange);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(geometryShaderCode(), QByteArrayLiteral("geometry"));
+        }
+        {
+            // WHEN
+            QSignalSpy spy(this, SIGNAL(computeShaderCodeChanged(QByteArray)));
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("generatedShaderCode");
+            valueChange->setValue(QVariant::fromValue(QPair<int, QByteArray>(int(Qt3DRender::QShaderProgram::Compute), QByteArrayLiteral("compute"))));
+            sceneChangeEvent(valueChange);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(computeShaderCode(), QByteArrayLiteral("compute"));
+        }
+        {
+            // WHEN
+            QSignalSpy spy(this, SIGNAL(tessellationControlShaderCodeChanged(QByteArray)));
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("generatedShaderCode");
+            valueChange->setValue(QVariant::fromValue(QPair<int, QByteArray>(int(Qt3DRender::QShaderProgram::TessellationControl), QByteArrayLiteral("control"))));
+            sceneChangeEvent(valueChange);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(tessellationControlShaderCode(), QByteArrayLiteral("control"));
+        }
+        {
+            // WHEN
+            QSignalSpy spy(this, SIGNAL(tessellationEvaluationShaderCodeChanged(QByteArray)));
+            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            valueChange->setPropertyName("generatedShaderCode");
+            valueChange->setValue(QVariant::fromValue(QPair<int, QByteArray>(int(Qt3DRender::QShaderProgram::TessellationEvaluation), QByteArrayLiteral("eval"))));
+            sceneChangeEvent(valueChange);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(tessellationEvaluationShaderCode(), QByteArrayLiteral("eval"));
+        }
+    }
+
 };
 
 QTEST_MAIN(tst_QShaderProgramBuilder)

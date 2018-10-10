@@ -63,6 +63,12 @@ class QT3DRENDERSHARED_EXPORT QShaderProgramBuilder : public Qt3DCore::QNode
     Q_PROPERTY(QUrl geometryShaderGraph READ geometryShaderGraph WRITE setGeometryShaderGraph NOTIFY geometryShaderGraphChanged)
     Q_PROPERTY(QUrl fragmentShaderGraph READ fragmentShaderGraph WRITE setFragmentShaderGraph NOTIFY fragmentShaderGraphChanged)
     Q_PROPERTY(QUrl computeShaderGraph READ computeShaderGraph WRITE setComputeShaderGraph NOTIFY computeShaderGraphChanged)
+    Q_PROPERTY(QByteArray vertexShaderCode READ vertexShaderCode NOTIFY vertexShaderCodeChanged REVISION 13)
+    Q_PROPERTY(QByteArray tessellationControlShaderCode READ tessellationControlShaderCode NOTIFY tessellationControlShaderCodeChanged REVISION 13)
+    Q_PROPERTY(QByteArray tessellationEvaluationShaderCode READ tessellationEvaluationShaderCode  NOTIFY tessellationEvaluationShaderCodeChanged REVISION 13)
+    Q_PROPERTY(QByteArray geometryShaderCode READ geometryShaderCode NOTIFY geometryShaderCodeChanged REVISION 13)
+    Q_PROPERTY(QByteArray fragmentShaderCode READ fragmentShaderCode NOTIFY fragmentShaderCodeChanged REVISION 13)
+    Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode NOTIFY computeShaderCodeChanged REVISION 13)
 
 public:
     explicit QShaderProgramBuilder(Qt3DCore::QNode *parent = nullptr);
@@ -76,6 +82,12 @@ public:
     QUrl geometryShaderGraph() const;
     QUrl fragmentShaderGraph() const;
     QUrl computeShaderGraph() const;
+    QByteArray vertexShaderCode() const;
+    QByteArray tessellationControlShaderCode() const;
+    QByteArray tessellationEvaluationShaderCode() const;
+    QByteArray geometryShaderCode() const;
+    QByteArray fragmentShaderCode() const;
+    QByteArray computeShaderCode() const;
 
 public Q_SLOTS:
     void setShaderProgram(Qt3DRender::QShaderProgram *program);
@@ -96,9 +108,16 @@ Q_SIGNALS:
     void geometryShaderGraphChanged(const QUrl &geometryShaderGraph);
     void fragmentShaderGraphChanged(const QUrl &fragmentShaderGraph);
     void computeShaderGraphChanged(const QUrl &computeShaderGraph);
+    void vertexShaderCodeChanged(const QByteArray &vertexShaderCode);
+    void tessellationControlShaderCodeChanged(const QByteArray &tessellationControlShaderCode);
+    void tessellationEvaluationShaderCodeChanged(const QByteArray &tessellationEvaluationShaderCode);
+    void geometryShaderCodeChanged(const QByteArray &geometryShaderCode);
+    void fragmentShaderCodeChanged(const QByteArray &fragmentShaderCode);
+    void computeShaderCodeChanged(const QByteArray &computeShaderCode);
 
 protected:
     explicit QShaderProgramBuilder(QShaderProgramBuilderPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QShaderProgramBuilder)

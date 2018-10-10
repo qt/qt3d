@@ -28,12 +28,15 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qshaderprogrambuilder.h>
 #include "testrenderer.h"
+#include "testpostmanarbiter.h"
 
 Q_DECLARE_METATYPE(Qt3DRender::Render::ShaderBuilder::ShaderType)
+Q_DECLARE_METATYPE(Qt3DRender::QShaderProgram::ShaderType)
 
 class tst_ShaderBuilder : public Qt3DCore::QBackendNodeTester
 {
@@ -539,7 +542,81 @@ private slots:
         // THEN
         QCOMPARE(backend.shaderGraph(type), graphUrl);
         QVERIFY(!backend.isShaderCodeDirty(type));
-//        QCOMPARE(backend.shaderCode(type), es2Code);
+        QCOMPARE(backend.shaderCode(type), es2Code);
+    }
+
+    void checkCodeUpdatedNotification_data()
+    {
+        QTest::addColumn<Qt3DRender::Render::ShaderBuilder::ShaderType>("type");
+        QTest::addColumn<Qt3DRender::QShaderProgram::ShaderType>("notificationType");
+
+        QTest::newRow("vertex") << Qt3DRender::Render::ShaderBuilder::Vertex << Qt3DRender::QShaderProgram::Vertex;
+        QTest::newRow("tessControl") << Qt3DRender::Render::ShaderBuilder::TessellationControl << Qt3DRender::QShaderProgram::TessellationControl;
+        QTest::newRow("tessEval") << Qt3DRender::Render::ShaderBuilder::TessellationEvaluation << Qt3DRender::QShaderProgram::TessellationEvaluation;
+        QTest::newRow("geometry") << Qt3DRender::Render::ShaderBuilder::Geometry << Qt3DRender::QShaderProgram::Geometry;
+        QTest::newRow("fragment") << Qt3DRender::Render::ShaderBuilder::Fragment << Qt3DRender::QShaderProgram::Fragment;
+        QTest::newRow("compute") << Qt3DRender::Render::ShaderBuilder::Compute << Qt3DRender::QShaderProgram::Compute;
+    }
+
+
+    void checkCodeUpdatedNotification()
+    {
+        // GIVEN
+        Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
+        QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
+        QFETCH(Qt3DRender::Render::ShaderBuilder::ShaderType, type);
+        QFETCH(Qt3DRender::QShaderProgram::ShaderType, notificationType);
+
+        const auto gl3Api = []{
+            auto api = Qt3DRender::GraphicsApiFilterData();
+            api.m_api = Qt3DRender::QGraphicsApiFilter::OpenGL;
+            api.m_profile = Qt3DRender::QGraphicsApiFilter::CoreProfile;
+            api.m_major = 3;
+            api.m_minor = 2;
+            return api;
+        }();
+
+        const auto readCode = [](const QString &suffix) -> QString {
+            const auto filePath = QStringLiteral(":/output.") + suffix;
+            QFile file(filePath);
+            if (!file.open(QFile::ReadOnly | QFile::Text))
+                qFatal("File open failed: %s", qPrintable(filePath));
+            return file.readAll();
+        };
+
+        const auto gl3Code = readCode("gl3");
+
+        Qt3DRender::Render::ShaderBuilder backend;
+        TestArbiter arbiter;
+        Qt3DCore::QBackendNodePrivate::get(&backend)->setArbiter(&arbiter);
+
+
+        // WHEN
+        const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+        backend.setShaderGraph(type, graphUrl);
+
+        // THEN
+        QCOMPARE(backend.shaderGraph(type), graphUrl);
+        QVERIFY(backend.isShaderCodeDirty(type));
+        QVERIFY(backend.shaderCode(type).isEmpty());
+
+        // WHEN
+        backend.setGraphicsApi(gl3Api);
+        backend.generateCode(type);
+
+        // THEN
+        QCOMPARE(backend.shaderGraph(type), graphUrl);
+        QVERIFY(!backend.isShaderCodeDirty(type));
+        QCOMPARE(backend.shaderCode(type), gl3Code);
+
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(arbiter.events.count(), 1);
+        QCOMPARE(change->propertyName(), "generatedShaderCode");
+        const QPair<int, QByteArray> value = change->value().value<QPair<int, QByteArray>>();
+        QCOMPARE(value.first, int(notificationType));
+        QCOMPARE(value.second, gl3Code);
+
+        arbiter.events.clear();
     }
 };
 
