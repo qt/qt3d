@@ -41,6 +41,11 @@
 #include <QtCore/QDebug>
 
 #if QT_CONFIG(qt3d_profile_jobs)
+
+#ifdef Q_OS_ANDROID
+#include <QtCore/QStandardPaths>
+#endif
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
 #include <QtCore/QThreadStorage>

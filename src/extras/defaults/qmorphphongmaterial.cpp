@@ -44,6 +44,7 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
+#include <Qt3DRender/qshaderprogrambuilder.h>
 #include <QUrl>
 #include <QVector3D>
 #include <QVector4D>
@@ -57,9 +58,9 @@ namespace Qt3DExtras {
 QMorphPhongMaterialPrivate::QMorphPhongMaterialPrivate()
     : QMaterialPrivate()
     , m_phongEffect(new QEffect())
-    , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
-    , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.7f, 0.7f, 0.7f, 1.0f)))
-    , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.01f, 0.01f, 0.01f, 1.0f)))
+    , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05, 0.05, 0.05, 1.0)))
+    , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.7, 0.7, 0.7, 1.0)))
+    , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.01, 0.01, 0.01, 1.0)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
     , m_interpolatorParameter(new QParameter(QStringLiteral("interpolator"), 0.0f))
     , m_phongGL3Technique(new QTechnique())
@@ -70,12 +71,16 @@ QMorphPhongMaterialPrivate::QMorphPhongMaterialPrivate()
     , m_phongES2RenderPass(new QRenderPass())
     , m_phongGL3Shader(new QShaderProgram())
     , m_phongGL2ES2Shader(new QShaderProgram())
+    , m_phongGL3ShaderBuilder(new QShaderProgramBuilder())
+    , m_phongGL2ES2ShaderBuilder(new QShaderProgramBuilder())
     , m_filterKey(new QFilterKey)
 {
 }
 
 void QMorphPhongMaterialPrivate::init()
 {
+    Q_Q(QMorphPhongMaterial);
+
     connect(m_ambientParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QMorphPhongMaterialPrivate::handleAmbientChanged);
     connect(m_diffuseParameter, &Qt3DRender::QParameter::valueChanged,
@@ -88,9 +93,19 @@ void QMorphPhongMaterialPrivate::init()
             this, &QMorphPhongMaterialPrivate::handleInterpolatorChanged);
 
     m_phongGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/morphphong.vert"))));
-    m_phongGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/phong.frag"))));
+    m_phongGL3ShaderBuilder->setParent(q);
+    m_phongGL3ShaderBuilder->setShaderProgram(m_phongGL3Shader);
+    m_phongGL3ShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_phongGL3ShaderBuilder->setEnabledLayers({QStringLiteral("diffuse"),
+                                               QStringLiteral("specular"),
+                                               QStringLiteral("normal")});
     m_phongGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/morphphong.vert"))));
-    m_phongGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/phong.frag"))));
+    m_phongGL2ES2ShaderBuilder->setParent(q);
+    m_phongGL2ES2ShaderBuilder->setShaderProgram(m_phongGL2ES2Shader);
+    m_phongGL2ES2ShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_phongGL2ES2ShaderBuilder->setEnabledLayers({QStringLiteral("diffuse"),
+                                                  QStringLiteral("specular"),
+                                                  QStringLiteral("normal")});
 
     m_phongGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_phongGL3Technique->graphicsApiFilter()->setMajorVersion(3);
@@ -115,7 +130,6 @@ void QMorphPhongMaterialPrivate::init()
     m_phongGL2Technique->addRenderPass(m_phongGL2RenderPass);
     m_phongES2Technique->addRenderPass(m_phongES2RenderPass);
 
-    Q_Q(QMorphPhongMaterial);
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
     m_filterKey->setValue(QStringLiteral("forward"));

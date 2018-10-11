@@ -5,14 +5,17 @@
         <file>shaders/gl3/light.inc.frag</file>
         <file>shaders/es2/light.inc.frag</file>
         <file>shaders/es2/light.inc.frag100</file>
+        <file>shaders/es3/light.inc.frag</file>
         <file>shaders/gl3/phong.inc.frag</file>
         <file>shaders/es2/phong.inc.frag</file>
         <file>shaders/es2/phong.inc.frag100</file>
         <file>shaders/gl3/metalrough.inc.frag</file>
+        <file>shaders/es3/metalrough.inc.frag</file>
         <file>shaders/gl3/coordinatesystems.inc</file>
         <file>shaders/es2/coordinatesystems.inc</file>
         <file>shaders/gl3/default.vert</file>
         <file>shaders/es2/default.vert</file>
+        <file>shaders/es3/default.vert</file>
         <file>shaders/gl3/pervertexcolor.frag</file>
         <file>shaders/gl3/pervertexcolor.vert</file>
         <file>shaders/es2/pervertexcolor.frag</file>

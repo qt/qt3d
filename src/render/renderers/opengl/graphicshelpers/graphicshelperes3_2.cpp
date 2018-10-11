@@ -117,6 +117,19 @@ void GraphicsHelperES3_2::setVerticesPerPatch(GLint verticesPerPatch)
     m_extraFuncs->glPatchParameteri(GL_PATCH_VERTICES, verticesPerPatch);
 }
 
+void GraphicsHelperES3_2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex, GLint baseInstance)
+{
+    if (baseInstance != 0)
+        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
+
+    m_extraFuncs->glDrawElementsInstancedBaseVertex(primitiveType,
+                                                    primitiveCount,
+                                                    indexType,
+                                                    indices,
+                                                    instances,
+                                                    baseVertex);
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 
