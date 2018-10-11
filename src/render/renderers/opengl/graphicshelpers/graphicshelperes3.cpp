@@ -234,6 +234,14 @@ void GraphicsHelperES3::vertexAttributePointer(GLenum shaderDataType,
     }
 }
 
+void GraphicsHelperES3::drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances)
+{
+    m_extraFuncs->glDrawArraysInstanced(primitiveType,
+                                        first,
+                                        count,
+                                        instances);
+}
+
 void GraphicsHelperES3::readBuffer(GLenum mode)
 {
     m_extraFuncs->glReadBuffer(mode);

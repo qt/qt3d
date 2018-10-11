@@ -223,6 +223,10 @@ GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
         delete m_gl;
         m_gl = nullptr;
         textureInfo.wasUpdated = true;
+        // If we are destroyed because of some property change but still our content data
+        // make sure we are marked for upload
+        if (m_textureData || !m_imageData.empty())
+            needUpload = true;
     }
 
     m_properties.status = QAbstractTexture::Ready;
