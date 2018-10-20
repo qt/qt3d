@@ -106,6 +106,7 @@
 #include <QSurface>
 #include <QElapsedTimer>
 #include <QLibraryInfo>
+#include <QMutexLocker>
 #include <QPluginLoader>
 #include <QDir>
 #include <QUrl>
@@ -444,8 +445,10 @@ void Renderer::shutdown()
 
     // We delete any renderqueue that we may not have had time to render
     // before the surface was destroyed
+    QMutexLocker lockRenderQueue(m_renderQueue->mutex());
     qDeleteAll(m_renderQueue->nextFrameQueue());
     m_renderQueue->reset();
+    lockRenderQueue.unlock();
 
     m_commandThread->shutdown();
 
