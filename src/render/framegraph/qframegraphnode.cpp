@@ -215,6 +215,7 @@ QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
 }
 
 /*!
+    \internal
  * Returns a list of the children that are frame graph nodes.
  * If this function encounters a child node that is not a frame graph node,
  * it will go through the children of the child node and look for frame graph nodes.

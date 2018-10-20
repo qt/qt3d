@@ -49,14 +49,14 @@
     features:
 
     \list
-        \li 2D and 3D rendering for C++ and Qt Quick applications
-        \li Meshes and \l {Qt 3D Render Geometry}{Geometry}
+        \li  2D and 3D \l {Qt3DRender}{rendering} for C++ and Qt Quick applications
+        \li \l{Qt3DRender::QMesh}{Meshes} and \l {Qt 3D Render Geometry}{Geometry}
         \li \l {Materials}
         \li \l {Shaders}
         \li \l {Shadow Mapping}{Shadow mapping}
-        \li Ambient occlusion
+        \li \l {Qt3DExtras::QMetalRoughMaterial::ambientOcclusion}{Ambient occlusion}
         \li High dynamic range
-        \li Deferred rendering
+        \li \l {Deferred Renderer}{Deferred rendering}
         \li Multitexturing
         \li \l {Instanced Rendering}{Instanced rendering}
         \li \l {Uniform Buffer Objects}
@@ -89,7 +89,7 @@
     vertex, tessellation control, tessellation evaluation, geometry, and
     fragment shaders. Compute shaders are planned for a future release.
 
-    For examples of using shaders, see the Simple Shaders QML Example,
+    For examples of using shaders, see the \l {Simple Shader Example},
     \l {Qt 3D: Shadow Map QML Example}, \l{Qt 3D: Wireframe QML Example}, and
     \l {Qt 3D: Wave QML Example}.
 
@@ -173,10 +173,10 @@
     large amounts of data readily available. Typical use cases for UBOs are for
     sets of material or lighting parameters.
 
-    \section2 Pro Tips
+    \section2 Useful Tips
 
-    Because Murphy's law proves to often be true when it comes to 3D rendering,
-    \l {Qt 3D Render Pro Tips}{here} are a few points that might help you.
+    Some very useful programming tips for 3D rendering can be found on this
+    page: \l {Qt 3D Render Pro Tips}.
 
     \section1 Configurable Renderer
 
@@ -197,7 +197,7 @@
     \section1 3D Extensions
 
     Beyond the essentials of displaying 3D content on the screen, Qt 3D is
-    extensible and flexible enough to act as a host for following types of
+    extensible and flexible enough to act as a host for the following types of
     extensions related to the 3D objects:
 
     \list
@@ -277,7 +277,7 @@
 
     \section2 Using an ECS
 
-    In an ECS, an entity represents a simulated object but by itself is devoid
+    In an ECS, an entity represents a simulated object, but by itself it is devoid
     of any specific behavior or characteristics. Additional behavior can be
     grafted onto an entity by having the entity aggregate one or more
     components. Each component is a vertical slice of behavior of an object
@@ -373,7 +373,7 @@
 
     \section1 Qt 3D's Aspects
 
-    By default Qt 3D provides the Qt3DRender and Qt3DInput aspects. The
+    By default, Qt 3D provides the Qt3DRender and Qt3DInput aspects. The
     components and other supporting classes provided by these aspects are
     discussed in the documentation for those modules.
 
