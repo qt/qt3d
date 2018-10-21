@@ -40,6 +40,7 @@
 #include <QtCore/qhash.h>
 #include "gltexture_p.h"
 
+#include <private/qdebug_p.h>
 #include <QDebug>
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
@@ -383,7 +384,9 @@ QOpenGLTexture *GLTexture::buildGLTexture()
             format = QAbstractTexture::DepthFormat;
             break;
         default:
-            qWarning() << Q_FUNC_INFO << "could not find a matching OpenGL ES 2.0 unsized texture format";
+            auto warning = qWarning();
+            warning << "Could not find a matching OpenGL ES 2.0 texture format:";
+            QtDebugUtils::formatQEnum(warning, m_properties.format);
             break;
         }
     }

@@ -76,6 +76,7 @@
 #include <Qt3DRender/private/graphicshelperes2_p.h>
 #include <Qt3DRender/private/graphicshelperes3_p.h>
 
+#include <private/qdebug_p.h>
 #include <QSurface>
 #include <QWindow>
 #include <QOpenGLTexture>
@@ -707,8 +708,10 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
         break;
 #endif
     default:
-        // unsupported format
-        Q_UNREACHABLE();
+        auto warning = qWarning();
+        warning << "Unable to convert";
+        QtDebugUtils::formatQEnum(warning, m_renderTargetFormat);
+        warning << "render target texture format to QImage.";
         return img;
     }
 
