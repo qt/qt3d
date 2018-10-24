@@ -325,6 +325,9 @@ void QJoint::setName(const QString &name)
     emit nameChanged(name);
 }
 
+/*!
+    Sets the transform matrix for this joint to the identity matrix.
+*/
 void QJoint::setToIdentity()
 {
     setScale(QVector3D(1.0f, 1.0f, 1.0f));
@@ -388,6 +391,9 @@ QVector<QJoint *> QJoint::childJoints() const
     return d->m_childJoints;
 }
 
+/*!
+    Returns the name of the joint.
+*/
 QString QJoint::name() const
 {
     Q_D(const QJoint);
