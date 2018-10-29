@@ -64,7 +64,61 @@ namespace Qt3DRender {
     \note In practice the QBlitFramebuffer node will often be used in
     combination with QNoDraw since a blit should not involve issuing draw calls
     for any entities.
+
+*/
+/*!
+    \enum Qt3DRender::QBlitFramebuffer::InterpolationMethod
+
+    Specifies the interpolation applied if the image is stretched.
+
+*/
+/*!
+    \property Qt3DRender::QBlitFramebuffer::destination
+
+    Specifies the destination render target. When not set, the destination
+    is assumed to be the default framebuffer (i.e. the backbuffer of
+    the current surface), if there is one.
+
+    \note the source and destination must not refer to the same render
+          target.
+*/
+/*!
+
+    \property Qt3DRender::QBlitFramebuffer::destinationAttachmentPoint
+
+    Specifies the target attachment point.
+*/
+
+/*!
+    \property Qt3DRender::QBlitFramebuffer::destinationRect
+
+    Specifies the destination rectangle. The coordinates are assumed to follow
+    the normal Qt coordinate system, meaning Y runs from top to bottom.
+*/
+
+/*!
+    \property Qt3DRender::QBlitFramebuffer::source
+
+    Specifies the source render target. When not set, the source is assumed to
+    be the default framebuffer (i.e. the backbuffer of the current surface), if
+    there is one.
+
+    \note the source and destination must not refer to the same render target.
+
+*/
+/*!
+    \property Qt3DRender::QBlitFramebuffer::sourceAttachmentPoint
+
+    Specifies the source attachment point.
+
+*/
+/*!
+    \property Qt3DRender::QBlitFramebuffer::sourceRect
+
+    Specifies the source rectangle. The coordinates are assumed to follow the
+    normal Qt coordinate system, meaning Y runs from top to bottom.
  */
+
 
 /*!
     \qmltype BlitFramebuffer
