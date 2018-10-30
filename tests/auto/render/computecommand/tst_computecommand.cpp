@@ -31,9 +31,11 @@
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/private/qcomputecommand_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
+#include "testpostmanarbiter.h"
 
 class tst_ComputeCommand : public Qt3DCore::QBackendNodeTester
 {
@@ -52,6 +54,8 @@ private Q_SLOTS:
         QCOMPARE(backendComputeCommand.x(), 1);
         QCOMPARE(backendComputeCommand.y(), 1);
         QCOMPARE(backendComputeCommand.z(), 1);
+        QCOMPARE(backendComputeCommand.runType(), Qt3DRender::QComputeCommand::Continuous);
+        QCOMPARE(backendComputeCommand.frameCount(), 0);
     }
 
     void checkCleanupState()
@@ -75,6 +79,8 @@ private Q_SLOTS:
         computeCommand.setWorkGroupX(256);
         computeCommand.setWorkGroupY(512);
         computeCommand.setWorkGroupZ(128);
+        computeCommand.setRunType(Qt3DRender::QComputeCommand::Manual);
+        computeCommand.trigger(6);
 
         {
             // WHEN
@@ -87,6 +93,8 @@ private Q_SLOTS:
             QCOMPARE(backendComputeCommand.x(), computeCommand.workGroupX());
             QCOMPARE(backendComputeCommand.y(), computeCommand.workGroupY());
             QCOMPARE(backendComputeCommand.z(), computeCommand.workGroupZ());
+            QCOMPARE(backendComputeCommand.runType(), computeCommand.runType());
+            QCOMPARE(backendComputeCommand.frameCount(), 6);
         }
         {
             // WHEN
@@ -151,8 +159,75 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendComputeCommand.z(), newValue);
         }
+        {
+            // WHEN
+            const Qt3DRender::QComputeCommand::RunType newValue = Qt3DRender::QComputeCommand::Manual;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("runType");
+            change->setValue(newValue);
+            backendComputeCommand.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendComputeCommand.runType(), newValue);
+        }
+        {
+            // WHEN
+            const int newValue = 32;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("frameCount");
+            change->setValue(newValue);
+            backendComputeCommand.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendComputeCommand.frameCount(), newValue);
+        }
     }
 
+    void checkUpdateFrameCount()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        TestArbiter arbiter;
+
+        Qt3DRender::QComputeCommand computeCommand;
+        Qt3DRender::Render::ComputeCommand backendComputeCommand;
+
+        computeCommand.setWorkGroupX(256);
+        computeCommand.setWorkGroupY(512);
+        computeCommand.setWorkGroupZ(128);
+        computeCommand.setRunType(Qt3DRender::QComputeCommand::Manual);
+        computeCommand.trigger(6);
+
+
+        Qt3DCore::QBackendNodePrivate::get(&backendComputeCommand)->setArbiter(&arbiter);
+
+        backendComputeCommand.setRenderer(&renderer);
+        simulateInitialization(&computeCommand, &backendComputeCommand);
+
+        for (int i = 0; i < 5; ++i) {
+            // WHEN
+            backendComputeCommand.updateFrameCount();
+
+            // THEN
+            QCOMPARE(backendComputeCommand.frameCount(), 6 - (i + 1));
+            QCOMPARE(backendComputeCommand.isEnabled(), true);
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+        // WHEN
+        backendComputeCommand.updateFrameCount();
+
+        // THEN
+        QCOMPARE(backendComputeCommand.frameCount(), false);
+        QCOMPARE(backendComputeCommand.isEnabled(), false);
+        QCOMPARE(arbiter.events.size(), 1);
+        {
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "enabled");
+            QCOMPARE(change->value().value<int>(), false);
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        }
+    }
 };
 
 QTEST_MAIN(tst_ComputeCommand)

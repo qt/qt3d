@@ -40,7 +40,6 @@
 #include "computecommand_p.h"
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/private/qcomputecommand_p.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 
@@ -51,7 +50,9 @@ namespace Qt3DRender {
 namespace Render {
 
 ComputeCommand::ComputeCommand()
-    : BackendNode(ReadOnly)
+    : BackendNode(ReadWrite)
+    , m_frameCount(0)
+    , m_runType(QComputeCommand::Continuous)
 {
     m_workGroups[0] = 1;
     m_workGroups[1] = 1;
@@ -68,6 +69,8 @@ void ComputeCommand::cleanup()
     m_workGroups[0] = 1;
     m_workGroups[1] = 1;
     m_workGroups[2] = 1;
+    m_frameCount = 0;
+    m_runType = QComputeCommand::Continuous;
 }
 
 void ComputeCommand::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -77,6 +80,8 @@ void ComputeCommand::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
     m_workGroups[0] = data.workGroupX;
     m_workGroups[1] = data.workGroupY;
     m_workGroups[2] = data.workGroupZ;
+    m_runType = data.runType;
+    m_frameCount = data.frameCount;
     if (m_renderer != nullptr)
         BackendNode::markDirty(AbstractRenderer::ComputeDirty);
 }
@@ -91,9 +96,28 @@ void ComputeCommand::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_workGroups[1] = propertyChange->value().toInt();
         else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupZ"))
             m_workGroups[2] = propertyChange->value().toInt();
-        markDirty(AbstractRenderer::AllDirty);
+        else if (propertyChange->propertyName() == QByteArrayLiteral("frameCount"))
+            m_frameCount = propertyChange->value().toInt();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("runType"))
+            m_runType = static_cast<QComputeCommand::RunType>(propertyChange->value().toInt());
+        markDirty(AbstractRenderer::ComputeDirty);
     }
     BackendNode::sceneChangeEvent(e);
+}
+
+// Called from buildComputeRenderCommands in a job
+void ComputeCommand::updateFrameCount()
+{
+    // Disable frontend node when reaching 0
+    --m_frameCount;
+    if (m_frameCount <= 0) {
+        setEnabled(false);
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("enabled");
+        e->setValue(false);
+        notifyObservers(e);
+    }
 }
 
 } // Render

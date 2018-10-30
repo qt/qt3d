@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -66,6 +67,10 @@ public:
     int m_workGroupX;
     int m_workGroupY;
     int m_workGroupZ;
+    QComputeCommand::RunType m_runType;
+    int m_frameCount;
+
+    void setFrameCount(int frameCount);
 };
 
 struct QComputeCommandData
@@ -73,6 +78,8 @@ struct QComputeCommandData
     int workGroupX;
     int workGroupY;
     int workGroupZ;
+    QComputeCommand::RunType runType;
+    int frameCount;
 };
 
 } // Qt3DRender

@@ -714,6 +714,11 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
         if ((computeJob = entity->renderComponent<ComputeCommand>()) != nullptr
                 && computeJob->isEnabled()) {
 
+            // Note: if frameCount has reached 0 in the previous frame, isEnabled
+            // would be false
+            if (computeJob->runType() == QComputeCommand::Manual)
+                computeJob->updateFrameCount();
+
             const Qt3DCore::QNodeId materialComponentId = entity->componentUuid<Material>();
             const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
 

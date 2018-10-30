@@ -55,24 +55,37 @@ class QT3DRENDERSHARED_EXPORT QComputeCommand : public Qt3DCore::QComponent
     Q_PROPERTY(int workGroupX READ workGroupX WRITE setWorkGroupX NOTIFY workGroupXChanged)
     Q_PROPERTY(int workGroupY READ workGroupY WRITE setWorkGroupY NOTIFY workGroupYChanged)
     Q_PROPERTY(int workGroupZ READ workGroupZ WRITE setWorkGroupZ NOTIFY workGroupZChanged)
+    Q_PROPERTY(RunType runType READ runType WRITE setRunType NOTIFY runTypeChanged REVISION 13)
 
 public:
+    enum RunType {
+        Continuous = 0,
+        Manual
+    };
+    Q_ENUM(RunType)
+
     explicit QComputeCommand(Qt3DCore::QNode *parent = nullptr);
     ~QComputeCommand();
 
     int workGroupX() const;
     int workGroupY() const;
     int workGroupZ() const;
+    RunType runType() const;
 
 public Q_SLOTS:
     void setWorkGroupX(int workGroupX);
     void setWorkGroupY(int workGroupY);
     void setWorkGroupZ(int workGroupZ);
+    void setRunType(RunType runType);
+
+    void trigger(int frameCount = 1);
+    void trigger(int workGroupX, int workGroupY, int workGroupZ, int frameCount = 1);
 
 Q_SIGNALS:
     void workGroupXChanged();
     void workGroupYChanged();
     void workGroupZChanged();
+    void runTypeChanged();
 
 private:
     Q_DECLARE_PRIVATE(QComputeCommand)

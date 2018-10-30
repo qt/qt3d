@@ -39,6 +39,7 @@
 
 #include "qcomputecommand.h"
 #include "qcomputecommand_p.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,18 +76,33 @@ namespace Qt3DRender {
     The compute shader is specified in the Material component of the same entity the
     ComputeCommand is added to. The workGroupX, workGroupY and workGroupZ properties
     specify the work group sizes for the compute shader invocation. DispatchCompute
-    node needs to be present in the FrameGraph to actually issue the commands.
+    node needs to be present in the FrameGraph to actually issue the commands. The execution behavior
+    of the compute command can be controlled with the run type property.
 
-    \note If the rendering policy is set to RenderSettings.OnDemand and there are no changes to the
-    scene, the ComputeCommand will not be invoked repeatedly.
-    The RenderSettings.Always render policy must be set for the ComputeCommand to be
-    repeatedly invoked if there are no other changes to the scene that triggers rendering a new
+    \note If the rendering policy is set to RenderSettings.OnDemand, the run
+    type is set to Continuous and there are no changes to the scene, the
+    ComputeCommand will not be invoked repeatedly. The RenderSettings.Always
+    render policy must be set for the ComputeCommand to be repeatedly invoked
+    if there are no other changes to the scene that triggers rendering a new
     frame.
  */
 
 /*!
     \qmlproperty int ComputeCommand::workGroupX
     Specifies X workgroup size.
+ */
+
+/*!
+    \qmlproperty QComputeCommand::runType
+
+    Specifies whether the compute command should be performed every frame or
+    manually triggered.
+
+    \value Continuous Compute command is executed everyframe. This is the
+    default.
+
+    \value Manual CompouteCommand is executed for a given number of frames and
+    then the component disables itself.
  */
 
 /*!
@@ -114,12 +130,36 @@ namespace Qt3DRender {
     Specifies Z workgroup size.
  */
 
+/*!
+    \property QComputeCommand::runType
+
+    Specifies whether the compute command should be performed every frame or
+    manually triggered.
+
+    If set to Continuous, Compute command is executed everyframe. This is the
+    default.
+
+    If set to Manual CompouteCommand is executed for a given number of frames
+    and then the component disables itself.
+ */
+
 QComputeCommandPrivate::QComputeCommandPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_workGroupX(1)
     , m_workGroupY(1)
     , m_workGroupZ(1)
+    , m_runType(QComputeCommand::Continuous)
+    , m_frameCount(0)
 {
+}
+
+void QComputeCommandPrivate::setFrameCount(int frameCount)
+{
+    m_frameCount = frameCount;
+    const auto propertyChange = Qt3DCore::QPropertyUpdatedChangePtr::create(m_id);
+    propertyChange->setPropertyName("frameCount");
+    propertyChange->setValue(m_frameCount);
+    notifyObservers(propertyChange);
 }
 
 /*!
@@ -152,6 +192,12 @@ int QComputeCommand::workGroupZ() const
 {
     Q_D(const QComputeCommand);
     return d->m_workGroupZ;
+}
+
+QComputeCommand::RunType QComputeCommand::runType() const
+{
+    Q_D(const QComputeCommand);
+    return d->m_runType;
 }
 
 /*!
@@ -190,6 +236,50 @@ void QComputeCommand::setWorkGroupZ(int workGroupZ)
     }
 }
 
+void QComputeCommand::setRunType(QComputeCommand::RunType runType)
+{
+    Q_D(QComputeCommand);
+    if (d->m_runType != runType) {
+        d->m_runType = runType;
+        emit runTypeChanged();
+    }
+}
+
+/*!
+    When the run type is set to Manual, calling trigger will make the compute
+    command be executed for the next \a frameCount frames. Upon completion of
+    the execution, the enabled property will be set to false.
+ */
+void QComputeCommand::trigger(int frameCount)
+{
+    if (isEnabled())
+        qWarning() << Q_FUNC_INFO << "is triggered while it hasn't finished executing";
+
+    Q_D(QComputeCommand);
+    d->setFrameCount(frameCount);
+    setEnabled(true);
+}
+
+/*!
+    When the run type is set to Manual, calling trigger will make the compute
+    command be executed for the next \a frameCount frames. Upon completion of
+    the execution, the enabled property will be set to false. The size of the
+    workgroup previously set will be overridden with \a workGroupX, \a
+    workGroupY, \a workGroupZ.
+ */
+void QComputeCommand::trigger(int workGroupX, int workGroupY, int workGroupZ, int frameCount)
+{
+    if (isEnabled())
+        qWarning() << Q_FUNC_INFO << "is triggered while it hasn't finished executing";
+
+    setWorkGroupX(workGroupX);
+    setWorkGroupY(workGroupY);
+    setWorkGroupZ(workGroupZ);
+    Q_D(QComputeCommand);
+    d->setFrameCount(frameCount);
+    setEnabled(true);
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QComputeCommand::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QComputeCommandData>::create(this);
@@ -198,6 +288,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QComputeCommand::createNodeCreationChange() 
     data.workGroupX = d->m_workGroupX;
     data.workGroupY = d->m_workGroupY;
     data.workGroupZ = d->m_workGroupZ;
+    data.runType = d->m_runType;
+    data.frameCount = d->m_frameCount;
     return creationChange;
 }
 

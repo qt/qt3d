@@ -52,6 +52,7 @@ private Q_SLOTS:
         QCOMPARE(computeCommand.workGroupX(), 1);
         QCOMPARE(computeCommand.workGroupY(), 1);
         QCOMPARE(computeCommand.workGroupZ(), 1);
+        QCOMPARE(computeCommand.runType(), Qt3DRender::QComputeCommand::Continuous);
     }
 
     void checkPropertyChanges()
@@ -116,6 +117,25 @@ private Q_SLOTS:
             QCOMPARE(computeCommand.workGroupZ(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+        {
+            // WHEN
+            QSignalSpy spy(&computeCommand, SIGNAL(runTypeChanged()));
+            const Qt3DRender::QComputeCommand::RunType newValue = Qt3DRender::QComputeCommand::Manual;
+            computeCommand.setRunType(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(computeCommand.runType(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            computeCommand.setRunType(newValue);
+
+            // THEN
+            QCOMPARE(computeCommand.runType(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -126,6 +146,7 @@ private Q_SLOTS:
         computeCommand.setWorkGroupX(128);
         computeCommand.setWorkGroupY(512);
         computeCommand.setWorkGroupZ(1024);
+        computeCommand.setRunType(Qt3DRender::QComputeCommand::Manual);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -145,6 +166,8 @@ private Q_SLOTS:
             QCOMPARE(computeCommand.workGroupX(), cloneData.workGroupX);
             QCOMPARE(computeCommand.workGroupY(), cloneData.workGroupY);
             QCOMPARE(computeCommand.workGroupZ(), cloneData.workGroupZ);
+            QCOMPARE(computeCommand.runType(), cloneData.runType);
+            QCOMPARE(0, cloneData.frameCount);
             QCOMPARE(computeCommand.id(), creationChangeData->subjectId());
             QCOMPARE(computeCommand.isEnabled(), true);
             QCOMPARE(computeCommand.isEnabled(), creationChangeData->isNodeEnabled());
@@ -171,6 +194,8 @@ private Q_SLOTS:
             QCOMPARE(computeCommand.workGroupZ(), cloneData.workGroupZ);
             QCOMPARE(computeCommand.id(), creationChangeData->subjectId());
             QCOMPARE(computeCommand.isEnabled(), false);
+            QCOMPARE(computeCommand.runType(), cloneData.runType);
+            QCOMPARE(0, cloneData.frameCount);
             QCOMPARE(computeCommand.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(computeCommand.metaObject(), creationChangeData->metaObject());
         }
@@ -273,6 +298,144 @@ private Q_SLOTS:
             QCOMPARE(arbiter.events.size(), 0);
         }
 
+    }
+
+    void checkRunTypeUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::QComputeCommand computeCommand;
+        arbiter.setArbiterOnNode(&computeCommand);
+
+        {
+            // WHEN
+            computeCommand.setRunType(Qt3DRender::QComputeCommand::Manual);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "runType");
+            QCOMPARE(change->value().value<int>(), int(computeCommand.runType()));
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            computeCommand.setRunType(Qt3DRender::QComputeCommand::Manual);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+    }
+
+    void checkTrigger()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::QComputeCommand computeCommand;
+        arbiter.setArbiterOnNode(&computeCommand);
+        computeCommand.setRunType(Qt3DRender::QComputeCommand::Manual);
+        computeCommand.setEnabled(false);
+        QCoreApplication::processEvents();
+        arbiter.events.clear();
+
+        {
+            // WHEN
+            computeCommand.trigger(1);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 2);
+            {
+                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "frameCount");
+                QCOMPARE(change->value().value<int>(), 1);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+            {
+                auto change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "enabled");
+                QCOMPARE(change->value().value<bool>(), true);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+
+            computeCommand.setEnabled(false);
+            QCoreApplication::processEvents();
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            computeCommand.trigger(2);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 2);
+            {
+                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "frameCount");
+                QCOMPARE(change->value().value<int>(), 2);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+            {
+                auto change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "enabled");
+                QCOMPARE(change->value().value<bool>(), true);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+
+
+            computeCommand.setEnabled(false);
+            QCoreApplication::processEvents();
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            computeCommand.trigger(10, 11, 12, 1);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 5);
+            {
+                auto change = arbiter.events.at(0).staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "workGroupX");
+                QCOMPARE(change->value().value<int>(), 10);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+            {
+                auto change = arbiter.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "workGroupY");
+                QCOMPARE(change->value().value<int>(), 11);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+            {
+                auto change = arbiter.events.at(2).staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "workGroupZ");
+                QCOMPARE(change->value().value<int>(), 12);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+            {
+                auto change = arbiter.events.at(3).staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "frameCount");
+                QCOMPARE(change->value().value<int>(), 1);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+            {
+                auto change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "enabled");
+                QCOMPARE(change->value().value<bool>(), true);
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            }
+
+            computeCommand.setEnabled(false);
+            QCoreApplication::processEvents();
+            arbiter.events.clear();
+        }
     }
 
 };

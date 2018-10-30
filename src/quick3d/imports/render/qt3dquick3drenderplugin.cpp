@@ -233,6 +233,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
         // Compute Job
     qmlRegisterType<Qt3DRender::QComputeCommand>(uri, 2, 0, "ComputeCommand");
+    qmlRegisterType<Qt3DRender::QComputeCommand, 13>(uri, 2, 13, "ComputeCommand");
 
     // Layers
     qmlRegisterType<Qt3DRender::QLayer>(uri, 2, 0, "Layer");
