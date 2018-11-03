@@ -207,6 +207,11 @@ void QBackendNode::notifyObservers(const QSceneChangePtr &e)
     d->notifyObservers(e);
 }
 
+/*!
+    Send the command named \a name with contents \a data,
+    and specify \a replyTo as the command id to which the
+    reply needs to be sent.
+*/
 QNodeCommand::CommandId QBackendNode::sendCommand(const QString &name,
                                                   const QVariant &data,
                                                   QNodeCommand::CommandId replyTo)
@@ -220,6 +225,9 @@ QNodeCommand::CommandId QBackendNode::sendCommand(const QString &name,
     return e->commandId();
 }
 
+/*!
+    Send the reply to \a command.
+*/
 void QBackendNode::sendReply(const QNodeCommandPtr &command)
 {
     command->setDeliveryFlags(QSceneChange::Nodes);

@@ -112,6 +112,17 @@ void QComponentPrivate::removeEntity(QEntity *entity)
 */
 
 /*!
+    \fn Qt3DCore::QComponent::addedToEntity(Qt3DCore::QEntity *entity)'
+
+    Indicates that a reference has been added to \a entity.
+*/
+/*!
+    \fn Qt3DCore::QComponent::removedFromEntity(Qt3DCore::QEntity *entity)
+
+    Indicates that a reference has been removed from \a entity.
+
+*/
+/*!
     Constructs a new QComponent instance with \a parent as the parent.
     \note a QComponent should never be instanced directly,
     instance one of the subclasses instead.

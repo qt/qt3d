@@ -713,6 +713,36 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
 */
 
 /*!
+    \fn void Qt3DCore::QNodeCommand::setReplyToCommandId(CommandId id)
+
+    Sets the command \a id to which the message is a reply.
+
+*/
+/*!
+    \fn  Qt3DCore::QNode::PropertyTrackingMode Qt3DCore::QNode::defaultPropertyTrackingMode() const
+
+    Returns the default property tracking mode which determines whether a
+    QNode should be listening for property updates.
+
+*/
+/*!
+    \fn Qt3DCore::QNode::clearPropertyTracking(const QString &propertyName)
+
+    Clears the tracking property called \a propertyName.
+*/
+/*!
+    \fn Qt3DCore::QNode::PropertyTrackingMode Qt3DCore::QNode::propertyTracking(const QString &propertyName) const
+
+    Returns the tracking mode of \a propertyName.
+*/
+
+/*!
+    \fn Qt3DCore::QNode::setPropertyTracking(const QString &propertyName, Qt3DCore::QNode::PropertyTrackingMode trackMode)
+
+    Sets the property tracking for \a propertyName and \a trackMode.
+*/
+
+/*!
      Creates a new QNode instance with parent \a parent.
 
      \note The backend aspects will be notified that a QNode instance is
@@ -955,11 +985,49 @@ QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const
 }
 
 /*!
- * \brief Sends a command messages to the backend node
+   \fn Qt3DCore::QNodeCommand::CommandId Qt3DCore::QNodeCommand::inReplyTo() const
+
+   Returns the id of the original QNodeCommand message that
+   was sent to the backend.
+
+*/
+/*!
+    \fn void Qt3DCore::QNodeCommand::setData(const QVariant &data)
+
+    Sets the data (\a data) in the backend node to perform
+    the operations requested.
+*/
+/*!
+    \fn void Qt3DCore::QNodeCommand::setName(const QString &name)
+
+
+    Sets the data (\a name) in the backend node to perform
+    the operations requested.
+*/
+
+/*!
+    \enum Qt3DCore::QNode::PropertyTrackingMode
+
+    Indicates how a QNode listens for property updates.
+
+    \value TrackFinalValues
+           Tracks final values
+    \value DontTrackValues
+           Does not track values
+    \value TrackAllValues
+           Tracks all values
+*/
+/*!
+    \fn Qt3DCore::QNode::clearPropertyTrackings()
+
+    Erases all values that have been saved by the property tracking.
+*/
+/*!
+ * \brief Sends a command message to the backend node
  *
  * Creates a QNodeCommand message and dispatches it to the backend node. The
  * command is given and a \a name and some \a data which can be used in the
- * backend node to performe various operations.
+ * backend node to perform various operations.
  * This returns a CommandId which can be used to identify the initial command
  * when receiving a message in reply. If the command message is to be sent in
  * reply to another command, \a replyTo contains the id of that command.
@@ -972,7 +1040,7 @@ QNodeCommand::CommandId QNode::sendCommand(const QString &name,
 {
     Q_D(QNode);
 
-    // Bail out early if we can to avoid operator new
+    // Bail out early, if we can, to avoid operator new
     if (d->m_blockNotifications)
         return QNodeCommand::CommandId(0);
 

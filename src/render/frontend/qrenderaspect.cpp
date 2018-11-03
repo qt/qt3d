@@ -184,6 +184,12 @@ namespace Qt3DRender {
  * \inmodule Qt3DRender
  */
 
+/*!
+    \namespace Qt3DRender::Render
+
+    \brief Namespace used for accessing the classes
+    Renderer and QRenderPlugin.
+*/
 /*! \internal */
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     : QAbstractAspectPrivate()

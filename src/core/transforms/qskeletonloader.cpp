@@ -120,7 +120,10 @@ void QSkeletonLoaderPrivate::setStatus(QSkeletonLoader::Status status)
     \value Ready                 The skeleton was successfully loaded
     \value Error                 An error occurred while loading the skeleton
 */
+/*!
+    \property Qt3DCore::QSkeletonLoader::createJointsEnabled
 
+    \brief A boolean to indicate whether createJoints is enabled or not.
 /*!
     Constructs a new QSkeletonLoader with \a parent.
 */
@@ -171,12 +174,19 @@ QSkeletonLoader::Status QSkeletonLoader::status() const
     return d->m_status;
 }
 
+/*!
+    Returns a boolean indicating whether CreateJoints
+    is enabled or not.
+    The default value is \c false.
+*/
 bool QSkeletonLoader::isCreateJointsEnabled() const
 {
     Q_D(const QSkeletonLoader);
     return d->m_createJoints;
 }
-
+/*!
+    Returns the root joint of the hierarchy of joints forming the skeleton.
+*/
 Qt3DCore::QJoint *QSkeletonLoader::rootJoint() const
 {
     Q_D(const QSkeletonLoader);
