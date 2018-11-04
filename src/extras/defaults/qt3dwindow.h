@@ -112,6 +112,7 @@ Q_SIGNALS:
 protected:
     void showEvent(QShowEvent *e) override;
     void resizeEvent(QResizeEvent *) override;
+    bool event(QEvent *e) override;
 
 private:
     Q_DECLARE_PRIVATE(Qt3DWindow)

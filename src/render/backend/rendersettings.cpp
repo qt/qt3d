@@ -42,6 +42,7 @@
 #include <Qt3DRender/QFrameGraphNode>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/qrendersettings_p.h>
+#include <Qt3DCore/qnodecommand.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -91,6 +92,10 @@ void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("renderPolicy"))
             m_renderPolicy = propertyChange->value().value<QRenderSettings::RenderPolicy>();
         markDirty(AbstractRenderer::AllDirty);
+    } else if (e->type() == CommandRequested) {
+        QNodeCommandPtr command = qSharedPointerCast<QNodeCommand>(e);
+        if (command->name() == QLatin1Literal("InvalidateFrame"))
+            markDirty(AbstractRenderer::AllDirty);
     }
 
     BackendNode::sceneChangeEvent(e);
