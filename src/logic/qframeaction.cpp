@@ -52,6 +52,7 @@ QFrameActionPrivate::QFrameActionPrivate()
 
 /*!
     \namespace Qt3DLogic::Logic
+    \inmodule Qt3DLogic
 
     \brief Used to import and use the module's QML types.
 */

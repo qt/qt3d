@@ -240,6 +240,8 @@ void Qt3DWindow::resizeEvent(QResizeEvent *)
 }
 
 /*!
+    \reimp
+
     Requests renderer to redraw if we are using OnDemand render policy.
 */
 bool Qt3DWindow::event(QEvent *e)

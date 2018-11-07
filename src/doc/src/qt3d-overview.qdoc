@@ -60,7 +60,7 @@
         \li Multitexturing
         \li \l {Instanced Rendering}{Instanced rendering}
         \li \l {Uniform Buffer Objects}
-        \li \l {Pro Tips}
+        \li \l {Qt 3D Render Pro Tips}{Pro Tips}
     \endlist
 
     \section2 Materials
