@@ -77,11 +77,8 @@ private Q_SLOTS:
         const int layerCacheJobCount = 2;
         // filterEntityByLayerJob,
         // syncFilterEntityByLayerJob
-        const int singleRenderViewJobCount = 11 + Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
+        const int singleRenderViewJobCount = 8 + Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
         // RenderViewBuilder renderViewJob,
-        //                   renderableEntityFilterJob,
-        //                   lightGatherJob,
-        //                   computableEntityFilterJob,
         //                   syncRenderViewInitializationJob,
         //                   syncFrustumCullingJob,
         //                   filterProximityJob,
@@ -192,6 +189,8 @@ private Q_SLOTS:
                  1 + // UpdateMeshTriangleListJob
                  1 + // updateSkinningPaletteJob
                  1 + // ExpandBoundingVolumeJob
+                 1 + // RenderableEntityFilterPtr
+                 1 + // SyncRenderableEntities
                  singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -299,6 +298,12 @@ private Q_SLOTS:
                  1 + // TexturesGathererJob
                  1 + // SyncTextureLoadingJob
                  1 + // UpdateEntityLayersJob
+                 1 + // RenderableEntityFilterPtr
+                 1 + // SyncRenderableEntities
+                 1 + // ComputableEntityFilterPtr
+                 1 + // SyncComputableEntities
+                 1 + // LightGathererPtr
+                 1 + // SyncLightsGatherer
                  singleRenderViewJobCount +
                  layerCacheJobCount +
                  renderViewBuilderMaterialCacheJobCount);

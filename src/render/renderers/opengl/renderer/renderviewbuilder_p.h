@@ -109,6 +109,15 @@ public:
     void setMaterialGathererCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
     bool materialGathererCacheNeedsToBeRebuilt() const;
 
+    void setRenderableCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
+    bool renderableCacheNeedsToBeRebuilt() const;
+
+    void setComputableCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
+    bool computableCacheNeedsToBeRebuilt() const;
+
+    void setLightGathererCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
+    bool lightGathererCacheNeedsToBeRebuilt() const;
+
     static int optimalJobCount();
     static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset);
 
@@ -118,6 +127,9 @@ private:
     Renderer *m_renderer;
     bool m_layerCacheNeedsToBeRebuilt;
     bool m_materialGathererCacheNeedsToBeRebuilt;
+    bool m_lightsCacheNeedsToBeRebuilt;
+    bool m_renderableCacheNeedsToBeRebuilt;
+    bool m_computableCacheNeedsToBeRebuilt;
 
     RenderViewInitializerJobPtr m_renderViewJob;
     FilterLayerEntityJobPtr m_filterEntityByLayerJob;
@@ -136,6 +148,10 @@ private:
     SynchronizerJobPtr m_syncFilterEntityByLayerJob;
     SynchronizerJobPtr m_syncMaterialGathererJob;
     FilterProximityDistanceJobPtr m_filterProximityJob;
+
+    SynchronizerJobPtr m_cacheRenderableEntitiesJob;
+    SynchronizerJobPtr m_cacheComputableEntitiesJob;
+    SynchronizerJobPtr m_cacheLightsJob;
 
     static const int m_optimalParallelJobCount;
 };
