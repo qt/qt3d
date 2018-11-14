@@ -91,11 +91,12 @@ void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
         debugBV->setRadius(s.radius());
         debugBV->setCenter(s.center());
     }
-#endif
+
 
     const auto children = node->children();
     for (Entity *c : children)
         updateBoundingVolumesDebug(c);
+#endif
 }
 
 void FrameCleanupJob::setManagers(NodeManagers *managers)
