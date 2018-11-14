@@ -151,11 +151,8 @@ private Q_SLOTS:
         // NOTE: FilterCompatibleTechniqueJob and ShaderGathererJob cannot run because the context
         // is not initialized in this test
 
-        const int singleRenderViewJobCount = 11 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
+        const int singleRenderViewJobCount = 8 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
         // RenderViewBuilder renderViewJob,
-        //                   renderableEntityFilterJob,
-        //                   lightGatherJob,
-        //                   computableEntityFilterJob,
         //                   syncRenderViewInitializationJob,
         //                   syncFrustumCullingJob,
         //                   filterProximityJob,

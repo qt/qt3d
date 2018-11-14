@@ -1832,6 +1832,9 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty;
     const bool materialDirty = dirtyBitsForFrame & AbstractRenderer::MaterialDirty;
+    const bool lightsDirty = dirtyBitsForFrame & AbstractRenderer::LightsDirty;
+    const bool computeableDirty = dirtyBitsForFrame & AbstractRenderer::ComputeDirty;
+    const bool renderableDirty = dirtyBitsForFrame & AbstractRenderer::GeometryDirty;
 
     // Rebuild Entity Layers list if layers are dirty
     if (layersDirty)
@@ -1859,6 +1862,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             RenderViewBuilder builder(fgLeaves.at(i), i, this);
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt);
             builder.setMaterialGathererCacheNeedsToBeRebuilt(materialDirty);
+            builder.setRenderableCacheNeedsToBeRebuilt(renderableDirty);
+            builder.setComputableCacheNeedsToBeRebuilt(computeableDirty);
+            builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
+
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
         }

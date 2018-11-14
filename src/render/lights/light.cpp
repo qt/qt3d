@@ -63,6 +63,9 @@ void Light::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractLightData>>(change);
     const auto &data = typedChange->data;
     m_shaderDataId = data.shaderDataId;
+
+    Q_ASSERT(m_renderer);
+    BackendNode::markDirty(AbstractRenderer::LightsDirty);
 }
 
 RenderLightFunctor::RenderLightFunctor(AbstractRenderer *renderer, NodeManagers *managers)
@@ -85,6 +88,8 @@ Qt3DCore::QBackendNode *RenderLightFunctor::get(Qt3DCore::QNodeId id) const
 
 void RenderLightFunctor::destroy(Qt3DCore::QNodeId id) const
 {
+    Light *backend = m_managers->lightManager()->getOrCreateResource(id);
+    m_renderer->markDirty(AbstractRenderer::LightsDirty, backend);
     m_managers->lightManager()->releaseResource(id);
 }
 
