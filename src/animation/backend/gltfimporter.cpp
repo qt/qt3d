@@ -342,15 +342,12 @@ GLTFImporter::Node::Node(const QJsonObject &json)
         const auto rotationValue = json.value(KEY_ROTATION);
         const auto translationValue = json.value(KEY_TRANSLATION);
 
-        QVector3D s(1.0f, 1.0f, 1.0f);
         if (!scaleValue.isUndefined())
             jsonArrayToVector3D(scaleValue.toArray(), localTransform.scale);
 
-        QQuaternion r;
         if (!rotationValue.isUndefined())
             jsonArrayToQuaternion(json.value(KEY_ROTATION).toArray(), localTransform.rotation);
 
-        QVector3D t;
         if (!translationValue.isUndefined())
             jsonArrayToVector3D(json.value(KEY_TRANSLATION).toArray(), localTransform.translation);
     }
