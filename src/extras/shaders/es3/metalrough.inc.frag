@@ -66,7 +66,7 @@ int mipLevelCount(const in FP samplerCube cube)
    return nMips;
 }
 
-float remapRoughness(const in FP float roughness)
+FP float remapRoughness(const in FP float roughness)
 {
     // As per page 14 of
     // http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
@@ -177,7 +177,7 @@ FP vec3 pbrModel(const in int lightIndex,
 
     if (lights[lightIndex].type != TYPE_DIRECTIONAL) {
         // Point and Spot lights
-        vec3 sUnnormalized = vec3(lights[lightIndex].position) - wPosition;
+        FP vec3 sUnnormalized = vec3(lights[lightIndex].position) - wPosition;
         s = normalize(sUnnormalized);
 
         // Calculate the attenuation factor
@@ -186,7 +186,7 @@ FP vec3 pbrModel(const in int lightIndex,
             if (lights[lightIndex].constantAttenuation != 0.0
              || lights[lightIndex].linearAttenuation != 0.0
              || lights[lightIndex].quadraticAttenuation != 0.0) {
-                float dist = length(sUnnormalized);
+                FP float dist = length(sUnnormalized);
                 att = 1.0 / (lights[lightIndex].constantAttenuation +
                              lights[lightIndex].linearAttenuation * dist +
                              lights[lightIndex].quadraticAttenuation * dist * dist);
