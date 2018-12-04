@@ -136,13 +136,13 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
 /*!
     \qmlproperty int GeometryRenderer::firstInstance
 
-    Holds the first vertex.
+    Holds the base instance.
  */
 
 /*!
     \qmlproperty int GeometryRenderer::firstVertex
 
-    Holds the base instance.
+    Holds the first vertex.
  */
 
 /*!

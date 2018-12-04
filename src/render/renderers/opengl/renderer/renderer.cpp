@@ -1875,14 +1875,14 @@ void Renderer::performDraw(RenderCommand *command)
                                                                            reinterpret_cast<void*>(quintptr(command->m_indexAttributeByteOffset)),
                                                                            command->m_instanceCount,
                                                                            command->m_indexOffset,
-                                                                           command->m_firstVertex);
+                                                                           command->m_firstInstance);
         } else {
             Profiling::GLTimeRecorder recorder(Profiling::DrawArray);
             m_submissionContext->drawArraysInstancedBaseInstance(command->m_primitiveType,
-                                                               command->m_firstInstance,
+                                                               command->m_firstVertex,
                                                                command->m_primitiveCount,
                                                                command->m_instanceCount,
-                                                               command->m_firstVertex);
+                                                               command->m_firstInstance);
         }
     }
 
