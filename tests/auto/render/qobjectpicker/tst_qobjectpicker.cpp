@@ -31,8 +31,10 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DRender/QPickEvent>
-
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include "testpostmanarbiter.h"
 
 class MyObjectPicker : public Qt3DRender::QObjectPicker
@@ -70,6 +72,162 @@ public:
     }
 
 private Q_SLOTS:
+
+    void checkInitialState()
+    {
+        // GIVEN
+        Qt3DRender::QObjectPicker picker;
+
+        // THEN
+        QCOMPARE(picker.priority(), 0);
+        QCOMPARE(picker.isDragEnabled(), false);
+        QCOMPARE(picker.isHoverEnabled(), false);
+    }
+
+    void checkCreationData()
+    {
+        // GIVEN
+        Qt3DRender::QObjectPicker picker;
+
+        picker.setPriority(1584);
+        picker.setDragEnabled(true);
+        picker.setHoverEnabled(true);
+
+        // WHEN
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
+
+        {
+            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&picker);
+            creationChanges = creationChangeGenerator.creationChanges();
+        }
+
+        // THEN
+        {
+            QCOMPARE(creationChanges.size(), 1);
+
+            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QObjectPickerData>>(creationChanges.first());
+            const Qt3DRender::QObjectPickerData cloneData = creationChangeData->data;
+
+            QCOMPARE(cloneData.priority, 1584);
+            QCOMPARE(cloneData.hoverEnabled, true);
+            QCOMPARE(cloneData.dragEnabled, true);
+            QCOMPARE(picker.id(), creationChangeData->subjectId());
+            QCOMPARE(picker.isEnabled(), true);
+            QCOMPARE(picker.isEnabled(), creationChangeData->isNodeEnabled());
+            QCOMPARE(picker.metaObject(), creationChangeData->metaObject());
+        }
+
+        // WHEN
+        picker.setEnabled(false);
+
+        {
+            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&picker);
+            creationChanges = creationChangeGenerator.creationChanges();
+        }
+
+        // THEN
+        {
+            QCOMPARE(creationChanges.size(), 1);
+
+            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QObjectPickerData>>(creationChanges.first());
+            const Qt3DRender::QObjectPickerData cloneData = creationChangeData->data;
+
+            QCOMPARE(cloneData.priority, 1584);
+            QCOMPARE(cloneData.hoverEnabled, true);
+            QCOMPARE(cloneData.dragEnabled, true);
+            QCOMPARE(picker.id(), creationChangeData->subjectId());
+            QCOMPARE(picker.isEnabled(), false);
+            QCOMPARE(picker.isEnabled(), creationChangeData->isNodeEnabled());
+            QCOMPARE(picker.metaObject(), creationChangeData->metaObject());
+        }
+    }
+
+    void checkPropertyUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::QObjectPicker picker;
+        arbiter.setArbiterOnNode(&picker);
+
+        {
+            {
+                // WHEN
+                picker.setPriority(883);
+                QCoreApplication::processEvents();
+
+                // THEN
+                QCOMPARE(arbiter.events.size(), 1);
+                QCOMPARE(picker.priority(), 883);
+                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "priority");
+                QCOMPARE(change->value().value<int>(), picker.priority());
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+                arbiter.events.clear();
+            }
+
+            {
+                // WHEN
+                picker.setPriority(883);
+                QCoreApplication::processEvents();
+
+                // THEN
+                QCOMPARE(arbiter.events.size(), 0);
+            }
+        }
+        {
+            {
+                // WHEN
+                picker.setDragEnabled(true);
+                QCoreApplication::processEvents();
+
+                // THEN
+                QCOMPARE(arbiter.events.size(), 1);
+                QCOMPARE(picker.isDragEnabled(), true);
+                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "dragEnabled");
+                QCOMPARE(change->value().value<bool>(), picker.isDragEnabled());
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+                arbiter.events.clear();
+            }
+
+            {
+                // WHEN
+                picker.setDragEnabled(true);
+                QCoreApplication::processEvents();
+
+                // THEN
+                QCOMPARE(arbiter.events.size(), 0);
+            }
+        }
+        {
+            {
+                // WHEN
+                picker.setHoverEnabled(true);
+                QCoreApplication::processEvents();
+
+                // THEN
+                QCOMPARE(arbiter.events.size(), 1);
+                QCOMPARE(picker.isHoverEnabled(), true);
+                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+                QCOMPARE(change->propertyName(), "hoverEnabled");
+                QCOMPARE(change->value().value<bool>(), picker.isHoverEnabled());
+                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+                arbiter.events.clear();
+            }
+
+            {
+                // WHEN
+                picker.setHoverEnabled(true);
+                QCoreApplication::processEvents();
+
+                // THEN
+                QCOMPARE(arbiter.events.size(), 0);
+            }
+        }
+    }
 
     void checkCloning_data()
     {

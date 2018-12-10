@@ -53,6 +53,7 @@ namespace Render {
 
 ObjectPicker::ObjectPicker()
     : BackendNode(QBackendNode::ReadWrite)
+    , m_priority(0)
     , m_isPressed(false)
     , m_hoverEnabled(false)
     , m_dragEnabled(false)
@@ -70,6 +71,7 @@ void ObjectPicker::cleanup()
     m_isPressed = false;
     m_hoverEnabled = false;
     m_dragEnabled = false;
+    m_priority = 0;
     notifyJob();
 }
 
@@ -79,6 +81,7 @@ void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     const auto &data = typedChange->data;
     m_hoverEnabled = data.hoverEnabled;
     m_dragEnabled = data.dragEnabled;
+    m_priority = data.priority;
     notifyJob();
 }
 
@@ -97,6 +100,8 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_hoverEnabled = propertyChange->value().toBool();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dragEnabled")) {
             m_dragEnabled = propertyChange->value().toBool();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("priority")) {
+            m_priority = propertyChange->value().toInt();
         }
 
         markDirty(AbstractRenderer::AllDirty);
@@ -173,6 +178,16 @@ void ObjectPicker::onExited()
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("exited");
     notifyObservers(e);
+}
+
+void ObjectPicker::setPriority(int priority)
+{
+    m_priority = priority;
+}
+
+int ObjectPicker::priority() const
+{
+    return m_priority;
 }
 
 } // Render

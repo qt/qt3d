@@ -183,7 +183,7 @@ bool RayCastingJob::runHelper()
                     gathererFunctor.m_manager = m_manager;
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_objectPickersRequired = false;
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
                 }
                 if (edgePickingRequested) {
                     PickingUtils::LineCollisionGathererFunctor gathererFunctor;
@@ -191,7 +191,7 @@ bool RayCastingJob::runHelper()
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
                     gathererFunctor.m_objectPickersRequired = false;
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
                 if (pointPickingRequested) {
@@ -200,7 +200,7 @@ bool RayCastingJob::runHelper()
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
                     gathererFunctor.m_objectPickersRequired = false;
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), true);
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
                 if (!primitivePickingRequested) {

@@ -81,10 +81,15 @@ public:
     void onEntered();
     void onExited();
 
+    // Needed for unit tests
+    void setPriority(int priority);
+    int priority() const;
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void notifyJob();
 
+    int m_priority;
     bool m_isPressed;
     bool m_hoverEnabled;
     bool m_dragEnabled;

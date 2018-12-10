@@ -55,6 +55,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 QT_BEGIN_NAMESPACE
 
@@ -418,6 +419,46 @@ HitList reduceToFirstHit(HitList &result, const HitList &intermediate)
     return result;
 }
 
+
+struct HighestPriorityHitReducer
+{
+    // No need to protect this from concurrent access as the table
+    // is read only
+    const QHash<Qt3DCore::QNodeId, int> entityToPriorityTable;
+
+    HitList operator()(HitList &result, const HitList &intermediate)
+    {
+        // Sort by priority first
+        // If we have equal priorities, we then sort by distance
+
+        if (!intermediate.empty()) {
+            if (result.empty())
+                result.push_back(intermediate.front());
+            int currentPriority = entityToPriorityTable.value(result.front().m_entityId, 0);
+            float closest = result.front().m_distance;
+
+            for (const auto &v : intermediate) {
+                const int newEntryPriority = entityToPriorityTable.value(v.m_entityId, 0);
+                if (newEntryPriority > currentPriority) {
+                    result.push_front(v);
+                    currentPriority = newEntryPriority;
+                    closest = v.m_distance;
+                } else if (newEntryPriority == currentPriority) {
+                    if (v.m_distance < closest) {
+                        result.push_front(v);
+                        closest = v.m_distance;
+                        currentPriority = newEntryPriority;
+                    }
+                }
+            }
+
+            while (result.size() > 1)
+                result.pop_back();
+        }
+        return result;
+    }
+};
+
 HitList reduceToAllHits(HitList &results, const HitList &intermediate)
 {
     if (!intermediate.empty())
@@ -492,9 +533,22 @@ struct MapFunctorHolder
 
 } // anonymous
 
-HitList EntityCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
+HitList EntityCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities,
+                                                    Qt3DRender::QPickingSettings::PickResultMode mode)
 {
-    const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+    std::function<HitList (HitList &, const HitList &)> reducerOp;
+    switch (mode) {
+    case QPickingSettings::AllPicks:
+        reducerOp = PickingUtils::reduceToAllHits;
+        break;
+    case QPickingSettings::NearestPriorityPick:
+        reducerOp = HighestPriorityHitReducer{ m_entityToPriorityTable };
+        break;
+    case QPickingSettings::NearestPick:
+        reducerOp = PickingUtils::reduceToFirstHit;
+        break;
+    }
+
     const MapFunctorHolder holder(this);
 #if QT_CONFIG(concurrent)
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
@@ -519,9 +573,22 @@ HitList EntityCollisionGathererFunctor::pick(const Entity *entity) const
     return result;
 }
 
-HitList TriangleCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
+HitList TriangleCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities,
+                                                      Qt3DRender::QPickingSettings::PickResultMode mode)
 {
-    const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+    std::function<HitList (HitList &, const HitList &)> reducerOp;
+    switch (mode) {
+    case QPickingSettings::AllPicks:
+        reducerOp = PickingUtils::reduceToAllHits;
+        break;
+    case QPickingSettings::NearestPriorityPick:
+        reducerOp = HighestPriorityHitReducer { m_entityToPriorityTable };
+        break;
+    case QPickingSettings::NearestPick:
+        reducerOp = PickingUtils::reduceToFirstHit;
+        break;
+    }
+
     const MapFunctorHolder holder(this);
 #if QT_CONFIG(concurrent)
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
@@ -553,9 +620,22 @@ HitList TriangleCollisionGathererFunctor::pick(const Entity *entity) const
     return result;
 }
 
-HitList LineCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
+HitList LineCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities,
+                                                  Qt3DRender::QPickingSettings::PickResultMode mode)
 {
-    const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+    std::function<HitList (HitList &, const HitList &)> reducerOp;
+    switch (mode) {
+    case QPickingSettings::AllPicks:
+        reducerOp = PickingUtils::reduceToAllHits;
+        break;
+    case QPickingSettings::NearestPriorityPick:
+        reducerOp = HighestPriorityHitReducer { m_entityToPriorityTable };
+        break;
+    case QPickingSettings::NearestPick:
+        reducerOp = PickingUtils::reduceToFirstHit;
+        break;
+    }
+
     const MapFunctorHolder holder(this);
 #if QT_CONFIG(concurrent)
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
@@ -586,9 +666,22 @@ HitList LineCollisionGathererFunctor::pick(const Entity *entity) const
     return result;
 }
 
-HitList PointCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
+HitList PointCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities,
+                                                   Qt3DRender::QPickingSettings::PickResultMode mode)
 {
-    const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+    std::function<HitList (HitList &, const HitList &)> reducerOp;
+    switch (mode) {
+    case QPickingSettings::AllPicks:
+        reducerOp = PickingUtils::reduceToAllHits;
+        break;
+    case QPickingSettings::NearestPriorityPick:
+        reducerOp = HighestPriorityHitReducer { m_entityToPriorityTable };
+        break;
+    case QPickingSettings::NearestPick:
+        reducerOp = PickingUtils::reduceToFirstHit;
+        break;
+    }
+
     const MapFunctorHolder holder(this);
 #if QT_CONFIG(concurrent)
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
@@ -641,15 +734,17 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
 {
     m_hits.clear();
     m_entities.clear();
+    m_entityToPriorityTable.clear();
 
     QRayCastingService rayCasting;
     struct EntityData {
         Entity* entity;
         bool hasObjectPicker;
         Qt3DCore::QNodeIdVector recursiveLayers;
+        int priority;
     };
     std::vector<EntityData> worklist;
-    worklist.push_back({root, !root->componentHandle<ObjectPicker>().isNull(), {}});
+    worklist.push_back({root, !root->componentHandle<ObjectPicker>().isNull(), {}, 0});
 
     LayerManager *layerManager = manager->layerManager();
 
@@ -710,6 +805,8 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
         if (accepted && queryResult.m_distance >= 0.f && (current.hasObjectPicker || !m_objectPickersRequired)) {
             m_entities.push_back(current.entity);
             m_hits.push_back(queryResult);
+            // Record entry for entity/priority
+            m_entityToPriorityTable.insert(current.entity->peerId(), current.priority);
         }
 
         Qt3DCore::QNodeIdVector recursiveLayers;
@@ -722,9 +819,12 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
 
         // and pick children
         const auto children = current.entity->children();
-        for (auto child: children)
-            worklist.push_back({child, current.hasObjectPicker || !child->componentHandle<ObjectPicker>().isNull(),
-                                current.recursiveLayers + recursiveLayers});
+        for (Entity *child: children) {
+            ObjectPicker *childPicker = child->renderComponent<ObjectPicker>();
+            worklist.push_back({child, current.hasObjectPicker || childPicker,
+                                current.recursiveLayers + recursiveLayers,
+                                (childPicker ? childPicker->priority() : current.priority)});
+        }
     }
 
     return !m_hits.empty();

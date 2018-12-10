@@ -199,6 +199,9 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
  * \value NearestPick Only the nearest entity to picking ray origin intersected by the picking ray
  * is picked (default).
  * \value AllPicks All entities that intersect the picking ray are picked.
+ * \value PriorityPick Selects the entity whose object picker has the highest
+ * value. If several object pickers have the same priority, the closest one on
+ * the ray is selected.
  *
  * \sa Qt3DRender::QPickEvent
  */
@@ -211,6 +214,7 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
     \list
         \li PickingSettings.NearestPick
         \li PickingSettings.AllPicks
+        \li PickingSettings.NearestPriorityPick
     \endlist
 
     \sa Qt3DRender::QPickingSettings::PickResultMode
@@ -224,6 +228,10 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
 
     When setting the pick method to AllPicks, events will be triggered for all the
     entities with a QObjectPicker along the ray.
+
+    When setting the pick method to NearestPriorityPick, events will be
+    triggered for the nearest highest priority picker. This can be used when a
+    given element should always be selected even if others are in front of it.
 
     If a QObjectPicker is assigned to an entity with multiple children, an event will
     be triggered for each child entity that intersects the ray.

@@ -73,7 +73,8 @@ public:
 
     enum PickResultMode {
         NearestPick,
-        AllPicks
+        AllPicks,
+        NearestPriorityPick
     };
     Q_ENUM(PickResultMode) // LCOV_EXCL_LINE
 

@@ -55,6 +55,7 @@
 #include <Qt3DRender/QAbstractRayCaster>
 #include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
+#include <Qt3DRender/qpickingsettings.h>
 
 
 QT_BEGIN_NAMESPACE
@@ -124,6 +125,7 @@ public:
     bool collectHits(NodeManagers *manager, Entity *root);
     inline HitList hits() const { return m_hits; }
     inline QVector<Entity *> entities() const { return m_entities; }
+    inline QHash<Qt3DCore::QNodeId, int> entityToPriorityTable() const { return m_entityToPriorityTable; }
 
 private:
     RayCasting::QRay3D m_ray;
@@ -132,6 +134,7 @@ private:
     bool m_objectPickersRequired;
     Qt3DCore::QNodeIdVector m_layerIds;
     QAbstractRayCaster::FilterMode m_filterMode;
+    QHash<Qt3DCore::QNodeId, int> m_entityToPriorityTable;
 };
 
 struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
@@ -142,8 +145,9 @@ struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
     bool m_objectPickersRequired = true;
     NodeManagers *m_manager = nullptr;
     RayCasting::QRay3D m_ray;
+    QHash<Qt3DCore::QNodeId, int> m_entityToPriorityTable;
 
-    virtual HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) = 0;
+    virtual HitList computeHits(const QVector<Entity *> &entities, Qt3DRender::QPickingSettings::PickResultMode mode) = 0;
 
     // This define is required to work with QtConcurrent
     typedef HitList result_type;
@@ -156,7 +160,7 @@ struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
 
 struct Q_AUTOTEST_EXPORT EntityCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 {
-    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) override;
+    HitList computeHits(const QVector<Entity *> &entities, Qt3DRender::QPickingSettings::PickResultMode mode) override;
     HitList pick(const Entity *entity) const override;
 };
 
@@ -165,7 +169,7 @@ struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractColli
     bool m_frontFaceRequested;
     bool m_backFaceRequested;
 
-    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) override;
+    HitList computeHits(const QVector<Entity *> &entities, Qt3DRender::QPickingSettings::PickResultMode mode) override;
     HitList pick(const Entity *entity) const override;
 };
 
@@ -173,7 +177,7 @@ struct Q_AUTOTEST_EXPORT LineCollisionGathererFunctor : public AbstractCollision
 {
     float m_pickWorldSpaceTolerance;
 
-    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) override;
+    HitList computeHits(const QVector<Entity *> &entities, Qt3DRender::QPickingSettings::PickResultMode mode) override;
     HitList pick(const Entity *entity) const override;
 };
 
@@ -181,7 +185,7 @@ struct Q_AUTOTEST_EXPORT PointCollisionGathererFunctor : public AbstractCollisio
 {
     float m_pickWorldSpaceTolerance;
 
-    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) override;
+    HitList computeHits(const QVector<Entity *> &entities, Qt3DRender::QPickingSettings::PickResultMode mode) override;
     HitList pick(const Entity *entity) const override;
 };
 
