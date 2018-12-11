@@ -13,6 +13,7 @@
         <file>shaders/es3/metalrough.inc.frag</file>
         <file>shaders/gl3/coordinatesystems.inc</file>
         <file>shaders/es2/coordinatesystems.inc</file>
+        <file>shaders/es3/coordinatesystems.inc</file>
         <file>shaders/gl3/default.vert</file>
         <file>shaders/es2/default.vert</file>
         <file>shaders/es3/default.vert</file>

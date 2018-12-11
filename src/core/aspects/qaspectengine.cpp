@@ -274,8 +274,8 @@ void QAspectEnginePrivate::exitSimulationLoop()
 }
 
 /*!
- * Registers a new \a aspect to the AspectManager. The QAspectEngine takes
- * ownership of the aspect and will delete it when the aspect is unregistered.
+ Registers a new \a aspect to the AspectManager. The QAspectEngine takes
+ ownership of the aspect and will delete it when the aspect is unregistered.
  //! Called in the main thread
  */
 void QAspectEngine::registerAspect(QAbstractAspect *aspect)

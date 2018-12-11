@@ -69,23 +69,23 @@
 
    The Qt 3D core QML types are imported with
 
-   \badcode
-   import Qt3D.Core 2.0
-   \endcode
+   \qml \QtMinorVersion
+   import Qt3D.Core 2.\1
+   \endqml
 
    Other modules import functionality for collision detection, rendering, input,
    and animation. The complete list of Qt 3D import statements:
 
-   \badcode
-   import Qt3D.Core 2.0
-   import Qt3D.Render 2.0
-   import Qt3D.Input 2.0
-   import Qt3D.Logic 2.0
-   import Qt3D.Extras 2.0
-   import Qt3D.Animation 2.9
-   import QtQuick.Scene2D 2.9
-   import QtQuick.Scene3D 2.0
-   \endcode
+   \qml \QtMinorVersion
+   import Qt3D.Core 2.\1
+   import Qt3D.Render 2.\1
+   import Qt3D.Input 2.\1
+   import Qt3D.Logic 2.\1
+   import Qt3D.Extras 2.\1
+   import Qt3D.Animation 2.\1
+   import QtQuick.Scene2D 2.\1
+   import QtQuick.Scene3D 2.\1
+   \endqml
 
    \section1 QML Types
 

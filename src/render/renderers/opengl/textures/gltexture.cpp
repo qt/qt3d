@@ -435,7 +435,6 @@ QOpenGLTexture *GLTexture::buildGLTexture()
     // Set layers count if texture array
     if (m_actualTarget == QAbstractTexture::Target1DArray ||
         m_actualTarget == QAbstractTexture::Target2DArray ||
-        m_actualTarget == QAbstractTexture::Target3D ||
         m_actualTarget == QAbstractTexture::Target2DMultisampleArray ||
         m_actualTarget == QAbstractTexture::TargetCubeMapArray) {
         glTex->setLayers(m_properties.layers);

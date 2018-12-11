@@ -62,6 +62,8 @@
 #include <Qt3DRender/qcamera.h>
 #include <QtGui/qopenglcontext.h>
 
+#include <QEvent>
+
 static void initResources()
 {
 #ifdef QT_STATIC
@@ -227,6 +229,7 @@ void Qt3DWindow::showEvent(QShowEvent *e)
 
     QWindow::showEvent(e);
 }
+
 /*!
     Resets the aspect ratio of the 3D window.
 */
@@ -234,6 +237,20 @@ void Qt3DWindow::resizeEvent(QResizeEvent *)
 {
     Q_D(Qt3DWindow);
     d->m_defaultCamera->setAspectRatio(float(width()) / float(height()));
+}
+
+/*!
+    \reimp
+
+    Requests renderer to redraw if we are using OnDemand render policy.
+*/
+bool Qt3DWindow::event(QEvent *e)
+{
+    Q_D(Qt3DWindow);
+    const bool needsRedraw = (e->type() == QEvent::Expose || e->type() == QEvent::UpdateRequest);
+    if (needsRedraw && d->m_renderSettings->renderPolicy() == Qt3DRender::QRenderSettings::OnDemand)
+        d->m_renderSettings->sendCommand(QLatin1Literal("InvalidateFrame"));
+    return QWindow::event(e);
 }
 
 } // Qt3DExtras

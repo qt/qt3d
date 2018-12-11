@@ -232,8 +232,14 @@ bool PickBoundingVolumeJob::runHelper()
         for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails) {
             PickingUtils::HitList sphereHits;
             QRay3D ray = rayForViewportAndCamera(vca, event.first, event.second.pos());
-            if (!ray.isValid())
+            if (!ray.isValid()) {
+                // An invalid rays is when we've lost our surface or the mouse
+                // has moved out of the viewport In case of a button released
+                // outside of the viewport, we still want to notify the
+                // lastCurrent entity about this.
+                dispatchPickEvents(event.second, PickingUtils::HitList(), eventButton, eventButtons, eventModifiers, allHitsRequested);
                 continue;
+            }
 
             PickingUtils::HierarchicalEntityPicker entityPicker(ray);
             if (entityPicker.collectHits(m_manager, m_node)) {

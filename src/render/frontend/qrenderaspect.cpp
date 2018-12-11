@@ -186,6 +186,7 @@ namespace Qt3DRender {
 
 /*!
     \namespace Qt3DRender::Render
+    \inmodule Qt3DRender
 
     \brief Namespace used for accessing the classes
     Renderer and QRenderPlugin.

@@ -5,14 +5,7 @@ description             = Qt 3D Reference Documentation
 version                 = $QT_VERSION
 
 moduleheader            = Qt3DDoc
-includepaths            = -I . \
-                          -I $QT_INSTALL_HEADERS \
-                          -I $QT_INSTALL_HEADERS/Qt3DCore \
-                          -I $QT_INSTALL_HEADERS/Qt3DCore/$QT_VERSION \
-                          -I $QT_INSTALL_HEADERS/Qt3DAnimation \
-                          -I $QT_INSTALL_HEADERS/Qt3DAnimation/$QT_VERSION \
-                          -I $QT_INSTALL_HEADERS/Qt3DInput \
-                          -I $QT_INSTALL_HEADERS/Qt3DInput/$QT_VERSION
+includepaths            = -I .
 
 examplesinstallpath     = qt3d
 

@@ -112,7 +112,7 @@ void QComponentPrivate::removeEntity(QEntity *entity)
 */
 
 /*!
-    \fn Qt3DCore::QComponent::addedToEntity(Qt3DCore::QEntity *entity)'
+    \fn Qt3DCore::QComponent::addedToEntity(Qt3DCore::QEntity *entity)
 
     Indicates that a reference has been added to \a entity.
 */

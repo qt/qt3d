@@ -632,18 +632,21 @@ void Renderer::doRender(bool scene3dBlocking)
     // Lock the mutex to protect access to the renderQueue while we look for its state
     QMutexLocker locker(m_renderQueue->mutex());
     bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
-    const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
+    bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
 
     // Scene3D Blocking Mode
     if (scene3dBlocking && !queueIsComplete && !queueIsEmpty) {
         int i = 0;
         // We wait at most 10ms to avoid a case we could never recover from
-        while (!queueIsComplete && i++ < 10) {
-            QThread::msleep(1);
+        while (!queueIsComplete && !queueIsEmpty && i++ < 10) {
             qCDebug(Backend) << Q_FUNC_INFO << "Waiting for ready queue (try:" << i << "/ 10)";
             locker.unlock();
-            queueIsComplete = m_renderQueue->isFrameQueueComplete();
+            // Give worker threads a chance to complete the queue
+            QThread::msleep(1);
             locker.relock();
+            queueIsComplete = m_renderQueue->isFrameQueueComplete();
+            // This could become true if we've tried to shutdown
+            queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
         }
     }
 
@@ -1979,14 +1982,14 @@ void Renderer::performDraw(RenderCommand *command)
                                                                            reinterpret_cast<void*>(quintptr(command->m_indexAttributeByteOffset)),
                                                                            command->m_instanceCount,
                                                                            command->m_indexOffset,
-                                                                           command->m_firstVertex);
+                                                                           command->m_firstInstance);
         } else {
             Profiling::GLTimeRecorder recorder(Profiling::DrawArray);
             m_submissionContext->drawArraysInstancedBaseInstance(command->m_primitiveType,
-                                                               command->m_firstInstance,
+                                                               command->m_firstVertex,
                                                                command->m_primitiveCount,
                                                                command->m_instanceCount,
-                                                               command->m_firstVertex);
+                                                               command->m_firstInstance);
         }
     }
 
