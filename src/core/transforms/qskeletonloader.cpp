@@ -124,6 +124,7 @@ void QSkeletonLoaderPrivate::setStatus(QSkeletonLoader::Status status)
     \property Qt3DCore::QSkeletonLoader::createJointsEnabled
 
     \brief A boolean to indicate whether createJoints is enabled or not.
+*/
 /*!
     Constructs a new QSkeletonLoader with \a parent.
 */
