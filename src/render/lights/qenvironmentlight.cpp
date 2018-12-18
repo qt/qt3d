@@ -169,7 +169,7 @@ void QEnvironmentLight::setSpecular(QAbstractTexture *s)
     if (specular() == s)
         return;
 
-    if (irradiance())
+    if (specular())
         d->unregisterDestructionHelper(specular());
 
     if (s && !s->parent())
