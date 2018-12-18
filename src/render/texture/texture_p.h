@@ -84,7 +84,7 @@ struct TextureProperties
     int mipLevels = 1;
     int samples = 1;
     QAbstractTexture::Target target = QAbstractTexture::Target2D;
-    QAbstractTexture::TextureFormat format = QAbstractTexture::RGBA8_UNorm;
+    QAbstractTexture::TextureFormat format = QAbstractTexture::NoFormat;
     bool generateMipMaps = false;
     QAbstractTexture::Status status = QAbstractTexture::None;
 

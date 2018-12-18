@@ -57,7 +57,7 @@ class QTextureDataPrivate
 {
 public:
     QAbstractTexture::Target m_target;
-    QAbstractTexture::TextureFormat m_format;
+    QAbstractTexture::TextureFormat m_format = QAbstractTexture::NoFormat;
     int m_width = 0;
     int m_height = 0;
     int m_depth = 0;

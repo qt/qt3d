@@ -1419,7 +1419,7 @@ QTextureFromSourceGenerator::QTextureFromSourceGenerator(QTextureLoader *texture
     , m_mirrored()
     , m_texture(textureId)
     , m_engine(engine)
-    , m_format(QAbstractTexture::RGBA8_UNorm)
+    , m_format(QAbstractTexture::NoFormat)
 {
     Q_ASSERT(textureLoader);
 

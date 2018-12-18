@@ -55,7 +55,7 @@ private Q_SLOTS:
         QCOMPARE(tid->layers(), -1);
         QCOMPARE(tid->mipLevels(), -1);
         QCOMPARE(tid->target(), QOpenGLTexture::Target2D);
-        QCOMPARE(tid->format(), QOpenGLTexture::RGBA8_UNorm);
+        QCOMPARE(tid->format(), QOpenGLTexture::NoFormat);
         QCOMPARE(tid->pixelFormat(), QOpenGLTexture::RGBA);
         QCOMPARE(tid->pixelType(), QOpenGLTexture::UInt8);
         QCOMPARE(tid->isCompressed(), false);
