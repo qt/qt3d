@@ -72,6 +72,9 @@ public:
     QShaderData *m_shaderData;
     QAbstractTexture *m_irradiance;
     QAbstractTexture *m_specular;
+
+private:
+    void _q_updateEnvMapsSize();
 };
 
 struct QEnvironmentLightData

@@ -170,6 +170,55 @@ private Q_SLOTS:
         }
         {
             auto texture = new Qt3DRender::QTexture2D(&light);
+            QSignalSpy spy(&light, &Qt3DRender::QEnvironmentLight::irradianceChanged);
+
+            // WHEN
+            light.setIrradiance(texture);
+
+            // THEN
+            QCOMPARE(light.irradiance(), texture);
+            QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), texture);
+            QCOMPARE(shaderData->property("irradianceSize").value<QVector3D>(),
+                     QVector3D(texture->width(), texture->height(), texture->depth()));
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
+
+            // WHEN
+            texture->setWidth(883);
+
+            // THEN
+            QCOMPARE(shaderData->property("irradianceSize").value<QVector3D>(),
+                     QVector3D(883.0f, texture->height(), texture->depth()));
+
+            // WHEN
+            texture->setHeight(1340);
+
+            // THEN
+            QCOMPARE(shaderData->property("irradianceSize").value<QVector3D>(),
+                     QVector3D(883.0f, 1340.0f, texture->depth()));
+
+            // WHEN
+            texture->setDepth(1584);
+
+            // THEN
+            QCOMPARE(shaderData->property("irradianceSize").value<QVector3D>(),
+                     QVector3D(883.0f, 1340.0f, 1584.0f));
+
+            // WHEN
+            delete texture;
+
+            // THEN
+            QCOMPARE(light.irradiance(), nullptr);
+            QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), nullptr);
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
+
+            // THEN
+            QCOMPARE(shaderData->property("irradianceSize").value<QVector3D>(),
+                     QVector3D());
+        }
+        {
+            auto texture = new Qt3DRender::QTexture2D(&light);
             QSignalSpy spy(&light, &Qt3DRender::QEnvironmentLight::specularChanged);
 
             // WHEN
@@ -241,6 +290,55 @@ private Q_SLOTS:
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), nullptr);
             QCOMPARE(spy.count(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
+        }
+        {
+            auto texture = new Qt3DRender::QTexture2D(&light);
+            QSignalSpy spy(&light, &Qt3DRender::QEnvironmentLight::specularChanged);
+
+            // WHEN
+            light.setSpecular(texture);
+
+            // THEN
+            QCOMPARE(light.specular(), texture);
+            QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), texture);
+            QCOMPARE(shaderData->property("specularSize").value<QVector3D>(),
+                     QVector3D(texture->width(), texture->height(), texture->depth()));
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
+
+            // WHEN
+            texture->setWidth(883);
+
+            // THEN
+            QCOMPARE(shaderData->property("specularSize").value<QVector3D>(),
+                     QVector3D(883.0f, texture->height(), texture->depth()));
+
+            // WHEN
+            texture->setHeight(1340);
+
+            // THEN
+            QCOMPARE(shaderData->property("specularSize").value<QVector3D>(),
+                     QVector3D(883.0f, 1340.0f, texture->depth()));
+
+            // WHEN
+            texture->setDepth(1584);
+
+            // THEN
+            QCOMPARE(shaderData->property("specularSize").value<QVector3D>(),
+                     QVector3D(883.0f, 1340.0f, 1584.0f));
+
+            // WHEN
+            delete texture;
+
+            // THEN
+            QCOMPARE(light.specular(), nullptr);
+            QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), nullptr);
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
+
+            // THEN
+            QCOMPARE(shaderData->property("specularSize").value<QVector3D>(),
+                     QVector3D());
         }
     }
 
