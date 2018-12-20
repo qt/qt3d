@@ -61,8 +61,6 @@ namespace Qt3DExtras {
 
 QMetalRoughMaterialPrivate::QMetalRoughMaterialPrivate()
     : QMaterialPrivate()
-    , m_environmentIrradianceTexture(new QTexture2D())
-    , m_environmentSpecularTexture(new QTexture2D())
     , m_baseColorParameter(new QParameter(QStringLiteral("baseColor"), QColor("grey")))
     , m_metalnessParameter(new QParameter(QStringLiteral("metalness"), 0.0f))
     , m_roughnessParameter(new QParameter(QStringLiteral("roughness"), 0.0f))
@@ -72,8 +70,6 @@ QMetalRoughMaterialPrivate::QMetalRoughMaterialPrivate()
     , m_ambientOcclusionMapParameter(new QParameter(QStringLiteral("ambientOcclusionMap"), QVariant()))
     , m_normalMapParameter(new QParameter(QStringLiteral("normalMap"), QVariant()))
     , m_textureScaleParameter(new QParameter(QStringLiteral("texCoordScale"), 1.0f))
-    , m_environmentIrradianceParameter(new QParameter(QStringLiteral("envLight.irradiance"), m_environmentIrradianceTexture))
-    , m_environmentSpecularParameter(new QParameter(QStringLiteral("envLight.specular"), m_environmentSpecularTexture))
     , m_metalRoughEffect(new QEffect())
     , m_metalRoughGL3Technique(new QTechnique())
     , m_metalRoughGL3RenderPass(new QRenderPass())
@@ -85,17 +81,6 @@ QMetalRoughMaterialPrivate::QMetalRoughMaterialPrivate()
     , m_metalRoughES3ShaderBuilder(new QShaderProgramBuilder())
     , m_filterKey(new QFilterKey)
 {
-    m_environmentIrradianceTexture->setMagnificationFilter(QAbstractTexture::Linear);
-    m_environmentIrradianceTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
-    m_environmentIrradianceTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
-    m_environmentIrradianceTexture->setGenerateMipMaps(true);
-    m_environmentIrradianceTexture->setMaximumAnisotropy(16.0f);
-
-    m_environmentSpecularTexture->setMagnificationFilter(QAbstractTexture::Linear);
-    m_environmentSpecularTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
-    m_environmentSpecularTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
-    m_environmentSpecularTexture->setGenerateMipMaps(true);
-    m_environmentSpecularTexture->setMaximumAnisotropy(16.0f);
 }
 
 void QMetalRoughMaterialPrivate::init()
@@ -162,15 +147,6 @@ void QMetalRoughMaterialPrivate::init()
     m_metalRoughEffect->addParameter(m_metalnessParameter);
     m_metalRoughEffect->addParameter(m_roughnessParameter);
     m_metalRoughEffect->addParameter(m_textureScaleParameter);
-
-    // Note that even though those parameters are not exposed in the API,
-    // they need to be kept around for now due to a bug in some drivers/GPUs
-    // (at least Intel) which cause issues with unbound textures even if you
-    // don't try to sample from them.
-    // Can probably go away once we generate the shaders and deal in this
-    // case in a better way.
-    m_metalRoughEffect->addParameter(m_environmentIrradianceParameter);
-    m_metalRoughEffect->addParameter(m_environmentSpecularParameter);
 
     q->setEffect(m_metalRoughEffect);
 }
