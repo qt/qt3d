@@ -91,12 +91,14 @@ QQ2.Item {
             }
 
             readonly property Texture texture3: Texture2D {
+                format: Texture.RGBA8_UNorm
                 textureImages: TextureImage {
                     source: textureSource
                 }
             }
 
             readonly property Texture texture4: Texture2D {
+                format: Texture.RGBA8_UNorm
                 textureImages: TextureImage {
                     source: textureSource
                 }
