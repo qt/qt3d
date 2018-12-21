@@ -228,6 +228,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // Picking
     qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
     qmlRegisterType<Qt3DRender::QObjectPicker, 9>(uri, 2, 9, "ObjectPicker");
+    qmlRegisterType<Qt3DRender::QObjectPicker, 13>(uri, 2, 13, "ObjectPicker");
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DRayCaster>(uri, 2, 11, "RayCaster");
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DScreenRayCaster>(uri, 2, 11, "ScreenRayCaster");
