@@ -57,6 +57,7 @@
 #include <QtCore/qjsondocument.h>
 #include <QtCore/qjsonobject.h>
 #include <QtCore/qhash.h>
+#include <QtCore/qloggingcategory.h>
 
 #include <Qt3DRender/private/qsceneimporter_p.h>
 
@@ -82,6 +83,7 @@ class QParameter;
 class QGeometryRenderer;
 class QAbstractLight;
 class QRenderPass;
+class QTexture2D;
 
 Q_DECLARE_LOGGING_CATEGORY(GLTFImporterLog)
 
@@ -94,7 +96,7 @@ public:
     ~GLTFImporter();
 
     void setBasePath(const QString& path);
-    bool setJSON( const QJsonDocument &json );
+    bool setJSON(const QJsonDocument &json);
 
     // SceneParserInterface interface
     void setSource(const QUrl &source) final;
@@ -130,7 +132,7 @@ private:
     {
     public:
         AccessorData();
-        explicit AccessorData(const QJsonObject& json);
+        explicit AccessorData(const QJsonObject& json, int major, int minor);
 
         QString bufferViewName;
         QAttribute::VertexBaseType type;
@@ -141,6 +143,7 @@ private:
     };
 
     static bool isGLTFSupported(const QStringList &extensions);
+    static bool isEmbeddedResource(const QString &url);
     static void renameFromJson(const QJsonObject& json, QObject * const object );
     static bool hasStandardUniformNameFromSemantic(const QString &semantic);
     static QString standardAttributeNameFromSemantic(const QString &semantic);
@@ -151,8 +154,11 @@ private:
     bool fillCamera(QCameraLens &lens, QCamera *cameraEntity, const QString &id) const;
 
     void parse();
+    void parseV1();
+    void parseV2();
     void cleanup();
 
+    void processJSONAsset(const QJsonObject &json);
     void processJSONBuffer(const QString &id, const QJsonObject &json);
     void processJSONBufferView(const QString &id, const QJsonObject &json);
     void processJSONShader(const QString &id, const QJsonObject &jsonObject);
@@ -181,12 +187,16 @@ private:
     void populateRenderStates(QRenderPass *pass, const QJsonObject &states);
     void addProgramToPass(QRenderPass *pass, const QString &progName);
 
+    void setTextureSamplerInfo(const QString &id, const QJsonObject &jsonObj, QTexture2D *tex);
     QMaterial *materialWithCustomShader(const QString &id, const QJsonObject &jsonObj);
     QMaterial *commonMaterial(const QJsonObject &jsonObj);
+    QMaterial *pbrMaterial(const QJsonObject &jsonObj);
 
     QJsonDocument m_json;
     QString m_basePath;
     bool m_parseDone;
+    int m_majorVersion;
+    int m_minorVersion;
     QString m_defaultScene;
 
     // multi-hash because our QMeshData corresponds to a single primitive
@@ -215,6 +225,7 @@ private:
 
     QHash<QString, QAbstractTexture*> m_textures;
     QHash<QString, QString> m_imagePaths;
+    QHash<QString, QImage> m_imageData;
     QHash<QString, QAbstractLight *> m_lights;
 };
 
