@@ -317,6 +317,12 @@ const struct FourCCFormat
 { DdsFourCC<'D','X','T','5'>::value,                { QOpenGLTexture::NoSourceFormat,   QOpenGLTexture::RGBA_DXT5,      QOpenGLTexture::NoPixelType,    16, true } },
 { DdsFourCC<'A','T','I','1'>::value,                { QOpenGLTexture::NoSourceFormat,   QOpenGLTexture::R_ATI1N_UNorm,  QOpenGLTexture::NoPixelType,     8, true } },
 { DdsFourCC<'A','T','I','2'>::value,                { QOpenGLTexture::NoSourceFormat,   QOpenGLTexture::RG_ATI2N_UNorm, QOpenGLTexture::NoPixelType,    16, true } },
+{ /* DXGI_FORMAT_R16_FLOAT */         111,          { QOpenGLTexture::Red,              QOpenGLTexture::R16F,           QOpenGLTexture::Float16,        2,  false } },
+{ /* DXGI_FORMAT_R16_FLOAT */         112,          { QOpenGLTexture::RG,               QOpenGLTexture::RG16F,          QOpenGLTexture::Float16,        4,  false } },
+{ /* DXGI_FORMAT_R16G16B16A16_FLOAT */113,          { QOpenGLTexture::RGBA,             QOpenGLTexture::RGBA16F,        QOpenGLTexture::Float16,        8,  false } },
+{ /* DXGI_FORMAT_R32_FLOAT */         114,          { QOpenGLTexture::Red,              QOpenGLTexture::R32F,           QOpenGLTexture::Float32,        4,  false } },
+{ /* DXGI_FORMAT_R32G32_FLOAT */      115,          { QOpenGLTexture::RG,               QOpenGLTexture::RG32F,          QOpenGLTexture::Float32,        8,  false } },
+{ /* DXGI_FORMAT_R32G32B32A32_FLOAT */116,          { QOpenGLTexture::RGBA,             QOpenGLTexture::RGBA32F,        QOpenGLTexture::Float32,        16, false } }
 };
 
 const struct DX10Format
@@ -1413,7 +1419,7 @@ QTextureFromSourceGenerator::QTextureFromSourceGenerator(QTextureLoader *texture
     , m_mirrored()
     , m_texture(textureId)
     , m_engine(engine)
-    , m_format(QAbstractTexture::RGBA8_UNorm)
+    , m_format(QAbstractTexture::NoFormat)
 {
     Q_ASSERT(textureLoader);
 

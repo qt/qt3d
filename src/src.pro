@@ -147,6 +147,7 @@ qtHaveModule(quick) {
                 src_quick3d_imports_scene2d
         }
         qtConfig(qt3d-logic): src_quick3d_imports_scene3d.depends += src_logic
+        qtConfig(qt3d-animation): src_quick3d_imports_scene3d.depends += src_animation
     }
     qtConfig(qt3d-animation) {
         SUBDIRS += \
