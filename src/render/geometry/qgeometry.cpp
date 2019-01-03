@@ -153,6 +153,28 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
 {
 }
 
+void QGeometry::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    Q_D(QGeometry);
+    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
+    if (e->type() == PropertyUpdated) {
+        const bool blocked = blockNotifications(true);
+        if (e->propertyName() == QByteArrayLiteral("extent")) {
+            const QPair<QVector3D, QVector3D> extent = e->value().value<QPair<QVector3D, QVector3D>>();
+
+            if (extent.first != d->m_minExtent) {
+                d->m_minExtent = extent.first;
+                emit minExtentChanged(extent.first);
+            }
+            if (extent.second != d->m_maxExtent) {
+                d->m_maxExtent = extent.second;
+                emit maxExtentChanged(d->m_maxExtent);
+            }
+        }
+        blockNotifications(blocked);
+    }
+}
+
 /*!
     \fn void Qt3DRender::QGeometry::addAttribute(Qt3DRender::QAttribute *attribute)
     Adds an \a attribute to this geometry.
@@ -213,6 +235,40 @@ QAttribute *QGeometry::boundingVolumePositionAttribute() const
 {
     Q_D(const QGeometry);
     return d->m_boundingVolumePositionAttribute;
+}
+
+/*!
+    \qmlproperty vector3d Geometry::minExtent
+
+    Holds the vertex with the lowest x, y, z position values.
+ */
+
+/*!
+    \property QGeometry::minExtent
+
+    Holds the vertex with the lowest x, y, z position values.
+ */
+QVector3D QGeometry::minExtent() const
+{
+    Q_D(const QGeometry);
+    return d->m_minExtent;
+}
+
+/*!
+    \qmlproperty vector3d Geometry::maxExtent
+
+    Holds the vertex with the highest x, y, z position values.
+ */
+
+/*!
+    \property QGeometry::maxExtent
+
+    Holds the vertex with the highest x, y, z position values.
+ */
+QVector3D QGeometry::maxExtent() const
+{
+    Q_D(const QGeometry);
+    return d->m_maxExtent;
 }
 
 /*!

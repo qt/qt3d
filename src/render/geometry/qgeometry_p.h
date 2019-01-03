@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +69,8 @@ public:
 
     QVector<QAttribute *> m_attributes;
     QAttribute *m_boundingVolumePositionAttribute;
+    QVector3D m_minExtent;
+    QVector3D m_maxExtent;
 };
 
 struct QGeometryData

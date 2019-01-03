@@ -53,8 +53,10 @@ namespace Qt3DRender {
 namespace Render {
 
 Geometry::Geometry()
-    : BackendNode(ReadOnly)
+    : BackendNode(ReadWrite)
     , m_geometryDirty(false)
+    , m_shouldNotifyMinExtentChanged(false)
+    , m_shouldNotifyMaxExtentChanged(false)
 {
 }
 
@@ -68,6 +70,10 @@ void Geometry::cleanup()
     m_attributes.clear();
     m_geometryDirty = false;
     m_boundingPositionAttribute = Qt3DCore::QNodeId();
+    m_min = QVector3D();
+    m_max = QVector3D();
+    m_shouldNotifyMinExtentChanged = false;
+    m_shouldNotifyMaxExtentChanged = false;
 }
 
 void Geometry::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -120,6 +126,37 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 void Geometry::unsetDirty()
 {
     m_geometryDirty = false;
+}
+
+// Called from calcboundingvolumejob (in a QtConcurrent thead (can't send
+// update changes from such a thread))
+void Geometry::updateExtent(const QVector3D &min, const QVector3D &max)
+{
+    // Send notification to frontend
+    if (m_min != min) {
+        m_min = min;
+        m_shouldNotifyMinExtentChanged = true;
+    }
+
+    if (m_max != max) {
+        m_max = max;
+        m_shouldNotifyMaxExtentChanged = true;
+    }
+}
+
+// Called from calcboundingvolumejob after all bounding volumes have been
+// updated (in an aspect thread)
+void Geometry::notifyExtentChanged()
+{
+    if (m_shouldNotifyMinExtentChanged || m_shouldNotifyMaxExtentChanged) {
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+        change->setPropertyName("extent");
+        change->setValue(QVariant::fromValue(QPair<QVector3D, QVector3D>(m_min, m_max)));
+        notifyObservers(change);
+        m_shouldNotifyMinExtentChanged = false;
+        m_shouldNotifyMaxExtentChanged = false;
+    }
 }
 
 } // namespace Render

@@ -75,12 +75,22 @@ public:
     inline Qt3DCore::QNodeId boundingPositionAttribute() const { return m_boundingPositionAttribute; }
     void unsetDirty();
 
+    inline QVector3D min() const { return m_min; }
+    inline QVector3D max() const { return m_max; }
+
+    void updateExtent(const QVector3D &min, const QVector3D &max);
+    void notifyExtentChanged();
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     QVector<Qt3DCore::QNodeId> m_attributes;
     bool m_geometryDirty;
     Qt3DCore::QNodeId m_boundingPositionAttribute;
+    QVector3D m_min;
+    QVector3D m_max;
+    bool m_shouldNotifyMinExtentChanged;
+    bool m_shouldNotifyMaxExtentChanged;
 };
 
 } // namespace Render

@@ -34,7 +34,9 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 #include "testrenderer.h"
+#include "testpostmanarbiter.h"
 
 class DummyAttribute : public Qt3DRender::QAttribute
 {
@@ -186,6 +188,32 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+    }
+
+    void checkExtentTransmission()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        TestArbiter arbiter;
+        Qt3DRender::Render::Geometry renderGeometry;
+
+        Qt3DCore::QBackendNodePrivate::get(&renderGeometry)->setArbiter(&arbiter);
+        renderGeometry.setRenderer(&renderer);
+
+        // WHEN
+        renderGeometry.updateExtent(QVector3D(-1.0f, -1.0f, -1.0f), QVector3D(1.0f, 1.0f, 1.0f));
+        renderGeometry.notifyExtentChanged();
+
+        // THEN
+        QCOMPARE(arbiter.events.count(), 1);
+
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "extent");
+        const QPair<QVector3D, QVector3D> v = change->value().value<QPair<QVector3D, QVector3D>>();
+        QCOMPARE(v.first, QVector3D(-1.0f, -1.0f, -1.0f));
+        QCOMPARE(v.second, QVector3D(1.0f, 1.0f, 1.0f));
+
+        arbiter.events.clear();
     }
 };
 

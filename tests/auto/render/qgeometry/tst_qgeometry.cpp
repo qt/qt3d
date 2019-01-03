@@ -39,8 +39,20 @@
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QPropertyNodeRemovedChange>
+#include <QSignalSpy>
 
 #include "testpostmanarbiter.h"
+
+class FakeGeometry : public Qt3DRender::QGeometry
+{
+    Q_OBJECT
+
+public:
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override
+    {
+        Qt3DRender::QGeometry::sceneChangeEvent(change);
+    }
+};
 
 class tst_QGeometry: public QObject
 {
@@ -179,6 +191,49 @@ private Q_SLOTS:
 
             // THEN Should not crash when the attribute is destroyed (tests for failed removal of destruction helper)
         }
+    }
+
+    void checkExtentUpdates()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        QScopedPointer<FakeGeometry> geometry(new FakeGeometry());
+        arbiter.setArbiterOnNode(geometry.data());
+        QSignalSpy spyMinExtent(geometry.data(), SIGNAL(minExtentChanged(QVector3D)));
+        QSignalSpy spyMaxExtent(geometry.data(), SIGNAL(maxExtentChanged(QVector3D)));
+
+        // THEN
+        QVERIFY(spyMinExtent.isValid());
+        QVERIFY(spyMaxExtent.isValid());
+        QCOMPARE(geometry->minExtent(), QVector3D());
+        QCOMPARE(geometry->maxExtent(), QVector3D());
+
+        // WHEN
+        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        valueChange->setPropertyName("extent");
+        valueChange->setValue(QVariant::fromValue(QPair<QVector3D, QVector3D>(QVector3D(10.0f, 10.f, 10.0f),
+                                                                              QVector3D())));
+        geometry->sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spyMinExtent.count(), 1);
+        QCOMPARE(spyMaxExtent.count(), 0);
+        QCOMPARE(geometry->minExtent(), QVector3D(10.0f, 10.0f, 10.0f));
+
+        spyMinExtent.clear();
+
+        // WHEN
+        valueChange->setPropertyName("extent");
+        valueChange->setValue(QVariant::fromValue(QPair<QVector3D, QVector3D>(QVector3D(10.0f, 10.f, 10.0f),
+                                                                              QVector3D(11.0f, 11.f, 11.0f))));
+        geometry->sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spyMinExtent.count(), 0);
+        QCOMPARE(spyMaxExtent.count(), 1);
+        QCOMPARE(geometry->maxExtent(), QVector3D(11.0f, 11.0f, 11.0f));
+
+        spyMaxExtent.clear();
     }
 };
 

@@ -65,14 +65,25 @@ namespace Render {
 
 namespace {
 
-void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node);
+QVector<Geometry*> calculateLocalBoundingVolume(NodeManagers *manager, Entity *node);
 
-struct UpdateBoundFunctor {
+struct UpdateBoundFunctor
+{
     NodeManagers *manager;
 
-    void operator ()(Qt3DRender::Render::Entity *node)
+    // This define is required to work with QtConcurrent
+    typedef QVector<Geometry *> result_type;
+    QVector<Geometry *> operator ()(Qt3DRender::Render::Entity *node)
     {
-        calculateLocalBoundingVolume(manager, node);
+        return calculateLocalBoundingVolume(manager, node);
+    }
+};
+
+struct ReduceUpdateBoundFunctor
+{
+    void operator ()(QVector<Geometry *> &result, const QVector<Geometry *> &values)
+    {
+        result += values;
     }
 };
 
@@ -82,6 +93,8 @@ public:
     BoundingVolumeCalculator(NodeManagers *manager) : m_manager(manager) { }
 
     const Sphere& result() { return m_volume; }
+    const QVector3D min() const { return m_min; }
+    const QVector3D max() const { return m_max; }
 
     bool apply(Qt3DRender::Render::Attribute *positionAttribute,
                Qt3DRender::Render::Attribute *indexAttribute,
@@ -94,6 +107,9 @@ public:
                                      primitiveRestartEnabled, primitiveRestartIndex)) {
             return false;
         }
+
+        m_min = QVector3D(findExtremePoints.xMin, findExtremePoints.yMin, findExtremePoints.zMin);
+        m_max = QVector3D(findExtremePoints.xMax, findExtremePoints.yMax, findExtremePoints.zMax);
 
         // Calculate squared distance for the pairs of points
         const float xDist2 = (findExtremePoints.xMaxPt - findExtremePoints.xMinPt).lengthSquared();
@@ -127,6 +143,8 @@ public:
 private:
     Sphere m_volume;
     NodeManagers *m_manager;
+    QVector3D m_min;
+    QVector3D m_max;
 
     class FindExtremePoints : public Buffer3fVisitor
     {
@@ -191,17 +209,20 @@ private:
     };
 };
 
-void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
+QVector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 {
     // The Bounding volume will only be computed if the position Buffer
     // isDirty
 
+    QVector<Geometry *> updatedGeometries;
+
     if (!node->isTreeEnabled())
-        return;
+        return updatedGeometries;
 
     GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
+    GeometryManager *geometryManager = manager->geometryManager();
     if (gRenderer && gRenderer->primitiveType() != QGeometryRenderer::Patches) {
-        Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(gRenderer->geometryId());
+        Geometry *geom = geometryManager->lookupResource(gRenderer->geometryId());
 
         if (geom) {
             int drawVertexCount = gRenderer->vertexCount(); // may be 0, gets changed below if so
@@ -224,14 +245,14 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                     || positionAttribute->vertexBaseType() != QAttribute::Float
                     || positionAttribute->vertexSize() < 3) {
                 qWarning("calculateLocalBoundingVolume: Position attribute not suited for bounding volume computation");
-                return;
+                return updatedGeometries;
             }
 
             Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
             // No point in continuing if the positionAttribute doesn't have a suitable buffer
             if (!buf) {
                 qWarning("calculateLocalBoundingVolume: Position attribute not referencing a valid buffer");
-                return;
+                return updatedGeometries;
             }
 
             // Check if there is an index attribute.
@@ -259,7 +280,7 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                                       std::end(validIndexTypes),
                                       indexAttribute->vertexBaseType()) == std::end(validIndexTypes)) {
                             qWarning() << "calculateLocalBoundingVolume: Unsupported index attribute type" << indexAttribute->name() << indexAttribute->vertexBaseType();
-                            return;
+                            return updatedGeometries;
                         }
 
                         break;
@@ -287,6 +308,11 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                     node->localBoundingVolume()->setCenter(reader.result().center());
                     node->localBoundingVolume()->setRadius(reader.result().radius());
                     node->unsetBoundingVolumeDirty();
+
+                    // Record min/max vertex in Geometry
+                    geom->updateExtent(reader.min(), reader.max());
+                    // Mark geometry as requiring a call to update its frontend
+                    updatedGeometries.push_back(geom);
                 }
             }
         }
@@ -297,14 +323,16 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
     if (children.size() > 1) {
         UpdateBoundFunctor functor;
         functor.manager = manager;
-        QtConcurrent::blockingMap(children, functor);
+        ReduceUpdateBoundFunctor reduceFunctor;
+        updatedGeometries += QtConcurrent::blockingMappedReduced<decltype(updatedGeometries)>(children, functor, reduceFunctor);
     } else
 #endif
     {
         const auto children = node->children();
         for (Entity *child : children)
-            calculateLocalBoundingVolume(manager, child);
+            updatedGeometries += calculateLocalBoundingVolume(manager, child);
     }
+    return updatedGeometries;
 }
 
 } // anonymous
@@ -318,7 +346,11 @@ CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
 
 void CalculateBoundingVolumeJob::run()
 {
-    calculateLocalBoundingVolume(m_manager, m_node);
+    const QVector<Geometry *> updatedGeometries = calculateLocalBoundingVolume(m_manager, m_node);
+
+    // Send extent updates to frontend
+    for (Geometry *geometry : updatedGeometries)
+        geometry->notifyExtentChanged();
 }
 
 void CalculateBoundingVolumeJob::setRoot(Entity *node)
