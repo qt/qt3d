@@ -52,6 +52,10 @@
 #include <Qt3DLogic/qlogicaspect.h>
 #endif
 
+#if QT_CONFIG(qt3d_animation)
+#include <Qt3DAnimation/qanimationaspect.h>
+#endif
+
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -169,7 +173,15 @@ void Scene3DItem::setAspects(const QStringList &aspects)
             m_aspectEngine->registerAspect(new Qt3DLogic::QLogicAspect);
             continue;
 #else
-            qFatal("Scene3D requested the Qt 3D input aspect but Qt 3D wasn't configured to build the Qt 3D Input aspect");
+            qFatal("Scene3D requested the Qt 3D logic aspect but Qt 3D wasn't configured to build the Qt 3D Logic aspect");
+#endif
+        }
+        if (aspect == QLatin1String("animation"))  {
+#if QT_CONFIG(qt3d_animation)
+            m_aspectEngine->registerAspect(new Qt3DAnimation::QAnimationAspect);
+            continue;
+#else
+            qFatal("Scene3D requested the Qt 3D animation aspect but Qt 3D wasn't configured to build the Qt 3D Animation aspect");
 #endif
         }
         m_aspectEngine->registerAspect(aspect);

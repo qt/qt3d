@@ -79,7 +79,19 @@ Entity {
         id: camera2
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
-        aspectRatio: _view.width * 0.5 / _view.height
+        aspectRatio: _view.width * 0.5 / (_view.height * 0.5)
+        nearPlane : 0.1
+        farPlane : 1000.0
+        position: Qt.vector3d( 40.0, 5.0, -20.0 )
+        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+    }
+
+    Camera {
+        id: camera3
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 45
+        aspectRatio: _view.width * 0.5 / (_view.height * 0.5)
         nearPlane : 0.1
         farPlane : 1000.0
         position: Qt.vector3d( 40.0, 5.0, -20.0 )
@@ -113,9 +125,19 @@ Entity {
                     }
 
                     Viewport {
-                        normalizedRect: Qt.rect(0.5, 0.0, 0.5, 1.0)
+                        normalizedRect: Qt.rect(0.5, 0.0, 0.5, 0.5)
                         CameraSelector {
                             camera: camera2
+                            LayerFilter {
+                                // To show Debug volumes
+                                layers: [sceneRoot.contentLayer, sceneRoot.debugLayer]
+                            }
+                        }
+                    }
+                    Viewport {
+                        normalizedRect: Qt.rect(0.5, 0.5, 0.5, 0.5)
+                        CameraSelector {
+                            camera: camera3
                             LayerFilter {
                                 // To show Debug volumes
                                 layers: [sceneRoot.contentLayer, sceneRoot.debugLayer]

@@ -1,29 +1,19 @@
 defineTest(qtConfLibrary_fbx) {
-    libs = $$eval($${1}.libs)
-    includedir =
-
-    libs_override = $$getenv(FBXSDK_LIBS)
-    !isEmpty(libs_override) {
-        libs = $${libs_override}
-    }
+    libdir =
 
     prefix = $$getenv(FBXSDK)
-
-    unix:isEmpty(prefix) {
-        libs += "-L/usr/local/lib"
-        libs += "-L/usr/lib"
-    }
-
     !isEmpty(prefix) {
-        includedir += $${prefix}/include
-        !win32:libs += -L$${prefix}/lib
+        !qtConfResolvePathIncs($${1}.includedir, $${prefix}/include, $$2): \
+            return(false)
+        !win32: libdir += $${prefix}/lib
     }
 
-    $${1}.libs = $$val_escape(libs)
-    $${1}.includedir = $$val_escape(includedir)
+    libs = $$getenv(FBXSDK_LIBS)
+    isEmpty(libs): \
+        libs = $$eval($${1}.libs)
 
-    export($${1}.libs)
-    export($${1}.includedir)
+    !qtConfResolvePathLibs($${1}.libs, $$libdir, $$libs): \
+        return(false)
 
     return(true)
 }

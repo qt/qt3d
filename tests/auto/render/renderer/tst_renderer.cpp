@@ -171,6 +171,8 @@ private Q_SLOTS:
                  1 + // sendBufferCaptureJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
+                 1 + // CalculateBoundingVolumeJob
+                 1 + // UpdateMeshTriangleListJob
                  1); // BufferGathererJob
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);

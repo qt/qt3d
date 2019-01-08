@@ -34,6 +34,8 @@
 #include <Qt3DRender/QRenderCapture>
 #include <Qt3DRender/private/qrendercapture_p.h>
 
+#include <QPointer>
+
 #include "testpostmanarbiter.h"
 
 class MyRenderCapture : public Qt3DRender::QRenderCapture
@@ -129,6 +131,23 @@ private Q_SLOTS:
         // THEN
         renderCapture->sceneChangeEvent(e); // Should not reset
     }
+
+    void crashOnRenderCaptureDeletion()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QRenderCapture> renderCapture(new Qt3DRender::QRenderCapture());
+        QPointer<Qt3DRender::QRenderCaptureReply> renderCaptureReply(renderCapture->requestCapture());
+
+        // THEN
+        QVERIFY(renderCaptureReply);
+
+        // WHEN
+        renderCapture.reset();
+
+        // THEN (Should not crash and delete reply)
+        QVERIFY(!renderCaptureReply);
+    }
+
 };
 
 QTEST_MAIN(tst_QRenderCapture)
