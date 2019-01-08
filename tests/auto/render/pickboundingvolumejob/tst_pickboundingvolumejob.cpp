@@ -38,6 +38,7 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QNoPicking>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickTriangleEvent>
 #include <Qt3DRender/private/nodemanagers_p.h>
@@ -57,6 +58,7 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/qobjectpicker_p.h>
+#include <Qt3DRender/private/nopicking_p.h>
 
 #include <private/qpickevent_p.h>
 
@@ -1577,6 +1579,52 @@ private Q_SLOTS:
             QVERIFY(!backendPicker1->isPressed());
             QVERIFY(!backendPicker2->isPressed());
         }
+    }
+
+    void checkNoPickingFGPicking()
+    {
+        // GIVEN
+        QmlSceneReader sceneReader(QUrl("qrc:/testscene_nopicking.qml"));
+        QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
+        QVERIFY(root);
+        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
+
+        // THEN
+        QVERIFY(test->frameGraphRoot() != nullptr);
+        Qt3DRender::QNoPicking *noPicking = root->findChild<Qt3DRender::QNoPicking *>();
+        QVERIFY(noPicking != nullptr);
+        Qt3DRender::QCamera *camera = root->findChild<Qt3DRender::QCamera *>();
+        QVERIFY(camera != nullptr);
+        QQuickWindow *window = root->findChild<QQuickWindow *>();
+        QVERIFY(camera != nullptr);
+        QCOMPARE(window->size(), QSize(600, 600));
+
+        // WHEN
+        Qt3DRender::Render::PickingUtils::ViewportCameraAreaGatherer gatherer;
+        QVector<Qt3DRender::Render::PickingUtils::ViewportCameraAreaDetails> results = gatherer.gather(test->frameGraphRoot());
+
+        // THEN
+        QCOMPARE(results.size(), 0);
+
+        // WHEN
+        Qt3DRender::Render::FrameGraphNode *backendFGNode = test->nodeManagers()->frameGraphManager()->lookupNode(noPicking->id());
+        QVERIFY(backendFGNode);
+        QCOMPARE(backendFGNode->nodeType(), Qt3DRender::Render::FrameGraphNode::NoPicking);
+        Qt3DRender::Render::NoPicking * backendNoPicking = static_cast<Qt3DRender::Render::NoPicking *>(backendFGNode);
+        backendNoPicking->setEnabled(false);
+
+        // THEN
+        QVERIFY(!backendNoPicking->isEnabled());
+
+        // WHEN
+        results = gatherer.gather(test->frameGraphRoot());
+
+        // THEN
+        QCOMPARE(results.size(), 1);
+        auto vca = results.first();
+        QCOMPARE(vca.area, QSize(600, 600));
+        QCOMPARE(vca.cameraId, camera->id());
+        QCOMPARE(vca.viewport, QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     }
 
 };

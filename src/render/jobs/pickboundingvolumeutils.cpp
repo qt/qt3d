@@ -100,6 +100,11 @@ ViewportCameraAreaDetails ViewportCameraAreaGatherer::gatherUpViewportCameraArea
                 vca.surface = selector->surface();
                 break;
             }
+            case FrameGraphNode::NoPicking: {
+                // Return an empty/invalid ViewportCameraAreaDetails which will
+                // prevent picking in the presence of a NoPicking node
+                return {};
+            }
             default:
                 break;
             }

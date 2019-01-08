@@ -64,7 +64,9 @@ HEADERS += \
     $$PWD/qwaitfence_p.h \
     $$PWD/qsetfence_p.h \
     $$PWD/setfence_p.h \
-    $$PWD/waitfence_p.h
+    $$PWD/waitfence_p.h \
+    $$PWD/qnopicking.h \
+    $$PWD/nopicking_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -110,4 +112,6 @@ SOURCES += \
     $$PWD/qsetfence.cpp \
     $$PWD/qwaitfence.cpp \
     $$PWD/setfence.cpp \
-    $$PWD/waitfence.cpp
+    $$PWD/waitfence.cpp \
+    $$PWD/qnopicking.cpp \
+    $$PWD/nopicking.cpp

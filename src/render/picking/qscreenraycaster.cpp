@@ -59,7 +59,7 @@ namespace Qt3DRender {
     screen space, which will be used to construct an actual 3D ray between the near and
     far planes.
 
-    \sa QRayCaster
+    \sa QRayCaster, QNoPicking
 */
 /*!
     \qmltype ScreenRayCaster
@@ -72,7 +72,7 @@ namespace Qt3DRender {
     screen space, which will be used to construct an actual 3D ray between the near and
     far planes.
 
-    \sa RayCaster
+    \sa RayCaster, NoPicking
 */
 
 /*!

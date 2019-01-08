@@ -67,6 +67,7 @@
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DRender/qrenderstateset.h>
 #include <Qt3DRender/qnodraw.h>
+#include <Qt3DRender/qnopicking.h>
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
@@ -116,6 +117,7 @@
 #include <Qt3DRender/private/textureimage_p.h>
 #include <Qt3DRender/private/statesetnode_p.h>
 #include <Qt3DRender/private/nodraw_p.h>
+#include <Qt3DRender/private/nopicking_p.h>
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
@@ -305,6 +307,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QBlitFramebuffer>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::BlitFramebuffer, QBlitFramebuffer> >::create(m_renderer));
     q->registerBackendType<QSetFence>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SetFence, QSetFence> >::create(m_renderer));
     q->registerBackendType<QWaitFence>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::WaitFence, QWaitFence> >::create(m_renderer));
+    q->registerBackendType<QNoPicking>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::NoPicking, QNoPicking> >::create(m_renderer));
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));

@@ -63,7 +63,7 @@ namespace Qt3DRender {
     Ray casting tests will be performed every frame as long as the component is enabled.
     The hits property will be updated with the list of intersections.
 
-    \sa QAbstractRayCaster, QScreenRayCaster
+    \sa QAbstractRayCaster, QScreenRayCaster, QNoPicking
 */
 /*!
     \qmltype RayCaster
@@ -78,7 +78,7 @@ namespace Qt3DRender {
     Ray casting tests will be performed every frame as long as the component is enabled.
     The hits property will be updated with the list of intersections.
 
-    \sa AbstractRayCaster, ScreenRayCaster
+    \sa AbstractRayCaster, ScreenRayCaster, NoPicking
 */
 
 /*!

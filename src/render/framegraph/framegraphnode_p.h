@@ -103,7 +103,8 @@ public:
         ProximityFilter,
         BlitFramebuffer,
         SetFence,
-        WaitFence
+        WaitFence,
+        NoPicking
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

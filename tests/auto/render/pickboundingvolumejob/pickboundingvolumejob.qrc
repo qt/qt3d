@@ -11,5 +11,6 @@
         <file>testscene_viewports.qml</file>
         <file>testscene_cameraposition.qml</file>
         <file>testscene_priorityoverlapping.qml</file>
+        <file>testscene_nopicking.qml</file>
     </qresource>
 </RCC>

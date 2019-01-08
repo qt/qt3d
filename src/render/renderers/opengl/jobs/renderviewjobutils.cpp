@@ -284,6 +284,10 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 break;
             }
 
+            case FrameGraphNode::NoPicking:
+                // Nothing to do RenderView wise for NoPicking
+                break;
+
             default:
                 // Should never get here
                 qCWarning(Backend) << "Unhandled FrameGraphNode type";
