@@ -122,15 +122,22 @@ RayCasting::QRay3D AbstractPickingJob::rayForViewportAndCamera(const PickingUtil
                                                                const QPoint &pos) const
 {
     static RayCasting::QRay3D invalidRay({}, {}, 0.f);
+
+    if (!vca.area.isValid())
+        return invalidRay;
+
     Matrix4x4 viewMatrix;
     Matrix4x4 projectionMatrix;
     Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(),
                                             vca.cameraId,
                                             viewMatrix,
                                             projectionMatrix);
+    // Returns viewport rect in GL coordinates (y inverted)
     const QRect viewport = windowViewport(vca.area, vca.viewport);
+    // In GL the y is inverted compared to Qt
+    const QPoint glCorrectPos = QPoint(pos.x(), vca.area.height() - pos.y());
 
-    if (vca.area.isValid() && !viewport.contains(pos))
+    if (!viewport.contains(glCorrectPos))
         return invalidRay;
     if (vca.surface) {
         QSurface *surface = nullptr;
@@ -148,8 +155,6 @@ RayCasting::QRay3D AbstractPickingJob::rayForViewportAndCamera(const PickingUtil
             return invalidRay;
     }
 
-    // In GL the y is inverted compared to Qt
-    const QPoint glCorrectPos = QPoint(pos.x(), vca.area.isValid() ? vca.area.height() - pos.y() : pos.y());
     const auto ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     return ray;
 }

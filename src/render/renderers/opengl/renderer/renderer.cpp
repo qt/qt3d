@@ -1797,7 +1797,8 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         renderBinJobs.push_back(m_updateShaderDataTransformJob);
     }
 
-    if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
+        dirtyBitsForFrame & AbstractRenderer::BuffersDirty) {
         renderBinJobs.push_back(m_calculateBoundingVolumeJob);
         renderBinJobs.push_back(m_updateMeshTriangleListJob);
     }
