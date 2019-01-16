@@ -74,6 +74,7 @@ GLTexture::GLTexture(TextureDataManager *texDataMgr,
     , m_textureDataManager(texDataMgr)
     , m_textureImageDataManager(texImgDataMgr)
     , m_dataFunctor(texGen)
+    , m_pendingDataFunctor(nullptr)
     , m_externalRendering(false)
 {
     // make sure texture generator is executed
@@ -189,7 +190,10 @@ GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
             setDirtyFlag(Properties, true);
             needUpload = true;
         } else {
-            qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+            if (m_pendingDataFunctor != m_dataFunctor.get()) {
+                qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+                m_pendingDataFunctor = m_dataFunctor.get();
+            }
             textureInfo.properties.status = QAbstractTexture::Loading;
             return textureInfo;
         }
@@ -273,7 +277,10 @@ RenderBuffer *GLTexture::getOrCreateRenderBuffer()
 
             setDirtyFlag(Properties);
         } else {
-            qWarning() << "[Qt3DRender::GLTexture] [renderbuffer] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+            if (m_pendingDataFunctor != m_dataFunctor.get()) {
+                qWarning() << "[Qt3DRender::GLTexture] [renderbuffer] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+                m_pendingDataFunctor = m_dataFunctor.get();
+            }
             return nullptr;
         }
     }

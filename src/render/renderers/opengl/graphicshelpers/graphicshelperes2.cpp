@@ -163,17 +163,29 @@ void GraphicsHelperES2::drawArrays(GLenum primitiveType,
 
 void GraphicsHelperES2::drawElementsIndirect(GLenum, GLenum, void *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "Indirect Drawing is not supported with OpenGL ES 2";
 }
 
 void GraphicsHelperES2::drawArraysIndirect(GLenum , void *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "Indirect Drawing is not supported with OpenGL ES 2";
 }
 
 void GraphicsHelperES2::setVerticesPerPatch(GLint verticesPerPatch)
 {
     Q_UNUSED(verticesPerPatch);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "Tessellation not supported with OpenGL ES 2";
 }
 
@@ -235,6 +247,10 @@ QVector<ShaderUniformBlock> GraphicsHelperES2::programUniformBlocks(GLuint progr
 {
     Q_UNUSED(programId);
     QVector<ShaderUniformBlock> blocks;
+    static bool showWarning = true;
+    if (!showWarning)
+        return blocks;
+    showWarning = false;
     qWarning() << "UBO are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
     return blocks;
 }
@@ -243,6 +259,10 @@ QVector<ShaderStorageBlock> GraphicsHelperES2::programShaderStorageBlocks(GLuint
 {
     Q_UNUSED(programId);
     QVector<ShaderStorageBlock> blocks;
+    static bool showWarning = true;
+    if (!showWarning)
+        return blocks;
+    showWarning = false;
     qWarning() << "SSBO are not supported by OpenGL ES 2.0 (since OpenGL ES 3.1)";
     return blocks;
 }
@@ -281,12 +301,20 @@ void GraphicsHelperES2::vertexAttributePointer(GLenum shaderDataType,
 void GraphicsHelperES2::readBuffer(GLenum mode)
 {
     Q_UNUSED(mode)
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glReadBuffer not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
 }
 
 void GraphicsHelperES2::drawBuffer(GLenum mode)
 {
     Q_UNUSED(mode);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glDrawBuffer is not supported with OpenGL ES 2";
 }
 
@@ -301,6 +329,10 @@ void GraphicsHelperES2::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
     Q_UNUSED(sfactor);
     Q_UNUSED(dfactor);
 
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glBlendFunci() not supported by OpenGL ES 2.0";
 }
 
@@ -312,6 +344,10 @@ void GraphicsHelperES2::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB,
     Q_UNUSED(sAlpha);
     Q_UNUSED(dAlpha);
 
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glBlendFuncSeparatei() not supported by OpenGL ES 2.0";
 }
 
@@ -339,6 +375,10 @@ void GraphicsHelperES2::frontFace(GLenum mode)
 void GraphicsHelperES2::setMSAAEnabled(bool enabled)
 {
     Q_UNUSED(enabled);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "MSAA not available with OpenGL ES 2.0";
 }
 
@@ -452,8 +492,13 @@ bool GraphicsHelperES2::supportsFeature(GraphicsHelperInterface::Feature feature
         return false;
     }
 }
+
 void GraphicsHelperES2::drawBuffers(GLsizei, const int *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "drawBuffers is not supported by ES 2.0";
 }
 
@@ -467,6 +512,10 @@ void GraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockIn
     Q_UNUSED(programId);
     Q_UNUSED(uniformBlockIndex);
     Q_UNUSED(uniformBlockBinding);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 
@@ -475,6 +524,10 @@ void GraphicsHelperES2::bindShaderStorageBlock(GLuint programId, GLuint shaderSt
     Q_UNUSED(programId);
     Q_UNUSED(shaderStorageBlockIndex);
     Q_UNUSED(shaderStorageBlockBinding);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "SSBO are not supported by ES 2.0 (since ES 3.1)";
 }
 
@@ -483,6 +536,10 @@ void GraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buffe
     Q_UNUSED(target);
     Q_UNUSED(index);
     Q_UNUSED(buffer);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "bindBufferBase is not supported by ES 2.0 (since ES 3.0)";
 }
 
@@ -491,6 +548,10 @@ void GraphicsHelperES2::buildUniformBuffer(const QVariant &v, const ShaderUnifor
     Q_UNUSED(v);
     Q_UNUSED(description);
     Q_UNUSED(buffer);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 
@@ -566,6 +627,10 @@ void GraphicsHelperES2::disableClipPlane(int)
 
 void GraphicsHelperES2::setClipPlane(int, const QVector3D &, float)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "Clip planes not supported by OpenGL ES 2.0";
 }
 
@@ -577,6 +642,10 @@ GLint GraphicsHelperES2::maxClipPlaneCount()
 void GraphicsHelperES2::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
     Q_UNUSED(barriers);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "memory barrier is not supported by OpenGL ES 2.0 (since 4.3)";
 }
 
@@ -597,6 +666,10 @@ void GraphicsHelperES2::clearBufferf(GLint drawbuffer, const QVector4D &values)
 {
     Q_UNUSED(drawbuffer);
     Q_UNUSED(values);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glClearBuffer*() not supported by OpenGL ES 2.0";
 }
 
@@ -616,6 +689,10 @@ void GraphicsHelperES2::enablei(GLenum cap, GLuint index)
 {
     Q_UNUSED(cap);
     Q_UNUSED(index);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glEnablei() not supported by OpenGL ES 2.0";
 }
 
@@ -623,12 +700,20 @@ void GraphicsHelperES2::disablei(GLenum cap, GLuint index)
 {
     Q_UNUSED(cap);
     Q_UNUSED(index);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glDisablei() not supported by OpenGL ES 2.0";
 }
 
 void GraphicsHelperES2::setSeamlessCubemap(bool enable)
 {
     Q_UNUSED(enable);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "GL_TEXTURE_CUBE_MAP_SEAMLESS not supported by OpenGL ES 2.0";
 }
 
@@ -659,6 +744,10 @@ void GraphicsHelperES2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     Q_UNUSED(wx);
     Q_UNUSED(wy);
     Q_UNUSED(wz);
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "Compute Shaders are not supported by ES 2.0 (since ES 3.1)";
 }
 
@@ -666,6 +755,10 @@ char *GraphicsHelperES2::mapBuffer(GLenum target, GLsizeiptr size)
 {
     Q_UNUSED(target);
     Q_UNUSED(size);
+    static bool showWarning = true;
+    if (!showWarning)
+        return nullptr;
+    showWarning = false;
     qWarning() << "Map buffer is not a core requirement for ES 2.0";
     return nullptr;
 }
@@ -673,6 +766,10 @@ char *GraphicsHelperES2::mapBuffer(GLenum target, GLsizeiptr size)
 GLboolean GraphicsHelperES2::unmapBuffer(GLenum target)
 {
     Q_UNUSED(target);
+    static bool showWarning = true;
+    if (!showWarning)
+        return false;
+    showWarning = false;
     qWarning() << "unMap buffer is not a core requirement for ES 2.0";
     return false;
 }
@@ -719,21 +816,37 @@ void GraphicsHelperES2::glUniform4iv(GLint location, GLsizei count, const GLint 
 
 void GraphicsHelperES2::glUniform1uiv(GLint , GLsizei , const GLuint *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniform1uiv not supported by ES 2";
 }
 
 void GraphicsHelperES2::glUniform2uiv(GLint , GLsizei , const GLuint *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniform2uiv not supported by ES 2";
 }
 
 void GraphicsHelperES2::glUniform3uiv(GLint , GLsizei , const GLuint *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniform3uiv not supported by ES 2";
 }
 
 void GraphicsHelperES2::glUniform4uiv(GLint , GLsizei , const GLuint *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniform4uiv not supported by ES 2";
 }
 
@@ -754,31 +867,55 @@ void GraphicsHelperES2::glUniformMatrix4fv(GLint location, GLsizei count, const 
 
 void GraphicsHelperES2::glUniformMatrix2x3fv(GLint , GLsizei , const GLfloat *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniformMatrix2x3fv not supported by ES 2";
 }
 
 void GraphicsHelperES2::glUniformMatrix3x2fv(GLint , GLsizei , const GLfloat *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniformMatrix3x2fv not supported by ES 2";
 }
 
 void GraphicsHelperES2::glUniformMatrix2x4fv(GLint , GLsizei , const GLfloat *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniformMatrix2x4fv not supported by ES 2";
 }
 
 void GraphicsHelperES2::glUniformMatrix4x2fv(GLint , GLsizei , const GLfloat *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniformMatrix4x2fv not supported by ES 2";
 }
 
 void GraphicsHelperES2::glUniformMatrix3x4fv(GLint , GLsizei , const GLfloat *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniformMatrix3x4fv not supported by ES 2";
 }
 
 void GraphicsHelperES2::glUniformMatrix4x3fv(GLint , GLsizei , const GLfloat *)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
     qWarning() << "glUniformMatrix4x3fv not supported by ES 2";
 }
 
@@ -827,9 +964,13 @@ UniformType GraphicsHelperES2::uniformTypeFromGLType(GLenum type)
 
 void GraphicsHelperES2::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
 {
-    if (!m_supportFramebufferBlit)
+    if (!m_supportFramebufferBlit) {
+        static bool showWarning = true;
+        if (!showWarning)
+            return;
+        showWarning = false;
         qWarning() << "Framebuffer blits are not supported by ES 2.0 (since ES 3.1)";
-    else
+    } else
         m_ext->glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
