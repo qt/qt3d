@@ -1273,14 +1273,15 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
             GLTexture *t = manager->glTextureManager()->lookupResource(namedTex.texId);
             if (t != nullptr) {
                 UniformValue &texUniform = uniformValues[namedTex.glslNameId];
-                Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
-                const int texUnit = activateTexture(TextureScopeMaterial, t);
-                texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
-                if (texUnit == -1) {
-                    if (namedTex.glslNameId != irradianceId &&
-                        namedTex.glslNameId != specularId) {
-                        // Only return false if we are not dealing with env light textures
-                        return false;
+                if (texUniform.valueType() == UniformValue::TextureValue) {
+                    const int texUnit = activateTexture(TextureScopeMaterial, t);
+                    texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
+                    if (texUnit == -1) {
+                        if (namedTex.glslNameId != irradianceId &&
+                            namedTex.glslNameId != specularId) {
+                            // Only return false if we are not dealing with env light textures
+                            return false;
+                        }
                     }
                 }
             }
