@@ -208,6 +208,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Geometry
     qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
+    qmlRegisterType<Qt3DRender::QAttribute, 10>(uri, 2, 10, "Attribute");
+    qmlRegisterType<Qt3DRender::QAttribute, 11>(uri, 2, 11, "Attribute");
     qmlRegisterUncreatableType<Qt3DRender::QBuffer>(uri, 2, 0, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
     qmlRegisterUncreatableType<Qt3DRender::QBuffer, 9>(uri, 2, 9, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
