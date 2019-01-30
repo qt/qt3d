@@ -70,7 +70,7 @@ namespace Quick {
 
 class Scene2DManager;
 
-class Q_AUTOTEST_EXPORT Scene2DSharedObject
+class QT3DQUICKSCENE2DSHARED_EXPORT Scene2DSharedObject
 {
 public:
     Scene2DSharedObject(Scene2DManager *manager);
