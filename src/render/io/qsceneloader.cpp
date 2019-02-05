@@ -114,7 +114,7 @@ namespace Qt3DRender {
 
     SceneLoader internally relies on the use of plugins to support a wide
     variety of 3D file formats. \l
-    {http://www.assimp.org/main_features_formats.html}{Here} is a list of
+    {http://assimp.sourceforge.net/main_features_formats.html}{Here} is a list of
     formats that are supported by Qt3D.
 
     \note this component shouldn't be shared among several Entity instances.

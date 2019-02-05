@@ -167,7 +167,7 @@ void QMetalRoughMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
     \inherits Qt3DRender::QMaterial
 
     This material uses an effect with a single render pass approach and performs per fragment
-    lighting. Techniques are provided for OpenGL 3 only.
+    lighting. Techniques are provided for OpenGL 3 and OpenGL ES 3.
 */
 
 /*!

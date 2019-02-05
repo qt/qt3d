@@ -78,7 +78,7 @@ QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
 
 /*!
   \fn Qt3DRender::PropertyReaderInterface::readProperty(const QVariant &v)
-  \return the property identifies by \a v
+  \return the property identified by \a v.
  */
 
 /*!
@@ -95,7 +95,7 @@ QShaderData::~QShaderData()
 }
 /*!
  * \brief QShaderData::propertyReader
- * \return PropertyReaderInterfacePtr for this shader data
+ * Returns the PropertyReaderInterfacePtr for this shader data
  */
 PropertyReaderInterfacePtr QShaderData::propertyReader() const
 {

@@ -533,6 +533,7 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
             entityNode->addComponent(mesh);
         } else {
             QEntity *childEntity = QAbstractNodeFactory::createNode<Qt3DCore::QEntity>("QEntity");
+            childEntity->setObjectName(entityNode->objectName() + QLatin1String("_Child") + QString::number(i));
             if (material)
                 childEntity->addComponent(material);
             childEntity->addComponent(mesh);
