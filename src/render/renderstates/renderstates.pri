@@ -24,6 +24,7 @@ HEADERS += \
     $$PWD/renderstates_p.h \
     $$PWD/qpointsize.h \
     $$PWD/qseamlesscubemap.h \
+    $$PWD/qdepthrange.h \
     $$PWD/qdepthtest.h \
     $$PWD/qnodepthmask.h \
     $$PWD/qlinewidth.h \
@@ -33,6 +34,7 @@ HEADERS += \
     $$PWD/qclipplane_p.h \
     $$PWD/qcolormask_p.h \
     $$PWD/qcullface_p.h \
+    $$PWD/qdepthrange_p.h \
     $$PWD/qdepthtest_p.h \
     $$PWD/qfrontface_p.h \
     $$PWD/qpointsize_p.h \
@@ -57,6 +59,7 @@ SOURCES += \
     $$PWD/qclipplane.cpp \
     $$PWD/qcolormask.cpp \
     $$PWD/qcullface.cpp \
+    $$PWD/qdepthrange.cpp \
     $$PWD/qdepthtest.cpp \
     $$PWD/qdithering.cpp \
     $$PWD/qfrontface.cpp \

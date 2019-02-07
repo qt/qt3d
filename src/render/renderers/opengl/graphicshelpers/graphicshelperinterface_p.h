@@ -111,6 +111,7 @@ public:
     virtual bool    checkFrameBufferComplete() = 0;
     virtual void    clearBufferf(GLint drawbuffer, const QVector4D &values) = 0;
     virtual GLuint  createFrameBufferObject() = 0;
+    virtual void    depthRange(GLdouble nearValue, GLdouble farValue) = 0;
     virtual void    depthMask(GLenum mode) = 0;
     virtual void    depthTest(GLenum mode) = 0;
     virtual void    disableClipPlane(int clipPlane) = 0;

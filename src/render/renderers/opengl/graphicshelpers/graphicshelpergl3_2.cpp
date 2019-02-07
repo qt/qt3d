@@ -406,6 +406,11 @@ void GraphicsHelperGL3_2::depthMask(GLenum mode)
     m_funcs->glDepthMask(mode);
 }
 
+void GraphicsHelperGL3_2::depthRange(GLdouble nearValue, GLdouble farValue)
+{
+    m_funcs->glDepthRange(nearValue, farValue);
+}
+
 void GraphicsHelperGL3_2::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);

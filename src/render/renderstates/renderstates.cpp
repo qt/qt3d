@@ -89,6 +89,12 @@ void MSAAEnabled::updateProperty(const char *name, const QVariant &value)
         std::get<0>(m_values) = value.toBool();
 }
 
+void DepthRange::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("nearValue")) std::get<0>(m_values) = value.toDouble();
+    else if (name == QByteArrayLiteral("farValue")) std::get<1>(m_values) = value.toDouble();
+}
+
 void DepthTest::updateProperty(const char *name, const QVariant &value)
 {
     if (name == QByteArrayLiteral("depthFunction")) std::get<0>(m_values) = value.toInt();

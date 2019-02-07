@@ -84,6 +84,7 @@
 #include <Qt3DRender/qclipplane.h>
 #include <Qt3DRender/qcolormask.h>
 #include <Qt3DRender/qcullface.h>
+#include <Qt3DRender/qdepthrange.h>
 #include <Qt3DRender/qdepthtest.h>
 #include <Qt3DRender/qdithering.h>
 #include <Qt3DRender/qfrontface.h>
@@ -1938,6 +1939,11 @@ void GLTFExporter::exportRenderStates(QJsonObject &jsonObj, const QRenderPass *p
             auto s = qobject_cast<QCullFace *>(state);
             arr << s->mode();
             funcObj["cullFace"] = arr;
+        } else if (qobject_cast<QDepthRange *>(state)) {
+            auto s = qobject_cast<QDepthRange *>(state);
+            arr << s->nearValue();
+            arr << s->farValue();
+            funcObj["depthRange"] = arr;
         } else if (qobject_cast<QDepthTest *>(state)) {
             auto s = qobject_cast<QDepthTest *>(state);
             arr << s->depthFunction();

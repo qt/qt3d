@@ -668,6 +668,11 @@ void GraphicsHelperGL4::depthMask(GLenum mode)
     m_funcs->glDepthMask(mode);
 }
 
+void GraphicsHelperGL4::depthRange(GLdouble nearValue, GLdouble farValue)
+{
+    m_funcs->glDepthRange(nearValue, farValue);
+}
+
 void GraphicsHelperGL4::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);

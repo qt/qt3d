@@ -67,6 +67,7 @@ struct Q_AUTOTEST_EXPORT StateVariant
         BlendEquation blendEquation;
         AlphaFunc alphaFunc;
         MSAAEnabled msaaEnabled;
+        DepthRange depthRange;
         DepthTest depthTest;
         NoDepthMask noDepthMask;
         CullFace cullFace;

@@ -88,6 +88,7 @@ public:
     void clearBufferf(GLint drawbuffer, const QVector4D &values) override;
     GLuint createFrameBufferObject() override;
     void depthMask(GLenum mode) override;
+    void depthRange(GLdouble nearValue, GLdouble farValue) override;
     void depthTest(GLenum mode) override;
     void disableClipPlane(int clipPlane) override;
     void disablei(GLenum cap, GLuint index) override;

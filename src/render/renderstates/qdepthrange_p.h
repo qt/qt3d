@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,84 +37,49 @@
 **
 ****************************************************************************/
 
-#include "statevariant_p.h"
+#ifndef QT3DRENDER_QDEPTHRANGE_P_H
+#define QT3DRENDER_QDEPTHRANGE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/private/qrenderstate_p.h>
+#include <Qt3DRender/qalphatest.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-RenderStateImpl *StateVariant::state()
+class QT3DRENDERSHARED_PRIVATE_EXPORT QDepthRangePrivate : public QRenderStatePrivate
 {
-    switch (type) {
-    case BlendEquationArgumentsMask:
-    case BlendStateMask:
-    case AlphaTestMask:
-    case MSAAEnabledStateMask:
-    case DepthRangeMask:
-    case DepthTestStateMask:
-    case DepthWriteStateMask:
-    case CullFaceStateMask:
-    case FrontFaceStateMask:
-    case DitheringStateMask:
-    case ScissorStateMask:
-    case StencilTestStateMask:
-    case AlphaCoverageStateMask:
-    case PointSizeMask:
-    case PolygonOffsetStateMask:
-    case ColorStateMask:
-    case ClipPlaneMask:
-    case SeamlessCubemapMask:
-    case StencilOpMask:
-    case StencilWriteStateMask:
-    case LineWidthMask:
-        return &data.blendEquationArguments;
-    default:
-        Q_UNREACHABLE();
-    }
-}
+public:
+    QDepthRangePrivate()
+        : QRenderStatePrivate(Render::DepthRangeMask)
+        , m_nearValue(0.0f)
+        , m_farValue(1.0f)
+    {}
 
-const RenderStateImpl *StateVariant::constState() const
+    double m_nearValue;
+    double m_farValue;
+};
+
+struct QDepthRangeData
 {
-    switch (type) {
-    case BlendEquationArgumentsMask:
-    case BlendStateMask:
-    case AlphaTestMask:
-    case MSAAEnabledStateMask:
-    case DepthRangeMask:
-    case DepthTestStateMask:
-    case DepthWriteStateMask:
-    case CullFaceStateMask:
-    case FrontFaceStateMask:
-    case DitheringStateMask:
-    case ScissorStateMask:
-    case StencilTestStateMask:
-    case AlphaCoverageStateMask:
-    case PointSizeMask:
-    case PolygonOffsetStateMask:
-    case ColorStateMask:
-    case ClipPlaneMask:
-    case SeamlessCubemapMask:
-    case StencilOpMask:
-    case StencilWriteStateMask:
-    case LineWidthMask:
-        return &data.blendEquationArguments;
-    default:
-        Q_UNREACHABLE();
-    }
-}
+    double nearValue;
+    double farValue;
+};
 
-bool StateVariant::operator ==(const StateVariant &other) const
-{
-    return (other.type == type && constState()->equalTo(*other.constState()));
-}
-
-bool StateVariant::operator !=(const StateVariant &other) const
-{
-    return !(*this == other);
-}
-
-} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QDEPTHRANGE_P_H

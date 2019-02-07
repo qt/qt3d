@@ -549,6 +549,11 @@ void GraphicsContext::bindFramebuffer(GLuint fbo, GraphicsHelperInterface::FBOBi
     m_glHelper->bindFrameBufferObject(fbo, mode);
 }
 
+void GraphicsContext::depthRange(GLdouble nearValue, GLdouble farValue)
+{
+    m_glHelper->depthRange(nearValue, farValue);
+}
+
 void GraphicsContext::depthTest(GLenum mode)
 {
     m_glHelper->depthTest(mode);

@@ -51,6 +51,8 @@
 #include <Qt3DRender/qcullface.h>
 #include <Qt3DRender/private/qcullface_p.h>
 #include <Qt3DRender/qnodepthmask.h>
+#include <Qt3DRender/qdepthrange.h>
+#include <Qt3DRender/private/qdepthrange_p.h>
 #include <Qt3DRender/qdepthtest.h>
 #include <Qt3DRender/private/qdepthtest_p.h>
 #include <Qt3DRender/qdithering.h>
@@ -124,6 +126,12 @@ StateVariant createStateImplementation(const Qt3DRender::QRenderStateCreatedChan
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QCullFaceData>>(renderStateChange);
         const auto &data = typedChange->data;
         return StateVariant::createState<CullFace>(data.mode);
+    }
+
+    case DepthRangeMask: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QDepthRangeData>>(renderStateChange);
+        const auto &data = typedChange->data;
+        return StateVariant::createState<DepthRange>(data.nearValue, data.farValue);
     }
 
     case DepthWriteStateMask: {

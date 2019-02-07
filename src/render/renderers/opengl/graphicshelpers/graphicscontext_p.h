@@ -134,6 +134,7 @@ public:
     void    clearColor(const QColor &color);
     void    clearDepthValue(float depth);
     void    clearStencilValue(int stencil);
+    void    depthRange(GLdouble nearValue, GLdouble farValue);
     void    depthMask(GLenum mode);
     void    depthTest(GLenum mode);
     void    disableClipPlane(int clipPlane);

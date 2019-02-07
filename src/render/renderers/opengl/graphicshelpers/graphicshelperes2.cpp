@@ -394,6 +394,11 @@ void GraphicsHelperES2::depthMask(GLenum mode)
     m_funcs->glDepthMask(mode);
 }
 
+void GraphicsHelperES2::depthRange(GLdouble nearValue, GLdouble farValue)
+{
+    m_funcs->glDepthRangef(static_cast<float>(nearValue), static_cast<float>(farValue));
+}
+
 void GraphicsHelperES2::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);

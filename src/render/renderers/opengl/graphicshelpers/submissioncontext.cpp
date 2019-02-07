@@ -233,6 +233,12 @@ void applyStateHelper<MSAAEnabled>(const MSAAEnabled *state, SubmissionContext *
     gc->setMSAAEnabled(std::get<0>(state->values()));
 }
 
+template<>
+void applyStateHelper<DepthRange>(const DepthRange *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->depthRange(std::get<0>(values), std::get<1>(values));
+}
 
 template<>
 void applyStateHelper<DepthTest>(const DepthTest *state, SubmissionContext *gc)
@@ -1084,6 +1090,11 @@ void SubmissionContext::applyState(const StateVariant &stateVariant)
         break;
     }
 
+    case DepthRangeMask: {
+        applyStateHelper<DepthRange>(static_cast<const DepthRange *>(stateVariant.constState()), this);
+        break;
+    }
+
     case FrontFaceStateMask: {
         applyStateHelper<FrontFace>(static_cast<const FrontFace *>(stateVariant.constState()), this);
         break;
@@ -1165,6 +1176,9 @@ void SubmissionContext::resetMasked(qint64 maskOfStatesToReset)
 
     if (maskOfStatesToReset & StencilTestStateMask)
         funcs->glDisable(GL_STENCIL_TEST);
+
+    if (maskOfStatesToReset & DepthRangeMask)
+        depthRange(0.0f, 1.0f);
 
     if (maskOfStatesToReset & DepthTestStateMask)
         funcs->glDisable(GL_DEPTH_TEST);

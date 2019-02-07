@@ -64,6 +64,7 @@
 #include <Qt3DRender/qmultisampleantialiasing.h>
 #include <Qt3DRender/qpointsize.h>
 #include <Qt3DRender/qnodepthmask.h>
+#include <Qt3DRender/qdepthrange.h>
 #include <Qt3DRender/qdepthtest.h>
 #include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qstencilmask.h>
@@ -2403,9 +2404,11 @@ QRenderState* GLTFImporter::buildState(const QString& functionName, const QJsonV
     }
 
     if (functionName == QLatin1String("depthRange")) {
-        //TODO: support render state depthRange
-        qCWarning(GLTFImporterLog, "unsupported render state: %ls", qUtf16PrintableImpl(functionName));
-        return nullptr;
+        type = GL_DEPTH_RANGE;
+        QDepthRange *depthRange = new QDepthRange;
+        depthRange->setNearValue(values.at(0).toDouble(0.0));
+        depthRange->setFarValue(values.at(1).toDouble(1.0));
+        return depthRange;
     }
 
     if (functionName == QLatin1String("frontFace")) {

@@ -83,6 +83,12 @@ public:
     void updateProperty(const char *name, const QVariant &value) override;
 };
 
+class Q_AUTOTEST_EXPORT DepthRange : public GenericState<DepthRange, DepthRangeMask, double, double>
+{
+public:
+    void updateProperty(const char *name, const QVariant &value) override;
+};
+
 class Q_AUTOTEST_EXPORT DepthTest : public GenericState<DepthTest, DepthTestStateMask, GLenum>
 {
 public:

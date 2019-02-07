@@ -41,6 +41,7 @@
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthRange>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QDithering>
 #include <Qt3DRender/QFrontFace>
@@ -169,6 +170,9 @@ private Q_SLOTS:
 
         addTestCase<QStencilMask>(StencilWriteStateMask, "frontOutputMask", &QStencilMask::setFrontOutputMask, 0x12, 0x34);
         addTestCase<QStencilMask>(StencilWriteStateMask, "backOutputMask", &QStencilMask::setBackOutputMask, 0x12, 0x34);
+
+        addTestCase<QDepthRange>(DepthRangeMask, "nearValue", &QDepthRange::setNearValue, 0.1, 0.2);
+        addTestCase<QDepthRange>(DepthRangeMask, "farValue", &QDepthRange::setFarValue, 0.5, 0.6);
     }
 
     void checkPropertyUpdates()
