@@ -70,7 +70,7 @@ public:
     };
     Q_ENUM(Buttons) // LCOV_EXCL_LINE
 
-    enum Modifiers {
+    enum Modifier {
         NoModifier = Qt::NoModifier,
         ShiftModifier = Qt::ShiftModifier,
         ControlModifier = Qt::ControlModifier,
@@ -78,7 +78,8 @@ public:
         MetaModifier = Qt::MetaModifier,
         KeypadModifier = Qt::KeypadModifier
     };
-    Q_ENUM(Modifiers) // LCOV_EXCL_LINE
+    Q_DECLARE_FLAGS(Modifiers, Modifier)
+    Q_FLAG(Modifiers)
 
     explicit QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e);
     ~QMouseEvent();
@@ -127,7 +128,7 @@ public:
     };
     Q_ENUM(Buttons) // LCOV_EXCL_LINE
 
-    enum Modifiers {
+    enum Modifier {
         NoModifier = Qt::NoModifier,
         ShiftModifier = Qt::ShiftModifier,
         ControlModifier = Qt::ControlModifier,
@@ -135,7 +136,8 @@ public:
         MetaModifier = Qt::MetaModifier,
         KeypadModifier = Qt::KeypadModifier
     };
-    Q_ENUM(Modifiers) // LCOV_EXCL_LINE
+    Q_DECLARE_FLAGS(Modifiers, Modifier)
+    Q_FLAG(Modifiers)
 
     explicit QWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &e);
     ~QWheelEvent();
@@ -158,6 +160,9 @@ typedef QSharedPointer<QWheelEvent> QWheelEventPtr;
 #endif
 
 } // namespace Qt3DInput
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Qt3DInput::QMouseEvent::Modifiers)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Qt3DInput::QWheelEvent::Modifiers)
 
 QT_END_NAMESPACE
 

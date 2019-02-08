@@ -43,6 +43,34 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+namespace {
+
+template<typename EventClass, typename QtEventClass>
+typename EventClass::Modifiers modifiersForEvent(const QtEventClass &event)
+{
+    const Qt::KeyboardModifiers eventModifiers = event.modifiers();
+    typename EventClass::Modifiers modifiers = EventClass::NoModifier;
+
+    if (eventModifiers & Qt::ShiftModifier)
+        modifiers |= EventClass::ShiftModifier;
+
+    if (eventModifiers & Qt::ControlModifier)
+        modifiers |= EventClass::ControlModifier;
+
+    if (eventModifiers & Qt::AltModifier)
+        modifiers |= EventClass::AltModifier;
+
+    if (eventModifiers & Qt::MetaModifier)
+        modifiers |= EventClass::MetaModifier;
+
+    if (eventModifiers & Qt::KeypadModifier)
+        modifiers |= EventClass::KeypadModifier;
+
+    return modifiers;
+}
+
+} // anonymous
+
 // Notes:
 // Maybe we should provide the world pos of the intersection
 // The distance t along the segment line at which the intersection occurs
@@ -270,20 +298,7 @@ int QMouseEvent::buttons() const
  */
 QMouseEvent::Modifiers QMouseEvent::modifiers() const
 {
-    switch (m_event.modifiers()) {
-    case Qt::ShiftModifier:
-        return QMouseEvent::ShiftModifier;
-    case Qt::ControlModifier:
-        return QMouseEvent::ControlModifier;
-    case Qt::AltModifier:
-        return QMouseEvent::AltModifier;
-    case Qt::MetaModifier:
-        return QMouseEvent::MetaModifier;
-    case Qt::KeypadModifier:
-        return QMouseEvent::KeypadModifier;
-    default:
-        return QMouseEvent::NoModifier;
-    }
+    return modifiersForEvent<QMouseEvent, decltype(m_event)>(m_event);
 }
 
 /*!
@@ -483,20 +498,7 @@ int QWheelEvent::buttons() const
  */
 QWheelEvent::Modifiers QWheelEvent::modifiers() const
 {
-    switch (m_event.modifiers()) {
-    case Qt::ShiftModifier:
-        return QWheelEvent::ShiftModifier;
-    case Qt::ControlModifier:
-        return QWheelEvent::ControlModifier;
-    case Qt::AltModifier:
-        return QWheelEvent::AltModifier;
-    case Qt::MetaModifier:
-        return QWheelEvent::MetaModifier;
-    case Qt::KeypadModifier:
-        return QWheelEvent::KeypadModifier;
-    default:
-        return QWheelEvent::NoModifier;
-    }
+    return modifiersForEvent<QWheelEvent, decltype(m_event)>(m_event);
 }
 #endif // QT_CONFIG(wheelevent)
 
