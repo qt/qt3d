@@ -79,8 +79,8 @@ GLTexture::GLTexture(TextureDataManager *texDataMgr,
     , m_textureDataManager(texDataMgr)
     , m_textureImageDataManager(texImgDataMgr)
     , m_dataFunctor(texGen)
-    , m_sharedTextureId(-1)
     , m_pendingDataFunctor(nullptr)
+    , m_sharedTextureId(-1)
     , m_externalRendering(false)
 {
     // make sure texture generator is executed
