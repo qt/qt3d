@@ -1,4 +1,5 @@
 #define FP highp
+#extension GL_OES_standard_derivatives: enable
 
 uniform FP sampler2D distanceFieldTexture;
 uniform FP float minAlpha;

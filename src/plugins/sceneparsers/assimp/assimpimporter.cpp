@@ -164,6 +164,7 @@ QMaterial *createBestApproachingMaterial(const aiMaterial *assimpMaterial)
 QString texturePath(const aiString &path)
 {
     QString p = aiStringToQString(path);
+    p.replace(QLatin1String("\\"), QLatin1String("/"));
     if (p.startsWith('/'))
         p.remove(0, 1);
     return p;

@@ -143,6 +143,15 @@ void Scene2DManager::startIfInitialized()
 
         m_initialized = true;
         m_sharedObject->setInitialized();
+
+        // Request render if we have already been requested and preparation has already been done
+        if (m_sharedObject->isPrepared() && m_renderSyncRequested) {
+            if (!m_requested) {
+                m_requested = true;
+                QCoreApplication::postEvent(this, new Scene2DEvent(Scene2DEvent::RenderSync));
+            }
+            m_renderSyncRequested = false;
+        }
     }
 }
 
