@@ -259,8 +259,58 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
     const QVector<Channel> &channels = clip->channels();
     int i = 0;
     for (const Channel &channel : channels) {
-        for (const auto &channelComponent : qAsConst(channel.channelComponents))
-            channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime);
+        if (channel.name.contains(QStringLiteral("Rotation")) &&
+                        channel.channelComponents.size() == 4) {
+
+            // Try to SLERP
+            const int nbKeyframes = channel.channelComponents[0].fcurve.keyframeCount();
+            const bool canSlerp = std::find_if(std::begin(channel.channelComponents)+1,
+                                               std::end(channel.channelComponents),
+                                               [nbKeyframes](const ChannelComponent &v) {
+                return v.fcurve.keyframeCount() != nbKeyframes;
+            }) == std::end(channel.channelComponents);
+
+            if (!canSlerp) {
+                // Interpolate per component
+                for (const auto &channelComponent : qAsConst(channel.channelComponents)) {
+                    const int lowerKeyframeBound = channelComponent.fcurve.lowerKeyframeBound(localTime);
+                    channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
+                }
+            } else {
+                // There's only one keyframe. We cant compute omega. Interoplate per component
+                const int lowerKeyframeBound = channel.channelComponents[0].fcurve.lowerKeyframeBound(localTime);
+                if (lowerKeyframeBound + 1 >= channel.channelComponents[0].fcurve.keyframeCount()) {
+                    for (const auto &channelComponent : qAsConst(channel.channelComponents))
+                        channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
+                } else {
+
+                    auto quaternionFromChannel = [channel](const int keyframe) {
+                        const float w = channel.channelComponents[0].fcurve.keyframe(keyframe).value;
+                        const float x = channel.channelComponents[1].fcurve.keyframe(keyframe).value;
+                        const float y = channel.channelComponents[2].fcurve.keyframe(keyframe).value;
+                        const float z = channel.channelComponents[3].fcurve.keyframe(keyframe).value;
+                        QQuaternion quat{w,x,y,z};
+                        quat.normalize();
+                        return quat;
+                    };
+
+                    const auto lowerQuat = quaternionFromChannel(lowerKeyframeBound);
+                    const auto higherQuat = quaternionFromChannel(lowerKeyframeBound + 1);
+
+                    const float omega = std::acos(QQuaternion::dotProduct(lowerQuat, higherQuat));
+                    for (const auto &channelComponent : qAsConst(channel.channelComponents))
+                        channelResults[i++] = channelComponent.fcurve.evaluateAtTimeAsSlerp(localTime, lowerKeyframeBound, omega);
+                }
+            }
+        } else {
+            // If the channel is not a Rotation, apply linear interpolation per channel component
+            // TODO How do we handle other interpolations. For exammple, color interpolation
+            // in a linear perceptual way or other non linear spaces?
+            for (const auto &channelComponent : qAsConst(channel.channelComponents)) {
+                const int lowerKeyframeBound = channelComponent.fcurve.lowerKeyframeBound(localTime);
+                channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
+            }
+        }
     }
     return channelResults;
 }

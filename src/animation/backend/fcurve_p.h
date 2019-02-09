@@ -83,6 +83,9 @@ public:
     float endTime() const;
 
     float evaluateAtTime(float localTime) const;
+    float evaluateAtTime(float localTime, int lowerBound) const;
+    float evaluateAtTimeAsSlerp(float localTime, int lowerBound, float omega) const;
+    int lowerKeyframeBound(float localTime) const;
 
     void read(const QJsonObject &json);
     void setFromQChannelComponent(const QChannelComponent &qcc);

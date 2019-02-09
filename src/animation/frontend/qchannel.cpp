@@ -53,6 +53,16 @@ public:
     int m_jointIndex = -1;
 };
 
+/*!
+    \class QChannel
+    \inmodule Qt3DAnimation
+    \brief Defines a channel for a QAnimationClipData.
+    The animation system interpolates each channel component independently
+    except in the case the QChannel is called "Rotation" (case sensitive),
+    it has four QChannelComponents and the same number of keyframes for
+    each QChannelComponent. In that case the interpolation will be performed
+    using SLERP.
+*/
 QChannel::QChannel()
     : d(new QChannelPrivate)
 {
@@ -138,14 +148,12 @@ QChannel::const_iterator QChannel::end() const Q_DECL_NOTHROW
 
 bool operator==(const QChannel &lhs, const QChannel &rhs) Q_DECL_NOTHROW
 {
-    return lhs.d->m_name == rhs.d->m_name &&
-           lhs.d->m_channelComponents == rhs.d->m_channelComponents;
+    return lhs.d->m_name == rhs.d->m_name && lhs.d->m_channelComponents == rhs.d->m_channelComponents;
 }
 
 bool operator!=(const QChannel &lhs, const QChannel &rhs) Q_DECL_NOTHROW
 {
-    return lhs.d->m_name != rhs.d->m_name ||
-           lhs.d->m_channelComponents != rhs.d->m_channelComponents;
+    return lhs.d->m_name != rhs.d->m_name || lhs.d->m_channelComponents != rhs.d->m_channelComponents;
 }
 
 } // namespace Qt3DAnimation
