@@ -124,7 +124,8 @@ const char *Scene3DSGMaterialShader::fragmentShader() const
                "out vec4 fragColor;                                 \n"
                "void main() {                                       \n"
                "   vec4 p = texture(source, qt_TexCoord);         \n"
-               "   fragColor = vec4(p.rgb * p.a, qt_Opacity * p.a); \n"
+               "   float a = qt_Opacity * p.a;                      \n"
+               "   fragColor = vec4(p.rgb * a, a);                  \n"
                "}";
     } else {
         return ""
@@ -133,7 +134,8 @@ const char *Scene3DSGMaterialShader::fragmentShader() const
                "varying highp vec2 qt_TexCoord;                         \n"
                "void main() {                                           \n"
                "   highp vec4 p = texture2D(source, qt_TexCoord);       \n"
-               "   gl_FragColor = vec4(p.rgb * p.a, qt_Opacity * p.a);  \n"
+               "   highp float a = qt_Opacity * p.a;                    \n"
+               "   gl_FragColor = vec4(p.rgb * a, a);                   \n"
                "}";
     }
 }
