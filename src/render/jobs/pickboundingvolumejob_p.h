@@ -66,6 +66,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+class QViewport;
+
 namespace Render {
 
 namespace PickingUtils {
@@ -94,7 +97,8 @@ protected:
                             QPickEvent::Buttons eventButton,
                             int eventButtons,
                             int eventModifiers,
-                            bool allHitsRequested);
+                            bool allHitsRequested,
+                            Qt3DCore::QNodeId viewportNodeId);
 
 private:
     void clearPreviouslyHoveredPickers();

@@ -262,8 +262,10 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
+        Qt3DCore::QScene scene;
         QScopedPointer<Qt3DRender::QObjectPicker> objectPicker(new Qt3DRender::QObjectPicker());
         arbiter.setArbiterOnNode(objectPicker.data());
+        Qt3DCore::QNodePrivate::get(objectPicker.data())->setScene(&scene);
 
         // WHEN
         objectPicker->setHoverEnabled(true);
@@ -317,9 +319,12 @@ private Q_SLOTS:
         QFETCH(QByteArray, signalPrototype);
         QFETCH(QByteArray, propertyName);
         QFETCH(bool, requiresEvent);
+        Qt3DCore::QScene scene;
         QScopedPointer<MyObjectPicker> objectPicker(new MyObjectPicker());
+        Qt3DCore::QNodePrivate::get(objectPicker.data())->setScene(&scene);
+
         QSignalSpy spy(objectPicker.data(), signalPrototype.constData());
-        Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
+        Qt3DRender::QObjectPickerEvent event {Qt3DRender::QPickEventPtr::create(), Qt3DCore::QNodeId()};
 
         // WHEN
         // Create Backend Change and distribute it to frontend node
@@ -328,7 +333,7 @@ private Q_SLOTS:
         if (requiresEvent)
         {
             QVariant v;
-            v.setValue<Qt3DRender::QPickEventPtr>(event);
+            v.setValue<Qt3DRender::QObjectPickerEvent>(event);
             e->setValue(v);
         }
         objectPicker->sceneChangeEvent(e);

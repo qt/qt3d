@@ -49,6 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+class QViewport;
 class QPickEventPrivate;
 
 class QPickEvent;
@@ -65,6 +66,7 @@ class QT3DRENDERSHARED_EXPORT QPickEvent : public QObject
     Q_PROPERTY(Qt3DRender::QPickEvent::Buttons button READ button CONSTANT)
     Q_PROPERTY(int buttons READ buttons CONSTANT)
     Q_PROPERTY(int modifiers READ modifiers CONSTANT)
+    Q_PROPERTY(Qt3DRender::QViewport *viewport READ viewport CONSTANT)
 public:
     enum Buttons {
         LeftButton = Qt::LeftButton,
@@ -87,7 +89,8 @@ public:
 
     QPickEvent();
     QPickEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance);
-    QPickEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance, Buttons button, int buttons, int modifiers);
+    QPickEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance, Buttons button,
+               int buttons, int modifiers);
     ~QPickEvent();
 
     bool isAccepted() const;
@@ -103,6 +106,7 @@ public:
     Buttons button() const;
     int buttons() const;
     int modifiers() const;
+    QViewport *viewport() const;
 
 Q_SIGNALS:
     void acceptedChanged(bool accepted);
@@ -112,6 +116,8 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QPickEvent)
+
+    friend class QObjectPickerPrivate;
 };
 
 } // Qt3DRender

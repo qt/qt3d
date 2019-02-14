@@ -126,40 +126,40 @@ bool ObjectPicker::isDragEnabled() const
     return m_dragEnabled;
 }
 
-void ObjectPicker::onClicked(QPickEventPtr event)
+void ObjectPicker::onClicked(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId)
 {
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("clicked");
-    e->setValue(QVariant::fromValue(event));
+    e->setValue(QVariant::fromValue(QObjectPickerEvent { event, viewportNodeId }));
     notifyObservers(e);
 }
 
-void ObjectPicker::onMoved(QPickEventPtr event)
+void ObjectPicker::onMoved(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId)
 {
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("moved");
-    e->setValue(QVariant::fromValue(event));
+    e->setValue(QVariant::fromValue(QObjectPickerEvent { event, viewportNodeId }));
     notifyObservers(e);
 }
 
-void ObjectPicker::onPressed(QPickEventPtr event)
+void ObjectPicker::onPressed(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId)
 {
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("pressed");
-    e->setValue(QVariant::fromValue(event));
+    e->setValue(QVariant::fromValue(QObjectPickerEvent { event, viewportNodeId }));
     m_isPressed = true;
     notifyObservers(e);
 }
 
-void ObjectPicker::onReleased(QPickEventPtr event)
+void ObjectPicker::onReleased(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId)
 {
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("released");
-    e->setValue(QVariant::fromValue(event));
+    e->setValue(QVariant::fromValue(QObjectPickerEvent { event, viewportNodeId }));
     m_isPressed = false;
     notifyObservers(e);
 }

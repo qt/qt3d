@@ -59,6 +59,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QPickEvent;
+class QViewport;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT QPickEventPrivate : public QObjectPrivate
 {
@@ -70,6 +71,7 @@ public:
         , m_button(QPickEvent::NoButton)
         , m_buttons(QPickEvent::NoButton)
         , m_modifiers(QPickEvent::NoModifier)
+        , m_viewport(nullptr)
     {
     }
 
@@ -82,6 +84,7 @@ public:
     int m_buttons;
     int m_modifiers;
     Qt3DCore::QNodeId m_entity;
+    QViewport *m_viewport;
 
     static QPickEventPrivate *get(QPickEvent *object);
 };

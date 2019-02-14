@@ -74,10 +74,10 @@ public:
     bool isHoverEnabled() const;
     bool isDragEnabled() const;
 
-    void onClicked(QPickEventPtr event);
-    void onMoved(QPickEventPtr event);
-    void onPressed(QPickEventPtr event);
-    void onReleased(QPickEventPtr event);
+    void onClicked(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId);
+    void onMoved(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId);
+    void onPressed(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId);
+    void onReleased(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId);
     void onEntered();
     void onExited();
 

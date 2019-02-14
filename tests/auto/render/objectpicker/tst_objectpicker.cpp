@@ -142,7 +142,7 @@ private Q_SLOTS:
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent);
 
         // WHEN
-        objectPicker.onPressed(event);
+        objectPicker.onPressed(event, Qt3DCore::QNodeId());
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
@@ -152,7 +152,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        objectPicker.onReleased(event);
+        objectPicker.onReleased(event, Qt3DCore::QNodeId());
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
@@ -162,7 +162,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        objectPicker.onClicked(event);
+        objectPicker.onClicked(event, Qt3DCore::QNodeId());
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);

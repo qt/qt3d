@@ -86,9 +86,14 @@ ViewportCameraAreaDetails ViewportCameraAreaGatherer::gatherUpViewportCameraArea
             case FrameGraphNode::CameraSelector:
                 vca.cameraId = static_cast<const CameraSelector *>(node)->cameraUuid();
                 break;
-            case FrameGraphNode::Viewport:
-                vca.viewport = ViewportNode::computeViewport(vca.viewport, static_cast<const ViewportNode *>(node));
+            case FrameGraphNode::Viewport: {
+                auto vnode = static_cast<const ViewportNode *>(node);
+                // we want the leaf viewport so if we have a viewport node already don't override it with its parent
+                if (!vca.viewportNodeId)
+                    vca.viewportNodeId = vnode->peerId();
+                vca.viewport = ViewportNode::computeViewport(vca.viewport, vnode);
                 break;
+            }
             case FrameGraphNode::Surface: {
                 auto selector = static_cast<const RenderSurfaceSelector *>(node);
                 vca.area = selector->renderTargetSize();

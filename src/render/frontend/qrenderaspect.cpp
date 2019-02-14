@@ -238,6 +238,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     qRegisterMetaType<Qt3DRender::QFrameGraphNode *>();
     qRegisterMetaType<Qt3DRender::QCamera*>();
     qRegisterMetaType<Qt3DRender::QShaderProgram*>();
+    qRegisterMetaType<Qt3DRender::QViewport*>();
     qRegisterMetaType<Qt3DCore::QJoint*>();
 
     q->registerBackendType<Qt3DCore::QEntity>(QSharedPointer<Render::RenderEntityFunctor>::create(m_renderer, m_nodeManagers));

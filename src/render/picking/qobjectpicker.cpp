@@ -41,8 +41,10 @@
 #include "qobjectpicker_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DRender/qpickevent.h>
+#include <Qt3DRender/QViewport>
+#include <Qt3DRender/private/qpickevent_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -358,17 +360,17 @@ void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         // to emit the correct signals
         const QByteArray propertyName = e->propertyName();
         if (propertyName == QByteArrayLiteral("pressed")) {
-            QPickEventPtr ev = e->value().value<QPickEventPtr>();
-            d->pressedEvent(ev.data());
+            QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
+            d->pressedEvent(d->resolvePickEvent(e));
         } else if (propertyName == QByteArrayLiteral("released")) {
-            QPickEventPtr ev = e->value().value<QPickEventPtr>();
-            d->releasedEvent(ev.data());
+            QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
+            d->releasedEvent(d->resolvePickEvent(e));
         } else if (propertyName == QByteArrayLiteral("clicked")) {
-            QPickEventPtr ev = e->value().value<QPickEventPtr>();
-            d->clickedEvent(ev.data());
+            QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
+            d->clickedEvent(d->resolvePickEvent(e));
         } else if (propertyName == QByteArrayLiteral("moved")) {
-            QPickEventPtr ev = e->value().value<QPickEventPtr>();
-            d->movedEvent(ev.data());
+            QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
+            d->movedEvent(d->resolvePickEvent(e));
         } else if (propertyName == QByteArrayLiteral("entered")) {
             emit entered();
             d->setContainsMouse(true);
@@ -405,6 +407,14 @@ void QObjectPickerPrivate::setContainsMouse(bool containsMouse)
         emit q->containsMouseChanged(containsMouse);
         q->blockNotifications(blocked);
     }
+}
+
+QPickEvent *QObjectPickerPrivate::resolvePickEvent(Qt3DCore::QPropertyUpdatedChangePtr e)
+{
+    QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
+    QPickEvent *pickEvent = ev.event.data();
+    pickEvent->d_func()->m_viewport = static_cast<QViewport *>(scene()->lookupNode(ev.viewportNodeId));
+    return pickEvent;
 }
 
 void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)

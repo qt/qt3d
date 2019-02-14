@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/qobjectpicker_p.h>
 
 #include <private/qpickevent_p.h>
 
@@ -783,11 +784,11 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), backAndFrontPicking ? 2 : 1);
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
-        Qt3DRender::QPickEventPtr pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
-        QVERIFY(pickEvent);
-        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.data())->m_entity.isNull());
+        Qt3DRender::QObjectPickerEvent pickEvent = change->value().value<Qt3DRender::QObjectPickerEvent>();
+        QVERIFY(pickEvent.event);
+        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.event.data())->m_entity.isNull());
         if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
-            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
+            QVERIFY(pickEvent.event.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -804,11 +805,11 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), backAndFrontPicking ? 2 : 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "moved");
-        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
-        QVERIFY(pickEvent);
-        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.data())->m_entity.isNull());
+        pickEvent = change->value().value<Qt3DRender::QObjectPickerEvent>();
+        QVERIFY(pickEvent.event);
+        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.event.data())->m_entity.isNull());
         if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
-            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
+            QVERIFY(pickEvent.event.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -825,18 +826,18 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 2);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "released");
-        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
-        QVERIFY(pickEvent);
-        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.data())->m_entity.isNull());
+        pickEvent = change->value().value<Qt3DRender::QObjectPickerEvent>();
+        QVERIFY(pickEvent.event);
+        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.event.data())->m_entity.isNull());
         if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
-            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
+            QVERIFY(pickEvent.event.dynamicCast<Qt3DRender::QPickTriangleEvent>());
         change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "clicked");
-        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
-        QVERIFY(pickEvent);
-        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.data())->m_entity.isNull());
+        pickEvent = change->value().value<Qt3DRender::QObjectPickerEvent>();
+        QVERIFY(pickEvent.event);
+        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.event.data())->m_entity.isNull());
         if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
-            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
+            QVERIFY(pickEvent.event.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -912,10 +913,10 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
-        Qt3DRender::QPickEventPtr pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
-        QVERIFY(pickEvent);
-        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.data())->m_entity.isNull());
-        QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
+        Qt3DRender::QObjectPickerEvent pickEvent = change->value().value<Qt3DRender::QObjectPickerEvent>();
+        QVERIFY(pickEvent.event);
+        QVERIFY(!Qt3DRender::QPickEventPrivate::get(pickEvent.event.data())->m_entity.isNull());
+        QVERIFY(pickEvent.event.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -932,9 +933,9 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "released");
-        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
-        QVERIFY(pickEvent);
-        QVERIFY(Qt3DRender::QPickEventPrivate::get(pickEvent.data())->m_entity.isNull());
+        pickEvent = change->value().value<Qt3DRender::QObjectPickerEvent>();
+        QVERIFY(pickEvent.event);
+        QVERIFY(Qt3DRender::QPickEventPrivate::get(pickEvent.event.data())->m_entity.isNull());
 
         arbiter.events.clear();
 
@@ -1467,8 +1468,8 @@ private Q_SLOTS:
         QVERIFY(backendPicker->isPressed());
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
-        Qt3DRender::QPickEventPtr pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
-        QVERIFY(pickEvent);
+        Qt3DRender::QObjectPickerEvent pickEvent = change->value().value<Qt3DRender::QObjectPickerEvent>();
+        QVERIFY(pickEvent.event);
 
         arbiter.events.clear();
     }

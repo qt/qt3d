@@ -236,7 +236,8 @@ bool PickBoundingVolumeJob::runHelper()
                 // has moved out of the viewport In case of a button released
                 // outside of the viewport, we still want to notify the
                 // lastCurrent entity about this.
-                dispatchPickEvents(event.second, PickingUtils::HitList(), eventButton, eventButtons, eventModifiers, m_renderSettings->pickResultMode());
+                dispatchPickEvents(event.second, PickingUtils::HitList(), eventButton, eventButtons, eventModifiers, m_renderSettings->pickResultMode(),
+                                   vca.viewportNodeId);
                 continue;
             }
 
@@ -278,7 +279,8 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event.second, sphereHits, eventButton, eventButtons, eventModifiers, m_renderSettings->pickResultMode());
+            dispatchPickEvents(event.second, sphereHits, eventButton, eventButtons, eventModifiers, m_renderSettings->pickResultMode(),
+                               vca.viewportNodeId);
         }
     }
 
@@ -295,7 +297,8 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
                                                int eventModifiers,
-                                               bool allHitsRequested)
+                                               bool allHitsRequested,
+                                               Qt3DCore::QNodeId viewportNodeId)
 {
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
     // If we have hits
@@ -380,29 +383,29 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                     // Store pressed object handle
                     m_currentPicker = objectPickerHandle;
                     // Send pressed event to m_currentPicker
-                    objectPicker->onPressed(pickEvent);
+                    objectPicker->onPressed(pickEvent, viewportNodeId);
                     break;
                 }
 
                 case QEvent::MouseButtonRelease: {
                     // Only send the release event if it was pressed
                     if (objectPicker->isPressed())
-                        objectPicker->onReleased(pickEvent);
+                        objectPicker->onReleased(pickEvent, viewportNodeId);
                     if (lastCurrentPicker != nullptr && m_currentPicker == objectPickerHandle) {
-                        objectPicker->onClicked(pickEvent);
+                        objectPicker->onClicked(pickEvent, viewportNodeId);
                         m_currentPicker = HObjectPicker();
                     }
                     break;
                 }
 #if QT_CONFIG(gestures)
                 case QEvent::Gesture: {
-                    objectPicker->onClicked(pickEvent);
+                    objectPicker->onClicked(pickEvent, viewportNodeId);
                     break;
                 }
 #endif
                 case QEvent::MouseMove: {
                     if ((objectPicker->isPressed() || objectPicker->isHoverEnabled()) && objectPicker->isDragEnabled()) {
-                        objectPicker->onMoved(pickEvent);
+                        objectPicker->onMoved(pickEvent, viewportNodeId);
                     }
                     Q_FALLTHROUGH(); // fallthrough
                 }
@@ -437,7 +440,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
             if (lastCurrentPicker != nullptr) {
                 m_currentPicker = HObjectPicker();
                 QPickEventPtr pickEvent(new QPickEvent);
-                lastCurrentPicker->onReleased(pickEvent);
+                lastCurrentPicker->onReleased(pickEvent, viewportNodeId);
             }
             break;
         }

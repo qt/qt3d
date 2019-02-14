@@ -79,6 +79,7 @@ namespace PickingUtils {
 struct Q_AUTOTEST_EXPORT ViewportCameraAreaDetails
 {
     Qt3DCore::QNodeId cameraId;
+    Qt3DCore::QNodeId viewportNodeId;
     QRectF viewport;
     QSize area;
     QSurface *surface = nullptr;
