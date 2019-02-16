@@ -217,7 +217,7 @@ void QDiffuseSpecularMapMaterialPrivate::handleTextureScaleChanged(const QVarian
 
     \list
     \li Ambient is the color that is emitted by an object without any other light source.
-    \li Diffuse is the color that is emitted for rought surface reflections with the lights.
+    \li Diffuse is the color that is emitted for rough surface reflections with the lights.
     \li Specular is the color emitted for shiny surface reflections with the lights.
     \li The shininess of a surface is controlled by a float property.
     \endlist
@@ -246,7 +246,8 @@ QDiffuseSpecularMapMaterial::~QDiffuseSpecularMapMaterial()
 /*!
     \property QDiffuseSpecularMapMaterial::ambient
 
-    Holds the current ambient color.
+    Holds the current ambient color that is emitted by an object without any
+    other light source.
 */
 QColor QDiffuseSpecularMapMaterial::ambient() const
 {
@@ -297,7 +298,10 @@ QAbstractTexture *QDiffuseSpecularMapMaterial::specular() const
 /*!
     \property QDiffuseSpecularMapMaterial::shininess
 
-    Holds the current shininess as a float value.
+    Holds the current shininess as a float value. Higher values of shininess result in
+    a smaller and brighter highlight.
+
+    Defaults to 150.0.
 */
 float QDiffuseSpecularMapMaterial::shininess() const
 {
