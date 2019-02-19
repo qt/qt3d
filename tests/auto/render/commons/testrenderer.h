@@ -61,7 +61,7 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() override { return Qt3DCore::QAspectJobPtr(); }
     Qt3DCore::QAspectJobPtr rayCastingJob() override { return Qt3DCore::QAspectJobPtr(); }
-    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() override { return Qt3DCore::QAspectJobPtr(); }
+    Qt3DCore::QAspectJobPtr syncLoadingJobs() override { return Qt3DCore::QAspectJobPtr(); }
     Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() override { return Qt3DCore::QAspectJobPtr(); }
     void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Qt3DRender::Render::Entity *root) override { Q_UNUSED(factory);  Q_UNUSED(root); }
     Qt3DRender::Render::Entity *sceneRoot() const override { return nullptr; }

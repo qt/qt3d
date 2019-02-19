@@ -43,7 +43,6 @@
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/gltexturemanager_p.h>
-#include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/armature_p.h>
@@ -71,9 +70,7 @@ NodeManagers::NodeManagers()
     , m_renderPassManager(new RenderPassManager())
     , m_textureManager(new TextureManager())
     , m_textureImageManager(new TextureImageManager())
-    , m_textureDataManager(new TextureDataManager())
-    , m_textureImageDataManager(new TextureImageDataManager())
-    , m_glTextureManager(new GLTextureManager(m_textureImageManager, m_textureDataManager, m_textureImageDataManager))
+    , m_glTextureManager(new GLTextureManager())
     , m_layerManager(new LayerManager())
     , m_levelOfDetailManager(new LevelOfDetailManager())
     , m_filterKeyManager(new FilterKeyManager())
@@ -117,8 +114,6 @@ NodeManagers::~NodeManagers()
     delete m_renderPassManager;
     delete m_glTextureManager;
     delete m_textureManager;
-    delete m_textureDataManager;
-    delete m_textureImageDataManager;
     delete m_layerManager;
     delete m_levelOfDetailManager;
     delete m_filterKeyManager;
@@ -221,12 +216,6 @@ template<>
 TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOTHROW
 {
     return m_textureManager;
-}
-
-template<>
-TextureDataManager *NodeManagers::manager<QTextureImageData>() const Q_DECL_NOTHROW
-{
-    return m_textureDataManager;
 }
 
 template<>

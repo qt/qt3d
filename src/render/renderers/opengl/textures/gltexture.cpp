@@ -49,7 +49,6 @@
 #include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qtextureimagedata.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
 #include <Qt3DRender/private/renderbuffer_p.h>
 #include <Qt3DRender/private/qtextureimagedata_p.h>
@@ -69,39 +68,42 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-GLTexture::GLTexture(TextureDataManager *texDataMgr,
-                     TextureImageDataManager *texImgDataMgr,
-                     const QTextureGeneratorPtr &texGen,
-                     bool unique)
-    : m_unique(unique)
-    , m_gl(nullptr)
+namespace {
+
+// This uploadGLData where the data is a fullsize subimage
+// as QOpenGLTexture doesn't allow partial subimage uploads
+void uploadGLData(QOpenGLTexture *glTex,
+                  int level, int layer, QOpenGLTexture::CubeMapFace face,
+                  const QByteArray &bytes, const QTextureImageDataPtr &data)
+{
+    if (data->isCompressed()) {
+        glTex->setCompressedData(level, layer, face, bytes.size(), bytes.constData());
+    } else {
+        QOpenGLPixelTransferOptions uploadOptions;
+        uploadOptions.setAlignment(1);
+        glTex->setData(level, layer, face, data->pixelFormat(), data->pixelType(), bytes.constData(), &uploadOptions);
+    }
+}
+
+} // anonymous
+
+
+GLTexture::GLTexture()
+    : m_gl(nullptr)
     , m_renderBuffer(nullptr)
-    , m_textureDataManager(texDataMgr)
-    , m_textureImageDataManager(texImgDataMgr)
-    , m_dataFunctor(texGen)
+    , m_dataFunctor()
     , m_pendingDataFunctor(nullptr)
     , m_sharedTextureId(-1)
     , m_externalRendering(false)
 {
-    // make sure texture generator is executed
-    // this is needed when Texture have the TargetAutomatic
-    // to ensure they are loaded before trying to instantiate the QOpenGLTexture
-    if (!texGen.isNull())
-        m_textureDataManager->requestData(texGen, this);
 }
 
 GLTexture::~GLTexture()
 {
-    destroyGLTexture();
 }
 
-void GLTexture::destroyResources()
-{
-    if (m_dataFunctor)
-        m_textureDataManager->releaseData(m_dataFunctor, this);
-}
-
-void GLTexture::destroyGLTexture()
+// Must be called from RenderThread with active GL context
+void GLTexture::destroy()
 {
     delete m_gl;
     m_gl = nullptr;
@@ -109,13 +111,22 @@ void GLTexture::destroyGLTexture()
     m_renderBuffer = nullptr;
 
     m_dirtyFlags.store(0);
+    m_sharedTextureId = -1;
+    m_externalRendering = false;
+    m_dataFunctor.reset();
+    m_pendingDataFunctor = nullptr;
 
-    destroyResources();
+    m_actualTarget = QAbstractTexture::Target1D;
+    m_properties = {};
+    m_parameters = {};
+    m_textureData.reset();
+    m_images.clear();
+    m_imageData.clear();
 }
 
 bool GLTexture::loadTextureDataFromGenerator()
 {
-    m_textureData = m_textureDataManager->getData(m_dataFunctor);
+    m_textureData = m_dataFunctor->operator()();
     // if there is a texture generator, most properties will be defined by it
     if (m_textureData) {
         if (m_properties.target != QAbstractTexture::TargetAutomatic)
@@ -143,7 +154,7 @@ void GLTexture::loadTextureDataFromImages()
 {
     int maxMipLevel = 0;
     for (const Image &img : qAsConst(m_images)) {
-        const QTextureImageDataPtr imgData = m_textureImageDataManager->getData(img.generator);
+        const QTextureImageDataPtr imgData = img.generator->operator()();
         // imgData may be null in the following cases:
         // - Texture is created with TextureImages which have yet to be
         // loaded (skybox where you don't yet know the path, source set by
@@ -285,7 +296,7 @@ RenderBuffer *GLTexture::getOrCreateRenderBuffer()
     QMutexLocker locker(&m_textureMutex);
 
     if (m_dataFunctor && !m_textureData) {
-        m_textureData = m_textureDataManager->getData(m_dataFunctor);
+        m_textureData = m_dataFunctor->operator()();
         if (m_textureData) {
             if (m_properties.target != QAbstractTexture::TargetAutomatic)
                 qWarning() << "[Qt3DRender::GLTexture] [renderbuffer] When a texture provides a generator, it's target is expected to be TargetAutomatic";
@@ -316,6 +327,13 @@ RenderBuffer *GLTexture::getOrCreateRenderBuffer()
     setDirtyFlag(Parameters, false);
 
     return m_renderBuffer;
+}
+
+// This must be called from the RenderThread
+// So GLTexture release from the manager can only be done from that thread
+void GLTexture::cleanup()
+{
+    destroy();
 }
 
 void GLTexture::setParameters(const TextureParameters &params)
@@ -359,19 +377,9 @@ void GLTexture::setImages(const QVector<Image> &images)
 
 void GLTexture::setGenerator(const QTextureGeneratorPtr &generator)
 {
-    // Note: we do not compare if the generator is different
-    // as in some cases we may want to reset the same generator to force a reload
-    // e.g when using remote urls for textures
-    if (m_dataFunctor)
-        m_textureDataManager->releaseData(m_dataFunctor, this);
-
     m_textureData.reset();
     m_dataFunctor = generator;
-
-    if (m_dataFunctor) {
-        m_textureDataManager->requestData(m_dataFunctor, this);
-        requestUpload();
-    }
+    requestUpload();
 }
 
 void GLTexture::setSharedTextureId(int textureId)
@@ -471,19 +479,6 @@ QOpenGLTexture *GLTexture::buildGLTexture()
     return glTex;
 }
 
-static void uploadGLData(QOpenGLTexture *glTex,
-                         int level, int layer, QOpenGLTexture::CubeMapFace face,
-                         const QByteArray &bytes, const QTextureImageDataPtr &data)
-{
-    if (data->isCompressed()) {
-        glTex->setCompressedData(level, layer, face, bytes.size(), bytes.constData());
-    } else {
-        QOpenGLPixelTransferOptions uploadOptions;
-        uploadOptions.setAlignment(1);
-        glTex->setData(level, layer, face, data->pixelFormat(), data->pixelType(), bytes.constData(), &uploadOptions);
-    }
-}
-
 void GLTexture::uploadGLTextureData()
 {
     // Upload all QTexImageData set by the QTextureGenerator
@@ -518,6 +513,9 @@ void GLTexture::uploadGLTextureData()
                      static_cast<QOpenGLTexture::CubeMapFace>(m_images[i].face),
                      bytes, imgData);
     }
+    // Free up image data once content has been uploaded
+    // Note: if data functor stores the data, this won't really free anything though
+    m_imageData.clear();
 }
 
 void GLTexture::updateGLTextureParameters()

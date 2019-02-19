@@ -64,7 +64,6 @@ qtConfig(private_tests) {
         qabstracttexture \
         qabstracttextureimage \
         qrendersettings \
-        texturedatamanager \
         rendertarget \
         transform \
         computecommand \

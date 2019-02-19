@@ -171,6 +171,7 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
+                 1 + // SyncLoadingJobs
                  singleRenderViewJobCount); // Only valid for the first call to renderBinJobs(), since subsequent calls won't have the renderqueue reset
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -185,6 +186,7 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
+                 1 + // SyncLoadingJobs
                  1); // EntityEnabledDirty
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -202,6 +204,7 @@ private Q_SLOTS:
                  1 + // UpdateWorldBoundingVolume
                  1 + // UpdateShaderDataTransform
                  1 + // updateSkinningPaletteJob
+                 1 + // SyncLoadingJobs
                  1); // ExpandBoundingVolumeJob
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -218,6 +221,7 @@ private Q_SLOTS:
                  1 + // CalculateBoundingVolumeJob
                  1 + // UpdateMeshTriangleListJob
                  1 + // updateSkinningPaletteJob
+                 1 + // SyncLoadingJobs
                  1); // ExpandBoundingVolumeJob
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -232,6 +236,7 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
+                 1 + // SyncLoadingJobs
                  1 + // CalculateBoundingVolumeJob
                  1 + // UpdateMeshTriangleListJob
                  1); // BufferGathererJob
@@ -249,7 +254,7 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // TexturesGathererJob
                  1 + // updateSkinningPaletteJob
-                 1); // SyncTexturesGathererJob
+                 1); // SyncLoadingJobs
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
@@ -262,7 +267,8 @@ private Q_SLOTS:
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
-                 1); // updateSkinningPaletteJob
+                 1 + // updateSkinningPaletteJob
+                 1); // SyncLoadingJobs
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
@@ -281,12 +287,12 @@ private Q_SLOTS:
                  1 + // CalculateBoundingVolumeJob
                  1 + // UpdateMeshTriangleListJob
                  1 + // updateSkinningPaletteJob
+                 1 + // SyncLoadingJobs
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // BufferGathererJob
                  1 + // TexturesGathererJob
-                 1 + // SyncTextureLoadingJob
                  1); // UpdateEntityLayersJob
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);

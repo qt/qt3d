@@ -77,11 +77,6 @@ public:
     ~TextureImage();
 
     void cleanup();
-
-    void setTextureImageDataManager(TextureImageDataManager *dataManager) { m_textureImageDataManager = dataManager; }
-
-    TextureImageDataManager *textureImageDataManager() const { return m_textureImageDataManager; }
-
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
     inline int layer() const { return m_layer; }
@@ -99,16 +94,13 @@ private:
     int m_mipLevel;
     QAbstractTexture::CubeMapFace m_face;
     QTextureImageDataGeneratorPtr m_generator;
-
-    TextureImageDataManager *m_textureImageDataManager;
 };
 
 class TextureImageFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit TextureImageFunctor(AbstractRenderer *renderer,
-                                 TextureImageManager *textureImageManager,
-                                 TextureImageDataManager *textureImageDataManager);
+                                 TextureImageManager *textureImageManager);
 
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
@@ -117,7 +109,6 @@ public:
 private:
     AbstractRenderer *m_renderer;
     TextureImageManager *m_textureImageManager;
-    TextureImageDataManager *m_textureImageDataManager;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

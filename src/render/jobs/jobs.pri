@@ -4,7 +4,6 @@ HEADERS += \
     $$PWD/updateworldtransformjob_p.h \
     $$PWD/loadscenejob_p.h \
     $$PWD/framecleanupjob_p.h \
-    $$PWD/loadtexturedatajob_p.h \
     $$PWD/loadbufferjob_p.h \
     $$PWD/loadgeometryjob_p.h \
     $$PWD/calcboundingvolumejob_p.h \
@@ -37,7 +36,6 @@ SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
     $$PWD/loadscenejob.cpp \
     $$PWD/framecleanupjob.cpp \
-    $$PWD/loadtexturedatajob.cpp \
     $$PWD/loadbufferjob.cpp \
     $$PWD/loadgeometryjob.cpp \
     $$PWD/calcboundingvolumejob.cpp \

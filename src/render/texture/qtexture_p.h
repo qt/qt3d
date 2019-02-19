@@ -84,13 +84,15 @@ class Q_AUTOTEST_EXPORT TextureDownloadRequest : public Qt3DCore::QDownloadReque
 public:
     TextureDownloadRequest(const QTextureFromSourceGeneratorPtr &functor,
                            const QUrl &url,
-                           Qt3DCore::QAspectEngine *engine);
+                           Qt3DCore::QAspectEngine *engine,
+                           Qt3DCore::QNodeId texNodeId);
 
     void onCompleted() override;
 
 private:
     QTextureFromSourceGeneratorPtr m_functor;
     Qt3DCore::QAspectEngine *m_engine;
+    Qt3DCore::QNodeId m_texNodeId;
 };
 
 class Q_AUTOTEST_EXPORT QTextureFromSourceGenerator : public QTextureGenerator,

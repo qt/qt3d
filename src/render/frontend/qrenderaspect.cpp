@@ -41,7 +41,6 @@
 #include "qrenderaspect_p.h"
 
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
@@ -113,7 +112,6 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/nodefunctor_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
-#include <Qt3DRender/private/loadtexturedatajob_p.h>
 #include <Qt3DRender/private/textureimage_p.h>
 #include <Qt3DRender/private/statesetnode_p.h>
 #include <Qt3DRender/private/nodraw_p.h>
@@ -269,8 +267,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     // Textures
     q->registerBackendType<QAbstractTexture>(QSharedPointer<Render::TextureFunctor>::create(m_renderer, m_nodeManagers->textureManager()));
     q->registerBackendType<QAbstractTextureImage>(QSharedPointer<Render::TextureImageFunctor>::create(m_renderer,
-                                                                                                      m_nodeManagers->textureImageManager(),
-                                                                                                      m_nodeManagers->textureImageDataManager()));
+                                                                                                      m_nodeManagers->textureImageManager()));
 
     // Material system
     q->registerBackendType<QEffect>(QSharedPointer<Render::NodeFunctor<Render::Effect, Render::EffectManager> >::create(m_renderer));
@@ -477,34 +474,16 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     if (d->m_renderer->isRunning() && d->m_renderer->settings()) {
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
-        QAspectJobPtr textureLoadingSync = d->m_renderer->syncTextureLoadingJob();
-        textureLoadingSync->removeDependency(QWeakPointer<QAspectJob>());
+        QAspectJobPtr loadingJobSync = d->m_renderer->syncLoadingJobs();
+        loadingJobSync->removeDependency(QWeakPointer<QAspectJob>());
 
-        // Launch texture generator jobs
-        const QVector<QTextureImageDataGeneratorPtr> pendingImgGen = manager->textureImageDataManager()->pendingGenerators();
-        for (const QTextureImageDataGeneratorPtr &imgGen : pendingImgGen) {
-            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(imgGen);
-            textureLoadingSync->addDependency(loadTextureJob);
-            loadTextureJob->setNodeManagers(manager);
-            jobs.append(loadTextureJob);
-        }
-        const QVector<QTextureGeneratorPtr> pendingTexGen = manager->textureDataManager()->pendingGenerators();
-        for (const QTextureGeneratorPtr &texGen : pendingTexGen) {
-            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(texGen);
-            textureLoadingSync->addDependency(loadTextureJob);
-            loadTextureJob->setNodeManagers(manager);
-            jobs.append(loadTextureJob);
-        }
-
-        // Launch skeleton loader jobs. We join on the syncTextureLoadingJob for now
-        // which should likely be renamed to something more generic or we introduce
-        // another synchronizing job for skeleton loading
+        // Launch skeleton loader jobs once all loading jobs have completed.
         const QVector<Render::HSkeleton> skeletonsToLoad =
                 manager->skeletonManager()->takeDirtySkeletons(Render::SkeletonManager::SkeletonDataDirty);
         for (const auto &skeletonHandle : skeletonsToLoad) {
             auto loadSkeletonJob = Render::LoadSkeletonJobPtr::create(skeletonHandle);
             loadSkeletonJob->setNodeManagers(manager);
-            textureLoadingSync->addDependency(loadSkeletonJob);
+            loadingJobSync->addDependency(loadSkeletonJob);
             jobs.append(loadSkeletonJob);
         }
 

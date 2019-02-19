@@ -198,8 +198,6 @@ public:
     inline RenderPassManager *renderPassManager() const Q_DECL_NOEXCEPT { return m_renderPassManager; }
     inline GLTextureManager *glTextureManager() const Q_DECL_NOEXCEPT { return m_glTextureManager; }
     inline TextureManager *textureManager() const Q_DECL_NOEXCEPT { return m_textureManager; }
-    inline TextureDataManager *textureDataManager() const Q_DECL_NOEXCEPT { return m_textureDataManager; }
-    inline TextureImageDataManager *textureImageDataManager() const Q_DECL_NOEXCEPT { return m_textureImageDataManager; }
     inline LayerManager *layerManager() const Q_DECL_NOEXCEPT { return m_layerManager; }
     inline LevelOfDetailManager *levelOfDetailManager() const Q_DECL_NOEXCEPT { return m_levelOfDetailManager; }
     inline FilterKeyManager *filterKeyManager() const Q_DECL_NOEXCEPT { return m_filterKeyManager; }
@@ -243,8 +241,6 @@ private:
     RenderPassManager *m_renderPassManager;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
-    TextureDataManager *m_textureDataManager;
-    TextureImageDataManager *m_textureImageDataManager;
     GLTextureManager *m_glTextureManager;
     LayerManager *m_layerManager;
     LevelOfDetailManager *m_levelOfDetailManager;
@@ -310,9 +306,6 @@ QT3DRENDERSHARED_PRIVATE_EXPORT RenderPassManager *NodeManagers::manager<RenderP
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT;
-
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT TextureDataManager *NodeManagers::manager<QTextureImageData>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT;

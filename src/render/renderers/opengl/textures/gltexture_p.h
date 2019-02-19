@@ -96,11 +96,7 @@ class RenderBuffer;
 class Q_AUTOTEST_EXPORT GLTexture
 {
 public:
-    GLTexture(TextureDataManager *texDataMgr,
-              TextureImageDataManager *texImgDataMgr,
-              const QTextureGeneratorPtr &texGen,
-              bool unique);
-
+    GLTexture();
     ~GLTexture();
 
     /**
@@ -119,8 +115,6 @@ public:
         }
         inline bool operator!=(const Image &o) const { return !(*this == o); }
     };
-
-    inline bool isUnique() const { return m_unique; }
 
     inline TextureProperties properties() const { return m_properties; }
     inline TextureParameters parameters() const { return m_parameters; }
@@ -157,17 +151,10 @@ public:
      */
     RenderBuffer *getOrCreateRenderBuffer();
 
-    /**
-     * @brief Make sure to call this before calling the dtor
-     */
-    void destroyGLTexture();
 
-    // Called by TextureDataManager when it has new texture data from
-    // a generator that needs to be uploaded.
-    void requestUpload()
-    {
-        setDirtyFlag(TextureData, true);
-    }
+    void destroy();
+
+    void cleanup();
 
     bool isDirty()
     {
@@ -189,18 +176,6 @@ public:
         return m_externalRendering;
     }
 
-protected:
-    template<class APITexture, class APITextureImage>
-    friend class APITextureManager;
-
-    /*
-     * These methods are to be accessed from the GLTextureManager.
-     * The renderer and the texture backend nodes can only modify Textures
-     * through the GLTextureManager.
-     *
-     * The methods should only be called for unique textures, or textures
-     * that are not shared between multiple nodes.
-     */
     void setParameters(const TextureParameters &params);
     void setProperties(const TextureProperties &props);
     void setImages(const QVector<Image> &images);
@@ -215,6 +190,12 @@ private:
         Parameters   = 0x04,     // texture parameters need to be (re-)set
         SharedTextureId = 0x08   // texture id from shared context
     };
+
+
+    void requestUpload()
+    {
+        setDirtyFlag(TextureData, true);
+    }
 
     bool testDirtyFlag(DirtyFlag flag)
     {
@@ -237,15 +218,11 @@ private:
     void introspectPropertiesFromSharedTextureId();
     void destroyResources();
 
-    bool m_unique;
     QAtomicInt m_dirtyFlags;
     QMutex m_textureMutex;
     QMutex m_externalRenderingMutex;
     QOpenGLTexture *m_gl;
     RenderBuffer *m_renderBuffer;
-
-    TextureDataManager *m_textureDataManager;
-    TextureImageDataManager *m_textureImageDataManager;
 
     // target which is actually used for GL texture
     QAbstractTexture::Target m_actualTarget;

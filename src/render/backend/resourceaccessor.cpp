@@ -42,7 +42,6 @@
 #include <private/nodemanagers_p.h>
 #include <private/texture_p.h>
 #include <private/rendertargetoutput_p.h>
-#include <private/texturedatamanager_p.h>
 #include <private/gltexturemanager_p.h>
 #include <private/managers_p.h>
 #include <private/gltexture_p.h>

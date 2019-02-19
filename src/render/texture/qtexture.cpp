@@ -56,7 +56,6 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
-#include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/gltexturemanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -925,7 +924,8 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
                 auto downloadService = Qt3DCore::QDownloadHelperService::getService(m_engine);
                 Qt3DCore::QDownloadRequestPtr request(new TextureDownloadRequest(sharedFromThis(),
                                                                                  m_url,
-                                                                                 m_engine));
+                                                                                 m_engine,
+                                                                                 m_texture));
                 downloadService->submitRequest(request);
             }
             return generatedData;
@@ -974,10 +974,12 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
 
 TextureDownloadRequest::TextureDownloadRequest(const QTextureFromSourceGeneratorPtr &functor,
                                                const QUrl &source,
-                                               Qt3DCore::QAspectEngine *engine)
+                                               Qt3DCore::QAspectEngine *engine,
+                                               Qt3DCore::QNodeId texNodeId)
     : Qt3DCore::QDownloadRequest(source)
     , m_functor(functor)
     , m_engine(engine)
+    , m_texNodeId(texNodeId)
 {
 
 }
@@ -992,46 +994,23 @@ void TextureDownloadRequest::onCompleted()
     if (!d_aspect)
         return;
 
-    // Find all textures which share the same functor
-    // Note: this should be refactored to not pull in API specific managers
-    // but texture sharing forces us to do that currently
-    Render::TextureDataManager *textureDataManager = d_aspect->m_nodeManagers->textureDataManager();
-    const QVector<Render::GLTexture *> referencedGLTextures = textureDataManager->referencesForGenerator(m_functor);
-
-    // We should have at most 1 GLTexture referencing this
-    // Since all textures having the same source should have the same functor == same GLTexture
-    Q_ASSERT(referencedGLTextures.size() <= 1);
-
-    Render::GLTexture *glTex = referencedGLTextures.size() > 0 ? referencedGLTextures.first() : nullptr;
-    if (glTex == nullptr)
+    Render::TextureManager *textureManager = d_aspect->m_nodeManagers->textureManager();
+    Render::Texture *texture = textureManager->lookupResource(m_texNodeId);
+    if (texture == nullptr)
         return;
 
-    Render::GLTextureManager *glTextureManager = d_aspect->m_nodeManagers->glTextureManager();
-    Qt3DCore::QNodeIdVector referencingTexturesIds = glTextureManager->referencedTextureIds(glTex);
+    QTextureFromSourceGeneratorPtr oldGenerator = qSharedPointerCast<QTextureFromSourceGenerator>(texture->dataGenerator());
 
+    // We create a new functor
+    // Which is a copy of the old one + the downloaded sourceData
+    auto newGenerator = QTextureFromSourceGeneratorPtr::create(*oldGenerator);
 
-    Render::TextureManager *textureManager = d_aspect->m_nodeManagers->textureManager();
-    for (const Qt3DCore::QNodeId texId : referencingTexturesIds) {
-        Render::Texture *texture = textureManager->lookupResource(texId);
-        if (texture != nullptr) {
-            // Each texture has a QTextureFunctor which matches m_functor;
-            // Update m_sourceData on each functor as we don't know which one
-            // is used as the reference for texture sharing
+    // Set raw data on functor so that it can really load something
+    newGenerator->m_sourceData = m_data;
 
-            QTextureFromSourceGeneratorPtr oldGenerator = qSharedPointerCast<QTextureFromSourceGenerator>(texture->dataGenerator());
-
-            // We create a new functor
-            // Which is a copy of the old one + the downloaded sourceData
-            auto newGenerator = QTextureFromSourceGeneratorPtr::create(*oldGenerator);
-
-            // Set raw data on functor so that it can really load something
-           newGenerator->m_sourceData = m_data;
-
-           // Set new generator on texture
-           // it implictely marks the texture as dirty so that the functor runs again with the downloaded data
-           texture->setDataGenerator(newGenerator);
-        }
-    }
+    // Set new generator on texture
+    // it implictely marks the texture as dirty so that the functor runs again with the downloaded data
+    texture->setDataGenerator(newGenerator);
 }
 
 /*!

@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/apitexturemanager_p.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRender/private/gltexture_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,20 +59,19 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-class Q_AUTOTEST_EXPORT GLTextureManager : public APITextureManager<GLTexture, GLTexture::Image>
+class Q_AUTOTEST_EXPORT GLTextureManager : public Qt3DCore::QResourceManager<
+        GLTexture,
+        Qt3DCore::QNodeId,
+        Qt3DCore::NonLockingPolicy>
 {
 public:
-    explicit GLTextureManager(TextureImageManager *textureImageManager,
-                              TextureDataManager *textureDataManager,
-                              TextureImageDataManager *textureImageDataManager)
-        : APITextureManager<GLTexture, GLTexture::Image>(textureImageManager,
-                                                         textureDataManager,
-                                                         textureImageDataManager)
-    {}
+    QHash<GLTexture *, Qt3DCore::QNodeId> texNodeIdForGLTexture;
 };
 
 } // namespace Render
 } // namespace Qt3DRender
+
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::GLTexture, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

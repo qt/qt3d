@@ -199,7 +199,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_sendTextureChangesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendTextureChangesToFrontend(); }, JobTypes::SendTextureChangesToFrontend))
     , m_sendSetFenceHandlesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
     , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
-    , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
+    , m_syncLoadingJobs(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncLoadingJobs))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
     #if QT_CONFIG(qt3d_profile_jobs)
@@ -222,12 +222,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_rayCastingJob->addDependency(m_expandBoundingVolumeJob);
     // m_calculateBoundingVolumeJob's dependency on m_updateTreeEnabledJob is set in renderBinJobs
 
-    // Dirty texture gathering depends on m_syncTextureLoadingJob
-    // m_syncTextureLoadingJob will depend on the texture loading jobs
-    m_textureGathererJob->addDependency(m_syncTextureLoadingJob);
-
     // Ensures all skeletons are loaded before we try to update them
-    m_updateSkinningPaletteJob->addDependency(m_syncTextureLoadingJob);
+    m_updateSkinningPaletteJob->addDependency(m_syncLoadingJobs);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_updateLevelOfDetailJob->addDependency(m_updateMeshTriangleListJob);
@@ -501,9 +497,11 @@ void Renderer::releaseGraphicsResources()
     if (context->makeCurrent(offscreenSurface)) {
 
         // Clean up the graphics context and any resources
-        const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
-        for (GLTexture *tex : activeTextures)
-            tex->destroyGLTexture();
+        const QVector<HGLTexture> activeTexturesHandles = m_nodesManager->glTextureManager()->activeHandles();
+        for (const HGLTexture &textureHandle : activeTexturesHandles) {
+            GLTexture *tex = m_nodesManager->glTextureManager()->data(textureHandle);
+            tex->destroy();
+        }
 
         // Do the same thing with buffers
         const QVector<HGLBuffer> activeBuffers = m_nodesManager->glBufferManager()->activeHandles();
@@ -1297,7 +1295,8 @@ void Renderer::updateGLResources()
             if (texture ==  nullptr)
                 continue;
 
-            // Create or Update GLTexture
+            // Create or Update GLTexture (the GLTexture instance is created if required
+            // and all things that can take place without a GL context are done here)
             updateTexture(texture);
         }
         // We want to upload textures data at this point as the SubmissionThread and
@@ -1305,15 +1304,18 @@ void Renderer::updateGLResources()
         // GLTexture
         if (m_submissionContext != nullptr) {
             GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
-            const QVector<GLTexture *> glTextures = glTextureManager->activeResources();
+            const QVector<HGLTexture> glTextureHandles = glTextureManager->activeHandles();
             // Upload texture data
-            for (GLTexture *glTexture : glTextures) {
+            for (const HGLTexture &glTextureHandle : glTextureHandles) {
+                GLTexture *glTexture = glTextureManager->data(glTextureHandle);
+
+                // We create/update the actual GL texture using the GL context at this point
                 const GLTexture::TextureUpdateInfo info = glTexture->createOrUpdateGLTexture();
 
                 // GLTexture creation provides us width/height/format ... information
                 // for textures which had not initially specified these information (TargetAutomatic...)
                 // Gather these information and store them to be distributed by a change next frame
-                const QNodeIdVector referenceTextureIds = glTextureManager->referencedTextureIds(glTexture);
+                const QNodeIdVector referenceTextureIds = { glTextureManager->texNodeIdForGLTexture.value(glTexture) };
                 // Store properties and referenceTextureIds
                 if (info.wasUpdated) {
                     Texture::TextureUpdateInfo updateInfo;
@@ -1324,14 +1326,10 @@ void Renderer::updateGLResources()
                 }
             }
         }
+
+        // Record ids of texture to cleanup while we are still blocking the aspect thread
+        m_textureIdsToCleanup += m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
     }
-    // When Textures are cleaned up, their id is saved so that they can be
-    // cleaned up in the render thread Note: we perform this step in second so
-    // that the previous updateTexture call has a chance to find a shared
-    // texture and avoid possible destroying recreating a new texture
-    const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
-    for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds)
-        cleanupTexture(textureCleanedUpId);
 }
 
 // Render Thread
@@ -1339,92 +1337,56 @@ void Renderer::updateTexture(Texture *texture)
 {
     // Check that the current texture images are still in place, if not, do not update
     const bool isValid = texture->isValid(m_nodesManager->textureImageManager());
-    if (!isValid)
+    if (!isValid) {
+        qWarning() << Q_FUNC_INFO << "QTexture referencing invalid QTextureImages";
         return;
-
-    // For implementing unique, non-shared, non-cached textures.
-    // for now, every texture is shared by default except if:
-    // - texture is reference by a render attachment
-    // - texture is referencing a shared texture id
-    bool isUnique = texture->sharedTextureId() > 0;
-
-    if (!isUnique) {
-        // TO DO: Update the vector once per frame (or in a job)
-        const QVector<HAttachment> activeRenderTargetOutputs = m_nodesManager->attachmentManager()->activeHandles();
-        // A texture is unique if it's being reference by a render target output
-        for (const HAttachment &attachmentHandle : activeRenderTargetOutputs) {
-            RenderTargetOutput *attachment = m_nodesManager->attachmentManager()->data(attachmentHandle);
-            if (attachment->textureUuid() == texture->peerId()) {
-                isUnique = true;
-                break;
-            }
-        }
     }
+
+    // All textures are unique, if you instanciate twice the exact same texture
+    // this will create 2 identical GLTextures, no sharing will take place
 
     // Try to find the associated GLTexture for the backend Texture
     GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
     GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
 
-    auto createOrUpdateGLTexture = [=] () {
-        if (isUnique)
-            glTextureManager->createUnique(texture);
-        else
-            glTextureManager->getOrCreateShared(texture);
-        texture->unsetDirty();
-    };
-
     // No GLTexture associated yet -> create it
     if (glTexture == nullptr) {
-        createOrUpdateGLTexture();
-        return;
+        glTexture = glTextureManager->getOrCreateResource(texture->peerId());
+        glTextureManager->texNodeIdForGLTexture.insert(glTexture, texture->peerId());
     }
 
-    // if this texture is a shared texture, we might need to look for a new TextureImpl
-    // and abandon the old one
-    if (glTextureManager->isShared(glTexture)) {
-        glTextureManager->abandon(glTexture, texture->peerId());
-        // Note: if isUnique is true, a once shared texture will become unique
-        createOrUpdateGLTexture();
-        return;
-    }
-
-    // this texture node is the only one referring to the GLTexture.
-    // we could thus directly modify the texture. Instead, for non-unique textures,
-    // we first see if there is already a matching texture present.
-    if (!isUnique) {
-        GLTexture *newSharedTex = glTextureManager->findMatchingShared(texture);
-        if (newSharedTex && newSharedTex != glTexture) {
-            glTextureManager->abandon(glTexture, texture->peerId());
-            glTextureManager->adoptShared(newSharedTex, texture);
-            texture->unsetDirty();
-            return;
-        }
-    }
-
-    // we hold a reference to a unique or exclusive access to a shared texture
-    // we can thus modify the texture directly.
+    // Update GLTexture to match Texture instance
     const Texture::DirtyFlags dirtyFlags = texture->dirtyFlags();
-    if (dirtyFlags.testFlag(Texture::DirtySharedTextureId) &&
-        !glTextureManager->setSharedTextureId(glTexture, texture->sharedTextureId()))
-        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setSharedTextureId failed, should be non-shared";
+    if (dirtyFlags.testFlag(Texture::DirtySharedTextureId))
+        glTexture->setSharedTextureId(texture->sharedTextureId());
 
-    if (dirtyFlags.testFlag(Texture::DirtyProperties) &&
-            !glTextureManager->setProperties(glTexture, texture->properties()))
-        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setProperties failed, should be non-shared";
+    if (dirtyFlags.testFlag(Texture::DirtyProperties))
+        glTexture->setProperties(texture->properties());
 
-    if (dirtyFlags.testFlag(Texture::DirtyParameters) &&
-            !glTextureManager->setParameters(glTexture, texture->parameters()))
-        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setParameters failed, should be non-shared";
+    if (dirtyFlags.testFlag(Texture::DirtyParameters))
+        glTexture->setParameters(texture->parameters());
 
     // Will make the texture requestUpload
-    if (dirtyFlags.testFlag(Texture::DirtyImageGenerators) &&
-            !glTextureManager->setImages(glTexture, texture->textureImageIds()))
-        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
+    if (dirtyFlags.testFlag(Texture::DirtyImageGenerators)) {
+        const QNodeIdVector textureImageIds = texture->textureImageIds();
+        QVector<GLTexture::Image> images;
+        images.reserve(textureImageIds.size());
+        // TODO: Move this into GLTexture directly
+        for (const QNodeId textureImageId : textureImageIds) {
+            const TextureImage *img = m_nodesManager->textureImageManager()->lookupResource(textureImageId);
+            if (img == nullptr) {
+                qWarning() << Q_FUNC_INFO << "invalid TextureImage handle";
+            } else {
+                GLTexture::Image glImg {img->dataGenerator(), img->layer(), img->mipLevel(), img->face()};
+                images.push_back(glImg);
+            }
+        }
+        glTexture->setImages(images);
+    }
 
     // Will make the texture requestUpload
-    if (dirtyFlags.testFlag(Texture::DirtyDataGenerator) &&
-            !glTextureManager->setGenerator(glTexture, texture->dataGenerator()))
-        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerator failed, should be non-shared";
+    if (dirtyFlags.testFlag(Texture::DirtyDataGenerator))
+        glTexture->setGenerator(texture->dataGenerator());
 
     // Unset the dirty flag on the texture
     texture->unsetDirty();
@@ -1436,8 +1398,11 @@ void Renderer::cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId)
     GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
     GLTexture *glTexture = glTextureManager->lookupResource(cleanedUpTextureId);
 
-    if (glTexture != nullptr)
-        glTextureManager->abandon(glTexture, cleanedUpTextureId);
+    // Destroying the GLTexture implicitely also destroy the GL resources
+    if (glTexture != nullptr) {
+        glTextureManager->releaseResource(cleanedUpTextureId);
+        glTextureManager->texNodeIdForGLTexture.remove(glTexture);
+    }
 }
 
 // Called by SubmitRenderView
@@ -1808,6 +1773,8 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         renderBinJobs.push_back(m_expandBoundingVolumeJob);
     }
 
+    // TO DO: Conditionally add if skeletons dirty
+    renderBinJobs.push_back(m_syncLoadingJobs);
     m_updateSkinningPaletteJob->setDirtyJoints(m_nodesManager->jointManager()->dirtyJoints());
     renderBinJobs.push_back(m_updateSkinningPaletteJob);
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
@@ -1821,10 +1788,8 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     if (dirtyBitsForFrame & AbstractRenderer::BuffersDirty)
         renderBinJobs.push_back(m_bufferGathererJob);
 
-    if (dirtyBitsForFrame & AbstractRenderer::TexturesDirty) {
-        renderBinJobs.push_back(m_syncTextureLoadingJob);
+    if (dirtyBitsForFrame & AbstractRenderer::TexturesDirty)
         renderBinJobs.push_back(m_textureGathererJob);
-    }
 
 
     // Layer cache is dependent on layers, layer filters and the enabled flag
@@ -1920,9 +1885,9 @@ QAspectJobPtr Renderer::rayCastingJob()
     return m_rayCastingJob;
 }
 
-QAspectJobPtr Renderer::syncTextureLoadingJob()
+QAspectJobPtr Renderer::syncLoadingJobs()
 {
-    return m_syncTextureLoadingJob;
+    return m_syncLoadingJobs;
 }
 
 QAspectJobPtr Renderer::expandBoundingVolumeJob()
@@ -2244,12 +2209,11 @@ void Renderer::cleanGraphicsResources()
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_submissionContext->releaseBuffer(bufferId);
 
-    // Delete abandoned textures
-    const QVector<GLTexture*> abandonedTextures = m_nodesManager->glTextureManager()->takeAbandonedTextures();
-    for (GLTexture *tex : abandonedTextures) {
-        tex->destroyGLTexture();
-        delete tex;
-    }
+    // When Textures are cleaned up, their id is saved so that they can be
+    // cleaned up in the render thread
+    const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
+    for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds)
+        cleanupTexture(textureCleanedUpId);
 
     // Delete abandoned VAOs
     m_abandonedVaosMutex.lock();

@@ -43,7 +43,6 @@
 #include <private/entity_p.h>
 #include <private/shaderdata_p.h>
 #include <private/managers_p.h>
-#include <private/texturedatamanager_p.h>
 #include <private/sphere_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 

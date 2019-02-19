@@ -204,7 +204,7 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() override;
     Qt3DCore::QAspectJobPtr rayCastingJob() override;
-    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() override;
+    Qt3DCore::QAspectJobPtr syncLoadingJobs() override;
     Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() override;
 
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
@@ -218,7 +218,7 @@ public:
     inline UpdateLevelOfDetailJobPtr updateLevelOfDetailJob() const { return m_updateLevelOfDetailJob; }
     inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
-    inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
+    inline SynchronizerJobPtr syncLoadingJobs() const { return m_syncLoadingJobs; }
     inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
     inline IntrospectShadersJobPtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
@@ -382,7 +382,7 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_sendSetFenceHandlesToFrontendJob;
     IntrospectShadersJobPtr m_introspectShaderJob;
 
-    SynchronizerJobPtr m_syncTextureLoadingJob;
+    SynchronizerJobPtr m_syncLoadingJobs;
 
     void lookForAbandonedVaos();
     void lookForDirtyBuffers();
@@ -401,6 +401,7 @@ private:
     QVector<HTexture> m_dirtyTextures;
     QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
     QVector<QPair<Qt3DCore::QNodeId, GLFence>> m_updatedSetFences;
+    Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
 
     bool m_ownedContext;
 

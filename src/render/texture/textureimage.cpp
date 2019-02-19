@@ -42,7 +42,6 @@
 #include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/qabstracttextureimage_p.h>
-#include <Qt3DRender/private/texturedatamanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,7 +56,6 @@ TextureImage::TextureImage()
     , m_layer(0)
     , m_mipLevel(0)
     , m_face(QAbstractTexture::CubeMapPositiveX)
-    , m_textureImageDataManager(nullptr)
 {
 }
 
@@ -67,10 +65,7 @@ TextureImage::~TextureImage()
 
 void TextureImage::cleanup()
 {
-    if (m_generator) {
-        m_textureImageDataManager->releaseData(m_generator, peerId());
-        m_generator.reset();
-    }
+    m_generator.reset();
     m_dirty = false;
     m_layer = 0;
     m_mipLevel = 0;
@@ -86,10 +81,6 @@ void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     m_face = data.face;
     m_generator = data.generator;
     m_dirty = true;
-
-    // Request functor upload
-    if (m_generator)
-        m_textureImageDataManager->requestData(m_generator, peerId());
 }
 
 void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -104,13 +95,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
             m_face = static_cast<QAbstractTexture::CubeMapFace>(propertyChange->value().toInt());
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dataGenerator")) {
-            // Release ref to generator
-            if (m_generator)
-                m_textureImageDataManager->releaseData(m_generator, peerId());
             m_generator = propertyChange->value().value<QTextureImageDataGeneratorPtr>();
-            // Request functor upload
-            if (m_generator)
-                m_textureImageDataManager->requestData(m_generator, peerId());
         }
         m_dirty = true;
     }
@@ -125,18 +110,15 @@ void TextureImage::unsetDirty()
 }
 
 TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer,
-                                         TextureImageManager *textureImageManager,
-                                         TextureImageDataManager *textureImageDataManager)
+                                         TextureImageManager *textureImageManager)
     : m_renderer(renderer)
     , m_textureImageManager(textureImageManager)
-    , m_textureImageDataManager(textureImageDataManager)
 {
 }
 
 Qt3DCore::QBackendNode *TextureImageFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     TextureImage *backend = m_textureImageManager->getOrCreateResource(change->subjectId());
-    backend->setTextureImageDataManager(m_textureImageDataManager);
     backend->setRenderer(m_renderer);
     return backend;
 }
