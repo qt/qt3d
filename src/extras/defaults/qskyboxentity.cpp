@@ -293,7 +293,10 @@ void QSkyboxEntity::setExtension(const QString &extension)
 /*!
     \property QSkyboxEntity::extension
 
-    Contains the extension of the Skybox.
+    Contains the extension of the filename for the skybox image, including the
+    leading '.'.
+
+    The default value is: .png
 */
 /*!
  * Returns the extension
