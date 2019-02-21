@@ -82,6 +82,7 @@ private slots:
 
     void checkConstructionSetParentMix(); // QTBUG-60612
     void checkConstructionWithParent();
+    void checkConstructionWithNonRootParent(); // QTBUG-73986
     void checkConstructionAsListElement();
     void checkSceneIsSetOnConstructionWithParent(); // QTBUG-69352
 
@@ -1117,6 +1118,61 @@ void tst_Nodes::checkConstructionWithParent()
     QCOMPARE(propertyEvent->subjectId(), root->id());
     QCOMPARE(propertyEvent->propertyName(), "nodeProperty");
     QCOMPARE(propertyEvent->value().value<Qt3DCore::QNodeId>(), node->id());
+}
+
+void tst_Nodes::checkConstructionWithNonRootParent()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QScene scene;
+    QScopedPointer<MyQNode> root(new MyQNode());
+
+    // WHEN
+    root->setArbiterAndScene(&spy, &scene);
+    root->setSimulateBackendCreated(true);
+    QScopedPointer<MyQNode> parent(new MyQNode(root.data()));
+
+    // THEN
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != nullptr);
+    QVERIFY(Qt3DCore::QNodePrivate::get(parent.data())->scene() != nullptr);
+
+    // WHEN we create a child and then set it as a Node* property
+    auto *child = new MyQNode(parent.data());
+    root->setNodeProperty(child);
+
+    // THEN we should get
+    // - one creation change for parent,
+    // - one creation change for child,
+    // - one child added change for root->parent,
+    // - and one property change event,
+    // in that order.
+    QCoreApplication::processEvents();
+    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(parent->children().count(), 1);
+
+    QCOMPARE(spy.events.size(), 4); // 2 creation changes, 1 child added changes, 1 property change
+
+    // Ensure first event is parent node's creation change
+    const auto parentCreationEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
+    QVERIFY(!parentCreationEvent.isNull());
+    QCOMPARE(parentCreationEvent->subjectId(), parent->id());
+
+    const auto childCreationEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
+    QVERIFY(!childCreationEvent.isNull());
+    QCOMPARE(childCreationEvent->subjectId(), child->id());
+
+    const auto parentNewChildEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+    QVERIFY(!parentNewChildEvent.isNull());
+    QCOMPARE(parentNewChildEvent->subjectId(), root->id());
+    QCOMPARE(parentNewChildEvent->propertyName(), "children");
+    QCOMPARE(parentNewChildEvent->addedNodeId(), parent->id());
+
+    // Ensure second and last event is property set change
+    const auto propertyEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
+    QVERIFY(!propertyEvent.isNull());
+    QCOMPARE(propertyEvent->subjectId(), root->id());
+    QCOMPARE(propertyEvent->propertyName(), "nodeProperty");
+    QCOMPARE(propertyEvent->value().value<Qt3DCore::QNodeId>(), child->id());
 }
 
 void tst_Nodes::checkConstructionAsListElement()

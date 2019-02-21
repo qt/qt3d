@@ -394,15 +394,15 @@ void QNodePrivate::propertyChanged(int propertyIndex)
         if (data.canConvert<QNode*>()) {
             QNode *node = data.value<QNode*>();
 
-            // Ensure the node has issued a node creation change. We can end
-            // up here if a newly created node with a parent is immediately set
+            // Ensure the node and all ancestors have issued their node creation changes.
+            // We can end up here if a newly created node with a parent is immediately set
             // as a property on another node. In this case the deferred call to
             // _q_postConstructorInit() will not have happened yet as the event
-            // loop will still be blocked. So force it here and we catch this
-            // eventuality in the _q_postConstructorInit() function so that we
-            // do not repeat the creation and new child scene change events.
+            // loop will still be blocked. We need to do this for all ancestors,
+            // since the subtree of this node otherwise can end up on the backend
+            // with a reference to a non-existent parent.
             if (node)
-                QNodePrivate::get(node)->_q_postConstructorInit();
+                QNodePrivate::get(node)->_q_ensureBackendNodeCreated();
 
             const QNodeId id = node ? node->id() : QNodeId();
             return QVariant::fromValue(id);
