@@ -36,6 +36,7 @@
 
 #include "qscene2d.h"
 #include "qscene2d_p.h"
+#include <private/qrenderaspect_p.h>
 #include "scene2d_p.h"
 #include "scene2dmanager_p.h"
 #include "scene2devent_p.h"
@@ -205,6 +206,12 @@ void QScene2DPrivate::setScene(Qt3DCore::QScene *scene)
 QScene2D::QScene2D(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QScene2DPrivate, parent)
 {
+#ifdef QT_STATIC
+    static bool isInitialized = false;
+    if (!isInitialized) {
+        Qt3DRender::QRenderAspectPrivate::configurePlugin(QLatin1String("scene2d"));
+    }
+#endif
 }
 
 /*!
