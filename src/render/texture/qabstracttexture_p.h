@@ -56,6 +56,7 @@
 #include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qtexturewrapmode.h>
 #include <Qt3DRender/qtexturegenerator.h>
+#include <Qt3DRender/qtexturedataupdate.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -95,6 +96,8 @@ public :
     QTextureGeneratorPtr dataFunctor() const;
     void setDataFunctor(const QTextureGeneratorPtr &generator);
 
+    QVector<QTextureDataUpdate> m_initialDataUpdates;
+
 private:
     QTextureGeneratorPtr m_dataFunctor;
 };
@@ -120,6 +123,7 @@ struct QAbstractTextureData
     int samples;
     int sharedTextureId;
     QTextureGeneratorPtr dataFunctor;
+    QVector<QTextureDataUpdate> initialDataUpdates;
 };
 
 } // QT3D

@@ -47,7 +47,6 @@
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <Qt3DRender/private/texture_p.h>
-#include <Qt3DRender/private/qabstracttexture_p.h>
 #include <Qt3DRender/private/gltexturemanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
 
@@ -115,6 +114,7 @@ void Texture::cleanup()
     // texture is being referenced by a shared API specific texture (GLTexture)
     m_dataFunctor.reset();
     m_textureImageIds.clear();
+    m_pendingTextureDataUpdates.clear();
     m_sharedTextureId = -1;
 
     // set default values
@@ -185,9 +185,12 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("textureId")) {
             m_sharedTextureId = propertyChange->value().toInt();
             dirty = DirtySharedTextureId;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("updateData")) {
+            Qt3DRender::QTextureDataUpdate updateData = propertyChange->value().value<Qt3DRender::QTextureDataUpdate>();
+            addTextureDataUpdate(updateData);
         }
-    }
         break;
+    }
 
     case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
@@ -340,9 +343,19 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     for (const QNodeId imgId : data.textureImageIds)
         addTextureImage(imgId);
 
+    const QVector<QTextureDataUpdate> initialDataUpdates = data.initialDataUpdates;
+    for (const QTextureDataUpdate &initialUpdate : initialDataUpdates)
+        addTextureDataUpdate(initialUpdate);
+
     addDirtyFlag(DirtyFlags(DirtyImageGenerators|DirtyProperties|DirtyParameters));
     if (m_sharedTextureId > 0)
         addDirtyFlag(DirtySharedTextureId);
+}
+
+void Texture::addTextureDataUpdate(const QTextureDataUpdate &update)
+{
+    m_pendingTextureDataUpdates.push_back(update);
+    addDirtyFlag(DirtyPendingDataUpdates);
 }
 
 

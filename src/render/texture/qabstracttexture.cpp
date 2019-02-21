@@ -972,6 +972,27 @@ QVariant QAbstractTexture::handle() const
     return d->m_handle;
 }
 
+/*!
+ * Allow to update a sub region of the texture without having to change the data
+ * generator or rely on adding or removing texture images.
+ * \since 5.14
+ */
+void QAbstractTexture::updateData(const QTextureDataUpdate &update)
+{
+    Q_D(QAbstractTexture);
+
+    // Send update to backend if we have the changeArbiter
+    if (d->m_changeArbiter != nullptr) {
+        auto e = QPropertyUpdatedChangePtr::create(id());
+        e->setPropertyName("updateData");
+        e->setValue(QVariant::fromValue(update));
+        notifyObservers(e);
+    } else {
+        // If we have no arbiter (no backend), record the update as part of the creation changes
+        d->m_initialDataUpdates.push_back(update);
+    }
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractTextureData>::create(this);
@@ -996,6 +1017,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange()
     data.samples = d->m_samples;
     data.dataFunctor = d->m_dataFunctor;
     data.sharedTextureId = d->m_sharedTextureId;
+    data.initialDataUpdates = d->m_initialDataUpdates;
     return creationChange;
 }
 

@@ -73,5 +73,6 @@ qtHaveModule(widgets): {
     SUBDIRS += \
         assimp-cpp \
         paintedtexture-cpp \
-        rendercapture-cpp
+        rendercapture-cpp \
+        texture-updates-cpp
 }

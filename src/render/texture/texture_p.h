@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/qabstracttexture_p.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qtexturegenerator.h>
@@ -83,7 +84,7 @@ struct TextureProperties
     int layers = 1;
     int mipLevels = 1;
     int samples = 1;
-    QAbstractTexture::Target target = QAbstractTexture::Target2D;
+    QAbstractTexture::Target target = QAbstractTexture::TargetAutomatic;
     QAbstractTexture::TextureFormat format = QAbstractTexture::NoFormat;
     bool generateMipMaps = false;
     QAbstractTexture::Status status = QAbstractTexture::None;
@@ -96,6 +97,7 @@ struct TextureProperties
     }
     inline bool operator!=(const TextureProperties &o) const { return !(*this == o); }
 };
+
 
 /**
  *   Texture parameters that are independent of texture data and that may
@@ -134,11 +136,12 @@ public:
 
     enum DirtyFlag {
         NotDirty = 0,
-        DirtyProperties = 0x1,
-        DirtyParameters = 0x2,
-        DirtyImageGenerators = 0x4,
-        DirtyDataGenerator = 0x8,
-        DirtySharedTextureId = 0x16
+        DirtyProperties = (1 << 0),
+        DirtyParameters = (1 << 1),
+        DirtyImageGenerators = (1 << 2),
+        DirtyDataGenerator = (1 << 3),
+        DirtySharedTextureId = (1 << 4),
+        DirtyPendingDataUpdates = (1 << 5),
     };
     Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
 
@@ -156,6 +159,9 @@ public:
     void addTextureImage(Qt3DCore::QNodeId id);
     void removeTextureImage(Qt3DCore::QNodeId id);
     void cleanup();
+
+    void addTextureDataUpdate(const QTextureDataUpdate &update);
+    QVector<QTextureDataUpdate> takePendingTextureDataUpdates() { return std::move(m_pendingTextureDataUpdates); }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
@@ -180,6 +186,7 @@ private:
     Qt3DCore::QNodeIdVector m_textureImageIds;
 
     QMutex m_flagsMutex;
+    QVector<QTextureDataUpdate> m_pendingTextureDataUpdates;
 };
 
 class Q_AUTOTEST_EXPORT TextureFunctor : public Qt3DCore::QBackendNodeMapper
@@ -211,5 +218,6 @@ inline QDebug operator<<(QDebug dbg, const Texture &texture)
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::Render::Texture*) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(Qt3DRender::Render::TextureProperties) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_TEXTURE_H

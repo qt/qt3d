@@ -102,7 +102,8 @@ qtConfig(private_tests) {
         qsetfence \
         qwaitfence \
         setfence \
-        waitfence
+        waitfence \
+        qtexturedataupdate
 
     QT_FOR_CONFIG = 3dcore-private
     # TO DO: These could be restored to be executed in all cases
@@ -134,7 +135,8 @@ qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
         renderviews \
         renderqueue \
         renderviewbuilder \
-        sendrendercapturejob
+        sendrendercapturejob \
+        gltexture
 
     qtConfig(qt3d-extras) {
         SUBDIRS += \

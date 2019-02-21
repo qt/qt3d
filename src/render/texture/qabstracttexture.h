@@ -52,7 +52,7 @@ class QAbstractTexturePrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
 class QTextureGenerator;
-
+class QTextureDataUpdate;
 typedef QSharedPointer<QTextureGenerator> QTextureGeneratorPtr;
 
 class QT3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
@@ -308,6 +308,9 @@ public:
     QTextureGeneratorPtr dataGenerator() const;
     HandleType handleType() const;
     QVariant handle() const;
+
+    Q_INVOKABLE void updateData(const QTextureDataUpdate &update);
+
 
 public Q_SLOTS:
     void setFormat(TextureFormat format);

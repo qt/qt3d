@@ -1388,6 +1388,10 @@ void Renderer::updateTexture(Texture *texture)
     if (dirtyFlags.testFlag(Texture::DirtyDataGenerator))
         glTexture->setGenerator(texture->dataGenerator());
 
+    // Will make the texture requestUpload
+    if (dirtyFlags.testFlag(Texture::DirtyPendingDataUpdates))
+        glTexture->addTextureDataUpdates(texture->takePendingTextureDataUpdates());
+
     // Unset the dirty flag on the texture
     texture->unsetDirty();
 }

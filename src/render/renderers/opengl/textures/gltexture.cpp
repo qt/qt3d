@@ -41,6 +41,8 @@
 #include "gltexture_p.h"
 
 #include <private/qdebug_p.h>
+#include <private/qopengltexture_p.h>
+#include <private/qopengltexturehelper_p.h>
 #include <QDebug>
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
@@ -85,16 +87,37 @@ void uploadGLData(QOpenGLTexture *glTex,
     }
 }
 
+// For partial sub image uploads
+void uploadGLData(QOpenGLTexture *glTex,
+                  int mipLevel, int layer, QOpenGLTexture::CubeMapFace cubeFace,
+                  int xOffset, int yOffset, int zOffset,
+                  const QByteArray &bytes, const QTextureImageDataPtr &data)
+{
+    if (data->isCompressed()) {
+        qWarning() << Q_FUNC_INFO << "Uploading non full sized Compressed Data not supported yet";
+    } else {
+        QOpenGLPixelTransferOptions uploadOptions;
+        uploadOptions.setAlignment(1);
+        glTex->setData(xOffset, yOffset, zOffset,
+                       data->width(), data->height(), data->depth(),
+                       mipLevel, layer, cubeFace, data->layers(),
+                       data->pixelFormat(), data->pixelType(),
+                       bytes.constData(), &uploadOptions);
+    }
+}
+
 } // anonymous
 
 
 GLTexture::GLTexture()
-    : m_gl(nullptr)
+    : m_dirtyFlags(None)
+    , m_gl(nullptr)
     , m_renderBuffer(nullptr)
     , m_dataFunctor()
     , m_pendingDataFunctor(nullptr)
     , m_sharedTextureId(-1)
     , m_externalRendering(false)
+    , m_wasTextureRecreated(false)
 {
 }
 
@@ -110,18 +133,19 @@ void GLTexture::destroy()
     delete m_renderBuffer;
     m_renderBuffer = nullptr;
 
-    m_dirtyFlags.store(0);
+    m_dirtyFlags = None;
     m_sharedTextureId = -1;
     m_externalRendering = false;
+    m_wasTextureRecreated = false;
     m_dataFunctor.reset();
     m_pendingDataFunctor = nullptr;
 
-    m_actualTarget = QAbstractTexture::Target1D;
     m_properties = {};
     m_parameters = {};
     m_textureData.reset();
     m_images.clear();
     m_imageData.clear();
+    m_pendingTextureDataUpdates.clear();
 }
 
 bool GLTexture::loadTextureDataFromGenerator()
@@ -129,10 +153,27 @@ bool GLTexture::loadTextureDataFromGenerator()
     m_textureData = m_dataFunctor->operator()();
     // if there is a texture generator, most properties will be defined by it
     if (m_textureData) {
-        if (m_properties.target != QAbstractTexture::TargetAutomatic)
-            qWarning() << "[Qt3DRender::GLTexture] When a texture provides a generator, it's target is expected to be TargetAutomatic";
+        const QAbstractTexture::Target target = m_textureData->target();
 
-        m_actualTarget = m_textureData->target();
+        // If both target and functor return Automatic we are still
+        // probably loading the texture, return false
+        if (m_properties.target == QAbstractTexture::TargetAutomatic &&
+            target == QAbstractTexture::TargetAutomatic) {
+            m_textureData.reset();
+            return false;
+        }
+
+        if (m_properties.target != QAbstractTexture::TargetAutomatic &&
+            target != QAbstractTexture::TargetAutomatic &&
+            m_properties.target != target) {
+            qWarning() << Q_FUNC_INFO << "Generator and Properties not requesting the same texture target";
+            m_textureData.reset();
+            return false;
+        }
+
+        // We take target type from generator if it wasn't explicitly set by the user
+        if (m_properties.target == QAbstractTexture::TargetAutomatic)
+            m_properties.target = target;
         m_properties.width = m_textureData->width();
         m_properties.height = m_textureData->height();
         m_properties.depth = m_textureData->depth();
@@ -190,26 +231,25 @@ void GLTexture::loadTextureDataFromImages()
     }
 }
 
+// Called from RenderThread
 GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
 {
-    QMutexLocker locker(&m_textureMutex);
-    bool needUpload = false;
     TextureUpdateInfo textureInfo;
-
     m_properties.status = QAbstractTexture::Error;
+    m_wasTextureRecreated = false;
 
     const bool hasSharedTextureId = m_sharedTextureId > 0;
 
     // Only load texture data if we are not using a sharedTextureId
+    // Check if dataFunctor or images have changed
     if (!hasSharedTextureId) {
-        // on the first invocation in the render thread, make sure to
-        // evaluate the texture data generator output
-        // (this might change some property values)
-        if (m_dataFunctor && !m_textureData) {
+        // If dataFunctor exists and we have no data and it hasn´t run yet
+        if (m_dataFunctor && !m_textureData && m_dataFunctor.get() != m_pendingDataFunctor ) {
             const bool successfullyLoadedTextureData = loadTextureDataFromGenerator();
+            // If successful, m_textureData has content
             if (successfullyLoadedTextureData) {
                 setDirtyFlag(Properties, true);
-                needUpload = true;
+                setDirtyFlag(TextureData, true);
             } else {
                 if (m_pendingDataFunctor != m_dataFunctor.get()) {
                     qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
@@ -220,56 +260,77 @@ GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
             }
         }
 
-        // additional texture images may be defined through image data generators
-        if (testDirtyFlag(TextureData)) {
+        // If images have changed, clear previous images data
+        // and regenerate m_imageData for the images
+        if (testDirtyFlag(TextureImageData)) {
             m_imageData.clear();
             loadTextureDataFromImages();
-            needUpload = true;
-        }
-
-        // don't try to create the texture if the format was not set
-        if (m_properties.format == QAbstractTexture::Automatic) {
-            textureInfo.properties.status = QAbstractTexture::Error;
-            return textureInfo;
+            // Mark for upload if we actually have something to upload
+            if (!m_imageData.empty()) {
+                setDirtyFlag(TextureData, true);
+            }
+            // Reset image flag
+            setDirtyFlag(TextureImageData, false);
         }
     }
 
-    // if the properties changed, we need to re-allocate the texture
+    // Don't try to create the texture if the target or format was still not set
+    // Format should either be set by user or if Automatic
+    // by either the dataGenerator of the texture or the first Image
+    // Target should explicitly be set by the user or the dataGenerator
+    if (m_properties.target == QAbstractTexture::TargetAutomatic ||
+        m_properties.format == QAbstractTexture::Automatic ||
+        m_properties.format == QAbstractTexture::NoFormat) {
+        textureInfo.properties.status = QAbstractTexture::Error;
+        return textureInfo;
+    }
+
+    // If the properties changed or texture has become a shared texture from a
+    // 3rd party engine, we need to destroy and maybe re-allocate the texture
     if (testDirtyFlag(Properties) || testDirtyFlag(SharedTextureId)) {
         delete m_gl;
         m_gl = nullptr;
         textureInfo.wasUpdated = true;
-        // If we are destroyed because of some property change but still our content data
-        // make sure we are marked for upload
-        if (m_textureData || !m_imageData.empty())
-            needUpload = true;
+        // If we are destroyed because of some property change but still have (some) of
+        // our content data make sure we are marked for upload
+        // TO DO: We should actually check if the textureData is still correct
+        // in regard to the size, target and format of the texture though.
+        if (!testDirtyFlag(SharedTextureId) &&
+            (m_textureData || !m_imageData.empty() || !m_pendingTextureDataUpdates.empty()))
+            setDirtyFlag(TextureData, true);
     }
 
     m_properties.status = QAbstractTexture::Ready;
 
-    if (hasSharedTextureId && testDirtyFlag(SharedTextureId)) {
+    if (testDirtyFlag(SharedTextureId) || hasSharedTextureId) {
         // Update m_properties by doing introspection on the texture
-        introspectPropertiesFromSharedTextureId();
+        if (hasSharedTextureId)
+            introspectPropertiesFromSharedTextureId();
+        setDirtyFlag(SharedTextureId, false);
     } else {
         // We only build a QOpenGLTexture if we have no shared textureId set
         if (!m_gl) {
             m_gl = buildGLTexture();
             if (!m_gl) {
+                qWarning() << "[Qt3DRender::GLTexture] failed to create texture";
                 textureInfo.properties.status = QAbstractTexture::Error;
                 return textureInfo;
             }
 
             m_gl->allocateStorage();
             if (!m_gl->isStorageAllocated()) {
+                qWarning() << "[Qt3DRender::GLTexture] failed to allocate texture";
                 textureInfo.properties.status = QAbstractTexture::Error;
                 return textureInfo;
             }
+            m_wasTextureRecreated = true;
         }
 
         textureInfo.texture = m_gl;
 
         // need to (re-)upload texture data?
-        if (needUpload) {
+        const bool needsUpload = testDirtyFlag(TextureData);
+        if (needsUpload) {
             uploadGLTextureData();
             setDirtyFlag(TextureData, false);
         }
@@ -277,24 +338,18 @@ GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
         // need to set texture parameters?
         if (testDirtyFlag(Properties) || testDirtyFlag(Parameters)) {
             updateGLTextureParameters();
+            setDirtyFlag(Properties, false);
+            setDirtyFlag(Parameters, false);
         }
     }
 
     textureInfo.properties = m_properties;
-
-    // un-set properties and parameters. The TextureData flag might have been set by another thread
-    // in the meantime, so don't clear that.
-    setDirtyFlag(Properties, false);
-    setDirtyFlag(Parameters, false);
-    setDirtyFlag(SharedTextureId, false);
 
     return textureInfo;
 }
 
 RenderBuffer *GLTexture::getOrCreateRenderBuffer()
 {
-    QMutexLocker locker(&m_textureMutex);
-
     if (m_dataFunctor && !m_textureData) {
         m_textureData = m_dataFunctor->operator()();
         if (m_textureData) {
@@ -338,7 +393,6 @@ void GLTexture::cleanup()
 
 void GLTexture::setParameters(const TextureParameters &params)
 {
-    QMutexLocker locker(&m_textureMutex);
     if (m_parameters != params) {
         m_parameters = params;
         setDirtyFlag(Parameters);
@@ -347,10 +401,8 @@ void GLTexture::setParameters(const TextureParameters &params)
 
 void GLTexture::setProperties(const TextureProperties &props)
 {
-    QMutexLocker locker(&m_textureMutex);
     if (m_properties != props) {
         m_properties = props;
-        m_actualTarget = props.target;
         setDirtyFlag(Properties);
     }
 }
@@ -371,7 +423,7 @@ void GLTexture::setImages(const QVector<Image> &images)
 
     if (!same) {
         m_images = images;
-        requestUpload();
+        requestImageUpload();
     }
 }
 
@@ -379,6 +431,7 @@ void GLTexture::setGenerator(const QTextureGeneratorPtr &generator)
 {
     m_textureData.reset();
     m_dataFunctor = generator;
+    m_pendingDataFunctor = nullptr;
     requestUpload();
 }
 
@@ -388,6 +441,12 @@ void GLTexture::setSharedTextureId(int textureId)
         m_sharedTextureId = textureId;
         setDirtyFlag(SharedTextureId);
     }
+}
+
+void GLTexture::addTextureDataUpdates(const QVector<QTextureDataUpdate> &updates)
+{
+    m_pendingTextureDataUpdates += updates;
+    requestUpload();
 }
 
 // Return nullptr if
@@ -401,14 +460,15 @@ QOpenGLTexture *GLTexture::buildGLTexture()
         return nullptr;
     }
 
-    if (m_actualTarget == QAbstractTexture::TargetAutomatic) {
+    const QAbstractTexture::Target actualTarget = m_properties.target;
+    if (actualTarget == QAbstractTexture::TargetAutomatic) {
         // If the target is automatic at this point, it means that the texture
         // hasn't been loaded yet (case of remote urls) and that loading failed
         // and that target format couldn't be deduced
         return nullptr;
     }
 
-    QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_actualTarget));
+    QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(actualTarget));
 
     // m_format may not be ES2 compatible. Now it's time to convert it, if necessary.
     QAbstractTexture::TextureFormat format = m_properties.format;
@@ -444,19 +504,19 @@ QOpenGLTexture *GLTexture::buildGLTexture()
     }
 
     glTex->setFormat(m_properties.format == QAbstractTexture::Automatic ?
-                         QOpenGLTexture::NoFormat :
-                         static_cast<QOpenGLTexture::TextureFormat>(format));
+                     QOpenGLTexture::NoFormat :
+                     static_cast<QOpenGLTexture::TextureFormat>(format));
     glTex->setSize(m_properties.width, m_properties.height, m_properties.depth);
     // Set layers count if texture array
-    if (m_actualTarget == QAbstractTexture::Target1DArray ||
-        m_actualTarget == QAbstractTexture::Target2DArray ||
-        m_actualTarget == QAbstractTexture::Target2DMultisampleArray ||
-        m_actualTarget == QAbstractTexture::TargetCubeMapArray) {
+    if (actualTarget == QAbstractTexture::Target1DArray ||
+        actualTarget == QAbstractTexture::Target2DArray ||
+        actualTarget == QAbstractTexture::Target2DMultisampleArray ||
+        actualTarget == QAbstractTexture::TargetCubeMapArray) {
         glTex->setLayers(m_properties.layers);
     }
 
-    if (m_actualTarget == QAbstractTexture::Target2DMultisample ||
-        m_actualTarget == QAbstractTexture::Target2DMultisampleArray) {
+    if (actualTarget == QAbstractTexture::Target2DMultisample ||
+        actualTarget == QAbstractTexture::Target2DMultisampleArray) {
         // Set samples count if multisampled texture
         // (multisampled textures don't have mipmaps)
         glTex->setSamples(m_properties.samples);
@@ -516,16 +576,59 @@ void GLTexture::uploadGLTextureData()
     // Free up image data once content has been uploaded
     // Note: if data functor stores the data, this won't really free anything though
     m_imageData.clear();
+
+    // Update data from TextureUpdates
+    const QVector<QTextureDataUpdate> textureDataUpdates = std::move(m_pendingTextureDataUpdates);
+    for (const QTextureDataUpdate &update : textureDataUpdates) {
+        const QTextureImageDataPtr imgData = update.data();
+
+        if (!imgData) {
+            qWarning() << Q_FUNC_INFO << "QTextureDataUpdate no QTextureImageData set";
+            continue;
+        }
+
+        const int xOffset = update.x();
+        const int yOffset = update.y();
+        const int zOffset = update.z();
+        const int xExtent = xOffset + imgData->width();
+        const int yExtent = yOffset + imgData->height();
+        const int zExtent = zOffset + imgData->depth();
+
+        // Check update is compatible with our texture
+        if (xOffset >= m_gl->width() ||
+            yOffset >= m_gl->height() ||
+            zOffset >= m_gl->depth() ||
+            xExtent > m_gl->width() ||
+            yExtent > m_gl->height() ||
+            zExtent > m_gl->depth() ||
+            update.mipLevel() >= m_gl->mipLevels() ||
+            update.layer() >= m_gl->layers()) {
+            qWarning() << Q_FUNC_INFO << "QTextureDataUpdate incompatible with texture";
+            continue;
+        }
+
+        const QByteArray bytes = (QTextureImageDataPrivate::get(imgData.get())->m_data);
+        // Here the bytes in the QTextureImageData contain data for a single
+        // layer, face or mip level, unlike the QTextureGenerator case where
+        // they are in a single blob. Hence QTextureImageData::data() is not suitable.
+
+        uploadGLData(m_gl,
+                     update.mipLevel(), update.layer(),
+                     static_cast<QOpenGLTexture::CubeMapFace>(update.face()),
+                     xOffset, yOffset, zOffset,
+                     bytes, imgData);
+    }
 }
 
 void GLTexture::updateGLTextureParameters()
 {
+    const QAbstractTexture::Target actualTarget = m_properties.target;
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeX));
-    if (m_actualTarget != QAbstractTexture::Target1D &&
-        m_actualTarget != QAbstractTexture::Target1DArray &&
-        m_actualTarget != QAbstractTexture::TargetBuffer)
+    if (actualTarget != QAbstractTexture::Target1D &&
+        actualTarget != QAbstractTexture::Target1DArray &&
+        actualTarget != QAbstractTexture::TargetBuffer)
         m_gl->setWrapMode(QOpenGLTexture::DirectionT, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeY));
-    if (m_actualTarget == QAbstractTexture::Target3D)
+    if (actualTarget == QAbstractTexture::Target3D)
         m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeZ));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_parameters.minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_parameters.magnificationFilter));

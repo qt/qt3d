@@ -77,6 +77,7 @@ private slots:
     void checkPropertyMirroring();
     void checkPropertyChanges();
     void checkTextureImageBookeeping();
+    void checkInitialUpdateData();
 };
 
 void tst_RenderTexture::checkDefaults()
@@ -531,6 +532,25 @@ void tst_RenderTexture::checkPropertyChanges()
     QVERIFY(backend.dirtyFlags() == Qt3DRender::Render::Texture::DirtyImageGenerators);
     renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
     backend.unsetDirty();
+
+    // WHEN
+    Qt3DRender::QTextureDataUpdate updateData;
+    updateData.setX(100);
+    updateData.setY(100);
+    updateData.setZ(100);
+    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
+    updateChange->setPropertyName("updateData");
+    updateChange->setValue(QVariant::fromValue(updateData));
+    backend.sceneChangeEvent(updateChange);
+
+    // THEN
+    const QVector<Qt3DRender::QTextureDataUpdate> pendingUpdates = backend.takePendingTextureDataUpdates();
+    QCOMPARE(pendingUpdates.size(), 1);
+    QCOMPARE(pendingUpdates.first(), updateData);
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
+    QVERIFY(backend.dirtyFlags() == Qt3DRender::Render::Texture::DirtyPendingDataUpdates);
+    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+    backend.unsetDirty();
 }
 
 void tst_RenderTexture::checkTextureImageBookeeping()
@@ -556,7 +576,31 @@ void tst_RenderTexture::checkTextureImageBookeeping()
 
     // THEN
     QCOMPARE(texture.textureImages().size(), 0);
+}
 
+void tst_RenderTexture::checkInitialUpdateData()
+{
+    // GIVEN
+    TestRenderer renderer;
+    DummyTexture frontend;
+    Qt3DRender::Render::Texture backend;
+
+    backend.setRenderer(&renderer);
+
+    Qt3DRender::QTextureDataUpdate updateData;
+    updateData.setX(100);
+    updateData.setY(100);
+    updateData.setZ(100);
+
+    // WHEN -> updateData with no backend/arbiter
+    frontend.updateData(updateData);
+    simulateInitialization(&frontend, &backend);
+
+    // THEN -> should have received the update as part of the initial data
+    const QVector<Qt3DRender::QTextureDataUpdate> pendingUpdates = backend.takePendingTextureDataUpdates();
+    QCOMPARE(pendingUpdates.size(), 1);
+    QCOMPARE(pendingUpdates.first(), updateData);
+    QVERIFY(backend.dirtyFlags() & Qt3DRender::Render::Texture::DirtyPendingDataUpdates);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderTexture)
