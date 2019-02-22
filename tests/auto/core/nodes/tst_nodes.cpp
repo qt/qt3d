@@ -87,7 +87,8 @@ private slots:
     void checkSceneIsSetOnConstructionWithParent(); // QTBUG-69352
 
     void appendingComponentToEntity();
-    void appendingParentlessComponentToEntity();
+    void appendingParentlessComponentToEntityWithoutScene();
+    void appendingParentlessComponentToEntityWithScene();
     void removingComponentFromEntity();
 
     void changeCustomProperty();
@@ -1265,7 +1266,7 @@ void tst_Nodes::checkSceneIsSetOnConstructionWithParent()
     QCOMPARE(spy.events.size(), 10); // 5 QComponentAddedChange(entity, cmp) and 5 QComponentAddedChange(cmp, entity)
 }
 
-void tst_Nodes::appendingParentlessComponentToEntity()
+void tst_Nodes::appendingParentlessComponentToEntityWithoutScene()
 {
     // GIVEN
     ObserverSpy entitySpy;
@@ -1320,6 +1321,79 @@ void tst_Nodes::appendingParentlessComponentToEntity()
         }
     }
 }
+
+void tst_Nodes::appendingParentlessComponentToEntityWithScene()
+{
+    // GIVEN
+    ObserverSpy eventSpy;
+    Qt3DCore::QScene scene;
+
+    {
+        QScopedPointer<MyQEntity> entity(new MyQEntity());
+        entity->setArbiterAndScene(&eventSpy, &scene);
+        entity->setSimulateBackendCreated(true);
+
+        QCoreApplication::processEvents();
+
+        MyQComponent *comp = new MyQComponent();
+
+        // THEN
+        QVERIFY(entity->parentNode() == nullptr);
+        QVERIFY(entity->children().count() == 0);
+        QVERIFY(entity->components().empty());
+        QVERIFY(comp->parentNode() == nullptr);
+
+        // WHEN
+        entity->addComponent(comp);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QVERIFY(entity->components().count() == 1);
+        QVERIFY(entity->components().first() == comp);
+        QVERIFY(comp->parentNode() == entity.data());
+
+        QCOMPARE(eventSpy.events.size(), 4);
+        // - entity created
+        // - child added
+        // - component added for entity
+        // - component added for compontent
+        QVERIFY(eventSpy.events.first().wasLocked());
+
+        {
+            const auto event = eventSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
+            QVERIFY(!event.isNull());
+            QCOMPARE(event->type(), Qt3DCore::NodeCreated);
+            QCOMPARE(event->subjectId(), comp->id());
+        }
+        {
+            const auto event = eventSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+            QVERIFY(!event.isNull());
+            QCOMPARE(event->type(), Qt3DCore::PropertyValueAdded);
+            QCOMPARE(event->subjectId(), entity->id());
+            QCOMPARE(event->propertyName(), QByteArrayLiteral("children"));
+            QCOMPARE(event->addedNodeId(), comp->id());
+        }
+        {
+            const auto event = eventSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>();
+            QVERIFY(!event.isNull());
+            QCOMPARE(event->type(), Qt3DCore::ComponentAdded);
+            QCOMPARE(event->subjectId(), entity->id());
+            QCOMPARE(event->entityId(), entity->id());
+            QCOMPARE(event->componentId(), comp->id());
+            QCOMPARE(event->componentMetaObject(), comp->metaObject());
+        }
+        {
+            const auto event = eventSpy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>();
+            QVERIFY(!event.isNull());
+            QCOMPARE(event->type(), Qt3DCore::ComponentAdded);
+            QCOMPARE(event->subjectId(), comp->id());
+            QCOMPARE(event->entityId(), entity->id());
+            QCOMPARE(event->componentId(), comp->id());
+            QCOMPARE(event->componentMetaObject(), comp->metaObject());
+        }
+    }
+}
+
 
 void tst_Nodes::appendingComponentToEntity()
 {
