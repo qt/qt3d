@@ -152,6 +152,8 @@ void QEntity::addComponent(QComponent *comp)
     if (!comp->parent())
         comp->setParent(this);
 
+    QNodePrivate::get(comp)->_q_ensureBackendNodeCreated();
+
     d->m_components.append(comp);
 
     // Ensures proper bookkeeping

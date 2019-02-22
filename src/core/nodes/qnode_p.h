@@ -152,6 +152,7 @@ public:
     static const QMetaObject *findStaticMetaObject(const QMetaObject *metaObject);
 
     void _q_postConstructorInit();
+    void _q_ensureBackendNodeCreated();
 
 private:
     void notifyCreationChange();

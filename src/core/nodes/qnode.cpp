@@ -506,6 +506,29 @@ void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 }
 
 /*!
+ * \internal
+ * Makes sure this node has a backend by traversing the tree up to the most distant ancestor
+ * without a backend node and initializing that node. This is done to make sure the parent nodes
+ * are always created before the child nodes, since child nodes reference parent nodes at creation
+ * time.
+ */
+void QNodePrivate::_q_ensureBackendNodeCreated()
+{
+    if (m_hasBackendNode)
+        return;
+
+    Q_Q(QNode);
+
+    QNode *nextNode = q;
+    QNode *topNodeWithoutBackend = nullptr;
+    while (nextNode != nullptr && !QNodePrivate::get(nextNode)->m_hasBackendNode) {
+        topNodeWithoutBackend = nextNode;
+        nextNode = nextNode->parentNode();
+    }
+    QNodePrivate::get(topNodeWithoutBackend)->_q_postConstructorInit();
+}
+
+/*!
     \class Qt3DCore::QNode
     \inherits QObject
 
