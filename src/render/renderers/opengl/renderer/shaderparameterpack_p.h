@@ -118,6 +118,18 @@ public:
         int glslNameId;
         Qt3DCore::QNodeId texId;
         int uniformArrayIndex;
+
+        bool operator==(const NamedTexture &other) const
+        {
+            return glslNameId == other.glslNameId &&
+                    texId == other.texId &&
+                    uniformArrayIndex == other.uniformArrayIndex;
+        }
+
+        bool operator!=(const NamedTexture &other) const
+        {
+            return !(*this == other);
+        }
     };
 
     inline QVector<NamedTexture> textures() const { return m_textures; }

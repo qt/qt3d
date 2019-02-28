@@ -406,6 +406,85 @@ private Q_SLOTS:
         // RenderCommands are deleted by RenderView dtor
     }
 
+    void checkRenderCommandTextureSorting()
+    {
+        // GIVEN
+        RenderView renderView;
+        QVector<QSortPolicy::SortType> sortTypes;
+
+        sortTypes.push_back(QSortPolicy::Texture);
+
+
+        Qt3DCore::QNodeId tex1 = Qt3DCore::QNodeId::createId();
+        Qt3DCore::QNodeId tex2 = Qt3DCore::QNodeId::createId();
+        Qt3DCore::QNodeId tex3 = Qt3DCore::QNodeId::createId();
+        Qt3DCore::QNodeId tex4 = Qt3DCore::QNodeId::createId();
+
+        RenderCommand *a = new RenderCommand();
+        {
+            ShaderParameterPack pack;
+            pack.setTexture(0, 0, tex1);
+            pack.setTexture(1, 0, tex3);
+            pack.setTexture(2, 0, tex4);
+            pack.setTexture(3, 0, tex2);
+            a->m_parameterPack = pack;
+        }
+        RenderCommand *b = new RenderCommand();
+        RenderCommand *c = new RenderCommand();
+        {
+            ShaderParameterPack pack;
+            pack.setTexture(0, 0, tex1);
+            pack.setTexture(3, 0, tex2);
+            c->m_parameterPack = pack;
+        }
+        RenderCommand *d = new RenderCommand();
+        {
+            ShaderParameterPack pack;
+            pack.setTexture(1, 0, tex3);
+            pack.setTexture(2, 0, tex4);
+            d->m_parameterPack = pack;
+        }
+        RenderCommand *e = new RenderCommand();
+        {
+            ShaderParameterPack pack;
+            pack.setTexture(3, 0, tex2);
+            e->m_parameterPack = pack;
+        }
+        RenderCommand *f = new RenderCommand();
+        {
+            ShaderParameterPack pack;
+            pack.setTexture(3, 0, tex2);
+            f->m_parameterPack = pack;
+        }
+        RenderCommand *g = new RenderCommand();
+        {
+            ShaderParameterPack pack;
+            pack.setTexture(0, 0, tex1);
+            pack.setTexture(1, 0, tex3);
+            pack.setTexture(2, 0, tex4);
+            pack.setTexture(3, 0, tex2);
+            g->m_parameterPack = pack;
+        }
+
+        // WHEN
+        QVector<RenderCommand *> rawCommands = {a, b, c, d, e, f, g};
+        renderView.addSortType(sortTypes);
+        renderView.setCommands(rawCommands);
+        renderView.sort();
+
+        // THEN
+        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        qDebug() << rawCommands << sortedCommands;
+        QCOMPARE(rawCommands.size(), sortedCommands.size());
+        QCOMPARE(sortedCommands.at(0), a);
+        QCOMPARE(sortedCommands.at(1), g);
+        QCOMPARE(sortedCommands.at(2), d);
+        QCOMPARE(sortedCommands.at(3), c);
+        QCOMPARE(sortedCommands.at(4), e);
+        QCOMPARE(sortedCommands.at(5), f);
+        QCOMPARE(sortedCommands.at(6), b);
+        // RenderCommands are deleted by RenderView dtor
+    }
 private:
 };
 

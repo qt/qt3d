@@ -321,6 +321,27 @@ struct AdjacentSubRangeFinder<QSortPolicy::FrontToBack>
     }
 };
 
+template<>
+struct AdjacentSubRangeFinder<QSortPolicy::Texture>
+{
+    static bool adjacentSubRange(RenderCommand *a, RenderCommand *b)
+    {
+        // Two renderCommands are adjacent if one contains all the other command's textures
+        QVector<ShaderParameterPack::NamedTexture> texturesA = a->m_parameterPack.textures();
+        QVector<ShaderParameterPack::NamedTexture> texturesB = b->m_parameterPack.textures();
+
+        if (texturesB.size() > texturesA.size())
+            qSwap(texturesA, texturesB);
+
+        // textureB.size() is always <= textureA.size()
+        for (const ShaderParameterPack::NamedTexture &texB : qAsConst(texturesB)) {
+            if (!texturesA.contains(texB))
+                return false;
+        }
+        return true;
+    }
+};
+
 template<typename Predicate>
 int advanceUntilNonAdjacent(const QVector<RenderCommand *> &commands,
                             const int beg, const int end, Predicate pred)
@@ -393,6 +414,33 @@ struct SubRangeSorter<QSortPolicy::FrontToBack>
     }
 };
 
+template<>
+struct SubRangeSorter<QSortPolicy::Texture>
+{
+    static void sortSubRange(CommandIt begin, const CommandIt end)
+    {
+        std::stable_sort(begin, end, [] (RenderCommand *a, RenderCommand *b) {
+            QVector<ShaderParameterPack::NamedTexture> texturesA = a->m_parameterPack.textures();
+            QVector<ShaderParameterPack::NamedTexture> texturesB = b->m_parameterPack.textures();
+
+            const int originalTextureASize = texturesA.size();
+            const bool isSuperior = originalTextureASize > texturesB.size();
+
+            if (texturesB.size() > texturesA.size())
+                qSwap(texturesA, texturesB);
+
+            int identicalTextureCount = 0;
+
+            for (const ShaderParameterPack::NamedTexture &texB : qAsConst(texturesB)) {
+                if (texturesA.contains(texB))
+                    ++identicalTextureCount;
+            }
+
+            return identicalTextureCount < originalTextureASize;
+        });
+    }
+};
+
 int findSubRange(const QVector<RenderCommand *> &commands,
                  const int begin, const int end,
                  const QSortPolicy::SortType sortType)
@@ -406,6 +454,8 @@ int findSubRange(const QVector<RenderCommand *> &commands,
         return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::Material>::adjacentSubRange);
     case QSortPolicy::FrontToBack:
         return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::FrontToBack>::adjacentSubRange);
+    case QSortPolicy::Texture:
+        return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::Texture>::adjacentSubRange);
     default:
         Q_UNREACHABLE();
         return end;
@@ -448,6 +498,9 @@ void sortCommandRange(QVector<RenderCommand *> &commands, int begin, const int e
         break;
     case QSortPolicy::FrontToBack:
         SubRangeSorter<QSortPolicy::FrontToBack>::sortSubRange(commands.begin() + begin, commands.begin() + end);
+        break;
+    case QSortPolicy::Texture:
+        SubRangeSorter<QSortPolicy::Texture>::sortSubRange(commands.begin() + begin, commands.begin() + end);
         break;
     default:
         Q_UNREACHABLE();

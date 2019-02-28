@@ -60,7 +60,8 @@ public:
         StateChangeCost = (1 << 0),
         BackToFront = (1 << 1),
         Material = (1 << 2),
-        FrontToBack = (1 << 3)
+        FrontToBack = (1 << 3),
+        Texture = (1 << 4),
     };
     Q_ENUM(SortType) // LCOV_EXCL_LINE
 
