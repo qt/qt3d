@@ -118,7 +118,7 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
 {
     Q_D(QLogicAspect);
     const qint64 deltaTime = time - d->m_time;
-    const float dt = static_cast<const float>(deltaTime) / 1.0e9;
+    const float dt = static_cast<float>(deltaTime) / 1.0e9;
     d->m_manager->setDeltaTime(dt);
     d->m_time = time;
 

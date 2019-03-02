@@ -223,7 +223,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 {
     Q_D(QInputAspect);
     const qint64 deltaTime = time - d->m_time;
-    const float dt = static_cast<const float>(deltaTime) / 1.0e9;
+    const float dt = static_cast<float>(deltaTime) / 1.0e9;
     d->m_time = time;
 
     QVector<QAspectJobPtr> jobs;
