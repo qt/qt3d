@@ -81,9 +81,11 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
         FP float att = 1.0;
         if ( light.type != TYPE_DIRECTIONAL ) {
             s = light.position - vpos;
-            if (length( light.attenuation ) != 0.0) {
+            if (light.constantAttenuation != 0.0
+              || light.linearAttenuation != 0.0
+              || light.quadraticAttenuation != 0.0) {
                 FP float dist = length(s);
-                att = 1.0 / (light.attenuation.x + light.attenuation.y * dist + light.attenuation.z * dist * dist);
+                att = 1.0 / (light.constantAttenuation + light.linearAttenuation * dist + light.quadraticAttenuation * dist * dist);
             }
             s = normalize( s );
             if ( light.type == TYPE_SPOT ) {
