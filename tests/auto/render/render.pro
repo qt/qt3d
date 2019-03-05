@@ -124,7 +124,6 @@ qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
         graphicshelpergl2 \
         materialparametergathererjob \
         textures \
-        scene2d \
         renderer \
         renderviewutils \
         renderviews \
