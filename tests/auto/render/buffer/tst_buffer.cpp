@@ -71,7 +71,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
-        Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        Qt3DRender::QBuffer buffer;
         Qt3DRender::Render::BufferManager bufferManager;
         TestRenderer renderer;
 
@@ -268,7 +268,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
-        Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        Qt3DRender::QBuffer buffer;
         Qt3DRender::Render::BufferManager bufferManager;
         TestRenderer renderer;
 
@@ -294,7 +294,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
-        Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        Qt3DRender::QBuffer buffer;
         Qt3DRender::Render::BufferManager bufferManager;
         TestRenderer renderer;
 

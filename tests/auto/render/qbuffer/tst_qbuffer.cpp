@@ -76,13 +76,13 @@ private Q_SLOTS:
         Qt3DRender::QBuffer *defaultConstructed = new Qt3DRender::QBuffer();
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
-        Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
+        auto buffer = new Qt3DRender::QBuffer;
         buffer->setUsage(Qt3DRender::QBuffer::DynamicRead);
         buffer->setData(QByteArrayLiteral("There's no replacement"));
         buffer->setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(883)));
         QTest::newRow("vertex") << buffer;
 
-        Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer);
+        auto indexBuffer = new Qt3DRender::QBuffer;
         indexBuffer->setUsage(Qt3DRender::QBuffer::StaticCopy);
         indexBuffer->setData(QByteArrayLiteral("For displacement"));
         indexBuffer->setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(1340)));
@@ -125,20 +125,8 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
-        QScopedPointer<Qt3DRender::QBuffer> buffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer));
+        QScopedPointer<Qt3DRender::QBuffer> buffer(new Qt3DRender::QBuffer);
         arbiter.setArbiterOnNode(buffer.data());
-
-        // WHEN
-        buffer->setType(Qt3DRender::QBuffer::IndexBuffer);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "type");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QBuffer::IndexBuffer));
-
-        arbiter.events.clear();
 
         // WHEN
         buffer->setUsage(Qt3DRender::QBuffer::DynamicCopy);
@@ -146,7 +134,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "usage");
         QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QBuffer::DynamicCopy));
 

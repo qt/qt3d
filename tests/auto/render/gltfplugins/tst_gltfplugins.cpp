@@ -516,7 +516,7 @@ void tst_gltfPlugins::createTestScene()
 
         Qt3DRender::QGeometryRenderer *boxMesh = createCustomCube();
         Qt3DRender::QBuffer *colorDataBuffer =
-                new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, boxMesh->geometry());
+                new Qt3DRender::QBuffer(boxMesh->geometry());
         QByteArray colorBufferData;
         colorBufferData.resize(8 * 4 * sizeof(float));
 
@@ -571,7 +571,7 @@ void tst_gltfPlugins::createTestScene()
         transform->setRotation(Qt3DCore::QTransform::fromAxisAndAngle(1.0f, 2.0f, 3.0f, 90.0f));
         Qt3DRender::QGeometryRenderer *boxMesh = createCustomCube();
         Qt3DRender::QBuffer *offsetBuffer =
-                new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, boxMesh->geometry());
+                new Qt3DRender::QBuffer(boxMesh->geometry());
         QByteArray offsetBufferData;
         offsetBufferData.resize(8 * 3 * sizeof(float));
 
@@ -964,9 +964,9 @@ Qt3DRender::QGeometryRenderer *tst_gltfPlugins::createCustomCube()
     Qt3DRender::QGeometryRenderer *boxMesh = new Qt3DRender::QGeometryRenderer;
     Qt3DRender::QGeometry *boxGeometry = new Qt3DRender::QGeometry(boxMesh);
     Qt3DRender::QBuffer *boxDataBuffer =
-            new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, boxGeometry);
+            new Qt3DRender::QBuffer(boxGeometry);
     Qt3DRender::QBuffer *indexDataBuffer =
-            new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, boxGeometry);
+            new Qt3DRender::QBuffer(boxGeometry);
     QByteArray vertexBufferData;
     QByteArray indexBufferData;
 
