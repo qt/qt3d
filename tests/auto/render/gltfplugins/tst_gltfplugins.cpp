@@ -587,8 +587,8 @@ void tst_gltfPlugins::createTestScene()
         Qt3DRender::QAttribute *customAttribute = new Qt3DRender::QAttribute();
         customAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
         customAttribute->setBuffer(offsetBuffer);
-        customAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        customAttribute->setDataSize(3);
+        customAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        customAttribute->setVertexSize(3);
         customAttribute->setByteOffset(0);
         customAttribute->setByteStride(0);
         customAttribute->setCount(8);
@@ -620,8 +620,8 @@ void tst_gltfPlugins::addPositionAttributeToGeometry(Qt3DRender::QGeometry *geom
     Qt3DRender::QAttribute *posAttribute = new Qt3DRender::QAttribute();
     posAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     posAttribute->setBuffer(buffer);
-    posAttribute->setDataType(Qt3DRender::QAttribute::Float);
-    posAttribute->setDataSize(3);
+    posAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+    posAttribute->setVertexSize(3);
     posAttribute->setByteOffset(0);
     posAttribute->setByteStride(0);
     posAttribute->setCount(count);
@@ -636,8 +636,8 @@ void tst_gltfPlugins::addIndexAttributeToGeometry(Qt3DRender::QGeometry *geometr
     Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute();
     indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
     indexAttribute->setBuffer(buffer);
-    indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedShort);
-    indexAttribute->setDataSize(1);
+    indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
+    indexAttribute->setVertexSize(1);
     indexAttribute->setByteOffset(0);
     indexAttribute->setByteStride(0);
     indexAttribute->setCount(count);
@@ -651,8 +651,8 @@ void tst_gltfPlugins::addColorAttributeToGeometry(Qt3DRender::QGeometry *geometr
     Qt3DRender::QAttribute *colorAttribute = new Qt3DRender::QAttribute();
     colorAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     colorAttribute->setBuffer(buffer);
-    colorAttribute->setDataType(Qt3DRender::QAttribute::Float);
-    colorAttribute->setDataSize(4);
+    colorAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+    colorAttribute->setVertexSize(4);
     colorAttribute->setByteOffset(0);
     colorAttribute->setByteStride(0);
     colorAttribute->setCount(count);
