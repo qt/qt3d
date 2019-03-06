@@ -931,7 +931,7 @@ QTextureGeneratorPtr QAbstractTexture::dataGenerator() const
 
 /*!
  * \return the current texture handle type.
- * \since 5.12
+ * \since 5.13
  */
 QAbstractTexture::HandleType QAbstractTexture::handleType() const
 {
@@ -958,7 +958,7 @@ QAbstractTexture::HandleType QAbstractTexture::handleType() const
  * \return the current texture handle, if Qt 3D is using the OpenGL renderer,
  * handle is a texture id integer.
  *
- * \since 5.12
+ * \since 5.13
  */
 QVariant QAbstractTexture::handle() const
 {
