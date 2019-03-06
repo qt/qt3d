@@ -108,12 +108,12 @@ Q_SIGNALS:
     void geometryShaderGraphChanged(const QUrl &geometryShaderGraph);
     void fragmentShaderGraphChanged(const QUrl &fragmentShaderGraph);
     void computeShaderGraphChanged(const QUrl &computeShaderGraph);
-    void vertexShaderCodeChanged(const QByteArray &vertexShaderCode);
-    void tessellationControlShaderCodeChanged(const QByteArray &tessellationControlShaderCode);
-    void tessellationEvaluationShaderCodeChanged(const QByteArray &tessellationEvaluationShaderCode);
-    void geometryShaderCodeChanged(const QByteArray &geometryShaderCode);
-    void fragmentShaderCodeChanged(const QByteArray &fragmentShaderCode);
-    void computeShaderCodeChanged(const QByteArray &computeShaderCode);
+    Q_REVISION(13) void vertexShaderCodeChanged(const QByteArray &vertexShaderCode);
+    Q_REVISION(13) void tessellationControlShaderCodeChanged(const QByteArray &tessellationControlShaderCode);
+    Q_REVISION(13) void tessellationEvaluationShaderCodeChanged(const QByteArray &tessellationEvaluationShaderCode);
+    Q_REVISION(13) void geometryShaderCodeChanged(const QByteArray &geometryShaderCode);
+    Q_REVISION(13) void fragmentShaderCodeChanged(const QByteArray &fragmentShaderCode);
+    Q_REVISION(13) void computeShaderCodeChanged(const QByteArray &computeShaderCode);
 
 protected:
     explicit QShaderProgramBuilder(QShaderProgramBuilderPrivate &dd, Qt3DCore::QNode *parent = nullptr);

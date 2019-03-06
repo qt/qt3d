@@ -75,7 +75,7 @@ public:
 public Q_SLOTS:
     void setHoverEnabled(bool hoverEnabled);
     void setDragEnabled(bool dragEnabled);
-    void setPriority(int priority);
+    Q_REVISION(13) void setPriority(int priority);
 
 Q_SIGNALS:
     void pressed(Qt3DRender::QPickEvent *pick);
@@ -88,7 +88,7 @@ Q_SIGNALS:
     void dragEnabledChanged(bool dragEnabled);
     void pressedChanged(bool pressed);
     void containsMouseChanged(bool containsMouse);
-    void priorityChanged(int priority);
+    Q_REVISION(13) void priorityChanged(int priority);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;

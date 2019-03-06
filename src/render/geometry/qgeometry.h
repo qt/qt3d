@@ -73,8 +73,8 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void boundingVolumePositionAttributeChanged(QAttribute *boundingVolumePositionAttribute);
-    void minExtentChanged(const QVector3D &minExtent);
-    void maxExtentChanged(const QVector3D &maxExtent);
+    Q_REVISION(13) void minExtentChanged(const QVector3D &minExtent);
+    Q_REVISION(13) void maxExtentChanged(const QVector3D &maxExtent);
 protected:
     explicit QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;

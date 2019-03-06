@@ -76,10 +76,10 @@ public Q_SLOTS:
     void setWorkGroupX(int workGroupX);
     void setWorkGroupY(int workGroupY);
     void setWorkGroupZ(int workGroupZ);
-    void setRunType(RunType runType);
+    Q_REVISION(13) void setRunType(RunType runType);
 
-    void trigger(int frameCount = 1);
-    void trigger(int workGroupX, int workGroupY, int workGroupZ, int frameCount = 1);
+    Q_REVISION(13) void trigger(int frameCount = 1);
+    Q_REVISION(13) void trigger(int workGroupX, int workGroupY, int workGroupZ, int frameCount = 1);
 
 Q_SIGNALS:
     void workGroupXChanged();
