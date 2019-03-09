@@ -337,8 +337,8 @@ Q_SIGNALS:
     void comparisonModeChanged(ComparisonMode comparisonMode);
     void layersChanged(int layers);
     void samplesChanged(int samples);
-    void handleTypeChanged(HandleType handleType);
-    void handleChanged(QVariant handle);
+    Q_REVISION(13) void handleTypeChanged(HandleType handleType);
+    Q_REVISION(13) void handleChanged(QVariant handle);
 
 protected:
     explicit QAbstractTexture(Qt3DCore::QNode *parent = nullptr);
