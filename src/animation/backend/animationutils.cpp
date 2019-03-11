@@ -277,13 +277,12 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
                     channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
                 }
             } else {
-                // There's only one keyframe. We cant compute omega. Interoplate per component
+                // There's only one keyframe. We cant compute omega. Interpolate per component
                 const int lowerKeyframeBound = channel.channelComponents[0].fcurve.lowerKeyframeBound(localTime);
                 if (lowerKeyframeBound + 1 >= channel.channelComponents[0].fcurve.keyframeCount()) {
                     for (const auto &channelComponent : qAsConst(channel.channelComponents))
                         channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
                 } else {
-
                     auto quaternionFromChannel = [channel](const int keyframe) {
                         const float w = channel.channelComponents[0].fcurve.keyframe(keyframe).value;
                         const float x = channel.channelComponents[1].fcurve.keyframe(keyframe).value;
@@ -296,10 +295,18 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
 
                     const auto lowerQuat = quaternionFromChannel(lowerKeyframeBound);
                     const auto higherQuat = quaternionFromChannel(lowerKeyframeBound + 1);
+                    const float omega = std::acos(qBound(-1.0f, QQuaternion::dotProduct(lowerQuat, higherQuat), 1.0f));
 
-                    const float omega = std::acos(QQuaternion::dotProduct(lowerQuat, higherQuat));
-                    for (const auto &channelComponent : qAsConst(channel.channelComponents))
-                        channelResults[i++] = channelComponent.fcurve.evaluateAtTimeAsSlerp(localTime, lowerKeyframeBound, omega);
+                    if (qFuzzyIsNull(omega)) {
+                        // If the two keyframe quaternions are equal, just return the first one as the interpolated value.
+                        channelResults[0] = lowerQuat.scalar();
+                        channelResults[1] = lowerQuat.x();
+                        channelResults[2] = lowerQuat.y();
+                        channelResults[3] = lowerQuat.z();
+                    } else {
+                        for (const auto &channelComponent : qAsConst(channel.channelComponents))
+                            channelResults[i++] = channelComponent.fcurve.evaluateAtTimeAsSlerp(localTime, lowerKeyframeBound, omega);
+                    }
                 }
             }
         } else {
