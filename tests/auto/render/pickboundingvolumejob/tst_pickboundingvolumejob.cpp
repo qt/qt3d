@@ -47,6 +47,7 @@
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/pickboundingvolumeutils_p.h>
+#include <Qt3DRender/private/updateentityhierarchyjob_p.h>
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
@@ -107,6 +108,10 @@ namespace {
 
 void runRequiredJobs(Qt3DRender::TestAspect *test)
 {
+    Qt3DRender::Render::UpdateEntityHierarchyJob updateEntitiesJob;
+    updateEntitiesJob.setManager(test->nodeManagers());
+    updateEntitiesJob.run();
+
     Qt3DRender::Render::UpdateWorldTransformJob updateWorldTransform;
     updateWorldTransform.setRoot(test->sceneRoot());
     updateWorldTransform.run();
@@ -251,6 +256,10 @@ private Q_SLOTS:
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
+
+        Qt3DRender::Render::UpdateEntityHierarchyJob updateEntitiesJob;
+        updateEntitiesJob.setManager(test->nodeManagers());
+        updateEntitiesJob.run();
 
         // THEN
         QList<Qt3DCore::QEntity *> frontendEntities;

@@ -78,6 +78,7 @@
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <Qt3DRender/private/updateskinningpalettejob_p.h>
 #include <Qt3DRender/private/updateentitylayersjob_p.h>
+#include <Qt3DRender/private/updateentityhierarchyjob_p.h>
 #include <Qt3DRender/private/renderercache_p.h>
 #include <Qt3DRender/private/texture_p.h>
 
@@ -361,6 +362,7 @@ private:
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
     UpdateEntityLayersJobPtr m_updateEntityLayersJob;
+    UpdateEntityHierarchyJobPtr m_updateEntityHierarchyJob;
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 

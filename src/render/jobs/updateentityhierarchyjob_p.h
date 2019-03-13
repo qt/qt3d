@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+
+#ifndef QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H
+#define QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,59 +61,26 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+class Entity;
+class NodeManagers;
 
-    enum JobType {
-        LoadBuffer = 1,
-        FrameCleanup,
-        UpdateShaderDataTransform,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RayCasting,
-        RenderView,
-        UpdateTransform,
-        UpdateTreeEnabled,
-        ExpandBoundingVolume,
-        FrameSubmissionPart1,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering,
-        UpdateWorldBoundingVolume,
-        FrameSubmissionPart2,
-        DirtyBufferGathering,
-        DirtyVaoGathering,
-        DirtyTextureGathering,
-        DirtyShaderGathering,
-        SendRenderCapture,
-        SendBufferCapture,
-        SyncRenderViewCommandBuilding,
-        SyncRenderViewInitialization,
-        SyncRenderViewCommandBuilder,
-        SyncFrustumCulling,
-        ClearBufferDrawIndex,
-        UpdateMeshTriangleList,
-        FilterCompatibleTechniques,
-        UpdateLevelOfDetail,
-        SyncTextureLoading,
-        LoadSkeleton,
-        UpdateSkinningPalette,
-        ProximityFiltering,
-        SyncFilterEntityByLayer,
-        SyncMaterialGatherer,
-        UpdateLayerEntity,
-        UpdateEntityHierarchy,
-        SendTextureChangesToFrontend
-    };
+class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateEntityHierarchyJob: public Qt3DCore::QAspectJob
+{
+public:
+    UpdateEntityHierarchyJob();
 
-} // JobTypes
+    inline void setManager(NodeManagers *manager) { m_manager = manager; }
+    inline NodeManagers *manager() const { return m_manager; }
+
+    // QAspectJob interface
+    void run() final;
+
+private:
+    NodeManagers *m_manager;
+};
+
+
+using UpdateEntityHierarchyJobPtr = QSharedPointer<UpdateEntityHierarchyJob>;
 
 } // Render
 
@@ -119,4 +88,4 @@ namespace JobTypes {
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+#endif // QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H

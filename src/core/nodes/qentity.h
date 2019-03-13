@@ -70,6 +70,9 @@ public:
 protected:
     explicit QEntity(QEntityPrivate &dd, QNode *parent = nullptr);
 
+private Q_SLOTS:
+    void onParentChanged(QObject *);
+
 private:
     Q_DECLARE_PRIVATE(QEntity)
 
