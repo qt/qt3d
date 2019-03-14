@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/graphicshelpergl3_3_p.h \
     $$PWD/graphicshelpergl4_p.h \
     $$PWD/graphicshelpergl3_2_p.h \
-    $$PWD/submissioncontext_p.h
+    $$PWD/submissioncontext_p.h \
+    $$PWD/texturesubmissioncontext_p.h
 
 SOURCES += \
     $$PWD/graphicscontext.cpp \
@@ -25,4 +26,5 @@ SOURCES += \
     $$PWD/graphicshelpergl3_3.cpp \
     $$PWD/graphicshelpergl4.cpp \
     $$PWD/graphicshelpergl3_2.cpp \
-    $$PWD/submissioncontext.cpp
+    $$PWD/submissioncontext.cpp \
+    $$PWD/texturesubmissioncontext.cpp
