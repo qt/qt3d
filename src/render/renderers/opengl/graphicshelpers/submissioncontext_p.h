@@ -101,7 +101,6 @@ public:
 
     bool beginDrawing(QSurface *surface);
     void endDrawing(bool swapBuffers);
-    void activateGLHelper();
     void releaseOpenGL();
     void setOpenGLContext(QOpenGLContext* ctx);
 
@@ -198,8 +197,6 @@ private:
     QHash<GLuint, QSize> m_renderTargetsSize;
     QAbstractTexture::TextureFormat m_renderTargetFormat;
 
-    QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
-
     // active textures, indexed by texture unit
     struct ActiveTexture {
         GLTexture *texture = nullptr;
@@ -226,7 +223,6 @@ private:
 
     // Attributes
     friend class OpenGLVertexArrayObject;
-    OpenGLVertexArrayObject *m_currentVAO;
 
     struct VAOVertexAttribute
     {

@@ -394,7 +394,6 @@ SubmissionContext::SubmissionContext()
     , m_stateSet(nullptr)
     , m_renderer(nullptr)
     , m_uboTempArray(QByteArray(1024, 0))
-    , m_currentVAO(nullptr)
 {
     static_contexts[m_id] = this;
 }
@@ -462,10 +461,6 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     // TODO: cache surface format somewhere rather than doing this every time render surface changes
     resolveRenderTargetFormat();
 
-    // Sets or Create the correct m_glHelper
-    // for the current surface
-    activateGLHelper();
-
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     GLint err = m_gl->functions()->glGetError();
     if (err != 0) {
@@ -475,12 +470,12 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
     if (!isInitialized())
         initialize();
+    initializeHelpers(m_surface);
 
     // need to reset these values every frame, may get overwritten elsewhere
     m_gl->functions()->glClearColor(m_currClearColorValue.redF(), m_currClearColorValue.greenF(), m_currClearColorValue.blueF(), m_currClearColorValue.alphaF());
     m_gl->functions()->glClearDepthf(m_currClearDepthValue);
     m_gl->functions()->glClearStencil(m_currClearStencilValue);
-
 
     if (m_activeShader) {
         m_activeShader = nullptr;
@@ -814,20 +809,6 @@ void SubmissionContext::setOpenGLContext(QOpenGLContext* ctx)
     releaseOpenGL();
     m_gl = ctx;
 }
-
-void SubmissionContext::activateGLHelper()
-{
-    // Sets the correct GL Helper depending on the surface
-    // If no helper exists, create one
-    m_glHelper = m_glHelpers.value(m_surface);
-    if (!m_glHelper) {
-        m_glHelper = resolveHighestOpenGLFunctions();
-        m_glHelpers.insert(m_surface, m_glHelper);
-        // Note: OpenGLContext is current at this point
-        m_gl->functions()->glDisable(GL_DITHER);
-    }
-}
-
 
 // Called only from RenderThread
 bool SubmissionContext::activateShader(ProgramDNA shaderDNA)
