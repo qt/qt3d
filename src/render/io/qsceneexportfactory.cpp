@@ -50,14 +50,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneExportFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
+#if QT_CONFIG(library)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneExportFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
 #endif
 
 QStringList QSceneExportFactory::keys(const QString &pluginPath)
 {
-#ifndef QT_NO_LIBRARY
+#if QT_CONFIG(library)
     QStringList list;
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
@@ -74,14 +74,14 @@ QStringList QSceneExportFactory::keys(const QString &pluginPath)
     list.append(loader()->keyMap().values());
     return list;
 #else
-    return QStringList();
+    return loader()->keyMap().values();
 #endif
 }
 
 QSceneExporter *QSceneExportFactory::create(const QString &name, const QStringList &args,
                                             const QString &pluginPath)
 {
-#ifndef QT_NO_LIBRARY
+#if QT_CONFIG(library)
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
         if (QSceneExporter *ret = qLoadPlugin<QSceneExporter,
@@ -89,10 +89,8 @@ QSceneExporter *QSceneExportFactory::create(const QString &name, const QStringLi
             return ret;
         }
     }
-    if (QSceneExporter *ret = qLoadPlugin<QSceneExporter, QSceneExportPlugin>(loader(), name, args))
-        return ret;
 #endif
-    return nullptr;
+    return qLoadPlugin<QSceneExporter, QSceneExportPlugin>(loader(), name, args);
 }
 
 } // namespace Qt3DRender
