@@ -39,6 +39,7 @@
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DQuickScene2D/qscene2d.h>
 #include <Qt3DRender/qpicktriangleevent.h>
+#include <Qt3DRender/qobjectpicker.h>
 
 #include <QtCore/qthread.h>
 #include <QtCore/qatomic.h>
@@ -55,6 +56,7 @@
 #include <private/attachmentpack_p.h>
 #include <private/qt3dquickscene2d_logging_p.h>
 #include <private/qbackendnode_p.h>
+#include <private/qobjectpicker_p.h>
 #include <private/qpickevent_p.h>
 #include <private/entity_p.h>
 #include <private/platformsurfacefilter_p.h>
@@ -194,14 +196,17 @@ void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             Qt3DCore::QNodeId outputId = propertyChange->value().value<Qt3DCore::QNodeId>();
             setOutput(outputId);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("pressed")) {
-            QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
-            handlePickEvent(QEvent::MouseButtonPress, ev);
+            QObjectPickerEvent ev = propertyChange->value().value<QObjectPickerEvent>();
+            QPickEventPtr pickEvent = ev.event;
+            handlePickEvent(QEvent::MouseButtonPress, pickEvent);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("released")) {
-            QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
-            handlePickEvent(QEvent::MouseButtonRelease, ev);
+            QObjectPickerEvent ev = propertyChange->value().value<QObjectPickerEvent>();
+            QPickEventPtr pickEvent = ev.event;
+            handlePickEvent(QEvent::MouseButtonRelease, pickEvent);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("moved")) {
-            QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
-            handlePickEvent(QEvent::MouseMove, ev);
+            QObjectPickerEvent ev = propertyChange->value().value<QObjectPickerEvent>();
+            QPickEventPtr pickEvent = ev.event;
+            handlePickEvent(QEvent::MouseMove, pickEvent);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("mouseEnabled")) {
             m_mouseEnabled = propertyChange->value().toBool();
             if (m_mouseEnabled && !m_cachedPickEvent.isNull()) {

@@ -360,16 +360,12 @@ void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         // to emit the correct signals
         const QByteArray propertyName = e->propertyName();
         if (propertyName == QByteArrayLiteral("pressed")) {
-            QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
             d->pressedEvent(d->resolvePickEvent(e));
         } else if (propertyName == QByteArrayLiteral("released")) {
-            QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
             d->releasedEvent(d->resolvePickEvent(e));
         } else if (propertyName == QByteArrayLiteral("clicked")) {
-            QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
             d->clickedEvent(d->resolvePickEvent(e));
         } else if (propertyName == QByteArrayLiteral("moved")) {
-            QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
             d->movedEvent(d->resolvePickEvent(e));
         } else if (propertyName == QByteArrayLiteral("entered")) {
             emit entered();
