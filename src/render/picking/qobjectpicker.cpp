@@ -414,6 +414,7 @@ QPickEvent *QObjectPickerPrivate::resolvePickEvent(Qt3DCore::QPropertyUpdatedCha
     QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
     QPickEvent *pickEvent = ev.event.data();
     pickEvent->d_func()->m_viewport = static_cast<QViewport *>(scene()->lookupNode(ev.viewportNodeId));
+    pickEvent->d_func()->m_entityPtr = static_cast<Qt3DCore::QEntity *>(scene()->lookupNode(pickEvent->d_func()->m_entity));
     return pickEvent;
 }
 

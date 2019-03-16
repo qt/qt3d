@@ -47,6 +47,10 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QEntity;
+}
+
 namespace Qt3DRender {
 
 class QViewport;
@@ -67,6 +71,7 @@ class QT3DRENDERSHARED_EXPORT QPickEvent : public QObject
     Q_PROPERTY(int buttons READ buttons CONSTANT)
     Q_PROPERTY(int modifiers READ modifiers CONSTANT)
     Q_PROPERTY(Qt3DRender::QViewport *viewport READ viewport CONSTANT)
+    Q_PROPERTY(Qt3DCore::QEntity *entity READ entity CONSTANT)
 public:
     enum Buttons {
         LeftButton = Qt::LeftButton,
@@ -107,6 +112,7 @@ public:
     int buttons() const;
     int modifiers() const;
     QViewport *viewport() const;
+    Qt3DCore::QEntity *entity() const;
 
 Q_SIGNALS:
     void acceptedChanged(bool accepted);

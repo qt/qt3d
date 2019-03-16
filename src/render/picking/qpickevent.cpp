@@ -324,6 +324,31 @@ QViewport *QPickEvent::viewport() const
     return d->m_viewport;
 }
 
+
+/*!
+ * \qmlproperty Entity Qt3D.Render::PickEvent::entity
+ * The entity that the picked geometry belongs to.
+ *
+ * If the object picker is not attached to a leaf node in the scene graph,
+ * this is useful to find which child entity was actually picked.
+ *
+ * \since 5.13
+ */
+/*!
+ * \property Qt3DRender::QPickEvent::entity
+ * The entity that the picked geometry belongs to.
+ *
+ * If the object picker is not attached to a leaf node in the scene graph,
+ * this is useful to find which child entity was actually picked.
+ *
+ * \since 5.13
+ */
+Qt3DCore::QEntity *QPickEvent::entity() const
+{
+    Q_D(const QPickEvent);
+    return d->m_entityPtr;
+}
+
 } // Qt3DRender
 
 QT_END_NAMESPACE
