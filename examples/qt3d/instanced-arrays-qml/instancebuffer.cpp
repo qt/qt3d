@@ -57,7 +57,7 @@ static const int colCount = 20;
 static const int maxInstanceCount = rowCount * colCount;
 
 InstanceBuffer::InstanceBuffer(Qt3DCore::QNode *parent)
-    : Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, parent)
+    : Qt3DRender::QBuffer(parent)
     , m_instanceCount(maxInstanceCount)
 {
     // Create some per instance data - position of each instance

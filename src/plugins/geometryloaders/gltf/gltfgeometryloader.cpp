@@ -303,11 +303,11 @@ void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObj
     const auto &bufferData = *it;
 
     int target = json.value(KEY_TARGET).toInt();
-    Qt3DRender::QBuffer::BufferType ty(Qt3DRender::QBuffer::VertexBuffer);
 
     switch (target) {
-    case GL_ARRAY_BUFFER:           ty = Qt3DRender::QBuffer::VertexBuffer; break;
-    case GL_ELEMENT_ARRAY_BUFFER:   ty = Qt3DRender::QBuffer::IndexBuffer; break;
+    case GL_ARRAY_BUFFER:
+    case GL_ELEMENT_ARRAY_BUFFER:
+        break;
     default:
         qCWarning(GLTFGeometryLoaderLog, "buffer %ls unsupported target: %d",
                   qUtf16PrintableImpl(id), target);
@@ -330,7 +330,6 @@ void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObj
     }
 
     Qt3DRender::QBuffer *b = new Qt3DRender::QBuffer();
-    b->setType(ty);
     b->setData(bytes);
     m_gltf1.m_buffers[id] = b;
 }
@@ -345,11 +344,10 @@ void GLTFGeometryLoader::processJSONBufferViewV2(const QJsonObject &json)
     const auto bufferData = m_gltf2.m_bufferDatas[bufferIndex];
 
     int target = json.value(KEY_TARGET).toInt();
-    Qt3DRender::QBuffer::BufferType ty(Qt3DRender::QBuffer::VertexBuffer);
-
     switch (target) {
-    case GL_ARRAY_BUFFER:           ty = Qt3DRender::QBuffer::VertexBuffer; break;
-    case GL_ELEMENT_ARRAY_BUFFER:   ty = Qt3DRender::QBuffer::IndexBuffer; break;
+    case GL_ARRAY_BUFFER:
+    case GL_ELEMENT_ARRAY_BUFFER:
+        break;
     default:
         return;
     }
@@ -368,7 +366,7 @@ void GLTFGeometryLoader::processJSONBufferViewV2(const QJsonObject &json)
                   qUtf16PrintableImpl(bufferData.path));
     }
 
-    Qt3DRender::QBuffer *b(new Qt3DRender::QBuffer(ty));
+    auto b = new Qt3DRender::QBuffer;
     b->setData(bytes);
     m_gltf2.m_buffers.push_back(b);
 }
