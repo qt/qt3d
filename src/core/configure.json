@@ -1,5 +1,9 @@
 {
     "module": "3dcore",
+    "depends": [
+        "gui"
+    ],
+    "condition": "module.gui && features.opengl && !config.wasm",
     "testDir": "../../config.tests",
 
     "commandline": {
