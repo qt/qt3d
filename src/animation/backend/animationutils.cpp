@@ -526,7 +526,7 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
 
             if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
                 qWarning() << "Unknown type for node id =" << mappingData.targetId
-                           << "and property =" << mapping->property()
+                           << "and property =" << mapping->propertyName()
                            << "and callback =" << mapping->callback();
                 continue;
             }

@@ -59,7 +59,6 @@ public:
     ChannelMapping *createChannelMapping(Handler *handler,
                                          const QString &channelName,
                                          const Qt3DCore::QNodeId targetId,
-                                         const QString &property,
                                          const char *propertyName,
                                          int type,
                                          int componentCount)
@@ -69,7 +68,6 @@ public:
         setPeerId(channelMapping, channelMappingId);
         channelMapping->setHandler(handler);
         channelMapping->setTargetId(targetId);
-        channelMapping->setProperty(property);
         channelMapping->setPropertyName(propertyName);
         channelMapping->setChannelName(channelName);
         channelMapping->setType(type);
@@ -143,7 +141,6 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler,
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
-                                                       QLatin1String("translation"),
                                                        "translation",
                                                        static_cast<int>(QVariant::Vector3D),
                                                        3);
@@ -189,7 +186,6 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler,
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
-                                                       QLatin1String("translation"),
                                                        "translation",
                                                        static_cast<int>(QVariant::Vector3D),
                                                        3);

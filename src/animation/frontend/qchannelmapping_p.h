@@ -77,7 +77,6 @@ struct QChannelMappingData
 {
     QString channelName;
     Qt3DCore::QNodeId targetId;
-    QString property;
     int type;
     int componentCount;
     const char *propertyName;

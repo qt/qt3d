@@ -145,7 +145,6 @@ public:
     ChannelMapping *createChannelMapping(Handler *handler,
                                          const QString &channelName,
                                          const Qt3DCore::QNodeId targetId,
-                                         const QString &property,
                                          const char *propertyName,
                                          int type,
                                          int componentCount)
@@ -155,7 +154,6 @@ public:
         setPeerId(channelMapping, channelMappingId);
         channelMapping->setHandler(handler);
         channelMapping->setTargetId(targetId);
-        channelMapping->setProperty(property);
         channelMapping->setPropertyName(propertyName);
         channelMapping->setChannelName(channelName);
         channelMapping->setType(type);
@@ -292,7 +290,6 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler,
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
-                                                       QLatin1String("translation"),
                                                        "translation",
                                                        static_cast<int>(QVariant::Vector3D),
                                                        3);
@@ -376,7 +373,6 @@ private Q_SLOTS:
             auto locationMapping = createChannelMapping(handler,
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
-                                                        QLatin1String("translation"),
                                                         "translation",
                                                         static_cast<int>(QVariant::Vector3D),
                                                         3);
@@ -384,7 +380,6 @@ private Q_SLOTS:
             auto metalnessMapping = createChannelMapping(handler,
                                                          QLatin1String("Metalness"),
                                                          Qt3DCore::QNodeId::createId(),
-                                                         QLatin1String("metalness"),
                                                          "metalness",
                                                          static_cast<int>(QVariant::Double),
                                                          1);
@@ -392,7 +387,6 @@ private Q_SLOTS:
             auto baseColorMapping = createChannelMapping(handler,
                                                          QLatin1String("BaseColor"),
                                                          Qt3DCore::QNodeId::createId(),
-                                                         QLatin1String("baseColor"),
                                                          "baseColor",
                                                          static_cast<int>(QVariant::Vector3D),
                                                          3);
@@ -400,7 +394,6 @@ private Q_SLOTS:
             auto roughnessMapping = createChannelMapping(handler,
                                                          QLatin1String("Roughness"),
                                                          Qt3DCore::QNodeId::createId(),
-                                                         QLatin1String("roughness"),
                                                          "roughness",
                                                          static_cast<int>(QVariant::Double),
                                                          1);
@@ -408,7 +401,6 @@ private Q_SLOTS:
             auto rotationMapping = createChannelMapping(handler,
                                                         QLatin1String("Rotation"),
                                                         Qt3DCore::QNodeId::createId(),
-                                                        QLatin1String("rotation"),
                                                         "rotation",
                                                         static_cast<int>(QVariant::Quaternion),
                                                         4);
@@ -416,7 +408,6 @@ private Q_SLOTS:
             auto morphTargetMapping = createChannelMapping(handler,
                                                            QLatin1String("MorphTargetWeights"),
                                                            Qt3DCore::QNodeId::createId(),
-                                                           QLatin1String("weights"),
                                                            "weights",
                                                            static_cast<int>(QVariant::List),
                                                            5);
@@ -2558,7 +2549,6 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler,
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
-                                                       QLatin1String("translation"),
                                                        "translation",
                                                        static_cast<int>(QVariant::Vector3D),
                                                        3);
@@ -2582,14 +2572,12 @@ private Q_SLOTS:
             auto channelMapping1 = createChannelMapping(handler,
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
-                                                        QLatin1String("translation"),
                                                         "translation",
                                                         static_cast<int>(QVariant::Vector3D),
                                                         3);
             auto channelMapping2 = createChannelMapping(handler,
                                                         QLatin1String("Rotation"),
                                                         Qt3DCore::QNodeId::createId(),
-                                                        QLatin1String("rotatrion"),
                                                         "rotation",
                                                         static_cast<int>(QVariant::Quaternion),
                                                         4);
@@ -2621,28 +2609,24 @@ private Q_SLOTS:
             auto channelMapping1 = createChannelMapping(handler,
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
-                                                        QLatin1String("translation"),
                                                         "translation",
                                                         static_cast<int>(QVariant::Vector3D),
                                                         3);
             auto channelMapping2 = createChannelMapping(handler,
                                                         QLatin1String("Rotation"),
                                                         Qt3DCore::QNodeId::createId(),
-                                                        QLatin1String("rotation"),
                                                         "rotation",
                                                         static_cast<int>(QVariant::Quaternion),
                                                         4);
             auto channelMapping3 = createChannelMapping(handler,
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
-                                                        QLatin1String("translation"),
                                                         "translation",
                                                         static_cast<int>(QVariant::Vector3D),
                                                         3);
             auto channelMapping4 = createChannelMapping(handler,
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
-                                                        QLatin1String("translation"),
                                                         "translation",
                                                         static_cast<int>(QVariant::Vector3D),
                                                         3);
@@ -3124,7 +3108,6 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler,
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
-                                                       QLatin1String("translation"),
                                                        "translation",
                                                        static_cast<int>(QVariant::Vector3D),
                                                        3);
@@ -3141,7 +3124,6 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler,
                                                        QLatin1String("Rotation"),
                                                        Qt3DCore::QNodeId::createId(),
-                                                       QLatin1String("rotation"),
                                                        "rotation",
                                                        static_cast<int>(QVariant::Quaternion),
                                                        4);
@@ -3158,7 +3140,6 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler,
                                                        QLatin1String("Scale"),
                                                        Qt3DCore::QNodeId::createId(),
-                                                       QLatin1String("scale"),
                                                        "scale",
                                                        static_cast<int>(QVariant::Vector3D),
                                                        3);
