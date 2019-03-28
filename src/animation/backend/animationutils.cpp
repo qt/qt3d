@@ -58,36 +58,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-int componentsForType(int type)
-{
-    int componentCount = 1;
-    switch (type) {
-    case QMetaType::Float:
-    case QVariant::Double:
-        componentCount = 1;
-        break;
-
-    case QVariant::Vector2D:
-        componentCount = 2;
-        break;
-
-    case QVariant::Vector3D:
-    case QVariant::Color:
-        componentCount = 3;
-        break;
-
-    case QVariant::Vector4D:
-    case QVariant::Quaternion:
-        componentCount = 4;
-        break;
-
-    default:
-        qWarning() << "Unhandled animation type";
-    }
-
-    return componentCount;
-}
-
 inline QVector<float> valueToVector(const QVector3D &value)
 {
     return { value.x(), value.y(), value.z() };
@@ -178,7 +148,10 @@ double phaseFromElapsedTime(double t_current_local,
     later be used as part of the format vector in the formatClipResults() function to
     remap the channels into the standard W, X, Y, Z order required by QQuaternion.
 */
-ComponentIndices channelComponentsToIndices(const Channel &channel, int dataType, int offset)
+ComponentIndices channelComponentsToIndices(const Channel &channel,
+                                            int dataType,
+                                            int expectedComponentCount,
+                                            int offset)
 {
 #if defined Q_COMPILER_UNIFORM_INIT
     static const QVector<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
@@ -192,20 +165,22 @@ ComponentIndices channelComponentsToIndices(const Channel &channel, int dataType
 
     switch (dataType) {
     case QVariant::Quaternion:
-        return channelComponentsToIndicesHelper(channel, dataType, offset, quaternionSuffixes);
+        return channelComponentsToIndicesHelper(channel, expectedComponentCount,
+                                                offset, quaternionSuffixes);
     case QVariant::Color:
-        return channelComponentsToIndicesHelper(channel, dataType, offset, colorSuffixes);
+        return channelComponentsToIndicesHelper(channel, expectedComponentCount,
+                                                offset, colorSuffixes);
     default:
-        return channelComponentsToIndicesHelper(channel, dataType, offset, standardSuffixes);
+        return channelComponentsToIndicesHelper(channel, expectedComponentCount,
+                                                offset, standardSuffixes);
     }
 }
 
 ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
-                                                  int dataType,
+                                                  int expectedComponentCount,
                                                   int offset,
                                                   const QVector<char> &suffixes)
 {
-    const int expectedComponentCount = componentsForType(dataType);
     const int actualComponentCount = channel.channelComponents.size();
     if (actualComponentCount != expectedComponentCount) {
         qWarning() << "Data type expects" << expectedComponentCount
@@ -329,30 +304,44 @@ ClipResults evaluateClipAtPhase(AnimationClip *clip, float phase)
     return evaluateClipAtLocalTime(clip, localTime);
 }
 
+template<typename Container>
+Container mapChannelResultsToContainer(const MappingData &mappingData,
+                                       const QVector<float> &channelResults)
+{
+    Container r;
+    r.reserve(channelResults.size());
+
+    const ComponentIndices channelIndices = mappingData.channelIndices;
+    for (const int channelIndex : channelIndices)
+        r.push_back(channelResults.at(channelIndex));
+
+    return r;
+}
+
 QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float> &channelResults)
 {
-    QVariant v;
+    const int vectorOfFloatType = qMetaTypeId<QVector<float>>();
+
+    if (mappingData.type == vectorOfFloatType)
+        return QVariant::fromValue(channelResults);
 
     switch (mappingData.type) {
     case QMetaType::Float:
     case QVariant::Double: {
-        v = QVariant::fromValue(channelResults[mappingData.channelIndices[0]]);
-        break;
+        return QVariant::fromValue(channelResults[mappingData.channelIndices[0]]);
     }
 
     case QVariant::Vector2D: {
         const QVector2D vector(channelResults[mappingData.channelIndices[0]],
                 channelResults[mappingData.channelIndices[1]]);
-        v = QVariant::fromValue(vector);
-        break;
+        return QVariant::fromValue(vector);
     }
 
     case QVariant::Vector3D: {
         const QVector3D vector(channelResults[mappingData.channelIndices[0]],
                 channelResults[mappingData.channelIndices[1]],
                 channelResults[mappingData.channelIndices[2]]);
-        v = QVariant::fromValue(vector);
-        break;
+        return QVariant::fromValue(vector);
     }
 
     case QVariant::Vector4D: {
@@ -360,8 +349,7 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float>
                 channelResults[mappingData.channelIndices[1]],
                 channelResults[mappingData.channelIndices[2]],
                 channelResults[mappingData.channelIndices[3]]);
-        v = QVariant::fromValue(vector);
-        break;
+        return QVariant::fromValue(vector);
     }
 
     case QVariant::Quaternion: {
@@ -370,24 +358,28 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float>
                 channelResults[mappingData.channelIndices[2]],
                 channelResults[mappingData.channelIndices[3]]);
         q.normalize();
-        v = QVariant::fromValue(q);
-        break;
+        return QVariant::fromValue(q);
     }
 
     case QVariant::Color: {
-        const QColor color = QColor::fromRgbF(channelResults[mappingData.channelIndices[0]],
+        const QColor color =
+                QColor::fromRgbF(channelResults[mappingData.channelIndices[0]],
                 channelResults[mappingData.channelIndices[1]],
                 channelResults[mappingData.channelIndices[2]]);
-        v = QVariant::fromValue(color);
-        break;
+        return QVariant::fromValue(color);
     }
 
+    case QVariant::List: {
+        const QVariantList results = mapChannelResultsToContainer<QVariantList>(
+                    mappingData, channelResults);
+        return QVariant::fromValue(results);
+    }
     default:
         qWarning() << "Unhandled animation type" << mappingData.type;
         break;
     }
 
-    return v;
+    return QVariant();
 }
 
 QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
@@ -540,7 +532,11 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
             }
 
             // Try to find matching channel name and type
-            const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type(), mapping->peerId() };
+            const ChannelNameAndType nameAndType = { mapping->channelName(),
+                                                     mapping->type(),
+                                                     mapping->componentCount(),
+                                                     mapping->peerId()
+                                                   };
             const int index = channelNamesAndTypes.indexOf(nameAndType);
             if (index != -1) {
                 // Do we have any animation data for this channel? If not, don't bother
@@ -645,7 +641,10 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
         case ChannelMapping::ChannelMappingType:
         case ChannelMapping::CallbackMappingType: {
             // Get the name and type
-            const ChannelNameAndType nameAndType{ mapping->channelName(), mapping->type(), mappingId };
+            const ChannelNameAndType nameAndType{ mapping->channelName(),
+                                                  mapping->type(),
+                                                  mapping->componentCount(),
+                                                  mappingId };
 
             // Add if not already contained
             if (!namesAndTypes.contains(nameAndType))
@@ -694,7 +693,7 @@ QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNam
     int baseIndex = 0;
     for (const auto &entry : namesAndTypes) {
         // Populate indices in order
-        const int componentCount = componentsForType(entry.type);
+        const int componentCount = entry.componentCount;
         ComponentIndices indices(componentCount);
         std::iota(indices.begin(), indices.end(), baseIndex);
 
@@ -780,6 +779,7 @@ ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetCh
             const int baseIndex = clip->channelComponentBaseIndex(clipChannelIndex);
             const auto channelIndices = channelComponentsToIndices(clip->channels()[clipChannelIndex],
                                                                    targetChannel.type,
+                                                                   targetChannel.componentCount,
                                                                    baseIndex);
             std::copy(channelIndices.begin(), channelIndices.end(), formatIt);
 
@@ -909,7 +909,7 @@ QVector<float> defaultValueForChannel(Handler *handler,
         }
 
         // Everything else gets all zeros
-        const int componentCount = componentsForType(channelDescription.type);
+        const int componentCount = mapping->componentCount();
         result = QVector<float>(componentCount, 0.0f);
         break;
     }
