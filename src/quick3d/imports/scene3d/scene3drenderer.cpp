@@ -347,7 +347,7 @@ void Scene3DRenderer::render()
     m_node->markDirty(QSGNode::DirtyMaterial);
 
     // Request next frame
-    m_item->update();
+    m_window->update();
 }
 
 } // namespace Qt3DRender
