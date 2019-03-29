@@ -132,7 +132,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::DynamicCopy);
         QCOMPARE(renderBuffer.isDirty(), true);
-        QCOMPARE(renderBuffer.data(), QByteArrayLiteral("C7"));
+        QCOMPARE(renderBuffer.data(), QByteArrayLiteral("C7LS5"));
         QVERIFY(!renderBuffer.dataGenerator().isNull());
         QVERIFY(!renderBuffer.pendingBufferUpdates().empty());
 
