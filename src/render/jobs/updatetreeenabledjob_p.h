@@ -63,7 +63,7 @@ namespace Render {
 
 class Entity;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateTreeEnabledJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateTreeEnabledJob : public Qt3DCore::QAspectJob
 {
 public:
     UpdateTreeEnabledJob();

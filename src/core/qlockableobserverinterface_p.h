@@ -60,7 +60,7 @@ namespace Qt3DCore {
 
 typedef std::vector<QSceneChangePtr> QSceneChangeList;
 
-class QT3DCORE_PRIVATE_EXPORT QLockableObserverInterface : public QObserverInterface
+class Q_3DCORE_PRIVATE_EXPORT QLockableObserverInterface : public QObserverInterface
 {
 public:
     virtual ~QLockableObserverInterface();

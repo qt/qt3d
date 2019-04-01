@@ -67,7 +67,7 @@ namespace Qt3DRender {
 
 Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneExporter : public QObject
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QSceneExporter : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)

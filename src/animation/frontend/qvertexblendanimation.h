@@ -49,7 +49,7 @@ namespace Qt3DAnimation {
 
 class QVertexBlendAnimationPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QVertexBlendAnimation : public QAbstractAnimation
+class Q_3DANIMATIONSHARED_EXPORT QVertexBlendAnimation : public QAbstractAnimation
 {
     Q_OBJECT
     Q_PROPERTY(QVector<float> targetPositions READ targetPositions WRITE setTargetPositions NOTIFY targetPositionsChanged)

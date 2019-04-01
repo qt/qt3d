@@ -45,7 +45,7 @@ namespace Qt3DAnimation {
 
 class QLerpClipBlendPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QLerpClipBlend : public QAbstractClipBlendNode
+class Q_3DANIMATIONSHARED_EXPORT QLerpClipBlend : public QAbstractClipBlendNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DAnimation::QAbstractClipBlendNode *startClip READ startClip WRITE setStartClip NOTIFY startClipChanged)

@@ -65,7 +65,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QCameraLensPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QCameraLensPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QCameraLensPrivate();

@@ -63,7 +63,7 @@ namespace Quick {
 
 class Quick3DLevelOfDetailLoaderPrivate;
 
-class QT3DQUICKEXTRASSHARED_PRIVATE_EXPORT Quick3DLevelOfDetailLoader : public Qt3DCore::QEntity
+class Q_3DQUICKEXTRASSHARED_PRIVATE_EXPORT Quick3DLevelOfDetailLoader : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY(QVariantList sources READ sources WRITE setSources NOTIFY sourcesChanged)

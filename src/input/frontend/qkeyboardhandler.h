@@ -51,7 +51,7 @@ namespace Qt3DInput {
 class QKeyboardDevice;
 class QKeyboardHandlerPrivate;
 
-class QT3DINPUTSHARED_EXPORT QKeyboardHandler : public Qt3DCore::QComponent
+class Q_3DINPUTSHARED_EXPORT QKeyboardHandler : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QKeyboardDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)

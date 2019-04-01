@@ -61,7 +61,7 @@ namespace Qt3DCore {
 
 class QBackendNode;
 
-class QT3DCORE_PRIVATE_EXPORT QBackendNodeFactory
+class Q_3DCORE_PRIVATE_EXPORT QBackendNodeFactory
 {
 public:
     virtual ~QBackendNodeFactory();

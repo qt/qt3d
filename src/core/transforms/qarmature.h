@@ -50,7 +50,7 @@ namespace Qt3DCore {
 class QArmaturePrivate;
 class QAbstractSkeleton;
 
-class QT3DCORESHARED_EXPORT QArmature : public Qt3DCore::QComponent
+class Q_3DCORESHARED_EXPORT QArmature : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QAbstractSkeleton* skeleton READ skeleton WRITE setSkeleton NOTIFY skeletonChanged)

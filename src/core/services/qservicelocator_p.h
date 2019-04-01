@@ -61,7 +61,7 @@ namespace Qt3DCore {
 
 class QAbstractServiceProviderPrivate;
 
-class QT3DCORESHARED_EXPORT QAbstractServiceProvider : public QObject
+class Q_3DCORESHARED_EXPORT QAbstractServiceProvider : public QObject
 {
     Q_OBJECT
 public:
@@ -86,7 +86,7 @@ class QServiceLocatorPrivate;
 class QEventFilterService;
 class QDownloadHelperService;
 
-class QT3DCORESHARED_EXPORT QServiceLocator
+class Q_3DCORESHARED_EXPORT QServiceLocator
 {
 public:
     QServiceLocator();

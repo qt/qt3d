@@ -64,7 +64,7 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderTargetSelector : public QObject
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderTargetSelector : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QVariantList drawBuffers READ drawBuffers WRITE setDrawBuffers NOTIFY drawBuffersChanged)

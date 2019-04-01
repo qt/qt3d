@@ -62,7 +62,7 @@ namespace Qt3DCore {
 
 class QPropertyValueAddedChange;
 
-class QT3DCORE_PRIVATE_EXPORT QPropertyValueAddedChangePrivate : public QStaticPropertyValueAddedChangeBasePrivate
+class Q_3DCORE_PRIVATE_EXPORT QPropertyValueAddedChangePrivate : public QStaticPropertyValueAddedChangeBasePrivate
 {
 public:
     QPropertyValueAddedChangePrivate();

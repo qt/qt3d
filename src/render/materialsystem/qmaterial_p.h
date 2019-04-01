@@ -61,7 +61,7 @@ namespace Qt3DRender {
 class QParameter;
 class QEffect;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QMaterialPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QMaterialPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QMaterialPrivate();

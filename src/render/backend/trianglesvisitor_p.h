@@ -92,7 +92,7 @@ protected:
     Qt3DCore::QNodeId m_nodeId;
 };
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT CoordinateReader
+class Q_3DRENDERSHARED_PRIVATE_EXPORT CoordinateReader
 {
 public:
     explicit CoordinateReader(NodeManagers *manager)

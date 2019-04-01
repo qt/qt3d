@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QT3DEXTRASSHARED_EXPORT QFirstPersonCameraController : public QAbstractCameraController
+class Q_3DEXTRASSHARED_EXPORT QFirstPersonCameraController : public QAbstractCameraController
 {
     Q_OBJECT
 

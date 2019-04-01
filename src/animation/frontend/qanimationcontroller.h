@@ -49,7 +49,7 @@ namespace Qt3DAnimation {
 
 class QAnimationControllerPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationController : public QObject
+class Q_3DANIMATIONSHARED_EXPORT QAnimationController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int activeAnimationGroup READ activeAnimationGroup WRITE setActiveAnimationGroup NOTIFY activeAnimationGroupChanged)

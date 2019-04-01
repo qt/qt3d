@@ -51,7 +51,7 @@ namespace Qt3DRender
 
 class QBufferCapturePrivate;
 
-class QT3DRENDERSHARED_EXPORT QBufferCapture : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QBufferCapture : public QFrameGraphNode
 {
     Q_OBJECT
 public:

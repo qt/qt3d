@@ -63,7 +63,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QTextureImagePrivate : public QAbstractTextureImagePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QTextureImagePrivate : public QAbstractTextureImagePrivate
 {
 public:
     QTextureImagePrivate()

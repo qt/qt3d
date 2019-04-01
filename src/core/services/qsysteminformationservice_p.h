@@ -62,7 +62,7 @@ namespace Qt3DCore {
 
 class QSystemInformationServicePrivate;
 
-class QT3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceProvider
+class Q_3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceProvider
 {
     Q_OBJECT
 public:

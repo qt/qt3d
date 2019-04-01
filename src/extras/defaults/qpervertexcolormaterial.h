@@ -50,7 +50,7 @@ namespace Qt3DExtras {
 
 class QPerVertexColorMaterialPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QPerVertexColorMaterial : public Qt3DRender::QMaterial
+class Q_3DEXTRASSHARED_EXPORT QPerVertexColorMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
 

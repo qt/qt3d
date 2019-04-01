@@ -51,7 +51,7 @@ namespace Qt3DExtras {
 
 class QSpriteGridPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
+class Q_3DEXTRASSHARED_EXPORT QSpriteGrid : public QAbstractSpriteSheet
 {
     Q_OBJECT
     Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)

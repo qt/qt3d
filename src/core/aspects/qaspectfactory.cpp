@@ -52,7 +52,7 @@ Q_GLOBAL_STATIC(defaultFactories_t, defaultFactories)
 typedef QHash<const QMetaObject*, QLatin1String> defaultAspectNames_t;
 Q_GLOBAL_STATIC(defaultAspectNames_t, defaultAspectNames)
 
-QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1String &name,
+Q_3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1String &name,
                                                                  const QMetaObject *metaObject,
                                                                  QAspectFactory::CreateFunction factory)
 {
@@ -60,7 +60,7 @@ QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1St
     defaultAspectNames->insert(metaObject, name);
 }
 
-QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &name,
+Q_3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &name,
                                                                  const QMetaObject *metaObject,
                                                                  QAspectFactory::CreateFunction factory)
 {

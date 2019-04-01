@@ -51,7 +51,7 @@ class QAbstractPhysicalDevice;
 class QInputAspectPrivate;
 class QInputDeviceIntegration;
 
-class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
+class Q_3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:

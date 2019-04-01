@@ -61,7 +61,7 @@ namespace Qt3DCore {
 
 class QLockableObserverInterface;
 
-class QT3DCORE_PRIVATE_EXPORT QObservableInterface
+class Q_3DCORE_PRIVATE_EXPORT QObservableInterface
 {
 public:
     virtual ~QObservableInterface();

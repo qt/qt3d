@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QStencilTestArgumentsPrivate : public QObjectPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QStencilTestArgumentsPrivate : public QObjectPrivate
 {
 public:
     QStencilTestArgumentsPrivate(QStencilTestArguments::StencilFaceMode face)

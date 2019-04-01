@@ -62,7 +62,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 namespace Quick {
 
-class QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT Quick3DChannelMapper  : public QObject
+class Q_3DQUICKANIMATIONSHARED_PRIVATE_EXPORT Quick3DChannelMapper  : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DAnimation::QAbstractChannelMapping> mappings READ qmlMappings CONSTANT)

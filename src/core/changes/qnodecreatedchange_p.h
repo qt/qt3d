@@ -61,7 +61,7 @@ namespace Qt3DCore {
 
 class QNode;
 
-class QT3DCORE_PRIVATE_EXPORT QNodeCreatedChangeBasePrivate : public QSceneChangePrivate
+class Q_3DCORE_PRIVATE_EXPORT QNodeCreatedChangeBasePrivate : public QSceneChangePrivate
 {
 public:
     QNodeCreatedChangeBasePrivate(const QNode *node);

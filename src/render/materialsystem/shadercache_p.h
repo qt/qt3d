@@ -66,7 +66,7 @@ namespace Render {
 class tst_ShaderCache;
 #endif
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT ShaderCache
+class Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderCache
 {
 public:
     ~ShaderCache();

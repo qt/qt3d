@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 class QPickEvent;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QPickEventPrivate : public QObjectPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QPickEventPrivate : public QObjectPrivate
 {
 public:
     QPickEventPrivate()

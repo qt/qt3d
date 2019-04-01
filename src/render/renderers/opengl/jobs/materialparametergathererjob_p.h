@@ -70,7 +70,7 @@ class Renderer;
 
 // TO be executed for each FrameGraph branch with a given RenderPassFilter/TechniqueFilter
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
 {
 public:
     MaterialParameterGathererJob();

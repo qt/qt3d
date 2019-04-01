@@ -50,7 +50,7 @@ namespace Qt3DRender {
 
 class QRenderStatePrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:

@@ -62,7 +62,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 namespace Quick {
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DJoint : public QObject
+class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DJoint : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DCore::QJoint> childJoints READ childJoints)

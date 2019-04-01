@@ -61,7 +61,7 @@ namespace Qt3DCore {
 class QScene;
 class QPostmanPrivate;
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractPostman : public QObserverInterface
+class Q_3DCORE_PRIVATE_EXPORT QAbstractPostman : public QObserverInterface
 {
 public:
     virtual void setScene(QScene *sceneLookup) = 0;

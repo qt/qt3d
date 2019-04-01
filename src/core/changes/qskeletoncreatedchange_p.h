@@ -57,7 +57,7 @@ namespace Qt3DCore {
 
 class QSkeletonCreatedChangeBasePrivate;
 
-class QT3DCORESHARED_EXPORT QSkeletonCreatedChangeBase : public QNodeCreatedChangeBase
+class Q_3DCORESHARED_EXPORT QSkeletonCreatedChangeBase : public QNodeCreatedChangeBase
 {
 public:
     explicit QSkeletonCreatedChangeBase(const QAbstractSkeleton *skeleton);

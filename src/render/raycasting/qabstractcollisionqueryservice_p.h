@@ -77,7 +77,7 @@ public:
     {}
 };
 
-class QT3DRENDERSHARED_EXPORT QAbstractCollisionQueryService : public Qt3DCore::QAbstractServiceProvider
+class Q_3DRENDERSHARED_EXPORT QAbstractCollisionQueryService : public Qt3DCore::QAbstractServiceProvider
 {
     Q_OBJECT
 public:

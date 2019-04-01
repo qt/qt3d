@@ -53,7 +53,7 @@ namespace Qt3DAnimation {
 
 class QSkeletonMappingPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QSkeletonMapping : public QAbstractChannelMapping
+class Q_3DANIMATIONSHARED_EXPORT QSkeletonMapping : public QAbstractChannelMapping
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QAbstractSkeleton* skeleton READ skeleton WRITE setSkeleton NOTIFY skeletonChanged)

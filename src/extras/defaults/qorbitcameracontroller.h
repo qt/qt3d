@@ -45,7 +45,7 @@ namespace Qt3DExtras {
 
 class QOrbitCameraControllerPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QOrbitCameraController : public QAbstractCameraController
+class Q_3DEXTRASSHARED_EXPORT QOrbitCameraController : public QAbstractCameraController
 {
     Q_OBJECT
     Q_PROPERTY(float zoomInLimit READ zoomInLimit WRITE setZoomInLimit NOTIFY zoomInLimitChanged)

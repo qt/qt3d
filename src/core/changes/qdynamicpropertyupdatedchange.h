@@ -48,7 +48,7 @@ namespace Qt3DCore {
 
 class QDynamicPropertyUpdatedChangePrivate;
 
-class QT3DCORESHARED_EXPORT QDynamicPropertyUpdatedChange : public QPropertyUpdatedChangeBase
+class Q_3DCORESHARED_EXPORT QDynamicPropertyUpdatedChange : public QPropertyUpdatedChangeBase
 {
 public:
     explicit QDynamicPropertyUpdatedChange(QNodeId subjectId);

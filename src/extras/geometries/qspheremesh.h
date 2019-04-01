@@ -49,7 +49,7 @@ namespace Qt3DExtras {
 
 class QSphereMeshPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QSphereMesh : public Qt3DRender::QGeometryRenderer
+class Q_3DEXTRASSHARED_EXPORT QSphereMesh : public Qt3DRender::QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

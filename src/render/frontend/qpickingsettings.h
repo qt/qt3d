@@ -51,7 +51,7 @@ class QPickingSettingsPrivate;
 
 // TO DO: Qt 6 -> Make this a QObject
 
-class QT3DRENDERSHARED_EXPORT QPickingSettings : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QPickingSettings : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(PickMethod pickMethod READ pickMethod WRITE setPickMethod NOTIFY pickMethodChanged)

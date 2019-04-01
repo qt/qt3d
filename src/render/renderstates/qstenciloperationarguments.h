@@ -50,7 +50,7 @@ namespace Qt3DRender {
 class QStencilOperationPrivate;
 class QStencilOperationArgumentsPrivate;
 
-class QT3DRENDERSHARED_EXPORT QStencilOperationArguments : public QObject
+class Q_3DRENDERSHARED_EXPORT QStencilOperationArguments : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(FaceMode faceMode READ faceMode NOTIFY faceModeChanged)

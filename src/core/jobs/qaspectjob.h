@@ -50,7 +50,7 @@ namespace Qt3DCore {
 
 class QAspectJobPrivate;
 
-class QT3DCORESHARED_EXPORT QAspectJob
+class Q_3DCORESHARED_EXPORT QAspectJob
 {
 public:
     QAspectJob();

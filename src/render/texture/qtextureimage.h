@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QTextureImagePrivate;
 
-class QT3DRENDERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
+class Q_3DRENDERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)

@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore
 {
 
-class QT3DCORESHARED_EXPORT QNodeVisitor
+class Q_3DCORESHARED_EXPORT QNodeVisitor
 {
 public:
     QNodeVisitor();

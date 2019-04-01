@@ -68,7 +68,7 @@ namespace Qt3DExtras {
 
 class QExtrudedTextGeometryPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QExtrudedTextGeometry : public Qt3DRender::QGeometry
+class Q_3DEXTRASSHARED_EXPORT QExtrudedTextGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)

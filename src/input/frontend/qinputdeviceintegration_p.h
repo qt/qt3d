@@ -72,7 +72,7 @@ class QInputAspect;
 class QAbstractPhysicalDevice;
 class QInputDeviceIntegrationPrivate;
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QInputDeviceIntegration : public QObject
+class Q_3DINPUTSHARED_PRIVATE_EXPORT QInputDeviceIntegration : public QObject
 {
     Q_OBJECT
 protected:

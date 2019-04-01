@@ -50,7 +50,7 @@ namespace Qt3DCore {
 
 class QPropertyValueRemovedChangePrivate;
 
-class QT3DCORESHARED_EXPORT QPropertyValueRemovedChange : public QStaticPropertyValueRemovedChangeBase
+class Q_3DCORESHARED_EXPORT QPropertyValueRemovedChange : public QStaticPropertyValueRemovedChangeBase
 {
 public:
     explicit QPropertyValueRemovedChange(QNodeId subjectId);

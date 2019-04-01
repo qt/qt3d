@@ -55,7 +55,7 @@ namespace Qt3DRender {
 class QTextureImageData;
 typedef QSharedPointer<QTextureImageData> QTextureImageDataPtr;
 
-class QT3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public QAbstractFunctor
+class Q_3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public QAbstractFunctor
 {
 public:
     virtual ~QTextureImageDataGenerator() {}

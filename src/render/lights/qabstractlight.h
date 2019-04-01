@@ -52,7 +52,7 @@ namespace Qt3DRender {
 
 class QAbstractLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QAbstractLight : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QAbstractLight : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Type type READ type)

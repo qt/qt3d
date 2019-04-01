@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 class QAbstractLight;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QAbstractLightPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QAbstractLightPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     explicit QAbstractLightPrivate(QAbstractLight::Type type);

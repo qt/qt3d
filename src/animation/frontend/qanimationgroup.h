@@ -49,7 +49,7 @@ namespace Qt3DAnimation {
 
 class QAnimationGroupPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationGroup : public QObject
+class Q_3DANIMATIONSHARED_EXPORT QAnimationGroup : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)

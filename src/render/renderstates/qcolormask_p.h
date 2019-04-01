@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QColorMaskPrivate : public QRenderStatePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QColorMaskPrivate : public QRenderStatePrivate
 {
 public:
     QColorMaskPrivate()

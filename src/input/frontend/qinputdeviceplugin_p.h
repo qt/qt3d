@@ -63,7 +63,7 @@ namespace Qt3DInput {
 
 class QInputDeviceIntegration;
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QInputDevicePlugin : public QObject
+class Q_3DINPUTSHARED_PRIVATE_EXPORT QInputDevicePlugin : public QObject
 {
     Q_OBJECT
 public:

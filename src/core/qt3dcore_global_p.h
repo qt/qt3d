@@ -54,6 +54,6 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/private/qt3dcore-config_p.h>
 
-#define QT3DCORE_PRIVATE_EXPORT QT3DCORESHARED_EXPORT
+#define Q_3DCORE_PRIVATE_EXPORT Q_3DCORESHARED_EXPORT
 
 #endif // QT3DCORE_GLOBAL_P_H

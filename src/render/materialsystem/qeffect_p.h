@@ -63,7 +63,7 @@ class QEffect;
 class QParameter;
 class QTechnique;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QEffectPrivate : public Qt3DCore::QNodePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QEffectPrivate : public Qt3DCore::QNodePrivate
 {
 public :
     QEffectPrivate();

@@ -63,7 +63,7 @@ namespace Qt3DCore {
 class QSceneChange;
 class QNodeId;
 
-class QT3DCORE_PRIVATE_EXPORT QSceneChangePrivate
+class Q_3DCORE_PRIVATE_EXPORT QSceneChangePrivate
 {
 public :
     QSceneChangePrivate();

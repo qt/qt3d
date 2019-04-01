@@ -53,7 +53,7 @@ namespace Qt3DExtras {
 
 class QConeGeometryPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QConeGeometry : public Qt3DRender::QGeometry
+class Q_3DEXTRASSHARED_EXPORT QConeGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY( bool hasTopEndcap READ hasTopEndcap WRITE setHasTopEndcap NOTIFY hasTopEndcapChanged )

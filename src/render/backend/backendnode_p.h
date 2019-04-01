@@ -64,7 +64,7 @@ namespace Render {
 
 class RenderBackendResourceAccessor;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT BackendNode : public Qt3DCore::QBackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT BackendNode : public Qt3DCore::QBackendNode
 {
 public:
     BackendNode(Qt3DCore::QBackendNode::Mode mode = ReadOnly);

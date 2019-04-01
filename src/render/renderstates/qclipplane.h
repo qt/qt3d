@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QClipPlanePrivate;
 
-class QT3DRENDERSHARED_EXPORT QClipPlane : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QClipPlane : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(int planeIndex READ planeIndex WRITE setPlaneIndex NOTIFY planeIndexChanged)

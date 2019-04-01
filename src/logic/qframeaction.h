@@ -54,7 +54,7 @@ namespace Logic {
 class Executor;
 }
 
-class QT3DLOGICSHARED_EXPORT QFrameAction : public Qt3DCore::QComponent
+class Q_3DLOGICSHARED_EXPORT QFrameAction : public Qt3DCore::QComponent
 {
     Q_OBJECT
 

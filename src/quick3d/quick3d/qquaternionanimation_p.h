@@ -63,7 +63,7 @@ namespace Quick {
 
 class QQuaternionAnimationPrivate;
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT QQuaternionAnimation : public QQuickPropertyAnimation
+class Q_3DQUICKSHARED_PRIVATE_EXPORT QQuaternionAnimation : public QQuickPropertyAnimation
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QQuaternionAnimation)
@@ -125,7 +125,7 @@ Q_SIGNALS:
     void toZRotationChanged(float value);
 };
 
-QT3DQUICKSHARED_PRIVATE_EXPORT QVariant q_quaternionInterpolator(const QQuaternion &from, const QQuaternion &to, qreal progress);
+Q_3DQUICKSHARED_PRIVATE_EXPORT QVariant q_quaternionInterpolator(const QQuaternion &from, const QQuaternion &to, qreal progress);
 
 } // namespace Quick
 } // namespace Qt3DCore

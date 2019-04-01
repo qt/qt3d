@@ -53,7 +53,7 @@ class QKeyEvent;
 
 typedef QSharedPointer<QKeyEvent> QKeyEventPtr;
 
-class QT3DINPUTSHARED_EXPORT QKeyEvent : public QObject
+class Q_3DINPUTSHARED_EXPORT QKeyEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int key READ key CONSTANT)

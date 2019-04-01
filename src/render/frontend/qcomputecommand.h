@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QComputeCommandPrivate;
 
-class QT3DRENDERSHARED_EXPORT QComputeCommand : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QComputeCommand : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(int workGroupX READ workGroupX WRITE setWorkGroupX NOTIFY workGroupXChanged)

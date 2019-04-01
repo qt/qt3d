@@ -65,7 +65,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
 
 class QSceneChangePrivate;
 
-class QT3DCORESHARED_EXPORT QSceneChange
+class Q_3DCORESHARED_EXPORT QSceneChange
 {
 public:
     enum DeliveryFlag {

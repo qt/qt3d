@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QNoDraw : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QNoDraw : public QFrameGraphNode
 {
     Q_OBJECT
 public:

@@ -47,7 +47,7 @@ namespace Qt3DAnimation {
 class QAbstractClipBlendNode;
 class QClipBlendNodeCreatedChangeBasePrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QClipBlendNodeCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
+class Q_3DANIMATIONSHARED_EXPORT QClipBlendNodeCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 {
 public:
     explicit QClipBlendNodeCreatedChangeBase(const QAbstractClipBlendNode *node);

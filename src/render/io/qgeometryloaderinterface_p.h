@@ -63,7 +63,7 @@ namespace Qt3DRender {
 
 class QGeometry;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QGeometryLoaderInterface : public QObject
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QGeometryLoaderInterface : public QObject
 {
 public:
     virtual QGeometry *geometry() const = 0;

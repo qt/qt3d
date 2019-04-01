@@ -50,7 +50,7 @@ namespace Qt3DRender {
 
 class QShaderDataPrivate;
 
-class QT3DRENDERSHARED_EXPORT PropertyReaderInterface
+class Q_3DRENDERSHARED_EXPORT PropertyReaderInterface
 {
 public:
     virtual ~PropertyReaderInterface();
@@ -59,7 +59,7 @@ public:
 
 typedef QSharedPointer<PropertyReaderInterface> PropertyReaderInterfacePtr;
 
-class QT3DRENDERSHARED_EXPORT QShaderData : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QShaderData : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:

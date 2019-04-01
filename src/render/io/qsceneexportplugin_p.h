@@ -65,7 +65,7 @@ namespace Qt3DRender {
 
 class QSceneExporter;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneExportPlugin : public QObject
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QSceneExportPlugin : public QObject
 {
     Q_OBJECT
 public:

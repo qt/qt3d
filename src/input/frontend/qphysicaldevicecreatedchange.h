@@ -47,7 +47,7 @@ namespace Qt3DInput {
 class QAbstractPhysicalDevice;
 class QPhysicalDeviceCreatedChangeBasePrivate;
 
-class QT3DINPUTSHARED_EXPORT QPhysicalDeviceCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
+class Q_3DINPUTSHARED_EXPORT QPhysicalDeviceCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 {
 public:
     explicit QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device);

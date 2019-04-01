@@ -49,7 +49,7 @@ namespace Qt3DExtras {
 
 class QSkyboxEntityPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QSkyboxEntity : public Qt3DCore::QEntity
+class Q_3DEXTRASSHARED_EXPORT QSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY(QString baseName READ baseName WRITE setBaseName NOTIFY baseNameChanged)

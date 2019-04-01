@@ -53,7 +53,7 @@ namespace Qt3DRender {
 
 class QRenderSurfaceSelectorPrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(QObject *surface READ surface WRITE setSurface NOTIFY surfaceChanged)

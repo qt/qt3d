@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 namespace Quick {
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DNode : public QObject
+class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DNode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)

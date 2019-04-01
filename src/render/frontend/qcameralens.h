@@ -53,7 +53,7 @@ namespace Qt3DRender {
 
 class QCameraLensPrivate;
 
-class QT3DRENDERSHARED_EXPORT QCameraLens : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QCameraLens : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)

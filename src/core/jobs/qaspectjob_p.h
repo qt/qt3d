@@ -103,7 +103,7 @@ struct JobRunStats
 };
 #endif
 
-class QT3DCORE_PRIVATE_EXPORT QAspectJobPrivate
+class Q_3DCORE_PRIVATE_EXPORT QAspectJobPrivate
 {
 public:
     QAspectJobPrivate();

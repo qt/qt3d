@@ -57,7 +57,7 @@ namespace Qt3DExtras {
 
 class QTextureMaterialPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QTextureMaterial : public Qt3DRender::QMaterial
+class Q_3DEXTRASSHARED_EXPORT QTextureMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)

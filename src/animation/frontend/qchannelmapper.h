@@ -47,7 +47,7 @@ namespace Qt3DAnimation {
 class QChannelMapperPrivate;
 class QAbstractChannelMapping;
 
-class QT3DANIMATIONSHARED_EXPORT QChannelMapper : public Qt3DCore::QNode
+class Q_3DANIMATIONSHARED_EXPORT QChannelMapper : public Qt3DCore::QNode
 {
     Q_OBJECT
 

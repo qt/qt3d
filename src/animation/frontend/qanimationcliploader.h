@@ -47,7 +47,7 @@ namespace Qt3DAnimation {
 
 class QAnimationClipLoaderPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationClipLoader : public QAbstractAnimationClip
+class Q_3DANIMATIONSHARED_EXPORT QAnimationClipLoader : public QAbstractAnimationClip
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)

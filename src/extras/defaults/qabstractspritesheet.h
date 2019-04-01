@@ -57,7 +57,7 @@ namespace Qt3DExtras {
 
 class QAbstractSpriteSheetPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QAbstractSpriteSheet : public Qt3DCore::QNode
+class Q_3DEXTRASSHARED_EXPORT QAbstractSpriteSheet : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)

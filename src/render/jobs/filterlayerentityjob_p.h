@@ -65,7 +65,7 @@ namespace Render {
 class Entity;
 class NodeManagers;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT FilterLayerEntityJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT FilterLayerEntityJob : public Qt3DCore::QAspectJob
 {
 public:
     FilterLayerEntityJob();

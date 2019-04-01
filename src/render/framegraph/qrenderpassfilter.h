@@ -53,7 +53,7 @@ class QRenderPassFilterPrivate;
 class QFilterKey;
 class QParameter;
 
-class QT3DRENDERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
 {
     Q_OBJECT
 

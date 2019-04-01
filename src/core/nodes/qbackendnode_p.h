@@ -63,7 +63,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
+class Q_3DCORE_PRIVATE_EXPORT QBackendNodePrivate
         : public QObserverInterface
         , public QObservableInterface
 {

@@ -61,7 +61,7 @@ namespace Qt3DCore {
 
 class QChangeArbiter;
 
-class QT3DCORE_PRIVATE_EXPORT QSceneObserverInterface
+class Q_3DCORE_PRIVATE_EXPORT QSceneObserverInterface
 {
 public:
     virtual ~QSceneObserverInterface();

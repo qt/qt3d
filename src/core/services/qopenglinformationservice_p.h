@@ -63,7 +63,7 @@ namespace Qt3DCore {
 
 class QOpenGLInformationServicePrivate;
 
-class QT3DCORESHARED_EXPORT QOpenGLInformationService : public QAbstractServiceProvider
+class Q_3DCORESHARED_EXPORT QOpenGLInformationService : public QAbstractServiceProvider
 {
     Q_OBJECT
 public:

@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QColorMaskPrivate;
 
-class QT3DRENDERSHARED_EXPORT QColorMask : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QColorMask : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(bool redMasked READ isRedMasked WRITE setRedMasked NOTIFY redMaskedChanged)

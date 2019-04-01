@@ -62,7 +62,7 @@ namespace Qt3DRender {
 class QAbstractTexture;
 class QEnvironmentLight;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QEnvironmentLightPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QEnvironmentLightPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     explicit QEnvironmentLightPrivate();

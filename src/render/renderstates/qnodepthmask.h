@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QNoDepthMaskPrivate;
 
-class QT3DRENDERSHARED_EXPORT  QNoDepthMask : public QRenderState
+class Q_3DRENDERSHARED_EXPORT  QNoDepthMask : public QRenderState
 {
     Q_OBJECT
 public:

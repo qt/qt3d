@@ -50,7 +50,7 @@ namespace Qt3DCore {
 
 class QPropertyUpdatedChangeBasePrivate;
 
-class QT3DCORESHARED_EXPORT QPropertyUpdatedChangeBase : public QSceneChange
+class Q_3DCORESHARED_EXPORT QPropertyUpdatedChangeBase : public QSceneChange
 {
 public:
     ~QPropertyUpdatedChangeBase();

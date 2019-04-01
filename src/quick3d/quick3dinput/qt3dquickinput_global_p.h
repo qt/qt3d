@@ -54,7 +54,7 @@
 #include <Qt3DQuickInput/qt3dquickinput_global.h>
 #include <QtQml/qqml.h>
 
-#define QT3DQUICKINPUTSHARED_PRIVATE_EXPORT QT3DQUICKINPUTSHARED_EXPORT
+#define Q_3DQUICKINPUTSHARED_PRIVATE_EXPORT Q_3DQUICKINPUTSHARED_EXPORT
 
 QT_BEGIN_NAMESPACE
 
@@ -62,8 +62,8 @@ namespace Qt3DInput {
 
 namespace Quick {
 
-QT3DQUICKINPUTSHARED_PRIVATE_EXPORT void Quick3DInput_initialize();
-QT3DQUICKINPUTSHARED_PRIVATE_EXPORT void Quick3DInput_registerType(const char *className, const char *quickName, int major, int minor);
+Q_3DQUICKINPUTSHARED_PRIVATE_EXPORT void Quick3DInput_initialize();
+Q_3DQUICKINPUTSHARED_PRIVATE_EXPORT void Quick3DInput_registerType(const char *className, const char *quickName, int major, int minor);
 
 template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
                                                      const char *uri, int major, int minor, const char *name)

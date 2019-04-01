@@ -64,7 +64,7 @@ namespace Quick {
 
 // TO DO : Check if this is required or if this might as well be removed
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DViewport : public QObject
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DViewport : public QObject
 {
     Q_OBJECT
 public:

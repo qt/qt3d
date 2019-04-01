@@ -50,7 +50,7 @@ namespace Qt3DRender {
 
 class QFrameGraphNodePrivate;
 
-class QT3DRENDERSHARED_EXPORT QFrameGraphNode : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QFrameGraphNode : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:

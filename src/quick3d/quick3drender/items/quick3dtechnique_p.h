@@ -62,7 +62,7 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DTechnique : public QObject
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DTechnique : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QFilterKey> filterKeys READ filterKeyList)

@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QUrlHelper
+class Q_3DRENDERSHARED_EXPORT QUrlHelper
 {
 public:
     static QString urlToLocalFileOrQrc(const QUrl &url);

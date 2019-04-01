@@ -49,7 +49,7 @@ namespace Qt3DAnimation {
 
 class QClipBlendValuePrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QClipBlendValue : public Qt3DAnimation::QAbstractClipBlendNode
+class Q_3DANIMATIONSHARED_EXPORT QClipBlendValue : public Qt3DAnimation::QAbstractClipBlendNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DAnimation::QAbstractAnimationClip *clip READ clip WRITE setClip NOTIFY clipChanged)

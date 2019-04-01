@@ -54,15 +54,15 @@
 #include <Qt3DQuickExtras/qt3dquickextras_global.h>
 #include <QtQml/qqml.h>
 
-#define QT3DQUICKEXTRASSHARED_PRIVATE_EXPORT QT3DQUICKEXTRASSHARED_EXPORT
+#define Q_3DQUICKEXTRASSHARED_PRIVATE_EXPORT Q_3DQUICKEXTRASSHARED_EXPORT
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 namespace Quick {
 
-QT3DQUICKEXTRASSHARED_PRIVATE_EXPORT void Quick3DExtras_initialize();
-QT3DQUICKEXTRASSHARED_PRIVATE_EXPORT void Quick3DExtras_registerType(const char *className, const char *quickName, int major, int minor);
+Q_3DQUICKEXTRASSHARED_PRIVATE_EXPORT void Quick3DExtras_initialize();
+Q_3DQUICKEXTRASSHARED_PRIVATE_EXPORT void Quick3DExtras_registerType(const char *className, const char *quickName, int major, int minor);
 
 template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
                                                      const char *uri, int major, int minor, const char *name)

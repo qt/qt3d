@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QBlendEquationArgumentsPrivate : public QRenderStatePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QBlendEquationArgumentsPrivate : public QRenderStatePrivate
 {
 public:
     QBlendEquationArgumentsPrivate(Render::StateMask type = Render::BlendEquationArgumentsMask)

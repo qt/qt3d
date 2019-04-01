@@ -49,7 +49,7 @@ namespace Qt3DAnimation {
 
 class QAnimationAspectPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationAspect : public Qt3DCore::QAbstractAspect
+class Q_3DANIMATIONSHARED_EXPORT QAnimationAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:

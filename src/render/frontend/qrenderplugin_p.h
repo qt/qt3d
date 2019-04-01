@@ -64,7 +64,7 @@ namespace Render {
 
 class AbstractRenderer;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderPlugin
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderPlugin
 {
 public:
     virtual bool registerBackendTypes(QRenderAspect *aspect, AbstractRenderer *renderer) = 0;

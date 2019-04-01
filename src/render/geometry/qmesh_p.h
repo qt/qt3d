@@ -69,7 +69,7 @@ namespace Render {
 class NodeManagers;
 }
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QMeshPrivate : public QGeometryRendererPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QMeshPrivate : public QGeometryRendererPrivate
 {
 public:
     QMeshPrivate();

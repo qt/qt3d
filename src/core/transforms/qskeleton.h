@@ -50,7 +50,7 @@ namespace Qt3DCore {
 class QJoint;
 class QSkeletonPrivate;
 
-class QT3DCORESHARED_EXPORT QSkeleton : public QAbstractSkeleton
+class Q_3DCORESHARED_EXPORT QSkeleton : public QAbstractSkeleton
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QJoint* rootJoint READ rootJoint WRITE setRootJoint NOTIFY rootJointChanged)

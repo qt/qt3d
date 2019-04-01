@@ -64,7 +64,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT Sphere : public RayCasting::BoundingSphere
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Sphere : public RayCasting::BoundingSphere
 {
 public:
     inline Sphere(Qt3DCore::QNodeId i = Qt3DCore::QNodeId())
@@ -158,7 +158,7 @@ inline bool intersects(const Sphere &a, const Sphere &b)
 }
 
 #ifndef QT_NO_DEBUG_STREAM
-QT3DRENDERSHARED_EXPORT QDebug operator<<(QDebug dbg, const Sphere &sphere);
+Q_3DRENDERSHARED_EXPORT QDebug operator<<(QDebug dbg, const Sphere &sphere);
 #endif
 
 } // Render

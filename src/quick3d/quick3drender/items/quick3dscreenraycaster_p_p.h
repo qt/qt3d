@@ -66,7 +66,7 @@ namespace Quick {
 
 class Quick3DScreenRayCaster;
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DScreenRayCasterPrivate : public QAbstractRayCasterPrivate
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DScreenRayCasterPrivate : public QAbstractRayCasterPrivate
 {
 public:
     explicit Quick3DScreenRayCasterPrivate() : QAbstractRayCasterPrivate() { }

@@ -48,7 +48,7 @@ namespace Qt3DCore {
 class QNode;
 class QNodeCreatedChangeBasePrivate;
 
-class QT3DCORESHARED_EXPORT QNodeCreatedChangeBase : public QSceneChange
+class Q_3DCORESHARED_EXPORT QNodeCreatedChangeBase : public QSceneChange
 {
 public:
     explicit QNodeCreatedChangeBase(const QNode *node);

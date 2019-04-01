@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QBlendEquationArgumentsPrivate;
 
-class QT3DRENDERSHARED_EXPORT QBlendEquationArguments : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QBlendEquationArguments : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(Blending sourceRgb READ sourceRgb WRITE setSourceRgb NOTIFY sourceRgbChanged)

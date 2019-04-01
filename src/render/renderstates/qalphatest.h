@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QAlphaTestPrivate;
 
-class QT3DRENDERSHARED_EXPORT QAlphaTest : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QAlphaTest : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(AlphaFunction alphaFunction READ alphaFunction WRITE setAlphaFunction NOTIFY alphaFunctionChanged)

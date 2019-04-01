@@ -47,7 +47,7 @@ namespace Qt3DAnimation {
 
 class QAbstractAnimationClipPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAbstractAnimationClip : public Qt3DCore::QNode
+class Q_3DANIMATIONSHARED_EXPORT QAbstractAnimationClip : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(float duration READ duration NOTIFY durationChanged)

@@ -50,7 +50,7 @@ namespace Qt3DRender {
 
 class QPaintedTextureImagePrivate;
 
-class QT3DRENDERSHARED_EXPORT QPaintedTextureImage : public QAbstractTextureImage
+class Q_3DRENDERSHARED_EXPORT QPaintedTextureImage : public QAbstractTextureImage
 {
     Q_OBJECT
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)

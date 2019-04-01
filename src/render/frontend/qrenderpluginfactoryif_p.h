@@ -64,7 +64,7 @@ namespace Render {
 
 class QRenderPlugin;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderPluginFactoryIf : public QObject
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderPluginFactoryIf : public QObject
 {
     Q_OBJECT
 public:

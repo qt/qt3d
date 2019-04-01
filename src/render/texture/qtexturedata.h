@@ -51,7 +51,7 @@ namespace Qt3DRender {
 
 class QTextureDataPrivate;
 
-class QT3DRENDERSHARED_EXPORT QTextureData
+class Q_3DRENDERSHARED_EXPORT QTextureData
 {
 public:
     QTextureData();

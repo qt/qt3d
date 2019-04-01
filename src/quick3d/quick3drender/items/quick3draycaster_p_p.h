@@ -65,7 +65,7 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRayCasterPrivate : public QAbstractRayCasterPrivate
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRayCasterPrivate : public QAbstractRayCasterPrivate
 {
 public:
     explicit Quick3DRayCasterPrivate() : QAbstractRayCasterPrivate() { }

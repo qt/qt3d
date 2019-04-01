@@ -51,7 +51,7 @@ class QAttribute;
 class QObjectPickerPrivate;
 class QPickEvent;
 
-class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(bool hoverEnabled READ isHoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)

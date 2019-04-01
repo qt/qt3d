@@ -66,7 +66,7 @@ namespace Qt3DInput {
 class QInputAspect;
 class QAbstractPhysicalDeviceBackendNodePrivate;
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
+class Q_3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
 {
 public:
     explicit QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode);

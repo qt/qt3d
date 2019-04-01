@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QRayCaster : public QAbstractRayCaster
+class Q_3DRENDERSHARED_EXPORT QRayCaster : public QAbstractRayCaster
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D origin READ origin WRITE setOrigin NOTIFY originChanged)

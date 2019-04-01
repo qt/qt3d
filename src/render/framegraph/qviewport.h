@@ -50,7 +50,7 @@ namespace Qt3DRender {
 
 class QViewportPrivate;
 
-class QT3DRENDERSHARED_EXPORT QViewport : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QViewport : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(QRectF normalizedRect READ normalizedRect WRITE setNormalizedRect NOTIFY normalizedRectChanged)

@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 class QSpotLight;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QSpotLightPrivate : public QAbstractLightPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QSpotLightPrivate : public QAbstractLightPrivate
 {
 public:
     QSpotLightPrivate();

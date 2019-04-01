@@ -53,7 +53,7 @@ class QAxisSetting;
 class QInputAspect;
 class QAbstractPhysicalDevicePrivate;
 
-class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : public Qt3DCore::QNode
+class Q_3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:

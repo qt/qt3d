@@ -50,7 +50,7 @@ namespace Qt3DAnimation {
 
 class QKeyframeAnimationPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QKeyframeAnimation : public QAbstractAnimation
+class Q_3DANIMATIONSHARED_EXPORT QKeyframeAnimation : public QAbstractAnimation
 {
     Q_OBJECT
     Q_PROPERTY(QVector<float> framePositions READ framePositions WRITE setFramePositions NOTIFY framePositionsChanged)

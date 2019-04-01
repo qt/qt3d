@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 class QTransformPrivate;
-class QT3DCORESHARED_EXPORT QTransform : public QComponent
+class Q_3DCORESHARED_EXPORT QTransform : public QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QMatrix4x4 matrix READ matrix WRITE setMatrix NOTIFY matrixChanged)

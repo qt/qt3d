@@ -65,7 +65,7 @@ class QBackendNodeTester;
 typedef QVector<QNode *> QNodeVector;
 typedef QSharedPointer<QNode> QNodePtr;
 
-class QT3DCORESHARED_EXPORT QNode : public QObject
+class Q_3DCORESHARED_EXPORT QNode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)

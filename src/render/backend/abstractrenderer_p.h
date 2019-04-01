@@ -87,7 +87,7 @@ class BackendNode;
 class OffscreenSurfaceHelper;
 class Shader;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
+class Q_3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
 public:
     virtual ~AbstractRenderer() {}

@@ -56,7 +56,7 @@ namespace Qt3DExtras {
 
 class QCuboidGeometryPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QCuboidGeometry : public Qt3DRender::QGeometry
+class Q_3DEXTRASSHARED_EXPORT QCuboidGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(float xExtent READ xExtent WRITE setXExtent NOTIFY xExtentChanged)

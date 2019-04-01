@@ -44,7 +44,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationCallback
+class Q_3DANIMATIONSHARED_EXPORT QAnimationCallback
 {
 public:
     enum Flag {

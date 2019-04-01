@@ -51,7 +51,7 @@ namespace Qt3DCore {
 class QJoint;
 class QSkeletonLoaderPrivate;
 
-class QT3DCORESHARED_EXPORT QSkeletonLoader : public QAbstractSkeleton
+class Q_3DCORESHARED_EXPORT QSkeletonLoader : public QAbstractSkeleton
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)

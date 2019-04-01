@@ -47,7 +47,7 @@ namespace Qt3DAnimation {
 class QAbstractAnimationClip;
 class QAbstractClipBlendNodePrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAbstractClipBlendNode : public Qt3DCore::QNode
+class Q_3DANIMATIONSHARED_EXPORT QAbstractClipBlendNode : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:

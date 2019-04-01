@@ -48,7 +48,7 @@ namespace Qt3DAnimation {
 
 class QAbstractAnimationPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAbstractAnimation : public QObject
+class Q_3DANIMATIONSHARED_EXPORT QAbstractAnimation : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString animationName READ animationName WRITE setAnimationName NOTIFY animationNameChanged)

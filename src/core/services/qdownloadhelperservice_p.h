@@ -72,7 +72,7 @@ class QDownloadNetworkWorker;
 class QDownloadHelperService;
 class QDownloadHelperServicePrivate;
 
-class QT3DCORESHARED_EXPORT QDownloadRequest
+class Q_3DCORESHARED_EXPORT QDownloadRequest
 {
 public:
     QDownloadRequest(const QUrl &url);
@@ -99,7 +99,7 @@ private:
 typedef QSharedPointer<QDownloadRequest> QDownloadRequestPtr;
 
 
-class QT3DCORESHARED_EXPORT QDownloadHelperService : public QAbstractServiceProvider
+class Q_3DCORESHARED_EXPORT QDownloadHelperService : public QAbstractServiceProvider
 {
     Q_OBJECT
 public:

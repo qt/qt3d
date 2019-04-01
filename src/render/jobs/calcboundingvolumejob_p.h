@@ -65,7 +65,7 @@ namespace Render {
 class NodeManagers;
 class Entity;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit CalculateBoundingVolumeJob();

@@ -53,7 +53,7 @@ class QEntityPrivate;
 
 typedef QVector<QComponent*> QComponentVector;
 
-class QT3DCORESHARED_EXPORT QEntity : public QNode
+class Q_3DCORESHARED_EXPORT QEntity : public QNode
 {
     Q_OBJECT
 public:

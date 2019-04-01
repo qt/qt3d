@@ -58,7 +58,7 @@ class QAspectEngine;
 class QBackendNodeTester;
 #endif
 
-class QT3DCORESHARED_EXPORT QBackendNodeMapper
+class Q_3DCORESHARED_EXPORT QBackendNodeMapper
 {
 public:
     virtual ~QBackendNodeMapper();
@@ -69,7 +69,7 @@ public:
 
 typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
 
-class QT3DCORESHARED_EXPORT QBackendNode
+class Q_3DCORESHARED_EXPORT QBackendNode
 {
 public:
     enum Mode {

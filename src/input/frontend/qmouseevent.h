@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QT3DINPUTSHARED_EXPORT QMouseEvent : public QObject
+class Q_3DINPUTSHARED_EXPORT QMouseEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int x READ x CONSTANT)
@@ -107,7 +107,7 @@ private:
 typedef QSharedPointer<QMouseEvent> QMouseEventPtr;
 
 #if QT_CONFIG(wheelevent)
-class QT3DINPUTSHARED_EXPORT QWheelEvent : public QObject
+class Q_3DINPUTSHARED_EXPORT QWheelEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int x READ x CONSTANT)

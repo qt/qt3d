@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QT3DEXTRASSHARED_EXPORT QPlaneMesh : public Qt3DRender::QGeometryRenderer
+class Q_3DEXTRASSHARED_EXPORT QPlaneMesh : public Qt3DRender::QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)

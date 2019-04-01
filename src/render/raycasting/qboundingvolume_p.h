@@ -61,7 +61,7 @@ namespace RayCasting {
 
 class QRay3D;
 
-class QT3DRENDERSHARED_EXPORT QBoundingVolume
+class Q_3DRENDERSHARED_EXPORT QBoundingVolume
 {
 public:
     QBoundingVolume();

@@ -52,7 +52,7 @@ class QChannelMapper;
 class QClock;
 class QAbstractClipAnimatorPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAbstractClipAnimator : public Qt3DCore::QComponent
+class Q_3DANIMATIONSHARED_EXPORT QAbstractClipAnimator : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)

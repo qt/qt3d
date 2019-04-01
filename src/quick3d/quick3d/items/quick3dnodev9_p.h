@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 namespace Quick {
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeV9 : public QObject
+class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeV9 : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QJSValue propertyTrackingOverrides READ propertyTrackingOverrides WRITE setPropertyTrackingOverrides NOTIFY propertyTrackingOverridesChanged)

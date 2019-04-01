@@ -233,7 +233,7 @@ template<typename T>
 inline T *QHandle<T>::data() const { return (d && counter == d->counter) ? &static_cast<QHandleData<T> *>(d)->data : nullptr; }
 
 
-class QT3DCORE_PRIVATE_EXPORT AlignedAllocator
+class Q_3DCORE_PRIVATE_EXPORT AlignedAllocator
 {
 public:
     static void *allocate(uint size);

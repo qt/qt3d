@@ -52,7 +52,7 @@ namespace Qt3DExtras {
 
 class QText2DEntityPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QText2DEntity : public Qt3DCore::QEntity
+class Q_3DEXTRASSHARED_EXPORT QText2DEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)

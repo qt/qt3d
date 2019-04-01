@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QT3DCORE_PRIVATE_EXPORT QComponentPrivate : public QNodePrivate
+class Q_3DCORE_PRIVATE_EXPORT QComponentPrivate : public QNodePrivate
 {
 public:
     QComponentPrivate();

@@ -86,7 +86,7 @@ public:
 
     bool isNull() const { return m_center.isNull() && m_radii.isNull(); }
 
-    void QT3DRENDERSHARED_PRIVATE_EXPORT update(const QVector<QVector3D> &points);
+    void Q_3DRENDERSHARED_PRIVATE_EXPORT update(const QVector<QVector3D> &points);
 
     inline QVector3D center() const { return m_center; }
     inline QVector3D radii() const { return m_radii; }

@@ -51,7 +51,7 @@ namespace Qt3DExtras {
 class QSpriteSheetItem;
 class QSpriteSheetPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QSpriteSheet : public QAbstractSpriteSheet
+class Q_3DEXTRASSHARED_EXPORT QSpriteSheet : public QAbstractSpriteSheet
 {
     Q_OBJECT
     Q_PROPERTY(QVector<QSpriteSheetItem *> sprites READ sprites WRITE setSprites NOTIFY spritesChanged)

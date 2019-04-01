@@ -62,7 +62,7 @@ namespace Qt3DCore {
 class QScene;
 class QPostman;
 
-class QT3DCORE_PRIVATE_EXPORT QPostmanPrivate : public QObjectPrivate
+class Q_3DCORE_PRIVATE_EXPORT QPostmanPrivate : public QObjectPrivate
 {
 public:
     QPostmanPrivate()

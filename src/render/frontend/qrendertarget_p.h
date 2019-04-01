@@ -61,7 +61,7 @@ namespace Qt3DRender {
 class QRenderTargetOutput;
 class QRenderTarget;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderTargetPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderTargetPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QRenderTargetPrivate();

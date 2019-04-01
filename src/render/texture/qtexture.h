@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QTexture1D : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTexture1D : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -63,7 +63,7 @@ public:
     ~QTexture1D();
 };
 
-class QT3DRENDERSHARED_EXPORT QTexture1DArray : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTexture1DArray : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -71,7 +71,7 @@ public:
     ~QTexture1DArray();
 };
 
-class QT3DRENDERSHARED_EXPORT QTexture2D : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTexture2D : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -79,7 +79,7 @@ public:
     ~QTexture2D();
 };
 
-class QT3DRENDERSHARED_EXPORT QTexture2DArray : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTexture2DArray : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -87,7 +87,7 @@ public:
     ~QTexture2DArray();
 };
 
-class QT3DRENDERSHARED_EXPORT QTexture3D : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTexture3D : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -95,7 +95,7 @@ public:
     ~QTexture3D();
 };
 
-class QT3DRENDERSHARED_EXPORT QTextureCubeMap : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTextureCubeMap : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -103,7 +103,7 @@ public:
     ~QTextureCubeMap();
 };
 
-class QT3DRENDERSHARED_EXPORT QTextureCubeMapArray : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTextureCubeMapArray : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -111,7 +111,7 @@ public:
     ~QTextureCubeMapArray();
 };
 
-class QT3DRENDERSHARED_EXPORT QTexture2DMultisample : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTexture2DMultisample : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -119,7 +119,7 @@ public:
     ~QTexture2DMultisample();
 };
 
-class QT3DRENDERSHARED_EXPORT QTexture2DMultisampleArray : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTexture2DMultisampleArray : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -127,7 +127,7 @@ public:
     ~QTexture2DMultisampleArray();
 };
 
-class QT3DRENDERSHARED_EXPORT QTextureRectangle : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTextureRectangle : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -135,7 +135,7 @@ public:
     ~QTextureRectangle();
 };
 
-class QT3DRENDERSHARED_EXPORT QTextureBuffer : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTextureBuffer : public QAbstractTexture
 {
     Q_OBJECT
 public:
@@ -145,7 +145,7 @@ public:
 
 class QTextureLoaderPrivate;
 
-class QT3DRENDERSHARED_EXPORT QTextureLoader : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QTextureLoader : public QAbstractTexture
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
@@ -169,7 +169,7 @@ private:
     Q_DECLARE_PRIVATE(QTextureLoader)
 };
 
-class QT3DRENDERSHARED_EXPORT QSharedGLTexture : public QAbstractTexture
+class Q_3DRENDERSHARED_EXPORT QSharedGLTexture : public QAbstractTexture
 {
     Q_OBJECT
     Q_PROPERTY(int textureId READ textureId WRITE setTextureId NOTIFY textureIdChanged)
