@@ -30,8 +30,7 @@
 #include <QtTest/QTest>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include "testrenderer.h"
 
@@ -108,24 +107,9 @@ private Q_SLOTS:
 
         // WHEN
         n->setParentId(parentId);
+
         // THEN
         QCOMPARE(n->parentId(), parentId);
-
-        // WHEN
-        const Qt3DCore::QNodeId childId = Qt3DCore::QNodeId::createId();
-        QScopedPointer<Qt3DRender::Render::FrameGraphNode> c(new MyFrameGraphNode());
-        setIdInternal(c.data(), childId);
-        manager->appendNode(childId, c.data());
-        n->appendChildId(childId);
-        // THEN
-        QCOMPARE(n->childrenIds().count(), 1);
-
-        // WHEN
-        n->appendChildId(childId);
-        // THEN
-        QCOMPARE(n->childrenIds().count(), 1);
-
-        c.take();
     }
 
     void checkParentChange()
@@ -151,7 +135,8 @@ private Q_SLOTS:
         QVERIFY(child->parentId().isNull());
 
         // WHEN
-        parent1->appendChildId(childId);
+        child->setParentId(parentId);
+
         // THEN
         QCOMPARE(child->parentId(), parentId);
         QCOMPARE(child->parent(), parent1);
@@ -161,17 +146,8 @@ private Q_SLOTS:
         QCOMPARE(parent1->children().first(), child);
 
         // WHEN
-        parent1->appendChildId(childId);
-        // THEN
-        QCOMPARE(child->parentId(), parentId);
-        QCOMPARE(child->parent(), parent1);
-        QCOMPARE(parent1->childrenIds().count(), 1);
-        QCOMPARE(parent1->childrenIds().first(), childId);
-        QCOMPARE(parent1->children().count(), parent1->childrenIds().count());
-        QCOMPARE(parent1->children().first(), child);
+        child->setParentId(Qt3DCore::QNodeId());
 
-        // WHEN
-        parent1->removeChildId(childId);
         // THEN
         QVERIFY(child->parentId().isNull());
         QVERIFY(child->parent() == nullptr);
@@ -251,6 +227,7 @@ private Q_SLOTS:
         TestRenderer renderer;
 
         backendFGNode->setRenderer(&renderer);
+        backendFGChild->setRenderer(&renderer);
 
         setIdInternal(backendFGNode, fgNode1Id);
         setIdInternal(backendFGChild, frontendFGChild->id());
@@ -269,20 +246,27 @@ private Q_SLOTS:
 
         {
             // WHEN
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), frontendFGChild);
-            backendFGNode->sceneChangeEvent(change);
+            renderer.clearDirtyBits(0);
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(frontendFGChild->id());
+            change->setPropertyName("parentFrameGraphUpdated");
+            change->setValue(QVariant::fromValue(fgNode1Id));
+            backendFGChild->sceneChangeEvent(change);
 
             // THEN
             QCOMPARE(backendFGNode->childrenIds().size(), 1);
-            QCOMPARE(backendFGNode->childrenIds().first(), frontendFGChild->id());
+            QCOMPARE(backendFGChild->parentId(), fgNode1Id);
         }
         {
             // WHEN
-            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), frontendFGChild);
-            backendFGNode->sceneChangeEvent(change);
+            renderer.clearDirtyBits(0);
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(frontendFGChild->id());
+            change->setPropertyName("parentFrameGraphUpdated");
+            change->setValue(QVariant::fromValue(Qt3DCore::QNodeId()));
+            backendFGChild->sceneChangeEvent(change);
 
             // THEN
             QCOMPARE(backendFGNode->childrenIds().size(), 0);
+            QVERIFY(backendFGChild->parentId().isNull());
         }
     }
 
