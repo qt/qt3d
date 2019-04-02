@@ -10,7 +10,9 @@ struct Light {
     FP vec3 color;
     FP float intensity;
     FP vec3 direction;
-    FP vec3 attenuation;
+    FP float constantAttenuation;
+    FP float linearAttenuation;
+    FP float quadraticAttenuation;
     FP float cutOffAngle;
 };
 uniform Light lights[MAX_LIGHTS];

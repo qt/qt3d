@@ -54,6 +54,7 @@
 
 
 #include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/texturesubmissioncontext_p.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/qattribute.h>
@@ -82,13 +83,6 @@ class Buffer;
 class ShaderManager;
 struct StateVariant;
 
-enum TextureScope
-{
-    TextureScopeMaterial = 0,
-    TextureScopeTechnique
-    // per-pass for deferred rendering?
-};
-
 typedef QPair<QString, int> NamedUniformLocation;
 
 class Q_AUTOTEST_EXPORT SubmissionContext : public GraphicsContext
@@ -102,7 +96,6 @@ public:
 
     bool beginDrawing(QSurface *surface);
     void endDrawing(bool swapBuffers);
-    void activateGLHelper();
     void releaseOpenGL();
     void setOpenGLContext(QOpenGLContext* ctx);
 
@@ -126,11 +119,6 @@ public:
                          QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
                          QBlitFramebuffer::InterpolationMethod interpolationMethod);
 
-
-    // Material
-    Material* activeMaterial() const { return m_material; }
-    void setActiveMaterial(Material* rmat);
-
     // Attributes
     void specifyAttribute(const Attribute *attribute,
                           Buffer *buffer,
@@ -146,10 +134,6 @@ public:
 
     // Parameters
     bool setParameters(ShaderParameterPack &parameterPack);
-
-    // Textures
-    int activateTexture(TextureScope scope, GLTexture* tex, int onUnit = -1);
-    void deactivateTexture(GLTexture *tex);
 
     // RenderState
     void setCurrentStateSet(RenderStateSet* ss);
@@ -175,10 +159,9 @@ public:
 private:
     void initialize();
 
-    // Textures
-    void decayTextureScores();
-    GLint assignUnitForTexture(GLTexture* tex);
-    void deactivateTexturesWithScope(TextureScope ts);
+    // Material
+    Material* activeMaterial() const { return m_material; }
+    void setActiveMaterial(Material* rmat);
 
     // FBO
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
@@ -186,7 +169,6 @@ private:
     void resolveRenderTargetFormat();
     GLuint createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments);
     GLuint updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, bool isActiveRenderTarget);
-
 
     // Buffers
     HGLBuffer createGLBufferFor(Buffer *buffer, GLBuffer::Type type);
@@ -207,17 +189,6 @@ private:
     QHash<GLuint, QSize> m_renderTargetsSize;
     QAbstractTexture::TextureFormat m_renderTargetFormat;
 
-    QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
-
-    // active textures, indexed by texture unit
-    struct ActiveTexture {
-        GLTexture *texture = nullptr;
-        int score = 0;
-        TextureScope scope = TextureScopeMaterial;
-        bool pinned = false;
-    };
-    QVector<ActiveTexture> m_activeTextures;
-
     // cache some current state, to make sure we don't issue unnecessary GL calls
     int m_currClearStencilValue;
     float m_currClearDepthValue;
@@ -232,10 +203,10 @@ private:
     Renderer *m_renderer;
     QByteArray m_uboTempArray;
 
+    TextureSubmissionContext m_textureContext;
 
     // Attributes
     friend class OpenGLVertexArrayObject;
-    OpenGLVertexArrayObject *m_currentVAO;
 
     struct VAOVertexAttribute
     {

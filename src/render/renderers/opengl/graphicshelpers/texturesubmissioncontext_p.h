@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,62 +37,70 @@
 **
 ****************************************************************************/
 
-#include "qsceneexportfactory_p.h"
-#include "qsceneexportplugin_p.h"
-#include "qsceneexporter_p.h"
+#ifndef QT3DRENDER_RENDER_TEXTURESUBMISSIONCONTEXT_H
+#define QT3DRENDER_RENDER_TEXTURESUBMISSIONCONTEXT_H
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qdir.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <private/qfactoryloader_p.h>
+
+#include <qglobal.h>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
+class QOpenGLContext;
+
 namespace Qt3DRender {
+namespace Render {
 
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneExportFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
-#if QT_CONFIG(library)
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneExportFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
-#endif
+class GraphicsContext;
+class GLTexture;
 
-QStringList QSceneExportFactory::keys(const QString &pluginPath)
+class Q_AUTOTEST_EXPORT TextureSubmissionContext
 {
-#if QT_CONFIG(library)
-    QStringList list;
-    if (!pluginPath.isEmpty()) {
-        QCoreApplication::addLibraryPath(pluginPath);
-        list = directLoader()->keyMap().values();
-        if (!list.isEmpty()) {
-            const QString postFix = QLatin1String(" (from ")
-                    + QDir::toNativeSeparators(pluginPath)
-                    + QLatin1Char(')');
-            const QStringList::iterator end = list.end();
-            for (QStringList::iterator it = list.begin(); it != end; ++it)
-                (*it).append(postFix);
-        }
-    }
-    list.append(loader()->keyMap().values());
-    return list;
-#else
-    return loader()->keyMap().values();
-#endif
-}
+public:
+    enum TextureScope
+    {
+        TextureScopeMaterial = 0,
+        TextureScopeTechnique
+        // per-pass for deferred rendering?
+    };
 
-QSceneExporter *QSceneExportFactory::create(const QString &name, const QStringList &args,
-                                            const QString &pluginPath)
-{
-#if QT_CONFIG(library)
-    if (!pluginPath.isEmpty()) {
-        QCoreApplication::addLibraryPath(pluginPath);
-        if (QSceneExporter *ret = qLoadPlugin<QSceneExporter,
-                QSceneExportPlugin>(directLoader(), name, args)) {
-            return ret;
-        }
-    }
-#endif
-    return qLoadPlugin<QSceneExporter, QSceneExportPlugin>(loader(), name, args);
-}
+    TextureSubmissionContext();
+    ~TextureSubmissionContext();
 
+    void initialize(GraphicsContext *context);
+    void endDrawing();
+    int activateTexture(TextureScope scope, QOpenGLContext *gl, GLTexture* tex);
+    void deactivateTexture(GLTexture *tex);
+    void deactivateTexturesWithScope(TextureScope ts);
+
+private:
+    void decayTextureScores();
+    int assignUnitForTexture(GLTexture* tex);
+
+    // active textures, indexed by texture unit
+    struct ActiveTexture {
+        GLTexture *texture = nullptr;
+        int score = 0;
+        TextureScope scope = TextureScopeMaterial;
+        bool pinned = false;
+    };
+    QVector<ActiveTexture> m_activeTextures;
+};
+
+} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_TEXTURESUBMISSIONCONTEXT_H

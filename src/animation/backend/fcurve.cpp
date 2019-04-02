@@ -53,6 +53,12 @@ FCurve::FCurve()
 
 float FCurve::evaluateAtTime(float localTime) const
 {
+    return evaluateAtTime(localTime, lowerKeyframeBound(localTime));
+}
+
+
+float FCurve::evaluateAtTime(float localTime, int lowerBound) const
+{
     // TODO: Implement extrapolation beyond first/last keyframes
     if (localTime < m_localTimes.first()) {
         return m_keyframes.first().value;
@@ -60,14 +66,13 @@ float FCurve::evaluateAtTime(float localTime) const
         return m_keyframes.last().value;
     } else {
         // Find keyframes that sandwich the requested localTime
-        const int idx = m_rangeFinder.findLowerBound(localTime);
-        if (idx < 0) // only one keyframe
+        if (lowerBound < 0) // only one keyframe
             return m_keyframes.first().value;
 
-        const float t0 = m_localTimes[idx];
-        const float t1 = m_localTimes[idx + 1];
-        const Keyframe &keyframe0(m_keyframes[idx]);
-        const Keyframe &keyframe1(m_keyframes[idx + 1]);
+        const float t0 = m_localTimes[lowerBound];
+        const float t1 = m_localTimes[lowerBound + 1];
+        const Keyframe &keyframe0(m_keyframes[lowerBound]);
+        const Keyframe &keyframe1(m_keyframes[lowerBound + 1]);
 
         switch (keyframe0.interpolation) {
         case QKeyFrame::ConstantInterpolation:
@@ -90,6 +95,52 @@ float FCurve::evaluateAtTime(float localTime) const
     }
 
     return m_keyframes.first().value;
+}
+
+float FCurve::evaluateAtTimeAsSlerp(float localTime, int lowerBound, float omega) const
+{
+    // TODO: Implement extrapolation beyond first/last keyframes
+    if (localTime < m_localTimes.first())
+        return m_keyframes.first().value;
+
+    if (localTime > m_localTimes.last())
+        return m_keyframes.last().value;
+    // Find keyframes that sandwich the requested localTime
+    if (lowerBound < 0) // only one keyframe
+        return m_keyframes.first().value;
+
+    const float t0 = m_localTimes[lowerBound];
+    const float t1 = m_localTimes[lowerBound + 1];
+    const Keyframe &keyframe0(m_keyframes[lowerBound]);
+    const Keyframe &keyframe1(m_keyframes[lowerBound + 1]);
+
+    switch (keyframe0.interpolation) {
+    case QKeyFrame::ConstantInterpolation:
+        return keyframe0.value;
+    case QKeyFrame::LinearInterpolation:
+        if (localTime >= t0 && localTime <= t1 && t1 > t0) {
+            const float t = (localTime - t0) / (t1 - t0);
+            const float div = 1.0f / std::sin(omega);
+            return std::sin((1 - t) * omega) * div * keyframe0.value  +
+                    std::sin(t * omega) * div * keyframe1.value;
+        }
+        break;
+    case QKeyFrame::BezierInterpolation:
+        // TODO implement a proper slerp bezier interpolation
+        BezierEvaluator evaluator(t0, keyframe0, t1, keyframe1);
+        return evaluator.valueForTime(localTime);
+    }
+
+    return m_keyframes.first().value;
+}
+
+int FCurve::lowerKeyframeBound(float localTime) const
+{
+    if (localTime < m_localTimes.first())
+        return 0;
+    if (localTime > m_localTimes.last())
+        return 0;
+    return m_rangeFinder.findLowerBound(localTime);
 }
 
 float FCurve::startTime() const

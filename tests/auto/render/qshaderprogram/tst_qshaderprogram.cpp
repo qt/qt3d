@@ -511,6 +511,24 @@ private Q_SLOTS:
         QCOMPARE(status(), newStatus);
     }
 
+    void checkIncludes()
+    {
+        // GIVEN
+        Qt3DRender::QShaderProgram shaderProgram;
+        QByteArray includedContent = shaderProgram.loadSource(QUrl(QStringLiteral("qrc:/included.frag")));
+
+        // WHEN (test relative include)
+        QByteArray mainContent = shaderProgram.loadSource(QUrl(QStringLiteral("qrc:/main.frag")));
+
+        // THEN
+        QVERIFY(mainContent.indexOf(includedContent) == 0);
+
+        // WHEN (test absolute include)
+        mainContent = shaderProgram.loadSource(QUrl(QStringLiteral("qrc:/mainabsolute.frag")));
+
+        // THEN
+        QVERIFY(mainContent.indexOf(includedContent) == 0);
+    }
 };
 
 QTEST_MAIN(tst_QShaderProgram)

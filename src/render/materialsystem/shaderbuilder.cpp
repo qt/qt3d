@@ -41,6 +41,7 @@
 
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
 #include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 
 #include <QtGui/private/qshaderformat_p.h>
@@ -234,47 +235,6 @@ bool ShaderBuilder::isShaderCodeDirty(ShaderBuilder::ShaderType type) const
     return m_dirtyTypes.contains(type);
 }
 
-static QByteArray deincludify(const QByteArray &contents, const QString &filePath);
-
-static QByteArray deincludify(const QString &filePath)
-{
-    QFile f(filePath);
-    if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "Could not read shader source file:" << f.fileName();
-        return QByteArray();
-    }
-
-    QByteArray contents = f.readAll();
-    return deincludify(contents, filePath);
-}
-
-static QByteArray deincludify(const QByteArray &contents, const QString &filePath)
-{
-    QByteArrayList lines = contents.split('\n');
-    const QByteArray includeDirective = QByteArrayLiteral("#pragma include");
-    for (int i = 0; i < lines.count(); ++i) {
-        const auto line = lines[i].simplified();
-        if (line.startsWith(includeDirective)) {
-            const QString includePartialPath = QString::fromUtf8(line.mid(includeDirective.count() + 1));
-
-            QString includePath = QFileInfo(includePartialPath).isAbsolute() ? includePartialPath
-                                : QFileInfo(filePath).absolutePath() + QLatin1Char('/') + includePartialPath;
-            if (qEnvironmentVariableIsSet("QT3D_GLSL100_WORKAROUND")) {
-                QString candidate = includePath + QLatin1String("100");
-                if (QFile::exists(candidate))
-                    includePath = candidate;
-            }
-            lines.removeAt(i);
-            QByteArray includedContents = deincludify(includePath);
-            lines.insert(i, includedContents);
-            QString lineDirective = QString(QStringLiteral("#line %1")).arg(i + 2);
-            lines.insert(i + 1, lineDirective.toUtf8());
-        }
-    }
-
-    return lines.join('\n');
-}
-
 void ShaderBuilder::generateCode(ShaderBuilder::ShaderType type)
 {
     const auto graphPath = QUrlHelper::urlToLocalFileOrQrc(shaderGraph(type));
@@ -308,7 +268,7 @@ void ShaderBuilder::generateCode(ShaderBuilder::ShaderType type)
     generator.graph = graph;
 
     const auto code = generator.createShaderCode(m_enabledLayers);
-    m_codes.insert(type, deincludify(code, graphPath + QStringLiteral(".glsl")));
+    m_codes.insert(type, QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl")));
     m_dirtyTypes.remove(type);
 
     // Send notification to the frontend

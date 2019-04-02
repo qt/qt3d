@@ -1687,7 +1687,6 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     ViewSubmissionResultData resultData;
     resultData.lastBoundFBOId = lastBoundFBOId;
     resultData.surface = lastUsedSurface;
-
     return resultData;
 }
 
@@ -1827,11 +1826,13 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
 
-    // Layer cache is dependent on layers, layer filters and the enabled flag
-    // on entities
+    // Layer cache is dependent on layers, layer filters (hence FG structure
+    // changes) and the enabled flag on entities
+    const bool frameGraphDirty = dirtyBitsForFrame & AbstractRenderer::FrameGraphDirty;
     const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
-    const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty;
+    const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty || frameGraphDirty;
     const bool materialDirty = dirtyBitsForFrame & AbstractRenderer::MaterialDirty;
+    const bool materialCacheNeedsToBeRebuilt = materialDirty || frameGraphDirty;
 
     // Rebuild Entity Layers list if layers are dirty
     if (layersDirty)
@@ -1858,7 +1859,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         for (int i = 0; i < fgBranchCount; ++i) {
             RenderViewBuilder builder(fgLeaves.at(i), i, this);
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt);
-            builder.setMaterialGathererCacheNeedsToBeRebuilt(materialDirty);
+            builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt);
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
         }
@@ -1869,6 +1870,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         // FilterLayerEntityJob is part of the RenderViewBuilder jobs and must be run later
         // if none of those jobs are started this frame
         notCleared |= AbstractRenderer::EntityEnabledDirty;
+        notCleared |= AbstractRenderer::FrameGraphDirty;
         notCleared |= AbstractRenderer::LayersDirty;
     }
 

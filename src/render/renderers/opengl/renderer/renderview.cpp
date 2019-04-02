@@ -102,9 +102,10 @@ int LIGHT_COLOR_NAMES[MAX_LIGHTS];
 int LIGHT_INTENSITY_NAMES[MAX_LIGHTS];
 QString LIGHT_STRUCT_NAMES[MAX_LIGHTS];
 
+bool wasInitialized = false;
+
 } // anonymous namespace
 
-bool wasInitialized = false;
 RenderView::StandardUniformsNameToTypeHash RenderView::ms_standardUniformSetters;
 
 

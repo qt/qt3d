@@ -75,6 +75,9 @@ public:
 
     void setLog(const QString &log);
     void setStatus(QShaderProgram::Status status);
+
+    static QByteArray deincludify(const QByteArray &contents, const QString &filePath);
+    static QByteArray deincludify(const QString &filePath);
 };
 
 struct QShaderProgramData

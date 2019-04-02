@@ -130,6 +130,7 @@ GraphicsContext::GraphicsContext()
     , m_glHelper(nullptr)
     , m_shaderCache(nullptr)
     , m_debugLogger(nullptr)
+    , m_currentVAO(nullptr)
 {
 }
 
@@ -199,15 +200,20 @@ bool GraphicsContext::makeCurrent(QSurface *surface)
         return false;
     }
 
+    initializeHelpers(surface);
+
+    return true;
+}
+
+void GraphicsContext::initializeHelpers(QSurface *surface)
+{
     // Set the correct GL Helper depending on the surface
     // If no helper exists, create one
-
     m_glHelper = m_glHelpers.value(surface);
     if (!m_glHelper) {
         m_glHelper = resolveHighestOpenGLFunctions();
         m_glHelpers.insert(surface, m_glHelper);
     }
-    return true;
 }
 
 void GraphicsContext::doneCurrent()
