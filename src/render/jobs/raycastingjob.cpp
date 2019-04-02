@@ -164,8 +164,11 @@ bool RayCastingJob::runHelper()
             rays.back().transform(*pair.first->worldTransform());
             break;
         case QAbstractRayCasterPrivate::ScreenScapeRayCaster:
-            for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails)
-                rays << rayForViewportAndCamera(vca, nullptr, pair.second->position());
+            for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails) {
+                auto ray = rayForViewportAndCamera(vca, nullptr, pair.second->position());
+                if (ray.isValid())
+                    rays << ray;
+            }
             break;
         default:
             Q_UNREACHABLE();
