@@ -51,6 +51,7 @@
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/buffervisitor_p.h>
+#include <Qt3DRender/private/entityaccumulator_p.h>
 
 #include <QtCore/qmath.h>
 #if QT_CONFIG(concurrent)
@@ -64,28 +65,6 @@ namespace Qt3DRender {
 namespace Render {
 
 namespace {
-
-QVector<Geometry*> calculateLocalBoundingVolume(NodeManagers *manager, Entity *node);
-
-struct UpdateBoundFunctor
-{
-    NodeManagers *manager;
-
-    // This define is required to work with QtConcurrent
-    typedef QVector<Geometry *> result_type;
-    QVector<Geometry *> operator ()(Qt3DRender::Render::Entity *node)
-    {
-        return calculateLocalBoundingVolume(manager, node);
-    }
-};
-
-struct ReduceUpdateBoundFunctor
-{
-    void operator ()(QVector<Geometry *> &result, const QVector<Geometry *> &values)
-    {
-        result += values;
-    }
-};
 
 class BoundingVolumeCalculator
 {
@@ -318,22 +297,28 @@ QVector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, Entity *
         }
     }
 
-#if QT_CONFIG(concurrent)
-    const QVector<Qt3DRender::Render::Entity *> children = node->children();
-    if (children.size() > 1) {
-        UpdateBoundFunctor functor;
-        functor.manager = manager;
-        ReduceUpdateBoundFunctor reduceFunctor;
-        updatedGeometries += QtConcurrent::blockingMappedReduced<decltype(updatedGeometries)>(children, functor, reduceFunctor);
-    } else
-#endif
-    {
-        const auto children = node->children();
-        for (Entity *child : children)
-            updatedGeometries += calculateLocalBoundingVolume(manager, child);
-    }
     return updatedGeometries;
 }
+
+struct UpdateBoundFunctor
+{
+    NodeManagers *manager;
+
+    // This define is required to work with QtConcurrent
+    typedef QVector<Geometry *> result_type;
+    QVector<Geometry *> operator ()(Qt3DRender::Render::Entity *node)
+    {
+        return calculateLocalBoundingVolume(manager, node);
+    }
+};
+
+struct ReduceUpdateBoundFunctor
+{
+    void operator ()(QVector<Geometry *> &result, const QVector<Geometry *> &values)
+    {
+        result += values;
+    }
+};
 
 } // anonymous
 
@@ -346,7 +331,26 @@ CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
 
 void CalculateBoundingVolumeJob::run()
 {
-    const QVector<Geometry *> updatedGeometries = calculateLocalBoundingVolume(m_manager, m_node);
+    EntityAccumulator accumulator([](Entity *entity) {
+        return !entity->componentUuid<GeometryRenderer>().isNull();
+    }, m_manager);
+    auto entities = accumulator.apply(m_node);
+
+    QVector<Geometry *> updatedGeometries;
+    updatedGeometries.reserve(entities.size());
+
+#if QT_CONFIG(concurrent)
+    if (entities.size() > 1) {
+        UpdateBoundFunctor functor;
+        functor.manager = m_manager;
+        ReduceUpdateBoundFunctor reduceFunctor;
+        updatedGeometries += QtConcurrent::blockingMappedReduced<decltype(updatedGeometries)>(entities, functor, reduceFunctor);
+    } else
+#endif
+    {
+        for (Entity *child : entities)
+            updatedGeometries += calculateLocalBoundingVolume(m_manager, child);
+    }
 
     // Send extent updates to frontend
     for (Geometry *geometry : updatedGeometries)
