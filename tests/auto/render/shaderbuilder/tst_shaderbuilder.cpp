@@ -474,6 +474,7 @@ private slots:
 
     void shouldHandleShaderCodeGeneration()
     {
+        QSKIP("Disabled for Qt Base QShaderGenerator Integration");
         // GIVEN
         Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
         QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
@@ -562,6 +563,8 @@ private slots:
     void checkCodeUpdatedNotification()
     {
         // GIVEN
+        QSKIP("Disabled for Qt Base QShaderGenerator Integration");
+
         Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
         QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
         QFETCH(Qt3DRender::Render::ShaderBuilder::ShaderType, type);
