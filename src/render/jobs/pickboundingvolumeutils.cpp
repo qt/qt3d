@@ -135,34 +135,6 @@ bool ViewportCameraAreaGatherer::isUnique(const QVector<ViewportCameraAreaDetail
     return true;
 }
 
-QVector<Entity *> gatherEntities(Entity *entity, QVector<Entity *> entities)
-{
-    if (entity != nullptr && entity->isEnabled()) {
-        entities.push_back(entity);
-        // Traverse children
-        const auto children = entity->children();
-        for (Entity *child : children)
-            entities = gatherEntities(child, std::move(entities));
-    }
-    return entities;
-}
-
-EntityGatherer::EntityGatherer(Entity *root)
-    : m_root(root)
-    , m_needsRefresh(true)
-{
-}
-
-QVector<Entity *> EntityGatherer::entities() const
-{
-    if (m_needsRefresh) {
-        m_entities.clear();
-        m_entities = gatherEntities(m_root, std::move(m_entities));
-        m_needsRefresh = false;
-    }
-    return m_entities;
-}
-
 class TriangleCollisionVisitor : public TrianglesVisitor
 {
 public:

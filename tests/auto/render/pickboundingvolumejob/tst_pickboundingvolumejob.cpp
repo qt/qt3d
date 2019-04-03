@@ -244,36 +244,6 @@ private Q_SLOTS:
         QCOMPARE(vca.viewport, QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     }
 
-    void entityGatherer()
-    {
-        // GIVEN
-        QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragenabled.qml"));
-        QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
-        QVERIFY(root);
-        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
-
-        // THEN
-        QList<Qt3DCore::QEntity *> frontendEntities;
-        frontendEntities << qobject_cast<Qt3DCore::QEntity *>(root.data()) << root->findChildren<Qt3DCore::QEntity *>();
-        QCOMPARE(frontendEntities.size(), 4);
-
-        // WHEN
-        Qt3DRender::Render::PickingUtils::EntityGatherer gatherer(test->nodeManagers()->lookupResource<Qt3DRender::Render::Entity, Qt3DRender::Render::EntityManager>(root->id()));
-        QVector<Qt3DRender::Render::Entity *> entities = gatherer.entities();
-
-        // THEN
-        QCOMPARE(frontendEntities.size(), entities.size());
-
-        std::sort(frontendEntities.begin(), frontendEntities.end(),
-                  [] (Qt3DCore::QEntity *a, Qt3DCore::QEntity *b) { return a->id() > b->id(); });
-
-        std::sort(entities.begin(), entities.end(),
-                  [] (Qt3DRender::Render::Entity *a, Qt3DRender::Render::Entity *b) { return a->peerId() > b->peerId(); });
-
-        for (int i = 0, e = frontendEntities.size(); i < e; ++i)
-            QCOMPARE(frontendEntities.at(i)->id(), entities.at(i)->peerId());
-    }
-
     void checkCurrentPickerChange_data()
     {
         generateAllPickingSettingsCombinations();
