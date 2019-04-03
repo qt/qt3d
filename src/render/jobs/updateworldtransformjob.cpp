@@ -44,6 +44,8 @@
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
 #include <QThread>
 
@@ -54,7 +56,7 @@ namespace Render {
 
 namespace {
 
-void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const Matrix4x4 &parentTransform)
+void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform)
 {
     Matrix4x4 worldTransform(parentTransform);
     Transform *nodeTransform = node->renderComponent<Transform>();
@@ -64,9 +66,12 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const Matri
 
     *(node->worldTransform()) = worldTransform;
 
-    const auto children = node->children();
-    for (Qt3DRender::Render::Entity *child : children)
-        updateWorldTransformAndBounds(child, worldTransform);
+    const auto childrenHandles = node->childrenHandles();
+    for (const HEntity &handle : childrenHandles) {
+        Entity *child = manager->renderNodesManager()->data(handle);
+        if (child)
+            updateWorldTransformAndBounds(manager, child, worldTransform);
+    }
 }
 
 }
@@ -74,6 +79,7 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const Matri
 UpdateWorldTransformJob::UpdateWorldTransformJob()
     : Qt3DCore::QAspectJob()
     , m_node(nullptr)
+    , m_manager(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTransform, 0);
 }
@@ -81,6 +87,11 @@ UpdateWorldTransformJob::UpdateWorldTransformJob()
 void UpdateWorldTransformJob::setRoot(Entity *root)
 {
     m_node = root;
+}
+
+void UpdateWorldTransformJob::setManagers(NodeManagers *manager)
+{
+    m_manager = manager;
 }
 
 void UpdateWorldTransformJob::run()
@@ -98,7 +109,7 @@ void UpdateWorldTransformJob::run()
     Entity *parent = m_node->parent();
     if (parent != nullptr)
         parentTransform = *(parent->worldTransform());
-    updateWorldTransformAndBounds(m_node, parentTransform);
+    updateWorldTransformAndBounds(m_manager, m_node, parentTransform);
 
     qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }

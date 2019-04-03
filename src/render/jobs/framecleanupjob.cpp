@@ -79,23 +79,22 @@ void FrameCleanupJob::run()
 
 void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
 {
+    Q_UNUSED(node);
 #if 0
-    BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
-    if (debugBV) {
-        Qt3DRender::Render::Sphere s;
-        if (!debugBV->isRecursive()) {
-            s = *node->worldBoundingVolume();
-        } else {
-            s = *node->worldBoundingVolumeWithChildren();
+    node->traverse([](Entity *node) {
+        BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
+        if (debugBV) {
+            Qt3DRender::Render::Sphere s;
+            if (!debugBV->isRecursive()) {
+                s = *node->worldBoundingVolume();
+            } else {
+                s = *node->worldBoundingVolumeWithChildren();
+            }
+            debugBV->setRadius(s.radius());
+            debugBV->setCenter(s.center());
         }
-        debugBV->setRadius(s.radius());
-        debugBV->setCenter(s.center());
-    }
+    });
 
-
-    const auto children = node->children();
-    for (Entity *c : children)
-        updateBoundingVolumesDebug(c);
 #endif
 }
 

@@ -114,6 +114,7 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
 
     Qt3DRender::Render::UpdateWorldTransformJob updateWorldTransform;
     updateWorldTransform.setRoot(test->sceneRoot());
+    updateWorldTransform.setManagers(test->nodeManagers());
     updateWorldTransform.run();
 
     // For each buffer
@@ -135,6 +136,7 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
 
     Qt3DRender::Render::ExpandBoundingVolumeJob expandBVolume;
     expandBVolume.setRoot(test->sceneRoot());
+    expandBVolume.setManagers(test->nodeManagers());
     expandBVolume.run();
 
     Qt3DRender::Render::UpdateMeshTriangleListJob updateTriangleList;

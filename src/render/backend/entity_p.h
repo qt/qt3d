@@ -107,6 +107,8 @@ public:
     QVector<HEntity> childrenHandles() const { return m_childrenHandles; }
     QVector<Entity *> children() const;
     bool hasChildren() const { return !m_childrenHandles.empty(); }
+    void traverse(const std::function<void(Entity *)> &operation);
+    void traverse(const std::function<void(const Entity *)> &operation) const;
 
     Matrix4x4 *worldTransform();
     const Matrix4x4 *worldTransform() const;

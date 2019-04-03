@@ -419,6 +419,58 @@ private slots:
 
         qDeleteAll(components);
     }
+
+    void traversal() {
+        // GIVEN
+        TestRenderer renderer;
+        NodeManagers nodeManagers;
+        Qt3DCore::QEntity frontendEntityA, frontendEntityB, frontendEntityC;
+
+        auto entityCreator = [&nodeManagers, &renderer](const Qt3DCore::QEntity &frontEndEntity) {
+            HEntity renderNodeHandle = nodeManagers.renderNodesManager()->getOrAcquireHandle(frontEndEntity.id());
+            Entity *entity = nodeManagers.renderNodesManager()->data(renderNodeHandle);
+            entity->setNodeManagers(&nodeManagers);
+            entity->setHandle(renderNodeHandle);
+            entity->setRenderer(&renderer);
+            return entity;
+        };
+
+        auto backendA = entityCreator(frontendEntityA);
+        auto backendB = entityCreator(frontendEntityB);
+        auto backendC = entityCreator(frontendEntityC);
+
+        auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
+            const auto parentChange = QPropertyUpdatedChangePtr::create(entity.id());
+            parentChange->setPropertyName("parentEntityUpdated");
+            auto parent = entity.parentEntity();
+            parentChange->setValue(QVariant::fromValue(parent ? parent->id() : Qt3DCore::QNodeId()));
+
+            Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
+            backendEntity->sceneChangeEvent(parentChange);
+        };
+
+        // reparent B to A and C to B.
+        frontendEntityB.setParent(&frontendEntityA);
+        sendParentChange(frontendEntityB);
+        frontendEntityC.setParent(&frontendEntityB);
+        sendParentChange(frontendEntityC);
+
+        auto rebuildHierarchy = [](Entity *backend) {
+            backend->clearEntityHierarchy();
+            backend->rebuildEntityHierarchy();
+        };
+        rebuildHierarchy(backendA);
+        rebuildHierarchy(backendB);
+        rebuildHierarchy(backendC);
+
+        // WHEN
+        int visitCount = 0;
+        auto counter = [&visitCount](const Entity *) { ++visitCount; };
+        backendA->traverse(counter);
+
+        // THEN
+        QCOMPARE(visitCount, 3);
+    }
 };
 
 QTEST_APPLESS_MAIN(tst_RenderEntity)

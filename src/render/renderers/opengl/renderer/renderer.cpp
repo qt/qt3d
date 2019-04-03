@@ -296,6 +296,8 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateShaderDataTransformJob->setManagers(m_nodesManager);
     m_cleanupJob->setManagers(m_nodesManager);
     m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
+    m_expandBoundingVolumeJob->setManagers(m_nodesManager);
+    m_worldTransformJob->setManagers(m_nodesManager);
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_rayCastingJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
@@ -305,6 +307,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
     m_updateEntityLayersJob->setManager(m_nodesManager);
+    m_updateTreeEnabledJob->setManagers(m_nodesManager);
     m_updateEntityHierarchyJob->setManager(m_nodesManager);
 }
 

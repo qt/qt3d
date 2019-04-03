@@ -790,12 +790,15 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
         }
 
         // and pick children
-        const auto children = current.entity->children();
-        for (Entity *child: children) {
-            ObjectPicker *childPicker = child->renderComponent<ObjectPicker>();
-            worklist.push_back({child, current.hasObjectPicker || childPicker,
-                                current.recursiveLayers + recursiveLayers,
-                                (childPicker ? childPicker->priority() : current.priority)});
+        const auto childrenHandles = current.entity->childrenHandles();
+        for (const HEntity &handle : childrenHandles) {
+            Entity *child = manager->renderNodesManager()->data(handle);
+            if (child) {
+                ObjectPicker *childPicker = child->renderComponent<ObjectPicker>();
+                worklist.push_back({child, current.hasObjectPicker || childPicker,
+                                    current.recursiveLayers + recursiveLayers,
+                                    (childPicker ? childPicker->priority() : current.priority)});
+            }
         }
     }
 
