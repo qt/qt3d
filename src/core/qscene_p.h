@@ -64,6 +64,7 @@ namespace Qt3DCore {
 
 class QScenePrivate;
 class QAspectEngine;
+class NodePostConstructorInit;
 
 typedef QList<QObservableInterface *> QObservableList;
 
@@ -105,6 +106,8 @@ public:
     NodePropertyTrackData lookupNodePropertyTrackData(QNodeId id) const;
     void setPropertyTrackDataForNode(QNodeId id, const NodePropertyTrackData &data);
     void removePropertyTrackDataForNode(QNodeId id);
+
+    NodePostConstructorInit* postConstructorInit() const;
 
 private:
     Q_DECLARE_PRIVATE(QScene)

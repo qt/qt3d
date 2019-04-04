@@ -85,7 +85,7 @@ QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId, QNode *nod
     // loop will still be blocked. So force it here and we catch this
     // eventuality in the _q_postConstructorInit() function so that we
     // do not repeat the creation and new child scene change events.
-    QNodePrivate::get(node)->_q_postConstructorInit();
+    QNodePrivate::get(node)->_q_ensureBackendNodeCreated();
 }
 
 /*! \internal */
