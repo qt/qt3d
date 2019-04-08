@@ -244,6 +244,8 @@ void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
     QChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
     localChangeQueue->push_back(e);
 
+    emit receivedChange();
+
     //    qCDebug(ChangeArbiter) << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
 }
 
@@ -259,6 +261,8 @@ void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangeList &e)
     QChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
     qCDebug(ChangeArbiter) << Q_FUNC_INFO << "Handles " << e.size() << " changes at once";
     localChangeQueue->insert(localChangeQueue->end(), e.begin(), e.end());
+
+    emit receivedChange();
 }
 
 // Either we have the postman or we could make the QChangeArbiter agnostic to the postman

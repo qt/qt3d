@@ -47,7 +47,13 @@
 #include <QtQuick/qquickwindow.h>
 
 #include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
+#include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
+
 #include <scene3dcleaner_p.h>
 #include <scene3ditem_p.h>
 #include <scene3dlogging_p.h>
@@ -101,6 +107,21 @@ private:
     The Scene3DRenderer class renders a Qt3D scene as provided by a Scene3DItem.
     It owns the aspectEngine even though it doesn't instantiate it.
 
+    The render loop goes as follows:
+    \list
+    \li The main thread runs, drives Animations, etc. and causes changes to be
+    reported to the Qt3D change arbiter. The first change reported will cause
+    the scene3drenderer to be marked dirty.
+    \li The QtQuick render thread starts a new frame, synchronizes the scene
+    graph and emits afterSynchronizing. This will trigger some preparational
+    steps for rendering and mark the QSGNode dirty if the Scene3DRenderer is
+    dirty.
+    \li The QtQuick render loop emits beforeRendering. If we're marked dirty or
+    if the renderPolicy is set to Always, we'll ask the Qt3D renderer aspect to
+    render. That call is blocking. If the aspect jobs are not done, yet, the
+    renderer will exit early and we skip a frame.
+    \endlist
+
     The shutdown procedure is a two steps process that goes as follow:
 
     \list
@@ -139,6 +160,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_needsShutdown(true)
     , m_blocking(false)
     , m_forceRecreate(false)
+    , m_dirty(true) // we want to render at least once
 {
     Q_CHECK_PTR(m_item);
     Q_CHECK_PTR(m_item->window());
@@ -155,6 +177,12 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
         m_window = w;
     });
 
+    auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
+    QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
+                     this, [this] { m_dirty = true; }, Qt::DirectConnection);
+    QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
+                     m_item, &QQuickItem::update, Qt::AutoConnection);
+
     Q_ASSERT(QOpenGLContext::currentContext());
     ContextSaver saver;
     static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderInitialize(saver.context());
@@ -168,6 +196,17 @@ Scene3DRenderer::~Scene3DRenderer()
 {
     qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
 }
+
+bool Scene3DRenderer::shouldRender() const
+{
+    auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
+    return m_dirty
+        || (renderAspectPriv
+            && renderAspectPriv->m_renderer
+            && renderAspectPriv->m_renderer->settings()
+            && renderAspectPriv->m_renderer->settings()->renderPolicy() == QRenderSettings::Always);
+}
+
 
 QOpenGLFramebufferObject *Scene3DRenderer::createMultisampledFramebufferObject(const QSize &size)
 {
@@ -249,7 +288,7 @@ void Scene3DRenderer::onWindowChanged(QQuickWindow *w)
 
 void Scene3DRenderer::synchronize()
 {
-    if (m_item && m_window) {
+    if (shouldRender() && m_item && m_window) {
         m_multisample = m_item->multisample();
 
         if (m_aspectEngine->rootEntity() != m_item->entity()) {
@@ -272,6 +311,8 @@ void Scene3DRenderer::synchronize()
         // point for the next frame
         m_lastSize = currentSize;
         m_lastMultisample = m_multisample;
+
+        m_node->markDirty(QSGNode::DirtyMaterial);
     }
 }
 
@@ -286,8 +327,10 @@ void Scene3DRenderer::render()
 {
     QMutexLocker l(&m_windowMutex);
     // Lock to ensure the window doesn't change while we are rendering
-    if (!m_window)
+    if (!m_window || !shouldRender())
         return;
+
+    m_dirty = false;
 
     ContextSaver saver;
 
@@ -342,12 +385,6 @@ void Scene3DRenderer::render()
     // Reset the state used by the Qt Quick scenegraph to avoid any
     // interference when rendering the rest of the UI.
     m_window->resetOpenGLState();
-
-    // Mark material as dirty to request a new frame
-    m_node->markDirty(QSGNode::DirtyMaterial);
-
-    // Request next frame
-    m_window->update();
 }
 
 } // namespace Qt3DRender

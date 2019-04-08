@@ -95,6 +95,8 @@ public Q_SLOTS:
     void onWindowChanged(QQuickWindow *w);
 
 private:
+    bool shouldRender() const;
+
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
     Qt3DCore::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DRendererCleaner
     QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
@@ -111,6 +113,7 @@ private:
     bool m_needsShutdown;
     bool m_blocking;
     bool m_forceRecreate;
+    bool m_dirty;
 
     friend class Scene3DCleaner;
 };

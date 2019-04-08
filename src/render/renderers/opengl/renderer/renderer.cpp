@@ -1688,6 +1688,7 @@ bool Renderer::shouldRender()
     // Only render if something changed during the last frame, or the last frame
     // was not rendered successfully (or render-on-demand is disabled)
     return (m_settings->renderPolicy() == QRenderSettings::Always
+            || m_renderThread == nullptr // <==> we use Scene3D
             || m_dirtyBits.marked != 0
             || m_dirtyBits.remaining != 0
             || !m_lastFrameCorrect.load());

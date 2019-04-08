@@ -120,6 +120,9 @@ public:
     static void createThreadLocalChangeQueue(void *changeArbiter);
     static void destroyThreadLocalChangeQueue(void *changeArbiter);
 
+Q_SIGNALS:
+    void receivedChange();
+
 protected:
     typedef std::vector<QSceneChangePtr> QChangeQueue;
     typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
@@ -134,7 +137,7 @@ protected:
     void removeLockingChangeQueue(QChangeQueue *queue);
 
 private:
-    QMutex m_mutex;
+    mutable QMutex m_mutex;
     QAbstractAspectJobManager *m_jobManager;
 
     // The lists of observers indexed by observable (QNodeId).
