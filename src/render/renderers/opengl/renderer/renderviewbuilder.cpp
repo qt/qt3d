@@ -47,7 +47,10 @@ namespace Qt3DRender {
 
 namespace Render {
 
-const int RenderViewBuilder::m_optimalParallelJobCount = std::max(QThread::idealThreadCount(), 2);
+// In some cases having less jobs is better (especially on fast cpus where
+// splitting just adds more overhead). Ideally, we should try to set the value
+// depending on the platform/CPU/nbr of cores
+const int RenderViewBuilder::m_optimalParallelJobCount = std::max(std::min(4, QThread::idealThreadCount()), 2);
 
 namespace {
 

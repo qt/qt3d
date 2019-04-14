@@ -49,7 +49,7 @@ namespace Qt3DCore {
 
 class QComponentPrivate;
 
-class QT3DCORESHARED_EXPORT QComponent : public QNode
+class Q_3DCORESHARED_EXPORT QComponent : public QNode
 {
     Q_OBJECT
     Q_PROPERTY(bool isShareable READ isShareable WRITE setShareable NOTIFY shareableChanged)

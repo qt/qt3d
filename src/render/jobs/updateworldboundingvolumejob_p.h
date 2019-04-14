@@ -62,7 +62,7 @@ namespace Render {
 
 class EntityManager;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateWorldBoundingVolumeJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateWorldBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
     UpdateWorldBoundingVolumeJob();

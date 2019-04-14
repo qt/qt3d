@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QBlendEquationPrivate;
 
-class QT3DRENDERSHARED_EXPORT QBlendEquation : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QBlendEquation : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(BlendFunction blendFunction READ blendFunction WRITE setBlendFunction NOTIFY blendFunctionChanged)

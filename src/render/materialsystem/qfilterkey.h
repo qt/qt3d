@@ -50,7 +50,7 @@ namespace Qt3DRender {
 
 class QFilterKeyPrivate;
 
-class QT3DRENDERSHARED_EXPORT QFilterKey : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QFilterKey : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)

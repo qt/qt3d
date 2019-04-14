@@ -61,7 +61,7 @@ namespace Qt3DRender {
 /*!
     \internal
 */
-class QT3DRENDERSHARED_PRIVATE_EXPORT QObjectPickerPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QObjectPickerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QObjectPickerPrivate()

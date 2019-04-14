@@ -73,7 +73,7 @@ qintptr functorTypeId()
    }
 
 
-class QT3DRENDERSHARED_EXPORT QAbstractFunctor
+class Q_3DRENDERSHARED_EXPORT QAbstractFunctor
 {
 public:
     QAbstractFunctor() = default;

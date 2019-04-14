@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QWaitFencePrivate;
 
-class QT3DRENDERSHARED_EXPORT QWaitFence : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QWaitFence : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(HandleType handleType READ handleType WRITE setHandleType NOTIFY handleTypeChanged)

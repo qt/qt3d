@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QMemoryBarrierPrivate;
 
-class QT3DRENDERSHARED_EXPORT QMemoryBarrier : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QMemoryBarrier : public QFrameGraphNode
 {
     Q_OBJECT
 public:

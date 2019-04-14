@@ -75,7 +75,7 @@ namespace Render {
 class OffscreenSurfaceHelper;
 }
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
 public:
     QRenderAspectPrivate(QRenderAspect::RenderType type);

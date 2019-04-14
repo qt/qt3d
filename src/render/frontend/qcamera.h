@@ -58,7 +58,7 @@ namespace Qt3DRender {
 
 class QCameraPrivate;
 
-class QT3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
+class Q_3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
 {
     Q_OBJECT
     // CameraLens

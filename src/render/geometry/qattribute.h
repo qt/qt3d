@@ -53,7 +53,7 @@ class QAttributePrivate;
 
 typedef QSharedPointer<QBuffer> QBufferPtr;
 
-class QT3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)

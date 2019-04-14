@@ -54,7 +54,7 @@ class QAttribute;
 namespace Qt3DExtras {
 
 class QCylinderGeometryPrivate;
-class QT3DEXTRASSHARED_EXPORT QCylinderGeometry : public Qt3DRender::QGeometry
+class Q_3DEXTRASSHARED_EXPORT QCylinderGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

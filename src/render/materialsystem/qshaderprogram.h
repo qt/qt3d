@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QShaderProgramPrivate;
 
-class QT3DRENDERSHARED_EXPORT QShaderProgram : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QShaderProgram : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QByteArray vertexShaderCode READ vertexShaderCode WRITE setVertexShaderCode NOTIFY vertexShaderCodeChanged)

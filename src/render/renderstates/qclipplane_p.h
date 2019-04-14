@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QClipPlanePrivate : public QRenderStatePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QClipPlanePrivate : public QRenderStatePrivate
 {
 public:
     QClipPlanePrivate()

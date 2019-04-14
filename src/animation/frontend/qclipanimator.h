@@ -51,7 +51,7 @@ class QAbstractAnimationClip;
 class QChannelMapper;
 class QClipAnimatorPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QClipAnimator : public Qt3DAnimation::QAbstractClipAnimator
+class Q_3DANIMATIONSHARED_EXPORT QClipAnimator : public Qt3DAnimation::QAbstractClipAnimator
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DAnimation::QAbstractAnimationClip *clip READ clip WRITE setClip NOTIFY clipChanged)

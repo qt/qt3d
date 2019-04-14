@@ -68,7 +68,7 @@ namespace Qt3DCore {
 
 class QFrameAllocatorPrivate;
 
-class QT3DCORE_PRIVATE_EXPORT QFrameAllocator
+class Q_3DCORE_PRIVATE_EXPORT QFrameAllocator
 {
 public:
     explicit QFrameAllocator(uint maxObjectSize, uint alignment = 16, uint pageSize = 128);

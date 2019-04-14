@@ -51,7 +51,7 @@ namespace Qt3DInput {
 class QAbstractPhysicalDevice;
 class QInputChordPrivate;
 
-class QT3DINPUTSHARED_EXPORT QInputChord : public Qt3DInput::QAbstractActionInput
+class Q_3DINPUTSHARED_EXPORT QInputChord : public Qt3DInput::QAbstractActionInput
 {
     Q_OBJECT
     Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)

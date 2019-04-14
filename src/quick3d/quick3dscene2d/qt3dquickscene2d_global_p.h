@@ -51,7 +51,7 @@
 #include <Qt3DQuickScene2D/qt3dquickscene2d_global.h>
 #include <QtQml/qqml.h>
 
-#define QT3DQUICKSCENE2DSHARED_PRIVATE_EXPORT QT3DQUICKSCENE2DSHARED_EXPORT
+#define Q_3DQUICKSCENE2DSHARED_PRIVATE_EXPORT Q_3DQUICKSCENE2DSHARED_EXPORT
 
 QT_BEGIN_NAMESPACE
 
@@ -59,8 +59,8 @@ namespace Qt3DRender {
 
 namespace Quick {
 
-QT3DQUICKSCENE2DSHARED_PRIVATE_EXPORT void Quick3DScene2D_initialize();
-QT3DQUICKSCENE2DSHARED_PRIVATE_EXPORT void Quick3DScene2D_registerType(const char *className,
+Q_3DQUICKSCENE2DSHARED_PRIVATE_EXPORT void Quick3DScene2D_initialize();
+Q_3DQUICKSCENE2DSHARED_PRIVATE_EXPORT void Quick3DScene2D_registerType(const char *className,
                                                                        const char *quickName,
                                                                        int major, int minor);
 

@@ -48,7 +48,7 @@ namespace Qt3DExtras {
 
 class QSpriteSheetItemPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QSpriteSheetItem : public Qt3DCore::QNode
+class Q_3DEXTRASSHARED_EXPORT QSpriteSheetItem : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int x READ x WRITE setX NOTIFY xChanged)

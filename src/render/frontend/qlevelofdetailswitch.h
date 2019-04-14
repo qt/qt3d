@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QLevelOfDetailSwitch : public QLevelOfDetail
+class Q_3DRENDERSHARED_EXPORT QLevelOfDetailSwitch : public QLevelOfDetail
 {
     Q_OBJECT
 

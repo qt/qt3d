@@ -49,7 +49,7 @@ namespace Qt3DInput {
 class QAxisPrivate;
 class QAbstractAxisInput;
 
-class QT3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
+class Q_3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(float value READ value NOTIFY valueChanged)

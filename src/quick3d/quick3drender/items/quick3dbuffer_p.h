@@ -70,7 +70,7 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DBuffer : public Qt3DRender::QBuffer
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DBuffer : public Qt3DRender::QBuffer
 {
     Q_OBJECT
     Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)

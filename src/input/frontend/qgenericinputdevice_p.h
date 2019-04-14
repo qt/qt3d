@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QGenericInputDevice : public QAbstractPhysicalDevice
+class Q_3DINPUTSHARED_PRIVATE_EXPORT QGenericInputDevice : public QAbstractPhysicalDevice
 {
     Q_OBJECT
     Q_PROPERTY(QVariantMap axesMap READ axesMap WRITE setAxesMap NOTIFY axesMapChanged)

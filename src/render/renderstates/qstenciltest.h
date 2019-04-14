@@ -50,7 +50,7 @@ namespace Qt3DRender {
 class QStencilTestPrivate;
 class QStencilTestArguments;
 
-class QT3DRENDERSHARED_EXPORT QStencilTest : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QStencilTest : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QStencilTestArguments *front READ front CONSTANT)

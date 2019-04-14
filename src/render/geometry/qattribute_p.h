@@ -62,7 +62,7 @@ namespace Qt3DRender {
 
 class QAttribute;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QAttributePrivate : public Qt3DCore::QNodePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QAttributePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     Q_DECLARE_PUBLIC(QAttribute)

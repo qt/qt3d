@@ -68,7 +68,7 @@ namespace Qt3DCore {
 class QNode;
 class QAspectEngine;
 
-class QT3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate, public QObservableInterface
+class Q_3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate, public QObservableInterface
 {
 public:
     QNodePrivate();
@@ -152,6 +152,7 @@ public:
     static const QMetaObject *findStaticMetaObject(const QMetaObject *metaObject);
 
     void _q_postConstructorInit();
+    void _q_ensureBackendNodeCreated();
 
 private:
     void notifyCreationChange();

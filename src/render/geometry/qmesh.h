@@ -54,7 +54,7 @@ class QMeshPrivate;
 * @brief Simple static mesh
 *
 */
-class QT3DRENDERSHARED_EXPORT QMesh : public QGeometryRenderer
+class Q_3DRENDERSHARED_EXPORT QMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)

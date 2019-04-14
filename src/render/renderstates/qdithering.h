@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QDitheringPrivate;
 
-class QT3DRENDERSHARED_EXPORT QDithering : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QDithering : public QRenderState
 {
     Q_OBJECT
 public:

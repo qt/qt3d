@@ -49,7 +49,7 @@ namespace Qt3DRender {
 class QRenderStateSetPrivate;
 class QRenderState;
 
-class QT3DRENDERSHARED_EXPORT QRenderStateSet : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QRenderStateSet : public QFrameGraphNode
 {
     Q_OBJECT
 

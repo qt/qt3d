@@ -50,7 +50,7 @@ class QComponent;
 class QEntity;
 class QComponentRemovedChangePrivate;
 
-class QT3DCORESHARED_EXPORT QComponentRemovedChange : public QSceneChange
+class Q_3DCORESHARED_EXPORT QComponentRemovedChange : public QSceneChange
 {
 public:
     explicit QComponentRemovedChange(const QEntity *entity,

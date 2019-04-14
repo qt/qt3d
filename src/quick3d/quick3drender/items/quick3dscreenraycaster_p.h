@@ -66,7 +66,7 @@ namespace Quick {
 
 class Quick3DScreenRayCasterPrivate;
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DScreenRayCaster : public QScreenRayCaster
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DScreenRayCaster : public QScreenRayCaster
 {
     Q_OBJECT
     Q_PROPERTY(QJSValue hits READ hits NOTIFY hitsChanged)

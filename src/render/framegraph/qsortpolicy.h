@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QSortPolicyPrivate;
 
-class QT3DRENDERSHARED_EXPORT QSortPolicy : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QSortPolicy : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(QVector<int> sortTypes READ sortTypesInt WRITE setSortTypes NOTIFY sortTypesChanged)

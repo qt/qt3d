@@ -371,7 +371,7 @@ public:
     friend Q_ALWAYS_INLINE const Vector4D_SSE operator/(Vector4D_SSE vector, float divisor) { return vector /= divisor; }
     friend Q_ALWAYS_INLINE const Vector4D_SSE operator/(Vector4D_SSE vector, Vector4D_SSE divisor) { return vector /= divisor; }
 
-    friend QT3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Vector4D_SSE &v);
+    friend Q_3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Vector4D_SSE &v);
     friend Q_ALWAYS_INLINE bool qFuzzyCompare(const Vector4D_SSE& v1, const Vector4D_SSE& v2)
     {
         return ::qFuzzyCompare(v1.x(), v2.x()) &&

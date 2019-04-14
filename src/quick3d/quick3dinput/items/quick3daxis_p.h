@@ -63,7 +63,7 @@ namespace Qt3DInput {
 namespace Input {
 namespace Quick {
 
-class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DAxis : public QObject
+class Q_3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DAxis : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractAxisInput> inputs READ qmlAxisInputs CONSTANT)

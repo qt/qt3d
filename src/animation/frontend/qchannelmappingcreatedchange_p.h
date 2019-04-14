@@ -58,7 +58,7 @@ namespace Qt3DAnimation {
 
 class QChannelMappingCreatedChangeBasePrivate;
 
-class QT3DANIMATIONSHARED_PRIVATE_EXPORT QChannelMappingCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
+class Q_3DANIMATIONSHARED_PRIVATE_EXPORT QChannelMappingCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 {
 public:
     explicit QChannelMappingCreatedChangeBase(const QAbstractChannelMapping *mapping);

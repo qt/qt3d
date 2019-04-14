@@ -60,7 +60,7 @@ class QBackendNodeMapper;
 typedef QSharedPointer<QAspectJob> QAspectJobPtr;
 typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
 
-class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject
+class Q_3DCORESHARED_EXPORT QAbstractAspect : public QObject
 {
     Q_OBJECT
 
@@ -118,8 +118,8 @@ QT_END_NAMESPACE
     QT_BEGIN_NAMESPACE \
     namespace Qt3DCore { \
         typedef QAbstractAspect *(*AspectCreateFunction)(QObject *); \
-        QT_DEPRECATED QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &, const QMetaObject *, AspectCreateFunction); \
-        QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1String &, const QMetaObject *, AspectCreateFunction); \
+        QT_DEPRECATED Q_3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &, const QMetaObject *, AspectCreateFunction); \
+        Q_3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1String &, const QMetaObject *, AspectCreateFunction); \
     } \
     QT_END_NAMESPACE \
     namespace { \

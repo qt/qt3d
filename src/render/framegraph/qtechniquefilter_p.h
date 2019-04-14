@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 class QTechniqueFilter;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QTechniqueFilterPrivate : public QFrameGraphNodePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QTechniqueFilterPrivate : public QFrameGraphNodePrivate
 {
 public :
     QTechniqueFilterPrivate();

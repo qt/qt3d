@@ -50,7 +50,7 @@ namespace Qt3DRender {
 
 class QCullFacePrivate;
 
-class QT3DRENDERSHARED_EXPORT QCullFace : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QCullFace : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(CullingMode mode READ mode WRITE setMode NOTIFY modeChanged)

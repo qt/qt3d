@@ -51,7 +51,7 @@ namespace Quick {
 
 class QQmlAspectEnginePrivate;
 
-class QT3DQUICKSHARED_EXPORT QQmlAspectEngine: public QObject
+class Q_3DQUICKSHARED_EXPORT QQmlAspectEngine: public QObject
 {
     Q_OBJECT
 public:

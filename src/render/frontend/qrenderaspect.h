@@ -65,7 +65,7 @@ class QRenderAspectPrivate;
 class QRenderAspectTester;
 #endif
 
-class QT3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
+class Q_3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:

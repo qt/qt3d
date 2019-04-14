@@ -53,7 +53,7 @@ class QGeometryFactory;
 
 typedef QSharedPointer<QGeometryFactory> QGeometryFactoryPtr;
 
-class QT3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)

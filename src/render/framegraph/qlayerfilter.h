@@ -50,7 +50,7 @@ namespace Qt3DRender {
 class QLayer;
 class QLayerFilterPrivate;
 
-class QT3DRENDERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(FilterMode filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)

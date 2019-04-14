@@ -69,7 +69,7 @@ class QRayCastingServicePrivate;
 
 typedef QFuture<QCollisionQueryResult> FutureQueryResult;
 
-class QT3DRENDERSHARED_EXPORT QRayCastingService : public QAbstractCollisionQueryService
+class Q_3DRENDERSHARED_EXPORT QRayCastingService : public QAbstractCollisionQueryService
 {
 public:
     QRayCastingService();

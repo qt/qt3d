@@ -51,7 +51,7 @@ namespace Qt3DInput {
 class QAbstractPhysicalDevice;
 class QAbstractAxisInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QAbstractAxisInput : public Qt3DCore::QNode
+class Q_3DINPUTSHARED_EXPORT QAbstractAxisInput : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)

@@ -64,7 +64,7 @@ namespace Qt3DRender {
 
 class QRenderSurfaceSelector;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderSurfaceSelectorPrivate : public Qt3DRender::QFrameGraphNodePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderSurfaceSelectorPrivate : public Qt3DRender::QFrameGraphNodePrivate
 {
 public:
     QRenderSurfaceSelectorPrivate();

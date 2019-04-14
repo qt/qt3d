@@ -53,7 +53,7 @@ namespace Qt3DRender {
 class QAbstractRayCasterPrivate;
 class QLayer;
 
-class QT3DRENDERSHARED_EXPORT QAbstractRayCaster : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QAbstractRayCaster : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(RunMode runMode READ runMode WRITE setRunMode NOTIFY runModeChanged)

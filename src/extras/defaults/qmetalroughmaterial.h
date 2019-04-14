@@ -54,7 +54,7 @@ namespace Qt3DExtras {
 
 class QMetalRoughMaterialPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QMetalRoughMaterial : public Qt3DRender::QMaterial
+class Q_3DEXTRASSHARED_EXPORT QMetalRoughMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
     Q_PROPERTY(QVariant baseColor READ baseColor WRITE setBaseColor NOTIFY baseColorChanged)

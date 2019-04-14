@@ -47,7 +47,7 @@ namespace Qt3DAnimation {
 
 class QCallbackMappingPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QCallbackMapping : public QAbstractChannelMapping
+class Q_3DANIMATIONSHARED_EXPORT QCallbackMapping : public QAbstractChannelMapping
 {
     Q_OBJECT
     Q_PROPERTY(QString channelName READ channelName WRITE setChannelName NOTIFY channelNameChanged)

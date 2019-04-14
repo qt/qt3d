@@ -86,7 +86,7 @@ namespace Qt3DExtras {
 
 class Qt3DWindowPrivate;
 
-class QT3DEXTRASSHARED_EXPORT Qt3DWindow : public QWindow
+class Q_3DEXTRASSHARED_EXPORT Qt3DWindow : public QWindow
 {
     Q_OBJECT
 public:

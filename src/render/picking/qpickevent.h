@@ -59,7 +59,7 @@ class QPickEventPrivate;
 class QPickEvent;
 typedef QSharedPointer<QPickEvent> QPickEventPtr;
 
-class QT3DRENDERSHARED_EXPORT QPickEvent : public QObject
+class Q_3DRENDERSHARED_EXPORT QPickEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted NOTIFY acceptedChanged)

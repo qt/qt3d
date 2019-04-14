@@ -55,7 +55,7 @@ namespace Qt3DExtras {
 
 class QSphereGeometryPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QSphereGeometry : public Qt3DRender::QGeometry
+class Q_3DEXTRASSHARED_EXPORT QSphereGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

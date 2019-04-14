@@ -51,7 +51,7 @@ namespace Qt3DAnimation {
 
 class QMorphingAnimationPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QMorphingAnimation : public QAbstractAnimation
+class Q_3DANIMATIONSHARED_EXPORT QMorphingAnimation : public QAbstractAnimation
 {
     Q_OBJECT
     Q_PROPERTY(QVector<float> targetPositions READ targetPositions WRITE setTargetPositions NOTIFY targetPositionsChanged)

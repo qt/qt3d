@@ -70,7 +70,7 @@ namespace Quick {
 
 class Quick3DEntityLoaderPrivate;
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DEntityLoader : public QEntity
+class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DEntityLoader : public QEntity
 {
     Q_OBJECT
     Q_PROPERTY(QObject *entity READ entity NOTIFY entityChanged)

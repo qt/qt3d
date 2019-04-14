@@ -51,7 +51,7 @@ class QTechniqueFilterPrivate;
 class QFilterKey;
 class QParameter;
 
-class QT3DRENDERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
 {
     Q_OBJECT
 public:

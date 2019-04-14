@@ -64,7 +64,7 @@ class QLayer;
 /*!
     \internal
 */
-class QT3DRENDERSHARED_PRIVATE_EXPORT QAbstractRayCasterPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QAbstractRayCasterPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QAbstractRayCasterPrivate();

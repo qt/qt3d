@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 class QSceneImporter;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QSceneLoaderPrivate();

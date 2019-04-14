@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace RayCasting {
 
-class QT3DRENDERSHARED_EXPORT QRay3D
+class Q_3DRENDERSHARED_EXPORT QRay3D
 {
 public:
     QRay3D();
@@ -104,12 +104,12 @@ QT3D_DECLARE_TYPEINFO_2(Qt3DRender, RayCasting, QRay3D, Q_MOVABLE_TYPE)
 
 
 #ifndef QT_NO_DEBUG_STREAM
-QT3DRENDERSHARED_EXPORT QDebug operator<<(QDebug dbg, const QRay3D &ray);
+Q_3DRENDERSHARED_EXPORT QDebug operator<<(QDebug dbg, const QRay3D &ray);
 #endif
 
 #ifndef QT_NO_DATASTREAM
-QT3DRENDERSHARED_EXPORT QDataStream &operator<<(QDataStream &stream, const QRay3D &ray);
-QT3DRENDERSHARED_EXPORT QDataStream &operator>>(QDataStream &stream, QRay3D &ray);
+Q_3DRENDERSHARED_EXPORT QDataStream &operator<<(QDataStream &stream, const QRay3D &ray);
+Q_3DRENDERSHARED_EXPORT QDataStream &operator>>(QDataStream &stream, QRay3D &ray);
 #endif
 
 } // namespace RayCasting

@@ -100,16 +100,15 @@ imagedirs   += images \
                ../../examples/qt3d/scene2d/doc/images \
                ../../examples/qt3d/advancedcustommaterial/doc/images
 
-Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
-                        QT3DCORESHARED_EXPORT \
-                        QT3DLOGIC_PRIVATE_EXPORT \
-                        QT3DLOGICSHARED_EXPORT \
-                        QT3DRENDERSHARED_EXPORT \
-                        QT3DRENDERSHARED_PRIVATE_EXPORT \
-                        QT3DQUICKSHARED_PRIVATE_EXPORT \
-                        QT3DEXTRASSHARED_EXPORT \
-                        QT3DANIMATIONSHARED_EXPORT \
-                        QT3DQUICKSCENE2DSHARED_EXPORT
+Cpp.ignoretokens     += Q_3DINPUTSHARED_EXPORT \
+                        Q_3DCORESHARED_EXPORT \
+                        Q_3DLOGICSHARED_EXPORT \
+                        Q_3DRENDERSHARED_EXPORT \
+                        Q_3DRENDERSHARED_PRIVATE_EXPORT \
+                        Q_3DQUICKSHARED_PRIVATE_EXPORT \
+                        Q_3DEXTRASSHARED_EXPORT \
+                        Q_3DANIMATIONSHARED_EXPORT \
+                        Q_3DQUICKSCENE2DSHARED_EXPORT
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 

@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QDispatchComputePrivate;
 
-class QT3DRENDERSHARED_EXPORT QDispatchCompute : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QDispatchCompute : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(int workGroupX READ workGroupX WRITE setWorkGroupX NOTIFY workGroupXChanged)

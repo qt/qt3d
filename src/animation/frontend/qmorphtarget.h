@@ -50,7 +50,7 @@ namespace Qt3DAnimation {
 
 class QMorphTargetPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QMorphTarget : public QObject
+class Q_3DANIMATIONSHARED_EXPORT QMorphTarget : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QStringList attributeNames READ attributeNames NOTIFY attributeNamesChanged)

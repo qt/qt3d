@@ -86,7 +86,7 @@ namespace Quick {
 
 class Qt3DQuickWindowPrivate;
 
-class QT3DQUICKEXTRASSHARED_EXPORT Qt3DQuickWindow : public QWindow
+class Q_3DQUICKEXTRASSHARED_EXPORT Qt3DQuickWindow : public QWindow
 {
     Q_OBJECT
     Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)

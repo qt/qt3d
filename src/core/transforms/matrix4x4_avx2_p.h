@@ -487,10 +487,10 @@ public:
     friend Vector4D operator*(const Vector4D &vector, const Matrix4x4_AVX2 &matrix);
     friend Vector4D operator*(const Matrix4x4_AVX2 &matrix, const Vector4D &vector);
 
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D operator*(const Vector3D &vector, const Matrix4x4_AVX2 &matrix);
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D operator*(const Matrix4x4_AVX2 &matrix, const Vector3D &vector);
+    friend Q_3DCORE_PRIVATE_EXPORT Vector3D operator*(const Vector3D &vector, const Matrix4x4_AVX2 &matrix);
+    friend Q_3DCORE_PRIVATE_EXPORT Vector3D operator*(const Matrix4x4_AVX2 &matrix, const Vector3D &vector);
 
-    friend QT3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Matrix4x4_AVX2 &m);
+    friend Q_3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Matrix4x4_AVX2 &m);
 private:
     // column major order
     // aligned on 32 bytes boundaries for AVX, compatible with 16 bytes boundary for SSE

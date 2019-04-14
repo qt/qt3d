@@ -101,19 +101,6 @@ private:
     bool isUnique(const QVector<ViewportCameraAreaDetails> &vcaList, const ViewportCameraAreaDetails &vca) const;
 };
 
-class Q_AUTOTEST_EXPORT EntityGatherer
-{
-public:
-    explicit EntityGatherer(Entity *root);
-
-    QVector<Entity *> entities() const;
-
-private:
-    Entity *m_root;
-    mutable QVector<Entity *> m_entities;
-    mutable bool m_needsRefresh;
-};
-
 typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
 
 class Q_AUTOTEST_EXPORT HierarchicalEntityPicker

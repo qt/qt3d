@@ -56,7 +56,7 @@ namespace Qt3DExtras {
 
 class QNormalDiffuseMapMaterialPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QNormalDiffuseMapMaterial : public Qt3DRender::QMaterial
+class Q_3DEXTRASSHARED_EXPORT QNormalDiffuseMapMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
     Q_PROPERTY(QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)

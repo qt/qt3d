@@ -64,7 +64,7 @@ namespace Render {
 class TechniqueManager;
 class Renderer;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT FilterCompatibleTechniqueJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT FilterCompatibleTechniqueJob : public Qt3DCore::QAspectJob
 {
 public:
     FilterCompatibleTechniqueJob();

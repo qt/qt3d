@@ -62,7 +62,7 @@ namespace Qt3DInput {
 class QAbstractPhysicalDeviceProxy;
 class QAbstractPhysicalDevice;
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceProxyPrivate : public QAbstractPhysicalDevicePrivate
+class Q_3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceProxyPrivate : public QAbstractPhysicalDevicePrivate
 {
 public:
     explicit QAbstractPhysicalDeviceProxyPrivate(const QString &deviceName);

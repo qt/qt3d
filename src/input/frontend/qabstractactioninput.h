@@ -48,7 +48,7 @@ namespace Qt3DInput {
 
 class QAbstractActionInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QAbstractActionInput : public Qt3DCore::QNode
+class Q_3DINPUTSHARED_EXPORT QAbstractActionInput : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:

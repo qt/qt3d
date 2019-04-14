@@ -54,15 +54,15 @@
 #include <Qt3DQuickAnimation/qt3dquickanimation_global.h>
 #include <QtQml/qqml.h>
 
-#define QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT QT3DQUICKANIMATIONSHARED_EXPORT
+#define Q_3DQUICKANIMATIONSHARED_PRIVATE_EXPORT Q_3DQUICKANIMATIONSHARED_EXPORT
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 namespace Quick {
 
-QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT void Quick3DAnimation_initialize();
-QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT void Quick3DAnimation_registerType(const char *className, const char *quickName, int major, int minor);
+Q_3DQUICKANIMATIONSHARED_PRIVATE_EXPORT void Quick3DAnimation_initialize();
+Q_3DQUICKANIMATIONSHARED_PRIVATE_EXPORT void Quick3DAnimation_registerType(const char *className, const char *quickName, int major, int minor);
 
 template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
                                                      const char *uri, int major, int minor, const char *name)

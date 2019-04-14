@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QRasterModePrivate;
 
-class QT3DRENDERSHARED_EXPORT QRasterMode : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QRasterMode : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(RasterMode rasterMode READ rasterMode WRITE setRasterMode NOTIFY rasterModeChanged)

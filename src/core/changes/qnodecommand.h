@@ -48,7 +48,7 @@ namespace Qt3DCore {
 
 class QNodeCommandPrivate;
 
-class QT3DCORESHARED_EXPORT QNodeCommand : public QSceneChange
+class Q_3DCORESHARED_EXPORT QNodeCommand : public QSceneChange
 {
 public:
 #if defined(Q_ATOMIC_INT64_IS_SUPPORTED)

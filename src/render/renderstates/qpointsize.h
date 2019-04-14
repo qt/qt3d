@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QPointSizePrivate;
 
-class QT3DRENDERSHARED_EXPORT QPointSize : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QPointSize : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(SizeMode sizeMode READ sizeMode WRITE setSizeMode NOTIFY sizeModeChanged)

@@ -60,7 +60,7 @@ namespace Quick {
 
 class QScene2DPrivate;
 
-class QT3DQUICKSCENE2DSHARED_EXPORT QScene2D : public Qt3DCore::QNode
+class Q_3DQUICKSCENE2DSHARED_EXPORT QScene2D : public Qt3DCore::QNode
 {
     Q_OBJECT
 

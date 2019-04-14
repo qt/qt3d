@@ -78,7 +78,7 @@ class QServiceLocator;
 
 namespace Debug {
 
-class QT3DCORE_PRIVATE_EXPORT AsynchronousCommandReply : public QObject
+class Q_3DCORE_PRIVATE_EXPORT AsynchronousCommandReply : public QObject
 {
     Q_OBJECT
 public:
@@ -102,7 +102,7 @@ private:
 
 } // Debug
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
+class Q_3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
         : public QObjectPrivate
         , public QBackendNodeFactory
         , public QSceneObserverInterface

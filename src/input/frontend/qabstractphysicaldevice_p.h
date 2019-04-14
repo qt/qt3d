@@ -65,7 +65,7 @@ namespace Qt3DInput {
 
 class QAxisSetting;
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDevicePrivate : public Qt3DCore::QNodePrivate
+class Q_3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDevicePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QAbstractPhysicalDevicePrivate();

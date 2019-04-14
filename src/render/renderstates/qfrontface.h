@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QFrontFacePrivate;
 
-class QT3DRENDERSHARED_EXPORT QFrontFace : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QFrontFace : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(WindingDirection direction READ direction WRITE setDirection NOTIFY directionChanged)

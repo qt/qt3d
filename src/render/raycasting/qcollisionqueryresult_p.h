@@ -65,7 +65,7 @@ namespace RayCasting {
 typedef int QQueryHandle;
 class QCollisionQueryResultPrivate;
 
-class QT3DRENDERSHARED_EXPORT QCollisionQueryResult
+class Q_3DRENDERSHARED_EXPORT QCollisionQueryResult
 {
 public:
     struct Hit {

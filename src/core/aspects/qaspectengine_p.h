@@ -75,7 +75,7 @@ class AspectCommandDebugger;
 } // Debug
 #endif
 
-class QT3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate
+class Q_3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate
 {
 public:
     QAspectEnginePrivate();

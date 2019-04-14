@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 class QGamepadInputPrivate;
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QGamepadInput : public QAbstractPhysicalDevice
+class Q_3DINPUTSHARED_PRIVATE_EXPORT QGamepadInput : public QAbstractPhysicalDevice
 {
     Q_OBJECT
     Q_PROPERTY(int deviceId READ deviceId WRITE setDeviceId NOTIFY deviceIdChanged)

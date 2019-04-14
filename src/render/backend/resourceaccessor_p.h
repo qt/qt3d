@@ -83,7 +83,7 @@ public:
     virtual bool accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) = 0;
 };
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT ResourceAccessor : public RenderBackendResourceAccessor
+class Q_3DRENDERSHARED_PRIVATE_EXPORT ResourceAccessor : public RenderBackendResourceAccessor
 {
 public:
     ResourceAccessor(NodeManagers *mgr);

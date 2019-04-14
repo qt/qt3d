@@ -51,7 +51,7 @@ namespace Qt3DRender {
 class QAbstractTexture;
 class QRenderTargetOutputPrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderTargetOutput : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QRenderTargetOutput : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(AttachmentPoint attachmentPoint READ attachmentPoint WRITE setAttachmentPoint NOTIFY attachmentPointChanged)

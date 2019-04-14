@@ -65,7 +65,7 @@ namespace Qt3DRender {
 
 class QGeometryLoaderInterface;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QGeometryLoaderFactory : public QObject, public QFactoryInterface
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QGeometryLoaderFactory : public QObject, public QFactoryInterface
 {
     Q_OBJECT
     Q_INTERFACES(QFactoryInterface)

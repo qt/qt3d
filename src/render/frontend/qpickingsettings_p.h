@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QPickingSettingsPrivate : public Qt3DCore::QNodePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QPickingSettingsPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QPickingSettingsPrivate();

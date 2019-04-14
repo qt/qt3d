@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QTextureWrapModePrivate;
 
-class QT3DRENDERSHARED_EXPORT QTextureWrapMode : public QObject
+class Q_3DRENDERSHARED_EXPORT QTextureWrapMode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(WrapMode x READ x WRITE setX NOTIFY xChanged)

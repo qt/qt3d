@@ -64,7 +64,7 @@ struct QStencilOperationData
     QStencilOperationArgumentsData back;
 };
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QStencilOperationPrivate : public QRenderStatePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QStencilOperationPrivate : public QRenderStatePrivate
 {
 public:
     QStencilOperationPrivate()

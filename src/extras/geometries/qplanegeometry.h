@@ -56,7 +56,7 @@ namespace Qt3DExtras {
 
 class QPlaneGeometryPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QPlaneGeometry : public Qt3DRender::QGeometry
+class Q_3DEXTRASSHARED_EXPORT QPlaneGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)

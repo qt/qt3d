@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QMultiSampleAntiAliasingPrivate;
 
-class QT3DRENDERSHARED_EXPORT QMultiSampleAntiAliasing : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QMultiSampleAntiAliasing : public QRenderState
 {
     Q_OBJECT
 

@@ -49,7 +49,7 @@ namespace Qt3DRender {
 class QStencilOperationPrivate;
 class QStencilOperationArguments;
 
-class QT3DRENDERSHARED_EXPORT QStencilOperation : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QStencilOperation : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QStencilOperationArguments *front READ front CONSTANT)

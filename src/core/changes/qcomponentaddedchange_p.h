@@ -65,7 +65,7 @@ namespace Qt3DCore {
 class QComponent;
 class QEntity;
 
-class QT3DCORE_PRIVATE_EXPORT QComponentAddedChangePrivate : public QSceneChangePrivate
+class Q_3DCORE_PRIVATE_EXPORT QComponentAddedChangePrivate : public QSceneChangePrivate
 {
 public:
     QComponentAddedChangePrivate(const QEntity *entity, const QComponent *component);

@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Quick {
 
-class QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT QQuick3DKeyframeAnimation : public QObject
+class Q_3DQUICKANIMATIONSHARED_PRIVATE_EXPORT QQuick3DKeyframeAnimation : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DCore::QTransform> keyframes READ keyframes)

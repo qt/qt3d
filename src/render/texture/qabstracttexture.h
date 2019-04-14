@@ -55,7 +55,7 @@ class QTextureGenerator;
 class QTextureDataUpdate;
 typedef QSharedPointer<QTextureGenerator> QTextureGeneratorPtr;
 
-class QT3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Target target READ target CONSTANT)

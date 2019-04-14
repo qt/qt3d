@@ -179,6 +179,7 @@ public:
     bool supportsVAO() const { return m_supportsVAO; }
 
     void initialize();
+    void initializeHelpers(QSurface *surface);
     GraphicsHelperInterface *resolveHighestOpenGLFunctions();
 
     bool m_initialized;

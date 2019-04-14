@@ -69,7 +69,7 @@ namespace Quick {
 class Quick3DShaderDataArrayPrivate;
 class Quick3DShaderData;
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderDataArray : public Qt3DCore::QNode
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderDataArray : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QShaderData> values READ valuesList)

@@ -50,7 +50,7 @@ namespace Qt3DExtras {
 
 class QPhongMaterialPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QPhongMaterial : public Qt3DRender::QMaterial
+class Q_3DEXTRASSHARED_EXPORT QPhongMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
     Q_PROPERTY(QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)

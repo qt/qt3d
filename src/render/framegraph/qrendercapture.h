@@ -47,7 +47,7 @@ namespace Qt3DRender {
 class QRenderCapturePrivate;
 class QRenderCaptureReplyPrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderCaptureReply : public QObject
+class Q_3DRENDERSHARED_EXPORT QRenderCaptureReply : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QImage image READ image CONSTANT)
@@ -78,7 +78,7 @@ private:
     friend class QRenderCapturePrivate;
 };
 
-class QT3DRENDERSHARED_EXPORT QRenderCapture : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QRenderCapture : public QFrameGraphNode
 {
     Q_OBJECT
 public:

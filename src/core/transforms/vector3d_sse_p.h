@@ -89,7 +89,7 @@ public:
     {
     }
 
-    explicit QT3DCORE_PRIVATE_EXPORT Vector3D_SSE(const Vector4D_SSE &v);
+    explicit Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE(const Vector4D_SSE &v);
 
     Q_ALWAYS_INLINE Vector3D_SSE &operator+=(Vector3D_SSE vector)
     {
@@ -179,11 +179,11 @@ public:
     }
 
 #ifdef __AVX2__
-    QT3DCORE_PRIVATE_EXPORT Vector3D_SSE unproject(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
-    QT3DCORE_PRIVATE_EXPORT Vector3D_SSE project(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
+    Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE unproject(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
+    Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE project(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
 #else
-    QT3DCORE_PRIVATE_EXPORT Vector3D_SSE unproject(const Matrix4x4_SSE &modelView, const Matrix4x4_SSE &projection, const QRect &viewport) const;
-    QT3DCORE_PRIVATE_EXPORT Vector3D_SSE project(const Matrix4x4_SSE &modelView, const Matrix4x4_SSE &projection, const QRect &viewport) const;
+    Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE unproject(const Matrix4x4_SSE &modelView, const Matrix4x4_SSE &projection, const QRect &viewport) const;
+    Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE project(const Matrix4x4_SSE &modelView, const Matrix4x4_SSE &projection, const QRect &viewport) const;
 #endif
 
     Q_ALWAYS_INLINE float x() const { return _mm_cvtss_f32(m_xyzw); }
@@ -350,13 +350,13 @@ public:
 
 #ifdef __AVX2__
     friend class Matrix4x4_AVX2;
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_AVX2 &matrix);
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_AVX2 &matrix, const Vector3D_SSE &vector);
+    friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_AVX2 &matrix);
+    friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_AVX2 &matrix, const Vector3D_SSE &vector);
 #endif
 
     friend class Matrix4x4_SSE;
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_SSE &matrix);
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_SSE &matrix, const Vector3D_SSE &vector);
+    friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_SSE &matrix);
+    friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_SSE &matrix, const Vector3D_SSE &vector);
 
     friend Q_ALWAYS_INLINE const Vector3D_SSE operator+(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 += v2; }
     friend Q_ALWAYS_INLINE const Vector3D_SSE operator-(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 -= v2; }
@@ -375,7 +375,7 @@ public:
     friend Q_ALWAYS_INLINE const Vector3D_SSE operator/(Vector3D_SSE vector, float divisor) { return vector /= divisor; }
     friend Q_ALWAYS_INLINE const Vector3D_SSE operator/(Vector3D_SSE vector, Vector3D_SSE divisor) { return vector /= divisor; }
 
-    friend QT3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Vector3D_SSE &v);
+    friend Q_3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Vector3D_SSE &v);
     friend Q_ALWAYS_INLINE bool qFuzzyCompare(const Vector3D_SSE& v1, const Vector3D_SSE& v2)
     {
         return ::qFuzzyCompare(v1.x(), v2.x()) &&

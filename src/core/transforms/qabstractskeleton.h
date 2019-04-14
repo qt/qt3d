@@ -49,7 +49,7 @@ namespace Qt3DCore {
 
 class QAbstractSkeletonPrivate;
 
-class QT3DCORESHARED_EXPORT QAbstractSkeleton : public Qt3DCore::QNode
+class Q_3DCORESHARED_EXPORT QAbstractSkeleton : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int jointCount READ jointCount NOTIFY jointCountChanged)

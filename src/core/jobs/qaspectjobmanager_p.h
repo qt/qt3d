@@ -64,7 +64,7 @@ namespace Qt3DCore {
 class QThreadPooler;
 class DependencyHandler;
 
-class QT3DCORE_PRIVATE_EXPORT QAspectJobManager : public QAbstractAspectJobManager
+class Q_3DCORE_PRIVATE_EXPORT QAspectJobManager : public QAbstractAspectJobManager
 {
     Q_OBJECT
 public:

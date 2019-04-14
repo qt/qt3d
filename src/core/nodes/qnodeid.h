@@ -58,7 +58,7 @@ public:
         : m_id(0)
     {}
 
-    QT3DCORESHARED_EXPORT static QNodeId createId() Q_DECL_NOTHROW;
+    Q_3DCORESHARED_EXPORT static QNodeId createId() Q_DECL_NOTHROW;
 
     Q_DECL_CONSTEXPR bool isNull() const Q_DECL_NOTHROW
     {
@@ -103,7 +103,7 @@ QT3D_DECLARE_TYPEINFO(Qt3DCore, QNodeId, Q_PRIMITIVE_TYPE)
 typedef QVector<QNodeId> QNodeIdVector;
 
 #ifndef QT_NO_DEBUG_STREAM
-QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);
+Q_3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);
 #endif
 
 inline Q_DECL_CONSTEXPR uint qHash(QNodeId id, uint seed = 0) Q_DECL_NOTHROW

@@ -51,7 +51,7 @@ namespace Qt3DRender {
 class QParameterPrivate;
 class QAbstractTexture;
 
-class QT3DRENDERSHARED_EXPORT QParameter : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QParameter : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)

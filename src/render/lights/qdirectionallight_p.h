@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 class QDirectionalLight;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QDirectionalLightPrivate : QAbstractLightPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QDirectionalLightPrivate : QAbstractLightPrivate
 {
 public:
     QDirectionalLightPrivate();

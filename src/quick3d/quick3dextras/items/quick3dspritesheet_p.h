@@ -61,7 +61,7 @@ namespace Qt3DExtras {
 namespace Extras {
 namespace Quick {
 
-class QT3DQUICKEXTRASSHARED_EXPORT Quick3DSpriteSheet : public QObject
+class Q_3DQUICKEXTRASSHARED_EXPORT Quick3DSpriteSheet : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> sprites READ sprites CONSTANT)

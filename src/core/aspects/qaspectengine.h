@@ -56,7 +56,7 @@ class QNode;
 
 typedef QSharedPointer<QEntity> QEntityPtr;
 
-class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
+class Q_3DCORESHARED_EXPORT QAspectEngine : public QObject
 {
     Q_OBJECT
 public:

@@ -50,7 +50,7 @@ namespace Qt3DInput {
 class QAxis;
 class QAxisAccumulatorPrivate;
 
-class QT3DINPUTSHARED_EXPORT QAxisAccumulator : public Qt3DCore::QComponent
+class Q_3DINPUTSHARED_EXPORT QAxisAccumulator : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QAxis *sourceAxis READ sourceAxis WRITE setSourceAxis NOTIFY sourceAxisChanged)

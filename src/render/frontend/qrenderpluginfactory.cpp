@@ -48,14 +48,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QRenderPluginFactoryInterface_iid, QLatin1String("/renderplugins"), Qt::CaseInsensitive))
+#if QT_CONFIG(library)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QRenderPluginFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
 #endif
 
 QStringList QRenderPluginFactory::keys(const QString &pluginPath)
 {
-#ifndef QT_NO_LIBRARY
+#if QT_CONFIG(library)
     QStringList list;
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
@@ -72,14 +72,14 @@ QStringList QRenderPluginFactory::keys(const QString &pluginPath)
     list.append(loader()->keyMap().values());
     return list;
 #else
-    return QStringList();
+    return loader()->keyMap().values();
 #endif
 }
 
 QRenderPlugin *QRenderPluginFactory::create(const QString &name, const QStringList &args,
                                             const QString &pluginPath)
 {
-#ifndef QT_NO_LIBRARY
+#if QT_CONFIG(library)
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
         if (QRenderPlugin *ret
@@ -87,10 +87,8 @@ QRenderPlugin *QRenderPluginFactory::create(const QString &name, const QStringLi
             return ret;
         }
     }
-    if (QRenderPlugin *ret = qLoadPlugin<QRenderPlugin, QRenderPluginFactoryIf>(loader(), name, args))
-        return ret;
 #endif
-    return nullptr;
+    return qLoadPlugin<QRenderPlugin, QRenderPluginFactoryIf>(loader(), name, args);
 }
 
 } // namespace Render

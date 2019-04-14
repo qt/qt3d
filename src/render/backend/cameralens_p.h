@@ -80,7 +80,7 @@ private:
     QRenderAspect *m_renderAspect;
 };
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT CameraLens : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT CameraLens : public BackendNode
 {
 public:
     CameraLens();

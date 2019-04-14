@@ -1248,6 +1248,17 @@ private Q_SLOTS:
                     << handler << clip << localTime << expectedResults;
             expectedResults.clear();
         }
+        {
+            // a clip with slerp interpolation
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip6.json"));
+            localTime = clip->duration() / 2.0f;
+            expectedResults = QVector<float>() << 0.923822f << 0.382626f << 0.0f << 0.0f;
+
+            QTest::newRow("clip6.json, slerp, t = duration/2")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
     }
 
     void checkEvaluateClipAtLocalTime()

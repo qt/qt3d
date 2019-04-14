@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace RayCasting {
 
-class QT3DRENDERSHARED_EXPORT BoundingSphere : public QBoundingVolume
+class Q_3DRENDERSHARED_EXPORT BoundingSphere : public QBoundingVolume
 {
 public:
     BoundingSphere();

@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QSeamlessCubemapPrivate;
 
-class QT3DRENDERSHARED_EXPORT QSeamlessCubemap : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QSeamlessCubemap : public QRenderState
 {
     Q_OBJECT
 

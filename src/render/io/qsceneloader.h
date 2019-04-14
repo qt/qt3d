@@ -51,7 +51,7 @@ namespace Qt3DRender {
 
 class QSceneLoaderPrivate;
 
-class QT3DRENDERSHARED_EXPORT QSceneLoader : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QSceneLoader : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)

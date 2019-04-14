@@ -54,7 +54,7 @@ namespace Qt3DExtras {
 
 class QForwardRendererPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QForwardRenderer : public Qt3DRender::QTechniqueFilter
+class Q_3DEXTRASSHARED_EXPORT QForwardRenderer : public Qt3DRender::QTechniqueFilter
 {
     Q_OBJECT
     Q_PROPERTY(QObject *surface READ surface WRITE setSurface NOTIFY surfaceChanged)

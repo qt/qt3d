@@ -60,7 +60,7 @@ namespace Qt3DCore {
 
 class QStaticPropertyValueRemovedChangeBase;
 
-class QT3DCORE_PRIVATE_EXPORT QStaticPropertyValueRemovedChangeBasePrivate : public QPropertyValueRemovedChangeBasePrivate
+class Q_3DCORE_PRIVATE_EXPORT QStaticPropertyValueRemovedChangeBasePrivate : public QPropertyValueRemovedChangeBasePrivate
 {
 public:
     QStaticPropertyValueRemovedChangeBasePrivate();

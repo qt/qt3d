@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 class QSceneExporter;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneExportFactory
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QSceneExportFactory
 {
 public:
     static QStringList keys(const QString &pluginPath = QString());

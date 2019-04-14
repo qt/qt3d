@@ -62,7 +62,7 @@ namespace Qt3DCore {
 
 class QAbstractFrameAdvanceServicePrivate;
 
-class QT3DCORESHARED_EXPORT QAbstractFrameAdvanceService : public QAbstractServiceProvider
+class Q_3DCORESHARED_EXPORT QAbstractFrameAdvanceService : public QAbstractServiceProvider
 {
     Q_OBJECT
 public:

@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QLineWidthPrivate;
 
-class QT3DRENDERSHARED_EXPORT QLineWidth : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QLineWidth : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(float value READ value WRITE setValue NOTIFY valueChanged)

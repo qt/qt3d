@@ -50,7 +50,7 @@ namespace Qt3DAnimation {
 
 class QAnimationClipPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationClip : public QAbstractAnimationClip
+class Q_3DANIMATIONSHARED_EXPORT QAnimationClip : public QAbstractAnimationClip
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DAnimation::QAnimationClipData clipData READ clipData WRITE setClipData NOTIFY clipDataChanged)

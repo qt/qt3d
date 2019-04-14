@@ -63,7 +63,7 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderData : public QShaderData
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderData : public QShaderData
 {
     Q_OBJECT
 public:

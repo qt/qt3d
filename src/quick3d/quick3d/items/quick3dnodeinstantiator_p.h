@@ -65,7 +65,7 @@ namespace Quick {
 
 class Quick3DNodeInstantiatorPrivate;
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeInstantiator : public QNode, public QQmlParserStatus
+class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeInstantiator : public QNode, public QQmlParserStatus
 {
     Q_OBJECT
 

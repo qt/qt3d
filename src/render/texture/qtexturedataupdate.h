@@ -51,7 +51,7 @@ namespace Qt3DRender
 
 class QTextureDataUpdatePrivate;
 
-class QT3DRENDERSHARED_EXPORT QTextureDataUpdate
+class Q_3DRENDERSHARED_EXPORT QTextureDataUpdate
 {
 public:
     QTextureDataUpdate();

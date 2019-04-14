@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QDepthRangePrivate;
 
-class QT3DRENDERSHARED_EXPORT QDepthRange : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QDepthRange : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(double nearValue READ nearValue WRITE setNearValue NOTIFY nearValueChanged)

@@ -53,7 +53,7 @@ namespace Qt3DCore {
 
 class QJointPrivate;
 
-class QT3DCORESHARED_EXPORT QJoint : public QNode
+class Q_3DCORESHARED_EXPORT QJoint : public QNode
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D scale READ scale WRITE setScale NOTIFY scaleChanged)

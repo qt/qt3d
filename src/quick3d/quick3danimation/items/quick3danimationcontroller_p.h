@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Quick {
 
-class QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT QQuick3DAnimationController : public QObject
+class Q_3DQUICKANIMATIONSHARED_PRIVATE_EXPORT QQuick3DAnimationController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DAnimation::QAnimationGroup> animationGroups READ animationGroups)

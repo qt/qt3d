@@ -52,7 +52,7 @@ namespace Qt3DRender {
 class QShaderProgram;
 class QShaderProgramBuilderPrivate;
 
-class QT3DRENDERSHARED_EXPORT QShaderProgramBuilder : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QShaderProgramBuilder : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QShaderProgram* shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)

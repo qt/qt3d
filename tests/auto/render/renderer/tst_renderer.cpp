@@ -35,6 +35,7 @@
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/renderviewbuilder_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
+#include <Qt3DRender/private/renderqueue_p.h>
 
 class tst_Renderer : public QObject
 {
@@ -131,6 +132,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
         Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::RenderQueue *renderQueue = renderer.renderQueue();
         Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
         Qt3DRender::Render::RenderSettings settings;
         // owned by FG manager
@@ -151,6 +153,12 @@ private Q_SLOTS:
         // NOTE: FilterCompatibleTechniqueJob and ShaderGathererJob cannot run because the context
         // is not initialized in this test
 
+        const int renderViewBuilderMaterialCacheJobCount = 1 + Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
+        // syncMaterialGathererJob
+        // n * materialGathererJob
+        const int layerCacheJobCount = 2;
+        // filterEntityByLayerJob,
+        // syncFilterEntityByLayerJob
         const int singleRenderViewJobCount = 8 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount();
         // RenderViewBuilder renderViewJob,
         //                   syncRenderViewInitializationJob,
@@ -175,6 +183,7 @@ private Q_SLOTS:
                  singleRenderViewJobCount); // Only valid for the first call to renderBinJobs(), since subsequent calls won't have the renderqueue reset
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::EntityEnabledDirty, nullptr);
@@ -187,9 +196,12 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 1); // EntityEnabledDirty
+                 1 + // EntityEnabledDirty
+                 singleRenderViewJobCount +
+                 layerCacheJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::TransformDirty, nullptr);
@@ -205,9 +217,28 @@ private Q_SLOTS:
                  1 + // UpdateShaderDataTransform
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 1); // ExpandBoundingVolumeJob
+                 1 + // ExpandBoundingVolumeJob
+                 singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
+
+        // WHEN
+        renderer.markDirty(Qt3DRender::Render::AbstractRenderer::MaterialDirty, nullptr);
+        jobs = renderer.renderBinJobs();
+
+        // THEN (level
+        QCOMPARE(jobs.size(),
+                 1 + // updateLevelOfDetailJob
+                 1 + // cleanupJob
+                 1 + // VAOGatherer
+                 1 + // updateSkinningPaletteJob
+                 1 + // SyncLoadingJobs
+                 singleRenderViewJobCount +
+                 renderViewBuilderMaterialCacheJobCount);
+
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::GeometryDirty, nullptr);
@@ -222,9 +253,13 @@ private Q_SLOTS:
                  1 + // UpdateMeshTriangleListJob
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 1); // ExpandBoundingVolumeJob
+                 1 + // ExpandBoundingVolumeJob
+                 1 + // RenderableEntityFilterJob
+                 1 + // CacheRenderableEntitiesJob
+                 singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::BuffersDirty, nullptr);
@@ -239,9 +274,11 @@ private Q_SLOTS:
                  1 + // SyncLoadingJobs
                  1 + // CalculateBoundingVolumeJob
                  1 + // UpdateMeshTriangleListJob
-                 1); // BufferGathererJob
+                 1 + // BufferGathererJob
+                 singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::TexturesDirty, nullptr);
@@ -254,10 +291,11 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // TexturesGathererJob
                  1 + // updateSkinningPaletteJob
-                 1); // SyncLoadingJobs
+                 1 + // SyncTexturesGathererJob
+                 singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-
+        renderQueue->reset();
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::FrameGraphDirty, nullptr);
@@ -268,9 +306,13 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
-                 1); // SyncLoadingJobs
+                 1 + // SyncLoadingJobs
+                 singleRenderViewJobCount +
+                 layerCacheJobCount +
+                 renderViewBuilderMaterialCacheJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
 
         // WHEN
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::AllDirty, nullptr);
@@ -293,9 +335,19 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // BufferGathererJob
                  1 + // TexturesGathererJob
-                 1); // UpdateEntityLayersJob
+                 1 + // LightGathererJob
+                 1 + // CacheLightJob
+                 1 + // RenderableEntityFilterJob
+                 1 + // CacheRenderableEntitiesJob
+                 1 + // ComputableEntityFilterJob
+                 1 + // CacheComputableEntitiesJob
+                 1 + // UpdateEntityLayersJob
+                 singleRenderViewJobCount +
+                 layerCacheJobCount +
+                 renderViewBuilderMaterialCacheJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
 
         // Properly shutdown command thread
         renderer.shutdown();

@@ -65,9 +65,11 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
     FP float att = 1.0;
     if ( lights[0].type != TYPE_DIRECTIONAL ) {
         s = lights[0].position - vpos;
-        if (length( lights[0].attenuation ) != 0.0) {
+        if (lights[0].constantAttenuation != 0.0
+          || light[0].linearAttenuation != 0.0
+          || light[0].quadraticAttenuation != 0.0) {
             FP float dist = length(s);
-            att = 1.0 / (lights[0].attenuation.x + lights[0].attenuation.y * dist + lights[0].attenuation.z * dist * dist);
+            att = 1.0 / (lights[0].constantAttenuation + lights[0].linearAttenuation * dist + lights[0].quadraticAttenuation * dist * dist);
         }
         s = normalize( s );
         if ( lights[0].type == TYPE_SPOT ) {
@@ -96,9 +98,11 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
     att = 1.0;
     if ( lights[1].type != TYPE_DIRECTIONAL ) {
         s = lights[1].position - vpos;
-        if (length( lights[1].attenuation ) != 0.0) {
+        if (lights[1].constantAttenuation != 0.0
+          || light[1].linearAttenuation != 0.0
+          || light[1].quadraticAttenuation != 0.0) {
             FP float dist = length(s);
-            att = 1.0 / (lights[1].attenuation.x + lights[1].attenuation.y * dist + lights[1].attenuation.z * dist * dist);
+            att = 1.0 / (lights[1].constantAttenuation + lights[1].linearAttenuation * dist + lights[1].quadraticAttenuation * dist * dist);
         }
         s = normalize( s );
         if ( lights[1].type == TYPE_SPOT ) {

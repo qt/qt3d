@@ -59,7 +59,7 @@ namespace Render {
 
 class QRenderPlugin;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderPluginFactory
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderPluginFactory
 {
 public:
     static QStringList keys(const QString &pluginPath = QString());

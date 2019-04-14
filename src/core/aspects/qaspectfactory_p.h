@@ -65,7 +65,7 @@ namespace Qt3DCore {
 
 class QAbstractAspect;
 
-class QT3DCORE_PRIVATE_EXPORT QAspectFactory
+class Q_3DCORE_PRIVATE_EXPORT QAspectFactory
 {
 public:
     typedef QAbstractAspect *(*CreateFunction)(QObject *);

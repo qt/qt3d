@@ -60,7 +60,7 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKSCENE2DSHARED_EXPORT QQuick3DScene2D : public QObject
+class Q_3DQUICKSCENE2DSHARED_EXPORT QQuick3DScene2D : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DCore::QEntity> entities READ entities)

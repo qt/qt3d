@@ -53,7 +53,7 @@ namespace Qt3DRender {
 class QRayCasterHitData;
 class QAbstractRayCasterPrivate;
 
-class QT3DRENDERSHARED_EXPORT QRayCasterHit
+class Q_3DRENDERSHARED_EXPORT QRayCasterHit
 {
     Q_GADGET
 public:

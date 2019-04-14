@@ -8,5 +8,8 @@ CONFIG += testcase
 
 SOURCES += tst_qshaderprogram.cpp
 
+RESOURCES += \
+    shaders.qrc
+
 include(../../core/common/common.pri)
 include(../commons/commons.pri)

@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QCameraSelectorPrivate;
 
-class QT3DRENDERSHARED_EXPORT QCameraSelector : public QFrameGraphNode
+class Q_3DRENDERSHARED_EXPORT QCameraSelector : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)

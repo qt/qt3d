@@ -47,7 +47,7 @@ namespace Qt3DRender {
 class QFrameGraphNode;
 class QFrameGraphNodeCreatedChangeBasePrivate;
 
-class QT3DRENDERSHARED_EXPORT QFrameGraphNodeCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
+class Q_3DRENDERSHARED_EXPORT QFrameGraphNodeCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 {
 public:
     explicit QFrameGraphNodeCreatedChangeBase(const QFrameGraphNode *node);

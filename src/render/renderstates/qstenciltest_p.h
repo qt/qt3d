@@ -64,7 +64,7 @@ struct QStencilTestData
     QStencilTestArgumentsData back;
 };
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QStencilTestPrivate : public QRenderStatePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QStencilTestPrivate : public QRenderStatePrivate
 {
 public:
     QStencilTestPrivate()

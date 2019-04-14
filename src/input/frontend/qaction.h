@@ -50,7 +50,7 @@ namespace Qt3DInput {
 class QActionPrivate;
 class QAbstractActionInput;
 
-class QT3DINPUTSHARED_EXPORT QAction : public Qt3DCore::QNode
+class Q_3DINPUTSHARED_EXPORT QAction : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(bool active READ isActive NOTIFY activeChanged)

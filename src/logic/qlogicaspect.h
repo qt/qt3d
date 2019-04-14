@@ -49,7 +49,7 @@ namespace Qt3DLogic {
 
 class QLogicAspectPrivate;
 
-class QT3DLOGICSHARED_EXPORT QLogicAspect : public Qt3DCore::QAbstractAspect
+class Q_3DLOGICSHARED_EXPORT QLogicAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:

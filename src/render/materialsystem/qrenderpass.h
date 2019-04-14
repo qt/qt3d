@@ -59,7 +59,7 @@ typedef QVector<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderPass : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QRenderPass : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QShaderProgram *shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)

@@ -60,7 +60,7 @@ namespace RayCasting {
 
 class QBoundingVolume;
 
-class QT3DRENDERSHARED_EXPORT QBoundingVolumeProvider
+class Q_3DRENDERSHARED_EXPORT QBoundingVolumeProvider
 {
 public:
     virtual ~QBoundingVolumeProvider();

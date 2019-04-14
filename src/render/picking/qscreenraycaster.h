@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QScreenRayCaster : public QAbstractRayCaster
+class Q_3DRENDERSHARED_EXPORT QScreenRayCaster : public QAbstractRayCaster
 {
     Q_OBJECT
 

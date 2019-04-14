@@ -63,7 +63,7 @@ namespace Quick {
 
 class Quick3DParameterPrivate;
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DParameter : public QParameter
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DParameter : public QParameter
 {
     Q_OBJECT
 public:

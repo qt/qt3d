@@ -157,7 +157,7 @@ typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 using IntrospectShadersJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
 public:
     explicit Renderer(QRenderAspect::RenderType type);
@@ -190,6 +190,7 @@ public:
     Entity *sceneRoot() const override { return m_renderSceneRoot; }
 
     FrameGraphNode *frameGraphRoot() const override;
+    RenderQueue *renderQueue() const { return m_renderQueue; }
 
     void markDirty(BackendNodeDirtySet changes, BackendNode *node) override;
     BackendNodeDirtySet dirtyBits() override;

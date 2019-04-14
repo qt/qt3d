@@ -50,7 +50,7 @@ namespace Qt3DRender {
 class QRenderTargetPrivate;
 class QRenderTargetOutput;
 
-class QT3DRENDERSHARED_EXPORT QRenderTarget : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QRenderTarget : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:

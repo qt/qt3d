@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QT_DEPRECATED_X("Use Qt3DExtras::QMetalRoughMaterial") QT3DEXTRASSHARED_EXPORT QTexturedMetalRoughMaterial : public QMetalRoughMaterial
+class QT_DEPRECATED_X("Use Qt3DExtras::QMetalRoughMaterial") Q_3DEXTRASSHARED_EXPORT QTexturedMetalRoughMaterial : public QMetalRoughMaterial
 {
     Q_OBJECT
     Q_PROPERTY(QVariant ambientOcclusion READ ambientOcclusion WRITE setAmbientOcclusion NOTIFY ambientOcclusionChanged)

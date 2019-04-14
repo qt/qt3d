@@ -50,7 +50,7 @@ namespace Qt3DRender {
 class QAttribute;
 class QGeometryPrivate;
 
-class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QAttribute *boundingVolumePositionAttribute READ boundingVolumePositionAttribute WRITE setBoundingVolumePositionAttribute NOTIFY boundingVolumePositionAttributeChanged)

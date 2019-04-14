@@ -77,13 +77,13 @@ class QAbstractPostman;
 class QScene;
 
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractArbiter : public QLockableObserverInterface
+class Q_3DCORE_PRIVATE_EXPORT QAbstractArbiter : public QLockableObserverInterface
 {
 public:
     virtual QAbstractPostman *postman() const = 0;
 };
 
-class QT3DCORE_PRIVATE_EXPORT QChangeArbiter final
+class Q_3DCORE_PRIVATE_EXPORT QChangeArbiter final
         : public QObject
         , public QAbstractArbiter
 {

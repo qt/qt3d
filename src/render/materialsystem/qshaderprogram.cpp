@@ -635,7 +635,7 @@ QShaderProgram::Status QShaderProgram::status() const
     return d->m_status;
 }
 
-static QByteArray deincludify(const QString &filePath)
+QByteArray QShaderProgramPrivate::deincludify(const QString &filePath)
 {
     QFile f(filePath);
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -644,20 +644,27 @@ static QByteArray deincludify(const QString &filePath)
     }
 
     QByteArray contents = f.readAll();
+    return deincludify(contents, filePath);
+}
+
+QByteArray QShaderProgramPrivate::deincludify(const QByteArray &contents, const QString &filePath)
+{
     QByteArrayList lines = contents.split('\n');
     const QByteArray includeDirective = QByteArrayLiteral("#pragma include");
     for (int i = 0; i < lines.count(); ++i) {
-        if (lines[i].startsWith(includeDirective)) {
-            QString includeFileName = QFileInfo(filePath).absolutePath()
-                + QLatin1Char('/')
-                + QString::fromUtf8(lines[i].mid(includeDirective.count() + 1));
+        const auto line = lines[i].simplified();
+        if (line.startsWith(includeDirective)) {
+            const QString includePartialPath = QString::fromUtf8(line.mid(includeDirective.count() + 1));
+
+            QString includePath = QFileInfo(includePartialPath).isAbsolute() ? includePartialPath
+                                : QFileInfo(filePath).absolutePath() + QLatin1Char('/') + includePartialPath;
             if (qEnvironmentVariableIsSet("QT3D_GLSL100_WORKAROUND")) {
-                QString candidate = includeFileName + QLatin1String("100");
+                QString candidate = includePath + QLatin1String("100");
                 if (QFile::exists(candidate))
-                    includeFileName = candidate;
+                    includePath = candidate;
             }
             lines.removeAt(i);
-            QByteArray includedContents = deincludify(includeFileName);
+            QByteArray includedContents = deincludify(includePath);
             lines.insert(i, includedContents);
             QString lineDirective = QString(QStringLiteral("#line %1")).arg(i + 2);
             lines.insert(i + 1, lineDirective.toUtf8());
@@ -678,7 +685,7 @@ static QByteArray deincludify(const QString &filePath)
 QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
-    return deincludify(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
+    return QShaderProgramPrivate::deincludify(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QShaderProgram::createNodeCreationChange() const

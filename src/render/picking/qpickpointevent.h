@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 class QPickPointEventPrivate;
 
-class QT3DRENDERSHARED_EXPORT QPickPointEvent : public QPickEvent
+class Q_3DRENDERSHARED_EXPORT QPickPointEvent : public QPickEvent
 {
     Q_OBJECT
     Q_PROPERTY(uint pointIndex READ pointIndex CONSTANT)

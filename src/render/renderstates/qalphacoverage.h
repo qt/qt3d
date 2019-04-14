@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QAlphaCoveragePrivate;
 
-class QT3DRENDERSHARED_EXPORT QAlphaCoverage : public QRenderState
+class Q_3DRENDERSHARED_EXPORT QAlphaCoverage : public QRenderState
 {
     Q_OBJECT
 public:

@@ -51,7 +51,7 @@ namespace Qt3DRender {
 class QFrameGraphNode;
 class QRenderSettingsPrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
 {
     Q_OBJECT
 

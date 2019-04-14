@@ -62,7 +62,7 @@ namespace Quick {
 
 // Qt6: Handle QFlags as Q_PROPERTY in QML
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DMemoryBarrier : public QObject
+class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DMemoryBarrier : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int waitFor READ waitFor WRITE setWaitFor)

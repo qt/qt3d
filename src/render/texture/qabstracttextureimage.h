@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 class QAbstractTextureImagePrivate;
 
-class QT3DRENDERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
+class Q_3DRENDERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)

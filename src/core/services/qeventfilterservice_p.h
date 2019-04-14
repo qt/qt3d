@@ -61,7 +61,7 @@ namespace Qt3DCore {
 
 class QEventFilterServicePrivate;
 
-class QT3DCORESHARED_EXPORT QEventFilterService : public QAbstractServiceProvider
+class Q_3DCORESHARED_EXPORT QEventFilterService : public QAbstractServiceProvider
 {
     Q_OBJECT
 public:
