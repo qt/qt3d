@@ -261,11 +261,7 @@ public:
         return QMatrix4x4();
     }
 
-#if Q_QML_PRIVATE_API_VERSION < 4
-    static QMatrix4x4 matrix4x4FromObject(QQmlV4Handle object, QV4::ExecutionEngine *v4, bool *ok)
-#else
     static QMatrix4x4 matrix4x4FromObject(const QV4::Value &object, QV4::ExecutionEngine *v4, bool *ok)
-#endif
     {
         if (ok) *ok = false;
         QV4::Scope scope(v4);
@@ -523,11 +519,7 @@ public:
         return false;
     }
 
-#if Q_QML_PRIVATE_API_VERSION < 4
-    bool variantFromJsObject(int type, QQmlV4Handle object, QV4::ExecutionEngine *v4, QVariant *v) override
-#else
     bool variantFromJsObject(int type, const QV4::Value &object, QV4::ExecutionEngine *v4, QVariant *v) override
-#endif
     {
         QV4::Scope scope(v4);
 #ifndef QT_NO_DEBUG
