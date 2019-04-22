@@ -274,10 +274,10 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
 
                     if (qFuzzyIsNull(omega)) {
                         // If the two keyframe quaternions are equal, just return the first one as the interpolated value.
-                        channelResults[0] = lowerQuat.scalar();
-                        channelResults[1] = lowerQuat.x();
-                        channelResults[2] = lowerQuat.y();
-                        channelResults[3] = lowerQuat.z();
+                        channelResults[i++] = lowerQuat.scalar();
+                        channelResults[i++] = lowerQuat.x();
+                        channelResults[i++] = lowerQuat.y();
+                        channelResults[i++] = lowerQuat.z();
                     } else {
                         for (const auto &channelComponent : qAsConst(channel.channelComponents))
                             channelResults[i++] = channelComponent.fcurve.evaluateAtTimeAsSlerp(localTime, lowerKeyframeBound, omega);
