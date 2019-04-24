@@ -48,11 +48,12 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.11
-import Qt3D.Extras 2.0
-import QtQuick.Window 2.0
-import Qt3D.Input 2.0
+import QtQml 2.14
+import Qt3D.Core 2.14
+import Qt3D.Render 2.14
+import Qt3D.Input 2.14
+import Qt3D.Extras 2.14
+import QtQuick.Window 2.14
 
 Entity {
     id: sceneRoot
