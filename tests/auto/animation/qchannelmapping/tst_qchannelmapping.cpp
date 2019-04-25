@@ -28,6 +28,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qchannelmapping.h>
+#include <Qt3DAnimation/private/qabstractchannelmapping_p.h>
 #include <Qt3DAnimation/private/qchannelmapping_p.h>
 #include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -36,7 +37,48 @@
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>
 #include <QSignalSpy>
+#include <QQuaternion>
 #include <testpostmanarbiter.h>
+
+class tst_QTargetEntity : public Qt3DCore::QEntity
+{
+    Q_OBJECT
+    Q_PROPERTY(QQuaternion rotation MEMBER m_rotation NOTIFY rotationChanged)
+    Q_PROPERTY(QVector3D translation MEMBER m_translation NOTIFY translationChanged)
+    Q_PROPERTY(QVector3D scale MEMBER m_scale NOTIFY scaleChanged)
+    Q_PROPERTY(float floatProperty MEMBER m_floatProperty NOTIFY floatPropertyChanged)
+    Q_PROPERTY(QVector2D vec2Property MEMBER m_vec2Property NOTIFY vec2PropertyChanged)
+    Q_PROPERTY(QVector3D vec3Property MEMBER m_vec3Property NOTIFY vec3PropertyChanged)
+    Q_PROPERTY(QVector4D vec4Property MEMBER m_vec4Property NOTIFY vec4PropertyChanged)
+    Q_PROPERTY(QQuaternion quaternionProperty MEMBER m_quaternionProperty NOTIFY quaternionPropertyChanged)
+    Q_PROPERTY(QVariantList listProperty MEMBER m_listProperty NOTIFY listPropertyChanged)
+    Q_PROPERTY(QVector<float> vecProperty MEMBER m_vecProperty NOTIFY vecPropertyChanged)
+
+signals:
+    void rotationChanged();
+    void translationChanged();
+    void scaleChanged();
+    void floatPropertyChanged();
+    void vec2PropertyChanged();
+    void vec3PropertyChanged();
+    void vec4PropertyChanged();
+    void quaternionPropertyChanged();
+    void listPropertyChanged();
+    void vecPropertyChanged();
+
+private:
+    QQuaternion m_rotation;
+    QVector3D m_translation;
+    QVector3D m_scale;
+    float m_floatProperty;
+    QVector2D m_vec2Property;
+    QVector3D m_vec3Property;
+    QVector4D m_vec4Property;
+    QQuaternion m_quaternionProperty;
+    QVariantList m_listProperty;
+    QVector<float> m_vecProperty;
+};
+
 
 class tst_QChannelMapping : public QObject
 {
@@ -52,6 +94,13 @@ private Q_SLOTS:
         QCOMPARE(mapping.channelName(), QString());
         QCOMPARE(mapping.target(), static_cast<Qt3DCore::QNode *>(nullptr));
         QCOMPARE(mapping.property(), QString());
+
+        const Qt3DAnimation::QChannelMappingPrivate *d =
+            static_cast<const Qt3DAnimation::QChannelMappingPrivate *>(
+                Qt3DAnimation::QChannelMappingPrivate::get(&mapping));
+
+        QCOMPARE(d->m_type, static_cast<int>(QVariant::Invalid));
+        QCOMPARE(d->m_componentCount, 0);
     }
 
     void checkPropertyChanges()
@@ -125,7 +174,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::QChannelMapping mapping;
-        auto target = new Qt3DCore::QEntity;
+        auto target = new tst_QTargetEntity;
 
         mapping.setChannelName(QStringLiteral("Location"));
         mapping.setTarget(target);
@@ -154,6 +203,8 @@ private Q_SLOTS:
             QCOMPARE(mapping.channelName(), data.channelName);
             QCOMPARE(mapping.target()->id(), data.targetId);
             QCOMPARE(mapping.property(), data.property);
+            QCOMPARE(data.type, static_cast<int>(QVariant::Vector3D));
+            QCOMPARE(data.componentCount, 3);
         }
 
         // WHEN
@@ -179,6 +230,8 @@ private Q_SLOTS:
             QCOMPARE(mapping.channelName(), data.channelName);
             QCOMPARE(mapping.target()->id(), data.targetId);
             QCOMPARE(mapping.property(), data.property);
+            QCOMPARE(data.type, static_cast<int>(QVariant::Vector3D));
+            QCOMPARE(data.componentCount, 3);
         }
     }
 
@@ -187,6 +240,7 @@ private Q_SLOTS:
         // GIVEN
         TestArbiter arbiter;
         Qt3DAnimation::QChannelMapping mapping;
+        QScopedPointer<Qt3DCore::QEntity> target(new tst_QTargetEntity());
         arbiter.setArbiterOnNode(&mapping);
 
         {
@@ -213,8 +267,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto target = new Qt3DCore::QEntity();
-            mapping.setTarget(target);
+            mapping.setTarget(target.data());
             QCoreApplication::processEvents();
 
             // THEN
@@ -227,7 +280,7 @@ private Q_SLOTS:
             arbiter.events.clear();
 
             // WHEN
-            mapping.setTarget(target);
+            mapping.setTarget(target.data());
             QCoreApplication::processEvents();
 
             // THEN
@@ -236,15 +289,31 @@ private Q_SLOTS:
 
         {
             // WHEN
+            target->setProperty("scale", QVector3D(1.0f, 0.0f, 0.0f));
             mapping.setProperty(QStringLiteral("scale"));
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(arbiter.events.size(), 4);
+            auto change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "property");
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
             QCOMPARE(change->value().toString(), mapping.property());
+
+            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "type");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().toInt(), static_cast<int>(QVariant::Vector3D));
+
+            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "componentCount");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().toInt(), 3);
+
+            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "propertyName");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QVERIFY(qstrcmp(reinterpret_cast<const char *>(change->value().value<void *>()), "scale") == 0);
 
             arbiter.events.clear();
 
@@ -255,8 +324,88 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
         }
-
     }
+
+    void checkPropertyUpdateNameTypeAndComponentCount_data()
+    {
+        QTest::addColumn<QByteArray>("propertyName");
+        QTest::addColumn<QVariant>("value");
+        QTest::addColumn<int>("expectedType");
+        QTest::addColumn<int>("expectedComponentCount");
+
+        QTest::newRow("float") << QByteArrayLiteral("floatProperty") << QVariant(1.0f) << static_cast<int>(QMetaType::Float) << 1;
+        QTest::newRow("vec2") << QByteArrayLiteral("vec2Property") << QVariant(QVector2D(1.0f, 1.0f)) << static_cast<int>(QVariant::Vector2D) << 2;
+        QTest::newRow("vec3") << QByteArrayLiteral("vec3Property") << QVariant(QVector3D(1.0f, 1.0f, 1.0f)) << static_cast<int>(QVariant::Vector3D) << 3;
+        QTest::newRow("vec4") << QByteArrayLiteral("vec4Property") << QVariant(QVector4D(1.0f, 1.0f, 1.0f, 1.0f)) << static_cast<int>(QVariant::Vector4D) << 4;
+        QTest::newRow("quaternion") << QByteArrayLiteral("quaternionProperty") << QVariant(QQuaternion(1.0f, 1.0f, 1.0f, 1.0f)) << static_cast<int>(QVariant::Quaternion) << 4;
+
+        QVariantList list = QVariantList() << QVariant(1.0f) << QVariant(1.0) << QVariant(1.0f) << QVariant(1.0f) << QVariant(1.0f);
+        QTest::newRow("variantlist") << QByteArrayLiteral("listProperty") << QVariant::fromValue(list) << static_cast<int>(QVariant::List) << 5;
+
+        QVector<float> vec(8);
+        QTest::newRow("vector") << QByteArrayLiteral("vecProperty") << QVariant::fromValue(vec) << qMetaTypeId<decltype(vec)>() << 8;
+    }
+
+    void checkPropertyUpdateNameTypeAndComponentCount()
+    {
+        // GIVEN
+        QFETCH(QByteArray, propertyName);
+        QFETCH(QVariant, value);
+        QFETCH(int, expectedType);
+        QFETCH(int, expectedComponentCount);
+
+        TestArbiter arbiter;
+        Qt3DAnimation::QChannelMapping mapping;
+        QScopedPointer<Qt3DCore::QEntity> target(new tst_QTargetEntity());
+        mapping.setTarget(target.data());
+        arbiter.setArbiterOnNode(&mapping);
+
+        {
+            // WHEN
+            target->setProperty(propertyName.constData(), value);
+            mapping.setProperty(QString::fromLatin1(propertyName));
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 5);
+
+            // Automatic notification change when property is updated
+            auto change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), propertyName.constData());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value(), value);
+
+            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "property");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().toString(), mapping.property());
+
+            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "type");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().toInt(), expectedType);
+
+            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "componentCount");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().toInt(), expectedComponentCount);
+
+            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "propertyName");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QVERIFY(qstrcmp(reinterpret_cast<const char *>(change->value().value<void *>()), propertyName.constData()) == 0);
+
+            arbiter.events.clear();
+
+            // WHEN
+            mapping.setProperty(QString::fromLatin1(propertyName));
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+    }
+
 };
 
 QTEST_MAIN(tst_QChannelMapping)

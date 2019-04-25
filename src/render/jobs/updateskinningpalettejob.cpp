@@ -59,6 +59,10 @@ UpdateSkinningPaletteJob::~UpdateSkinningPaletteJob()
 
 void UpdateSkinningPaletteJob::run()
 {
+    auto armatureManager = m_nodeManagers->armatureManager();
+    if (armatureManager->count() == 0)
+        return;
+
     // TODO: Decompose this job across several jobs, say one per skeleton so
     // that it can be done in parallel
 
@@ -78,7 +82,6 @@ void UpdateSkinningPaletteJob::run()
     findDirtyArmatures(m_root, dirtyArmatures);
 
     // Update the skeleton for each dirty armature
-    auto armatureManager = m_nodeManagers->armatureManager();
     auto skeletonManager = m_nodeManagers->skeletonManager();
     for (const auto &armatureHandle : qAsConst(dirtyArmatures)) {
         auto armature = armatureManager->data(armatureHandle);

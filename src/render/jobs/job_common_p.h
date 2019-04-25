@@ -109,6 +109,7 @@ namespace JobTypes {
         UpdateLayerEntity,
         SendTextureChangesToFrontend,
         SendSetFenceHandlesToFrontend,
+        UpdateEntityHierarchy,
     };
 
 } // JobTypes

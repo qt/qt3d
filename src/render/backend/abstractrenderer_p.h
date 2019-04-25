@@ -114,6 +114,8 @@ public:
         JointDirty          = 1 << 11,
         LayersDirty         = 1 << 12,
         TechniquesDirty     = 1 << 13,
+        EntityHierarchyDirty= 1 << 14,
+        LightsDirty         = 1 << 15,
         AllDirty            = 0xffffff
     };
     Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,9 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERERCACHE_P_H
-#define QT3DRENDER_RENDER_RENDERERCACHE_P_H
+
+#ifndef QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H
+#define QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H
 
 //
 //  W A R N I N G
@@ -51,11 +52,8 @@
 // We mean it.
 //
 
-#include <Qt3DRender/QFrameGraphNode>
-
-#include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/private/renderviewjobutils_p.h>
-#include <Qt3DRender/private/lightsource_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,30 +61,31 @@ namespace Qt3DRender {
 
 namespace Render {
 
-struct RendererCache
+class Entity;
+class NodeManagers;
+
+class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateEntityHierarchyJob: public Qt3DCore::QAspectJob
 {
-    struct LeafNodeData
-    {
-        QVector<Entity *> filterEntitiesByLayer;
-        MaterialParameterGathererData materialParameterGatherer;
-        QVector<LightSource> gatheredLights;
-        QVector<Entity *> renderableEntities;
-        QVector<Entity *> computeEntities;
-        EnvironmentLight* environmentLight;
-    };
+public:
+    UpdateEntityHierarchyJob();
 
-    QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
+    inline void setManager(NodeManagers *manager) { m_manager = manager; }
+    inline NodeManagers *manager() const { return m_manager; }
 
-    QMutex *mutex() { return &m_mutex; }
+    // QAspectJob interface
+    void run() final;
 
 private:
-    QMutex m_mutex;
+    NodeManagers *m_manager;
 };
 
-} // namespace Render
 
-} // namespace Qt3DRender
+using UpdateEntityHierarchyJobPtr = QSharedPointer<UpdateEntityHierarchyJob>;
+
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERERCACHE_P_H
+#endif // QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H

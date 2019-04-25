@@ -40,6 +40,7 @@
 #include "qframegraphnode.h"
 #include "qframegraphnode_p.h"
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DCore/QNode>
 
@@ -248,7 +249,22 @@ QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
 
 Qt3DCore::QNodeCreatedChangeBasePtr QFrameGraphNode::createNodeCreationChange() const
 {
+    // connect to the parentChanged signal here rather than constructor because
+    // until now there's no backend node to notify when parent changes
+    connect(this, &QNode::parentChanged, this, &QFrameGraphNode::onParentChanged);
+
     return QFrameGraphNodeCreatedChangeBasePtr::create(this);
+}
+
+void QFrameGraphNode::onParentChanged(QObject *)
+{
+    const auto parentID = parentFrameGraphNode() ? parentFrameGraphNode()->id() : Qt3DCore::QNodeId();
+    auto parentChange = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
+    parentChange->setPropertyName("parentFrameGraphUpdated");
+    parentChange->setValue(QVariant::fromValue(parentID));
+    const bool blocked = blockNotifications(false);
+    notifyObservers(parentChange);
+    blockNotifications(blocked);
 }
 
 } // namespace Qt3DRender

@@ -50,25 +50,27 @@
 
 #include <Qt3DAnimation/private/qabstractchannelmapping_p.h>
 #include <Qt3DAnimation/qanimationcallback.h>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QChannelMappingPrivate : public QAbstractChannelMappingPrivate
+class Q_AUTOTEST_EXPORT QChannelMappingPrivate : public QAbstractChannelMappingPrivate
 {
 public:
     QChannelMappingPrivate();
 
     Q_DECLARE_PUBLIC(QChannelMapping)
 
-    void updatePropertyNameAndType();
+    void updatePropertyNameTypeAndComponentCount();
 
     QString m_channelName;
     Qt3DCore::QNode *m_target;
     QString m_property;
     const char *m_propertyName;
     int m_type;
+    int m_componentCount;
 };
 
 struct QChannelMappingData
@@ -77,6 +79,7 @@ struct QChannelMappingData
     Qt3DCore::QNodeId targetId;
     QString property;
     int type;
+    int componentCount;
     const char *propertyName;
 };
 
@@ -84,5 +87,8 @@ struct QChannelMappingData
 
 
 QT_END_NAMESPACE
+
+// Used to define the meta type id
+Q_DECLARE_METATYPE(QVector<float>) // LCOV_EXCL_LINE
 
 #endif // QT3DANIMATION_QCHANNELMAPPING_P_H

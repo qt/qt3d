@@ -1,5 +1,9 @@
 {
     "module": "3drender",
+    "depends": [
+        "3dcore"
+    ],
+    "condition": "module.3dcore",
     "testDir": "./config.tests",
 
     "commandline": {

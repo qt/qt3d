@@ -309,9 +309,6 @@ void Quick3DEntityLoaderPrivate::_q_componentStatusChanged(QQmlComponent::Status
     Q_ASSERT(m_context == nullptr);
     Q_ASSERT(m_incubator == nullptr);
 
-
-    qDebug() <<  Q_FUNC_INFO << status;
-
     if (!m_component) {
         clear();
         emit q->entityChanged();

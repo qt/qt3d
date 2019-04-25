@@ -93,6 +93,11 @@ void UpdateLevelOfDetailJob::setFrameGraphRoot(FrameGraphNode *frameGraphRoot)
 void UpdateLevelOfDetailJob::run()
 {
     Q_ASSERT(m_frameGraphRoot && m_root && m_manager);
+
+    // short-circuit if no LoDs exist
+    if (m_manager->levelOfDetailManager()->count() == 0)
+        return;
+
     updateEntityLod(m_root);
 }
 

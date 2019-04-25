@@ -97,6 +97,10 @@ public:
     HEntity handle() const { return m_handle; }
     Entity *parent() const;
     HEntity parentHandle() const { return m_parentHandle; }
+    Qt3DCore::QNodeId parentEntityId() const { return m_parentEntityId; }
+
+    void clearEntityHierarchy();
+    void rebuildEntityHierarchy();
 
     void appendChildHandle(HEntity childHandle);
     void removeChildHandle(HEntity childHandle) { m_childrenHandles.removeOne(childHandle); }
@@ -180,6 +184,8 @@ private:
     HEntity m_handle;
     HEntity m_parentHandle;
     QVector<HEntity > m_childrenHandles;
+
+    Qt3DCore::QNodeId m_parentEntityId;
 
     HMatrix m_worldTransform;
     QSharedPointer<Sphere> m_localBoundingVolume;

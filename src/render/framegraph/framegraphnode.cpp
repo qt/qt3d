@@ -40,9 +40,8 @@
 #include "framegraphnode_p.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -101,28 +100,6 @@ void FrameGraphNode::setParentId(Qt3DCore::QNodeId parentId)
     }
 }
 
-void FrameGraphNode::appendChildId(Qt3DCore::QNodeId childId)
-{
-    if (!m_childrenIds.contains(childId)) {
-        FrameGraphNode *child = m_manager->lookupNode(childId);
-        if (child != nullptr) {
-            m_childrenIds.append(childId);
-            child->m_parentId = peerId();
-        }
-    }
-}
-
-void FrameGraphNode::removeChildId(Qt3DCore::QNodeId childId)
-{
-    if (m_childrenIds.contains(childId)) {
-        FrameGraphNode *child = m_manager->lookupNode(childId);
-        if (child != nullptr) {
-            child->m_parentId = Qt3DCore::QNodeId();
-        }
-        m_childrenIds.removeAll(childId);
-    }
-}
-
 Qt3DCore::QNodeId FrameGraphNode::parentId() const
 {
     return m_parentId;
@@ -155,28 +132,15 @@ void FrameGraphNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
 
-    case Qt3DCore::PropertyValueAdded: {
-       Qt3DCore::QPropertyNodeAddedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->metaObject()->inherits(&QFrameGraphNode::staticMetaObject)) {
-            appendChildId(change->addedNodeId());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-        break;
-    }
-
-    case Qt3DCore::PropertyValueRemoved: {
-        Qt3DCore::QPropertyNodeRemovedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->metaObject()->inherits(&QFrameGraphNode::staticMetaObject)) {
-            removeChildId(change->removedNodeId());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-        break;
-    }
     case Qt3DCore::PropertyUpdated: {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             d_func()->m_enabled = propertyChange->value().toBool();
             markDirty(AbstractRenderer::FrameGraphDirty);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("parentFrameGraphUpdated")) {
+            auto newParent = propertyChange->value().value<Qt3DCore::QNodeId>();
+            setParentId(newParent);
+            markDirty(AbstractRenderer::AllDirty);
         }
         break;
     }
@@ -184,6 +148,12 @@ void FrameGraphNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 }
+
+void FrameGraphNode::cleanup()
+{
+    setParentId({});
+}
+
 
 } // namespace Render
 } // namespace Qt3DRender

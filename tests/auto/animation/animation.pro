@@ -5,7 +5,6 @@ SUBDIRS += \
     qanimationcliploader \
     qclipanimator \
     qblendedclipanimator \
-    qchannelmapping \
     qchannelmapper \
     qclipblendvalue \
     qanimationcontroller \
@@ -40,5 +39,6 @@ qtConfig(private_tests) {
         qabstractanimation \
         clock \
         skeleton \
-        findrunningclipanimatorsjob
+        findrunningclipanimatorsjob \
+        qchannelmapping
 }
