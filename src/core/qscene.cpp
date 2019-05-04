@@ -57,8 +57,8 @@ public:
     QScenePrivate(QAspectEngine *engine)
         : m_engine(engine)
         , m_arbiter(nullptr)
-        , m_rootNode(nullptr)
         , m_postConstructorInit(new NodePostConstructorInit)
+        , m_rootNode(nullptr)
     {
     }
 
