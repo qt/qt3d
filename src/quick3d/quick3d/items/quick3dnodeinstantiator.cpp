@@ -47,11 +47,11 @@
 #include <QQmlIncubator>
 
 #include <Qt3DCore/private/qnode_p.h>
-#include <QtQml/private/qqmlchangeset_p.h>
+#include <private/qqmlchangeset_p.h>
 #if QT_CONFIG(qml_delegate_model)
-#include <QtQml/private/qqmldelegatemodel_p.h>
+#include <private/qqmldelegatemodel_p.h>
 #endif
-#include <QtQml/private/qqmlobjectmodel_p.h>
+#include <private/qqmlobjectmodel_p.h>
 
 QT_BEGIN_NAMESPACE
 
