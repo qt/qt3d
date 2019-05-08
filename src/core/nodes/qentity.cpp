@@ -88,6 +88,26 @@ QEntityPrivate::~QEntityPrivate()
 {
 }
 
+/*! \internal */
+void QEntityPrivate::removeDestroyedComponent(QComponent *comp)
+{
+    // comp is actually no longer a QComponent, just a QObject
+
+    Q_CHECK_PTR(comp);
+    qCDebug(Nodes) << Q_FUNC_INFO << comp;
+    Q_Q(QEntity);
+
+    if (m_changeArbiter) {
+        const auto componentRemovedChange = QComponentRemovedChangePtr::create(q, comp);
+        notifyObservers(componentRemovedChange);
+    }
+
+    m_components.removeOne(comp);
+
+    // Remove bookkeeping connection
+    unregisterDestructionHelper(comp);
+}
+
 /*!
     Constructs a new Qt3DCore::QEntity instance with \a parent as parent.
  */
@@ -157,7 +177,7 @@ void QEntity::addComponent(QComponent *comp)
     d->m_components.append(comp);
 
     // Ensures proper bookkeeping
-    d->registerDestructionHelper(comp, &QEntity::removeComponent, d->m_components);
+    d->registerPrivateDestructionHelper(comp, &QEntityPrivate::removeDestroyedComponent);
 
     if (d->m_changeArbiter) {
         const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);

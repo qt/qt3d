@@ -145,6 +145,14 @@ public:
         m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
     }
 
+    template<typename Caller, typename NodeType>
+    void registerPrivateDestructionHelper(NodeType *node, DestructionFunctionPointer<Caller, NodeType> func)
+    {
+        // If the node is destoyed, we make sure not to keep a dangling pointer to it
+        auto f = [this, func, node]() { (static_cast<Caller *>(this)->*func)(node); };
+        m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
+    }
+
     void unregisterDestructionHelper(QNode *node)
     {
         QObject::disconnect(m_destructionConnections.take(node));
