@@ -29,6 +29,7 @@
 #include <QtTest/QTest>
 #include <Qt3DRender/private/updateshaderdatatransformjob_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
+#include <Qt3DRender/private/updateentityhierarchyjob_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/qrenderaspect.h>
@@ -88,6 +89,10 @@ namespace {
 
 void runRequiredJobs(Qt3DRender::TestAspect *test)
 {
+    Qt3DRender::Render::UpdateEntityHierarchyJob updateEntitiesJob;
+    updateEntitiesJob.setManager(test->nodeManagers());
+    updateEntitiesJob.run();
+
     Qt3DRender::Render::UpdateWorldTransformJob updateWorldTransform;
     updateWorldTransform.setRoot(test->sceneRoot());
     updateWorldTransform.run();

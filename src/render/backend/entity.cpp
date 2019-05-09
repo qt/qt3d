@@ -65,8 +65,6 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 
 #include <QMatrix4x4>
@@ -95,14 +93,13 @@ Entity::~Entity()
 void Entity::cleanup()
 {
     if (m_nodeManagers != nullptr) {
-        Entity *parentEntity = parent();
-        if (parentEntity != nullptr)
-            parentEntity->removeChildHandle(m_handle);
         m_nodeManagers->worldMatrixManager()->releaseResource(peerId());
-
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
-
     }
+    if (!m_parentEntityId.isNull())
+        markDirty(AbstractRenderer::EntityHierarchyDirty);
+
+    m_parentEntityId = Qt3DCore::QNodeId();
     m_worldTransform = HMatrix();
     // Release all component will have to perform their own release when they receive the
     // NodeDeleted notification
@@ -132,12 +129,8 @@ void Entity::cleanup()
 void Entity::setParentHandle(HEntity parentHandle)
 {
     Q_ASSERT(m_nodeManagers);
-    // Remove ourselves from previous parent children list
-    Entity *parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
-    if (parent != nullptr && parent->m_childrenHandles.contains(m_handle))
-        parent->m_childrenHandles.removeAll(m_handle);
     m_parentHandle = parentHandle;
-    parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
+    auto parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
     if (parent != nullptr && !parent->m_childrenHandles.contains(m_handle))
         parent->m_childrenHandles.append(m_handle);
 }
@@ -159,8 +152,8 @@ void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 
     // Note this is *not* the parentId as that is the ID of the parent QNode, which is not
     // necessarily the same as the parent QEntity (which may be further up the tree).
-    const QNodeId parentEntityId = data.parentEntityId;
-    qCDebug(Render::RenderNodes) << "Creating Entity id =" << peerId() << "parentId =" << parentEntityId;
+    m_parentEntityId = data.parentEntityId;
+    qCDebug(Render::RenderNodes) << "Creating Entity id =" << peerId() << "parentId =" << m_parentEntityId;
 
     // TODO: Store string id instead and only in debug mode
     //m_objectName = peer->objectName();
@@ -187,10 +180,7 @@ void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     for (const auto &idAndType : qAsConst(data.componentIdsAndTypes))
         addComponent(idAndType);
 
-    if (!parentEntityId.isNull())
-        setParentHandle(m_nodeManagers->renderNodesManager()->lookupHandle(parentEntityId));
-    else
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerId();
+    markDirty(AbstractRenderer::EntityHierarchyDirty);
 }
 
 void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -214,30 +204,21 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case PropertyValueAdded: {
-        QPropertyNodeAddedChangePtr change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->metaObject()->inherits(&QEntity::staticMetaObject)) {
-            appendChildHandle(m_nodeManagers->renderNodesManager()->lookupHandle(change->addedNodeId()));
-            markDirty(AbstractRenderer::AllDirty);
-        }
-        break;
-    }
-
-    case PropertyValueRemoved: {
-        QPropertyNodeRemovedChangePtr change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->metaObject()->inherits(&QEntity::staticMetaObject)) {
-            removeChildHandle(m_nodeManagers->renderNodesManager()->lookupHandle(change->removedNodeId()));
-            markDirty(AbstractRenderer::AllDirty);
-        }
-        break;
-    }
-
     case PropertyUpdated: {
         QPropertyUpdatedChangePtr change = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("enabled")) {
             // We only mark as dirty the renderer
             markDirty(AbstractRenderer::EntityEnabledDirty);
             // We let QBackendNode::sceneChangeEvent change the enabled property
+        } else if (change->propertyName() == QByteArrayLiteral("parentEntityUpdated")) {
+            auto newParent = change->value().value<Qt3DCore::QNodeId>();
+            qCDebug(Render::RenderNodes) << "Setting parent for " << peerId() << ", new parentId =" << newParent;
+            if (m_parentEntityId != newParent) {
+                m_parentEntityId = newParent;
+                // TODO: change to EventHierarchyDirty and update renderer to
+                //       ensure all jobs are run that depend on Entity hierarchy.
+                markDirty(AbstractRenderer::AllDirty);
+            }
         }
 
         break;
@@ -263,6 +244,27 @@ void Entity::dump() const
 Entity *Entity::parent() const
 {
     return m_nodeManagers->renderNodesManager()->data(m_parentHandle);
+}
+
+
+// clearEntityHierarchy and rebuildEntityHierarchy should only be called
+// from UpdateEntityHierarchyJob to update the entity hierarchy for the
+// entire scene at once
+void Entity::clearEntityHierarchy()
+{
+    m_childrenHandles.clear();
+    m_parentHandle = HEntity();
+}
+
+// clearEntityHierarchy and rebuildEntityHierarchy should only be called
+// from UpdateEntityHierarchyJob to update the entity hierarchy for the
+// entire scene at once
+void Entity::rebuildEntityHierarchy()
+{
+    if (!m_parentEntityId.isNull())
+        setParentHandle(m_nodeManagers->renderNodesManager()->lookupHandle(m_parentEntityId));
+    else
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerId();
 }
 
 void Entity::appendChildHandle(HEntity childHandle)

@@ -1,5 +1,8 @@
 TEMPLATE = subdirs
 
+!qtHaveModule(gui): \
+    return()
+
 src_core.subdir = $$PWD/core
 src_core.target = sub-core
 
