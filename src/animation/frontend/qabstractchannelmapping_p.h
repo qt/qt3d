@@ -60,7 +60,7 @@ namespace Qt3DAnimation {
 
 class QAbstractChannelMapping;
 
-class QAbstractChannelMappingPrivate : public Qt3DCore::QNodePrivate
+class Q_AUTOTEST_EXPORT QAbstractChannelMappingPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QAbstractChannelMappingPrivate();

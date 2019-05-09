@@ -134,7 +134,7 @@ struct ChannelNameAndType
     int jointIndex;
     Qt3DCore::QNodeId mappingId;
     JointTransformComponent jointTransformComponent;
-    float pad; // Unused
+    int componentCount;
 
     static const int invalidIndex = -1;
 
@@ -145,11 +145,12 @@ struct ChannelNameAndType
         , jointIndex(-1)
         , mappingId()
         , jointTransformComponent(NoTransformComponent)
-        , pad(0)
+        , componentCount(-1)
     {}
 
     ChannelNameAndType(const QString &_name,
                        int _type,
+                       int componentCount,
                        Qt3DCore::QNodeId _mappingId = Qt3DCore::QNodeId(),
                        int _jointIndex = invalidIndex)
         : jointName()
@@ -158,7 +159,7 @@ struct ChannelNameAndType
         , jointIndex(_jointIndex)
         , mappingId(_mappingId)
         , jointTransformComponent(NoTransformComponent)
-        , pad(0)
+        , componentCount(componentCount)
     {}
 
     ChannelNameAndType(const QString &_name,
@@ -170,8 +171,20 @@ struct ChannelNameAndType
         , jointIndex(invalidIndex)
         , mappingId()
         , jointTransformComponent(_jointTransformComponent)
-        , pad(0)
-    {}
+        , componentCount(-1)
+    {
+        switch (_jointTransformComponent) {
+        case  NoTransformComponent:
+            break;
+        case Scale:
+        case Translation:
+            componentCount = 3;
+            break;
+        case Rotation:
+            componentCount = 4;
+            break;
+        };
+    }
 
     bool operator==(const ChannelNameAndType &rhs) const
     {
@@ -179,7 +192,8 @@ struct ChannelNameAndType
             && type == rhs.type
             && jointIndex == rhs.jointIndex
             && mappingId == rhs.mappingId
-            && jointTransformComponent == rhs.jointTransformComponent;
+            && jointTransformComponent == rhs.jointTransformComponent
+            && componentCount == rhs.componentCount;
     }
 };
 
@@ -192,7 +206,8 @@ inline QDebug operator<<(QDebug dbg, const ChannelNameAndType &nameAndType)
         << "mappingId =" << nameAndType.mappingId
         << "jointIndex =" << nameAndType.jointIndex
         << "jointName =" << nameAndType.jointName
-        << "jointTransformComponent =" << nameAndType.jointTransformComponent;
+        << "jointTransformComponent =" << nameAndType.jointTransformComponent
+        << "componentCount =" << nameAndType.componentCount;
     return dbg;
 }
 #endif
@@ -289,20 +304,18 @@ inline bool isValidNormalizedTime(float t)
 }
 
 Q_AUTOTEST_EXPORT
-int componentsForType(int type);
-
-Q_AUTOTEST_EXPORT
 ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
                                          const AnimatorEvaluationData &animatorData);
 
 Q_AUTOTEST_EXPORT
 ComponentIndices channelComponentsToIndices(const Channel &channel,
                                             int dataType,
-                                            int offset = 0);
+                                            int expectedComponentCount,
+                                            int offset);
 
 Q_AUTOTEST_EXPORT
 ComponentIndices channelComponentsToIndicesHelper(const Channel &channelGroup,
-                                                  int dataType,
+                                                  int expectedComponentCount,
                                                   int offset,
                                                   const QVector<char> &suffixes);
 

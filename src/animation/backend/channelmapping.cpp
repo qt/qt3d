@@ -55,6 +55,7 @@ ChannelMapping::ChannelMapping()
     , m_targetId()
     , m_property()
     , m_type(static_cast<int>(QVariant::Invalid))
+    , m_componentCount(0)
     , m_propertyName(nullptr)
     , m_callback(nullptr)
     , m_callbackFlags(0)
@@ -74,6 +75,7 @@ void ChannelMapping::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
         m_targetId = data.targetId;
         m_property = data.property;
         m_type = data.type;
+        m_componentCount = data.componentCount;
         m_propertyName = data.propertyName;
         m_mappingType = ChannelMappingType;
         break;
@@ -108,6 +110,7 @@ void ChannelMapping::cleanup()
     m_property.clear();
     m_type = static_cast<int>(QVariant::Invalid);
     m_propertyName = nullptr;
+    m_componentCount = 0;
     m_callback = nullptr;
     m_callbackFlags = 0;
     m_skeletonId = Qt3DCore::QNodeId();
@@ -128,6 +131,8 @@ void ChannelMapping::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_type = change->value().toInt();
         else if (change->propertyName() == QByteArrayLiteral("propertyName"))
             m_propertyName = static_cast<const char *>(const_cast<const void *>(change->value().value<void *>()));
+        else if (change->propertyName() == QByteArrayLiteral("componentCount"))
+            m_componentCount = change->value().toInt();
         else if (change->propertyName() == QByteArrayLiteral("callback"))
             m_callback = static_cast<QAnimationCallback *>(change->value().value<void *>());
         else if (change->propertyName() == QByteArrayLiteral("callbackFlags"))

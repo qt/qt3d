@@ -47,6 +47,61 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
+namespace {
+
+template<typename T>
+int componentCountForValue(const T &)
+{
+    return 0;
+}
+
+template<>
+int componentCountForValue<QVector<float>>(const QVector<float> &v)
+{
+    return v.size();
+}
+
+template<>
+int componentCountForValue<QVariantList>(const QVariantList &v)
+{
+    return v.size();
+}
+
+
+int componentCountForType(int type, const QVariant &value)
+{
+    const int vectorOfFloatTypeId = qMetaTypeId<QVector<float>>();
+
+    if (type == vectorOfFloatTypeId)
+        return componentCountForValue<QVector<float>>(value.value<QVector<float>>());
+
+    switch (type) {
+    case QMetaType::Float:
+    case QVariant::Double:
+        return 1;
+
+    case QVariant::Vector2D:
+        return 2;
+
+    case QVariant::Vector3D:
+    case QVariant::Color:
+        return 3;
+
+    case QVariant::Vector4D:
+    case QVariant::Quaternion:
+        return 4;
+
+    case QVariant::List:
+        return componentCountForValue<QVariantList>(value.toList());
+
+    default:
+        qWarning() << "Unhandled animation type";
+        return 0;
+    }
+}
+
+} // anonymous
+
 QChannelMappingPrivate::QChannelMappingPrivate()
     : QAbstractChannelMappingPrivate()
     , m_channelName()
@@ -54,6 +109,7 @@ QChannelMappingPrivate::QChannelMappingPrivate()
     , m_property()
     , m_propertyName(nullptr)
     , m_type(static_cast<int>(QVariant::Invalid))
+    , m_componentCount(0)
 {
     m_mappingType = QChannelMappingCreatedChangeBase::ChannelMapping;
 }
@@ -63,9 +119,10 @@ QChannelMappingPrivate::QChannelMappingPrivate()
 
     Find the type of the property specified on the target node
  */
-void QChannelMappingPrivate::updatePropertyNameAndType()
+void QChannelMappingPrivate::updatePropertyNameTypeAndComponentCount()
 {
     int type;
+    int componentCount = 0;
     const char *propertyName = nullptr;
 
     if (!m_target || m_property.isNull()) {
@@ -76,8 +133,8 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
         QMetaProperty mp = mo->property(propertyIndex);
         propertyName = mp.name();
         type = mp.userType();
+        const QVariant currentValue = m_target->property(mp.name());
         if (type == QMetaType::QVariant) {
-            QVariant currentValue = m_target->property(mp.name());
             if (currentValue.isValid()) {
                 type = currentValue.userType();
             } else {
@@ -85,6 +142,7 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
                          "Set a value first in order to be able to determine the type.");
             }
         }
+        componentCount = componentCountForType(type, currentValue);
     }
 
     if (m_type != type) {
@@ -95,6 +153,17 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(q->id());
         e->setPropertyName("type");
         e->setValue(QVariant(m_type));
+        notifyObservers(e);
+    }
+
+    if (m_componentCount != componentCount) {
+        m_componentCount = componentCount;
+
+        // Send update to the backend
+        Q_Q(QChannelMapping);
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(q->id());
+        e->setPropertyName("componentCount");
+        e->setValue(QVariant(m_componentCount));
         notifyObservers(e);
     }
 
@@ -178,7 +247,7 @@ void QChannelMapping::setTarget(Qt3DCore::QNode *target)
         d->registerDestructionHelper(d->m_target, &QChannelMapping::setTarget, d->m_target);
 
     emit targetChanged(target);
-    d->updatePropertyNameAndType();
+    d->updatePropertyNameTypeAndComponentCount();
 }
 
 void QChannelMapping::setProperty(const QString &property)
@@ -189,7 +258,7 @@ void QChannelMapping::setProperty(const QString &property)
 
     d->m_property = property;
     emit propertyChanged(property);
-    d->updatePropertyNameAndType();
+    d->updatePropertyNameTypeAndComponentCount();
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() const
@@ -201,6 +270,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() 
     data.targetId = Qt3DCore::qIdForNode(d->m_target);
     data.property = d->m_property;
     data.type = d->m_type;
+    data.componentCount = d->m_componentCount;
     data.propertyName = d->m_propertyName;
     return creationChange;
 }

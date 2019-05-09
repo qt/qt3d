@@ -13,6 +13,7 @@ SUBDIRS += \
     custom-mesh-update-data-cpp \
     custom-mesh-update-data-qml \
     cylinder-cpp \
+    cylinder-parent-test \
     cylinder-qml \
     deferred-renderer-cpp \
     deferred-renderer-qml \

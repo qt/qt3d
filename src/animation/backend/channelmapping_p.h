@@ -93,6 +93,9 @@ public:
     void setPropertyName(const char *propertyName) { m_propertyName = propertyName; }
     const char *propertyName() const { return m_propertyName; }
 
+    void setComponentCount(int componentCount) { m_componentCount = componentCount; }
+    int componentCount() const { return m_componentCount; }
+
     void setCallback(QAnimationCallback *callback) { m_callback = callback; }
     QAnimationCallback *callback() const { return m_callback; }
 
@@ -114,6 +117,7 @@ private:
     Qt3DCore::QNodeId m_targetId;
     QString m_property;
     int m_type;
+    int m_componentCount;
     const char *m_propertyName;
 
     // TODO: Properties from QCallbackMapping

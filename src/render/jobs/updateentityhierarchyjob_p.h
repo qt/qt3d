@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,85 +37,55 @@
 **
 ****************************************************************************/
 
-#include "managers_p.h"
 
-#include <Qt3DRender/private/framegraphnode_p.h>
+#ifndef QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H
+#define QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
 namespace Render {
 
-FrameGraphManager::~FrameGraphManager()
+class Entity;
+class NodeManagers;
+
+class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateEntityHierarchyJob: public Qt3DCore::QAspectJob
 {
-    qDeleteAll(m_nodes);
-}
+public:
+    UpdateEntityHierarchyJob();
 
-bool FrameGraphManager::containsNode(Qt3DCore::QNodeId id) const
-{
-    return m_nodes.contains(id);
-}
+    inline void setManager(NodeManagers *manager) { m_manager = manager; }
+    inline NodeManagers *manager() const { return m_manager; }
 
-void FrameGraphManager::appendNode(Qt3DCore::QNodeId id, FrameGraphNode *node)
-{
-    m_nodes.insert(id, node);
-}
+    // QAspectJob interface
+    void run() final;
 
-FrameGraphNode* FrameGraphManager::lookupNode(Qt3DCore::QNodeId id) const
-{
-    const QHash<Qt3DCore::QNodeId, FrameGraphNode*>::const_iterator it = m_nodes.find(id);
-    if (it == m_nodes.end())
-        return nullptr;
-    else
-        return *it;
-}
+private:
+    NodeManagers *m_manager;
+};
 
-void FrameGraphManager::releaseNode(Qt3DCore::QNodeId id)
-{
-    auto node = m_nodes.take(id);
-    if (node) {
-        node->cleanup();
-        delete node;
-    }
-}
 
-void SkeletonManager::addDirtySkeleton(DirtyFlag dirtyFlag, HSkeleton skeletonHandle)
-{
-    switch (dirtyFlag) {
-    case SkeletonDataDirty:
-        m_dirtyDataSkeletons.push_back(skeletonHandle);
-        break;
+using UpdateEntityHierarchyJobPtr = QSharedPointer<UpdateEntityHierarchyJob>;
 
-    case SkeletonTransformsDirty:
-        m_dirtyTransformSkeletons.push_back(skeletonHandle);
-        break;
-    }
-}
+} // Render
 
-QVector<HSkeleton> SkeletonManager::takeDirtySkeletons(DirtyFlag dirtyFlag)
-{
-    switch (dirtyFlag) {
-    case SkeletonDataDirty:
-        return std::move(m_dirtyDataSkeletons);
-
-    case SkeletonTransformsDirty:
-        return std::move(m_dirtyTransformSkeletons);
-    }
-    return QVector<HSkeleton>();
-}
-
-void JointManager::addDirtyJoint(Qt3DCore::QNodeId jointId)
-{
-    const HJoint jointHandle = lookupHandle(jointId);
-    m_dirtyJoints.push_back(jointHandle);
-}
-
-QVector<HJoint> JointManager::dirtyJoints()
-{
-    return std::move(m_dirtyJoints);
-}
-
-} // namespace Render
-} // namespace Qt3DRender
+} // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_UPDATEENTITYHIERARCHYJOB_P_H

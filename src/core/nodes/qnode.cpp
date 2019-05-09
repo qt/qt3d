@@ -101,7 +101,7 @@ void QNodePrivate::init(QNode *parent)
     Q_Q(QNode);
     if (m_scene) {
         // schedule the backend notification and scene registering -> set observers through scene
-        QMetaObject::invokeMethod(q, "_q_postConstructorInit", Qt::QueuedConnection);
+        m_scene->postConstructorInit()->addNode(q);
     }
 }
 
@@ -165,7 +165,7 @@ void QNodePrivate::notifyDestructionChangesAndRemoveFromScene()
  *
  * Sends a QNodeCreatedChange event to the aspects and then also notifies the
  * parent backend node of its new child. This is called in a deferred manner
- * by the QNodePrivate::init() method to notify the backend of newly created
+ * by NodePostConstructorInit::processNodes to notify the backend of newly created
  * nodes with a parent that is already part of the scene.
  *
  * Also notify the scene of this node, so it may set it's change arbiter.
@@ -873,6 +873,12 @@ void QNode::setParent(QNode *parent)
     if (parentNode() == parent &&
             ((parent != nullptr && d->m_parentId == parentNode()->id()) || parent == nullptr))
         return;
+
+    // remove ourself from postConstructorInit queue. The call to _q_setParentHelper
+    // will take care of creating the backend node if necessary depending on new parent.
+    if (d->m_scene)
+        d->m_scene->postConstructorInit()->removeNode(this);
+
     d->_q_setParentHelper(parent);
 
     // Block notifications as we want to let the _q_setParentHelper
@@ -1130,6 +1136,75 @@ const QMetaObject *QNodePrivate::findStaticMetaObject(const QMetaObject *metaObj
     }
     Q_ASSERT(lastStaticMetaobject);
     return lastStaticMetaobject;
+}
+
+/*!
+ * \internal
+ *
+ * NodePostConstructorInit handles calling QNode::_q_postConstructorInit for
+ * all nodes. By keeping track of nodes that need initialization we can
+ * create them all together ensuring they get sent to the backend in a single
+ * batch.
+ */
+NodePostConstructorInit::NodePostConstructorInit(QObject *parent)
+    : QObject(parent)
+    , m_requestedProcessing(false)
+{
+}
+
+NodePostConstructorInit::~NodePostConstructorInit() {}
+
+/*!
+ * \internal
+ *
+ * Add a node to the list of nodes needing a call to _q_postConstructorInit
+ * We only add the node if it does not have an ancestor already in the queue
+ * because initializing the ancestor will initialize all it's children.
+ * This ensures that all backend nodes are created from the top-down, with
+ * all parents created before their children
+ *
+ */
+void NodePostConstructorInit::addNode(QNode *node)
+{
+    Q_ASSERT(node);
+    QNode *nextNode = node;
+    while (nextNode != nullptr && !m_nodesToConstruct.contains(QNodePrivate::get(nextNode)))
+        nextNode = nextNode->parentNode();
+
+    if (!nextNode) {
+        m_nodesToConstruct.append(QNodePrivate::get(node));
+        if (!m_requestedProcessing){
+            QMetaObject::invokeMethod(this, "processNodes", Qt::QueuedConnection);
+            m_requestedProcessing = true;
+        }
+    }
+}
+
+/*!
+ * \internal
+ *
+ * Remove a node from the queue. This will ensure none of its
+ * children get initialized
+ */
+void NodePostConstructorInit::removeNode(QNode *node)
+{
+    Q_ASSERT(node);
+    m_nodesToConstruct.removeAll(QNodePrivate::get(node));
+}
+
+/*!
+ * \internal
+ *
+ * call _q_postConstructorInit for all nodes in the queue
+ * and clear the queue
+ */
+void NodePostConstructorInit::processNodes()
+{
+    m_requestedProcessing = false;
+    while (!m_nodesToConstruct.empty()) {
+        auto node = m_nodesToConstruct.takeFirst();
+        node->_q_postConstructorInit();
+    }
 }
 
 } // namespace Qt3DCore
