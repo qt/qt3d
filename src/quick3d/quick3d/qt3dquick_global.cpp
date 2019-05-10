@@ -44,7 +44,6 @@
 #include <QtQml/private/qqmlglobal_p.h>
 #include <QtQml/private/qv4engine_p.h>
 #include <QtQml/private/qv4object_p.h>
-#include <QtQml/private/qv8engine_p.h>
 
 QT_BEGIN_NAMESPACE
 
