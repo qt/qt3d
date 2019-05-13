@@ -139,6 +139,7 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
 {
     Q_D(QForwardRenderer);
     QObject::connect(d->m_clearBuffer, &QClearBuffers::clearColorChanged, this, &QForwardRenderer::clearColorChanged);
+    QObject::connect(d->m_clearBuffer, &QClearBuffers::buffersChanged, this, &QForwardRenderer::clearBuffersChanged);
     QObject::connect(d->m_viewport, &QViewport::normalizedRectChanged, this, &QForwardRenderer::viewportRectChanged);
     QObject::connect(d->m_cameraSelector, &QCameraSelector::cameraChanged, this, &QForwardRenderer::cameraChanged);
     QObject::connect(d->m_surfaceSelector, &QRenderSurfaceSelector::surfaceChanged, this, &QForwardRenderer::surfaceChanged);
@@ -162,6 +163,12 @@ void QForwardRenderer::setClearColor(const QColor &clearColor)
 {
     Q_D(QForwardRenderer);
     d->m_clearBuffer->setClearColor(clearColor);
+}
+
+void QForwardRenderer::setClearBuffers(QClearBuffers::BufferType buffers)
+{
+    Q_D(QForwardRenderer);
+    d->m_clearBuffer->setBuffers(buffers);
 }
 
 void QForwardRenderer::setCamera(Qt3DCore::QEntity *camera)
@@ -226,6 +233,22 @@ QColor QForwardRenderer::clearColor() const
 {
     Q_D(const QForwardRenderer);
     return d->m_clearBuffer->clearColor();
+}
+
+/*!
+    \qmlproperty color ForwardRenderer::clearBuffers
+
+    Holds the current buffers to be cleared. Default value is ColorDepthBuffer
+*/
+/*!
+    \property QForwardRenderer::clearBuffers
+
+    Holds the current buffers to be cleared. Default value is ColorDepthBuffer
+*/
+QClearBuffers::BufferType QForwardRenderer::clearBuffers() const
+{
+    Q_D(const QForwardRenderer);
+    return d->m_clearBuffer->buffers();
 }
 
 /*!
