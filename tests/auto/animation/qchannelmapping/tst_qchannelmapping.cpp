@@ -202,7 +202,7 @@ private Q_SLOTS:
             QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::ChannelMapping);
             QCOMPARE(mapping.channelName(), data.channelName);
             QCOMPARE(mapping.target()->id(), data.targetId);
-            QCOMPARE(mapping.property(), data.property);
+            QVERIFY(qstrcmp(mapping.property().toLatin1().constData(), data.propertyName) == 0);
             QCOMPARE(data.type, static_cast<int>(QVariant::Vector3D));
             QCOMPARE(data.componentCount, 3);
         }
@@ -229,7 +229,7 @@ private Q_SLOTS:
             QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::ChannelMapping);
             QCOMPARE(mapping.channelName(), data.channelName);
             QCOMPARE(mapping.target()->id(), data.targetId);
-            QCOMPARE(mapping.property(), data.property);
+            QVERIFY(qstrcmp(mapping.property().toLatin1().constData(), data.propertyName) == 0);
             QCOMPARE(data.type, static_cast<int>(QVariant::Vector3D));
             QCOMPARE(data.componentCount, 3);
         }
@@ -294,13 +294,9 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 4);
-            auto change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "property");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toString(), mapping.property());
+            QCOMPARE(arbiter.events.size(), 3);
 
-            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            auto change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "type");
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
             QCOMPARE(change->value().toInt(), static_cast<int>(QVariant::Vector3D));
@@ -367,18 +363,13 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 5);
+            QCOMPARE(arbiter.events.size(), 4);
 
             // Automatic notification change when property is updated
             auto change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), propertyName.constData());
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
             QCOMPARE(change->value(), value);
-
-            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "property");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toString(), mapping.property());
 
             change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "type");

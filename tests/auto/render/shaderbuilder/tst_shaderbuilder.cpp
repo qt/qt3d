@@ -474,7 +474,6 @@ private slots:
 
     void shouldHandleShaderCodeGeneration()
     {
-        QSKIP("Disabled for Qt Base QShaderGenerator Integration");
         // GIVEN
         Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
         QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());

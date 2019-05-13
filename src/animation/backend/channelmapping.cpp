@@ -53,7 +53,6 @@ ChannelMapping::ChannelMapping()
     : BackendNode(ReadOnly)
     , m_channelName()
     , m_targetId()
-    , m_property()
     , m_type(static_cast<int>(QVariant::Invalid))
     , m_componentCount(0)
     , m_propertyName(nullptr)
@@ -73,7 +72,6 @@ void ChannelMapping::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
         const auto &data = typedChange->data;
         m_channelName = data.channelName;
         m_targetId = data.targetId;
-        m_property = data.property;
         m_type = data.type;
         m_componentCount = data.componentCount;
         m_propertyName = data.propertyName;
@@ -107,7 +105,6 @@ void ChannelMapping::cleanup()
     setEnabled(false);
     m_channelName.clear();
     m_targetId = Qt3DCore::QNodeId();
-    m_property.clear();
     m_type = static_cast<int>(QVariant::Invalid);
     m_propertyName = nullptr;
     m_componentCount = 0;
@@ -125,8 +122,6 @@ void ChannelMapping::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_channelName = change->value().toString();
         else if (change->propertyName() == QByteArrayLiteral("target"))
             m_targetId = change->value().value<Qt3DCore::QNodeId>();
-        else if (change->propertyName() == QByteArrayLiteral("property"))
-            m_property = change->value().toString();
         else if (change->propertyName() == QByteArrayLiteral("type"))
             m_type = change->value().toInt();
         else if (change->propertyName() == QByteArrayLiteral("propertyName"))

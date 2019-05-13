@@ -257,7 +257,12 @@ void QChannelMapping::setProperty(const QString &property)
         return;
 
     d->m_property = property;
+
+    // The backend uses propertyName instead of property
+    const bool blocked = blockNotifications(true);
     emit propertyChanged(property);
+    blockNotifications(blocked);
+
     d->updatePropertyNameTypeAndComponentCount();
 }
 
@@ -268,7 +273,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() 
     Q_D(const QChannelMapping);
     data.channelName = d->m_channelName;
     data.targetId = Qt3DCore::qIdForNode(d->m_target);
-    data.property = d->m_property;
     data.type = d->m_type;
     data.componentCount = d->m_componentCount;
     data.propertyName = d->m_propertyName;
