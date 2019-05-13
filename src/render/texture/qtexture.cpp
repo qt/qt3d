@@ -1279,6 +1279,13 @@ void QTextureLoaderPrivate::updateGenerator()
    \brief Handles the texture loading and setting the texture's properties.
 */
 /*!
+   \qmltype TextureLoader
+   \instantiates Qt3DRender::QTextureLoader
+   \inqmlmodule Qt3D.Render
+
+   \brief Handles the texture loading and setting the texture's properties.
+*/
+/*!
  * Constructs a new Qt3DRender::QTextureLoader instance with \a parent as parent.
  *
  * Note that by default, if not contradicted by the file metadata, the loaded texture
@@ -1316,7 +1323,12 @@ QTextureLoader::~QTextureLoader()
 /*!
     \property QTextureLoader::source
 
-    Returns the current texture source.
+    \brief The current texture source.
+*/
+/*!
+    \qmlproperty url Qt3D.Render::TextureLoader::source
+
+    This property holds the current texture source.
 */
 QUrl QTextureLoader::source() const
 {
@@ -1368,7 +1380,7 @@ void QTextureLoader::setSource(const QUrl& source)
 */
 
 /*!
-  \qmlproperty bool Qt3DRender::QTextureLoader::mirrored
+  \qmlproperty bool Qt3D.Render::TextureLoader::mirrored
 
   This property specifies whether the texture should be mirrored when loaded. This
   is a convenience to avoid having to manipulate images to match the origin of
