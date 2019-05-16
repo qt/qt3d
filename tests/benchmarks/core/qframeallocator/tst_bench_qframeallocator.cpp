@@ -62,7 +62,7 @@ void benchmarkAlloc()
             items[i] = allocator.allocate< Object<Size> >();
         }
     }
-    foreach (Object<Size>* item, items) {
+    for (Object<Size>* item : qAsConst(items)) {
         allocator.deallocate(item);
     }
 }
@@ -76,7 +76,7 @@ void benchmarkDealloc()
         items[i] = allocator.allocate< Object<Size> >();
     }
     QBENCHMARK_ONCE {
-        foreach (Object<Size>* item, items) {
+        for (Object<Size>* item : qAsConst(items)) {
             allocator.deallocate(item);
         }
     }

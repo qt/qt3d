@@ -62,8 +62,9 @@ bool TouchSettings::isHoverEnabled() const
 #if defined(Q_OS_IOS) || defined(Q_OS_ANDROID) || defined(Q_OS_QNX) || defined(Q_OS_WINRT)
     return false;
 #else
+    const auto devices = QTouchDevice::devices();
     bool isTouch = false;
-    foreach (const QTouchDevice *dev, QTouchDevice::devices())
+    for (const QTouchDevice *dev : devices)
         if (dev->type() == QTouchDevice::TouchScreen) {
             isTouch = true;
             break;

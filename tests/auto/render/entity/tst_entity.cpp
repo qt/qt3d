@@ -100,7 +100,7 @@ private slots:
     void checkInitialAndCleanUpState()
     {
         // GIVEN
-        QFETCH(QList<QComponent*>, components);
+        QFETCH(const QList<QComponent*>, components);
 
         TestRenderer renderer;
         NodeManagers nodeManagers;
@@ -125,7 +125,7 @@ private slots:
         QVERIFY(entity.layerIds().isEmpty());
 
         // WHEN
-        Q_FOREACH (QComponent *component, components) {
+        for (QComponent *component : components) {
             const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
             entity.sceneChangeEvent(addChange);
         }
@@ -382,7 +382,7 @@ private slots:
     void shouldHandleComponentsEvents()
     {
         // GIVEN
-        QFETCH(QList<QComponent*>, components);
+        QFETCH(const QList<QComponent*>, components);
         QFETCH(void*, functionPtr);
         UuidListMethod method = reinterpret_cast<UuidListMethod>(functionPtr);
 
@@ -395,14 +395,14 @@ private slots:
         QVERIFY(method(&entity).isEmpty());
 
         // WHEN
-        Q_FOREACH (QComponent *component, components) {
+        for (QComponent *component : components) {
             const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
             entity.sceneChangeEvent(addChange);
         }
 
         // THEN
         QCOMPARE(method(&entity).size(), components.size());
-        Q_FOREACH (QComponent *component, components) {
+        for (QComponent *component : components) {
             QVERIFY(method(&entity).contains(component->id()));
         }
         QVERIFY(renderer.dirtyBits() != 0);

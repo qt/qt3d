@@ -9,9 +9,6 @@ qtConfig(qt3d-input): QT += 3dinput
 qtConfig(qt3d-logic): QT += 3dlogic
 qtConfig(qt3d-animation): QT += 3danimation
 
-# Qt3D is free of Q_FOREACH - make sure it stays that way:
-DEFINES += QT_NO_FOREACH
-
 HEADERS += \
     qtquickscene3dplugin.h \
     scene3dlogging_p.h \

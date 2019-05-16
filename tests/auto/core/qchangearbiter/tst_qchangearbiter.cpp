@@ -411,12 +411,12 @@ void tst_QChangeArbiter::registerObservers()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers)
+    for (tst_SimpleObserver *o : qAsConst(observers))
         QVERIFY(o->lastChange().isNull());
 
     child->setParent(root);
     arbiter->syncChanges();
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QCOMPARE(o->lastChanges().size(), 1);
         QVERIFY(o->lastChanges().last()->type() == Qt3DCore::PropertyValueAdded);
     }
@@ -462,9 +462,9 @@ void tst_QChangeArbiter::registerSceneObserver()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers)
+    for (tst_SimpleObserver *o : qAsConst(observers))
         QVERIFY(o->lastChange().isNull());
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers)
+    for (tst_SceneObserver *s : qAsConst(sceneObservers))
         QVERIFY(s->lastChange().isNull());
 
     // WHEN
@@ -472,11 +472,11 @@ void tst_QChangeArbiter::registerSceneObserver()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
+    for (tst_SceneObserver *s : qAsConst(sceneObservers)) {
         QVERIFY(!s->lastChange().isNull());
         QVERIFY(s->lastChange()->type() == Qt3DCore::NodeCreated);
     }
@@ -486,11 +486,11 @@ void tst_QChangeArbiter::registerSceneObserver()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3DCore::ComponentAdded);
     }
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
+    for (tst_SceneObserver *s : qAsConst(sceneObservers)) {
         QVERIFY(!s->lastChange().isNull());
         QVERIFY(s->lastChange()->type() == Qt3DCore::NodeCreated);
     }
@@ -527,7 +527,7 @@ void tst_QChangeArbiter::unregisterObservers()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers)
+    for (tst_SimpleObserver *o : qAsConst(observers))
         QVERIFY(o->lastChange().isNull());
 
     // WHEN
@@ -535,20 +535,20 @@ void tst_QChangeArbiter::unregisterObservers()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
 
     // WHEN
-    Q_FOREACH (tst_SimpleObserver *o, observers)
+    for (tst_SimpleObserver *o : qAsConst(observers))
         arbiter->unregisterObserver(o, root->id());
 
     root->sendAllChangesNotification();
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
@@ -594,9 +594,9 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers)
+    for (tst_SimpleObserver *o : qAsConst(observers))
         QVERIFY(o->lastChange().isNull());
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers)
+    for (tst_SceneObserver *s : qAsConst(sceneObservers))
         QVERIFY(s->lastChange().isNull());
 
     // WHEN
@@ -604,11 +604,11 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
+    for (tst_SceneObserver *s : qAsConst(sceneObservers)) {
         QVERIFY(!s->lastChange().isNull());
         QVERIFY(s->lastChange()->type() == Qt3DCore::NodeCreated);
     }
@@ -618,11 +618,11 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3DCore::ComponentAdded);
     }
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
+    for (tst_SceneObserver *s : qAsConst(sceneObservers)) {
         QVERIFY(!s->lastChange().isNull());
         QVERIFY(s->lastChange()->type() == Qt3DCore::NodeCreated);
     }
@@ -632,16 +632,16 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueRemoved);
     }
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
+    for (tst_SceneObserver *s : qAsConst(sceneObservers)) {
         QVERIFY(!s->lastChange().isNull());
         QVERIFY(s->lastChange()->type() == Qt3DCore::NodeDeleted);
     }
 
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers)
+    for (tst_SceneObserver *s : qAsConst(sceneObservers))
         arbiter->unregisterSceneObserver(s);
 
     // WHEN
@@ -649,11 +649,11 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     arbiter->syncChanges();
 
     // THEN
-    Q_FOREACH (tst_SimpleObserver *o, observers) {
+    for (tst_SimpleObserver *o : qAsConst(observers)) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
-    Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
+    for (tst_SceneObserver *s : qAsConst(sceneObservers)) {
         QVERIFY(!s->lastChange().isNull());
         QVERIFY(s->lastChange()->type() == Qt3DCore::NodeDeleted);
     }

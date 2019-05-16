@@ -83,7 +83,8 @@ Qt3DCore::QAbstractPostman *TestArbiter::postman() const
 void TestArbiter::setArbiterOnNode(Qt3DCore::QNode *node)
 {
     Qt3DCore::QNodePrivate::get(node)->setArbiter(this);
-    Q_FOREACH (Qt3DCore::QNode *n, node->childNodes())
+    const auto childNodes = node->childNodes();
+    for (Qt3DCore::QNode *n : childNodes)
         setArbiterOnNode(n);
 }
 

@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
     QVector3D blue(0.0f, 0.0f, 1.0f);
     QVector3D white(1.0f, 1.0f, 1.0f);
 
-    QVector<QVector3D> vertices = QVector<QVector3D>()
+    const QVector<QVector3D> vertices = QVector<QVector3D>()
             << v0 << n0 << red
             << v1 << n1 << blue
             << v2 << n2 << green
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
         float *rawVertexArray = reinterpret_cast<float *>(vertexBufferData.data());
         int idx = 0;
 
-        Q_FOREACH (const QVector3D &v, vertices) {
+        for (const QVector3D &v : vertices) {
             rawVertexArray[idx++] = v.x();
             rawVertexArray[idx++] = v.y();
             rawVertexArray[idx++] = v.z();

@@ -120,18 +120,18 @@ void tst_QScene::addObservable()
     for (int i = 0; i < 5; i++)
         scene->addObservable(observables.at(i + 5), node2->id());
 
-    Qt3DCore::QObservableList obs1 = scene->lookupObservables(node1->id());
-    Qt3DCore::QObservableList obs2 = scene->lookupObservables(node2->id());
+    const Qt3DCore::QObservableList obs1 = scene->lookupObservables(node1->id());
+    const Qt3DCore::QObservableList obs2 = scene->lookupObservables(node2->id());
 
     // THEN
     QCOMPARE(obs1.count(), 5);
     QCOMPARE(obs2.count(), obs1.count());
 
-    Q_FOREACH (Qt3DCore::QObservableInterface *o, obs1) {
+    for (Qt3DCore::QObservableInterface *o : obs1) {
         QVERIFY(scene->nodeIdFromObservable(o) == node1->id());
         QVERIFY(scene->lookupNode(node1->id()) == nullptr);
     }
-    Q_FOREACH (Qt3DCore::QObservableInterface *o, obs2) {
+    for (Qt3DCore::QObservableInterface *o : obs2) {
         QVERIFY(scene->nodeIdFromObservable(o) == node2->id());
         QVERIFY(scene->lookupNode(node2->id()) == nullptr);
     }
@@ -153,7 +153,7 @@ void tst_QScene::addNodeObservable()
         scene->addObservable(nodes.at(i));
 
     // THEN
-    Q_FOREACH (Qt3DCore::QNode *n, nodes) {
+    for (Qt3DCore::QNode *n : qAsConst(nodes)) {
         QVERIFY(n == scene->lookupNode(n->id()));
         QVERIFY(scene->lookupObservables(n->id()).isEmpty());
     }
@@ -281,7 +281,7 @@ void tst_QScene::addChildNode()
     QCoreApplication::processEvents();
 
     // THEN
-    Q_FOREACH (Qt3DCore::QNode *n, nodes) {
+    for (Qt3DCore::QNode *n : qAsConst(nodes)) {
         QVERIFY(scene->lookupNode(n->id()) == n);
     }
 }

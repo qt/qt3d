@@ -85,8 +85,8 @@ QObject *SceneHelper::findEntity(Qt3DRender::QSceneLoader *loader, const QString
 QObject *SceneHelper::findComponent(Qt3DCore::QEntity *entity, const QString &componentMetatype)
 {
     Q_ASSERT(entity);
-    Qt3DCore::QComponentVector components = entity->components();
-    Q_FOREACH (Qt3DCore::QComponent *component, components) {
+    const Qt3DCore::QComponentVector components = entity->components();
+    for (Qt3DCore::QComponent *component : components) {
         qDebug() << component->metaObject()->className();
         if (component->metaObject()->className() == componentMetatype) {
             return component;

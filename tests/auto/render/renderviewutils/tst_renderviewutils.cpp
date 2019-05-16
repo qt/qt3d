@@ -58,7 +58,7 @@ private:
                                Qt3DRender::Render::ShaderDataManager *manager)
     {
         // Create children first
-        Q_FOREACH (QObject *c, frontend->children()) {
+        for (QObject *c : frontend->children()) {
             Qt3DRender::QShaderData *cShaderData = qobject_cast<Qt3DRender::QShaderData *>(c);
             if (cShaderData)
                 initBackendShaderData(cShaderData, manager);

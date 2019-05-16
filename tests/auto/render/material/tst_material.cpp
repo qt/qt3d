@@ -123,7 +123,8 @@ void tst_RenderMaterial::shouldHavePropertiesMirroringFromItsPeer()
     QCOMPARE(backend.parameters().count(), frontendMaterial->parameters().count());
 
     int c = 0;
-    Q_FOREACH (QParameter *p, frontendMaterial->parameters())
+    const auto frontendMaterialParameters = frontendMaterial->parameters();
+    for (QParameter *p : frontendMaterialParameters)
         QCOMPARE(p->id(), backend.parameters().at(c++));
 
     delete frontendMaterial;

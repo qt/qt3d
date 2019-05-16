@@ -605,7 +605,7 @@ void tst_QFrameAllocator::allocateSubclass()
 
     QCOMPARE(composeds.count(), 256);
 
-    Q_FOREACH (composed *c, composeds) {
+    for (composed *c : qAsConst(composeds)) {
         subclass *s = static_cast<subclass *>(c);
         s->toto = 2586.0f;
     }

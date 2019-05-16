@@ -182,13 +182,13 @@ void tst_RayCasting::shouldReturnAllResults()
                                  &provider));
 
     // WHEN
-    QVector<QCollisionQueryResult> results = service.fetchAllResults();
+    const QVector<QCollisionQueryResult> results = service.fetchAllResults();
 
     // THEN
     bool expectedHandlesFound = true;
-    Q_FOREACH (QQueryHandle expected, handles) {
+    for (QQueryHandle expected : qAsConst(handles)) {
         bool found = false;
-        Q_FOREACH (QCollisionQueryResult result, results) {
+        for (QCollisionQueryResult result : results) {
             if (result.handle() == expected)
                 found = true;
         }

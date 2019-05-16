@@ -1054,23 +1054,22 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
 
     // WHEN
     spy.events.clear();
-    Q_FOREACH (QObject *c, root->children())
-        delete c;
+    qDeleteAll(root->children());
 
     // THEN
     QVERIFY(root->children().count() == 0);
     QCOMPARE(spy.events.size(), 20);
     int i = 0;
-    Q_FOREACH (const ObserverSpy::ChangeRecord &r, spy.events) {
+    for (const ObserverSpy::ChangeRecord &r : qAsConst(spy.events)) {
         QVERIFY(r.wasLocked());
         const Qt3DCore::QNodeId childId = childIds.at(i / 2);
         if (i % 2 == 0) {
-            Qt3DCore::QPropertyNodeRemovedChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
+            Qt3DCore::QPropertyNodeRemovedChangePtr additionEvent = r.change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
             QCOMPARE(additionEvent->subjectId(), root->id());
             QCOMPARE(additionEvent->removedNodeId(), childId);
             QCOMPARE(additionEvent->metaObject(), &MyQNode::staticMetaObject);
         } else {
-            const Qt3DCore::QNodeDestroyedChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeDestroyedChange>();
+            const Qt3DCore::QNodeDestroyedChangePtr event = r.change().dynamicCast<Qt3DCore::QNodeDestroyedChange>();
             QCOMPARE(event->subjectId(), childId);
             QCOMPARE(event->subtreeIdsAndTypes().count(), 1);
             QCOMPARE(event->subtreeIdsAndTypes().first().id, childId);

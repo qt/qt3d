@@ -75,7 +75,7 @@ void benchmarkReleaseResources()
     }
 
     QBENCHMARK_ONCE {
-        foreach (auto ptr, resources) {
+        for (auto ptr : qAsConst(resources)) {
             allocator.releaseResource(ptr);
         }
     }
