@@ -83,12 +83,12 @@ QVector<Qt3DCore::QNodeId> BufferManager::takeBuffersToRelease()
 {
     QMutexLocker lock(&m_mutex);
     QVector<Qt3DCore::QNodeId> buffersToRelease;
-    QMutableHashIterator<Qt3DCore::QNodeId, int> it(m_bufferReferences);
-    while (it.hasNext()) {
-        it.next();
+    for (auto it = m_bufferReferences.begin(), end = m_bufferReferences.end(); it != end; /*erasing*/) {
         if (it.value() == 0) {
             buffersToRelease.append(it.key());
-            it.remove();
+            it = m_bufferReferences.erase(it);
+        } else {
+            ++it;
         }
     }
     return buffersToRelease;
