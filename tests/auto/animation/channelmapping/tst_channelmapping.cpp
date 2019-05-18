@@ -79,7 +79,7 @@ private Q_SLOTS:
         QCOMPARE(backendMapping.isEnabled(), mapping.isEnabled());
         QCOMPARE(backendMapping.channelName(), mapping.channelName());
         QCOMPARE(backendMapping.targetId(), mapping.target()->id());
-        QCOMPARE(backendMapping.property(), mapping.property());
+        QVERIFY(qstrcmp(backendMapping.propertyName(), mapping.property().toLatin1().constData()) == 0);
         QVERIFY(qstrcmp(backendMapping.propertyName(), "foo") == 0);
         QCOMPARE(backendMapping.componentCount(), 2);
         QCOMPARE(backendMapping.type(), static_cast<int>(QVariant::Vector2D));
@@ -114,7 +114,6 @@ private Q_SLOTS:
         QCOMPARE(backendMapping.isEnabled(), false);
         QCOMPARE(backendMapping.channelName(), QString());
         QCOMPARE(backendMapping.targetId(), Qt3DCore::QNodeId());
-        QCOMPARE(backendMapping.property(), QString());
         QCOMPARE(backendMapping.propertyName(), nullptr);
         QCOMPARE(backendMapping.componentCount(), 0);
         QCOMPARE(backendMapping.type(), static_cast<int>(QVariant::Invalid));
@@ -137,7 +136,6 @@ private Q_SLOTS:
         QCOMPARE(backendMapping.isEnabled(), false);
         QCOMPARE(backendMapping.channelName(), QString());
         QCOMPARE(backendMapping.targetId(), Qt3DCore::QNodeId());
-        QCOMPARE(backendMapping.property(), QString());
         QCOMPARE(backendMapping.propertyName(), nullptr);
         QCOMPARE(backendMapping.componentCount(), 0);
         QCOMPARE(backendMapping.type(), static_cast<int>(QVariant::Invalid));
@@ -181,16 +179,6 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendMapping.targetId(), id);
-
-        // WHEN
-        const QString property(QLatin1String("bar"));
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("property");
-        updateChange->setValue(property);
-        backendMapping.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(backendMapping.property(), property);
 
         // WHEN
         updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());

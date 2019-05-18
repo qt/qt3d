@@ -1100,7 +1100,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 }
 
                 if (uniformNamesIds.contains(LIGHT_COUNT_NAME_ID))
-                    setUniformValue(command->m_parameterPack, LIGHT_COUNT_NAME_ID, UniformValue(qMax(1, lightIdx)));
+                    setUniformValue(command->m_parameterPack, LIGHT_COUNT_NAME_ID, UniformValue(qMax((environmentLight ? 0 : 1), lightIdx)));
 
                 // If no active light sources and no environment light, add a default light
                 if (activeLightSources.isEmpty() && !environmentLight) {
