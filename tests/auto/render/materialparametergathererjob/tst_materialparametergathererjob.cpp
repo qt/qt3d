@@ -459,6 +459,327 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(gatherer->materialToPassAndParameter().size(), 0);
     }
+
+    void checkParameterPriorityGathering()
+    {
+        {
+            // GIVEN
+            Qt3DRender::QTechniqueFilter *techniqueFilterFG = techniqueFilterFrameGraph();
+            Qt3DRender::QRenderPassFilter *renderPassFG = renderPassFilter();
+
+            renderPassFG->setParent(techniqueFilterFG);
+
+            TestMaterial material;
+
+            Qt3DCore::QEntity *sceneRoot = buildScene(techniqueFilterFG, &material);
+
+            // WHEN
+            techniqueFilterFG->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::red))));
+
+            auto renderPassParameter = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::cyan)));
+
+            renderPassFG->addParameter(renderPassParameter);
+            material.addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::green))));
+            material.effect()->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::blue))));
+
+            auto techniqueParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::white)));
+
+            material.gl3Technique()->addParameter(techniqueParam);
+            material.gl2Technique()->addParameter(techniqueParam);
+            material.es2Technique()->addParameter(techniqueParam);
+
+            auto passParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::gray)));
+
+            material.gl3Pass()->addParameter(passParam);
+            material.gl2Pass()->addParameter(passParam);
+            material.es2Pass()->addParameter(passParam);
+
+            Qt3DRender::TestAspect testAspect(sceneRoot);
+            Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
+            testAspect.initializeRenderer();
+
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
+            Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
+            QVERIFY(backendTechniqueFilter != nullptr);
+            QVERIFY(backendRenderPassFilter != nullptr);
+
+            gatherer->setHandles(testAspect.nodeManagers()->materialManager()->activeHandles());
+            gatherer->setRenderPassFilter(backendRenderPassFilter);
+            gatherer->setTechniqueFilter(backendTechniqueFilter);
+            gatherer->run();
+
+            // THEN -> RenderPassFilter wins
+            QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
+
+            const QVector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
+            QCOMPARE(passParameterData.size(), 1);
+
+            const Qt3DRender::Render::RenderPassParameterData data = passParameterData.first();
+
+            QCOMPARE(data.parameterInfo.size(), 1);
+            QCOMPARE(data.parameterInfo.first().handle, testAspect.nodeManagers()->parameterManager()->lookupHandle(renderPassParameter->id()));
+        }
+        {
+            // GIVEN
+            Qt3DRender::QTechniqueFilter *techniqueFilterFG = techniqueFilterFrameGraph();
+            Qt3DRender::QRenderPassFilter *renderPassFG = renderPassFilter();
+
+            renderPassFG->setParent(techniqueFilterFG);
+
+            TestMaterial material;
+
+            Qt3DCore::QEntity *sceneRoot = buildScene(techniqueFilterFG, &material);
+
+            // WHEN
+            auto techniqueFilterParameter = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::cyan)));
+            techniqueFilterFG->addParameter(techniqueFilterParameter);
+
+            material.addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::green))));
+            material.effect()->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::blue))));
+
+            auto techniqueParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::white)));
+
+            material.gl3Technique()->addParameter(techniqueParam);
+            material.gl2Technique()->addParameter(techniqueParam);
+            material.es2Technique()->addParameter(techniqueParam);
+
+            auto passParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::gray)));
+
+            material.gl3Pass()->addParameter(passParam);
+            material.gl2Pass()->addParameter(passParam);
+            material.es2Pass()->addParameter(passParam);
+
+            Qt3DRender::TestAspect testAspect(sceneRoot);
+            Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
+            testAspect.initializeRenderer();
+
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
+            Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
+            QVERIFY(backendTechniqueFilter != nullptr);
+            QVERIFY(backendRenderPassFilter != nullptr);
+
+            gatherer->setHandles(testAspect.nodeManagers()->materialManager()->activeHandles());
+            gatherer->setRenderPassFilter(backendRenderPassFilter);
+            gatherer->setTechniqueFilter(backendTechniqueFilter);
+            gatherer->run();
+
+            // THEN -> TechniqueFilter wins
+            QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
+
+            const QVector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
+            QCOMPARE(passParameterData.size(), 1);
+
+            const Qt3DRender::Render::RenderPassParameterData data = passParameterData.first();
+
+            QCOMPARE(data.parameterInfo.size(), 1);
+            QCOMPARE(data.parameterInfo.first().handle, testAspect.nodeManagers()->parameterManager()->lookupHandle(techniqueFilterParameter->id()));
+        }
+        {
+            // GIVEN
+            Qt3DRender::QTechniqueFilter *techniqueFilterFG = techniqueFilterFrameGraph();
+            Qt3DRender::QRenderPassFilter *renderPassFG = renderPassFilter();
+
+            renderPassFG->setParent(techniqueFilterFG);
+
+            TestMaterial material;
+
+            Qt3DCore::QEntity *sceneRoot = buildScene(techniqueFilterFG, &material);
+
+            // WHEN
+            auto materialParameter = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::cyan)));
+
+            material.addParameter(materialParameter);
+            material.effect()->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::blue))));
+
+            auto techniqueParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::white)));
+
+            material.gl3Technique()->addParameter(techniqueParam);
+            material.gl2Technique()->addParameter(techniqueParam);
+            material.es2Technique()->addParameter(techniqueParam);
+
+            auto passParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::gray)));
+
+            material.gl3Pass()->addParameter(passParam);
+            material.gl2Pass()->addParameter(passParam);
+            material.es2Pass()->addParameter(passParam);
+
+            Qt3DRender::TestAspect testAspect(sceneRoot);
+            Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
+            testAspect.initializeRenderer();
+
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
+            Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
+            QVERIFY(backendTechniqueFilter != nullptr);
+            QVERIFY(backendRenderPassFilter != nullptr);
+
+            gatherer->setHandles(testAspect.nodeManagers()->materialManager()->activeHandles());
+            gatherer->setRenderPassFilter(backendRenderPassFilter);
+            gatherer->setTechniqueFilter(backendTechniqueFilter);
+            gatherer->run();
+
+            // THEN -> TechniqueFilter wins
+            QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
+
+            const QVector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
+            QCOMPARE(passParameterData.size(), 1);
+
+            const Qt3DRender::Render::RenderPassParameterData data = passParameterData.first();
+
+            QCOMPARE(data.parameterInfo.size(), 1);
+            QCOMPARE(data.parameterInfo.first().handle, testAspect.nodeManagers()->parameterManager()->lookupHandle(materialParameter->id()));
+        }
+        {
+            // GIVEN
+            Qt3DRender::QTechniqueFilter *techniqueFilterFG = techniqueFilterFrameGraph();
+            Qt3DRender::QRenderPassFilter *renderPassFG = renderPassFilter();
+
+            renderPassFG->setParent(techniqueFilterFG);
+
+            TestMaterial material;
+
+            Qt3DCore::QEntity *sceneRoot = buildScene(techniqueFilterFG, &material);
+
+            // WHEN
+            auto effectParameter = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::cyan)));
+
+            material.effect()->addParameter(effectParameter);
+
+            auto techniqueParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::white)));
+
+            material.gl3Technique()->addParameter(techniqueParam);
+            material.gl2Technique()->addParameter(techniqueParam);
+            material.es2Technique()->addParameter(techniqueParam);
+
+            auto passParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::gray)));
+
+            material.gl3Pass()->addParameter(passParam);
+            material.gl2Pass()->addParameter(passParam);
+            material.es2Pass()->addParameter(passParam);
+
+            Qt3DRender::TestAspect testAspect(sceneRoot);
+            Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
+            testAspect.initializeRenderer();
+
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
+            Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
+            QVERIFY(backendTechniqueFilter != nullptr);
+            QVERIFY(backendRenderPassFilter != nullptr);
+
+            gatherer->setHandles(testAspect.nodeManagers()->materialManager()->activeHandles());
+            gatherer->setRenderPassFilter(backendRenderPassFilter);
+            gatherer->setTechniqueFilter(backendTechniqueFilter);
+            gatherer->run();
+
+            // THEN -> TechniqueFilter wins
+            QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
+
+            const QVector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
+            QCOMPARE(passParameterData.size(), 1);
+
+            const Qt3DRender::Render::RenderPassParameterData data = passParameterData.first();
+
+            QCOMPARE(data.parameterInfo.size(), 1);
+            QCOMPARE(data.parameterInfo.first().handle, testAspect.nodeManagers()->parameterManager()->lookupHandle(effectParameter->id()));
+        }
+        {
+            // GIVEN
+            Qt3DRender::QTechniqueFilter *techniqueFilterFG = techniqueFilterFrameGraph();
+            Qt3DRender::QRenderPassFilter *renderPassFG = renderPassFilter();
+
+            renderPassFG->setParent(techniqueFilterFG);
+
+            TestMaterial material;
+
+            Qt3DCore::QEntity *sceneRoot = buildScene(techniqueFilterFG, &material);
+
+            // WHEN
+            auto techniqueParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::white)));
+
+            material.gl3Technique()->addParameter(techniqueParam);
+            material.gl2Technique()->addParameter(techniqueParam);
+            material.es2Technique()->addParameter(techniqueParam);
+
+            auto passParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::gray)));
+
+            material.gl3Pass()->addParameter(passParam);
+            material.gl2Pass()->addParameter(passParam);
+            material.es2Pass()->addParameter(passParam);
+
+            Qt3DRender::TestAspect testAspect(sceneRoot);
+            Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
+            testAspect.initializeRenderer();
+
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
+            Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
+            QVERIFY(backendTechniqueFilter != nullptr);
+            QVERIFY(backendRenderPassFilter != nullptr);
+
+            gatherer->setHandles(testAspect.nodeManagers()->materialManager()->activeHandles());
+            gatherer->setRenderPassFilter(backendRenderPassFilter);
+            gatherer->setTechniqueFilter(backendTechniqueFilter);
+            gatherer->run();
+
+            // THEN -> TechniqueFilter wins
+            QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
+
+            const QVector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
+            QCOMPARE(passParameterData.size(), 1);
+
+            const Qt3DRender::Render::RenderPassParameterData data = passParameterData.first();
+
+            QCOMPARE(data.parameterInfo.size(), 1);
+            QCOMPARE(data.parameterInfo.first().handle, testAspect.nodeManagers()->parameterManager()->lookupHandle(techniqueParam->id()));
+        }
+        {
+            // GIVEN
+            Qt3DRender::QTechniqueFilter *techniqueFilterFG = techniqueFilterFrameGraph();
+            Qt3DRender::QRenderPassFilter *renderPassFG = renderPassFilter();
+
+            renderPassFG->setParent(techniqueFilterFG);
+
+            TestMaterial material;
+
+            Qt3DCore::QEntity *sceneRoot = buildScene(techniqueFilterFG, &material);
+
+            // WHEN
+            auto passParam = new Qt3DRender::QParameter(QStringLiteral("color"), QVariant(QColor(Qt::gray)));
+
+            material.gl3Pass()->addParameter(passParam);
+            material.gl2Pass()->addParameter(passParam);
+            material.es2Pass()->addParameter(passParam);
+
+            Qt3DRender::TestAspect testAspect(sceneRoot);
+            Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
+            testAspect.initializeRenderer();
+
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
+            Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
+            QVERIFY(backendTechniqueFilter != nullptr);
+            QVERIFY(backendRenderPassFilter != nullptr);
+
+            gatherer->setHandles(testAspect.nodeManagers()->materialManager()->activeHandles());
+            gatherer->setRenderPassFilter(backendRenderPassFilter);
+            gatherer->setTechniqueFilter(backendTechniqueFilter);
+            gatherer->run();
+
+            // THEN -> TechniqueFilter wins
+            QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
+
+            const QVector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
+            QCOMPARE(passParameterData.size(), 1);
+
+            const Qt3DRender::Render::RenderPassParameterData data = passParameterData.first();
+
+            QCOMPARE(data.parameterInfo.size(), 1);
+            QCOMPARE(data.parameterInfo.first().handle, testAspect.nodeManagers()->parameterManager()->lookupHandle(passParam->id()));
+        }
+    }
 };
 
 QTEST_MAIN(tst_MaterialParameterGatherer)
