@@ -145,6 +145,7 @@ void FrameGraphNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     default:
+        markDirty(AbstractRenderer::AllDirty);
         break;
     }
 }
