@@ -65,7 +65,7 @@ namespace Qt3DCore {
 class QEntity;
 class QNode;
 class QAspectEngine;
-class QAspectThread;
+class QAspectManager;
 class QPostman;
 class QScene;
 
@@ -84,7 +84,7 @@ public:
     Q_DECLARE_PUBLIC(QAspectEngine)
 
     QAspectFactory m_factory;
-    QAspectThread *m_aspectThread;
+    QAspectManager *m_aspectManager;
     QPostman *m_postman;
     QScene *m_scene;
     QSharedPointer<QEntity> m_root;

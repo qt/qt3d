@@ -87,7 +87,6 @@ public:
     explicit Executor(QObject *parent = 0);
 
     void setScene(Qt3DCore::QScene *scene) { m_scene = scene; }
-    void setSemephore(QSemaphore *semaphore) { m_semaphore = semaphore; }
     void clearQueueAndProceed();
 
 public Q_SLOTS:
@@ -100,7 +99,6 @@ protected:
 private:
     QVector<Qt3DCore::QNodeId> m_nodeIds;
     Qt3DCore::QScene *m_scene;
-    QSemaphore *m_semaphore;
 };
 
 } // namespace Logic

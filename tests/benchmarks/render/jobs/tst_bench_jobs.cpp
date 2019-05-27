@@ -48,7 +48,6 @@
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/private/qaspectthread_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QQmlComponent>

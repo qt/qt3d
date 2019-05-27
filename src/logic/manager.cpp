@@ -56,10 +56,8 @@ namespace Logic {
 
 Manager::Manager()
     : m_logicHandlerManager(new HandlerManager)
-    , m_semaphore(1)
     , m_dt(0.0f)
 {
-    m_semaphore.acquire();
 }
 
 Manager::~Manager()
@@ -69,8 +67,6 @@ Manager::~Manager()
 void Manager::setExecutor(Executor *executor)
 {
     m_executor = executor;
-    if (m_executor)
-        m_executor->setSemephore(&m_semaphore);
 }
 
 void Manager::appendHandler(Handler *handler)
@@ -93,6 +89,7 @@ bool Manager::hasFrameActions() const
     return m_logicHandlers.count() > 0;
 }
 
+// Called from Job Thread
 void Manager::triggerLogicFrameUpdates()
 {
     Q_ASSERT(m_executor);
@@ -107,7 +104,6 @@ void Manager::triggerLogicFrameUpdates()
     // release the semaphore when it has completed its work.
     m_executor->enqueueLogicFrameUpdates(m_logicComponentIds);
     qApp->postEvent(m_executor, new FrameUpdateEvent(m_dt));
-    m_semaphore.acquire();
 }
 
 } // namespace Logic

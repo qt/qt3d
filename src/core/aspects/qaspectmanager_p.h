@@ -95,9 +95,6 @@ public Q_SLOTS:
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
     void unregisterAspect(Qt3DCore::QAbstractAspect *aspect);
 
-    void exec();
-    void quit();
-
 public:
     const QVector<QAbstractAspect *> &aspects() const;
     QAbstractAspectJobManager *jobManager() const;
@@ -105,19 +102,20 @@ public:
     QServiceLocator *serviceLocator() const;
 
 private:
+    bool event(QEvent *event) override;
+    void requestNextFrame();
+    void processFrame();
+
     QVector<QAbstractAspect *> m_aspects;
     QEntity *m_root;
     QVariantMap m_data;
     QScheduler *m_scheduler;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_changeArbiter;
-    QAtomicInt m_runSimulationLoop;
-    QAtomicInt m_runMainLoop;
     QScopedPointer<QServiceLocator> m_serviceLocator;
-    QSemaphore m_waitForEndOfSimulationLoop;
-    QSemaphore m_waitForStartOfSimulationLoop;
-    QSemaphore m_waitForEndOfExecLoop;
-    QSemaphore m_waitForQuit;
+    bool m_mainLoopRunning;
+    bool m_simulationLoopRunning;
+
 };
 
 } // namespace Qt3DCore

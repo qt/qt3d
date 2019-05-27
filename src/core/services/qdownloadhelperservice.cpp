@@ -39,10 +39,10 @@
 
 #include "qdownloadhelperservice_p.h"
 #include "qdownloadnetworkworker_p.h"
+#include <QtCore/QThread>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/private/qabstractserviceprovider_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
-#include <Qt3DCore/private/qaspectthread_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
 
@@ -196,7 +196,7 @@ QString QDownloadHelperService::urlToLocalFileOrQrc(const QUrl &url)
 QDownloadHelperService *QDownloadHelperService::getService(QAspectEngine *engine)
 {
     auto enginePrivate = Qt3DCore::QAspectEnginePrivate::get(engine);
-    return enginePrivate->m_aspectThread->aspectManager()->serviceLocator()->downloadHelperService();
+    return enginePrivate->m_aspectManager->serviceLocator()->downloadHelperService();
 }
 
 bool QDownloadHelperService::isLocal(const QUrl &url)

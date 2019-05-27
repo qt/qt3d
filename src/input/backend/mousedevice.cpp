@@ -150,6 +150,7 @@ void MouseDevice::updateWheelEvents(const QList<QT_PREPEND_NAMESPACE (QWheelEven
 }
 #endif
 
+// Main Thread
 void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
 {
     // Reset axis values before we accumulate new values for this frame
