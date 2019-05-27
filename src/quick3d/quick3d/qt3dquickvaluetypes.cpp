@@ -54,8 +54,7 @@ namespace Quick3DValueTypes {
 
 QString Quick3DColorValueType::toString() const
 {
-    // to maintain behaviour with QtQuick 1.0, we just output normal toString() value.
-    return QVariant(v).toString();
+    return v.name(v.alpha() != 255 ? QColor::HexArgb : QColor::HexRgb);
 }
 
 qreal Quick3DColorValueType::r() const
@@ -78,6 +77,36 @@ qreal Quick3DColorValueType::a() const
     return v.alphaF();
 }
 
+qreal Quick3DColorValueType::hsvHue() const
+{
+    return v.hsvHueF();
+}
+
+qreal Quick3DColorValueType::hsvSaturation() const
+{
+    return v.hsvSaturationF();
+}
+
+qreal Quick3DColorValueType::hsvValue() const
+{
+    return v.valueF();
+}
+
+qreal Quick3DColorValueType::hslHue() const
+{
+    return v.hslHueF();
+}
+
+qreal Quick3DColorValueType::hslSaturation() const
+{
+    return v.hslSaturationF();
+}
+
+qreal Quick3DColorValueType::hslLightness() const
+{
+    return v.lightnessF();
+}
+
 void Quick3DColorValueType::setR(qreal r)
 {
     v.setRedF(r);
@@ -98,6 +127,47 @@ void Quick3DColorValueType::setA(qreal a)
     v.setAlphaF(a);
 }
 
+void Quick3DColorValueType::setHsvHue(qreal hsvHue)
+{
+    qreal hue, saturation, value, alpha;
+    v.getHsvF(&hue, &saturation, &value, &alpha);
+    v.setHsvF(hsvHue, saturation, value, alpha);
+}
+
+void Quick3DColorValueType::setHsvSaturation(qreal hsvSaturation)
+{
+    qreal hue, saturation, value, alpha;
+    v.getHsvF(&hue, &saturation, &value, &alpha);
+    v.setHsvF(hue, hsvSaturation, value, alpha);
+}
+
+void Quick3DColorValueType::setHsvValue(qreal hsvValue)
+{
+    qreal hue, saturation, value, alpha;
+    v.getHsvF(&hue, &saturation, &value, &alpha);
+    v.setHsvF(hue, saturation, hsvValue, alpha);
+}
+
+void Quick3DColorValueType::setHslHue(qreal hslHue)
+{
+    qreal hue, saturation, lightness, alpha;
+    v.getHslF(&hue, &saturation, &lightness, &alpha);
+    v.setHslF(hslHue, saturation, lightness, alpha);
+}
+
+void Quick3DColorValueType::setHslSaturation(qreal hslSaturation)
+{
+    qreal hue, saturation, lightness, alpha;
+    v.getHslF(&hue, &saturation, &lightness, &alpha);
+    v.setHslF(hue, hslSaturation, lightness, alpha);
+}
+
+void Quick3DColorValueType::setHslLightness(qreal hslLightness)
+{
+    qreal hue, saturation, lightness, alpha;
+    v.getHslF(&hue, &saturation, &lightness, &alpha);
+    v.setHslF(hue, saturation, hslLightness, alpha);
+}
 
 QString Quick3DVector2DValueType::toString() const
 {
