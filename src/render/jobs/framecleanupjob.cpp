@@ -79,6 +79,7 @@ void FrameCleanupJob::run()
 
 void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
 {
+    Q_UNUSED(node);
 #if 0
     BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
     if (debugBV) {

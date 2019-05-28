@@ -360,7 +360,6 @@ private Q_SLOTS:
     {
         // GIVEN
         QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
-        Qt3DRender::Render::TextureManager *texMgr = mgrs->textureManager();
         Qt3DRender::Render::TextureImageDataManager *texImgDataMgr = mgrs->textureImageDataManager();
 
         TestTextureImage img(1);
