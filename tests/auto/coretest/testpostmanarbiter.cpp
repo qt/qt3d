@@ -29,6 +29,9 @@
 #include "testpostmanarbiter_p.h"
 #include <Qt3DCore/private/qnode_p.h>
 
+#include <algorithm>
+#include <iterator>
+
 QT_BEGIN_NAMESPACE
 
 TestPostman::TestPostman(TestArbiter *arbiter)
@@ -72,7 +75,7 @@ void TestArbiter::sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e)
 
 void TestArbiter::sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e)
 {
-    events += QVector<Qt3DCore::QSceneChangePtr>::fromStdVector(e);
+    std::copy(e.cbegin(), e.cend(), std::back_inserter(events));
 }
 
 Qt3DCore::QAbstractPostman *TestArbiter::postman() const

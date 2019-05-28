@@ -63,7 +63,7 @@ QTextureMaterialPrivate::QTextureMaterialPrivate()
     : QMaterialPrivate()
     , m_textureEffect(new QEffect)
     , m_textureParameter(new QParameter(QStringLiteral("diffuseTexture"), new QTexture2D))
-    , m_textureTransformParameter(new QParameter(QStringLiteral("texCoordTransform"), qVariantFromValue(QMatrix3x3())))
+    , m_textureTransformParameter(new QParameter(QStringLiteral("texCoordTransform"), QVariant::fromValue(QMatrix3x3())))
     , m_textureGL3Technique(new QTechnique)
     , m_textureGL2Technique(new QTechnique)
     , m_textureES2Technique(new QTechnique)
@@ -247,13 +247,13 @@ void QTextureMaterial::setTextureOffset(QVector2D textureOffset)
     QMatrix3x3 matrix = d->m_textureTransformParameter->value().value<QMatrix3x3>();
     matrix(0, 2) = textureOffset.x();
     matrix(1, 2) = textureOffset.y();
-    d->m_textureTransformParameter->setValue(qVariantFromValue(matrix));
+    d->m_textureTransformParameter->setValue(QVariant::fromValue(matrix));
 }
 
 void QTextureMaterial::setTextureTransform(const QMatrix3x3 &matrix)
 {
     Q_D(QTextureMaterial);
-    d->m_textureTransformParameter->setValue(qVariantFromValue(matrix));
+    d->m_textureTransformParameter->setValue(QVariant::fromValue(matrix));
 }
 
 /*!

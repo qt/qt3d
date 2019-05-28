@@ -87,7 +87,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 
         int dependerCount = 0;
         for (const QWeakPointer<QAspectJob> &dep : deps) {
-            AspectTaskRunnable *taskDependee = tasksMap.value(dep.data());
+            AspectTaskRunnable *taskDependee = tasksMap.value(dep.toStrongRef().data());
             // The dependencies here are not hard requirements, i.e., the dependencies
             // not in the jobQueue should already have their data ready.
             if (taskDependee) {

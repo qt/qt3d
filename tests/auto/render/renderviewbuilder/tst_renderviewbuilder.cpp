@@ -328,7 +328,8 @@ private Q_SLOTS:
 
             // Step 2
             QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().first().data(), renderViewBuilder.renderViewJob().data());
+            QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().constFirst().toStrongRef().data(),
+                     renderViewBuilder.renderViewJob().data());
 
             // Step 3
             QVERIFY(renderViewBuilder.filterEntityByLayerJob().isNull());
@@ -339,7 +340,8 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
 
             QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());
+            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().constFirst().toStrongRef().data(),
+                     renderViewBuilder.syncRenderViewInitializationJob().data());
 
             QCOMPARE(renderViewBuilder.syncFrustumCullingJob()->dependencies().size(), 3);
             QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
@@ -363,7 +365,8 @@ private Q_SLOTS:
             // Step 5
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewBuilderJobs()) {
                 QCOMPARE(renderViewBuilderJob->dependencies().size(), 1);
-                QCOMPARE(renderViewBuilderJob->dependencies().first().data(), renderViewBuilder.syncRenderCommandBuildingJob().data());
+                QCOMPARE(renderViewBuilderJob->dependencies().constFirst().toStrongRef().data(),
+                         renderViewBuilder.syncRenderCommandBuildingJob().data());
             }
 
             // Step 6
@@ -386,7 +389,8 @@ private Q_SLOTS:
 
             // Step 2
             QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().first().data(), renderViewBuilder.renderViewJob().data());
+            QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().constFirst().toStrongRef().data(),
+                     renderViewBuilder.renderViewJob().data());
 
             // Step 3
             QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->dependencies().size(), 3);
@@ -402,7 +406,8 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
 
             QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());
+            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().constFirst().toStrongRef().data(),
+                     renderViewBuilder.syncRenderViewInitializationJob().data());
 
             QCOMPARE(renderViewBuilder.syncFrustumCullingJob()->dependencies().size(), 3);
             QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
@@ -432,7 +437,8 @@ private Q_SLOTS:
             // Step 5
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewBuilderJobs()) {
                 QCOMPARE(renderViewBuilderJob->dependencies().size(), 1);
-                QCOMPARE(renderViewBuilderJob->dependencies().first().data(), renderViewBuilder.syncRenderCommandBuildingJob().data());
+                QCOMPARE(renderViewBuilderJob->dependencies().constFirst().toStrongRef().data(),
+                         renderViewBuilder.syncRenderCommandBuildingJob().data());
             }
 
             // Step 6

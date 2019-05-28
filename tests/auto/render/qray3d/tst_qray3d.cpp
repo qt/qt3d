@@ -506,7 +506,7 @@ void tst_QRay3D::properties()
     QCOMPARE(r.direction(), Vector3D(4, 5, 6));
 
     obj.setProperty("ray",
-                    qVariantFromValue
+                    QVariant::fromValue
                         (Qt3DRender::RayCasting::QRay3D(Vector3D(-1, -2, -3), Vector3D(-4, -5, -6))));
 
     r = qvariant_cast<Qt3DRender::RayCasting::QRay3D>(obj.property("ray"));
