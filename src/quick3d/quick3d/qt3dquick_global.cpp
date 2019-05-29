@@ -54,7 +54,7 @@ namespace Quick {
 class Quick3DColorProvider : public QQmlColorProvider
 {
 public:
-    QVariant colorFromString(const QString &s, bool *ok)
+    QVariant colorFromString(const QString &s, bool *ok) override
     {
         QColor c(s);
         if (c.isValid()) {
@@ -66,7 +66,7 @@ public:
         return QVariant();
     }
 
-    unsigned rgbaFromString(const QString &s, bool *ok)
+    unsigned rgbaFromString(const QString &s, bool *ok) override
     {
         QColor c(s);
         if (c.isValid()) {
@@ -88,12 +88,12 @@ public:
         return QString();
     }
 
-    QVariant fromRgbF(double r, double g, double b, double a)
+    QVariant fromRgbF(double r, double g, double b, double a) override
     {
         return QVariant(QColor::fromRgbF(r, g, b, a));
     }
 
-    QVariant fromHslF(double h, double s, double l, double a)
+    QVariant fromHslF(double h, double s, double l, double a) override
     {
         return QVariant(QColor::fromHslF(h, s, l, a));
     }
@@ -103,21 +103,21 @@ public:
         return QVariant(QColor::fromHsvF(h, s, v, a));
     }
 
-    QVariant lighter(const QVariant &var, qreal factor)
+    QVariant lighter(const QVariant &var, qreal factor) override
     {
         QColor color = var.value<QColor>();
         color = color.lighter(int(qRound(factor*100.)));
         return QVariant::fromValue(color);
     }
 
-    QVariant darker(const QVariant &var, qreal factor)
+    QVariant darker(const QVariant &var, qreal factor) override
     {
         QColor color = var.value<QColor>();
         color = color.darker(int(qRound(factor*100.)));
         return QVariant::fromValue(color);
     }
 
-    QVariant tint(const QVariant &baseVar, const QVariant &tintVar)
+    QVariant tint(const QVariant &baseVar, const QVariant &tintVar) override
     {
         QColor tintColor = tintVar.value<QColor>();
 

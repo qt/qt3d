@@ -73,7 +73,7 @@ class MyQComponent : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit MyQComponent(Qt3DCore::QNode *parent = 0)
+    explicit MyQComponent(Qt3DCore::QNode *parent = nullptr)
         : QComponent(parent)
     {}
 };
@@ -90,7 +90,7 @@ public:
 class MyEntity : public Qt3DCore::QEntity
 {
 public:
-    explicit MyEntity(Qt3DCore::QNode *parent = 0)
+    explicit MyEntity(Qt3DCore::QNode *parent = nullptr)
         : QEntity(parent)
     {}
 };
@@ -622,6 +622,8 @@ void tst_Entity::checkCloning_data()
         Qt3DCore::QEntity *grandChild = new MyEntity(entityWithNestedChildren);
         QVector<QNodeId> childIds = {child->id(), grandChild->id()};
         QTest::newRow("entityWithNestedChildren") << entityWithNestedChildren << childIds << 4;
+
+        Q_UNUSED(dummy);
     }
 }
 
