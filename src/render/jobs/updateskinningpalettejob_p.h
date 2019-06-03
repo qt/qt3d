@@ -75,7 +75,6 @@ public:
 
 protected:
     void run() override;
-    void findDirtyArmatures(Entity *entity, QVector<HArmature> &armatures) const;
     NodeManagers *m_nodeManagers;
     Entity *m_root;
     QVector<HJoint> m_dirtyJoints;

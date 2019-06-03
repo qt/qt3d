@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,72 +37,63 @@
 **
 ****************************************************************************/
 
-#include "framecleanupjob_p.h"
-#include <private/renderer_p.h>
-#include <private/nodemanagers_p.h>
-#include <private/entity_p.h>
-#include <private/shaderdata_p.h>
-#include <private/managers_p.h>
-#include <private/sphere_p.h>
-#include <Qt3DRender/private/job_common_p.h>
+#include "entityaccumulator_p.h"
+#include "entityvisitor_p.h"
 
-QT_BEGIN_NAMESPACE
+QT_USE_NAMESPACE
+using namespace Qt3DRender::Render;
 
-namespace Qt3DRender {
-namespace Render {
+namespace {
 
-FrameCleanupJob::FrameCleanupJob()
-    : m_managers(nullptr)
-    , m_root(nullptr)
+class Accumulator : public EntityVisitor
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
+public:
+    Accumulator(std::function<bool(Entity *)> predicate, NodeManagers *manager)
+        : EntityVisitor(manager)
+        , m_predicate(predicate)
+    {
+    }
+
+    EntityVisitor::Operation visit(Entity *entity) override {
+        if (m_predicate(entity))
+            m_entities << entity;
+        return Continue;
+    }
+
+    QVector<Entity *> m_entities;
+
+private:
+    std::function<bool(Entity *)> m_predicate;
+};
+
 }
 
-FrameCleanupJob::~FrameCleanupJob()
+EntityAccumulator::EntityAccumulator(NodeManagers *manager)
+    : m_manager(manager)
+    , m_predicate([](Entity*) { return true; })
 {
+
 }
 
-void FrameCleanupJob::setRoot(Entity *root)
+EntityAccumulator::EntityAccumulator(std::function<bool (Entity *)> predicate, NodeManagers *manager)
+    : m_manager(manager)
+    , m_predicate(predicate)
 {
-    m_root = root;
+
 }
 
-void FrameCleanupJob::run()
+/*!
+ * \internal
+ *
+ * Call this to traverse the scene graph and return all entities for
+ * which the predicate returns true.
+ *
+ * Can be useful to get all the entities that contain a specific type
+ * of component.
+ */
+QVector<Entity *> EntityAccumulator::apply(Entity *root) const
 {
-    // mark each ShaderData clean
-    ShaderData::cleanup(m_managers);
-
-    // Debug bounding volume debug
-    updateBoundingVolumesDebug(m_root);
+    Accumulator a(m_predicate, m_manager);
+    a.apply(root);
+    return a.m_entities;
 }
-
-void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
-{
-    Q_UNUSED(node);
-#if 0
-    node->traverse([](Entity *node) {
-        BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
-        if (debugBV) {
-            Qt3DRender::Render::Sphere s;
-            if (!debugBV->isRecursive()) {
-                s = *node->worldBoundingVolume();
-            } else {
-                s = *node->worldBoundingVolumeWithChildren();
-            }
-            debugBV->setRadius(s.radius());
-            debugBV->setCenter(s.center());
-        }
-    });
-
-#endif
-}
-
-void FrameCleanupJob::setManagers(NodeManagers *managers)
-{
-    m_managers = managers;
-}
-
-} // namespace Render
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE

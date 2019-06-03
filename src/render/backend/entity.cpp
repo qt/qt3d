@@ -289,6 +289,26 @@ QVector<Entity *> Entity::children() const
     return childrenVector;
 }
 
+void Entity::traverse(const std::function<void(Entity *)> &operation)
+{
+    operation(this);
+    for (const HEntity &handle : qAsConst(m_childrenHandles)) {
+        Entity *child = m_nodeManagers->renderNodesManager()->data(handle);
+        if (child != nullptr)
+            child->traverse(operation);
+    }
+}
+
+void Entity::traverse(const std::function<void(const Entity *)> &operation) const
+{
+    operation(this);
+    for (const HEntity &handle : m_childrenHandles) {
+        const Entity *child = m_nodeManagers->renderNodesManager()->data(handle);
+        if (child != nullptr)
+            child->traverse(operation);
+    }
+}
+
 Matrix4x4 *Entity::worldTransform()
 {
     return m_nodeManagers->worldMatrixManager()->data(m_worldTransform);

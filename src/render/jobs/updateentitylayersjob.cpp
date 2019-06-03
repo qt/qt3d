@@ -49,19 +49,6 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace {
-
-void addLayerIdToEntityChildren(const QVector<Entity *> &children,
-                                const Qt3DCore::QNodeId layerId)
-{
-    for (Entity *child : children) {
-        child->addRecursiveLayerId(layerId);
-        addLayerIdToEntityChildren(child->children(), layerId);
-    }
-}
-
-} // anonymous
-
 UpdateEntityLayersJob::UpdateEntityLayersJob()
     : m_manager(nullptr)
 {
@@ -93,7 +80,9 @@ void UpdateEntityLayersJob::run()
             Layer *layer = layerManager->lookupResource(layerId);
             if (layer->recursive()) {
                 // Find all children of the entity and add the layers to them
-                addLayerIdToEntityChildren(entity->children(), layerId);
+                entity->traverse([layerId](Entity *e) {
+                    e->addRecursiveLayerId(layerId);
+                });
             }
         }
     }

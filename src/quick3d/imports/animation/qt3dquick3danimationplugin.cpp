@@ -58,6 +58,7 @@
 #include <Qt3DAnimation/qmorphtarget.h>
 #include <Qt3DAnimation/qvertexblendanimation.h>
 
+#include <Qt3DQuick/private/quick3dnodev9_p.h>
 #include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
 #include <Qt3DQuickAnimation/private/quick3dchannelmapper_p.h>
 #include <Qt3DQuickAnimation/private/quick3dkeyframeanimation_p.h>
@@ -74,6 +75,7 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
     Qt3DAnimation::Quick::Quick3DAnimation_initialize();
 
     // @uri Qt3D.Animation
+    qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNodeV9, 9>(uri, 2, 9, "Node", QStringLiteral("Node is a base class"));
     qmlRegisterUncreatableType<Qt3DAnimation::QAbstractClipAnimator>(uri, 2, 9, "AbstractClipAnimator", QStringLiteral("QAbstractClipAnimator is abstract"));
     qmlRegisterType<Qt3DAnimation::QClipAnimator>(uri, 2, 9, "ClipAnimator");
     qmlRegisterType<Qt3DAnimation::QBlendedClipAnimator>(uri, 2, 9, "BlendedClipAnimator");

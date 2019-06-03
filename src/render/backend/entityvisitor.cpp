@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,72 +37,77 @@
 **
 ****************************************************************************/
 
-#include "framecleanupjob_p.h"
-#include <private/renderer_p.h>
-#include <private/nodemanagers_p.h>
-#include <private/entity_p.h>
-#include <private/shaderdata_p.h>
-#include <private/managers_p.h>
-#include <private/sphere_p.h>
-#include <Qt3DRender/private/job_common_p.h>
+#include "entityvisitor_p.h"
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
-QT_BEGIN_NAMESPACE
+QT_USE_NAMESPACE
+using namespace Qt3DRender::Render;
 
-namespace Qt3DRender {
-namespace Render {
-
-FrameCleanupJob::FrameCleanupJob()
-    : m_managers(nullptr)
-    , m_root(nullptr)
+EntityVisitor::EntityVisitor(NodeManagers *manager)
+    : m_manager(manager)
+    , m_pruneDisabled(false)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
+
 }
 
-FrameCleanupJob::~FrameCleanupJob()
-{
+EntityVisitor::~EntityVisitor() = default;
+
+/*!
+ * \internal
+ *
+ * Override in derived class to do work on the current entity
+ *
+ * Return value (Continue, Prune, Stop) will affect traversal
+ */
+EntityVisitor::Operation EntityVisitor::visit(Entity *entity) {
+    // return false to stop traversal
+    if (!entity)
+        return Stop;
+    return Continue;
 }
 
-void FrameCleanupJob::setRoot(Entity *root)
+/*!
+ * \internal
+ *
+ * If true, disabled entities and all their children will be ignored
+ * during traversal
+ *
+ */
+bool EntityVisitor::pruneDisabled() const
 {
-    m_root = root;
+    return m_pruneDisabled;
 }
 
-void FrameCleanupJob::run()
+void EntityVisitor::setPruneDisabled(bool pruneDisabled)
 {
-    // mark each ShaderData clean
-    ShaderData::cleanup(m_managers);
-
-    // Debug bounding volume debug
-    updateBoundingVolumesDebug(m_root);
+    m_pruneDisabled = pruneDisabled;
 }
 
-void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
-{
-    Q_UNUSED(node);
-#if 0
-    node->traverse([](Entity *node) {
-        BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
-        if (debugBV) {
-            Qt3DRender::Render::Sphere s;
-            if (!debugBV->isRecursive()) {
-                s = *node->worldBoundingVolume();
-            } else {
-                s = *node->worldBoundingVolumeWithChildren();
-            }
-            debugBV->setRadius(s.radius());
-            debugBV->setCenter(s.center());
-        }
-    });
+/*!
+ * \internal
+ *
+ * Call on the root of the tree that should be traversed.
+ * Returns false if any visit resulted in Stop
+ */
+bool EntityVisitor::apply(Entity *root) {
+    if (!root)
+        return false;
+    if (m_pruneDisabled && !root->isEnabled())
+        return true;
 
-#endif
+    const auto op = visit(root);
+    if (op == Stop)
+        return false;
+    if (op == Prune)
+        return true;
+
+    const auto childrenHandles = root->childrenHandles();
+    for (const HEntity &handle : childrenHandles) {
+        Entity *child = m_manager->renderNodesManager()->data(handle);
+        if (child != nullptr && !apply(child))
+            return false;
+    }
+
+    return true;
 }
-
-void FrameCleanupJob::setManagers(NodeManagers *managers)
-{
-    m_managers = managers;
-}
-
-} // namespace Render
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE
