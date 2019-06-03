@@ -39,6 +39,7 @@
 
 #include "updatelevelofdetailjob_p.h"
 #include <Qt3DRender/QLevelOfDetail>
+#include <Qt3DRender/private/entityvisitor_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
@@ -57,9 +58,145 @@ double approxRollingAverage(double avg, double input) {
     return avg;
 }
 
-}
-namespace Qt3DRender {
+class LODUpdateVisitor : public Qt3DRender::Render::EntityVisitor
+{
+public:
+    LODUpdateVisitor(double filterValue, Qt3DRender::Render::FrameGraphNode *frameGraphRoot, Qt3DRender::Render::NodeManagers *manager)
+        : Qt3DRender::Render::EntityVisitor(manager)
+        , m_filterValue(filterValue)
+        , m_frameGraphRoot(frameGraphRoot)
+    {
+    }
 
+    double filterValue() const { return m_filterValue; }
+
+    Operation visit(Qt3DRender::Render::Entity *entity = nullptr) override {
+        using namespace Qt3DRender;
+        using namespace Qt3DRender::Render;
+
+        if (!entity->isEnabled())
+            return Prune; // skip disabled sub-trees, since their bounding box is probably not valid anyway
+
+        QVector<LevelOfDetail *> lods = entity->renderComponents<LevelOfDetail>();
+        if (!lods.empty()) {
+            LevelOfDetail* lod = lods.front();  // other lods are ignored
+
+            if (lod->isEnabled() && !lod->thresholds().isEmpty()) {
+                switch (lod->thresholdType()) {
+                case QLevelOfDetail::DistanceToCameraThreshold:
+                    updateEntityLodByDistance(entity, lod);
+                    break;
+                case QLevelOfDetail::ProjectedScreenPixelSizeThreshold:
+                    updateEntityLodByScreenArea(entity, lod);
+                    break;
+                default:
+                    Q_ASSERT(false);
+                    break;
+                }
+            }
+        }
+
+        return Continue;
+    }
+
+private:
+    double m_filterValue = 0.;
+    Qt3DRender::Render::FrameGraphNode *m_frameGraphRoot;
+
+    void updateEntityLodByDistance(Qt3DRender::Render::Entity *entity, Qt3DRender::Render::LevelOfDetail *lod)
+    {
+        using namespace Qt3DRender;
+        using namespace Qt3DRender::Render;
+
+        Matrix4x4 viewMatrix;
+        Matrix4x4 projectionMatrix;
+        if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
+            return;
+
+        const QVector<qreal> thresholds = lod->thresholds();
+        Vector3D center(lod->center());
+        if (lod->hasBoundingVolumeOverride() || entity->worldBoundingVolume() == nullptr) {
+            center = *entity->worldTransform() * center;
+        } else {
+            center = entity->worldBoundingVolume()->center();
+        }
+
+        const Vector3D tcenter = viewMatrix * center;
+        const float dist = tcenter.length();
+        const int n = thresholds.size();
+        for (int i=0; i<n; ++i) {
+            if (dist <= thresholds[i] || i == n -1) {
+                m_filterValue = approxRollingAverage<30>(m_filterValue, i);
+                i = qBound(0, static_cast<int>(qRound(m_filterValue)), n - 1);
+                if (lod->currentIndex() != i)
+                    lod->setCurrentIndex(i);
+                break;
+            }
+        }
+    }
+
+    void updateEntityLodByScreenArea(Qt3DRender::Render::Entity *entity, Qt3DRender::Render::LevelOfDetail *lod)
+    {
+        using namespace Qt3DRender;
+        using namespace Qt3DRender::Render;
+
+        Matrix4x4 viewMatrix;
+        Matrix4x4 projectionMatrix;
+        if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
+            return;
+
+        PickingUtils::ViewportCameraAreaGatherer vcaGatherer(lod->camera());
+        const QVector<PickingUtils::ViewportCameraAreaDetails> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+        if (vcaTriplets.isEmpty())
+            return;
+
+        const PickingUtils::ViewportCameraAreaDetails &vca = vcaTriplets.front();
+
+        const QVector<qreal> thresholds = lod->thresholds();
+        Sphere bv(Vector3D(lod->center()), lod->radius());
+        if (!lod->hasBoundingVolumeOverride() && entity->worldBoundingVolume() != nullptr) {
+            bv = *(entity->worldBoundingVolume());
+        } else {
+            bv.transform(*entity->worldTransform());
+        }
+
+        bv.transform(projectionMatrix * viewMatrix);
+        const float sideLength = bv.radius() * 2.f;
+        float area = vca.viewport.width() * sideLength * vca.viewport.height() * sideLength;
+
+        const QRect r = windowViewport(vca.area, vca.viewport);
+        area =  std::sqrt(area * r.width() * r.height());
+
+        const int n = thresholds.size();
+        for (int i = 0; i < n; ++i) {
+            if (thresholds[i] < area || i == n -1) {
+                m_filterValue = approxRollingAverage<30>(m_filterValue, i);
+                i = qBound(0, static_cast<int>(qRound(m_filterValue)), n - 1);
+                if (lod->currentIndex() != i)
+                    lod->setCurrentIndex(i);
+                break;
+            }
+        }
+    }
+
+    QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const
+    {
+        if (area.isValid()) {
+            const int areaWidth = area.width();
+            const int areaHeight = area.height();
+            return QRect(relativeViewport.x() * areaWidth,
+                         (1.0 - relativeViewport.y() - relativeViewport.height()) * areaHeight,
+                         relativeViewport.width() * areaWidth,
+                         relativeViewport.height() * areaHeight);
+        }
+        return relativeViewport.toRect();
+    }
+};
+
+}
+
+
+namespace Qt3DRender {
 namespace Render {
 
 UpdateLevelOfDetailJob::UpdateLevelOfDetailJob()
@@ -98,119 +235,13 @@ void UpdateLevelOfDetailJob::run()
     if (m_manager->levelOfDetailManager()->count() == 0)
         return;
 
-    updateEntityLod(m_root);
-}
 
-QRect UpdateLevelOfDetailJob::windowViewport(const QSize &area, const QRectF &relativeViewport) const
-{
-    if (area.isValid()) {
-        const int areaWidth = area.width();
-        const int areaHeight = area.height();
-        return QRect(relativeViewport.x() * areaWidth,
-                     (1.0 - relativeViewport.y() - relativeViewport.height()) * areaHeight,
-                     relativeViewport.width() * areaWidth,
-                     relativeViewport.height() * areaHeight);
-    }
-    return relativeViewport.toRect();
-}
+    if (m_manager->levelOfDetailManager()->count() == 0)
+        return; // no LODs, lets bail out early
 
-void UpdateLevelOfDetailJob::updateEntityLod(Entity *entity)
-{
-    if (!entity->isEnabled())
-        return; // skip disabled sub-trees, since their bounding box is probably not valid anyway
-
-    QVector<LevelOfDetail *> lods = entity->renderComponents<LevelOfDetail>();
-    if (!lods.empty()) {
-        LevelOfDetail* lod = lods.front();  // other lods are ignored
-
-        if (lod->isEnabled() && !lod->thresholds().isEmpty()) {
-            switch (lod->thresholdType()) {
-            case QLevelOfDetail::DistanceToCameraThreshold:
-                updateEntityLodByDistance(entity, lod);
-                break;
-            case QLevelOfDetail::ProjectedScreenPixelSizeThreshold:
-                updateEntityLodByScreenArea(entity, lod);
-                break;
-            default:
-                Q_ASSERT(false);
-                break;
-            }
-        }
-    }
-
-    const auto children = entity->children();
-    for (Qt3DRender::Render::Entity *child : children)
-        updateEntityLod(child);
-}
-
-void UpdateLevelOfDetailJob::updateEntityLodByDistance(Entity *entity, LevelOfDetail *lod)
-{
-    Matrix4x4 viewMatrix;
-    Matrix4x4 projectionMatrix;
-    if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
-        return;
-
-    const QVector<qreal> thresholds = lod->thresholds();
-    Vector3D center(lod->center());
-    if (lod->hasBoundingVolumeOverride() || entity->worldBoundingVolume() == nullptr) {
-        center = *entity->worldTransform() * center;
-    } else {
-        center = entity->worldBoundingVolume()->center();
-    }
-
-    const Vector3D tcenter = viewMatrix * center;
-    const float dist = tcenter.length();
-    const int n = thresholds.size();
-    for (int i=0; i<n; ++i) {
-        if (dist <= thresholds[i] || i == n -1) {
-            m_filterValue = approxRollingAverage<30>(m_filterValue, i);
-            i = qBound(0, static_cast<int>(qRound(m_filterValue)), n - 1);
-            if (lod->currentIndex() != i)
-                lod->setCurrentIndex(i);
-            break;
-        }
-    }
-}
-
-void UpdateLevelOfDetailJob::updateEntityLodByScreenArea(Entity *entity, LevelOfDetail *lod)
-{
-    Matrix4x4 viewMatrix;
-    Matrix4x4 projectionMatrix;
-    if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
-        return;
-
-    PickingUtils::ViewportCameraAreaGatherer vcaGatherer(lod->camera());
-    const QVector<PickingUtils::ViewportCameraAreaDetails> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
-    if (vcaTriplets.isEmpty())
-        return;
-
-    const PickingUtils::ViewportCameraAreaDetails &vca = vcaTriplets.front();
-
-    const QVector<qreal> thresholds = lod->thresholds();
-    Sphere bv(Vector3D(lod->center()), lod->radius());
-    if (!lod->hasBoundingVolumeOverride() && entity->worldBoundingVolume() != nullptr) {
-        bv = *(entity->worldBoundingVolume());
-    } else {
-        bv.transform(*entity->worldTransform());
-    }
-
-    bv.transform(projectionMatrix * viewMatrix);
-    const float sideLength = bv.radius() * 2.f;
-    float area = vca.viewport.width() * sideLength * vca.viewport.height() * sideLength;
-
-    const QRect r = windowViewport(vca.area, vca.viewport);
-    area =  std::sqrt(area * r.width() * r.height());
-
-    const int n = thresholds.size();
-    for (int i = 0; i < n; ++i) {
-        if (thresholds[i] < area || i == n -1) {
-            m_filterValue = approxRollingAverage<30>(m_filterValue, i);
-            i = qBound(0, static_cast<int>(qRound(m_filterValue)), n - 1);
-            if (lod->currentIndex() != i)
-                lod->setCurrentIndex(i);
-            break;
-        }
-    }
+    LODUpdateVisitor visitor(m_filterValue, m_frameGraphRoot, m_manager);
+    visitor.apply(m_root);
+    m_filterValue = visitor.filterValue();
 }
 
 } // Render

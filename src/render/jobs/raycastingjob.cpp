@@ -50,6 +50,7 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/trianglesvisitor_p.h>
+#include <Qt3DRender/private/entityvisitor_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,43 +60,23 @@ using namespace Render;
 
 namespace {
 
-class EntityCasterGatherer
+class EntityCasterGatherer : public EntityVisitor
 {
 public:
     using EntityCasterList = QVector<QPair<Entity *, RayCaster*>>;
+    EntityCasterList m_result;
 
-    explicit EntityCasterGatherer(Entity *root) : m_root(root), m_needsRefresh(true) { }
+    explicit EntityCasterGatherer(NodeManagers *manager) : EntityVisitor(manager) { setPruneDisabled(true); }
 
-    EntityCasterList result() const {
-        if (m_needsRefresh) {
-            m_result.clear();
-            m_result = gatherEntities(m_root, std::move(m_result));
-            m_needsRefresh = false;
+    Operation visit(Entity *entity) override {
+        QVector<RayCaster *> components = entity->renderComponents<RayCaster>();
+        for (const auto c: qAsConst(components)) {
+            if (c->isEnabled())
+                m_result.push_back(qMakePair(entity, c));
         }
-        return m_result;
+
+        return Continue;
     }
-
-private:
-    EntityCasterList gatherEntities(Entity *entity, EntityCasterList entities) const
-    {
-        if (entity != nullptr && entity->isEnabled()) {
-            QVector<RayCaster *> components = entity->renderComponents<RayCaster>();
-            for (const auto c: qAsConst(components)) {
-                if (c->isEnabled())
-                    entities.push_back(qMakePair(entity, c));
-            }
-
-            // Traverse children
-            const auto children = entity->children();
-            for (Entity *child : children)
-                entities = gatherEntities(child, std::move(entities));
-        }
-        return entities;
-    }
-
-    Entity *m_root;
-    mutable EntityCasterList m_result;
-    mutable bool m_needsRefresh;
 };
 
 } // anonymous
@@ -145,8 +126,9 @@ bool RayCastingJob::runHelper()
             m_renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
     const float pickWorldSpaceTolerance = m_renderSettings->pickWorldSpaceTolerance();
 
-    EntityCasterGatherer gatherer(m_node);
-    const EntityCasterGatherer::EntityCasterList &entities = gatherer.result();
+    EntityCasterGatherer gatherer(m_manager);
+    gatherer.apply(m_node);
+    const EntityCasterGatherer::EntityCasterList &entities = gatherer.m_result;
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     const QVector<PickingUtils::ViewportCameraAreaDetails> vcaDetails = vcaGatherer.gather(m_frameGraphRoot);

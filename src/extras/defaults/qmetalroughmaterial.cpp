@@ -171,6 +171,16 @@ void QMetalRoughMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
 */
 
 /*!
+   \qmltype MetalRoughMaterial
+   \instantiates Qt3DExtras::QMetalRoughMaterial
+   \inqmlmodule Qt3D.Extras
+
+   \brief This material uses an effect with a single render pass approach and
+          performs per fragment lighting. Techniques are provided for OpenGL 3
+          and OpenGL ES 3.
+*/
+
+/*!
     Constructs a new QMetalRoughMaterial instance with parent object \a parent.
 */
 QMetalRoughMaterial::QMetalRoughMaterial(QNode *parent)
@@ -201,6 +211,12 @@ QMetalRoughMaterial::~QMetalRoughMaterial()
     Holds the current base color of the material. This can be either a plain
     color value or a texture. By default the value of this property is "grey".
 */
+/*!
+    \qmlproperty color Qt3D.Extras::MetalRoughMaterial::baseColor
+
+    Holds the current base color of the material. This can be either a plain
+    color value or a texture. By default the value of this property is "grey".
+*/
 QVariant QMetalRoughMaterial::baseColor() const
 {
     Q_D(const QMetalRoughMaterial);
@@ -210,7 +226,15 @@ QVariant QMetalRoughMaterial::baseColor() const
 /*!
     \property QMetalRoughMaterial::metalness
 
-    Holds the current metalness level of the material, since is a value between
+    Holds the current metalness level of the material, as a value between
+    0 (purely dielectric, the default) and 1 (purely metallic). This can be
+    either a plain uniform value or a texture. By default the value of this
+    property is 0.
+*/
+/*!
+    \qmlproperty real Qt3D.Extras::MetalRoughMaterial::metalness
+
+    Holds the current metalness level of the material, as a value between
     0 (purely dielectric, the default) and 1 (purely metallic). This can be
     either a plain uniform value or a texture. By default the value of this
     property is 0.
@@ -228,6 +252,13 @@ QVariant QMetalRoughMaterial::metalness() const
     plain uniform value or a texture. By default the value of this property is
     0.
 */
+/*!
+    \qmlproperty real Qt3D.Extras::MetalRoughMaterial::roughness
+
+    Holds the current roughness level of the material. This can be either a
+    plain uniform value or a texture. By default the value of this property is
+    0.
+*/
 QVariant QMetalRoughMaterial::roughness() const
 {
     Q_D(const QMetalRoughMaterial);
@@ -236,6 +267,12 @@ QVariant QMetalRoughMaterial::roughness() const
 
 /*!
     \property QMetalRoughMaterial::ambientOcclusion
+
+    Holds the current ambient occlusion map texture of the material. This can
+    only be a texture, otherwise it is ignored. By default this map is not set.
+*/
+/*!
+    \qmlproperty Texture Qt3D.Extras::MetalRoughMaterial::ambientOcclusion
 
     Holds the current ambient occlusion map texture of the material. This can
     only be a texture, otherwise it is ignored. By default this map is not set.
@@ -252,6 +289,12 @@ QVariant QMetalRoughMaterial::ambientOcclusion() const
     Holds the current normal map texture of the material. This can only be a
     texture, otherwise it is ignored. By default this map is not set.
 */
+/*!
+    \qmlproperty Texture Qt3D.Extras::MetalRoughMaterial::normal
+
+    Holds the current normal map texture of the material. This can only be a
+    texture, otherwise it is ignored. By default this map is not set.
+*/
 QVariant QMetalRoughMaterial::normal() const
 {
     Q_D(const QMetalRoughMaterial);
@@ -260,6 +303,12 @@ QVariant QMetalRoughMaterial::normal() const
 
 /*!
     \property QMetalRoughMaterial::textureScale
+
+    Holds the current texture scale. It is applied as a multiplier to texture
+    coordinates at render time. Defaults to 1.0.
+*/
+/*!
+    \qmlproperty real Qt3D.Extras::MetalRoughMaterial::textureScale
 
     Holds the current texture scale. It is applied as a multiplier to texture
     coordinates at render time. Defaults to 1.0.

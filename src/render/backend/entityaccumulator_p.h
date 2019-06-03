@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,72 +37,47 @@
 **
 ****************************************************************************/
 
-#include "framecleanupjob_p.h"
-#include <private/renderer_p.h>
-#include <private/nodemanagers_p.h>
-#include <private/entity_p.h>
-#include <private/shaderdata_p.h>
-#include <private/managers_p.h>
-#include <private/sphere_p.h>
-#include <Qt3DRender/private/job_common_p.h>
+#ifndef QT3DRENDER_RENDER_ENTITYACCUMULATOR_H
+#define QT3DRENDER_RENDER_ENTITYACCUMULATOR_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-FrameCleanupJob::FrameCleanupJob()
-    : m_managers(nullptr)
-    , m_root(nullptr)
+class NodeManagers;
+
+class Q_3DRENDERSHARED_PRIVATE_EXPORT EntityAccumulator
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
-}
+public:
+    EntityAccumulator(NodeManagers *manager);
+    EntityAccumulator(std::function<bool(Entity*)> predicate, NodeManagers *manager);
 
-FrameCleanupJob::~FrameCleanupJob()
-{
-}
+    QVector<Entity *> apply(Entity *root) const;
 
-void FrameCleanupJob::setRoot(Entity *root)
-{
-    m_root = root;
-}
-
-void FrameCleanupJob::run()
-{
-    // mark each ShaderData clean
-    ShaderData::cleanup(m_managers);
-
-    // Debug bounding volume debug
-    updateBoundingVolumesDebug(m_root);
-}
-
-void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
-{
-    Q_UNUSED(node);
-#if 0
-    node->traverse([](Entity *node) {
-        BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
-        if (debugBV) {
-            Qt3DRender::Render::Sphere s;
-            if (!debugBV->isRecursive()) {
-                s = *node->worldBoundingVolume();
-            } else {
-                s = *node->worldBoundingVolumeWithChildren();
-            }
-            debugBV->setRadius(s.radius());
-            debugBV->setCenter(s.center());
-        }
-    });
-
-#endif
-}
-
-void FrameCleanupJob::setManagers(NodeManagers *managers)
-{
-    m_managers = managers;
-}
+private:
+    NodeManagers *m_manager;
+    std::function<bool(Entity *)> m_predicate;
+};
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_ENTITYACCUMULATOR_H

@@ -30,6 +30,8 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/entityvisitor_p.h>
+#include <Qt3DRender/private/entityaccumulator_p.h>
 
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QPropertyUpdatedChange>
@@ -68,6 +70,24 @@ QNodeId armatureUuid(Entity *entity) { return entity->componentUuid<Armature>();
 QVector<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
 QVector<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
 QVector<QNodeId> environmentLightsUuid(Entity *entity) { return entity->componentsUuid<EnvironmentLight>(); }
+
+class CompleteVisitor : public EntityVisitor
+{
+public:
+    CompleteVisitor(NodeManagers *manager) : EntityVisitor(manager) { }
+
+    int count = 0;
+    Operation visit(Entity *) { count++; return Continue; }
+};
+
+class EnabledVisitor : public EntityVisitor
+{
+public:
+    EnabledVisitor(NodeManagers *manager) : EntityVisitor(manager) { }
+
+    int count = 0;
+    Operation visit(Entity *e) { count++; return e->isEnabled() ? Continue : Prune; }
+};
 
 class tst_RenderEntity : public QObject
 {
@@ -418,6 +438,172 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         qDeleteAll(components);
+    }
+
+    void traversal() {
+        // GIVEN
+        TestRenderer renderer;
+        NodeManagers nodeManagers;
+        Qt3DCore::QEntity frontendEntityA, frontendEntityB, frontendEntityC;
+
+        auto entityCreator = [&nodeManagers, &renderer](const Qt3DCore::QEntity &frontEndEntity) {
+            HEntity renderNodeHandle = nodeManagers.renderNodesManager()->getOrAcquireHandle(frontEndEntity.id());
+            Entity *entity = nodeManagers.renderNodesManager()->data(renderNodeHandle);
+            entity->setNodeManagers(&nodeManagers);
+            entity->setHandle(renderNodeHandle);
+            entity->setRenderer(&renderer);
+            return entity;
+        };
+
+        auto backendA = entityCreator(frontendEntityA);
+        auto backendB = entityCreator(frontendEntityB);
+        auto backendC = entityCreator(frontendEntityC);
+
+        auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
+            const auto parentChange = QPropertyUpdatedChangePtr::create(entity.id());
+            parentChange->setPropertyName("parentEntityUpdated");
+            auto parent = entity.parentEntity();
+            parentChange->setValue(QVariant::fromValue(parent ? parent->id() : Qt3DCore::QNodeId()));
+
+            Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
+            backendEntity->sceneChangeEvent(parentChange);
+        };
+
+        // reparent B to A and C to B.
+        frontendEntityB.setParent(&frontendEntityA);
+        sendParentChange(frontendEntityB);
+        frontendEntityC.setParent(&frontendEntityB);
+        sendParentChange(frontendEntityC);
+
+        auto rebuildHierarchy = [](Entity *backend) {
+            backend->clearEntityHierarchy();
+            backend->rebuildEntityHierarchy();
+        };
+        rebuildHierarchy(backendA);
+        rebuildHierarchy(backendB);
+        rebuildHierarchy(backendC);
+
+        // WHEN
+        int visitCount = 0;
+        auto counter = [&visitCount](const Entity *) { ++visitCount; };
+        backendA->traverse(counter);
+
+        // THEN
+        QCOMPARE(visitCount, 3);
+    }
+
+    void visitor()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        NodeManagers nodeManagers;
+        Qt3DCore::QEntity frontendEntityA, frontendEntityB, frontendEntityC;
+
+        auto entityCreator = [&nodeManagers, &renderer](const Qt3DCore::QEntity &frontEndEntity) {
+            HEntity renderNodeHandle = nodeManagers.renderNodesManager()->getOrAcquireHandle(frontEndEntity.id());
+            Entity *entity = nodeManagers.renderNodesManager()->data(renderNodeHandle);
+            entity->setNodeManagers(&nodeManagers);
+            entity->setHandle(renderNodeHandle);
+            entity->setRenderer(&renderer);
+            return entity;
+        };
+
+        auto backendA = entityCreator(frontendEntityA);
+        auto backendB = entityCreator(frontendEntityB);
+        auto backendC = entityCreator(frontendEntityC);
+
+        auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
+            const auto parentChange = QPropertyUpdatedChangePtr::create(entity.id());
+            parentChange->setPropertyName("parentEntityUpdated");
+            auto parent = entity.parentEntity();
+            parentChange->setValue(QVariant::fromValue(parent ? parent->id() : Qt3DCore::QNodeId()));
+
+            Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
+            backendEntity->sceneChangeEvent(parentChange);
+        };
+
+        // reparent B to A and C to B.
+        frontendEntityB.setParent(&frontendEntityA);
+        sendParentChange(frontendEntityB);
+        frontendEntityC.setParent(&frontendEntityB);
+        sendParentChange(frontendEntityC);
+
+        auto rebuildHierarchy = [](Entity *backend) {
+            backend->clearEntityHierarchy();
+            backend->rebuildEntityHierarchy();
+        };
+        rebuildHierarchy(backendA);
+        rebuildHierarchy(backendB);
+        rebuildHierarchy(backendC);
+
+       // WHEN
+       CompleteVisitor v1(&nodeManagers);
+       EnabledVisitor v2(&nodeManagers);
+       CompleteVisitor v3(&nodeManagers);
+       v3.setPruneDisabled(true);
+       v1.apply(backendA);
+       v2.apply(backendA);
+       v3.apply(backendA);
+
+       // THEN
+       QCOMPARE(v1.count, 3);
+       QCOMPARE(v2.count, 1); // nodes disabled by default but the first one is still visited before visitation finds out it's disabled
+       QCOMPARE(v3.count, 0); // nodes disabled by default
+    }
+
+    void accumulator()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        NodeManagers nodeManagers;
+        Qt3DCore::QEntity frontendEntityA, frontendEntityB, frontendEntityC;
+
+        auto entityCreator = [&nodeManagers, &renderer](const Qt3DCore::QEntity &frontEndEntity) {
+            HEntity renderNodeHandle = nodeManagers.renderNodesManager()->getOrAcquireHandle(frontEndEntity.id());
+            Entity *entity = nodeManagers.renderNodesManager()->data(renderNodeHandle);
+            entity->setNodeManagers(&nodeManagers);
+            entity->setHandle(renderNodeHandle);
+            entity->setRenderer(&renderer);
+            return entity;
+        };
+
+        auto backendA = entityCreator(frontendEntityA);
+        auto backendB = entityCreator(frontendEntityB);
+        auto backendC = entityCreator(frontendEntityC);
+
+        auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
+            const auto parentChange = QPropertyUpdatedChangePtr::create(entity.id());
+            parentChange->setPropertyName("parentEntityUpdated");
+            auto parent = entity.parentEntity();
+            parentChange->setValue(QVariant::fromValue(parent ? parent->id() : Qt3DCore::QNodeId()));
+
+            Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
+            backendEntity->sceneChangeEvent(parentChange);
+        };
+
+        // reparent B to A and C to B.
+        frontendEntityB.setParent(&frontendEntityA);
+        sendParentChange(frontendEntityB);
+        frontendEntityC.setParent(&frontendEntityB);
+        sendParentChange(frontendEntityC);
+
+        auto rebuildHierarchy = [](Entity *backend) {
+            backend->clearEntityHierarchy();
+            backend->rebuildEntityHierarchy();
+        };
+        rebuildHierarchy(backendA);
+        rebuildHierarchy(backendB);
+        rebuildHierarchy(backendC);
+
+        // WHEN
+        EntityAccumulator v1(&nodeManagers);
+        EntityAccumulator v2([](Entity *e) { return e->isEnabled(); }, &nodeManagers);
+        const auto r1 = v1.apply(backendA);
+        const auto r2 = v2.apply(backendA);
+
+        // THEN
+        QCOMPARE(r1.count(), 3);
+        QCOMPARE(r2.count(), 0);
     }
 };
 

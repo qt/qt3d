@@ -145,6 +145,7 @@ void CameraLens::computeSceneBoundingVolume(QNodeId entityId,
     ComputeFilteredBoundingVolumeJobPtr job(new GetBoundingVolumeWithoutCameraJob(this, commandId));
     job->addDependency(m_renderer->expandBoundingVolumeJob());
     job->setRoot(root);
+    job->setManagers(nodeManagers);
     job->ignoreSubTree(camNode);
     m_renderAspect->scheduleSingleShotJob(job);
 }

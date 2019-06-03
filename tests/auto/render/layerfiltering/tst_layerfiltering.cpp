@@ -640,6 +640,7 @@ private Q_SLOTS:
 
         Qt3DRender::Render::UpdateTreeEnabledJob updateTreeEnabledJob;
         updateTreeEnabledJob.setRoot(backendRoot);
+        updateTreeEnabledJob.setManagers(aspect->nodeManagers());
         updateTreeEnabledJob.run();
 
         // WHEN
