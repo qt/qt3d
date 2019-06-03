@@ -556,6 +556,20 @@ void GraphicsHelperGL3_3::bindShaderStorageBlock(GLuint programId, GLuint shader
     qWarning() << "SSBO are not supported by OpenGL 3.3 (since OpenGL 4.3)";
 }
 
+void GraphicsHelperGL3_3::bindImageTexture(GLuint imageUnit, GLuint texture,
+                                           GLint mipLevel, GLboolean layered,
+                                           GLint layer, GLenum access, GLenum format)
+{
+    Q_UNUSED(imageUnit)
+    Q_UNUSED(texture)
+    Q_UNUSED(mipLevel)
+    Q_UNUSED(layered)
+    Q_UNUSED(layer)
+    Q_UNUSED(access)
+    Q_UNUSED(format)
+    qWarning() << "Shader Images are not supported by OpenGL 3.3 (since OpenGL 4.2)";
+}
+
 void GraphicsHelperGL3_3::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     m_funcs->glBindBufferBase(target, index, buffer);

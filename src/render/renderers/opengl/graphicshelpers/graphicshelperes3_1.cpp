@@ -175,11 +175,25 @@ bool GraphicsHelperES3_1::supportsFeature(GraphicsHelperInterface::Feature featu
     case GraphicsHelperInterface::Compute:
     case GraphicsHelperInterface::ShaderStorageObject:
     case GraphicsHelperInterface::IndirectDrawing:
+    case GraphicsHelperInterface::ShaderImage:
         return true;
     default:
         break;
     }
     return GraphicsHelperES3::supportsFeature(feature);
+}
+
+void GraphicsHelperES3_1::bindImageTexture(GLuint imageUnit, GLuint texture,
+                                           GLint mipLevel, GLboolean layered,
+                                           GLint layer, GLenum access, GLenum format)
+{
+    m_extraFuncs->glBindImageTexture(imageUnit,
+                                     texture,
+                                     mipLevel,
+                                     layered,
+                                     layer,
+                                     access,
+                                     format);
 }
 
 void GraphicsHelperES3_1::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)

@@ -587,6 +587,19 @@ void GraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> &
         m_glHelper->bindFragDataLocation(shader, outputs);
 }
 
+void GraphicsContext::bindImageTexture(GLuint imageUnit, GLuint texture,
+                                       GLint mipLevel, GLboolean layered,
+                                       GLint layer, GLenum access, GLenum format)
+{
+    m_glHelper->bindImageTexture(imageUnit,
+                                 texture,
+                                 mipLevel,
+                                 layered,
+                                 layer,
+                                 access,
+                                 format);
+}
+
 void GraphicsContext::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     m_glHelper->bindUniformBlock(programId, uniformBlockIndex, uniformBlockBinding);

@@ -494,6 +494,37 @@ private Q_SLOTS:
         m_func->glDeleteFramebuffers(1, &fboId);
     }
 
+    void bindImageTexture()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        // GIVEN
+        QOpenGLTexture texture(QOpenGLTexture::Target2D);
+        texture.setSize(512, 512);
+        texture.setFormat(QOpenGLTexture::RGBA8U);
+        texture.setMinificationFilter(QOpenGLTexture::Linear);
+        texture.setMagnificationFilter(QOpenGLTexture::Linear);
+        texture.create();
+        texture.allocateStorage();
+
+        // THEN
+        QVERIFY(texture.textureId() != 0 && texture.isCreated() && texture.isStorageAllocated());
+
+        // WHEN
+        m_glHelper.bindImageTexture(0,
+                                    texture.textureId(),
+                                    0,
+                                    GL_FALSE,
+                                    0,
+                                    GL_READ_WRITE,
+                                    GL_RGBA8UI);
+
+        // THEN
+        GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+    }
+
     void bindShaderStorageBlock()
     {
         if (!m_initializationSuccessful)

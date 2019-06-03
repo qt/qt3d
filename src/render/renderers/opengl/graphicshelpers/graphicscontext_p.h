@@ -123,6 +123,7 @@ public:
     void    bindFramebuffer(GLuint fbo, GraphicsHelperInterface::FBOBindMode mode);
     void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
     void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
+    void    bindImageTexture(GLuint imageUnit, GLuint texture, GLint mipLevel, GLboolean layered, GLint layer, GLenum access, GLenum format);
     void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
     void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding);
     void    blendEquation(GLenum mode);

@@ -724,6 +724,19 @@ void GraphicsHelperGL4::bindFrameBufferObject(GLuint frameBufferId, FBOBindMode 
     }
 }
 
+void GraphicsHelperGL4::bindImageTexture(GLuint imageUnit, GLuint texture,
+                                         GLint mipLevel, GLboolean layered,
+                                         GLint layer, GLenum access, GLenum format)
+{
+    m_funcs->glBindImageTexture(imageUnit,
+                                texture,
+                                mipLevel,
+                                layered,
+                                layer,
+                                access,
+                                format);
+}
+
 GLuint GraphicsHelperGL4::boundFrameBufferObject()
 {
     GLint id = 0;
@@ -791,6 +804,7 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case IndirectDrawing:
     case MapBuffer:
     case Fences:
+    case ShaderImage:
         return true;
     default:
         return false;
