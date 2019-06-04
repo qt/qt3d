@@ -90,6 +90,7 @@
 #include <Qt3DRender/qblitframebuffer.h>
 #include <Qt3DRender/qsetfence.h>
 #include <Qt3DRender/qwaitfence.h>
+#include <Qt3DRender/qshaderimage.h>
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qskeletonloader.h>
@@ -154,6 +155,7 @@
 #include <Qt3DRender/private/proximityfilter_p.h>
 #include <Qt3DRender/private/setfence_p.h>
 #include <Qt3DRender/private/waitfence_p.h>
+#include <Qt3DRender/private/shaderimage_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -281,6 +283,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QShaderProgram>(QSharedPointer<Render::NodeFunctor<Render::Shader, Render::ShaderManager> >::create(m_renderer));
     q->registerBackendType<QShaderProgramBuilder>(QSharedPointer<Render::NodeFunctor<Render::ShaderBuilder, Render::ShaderBuilderManager> >::create(m_renderer));
     q->registerBackendType<QTechnique>(QSharedPointer<Render::TechniqueFunctor>::create(m_renderer, m_nodeManagers));
+    q->registerBackendType<QShaderImage>(QSharedPointer<Render::NodeFunctor<Render::ShaderImage, Render::ShaderImageManager>>::create(m_renderer));
 
     // Framegraph
     q->registerBackendType<QFrameGraphNode>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::FrameGraphNode, QFrameGraphNode> >::create(m_renderer));
@@ -357,6 +360,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QShaderProgram>();
     unregisterBackendType<QShaderProgramBuilder>();
     unregisterBackendType<QTechnique>();
+    unregisterBackendType<QShaderImage>();
 
     // Framegraph
     unregisterBackendType<QCameraSelector>();

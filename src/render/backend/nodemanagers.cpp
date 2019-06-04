@@ -97,6 +97,7 @@ NodeManagers::NodeManagers()
     , m_armatureManager(new ArmatureManager())
     , m_skeletonManager(new SkeletonManager())
     , m_jointManager(new JointManager())
+    , m_shaderImageManager(new ShaderImageManager())
     , m_resourceAccessor(new ResourceAccessor(this))
 {
 }
@@ -145,6 +146,7 @@ NodeManagers::~NodeManagers()
     delete m_armatureManager;
     delete m_skeletonManager;
     delete m_jointManager;
+    delete m_shaderImageManager;
 }
 
 QSharedPointer<ResourceAccessor> NodeManagers::resourceAccessor()
@@ -372,6 +374,12 @@ template<>
 JointManager *NodeManagers::manager<Joint>() const Q_DECL_NOTHROW
 {
     return m_jointManager;
+}
+
+template<>
+ShaderImageManager *NodeManagers::manager<ShaderImage>() const Q_DECL_NOTHROW
+{
+    return m_shaderImageManager;
 }
 
 } // Render

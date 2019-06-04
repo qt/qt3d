@@ -105,6 +105,7 @@ class RenderStateManager;
 class ArmatureManager;
 class SkeletonManager;
 class JointManager;
+class ShaderImageManager;
 
 class FrameGraphNode;
 class Entity;
@@ -143,6 +144,7 @@ class Armature;
 class Skeleton;
 class Joint;
 class OpenGLVertexArrayObject;
+class ShaderImage;
 
 class ResourceAccessor;
 
@@ -225,6 +227,7 @@ public:
     inline ArmatureManager *armatureManager() const Q_DECL_NOEXCEPT { return m_armatureManager; }
     inline SkeletonManager *skeletonManager() const Q_DECL_NOEXCEPT { return m_skeletonManager; }
     inline JointManager *jointManager() const Q_DECL_NOEXCEPT { return m_jointManager; }
+    inline ShaderImageManager *shaderImageManager() const Q_DECL_NOEXCEPT { return m_shaderImageManager; }
 
     QSharedPointer<ResourceAccessor> resourceAccessor();
 
@@ -268,6 +271,7 @@ private:
     ArmatureManager *m_armatureManager;
     SkeletonManager *m_skeletonManager;
     JointManager *m_jointManager;
+    ShaderImageManager *m_shaderImageManager;
 
     QSharedPointer<ResourceAccessor> m_resourceAccessor;
 };
@@ -384,6 +388,9 @@ Q_3DRENDERSHARED_PRIVATE_EXPORT SkeletonManager *NodeManagers::manager<Skeleton>
 
 template<>
 Q_3DRENDERSHARED_PRIVATE_EXPORT JointManager *NodeManagers::manager<Joint>() const Q_DECL_NOEXCEPT;
+
+template<>
+Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderImageManager *NodeManagers::manager<ShaderImage>() const Q_DECL_NOEXCEPT;
 
 } // Render
 
