@@ -155,229 +155,229 @@ QSharedPointer<ResourceAccessor> NodeManagers::resourceAccessor()
 }
 
 template<>
-CameraManager *NodeManagers::manager<CameraLens>() const Q_DECL_NOTHROW
+CameraManager *NodeManagers::manager<CameraLens>() const noexcept
 {
     return m_cameraManager;
 }
 
 template<>
-EntityManager *NodeManagers::manager<Entity>() const Q_DECL_NOTHROW
+EntityManager *NodeManagers::manager<Entity>() const noexcept
 {
     return m_renderNodesManager;
 }
 
 template<>
-MaterialManager *NodeManagers::manager<Material>() const Q_DECL_NOTHROW
+MaterialManager *NodeManagers::manager<Material>() const noexcept
 {
     return m_materialManager;
 }
 
 template<>
-MatrixManager *NodeManagers::manager<Matrix4x4>() const Q_DECL_NOTHROW
+MatrixManager *NodeManagers::manager<Matrix4x4>() const noexcept
 {
     return m_worldMatrixManager;
 }
 
 template<>
-VAOManager *NodeManagers::manager<OpenGLVertexArrayObject>() const Q_DECL_NOTHROW
+VAOManager *NodeManagers::manager<OpenGLVertexArrayObject>() const noexcept
 {
     return m_vaoManager;
 }
 
 template<>
-ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOTHROW
+ShaderManager *NodeManagers::manager<Shader>() const noexcept
 {
     return m_shaderManager;
 }
 
 template<>
-ShaderBuilderManager *NodeManagers::manager<ShaderBuilder>() const Q_DECL_NOTHROW
+ShaderBuilderManager *NodeManagers::manager<ShaderBuilder>() const noexcept
 {
     return m_shaderBuilderManager;
 }
 
 template<>
-TechniqueManager *NodeManagers::manager<Technique>() const Q_DECL_NOTHROW
+TechniqueManager *NodeManagers::manager<Technique>() const noexcept
 {
     return m_techniqueManager;
 }
 
 template<>
-EffectManager *NodeManagers::manager<Effect>() const Q_DECL_NOTHROW
+EffectManager *NodeManagers::manager<Effect>() const noexcept
 {
     return m_effectManager;
 }
 
 template<>
-RenderPassManager *NodeManagers::manager<RenderPass>() const Q_DECL_NOTHROW
+RenderPassManager *NodeManagers::manager<RenderPass>() const noexcept
 {
     return m_renderPassManager;
 }
 
 template<>
-TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOTHROW
+TextureManager *NodeManagers::manager<Texture>() const noexcept
 {
     return m_textureManager;
 }
 
 template<>
-LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOTHROW
+LayerManager *NodeManagers::manager<Layer>() const noexcept
 {
     return m_layerManager;
 }
 
 template<>
-LevelOfDetailManager *NodeManagers::manager<LevelOfDetail>() const Q_DECL_NOTHROW
+LevelOfDetailManager *NodeManagers::manager<LevelOfDetail>() const noexcept
 {
     return m_levelOfDetailManager;
 }
 
 template<>
-FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOTHROW
+FilterKeyManager *NodeManagers::manager<FilterKey>() const noexcept
 {
     return m_filterKeyManager;
 }
 
 template<>
-FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOTHROW
+FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const noexcept
 {
     return m_frameGraphManager;
 }
 
 template<>
-TransformManager *NodeManagers::manager<Transform>() const Q_DECL_NOTHROW
+TransformManager *NodeManagers::manager<Transform>() const noexcept
 {
     return m_transformManager;
 }
 
 template<>
-RenderTargetManager *NodeManagers::manager<RenderTarget>() const Q_DECL_NOTHROW
+RenderTargetManager *NodeManagers::manager<RenderTarget>() const noexcept
 {
     return m_renderTargetManager;
 }
 
 template<>
-SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOTHROW
+SceneManager *NodeManagers::manager<Scene>() const noexcept
 {
     return m_sceneManager;
 }
 
 template<>
-AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOTHROW
+AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const noexcept
 {
     return m_attachmentManager;
 }
 
 template<>
-ParameterManager *NodeManagers::manager<Parameter>() const Q_DECL_NOTHROW
+ParameterManager *NodeManagers::manager<Parameter>() const noexcept
 {
     return m_parameterManager;
 }
 
 template<>
-ShaderDataManager *NodeManagers::manager<ShaderData>() const Q_DECL_NOTHROW
+ShaderDataManager *NodeManagers::manager<ShaderData>() const noexcept
 {
     return m_shaderDataManager;
 }
 
 template<>
-GLBufferManager *NodeManagers::manager<GLBuffer>() const Q_DECL_NOTHROW
+GLBufferManager *NodeManagers::manager<GLBuffer>() const noexcept
 {
     return m_glBufferManager;
 }
 
 template<>
-TextureImageManager *NodeManagers::manager<TextureImage>() const Q_DECL_NOTHROW
+TextureImageManager *NodeManagers::manager<TextureImage>() const noexcept
 {
     return m_textureImageManager;
 }
 
 template<>
-BufferManager *NodeManagers::manager<Buffer>() const Q_DECL_NOTHROW
+BufferManager *NodeManagers::manager<Buffer>() const noexcept
 {
     return m_bufferManager;
 }
 
 template<>
-AttributeManager *NodeManagers::manager<Attribute>() const Q_DECL_NOTHROW
+AttributeManager *NodeManagers::manager<Attribute>() const noexcept
 {
     return m_attributeManager;
 }
 
 template<>
-GeometryManager *NodeManagers::manager<Geometry>() const Q_DECL_NOTHROW
+GeometryManager *NodeManagers::manager<Geometry>() const noexcept
 {
     return m_geometryManager;
 }
 
 template<>
-GeometryRendererManager *NodeManagers::manager<GeometryRenderer>() const Q_DECL_NOTHROW
+GeometryRendererManager *NodeManagers::manager<GeometryRenderer>() const noexcept
 {
     return m_geometryRendererManager;
 }
 
 template<>
-ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOTHROW
+ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const noexcept
 {
     return m_objectPickerManager;
 }
 
 template<>
-RayCasterManager *NodeManagers::manager<RayCaster>() const Q_DECL_NOTHROW
+RayCasterManager *NodeManagers::manager<RayCaster>() const noexcept
 {
     return m_rayCasterManager;
 }
 
 //template<>
-//BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOTHROW
+//BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const noexcept
 //{
 //    return m_boundingVolumeDebugManager;
 //}
 
 template<>
-LightManager *NodeManagers::manager<Light>() const Q_DECL_NOTHROW
+LightManager *NodeManagers::manager<Light>() const noexcept
 {
     return m_lightManager;
 }
 
 template<>
-EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const Q_DECL_NOTHROW
+EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const noexcept
 {
     return m_environmentLightManager;
 }
 
 template<>
-ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOTHROW
+ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const noexcept
 {
     return m_computeJobManager;
 }
 
 template<>
-RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOTHROW
+RenderStateManager *NodeManagers::manager<RenderStateNode>() const noexcept
 {
     return m_renderStateManager;
 }
 
 template<>
-ArmatureManager *NodeManagers::manager<Armature>() const Q_DECL_NOTHROW
+ArmatureManager *NodeManagers::manager<Armature>() const noexcept
 {
     return m_armatureManager;
 }
 
 template<>
-SkeletonManager *NodeManagers::manager<Skeleton>() const Q_DECL_NOTHROW
+SkeletonManager *NodeManagers::manager<Skeleton>() const noexcept
 {
     return m_skeletonManager;
 }
 
 template<>
-JointManager *NodeManagers::manager<Joint>() const Q_DECL_NOTHROW
+JointManager *NodeManagers::manager<Joint>() const noexcept
 {
     return m_jointManager;
 }
 
 template<>
-ShaderImageManager *NodeManagers::manager<ShaderImage>() const Q_DECL_NOTHROW
+ShaderImageManager *NodeManagers::manager<ShaderImage>() const noexcept
 {
     return m_shaderImageManager;
 }

@@ -155,7 +155,7 @@ public:
     ~NodeManagers();
 
     template<class Backend, typename Manager>
-    Manager *manager() const Q_DECL_NOEXCEPT
+    Manager *manager() const noexcept
     {
         return nullptr;
     }
@@ -188,46 +188,46 @@ public:
     }
 
 
-    inline CameraManager *cameraManager() const Q_DECL_NOEXCEPT { return m_cameraManager; }
-    inline EntityManager *renderNodesManager() const Q_DECL_NOEXCEPT { return m_renderNodesManager; }
-    inline MaterialManager *materialManager() const Q_DECL_NOEXCEPT { return m_materialManager; }
-    inline MatrixManager *worldMatrixManager() const Q_DECL_NOEXCEPT { return m_worldMatrixManager; }
-    inline VAOManager *vaoManager() const Q_DECL_NOEXCEPT { return m_vaoManager; }
-    inline ShaderManager *shaderManager() const Q_DECL_NOEXCEPT { return m_shaderManager; }
-    inline ShaderBuilderManager *shaderBuilderManager() const Q_DECL_NOEXCEPT { return m_shaderBuilderManager; }
-    inline TechniqueManager *techniqueManager() const Q_DECL_NOEXCEPT { return m_techniqueManager; }
-    inline EffectManager *effectManager() const Q_DECL_NOEXCEPT { return m_effectManager; }
-    inline RenderPassManager *renderPassManager() const Q_DECL_NOEXCEPT { return m_renderPassManager; }
-    inline GLTextureManager *glTextureManager() const Q_DECL_NOEXCEPT { return m_glTextureManager; }
-    inline TextureManager *textureManager() const Q_DECL_NOEXCEPT { return m_textureManager; }
-    inline LayerManager *layerManager() const Q_DECL_NOEXCEPT { return m_layerManager; }
-    inline LevelOfDetailManager *levelOfDetailManager() const Q_DECL_NOEXCEPT { return m_levelOfDetailManager; }
-    inline FilterKeyManager *filterKeyManager() const Q_DECL_NOEXCEPT { return m_filterKeyManager; }
-    inline FrameGraphManager *frameGraphManager() const Q_DECL_NOEXCEPT { return m_frameGraphManager; }
-    inline TransformManager *transformManager() const Q_DECL_NOEXCEPT { return m_transformManager; }
-    inline RenderTargetManager *renderTargetManager() const Q_DECL_NOEXCEPT { return m_renderTargetManager; }
-    inline SceneManager *sceneManager() const Q_DECL_NOEXCEPT { return m_sceneManager; }
-    inline AttachmentManager *attachmentManager() const Q_DECL_NOEXCEPT { return m_attachmentManager; }
-    inline ParameterManager *parameterManager() const Q_DECL_NOEXCEPT { return m_parameterManager; }
-    inline ShaderDataManager *shaderDataManager() const Q_DECL_NOEXCEPT { return m_shaderDataManager; }
-    inline GLBufferManager *glBufferManager() const Q_DECL_NOEXCEPT { return m_glBufferManager; }
-    inline GLFenceManager *glFenceManager() const Q_DECL_NOEXCEPT { return m_glFenceManager; }
-    inline TextureImageManager *textureImageManager() const Q_DECL_NOEXCEPT { return m_textureImageManager; }
-    inline BufferManager *bufferManager() const Q_DECL_NOEXCEPT { return m_bufferManager; }
-    inline AttributeManager *attributeManager() const Q_DECL_NOEXCEPT { return m_attributeManager; }
-    inline GeometryManager *geometryManager() const Q_DECL_NOEXCEPT { return m_geometryManager; }
-    inline GeometryRendererManager *geometryRendererManager() const Q_DECL_NOEXCEPT { return m_geometryRendererManager; }
-    inline ObjectPickerManager *objectPickerManager() const Q_DECL_NOEXCEPT { return m_objectPickerManager; }
-    inline RayCasterManager *rayCasterManager() const Q_DECL_NOEXCEPT { return m_rayCasterManager; }
-    //    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
-    inline LightManager *lightManager() const Q_DECL_NOEXCEPT { return m_lightManager; }
-    inline EnvironmentLightManager *environmentLightManager() const Q_DECL_NOEXCEPT { return m_environmentLightManager; }
-    inline ComputeCommandManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
-    inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
-    inline ArmatureManager *armatureManager() const Q_DECL_NOEXCEPT { return m_armatureManager; }
-    inline SkeletonManager *skeletonManager() const Q_DECL_NOEXCEPT { return m_skeletonManager; }
-    inline JointManager *jointManager() const Q_DECL_NOEXCEPT { return m_jointManager; }
-    inline ShaderImageManager *shaderImageManager() const Q_DECL_NOEXCEPT { return m_shaderImageManager; }
+    inline CameraManager *cameraManager() const noexcept { return m_cameraManager; }
+    inline EntityManager *renderNodesManager() const noexcept { return m_renderNodesManager; }
+    inline MaterialManager *materialManager() const noexcept { return m_materialManager; }
+    inline MatrixManager *worldMatrixManager() const noexcept { return m_worldMatrixManager; }
+    inline VAOManager *vaoManager() const noexcept { return m_vaoManager; }
+    inline ShaderManager *shaderManager() const noexcept { return m_shaderManager; }
+    inline ShaderBuilderManager *shaderBuilderManager() const noexcept { return m_shaderBuilderManager; }
+    inline TechniqueManager *techniqueManager() const noexcept { return m_techniqueManager; }
+    inline EffectManager *effectManager() const noexcept { return m_effectManager; }
+    inline RenderPassManager *renderPassManager() const noexcept { return m_renderPassManager; }
+    inline GLTextureManager *glTextureManager() const noexcept { return m_glTextureManager; }
+    inline TextureManager *textureManager() const noexcept { return m_textureManager; }
+    inline LayerManager *layerManager() const noexcept { return m_layerManager; }
+    inline LevelOfDetailManager *levelOfDetailManager() const noexcept { return m_levelOfDetailManager; }
+    inline FilterKeyManager *filterKeyManager() const noexcept { return m_filterKeyManager; }
+    inline FrameGraphManager *frameGraphManager() const noexcept { return m_frameGraphManager; }
+    inline TransformManager *transformManager() const noexcept { return m_transformManager; }
+    inline RenderTargetManager *renderTargetManager() const noexcept { return m_renderTargetManager; }
+    inline SceneManager *sceneManager() const noexcept { return m_sceneManager; }
+    inline AttachmentManager *attachmentManager() const noexcept { return m_attachmentManager; }
+    inline ParameterManager *parameterManager() const noexcept { return m_parameterManager; }
+    inline ShaderDataManager *shaderDataManager() const noexcept { return m_shaderDataManager; }
+    inline GLBufferManager *glBufferManager() const noexcept { return m_glBufferManager; }
+    inline GLFenceManager *glFenceManager() const noexcept { return m_glFenceManager; }
+    inline TextureImageManager *textureImageManager() const noexcept { return m_textureImageManager; }
+    inline BufferManager *bufferManager() const noexcept { return m_bufferManager; }
+    inline AttributeManager *attributeManager() const noexcept { return m_attributeManager; }
+    inline GeometryManager *geometryManager() const noexcept { return m_geometryManager; }
+    inline GeometryRendererManager *geometryRendererManager() const noexcept { return m_geometryRendererManager; }
+    inline ObjectPickerManager *objectPickerManager() const noexcept { return m_objectPickerManager; }
+    inline RayCasterManager *rayCasterManager() const noexcept { return m_rayCasterManager; }
+    //    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const noexcept { return m_boundingVolumeDebugManager; }
+    inline LightManager *lightManager() const noexcept { return m_lightManager; }
+    inline EnvironmentLightManager *environmentLightManager() const noexcept { return m_environmentLightManager; }
+    inline ComputeCommandManager *computeJobManager() const noexcept { return m_computeJobManager; }
+    inline RenderStateManager *renderStateManager() const noexcept { return m_renderStateManager; }
+    inline ArmatureManager *armatureManager() const noexcept { return m_armatureManager; }
+    inline SkeletonManager *skeletonManager() const noexcept { return m_skeletonManager; }
+    inline JointManager *jointManager() const noexcept { return m_jointManager; }
+    inline ShaderImageManager *shaderImageManager() const noexcept { return m_shaderImageManager; }
 
     QSharedPointer<ResourceAccessor> resourceAccessor();
 
@@ -279,118 +279,118 @@ private:
 // Specializations
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT CameraManager *NodeManagers::manager<CameraLens>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT CameraManager *NodeManagers::manager<CameraLens>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT EntityManager *NodeManagers::manager<Entity>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT EntityManager *NodeManagers::manager<Entity>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT MaterialManager *NodeManagers::manager<Material>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT MaterialManager *NodeManagers::manager<Material>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT MatrixManager *NodeManagers::manager<QMatrix4x4*>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT MatrixManager *NodeManagers::manager<QMatrix4x4*>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT VAOManager *NodeManagers::manager<OpenGLVertexArrayObject>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT VAOManager *NodeManagers::manager<OpenGLVertexArrayObject>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderManager *NodeManagers::manager<Shader>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderBuilderManager *NodeManagers::manager<ShaderBuilder>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderBuilderManager *NodeManagers::manager<ShaderBuilder>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT TechniqueManager *NodeManagers::manager<Technique>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT TechniqueManager *NodeManagers::manager<Technique>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT EffectManager *NodeManagers::manager<Effect>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT EffectManager *NodeManagers::manager<Effect>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT RenderPassManager *NodeManagers::manager<RenderPass>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT RenderPassManager *NodeManagers::manager<RenderPass>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT TextureManager *NodeManagers::manager<Texture>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT LayerManager *NodeManagers::manager<Layer>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT LevelOfDetailManager *NodeManagers::manager<LevelOfDetail>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT LevelOfDetailManager *NodeManagers::manager<LevelOfDetail>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT FilterKeyManager *NodeManagers::manager<FilterKey>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT TransformManager *NodeManagers::manager<Transform>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT TransformManager *NodeManagers::manager<Transform>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT RenderTargetManager *NodeManagers::manager<RenderTarget>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT RenderTargetManager *NodeManagers::manager<RenderTarget>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT SceneManager *NodeManagers::manager<Scene>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT ParameterManager *NodeManagers::manager<Parameter>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT ParameterManager *NodeManagers::manager<Parameter>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderDataManager *NodeManagers::manager<ShaderData>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderDataManager *NodeManagers::manager<ShaderData>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT GLBufferManager *NodeManagers::manager<GLBuffer>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT GLBufferManager *NodeManagers::manager<GLBuffer>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT TextureImageManager *NodeManagers::manager<TextureImage>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT TextureImageManager *NodeManagers::manager<TextureImage>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT BufferManager *NodeManagers::manager<Buffer>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT BufferManager *NodeManagers::manager<Buffer>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT AttributeManager *NodeManagers::manager<Attribute>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT AttributeManager *NodeManagers::manager<Attribute>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT GeometryManager *NodeManagers::manager<Geometry>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT GeometryManager *NodeManagers::manager<Geometry>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT GeometryRendererManager *NodeManagers::manager<GeometryRenderer>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT GeometryRendererManager *NodeManagers::manager<GeometryRenderer>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT RayCasterManager *NodeManagers::manager<RayCaster>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT RayCasterManager *NodeManagers::manager<RayCaster>() const noexcept;
 
 //template<>
-//Q_3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
+//Q_3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const noexcept;
 
 template<>
-LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT;
+LightManager *NodeManagers::manager<Light>() const noexcept;
 
 template<>
-EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const Q_DECL_NOEXCEPT;
+EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT RenderStateManager *NodeManagers::manager<RenderStateNode>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT ArmatureManager *NodeManagers::manager<Armature>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT ArmatureManager *NodeManagers::manager<Armature>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT SkeletonManager *NodeManagers::manager<Skeleton>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT SkeletonManager *NodeManagers::manager<Skeleton>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT JointManager *NodeManagers::manager<Joint>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT JointManager *NodeManagers::manager<Joint>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderImageManager *NodeManagers::manager<ShaderImage>() const Q_DECL_NOEXCEPT;
+Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderImageManager *NodeManagers::manager<ShaderImage>() const noexcept;
 
 } // Render
 
