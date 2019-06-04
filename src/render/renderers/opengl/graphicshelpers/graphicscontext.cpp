@@ -782,6 +782,7 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
         break;
 
     case UniformType::Sampler:
+    case UniformType::Image:
     case UniformType::Int:
         applyUniformHelper<UniformType::Int>(description, v);
         break;

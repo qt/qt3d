@@ -174,6 +174,28 @@ const QByteArray fragCodeSamplers = QByteArrayLiteral(
             " texture(srect, texCoord);\n" \
             "}\n");
 
+const QByteArray fragCodeImages = QByteArrayLiteral(
+            "#version 430 core\n" \
+            "in vec2 texCoord;\n" \
+            "out vec4 color;\n" \
+            "layout(location = 1, rgba32f) readonly uniform image1D s1;\n" \
+            "layout(location = 2, rg16f) readonly uniform image2D s2;\n" \
+            "layout(location = 3, r16f) readonly uniform image2DArray s2a;\n" \
+            "layout(location = 4, rg8) readonly uniform image3D s3;\n" \
+            "layout(location = 5, rgba16_snorm) readonly uniform imageCube scube;\n" \
+            "layout(location = 6, rg16) readonly uniform image2DRect srect;\n" \
+            "void main()\n" \
+            "{\n" \
+            "    ivec2 coords = ivec2(texCoord);\n"\
+            "    color = vec4(1, 0, 0, 1) *" \
+            "    imageLoad(s1, coords.x) *" \
+            "    imageLoad(s2, coords) *" \
+            "    imageLoad(s2a,  ivec3(coords, 0)) *" \
+            "    imageLoad(s3, ivec3(coords, 0)) *" \
+            "    imageLoad(scube,  ivec3(coords, 0)) *" \
+            "    imageLoad(srect, coords);\n" \
+            "}\n");
+
 const QByteArray computeShader = QByteArrayLiteral(
             "#version 430 core\n" \
             "uniform float particleStep;\n" \
@@ -1508,6 +1530,13 @@ private Q_SLOTS:
         ADD_UNIFORM_ENTRY(fragCodeSamplers, GL_SAMPLER_3D, 4, 1, 4);
         ADD_UNIFORM_ENTRY(fragCodeSamplers, GL_SAMPLER_CUBE, 5, 1, 4);
         ADD_UNIFORM_ENTRY(fragCodeSamplers, GL_SAMPLER_2D_RECT, 6, 1, 4);
+
+        ADD_UNIFORM_ENTRY(fragCodeImages, GL_IMAGE_1D, 1, 1, 4);
+        ADD_UNIFORM_ENTRY(fragCodeImages, GL_IMAGE_2D, 2, 1, 4);
+        ADD_UNIFORM_ENTRY(fragCodeImages, GL_IMAGE_2D_ARRAY, 3, 1, 4);
+        ADD_UNIFORM_ENTRY(fragCodeImages, GL_IMAGE_3D, 4, 1, 4);
+        ADD_UNIFORM_ENTRY(fragCodeImages, GL_IMAGE_CUBE, 5, 1, 4);
+        ADD_UNIFORM_ENTRY(fragCodeImages, GL_IMAGE_2D_RECT, 6, 1, 4);
     }
 
     void uniformsByteSize()
@@ -2329,6 +2358,38 @@ private Q_SLOTS:
         ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, UniformType::Sampler);
         ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_SAMPLER_CUBE, UniformType::Sampler);
         ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY, UniformType::Sampler);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_1D, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_2D, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_3D, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_2D_RECT, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_CUBE, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_BUFFER, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_1D_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_2D_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_CUBE_MAP_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_2D_MULTISAMPLE, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_IMAGE_2D_MULTISAMPLE_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_1D, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_2D, UniformType::Image); ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_3D, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_2D_RECT, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_CUBE, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_BUFFER, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_1D_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_2D_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_CUBE_MAP_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_2D_MULTISAMPLE, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_1D, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_2D, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_3D, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_2D_RECT, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_CUBE, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_BUFFER, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_1D_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_2D_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE, UniformType::Image);
+        ADD_GL_TYPE_ENTRY(GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY, UniformType::Image);
     }
 
     void uniformTypeFromGLType()

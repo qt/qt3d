@@ -56,6 +56,25 @@ QT_BEGIN_NAMESPACE
 #define GL_PATCH_VERTICES 36466
 #endif
 
+#ifndef GL_IMAGE_BUFFER
+#define GL_IMAGE_BUFFER                   0x9051
+#endif
+#ifndef GL_IMAGE_CUBE_MAP_ARRAY
+#define GL_IMAGE_CUBE_MAP_ARRAY           0x9054
+#endif
+#ifndef GL_INT_IMAGE_BUFFER
+#define GL_INT_IMAGE_BUFFER               0x905C
+#endif
+#ifndef GL_INT_IMAGE_CUBE_MAP_ARRAY
+#define GL_INT_IMAGE_CUBE_MAP_ARRAY       0x905F
+#endif
+#ifndef GL_UNSIGNED_INT_IMAGE_BUFFER
+#define GL_UNSIGNED_INT_IMAGE_BUFFER      0x9067
+#endif
+#ifndef GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY
+#define GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY 0x906A
+#endif
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -128,6 +147,44 @@ void GraphicsHelperES3_2::drawElementsInstancedBaseVertexBaseInstance(GLenum pri
                                                     indices,
                                                     instances,
                                                     baseVertex);
+}
+
+UniformType GraphicsHelperES3_2::uniformTypeFromGLType(GLenum glType)
+{
+    switch (glType) {
+    case GL_IMAGE_BUFFER:
+    case GL_IMAGE_CUBE_MAP_ARRAY:
+    case GL_INT_IMAGE_BUFFER:
+    case GL_INT_IMAGE_CUBE_MAP_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_BUFFER:
+    case GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY:
+        return UniformType::Image;
+
+    default:
+       return GraphicsHelperES3_1::uniformTypeFromGLType(glType);
+    }
+}
+
+uint GraphicsHelperES3_2::uniformByteSize(const ShaderUniform &description)
+{
+    uint rawByteSize = 0;
+
+    switch (description.m_type) {
+    case GL_IMAGE_BUFFER:
+    case GL_IMAGE_CUBE_MAP_ARRAY:
+    case GL_INT_IMAGE_BUFFER:
+    case GL_INT_IMAGE_CUBE_MAP_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_BUFFER:
+    case GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY:
+        rawByteSize = 4;
+        break;
+
+    default:
+        rawByteSize = GraphicsHelperES3_1::uniformByteSize(description);
+        break;
+    }
+
+    return rawByteSize;
 }
 
 } // namespace Render

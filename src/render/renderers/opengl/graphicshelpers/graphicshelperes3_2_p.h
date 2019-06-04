@@ -71,6 +71,9 @@ public:
     bool frameBufferNeedsRenderBuffer(const Attachment &attachment) override;
     void setVerticesPerPatch(GLint verticesPerPatch) override;
     void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) override;
+    UniformType uniformTypeFromGLType(GLenum glType) override;
+    uint uniformByteSize(const ShaderUniform &description) override;
+
 };
 
 } // namespace Render

@@ -101,6 +101,7 @@ enum UniformType {
     Mat3x4,
     Mat4x3,
     Sampler,
+    Image,
     Unknown
 };
 
@@ -111,7 +112,8 @@ public:
         ScalarValue,
         NodeId,
         TextureValue,
-        BufferValue
+        BufferValue,
+        ShaderImageValue
     };
 
     // UniformValue implicitely converts doubles to floats to ensure
