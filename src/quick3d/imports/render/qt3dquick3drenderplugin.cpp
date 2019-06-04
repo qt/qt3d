@@ -117,6 +117,7 @@
 #include <Qt3DRender/qwaitfence.h>
 #include <Qt3DRender/qrastermode.h>
 #include <Qt3DRender/qnopicking.h>
+#include <Qt3DRender/qshaderimage.h>
 
 #include <QtGui/qwindow.h>
 
@@ -213,6 +214,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DRender::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
     qmlRegisterType<Qt3DRender::QTextureImage>(uri, 2, 0, "TextureImage");
     qmlRegisterType<Qt3DRender::QSharedGLTexture>(uri, 2, 13, "SharedGLTexture");
+    qmlRegisterType<Qt3DRender::QShaderImage>(uri, 2, 14, "ShaderImage");
 
     // Geometry
     qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
