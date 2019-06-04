@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,77 +37,59 @@
 **
 ****************************************************************************/
 
-#include "shaderparameterpack_p.h"
+#ifndef QT3DRENDER_RENDER_IMAGESUBMISSIONCONTEXT_P_H
+#define QT3DRENDER_RENDER_IMAGESUBMISSIONCONTEXT_P_H
 
-#include <Qt3DRender/private/graphicscontext_p.h>
-#include <Qt3DRender/private/texture_p.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <Qt3DCore/private/qframeallocator_p.h>
-
-#include <QOpenGLShaderProgram>
-#include <QDebug>
-#include <QColor>
-#include <QQuaternion>
-#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DCore/QNodeId>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-ShaderParameterPack::~ShaderParameterPack()
+class GraphicsContext;
+class GLTexture;
+class ShaderImage;
+
+class Q_AUTOTEST_EXPORT ImageSubmissionContext
 {
-    m_uniforms.clear();
-}
+public:
+    ImageSubmissionContext();
 
-void ShaderParameterPack::setUniform(const int glslNameId, const UniformValue &val)
-{
-    m_uniforms.insert(glslNameId, val);
-}
+    void initialize(GraphicsContext *context);
+    void endDrawing();
+    int activateImage(ShaderImage *image, GLTexture *tex);
+    void deactivateImages();
 
-void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId texId)
-{
-    for (int t=0; t<m_textures.size(); ++t) {
-        if (m_textures[t].glslNameId != glslNameId || m_textures[t].uniformArrayIndex != uniformArrayIndex)
-            continue;
+private:
+    void decayImageScores();
+    int assignUnitForImage(Qt3DCore::QNodeId shaderImageId);
 
-        m_textures[t].nodeId = texId;
-        return;
-    }
-
-    m_textures.append(NamedResource(glslNameId, texId, uniformArrayIndex, NamedResource::Texture));
-}
-
-void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id)
-{
-    for (int i=0, m = m_images.size(); i < m; ++i) {
-        if (m_images[i].glslNameId != glslNameId || m_images[i].uniformArrayIndex != uniformArrayIndex)
-            continue;
-
-        m_images[i].nodeId = id;
-        return;
-    }
-
-    m_images.append(NamedResource(glslNameId, id, uniformArrayIndex, NamedResource::Image));
-}
-
-// Contains Uniform Block Index and QNodeId of the ShaderData (UBO)
-void ShaderParameterPack::setUniformBuffer(BlockToUBO blockToUBO)
-{
-    m_uniformBuffers.append(std::move(blockToUBO));
-}
-
-void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
-{
-    m_shaderStorageBuffers.push_back(std::move(blockToSSBO));
-}
-
-void ShaderParameterPack::setSubmissionUniform(const ShaderUniform &uniform)
-{
-    m_submissionUniforms.push_back(uniform);
-}
+    struct ActiveImage
+    {
+        Qt3DCore::QNodeId shaderImageId;
+        GLTexture *texture = nullptr;
+        int score = 0;
+        bool pinned = false;
+    };
+    QVector<ActiveImage> m_activeImages;
+    GraphicsContext *m_ctx;
+};
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_IMAGESUBMISSIONCONTEXT_P_H

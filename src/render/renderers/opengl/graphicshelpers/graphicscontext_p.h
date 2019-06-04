@@ -156,7 +156,8 @@ public:
     void    enablePrimitiveRestart(int restartIndex);
     void    frontFace(GLenum mode);
     GLint   maxClipPlaneCount();
-    GLint   maxTextureUnitsCount();
+    GLint   maxTextureUnitsCount() const;
+    GLint   maxImageUnitsCount() const;
     void    pointSize(bool programmable, GLfloat value);
     void    readBuffer(GLenum mode);
     void    drawBuffer(GLenum mode);
@@ -186,6 +187,7 @@ public:
     bool m_initialized;
     bool m_supportsVAO;
     GLint m_maxTextureUnits;
+    GLint m_maxImageUnits;
     GLuint m_defaultFBO;
     QOpenGLContext *m_gl;
     GraphicsHelperInterface *m_glHelper;

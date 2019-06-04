@@ -98,6 +98,8 @@ public:
 
     void setUniform(const int glslNameId, const UniformValue &val);
     void setTexture(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id);
+    void setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id);
+
     void setUniformBuffer(BlockToUBO blockToUBO);
     void setShaderStorageBuffer(BlockToSSBO blockToSSBO);
     void setSubmissionUniform(const ShaderUniform &uniform);
@@ -106,47 +108,59 @@ public:
     inline const PackUniformHash &uniforms() const { return m_uniforms; }
     UniformValue uniform(const int glslNameId) const { return m_uniforms.value(glslNameId); }
 
-    struct NamedTexture
+
+    struct NamedResource
     {
-        NamedTexture() {}
-        NamedTexture(const int glslNameId, Qt3DCore::QNodeId texId, int uniformArrayIndex)
+        enum Type {
+            Texture = 0,
+            Image
+        };
+
+        NamedResource() {}
+        NamedResource(const int glslNameId, Qt3DCore::QNodeId texId,
+                      int uniformArrayIndex, Type type)
             : glslNameId(glslNameId)
-            , texId(texId)
+            , nodeId(texId)
             , uniformArrayIndex(uniformArrayIndex)
+            , type(type)
         { }
 
         int glslNameId;
-        Qt3DCore::QNodeId texId;
+        Qt3DCore::QNodeId nodeId;
         int uniformArrayIndex;
+        Type type;
 
-        bool operator==(const NamedTexture &other) const
+        bool operator==(const NamedResource &other) const
         {
             return glslNameId == other.glslNameId &&
-                    texId == other.texId &&
-                    uniformArrayIndex == other.uniformArrayIndex;
+                    nodeId == other.nodeId &&
+                    uniformArrayIndex == other.uniformArrayIndex &&
+                    type == other.type;
         }
 
-        bool operator!=(const NamedTexture &other) const
+        bool operator!=(const NamedResource &other) const
         {
             return !(*this == other);
         }
     };
 
-    inline QVector<NamedTexture> textures() const { return m_textures; }
+    inline QVector<NamedResource> textures() const { return m_textures; }
+    inline QVector<NamedResource> images() const { return m_images; }
     inline QVector<BlockToUBO> uniformBuffers() const { return m_uniformBuffers; }
     inline QVector<BlockToSSBO> shaderStorageBuffers() const { return m_shaderStorageBuffers; }
     inline QVector<ShaderUniform> submissionUniforms() const { return m_submissionUniforms; }
 private:
     PackUniformHash m_uniforms;
 
-    QVector<NamedTexture> m_textures;
+    QVector<NamedResource> m_textures;
+    QVector<NamedResource> m_images;
     QVector<BlockToUBO> m_uniformBuffers;
     QVector<BlockToSSBO> m_shaderStorageBuffers;
     QVector<ShaderUniform> m_submissionUniforms;
 
     friend class RenderView;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderParameterPack::NamedTexture, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderParameterPack::NamedResource, Q_PRIMITIVE_TYPE)
 
 } // namespace Render
 } // namespace Qt3DRender

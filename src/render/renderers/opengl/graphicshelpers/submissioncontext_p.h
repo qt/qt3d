@@ -55,6 +55,7 @@
 
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/texturesubmissioncontext_p.h>
+#include <Qt3DRender/private/imagesubmissioncontext_p.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/qattribute.h>
@@ -204,6 +205,7 @@ private:
     QByteArray m_uboTempArray;
 
     TextureSubmissionContext m_textureContext;
+    ImageSubmissionContext m_imageContext;
 
     // Attributes
     friend class OpenGLVertexArrayObject;

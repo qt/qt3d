@@ -328,14 +328,14 @@ struct AdjacentSubRangeFinder<QSortPolicy::Texture>
     static bool adjacentSubRange(RenderCommand *a, RenderCommand *b)
     {
         // Two renderCommands are adjacent if one contains all the other command's textures
-        QVector<ShaderParameterPack::NamedTexture> texturesA = a->m_parameterPack.textures();
-        QVector<ShaderParameterPack::NamedTexture> texturesB = b->m_parameterPack.textures();
+        QVector<ShaderParameterPack::NamedResource> texturesA = a->m_parameterPack.textures();
+        QVector<ShaderParameterPack::NamedResource> texturesB = b->m_parameterPack.textures();
 
         if (texturesB.size() > texturesA.size())
             qSwap(texturesA, texturesB);
 
         // textureB.size() is always <= textureA.size()
-        for (const ShaderParameterPack::NamedTexture &texB : qAsConst(texturesB)) {
+        for (const ShaderParameterPack::NamedResource &texB : qAsConst(texturesB)) {
             if (!texturesA.contains(texB))
                 return false;
         }
@@ -421,8 +421,8 @@ struct SubRangeSorter<QSortPolicy::Texture>
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
         std::stable_sort(begin, end, [] (RenderCommand *a, RenderCommand *b) {
-            QVector<ShaderParameterPack::NamedTexture> texturesA = a->m_parameterPack.textures();
-            QVector<ShaderParameterPack::NamedTexture> texturesB = b->m_parameterPack.textures();
+            QVector<ShaderParameterPack::NamedResource> texturesA = a->m_parameterPack.textures();
+            QVector<ShaderParameterPack::NamedResource> texturesB = b->m_parameterPack.textures();
 
             const int originalTextureASize = texturesA.size();
             const bool isSuperior = originalTextureASize > texturesB.size();
@@ -432,7 +432,7 @@ struct SubRangeSorter<QSortPolicy::Texture>
 
             int identicalTextureCount = 0;
 
-            for (const ShaderParameterPack::NamedTexture &texB : qAsConst(texturesB)) {
+            for (const ShaderParameterPack::NamedResource &texB : qAsConst(texturesB)) {
                 if (texturesA.contains(texB))
                     ++identicalTextureCount;
             }
@@ -829,23 +829,35 @@ void RenderView::updateMatrices()
 void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, const UniformValue &value) const
 {
     // At this point a uniform value can only be a scalar type
-    // or a Qt3DCore::QNodeId corresponding to a Texture
+    // or a Qt3DCore::QNodeId corresponding to a Texture or Image
     // ShaderData/Buffers would be handled as UBO/SSBO and would therefore
     // not be in the default uniform block
     if (value.valueType() == UniformValue::NodeId) {
         const Qt3DCore::QNodeId *nodeIds = value.constData<Qt3DCore::QNodeId>();
 
         const int uniformArraySize = value.byteSize() / sizeof(Qt3DCore::QNodeId);
+        UniformValue::ValueType resourceType = UniformValue::TextureValue;
+
         for (int i = 0; i < uniformArraySize; ++i) {
-            const Qt3DCore::QNodeId texId = nodeIds[i];
-            const Texture *tex =  m_manager->textureManager()->lookupResource(texId);
-            if (tex != nullptr)
-                uniformPack.setTexture(nameId, i, texId);
+            const Qt3DCore::QNodeId resourceId = nodeIds[i];
+
+            const Texture *tex =  m_manager->textureManager()->lookupResource(resourceId);
+            if (tex != nullptr) {
+                uniformPack.setTexture(nameId, i, resourceId);
+            } else {
+                const ShaderImage *img = m_manager->shaderImageManager()->lookupResource(resourceId);
+                if (img != nullptr) {
+                    resourceType = UniformValue::ShaderImageValue;
+                    uniformPack.setImage(nameId, i, resourceId);
+                }
+            }
         }
 
-        UniformValue textureValue(uniformArraySize * sizeof(int), UniformValue::TextureValue);
-        std::fill(textureValue.data<int>(), textureValue.data<int>() + uniformArraySize, -1);
-        uniformPack.setUniform(nameId, textureValue);
+        // This uniform will be overridden in SubmissionContext::setParameters
+        // and -1 values will be replaced by valid Texture or Image units
+        UniformValue uniformValue(uniformArraySize * sizeof(int), resourceType);
+        std::fill(uniformValue.data<int>(), uniformValue.data<int>() + uniformArraySize, -1);
+        uniformPack.setUniform(nameId, uniformValue);
     } else {
         uniformPack.setUniform(nameId, value);
     }
