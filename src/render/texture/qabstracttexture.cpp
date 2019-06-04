@@ -246,6 +246,8 @@ void QAbstractTexturePrivate::setDataFunctor(const QTextureGeneratorPtr &generat
     \value RGBA4
           GL_RGBA4
     \value RGB10A2
+          GL_RGB10_A2
+    \value RGB10A2U
           GL_RGB10_A2UI
     \value D16
           GL_DEPTH_COMPONENT16
