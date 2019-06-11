@@ -234,7 +234,7 @@ void QCameraLens::viewAll(Qt3DCore::QNodeId cameraId)
     if (d->m_projectionType == PerspectiveProjection) {
         QVariant v;
         v.setValue(cameraId);
-        d->m_pendingViewAllCommand = sendCommand(QLatin1Literal("QueryRootBoundingVolume"), v);
+        d->m_pendingViewAllCommand = sendCommand(QLatin1String("QueryRootBoundingVolume"), v);
     }
 }
 
@@ -245,7 +245,7 @@ void QCameraLens::viewEntity(Qt3DCore::QNodeId entityId, Qt3DCore::QNodeId camer
         QVector<Qt3DCore::QNodeId> ids = {entityId, cameraId};
         QVariant v;
         v.setValue(ids);
-        d->m_pendingViewAllCommand = sendCommand(QLatin1Literal("QueryEntityBoundingVolume"), v);
+        d->m_pendingViewAllCommand = sendCommand(QLatin1String("QueryEntityBoundingVolume"), v);
     }
 }
 
@@ -641,7 +641,7 @@ void QCameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     case Qt3DCore::CommandRequested: {
         Qt3DCore::QNodeCommandPtr command = qSharedPointerCast<Qt3DCore::QNodeCommand>(change);
 
-        if (command->name() == QLatin1Literal("ViewAll"))
+        if (command->name() == QLatin1String("ViewAll"))
             d->processViewAllCommand(command->inReplyTo(), command->data());
     }
         break;

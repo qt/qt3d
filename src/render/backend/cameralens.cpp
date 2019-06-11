@@ -159,7 +159,7 @@ void CameraLens::notifySceneBoundingVolume(const Sphere &sphere, QNodeCommand::C
                                 sphere.radius() };
         QVariant v;
         v.setValue(data);
-        sendCommand(QLatin1Literal("ViewAll"), v, m_pendingViewAllCommand);
+        sendCommand(QLatin1String("ViewAll"), v, m_pendingViewAllCommand);
     }
 }
 
@@ -193,12 +193,12 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case CommandRequested: {
         QNodeCommandPtr command = qSharedPointerCast<QNodeCommand>(e);
 
-        if (command->name() == QLatin1Literal("QueryRootBoundingVolume")) {
+        if (command->name() == QLatin1String("QueryRootBoundingVolume")) {
             m_pendingViewAllCommand = command->commandId();
             QVariant v = command->data();
             QNodeId id = v.value<QNodeId>();
             computeSceneBoundingVolume({}, id, command->commandId());
-        } else if (command->name() == QLatin1Literal("QueryEntityBoundingVolume")) {
+        } else if (command->name() == QLatin1String("QueryEntityBoundingVolume")) {
             m_pendingViewAllCommand = command->commandId();
             QVariant v = command->data();
             QVector<QNodeId> ids = v.value<QVector<QNodeId>>();

@@ -94,7 +94,7 @@ void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         markDirty(AbstractRenderer::AllDirty);
     } else if (e->type() == CommandRequested) {
         QNodeCommandPtr command = qSharedPointerCast<QNodeCommand>(e);
-        if (command->name() == QLatin1Literal("InvalidateFrame"))
+        if (command->name() == QLatin1String("InvalidateFrame"))
             markDirty(AbstractRenderer::AllDirty);
     }
 
