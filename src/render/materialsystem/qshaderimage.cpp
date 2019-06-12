@@ -661,7 +661,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
        \li uimageCubeArray
        \li GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY
        \li QTextureCubeMapArray
-    \endlist
+    \endtable
 
     Expected use would look like:
 
