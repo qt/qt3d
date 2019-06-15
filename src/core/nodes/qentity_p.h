@@ -82,6 +82,7 @@ public :
         return typedComponents;
     }
 
+    void removeDestroyedComponent(QComponent *comp);
 
     QComponentVector m_components;
     mutable QNodeId m_parentEntityId;
