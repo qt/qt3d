@@ -134,10 +134,13 @@ QComponent::~QComponent()
 {
     Q_D(QComponent);
 
-    for (QEntity *entity : qAsConst(d->m_entities)) {
+    // iterate on copy since removeEntity removes from the list, invalidating the iterator
+    const auto entities = std::move(d->m_entities);
+    for (QEntity *entity : entities) {
         QEntityPrivate *entityPimpl = static_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
         if (entityPimpl)
             entityPimpl->m_components.removeAll(this);
+        d->removeEntity(entity);
     }
 }
 
