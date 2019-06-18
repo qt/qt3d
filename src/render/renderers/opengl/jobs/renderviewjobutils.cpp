@@ -423,14 +423,14 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
     // The parameters are taken in the following priority order:
     //
     // 1) Material
-    // 2) Technique
-    // 3) Effect
+    // 2) Effect
+    // 3) Technique
     //
     // That way a user can override defaults in Effect's and Techniques on a
     // object manner and a Technique can override global defaults from the Effect.
     parametersFromParametersProvider(infoList, manager, material);
-    parametersFromParametersProvider(infoList, manager, technique);
     parametersFromParametersProvider(infoList, manager, effect);
+    parametersFromParametersProvider(infoList, manager, technique);
 }
 
 void addToRenderStateSet(RenderStateSet *stateSet,
