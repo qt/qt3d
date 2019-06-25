@@ -58,7 +58,14 @@ namespace Qt3DRender {
  */
 /*!
     \fn qintptr Qt3DRender::QAbstractFunctor::id() const
+
+    Returns a pointer to the id of the functor.
  */
+/*!
+   \fn qintptr Qt3DRender::functorTypeId()
+
+   Returns a pointer to the type id of the functor.
+*/
 /*!
     \macro QT3D_FUNCTOR(Class)
     \relates Qt3DRender::QAbstractFunctor
