@@ -280,11 +280,18 @@ QObject *QForwardRenderer::surface() const
 }
 
 /*!
+    \qmlproperty QSize ForwardRenderer::externalRenderTargetSize
+
+    Contains the size of the external render target. External render
+    targets are relevant when rendering does not target a window
+    surface (as set in \l {surface}).
+*/
+/*!
     \property QForwardRenderer::externalRenderTargetSize
 
     Contains the size of the external render target. External render
     targets are relevant when rendering does not target a window
-    surface (as set in \l {QForwardRenderer::surface()}{surface()}).
+    surface (as set in \l {surface}).
 */
 QSize QForwardRenderer::externalRenderTargetSize() const
 {
