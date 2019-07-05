@@ -627,34 +627,20 @@ void Renderer::render()
     }
 }
 
-void Renderer::doRender(bool scene3dBlocking)
+void Renderer::doRender()
 {
     Renderer::ViewSubmissionResultData submissionData;
     bool hasCleanedQueueAndProceeded = false;
     bool preprocessingComplete = false;
     bool beganDrawing = false;
+
+    // Blocking until RenderQueue is full
     const bool canSubmit = isReadyToSubmit();
 
     // Lock the mutex to protect access to the renderQueue while we look for its state
     QMutexLocker locker(m_renderQueue->mutex());
-    bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
-    bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
-
-    // Scene3D Blocking Mode
-    if (scene3dBlocking && !queueIsComplete && !queueIsEmpty) {
-        int i = 0;
-        // We wait at most 10ms to avoid a case we could never recover from
-        while (!queueIsComplete && !queueIsEmpty && i++ < 10) {
-            qCDebug(Backend) << Q_FUNC_INFO << "Waiting for ready queue (try:" << i << "/ 10)";
-            locker.unlock();
-            // Give worker threads a chance to complete the queue
-            QThread::msleep(1);
-            locker.relock();
-            queueIsComplete = m_renderQueue->isFrameQueueComplete();
-            // This could become true if we've tried to shutdown
-            queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
-        }
-    }
+    const bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
+    const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
 
     // When using synchronous rendering (QtQuick)
     // We are not sure that the frame queue is actually complete
@@ -751,16 +737,12 @@ void Renderer::doRender(bool scene3dBlocking)
 #endif
     }
 
-    // Only reset renderQueue and proceed to next frame if the submission
-    // succeeded or if we are using a render thread and that is wasn't performed
-    // already
-
     // If hasCleanedQueueAndProceeded isn't true this implies that something went wrong
     // with the rendering and/or the renderqueue is incomplete from some reason
-    // (in the case of scene3d the render jobs may be taking too long ....)
     // or alternatively it could be complete but empty (RenderQueue of size 0)
-    if (!hasCleanedQueueAndProceeded &&
-        (m_renderThread || queueIsComplete || queueIsEmpty)) {
+
+
+    if (!hasCleanedQueueAndProceeded) {
         // RenderQueue was full but something bad happened when
         // trying to render it and therefore proceedToNextFrame was not called
         // Note: in this case the renderQueue mutex is still locked
@@ -825,21 +807,19 @@ bool Renderer::canRender() const
 
 bool Renderer::isReadyToSubmit()
 {
-    // If we are using a render thread, make sure that
-    // we've been told to render before rendering
-    if (m_renderThread) { // Prevent ouf of order execution
-        m_submitRenderViewsSemaphore.acquire(1);
+    // Make sure that we've been told to render before rendering
+    // Prevent ouf of order execution
+    m_submitRenderViewsSemaphore.acquire(1);
 
-        // Check if shutdown has been requested
-        if (m_running.load() == 0)
-            return false;
+    // Check if shutdown has been requested
+    if (m_running.load() == 0)
+        return false;
 
-        // When using Thread rendering, the semaphore should only
-        // be released when the frame queue is complete and there's
-        // something to render
-        // The case of shutdown should have been handled just before
-        Q_ASSERT(m_renderQueue->isFrameQueueComplete());
-    }
+    // The semaphore should only
+    // be released when the frame queue is complete and there's
+    // something to render
+    // The case of shutdown should have been handled just before
+    Q_ASSERT(m_renderQueue->isFrameQueueComplete());
     return true;
 }
 

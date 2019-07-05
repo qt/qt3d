@@ -437,9 +437,9 @@ void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 }
 
 /*! \internal */
-void QRenderAspectPrivate::renderSynchronous(bool blocking)
+void QRenderAspectPrivate::renderSynchronous()
 {
-    m_renderer->doRender(blocking);
+    m_renderer->doRender();
 }
 
 /*

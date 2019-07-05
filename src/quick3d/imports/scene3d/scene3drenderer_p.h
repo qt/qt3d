@@ -54,6 +54,7 @@
 #include <QtCore/QObject>
 #include <QtCore/qsize.h>
 #include <QtCore/QMutex>
+#include <QtCore/QSemaphore>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,12 +82,9 @@ public:
                     QRenderAspect *renderAspect);
     ~Scene3DRenderer();
 
-    QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size);
-    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size);
-    void scheduleRootEntityChange();
     void setSGNode(Scene3DSGNode *node);
     void setCleanerHelper(Scene3DCleaner *cleaner);
-    void synchronize();
+    void allowRender();
 
 public Q_SLOTS:
     void render();
@@ -95,7 +93,10 @@ public Q_SLOTS:
     void onWindowChanged(QQuickWindow *w);
 
 private:
-    bool shouldRender() const;
+    QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size);
+    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size);
+    void synchronize();
+    void scheduleRootEntityChange();
 
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
     Qt3DCore::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DRendererCleaner
@@ -111,9 +112,9 @@ private:
     bool m_multisample;
     bool m_lastMultisample;
     bool m_needsShutdown;
-    bool m_blocking;
     bool m_forceRecreate;
-    bool m_dirty;
+    bool m_shouldRender;
+    QSemaphore m_allowRendering;
 
     friend class Scene3DCleaner;
 };

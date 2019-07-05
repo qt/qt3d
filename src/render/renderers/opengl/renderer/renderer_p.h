@@ -182,7 +182,7 @@ public:
     void releaseGraphicsResources() override;
 
     void render() override;
-    void doRender(bool scene3dBlocking = false) override;
+    void doRender() override;
     void cleanGraphicsResources() override;
 
     bool isRunning() const override { return m_running.load(); }

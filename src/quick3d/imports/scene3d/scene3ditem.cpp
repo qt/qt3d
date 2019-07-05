@@ -66,10 +66,16 @@
 #include <QtQuick/qquickrendercontrol.h>
 
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DRender/private/rendersettings_p.h>
 #include <scene3dcleaner_p.h>
 #include <scene3dlogging_p.h>
 #include <scene3drenderer_p.h>
 #include <scene3dsgnode_p.h>
+
+#include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 
@@ -125,11 +131,15 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_renderer(nullptr)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
+    , m_dirty(true)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
     // TO DO: register the event source in the main thread
+
+    // Use manual drive mode when using Scene3D
+    m_aspectEngine->setRunMode(Qt3DCore::QAspectEngine::Manual);
 }
 
 Scene3DItem::~Scene3DItem()
@@ -285,6 +295,65 @@ void Scene3DItem::applyRootEntityChange()
     }
 }
 
+bool Scene3DItem::needsRender()
+{
+    auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
+    const bool dirty = m_dirty
+            || (renderAspectPriv
+                && renderAspectPriv->m_renderer
+                && renderAspectPriv->m_renderer->settings()
+                && renderAspectPriv->m_renderer->settings()->renderPolicy() == QRenderSettings::Always);
+    m_dirty = false;
+    return dirty;
+}
+
+// This function is triggered in the context of the Main Thread
+// when afterAnimating is emitted
+
+// The QtQuick SG proceeds like indicated below:
+// afterAnimating (Main Thread)
+// beforeSynchronizing (SG Thread and MainThread locked)
+// afterSynchronizing (SG Thread)
+// beforeRendering (SG Thread)
+
+// Note: we connect to afterAnimating rather than beforeSynchronizing as a
+// direct connection on beforeSynchronizing is executed within the SG Render
+// Thread context
+void Scene3DItem::onBeforeSync()
+{
+    // Has anything in the 3D scene actually changed that requires us to render?
+    if (!needsRender())
+        return;
+
+    Q_ASSERT(QThread::currentThread() == thread());
+
+    // Since we are in manual mode, trigger jobs for the next frame
+    Qt3DCore::QAspectEnginePrivate *aspectEnginePriv = static_cast<Qt3DCore::QAspectEnginePrivate *>(QObjectPrivate::get(m_aspectEngine));
+    if (!aspectEnginePriv->m_initialized)
+        return;
+
+    Q_ASSERT(m_aspectEngine->runMode() == Qt3DCore::QAspectEngine::Manual);
+    m_aspectEngine->processFrame();
+    // The above essentially sets the number of RV for the RenderQueue and
+    // processes the jobs for the frame (it's blocking) When
+    // Scene3DRender::updatePaintNode is called, following this step, we know
+    // that the RenderQueue target count has been set and that everything
+    // should be ready for rendering
+
+
+    // processFrame() must absolutely be followed by a single call to
+    // render
+    // At startup, we have no garantee that the QtQuick Render Thread doesn't
+    // start rendering before this function has been called
+    // We add in a safety to skip such frames as this could otherwise
+    // make Qt3D enter a locked state
+    if (m_renderer)
+        m_renderer->allowRender();
+
+    // Request refresh for next frame
+    QQuickItem::update();
+}
+
 void Scene3DItem::setWindowSurface(QObject *rootObject)
 {
     Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(rootObject);
@@ -389,6 +458,16 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     if (m_renderAspect == nullptr) {
         m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
         m_aspectEngine->registerAspect(m_renderAspect);
+
+        // Before Synchronizing is in the SG Thread, we want beforeSync to be triggered
+        // in the context of the main thread
+        QObject::connect(window(), &QQuickWindow::afterAnimating,
+                         this, &Scene3DItem::onBeforeSync, Qt::DirectConnection);
+        auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
+        QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
+                         this, [this] { m_dirty = true; }, Qt::DirectConnection);
+        QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
+                         this, &QQuickItem::update, Qt::AutoConnection);
     }
 
     if (m_renderer == nullptr) {

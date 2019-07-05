@@ -113,6 +113,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void applyRootEntityChange();
+    void onBeforeSync();
 
 private:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) override;
@@ -120,6 +121,7 @@ private:
     void setCameraAspectModeHelper();
     void updateCameraAspectRatio();
     void mousePressEvent(QMouseEvent *event) override;
+    bool needsRender();
 
     QStringList m_aspects;
     Qt3DCore::QEntity *m_entity;
@@ -130,6 +132,7 @@ private:
     Scene3DCleaner *m_rendererCleaner;
 
     bool m_multisample;
+    bool m_dirty;
 
     QPointer<Qt3DRender::QCamera> m_camera;
     CameraAspectRatioMode m_cameraAspectRatioMode;
