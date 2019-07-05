@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DCore/qaspectengine.h>
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
 #include <QtCore/QSemaphore>
@@ -82,6 +83,7 @@ public:
     explicit QAspectManager(QObject *parent = 0);
     ~QAspectManager();
 
+    void setRunMode(QAspectEngine::RunMode mode);
     void enterSimulationLoop();
     void exitSimulationLoop();
 
@@ -90,6 +92,7 @@ public:
 public Q_SLOTS:
     void initialize();
     void shutdown();
+    void processFrame();
 
     void setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
@@ -104,7 +107,6 @@ public:
 private:
     bool event(QEvent *event) override;
     void requestNextFrame();
-    void processFrame();
 
     QVector<QAbstractAspect *> m_aspects;
     QEntity *m_root;
@@ -115,6 +117,7 @@ private:
     QScopedPointer<QServiceLocator> m_serviceLocator;
     bool m_mainLoopRunning;
     bool m_simulationLoopRunning;
+    QAspectEngine::RunMode m_driveMode;
 
 };
 

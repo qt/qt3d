@@ -56,6 +56,7 @@
 #include <QtCore/qsharedpointer.h>
 
 #include <Qt3DCore/private/qaspectfactory_p.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
 #include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,7 +65,6 @@ namespace Qt3DCore {
 
 class QEntity;
 class QNode;
-class QAspectEngine;
 class QAspectManager;
 class QPostman;
 class QScene;
@@ -91,6 +91,7 @@ public:
     QVector<QAbstractAspect*> m_aspects;
     QHash<QString, QAbstractAspect *> m_namedAspects;
     bool m_initialized;
+    QAspectEngine::RunMode m_runMode;
 
 #if QT_CONFIG(qt3d_profile_jobs)
     Debug::AspectCommandDebugger *m_commandDebugger;

@@ -103,6 +103,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_changeArbiter(new QChangeArbiter(this))
     , m_serviceLocator(new QServiceLocator())
     , m_simulationLoopRunning(false)
+    , m_driveMode(QAspectEngine::Automatic)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -113,6 +114,12 @@ QAspectManager::~QAspectManager()
     delete m_changeArbiter;
     delete m_jobManager;
     delete m_scheduler;
+}
+
+void QAspectManager::setRunMode(QAspectEngine::RunMode mode)
+{
+    qCDebug(Aspects) << Q_FUNC_INFO << "Running Loop Drive Mode set to" << mode;
+    m_driveMode = mode;
 }
 
 // Main thread (called by QAspectEngine)
@@ -137,8 +144,9 @@ void QAspectManager::enterSimulationLoop()
     }
     qCDebug(Aspects) << "Done calling onEngineStartup() for each aspect";
 
-    // Trigger event loop
-    requestNextFrame();
+    // Start running loop if Qt3D is in charge of driving it
+    if (m_driveMode == QAspectEngine::Automatic)
+        requestNextFrame();
 }
 
 // Main thread (called by QAspectEngine)
@@ -319,8 +327,9 @@ bool QAspectManager::event(QEvent *e)
         // Process current frame
         processFrame();
 
-        // Request next frame if we are still running
-        if (m_simulationLoopRunning)
+        // Request next frame if we are still running and if Qt3D is driving
+        // the loop
+        if (m_simulationLoopRunning && m_driveMode == QAspectEngine::Automatic)
             requestNextFrame();
     }
 

@@ -77,6 +77,7 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     , m_postman(nullptr)
     , m_scene(nullptr)
     , m_initialized(false)
+    , m_runMode(QAspectEngine::Automatic)
     #if QT_CONFIG(qt3d_profile_jobs)
     , m_commandDebugger(new Debug::AspectCommandDebugger(q_func()))
     #endif
@@ -393,6 +394,19 @@ QVariant QAspectEngine::executeCommand(const QString &command)
 }
 
 /*!
+ * If using the manual run mode, this function executes the jobs for each aspect.
+ * It is blocking and won't return until all jobs have been completed.
+ *
+ * If you are using the QRenderAspect,
+ */
+void QAspectEngine::processFrame()
+{
+    Q_D(QAspectEngine);
+    Q_ASSERT(d->m_runMode == QAspectEngine::Manual);
+    d->m_aspectManager->processFrame();
+}
+
+/*!
  * Sets the \a root entity for the aspect engine.
  */
 void QAspectEngine::setRootEntity(QEntityPtr root)
@@ -432,6 +446,9 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // Traverse tree to generate a vector of creation changes
     d->generateCreationChanges(root.data());
 
+    // Specify if the AspectManager should be driving the simulation loop or not
+    d->m_aspectManager->setRunMode(d->m_runMode);
+
     // Finally, tell the aspects about the new scene object tree. This is done
     // in a blocking manner to allow the aspects to get synchronized before the
     // main thread starts triggering potentially more notifications
@@ -451,6 +468,20 @@ QEntityPtr QAspectEngine::rootEntity() const
 {
     Q_D(const QAspectEngine);
     return d->m_root;
+}
+
+void QAspectEngine::setRunMode(QAspectEngine::RunMode mode)
+{
+    Q_D(QAspectEngine);
+    d->m_runMode = mode;
+    if (d->m_aspectManager)
+        d->m_aspectManager->setRunMode(mode);
+}
+
+QAspectEngine::RunMode QAspectEngine::runMode() const
+{
+    Q_D(const QAspectEngine);
+    return d->m_runMode;
 }
 
 } // namespace Qt3DCore
