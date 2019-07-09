@@ -182,7 +182,7 @@
 
     \badcode
     Viewport {
-         rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+         normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
          property alias camera: cameraSelector.camera
 
          ClearBuffers {
@@ -221,7 +221,7 @@
 
     \badcode
     Viewport {
-         rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+         normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
          property alias camera: cameraSelector.camera
 
          CameraSelector {
@@ -237,7 +237,7 @@
     \badcode
     CameraSelector {
           Viewport {
-               rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+               normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
                ClearBuffers {
                     buffers: ClearBuffers.ColorDepthBuffer
@@ -259,7 +259,7 @@
     \badcode
     Viewport {
          id: mainViewport
-         rect: Qt.rect(0, 0, 1, 1)
+         normalizedRect: Qt.rect(0, 0, 1, 1)
          property alias Camera: cameraSelectorTopLeftViewport.camera
          property alias Camera: cameraSelectorTopRightViewport.camera
          property alias Camera: cameraSelectorBottomLeftViewport.camera
@@ -271,25 +271,25 @@
 
          Viewport {
               id: topLeftViewport
-              rect: Qt.rect(0, 0, 0.5, 0.5)
+              normalizedRect: Qt.rect(0, 0, 0.5, 0.5)
               CameraSelector { id: cameraSelectorTopLeftViewport }
          }
 
          Viewport {
               id: topRightViewport
-              rect: Qt.rect(0.5, 0, 0.5, 0.5)
+              normalizedRect: Qt.rect(0.5, 0, 0.5, 0.5)
               CameraSelector { id: cameraSelectorTopRightViewport }
          }
 
          Viewport {
               id: bottomLeftViewport
-              rect: Qt.rect(0, 0.5, 0.5, 0.5)
+              normalizedRect: Qt.rect(0, 0.5, 0.5, 0.5)
               CameraSelector { id: cameraSelectorBottomLeftViewport }
          }
 
          Viewport {
               id: bottomRightViewport
-              rect: Qt.rect(0.5, 0.5, 0.5, 0.5)
+              normalizedRect: Qt.rect(0.5, 0.5, 0.5, 0.5)
               CameraSelector { id: cameraSelectorBottomRightViewport }
          }
     }
@@ -404,48 +404,84 @@
     many games due to the ability to use large numbers of dynamic lights at
     the expense of additional GPU memory usage.
 
-    \badcode
-    Viewport {
-         rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+\qml
+Viewport {
+    id: root
+    normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
-         property alias gBuffer: gBufferTargetSelector.target
-         property alias camera: sceneCameraSelector.camera
+    property GBuffer gBuffer
+    property alias camera: sceneCameraSelector.camera
+    property alias sceneLayer: sceneLayerFilter.layers
+    property alias screenQuadLayer: screenQuadLayerFilter.layers
 
-         LayerFilter {
-              layers: "scene"
+    RenderSurfaceSelector {
 
-              RenderTargetSelector {
+        CameraSelector {
+            id: sceneCameraSelector
+
+            // Fill G-Buffer
+            LayerFilter {
+                id: sceneLayerFilter
+                RenderTargetSelector {
                     id: gBufferTargetSelector
+                    target: gBuffer
 
                     ClearBuffers {
-                         buffers: ClearBuffers.ColorDepthBuffer
+                        buffers: ClearBuffers.ColorDepthBuffer
 
-                         RenderPassFilter {
-                               id: geometryPass
-                               includes: Annotation { name: "pass"; value: "geometry" }
-
-                               CameraSelector {
-                                     id: sceneCameraSelector
-                               }
-                         }
+                        RenderPassFilter {
+                            id: geometryPass
+                            matchAny: FilterKey {
+                                name: "pass"
+                                value: "geometry"
+                            }
+                        }
                     }
-              }
-         }
+                }
+            }
 
-         LayerFilter {
-              layers: "screenQuad"
+            TechniqueFilter {
+                parameters: [
+                    Parameter { name: "color"; value: gBuffer.color },
+                    Parameter { name: "position"; value: gBuffer.position },
+                    Parameter { name: "normal"; value: gBuffer.normal },
+                    Parameter { name: "depth"; value: gBuffer.depth }
+                ]
 
-              ClearBuffers {
-                   buffers: ClearBuffers.ColorDepthBuffer
+                RenderStateSet {
+                    // Render FullScreen Quad
+                    renderStates: [
+                        BlendEquation { blendFunction: BlendEquation.Add },
+                        BlendEquationArguments {
+                            sourceRgb: BlendEquationArguments.SourceAlpha
+                            destinationRgb: BlendEquationArguments.DestinationColor
+                        }
+                    ]
 
-                   RenderPassFilter {
-                         id: finalPass
-                         includes: Annotation { name: "pass"; value: "final" }
-                   }
-             }
-         }
+                    LayerFilter {
+                        id: screenQuadLayerFilter
+                        ClearBuffers {
+                            buffers: ClearBuffers.ColorDepthBuffer
+                            RenderPassFilter {
+                                matchAny: FilterKey {
+                                    name: "pass"
+                                    value: "final"
+                                }
+                                parameters: Parameter {
+                                    name: "winSize"
+                                    value: Qt.size(1024, 768)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-    \endcode
+}
+\endqml
+
+    (Above code is adapted from \e {qt3d/tests/manual/deferred-renderer-qml}.)
 
     Graphically, the resulting framegraph looks like:
 
@@ -456,22 +492,20 @@
     \list
         \li RenderView (1)
         \list
+            \li Specify which camera should be used
             \li Define a viewport that fills the whole screen
-            \li Select all Entities that have a Layer component matching
-                \c "scene"
+            \li Select all Entities for layer component sceneLayer
             \li Set the \c gBuffer as the active render target
             \li Clear the color and depth on the currently bound render target
                 (the \c gBuffer)
             \li Select only Entities in the scene that have a Material and
                 Technique matching the annotations in the RenderPassFilter
-            \li Specify which camera should be used
         \endlist
 
         \li RenderView (2)
         \list
             \li Define a viewport that fills the whole screen
-            \li Select all Entities that have a Layer component matching
-                \c "screenQuad"
+            \li Select all Entities for layer component screenQuadLayer
             \li Clear the color and depth buffers on the currently bound
                 framebuffer (the screen)
             \li Select only Entities in the scene that have a Material and
