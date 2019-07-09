@@ -220,7 +220,7 @@ void QClearBuffers::setClearStencilValue(int clearStencilValue)
     ColorBuffer flag is set, all color buffers will be cleared.
  */
 /*!
-    \qmlproperty RenderTargetOutput Qt3D.Render::ClearBuffers::colorbuffer
+    \qmlproperty RenderTargetOutput Qt3D.Render::ClearBuffers::colorBuffer
     Specifies a specific color buffer to clear. If set to NULL (default), and
     ColorBuffer flag is set, all color buffers will be cleared.
 */
