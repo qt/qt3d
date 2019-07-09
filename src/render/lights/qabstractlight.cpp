@@ -67,9 +67,22 @@ QAbstractLightPrivate::~QAbstractLightPrivate()
 }
 
 /*!
+    \qmlproperty enumeration Qt3D.Render::Light::type
+    \readonly
+
+    Holds the particular type of light.
+
+    \value Light.PointLight
+           A point light
+    \value Light.DirectionalLight
+           A directional light
+    \value Light.SpotLight
+           a spot light
+*/
+/*!
     \property Qt3DRender::QAbstractLight::type
 
-    Contains the type of light.
+    The type of light.
 */
 /*!
     \enum Qt3DRender::QAbstractLight::Type
@@ -118,6 +131,11 @@ QAbstractLight::Type QAbstractLight::type() const
 }
 
 /*!
+ *  \qmlproperty QColor Qt3D.Render.Light::color
+ *
+ *  Holds the current Light color.
+ */
+/*!
  *  \property Qt3DRender::QAbstractLight::color
  *
  * Holds the current QAbstractLight color.
@@ -137,6 +155,11 @@ void QAbstractLight::setColor(const QColor &c)
     }
 }
 
+/*!
+    \qmlproperty float Qt3D.Render.Light::intensity
+
+    Holds the current Light intensity.
+*/
 /*!
     \property Qt3DRender::QAbstractLight::intensity
 
