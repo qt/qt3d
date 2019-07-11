@@ -515,7 +515,7 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
         const auto interpolationType = gltfToQKeyFrameInterpolation(sampler.interpolationMode);
 
         if (sampler.inputAccessorIndex == -1 || sampler.outputAccessorIndex == -1) {
-            qWarning() << "Skipping channel due to invalid accessor indices in the sampler" << endl;
+            qWarning() << "Skipping channel due to invalid accessor indices in the sampler" << Qt::endl;
             continue;
         }
 

@@ -176,7 +176,7 @@ private:
 inline QDebug operator<<(QDebug dbg, const Shader &shader)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "QNodeId =" << shader.peerId() << "dna =" << shader.dna() << endl;
+    dbg << "QNodeId =" << shader.peerId() << "dna =" << shader.dna() << Qt::endl;
     return dbg;
 }
 #endif

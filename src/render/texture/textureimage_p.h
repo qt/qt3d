@@ -117,7 +117,7 @@ inline QDebug operator<<(QDebug dbg, const TextureImage &textureImage)
         << "mip level =" << textureImage.mipLevel()
         << "layer =" << textureImage.layer()
         << "cube face =" << textureImage.face()
-        << "dataGenerator =" << textureImage.dataGenerator() << endl;
+        << "dataGenerator =" << textureImage.dataGenerator() << Qt::endl;
     return dbg;
 }
 #endif
