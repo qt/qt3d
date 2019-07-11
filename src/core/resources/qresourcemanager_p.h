@@ -476,14 +476,14 @@ template <typename ValueType, typename KeyType,
 QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, LockingPolicy> &manager)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "Contains" << manager.count() << "items" << endl;
+    dbg << "Contains" << manager.count() << "items" << Qt::endl;
 
-    dbg << "Key to Handle Map:" << endl;
+    dbg << "Key to Handle Map:" << Qt::endl;
     const auto end = manager.m_keyToHandleMap.cend();
     for (auto it = manager.m_keyToHandleMap.cbegin(); it != end; ++it)
-        dbg << "QNodeId =" << it.key() << "Handle =" << it.value() << endl;
+        dbg << "QNodeId =" << it.key() << "Handle =" << it.value() << Qt::endl;
 
-//    dbg << "Resources:" << endl;
+//    dbg << "Resources:" << Qt::endl;
 //    dbg << manager.m_handleManager;
     return dbg;
 }

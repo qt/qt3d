@@ -207,7 +207,7 @@ private:
 inline QDebug operator<<(QDebug dbg, const Texture &texture)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "QNodeId =" << texture.peerId() << "imageCount =" << texture.textureImageIds().size() << endl;
+    dbg << "QNodeId =" << texture.peerId() << "imageCount =" << texture.textureImageIds().size() << Qt::endl;
     return dbg;
 }
 #endif

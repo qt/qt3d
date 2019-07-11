@@ -101,7 +101,7 @@ private:
 inline QDebug operator<<(QDebug dbg, const FCurve &fcurve)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "Keyframe Count = " << fcurve.keyframeCount() << endl;
+    dbg << "Keyframe Count = " << fcurve.keyframeCount() << Qt::endl;
     for (int i = 0; i < fcurve.keyframeCount(); ++i) {
         const Keyframe &kf = fcurve.keyframe(i);
         switch (kf.interpolation) {
@@ -110,14 +110,14 @@ inline QDebug operator<<(QDebug dbg, const FCurve &fcurve)
                 << ", value = " << kf.value
                 << ", leftHandle = " << kf.leftControlPoint
                 << ", rightHandle = " << kf.rightControlPoint
-                << endl;
+                << Qt::endl;
             break;
         }
         case QKeyFrame::ConstantInterpolation:
         case QKeyFrame::LinearInterpolation: {
             dbg << "t = " << fcurve.localTime(i)
                 << ", value = " << kf.value
-                << endl;
+                << Qt::endl;
             break;
         }
         }
@@ -139,8 +139,8 @@ struct ChannelComponent
 inline QDebug operator<<(QDebug dbg, const ChannelComponent &channelComponent)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "Channel Component Name: " << channelComponent.name << endl
-        << "FCurve:" << channelComponent.fcurve << endl;
+    dbg << "Channel Component Name: " << channelComponent.name << Qt::endl
+        << "FCurve:" << channelComponent.fcurve << Qt::endl;
     return dbg;
 }
 #endif
@@ -159,8 +159,8 @@ struct Channel
 inline QDebug operator<<(QDebug dbg, const Channel &channel)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "Channel Name: " << channel.name << endl
-        << "Channels:" << channel.channelComponents.size() << endl;
+    dbg << "Channel Name: " << channel.name << Qt::endl
+        << "Channels:" << channel.channelComponents.size() << Qt::endl;
 
     for (const auto &channelComponent : qAsConst(channel.channelComponents)) {
         dbg << channelComponent;
