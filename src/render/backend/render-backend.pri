@@ -11,6 +11,8 @@ HEADERS += \
     $$PWD/platformsurfacefilter_p.h \
     $$PWD/cameralens_p.h \
     $$PWD/entity_p.h \
+    $$PWD/entityvisitor_p.h \
+    $$PWD/entityaccumulator_p.h \
     $$PWD/layer_p.h \
     $$PWD/levelofdetail_p.h \
     $$PWD/nodefunctor_p.h \
@@ -44,6 +46,8 @@ SOURCES += \
     $$PWD/platformsurfacefilter.cpp \
     $$PWD/cameralens.cpp \
     $$PWD/entity.cpp \
+    $$PWD/entityvisitor.cpp \
+    $$PWD/entityaccumulator.cpp \
     $$PWD/layer.cpp \
     $$PWD/levelofdetail.cpp \
     $$PWD/transform.cpp \

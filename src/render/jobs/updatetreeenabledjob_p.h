@@ -62,6 +62,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class Entity;
+class NodeManagers;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateTreeEnabledJob : public Qt3DCore::QAspectJob
 {
@@ -69,10 +70,12 @@ public:
     UpdateTreeEnabledJob();
 
     void setRoot(Entity *root);
+    void setManagers(NodeManagers *manager);
     void run() override;
 
 private:
     Entity *m_node;
+    NodeManagers *m_manager;
 };
 
 typedef QSharedPointer<UpdateTreeEnabledJob> UpdateTreeEnabledJobPtr;

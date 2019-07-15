@@ -95,6 +95,7 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
 
     Qt3DRender::Render::UpdateWorldTransformJob updateWorldTransform;
     updateWorldTransform.setRoot(test->sceneRoot());
+    updateWorldTransform.setManagers(test->nodeManagers());
     updateWorldTransform.run();
 }
 

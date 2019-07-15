@@ -44,6 +44,8 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
 #include <QThread>
 
@@ -54,16 +56,18 @@ namespace Render {
 
 namespace {
 
-void expandWorldBoundingVolume(Qt3DRender::Render::Sphere *sphere,
+void expandWorldBoundingVolume(NodeManagers *manager,
+                               Qt3DRender::Render::Sphere *sphere,
                                Qt3DRender::Render::Entity *node,
                                Qt3DRender::Render::Entity *excludeSubTree)
 {
     Qt3DRender::Render::Sphere childSphere(*node->worldBoundingVolume());
     // Go to the nodes that have the most depth
-    const auto children = node->children();
-    for (Entity *c : children) {
-        if (c != excludeSubTree)
-            expandWorldBoundingVolume(&childSphere, c, excludeSubTree);
+    const auto childrenHandles = node->childrenHandles();
+    for (const HEntity &handle : childrenHandles) {
+        Entity *c = manager->renderNodesManager()->data(handle);
+        if (c && c != excludeSubTree)
+            expandWorldBoundingVolume(manager, &childSphere, c, excludeSubTree);
     }
     sphere->expandToContain(childSphere);
 }
@@ -73,6 +77,7 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Sphere *sphere,
 ComputeFilteredBoundingVolumeJob::ComputeFilteredBoundingVolumeJob()
     : m_root(nullptr)
     , m_ignoreSubTree(nullptr)
+    , m_manager(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpandBoundingVolume, 0);
 }
@@ -80,6 +85,11 @@ ComputeFilteredBoundingVolumeJob::ComputeFilteredBoundingVolumeJob()
 void ComputeFilteredBoundingVolumeJob::setRoot(Entity *root)
 {
     m_root = root;
+}
+
+void ComputeFilteredBoundingVolumeJob::setManagers(NodeManagers *manager)
+{
+    m_manager = manager;
 }
 
 void ComputeFilteredBoundingVolumeJob::ignoreSubTree(Entity *node)
@@ -113,7 +123,7 @@ void ComputeFilteredBoundingVolumeJob::run()
     }
 
     Qt3DRender::Render::Sphere sphere;
-    expandWorldBoundingVolume(&sphere, m_root, m_ignoreSubTree);
+    expandWorldBoundingVolume(m_manager, &sphere, m_root, m_ignoreSubTree);
     finished(sphere);
 
     qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();

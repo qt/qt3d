@@ -246,6 +246,8 @@ void QAbstractTexturePrivate::setDataFunctor(const QTextureGeneratorPtr &generat
     \value RGBA4
           GL_RGBA4
     \value RGB10A2
+          GL_RGB10_A2
+    \value RGB10A2U
           GL_RGB10_A2UI
     \value D16
           GL_DEPTH_COMPONENT16
@@ -423,7 +425,7 @@ void QAbstractTexture::setDepth(int depth)
 }
 
 /*!
- * \return the width of the texture
+ * Returns the width of the texture
  */
 int QAbstractTexture::width() const
 {
@@ -432,7 +434,7 @@ int QAbstractTexture::width() const
 }
 
 /*!
- * \return the height of the texture
+ * Returns the height of the texture
  */
 int QAbstractTexture::height() const
 {
@@ -441,7 +443,7 @@ int QAbstractTexture::height() const
 }
 
 /*!
- * \return the depth of the texture
+ * Returns the depth of the texture
  */
 int QAbstractTexture::depth() const
 {
@@ -471,7 +473,7 @@ void QAbstractTexture::setLayers(int layers)
 }
 
 /*!
-    \return the maximum number of layers for the texture provider.
+    Returns the maximum number of layers for the texture provider.
 
     \note this has a meaning only for texture providers that have 3D or
      array target formats.
@@ -504,7 +506,7 @@ void QAbstractTexture::setSamples(int samples)
 }
 
 /*!
-    \return the number of samples per texel for the texture provider.
+    Returns the number of samples per texel for the texture provider.
 
     \note this has a meaning only for texture providers that have multisample
     formats.
@@ -598,7 +600,7 @@ void QAbstractTexture::setHandleType(QAbstractTexture::HandleType type)
 }
 
 /*!
- * \return the current status of the texture provider.
+ * Returns the current status of the texture provider.
  */
 QAbstractTexture::Status QAbstractTexture::status() const
 {
@@ -700,7 +702,7 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
 }
 
 /*!
-    \return a list of pointers to QAbstractTextureImage objects contained in
+    Returns a list of pointers to QAbstractTextureImage objects contained in
     the texture provider.
  */
 QVector<QAbstractTextureImage *> QAbstractTexture::textureImages() const
@@ -854,7 +856,7 @@ void QAbstractTexture::setMaximumAnisotropy(float anisotropy)
 }
 
 /*!
- * \return the current maximum anisotropy
+ * Returns the current maximum anisotropy
  */
 float QAbstractTexture::maximumAnisotropy() const
 {
@@ -863,7 +865,7 @@ float QAbstractTexture::maximumAnisotropy() const
 }
 
 /*!
-    \property Qt3DRender::QAbstractTexture::comparisonFunction
+    \property Qt3DRender::QAbstractTexture::ComparisonFunction
 
     Holds the comparison function of the texture provider.
  */
@@ -880,7 +882,7 @@ void QAbstractTexture::setComparisonFunction(QAbstractTexture::ComparisonFunctio
 }
 
 /*!
- * \return the current comparison function.
+ * Returns the current comparison function.
  */
 QAbstractTexture::ComparisonFunction QAbstractTexture::comparisonFunction() const
 {
@@ -889,7 +891,7 @@ QAbstractTexture::ComparisonFunction QAbstractTexture::comparisonFunction() cons
 }
 
 /*!
-    \property Qt3DRender::QAbstractTexture::comparisonMode
+    \property Qt3DRender::QAbstractTexture::ComparisonMode
 
     Holds the comparison mode of the texture provider.
  */
@@ -906,7 +908,7 @@ void QAbstractTexture::setComparisonMode(QAbstractTexture::ComparisonMode mode)
 }
 
 /*!
- * \return the current comparison mode.
+ * Returns the current comparison mode.
  */
 QAbstractTexture::ComparisonMode QAbstractTexture::comparisonMode() const
 {
@@ -915,7 +917,7 @@ QAbstractTexture::ComparisonMode QAbstractTexture::comparisonMode() const
 }
 
 /*!
- * \return the current data generator.
+ * Returns the current data generator.
  */
 QTextureGeneratorPtr QAbstractTexture::dataGenerator() const
 {
@@ -1021,6 +1023,9 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange()
     return creationChange;
 }
 
+/*!
+    A function for receiving and processing a \a change.
+*/
 void QAbstractTexture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     switch (change->type()) {

@@ -92,6 +92,10 @@ QT_BEGIN_NAMESPACE
 #define GL_DRAW_FRAMEBUFFER 0x8CA9
 #endif
 
+#ifndef GL_MAX_IMAGE_UNITS
+#define GL_MAX_IMAGE_UNITS                0x8F38
+#endif
+
 namespace {
 
 QOpenGLShader::ShaderType shaderType(Qt3DRender::QShaderProgram::ShaderType type)
@@ -125,6 +129,7 @@ GraphicsContext::GraphicsContext()
     : m_initialized(false)
     , m_supportsVAO(false)
     , m_maxTextureUnits(0)
+    , m_maxImageUnits(0)
     , m_defaultFBO(0)
     , m_gl(nullptr)
     , m_glHelper(nullptr)
@@ -152,6 +157,8 @@ void GraphicsContext::initialize()
 
     m_gl->functions()->glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &m_maxTextureUnits);
     qCDebug(Backend) << "context supports" << m_maxTextureUnits << "texture units";
+    m_gl->functions()->glGetIntegerv(GL_MAX_IMAGE_UNITS, &m_maxImageUnits);
+    qCDebug(Backend) << "context supports" << m_maxImageUnits << "image units";
 
     if (m_gl->format().majorVersion() >= 3) {
         m_supportsVAO = true;
@@ -587,6 +594,19 @@ void GraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> &
         m_glHelper->bindFragDataLocation(shader, outputs);
 }
 
+void GraphicsContext::bindImageTexture(GLuint imageUnit, GLuint texture,
+                                       GLint mipLevel, GLboolean layered,
+                                       GLint layer, GLenum access, GLenum format)
+{
+    m_glHelper->bindImageTexture(imageUnit,
+                                 texture,
+                                 mipLevel,
+                                 layered,
+                                 layer,
+                                 access,
+                                 format);
+}
+
 void GraphicsContext::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     m_glHelper->bindUniformBlock(programId, uniformBlockIndex, uniformBlockBinding);
@@ -662,10 +682,16 @@ GLint GraphicsContext::maxClipPlaneCount()
     return m_glHelper->maxClipPlaneCount();
 }
 
-GLint GraphicsContext::maxTextureUnitsCount()
+GLint GraphicsContext::maxTextureUnitsCount() const
 {
     return m_maxTextureUnits;
 }
+
+GLint GraphicsContext::maxImageUnitsCount() const
+{
+    return m_maxImageUnits;
+}
+
 
 void GraphicsContext::enablePrimitiveRestart(int restartIndex)
 {
@@ -769,6 +795,7 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
         break;
 
     case UniformType::Sampler:
+    case UniformType::Image:
     case UniformType::Int:
         applyUniformHelper<UniformType::Int>(description, v);
         break;

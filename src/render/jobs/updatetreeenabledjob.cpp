@@ -41,6 +41,8 @@
 
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
 #include <QThread>
 
@@ -51,14 +53,17 @@ namespace Render {
 
 namespace {
 
-void updateTreeEnabled(Entity *node, bool parentEnabled)
+void updateTreeEnabled(NodeManagers *manager, Entity *node, bool parentEnabled)
 {
     const bool treeEnabled = node->isEnabled() && parentEnabled;
     node->setTreeEnabled(treeEnabled);
 
-    const QVector<Entity*> children = node->children();
-    for (Entity *child : children)
-        updateTreeEnabled(child, treeEnabled);
+    const auto childrenHandles = node->childrenHandles();
+    for (const HEntity &handle : childrenHandles) {
+        Entity *child = manager->renderNodesManager()->data(handle);
+        if (child)
+            updateTreeEnabled(manager, child, treeEnabled);
+    }
 }
 
 }
@@ -75,10 +80,15 @@ void UpdateTreeEnabledJob::setRoot(Entity *root)
     m_node = root;
 }
 
+void UpdateTreeEnabledJob::setManagers(NodeManagers *manager)
+{
+    m_manager = manager;
+}
+
 void UpdateTreeEnabledJob::run()
 {
-    if (m_node)
-        updateTreeEnabled(m_node, true);
+    if (m_node && m_manager)
+        updateTreeEnabled(m_manager, m_node, true);
 }
 
 } // namespace Render

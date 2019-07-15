@@ -123,6 +123,7 @@ public:
     void    bindFramebuffer(GLuint fbo, GraphicsHelperInterface::FBOBindMode mode);
     void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
     void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
+    void    bindImageTexture(GLuint imageUnit, GLuint texture, GLint mipLevel, GLboolean layered, GLint layer, GLenum access, GLenum format);
     void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
     void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding);
     void    blendEquation(GLenum mode);
@@ -155,7 +156,8 @@ public:
     void    enablePrimitiveRestart(int restartIndex);
     void    frontFace(GLenum mode);
     GLint   maxClipPlaneCount();
-    GLint   maxTextureUnitsCount();
+    GLint   maxTextureUnitsCount() const;
+    GLint   maxImageUnitsCount() const;
     void    pointSize(bool programmable, GLfloat value);
     void    readBuffer(GLenum mode);
     void    drawBuffer(GLenum mode);
@@ -185,6 +187,7 @@ public:
     bool m_initialized;
     bool m_supportsVAO;
     GLint m_maxTextureUnits;
+    GLint m_maxImageUnits;
     GLuint m_defaultFBO;
     QOpenGLContext *m_gl;
     GraphicsHelperInterface *m_glHelper;

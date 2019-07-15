@@ -67,13 +67,13 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DParameter : public QParameter
 {
     Q_OBJECT
 public:
-    explicit Quick3DParameter(QNode *parent = 0);
+    explicit Quick3DParameter(QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(Quick3DParameter)
 
 protected:
-    Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent = 0);
+    Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent = nullptr);
 };
 
 } // namespace Quick

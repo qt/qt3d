@@ -71,11 +71,24 @@ void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex
         if (m_textures[t].glslNameId != glslNameId || m_textures[t].uniformArrayIndex != uniformArrayIndex)
             continue;
 
-        m_textures[t].texId = texId;
+        m_textures[t].nodeId = texId;
         return;
     }
 
-    m_textures.append(NamedTexture(glslNameId, texId, uniformArrayIndex));
+    m_textures.append(NamedResource(glslNameId, texId, uniformArrayIndex, NamedResource::Texture));
+}
+
+void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id)
+{
+    for (int i=0, m = m_images.size(); i < m; ++i) {
+        if (m_images[i].glslNameId != glslNameId || m_images[i].uniformArrayIndex != uniformArrayIndex)
+            continue;
+
+        m_images[i].nodeId = id;
+        return;
+    }
+
+    m_images.append(NamedResource(glslNameId, id, uniformArrayIndex, NamedResource::Image));
 }
 
 // Contains Uniform Block Index and QNodeId of the ShaderData (UBO)

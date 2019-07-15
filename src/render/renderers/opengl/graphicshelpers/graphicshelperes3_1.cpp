@@ -110,6 +110,42 @@ QT_BEGIN_NAMESPACE
 #ifndef GL_SHADER_STORAGE_BARRIER_BIT
 #define GL_SHADER_STORAGE_BARRIER_BIT 0x00002000
 #endif
+#ifndef GL_IMAGE_2D
+#define GL_IMAGE_2D                       0x904D
+#endif
+#ifndef GL_IMAGE_3D
+#define GL_IMAGE_3D                       0x904E
+#endif
+#ifndef GL_IMAGE_CUBE
+#define GL_IMAGE_CUBE                     0x9050
+#endif
+#ifndef GL_IMAGE_2D_ARRAY
+#define GL_IMAGE_2D_ARRAY                 0x9053
+#endif
+#ifndef GL_INT_IMAGE_2D
+#define GL_INT_IMAGE_2D                   0x9058
+#endif
+#ifndef GL_INT_IMAGE_3D
+#define GL_INT_IMAGE_3D                   0x9059
+#endif
+#ifndef GL_INT_IMAGE_CUBE
+#define GL_INT_IMAGE_CUBE                 0x905B
+#endif
+#ifndef GL_INT_IMAGE_2D_ARRAY
+#define GL_INT_IMAGE_2D_ARRAY             0x905E
+#endif
+#ifndef GL_UNSIGNED_INT_IMAGE_2D
+#define GL_UNSIGNED_INT_IMAGE_2D          0x9063
+#endif
+#ifndef GL_UNSIGNED_INT_IMAGE_3D
+#define GL_UNSIGNED_INT_IMAGE_3D          0x9064
+#endif
+#ifndef GL_UNSIGNED_INT_IMAGE_CUBE
+#define GL_UNSIGNED_INT_IMAGE_CUBE        0x9066
+#endif
+#ifndef GL_UNSIGNED_INT_IMAGE_2D_ARRAY
+#define GL_UNSIGNED_INT_IMAGE_2D_ARRAY    0x9069
+#endif
 
 
 namespace Qt3DRender {
@@ -175,11 +211,25 @@ bool GraphicsHelperES3_1::supportsFeature(GraphicsHelperInterface::Feature featu
     case GraphicsHelperInterface::Compute:
     case GraphicsHelperInterface::ShaderStorageObject:
     case GraphicsHelperInterface::IndirectDrawing:
+    case GraphicsHelperInterface::ShaderImage:
         return true;
     default:
         break;
     }
     return GraphicsHelperES3::supportsFeature(feature);
+}
+
+void GraphicsHelperES3_1::bindImageTexture(GLuint imageUnit, GLuint texture,
+                                           GLint mipLevel, GLboolean layered,
+                                           GLint layer, GLenum access, GLenum format)
+{
+    m_extraFuncs->glBindImageTexture(imageUnit,
+                                     texture,
+                                     mipLevel,
+                                     layered,
+                                     layer,
+                                     access,
+                                     format);
 }
 
 void GraphicsHelperES3_1::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
@@ -240,6 +290,19 @@ UniformType GraphicsHelperES3_1::uniformTypeFromGLType(GLenum glType)
     case GL_INT_SAMPLER_2D_MULTISAMPLE:
     case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
         return UniformType::Sampler;
+    case GL_IMAGE_2D:
+    case GL_IMAGE_3D:
+    case GL_IMAGE_CUBE:
+    case GL_IMAGE_2D_ARRAY:
+    case GL_INT_IMAGE_2D:
+    case GL_INT_IMAGE_3D:
+    case GL_INT_IMAGE_CUBE:
+    case GL_INT_IMAGE_2D_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_2D:
+    case GL_UNSIGNED_INT_IMAGE_3D:
+    case GL_UNSIGNED_INT_IMAGE_CUBE:
+    case GL_UNSIGNED_INT_IMAGE_2D_ARRAY:
+        return UniformType::Image;
 
     default:
        return GraphicsHelperES3::uniformTypeFromGLType(glType);
@@ -254,6 +317,18 @@ uint GraphicsHelperES3_1::uniformByteSize(const ShaderUniform &description)
     case GL_SAMPLER_2D_MULTISAMPLE:
     case GL_INT_SAMPLER_2D_MULTISAMPLE:
     case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_IMAGE_2D:
+    case GL_IMAGE_3D:
+    case GL_IMAGE_CUBE:
+    case GL_IMAGE_2D_ARRAY:
+    case GL_INT_IMAGE_2D:
+    case GL_INT_IMAGE_3D:
+    case GL_INT_IMAGE_CUBE:
+    case GL_INT_IMAGE_2D_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_2D:
+    case GL_UNSIGNED_INT_IMAGE_3D:
+    case GL_UNSIGNED_INT_IMAGE_CUBE:
+    case GL_UNSIGNED_INT_IMAGE_2D_ARRAY:
         rawByteSize = 4;
         break;
 

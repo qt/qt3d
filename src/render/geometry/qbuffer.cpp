@@ -117,6 +117,12 @@ QBufferPrivate::QBufferPrivate()
  */
 
 /*!
+ * \fn void Qt3DRender::QBuffer::dataAvailable()
+ *
+ * This signal is emitted when data becomes available.
+ */
+
+/*!
     \class Qt3DRender::QBufferDataGenerator
     \inmodule Qt3DRender
 
@@ -249,6 +255,17 @@ QBufferPrivate::QBufferPrivate()
  *        GL_DYNAMIC_READ
  * \value DynamicCopy
  *        GL_DYNAMIC_COPY
+ */
+
+/*!
+ * \enum QBuffer::AccessType
+ *
+ * \value Write
+ *        Write access
+ * \value Read
+ *        Read access
+ * \value ReadWrite
+ *        Write|Read
  */
 
 /*!
@@ -443,6 +460,13 @@ bool QBuffer::isSyncData() const
     return d->m_syncData;
 }
 
+/*!
+ * \property Qt3DRender::QBuffer::accessType
+ *
+ * Returns the \l {QBuffer::}{AccessType} of the buffer.
+ *
+ * \sa QBuffer::AccessType
+ */
 QBuffer::AccessType QBuffer::accessType() const
 {
     Q_D(const QBuffer);

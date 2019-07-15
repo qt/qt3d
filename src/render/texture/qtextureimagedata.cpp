@@ -59,7 +59,23 @@ QTextureImageDataPrivate::QTextureImageDataPrivate()
     , m_pixelFormat(QOpenGLTexture::RGBA)
     , m_pixelType(QOpenGLTexture::UInt8)
     , m_isCompressed(false)
+    , m_isKtx(false)
 {
+}
+
+QByteArray QTextureImageDataPrivate::ktxData(int layer, int face, int mipmapLevel) const
+{
+    Q_ASSERT(layer >= 0 && layer < m_layers &&
+            face >= 0 && face < m_faces &&
+            mipmapLevel >= 0 && mipmapLevel < m_mipLevels);
+
+    int offset = 0;
+    for (int i = 0; i < mipmapLevel; i++)
+        offset += (mipmapLevelSize(i) * m_faces * m_layers) + 4;
+    const int selectedMipmapLevelSize = mipmapLevelSize(mipmapLevel);
+    offset += (selectedMipmapLevelSize * m_faces * layer) + (selectedMipmapLevelSize * face) + 4;
+
+    return QByteArray::fromRawData(m_data.constData() + offset, selectedMipmapLevelSize);
 }
 
 QByteArray QTextureImageDataPrivate::data(int layer, int face, int mipmapLevel) const
@@ -71,7 +87,10 @@ QByteArray QTextureImageDataPrivate::data(int layer, int face, int mipmapLevel) 
         return QByteArray();
     }
 
-    int offset = layer * layerSize() + face * faceSize();
+    if (m_isKtx)
+        return ktxData(layer, face, mipmapLevel);
+
+    int offset = layer * ddsLayerSize() + face * ddsFaceSize();
 
     for (int i = 0; i < mipmapLevel; i++)
         offset += mipmapLevelSize(i);
@@ -93,12 +112,12 @@ void QTextureImageDataPrivate::setData(const QByteArray &data,
     m_blockSize = blockSize;
 }
 
-int QTextureImageDataPrivate::layerSize() const
+int QTextureImageDataPrivate::ddsLayerSize() const
 {
-    return m_faces * faceSize();
+    return m_faces * ddsFaceSize();
 }
 
-int QTextureImageDataPrivate::faceSize() const
+int QTextureImageDataPrivate::ddsFaceSize() const
 {
     int size = 0;
 

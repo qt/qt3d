@@ -164,7 +164,7 @@ void QClearBuffers::setBuffers(QClearBuffers::BufferType buffers)
     Specifies the clear color to be used.
  */
 /*!
-    \qmlproperty color Qt3D.Render::ClearBuffers::color
+    \qmlproperty color Qt3D.Render::ClearBuffers::clearColor
     Specifies the clear color to be used.
 */
 void QClearBuffers::setClearColor(const QColor &color)

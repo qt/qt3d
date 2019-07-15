@@ -40,6 +40,7 @@
 #include "qtextureimage.h"
 #include "qabstracttextureimage.h"
 #include "qtextureimage_p.h"
+#include "qtextureimagedata_p.h"
 #include "qtexturedata.h"
 #include "qtexture.h"
 #include "qtexture_p.h"
@@ -451,7 +452,8 @@ enum ImageFormat {
     GenericImageFormat = 0,
     DDS,
     PKM,
-    HDR
+    HDR,
+    KTX
 };
 
 ImageFormat imageFormatFromSuffix(const QString &suffix)
@@ -462,7 +464,142 @@ ImageFormat imageFormatFromSuffix(const QString &suffix)
         return DDS;
     if (suffix == QStringLiteral("hdr"))
         return HDR;
+    if (suffix == QStringLiteral("ktx"))
+        return KTX;
     return GenericImageFormat;
+}
+
+// NOTE: the ktx loading code is a near-duplication of the code in qt3d-runtime, and changes
+// should be kept up to date in both locations.
+quint32 blockSizeForTextureFormat(QOpenGLTexture::TextureFormat format)
+{
+    switch (format) {
+    case QOpenGLTexture::RGB8_ETC1:
+    case QOpenGLTexture::RGB8_ETC2:
+    case QOpenGLTexture::SRGB8_ETC2:
+    case QOpenGLTexture::RGB8_PunchThrough_Alpha1_ETC2:
+    case QOpenGLTexture::SRGB8_PunchThrough_Alpha1_ETC2:
+    case QOpenGLTexture::R11_EAC_UNorm:
+    case QOpenGLTexture::R11_EAC_SNorm:
+    case QOpenGLTexture::RGB_DXT1:
+        return 8;
+
+    default:
+        return 16;
+    }
+}
+
+QTextureImageDataPtr setKtxFile(QIODevice *source)
+{
+    static const int KTX_IDENTIFIER_LENGTH = 12;
+    static const char ktxIdentifier[KTX_IDENTIFIER_LENGTH] = { '\xAB', 'K', 'T', 'X', ' ', '1', '1', '\xBB', '\r', '\n', '\x1A', '\n' };
+    static const quint32 platformEndianIdentifier = 0x04030201;
+    static const quint32 inversePlatformEndianIdentifier = 0x01020304;
+
+    struct KTXHeader {
+        quint8 identifier[KTX_IDENTIFIER_LENGTH];
+        quint32 endianness;
+        quint32 glType;
+        quint32 glTypeSize;
+        quint32 glFormat;
+        quint32 glInternalFormat;
+        quint32 glBaseInternalFormat;
+        quint32 pixelWidth;
+        quint32 pixelHeight;
+        quint32 pixelDepth;
+        quint32 numberOfArrayElements;
+        quint32 numberOfFaces;
+        quint32 numberOfMipmapLevels;
+        quint32 bytesOfKeyValueData;
+    };
+
+    KTXHeader header;
+    QTextureImageDataPtr imageData;
+    if (source->read(reinterpret_cast<char *>(&header), sizeof(header)) != sizeof(header)
+            || qstrncmp(reinterpret_cast<char *>(header.identifier), ktxIdentifier, KTX_IDENTIFIER_LENGTH) != 0
+            || (header.endianness != platformEndianIdentifier && header.endianness != inversePlatformEndianIdentifier))
+    {
+        return imageData;
+    }
+
+    const bool isInverseEndian = (header.endianness == inversePlatformEndianIdentifier);
+    auto decode = [isInverseEndian](quint32 val) {
+        return isInverseEndian ? qbswap<quint32>(val) : val;
+    };
+
+    const bool isCompressed = decode(header.glType) == 0 && decode(header.glFormat) == 0 && decode(header.glTypeSize) == 1;
+    if (!isCompressed) {
+        qWarning("Uncompressed ktx texture data is not supported");
+        return imageData;
+    }
+
+    if (decode(header.numberOfArrayElements) != 0) {
+        qWarning("Array ktx textures not supported");
+        return imageData;
+    }
+
+    if (decode(header.pixelDepth) != 0) {
+        qWarning("Only 2D and cube ktx textures are supported");
+        return imageData;
+    }
+
+    const int bytesToSkip = decode(header.bytesOfKeyValueData);
+    if (source->read(bytesToSkip).count() != bytesToSkip) {
+        qWarning("Unexpected end of ktx data");
+        return imageData;
+    }
+
+    const int level0Width = decode(header.pixelWidth);
+    const int level0Height = decode(header.pixelHeight);
+    const int faceCount = decode(header.numberOfFaces);
+    const int mipMapLevels = decode(header.numberOfMipmapLevels);
+    const QOpenGLTexture::TextureFormat format = QOpenGLTexture::TextureFormat(decode(header.glInternalFormat));
+    const int blockSize = blockSizeForTextureFormat(format);
+
+    // now for each mipmap level we have (arrays and 3d textures not supported here)
+    // uint32 imageSize
+    // for each array element
+    //   for each face
+    //     for each z slice
+    //       compressed data
+    //     padding so that each face data starts at an offset that is a multiple of 4
+    // padding so that each imageSize starts at an offset that is a multiple of 4
+
+    // assumes no depth or uncompressed textures (per above)
+    auto computeMipMapLevelSize = [&] (int level) {
+        const int w = qMax(level0Width >> level, 1);
+        const int h = qMax(level0Height >> level, 1);
+        return ((w + 3) / 4) * ((h + 3) / 4) * blockSize;
+    };
+
+    int dataSize = 0;
+    for (auto i = 0; i < mipMapLevels; ++i)
+        dataSize += computeMipMapLevelSize(i) * faceCount + 4; // assumes a single layer (per above)
+
+    const QByteArray rawData = source->read(dataSize);
+    if (rawData.size() < dataSize) {
+        qWarning() << "Unexpected end of data in" << source;
+        return imageData;
+    }
+
+    if (!source->atEnd())
+        qWarning() << "Unrecognized data in" << source;
+
+    imageData = QTextureImageDataPtr::create();
+    imageData->setTarget(faceCount == 6 ? QOpenGLTexture::TargetCubeMap : QOpenGLTexture::Target2D);
+    imageData->setFormat(format);
+    imageData->setWidth(level0Width);
+    imageData->setHeight(level0Height);
+    imageData->setLayers(1);
+    imageData->setDepth(1);
+    imageData->setFaces(faceCount);
+    imageData->setMipLevels(mipMapLevels);
+    imageData->setPixelFormat(QOpenGLTexture::NoSourceFormat);
+    imageData->setPixelType(QOpenGLTexture::NoPixelType);
+    imageData->setData(rawData, blockSize, true);
+    QTextureImageDataPrivate::get(imageData.data())->m_isKtx = true; // see note in QTextureImageDataPrivate
+
+    return imageData;
 }
 
 QTextureImageDataPtr setPkmFile(QIODevice *source)
@@ -889,6 +1026,10 @@ QTextureImageDataPtr TextureLoadingHelper::loadTextureData(QIODevice *data, cons
     case HDR:
         textureData = setHdrFile(data);
         break;
+    case KTX: {
+        textureData = setKtxFile(data);
+        break;
+    }
     default: {
         QImage img;
         if (img.load(data, suffix.toLatin1())) {
@@ -1258,6 +1399,13 @@ void QTextureLoaderPrivate::updateGenerator()
    \brief Handles the texture loading and setting the texture's properties.
 */
 /*!
+   \qmltype TextureLoader
+   \instantiates Qt3DRender::QTextureLoader
+   \inqmlmodule Qt3D.Render
+
+   \brief Handles the texture loading and setting the texture's properties.
+*/
+/*!
  * Constructs a new Qt3DRender::QTextureLoader instance with \a parent as parent.
  *
  * Note that by default, if not contradicted by the file metadata, the loaded texture
@@ -1295,7 +1443,12 @@ QTextureLoader::~QTextureLoader()
 /*!
     \property QTextureLoader::source
 
-    Returns the current texture source.
+    \brief The current texture source.
+*/
+/*!
+    \qmlproperty url Qt3D.Render::TextureLoader::source
+
+    This property holds the current texture source.
 */
 QUrl QTextureLoader::source() const
 {
@@ -1347,7 +1500,7 @@ void QTextureLoader::setSource(const QUrl& source)
 */
 
 /*!
-  \qmlproperty bool Qt3DRender::QTextureLoader::mirrored
+  \qmlproperty bool Qt3D.Render::TextureLoader::mirrored
 
   This property specifies whether the texture should be mirrored when loaded. This
   is a convenience to avoid having to manipulate images to match the origin of

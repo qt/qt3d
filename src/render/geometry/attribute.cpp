@@ -100,6 +100,17 @@ void Attribute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_attributeDirty = true;
 }
 
+/*!
+    \fn Qt3DRender::QAttribute::dataSizeChanged(uint vertexSize)
+
+    The signal is emitted with \a vertexSize when the dataSize changes.
+
+*/
+/*!
+    \fn Qt3DRender::QAttribute::dataTypeChanged(Qt3DRender::QAttribute::VertexBaseType vertexBaseType)
+
+    The signal is emitted with \a vertexBaseType when the dataType changed.
+*/
 void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {

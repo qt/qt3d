@@ -31,6 +31,7 @@ import Qt3D.Render 2.0 as QQ3Render20
 import Qt3D.Render 2.1 as QQ3Render21
 import Qt3D.Render 2.10 as QQ3Render210
 import Qt3D.Render 2.13 as QQ3Render213
+import Qt3D.Render 2.14 as QQ3Render214
 import QtQuick 2.0
 
 Item {
@@ -58,6 +59,7 @@ Item {
     //QQ3Render20.QShaderData                  // (uncreatable) Qt3DRender::QShaderData
     QQ3Render20.ShaderDataArray {}             //Qt3DRender::Render::Quick::Quick3DShaderDataArray
     QQ3Render20.ShaderData {}                  //Qt3DRender::Render::Quick::Quick3DShaderData
+    QQ3Render214.ShaderImage {}
 
     // Camera
     QQ3Render20.Camera {}                      //Qt3DRender::QCamera
