@@ -82,17 +82,20 @@ public:
     QOpenGLTexture::PixelType m_pixelType;
 
     bool m_isCompressed;
+    // ### Qt 6
+    // QTextureImageData was originally written with assumptions around the internal data format
+    // matching dds layout. This is an ugly, but easy, way to add basic ktx support without any
+    // public API changes. Consider https://codereview.qt-project.org/#/c/178474/ for Qt 6.
+    bool m_isKtx;
     QByteArray m_data;
 
     static QTextureImageDataPrivate *get(QTextureImageData *imageData);
 
 private:
-    int layerSize() const;
-    int faceSize() const;
+    int ddsLayerSize() const;
+    int ddsFaceSize() const;
     int mipmapLevelSize(int level) const;
-
-    bool setPkmFile(const QString &source);
-    bool setDdsFile(const QString &source);
+    QByteArray ktxData(int layer, int face, int mipmapLevel) const;
 };
 
 } // namespace Qt3DRender

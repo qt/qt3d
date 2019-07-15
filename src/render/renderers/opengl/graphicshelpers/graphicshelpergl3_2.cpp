@@ -462,6 +462,21 @@ void GraphicsHelperGL3_2::bindFrameBufferObject(GLuint frameBufferId, FBOBindMod
     }
 }
 
+void GraphicsHelperGL3_2::bindImageTexture(GLuint imageUnit, GLuint texture,
+                                           GLint mipLevel, GLboolean layered,
+                                           GLint layer, GLenum access, GLenum format)
+{
+    Q_UNUSED(imageUnit)
+    Q_UNUSED(texture)
+    Q_UNUSED(mipLevel)
+    Q_UNUSED(layered)
+    Q_UNUSED(layer)
+    Q_UNUSED(access)
+    Q_UNUSED(format)
+    qWarning() << "Shader Images are not supported by OpenGL 3.2 (since OpenGL 4.2)";
+
+}
+
 GLuint GraphicsHelperGL3_2::boundFrameBufferObject()
 {
     GLint id = 0;

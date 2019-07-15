@@ -76,6 +76,7 @@ public:
     void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) override;
     void bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment) override;
     void bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode) override;
+    void bindImageTexture(GLuint imageUnit, GLuint texture, GLint mipLevel, GLboolean layered, GLint layer, GLenum access, GLenum format) override;
     void bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) override;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) override;
     void blendEquation(GLenum mode) override;

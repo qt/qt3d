@@ -83,7 +83,8 @@ public:
         BlitFramebuffer,
         IndirectDrawing,
         MapBuffer,
-        Fences
+        Fences,
+        ShaderImage
     };
 
     enum FBOBindMode {
@@ -100,6 +101,7 @@ public:
     virtual void    bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) = 0;
     virtual void    bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment) = 0;
     virtual void    bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode) = 0;
+    virtual void    bindImageTexture(GLuint imageUnit, GLuint texture, GLint mipLevel, GLboolean layered, GLint layer, GLenum access, GLenum format) = 0;
     virtual void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) = 0;
     virtual void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) = 0;
     virtual void    blendEquation(GLenum mode) = 0;

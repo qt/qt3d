@@ -79,6 +79,39 @@
 #  define GL_ATOMIC_COUNTER_BARRIER_BIT 0x00001000
 #  define GL_SHADER_STORAGE_BARRIER_BIT 0x00002000
 #  define GL_QUERY_BUFFER_BARRIER_BIT 0x00008000
+#  define GL_IMAGE_1D                       0x904C
+#  define GL_IMAGE_2D                       0x904D
+#  define GL_IMAGE_3D                       0x904E
+#  define GL_IMAGE_2D_RECT                  0x904F
+#  define GL_IMAGE_CUBE                     0x9050
+#  define GL_IMAGE_BUFFER                   0x9051
+#  define GL_IMAGE_1D_ARRAY                 0x9052
+#  define GL_IMAGE_2D_ARRAY                 0x9053
+#  define GL_IMAGE_CUBE_MAP_ARRAY           0x9054
+#  define GL_IMAGE_2D_MULTISAMPLE           0x9055
+#  define GL_IMAGE_2D_MULTISAMPLE_ARRAY     0x9056
+#  define GL_INT_IMAGE_1D                   0x9057
+#  define GL_INT_IMAGE_2D                   0x9058
+#  define GL_INT_IMAGE_3D                   0x9059
+#  define GL_INT_IMAGE_2D_RECT              0x905A
+#  define GL_INT_IMAGE_CUBE                 0x905B
+#  define GL_INT_IMAGE_BUFFER               0x905C
+#  define GL_INT_IMAGE_1D_ARRAY             0x905D
+#  define GL_INT_IMAGE_2D_ARRAY             0x905E
+#  define GL_INT_IMAGE_CUBE_MAP_ARRAY       0x905F
+#  define GL_INT_IMAGE_2D_MULTISAMPLE       0x9060
+#  define GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY 0x9061
+#  define GL_UNSIGNED_INT_IMAGE_1D          0x9062
+#  define GL_UNSIGNED_INT_IMAGE_2D          0x9063
+#  define GL_UNSIGNED_INT_IMAGE_3D          0x9064
+#  define GL_UNSIGNED_INT_IMAGE_2D_RECT     0x9065
+#  define GL_UNSIGNED_INT_IMAGE_CUBE        0x9066
+#  define GL_UNSIGNED_INT_IMAGE_BUFFER      0x9067
+#  define GL_UNSIGNED_INT_IMAGE_1D_ARRAY    0x9068
+#  define GL_UNSIGNED_INT_IMAGE_2D_ARRAY    0x9069
+#  define GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY 0x906A
+#  define GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE 0x906B
+#  define GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY 0x906C
 # endif
 
 QT_BEGIN_NAMESPACE
@@ -635,6 +668,42 @@ UniformType GraphicsHelperGL4::uniformTypeFromGLType(GLenum type)
     case GL_UNSIGNED_INT_SAMPLER_CUBE:
     case GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY:
         return UniformType::Sampler;
+
+    case GL_IMAGE_1D:
+    case GL_IMAGE_2D:
+    case GL_IMAGE_3D:
+    case GL_IMAGE_2D_RECT:
+    case GL_IMAGE_CUBE:
+    case GL_IMAGE_BUFFER:
+    case GL_IMAGE_1D_ARRAY:
+    case GL_IMAGE_2D_ARRAY:
+    case GL_IMAGE_CUBE_MAP_ARRAY:
+    case GL_IMAGE_2D_MULTISAMPLE:
+    case GL_IMAGE_2D_MULTISAMPLE_ARRAY:
+    case GL_INT_IMAGE_1D:
+    case GL_INT_IMAGE_2D:
+    case GL_INT_IMAGE_3D:
+    case GL_INT_IMAGE_2D_RECT:
+    case GL_INT_IMAGE_CUBE:
+    case GL_INT_IMAGE_BUFFER:
+    case GL_INT_IMAGE_1D_ARRAY:
+    case GL_INT_IMAGE_2D_ARRAY:
+    case GL_INT_IMAGE_CUBE_MAP_ARRAY:
+    case GL_INT_IMAGE_2D_MULTISAMPLE:
+    case GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_1D:
+    case GL_UNSIGNED_INT_IMAGE_2D:
+    case GL_UNSIGNED_INT_IMAGE_3D:
+    case GL_UNSIGNED_INT_IMAGE_2D_RECT:
+    case GL_UNSIGNED_INT_IMAGE_CUBE:
+    case GL_UNSIGNED_INT_IMAGE_BUFFER:
+    case GL_UNSIGNED_INT_IMAGE_1D_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_2D_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
+        return UniformType::Image;
+
     default:
         // TO DO: Add support for Doubles and Images
         Q_UNREACHABLE();
@@ -724,6 +793,19 @@ void GraphicsHelperGL4::bindFrameBufferObject(GLuint frameBufferId, FBOBindMode 
     }
 }
 
+void GraphicsHelperGL4::bindImageTexture(GLuint imageUnit, GLuint texture,
+                                         GLint mipLevel, GLboolean layered,
+                                         GLint layer, GLenum access, GLenum format)
+{
+    m_funcs->glBindImageTexture(imageUnit,
+                                texture,
+                                mipLevel,
+                                layered,
+                                layer,
+                                access,
+                                format);
+}
+
 GLuint GraphicsHelperGL4::boundFrameBufferObject()
 {
     GLint id = 0;
@@ -791,6 +873,7 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case IndirectDrawing:
     case MapBuffer:
     case Fences:
+    case ShaderImage:
         return true;
     default:
         return false;
@@ -1019,7 +1102,40 @@ void GraphicsHelperGL4::buildUniformBuffer(const QVariant &v, const ShaderUnifor
     case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
     case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
     case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
-    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: {
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_IMAGE_1D:
+    case GL_IMAGE_2D:
+    case GL_IMAGE_3D:
+    case GL_IMAGE_2D_RECT:
+    case GL_IMAGE_CUBE:
+    case GL_IMAGE_BUFFER:
+    case GL_IMAGE_1D_ARRAY:
+    case GL_IMAGE_2D_ARRAY:
+    case GL_IMAGE_CUBE_MAP_ARRAY:
+    case GL_IMAGE_2D_MULTISAMPLE:
+    case GL_IMAGE_2D_MULTISAMPLE_ARRAY:
+    case GL_INT_IMAGE_1D:
+    case GL_INT_IMAGE_2D:
+    case GL_INT_IMAGE_3D:
+    case GL_INT_IMAGE_2D_RECT:
+    case GL_INT_IMAGE_CUBE:
+    case GL_INT_IMAGE_BUFFER:
+    case GL_INT_IMAGE_1D_ARRAY:
+    case GL_INT_IMAGE_2D_ARRAY:
+    case GL_INT_IMAGE_CUBE_MAP_ARRAY:
+    case GL_INT_IMAGE_2D_MULTISAMPLE:
+    case GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_1D:
+    case GL_UNSIGNED_INT_IMAGE_2D:
+    case GL_UNSIGNED_INT_IMAGE_3D:
+    case GL_UNSIGNED_INT_IMAGE_2D_RECT:
+    case GL_UNSIGNED_INT_IMAGE_CUBE:
+    case GL_UNSIGNED_INT_IMAGE_BUFFER:
+    case GL_UNSIGNED_INT_IMAGE_1D_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_2D_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY: {
         Q_ASSERT(description.m_size == 1);
         int value = v.toInt();
         QGraphicsUtils::fillDataArray<GLint>(bufferData, &value, description, 1);
@@ -1149,8 +1265,47 @@ uint GraphicsHelperGL4::uniformByteSize(const ShaderUniform &description)
     case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
     case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
     case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_IMAGE_1D:
+    case GL_IMAGE_2D:
+    case GL_IMAGE_3D:
+    case GL_IMAGE_2D_RECT:
+    case GL_IMAGE_CUBE:
+    case GL_IMAGE_BUFFER:
+    case GL_IMAGE_1D_ARRAY:
+    case GL_IMAGE_2D_ARRAY:
+    case GL_IMAGE_CUBE_MAP_ARRAY:
+    case GL_IMAGE_2D_MULTISAMPLE:
+    case GL_IMAGE_2D_MULTISAMPLE_ARRAY:
+    case GL_INT_IMAGE_1D:
+    case GL_INT_IMAGE_2D:
+    case GL_INT_IMAGE_3D:
+    case GL_INT_IMAGE_2D_RECT:
+    case GL_INT_IMAGE_CUBE:
+    case GL_INT_IMAGE_BUFFER:
+    case GL_INT_IMAGE_1D_ARRAY:
+    case GL_INT_IMAGE_2D_ARRAY:
+    case GL_INT_IMAGE_CUBE_MAP_ARRAY:
+    case GL_INT_IMAGE_2D_MULTISAMPLE:
+    case GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_1D:
+    case GL_UNSIGNED_INT_IMAGE_2D:
+    case GL_UNSIGNED_INT_IMAGE_3D:
+    case GL_UNSIGNED_INT_IMAGE_2D_RECT:
+    case GL_UNSIGNED_INT_IMAGE_CUBE:
+    case GL_UNSIGNED_INT_IMAGE_BUFFER:
+    case GL_UNSIGNED_INT_IMAGE_1D_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_2D_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY:
+    case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
         rawByteSize = 4;
         break;
+
+    default: {
+        qWarning() << Q_FUNC_INFO << "unable to deduce rawByteSize for uniform type:" << description.m_type << "for uniform" << description.m_name;
+        break;
+    }
+
     }
 
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;

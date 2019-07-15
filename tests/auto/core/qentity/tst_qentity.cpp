@@ -73,7 +73,7 @@ class MyQComponent : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit MyQComponent(Qt3DCore::QNode *parent = 0)
+    explicit MyQComponent(Qt3DCore::QNode *parent = nullptr)
         : QComponent(parent)
     {}
 };
@@ -90,7 +90,7 @@ public:
 class MyEntity : public Qt3DCore::QEntity
 {
 public:
-    explicit MyEntity(Qt3DCore::QNode *parent = 0)
+    explicit MyEntity(Qt3DCore::QNode *parent = nullptr)
         : QEntity(parent)
     {}
 };
@@ -622,6 +622,8 @@ void tst_Entity::checkCloning_data()
         Qt3DCore::QEntity *grandChild = new MyEntity(entityWithNestedChildren);
         QVector<QNodeId> childIds = {child->id(), grandChild->id()};
         QTest::newRow("entityWithNestedChildren") << entityWithNestedChildren << childIds << 4;
+
+        Q_UNUSED(dummy);
     }
 }
 
@@ -686,10 +688,19 @@ void tst_Entity::checkComponentBookkeeping()
         QCOMPARE(rootEntity->components().size(), 1);
 
         // WHEN
-        rootEntity.reset();
+        int sigCount = 0;
+        QObject *sigSender = comp.data();
+        connect(comp.data(), &QComponent::removedFromEntity, [&sigCount, sigSender](QEntity *) {
+            QComponent *c = qobject_cast<QComponent *>(sigSender);
+            if (sigSender && c)
+                sigCount++; // test the sender is still a QComponent when signal is emitted
+        });
+
         comp.reset();
+        rootEntity.reset();
 
         // THEN (Should not crash when the comp is destroyed (tests for failed removal of destruction helper)
+        QCOMPARE(sigCount, 1);
     }
 }
 

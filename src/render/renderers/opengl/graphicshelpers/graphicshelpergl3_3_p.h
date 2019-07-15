@@ -79,6 +79,7 @@ public:
     void bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment) override;
     void bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode) override;
     void bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) override;
+    void bindImageTexture(GLuint imageUnit, GLuint texture, GLint mipLevel, GLboolean layered, GLint layer, GLenum access, GLenum format) override;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) override;
     void blendEquation(GLenum mode) override;
     void blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor) override;

@@ -193,6 +193,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_updateEntityLayersJob(Render::UpdateEntityLayersJobPtr::create())
+    , m_updateEntityHierarchyJob(Render::UpdateEntityHierarchyJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
@@ -200,7 +201,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_sendSetFenceHandlesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
     , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     , m_syncLoadingJobs(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncLoadingJobs))
-    , m_updateEntityHierarchyJob(Render::UpdateEntityHierarchyJobPtr::create())
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
     #if QT_CONFIG(qt3d_profile_jobs)
@@ -292,6 +292,8 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateShaderDataTransformJob->setManagers(m_nodesManager);
     m_cleanupJob->setManagers(m_nodesManager);
     m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
+    m_expandBoundingVolumeJob->setManagers(m_nodesManager);
+    m_worldTransformJob->setManagers(m_nodesManager);
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_rayCastingJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
@@ -301,6 +303,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
     m_updateEntityLayersJob->setManager(m_nodesManager);
+    m_updateTreeEnabledJob->setManagers(m_nodesManager);
     m_updateEntityHierarchyJob->setManager(m_nodesManager);
 }
 

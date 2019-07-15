@@ -92,7 +92,7 @@ private: \
     \
     QVariant executeCommand(const QStringList &args) override \
     { \
-        if (args.size() >= 2 && args.first() == QLatin1Literal("echo")) { \
+        if (args.size() >= 2 && args.first() == QLatin1String("echo")) { \
             QStringList list = args; \
             list.removeFirst(); \
             return QString("%1 said '%2'").arg(metaObject()->className()).arg(list.join(QLatin1Char(' '))); \

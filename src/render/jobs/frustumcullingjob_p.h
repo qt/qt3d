@@ -63,6 +63,7 @@ namespace Render {
 
 class Entity;
 class EntityManager;
+class NodeManagers;
 struct Plane;
 
 class FrustumCullingJob : public Qt3DCore::QAspectJob
@@ -73,6 +74,7 @@ public:
     QT3D_ALIGNED_MALLOC_AND_FREE()
 
     inline void setRoot(Entity *root) Q_DECL_NOTHROW { m_root = root; }
+    inline void setManagers(NodeManagers *manager) Q_DECL_NOTHROW { m_manager = manager; }
     inline void setActive(bool active) Q_DECL_NOTHROW { m_active = active; }
     inline bool isActive() const Q_DECL_NOTHROW { return m_active; }
     inline void setViewProjection(const Matrix4x4 &viewProjection) Q_DECL_NOTHROW { m_viewProjection = viewProjection; }
@@ -86,6 +88,7 @@ private:
     void cullScene(Entity *e, const Plane *planes);
     Matrix4x4 m_viewProjection;
     Entity *m_root;
+    NodeManagers *m_manager;
     QVector<Entity *> m_visibleEntities;
     bool m_active;
 };

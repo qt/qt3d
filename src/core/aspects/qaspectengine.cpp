@@ -381,9 +381,9 @@ QVariant QAspectEngine::executeCommand(const QString &command)
 {
     Q_D(QAspectEngine);
 
-    if (command == QLatin1Literal("list aspects")) {
+    if (command == QLatin1String("list aspects")) {
         if (d->m_aspects.isEmpty())
-            return QLatin1Literal("No loaded aspect");
+            return QLatin1String("No loaded aspect");
 
         QString reply;
         reply += QLatin1String("Loaded aspects:");

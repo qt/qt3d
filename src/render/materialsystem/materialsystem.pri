@@ -17,6 +17,8 @@ HEADERS += \
     $$PWD/qrenderpass.h \
     $$PWD/qshaderdata.h \
     $$PWD/qshaderdata_p.h \
+    $$PWD/qshaderimage.h \
+    $$PWD/qshaderimage_p.h \
     $$PWD/qshaderprogram.h \
     $$PWD/qshaderprogram_p.h \
     $$PWD/qshaderprogrambuilder.h \
@@ -27,6 +29,7 @@ HEADERS += \
     $$PWD/shader_p.h \
     $$PWD/shaderbuilder_p.h \
     $$PWD/shaderdata_p.h \
+    $$PWD/shaderimage_p.h \
     $$PWD/technique_p.h \
     $$PWD/qgraphicsapifilter.h \
     $$PWD/qgraphicsapifilter_p.h \
@@ -44,6 +47,7 @@ SOURCES += \
     $$PWD/qparameter.cpp \
     $$PWD/qrenderpass.cpp \
     $$PWD/qshaderdata.cpp \
+    $$PWD/qshaderimage.cpp \
     $$PWD/qshaderprogram.cpp \
     $$PWD/qshaderprogrambuilder.cpp \
     $$PWD/qtechnique.cpp \
@@ -51,6 +55,7 @@ SOURCES += \
     $$PWD/shader.cpp \
     $$PWD/shaderbuilder.cpp \
     $$PWD/shaderdata.cpp \
+    $$PWD/shaderimage.cpp \
     $$PWD/technique.cpp \
     $$PWD/qgraphicsapifilter.cpp \
     $$PWD/shadercache.cpp \

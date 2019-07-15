@@ -43,6 +43,8 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/sphere_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +55,7 @@ namespace Render {
 FrustumCullingJob::FrustumCullingJob()
     : Qt3DCore::QAspectJob()
     , m_root(nullptr)
+    , m_manager(nullptr)
     , m_active(false)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrustumCulling, 0);
@@ -83,27 +86,25 @@ void FrustumCullingJob::run()
 
 void FrustumCullingJob::cullScene(Entity *e, const Plane *planes)
 {
-    const Sphere *s = e->worldBoundingVolumeWithChildren();
+    e->traverse([planes, this](Entity *e) {
+        const Sphere *s = e->worldBoundingVolumeWithChildren();
 
-    // Unrolled loop
-    if (Vector3D::dotProduct(s->center(), planes[0].normal) + planes[0].d < -s->radius())
-        return;
-    if (Vector3D::dotProduct(s->center(), planes[1].normal) + planes[1].d < -s->radius())
-        return;
-    if (Vector3D::dotProduct(s->center(), planes[2].normal) + planes[2].d < -s->radius())
-        return;
-    if (Vector3D::dotProduct(s->center(), planes[3].normal) + planes[3].d < -s->radius())
-        return;
-    if (Vector3D::dotProduct(s->center(), planes[4].normal) + planes[4].d < -s->radius())
-        return;
-    if (Vector3D::dotProduct(s->center(), planes[5].normal) + planes[5].d < -s->radius())
-        return;
+        // Unrolled loop
+        if (Vector3D::dotProduct(s->center(), planes[0].normal) + planes[0].d < -s->radius())
+            return;
+        if (Vector3D::dotProduct(s->center(), planes[1].normal) + planes[1].d < -s->radius())
+            return;
+        if (Vector3D::dotProduct(s->center(), planes[2].normal) + planes[2].d < -s->radius())
+            return;
+        if (Vector3D::dotProduct(s->center(), planes[3].normal) + planes[3].d < -s->radius())
+            return;
+        if (Vector3D::dotProduct(s->center(), planes[4].normal) + planes[4].d < -s->radius())
+            return;
+        if (Vector3D::dotProduct(s->center(), planes[5].normal) + planes[5].d < -s->radius())
+            return;
 
-    m_visibleEntities.push_back(e);
-
-    const QVector<Entity *> children = e->children();
-    for (Entity *c : children)
-        cullScene(c, planes);
+        m_visibleEntities.push_back(e);
+    });
 }
 
 } // Render

@@ -389,6 +389,7 @@ void SubmissionContext::initialize()
 {
     GraphicsContext::initialize();
     m_textureContext.initialize(this);
+    m_imageContext.initialize(this);
 }
 
 void SubmissionContext::resolveRenderTargetFormat()
@@ -479,6 +480,7 @@ void SubmissionContext::endDrawing(bool swapBuffers)
     if (m_ownCurrent)
         m_gl->doneCurrent();
     m_textureContext.endDrawing();
+    m_imageContext.endDrawing();
 }
 
 void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, GLuint defaultFboId)
@@ -864,6 +866,7 @@ void SubmissionContext::setActiveMaterial(Material *rmat)
         return;
 
     m_textureContext.deactivateTexturesWithScope(TextureSubmissionContext::TextureScopeMaterial);
+    m_imageContext.deactivateImages();
     m_material = rmat;
 }
 
@@ -1160,11 +1163,13 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     // Update the uniforms with the correct texture unit id's
     PackUniformHash &uniformValues = parameterPack.uniforms();
 
+    // Fill Texture Uniform Value with proper texture units
+    // so that they can be applied as regular uniforms in a second step
     for (int i = 0; i < parameterPack.textures().size(); ++i) {
-        const ShaderParameterPack::NamedTexture &namedTex = parameterPack.textures().at(i);
+        const ShaderParameterPack::NamedResource &namedTex = parameterPack.textures().at(i);
         // Given a Texture QNodeId, we retrieve the associated shared GLTexture
         if (uniformValues.contains(namedTex.glslNameId)) {
-            GLTexture *t = manager->glTextureManager()->lookupResource(namedTex.texId);
+            GLTexture *t = manager->glTextureManager()->lookupResource(namedTex.nodeId);
             if (t != nullptr) {
                 UniformValue &texUniform = uniformValues[namedTex.glslNameId];
                 if (texUniform.valueType() == UniformValue::TextureValue) {
@@ -1174,6 +1179,34 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
                         if (namedTex.glslNameId != irradianceId &&
                             namedTex.glslNameId != specularId) {
                             // Only return false if we are not dealing with env light textures
+                            qWarning() << "Unable to find suitable Texture Unit";
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Fill Image Uniform Value with proper image units
+    // so that they can be applied as regular uniforms in a second step
+    for (int i = 0; i < parameterPack.images().size(); ++i) {
+        const ShaderParameterPack::NamedResource &namedTex = parameterPack.images().at(i);
+        // Given a Texture QNodeId, we retrieve the associated shared GLTexture
+        if (uniformValues.contains(namedTex.glslNameId)) {
+            ShaderImage *img = manager->shaderImageManager()->lookupResource(namedTex.nodeId);
+            if (img != nullptr) {
+                GLTexture *t = manager->glTextureManager()->lookupResource(img->textureId());
+                if (t == nullptr) {
+                    qWarning() << "Shader Image referencing invalid texture";
+                    continue;
+                } else {
+                    UniformValue &imgUniform = uniformValues[namedTex.glslNameId];
+                    if (imgUniform.valueType() == UniformValue::ShaderImageValue) {
+                        const int imgUnit = m_imageContext.activateImage(img, t);
+                        imgUniform.data<int>()[namedTex.uniformArrayIndex] = imgUnit;
+                        if (imgUnit == -1) {
+                            qWarning() << "Unable to bind Image to Texture";
                             return false;
                         }
                     }
@@ -1229,8 +1262,10 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
         // be un activeUniforms if there wasn't a matching value
         const UniformValue &v = values[uniform.m_nameId];
 
-        // skip invalid textures
-        if (v.valueType() == UniformValue::TextureValue && *v.constData<int>() == -1)
+        // skip invalid textures/images
+        if ((v.valueType() == UniformValue::TextureValue ||
+             v.valueType() == UniformValue::ShaderImageValue) &&
+            *v.constData<int>() == -1)
             continue;
 
         applyUniform(uniform, v);

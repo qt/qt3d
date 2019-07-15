@@ -113,7 +113,7 @@ namespace Qt3DRender {
     \qml
     sourceAlphaArg: BlendEquationArguments.Zero
     destinationAlphaArg: BlendEquationArguments.One
-    \qml
+    \endqml
 
     to that material.
  */

@@ -63,7 +63,8 @@ SUBDIRS += \
     texture_property_updates \
     raster-cpp \
     raster-qml \
-    qtbug-72236
+    qtbug-72236 \
+    shader-image-qml
 
 qtHaveModule(multimedia): {
     SUBDIRS += \

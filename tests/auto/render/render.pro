@@ -103,7 +103,9 @@ qtConfig(private_tests) {
         qwaitfence \
         setfence \
         waitfence \
-        qtexturedataupdate
+        qtexturedataupdate \
+        qshaderimage \
+        shaderimage
 
     QT_FOR_CONFIG = 3dcore-private
     # TO DO: These could be restored to be executed in all cases

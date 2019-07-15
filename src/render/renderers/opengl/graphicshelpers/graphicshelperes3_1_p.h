@@ -65,6 +65,7 @@ public:
     ~GraphicsHelperES3_1();
 
     bool supportsFeature(Feature feature) const override;
+    void bindImageTexture(GLuint imageUnit, GLuint texture, GLint mipLevel, GLboolean layered, GLint layer, GLenum access, GLenum format) override;
     void dispatchCompute(GLuint wx, GLuint wy, GLuint wz) override;
     void memoryBarrier(QMemoryBarrier::Operations barriers) override;
     void drawArraysIndirect(GLenum mode,void *indirect) override;

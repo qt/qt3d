@@ -83,14 +83,10 @@ private:
 class AssimpIOSystem : public Assimp::IOSystem
 {
 public:
-    AssimpIOSystem();
     bool Exists(const char *pFile) const override;
     char getOsSeparator() const override;
     Assimp::IOStream *Open(const char *pFile, const char *pMode) override;
     void Close(Assimp::IOStream *pFile) override;
-
-private:
-    QHash<QByteArray, QIODevice::OpenMode> m_openModeMap;
 };
 
 AssimpIOStream::AssimpIOStream(QIODevice *device) :
@@ -151,18 +147,29 @@ void AssimpIOStream::Flush()
     // we don't write via assimp
 }
 
-AssimpIOSystem::AssimpIOSystem()
+static QIODevice::OpenMode openModeFromText(const char *name) noexcept
 {
-    m_openModeMap[QByteArrayLiteral("r")] = QIODevice::ReadOnly;
-    m_openModeMap[QByteArrayLiteral("r+")] = QIODevice::ReadWrite;
-    m_openModeMap[QByteArrayLiteral("w")] = QIODevice::WriteOnly | QIODevice::Truncate;
-    m_openModeMap[QByteArrayLiteral("w+")] = QIODevice::ReadWrite | QIODevice::Truncate;
-    m_openModeMap[QByteArrayLiteral("a")] = QIODevice::WriteOnly | QIODevice::Append;
-    m_openModeMap[QByteArrayLiteral("a+")] = QIODevice::ReadWrite | QIODevice::Append;
-    m_openModeMap[QByteArrayLiteral("wb")] = QIODevice::WriteOnly;
-    m_openModeMap[QByteArrayLiteral("wt")] = QIODevice::WriteOnly | QIODevice::Text;
-    m_openModeMap[QByteArrayLiteral("rb")] = QIODevice::ReadOnly;
-    m_openModeMap[QByteArrayLiteral("rt")] = QIODevice::ReadOnly | QIODevice::Text;
+    static const struct OpenModeMapping {
+        char name[2];
+        ushort mode;
+    } openModeMapping[] = {
+        { { 'r',   0 },  QIODevice::ReadOnly  },
+        { { 'r', '+' },  QIODevice::ReadWrite },
+        { { 'w',   0 },  QIODevice::WriteOnly | QIODevice::Truncate },
+        { { 'w', '+' },  QIODevice::ReadWrite | QIODevice::Truncate },
+        { { 'a',   0 },  QIODevice::WriteOnly | QIODevice::Append },
+        { { 'a', '+' },  QIODevice::ReadWrite | QIODevice::Append },
+        { { 'w', 'b' },  QIODevice::WriteOnly },
+        { { 'w', 't' },  QIODevice::WriteOnly | QIODevice::Text },
+        { { 'r', 'b' },  QIODevice::ReadOnly  },
+        { { 'r', 't' },  QIODevice::ReadOnly  | QIODevice::Text },
+    };
+
+    for (auto e : openModeMapping) {
+        if (qstrncmp(e.name, name, sizeof(OpenModeMapping::name)) == 0)
+            return static_cast<QIODevice::OpenMode>(e.mode);
+    }
+    return QIODevice::NotOpen;
 }
 
 bool AssimpIOSystem::Exists(const char *pFile) const
@@ -178,13 +185,13 @@ char AssimpIOSystem::getOsSeparator() const
 Assimp::IOStream *AssimpIOSystem::Open(const char *pFile, const char *pMode)
 {
     const QString fileName(QString::fromUtf8(pFile));
-    const QByteArray cleanedMode(QByteArray(pMode).trimmed());
+    const QLatin1String cleanedMode = QLatin1String{pMode}.trimmed();
 
-    const QIODevice::OpenMode openMode = m_openModeMap.value(cleanedMode, QIODevice::NotOpen);
-
-    QScopedPointer<QFile> file(new QFile(fileName));
-    if (file->open(openMode))
-        return new AssimpIOStream(file.take());
+    if (const QIODevice::OpenMode openMode = openModeFromText(cleanedMode.data())) {
+        QScopedPointer<QFile> file(new QFile(fileName));
+        if (file->open(openMode))
+            return new AssimpIOStream(file.take());
+    }
 
     return nullptr;
 }

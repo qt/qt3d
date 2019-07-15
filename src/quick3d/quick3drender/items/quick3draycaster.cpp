@@ -73,38 +73,38 @@ QJSValue Quick3DRayCasterPrivate::convertHits(const QAbstractRayCaster::Hits &hi
     auto jsHits = engine->newArray(hits.length());
     for (int i=0; i<hits.size(); i++) {
         QJSValue v = engine->newObject();
-        v.setProperty(QLatin1Literal("type"), hits[i].type());
-        v.setProperty(QLatin1Literal("entity"), engine->newQObject(hits[i].entity()));
-        v.setProperty(QLatin1Literal("distance"), hits[i].distance());
+        v.setProperty(QLatin1String("type"), hits[i].type());
+        v.setProperty(QLatin1String("entity"), engine->newQObject(hits[i].entity()));
+        v.setProperty(QLatin1String("distance"), hits[i].distance());
         {
             QJSValue p = engine->newObject();
-            p.setProperty(QLatin1Literal("x"), hits[i].localIntersection().x());
-            p.setProperty(QLatin1Literal("y"), hits[i].localIntersection().y());
-            p.setProperty(QLatin1Literal("z"), hits[i].localIntersection().z());
-            v.setProperty(QLatin1Literal("localIntersection"), p);
+            p.setProperty(QLatin1String("x"), hits[i].localIntersection().x());
+            p.setProperty(QLatin1String("y"), hits[i].localIntersection().y());
+            p.setProperty(QLatin1String("z"), hits[i].localIntersection().z());
+            v.setProperty(QLatin1String("localIntersection"), p);
         }
         {
             QJSValue p = engine->newObject();
-            p.setProperty(QLatin1Literal("x"), hits[i].worldIntersection().x());
-            p.setProperty(QLatin1Literal("y"), hits[i].worldIntersection().y());
-            p.setProperty(QLatin1Literal("z"), hits[i].worldIntersection().z());
-            v.setProperty(QLatin1Literal("worldIntersection"), p);
+            p.setProperty(QLatin1String("x"), hits[i].worldIntersection().x());
+            p.setProperty(QLatin1String("y"), hits[i].worldIntersection().y());
+            p.setProperty(QLatin1String("z"), hits[i].worldIntersection().z());
+            v.setProperty(QLatin1String("worldIntersection"), p);
         }
 
         switch (hits[i].type()) {
         case Qt3DRender::QRayCasterHit::TriangleHit:
-            v.setProperty(QLatin1Literal("primitiveIndex"), hits[i].primitiveIndex());
-            v.setProperty(QLatin1Literal("vertex1Index"), hits[i].vertex1Index());
-            v.setProperty(QLatin1Literal("vertex2Index"), hits[i].vertex2Index());
-            v.setProperty(QLatin1Literal("vertex3Index"), hits[i].vertex3Index());
+            v.setProperty(QLatin1String("primitiveIndex"), hits[i].primitiveIndex());
+            v.setProperty(QLatin1String("vertex1Index"), hits[i].vertex1Index());
+            v.setProperty(QLatin1String("vertex2Index"), hits[i].vertex2Index());
+            v.setProperty(QLatin1String("vertex3Index"), hits[i].vertex3Index());
             break;
         case Qt3DRender::QRayCasterHit::LineHit:
-            v.setProperty(QLatin1Literal("primitiveIndex"), hits[i].primitiveIndex());
-            v.setProperty(QLatin1Literal("vertex1Index"), hits[i].vertex1Index());
-            v.setProperty(QLatin1Literal("vertex2Index"), hits[i].vertex2Index());
+            v.setProperty(QLatin1String("primitiveIndex"), hits[i].primitiveIndex());
+            v.setProperty(QLatin1String("vertex1Index"), hits[i].vertex1Index());
+            v.setProperty(QLatin1String("vertex2Index"), hits[i].vertex2Index());
             break;
         case Qt3DRender::QRayCasterHit::PointHit:
-            v.setProperty(QLatin1Literal("primitiveIndex"), hits[i].primitiveIndex());
+            v.setProperty(QLatin1String("primitiveIndex"), hits[i].primitiveIndex());
             break;
         default: break;
         }

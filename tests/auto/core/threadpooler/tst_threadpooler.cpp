@@ -33,6 +33,7 @@
 #include <QtCore/QMutex>
 #include <QtGui/QVector3D>
 #include <QtGui/QMatrix4x4>
+#include <QtCore/QElapsedTimer>
 #include <QtCore/QTimer>
 
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
@@ -292,8 +293,8 @@ void tst_ThreadPooler::massTest()
     QVector3D data[3 * mass];
 
     // WHEN
-    QTime time;
-    time.start();
+    QElapsedTimer timer;
+    timer.start();
 
     for (int i = 0; i < mass; i++) {
         QSharedPointer<MassAspectJob> job1(new MassAspectJob(massTestFunction, &(data[i * 3 + 0])));
@@ -310,7 +311,7 @@ void tst_ThreadPooler::massTest()
     m_jobManager->waitForAllJobs();
 
     // THEN
-    qDebug() << "time.elapsed() = " << time.elapsed() << " ms";
+    qDebug() << "timer.elapsed() = " << timer.elapsed() << " ms";
 }
 
 class PerThreadUniqueTester {
