@@ -127,12 +127,12 @@ void QFrameAction::onTriggered(float dt)
 
 /*!
     \qmlsignal Qt3D.Logic::FrameAction::triggered(real dt)
-    This signal is emitted each frame.
+    This signal is emitted each frame with \a dt being the time (in seconds) since the last triggering.
 */
 
 /*!
     \fn Qt3DLogic::QFrameAction::triggered(float dt)
-    This signal is emitted each frame with \a dt being the time since the last triggering.
+    This signal is emitted each frame with \a dt being the time (in seconds) since the last triggering.
 */
 } // namespace Qt3DLogic
 
