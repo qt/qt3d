@@ -153,6 +153,7 @@ Qt3DCore::QBackendNode *JointFunctor::get(Qt3DCore::QNodeId id) const
 
 void JointFunctor::destroy(Qt3DCore::QNodeId id) const
 {
+    m_jointManager->removeDirtyJoint(id);
     m_jointManager->releaseResource(id);
 }
 

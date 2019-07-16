@@ -108,23 +108,23 @@ void tst_QRay3D::create_data()
     // non-normalized direction vectors
     QTest::newRow("line on x-axis from origin - B")
             << Vector3D()
-            << Vector3D(2.0f, 0.0f, 0.0f);
+            << Vector3D(2.0f, 0.0f, 0.0f).normalized();
 
     QTest::newRow("line parallel -z-axis from 3,3,3 - B")
             << Vector3D(3.0f, 3.0f, 3.0f)
-            << Vector3D(0.0f, 0.0f, -0.7f);
+            << Vector3D(0.0f, 0.0f, -0.7f).normalized();
 
     QTest::newRow("vertical line (parallel to y-axis) - B")
             << Vector3D(0.5f, 0.0f, 0.5f)
-            << Vector3D(0.0f, 5.3f, 0.0f);
+            << Vector3D(0.0f, 5.3f, 0.0f).normalized();
 
     QTest::newRow("equidistant from all 3 axes - B")
             << Vector3D(0.5f, 0.0f, 0.5f)
-            << Vector3D(1.0f, 1.0f, 1.0f);
+            << Vector3D(1.0f, 1.0f, 1.0f).normalized();
 
     QTest::newRow("negative direction")
             << Vector3D(-3.0f, -3.0f, -3.0f)
-            << Vector3D(-1.2f, -1.8f, -2.4f);
+            << Vector3D(-1.2f, -1.8f, -2.4f).normalized();
 }
 
 void tst_QRay3D::create()
@@ -203,32 +203,32 @@ void tst_QRay3D::point_data()
     QTest::newRow("line on x-axis from origin")
             << Vector3D()
             << Vector3D(2.0f, 0.0f, 0.0f)
-            << Vector3D(1.2f, 0.0f, 0.0f)
-            << Vector3D(-14.4f, 0.0f, 0.0f);
+            << Vector3D(0.6f, 0.0f, 0.0f)
+            << Vector3D(-7.2f, 0.0f, 0.0f);
 
     QTest::newRow("line parallel -z-axis from 3,3,3")
             << Vector3D(3.0f, 3.0f, 3.0f)
             << Vector3D(0.0f, 0.0f, -0.7f)
-            << Vector3D(3.0f, 3.0f, 2.58f)
-            << Vector3D(3.0f, 3.0f, 8.04f);
+            << Vector3D(3.0f, 3.0f, 2.4f)
+            << Vector3D(3.0f, 3.0f, 10.2f);
 
     QTest::newRow("vertical line (parallel to y-axis)")
             << Vector3D(0.5f, 0.0f, 0.5f)
             << Vector3D(0.0f, 5.3f, 0.0f)
-            << Vector3D(0.5f, 3.18f, 0.5f)
-            << Vector3D(0.5f, -38.16f, 0.5f);
+            << Vector3D(0.5f, 0.6f, 0.5f)
+            << Vector3D(0.5f, -7.2f, 0.5f);
 
     QTest::newRow("equidistant from all 3 axes")
             << Vector3D(0.5f, 0.0f, 0.5f)
             << Vector3D(1.0f, 1.0f, 1.0f)
-            << Vector3D(1.1f, 0.6f, 1.1f)
-            << Vector3D(-6.7f, -7.2f, -6.7f);
+            << Vector3D(0.84641f, 0.34641f, 0.84641f)
+            << Vector3D(-3.65692f, -4.15692f, -3.65692f);
 
     QTest::newRow("negative direction")
             << Vector3D(-3.0f, -3.0f, -3.0f)
             << Vector3D(-1.2f, -1.8f, -2.4f)
-            << Vector3D(-3.72f, -4.08f, -4.44f)
-            << Vector3D(5.64f, 9.96f, 14.28f);
+            << Vector3D(-3.22283f, -3.33425f, -3.44567f)
+            << Vector3D(-0.325987f, 1.01102f, 2.34803f);
 }
 
 void tst_QRay3D::point()
@@ -475,7 +475,7 @@ void tst_QRay3D::transform()
     QVERIFY(fuzzyCompare(ray1.direction(), ray3.direction()));
 
     QVERIFY(fuzzyCompare(ray1.origin(), m * point));
-    QVERIFY(fuzzyCompare(ray1.direction(), m.mapVector(direction)));
+    QVERIFY(fuzzyCompare(ray1.direction(), m.mapVector(direction).normalized()));
 }
 
 class tst_QRay3DProperties : public QObject
@@ -503,7 +503,7 @@ void tst_QRay3D::properties()
 
     Qt3DRender::RayCasting::QRay3D r = qvariant_cast<Qt3DRender::RayCasting::QRay3D>(obj.property("ray"));
     QCOMPARE(r.origin(), Vector3D(1, 2, 3));
-    QCOMPARE(r.direction(), Vector3D(4, 5, 6));
+    QCOMPARE(r.direction(), Vector3D(4, 5, 6).normalized());
 
     obj.setProperty("ray",
                     qVariantFromValue
@@ -511,7 +511,7 @@ void tst_QRay3D::properties()
 
     r = qvariant_cast<Qt3DRender::RayCasting::QRay3D>(obj.property("ray"));
     QCOMPARE(r.origin(), Vector3D(-1, -2, -3));
-    QCOMPARE(r.direction(), Vector3D(-4, -5, -6));
+    QCOMPARE(r.direction(), Vector3D(-4, -5, -6).normalized());
 }
 
 void tst_QRay3D::metaTypes()
