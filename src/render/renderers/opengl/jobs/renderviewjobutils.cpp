@@ -193,8 +193,10 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                     rv->setStateSet(stateSet);
                 }
 
+                // Add states from new stateSet we might be missing
+                // but don' t override existing states (lower StateSetNode always has priority)
                 if (rStateSet->hasRenderStates())
-                    addToRenderStateSet(stateSet, rStateSet->renderStates(), manager->renderStateManager());
+                    addUniqueStatesToRenderStateSet(stateSet, rStateSet->renderStates(), manager->renderStateManager());
                 break;
             }
 
@@ -417,14 +419,16 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
     parametersFromParametersProvider(infoList, manager, technique);
 }
 
-void addToRenderStateSet(RenderStateSet *stateSet,
-                         const QVector<Qt3DCore::QNodeId> stateIds,
-                         RenderStateManager *manager)
+// Only add states with types we don't already have
+void addUniqueStatesToRenderStateSet(RenderStateSet *stateSet,
+                                     const QVector<Qt3DCore::QNodeId> stateIds,
+                                     RenderStateManager *manager)
 {
     for (const Qt3DCore::QNodeId &stateId : stateIds) {
         RenderStateNode *node = manager->lookupResource(stateId);
-        if (node->isEnabled())
+        if (node->isEnabled() && !stateSet->hasStateOfType(node->type())) {
             stateSet->addState(node->impl());
+        }
     }
 }
 
