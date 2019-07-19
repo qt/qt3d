@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "uniform_p.h"
+#include "qabstracttexture.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -260,6 +261,11 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
             v.m_data.resize(9);
             memcpy(v.data<float>(), mat33.constData(), 9 * sizeof(float));
             break;
+        }
+        if (variant.userType() == qMetaTypeId<Qt3DRender::QAbstractTexture *>()) {
+            // silently ignore null texture pointers as they are common while textures are loading
+            if (variant.value<Qt3DRender::QAbstractTexture *>() == nullptr)
+                break;
         }
         qWarning() << "Unknown uniform type or value:" << variant << "Please check your QParameters";
     }
