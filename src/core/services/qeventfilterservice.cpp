@@ -39,7 +39,6 @@
 
 #include "qeventfilterservice_p.h"
 
-#include <QtCore/QMap>
 #include <QtCore/QObject>
 #include <QtCore/QVector>
 
