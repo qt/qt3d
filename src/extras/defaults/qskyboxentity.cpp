@@ -238,6 +238,30 @@ void QSkyboxEntityPrivate::reloadTexture()
  */
 
 /*!
+ * \qmltype SkyboxEntity
+ * \instantiates Qt3DExtras::QSkyboxEntity
+   \inqmlmodule Qt3D.Extras
+ *
+ * \brief SkyboxEntity is a convenience Entity subclass that can be used to
+ * insert a skybox in a 3D scene.
+ *
+ * By specifying a base name and an extension, SkyboxEntity will take care of
+ * building a TextureCubeMap to be rendered at runtime. The images in the
+ * source directory should match the pattern: \b base name + *
+ * "_posx|_posy|_posz|_negx|_negy|_negz" + extension
+ *
+ * By default the extension defaults to .png.
+ *
+ * Be sure to disable frustum culling in the FrameGraph through which the
+ * skybox rendering happens.
+ *
+ * \note Please note that you shouldn't try to render a skybox with an
+ * orthographic projection.
+ *
+ * \since 5.5
+ */
+
+/*!
  * Constructs a new Qt3DExtras::QSkyboxEntity object with \a parent as parent.
  */
 QSkyboxEntity::QSkyboxEntity(QNode *parent)
@@ -269,6 +293,11 @@ void QSkyboxEntity::setBaseName(const QString &baseName)
     Contains the base name of the Skybox.
 */
 /*!
+    \qmlproperty string QSkyboxEntity::baseName
+
+    Contains the base name of the Skybox.
+*/
+/*!
  * Returns the base name of the Skybox.
  */
 QString QSkyboxEntity::baseName() const
@@ -292,6 +321,15 @@ void QSkyboxEntity::setExtension(const QString &extension)
 
 /*!
     \property QSkyboxEntity::extension
+
+    Contains the extension of the filename for the skybox image, including the
+    leading '.'.
+
+    The default value is: .png
+*/
+
+/*!
+    \qmlproperty string QSkyboxEntity::extension
 
     Contains the extension of the filename for the skybox image, including the
     leading '.'.
@@ -336,5 +374,12 @@ bool QSkyboxEntity::isGammaCorrectEnabled() const
     \property QSkyboxEntity::gammaCorrect
 
     A boolean indicating whether gamma correction is enabled.
+    \since 5.9
+*/
+/*!
+    \qmlproperty bool QSkyboxEntity::gammaCorrect
+
+    A boolean indicating whether gamma correction is enabled.
+    \since 5.9
 */
 QT_END_NAMESPACE
