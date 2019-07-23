@@ -193,6 +193,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // Camera
     qmlRegisterType<Qt3DRender::QCamera>(uri, 2, 0, "Camera");
     qmlRegisterType<Qt3DRender::QCamera, 9>(uri, 2, 9, "Camera");
+    qmlRegisterType<Qt3DRender::QCamera, 14>(uri, 2, 14, "Camera");
     qmlRegisterType<Qt3DRender::QCameraLens>(uri, 2, 0, "CameraLens");
     qmlRegisterType<Qt3DRender::QCameraLens, 9>(uri, 2, 9, "CameraLens");
 

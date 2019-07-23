@@ -80,6 +80,9 @@ class Q_3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
     Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
     Q_PROPERTY(QMatrix4x4 viewMatrix READ viewMatrix NOTIFY viewMatrixChanged)
 
+    Q_PROPERTY(Qt3DRender::QCameraLens *lens READ lens CONSTANT REVISION 14)
+    Q_PROPERTY(Qt3DCore::QTransform *transform  READ transform CONSTANT REVISION 14)
+
 public:
     explicit QCamera(QNode *parent = nullptr);
     ~QCamera();
