@@ -1679,7 +1679,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
     // Reset state and call doneCurrent if the surface
     // is valid and was actually activated
-    if (surface && m_submissionContext->hasValidGLHelper()) {
+    if (lastUsedSurface && m_submissionContext->hasValidGLHelper()) {
         // Reset state to the default state if the last stateset is not the
         // defaultRenderStateSet
         if (m_submissionContext->currentStateSet() != m_defaultRenderStateSet)

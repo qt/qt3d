@@ -183,8 +183,8 @@ private Q_SLOTS:
         // THEN
         RenderStateNode *backend1 = createBackendNode(frontend1);
         RenderStateNode *backend2 = createBackendNode(frontend2);
-        QVERIFY(backend1->mask() == mask);
-        QVERIFY(backend2->mask() == mask);
+        QVERIFY(backend1->type() == mask);
+        QVERIFY(backend2->type() == mask);
         QVERIFY(backend1->impl() != backend2->impl());
 
         // WHEN
@@ -268,8 +268,8 @@ private Q_SLOTS:
         // THEN
         RenderStateNode *backend1 = createBackendNode(frontend1);
         RenderStateNode *backend2 = createBackendNode(frontend2);
-        QVERIFY(backend1->mask() == mask);
-        QVERIFY(backend2->mask() == mask);
+        QVERIFY(backend1->type() == mask);
+        QVERIFY(backend2->type() == mask);
         QVERIFY(backend1->impl() != backend2->impl());
 
         // WHEN
