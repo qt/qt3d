@@ -55,6 +55,10 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace {
+const auto slerpThreshold = 0.01f;
+}
+
 namespace Qt3DAnimation {
 namespace Animation {
 
@@ -270,17 +274,38 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
                     const int lowerKeyframeBound = channel.channelComponents[0].fcurve.lowerKeyframeBound(localTime);
                     const auto lowerQuat = quaternionFromChannel(lowerKeyframeBound);
                     const auto higherQuat = quaternionFromChannel(lowerKeyframeBound + 1);
-                    const float omega = std::acos(qBound(-1.0f, QQuaternion::dotProduct(lowerQuat, higherQuat), 1.0f));
-
-                    if (qFuzzyIsNull(omega)) {
-                        // If the two keyframe quaternions are equal, just return the first one as the interpolated value.
+                    auto cosHalfTheta = QQuaternion::dotProduct(lowerQuat, higherQuat);
+                    // If the two keyframe quaternions are equal, just return the first one as the interpolated value.
+                    if (std::abs(cosHalfTheta) >= 1.0f) {
                         channelResults[i++] = lowerQuat.scalar();
                         channelResults[i++] = lowerQuat.x();
                         channelResults[i++] = lowerQuat.y();
                         channelResults[i++] = lowerQuat.z();
                     } else {
-                        for (const auto &channelComponent : qAsConst(channel.channelComponents))
-                            channelResults[i++] = channelComponent.fcurve.evaluateAtTimeAsSlerp(localTime, lowerKeyframeBound, omega);
+                        const auto sinHalfTheta = std::sqrt(1.0f - std::pow(cosHalfTheta,2.0f));
+                        if (std::abs(sinHalfTheta) < ::slerpThreshold) {
+                            auto initial_i = i;
+                            for (const auto &channelComponent : qAsConst(channel.channelComponents))
+                                channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
+
+                            // Normalize the resulting quaternion
+                            QQuaternion quat{channelResults[initial_i], channelResults[initial_i+1], channelResults[initial_i+2], channelResults[initial_i+3]};
+                            quat.normalize();
+                            channelResults[initial_i+0] = quat.scalar();
+                            channelResults[initial_i+1] = quat.x();
+                            channelResults[initial_i+2] = quat.y();
+                            channelResults[initial_i+3] = quat.z();
+                        } else {
+                            const auto reverseQ1 = cosHalfTheta < 0 ? -1.0f : 1.0f;
+                            cosHalfTheta *= reverseQ1;
+                            const auto halfTheta = std::acos(cosHalfTheta);
+                            for (const auto &channelComponent : qAsConst(channel.channelComponents))
+                                channelResults[i++] = channelComponent.fcurve.evaluateAtTimeAsSlerp(localTime,
+                                                                                                    lowerKeyframeBound,
+                                                                                                    halfTheta,
+                                                                                                    sinHalfTheta,
+                                                                                                    reverseQ1);
+                        }
                     }
                 }
             }

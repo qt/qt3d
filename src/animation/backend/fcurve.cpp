@@ -97,7 +97,7 @@ float FCurve::evaluateAtTime(float localTime, int lowerBound) const
     return m_keyframes.first().value;
 }
 
-float FCurve::evaluateAtTimeAsSlerp(float localTime, int lowerBound, float omega) const
+float FCurve::evaluateAtTimeAsSlerp(float localTime, int lowerBound, float halfTheta, float sinHalfTheta, float reverseQ1) const
 {
     // TODO: Implement extrapolation beyond first/last keyframes
     if (localTime < m_localTimes.first())
@@ -119,10 +119,11 @@ float FCurve::evaluateAtTimeAsSlerp(float localTime, int lowerBound, float omega
         return keyframe0.value;
     case QKeyFrame::LinearInterpolation:
         if (localTime >= t0 && localTime <= t1 && t1 > t0) {
-            const float t = (localTime - t0) / (t1 - t0);
-            const float div = 1.0f / std::sin(omega);
-            return std::sin((1 - t) * omega) * div * keyframe0.value  +
-                    std::sin(t * omega) * div * keyframe1.value;
+            const auto t = (localTime - t0) / (t1 - t0);
+
+            const auto A = std::sin((1.0f-t) * halfTheta) / sinHalfTheta;
+            const auto B = std::sin(t * halfTheta) / sinHalfTheta;
+            return A * keyframe0.value + reverseQ1 * B * keyframe1.value;
         }
         break;
     case QKeyFrame::BezierInterpolation:
