@@ -107,6 +107,8 @@ private:
 
 typedef QSharedPointer<QMouseEvent> QMouseEventPtr;
 
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
 #if QT_CONFIG(wheelevent)
 class Q_3DINPUTSHARED_EXPORT QWheelEvent : public QObject
 {
@@ -155,6 +157,7 @@ public:
 private:
     QT_PREPEND_NAMESPACE(QWheelEvent) m_event;
 };
+QT_WARNING_POP
 
 typedef QSharedPointer<QWheelEvent> QWheelEventPtr;
 #endif
