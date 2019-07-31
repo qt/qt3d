@@ -53,6 +53,9 @@ namespace Qt3DRender
  * \instantiates Qt3DRender::QEnvironmentLight
  * \brief Encapsulate an environment light object in a Qt 3D scene.
  * \since 5.9
+ *
+ * EnvironmentLight uses cubemaps to implement image-based lighting (IBL), a technique
+ * often used in conjunction with physically-based rendering (PBR).
  */
 
 QEnvironmentLightPrivate::QEnvironmentLightPrivate()
@@ -97,6 +100,9 @@ Qt3DCore::QNodeCreatedChangeBasePtr QEnvironmentLight::createNodeCreationChange(
     \inmodule Qt3DRender
     \brief Encapsulate an environment light object in a Qt 3D scene.
     \since 5.9
+
+    EnvironmentLight uses cubemaps to implement image-based lighting (IBL), a technique
+    often used in conjunction with physically-based rendering (PBR).
 */
 
 QEnvironmentLight::QEnvironmentLight(Qt3DCore::QNode *parent)

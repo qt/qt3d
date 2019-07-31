@@ -64,6 +64,7 @@ SUBDIRS += \
     raster-cpp \
     raster-qml \
     qtbug-72236 \
+    qtbug-76766 \
     shader-image-qml
 
 qtHaveModule(multimedia): {
