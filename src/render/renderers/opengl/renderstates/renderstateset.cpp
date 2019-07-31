@@ -103,9 +103,24 @@ StateMaskSet RenderStateSet::stateMask() const
     return m_stateMask;
 }
 
+// This modifies our state to add states from others
+// if we don't already contain a state with that type set
 void RenderStateSet::merge(RenderStateSet *other)
 {
     m_stateMask |= other->stateMask();
+    const QVector<StateVariant> otherStates = other->states();
+
+    // We only add states which are new (different type)
+    for (const StateVariant &otherState : otherStates) {
+        const bool hasFoundStateOfSameType = hasStateOfType(otherState.type);
+        if (!hasFoundStateOfSameType)
+            m_states.push_back(otherState);
+    }
+}
+
+bool RenderStateSet::hasStateOfType(StateMask type) const
+{
+    return (type & stateMask());
 }
 
 bool RenderStateSet::contains(const StateVariant &ds) const

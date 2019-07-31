@@ -96,7 +96,7 @@ public:
     bool equalTo(const RenderStateImpl &renderState) const override
     {
         const GenericState *other = static_cast<const GenericState*>(&renderState);
-        return (other != NULL && other->m_values == m_values);
+        return (other != nullptr && other->m_values == m_values);
     }
 
     StateMask mask() const override

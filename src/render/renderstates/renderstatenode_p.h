@@ -65,7 +65,7 @@ public:
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
 
-    StateMaskSet mask() const { return m_impl.type; }
+    StateMask type() const { return m_impl.type; }
     StateVariant impl() const { return m_impl; }
 
 protected:
