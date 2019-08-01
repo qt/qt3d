@@ -146,7 +146,7 @@ QT_WARNING_POP
     qmlRegisterType<Qt3DExtras::QText2DEntity>(uri, 2, 9, "Text2DEntity");
 
     // Auto-increment the import to stay in sync with ALL future Qt minor versions
-    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
+    qmlRegisterModule(uri, 2, 15);
 }
 
 

@@ -54,8 +54,9 @@ void QtQuickScene2DPlugin::registerTypes(const char *uri)
 {
     qmlRegisterExtendedType<Qt3DRender::Quick::QScene2D, Qt3DRender::Render::Quick::QQuick3DScene2D>(uri, 2, 9, "Scene2D");
 
-    // Auto-increment the import to stay in sync with ALL future Qt minor versions
-    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
+    // The minor version used to be the current Qt 5 minor. For compatibility it is the last
+    // Qt 5 release.
+    qmlRegisterModule(uri, 2, 15);
 }
 
 QT_END_NAMESPACE

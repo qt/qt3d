@@ -72,7 +72,7 @@ void TestArbiter::sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e)
 
 void TestArbiter::sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e)
 {
-    events += QVector<Qt3DCore::QSceneChangePtr>::fromStdVector(e);
+    events += QVector<Qt3DCore::QSceneChangePtr>(e.begin(), e.end());
 }
 
 Qt3DCore::QAbstractPostman *TestArbiter::postman() const

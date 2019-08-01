@@ -83,8 +83,9 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 
     Qt3DCore::Quick::registerExtendedType<Qt3DCore::QJoint, Qt3DCore::Quick::Quick3DJoint>("QJoint", "Qt3D.Core/Joint", uri, 2, 10, "Joint");
 
-    // Auto-increment the import to stay in sync with ALL future Qt minor versions
-    qmlRegisterModule(uri, 2, QT_VERSION_MINOR);
+    // The minor version used to be the current Qt 5 minor. For compatibility it is the last
+    // Qt 5 release.
+    qmlRegisterModule(uri, 2, 15);
 }
 
 Qt3DQuick3DCorePlugin::~Qt3DQuick3DCorePlugin()
