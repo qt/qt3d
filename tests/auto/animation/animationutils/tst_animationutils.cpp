@@ -203,6 +203,7 @@ public:
         auto animatorId = Qt3DCore::QNodeId::createId();
         ClipAnimator *animator = handler->clipAnimatorManager()->getOrCreateResource(animatorId);
         setPeerId(animator, animatorId);
+        animator->setHandler(handler);
         animator->setStartTime(globalStartTimeNS);
         animator->setLoops(loops);
         return animator;

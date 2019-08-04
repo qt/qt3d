@@ -40,5 +40,6 @@ qtConfig(private_tests) {
         clock \
         skeleton \
         findrunningclipanimatorsjob \
+        updatepropertymapjob \
         qchannelmapping
 }

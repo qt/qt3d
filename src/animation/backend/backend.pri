@@ -29,7 +29,8 @@ HEADERS += \
     $$PWD/animationclip_p.h \
     $$PWD/clock_p.h \
     $$PWD/skeleton_p.h \
-    $$PWD/gltfimporter_p.h
+    $$PWD/gltfimporter_p.h \
+    $$PWD/updatepropertymapjob_p.h
 
 SOURCES += \
     $$PWD/handler.cpp \
@@ -56,4 +57,5 @@ SOURCES += \
     $$PWD/animationclip.cpp \
     $$PWD/clock.cpp \
     $$PWD/skeleton.cpp \
-    $$PWD/gltfimporter.cpp
+    $$PWD/gltfimporter.cpp \
+    $$PWD/updatepropertymapjob.cpp

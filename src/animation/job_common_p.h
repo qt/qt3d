@@ -65,7 +65,8 @@ enum JobType {
     EvaluateBlendClipAnimator,
     EvaluateClipAnimator,
     LoadAnimationClip,
-    FindRunningClipAnimator
+    FindRunningClipAnimator,
+    UpdatePropertyMap
 };
 
 } // JobTypes

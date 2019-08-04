@@ -55,6 +55,10 @@
 #include <QtCore/qscopedpointer.h>
 #include <QtCore/qmutex.h>
 
+#if defined(QT_BUILD_INTERNAL)
+class tst_ClipAnimator;
+#endif
+
 QT_BEGIN_NAMESPACE
 
 #if defined(QT_BUILD_INTERNAL)
@@ -79,6 +83,7 @@ class ClipBlendNodeManager;
 class SkeletonManager;
 
 class FindRunningClipAnimatorsJob;
+class UpdatePropertyMapJob;
 class LoadAnimationClipJob;
 class EvaluateClipAnimatorJob;
 class BuildBlendTreesJob;
@@ -97,6 +102,7 @@ public:
         AnimationClipDirty,
         ChannelMappingsDirty,
         ClipAnimatorDirty,
+        ClipAnimatorMapDirty,
         BlendedClipAnimatorDirty
     };
 
@@ -138,6 +144,7 @@ private:
 
     QVector<HAnimationClip> m_dirtyAnimationClips;
     QVector<HChannelMapper> m_dirtyChannelMappers;
+    QVector<HClipAnimator> m_dirtyClipAnimatorMaps;
     QVector<HClipAnimator> m_dirtyClipAnimators;
     QVector<HBlendedClipAnimator> m_dirtyBlendedAnimators;
 
@@ -146,6 +153,7 @@ private:
 
     QSharedPointer<LoadAnimationClipJob> m_loadAnimationClipJob;
     QSharedPointer<FindRunningClipAnimatorsJob> m_findRunningClipAnimatorsJob;
+    QSharedPointer<UpdatePropertyMapJob> m_updatePropertyMapJob;
     QVector<QSharedPointer<EvaluateClipAnimatorJob>> m_evaluateClipAnimatorJobs;
     QVector<EvaluateBlendClipAnimatorJobPtr> m_evaluateBlendClipAnimatorJobs;
     BuildBlendTreesJobPtr m_buildBlendTreesJob;
@@ -154,6 +162,7 @@ private:
 
 #if defined(QT_BUILD_INTERNAL)
     friend class QT_PREPEND_NAMESPACE(tst_Handler);
+    friend class ::tst_ClipAnimator;
 #endif
 };
 

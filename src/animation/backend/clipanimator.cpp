@@ -76,12 +76,14 @@ void ClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     m_loops = data.loops;
     m_normalizedLocalTime = data.normalizedTime;
     setDirty(Handler::ClipAnimatorDirty);
+    setDirty(Handler::ClipAnimatorMapDirty);
 }
 
 void ClipAnimator::setClipId(Qt3DCore::QNodeId clipId)
 {
     m_clipId = clipId;
     setDirty(Handler::ClipAnimatorDirty);
+    setDirty(Handler::ClipAnimatorMapDirty);
 
     // register at the clip to make sure we are marked dirty when the clip finished loading
     AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipId);
@@ -92,7 +94,7 @@ void ClipAnimator::setClipId(Qt3DCore::QNodeId clipId)
 void ClipAnimator::setMapperId(Qt3DCore::QNodeId mapperId)
 {
     m_mapperId = mapperId;
-    setDirty(Handler::ClipAnimatorDirty);
+    setDirty(Handler::ClipAnimatorMapDirty);
 }
 
 void ClipAnimator::setClockId(Qt3DCore::QNodeId clockId)
@@ -106,6 +108,13 @@ void ClipAnimator::setRunning(bool running)
     m_running = running;
     if (!running)
         m_currentLoop = 0;
+    setDirty(Handler::ClipAnimatorDirty);
+    setDirty(Handler::ClipAnimatorMapDirty);
+}
+
+void ClipAnimator::setLoops(int loops)
+{
+    m_loops = loops;
     setDirty(Handler::ClipAnimatorDirty);
 }
 
@@ -143,7 +152,7 @@ void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (change->propertyName() == QByteArrayLiteral("running"))
             setRunning(change->value().toBool());
         else if (change->propertyName() == QByteArrayLiteral("loops"))
-            m_loops = change->value().toInt();
+            setLoops(change->value().toInt());
         else if (change->propertyName() == QByteArrayLiteral("normalizedTime"))
             setNormalizedLocalTime(change->value().toFloat());
         break;

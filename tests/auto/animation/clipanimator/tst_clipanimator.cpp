@@ -28,9 +28,12 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/clipanimator_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/handle_types_p.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/qclock.h>
+#include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -69,6 +72,9 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.isRunning(), animator.isRunning());
         QCOMPARE(backendAnimator.loops(), animator.loopCount());
         QCOMPARE(backendAnimator.normalizedLocalTime(), animator.normalizedTime());
+
+        QCOMPARE(handler.m_dirtyClipAnimators.size(), 1);
+        QCOMPARE(handler.m_dirtyClipAnimatorMaps.size(), 1);
     }
 
     void checkInitialAndCleanedUpState()
@@ -120,6 +126,8 @@ private Q_SLOTS:
         backendAnimator.setHandler(&handler);
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
+        handler.clipAnimatorManager()->getOrAcquireHandle(backendAnimator.peerId());
+
         // WHEN
         updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
         updateChange->setPropertyName("enabled");
@@ -135,9 +143,13 @@ private Q_SLOTS:
         updateChange->setPropertyName("clip");
         updateChange->setValue(QVariant::fromValue(newClip->id()));
         backendAnimator.sceneChangeEvent(updateChange);
-
         // THEN
         QCOMPARE(backendAnimator.clipId(), newClip->id());
+        QCOMPARE(handler.m_dirtyClipAnimators.size(), 1);
+        QCOMPARE(handler.m_dirtyClipAnimatorMaps.size(), 1);
+
+        handler.m_dirtyClipAnimators.clear();
+        handler.m_dirtyClipAnimatorMaps.clear();
 
         // WHEN
         auto clock = new Qt3DAnimation::QClock();
@@ -148,6 +160,24 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAnimator.clockId(), clock->id());
+        QCOMPARE(handler.m_dirtyClipAnimators.size(), 1);
+        QCOMPARE(handler.m_dirtyClipAnimatorMaps.size(), 0);
+
+        handler.m_dirtyClipAnimators.clear();
+
+        // WHEN
+        auto mapper = new Qt3DAnimation::QChannelMapper();
+        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
+        updateChange->setPropertyName("channelMapper");
+        updateChange->setValue(QVariant::fromValue(mapper->id()));
+        backendAnimator.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(backendAnimator.mapperId(), mapper->id());
+        QCOMPARE(handler.m_dirtyClipAnimators.size(), 0);
+        QCOMPARE(handler.m_dirtyClipAnimatorMaps.size(), 1);
+
+        handler.m_dirtyClipAnimatorMaps.clear();
 
         // WHEN
         updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
@@ -157,6 +187,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAnimator.isRunning(), true);
+        QCOMPARE(handler.m_dirtyClipAnimators.size(), 1);
+        QCOMPARE(handler.m_dirtyClipAnimatorMaps.size(), 1);
+
+        handler.m_dirtyClipAnimators.clear();
+        handler.m_dirtyClipAnimatorMaps.clear();
 
         // WHEN
         updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
@@ -166,6 +201,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAnimator.loops(), 64);
+        QCOMPARE(handler.m_dirtyClipAnimators.size(), 1);
+        QCOMPARE(handler.m_dirtyClipAnimatorMaps.size(), 0);
+
+        handler.m_dirtyClipAnimators.clear();
 
         // WHEN
         updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
@@ -175,6 +214,10 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(qFuzzyCompare(backendAnimator.normalizedLocalTime(), 0.5f));
+        QCOMPARE(handler.m_dirtyClipAnimators.size(), 1);
+        QCOMPARE(handler.m_dirtyClipAnimatorMaps.size(), 0);
+
+        handler.m_dirtyClipAnimators.clear();
     }
 };
 

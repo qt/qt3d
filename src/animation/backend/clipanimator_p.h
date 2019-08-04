@@ -75,7 +75,7 @@ public:
 
     void setRunning(bool running);
     bool isRunning() const { return m_running; }
-    void setLoops(int loops) { m_loops = loops; }
+    void setLoops(int loops);
     int loops() const { return m_loops; }
     void setNormalizedLocalTime(float normalizedLocalTime);
     float normalizedLocalTime() const { return m_normalizedLocalTime; }

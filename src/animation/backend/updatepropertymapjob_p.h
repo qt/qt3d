@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_FINDRUNNINGCLIPANIMATORSJOB_P_H
-#define QT3DANIMATION_ANIMATION_FINDRUNNINGCLIPANIMATORSJOB_P_H
+#ifndef QT3DANIMATION_ANIMATION_UPDATEPROPERTYMAPJOB_P_H
+#define QT3DANIMATION_ANIMATION_UPDATEPROPERTYMAPJOB_P_H
 
 //
 //  W A R N I N G
@@ -52,11 +52,6 @@
 #include <Qt3DAnimation/private/handle_types_p.h>
 #include <QtCore/qvector.h>
 
-#if defined(QT_BUILD_INTERNAL)
-class tst_FindRunningClipAnimatorsJob;
-class tst_UpdatePropertyMapJob;
-#endif
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
@@ -64,32 +59,24 @@ namespace Animation {
 
 class Handler;
 
-class Q_AUTOTEST_EXPORT FindRunningClipAnimatorsJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT UpdatePropertyMapJob : public Qt3DCore::QAspectJob
 {
 public:
-    FindRunningClipAnimatorsJob();
+    UpdatePropertyMapJob();
 
-    void setHandler(Handler *handler) { m_handler = handler; }
-    Handler *handler() const { return m_handler; }
+    void setHandler(Handler *handler);
+    void setDirtyClipAnimators(const QVector<HClipAnimator> &clipAnimators);
 
-    void setDirtyClipAnimators(const QVector<HClipAnimator> &animationClipHandles);
-
-protected:
     void run() override;
 
 private:
     QVector<HClipAnimator> m_clipAnimatorHandles;
     Handler *m_handler;
-
-#if defined(QT_BUILD_INTERNAL)
-    friend class ::tst_FindRunningClipAnimatorsJob;
-    friend class ::tst_UpdatePropertyMapJob;
-#endif
 };
 
-} // namespace Animation
-} // namespace Qt3DAnimation
+} // Animation
+} // Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_FINDRUNNINGCLIPANIMATORSJOB_P_H
+#endif // QT3DANIMATION_ANIMATION_UPDATEPROPERTYMAPJOB_P_H

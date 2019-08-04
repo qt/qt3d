@@ -72,37 +72,6 @@ void FindRunningClipAnimatorsJob::run()
         const bool running = clipAnimator->isRunning();
         const bool seeking = clipAnimator->isSeeking();
         m_handler->setClipAnimatorRunning(clipAnimatorHandle, canRun && (seeking || running));
-
-        // TODO: Actually check if this is needed first, currently we re-build this every time
-        // canRun (or the normalized time) is true.
-        if (!canRun || !(seeking || running))
-            continue;
-
-        // The clip animator needs to know how to map fcurve values through to properties on QNodes.
-        // Now we know this animator can run, build the mapping table. Even though this could be
-        // done a little simpler in the non-blended case, we follow the same code path as the
-        // blended clip animator for consistency and ease of maintenance.
-        const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(clipAnimator->mapperId());
-        Q_ASSERT(mapper);
-        const QVector<ChannelMapping *> channelMappings = mapper->mappings();
-
-        const QVector<ChannelNameAndType> channelNamesAndTypes
-                = buildRequiredChannelsAndTypes(m_handler, mapper);
-        const QVector<ComponentIndices> channelComponentIndices
-                = assignChannelComponentIndices(channelNamesAndTypes);
-
-        const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
-        Q_ASSERT(clip);
-        const ClipFormat format = generateClipFormatIndices(channelNamesAndTypes,
-                                                            channelComponentIndices,
-                                                            clip);
-        clipAnimator->setClipFormat(format);
-
-        const QVector<MappingData> mappingData = buildPropertyMappings(channelMappings,
-                                                                       channelNamesAndTypes,
-                                                                       format.formattedComponentIndices,
-                                                                       format.sourceClipMask);
-        clipAnimator->setMappingData(mappingData);
     }
 
     qCDebug(Jobs) << "Running clip animators =" << m_handler->runningClipAnimators();

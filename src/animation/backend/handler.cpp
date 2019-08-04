@@ -38,6 +38,7 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/loadanimationclipjob_p.h>
 #include <Qt3DAnimation/private/findrunningclipanimatorsjob_p.h>
+#include <Qt3DAnimation/private/updatepropertymapjob_p.h>
 #include <Qt3DAnimation/private/evaluateclipanimatorjob_p.h>
 #include <Qt3DAnimation/private/buildblendtreesjob_p.h>
 #include <Qt3DAnimation/private/evaluateblendclipanimatorjob_p.h>
@@ -61,12 +62,14 @@ Handler::Handler()
     , m_skeletonManager(new SkeletonManager)
     , m_loadAnimationClipJob(new LoadAnimationClipJob)
     , m_findRunningClipAnimatorsJob(new FindRunningClipAnimatorsJob)
+    , m_updatePropertyMapJob(new UpdatePropertyMapJob)
     , m_buildBlendTreesJob(new BuildBlendTreesJob)
     , m_simulationTime(0)
 {
     m_loadAnimationClipJob->setHandler(this);
     m_findRunningClipAnimatorsJob->setHandler(this);
     m_buildBlendTreesJob->setHandler(this);
+    m_updatePropertyMapJob->setHandler(this);
 }
 
 Handler::~Handler()
@@ -94,6 +97,13 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
         QMutexLocker lock(&m_mutex);
         const auto handle = m_clipAnimatorManager->lookupHandle(nodeId);
         m_dirtyClipAnimators.push_back(handle);
+        break;
+    }
+
+    case ClipAnimatorMapDirty: {
+        QMutexLocker lock(&m_mutex);
+        const auto handle = m_clipAnimatorManager->lookupHandle(nodeId);
+        m_dirtyClipAnimatorMaps.push_back(handle);
         break;
     }
 
@@ -217,6 +227,18 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
         m_dirtyClipAnimators.clear();
     }
 
+    const bool hasUpdatePropertyMapJob = !m_dirtyClipAnimatorMaps.isEmpty();
+    if (hasUpdatePropertyMapJob) {
+        qCDebug(HandlerLogic) << "Added UpdatePropertyMapJob";
+        cleanupHandleList(&m_dirtyClipAnimatorMaps);
+        m_updatePropertyMapJob->setDirtyClipAnimators(m_dirtyClipAnimatorMaps);
+        m_updatePropertyMapJob->removeDependency(QWeakPointer<Qt3DCore::QAspectJob>());
+        jobs.push_back(m_updatePropertyMapJob);
+        if (hasFindRunningClipAnimatorsJob)
+            m_updatePropertyMapJob->addDependency(m_findRunningClipAnimatorsJob);
+        m_dirtyClipAnimatorMaps.clear();
+    }
+
     // Rebuild blending trees if a blend tree is dirty
     const bool hasBuildBlendTreesJob = !m_dirtyBlendedAnimators.isEmpty();
     if (hasBuildBlendTreesJob) {
@@ -255,6 +277,10 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
             if (hasFindRunningClipAnimatorsJob &&
                     !m_evaluateClipAnimatorJobs[i]->dependencies().contains(m_findRunningClipAnimatorsJob))
                 m_evaluateClipAnimatorJobs[i]->addDependency(m_findRunningClipAnimatorsJob);
+
+            if (hasUpdatePropertyMapJob &&
+                    !m_evaluateClipAnimatorJobs[i]->dependencies().contains(m_updatePropertyMapJob))
+                m_evaluateClipAnimatorJobs[i]->addDependency(m_updatePropertyMapJob);
             jobs.push_back(m_evaluateClipAnimatorJobs[i]);
         }
     }
