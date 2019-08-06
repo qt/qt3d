@@ -37,6 +37,7 @@
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include "testpostmanarbiter.h"
 
@@ -1099,28 +1100,6 @@ private Q_SLOTS:
     {
         {
             // GIVEN
-            FakeTexture abstractTexture;
-            Qt3DRender::QTextureDataUpdate update;
-
-            // WHEN
-            abstractTexture.updateData(update);
-
-            // THEN (no arbiter -> should be stored in the initial changes)
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&abstractTexture);
-            const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-            QCOMPARE(creationChanges.size(), 1);
-            const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QAbstractTextureData>>(creationChanges.first());
-
-            QVERIFY(typedChange);
-            const Qt3DRender::QAbstractTextureData data = typedChange->data;
-
-            QCOMPARE(data.initialDataUpdates.size(), 1);
-            QVERIFY(data.initialDataUpdates.contains(update));
-        }
-
-        {
-            // GIVEN
             TestArbiter arbiter;
             FakeTexture abstractTexture;
             Qt3DRender::QTextureDataUpdate update;
@@ -1131,23 +1110,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN (arbiter -> should not be stored in the initial changes but only send as a property change)
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&abstractTexture);
-            const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-            QCOMPARE(creationChanges.size(), 1);
-            const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QAbstractTextureData>>(creationChanges.first());
-
-            QVERIFY(typedChange);
-            const Qt3DRender::QAbstractTextureData data = typedChange->data;
-
-            QCOMPARE(data.initialDataUpdates.size(), 0);
-
-            // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "updateData");
-            QCOMPARE(change->value().value<Qt3DRender::QTextureDataUpdate>(), update);
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            auto d = static_cast<Qt3DRender::QAbstractTexturePrivate*>(Qt3DRender::QAbstractTexturePrivate::get(&abstractTexture));
+            QCOMPARE(d->m_pendingDataUpdates.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &abstractTexture);
         }
     }
 

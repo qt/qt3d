@@ -255,12 +255,7 @@ void QAbstractTextureImage::setFace(QAbstractTexture::CubeMapFace face)
 void QAbstractTextureImage::notifyDataGeneratorChanged()
 {
     Q_D(QAbstractTextureImage);
-    if (d->m_changeArbiter != nullptr) {
-        auto change = QPropertyUpdatedChangePtr::create(d->m_id);
-        change->setPropertyName("dataGenerator");
-        change->setValue(QVariant::fromValue(dataGenerator()));
-        d->notifyObservers(change);
-    }
+    d->update();
 }
 
 /*! \internal */
