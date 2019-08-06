@@ -55,6 +55,7 @@
 #include <QtCore/qsize.h>
 #include <QtCore/QMutex>
 #include <QtCore/QSemaphore>
+#include <scene3ditem_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -70,7 +71,6 @@ namespace Qt3DRender {
 
 class QRenderAspect;
 class Scene3DCleaner;
-class Scene3DItem;
 class Scene3DSGNode;
 
 class Scene3DRenderer : public QObject
@@ -85,6 +85,7 @@ public:
     void setSGNode(Scene3DSGNode *node);
     void setCleanerHelper(Scene3DCleaner *cleaner);
     void allowRender();
+    void setCompositingMode(Scene3DItem::CompositingMode mode);
 
 public Q_SLOTS:
     void render();
@@ -115,6 +116,7 @@ private:
     bool m_forceRecreate;
     bool m_shouldRender;
     QSemaphore m_allowRendering;
+    Scene3DItem::CompositingMode m_compositingMode;
 
     friend class Scene3DCleaner;
 };

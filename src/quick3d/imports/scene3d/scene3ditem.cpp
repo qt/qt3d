@@ -132,7 +132,10 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
     , m_dirty(true)
+    , m_clearsWindowByDefault(true)
+    , m_disableClearWindow(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
+    , m_compositingMode(FBO)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
@@ -140,6 +143,11 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
 
     // Use manual drive mode when using Scene3D
     m_aspectEngine->setRunMode(Qt3DCore::QAspectEngine::Manual);
+
+    // Give a default size so that if nothing is specified by the user
+    // we still won't get ignored by the QtQuick SG when in Underlay mode
+    setWidth(1);
+    setHeight(1);
 }
 
 Scene3DItem::~Scene3DItem()
@@ -246,6 +254,45 @@ void Scene3DItem::setHoverEnabled(bool enabled)
 }
 
 /*!
+    \qmlproperty enumeration Scene3D::compositingMode
+
+    \value FBO
+           Scene is rendered into a Frame Buffer Object which can be costly on
+           some platform and hardware but allows a greater amount of
+           flexibility. Automatic aspect ratio. This is the compositing mode to
+           choose if your Scene3D element shouldn't occupy the entire screen
+           and if you optionally plan on having it resized or animated. In this
+           mode, the position of the Scene3D in the QML file controls its
+           stacking order with regard to the other Qt Quick elements.
+
+    \value Underlay
+           Suitable for full screen 3D scenes where using an FBO might be too
+           resource intensive. Scene3D behaves as a QtQuick underlay.
+
+           Please note that when using this mode, the size of the Scene3D and
+           its transformations are ignored and the rendering will occupy the
+           whole screen. The position of the Scene3D in the QML file won't have
+           any effect either. The Qt 3D content will be drawn prior to any Qt
+           Quick content. Care has to be taken not to overdraw and hide the Qt
+           3D content by overlapping Qt Quick content.
+
+           Additionally when using this mode, the window clearBeforeRendering
+           will be set to false automatically.
+
+    \since 5.14
+    \default FBO
+ */
+void Scene3DItem::setCompositingMode(Scene3DItem::CompositingMode mode)
+{
+    if (m_compositingMode == mode)
+        return;
+    m_compositingMode = mode;
+    emit compositingModeChanged();
+
+    QQuickItem::update();
+}
+
+/*!
     \qmlproperty enumeration Scene3D::cameraAspectRatioMode
 
     \value Scene3D.AutomaticAspectRatio
@@ -258,6 +305,11 @@ void Scene3DItem::setHoverEnabled(bool enabled)
 Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
 {
     return m_cameraAspectRatioMode;
+}
+
+Scene3DItem::CompositingMode Scene3DItem::compositingMode() const
+{
+    return m_compositingMode;
 }
 
 void Scene3DItem::applyRootEntityChange()
@@ -351,7 +403,13 @@ void Scene3DItem::onBeforeSync()
         m_renderer->allowRender();
 
     // Request refresh for next frame
-    QQuickItem::update();
+
+    // When using the FBO mode, only the QQuickItem needs to be updated
+    // When using the Underlay mode, the whole windows needs updating
+    if (m_compositingMode == FBO)
+        QQuickItem::update();
+    else
+        window()->update();
 }
 
 void Scene3DItem::setWindowSurface(QObject *rootObject)
@@ -474,13 +532,35 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
         m_renderer->setCleanerHelper(m_rendererCleaner);
     }
+    m_renderer->setCompositingMode(m_compositingMode);
 
     Scene3DSGNode *fboNode = static_cast<Scene3DSGNode *>(node);
-    if (fboNode == nullptr) {
-        fboNode = new Scene3DSGNode();
-        m_renderer->setSGNode(fboNode);
+    const bool usesFBO = m_compositingMode == FBO;
+    if (usesFBO) {
+        if (fboNode == nullptr) {
+            fboNode = new Scene3DSGNode();
+            m_renderer->setSGNode(fboNode);
+        }
+        fboNode->setRect(boundingRect());
+
+        // Reset clear flag if we've set it to false it's still set to that
+        if (m_disableClearWindow && !window()->clearBeforeRendering())
+            window()->setClearBeforeRendering(m_clearsWindowByDefault);
+        m_disableClearWindow = false;
+    } else {
+        // In FBOLess node the Scene3DItem doesn't have any QSGNode to actually
+        // manager
+        if (fboNode != nullptr) {
+            delete fboNode;
+            fboNode = nullptr;
+            m_renderer->setSGNode(fboNode);
+        }
+        // Record clearBeforeRendering value before we force it to false
+        m_clearsWindowByDefault = window()->clearBeforeRendering();
+        m_disableClearWindow = true;
+        if (m_clearsWindowByDefault)
+            window()->setClearBeforeRendering(false);
     }
-    fboNode->setRect(boundingRect());
 
     return fboNode;
 }
