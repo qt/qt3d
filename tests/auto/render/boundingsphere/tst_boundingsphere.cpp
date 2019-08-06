@@ -366,7 +366,7 @@ private Q_SLOTS:
         Qt3DRender::Render::GeometryRenderer *grBackend = test->nodeManagers()->geometryRendererManager()->getOrCreateResource(gr->id());
         grBackend->setRenderer(test->renderer());
         grBackend->setManager(test->nodeManagers()->geometryRendererManager());
-        simulateInitialization(gr, grBackend);
+        simulateInitializationSync(gr, grBackend);
 
         Qt3DRender::Render::Entity *entityBackend = test->nodeManagers()->renderNodesManager()->getOrCreateResource(entity->id());
         entityBackend->setRenderer(test->renderer());
@@ -457,7 +457,7 @@ private Q_SLOTS:
         Qt3DRender::Render::GeometryRenderer *grBackend = test->nodeManagers()->geometryRendererManager()->getOrCreateResource(gr->id());
         grBackend->setRenderer(test->renderer());
         grBackend->setManager(test->nodeManagers()->geometryRendererManager());
-        simulateInitialization(gr, grBackend);
+        simulateInitializationSync(gr, grBackend);
 
         Qt3DRender::Render::Entity *entityBackend = test->nodeManagers()->renderNodesManager()->getOrCreateResource(entity->id());
         entityBackend->setRenderer(test->renderer());

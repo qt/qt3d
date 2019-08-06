@@ -480,12 +480,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
     if (factory && d->m_geometryFactory && *factory == *d->m_geometryFactory)
         return;
     d->m_geometryFactory = factory;
-    if (d->m_changeArbiter != nullptr) {
-        auto change = QPropertyUpdatedChangePtr::create(d->m_id);
-        change->setPropertyName("geometryFactory");
-        change->setValue(QVariant::fromValue(d->m_geometryFactory));
-        d->notifyObservers(change);
-    }
+    d->update();
 }
 
 /*!

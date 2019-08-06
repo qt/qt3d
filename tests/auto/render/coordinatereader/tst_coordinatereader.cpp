@@ -101,7 +101,7 @@ private Q_SLOTS:
                                             ->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer, QString(""));
@@ -178,7 +178,7 @@ private Q_SLOTS:
                                             ->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer,
@@ -261,7 +261,7 @@ private Q_SLOTS:
                                             ->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer,
@@ -355,7 +355,7 @@ private Q_SLOTS:
                                             ->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer,
@@ -459,7 +459,7 @@ private Q_SLOTS:
                                             ->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer,

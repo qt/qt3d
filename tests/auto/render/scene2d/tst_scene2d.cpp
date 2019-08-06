@@ -320,7 +320,7 @@ private Q_SLOTS:
                                             ->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer, backendRenderer);
+        simulateInitializationSync(geometryRenderer, backendRenderer);
 
         Entity *backendEntity = nodeManagers->renderNodesManager()->getOrCreateResource(entity->id());
         backendEntity->setRenderer(&renderer);

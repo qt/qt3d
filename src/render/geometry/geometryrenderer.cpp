@@ -105,95 +105,47 @@ void GeometryRenderer::setManager(GeometryRendererManager *manager)
     m_manager = manager;
 }
 
-void GeometryRenderer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void GeometryRenderer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QGeometryRendererData>>(change);
-    const auto &data = typedChange->data;
-    m_geometryId = data.geometryId;
-    m_instanceCount = data.instanceCount;
-    m_vertexCount = data.vertexCount;
-    m_indexOffset = data.indexOffset;
-    m_firstInstance = data.firstInstance;
-    m_firstVertex = data.firstVertex;
-    m_indexBufferByteOffset = data.indexBufferByteOffset;
-    m_restartIndexValue = data.restartIndexValue;
-    m_verticesPerPatch = data.verticesPerPatch;
-    m_primitiveRestartEnabled = data.primitiveRestart;
-    m_primitiveType = data.primitiveType;
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QGeometryRenderer *node = qobject_cast<const QGeometryRenderer *>(frontEnd);
+    if (!node)
+        return;
 
-    Q_ASSERT(m_manager);
-    m_geometryFactory = data.geometryFactory;
-    if (m_geometryFactory)
-        m_manager->addDirtyGeometryRenderer(peerId());
-
-    m_dirty = true;
-    markDirty(AbstractRenderer::GeometryDirty);
-}
-
-void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyUpdated: {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-
-        if (propertyName == QByteArrayLiteral("instanceCount")) {
-            m_instanceCount = propertyChange->value().value<int>();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("vertexCount")) {
-            m_vertexCount = propertyChange->value().value<int>();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("indexOffset")) {
-            m_indexOffset = propertyChange->value().value<int>();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("firstInstance")) {
-            m_firstInstance = propertyChange->value().value<int>();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("firstVertex")) {
-            m_firstVertex = propertyChange->value().value<int>();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("indexBufferByteOffset")) {
-            m_indexBufferByteOffset = propertyChange->value().value<int>();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("restartIndexValue")) {
-            m_restartIndexValue = propertyChange->value().value<int>();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("verticesPerPatch")) {
-            m_verticesPerPatch = propertyChange->value().value<int>();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("primitiveRestartEnabled")) {
-            m_primitiveRestartEnabled = propertyChange->value().toBool();
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("primitiveType")) {
-            m_primitiveType = static_cast<QGeometryRenderer::PrimitiveType>(propertyChange->value().value<int>());
-            m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("geometryFactory")) {
-            QGeometryFactoryPtr newFunctor = propertyChange->value().value<QGeometryFactoryPtr>();
-            const bool functorDirty = ((m_geometryFactory && !newFunctor)
-                                    || (!m_geometryFactory && newFunctor)
-                                    || (m_geometryFactory && newFunctor && !(*newFunctor == *m_geometryFactory)));
-            m_dirty |= functorDirty;
-            if (functorDirty) {
-                m_geometryFactory = newFunctor;
-                if (m_geometryFactory && m_manager != nullptr)
-                    m_manager->addDirtyGeometryRenderer(peerId());
-            }
-        } else if (propertyName == QByteArrayLiteral("geometry")) {
-            m_geometryId = propertyChange->value().value<Qt3DCore::QNodeId>();
-            m_dirty = true;
-        }
-        break;
-    }
-
-    default:
-        break;
+    m_dirty |= m_instanceCount != node->instanceCount();
+    m_instanceCount = node->instanceCount();
+    m_dirty |= m_vertexCount != node->vertexCount();
+    m_vertexCount = node->vertexCount();
+    m_dirty |= m_indexOffset != node->indexOffset();
+    m_indexOffset = node->indexOffset();
+    m_dirty |= m_firstInstance != node->firstInstance();
+    m_firstInstance = node->firstInstance();
+    m_dirty |= m_firstVertex != node->firstVertex();
+    m_firstVertex = node->firstVertex();
+    m_dirty |= m_indexBufferByteOffset != node->indexBufferByteOffset();
+    m_indexBufferByteOffset = node->indexBufferByteOffset();
+    m_dirty |= m_restartIndexValue != node->restartIndexValue();
+    m_restartIndexValue = node->restartIndexValue();
+    m_dirty |= m_verticesPerPatch != node->verticesPerPatch();
+    m_verticesPerPatch = node->verticesPerPatch();
+    m_dirty |= m_primitiveRestartEnabled != node->primitiveRestartEnabled();
+    m_primitiveRestartEnabled = node->primitiveRestartEnabled();
+    m_dirty |= m_primitiveType != node->primitiveType();
+    m_primitiveType = node->primitiveType();
+    m_dirty |= (node->geometry() && m_geometryId != node->geometry()->id()) || (!node->geometry() && !m_geometryId.isNull());
+    m_geometryId = node->geometry() ? node->geometry()->id() : Qt3DCore::QNodeId();
+    QGeometryFactoryPtr newFunctor = node->geometryFactory();
+    const bool functorDirty = ((m_geometryFactory && !newFunctor)
+                               || (!m_geometryFactory && newFunctor)
+                               || (m_geometryFactory && newFunctor && !(*newFunctor == *m_geometryFactory)));
+    if (functorDirty) {
+        m_dirty = true;
+        m_geometryFactory = newFunctor;
+        if (m_geometryFactory && m_manager != nullptr)
+            m_manager->addDirtyGeometryRenderer(peerId());
     }
 
     markDirty(AbstractRenderer::GeometryDirty);
-
-    BackendNode::sceneChangeEvent(e);
-
-    // Add to dirty list in manager
 }
 
 void GeometryRenderer::executeFunctor()
