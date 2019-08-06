@@ -64,7 +64,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     A Qt3DRender::QSortPolicy class stores the sorting type used by the FrameGraph.
     The sort types determine how drawable entities are sorted before drawing to
     determine the drawing order. When QSortPolicy is present in the FrameGraph,
-    the sorting mechanism is determined by the SortTypes list. Multiple sort types
+    the sorting mechanism is determined by the sortTypes list. Multiple sort types
     can be used simultaneously. If QSortPolicy is not present in the FrameGraph,
     entities are drawn in the order they appear in the entity hierarchy.
  */
@@ -80,7 +80,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     A SortPolicy class stores the sorting type used by the FrameGraph.
     The sort types determine how drawable entities are sorted before drawing to
     determine the drawing order. When SortPolicy is present in the FrameGraph,
-    the sorting mechanism is determined by the SortTypes list. Multiple sort
+    the sorting mechanism is determined by the sortTypes list. Multiple sort
     types can be used simultaneously. If SortPolicy is not present in the FrameGraph,
     entities are drawn in the order they appear in the entity hierarchy.
  */
@@ -110,8 +110,21 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 */
 
 /*!
-    \qmlproperty QVariantList SortPolicy::sortTypes
+    \qmlproperty list<int> SortPolicy::sortTypes
     Specifies the sorting types to be used.
+
+    This list can include the following values:
+    \list
+    \li StateChangeCost - sort the objects so as to minimize the cost of
+        changing from the currently rendered state
+    \li BackToFront - sort the objects from back to front based on inverted z
+        order. More accurately, the sorting key is the z component of the
+        projection of the camera-to-object-center vector onto the camera's view
+        vector.
+    \li Material - sort the objects based on their material value
+    \li FrontToBack - sort the objects from front to back. The opposite of
+        BackToFront.
+    \endlist
 */
 
 /*!
