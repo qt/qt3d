@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2016 Paul Lemire
+** Copyright (C) 2019 Ford Motor Company
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -38,60 +37,21 @@
 **
 ****************************************************************************/
 
-#include "framegraphvisitor_p.h"
-
-#include "framegraphnode_p.h"
-#include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DRender/private/managers_p.h>
-#include <QThreadPool>
+#include "subtreeenabler_p.h"
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
+
 namespace Render {
 
-FrameGraphVisitor::FrameGraphVisitor(const FrameGraphManager *manager)
-    : m_manager(manager)
+SubtreeEnabler::SubtreeEnabler()
+    : FrameGraphNode(FrameGraphNode::SubtreeEnabler)
 {
-    m_leaves.reserve(8);
 }
 
-QVector<FrameGraphNode *> FrameGraphVisitor::traverse(FrameGraphNode *root)
-{
-    m_leaves.clear();
+} //Render
 
-    Q_ASSERT_X(root, Q_FUNC_INFO, "The FrameGraphRoot is null");
-
-    // Kick off the traversal
-    Render::FrameGraphNode *node = root;
-    if (node == nullptr)
-        qCritical() << Q_FUNC_INFO << "FrameGraph is null";
-    visit(node);
-    return m_leaves;
-}
-
-void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
-{
-    if (node->nodeType() == Render::FrameGraphNode::SubtreeEnabler && !node->isEnabled())
-        return;
-
-    // Recurse to children (if we have any), otherwise if this is a leaf node,
-    // initiate a rendering from the current camera
-    const QVector<Qt3DCore::QNodeId> fgChildIds = node->childrenIds();
-
-    for (const Qt3DCore::QNodeId fgChildId : fgChildIds)
-        visit(m_manager->lookupNode(fgChildId));
-
-    // Leaf node - create a RenderView ready to be populated
-    // TODO: Pass in only framegraph config that has changed from previous
-    // index RenderViewJob.
-    if (fgChildIds.empty())
-        m_leaves.push_back(node);
-}
-
-} // namespace Render
-} // namespace Qt3DRender
+} //Qt3DRender
 
 QT_END_NAMESPACE

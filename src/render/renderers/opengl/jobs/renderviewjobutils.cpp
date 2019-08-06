@@ -180,9 +180,9 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 break;
             }
 
-            case FrameGraphNode::SubtreeSelector:
-                // Has no meaning here. SubtreeSelector was used
-                // in a prior step to build the list of RenderViewJobs
+            case FrameGraphNode::SubtreeEnabler:
+                // Has no meaning here. SubtreeEnabler was used
+                // in a prior step to filter the list of RenderViewJobs
                 break;
 
             case FrameGraphNode::StateSet: {

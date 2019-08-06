@@ -66,7 +66,9 @@ HEADERS += \
     $$PWD/setfence_p.h \
     $$PWD/waitfence_p.h \
     $$PWD/qnopicking.h \
-    $$PWD/nopicking_p.h
+    $$PWD/nopicking_p.h \
+    $$PWD/qsubtreeenabler.h \
+    $$PWD/subtreeenabler_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -114,4 +116,6 @@ SOURCES += \
     $$PWD/setfence.cpp \
     $$PWD/waitfence.cpp \
     $$PWD/qnopicking.cpp \
-    $$PWD/nopicking.cpp
+    $$PWD/nopicking.cpp \
+    $$PWD/qsubtreeenabler.cpp \
+    $$PWD/subtreeenabler.cpp

@@ -91,6 +91,7 @@
 #include <Qt3DRender/qsetfence.h>
 #include <Qt3DRender/qwaitfence.h>
 #include <Qt3DRender/qshaderimage.h>
+#include <Qt3DRender/qsubtreeenabler.h>
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qskeletonloader.h>
@@ -148,6 +149,7 @@
 #include <Qt3DRender/private/memorybarrier_p.h>
 #include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/private/blitframebuffer_p.h>
+#include <Qt3DRender/private/subtreeenabler_p.h>
 #include <Qt3DRender/private/armature_p.h>
 #include <Qt3DRender/private/skeleton_p.h>
 #include <Qt3DRender/private/joint_p.h>
@@ -308,6 +310,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QSetFence>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SetFence, QSetFence> >::create(m_renderer));
     q->registerBackendType<QWaitFence>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::WaitFence, QWaitFence> >::create(m_renderer));
     q->registerBackendType<QNoPicking>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::NoPicking, QNoPicking> >::create(m_renderer));
+    q->registerBackendType<QSubtreeEnabler>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SubtreeEnabler, QSubtreeEnabler> >::create(m_renderer));
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
@@ -381,6 +384,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QMemoryBarrier>();
     unregisterBackendType<QSetFence>();
     unregisterBackendType<QWaitFence>();
+    unregisterBackendType<QSubtreeEnabler>();
 
     // Picking
     unregisterBackendType<QObjectPicker>();
