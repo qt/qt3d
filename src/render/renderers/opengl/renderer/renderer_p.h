@@ -182,7 +182,7 @@ public:
     void releaseGraphicsResources() override;
 
     void render() override;
-    void doRender() override;
+    void doRender(bool swapBuffers = true) override;
     void cleanGraphicsResources() override;
 
     bool isRunning() const override { return m_running.load(); }
@@ -422,6 +422,7 @@ private:
 
     QMetaObject::Connection m_contextConnection;
     RendererCache m_cache;
+    bool m_shouldSwapBuffers;
 };
 
 } // namespace Render

@@ -203,6 +203,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_syncLoadingJobs(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncLoadingJobs))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
+    , m_shouldSwapBuffers(true)
     #if QT_CONFIG(qt3d_profile_jobs)
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
@@ -627,7 +628,9 @@ void Renderer::render()
     }
 }
 
-void Renderer::doRender()
+// Either called by render if Qt3D is in charge of the RenderThread
+// or by QRenderAspectPrivate::renderSynchronous (for Scene3D)
+void Renderer::doRender(bool swapBuffers)
 {
     Renderer::ViewSubmissionResultData submissionData;
     bool hasCleanedQueueAndProceeded = false;
@@ -636,6 +639,7 @@ void Renderer::doRender()
 
     // Blocking until RenderQueue is full
     const bool canSubmit = isReadyToSubmit();
+    m_shouldSwapBuffers = swapBuffers;
 
     // Lock the mutex to protect access to the renderQueue while we look for its state
     QMutexLocker locker(m_renderQueue->mutex());
@@ -765,7 +769,10 @@ void Renderer::doRender()
     if (beganDrawing) {
         SurfaceLocker surfaceLock(submissionData.surface);
         // Finish up with last surface used in the list of RenderViews
-        m_submissionContext->endDrawing(submissionData.lastBoundFBOId == m_submissionContext->defaultFBO() && surfaceLock.isSurfaceValid());
+        const bool swapBuffers = submissionData.lastBoundFBOId == m_submissionContext->defaultFBO()
+                && surfaceLock.isSurfaceValid()
+                && m_shouldSwapBuffers;
+        m_submissionContext->endDrawing(swapBuffers);
     }
 }
 
@@ -1460,7 +1467,9 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         const bool surfaceHasChanged = surface != previousSurface;
 
         if (surfaceHasChanged && previousSurface) {
-            const bool swapBuffers = (lastBoundFBOId == m_submissionContext->defaultFBO()) && PlatformSurfaceFilter::isSurfaceValid(previousSurface);
+            const bool swapBuffers = lastBoundFBOId == m_submissionContext->defaultFBO()
+                    && surfaceLock.isSurfaceValid()
+                    && m_shouldSwapBuffers;
             // We only call swap buffer if we are sure the previous surface is still valid
             m_submissionContext->endDrawing(swapBuffers);
         }

@@ -437,9 +437,9 @@ void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 }
 
 /*! \internal */
-void QRenderAspectPrivate::renderSynchronous()
+void QRenderAspectPrivate::renderSynchronous(bool swapBuffers)
 {
-    m_renderer->doRender();
+    m_renderer->doRender(swapBuffers);
 }
 
 /*

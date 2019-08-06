@@ -52,7 +52,7 @@ public:
     void shutdown() override {}
     void releaseGraphicsResources() override {}
     void render() override {}
-    void doRender() override {}
+    void doRender(bool swapBuffers) override {}
     void cleanGraphicsResources() override {}
     bool isRunning() const override { return true; }
     bool shouldRender() override { return true; }

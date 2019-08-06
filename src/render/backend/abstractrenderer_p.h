@@ -141,7 +141,7 @@ public:
     // Threaded renderer
     virtual void render() = 0;
     // Synchronous renderer
-    virtual void doRender() = 0;
+    virtual void doRender(bool swapBuffers) = 0;
 
     virtual void cleanGraphicsResources() = 0;
 
