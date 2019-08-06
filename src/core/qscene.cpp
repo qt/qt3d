@@ -68,7 +68,7 @@ public:
     QMultiHash<QNodeId, QObservableInterface *> m_observablesLookupTable;
     QHash<QObservableInterface *, QNodeId> m_observableToUuid;
     QHash<QNodeId, QScene::NodePropertyTrackData> m_nodePropertyTrackModeLookupTable;
-    QLockableObserverInterface *m_arbiter;
+    QAbstractArbiter *m_arbiter;
     QScopedPointer<NodePostConstructorInit> m_postConstructorInit;
     mutable QReadWriteLock m_lock;
     mutable QReadWriteLock m_nodePropertyTrackModeLock;
@@ -183,13 +183,13 @@ QNode *QScene::rootNode() const
     return d->m_rootNode;
 }
 
-void QScene::setArbiter(QLockableObserverInterface *arbiter)
+void QScene::setArbiter(QAbstractArbiter *arbiter)
 {
     Q_D(QScene);
     d->m_arbiter = arbiter;
 }
 
-QLockableObserverInterface *QScene::arbiter() const
+QAbstractArbiter *QScene::arbiter() const
 {
     Q_D(const QScene);
     return d->m_arbiter;

@@ -103,6 +103,8 @@ private slots:
     void checkEnabledUpdate();
     void checkPropertyTrackModeUpdate();
     void checkTrackedPropertyNamesUpdate();
+
+    void checkNodeRemovedFromDirtyListOnDestruction();
 };
 
 class ObserverSpy;
@@ -113,8 +115,8 @@ public:
         : m_spy(spy)
     {}
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) final {};
-    void setScene(Qt3DCore::QScene *) final {};
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) final {}
+    void setScene(Qt3DCore::QScene *) final {}
     void notifyBackend(const Qt3DCore::QSceneChangePtr &change) final;
     bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &changee) final { Q_UNUSED(changee); return false; }
 
@@ -143,9 +145,7 @@ public:
     {
     }
 
-    ~ObserverSpy()
-    {
-    }
+    ~ObserverSpy();
 
     void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e) override
     {
@@ -169,9 +169,23 @@ public:
         return m_postman.data();
     }
 
+    void addDirtyFrontEndNode(Qt3DCore::QNode *node) final {
+        if (!dirtyNodes.contains(node))
+            dirtyNodes << node;
+    }
+
+    void removeDirtyFrontEndNode(Qt3DCore::QNode *node) final {
+        dirtyNodes.removeOne(node);
+    };
+
+    QVector<Qt3DCore::QNode *> dirtyNodes;
     QList<ChangeRecord> events;
     QScopedPointer<SimplePostman> m_postman;
 };
+
+ObserverSpy::~ObserverSpy()
+{
+}
 
 void SimplePostman::notifyBackend(const Qt3DCore::QSceneChangePtr &change)
 {
@@ -299,7 +313,7 @@ class MyQEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
-    explicit MyQEntity(Qt3DCore::QNode *parent = 0)
+    explicit MyQEntity(Qt3DCore::QNode *parent = nullptr)
         : QEntity(parent)
     {}
 
@@ -1244,10 +1258,10 @@ void tst_Nodes::checkConstructionWithParent()
     root->setNodeProperty(node);
 
     // THEN we should get one creation change, one child added change
-    // and one property change event, in that order.
+    // in that order.
     QCoreApplication::processEvents();
     QCOMPARE(root->children().count(), 1);
-    QCOMPARE(spy.events.size(), 3); // 1 creation change, 1 child added change, 1 property change
+    QCOMPARE(spy.events.size(), 2); // 1 creation change, 1 child added change
 
     // Ensure first event is child node's creation change
     const auto creationEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
@@ -1260,12 +1274,15 @@ void tst_Nodes::checkConstructionWithParent()
     QCOMPARE(newChildEvent->propertyName(), "children");
     QCOMPARE(newChildEvent->addedNodeId(), node->id());
 
-    // Ensure second and last event is property set change
-    const auto propertyEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
-    QVERIFY(!propertyEvent.isNull());
-    QCOMPARE(propertyEvent->subjectId(), root->id());
-    QCOMPARE(propertyEvent->propertyName(), "nodeProperty");
-    QCOMPARE(propertyEvent->value().value<Qt3DCore::QNodeId>(), node->id());
+    // Ensure the parent node is dirty
+    QCOMPARE(spy.dirtyNodes.size(), 1);
+    QCOMPARE(spy.dirtyNodes.front(), root.data());
+
+//    const auto propertyEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
+//    QVERIFY(!propertyEvent.isNull());
+//    QCOMPARE(propertyEvent->subjectId(), root->id());
+//    QCOMPARE(propertyEvent->propertyName(), "nodeProperty");
+//    QCOMPARE(propertyEvent->value().value<Qt3DCore::QNodeId>(), node->id());
 }
 
 void tst_Nodes::checkConstructionWithNonRootParent()
@@ -1298,7 +1315,7 @@ void tst_Nodes::checkConstructionWithNonRootParent()
     QCOMPARE(root->children().count(), 1);
     QCOMPARE(parent->children().count(), 1);
 
-    QCOMPARE(spy.events.size(), 4); // 2 creation changes, 1 child added changes, 1 property change
+    QCOMPARE(spy.events.size(), 3); // 2 creation changes, 1 child added changes
 
     // Ensure first event is parent node's creation change
     const auto parentCreationEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
@@ -1316,11 +1333,8 @@ void tst_Nodes::checkConstructionWithNonRootParent()
     QCOMPARE(parentNewChildEvent->addedNodeId(), parent->id());
 
     // Ensure second and last event is property set change
-    const auto propertyEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
-    QVERIFY(!propertyEvent.isNull());
-    QCOMPARE(propertyEvent->subjectId(), root->id());
-    QCOMPARE(propertyEvent->propertyName(), "nodeProperty");
-    QCOMPARE(propertyEvent->value().value<Qt3DCore::QNodeId>(), child->id());
+    QCOMPARE(spy.dirtyNodes.size(), 1);
+    QCOMPARE(spy.dirtyNodes.front(), root.data());
 }
 
 void tst_Nodes::checkConstructionAsListElement()
@@ -1730,12 +1744,8 @@ void tst_Nodes::changeCustomProperty()
     // WHEN
     node->setCustomProperty(QStringLiteral("foo"));
     // THEN
-    QCOMPARE(spy.events.size(), 1);
-    QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QPropertyUpdatedChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
-    QCOMPARE(event->type(), Qt3DCore::PropertyUpdated);
-    QCOMPARE(event->propertyName(), "customProperty");
-    QCOMPARE(event->value().toString(), QString("foo"));
+    QCOMPARE(spy.dirtyNodes.size(), 1);
+    QCOMPARE(spy.dirtyNodes.front(), node.data());
 }
 
 void tst_Nodes::checkDestruction()
@@ -1918,25 +1928,22 @@ void tst_Nodes::checkEnabledUpdate()
     {
         // WHEN
         node.setEnabled(false);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "enabled");
-        QCOMPARE(change->value().value<bool>(), node.isEnabled());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), &node);
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     {
         // WHEN
         node.setEnabled(false);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
     }
 
 }
@@ -1995,6 +2002,60 @@ void tst_Nodes::checkTrackedPropertyNamesUpdate()
 
 }
 
+void tst_Nodes::checkNodeRemovedFromDirtyListOnDestruction()
+{
+    // GIVEN
+    TestArbiter arbiter;
+    Qt3DCore::QScene scene;
+
+    {
+        // GIVEN
+        QScopedPointer<MyQNode> node(new MyQNode());
+        node->setArbiterAndScene(&arbiter, &scene);
+
+        // WHEN
+        node->setEnabled(false);
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), node.data());
+
+        // WHEN
+        // scene should be unset and node removed from arbiter dirtyList
+        node.reset();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
+    }
+    {
+        // GIVEN
+        QScopedPointer<MyQNode> node(new MyQNode());
+        node->setArbiterAndScene(&arbiter, &scene);
+
+
+        Qt3DCore::QNode *child = new Qt3DCore::QNode(node.data());
+        // Wait for deferred initialization of child node
+        QCoreApplication::processEvents();
+
+        // WHEN
+        child->setEnabled(false);
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 2); // nodeCreated + childAdded
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), child);
+
+        // WHEN
+        // scene should be unset and child node removed from arbiter dirtyList
+        node.reset();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 2); // childRemoved + nodeDestroyed
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
+    }
+}
 
 
 QTEST_MAIN(tst_Nodes)

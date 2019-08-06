@@ -148,25 +148,20 @@ private Q_SLOTS:
         {
             // WHEN
             clipBlendNode.setClip(clip);
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "clip");
-            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), clipBlendNode.clip()->id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &clipBlendNode);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
             // WHEN
             clipBlendNode.setClip(clip);
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
     }
 

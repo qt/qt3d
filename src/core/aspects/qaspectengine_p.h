@@ -106,9 +106,6 @@ public:
     void initNode(QNode *node);
     void initEntity(QEntity *entity);
 
-    void generateCreationChanges(QNode *rootNode);
-    QVector<QNodeCreatedChangeBasePtr> m_creationChanges;
-
     static QAspectEnginePrivate *get(QAspectEngine *engine);
 };
 

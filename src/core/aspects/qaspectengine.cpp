@@ -120,12 +120,6 @@ void QAspectEnginePrivate::initEntity(QEntity *entity)
     }
 }
 
-void QAspectEnginePrivate::generateCreationChanges(QNode *root)
-{
-    const QNodeCreatedChangeGenerator generator(root);
-    m_creationChanges = generator.creationChanges();
-}
-
 /*!
  * \class Qt3DCore::QAspectEngine
  * \inheaderfile Qt3DCore/QAspectEngine
@@ -444,7 +438,8 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     d->initNodeTree(root.data());
 
     // Traverse tree to generate a vector of creation changes
-    d->generateCreationChanges(root.data());
+    const QNodeCreatedChangeGenerator generator(root.data());
+    auto creationChanges = generator.creationChanges();
 
     // Specify if the AspectManager should be driving the simulation loop or not
     d->m_aspectManager->setRunMode(d->m_runMode);
@@ -456,7 +451,7 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // TODO: Pass the creation changes via the arbiter rather than relying upon
     // an invokeMethod call.
     qCDebug(Aspects) << "Begin setting scene root on aspect manager";
-    d->m_aspectManager->setRootEntity(root.data(), d->m_creationChanges);
+    d->m_aspectManager->setRootEntity(root.data(), creationChanges);
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
     d->m_aspectManager->enterSimulationLoop();
 }

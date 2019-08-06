@@ -370,6 +370,10 @@ void QAspectManager::processFrame()
     changeArbiterStats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
     changeArbiterStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
 #endif
+    const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
+    if (dirtyFrontEndNodes.size())
+        for (QAbstractAspect *aspect : qAsConst(m_aspects))
+           aspect->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
     // TO DO: Having this done in the main thread actually means aspects could just
     // as simply read info out of the Frontend classes without risk of introducing
     // races. This could therefore be removed for Qt 6.
@@ -390,6 +394,8 @@ void QAspectManager::processFrame()
 #if defined(QT3D_CORE_JOB_TIMING)
     qDebug() << "Jobs took" << timer.nsecsElapsed() / 1.0e6;
 #endif
+
+    // TODO sync backend changes to frontend
 }
 
 } // namespace Qt3DCore

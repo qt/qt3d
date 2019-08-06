@@ -77,12 +77,17 @@ protected:
 
     template<class Frontend>
     void registerBackendType(const QBackendNodeMapperPtr &functor);
-    void registerBackendType(const QMetaObject &, const QBackendNodeMapperPtr &functor);
+    template<class Frontend, bool supportsSyncing>
+    void registerBackendType(const QBackendNodeMapperPtr &functor);
+    void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor);
     template<class Frontend>
     void unregisterBackendType();
     void unregisterBackendType(const QMetaObject &);
 
 private:
+    void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
+    void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor, bool supportsSyncing);
+
     virtual QVariant executeCommand(const QStringList &args);
 
     virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time);
@@ -102,6 +107,12 @@ template<class Frontend>
 void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
 {
     registerBackendType(Frontend::staticMetaObject, functor);
+}
+
+template<class Frontend, bool supportsSyncing>
+void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
+{
+    registerBackendType(Frontend::staticMetaObject, functor, supportsSyncing);
 }
 
 template<class Frontend>
