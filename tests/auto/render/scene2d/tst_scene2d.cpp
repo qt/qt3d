@@ -325,7 +325,7 @@ private Q_SLOTS:
         Entity *backendEntity = nodeManagers->renderNodesManager()->getOrCreateResource(entity->id());
         backendEntity->setRenderer(&renderer);
         backendEntity->setNodeManagers(nodeManagers.data());
-        simulateInitialization(entity.data(), backendEntity);
+        simulateInitializationSync(entity.data(), backendEntity);
 
 #define PICK_TRIANGLE(tri, v0, v1, v2, uvw)     \
     new Qt3DRender::QPickTriangleEvent(QPointF(), QVector3D(), QVector3D(), 0.0f,   \

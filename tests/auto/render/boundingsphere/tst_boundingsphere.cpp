@@ -370,7 +370,7 @@ private Q_SLOTS:
 
         Qt3DRender::Render::Entity *entityBackend = test->nodeManagers()->renderNodesManager()->getOrCreateResource(entity->id());
         entityBackend->setRenderer(test->renderer());
-        simulateInitialization(entity.data(), entityBackend);
+        simulateInitializationSync(entity.data(), entityBackend);
 
         Qt3DRender::Render::CalculateBoundingVolumeJob calcBVolume;
         calcBVolume.setManagers(test->nodeManagers());
@@ -382,10 +382,10 @@ private Q_SLOTS:
         qDebug() << radius << center;
 
         // truncate and compare integers only
-        QVERIFY(int(radius) == int(expectedRadius));
-        QVERIFY(int(center.x()) == int(expectedCenter.x()));
-        QVERIFY(int(center.y()) == int(expectedCenter.y()));
-        QVERIFY(int(center.z()) == int(expectedCenter.z()));
+        QCOMPARE(int(radius), int(expectedRadius));
+        QCOMPARE(int(center.x()), int(expectedCenter.x()));
+        QCOMPARE(int(center.y()), int(expectedCenter.y()));
+        QCOMPARE(int(center.z()), int(expectedCenter.z()));
     }
 
     void checkCustomPackedGeometry()
@@ -461,7 +461,7 @@ private Q_SLOTS:
 
         Qt3DRender::Render::Entity *entityBackend = test->nodeManagers()->renderNodesManager()->getOrCreateResource(entity->id());
         entityBackend->setRenderer(test->renderer());
-        simulateInitialization(entity.data(), entityBackend);
+        simulateInitializationSync(entity.data(), entityBackend);
 
         Qt3DRender::Render::CalculateBoundingVolumeJob calcBVolume;
         calcBVolume.setManagers(test->nodeManagers());

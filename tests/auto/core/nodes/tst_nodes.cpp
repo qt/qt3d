@@ -1170,8 +1170,7 @@ void tst_Nodes::checkParentingQEntityToQNode()
     // THEN we should get
     // - one child removed change for childEntity->subTreeRoot,
     // - one child added change for childEntity->childNode,
-    // - and one property updated event specifying the correct QEntity parent (subTreeRoot)
-    QCOMPARE(spy.events.size(), 3);
+    QCOMPARE(spy.events.size(), 2);
 
     const auto removedEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
     QVERIFY(!removedEvent.isNull());
@@ -1181,11 +1180,11 @@ void tst_Nodes::checkParentingQEntityToQNode()
     QVERIFY(!addedEvent.isNull());
     QCOMPARE(addedEvent->subjectId(), childNode->id());
 
-    const auto parentChangeEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
-    QVERIFY(!parentChangeEvent.isNull());
-    QCOMPARE(parentChangeEvent->subjectId(), childEntity->id());
-    QCOMPARE(parentChangeEvent->propertyName(), "parentEntityUpdated");
-    QCOMPARE(parentChangeEvent->value().value<Qt3DCore::QNodeId>(), subTreeRoot->id());
+//    const auto parentChangeEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
+//    QVERIFY(!parentChangeEvent.isNull());
+//    QCOMPARE(parentChangeEvent->subjectId(), childEntity->id());
+//    QCOMPARE(parentChangeEvent->propertyName(), "parentEntityUpdated");
+//    QCOMPARE(parentChangeEvent->value().value<Qt3DCore::QNodeId>(), subTreeRoot->id());
 }
 
 void tst_Nodes::checkConstructionWithParent()

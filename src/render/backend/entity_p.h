@@ -90,6 +90,7 @@ public:
     void setParentHandle(HEntity parentHandle);
     void setNodeManagers(NodeManagers *manager);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void dump() const;
 
@@ -178,10 +179,7 @@ public:
         return containsComponentsOfType<T>() && containsComponentsOfType<Ts, Ts2...>();
     }
 
-
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     NodeManagers *m_nodeManagers;
     HEntity m_handle;
     HEntity m_parentHandle;

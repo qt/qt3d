@@ -36,7 +36,6 @@
 
 #include "qbackendnodetester.h"
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
