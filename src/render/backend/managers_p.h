@@ -443,6 +443,7 @@ class JointManager : public Qt3DCore::QResourceManager<
 {
 public:
     void addDirtyJoint(Qt3DCore::QNodeId jointId);
+    void removeDirtyJoint(Qt3DCore::QNodeId jointId);
     QVector<HJoint> dirtyJoints();
 
 private:

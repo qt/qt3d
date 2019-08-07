@@ -43,7 +43,6 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 
-#include <QMap>
 #include <QtConcurrent>
 
 #include "math.h"

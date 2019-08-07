@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -38,81 +37,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERSTATE_H
-#define QT3DRENDER_RENDER_RENDERSTATE_H
+#include <QGuiApplication>
+#include <QQuickView>
+#include <QOpenGLContext>
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/genericstate_p.h>
-#include <Qt3DRender/private/renderstates_p.h>
-#include <Qt3DRender/private/statevariant_p.h>
-#include <QVector>
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3DRender {
-
-class QRenderState;
-
-namespace Render {
-
-class RenderState;
-
-class RenderStateSet
+void setSurfaceFormat()
 {
-public:
-    RenderStateSet();
-    ~RenderStateSet();
-
-    template<typename GenericState>
-    void addState(const GenericState &state)
-    {
-        addState(StateVariant::fromValue(state));
+    QSurfaceFormat format;
+#ifdef QT_OPENGL_ES_2
+    format.setRenderableType(QSurfaceFormat::OpenGLES);
+#else
+    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+        format.setVersion(4, 3);
+        format.setProfile(QSurfaceFormat::CoreProfile);
     }
+#endif
+    format.setDepthBufferSize(24);
+    format.setSamples(4);
+    format.setStencilBufferSize(8);
+    QSurfaceFormat::setDefaultFormat(format);
+}
 
-    /**
-     * @brief changeCost - metric of cost to change to this state-set from
-     * a candidate previous state-set. This is used to find an optimal
-     * ordering of state-sets when sending draw commands.
-     * @param previousState
-     * @return
-     */
-    int changeCost(RenderStateSet* previousState);
+int main(int argc, char **argv)
+{
+    QGuiApplication app(argc, argv);
+    setSurfaceFormat();
 
-    StateMaskSet stateMask() const;
-    void merge(RenderStateSet *other);
+    QQuickView view;
 
-    QVector<StateVariant> states() const { return m_states; }
+    view.resize(1920, 1080);
+    view.setResizeMode(QQuickView::SizeRootObjectToView);
+    view.setSource(QUrl("qrc:/main.qml"));
+    view.show();
 
-    bool hasStateOfType(StateMask type) const;
-
-
-    /**
-     * @brief contains - check if this set contains a matching piece of state
-     * @param ds
-     * @return
-     */
-    bool contains(const StateVariant &ds) const;
-private:
-    StateMaskSet m_stateMask;
-    QVector<StateVariant> m_states;
-};
-
-template<>
-void RenderStateSet::addState<StateVariant>(const StateVariant &state);
-
-} // namespace Render
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_RENDERSTATE_H
+    return app.exec();
+}

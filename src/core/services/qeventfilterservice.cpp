@@ -39,11 +39,12 @@
 
 #include "qeventfilterservice_p.h"
 
-#include <QtCore/QMap>
 #include <QtCore/QObject>
-#include <QtCore/QVector>
 
 #include <Qt3DCore/private/qabstractserviceprovider_p.h>
+
+#include <algorithm>
+#include <vector>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,10 +55,10 @@ namespace {
         int priority;
     };
 
-    bool operator <(const FilterPriorityPair &a, const FilterPriorityPair &b)
+    const auto byPriority = [](const FilterPriorityPair &a, const FilterPriorityPair &b) noexcept
     {
         return a.priority < b.priority;
-    }
+    };
 }
 
 Q_DECLARE_TYPEINFO(FilterPriorityPair, Q_PRIMITIVE_TYPE);
@@ -89,32 +90,26 @@ public:
 
     void registerEventFilter(QObject *eventFilter, int priority)
     {
-        for (int i = 0, m = m_eventFilters.size(); i < m; ++i)
-            if (m_eventFilters.at(i).priority == priority)
-                return;
-
         FilterPriorityPair fpPair;
         fpPair.filter = eventFilter;
         fpPair.priority = priority;
-        m_eventFilters.push_back(fpPair);
-        std::sort(m_eventFilters.begin(), m_eventFilters.end());
+        const auto it = std::lower_bound(m_eventFilters.begin(), m_eventFilters.end(), fpPair, byPriority);
+        if (it == m_eventFilters.end() || it->priority != priority)
+            m_eventFilters.insert(it, std::move(fpPair));
     }
 
     void unregisterEventFilter(QObject *eventFilter)
     {
-        QVector<FilterPriorityPair>::iterator it = m_eventFilters.begin();
-        const QVector<FilterPriorityPair>::iterator end = m_eventFilters.end();
-        while (it != end) {
+        for (auto it = m_eventFilters.begin(), end = m_eventFilters.end(); it != end; ++it) {
             if (it->filter == eventFilter) {
                 m_eventFilters.erase(it);
                 return;
             }
-            ++it;
         }
     }
 
     QScopedPointer<InternalEventListener> m_eventDispatcher;
-    QVector<FilterPriorityPair> m_eventFilters;
+    std::vector<FilterPriorityPair> m_eventFilters;
 };
 
 /* !\internal
@@ -179,8 +174,8 @@ InternalEventListener::InternalEventListener(QEventFilterServicePrivate *filterS
 
 bool InternalEventListener::eventFilter(QObject *obj, QEvent *e)
 {
-    for (int i = m_filterService->m_eventFilters.size() - 1; i >= 0; --i) {
-        const FilterPriorityPair &fPPair = m_filterService->m_eventFilters.at(i);
+    for (auto i = m_filterService->m_eventFilters.size(); i > 0; --i) {
+        const FilterPriorityPair &fPPair = m_filterService->m_eventFilters[i - 1];
         if (fPPair.filter->eventFilter(obj, e))
             return true;
     }
