@@ -254,11 +254,14 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 /*!
  * \qmlproperty enumeration Qt3D.Render::Camera::projectionType
  *
- * Holds the type of the camera projection.
+ * Holds the type of the camera projection. The default value is
+ * CameraLens.PerspectiveProjection.
  *
  * \list
- * \li CameraLens.OrthographicProjection
- * \li CameraLens.PerspectiveProjection
+ * \li CameraLens.OrthographicProjection - Parallel lines appear parallel. Objects appear
+ *     the same size regardless of distance.
+ * \li CameraLens.PerspectiveProjection - Parallel lines appear to meet in the distance.
+ *     Objects appear to shrink the farther they are from the camera.
  * \li CameraLens.FrustumProjection
  * \li CameraLens.CustomProjection
  * \endlist
@@ -267,17 +270,28 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 
 /*!
  * \qmlproperty real Qt3D.Render::Camera::nearPlane
- * Holds the current camera near plane of the camera.
+ * Holds the current camera near plane of the camera. Objects that
+ * are closer to the camera than the nearPlane will not be rendered.
  */
 
 /*!
  * \qmlproperty real Qt3D.Render::Camera::farPlane
- * Holds the current camera far plane of the camera.
+ * Holds the current camera far plane of the camera. Objects that
+ * are farther from the camera than the farPlane will not be rendered.
  */
 
 /*!
  * \qmlproperty real Qt3D.Render::Camera::fieldOfView
- * Holds the current field of view of the camera in degrees.
+ * Holds the current vertical field of view of the camera in degrees.
+ *
+ * Along with \l aspectRatio, this property determines how much of
+ * the scene is visible to the camera. In that respect you might
+ * think of it as analogous to choosing a wide angle (wide horizontal
+ * field of view) or telephoto (narrow horizontal field of view) lens,
+ * depending on how much of a scene you want to capture.
+ *
+ * fieldOfView is only relevant when \l projectionType is
+ * CameraLens.PerspectiveProjection.
  */
 
 /*!
@@ -288,21 +302,33 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 /*!
  *\qmlproperty real Qt3D.Render::Camera::left
  * Holds the current left of the camera.
+ *
+ * This property is only relevant when \l projectionType is
+ * CameraLens.OrthographicProjection.
  */
 
 /*!
  * \qmlproperty real Qt3D.Render::Camera::right
  * Holds the current right of the camera.
+ *
+ * This property is only relevant when \l projectionType is
+ * CameraLens.OrthographicProjection.
  */
 
 /*!
  * \qmlproperty real Qt3D.Render::Camera::bottom
  * Holds the current bottom of the camera.
+ *
+ * This property is only relevant when \l projectionType is
+ * CameraLens.OrthographicProjection.
  */
 
 /*!
  * \qmlproperty real Qt3D.Render::Camera::top
  * Holds the current top of the camera.
+ *
+ * This property is only relevant when \l projectionType is
+ * CameraLens.OrthographicProjection.
  */
 
 /*!
@@ -321,19 +347,29 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  * \qmlproperty vector3d Qt3D.Render::Camera::upVector
  * Holds the current up vector of the camera in coordinates relative to
  * the parent entity.
+ *
+ * The up vector indicates which direction the top of the camera is
+ * facing. Think of taking a picture: after positioning yourself
+ * and pointing the camera at your target, you might rotate the camera
+ * left or right, giving you a portrait or landscape (or angled!)
+ * shot. upVector allows you to control this type of movement.
  */
 
 /*!
  * \qmlproperty vector3d Qt3D.Render::Camera::viewCenter
  * Holds the current view center of the camera in coordinates relative to
  * the parent entity.
- * \readonly
+ *
+ * Intuitively, the viewCenter is the location the camera is pointing at.
  */
 
 /*!
  * \qmlproperty vector3d Qt3D.Render::Camera::viewVector
  * Holds the camera's view vector in coordinates relative to
  * the parent entity.
+ *
+ * This vector decribes the displacement from the camera (\l position)
+ * to its target (\l viewCenter).
  * \readonly
  */
 
@@ -348,30 +384,44 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 /*!
  * \property QCamera::projectionType
  *
- * Holds the type of the camera projection.
+ * Holds the type of the camera projection. The default value is
+ * QCameraLens::PerspectiveProjection.
  *
  * \list
- * \li CameraLens.OrthographicProjection
- * \li CameraLens.PerspectiveProjection
- * \li CameraLens.FrustumProjection
- * \li CameraLens.CustomProjection
+ * \li QCameraLens::OrthographicProjection - Parallel lines appear parallel. Objects appear
+ *     the same size regardless of distance.
+ * \li QCameraLens::PerspectiveProjection - Parallel lines appear to meet in the distance.
+ *     Objects appear to shrink the farther they are from the camera.
+ * \li QCameraLens::FrustumProjection
+ * \li QCameraLens::CustomProjection
  * \endlist
  * \sa Qt3DRender::QCameraLens::ProjectionType
  */
 
 /*!
  * \property QCamera::nearPlane
- * Holds the current camera near plane.
+ * Holds the current camera near plane. Objects that are closer to the
+ * camera than the nearPlane will not be rendered.
  */
 
 /*!
  * \property QCamera::farPlane
- * Holds the current camera far plane.
+ * Holds the current camera far plane. Objects that are farther from the
+ * camera than the farPlane will not be rendered.
  */
 
 /*!
  * \property QCamera::fieldOfView
- * Holds the current field of view in degrees.
+ * Holds the current vertical field of view in degrees.
+ *
+ * Along with \l aspectRatio, this property determines how much of
+ * the scene is visible to the camera. In that respect you might
+ * think of it as analogous to choosing a wide angle (wide horizontal
+ * field of view) or telephoto (narrow horizontal field of view) lens
+ * depending on how much of a scene you want to capture.
+ *
+ * fieldOfView is only relevant when \l projectionType is
+ * QCameraLens::PerspectiveProjection.
  */
 
 /*!
@@ -382,21 +432,33 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 /*!
  *\property QCamera::left
  * Holds the current left of the camera.
+ *
+ * This property is only relevant when \l projectionType is
+ * QCameraLens::OrthographicProjection.
  */
 
 /*!
  * \property QCamera::right
  * Holds the current right of the camera.
+ *
+ * This property is only relevant when \l projectionType is
+ * QCameraLens::OrthographicProjection.
  */
 
 /*!
  * \property QCamera::bottom
  * Holds the current bottom of the camera.
+ *
+ * This property is only relevant when \l projectionType is
+ * QCameraLens::OrthographicProjection.
  */
 
 /*!
  * \property QCamera::top
  * Holds the current top of the camera.
+ *
+ * This property is only relevant when \l projectionType is
+ * QCameraLens::OrthographicProjection.
  */
 
 /*!
@@ -419,18 +481,29 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  * \property QCamera::upVector
  * Holds the camera's up vector in coordinates relative to
  * the parent entity.
+ *
+ * The up vector indicates which direction the top of the camera is
+ * facing. Think of taking a picture: after positioning yourself
+ * and pointing the camera at your target, you might rotate the camera
+ * left or right, giving you a portrait or landscape (or angled!)
+ * shot. upVector allows you to control this type of movement.
  */
 
 /*!
  * \property QCamera::viewCenter
  * Holds the camera's view center in coordinates relative to
  * the parent entity.
+ *
+ * Intuitively, the viewCenter is the location the camera is pointing at.
  */
 
 /*!
  * \property QCamera::viewVector
  * Holds the camera's view vector in coordinates relative to
  * the parent entity.
+ *
+ * This vector decribes the displacement from the camera (\l position)
+ * to its target (\l viewCenter).
  */
 
 /*!

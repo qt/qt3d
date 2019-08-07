@@ -289,10 +289,12 @@ QImageTextureDataFunctor::QImageTextureDataFunctor(const QUrl &url, bool mirrore
 
 QTextureImageDataPtr QImageTextureDataFunctor::operator ()()
 {
+    if (!m_url.isValid())
+        return QTextureImageDataPtr();
+
     // We assume that a texture image is going to contain a single image data
     // For compressed dds or ktx textures a warning should be issued if
     // there are layers or 3D textures
-
     if (!Qt3DCore::QDownloadHelperService::isLocal(m_url))
         qWarning() << "QTextureImage only supports local url";
 

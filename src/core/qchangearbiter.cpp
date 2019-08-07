@@ -51,6 +51,8 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qsceneobserverinterface_p.h>
 
+#include <mutex>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -76,7 +78,6 @@ namespace Qt3DCore {
 */
 QChangeArbiter::QChangeArbiter(QObject *parent)
     : QObject(parent)
-    , m_mutex(QMutex::Recursive)
     , m_jobManager(nullptr)
     , m_postman(nullptr)
     , m_scene(nullptr)
@@ -151,31 +152,31 @@ QThreadStorage<QChangeArbiter::QChangeQueue *> *QChangeArbiter::tlsChangeQueue()
 
 void QChangeArbiter::appendChangeQueue(QChangeArbiter::QChangeQueue *queue)
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     m_changeQueues.append(queue);
 }
 
 void QChangeArbiter::removeChangeQueue(QChangeArbiter::QChangeQueue *queue)
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     m_changeQueues.removeOne(queue);
 }
 
 void QChangeArbiter::appendLockingChangeQueue(QChangeArbiter::QChangeQueue *queue)
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     m_lockingChangeQueues.append(queue);
 }
 
 void QChangeArbiter::removeLockingChangeQueue(QChangeArbiter::QChangeQueue *queue)
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     m_lockingChangeQueues.removeOne(queue);
 }
 
 void QChangeArbiter::syncChanges()
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     for (QChangeArbiter::QChangeQueue *changeQueue : qAsConst(m_changeQueues))
         distributeQueueChanges(changeQueue);
 
@@ -202,7 +203,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       QNodeId nodeId,
                                       ChangeFlags changeFlags)
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     QObserverList &observerList = m_nodeObservations[nodeId];
     observerList.append(QObserverPair(changeFlags, observer));
 }
@@ -216,7 +217,7 @@ void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
 
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNodeId nodeId)
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     const auto it = m_nodeObservations.find(nodeId);
     if (it != m_nodeObservations.end()) {
         QObserverList &observers = it.value();
@@ -251,13 +252,13 @@ void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
 
 void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     sceneChangeEvent(e);
 }
 
 void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangeList &e)
 {
-    QMutexLocker locker(&m_mutex);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
     QChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
     qCDebug(ChangeArbiter) << Q_FUNC_INFO << "Handles " << e.size() << " changes at once";
     localChangeQueue->insert(localChangeQueue->end(), e.begin(), e.end());

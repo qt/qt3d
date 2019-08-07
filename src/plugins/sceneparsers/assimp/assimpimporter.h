@@ -57,7 +57,6 @@
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 
-#include <QtCore/QMap>
 #include <QtCore/QDir>
 #include <QtCore/QLoggingCategory>
 #include <QtCore/QVector>
@@ -139,7 +138,6 @@ private:
         Assimp::Importer *m_importer;
         mutable const aiScene *m_aiScene;
 
-        QMap<uint, QAbstractTexture *> m_embeddedTextures;
         QHash<aiTextureType, QString> m_textureToParameterName;
         QVector<Qt3DAnimation::QKeyframeAnimation *> m_animations;
         QVector<Qt3DAnimation::QMorphingAnimation *> m_morphAnimations;

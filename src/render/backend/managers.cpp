@@ -110,6 +110,12 @@ void JointManager::addDirtyJoint(Qt3DCore::QNodeId jointId)
     m_dirtyJoints.push_back(jointHandle);
 }
 
+void JointManager::removeDirtyJoint(Qt3DCore::QNodeId jointId)
+{
+    const HJoint jointHandle = lookupHandle(jointId);
+    m_dirtyJoints.removeAll(jointHandle);
+}
+
 QVector<HJoint> JointManager::dirtyJoints()
 {
     return std::move(m_dirtyJoints);

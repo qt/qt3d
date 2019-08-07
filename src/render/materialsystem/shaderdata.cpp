@@ -245,7 +245,7 @@ void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         // Note we aren't notified about nested QShaderData in this call
         // only scalar / vec properties
         m_originalProperties.insert(propertyName, propertyValue);
-        BackendNode::markDirty(AbstractRenderer::AllDirty);
+        BackendNode::markDirty(AbstractRenderer::ParameterDirty);
     }
 
     BackendNode::sceneChangeEvent(e);

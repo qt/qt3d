@@ -137,7 +137,7 @@ protected:
     void removeLockingChangeQueue(QChangeQueue *queue);
 
 private:
-    mutable QMutex m_mutex;
+    mutable QRecursiveMutex m_mutex;
     QAbstractAspectJobManager *m_jobManager;
 
     // The lists of observers indexed by observable (QNodeId).

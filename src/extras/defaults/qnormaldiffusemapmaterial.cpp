@@ -338,6 +338,10 @@ float QNormalDiffuseMapMaterial::shininess() const
 
     Holds the current texture scale. It is applied as a multiplier to texture
     coordinates at render time. Defaults to 1.0.
+
+    When used in conjunction with QTextureWrapMode::Repeat, textureScale provides a simple
+    way to tile a texture across a surface. For example, a texture scale of \c 4.0
+    would result in 16 (4x4) tiles.
 */
 float QNormalDiffuseMapMaterial::textureScale() const
 {

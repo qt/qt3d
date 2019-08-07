@@ -55,7 +55,6 @@
 #include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
 #include <QtCore/QIODevice>
-#include <QtCore/QMap>
 
 QT_BEGIN_NAMESPACE
 
@@ -84,15 +83,10 @@ private:
 class AssimpIOSystem : public Assimp::IOSystem
 {
 public :
-    AssimpIOSystem();
-    ~AssimpIOSystem();
     bool Exists(const char *pFile) const override;
     char getOsSeparator() const override;
     Assimp::IOStream *Open(const char *pFile, const char *pMode) override;
     void Close(Assimp::IOStream *pFile) override;
-
-private:
-    QMap<QByteArray, QIODevice::OpenMode> m_openModeMaps;
 };
 
 } // namespace AssimpHelper
