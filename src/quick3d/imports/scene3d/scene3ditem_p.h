@@ -69,6 +69,8 @@ class QCamera;
 class QRenderAspect;
 class Scene3DRenderer;
 class Scene3DCleaner;
+class Scene3DView;
+class QFrameGraphNode;
 
 class Scene3DItem : public QQuickItem
 {
@@ -106,6 +108,9 @@ public:
     Q_ENUM(CompositingMode) // LCOV_EXCL_LINE
     CompositingMode compositingMode() const;
 
+    void addView(Scene3DView *view);
+    void removeView(Scene3DView *view);
+
 public Q_SLOTS:
     void setAspects(const QStringList &aspects);
     void setEntity(Qt3DCore::QEntity *entity);
@@ -135,6 +140,8 @@ private:
 
     QStringList m_aspects;
     Qt3DCore::QEntity *m_entity;
+    Qt3DCore::QEntity *m_viewHolderEntity;
+    Qt3DRender::QFrameGraphNode *m_viewHolderFG;
 
     Qt3DCore::QAspectEngine *m_aspectEngine;
     QRenderAspect *m_renderAspect;
@@ -143,6 +150,7 @@ private:
 
     bool m_multisample;
     bool m_dirty;
+    bool m_dirtyViews;
     bool m_clearsWindowByDefault;
     bool m_disableClearWindow;
 
@@ -150,6 +158,7 @@ private:
     CameraAspectRatioMode m_cameraAspectRatioMode;
     CompositingMode m_compositingMode;
     QOffscreenSurface *m_dummySurface;
+    QVector<Scene3DView *> m_views;
 };
 
 } // Qt3DRender

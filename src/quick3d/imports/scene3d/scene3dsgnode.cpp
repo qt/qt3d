@@ -74,13 +74,12 @@ Scene3DSGNode::~Scene3DSGNode()
     // is terminated.
 }
 
-void Scene3DSGNode::setRect(const QRectF &rect)
+void Scene3DSGNode::setRect(const QRectF &rect, const QRectF textureRect)
 {
     if (rect != m_rect) {
         m_rect = rect;
-        // Map the item's bounding rect to normalized texture coordinates
-        const QRectF sourceRect(0.0f, 1.0f, 1.0f, -1.0f);
-        QSGGeometry::updateTexturedRectGeometry(&m_geometry, m_rect, sourceRect);
+        // By default, map the item's bounding rect to normalized texture coordinates
+        QSGGeometry::updateTexturedRectGeometry(&m_geometry, m_rect, textureRect);
         markDirty(DirtyGeometry);
     }
 }

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_SCENE3DSGNODE_P_H
-#define QT3DRENDER_SCENE3DSGNODE_P_H
+#ifndef SCENE3DVIEW_P_H
+#define SCENE3DVIEW_P_H
 
 //
 //  W A R N I N G
@@ -51,42 +51,87 @@
 // We mean it.
 //
 
-#include <QtQuick/QSGGeometryNode>
-
-#include <scene3dsgmaterial_p.h>
+#include <QtQuick/QQuickItem>
+#include <QtCore/QFlags>
 
 QT_BEGIN_NAMESPACE
 
 class QSGTexture;
 
+namespace Qt3DCore {
+class QEntity;
+class QNode;
+}
+
 namespace Qt3DRender {
 
-class Scene3DSGNode : public QSGGeometryNode
+class QLayer;
+class QLayerFilter;
+class Scene3DItem;
+class QFrameGraphNode;
+class QViewport;
+
+class Scene3DView : public QQuickItem
 {
+    Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
+    Q_PROPERTY(Qt3DRender::Scene3DItem *scene3D READ scene3D WRITE setScene3D NOTIFY scene3DChanged)
+    Q_CLASSINFO("DefaultProperty", "entity")
+
 public:
-    Scene3DSGNode();
-    ~Scene3DSGNode();
+    enum DirtyFlag {
+        DirtyNode = 1 << 0,
+        DirtyTexture = 1 << 1
+    };
+    Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
 
-    void setTexture(QSGTexture *texture) Q_DECL_NOTHROW
-    {
-        m_material.setTexture(texture);
-        m_opaqueMaterial.setTexture(texture);
-        markDirty(DirtyMaterial);
-    }
-    QSGTexture *texture() const Q_DECL_NOTHROW { return m_material.texture(); }
+    explicit Scene3DView(QQuickItem *parent = nullptr);
+    ~Scene3DView();
 
-    void setRect(const QRectF &rect, const QRectF textureRect = QRectF(0.0f, 1.0f, 1.0f, -1.0f));
-    QRectF rect() const Q_DECL_NOTHROW { return m_rect; }
+    Qt3DCore::QEntity *entity() const;
+    Scene3DItem *scene3D() const;
+
+    Qt3DCore::QEntity *viewSubtree() const;
+    Qt3DRender::QFrameGraphNode *viewFrameGraph() const;
+
+    void setTexture(QSGTexture *texture);
+    QSGTexture *texture() const;
+
+    void markSGNodeDirty();
+
+public Q_SLOTS:
+    void setEntity(Qt3DCore::QEntity *entity);
+    void setScene3D(Scene3DItem *scene3D);
+
+Q_SIGNALS:
+    void entityChanged();
+    void scene3DChanged();
 
 private:
-    Scene3DSGMaterial m_material;
-    Scene3DSGMaterial m_opaqueMaterial;
-    QSGGeometry m_geometry;
-    QRectF m_rect;
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) override;
+    void adoptSubtree(Qt3DCore::QEntity *subtree);
+    void abandonSubtree(Qt3DCore::QEntity *subtree);
+
+    Scene3DItem *m_scene3D;
+    Qt3DCore::QEntity *m_entity;
+    Qt3DCore::QNode *m_previousFGParent;
+
+    Qt3DCore::QEntity *m_holderEntity;
+    Qt3DRender::QLayer *m_holderLayer;
+    Qt3DRender::QLayerFilter *m_holderLayerFilter;
+    Qt3DRender::QViewport *m_holderViewport;
+
+    QMetaObject::Connection m_scene3DDestroyedConnection;
+
+    DirtyFlags m_dirtyFlags;
+    QSGTexture *m_texture;
 };
 
-} // namespace Qt3DRender
+Q_DECLARE_OPERATORS_FOR_FLAGS(Scene3DView::DirtyFlags)
+
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_SCENE3DSGNODE_P_H
+#endif // SCENE3DVIEW_P_H

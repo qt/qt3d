@@ -57,6 +57,7 @@
 #include <scene3ditem_p.h>
 #include <scene3dlogging_p.h>
 #include <scene3dsgnode_p.h>
+#include <scene3dview_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -159,6 +160,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_needsShutdown(true)
     , m_forceRecreate(false)
     , m_shouldRender(false)
+    , m_dirtyViews(false)
     , m_allowRendering(0)
 {
     Q_CHECK_PTR(m_item);
@@ -313,9 +315,23 @@ void Scene3DRenderer::beforeSynchronize()
                 m_texture.reset(m_window->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
             }
 
+            // We can render either the Scene3D or the Scene3DView but not both
+            // at the same time
+            Q_ASSERT((m_node == nullptr || m_views.empty()) ||
+                     (m_node != nullptr && m_views.empty()) ||
+                     (m_node == nullptr && !m_views.empty()));
+
             // Set texture on node
             if (m_node && (!m_node->texture() || generateNewTexture))
                 m_node->setTexture(m_texture.data());
+
+            // Set textures on Scene3DView
+            if (m_dirtyViews || generateNewTexture) {
+                for (Scene3DView *view : qAsConst(m_views))
+                    if (!view->texture() || generateNewTexture)
+                        view->setTexture(m_texture.data());
+                m_dirtyViews = false;
+            }
         }
 
         if (m_aspectEngine->rootEntity() != m_item->entity()) {
@@ -325,6 +341,9 @@ void Scene3DRenderer::beforeSynchronize()
         // Mark SGNodes as dirty so that QQuick will trigger some rendering
         if (m_node)
             m_node->markDirty(QSGNode::DirtyMaterial);
+
+        for (Scene3DView *view : qAsConst(m_views))
+            view->markSGNodeDirty();
 
         m_item->update();
     }
@@ -338,6 +357,13 @@ void Scene3DRenderer::allowRender()
 void Scene3DRenderer::setCompositingMode(Scene3DItem::CompositingMode mode)
 {
     m_compositingMode = mode;
+}
+
+// Main Thread, Render Thread locked
+void Scene3DRenderer::setScene3DViews(const QVector<Scene3DView *> views)
+{
+    m_views = views;
+    m_dirtyViews = true;
 }
 
 void Scene3DRenderer::setSGNode(Scene3DSGNode *node)

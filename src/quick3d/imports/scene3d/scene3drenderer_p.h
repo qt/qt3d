@@ -72,6 +72,7 @@ namespace Qt3DRender {
 class QRenderAspect;
 class Scene3DCleaner;
 class Scene3DSGNode;
+class Scene3DViews;
 
 class Scene3DRenderer : public QObject
 {
@@ -86,6 +87,8 @@ public:
     void setCleanerHelper(Scene3DCleaner *cleaner);
     void allowRender();
     void setCompositingMode(Scene3DItem::CompositingMode mode);
+
+    void setScene3DViews(const QVector<Scene3DView *> views);
 
 public Q_SLOTS:
     void render();
@@ -115,8 +118,10 @@ private:
     bool m_needsShutdown;
     bool m_forceRecreate;
     bool m_shouldRender;
+    bool m_dirtyViews;
     QSemaphore m_allowRendering;
     Scene3DItem::CompositingMode m_compositingMode;
+    QVector<Scene3DView *> m_views;
 
     friend class Scene3DCleaner;
 };
