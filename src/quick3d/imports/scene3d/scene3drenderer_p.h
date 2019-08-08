@@ -96,7 +96,7 @@ public Q_SLOTS:
 private:
     QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size);
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size);
-    void synchronize();
+    void beforeSynchronize();
     void scheduleRootEntityChange();
 
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine

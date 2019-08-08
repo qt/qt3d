@@ -365,12 +365,15 @@ bool Scene3DItem::needsRender()
 // The QtQuick SG proceeds like indicated below:
 // afterAnimating (Main Thread)
 // beforeSynchronizing (SG Thread and MainThread locked)
-// afterSynchronizing (SG Thread)
+// afterSynchronizing (SG Thread and MainThread locked)
 // beforeRendering (SG Thread)
 
 // Note: we connect to afterAnimating rather than beforeSynchronizing as a
 // direct connection on beforeSynchronizing is executed within the SG Render
-// Thread context
+// Thread context. This is executed before the RenderThread is asked to
+// synchronize and render
+// Note: we might still not be done rendering when this is called but
+// processFrame will block and wait for renderer to have been finished
 void Scene3DItem::onBeforeSync()
 {
     // Has anything in the 3D scene actually changed that requires us to render?
@@ -381,8 +384,12 @@ void Scene3DItem::onBeforeSync()
 
     // Since we are in manual mode, trigger jobs for the next frame
     Qt3DCore::QAspectEnginePrivate *aspectEnginePriv = static_cast<Qt3DCore::QAspectEnginePrivate *>(QObjectPrivate::get(m_aspectEngine));
-    if (!aspectEnginePriv->m_initialized)
+    if (!aspectEnginePriv->m_initialized || !m_renderer)
         return;
+
+    // Set compositing mode on renderer
+    m_renderer->setCompositingMode(m_compositingMode);
+    const bool usesFBO = m_compositingMode == FBO;
 
     Q_ASSERT(m_aspectEngine->runMode() == Qt3DCore::QAspectEngine::Manual);
     m_aspectEngine->processFrame();
@@ -399,14 +406,13 @@ void Scene3DItem::onBeforeSync()
     // start rendering before this function has been called
     // We add in a safety to skip such frames as this could otherwise
     // make Qt3D enter a locked state
-    if (m_renderer)
-        m_renderer->allowRender();
+    m_renderer->allowRender();
 
     // Request refresh for next frame
 
     // When using the FBO mode, only the QQuickItem needs to be updated
     // When using the Underlay mode, the whole windows needs updating
-    if (m_compositingMode == FBO)
+    if (usesFBO)
         QQuickItem::update();
     else
         window()->update();
@@ -532,24 +538,12 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
         m_renderer->setCleanerHelper(m_rendererCleaner);
     }
-    m_renderer->setCompositingMode(m_compositingMode);
-
-    Scene3DSGNode *fboNode = static_cast<Scene3DSGNode *>(node);
     const bool usesFBO = m_compositingMode == FBO;
-    if (usesFBO) {
-        if (fboNode == nullptr) {
-            fboNode = new Scene3DSGNode();
-            m_renderer->setSGNode(fboNode);
-        }
-        fboNode->setRect(boundingRect());
+    Scene3DSGNode *fboNode = static_cast<Scene3DSGNode *>(node);
 
-        // Reset clear flag if we've set it to false it's still set to that
-        if (m_disableClearWindow && !window()->clearBeforeRendering())
-            window()->setClearBeforeRendering(m_clearsWindowByDefault);
-        m_disableClearWindow = false;
-    } else {
-        // In FBOLess node the Scene3DItem doesn't have any QSGNode to actually
-        // manager
+    // When usin Scene3DViews or Scene3D in Underlay mode
+    // we shouldn't be managing a Scene3DSGNode
+    if (!usesFBO) {
         if (fboNode != nullptr) {
             delete fboNode;
             fboNode = nullptr;
@@ -560,6 +554,19 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         m_disableClearWindow = true;
         if (m_clearsWindowByDefault)
             window()->setClearBeforeRendering(false);
+    } else {
+        // Regular Scene3D only case
+        // Create SGNode if using FBO and no Scene3DViews
+        if (fboNode == nullptr) {
+            fboNode = new Scene3DSGNode();
+            m_renderer->setSGNode(fboNode);
+        }
+        fboNode->setRect(boundingRect());
+
+        // Reset clear flag if we've set it to false it's still set to that
+        if (m_disableClearWindow && !window()->clearBeforeRendering())
+            window()->setClearBeforeRendering(m_clearsWindowByDefault);
+        m_disableClearWindow = false;
     }
 
     return fboNode;
