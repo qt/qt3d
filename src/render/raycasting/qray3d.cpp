@@ -101,7 +101,7 @@ QRay3D::QRay3D()
 */
 QRay3D::QRay3D(const Vector3D &origin, const Vector3D &direction, float distance)
     : m_origin(origin)
-    , m_direction(direction)
+    , m_direction(direction.normalized())
     , m_distance(distance)
 {}
 
@@ -157,7 +157,7 @@ void QRay3D::setDirection(const Vector3D &value)
     if (value.isNull())
         return;
 
-    m_direction = value;
+    m_direction = value.normalized();
 }
 
 float QRay3D::distance() const
@@ -178,14 +178,14 @@ Vector3D QRay3D::point(float t) const
 QRay3D &QRay3D::transform(const Matrix4x4 &matrix)
 {
     m_origin = matrix * m_origin;
-    m_direction = matrix.mapVector(m_direction);
+    m_direction = matrix.mapVector(m_direction).normalized();
 
     return *this;
 }
 
 QRay3D QRay3D::transformed(const Matrix4x4 &matrix) const
 {
-    return QRay3D(matrix * m_origin, matrix.mapVector(m_direction));
+    return QRay3D(matrix * m_origin, matrix.mapVector(m_direction).normalized());
 }
 
 bool QRay3D::operator==(const QRay3D &other) const
