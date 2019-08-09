@@ -1514,16 +1514,6 @@ void GLTFImporter::processJSONBufferView(const QString &id, const QJsonObject& j
     } else {
         target = targetValue.toInt();
     }
-    Qt3DRender::QBuffer::BufferType ty(Qt3DRender::QBuffer::VertexBuffer);
-
-    switch (target) {
-    case GL_ARRAY_BUFFER:           ty = Qt3DRender::QBuffer::VertexBuffer; break;
-    case GL_ELEMENT_ARRAY_BUFFER:   ty = Qt3DRender::QBuffer::IndexBuffer; break;
-    default:
-        qCWarning(GLTFImporterLog, "buffer %ls unsupported target: %d",
-                  qUtf16PrintableImpl(id), target);
-        return;
-    }
 
     quint64 offset = 0;
     const auto byteOffset = json.value(KEY_BYTE_OFFSET);
@@ -1541,7 +1531,6 @@ void GLTFImporter::processJSONBufferView(const QString &id, const QJsonObject& j
     }
 
     Qt3DRender::QBuffer *b = new Qt3DRender::QBuffer();
-    b->setType(ty);
     b->setData(bytes);
     m_buffers[id] = b;
 }

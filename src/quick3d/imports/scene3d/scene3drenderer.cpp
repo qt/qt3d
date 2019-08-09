@@ -313,6 +313,7 @@ void Scene3DRenderer::synchronize()
         m_lastMultisample = m_multisample;
 
         m_node->markDirty(QSGNode::DirtyMaterial);
+        m_item->update();
     }
 }
 

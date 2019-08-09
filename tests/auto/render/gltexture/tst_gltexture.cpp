@@ -864,6 +864,44 @@ private Q_SLOTS:
         // Cleanup
         texture.destroy();
     }
+
+    void checkPropertiesAfterLoadTextureDataFromImages()
+    {
+        // GIVEN
+        GLTexture texture;
+        TextureProperties props;
+        props.target = QAbstractTexture::TargetCubeMap;
+        props.format = QAbstractTexture::Automatic;
+        props.width = 1;
+        props.height = 1;
+        texture.setProperties(props);
+        QVector<GLTexture::Image> images;
+        // test a image texture data generator whose url is invalid
+        QImageTextureDataFunctorPtr gen = QImageTextureDataFunctorPtr::create(QUrl(), true);
+        images.push_back({gen, 0, 0, QAbstractTexture::CubeMapPositiveX});
+        texture.setImages(images);
+
+        // WHEN
+        texture.createOrUpdateGLTexture();
+
+        // THEN
+        QCOMPARE(texture.properties().format, QAbstractTexture::Automatic);
+
+        // WHEN
+        // test a image texture data generator whose url is valid
+        gen = QImageTextureDataFunctorPtr::create(QUrl("qrc:/image.jpg"), true);
+        images.clear();
+        images.push_back({gen, 0, 0, QAbstractTexture::CubeMapPositiveX});
+        texture.setImages(images);
+        texture.createOrUpdateGLTexture();
+
+        // THEN
+        QVERIFY(texture.properties().format != QAbstractTexture::Automatic);
+        QVERIFY(texture.properties().format != QAbstractTexture::NoFormat);
+
+        // Cleanup
+        texture.destroy();
+    }
 };
 
 QTEST_MAIN(tst_GLTexture);

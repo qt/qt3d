@@ -37,57 +37,57 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSHADERIMAGE_P_H
-#define QT3DRENDER_QSHADERIMAGE_P_H
+import Qt3D.Core 2.0
+import Qt3D.Render 2.0
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+Material {
+    id: root
 
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRender/qshaderimage.h>
+    property color color:  Qt.rgba(0.15, 0.35, 0.50, 1.0)
 
-QT_BEGIN_NAMESPACE
+    parameters: [
+        Parameter { name: "color"; value: Qt.vector3d(root.color.r, root.color.g, root.color.b) }
+    ]
 
-namespace Qt3DRender {
 
-class QAbstractTexture;
+    effect: Effect {
+        property string vertex: "qrc:/shaders/shader.vert"
+        property string fragment: "qrc:/shaders/shader.frag"
 
-class QShaderImagePrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QShaderImagePrivate();
-    ~QShaderImagePrivate();
+        FilterKey {
+            id: forward
+            name: "renderingStyle"
+            value: "forward"
+        }
 
-    Q_DECLARE_PUBLIC(QShaderImage)
+        ShaderProgram {
+            id: gl3Shader
+            vertexShaderCode: loadSource(parent.vertex)
+            fragmentShaderCode: loadSource(parent.fragment)
+        }
 
-    Qt3DRender::QAbstractTexture *m_texture;
-    int m_mipLevel;
-    int m_layer;
-    QShaderImage::Access m_access;
-    QShaderImage::ImageFormat m_format;
-    bool m_layered;
-};
+        techniques: [
+            // OpenGL 3.1
+            Technique {
+                filterKeys: [ forward ]
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGL
+                    profile: GraphicsApiFilter.CoreProfile
+                    majorVersion: 3
+                    minorVersion: 3
+                }
+                renderPasses: RenderPass {
+                    filterKeys: [
+                        FilterKey {
+                            name: "pass"
+                            value: 0
+                        }
+                    ]
+                    shaderProgram: gl3Shader
+                }
+            }
+        ]
+    }
+}
 
-struct QShaderImageData
-{
-    Qt3DCore::QNodeId textureId;
-    int mipLevel;
-    int layer;
-    QShaderImage::Access access;
-    QShaderImage::ImageFormat format;
-    bool layered;
-};
 
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QSHADERIMAGE_P_H

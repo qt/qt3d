@@ -37,57 +37,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSHADERIMAGE_P_H
-#define QT3DRENDER_QSHADERIMAGE_P_H
+import QtQuick 2.12
+import QtQuick.Scene3D 2.12
+import Qt3D.Render 2.12
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+Item {
+    anchors.fill: parent
 
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRender/qshaderimage.h>
+    Scene3D {
+        id: scene3d
+        anchors.fill: parent
+        focus: true
+        cameraAspectRatioMode: Scene3D.AutomaticAspectRatio
 
-QT_BEGIN_NAMESPACE
+        SceneRoot {
+            id: root
+        }
+    }
 
-namespace Qt3DRender {
-
-class QAbstractTexture;
-
-class QShaderImagePrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QShaderImagePrivate();
-    ~QShaderImagePrivate();
-
-    Q_DECLARE_PUBLIC(QShaderImage)
-
-    Qt3DRender::QAbstractTexture *m_texture;
-    int m_mipLevel;
-    int m_layer;
-    QShaderImage::Access m_access;
-    QShaderImage::ImageFormat m_format;
-    bool m_layered;
-};
-
-struct QShaderImageData
-{
-    Qt3DCore::QNodeId textureId;
-    int mipLevel;
-    int layer;
-    QShaderImage::Access access;
-    QShaderImage::ImageFormat format;
-    bool layered;
-};
-
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QSHADERIMAGE_P_H
+    Image {
+        width: 400
+        fillMode: Image.PreserveAspectFit
+        source: "qrc:/expected_output.png"
+        Text {
+            anchors.centerIn: parent
+            color: "white"
+            text: "This is the expected output"
+        }
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+            border {
+                color: "white"
+                width: 2
+            }
+        }
+    }
+}
