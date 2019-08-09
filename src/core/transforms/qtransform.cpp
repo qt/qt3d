@@ -135,6 +135,18 @@ QTransformPrivate::~QTransformPrivate()
  */
 
 /*!
+    \qmlproperty matrix4x4 QTransform::worldMatrix
+
+    Holds the world transformation matrix for the transform. This assumes the
+    Transform component is being referenced by an Entity. This makes it more
+    convenient to identify when an Entity part of a subtree has been
+    transformed in the world even though its local transformation might not
+    have changed.
+
+    \since 5.14
+ */
+
+/*!
     \qmlmethod quaternion Transform::fromAxisAndAngle(vector3d axis, real angle)
     Creates a quaternion from \a axis and \a angle.
     Returns the resulting quaternion.
@@ -222,6 +234,35 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+    \internal
+ */
+void QTransform::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    switch (change->type()) {
+    case PropertyUpdated: {
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        if (propertyChange->propertyName() == QByteArrayLiteral("worldMatrix")) {
+            const bool blocked = blockNotifications(true);
+            setWorldMatrix(propertyChange->value().value<QMatrix4x4>());
+            blockNotifications(blocked);
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void QTransform::setWorldMatrix(const QMatrix4x4 &worldMatrix)
+{
+    Q_D(QTransform);
+    if (d->m_worldMatrix == worldMatrix)
+        return;
+    d->m_worldMatrix = worldMatrix;
+    emit worldMatrixChanged(worldMatrix);
+}
+
 void QTransform::setMatrix(const QMatrix4x4 &m)
 {
     Q_D(QTransform);
@@ -240,7 +281,6 @@ void QTransform::setMatrix(const QMatrix4x4 &m)
         emit scale3DChanged(s);
         emit rotationChanged(r);
         emit translationChanged(t);
-
         const bool wasBlocked = blockNotifications(true);
         emit matrixChanged();
         emit scaleChanged(d->m_scale.x());
@@ -327,6 +367,30 @@ QMatrix4x4 QTransform::matrix() const
         d->m_matrixDirty = false;
     }
     return d->m_matrix;
+}
+
+/*!
+    \property QTransform::worldMatrix
+
+    Holds the world transformation matrix for the transform. This assumes the
+    QTransform component is being referenced by a QEntity. This makes it more
+    convenient to identify when a QEntity part of a subtree has been
+    transformed in the world even though its local transformation might not
+    have changed.
+
+    \since 5.14
+ */
+
+/*!
+    Returns the world transformation matrix associated to the QTransform when
+    referenced by a QEntity which may be part of a QEntity hierarchy.
+
+    \since 5.14
+ */
+QMatrix4x4 QTransform::worldMatrix() const
+{
+    Q_D(const QTransform);
+    return d->m_worldMatrix;
 }
 
 /*!

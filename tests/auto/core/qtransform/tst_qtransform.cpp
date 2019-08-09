@@ -36,6 +36,15 @@
 
 using namespace Qt3DCore;
 
+class FakeTransform : public Qt3DCore::QTransform
+{
+public:
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override
+    {
+        Qt3DCore::QTransform::sceneChangeEvent(change);
+    }
+};
+
 class tst_QTransform : public QObject
 {
     Q_OBJECT
@@ -49,6 +58,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(transform.isShareable(), false);
         QCOMPARE(transform.matrix(), QMatrix4x4());
+        QCOMPARE(transform.worldMatrix(), QMatrix4x4());
         QCOMPARE(transform.scale(), 1.0f);
         QCOMPARE(transform.scale3D(), QVector3D(1.0f, 1.0f, 1.0f));
         QCOMPARE(transform.rotation(), QQuaternion());
@@ -112,6 +122,7 @@ private Q_SLOTS:
         QCOMPARE(transform->translation(), cloneData.translation);
         QCOMPARE(transform->scale3D(), cloneData.scale);
         QCOMPARE(transform->rotation(), cloneData.rotation);
+        QCOMPARE(transform->worldMatrix(), QMatrix4x4());
     }
 
     void checkPropertyUpdates()
@@ -341,6 +352,44 @@ private Q_SLOTS:
 
         // Note: t.matrix() != t2.matrix() since different matrices
         // can result in the same scale, rotation, translation
+    }
+
+    void checkUpdateWorldTransform()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        FakeTransform t;
+        arbiter.setArbiterOnNode(&t);
+
+        // WHEN
+        QSignalSpy spy(&t, SIGNAL(worldMatrixChanged(QMatrix4x4)));
+
+        // THEN
+        QVERIFY(spy.isValid());
+
+        // WHEN
+        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        valueChange->setPropertyName("worldMatrix");
+        const QMatrix4x4 newValue(1.0f, 2.0f, 3.0f, 4.0f,
+                                  5.0f, 6.0f, 7.0f, 8.0f,
+                                  9.0f, 10.0f, 11.0f, 12.0f,
+                                  13.0f, 14.0f, 15.0f, 16.0f);
+        valueChange->setValue(newValue);
+        t.sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(t.worldMatrix(), newValue);
+
+        // WHEN
+        spy.clear();
+        t.sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spy.count(), 0);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(t.worldMatrix(), newValue);
     }
 };
 

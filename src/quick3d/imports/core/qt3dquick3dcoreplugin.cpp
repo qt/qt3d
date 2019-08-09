@@ -69,6 +69,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader, 12>(uri, 2, 12, "EntityLoader");
     qmlRegisterType<Qt3DCore::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
     qmlRegisterType<Qt3DCore::QTransform>(uri, 2, 0, "Transform");
+    qmlRegisterType<Qt3DCore::QTransform, 14>(uri, 2, 14, "Transform");
     qmlRegisterType<Qt3DCore::QArmature>(uri, 2, 10, "Armature");
     qmlRegisterUncreatableType<Qt3DCore::QAbstractSkeleton>(uri, 2, 10, "AbstractSkeleton", QStringLiteral("AbstractSkeleton is an abstract base class"));
     qmlRegisterType<Qt3DCore::QSkeletonLoader>(uri, 2, 10, "SkeletonLoader");

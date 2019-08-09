@@ -52,7 +52,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Transform::Transform()
-    : BackendNode()
+    : BackendNode(ReadWrite)
     , m_rotation()
     , m_scale(1.0f, 1.0f, 1.0f)
     , m_translation()
@@ -117,6 +117,15 @@ void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     markDirty(AbstractRenderer::TransformDirty);
 
     BackendNode::sceneChangeEvent(e);
+}
+
+void Transform::notifyWorldTransformChanged(const Matrix4x4 &worldMatrix)
+{
+    auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
+    change->setPropertyName("worldMatrix");
+    change->setValue(convertToQMatrix4x4(worldMatrix));
+    notifyObservers(change);
 }
 
 void Transform::updateMatrix()

@@ -61,10 +61,15 @@ void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Ma
     Matrix4x4 worldTransform(parentTransform);
     Transform *nodeTransform = node->renderComponent<Transform>();
 
-    if (nodeTransform != nullptr && nodeTransform->isEnabled())
+    const bool hasTransformComponent = nodeTransform != nullptr && nodeTransform->isEnabled();
+    if (hasTransformComponent)
         worldTransform = worldTransform * nodeTransform->transformMatrix();
 
-    *(node->worldTransform()) = worldTransform;
+    if (*(node->worldTransform()) != worldTransform) {
+        *(node->worldTransform()) = worldTransform;
+        if (hasTransformComponent)
+            nodeTransform->notifyWorldTransformChanged(worldTransform);
+    }
 
     const auto childrenHandles = node->childrenHandles();
     for (const HEntity &handle : childrenHandles) {

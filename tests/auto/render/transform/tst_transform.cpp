@@ -32,8 +32,10 @@
 #include <Qt3DCore/private/qtransform_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <private/qbackendnode_p.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
+#include "testpostmanarbiter.h"
 
 class tst_Transform : public Qt3DCore::QBackendNodeTester
 {
@@ -171,6 +173,30 @@ private Q_SLOTS:
         }
     }
 
+    void checkWorldTransformUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::Render::Transform backend;
+
+        Qt3DCore::QBackendNodePrivate::get(&backend)->setArbiter(&arbiter);
+
+        // WHEN
+        const QMatrix4x4 expectedNewWorldMatrix(1.0f, 2.0f, 3.0f, 4.0f,
+                                                5.0f, 6.0f, 7.0f, 8.0f,
+                                                9.0f, 10.0f, 11.0f, 12.0f,
+                                                13.0f, 14.0f, 15.0f, 16.0f);
+        Matrix4x4 newWorldMatrix(expectedNewWorldMatrix);
+        backend.notifyWorldTransformChanged(newWorldMatrix);
+
+        // THEN
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(arbiter.events.count(), 1);
+        QCOMPARE(change->propertyName(), "worldMatrix");
+        QCOMPARE(change->value().value<QMatrix4x4>(), expectedNewWorldMatrix);
+
+        arbiter.events.clear();
+    }
 };
 
 QTEST_MAIN(tst_Transform)
