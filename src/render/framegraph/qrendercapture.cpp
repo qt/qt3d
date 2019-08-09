@@ -119,6 +119,7 @@ namespace Qt3DRender {
  * \since 5.9
  */
 
+#if QT_DEPRECATED_SINCE(5, 9)
 /*!
  * \qmlmethod void Qt3D.Render::RenderCaptureReply::saveToFile(fileName)
  * \deprecated
@@ -127,6 +128,7 @@ namespace Qt3DRender {
  *
  * Deprecated in 5.9. Use saveImage().
  */
+#endif
 
 /*!
  * \qmlmethod RenderCaptureReply Qt3D.Render::RenderCapture::requestCapture(int captureId)
@@ -226,6 +228,7 @@ bool QRenderCaptureReply::saveImage(const QString &fileName) const
     return false;
 }
 
+#if QT_DEPRECATED_SINCE(5, 9)
 /*!
  * \deprecated
  * Saves the render capture result as an image to \a fileName.
@@ -238,6 +241,7 @@ void QRenderCaptureReply::saveToFile(const QString &fileName) const
     if (d->m_complete)
         d->m_image.save(fileName);
 }
+#endif
 
 /*!
  * \internal

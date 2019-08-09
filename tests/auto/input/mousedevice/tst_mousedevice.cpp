@@ -178,11 +178,14 @@ private Q_SLOTS:
         Qt3DInput::Input::MouseDevice backendMouseDevice;
 
         // WHEN
-        auto eventList = QList<QT_PREPEND_NAMESPACE(QWheelEvent)>() << QT_PREPEND_NAMESPACE(QWheelEvent)(QPointF(500.0f, 500.0f),
-                                                                                                         120,
-                                                                                                         Qt::NoButton,
-                                                                                                         Qt::NoModifier,
-                                                                                                         Qt::Vertical);
+        auto eventList = QList<QT_PREPEND_NAMESPACE(QWheelEvent)>()
+                << QT_PREPEND_NAMESPACE(QWheelEvent)(QPointF(500.0, 500.0),
+                                                     QPointF(), QPoint(),
+                                                     QPoint(0, 120),
+                                                     Qt::NoButton,
+                                                     Qt::NoModifier,
+                                                     Qt::NoScrollPhase,
+                                                     false);
         backendMouseDevice.updateWheelEvents(eventList);
 
         // THEN
@@ -191,11 +194,14 @@ private Q_SLOTS:
         QCOMPARE(backendMouseDevice.sensitivity(), 0.1f);
 
         // WHEN
-        eventList = QList<QT_PREPEND_NAMESPACE(QWheelEvent)>() << QT_PREPEND_NAMESPACE(QWheelEvent)(QPointF(500.0f, 500.0f),
-                                                                                                    120,
-                                                                                                    Qt::NoButton,
-                                                                                                    Qt::NoModifier,
-                                                                                                    Qt::Horizontal);
+        eventList = QList<QT_PREPEND_NAMESPACE(QWheelEvent)>()
+                << QT_PREPEND_NAMESPACE(QWheelEvent)(QPointF(500.0, 500.0),
+                                                     QPointF(), QPoint(),
+                                                     QPoint(120, 0),
+                                                     Qt::NoButton,
+                                                     Qt::NoModifier,
+                                                     Qt::NoScrollPhase,
+                                                     false);
         backendMouseDevice.updateWheelEvents(eventList);
 
         // THEN
@@ -204,11 +210,13 @@ private Q_SLOTS:
         QCOMPARE(backendMouseDevice.sensitivity(), 0.1f);
 
         // WHEN
-        eventList = QList<QT_PREPEND_NAMESPACE(QWheelEvent)>() << QT_PREPEND_NAMESPACE(QWheelEvent)(QPointF(500.0f, 500.0f),
-                                                                                                    0,
-                                                                                                    Qt::NoButton,
-                                                                                                    Qt::NoModifier,
-                                                                                                    Qt::Horizontal);
+        eventList = QList<QT_PREPEND_NAMESPACE(QWheelEvent)>()
+                << QT_PREPEND_NAMESPACE(QWheelEvent)(QPointF(500.0, 500.0),
+                                                     QPointF(), QPoint(), QPoint(),
+                                                     Qt::NoButton,
+                                                     Qt::NoModifier,
+                                                     Qt::NoScrollPhase,
+                                                     false);
         backendMouseDevice.updateWheelEvents(eventList);
 
         // THEN
