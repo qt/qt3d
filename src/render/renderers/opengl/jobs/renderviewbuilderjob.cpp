@@ -64,38 +64,11 @@ void RenderViewBuilderJob::run()
     // Build RenderCommand should perform the culling as we have no way to determine
     // if a child has a mesh in the view frustum while its parent isn't contained in it.
     if (!m_renderView->noDraw()) {
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-        gatherLightsTime = timer.nsecsElapsed();
-        timer.restart();
-#endif
-    if (!m_renderView->isCompute())
-        m_commands = m_renderView->buildDrawRenderCommands(m_renderables);
-    else
-        m_commands = m_renderView->buildComputeRenderCommands(m_renderables);
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-        buildCommandsTime = timer.nsecsElapsed();
-        timer.restart();
-#endif
+        if (!m_renderView->isCompute())
+            m_commands = m_renderView->buildDrawRenderCommands(m_renderables);
+        else
+            m_commands = m_renderView->buildComputeRenderCommands(m_renderables);
     }
-
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qint64 creationTime = timer.nsecsElapsed();
-    timer.restart();
-#endif
-
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qint64 sortTime = timer.nsecsElapsed();
-#endif
-
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qDebug() << m_index
-             << "state:" << gatherStateTime / 1.0e6
-             << "lights:" << gatherLightsTime / 1.0e6
-             << "build commands:" << buildCommandsTime / 1.0e6
-             << "sort:" << sortTime / 1.0e6;
-#endif
-
-
 }
 
 } // Render
