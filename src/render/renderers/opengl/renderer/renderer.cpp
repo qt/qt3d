@@ -896,7 +896,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                     if (rGeometry->isDirty())
                         m_dirtyGeometry.push_back(rGeometry);
 
-                    if (!command->m_attributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
+                    if (!command->m_activeAttributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
                         Profiling::GLTimeRecorder recorder(Profiling::VAOUpload);
                         // Activate shader
                         m_submissionContext->activateShader(shader->dna());
@@ -918,9 +918,8 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
                 shader->prepareUniforms(command->m_parameterPack);
 
-                // TO DO: The step below could be performed by the RenderCommand builder job
                 { // Scoped to show extent
-                    command->m_isValid = !command->m_attributes.empty();
+                    command->m_isValid = !command->m_activeAttributes.empty();
                     if (!command->m_isValid)
                         continue;
 
@@ -941,7 +940,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                             indirectAttribute = attribute;
                             break;
                         case QAttribute::VertexAttribute: {
-                            if (command->m_attributes.contains(attribute->nameId()))
+                            if (command->m_activeAttributes.contains(attribute->nameId()))
                                 estimatedCount = qMax(attribute->count(), estimatedCount);
                             break;
                         }
@@ -2174,7 +2173,7 @@ bool Renderer::updateVAOWithAttributes(Geometry *geometry,
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate)
                 m_submissionContext->specifyIndices(buffer);
             // Vertex Attribute
-        } else if (command->m_attributes.contains(attribute->nameId())) {
+        } else if (command->m_activeAttributes.contains(attribute->nameId())) {
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate) {
                 // Find the location for the attribute
                 const QVector<ShaderAttribute> shaderAttributes = shader->attributes();
@@ -2219,7 +2218,7 @@ bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
             continue;
 
         if ((attribute->attributeType() == QAttribute::IndexAttribute && attribute->isDirty()) ||
-                (command->m_attributes.contains(attribute->nameId()) && attribute->isDirty()))
+                (command->m_activeAttributes.contains(attribute->nameId()) && attribute->isDirty()))
             return true;
     }
     return false;
