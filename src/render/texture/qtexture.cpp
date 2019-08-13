@@ -1609,6 +1609,7 @@ bool QTextureFromSourceGenerator::isMirrored() const
 
 /*!
  * \class QSharedGLTexture
+ * \inmodule Qt3DRender
  * \brief Allows to use a textureId from a separate OpenGL context in a Qt 3D scene.
  *
  * Depending on the rendering mode used by Qt 3D, the shared context will either be:

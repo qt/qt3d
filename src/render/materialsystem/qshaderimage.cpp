@@ -65,7 +65,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     \instantiates Qt3DRender::QShaderImage
     \inqmlmodule Qt3D.Render
     \since 5.14
-    \brief Provides Image access to shader programs
+    \brief Provides Image access to shader programs.
 
     To make the content of textures available for read and write operations in
     a shader, they need to exposed as ShaderImage. Textures can be composed of
@@ -312,7 +312,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
        \li uimageCubeArray
        \li GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY
        \li TextureCubeMapArray
-    \endlist
+    \endtable
 
     Expected use would look like:
 
@@ -400,8 +400,8 @@ QShaderImagePrivate::~QShaderImagePrivate()
     It however has to be compatible (matching in size but not necessarily by
     class type). For instance a texture of format R32F (size 32bits, class
     1x32) could be used with an image of format RGBA8I (size 32bits, class
-    4x8). Table 8.27 of the \l {OpenG specifications}
-    {https://www.khronos.org/registry/OpenGL/specs/gl/glspec45.core.pdf}
+    4x8). Table 8.27 of the
+    \l{https://www.khronos.org/registry/OpenGL/specs/gl/glspec45.core.pdf}{OpenGL specifications}
     shows the size and class for all supported image formats.
 
     By default Qt3D will try to set the image format to match that of the
@@ -414,7 +414,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     \class Qt3DRender::QShaderImage
     \inmodule Qt3DRender
     \since 5.14
-    \brief Provides Image access to shader programs
+    \brief Provides Image access to shader programs.
 
     To make the content of textures available for read and write operations in
     a shader, they need to exposed as QShaderImage. Textures can be composed of
@@ -728,7 +728,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     the image. If a shader tries to write or read from an image that has
     incompatible access, the behavior is undefined.
 
-    \defaut QShaderImage::ReadWrite
+    \default QShaderImage::ReadWrite
  */
 
 /*!
@@ -741,8 +741,8 @@ QShaderImagePrivate::~QShaderImagePrivate()
     It however has to be compatible (matching in size but not necessarily by
     class type). For instance a texture of format R32F (size 32bits, class
     1x32) could be used with an image of format RGBA8I (size 32bits, class
-    4x8). Table 8.27 of the \l {OpenG specifications}
-    {https://www.khronos.org/registry/OpenGL/specs/gl/glspec45.core.pdf}
+    4x8). Table 8.27 of the
+    \l{https://www.khronos.org/registry/OpenGL/specs/gl/glspec45.core.pdf}{OpenGL specifications}
     shows the size and class for all supported Image formats.
 
     By default Qt3D will try to set the image format to match that of the

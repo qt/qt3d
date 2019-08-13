@@ -199,7 +199,7 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
  * \value NearestPick Only the nearest entity to picking ray origin intersected by the picking ray
  * is picked (default).
  * \value AllPicks All entities that intersect the picking ray are picked.
- * \value PriorityPick Selects the entity whose object picker has the highest
+ * \value NearestPriorityPick Selects the entity whose object picker has the highest
  * value. If several object pickers have the same priority, the closest one on
  * the ray is selected.
  *

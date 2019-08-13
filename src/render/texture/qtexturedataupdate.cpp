@@ -81,6 +81,7 @@ bool QTextureDataUpdatePrivate::operator!=(const QTextureDataUpdatePrivate &othe
 
 /*!
     \class Qt3DRender::QTextureDataUpdate
+    \inmodule Qt3DRender
     \brief QTextureDataUpdate holds content and information required to perform
     partial updates of a texture content.
 
