@@ -109,6 +109,8 @@ namespace Qt3DRender {
 
     \sa PickingSettings, Geometry, Attribute, PickEvent, PickTriangleEvent
 
+    \note To receive hover events in QtQuick, the hoverEnabled property of Scene3D must also be set.
+
     \note Instances of this component shouldn't be shared, not respecting that
     condition will most likely result in undefined behavior.
  */
