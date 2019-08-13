@@ -522,6 +522,13 @@ void GLTexture::uploadGLTextureData()
 
 void GLTexture::updateGLTextureParameters()
 {
+    const bool isMultisampledTexture = (m_actualTarget == QAbstractTexture::Target2DMultisample ||
+                                        m_actualTarget == QAbstractTexture::Target2DMultisampleArray);
+    // Multisampled textures can only be accessed by texelFetch in shaders
+    // and don't support wrap modes and mig/mag filtes
+    if (isMultisampledTexture)
+        return;
+
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeX));
     if (m_actualTarget != QAbstractTexture::Target1D &&
         m_actualTarget != QAbstractTexture::Target1DArray &&
