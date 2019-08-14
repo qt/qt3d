@@ -185,7 +185,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -254,7 +254,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 2 * 5);
@@ -274,7 +274,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -354,7 +354,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -423,7 +423,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 2 * 4);
@@ -437,7 +437,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -515,7 +515,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -585,7 +585,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 2 * 4);
@@ -599,7 +599,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -679,7 +679,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -747,7 +747,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 4);
@@ -761,7 +761,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());

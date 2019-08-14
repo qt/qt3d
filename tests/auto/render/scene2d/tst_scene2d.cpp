@@ -276,7 +276,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer, backendBuffer);
+        simulateInitializationSync(dataBuffer, backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer);
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());

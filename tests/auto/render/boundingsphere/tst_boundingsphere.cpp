@@ -314,13 +314,13 @@ private Q_SLOTS:
         Qt3DRender::Render::Buffer *vbufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(vbuffer->id());
         vbufferBackend->setRenderer(test->renderer());
         vbufferBackend->setManager(test->nodeManagers()->bufferManager());
-        simulateInitialization(vbuffer, vbufferBackend);
+        simulateInitializationSync(vbuffer, vbufferBackend);
 
         ibuffer->setData(idata);
         Qt3DRender::Render::Buffer *ibufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(ibuffer->id());
         ibufferBackend->setRenderer(test->renderer());
         ibufferBackend->setManager(test->nodeManagers()->bufferManager());
-        simulateInitialization(ibuffer, ibufferBackend);
+        simulateInitializationSync(ibuffer, ibufferBackend);
 
         Qt3DRender::QGeometry *g = new Qt3DRender::QGeometry;
         for (int i = 0; i < 2; ++i)
@@ -426,7 +426,7 @@ private Q_SLOTS:
         Qt3DRender::Render::Buffer *vbufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(vbuffer->id());
         vbufferBackend->setRenderer(test->renderer());
         vbufferBackend->setManager(test->nodeManagers()->bufferManager());
-        simulateInitialization(vbuffer, vbufferBackend);
+        simulateInitializationSync(vbuffer, vbufferBackend);
 
         Qt3DRender::QGeometry *g = new Qt3DRender::QGeometry;
         g->addAttribute(new Qt3DRender::QAttribute);

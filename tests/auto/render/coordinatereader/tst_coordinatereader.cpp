@@ -149,7 +149,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -232,7 +232,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -326,7 +326,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -415,7 +415,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
