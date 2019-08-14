@@ -187,7 +187,7 @@ public:
 
     bool isRunning() const override { return m_running.load(); }
 
-    void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *sgRoot) override;
+    void setSceneRoot(Entity *sgRoot) override;
     Entity *sceneRoot() const override { return m_renderSceneRoot; }
 
     FrameGraphNode *frameGraphRoot() const override;

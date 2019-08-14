@@ -542,7 +542,7 @@ void QRenderAspect::onEngineStartup()
     Render::NodeManagers *managers = d->m_renderer->nodeManagers();
     Render::Entity *rootEntity = managers->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
     Q_ASSERT(rootEntity);
-    d->m_renderer->setSceneRoot(d, rootEntity);
+    d->m_renderer->setSceneRoot(rootEntity);
 }
 
 void QRenderAspect::onRegistered()

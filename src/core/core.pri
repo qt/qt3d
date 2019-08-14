@@ -11,7 +11,6 @@ HEADERS += \
     $$PWD/qobserverinterface_p.h \
     $$PWD/qlockableobserverinterface_p.h \
     $$PWD/qchangearbiter_p.h \
-    $$PWD/qbackendnodefactory_p.h \
     $$PWD/qt3dcore_global_p.h \
     $$PWD/qscene_p.h \
     $$PWD/qpostman_p_p.h
@@ -26,5 +25,4 @@ SOURCES += \
     $$PWD/qlockableobserverinterface.cpp \
     $$PWD/qsceneobserverinterface.cpp \
     $$PWD/qpostman.cpp \
-    $$PWD/qscene.cpp \
-    $$PWD/qbackendnodefactory.cpp
+    $$PWD/qscene.cpp

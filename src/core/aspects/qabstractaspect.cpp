@@ -300,13 +300,6 @@ void QAbstractAspectPrivate::sendPropertyMessages(QNode *node, QBackendNode *bac
     }
 }
 
-QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChangeBasePtr &change) const
-{
-    Q_UNUSED(change);
-    Q_ASSERT(false); // should not be here
-    return nullptr;
-}
-
 QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *node) const
 {
     const BackendNodeMapperAndInfo backendNodeMapperInfo = mapperForNode(node);

@@ -56,7 +56,6 @@
 
 #include <Qt3DCore/private/qaspectjobproviderinterface_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/private/qbackendnodefactory_p.h>
 #include <Qt3DCore/private/qsceneobserverinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <QtCore/private/qobject_p.h>
@@ -104,7 +103,6 @@ private:
 
 class Q_3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
         : public QObjectPrivate
-        , public QBackendNodeFactory
         , public QSceneObserverInterface
         , public QAspectJobProviderInterface
 {
@@ -120,7 +118,6 @@ public:
 
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) override;
 
-    QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const override;
     QBackendNode *createBackendNode(QNode *node) const;
     void clearBackendNode(const QNodeDestroyedChangePtr &change) const;
     void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
