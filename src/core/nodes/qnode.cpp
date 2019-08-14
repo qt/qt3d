@@ -39,6 +39,7 @@
 
 #include "qnode.h"
 #include "qnode_p.h"
+#include "qscene_p.h"
 
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/qaspectengine.h>
@@ -55,10 +56,11 @@
 
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <QtCore/private/qmetaobject_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -110,17 +112,15 @@ void QNodePrivate::init(QNode *parent)
  *
  * Sends QNodeCreatedChange events to the aspects.
  */
-void QNodePrivate::notifyCreationChange()
+void QNodePrivate::createBackendNode()
 {
-    Q_Q(QNode);
     // Do nothing if we already have already sent a node creation change
     // and not a subsequent node destroyed change.
-    if (m_hasBackendNode || !m_scene)
+    if (m_hasBackendNode || !m_scene || !m_scene->engine())
         return;
-    QNodeCreatedChangeGenerator generator(q);
-    const auto creationChanges = generator.creationChanges();
-    for (const auto &change : creationChanges)
-        notifyObservers(change);
+
+    Q_Q(QNode);
+    QAspectEnginePrivate::get(m_scene->engine())->addNode(q);
 }
 
 /*!
@@ -189,7 +189,7 @@ void QNodePrivate::_q_postConstructorInit()
         return;
 
     // Set the scene on this node and all children it references so that all
-    // children have a scene set since notifyCreationChanges will set
+    // children have a scene set since createBackendNode will set
     // m_hasBackendNode to true for all children, which would prevent them from
     // ever having their scene set
     if (m_scene) {
@@ -198,7 +198,7 @@ void QNodePrivate::_q_postConstructorInit()
     }
 
     // Let the backend know we have been added to the scene
-    notifyCreationChange();
+    createBackendNode();
 
     // Let the backend parent know that they have a new child
     Q_ASSERT(parentNode);
@@ -247,7 +247,7 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     }
 
     // Update the scene
-    // TODO: Fold this into the QNodeCreatedChangeGenerator so we don't have to
+    // TODO: Fold this into the QAspectEnginePrivate::addNode so we don't have to
     // traverse the sub tree three times!
     QNodeVisitor visitor;
     visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
@@ -340,13 +340,13 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
         // child->setParent(subTreeRoot)
         // We need to take into account that subTreeRoot needs to be
         // created in the backend before the child.
-        // Therefore we only call notifyCreationChanges if the parent
+        // Therefore we only call createBackendNode if the parent
         // hasn't been created yet as we know that when the parent will be
         // fully created, it will also send the changes for all of its
         // children
 
         if (newParentPrivate->m_hasBackendNode)
-            notifyCreationChange();
+            createBackendNode();
 
         // If we have a valid new parent, we let him know that we are its child
         QNodePrivate::get(parent)->_q_addChild(q);

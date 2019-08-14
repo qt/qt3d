@@ -166,7 +166,7 @@ public:
     void _q_ensureBackendNodeCreated();
 
 private:
-    void notifyCreationChange();
+    void createBackendNode();
     void notifyDestructionChangesAndRemoveFromScene();
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);

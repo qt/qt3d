@@ -67,7 +67,6 @@ public:
     virtual ~QSceneObserverInterface();
 
 private:
-    virtual void sceneNodeAdded(QSceneChangePtr &e) = 0;
     virtual void sceneNodeRemoved(QSceneChangePtr &e) = 0;
 
     friend class QChangeArbiter;

@@ -112,7 +112,8 @@ public:
     QAbstractAspectPrivate();
     ~QAbstractAspectPrivate();
 
-    void setRootAndCreateNodes(QEntity *rootObject, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
+    void setRootAndCreateNodes(QEntity *rootObject, const QVector<QNode *> &nodes);
+    void createNodes(const QVector<QNode *> &nodes);
 
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
@@ -120,12 +121,12 @@ public:
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) override;
 
     QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const override;
+    QBackendNode *createBackendNode(QNode *node) const;
     void clearBackendNode(const QNodeDestroyedChangePtr &change) const;
     void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
     virtual void syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const;
     void sendPropertyMessages(QNode *node, QBackendNode *backend) const;
 
-    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) override;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) override;
 
     virtual void onEngineAboutToShutdown();
@@ -141,13 +142,15 @@ public:
         DefaultMapper = 0,
         SupportsSyncing = 1 << 0
     };
+    using BackendNodeMapperAndInfo = QPair<QBackendNodeMapperPtr, NodeMapperInfo>;
+    BackendNodeMapperAndInfo mapperForNode(QNode *n) const;
 
     QEntity *m_root;
     QNodeId m_rootId;
     QAspectManager *m_aspectManager;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
-    QHash<const QMetaObject*, QPair<QBackendNodeMapperPtr, NodeMapperInfo>> m_backendCreatorFunctors;
+    QHash<const QMetaObject*, BackendNodeMapperAndInfo> m_backendCreatorFunctors;
     QMutex m_singleShotMutex;
     QVector<QAspectJobPtr> m_singleShotJobs;
 

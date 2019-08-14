@@ -52,7 +52,6 @@
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
@@ -63,6 +62,34 @@
 #endif
 
 QT_BEGIN_NAMESPACE
+
+namespace{
+
+QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
+{
+    using namespace Qt3DCore;
+
+    QVector<QNode *> nodes;
+    QNodeVisitor visitor;
+    visitor.traverse(root, [&nodes](QNode *node) {
+        nodes.append(node);
+
+        // Store the metaobject of the node in the QNode so that we have it available
+        // to us during destruction in the QNode destructor. This allows us to send
+        // the QNodeId and the metaobject as typeinfo to the backend aspects so they
+        // in turn can find the correct QBackendNodeMapper object to handle the destruction
+        // of the corresponding backend nodes.
+        QNodePrivate *d = QNodePrivate::get(node);
+        d->m_typeInfo = const_cast<QMetaObject*>(QNodePrivate::findStaticMetaObject(node->metaObject()));
+
+        // Mark this node as having been handled for creation so that it is picked up
+        d->m_hasBackendNode = true;
+    });
+
+    return nodes;
+}
+
+}
 
 namespace Qt3DCore {
 
@@ -118,6 +145,11 @@ void QAspectEnginePrivate::initEntity(QEntity *entity)
             m_scene->addEntityForComponent(comp->id(), entity->id());
         }
     }
+}
+
+void QAspectEnginePrivate::addNode(QNode *node)
+{
+    m_aspectManager->addNodes(getNodesForCreation(node));
 }
 
 /*!
@@ -437,9 +469,7 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // deregister the nodes from the scene
     d->initNodeTree(root.data());
 
-    // Traverse tree to generate a vector of creation changes
-    const QNodeCreatedChangeGenerator generator(root.data());
-    auto creationChanges = generator.creationChanges();
+    const QVector<QNode *> nodes = getNodesForCreation(root.data());
 
     // Specify if the AspectManager should be driving the simulation loop or not
     d->m_aspectManager->setRunMode(d->m_runMode);
@@ -451,7 +481,7 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // TODO: Pass the creation changes via the arbiter rather than relying upon
     // an invokeMethod call.
     qCDebug(Aspects) << "Begin setting scene root on aspect manager";
-    d->m_aspectManager->setRootEntity(root.data(), creationChanges);
+    d->m_aspectManager->setRootEntity(root.data(), nodes);
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
     d->m_aspectManager->enterSimulationLoop();
 }

@@ -42,7 +42,6 @@
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 QT_BEGIN_NAMESPACE
 

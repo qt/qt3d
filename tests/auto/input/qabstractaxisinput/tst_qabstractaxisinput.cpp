@@ -29,7 +29,6 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QAbstractAxisInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>

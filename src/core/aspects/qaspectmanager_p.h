@@ -94,7 +94,8 @@ public Q_SLOTS:
     void shutdown();
     void processFrame();
 
-    void setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
+    void setRootEntity(Qt3DCore::QEntity *root, const QVector<QNode *> &nodes);
+    void addNodes(const QVector<QNode *> &nodes);
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
     void unregisterAspect(Qt3DCore::QAbstractAspect *aspect);
 

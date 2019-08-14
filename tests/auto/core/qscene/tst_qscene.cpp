@@ -304,10 +304,12 @@ void tst_QScene::deleteChildNode()
     for (int i = 0; i < 10; i++) {
         Qt3DCore::QNode *child1 = new tst_Node();
         child1->setParent(nodes1.isEmpty() ? root1 : nodes1.last());
+        Qt3DCore::QNodePrivate::get(child1)->m_hasBackendNode = true;
         nodes1.append(child1);
 
         Qt3DCore::QNode *child2 = new tst_Node();
         child2->setParent(nodes2.isEmpty() ? root2 : nodes2.last());
+        Qt3DCore::QNodePrivate::get(child2)->m_hasBackendNode = true;
         nodes2.append(child2);
     }
     QCoreApplication::processEvents();
@@ -363,6 +365,7 @@ void tst_QScene::removeChildNode()
             child->setParent(root);
         else
             child->setParent(nodes.last());
+        Qt3DCore::QNodePrivate::get(child)->m_hasBackendNode = true;
         nodes.append(child);
     }
 

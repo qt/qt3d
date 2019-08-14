@@ -46,7 +46,7 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 Qt3DRender::QGeometryRenderer *customIndexedGeometryRenderer()
 {
@@ -320,18 +320,31 @@ public:
     TestAspect(Qt3DCore::QNode *root)
         : Qt3DRender::QRenderAspect()
     {
-        const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
-        const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
+        QVector<Qt3DCore::QNode *> nodes;
+        Qt3DCore::QNodeVisitor v;
+        v.traverse(root, [&nodes](Qt3DCore::QNode *node) {
+            Qt3DCore::QNodePrivate *d = Qt3DCore::QNodePrivate::get(node);
+            d->m_typeInfo = const_cast<QMetaObject*>(Qt3DCore::QNodePrivate::findStaticMetaObject(node->metaObject()));
+            d->m_hasBackendNode = true;
+            nodes << node;
+        });
 
-        for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
-            d_func()->createBackendNode(change);
+        for (const auto node: nodes)
+            d_func()->createBackendNode(node);
     }
+
+    ~TestAspect();
 
     Qt3DRender::Render::NodeManagers *nodeManagers() const
     {
         return d_func()->m_renderer->nodeManagers();
     }
 };
+
+TestAspect::~TestAspect()
+{
+
+}
 
 QT_END_NAMESPACE
 

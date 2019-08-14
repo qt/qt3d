@@ -168,9 +168,9 @@ int main(int argc, char* argv[])
         Qt3DRender::QGeometryRenderer *customMeshRenderer = new Qt3DRender::QGeometryRenderer;
         Qt3DRender::QGeometry *customGeometry = new Qt3DRender::QGeometry(customMeshRenderer);
 
-        Qt3DRender::QBuffer *vertexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, customGeometry);
-        Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, customGeometry);
-        Qt3DRender::QBuffer *indirectDrawDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::DrawIndirectBuffer, customGeometry);
+        Qt3DRender::QBuffer *vertexDataBuffer = new Qt3DRender::QBuffer(customGeometry);
+        Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(customGeometry);
+        Qt3DRender::QBuffer *indirectDrawDataBuffer = new Qt3DRender::QBuffer(customGeometry);
 
         // 4 distinct vertices
         QByteArray vertexBufferData;
@@ -300,8 +300,8 @@ int main(int argc, char* argv[])
         Qt3DRender::QGeometryRenderer *customMeshRenderer = new Qt3DRender::QGeometryRenderer;
         Qt3DRender::QGeometry *customGeometry = new Qt3DRender::QGeometry(customMeshRenderer);
 
-        Qt3DRender::QBuffer *vertexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, customGeometry);
-        Qt3DRender::QBuffer *indirectDrawDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::DrawIndirectBuffer, customGeometry);
+        Qt3DRender::QBuffer *vertexDataBuffer = new Qt3DRender::QBuffer(customGeometry);
+        Qt3DRender::QBuffer *indirectDrawDataBuffer = new Qt3DRender::QBuffer(customGeometry);
 
 
         QVector<QVector3D> orderedPositionVertices;

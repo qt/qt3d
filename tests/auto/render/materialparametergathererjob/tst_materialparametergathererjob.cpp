@@ -29,8 +29,9 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
@@ -65,14 +66,20 @@ public:
         Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
         QRenderAspect::onRegistered();
 
-        const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
-        const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
+        QVector<Qt3DCore::QNode *> nodes;
+        Qt3DCore::QNodeVisitor v;
+        v.traverse(root, [&nodes](Qt3DCore::QNode *node) {
+            Qt3DCore::QNodePrivate *d = Qt3DCore::QNodePrivate::get(node);
+            d->m_typeInfo = const_cast<QMetaObject*>(Qt3DCore::QNodePrivate::findStaticMetaObject(node->metaObject()));
+            d->m_hasBackendNode = true;
+            nodes << node;
+        });
 
-        for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
-            d_func()->createBackendNode(change);
+        for (const auto node: nodes)
+            d_func()->createBackendNode(node);
 
         const auto handles = nodeManagers()->techniqueManager()->activeHandles();
-        for (const auto handle: handles) {
+        for (const auto &handle: handles) {
             Render::Technique *technique = nodeManagers()->techniqueManager()->data(handle);
             technique->setCompatibleWithRenderer(true);
         }

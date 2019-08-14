@@ -125,6 +125,7 @@ QEntity::QEntity(QNode *parent)
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+    connect(this, &QNode::parentChanged, this, &QEntity::onParentChanged);
 }
 
 QEntity::~QEntity()
@@ -259,10 +260,6 @@ QNodeId QEntityPrivate::parentEntityId() const
 
 QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
 {
-    // connect to the parentChanged signal here rather than constructor because
-    // until now there's no backend node to notify when parent changes
-    connect(this, &QNode::parentChanged, this, &QEntity::onParentChanged);
-
     auto creationChange = QNodeCreatedChangePtr<QEntityData>::create(this);
     auto &data = creationChange->data;
 
@@ -294,6 +291,10 @@ QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
 
 void QEntity::onParentChanged(QObject *)
 {
+    Q_D(QEntity);
+    if (!d->m_hasBackendNode)
+        return;
+
     const auto parentID = parentEntity() ? parentEntity()->id() : Qt3DCore::QNodeId();
     auto parentChange = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
     parentChange->setPropertyName("parentEntityUpdated");

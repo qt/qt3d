@@ -60,6 +60,7 @@
 #include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DCore/private/qtickclock_p.h>
 #include <Qt3DCore/private/qtickclockservice_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 
 #include <QtCore/QCoreApplication>
 
@@ -230,7 +231,7 @@ void QAspectManager::shutdown()
 }
 
 // MainThread called by QAspectEngine::setRootEntity
-void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes)
+void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<QNode *> &nodes)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
@@ -246,8 +247,14 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCo
 
     if (m_root) {
         for (QAbstractAspect *aspect : qAsConst(m_aspects))
-            aspect->d_func()->setRootAndCreateNodes(m_root, changes);
+            aspect->d_func()->setRootAndCreateNodes(m_root, nodes);
     }
+}
+
+void QAspectManager::addNodes(const QVector<QNode *> &nodes)
+{
+    for (QAbstractAspect *aspect : qAsConst(m_aspects))
+        aspect->d_func()->createNodes(nodes);
 }
 
 /*!
