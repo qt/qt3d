@@ -6,5 +6,6 @@ contains(QT_CONFIG, private_tests) {
         qtorusgeometry \
         qforwardrenderer \
         qfirstpersoncameracontroller \
-        qorbitcameracontroller
+        qorbitcameracontroller \
+        qtext2dentity
 }
