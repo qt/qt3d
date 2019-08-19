@@ -473,15 +473,13 @@ public:
 
     Vector3D_SSE mapVector(const Vector3D_SSE &vector) const
     {
-        const __m128 row1 = _mm_set_ps(0.0f, m13(), m12(), m11());
-        const __m128 row2 = _mm_set_ps(0.0f, m23(), m22(), m21());
-        const __m128 row3 = _mm_set_ps(0.0f, m33(), m32(), m31());
+        const Vector3D_SSE row1(m11(), m12(), m13());
+        const Vector3D_SSE row2(m21(), m22(), m23());
+        const Vector3D_SSE row3(m31(), m32(), m33());
 
-        const __m128 tmp = _mm_add_ps(_mm_mul_ps(vector.m_xyzw, row1), _mm_mul_ps(vector.m_xyzw, row2));
-
-        Vector3D_SSE v(Qt::Uninitialized);
-        v.m_xyzw = _mm_add_ps(tmp, _mm_mul_ps(vector.m_xyzw, row3));
-        return v;
+        return Vector3D(Vector3D_SSE::dotProduct(row1, vector),
+                        Vector3D_SSE::dotProduct(row2, vector),
+                        Vector3D_SSE::dotProduct(row3, vector));
     }
 
     friend Vector4D operator*(const Vector4D &vector, const Matrix4x4_AVX2 &matrix);
