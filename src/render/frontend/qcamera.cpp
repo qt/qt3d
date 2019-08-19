@@ -336,6 +336,18 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  * Holds the current projection matrix of the camera.
  */
 
+/*!
+ * \qmlproperty real Qt3D.Render::Camera::exposure
+ * Holds the current exposure of the camera.
+ *
+ * The default value is 0.0.
+ *
+ * The MetalRoughMaterial in Qt 3D Extras is currently the only provided
+ * material that makes use of camera exposure. Negative values will cause
+ * the material to be darker, and positive values will cause it to be lighter.
+ *
+ * Custom materials may choose to interpret the value differently.
+ */
 
 /*!
  * \qmlproperty vector3d Qt3D.Render::Camera::position
@@ -469,6 +481,14 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 /*!
  * \property QCamera::exposure
  * Holds the current exposure of the camera.
+ *
+ * The default value is 0.0.
+ *
+ * The MetalRoughMaterial in Qt 3D Extras is currently the only provided
+ * material that makes use of camera exposure. Negative values will cause
+ * the material to be darker, and positive values will cause it to be lighter.
+ *
+ * Custom materials may choose to interpret the value differently.
  */
 
 /*!
