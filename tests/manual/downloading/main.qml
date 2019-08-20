@@ -81,7 +81,7 @@ Entity {
 
     Mesh {
         id: mesh
-        source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;hb=refs/heads/dev;f=examples/qt3d/exampleresources/assets/chest/Chest.obj"
+        source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;f=examples/qt3d/exampleresources/assets/obj/plane-10x10.obj"
         onStatusChanged: console.log("Mesh status " + status)
     }
 
