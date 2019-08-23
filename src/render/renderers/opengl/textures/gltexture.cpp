@@ -474,15 +474,15 @@ QOpenGLTexture *GLTexture::buildGLTexture()
     QAbstractTexture::TextureFormat format = m_properties.format;
     if (ctx->isOpenGLES() && ctx->format().majorVersion() < 3) {
         switch (m_properties.format) {
-        case QOpenGLTexture::RGBA8_UNorm:
-        case QOpenGLTexture::RGBAFormat:
+        case QAbstractTexture::RGBA8_UNorm:
+        case QAbstractTexture::RGBAFormat:
             format = QAbstractTexture::RGBAFormat;
             break;
-        case QOpenGLTexture::RGB8_UNorm:
-        case QOpenGLTexture::RGBFormat:
+        case QAbstractTexture::RGB8_UNorm:
+        case QAbstractTexture::RGBFormat:
             format = QAbstractTexture::RGBFormat;
             break;
-        case QOpenGLTexture::DepthFormat:
+        case QAbstractTexture::DepthFormat:
             format = QAbstractTexture::DepthFormat;
             break;
         default:
@@ -675,8 +675,8 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
     const QPair<int, int> ctxGLVersion = ctx->format().version();
     if (ctxGLVersion.first > 4 || (ctxGLVersion.first == 4 && ctxGLVersion.second >= 5)) {
         // Only for GL 4.5+
-        QOpenGLFunctions_4_5_Core *gl5 = ctx->versionFunctions<QOpenGLFunctions_4_5_Core>();
 #ifdef GL_TEXTURE_TARGET
+        QOpenGLFunctions_4_5_Core *gl5 = ctx->versionFunctions<QOpenGLFunctions_4_5_Core>();
         if (gl5 != nullptr)
             gl5->glGetTextureParameteriv(m_sharedTextureId, GL_TEXTURE_TARGET, reinterpret_cast<int *>(&m_properties.target));
 #endif
