@@ -59,6 +59,7 @@ private Q_SLOTS:
         // GIVEN
         TestRenderer renderer;
         Qt3DRender::Render::Transform backendTransform;
+        backendTransform.setRenderer(&renderer);
 
         // WHEN
         {
@@ -67,7 +68,7 @@ private Q_SLOTS:
             transform.setTranslation(QVector3D(-1.0, 5.0f, -2.0f));
             transform.setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0), 30.0f));
             backendTransform.setRenderer(&renderer);
-            simulateInitialization(&transform, &backendTransform);
+            simulateInitializationSync(&transform, &backendTransform);
         }
         backendTransform.setEnabled(true);
 
@@ -94,7 +95,9 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::Transform backendTransform;
             backendTransform.setRenderer(&renderer);
-            simulateInitialization(&transform, &backendTransform);
+            TestRenderer renderer;
+            backendTransform.setRenderer(&renderer);
+            simulateInitializationSync(&transform, &backendTransform);
 
             // THEN
             QCOMPARE(backendTransform.isEnabled(), true);
@@ -109,9 +112,10 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::Transform backendTransform;
+            TestRenderer renderer;
             backendTransform.setRenderer(&renderer);
             transform.setEnabled(false);
-            simulateInitialization(&transform, &backendTransform);
+            simulateInitializationSync(&transform, &backendTransform);
 
             // THEN
             QCOMPARE(backendTransform.peerId(), transform.id());
@@ -123,17 +127,18 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DCore::QTransform frontendTranform;
         Qt3DRender::Render::Transform backendTransform;
         TestRenderer renderer;
         backendTransform.setRenderer(&renderer);
+        backendTransform.syncFromFrontEnd(&frontendTranform, true);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendTransform.sceneChangeEvent(change);
+            frontendTranform.setEnabled(newValue);
+            backendTransform.syncFromFrontEnd(&frontendTranform, false);
 
             // THEN
             QCOMPARE(backendTransform.isEnabled(), newValue);
@@ -143,10 +148,8 @@ private Q_SLOTS:
         {
             // WHEN
             const QQuaternion newValue = QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 1.0f, 0.0f), 45.0f);
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("rotation");
-            change->setValue(QVariant::fromValue(newValue));
-            backendTransform.sceneChangeEvent(change);
+            frontendTranform.setRotation(newValue);
+            backendTransform.syncFromFrontEnd(&frontendTranform, false);
 
             // THEN
             QCOMPARE(backendTransform.rotation(), newValue);
@@ -156,10 +159,8 @@ private Q_SLOTS:
         {
             // WHEN
             const QVector3D newValue(454.0f, 355.0f, 0.0f);
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("scale3D");
-            change->setValue(QVariant::fromValue(newValue));
-            backendTransform.sceneChangeEvent(change);
+            frontendTranform.setScale3D(newValue);
+            backendTransform.syncFromFrontEnd(&frontendTranform, false);
 
             // THEN
             QCOMPARE(backendTransform.scale(), newValue);
@@ -169,10 +170,8 @@ private Q_SLOTS:
         {
             // WHEN
             const QVector3D newValue(383.0f, 0.0f, 427.0f);
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("translation");
-            change->setValue(QVariant::fromValue(newValue));
-            backendTransform.sceneChangeEvent(change);
+            frontendTranform.setTranslation(newValue);
+            backendTransform.syncFromFrontEnd(&frontendTranform, false);
 
             // THEN
             QCOMPARE(backendTransform.translation(), newValue);
