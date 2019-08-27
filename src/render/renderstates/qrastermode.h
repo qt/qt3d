@@ -71,7 +71,7 @@ public:
     Q_ENUM(FaceMode) // LCOV_EXCL_LINE
 
     explicit QRasterMode(Qt3DCore::QNode *parent = nullptr);
-    ~QRasterMode() = default;
+    ~QRasterMode();
 
     RasterMode rasterMode() const;
     FaceMode faceMode() const;
