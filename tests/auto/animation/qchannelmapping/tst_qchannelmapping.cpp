@@ -246,45 +246,35 @@ private Q_SLOTS:
         {
             // WHEN
             mapping.setChannelName(QStringLiteral("Scale"));
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "channelName");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toString(), mapping.channelName());
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
 
             // WHEN
             mapping.setChannelName(QStringLiteral("Scale"));
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
         {
             // WHEN
             mapping.setTarget(target.data());
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "target");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), mapping.target()->id());
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
 
             // WHEN
             mapping.setTarget(target.data());
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
         {
@@ -350,6 +340,9 @@ private Q_SLOTS:
         QFETCH(int, expectedType);
         QFETCH(int, expectedComponentCount);
 
+        Q_UNUSED(expectedType);
+        Q_UNUSED(expectedComponentCount);
+
         TestArbiter arbiter;
         Qt3DAnimation::QChannelMapping mapping;
         QScopedPointer<Qt3DCore::QEntity> target(new tst_QTargetEntity());
@@ -359,41 +352,18 @@ private Q_SLOTS:
         {
             // WHEN
             target->setProperty(propertyName.constData(), value);
-            mapping.setProperty(QString::fromLatin1(propertyName));
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 4);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), target.data());
 
-            // Automatic notification change when property is updated
-            auto change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), propertyName.constData());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value(), value);
-
-            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "type");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toInt(), expectedType);
-
-            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "componentCount");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toInt(), expectedComponentCount);
-
-            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "propertyName");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QVERIFY(qstrcmp(reinterpret_cast<const char *>(change->value().value<void *>()), propertyName.constData()) == 0);
-
-            arbiter.events.clear();
-
-            // WHEN
-            mapping.setProperty(QString::fromLatin1(propertyName));
-            QCoreApplication::processEvents();
+            arbiter.dirtyNodes.clear();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            mapping.setProperty(QString::fromLatin1(propertyName));
+
+            // THEN
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
     }
 

@@ -266,6 +266,22 @@ void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangeList &e)
     emit receivedChange();
 }
 
+void QChangeArbiter::addDirtyFrontEndNode(QNode *node)
+{
+    if (!m_dirtyFrontEndNodes.contains(node))
+        m_dirtyFrontEndNodes += node;
+}
+
+void QChangeArbiter::removeDirtyFrontEndNode(QNode *node)
+{
+    m_dirtyFrontEndNodes.removeOne(node);
+}
+
+QVector<QNode *> QChangeArbiter::takeDirtyFrontEndNodes()
+{
+    return std::move(m_dirtyFrontEndNodes);
+}
+
 // Either we have the postman or we could make the QChangeArbiter agnostic to the postman
 // but that would require adding it to every QObserverList in m_aspectObservations.
 void QChangeArbiter::setPostman(QAbstractPostman *postman)

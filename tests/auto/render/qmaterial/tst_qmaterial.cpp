@@ -253,37 +253,26 @@ private Q_SLOTS:
         // WHEN
         Qt3DRender::QEffect effect;
         material->setEffect(&effect);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "effect");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), material.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // GIVEN
         TestArbiter arbiter2;
         QScopedPointer<TestMaterial> material2(new TestMaterial());
         arbiter2.setArbiterOnNode(material2.data());
 
-        QCoreApplication::processEvents();
-        // Clear events trigger by child generation of TestMnterial
-        arbiter2.events.clear();
-
         // WHEN
         material2->setEffect(&effect);
-        QCoreApplication::processEvents();
 
         // THEN
-        qDebug() << Q_FUNC_INFO << arbiter2.events.size();
-        QCOMPARE(arbiter2.events.size(), 1);
-        change = arbiter2.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "effect");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter2.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter2.dirtyNodes.front(), material2.data());
+
+        arbiter2.dirtyNodes.clear();
     }
 
     void checkDynamicParametersAddedUpdates()
@@ -364,93 +353,64 @@ private Q_SLOTS:
         TestMaterial *material = new TestMaterial();
         arbiter.setArbiterOnNode(material);
 
-        QCoreApplication::processEvents();
-        // Clear events trigger by child generation of TestMnterial
-        arbiter.events.clear();
-
         // WHEN
         const QByteArray vertexCode = QByteArrayLiteral("new vertex shader code");
         material->m_shaderProgram->setVertexShaderCode(vertexCode);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "vertexShaderCode");
-        QCOMPARE(change->value().value<QByteArray>(), vertexCode);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), material->m_shaderProgram);
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         const QByteArray fragmentCode = QByteArrayLiteral("new fragment shader code");
         material->m_shaderProgram->setFragmentShaderCode(fragmentCode);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "fragmentShaderCode");
-        QCOMPARE(change->value().value<QByteArray>(), fragmentCode);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), material->m_shaderProgram);
 
-        arbiter.events.clear();
-
+        arbiter.dirtyNodes.clear();
         // WHEN
         const QByteArray geometryCode = QByteArrayLiteral("new geometry shader code");
         material->m_shaderProgram->setGeometryShaderCode(geometryCode);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "geometryShaderCode");
-        QCOMPARE(change->value().value<QByteArray>(), geometryCode);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), material->m_shaderProgram);
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         const QByteArray computeCode = QByteArrayLiteral("new compute shader code");
         material->m_shaderProgram->setComputeShaderCode(computeCode);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "computeShaderCode");
-        QCOMPARE(change->value().value<QByteArray>(), computeCode);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), material->m_shaderProgram);
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         const QByteArray tesselControlCode = QByteArrayLiteral("new tessellation control shader code");
         material->m_shaderProgram->setTessellationControlShaderCode(tesselControlCode);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "tessellationControlShaderCode");
-        QCOMPARE(change->value().value<QByteArray>(), tesselControlCode);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), material->m_shaderProgram);
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         const QByteArray tesselEvalCode = QByteArrayLiteral("new tessellation eval shader code");
         material->m_shaderProgram->setTessellationEvaluationShaderCode(tesselEvalCode);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "tessellationEvaluationShaderCode");
-        QCOMPARE(change->value().value<QByteArray>(), tesselEvalCode);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), material->m_shaderProgram);
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkEffectBookkeeping()

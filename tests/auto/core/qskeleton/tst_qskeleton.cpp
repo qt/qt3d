@@ -109,33 +109,24 @@ private Q_SLOTS:
 
         // WHEN
         QJoint *joint = new QJoint(skeleton.data());
-        QCoreApplication::processEvents();
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         skeleton->setRootJoint(joint);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "rootJoint");
-        QCOMPARE(change->value().value<QNodeId>(), joint->id());
-        QCOMPARE(change->type(), PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), skeleton.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         skeleton->setRootJoint(nullptr);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "rootJoint");
-        QCOMPARE(change->value().value<QNodeId>(), QNodeId());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), skeleton.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkRootJointBookkeeping()

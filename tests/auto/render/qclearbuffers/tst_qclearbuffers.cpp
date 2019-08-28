@@ -104,38 +104,30 @@ private Q_SLOTS:
 
         // WHEN
         clearBuffer->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "buffers");
-        QCOMPARE(change->subjectId(), clearBuffer->id());
-        QCOMPARE(change->value().value<Qt3DRender::QClearBuffers::BufferType>(), Qt3DRender::QClearBuffers::AllBuffers);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        clearBuffer->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), clearBuffer.data());
+
+        arbiter.dirtyNodes.clear();
+
+        // WHEN
+        clearBuffer->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         clearBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "buffers");
-        QCOMPARE(change->subjectId(), clearBuffer->id());
-        QCOMPARE(change->value().value<Qt3DRender::QClearBuffers::BufferType>(), Qt3DRender::QClearBuffers::ColorDepthBuffer);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), clearBuffer.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 };
 

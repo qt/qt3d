@@ -200,18 +200,18 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<QPropertyUpdatedChange>();
-        QVERIFY(change->propertyName() == propertyName);
-        QCOMPARE(change->subjectId(), frontend1->id());
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), frontend1);
 
-        // WHEN
-        backend1->sceneChangeEvent(change.staticCast<QSceneChange>());
+        // TODOSYNC update when syncFromFrontendNode is implemented
+//        // WHEN
+//        backend1->sceneChangeEvent(change.staticCast<QSceneChange>());
 
-        // THEN
-        QVERIFY(backend1->impl() == backend2->impl());
+//        // THEN
+//        QVERIFY(backend1->impl() == backend2->impl());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkStencilUpdates_data()

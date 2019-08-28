@@ -114,13 +114,11 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-    QCOMPARE(change->propertyName(), "width");
-    QCOMPARE(change->value().value<int>(), 512);
-    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
 
-    arbiter.events.clear();
+    arbiter.dirtyNodes.clear();
 
     // WHEN
     texture.setWidth(512);
@@ -128,19 +126,7 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
 
     // THEN
     QCOMPARE(arbiter.events.size(), 0);
-
-    // WHEN
-    texture.setHeight(256);
-    QCoreApplication::processEvents();
-
-    // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-    QCOMPARE(change->propertyName(), "height");
-    QCOMPARE(change->value().value<int>(), 256);
-    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-    arbiter.events.clear();
+    QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
     // WHEN
     texture.setHeight(256);
@@ -148,25 +134,36 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
 
     // THEN
     QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+
+    arbiter.dirtyNodes.clear();
+
+    // WHEN
+    texture.setHeight(256);
+    QCoreApplication::processEvents();
+
+    // THEN
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
     // WHEN
     texture.setDepth(128);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-    QCOMPARE(change->propertyName(), "depth");
-    QCOMPARE(change->value().value<int>(), 128);
-    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
 
-    arbiter.events.clear();
+    arbiter.dirtyNodes.clear();
 
     // WHEN
     texture.setDepth(128);
     QCoreApplication::processEvents();
 
     // THEN
+    QCOMPARE(arbiter.events.size(), 0);
     QCOMPARE(arbiter.events.size(), 0);
 
     // WHEN
@@ -174,13 +171,11 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-    QCOMPARE(change->propertyName(), "layers");
-    QCOMPARE(change->value().value<int>(), 16);
-    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
 
-    arbiter.events.clear();
+    arbiter.dirtyNodes.clear();
 
     // WHEN
     texture.setLayers(16);
@@ -188,19 +183,7 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
 
     // THEN
     QCOMPARE(arbiter.events.size(), 0);
-
-    // WHEN
-    texture.setSamples(32);
-    QCoreApplication::processEvents();
-
-    // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-    QCOMPARE(change->propertyName(), "samples");
-    QCOMPARE(change->value().value<int>(), 32);
-    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-    arbiter.events.clear();
+    QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
     // WHEN
     texture.setSamples(32);
@@ -208,6 +191,18 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
 
     // THEN
     QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+
+    arbiter.dirtyNodes.clear();
+
+    // WHEN
+    texture.setSamples(32);
+    QCoreApplication::processEvents();
+
+    // THEN
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
     // WHEN
     Qt3DRender::QTextureImage img;

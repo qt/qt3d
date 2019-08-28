@@ -102,16 +102,12 @@ private Q_SLOTS:
 
         // WHEN
         mapper->setEnabled(false);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(propertyChange->propertyName(), "enabled");
-        QCOMPARE(propertyChange->value().toBool(), mapper->isEnabled());
-        QCOMPARE(propertyChange->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), mapper.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkMappingBookkeeping()

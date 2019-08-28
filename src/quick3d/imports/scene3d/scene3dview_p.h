@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,52 +37,101 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QASPECTTHREAD_P_H
-#define QT3DCORE_QASPECTTHREAD_P_H
+#ifndef SCENE3DVIEW_P_H
+#define SCENE3DVIEW_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QtCore/QSemaphore>
-#include <QtCore/QThread>
-
+#include <QtQuick/QQuickItem>
+#include <QtCore/QFlags>
 
 QT_BEGIN_NAMESPACE
 
+class QSGTexture;
+
 namespace Qt3DCore {
+class QEntity;
+class QNode;
+}
 
-class QAspectManager;
+namespace Qt3DRender {
 
-class QAspectThread : public QThread
+class QLayer;
+class QLayerFilter;
+class Scene3DItem;
+class QFrameGraphNode;
+class QViewport;
+
+class Scene3DView : public QQuickItem
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
+    Q_PROPERTY(Qt3DRender::Scene3DItem *scene3D READ scene3D WRITE setScene3D NOTIFY scene3DChanged)
+    Q_CLASSINFO("DefaultProperty", "entity")
+
 public:
-    explicit QAspectThread(QObject *parent = 0);
-    ~QAspectThread();
+    enum DirtyFlag {
+        DirtyNode = 1 << 0,
+        DirtyTexture = 1 << 1
+    };
+    Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
 
-    void waitForStart(Priority priority);
+    explicit Scene3DView(QQuickItem *parent = nullptr);
+    ~Scene3DView();
 
-    QAspectManager *aspectManager() const { return m_aspectManager; }
+    Qt3DCore::QEntity *entity() const;
+    Scene3DItem *scene3D() const;
 
-protected:
-    void run() override;
+    Qt3DCore::QEntity *viewSubtree() const;
+    Qt3DRender::QFrameGraphNode *viewFrameGraph() const;
+
+    void setTexture(QSGTexture *texture);
+    QSGTexture *texture() const;
+
+    void markSGNodeDirty();
+
+public Q_SLOTS:
+    void setEntity(Qt3DCore::QEntity *entity);
+    void setScene3D(Scene3DItem *scene3D);
+
+Q_SIGNALS:
+    void entityChanged();
+    void scene3DChanged();
 
 private:
-    QAspectManager *m_aspectManager;
-    QSemaphore m_semaphore;
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) override;
+    void adoptSubtree(Qt3DCore::QEntity *subtree);
+    void abandonSubtree(Qt3DCore::QEntity *subtree);
+
+    Scene3DItem *m_scene3D;
+    Qt3DCore::QEntity *m_entity;
+    Qt3DCore::QNode *m_previousFGParent;
+
+    Qt3DCore::QEntity *m_holderEntity;
+    Qt3DRender::QLayer *m_holderLayer;
+    Qt3DRender::QLayerFilter *m_holderLayerFilter;
+    Qt3DRender::QViewport *m_holderViewport;
+
+    QMetaObject::Connection m_scene3DDestroyedConnection;
+
+    DirtyFlags m_dirtyFlags;
+    QSGTexture *m_texture;
 };
 
-} // namespace Qt3DCore
+Q_DECLARE_OPERATORS_FOR_FLAGS(Scene3DView::DirtyFlags)
+
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QASPECTTHREAD_P_H
+#endif // SCENE3DVIEW_P_H

@@ -34,6 +34,7 @@
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <private/qnode_p.h>
+#include "testpostmanarbiter.h"
 
 class tst_QScene : public QObject
 {
@@ -58,14 +59,6 @@ private slots:
     void removePropertyTrackData();
     void nodeSetAndUnsetPropertyTrackData();
     void nodeUpdatePropertyTrackData();
-};
-
-class tst_LockableObserver : public Qt3DCore::QLockableObserverInterface
-{
-public:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) override {}
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &) override {}
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &) override {}
 };
 
 class tst_Observable : public Qt3DCore::QObservableInterface
@@ -111,7 +104,7 @@ void tst_QScene::addObservable()
         observables.append(new tst_Observable());
 
     Qt3DCore::QScene *scene = new Qt3DCore::QScene;
-    scene->setArbiter(new tst_LockableObserver);
+    scene->setArbiter(new TestArbiter);
 
     // WHEN
     for (int i = 0; i < 5; i++)
@@ -146,7 +139,7 @@ void tst_QScene::addNodeObservable()
         nodes.append(new tst_Node());
 
     Qt3DCore::QScene *scene = new Qt3DCore::QScene;
-    scene->setArbiter(new tst_LockableObserver);
+    scene->setArbiter(new TestArbiter);
 
     // WHEN
     for (int i = 0; i < 10; i++)
@@ -171,7 +164,7 @@ void tst_QScene::removeObservable()
         observables.append(new tst_Observable());
 
     Qt3DCore::QScene *scene = new Qt3DCore::QScene;
-    scene->setArbiter(new tst_LockableObserver);
+    scene->setArbiter(new TestArbiter);
 
     // WHEN
     for (int i = 0; i < 5; i++)
@@ -222,7 +215,7 @@ void tst_QScene::removeNodeObservable()
         observables.append(new tst_Observable());
 
     Qt3DCore::QScene *scene = new Qt3DCore::QScene;
-    scene->setArbiter(new tst_LockableObserver);
+    scene->setArbiter(new TestArbiter);
 
     // WHEN
     scene->addObservable(node1);

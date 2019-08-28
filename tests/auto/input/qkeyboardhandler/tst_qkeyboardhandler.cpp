@@ -96,16 +96,12 @@ private Q_SLOTS:
 
         // WHEN
         keyboardHandler->setFocus(true);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "focus");
-        QCOMPARE(change->value().toBool(), true);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), keyboardHandler.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         auto device = new Qt3DInput::QKeyboardDevice(keyboardHandler.data());
@@ -113,16 +109,12 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         keyboardHandler->setSourceDevice(device);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceDevice");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), keyboardHandler.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkSourceDeviceBookkeeping()
