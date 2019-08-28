@@ -75,6 +75,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QComputeCommand computeCommand;
         computeCommand.setWorkGroupX(256);
         computeCommand.setWorkGroupY(512);
@@ -85,6 +86,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::ComputeCommand backendComputeCommand;
+            backendComputeCommand.setRenderer(&renderer);
             simulateInitialization(&computeCommand, &backendComputeCommand);
 
             // THEN
@@ -95,16 +97,20 @@ private Q_SLOTS:
             QCOMPARE(backendComputeCommand.z(), computeCommand.workGroupZ());
             QCOMPARE(backendComputeCommand.runType(), computeCommand.runType());
             QCOMPARE(backendComputeCommand.frameCount(), 6);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::ComputeDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::ComputeCommand backendComputeCommand;
+            backendComputeCommand.setRenderer(&renderer);
             computeCommand.setEnabled(false);
             simulateInitialization(&computeCommand, &backendComputeCommand);
 
             // THEN
             QCOMPARE(backendComputeCommand.peerId(), computeCommand.id());
             QCOMPARE(backendComputeCommand.isEnabled(), false);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::ComputeDirty);
         }
     }
 

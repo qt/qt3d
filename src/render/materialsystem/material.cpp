@@ -79,6 +79,8 @@ void Material::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
     const auto &data = typedChange->data;
     m_effectUuid = data.effectId;
     m_parameterPack.setParameters(data.parameterIds);
+
+    markDirty(AbstractRenderer::MaterialDirty);
 }
 
 void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

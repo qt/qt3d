@@ -35,6 +35,7 @@
 #include <private/renderviewjobutils_p.h>
 #include <private/rendercommand_p.h>
 #include <testpostmanarbiter.h>
+#include <testrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -104,6 +105,7 @@ private Q_SLOTS:
 
     void checkSetRenderViewConfig()
     {
+        TestRenderer renderer;
         {
             // GIVEN
             const QMemoryBarrier::Operations barriers(QMemoryBarrier::AtomicCounter|QMemoryBarrier::ShaderStorage);
@@ -113,6 +115,7 @@ private Q_SLOTS:
             RenderView renderView;
             // setRenderViewConfigFromFrameGraphLeafNode assumes node has a manager
             backendBarrier.setFrameGraphManager(&frameGraphManager);
+            backendBarrier.setRenderer(&renderer);
 
             // WHEN
             frontendBarrier.setWaitOperations(barriers);
