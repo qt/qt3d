@@ -72,12 +72,14 @@ public:
     explicit FrameGraphVisitor(const FrameGraphManager *nodeManager);
 
     QVector<FrameGraphNode *> traverse(FrameGraphNode *root);
+    QVector<FrameGraphNode *> &&takeEnablersToDisable();
 
 private:
     void visit(Render::FrameGraphNode *node);
 
     const FrameGraphManager *m_manager;
     QVector<FrameGraphNode *> m_leaves;
+    QVector<FrameGraphNode *> m_enablersToDisable;
 };
 
 } // namespace Render

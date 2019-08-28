@@ -47,12 +47,33 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender
 {
 
+class QSubtreeEnablerPrivate;
+
 class Q_3DRENDERSHARED_EXPORT QSubtreeEnabler : public QFrameGraphNode
 {
     Q_OBJECT
+    Q_PROPERTY(Enablement enablement READ enablement WRITE setEnablement NOTIFY enablementChanged)
 public:
     explicit QSubtreeEnabler(Qt3DCore::QNode *parent = nullptr);
     ~QSubtreeEnabler();
+
+    enum Enablement {
+        Persistent,
+        SingleShot
+    };
+    Q_ENUM(Enablement)
+
+    Enablement enablement() const;
+    void setEnablement(Enablement enablement);
+
+    Q_INVOKABLE void requestUpdate();
+
+Q_SIGNALS:
+    void enablementChanged(Qt3DRender::QSubtreeEnabler::Enablement enablement);
+
+private:
+    Q_DECLARE_PRIVATE(QSubtreeEnabler)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } //Qt3DRender

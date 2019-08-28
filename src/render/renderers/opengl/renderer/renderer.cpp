@@ -92,6 +92,7 @@
 #include <Qt3DRender/private/commandthread_p.h>
 #include <Qt3DRender/private/glcommands_p.h>
 #include <Qt3DRender/private/setfence_p.h>
+#include <Qt3DRender/private/subtreeenabler_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -197,6 +198,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_sendTextureChangesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendTextureChangesToFrontend(); }, JobTypes::SendTextureChangesToFrontend))
     , m_sendSetFenceHandlesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
+    , m_sendDisablesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendDisablesToFrontend(); }, JobTypes::SendDisablesToFrontend))
     , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     , m_syncLoadingJobs(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncLoadingJobs))
     , m_ownedContext(false)
@@ -1204,6 +1206,21 @@ void Renderer::sendSetFenceHandlesToFrontend()
     }
 }
 
+// Executed in a job
+void Renderer::sendDisablesToFrontend()
+{
+    const auto updatedDisables = std::move(m_updatedDisables);
+    FrameGraphManager *fgManager = m_nodesManager->frameGraphManager();
+    for (const auto &nodeId : updatedDisables) {
+        FrameGraphNode *fgNode = fgManager->lookupNode(nodeId);
+        if (fgNode != nullptr) { // Node could have been deleted before we got a chance to notify it
+            Q_ASSERT(fgNode->nodeType() == FrameGraphNode::SubtreeEnabler);
+            SubtreeEnabler *enabler = static_cast<SubtreeEnabler *>(fgNode);
+            enabler->sendDisableToFrontend();
+        }
+    }
+}
+
 // Render Thread (or QtQuick RenderThread when using Scene3D)
 // Scene3D: When using Scene3D rendering, we can't assume that when
 // updateGLResources is called, the resource handles points to still existing
@@ -1810,6 +1827,13 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         // Camera selected by the framegraph configuration
         FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
         const QVector<FrameGraphNode *> fgLeaves = visitor.traverse(frameGraphRoot());
+
+        // Handle single shot subtree enablers
+        const auto subtreeEnablers = visitor.takeEnablersToDisable();
+        for (auto *node : subtreeEnablers)
+            m_updatedDisables.push_back(node->peerId());
+        if (m_updatedDisables.size() > 0)
+            renderBinJobs.push_back(m_sendDisablesToFrontendJob);
 
         // Remove leaf nodes that no longer exist from cache
         const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();

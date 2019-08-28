@@ -37,56 +37,44 @@
 **
 ****************************************************************************/
 
-#include "subtreeenabler_p.h"
-#include <Qt3DRender/private/qsubtreeenabler_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
+#ifndef QT3DRENDER_QSUBTREEENABLER_P_H
+#define QT3DRENDER_QSUBTREEENABLER_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "qsubtreeenabler.h"
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
-
-SubtreeEnabler::SubtreeEnabler()
-    : FrameGraphNode(FrameGraphNode::SubtreeEnabler, FrameGraphNode::ReadWrite)
+class QSubtreeEnablerPrivate : public QFrameGraphNodePrivate
 {
-}
+public:
+    QSubtreeEnablerPrivate() = default;
 
-void SubtreeEnabler::sendDisableToFrontend()
+    QSubtreeEnabler::Enablement m_enablement = QSubtreeEnabler::Persistent;
+
+    Q_DECLARE_PUBLIC(QSubtreeEnabler)
+};
+
+struct QSubtreeEnablerData
 {
-    if (m_enablement != QSubtreeEnabler::SingleShot)
-        return;
+    QSubtreeEnabler::Enablement enablement;
+};
 
-    if (isEnabled())
-        return;
-
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("enabled");
-    e->setValue(false);
-    notifyObservers(e);
-}
-
-void SubtreeEnabler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
-{
-    const QSubtreeEnabler *node = qobject_cast<const QSubtreeEnabler *>(frontEnd);
-    if (!node)
-        return;
-
-    if (node->isEnabled() != isEnabled())
-        markDirty(AbstractRenderer::AllDirty);
-
-    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
-
-    const auto enablement = node->enablement();
-    if (enablement != m_enablement) {
-        m_enablement = enablement;
-        markDirty(AbstractRenderer::FrameGraphDirty);
-    }
-}
-
-} //Render
-
-} //Qt3DRender
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QSUBTREEENABLER_P_H
