@@ -105,7 +105,7 @@ void QEntityPrivate::removeDestroyedComponent(QComponent *comp)
     Q_Q(QEntity);
 
     if (m_changeArbiter) {
-        const auto componentRemovedChange = QComponentRemovedChangePtr::create(q, comp);
+        const auto componentRemovedChange = QComponentRemovedChangePtr::create(q, comp);  // TODOSYNC notify backend directly
         notifyObservers(componentRemovedChange);
     }
 
@@ -187,7 +187,7 @@ void QEntity::addComponent(QComponent *comp)
     d->registerPrivateDestructionHelper(comp, &QEntityPrivate::removeDestroyedComponent);
 
     if (d->m_changeArbiter) {
-        const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);
+        const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);     // TODOSYNC notify backend directly
         d->notifyObservers(componentAddedChange);
     }
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);

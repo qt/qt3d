@@ -80,16 +80,7 @@ qint64 VSyncFrameAdvanceService::waitForNextFrame()
 {
     Q_D(VSyncFrameAdvanceService);
 
-    // When rendering with Scene3D, we always want to acquire the available
-    // amount + 1 to handle the cases where for some reason proceedToNextFrame
-    // is being called more than once between calls to waitForNextFrame This
-    // could be the case when resizing the window
-
-    // When Qt3D is driving rendering however, this shouldn't happen
-    if (d->m_drivenByRenderThread)
-        d->m_semaphore.acquire(1);
-    else
-        d->m_semaphore.acquire(d->m_semaphore.available() + 1);
+    d->m_semaphore.acquire(std::max(d->m_semaphore.available(), 1));
 
     const quint64 currentTime = d->m_elapsed.nsecsElapsed();
     qCDebug(VSyncAdvanceService) << "Elapsed nsecs since last call " << currentTime - d->m_elapsedTimeSincePreviousFrame;

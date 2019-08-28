@@ -75,13 +75,9 @@ public:
     // Called from aspect thread
     void setEventFilterService(Qt3DCore::QEventFilterService *service);
 
-    // Called from any thread
+    // Called from main thread
     void setEventSource(QObject *eventSource);
     void unsetEventSource(QObject *eventSource);
-
-private Q_SLOTS:
-    // Called in main thread
-    void setEventSourceHelper(QObject *);
 
 private:
     Qt3DCore::QEventFilterService *m_service;

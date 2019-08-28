@@ -121,6 +121,9 @@ public:
 
     QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const override;
     void clearBackendNode(const QNodeDestroyedChangePtr &change) const;
+    void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
+    virtual void syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const;
+    void sendPropertyMessages(QNode *node, QBackendNode *backend) const;
 
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) override;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) override;
@@ -134,12 +137,17 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
+    enum NodeMapperInfo {
+        DefaultMapper = 0,
+        SupportsSyncing = 1 << 0
+    };
+
     QEntity *m_root;
     QNodeId m_rootId;
     QAspectManager *m_aspectManager;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
-    QHash<const QMetaObject*, QBackendNodeMapperPtr> m_backendCreatorFunctors;
+    QHash<const QMetaObject*, QPair<QBackendNodeMapperPtr, NodeMapperInfo>> m_backendCreatorFunctors;
     QMutex m_singleShotMutex;
     QVector<QAspectJobPtr> m_singleShotJobs;
 

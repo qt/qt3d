@@ -52,7 +52,7 @@ public:
     void shutdown() override {}
     void releaseGraphicsResources() override {}
     void render() override {}
-    void doRender(bool scene3dBlocking = false) override { Q_UNUSED(scene3dBlocking); }
+    void doRender(bool swapBuffers) override { Q_UNUSED(swapBuffers); }
     void cleanGraphicsResources() override {}
     bool isRunning() const override { return true; }
     bool shouldRender() override { return true; }

@@ -66,10 +66,17 @@
 #include <QtQuick/qquickrendercontrol.h>
 
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DRender/private/rendersettings_p.h>
 #include <scene3dcleaner_p.h>
 #include <scene3dlogging_p.h>
 #include <scene3drenderer_p.h>
 #include <scene3dsgnode_p.h>
+#include <scene3dview_p.h>
+
+#include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 
@@ -116,20 +123,49 @@ namespace Qt3DRender {
     \endqml
 
     to that material.
+
+    It is not recommended to instantiate more than a single Scene3D instance
+    per application. The reason for this is that a Scene3D instance
+    instantiates the entire Qt 3D engine (memory managers, thread pool, render
+    ...) under the scene. You should instead look into using \l Scene3DView
+    instances in conjunction with a single Scene3D instance.
+
+    When using Scene3D with Scene3DViews the following conditions are expected:
+    \list
+    \li The compositingMode is set to FBO
+    \li The Scene3D is sized to occupy the full window size
+    \li The Scene3D instance is instantiated prior to any Scene3DView
+    \li The Scene3D entity property is left unset
+    \endlist
  */
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
     , m_entity(nullptr)
+    , m_viewHolderEntity(nullptr)
+    , m_viewHolderFG(nullptr)
     , m_aspectEngine(new Qt3DCore::QAspectEngine())
     , m_renderAspect(nullptr)
     , m_renderer(nullptr)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
+    , m_dirty(true)
+    , m_dirtyViews(false)
+    , m_clearsWindowByDefault(true)
+    , m_disableClearWindow(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
+    , m_compositingMode(FBO)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
     // TO DO: register the event source in the main thread
+
+    // Use manual drive mode when using Scene3D
+    m_aspectEngine->setRunMode(Qt3DCore::QAspectEngine::Manual);
+
+    // Give a default size so that if nothing is specified by the user
+    // we still won't get ignored by the QtQuick SG when in Underlay mode
+    setWidth(1);
+    setHeight(1);
 }
 
 Scene3DItem::~Scene3DItem()
@@ -168,7 +204,7 @@ Qt3DCore::QEntity *Scene3DItem::entity() const
 void Scene3DItem::setAspects(const QStringList &aspects)
 {
     if (!m_aspects.isEmpty()) {
-        qWarning() << "Aspects already set on the Scene3D, ignoring";
+        qCWarning(Scene3D) << "Aspects already set on the Scene3D, ignoring";
         return;
     }
 
@@ -236,6 +272,45 @@ void Scene3DItem::setHoverEnabled(bool enabled)
 }
 
 /*!
+    \qmlproperty enumeration Scene3D::compositingMode
+
+    \value FBO
+           Scene is rendered into a Frame Buffer Object which can be costly on
+           some platform and hardware but allows a greater amount of
+           flexibility. Automatic aspect ratio. This is the compositing mode to
+           choose if your Scene3D element shouldn't occupy the entire screen
+           and if you optionally plan on having it resized or animated. In this
+           mode, the position of the Scene3D in the QML file controls its
+           stacking order with regard to the other Qt Quick elements.
+
+    \value Underlay
+           Suitable for full screen 3D scenes where using an FBO might be too
+           resource intensive. Scene3D behaves as a QtQuick underlay.
+
+           Please note that when using this mode, the size of the Scene3D and
+           its transformations are ignored and the rendering will occupy the
+           whole screen. The position of the Scene3D in the QML file won't have
+           any effect either. The Qt 3D content will be drawn prior to any Qt
+           Quick content. Care has to be taken not to overdraw and hide the Qt
+           3D content by overlapping Qt Quick content.
+
+           Additionally when using this mode, the window clearBeforeRendering
+           will be set to false automatically.
+
+    \since 5.14
+    \default FBO
+ */
+void Scene3DItem::setCompositingMode(Scene3DItem::CompositingMode mode)
+{
+    if (m_compositingMode == mode)
+        return;
+    m_compositingMode = mode;
+    emit compositingModeChanged();
+
+    QQuickItem::update();
+}
+
+/*!
     \qmlproperty enumeration Scene3D::cameraAspectRatioMode
 
     \value Scene3D.AutomaticAspectRatio
@@ -248,6 +323,71 @@ void Scene3DItem::setHoverEnabled(bool enabled)
 Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
 {
     return m_cameraAspectRatioMode;
+}
+
+Scene3DItem::CompositingMode Scene3DItem::compositingMode() const
+{
+    return m_compositingMode;
+}
+
+// MainThread called by Scene3DView
+void Scene3DItem::addView(Scene3DView *view)
+{
+    if (m_views.contains(view))
+        return;
+
+    Qt3DRender::QFrameGraphNode *viewFG = view->viewFrameGraph();
+    Qt3DCore::QEntity *subtreeRoot = view->viewSubtree();
+
+    if (m_viewHolderEntity == nullptr) {
+        m_viewHolderEntity = new Qt3DCore::QEntity;
+
+        if (m_entity != nullptr) {
+            qCWarning(Scene3D) << "Scene3DView is not supported if the Scene3D entity property has been set";
+        }
+
+        Qt3DRender::QRenderSettings *settings = new Qt3DRender::QRenderSettings();
+        Qt3DRender::QRenderSurfaceSelector *surfaceSelector = new Qt3DRender::QRenderSurfaceSelector();
+        m_viewHolderFG = surfaceSelector;
+        surfaceSelector->setSurface(window());
+
+        // Copy setting properties from first View
+        QVector<Qt3DRender::QRenderSettings *> viewRenderSettings = subtreeRoot->componentsOfType<Qt3DRender::QRenderSettings>();
+        if (viewRenderSettings.size() > 0) {
+            Qt3DRender::QRenderSettings *viewRenderSetting = viewRenderSettings.first();
+            settings->setRenderPolicy(viewRenderSetting->renderPolicy());
+            settings->pickingSettings()->setPickMethod(viewRenderSetting->pickingSettings()->pickMethod());
+            settings->pickingSettings()->setPickResultMode(viewRenderSetting->pickingSettings()->pickResultMode());
+        }
+        settings->setActiveFrameGraph(m_viewHolderFG);
+        m_viewHolderEntity->addComponent(settings);
+
+        setEntity(m_viewHolderEntity);
+    }
+
+    // Parent FG and Subtree
+    viewFG->setParent(m_viewHolderFG);
+    subtreeRoot->setParent(m_viewHolderEntity);
+
+    m_views.push_back(view);
+    m_dirtyViews |= true;
+}
+
+// MainThread called by Scene3DView
+void Scene3DItem::removeView(Scene3DView *view)
+{
+    if (!m_views.contains(view))
+        return;
+
+    Qt3DRender::QFrameGraphNode *viewFG = view->viewFrameGraph();
+    Qt3DCore::QEntity *subtreeRoot = view->viewSubtree();
+
+    // Unparent FG and Subtree
+    viewFG->setParent(Q_NODE_NULLPTR);
+    subtreeRoot->setParent(Q_NODE_NULLPTR);
+
+    m_views.removeOne(view);
+    m_dirtyViews |= true;
 }
 
 void Scene3DItem::applyRootEntityChange()
@@ -282,6 +422,94 @@ void Scene3DItem::applyRootEntityChange()
             qCDebug(Scene3D) << "No Input Settings found, keyboard and mouse events won't be handled";
         }
 #endif
+    }
+}
+
+bool Scene3DItem::needsRender()
+{
+    auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
+    const bool dirty = m_dirty
+            || (renderAspectPriv
+                && renderAspectPriv->m_renderer
+                && renderAspectPriv->m_renderer->settings()
+                && renderAspectPriv->m_renderer->settings()->renderPolicy() == QRenderSettings::Always);
+    m_dirty = false;
+    return dirty;
+}
+
+// This function is triggered in the context of the Main Thread
+// when afterAnimating is emitted
+
+// The QtQuick SG proceeds like indicated below:
+// afterAnimating (Main Thread)
+// beforeSynchronizing (SG Thread and MainThread locked)
+// afterSynchronizing (SG Thread and MainThread locked)
+// beforeRendering (SG Thread)
+
+// Note: we connect to afterAnimating rather than beforeSynchronizing as a
+// direct connection on beforeSynchronizing is executed within the SG Render
+// Thread context. This is executed before the RenderThread is asked to
+// synchronize and render
+// Note: we might still not be done rendering when this is called but
+// processFrame will block and wait for renderer to have been finished
+void Scene3DItem::onBeforeSync()
+{
+    // Has anything in the 3D scene actually changed that requires us to render?
+    if (!needsRender())
+        return;
+
+    Q_ASSERT(QThread::currentThread() == thread());
+
+    // Since we are in manual mode, trigger jobs for the next frame
+    Qt3DCore::QAspectEnginePrivate *aspectEnginePriv = static_cast<Qt3DCore::QAspectEnginePrivate *>(QObjectPrivate::get(m_aspectEngine));
+    if (!aspectEnginePriv->m_initialized || !m_renderer)
+        return;
+
+    // Set compositing mode on renderer
+    m_renderer->setCompositingMode(m_compositingMode);
+    const bool usesFBO = m_compositingMode == FBO;
+
+    // Make renderer aware of any Scene3DView we are dealing with
+    if (m_dirtyViews) {
+        // Scene3DViews checks
+        if (m_entity != m_viewHolderEntity) {
+            qCWarning(Scene3D) << "Scene3DView is not supported if the Scene3D entity property has been set";
+        }
+        if (!usesFBO) {
+            qCWarning(Scene3D) << "Scene3DView is only supported when Scene3D compositingMode is set to FBO";
+        }
+        // The Scene3DRender will take care of providing the texture containing the 3D scene
+        m_renderer->setScene3DViews(m_views);
+        m_dirtyViews = false;
+    }
+
+    Q_ASSERT(m_aspectEngine->runMode() == Qt3DCore::QAspectEngine::Manual);
+    m_aspectEngine->processFrame();
+    // The above essentially sets the number of RV for the RenderQueue and
+    // processes the jobs for the frame (it's blocking) When
+    // Scene3DRender::updatePaintNode is called, following this step, we know
+    // that the RenderQueue target count has been set and that everything
+    // should be ready for rendering
+
+
+    // processFrame() must absolutely be followed by a single call to
+    // render
+    // At startup, we have no garantee that the QtQuick Render Thread doesn't
+    // start rendering before this function has been called
+    // We add in a safety to skip such frames as this could otherwise
+    // make Qt3D enter a locked state
+    m_renderer->allowRender();
+
+    // Request refresh for next frame
+
+    // When using the FBO mode, only the QQuickItem needs to be updated
+    // When using the Underlay mode, the whole windows needs updating
+    if (usesFBO) {
+        QQuickItem::update();
+        for (Scene3DView *view : m_views)
+            view->update();
+    } else {
+        window()->update();
     }
 }
 
@@ -389,19 +617,56 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     if (m_renderAspect == nullptr) {
         m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
         m_aspectEngine->registerAspect(m_renderAspect);
+
+        // Before Synchronizing is in the SG Thread, we want beforeSync to be triggered
+        // in the context of the main thread
+        QObject::connect(window(), &QQuickWindow::afterAnimating,
+                         this, &Scene3DItem::onBeforeSync, Qt::DirectConnection);
+        auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
+        QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
+                         this, [this] { m_dirty = true; }, Qt::DirectConnection);
+        QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
+                         this, &QQuickItem::update, Qt::AutoConnection);
     }
 
     if (m_renderer == nullptr) {
         m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
         m_renderer->setCleanerHelper(m_rendererCleaner);
     }
-
+    const bool usesFBO = m_compositingMode == FBO;
+    const bool hasScene3DViews = !m_views.empty();
     Scene3DSGNode *fboNode = static_cast<Scene3DSGNode *>(node);
-    if (fboNode == nullptr) {
-        fboNode = new Scene3DSGNode();
-        m_renderer->setSGNode(fboNode);
+
+    // When usin Scene3DViews or Scene3D in Underlay mode
+    // we shouldn't be managing a Scene3DSGNode
+    if (!usesFBO || hasScene3DViews) {
+        if (fboNode != nullptr) {
+            delete fboNode;
+            fboNode = nullptr;
+            m_renderer->setSGNode(fboNode);
+        }
+    } else {
+        // Regular Scene3D only case
+        // Create SGNode if using FBO and no Scene3DViews
+        if (fboNode == nullptr) {
+            fboNode = new Scene3DSGNode();
+            m_renderer->setSGNode(fboNode);
+        }
+        fboNode->setRect(boundingRect());
     }
-    fboNode->setRect(boundingRect());
+
+    if (usesFBO) {
+        // Reset clear flag if we've set it to false it's still set to that
+        if (m_disableClearWindow && !window()->clearBeforeRendering())
+            window()->setClearBeforeRendering(m_clearsWindowByDefault);
+        m_disableClearWindow = false;
+    } else {
+        // Record clearBeforeRendering value before we force it to false
+        m_clearsWindowByDefault = window()->clearBeforeRendering();
+        m_disableClearWindow = true;
+        if (m_clearsWindowByDefault)
+            window()->setClearBeforeRendering(false);
+    }
 
     return fboNode;
 }

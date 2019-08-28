@@ -89,6 +89,8 @@ public:
     void insertTree(QNode *treeRoot, int depth = 0);
     void updatePropertyTrackMode();
 
+    void update();
+
     Q_DECLARE_PUBLIC(QNode)
 
     // For now this just protects access to the m_changeArbiter.

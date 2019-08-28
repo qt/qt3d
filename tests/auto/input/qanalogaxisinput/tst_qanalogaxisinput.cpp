@@ -97,16 +97,12 @@ private Q_SLOTS:
 
         // WHEN
         axisInput->setAxis(350);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "axis");
-        QCOMPARE(change->value().toInt(), 350);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         TestDevice *device = new TestDevice(axisInput.data());
@@ -114,16 +110,12 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         axisInput->setSourceDevice(device);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceDevice");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 };
 

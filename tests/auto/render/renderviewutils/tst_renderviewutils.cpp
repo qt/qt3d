@@ -768,24 +768,20 @@ void tst_RenderViewUtils::shouldNotifyDynamicPropertyChanges()
     shaderData->setProperty("scalar", 883.0f);
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    auto change = arbiter.events.first().dynamicCast<Qt3DCore::QDynamicPropertyUpdatedChange>();
-    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-    QCOMPARE(change->propertyName(), QByteArrayLiteral("scalar"));
-    QCOMPARE(change->value().toFloat(), 883.0f);
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), shaderData.data());
 
-    arbiter.events.clear();
+    arbiter.dirtyNodes.clear();
 
     // WHEN
     QScopedPointer<Qt3DRender::QAbstractTexture> texture(new Qt3DRender::QTexture2D);
     shaderData->setProperty("texture", QVariant::fromValue(texture.data()));
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    change = arbiter.events.first().dynamicCast<Qt3DCore::QDynamicPropertyUpdatedChange>();
-    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-    QCOMPARE(change->propertyName(), QByteArrayLiteral("texture"));
-    QCOMPARE(change->value(), QVariant::fromValue(texture->id()));
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), shaderData.data());
 }
 
 QTEST_MAIN(tst_RenderViewUtils)

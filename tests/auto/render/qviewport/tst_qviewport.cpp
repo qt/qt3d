@@ -97,37 +97,32 @@ private Q_SLOTS:
 
         {
             // WHEN
-            viewport->setNormalizedRect(QRectF(0.5f, 0.5f, 1.0f, 1.0f));
-            QCoreApplication::processEvents();
-
-            // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "normalizedRect");
-            QCOMPARE(change->subjectId(), viewport->id());
-            QCOMPARE(change->value().value<QRectF>(), QRectF(0.5f, 0.5f, 1.0f, 1.0f));
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-            arbiter.events.clear();
-
-            // WHEN
-            viewport->setNormalizedRect(QRectF(0.5f, 0.5f, 1.0f, 1.0f));
+            viewport->setNormalizedRect(QRectF(0.5, 0.5, 1.0, 1.0));
             QCoreApplication::processEvents();
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), viewport.data());
+
+            arbiter.dirtyNodes.clear();
 
             // WHEN
-            viewport->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
+            viewport->setNormalizedRect(QRectF(0.5, 0.5, 1.0, 1.0));
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "normalizedRect");
-            QCOMPARE(change->subjectId(), viewport->id());
-            QCOMPARE(change->value().value<QRectF>(), QRectF(0.0f, 0.0f, 1.0f, 1.0f));
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+
+            // WHEN
+            viewport->setNormalizedRect(QRectF(0.0, 0.0, 1.0, 1.0));
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), viewport.data());
         }
 
         arbiter.events.clear();
@@ -138,14 +133,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "gamma");
-            QCOMPARE(change->subjectId(), viewport->id());
-            QCOMPARE(change->value().toFloat(), 1.8f);
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), viewport.data());
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
 
             // WHEN
             viewport->setGamma(1.8f);
@@ -153,18 +145,16 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
             // WHEN
             viewport->setGamma(2.0f);
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "gamma");
-            QCOMPARE(change->subjectId(), viewport->id());
-            QCOMPARE(change->value().toFloat(), 2.0f);
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), viewport.data());
         }
     }
 };
