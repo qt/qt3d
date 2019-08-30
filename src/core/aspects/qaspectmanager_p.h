@@ -73,14 +73,14 @@ class QScheduler;
 class QChangeArbiter;
 class QAbstractAspect;
 class QAbstractAspectJobManager;
-class QSceneObserverInterface;
 class QServiceLocator;
+struct NodeTreeChange;
 
 class Q_3DCORE_PRIVATE_EXPORT QAspectManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAspectManager(QObject *parent = 0);
+    explicit QAspectManager(QObject *parent = nullptr);
     ~QAspectManager();
 
     void setRunMode(QAspectEngine::RunMode mode);
@@ -96,6 +96,7 @@ public Q_SLOTS:
 
     void setRootEntity(Qt3DCore::QEntity *root, const QVector<QNode *> &nodes);
     void addNodes(const QVector<QNode *> &nodes);
+    void removeNodes(const QVector<QNode *> &nodes);
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
     void unregisterAspect(Qt3DCore::QAbstractAspect *aspect);
 
@@ -119,7 +120,7 @@ private:
     bool m_mainLoopRunning;
     bool m_simulationLoopRunning;
     QAspectEngine::RunMode m_driveMode;
-
+    QVector<NodeTreeChange> m_nodeTreeChanges;
 };
 
 } // namespace Qt3DCore

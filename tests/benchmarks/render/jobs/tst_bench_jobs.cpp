@@ -123,16 +123,21 @@ namespace Qt3DRender {
         void onRootEntityChanged(Qt3DCore::QEntity *root)
         {
             if (!m_window) {
-                QVector<Qt3DCore::QNode *> nodes;
+                QVector<Qt3DCore::NodeTreeChange> nodes;
                 Qt3DCore::QNodeVisitor v;
                 v.traverse(root, [&nodes](Qt3DCore::QNode *node) {
                     Qt3DCore::QNodePrivate *d = Qt3DCore::QNodePrivate::get(node);
                     d->m_typeInfo = const_cast<QMetaObject*>(Qt3DCore::QNodePrivate::findStaticMetaObject(node->metaObject()));
                     d->m_hasBackendNode = true;
-                    nodes << node;
+                    nodes.push_back({
+                        node->id(),
+                        Qt3DCore::QNodePrivate::get(node)->m_typeInfo,
+                        Qt3DCore::NodeTreeChange::Added,
+                        node
+                    });
                 });
 
-                for (const auto node: nodes)
+                for (const auto &node: nodes)
                     d_func()->createBackendNode(node);
 
                 static_cast<Qt3DRender::Render::Renderer *>(d_func()->m_renderer)->m_renderSceneRoot =
