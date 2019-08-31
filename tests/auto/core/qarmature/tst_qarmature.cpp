@@ -98,33 +98,22 @@ private Q_SLOTS:
 
         // WHEN
         QSkeleton *skeleton = new QSkeleton(armature.data());
-        QCoreApplication::processEvents();
-        arbiter.events.clear();
-
         armature->setSkeleton(skeleton);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "skeleton");
-        QCOMPARE(change->value().value<QNodeId>(), skeleton->id());
-        QCOMPARE(change->type(), PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), armature.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         armature->setSkeleton(nullptr);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "skeleton");
-        QCOMPARE(change->value().value<QNodeId>(), QNodeId());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), armature.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkSkeletonBookkeeping()

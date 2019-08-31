@@ -20,7 +20,9 @@ SUBDIRS += \
     simplecustommaterial \
     scene2d \
     phong-cubes \
-    pbr-materials
+    pbr-materials \
+    controlsunderlay \
+    scene3dview
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 

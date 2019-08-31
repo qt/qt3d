@@ -81,6 +81,8 @@ class Q_3DCORE_PRIVATE_EXPORT QAbstractArbiter : public QLockableObserverInterfa
 {
 public:
     virtual QAbstractPostman *postman() const = 0;
+    virtual void addDirtyFrontEndNode(QNode *node) = 0;
+    virtual void removeDirtyFrontEndNode(QNode *node) = 0;
 };
 
 class Q_3DCORE_PRIVATE_EXPORT QChangeArbiter final
@@ -89,7 +91,7 @@ class Q_3DCORE_PRIVATE_EXPORT QChangeArbiter final
 {
     Q_OBJECT
 public:
-    explicit QChangeArbiter(QObject *parent = 0);
+    explicit QChangeArbiter(QObject *parent = nullptr);
     ~QChangeArbiter();
 
     void initialize(Qt3DCore::QAbstractAspectJobManager *jobManager);
@@ -109,8 +111,12 @@ public:
     void sceneChangeEventWithLock(const QSceneChangePtr &e) override; // QLockableObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangeList &e) override; // QLockableObserverInterface impl
 
-    Q_INVOKABLE void setPostman(Qt3DCore::QAbstractPostman *postman);
-    Q_INVOKABLE void setScene(Qt3DCore::QScene *scene);
+    void addDirtyFrontEndNode(QNode *node) override;
+    void removeDirtyFrontEndNode(QNode *node) override;
+    QVector<QNode *> takeDirtyFrontEndNodes();
+
+    void setPostman(Qt3DCore::QAbstractPostman *postman);
+    void setScene(Qt3DCore::QScene *scene);
 
     QAbstractPostman *postman() const final;
     QScene *scene() const;
@@ -155,6 +161,8 @@ private:
     QList<QChangeQueue *> m_lockingChangeQueues;
     QAbstractPostman *m_postman;
     QScene *m_scene;
+
+    QVector<QNode *> m_dirtyFrontEndNodes;
 };
 
 } // namespace Qt3DCore

@@ -112,15 +112,18 @@ void tst_RenderMaterial::shouldHavePropertiesMirroringFromItsPeer()
 {
     // WHEN
     QFETCH(QMaterial *, frontendMaterial);
+    TestRenderer renderer;
     Material backend;
 
     // GIVEN
+    backend.setRenderer(&renderer);
     simulateInitialization(frontendMaterial, &backend);
 
     // THEN
     QVERIFY(backend.isEnabled() == frontendMaterial->isEnabled());
     QCOMPARE(backend.effect(), frontendMaterial->effect() ? frontendMaterial->effect()->id() : QNodeId());
     QCOMPARE(backend.parameters().count(), frontendMaterial->parameters().count());
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::MaterialDirty);
 
     int c = 0;
     const auto frontendMaterialParameters = frontendMaterial->parameters();

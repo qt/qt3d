@@ -53,9 +53,6 @@ class Q_3DRENDERSHARED_EXPORT QSubtreeEnabler : public QFrameGraphNode
 public:
     explicit QSubtreeEnabler(Qt3DCore::QNode *parent = nullptr);
     ~QSubtreeEnabler();
-
-private:
-    void *m_reserved;
 };
 
 } //Qt3DRender

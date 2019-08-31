@@ -35,10 +35,36 @@
 ****************************************************************************/
 
 #include "testaspect.h"
+#include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
+{
+    using namespace Qt3DCore;
+
+    QVector<QNode *> nodes;
+    Qt3DCore::QNodeVisitor visitor;
+    visitor.traverse(root, [&nodes](QNode *node) {
+        nodes.append(node);
+
+        // Store the metaobject of the node in the QNode so that we have it available
+        // to us during destruction in the QNode destructor. This allows us to send
+        // the QNodeId and the metaobject as typeinfo to the backend aspects so they
+        // in turn can find the correct QBackendNodeMapper object to handle the destruction
+        // of the corresponding backend nodes.
+        QNodePrivate *d = QNodePrivate::get(node);
+        d->m_typeInfo = const_cast<QMetaObject*>(QNodePrivate::findStaticMetaObject(node->metaObject()));
+
+        // Mark this node as having been handled for creation so that it is picked up
+        d->m_hasBackendNode = true;
+    });
+
+    return nodes;
+}
 
 TestAspect::TestAspect(Qt3DCore::QNode *root)
     : Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous)
@@ -47,11 +73,10 @@ TestAspect::TestAspect(Qt3DCore::QNode *root)
     Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
     QRenderAspect::onRegistered();
 
-    const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
-    const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
+    const QVector<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
 
-    for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
-        d_func()->createBackendNode(change);
+    for (Qt3DCore::QNode *node : nodes)
+        d_func()->createBackendNode(node);
 }
 
 TestAspect::~TestAspect()

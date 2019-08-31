@@ -54,25 +54,21 @@
 #include <Qt3DRender/qtextureimagedata.h>
 #include <Qt3DRender/qabstracttexture.h>
 
+#include <QtCore/qshareddata.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTextureDataUpdatePrivate
+class QTextureDataUpdatePrivate : public QSharedData
 {
 public:
-    QTextureDataUpdatePrivate();
-    QTextureDataUpdatePrivate(const QTextureDataUpdatePrivate &other);
-
-    bool operator==(const QTextureDataUpdatePrivate &other) const;
-    bool operator!=(const QTextureDataUpdatePrivate &other) const;
-
-    int m_x;
-    int m_y;
-    int m_z;
-    int m_layer;
-    int m_mipLevel;
-    QAbstractTexture::CubeMapFace m_face;
+    int m_x = 0;
+    int m_y = 0;
+    int m_z = 0;
+    int m_layer = 0;
+    int m_mipLevel = 0;
+    QAbstractTexture::CubeMapFace m_face = QAbstractTexture::CubeMapPositiveX;
     QTextureImageDataPtr m_data;
 };
 

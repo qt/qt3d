@@ -77,6 +77,7 @@ void Parameter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_name = data.name;
     m_nameId = StringToInt::lookupId(m_name);
     m_uniformValue = UniformValue::fromVariant(data.backendValue);
+    markDirty(AbstractRenderer::ParameterDirty);
 }
 
 void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

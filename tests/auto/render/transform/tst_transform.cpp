@@ -57,6 +57,7 @@ private Q_SLOTS:
     void checkCleanupState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Transform backendTransform;
 
         // WHEN
@@ -65,6 +66,7 @@ private Q_SLOTS:
             transform.setScale3D(QVector3D(1.0f, 2.0f, 3.0f));
             transform.setTranslation(QVector3D(-1.0, 5.0f, -2.0f));
             transform.setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0), 30.0f));
+            backendTransform.setRenderer(&renderer);
             simulateInitialization(&transform, &backendTransform);
         }
         backendTransform.setEnabled(true);
@@ -82,6 +84,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DCore::QTransform transform;
         transform.setScale3D(QVector3D(1.0f, 2.0f, 3.0f));
         transform.setTranslation(QVector3D(-1.0, 5.0f, -2.0f));
@@ -90,6 +93,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::Transform backendTransform;
+            backendTransform.setRenderer(&renderer);
             simulateInitialization(&transform, &backendTransform);
 
             // THEN
@@ -99,16 +103,20 @@ private Q_SLOTS:
             QCOMPARE(backendTransform.rotation(), transform.rotation());
             QCOMPARE(backendTransform.scale(), transform.scale3D());
             QCOMPARE(backendTransform.translation(), transform.translation());
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TransformDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::Transform backendTransform;
+            backendTransform.setRenderer(&renderer);
             transform.setEnabled(false);
             simulateInitialization(&transform, &backendTransform);
 
             // THEN
             QCOMPARE(backendTransform.peerId(), transform.id());
             QCOMPARE(backendTransform.isEnabled(), false);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TransformDirty);
         }
     }
 

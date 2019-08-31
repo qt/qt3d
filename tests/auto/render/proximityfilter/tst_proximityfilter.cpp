@@ -56,6 +56,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QProximityFilter proximityFilter;
         Qt3DCore::QEntity entity;
         proximityFilter.setDistanceThreshold(1340.0f);
@@ -64,6 +65,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::ProximityFilter backendProximityFilter;
+            backendProximityFilter.setRenderer(&renderer);
             simulateInitialization(&proximityFilter, &backendProximityFilter);
 
             // THEN
@@ -71,16 +73,20 @@ private Q_SLOTS:
             QCOMPARE(backendProximityFilter.peerId(), proximityFilter.id());
             QCOMPARE(backendProximityFilter.distanceThreshold(), 1340.f);
             QCOMPARE(backendProximityFilter.entityId(), entity.id());
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::ProximityFilter backendProximityFilter;
+            backendProximityFilter.setRenderer(&renderer);
             proximityFilter.setEnabled(false);
             simulateInitialization(&proximityFilter, &backendProximityFilter);
 
             // THEN
             QCOMPARE(backendProximityFilter.peerId(), proximityFilter.id());
             QCOMPARE(backendProximityFilter.isEnabled(), false);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
     }
 

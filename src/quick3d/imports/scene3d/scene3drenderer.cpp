@@ -48,7 +48,6 @@
 
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
-#include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
@@ -58,6 +57,7 @@
 #include <scene3ditem_p.h>
 #include <scene3dlogging_p.h>
 #include <scene3dsgnode_p.h>
+#include <scene3dview_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -158,15 +158,16 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
     , m_lastMultisample(false)
     , m_needsShutdown(true)
-    , m_blocking(false)
     , m_forceRecreate(false)
-    , m_dirty(true) // we want to render at least once
+    , m_shouldRender(false)
+    , m_dirtyViews(false)
+    , m_allowRendering(0)
 {
     Q_CHECK_PTR(m_item);
     Q_CHECK_PTR(m_item->window());
 
     m_window = m_item->window();
-    QObject::connect(m_item->window(), &QQuickWindow::afterSynchronizing, this, &Scene3DRenderer::synchronize, Qt::DirectConnection);
+    QObject::connect(m_item->window(), &QQuickWindow::beforeSynchronizing, this, &Scene3DRenderer::beforeSynchronize, Qt::DirectConnection);
     QObject::connect(m_item->window(), &QQuickWindow::beforeRendering, this, &Scene3DRenderer::render, Qt::DirectConnection);
     QObject::connect(m_item->window(), &QQuickWindow::sceneGraphInvalidated, this, &Scene3DRenderer::onSceneGraphInvalidated, Qt::DirectConnection);
     // So that we can schedule the cleanup
@@ -177,34 +178,15 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
         m_window = w;
     });
 
-    auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
-    QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
-                     this, [this] { m_dirty = true; }, Qt::DirectConnection);
-    QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
-                     m_item, &QQuickItem::update, Qt::AutoConnection);
-
     Q_ASSERT(QOpenGLContext::currentContext());
     ContextSaver saver;
     static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderInitialize(saver.context());
     scheduleRootEntityChange();
-
-    const bool blockingRendermode = !qgetenv("SCENE3D_BLOCKING_RENDERMODE").isEmpty();
-    m_blocking = blockingRendermode;
 }
 
 Scene3DRenderer::~Scene3DRenderer()
 {
     qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
-}
-
-bool Scene3DRenderer::shouldRender() const
-{
-    auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
-    return m_dirty
-        || (renderAspectPriv
-            && renderAspectPriv->m_renderer
-            && renderAspectPriv->m_renderer->settings()
-            && renderAspectPriv->m_renderer->settings()->renderPolicy() == QRenderSettings::Always);
 }
 
 
@@ -286,20 +268,28 @@ void Scene3DRenderer::onWindowChanged(QQuickWindow *w)
     }
 }
 
-void Scene3DRenderer::synchronize()
+// Render Thread, GUI locked
+void Scene3DRenderer::beforeSynchronize()
 {
-    if (shouldRender() && m_item && m_window) {
+    if (m_item && m_window) {
+
+        // Only render if we are sure aspectManager->processFrame was called prior
+        // We could otherwise enter a deadlock state
+        if (!m_allowRendering.tryAcquire(std::max(m_allowRendering.available(), 1)))
+            return;
+        m_shouldRender = true;
+
+        // Check size / multisampling
         m_multisample = m_item->multisample();
-
-        if (m_aspectEngine->rootEntity() != m_item->entity()) {
-            scheduleRootEntityChange();
-        }
-
         const QSize boundingRectSize = m_item->boundingRect().size().toSize();
         const QSize currentSize = boundingRectSize * m_window->effectiveDevicePixelRatio();
         const bool sizeHasChanged = currentSize != m_lastSize;
         const bool multisampleHasChanged = m_multisample != m_lastMultisample;
-        m_forceRecreate = sizeHasChanged || multisampleHasChanged;
+        const bool forceRecreate = sizeHasChanged || multisampleHasChanged;
+        // Store the current size as a comparison
+        // point for the next frame
+        m_lastSize = currentSize;
+        m_lastMultisample = m_multisample;
 
         if (sizeHasChanged) {
             static const QMetaMethod setItemAreaAndDevicePixelRatio = setItemAreaAndDevicePixelRatioMethod();
@@ -307,31 +297,88 @@ void Scene3DRenderer::synchronize()
                                                   Q_ARG(qreal, m_window->effectiveDevicePixelRatio()));
         }
 
-        // Store the current size as a comparison
-        // point for the next frame
-        m_lastSize = currentSize;
-        m_lastMultisample = m_multisample;
+        // Rebuild FBO if size/multisampling has changed
+        const bool usesFBO = m_compositingMode == Scene3DItem::FBO;
+        if (usesFBO) {
+            // Rebuild FBO and textures if never created or a resize has occurred
+            if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {
+                m_multisampledFBO.reset(createMultisampledFramebufferObject(m_lastSize));
+                if (m_multisampledFBO->format().samples() == 0 || !QOpenGLFramebufferObject::hasOpenGLFramebufferBlit()) {
+                    m_multisample = false;
+                    m_multisampledFBO.reset(nullptr);
+                }
+            }
 
-        m_node->markDirty(QSGNode::DirtyMaterial);
+            const bool generateNewTexture = m_finalFBO.isNull() || forceRecreate;
+            if (generateNewTexture) {
+                m_finalFBO.reset(createFramebufferObject(m_lastSize));
+                m_texture.reset(m_window->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
+            }
+
+            // We can render either the Scene3D or the Scene3DView but not both
+            // at the same time
+            Q_ASSERT((m_node == nullptr || m_views.empty()) ||
+                     (m_node != nullptr && m_views.empty()) ||
+                     (m_node == nullptr && !m_views.empty()));
+
+            // Set texture on node
+            if (m_node && (!m_node->texture() || generateNewTexture))
+                m_node->setTexture(m_texture.data());
+
+            // Set textures on Scene3DView
+            if (m_dirtyViews || generateNewTexture) {
+                for (Scene3DView *view : qAsConst(m_views))
+                    if (!view->texture() || generateNewTexture)
+                        view->setTexture(m_texture.data());
+                m_dirtyViews = false;
+            }
+        }
+
+        if (m_aspectEngine->rootEntity() != m_item->entity()) {
+            scheduleRootEntityChange();
+        }
+
+        // Mark SGNodes as dirty so that QQuick will trigger some rendering
+        if (m_node)
+            m_node->markDirty(QSGNode::DirtyMaterial);
+
+        for (Scene3DView *view : qAsConst(m_views))
+            view->markSGNodeDirty();
+
         m_item->update();
     }
+}
+
+void Scene3DRenderer::allowRender()
+{
+    m_allowRendering.release(1);
+}
+
+void Scene3DRenderer::setCompositingMode(Scene3DItem::CompositingMode mode)
+{
+    m_compositingMode = mode;
+}
+
+// Main Thread, Render Thread locked
+void Scene3DRenderer::setScene3DViews(const QVector<Scene3DView *> views)
+{
+    m_views = views;
+    m_dirtyViews = true;
 }
 
 void Scene3DRenderer::setSGNode(Scene3DSGNode *node)
 {
     m_node = node;
-    if (!m_texture.isNull())
-        node->setTexture(m_texture.data());
 }
 
+// Render Thread, Main Thread is unlocked at this point
 void Scene3DRenderer::render()
 {
     QMutexLocker l(&m_windowMutex);
     // Lock to ensure the window doesn't change while we are rendering
-    if (!m_window || !shouldRender())
+    if (!m_window || !m_shouldRender)
         return;
-
-    m_dirty = false;
+    m_shouldRender = false;
 
     ContextSaver saver;
 
@@ -339,49 +386,40 @@ void Scene3DRenderer::render()
     // it here to give Qt3D the clean state it expects
     m_window->resetOpenGLState();
 
-    // Rebuild FBO and textures if never created or a resize has occurred
-    if ((m_multisampledFBO.isNull() || m_forceRecreate) && m_multisample) {
-        m_multisampledFBO.reset(createMultisampledFramebufferObject(m_lastSize));
-        if (m_multisampledFBO->format().samples() == 0 || !QOpenGLFramebufferObject::hasOpenGLFramebufferBlit()) {
-            m_multisample = false;
-            m_multisampledFBO.reset(nullptr);
-        }
+    // Create and bind FBO if using the FBO compositing mode
+    const bool usesFBO = m_compositingMode == Scene3DItem::FBO;
+    if (usesFBO) {
+        // Bind FBO
+        if (m_multisample) //Only try to use MSAA when available
+            m_multisampledFBO->bind();
+        else
+            m_finalFBO->bind();
     }
-
-    if (m_finalFBO.isNull() || m_forceRecreate) {
-        m_finalFBO.reset(createFramebufferObject(m_lastSize));
-        m_texture.reset(m_window->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
-        m_node->setTexture(m_texture.data());
-    }
-
-    // Bind FBO
-    if (m_multisample) //Only try to use MSAA when available
-        m_multisampledFBO->bind();
-    else
-        m_finalFBO->bind();
 
     // Render Qt3D Scene
-    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(m_blocking);
+    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(usesFBO);
 
     // We may have called doneCurrent() so restore the context if the rendering surface was changed
     // Note: keep in mind that the ContextSave also restores the surface when destroyed
     if (saver.context()->surface() != saver.surface())
         saver.context()->makeCurrent(saver.surface());
 
-    if (m_multisample) {
-        // Blit multisampled FBO with non multisampled FBO with texture attachment
-        const QRect dstRect(QPoint(0, 0), m_finalFBO->size());
-        const QRect srcRect(QPoint(0, 0), m_multisampledFBO->size());
-        QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), dstRect,
-                                                  m_multisampledFBO.data(), srcRect,
-                                                  GL_COLOR_BUFFER_BIT,
-                                                  GL_NEAREST,
-                                                  0, 0,
-                                                  QOpenGLFramebufferObject::DontRestoreFramebufferBinding);
-    }
+    if (usesFBO) {
+        if (m_multisample) {
+            // Blit multisampled FBO with non multisampled FBO with texture attachment
+            const QRect dstRect(QPoint(0, 0), m_finalFBO->size());
+            const QRect srcRect(QPoint(0, 0), m_multisampledFBO->size());
+            QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), dstRect,
+                                                      m_multisampledFBO.data(), srcRect,
+                                                      GL_COLOR_BUFFER_BIT,
+                                                      GL_NEAREST,
+                                                      0, 0,
+                                                      QOpenGLFramebufferObject::DontRestoreFramebufferBinding);
+        }
 
-    // Restore QtQuick FBO
-    QOpenGLFramebufferObject::bindDefault();
+        // Restore QtQuick FBO
+        QOpenGLFramebufferObject::bindDefault();
+    }
 
     // Reset the state used by the Qt Quick scenegraph to avoid any
     // interference when rendering the rest of the UI.

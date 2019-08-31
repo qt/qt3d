@@ -92,49 +92,41 @@ private Q_SLOTS:
         // WHEN
         Qt3DCore::QEntity *camera = new Qt3DCore::QEntity();
         cameraSelector->setCamera(camera);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "camera");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), camera->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        cameraSelector->setCamera(camera);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), cameraSelector.data());
+
+        arbiter.dirtyNodes.clear();
+
+        // WHEN
+        cameraSelector->setCamera(camera);
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         Qt3DCore::QEntity *camera2 = new Qt3DCore::QEntity();
         cameraSelector->setCamera(camera2);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "camera");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), camera2->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        arbiter.events.clear();
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), cameraSelector.data());
+
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         cameraSelector->setCamera(nullptr);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "camera");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), Qt3DCore::QNodeId());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), cameraSelector.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkCameraBookkeeping()
