@@ -34,8 +34,8 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 #include <QtQuick/qquickwindow.h>
 
 #include <Qt3DRender/QCamera>
@@ -72,6 +72,30 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
+{
+    using namespace Qt3DCore;
+
+    QVector<QNode *> nodes;
+    Qt3DCore::QNodeVisitor visitor;
+    visitor.traverse(root, [&nodes](QNode *node) {
+        nodes.append(node);
+
+        // Store the metaobject of the node in the QNode so that we have it available
+        // to us during destruction in the QNode destructor. This allows us to send
+        // the QNodeId and the metaobject as typeinfo to the backend aspects so they
+        // in turn can find the correct QBackendNodeMapper object to handle the destruction
+        // of the corresponding backend nodes.
+        QNodePrivate *d = QNodePrivate::get(node);
+        d->m_typeInfo = const_cast<QMetaObject*>(QNodePrivate::findStaticMetaObject(node->metaObject()));
+
+        // Mark this node as having been handled for creation so that it is picked up
+        d->m_hasBackendNode = true;
+    });
+
+    return nodes;
+}
+
 class TestAspect : public Qt3DRender::QRenderAspect
 {
 public:
@@ -81,10 +105,8 @@ public:
     {
         QRenderAspect::onRegistered();
 
-        const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
-        const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
-
-        d_func()->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(root), creationChanges);
+        const QVector<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
+        d_func()->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(root), nodes);
 
         Render::Entity *rootEntity = nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
         Q_ASSERT(rootEntity);

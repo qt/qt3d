@@ -256,16 +256,16 @@ void QBackendNode::setEnabled(bool enabled) Q_DECL_NOTHROW
 void QBackendNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
     Q_D(QBackendNode);
-    auto propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
 
     switch (e->type()) {
-        case PropertyUpdated: {
-            if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-                d->m_enabled = propertyChange->value().toBool();
-            break;
-        }
-        default:
-            break;
+    case PropertyUpdated: {
+        auto propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            d->m_enabled = propertyChange->value().toBool();
+        break;
+    }
+    default:
+        break;
     }
 }
 

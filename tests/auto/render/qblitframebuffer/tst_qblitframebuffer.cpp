@@ -119,217 +119,169 @@ private Q_SLOTS:
         // sourceRenderTarget
         // WHEN
         blitFramebuffer->setSource(sourceRenderTarget);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "source");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), sourceRenderTarget->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        blitFramebuffer->setSource(sourceRenderTarget);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
+
+        arbiter.dirtyNodes.clear();
+
+        // WHEN
+        blitFramebuffer->setSource(sourceRenderTarget);
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         blitFramebuffer->setSource(nullptr);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "source");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), Qt3DCore::QNodeId());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // destinationRenderTarget
         // WHEN
         blitFramebuffer->setDestination(destinationRenderTarget);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "destination");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), destinationRenderTarget->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        blitFramebuffer->setDestination(destinationRenderTarget);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
+
+        arbiter.dirtyNodes.clear();
+
+        // WHEN
+        blitFramebuffer->setDestination(destinationRenderTarget);
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         blitFramebuffer->setDestination(nullptr);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "destination");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), Qt3DCore::QNodeId());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // sourceRect
         // WHEN
         blitFramebuffer->setSourceRect(QRect(0,0,1,1));
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceRect");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<QRect>(), QRect(0,0,1,1)) ;
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         blitFramebuffer->setSourceRect(QRect(0,0,1,1));
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         blitFramebuffer->setSourceRect(QRect());
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceRect");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<QRect>(), QRect());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // destinationRect
-        blitFramebuffer->setDestinationRect(QRect(0,0,1,1));
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "destinationRect");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<QRect>(), QRect(0,0,1,1)) ;
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        blitFramebuffer->setDestinationRect(QRect(0,0,1,1));
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
+
+        arbiter.dirtyNodes.clear();
+
+        // destinationRect
+        blitFramebuffer->setDestinationRect(QRect(0,0,1,1));
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
+
+        arbiter.dirtyNodes.clear();
+
+        // WHEN
+        blitFramebuffer->setDestinationRect(QRect(0,0,1,1));
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         blitFramebuffer->setDestinationRect(QRect());
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "destinationRect");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<QRect>(), QRect());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // sourceAttachmentPoint
         // WHEN
         blitFramebuffer->setSourceAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color1);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceAttachmentPoint");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>(), Qt3DRender::QRenderTargetOutput::Color1);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        blitFramebuffer->setSourceAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color1);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
+
+        arbiter.dirtyNodes.clear();
+
+        // WHEN
+        blitFramebuffer->setSourceAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color1);
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         blitFramebuffer->setSourceAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color0);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceAttachmentPoint");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>(), Qt3DRender::QRenderTargetOutput::Color0);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // destinationAttachmentPoint
         // WHEN
         blitFramebuffer->setDestinationAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color1);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "destinationAttachmentPoint");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>(), Qt3DRender::QRenderTargetOutput::Color1);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        blitFramebuffer->setDestinationAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color1);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
+
+        arbiter.dirtyNodes.clear();
+
+        // WHEN
+        blitFramebuffer->setDestinationAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color1);
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         blitFramebuffer->setDestinationAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color0);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "destinationAttachmentPoint");
-        QCOMPARE(change->subjectId(), blitFramebuffer->id());
-        QCOMPARE(change->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>(), Qt3DRender::QRenderTargetOutput::Color0);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), blitFramebuffer.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkSourceDestReset()

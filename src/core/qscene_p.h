@@ -65,6 +65,7 @@ namespace Qt3DCore {
 class QScenePrivate;
 class QAspectEngine;
 class NodePostConstructorInit;
+class QAbstractArbiter;
 
 typedef QList<QObservableInterface *> QObservableList;
 
@@ -88,8 +89,8 @@ public:
 
     QNode *rootNode() const;
 
-    void setArbiter(Qt3DCore::QLockableObserverInterface *arbiter);
-    Qt3DCore::QLockableObserverInterface *arbiter() const;
+    void setArbiter(QAbstractArbiter *arbiter);
+    QAbstractArbiter *arbiter() const;
 
     // Component -> Entities
     QVector<QNodeId> entitiesForComponent(QNodeId id) const;

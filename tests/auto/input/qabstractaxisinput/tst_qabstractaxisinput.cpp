@@ -29,7 +29,6 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QAbstractAxisInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>
@@ -72,16 +71,12 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         axisInput->setSourceDevice(device);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceDevice");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkSourceDeviceBookkeeping()

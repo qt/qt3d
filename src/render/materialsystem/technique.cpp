@@ -95,6 +95,7 @@ void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_parameterPack.setParameters(data.parameterIds);
     m_renderPasses = data.renderPassIds;
     m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
+    markDirty(AbstractRenderer::TechniquesDirty);
 }
 
 void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

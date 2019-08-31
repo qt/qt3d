@@ -39,6 +39,7 @@
 
 #include "qnode.h"
 #include "qnode_p.h"
+#include "qscene_p.h"
 
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/qaspectengine.h>
@@ -55,10 +56,11 @@
 
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <QtCore/private/qmetaobject_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -110,17 +112,15 @@ void QNodePrivate::init(QNode *parent)
  *
  * Sends QNodeCreatedChange events to the aspects.
  */
-void QNodePrivate::notifyCreationChange()
+void QNodePrivate::createBackendNode()
 {
-    Q_Q(QNode);
     // Do nothing if we already have already sent a node creation change
     // and not a subsequent node destroyed change.
-    if (m_hasBackendNode || !m_scene)
+    if (m_hasBackendNode || !m_scene || !m_scene->engine())
         return;
-    QNodeCreatedChangeGenerator generator(q);
-    const auto creationChanges = generator.creationChanges();
-    for (const auto &change : creationChanges)
-        notifyObservers(change);
+
+    Q_Q(QNode);
+    QAspectEnginePrivate::get(m_scene->engine())->addNode(q);
 }
 
 /*!
@@ -189,7 +189,7 @@ void QNodePrivate::_q_postConstructorInit()
         return;
 
     // Set the scene on this node and all children it references so that all
-    // children have a scene set since notifyCreationChanges will set
+    // children have a scene set since createBackendNode will set
     // m_hasBackendNode to true for all children, which would prevent them from
     // ever having their scene set
     if (m_scene) {
@@ -198,7 +198,7 @@ void QNodePrivate::_q_postConstructorInit()
     }
 
     // Let the backend know we have been added to the scene
-    notifyCreationChange();
+    createBackendNode();
 
     // Let the backend parent know that they have a new child
     Q_ASSERT(parentNode);
@@ -247,7 +247,7 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     }
 
     // Update the scene
-    // TODO: Fold this into the QNodeCreatedChangeGenerator so we don't have to
+    // TODO: Fold this into the QAspectEnginePrivate::addNode so we don't have to
     // traverse the sub tree three times!
     QNodeVisitor visitor;
     visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
@@ -340,13 +340,13 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
         // child->setParent(subTreeRoot)
         // We need to take into account that subTreeRoot needs to be
         // created in the backend before the child.
-        // Therefore we only call notifyCreationChanges if the parent
+        // Therefore we only call createBackendNode if the parent
         // hasn't been created yet as we know that when the parent will be
         // fully created, it will also send the changes for all of its
         // children
 
         if (newParentPrivate->m_hasBackendNode)
-            notifyCreationChange();
+            createBackendNode();
 
         // If we have a valid new parent, we let him know that we are its child
         QNodePrivate::get(parent)->_q_addChild(q);
@@ -385,48 +385,13 @@ void QNodePrivate::unregisterNotifiedProperties()
 
 void QNodePrivate::propertyChanged(int propertyIndex)
 {
+    Q_UNUSED(propertyIndex);
+
     // Bail out early if we can to avoid the cost below
     if (m_blockNotifications)
         return;
 
-    const auto toBackendValue = [](const QVariant &data) -> QVariant
-    {
-        if (data.canConvert<QNode*>()) {
-            QNode *node = data.value<QNode*>();
-
-            // Ensure the node and all ancestors have issued their node creation changes.
-            // We can end up here if a newly created node with a parent is immediately set
-            // as a property on another node. In this case the deferred call to
-            // _q_postConstructorInit() will not have happened yet as the event
-            // loop will still be blocked. We need to do this for all ancestors,
-            // since the subtree of this node otherwise can end up on the backend
-            // with a reference to a non-existent parent.
-            if (node)
-                QNodePrivate::get(node)->_q_ensureBackendNodeCreated();
-
-            const QNodeId id = node ? node->id() : QNodeId();
-            return QVariant::fromValue(id);
-        }
-
-        return data;
-    };
-
-    Q_Q(QNode);
-
-    const QMetaProperty property = q->metaObject()->property(propertyIndex);
-
-    const QVariant data = property.read(q);
-
-    if (data.type() == QVariant::List) {
-        QSequentialIterable iterable = data.value<QSequentialIterable>();
-        QVariantList variants;
-        variants.reserve(iterable.size());
-        for (const auto &v : iterable)
-            variants.append(toBackendValue(v));
-        notifyPropertyChange(property.name(), variants);
-    } else {
-        notifyPropertyChange(property.name(), toBackendValue(data));
-    }
+    update();
 }
 
 /*!
@@ -498,8 +463,13 @@ void QNodePrivate::addEntityComponentToScene(QNode *root)
 // Called in the main thread by QScene -> following QEvent::childAdded / addChild
 void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 {
-    if (m_changeArbiter && m_changeArbiter != arbiter)
+    if (m_changeArbiter && m_changeArbiter != arbiter) {
         unregisterNotifiedProperties();
+
+        // Remove node from dirtyFrontendNodeList on old arbiter
+        Q_Q(QNode);
+        m_changeArbiter->removeDirtyFrontEndNode(q);
+    }
     m_changeArbiter = static_cast<QAbstractArbiter *>(arbiter);
     if (m_changeArbiter)
         registerNotifiedProperties();
@@ -626,26 +596,26 @@ QScene *QNodePrivate::scene() const
  */
 void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 {
+    Q_UNUSED(name);
+    Q_UNUSED(value);
+
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)
         return;
 
-    auto e = QPropertyUpdatedChangePtr::create(m_id);
-    e->setPropertyName(name);
-    e->setValue(value);
-    notifyObservers(e);
+    update();
 }
 
 void QNodePrivate::notifyDynamicPropertyChange(const QByteArray &name, const QVariant &value)
 {
+    Q_UNUSED(name);
+    Q_UNUSED(value);
+
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)
         return;
 
-    auto e = QDynamicPropertyUpdatedChangePtr::create(m_id);
-    e->setPropertyName(name);
-    e->setValue(value);
-    notifyObservers(e);
+    update();
 }
 
 /*!
@@ -701,6 +671,14 @@ void QNodePrivate::updatePropertyTrackMode()
         trackData.defaultTrackMode = m_defaultPropertyTrackMode;
         trackData.trackedPropertiesOverrides = m_trackedPropertiesOverrides;
         m_scene->setPropertyTrackDataForNode(m_id, trackData);
+    }
+}
+
+void QNodePrivate::update()
+{
+    if (m_changeArbiter) {
+        Q_Q(QNode);
+        m_changeArbiter->addDirtyFrontEndNode(q);
     }
 }
 

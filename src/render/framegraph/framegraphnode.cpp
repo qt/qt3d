@@ -71,6 +71,7 @@ void FrameGraphNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
     // Set up the parent child relationship and enabled state
     const auto creationChange = qSharedPointerCast<QFrameGraphNodeCreatedChangeBase>(change);
     setParentId(creationChange->parentFrameGraphNodeId());
+    markDirty(AbstractRenderer::FrameGraphDirty);
 }
 
 void FrameGraphNode::setFrameGraphManager(FrameGraphManager *manager)

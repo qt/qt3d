@@ -47,13 +47,11 @@
 #include <QtCore/QMetaObject>
 
 #include <Qt3DCore/private/corelogging_p.h>
-#include <Qt3DCore/private/qaspectthread_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
@@ -65,6 +63,34 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace{
+
+QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
+{
+    using namespace Qt3DCore;
+
+    QVector<QNode *> nodes;
+    QNodeVisitor visitor;
+    visitor.traverse(root, [&nodes](QNode *node) {
+        nodes.append(node);
+
+        // Store the metaobject of the node in the QNode so that we have it available
+        // to us during destruction in the QNode destructor. This allows us to send
+        // the QNodeId and the metaobject as typeinfo to the backend aspects so they
+        // in turn can find the correct QBackendNodeMapper object to handle the destruction
+        // of the corresponding backend nodes.
+        QNodePrivate *d = QNodePrivate::get(node);
+        d->m_typeInfo = const_cast<QMetaObject*>(QNodePrivate::findStaticMetaObject(node->metaObject()));
+
+        // Mark this node as having been handled for creation so that it is picked up
+        d->m_hasBackendNode = true;
+    });
+
+    return nodes;
+}
+
+}
+
 namespace Qt3DCore {
 
 QAspectEnginePrivate *QAspectEnginePrivate::get(QAspectEngine *q)
@@ -74,9 +100,11 @@ QAspectEnginePrivate *QAspectEnginePrivate::get(QAspectEngine *q)
 
 QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
+    , m_aspectManager(nullptr)
     , m_postman(nullptr)
     , m_scene(nullptr)
     , m_initialized(false)
+    , m_runMode(QAspectEngine::Automatic)
     #if QT_CONFIG(qt3d_profile_jobs)
     , m_commandDebugger(new Debug::AspectCommandDebugger(q_func()))
     #endif
@@ -119,10 +147,9 @@ void QAspectEnginePrivate::initEntity(QEntity *entity)
     }
 }
 
-void QAspectEnginePrivate::generateCreationChanges(QNode *root)
+void QAspectEnginePrivate::addNode(QNode *node)
 {
-    const QNodeCreatedChangeGenerator generator(root);
-    m_creationChanges = generator.creationChanges();
+    m_aspectManager->addNodes(getNodesForCreation(node));
 }
 
 /*!
@@ -185,8 +212,7 @@ QAspectEngine::QAspectEngine(QObject *parent)
     d->m_scene = new QScene(this);
     d->m_postman = new QPostman(this);
     d->m_postman->setScene(d->m_scene);
-    d->m_aspectThread = new QAspectThread(this);
-    d->m_aspectThread->waitForStart(QThread::HighestPriority);
+    d->m_aspectManager = new QAspectManager(this);
 }
 
 /*!
@@ -206,11 +232,6 @@ QAspectEngine::~QAspectEngine()
     for (auto aspect : aspects)
         unregisterAspect(aspect);
 
-    // Wait for thread to have completed it's final loop of execution
-    d->m_aspectThread->aspectManager()->quit();
-    d->m_aspectThread->wait();
-
-    delete d->m_aspectThread;
     delete d->m_postman;
     delete d->m_scene;
 }
@@ -225,15 +246,12 @@ void QAspectEnginePrivate::initNodeTree(QNode *node)
 
 void QAspectEnginePrivate::initialize()
 {
-    QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
+    m_aspectManager->initialize();
+    QChangeArbiter *arbiter = m_aspectManager->changeArbiter();
     m_scene->setArbiter(arbiter);
     QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
-    QMetaObject::invokeMethod(arbiter,
-                              "setPostman",
-                              Q_ARG(Qt3DCore::QAbstractPostman*, m_postman));
-    QMetaObject::invokeMethod(arbiter,
-                              "setScene",
-                              Q_ARG(Qt3DCore::QScene*, m_scene));
+    arbiter->setPostman(m_postman);
+    arbiter->setScene(m_scene);
     m_initialized = true;
 #if QT_CONFIG(qt3d_profile_jobs)
     m_commandDebugger->setAspectEngine(q_func());
@@ -263,14 +281,14 @@ void QAspectEnginePrivate::shutdown()
 
     // Cleanup the scene before quitting the backend
     m_scene->setArbiter(nullptr);
-    QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
+    QChangeArbiter *arbiter = m_aspectManager->changeArbiter();
     QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
     m_initialized = false;
 }
 
 void QAspectEnginePrivate::exitSimulationLoop()
 {
-    m_aspectThread->aspectManager()->exitSimulationLoop();
+    m_aspectManager->exitSimulationLoop();
 }
 
 /*!
@@ -285,12 +303,8 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
     // AspectManager::registerAspect is called in the context
     // of the AspectThread. This is turns call aspect->onInitialize
     // still in the same AspectThread context
-    aspect->moveToThread(d->m_aspectThread);
     d->m_aspects << aspect;
-    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "registerAspect",
-                              Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3DCore::QAbstractAspect*, aspect));
+    d->m_aspectManager->registerAspect(aspect);
 }
 
 /*!
@@ -327,10 +341,7 @@ void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
 
     // Tell the aspect manager to give the aspect a chance to do some cleanup
     // in its QAbstractAspect::onUnregistered() virtual
-    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "unregisterAspect",
-                              Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3DCore::QAbstractAspect*, aspect));
+    d->m_aspectManager->unregisterAspect(aspect);
 
     // Remove from our collection of named aspects (if present)
     const auto it = std::find_if(d->m_namedAspects.begin(), d->m_namedAspects.end(),
@@ -409,6 +420,19 @@ QVariant QAspectEngine::executeCommand(const QString &command)
 }
 
 /*!
+ * If using the manual run mode, this function executes the jobs for each aspect.
+ * It is blocking and won't return until all jobs have been completed.
+ *
+ * If you are using the QRenderAspect,
+ */
+void QAspectEngine::processFrame()
+{
+    Q_D(QAspectEngine);
+    Q_ASSERT(d->m_runMode == QAspectEngine::Manual);
+    d->m_aspectManager->processFrame();
+}
+
+/*!
  * Sets the \a root entity for the aspect engine.
  */
 void QAspectEngine::setRootEntity(QEntityPtr root)
@@ -445,8 +469,10 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // deregister the nodes from the scene
     d->initNodeTree(root.data());
 
-    // Traverse tree to generate a vector of creation changes
-    d->generateCreationChanges(root.data());
+    const QVector<QNode *> nodes = getNodesForCreation(root.data());
+
+    // Specify if the AspectManager should be driving the simulation loop or not
+    d->m_aspectManager->setRunMode(d->m_runMode);
 
     // Finally, tell the aspects about the new scene object tree. This is done
     // in a blocking manner to allow the aspects to get synchronized before the
@@ -455,14 +481,9 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // TODO: Pass the creation changes via the arbiter rather than relying upon
     // an invokeMethod call.
     qCDebug(Aspects) << "Begin setting scene root on aspect manager";
-    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "setRootEntity",
-                              Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3DCore::QEntity*, root.data()),
-                              Q_ARG(QVector<Qt3DCore::QNodeCreatedChangeBasePtr>, d->m_creationChanges));
+    d->m_aspectManager->setRootEntity(root.data(), nodes);
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
-
-    d->m_aspectThread->aspectManager()->enterSimulationLoop();
+    d->m_aspectManager->enterSimulationLoop();
 }
 
 /*!
@@ -472,6 +493,20 @@ QEntityPtr QAspectEngine::rootEntity() const
 {
     Q_D(const QAspectEngine);
     return d->m_root;
+}
+
+void QAspectEngine::setRunMode(QAspectEngine::RunMode mode)
+{
+    Q_D(QAspectEngine);
+    d->m_runMode = mode;
+    if (d->m_aspectManager)
+        d->m_aspectManager->setRunMode(mode);
+}
+
+QAspectEngine::RunMode QAspectEngine::runMode() const
+{
+    Q_D(const QAspectEngine);
+    return d->m_runMode;
 }
 
 } // namespace Qt3DCore

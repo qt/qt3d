@@ -68,26 +68,32 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QSetFence setFence;
 
         {
             // WHEN
             Qt3DRender::Render::SetFence backendSetFence;
+            backendSetFence.setRenderer(&renderer);
             simulateInitialization(&setFence, &backendSetFence);
 
             // THEN
             QCOMPARE(backendSetFence.isEnabled(), true);
             QCOMPARE(backendSetFence.peerId(), setFence.id());
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::SetFence backendSetFence;
             setFence.setEnabled(false);
+            backendSetFence.setRenderer(&renderer);
             simulateInitialization(&setFence, &backendSetFence);
 
             // THEN
             QCOMPARE(backendSetFence.peerId(), setFence.id());
             QCOMPARE(backendSetFence.isEnabled(), false);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
     }
 

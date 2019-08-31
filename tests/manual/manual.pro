@@ -65,7 +65,8 @@ SUBDIRS += \
     raster-qml \
     qtbug-72236 \
     qtbug-76766 \
-    shader-image-qml
+    shader-image-qml \
+    scene3d-in-sync
 
 qtHaveModule(multimedia): {
     SUBDIRS += \

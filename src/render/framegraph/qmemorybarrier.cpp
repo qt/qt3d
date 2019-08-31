@@ -140,7 +140,7 @@ void QMemoryBarrier::setWaitOperations(QMemoryBarrier::Operations waitOperations
     if (waitOperations != d->m_waitOperations) {
         d->m_waitOperations = waitOperations;
         emit waitOperationsChanged(waitOperations);
-        d->notifyPropertyChange("waitOperations", QVariant::fromValue(waitOperations));
+        d->notifyPropertyChange("waitOperations", QVariant::fromValue(waitOperations));  // TODOSYNC
     }
 }
 

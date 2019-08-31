@@ -89,6 +89,8 @@ public:
     void insertTree(QNode *treeRoot, int depth = 0);
     void updatePropertyTrackMode();
 
+    void update();
+
     Q_DECLARE_PUBLIC(QNode)
 
     // For now this just protects access to the m_changeArbiter.
@@ -164,7 +166,7 @@ public:
     void _q_ensureBackendNodeCreated();
 
 private:
-    void notifyCreationChange();
+    void createBackendNode();
     void notifyDestructionChangesAndRemoveFromScene();
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);

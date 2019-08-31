@@ -130,34 +130,34 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "source");
-        QCOMPARE(change->value().value<QUrl>(), sourceUrl);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), sceneLoader.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
-    void checkStatusPropertyUpdate()
-    {
-        // GIVEN
-        qRegisterMetaType<Qt3DRender::QSceneLoader::Status>("Status");
-        TestArbiter arbiter;
-        QScopedPointer<Qt3DRender::QSceneLoader> sceneLoader(new Qt3DRender::QSceneLoader());
-        arbiter.setArbiterOnNode(sceneLoader.data());
-        QSignalSpy spy(sceneLoader.data(), SIGNAL(statusChanged(Status)));
+    // DEPRECATED
+//    void checkStatusPropertyUpdate()
+//    {
+//        // GIVEN
+//        qRegisterMetaType<Qt3DRender::QSceneLoader::Status>("Status");
+//        TestArbiter arbiter;
+//        QScopedPointer<Qt3DRender::QSceneLoader> sceneLoader(new Qt3DRender::QSceneLoader());
+//        arbiter.setArbiterOnNode(sceneLoader.data());
+//        QSignalSpy spy(sceneLoader.data(), SIGNAL(statusChanged(Status)));
 
 
-        // WHEN
-        const Qt3DRender::QSceneLoader::Status newStatus = Qt3DRender::QSceneLoader::Ready;
-        sceneLoader->setStatus(newStatus);
+//        // WHEN
+//        const Qt3DRender::QSceneLoader::Status newStatus = Qt3DRender::QSceneLoader::Ready;
+//        sceneLoader->setStatus(newStatus);
 
-        // THEN
-        QVERIFY(arbiter.events.empty());
-        QCOMPARE(spy.count(), 1);
+//        // THEN
+//        QVERIFY(arbiter.events.empty());
+//        QCOMPARE(spy.count(), 1);
 
-        spy.clear();
-    }
+//        spy.clear();
+//    }
 
     void checkPropertyChanges()
     {
