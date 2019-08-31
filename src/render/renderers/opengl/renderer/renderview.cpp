@@ -603,7 +603,7 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 RenderPass *pass = passData.pass;
                 if (pass->hasRenderStates()) {
                     command->m_stateSet = new RenderStateSet();
-                    addUniqueStatesToRenderStateSet(command->m_stateSet, pass->renderStates(), m_manager->renderStateManager());
+                    addStatesToRenderStateSet(command->m_stateSet, pass->renderStates(), m_manager->renderStateManager());
                     if (m_stateSet != nullptr)
                         command->m_stateSet->merge(m_stateSet);
                     command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
@@ -728,7 +728,7 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
 
                 if (pass->hasRenderStates()) {
                     command->m_stateSet = new RenderStateSet();
-                    addUniqueStatesToRenderStateSet(command->m_stateSet, pass->renderStates(), m_manager->renderStateManager());
+                    addStatesToRenderStateSet(command->m_stateSet, pass->renderStates(), m_manager->renderStateManager());
 
                     // Merge per pass stateset with global stateset
                     // so that the local stateset only overrides
