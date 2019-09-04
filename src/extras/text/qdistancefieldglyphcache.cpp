@@ -284,7 +284,9 @@ DistanceFieldFont* QDistanceFieldGlyphCache::getOrCreateDistanceFieldFont(const 
     actualFont.setPixelSize(QT_DISTANCEFIELD_BASEFONTSIZE(useDoubleRes) * QT_DISTANCEFIELD_SCALE(useDoubleRes));
 
     // create new font cache
-    DistanceFieldFont *dff = new DistanceFieldFont(actualFont, useDoubleRes, m_rootNode);
+    // we set the parent node to nullptr, since the parent node of QTextureAtlasses
+    // will be set when we pass them to QText2DMaterial later
+    DistanceFieldFont *dff = new DistanceFieldFont(actualFont, useDoubleRes, nullptr);
     m_fonts.insert(key, dff);
     return dff;
 }
