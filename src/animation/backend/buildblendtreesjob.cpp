@@ -86,7 +86,8 @@ void BuildBlendTreesJob::run()
         // Build the format for clip results that should be used by nodes in the blend
         // tree when used with this animator
         const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(blendClipAnimator->mapperId());
-        Q_ASSERT(mapper);
+        if (!mapper)
+            continue;
         const QVector<ChannelNameAndType> channelNamesAndTypes
                 = buildRequiredChannelsAndTypes(m_handler, mapper);
         const QVector<ComponentIndices> channelComponentIndices

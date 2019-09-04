@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -51,59 +51,43 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
-import Qt3D.Extras 2.0
+import Qt3D.Extras 2.9
 
 Entity {
     id: sceneRoot
-
+    property alias text2DEntity: text
     Camera {
         id: camera
-        position: Qt.vector3d( 0.0, 0.5, 15.0 )
-        viewCenter: Qt.vector3d( 0.0, 0.5, 0.0 )
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 45
+        aspectRatio: 16/9
+        nearPlane : 0.1
+        farPlane : 1000.0
+        position: Qt.vector3d( 0.0, 0.0, 140.0 )
+        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    OrbitCameraController { camera: camera }
-
-    RenderSettings {
-        id : external_forward_renderer
-        activeFrameGraph : ForwardRenderer {
-            camera: camera
-            clearColor: "white"
-        }
+    OrbitCameraController {
+        camera: camera
     }
 
-    // Event Source will be set by the Qt3DQuickWindow
-    InputSettings { id: inputSettings }
+    components: [
+        RenderSettings {
+            activeFrameGraph: ForwardRenderer {
+                clearColor: Qt.rgba(1, 1, 1, 1)
+                camera: camera
+            }
+        },
+        // Event Source will be set by the Qt3DQuickWindow
+        InputSettings { }
+    ]
 
-    DirectionalLight { id: light; worldDirection: camera.viewVector }
-
-    components: [external_forward_renderer, inputSettings, light]
-
-    Mesh {
-        id: mesh
-        source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;f=examples/qt3d/exampleresources/assets/obj/plane-10x10.obj"
-        onStatusChanged: console.log("Mesh status " + status)
-    }
-
-    Transform {
-        id: transform
-        scale: 0.03
-        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 30)
-    }
-
-    DiffuseMapMaterial {
-        id: material
-        diffuse: TextureLoader {
-            source: "https://codereview.qt-project.org/gitweb?p=qt/qt3d.git;a=blob_plain;hb=refs/heads/dev;f=examples/qt3d/planets-qml/images/solarsystemscope/earthmap2k.jpg"
-            onStatusChanged: console.log("TextureLoader status " + status)
-        }
-        specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-        shininess: 2.0
-    }
-
-    Entity {
-        id: mainEntity
-        objectName: "mainEntity"
-        components: [ mesh, material, transform ]
+    Text2DEntity {
+        id: text
+        text: "foo"
+        width: 200
+        height: 40
+        color: "darkgrey"
     }
 }
