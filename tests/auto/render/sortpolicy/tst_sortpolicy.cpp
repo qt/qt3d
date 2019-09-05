@@ -52,8 +52,10 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QFrameGraphNode parent;
         auto parentBackend = new Qt3DRender::Render::FrameGraphNode;
+        parentBackend->setRenderer(&renderer);
         simulateInitialization(&parent, parentBackend);
 
         Qt3DRender::Render::FrameGraphManager manager;
@@ -67,12 +69,14 @@ private Q_SLOTS:
         sortPolicy.setSortTypes(sortTypes);
 
         // WHEN
+        backendNode.setRenderer(&renderer);
         simulateInitialization(&sortPolicy, &backendNode);
 
         // THEN
         QCOMPARE(backendNode.peerId(), sortPolicy.id());
         QCOMPARE(backendNode.parentId(), parent.id());
         QCOMPARE(backendNode.sortTypes(), sortTypes);
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
     }
 
     void checkPropertyChanges()
@@ -96,6 +100,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendNode.sortTypes(), sortTypes);
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
     }
 };
 

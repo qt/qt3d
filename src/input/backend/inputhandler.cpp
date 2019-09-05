@@ -127,58 +127,55 @@ void InputHandler::unregisterEventFilters(Qt3DCore::QEventFilterService *service
 // Called by the keyboardEventFilter in the main thread
 void InputHandler::appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event)
 {
-    QMutexLocker lock(&m_mutex);
     m_pendingKeyEvents.append(event);
 }
 
-// Called by QInputASpect::jobsToExecute (aspectThread)
+// Called by QInputASpect::jobsToExecute (Main Thread)
 QList<QT_PREPEND_NAMESPACE(QKeyEvent)> InputHandler::pendingKeyEvents()
 {
-    QMutexLocker lock(&m_mutex);
     return std::move(m_pendingKeyEvents);
 }
 
-// Called by QInputASpect::jobsToExecute (aspectThread)
+// Called by QInputASpect::jobsToExecute (Main Thread)
 void InputHandler::clearPendingKeyEvents()
 {
-    QMutexLocker lock(&m_mutex);
     m_pendingKeyEvents.clear();
 }
 
+// Main Thread
 void InputHandler::appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &event)
 {
-    QMutexLocker lock(&m_mutex);
     m_pendingMouseEvents.append(event);
 }
 
+// Main Thread
 QList<QT_PREPEND_NAMESPACE(QMouseEvent)> InputHandler::pendingMouseEvents()
 {
-    QMutexLocker lock(&m_mutex);
     return std::move(m_pendingMouseEvents);
 }
 
+// Main Thread
 void InputHandler::clearPendingMouseEvents()
 {
-    QMutexLocker lock(&m_mutex);
     m_pendingMouseEvents.clear();
 }
 
 #if QT_CONFIG(wheelevent)
+// Main Thread
 void InputHandler::appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event)
 {
-    QMutexLocker lock(&m_mutex);
     m_pendingWheelEvents.append(event);
 }
 
+// Main Thread
 QList<QT_PREPEND_NAMESPACE (QWheelEvent)> Qt3DInput::Input::InputHandler::pendingWheelEvents()
 {
-    QMutexLocker lock(&m_mutex);
     return std::move(m_pendingWheelEvents);
 }
 
+// Main Thread
 void InputHandler::clearPendingWheelEvents()
 {
-    QMutexLocker lock(&m_mutex);
     m_pendingWheelEvents.clear();
 }
 #endif
@@ -253,7 +250,6 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 #if QT_CONFIG(wheelevent)
     const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> wheelEvents = pendingWheelEvents();
 #endif
-
     for (const HMouseDevice &cHandle : qAsConst(m_activeMouseDevices)) {
         MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
 

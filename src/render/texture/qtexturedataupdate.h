@@ -42,14 +42,18 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qabstracttexture.h>
-#include <memory>
+
+#include <QtCore/qshareddata.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender
 {
 
+class QTextureDataUpdate;
 class QTextureDataUpdatePrivate;
+
+Q_3DRENDERSHARED_EXPORT bool operator==(const QTextureDataUpdate &lhs, const QTextureDataUpdate &rhs) noexcept;
 
 class Q_3DRENDERSHARED_EXPORT QTextureDataUpdate
 {
@@ -57,10 +61,11 @@ public:
     QTextureDataUpdate();
     QTextureDataUpdate(const QTextureDataUpdate &other);
     QTextureDataUpdate &operator=(const QTextureDataUpdate &other);
+    QTextureDataUpdate &operator=(QTextureDataUpdate &&other) noexcept
+    { swap(other); return *this; }
     ~QTextureDataUpdate();
 
-    bool operator==(const QTextureDataUpdate &other) const;
-    bool operator!=(const QTextureDataUpdate &other) const;
+    void swap(QTextureDataUpdate &other) noexcept { qSwap(d_ptr, other.d_ptr); }
 
     int x() const;
     int y() const;
@@ -79,8 +84,16 @@ public:
     void setData(const QTextureImageDataPtr &data);
 
 private:
-    std::unique_ptr<QTextureDataUpdatePrivate> d;
+    friend Q_3DRENDERSHARED_EXPORT bool operator==(const QTextureDataUpdate &lhs, const QTextureDataUpdate &rhs) noexcept;
+    Q_DECLARE_PRIVATE(QTextureDataUpdate)
+    QExplicitlySharedDataPointer<QTextureDataUpdatePrivate> d_ptr;
 };
+QT3D_DECLARE_TYPEINFO(Qt3DRender, QTextureDataUpdate, Q_MOVABLE_TYPE)
+
+inline bool operator!=(const QTextureDataUpdate &lhs, const QTextureDataUpdate &rhs) noexcept
+{ return !operator==(lhs, rhs); }
+
+inline void swap(QTextureDataUpdate &lhs, QTextureDataUpdate &rhs) noexcept { return lhs.swap(rhs); }
 
 } // Qt3DRender
 

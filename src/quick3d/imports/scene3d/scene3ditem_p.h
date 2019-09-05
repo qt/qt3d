@@ -69,6 +69,8 @@ class QCamera;
 class QRenderAspect;
 class Scene3DRenderer;
 class Scene3DCleaner;
+class Scene3DView;
+class QFrameGraphNode;
 
 class Scene3DItem : public QQuickItem
 {
@@ -78,6 +80,7 @@ class Scene3DItem : public QQuickItem
     Q_PROPERTY(bool multisample READ multisample WRITE setMultisample NOTIFY multisampleChanged)
     Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)
     Q_PROPERTY(bool hoverEnabled READ isHoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)
+    Q_PROPERTY(CompositingMode compositingMode READ compositingMode WRITE setCompositingMode NOTIFY compositingModeChanged REVISION 14)
     Q_CLASSINFO("DefaultProperty", "entity")
 public:
     explicit Scene3DItem(QQuickItem *parent = 0);
@@ -98,11 +101,22 @@ public:
     Q_ENUM(CameraAspectRatioMode); // LCOV_EXCL_LINE
     CameraAspectRatioMode cameraAspectRatioMode() const;
 
+    enum CompositingMode {
+        FBO,
+        Underlay
+    };
+    Q_ENUM(CompositingMode) // LCOV_EXCL_LINE
+    CompositingMode compositingMode() const;
+
+    void addView(Scene3DView *view);
+    void removeView(Scene3DView *view);
+
 public Q_SLOTS:
     void setAspects(const QStringList &aspects);
     void setEntity(Qt3DCore::QEntity *entity);
     void setCameraAspectRatioMode(CameraAspectRatioMode mode);
     void setHoverEnabled(bool enabled);
+    void setCompositingMode(CompositingMode mode);
 
 Q_SIGNALS:
     void aspectsChanged();
@@ -110,9 +124,11 @@ Q_SIGNALS:
     void multisampleChanged();
     void cameraAspectRatioModeChanged(CameraAspectRatioMode mode);
     void hoverEnabledChanged();
+    void compositingModeChanged();
 
 private Q_SLOTS:
     void applyRootEntityChange();
+    void onBeforeSync();
 
 private:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) override;
@@ -120,9 +136,12 @@ private:
     void setCameraAspectModeHelper();
     void updateCameraAspectRatio();
     void mousePressEvent(QMouseEvent *event) override;
+    bool needsRender();
 
     QStringList m_aspects;
     Qt3DCore::QEntity *m_entity;
+    Qt3DCore::QEntity *m_viewHolderEntity;
+    Qt3DRender::QFrameGraphNode *m_viewHolderFG;
 
     Qt3DCore::QAspectEngine *m_aspectEngine;
     QRenderAspect *m_renderAspect;
@@ -130,10 +149,16 @@ private:
     Scene3DCleaner *m_rendererCleaner;
 
     bool m_multisample;
+    bool m_dirty;
+    bool m_dirtyViews;
+    bool m_clearsWindowByDefault;
+    bool m_disableClearWindow;
 
     QPointer<Qt3DRender::QCamera> m_camera;
     CameraAspectRatioMode m_cameraAspectRatioMode;
+    CompositingMode m_compositingMode;
     QOffscreenSurface *m_dummySurface;
+    QVector<Scene3DView *> m_views;
 };
 
 } // Qt3DRender

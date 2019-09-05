@@ -121,72 +121,50 @@ private Q_SLOTS:
         // WHEN
         QVector<int> buttons = QVector<int>() << 555;
         axisInput->setButtons(buttons);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "buttons");
-        QCOMPARE(change->value().value<QVector<int>>(), buttons);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         axisInput->setScale(1340.0f);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "scale");
-        QCOMPARE(change->value().toFloat(), 1340.0f);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         TestDevice *device = new TestDevice(axisInput.data());
-        QCoreApplication::processEvents();
-        arbiter.events.clear();
 
         axisInput->setSourceDevice(device);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceDevice");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         axisInput->setAcceleration(42.0f);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "acceleration");
-        QCOMPARE(change->value().toFloat(), 42.0f);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         axisInput->setDeceleration(43.0f);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "deceleration");
-        QCOMPARE(change->value().toFloat(), 43.0f);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 };
 

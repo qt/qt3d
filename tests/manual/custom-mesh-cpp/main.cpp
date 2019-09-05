@@ -107,8 +107,8 @@ int main(int argc, char* argv[])
     Qt3DRender::QGeometryRenderer *customMeshRenderer = new Qt3DRender::QGeometryRenderer;
     Qt3DRender::QGeometry *customGeometry = new Qt3DRender::QGeometry(customMeshRenderer);
 
-    Qt3DRender::QBuffer *vertexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, customGeometry);
-    Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, customGeometry);
+    Qt3DRender::QBuffer *vertexDataBuffer = new Qt3DRender::QBuffer(customGeometry);
+    Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(customGeometry);
 
     // vec3 for position
     // vec3 for colors

@@ -82,8 +82,7 @@ void ComputeCommand::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
     m_workGroups[2] = data.workGroupZ;
     m_runType = data.runType;
     m_frameCount = data.frameCount;
-    if (m_renderer != nullptr)
-        BackendNode::markDirty(AbstractRenderer::ComputeDirty);
+    markDirty(AbstractRenderer::ComputeDirty);
 }
 
 void ComputeCommand::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

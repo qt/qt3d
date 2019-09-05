@@ -85,7 +85,7 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DRender::QAttribute *customVertex = new Qt3DRender::QAttribute();
-        Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
+        Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer();
         customVertex->setBuffer(buffer);
         customVertex->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
         customVertex->setCount(454);
@@ -98,7 +98,7 @@ private Q_SLOTS:
         QTest::newRow("vertex") << customVertex;
 
         Qt3DRender::QAttribute *customIndex = new Qt3DRender::QAttribute();
-        Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer);
+        Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer();
         customIndex->setBuffer(indexBuffer);
         customIndex->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
         customIndex->setCount(383);
@@ -111,7 +111,7 @@ private Q_SLOTS:
         QTest::newRow("index") << customIndex;
 
         Qt3DRender::QAttribute *customIndirect = new Qt3DRender::QAttribute();
-        Qt3DRender::QBuffer *indirectBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::DrawIndirectBuffer);
+        Qt3DRender::QBuffer *indirectBuffer = new Qt3DRender::QBuffer();
         customIndirect->setBuffer(indirectBuffer);
         customIndirect->setAttributeType(Qt3DRender::QAttribute::DrawIndirectAttribute);
         customIndirect->setCount(1);
@@ -160,134 +160,95 @@ private Q_SLOTS:
 
         // WHEN
         attribute->setVertexBaseType(Qt3DRender::QAttribute::Double);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "vertexBaseType");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAttribute::Double));
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         attribute->setVertexSize(4);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "vertexSize");
-        QCOMPARE(change->value().value<uint>(), 4U);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         attribute->setName(QStringLiteral("Duntov"));
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "name");
-        QCOMPARE(change->value().value<QString>(), QStringLiteral("Duntov"));
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         attribute->setCount(883);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "count");
-        QCOMPARE(change->value().value<uint>(), 883U);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         attribute->setByteStride(1340);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "byteStride");
-        QCOMPARE(change->value().value<uint>(), 1340U);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         attribute->setByteOffset(1584);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "byteOffset");
-        QCOMPARE(change->value().value<uint>(), 1584U);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         attribute->setDivisor(1450);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "divisor");
-        QCOMPARE(change->value().value<uint>(), 1450U);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         attribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "attributeType");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAttribute::IndexAttribute));
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         Qt3DRender::QBuffer buf;
         attribute->setBuffer(&buf);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "buffer");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), buf.id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         Qt3DRender::QBuffer buf2;
         attribute->setBuffer(&buf2);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "buffer");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), buf2.id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
 
+        arbiter.dirtyNodes.clear();
     }
 
     void checkBufferBookkeeping()
@@ -309,7 +270,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::QAttribute someOtherAttribute;
-            QScopedPointer<Qt3DRender::QBuffer> buf(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, &someOtherAttribute));
+            QScopedPointer<Qt3DRender::QBuffer> buf(new Qt3DRender::QBuffer(&someOtherAttribute));
             attribute->setBuffer(buf.data());
 
             // THEN

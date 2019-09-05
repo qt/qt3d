@@ -76,6 +76,7 @@ void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_scale = data.scale;
     m_translation = data.translation;
     updateMatrix();
+    markDirty(AbstractRenderer::TransformDirty);
 }
 
 Matrix4x4 Transform::transformMatrix() const

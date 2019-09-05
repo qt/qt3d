@@ -62,6 +62,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QRenderTarget *sourceTarget = new Qt3DRender::QRenderTarget;
         Qt3DRender::QRenderTarget *destinationTarget = new Qt3DRender::QRenderTarget;
         Qt3DRender::QBlitFramebuffer blitFramebuffer;
@@ -76,6 +77,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::BlitFramebuffer backendBlitFramebuffer;
+            backendBlitFramebuffer.setRenderer(&renderer);
             simulateInitialization(&blitFramebuffer, &backendBlitFramebuffer);
 
             // THEN
@@ -88,16 +90,20 @@ private Q_SLOTS:
             QCOMPARE(backendBlitFramebuffer.sourceAttachmentPoint(), Qt3DRender::QRenderTargetOutput::Color1);
             QCOMPARE(backendBlitFramebuffer.destinationAttachmentPoint(),  Qt3DRender::QRenderTargetOutput::Color1);
             QCOMPARE(backendBlitFramebuffer.interpolationMethod(), Qt3DRender::QBlitFramebuffer::Nearest);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::BlitFramebuffer backendBlitFramebuffer;
+            backendBlitFramebuffer.setRenderer(&renderer);
             blitFramebuffer.setEnabled(false);
             simulateInitialization(&blitFramebuffer, &backendBlitFramebuffer);
 
             // THEN
             QCOMPARE(backendBlitFramebuffer.peerId(), blitFramebuffer.id());
             QCOMPARE(backendBlitFramebuffer.isEnabled(), false);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
     }
 

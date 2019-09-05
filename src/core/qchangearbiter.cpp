@@ -118,8 +118,7 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
             continue;
 
         if (change->type() == NodeCreated) {
-            for (QSceneObserverInterface *observer : qAsConst(m_sceneObservers))
-                observer->sceneNodeAdded(change);
+            Q_ASSERT(false); // messages no longer used
         } else if (change->type() == NodeDeleted) {
             for (QSceneObserverInterface *observer : qAsConst(m_sceneObservers))
                 observer->sceneNodeRemoved(change);
@@ -264,6 +263,22 @@ void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangeList &e)
     localChangeQueue->insert(localChangeQueue->end(), e.begin(), e.end());
 
     emit receivedChange();
+}
+
+void QChangeArbiter::addDirtyFrontEndNode(QNode *node)
+{
+    if (!m_dirtyFrontEndNodes.contains(node))
+        m_dirtyFrontEndNodes += node;
+}
+
+void QChangeArbiter::removeDirtyFrontEndNode(QNode *node)
+{
+    m_dirtyFrontEndNodes.removeOne(node);
+}
+
+QVector<QNode *> QChangeArbiter::takeDirtyFrontEndNodes()
+{
+    return std::move(m_dirtyFrontEndNodes);
 }
 
 // Either we have the postman or we could make the QChangeArbiter agnostic to the postman

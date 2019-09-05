@@ -50,6 +50,12 @@ QRasterMode::QRasterMode(QNode *parent)
 {
 }
 
+/*!
+    \internal
+*/
+QRasterMode::~QRasterMode()
+    = default;
+
 QRasterMode::RasterMode QRasterMode::rasterMode() const
 {
     Q_D(const QRasterMode);

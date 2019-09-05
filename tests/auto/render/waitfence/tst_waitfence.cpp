@@ -71,6 +71,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QWaitFence waitFence;
         waitFence.setHandle(QVariant(883));
         waitFence.setWaitOnCPU(true);
@@ -80,6 +81,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::WaitFence backendWaitFence;
+            backendWaitFence.setRenderer(&renderer);
             simulateInitialization(&waitFence, &backendWaitFence);
 
             // THEN
@@ -89,11 +91,14 @@ private Q_SLOTS:
             QCOMPARE(backendWaitFence.data().handle, QVariant(883));
             QCOMPARE(backendWaitFence.data().waitOnCPU, true);
             QCOMPARE(backendWaitFence.data().timeout, quint64(8));
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::WaitFence backendWaitFence;
             waitFence.setEnabled(false);
+            backendWaitFence.setRenderer(&renderer);
             simulateInitialization(&waitFence, &backendWaitFence);
 
             // THEN
@@ -103,6 +108,7 @@ private Q_SLOTS:
             QCOMPARE(backendWaitFence.data().handle, QVariant(883));
             QCOMPARE(backendWaitFence.data().waitOnCPU, true);
             QCOMPARE(backendWaitFence.data().timeout, quint64(8));
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
     }
 

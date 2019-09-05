@@ -197,25 +197,20 @@ private Q_SLOTS:
         {
             // WHEN
             lerpBlend.setBlendFactor(0.4f);
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "blendFactor");
-            QCOMPARE(change->value().value<float>(), lerpBlend.blendFactor());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &lerpBlend);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
             // WHEN
             lerpBlend.setBlendFactor(0.4f);
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }
@@ -231,25 +226,20 @@ private Q_SLOTS:
         {
             // WHEN
             lerpBlend.setStartClip(startClip);
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "startClip");
-            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), lerpBlend.startClip()->id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &lerpBlend);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
             // WHEN
             lerpBlend.setStartClip(startClip);
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
     }
 
@@ -264,25 +254,20 @@ private Q_SLOTS:
         {
             // WHEN
             lerpBlend.setEndClip(endClip);
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "endClip");
-            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), lerpBlend.endClip()->id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &lerpBlend);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
             // WHEN
             lerpBlend.setEndClip(endClip);
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
     }
 

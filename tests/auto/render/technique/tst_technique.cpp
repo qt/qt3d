@@ -76,10 +76,12 @@ private Q_SLOTS:
     void checkCleanupState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Technique backendTechnique;
         Qt3DRender::Render::NodeManagers nodeManagers;
 
         // WHEN
+        backendTechnique.setRenderer(&renderer);
         backendTechnique.setEnabled(true);
         backendTechnique.setNodeManager(&nodeManagers);
         backendTechnique.setCompatibleWithRenderer(true);
@@ -110,6 +112,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QTechnique technique;
         Qt3DRender::QRenderPass pass;
         Qt3DRender::QParameter parameter;
@@ -124,6 +127,7 @@ private Q_SLOTS:
             Qt3DRender::Render::Technique backendTechnique;
             Qt3DRender::Render::NodeManagers nodeManagers;
 
+            backendTechnique.setRenderer(&renderer);
             backendTechnique.setNodeManager(&nodeManagers);
             simulateInitialization(&technique, &backendTechnique);
 
@@ -142,19 +146,23 @@ private Q_SLOTS:
             const QVector<Qt3DCore::QNodeId> dirtyTechniques = nodeManagers.techniqueManager()->takeDirtyTechniques();
             QCOMPARE(dirtyTechniques.size(), 1);
             QCOMPARE(dirtyTechniques.first(), backendTechnique.peerId());
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::Technique backendTechnique;
             Qt3DRender::Render::NodeManagers nodeManagers;
 
             backendTechnique.setNodeManager(&nodeManagers);
+            backendTechnique.setRenderer(&renderer);
             technique.setEnabled(false);
             simulateInitialization(&technique, &backendTechnique);
 
             // THEN
             QCOMPARE(backendTechnique.peerId(), technique.id());
             QCOMPARE(backendTechnique.isEnabled(), false);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
         }
     }
 

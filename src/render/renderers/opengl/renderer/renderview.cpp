@@ -425,7 +425,6 @@ struct SubRangeSorter<QSortPolicy::Texture>
             QVector<ShaderParameterPack::NamedResource> texturesB = b->m_parameterPack.textures();
 
             const int originalTextureASize = texturesA.size();
-            const bool isSuperior = originalTextureASize > texturesB.size();
 
             if (texturesB.size() > texturesA.size())
                 qSwap(texturesA, texturesB);

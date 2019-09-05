@@ -56,28 +56,34 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QMemoryBarrier memoryBarrier;
         memoryBarrier.setWaitOperations(Qt3DRender::QMemoryBarrier::VertexAttributeArray);
 
         {
             // WHEN
             Qt3DRender::Render::MemoryBarrier backendMemoryBarrier;
+            backendMemoryBarrier.setRenderer(&renderer);
             simulateInitialization(&memoryBarrier, &backendMemoryBarrier);
 
             // THEN
             QCOMPARE(backendMemoryBarrier.isEnabled(), true);
             QCOMPARE(backendMemoryBarrier.peerId(), memoryBarrier.id());
             QCOMPARE(backendMemoryBarrier.waitOperations(), Qt3DRender::QMemoryBarrier::VertexAttributeArray);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::MemoryBarrier backendMemoryBarrier;
+            backendMemoryBarrier.setRenderer(&renderer);
             memoryBarrier.setEnabled(false);
             simulateInitialization(&memoryBarrier, &backendMemoryBarrier);
 
             // THEN
             QCOMPARE(backendMemoryBarrier.peerId(), memoryBarrier.id());
             QCOMPARE(backendMemoryBarrier.isEnabled(), false);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
     }
 

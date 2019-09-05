@@ -131,8 +131,10 @@ void RenderSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
     Q_UNUSED(id);
     // Deletes the old settings object
     auto settings = m_renderer->settings();
-    delete settings;
-    m_renderer->setSettings(nullptr);
+    if (settings && settings->peerId() == id) {
+        m_renderer->setSettings(nullptr);
+        delete settings;
+    }
 }
 
 } // namespace Render

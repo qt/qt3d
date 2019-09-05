@@ -253,13 +253,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "renderPolicy");
-            QCOMPARE(change->value().value<Qt3DRender::QRenderSettings::RenderPolicy>(), renderSettings.renderPolicy());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &renderSettings);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -269,6 +267,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }
@@ -287,13 +286,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "activeFrameGraph");
-            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), viewport.id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &renderSettings);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -303,6 +300,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }
@@ -322,13 +320,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "pickMethod");
-            QCOMPARE(change->value().value<Qt3DRender::QPickingSettings::PickMethod>(), pickingSettings->pickMethod());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &renderSettings);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -338,6 +334,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }
@@ -357,13 +354,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "pickResultMode");
-            QCOMPARE(change->value().value<Qt3DRender::QPickingSettings::PickResultMode>(), pickingSettings->pickResultMode());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &renderSettings);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -373,6 +368,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }
@@ -392,13 +388,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "faceOrientationPickingMode");
-            QCOMPARE(change->value().value<Qt3DRender::QPickingSettings::FaceOrientationPickingMode>(), pickingSettings->faceOrientationPickingMode());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &renderSettings);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -408,6 +402,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }
@@ -427,13 +422,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "pickWorldSpaceTolerance");
-            QCOMPARE(change->value().toFloat(), pickingSettings->worldSpaceTolerance());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &renderSettings);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -443,6 +436,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }

@@ -66,8 +66,11 @@ public:
     Qt3DCore::QAbstractPostman *postman() const final;
 
     QVector<Qt3DCore::QSceneChangePtr> events;
+    QVector<Qt3DCore::QNode *> dirtyNodes;
 
     void setArbiterOnNode(Qt3DCore::QNode *node);
+    void addDirtyFrontEndNode(Qt3DCore::QNode *node) final;
+    void removeDirtyFrontEndNode(Qt3DCore::QNode *node) final;
 
 private:
     TestPostman *m_postman;

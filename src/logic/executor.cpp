@@ -64,8 +64,6 @@ void Executor::clearQueueAndProceed()
     // If the semaphore is acquired, release it to allow the logic job and hence the
     // manager and frame to complete and shutdown to continue.
     m_nodeIds.clear();
-    if (m_semaphore->available() == 0)
-        m_semaphore->release();
 }
 
 void Executor::enqueueLogicFrameUpdates(const QVector<Qt3DCore::QNodeId> &nodeIds)
@@ -92,16 +90,12 @@ bool Executor::event(QEvent *e)
 void Executor::processLogicFrameUpdates(float dt)
 {
     Q_ASSERT(m_scene);
-    Q_ASSERT(m_semaphore);
     const QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
     for (QNode *node : nodes) {
         QFrameAction *frameAction = qobject_cast<QFrameAction *>(node);
         if (frameAction && frameAction->isEnabled())
             frameAction->onTriggered(dt);
     }
-
-    // Release the semaphore so the calling Manager can continue
-    m_semaphore->release();
 }
 
 } // namespace Logic

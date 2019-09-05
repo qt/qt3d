@@ -164,23 +164,18 @@ private Q_SLOTS:
         {
             // WHEN
             mapping.setChannelName(QStringLiteral("Scale"));
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "channelName");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toString(), mapping.channelName());
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
 
             // WHEN
             mapping.setChannelName(QStringLiteral("Scale"));
-            QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
         {

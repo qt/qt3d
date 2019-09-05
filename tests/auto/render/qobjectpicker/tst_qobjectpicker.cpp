@@ -156,14 +156,11 @@ private Q_SLOTS:
                 QCoreApplication::processEvents();
 
                 // THEN
-                QCOMPARE(arbiter.events.size(), 1);
-                QCOMPARE(picker.priority(), 883);
-                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-                QCOMPARE(change->propertyName(), "priority");
-                QCOMPARE(change->value().value<int>(), picker.priority());
-                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+                QCOMPARE(arbiter.events.size(), 0);
+                QCOMPARE(arbiter.dirtyNodes.size(), 1);
+                QCOMPARE(arbiter.dirtyNodes.front(), &picker);
 
-                arbiter.events.clear();
+                arbiter.dirtyNodes.clear();
             }
 
             {
@@ -173,6 +170,7 @@ private Q_SLOTS:
 
                 // THEN
                 QCOMPARE(arbiter.events.size(), 0);
+                QCOMPARE(arbiter.dirtyNodes.size(), 0);
             }
         }
         {
@@ -182,14 +180,11 @@ private Q_SLOTS:
                 QCoreApplication::processEvents();
 
                 // THEN
-                QCOMPARE(arbiter.events.size(), 1);
-                QCOMPARE(picker.isDragEnabled(), true);
-                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-                QCOMPARE(change->propertyName(), "dragEnabled");
-                QCOMPARE(change->value().value<bool>(), picker.isDragEnabled());
-                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+                QCOMPARE(arbiter.events.size(), 0);
+                QCOMPARE(arbiter.dirtyNodes.size(), 1);
+                QCOMPARE(arbiter.dirtyNodes.front(), &picker);
 
-                arbiter.events.clear();
+                arbiter.dirtyNodes.clear();
             }
 
             {
@@ -199,6 +194,7 @@ private Q_SLOTS:
 
                 // THEN
                 QCOMPARE(arbiter.events.size(), 0);
+                QCOMPARE(arbiter.dirtyNodes.size(), 0);
             }
         }
         {
@@ -208,14 +204,11 @@ private Q_SLOTS:
                 QCoreApplication::processEvents();
 
                 // THEN
-                QCOMPARE(arbiter.events.size(), 1);
-                QCOMPARE(picker.isHoverEnabled(), true);
-                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-                QCOMPARE(change->propertyName(), "hoverEnabled");
-                QCOMPARE(change->value().value<bool>(), picker.isHoverEnabled());
-                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+                QCOMPARE(arbiter.events.size(), 0);
+                QCOMPARE(arbiter.dirtyNodes.size(), 1);
+                QCOMPARE(arbiter.dirtyNodes.front(), &picker);
 
-                arbiter.events.clear();
+                arbiter.dirtyNodes.clear();
             }
 
             {
@@ -225,6 +218,7 @@ private Q_SLOTS:
 
                 // THEN
                 QCOMPARE(arbiter.events.size(), 0);
+                QCOMPARE(arbiter.dirtyNodes.size(), 0);
             }
         }
     }
@@ -272,13 +266,11 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "hoverEnabled");
-        QCOMPARE(change->value().toBool(), true);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), objectPicker.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkBackendUpdates_data()

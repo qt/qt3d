@@ -62,7 +62,7 @@ class Q_3DCORESHARED_EXPORT QBackendNodeMapper
 {
 public:
     virtual ~QBackendNodeMapper();
-    virtual QBackendNode *create(const QNodeCreatedChangeBasePtr &change) const = 0;
+    virtual QBackendNode *create(const QNodeCreatedChangeBasePtr &change) const = 0;        // TODO QT6 change to only take a NodeId
     virtual QBackendNode *get(QNodeId id) const = 0;
     virtual void destroy(QNodeId id) const = 0;
 };

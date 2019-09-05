@@ -154,21 +154,23 @@ void Scene3DSGMaterialShader::updateState(const RenderState &state, QSGMaterial 
 
     QSGTexture *t = tx->texture();
 
-    bool npotSupported = const_cast<QOpenGLContext *>(state.context())
-            ->functions()->hasOpenGLFeature(QOpenGLFunctions::NPOTTextureRepeat);
-    if (!npotSupported) {
-        QSize size = t->textureSize();
-        const bool isNpot = !isPowerOfTwo(size.width()) || !isPowerOfTwo(size.height());
-        if (isNpot) {
-            t->setHorizontalWrapMode(QSGTexture::ClampToEdge);
-            t->setVerticalWrapMode(QSGTexture::ClampToEdge);
+    if (t != nullptr) {
+        bool npotSupported = const_cast<QOpenGLContext *>(state.context())
+                ->functions()->hasOpenGLFeature(QOpenGLFunctions::NPOTTextureRepeat);
+        if (!npotSupported) {
+            QSize size = t->textureSize();
+            const bool isNpot = !isPowerOfTwo(size.width()) || !isPowerOfTwo(size.height());
+            if (isNpot) {
+                t->setHorizontalWrapMode(QSGTexture::ClampToEdge);
+                t->setVerticalWrapMode(QSGTexture::ClampToEdge);
+            }
         }
-    }
 
-    if (oldTx == 0 || oldTx->texture()->textureId() != t->textureId())
-        t->bind();
-    else
-        t->updateBindOptions();
+        if (oldTx == 0 || oldTx->texture()->textureId() != t->textureId())
+            t->bind();
+        else
+            t->updateBindOptions();
+    }
 
     if (state.isMatrixDirty())
         program()->setUniformValue(m_matrixId, state.combinedMatrix());

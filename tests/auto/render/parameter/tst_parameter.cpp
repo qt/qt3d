@@ -58,12 +58,14 @@ private Q_SLOTS:
     void checkCleanupState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Parameter backendParameter;
         Qt3DRender::QParameter parameter;
         parameter.setName(QStringLiteral("Cutlass"));
         parameter.setValue(QVariant(QColor(Qt::blue)));
 
         // WHEN
+        backendParameter.setRenderer(&renderer);
         simulateInitialization(&parameter, &backendParameter);
         backendParameter.cleanup();
 
@@ -77,6 +79,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QParameter parameter;
 
         parameter.setName(QStringLiteral("Chevelle"));
@@ -85,6 +88,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::Parameter backendParameter;
+            backendParameter.setRenderer(&renderer);
             simulateInitialization(&parameter, &backendParameter);
 
             // THEN
@@ -93,16 +97,20 @@ private Q_SLOTS:
             QCOMPARE(backendParameter.name(), QStringLiteral("Chevelle"));
             QCOMPARE(backendParameter.uniformValue(), Qt3DRender::Render::UniformValue::fromVariant(parameter.value()));
             QCOMPARE(backendParameter.nameId(), Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("Chevelle")));
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::ParameterDirty);
         }
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         {
             // WHEN
             Qt3DRender::Render::Parameter backendParameter;
+            backendParameter.setRenderer(&renderer);
             parameter.setEnabled(false);
             simulateInitialization(&parameter, &backendParameter);
 
             // THEN
             QCOMPARE(backendParameter.peerId(), parameter.id());
             QCOMPARE(backendParameter.isEnabled(), false);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::ParameterDirty);
         }
     }
 
@@ -123,6 +131,8 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(backendParameter.isEnabled(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::ParameterDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
             // WHEN
@@ -135,6 +145,8 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendParameter.name(), newValue);
             QCOMPARE(backendParameter.nameId(), Qt3DRender::Render::StringToInt::lookupId(newValue));
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::ParameterDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
             // WHEN
@@ -147,6 +159,8 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(backendParameter.uniformValue(), newValue);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::ParameterDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
     }
 

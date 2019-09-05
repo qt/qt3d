@@ -87,6 +87,7 @@ void Layer::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerData>>(change);
     const auto &data = typedChange->data;
     m_recursive = data.m_recursive;
+    markDirty(AbstractRenderer::LayersDirty);
 }
 
 bool Layer::recursive() const

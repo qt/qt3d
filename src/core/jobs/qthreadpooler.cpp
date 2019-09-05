@@ -212,7 +212,7 @@ void QThreadPooler::addJobLogStatsEntry(JobRunStats &stats)
     jobStatsCached.localData()->push_back(stats);
 }
 
-// Called after jobs have been executed (AspectThread QAspectJobManager::enqueueJobs)
+// Called after jobs have been executed (MainThread QAspectJobManager::enqueueJobs)
 void QThreadPooler::writeFrameJobLogStats()
 {
     static QScopedPointer<QFile> traceFile;
@@ -268,7 +268,7 @@ void QThreadPooler::writeFrameJobLogStats()
     ++frameId;
 }
 
-// Called from Submission thread
+// Called from Submission thread (which can be main thread in Manual drive mode)
 void QThreadPooler::addSubmissionLogStatsEntry(JobRunStats &stats)
 {
     QMutexLocker lock(&localStoragesMutex);
@@ -276,6 +276,12 @@ void QThreadPooler::addSubmissionLogStatsEntry(JobRunStats &stats)
         submissionStorage = new QVector<JobRunStats>;
         jobStatsCached.setLocalData(submissionStorage);
     }
+
+    // Handle the case where submission thread is also the main thread (Scene/Manual drive modes with no RenderThread)
+    if (submissionStorage == nullptr && jobStatsCached.hasLocalData())
+        submissionStorage = new QVector<JobRunStats>;
+
+    // When having no submission thread this can be null
     submissionStorage->push_back(stats);
 }
 
