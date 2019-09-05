@@ -46,37 +46,15 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender
 {
 
-QTextureDataUpdatePrivate::QTextureDataUpdatePrivate()
-    : m_x(0)
-    , m_y(0)
-    , m_z(0)
-    , m_layer(0)
-    , m_mipLevel(0)
-    , m_face(QAbstractTexture::CubeMapPositiveX)
+static bool operator==(const QTextureDataUpdatePrivate &lhs, const QTextureDataUpdatePrivate &rhs) noexcept
 {
-}
-
-QTextureDataUpdatePrivate::QTextureDataUpdatePrivate(const QTextureDataUpdatePrivate &other)
-    : m_x(other.m_x)
-    , m_y(other.m_y)
-    , m_z(other.m_z)
-    , m_layer(other.m_layer)
-    , m_mipLevel(other.m_mipLevel)
-    , m_face(other.m_face)
-    , m_data(other.m_data)
-{
-}
-
-bool QTextureDataUpdatePrivate::operator==(const QTextureDataUpdatePrivate &other) const
-{
-    return (m_x == other.m_x && m_y == other.m_y && m_z == other.m_z &&
-            m_layer == other.m_layer && m_mipLevel == other.m_mipLevel &&
-            m_face == other.m_face && m_data == other.m_data);
-}
-
-bool QTextureDataUpdatePrivate::operator!=(const QTextureDataUpdatePrivate &other) const
-{
-    return !(*this == other);
+    return lhs.m_x == rhs.m_x &&
+           lhs.m_y == rhs.m_y &&
+           lhs.m_z == rhs.m_z &&
+           lhs.m_layer == rhs.m_layer &&
+           lhs.m_mipLevel == rhs.m_mipLevel &&
+           lhs.m_face == rhs.m_face &&
+           lhs.m_data == rhs.m_data;
 }
 
 /*!
@@ -93,103 +71,112 @@ bool QTextureDataUpdatePrivate::operator!=(const QTextureDataUpdatePrivate &othe
  */
 
 QTextureDataUpdate::QTextureDataUpdate()
-    : d(new QTextureDataUpdatePrivate())
+    : d_ptr(new QTextureDataUpdatePrivate())
 {
 }
 
 QTextureDataUpdate::QTextureDataUpdate(const QTextureDataUpdate &other)
-    : d(new QTextureDataUpdatePrivate(*other.d))
-{
-}
+    = default;
 
 QTextureDataUpdate &QTextureDataUpdate::operator=(const QTextureDataUpdate &other)
-{
-    QTextureDataUpdate tmp(other);
-    d.swap(tmp.d);
-    return *this;
-}
+    = default;
 
 QTextureDataUpdate::~QTextureDataUpdate()
-{
-}
+    = default;
 
-bool QTextureDataUpdate::operator==(const QTextureDataUpdate &other) const
+bool operator==(const QTextureDataUpdate &lhs, const QTextureDataUpdate &rhs) noexcept
 {
-    return *d == *other.d;
-}
-
-bool QTextureDataUpdate::operator!=(const QTextureDataUpdate &other) const
-{
-    return *d != *other.d;
+    return *lhs.d_func() == *rhs.d_func();
 }
 
 int QTextureDataUpdate::x() const
 {
+    Q_D(const QTextureDataUpdate);
     return d->m_x;
 }
 
 int QTextureDataUpdate::y() const
 {
+    Q_D(const QTextureDataUpdate);
     return d->m_y;
 }
 
 int QTextureDataUpdate::z() const
 {
+    Q_D(const QTextureDataUpdate);
     return d->m_z;
 }
 
 int QTextureDataUpdate::layer() const
 {
+    Q_D(const QTextureDataUpdate);
     return d->m_layer;
 }
 
 int QTextureDataUpdate::mipLevel() const
 {
+    Q_D(const QTextureDataUpdate);
     return d->m_mipLevel;
 }
 
 QAbstractTexture::CubeMapFace QTextureDataUpdate::face() const
 {
+    Q_D(const QTextureDataUpdate);
     return d->m_face;
 }
 
 QTextureImageDataPtr QTextureDataUpdate::data() const
 {
+    Q_D(const QTextureDataUpdate);
     return d->m_data;
 }
 
 void QTextureDataUpdate::setX(int x)
 {
+    d_ptr.detach();
+    Q_D(QTextureDataUpdate);
     d->m_x = x;
 }
 
 void QTextureDataUpdate::setY(int y)
 {
+    d_ptr.detach();
+    Q_D(QTextureDataUpdate);
     d->m_y = y;
 }
 
 void QTextureDataUpdate::setZ(int z)
 {
+    d_ptr.detach();
+    Q_D(QTextureDataUpdate);
     d->m_z = z;
 }
 
 void QTextureDataUpdate::setLayer(int layer)
 {
+    d_ptr.detach();
+    Q_D(QTextureDataUpdate);
     d->m_layer = layer;
 }
 
 void QTextureDataUpdate::setMipLevel(int mipLevel)
 {
+    d_ptr.detach();
+    Q_D(QTextureDataUpdate);
     d->m_mipLevel = mipLevel;
 }
 
 void QTextureDataUpdate::setFace(QAbstractTexture::CubeMapFace face)
 {
+    d_ptr.detach();
+    Q_D(QTextureDataUpdate);
     d->m_face = face;
 }
 
 void QTextureDataUpdate::setData(const QTextureImageDataPtr &data)
 {
+    d_ptr.detach();
+    Q_D(QTextureDataUpdate);
     d->m_data = data;
 }
 

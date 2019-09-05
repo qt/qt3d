@@ -43,16 +43,19 @@ private Q_SLOTS:
     void checkInitialState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QRenderCapture frontend;
         Qt3DRender::Render::RenderCapture backend;
 
         // WHEN
+        backend.setRenderer(&renderer);
         simulateInitialization(&frontend, &backend);
 
         // THEN
         QVERIFY(!backend.peerId().isNull());
         QCOMPARE(backend.wasCaptureRequested(), false);
         QCOMPARE(backend.isEnabled(), true);
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
     }
 
     void checkEnabledPropertyChange()
@@ -70,6 +73,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderCapture.isEnabled(), true);
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
     }
 
     void checkReceiveRenderCaptureRequest()

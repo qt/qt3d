@@ -75,7 +75,7 @@ public:
     }
     QSGTexture *texture() const Q_DECL_NOTHROW { return m_material.texture(); }
 
-    void setRect(const QRectF &rect);
+    void setRect(const QRectF &rect, const QRectF textureRect = QRectF(0.0f, 1.0f, 1.0f, -1.0f));
     QRectF rect() const Q_DECL_NOTHROW { return m_rect; }
 
 private:

@@ -95,7 +95,6 @@ private:
     QVector<Qt3DCore::QNodeId> m_logicComponentIds;
     QLogicAspect *m_logicAspect;
     Executor *m_executor;
-    QSemaphore m_semaphore;
     float m_dt;
 };
 

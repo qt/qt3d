@@ -134,74 +134,54 @@ private Q_SLOTS:
 
         // WHEN
         transform->setTranslation(QVector3D(454.0f, 427.0f, 383.0f));
-        QCoreApplication::processEvents();
 
         // THEN
-        Qt3DCore::QPropertyUpdatedChangePtr change;
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "translation");
-        QCOMPARE(change->value().value<QVector3D>(), QVector3D(454.0f, 427.0f, 383.0f));
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         QQuaternion q = Qt3DCore::QTransform::fromAxisAndAngle(QVector3D(0.0f, 1.0f, 0.0f), 90.0f);
         transform->setRotation(q);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "rotation");
-        QCOMPARE(change->value().value<QQuaternion>(), q);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         transform->setScale3D(QVector3D(883.0f, 1200.0f, 1340.0f));
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "scale3D");
-        QCOMPARE(change->value().value<QVector3D>(), QVector3D(883.0f, 1200.0f, 1340.0f));
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         // Force the transform to update its matrix
         (void)transform->matrix();
 
         transform->setMatrix(QMatrix4x4());
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 3);
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "scale3D");
-        QCOMPARE(change->value().value<QVector3D>(), QVector3D(1.0f, 1.0f, 1.0f));
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "rotation");
-        QCOMPARE(change->value().value<QQuaternion>(), QQuaternion());
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "translation");
-        QCOMPARE(change->value().value<QVector3D>(), QVector3D());
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         transform->setRotationX(20.0f);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "rotation");
-        QCOMPARE(change->value().value<QQuaternion>().toEulerAngles().x(), 20.0f);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkSignalEmittion()

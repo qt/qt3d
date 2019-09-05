@@ -42,12 +42,15 @@
 #include <QtQml>
 
 #include <scene3ditem_p.h>
+#include <scene3dview_p.h>
 
 QT_BEGIN_NAMESPACE
 
 void QtQuickScene3DPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<Qt3DRender::Scene3DItem>(uri, 2, 0, "Scene3D");
+    qmlRegisterType<Qt3DRender::Scene3DItem, 14>(uri, 2, 14, "Scene3D");
+    qmlRegisterType<Qt3DRender::Scene3DView>(uri, 2, 14, "Scene3DView");
 
     // Auto-increment the import to stay in sync with ALL future Qt minor versions
     qmlRegisterModule(uri, 2, QT_VERSION_MINOR);

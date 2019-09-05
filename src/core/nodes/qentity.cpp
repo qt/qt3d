@@ -105,7 +105,7 @@ void QEntityPrivate::removeDestroyedComponent(QComponent *comp)
     Q_Q(QEntity);
 
     if (m_changeArbiter) {
-        const auto componentRemovedChange = QComponentRemovedChangePtr::create(q, comp);
+        const auto componentRemovedChange = QComponentRemovedChangePtr::create(q, comp);  // TODOSYNC notify backend directly
         notifyObservers(componentRemovedChange);
     }
 
@@ -125,6 +125,7 @@ QEntity::QEntity(QNode *parent)
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+    connect(this, &QNode::parentChanged, this, &QEntity::onParentChanged);
 }
 
 QEntity::~QEntity()
@@ -187,7 +188,7 @@ void QEntity::addComponent(QComponent *comp)
     d->registerPrivateDestructionHelper(comp, &QEntityPrivate::removeDestroyedComponent);
 
     if (d->m_changeArbiter) {
-        const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);
+        const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);     // TODOSYNC notify backend directly
         d->notifyObservers(componentAddedChange);
     }
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);
@@ -259,10 +260,6 @@ QNodeId QEntityPrivate::parentEntityId() const
 
 QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
 {
-    // connect to the parentChanged signal here rather than constructor because
-    // until now there's no backend node to notify when parent changes
-    connect(this, &QNode::parentChanged, this, &QEntity::onParentChanged);
-
     auto creationChange = QNodeCreatedChangePtr<QEntityData>::create(this);
     auto &data = creationChange->data;
 
@@ -294,6 +291,10 @@ QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
 
 void QEntity::onParentChanged(QObject *)
 {
+    Q_D(QEntity);
+    if (!d->m_hasBackendNode)
+        return;
+
     const auto parentID = parentEntity() ? parentEntity()->id() : Qt3DCore::QNodeId();
     auto parentChange = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
     parentChange->setPropertyName("parentEntityUpdated");

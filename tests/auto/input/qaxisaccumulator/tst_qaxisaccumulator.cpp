@@ -131,42 +131,31 @@ private Q_SLOTS:
 
         // WHEN
         accumulator->setSourceAxis(axis);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceAxis");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), axis->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), accumulator.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
+
 
         // WHEN
         accumulator->setScale(2.0f);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "scale");
-        QCOMPARE(change->value().toFloat(), 2.0f);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), accumulator.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         accumulator->setSourceAxisType(Qt3DInput::QAxisAccumulator::Acceleration);
-        QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "sourceAxisType");
-        QCOMPARE(change->value().value<Qt3DInput::QAxisAccumulator::SourceAxisType>(), Qt3DInput::QAxisAccumulator::Acceleration);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), accumulator.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkValuePropertyChanged()

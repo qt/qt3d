@@ -72,7 +72,7 @@ void TestArbiter::sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e)
 
 void TestArbiter::sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e)
 {
-    events += QVector<Qt3DCore::QSceneChangePtr>::fromStdVector(e);
+    events += QVector<Qt3DCore::QSceneChangePtr>(e.begin(), e.end());
 }
 
 Qt3DCore::QAbstractPostman *TestArbiter::postman() const
@@ -86,6 +86,17 @@ void TestArbiter::setArbiterOnNode(Qt3DCore::QNode *node)
     const auto childNodes = node->childNodes();
     for (Qt3DCore::QNode *n : childNodes)
         setArbiterOnNode(n);
+}
+
+void TestArbiter::addDirtyFrontEndNode(Qt3DCore::QNode *node)
+{
+    if (!dirtyNodes.contains(node))
+        dirtyNodes << node;
+}
+
+void TestArbiter::removeDirtyFrontEndNode(Qt3DCore::QNode *node)
+{
+    dirtyNodes.removeOne(node);
 }
 
 QT_END_NAMESPACE

@@ -169,12 +169,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "source");
-            QCOMPARE(change->type(), PropertyUpdated);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes[0], &skeleton);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -184,21 +183,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
-        }
-
-
-        {
-            // WHEN
-            skeleton.setCreateJointsEnabled(true);
-            QCoreApplication::processEvents();
-
-            // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "createJointsEnabled");
-            QCOMPARE(change->type(), PropertyUpdated);
-
-            arbiter.events.clear();
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
         {
@@ -207,6 +192,20 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes[0], &skeleton);
+
+            arbiter.dirtyNodes.clear();
+        }
+
+        {
+            // WHEN
+            skeleton.setCreateJointsEnabled(true);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
             QCOMPARE(arbiter.events.size(), 0);
         }
     }
@@ -242,6 +241,9 @@ private Q_SLOTS:
         QCOMPARE(spy.count(), 0);
         QCOMPARE(arbiter.events.size(), 0);
         QCOMPARE(status(), newStatus);
+
+        // Cleanup
+        QNodePrivate::get(this)->setArbiter(nullptr);
     }
 
     void checkRootJointPropertyUpdate()
@@ -266,8 +268,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(arbiter.events.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
         QVERIFY(rootJoint() != nullptr);
+
+        // Cleanup
+        QNodePrivate::get(this)->setArbiter(nullptr);
     }
 };
 
