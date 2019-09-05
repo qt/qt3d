@@ -262,7 +262,7 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
 // That assumes that the shaderProgram in Shader stays the same
 void GraphicsContext::introspectShaderInterface(Shader *shader, QOpenGLShaderProgram *shaderProgram)
 {
-    GraphicsHelperInterface *glHelper = resolveHighestOpenGLFunctions();
+    QScopedPointer<GraphicsHelperInterface> glHelper(resolveHighestOpenGLFunctions());
     shader->initializeUniforms(glHelper->programUniformsAndLocations(shaderProgram->programId()));
     shader->initializeAttributes(glHelper->programAttributesAndLocations(shaderProgram->programId()));
     if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
