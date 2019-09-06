@@ -58,14 +58,18 @@ QNodeId Light::shaderData() const
     return m_shaderDataId;
 }
 
-void Light::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+void Light::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractLightData>>(change);
-    const auto &data = typedChange->data;
-    m_shaderDataId = data.shaderDataId;
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAbstractLight *node = qobject_cast<const QAbstractLight *>(frontEnd);
+    if (!node)
+        return;
 
-    Q_ASSERT(m_renderer);
-    BackendNode::markDirty(AbstractRenderer::LightsDirty);
+    if (firstTime) {
+        QAbstractLightPrivate *d = static_cast<QAbstractLightPrivate *>(QAbstractLightPrivate::get(const_cast<Qt3DCore::QNode *>(frontEnd)));
+        m_shaderDataId = d->m_shaderData ? d->m_shaderData->id() : QNodeId{};
+        BackendNode::markDirty(AbstractRenderer::LightsDirty);
+    }
 }
 
 RenderLightFunctor::RenderLightFunctor(AbstractRenderer *renderer, NodeManagers *managers)
