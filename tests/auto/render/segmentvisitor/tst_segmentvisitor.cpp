@@ -206,7 +206,7 @@ private Q_SLOTS:
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
@@ -306,7 +306,7 @@ private Q_SLOTS:
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
@@ -375,7 +375,7 @@ private Q_SLOTS:
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
@@ -469,7 +469,7 @@ private Q_SLOTS:
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
@@ -536,7 +536,7 @@ private Q_SLOTS:
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
@@ -631,7 +631,7 @@ private Q_SLOTS:
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
@@ -700,7 +700,7 @@ private Q_SLOTS:
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
@@ -793,7 +793,7 @@ private Q_SLOTS:
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
