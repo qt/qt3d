@@ -295,13 +295,8 @@ private Q_SLOTS:
         QCOMPARE(param->parent(), material);
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeAddedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->addedNodeId(), param->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
-
-        arbiter.events.clear();
+        QCOMPARE(arbiter.events.size(), 0);
+        QVERIFY(material->parameters().contains(param));
 
         // WHEN (add parameter to effect)
         param = new Qt3DRender::QParameter("testParamEffect", QVariant::fromValue(383.0f));
@@ -319,7 +314,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(change->propertyName(), "parameter");
         QCOMPARE(change->addedNodeId(), param->id());
         QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
