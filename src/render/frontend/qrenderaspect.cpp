@@ -281,7 +281,7 @@ void QRenderAspectPrivate::registerBackendTypes()
                                                                                                       m_nodeManagers->textureImageManager()));
 
     // Material system
-    q->registerBackendType<QEffect>(QSharedPointer<Render::NodeFunctor<Render::Effect, Render::EffectManager> >::create(m_renderer));
+    q->registerBackendType<QEffect, true>(QSharedPointer<Render::NodeFunctor<Render::Effect, Render::EffectManager> >::create(m_renderer));
     q->registerBackendType<QFilterKey>(QSharedPointer<Render::NodeFunctor<Render::FilterKey, Render::FilterKeyManager> >::create(m_renderer));
     q->registerBackendType<QAbstractLight, true>(QSharedPointer<Render::RenderLightFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<QEnvironmentLight, true>(QSharedPointer<Render::NodeFunctor<Render::EnvironmentLight, Render::EnvironmentLightManager> >::create(m_renderer));

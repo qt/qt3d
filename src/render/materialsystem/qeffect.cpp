@@ -192,11 +192,7 @@ void QEffect::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
-            change->setPropertyName("parameter");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -207,14 +203,10 @@ void QEffect::removeParameter(QParameter *parameter)
 {
     Q_D(QEffect);
 
-    if (parameter && d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
-        change->setPropertyName("parameter");
-        d->notifyObservers(change);
-    }
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
+    d->update();
 }
 
 /*!
@@ -246,11 +238,7 @@ void QEffect::addTechnique(QTechnique *t)
         if (!t->parent())
             t->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), t);
-            change->setPropertyName("technique");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -260,11 +248,8 @@ void QEffect::addTechnique(QTechnique *t)
 void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
-    if (t && d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), t);
-        change->setPropertyName("technique");
-        d->notifyObservers(change);
-    }
+    if (t)
+        d->update();
     d->m_techniques.removeOne(t);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(t);

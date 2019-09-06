@@ -309,13 +309,8 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->addedNodeId(), param->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
-
-        arbiter.events.clear();
+        QCOMPARE(arbiter.events.size(), 0);
+        QVERIFY(material->effect()->parameters().contains(param));
 
         // WHEN (add parameter to technique)
         param = new Qt3DRender::QParameter("testParamTechnique", QVariant::fromValue(383.0f));
