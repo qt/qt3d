@@ -204,7 +204,7 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -311,11 +311,11 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -391,7 +391,7 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -497,11 +497,11 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -580,7 +580,7 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -680,11 +680,11 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -759,7 +759,7 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -863,11 +863,11 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -953,7 +953,7 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
@@ -1054,11 +1054,11 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);

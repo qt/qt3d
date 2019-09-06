@@ -354,10 +354,10 @@ private Q_SLOTS:
 
         Qt3DRender::Render::Attribute *attr0Backend = test->nodeManagers()->attributeManager()->getOrCreateResource(attrs[0]->id());
         attr0Backend->setRenderer(test->renderer());
-        simulateInitialization(attrs[0], attr0Backend);
+        simulateInitializationSync(attrs[0], attr0Backend);
         Qt3DRender::Render::Attribute *attr1Backend = test->nodeManagers()->attributeManager()->getOrCreateResource(attrs[1]->id());
         attr1Backend->setRenderer(test->renderer());
-        simulateInitialization(attrs[1], attr1Backend);
+        simulateInitializationSync(attrs[1], attr1Backend);
 
         Qt3DRender::Render::Geometry *gBackend = test->nodeManagers()->geometryManager()->getOrCreateResource(g->id());
         gBackend->setRenderer(test->renderer());
@@ -448,7 +448,7 @@ private Q_SLOTS:
 
         Qt3DRender::Render::Attribute *attr0Backend = test->nodeManagers()->attributeManager()->getOrCreateResource(attrs[0]->id());
         attr0Backend->setRenderer(test->renderer());
-        simulateInitialization(attrs[0], attr0Backend);
+        simulateInitializationSync(attrs[0], attr0Backend);
 
         Qt3DRender::Render::Geometry *gBackend = test->nodeManagers()->geometryManager()->getOrCreateResource(g->id());
         gBackend->setRenderer(test->renderer());

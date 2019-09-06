@@ -304,12 +304,12 @@ private Q_SLOTS:
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(
                                         positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute, backendAttribute);
+        simulateInitializationSync(positionAttribute, backendAttribute);
 
         Attribute *backendTexcoordAttribute = nodeManagers->attributeManager()
                                               ->getOrCreateResource(texcoordAttribute->id());
         backendTexcoordAttribute->setRenderer(&renderer);
-        simulateInitialization(texcoordAttribute, backendTexcoordAttribute);
+        simulateInitializationSync(texcoordAttribute, backendTexcoordAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()
                                     ->getOrCreateResource(geometry->id());
