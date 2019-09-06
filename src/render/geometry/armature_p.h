@@ -63,7 +63,7 @@ class Q_AUTOTEST_EXPORT Armature : public BackendNode
 public:
     Armature();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void cleanup();
 
     Qt3DCore::QNodeId skeletonId() const { return m_skeletonId; }
@@ -73,8 +73,6 @@ public:
     const UniformValue &skinningPaletteUniform() const { return m_skinningPaletteUniform; }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Qt3DCore::QNodeId m_skeletonId;
     UniformValue m_skinningPaletteUniform;
 };
