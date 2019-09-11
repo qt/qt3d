@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 
 /*!
-    \qmltype LerpBlend
+    \qmltype LerpClipBlend
     \instantiates Qt3DAnimation::QLerpClipBlend
     \inqmlmodule Qt3D.Animation
 
@@ -52,7 +52,7 @@ namespace Qt3DAnimation {
 
     \since 5.9
 
-    LerpBlend can be useful to create advanced animation effects based on
+    LerpClipBlend can be useful to create advanced animation effects based on
     individual animation clips. For instance, given a player character,, lerp
     blending could be used to combine a walking animation clip with an injured
     animation clip based on a blend factor that increases the more the player
@@ -118,7 +118,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLerpClipBlend::createNodeCreationChange() c
 }
 
 /*!
-    \qmlproperty real LerpBlend::blendFactor
+    \qmlproperty real LerpClipBlend::blendFactor
 
     Specifies the blending factor between 0 and 1 to control the blending of
     two animation clips.
