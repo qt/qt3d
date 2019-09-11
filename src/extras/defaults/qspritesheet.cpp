@@ -56,7 +56,7 @@ QSpriteSheetPrivate::QSpriteSheetPrivate()
 
 int QSpriteSheetPrivate::maxIndex() const
 {
-    return m_sprites.count();
+    return m_sprites.count() - 1;
 }
 
 void QSpriteSheetPrivate::updateSizes()
@@ -77,7 +77,7 @@ void QSpriteSheetPrivate::updateSizes()
         return;
     }
 
-    if (m_currentIndex < 0 || m_currentIndex > m_sprites.size()) {
+    if (m_currentIndex < 0 || m_currentIndex >= m_sprites.size()) {
         m_currentIndex = 0;
         emit q->currentIndexChanged(m_currentIndex);
     }

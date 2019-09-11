@@ -69,7 +69,7 @@ class QSpriteGridPrivate : public QAbstractSpriteSheetPrivate
 
     int m_numColumns;
     int m_numRows;
-    QSize m_cellSize;
+    QSizeF m_cellSize;
 
     Q_DECLARE_PUBLIC(QSpriteGrid)
 };

@@ -212,7 +212,7 @@ QMetalRoughMaterial::~QMetalRoughMaterial()
     color value or a texture. By default the value of this property is "grey".
 */
 /*!
-    \qmlproperty color Qt3D.Extras::MetalRoughMaterial::baseColor
+    \qmlproperty variant Qt3D.Extras::MetalRoughMaterial::baseColor
 
     Holds the current base color of the material. This can be either a plain
     color value or a texture. By default the value of this property is "grey".
@@ -232,7 +232,7 @@ QVariant QMetalRoughMaterial::baseColor() const
     property is 0.
 */
 /*!
-    \qmlproperty real Qt3D.Extras::MetalRoughMaterial::metalness
+    \qmlproperty variant Qt3D.Extras::MetalRoughMaterial::metalness
 
     Holds the current metalness level of the material, as a value between
     0 (purely dielectric, the default) and 1 (purely metallic). This can be
@@ -253,7 +253,7 @@ QVariant QMetalRoughMaterial::metalness() const
     0.
 */
 /*!
-    \qmlproperty real Qt3D.Extras::MetalRoughMaterial::roughness
+    \qmlproperty variant Qt3D.Extras::MetalRoughMaterial::roughness
 
     Holds the current roughness level of the material. This can be either a
     plain uniform value or a texture. By default the value of this property is

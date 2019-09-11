@@ -57,7 +57,7 @@ QSpriteGridPrivate::QSpriteGridPrivate()
 
 int QSpriteGridPrivate::maxIndex() const
 {
-    return m_numColumns * m_numRows;
+    return m_numColumns * m_numRows - 1;
 }
 
 void QSpriteGridPrivate::updateSizes()
@@ -65,10 +65,10 @@ void QSpriteGridPrivate::updateSizes()
     Q_Q(QSpriteGrid);
     if (m_texture && m_numColumns && m_numRows) {
         m_textureSize = QSize(m_texture->width(), m_texture->height());
-        m_cellSize = QSize(m_texture->width() / m_numColumns, m_texture->height() / m_numRows);
+        m_cellSize = QSizeF((float) m_texture->width() / m_numColumns, (float) m_texture->height() / m_numRows);
     } else {
         m_textureSize = QSize();
-        m_cellSize = QSize();
+        m_cellSize = QSizeF();
     }
 
     if (m_cellSize.isEmpty() || m_numColumns == 0 || m_numRows == 0) {
