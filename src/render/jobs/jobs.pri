@@ -30,7 +30,6 @@ HEADERS += \
     $$PWD/filterproximitydistancejob_p.h \
     $$PWD/abstractpickingjob_p.h \
     $$PWD/raycastingjob_p.h \
-    $$PWD/updateentityhierarchyjob_p.h \
     $$PWD/updateentitylayersjob_p.h
 
 SOURCES += \
@@ -60,6 +59,5 @@ SOURCES += \
     $$PWD/filterproximitydistancejob.cpp \
     $$PWD/abstractpickingjob.cpp \
     $$PWD/raycastingjob.cpp \
-    $$PWD/updateentityhierarchyjob.cpp \
     $$PWD/updateentitylayersjob.cpp
 
