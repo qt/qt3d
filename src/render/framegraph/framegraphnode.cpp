@@ -66,6 +66,7 @@ FrameGraphNode::~FrameGraphNode()
 {
 }
 
+// TO DO: Remove once all FG nodes have been converted to direct sync
 void FrameGraphNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     // Set up the parent child relationship and enabled state
@@ -129,6 +130,7 @@ QVector<FrameGraphNode *> FrameGraphNode::children() const
     return children;
 }
 
+// TO DO: Remove once all FG nodes have been converted to direct sync
 void FrameGraphNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
@@ -155,6 +157,25 @@ void FrameGraphNode::cleanup()
 {
     setParentId({});
 }
+
+void FrameGraphNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
+{
+    Q_UNUSED(firstTime);
+    const QFrameGraphNode *node = qobject_cast<const QFrameGraphNode *>(frontEnd);
+
+    const auto parentId = Qt3DCore::qIdForNode(node->parentFrameGraphNode());
+    if (parentId != m_parentId) {
+        setParentId(parentId);
+        // TO DO: Check if FrameGraphDirty wouldn't be enough here
+        markDirty(AbstractRenderer::AllDirty);
+    }
+
+    if (node->isEnabled() != d_func()->m_enabled) {
+        d_func()->m_enabled = node->isEnabled();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+}
+
 
 
 } // namespace Render

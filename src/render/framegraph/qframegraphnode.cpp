@@ -258,6 +258,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QFrameGraphNode::createNodeCreationChange() 
 
 void QFrameGraphNode::onParentChanged(QObject *)
 {
+    // TO DO: Remove once all node have been converted to use direct sync
     const auto parentID = parentFrameGraphNode() ? parentFrameGraphNode()->id() : Qt3DCore::QNodeId();
     auto parentChange = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
     parentChange->setPropertyName("parentFrameGraphUpdated");
@@ -265,6 +266,10 @@ void QFrameGraphNode::onParentChanged(QObject *)
     const bool blocked = blockNotifications(false);
     notifyObservers(parentChange);
     blockNotifications(blocked);
+
+    // Direct sync update request
+    Q_D(QFrameGraphNode);
+    d->update();
 }
 
 } // namespace Qt3DRender
