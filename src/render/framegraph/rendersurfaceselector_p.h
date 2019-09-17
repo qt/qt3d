@@ -68,7 +68,7 @@ public:
     QSize renderTargetSize() const;
     void setRenderTargetSize(const QSize &size) { m_renderTargetSize = size; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     QSurface *surface() const { return m_surface; }
     inline int width() const Q_DECL_NOTHROW { return m_width; }
@@ -76,8 +76,7 @@ public:
     inline float devicePixelRatio() const Q_DECL_NOTHROW { return m_devicePixelRatio; }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
+    QObject *m_surfaceObj;
     QSurface *m_surface;
     QSize m_renderTargetSize;
     int m_width;
