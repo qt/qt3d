@@ -142,11 +142,7 @@ void QRenderPassFilter::addMatch(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), filterKey);
-            change->setPropertyName("match");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -158,11 +154,7 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
     Q_ASSERT(filterKey);
     Q_D(QRenderPassFilter);
 
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), filterKey);
-        change->setPropertyName("match");
-        d->notifyObservers(change);
-    }
+    d->update();
     d->m_matchList.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
@@ -188,11 +180,7 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
-            change->setPropertyName("parameter");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -204,11 +192,7 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QRenderPassFilter);
 
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
-        change->setPropertyName("parameter");
-        d->notifyObservers(change);
-    }
+    d->update();
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
