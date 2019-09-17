@@ -61,6 +61,7 @@
 #include <Qt3DCore/private/qtickclock_p.h>
 #include <Qt3DCore/private/qtickclockservice_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 #include <QtCore/QCoreApplication>
 
@@ -224,9 +225,6 @@ void QAspectManager::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    for (QAbstractAspect *aspect : qAsConst(m_aspects))
-        m_changeArbiter->unregisterSceneObserver(aspect->d_func());
-
     // Aspects must be deleted in the Thread they were created in
 }
 
@@ -246,15 +244,71 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<QNode 
     m_root = root;
 
     if (m_root) {
+
+        QVector<NodeTreeChange> nodeTreeChanges;
+        nodeTreeChanges.reserve(nodes.size());
+
+        for (QNode *n : nodes) {
+            nodeTreeChanges.push_back({
+                                          n->id(),
+                                          QNodePrivate::get(n)->m_typeInfo,
+                                          NodeTreeChange::Added,
+                                          n
+                                      });
+        }
+
         for (QAbstractAspect *aspect : qAsConst(m_aspects))
-            aspect->d_func()->setRootAndCreateNodes(m_root, nodes);
+            aspect->d_func()->setRootAndCreateNodes(m_root, nodeTreeChanges);
     }
 }
 
+
+// Main Thread -> immediately following node insertion
 void QAspectManager::addNodes(const QVector<QNode *> &nodes)
 {
-    for (QAbstractAspect *aspect : qAsConst(m_aspects))
-        aspect->d_func()->createNodes(nodes);
+    // We record the nodes added information, which we will actually use when
+    // processFrame is called (later but within the same loop of the even loop
+    // as this call) The idea is we want to avoid modifying the backend tree if
+    // the Renderer hasn't allowed processFrame to continue yet
+
+    QVector<NodeTreeChange> treeChanges;
+    treeChanges.reserve(nodes.size());
+
+    for (QNode *node : nodes) {
+        treeChanges.push_back({ node->id(),
+                                QNodePrivate::get(node)->m_typeInfo,
+                                NodeTreeChange::Added,
+                                node });
+    }
+
+    m_nodeTreeChanges += treeChanges;
+}
+
+// Main Thread -> immediately following node destruction (call from QNode dtor)
+void QAspectManager::removeNodes(const QVector<QNode *> &nodes)
+{
+    // We record the nodes removed information, which we will actually use when
+    // processFrame is called (later but within the same loop of the even loop
+    // as this call) The idea is we want to avoid modifying the backend tree if
+    // the Renderer hasn't allowed processFrame to continue yet The drawback is
+    // that when processFrame is processed, the QNode* pointer might be invalid by
+    // that point. Therefore we record all we need to remove the object.
+
+    for (QNode *node : nodes) {
+        // In addition, we check if we contain an Added change for a given node
+        // that is now about to be destroyed. If so we remove the Added change
+        // entirely
+
+        m_nodeTreeChanges.erase(std::remove_if(m_nodeTreeChanges.begin(),
+                                               m_nodeTreeChanges.end(),
+                                               [&node] (const NodeTreeChange &change) { return change.id == node->id(); }),
+                                m_nodeTreeChanges.end());
+
+        m_nodeTreeChanges.push_back({ node->id(),
+                                      QNodePrivate::get(node)->m_typeInfo,
+                                      NodeTreeChange::Removed,
+                                      nullptr });
+    }
 }
 
 /*!
@@ -271,8 +325,6 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
         QAbstractAspectPrivate::get(aspect)->m_aspectManager = this;
         QAbstractAspectPrivate::get(aspect)->m_jobManager = m_jobManager;
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
-        // Register sceneObserver with the QChangeArbiter
-        m_changeArbiter->registerSceneObserver(aspect->d_func());
 
         // Allow the aspect to do some work now that it is registered
         aspect->onRegistered();
@@ -295,7 +347,6 @@ void QAspectManager::unregisterAspect(Qt3DCore::QAbstractAspect *aspect)
     qCDebug(Aspects) << "Unregistering aspect";
     Q_ASSERT(aspect);
     aspect->onUnregistered();
-    m_changeArbiter->unregisterSceneObserver(aspect->d_func());
     QAbstractAspectPrivate::get(aspect)->m_arbiter = nullptr;
     QAbstractAspectPrivate::get(aspect)->m_jobManager = nullptr;
     QAbstractAspectPrivate::get(aspect)->m_aspectManager = nullptr;
@@ -377,6 +428,26 @@ void QAspectManager::processFrame()
     changeArbiterStats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
     changeArbiterStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
 #endif
+
+    // Add and Remove Nodes
+    const QVector<NodeTreeChange> nodeTreeChanges = std::move(m_nodeTreeChanges);
+    for (const NodeTreeChange &change : nodeTreeChanges) {
+        // Buckets ensure that even if we have intermingled node added / removed
+        // buckets, we preserve the order of the sequences
+
+        for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+            switch (change.type) {
+            case NodeTreeChange::Added:
+                aspect->d_func()->createBackendNode(change);
+                break;
+            case NodeTreeChange::Removed:
+                aspect->d_func()->clearBackendNode(change);
+                break;
+            }
+        }
+    }
+
+    // Sync property updates
     const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
     if (dirtyFrontEndNodes.size())
         for (QAbstractAspect *aspect : qAsConst(m_aspects))

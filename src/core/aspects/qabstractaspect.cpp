@@ -191,12 +191,6 @@ void QAbstractAspect::unregisterBackendType(const QMetaObject &obj)
     d->m_backendCreatorFunctors.remove(&obj);
 }
 
-void QAbstractAspectPrivate::sceneNodeRemoved(QSceneChangePtr &change)
-{
-    QNodeDestroyedChangePtr destructionChange = qSharedPointerCast<QNodeDestroyedChange>(change);
-    clearBackendNode(destructionChange);
-}
-
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
 {
     Q_UNUSED(args);
@@ -215,9 +209,9 @@ void QAbstractAspect::syncDirtyFrontEndNodes(const QVector<QNode *> &nodes)
     d->syncDirtyFrontEndNodes(nodes);
 }
 
-QAbstractAspectPrivate::BackendNodeMapperAndInfo QAbstractAspectPrivate::mapperForNode(QNode *n) const
+QAbstractAspectPrivate::BackendNodeMapperAndInfo QAbstractAspectPrivate::mapperForNode(const QMetaObject *metaObj) const
 {
-    const QMetaObject *metaObj = n->metaObject();
+    Q_ASSERT(metaObj);
     BackendNodeMapperAndInfo info;
 
     while (metaObj != nullptr && info.first.isNull()) {
@@ -230,7 +224,8 @@ QAbstractAspectPrivate::BackendNodeMapperAndInfo QAbstractAspectPrivate::mapperF
 void QAbstractAspectPrivate::syncDirtyFrontEndNodes(const QVector<QNode *> &nodes)
 {
     for (auto node: qAsConst(nodes)) {
-        const BackendNodeMapperAndInfo backendNodeMapperInfo = mapperForNode(node);
+        const QMetaObject *metaObj = QNodePrivate::get(node)->m_typeInfo;
+        const BackendNodeMapperAndInfo backendNodeMapperInfo = mapperForNode(metaObj);
         const QBackendNodeMapperPtr backendNodeMapper = backendNodeMapperInfo.first;
 
         if (!backendNodeMapper)
@@ -300,42 +295,37 @@ void QAbstractAspectPrivate::sendPropertyMessages(QNode *node, QBackendNode *bac
     }
 }
 
-QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChangeBasePtr &change) const
+QBackendNode *QAbstractAspectPrivate::createBackendNode(const NodeTreeChange &change) const
 {
-    Q_UNUSED(change);
-    Q_ASSERT(false); // should not be here
-    return nullptr;
-}
-
-QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *node) const
-{
-    const BackendNodeMapperAndInfo backendNodeMapperInfo = mapperForNode(node);
+    const QMetaObject *metaObj = change.metaObj;
+    const BackendNodeMapperAndInfo backendNodeMapperInfo = mapperForNode(metaObj);
     const QBackendNodeMapperPtr backendNodeMapper = backendNodeMapperInfo.first;
 
     if (!backendNodeMapper)
         return nullptr;
 
-    QBackendNode *backend = backendNodeMapper->get(node->id());
+    QBackendNode *backend = backendNodeMapper->get(change.id);
     if (backend != nullptr)
         return backend;
 
-    QNodeCreatedChangeBasePtr change;
+    QNode *node = change.node;
+    QNodeCreatedChangeBasePtr creationChange;
     const bool supportsSyncing = backendNodeMapperInfo.second & SupportsSyncing;
     if (supportsSyncing) {
         // All objects modified to use syncing should only use the id in the creation functor
         QNodeCreatedChangeBase changeObj(node);
-        change = QNodeCreatedChangeBasePtr(&changeObj, [](QNodeCreatedChangeBase *) {});
-        backend = backendNodeMapper->create(change);
+        creationChange = QNodeCreatedChangeBasePtr(&changeObj, [](QNodeCreatedChangeBase *) {});
+        backend = backendNodeMapper->create(creationChange);
     } else {
-        change = node->createNodeCreationChange();
-        backend = backendNodeMapper->create(change);
+        creationChange = node->createNodeCreationChange();
+        backend = backendNodeMapper->create(creationChange);
     }
 
     if (!backend)
         return nullptr;
 
     // TODO: Find some place else to do all of this function from the arbiter
-    backend->setPeerId(node->id());
+    backend->setPeerId(change.id);
 
     // Backend could be null if the user decides that his functor should only
     // perform some action when encountering a given type of item but doesn't need to
@@ -348,7 +338,7 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *node) const
     // Register backendNode with QChangeArbiter
     if (m_arbiter != nullptr) { // Unit tests may not have the arbiter registered
         qCDebug(Nodes) << q_func()->objectName() << "Creating backend node for node id"
-                       << node->id() << "of type" << node->metaObject()->className();
+                       << node->id() << "of type" << QNodePrivate::get(node)->m_typeInfo->className();
         m_arbiter->registerObserver(backendPriv, backend->peerId(), AllChanges);
         if (backend->mode() == QBackendNode::ReadWrite)
             m_arbiter->scene()->addObservable(backendPriv, backend->peerId());
@@ -357,44 +347,34 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *node) const
     if (supportsSyncing)
         syncDirtyFrontEndNode(node, backend, true);
     else
-        backend->initializeFromPeer(change);
+        backend->initializeFromPeer(creationChange);
 
     return backend;
 }
 
-void QAbstractAspectPrivate::clearBackendNode(const QNodeDestroyedChangePtr &change) const
+void QAbstractAspectPrivate::clearBackendNode(const NodeTreeChange &change) const
 {
-    // Each QNodeDestroyedChange may contain info about a whole sub-tree of nodes that
-    // are being destroyed. Iterate over them and process each in turn
-    const auto subTree = change->subtreeIdsAndTypes();
-    for (const auto &idAndType : subTree) {
-        const QMetaObject *metaObj = idAndType.type;
-        QBackendNodeMapperPtr backendNodeMapper;
+    const QMetaObject *metaObj = change.metaObj;
+    const BackendNodeMapperAndInfo backendNodeMapperInfo = mapperForNode(metaObj);
+    const QBackendNodeMapperPtr backendNodeMapper = backendNodeMapperInfo.first;
 
-        // Find backend node mapper for this type
-        while (metaObj != nullptr && backendNodeMapper.isNull()) {
-            backendNodeMapper = m_backendCreatorFunctors.value(metaObj).first;
-            metaObj = metaObj->superClass();
-        }
+    if (!backendNodeMapper)
+        return;
 
-        if (!backendNodeMapper)
-            continue;
-
-        // Request the mapper to destroy the corresponding backend node
-        QBackendNode *backend = backendNodeMapper->get(idAndType.id);
-        if (backend) {
-            qCDebug(Nodes) << q_func()->objectName() << "Deleting backend node for node id"
-                           << idAndType.id << "of type" << idAndType.type->className();
-            QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
-            m_arbiter->unregisterObserver(backendPriv, backend->peerId());
-            if (backend->mode() == QBackendNode::ReadWrite)
-                m_arbiter->scene()->removeObservable(backendPriv, backend->peerId());
-            backendNodeMapper->destroy(idAndType.id);
-        }
+    // Request the mapper to destroy the corresponding backend node
+    QBackendNode *backend = backendNodeMapper->get(change.id);
+    if (backend) {
+        qCDebug(Nodes) << "Deleting backend node for node id"
+                       << change.id << "of type" << metaObj->className();
+        QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
+        m_arbiter->unregisterObserver(backendPriv, backend->peerId());
+        if (backend->mode() == QBackendNode::ReadWrite)
+            m_arbiter->scene()->removeObservable(backendPriv, backend->peerId());
+        backendNodeMapper->destroy(change.id);
     }
 }
 
-void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QVector<QNode *> &nodes)
+void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QVector<NodeTreeChange> &nodesChanges)
 {
     qCDebug(Aspects) << Q_FUNC_INFO << "rootObject =" << rootObject;
     if (rootObject == m_root)
@@ -403,14 +383,10 @@ void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QV
     m_root = rootObject;
     m_rootId = rootObject->id();
 
-    createNodes(nodes);
+    for (const NodeTreeChange &change : nodesChanges)
+        createBackendNode(change);
 }
 
-void QAbstractAspectPrivate::createNodes(const QVector<QNode *> &nodes)
-{
-    for (const auto node : nodes)
-        createBackendNode(node);
-}
 
 QServiceLocator *QAbstractAspectPrivate::services() const
 {

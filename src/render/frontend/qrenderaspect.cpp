@@ -96,6 +96,7 @@
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qskeletonloader.h>
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
@@ -230,6 +231,12 @@ QRenderAspectPrivate *QRenderAspectPrivate::findPrivate(Qt3DCore::QAspectEngine 
             return static_cast<QRenderAspectPrivate *>(renderAspect->d_ptr.data());
     }
     return nullptr;
+}
+
+void QRenderAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const
+{
+    Render::BackendNode *renderBackend = static_cast<Render::BackendNode *>(backend);
+    renderBackend->syncFromFrontEnd(node, firstTime);
 }
 
 /*! \internal */
@@ -542,7 +549,7 @@ void QRenderAspect::onEngineStartup()
     Render::NodeManagers *managers = d->m_renderer->nodeManagers();
     Render::Entity *rootEntity = managers->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
     Q_ASSERT(rootEntity);
-    d->m_renderer->setSceneRoot(d, rootEntity);
+    d->m_renderer->setSceneRoot(rootEntity);
 }
 
 void QRenderAspect::onRegistered()

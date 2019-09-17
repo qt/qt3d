@@ -240,7 +240,7 @@ void QSkyboxEntityPrivate::reloadTexture()
 /*!
  * \qmltype SkyboxEntity
  * \instantiates Qt3DExtras::QSkyboxEntity
-   \inqmlmodule Qt3D.Extras
+ * \inqmlmodule Qt3D.Extras
  *
  * \brief SkyboxEntity is a convenience Entity subclass that can be used to
  * insert a skybox in a 3D scene.
