@@ -559,10 +559,9 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 // 2) setSceneRoot waits to acquire initialization
 // 3) submitRenderView -> check for surface
 //    -> make surface current + create proper glHelper if needed
-void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
+void Renderer::setSceneRoot(Entity *sgRoot)
 {
     Q_ASSERT(sgRoot);
-    Q_UNUSED(factory);
 
     // If initialization hasn't been completed we must wait
     m_waitForInitializationToBeCompleted.acquire();

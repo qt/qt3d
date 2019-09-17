@@ -149,11 +149,8 @@ void QNodePrivate::notifyDestructionChangesAndRemoveFromScene()
     }
 
     // Tell the backend we are about to be destroyed
-    if (m_hasBackendNode) {
-        const QDestructionIdAndTypeCollector collector(q);
-        const auto destroyedChange = QNodeDestroyedChangePtr::create(q, collector.subtreeIdsAndTypes());
-        notifyObservers(destroyedChange);
-    }
+    if (m_hasBackendNode && m_scene && m_scene->engine())
+        QAspectEnginePrivate::get(m_scene->engine())->removeNode(q);
 
     // We unset the scene from the node as its backend node was/is about to be destroyed
     QNodeVisitor visitor;

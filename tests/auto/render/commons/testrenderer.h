@@ -63,7 +63,7 @@ public:
     Qt3DCore::QAspectJobPtr rayCastingJob() override { return Qt3DCore::QAspectJobPtr(); }
     Qt3DCore::QAspectJobPtr syncLoadingJobs() override { return Qt3DCore::QAspectJobPtr(); }
     Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() override { return Qt3DCore::QAspectJobPtr(); }
-    void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Qt3DRender::Render::Entity *root) override { Q_UNUSED(factory);  Q_UNUSED(root); }
+    void setSceneRoot(Qt3DRender::Render::Entity *root) override { Q_UNUSED(root); }
     Qt3DRender::Render::Entity *sceneRoot() const override { return nullptr; }
     Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const override { return nullptr; }
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override { return nullptr; }

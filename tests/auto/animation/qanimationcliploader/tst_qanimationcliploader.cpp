@@ -190,6 +190,9 @@ private Q_SLOTS:
         QCOMPARE(spy.count(), 0);
         QCOMPARE(arbiter.events.size(), 0);
         QCOMPARE(status(), newStatus);
+
+        // Cleanup
+        Qt3DCore::QNodePrivate::get(this)->setArbiter(nullptr);
     }
 };
 
