@@ -680,6 +680,14 @@ void QNodePrivate::update()
     }
 }
 
+void QNodePrivate::updateNode(QNode *node, const char *property, ChangeFlag change)
+{
+    if (m_changeArbiter) {
+        Q_Q(QNode);
+        m_changeArbiter->addDirtyFrontEndNode(q, node, property, change);
+    }
+}
+
 /*!
     \internal
  */

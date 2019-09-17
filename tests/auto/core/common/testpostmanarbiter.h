@@ -66,9 +66,11 @@ public:
 
     QVector<Qt3DCore::QSceneChangePtr> events;
     QVector<Qt3DCore::QNode *> dirtyNodes;
+    QVector<Qt3DCore::NodeRelationshipChange> dirtySubNodes;
 
     void setArbiterOnNode(Qt3DCore::QNode *node);
     void addDirtyFrontEndNode(Qt3DCore::QNode *node) final;
+    void addDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QNode *subNode, const char *property, Qt3DCore::ChangeFlag change) final;
     void removeDirtyFrontEndNode(Qt3DCore::QNode *node) final;
 
 private:

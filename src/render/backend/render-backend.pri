@@ -11,6 +11,7 @@ HEADERS += \
     $$PWD/platformsurfacefilter_p.h \
     $$PWD/cameralens_p.h \
     $$PWD/entity_p.h \
+    $$PWD/entity_p_p.h \
     $$PWD/entityvisitor_p.h \
     $$PWD/entityaccumulator_p.h \
     $$PWD/layer_p.h \

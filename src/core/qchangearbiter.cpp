@@ -253,14 +253,29 @@ void QChangeArbiter::addDirtyFrontEndNode(QNode *node)
         m_dirtyFrontEndNodes += node;
 }
 
+void QChangeArbiter::addDirtyFrontEndNode(QNode *node, QNode *subNode, const char *property, ChangeFlag change)
+{
+    if (!m_dirtyFrontEndNodes.contains(node))
+        m_dirtyFrontEndNodes += node;
+    m_dirtySubNodeChanges.push_back({node, subNode, change, property});
+}
+
 void QChangeArbiter::removeDirtyFrontEndNode(QNode *node)
 {
     m_dirtyFrontEndNodes.removeOne(node);
+    m_dirtySubNodeChanges.erase(std::remove_if(m_dirtySubNodeChanges.begin(), m_dirtySubNodeChanges.end(), [node](const NodeRelationshipChange &elt) {
+                                    return elt.node == node || elt.subNode == node;
+                                }), m_dirtySubNodeChanges.end());
 }
 
 QVector<QNode *> QChangeArbiter::takeDirtyFrontEndNodes()
 {
     return std::move(m_dirtyFrontEndNodes);
+}
+
+QVector<NodeRelationshipChange> QChangeArbiter::takeDirtyFrontEndSubNodes()
+{
+    return std::move(m_dirtySubNodeChanges);
 }
 
 // Either we have the postman or we could make the QChangeArbiter agnostic to the postman

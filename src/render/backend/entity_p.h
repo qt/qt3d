@@ -79,6 +79,7 @@ namespace Render {
 class Sphere;
 class Renderer;
 class NodeManagers;
+class EntityPrivate;
 
 class Q_AUTOTEST_EXPORT Entity : public BackendNode
 {
@@ -89,7 +90,6 @@ public:
 
     void setParentHandle(HEntity parentHandle);
     void setNodeManagers(NodeManagers *manager);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void dump() const;
@@ -175,6 +175,9 @@ public:
     {
         return containsComponentsOfType<T>() && containsComponentsOfType<Ts, Ts2...>();
     }
+
+protected:
+    Q_DECLARE_PRIVATE(Entity)
 
 private:
     NodeManagers *m_nodeManagers;

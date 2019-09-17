@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QBACKENDNODE_P_H
-#define QT3DCORE_QBACKENDNODE_P_H
+#ifndef QT3DRENDER_RENDER_ENTITY_P_P_H
+#define QT3DRENDER_RENDER_ENTITY_P_P_H
 
 //
 //  W A R N I N G
@@ -51,53 +52,36 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
-
-#include <Qt3DCore/private/qlockableobserverinterface_p.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-
 class QNode;
+}
 
-class Q_3DCORE_PRIVATE_EXPORT QBackendNodePrivate
-        : public QObserverInterface
-        , public QObservableInterface
-{
+namespace Qt3DRender {
+
+class QRenderAspect;
+
+namespace Render {
+
+class Q_AUTOTEST_EXPORT EntityPrivate : public Qt3DCore::QBackendNodePrivate {
 public:
-    QBackendNodePrivate(QBackendNode::Mode mode);
+    EntityPrivate();
 
-    void setArbiter(QLockableObserverInterface *arbiter) override;
-    void notifyObservers(const QSceneChangePtr &e) override;
-    void sceneChangeEvent(const QSceneChangePtr &e) override;
-    void setEnabled(bool enabled);
+    Q_DECLARE_PUBLIC(Entity)
 
-    static QBackendNodePrivate *get(QBackendNode *n);
+    static EntityPrivate *get(Entity *node);
 
-    Q_DECLARE_PUBLIC(QBackendNode)
-    QBackendNode *q_ptr;
-    QBackendNode::Mode m_mode;
-
-    QLockableObserverInterface *m_arbiter;
-    QNodeId m_peerId;
-    bool m_enabled;
-
-    virtual void addedToEntity(QNode *frontend);
-    virtual void removedFromEntity(QNode *frontend);
-    virtual void componentAdded(QNode *frontend);
-    virtual void componentRemoved(QNode *frontend);
-
-private:
-    Q_DISABLE_COPY(QBackendNodePrivate)
+    void componentAdded(Qt3DCore::QNode *frontend) override;
+    void componentRemoved(Qt3DCore::QNode *frontend) override;
 };
 
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QBACKENDNODE_P_H
+#endif // QT3DRENDER_RENDER_ENTITY_P_P_H
