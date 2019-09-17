@@ -194,11 +194,7 @@ void QRenderStateSet::addRenderState(QRenderState *state)
         if (!state->parent())
             state->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), state);
-            change->setPropertyName("renderState");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -210,11 +206,7 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
     Q_ASSERT(state);
     Q_D(QRenderStateSet);
 
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), state);
-        change->setPropertyName("renderState");
-        d->notifyObservers(change);
-    }
+    d->update();
     d->m_renderStates.removeOne(state);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(state);

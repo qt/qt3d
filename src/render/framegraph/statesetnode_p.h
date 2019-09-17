@@ -68,13 +68,13 @@ public:
     inline bool hasRenderStates() const { return !m_renderStates.empty(); }
     QVector<Qt3DCore::QNodeId> renderStates() const;
 
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
+
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void addRenderState(Qt3DCore::QNodeId renderStateId);
     void removeRenderState(Qt3DCore::QNodeId renderStateId);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     QVector<Qt3DCore::QNodeId> m_renderStates;
 };
 
