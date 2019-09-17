@@ -153,13 +153,7 @@ void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::Attach
     Q_D(QRenderTargetSelector);
     if (buffers != d->m_outputs) {
         d->m_outputs = buffers;
-
-        if (d->m_changeArbiter) {
-            auto change = QPropertyUpdatedChangePtr::create(d->m_id);
-            change->setPropertyName("outputs");
-            change->setValue(QVariant::fromValue(d->m_outputs));
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
