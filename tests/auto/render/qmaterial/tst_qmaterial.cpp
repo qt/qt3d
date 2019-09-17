@@ -296,6 +296,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
         QVERIFY(material->parameters().contains(param));
 
         // WHEN (add parameter to effect)
@@ -305,6 +306,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 2);
         QVERIFY(material->effect()->parameters().contains(param));
 
         // WHEN (add parameter to technique)
@@ -313,13 +315,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->addedNodeId(), param->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 3);
+        QVERIFY(material->m_technique->parameters().contains(param));
 
-        arbiter.events.clear();
 
         // WHEN (add parameter to renderpass)
         param = new Qt3DRender::QParameter("testParamRenderPass", QVariant::fromValue(383.0f));
@@ -328,6 +327,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 4);
         QVERIFY(material->m_renderPass->parameters().contains(param));
     }
 

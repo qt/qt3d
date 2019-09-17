@@ -96,7 +96,7 @@ private Q_SLOTS:
             technique.addParameter(&parameter);
             technique.addFilterKey(&filterKey);
 
-            simulateInitialization(&technique, &backendTechnique);
+            simulateInitializationSync(&technique, &backendTechnique);
         }
 
         backendTechnique.cleanup();
@@ -129,7 +129,7 @@ private Q_SLOTS:
 
             backendTechnique.setRenderer(&renderer);
             backendTechnique.setNodeManager(&nodeManagers);
-            simulateInitialization(&technique, &backendTechnique);
+            simulateInitializationSync(&technique, &backendTechnique);
 
             // THEN
             QCOMPARE(backendTechnique.isEnabled(), true);
@@ -157,7 +157,7 @@ private Q_SLOTS:
             backendTechnique.setNodeManager(&nodeManagers);
             backendTechnique.setRenderer(&renderer);
             technique.setEnabled(false);
-            simulateInitialization(&technique, &backendTechnique);
+            simulateInitializationSync(&technique, &backendTechnique);
 
             // THEN
             QCOMPARE(backendTechnique.peerId(), technique.id());
@@ -184,6 +184,7 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DRender::QTechnique technique;
         Qt3DRender::Render::Technique backendTechnique;
         Qt3DRender::Render::NodeManagers nodeManagers;
 
@@ -193,34 +194,31 @@ private Q_SLOTS:
 
         {
             // WHEN
-            const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendTechnique.sceneChangeEvent(change);
+            const bool newValue = true;
+            technique.setEnabled(newValue);
+            backendTechnique.syncFromFrontEnd(&technique, false);
 
             // THEN
             QCOMPARE(backendTechnique.isEnabled(), newValue);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+            QCOMPARE(nodeManagers.techniqueManager()->takeDirtyTechniques().size(), 1);
         }
         {
             // WHEN
             backendTechnique.setCompatibleWithRenderer(true);
             QCOMPARE(nodeManagers.techniqueManager()->takeDirtyTechniques().size(), 0);
 
-            Qt3DRender::GraphicsApiFilterData newValue;
-            newValue.m_major = 4;
-            newValue.m_minor = 5;
-            newValue.m_vendor = QStringLiteral("ATI");
+            technique.graphicsApiFilter()->setMajorVersion(4);
+            technique.graphicsApiFilter()->setMinorVersion(5);
+            technique.graphicsApiFilter()->setVendor(QStringLiteral("ATI"));
 
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("graphicsApiFilterData");
-            change->setValue(QVariant::fromValue(newValue));
-            backendTechnique.sceneChangeEvent(change);
+            backendTechnique.syncFromFrontEnd(&technique, false);
 
             // THEN
-            QCOMPARE(*backendTechnique.graphicsApiFilter(), newValue);
+            QCOMPARE(backendTechnique.graphicsApiFilter()->m_major, technique.graphicsApiFilter()->majorVersion());
+            QCOMPARE(backendTechnique.graphicsApiFilter()->m_minor, technique.graphicsApiFilter()->minorVersion());
+            QCOMPARE(backendTechnique.graphicsApiFilter()->m_vendor, technique.graphicsApiFilter()->vendor());
             QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
 
             const QVector<Qt3DCore::QNodeId> dirtyTechniques = nodeManagers.techniqueManager()->takeDirtyTechniques();
@@ -235,9 +233,8 @@ private Q_SLOTS:
 
             {
                 // WHEN
-                const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &parameter);
-                change->setPropertyName("parameter");
-                backendTechnique.sceneChangeEvent(change);
+                technique.addParameter(&parameter);
+                backendTechnique.syncFromFrontEnd(&technique, false);
 
                 // THEN
                 QCOMPARE(backendTechnique.parameters().size(), 1);
@@ -247,9 +244,8 @@ private Q_SLOTS:
             }
             {
                 // WHEN
-                const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &parameter);
-                change->setPropertyName("parameter");
-                backendTechnique.sceneChangeEvent(change);
+                technique.removeParameter(&parameter);
+                backendTechnique.syncFromFrontEnd(&technique, false);
 
                 // THEN
                 QCOMPARE(backendTechnique.parameters().size(), 0);
@@ -262,9 +258,8 @@ private Q_SLOTS:
 
             {
                 // WHEN
-                const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &filterKey);
-                change->setPropertyName("filterKeys");
-                backendTechnique.sceneChangeEvent(change);
+                technique.addFilterKey(&filterKey);
+                backendTechnique.syncFromFrontEnd(&technique, false);
 
                 // THEN
                 QCOMPARE(backendTechnique.filterKeys().size(), 1);
@@ -274,9 +269,8 @@ private Q_SLOTS:
             }
             {
                 // WHEN
-                const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &filterKey);
-                change->setPropertyName("filterKeys");
-                backendTechnique.sceneChangeEvent(change);
+                technique.removeFilterKey(&filterKey);
+                backendTechnique.syncFromFrontEnd(&technique, false);
 
                 // THEN
                 QCOMPARE(backendTechnique.filterKeys().size(), 0);
@@ -289,9 +283,8 @@ private Q_SLOTS:
 
             {
                 // WHEN
-                const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &pass);
-                change->setPropertyName("pass");
-                backendTechnique.sceneChangeEvent(change);
+                technique.addRenderPass(&pass);
+                backendTechnique.syncFromFrontEnd(&technique, false);
 
                 // THEN
                 QCOMPARE(backendTechnique.renderPasses().size(), 1);
@@ -301,9 +294,8 @@ private Q_SLOTS:
             }
             {
                 // WHEN
-                const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &pass);
-                change->setPropertyName("pass");
-                backendTechnique.sceneChangeEvent(change);
+                technique.removeRenderPass(&pass);
+                backendTechnique.syncFromFrontEnd(&technique, false);
 
                 // THEN
                 QCOMPARE(backendTechnique.renderPasses().size(), 0);
