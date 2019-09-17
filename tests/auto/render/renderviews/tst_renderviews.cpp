@@ -119,7 +119,7 @@ private Q_SLOTS:
 
             // WHEN
             frontendBarrier.setWaitOperations(barriers);
-            simulateInitialization(&frontendBarrier, &backendBarrier);
+            simulateInitializationSync(&frontendBarrier, &backendBarrier);
 
             // THEN
             QCOMPARE(renderView.memoryBarrier(), QMemoryBarrier::None);
