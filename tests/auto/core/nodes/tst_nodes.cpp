@@ -1392,11 +1392,15 @@ void tst_Nodes::checkParentingQEntityToQNode()
     QVERIFY(!addedEvent.isNull());
     QCOMPARE(addedEvent->subjectId(), childNode->id());
 
-//    const auto parentChangeEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
-//    QVERIFY(!parentChangeEvent.isNull());
-//    QCOMPARE(parentChangeEvent->subjectId(), childEntity->id());
-//    QCOMPARE(parentChangeEvent->propertyName(), "parentEntityUpdated");
-//    QCOMPARE(parentChangeEvent->value().value<Qt3DCore::QNodeId>(), subTreeRoot->id());
+    // The arbiter's dirtyNodes should contain the childEntity and
+    //  - the dirty node's parent should be childNode
+    //  - the dirty node's parent entity should be the subTreeRoot
+    QCOMPARE(spy.dirtyNodes.size(), 1);
+    const auto dirtyEntity = qobject_cast<Qt3DCore::QEntity*>(spy.dirtyNodes.takeFirst());
+    QVERIFY(dirtyEntity);
+    QCOMPARE(dirtyEntity, childEntity);
+    QCOMPARE(dirtyEntity->parent(), childNode);
+    QCOMPARE(dirtyEntity->parentEntity(), subTreeRoot);
 }
 
 void tst_Nodes::checkConstructionWithParent()
