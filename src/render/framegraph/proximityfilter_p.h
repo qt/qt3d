@@ -64,7 +64,7 @@ class Q_AUTOTEST_EXPORT ProximityFilter : public FrameGraphNode
 public:
     ProximityFilter();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     float distanceThreshold() const { return m_distanceThreshold; }
     Qt3DCore::QNodeId entityId() const { return m_entityId; }
@@ -76,8 +76,6 @@ public:
 #endif
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     float m_distanceThreshold;
     Qt3DCore::QNodeId m_entityId;
 };
