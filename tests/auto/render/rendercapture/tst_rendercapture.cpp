@@ -49,7 +49,7 @@ private Q_SLOTS:
 
         // WHEN
         backend.setRenderer(&renderer);
-        simulateInitialization(&frontend, &backend);
+        simulateInitializationSync(&frontend, &backend);
 
         // THEN
         QVERIFY(!backend.peerId().isNull());
@@ -61,34 +61,33 @@ private Q_SLOTS:
     void checkEnabledPropertyChange()
     {
         // GIVEN
+        Qt3DRender::QRenderCapture frontend;
         Qt3DRender::Render::RenderCapture renderCapture;
         TestRenderer renderer;
         renderCapture.setRenderer(&renderer);
+        simulateInitializationSync(&frontend, &renderCapture);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(renderCapture.peerId()));
-        change->setPropertyName(QByteArrayLiteral("enabled"));
-        change->setValue(QVariant::fromValue(true));
-        sceneChangeEvent(&renderCapture, change);
+        frontend.setEnabled(false);
+        renderCapture.syncFromFrontEnd(&frontend, false);
 
         // THEN
-        QCOMPARE(renderCapture.isEnabled(), true);
+        QCOMPARE(renderCapture.isEnabled(), false);
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
     }
 
     void checkReceiveRenderCaptureRequest()
     {
         // GIVEN
+        Qt3DRender::QRenderCapture frontend;
         Qt3DRender::Render::RenderCapture renderCapture;
         TestRenderer renderer;
         renderCapture.setRenderer(&renderer);
-        renderCapture.setEnabled(true);
+        simulateInitializationSync(&frontend, &renderCapture);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(renderCapture.peerId()));
-        change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));
-        change->setValue(QVariant::fromValue(32));
-        sceneChangeEvent(&renderCapture, change);
+        frontend.requestCapture();
+        renderCapture.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(renderCapture.wasCaptureRequested(), true);
