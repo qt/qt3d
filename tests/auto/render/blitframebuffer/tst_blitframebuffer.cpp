@@ -78,7 +78,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::BlitFramebuffer backendBlitFramebuffer;
             backendBlitFramebuffer.setRenderer(&renderer);
-            simulateInitialization(&blitFramebuffer, &backendBlitFramebuffer);
+            simulateInitializationSync(&blitFramebuffer, &backendBlitFramebuffer);
 
             // THEN
             QCOMPARE(backendBlitFramebuffer.isEnabled(), true);
@@ -98,7 +98,7 @@ private Q_SLOTS:
             Qt3DRender::Render::BlitFramebuffer backendBlitFramebuffer;
             backendBlitFramebuffer.setRenderer(&renderer);
             blitFramebuffer.setEnabled(false);
-            simulateInitialization(&blitFramebuffer, &backendBlitFramebuffer);
+            simulateInitializationSync(&blitFramebuffer, &backendBlitFramebuffer);
 
             // THEN
             QCOMPARE(backendBlitFramebuffer.peerId(), blitFramebuffer.id());
@@ -111,98 +111,84 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::BlitFramebuffer backendBlitFramebuffer;
+        Qt3DRender::QBlitFramebuffer blitFramebuffer;
         TestRenderer renderer;
         backendBlitFramebuffer.setRenderer(&renderer);
+        simulateInitializationSync(&blitFramebuffer, &backendBlitFramebuffer);
 
         {
-             // WHEN
-             const bool newValue = false;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("enabled");
-             change->setValue(newValue);
-             backendBlitFramebuffer.sceneChangeEvent(change);
+            // WHEN
+            const bool newValue = false;
+            blitFramebuffer.setEnabled(newValue);
+            backendBlitFramebuffer.syncFromFrontEnd(&blitFramebuffer, false);
 
-             // THEN
+            // THEN
             QCOMPARE(backendBlitFramebuffer.isEnabled(), newValue);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
-             // WHEN
-            const Qt3DRender::QRenderTarget sourceRenderTarget;
-            const Qt3DCore::QNodeId newValue = sourceRenderTarget.id();
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("sourceRenderTarget");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlitFramebuffer.sceneChangeEvent(change);
+            // WHEN
+            Qt3DRender::QRenderTarget sourceRenderTarget;
+            blitFramebuffer.setSource(&sourceRenderTarget);
+            backendBlitFramebuffer.syncFromFrontEnd(&blitFramebuffer, false);
 
-             // THEN
-            QCOMPARE(backendBlitFramebuffer.sourceRenderTargetId(), newValue);
+            // THEN
+            QCOMPARE(backendBlitFramebuffer.sourceRenderTargetId(), sourceRenderTarget.id());
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
-             // WHEN
-            const Qt3DRender::QRenderTarget destinationRenderTarget;
-            const Qt3DCore::QNodeId newValue = destinationRenderTarget.id();
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("destinationRenderTarget");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlitFramebuffer.sceneChangeEvent(change);
+            // WHEN
+            Qt3DRender::QRenderTarget destinationRenderTarget;
+            blitFramebuffer.setDestination(&destinationRenderTarget);
+            backendBlitFramebuffer.syncFromFrontEnd(&blitFramebuffer, false);
 
-             // THEN
-            QCOMPARE(backendBlitFramebuffer.destinationRenderTargetId(), newValue);
+            // THEN
+            QCOMPARE(backendBlitFramebuffer.destinationRenderTargetId(), destinationRenderTarget.id());
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
-             // WHEN
+            // WHEN
             const auto newValue = QRect(0,0,1,1);
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("sourceRect");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlitFramebuffer.sceneChangeEvent(change);
+            blitFramebuffer.setSourceRect(newValue);
+            backendBlitFramebuffer.syncFromFrontEnd(&blitFramebuffer, false);
 
-             // THEN
+            // THEN
             QCOMPARE(backendBlitFramebuffer.sourceRect(), newValue);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
-             // WHEN
+            // WHEN
             const auto newValue = QRect(0,0,1,1);
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("destinationRect");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlitFramebuffer.sceneChangeEvent(change);
+            blitFramebuffer.setDestinationRect(newValue);
+            backendBlitFramebuffer.syncFromFrontEnd(&blitFramebuffer, false);
 
-             // THEN
+            // THEN
             QCOMPARE(backendBlitFramebuffer.destinationRect(), newValue);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
-             // WHEN
+            // WHEN
             const auto newValue = Qt3DRender::QRenderTargetOutput::Color1;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("sourceAttachmentPoint");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlitFramebuffer.sceneChangeEvent(change);
+            blitFramebuffer.setSourceAttachmentPoint(newValue);
+            backendBlitFramebuffer.syncFromFrontEnd(&blitFramebuffer, false);
 
-             // THEN
+            // THEN
             QCOMPARE(backendBlitFramebuffer.sourceAttachmentPoint(), newValue);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
         {
-             // WHEN
+            // WHEN
             const auto newValue = Qt3DRender::QRenderTargetOutput::Color1;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("destinationAttachmentPoint");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlitFramebuffer.sceneChangeEvent(change);
+            blitFramebuffer.setDestinationAttachmentPoint(newValue);
+            backendBlitFramebuffer.syncFromFrontEnd(&blitFramebuffer, false);
 
-             // THEN
+            // THEN
             QCOMPARE(backendBlitFramebuffer.destinationAttachmentPoint(), newValue);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
