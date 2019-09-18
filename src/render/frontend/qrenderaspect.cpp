@@ -255,7 +255,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<Qt3DCore::QEntity, true>(QSharedPointer<Render::RenderEntityFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<Qt3DCore::QTransform, true>(QSharedPointer<Render::NodeFunctor<Render::Transform, Render::TransformManager> >::create(m_renderer));
 
-    q->registerBackendType<Qt3DRender::QCameraLens>(QSharedPointer<Render::CameraLensFunctor>::create(m_renderer, q));
+    q->registerBackendType<Qt3DRender::QCameraLens, true>(QSharedPointer<Render::CameraLensFunctor>::create(m_renderer, q));
     q->registerBackendType<QLayer>(QSharedPointer<Render::NodeFunctor<Render::Layer, Render::LayerManager> >::create(m_renderer));
     q->registerBackendType<QLevelOfDetail>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
     q->registerBackendType<QLevelOfDetailSwitch>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
