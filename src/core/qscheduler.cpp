@@ -91,6 +91,9 @@ void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
     // whilst the threadpool works its way through the jobs
 
     m_aspectManager->jobManager()->waitForAllJobs();
+
+    for (auto &job : qAsConst(jobQueue))
+        job->postFrame(m_aspectManager);
 }
 
 } // namespace Qt3DCore
