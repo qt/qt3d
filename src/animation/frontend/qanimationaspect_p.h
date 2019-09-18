@@ -70,6 +70,8 @@ public:
 
     Q_DECLARE_PUBLIC(QAnimationAspect)
 
+    void syncDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QBackendNode *backend, bool firstTime) const override;
+
     QScopedPointer<Animation::Handler> m_handler;
 };
 
