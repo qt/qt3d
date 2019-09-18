@@ -96,6 +96,11 @@ void QRenderSettingsPrivate::init()
                      q, SLOT(_q_onWorldSpaceToleranceChanged(float)));
 }
 
+void QRenderSettingsPrivate::invalidateFrame()
+{
+    update();
+}
+
 /*! \internal */
 void QRenderSettingsPrivate::_q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod)
 {
@@ -153,6 +158,12 @@ QRenderSettings::~QRenderSettings()
 QPickingSettings *QRenderSettings::pickingSettings()
 {
     Q_D(QRenderSettings);
+    return &(d->m_pickingSettings);
+}
+
+const QPickingSettings *QRenderSettings::pickingSettings() const
+{
+    Q_D(const QRenderSettings);
     return &(d->m_pickingSettings);
 }
 

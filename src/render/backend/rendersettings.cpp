@@ -63,42 +63,42 @@ RenderSettings::RenderSettings()
 {
 }
 
-void RenderSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void RenderSettings::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderSettingsData>>(change);
-    const auto &data = typedChange->data;
-    m_activeFrameGraph = data.activeFrameGraphId;
-    m_renderPolicy = data.renderPolicy;
-    m_pickMethod = data.pickMethod;
-    m_pickResultMode = data.pickResultMode;
-    m_pickWorldSpaceTolerance = data.pickWorldSpaceTolerance;
-    m_faceOrientationPickingMode = data.faceOrientationPickingMode;
-}
+    const QRenderSettings *node = qobject_cast<const QRenderSettings *>(frontEnd);
+    if (!node)
+        return;
 
-void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("pickMethod"))
-            m_pickMethod = propertyChange->value().value<QPickingSettings::PickMethod>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("pickResult"))
-            m_pickResultMode = propertyChange->value().value<QPickingSettings::PickResultMode>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("faceOrientationPickingMode"))
-            m_faceOrientationPickingMode = propertyChange->value().value<QPickingSettings::FaceOrientationPickingMode>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("pickWorldSpaceTolerance"))
-            m_pickWorldSpaceTolerance = propertyChange->value().toFloat();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("activeFrameGraph"))
-            m_activeFrameGraph = propertyChange->value().value<QNodeId>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("renderPolicy"))
-            m_renderPolicy = propertyChange->value().value<QRenderSettings::RenderPolicy>();
-        markDirty(AbstractRenderer::AllDirty);
-    } else if (e->type() == CommandRequested) {
-        QNodeCommandPtr command = qSharedPointerCast<QNodeCommand>(e);
-        if (command->name() == QLatin1String("InvalidateFrame"))
-            markDirty(AbstractRenderer::AllDirty);
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const Qt3DCore::QNodeId activeFGId = Qt3DCore::qIdForNode(node->activeFrameGraph());
+    if (activeFGId != m_activeFrameGraph) {
+        m_activeFrameGraph = activeFGId;
     }
 
-    BackendNode::sceneChangeEvent(e);
+    if (node->renderPolicy() != m_renderPolicy) {
+        m_renderPolicy = node->renderPolicy();
+    }
+
+    if (node->pickingSettings()->pickMethod() != m_pickMethod) {
+        m_pickMethod = node->pickingSettings()->pickMethod();
+    }
+
+    if (node->pickingSettings()->pickResultMode() != m_pickResultMode) {
+        m_pickResultMode = node->pickingSettings()->pickResultMode();
+    }
+
+    if (node->pickingSettings()->worldSpaceTolerance() != m_pickWorldSpaceTolerance) {
+        m_pickWorldSpaceTolerance = node->pickingSettings()->worldSpaceTolerance();
+    }
+
+    if (node->pickingSettings()->faceOrientationPickingMode() != m_faceOrientationPickingMode) {
+        m_faceOrientationPickingMode = node->pickingSettings()->faceOrientationPickingMode();
+    }
+
+    // Either because something above as changed or if QRenderSettingsPrivate::invalidFrame()
+    // was called
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 RenderSettingsFunctor::RenderSettingsFunctor(AbstractRenderer *renderer)
