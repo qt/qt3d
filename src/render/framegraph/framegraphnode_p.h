@@ -121,13 +121,10 @@ public:
 
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
-
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 protected:
     FrameGraphNode(FrameGraphNodeType nodeType, QBackendNode::Mode mode = QBackendNode::ReadOnly);
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
 
 private:
     FrameGraphNodeType m_nodeType;

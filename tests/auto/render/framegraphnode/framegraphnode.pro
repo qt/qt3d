@@ -8,3 +8,4 @@ CONFIG += testcase
 SOURCES += tst_framegraphnode.cpp
 
 include(../commons/commons.pri)
+include(../../core/common/common.pri)

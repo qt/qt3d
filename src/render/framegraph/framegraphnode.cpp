@@ -66,15 +66,6 @@ FrameGraphNode::~FrameGraphNode()
 {
 }
 
-// TO DO: Remove once all FG nodes have been converted to direct sync
-void FrameGraphNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    // Set up the parent child relationship and enabled state
-    const auto creationChange = qSharedPointerCast<QFrameGraphNodeCreatedChangeBase>(change);
-    setParentId(creationChange->parentFrameGraphNodeId());
-    markDirty(AbstractRenderer::FrameGraphDirty);
-}
-
 void FrameGraphNode::setFrameGraphManager(FrameGraphManager *manager)
 {
     if (m_manager != manager)
@@ -128,29 +119,6 @@ QVector<FrameGraphNode *> FrameGraphNode::children() const
             children << child;
     }
     return children;
-}
-
-// TO DO: Remove once all FG nodes have been converted to direct sync
-void FrameGraphNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-
-    case Qt3DCore::PropertyUpdated: {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            d_func()->m_enabled = propertyChange->value().toBool();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("parentFrameGraphUpdated")) {
-            auto newParent = propertyChange->value().value<Qt3DCore::QNodeId>();
-            setParentId(newParent);
-            markDirty(AbstractRenderer::AllDirty);
-        }
-        break;
-    }
-    default:
-        markDirty(AbstractRenderer::AllDirty);
-        break;
-    }
 }
 
 void FrameGraphNode::cleanup()
