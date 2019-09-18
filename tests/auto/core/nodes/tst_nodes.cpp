@@ -79,6 +79,7 @@ private slots:
     void checkParentChangeFromExistingBackendParentToNewlyCreatedParent();
     void checkBackendNodesCreatedFromTopDown();   //QTBUG-74106
     void checkBackendNodesCreatedFromTopDownWithReparenting();
+    void checkAllBackendCreationDoneInSingleFrame();
 
     void removingSingleChildNodeFromNode();
     void removingMultipleChildNodesFromNode();
@@ -929,8 +930,6 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
     MyQNode *child(new MyQNode(root.data()));
     MyQNode *child2(new MyQNode(root.data()));
 
-    // processEvents 2x because the postConstructorInit happens after the frame advance.
-    QCoreApplication::processEvents();
     QCoreApplication::processEvents();
 
     // Due to the way we create root, it has a backend
@@ -961,8 +960,6 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
     QVERIFY(Qt3DCore::QNodePrivate::get(child)->scene() != nullptr);
 
     // WHEN
-    // processEvents 2x because the postConstructorInit happens after the frame advance.
-    QCoreApplication::processEvents();
     QCoreApplication::processEvents();
 
     // THEN
@@ -1039,8 +1036,6 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
     QVERIFY(Qt3DCore::QNodePrivate::get(child)->scene() != nullptr);
 
     // WHEN
-    // processEvents 2x because the postConstructorInit happens after the frame advance.
-    QCoreApplication::processEvents();
     QCoreApplication::processEvents();
 
     // THEN
@@ -1099,8 +1094,6 @@ void tst_Nodes::checkBackendNodesCreatedFromTopDown()
     QCOMPARE(spy.events.count(), 0);
 
     // WHEN - create the backend nodes
-    // processEvents 2x because the postConstructorInit happens after the frame advance.
-    QCoreApplication::processEvents();
     QCoreApplication::processEvents();
 
     // THEN
@@ -1159,8 +1152,6 @@ void tst_Nodes::checkBackendNodesCreatedFromTopDownWithReparenting()
     auto parent1 = new MyQNode(parentWithBackend.data());
     node1->setParent(parent1);
 
-    // processEvents 2x because the postConstructorInit happens after the frame advance.
-    QCoreApplication::processEvents();
     QCoreApplication::processEvents();
 
     // THEN
@@ -1175,8 +1166,6 @@ void tst_Nodes::checkBackendNodesCreatedFromTopDownWithReparenting()
     node2->setParent(parent2);
     parent2->setParent(parentWithBackend.get());
 
-    // processEvents 2x because the postConstructorInit happens after the frame advance.
-    QCoreApplication::processEvents();
     QCoreApplication::processEvents();
 
     // THEN
@@ -1219,6 +1208,52 @@ void tst_Nodes::removingSingleChildNodeFromNode()
     QCOMPARE(removalEvent->subjectId(), root->id());
     QCOMPARE(removalEvent->removedNodeId(), child->id());
     QCOMPARE(removalEvent->metaObject(), child->metaObject());
+}
+
+void tst_Nodes::checkAllBackendCreationDoneInSingleFrame()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QAspectEngine engine;
+    auto aspect = new TestAspect;
+    engine.registerAspect(aspect);
+
+    QScopedPointer<MyQEntity> root(new MyQEntity());
+    root->setArbiterAndEngine(&spy, &engine);
+
+    QCoreApplication::processEvents();
+
+    // THEN
+    // Due to the way we create root, it has a backend
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->m_hasBackendNode == true);
+    QCOMPARE(aspect->events.count(), 1);
+    QCOMPARE(aspect->events[0].type, TestAspect::Creation);
+    QCOMPARE(aspect->events[0].nodeId, root->id());
+
+    // WHEN -> create 2 children:
+    //  1. a child with parent with backend node
+    //  2. a child with no parent that is then reparented to a parent with backend node
+    aspect->clearNodes();
+    auto child1 = new MyQNode(root.data());
+    auto child2 = new MyQNode;
+    child2->setParent(root.data());
+
+    // THEN - reparented child should have a backend node, but other child should
+    //        still be waiting
+    QCOMPARE(child1->parent(), root.data());
+    QCOMPARE(child2->parent(), root.data());
+    QVERIFY(Qt3DCore::QNodePrivate::get(child1)->m_hasBackendNode == false);
+    QVERIFY(Qt3DCore::QNodePrivate::get(child2)->m_hasBackendNode == true);
+
+    // WHEN
+    QCoreApplication::processEvents();
+
+    // THEN - both children have their backend nodes actually created.
+    QCOMPARE(aspect->events.count(), 2);
+    QCOMPARE(aspect->events[0].type, TestAspect::Creation);
+    QCOMPARE(aspect->events[0].nodeId, child2->id());
+    QCOMPARE(aspect->events[1].type, TestAspect::Creation);
+    QCOMPARE(aspect->events[1].nodeId, child1->id());
 }
 
 void tst_Nodes::removingMultipleChildNodesFromNode()
@@ -1329,8 +1364,6 @@ void tst_Nodes::checkConstructionSetParentMix()
     }
 
     // THEN
-    // processEvents 2x because the postConstructorInit happens after the frame advance.
-    QCoreApplication::processEvents();
     QCoreApplication::processEvents();
     QCOMPARE(root->children().count(), 1);
     QCOMPARE(subTreeRoot->children().count(), 100);

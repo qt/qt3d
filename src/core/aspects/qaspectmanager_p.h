@@ -74,6 +74,7 @@ class QChangeArbiter;
 class QAbstractAspect;
 class QAbstractAspectJobManager;
 class QServiceLocator;
+class NodePostConstructorInit;
 struct NodeTreeChange;
 
 class Q_3DCORE_PRIVATE_EXPORT QAspectManager : public QObject
@@ -105,6 +106,7 @@ public:
     QAbstractAspectJobManager *jobManager() const;
     QChangeArbiter *changeArbiter() const;
     QServiceLocator *serviceLocator() const;
+    void setPostConstructorInit(NodePostConstructorInit *postConstructorInit);
 
 private:
     bool event(QEvent *event) override;
@@ -121,6 +123,8 @@ private:
     bool m_simulationLoopRunning;
     QAspectEngine::RunMode m_driveMode;
     QVector<NodeTreeChange> m_nodeTreeChanges;
+    NodePostConstructorInit* m_postConstructorInit;
+
 };
 
 } // namespace Qt3DCore

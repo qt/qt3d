@@ -275,6 +275,7 @@ void QAspectEnginePrivate::initialize()
     arbiter->setPostman(m_postman);
     arbiter->setScene(m_scene);
     m_initialized = true;
+    m_aspectManager->setPostConstructorInit(m_scene->postConstructorInit());
 #if QT_CONFIG(qt3d_profile_jobs)
     m_commandDebugger->setAspectEngine(q_func());
     m_commandDebugger->initialize();
