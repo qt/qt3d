@@ -160,7 +160,6 @@ void FrameGraphNode::cleanup()
 
 void FrameGraphNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    Q_UNUSED(firstTime);
     const QFrameGraphNode *node = qobject_cast<const QFrameGraphNode *>(frontEnd);
 
     const auto parentId = Qt3DCore::qIdForNode(node->parentFrameGraphNode());
@@ -174,6 +173,9 @@ void FrameGraphNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
         d_func()->m_enabled = node->isEnabled();
         markDirty(AbstractRenderer::FrameGraphDirty);
     }
+
+    if (firstTime)
+        markDirty(AbstractRenderer::FrameGraphDirty);
 }
 
 
