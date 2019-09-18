@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/qlevelofdetail_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/QCamera>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -64,41 +65,48 @@ LevelOfDetail::~LevelOfDetail()
     cleanup();
 }
 
-void LevelOfDetail::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+void LevelOfDetail::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLevelOfDetailData>>(change);
-    const auto &data = typedChange->data;
-    m_camera = data.camera;
-    m_currentIndex = data.currentIndex;
-    m_thresholdType = data.thresholdType;
-    m_thresholds = data.thresholds;
-    m_volumeOverride = data.volumeOverride;
+    const QLevelOfDetail *node = qobject_cast<const QLevelOfDetail *>(frontEnd);
+    if (!node)
+        return;
+
+    const bool oldEnabled = isEnabled();
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const Qt3DCore::QNodeId cameraId = Qt3DCore::qIdForNode(node->camera());
+    if (cameraId != m_camera) {
+        m_camera = cameraId;
+        markDirty(AbstractRenderer::GeometryDirty);
+    }
+
+    if (node->currentIndex() != m_currentIndex) {
+        m_currentIndex = node->currentIndex();
+        markDirty(AbstractRenderer::GeometryDirty);
+    }
+
+    if (node->thresholdType() != m_thresholdType) {
+        m_thresholdType = node->thresholdType();
+        markDirty(AbstractRenderer::GeometryDirty);
+    }
+
+    if (node->thresholds() != m_thresholds) {
+        m_thresholds = node->thresholds();
+        markDirty(AbstractRenderer::GeometryDirty);
+    }
+
+    if (node->volumeOverride() != m_volumeOverride) {
+        m_volumeOverride = node->volumeOverride();
+        markDirty(AbstractRenderer::GeometryDirty);
+    }
+
+    if (isEnabled() != oldEnabled || firstTime)
+        markDirty(AbstractRenderer::LayersDirty);
 }
 
 void LevelOfDetail::cleanup()
 {
     QBackendNode::setEnabled(false);
-}
-
-void LevelOfDetail::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    if (e->type() == PropertyUpdated) {
-        const QPropertyUpdatedChangePtr &propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("currentIndex"))
-            m_currentIndex = propertyChange->value().value<int>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("camera"))
-            m_camera = propertyChange->value().value<Qt3DCore::QNodeId>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("thresholdType"))
-            m_thresholdType = propertyChange->value().value<QLevelOfDetail::ThresholdType>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("thresholds"))
-            m_thresholds = propertyChange->value().value<QVector<qreal>>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("volumeOverride"))
-            m_volumeOverride = propertyChange->value().value<Qt3DRender::QLevelOfDetailBoundingSphere>();
-    }
-
-    markDirty(AbstractRenderer::GeometryDirty);
-
-    BackendNode::sceneChangeEvent(e);
 }
 
 void LevelOfDetail::setCurrentIndex(int currentIndex)

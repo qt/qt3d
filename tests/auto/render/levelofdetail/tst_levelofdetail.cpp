@@ -45,11 +45,13 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::LevelOfDetail renderLod;
         Qt3DRender::QLevelOfDetail lod;
 
         // WHEN
-        simulateInitialization(&lod, &renderLod);
+        renderLod.setRenderer(&renderer);
+        simulateInitializationSync(&lod, &renderLod);
 
         // THEN
         QCOMPARE(renderLod.peerId(), lod.id());
@@ -82,7 +84,7 @@ private Q_SLOTS:
 
         // WHEN
         renderLod.setRenderer(&renderer);
-        simulateInitialization(&lod, &renderLod);
+        simulateInitializationSync(&lod, &renderLod);
 
         // THEN
         QCOMPARE(renderLod.thresholdType(), lod.thresholdType());
@@ -92,8 +94,10 @@ private Q_SLOTS:
     {
         // GIVEN
         TestRenderer renderer;
+        Qt3DRender::QLevelOfDetail lod;
         Qt3DRender::Render::LevelOfDetail renderLod;
         renderLod.setRenderer(&renderer);
+        simulateInitializationSync(&lod, &renderLod);
 
         // THEN
         QVERIFY(renderLod.thresholdType() != Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold);
@@ -101,38 +105,30 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            updateChange->setValue(static_cast<int>(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold));
-            updateChange->setPropertyName("thresholdType");
-            renderLod.sceneChangeEvent(updateChange);
+            lod.setThresholdType(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold);
+            renderLod.syncFromFrontEnd(&lod, false);
 
             // THEN
             QCOMPARE(renderLod.thresholdType(), Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold);
-            QVERIFY(renderer.dirtyBits() != 0);
-        }
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);        }
 
         {
-            QVector<qreal> thresholds = {20.f, 30.f, 40.f};
-            QVariant v;
-            v.setValue<decltype(thresholds)>(thresholds);
+            const QVector<qreal> thresholds = {20.f, 30.f, 40.f};
 
             // WHEN
-            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            updateChange->setValue(v);
-            updateChange->setPropertyName("thresholds");
-            renderLod.sceneChangeEvent(updateChange);
-
+            lod.setThresholds(thresholds);
+            renderLod.syncFromFrontEnd(&lod, false);
             // THEN
             QCOMPARE(renderLod.thresholds(), thresholds);
         }
 
         {
             // WHEN
-            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            Qt3DRender::QLevelOfDetailBoundingSphere sphere(QVector3D(1.0f, 2.0f, 3.0f), 1.0f);
-            updateChange->setValue(QVariant::fromValue(sphere));
-            updateChange->setPropertyName("volumeOverride");
-            renderLod.sceneChangeEvent(updateChange);
+            const Qt3DRender::QLevelOfDetailBoundingSphere sphere(QVector3D(1.0f, 2.0f, 3.0f), 1.0f);
+            // WHEN
+            lod.setVolumeOverride(sphere);
+            renderLod.syncFromFrontEnd(&lod, false);
 
             // THEN
             QCOMPARE(renderLod.center(), QVector3D(1., 2., 3.));
