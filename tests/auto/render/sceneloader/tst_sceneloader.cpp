@@ -46,6 +46,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Scene sceneLoader;
         Qt3DRender::Render::SceneManager sceneManager;
 
@@ -61,8 +62,9 @@ private Q_SLOTS:
         frontendSceneLoader.setSource(newUrl);
 
         // WHEN
+        sceneLoader.setRenderer(&renderer);
         sceneLoader.setSceneManager(&sceneManager);
-        simulateInitialization(&frontendSceneLoader, &sceneLoader);
+        simulateInitializationSync(&frontendSceneLoader, &sceneLoader);
 
         // THEN
         QVERIFY(!sceneLoader.peerId().isNull());
@@ -78,6 +80,7 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QSceneLoader frontendSceneLoader;
         frontendSceneLoader.setSource(QUrl(QStringLiteral("file:///CorvetteMuseum")));
 
@@ -85,8 +88,9 @@ private Q_SLOTS:
         Qt3DRender::Render::SceneManager sceneManager;
 
         // WHEN
+        sceneLoader.setRenderer(&renderer);
         sceneLoader.setSceneManager(&sceneManager);
-        simulateInitialization(&frontendSceneLoader, &sceneLoader);
+        simulateInitializationSync(&frontendSceneLoader, &sceneLoader);
 
         // THEN
         QCOMPARE(sceneLoader.peerId(), frontendSceneLoader.id());
@@ -100,29 +104,27 @@ private Q_SLOTS:
         TestRenderer renderer;
         Qt3DRender::Render::Scene sceneLoader;
         Qt3DRender::Render::SceneManager sceneManager;
+        Qt3DRender::QSceneLoader frontendSceneLoader;
 
         sceneLoader.setRenderer(&renderer);
         sceneLoader.setSceneManager(&sceneManager);
+        simulateInitializationSync(&frontendSceneLoader, &sceneLoader);
 
         // THEN
         QVERIFY(sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         const QUrl newUrl(QStringLiteral("file:///Bownling_Green_KY"));
-        updateChange->setValue(newUrl);
-        updateChange->setPropertyName("source");
-        sceneLoader.sceneChangeEvent(updateChange);
+        frontendSceneLoader.setSource(newUrl);
+        sceneLoader.syncFromFrontEnd(&frontendSceneLoader, false);
 
         // THEN
         QCOMPARE(sceneLoader.source(), newUrl);
         QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setValue(false);
-        updateChange->setPropertyName("enabled");
-        sceneLoader.sceneChangeEvent(updateChange);
+        frontendSceneLoader.setEnabled(false);
+        sceneLoader.syncFromFrontEnd(&frontendSceneLoader, false);
 
         // THEN
         QCOMPARE(sceneLoader.isEnabled(), false);
@@ -179,29 +181,27 @@ private Q_SLOTS:
         TestRenderer renderer;
         Qt3DRender::Render::Scene sceneLoader;
         Qt3DRender::Render::SceneManager sceneManager;
+        Qt3DRender::QSceneLoader frontendSceneLoader;
 
         sceneLoader.setRenderer(&renderer);
         sceneLoader.setSceneManager(&sceneManager);
+        simulateInitializationSync(&frontendSceneLoader, &sceneLoader);
 
         // THEN
         QVERIFY(sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         const QUrl newUrl(QStringLiteral("file:///Bownling_Green_KY"));
-        updateChange->setValue(newUrl);
-        updateChange->setPropertyName("source");
-        sceneLoader.sceneChangeEvent(updateChange);
+        frontendSceneLoader.setSource(newUrl);
+        sceneLoader.syncFromFrontEnd(&frontendSceneLoader, false);
 
         // THEN
         QCOMPARE(sceneLoader.source(), newUrl);
         QVERIFY(!sceneManager.takePendingSceneLoaderJobs().isEmpty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setValue(QUrl());
-        updateChange->setPropertyName("source");
-        sceneLoader.sceneChangeEvent(updateChange);
+        frontendSceneLoader.setSource(QUrl());
+        sceneLoader.syncFromFrontEnd(&frontendSceneLoader, false);
 
         // THEN -> we should still have generated a job to reset the scene (immediately)
         QCOMPARE(sceneLoader.source(), QUrl());
