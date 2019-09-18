@@ -48,152 +48,181 @@
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/qstenciloperation_p.h>
 #include <Qt3DRender/private/qstenciltest_p.h>
+#include <Qt3DRender/qblendequationarguments.h>
+#include <Qt3DRender/qblendequation.h>
+#include <Qt3DRender/qalphatest.h>
+#include <Qt3DRender/qdepthrange.h>
+#include <Qt3DRender/qdepthtest.h>
+#include <Qt3DRender/qrastermode.h>
+#include <Qt3DRender/qfrontface.h>
+#include <Qt3DRender/qscissortest.h>
+#include <Qt3DRender/qpolygonoffset.h>
+#include <Qt3DRender/qcolormask.h>
+#include <Qt3DRender/qclipplane.h>
+#include <Qt3DRender/qstencilmask.h>
+#include <Qt3DRender/qlinewidth.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-void RenderStateImpl::updateProperty(const char *name, const QVariant &value)
+void RenderStateImpl::updateProperties(const QRenderState *)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(value);
 }
 
-void BlendEquationArguments::updateProperty(const char *name, const QVariant &value)
+void BlendEquationArguments::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("sourceRgb")) std::get<0>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("destinationRgb")) std::get<1>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("sourceAlpha")) std::get<2>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("destinationAlpha")) std::get<3>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("enabled")) std::get<4>(m_values) = value.toBool();
-    else if (name == QByteArrayLiteral("bufferIndex")) std::get<5>(m_values) = value.toInt();
+    const QBlendEquationArguments *args = static_cast<const QBlendEquationArguments *>(node);
+
+    std::get<0>(m_values) = args->sourceRgb();
+    std::get<1>(m_values) = args->destinationRgb();
+    std::get<2>(m_values) = args->sourceAlpha();
+    std::get<3>(m_values) = args->destinationAlpha();
+    std::get<4>(m_values) = args->isEnabled();
+    std::get<5>(m_values) = args->bufferIndex();
 }
 
-void BlendEquation::updateProperty(const char *name, const QVariant &value)
+void BlendEquation::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("blendFunction")) std::get<0>(m_values) = value.toInt();
+    const QBlendEquation *equation = static_cast<const QBlendEquation *>(node);
+    std::get<0>(m_values) = equation->blendFunction();
 }
 
-void AlphaFunc::updateProperty(const char *name, const QVariant &value)
+void AlphaFunc::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("alphaFunction"))
-        std::get<0>(m_values) = value.toInt();
-    if (name == QByteArrayLiteral("referenceValue"))
-        std::get<1>(m_values) = value.toFloat();
+    const QAlphaTest *alphaTest = static_cast<const QAlphaTest *>(node);
+    std::get<0>(m_values) = alphaTest->alphaFunction();
+    std::get<1>(m_values) = alphaTest->referenceValue();
 }
 
-void MSAAEnabled::updateProperty(const char *name, const QVariant &value)
+void MSAAEnabled::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("enabled"))
-        std::get<0>(m_values) = value.toBool();
+    std::get<0>(m_values) = node->isEnabled();
 }
 
-void DepthRange::updateProperty(const char *name, const QVariant &value)
+void DepthRange::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("nearValue")) std::get<0>(m_values) = value.toDouble();
-    else if (name == QByteArrayLiteral("farValue")) std::get<1>(m_values) = value.toDouble();
+    const QDepthRange *depthRange = static_cast<const QDepthRange *>(node);
+
+    std::get<0>(m_values) = depthRange->nearValue();
+    std::get<1>(m_values) = depthRange->farValue();
 }
 
-void DepthTest::updateProperty(const char *name, const QVariant &value)
+void DepthTest::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("depthFunction")) std::get<0>(m_values) = value.toInt();
+    const QDepthTest *depthTest = static_cast<const QDepthTest *>(node);
+
+    std::get<0>(m_values) = depthTest->depthFunction();
 }
 
-void RasterMode::updateProperty(const char *name, const QVariant &value)
+void RasterMode::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("rasterMode")) std::get<0>(m_values) = value.toInt();
-    if (name == QByteArrayLiteral("faceMode")) std::get<1>(m_values) = value.toInt();
+    const QRasterMode *rasterMode = static_cast<const QRasterMode *>(node);
+
+    std::get<0>(m_values) = rasterMode->faceMode();
+    std::get<1>(m_values) = rasterMode->rasterMode();
 }
 
-void CullFace::updateProperty(const char *name, const QVariant &value)
+void CullFace::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("mode")) std::get<0>(m_values) = value.toInt();
+    const QCullFace *cullFace = static_cast<const QCullFace *>(node);
+
+    std::get<0>(m_values) = cullFace->mode();
 }
 
-void FrontFace::updateProperty(const char *name, const QVariant &value)
+void FrontFace::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("direction")) std::get<0>(m_values) = value.toInt();
+    const QFrontFace *frontFace = static_cast<const QFrontFace *>(node);
+
+    std::get<0>(m_values) = frontFace->direction();
 }
 
-void NoDepthMask::updateProperty(const char *name, const QVariant &value)
+void NoDepthMask::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("mask")) std::get<0>(m_values) = value.toBool();
+    std::get<0>(m_values) = !node->isEnabled();
 }
 
-void ScissorTest::updateProperty(const char *name, const QVariant &value)
+void ScissorTest::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("left")) std::get<0>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("bottom")) std::get<1>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("width")) std::get<2>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("height")) std::get<3>(m_values) = value.toInt();
+    const QScissorTest *scissorTest = static_cast<const QScissorTest *>(node);
+
+    std::get<0>(m_values) = scissorTest->left();
+    std::get<1>(m_values) = scissorTest->bottom();
+    std::get<2>(m_values) = scissorTest->width();
+    std::get<3>(m_values) = scissorTest->height();
 }
 
-void StencilTest::updateProperty(const char *name, const QVariant &value)
+void StencilTest::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("arguments")) {
-        const QStencilTestData data = value.value<QStencilTestData>();
-        std::get<0>(m_values) = data.front.stencilFunction;
-        std::get<1>(m_values) = data.front.referenceValue;
-        std::get<2>(m_values) = data.front.comparisonMask;
-        std::get<3>(m_values) = data.back.stencilFunction;
-        std::get<4>(m_values) = data.back.referenceValue;
-        std::get<5>(m_values) = data.back.comparisonMask;
-    }
+    const QStencilTest *stencilTest = static_cast<const QStencilTest *>(node);
+    std::get<0>(m_values) = stencilTest->front()->stencilFunction();
+    std::get<1>(m_values) = stencilTest->front()->referenceValue();
+    std::get<2>(m_values) = stencilTest->front()->comparisonMask();
+    std::get<3>(m_values) = stencilTest->back()->stencilFunction();
+    std::get<4>(m_values) = stencilTest->back()->referenceValue();
+    std::get<5>(m_values) = stencilTest->back()->comparisonMask();
 }
 
-void PointSize::updateProperty(const char *name, const QVariant &value)
+void PointSize::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("sizeMode")) std::get<0>(m_values) = (value.toInt() == QPointSize::Programmable);
-    else if (name == QByteArrayLiteral("value")) std::get<1>(m_values) = value.toFloat();
+    const QPointSize *pointSize = static_cast<const QPointSize *>(node);
+
+    std::get<0>(m_values) = (pointSize->sizeMode() == QPointSize::Programmable);
+    std::get<1>(m_values) = pointSize->value();
 }
 
-void PolygonOffset::updateProperty(const char *name, const QVariant &value)
+void PolygonOffset::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("scaleFactor")) std::get<0>(m_values) = value.toFloat();
-    else if (name == QByteArrayLiteral("depthSteps")) std::get<1>(m_values) = value.toFloat();
+    const QPolygonOffset *offset = static_cast<const QPolygonOffset *>(node);
+
+    std::get<0>(m_values) = offset->scaleFactor();
+    std::get<1>(m_values) = offset->depthSteps();
 }
 
-void ColorMask::updateProperty(const char *name, const QVariant &value)
+void ColorMask::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("redMasked")) std::get<0>(m_values) = value.toBool();
-    else if (name == QByteArrayLiteral("greenMasked")) std::get<1>(m_values) = value.toBool();
-    else if (name == QByteArrayLiteral("blueMasked")) std::get<2>(m_values) = value.toBool();
-    else if (name == QByteArrayLiteral("alphaMasked")) std::get<3>(m_values) = value.toBool();
+    const QColorMask *colorMask = static_cast<const QColorMask *>(node);
+
+    std::get<0>(m_values) = colorMask->isRedMasked();
+    std::get<1>(m_values) = colorMask->isGreenMasked();
+    std::get<2>(m_values) = colorMask->isBlueMasked();
+    std::get<3>(m_values) = colorMask->isAlphaMasked();
 }
 
-void ClipPlane::updateProperty(const char *name, const QVariant &value)
+void ClipPlane::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("planeIndex")) std::get<0>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("normal")) std::get<1>(m_values) = value.value<QVector3D>();
-    else if (name == QByteArrayLiteral("distance")) std::get<2>(m_values) = value.toFloat();
+    const QClipPlane *clipPlane = static_cast<const QClipPlane *>(node);
+
+    std::get<0>(m_values) = clipPlane->planeIndex();
+    std::get<1>(m_values) = clipPlane->normal();
+    std::get<2>(m_values) = clipPlane->distance();
 }
 
-void StencilOp::updateProperty(const char *name, const QVariant &value)
+void StencilOp::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("arguments")) {
-        const QStencilOperationData data = value.value<QStencilOperationData>();
-        std::get<0>(m_values) = data.front.stencilTestFailureOperation;
-        std::get<1>(m_values) = data.front.depthTestFailureOperation;
-        std::get<2>(m_values) = data.front.allTestsPassOperation;
-        std::get<3>(m_values) = data.back.stencilTestFailureOperation;
-        std::get<4>(m_values) = data.back.depthTestFailureOperation;
-        std::get<5>(m_values) = data.back.allTestsPassOperation;
-    }
+    const QStencilOperation *stencilOp = static_cast<const QStencilOperation *>(node);
+
+    std::get<0>(m_values) = stencilOp->front()->stencilTestFailureOperation();
+    std::get<1>(m_values) = stencilOp->front()->depthTestFailureOperation();
+    std::get<2>(m_values) = stencilOp->front()->allTestsPassOperation();
+    std::get<3>(m_values) = stencilOp->back()->stencilTestFailureOperation();
+    std::get<4>(m_values) = stencilOp->back()->depthTestFailureOperation();
+    std::get<5>(m_values) = stencilOp->back()->allTestsPassOperation();
 }
 
-void StencilMask::updateProperty(const char *name, const QVariant &value)
+void StencilMask::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("frontOutputMask")) std::get<0>(m_values) = value.toInt();
-    else if (name == QByteArrayLiteral("backOutputMask")) std::get<1>(m_values) = value.toInt();
+    const QStencilMask *stencilMask = static_cast<const QStencilMask *>(node);
+    std::get<0>(m_values) = stencilMask->frontOutputMask();
+    std::get<1>(m_values) = stencilMask->backOutputMask();
 }
 
-void LineWidth::updateProperty(const char *name, const QVariant &value)
+void LineWidth::updateProperties(const QRenderState *node)
 {
-    if (name == QByteArrayLiteral("value"))
-        std::get<0>(m_values) = value.toFloat();
-    else if (name == QByteArrayLiteral("smooth"))
-        std::get<1>(m_values) = value.toBool();
+    const QLineWidth *lineWidth = static_cast<const QLineWidth *>(node);
+    std::get<0>(m_values) = lineWidth->value();
+    std::get<1>(m_values) = lineWidth->smooth();
 }
 
 } // namespace Render

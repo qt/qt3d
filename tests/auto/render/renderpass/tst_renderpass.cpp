@@ -148,6 +148,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
+        backendState->setRenderer(&renderer);
         simulateInitializationSync(frontendState, backendState);
 
         // WHEN
@@ -262,6 +263,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
+        backendState->setRenderer(&renderer);
         simulateInitializationSync(frontendState, backendState);
 
         QRenderPass frontend;

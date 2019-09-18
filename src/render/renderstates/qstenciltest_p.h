@@ -78,7 +78,6 @@ public:
     QStencilTestArguments *m_front;
     QStencilTestArguments *m_back;
 
-    void resendArguments();
     void fillData(QStencilTestData &data) const;
 };
 
