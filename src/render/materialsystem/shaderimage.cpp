@@ -40,6 +40,7 @@
 #include "shaderimage_p.h"
 #include <Qt3DRender/private/qshaderimage_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qabstracttexture.h>
 
 
 QT_BEGIN_NAMESPACE
@@ -70,44 +71,45 @@ void ShaderImage::cleanup()
     m_format = QShaderImage::NoFormat;
 }
 
-void ShaderImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void ShaderImage::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("texture")) {
-            m_textureId = propertyChange->value().value<Qt3DCore::QNodeId>();
-            markDirty(AbstractRenderer::ParameterDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
-            m_mipLevel = propertyChange->value().toInt();
-            markDirty(AbstractRenderer::ParameterDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
-            m_layer = propertyChange->value().toInt();
-            markDirty(AbstractRenderer::ParameterDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("layered")) {
-            m_layered = propertyChange->value().toBool();
-            markDirty(AbstractRenderer::ParameterDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
-            m_format = propertyChange->value().value<QShaderImage::ImageFormat>();
-            markDirty(AbstractRenderer::ParameterDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("access")) {
-            m_access = propertyChange->value().value<QShaderImage::Access>();
-            markDirty(AbstractRenderer::ParameterDirty);
-        }
+    const QShaderImage *node = qobject_cast<const QShaderImage *>(frontEnd);
+    if (!node)
+        return;
+
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const Qt3DCore::QNodeId textureNodeId = Qt3DCore::qIdForNode(node->texture());
+    if (textureNodeId != m_textureId) {
+        m_textureId = textureNodeId;
+        markDirty(AbstractRenderer::ParameterDirty);
     }
-    BackendNode::sceneChangeEvent(e);
-}
 
-void ShaderImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderImageData>>(change);
-    const QShaderImageData &data = typedChange->data;
+    if (node->mipLevel() != m_mipLevel) {
+        m_mipLevel = node->mipLevel();
+        markDirty(AbstractRenderer::ParameterDirty);
+    }
 
-    m_textureId = data.textureId;
-    m_mipLevel = data.mipLevel;
-    m_layer = data.layer;
-    m_layered = data.layered;
-    m_access = data.access;
-    m_format = data.format;
+    if (node->layer() != m_layer) {
+        m_layer = node->layer();
+        markDirty(AbstractRenderer::ParameterDirty);
+    }
+
+    if (node->layered() != m_layered) {
+        m_layered = node->layered();
+        markDirty(AbstractRenderer::ParameterDirty);
+    }
+
+    if (node->format() != m_format) {
+        m_format = node->format();
+        markDirty(AbstractRenderer::ParameterDirty);
+    }
+
+    if (node->access() != m_access) {
+        m_access = node->access();
+        markDirty(AbstractRenderer::ParameterDirty);
+    }
+
 }
 
 } // namespace Render
