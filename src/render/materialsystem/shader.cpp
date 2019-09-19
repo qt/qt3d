@@ -101,23 +101,24 @@ void Shader::cleanup()
     m_status = QShaderProgram::NotReady;
 }
 
-void Shader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Shader::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderProgramData>>(change);
-    const auto &data = typedChange->data;
+    const QShaderProgram *node = qobject_cast<const QShaderProgram *>(frontEnd);
+    if (!node)
+        return;
 
-    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i)
-        m_shaderCode[i].clear();
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 
-    m_shaderCode[QShaderProgram::Vertex] = data.vertexShaderCode;
-    m_shaderCode[QShaderProgram::TessellationControl] = data.tessellationControlShaderCode;
-    m_shaderCode[QShaderProgram::TessellationEvaluation] = data.tessellationEvaluationShaderCode;
-    m_shaderCode[QShaderProgram::Geometry] = data.geometryShaderCode;
-    m_shaderCode[QShaderProgram::Fragment] = data.fragmentShaderCode;
-    m_shaderCode[QShaderProgram::Compute] = data.computeShaderCode;
-    m_isLoaded = false;
-    updateDNA();
-    markDirty(AbstractRenderer::ShadersDirty);
+    if (firstTime)
+        for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i)
+            m_shaderCode[i].clear();
+
+    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+        const QShaderProgram::ShaderType shaderType = static_cast<QShaderProgram::ShaderType>(i);
+        const QByteArray code = node->shaderCode(shaderType);
+        if (code != m_shaderCode.value(shaderType))
+            setShaderCode(shaderType, code);
+    }
 }
 
 void Shader::setGraphicsContext(GraphicsContext *context)
@@ -172,29 +173,6 @@ void Shader::setShaderCode(QShaderProgram::ShaderType type, const QByteArray &co
     setStatus(QShaderProgram::NotReady);
     updateDNA();
     markDirty(AbstractRenderer::ShadersDirty);
-}
-
-void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = e.staticCast<QPropertyUpdatedChange>();
-        QVariant propertyValue = propertyChange->value();
-
-        if (propertyChange->propertyName() == QByteArrayLiteral("vertexShaderCode"))
-            setShaderCode(QShaderProgram::Vertex, propertyValue.toByteArray());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentShaderCode"))
-            setShaderCode(QShaderProgram::Fragment, propertyValue.toByteArray());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlShaderCode"))
-            setShaderCode(QShaderProgram::TessellationControl, propertyValue.toByteArray());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationShaderCode"))
-            setShaderCode(QShaderProgram::TessellationEvaluation, propertyValue.toByteArray());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("geometryShaderCode"))
-            setShaderCode(QShaderProgram::Geometry, propertyValue.toByteArray());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("computeShaderCode"))
-            setShaderCode(QShaderProgram::Compute, propertyValue.toByteArray());
-    }
-
-    BackendNode::sceneChangeEvent(e);
 }
 
 QHash<QString, ShaderUniform> Shader::activeUniformsForUniformBlock(int blockIndex) const
