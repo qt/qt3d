@@ -185,7 +185,7 @@ public:
     void doRender(bool swapBuffers = true) override;
     void cleanGraphicsResources() override;
 
-    bool isRunning() const override { return m_running.load(); }
+    bool isRunning() const override { return m_running.loadRelaxed(); }
 
     void setSceneRoot(Entity *sgRoot) override;
     Entity *sceneRoot() const override { return m_renderSceneRoot; }

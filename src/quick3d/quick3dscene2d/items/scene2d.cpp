@@ -443,7 +443,7 @@ void Scene2D::cleanup()
     }
     if (m_renderThread) {
         renderThreadClientCount->fetchAndSubAcquire(1);
-        if (renderThreadClientCount->load() == 0)
+        if (renderThreadClientCount->loadRelaxed() == 0)
             renderThread->quit();
     }
 }
