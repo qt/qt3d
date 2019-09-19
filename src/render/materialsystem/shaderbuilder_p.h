@@ -95,10 +95,9 @@ public:
 
     void generateCode(ShaderType type);
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void setEnabledLayers(const QStringList &layers);
 
     GraphicsApiFilterData m_graphicsApi;
