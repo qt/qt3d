@@ -448,7 +448,7 @@ void Renderer::shutdown()
     QMutexLocker lock(&m_hasBeenInitializedMutex);
 
     qCDebug(Backend) << Q_FUNC_INFO << "Requesting renderer shutdown";
-    m_running.store(0);
+    m_running.storeRelaxed(0);
 
     // We delete any renderqueue that we may not have had time to render
     // before the surface was destroyed
@@ -619,7 +619,7 @@ void Renderer::render()
     // One scene description
     // One framegraph description
 
-    while (m_running.load() > 0) {
+    while (m_running.loadRelaxed() > 0) {
         doRender();
         // TO DO: Restore windows exposed detection
         // Probably needs to happens some place else though
@@ -789,7 +789,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
     const bool isQueueComplete = m_renderQueue->queueRenderView(renderView, submitOrder);
     locker.unlock(); // We're done protecting the queue at this point
     if (isQueueComplete) {
-        if (m_renderThread && m_running.load())
+        if (m_renderThread && m_running.loadRelaxed())
             Q_ASSERT(m_submitRenderViewsSemaphore.available() == 0);
         m_submitRenderViewsSemaphore.release(1);
     }
@@ -798,7 +798,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
 bool Renderer::canRender() const
 {
     // Make sure that we've not been told to terminate
-    if (m_renderThread && !m_running.load()) {
+    if (m_renderThread && !m_running.loadRelaxed()) {
         qCDebug(Rendering) << "RenderThread termination requested whilst waiting";
         return false;
     }
@@ -817,7 +817,7 @@ bool Renderer::isReadyToSubmit()
     m_submitRenderViewsSemaphore.acquire(1);
 
     // Check if shutdown has been requested
-    if (m_running.load() == 0)
+    if (m_running.loadRelaxed() == 0)
         return false;
 
     // The semaphore should only
@@ -1424,7 +1424,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
     const int renderViewsCount = renderViews.size();
     quint64 frameElapsed = queueElapsed;
-    m_lastFrameCorrect.store(1);    // everything fine until now.....
+    m_lastFrameCorrect.storeRelaxed(1);    // everything fine until now.....
 
     qCDebug(Memory) << Q_FUNC_INFO << "rendering frame ";
 
@@ -1457,7 +1457,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         //       to use when surface is null. Or if we should instead expose an
         //       offscreensurface to Qt3D.
         if (!surface || !surfaceLock.isSurfaceValid()) {
-            m_lastFrameCorrect.store(0);
+            m_lastFrameCorrect.storeRelaxed(0);
             continue;
         }
 
@@ -1477,7 +1477,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             // next RenderView. We won't get the full frame but we may get something
             if (!m_submissionContext->beginDrawing(surface)) {
                 qWarning() << "Failed to make OpenGL context current on surface";
-                m_lastFrameCorrect.store(0);
+                m_lastFrameCorrect.storeRelaxed(0);
                 continue;
             }
 
@@ -1578,7 +1578,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
         // Execute the render commands
         if (!executeCommandsSubmission(renderView))
-            m_lastFrameCorrect.store(0);    // something went wrong; make sure to render the next frame!
+            m_lastFrameCorrect.storeRelaxed(0);    // something went wrong; make sure to render the next frame!
 
         // executeCommandsSubmission takes care of restoring the stateset to the value
         // of gc->currentContext() at the moment it was called (either
@@ -1681,7 +1681,7 @@ bool Renderer::shouldRender()
             || m_renderThread == nullptr // <==> we use Scene3D
             || m_dirtyBits.marked != 0
             || m_dirtyBits.remaining != 0
-            || !m_lastFrameCorrect.load());
+            || !m_lastFrameCorrect.loadRelaxed());
 }
 
 void Renderer::skipNextFrame()

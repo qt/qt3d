@@ -374,6 +374,11 @@ QServiceLocator *QAspectManager::serviceLocator() const
     return m_serviceLocator.data();
 }
 
+void QAspectManager::setPostConstructorInit(NodePostConstructorInit *postConstructorInit)
+{
+    m_postConstructorInit = postConstructorInit;
+}
+
 /*!
     \internal
     \brief Drives the Qt3D simulation loop in the main thread
@@ -428,6 +433,10 @@ void QAspectManager::processFrame()
     changeArbiterStats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
     changeArbiterStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
 #endif
+
+    // Tell the NodePostConstructorInit to process any pending nodes which will add them to our list of
+    // tree changes
+    m_postConstructorInit->processNodes();
 
     // Add and Remove Nodes
     const QVector<NodeTreeChange> nodeTreeChanges = std::move(m_nodeTreeChanges);

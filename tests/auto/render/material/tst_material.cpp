@@ -45,6 +45,7 @@ using namespace Qt3DRender::Render;
 class tst_RenderMaterial : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+
 public:
     tst_RenderMaterial() {}
 
@@ -117,7 +118,7 @@ void tst_RenderMaterial::shouldHavePropertiesMirroringFromItsPeer()
 
     // GIVEN
     backend.setRenderer(&renderer);
-    simulateInitialization(frontendMaterial, &backend);
+    simulateInitializationSync(frontendMaterial, &backend);
 
     // THEN
     QVERIFY(backend.isEnabled() == frontendMaterial->isEnabled());
@@ -136,15 +137,17 @@ void tst_RenderMaterial::shouldHavePropertiesMirroringFromItsPeer()
 void tst_RenderMaterial::shouldHandleParametersPropertyChange()
 {
     // GIVEN
-    QScopedPointer<QParameter> parameter(new QParameter());
+    QParameter *parameter = new QParameter();
     Material backend;
     TestRenderer renderer;
     backend.setRenderer(&renderer);
 
+    QMaterial material;
+    simulateInitializationSync(&material, &backend);
+
     // WHEN
-    const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
-    addChange->setPropertyName("parameter");
-    backend.sceneChangeEvent(addChange);
+    material.addParameter(parameter);
+    backend.syncFromFrontEnd(&material, false);
 
     // THEN
     QCOMPARE(backend.parameters().count(), 1);
@@ -152,9 +155,8 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
-    const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
-    removeChange->setPropertyName("parameter");
-    backend.sceneChangeEvent(removeChange);
+    material.removeParameter(parameter);
+    backend.syncFromFrontEnd(&material, false);
 
     // THEN
     QVERIFY(backend.parameters().isEmpty());
@@ -167,24 +169,23 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
     TestRenderer renderer;
     backend.setRenderer(&renderer);
 
-    // WHEN
-    auto updateChange = QPropertyUpdatedChangePtr::create(QNodeId());
-    updateChange->setValue(true);
-    updateChange->setPropertyName("enabled");
-    backend.sceneChangeEvent(updateChange);
-
-    // THEN
-    QVERIFY(backend.isEnabled());
-    QVERIFY(renderer.dirtyBits() != 0);
+    QMaterial material;
+    simulateInitializationSync(&material, &backend);
 
     // WHEN
-    auto secondUpdateChange = QPropertyUpdatedChangePtr::create(QNodeId());
-    secondUpdateChange->setValue(false);
-    secondUpdateChange->setPropertyName("enabled");
-    backend.sceneChangeEvent(secondUpdateChange);
+    material.setEnabled(false);
+    backend.syncFromFrontEnd(&material, false);
 
     // THEN
     QVERIFY(!backend.isEnabled());
+    QVERIFY(renderer.dirtyBits() != 0);
+
+    // WHEN
+    material.setEnabled(true);
+    backend.syncFromFrontEnd(&material, false);
+
+    // THEN
+    QVERIFY(backend.isEnabled());
 
 }
 
@@ -195,15 +196,16 @@ void tst_RenderMaterial::shouldHandleEffectPropertyChange()
     TestRenderer renderer;
     backend.setRenderer(&renderer);
 
+    QMaterial material;
+    simulateInitializationSync(&material, &backend);
+
     // WHEN
-    QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-    Qt3DCore::QNodeId effectId = Qt3DCore::QNodeId::createId();
-    updateChange->setValue(QVariant::fromValue(effectId));
-    updateChange->setPropertyName("effect");
-    backend.sceneChangeEvent(updateChange);
+    QEffect effect;
+    material.setEffect(&effect);
+    backend.syncFromFrontEnd(&material, false);
 
     // THEN
-    QCOMPARE(backend.effect(), effectId);
+    QCOMPARE(backend.effect(), effect.id());
     QVERIFY(renderer.dirtyBits() != 0);
 }
 

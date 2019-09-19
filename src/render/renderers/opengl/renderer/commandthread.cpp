@@ -176,7 +176,7 @@ void CommandThread::run()
         m_commandRequestedSemaphore.acquire();
 
         // Are we still running?
-        if (!m_running.load()) {
+        if (!m_running.loadRelaxed()) {
             m_graphicsContext->doneCurrent();
             // to prevent executeCommand being locked
             m_commandExecutionSemaphore.release();

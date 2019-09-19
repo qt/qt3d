@@ -237,13 +237,8 @@ private slots:
         QVERIFY(renderer.dirtyBits() == 0);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
-            const auto parentChange = QPropertyUpdatedChangePtr::create(entity.id());
-            parentChange->setPropertyName("parentEntityUpdated");
-            auto parent = entity.parentEntity();
-            parentChange->setValue(QVariant::fromValue(parent ? parent->id() : Qt3DCore::QNodeId()));
-
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
-            backendEntity->sceneChangeEvent(parentChange);
+            backendEntity->syncFromFrontEnd(&entity, false);
         };
 
         // reparent B to A and C to B.
@@ -452,6 +447,7 @@ private slots:
             entity->setNodeManagers(&nodeManagers);
             entity->setHandle(renderNodeHandle);
             entity->setRenderer(&renderer);
+            entity->syncFromFrontEnd(&frontEndEntity, true);
             return entity;
         };
 
@@ -460,13 +456,8 @@ private slots:
         auto backendC = entityCreator(frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
-            const auto parentChange = QPropertyUpdatedChangePtr::create(entity.id());
-            parentChange->setPropertyName("parentEntityUpdated");
-            auto parent = entity.parentEntity();
-            parentChange->setValue(QVariant::fromValue(parent ? parent->id() : Qt3DCore::QNodeId()));
-
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
-            backendEntity->sceneChangeEvent(parentChange);
+            backendEntity->syncFromFrontEnd(&entity, false);
         };
 
         // reparent B to A and C to B.
@@ -499,12 +490,17 @@ private slots:
         NodeManagers nodeManagers;
         Qt3DCore::QEntity frontendEntityA, frontendEntityB, frontendEntityC;
 
+        frontendEntityA.setEnabled(false);
+        frontendEntityB.setEnabled(false);
+        frontendEntityC.setEnabled(false);
+
         auto entityCreator = [&nodeManagers, &renderer](const Qt3DCore::QEntity &frontEndEntity) {
             HEntity renderNodeHandle = nodeManagers.renderNodesManager()->getOrAcquireHandle(frontEndEntity.id());
             Entity *entity = nodeManagers.renderNodesManager()->data(renderNodeHandle);
             entity->setNodeManagers(&nodeManagers);
             entity->setHandle(renderNodeHandle);
             entity->setRenderer(&renderer);
+            entity->syncFromFrontEnd(&frontEndEntity, true);
             return entity;
         };
 
@@ -513,13 +509,8 @@ private slots:
         auto backendC = entityCreator(frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
-            const auto parentChange = QPropertyUpdatedChangePtr::create(entity.id());
-            parentChange->setPropertyName("parentEntityUpdated");
-            auto parent = entity.parentEntity();
-            parentChange->setValue(QVariant::fromValue(parent ? parent->id() : Qt3DCore::QNodeId()));
-
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
-            backendEntity->sceneChangeEvent(parentChange);
+            backendEntity->syncFromFrontEnd(&entity, false);
         };
 
         // reparent B to A and C to B.
@@ -547,8 +538,8 @@ private slots:
 
        // THEN
        QCOMPARE(v1.count, 3);
-       QCOMPARE(v2.count, 1); // nodes disabled by default but the first one is still visited before visitation finds out it's disabled
-       QCOMPARE(v3.count, 0); // nodes disabled by default
+       QCOMPARE(v2.count, 1); // nodes disabled but the first one is still visited before visitation finds out it's disabled
+       QCOMPARE(v3.count, 0); // nodes disabled
     }
 
     void accumulator()
@@ -558,12 +549,17 @@ private slots:
         NodeManagers nodeManagers;
         Qt3DCore::QEntity frontendEntityA, frontendEntityB, frontendEntityC;
 
+        frontendEntityA.setEnabled(false);
+        frontendEntityB.setEnabled(false);
+        frontendEntityC.setEnabled(false);
+
         auto entityCreator = [&nodeManagers, &renderer](const Qt3DCore::QEntity &frontEndEntity) {
             HEntity renderNodeHandle = nodeManagers.renderNodesManager()->getOrAcquireHandle(frontEndEntity.id());
             Entity *entity = nodeManagers.renderNodesManager()->data(renderNodeHandle);
             entity->setNodeManagers(&nodeManagers);
             entity->setHandle(renderNodeHandle);
             entity->setRenderer(&renderer);
+            entity->syncFromFrontEnd(&frontEndEntity, true);
             return entity;
         };
 
@@ -572,13 +568,8 @@ private slots:
         auto backendC = entityCreator(frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
-            const auto parentChange = QPropertyUpdatedChangePtr::create(entity.id());
-            parentChange->setPropertyName("parentEntityUpdated");
-            auto parent = entity.parentEntity();
-            parentChange->setValue(QVariant::fromValue(parent ? parent->id() : Qt3DCore::QNodeId()));
-
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
-            backendEntity->sceneChangeEvent(parentChange);
+            backendEntity->syncFromFrontEnd(&entity, false);
         };
 
         // reparent B to A and C to B.

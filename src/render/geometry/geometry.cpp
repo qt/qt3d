@@ -45,6 +45,8 @@
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 
+#include <algorithm>
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -76,51 +78,29 @@ void Geometry::cleanup()
     m_shouldNotifyMaxExtentChanged = false;
 }
 
-void Geometry::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Geometry::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QGeometryData>>(change);
-    const auto &data = typedChange->data;
-    m_attributes = data.attributeIds;
-    m_boundingPositionAttribute = data.boundingVolumePositionAttributeId;
-    m_geometryDirty = true;
-    markDirty(AbstractRenderer::GeometryDirty);
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QGeometry *node = qobject_cast<const QGeometry *>(frontEnd);
+    if (!node)
+        return;
 
-void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("attribute")) {
-            m_attributes.push_back(change->addedNodeId());
-            m_geometryDirty = true;
-        }
-        break;
+    m_geometryDirty |= firstTime;
+
+    QNodeIdVector attribs = qIdsForNodes(node->attributes());
+    std::sort(std::begin(attribs), std::end(attribs));
+    if (m_attributes != attribs) {
+        m_attributes = attribs;
+        m_geometryDirty = true;
     }
 
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("attribute")) {
-            m_attributes.removeOne(change->removedNodeId());
-            m_geometryDirty = true;
-        }
-        break;
-    }
-
-    case PropertyUpdated: {
+    if ((node->boundingVolumePositionAttribute() && node->boundingVolumePositionAttribute()->id() != m_boundingPositionAttribute) ||
         // Note: doesn't set dirtyness as this parameter changing doesn't need a new VAO update.
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("boundingVolumePositionAttribute")) {
-            m_boundingPositionAttribute = change->value().value<QNodeId>();
-            break;
-        }
+        (!node->boundingVolumePositionAttribute() && !m_boundingPositionAttribute.isNull())) {
+        m_boundingPositionAttribute = node->boundingVolumePositionAttribute() ? node->boundingVolumePositionAttribute()->id() : QNodeId{};
     }
 
-    default:
-        break;
-    }
     markDirty(AbstractRenderer::GeometryDirty);
-    BackendNode::sceneChangeEvent(e);
 }
 
 void Geometry::unsetDirty()

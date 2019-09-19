@@ -194,7 +194,7 @@ public:
     void removeNode(QNode *node);
     void addNode(QNode *node);
 
-private Q_SLOTS:
+public Q_SLOTS:
     void processNodes();
 
 private:

@@ -70,6 +70,7 @@ using namespace Qt3DRender::Render;
 class tst_RenderRenderPass : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+
 public:
     tst_RenderRenderPass()
         : m_renderStateManager(new RenderStateManager())
@@ -96,6 +97,8 @@ private slots:
     {
         // GIVEN
         RenderPass backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
 
         // WHEN
         backend.setEnabled(true);
@@ -112,7 +115,7 @@ private slots:
             frontend.addRenderState(&state);
             frontend.setShaderProgram(&program);
 
-            simulateInitialization(&frontend, &backend);
+            simulateInitializationSync(&frontend, &backend);
         }
 
         backend.cleanup();
@@ -141,12 +144,14 @@ private slots:
         frontend.addRenderState(frontendState);
 
         RenderPass backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
 
         RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
-        simulateInitialization(frontendState, backendState);
+        simulateInitializationSync(frontendState, backendState);
 
         // WHEN
-        simulateInitialization(&frontend, &backend);
+        simulateInitializationSync(&frontend, &backend);
 
         // THEN
         QCOMPARE(backend.shaderProgram(), frontend.shaderProgram()->id());
@@ -165,25 +170,26 @@ private slots:
     void shouldHandleShaderPropertyChangeEvents()
     {
         // GIVEN
-        QScopedPointer<QShaderProgram> shader(new QShaderProgram);
+        QShaderProgram *shader = new QShaderProgram;
 
         RenderPass backend;
         TestRenderer renderer;
         backend.setRenderer(&renderer);
 
+        QRenderPass frontend;
+        simulateInitializationSync(&frontend, &backend);
+
         // WHEN
-        const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), shader.data());
-        addChange->setPropertyName("shaderProgram");
-        backend.sceneChangeEvent(addChange);
+        frontend.setShaderProgram(shader);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.shaderProgram(), shader->id());
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), shader.data());
-        removeChange->setPropertyName("shaderProgram");
-        backend.sceneChangeEvent(removeChange);
+        frontend.setShaderProgram(nullptr);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QVERIFY(backend.shaderProgram().isNull());
@@ -192,16 +198,18 @@ private slots:
     void shouldHandleAnnotationsPropertyChangeEvents()
     {
         // GIVEN
-        QScopedPointer<QFilterKey> annotation(new QFilterKey);
+        QFilterKey *annotation = new QFilterKey;
 
         RenderPass backend;
         TestRenderer renderer;
         backend.setRenderer(&renderer);
 
+        QRenderPass frontend;
+        simulateInitializationSync(&frontend, &backend);
+
         // WHEN
-        const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), annotation.data());
-        addChange->setPropertyName("filterKeys");
-        backend.sceneChangeEvent(addChange);
+        frontend.addFilterKey(annotation);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.filterKeys().size(), 1);
@@ -209,9 +217,8 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), annotation.data());
-        removeChange->setPropertyName("filterKeys");
-        backend.sceneChangeEvent(removeChange);
+        frontend.removeFilterKey(annotation);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QVERIFY(backend.filterKeys().isEmpty());
@@ -220,16 +227,18 @@ private slots:
     void shouldHandleParametersPropertyChangeEvents()
     {
         // GIVEN
-        QScopedPointer<QParameter> parameter(new QParameter);
+        QParameter *parameter = new QParameter;
 
         RenderPass backend;
         TestRenderer renderer;
         backend.setRenderer(&renderer);
 
+        QRenderPass frontend;
+        simulateInitializationSync(&frontend, &backend);
+
         // WHEN
-        const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
-        addChange->setPropertyName("parameter");
-        backend.sceneChangeEvent(addChange);
+        frontend.addParameter(parameter);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.parameters().size(), 1);
@@ -237,9 +246,8 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
-        removeChange->setPropertyName("parameter");
-        backend.sceneChangeEvent(removeChange);
+        frontend.removeParameter(parameter);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QVERIFY(backend.parameters().isEmpty());
@@ -254,12 +262,14 @@ private slots:
         backend.setRenderer(&renderer);
 
         RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
-        simulateInitialization(frontendState, backendState);
+        simulateInitializationSync(frontendState, backendState);
+
+        QRenderPass frontend;
+        simulateInitializationSync(&frontend, &backend);
 
         // WHEN
-        const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), frontendState);
-        addChange->setPropertyName("renderState");
-        backend.sceneChangeEvent(addChange);
+        frontend.addRenderState(frontendState);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.renderStates().size(), 1);
@@ -267,30 +277,11 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), frontendState);
-        removeChange->setPropertyName("renderState");
-        backend.sceneChangeEvent(removeChange);
+        frontend.removeRenderState(frontendState);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QVERIFY(backend.renderStates().isEmpty());
-    }
-
-    void shouldHandleShaderProgramPropertyChangeEvents()
-    {
-        // GIVEN
-        RenderPass backend;
-        TestRenderer renderer;
-        backend.setRenderer(&renderer);
-
-        // WHEN
-        Qt3DCore::QNodeId shaderId = Qt3DCore::QNodeId::createId();
-        const auto shaderChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        shaderChange->setPropertyName("shaderProgram");
-        shaderChange->setValue(QVariant::fromValue(shaderId));
-        backend.sceneChangeEvent(shaderChange);
-
-        // THEN
-        QCOMPARE(backend.shaderProgram(), shaderId);
     }
 
 private:

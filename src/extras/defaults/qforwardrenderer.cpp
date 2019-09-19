@@ -239,11 +239,13 @@ QColor QForwardRenderer::clearColor() const
     \qmlproperty color ForwardRenderer::clearBuffers
 
     Holds the current buffers to be cleared. Default value is ColorDepthBuffer
+    \since 5.14
 */
 /*!
     \property QForwardRenderer::clearBuffers
 
     Holds the current buffers to be cleared. Default value is ColorDepthBuffer
+    \since 5.14
 */
 QClearBuffers::BufferType QForwardRenderer::clearBuffers() const
 {

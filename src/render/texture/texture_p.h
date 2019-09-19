@@ -164,6 +164,7 @@ public:
     QVector<QTextureDataUpdate> takePendingTextureDataUpdates() { return std::move(m_pendingTextureDataUpdates); }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     inline const TextureProperties& properties() const { return m_properties; }
     inline const TextureParameters& parameters() const { return m_parameters; }

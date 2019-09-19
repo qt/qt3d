@@ -145,44 +145,6 @@ void Entity::setHandle(HEntity handle)
     m_handle = handle;
 }
 
-void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<QNodeCreatedChange<Qt3DCore::QEntityData>>(change);
-    const auto &data = typedChange->data;
-
-    // Note this is *not* the parentId as that is the ID of the parent QNode, which is not
-    // necessarily the same as the parent QEntity (which may be further up the tree).
-    m_parentEntityId = data.parentEntityId;
-    qCDebug(Render::RenderNodes) << "Creating Entity id =" << peerId() << "parentId =" << m_parentEntityId;
-
-    // TODO: Store string id instead and only in debug mode
-    //m_objectName = peer->objectName();
-    m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerId());
-
-    // TODO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
-    m_transformComponent = QNodeId();
-    m_materialComponent = QNodeId();
-    m_cameraComponent = QNodeId();
-    m_geometryRendererComponent = QNodeId();
-    m_objectPickerComponent = QNodeId();
-    m_boundingVolumeDebugComponent = QNodeId();
-    m_computeComponent = QNodeId();
-    m_layerComponents.clear();
-    m_levelOfDetailComponents.clear();
-    m_rayCasterComponents.clear();
-    m_shaderDataComponents.clear();
-    m_lightComponents.clear();
-    m_environmentLightComponents.clear();
-    m_localBoundingVolume = QSharedPointer<Sphere>::create(peerId());
-    m_worldBoundingVolume = QSharedPointer<Sphere>::create(peerId());
-    m_worldBoundingVolumeWithChildren = QSharedPointer<Sphere>::create(peerId());
-
-    for (const auto &idAndType : qAsConst(data.componentIdsAndTypes))
-        addComponent(idAndType);
-
-    markDirty(AbstractRenderer::EntityHierarchyDirty);
-}
-
 void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
@@ -192,7 +154,6 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const auto componentIdAndType = QNodeIdTypePair(change->componentId(), change->componentMetaObject());
         addComponent(componentIdAndType);
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added. Id =" << change->componentId();
-        markDirty(AbstractRenderer::AllDirty);
         break;
     }
 
@@ -200,27 +161,6 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QComponentRemovedChangePtr change = qSharedPointerCast<QComponentRemovedChange>(e);
         removeComponent(change->componentId());
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed. Id =" << change->componentId();
-        markDirty(AbstractRenderer::AllDirty);
-        break;
-    }
-
-    case PropertyUpdated: {
-        QPropertyUpdatedChangePtr change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("enabled")) {
-            // We only mark as dirty the renderer
-            markDirty(AbstractRenderer::EntityEnabledDirty);
-            // We let QBackendNode::sceneChangeEvent change the enabled property
-        } else if (change->propertyName() == QByteArrayLiteral("parentEntityUpdated")) {
-            auto newParent = change->value().value<Qt3DCore::QNodeId>();
-            qCDebug(Render::RenderNodes) << "Setting parent for " << peerId() << ", new parentId =" << newParent;
-            if (m_parentEntityId != newParent) {
-                m_parentEntityId = newParent;
-                // TODO: change to EventHierarchyDirty and update renderer to
-                //       ensure all jobs are run that depend on Entity hierarchy.
-                markDirty(AbstractRenderer::AllDirty);
-            }
-        }
-
         break;
     }
 
@@ -228,6 +168,58 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     BackendNode::sceneChangeEvent(e);
+}
+
+void Entity::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
+{
+    const Qt3DCore::QEntity *node = qobject_cast<const Qt3DCore::QEntity *>(frontEnd);
+    if (!node)
+        return;
+
+    if (this->isEnabled() != node->isEnabled()) {
+        markDirty(AbstractRenderer::EntityEnabledDirty);
+        // We let QBackendNode::syncFromFrontEnd change the enabled property
+    }
+
+    const auto parentID = node->parentEntity() ? node->parentEntity()->id() : Qt3DCore::QNodeId();
+    if (m_parentEntityId != parentID) {
+        m_parentEntityId = parentID;
+        // TODO: change to EventHierarchyDirty and update renderer to
+        //       ensure all jobs are run that depend on Entity hierarchy.
+        markDirty(AbstractRenderer::AllDirty);
+    }
+
+    if (firstTime) {
+        m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerId());
+
+        // TODO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
+        m_transformComponent = QNodeId();
+        m_materialComponent = QNodeId();
+        m_cameraComponent = QNodeId();
+        m_geometryRendererComponent = QNodeId();
+        m_objectPickerComponent = QNodeId();
+        m_boundingVolumeDebugComponent = QNodeId();
+        m_computeComponent = QNodeId();
+        m_layerComponents.clear();
+        m_levelOfDetailComponents.clear();
+        m_rayCasterComponents.clear();
+        m_shaderDataComponents.clear();
+        m_lightComponents.clear();
+        m_environmentLightComponents.clear();
+        m_localBoundingVolume = QSharedPointer<Sphere>::create(peerId());
+        m_worldBoundingVolume = QSharedPointer<Sphere>::create(peerId());
+        m_worldBoundingVolumeWithChildren = QSharedPointer<Sphere>::create(peerId());
+
+        const QComponentVector &components = node->components();
+        for (QComponent *c : components) {
+            const auto idAndType = QNodeIdTypePair(c->id(), QNodePrivate::findStaticMetaObject(c->metaObject()));
+            addComponent(idAndType);
+        }
+
+        markDirty(AbstractRenderer::EntityHierarchyDirty);
+    }
+
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 }
 
 void Entity::dump() const
@@ -358,6 +350,7 @@ void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
     } else if (type->inherits(&QArmature::staticMetaObject)) {
         m_armatureComponent = id;
     }
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 void Entity::removeComponent(Qt3DCore::QNodeId nodeId)
@@ -392,6 +385,7 @@ void Entity::removeComponent(Qt3DCore::QNodeId nodeId)
     } else if (m_armatureComponent == nodeId) {
         m_armatureComponent = QNodeId();
     }
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 bool Entity::isBoundingVolumeDirty() const

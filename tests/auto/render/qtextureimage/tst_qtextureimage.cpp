@@ -174,14 +174,8 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "dataGenerator");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-            const auto generator = qSharedPointerCast<Qt3DRender::QImageTextureDataFunctor>(change->value().value<Qt3DRender::QTextureImageDataGeneratorPtr>());
-            QVERIFY(generator);
-            QCOMPARE(generator->url(), textureImage.source());
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &textureImage);
 
             arbiter.events.clear();
         }
@@ -210,14 +204,8 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "dataGenerator");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-            const auto generator = qSharedPointerCast<Qt3DRender::QImageTextureDataFunctor>(change->value().value<Qt3DRender::QTextureImageDataGeneratorPtr>());
-            QVERIFY(generator);
-            QCOMPARE(generator->isMirrored(), textureImage.isMirrored());
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &textureImage);
 
             arbiter.events.clear();
         }

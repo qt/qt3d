@@ -314,13 +314,13 @@ private Q_SLOTS:
         Qt3DRender::Render::Buffer *vbufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(vbuffer->id());
         vbufferBackend->setRenderer(test->renderer());
         vbufferBackend->setManager(test->nodeManagers()->bufferManager());
-        simulateInitialization(vbuffer, vbufferBackend);
+        simulateInitializationSync(vbuffer, vbufferBackend);
 
         ibuffer->setData(idata);
         Qt3DRender::Render::Buffer *ibufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(ibuffer->id());
         ibufferBackend->setRenderer(test->renderer());
         ibufferBackend->setManager(test->nodeManagers()->bufferManager());
-        simulateInitialization(ibuffer, ibufferBackend);
+        simulateInitializationSync(ibuffer, ibufferBackend);
 
         Qt3DRender::QGeometry *g = new Qt3DRender::QGeometry;
         for (int i = 0; i < 2; ++i)
@@ -354,23 +354,23 @@ private Q_SLOTS:
 
         Qt3DRender::Render::Attribute *attr0Backend = test->nodeManagers()->attributeManager()->getOrCreateResource(attrs[0]->id());
         attr0Backend->setRenderer(test->renderer());
-        simulateInitialization(attrs[0], attr0Backend);
+        simulateInitializationSync(attrs[0], attr0Backend);
         Qt3DRender::Render::Attribute *attr1Backend = test->nodeManagers()->attributeManager()->getOrCreateResource(attrs[1]->id());
         attr1Backend->setRenderer(test->renderer());
-        simulateInitialization(attrs[1], attr1Backend);
+        simulateInitializationSync(attrs[1], attr1Backend);
 
         Qt3DRender::Render::Geometry *gBackend = test->nodeManagers()->geometryManager()->getOrCreateResource(g->id());
         gBackend->setRenderer(test->renderer());
-        simulateInitialization(g, gBackend);
+        simulateInitializationSync(g, gBackend);
 
         Qt3DRender::Render::GeometryRenderer *grBackend = test->nodeManagers()->geometryRendererManager()->getOrCreateResource(gr->id());
         grBackend->setRenderer(test->renderer());
         grBackend->setManager(test->nodeManagers()->geometryRendererManager());
-        simulateInitialization(gr, grBackend);
+        simulateInitializationSync(gr, grBackend);
 
         Qt3DRender::Render::Entity *entityBackend = test->nodeManagers()->renderNodesManager()->getOrCreateResource(entity->id());
         entityBackend->setRenderer(test->renderer());
-        simulateInitialization(entity.data(), entityBackend);
+        simulateInitializationSync(entity.data(), entityBackend);
 
         Qt3DRender::Render::CalculateBoundingVolumeJob calcBVolume;
         calcBVolume.setManagers(test->nodeManagers());
@@ -382,10 +382,10 @@ private Q_SLOTS:
         qDebug() << radius << center;
 
         // truncate and compare integers only
-        QVERIFY(int(radius) == int(expectedRadius));
-        QVERIFY(int(center.x()) == int(expectedCenter.x()));
-        QVERIFY(int(center.y()) == int(expectedCenter.y()));
-        QVERIFY(int(center.z()) == int(expectedCenter.z()));
+        QCOMPARE(int(radius), int(expectedRadius));
+        QCOMPARE(int(center.x()), int(expectedCenter.x()));
+        QCOMPARE(int(center.y()), int(expectedCenter.y()));
+        QCOMPARE(int(center.z()), int(expectedCenter.z()));
     }
 
     void checkCustomPackedGeometry()
@@ -426,7 +426,7 @@ private Q_SLOTS:
         Qt3DRender::Render::Buffer *vbufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(vbuffer->id());
         vbufferBackend->setRenderer(test->renderer());
         vbufferBackend->setManager(test->nodeManagers()->bufferManager());
-        simulateInitialization(vbuffer, vbufferBackend);
+        simulateInitializationSync(vbuffer, vbufferBackend);
 
         Qt3DRender::QGeometry *g = new Qt3DRender::QGeometry;
         g->addAttribute(new Qt3DRender::QAttribute);
@@ -448,20 +448,20 @@ private Q_SLOTS:
 
         Qt3DRender::Render::Attribute *attr0Backend = test->nodeManagers()->attributeManager()->getOrCreateResource(attrs[0]->id());
         attr0Backend->setRenderer(test->renderer());
-        simulateInitialization(attrs[0], attr0Backend);
+        simulateInitializationSync(attrs[0], attr0Backend);
 
         Qt3DRender::Render::Geometry *gBackend = test->nodeManagers()->geometryManager()->getOrCreateResource(g->id());
         gBackend->setRenderer(test->renderer());
-        simulateInitialization(g, gBackend);
+        simulateInitializationSync(g, gBackend);
 
         Qt3DRender::Render::GeometryRenderer *grBackend = test->nodeManagers()->geometryRendererManager()->getOrCreateResource(gr->id());
         grBackend->setRenderer(test->renderer());
         grBackend->setManager(test->nodeManagers()->geometryRendererManager());
-        simulateInitialization(gr, grBackend);
+        simulateInitializationSync(gr, grBackend);
 
         Qt3DRender::Render::Entity *entityBackend = test->nodeManagers()->renderNodesManager()->getOrCreateResource(entity->id());
         entityBackend->setRenderer(test->renderer());
-        simulateInitialization(entity.data(), entityBackend);
+        simulateInitializationSync(entity.data(), entityBackend);
 
         Qt3DRender::Render::CalculateBoundingVolumeJob calcBVolume;
         calcBVolume.setManagers(test->nodeManagers());

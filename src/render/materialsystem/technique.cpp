@@ -85,72 +85,48 @@ void Technique::cleanup()
     m_isCompatibleWithRenderer = false;
 }
 
-void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Technique::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTechniqueData>>(change);
-    const QTechniqueData &data = typedChange->data;
+    const QTechnique *node = qobject_cast<const QTechnique *>(frontEnd);
 
-    m_graphicsApiFilterData = data.graphicsApiFilterData;
-    m_filterKeyList = data.filterKeyIds;
-    m_parameterPack.setParameters(data.parameterIds);
-    m_renderPasses = data.renderPassIds;
-    m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
-    markDirty(AbstractRenderer::TechniquesDirty);
-}
+    if (!node)
+        return;
 
-void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("enabled")) {
-            markDirty(AbstractRenderer::TechniquesDirty);
-        } else if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
-            GraphicsApiFilterData filterData = change->value().value<GraphicsApiFilterData>();
-            m_graphicsApiFilterData = filterData;
-            // Notify the manager that our graphicsApiFilterData has changed
-            // and that we therefore need to be check for compatibility again
-            m_isCompatibleWithRenderer = false;
-            m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
-            markDirty(AbstractRenderer::TechniquesDirty);
-        }
-        break;
+    bool dirty = isEnabled() != frontEnd->isEnabled();
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    auto renderPasses = qIdsForNodes(node->renderPasses());
+    std::sort(std::begin(renderPasses), std::end(renderPasses));
+    if (m_renderPasses != renderPasses) {
+        m_renderPasses = renderPasses;
+        dirty = true;
     }
 
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("pass")) {
-            appendRenderPass(change->addedNodeId());
-            markDirty(AbstractRenderer::TechniquesDirty);
-        } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(change->addedNodeId());
-            markDirty(AbstractRenderer::TechniquesDirty);
-        } else if (change->propertyName() == QByteArrayLiteral("filterKeys")) {
-            appendFilterKey(change->addedNodeId());
-            markDirty(AbstractRenderer::TechniquesDirty);
-        }
-        break;
+    auto parameters = qIdsForNodes(node->parameters());
+    std::sort(std::begin(parameters), std::end(parameters));
+    if (m_parameterPack.parameters() != parameters) {
+        m_parameterPack.setParameters(parameters);
+        dirty = true;
     }
 
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("pass")) {
-            removeRenderPass(change->removedNodeId());
-            markDirty(AbstractRenderer::TechniquesDirty);
-        } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(change->removedNodeId());
-            markDirty(AbstractRenderer::TechniquesDirty);
-        } else if (change->propertyName() == QByteArrayLiteral("filterKeys")) {
-            removeFilterKey(change->removedNodeId());
-            markDirty(AbstractRenderer::TechniquesDirty);
-        }
-        break;
+    auto filterKeys = qIdsForNodes(node->filterKeys());
+    std::sort(std::begin(filterKeys), std::end(filterKeys));
+    if (m_filterKeyList != filterKeys) {
+        m_filterKeyList = filterKeys;
+        dirty = true;
     }
 
-    default:
-        break;
+    auto graphicsApiFilterData = QGraphicsApiFilterPrivate::get(node->graphicsApiFilter())->m_data;
+    if (m_graphicsApiFilterData != graphicsApiFilterData) {
+        m_graphicsApiFilterData = graphicsApiFilterData;
+        m_isCompatibleWithRenderer = false;
+        dirty = true;
     }
-    BackendNode::sceneChangeEvent(e);
+
+    if (dirty) {
+        m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
+        markDirty(AbstractRenderer::TechniquesDirty);
+    }
 }
 
 QVector<Qt3DCore::QNodeId> Technique::parameters() const

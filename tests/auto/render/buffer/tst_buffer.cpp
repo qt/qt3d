@@ -65,6 +65,7 @@ private:
 class tst_RenderBuffer : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+
 private Q_SLOTS:
 
     void checkPeerPropertyMirroring()
@@ -82,7 +83,7 @@ private Q_SLOTS:
         // WHEN
         renderBuffer.setRenderer(&renderer);
         renderBuffer.setManager(&bufferManager);
-        simulateInitialization(&buffer, &renderBuffer);
+        simulateInitializationSync(&buffer, &renderBuffer);
 
         // THEN
         QCOMPARE(renderBuffer.peerId(), buffer.id());
@@ -98,170 +99,154 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DRender::Render::Buffer renderBuffer;
+        Qt3DRender::Render::Buffer backendBuffer;
         Qt3DRender::Render::BufferManager bufferManager;
         TestRenderer renderer;
 
         // THEN
-        QCOMPARE(renderBuffer.isDirty(), false);
-        QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
-        QVERIFY(renderBuffer.data().isEmpty());
-        QVERIFY(renderBuffer.peerId().isNull());
-        QVERIFY(renderBuffer.dataGenerator().isNull());
-        QVERIFY(renderBuffer.pendingBufferUpdates().empty());
+        QCOMPARE(backendBuffer.isDirty(), false);
+        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
+        QVERIFY(backendBuffer.data().isEmpty());
+        QVERIFY(backendBuffer.peerId().isNull());
+        QVERIFY(backendBuffer.dataGenerator().isNull());
+        QVERIFY(backendBuffer.pendingBufferUpdates().empty());
 
         // GIVEN
-        Qt3DRender::QBuffer buffer;
-        buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
-        buffer.setData(QByteArrayLiteral("C7"));
-        buffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(73)));
+        Qt3DRender::QBuffer frontendBuffer;
+        frontendBuffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
+        frontendBuffer.setData(QByteArrayLiteral("C7KR4"));
+        frontendBuffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(73)));
 
         // WHEN
-        renderBuffer.setManager(&bufferManager);
-        renderBuffer.setRenderer(&renderer);
-        simulateInitialization(&buffer, &renderBuffer);
+        backendBuffer.setManager(&bufferManager);
+        backendBuffer.setRenderer(&renderer);
+        simulateInitializationSync(&frontendBuffer, &backendBuffer);
 
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        Qt3DRender::QBufferUpdate updateData;
-        updateData.offset = 2;
-        updateData.data = QByteArrayLiteral("LS5");
-        updateChange->setValue(QVariant::fromValue(updateData));
-        updateChange->setPropertyName("updateData");
-        renderBuffer.sceneChangeEvent(updateChange);
+        frontendBuffer.updateData(2, QByteArrayLiteral("LS5"));
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
-        QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::DynamicCopy);
-        QCOMPARE(renderBuffer.isDirty(), true);
-        QCOMPARE(renderBuffer.data(), QByteArrayLiteral("C7LS5"));
-        QVERIFY(!renderBuffer.dataGenerator().isNull());
-        QVERIFY(!renderBuffer.pendingBufferUpdates().empty());
+        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::DynamicCopy);
+        QCOMPARE(backendBuffer.isDirty(), true);
+        QCOMPARE(backendBuffer.data(), QByteArrayLiteral("C7LS5"));
+        QVERIFY(!backendBuffer.dataGenerator().isNull());
+        QVERIFY(!backendBuffer.pendingBufferUpdates().empty());
 
         // WHEN
-        renderBuffer.cleanup();
+        backendBuffer.cleanup();
 
         // THEN
-        QCOMPARE(renderBuffer.isDirty(), false);
-        QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
-        QVERIFY(renderBuffer.data().isEmpty());
-        QVERIFY(renderBuffer.dataGenerator().isNull());
-        QVERIFY(renderBuffer.pendingBufferUpdates().empty());
+        QCOMPARE(backendBuffer.isDirty(), false);
+        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
+        QVERIFY(backendBuffer.data().isEmpty());
+        QVERIFY(backendBuffer.dataGenerator().isNull());
+        QVERIFY(backendBuffer.pendingBufferUpdates().empty());
     }
 
     void checkPropertyChanges()
     {
         // GIVEN
         TestRenderer renderer;
-        Qt3DRender::Render::Buffer renderBuffer;
-        renderBuffer.setRenderer(&renderer);
+        Qt3DRender::QBuffer frontendBuffer;
+        Qt3DRender::Render::Buffer backendBuffer;
+        backendBuffer.setRenderer(&renderer);
+        simulateInitializationSync(&frontendBuffer, &backendBuffer);
 
         // THEN
-        QVERIFY(renderBuffer.data().isEmpty());
-        QVERIFY(renderBuffer.usage() != Qt3DRender::QBuffer::DynamicRead);
-        QVERIFY(!renderBuffer.isDirty());
-        QVERIFY(!(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty));
+        QVERIFY(backendBuffer.data().isEmpty());
+        QVERIFY(backendBuffer.usage() != Qt3DRender::QBuffer::DynamicRead);
+        QVERIFY(!backendBuffer.isDirty());
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setValue(static_cast<int>(Qt3DRender::QBuffer::DynamicRead));
-        updateChange->setPropertyName("usage");
-        renderBuffer.sceneChangeEvent(updateChange);
+        frontendBuffer.setUsage(Qt3DRender::QBuffer::DynamicRead);
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
-        QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::DynamicRead);
-        QVERIFY(renderBuffer.isDirty());
+        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::DynamicRead);
+        QVERIFY(backendBuffer.isDirty());
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
-        renderBuffer.unsetDirty();
-        QVERIFY(!renderBuffer.isDirty());
+        backendBuffer.unsetDirty();
+        QVERIFY(!backendBuffer.isDirty());
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setValue(QByteArrayLiteral("LS9"));
-        updateChange->setPropertyName("data");
-        renderBuffer.sceneChangeEvent(updateChange);
+        frontendBuffer.setData(QByteArrayLiteral("LS9SL"));
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
-        QCOMPARE(renderBuffer.data(), QByteArrayLiteral("LS9"));
-        QVERIFY(renderBuffer.isDirty());
-        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1);
-        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, -1);
+        QCOMPARE(backendBuffer.data(), QByteArrayLiteral("LS9SL"));
+        QVERIFY(backendBuffer.isDirty());
+        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, -1);
 
-        renderBuffer.pendingBufferUpdates().clear();
+        backendBuffer.pendingBufferUpdates().clear();
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
-        renderBuffer.unsetDirty();
-        QVERIFY(!renderBuffer.isDirty());
+        backendBuffer.unsetDirty();
+        QVERIFY(!backendBuffer.isDirty());
 
         // WHEN
         Qt3DRender::QBufferDataGeneratorPtr functor(new TestFunctor(355));
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setValue(QVariant::fromValue(functor));
-        updateChange->setPropertyName("dataGenerator");
-        renderBuffer.sceneChangeEvent(updateChange);
+        frontendBuffer.setDataGenerator(functor);
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
-        QCOMPARE(renderBuffer.dataGenerator(), functor);
-        QVERIFY(renderBuffer.isDirty());
+        QCOMPARE(backendBuffer.dataGenerator(), functor);
+        QVERIFY(backendBuffer.isDirty());
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
-        renderBuffer.unsetDirty();
-        QVERIFY(!renderBuffer.isDirty());
+        backendBuffer.unsetDirty();
+        QVERIFY(!backendBuffer.isDirty());
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setValue(true);
-        updateChange->setPropertyName("syncData");
-        renderBuffer.sceneChangeEvent(updateChange);
+        frontendBuffer.setSyncData(true);
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
-        QCOMPARE(renderBuffer.isSyncData(), true);
-        QVERIFY(!renderBuffer.isDirty());
+        QCOMPARE(backendBuffer.isSyncData(), true);
+        QVERIFY(!backendBuffer.isDirty());
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         // WHEN
         TestArbiter arbiter;
-        Qt3DCore::QBackendNodePrivate::get(&renderBuffer)->setArbiter(&arbiter);
-        renderBuffer.executeFunctor();
+        Qt3DCore::QBackendNodePrivate::get(&backendBuffer)->setArbiter(&arbiter);
+        backendBuffer.executeFunctor();
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "data");
         QCOMPARE(change->value().toByteArray(), QByteArrayLiteral("454"));
-        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1);
-        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, -1);
+        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, -1);
 
         arbiter.events.clear();
-        renderBuffer.pendingBufferUpdates().clear();
+        backendBuffer.pendingBufferUpdates().clear();
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        Qt3DRender::QBufferUpdate updateData;
-        updateData.offset = 2;
-        updateData.data = QByteArrayLiteral("LS5");
-        updateChange->setValue(QVariant::fromValue(updateData));
-        updateChange->setPropertyName("updateData");
-        renderBuffer.sceneChangeEvent(updateChange);
+        frontendBuffer.updateData(2, QByteArrayLiteral("LS5"));
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
-        QVERIFY(!renderBuffer.pendingBufferUpdates().empty());
-        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, 2);
-        QVERIFY(renderBuffer.isDirty());
+        QVERIFY(!backendBuffer.pendingBufferUpdates().empty());
+        QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, 2);
+        QVERIFY(backendBuffer.isDirty());
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
-        renderBuffer.unsetDirty();
-        QVERIFY(!renderBuffer.isDirty());
+        backendBuffer.unsetDirty();
+        QVERIFY(!backendBuffer.isDirty());
     }
 
     void checkBufferManagerReferenceCount()
@@ -275,7 +260,7 @@ private Q_SLOTS:
         // WHEN
         renderBuffer.setRenderer(&renderer);
         renderBuffer.setManager(&bufferManager);
-        simulateInitialization(&buffer, &renderBuffer);
+        simulateInitializationSync(&buffer, &renderBuffer);
 
         // THEN
         QVERIFY(bufferManager.takeBuffersToRelease().empty());
@@ -305,7 +290,7 @@ private Q_SLOTS:
         QCOMPARE(renderer.dirtyBits(), 0);
 
         // WHEN
-        simulateInitialization(&buffer, &renderBuffer);
+        simulateInitializationSync(&buffer, &renderBuffer);
 
         // THEN
         QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::BuffersDirty);
