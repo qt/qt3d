@@ -107,7 +107,7 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QAbstractAnimationClip, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::AnimationClip, Animation::AnimationClipLoaderManager>>::create(d->m_handler.data(),
                                                                                                                         d->m_handler->animationClipLoaderManager()));
-    registerBackendType<QClock>(
+    registerBackendType<QClock, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::Clock, Animation::ClockManager>>::create(d->m_handler.data(),
                                                                                                   d->m_handler->clockManager()));
     registerBackendType<QClipAnimator>(
