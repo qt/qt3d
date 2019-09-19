@@ -30,6 +30,7 @@
 import Qt3D.Core 2.0 as QQ3Core20
 import Qt3D.Core 2.9 as QQ3Core29
 import Qt3D.Core 2.10 as QQ3Core210
+import Qt3D.Core 2.14 as QQ3Core214
 import QtQuick 2.0
 
 Item {
@@ -47,4 +48,6 @@ Item {
     QQ3Core210.Armature {}
     QQ3Core210.SkeletonLoader {}
     QQ3Core210.Joint {}
+
+    QQ3Core214.Transform {}
 }
