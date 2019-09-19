@@ -276,7 +276,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer, backendBuffer);
+        simulateInitializationSync(dataBuffer, backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer);
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -304,28 +304,28 @@ private Q_SLOTS:
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(
                                         positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute, backendAttribute);
+        simulateInitializationSync(positionAttribute, backendAttribute);
 
         Attribute *backendTexcoordAttribute = nodeManagers->attributeManager()
                                               ->getOrCreateResource(texcoordAttribute->id());
         backendTexcoordAttribute->setRenderer(&renderer);
-        simulateInitialization(texcoordAttribute, backendTexcoordAttribute);
+        simulateInitializationSync(texcoordAttribute, backendTexcoordAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()
                                     ->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()
                                             ->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer, backendRenderer);
+        simulateInitializationSync(geometryRenderer, backendRenderer);
 
         Entity *backendEntity = nodeManagers->renderNodesManager()->getOrCreateResource(entity->id());
         backendEntity->setRenderer(&renderer);
         backendEntity->setNodeManagers(nodeManagers.data());
-        simulateInitialization(entity.data(), backendEntity);
+        simulateInitializationSync(entity.data(), backendEntity);
 
 #define PICK_TRIANGLE(tri, v0, v1, v2, uvw)     \
     new Qt3DRender::QPickTriangleEvent(QPointF(), QVector3D(), QVector3D(), 0.0f,   \

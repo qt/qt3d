@@ -86,7 +86,7 @@ private Q_SLOTS:
         skeleton.setSource(QUrl::fromLocalFile("funnybones.json"));
 
         // WHEN
-        simulateInitialization(&skeleton, &backendSkeleton);
+        simulateInitializationSync(&skeleton, &backendSkeleton);
 
         // THEN
         QCOMPARE(backendSkeleton.peerId(), skeleton.id());
@@ -104,7 +104,7 @@ private Q_SLOTS:
         skeleton2.setRootJoint(joint);
 
         // WHEN
-        simulateInitialization(&skeleton2, &backendSkeleton2);
+        simulateInitializationSync(&skeleton2, &backendSkeleton2);
 
         // THEN
         QCOMPARE(backendSkeleton2.peerId(), skeleton2.id());
@@ -135,7 +135,7 @@ private Q_SLOTS:
         skeleton.setSource(QUrl::fromLocalFile("skeleton1.json"));
 
         // WHEN
-        simulateInitialization(&skeleton, &backendSkeleton);
+        simulateInitializationSync(&skeleton, &backendSkeleton);
         backendSkeleton.cleanup();
 
         // THEN
@@ -145,7 +145,7 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.rootJointId(), QNodeId());
     }
 
-    void checkPropertyChanges()
+    void checkDirectPropertyChanges()
     {
         // GIVEN
         TestRenderer renderer;
@@ -160,36 +160,22 @@ private Q_SLOTS:
         // Initialize to ensure skeleton manager is set
         QSkeletonLoader skeleton;
         skeleton.setSource(QUrl::fromLocalFile("skeleton1.json"));
-        simulateInitialization(&skeleton, &backendSkeleton);
+        simulateInitializationSync(&skeleton, &backendSkeleton);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendSkeleton.sceneChangeEvent(updateChange);
+        skeleton.setEnabled(false);
+        backendSkeleton.syncFromFrontEnd(&skeleton, false);
 
         // THEN
-        QCOMPARE(backendSkeleton.isEnabled(), true);
+        QCOMPARE(backendSkeleton.isEnabled(), false);
 
         // WHEN
         const QUrl newSource = QUrl::fromLocalFile("terminator.json");
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("source");
-        updateChange->setValue(newSource);
-        backendSkeleton.sceneChangeEvent(updateChange);
+        skeleton.setSource(newSource);
+        backendSkeleton.syncFromFrontEnd(&skeleton, false);
 
         // THEN
         QCOMPARE(backendSkeleton.source(), newSource);
-
-        // WHEN
-        const QNodeId newRootJointId = QNodeId::createId();
-        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("rootJoint");
-        updateChange->setValue(QVariant::fromValue(newRootJointId));
-        backendSkeleton.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(backendSkeleton.rootJointId(), newRootJointId);
     }
 
     void checkStatusPropertyBackendNotification()

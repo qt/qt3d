@@ -107,6 +107,11 @@ QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(QGraphicsApiFilter *q)
     return q->d_func();
 }
 
+const QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(const QGraphicsApiFilter *q)
+{
+    return q->d_func();
+}
+
 /*!
     \class Qt3DRender::QGraphicsApiFilter
     \inmodule Qt3DRender

@@ -186,18 +186,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "geometryFactory");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &mesh);
 
-            Qt3DRender::QGeometryFactoryPtr factory = change->value().value<Qt3DRender::QGeometryFactoryPtr>();
-            QSharedPointer<Qt3DRender::MeshLoaderFunctor> meshFunctor = qSharedPointerCast<Qt3DRender::MeshLoaderFunctor>(factory);
-            QVERIFY(meshFunctor != nullptr);
-            QCOMPARE(meshFunctor->mesh(), mesh.id());
-            QCOMPARE(meshFunctor->sourcePath(), mesh.source());
-
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -206,7 +198,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }
@@ -231,18 +223,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "geometryFactory");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &mesh);
 
-            Qt3DRender::QGeometryFactoryPtr factory = change->value().value<Qt3DRender::QGeometryFactoryPtr>();
-            QSharedPointer<Qt3DRender::MeshLoaderFunctor> meshFunctor = qSharedPointerCast<Qt3DRender::MeshLoaderFunctor>(factory);
-            QVERIFY(meshFunctor != nullptr);
-            QCOMPARE(meshFunctor->mesh(), mesh.id());
-            QCOMPARE(meshFunctor->meshName(), mesh.meshName());
-
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -251,7 +235,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
 
     }

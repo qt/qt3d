@@ -74,7 +74,7 @@ public:
 
     void cleanup();
     void setManager(GeometryRendererManager *manager);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void executeFunctor();
 
     inline Qt3DCore::QNodeId geometryId() const { return m_geometryId; }
@@ -98,8 +98,6 @@ public:
     QVector<RayCasting::QBoundingVolume *> triangleData() const;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Qt3DCore::QNodeId m_geometryId;
     int m_instanceCount;
     int m_vertexCount;

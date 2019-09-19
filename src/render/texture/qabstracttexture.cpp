@@ -81,10 +81,7 @@ void QAbstractTexturePrivate::setDataFunctor(const QTextureGeneratorPtr &generat
 {
     if (generator != m_dataFunctor) {
         m_dataFunctor = generator;
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(m_id);
-        change->setPropertyName("generator");
-        change->setValue(QVariant::fromValue(generator));
-        notifyObservers(change);
+        update();
     }
 }
 
@@ -811,24 +808,15 @@ void QAbstractTexture::setWrapMode(const QTextureWrapMode &wrapMode)
     Q_D(QAbstractTexture);
     if (d->m_wrapMode.x() != wrapMode.x()) {
         d->m_wrapMode.setX(wrapMode.x());
-        auto e = QPropertyUpdatedChangePtr::create(d->m_id);
-        e->setPropertyName("wrapModeX");
-        e->setValue(static_cast<int>(d->m_wrapMode.x()));
-        d->notifyObservers(e);
+        d->update();
     }
     if (d->m_wrapMode.y() != wrapMode.y()) {
         d->m_wrapMode.setY(wrapMode.y());
-        auto e = QPropertyUpdatedChangePtr::create(d->m_id);
-        e->setPropertyName("wrapModeY");
-        e->setValue(static_cast<int>(d->m_wrapMode.y()));
-        d->notifyObservers(e);
+        d->update();
     }
     if (d->m_wrapMode.z() != wrapMode.z()) {
         d->m_wrapMode.setZ(wrapMode.z());
-        auto e = QPropertyUpdatedChangePtr::create(d->m_id);
-        e->setPropertyName("wrapModeZ");
-        e->setValue(static_cast<int>(d->m_wrapMode.z()));
-        d->notifyObservers(e);
+        d->update();
     }
 }
 
@@ -983,16 +971,8 @@ void QAbstractTexture::updateData(const QTextureDataUpdate &update)
 {
     Q_D(QAbstractTexture);
 
-    // Send update to backend if we have the changeArbiter
-    if (d->m_changeArbiter != nullptr) {
-        auto e = QPropertyUpdatedChangePtr::create(id());
-        e->setPropertyName("updateData");
-        e->setValue(QVariant::fromValue(update));
-        notifyObservers(e);
-    } else {
-        // If we have no arbiter (no backend), record the update as part of the creation changes
-        d->m_initialDataUpdates.push_back(update);
-    }
+    d->m_pendingDataUpdates.push_back(update);
+    d->update();
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange() const
@@ -1019,8 +999,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange()
     data.samples = d->m_samples;
     data.dataFunctor = d->m_dataFunctor;
     data.sharedTextureId = d->m_sharedTextureId;
-    data.initialDataUpdates = d->m_initialDataUpdates;
-    return creationChange;
+    data.initialDataUpdates = d->m_pendingDataUpdates;
+    return std::move(creationChange);
 }
 
 /*!

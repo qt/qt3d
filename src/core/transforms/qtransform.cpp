@@ -239,12 +239,13 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
  */
 void QTransform::sceneChangeEvent(const QSceneChangePtr &change)
 {
+    Q_D(QTransform);
     switch (change->type()) {
     case PropertyUpdated: {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
         if (propertyChange->propertyName() == QByteArrayLiteral("worldMatrix")) {
             const bool blocked = blockNotifications(true);
-            setWorldMatrix(propertyChange->value().value<QMatrix4x4>());
+            d->setWorldMatrix(propertyChange->value().value<QMatrix4x4>());
             blockNotifications(blocked);
         }
         break;
@@ -254,13 +255,13 @@ void QTransform::sceneChangeEvent(const QSceneChangePtr &change)
     }
 }
 
-void QTransform::setWorldMatrix(const QMatrix4x4 &worldMatrix)
+void QTransformPrivate::setWorldMatrix(const QMatrix4x4 &worldMatrix)
 {
-    Q_D(QTransform);
-    if (d->m_worldMatrix == worldMatrix)
+    Q_Q(QTransform);
+    if (m_worldMatrix == worldMatrix)
         return;
-    d->m_worldMatrix = worldMatrix;
-    emit worldMatrixChanged(worldMatrix);
+    m_worldMatrix = worldMatrix;
+    emit q->worldMatrixChanged(worldMatrix);
 }
 
 void QTransform::setMatrix(const QMatrix4x4 &m)

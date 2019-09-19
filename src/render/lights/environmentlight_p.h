@@ -63,10 +63,9 @@ class Q_AUTOTEST_EXPORT EnvironmentLight : public BackendNode
 {
 public:
     Qt3DCore::QNodeId shaderData() const;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Qt3DCore::QNodeId m_shaderDataId;
 };
 

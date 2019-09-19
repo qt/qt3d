@@ -77,6 +77,8 @@ public:
     mutable bool m_matrixDirty;
 
     QMatrix4x4 m_worldMatrix;
+
+    void setWorldMatrix(const QMatrix4x4 &worldMatrix);
 };
 
 struct QTransformData

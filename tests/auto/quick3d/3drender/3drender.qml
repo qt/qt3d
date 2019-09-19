@@ -163,4 +163,7 @@ Item {
     QQ3Render20.StencilOperation {}            //Qt3DRender::QStencilOperation
     QQ3Render20.StencilMask {}                 //Qt3DRender::QStencilMask
 
+    QQ3Render214.DepthRange {}
+    QQ3Render214.RasterMode {}
+
 }

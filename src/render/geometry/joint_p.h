@@ -70,6 +70,7 @@ public:
 
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     Qt3DCore::Sqt localPose() const { return m_localPose; }
     QMatrix4x4 inverseBindMatrix() const { return m_inverseBindMatrix; }
@@ -90,8 +91,6 @@ public:
     SkeletonManager *skeletonManager() const { return m_skeletonManager; }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     QMatrix4x4 m_inverseBindMatrix;
     Qt3DCore::Sqt m_localPose;
     QVector<Qt3DCore::QNodeId> m_childJointIds;

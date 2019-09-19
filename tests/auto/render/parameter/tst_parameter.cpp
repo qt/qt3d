@@ -66,7 +66,7 @@ private Q_SLOTS:
 
         // WHEN
         backendParameter.setRenderer(&renderer);
-        simulateInitialization(&parameter, &backendParameter);
+        simulateInitializationSync(&parameter, &backendParameter);
         backendParameter.cleanup();
 
         // THEN
@@ -89,7 +89,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::Parameter backendParameter;
             backendParameter.setRenderer(&renderer);
-            simulateInitialization(&parameter, &backendParameter);
+            simulateInitializationSync(&parameter, &backendParameter);
 
             // THEN
             QCOMPARE(backendParameter.isEnabled(), true);
@@ -105,7 +105,7 @@ private Q_SLOTS:
             Qt3DRender::Render::Parameter backendParameter;
             backendParameter.setRenderer(&renderer);
             parameter.setEnabled(false);
-            simulateInitialization(&parameter, &backendParameter);
+            simulateInitializationSync(&parameter, &backendParameter);
 
             // THEN
             QCOMPARE(backendParameter.peerId(), parameter.id());
@@ -121,13 +121,14 @@ private Q_SLOTS:
         TestRenderer renderer;
         backendParameter.setRenderer(&renderer);
 
+        Qt3DRender::QParameter parameter;
+        simulateInitializationSync(&parameter, &backendParameter);
+
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendParameter.sceneChangeEvent(change);
+            parameter.setEnabled(newValue);
+            backendParameter.syncFromFrontEnd(&parameter, false);
 
             // THEN
             QCOMPARE(backendParameter.isEnabled(), newValue);
@@ -137,10 +138,8 @@ private Q_SLOTS:
         {
             // WHEN
             const QString newValue = QStringLiteral("C7");
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("name");
-            change->setValue(QVariant::fromValue(newValue));
-            backendParameter.sceneChangeEvent(change);
+            parameter.setName(newValue);
+            backendParameter.syncFromFrontEnd(&parameter, false);
 
             // THEN
             QCOMPARE(backendParameter.name(), newValue);
@@ -152,10 +151,8 @@ private Q_SLOTS:
             // WHEN
             const QVariant value = QVariant::fromValue(QVector3D(350.0f, 427.0f, 454.0f));
             const Qt3DRender::Render::UniformValue newValue = Qt3DRender::Render::UniformValue::fromVariant(value);
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("value");
-            change->setValue(value);
-            backendParameter.sceneChangeEvent(change);
+            parameter.setValue(value);
+            backendParameter.syncFromFrontEnd(&parameter, false);
 
             // THEN
             QCOMPARE(backendParameter.uniformValue(), newValue);

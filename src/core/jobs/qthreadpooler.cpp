@@ -183,7 +183,7 @@ int QThreadPooler::currentCount() const
 {
     // The caller have to set the mutex
 
-    return m_taskCount.load();
+    return m_taskCount.loadRelaxed();
 }
 
 int QThreadPooler::maxThreadCount() const

@@ -154,12 +154,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "dataGenerator");
-        QCOMPARE(change->value().value<Qt3DRender::QBufferDataGeneratorPtr>(), functor);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), buffer.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         buffer->setSyncData(true);
@@ -176,13 +174,8 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        QCOMPARE(buffer->data(), QByteArrayLiteral("ZL1"));
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "updateData");
-        Qt3DRender::QBufferUpdate updateData = change->value().value<Qt3DRender::QBufferUpdate>();
-        QCOMPARE(updateData.offset, 1);
-        QCOMPARE(updateData.data, QByteArrayLiteral("L1"));
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), buffer.data());
     }
 };
 

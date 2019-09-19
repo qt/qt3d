@@ -244,7 +244,7 @@ void tst_RenderTexture::checkPropertyMirroring()
     frontend.setSamples(32);
 
     // WHEN
-    simulateInitialization(&frontend, &backend);
+    simulateInitializationSync(&frontend, &backend);
 
     // THEN
     QCOMPARE(backend.peerId(), frontend.id());
@@ -275,15 +275,14 @@ void tst_RenderTexture::checkPropertyChanges()
 {
     // GIVEN
     TestRenderer renderer;
+    Qt3DRender::QSharedGLTexture frontend;
     Qt3DRender::Render::Texture backend;
     backend.setRenderer(&renderer);
     backend.unsetDirty();
 
     // WHEN
-    Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-    updateChange->setValue(256);
-    updateChange->setPropertyName("width");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setWidth(256);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.properties().width, 256);
@@ -293,10 +292,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(128);
-    updateChange->setPropertyName("height");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setHeight(128);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.properties().height, 128);
@@ -306,10 +303,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(16);
-    updateChange->setPropertyName("depth");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setDepth(16);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.properties().depth, 16);
@@ -319,10 +314,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QAbstractTexture::RGB16F));
-    updateChange->setPropertyName("format");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setFormat(Qt3DRender::QAbstractTexture::RGB16F);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.properties().format, Qt3DRender::QAbstractTexture::RGB16F);
@@ -332,23 +325,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QAbstractTexture::Target1DArray));
-    updateChange->setPropertyName("target");
-    backend.sceneChangeEvent(updateChange);
-
-    // THEN
-    QCOMPARE(backend.properties().target, Qt3DRender::QAbstractTexture::Target1DArray);
-    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
-    QVERIFY(backend.dirtyFlags() == Qt3DRender::Render::Texture::DirtyProperties);
-    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-    backend.unsetDirty();
-
-    // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(true);
-    updateChange->setPropertyName("mipmaps");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setGenerateMipMaps(true);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.properties().generateMipMaps, true);
@@ -358,10 +336,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QAbstractTexture::LinearMipMapLinear));
-    updateChange->setPropertyName("minificationFilter");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setMinificationFilter(Qt3DRender::QAbstractTexture::LinearMipMapLinear);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.parameters().minificationFilter, Qt3DRender::QAbstractTexture::LinearMipMapLinear);
@@ -371,10 +347,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QAbstractTexture::Linear));
-    updateChange->setPropertyName("magnificationFilter");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setMagnificationFilter(Qt3DRender::QAbstractTexture::Linear);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.parameters().magnificationFilter, Qt3DRender::QAbstractTexture::Linear);
@@ -384,10 +358,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QTextureWrapMode::Repeat));
-    updateChange->setPropertyName("wrapModeX");
-    backend.sceneChangeEvent(updateChange);
+    frontend.wrapMode()->setX(Qt3DRender::QTextureWrapMode::Repeat);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.parameters().wrapModeX, Qt3DRender::QTextureWrapMode::Repeat);
@@ -397,10 +369,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QTextureWrapMode::Repeat));
-    updateChange->setPropertyName("wrapModeY");
-    backend.sceneChangeEvent(updateChange);
+    frontend.wrapMode()->setY(Qt3DRender::QTextureWrapMode::Repeat);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.parameters().wrapModeY, Qt3DRender::QTextureWrapMode::Repeat);
@@ -410,10 +380,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QTextureWrapMode::Repeat));
-    updateChange->setPropertyName("wrapModeZ");
-    backend.sceneChangeEvent(updateChange);
+    frontend.wrapMode()->setZ(Qt3DRender::QTextureWrapMode::Repeat);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.parameters().wrapModeZ, Qt3DRender::QTextureWrapMode::Repeat);
@@ -423,10 +391,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(16.0f);
-    updateChange->setPropertyName("maximumAnisotropy");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setMaximumAnisotropy(16.f);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.parameters().maximumAnisotropy, 16.0f);
@@ -436,10 +402,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QAbstractTexture::CompareEqual));
-    updateChange->setPropertyName("comparisonFunction");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setComparisonFunction(Qt3DRender::QAbstractTexture::CompareEqual);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.parameters().comparisonFunction, Qt3DRender::QAbstractTexture::CompareEqual);
@@ -449,10 +413,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QVariant::fromValue(Qt3DRender::QAbstractTexture::CompareRefToTexture));
-    updateChange->setPropertyName("comparisonMode");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setComparisonMode(Qt3DRender::QAbstractTexture::CompareRefToTexture);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.parameters().comparisonMode, Qt3DRender::QAbstractTexture::CompareRefToTexture);
@@ -462,10 +424,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(32);
-    updateChange->setPropertyName("layers");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setLayers(32);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.properties().layers, 32);
@@ -475,10 +435,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(64);
-    updateChange->setPropertyName("samples");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setSamples(64);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.properties().samples, 64);
@@ -488,24 +446,8 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.unsetDirty();
 
     // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    Qt3DRender::QTextureGeneratorPtr gen = QSharedPointer<FakeGenerator>::create();
-    updateChange->setValue(QVariant::fromValue(gen));
-    updateChange->setPropertyName("generator");
-    backend.sceneChangeEvent(updateChange);
-
-    // THEN
-    QCOMPARE(backend.dataGenerator(), gen);
-    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
-    QVERIFY(backend.dirtyFlags() == Qt3DRender::Render::Texture::DirtyDataGenerator);
-    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-    backend.unsetDirty();
-
-    // WHEN
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setValue(883);
-    updateChange->setPropertyName("textureId");
-    backend.sceneChangeEvent(updateChange);
+    frontend.setTextureId(883);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.sharedTextureId(), 883);
@@ -533,10 +475,8 @@ void tst_RenderTexture::checkPropertyChanges()
     updateData.setX(100);
     updateData.setY(100);
     updateData.setZ(100);
-    updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-    updateChange->setPropertyName("updateData");
-    updateChange->setValue(QVariant::fromValue(updateData));
-    backend.sceneChangeEvent(updateChange);
+    frontend.updateData(updateData);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     const QVector<Qt3DRender::QTextureDataUpdate> pendingUpdates = backend.takePendingTextureDataUpdates();
@@ -589,7 +529,7 @@ void tst_RenderTexture::checkInitialUpdateData()
 
     // WHEN -> updateData with no backend/arbiter
     frontend.updateData(updateData);
-    simulateInitialization(&frontend, &backend);
+    simulateInitializationSync(&frontend, &backend);
 
     // THEN -> should have received the update as part of the initial data
     const QVector<Qt3DRender::QTextureDataUpdate> pendingUpdates = backend.takePendingTextureDataUpdates();

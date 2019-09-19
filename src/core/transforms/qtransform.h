@@ -120,7 +120,6 @@ Q_SIGNALS:
 protected:
     explicit QTransform(QTransformPrivate &dd, QNode *parent = nullptr);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-    void setWorldMatrix(const QMatrix4x4 &worldMatrix);
 
 private:
     Q_DECLARE_PRIVATE(QTransform)

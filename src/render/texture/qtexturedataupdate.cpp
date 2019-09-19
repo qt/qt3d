@@ -68,6 +68,7 @@ static bool operator==(const QTextureDataUpdatePrivate &lhs, const QTextureDataU
     as well as the eventual layer, mipLevel and face.
 
     \sa QAbstractTexture
+    \since 5.14
  */
 
 QTextureDataUpdate::QTextureDataUpdate()

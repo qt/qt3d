@@ -73,7 +73,7 @@ public:
     ~Buffer();
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void setManager(BufferManager *manager);
     void executeFunctor();
@@ -88,7 +88,6 @@ public:
     void unsetDirty();
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void forceDataUpload();
 
     QBuffer::UsageType m_usage;

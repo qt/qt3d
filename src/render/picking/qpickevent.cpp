@@ -309,14 +309,14 @@ int QPickEvent::modifiers() const
  * The viewport in which this event originated. A null value means the event originated from a frame graph branch without a Viewport.
  * If a frame graph branch has a Viewport inside a Viewport the property will contain the leaf viewport.
  *
- * \since 5.13
+ * \since 5.14
  */
 /*!
  * \property Qt3DRender::QPickEvent::viewport
  * The viewport in which this event originated. A null value means the event originated from a frame graph branch without a QViewport.
  * If a frame graph branch has a Viewport inside a Viewport the property will contain the leaf viewport.
  *
- * \since 5.13
+ * \since 5.14
  */
 QViewport *QPickEvent::viewport() const
 {
@@ -332,7 +332,7 @@ QViewport *QPickEvent::viewport() const
  * If the object picker is not attached to a leaf node in the scene graph,
  * this is useful to find which child entity was actually picked.
  *
- * \since 5.13
+ * \since 5.14
  */
 /*!
  * \property Qt3DRender::QPickEvent::entity
@@ -341,7 +341,7 @@ QViewport *QPickEvent::viewport() const
  * If the object picker is not attached to a leaf node in the scene graph,
  * this is useful to find which child entity was actually picked.
  *
- * \since 5.13
+ * \since 5.14
  */
 Qt3DCore::QEntity *QPickEvent::entity() const
 {

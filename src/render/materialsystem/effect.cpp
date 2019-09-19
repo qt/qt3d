@@ -48,6 +48,7 @@
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <QVariant>
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,41 +74,25 @@ void Effect::cleanup()
     m_techniques.clear();
 }
 
-void Effect::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Effect::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QEffectData>>(change);
-    const auto &data = typedChange->data;
-    m_techniques = data.techniqueIds;
-    m_parameterPack.setParameters(data.parameterIds);
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QEffect *node = qobject_cast<const QEffect *>(frontEnd);
+    if (!node)
+        return;
 
-void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("technique"))
-            appendRenderTechnique(change->addedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(change->addedNodeId());
-        break;
-    }
+    auto parameters = qIdsForNodes(node->parameters());
+    std::sort(std::begin(parameters), std::end(parameters));
+    if (m_parameterPack.parameters() != parameters)
+        m_parameterPack.setParameters(parameters);
 
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("technique"))
-            m_techniques.removeOne(change->removedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(change->removedNodeId());
-        break;
-    }
+    auto techniques = qIdsForNodes(node->techniques());
+    std::sort(std::begin(techniques), std::end(techniques));
+    if (m_techniques != techniques)
+        m_techniques = techniques;
 
-    default:
-        break;
-    }
-
-    markDirty(AbstractRenderer::AllDirty);
-    BackendNode::sceneChangeEvent(e);
+    if (!firstTime)
+        markDirty(AbstractRenderer::AllDirty);
 }
 
 void Effect::appendRenderTechnique(Qt3DCore::QNodeId technique)

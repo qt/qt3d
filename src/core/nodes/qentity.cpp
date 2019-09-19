@@ -295,13 +295,7 @@ void QEntity::onParentChanged(QObject *)
     if (!d->m_hasBackendNode)
         return;
 
-    const auto parentID = parentEntity() ? parentEntity()->id() : Qt3DCore::QNodeId();
-    auto parentChange = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
-    parentChange->setPropertyName("parentEntityUpdated");
-    parentChange->setValue(QVariant::fromValue(parentID));
-    const bool blocked = blockNotifications(false);
-    notifyObservers(parentChange);
-    blockNotifications(blocked);
+    d->update();
 }
 
 } // namespace Qt3DCore

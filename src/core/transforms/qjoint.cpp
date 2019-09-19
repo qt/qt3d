@@ -352,11 +352,8 @@ void QJoint::addChildJoint(QJoint *joint)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(joint, &QJoint::removeChildJoint, d->m_childJoints);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), joint);
-            change->setPropertyName("childJoint");
-            d->notifyObservers(change);
-        }
+        if (d->m_changeArbiter != nullptr)
+            d->update();
     }
 }
 
@@ -369,11 +366,8 @@ void QJoint::removeChildJoint(QJoint *joint)
     Q_D(QJoint);
     if (d->m_childJoints.contains(joint)) {
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeRemovedChangePtr::create(id(), joint);
-            change->setPropertyName("childJoint");
-            d->notifyObservers(change);
-        }
+        if (d->m_changeArbiter != nullptr)
+            d->update();
 
         d->m_childJoints.removeOne(joint);
 
