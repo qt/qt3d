@@ -156,10 +156,7 @@ QComputeCommandPrivate::QComputeCommandPrivate()
 void QComputeCommandPrivate::setFrameCount(int frameCount)
 {
     m_frameCount = frameCount;
-    const auto propertyChange = Qt3DCore::QPropertyUpdatedChangePtr::create(m_id);
-    propertyChange->setPropertyName("frameCount");
-    propertyChange->setValue(m_frameCount);
-    notifyObservers(propertyChange);
+    update();
 }
 
 /*!
