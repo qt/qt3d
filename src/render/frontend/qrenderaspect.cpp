@@ -277,7 +277,7 @@ void QRenderAspectPrivate::registerBackendTypes()
 
     // Textures
     q->registerBackendType<QAbstractTexture, true>(QSharedPointer<Render::TextureFunctor>::create(m_renderer, m_nodeManagers->textureManager()));
-    q->registerBackendType<QAbstractTextureImage>(QSharedPointer<Render::TextureImageFunctor>::create(m_renderer,
+    q->registerBackendType<QAbstractTextureImage, true>(QSharedPointer<Render::TextureImageFunctor>::create(m_renderer,
                                                                                                       m_nodeManagers->textureImageManager()));
 
     // Material system
