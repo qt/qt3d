@@ -116,7 +116,7 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QBlendedClipAnimator, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::BlendedClipAnimator, Animation::BlendedClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                               d->m_handler->blendedClipAnimatorManager()));
-    registerBackendType<QAbstractChannelMapping>(
+    registerBackendType<QAbstractChannelMapping, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapping, Animation::ChannelMappingManager>>::create(d->m_handler.data(),
                                                                                                                     d->m_handler->channelMappingManager()));
     registerBackendType<QChannelMapper>(
