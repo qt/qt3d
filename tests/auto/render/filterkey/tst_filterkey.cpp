@@ -56,16 +56,18 @@ private Q_SLOTS:
     void checkCleanupState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::FilterKey backendFilterKey;
 
         // WHEN
+        backendFilterKey.setRenderer(&renderer);
         backendFilterKey.setEnabled(true);
 
         {
             Qt3DRender::QFilterKey filterKey;
             filterKey.setName(QStringLiteral("Tim"));
             filterKey.setValue(QVariant(QStringLiteral("McGraw")));
-            simulateInitialization(&filterKey, &backendFilterKey);
+            simulateInitializationSync(&filterKey, &backendFilterKey);
         }
 
         backendFilterKey.cleanup();
@@ -79,6 +81,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QFilterKey filterKey;
         filterKey.setName(QStringLiteral("Dallas"));
         filterKey.setValue(QVariant(QStringLiteral("Smith")));
@@ -86,7 +89,8 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::FilterKey backendFilterKey;
-            simulateInitialization(&filterKey, &backendFilterKey);
+            backendFilterKey.setRenderer(&renderer);
+            simulateInitializationSync(&filterKey, &backendFilterKey);
 
             // THEN
             QCOMPARE(backendFilterKey.isEnabled(), true);
@@ -97,8 +101,9 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::FilterKey backendFilterKey;
+            backendFilterKey.setRenderer(&renderer);
             filterKey.setEnabled(false);
-            simulateInitialization(&filterKey, &backendFilterKey);
+            simulateInitializationSync(&filterKey, &backendFilterKey);
 
             // THEN
             QCOMPARE(backendFilterKey.peerId(), filterKey.id());
@@ -110,16 +115,16 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::FilterKey backendFilterKey;
+        Qt3DRender::QFilterKey frontend;
         TestRenderer renderer;
         backendFilterKey.setRenderer(&renderer);
+        simulateInitializationSync(&frontend, &backendFilterKey);
 
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendFilterKey.sceneChangeEvent(change);
+            frontend.setEnabled(newValue);
+            backendFilterKey.syncFromFrontEnd(&frontend, false);
 
             // THEN
             QCOMPARE(backendFilterKey.isEnabled(), newValue);
@@ -127,10 +132,8 @@ private Q_SLOTS:
         {
             // WHEN
             const QVariant newValue(383.0f);
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("value");
-            change->setValue(QVariant::fromValue(newValue));
-            backendFilterKey.sceneChangeEvent(change);
+            frontend.setValue(newValue);
+            backendFilterKey.syncFromFrontEnd(&frontend, false);
 
             // THEN
             QCOMPARE(backendFilterKey.value(), newValue);
@@ -138,10 +141,8 @@ private Q_SLOTS:
         {
             // WHEN
             const QString newValue = QStringLiteral("Alan");
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("name");
-            change->setValue(QVariant::fromValue(newValue));
-            backendFilterKey.sceneChangeEvent(change);
+            frontend.setName(newValue);
+            backendFilterKey.syncFromFrontEnd(&frontend, false);
 
             // THEN
             QCOMPARE(backendFilterKey.name(), newValue);
@@ -151,10 +152,15 @@ private Q_SLOTS:
     void checkComparison()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::FilterKey backendFilterKey1;
         Qt3DRender::Render::FilterKey backendFilterKey2;
         Qt3DRender::Render::FilterKey backendFilterKey3;
         Qt3DRender::Render::FilterKey backendFilterKey4;
+        backendFilterKey1.setRenderer(&renderer);
+        backendFilterKey2.setRenderer(&renderer);
+        backendFilterKey3.setRenderer(&renderer);
+        backendFilterKey4.setRenderer(&renderer);
 
         // WHEN
         {
@@ -162,20 +168,20 @@ private Q_SLOTS:
             filterKey1.setName(QStringLiteral("Dallas"));
             filterKey1.setValue(QVariant(QStringLiteral("Smith")));
 
-            simulateInitialization(&filterKey1, &backendFilterKey1);
-            simulateInitialization(&filterKey1, &backendFilterKey4);
+            simulateInitializationSync(&filterKey1, &backendFilterKey1);
+            simulateInitializationSync(&filterKey1, &backendFilterKey4);
 
             Qt3DRender::QFilterKey filterKey2;
             filterKey2.setName(QStringLiteral("Tim"));
             filterKey2.setValue(QVariant(QStringLiteral("Smith")));
 
-            simulateInitialization(&filterKey2, &backendFilterKey2);
+            simulateInitializationSync(&filterKey2, &backendFilterKey2);
 
             Qt3DRender::QFilterKey filterKey3;
             filterKey3.setName(QStringLiteral("Dallas"));
             filterKey3.setValue(QVariant(QStringLiteral("McGraw")));
 
-            simulateInitialization(&filterKey3, &backendFilterKey3);
+            simulateInitializationSync(&filterKey3, &backendFilterKey3);
         }
 
         // THEN

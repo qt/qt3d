@@ -65,31 +65,23 @@ void FilterKey::cleanup()
     m_value.clear();
 }
 
-void FilterKey::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void FilterKey::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QFilterKeyData>>(change);
-    const auto &data = typedChange->data;
-    m_name = data.name;
-    m_value = data.value;
-}
+    const QFilterKey *node = qobject_cast<const QFilterKey *>(frontEnd);
+    if (!node)
+        return;
 
-void FilterKey::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyUpdated: {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("value"))
-            m_value = propertyChange->value();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("name"))
-            m_name = propertyChange->value().toString();
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 
+    if (node->name() != m_name) {
+        m_name = node->name();
         markDirty(AbstractRenderer::AllDirty);
     }
 
-    default:
-        break;
+    if (node->value() != m_value) {
+        m_value = node->value();
+        markDirty(AbstractRenderer::AllDirty);
     }
-    BackendNode::sceneChangeEvent(e);
 }
 
 bool FilterKey::operator ==(const FilterKey &other)
