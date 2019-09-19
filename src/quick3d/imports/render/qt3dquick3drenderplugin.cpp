@@ -298,7 +298,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QBlendEquationArguments>(uri, 2, 0, "BlendEquationArguments");
     qmlRegisterType<Qt3DRender::QBlendEquation>(uri, 2, 0, "BlendEquation");
     qmlRegisterType<Qt3DRender::QAlphaTest>(uri, 2, 0, "AlphaTest");
-    qmlRegisterType<Qt3DRender::QDepthRange>(uri, 2, 13, "DepthRange");
+    qmlRegisterType<Qt3DRender::QDepthRange>(uri, 2, 14, "DepthRange");
     qmlRegisterType<Qt3DRender::QDepthTest>(uri, 2, 0, "DepthTest");
     qmlRegisterType<Qt3DRender::QMultiSampleAntiAliasing>(uri, 2, 0, "MultiSampleAntiAliasing");
     qmlRegisterType<Qt3DRender::QNoDepthMask>(uri, 2, 0, "NoDepthMask");
