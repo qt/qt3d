@@ -131,7 +131,7 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QClipBlendValue>(
                 QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::ClipBlendValue, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                    d->m_handler->clipBlendNodeManager()));
-    registerBackendType<Qt3DCore::QAbstractSkeleton>(
+    registerBackendType<Qt3DCore::QAbstractSkeleton, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::Skeleton, Animation::SkeletonManager>>::create(d->m_handler.data(),
                                                                                                         d->m_handler->skeletonManager()));
 }
