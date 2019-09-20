@@ -44,13 +44,15 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::ObjectPicker objectPicker;
         Qt3DRender::QObjectPicker picker;
         picker.setHoverEnabled(true);
         picker.setPriority(883);
 
         // WHEN
-        simulateInitialization(&picker, &objectPicker);
+        objectPicker.setRenderer(&renderer);
+        simulateInitializationSync(&picker, &objectPicker);
 
         // THEN
         QVERIFY(!objectPicker.peerId().isNull());
@@ -61,6 +63,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::ObjectPicker objectPicker;
 
         // THEN
@@ -76,7 +79,8 @@ private Q_SLOTS:
         picker.setPriority(1584);
 
         // WHEN
-        simulateInitialization(&picker, &objectPicker);
+        objectPicker.setRenderer(&renderer);
+        simulateInitializationSync(&picker, &objectPicker);
         objectPicker.cleanup();
 
         // THEN
@@ -90,42 +94,43 @@ private Q_SLOTS:
         // GIVEN
         TestRenderer renderer;
         {
+            Qt3DRender::QObjectPicker picker;
             Qt3DRender::Render::ObjectPicker objectPicker;
             objectPicker.setRenderer(&renderer);
+            simulateInitializationSync(&picker, &objectPicker);
 
             // WHEN
-            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            updateChange->setValue(true);
-            updateChange->setPropertyName("hoverEnabled");
-            objectPicker.sceneChangeEvent(updateChange);
+            picker.setHoverEnabled(true);
+            objectPicker.syncFromFrontEnd(&picker, false);
 
             // THEN
             QCOMPARE(objectPicker.isHoverEnabled(), true);
             QVERIFY(renderer.dirtyBits() != 0);
         }
         {
+            Qt3DRender::QObjectPicker picker;
             Qt3DRender::Render::ObjectPicker objectPicker;
             objectPicker.setRenderer(&renderer);
+            simulateInitializationSync(&picker, &objectPicker);
 
             // WHEN
-            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            updateChange->setValue(true);
-            updateChange->setPropertyName("dragEnabled");
-            objectPicker.sceneChangeEvent(updateChange);
+            picker.setDragEnabled(true);
+            objectPicker.syncFromFrontEnd(&picker, false);
+
 
             // THEN
             QCOMPARE(objectPicker.isDragEnabled(), true);
             QVERIFY(renderer.dirtyBits() != 0);
         }
         {
+            Qt3DRender::QObjectPicker picker;
             Qt3DRender::Render::ObjectPicker objectPicker;
             objectPicker.setRenderer(&renderer);
+            simulateInitializationSync(&picker, &objectPicker);
 
             // WHEN
-            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            updateChange->setValue(15);
-            updateChange->setPropertyName("priority");
-            objectPicker.sceneChangeEvent(updateChange);
+            picker.setPriority(15);
+            objectPicker.syncFromFrontEnd(&picker, false);
 
             // THEN
             QCOMPARE(objectPicker.priority(), 15);
