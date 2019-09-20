@@ -125,7 +125,7 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QLerpClipBlend>(
                 QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::LerpClipBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                   d->m_handler->clipBlendNodeManager()));
-    registerBackendType<QAdditiveClipBlend>(
+    registerBackendType<QAdditiveClipBlend, true>(
                 QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::AdditiveClipBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                       d->m_handler->clipBlendNodeManager()));
     registerBackendType<QClipBlendValue>(
