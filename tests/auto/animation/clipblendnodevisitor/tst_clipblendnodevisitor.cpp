@@ -73,11 +73,11 @@ private Q_SLOTS:
         manager.appendNode(childBlendNode12.id(), backendChildBlendNode12);
 
         // WHEN
-        simulateInitialization(&rootBlendNode, backendRootBlendNode);
-        simulateInitialization(&childBlendNode1, backendChildBlendNode1);
-        simulateInitialization(&childBlendNode2, backendChildBlendNode2);
-        simulateInitialization(&childBlendNode11, backendChildBlendNode11);
-        simulateInitialization(&childBlendNode12, backendChildBlendNode12);
+        simulateInitializationSync(&rootBlendNode, backendRootBlendNode);
+        simulateInitializationSync(&childBlendNode1, backendChildBlendNode1);
+        simulateInitializationSync(&childBlendNode2, backendChildBlendNode2);
+        simulateInitializationSync(&childBlendNode11, backendChildBlendNode11);
+        simulateInitializationSync(&childBlendNode12, backendChildBlendNode12);
 
         // THEN
         QCOMPARE(backendRootBlendNode->allDependencyIds().size(), 2);
@@ -121,7 +121,7 @@ private Q_SLOTS:
         // We purposely forgot the to do:  manager.appendNode(rootBlendNode.id(), backendRootBlendNode);
 
         // WHEN
-        simulateInitialization(&rootBlendNode, backendRootBlendNode);
+        simulateInitializationSync(&rootBlendNode, backendRootBlendNode);
 
         // THEN
         QCOMPARE(backendRootBlendNode->allDependencyIds().size(), 2);
@@ -159,9 +159,9 @@ private Q_SLOTS:
 
 
         // WHEN
-        simulateInitialization(&rootBlendNode, backendRootBlendNode);
-        simulateInitialization(&childBlendNode1, backendChildBlendNode1);
-        simulateInitialization(&childBlendNode2, backendChildBlendNode2);
+        simulateInitializationSync(&rootBlendNode, backendRootBlendNode);
+        simulateInitializationSync(&childBlendNode1, backendChildBlendNode1);
+        simulateInitializationSync(&childBlendNode2, backendChildBlendNode2);
 
         // THEN
         QCOMPARE(backendRootBlendNode->allDependencyIds().size(), 2);
