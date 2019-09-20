@@ -69,7 +69,7 @@ public:
 
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void setMappingIds(const QVector<Qt3DCore::QNodeId> &mappingIds) { m_mappingIds = mappingIds; }
     QVector<Qt3DCore::QNodeId> mappingIds() const { return m_mappingIds; }
@@ -82,7 +82,6 @@ public:
     }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void updateMappings() const;
 
     QVector<Qt3DCore::QNodeId> m_mappingIds;
