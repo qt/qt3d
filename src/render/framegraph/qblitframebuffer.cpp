@@ -364,6 +364,7 @@ void QBlitFramebuffer::setDestination(QRenderTarget *destination)
     }
 }
 
+// TO DO Qt6: convert QRectF to QRect
 /*!
     Sets the source rectangle to \a inputRect. The coordinates are assumed to
     follow the normal Qt coordinate system, meaning Y runs from top to bottom.

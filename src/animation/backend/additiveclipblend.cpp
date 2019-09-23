@@ -35,10 +35,8 @@
 ****************************************************************************/
 
 #include "additiveclipblend_p.h"
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 #include <Qt3DAnimation/qadditiveclipblend.h>
 #include <Qt3DAnimation/private/qadditiveclipblend_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,17 +56,16 @@ AdditiveClipBlend::~AdditiveClipBlend()
 {
 }
 
-void AdditiveClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void AdditiveClipBlend::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("additiveFactor"))
-            m_additiveFactor = change->value().toFloat();
-        else if (change->propertyName() == QByteArrayLiteral("baseClip"))
-            m_baseClipId = change->value().value<Qt3DCore::QNodeId>();
-        else if (change->propertyName() == QByteArrayLiteral("additiveClip"))
-            m_additiveClipId = change->value().value<Qt3DCore::QNodeId>();
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAdditiveClipBlend *node = qobject_cast<const QAdditiveClipBlend *>(frontEnd);
+    if (!node)
+        return;
+
+    m_additiveFactor = node->additiveFactor();
+    m_baseClipId = Qt3DCore::qIdForNode(node->baseClip());
+    m_additiveClipId = Qt3DCore::qIdForNode(node->additiveClip());
 }
 
 ClipResults AdditiveClipBlend::doBlend(const QVector<ClipResults> &blendData) const
@@ -82,16 +79,6 @@ ClipResults AdditiveClipBlend::doBlend(const QVector<ClipResults> &blendData) co
         blendResults[i] = blendData[0][i] + m_additiveFactor * blendData[1][i];
 
     return blendResults;
-}
-
-void AdditiveClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    ClipBlendNode::initializeFromPeer(change);
-    const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QAdditiveClipBlendData>>(change);
-    const Qt3DAnimation::QAdditiveClipBlendData cloneData = creationChangeData->data;
-    m_baseClipId = cloneData.baseClipId;
-    m_additiveClipId = cloneData.additiveClipId;
-    m_additiveFactor = cloneData.additiveFactor;
 }
 
 } // Animation

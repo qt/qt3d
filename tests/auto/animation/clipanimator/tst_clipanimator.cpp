@@ -29,6 +29,7 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/clipanimator_p.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
+#include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/qclock.h>
 #include <Qt3DCore/private/qnode_p.h>
@@ -59,7 +60,7 @@ private Q_SLOTS:
         animator.setNormalizedTime(0.5f);
 
         // WHEN
-        simulateInitialization(&animator, &backendAnimator);
+        simulateInitializationSync(&animator, &backendAnimator);
 
         // THEN
         QCOMPARE(backendAnimator.peerId(), animator.id());
@@ -98,7 +99,7 @@ private Q_SLOTS:
         animator.setNormalizedTime(1.0f);
 
         // WHEN
-        simulateInitialization(&animator, &backendAnimator);
+        simulateInitializationSync(&animator, &backendAnimator);
         backendAnimator.setClipId(Qt3DCore::QNodeId::createId());
         backendAnimator.setClockId(Qt3DCore::QNodeId::createId());
         backendAnimator.cleanup();
@@ -115,63 +116,60 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DAnimation::QClipAnimator animator;
         Qt3DAnimation::Animation::Handler handler;
         Qt3DAnimation::Animation::ClipAnimator backendAnimator;
         backendAnimator.setHandler(&handler);
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
+        simulateInitializationSync(&animator, &backendAnimator);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendAnimator.sceneChangeEvent(updateChange);
+        animator.setEnabled(false);
+        backendAnimator.syncFromFrontEnd(&animator, false);
 
         // THEN
-        QCOMPARE(backendAnimator.isEnabled(), true);
+        QCOMPARE(backendAnimator.isEnabled(), false);
 
         // WHEN
         auto newClip = new Qt3DAnimation::QAnimationClipLoader();
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("clip");
-        updateChange->setValue(QVariant::fromValue(newClip->id()));
-        backendAnimator.sceneChangeEvent(updateChange);
+        animator.setClip(newClip);
+        backendAnimator.syncFromFrontEnd(&animator, false);
 
         // THEN
         QCOMPARE(backendAnimator.clipId(), newClip->id());
 
         // WHEN
+        auto newMapper = new Qt3DAnimation::QChannelMapper();
+        animator.setChannelMapper(newMapper);
+        backendAnimator.syncFromFrontEnd(&animator, false);
+
+        // THEN
+        QCOMPARE(backendAnimator.mapperId(), newMapper->id());
+
+        // WHEN
         auto clock = new Qt3DAnimation::QClock();
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("clock");
-        updateChange->setValue(QVariant::fromValue(clock->id()));
-        backendAnimator.sceneChangeEvent(updateChange);
+        animator.setClock(clock);
+        backendAnimator.syncFromFrontEnd(&animator, false);
 
         // THEN
         QCOMPARE(backendAnimator.clockId(), clock->id());
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("running");
-        updateChange->setValue(true);
-        backendAnimator.sceneChangeEvent(updateChange);
+        animator.setRunning(true);
+        backendAnimator.syncFromFrontEnd(&animator, false);
 
         // THEN
         QCOMPARE(backendAnimator.isRunning(), true);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("loops");
-        updateChange->setValue(64);
-        backendAnimator.sceneChangeEvent(updateChange);
+        animator.setLoopCount(64);
+        backendAnimator.syncFromFrontEnd(&animator, false);
 
         // THEN
         QCOMPARE(backendAnimator.loops(), 64);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("normalizedTime");
-        updateChange->setValue(0.5f);
-        backendAnimator.sceneChangeEvent(updateChange);
+        animator.setNormalizedTime(0.5f);
+        backendAnimator.syncFromFrontEnd(&animator, false);
 
         // THEN
         QVERIFY(qFuzzyCompare(backendAnimator.normalizedLocalTime(), 0.5f));

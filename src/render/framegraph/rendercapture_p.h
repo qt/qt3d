@@ -68,8 +68,7 @@ public:
     void addRenderCapture(int captureId, const QImage &image);
     void sendRenderCaptures();
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
 

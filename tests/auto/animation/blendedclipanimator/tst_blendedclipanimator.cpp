@@ -29,6 +29,7 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
+#include <Qt3DAnimation/qadditiveclipblend.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -114,7 +115,7 @@ private Q_SLOTS:
             Qt3DAnimation::Animation::Handler handler;
             backendBlendedClipAnimator.setHandler(&handler);
 
-            simulateInitialization(&blendedClipAnimator, &backendBlendedClipAnimator);
+            simulateInitializationSync(&blendedClipAnimator, &backendBlendedClipAnimator);
 
             // THEN
             QCOMPARE(backendBlendedClipAnimator.isEnabled(), true);
@@ -131,7 +132,7 @@ private Q_SLOTS:
             backendBlendedClipAnimator.setHandler(&handler);
 
             blendedClipAnimator.setEnabled(false);
-            simulateInitialization(&blendedClipAnimator, &backendBlendedClipAnimator);
+            simulateInitializationSync(&blendedClipAnimator, &backendBlendedClipAnimator);
 
             // THEN
             QCOMPARE(backendBlendedClipAnimator.peerId(), blendedClipAnimator.id());
@@ -142,61 +143,53 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
         Qt3DAnimation::Animation::BlendedClipAnimator backendBlendedClipAnimator;
         Qt3DAnimation::Animation::Handler handler;
         backendBlendedClipAnimator.setHandler(&handler);
+        simulateInitializationSync(&blendedClipAnimator, &backendBlendedClipAnimator);
 
         {
-             // WHEN
-             const bool newValue = false;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("enabled");
-             change->setValue(newValue);
-             backendBlendedClipAnimator.sceneChangeEvent(change);
+            // WHEN
+            const bool newValue = false;
+            blendedClipAnimator.setEnabled(newValue);
+            backendBlendedClipAnimator.syncFromFrontEnd(&blendedClipAnimator, false);
 
-             // THEN
+            // THEN
             QCOMPARE(backendBlendedClipAnimator.isEnabled(), newValue);
         }
         {
-             // WHEN
-             const Qt3DCore::QNodeId newValue = Qt3DCore::QNodeId::createId();
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("blendTree");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlendedClipAnimator.sceneChangeEvent(change);
+            // WHEN
+            auto blendTree = new Qt3DAnimation::QAdditiveClipBlend();
+            blendedClipAnimator.setBlendTree(blendTree);
+            backendBlendedClipAnimator.syncFromFrontEnd(&blendedClipAnimator, false);
 
-             // THEN
-            QCOMPARE(backendBlendedClipAnimator.blendTreeRootId(), newValue);
+            // THEN
+            QCOMPARE(backendBlendedClipAnimator.blendTreeRootId(), blendTree->id());
         }
         {
-             // WHEN
-             const Qt3DCore::QNodeId newValue = Qt3DCore::QNodeId::createId();
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("channelMapper");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlendedClipAnimator.sceneChangeEvent(change);
+            // WHEN
+            auto channelMapper = new Qt3DAnimation::QChannelMapper();
+            blendedClipAnimator.setChannelMapper(channelMapper);
+            backendBlendedClipAnimator.syncFromFrontEnd(&blendedClipAnimator, false);
 
-             // THEN
-            QCOMPARE(backendBlendedClipAnimator.mapperId(), newValue);
+            // THEN
+            QCOMPARE(backendBlendedClipAnimator.mapperId(), channelMapper->id());
         }
         {
-             // WHEN
-             const bool newValue = true;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("running");
-             change->setValue(QVariant::fromValue(newValue));
-             backendBlendedClipAnimator.sceneChangeEvent(change);
+            // WHEN
+            const bool newValue = true;
+            blendedClipAnimator.setRunning(newValue);
+            backendBlendedClipAnimator.syncFromFrontEnd(&blendedClipAnimator, false);
 
-             // THEN
+            // THEN
             QCOMPARE(backendBlendedClipAnimator.isRunning(), newValue);
         }
         {
             // WHEN
             const int newValue = 883;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("loops");
-            change->setValue(QVariant::fromValue(newValue));
-            backendBlendedClipAnimator.sceneChangeEvent(change);
+            blendedClipAnimator.setLoopCount(newValue);
+            backendBlendedClipAnimator.syncFromFrontEnd(&blendedClipAnimator, false);
 
             // THEN
             QCOMPARE(backendBlendedClipAnimator.loops(), newValue);

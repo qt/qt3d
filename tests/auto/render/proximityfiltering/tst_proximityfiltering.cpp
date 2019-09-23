@@ -247,10 +247,6 @@ private Q_SLOTS:
         // WHEN
         Qt3DRender::Render::Entity *backendRoot = aspect->nodeManagers()->renderNodesManager()->getOrCreateResource(entitySubtree->id());
 
-        Qt3DRender::Render::UpdateEntityHierarchyJob updateEntitiesJob;
-        updateEntitiesJob.setManager(aspect->nodeManagers());
-        updateEntitiesJob.run();
-
         Qt3DRender::Render::UpdateTreeEnabledJob updateTreeEnabledJob;
         updateTreeEnabledJob.setRoot(backendRoot);
         updateTreeEnabledJob.setManagers(aspect->nodeManagers());

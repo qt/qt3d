@@ -70,7 +70,7 @@ private Q_SLOTS:
 
         // WHEN
         backendNode.setRenderer(&renderer);
-        simulateInitialization(&sortPolicy, &backendNode);
+        simulateInitializationSync(&sortPolicy, &backendNode);
 
         // THEN
         QCOMPARE(backendNode.peerId(), sortPolicy.id());
@@ -88,15 +88,14 @@ private Q_SLOTS:
         Qt3DRender::Render::SortPolicy backendNode;
         backendNode.setRenderer(&renderer);
 
+        Qt3DRender::QSortPolicy sortPolicy;
+        sortPolicy.setSortTypes(sortTypes);
+
+        simulateInitializationSync(&sortPolicy, &backendNode);
+
         // WHEN
-        auto sortTypeInts = QVector<int>();
-        std::transform(sortTypes.constBegin(), sortTypes.constEnd(),
-                       std::back_inserter(sortTypeInts),
-                       [] (Qt3DRender::QSortPolicy::SortType type) -> int { return type; });
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(sortTypeInts));
-        updateChange->setPropertyName("sortTypes");
-        backendNode.sceneChangeEvent(updateChange);
+        sortPolicy.setSortTypes(sortTypes);
+        backendNode.syncFromFrontEnd(&sortPolicy, false);
 
         // THEN
         QCOMPARE(backendNode.sortTypes(), sortTypes);

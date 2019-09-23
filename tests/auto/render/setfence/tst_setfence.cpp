@@ -75,7 +75,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::SetFence backendSetFence;
             backendSetFence.setRenderer(&renderer);
-            simulateInitialization(&setFence, &backendSetFence);
+            simulateInitializationSync(&setFence, &backendSetFence);
 
             // THEN
             QCOMPARE(backendSetFence.isEnabled(), true);
@@ -88,7 +88,7 @@ private Q_SLOTS:
             Qt3DRender::Render::SetFence backendSetFence;
             setFence.setEnabled(false);
             backendSetFence.setRenderer(&renderer);
-            simulateInitialization(&setFence, &backendSetFence);
+            simulateInitializationSync(&setFence, &backendSetFence);
 
             // THEN
             QCOMPARE(backendSetFence.peerId(), setFence.id());
@@ -101,16 +101,16 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::SetFence backendSetFence;
+        Qt3DRender::QSetFence setFence;
         TestRenderer renderer;
         backendSetFence.setRenderer(&renderer);
+        simulateInitializationSync(&setFence, &backendSetFence);
 
         {
              // WHEN
              const bool newValue = false;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("enabled");
-             change->setValue(newValue);
-             backendSetFence.sceneChangeEvent(change);
+             setFence.setEnabled(newValue);
+             backendSetFence.syncFromFrontEnd(&setFence, false);
 
              // THEN
             QCOMPARE(backendSetFence.isEnabled(), newValue);

@@ -52,28 +52,16 @@ Clock::Clock()
 {
 }
 
-void Clock::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Clock::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QClockData>>(change);
-    const auto &data = typedChange->data;
-    m_playbackRate = data.playbackRate;
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QClock *node = qobject_cast<const QClock *>(frontEnd);
+    if (!node)
+        return;
 
-void Clock::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("playbackRate")) {
-            m_playbackRate = change.data()->value().toDouble();
-        }
-        break;
+    if (!qFuzzyCompare(m_playbackRate, node->playbackRate())) {
+        m_playbackRate = node->playbackRate();
     }
-
-    default:
-        break;
-    }
-    QBackendNode::sceneChangeEvent(e);
 }
 
 void Clock::cleanup()

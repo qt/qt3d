@@ -192,7 +192,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_updateEntityLayersJob(Render::UpdateEntityLayersJobPtr::create())
-    , m_updateEntityHierarchyJob(Render::UpdateEntityHierarchyJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
@@ -212,9 +211,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_running.fetchAndStoreOrdered(1);
     if (m_renderThread)
         m_renderThread->waitForStart();
-
-    m_worldTransformJob->addDependency(m_updateEntityHierarchyJob);
-    m_updateEntityLayersJob->addDependency(m_updateEntityHierarchyJob);
 
     // Create jobs to update transforms and bounding volumes
     // We can only update bounding volumes once all world transforms are known
@@ -304,7 +300,6 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
     m_updateEntityLayersJob->setManager(m_nodesManager);
     m_updateTreeEnabledJob->setManagers(m_nodesManager);
-    m_updateEntityHierarchyJob->setManager(m_nodesManager);
 }
 
 void Renderer::setServices(QServiceLocator *services)
@@ -1748,17 +1743,14 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     // Add jobs
     const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
-    const bool entityHierarchyNeedsToBeRebuilt = dirtyBitsForFrame & AbstractRenderer::EntityHierarchyDirty;
-    if (entitiesEnabledDirty || entityHierarchyNeedsToBeRebuilt) {
+    if (entitiesEnabledDirty) {
         renderBinJobs.push_back(m_updateTreeEnabledJob);
         // This dependency is added here because we clear all dependencies
         // at the start of this function.
         m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
-        m_calculateBoundingVolumeJob->addDependency(m_updateEntityHierarchyJob);
     }
 
-    if (dirtyBitsForFrame & AbstractRenderer::TransformDirty ||
-        dirtyBitsForFrame & AbstractRenderer::EntityHierarchyDirty) {
+    if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_worldTransformJob);
         renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
         renderBinJobs.push_back(m_updateShaderDataTransformJob);
@@ -1771,7 +1763,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
     if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
-        dirtyBitsForFrame & AbstractRenderer::EntityHierarchyDirty ||
         dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
         renderBinJobs.push_back(m_expandBoundingVolumeJob);
     }
@@ -1798,17 +1789,13 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Layer cache is dependent on layers, layer filters (hence FG structure
     // changes) and the enabled flag on entities
     const bool frameGraphDirty = dirtyBitsForFrame & AbstractRenderer::FrameGraphDirty;
-    const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty || entityHierarchyNeedsToBeRebuilt;
+    const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty || frameGraphDirty;
     const bool materialDirty = dirtyBitsForFrame & AbstractRenderer::MaterialDirty;
     const bool lightsDirty = dirtyBitsForFrame & AbstractRenderer::LightsDirty;
     const bool computeableDirty = dirtyBitsForFrame & AbstractRenderer::ComputeDirty;
     const bool renderableDirty = dirtyBitsForFrame & AbstractRenderer::GeometryDirty;
     const bool materialCacheNeedsToBeRebuilt = materialDirty || frameGraphDirty;
-
-    // Rebuild Entity Hierarchy if dirty
-    if (entityHierarchyNeedsToBeRebuilt)
-        renderBinJobs.push_back(m_updateEntityHierarchyJob);
 
     // Rebuild Entity Layers list if layers are dirty
     if (layersDirty)

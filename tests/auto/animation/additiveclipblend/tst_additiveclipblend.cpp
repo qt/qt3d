@@ -143,7 +143,7 @@ private Q_SLOTS:
         {
             // WHEN
             AdditiveClipBlend backendAdditiveBlend;
-            simulateInitialization(&additiveBlend, &backendAdditiveBlend);
+            simulateInitializationSync(&additiveBlend, &backendAdditiveBlend);
 
             // THEN
             QCOMPARE(backendAdditiveBlend.isEnabled(), true);
@@ -156,7 +156,7 @@ private Q_SLOTS:
             // WHEN
             AdditiveClipBlend backendAdditiveBlend;
             additiveBlend.setEnabled(false);
-            simulateInitialization(&additiveBlend, &backendAdditiveBlend);
+            simulateInitializationSync(&additiveBlend, &backendAdditiveBlend);
 
             // THEN
             QCOMPARE(backendAdditiveBlend.peerId(), additiveBlend.id());
@@ -167,14 +167,14 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DAnimation::QAdditiveClipBlend additiveBlend;
         AdditiveClipBlend backendAdditiveBlend;
+        simulateInitializationSync(&additiveBlend, &backendAdditiveBlend);
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendAdditiveBlend.sceneChangeEvent(change);
+            additiveBlend.setEnabled(newValue);
+            backendAdditiveBlend.syncFromFrontEnd(&additiveBlend, false);
 
             // THEN
             QCOMPARE(backendAdditiveBlend.isEnabled(), newValue);
@@ -182,32 +182,26 @@ private Q_SLOTS:
         {
             // WHEN
             const float newValue = 0.883f;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("additiveFactor");
-            change->setValue(QVariant::fromValue(newValue));
-            backendAdditiveBlend.sceneChangeEvent(change);
+            additiveBlend.setAdditiveFactor(newValue);
+            backendAdditiveBlend.syncFromFrontEnd(&additiveBlend, false);
 
             // THEN
             QCOMPARE(backendAdditiveBlend.additiveFactor(), newValue);
         }
         {
             // WHEN
-            const Qt3DAnimation::QAdditiveClipBlend newValue;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("baseClip");
-            change->setValue(QVariant::fromValue(newValue.id()));
-            backendAdditiveBlend.sceneChangeEvent(change);
+            Qt3DAnimation::QAdditiveClipBlend newValue;
+            additiveBlend.setBaseClip(&newValue);
+            backendAdditiveBlend.syncFromFrontEnd(&additiveBlend, false);
 
             // THEN
             QCOMPARE(backendAdditiveBlend.baseClipId(), newValue.id());
         }
         {
             // WHEN
-            const Qt3DAnimation::QAdditiveClipBlend newValue;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("additiveClip");
-            change->setValue(QVariant::fromValue(newValue.id()));
-            backendAdditiveBlend.sceneChangeEvent(change);
+            Qt3DAnimation::QAdditiveClipBlend newValue;
+            additiveBlend.setAdditiveClip(&newValue);
+            backendAdditiveBlend.syncFromFrontEnd(&additiveBlend, false);
 
             // THEN
             QCOMPARE(backendAdditiveBlend.additiveClipId(), newValue.id());

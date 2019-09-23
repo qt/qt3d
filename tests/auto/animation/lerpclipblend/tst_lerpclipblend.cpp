@@ -137,7 +137,7 @@ private Q_SLOTS:
         {
             // WHEN
             LerpClipBlend backendLerpBlend;
-            simulateInitialization(&lerpBlend, &backendLerpBlend);
+            simulateInitializationSync(&lerpBlend, &backendLerpBlend);
 
             // THEN
             QCOMPARE(backendLerpBlend.isEnabled(), true);
@@ -148,7 +148,7 @@ private Q_SLOTS:
             // WHEN
             LerpClipBlend backendLerpBlend;
             lerpBlend.setEnabled(false);
-            simulateInitialization(&lerpBlend, &backendLerpBlend);
+            simulateInitializationSync(&lerpBlend, &backendLerpBlend);
 
             // THEN
             QCOMPARE(backendLerpBlend.peerId(), lerpBlend.id());
@@ -159,27 +159,26 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DAnimation::QLerpClipBlend lerpBlend;
         LerpClipBlend backendLerpBlend;
-        {
-             // WHEN
-             const bool newValue = false;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("enabled");
-             change->setValue(newValue);
-             backendLerpBlend.sceneChangeEvent(change);
+        simulateInitializationSync(&lerpBlend, &backendLerpBlend);
 
-             // THEN
+        {
+            // WHEN
+            const bool newValue = false;
+            lerpBlend.setEnabled(newValue);
+            backendLerpBlend.syncFromFrontEnd(&lerpBlend, false);
+
+            // THEN
             QCOMPARE(backendLerpBlend.isEnabled(), newValue);
         }
         {
-             // WHEN
-             const float newValue = 0.883f;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("blendFactor");
-             change->setValue(QVariant::fromValue(newValue));
-             backendLerpBlend.sceneChangeEvent(change);
+            // WHEN
+            const float newValue = 0.883f;
+            lerpBlend.setBlendFactor(newValue);
+            backendLerpBlend.syncFromFrontEnd(&lerpBlend, false);
 
-             // THEN
+            // THEN
             QCOMPARE(backendLerpBlend.blendFactor(), newValue);
         }
     }

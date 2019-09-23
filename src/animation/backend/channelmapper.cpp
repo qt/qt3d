@@ -36,12 +36,15 @@
 
 #include "channelmapper_p.h"
 #include <Qt3DAnimation/qchannelmapper.h>
+#include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/private/qchannelmapper_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,14 +58,6 @@ ChannelMapper::ChannelMapper()
 {
 }
 
-void ChannelMapper::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QChannelMapperData>>(change);
-    const auto &data = typedChange->data;
-    m_mappingIds = data.mappingIds;
-    m_isDirty = true;
-}
-
 void ChannelMapper::cleanup()
 {
     setEnabled(false);
@@ -71,33 +66,21 @@ void ChannelMapper::cleanup()
     m_isDirty = true;
 }
 
-void ChannelMapper::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void ChannelMapper::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    switch (e->type()) {
-    case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("mappings")) {
-            m_mappingIds.push_back(change->addedNodeId());
-            setDirty(Handler::ChannelMappingsDirty);
-            m_isDirty = true;
-        }
-        break;
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QChannelMapper *node = qobject_cast<const QChannelMapper *>(frontEnd);
+    if (!node)
+        return;
 
-    case Qt3DCore::PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("mappings")) {
-            m_mappingIds.removeOne(change->removedNodeId());
-            setDirty(Handler::ChannelMappingsDirty);
-            m_isDirty = true;
-        }
-        break;
+    auto ids = Qt3DCore::qIdsForNodes(node->mappings());
+    std::sort(std::begin(ids), std::end(ids));
+    m_isDirty = firstTime;
+    if (m_mappingIds != ids) {
+        m_mappingIds = ids;
+        setDirty(Handler::ChannelMappingsDirty);
+        m_isDirty = true;
     }
-
-    default:
-        break;
-    }
-    QBackendNode::sceneChangeEvent(e);
 }
 
 void ChannelMapper::updateMappings() const

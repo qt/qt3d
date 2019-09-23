@@ -295,29 +295,29 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QShaderImage>(QSharedPointer<Render::NodeFunctor<Render::ShaderImage, Render::ShaderImageManager>>::create(m_renderer));
 
     // Framegraph
-    q->registerBackendType<QFrameGraphNode>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::FrameGraphNode, QFrameGraphNode> >::create(m_renderer));
-    q->registerBackendType<QCameraSelector>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector> >::create(m_renderer));
-    q->registerBackendType<QClearBuffers>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ClearBuffers, QClearBuffers> >::create(m_renderer));
-    q->registerBackendType<QDispatchCompute>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute> >::create(m_renderer));
-    q->registerBackendType<QFrustumCulling>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::FrustumCulling, QFrustumCulling> >::create(m_renderer));
-    q->registerBackendType<QLayerFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter> >::create(m_renderer));
-    q->registerBackendType<QNoDraw>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw> >::create(m_renderer));
-    q->registerBackendType<QRenderPassFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderPassFilter, QRenderPassFilter> >::create(m_renderer));
-    q->registerBackendType<QRenderStateSet>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::StateSetNode, QRenderStateSet> >::create(m_renderer));
-    q->registerBackendType<QRenderSurfaceSelector>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderSurfaceSelector, QRenderSurfaceSelector> >::create(m_renderer));
-    q->registerBackendType<QRenderTargetSelector>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector> >::create(m_renderer));
-    q->registerBackendType<QSortPolicy>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SortPolicy, QSortPolicy> >::create(m_renderer));
-    q->registerBackendType<QTechniqueFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter> >::create(m_renderer));
-    q->registerBackendType<QViewport>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport> >::create(m_renderer));
-    q->registerBackendType<QRenderCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderCapture, QRenderCapture> >::create(m_renderer));
-    q->registerBackendType<QBufferCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::BufferCapture, QBufferCapture> >::create(m_renderer));
-    q->registerBackendType<QMemoryBarrier>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::MemoryBarrier, QMemoryBarrier> >::create(m_renderer));
-    q->registerBackendType<QProximityFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ProximityFilter, QProximityFilter> >::create(m_renderer));
-    q->registerBackendType<QBlitFramebuffer>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::BlitFramebuffer, QBlitFramebuffer> >::create(m_renderer));
-    q->registerBackendType<QSetFence>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SetFence, QSetFence> >::create(m_renderer));
-    q->registerBackendType<QWaitFence>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::WaitFence, QWaitFence> >::create(m_renderer));
-    q->registerBackendType<QNoPicking>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::NoPicking, QNoPicking> >::create(m_renderer));
-    q->registerBackendType<QSubtreeEnabler>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SubtreeEnabler, QSubtreeEnabler> >::create(m_renderer));
+    q->registerBackendType<QFrameGraphNode, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::FrameGraphNode, QFrameGraphNode> >::create(m_renderer));
+    q->registerBackendType<QCameraSelector, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector> >::create(m_renderer));
+    q->registerBackendType<QClearBuffers, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ClearBuffers, QClearBuffers> >::create(m_renderer));
+    q->registerBackendType<QDispatchCompute, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute> >::create(m_renderer));
+    q->registerBackendType<QFrustumCulling, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::FrustumCulling, QFrustumCulling> >::create(m_renderer));
+    q->registerBackendType<QLayerFilter, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter> >::create(m_renderer));
+    q->registerBackendType<QNoDraw, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw> >::create(m_renderer));
+    q->registerBackendType<QRenderPassFilter, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderPassFilter, QRenderPassFilter> >::create(m_renderer));
+    q->registerBackendType<QRenderStateSet, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::StateSetNode, QRenderStateSet> >::create(m_renderer));
+    q->registerBackendType<QRenderSurfaceSelector, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderSurfaceSelector, QRenderSurfaceSelector> >::create(m_renderer));
+    q->registerBackendType<QRenderTargetSelector, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector> >::create(m_renderer));
+    q->registerBackendType<QSortPolicy, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SortPolicy, QSortPolicy> >::create(m_renderer));
+    q->registerBackendType<QTechniqueFilter, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter> >::create(m_renderer));
+    q->registerBackendType<QViewport, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport> >::create(m_renderer));
+    q->registerBackendType<QRenderCapture, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderCapture, QRenderCapture> >::create(m_renderer));
+    q->registerBackendType<QBufferCapture, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::BufferCapture, QBufferCapture> >::create(m_renderer));
+    q->registerBackendType<QMemoryBarrier, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::MemoryBarrier, QMemoryBarrier> >::create(m_renderer));
+    q->registerBackendType<QProximityFilter, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ProximityFilter, QProximityFilter> >::create(m_renderer));
+    q->registerBackendType<QBlitFramebuffer, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::BlitFramebuffer, QBlitFramebuffer> >::create(m_renderer));
+    q->registerBackendType<QSetFence, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SetFence, QSetFence> >::create(m_renderer));
+    q->registerBackendType<QWaitFence, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::WaitFence, QWaitFence> >::create(m_renderer));
+    q->registerBackendType<QNoPicking, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::NoPicking, QNoPicking> >::create(m_renderer));
+    q->registerBackendType<QSubtreeEnabler, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SubtreeEnabler, QSubtreeEnabler> >::create(m_renderer));
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));

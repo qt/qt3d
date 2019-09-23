@@ -50,7 +50,7 @@ private Q_SLOTS:
         clock.setPlaybackRate(10.5);
 
         // WHEN
-        simulateInitialization(&clock, &backendClock);
+        simulateInitializationSync(&clock, &backendClock);
 
         // THEN
         QCOMPARE(backendClock.playbackRate(), clock.playbackRate());
@@ -69,7 +69,7 @@ private Q_SLOTS:
         clock.setPlaybackRate(10.5);
 
         // WHEN
-        simulateInitialization(&clock, &backendClock);
+        simulateInitializationSync(&clock, &backendClock);
         backendClock.cleanup();
 
         // THEN
@@ -79,15 +79,15 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DAnimation::QClock clock;
         Qt3DAnimation::Animation::Clock backendClock;
+        simulateInitializationSync(&clock, &backendClock);
 
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendClock.sceneChangeEvent(change);
+            clock.setEnabled(newValue);
+            backendClock.syncFromFrontEnd(&clock, false);
 
             // THEN
             QCOMPARE(backendClock.isEnabled(), newValue);
@@ -95,10 +95,8 @@ private Q_SLOTS:
         {
             // WHEN
             const double newPlaybackRateValue = 2.0;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("playbackRate");
-            change->setValue(newPlaybackRateValue);
-            backendClock.sceneChangeEvent(change);
+            clock.setPlaybackRate(newPlaybackRateValue);
+            backendClock.syncFromFrontEnd(&clock, false);
 
             // THEN
             QCOMPARE(backendClock.playbackRate(), newPlaybackRateValue);

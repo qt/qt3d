@@ -73,6 +73,7 @@ namespace Render {
 
 RenderSurfaceSelector::RenderSurfaceSelector()
     : FrameGraphNode(FrameGraphNode::Surface)
+    , m_surfaceObj(nullptr)
     , m_surface(nullptr)
     , m_width(0)
     , m_height(0)
@@ -80,45 +81,41 @@ RenderSurfaceSelector::RenderSurfaceSelector()
 {
 }
 
-void RenderSurfaceSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void RenderSurfaceSelector::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderSurfaceSelectorData>>(change);
-    const auto &data = typedChange->data;
-    m_surface = surfaceFromQObject(data.surface);
-    m_renderTargetSize = data.externalRenderTargetSize;
-    m_devicePixelRatio = data.surfacePixelRatio;
+    const QRenderSurfaceSelector *node = qobject_cast<const QRenderSurfaceSelector *>(frontEnd);
+    if (!node)
+        return;
+
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (node->surface() != m_surfaceObj) {
+        m_surfaceObj = node->surface();
+        m_surface = surfaceFromQObject(m_surfaceObj);
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 
     if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
         QWindow *window = static_cast<QWindow *>(m_surface);
-        m_width = window->width();
-        m_height = window->height();
-    }
-}
-
-void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("surface")) {
-            m_surface = surfaceFromQObject(propertyChange->value().value<QObject *>());
+        if (window->width() != m_width) {
+            m_width = window->width();
             markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("externalRenderTargetSize")) {
-            setRenderTargetSize(propertyChange->value().toSize());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
-            m_width = propertyChange->value().toInt();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
-            m_height = propertyChange->value().toInt();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("surfacePixelRatio")) {
-            m_devicePixelRatio = propertyChange->value().toFloat();
+        }
+        if (window->height() != m_height) {
+            m_height = window->height();
             markDirty(AbstractRenderer::FrameGraphDirty);
         }
     }
-    FrameGraphNode::sceneChangeEvent(e);
+
+    if (node->externalRenderTargetSize() != m_renderTargetSize) {
+        m_renderTargetSize = node->externalRenderTargetSize();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+
+    if (node->surfacePixelRatio() != m_devicePixelRatio) {
+        m_devicePixelRatio = node->surfacePixelRatio();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
 
 QSize RenderSurfaceSelector::renderTargetSize() const

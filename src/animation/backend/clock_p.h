@@ -61,15 +61,13 @@ class Q_AUTOTEST_EXPORT Clock : public BackendNode
 public:
     Clock();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e);
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void cleanup();
 
     void setPlaybackRate(double playbackRate) { m_playbackRate = playbackRate; }
     double playbackRate() const { return m_playbackRate; }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     double m_playbackRate;
 };
 

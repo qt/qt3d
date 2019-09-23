@@ -65,13 +65,11 @@ class Q_AUTOTEST_EXPORT SortPolicy : public FrameGraphNode
 public:
     SortPolicy();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     QVector<Qt3DRender::QSortPolicy::SortType> sortTypes() const;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     QVector<Qt3DRender::QSortPolicy::SortType> m_sortTypes;
 };
 

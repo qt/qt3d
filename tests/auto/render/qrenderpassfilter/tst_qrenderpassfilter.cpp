@@ -154,14 +154,11 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeAddedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->subjectId(),renderPassFilter->id());
-        QCOMPARE(change->addedNodeId(), param1->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QVERIFY(arbiter.dirtyNodes.contains(renderPassFilter.data()));
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         renderPassFilter->addParameter(param1);
@@ -169,20 +166,18 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         renderPassFilter->removeParameter(param1);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-        QCOMPARE(nodeRemovedChange->propertyName(), "parameter");
-        QCOMPARE(nodeRemovedChange->subjectId(), renderPassFilter->id());
-        QCOMPARE(nodeRemovedChange->removedNodeId(), param1->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QVERIFY(arbiter.dirtyNodes.contains(renderPassFilter.data()));
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
@@ -190,14 +185,11 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(change->propertyName(), "match");
-        QCOMPARE(change->subjectId(),renderPassFilter->id());
-        QCOMPARE(change->addedNodeId(), filterKey1->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QVERIFY(arbiter.dirtyNodes.contains(renderPassFilter.data()));
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         renderPassFilter->addMatch(filterKey1);
@@ -205,20 +197,18 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 0);
 
         // WHEN
         renderPassFilter->removeMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-        QCOMPARE(nodeRemovedChange->propertyName(), "match");
-        QCOMPARE(nodeRemovedChange->subjectId(), renderPassFilter->id());
-        QCOMPARE(nodeRemovedChange->removedNodeId(), filterKey1->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QVERIFY(arbiter.dirtyNodes.contains(renderPassFilter.data()));
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkParameterBookkeeping()

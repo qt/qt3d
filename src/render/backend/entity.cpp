@@ -95,11 +95,19 @@ void Entity::cleanup()
     if (m_nodeManagers != nullptr) {
         m_nodeManagers->worldMatrixManager()->releaseResource(peerId());
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
-    }
-    if (!m_parentEntityId.isNull())
-        markDirty(AbstractRenderer::EntityHierarchyDirty);
 
-    m_parentEntityId = Qt3DCore::QNodeId();
+        removeFromParentChildHandles();
+
+        for (auto &childHandle : qAsConst(m_childrenHandles)) {
+            auto child = m_nodeManagers->renderNodesManager()->data(childHandle);
+            // children should always exist and have this as parent
+            // if they were destroyed, they would have removed themselves from our m_childrenHandles
+            Q_ASSERT(child);
+            Q_ASSERT(child->m_parentHandle == m_handle);
+            child->m_parentHandle = {};
+        }
+    }
+
     m_worldTransform = HMatrix();
     // Release all component will have to perform their own release when they receive the
     // NodeDeleted notification
@@ -122,6 +130,7 @@ void Entity::cleanup()
     m_localBoundingVolume.reset();
     m_worldBoundingVolume.reset();
     m_worldBoundingVolumeWithChildren.reset();
+    m_parentHandle = {};
     m_boundingDirty = false;
     QBackendNode::setEnabled(false);
 }
@@ -129,6 +138,12 @@ void Entity::cleanup()
 void Entity::setParentHandle(HEntity parentHandle)
 {
     Q_ASSERT(m_nodeManagers);
+
+    if (parentHandle == m_parentHandle)
+        return;
+
+    removeFromParentChildHandles();
+
     m_parentHandle = parentHandle;
     auto parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
     if (parent != nullptr && !parent->m_childrenHandles.contains(m_handle))
@@ -182,12 +197,18 @@ void Entity::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     }
 
     const auto parentID = node->parentEntity() ? node->parentEntity()->id() : Qt3DCore::QNodeId();
-    if (m_parentEntityId != parentID) {
-        m_parentEntityId = parentID;
-        // TODO: change to EventHierarchyDirty and update renderer to
-        //       ensure all jobs are run that depend on Entity hierarchy.
+    auto parentHandle = m_nodeManagers->renderNodesManager()->lookupHandle(parentID);
+
+    // All entity creation is done from top-down and always during the same frame, so
+    // we if we have a valid parent node, we should always be able to resolve the
+    // backend parent at this time
+    Q_ASSERT(!node->parentEntity() || (!parentHandle.isNull() && m_nodeManagers->renderNodesManager()->data(parentHandle)));
+
+    if (parentHandle != m_parentHandle) {
         markDirty(AbstractRenderer::AllDirty);
     }
+
+    setParentHandle(parentHandle);
 
     if (firstTime) {
         m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerId());
@@ -215,8 +236,6 @@ void Entity::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             const auto idAndType = QNodeIdTypePair(c->id(), QNodePrivate::findStaticMetaObject(c->metaObject()));
             addComponent(idAndType);
         }
-
-        markDirty(AbstractRenderer::EntityHierarchyDirty);
     }
 
     BackendNode::syncFromFrontEnd(frontEnd, firstTime);
@@ -238,25 +257,12 @@ Entity *Entity::parent() const
     return m_nodeManagers->renderNodesManager()->data(m_parentHandle);
 }
 
-
-// clearEntityHierarchy and rebuildEntityHierarchy should only be called
-// from UpdateEntityHierarchyJob to update the entity hierarchy for the
-// entire scene at once
-void Entity::clearEntityHierarchy()
+void Entity::removeFromParentChildHandles()
 {
-    m_childrenHandles.clear();
-    m_parentHandle = HEntity();
-}
-
-// clearEntityHierarchy and rebuildEntityHierarchy should only be called
-// from UpdateEntityHierarchyJob to update the entity hierarchy for the
-// entire scene at once
-void Entity::rebuildEntityHierarchy()
-{
-    if (!m_parentEntityId.isNull())
-        setParentHandle(m_nodeManagers->renderNodesManager()->lookupHandle(m_parentEntityId));
-    else
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerId();
+    // remove ourself from our parent's list of children.
+    auto p = parent();
+    if (p)
+        p->removeChildHandle(m_handle);
 }
 
 void Entity::appendChildHandle(HEntity childHandle)

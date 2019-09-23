@@ -76,7 +76,7 @@ public:
 
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void setChannelName(const QString &channelName) { m_channelName = channelName; }
     QString channelName() const { return m_channelName; }
@@ -107,8 +107,6 @@ public:
     MappingType mappingType() const { return m_mappingType; }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     // Properties from QChannelMapping
     QString m_channelName;
     Qt3DCore::QNodeId m_targetId;
