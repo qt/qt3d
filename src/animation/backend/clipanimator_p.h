@@ -80,7 +80,7 @@ public:
     void setNormalizedLocalTime(float normalizedLocalTime);
     float normalizedLocalTime() const { return m_normalizedLocalTime; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void setHandler(Handler *handler) { m_handler = handler; }
 
     // Called by jobs
@@ -116,8 +116,6 @@ public:
     }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Qt3DCore::QNodeId m_clipId;
     Qt3DCore::QNodeId m_mapperId;
     Qt3DCore::QNodeId m_clockId;

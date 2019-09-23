@@ -84,13 +84,11 @@ public:
     float gamma() const;
     void setGamma(float gamma);
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     static QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     float m_xMin;
     float m_yMin;
     float m_xMax;

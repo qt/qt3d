@@ -60,7 +60,7 @@ private Q_SLOTS:
         mapper.addMapping(new Qt3DAnimation::QChannelMapping);
 
         // WHEN
-        simulateInitialization(&mapper, &backendMapper);
+        simulateInitializationSync(&mapper, &backendMapper);
 
         // THEN
         QCOMPARE(backendMapper.peerId(), mapper.id());
@@ -90,7 +90,7 @@ private Q_SLOTS:
         mapper.addMapping(new Qt3DAnimation::QChannelMapping());
 
         // WHEN
-        simulateInitialization(&mapper, &backendMapper);
+        simulateInitializationSync(&mapper, &backendMapper);
         backendMapper.cleanup();
 
         // THEN
@@ -101,19 +101,18 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DAnimation::QChannelMapper mapper;
         Qt3DAnimation::Animation::Handler handler;
         Qt3DAnimation::Animation::ChannelMapper backendMapper;
         backendMapper.setHandler(&handler);
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
+        simulateInitializationSync(&mapper, &backendMapper);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendMapper.sceneChangeEvent(updateChange);
+        mapper.setEnabled(false);
+        backendMapper.syncFromFrontEnd(&mapper, false);
 
         // THEN
-        QCOMPARE(backendMapper.isEnabled(), true);
+        QCOMPARE(backendMapper.isEnabled(), false);
 
         // WHEN
         Qt3DAnimation::QChannelMapping mapping;
@@ -121,11 +120,10 @@ private Q_SLOTS:
         Qt3DAnimation::Animation::ChannelMapping *backendMapping
                 = handler.channelMappingManager()->getOrCreateResource(mappingId);
         backendMapping->setHandler(&handler);
-        simulateInitialization(&mapping, backendMapping);
+        simulateInitializationSync(&mapping, backendMapping);
 
-        auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &mapping);
-        nodeAddedChange->setPropertyName("mappings");
-        backendMapper.sceneChangeEvent(nodeAddedChange);
+        mapper.addMapping(&mapping);
+        backendMapper.syncFromFrontEnd(&mapper, false);
 
         // THEN
         QCOMPARE(backendMapper.mappingIds().size(), 1);
@@ -139,11 +137,10 @@ private Q_SLOTS:
         Qt3DAnimation::Animation::ChannelMapping *backendMapping2
                 = handler.channelMappingManager()->getOrCreateResource(mappingId2);
         backendMapping2->setHandler(&handler);
-        simulateInitialization(&mapping2, backendMapping2);
+        simulateInitializationSync(&mapping2, backendMapping2);
 
-        nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &mapping2);
-        nodeAddedChange->setPropertyName("mappings");
-        backendMapper.sceneChangeEvent(nodeAddedChange);
+        mapper.addMapping(&mapping2);
+        backendMapper.syncFromFrontEnd(&mapper, false);
 
         // THEN
         QCOMPARE(backendMapper.mappingIds().size(), 2);
@@ -154,9 +151,8 @@ private Q_SLOTS:
         QCOMPARE(backendMapper.mappings().last(), backendMapping2);
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &mapping);
-        nodeRemovedChange->setPropertyName("mappings");
-        backendMapper.sceneChangeEvent(nodeRemovedChange);
+        mapper.removeMapping(&mapping);
+        backendMapper.syncFromFrontEnd(&mapper, false);
 
         // THEN
         QCOMPARE(backendMapper.mappingIds().size(), 1);

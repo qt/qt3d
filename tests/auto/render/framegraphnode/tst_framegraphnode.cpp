@@ -33,6 +33,7 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include "testrenderer.h"
+#include "qbackendnodetester.h"
 
 class MyFrameGraphNode : public Qt3DRender::Render::FrameGraphNode
 {
@@ -52,12 +53,12 @@ public:
     {}
 };
 
-class tst_FrameGraphNode : public QObject
+class tst_FrameGraphNode : public  Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 public:
     tst_FrameGraphNode(QObject *parent = nullptr)
-        : QObject(parent)
+        : Qt3DCore::QBackendNodeTester(parent)
     {}
 
     ~tst_FrameGraphNode()
@@ -216,10 +217,9 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
-        const Qt3DCore::QNodeId fgNode1Id = Qt3DCore::QNodeId::createId();
-
-        Qt3DRender::Render::FrameGraphNode *backendFGNode = new MyFrameGraphNode();
+        Qt3DRender::QFrameGraphNode *frontendFGNode = new MyQFrameGraphNode();
         Qt3DRender::QFrameGraphNode *frontendFGChild = new MyQFrameGraphNode();
+        Qt3DRender::Render::FrameGraphNode *backendFGNode = new MyFrameGraphNode();
         Qt3DRender::Render::FrameGraphNode *backendFGChild = new MyFrameGraphNode();
 
         QScopedPointer<Qt3DRender::Render::FrameGraphManager> manager(new Qt3DRender::Render::FrameGraphManager());
@@ -229,44 +229,41 @@ private Q_SLOTS:
         backendFGNode->setRenderer(&renderer);
         backendFGChild->setRenderer(&renderer);
 
-        setIdInternal(backendFGNode, fgNode1Id);
+        setIdInternal(backendFGNode, frontendFGNode->id());
         setIdInternal(backendFGChild, frontendFGChild->id());
 
-        manager->appendNode(fgNode1Id, backendFGNode);
+        manager->appendNode(frontendFGNode->id(), backendFGNode);
         manager->appendNode(frontendFGChild->id(), backendFGChild);
 
         backendFGNode->setFrameGraphManager(manager.data());
         backendFGChild->setFrameGraphManager(manager.data());
 
-
-        // To geneate the type_info in the QNodePrivate of frontendFGChild
-        Qt3DCore::QNodeCreatedChangeGenerator generator(frontendFGChild);
+        simulateInitializationSync(frontendFGNode, backendFGNode);
+        simulateInitializationSync(frontendFGChild, backendFGChild);
 
         QCOMPARE(backendFGNode->childrenIds().size(), 0);
 
         {
             // WHEN
-            renderer.clearDirtyBits(0);
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(frontendFGChild->id());
-            change->setPropertyName("parentFrameGraphUpdated");
-            change->setValue(QVariant::fromValue(fgNode1Id));
-            backendFGChild->sceneChangeEvent(change);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+            frontendFGChild->setParent(frontendFGNode);
+            backendFGChild->syncFromFrontEnd(frontendFGChild, false);
 
             // THEN
             QCOMPARE(backendFGNode->childrenIds().size(), 1);
-            QCOMPARE(backendFGChild->parentId(), fgNode1Id);
+            QCOMPARE(backendFGChild->parentId(), frontendFGNode->id());
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
         {
             // WHEN
-            renderer.clearDirtyBits(0);
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(frontendFGChild->id());
-            change->setPropertyName("parentFrameGraphUpdated");
-            change->setValue(QVariant::fromValue(Qt3DCore::QNodeId()));
-            backendFGChild->sceneChangeEvent(change);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+            frontendFGChild->setParent(Q_NODE_NULLPTR);
+            backendFGChild->syncFromFrontEnd(frontendFGChild, false);
 
             // THEN
             QCOMPARE(backendFGNode->childrenIds().size(), 0);
             QVERIFY(backendFGChild->parentId().isNull());
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
         }
     }
 

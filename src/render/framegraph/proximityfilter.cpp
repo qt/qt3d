@@ -53,29 +53,24 @@ ProximityFilter::ProximityFilter()
 {
 }
 
-void ProximityFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void ProximityFilter::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QProximityFilterData>>(change);
-    const QProximityFilterData &data = typedChange->data;
-    m_entityId = data.entityId;
-    m_distanceThreshold = data.distanceThreshold;
-}
+    const QProximityFilter *node = qobject_cast<const QProximityFilter *>(frontEnd);
+    if (!node)
+        return;
 
-void ProximityFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("entity")) {
-            m_entityId = propertyChange->value().value<Qt3DCore::QNodeId>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("distanceThreshold")) {
-            m_distanceThreshold = propertyChange->value().toFloat();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const auto entityId = Qt3DCore::qIdForNode(node->entity());
+    if (entityId != m_entityId) {
+        m_entityId = entityId;
+        markDirty(AbstractRenderer::FrameGraphDirty);
     }
-    FrameGraphNode::sceneChangeEvent(e);
+
+    if (node->distanceThreshold() != m_distanceThreshold) {
+        m_distanceThreshold = node->distanceThreshold();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
 
 } // namespace Render

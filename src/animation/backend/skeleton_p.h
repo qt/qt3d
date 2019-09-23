@@ -112,8 +112,6 @@ public:
 #endif
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
     QVector<QString> m_jointNames;
     QVector<Qt3DCore::Sqt> m_jointLocalPoses;
 };

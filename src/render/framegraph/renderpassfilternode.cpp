@@ -58,15 +58,32 @@ RenderPassFilter::RenderPassFilter()
 {
 }
 
-void RenderPassFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void RenderPassFilter::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderPassFilterData>>(change);
-    const auto &data = typedChange->data;
-    m_filters = data.matchIds;
-    m_parameterPack.clear();
-    m_parameterPack.setParameters(data.parameterIds);
+    const QRenderPassFilter *node = qobject_cast<const QRenderPassFilter *>(frontEnd);
+    if (!node)
+        return;
+
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (firstTime)
+        m_parameterPack.clear();
+
+    auto parameters = qIdsForNodes(node->parameters());
+    std::sort(std::begin(parameters), std::end(parameters));
+    if (m_parameterPack.parameters() != parameters) {
+        m_parameterPack.setParameters(parameters);
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+
+    auto filterIds = qIdsForNodes(node->matchAny());
+    std::sort(std::begin(filterIds), std::end(filterIds));
+    if (m_filters != filterIds) {
+        m_filters = filterIds;
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
+
 
 QVector<Qt3DCore::QNodeId> RenderPassFilter::filters() const
 {
@@ -87,40 +104,6 @@ void RenderPassFilter::removeFilter(Qt3DCore::QNodeId criterionId)
 QVector<Qt3DCore::QNodeId> RenderPassFilter::parameters() const
 {
     return m_parameterPack.parameters();
-}
-
-void RenderPassFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-
-    switch (e->type()) {
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("match")) {
-            appendFilter(change->addedNodeId());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(change->addedNodeId());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-        break;
-    }
-
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("match")) {
-            removeFilter(change->removedNodeId());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(change->removedNodeId());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-        break;
-    }
-
-    default:
-        break;
-    }
-    FrameGraphNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

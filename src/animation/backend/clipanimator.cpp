@@ -36,6 +36,8 @@
 
 #include "clipanimator_p.h"
 #include <Qt3DAnimation/qclipanimator.h>
+#include <Qt3DAnimation/qchannelmapper.h>
+#include <Qt3DAnimation/qclock.h>
 #include <Qt3DAnimation/private/qclipanimator_p.h>
 #include <Qt3DAnimation/private/animationclip_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
@@ -63,19 +65,6 @@ ClipAnimator::ClipAnimator()
     , m_normalizedLocalTime(-1.0f)
     , m_lastNormalizedLocalTime(-1.0f)
 {
-}
-
-void ClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QClipAnimatorData>>(change);
-    const auto &data = typedChange->data;
-    m_clipId = data.clipId;
-    m_mapperId = data.mapperId;
-    m_clockId = data.clockId;
-    m_running = data.running;
-    m_loops = data.loops;
-    m_normalizedLocalTime = data.normalizedTime;
-    setDirty(Handler::ClipAnimatorDirty);
 }
 
 void ClipAnimator::setClipId(Qt3DCore::QNodeId clipId)
@@ -129,30 +118,32 @@ void ClipAnimator::cleanup()
     m_normalizedLocalTime = m_lastNormalizedLocalTime = -1.0f;
 }
 
-void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void ClipAnimator::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    switch (e->type()) {
-    case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("clip"))
-            setClipId(change->value().value<Qt3DCore::QNodeId>());
-        else if (change->propertyName() == QByteArrayLiteral("channelMapper"))
-            setMapperId(change->value().value<Qt3DCore::QNodeId>());
-        else if (change->propertyName() == QByteArrayLiteral("clock"))
-            setClockId(change->value().value<Qt3DCore::QNodeId>());
-        else if (change->propertyName() == QByteArrayLiteral("running"))
-            setRunning(change->value().toBool());
-        else if (change->propertyName() == QByteArrayLiteral("loops"))
-            m_loops = change->value().toInt();
-        else if (change->propertyName() == QByteArrayLiteral("normalizedTime"))
-            setNormalizedLocalTime(change->value().toFloat());
-        break;
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QClipAnimator *node = qobject_cast<const QClipAnimator *>(frontEnd);
+    if (!node)
+        return;
 
-    default:
-        break;
-    }
-    QBackendNode::sceneChangeEvent(e);
+    auto id = Qt3DCore::qIdForNode(node->clip());
+    if (m_clipId != id)
+        setClipId(id);
+    id = Qt3DCore::qIdForNode(node->channelMapper());
+    if (m_mapperId != id)
+        setMapperId(id);
+    id = Qt3DCore::qIdForNode(node->clock());
+    if (m_clockId != id)
+        setClockId(id);
+
+    if (m_running != node->isRunning())
+        setRunning(node->isRunning());
+    if (m_loops != node->loopCount())
+        m_loops = node->loopCount();
+    if (!qFuzzyCompare(m_normalizedLocalTime, node->normalizedTime()))
+        setNormalizedLocalTime(node->normalizedTime());
+
+    if (firstTime)
+        setDirty(Handler::ClipAnimatorDirty);
 }
 
 void ClipAnimator::sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes)

@@ -34,7 +34,6 @@
 #include <qbackendnodetester.h>
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DRender/private/updateentityhierarchyjob_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -141,10 +140,6 @@ namespace {
 
 void runRequiredJobs(Qt3DRender::TestAspect *test)
 {
-    Qt3DRender::Render::UpdateEntityHierarchyJob updateEntitiesJob;
-    updateEntitiesJob.setManager(test->nodeManagers());
-    updateEntitiesJob.run();
-
     Qt3DRender::Render::UpdateWorldTransformJob updateWorldTransform;
     updateWorldTransform.setRoot(test->sceneRoot());
     updateWorldTransform.setManagers(test->nodeManagers());

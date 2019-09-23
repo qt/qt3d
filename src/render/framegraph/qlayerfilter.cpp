@@ -206,11 +206,7 @@ void QLayerFilter::addLayer(QLayer *layer)
         if (!layer->parent())
             layer->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), layer);
-            change->setPropertyName("layer");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -221,11 +217,7 @@ void QLayerFilter::removeLayer(QLayer *layer)
 {
     Q_ASSERT(layer);
     Q_D(QLayerFilter);
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), layer);
-        change->setPropertyName("layer");
-        d->notifyObservers(change);
-    }
+    d->update();
     d->m_layers.removeOne(layer);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(layer);

@@ -80,7 +80,7 @@ private Q_SLOTS:
         {
             // WHEN
             ClipBlendValue backendClipBlendValue;
-            simulateInitialization(&clipBlendValue, &backendClipBlendValue);
+            simulateInitializationSync(&clipBlendValue, &backendClipBlendValue);
 
             // THEN
             QCOMPARE(backendClipBlendValue.isEnabled(), true);
@@ -91,7 +91,7 @@ private Q_SLOTS:
             // WHEN
             ClipBlendValue backendClipBlendValue;
             clipBlendValue.setEnabled(false);
-            simulateInitialization(&clipBlendValue, &backendClipBlendValue);
+            simulateInitializationSync(&clipBlendValue, &backendClipBlendValue);
 
             // THEN
             QCOMPARE(backendClipBlendValue.peerId(), clipBlendValue.id());
@@ -102,25 +102,23 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DAnimation::QClipBlendValue clipBlendValue;
         ClipBlendValue backendClipBlendValue;
+        simulateInitializationSync(&clipBlendValue, &backendClipBlendValue);
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendClipBlendValue.sceneChangeEvent(change);
+            clipBlendValue.setEnabled(newValue);
+            backendClipBlendValue.syncFromFrontEnd(&clipBlendValue, false);
 
             // THEN
             QCOMPARE(backendClipBlendValue.isEnabled(), newValue);
         }
         {
             // WHEN
-            const Qt3DAnimation::QAnimationClipLoader newValue;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("clip");
-            change->setValue(QVariant::fromValue(newValue.id()));
-            backendClipBlendValue.sceneChangeEvent(change);
+            Qt3DAnimation::QAnimationClipLoader newValue;
+            clipBlendValue.setClip(&newValue);
+            backendClipBlendValue.syncFromFrontEnd(&clipBlendValue, false);
 
             // THEN
             QCOMPARE(backendClipBlendValue.clipId(), newValue.id());

@@ -60,48 +60,44 @@ BlitFramebuffer::BlitFramebuffer()
 {
 }
 
-void BlitFramebuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void BlitFramebuffer::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("sourceRenderTarget")) {
-            m_sourceRenderTargetId = propertyChange->value().value<QNodeId>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationRenderTarget")) {
-            m_destinationRenderTargetId = propertyChange->value().value<QNodeId>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("sourceRect")) {
-            m_sourceRect = propertyChange->value().toRect();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationRect")) {
-            m_destinationRect = propertyChange->value().toRect();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("sourceAttachmentPoint")) {
-            m_sourceAttachmentPoint = propertyChange->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("destinationAttachmentPoint")) {
-            m_destinationAttachmentPoint = propertyChange->value().value<Qt3DRender::QRenderTargetOutput::AttachmentPoint>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("interpolationMethod")) {
-            m_interpolationMethod = propertyChange->value().value<QBlitFramebuffer::InterpolationMethod>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-    }
-    FrameGraphNode::sceneChangeEvent(e);
-}
+    const QBlitFramebuffer *node = qobject_cast<const QBlitFramebuffer *>(frontEnd);
+    if (!node)
+        return;
 
-void BlitFramebuffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QBlitFramebufferData> >(change);
-    const auto &data = typedChange->data;
-    m_sourceRect = data.m_sourceRect;
-    m_destinationRect = data.m_destinationRect;
-    m_sourceRenderTargetId = data.m_sourceRenderTargetId;
-    m_destinationRenderTargetId = data.m_destinationRenderTargetId;
-    m_sourceAttachmentPoint = data.m_sourceAttachmentPoint;
-    m_destinationAttachmentPoint = data.m_destinationAttachmentPoint;
-    m_interpolationMethod = data.m_interpolationMethod;
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (node->sourceRect().toRect() != m_sourceRect) {
+        m_sourceRect = node->sourceRect().toRect();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    if (node->destinationRect().toRect() != m_destinationRect) {
+        m_destinationRect = node->destinationRect().toRect();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    if (node->sourceAttachmentPoint() != m_sourceAttachmentPoint) {
+        m_sourceAttachmentPoint = node->sourceAttachmentPoint();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    if (node->destinationAttachmentPoint() != m_destinationAttachmentPoint) {
+        m_destinationAttachmentPoint = node->destinationAttachmentPoint();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    if (node->interpolationMethod() != m_interpolationMethod) {
+        m_interpolationMethod = node->interpolationMethod();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    const QNodeId destinationNodeId = qIdForNode(node->destination());
+    if (destinationNodeId != m_destinationRenderTargetId) {
+        m_destinationRenderTargetId = destinationNodeId;
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    const QNodeId sourceNodeId = qIdForNode(node->source());
+    if (sourceNodeId != m_sourceRenderTargetId) {
+        m_sourceRenderTargetId = sourceNodeId;
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
 
 Qt3DRender::QRenderTargetOutput::AttachmentPoint BlitFramebuffer::destinationAttachmentPoint() const

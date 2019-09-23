@@ -52,7 +52,6 @@
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
-#include <Qt3DRender/private/updateentityhierarchyjob_p.h>
 #include <Qt3DRender/private/calcgeometrytrianglevolumes_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
@@ -147,10 +146,6 @@ namespace {
 
 void runRequiredJobs(Qt3DRender::TestAspect *test)
 {
-    Qt3DRender::Render::UpdateEntityHierarchyJob updateEntitiesJob;
-    updateEntitiesJob.setManager(test->nodeManagers());
-    updateEntitiesJob.run();
-
     Qt3DRender::Render::UpdateWorldTransformJob updateWorldTransform;
     updateWorldTransform.setRoot(test->sceneRoot());
     updateWorldTransform.setManagers(test->nodeManagers());

@@ -687,6 +687,11 @@ QNodePrivate *QNodePrivate::get(QNode *q)
     return q->d_func();
 }
 
+const QNodePrivate *QNodePrivate::get(const QNode *q)
+{
+    return q->d_func();
+}
+
 /*!
     \internal
  */

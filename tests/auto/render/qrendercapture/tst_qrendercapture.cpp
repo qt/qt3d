@@ -72,17 +72,11 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::QRenderCaptureReply> reply(renderCapture->requestCapture(QRect(10, 15, 20, 50)));
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "renderCaptureRequest");
-        QCOMPARE(change->subjectId(),renderCapture->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        QVERIFY(change->value().canConvert<Qt3DRender::QRenderCaptureRequest>());
-        const Qt3DRender::QRenderCaptureRequest request = change->value().value<Qt3DRender::QRenderCaptureRequest>();
-        QCOMPARE(request.captureId, 1);
-        QCOMPARE(request.rect, QRect(10, 15, 20, 50));
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), renderCapture.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkRenderCaptureReply()

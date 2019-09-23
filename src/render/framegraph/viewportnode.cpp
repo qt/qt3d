@@ -59,16 +59,28 @@ ViewportNode::ViewportNode()
 {
 }
 
-void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+
+void ViewportNode::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QViewportData>>(change);
-    const auto &data = typedChange->data;
-    m_xMin = data.normalizedRect.x();
-    m_xMax = data.normalizedRect.width();
-    m_yMin = data.normalizedRect.y();
-    m_yMax = data.normalizedRect.height();
-    m_gamma = data.gamma;
+    const QViewport *node = qobject_cast<const QViewport *>(frontEnd);
+    if (!node)
+        return;
+
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const QRectF oldRect(m_xMin, m_yMin, m_xMax, m_yMax);
+    if (oldRect != node->normalizedRect()) {
+        m_xMin = node->normalizedRect().x();
+        m_yMin = node->normalizedRect().y();
+        m_xMax = node->normalizedRect().width();
+        m_yMax = node->normalizedRect().height();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+
+    if (node->gamma() != m_gamma) {
+        m_gamma = node->gamma();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
 
 float ViewportNode::xMin() const
@@ -116,25 +128,6 @@ float ViewportNode::gamma() const
 void ViewportNode::setGamma(float gamma)
 {
     m_gamma = gamma;
-}
-
-void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("normalizedRect")) {
-            QRectF normalizedRect = propertyChange->value().toRectF();
-            setXMin(normalizedRect.x());
-            setYMin(normalizedRect.y());
-            setXMax(normalizedRect.width());
-            setYMax(normalizedRect.height());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("gamma")) {
-            setGamma(propertyChange->value().toFloat());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-    }
-    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QRectF ViewportNode::computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport)

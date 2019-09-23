@@ -68,40 +68,20 @@ QVector<QNodeId> StateSetNode::renderStates() const
     return m_renderStates;
 }
 
-void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void StateSetNode::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderStateSetData>>(change);
-    const auto &data = typedChange->data;
-    for (const auto &stateId : qAsConst(data.renderStateIds))
-        addRenderState(stateId);
-}
+    const QRenderStateSet *node = qobject_cast<const QRenderStateSet *>(frontEnd);
+    if (!node)
+        return;
 
-void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("renderState")) {
-            addRenderState(change->addedNodeId());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-        break;
-    }
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
 
-    case PropertyValueRemoved: {
-        const auto propertyChange = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
-            removeRenderState(propertyChange->removedNodeId());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-        break;
+    auto stateIds = qIdsForNodes(node->renderStates());
+    std::sort(std::begin(stateIds), std::end(stateIds));
+    if (m_renderStates != stateIds) {
+        m_renderStates = stateIds;
+        markDirty(AbstractRenderer::FrameGraphDirty);
     }
-
-    default:
-        break;
-    }
-    FrameGraphNode::sceneChangeEvent(e);
 }
 
 void StateSetNode::addRenderState(QNodeId renderStateId)

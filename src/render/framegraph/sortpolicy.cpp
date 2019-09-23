@@ -53,31 +53,24 @@ SortPolicy::SortPolicy()
 {
 }
 
-void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void SortPolicy::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("sortTypes")) {
-            auto sortTypesInt = propertyChange->value().value<QVector<int>>();
-            m_sortTypes.clear();
-            transformVector(sortTypesInt, m_sortTypes);
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
+    const QSortPolicy *node = qobject_cast<const QSortPolicy *>(frontEnd);
+    if (!node)
+        return;
+
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const auto sortTypes = node->sortTypes();
+    if (sortTypes != m_sortTypes) {
+        m_sortTypes = sortTypes;
+        markDirty(AbstractRenderer::FrameGraphDirty);
     }
-    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QVector<QSortPolicy::SortType> SortPolicy::sortTypes() const
 {
     return m_sortTypes;
-}
-
-void SortPolicy::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
-{
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QSortPolicyData>>(change);
-    const QSortPolicyData &data = typedChange->data;
-    m_sortTypes = data.sortTypes;
 }
 
 } // namepace Render

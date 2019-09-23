@@ -35,9 +35,8 @@
 ****************************************************************************/
 
 #include "lerpclipblend_p.h"
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/private/qlerpclipblend_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,17 +56,16 @@ LerpClipBlend::~LerpClipBlend()
 {
 }
 
-void LerpClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void LerpClipBlend::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("blendFactor"))
-            m_blendFactor = change->value().toFloat();
-        else if (change->propertyName() == QByteArrayLiteral("startClip"))
-            m_startClipId = change->value().value<Qt3DCore::QNodeId>();
-        else if (change->propertyName() == QByteArrayLiteral("endClip"))
-            m_endClipId = change->value().value<Qt3DCore::QNodeId>();
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QLerpClipBlend *node = qobject_cast<const QLerpClipBlend *>(frontEnd);
+    if (!node)
+        return;
+
+    m_blendFactor = node->blendFactor();
+    m_startClipId = Qt3DCore::qIdForNode(node->startClip());
+    m_endClipId = Qt3DCore::qIdForNode(node->endClip());
 }
 
 ClipResults LerpClipBlend::doBlend(const QVector<ClipResults> &blendData) const
@@ -83,16 +81,6 @@ ClipResults LerpClipBlend::doBlend(const QVector<ClipResults> &blendData) const
     return blendResults;
 }
 
-void LerpClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    ClipBlendNode::initializeFromPeer(change);
-    const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QLerpClipBlendData>>(change);
-    const Qt3DAnimation::QLerpClipBlendData cloneData = creationChangeData->data;
-    m_startClipId = cloneData.startClipId;
-    m_endClipId = cloneData.endClipId;
-    m_blendFactor = cloneData.blendFactor;
-}
-
 double LerpClipBlend::duration() const
 {
     ClipBlendNode *startNode = clipBlendNodeManager()->lookupNode(m_startClipId);
@@ -101,7 +89,7 @@ double LerpClipBlend::duration() const
     ClipBlendNode *endNode = clipBlendNodeManager()->lookupNode(m_endClipId);
     const double endNodeDuration = endNode ? endNode->duration() : 0.0;
 
-    return (1.0f - m_blendFactor) * startNodeDuration + m_blendFactor * endNodeDuration;
+    return (1.0 - static_cast<double>(m_blendFactor)) * startNodeDuration + static_cast<double>(m_blendFactor) * endNodeDuration;
 }
 
 } // Animation
