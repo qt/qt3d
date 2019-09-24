@@ -29,7 +29,6 @@
 #include <QtTest/QTest>
 #include <Qt3DRender/private/updateshaderdatatransformjob_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
-#include <Qt3DRender/private/updateentityhierarchyjob_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/qrenderaspect.h>
@@ -70,6 +69,23 @@ QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
     return nodes;
 }
 
+QVector<Qt3DCore::NodeTreeChange> nodeTreeChangesForNodes(const QVector<Qt3DCore::QNode *> nodes)
+{
+    QVector<Qt3DCore::NodeTreeChange> nodeTreeChanges;
+    nodeTreeChanges.reserve(nodes.size());
+
+    for (Qt3DCore::QNode *n : nodes) {
+        nodeTreeChanges.push_back({
+                                      n->id(),
+                                      Qt3DCore::QNodePrivate::get(n)->m_typeInfo,
+                                      Qt3DCore::NodeTreeChange::Added,
+                                      n
+                                  });
+    }
+
+    return nodeTreeChanges;
+}
+
 class TestAspect : public Qt3DRender::QRenderAspect
 {
 public:
@@ -80,7 +96,7 @@ public:
         Qt3DRender::QRenderAspect::onRegistered();
 
         const QVector<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
-        d_func()->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(root), nodes);
+        d_func()->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(root), nodeTreeChangesForNodes(nodes));
 
         Qt3DRender::Render::Entity *rootEntity = nodeManagers()->lookupResource<Qt3DRender::Render::Entity, Render::EntityManager>(rootEntityId());
         Q_ASSERT(rootEntity);
@@ -112,10 +128,6 @@ namespace {
 
 void runRequiredJobs(Qt3DRender::TestAspect *test)
 {
-    Qt3DRender::Render::UpdateEntityHierarchyJob updateEntitiesJob;
-    updateEntitiesJob.setManager(test->nodeManagers());
-    updateEntitiesJob.run();
-
     Qt3DRender::Render::UpdateWorldTransformJob updateWorldTransform;
     updateWorldTransform.setRoot(test->sceneRoot());
     updateWorldTransform.setManagers(test->nodeManagers());

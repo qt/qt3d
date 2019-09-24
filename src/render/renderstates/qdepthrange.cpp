@@ -48,7 +48,7 @@ namespace Qt3DRender {
 /*!
     \class Qt3DRender::QDepthRange
     \inmodule Qt3DRender
-    \since 5.13
+    \since 5.14
     \ingroup renderstates
     \brief Enables remapping depth values written into the depth buffer.
 
@@ -65,7 +65,7 @@ namespace Qt3DRender {
     \inherits RenderState
     \inqmlmodule Qt3D.Render
     \ingroup renderstates
-    \since 5.13
+    \since 5.14
     \brief Enables remapping depth values written into the depth buffer.
 
     By default, OpenGL writes scene depth information into the depth buffer in

@@ -66,8 +66,8 @@ public:
     QVector<T *> componentsOfType() const
     {
         QVector<T*> matchComponents;
-        const QComponentVector components = this->components();
-        for (QComponent *component : components) {
+        const QComponentVector comps = this->components();
+        for (QComponent *component : comps) {
             T *typedComponent = qobject_cast<T*>(component);
             if (typedComponent != nullptr)
                 matchComponents.append(typedComponent);

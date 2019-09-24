@@ -78,7 +78,6 @@
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <Qt3DRender/private/updateskinningpalettejob_p.h>
 #include <Qt3DRender/private/updateentitylayersjob_p.h>
-#include <Qt3DRender/private/updateentityhierarchyjob_p.h>
 #include <Qt3DRender/private/renderercache_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/glfence_p.h>
@@ -185,9 +184,9 @@ public:
     void doRender(bool swapBuffers = true) override;
     void cleanGraphicsResources() override;
 
-    bool isRunning() const override { return m_running.load(); }
+    bool isRunning() const override { return m_running.loadRelaxed(); }
 
-    void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *sgRoot) override;
+    void setSceneRoot(Entity *sgRoot) override;
     Entity *sceneRoot() const override { return m_renderSceneRoot; }
 
     FrameGraphNode *frameGraphRoot() const override;
@@ -368,7 +367,6 @@ private:
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
     UpdateEntityLayersJobPtr m_updateEntityLayersJob;
-    UpdateEntityHierarchyJobPtr m_updateEntityHierarchyJob;
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 

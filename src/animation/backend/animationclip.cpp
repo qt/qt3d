@@ -72,29 +72,6 @@ AnimationClip::AnimationClip()
 {
 }
 
-void AnimationClip::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto loaderTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipLoaderData>>(change);
-    if (loaderTypedChange) {
-        const auto &data = loaderTypedChange->data;
-        m_dataType = File;
-        m_source = data.source;
-        if (!m_source.isEmpty())
-            setDirty(Handler::AnimationClipDirty);
-        return;
-    }
-
-    const auto clipTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipChangeData>>(change);
-    if (clipTypedChange) {
-        const auto &data = clipTypedChange->data;
-        m_dataType = Data;
-        m_clipData = data.clipData;
-        if (m_clipData.isValid())
-            setDirty(Handler::AnimationClipDirty);
-        return;
-    }
-}
-
 void AnimationClip::cleanup()
 {
     setEnabled(false);
@@ -121,28 +98,36 @@ void AnimationClip::setStatus(QAnimationClipLoader::Status status)
     }
 }
 
-void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void AnimationClip::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    switch (e->type()) {
-    case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("source")) {
-            Q_ASSERT(m_dataType == File);
-            m_source = change->value().toUrl();
-            setDirty(Handler::AnimationClipDirty);
-        } else if (change->propertyName() == QByteArrayLiteral("clipData")) {
-            Q_ASSERT(m_dataType == Data);
-            m_clipData = change->value().value<Qt3DAnimation::QAnimationClipData>();
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAbstractAnimationClip *node = qobject_cast<const QAbstractAnimationClip *>(frontEnd);
+    if (!node)
+        return;
+
+    const QAnimationClip *clipNode = qobject_cast<const QAnimationClip *>(frontEnd);
+    if (clipNode) {
+        if (firstTime)
+            m_dataType = Data;
+        Q_ASSERT(m_dataType == Data);
+        if (m_clipData != clipNode->clipData()) {
+            m_clipData = clipNode->clipData();
             if (m_clipData.isValid())
                 setDirty(Handler::AnimationClipDirty);
         }
-        break;
     }
 
-    default:
-        break;
+    const QAnimationClipLoader *loaderNode = qobject_cast<const QAnimationClipLoader *>(frontEnd);
+    if (loaderNode) {
+        if (firstTime)
+            m_dataType = File;
+        Q_ASSERT(m_dataType == File);
+        if (m_source != loaderNode->source()) {
+            m_source = loaderNode->source();
+            if (m_clipData.isValid())
+                setDirty(Handler::AnimationClipDirty);
+        }
     }
-    QBackendNode::sceneChangeEvent(e);
 }
 
 /*!

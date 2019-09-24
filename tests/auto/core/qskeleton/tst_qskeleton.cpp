@@ -193,6 +193,9 @@ private Q_SLOTS:
         QCOMPARE(spy.count(), 0);
         QCOMPARE(arbiter.events.size(), 0);
         QCOMPARE(jointCount(), newJointCount);
+
+        // Cleanup
+        QNodePrivate::get(this)->setArbiter(nullptr);
     }
 };
 

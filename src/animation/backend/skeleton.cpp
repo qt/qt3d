@@ -62,14 +62,7 @@ void Skeleton::cleanup()
     m_jointLocalPoses.clear();
 }
 
-void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    // Nothing to initialize from the frontend. We get all of our internal state
-    // from whatever aspect loads the skeleton data - the render aspect in the
-    // default case.
-    Q_UNUSED(change);
-}
-
+// TODOSYNC remove once backend > backend communication no longer requires messages
 void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     // Get the joint names and initial local poses from a change sent

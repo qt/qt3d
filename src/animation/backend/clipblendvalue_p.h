@@ -64,7 +64,7 @@ public:
     inline Qt3DCore::QNodeId clipId() const { return m_clipId; }
     void setClipId(Qt3DCore::QNodeId clipId) { m_clipId = clipId; } // For unit tests
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     inline QVector<Qt3DCore::QNodeId> allDependencyIds() const override
     {
@@ -86,8 +86,6 @@ protected:
     ClipResults doBlend(const QVector<ClipResults> &blendData) const override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Qt3DCore::QNodeId m_clipId;
 
     QVector<Qt3DCore::QNodeId> m_animatorIds;

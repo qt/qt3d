@@ -71,33 +71,30 @@ WaitFence::~WaitFence()
 {
 }
 
-void WaitFence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void WaitFence::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("handle")) {
-            m_data.handle = propertyChange->value();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("handleType")) {
-            m_data.handleType = static_cast<QWaitFence::HandleType>(propertyChange->value().toInt());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
-            m_data.timeout = propertyChange->value().value<quint64>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("waitOnCPU")) {
-            m_data.waitOnCPU = propertyChange->value().toBool();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-    }
-    FrameGraphNode::sceneChangeEvent(e);
-}
+    const QWaitFence *node = qobject_cast<const QWaitFence *>(frontEnd);
+    if (!node)
+        return;
 
-void WaitFence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QWaitFenceData>>(change);
-    const QWaitFenceData &data = typedChange->data;
-    m_data = data;
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (node->handleType() != m_data.handleType) {
+        m_data.handleType = node->handleType();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    if (node->handle() != m_data.handle) {
+        m_data.handle = node->handle();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    if (node->timeout() != m_data.timeout) {
+        m_data.timeout = node->timeout();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
+    if (node->waitOnCPU() != m_data.waitOnCPU) {
+        m_data.waitOnCPU = node->waitOnCPU();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
 
 } // namespace Render

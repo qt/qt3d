@@ -64,7 +64,7 @@ public:
     BlendedClipAnimator();
 
     void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     Qt3DCore::QNodeId blendTreeRootId() const;
     Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
@@ -112,7 +112,6 @@ public:
     }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     Qt3DCore::QNodeId m_blendTreeRootId;
     Qt3DCore::QNodeId m_mapperId;
     Qt3DCore::QNodeId m_clockId;

@@ -83,78 +83,54 @@ void Attribute::cleanup()
     m_nameId = 0;
 }
 
-void Attribute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Attribute::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAttributeData>>(change);
-    const auto &data = typedChange->data;
-    m_bufferId = data.bufferId;
-    m_name = data.name;
-    m_nameId = StringToInt::lookupId(m_name);
-    m_vertexBaseType = data.vertexBaseType;
-    m_vertexSize = data.vertexSize;
-    m_count = data.count;
-    m_byteStride = data.byteStride;
-    m_byteOffset = data.byteOffset;
-    m_divisor = data.divisor;
-    m_attributeType = data.attributeType;
-    m_attributeDirty = true;
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAttribute *node = qobject_cast<const QAttribute *>(frontEnd);
+    if (!node)
+        return;
 
-/*!
-    \fn Qt3DRender::QAttribute::dataSizeChanged(uint vertexSize)
-
-    The signal is emitted with \a vertexSize when the dataSize changes.
-
-*/
-/*!
-    \fn Qt3DRender::QAttribute::dataTypeChanged(Qt3DRender::QAttribute::VertexBaseType vertexBaseType)
-
-    The signal is emitted with \a vertexBaseType when the dataType changed.
-*/
-void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyUpdated: {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-
-        if (propertyName == QByteArrayLiteral("name")) {
-            m_name = propertyChange->value().toString();
-            m_nameId = StringToInt::lookupId(m_name);
-            m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("vertexBaseType")) {
-            m_vertexBaseType = static_cast<QAttribute::VertexBaseType>(propertyChange->value().value<int>());
-            m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("vertexSize")) {
-            m_vertexSize = propertyChange->value().value<uint>();
-            m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("count")) {
-            m_count = propertyChange->value().value<uint>();
-            m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("byteStride")) {
-            m_byteStride = propertyChange->value().value<uint>();
-            m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("byteOffset")) {
-            m_byteOffset = propertyChange->value().value<uint>();
-            m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("divisor")) {
-            m_divisor = propertyChange->value().value<uint>();
-            m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("attributeType")) {
-            m_attributeType = static_cast<QAttribute::AttributeType>(propertyChange->value().value<int>());
-            m_attributeDirty = true;
-        } else  if (propertyName == QByteArrayLiteral("buffer")) {
-            m_bufferId = propertyChange->value().value<QNodeId>();
-            m_attributeDirty = true;
-        }
-        markDirty(AbstractRenderer::AllDirty);
-        break;
+    m_attributeDirty = firstTime;
+    if (m_name != node->name()) {
+        m_name = node->name();
+        m_nameId = StringToInt::lookupId(m_name);
+        m_attributeDirty = true;
+    }
+    if (m_vertexBaseType != node->vertexBaseType()) {
+        m_vertexBaseType = node->vertexBaseType();
+        m_attributeDirty = true;
+    }
+    if (m_vertexSize != node->vertexSize()) {
+        m_vertexSize = node->vertexSize();
+        m_attributeDirty = true;
+    }
+    if (m_count != node->count()) {
+        m_count = node->count();
+        m_attributeDirty = true;
+    }
+    if (m_byteStride != node->byteStride()) {
+        m_byteStride = node->byteStride();
+        m_attributeDirty = true;
+    }
+    if (m_byteOffset != node->byteOffset()) {
+        m_byteOffset = node->byteOffset();
+        m_attributeDirty = true;
+    }
+    if (m_divisor != node->divisor()) {
+        m_divisor = node->divisor();
+        m_attributeDirty = true;
+    }
+    if (m_attributeType != node->attributeType()) {
+        m_attributeType = node->attributeType();
+        m_attributeDirty = true;
+    }
+    const auto bufferId = node->buffer() ? node->buffer()->id() : QNodeId{};
+    if (bufferId != m_bufferId) {
+        m_bufferId = bufferId;
+        m_attributeDirty = true;
     }
 
-    default:
-        break;
-    }
-    BackendNode::sceneChangeEvent(e);
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 void Attribute::unsetDirty()

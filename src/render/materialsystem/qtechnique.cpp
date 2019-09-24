@@ -234,12 +234,7 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
 /*! \internal */
 void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
-    if (m_changeArbiter != nullptr) {
-        auto change = QPropertyUpdatedChangePtr::create(m_id);
-        change->setPropertyName("graphicsApiFilterData");
-        change->setValue(QVariant::fromValue(QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&m_graphicsApiFilter))->m_data));
-        notifyObservers(change);
-    }
+    update();
 }
 
 /*!
@@ -262,11 +257,7 @@ void QTechnique::addFilterKey(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), filterKey);
-            change->setPropertyName("filterKeys");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -277,11 +268,7 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QTechnique);
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), filterKey);
-        change->setPropertyName("filterKeys");
-        d->notifyObservers(change);
-    }
+    d->update();
     d->m_filterKeys.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
@@ -317,11 +304,7 @@ void QTechnique::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
-            change->setPropertyName("parameter");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -332,11 +315,7 @@ void QTechnique::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QTechnique);
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
-        change->setPropertyName("parameter");
-        d->notifyObservers(change);
-    }
+    d->update();
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
@@ -362,11 +341,7 @@ void QTechnique::addRenderPass(QRenderPass *pass)
         if (!pass->parent())
             pass->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), pass);
-            change->setPropertyName("pass");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -377,11 +352,7 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
 {
     Q_ASSERT(pass);
     Q_D(QTechnique);
-    if (d->m_changeArbiter) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), pass);
-        change->setPropertyName("pass");
-        d->notifyObservers(change);
-    }
+    d->update();
     d->m_renderPasses.removeOne(pass);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(pass);
@@ -405,9 +376,16 @@ QVector<QParameter *> QTechnique::parameters() const
     return d->m_parameters;
 }
 
+// TODO Qt 6 -> Remove
 QGraphicsApiFilter *QTechnique::graphicsApiFilter()
 {
     Q_D(QTechnique);
+    return &d->m_graphicsApiFilter;
+}
+
+const QGraphicsApiFilter *QTechnique::graphicsApiFilter() const
+{
+    Q_D(const QTechnique);
     return &d->m_graphicsApiFilter;
 }
 

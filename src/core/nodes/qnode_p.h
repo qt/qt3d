@@ -108,6 +108,7 @@ public:
     QHash<QString, QNode::PropertyTrackingMode> m_trackedPropertiesOverrides;
 
     static QNodePrivate *get(QNode *q);
+    static const QNodePrivate *get(const QNode *q);
     static void nodePtrDeleter(QNode *q);
 
     template<typename Caller, typename NodeType>
@@ -194,7 +195,7 @@ public:
     void removeNode(QNode *node);
     void addNode(QNode *node);
 
-private Q_SLOTS:
+public Q_SLOTS:
     void processNodes();
 
 private:

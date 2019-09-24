@@ -57,6 +57,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+struct QRenderCaptureRequest
+{
+    int captureId;
+    QRect rect;
+};
+
 class QRenderCapturePrivate : public QFrameGraphNodePrivate
 {
 public:
@@ -64,6 +70,7 @@ public:
     ~QRenderCapturePrivate();
     QVector<QRenderCaptureReply *> m_waitingReplies;
     QMutex m_mutex;
+    mutable QVector<QRenderCaptureRequest> m_pendingRequests;
 
     QRenderCaptureReply *createReply(int captureId);
     QRenderCaptureReply *takeReply(int captureId);
@@ -82,6 +89,7 @@ public:
     int m_captureId;
     bool m_complete;
 
+
     Q_DECLARE_PUBLIC(QRenderCaptureReply)
 };
 
@@ -99,12 +107,6 @@ struct RenderCaptureData
 };
 
 typedef QSharedPointer<RenderCaptureData> RenderCaptureDataPtr;
-
-struct QRenderCaptureRequest
-{
-    int captureId;
-    QRect rect;
-};
 
 } // Qt3DRender
 

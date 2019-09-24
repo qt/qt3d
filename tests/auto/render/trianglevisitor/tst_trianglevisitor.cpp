@@ -187,7 +187,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -204,16 +204,16 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -262,7 +262,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 3 * 5);
@@ -287,7 +287,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -311,20 +311,20 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -374,7 +374,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -391,16 +391,16 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -451,7 +451,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 3 * 4);
@@ -473,7 +473,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -497,20 +497,20 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -563,7 +563,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -580,16 +580,16 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -640,7 +640,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 3 * 2);
@@ -656,7 +656,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -680,20 +680,20 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -742,7 +742,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -759,16 +759,16 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -816,7 +816,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 3 * 4);
@@ -839,7 +839,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -863,20 +863,20 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -936,7 +936,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -953,16 +953,16 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
@@ -1012,7 +1012,7 @@ private Q_SLOTS:
         Buffer *backendBuffer = nodeManagers->bufferManager()->getOrCreateResource(dataBuffer->id());
         backendBuffer->setRenderer(&renderer);
         backendBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(dataBuffer.data(), backendBuffer);
+        simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
         indexData.resize(sizeof(uint) * 8);
@@ -1030,7 +1030,7 @@ private Q_SLOTS:
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
         backendIndexBuffer->setRenderer(&renderer);
         backendIndexBuffer->setManager(nodeManagers->bufferManager());
-        simulateInitialization(indexDataBuffer.data(), backendIndexBuffer);
+        simulateInitializationSync(indexDataBuffer.data(), backendIndexBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -1054,20 +1054,20 @@ private Q_SLOTS:
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
-        simulateInitialization(positionAttribute.data(), backendAttribute);
+        simulateInitializationSync(positionAttribute.data(), backendAttribute);
 
         Attribute *backendIndexAttribute = nodeManagers->attributeManager()->getOrCreateResource(indexAttribute->id());
         backendIndexAttribute->setRenderer(&renderer);
-        simulateInitialization(indexAttribute.data(), backendIndexAttribute);
+        simulateInitializationSync(indexAttribute.data(), backendIndexAttribute);
 
         Geometry *backendGeometry = nodeManagers->geometryManager()->getOrCreateResource(geometry->id());
         backendGeometry->setRenderer(&renderer);
-        simulateInitialization(geometry, backendGeometry);
+        simulateInitializationSync(geometry, backendGeometry);
 
         GeometryRenderer *backendRenderer = nodeManagers->geometryRendererManager()->getOrCreateResource(geometryRenderer->id());
         backendRenderer->setRenderer(&renderer);
         backendRenderer->setManager(nodeManagers->geometryRendererManager());
-        simulateInitialization(geometryRenderer.data(), backendRenderer);
+        simulateInitializationSync(geometryRenderer.data(), backendRenderer);
 
         // WHEN
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());

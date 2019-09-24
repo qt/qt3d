@@ -36,6 +36,8 @@
 
 #include "armature_p.h"
 
+#include <Qt3DCore/qarmature.h>
+#include <Qt3DCore/qabstractskeleton.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DCore/private/qarmature_p.h>
@@ -52,32 +54,20 @@ Armature::Armature()
 {
 }
 
+void Armature::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
+{
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QArmature *node = qobject_cast<const QArmature *>(frontEnd);
+    if (!node)
+        return;
+
+    m_skeletonId = node->skeleton() ? node->skeleton()->id() : QNodeId{};
+}
+
 void Armature::cleanup()
 {
     m_skeletonId = Qt3DCore::QNodeId();
     setEnabled(false);
-}
-
-void Armature::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<QNodeCreatedChange<QArmatureData>>(change);
-    m_skeletonId = typedChange->data.skeletonId;
-}
-
-void Armature::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("skeleton"))
-            m_skeletonId = change->value().value<QNodeId>();
-        break;
-    }
-
-    default:
-        break;
-    }
-    QBackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

@@ -37,6 +37,7 @@
 #include "testaspect.h"
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,7 +77,12 @@ TestAspect::TestAspect(Qt3DCore::QNode *root)
     const QVector<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
 
     for (Qt3DCore::QNode *node : nodes)
-        d_func()->createBackendNode(node);
+        d_func()->createBackendNode({
+                                        node->id(),
+                                        Qt3DCore::QNodePrivate::get(node)->m_typeInfo,
+                                        Qt3DCore::NodeTreeChange::Added,
+                                        node
+                                    });
 }
 
 TestAspect::~TestAspect()

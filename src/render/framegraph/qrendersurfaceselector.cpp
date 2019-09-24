@@ -253,24 +253,10 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
 
             if (window) {
                 d->m_widthConn = QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
-                    if (d->m_changeArbiter != nullptr) {
-                        Qt3DCore::QPropertyUpdatedChangePtr change(
-                                    new Qt3DCore::QPropertyUpdatedChange(id()));
-
-                        change->setPropertyName("width");
-                        change->setValue(QVariant::fromValue(width));
-                        d->notifyObservers(change);
-                    }
+                    d->update();
                 });
                 d->m_heightConn = QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
-                    if (d->m_changeArbiter != nullptr) {
-                        Qt3DCore::QPropertyUpdatedChangePtr change(
-                                    new Qt3DCore::QPropertyUpdatedChange(id()));
-
-                        change->setPropertyName("height");
-                        change->setValue(QVariant::fromValue(height));
-                        d->notifyObservers(change);
-                    }
+                    d->update();
                 });
                 d->m_screenConn = QObject::connect(window, &QWindow::screenChanged, [=] (QScreen *screen) {
                     if (screen && surfacePixelRatio() != screen->devicePixelRatio())

@@ -96,7 +96,7 @@ public :
     QTextureGeneratorPtr dataFunctor() const;
     void setDataFunctor(const QTextureGeneratorPtr &generator);
 
-    QVector<QTextureDataUpdate> m_initialDataUpdates;
+    QVector<QTextureDataUpdate> m_pendingDataUpdates;
 
 private:
     QTextureGeneratorPtr m_dataFunctor;

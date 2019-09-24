@@ -80,61 +80,48 @@ void Skeleton::cleanup()
     setEnabled(false);
 }
 
-void Skeleton::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Skeleton::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    Q_ASSERT(m_skeletonManager);
-    m_skeletonHandle = m_skeletonManager->lookupHandle(peerId());
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAbstractSkeleton *node = qobject_cast<const QAbstractSkeleton *>(frontEnd);
+    if (!node)
+        return;
+    const QSkeleton *skeletonNode = qobject_cast<const QSkeleton *>(frontEnd);
+    const QSkeletonLoader *loaderNode = qobject_cast<const QSkeletonLoader *>(frontEnd);
 
-    const auto skeletonCreatedChange = qSharedPointerCast<QSkeletonCreatedChangeBase>(change);
-    switch (skeletonCreatedChange->type()) {
-    case QSkeletonCreatedChangeBase::SkeletonLoader: {
-        const auto loaderTypedChange = qSharedPointerCast<QSkeletonCreatedChange<QSkeletonLoaderData>>(change);
-        const auto &data = loaderTypedChange->data;
-        m_dataType = File;
-        m_source = data.source;
-        m_createJoints = data.createJoints;
-        if (!m_source.isEmpty()) {
-            markDirty(AbstractRenderer::SkeletonDataDirty);
-            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
-        }
-        break;
-    }
+    if (firstTime) {
+        m_skeletonHandle = m_skeletonManager->lookupHandle(peerId());
 
-    case QSkeletonCreatedChangeBase::Skeleton:
-        const auto typedChange = qSharedPointerCast<QSkeletonCreatedChange<QSkeletonData>>(change);
-        const auto &data = typedChange->data;
-        m_dataType = Data;
-        m_rootJointId = data.rootJointId;
-        if (!m_rootJointId.isNull()) {
-            markDirty(AbstractRenderer::SkeletonDataDirty);
-            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
-        }
-        break;
-    }
-}
-
-void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("localPoses")) {
-            // When the animation aspect sends us a new set of local poses, all we
-            // need to do is copy them into place. The existing jobs will then update
-            // the skinning matrix palette.
-            m_skeletonData.localPoses = change->value().value<QVector<Qt3DCore::Sqt>>();
-        } else if (change->propertyName() == QByteArrayLiteral("source")) {
-            Q_ASSERT(m_dataType == File);
-            const auto source = change->value().toUrl();
-            if (source != m_source) {
-                m_source = source;
+        if (skeletonNode) {
+            m_dataType = Data;
+            m_rootJointId = skeletonNode->rootJoint()->id();
+            if (!m_rootJointId.isNull()) {
                 markDirty(AbstractRenderer::SkeletonDataDirty);
                 m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
             }
-        } else if (change->propertyName() == QByteArrayLiteral("createJointsEnabled")) {
-            m_createJoints = change->value().toBool();
-        } else if (change->propertyName() == QByteArrayLiteral("rootJoint")) {
-            m_rootJointId = change->value().value<QNodeId>();
+        }
+
+        if (loaderNode) {
+            m_dataType = File;
+            m_source = loaderNode->source();
+            if (!m_source.isEmpty()) {
+                markDirty(AbstractRenderer::SkeletonDataDirty);
+                m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
+            }
+        }
+    }
+
+    if (loaderNode) {
+        if (loaderNode->source() != m_source) {
+            m_source = loaderNode->source();
+            markDirty(AbstractRenderer::SkeletonDataDirty);
+            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
+        }
+        m_createJoints = loaderNode->isCreateJointsEnabled();
+
+        if ((loaderNode->rootJoint() && loaderNode->rootJoint()->id() != m_rootJointId) ||
+            (!loaderNode->rootJoint() && !m_rootJointId.isNull())) {
+            m_rootJointId = loaderNode->rootJoint() ? loaderNode->rootJoint()->id() : Qt3DCore::QNodeId{};
 
             // If using a QSkeletonLoader to create frontend QJoints, when those joints are
             // set on the skeleton, we end up here. In order to allow the subsequent call
@@ -146,8 +133,25 @@ void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             // If the joint changes, we need to rebuild our internal SkeletonData and
             // the relationships between joints and skeleton. Mark the skeleton data as
             // dirty so that we get a loadSkeletonJob executed to process this skeleton.
-            markDirty(AbstractRenderer::SkeletonDataDirty);
-            m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
+            if (!m_rootJointId.isNull()) {
+                markDirty(AbstractRenderer::SkeletonDataDirty);
+                m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_skeletonHandle);
+            }
+        }
+    }
+}
+
+// TODOSYNC remove once animation aspect no longer requires messages
+void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    switch (e->type()) {
+    case Qt3DCore::PropertyUpdated: {
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("localPoses")) {
+            // When the animation aspect sends us a new set of local poses, all we
+            // need to do is copy them into place. The existing jobs will then update
+            // the skinning matrix palette.
+            m_skeletonData.localPoses = change->value().value<QVector<Qt3DCore::Sqt>>();
         }
 
         break;

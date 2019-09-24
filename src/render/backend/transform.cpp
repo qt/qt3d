@@ -68,17 +68,6 @@ void Transform::cleanup()
     QBackendNode::setEnabled(false);
 }
 
-void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTransformData>>(change);
-    const auto &data = typedChange->data;
-    m_rotation = data.rotation;
-    m_scale = data.scale;
-    m_translation = data.translation;
-    updateMatrix();
-    markDirty(AbstractRenderer::TransformDirty);
-}
-
 Matrix4x4 Transform::transformMatrix() const
 {
     return m_transformMatrix;
@@ -99,6 +88,7 @@ QVector3D Transform::translation() const
     return m_translation;
 }
 
+// TODOSYNC remove once we've found a way to propagate animation changes
 void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     // TODO: Flag the matrix as dirty and update all matrices batched in a job
@@ -118,6 +108,27 @@ void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     markDirty(AbstractRenderer::TransformDirty);
 
     BackendNode::sceneChangeEvent(e);
+}
+
+void Transform::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
+{
+    const Qt3DCore::QTransform *transform = qobject_cast<const Qt3DCore::QTransform *>(frontEnd);
+    if (!transform)
+        return;
+
+    bool dirty = m_rotation != transform->rotation();
+    m_rotation = transform->rotation();
+    dirty |= m_scale != transform->scale3D();
+    m_scale = transform->scale3D();
+    dirty |= m_translation != transform->translation();
+    m_translation = transform->translation();
+
+    if (dirty || firstTime) {
+        updateMatrix();
+        markDirty(AbstractRenderer::TransformDirty);
+    }
+
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 }
 
 void Transform::notifyWorldTransformChanged(const Matrix4x4 &worldMatrix)

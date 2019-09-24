@@ -64,7 +64,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::MemoryBarrier backendMemoryBarrier;
             backendMemoryBarrier.setRenderer(&renderer);
-            simulateInitialization(&memoryBarrier, &backendMemoryBarrier);
+            simulateInitializationSync(&memoryBarrier, &backendMemoryBarrier);
 
             // THEN
             QCOMPARE(backendMemoryBarrier.isEnabled(), true);
@@ -78,7 +78,7 @@ private Q_SLOTS:
             Qt3DRender::Render::MemoryBarrier backendMemoryBarrier;
             backendMemoryBarrier.setRenderer(&renderer);
             memoryBarrier.setEnabled(false);
-            simulateInitialization(&memoryBarrier, &backendMemoryBarrier);
+            simulateInitializationSync(&memoryBarrier, &backendMemoryBarrier);
 
             // THEN
             QCOMPARE(backendMemoryBarrier.peerId(), memoryBarrier.id());
@@ -93,14 +93,15 @@ private Q_SLOTS:
         Qt3DRender::Render::MemoryBarrier backendMemoryBarrier;
         TestRenderer renderer;
         backendMemoryBarrier.setRenderer(&renderer);
+        Qt3DRender::QMemoryBarrier memoryBarrier;
+
+        simulateInitializationSync(&memoryBarrier, &backendMemoryBarrier);
 
         {
              // WHEN
              const bool newValue = false;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("enabled");
-             change->setValue(newValue);
-             backendMemoryBarrier.sceneChangeEvent(change);
+             memoryBarrier.setEnabled(newValue);
+             backendMemoryBarrier.syncFromFrontEnd(&memoryBarrier, false);
 
              // THEN
             QCOMPARE(backendMemoryBarrier.isEnabled(), newValue);
@@ -110,10 +111,8 @@ private Q_SLOTS:
         {
              // WHEN
              const Qt3DRender::QMemoryBarrier::Operations newValue(Qt3DRender::QMemoryBarrier::AtomicCounter|Qt3DRender::QMemoryBarrier::ElementArray);
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("waitOperations");
-             change->setValue(QVariant::fromValue(newValue));
-             backendMemoryBarrier.sceneChangeEvent(change);
+             memoryBarrier.setWaitOperations(newValue);
+             backendMemoryBarrier.syncFromFrontEnd(&memoryBarrier, false);
 
              // THEN
             QCOMPARE(backendMemoryBarrier.waitOperations(), newValue);

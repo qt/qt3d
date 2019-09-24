@@ -73,47 +73,26 @@ void Material::cleanup()
     m_parameterPack.clear();
 }
 
-void Material::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Material::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMaterialData>>(change);
-    const auto &data = typedChange->data;
-    m_effectUuid = data.effectId;
-    m_parameterPack.setParameters(data.parameterIds);
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QMaterial *node = qobject_cast<const QMaterial *>(frontEnd);
+    if (!node)
+        return;
 
-    markDirty(AbstractRenderer::MaterialDirty);
-}
+    auto parameters = qIdsForNodes(node->parameters());
+    std::sort(std::begin(parameters), std::end(parameters));
+    if (m_parameterPack.parameters() != parameters)
+        m_parameterPack.setParameters(parameters);
 
-void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
+    const auto effectId = node->effect() ? node->effect()->id() : QNodeId{};
+    if (effectId != m_effectUuid)
+        m_effectUuid = effectId;
 
-    switch (e->type()) {
-    case PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("effect"))
-            m_effectUuid = change->value().value<QNodeId>();
-        break;
-    }
-
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(change->addedNodeId());
-        break;
-    }
-
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(change->removedNodeId());
-        break;
-    }
-
-    default:
-        break;
-    }
-    markDirty(AbstractRenderer::AllDirty);
-
-    BackendNode::sceneChangeEvent(e);
+    if (firstTime)
+        markDirty(AbstractRenderer::MaterialDirty);
+    else
+        markDirty(AbstractRenderer::AllDirty);
 }
 
 QVector<Qt3DCore::QNodeId> Material::parameters() const

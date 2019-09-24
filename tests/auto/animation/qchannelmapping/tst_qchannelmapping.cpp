@@ -284,24 +284,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 3);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
 
-            auto change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "type");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toInt(), static_cast<int>(QVariant::Vector3D));
-
-            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "componentCount");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toInt(), 3);
-
-            change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "propertyName");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QVERIFY(qstrcmp(reinterpret_cast<const char *>(change->value().value<void *>()), "scale") == 0);
-
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
 
             // WHEN
             mapping.setProperty(QStringLiteral("scale"));
@@ -309,6 +296,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 0);
         }
     }
 
@@ -340,8 +328,8 @@ private Q_SLOTS:
         QFETCH(int, expectedType);
         QFETCH(int, expectedComponentCount);
 
-        Q_UNUSED(expectedType);
-        Q_UNUSED(expectedComponentCount);
+        Q_UNUSED(expectedType)
+        Q_UNUSED(expectedComponentCount)
 
         TestArbiter arbiter;
         Qt3DAnimation::QChannelMapping mapping;
@@ -363,7 +351,7 @@ private Q_SLOTS:
             mapping.setProperty(QString::fromLatin1(propertyName));
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
         }
     }
 

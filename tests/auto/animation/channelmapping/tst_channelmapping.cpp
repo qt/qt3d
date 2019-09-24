@@ -34,6 +34,7 @@
 #include <Qt3DAnimation/qskeletonmapping.h>
 #include <Qt3DAnimation/private/qchannelmapping_p.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qskeleton.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -72,7 +73,7 @@ private Q_SLOTS:
         mapping.setProperty(QLatin1String("foo"));
 
         // WHEN
-        simulateInitialization(&mapping, &backendMapping);
+        simulateInitializationSync(&mapping, &backendMapping);
 
         // THEN
         QCOMPARE(backendMapping.peerId(), mapping.id());
@@ -93,7 +94,7 @@ private Q_SLOTS:
         skeletonMapping.setSkeleton(skeleton);
 
         // WHEN
-        simulateInitialization(&skeletonMapping, &backendSkeletonMapping);
+        simulateInitializationSync(&skeletonMapping, &backendSkeletonMapping);
 
         // THEN
         QCOMPARE(backendSkeletonMapping.peerId(), skeletonMapping.id());
@@ -128,7 +129,7 @@ private Q_SLOTS:
         mapping.setProperty(QLatin1String("foo"));
 
         // WHEN
-        simulateInitialization(&mapping, &backendMapping);
+        simulateInitializationSync(&mapping, &backendMapping);
         backendMapping.setSkeletonId(Qt3DCore::QNodeId::createId());
         backendMapping.cleanup();
 
@@ -146,77 +147,50 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DAnimation::QChannelMapping mapping;
         Qt3DAnimation::Animation::Handler handler;
         Qt3DAnimation::Animation::ChannelMapping backendMapping;
         backendMapping.setHandler(&handler);
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
+        simulateInitializationSync(&mapping, &backendMapping);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendMapping.sceneChangeEvent(updateChange);
+        mapping.setEnabled(false);
+        backendMapping.syncFromFrontEnd(&mapping, false);
 
         // THEN
-        QCOMPARE(backendMapping.isEnabled(), true);
+        QCOMPARE(backendMapping.isEnabled(), false);
 
         // WHEN
-        const QString channelName(QLatin1String("Rotation"));
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("channelName");
-        updateChange->setValue(channelName);
-        backendMapping.sceneChangeEvent(updateChange);
+        const QString channelName(QLatin1String("Translation"));
+        mapping.setChannelName(channelName);
+        backendMapping.syncFromFrontEnd(&mapping, false);
 
         // THEN
         QCOMPARE(backendMapping.channelName(), channelName);
 
         // WHEN
-        const auto id = Qt3DCore::QNodeId::createId();
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("target");
-        updateChange->setValue(QVariant::fromValue(id));
-        backendMapping.sceneChangeEvent(updateChange);
+        const auto target = new Qt3DCore::QTransform();
+        mapping.setTarget(target);
+        mapping.setProperty("translation");
+        backendMapping.syncFromFrontEnd(&mapping, false);
 
         // THEN
-        QCOMPARE(backendMapping.targetId(), id);
-
-        // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("type");
-        updateChange->setValue(QVariant(static_cast<int>(QVariant::Vector3D)));
-        backendMapping.sceneChangeEvent(updateChange);
-
-        // THEN
+        QCOMPARE(backendMapping.targetId(), target->id());
         QCOMPARE(backendMapping.type(), static_cast<int>(QVariant::Vector3D));
+        QCOMPARE(backendMapping.componentCount(), 3);
 
-        // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("componentCount");
-        updateChange->setValue(4);
-        backendMapping.sceneChangeEvent(updateChange);
+        const char *testName = "translation";
+        QCOMPARE(qstrcmp(testName, backendMapping.propertyName()), 0);
 
-        // THEN
-        QCOMPARE(backendMapping.componentCount(), 4);
+//        // WHEN
+//        const auto skeletonId = Qt3DCore::QNodeId::createId();
+//        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
+//        updateChange->setPropertyName("skeleton");
+//        updateChange->setValue(QVariant::fromValue(skeletonId));
+//        backendMapping.sceneChangeEvent(updateChange);
 
-        // WHEN
-        const char *testName = "883";
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("propertyName");
-        updateChange->setValue(QVariant::fromValue(reinterpret_cast<void *>(const_cast<char *>(testName))));
-        backendMapping.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(backendMapping.propertyName(), testName);
-
-        // WHEN
-        const auto skeletonId = Qt3DCore::QNodeId::createId();
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("skeleton");
-        updateChange->setValue(QVariant::fromValue(skeletonId));
-        backendMapping.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(backendMapping.skeletonId(), skeletonId);
+//        // THEN
+//        QCOMPARE(backendMapping.skeletonId(), skeletonId);
     }
 };
 

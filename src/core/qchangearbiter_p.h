@@ -104,9 +104,6 @@ public:
     void unregisterObserver(QObserverInterface *observer,
                             QNodeId nodeId);
 
-    void registerSceneObserver(QSceneObserverInterface *observer);
-    void unregisterSceneObserver(QSceneObserverInterface *observer);
-
     void sceneChangeEvent(const QSceneChangePtr &e) override;         // QLockableObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangePtr &e) override; // QLockableObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangeList &e) override; // QLockableObserverInterface impl
@@ -149,7 +146,6 @@ private:
     // The lists of observers indexed by observable (QNodeId).
     // m_nodeObservations is for observables in the main thread's object tree
     QHash<QNodeId, QObserverList> m_nodeObservations;
-    QList<QSceneObserverInterface *> m_sceneObservers;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.

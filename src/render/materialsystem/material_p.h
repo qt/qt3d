@@ -79,14 +79,12 @@ public:
     ~Material();
     void cleanup();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     QVector<Qt3DCore::QNodeId> parameters() const;
     Qt3DCore::QNodeId effect() const;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     ParameterPack m_parameterPack;
     Qt3DCore::QNodeId m_effectUuid;
 };

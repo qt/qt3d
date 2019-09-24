@@ -239,6 +239,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QObjectPicker, 9>(uri, 2, 9, "ObjectPicker");
     qmlRegisterType<Qt3DRender::QObjectPicker, 13>(uri, 2, 13, "ObjectPicker");
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterUncreatableType<Qt3DRender::QPickEvent, 14>(uri, 2, 14, "PickEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DRayCaster>(uri, 2, 11, "RayCaster");
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DScreenRayCaster>(uri, 2, 11, "ScreenRayCaster");
 
@@ -297,7 +298,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QBlendEquationArguments>(uri, 2, 0, "BlendEquationArguments");
     qmlRegisterType<Qt3DRender::QBlendEquation>(uri, 2, 0, "BlendEquation");
     qmlRegisterType<Qt3DRender::QAlphaTest>(uri, 2, 0, "AlphaTest");
-    qmlRegisterType<Qt3DRender::QDepthRange>(uri, 2, 13, "DepthRange");
+    qmlRegisterType<Qt3DRender::QDepthRange>(uri, 2, 14, "DepthRange");
     qmlRegisterType<Qt3DRender::QDepthTest>(uri, 2, 0, "DepthTest");
     qmlRegisterType<Qt3DRender::QMultiSampleAntiAliasing>(uri, 2, 0, "MultiSampleAntiAliasing");
     qmlRegisterType<Qt3DRender::QNoDepthMask>(uri, 2, 0, "NoDepthMask");

@@ -329,28 +329,21 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-            QCOMPARE(change->propertyName(), "pass");
-            QCOMPARE(change->addedNodeId(), pass.id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
-
         {
             // WHEN
             technique.removeRenderPass(&pass);
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-            QCOMPARE(change->propertyName(), "pass");
-            QCOMPARE(change->removedNodeId(), pass.id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyValueRemoved);
-
-            arbiter.events.clear();
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
         }
     }
 
@@ -368,13 +361,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-            QCOMPARE(change->propertyName(), "parameter");
-            QCOMPARE(change->addedNodeId(), parameter.id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -383,13 +374,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-            QCOMPARE(change->propertyName(), "parameter");
-            QCOMPARE(change->removedNodeId(), parameter.id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyValueRemoved);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
     }
 
@@ -407,13 +396,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-            QCOMPARE(change->propertyName(), "filterKeys");
-            QCOMPARE(change->addedNodeId(), filterKey.id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
 
         {
@@ -422,13 +409,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-            QCOMPARE(change->propertyName(), "filterKeys");
-            QCOMPARE(change->removedNodeId(), filterKey.id());
-            QCOMPARE(change->type(), Qt3DCore::PropertyValueRemoved);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
     }
 
@@ -445,14 +430,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "graphicsApiFilterData");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            Qt3DRender::GraphicsApiFilterData data = change->value().value<Qt3DRender::GraphicsApiFilterData>();
-            QCOMPARE(data.m_major, 4);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
         {
             // WHEN
@@ -460,14 +442,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "graphicsApiFilterData");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            Qt3DRender::GraphicsApiFilterData data = change->value().value<Qt3DRender::GraphicsApiFilterData>();
-            QCOMPARE(data.m_minor, 5);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
         {
             // WHEN
@@ -475,14 +454,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "graphicsApiFilterData");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            Qt3DRender::GraphicsApiFilterData data = change->value().value<Qt3DRender::GraphicsApiFilterData>();
-            QCOMPARE(data.m_vendor, QStringLiteral("AMD"));
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
         {
             // WHEN
@@ -490,14 +466,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "graphicsApiFilterData");
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            Qt3DRender::GraphicsApiFilterData data = change->value().value<Qt3DRender::GraphicsApiFilterData>();
-            QCOMPARE(data.m_profile, Qt3DRender::QGraphicsApiFilter::CompatibilityProfile);
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QVERIFY(arbiter.dirtyNodes.contains(&technique));
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
     }
 };

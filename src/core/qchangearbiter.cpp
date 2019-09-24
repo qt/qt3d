@@ -49,7 +49,6 @@
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qsceneobserverinterface_p.h>
 
 #include <mutex>
 
@@ -117,11 +116,8 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
         if (change.isNull())
             continue;
 
-        if (change->type() == NodeCreated) {
+        if (change->type() == NodeCreated || change->type() == NodeDeleted) {
             Q_ASSERT(false); // messages no longer used
-        } else if (change->type() == NodeDeleted) {
-            for (QSceneObserverInterface *observer : qAsConst(m_sceneObservers))
-                observer->sceneNodeRemoved(change);
         }
 
         const QNodeId nodeId = change->subjectId();
@@ -207,13 +203,6 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     observerList.append(QObserverPair(changeFlags, observer));
 }
 
-// Called from the QAspectThread context, no need to lock
-void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
-{
-    if (!m_sceneObservers.contains(observer))
-        m_sceneObservers << observer;
-}
-
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNodeId nodeId)
 {
     const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
@@ -227,13 +216,6 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNodeId no
         if (observers.isEmpty())
             m_nodeObservations.erase(it);
     }
-}
-
-// Called from the QAspectThread context, no need to lock
-void QChangeArbiter::unregisterSceneObserver(QSceneObserverInterface *observer)
-{
-    if (observer != nullptr)
-        m_sceneObservers.removeOne(observer);
 }
 
 void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)

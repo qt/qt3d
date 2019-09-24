@@ -66,32 +66,26 @@ void DispatchCompute::cleanup()
     m_workGroups[2] = 1;
 }
 
-void DispatchCompute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void DispatchCompute::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QDispatchComputeData>>(change);
-    const auto &data = typedChange->data;
-    m_workGroups[0] = data.workGroupX;
-    m_workGroups[1] = data.workGroupY;
-    m_workGroups[2] = data.workGroupZ;
-}
+    const QDispatchCompute *node = qobject_cast<const QDispatchCompute *>(frontEnd);
+    if (!node)
+        return;
 
-void DispatchCompute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX")) {
-            m_workGroups[0] = propertyChange->value().toInt();
-            markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupY")) {
-            m_workGroups[1] = propertyChange->value().toInt();
-            markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupZ")) {
-            m_workGroups[2] = propertyChange->value().toInt();
-            markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
-        }
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (m_workGroups[0] != node->workGroupX()) {
+        m_workGroups[0] = node->workGroupX();
+        markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
     }
-    FrameGraphNode::sceneChangeEvent(e);
+    if (m_workGroups[1] != node->workGroupY()) {
+        m_workGroups[1] = node->workGroupY();
+        markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
+    }
+    if (m_workGroups[2] != node->workGroupZ()) {
+        m_workGroups[2] = node->workGroupZ();
+        markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::ComputeDirty);
+    }
 }
 
 } // Render

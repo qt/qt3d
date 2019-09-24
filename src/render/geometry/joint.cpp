@@ -39,10 +39,13 @@
 
 #include "joint_p.h"
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DCore/QJoint>
 #include <Qt3DCore/private/qjoint_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,21 +72,7 @@ void Joint::cleanup()
     setEnabled(false);
 }
 
-void Joint::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    Q_ASSERT(m_jointManager);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QJointData>>(change);
-    const auto &data = typedChange->data;
-    m_inverseBindMatrix = data.inverseBindMatrix;
-    m_localPose.rotation = data.rotation;
-    m_localPose.scale = data.scale;
-    m_localPose.translation = data.translation;
-    m_childJointIds = data.childJointIds;
-    m_name = data.name;
-    markDirty(AbstractRenderer::JointDirty);
-    m_jointManager->addDirtyJoint(peerId());
-}
-
+// TODOSYNC remove once animation changes don't use messages anymore
 void Joint::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
@@ -123,8 +112,58 @@ void Joint::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (removedChange->propertyName() == QByteArrayLiteral("childJoint"))
             m_childJointIds.removeOne(removedChange->removedNodeId());
     }
-
     BackendNode::sceneChangeEvent(e);
+}
+
+void Joint::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
+{
+    const Qt3DCore::QJoint *joint = qobject_cast<const Qt3DCore::QJoint *>(frontEnd);
+    if (!joint)
+        return;
+
+    if (m_localPose.scale != joint->scale()) {
+        m_localPose.scale = joint->scale();
+        markDirty(AbstractRenderer::JointDirty);
+        m_jointManager->addDirtyJoint(peerId());
+    }
+    if (m_localPose.rotation != joint->rotation()) {
+        m_localPose.rotation = joint->rotation();
+        markDirty(AbstractRenderer::JointDirty);
+        m_jointManager->addDirtyJoint(peerId());
+    }
+    if (m_localPose.translation != joint->translation()) {
+        m_localPose.translation = joint->translation();
+        markDirty(AbstractRenderer::JointDirty);
+        m_jointManager->addDirtyJoint(peerId());
+    }
+    if (m_inverseBindMatrix != joint->inverseBindMatrix()) {
+        // Setting the inverse bind matrix should be a rare operation. Usually it is
+        // set once and then remains constant for the duration of the skeleton. So just
+        // trigger a rebuild of the skeleton's SkeletonData which will include obtaining
+        // the inverse bind matrix.
+        m_inverseBindMatrix = joint->inverseBindMatrix();
+        m_skeletonManager->addDirtySkeleton(SkeletonManager::SkeletonDataDirty, m_owningSkeleton);
+    }
+    if (m_name != joint->name()) {
+        // Joint name doesn't affect anything in the render aspect so no need
+        // to mark anything as dirty.
+        m_name = joint->name();
+
+        // TODO: Notify other aspects (animation) about the name change.
+    }
+
+    Qt3DCore::QNodeIdVector childIds = qIdsForNodes(joint->childJoints());
+    std::sort(std::begin(childIds), std::end(childIds));
+    if (m_childJointIds != childIds) {
+        m_childJointIds = childIds;
+    }
+
+    if (firstTime) {
+        markDirty(AbstractRenderer::JointDirty);
+        m_jointManager->addDirtyJoint(peerId());
+    }
+
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 }
 
 

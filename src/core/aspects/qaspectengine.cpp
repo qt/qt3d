@@ -89,6 +89,23 @@ QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
     return nodes;
 }
 
+QVector<Qt3DCore::QNode *> getNodesForRemoval(Qt3DCore::QNode *root)
+{
+    using namespace Qt3DCore;
+
+    QVector<QNode *> nodes;
+    QNodeVisitor visitor;
+    visitor.traverse(root, [&nodes](QNode *node) {
+        nodes.append(node);
+
+        // Mark this node as having been handled for destruction so we don't
+        // repeat it unnecessarily in an O(n^2) manner
+        QNodePrivate::get(node)->m_hasBackendNode = false;
+    });
+
+    return nodes;
+}
+
 }
 
 namespace Qt3DCore {
@@ -150,6 +167,11 @@ void QAspectEnginePrivate::initEntity(QEntity *entity)
 void QAspectEnginePrivate::addNode(QNode *node)
 {
     m_aspectManager->addNodes(getNodesForCreation(node));
+}
+
+void QAspectEnginePrivate::removeNode(QNode *node)
+{
+    m_aspectManager->removeNodes(getNodesForRemoval(node));
 }
 
 /*!
@@ -253,6 +275,7 @@ void QAspectEnginePrivate::initialize()
     arbiter->setPostman(m_postman);
     arbiter->setScene(m_scene);
     m_initialized = true;
+    m_aspectManager->setPostConstructorInit(m_scene->postConstructorInit());
 #if QT_CONFIG(qt3d_profile_jobs)
     m_commandDebugger->setAspectEngine(q_func());
     m_commandDebugger->initialize();

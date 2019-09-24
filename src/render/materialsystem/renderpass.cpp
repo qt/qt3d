@@ -52,6 +52,8 @@
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 
+#include <algorithm>
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -77,58 +79,33 @@ void RenderPass::cleanup()
     m_shaderUuid = Qt3DCore::QNodeId();
 }
 
-void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void RenderPass::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderPassData>>(change);
-    const auto &data = typedChange->data;
-    m_filterKeyList = data.filterKeyIds;
-    m_parameterPack.setParameters(data.parameterIds);
-    for (const auto &renderStateId : qAsConst(data.renderStateIds))
-        addRenderState(renderStateId);
-    m_shaderUuid = data.shaderId;
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QRenderPass *node = qobject_cast<const QRenderPass *>(frontEnd);
+    if (!node)
+        return;
 
-void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("filterKeys"))
-            appendFilterKey(change->addedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("shaderProgram"))
-            m_shaderUuid = change->addedNodeId();
-        else if (change->propertyName() == QByteArrayLiteral("renderState"))
-            addRenderState(change->addedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(change->addedNodeId());
-        break;
+    if ((node->shaderProgram() && node->shaderProgram()->id() != m_shaderUuid) ||
+        (!node->shaderProgram() && !m_shaderUuid.isNull())) {
+        m_shaderUuid = node->shaderProgram() ? node->shaderProgram()->id() : QNodeId{};
     }
 
-    case PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("shaderProgram"))
-            m_shaderUuid = change->value().value<Qt3DCore::QNodeId>();
-        break;
-    }
+    auto filterList = qIdsForNodes(node->filterKeys());
+    std::sort(std::begin(filterList), std::end(filterList));
+    if (m_filterKeyList != filterList)
+        m_filterKeyList = filterList;
 
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("filterKeys"))
-            removeFilterKey(change->removedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("shaderProgram"))
-            m_shaderUuid = QNodeId();
-        else if (change->propertyName() == QByteArrayLiteral("renderState"))
-            removeRenderState(change->removedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(change->removedNodeId());
-        break;
-    }
+    auto parameters = qIdsForNodes(node->parameters());
+    std::sort(std::begin(parameters), std::end(parameters));
+    if (m_parameterPack.parameters() != parameters)
+        m_parameterPack.setParameters(parameters);
 
-    default:
-        break;
-    }
+    auto renderStates = qIdsForNodes(node->renderStates());
+    std::sort(std::begin(renderStates), std::end(renderStates));
+    if (m_renderStates != renderStates)
+        m_renderStates = renderStates;
 
-    BackendNode::sceneChangeEvent(e);
     markDirty(AbstractRenderer::AllDirty);
 }
 

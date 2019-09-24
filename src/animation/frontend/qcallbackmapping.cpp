@@ -130,24 +130,15 @@ void QCallbackMapping::setCallback(int type, QAnimationCallback *callback, QAnim
     Q_D(QCallbackMapping);
     if (d->m_type != type) {
         d->m_type = type;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
-        e->setPropertyName("type");
-        e->setValue(QVariant(d->m_type));
-        notifyObservers(e);
+        d->update();
     }
     if (d->m_callback != callback) {
         d->m_callback = callback;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
-        e->setPropertyName("callback");
-        e->setValue(QVariant::fromValue(static_cast<void *>(d->m_callback)));
-        notifyObservers(e);
+        d->update();
     }
     if (d->m_callbackFlags != flags) {
         d->m_callbackFlags = flags;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(id());
-        e->setPropertyName("callbackFlags");
-        e->setValue(QVariant::fromValue(int(d->m_callbackFlags)));
-        notifyObservers(e);
+        d->update();
     }
 }
 

@@ -53,11 +53,17 @@ QNodeId EnvironmentLight::shaderData() const
     return m_shaderDataId;
 }
 
-void EnvironmentLight::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+void EnvironmentLight::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QEnvironmentLightData>>(change);
-    const auto &data = typedChange->data;
-    m_shaderDataId = data.shaderDataId;
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QEnvironmentLight *node = qobject_cast<const QEnvironmentLight *>(frontEnd);
+    if (!node)
+        return;
+
+    if (firstTime) {
+        QEnvironmentLightPrivate *d = static_cast<QEnvironmentLightPrivate *>(QEnvironmentLightPrivate::get(const_cast<Qt3DCore::QNode *>(frontEnd)));
+        m_shaderDataId = d->m_shaderData ? d->m_shaderData->id() : QNodeId{};
+    }
 }
 
 } // namespace Render

@@ -178,7 +178,10 @@ void QSortPolicy::setSortTypes(const QVector<SortType> &sortTypes)
     if (sortTypes != d->m_sortTypes) {
         d->m_sortTypes = sortTypes;
         emit sortTypesChanged(sortTypes);
+
+        const bool wasBlocked = blockNotifications(true);
         emit sortTypesChanged(sortTypesInt());
+        blockNotifications(wasBlocked);
     }
 }
 

@@ -67,7 +67,6 @@ class QSize;
 
 namespace Qt3DCore {
 class QAbstractFrameAdvanceService;
-class QBackendNodeFactory;
 class QEventFilterService;
 class QAbstractAspectJobManager;
 class QServiceLocator;
@@ -114,7 +113,6 @@ public:
         JointDirty          = 1 << 11,
         LayersDirty         = 1 << 12,
         TechniquesDirty     = 1 << 13,
-        EntityHierarchyDirty= 1 << 14,
         LightsDirty         = 1 << 15,
         AllDirty            = 0xffffff
     };
@@ -162,7 +160,7 @@ public:
     virtual Qt3DCore::QAspectJobPtr syncLoadingJobs() = 0;
     virtual Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() = 0;
 
-    virtual void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *root) = 0;
+    virtual void setSceneRoot(Entity *root) = 0;
 
     virtual Entity *sceneRoot() const = 0;
     virtual FrameGraphNode *frameGraphRoot() const = 0;
