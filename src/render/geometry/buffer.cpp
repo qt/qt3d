@@ -113,28 +113,6 @@ void Buffer::updateDataFromGPUToCPU(QByteArray data)
     notifyObservers(e);
 }
 
-void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QBufferData>>(change);
-    const auto &data = typedChange->data;
-    m_data = data.data;
-    m_usage = data.usage;
-    m_syncData = data.syncData;
-    m_access = data.access;
-    m_bufferDirty = true;
-
-    if (!m_data.isEmpty())
-        forceDataUpload();
-
-    m_functor = data.functor;
-    Q_ASSERT(m_manager);
-    if (m_functor)
-        m_manager->addDirtyBuffer(peerId());
-
-    m_manager->addBufferReference(peerId());
-    markDirty(AbstractRenderer::BuffersDirty);
-}
-
 void Buffer::forceDataUpload()
 {
     // We push back an update with offset = -1
@@ -145,40 +123,50 @@ void Buffer::forceDataUpload()
     m_bufferUpdates.push_back(updateNewData);
 }
 
-void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void Buffer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-        if (propertyName == QByteArrayLiteral("data")) {
-            QByteArray newData = propertyChange->value().toByteArray();
-            bool dirty = m_data != newData;
-            m_bufferDirty |= dirty;
-            m_data = newData;
-            if (dirty)
-                forceDataUpload();
-        } else if (propertyName == QByteArrayLiteral("updateData")) {
-            Qt3DRender::QBufferUpdate updateData = propertyChange->value().value<Qt3DRender::QBufferUpdate>();
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QBuffer *node = qobject_cast<const QBuffer *>(frontEnd);
+    if (!node)
+        return;
+
+    if (firstTime && m_manager != nullptr)
+        m_manager->addBufferReference(peerId());
+
+    m_syncData = node->isSyncData();
+    m_access = node->accessType();
+    if (m_usage != node->usage()) {
+        m_usage = node->usage();
+        m_bufferDirty = true;
+    }
+    {
+        QBufferDataGeneratorPtr newGenerator = node->dataGenerator();
+        bool dirty = (newGenerator && m_functor && !(*newGenerator == *m_functor)) ||
+                     (newGenerator.isNull() && !m_functor.isNull()) ||
+                     (!newGenerator.isNull() && m_functor.isNull());
+        m_bufferDirty |= dirty;
+        m_functor = newGenerator;
+        if (m_functor && m_manager != nullptr)
+            m_manager->addDirtyBuffer(peerId());
+    }
+    {
+        QVariant v = node->property("QT3D_updateData");
+        if (v.isValid()) {
+            Qt3DRender::QBufferUpdate updateData = v.value<Qt3DRender::QBufferUpdate>();
             m_data.replace(updateData.offset, updateData.data.size(), updateData.data);
             m_bufferUpdates.push_back(updateData);
             m_bufferDirty = true;
-        } else if (propertyName == QByteArrayLiteral("usage")) {
-            m_usage = static_cast<QBuffer::UsageType>(propertyChange->value().value<int>());
-            m_bufferDirty = true;
-        } else if (propertyName == QByteArrayLiteral("accessType")) {
-            m_access = static_cast<QBuffer::AccessType>(propertyChange->value().value<int>());
-        } else if (propertyName == QByteArrayLiteral("dataGenerator")) {
-            QBufferDataGeneratorPtr newGenerator = propertyChange->value().value<QBufferDataGeneratorPtr>();
-            m_bufferDirty |= !(newGenerator && m_functor && *newGenerator == *m_functor);
-            m_functor = newGenerator;
-            if (m_functor && m_manager != nullptr)
-                m_manager->addDirtyBuffer(peerId());
-        } else if (propertyName == QByteArrayLiteral("syncData")) {
-            m_syncData = propertyChange->value().toBool();
+            const_cast<QBuffer *>(node)->setProperty("QT3D_updateData", {});
+        } else {
+            QByteArray newData = node->data();
+            bool dirty = m_data != newData;
+            m_bufferDirty |= dirty;
+            m_data = newData;
+            if (dirty && !m_data.isEmpty())
+                forceDataUpload();
         }
-        markDirty(AbstractRenderer::BuffersDirty);
     }
-    BackendNode::sceneChangeEvent(e);
+    markDirty(AbstractRenderer::BuffersDirty);
 }
 
 // Called by Renderer once the buffer has been uploaded to OpenGL

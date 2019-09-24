@@ -55,7 +55,7 @@ private Q_SLOTS:
         clip.setSource(QUrl::fromLocalFile("walk.qlip"));
 
         // WHEN
-        simulateInitialization(&clip, &backendClip);
+        simulateInitializationSync(&clip, &backendClip);
 
         // THEN
         QCOMPARE(backendClip.peerId(), clip.id());
@@ -82,7 +82,7 @@ private Q_SLOTS:
         clip.setSource(QUrl::fromLocalFile("walk.qlip"));
 
         // WHEN
-        simulateInitialization(&clip, &backendClip);
+        simulateInitializationSync(&clip, &backendClip);
         backendClip.setSource(QUrl::fromLocalFile("run.qlip"));
         backendClip.cleanup();
 
@@ -96,27 +96,23 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DAnimation::QAnimationClipLoader clip;
         AnimationClip backendClip;
         Handler handler;
         backendClip.setHandler(&handler);
-        backendClip.setDataType(Qt3DAnimation::Animation::AnimationClip::File);
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
+        simulateInitializationSync(&clip, &backendClip);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendClip.sceneChangeEvent(updateChange);
+        clip.setEnabled(false);
+        backendClip.syncFromFrontEnd(&clip, false);
 
         // THEN
-        QCOMPARE(backendClip.isEnabled(), true);
+        QCOMPARE(backendClip.isEnabled(), false);
 
         // WHEN
         const QUrl newSource = QUrl::fromLocalFile("fallover.qlip");
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("source");
-        updateChange->setValue(newSource);
-        backendClip.sceneChangeEvent(updateChange);
+        clip.setSource(newSource);
+        backendClip.syncFromFrontEnd(&clip, false);
 
         // THEN
         QCOMPARE(backendClip.source(), newSource);

@@ -505,6 +505,19 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAttribute::createNodeCreationChange() const
     return creationChange;
 }
 
+
+/*!
+\fn Qt3DRender::QAttribute::dataSizeChanged(uint vertexSize)
+
+The signal is emitted with \a vertexSize when the dataSize changes.
+*/
+/*!
+\fn Qt3DRender::QAttribute::dataTypeChanged(Qt3DRender::QAttribute::VertexBaseType vertexBaseType)
+
+The signal is emitted with \a vertexBaseType when the dataType changed.
+*/
+
+
 } // Qt3DRender
 
 QT_END_NAMESPACE

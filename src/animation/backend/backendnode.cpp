@@ -38,6 +38,8 @@
 ****************************************************************************/
 
 #include "backendnode_p.h"
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,6 +65,13 @@ void BackendNode::setDirty(Handler::DirtyFlag flag)
 {
     Q_ASSERT(m_handler);
     m_handler->setDirty(flag, peerId());
+}
+
+void BackendNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
+{
+    Q_UNUSED(firstTime)
+
+    d_ptr->setEnabled(frontEnd->isEnabled());
 }
 
 } // namespace Animation

@@ -54,22 +54,14 @@ ClipBlendValue::~ClipBlendValue()
 {
 }
 
-void ClipBlendValue::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void ClipBlendValue::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    ClipBlendNode::initializeFromPeer(change);
-    const auto creationChange
-            = qSharedPointerCast<QClipBlendNodeCreatedChange<QClipBlendValueData>>(change);
-    const Qt3DAnimation::QClipBlendValueData data = creationChange->data;
-    m_clipId = data.clipId;
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QClipBlendValue *node = qobject_cast<const QClipBlendValue *>(frontEnd);
+    if (!node)
+        return;
 
-void ClipBlendValue::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("clip"))
-            m_clipId = change->value().value<Qt3DCore::QNodeId>();
-    }
+    m_clipId = Qt3DCore::qIdForNode(node->clip());
 }
 
 ClipResults ClipBlendValue::doBlend(const QVector<ClipResults> &blendData) const

@@ -70,16 +70,23 @@ QRenderCaptureRequest RenderCapture::takeCaptureRequest()
     return m_requestedCaptures.takeFirst();
 }
 
-void RenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void RenderCapture::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("renderCaptureRequest")) {
-            requestCapture(propertyChange->value().value<QRenderCaptureRequest>());
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
+    const QRenderCapture *node = qobject_cast<const QRenderCapture *>(frontEnd);
+    if (!node)
+        return;
+
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const QRenderCapturePrivate *d = static_cast<const QRenderCapturePrivate *>(QFrameGraphNodePrivate::get(node));
+    const auto newPendingsCaptures = std::move(d->m_pendingRequests);
+    if (newPendingsCaptures.size() > 0) {
+        m_requestedCaptures.append(newPendingsCaptures);
+        markDirty(AbstractRenderer::FrameGraphDirty);
     }
-    FrameGraphNode::sceneChangeEvent(e);
+
+    if (firstTime)
+        markDirty(AbstractRenderer::FrameGraphDirty);
 }
 
 // called by render thread

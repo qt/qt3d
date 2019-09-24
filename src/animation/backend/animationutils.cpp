@@ -453,6 +453,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
                 break;
             }
         } else {
+            // TODOSYNC remove once we've found a way to propagate animation changes
             // Construct a property update change, set target, property and delivery options
             auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(mappingData.targetId);
             e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
@@ -469,6 +470,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
         skeleton->sendLocalPoses();
 
     if (isValidNormalizedTime(normalizedLocalTime)) {
+        // TODOSYNC remove once we've found a way to propagate animation changes
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("normalizedTime");
@@ -479,6 +481,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
 
     // If it's the final frame, notify the frontend that we've stopped
     if (finalFrame) {
+        // TODOSYNC remove once we've found a way to propagate animation changes
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("running");

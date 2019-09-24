@@ -196,11 +196,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
         if (!attribute->parent())
             attribute->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), attribute);
-            change->setPropertyName("attribute");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -212,14 +208,10 @@ void QGeometry::removeAttribute(QAttribute *attribute)
 {
     Q_ASSERT(attribute);
     Q_D(QGeometry);
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), attribute);
-        change->setPropertyName("attribute");
-        d->notifyObservers(change);
-    }
     d->m_attributes.removeOne(attribute);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(attribute);
+    d->update();
 }
 
 void QGeometry::setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute)

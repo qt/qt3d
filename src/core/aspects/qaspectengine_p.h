@@ -106,6 +106,7 @@ public:
     void initNode(QNode *node);
     void initEntity(QEntity *entity);
     void addNode(QNode *node);
+    void removeNode(QNode *node);
 
     static QAspectEnginePrivate *get(QAspectEngine *engine);
 };

@@ -41,13 +41,13 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
 class QBackendNode;
-class QNode;
 
 class QBackendNodeTester : public QObject
 {
@@ -57,9 +57,21 @@ public:
 
     // Proxies to allow test classes to call private methods on QBackendNode
     void setPeerId(QBackendNode *backend, QNodeId id);
-    void simulateInitialization(QNode *frontend, QBackendNode *backend);
     void sceneChangeEvent(QBackendNode *backend, const Qt3DCore::QSceneChangePtr &e);
     Qt3DCore::QNodeCreatedChangeBasePtr creationChange(QNode *frontend) const;
+
+    template<class Backend>
+    void simulateInitializationSync(QNode *frontend, Backend *backend)
+    {
+        Q_ASSERT(frontend);
+        Q_ASSERT(backend);
+
+        backend->setPeerId(frontend->id());
+        backend->setEnabled(frontend->isEnabled());
+        backend->syncFromFrontEnd(frontend, true);
+    }
+
+    void simulateInitialization(QNode *frontend, QBackendNode *backend);
 };
 
 } // namespace Qt3DCore

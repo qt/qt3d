@@ -31,6 +31,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qabstractaspect.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
@@ -40,6 +41,7 @@
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
+#include <private/qabstractaspect_p.h>
 #include <private/qpostman_p.h>
 
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
@@ -76,6 +78,8 @@ private slots:
     void checkParentChangeToOtherParent();
     void checkParentChangeFromExistingBackendParentToNewlyCreatedParent();
     void checkBackendNodesCreatedFromTopDown();   //QTBUG-74106
+    void checkBackendNodesCreatedFromTopDownWithReparenting();
+    void checkAllBackendCreationDoneInSingleFrame();
 
     void removingSingleChildNodeFromNode();
     void removingMultipleChildNodesFromNode();
@@ -425,6 +429,124 @@ public:
     }
 };
 
+class TestAspectPrivate;
+class TestAspect : public Qt3DCore::QAbstractAspect
+{
+    Q_OBJECT
+public:
+    explicit TestAspect(QObject *parent = nullptr);
+
+    enum ChangeType { Creation, Destruction };
+
+    void clearNodes()
+    {
+        events.clear();
+        allNodes.clear();
+    }
+
+    void addEvent(const Qt3DCore::QNodeId &id, ChangeType change)
+    {
+        events.push_back(Event{ change, id});
+    }
+
+    QVector<Qt3DCore::QNodeId> filteredEvents(ChangeType change) const
+    {
+        QVector<Qt3DCore::QNodeId> result;
+        for (const auto &event : events) {
+            if (event.type == change)
+                result.push_back(event.nodeId);
+        }
+        return result;
+    }
+
+    struct Event{
+        ChangeType type;
+        Qt3DCore::QNodeId nodeId;
+    };
+
+    mutable QVector<Event> events;
+    mutable QHash<Qt3DCore::QNodeId, Qt3DCore::QNode *> allNodes;
+
+private:
+    Q_DECLARE_PRIVATE(TestAspect)
+    explicit TestAspect(TestAspectPrivate &dd, QObject *parent);
+};
+
+class TestFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    TestFunctor(TestAspect *aspect) : m_aspect(aspect) {}
+
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override
+    {
+        auto node = new Qt3DCore::QBackendNode;
+        m_Nodes.insert(change->subjectId(), node);
+        m_aspect->addEvent(change->subjectId(), TestAspect::Creation);
+        return node;
+    }
+
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override
+    {
+        return m_Nodes.value(id, nullptr);
+    }
+
+    void destroy(Qt3DCore::QNodeId id) const override
+    {
+        if (m_Nodes.contains(id)) {
+            m_aspect->addEvent(id, TestAspect::Destruction);
+            delete m_Nodes.take(id);
+        }
+    }
+
+private:
+    mutable QHash<Qt3DCore::QNodeId, Qt3DCore::QBackendNode *> m_Nodes;
+    TestAspect *m_aspect;
+};
+
+class TestAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+{
+public:
+    TestAspectPrivate() = default;
+    void syncDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QBackendNode *backend,
+                               bool firstTime) const override
+    {
+        Q_UNUSED(backend);
+        auto q = q_func();
+        if (firstTime)
+            q->allNodes.insert(node->id(), node);
+    }
+
+    Q_DECLARE_PUBLIC(TestAspect)
+};
+
+TestAspect::TestAspect(QObject *parent) : TestAspect(*new TestAspectPrivate, parent)
+{
+    registerBackendType<Qt3DCore::QEntity, true>(QSharedPointer<TestFunctor>::create(this));
+    registerBackendType<MyQEntity, true>(QSharedPointer<TestFunctor>::create(this));
+    registerBackendType<MyQNode, true>(QSharedPointer<TestFunctor>::create(this));
+    registerBackendType<Qt3DCore::QNode, true>(QSharedPointer<TestFunctor>::create(this));
+}
+
+TestAspect::TestAspect(TestAspectPrivate &dd, QObject *parent)
+    : Qt3DCore::QAbstractAspect(dd, parent)
+{
+    setObjectName(QStringLiteral("Test Aspect"));
+}
+
+namespace {
+void verifyChildrenCreatedBeforeParents(Qt3DCore::QNode *root, TestAspect *aspect)
+{
+    QSet<Qt3DCore::QNodeId> processedNodes;
+    processedNodes.insert(root->id());
+    for (const auto &nodeId : aspect->filteredEvents(TestAspect::Creation)) {
+        const auto node = aspect->allNodes.value(nodeId);
+        Q_ASSERT(node);
+        const auto parentNode = node->parentNode();
+        QVERIFY(parentNode == nullptr || processedNodes.contains(parentNode->id()));
+        processedNodes.insert(nodeId);
+    }
+}
+}
 
 void tst_Nodes::initTestCase()
 {
@@ -802,17 +924,27 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
     Qt3DCore::QAspectEngine engine;
     QScopedPointer<MyQEntity> root(new MyQEntity());
     root->setArbiterAndEngine(&spy, &engine);
+    auto aspect = new TestAspect;
+    engine.registerAspect(aspect);
+
     MyQNode *child(new MyQNode(root.data()));
     MyQNode *child2(new MyQNode(root.data()));
+
     QCoreApplication::processEvents();
 
     // Due to the way we create root, it has a backend
     QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->m_hasBackendNode == true);
+    QCOMPARE(aspect->events.count(), 2);
+    QCOMPARE(aspect->events[0].type, TestAspect::Creation);
+    QCOMPARE(aspect->events[0].nodeId, child->id());
+    QCOMPARE(aspect->events[1].type, TestAspect::Creation);
+    QCOMPARE(aspect->events[1].nodeId, child2->id());
 
     // THEN
     QCOMPARE(spy.events.size(), 2); // 2 x (1 child added to parent change)
 
     // WHEN -> Reparenting child with backend node to new parent with no backend yet
+    aspect->clearNodes();
     spy.events.clear();
     QScopedPointer<Qt3DCore::QNode> newParent(new MyQNode(root.data()));
     child->setParent(newParent.data());
@@ -831,8 +963,8 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(spy.events.size(), 3);
-    // 1 node removed change, 1 node destroyed change
+    QCOMPARE(spy.events.size(), 2);
+    // 1 node removed change
     // 1 node added to children change
     QVERIFY(Qt3DCore::QNodePrivate::get(newParent.data())->m_hasBackendNode == true);
     QVERIFY(Qt3DCore::QNodePrivate::get(child)->m_hasBackendNode == true);
@@ -846,33 +978,27 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
         QCOMPARE(event->removedNodeId(), child->id());
         QCOMPARE(event->metaObject(), child->metaObject());
 
-        // CHECK event 2 is a Node Destroyed
-        QVERIFY(spy.events.first().wasLocked());
-        const Qt3DCore::QNodeDestroyedChangePtr event2 = spy.events.takeFirst().change().staticCast<Qt3DCore::QNodeDestroyedChange>();
-        QCOMPARE(event2->type(), Qt3DCore::NodeDeleted);
-        QCOMPARE(event2->subtreeIdsAndTypes().size(), 1);
-        QCOMPARE(event2->subtreeIdsAndTypes().first().id, child->id());
+        const Qt3DCore::QPropertyNodeAddedChangePtr event2 = spy.events.takeFirst().change().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(event2->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(event2->addedNodeId(), newParent->id());
+        QCOMPARE(event2->metaObject(), newParent->metaObject());
+        QCOMPARE(event2->subjectId(), root->id());
 
-//        // CHECK event 3 and 4 are Node Created events
-//        const Qt3DCore::QNodeCreatedChangeBasePtr event3 = spy.events.takeFirst().change().staticCast<Qt3DCore::QNodeCreatedChangeBase>();
-//        const Qt3DCore::QNodeCreatedChangeBasePtr event4 = spy.events.takeFirst().change().staticCast<Qt3DCore::QNodeCreatedChangeBase>();
+        QCOMPARE(aspect->events.count(), 3);
 
-//        QCOMPARE(event3->type(), Qt3DCore::NodeCreated);
-//        QCOMPARE(event3->parentId(), root->id());
-//        QCOMPARE(event3->subjectId(), newParent->id());
+        // child backend is destroyed because it was reparented to node without backend (newParent)
+        QCOMPARE(aspect->events[0].type, TestAspect::Destruction);
+        QCOMPARE(aspect->events[0].nodeId, child->id());
 
-//        QCOMPARE(event4->type(), Qt3DCore::NodeCreated);
-//        QCOMPARE(event4->parentId(), newParent->id());
-//        QCOMPARE(event4->subjectId(), child->id());
-
-        const Qt3DCore::QPropertyNodeAddedChangePtr event5 = spy.events.takeFirst().change().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(event5->type(), Qt3DCore::PropertyValueAdded);
-        QCOMPARE(event5->addedNodeId(), newParent->id());
-        QCOMPARE(event5->metaObject(), newParent->metaObject());
-        QCOMPARE(event5->subjectId(), root->id());
+        // newParent and child both get backends created
+        QCOMPARE(aspect->events[1].type, TestAspect::Creation);
+        QCOMPARE(aspect->events[1].nodeId, newParent->id());
+        QCOMPARE(aspect->events[2].type, TestAspect::Creation);
+        QCOMPARE(aspect->events[2].nodeId, child->id());
     }
 
     // WHEN -> Changing parent to node with existing backend
+    aspect->clearNodes();
     child->setParent(child2);
 
     // THEN
@@ -913,8 +1039,8 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(spy.events.size(), 3);
-    // 1 node removed change, 1 node destroyed change,
+    QCOMPARE(spy.events.size(), 2);
+    // 1 node removed change
     // 1 node added to children change
     {
         // CHECK event 1 is a Node Removed event
@@ -925,30 +1051,15 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
         QCOMPARE(event->removedNodeId(), child->id());
         QCOMPARE(event->metaObject(), child->metaObject());
 
-        // CHECK event 2 is a Node Destroyed
-        QVERIFY(spy.events.first().wasLocked());
-        const Qt3DCore::QNodeDestroyedChangePtr event2 = spy.events.takeFirst().change().staticCast<Qt3DCore::QNodeDestroyedChange>();
-        QCOMPARE(event2->type(), Qt3DCore::NodeDeleted);
-        QCOMPARE(event2->subtreeIdsAndTypes().size(), 1);
-        QCOMPARE(event2->subtreeIdsAndTypes().first().id, child->id());
+        const Qt3DCore::QPropertyNodeAddedChangePtr event2 = spy.events.takeFirst().change().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(event2->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(event2->addedNodeId(), newParent2->id());
+        QCOMPARE(event2->metaObject(), newParent2->metaObject());
+        QCOMPARE(event2->subjectId(), root->id());
 
-//        // CHECK event 3 and 4 are Node Created events
-//        const Qt3DCore::QNodeCreatedChangeBasePtr event3 = spy.events.takeFirst().change().staticCast<Qt3DCore::QNodeCreatedChangeBase>();
-//        const Qt3DCore::QNodeCreatedChangeBasePtr event4 = spy.events.takeFirst().change().staticCast<Qt3DCore::QNodeCreatedChangeBase>();
-
-//        QCOMPARE(event3->type(), Qt3DCore::NodeCreated);
-//        QCOMPARE(event3->parentId(), root->id());
-//        QCOMPARE(event3->subjectId(), newParent2->id());
-
-//        QCOMPARE(event4->type(), Qt3DCore::NodeCreated);
-//        QCOMPARE(event4->parentId(), newParent2->id());
-//        QCOMPARE(event4->subjectId(), child->id());
-
-        const Qt3DCore::QPropertyNodeAddedChangePtr event5 = spy.events.takeFirst().change().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(event5->type(), Qt3DCore::PropertyValueAdded);
-        QCOMPARE(event5->addedNodeId(), newParent2->id());
-        QCOMPARE(event5->metaObject(), newParent2->metaObject());
-        QCOMPARE(event5->subjectId(), root->id());
+        // child backend is destroyed because it was reparented to node without backend (newParent)
+        QCOMPARE(aspect->events[0].type, TestAspect::Destruction);
+        QCOMPARE(aspect->events[0].nodeId, child->id());
     }
 }
 
@@ -960,7 +1071,10 @@ void tst_Nodes::checkBackendNodesCreatedFromTopDown()
     // GIVEN
     ObserverSpy spy;
     Qt3DCore::QAspectEngine engine;
+    auto aspect = new TestAspect;
+    engine.registerAspect(aspect);
     QScopedPointer<MyQEntity> root(new MyQEntity());
+
     root->setArbiterAndEngine(&spy, &engine);
     QScopedPointer<Qt3DCore::QNode> parentWithBackend(new MyQNode(root.data()));
 
@@ -974,7 +1088,7 @@ void tst_Nodes::checkBackendNodesCreatedFromTopDown()
     MyQNode *dummyParent(new MyQNode(parentWithBackend.data()));
     MyQNode *child1(new MyQNode(parentWithBackend.data()));
     MyQNode *child2(new MyQNode(dummyParent));
-    child2->setNodeProperty(child1);
+    child1->setNodeProperty(child2);
 
     // THEN - we should have no events because the new nodes have no backend yet
     QCOMPARE(spy.events.count(), 0);
@@ -997,41 +1111,68 @@ void tst_Nodes::checkBackendNodesCreatedFromTopDown()
         QVERIFY(Qt3DCore::QNodePrivate::get(child1)->m_hasBackendNode);
         QVERIFY(Qt3DCore::QNodePrivate::get(child2)->m_hasBackendNode);
 
-        // 1st event: dummyParent creation
-//        const auto event1 = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
-//        QVERIFY(!event1.isNull());
-//        QCOMPARE(event1->type(), Qt3DCore::NodeCreated);
-//        QCOMPARE(event1->parentId(), parentWithBackend->id());
-//        QCOMPARE(event1->subjectId(), dummyParent->id());
+        // 1st event: dummyParent added to parent
+        const auto event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(event->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(event->addedNodeId(), dummyParent->id());
+        QCOMPARE(event->subjectId(), parentWithBackend->id());
 
-//        // 2nd event: child2 creation (even though we constructed child1 first)
-//        const auto event2 = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
-//        QVERIFY(!event2.isNull());
-//        QCOMPARE(event2->type(), Qt3DCore::NodeCreated);
-//        QCOMPARE(event2->parentId(), dummyParent->id());
-//        QCOMPARE(event2->subjectId(), child2->id());
+        // 2nd event: child 1 added to parent
+        const auto event2 = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(event2->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(event2->addedNodeId(), child1->id());
+        QCOMPARE(event2->subjectId(), parentWithBackend->id());
 
-        // 3rd event: dummyParent added to parent
-        const auto event3 = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(event3->type(), Qt3DCore::PropertyValueAdded);
-        QCOMPARE(event3->addedNodeId(), dummyParent->id());
-        QCOMPARE(event3->subjectId(), parentWithBackend->id());
-
-        // 4th event: child1 creation
-//        const auto event4 = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
-//        QVERIFY(!event4.isNull());
-//        QCOMPARE(event4->type(), Qt3DCore::NodeCreated);
-//        QCOMPARE(event4->parentId(), parentWithBackend->id());
-//        QCOMPARE(event4->subjectId(), child1->id());
-
-        // 5th event: child 1 added to parent
-        const auto event5 = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(event5->type(), Qt3DCore::PropertyValueAdded);
-        QCOMPARE(event5->addedNodeId(), child1->id());
-        QCOMPARE(event5->subjectId(), parentWithBackend->id());
+        verifyChildrenCreatedBeforeParents(root.get(), aspect);
     }
+
 }
 
+void tst_Nodes::checkBackendNodesCreatedFromTopDownWithReparenting()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QAspectEngine engine;
+    auto aspect = new TestAspect;
+    engine.registerAspect(aspect);
+    QScopedPointer<MyQEntity> root(new MyQEntity());
+
+    root->setArbiterAndEngine(&spy, &engine);
+    QScopedPointer<Qt3DCore::QNode> parentWithBackend(new MyQNode(root.data()));
+
+    // create parent backend node
+    QCoreApplication::processEvents();
+    QCoreApplication::processEvents();
+    QVERIFY(Qt3DCore::QNodePrivate::get(parentWithBackend.get())->m_hasBackendNode);
+
+    // WHEN -> creating a node with a parent with backend, then reparenting it to another
+    // parent with backend created after it.
+    spy.events.clear();
+    auto node1 = new MyQNode(parentWithBackend.data());
+    auto parent1 = new MyQNode(parentWithBackend.data());
+    node1->setParent(parent1);
+
+    QCoreApplication::processEvents();
+
+    // THEN
+    QVERIFY(node1->parent() == parent1);
+    QVERIFY(parent1->parent() == parentWithBackend.data());
+    verifyChildrenCreatedBeforeParents(root.get(), aspect);
+
+
+    // WHEN -> creating 2 nodes with no parent and reparenting the first to the second
+    auto node2 = new MyQNode(nullptr);
+    auto parent2 = new MyQNode(nullptr);
+    node2->setParent(parent2);
+    parent2->setParent(parentWithBackend.get());
+
+    QCoreApplication::processEvents();
+
+    // THEN
+    QVERIFY(node2->parent() == parent2);
+    QVERIFY(parent2->parent() == parentWithBackend.data());
+    verifyChildrenCreatedBeforeParents(root.get(), aspect);
+}
 
 void tst_Nodes::removingSingleChildNodeFromNode()
 {
@@ -1060,21 +1201,59 @@ void tst_Nodes::removingSingleChildNodeFromNode()
     QVERIFY(child->parent() == nullptr);
     QVERIFY(root->children().count() == 0);
 
-    QCOMPARE(spy.events.size(), 2);
+    QCOMPARE(spy.events.size(), 1);
 
     QVERIFY(spy.events.first().wasLocked());
     const Qt3DCore::QPropertyNodeRemovedChangePtr removalEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
     QCOMPARE(removalEvent->subjectId(), root->id());
     QCOMPARE(removalEvent->removedNodeId(), child->id());
     QCOMPARE(removalEvent->metaObject(), child->metaObject());
+}
 
-    QVERIFY(spy.events.first().wasLocked());
-    const Qt3DCore::QNodeDestroyedChangePtr destructionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeDestroyedChange>();
-    QCOMPARE(destructionEvent->type(), Qt3DCore::NodeDeleted);
-    QCOMPARE(destructionEvent->subjectId(), child->id());
-    QCOMPARE(destructionEvent->subtreeIdsAndTypes().size(), 1);
-    QCOMPARE(destructionEvent->subtreeIdsAndTypes().first().id, child->id());
-    QCOMPARE(destructionEvent->subtreeIdsAndTypes().first().type, child->metaObject());
+void tst_Nodes::checkAllBackendCreationDoneInSingleFrame()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QAspectEngine engine;
+    auto aspect = new TestAspect;
+    engine.registerAspect(aspect);
+
+    QScopedPointer<MyQEntity> root(new MyQEntity());
+    root->setArbiterAndEngine(&spy, &engine);
+
+    QCoreApplication::processEvents();
+
+    // THEN
+    // Due to the way we create root, it has a backend
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->m_hasBackendNode == true);
+    QCOMPARE(aspect->events.count(), 1);
+    QCOMPARE(aspect->events[0].type, TestAspect::Creation);
+    QCOMPARE(aspect->events[0].nodeId, root->id());
+
+    // WHEN -> create 2 children:
+    //  1. a child with parent with backend node
+    //  2. a child with no parent that is then reparented to a parent with backend node
+    aspect->clearNodes();
+    auto child1 = new MyQNode(root.data());
+    auto child2 = new MyQNode;
+    child2->setParent(root.data());
+
+    // THEN - reparented child should have a backend node, but other child should
+    //        still be waiting
+    QCOMPARE(child1->parent(), root.data());
+    QCOMPARE(child2->parent(), root.data());
+    QVERIFY(Qt3DCore::QNodePrivate::get(child1)->m_hasBackendNode == false);
+    QVERIFY(Qt3DCore::QNodePrivate::get(child2)->m_hasBackendNode == true);
+
+    // WHEN
+    QCoreApplication::processEvents();
+
+    // THEN - both children have their backend nodes actually created.
+    QCOMPARE(aspect->events.count(), 2);
+    QCOMPARE(aspect->events[0].type, TestAspect::Creation);
+    QCOMPARE(aspect->events[0].nodeId, child2->id());
+    QCOMPARE(aspect->events[1].type, TestAspect::Creation);
+    QCOMPARE(aspect->events[1].nodeId, child1->id());
 }
 
 void tst_Nodes::removingMultipleChildNodesFromNode()
@@ -1109,24 +1288,15 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
 
     // THEN
     QVERIFY(root->children().count() == 0);
-    QCOMPARE(spy.events.size(), 20);
+    QCOMPARE(spy.events.size(), 10);
     int i = 0;
     for (const ObserverSpy::ChangeRecord &r : qAsConst(spy.events)) {
         QVERIFY(r.wasLocked());
-        const Qt3DCore::QNodeId childId = childIds.at(i / 2);
-        if (i % 2 == 0) {
-            Qt3DCore::QPropertyNodeRemovedChangePtr additionEvent = r.change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
-            QCOMPARE(additionEvent->subjectId(), root->id());
-            QCOMPARE(additionEvent->removedNodeId(), childId);
-            QCOMPARE(additionEvent->metaObject(), &MyQNode::staticMetaObject);
-        } else {
-            const Qt3DCore::QNodeDestroyedChangePtr event = r.change().dynamicCast<Qt3DCore::QNodeDestroyedChange>();
-            QCOMPARE(event->subjectId(), childId);
-            QCOMPARE(event->subtreeIdsAndTypes().count(), 1);
-            QCOMPARE(event->subtreeIdsAndTypes().first().id, childId);
-            QCOMPARE(event->subtreeIdsAndTypes().first().type, &MyQNode::staticMetaObject);
-            QCOMPARE(event->type(), Qt3DCore::NodeDeleted);
-        }
+        const Qt3DCore::QNodeId childId = childIds.at(i);
+        Qt3DCore::QPropertyNodeRemovedChangePtr additionEvent = r.change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
+        QCOMPARE(additionEvent->subjectId(), root->id());
+        QCOMPARE(additionEvent->removedNodeId(), childId);
+        QCOMPARE(additionEvent->metaObject(), &MyQNode::staticMetaObject);
         ++i;
     }
 }
@@ -1174,6 +1344,8 @@ void tst_Nodes::checkConstructionSetParentMix()
     // GIVEN
     ObserverSpy spy;
     Qt3DCore::QAspectEngine engine;
+    auto aspect = new TestAspect;
+    engine.registerAspect(aspect);
     QScopedPointer<MyQEntity> root(new MyQEntity());
 
     // WHEN
@@ -1198,10 +1370,7 @@ void tst_Nodes::checkConstructionSetParentMix()
     QCOMPARE(spy.events.size(), 1); // 1 child added (subTree to root)
 
     // Ensure first event is subTreeRoot
-//    const Qt3DCore::QNodeCreatedChangeBasePtr firstEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
-//    QVERIFY(!firstEvent.isNull());
-//    QCOMPARE(firstEvent->subjectId(), subTreeRoot->id());
-//    QCOMPARE(firstEvent->parentId(), root->id());
+    verifyChildrenCreatedBeforeParents(root.data(), aspect);
 
     const Qt3DCore::QPropertyNodeAddedChangePtr lastEvent = spy.events.takeLast().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
     QVERIFY(!lastEvent.isNull());
@@ -1238,28 +1407,7 @@ void tst_Nodes::checkParentingQEntityToQNode()
     QVERIFY(Qt3DCore::QNodePrivate::get(childEntity)->m_hasBackendNode);
     QVERIFY(Qt3DCore::QNodePrivate::get(childNode)->m_hasBackendNode);
 
-
-    // Ensure first event is subTreeRoot creation
-//    const Qt3DCore::QNodeCreatedChangeBasePtr firstEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
-//    QVERIFY(!firstEvent.isNull());
-//    QCOMPARE(firstEvent->subjectId(), subTreeRoot->id());
-//    QCOMPARE(firstEvent->parentId(), root->id());
-
-//    // Ensure 2nd event is childEntity creation
-//    const Qt3DCore::QNodeCreatedChangeBasePtr secondEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
-//    QVERIFY(!secondEvent.isNull());
-//    QCOMPARE(secondEvent->subjectId(), childEntity->id());
-//    QCOMPARE(secondEvent->parentId(), subTreeRoot->id());
-
-//    // Ensure 3rd event is childNode creation
-//    const Qt3DCore::QNodeCreatedChangeBasePtr thirdEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
-//    QVERIFY(!thirdEvent.isNull());
-//    QCOMPARE(thirdEvent->subjectId(), childNode->id());
-//    QCOMPARE(thirdEvent->parentId(), subTreeRoot->id());
-
-
     // WHEN we reparent the childEntity to the childNode (QNode)
-
     spy.events.clear();
     childEntity->setParent(childNode);
     QCoreApplication::processEvents();
@@ -1267,8 +1415,7 @@ void tst_Nodes::checkParentingQEntityToQNode()
     // THEN we should get
     // - one child removed change for childEntity->subTreeRoot,
     // - one child added change for childEntity->childNode,
-    // - and one property updated event specifying the correct QEntity parent (subTreeRoot)
-    QCOMPARE(spy.events.size(), 3);
+    QCOMPARE(spy.events.size(), 2);
 
     const auto removedEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
     QVERIFY(!removedEvent.isNull());
@@ -1278,11 +1425,15 @@ void tst_Nodes::checkParentingQEntityToQNode()
     QVERIFY(!addedEvent.isNull());
     QCOMPARE(addedEvent->subjectId(), childNode->id());
 
-    const auto parentChangeEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
-    QVERIFY(!parentChangeEvent.isNull());
-    QCOMPARE(parentChangeEvent->subjectId(), childEntity->id());
-    QCOMPARE(parentChangeEvent->propertyName(), "parentEntityUpdated");
-    QCOMPARE(parentChangeEvent->value().value<Qt3DCore::QNodeId>(), subTreeRoot->id());
+    // The arbiter's dirtyNodes should contain the childEntity and
+    //  - the dirty node's parent should be childNode
+    //  - the dirty node's parent entity should be the subTreeRoot
+    QCOMPARE(spy.dirtyNodes.size(), 1);
+    const auto dirtyEntity = qobject_cast<Qt3DCore::QEntity*>(spy.dirtyNodes.takeFirst());
+    QVERIFY(dirtyEntity);
+    QCOMPARE(dirtyEntity, childEntity);
+    QCOMPARE(dirtyEntity->parent(), childNode);
+    QCOMPARE(dirtyEntity->parentEntity(), subTreeRoot);
 }
 
 void tst_Nodes::checkConstructionWithParent()
@@ -1303,8 +1454,7 @@ void tst_Nodes::checkConstructionWithParent()
     auto *node = new MyQNode(root.data());
     root->setNodeProperty(node);
 
-    // THEN we should get one creation change, one child added change
-    // in that order.
+    // THEN we should get one child added change
     QCoreApplication::processEvents();
     QCOMPARE(root->children().count(), 1);
     QCOMPARE(spy.events.size(), 1); // 1 child added change

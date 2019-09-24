@@ -112,15 +112,26 @@ void RenderStateSet::merge(RenderStateSet *other)
 
     // We only add states which are new (different type)
     for (const StateVariant &otherState : otherStates) {
-        const bool hasFoundStateOfSameType = hasStateOfType(otherState.type);
-        if (!hasFoundStateOfSameType)
+        const bool canAdd = canAddStateOfType(otherState.type);
+        if (canAdd)
             m_states.push_back(otherState);
     }
+}
+
+bool RenderStateSet::canAddStateOfType(StateMask type) const
+{
+    return !hasStateOfType(type) || allowMultipleStatesOfType(type);
 }
 
 bool RenderStateSet::hasStateOfType(StateMask type) const
 {
     return (type & stateMask());
+}
+
+bool RenderStateSet::allowMultipleStatesOfType(StateMask type) const
+{
+    return (type == BlendEquationArgumentsMask) ||
+           (type == ClipPlaneMask);
 }
 
 bool RenderStateSet::contains(const StateVariant &ds) const

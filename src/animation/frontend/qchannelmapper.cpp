@@ -87,11 +87,7 @@ void QChannelMapper::addMapping(QAbstractChannelMapping *mapping)
         if (!mapping->parent())
             mapping->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), mapping);
-            change->setPropertyName("mappings");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -99,12 +95,8 @@ void QChannelMapper::removeMapping(QAbstractChannelMapping *mapping)
 {
     Q_ASSERT(mapping);
     Q_D(QChannelMapper);
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), mapping);
-        change->setPropertyName("mappings");
-        d->notifyObservers(change);
-    }
     d->m_mappings.removeOne(mapping);
+    d->update();
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(mapping);
 }

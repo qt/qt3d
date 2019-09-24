@@ -33,7 +33,6 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/filterlayerentityjob_p.h>
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
-#include <Qt3DRender/private/updateentityhierarchyjob_p.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
 #include "testaspect.h"
@@ -633,10 +632,6 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::Entity *backendRoot = aspect->nodeManagers()->renderNodesManager()->getOrCreateResource(entitySubtree->id());
-
-        Qt3DRender::Render::UpdateEntityHierarchyJob updateEntitiesJob;
-        updateEntitiesJob.setManager(aspect->nodeManagers());
-        updateEntitiesJob.run();
 
         Qt3DRender::Render::UpdateTreeEnabledJob updateTreeEnabledJob;
         updateTreeEnabledJob.setRoot(backendRoot);

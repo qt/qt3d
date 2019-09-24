@@ -61,6 +61,7 @@ Texture::Texture()
     // We need backend -> frontend notifications to update the status of the texture
     : BackendNode(ReadWrite)
     , m_dirty(DirtyImageGenerators|DirtyProperties|DirtyParameters|DirtyDataGenerator)
+    , m_sharedTextureId(-1)
 {
 }
 
@@ -130,67 +131,6 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     DirtyFlags dirty;
 
     switch (e->type()) {
-    case PropertyUpdated: {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
-            m_properties.width = propertyChange->value().toInt();
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
-            m_properties.height = propertyChange->value().toInt();
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
-            m_properties.depth = propertyChange->value().toInt();
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
-            m_properties.format = static_cast<QAbstractTexture::TextureFormat>(propertyChange->value().toInt());
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
-            m_properties.target = static_cast<QAbstractTexture::Target>(propertyChange->value().toInt());
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("mipmaps")) {
-            m_properties.generateMipMaps = propertyChange->value().toBool();
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
-            m_parameters.minificationFilter = static_cast<QAbstractTexture::Filter>(propertyChange->value().toInt());
-            dirty = DirtyParameters;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("magnificationFilter")) {
-            m_parameters.magnificationFilter = static_cast<QAbstractTexture::Filter>(propertyChange->value().toInt());
-            dirty = DirtyParameters;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
-            m_parameters.wrapModeX = static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
-            dirty = DirtyParameters;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeY")) {
-            m_parameters.wrapModeY = static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
-            dirty = DirtyParameters;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeZ")) {
-            m_parameters.wrapModeZ =static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
-            dirty = DirtyParameters;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumAnisotropy")) {
-            m_parameters.maximumAnisotropy = propertyChange->value().toFloat();
-            dirty = DirtyParameters;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonFunction")) {
-            m_parameters.comparisonFunction = propertyChange->value().value<QAbstractTexture::ComparisonFunction>();
-            dirty = DirtyParameters;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonMode")) {
-            m_parameters.comparisonMode = propertyChange->value().value<QAbstractTexture::ComparisonMode>();
-            dirty = DirtyParameters;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("layers")) {
-            m_properties.layers = propertyChange->value().toInt();
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("samples")) {
-            m_properties.samples = propertyChange->value().toInt();
-            dirty = DirtyProperties;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("generator")) {
-            setDataGenerator(propertyChange->value().value<QTextureGeneratorPtr>());
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("textureId")) {
-            m_sharedTextureId = propertyChange->value().toInt();
-            dirty = DirtySharedTextureId;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("updateData")) {
-            Qt3DRender::QTextureDataUpdate updateData = propertyChange->value().value<Qt3DRender::QTextureDataUpdate>();
-            addTextureDataUpdate(updateData);
-        }
-        break;
-    }
 
     case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
@@ -215,6 +155,62 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     addDirtyFlag(dirty);
     BackendNode::sceneChangeEvent(e);
+}
+
+void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
+{
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAbstractTexture *node = qobject_cast<const QAbstractTexture *>(frontEnd);
+    if (!node)
+        return;
+
+    TextureProperties p = m_properties;
+    p.width = node->width();
+    p.height = node->height();
+    p.depth = node->depth();
+    p.format = node->format();
+    p.target = node->target();
+    p.generateMipMaps = node->generateMipMaps();
+    p.layers = node->layers();
+    p.samples = node->samples();
+    if (p != m_properties) {
+        m_properties = p;
+        addDirtyFlag(DirtyProperties);
+    }
+
+    TextureParameters q = m_parameters;
+    q.magnificationFilter = node->magnificationFilter();
+    q.minificationFilter = node->minificationFilter();
+    q.wrapModeX = const_cast<QAbstractTexture *>(node)->wrapMode()->x();
+    q.wrapModeY = const_cast<QAbstractTexture *>(node)->wrapMode()->y();
+    q.wrapModeZ = const_cast<QAbstractTexture *>(node)->wrapMode()->z();
+    q.maximumAnisotropy = node->maximumAnisotropy();
+    q.comparisonFunction = node->comparisonFunction();
+    q.comparisonMode = node->comparisonMode();
+    if (q != m_parameters) {
+        m_parameters = q;
+        addDirtyFlag(DirtyParameters);
+    }
+
+    auto newGenerator = node->dataGenerator();
+    if (newGenerator != m_dataFunctor) {
+        setDataGenerator(newGenerator);
+    }
+
+    QAbstractTexturePrivate *dnode = dynamic_cast<QAbstractTexturePrivate *>(QAbstractTexturePrivate::get(const_cast<QAbstractTexture *>(node)));
+    if (dnode) {
+        for (const QTextureDataUpdate &pendingUpdate : dnode->m_pendingDataUpdates)
+            addTextureDataUpdate(pendingUpdate);
+        dnode->m_pendingDataUpdates.clear();
+
+        for (const auto imgNode : dnode->m_textureImages)
+            addTextureImage(imgNode->id());
+    }
+
+    if (dnode->m_sharedTextureId != m_sharedTextureId) {
+        m_sharedTextureId = dnode->m_sharedTextureId;
+        addDirtyFlag(DirtySharedTextureId);
+    }
 }
 
 // Called by sceneChangeEvent or TextureDownloadRequest (both in AspectThread context)
@@ -308,7 +304,7 @@ void Texture::updatePropertiesAndNotify(const TextureUpdateInfo &updateInfo)
 
 bool Texture::isValid(TextureImageManager *manager) const
 {
-    for (const QNodeId id : m_textureImageIds) {
+    for (const QNodeId &id : m_textureImageIds) {
         TextureImage *img = manager->lookupResource(id);
         if (img == nullptr)
             return false;
@@ -340,7 +336,7 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_dataFunctor = data.dataFunctor;
     m_sharedTextureId = data.sharedTextureId;
 
-    for (const QNodeId imgId : data.textureImageIds)
+    for (const QNodeId &imgId : data.textureImageIds)
         addTextureImage(imgId);
 
     const QVector<QTextureDataUpdate> initialDataUpdates = data.initialDataUpdates;

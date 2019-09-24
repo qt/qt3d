@@ -43,6 +43,7 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,48 +58,25 @@ LayerFilterNode::LayerFilterNode()
 {
 }
 
-void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void LayerFilterNode::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerFilterData>>(change);
-    const auto &data = typedChange->data;
-    setLayerIds(data.layerIds);
-    m_filterMode = data.filterMode;
-}
+    const QLayerFilter *node = qobject_cast<const QLayerFilter *>(frontEnd);
+    if (!node)
+        return;
 
-void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("layer"))
-            m_layerIds.append(change->addedNodeId());
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (m_filterMode != node->filterMode()) {
+        m_filterMode = node->filterMode();
         markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::LayersDirty);
-        break;
     }
 
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("layer"))
-            m_layerIds.removeOne(change->removedNodeId());
+    auto layerIds = qIdsForNodes(node->layers());
+    std::sort(std::begin(layerIds), std::end(layerIds));
+    if (m_layerIds != layerIds) {
+        m_layerIds = layerIds;
         markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::LayersDirty);
-        break;
     }
-
-    case PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("filterMode")) {
-            m_filterMode = static_cast<QLayerFilter::FilterMode>(change->value().value<int>());
-            markDirty(AbstractRenderer::FrameGraphDirty|AbstractRenderer::LayersDirty);
-            break;
-        }
-    }
-
-    default:
-        break;
-    }
-
-    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QNodeIdVector LayerFilterNode::layerIds() const

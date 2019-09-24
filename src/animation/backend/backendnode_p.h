@@ -68,6 +68,8 @@ public:
 
     void setHandler(Handler *handler);
 
+    virtual void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
+
 protected:
     void setDirty(Handler::DirtyFlag flag);
     Handler *m_handler;

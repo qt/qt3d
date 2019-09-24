@@ -56,8 +56,6 @@
 
 #include <Qt3DCore/private/qaspectjobproviderinterface_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/private/qbackendnodefactory_p.h>
-#include <Qt3DCore/private/qsceneobserverinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <QtCore/private/qobject_p.h>
 
@@ -102,32 +100,38 @@ private:
 
 } // Debug
 
+struct NodeTreeChange
+{
+    enum NodeTreeChangeType {
+        Added = 0,
+        Removed = 1
+    };
+    Qt3DCore::QNodeId id;
+    const QMetaObject *metaObj;
+    NodeTreeChangeType type;
+    Qt3DCore::QNode *node;
+};
+
 class Q_3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
         : public QObjectPrivate
-        , public QBackendNodeFactory
-        , public QSceneObserverInterface
         , public QAspectJobProviderInterface
 {
 public:
     QAbstractAspectPrivate();
     ~QAbstractAspectPrivate();
 
-    void setRootAndCreateNodes(QEntity *rootObject, const QVector<QNode *> &nodes);
-    void createNodes(const QVector<QNode *> &nodes);
+    void setRootAndCreateNodes(QEntity *rootObject, const QVector<NodeTreeChange> &nodesTreeChanges);
 
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) override;
 
-    QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const override;
-    QBackendNode *createBackendNode(QNode *node) const;
-    void clearBackendNode(const QNodeDestroyedChangePtr &change) const;
+    QBackendNode *createBackendNode(const NodeTreeChange &change) const;
+    void clearBackendNode(const NodeTreeChange &change) const;
     void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
     virtual void syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const;
     void sendPropertyMessages(QNode *node, QBackendNode *backend) const;
-
-    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) override;
 
     virtual void onEngineAboutToShutdown();
 
@@ -143,7 +147,7 @@ public:
         SupportsSyncing = 1 << 0
     };
     using BackendNodeMapperAndInfo = QPair<QBackendNodeMapperPtr, NodeMapperInfo>;
-    BackendNodeMapperAndInfo mapperForNode(QNode *n) const;
+    BackendNodeMapperAndInfo mapperForNode(const QMetaObject *metaObj) const;
 
     QEntity *m_root;
     QNodeId m_rootId;

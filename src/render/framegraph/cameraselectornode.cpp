@@ -57,25 +57,19 @@ CameraSelector::CameraSelector()
 {
 }
 
-void CameraSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void CameraSelector::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraSelectorData>>(change);
-    const auto &data = typedChange->data;
-    m_cameraUuid = data.cameraId;
-}
+    const QCameraSelector *node = qobject_cast<const QCameraSelector *>(frontEnd);
+    if (!node)
+        return;
 
-void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("camera")) {
-            m_cameraUuid = propertyChange->value().value<QNodeId>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const QNodeId cameraId = qIdForNode(node->camera());
+    if (m_cameraUuid != cameraId) {
+        m_cameraUuid = cameraId;
+        markDirty(AbstractRenderer::FrameGraphDirty);
     }
-    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QNodeId CameraSelector::cameraUuid() const

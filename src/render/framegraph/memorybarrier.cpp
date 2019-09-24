@@ -62,24 +62,18 @@ QMemoryBarrier::Operations MemoryBarrier::waitOperations() const
     return m_waitOperations;
 }
 
-void MemoryBarrier::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void MemoryBarrier::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("waitOperations")) {
-            m_waitOperations = propertyChange->value().value<QMemoryBarrier::Operations>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
-    }
-    FrameGraphNode::sceneChangeEvent(e);
-}
+    const QMemoryBarrier *node = qobject_cast<const QMemoryBarrier *>(frontEnd);
+    if (!node)
+        return;
 
-void MemoryBarrier::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMemoryBarrierData>>(change);
-    const QMemoryBarrierData &data = typedChange->data;
-    m_waitOperations = data.waitOperations;
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (node->waitOperations() != m_waitOperations) {
+        m_waitOperations = node->waitOperations();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
 
 } // Render

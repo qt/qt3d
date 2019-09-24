@@ -68,11 +68,9 @@ public:
     ~WaitFence();
 
     inline QWaitFenceData data() const { return m_data; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
-
     QWaitFenceData m_data;
 };
 

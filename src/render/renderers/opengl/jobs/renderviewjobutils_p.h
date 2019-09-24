@@ -150,9 +150,9 @@ void parametersFromParametersProvider(ParameterInfoList *infoList,
 Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *infoList,
                                                                   const int nameId);
 
-Q_AUTOTEST_EXPORT void addUniqueStatesToRenderStateSet(RenderStateSet *stateSet,
-                                                       const QVector<Qt3DCore::QNodeId> stateIds,
-                                                       RenderStateManager *manager);
+Q_AUTOTEST_EXPORT void addStatesToRenderStateSet(RenderStateSet *stateSet,
+                                                 const QVector<Qt3DCore::QNodeId> stateIds,
+                                                 RenderStateManager *manager);
 
 typedef QHash<int, QVariant> UniformBlockValueBuilderHash;
 

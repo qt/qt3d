@@ -90,6 +90,7 @@ public:
     void setParentHandle(HEntity parentHandle);
     void setNodeManagers(NodeManagers *manager);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void dump() const;
 
@@ -97,11 +98,8 @@ public:
     HEntity handle() const { return m_handle; }
     Entity *parent() const;
     HEntity parentHandle() const { return m_parentHandle; }
-    Qt3DCore::QNodeId parentEntityId() const { return m_parentEntityId; }
 
-    void clearEntityHierarchy();
-    void rebuildEntityHierarchy();
-
+    void removeFromParentChildHandles();
     void appendChildHandle(HEntity childHandle);
     void removeChildHandle(HEntity childHandle) { m_childrenHandles.removeOne(childHandle); }
     QVector<HEntity> childrenHandles() const { return m_childrenHandles; }
@@ -178,16 +176,11 @@ public:
         return containsComponentsOfType<T>() && containsComponentsOfType<Ts, Ts2...>();
     }
 
-
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     NodeManagers *m_nodeManagers;
     HEntity m_handle;
     HEntity m_parentHandle;
     QVector<HEntity > m_childrenHandles;
-
-    Qt3DCore::QNodeId m_parentEntityId;
 
     HMatrix m_worldTransform;
     QSharedPointer<Sphere> m_localBoundingVolume;
@@ -306,7 +299,7 @@ ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(ShaderData, HShaderData)
 ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(Light, HLight)
 ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(EnvironmentLight, HEnvironmentLight)
 
-class RenderEntityFunctor : public Qt3DCore::QBackendNodeMapper
+class Q_AUTOTEST_EXPORT RenderEntityFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit RenderEntityFunctor(AbstractRenderer *renderer, NodeManagers *manager);

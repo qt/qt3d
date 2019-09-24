@@ -474,6 +474,55 @@ private Q_SLOTS:
             QCOMPARE(row.w(), 44.0f);
         }
     }
+
+    void checkVectorMapVector()
+    {
+        {
+            // GIVEN
+            QMatrix4x4 tmpMat;
+            QVector3D tmpVec3(1.0f, 0.0f, 0.0f);
+            tmpMat.rotate(90.f, 0.f, 1.f, 0.f);
+
+            Matrix4x4_AVX2 mat(tmpMat);
+            Vector3D vec3(tmpVec3);
+
+            // WHEN
+            const Vector3D resultingVec = mat.mapVector(vec3);
+
+            // THEN
+            QCOMPARE(resultingVec.toQVector3D(), tmpMat.mapVector(tmpVec3));
+        }
+        {
+            // GIVEN
+            QMatrix4x4 tmpMat;
+            QVector3D tmpVec3(0.0f, 0.0f, -1.0f);
+            tmpMat.rotate(90.f, 0.f, 1.f, 0.f);
+
+            Matrix4x4_AVX2 mat(tmpMat);
+            Vector3D vec3(tmpVec3);
+
+            // WHEN
+            const Vector3D resultingVec = mat.mapVector(vec3);
+
+            // THEN
+            QCOMPARE(resultingVec.toQVector3D(), tmpMat.mapVector(tmpVec3));
+        }
+        {
+            // GIVEN
+            QMatrix4x4 tmpMat;
+            QVector3D tmpVec3(3.0f, -3.0f, -1.0f);
+            tmpMat.rotate(90.f, 0.33f, 0.33f, 0.33f);
+
+            Matrix4x4_AVX2 mat(tmpMat);
+            Vector3D vec3(tmpVec3);
+
+            // WHEN
+            const Vector3D resultingVec = mat.mapVector(vec3);
+
+            // THEN
+            QCOMPARE(resultingVec.toQVector3D(), tmpMat.mapVector(tmpVec3));
+        }
+    }
 };
 
 QTEST_MAIN(tst_Matrix4x4_AVX2)

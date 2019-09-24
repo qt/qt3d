@@ -330,11 +330,9 @@ QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
         d->replyDestroyed(reply);
     });
 
-    Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(id()));
-    change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));
     const QRenderCaptureRequest request = { captureId, QRect() };
-    change->setValue(QVariant::fromValue(request));
-    d->notifyObservers(change);
+    d->m_pendingRequests.push_back(request);
+    d->update();
 
     return reply;
 }
@@ -355,11 +353,9 @@ QRenderCaptureReply *QRenderCapture::requestCapture(const QRect &rect)
         d->replyDestroyed(reply);
     });
 
-    Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(id()));
-    change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));
     const QRenderCaptureRequest request = { captureId, rect };
-    change->setValue(QVariant::fromValue(request));
-    d->notifyObservers(change);
+    d->m_pendingRequests.push_back(request);
+    d->update();
 
     captureId++;
 

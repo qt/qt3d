@@ -59,29 +59,24 @@ RenderTargetSelector::RenderTargetSelector() :
 {
 }
 
-void RenderTargetSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void RenderTargetSelector::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    FrameGraphNode::initializeFromPeer(change);
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderTargetSelectorData>>(change);
-    const auto &data = typedChange->data;
-    m_renderTargetUuid = data.targetId;
-    m_outputs = data.outputs;
-}
+    const QRenderTargetSelector *node = qobject_cast<const QRenderTargetSelector *>(frontEnd);
+    if (!node)
+        return;
 
-void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
-            m_renderTargetUuid = propertyChange->value().value<QNodeId>();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("outputs")) {
-            m_outputs = propertyChange->value().value<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >();
-            markDirty(AbstractRenderer::FrameGraphDirty);
-        }
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const QNodeId renderTargetId = qIdForNode(node->target());
+    if (renderTargetId != m_renderTargetUuid) {
+        m_renderTargetUuid = renderTargetId;
+        markDirty(AbstractRenderer::FrameGraphDirty);
     }
-    FrameGraphNode::sceneChangeEvent(e);
+
+    if (node->outputs() != m_outputs) {
+        m_outputs = node->outputs();
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
 
 } // namespace Render

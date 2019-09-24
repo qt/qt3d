@@ -78,7 +78,12 @@ public:
         });
 
         for (const auto node: nodes)
-            d_func()->createBackendNode(node);
+            d_func()->createBackendNode({
+                                            node->id(),
+                                            Qt3DCore::QNodePrivate::get(node)->m_typeInfo,
+                                            Qt3DCore::NodeTreeChange::Added,
+                                            node
+                                        });
     }
 
     ~TestAspect()
