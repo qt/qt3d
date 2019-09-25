@@ -1824,26 +1824,27 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         // populate the RenderView with a set of RenderCommands that get
         // their details from the RenderNodes that are visible to the
         // Camera selected by the framegraph configuration
-        FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
-        const QVector<FrameGraphNode *> fgLeaves = visitor.traverse(frameGraphRoot());
+        if (frameGraphDirty) {
+            FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
+            m_frameGraphLeaves = visitor.traverse(frameGraphRoot());
+            // Remove leaf nodes that no longer exist from cache
+            const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
+            for (FrameGraphNode *leafNode : keys) {
+                if (!m_frameGraphLeaves.contains(leafNode))
+                    m_cache.leafNodeCache.remove(leafNode);
+            }
 
-        // Handle single shot subtree enablers
-        const auto subtreeEnablers = visitor.takeEnablersToDisable();
-        for (auto *node : subtreeEnablers)
-            m_updatedDisables.push_back(node->peerId());
-        if (m_updatedDisables.size() > 0)
-            renderBinJobs.push_back(m_sendDisablesToFrontendJob);
-
-        // Remove leaf nodes that no longer exist from cache
-        const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
-        for (FrameGraphNode *leafNode : keys) {
-            if (!fgLeaves.contains(leafNode))
-                m_cache.leafNodeCache.remove(leafNode);
+            // Handle single shot subtree enablers
+            const auto subtreeEnablers = visitor.takeEnablersToDisable();
+            for (auto *node : subtreeEnablers)
+                m_updatedDisables.push_back(node->peerId());
+            if (m_updatedDisables.size() > 0)
+                renderBinJobs.push_back(m_sendDisablesToFrontendJob);
         }
 
-        const int fgBranchCount = fgLeaves.size();
+        const int fgBranchCount = m_frameGraphLeaves.size();
         for (int i = 0; i < fgBranchCount; ++i) {
-            RenderViewBuilder builder(fgLeaves.at(i), i, this);
+            RenderViewBuilder builder(m_frameGraphLeaves.at(i), i, this);
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt);
             builder.setRenderableCacheNeedsToBeRebuilt(renderableDirty);
             builder.setComputableCacheNeedsToBeRebuilt(computeableDirty);

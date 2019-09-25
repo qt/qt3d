@@ -424,6 +424,8 @@ private:
     QMetaObject::Connection m_contextConnection;
     RendererCache m_cache;
     bool m_shouldSwapBuffers;
+
+    QVector<FrameGraphNode *> m_frameGraphLeaves;
 };
 
 } // namespace Render
