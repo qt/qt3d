@@ -143,7 +143,7 @@ private Q_SLOTS:
         {
             // WHEN
             TestPhysicalDeviceBackendNode backendQAbstractPhysicalDeviceBackendNode;
-            simulateInitialization(&physicalDeviceNode, &backendQAbstractPhysicalDeviceBackendNode);
+            simulateInitializationSync(&physicalDeviceNode, &backendQAbstractPhysicalDeviceBackendNode);
 
             // THEN
             QCOMPARE(backendQAbstractPhysicalDeviceBackendNode.isEnabled(), true);
@@ -153,7 +153,7 @@ private Q_SLOTS:
             // WHEN
             TestPhysicalDeviceBackendNode backendQAbstractPhysicalDeviceBackendNode;
             physicalDeviceNode.setEnabled(false);
-            simulateInitialization(&physicalDeviceNode, &backendQAbstractPhysicalDeviceBackendNode);
+            simulateInitializationSync(&physicalDeviceNode, &backendQAbstractPhysicalDeviceBackendNode);
 
             // THEN
             QCOMPARE(backendQAbstractPhysicalDeviceBackendNode.peerId(), physicalDeviceNode.id());
@@ -164,17 +164,17 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        TestDevice physicalDeviceNode;
         TestPhysicalDeviceBackendNode backendQAbstractPhysicalDeviceBackendNode;
         Qt3DInput::QInputAspect aspect;
         backendQAbstractPhysicalDeviceBackendNode.setInputAspect(&aspect);
+        simulateInitializationSync(&physicalDeviceNode, &backendQAbstractPhysicalDeviceBackendNode);
 
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendQAbstractPhysicalDeviceBackendNode.sceneChangeEvent(change);
+            physicalDeviceNode.setEnabled(newValue);
+            backendQAbstractPhysicalDeviceBackendNode.syncFromFrontEnd(&physicalDeviceNode, false);
 
             // THEN
             QCOMPARE(backendQAbstractPhysicalDeviceBackendNode.isEnabled(), newValue);
@@ -202,40 +202,36 @@ private Q_SLOTS:
             // Adding AxisSettings
             {
                 // WHEN
-                auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &settings1);
-                change->setPropertyName("axisSettings");
-                backendQAbstractPhysicalDeviceBackendNode.sceneChangeEvent(change);
+                physicalDeviceNode.addAxisSetting(&settings1);
+                backendQAbstractPhysicalDeviceBackendNode.syncFromFrontEnd(&physicalDeviceNode, false);
 
                 // THEN
                 QCOMPARE(priv->m_axisSettings.size(), 1);
 
                 // WHEN
-                change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &settings2);
-                change->setPropertyName("axisSettings");
-                backendQAbstractPhysicalDeviceBackendNode.sceneChangeEvent(change);
+                physicalDeviceNode.addAxisSetting(&settings2);
+                backendQAbstractPhysicalDeviceBackendNode.syncFromFrontEnd(&physicalDeviceNode, false);
 
                 // THEN
                 QCOMPARE(priv->m_axisSettings.size(), 2);
             }
+
             // Removing AxisSettings
             {
                 // WHEN
-                auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &settings1);
-                change->setPropertyName("axisSettings");
-                backendQAbstractPhysicalDeviceBackendNode.sceneChangeEvent(change);
+                physicalDeviceNode.removeAxisSetting(&settings1);
+                backendQAbstractPhysicalDeviceBackendNode.syncFromFrontEnd(&physicalDeviceNode, false);
 
                 // THEN
                 QCOMPARE(priv->m_axisSettings.size(), 1);
 
                 // WHEN
-                change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &settings2);
-                change->setPropertyName("axisSettings");
-                backendQAbstractPhysicalDeviceBackendNode.sceneChangeEvent(change);
+                physicalDeviceNode.removeAxisSetting(&settings2);
+                backendQAbstractPhysicalDeviceBackendNode.syncFromFrontEnd(&physicalDeviceNode, false);
 
                 // THEN
                 QCOMPARE(priv->m_axisSettings.size(), 0);
             }
-
         }
     }
 

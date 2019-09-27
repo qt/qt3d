@@ -65,14 +65,6 @@ MouseDevice::~MouseDevice()
 {
 }
 
-void MouseDevice::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMouseDeviceData>>(change);
-    const auto &data = typedChange->data;
-    m_sensitivity = data.sensitivity;
-    QAbstractPhysicalDeviceBackendNode::initializeFromPeer(change);
-}
-
 void MouseDevice::setInputHandler(InputHandler *handler)
 {
     m_inputHandler = handler;
@@ -173,13 +165,14 @@ void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent
     }
 }
 
-void MouseDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void MouseDevice::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("sensitivity"))
-            m_sensitivity = propertyChange->value().toFloat();
-    }
+    QAbstractPhysicalDeviceBackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const Qt3DInput::QMouseDevice *node = qobject_cast<const Qt3DInput::QMouseDevice *>(frontEnd);
+    if (!node)
+        return;
+
+    m_sensitivity = node->sensitivity();
 }
 
 MouseDeviceFunctor::MouseDeviceFunctor(QInputAspect *inputAspect, InputHandler *handler)

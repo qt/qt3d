@@ -86,9 +86,6 @@ public:
     inline Qt3DCore::QNodeId currentFocusItem() const { return m_currentFocusItem; }
     inline Qt3DCore::QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) override;
-
 private:
     void setButtonValue(int key, bool value);
 

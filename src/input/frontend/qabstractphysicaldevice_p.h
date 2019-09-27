@@ -76,6 +76,9 @@ public:
     QHash<QString, int> m_axesHash;
     QHash<QString, int> m_buttonsHash;
 
+    QVector<QPair<int, qreal>> m_pendingAxisEvents;
+    QVector<QPair<int, qreal>> m_pendingButtonsEvents;
+
     void postAxisEvent(int axis, qreal value);
     void postButtonEvent(int button, qreal value);
 };

@@ -73,7 +73,7 @@ public:
     void updateEvents();
 
     // QAbstractPhysicalDeviceBackendNode interface
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void cleanup() override;
     float axisValue(int axisIdentifier) const override;
     bool isButtonPressed(int buttonIdentifier) const override;

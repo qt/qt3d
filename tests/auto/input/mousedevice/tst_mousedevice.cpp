@@ -70,7 +70,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DInput::Input::MouseDevice backendMouseDevice;
-            simulateInitialization(&mouseDevice, &backendMouseDevice);
+            simulateInitializationSync(&mouseDevice, &backendMouseDevice);
 
             // THEN
             QCOMPARE(backendMouseDevice.isEnabled(), true);
@@ -91,7 +91,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DInput::Input::MouseDevice backendMouseDevice;
             mouseDevice.setEnabled(false);
-            simulateInitialization(&mouseDevice, &backendMouseDevice);
+            simulateInitializationSync(&mouseDevice, &backendMouseDevice);
 
             // THEN
             QCOMPARE(backendMouseDevice.peerId(), mouseDevice.id());
@@ -220,15 +220,15 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DInput::QMouseDevice mouseDevice;
         Qt3DInput::Input::MouseDevice backendMouseDevice;
+        simulateInitializationSync(&mouseDevice, &backendMouseDevice);
 
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendMouseDevice.sceneChangeEvent(change);
+            mouseDevice.setEnabled(newValue);
+            backendMouseDevice.syncFromFrontEnd(&mouseDevice, false);
 
             // THEN
             QCOMPARE(backendMouseDevice.isEnabled(), newValue);
@@ -236,10 +236,8 @@ private Q_SLOTS:
         {
             // WHEN
             const float newValue = 99.0f;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("sensitivity");
-            change->setValue(QVariant::fromValue(newValue));
-            backendMouseDevice.sceneChangeEvent(change);
+            mouseDevice.setSensitivity(newValue);
+            backendMouseDevice.syncFromFrontEnd(&mouseDevice, false);
 
             // THEN
             QCOMPARE(backendMouseDevice.sensitivity(), newValue);

@@ -427,11 +427,6 @@ void KeyboardDevice::updateKeyEvents(const QList<QT_PREPEND_NAMESPACE(QKeyEvent)
         setButtonValue(e.key(), e.type() == QT_PREPEND_NAMESPACE(QKeyEvent)::KeyPress ? true : false);
 }
 
-
-void KeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
 KeyboardDeviceFunctor::KeyboardDeviceFunctor(QInputAspect *inputaspect, InputHandler *handler)
     : m_inputAspect(inputaspect)
     , m_handler(handler)

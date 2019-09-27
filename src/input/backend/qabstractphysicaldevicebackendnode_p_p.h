@@ -97,10 +97,7 @@ public:
 
     Input::AxisSetting *getAxisSetting(Qt3DCore::QNodeId axisSettingId) const;
 
-    QVector<Input::AxisIdSetting> convertToAxisIdSettingVector(Qt3DCore::QNodeId axisSettingId) const;
-    void updatePendingAxisSettings();
-
-    Qt3DCore::QNodeIdVector m_pendingAxisSettingIds;
+    Qt3DCore::QNodeIdVector m_currentAxisSettingIds;
     QVector<Input::AxisIdSetting> m_axisSettings;
     QVector<Input::AxisIdFilter> m_axisFilters;
     QInputAspect *m_inputAspect;

@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 
 #include <Qt3DInput/private/qt3dinput_global_p.h>
 
@@ -66,12 +66,12 @@ namespace Qt3DInput {
 class QInputAspect;
 class QAbstractPhysicalDeviceBackendNodePrivate;
 
-class Q_3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
+class Q_3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNode : public Input::BackendNode
 {
 public:
     explicit QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode);
     virtual void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void setInputAspect(QInputAspect *aspect);
     QInputAspect *inputAspect() const;
@@ -82,8 +82,6 @@ public:
 
 protected:
     QAbstractPhysicalDeviceBackendNode(QAbstractPhysicalDeviceBackendNodePrivate &dd);
-
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
 
     Q_DECLARE_PRIVATE(QAbstractPhysicalDeviceBackendNode)
 };
