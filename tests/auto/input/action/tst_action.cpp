@@ -64,7 +64,7 @@ private Q_SLOTS:
         action.addInput(&actionInput);
 
         // WHEN
-        simulateInitialization(&action, &backendAction);
+        simulateInitializationSync(&action, &backendAction);
 
         // THEN
         QCOMPARE(backendAction.peerId(), action.id());
@@ -96,7 +96,7 @@ private Q_SLOTS:
         action.addInput(&axisInput);
 
         // WHEN
-        simulateInitialization(&action, &backendAction);
+        simulateInitializationSync(&action, &backendAction);
         backendAction.setActionTriggered(true);
         backendAction.cleanup();
 
@@ -109,33 +109,30 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DInput::QAction action;
         Qt3DInput::Input::Action backendAction;
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
+        simulateInitializationSync(&action, &backendAction);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendAction.sceneChangeEvent(updateChange);
+        action.setEnabled(false);
+        backendAction.syncFromFrontEnd(&action, false);
 
         // THEN
-        QCOMPARE(backendAction.isEnabled(), true);
+        QCOMPARE(backendAction.isEnabled(), false);
 
         // WHEN
         DummyActionInput input;
         const Qt3DCore::QNodeId inputId = input.id();
-        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &input);
-        nodeAddedChange->setPropertyName("input");
-        backendAction.sceneChangeEvent(nodeAddedChange);
+        action.addInput(&input);
+        backendAction.syncFromFrontEnd(&action, false);
 
         // THEN
         QCOMPARE(backendAction.inputs().size(), 1);
         QCOMPARE(backendAction.inputs().first(), inputId);
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &input);
-        nodeRemovedChange->setPropertyName("input");
-        backendAction.sceneChangeEvent(nodeRemovedChange);
+        action.removeInput(&input);
+        backendAction.syncFromFrontEnd(&action, false);
 
         // THEN
         QCOMPARE(backendAction.inputs().size(), 0);

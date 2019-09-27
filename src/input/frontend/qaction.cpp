@@ -121,11 +121,7 @@ void QAction::addInput(QAbstractActionInput *input)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(input, &QAction::removeInput, d->m_inputs);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
-            change->setPropertyName("input");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -137,11 +133,7 @@ void QAction::removeInput(QAbstractActionInput *input)
     Q_D(QAction);
     if (d->m_inputs.contains(input)) {
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), input);
-            change->setPropertyName("input");
-            d->notifyObservers(change);
-        }
+        d->update();
 
         d->m_inputs.removeOne(input);
 

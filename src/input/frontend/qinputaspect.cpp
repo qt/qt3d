@@ -154,7 +154,7 @@ QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
     registerBackendType<QAnalogAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AnalogAxisInput, Input::AnalogAxisInputManager>(d_func()->m_inputHandler->analogAxisInputManager())));
     registerBackendType<QButtonAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ButtonAxisInput, Input::ButtonAxisInputManager>(d_func()->m_inputHandler->buttonAxisInputManager())));
     registerBackendType<QAxisSetting>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));
-    registerBackendType<Qt3DInput::QAction>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Action, Input::ActionManager>(d_func()->m_inputHandler->actionManager())));
+    registerBackendType<Qt3DInput::QAction, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Action, Input::ActionManager>(d_func()->m_inputHandler->actionManager())));
     registerBackendType<QActionInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ActionInput, Input::ActionInputManager>(d_func()->m_inputHandler->actionInputManager())));
     registerBackendType<QInputChord>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::InputChord, Input::InputChordManager>(d_func()->m_inputHandler->inputChordManager())));
     registerBackendType<QInputSequence>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::InputSequence, Input::InputSequenceManager>(d_func()->m_inputHandler->inputSequenceManager())));
