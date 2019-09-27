@@ -58,7 +58,8 @@
 #include <Qt3DRender/private/genericlambdajob_p.h>
 #include <Qt3DRender/private/materialparametergathererjob_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/private/renderviewbuilderjob_p.h>
+#include <Qt3DRender/private/renderviewcommandbuilderjob_p.h>
+#include <Qt3DRender/private/renderviewcommandupdaterjob_p.h>
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/frustumcullingjob_p.h>
 #include <Qt3DRender/private/lightgatherer_p.h>
@@ -87,12 +88,14 @@ public:
     RenderableEntityFilterPtr renderableEntityFilterJob() const;
     ComputableEntityFilterPtr computableEntityFilterJob() const;
     FrustumCullingJobPtr frustumCullingJob() const;
-    QVector<RenderViewBuilderJobPtr> renderViewBuilderJobs() const;
+    QVector<RenderViewCommandBuilderJobPtr> renderViewCommandBuilderJobs() const;
+    QVector<RenderViewCommandUpdaterJobPtr> renderViewCommandUpdaterJobs() const;
     QVector<MaterialParameterGathererJobPtr> materialGathererJobs() const;
-    SynchronizerJobPtr syncRenderViewInitializationJob() const;
-    SynchronizerJobPtr syncFrustumCullingJob() const;
-    SynchronizerJobPtr syncRenderCommandBuildingJob() const;
-    SynchronizerJobPtr syncRenderViewCommandBuildersJob() const;
+    SynchronizerJobPtr syncRenderViewPostInitializationJob() const;
+    SynchronizerJobPtr syncPreFrustumCullingJob() const;
+    SynchronizerJobPtr syncRenderViewPreCommandBuildingJob() const;
+    SynchronizerJobPtr syncRenderViewPreCommandUpdateJob() const;
+    SynchronizerJobPtr syncRenderViewPostCommandUpdateJob() const;
     SynchronizerJobPtr setClearDrawBufferIndexJob() const;
     SynchronizerJobPtr syncFilterEntityByLayerJob() const;
     FilterProximityDistanceJobPtr filterProximityJob() const;
@@ -118,6 +121,9 @@ public:
     void setLightGathererCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
     bool lightGathererCacheNeedsToBeRebuilt() const;
 
+    void setRenderCommandCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
+    bool renderCommandCacheNeedsToBeRebuilt() const;
+
     static int optimalJobCount();
     static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset);
 
@@ -130,6 +136,7 @@ private:
     bool m_lightsCacheNeedsToBeRebuilt;
     bool m_renderableCacheNeedsToBeRebuilt;
     bool m_computableCacheNeedsToBeRebuilt;
+    bool m_renderCommandCacheNeedsToBeRebuilt;
 
     RenderViewInitializerJobPtr m_renderViewJob;
     FilterLayerEntityJobPtr m_filterEntityByLayerJob;
@@ -137,13 +144,15 @@ private:
     RenderableEntityFilterPtr m_renderableEntityFilterJob;
     ComputableEntityFilterPtr m_computableEntityFilterJob;
     FrustumCullingJobPtr m_frustumCullingJob;
-    QVector<RenderViewBuilderJobPtr> m_renderViewBuilderJobs;
+    QVector<RenderViewCommandBuilderJobPtr> m_renderViewCommandBuilderJobs;
+    QVector<RenderViewCommandUpdaterJobPtr> m_renderViewCommandUpdaterJobs;
     QVector<MaterialParameterGathererJobPtr> m_materialGathererJobs;
 
-    SynchronizerJobPtr m_syncRenderViewInitializationJob;
-    SynchronizerJobPtr m_syncFrustumCullingJob;
-    SynchronizerJobPtr m_syncRenderCommandBuildingJob;
-    SynchronizerJobPtr m_syncRenderViewCommandBuildersJob;
+    SynchronizerJobPtr m_syncRenderViewPostInitializationJob;
+    SynchronizerJobPtr m_syncPreFrustumCullingJob;
+    SynchronizerJobPtr m_syncRenderViewPreCommandBuildingJob;
+    SynchronizerJobPtr m_syncRenderViewPreCommandUpdateJob;
+    SynchronizerJobPtr m_syncRenderViewPostCommandUpdateJob;
     SynchronizerJobPtr m_setClearDrawBufferIndexJob;
     SynchronizerJobPtr m_syncFilterEntityByLayerJob;
     SynchronizerJobPtr m_syncMaterialGathererJob;

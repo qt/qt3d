@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,26 +37,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERERCACHE_P_H
-#define QT3DRENDER_RENDER_RENDERERCACHE_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/QFrameGraphNode>
-
-#include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/private/renderviewjobutils_p.h>
-#include <Qt3DRender/private/lightsource_p.h>
-#include <Qt3DRender/private/rendercommand_p.h>
+#include "renderviewcommandupdaterjob_p.h"
+#include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/renderview_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,31 +48,38 @@ namespace Qt3DRender {
 
 namespace Render {
 
-struct RendererCache
+namespace {
+int renderViewInstanceCounter = 0;
+} // anonymous
+
+RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
+    : Qt3DCore::QAspectJob()
+    , m_renderView(nullptr)
+    , m_renderer(nullptr)
 {
-    struct LeafNodeData
-    {
-        QVector<Entity *> filterEntitiesByLayer;
-        MaterialParameterGathererData materialParameterGatherer;
-        QVector<LightSource> gatheredLights;
-        QVector<Entity *> renderableEntities;
-        QVector<Entity *> computeEntities;
-        EnvironmentLight* environmentLight;
-        QVector<EntityRenderCommandData> renderCommandData;
-    };
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++);
+}
 
-    QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
+void RenderViewCommandUpdaterJob::run()
+{
+    // Build RenderCommand should perform the culling as we have no way to determine
+    // if a child has a mesh in the view frustum while its parent isn't contained in it.
+    if (!m_renderView->noDraw()) {
+        // Update Render Commands (Uniform Change, Depth Change)
+        m_renderView->updateRenderCommand(m_renderables);
 
-    QMutex *mutex() { return &m_mutex; }
+        // Copy commands out of cached -> ensures we can submit them for rendering
+        // while cache is rebuilt or modified for next frame
+        QVector<RenderCommand> commands;
+        commands.reserve(m_renderables.size());
+        for (const EntityRenderCommandData *data : m_renderables)
+            commands.push_back(data->command);
+        m_commands = commands;
+    }
+}
 
-private:
-    QMutex m_mutex;
-};
+} // Render
 
-} // namespace Render
-
-} // namespace Qt3DRender
+} // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_RENDERERCACHE_P_H

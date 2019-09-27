@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERERCACHE_P_H
-#define QT3DRENDER_RENDER_RENDERERCACHE_P_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#define QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H
 
 //
 //  W A R N I N G
@@ -51,11 +51,8 @@
 // We mean it.
 //
 
-#include <Qt3DRender/QFrameGraphNode>
-
-#include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/private/renderviewjobutils_p.h>
-#include <Qt3DRender/private/lightsource_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/rendercommand_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,31 +61,29 @@ namespace Qt3DRender {
 
 namespace Render {
 
-struct RendererCache
+class Q_AUTOTEST_EXPORT RenderViewCommandBuilderJob : public Qt3DCore::QAspectJob
 {
-    struct LeafNodeData
-    {
-        QVector<Entity *> filterEntitiesByLayer;
-        MaterialParameterGathererData materialParameterGatherer;
-        QVector<LightSource> gatheredLights;
-        QVector<Entity *> renderableEntities;
-        QVector<Entity *> computeEntities;
-        EnvironmentLight* environmentLight;
-        QVector<EntityRenderCommandData> renderCommandData;
-    };
+public:
+    RenderViewCommandBuilderJob();
 
-    QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
+    inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
+    inline void setEntities(const QVector<Entity *> &entities) { m_entities = entities; }
+    inline QVector<EntityRenderCommandData> &commandData() { return m_commandData; }
 
-    QMutex *mutex() { return &m_mutex; }
+    void run() final;
 
 private:
-    QMutex m_mutex;
+    RenderView *m_renderView;
+    QVector<Entity *> m_entities;
+    QVector<EntityRenderCommandData> m_commandData;
 };
 
-} // namespace Render
+typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobPtr;
 
-} // namespace Qt3DRender
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERERCACHE_P_H
+#endif // QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H

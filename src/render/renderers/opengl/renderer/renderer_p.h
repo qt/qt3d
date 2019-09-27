@@ -254,12 +254,12 @@ public:
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
     bool updateVAOWithAttributes(Geometry *geometry,
-                                 RenderCommand *command,
+                                 const RenderCommand *command,
                                  Shader *shader,
                                  bool forceUpdate);
 
     bool requiresVAOAttributeUpdate(Geometry *geometry,
-                                    RenderCommand *command) const;
+                                    const RenderCommand *command) const;
 
     void setOpenGLContext(QOpenGLContext *context) override;
     const GraphicsApiFilterData *contextInfo() const;

@@ -432,6 +432,9 @@ void Renderer::initialize()
     m_waitForInitializationToBeCompleted.release(1);
     // Allow the aspect manager to proceed
     m_vsyncFrameAdvanceService->proceedToNextFrame();
+
+    // Force initial refresh
+    markDirty(AllDirty, nullptr);
 }
 
 /*!
@@ -860,13 +863,13 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
     QHash<HVao, bool> updatedTable;
 
     for (RenderView *rv: renderViews) {
-        const QVector<RenderCommand *> commands = rv->commands();
-        for (RenderCommand *command : commands) {
+        QVector<RenderCommand> &commands = rv->commands();
+        for (RenderCommand &command : commands) {
             // Update/Create VAO
-            if (command->m_type == RenderCommand::Draw) {
-                Geometry *rGeometry = m_nodesManager->data<Geometry, GeometryManager>(command->m_geometry);
-                GeometryRenderer *rGeometryRenderer = m_nodesManager->data<GeometryRenderer, GeometryRendererManager>(command->m_geometryRenderer);
-                Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
+            if (command.m_type == RenderCommand::Draw) {
+                Geometry *rGeometry = m_nodesManager->data<Geometry, GeometryManager>(command.m_geometry);
+                GeometryRenderer *rGeometryRenderer = m_nodesManager->data<GeometryRenderer, GeometryRendererManager>(command.m_geometryRenderer);
+                Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command.m_shader);
 
                 // We should never have inserted a command for which these are null
                 // in the first place
@@ -879,15 +882,15 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
 
                 // Create VAO or return already created instance associated with command shader/geometry
                 // (VAO is emulated if not supported)
-                createOrUpdateVAO(command, &vaoHandle, &vao);
-                command->m_vao = vaoHandle;
+                createOrUpdateVAO(&command, &vaoHandle, &vao);
+                command.m_vao = vaoHandle;
 
                 // Avoids redoing the same thing for the same VAO
                 if (!updatedTable.contains(vaoHandle)) {
                     updatedTable.insert(vaoHandle, true);
 
                     // Do we have any attributes that are dirty ?
-                    const bool requiresPartialVAOUpdate = requiresVAOAttributeUpdate(rGeometry, command);
+                    const bool requiresPartialVAOUpdate = requiresVAOAttributeUpdate(rGeometry, &command);
 
                     // If true, we need to reupload all attributes to set the VAO
                     // Otherwise only dirty attributes will be updates
@@ -898,7 +901,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                     if (rGeometry->isDirty())
                         m_dirtyGeometry.push_back(rGeometry);
 
-                    if (!command->m_activeAttributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
+                    if (!command.m_activeAttributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
                         Profiling::GLTimeRecorder recorder(Profiling::VAOUpload);
                         // Activate shader
                         m_submissionContext->activateShader(shader->dna());
@@ -906,7 +909,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                         vao->bind();
                         // Update or set Attributes and Buffers for the given rGeometry and Command
                         // Note: this fills m_dirtyAttributes as well
-                        if (updateVAOWithAttributes(rGeometry, command, shader, requiresFullVAOUpdate))
+                        if (updateVAOWithAttributes(rGeometry, &command, shader, requiresFullVAOUpdate))
                             vao->setSpecified(true);
                     }
                 }
@@ -918,11 +921,11 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                     rGeometryRenderer->unsetDirty();
 
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
-                shader->prepareUniforms(command->m_parameterPack);
+                shader->prepareUniforms(command.m_parameterPack);
 
                 { // Scoped to show extent
-                    command->m_isValid = !command->m_activeAttributes.empty();
-                    if (!command->m_isValid)
+                    command.m_isValid = !command.m_activeAttributes.empty();
+                    if (!command.m_isValid)
                         continue;
 
                     // Update the draw command with what's going to be needed for the drawing
@@ -942,7 +945,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                             indirectAttribute = attribute;
                             break;
                         case QAttribute::VertexAttribute: {
-                            if (command->m_activeAttributes.contains(attribute->nameId()))
+                            if (command.m_activeAttributes.contains(attribute->nameId()))
                                 estimatedCount = qMax(attribute->count(), estimatedCount);
                             break;
                         }
@@ -952,20 +955,20 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                         }
                     }
 
-                    command->m_drawIndexed = (indexAttribute != nullptr);
-                    command->m_drawIndirect = (indirectAttribute != nullptr);
+                    command.m_drawIndexed = (indexAttribute != nullptr);
+                    command.m_drawIndirect = (indirectAttribute != nullptr);
 
                     // Update the draw command with all the information required for the drawing
-                    if (command->m_drawIndexed) {
-                        command->m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
-                        command->m_indexAttributeByteOffset = indexAttribute->byteOffset() + rGeometryRenderer->indexBufferByteOffset();
+                    if (command.m_drawIndexed) {
+                        command.m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
+                        command.m_indexAttributeByteOffset = indexAttribute->byteOffset() + rGeometryRenderer->indexBufferByteOffset();
                     }
 
                     // Note: we only care about the primitiveCount when using direct draw calls
                     // For indirect draw calls it is assumed the buffer was properly set already
-                    if (command->m_drawIndirect) {
-                        command->m_indirectAttributeByteOffset = indirectAttribute->byteOffset();
-                        command->m_indirectDrawBuffer = m_nodesManager->bufferManager()->lookupHandle(indirectAttribute->bufferId());
+                    if (command.m_drawIndirect) {
+                        command.m_indirectAttributeByteOffset = indirectAttribute->byteOffset();
+                        command.m_indirectDrawBuffer = m_nodesManager->bufferManager()->lookupHandle(indirectAttribute->bufferId());
                     } else {
                         // Use the count specified by the GeometryRender
                         // If not specify use the indexAttribute count if present
@@ -978,22 +981,22 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                         }
                     }
 
-                    command->m_primitiveCount = primitiveCount;
-                    command->m_primitiveType = rGeometryRenderer->primitiveType();
-                    command->m_primitiveRestartEnabled = rGeometryRenderer->primitiveRestartEnabled();
-                    command->m_restartIndexValue = rGeometryRenderer->restartIndexValue();
-                    command->m_firstInstance = rGeometryRenderer->firstInstance();
-                    command->m_instanceCount = rGeometryRenderer->instanceCount();
-                    command->m_firstVertex = rGeometryRenderer->firstVertex();
-                    command->m_indexOffset = rGeometryRenderer->indexOffset();
-                    command->m_verticesPerPatch = rGeometryRenderer->verticesPerPatch();
+                    command.m_primitiveCount = primitiveCount;
+                    command.m_primitiveType = rGeometryRenderer->primitiveType();
+                    command.m_primitiveRestartEnabled = rGeometryRenderer->primitiveRestartEnabled();
+                    command.m_restartIndexValue = rGeometryRenderer->restartIndexValue();
+                    command.m_firstInstance = rGeometryRenderer->firstInstance();
+                    command.m_instanceCount = rGeometryRenderer->instanceCount();
+                    command.m_firstVertex = rGeometryRenderer->firstVertex();
+                    command.m_indexOffset = rGeometryRenderer->indexOffset();
+                    command.m_verticesPerPatch = rGeometryRenderer->verticesPerPatch();
                 } // scope
-            } else if (command->m_type == RenderCommand::Compute) {
-                Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
+            } else if (command.m_type == RenderCommand::Compute) {
+                Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command.m_shader);
                 Q_ASSERT(shader);
 
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
-                shader->prepareUniforms(command->m_parameterPack);
+                shader->prepareUniforms(command.m_parameterPack);
             }
         }
     }
@@ -1834,6 +1837,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     const bool computeableDirty = dirtyBitsForFrame & AbstractRenderer::ComputeDirty;
     const bool renderableDirty = dirtyBitsForFrame & AbstractRenderer::GeometryDirty;
     const bool materialCacheNeedsToBeRebuilt = shadersDirty || materialDirty || frameGraphDirty;
+    const bool renderCommandsDirty = materialCacheNeedsToBeRebuilt || renderableDirty || computeableDirty;
 
     // Rebuild Entity Layers list if layers are dirty
     if (layersDirty)
@@ -1873,6 +1877,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
             builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt);
             builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
+            builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty);
 
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
@@ -2075,7 +2080,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
     bool allCommandsIssued = true;
 
     // Render drawing commands
-    const QVector<RenderCommand *> commands = rv->commands();
+    QVector<RenderCommand> commands = rv->commands();
 
     // Use the graphicscontext to submit the commands to the underlying
     // graphics API (OpenGL)
@@ -2084,18 +2089,18 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
     RenderStateSet *globalState = m_submissionContext->currentStateSet();
     OpenGLVertexArrayObject *vao = nullptr;
 
-    for (RenderCommand *command : qAsConst(commands)) {
+    for (RenderCommand &command : commands) {
 
-        if (command->m_type == RenderCommand::Compute) { // Compute Call
-            performCompute(rv, command);
+        if (command.m_type == RenderCommand::Compute) { // Compute Call
+            performCompute(rv, &command);
         } else { // Draw Command
             // Check if we have a valid command that can be drawn
-            if (!command->m_isValid) {
+            if (!command.m_isValid) {
                 allCommandsIssued = false;
                 continue;
             }
 
-            vao = m_nodesManager->vaoManager()->data(command->m_vao);
+            vao = m_nodesManager->vaoManager()->data(command.m_vao);
 
             // something may have went wrong when initializing the VAO
             if (!vao->isSpecified()) {
@@ -2106,7 +2111,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             {
                 Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate);
                 //// We activate the shader here
-                if (!m_submissionContext->activateShader(command->m_shaderDna)) {
+                if (!m_submissionContext->activateShader(command.m_shaderDna)) {
                     allCommandsIssued = false;
                     continue;
                 }
@@ -2121,7 +2126,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             {
                 Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate);
                 //// Update program uniforms
-                if (!m_submissionContext->setParameters(command->m_parameterPack)) {
+                if (!m_submissionContext->setParameters(command.m_parameterPack)) {
                     allCommandsIssued = false;
                     // If we have failed to set uniform (e.g unable to bind a texture)
                     // we won't perform the draw call which could show invalid content
@@ -2132,7 +2137,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             //// OpenGL State
             // TO DO: Make states not dependendent on their backend node for this step
             // Set state
-            RenderStateSet *localState = command->m_stateSet;
+            RenderStateSet *localState = command.m_stateSet.data();
 
 
             {
@@ -2140,8 +2145,8 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
                 // Merge the RenderCommand state with the globalState of the RenderView
                 // Or restore the globalState if no stateSet for the RenderCommand
                 if (localState != nullptr) {
-                    command->m_stateSet->merge(globalState);
-                    m_submissionContext->setCurrentStateSet(command->m_stateSet);
+                    command.m_stateSet->merge(globalState);
+                    m_submissionContext->setCurrentStateSet(localState);
                 } else {
                     m_submissionContext->setCurrentStateSet(globalState);
                 }
@@ -2151,7 +2156,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             // at that point
 
             //// Draw Calls
-            performDraw(command);
+            performDraw(&command);
         }
     } // end of RenderCommands loop
 
@@ -2167,7 +2172,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
 }
 
 bool Renderer::updateVAOWithAttributes(Geometry *geometry,
-                                       RenderCommand *command,
+                                       const RenderCommand *command,
                                        Shader *shader,
                                        bool forceUpdate)
 {
@@ -2227,7 +2232,7 @@ bool Renderer::updateVAOWithAttributes(Geometry *geometry,
 }
 
 bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
-                                          RenderCommand *command) const
+                                          const RenderCommand *command) const
 {
     const auto attributeIds = geometry->attributes();
 

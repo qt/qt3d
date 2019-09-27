@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 **
 ** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
@@ -37,10 +37,23 @@
 **
 ****************************************************************************/
 
-#include "renderviewbuilderjob_p.h"
-#include <Qt3DRender/private/job_common_p.h>
-#include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DRender/private/renderview_p.h>
+#ifndef QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H
+#define QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/rendercommand_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,60 +61,35 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace {
-int renderViewInstanceCounter = 0;
-} // anonymous
+class RenderView;
+class Renderer;
 
-RenderViewBuilderJob::RenderViewBuilderJob()
-    : Qt3DCore::QAspectJob()
-    , m_renderView(nullptr)
-    , m_renderer(nullptr)
-    , m_index(0)
+class Q_AUTOTEST_EXPORT RenderViewCommandUpdaterJob : public Qt3DCore::QAspectJob
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderViewBuilder, renderViewInstanceCounter++)
-}
+public:
+    RenderViewCommandUpdaterJob();
 
-void RenderViewBuilderJob::run()
-{
-    // Build RenderCommand should perform the culling as we have no way to determine
-    // if a child has a mesh in the view frustum while its parent isn't contained in it.
-    if (!m_renderView->noDraw()) {
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-        gatherLightsTime = timer.nsecsElapsed();
-        timer.restart();
-#endif
-    if (!m_renderView->isCompute())
-        m_commands = m_renderView->buildDrawRenderCommands(m_renderables);
-    else
-        m_commands = m_renderView->buildComputeRenderCommands(m_renderables);
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-        buildCommandsTime = timer.nsecsElapsed();
-        timer.restart();
-#endif
-    }
+    inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
+    inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
+    inline void setRenderables(const QVector<EntityRenderCommandData *> &renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
 
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qint64 creationTime = timer.nsecsElapsed();
-    timer.restart();
-#endif
+    QVector<RenderCommand> &commands() Q_DECL_NOTHROW { return m_commands; }
 
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qint64 sortTime = timer.nsecsElapsed();
-#endif
+    void run() final;
 
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qDebug() << m_index
-             << "state:" << gatherStateTime / 1.0e6
-             << "lights:" << gatherLightsTime / 1.0e6
-             << "build commands:" << buildCommandsTime / 1.0e6
-             << "sort:" << sortTime / 1.0e6;
-#endif
+private:
+    RenderView *m_renderView;
+    Renderer *m_renderer;
+    QVector<EntityRenderCommandData *> m_renderables;
+    QVector<RenderCommand> m_commands;
+};
 
-
-}
+typedef QSharedPointer<RenderViewCommandUpdaterJob> RenderViewCommandUpdaterJobPtr;
 
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H
