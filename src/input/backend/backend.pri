@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/backendnode_p.h \
     $$PWD/keyboarddevice_p.h \
     $$PWD/keyboardhandler_p.h \
     $$PWD/inputhandler_p.h \
@@ -39,6 +40,7 @@ HEADERS += \
     $$PWD/axisaccumulatorjob_p.h
 
 SOURCES += \
+    $$PWD/backendnode.cpp \
     $$PWD/keyboarddevice.cpp \
     $$PWD/keyboardhandler.cpp \
     $$PWD/inputhandler.cpp \

@@ -61,6 +61,7 @@
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QPluginLoader>
 
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/axis_p.h>
@@ -108,6 +109,13 @@ QInputAspectPrivate::QInputAspectPrivate()
     , m_time(0)
 {
 }
+
+void QInputAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const
+{
+    Input::BackendNode *renderBackend = static_cast<Input::BackendNode *>(backend);
+    renderBackend->syncFromFrontEnd(node, firstTime);
+}
+
 
 /*!
     \class Qt3DInput::QInputAspect

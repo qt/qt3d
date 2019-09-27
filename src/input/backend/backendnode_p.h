@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTASPECT_P_H
-#define QT3DINPUT_QINPUTASPECT_P_H
+#ifndef QT3DINPUT_INPUT_BACKENDNODE_H
+#define QT3DINPUT_INPUT_BACKENDNODE_H
 
 //
 //  W A R N I N G
@@ -51,34 +51,29 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QInputAspect;
-
 namespace Input {
-class InputHandler;
-class KeyboardMouseGenericDeviceIntegration;
-}
 
-class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class Q_3DINPUTSHARED_PRIVATE_EXPORT BackendNode : public Qt3DCore::QBackendNode
 {
 public:
-    QInputAspectPrivate();
-    void loadInputDevicePlugins();
-    void syncDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QBackendNode *backend, bool firstTime) const override;
+    BackendNode(Qt3DCore::QBackendNode::Mode mode = ReadOnly);
+    ~BackendNode();
 
-    Q_DECLARE_PUBLIC(QInputAspect)
-    QScopedPointer<Input::InputHandler> m_inputHandler;
-    QScopedPointer<Input::KeyboardMouseGenericDeviceIntegration> m_keyboardMouseIntegration;
-    qint64 m_time;
+    virtual void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
+
+protected:
+    explicit BackendNode(Qt3DCore::QBackendNodePrivate &dd);
 };
 
+} // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTASPECT_P_H
+#endif // QT3DINPUT_INPUT_BACKENDNODE_H
