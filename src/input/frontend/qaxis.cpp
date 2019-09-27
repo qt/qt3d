@@ -83,6 +83,10 @@ namespace Qt3DInput {
 QAxis::QAxis(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAxisPrivate(), parent)
 {
+    Q_D(QAxis);
+    connect(this, &QAxis::enabledChanged, [d]() {
+        d->setValue(0.);
+    });
 }
 
 /*! \internal */
