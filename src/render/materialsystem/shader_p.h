@@ -75,6 +75,30 @@ typedef uint ProgramDNA;
 class Q_AUTOTEST_EXPORT Shader : public BackendNode
 {
 public:
+    static const int modelMatrixNameId;
+    static const int viewMatrixNameId;
+    static const int projectionMatrixNameId;
+    static const int modelViewMatrixNameId;
+    static const int viewProjectionMatrixNameId;
+    static const int modelViewProjectionNameId;
+    static const int mvpNameId;
+    static const int inverseModelMatrixNameId;
+    static const int inverseViewMatrixNameId;
+    static const int inverseProjectionMatrixNameId;
+    static const int inverseModelViewNameId;
+    static const int inverseViewProjectionMatrixNameId;
+    static const int inverseModelViewProjectionNameId;
+    static const int modelNormalMatrixNameId;
+    static const int modelViewNormalNameId;
+    static const int viewportMatrixNameId;
+    static const int inverseViewportMatrixNameId;
+    static const int aspectRatioNameId;
+    static const int exposureNameId;
+    static const int gammaNameId;
+    static const int timeNameId;
+    static const int eyePositionNameId;
+    static const int skinningPaletteNameId;
+
     Shader();
     ~Shader();
 
@@ -88,6 +112,7 @@ public:
     const QHash<QString, int> fragOutputs() const;
 
     inline QVector<int> uniformsNamesIds() const { return m_uniformsNamesIds; }
+    inline QVector<int> standardUniformNameIds() const { return m_standardUniformNamesIds; }
     inline QVector<int> uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
     inline QVector<int> storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
     inline QVector<int> attributeNamesIds() const { return m_attributeNamesIds; }
@@ -128,6 +153,7 @@ public:
 private:
     QVector<QString> m_uniformsNames;
     QVector<int> m_uniformsNamesIds;
+    QVector<int> m_standardUniformNamesIds;
     QVector<ShaderUniform> m_uniforms;
 
     QVector<QString> m_attributesNames;

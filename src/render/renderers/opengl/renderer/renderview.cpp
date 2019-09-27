@@ -119,29 +119,29 @@ RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniform
 {
     RenderView::StandardUniformsNameToTypeHash setters;
 
-    setters.insert(StringToInt::lookupId(QLatin1String("modelMatrix")), ModelMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewMatrix")), ViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("projectionMatrix")), ProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelView")), ModelViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewProjectionMatrix")), ViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelViewProjection")), ModelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("mvp")), ModelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelMatrix")), InverseModelMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewMatrix")), InverseViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseProjectionMatrix")), InverseProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelView")), InverseModelViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewProjectionMatrix")), InverseViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelViewProjection")), InverseModelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelNormalMatrix")), ModelNormalMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), ModelViewNormalMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), ViewportMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), InverseViewportMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("aspectRatio")), AspectRatio);
-    setters.insert(StringToInt::lookupId(QLatin1String("exposure")), Exposure);
-    setters.insert(StringToInt::lookupId(QLatin1String("gamma")), Gamma);
-    setters.insert(StringToInt::lookupId(QLatin1String("time")), Time);
-    setters.insert(StringToInt::lookupId(QLatin1String("eyePosition")), EyePosition);
-    setters.insert(StringToInt::lookupId(QLatin1String("skinningPalette[0]")), SkinningPalette);
+    setters.insert(Shader::modelMatrixNameId, ModelMatrix);
+    setters.insert(Shader::viewMatrixNameId, ViewMatrix);
+    setters.insert(Shader::projectionMatrixNameId, ProjectionMatrix);
+    setters.insert(Shader::modelViewMatrixNameId, ModelViewMatrix);
+    setters.insert(Shader::viewProjectionMatrixNameId, ViewProjectionMatrix);
+    setters.insert(Shader::modelViewProjectionNameId, ModelViewProjectionMatrix);
+    setters.insert(Shader::mvpNameId, ModelViewProjectionMatrix);
+    setters.insert(Shader::inverseModelMatrixNameId, InverseModelMatrix);
+    setters.insert(Shader::inverseViewMatrixNameId, InverseViewMatrix);
+    setters.insert(Shader::inverseProjectionMatrixNameId, InverseProjectionMatrix);
+    setters.insert(Shader::inverseModelViewNameId, InverseModelViewMatrix);
+    setters.insert(Shader::inverseViewProjectionMatrixNameId, InverseViewProjectionMatrix);
+    setters.insert(Shader::inverseModelViewProjectionNameId, InverseModelViewProjectionMatrix);
+    setters.insert(Shader::modelNormalMatrixNameId, ModelNormalMatrix);
+    setters.insert(Shader::modelViewNormalNameId, ModelViewNormalMatrix);
+    setters.insert(Shader::viewportMatrixNameId, ViewportMatrix);
+    setters.insert(Shader::inverseViewportMatrixNameId, InverseViewportMatrix);
+    setters.insert(Shader::aspectRatioNameId, AspectRatio);
+    setters.insert(Shader::exposureNameId, Exposure);
+    setters.insert(Shader::gammaNameId, Gamma);
+    setters.insert(Shader::timeNameId, Time);
+    setters.insert(Shader::eyePositionNameId, EyePosition);
+    setters.insert(Shader::skinningPaletteNameId, SkinningPalette);
 
     return setters;
 }
@@ -1023,6 +1023,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
         // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
         // equals to the parameter name
         const QVector<int> uniformNamesIds = shader->uniformsNamesIds();
+        const QVector<int> standardUniformNamesIds = shader->standardUniformNameIds();
         const QVector<int> uniformBlockNamesIds = shader->uniformBlockNamesIds();
         const QVector<int> shaderStorageBlockNamesIds = shader->storageBlockNamesIds();
         const QVector<int> attributeNamesIds = shader->attributeNamesIds();
@@ -1042,16 +1043,15 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 shader->setFragOutputs(fragOutputs);
         }
 
-        if (!uniformNamesIds.isEmpty() || !attributeNamesIds.isEmpty() ||
+        if (!uniformNamesIds.isEmpty() || !standardUniformNamesIds.isEmpty() ||
+                !attributeNamesIds.isEmpty() ||
                 !shaderStorageBlockNamesIds.isEmpty() || !attributeNamesIds.isEmpty()) {
 
             // Set default standard uniforms without bindings
             const Matrix4x4 worldTransform = *(entity->worldTransform());
 
-            for (const int uniformNameId : uniformNamesIds) {
-                if (ms_standardUniformSetters.contains(uniformNameId))
+            for (const int uniformNameId : standardUniformNamesIds)
                     setStandardUniformValue(command->m_parameterPack, uniformNameId, uniformNameId, entity, worldTransform);
-            }
 
             // Set default attributes
             command->m_activeAttributes = attributeNamesIds;
