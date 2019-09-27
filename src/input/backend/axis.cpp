@@ -42,10 +42,9 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <Qt3DInput/private/qaxis_p.h>
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,16 +53,9 @@ namespace Qt3DInput {
 namespace Input {
 
 Axis::Axis()
-    : Qt3DCore::QBackendNode(ReadWrite)
+    : BackendNode(ReadWrite)
     , m_axisValue(0.0f)
 {
-}
-
-void Axis::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisData>>(change);
-    const auto &data = typedChange->data;
-    m_inputs = data.inputIds;
 }
 
 void Axis::cleanup()
@@ -75,11 +67,11 @@ void Axis::cleanup()
 
 void Axis::setAxisValue(float axisValue)
 {
-    if (isEnabled() && (axisValue != m_axisValue)) {
+    if (isEnabled() && (!qFuzzyCompare(axisValue, m_axisValue))) {
         m_axisValue = axisValue;
 
         // Send a change to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId()); // TODOSYNC replace with direct access
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("value");
         e->setValue(m_axisValue);
@@ -87,26 +79,15 @@ void Axis::setAxisValue(float axisValue)
     }
 }
 
-void Axis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void Axis::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    switch (e->type()) {
-    case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("input"))
-            m_inputs.push_back(change->addedNodeId());
-        break;
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const Qt3DInput::QAxis *node = qobject_cast<const Qt3DInput::QAxis *>(frontEnd);
+    if (!node)
+        return;
 
-    case Qt3DCore::PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("input"))
-            m_inputs.removeOne(change->removedNodeId());
-    }
-
-    default:
-        break;
-    }
-    QBackendNode::sceneChangeEvent(e);
+    auto ids = Qt3DCore::qIdsForNodes(node->inputs());
+    m_inputs = ids;
 }
 
 } // namespace Input

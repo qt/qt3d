@@ -117,12 +117,7 @@ void QAxis::addInput(QAbstractAxisInput *input)
 
         // Ensures proper bookkeeping
         d->registerDestructionHelper(input, &QAxis::removeInput, d->m_inputs);
-
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
-            change->setPropertyName("input");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -144,11 +139,7 @@ void QAxis::removeInput(QAbstractAxisInput *input)
     Q_D(QAxis);
     if (d->m_inputs.contains(input)) {
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), input);
-            change->setPropertyName("input");
-            d->notifyObservers(change);
-        }
+        d->update();
 
         d->m_inputs.removeOne(input);
 
