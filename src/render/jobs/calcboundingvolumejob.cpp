@@ -90,30 +90,42 @@ public:
         m_min = QVector3D(findExtremePoints.xMin, findExtremePoints.yMin, findExtremePoints.zMin);
         m_max = QVector3D(findExtremePoints.xMax, findExtremePoints.yMax, findExtremePoints.zMax);
 
-        // Calculate squared distance for the pairs of points
-        const float xDist2 = (findExtremePoints.xMaxPt - findExtremePoints.xMinPt).lengthSquared();
-        const float yDist2 = (findExtremePoints.yMaxPt - findExtremePoints.yMinPt).lengthSquared();
-        const float zDist2 = (findExtremePoints.zMaxPt - findExtremePoints.zMinPt).lengthSquared();
-
-        // Select most distant pair
-        Vector3D p = findExtremePoints.xMinPt;
-        Vector3D q = findExtremePoints.xMaxPt;
-        if (yDist2 > xDist2 && yDist2 > zDist2) {
-            p = findExtremePoints.yMinPt;
-            q = findExtremePoints.yMaxPt;
+        FindMaxDistantPoint maxDistantPointY(m_manager);
+        maxDistantPointY.setReferencePoint = true;
+        if (!maxDistantPointY.apply(positionAttribute, indexAttribute, drawVertexCount,
+                                     primitiveRestartEnabled, primitiveRestartIndex)) {
+            return false;
         }
-        if (zDist2 > xDist2 && zDist2 > yDist2) {
-            p = findExtremePoints.zMinPt;
-            q = findExtremePoints.zMaxPt;
+        if (maxDistantPointY.hasNoPoints)
+            return false;
+
+        //const Vector3D x = maxDistantPointY.referencePt;
+        const Vector3D y = maxDistantPointY.maxDistPt;
+
+        FindMaxDistantPoint maxDistantPointZ(m_manager);
+        maxDistantPointZ.setReferencePoint = false;
+        maxDistantPointZ.referencePt = y;
+        if (!maxDistantPointZ.apply(positionAttribute, indexAttribute, drawVertexCount,
+                                     primitiveRestartEnabled, primitiveRestartIndex)) {
+            return false;
+        }
+        const Vector3D z = maxDistantPointZ.maxDistPt;
+
+        const Vector3D center = (y + z) * 0.5f;
+
+        FindMaxDistantPoint maxDistantPointCenter(m_manager);
+        maxDistantPointCenter.setReferencePoint = false;
+        maxDistantPointCenter.referencePt = center;
+        if (!maxDistantPointCenter.apply(positionAttribute, indexAttribute, drawVertexCount,
+                                     primitiveRestartEnabled, primitiveRestartIndex)) {
+            return false;
         }
 
-        const Vector3D c = 0.5f * (p + q);
-        m_volume.setCenter(c);
-        m_volume.setRadius((q - c).length());
+        const float radius = (center - maxDistantPointCenter.maxDistPt).length();
 
-        ExpandSphere expandSphere(m_manager, m_volume);
-        if (!expandSphere.apply(positionAttribute, indexAttribute, drawVertexCount,
-                                primitiveRestartEnabled, primitiveRestartIndex))
+        m_volume = Qt3DRender::Render::Sphere(center, radius);
+
+        if (m_volume.isNull())
             return false;
 
         return true;
@@ -172,18 +184,34 @@ private:
         }
     };
 
-    class ExpandSphere : public Buffer3fVisitor
+    class FindMaxDistantPoint : public Buffer3fVisitor
     {
     public:
-        ExpandSphere(NodeManagers *manager, Sphere& volume)
-            : Buffer3fVisitor(manager), m_volume(volume)
+        FindMaxDistantPoint(NodeManagers *manager)
+            : Buffer3fVisitor(manager)
         { }
 
-        Sphere& m_volume;
+        float maxLengthSquared = 0.0f;
+        Vector3D maxDistPt;
+        Vector3D referencePt;
+        bool setReferencePoint = false;
+        bool hasNoPoints = true;
+
         void visit(uint ndx, float x, float y, float z) override
         {
             Q_UNUSED(ndx);
-            m_volume.expandToContain(Vector3D(x, y, z));
+            const Vector3D p = Vector3D(x, y, z);
+
+            if (hasNoPoints && setReferencePoint) {
+                maxLengthSquared = 0.0f;
+                referencePt = p;
+            }
+            const float lengthSquared = (p - referencePt).lengthSquared();
+            if ( lengthSquared >= maxLengthSquared ) {
+                maxDistPt = p;
+                maxLengthSquared = lengthSquared;
+            }
+            hasNoPoints = false;
         }
     };
 };

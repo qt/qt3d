@@ -44,6 +44,7 @@
 #include <QPair>
 
 #include <math.h>
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +56,9 @@ namespace {
 // returns true and intersection point q; false otherwise
 bool intersectRaySphere(const Qt3DRender::RayCasting::QRay3D &ray, const Qt3DRender::Render::Sphere &s, Vector3D *q = nullptr)
 {
+    if (s.isNull())
+        return false;
+
     const Vector3D p = ray.origin();
     const Vector3D d = ray.direction();
     const Vector3D m = p - s.center();
@@ -139,11 +143,31 @@ inline void sphereFromExtremePoints(Qt3DRender::Render::Sphere &s, const QVector
 
 inline void constructRitterSphere(Qt3DRender::Render::Sphere &s, const QVector<Vector3D> &points)
 {
-    // Calculate the sphere encompassing two axially extreme points
-    sphereFromExtremePoints(s, points);
+    //def bounding_sphere(points):
+    //  dist = lambda a,b: ((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)**0.5
+    //  x = points[0]
+    //  y = max(points,key= lambda p: dist(p,x) )
+    //  z = max(points,key= lambda p: dist(p,y) )
+    //  bounding_sphere = (((y[0]+z[0])/2,(y[1]+z[1])/2,(y[2]+z[2])/2), dist(y,z)/2)
+    //
+    //  exterior_points = [p for p in points if dist(p,bounding_sphere[0]) > bounding_sphere[1] ]
+    //  while ( len(exterior_points) > 0 ):
+    //    pt = exterior_points.pop()
+    //    if (dist(pt, bounding_sphere[0]) > bounding_sphere[1]):
+    //      bounding_sphere = (bounding_sphere[0],dist(pt,bounding_sphere[0]))
+    //
+    //  return bounding_sphere
 
-    // Now make sure the sphere bounds all points by growing if needed
-    s.expandToContain(points);
+    const Vector3D x = points[0];
+    const Vector3D y = *std::max_element(points.begin(), points.end(), [&x](const Vector3D& lhs, const Vector3D& rhs){ return (lhs - x).lengthSquared() < (rhs - x).lengthSquared(); });
+    const Vector3D z = *std::max_element(points.begin(), points.end(), [&y](const Vector3D& lhs, const Vector3D& rhs){ return (lhs - y).lengthSquared() < (rhs - y).lengthSquared(); });
+
+    const Vector3D center = (y + z) * 0.5f;
+    const Vector3D maxDistPt = *std::max_element(points.begin(), points.end(), [&center](const Vector3D& lhs, const Vector3D& rhs){ return (lhs - center).lengthSquared() < (rhs - center).lengthSquared(); });
+    const float radius = (maxDistPt - center).length();
+
+    s.setCenter(center);
+    s.setRadius(radius);
 }
 
 } // anonymous namespace
@@ -169,6 +193,12 @@ void Sphere::initializeFromPoints(const QVector<Vector3D> &points)
 
 void Sphere::expandToContain(const Vector3D &p)
 {
+    if (isNull()) {
+        m_center = p;
+        m_radius = 0.0f;
+        return;
+    }
+
     const Vector3D d = p - m_center;
     const float dist2 = d.lengthSquared();
 
@@ -184,6 +214,13 @@ void Sphere::expandToContain(const Vector3D &p)
 
 void Sphere::expandToContain(const Sphere &sphere)
 {
+    if (isNull()) {
+        *this = sphere;
+        return;
+    } else if (sphere.isNull()) {
+        return;
+    }
+
     const Vector3D d(sphere.m_center - m_center);
     const float dist2 = d.lengthSquared();
 
@@ -206,6 +243,9 @@ void Sphere::expandToContain(const Sphere &sphere)
 
 Sphere Sphere::transformed(const Matrix4x4 &mat) const
 {
+    if (isNull())
+        return *this;
+
     // Transform extremities in x, y, and z directions to find extremities
     // of the resulting ellipsoid
     Vector3D x = mat.map(m_center + Vector3D(m_radius, 0.0f, 0.0f));
