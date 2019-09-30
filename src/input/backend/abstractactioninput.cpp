@@ -46,7 +46,7 @@ namespace Qt3DInput {
 namespace Input {
 
 AbstractActionInput::AbstractActionInput()
-    : Qt3DCore::QBackendNode()
+    : BackendNode()
 {
 }
 

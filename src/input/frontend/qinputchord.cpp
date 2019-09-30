@@ -41,9 +41,6 @@
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -157,11 +154,7 @@ void QInputChord::addChord(QAbstractActionInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
-            change->setPropertyName("chord");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -174,12 +167,7 @@ void QInputChord::removeChord(QAbstractActionInput *input)
 {
     Q_D(QInputChord);
     if (d->m_chords.contains(input)) {
-
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), input);
-            change->setPropertyName("chord");
-            d->notifyObservers(change);
-        }
+        d->update();
 
         d->m_chords.removeOne(input);
 
