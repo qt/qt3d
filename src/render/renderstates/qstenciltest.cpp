@@ -41,7 +41,6 @@
 #include "qstenciltest.h"
 #include "qstenciltest_p.h"
 #include "qstenciltestarguments.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE

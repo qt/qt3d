@@ -35,10 +35,6 @@
 #include <Qt3DAnimation/private/qchannelmapper_p.h>
 #include <Qt3DAnimation/qchannelmapping.h>
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
-
 #include "testpostmanarbiter.h"
 
 class tst_QChannelmapper : public Qt3DAnimation::QChannelMapper

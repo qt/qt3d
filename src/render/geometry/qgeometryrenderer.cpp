@@ -41,9 +41,6 @@
 #include "qgeometryrenderer_p.h"
 
 #include <private/qcomponent_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 

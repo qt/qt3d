@@ -34,7 +34,6 @@
 #include <Qt3DRender/private/entityaccumulator_p.h>
 
 #include <Qt3DRender/QCameraLens>
-#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QComponentAddedChange>
 #include <Qt3DCore/QComponentRemovedChange>

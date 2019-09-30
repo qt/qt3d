@@ -27,7 +27,6 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qnode_p.h>

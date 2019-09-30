@@ -31,7 +31,6 @@
 #include <Qt3DAnimation/private/qabstractchannelmapping_p.h>
 #include <Qt3DAnimation/private/qchannelmapping_p.h>
 #include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>

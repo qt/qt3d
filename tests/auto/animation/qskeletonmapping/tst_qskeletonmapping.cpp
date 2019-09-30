@@ -30,7 +30,6 @@
 #include <Qt3DAnimation/qskeletonmapping.h>
 #include <Qt3DAnimation/private/qskeletonmapping_p.h>
 #include <Qt3DCore/qskeleton.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>

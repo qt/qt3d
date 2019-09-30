@@ -31,7 +31,6 @@
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DInput/private/qmousedevice_p.h>
 #include <Qt3DInput/private/mousedevice_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
 class tst_MouseDevice : public Qt3DCore::QBackendNodeTester

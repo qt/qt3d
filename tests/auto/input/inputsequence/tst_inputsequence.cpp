@@ -30,9 +30,6 @@
 #include <qbackendnodetester.h>
 #include "testdevice.h"
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>

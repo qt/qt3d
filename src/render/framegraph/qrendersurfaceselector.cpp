@@ -44,7 +44,6 @@
 #include <QtGui/QScreen>
 #include <QtGui/QOffscreenSurface>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 

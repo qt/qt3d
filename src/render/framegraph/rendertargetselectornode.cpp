@@ -43,7 +43,6 @@
 #include <Qt3DRender/qrendertargetselector.h>
 #include <Qt3DRender/private/qrendertargetselector_p.h>
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/qrendertargetoutput.h>
 

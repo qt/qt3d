@@ -32,9 +32,6 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryfactory.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include "testrenderer.h"
 
 class TestFactory : public Qt3DRender::QGeometryFactory

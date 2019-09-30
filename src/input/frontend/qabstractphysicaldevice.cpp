@@ -42,9 +42,6 @@
 
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <Qt3DCore/private/qnode_p.h>
 

@@ -33,7 +33,6 @@
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qabstractaspect.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qnodedestroyedchange.h>

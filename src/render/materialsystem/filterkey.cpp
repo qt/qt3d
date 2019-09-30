@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "filterkey_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qfilterkey_p.h>
 
 QT_BEGIN_NAMESPACE

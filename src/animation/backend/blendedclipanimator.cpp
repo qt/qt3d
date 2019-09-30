@@ -41,7 +41,6 @@
 #include <Qt3DAnimation/qabstractclipblendnode.h>
 #include <Qt3DAnimation/private/qblendedclipanimator_p.h>
 #include <Qt3DAnimation/private/qanimationcallbacktrigger_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -31,7 +31,6 @@
 #include <Qt3DInput/private/utils_p.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/qanalogaxisinput.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testdeviceproxy.h"
 

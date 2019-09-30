@@ -40,9 +40,6 @@
 #include "inputchord_p.h"
 
 #include <Qt3DInput/qinputchord.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <Qt3DInput/private/qinputchord_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>

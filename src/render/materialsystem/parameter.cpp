@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "parameter_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/private/qparameter_p.h>
 #include <Qt3DRender/qtexture.h>

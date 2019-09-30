@@ -41,9 +41,6 @@
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qinputsequence.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QDateTime>
 
 #include <Qt3DInput/private/inputhandler_p.h>

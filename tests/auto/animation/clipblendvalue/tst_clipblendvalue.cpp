@@ -32,7 +32,6 @@
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qclipblendvalue_p.h>
 #include <Qt3DAnimation/private/clipblendvalue_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
 #include <random>

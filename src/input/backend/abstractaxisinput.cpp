@@ -41,7 +41,6 @@
 #include "qabstractaxisinput_p.h"
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/abstractaxisinput_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>

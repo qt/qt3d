@@ -30,7 +30,6 @@
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/private/qarmature_p.h>
 #include <Qt3DCore/qskeleton.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>

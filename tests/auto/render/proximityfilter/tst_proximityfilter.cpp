@@ -31,7 +31,6 @@
 #include <Qt3DRender/qproximityfilter.h>
 #include <Qt3DRender/private/qproximityfilter_p.h>
 #include <Qt3DRender/private/proximityfilter_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 

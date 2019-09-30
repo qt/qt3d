@@ -32,7 +32,6 @@
 #include <Qt3DRender/private/parameter_p.h>
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 

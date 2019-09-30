@@ -33,9 +33,6 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/private/qlogicaldevice_p.h>
 #include <Qt3DInput/private/logicaldevice_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include "qbackendnodetester.h"
 
 class tst_LogicalDevice : public Qt3DCore::QBackendNodeTester

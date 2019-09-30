@@ -47,7 +47,6 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/computefilteredboundingvolumejob_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qtransform.h>
 
 QT_BEGIN_NAMESPACE

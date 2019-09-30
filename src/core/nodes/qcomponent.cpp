@@ -40,7 +40,6 @@
 #include "qcomponent.h"
 #include "qcomponent_p.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qentity.h>

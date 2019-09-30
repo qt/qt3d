@@ -39,7 +39,6 @@
 
 #include "clearbuffers_p.h"
 #include <Qt3DRender/private/qclearbuffers_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

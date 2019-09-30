@@ -37,10 +37,6 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qfilterkey.h>
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
-
 #include "testpostmanarbiter.h"
 
 class tst_QTechniqueFilter: public QObject

@@ -41,7 +41,6 @@
 
 #include <Qt3DInput/qanalogaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <Qt3DInput/private/qanalogaxisinput_p.h>

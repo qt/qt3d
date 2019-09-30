@@ -39,7 +39,6 @@
 
 #include "qclearbuffers.h"
 #include "qclearbuffers_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE

@@ -39,7 +39,6 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>

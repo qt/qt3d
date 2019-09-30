@@ -44,7 +44,6 @@
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
 

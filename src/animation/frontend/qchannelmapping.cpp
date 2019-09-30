@@ -38,7 +38,6 @@
 #include "qchannelmapping_p.h"
 
 #include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <QtCore/qmetaobject.h>
 #include <QtCore/QMetaProperty>

@@ -41,9 +41,6 @@
 #include "qtechnique_p.h"
 #include "qparameter.h"
 #include "qgraphicsapifilter.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
