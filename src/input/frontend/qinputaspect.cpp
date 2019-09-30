@@ -161,7 +161,7 @@ QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
     registerBackendType<QLogicalDevice, true>(QBackendNodeMapperPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
     registerBackendType<QGenericInputDevice, true>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QInputSettings, true>(QBackendNodeMapperPtr(new Input::InputSettingsFunctor(d_func()->m_inputHandler.data())));
-    registerBackendType<QAbstractPhysicalDeviceProxy>(QBackendNodeMapperPtr(new Input::PhysicalDeviceProxyNodeFunctor(d_func()->m_inputHandler->physicalDeviceProxyManager())));
+    registerBackendType<QAbstractPhysicalDeviceProxy, true>(QBackendNodeMapperPtr(new Input::PhysicalDeviceProxyNodeFunctor(d_func()->m_inputHandler->physicalDeviceProxyManager())));
 
 #ifdef HAVE_QGAMEPAD
     registerBackendType<QGamepadInput>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));

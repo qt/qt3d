@@ -69,7 +69,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DInput::Input::PhysicalDeviceProxy backendPhysicalDeviceProxy;
             backendPhysicalDeviceProxy.setManager(&manager);
-            simulateInitialization(&PhysicalDeviceProxy, &backendPhysicalDeviceProxy);
+            simulateInitializationSync(&PhysicalDeviceProxy, &backendPhysicalDeviceProxy);
 
             // THEN
             QCOMPARE(backendPhysicalDeviceProxy.isEnabled(), true);
@@ -83,7 +83,7 @@ private Q_SLOTS:
             Qt3DInput::Input::PhysicalDeviceProxy backendPhysicalDeviceProxy;
             backendPhysicalDeviceProxy.setManager(&manager);
             PhysicalDeviceProxy.setEnabled(false);
-            simulateInitialization(&PhysicalDeviceProxy, &backendPhysicalDeviceProxy);
+            simulateInitializationSync(&PhysicalDeviceProxy, &backendPhysicalDeviceProxy);
 
             // THEN
             QCOMPARE(backendPhysicalDeviceProxy.peerId(), PhysicalDeviceProxy.id());
@@ -100,7 +100,7 @@ private Q_SLOTS:
 
         // WHEN
         backendPhysicalDeviceProxy.setManager(&manager);
-        simulateInitialization(&deviceProxy, &backendPhysicalDeviceProxy);
+        simulateInitializationSync(&deviceProxy, &backendPhysicalDeviceProxy);
 
         // THEN
         QCOMPARE(backendPhysicalDeviceProxy.deviceName(), QStringLiteral("TestProxy"));
@@ -139,7 +139,7 @@ private Q_SLOTS:
 
         // WHEN
         backendPhysicalDeviceProxy.setManager(&manager);
-        simulateInitialization(&deviceProxy, &backendPhysicalDeviceProxy);
+        simulateInitializationSync(&deviceProxy, &backendPhysicalDeviceProxy);
 
         backendPhysicalDeviceProxy.cleanup();
 

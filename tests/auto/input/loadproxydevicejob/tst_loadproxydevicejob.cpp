@@ -118,7 +118,7 @@ private Q_SLOTS:
             {
                 backendProxy->setManager(manager);
                 Qt3DCore::QBackendNodeTester backendNodeCreator;
-                backendNodeCreator.simulateInitialization(&proxy, backendProxy);
+                backendNodeCreator.simulateInitializationSync(&proxy, backendProxy);
                 Qt3DCore::QBackendNodePrivate::get(backendProxy)->setArbiter(&arbiter);
             }
 
@@ -155,7 +155,7 @@ private Q_SLOTS:
             {
                 backendProxy->setManager(manager);
                 Qt3DCore::QBackendNodeTester backendNodeCreator;
-                backendNodeCreator.simulateInitialization(&proxy, backendProxy);
+                backendNodeCreator.simulateInitializationSync(&proxy, backendProxy);
                 Qt3DCore::QBackendNodePrivate::get(backendProxy)->setArbiter(&arbiter);
             }
 
