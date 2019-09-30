@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,19 +64,18 @@ namespace Input {
 
 class InputHandler;
 
-class Q_AUTOTEST_EXPORT AbstractAxisInput : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT AbstractAxisInput : public BackendNode
 {
 public:
     virtual void cleanup();
 
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     virtual float process(InputHandler *inputHandler, qint64 currentTime) = 0;
 
 protected:
     AbstractAxisInput();
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
 
     Qt3DCore::QNodeId m_sourceDevice;
 };

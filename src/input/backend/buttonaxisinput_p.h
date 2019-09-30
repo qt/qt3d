@@ -78,13 +78,12 @@ public:
     inline float speedRatio() const { return m_speedRatio; }
     inline qint64 lastUpdateTime() const { return m_lastUpdateTime; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) final;
 
     float process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
     void updateSpeedRatio(qint64 currentTime, UpdateType type);
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     QVector<int> m_buttons;
     float m_scale;

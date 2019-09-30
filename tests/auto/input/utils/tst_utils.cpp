@@ -94,7 +94,7 @@ private Q_SLOTS:
 
         // WHEN -> Create backend AnalogAxisInput
         Qt3DInput::Input::AnalogAxisInput *backendAxisInput = handler.analogAxisInputManager()->getOrCreateResource(analogAxisInput.id());
-        simulateInitialization(&analogAxisInput, backendAxisInput);
+        simulateInitializationSync(&analogAxisInput, backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput->axis(), analogAxisInput.axis());
@@ -125,7 +125,7 @@ private Q_SLOTS:
 
         // WHEN -> Create backend AnalogAxisInput
         Qt3DInput::Input::AnalogAxisInput *backendAxisInput = handler.analogAxisInputManager()->getOrCreateResource(analogAxisInput.id());
-        simulateInitialization(&analogAxisInput, backendAxisInput);
+        simulateInitializationSync(&analogAxisInput, backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput->axis(), analogAxisInput.axis());
@@ -165,7 +165,7 @@ private Q_SLOTS:
 
         // WHEN -> Create backend AnalogAxisInput
         Qt3DInput::Input::AnalogAxisInput *backendAxisInput = handler.analogAxisInputManager()->getOrCreateResource(analogAxisInput.id());
-        simulateInitialization(&analogAxisInput, backendAxisInput);
+        simulateInitializationSync(&analogAxisInput, backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput->axis(), analogAxisInput.axis());
@@ -196,7 +196,7 @@ private Q_SLOTS:
 
         // WHEN -> Create backend AnalogAxisInput
         Qt3DInput::Input::AnalogAxisInput *backendAxisInput = handler.analogAxisInputManager()->getOrCreateResource(analogAxisInput.id());
-        simulateInitialization(&analogAxisInput, backendAxisInput);
+        simulateInitializationSync(&analogAxisInput, backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput->axis(), analogAxisInput.axis());
