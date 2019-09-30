@@ -1850,8 +1850,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             builder.setComputableCacheNeedsToBeRebuilt(computeableDirty);
             builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
             builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt);
-            builder.setRenderableCacheNeedsToBeRebuilt(renderableDirty);
-            builder.setComputableCacheNeedsToBeRebuilt(computeableDirty);
             builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
 
             builder.prepareJobs();
