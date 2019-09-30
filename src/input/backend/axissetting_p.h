@@ -51,14 +51,14 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 namespace Input {
 
-class Q_AUTOTEST_EXPORT AxisSetting : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT AxisSetting : public BackendNode
 {
 public:
     AxisSetting();
@@ -68,11 +68,9 @@ public:
     inline QVector<int> axes() const { return m_axes; }
     inline bool isSmoothEnabled() const { return m_smooth; }
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     float m_deadZoneRadius;
     QVector<int> m_axes;

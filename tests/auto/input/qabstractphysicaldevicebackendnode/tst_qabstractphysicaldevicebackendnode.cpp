@@ -195,8 +195,8 @@ private Q_SLOTS:
                 Qt3DInput::Input::InputHandler *handler = aspectPrivate->m_inputHandler.data();
                 Qt3DInput::Input::AxisSetting *backendSetting1 = handler->axisSettingManager()->getOrCreateResource(settings1.id());
                 Qt3DInput::Input::AxisSetting *backendSetting2 = handler->axisSettingManager()->getOrCreateResource(settings2.id());
-                simulateInitialization(&settings1, backendSetting1);
-                simulateInitialization(&settings2, backendSetting2);
+                simulateInitializationSync(&settings1, backendSetting1);
+                simulateInitializationSync(&settings2, backendSetting2);
             }
 
             // Adding AxisSettings
