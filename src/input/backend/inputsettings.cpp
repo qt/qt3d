@@ -52,26 +52,19 @@ namespace Qt3DInput {
 namespace Input {
 
 InputSettings::InputSettings()
-    : QBackendNode(QBackendNode::ReadOnly)
+    : BackendNode(QBackendNode::ReadOnly)
     , m_eventSource(nullptr)
 {
 }
 
-void InputSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void InputSettings::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSettingsData>>(change);
-    const auto &data = typedChange->data;
-    m_eventSource = data.eventSource;
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QInputSettings *node = qobject_cast<const QInputSettings *>(frontEnd);
+    if (!node)
+        return;
 
-void InputSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("eventSource"))
-            m_eventSource = propertyChange->value().value<QObject *>();
-    }
-    QBackendNode::sceneChangeEvent(e);
+    m_eventSource = node->eventSource();
 }
 
 InputSettingsFunctor::InputSettingsFunctor(InputHandler *handler)
