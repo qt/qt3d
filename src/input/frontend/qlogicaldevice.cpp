@@ -176,11 +176,7 @@ void QLogicalDevice::addAction(QAction *action)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(action, &QLogicalDevice::removeAction, d->m_actions);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), action);
-            change->setPropertyName("action");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -191,12 +187,7 @@ void QLogicalDevice::removeAction(QAction *action)
 {
     Q_D(QLogicalDevice);
     if (d->m_actions.contains(action)) {
-
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), action);
-            change->setPropertyName("action");
-            d->notifyObservers(change);
-        }
+        d->update();
 
         d->m_actions.removeOne(action);
 
@@ -236,11 +227,7 @@ void QLogicalDevice::addAxis(QAxis *axis)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(axis, &QLogicalDevice::removeAxis, d->m_axes);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), axis);
-            change->setPropertyName("axis");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -251,11 +238,7 @@ void QLogicalDevice::removeAxis(QAxis *axis)
 {
     Q_D(QLogicalDevice);
     if (d->m_axes.contains(axis)) {
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), axis);
-            change->setPropertyName("axis");
-            d->notifyObservers(change);
-        }
+        d->update();
 
         d->m_axes.removeOne(axis);
 
