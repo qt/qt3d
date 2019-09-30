@@ -79,7 +79,7 @@ private Q_SLOTS:
             axisAccumulator->setSourceAxis(axis);
             axisAccumulator->setScale(scale);
             axisAccumulator->setSourceAxisType(sourceAxisType);
-            simulateInitialization(axisAccumulator, backendAxisAccumulator);
+            simulateInitializationSync(axisAccumulator, backendAxisAccumulator);
         }
 
         // WHEN
