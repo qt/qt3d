@@ -177,24 +177,6 @@ void RayCaster::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime
     }
 }
 
-void RayCaster::dispatchHits(const QAbstractRayCaster::Hits &hits)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("hits");
-    e->setValue(QVariant::fromValue(hits));
-    notifyObservers(e);
-
-    if (m_runMode == QAbstractRayCaster::SingleShot) {
-        setEnabled(false);
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("enabled");
-        e->setValue(false);
-        notifyObservers(e);
-    }
-}
-
 void RayCaster::notifyJob()
 {
     if (m_renderer && m_renderer->rayCastingJob())

@@ -83,8 +83,6 @@ public:
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void cleanup();
 
-    void dispatchHits(const QAbstractRayCaster::Hits &hits);
-
 private:
     void notifyJob();
 
