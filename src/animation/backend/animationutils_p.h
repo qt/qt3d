@@ -53,6 +53,7 @@
 #include <Qt3DAnimation/qanimationcallback.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/private/sqt_p.h>
 
 #include <QtCore/qbitarray.h>
 #include <QtCore/qdebug.h>
@@ -183,7 +184,7 @@ struct ChannelNameAndType
         case Rotation:
             componentCount = 4;
             break;
-        };
+        }
     }
 
     bool operator==(const ChannelNameAndType &rhs) const
@@ -264,6 +265,32 @@ struct AnimationCallbackAndValue
     QVariant value;
 };
 
+struct AnimationRecord {
+    struct TargetChange {
+        TargetChange(Qt3DCore::QNodeId id, const char *name, QVariant v)
+            : targetId(id), propertyName(name), value(v) {
+
+        }
+
+        Qt3DCore::QNodeId targetId;
+        const char *propertyName = nullptr;
+        QVariant value;
+    };
+
+    Qt3DCore::QNodeId animatorId;
+    QVector<TargetChange> targetChanges;
+    QVector<QPair<Qt3DCore::QNodeId, QVector<Qt3DCore::Sqt>>> skeletonChanges;
+    float normalizedTime = -1.f;
+    bool finalFrame = false;
+};
+
+Q_AUTOTEST_EXPORT
+AnimationRecord prepareAnimationRecord(Qt3DCore::QNodeId animatorId,
+                                       const QVector<MappingData> &mappingDataVec,
+                                       const QVector<float> &channelResults,
+                                       bool finalFrame,
+                                       float normalizedLocalTime);
+
 inline constexpr double toSecs(qint64 nsecs) { return nsecs / 1.0e9; }
 inline qint64 toNsecs(double seconds) { return qRound64(seconds * 1.0e9); }
 
@@ -328,12 +355,6 @@ ClipResults evaluateClipAtPhase(AnimationClip *clip,
                                 float phase);
 
 Q_AUTOTEST_EXPORT
-QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
-                                                          const QVector<MappingData> &mappingDataVec,
-                                                          const QVector<float> &channelResults,
-                                                          bool finalFrame, float normalizedLocalTime);
-
-Q_AUTOTEST_EXPORT
 QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &mappingDataVec,
                                                     const QVector<float> &channelResults);
 
@@ -389,6 +410,8 @@ void applyComponentDefaultValues(const QVector<ComponentValue> &componentDefault
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DAnimation::Animation::AnimationRecord) // LCOV_EXCL_LINE
 
 
 #endif // QT3DANIMATION_ANIMATION_ANIMATIONUTILS_P_H

@@ -84,7 +84,6 @@ public:
     JointManager *jointManager() const { return m_jointManager; }
 
     void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void setStatus(Qt3DCore::QSkeletonLoader::Status status);
     Qt3DCore::QSkeletonLoader::Status status() const { return m_status; }

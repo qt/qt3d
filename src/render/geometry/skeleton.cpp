@@ -139,28 +139,9 @@ void Skeleton::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             }
         }
     }
-}
 
-// TODOSYNC remove once animation aspect no longer requires messages
-void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("localPoses")) {
-            // When the animation aspect sends us a new set of local poses, all we
-            // need to do is copy them into place. The existing jobs will then update
-            // the skinning matrix palette.
-            m_skeletonData.localPoses = change->value().value<QVector<Qt3DCore::Sqt>>();
-        }
-
-        break;
-    }
-
-    default:
-        break;
-    }
-    QBackendNode::sceneChangeEvent(e);
+    auto d = Qt3DCore::QAbstractSkeletonPrivate::get(node);
+    m_skeletonData.localPoses = d->m_localPoses;
 }
 
 void Skeleton::setStatus(QSkeletonLoader::Status status)

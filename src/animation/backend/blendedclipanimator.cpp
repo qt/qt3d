@@ -40,7 +40,6 @@
 #include <Qt3DAnimation/qclock.h>
 #include <Qt3DAnimation/qabstractclipblendnode.h>
 #include <Qt3DAnimation/private/qblendedclipanimator_p.h>
-#include <Qt3DAnimation/private/qanimationcallbacktrigger_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -120,27 +119,6 @@ void BlendedClipAnimator::setRunning(bool running)
 {
     m_running = running;
     setDirty(Handler::BlendedClipAnimatorDirty);
-}
-
-void BlendedClipAnimator::sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes)
-{
-    for (const Qt3DCore::QSceneChangePtr &change : changes)
-        notifyObservers(change);
-}
-
-void BlendedClipAnimator::sendCallbacks(const QVector<AnimationCallbackAndValue> &callbacks)
-{
-    for (const AnimationCallbackAndValue &callback : callbacks) {
-        if (callback.flags.testFlag(QAnimationCallback::OnThreadPool)) {
-            callback.callback->valueChanged(callback.value);
-        } else {
-            auto e = QAnimationCallbackTriggerPtr::create(peerId());
-            e->setCallback(callback.callback);
-            e->setValue(callback.value);
-            e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-            notifyObservers(e);
-        }
-    }
 }
 
 

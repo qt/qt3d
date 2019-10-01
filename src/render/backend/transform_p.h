@@ -76,7 +76,6 @@ public:
     QQuaternion rotation() const;
     QVector3D translation() const;
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) final;
 
 private:

@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qskeletoncreatedchange_p.h>
+#include <Qt3DCore/private/sqt_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,10 +68,12 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractSkeleton)
     static const QAbstractSkeletonPrivate *get(const QAbstractSkeleton *q);
+    static QAbstractSkeletonPrivate *get(QAbstractSkeleton *q);
 
     QSkeletonCreatedChangeBase::SkeletonType m_type;
 
     int m_jointCount;
+    QVector<Sqt> m_localPoses;
 };
 
 } // namespace Qt3DCore

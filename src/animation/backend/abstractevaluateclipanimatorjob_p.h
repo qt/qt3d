@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,62 +34,44 @@
 **
 ****************************************************************************/
 
-#include "skeleton_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
+#ifndef QT3DANIMATION_ANIMATION_ABSTRACTEVALUATECLIPANIMATORJOB_P_H
+#define QT3DANIMATION_ANIMATION_ABSTRACTEVALUATECLIPANIMATORJOB_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DAnimation/private/animationutils_p.h>
 
 QT_BEGIN_NAMESPACE
-
-using namespace Qt3DCore;
 
 namespace Qt3DAnimation {
 namespace Animation {
 
-// Rather than store backend nodes for the individual joints, the
-// animation aspect operates on the vector of local poses as aggregated
-// by the skeleton. This allows us to animate a skeleton even when the
-// frontend QSkeletonLoader does not instantiate the frontend QJoint nodes.
-// It also means we don't need a QChannelMapping for each property of each
-// joint.
+class AbstractEvaluateClipAnimatorJobPrivate;
 
-Skeleton::Skeleton()
-    : BackendNode(Qt3DCore::QBackendNode::ReadWrite)
+class AbstractEvaluateClipAnimatorJob : public Qt3DCore::QAspectJob
 {
-}
+protected:
+    AbstractEvaluateClipAnimatorJob();
 
-void Skeleton::cleanup()
-{
-    m_jointNames.clear();
-    m_jointLocalPoses.clear();
-}
+    void setPostFrameData(const AnimationRecord &record, const QVector<AnimationCallbackAndValue> &callbacks);
 
-// TODOSYNC remove once backend > backend communication no longer requires messages
-void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    // Get the joint names and initial local poses from a change sent
-    // by the render aspect when the skeleton has been loaded.
-    switch (e->type()) {
-    case PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("jointNamesAndLocalPoses")) {
-            const auto payload = change->value().value<JointNamesAndLocalPoses>();
-            m_jointNames = payload.names;
-            m_jointLocalPoses = payload.localPoses;
+private:
+    Q_DECLARE_PRIVATE(AbstractEvaluateClipAnimatorJob)
+};
 
-            // TODO: Mark joint info as dirty so we can rebuild any indexes used
-            // by the animators and channel mappings.
-        }
-
-        break;
-    }
-
-    default:
-        break;
-    }
-
-    BackendNode::sceneChangeEvent(e);
-}
-
-} // namespace Animation
-} // namespace Qt3DAnimation
+} // Animation
+} // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#endif // QT3DANIMATION_ANIMATION_ABSTRACTEVALUATECLIPANIMATORJOB_P_H

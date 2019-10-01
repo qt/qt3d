@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DAnimation/private/abstractevaluateclipanimatorjob_p.h>
 #include <Qt3DAnimation/private/handle_types_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
@@ -60,8 +60,9 @@ namespace Animation {
 
 class Handler;
 class ClipBlendNode;
+class EvaluateBlendClipAnimatorJobPrivate;
 
-class EvaluateBlendClipAnimatorJob : public Qt3DCore::QAspectJob
+class EvaluateBlendClipAnimatorJob : public AbstractEvaluateClipAnimatorJob
 {
 public:
     EvaluateBlendClipAnimatorJob();

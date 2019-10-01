@@ -35,6 +35,9 @@
 ****************************************************************************/
 
 #include "evaluateclipanimatorjob_p.h"
+#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
@@ -46,10 +49,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
+
 EvaluateClipAnimatorJob::EvaluateClipAnimatorJob()
-    : Qt3DCore::QAspectJob()
+    : AbstractEvaluateClipAnimatorJob()
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateClipAnimator, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateClipAnimator, 0)
 }
 
 void EvaluateClipAnimatorJob::run()
@@ -98,19 +102,16 @@ void EvaluateClipAnimatorJob::run()
     clipAnimator->setNormalizedLocalTime(-1.0f); // Re-set to something invalid.
 
     // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
-    const QVector<Qt3DCore::QSceneChangePtr> changes = preparePropertyChanges(clipAnimator->peerId(),
-                                                                              clipAnimator->mappingData(),
-                                                                              formattedClipResults,
-                                                                              preEvaluationDataForClip.isFinalFrame,
-                                                                              preEvaluationDataForClip.normalizedLocalTime);
-
-    // Send the property changes
-    clipAnimator->sendPropertyChanges(changes);
+    auto record = prepareAnimationRecord(clipAnimator->peerId(),
+                                         clipAnimator->mappingData(),
+                                         formattedClipResults,
+                                         preEvaluationDataForClip.isFinalFrame,
+                                         preEvaluationDataForClip.normalizedLocalTime);
 
     // Trigger callbacks either on this thread or by notifying the gui thread.
-    const QVector<AnimationCallbackAndValue> callbacks = prepareCallbacks(clipAnimator->mappingData(),
-                                                                          formattedClipResults);
-    clipAnimator->sendCallbacks(callbacks);
+    auto callbacks = prepareCallbacks(clipAnimator->mappingData(), formattedClipResults);
+
+    setPostFrameData(record, callbacks);
 }
 
 } // namespace Animation
