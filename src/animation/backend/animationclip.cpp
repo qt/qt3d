@@ -124,7 +124,7 @@ void AnimationClip::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool first
         Q_ASSERT(m_dataType == File);
         if (m_source != loaderNode->source()) {
             m_source = loaderNode->source();
-            if (m_clipData.isValid())
+            if (!m_source.isEmpty())
                 setDirty(Handler::AnimationClipDirty);
         }
     }
