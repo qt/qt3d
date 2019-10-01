@@ -50,6 +50,8 @@ namespace Render {
 
 static QVector4D vec4dFromColor(const QColor &color)
 {
+    if (!color.isValid())
+        return QVector4D(0.0f, 0.0f, 0.0f, 1.0f);
     return QVector4D(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 }
 
@@ -58,6 +60,8 @@ ClearBuffers::ClearBuffers()
     , m_type(QClearBuffers::None)
     , m_clearDepthValue(1.f)
     , m_clearStencilValue(0)
+    , m_clearColorAsColor(Qt::black)
+    , m_clearColor(vec4dFromColor(m_clearColorAsColor))
 {
 }
 

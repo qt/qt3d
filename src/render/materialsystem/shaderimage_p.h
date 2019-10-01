@@ -66,7 +66,7 @@ public:
     ShaderImage();
 
     void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     Qt3DCore::QNodeId textureId() const { return m_textureId; }
     int mipLevel() const { return m_mipLevel; }
@@ -86,8 +86,6 @@ public:
 #endif
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Qt3DCore::QNodeId m_textureId;
     int m_mipLevel;
     int m_layer;

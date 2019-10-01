@@ -65,7 +65,7 @@ private Q_SLOTS:
         axis.addInput(&axisInput);
 
         // WHEN
-        simulateInitialization(&axis, &backendAxis);
+        simulateInitializationSync(&axis, &backendAxis);
 
         // THEN
         QCOMPARE(backendAxis.peerId(), axis.id());
@@ -97,7 +97,7 @@ private Q_SLOTS:
         axis.addInput(&axisInput);
 
         // WHEN
-        simulateInitialization(&axis, &backendAxis);
+        simulateInitializationSync(&axis, &backendAxis);
         backendAxis.setAxisValue(883.0f);
         backendAxis.cleanup();
 
@@ -110,33 +110,30 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DInput::QAxis axis;
         Qt3DInput::Input::Axis backendAxis;
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
+        simulateInitializationSync(&axis, &backendAxis);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendAxis.sceneChangeEvent(updateChange);
+        axis.setEnabled(false);
+        backendAxis.syncFromFrontEnd(&axis, false);
 
         // THEN
-        QCOMPARE(backendAxis.isEnabled(), true);
+        QCOMPARE(backendAxis.isEnabled(), false);
 
         // WHEN
         DummyAxisInput input;
         const Qt3DCore::QNodeId inputId = input.id();
-        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &input);
-        nodeAddedChange->setPropertyName("input");
-        backendAxis.sceneChangeEvent(nodeAddedChange);
+        axis.addInput(&input);
+        backendAxis.syncFromFrontEnd(&axis, false);
 
         // THEN
         QCOMPARE(backendAxis.inputs().size(), 1);
         QCOMPARE(backendAxis.inputs().first(), inputId);
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &input);
-        nodeRemovedChange->setPropertyName("input");
-        backendAxis.sceneChangeEvent(nodeRemovedChange);
+        axis.removeInput(&input);
+        backendAxis.syncFromFrontEnd(&axis, false);
 
         // THEN
         QCOMPARE(backendAxis.inputs().size(), 0);

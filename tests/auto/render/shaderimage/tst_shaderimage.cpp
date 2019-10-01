@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/qshaderimage_p.h>
 #include <Qt3DRender/private/shaderimage_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qtexture.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 
@@ -98,11 +99,13 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::QShaderImage shaderImage;
+        TestRenderer renderer;
 
         {
             // WHEN
             Qt3DRender::Render::ShaderImage backendShaderImage;
-            simulateInitialization(&shaderImage, &backendShaderImage);
+            backendShaderImage.setRenderer(&renderer);
+            simulateInitializationSync(&shaderImage, &backendShaderImage);
 
             // THEN
             QCOMPARE(backendShaderImage.isEnabled(), true);
@@ -118,7 +121,8 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::ShaderImage backendShaderImage;
             shaderImage.setEnabled(false);
-            simulateInitialization(&shaderImage, &backendShaderImage);
+            backendShaderImage.setRenderer(&renderer);
+            simulateInitializationSync(&shaderImage, &backendShaderImage);
 
             // THEN
             QCOMPARE(backendShaderImage.peerId(), shaderImage.id());
@@ -129,39 +133,35 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DRender::QShaderImage shaderImage;
         Qt3DRender::Render::ShaderImage backendShaderImage;
         TestRenderer renderer;
         backendShaderImage.setRenderer(&renderer);
+        simulateInitializationSync(&shaderImage, &backendShaderImage);
 
         {
              // WHEN
              const bool newValue = false;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("enabled");
-             change->setValue(newValue);
-             backendShaderImage.sceneChangeEvent(change);
+             shaderImage.setEnabled(newValue);
+             backendShaderImage.syncFromFrontEnd(&shaderImage, false);
 
              // THEN
             QCOMPARE(backendShaderImage.isEnabled(), newValue);
         }
         {
              // WHEN
-             const Qt3DCore::QNodeId newValue = Qt3DCore::QNodeId::createId();
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("texture");
-             change->setValue(QVariant::fromValue(newValue));
-             backendShaderImage.sceneChangeEvent(change);
+            Qt3DRender::QTexture2D tex2D;
+            shaderImage.setTexture(&tex2D);
+            backendShaderImage.syncFromFrontEnd(&shaderImage, false);
 
              // THEN
-            QCOMPARE(backendShaderImage.textureId(), newValue);
+            QCOMPARE(backendShaderImage.textureId(), tex2D.id());
         }
         {
              // WHEN
              const int newValue = 883;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("mipLevel");
-             change->setValue(QVariant::fromValue(newValue));
-             backendShaderImage.sceneChangeEvent(change);
+             shaderImage.setMipLevel(newValue);
+             backendShaderImage.syncFromFrontEnd(&shaderImage, false);
 
              // THEN
             QCOMPARE(backendShaderImage.mipLevel(), newValue);
@@ -169,10 +169,8 @@ private Q_SLOTS:
         {
              // WHEN
              const int newValue = 1584;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("layer");
-             change->setValue(QVariant::fromValue(newValue));
-             backendShaderImage.sceneChangeEvent(change);
+             shaderImage.setLayer(newValue);
+             backendShaderImage.syncFromFrontEnd(&shaderImage, false);
 
              // THEN
             QCOMPARE(backendShaderImage.layer(), newValue);
@@ -180,10 +178,8 @@ private Q_SLOTS:
         {
              // WHEN
              const bool newValue = true;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("layered");
-             change->setValue(QVariant::fromValue(newValue));
-             backendShaderImage.sceneChangeEvent(change);
+             shaderImage.setLayered(newValue);
+             backendShaderImage.syncFromFrontEnd(&shaderImage, false);
 
              // THEN
             QCOMPARE(backendShaderImage.layered(), newValue);
@@ -191,10 +187,8 @@ private Q_SLOTS:
         {
              // WHEN
              const  Qt3DRender::QShaderImage::Access newValue = Qt3DRender::QShaderImage::WriteOnly;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("access");
-             change->setValue(QVariant::fromValue(newValue));
-             backendShaderImage.sceneChangeEvent(change);
+             shaderImage.setAccess(newValue);
+             backendShaderImage.syncFromFrontEnd(&shaderImage, false);
 
              // THEN
             QCOMPARE(backendShaderImage.access(), newValue);
@@ -202,10 +196,8 @@ private Q_SLOTS:
         {
              // WHEN
              const  Qt3DRender::QShaderImage::ImageFormat newValue =  Qt3DRender::QShaderImage::RG16F;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("format");
-             change->setValue(QVariant::fromValue(newValue));
-             backendShaderImage.sceneChangeEvent(change);
+             shaderImage.setFormat(newValue);
+             backendShaderImage.syncFromFrontEnd(&shaderImage, false);
 
              // THEN
             QCOMPARE(backendShaderImage.format(), newValue);

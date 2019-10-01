@@ -38,6 +38,8 @@
 ****************************************************************************/
 
 #include "subtreeenabler_p.h"
+#include <Qt3DRender/private/qsubtreeenabler_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,8 +48,41 @@ namespace Qt3DRender {
 namespace Render {
 
 SubtreeEnabler::SubtreeEnabler()
-    : FrameGraphNode(FrameGraphNode::SubtreeEnabler)
+    : FrameGraphNode(FrameGraphNode::SubtreeEnabler, FrameGraphNode::ReadWrite)
 {
+}
+
+void SubtreeEnabler::sendDisableToFrontend()
+{
+    if (m_enablement != QSubtreeEnabler::SingleShot)
+        return;
+
+    if (isEnabled())
+        return;
+
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    e->setPropertyName("enabled");
+    e->setValue(false);
+    notifyObservers(e);
+}
+
+void SubtreeEnabler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
+{
+    const QSubtreeEnabler *node = qobject_cast<const QSubtreeEnabler *>(frontEnd);
+    if (!node)
+        return;
+
+    if (node->isEnabled() != isEnabled())
+        markDirty(AbstractRenderer::AllDirty);
+
+    FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    const auto enablement = node->enablement();
+    if (enablement != m_enablement) {
+        m_enablement = enablement;
+        markDirty(AbstractRenderer::FrameGraphDirty);
+    }
 }
 
 } //Render

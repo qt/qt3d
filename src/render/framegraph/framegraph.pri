@@ -68,6 +68,7 @@ HEADERS += \
     $$PWD/qnopicking.h \
     $$PWD/nopicking_p.h \
     $$PWD/qsubtreeenabler.h \
+    $$PWD/qsubtreeenabler_p.h \
     $$PWD/subtreeenabler_p.h
 
 SOURCES += \

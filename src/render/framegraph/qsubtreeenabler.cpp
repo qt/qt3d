@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRender/qsubtreeenabler.h>
-#include <Qt3DRender/private/qframegraphnode_p.h>
+#include "qsubtreeenabler_p.h"
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -100,12 +100,84 @@ namespace Qt3DRender
  */
 
 QSubtreeEnabler::QSubtreeEnabler(Qt3DCore::QNode *parent)
-    : QFrameGraphNode(*new QFrameGraphNodePrivate, parent)
+    : QFrameGraphNode(*new QSubtreeEnablerPrivate, parent)
 {
 }
 
 QSubtreeEnabler::~QSubtreeEnabler()
 {
+}
+
+/*!
+    \enum QSubtreeEnabler::Enablement
+
+    Specifies whether subtree enablement is persistent or transient.
+
+    \value Persistent
+    The value of enabled is persistent. This is the default.
+
+    \value SingleShot
+    The value of enabled will last for a single frame and then be reset to false.
+    This might be used for a subtree drawing to an FBO, for example, to only update
+    the FBO when the relevant portions of the scene changed.
+*/
+
+/*!
+    \qmlproperty enumeration Qt3D.Render::SubtreeEnabler::enablement
+    Controls whether subtree enablement is persistent or transient.
+
+    \value Persistent
+    The value of enabled is persistent. This is the default.
+
+    \value SingleShot
+    The value of enabled will last for a single frame and then be reset to false.
+    This might be used for a subtree drawing to an FBO, for example, to only update
+    the FBO when the relevant portions of the scene changed.
+*/
+
+/*!
+    \property Qt3DRender::QSubtreeEnabler::enablement
+    Controls whether subtree enablement is persistent or transient.
+*/
+QSubtreeEnabler::Enablement QSubtreeEnabler::enablement() const
+{
+    Q_D(const QSubtreeEnabler);
+    return d->m_enablement;
+}
+
+void QSubtreeEnabler::setEnablement(QSubtreeEnabler::Enablement enablement)
+{
+    Q_D(QSubtreeEnabler);
+    if (d->m_enablement == enablement)
+        return;
+    d->m_enablement = enablement;
+    emit enablementChanged(d->m_enablement);
+}
+
+/*!
+    \qmlmethod void Qt3D.Render::SubtreeEnabler::requestUpdate()
+    Requests that the subtree be enabled.
+
+    A conveninence method intended to be used with \c SingleShot enablement.
+ */
+
+/*!
+    Requests that the subtree be enabled.
+
+    A conveninence method intended to be used with \c SingleShot enablement.
+ */
+void QSubtreeEnabler::requestUpdate()
+{
+    setEnabled(true);
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QSubtreeEnabler::createNodeCreationChange() const
+{
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QSubtreeEnablerData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QSubtreeEnabler);
+    data.enablement = d->m_enablement;
+    return creationChange;
 }
 
 } //Qt3DRender

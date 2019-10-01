@@ -87,7 +87,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::ComputeCommand backendComputeCommand;
             backendComputeCommand.setRenderer(&renderer);
-            simulateInitialization(&computeCommand, &backendComputeCommand);
+            simulateInitializationSync(&computeCommand, &backendComputeCommand);
 
             // THEN
             QCOMPARE(backendComputeCommand.isEnabled(), true);
@@ -105,7 +105,7 @@ private Q_SLOTS:
             Qt3DRender::Render::ComputeCommand backendComputeCommand;
             backendComputeCommand.setRenderer(&renderer);
             computeCommand.setEnabled(false);
-            simulateInitialization(&computeCommand, &backendComputeCommand);
+            simulateInitializationSync(&computeCommand, &backendComputeCommand);
 
             // THEN
             QCOMPARE(backendComputeCommand.peerId(), computeCommand.id());
@@ -118,16 +118,16 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::ComputeCommand backendComputeCommand;
+        Qt3DRender::QComputeCommand computeCommand;
         TestRenderer renderer;
         backendComputeCommand.setRenderer(&renderer);
+        simulateInitializationSync(&computeCommand, &backendComputeCommand);
 
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendComputeCommand.sceneChangeEvent(change);
+            computeCommand.setEnabled(newValue);
+            backendComputeCommand.syncFromFrontEnd(&computeCommand, false);
 
             // THEN
             QCOMPARE(backendComputeCommand.isEnabled(), newValue);
@@ -135,10 +135,8 @@ private Q_SLOTS:
         {
             // WHEN
             const int newValue = 128;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("workGroupX");
-            change->setValue(newValue);
-            backendComputeCommand.sceneChangeEvent(change);
+            computeCommand.setWorkGroupX(newValue);
+            backendComputeCommand.syncFromFrontEnd(&computeCommand, false);
 
             // THEN
             QCOMPARE(backendComputeCommand.x(), newValue);
@@ -146,10 +144,8 @@ private Q_SLOTS:
         {
             // WHEN
             const int newValue = 64;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("workGroupY");
-            change->setValue(newValue);
-            backendComputeCommand.sceneChangeEvent(change);
+            computeCommand.setWorkGroupY(newValue);
+            backendComputeCommand.syncFromFrontEnd(&computeCommand, false);
 
             // THEN
             QCOMPARE(backendComputeCommand.y(), newValue);
@@ -157,10 +153,8 @@ private Q_SLOTS:
         {
             // WHEN
             const int newValue = 32;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("workGroupZ");
-            change->setValue(newValue);
-            backendComputeCommand.sceneChangeEvent(change);
+            computeCommand.setWorkGroupZ(newValue);
+            backendComputeCommand.syncFromFrontEnd(&computeCommand, false);
 
             // THEN
             QCOMPARE(backendComputeCommand.z(), newValue);
@@ -168,10 +162,8 @@ private Q_SLOTS:
         {
             // WHEN
             const Qt3DRender::QComputeCommand::RunType newValue = Qt3DRender::QComputeCommand::Manual;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("runType");
-            change->setValue(newValue);
-            backendComputeCommand.sceneChangeEvent(change);
+            computeCommand.setRunType(newValue);
+            backendComputeCommand.syncFromFrontEnd(&computeCommand, false);
 
             // THEN
             QCOMPARE(backendComputeCommand.runType(), newValue);
@@ -179,10 +171,8 @@ private Q_SLOTS:
         {
             // WHEN
             const int newValue = 32;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("frameCount");
-            change->setValue(newValue);
-            backendComputeCommand.sceneChangeEvent(change);
+            computeCommand.trigger(newValue);
+            backendComputeCommand.syncFromFrontEnd(&computeCommand, false);
 
             // THEN
             QCOMPARE(backendComputeCommand.frameCount(), newValue);
@@ -208,7 +198,7 @@ private Q_SLOTS:
         Qt3DCore::QBackendNodePrivate::get(&backendComputeCommand)->setArbiter(&arbiter);
 
         backendComputeCommand.setRenderer(&renderer);
-        simulateInitialization(&computeCommand, &backendComputeCommand);
+        simulateInitializationSync(&computeCommand, &backendComputeCommand);
 
         for (int i = 0; i < 5; ++i) {
             // WHEN

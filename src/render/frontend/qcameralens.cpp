@@ -228,13 +228,17 @@ QCameraLensPrivate::QCameraLensPrivate()
 {
 }
 
+
 void QCameraLens::viewAll(Qt3DCore::QNodeId cameraId)
 {
     Q_D(QCameraLens);
     if (d->m_projectionType == PerspectiveProjection) {
         QVariant v;
         v.setValue(cameraId);
-        d->m_pendingViewAllCommand = sendCommand(QLatin1String("QueryRootBoundingVolume"), v);
+        d->m_pendingViewAllCommand = {QLatin1String("QueryRootBoundingVolume"),
+                                      v,
+                                      id()};
+        d->update();
     }
 }
 
@@ -245,7 +249,10 @@ void QCameraLens::viewEntity(Qt3DCore::QNodeId entityId, Qt3DCore::QNodeId camer
         QVector<Qt3DCore::QNodeId> ids = {entityId, cameraId};
         QVariant v;
         v.setValue(ids);
-        d->m_pendingViewAllCommand = sendCommand(QLatin1String("QueryEntityBoundingVolume"), v);
+        d->m_pendingViewAllCommand = {QLatin1String("QueryEntityBoundingVolume"),
+                                      v,
+                                      id()};
+        d->update();
     }
 }
 
@@ -253,7 +260,7 @@ void QCameraLensPrivate::processViewAllCommand(Qt3DCore::QNodeCommand::CommandId
                                                const QVariant &data)
 {
     Q_Q(QCameraLens);
-    if (m_pendingViewAllCommand != commandId)
+    if (!m_pendingViewAllCommand || m_pendingViewAllCommand.commandId != commandId)
         return;
 
     QVector<float> boundingVolumeData = data.value< QVector<float> >();
@@ -262,7 +269,7 @@ void QCameraLensPrivate::processViewAllCommand(Qt3DCore::QNodeCommand::CommandId
     QVector3D center(boundingVolumeData[0], boundingVolumeData[1], boundingVolumeData[2]);
     float radius = boundingVolumeData[3];
     Q_EMIT q->viewSphere(center, radius);
-    m_pendingViewAllCommand = Qt3DCore::QNodeCommand::CommandId();
+    m_pendingViewAllCommand = {};
 }
 
 /*!

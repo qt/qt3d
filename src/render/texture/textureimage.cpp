@@ -72,36 +72,39 @@ void TextureImage::cleanup()
     m_face = QAbstractTexture::CubeMapPositiveX;
 }
 
-void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void TextureImage::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureImageData>>(change);
-    const auto &data = typedChange->data;
-    m_mipLevel = data.mipLevel;
-    m_layer = data.layer;
-    m_face = data.face;
-    m_generator = data.generator;
-    m_dirty = true;
-}
+    const QAbstractTextureImage *node = qobject_cast<const QAbstractTextureImage *>(frontEnd);
+    if (!node)
+        return;
 
-void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
+    const bool oldEnabled = isEnabled();
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    m_dirty |= (oldEnabled != isEnabled());
 
-    if (e->type() == PropertyUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
-            m_layer = propertyChange->value().toInt();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
-            m_mipLevel = propertyChange->value().toInt();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
-            m_face = static_cast<QAbstractTexture::CubeMapFace>(propertyChange->value().toInt());
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("dataGenerator")) {
-            m_generator = propertyChange->value().value<QTextureImageDataGeneratorPtr>();
-        }
+    if (node->layer() != m_layer) {
+        m_layer = node->layer();
         m_dirty = true;
     }
 
-    markDirty(AbstractRenderer::AllDirty);
-    BackendNode::sceneChangeEvent(e);
+    if (node->mipLevel() != m_mipLevel) {
+        m_mipLevel = node->mipLevel();
+        m_dirty = true;
+    }
+
+    if (node->face() != m_face) {
+        m_face = node->face();
+        m_dirty = true;
+    }
+
+    const QAbstractTextureImagePrivate *d = static_cast<const QAbstractTextureImagePrivate *>(QNodePrivate::get(node));
+    if (d->dataGenerator() != m_generator) {
+        m_generator = d->dataGenerator();
+        m_dirty = true;
+    }
+
+    if (m_dirty)
+        markDirty(AbstractRenderer::AllDirty);
 }
 
 void TextureImage::unsetDirty()

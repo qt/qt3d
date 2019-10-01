@@ -72,8 +72,10 @@ GLenum glAccessEnumForShaderImageAccess(QShaderImage::Access access)
     case QShaderImage::WriteOnly:
         return GL_WRITE_ONLY;
     case QShaderImage::ReadWrite:
-        return GL_READ_WRITE;
+    default:
+        break;
     }
+    return GL_READ_WRITE;
 }
 
 GLenum glImageFormatToGL(QShaderImage::ImageFormat format)

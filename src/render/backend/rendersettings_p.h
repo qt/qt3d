@@ -67,7 +67,7 @@ class Q_AUTOTEST_EXPORT RenderSettings : public BackendNode
 public:
     RenderSettings();
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     Qt3DCore::QNodeId activeFrameGraphID() const { return m_activeFrameGraph; }
     QRenderSettings::RenderPolicy renderPolicy() const { return m_renderPolicy; }
@@ -80,8 +80,6 @@ public:
     void setActiveFrameGraphId(Qt3DCore::QNodeId frameGraphNodeId) { m_activeFrameGraph = frameGraphNodeId; }
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     QRenderSettings::RenderPolicy m_renderPolicy;
     QPickingSettings::PickMethod m_pickMethod;
     QPickingSettings::PickResultMode m_pickResultMode;

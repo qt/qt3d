@@ -89,7 +89,7 @@ public:
 
     // A QAttribute pack might be interesting
     // This is a temporary fix in the meantime, to remove the hacked methods in Technique
-    QVector<int> m_attributes;
+    QVector<int> m_activeAttributes;
 
     float m_depth;
     int m_changeCost;
@@ -103,7 +103,7 @@ public:
     CommandType m_type;
     int m_workGroups[3];
 
-    // Values filled for draw calls
+    // Values filled for draw calls by Renderer (in prepare Submission)
     GLsizei m_primitiveCount;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     int m_restartIndexValue;

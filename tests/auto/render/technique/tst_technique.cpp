@@ -308,6 +308,7 @@ private Q_SLOTS:
     void checkIsCompatibleWithFilters()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Technique backendTechnique;
         Qt3DRender::Render::NodeManagers nodeManagers;
 
@@ -339,11 +340,17 @@ private Q_SLOTS:
         Qt3DRender::Render::FilterKey *backendFilterKey4 = nodeManagers.filterKeyManager()->getOrCreateResource(filterKey4->id());
         Qt3DRender::Render::FilterKey *backendFilterKey5 = nodeManagers.filterKeyManager()->getOrCreateResource(filterKey5->id());
 
-        simulateInitialization(filterKey1, backendFilterKey1);
-        simulateInitialization(filterKey2, backendFilterKey2);
-        simulateInitialization(filterKey3, backendFilterKey3);
-        simulateInitialization(filterKey4, backendFilterKey4);
-        simulateInitialization(filterKey5, backendFilterKey5);
+        backendFilterKey1->setRenderer(&renderer);
+        backendFilterKey2->setRenderer(&renderer);
+        backendFilterKey3->setRenderer(&renderer);
+        backendFilterKey4->setRenderer(&renderer);
+        backendFilterKey5->setRenderer(&renderer);
+
+        simulateInitializationSync(filterKey1, backendFilterKey1);
+        simulateInitializationSync(filterKey2, backendFilterKey2);
+        simulateInitializationSync(filterKey3, backendFilterKey3);
+        simulateInitializationSync(filterKey4, backendFilterKey4);
+        simulateInitializationSync(filterKey5, backendFilterKey5);
 
         // THEN
         QCOMPARE(nodeManagers.filterKeyManager()->activeHandles().size(), 5);

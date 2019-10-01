@@ -75,8 +75,8 @@ private:
     RenderStateNode* createBackendNode(QRenderState *frontend)
     {
         RenderStateNode *backend = m_renderStateManager.getOrCreateResource(frontend->id());
-        simulateInitialization(frontend, backend);
         backend->setRenderer(&m_renderer);
+        simulateInitializationSync(frontend, backend);
         return backend;
     }
 
@@ -187,6 +187,7 @@ private Q_SLOTS:
         // THEN
         RenderStateNode *backend1 = createBackendNode(frontend1);
         RenderStateNode *backend2 = createBackendNode(frontend2);
+
         QVERIFY(backend1->type() == mask);
         QVERIFY(backend2->type() == mask);
         QVERIFY(backend1->impl() != backend2->impl());
@@ -204,12 +205,11 @@ private Q_SLOTS:
         QCOMPARE(arbiter.dirtyNodes.size(), 1);
         QCOMPARE(arbiter.dirtyNodes.front(), frontend1);
 
-        // TODOSYNC update when syncFromFrontendNode is implemented
-//        // WHEN
-//        backend1->sceneChangeEvent(change.staticCast<QSceneChange>());
+        // WHEN
+        backend1->syncFromFrontEnd(frontend1, false);
 
-//        // THEN
-//        QVERIFY(backend1->impl() == backend2->impl());
+        // THEN
+        QVERIFY(backend1->impl() == backend2->impl());
 
         arbiter.dirtyNodes.clear();
     }
@@ -285,12 +285,12 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), frontend1->id());
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), frontend1);
 
         // WHEN
-        backend1->sceneChangeEvent(change.staticCast<QSceneChange>());
+        backend1->syncFromFrontEnd(frontend1, false);
 
         // THEN
         QVERIFY(backend1->impl() == backend2->impl());

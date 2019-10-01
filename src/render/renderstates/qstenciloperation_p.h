@@ -76,7 +76,6 @@ public:
     QStencilOperationArguments *m_front;
     QStencilOperationArguments *m_back;
 
-    void resendArguments();
     void fillData(QStencilOperationData &data) const;
 };
 

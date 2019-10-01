@@ -109,7 +109,7 @@ QStencilTest::QStencilTest(QNode *parent)
 {
     Q_D(QStencilTest);
 
-    const auto resend = [d]() { d->resendArguments(); };
+    const auto resend = [d]() { d->update(); };
 
     (void) connect(d->m_front, &QStencilTestArguments::comparisonMaskChanged, resend);
     (void) connect(d->m_front, &QStencilTestArguments::faceModeChanged, resend);
@@ -125,17 +125,6 @@ QStencilTest::QStencilTest(QNode *parent)
 /*! \internal */
 QStencilTest::~QStencilTest()
 {
-}
-
-/*! \internal */
-void QStencilTestPrivate::resendArguments()
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(m_id);
-    QStencilTestData data;
-    fillData(data);
-    e->setPropertyName("arguments");
-    e->setValue(QVariant::fromValue(data));
-    notifyObservers(e);
 }
 
 /*! \internal */

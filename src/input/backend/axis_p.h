@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Q_AUTOTEST_EXPORT Axis : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Axis : public BackendNode
 {
 public:
     Axis();
@@ -68,11 +68,9 @@ public:
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline float axisValue() const { return m_axisValue; }
     void setAxisValue(float axisValue);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     QVector<Qt3DCore::QNodeId> m_inputs;
     float m_axisValue;
 };

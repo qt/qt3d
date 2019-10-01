@@ -73,35 +73,35 @@ void ComputeCommand::cleanup()
     m_runType = QComputeCommand::Continuous;
 }
 
-void ComputeCommand::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void ComputeCommand::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QComputeCommandData>>(change);
-    const auto &data = typedChange->data;
-    m_workGroups[0] = data.workGroupX;
-    m_workGroups[1] = data.workGroupY;
-    m_workGroups[2] = data.workGroupZ;
-    m_runType = data.runType;
-    m_frameCount = data.frameCount;
-    markDirty(AbstractRenderer::ComputeDirty);
-}
+    const QComputeCommand *node = qobject_cast<const QComputeCommand *>(frontEnd);
+    if (!node)
+        return;
 
-void ComputeCommand::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX"))
-            m_workGroups[0] = propertyChange->value().toInt();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupY"))
-            m_workGroups[1] = propertyChange->value().toInt();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupZ"))
-            m_workGroups[2] = propertyChange->value().toInt();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("frameCount"))
-            m_frameCount = propertyChange->value().toInt();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("runType"))
-            m_runType = static_cast<QComputeCommand::RunType>(propertyChange->value().toInt());
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (m_workGroups[0] != node->workGroupX()) {
+        m_workGroups[0] = node->workGroupX();
         markDirty(AbstractRenderer::ComputeDirty);
     }
-    BackendNode::sceneChangeEvent(e);
+    if (m_workGroups[1] != node->workGroupY()) {
+        m_workGroups[1] = node->workGroupY();
+        markDirty(AbstractRenderer::ComputeDirty);
+    }
+    if (m_workGroups[2] != node->workGroupZ()) {
+        m_workGroups[2] = node->workGroupZ();
+        markDirty(AbstractRenderer::ComputeDirty);
+    }
+    if (node->runType() != m_runType) {
+        m_runType = node->runType();
+        markDirty(AbstractRenderer::ComputeDirty);
+    }
+    const QComputeCommandPrivate *d = static_cast<const QComputeCommandPrivate *>(Qt3DCore::QNodePrivate::get(node));
+    if (d->m_frameCount != m_frameCount) {
+        m_frameCount = d->m_frameCount;
+        markDirty(AbstractRenderer::ComputeDirty);
+    }
 }
 
 // Called from buildComputeRenderCommands in a job

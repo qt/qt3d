@@ -54,6 +54,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/qabstracttexture.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,6 +73,7 @@ public:
     int m_mipLevel;
     int m_layer;
     QAbstractTexture::CubeMapFace m_face;
+    QTextureImageDataGeneratorPtr dataGenerator() const;
 };
 
 struct QAbstractTextureImageData

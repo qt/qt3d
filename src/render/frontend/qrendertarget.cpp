@@ -126,11 +126,7 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
         if (!output->parent())
             output->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), output);
-            change->setPropertyName("output");
-            d->notifyObservers(change);
-        }
+        d->update();
     }
 }
 
@@ -141,11 +137,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
 
-    if (output && d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), output);
-        change->setPropertyName("output");
-        d->notifyObservers(change);
-    }
+    d->update();
     d->m_outputs.removeOne(output);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(output);
