@@ -142,19 +142,6 @@ void QAnimationClipLoader::setSource(const QUrl &source)
     emit sourceChanged(source);
 }
 
-/*!
-    \internal
-*/
-void QAnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QAnimationClipLoader);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("status"))
-            d->setStatus(static_cast<QAnimationClipLoader::Status>(e->value().toInt()));
-    }
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClipLoader::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAnimationClipLoaderData>::create(this);

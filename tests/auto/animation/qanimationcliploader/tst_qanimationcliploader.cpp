@@ -158,42 +158,6 @@ private Q_SLOTS:
         }
 
     }
-
-    void checkStatusPropertyUpdate()
-    {
-        // GIVEN
-        qRegisterMetaType<Qt3DAnimation::QAnimationClipLoader::Status>("Status");
-        TestArbiter arbiter;
-        arbiter.setArbiterOnNode(this);
-        QSignalSpy spy(this, SIGNAL(statusChanged(Status)));
-        const Qt3DAnimation::QAnimationClipLoader::Status newStatus = Qt3DAnimation::QAnimationClipLoader::Error;
-
-        // THEN
-        QVERIFY(spy.isValid());
-
-        // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("status");
-        valueChange->setValue(QVariant::fromValue(newStatus));
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(spy.count(), 1);
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(status(), newStatus);
-
-        // WHEN
-        spy.clear();
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(spy.count(), 0);
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(status(), newStatus);
-
-        // Cleanup
-        Qt3DCore::QNodePrivate::get(this)->setArbiter(nullptr);
-    }
 };
 
 QTEST_MAIN(tst_QAnimationClipLoader)

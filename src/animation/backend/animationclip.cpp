@@ -43,7 +43,6 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/gltfimporter_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <QtCore/qbytearray.h>
 #include <QtCore/qfile.h>
@@ -90,11 +89,6 @@ void AnimationClip::setStatus(QAnimationClipLoader::Status status)
 {
     if (status != m_status) {
         m_status = status;
-        Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("status");
-        e->setValue(QVariant::fromValue(m_status));
-        notifyObservers(e);
     }
 }
 
@@ -317,13 +311,6 @@ void AnimationClip::setDuration(float duration)
         return;
 
     m_duration = duration;
-
-    // Send a change to the frontend
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("duration");
-    e->setValue(m_duration);
-    notifyObservers(e);
 }
 
 int AnimationClip::channelIndex(const QString &channelName, int jointIndex) const
