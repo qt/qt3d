@@ -60,7 +60,7 @@ namespace Qt3DCore {
 
 class QAbstractSkeleton;
 
-class QArmaturePrivate : public Qt3DCore::QComponentPrivate
+class Q_3DCORE_PRIVATE_EXPORT QArmaturePrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QArmaturePrivate();

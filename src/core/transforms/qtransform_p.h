@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QTransformPrivate : public QComponentPrivate
+class Q_3DCORE_PRIVATE_EXPORT QTransformPrivate : public QComponentPrivate
 {
     Q_DECLARE_PUBLIC(QTransform)
 
