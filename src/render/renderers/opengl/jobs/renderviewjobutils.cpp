@@ -512,27 +512,24 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
             // If the property needs to be transformed, we transform it here as
             // the shaderdata cannot hold transformed properties for multiple
             // thread contexts at once
-            if (currentShaderData->propertyTransformType(qmlPropertyName) != ShaderData::NoTransform)
-                activeUniformNamesToValue.insert(StringToInt::lookupId(varName),
-                                                 currentShaderData->getTransformedProperty(qmlPropertyName, viewMatrix));
-            else
-                activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
+            activeUniformNamesToValue.insert(StringToInt::lookupId(varName),
+                                             currentShaderData->getTransformedProperty(qmlPropertyName.toLatin1(), viewMatrix));
         }
     }
 }
 
 void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName)
 {
-    const QHash<QString, QVariant> &properties = rShaderData->properties();
-    QHash<QString, QVariant>::const_iterator it = properties.begin();
-    const QHash<QString, QVariant>::const_iterator end = properties.end();
+    const QHash<QString, ShaderData::PropertyValue> &properties = rShaderData->properties();
+    auto it = properties.begin();
+    const auto end = properties.end();
 
     while (it != end) {
         const auto prefix = qmlPropertyName.isEmpty() ? QLatin1String("") : QLatin1String(".");
         buildActiveUniformNameValueMapHelper(rShaderData,
                                              blockName + prefix + qmlPropertyName,
                                              it.key(),
-                                             it.value());
+                                             it.value().value);
         ++it;
     }
 }

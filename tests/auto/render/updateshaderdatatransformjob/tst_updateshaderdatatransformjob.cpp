@@ -207,11 +207,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendShaderData->properties().size(), 3);
-        QVERIFY(backendShaderData->properties().contains(QLatin1String("eyePosition")));
-        QVERIFY(backendShaderData->properties().contains(QLatin1String("eyePositionTransformed")));
+        QVERIFY(backendShaderData->properties().contains(QStringLiteral("eyePosition")));
+        QVERIFY(backendShaderData->properties().contains(QStringLiteral("eyePositionTransformed")));
 
-        QCOMPARE(backendShaderData->properties()[QLatin1String("eyePosition")].value<QVector3D>(), QVector3D(1.0f, 1.0f, 1.0f));
-        QCOMPARE(backendShaderData->properties()[QLatin1String("eyePositionTransformed")].toInt(), int(Qt3DRender::Render::ShaderData::ModelToEye));
+        QCOMPARE(backendShaderData->properties()[QStringLiteral("eyePosition")].value.value<QVector3D>(), QVector3D(1.0f, 1.0f, 1.0f));
+        QCOMPARE(backendShaderData->properties()[QStringLiteral("eyePositionTransformed")].value.toInt(), int(Qt3DRender::Render::ShaderData::ModelToEye));
 
         // WHEN
         Qt3DRender::Render::UpdateShaderDataTransformJob backendUpdateShaderDataTransformJob;
@@ -220,7 +220,7 @@ private Q_SLOTS:
 
         // THEN
         // See scene file to find translation
-        QCOMPARE(backendShaderData->getTransformedProperty(QLatin1String("eyePosition"), Matrix4x4(camera->viewMatrix())).value<Vector3D>(),
+        QCOMPARE(backendShaderData->getTransformedProperty(QStringLiteral("eyePosition"), Matrix4x4(camera->viewMatrix())).value<Vector3D>(),
                  Matrix4x4(camera->viewMatrix()) * (Vector3D(1.0f, 1.0f, 1.0f) + Vector3D(0.0f, 5.0f, 0.0f)));
     }
 
@@ -248,11 +248,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendShaderData->properties().size(), 3);
-        QVERIFY(backendShaderData->properties().contains(QLatin1String("position")));
-        QVERIFY(backendShaderData->properties().contains(QLatin1String("positionTransformed")));
+        QVERIFY(backendShaderData->properties().contains(QStringLiteral("position")));
+        QVERIFY(backendShaderData->properties().contains(QStringLiteral("positionTransformed")));
 
-        QCOMPARE(backendShaderData->properties()[QLatin1String("position")].value<QVector3D>(), QVector3D(1.0f, 1.0f, 1.0f));
-        QCOMPARE(backendShaderData->properties()[QLatin1String("positionTransformed")].toInt(), int(Qt3DRender::Render::ShaderData::ModelToWorld));
+        QCOMPARE(backendShaderData->properties()[QStringLiteral("position")].value.value<QVector3D>(), QVector3D(1.0f, 1.0f, 1.0f));
+        QCOMPARE(backendShaderData->properties()[QStringLiteral("positionTransformed")].value.toInt(), int(Qt3DRender::Render::ShaderData::ModelToWorld));
 
         // WHEN
         Qt3DRender::Render::UpdateShaderDataTransformJob backendUpdateShaderDataTransformJob;
@@ -261,7 +261,7 @@ private Q_SLOTS:
 
         // THEN
         // See scene file to find translation
-        QCOMPARE(backendShaderData->getTransformedProperty(QLatin1String("position"), Matrix4x4(camera->viewMatrix())).value<Vector3D>(),
+        QCOMPARE(backendShaderData->getTransformedProperty(QStringLiteral("position"), Matrix4x4(camera->viewMatrix())).value<Vector3D>(),
                  Vector3D(1.0f, 1.0f, 1.0f) + Vector3D(5.0f, 5.0f, 5.0f));
     }
 };
