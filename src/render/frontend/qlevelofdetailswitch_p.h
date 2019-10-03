@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QLEVELOFDETAIL_P_H
-#define QT3DRENDER_QLEVELOFDETAIL_P_H
+#ifndef QT3DRENDER_QLEVELOFDETAILSWITCH_P_H
+#define QT3DRENDER_QLEVELOFDETAILSWITCH_P_H
 
 //
 //  W A R N I N G
@@ -51,10 +51,8 @@
 // We mean it.
 //
 
-#include <private/qcomponent_p.h>
-#include <qlevelofdetail.h>
-#include <Qt3DRender/qlevelofdetailboundingsphere.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/qlevelofdetail_p.h>
+#include <Qt3DRender/qlevelofdetailswitch.h>
 
 #include <QVector3D>
 
@@ -62,36 +60,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class Q_3DRENDERSHARED_PRIVATE_EXPORT QLevelOfDetailPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QLevelOfDetailSwitchPrivate : public QLevelOfDetailPrivate
 {
 public:
-    QLevelOfDetailPrivate();
+    QLevelOfDetailSwitchPrivate();
 
-    Q_DECLARE_PUBLIC(QLevelOfDetail)
+    Q_DECLARE_PUBLIC(QLevelOfDetailSwitch)
 
-    void _q_radiusChanged(float radius);
-    void _q_centerChanged(const QVector3D &center);
-
-    virtual void setCurrentIndex(int currentIndex);
-
-    QCamera *m_camera;
-    int m_currentIndex;
-    QLevelOfDetail::ThresholdType m_thresholdType;
-    QVector<qreal> m_thresholds;
-    QLevelOfDetailBoundingSphere m_volumeOverride;
-};
-
-struct QLevelOfDetailData
-{
-    Qt3DCore::QNodeId camera;
-    int currentIndex;
-    QLevelOfDetail::ThresholdType thresholdType;
-    QVector<qreal> thresholds;
-    QLevelOfDetailBoundingSphere volumeOverride;
+    void setCurrentIndex(int currentIndex) override;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QLEVELOFDETAIL_P_H
+#endif // QT3DRENDER_QLEVELOFDETAILSWITCH_P_H
