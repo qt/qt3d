@@ -63,6 +63,7 @@ namespace Render {
 
 class Entity;
 class NodeManagers;
+class UpdateWorldTransformJobPrivate;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateWorldTransformJob : public Qt3DCore::QAspectJob
 {
@@ -77,6 +78,7 @@ public:
 private:
     Entity *m_node;
     NodeManagers *m_manager;
+    Q_DECLARE_PRIVATE(UpdateWorldTransformJob)
 };
 
 typedef QSharedPointer<UpdateWorldTransformJob> UpdateWorldTransformJobPtr;

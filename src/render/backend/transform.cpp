@@ -131,15 +131,6 @@ void Transform::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 }
 
-void Transform::notifyWorldTransformChanged(const Matrix4x4 &worldMatrix)
-{
-    auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-    change->setPropertyName("worldMatrix");
-    change->setValue(convertToQMatrix4x4(worldMatrix));
-    notifyObservers(change);
-}
-
 void Transform::updateMatrix()
 {
     QMatrix4x4 m;

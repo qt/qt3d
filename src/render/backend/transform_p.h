@@ -78,7 +78,6 @@ public:
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) final;
-    void notifyWorldTransformChanged(const Matrix4x4 &worldMatrix);
 
 private:
     void updateMatrix();
