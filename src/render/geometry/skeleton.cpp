@@ -36,24 +36,19 @@
 
 #include "skeleton_p.h"
 
-#include <Qt3DCore/qjoint.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-
 #include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
 
+#include <Qt3DCore/qjoint.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
-#include <Qt3DRender/private/gltfskeletonloader_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/private/qskeletoncreatedchange_p.h>
 #include <Qt3DCore/private/qskeleton_p.h>
 #include <Qt3DCore/private/qskeletonloader_p.h>
 #include <Qt3DCore/private/qmath3d_p.h>
-#include <Qt3DCore/private/qabstractnodefactory_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -146,192 +141,8 @@ void Skeleton::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 
 void Skeleton::setStatus(QSkeletonLoader::Status status)
 {
-    if (status != m_status) {
+    if (status != m_status)
         m_status = status;
-        Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("status");
-        e->setValue(QVariant::fromValue(m_status));
-        notifyObservers(e);
-    }
-}
-
-void Skeleton::loadSkeleton()
-{
-    qCDebug(Jobs) << Q_FUNC_INFO << m_source;
-    clearData();
-
-    // Load the data
-    switch (m_dataType) {
-    case File:
-        loadSkeletonFromUrl();
-        break;
-
-    case Data:
-        loadSkeletonFromData();
-        break;
-
-    default:
-        Q_UNREACHABLE();
-    }
-
-    // If using a loader inform the frontend of the status change.
-    // Don't bother if asked to create frontend joints though. When
-    // the backend gets notified of those joints we'll update the
-    // status at that point.
-    if (m_dataType == File && !m_createJoints) {
-        if (jointCount() == 0)
-            setStatus(QSkeletonLoader::Error);
-        else
-            setStatus(QSkeletonLoader::Ready);
-    }
-
-    qCDebug(Jobs) << "Loaded skeleton data:" << *this;
-}
-
-void Skeleton::loadSkeletonFromUrl()
-{
-    // TODO: Handle remote files
-    QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_source);
-    QFileInfo info(filePath);
-    if (!info.exists()) {
-        qWarning() << "Could not open skeleton file:" << filePath;
-        setStatus(Qt3DCore::QSkeletonLoader::Error);
-        return;
-    }
-
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "Could not open skeleton file:" << filePath;
-        setStatus(Qt3DCore::QSkeletonLoader::Error);
-        return;
-    }
-
-    // TODO: Make plugin based for more file type support. For now gltf or native
-    const QString ext = info.suffix();
-    if (ext == QLatin1String("gltf")) {
-        GLTFSkeletonLoader loader;
-        loader.load(&file);
-        m_skeletonData = loader.createSkeleton(m_name);
-
-        // If the user has requested it, create the frontend nodes for the joints
-        // and send them to the (soon to be owning) QSkeletonLoader.
-        if (m_createJoints) {
-            std::unique_ptr<QJoint> rootJoint(createFrontendJoints(m_skeletonData));
-            if (!rootJoint) {
-                qWarning() << "Failed to create frontend joints";
-                setStatus(Qt3DCore::QSkeletonLoader::Error);
-                return;
-            }
-
-            // Move the QJoint tree to the main thread and notify the
-            // corresponding QSkeletonLoader
-            const auto appThread = QCoreApplication::instance()->thread();
-            rootJoint->moveToThread(appThread);
-
-            auto e = QJointChangePtr::create(peerId());
-            e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-            e->setPropertyName("rootJoint");
-            e->data = std::move(rootJoint);
-            notifyObservers(e);
-
-            // Clear the skeleton data. It will be recreated from the
-            // frontend joints. A little bit inefficient but ensures
-            // that joints created this way and via QSkeleton go through
-            // the same code path.
-            m_skeletonData = SkeletonData();
-        }
-    } else if (ext == QLatin1String("json")) {
-        // TODO: Support native skeleton type
-    } else {
-        qWarning() << "Unknown skeleton file type:" << ext;
-        setStatus(Qt3DCore::QSkeletonLoader::Error);
-        return;
-    }
-    m_skinningPalette.resize(m_skeletonData.joints.size());
-}
-
-void Skeleton::loadSkeletonFromData()
-{
-    // Recurse down through the joint hierarchy and process it into
-    // the vector of joints used within SkeletonData. The recursion
-    // ensures that a parent always appears before its children in
-    // the vector of JointInfo objects.
-    //
-    // In addition, we set up a mapping from the joint ids to the
-    // index of the corresponding JointInfo object in the vector.
-    // This will allow us to easily update entries in the vector of
-    // JointInfos when a Joint node marks itself as dirty.
-    const int rootParentIndex = -1;
-    processJointHierarchy(m_rootJointId, rootParentIndex, m_skeletonData);
-    m_skinningPalette.resize(m_skeletonData.joints.size());
-}
-
-Qt3DCore::QJoint *Skeleton::createFrontendJoints(const SkeletonData &skeletonData) const
-{
-    if (skeletonData.joints.isEmpty())
-        return nullptr;
-
-    // Create frontend joints from the joint info objects
-    QVector<QJoint *> frontendJoints;
-    const int jointCount = skeletonData.joints.size();
-    frontendJoints.reserve(jointCount);
-    for (int i = 0; i < jointCount; ++i) {
-        const QMatrix4x4 &inverseBindMatrix = skeletonData.joints[i].inverseBindPose;
-        const QString &jointName = skeletonData.jointNames[i];
-        const Qt3DCore::Sqt &localPose = skeletonData.localPoses[i];
-        frontendJoints.push_back(createFrontendJoint(jointName, localPose, inverseBindMatrix));
-    }
-
-    // Now go through and resolve the parent for each joint
-    for (int i = 0; i < frontendJoints.size(); ++i) {
-        const auto parentIndex = skeletonData.joints[i].parentIndex;
-        if (parentIndex == -1)
-            continue;
-
-        // It's not enough to just set up the QObject parent-child relationship.
-        // We need to explicitly add the child to the parent's list of joints so
-        // that information is then propagated to the backend.
-        frontendJoints[parentIndex]->addChildJoint(frontendJoints[i]);
-    }
-
-    return frontendJoints[0];
-}
-
-Qt3DCore::QJoint *Skeleton::createFrontendJoint(const QString &jointName,
-                                                const Qt3DCore::Sqt &localPose,
-                                                const QMatrix4x4 &inverseBindMatrix) const
-{
-    auto joint = QAbstractNodeFactory::createNode<QJoint>("QJoint");
-    joint->setTranslation(localPose.translation);
-    joint->setRotation(localPose.rotation);
-    joint->setScale(localPose.scale);
-    joint->setInverseBindMatrix(inverseBindMatrix);
-    joint->setName(jointName);
-    return joint;
-}
-
-void Skeleton::processJointHierarchy(Qt3DCore::QNodeId jointId,
-                                     int parentJointIndex,
-                                     SkeletonData &skeletonData)
-{
-    // Lookup the joint, create a JointInfo, and add an entry to the index map
-    Joint *joint = m_renderer->nodeManagers()->jointManager()->lookupResource(jointId);
-    Q_ASSERT(joint);
-    joint->setOwningSkeleton(m_skeletonHandle);
-    const JointInfo jointInfo(joint, parentJointIndex);
-    skeletonData.joints.push_back(jointInfo);
-    skeletonData.localPoses.push_back(joint->localPose());
-    skeletonData.jointNames.push_back(joint->name());
-
-    const int jointIndex = skeletonData.joints.size() - 1;
-    const HJoint jointHandle = m_jointManager->lookupHandle(jointId);
-    skeletonData.jointIndices.insert(jointHandle, jointIndex);
-
-    // Recurse to the children
-    const auto childIds = joint->childJointIds();
-    for (const auto childJointId : childIds)
-        processJointHierarchy(childJointId, jointIndex, skeletonData);
 }
 
 void Skeleton::clearData()
@@ -341,6 +152,12 @@ void Skeleton::clearData()
     m_skeletonData.localPoses.clear();
     m_skeletonData.jointNames.clear();
     m_skeletonData.jointIndices.clear();
+}
+
+void Skeleton::setSkeletonData(const SkeletonData &data)
+{
+    m_skeletonData = data;
+    m_skinningPalette.resize(m_skeletonData.joints.size());
 }
 
 // Called from UpdateSkinningPaletteJob
