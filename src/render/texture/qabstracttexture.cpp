@@ -85,6 +85,39 @@ void QAbstractTexturePrivate::setDataFunctor(const QTextureGeneratorPtr &generat
     }
 }
 
+void QAbstractTexturePrivate::setStatus(QAbstractTexture::Status status)
+{
+    Q_Q(QAbstractTexture);
+    if (m_status != status) {
+        m_status = status;
+        const bool blocked = q->blockNotifications(true);
+        q->statusChanged(status);
+        q->blockNotifications(blocked);
+    }
+}
+
+void QAbstractTexturePrivate::setHandle(const QVariant &handle)
+{
+    Q_Q(QAbstractTexture);
+    if (m_handle != handle) {
+        m_handle = handle;
+        const bool blocked = q->blockNotifications(true);
+        emit q->handleChanged(handle);
+        q->blockNotifications(blocked);
+    }
+}
+
+void QAbstractTexturePrivate::setHandleType(QAbstractTexture::HandleType type)
+{
+    Q_Q(QAbstractTexture);
+    if (m_handleType != type) {
+        m_handleType = type;
+        const bool blocked = q->blockNotifications(true);
+        emit q->handleTypeChanged(type);
+        q->blockNotifications(blocked);
+    }
+}
+
 /*!
     \class Qt3DRender::QAbstractTexture
     \inmodule Qt3DRender
@@ -564,7 +597,9 @@ void QAbstractTexture::setStatus(Status status)
     Q_D(QAbstractTexture);
     if (status != d->m_status) {
         d->m_status = status;
+        const bool blocked = blockNotifications(true);
         emit statusChanged(status);
+        blockNotifications(blocked);
     }
 }
 

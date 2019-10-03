@@ -173,7 +173,6 @@ public:
     inline int sharedTextureId() const { return m_sharedTextureId; }
 
     void setDataGenerator(const QTextureGeneratorPtr &generator);
-    void updatePropertiesAndNotify(const TextureUpdateInfo &updateInfo);
     bool isValid(TextureImageManager *manager) const;
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;

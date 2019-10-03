@@ -379,7 +379,7 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_vaoGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
-    GenericLambdaJobPtr<std::function<void ()>> m_sendTextureChangesToFrontendJob;
+    GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>> m_sendTextureChangesToFrontendJob;
     GenericLambdaJobPtr<std::function<void ()>> m_sendSetFenceHandlesToFrontendJob;
     GenericLambdaJobPtr<std::function<void ()>> m_sendDisablesToFrontendJob;
     IntrospectShadersJobPtr m_introspectShaderJob;
@@ -391,7 +391,7 @@ private:
     void lookForDownloadableBuffers();
     void lookForDirtyTextures();
     void reloadDirtyShaders();
-    void sendTextureChangesToFrontend();
+    void sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendSetFenceHandlesToFrontend();
     void sendDisablesToFrontend();
 

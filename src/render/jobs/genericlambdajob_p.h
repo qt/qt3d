@@ -84,6 +84,49 @@ private:
 template<typename T>
 using GenericLambdaJobPtr = QSharedPointer<GenericLambdaJob<T>>;
 
+template<typename T, typename U>
+class GenericLambdaJobAndPostFramePrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    explicit GenericLambdaJobAndPostFramePrivate(U postFrameCallable)
+        : m_postFrameCallable(postFrameCallable)
+    {}
+
+    ~GenericLambdaJobAndPostFramePrivate() override {}
+
+    void postFrame(Qt3DCore::QAspectManager *manager) override
+    {
+        m_postFrameCallable(manager);
+    }
+
+private:
+    U m_postFrameCallable;
+};
+
+template<typename T, typename U>
+class GenericLambdaJobAndPostFrame : public Qt3DCore::QAspectJob
+{
+public:
+    explicit GenericLambdaJobAndPostFrame(T runCallable, U postFrameCallable, JobTypes::JobType type = JobTypes::GenericLambda)
+        : Qt3DCore::QAspectJob(*new GenericLambdaJobAndPostFramePrivate<T, U>(postFrameCallable))
+        , m_runCallable(runCallable)
+    {
+        SET_JOB_RUN_STAT_TYPE(this, type, 0);
+    }
+
+    // QAspectJob interface
+    void run() final
+    {
+        m_runCallable();
+    }
+
+private:
+    T m_runCallable;
+};
+
+template<typename T, typename U>
+using GenericLambdaJobAndPostFramePtr = QSharedPointer<GenericLambdaJobAndPostFrame<T, U>>;
+
 } // Render
 
 } // Qt3DRender

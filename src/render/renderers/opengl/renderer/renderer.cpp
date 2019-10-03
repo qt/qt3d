@@ -97,6 +97,7 @@
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 
 #if QT_CONFIG(qt3d_profile_jobs)
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
@@ -196,7 +197,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
-    , m_sendTextureChangesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendTextureChangesToFrontend(); }, JobTypes::SendTextureChangesToFrontend))
+    , m_sendTextureChangesToFrontendJob(decltype(m_sendTextureChangesToFrontendJob)::create([] {},
+                                                                                            [this] (Qt3DCore::QAspectManager *m) { sendTextureChangesToFrontend(m); },
+                                                                                            JobTypes::SendTextureChangesToFrontend))
     , m_sendSetFenceHandlesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
     , m_sendDisablesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendDisablesToFrontend(); }, JobTypes::SendDisablesToFrontend))
     , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
@@ -1167,24 +1170,39 @@ void Renderer::reloadDirtyShaders()
     }
 }
 
-// Executed in a job
-void Renderer::sendTextureChangesToFrontend()
+// Executed in a job (as postFrame)
+void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     const QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
     for (const auto &pair : updateTextureProperties) {
-        // Prepare change notification
-
         const Qt3DCore::QNodeIdVector targetIds = pair.second;
         for (const Qt3DCore::QNodeId targetId: targetIds) {
+
             // Lookup texture
             Texture *t = m_nodesManager->textureManager()->lookupResource(targetId);
-
-            // Texture might have been deleted between previous and current frame
-            if (t == nullptr)
+            // If backend texture is Dirty, some property has changed and the properties we are
+            // about to send are already outdate
+            if (t == nullptr || t->dirtyFlags() != Texture::NotDirty)
                 continue;
 
-            // Send change and update backend
-            t->updatePropertiesAndNotify(pair.first);
+            QAbstractTexture *texture = static_cast<QAbstractTexture *>(manager->lookupNode(targetId));
+            if (!texture)
+                continue;
+           const TextureProperties &properties = pair.first.properties;
+
+           const bool blocked = texture->blockNotifications(true);
+           texture->setWidth(properties.width);
+           texture->setHeight(properties.height);
+           texture->setDepth(properties.depth);
+           texture->setLayers(properties.layers);
+           texture->setFormat(properties.format);
+           texture->blockNotifications(blocked);
+
+           QAbstractTexturePrivate *dTexture = static_cast<QAbstractTexturePrivate *>(QNodePrivate::get(texture));
+
+           dTexture->setStatus(properties.status);
+           dTexture->setHandleType(pair.first.handleType);
+           dTexture->setHandle(pair.first.handle);
         }
     }
 }
