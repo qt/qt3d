@@ -35,6 +35,9 @@
 ****************************************************************************/
 
 #include "loadskeletonjob_p.h"
+#include <Qt3DCore/qabstractskeleton.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qabstractskeleton_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/job_common_p.h>
@@ -44,12 +47,23 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+class LoadSkeletonJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    LoadSkeletonJobPrivate() : m_backendSkeleton(nullptr) { }
+    ~LoadSkeletonJobPrivate() override { }
+
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    Skeleton *m_backendSkeleton;
+};
+
 LoadSkeletonJob::LoadSkeletonJob(const HSkeleton &handle)
     : QAspectJob()
     , m_handle(handle)
     , m_nodeManagers(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadSkeleton, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadSkeleton, 0)
 }
 
 LoadSkeletonJob::~LoadSkeletonJob()
@@ -58,9 +72,31 @@ LoadSkeletonJob::~LoadSkeletonJob()
 
 void LoadSkeletonJob::run()
 {
+    Q_D(LoadSkeletonJob);
+    d->m_backendSkeleton = nullptr;
+
     Skeleton *skeleton = m_nodeManagers->skeletonManager()->data(m_handle);
-    if (skeleton != nullptr)
+    if (skeleton != nullptr) {
+        d->m_backendSkeleton = skeleton;
         skeleton->loadSkeleton();
+    }
+}
+
+void LoadSkeletonJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    if (!m_backendSkeleton)
+        return;
+
+    using namespace Qt3DCore;
+    QAbstractSkeleton *node = qobject_cast<QAbstractSkeleton *>(manager->lookupNode(m_backendSkeleton->peerId()));
+    if (!node)
+        return;
+
+    QAbstractSkeletonPrivate *dnode = QAbstractSkeletonPrivate::get(node);
+    dnode->m_jointCount = m_backendSkeleton->jointCount();
+    dnode->m_jointNames = m_backendSkeleton->jointNames();
+    dnode->m_localPoses = m_backendSkeleton->localPoses();
+    dnode->update();
 }
 
 } // namespace Render

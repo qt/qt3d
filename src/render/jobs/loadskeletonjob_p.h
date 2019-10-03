@@ -60,6 +60,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class NodeManagers;
+class LoadSkeletonJobPrivate;
 
 class LoadSkeletonJob : public Qt3DCore::QAspectJob
 {
@@ -73,6 +74,9 @@ protected:
     void run() override;
     HSkeleton m_handle;
     NodeManagers *m_nodeManagers;
+
+private:
+    Q_DECLARE_PRIVATE(LoadSkeletonJob)
 };
 
 typedef QSharedPointer<LoadSkeletonJob> LoadSkeletonJobPtr;

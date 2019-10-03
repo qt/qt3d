@@ -178,43 +178,6 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.source(), newSource);
     }
 
-    void checkStatusPropertyBackendNotification()
-    {
-        // GIVEN
-        TestRenderer renderer;
-        NodeManagers nodeManagers;
-        renderer.setNodeManagers(&nodeManagers);
-        TestArbiter arbiter;
-        Skeleton backendSkeleton;
-        backendSkeleton.setRenderer(&renderer);
-        backendSkeleton.setSkeletonManager(nodeManagers.skeletonManager());
-        backendSkeleton.setEnabled(true);
-        Qt3DCore::QBackendNodePrivate::get(&backendSkeleton)->setArbiter(&arbiter);
-
-        // WHEN
-        backendSkeleton.setStatus(QSkeletonLoader::Error);
-
-        // THEN
-        QCOMPARE(backendSkeleton.status(), QSkeletonLoader::Error);
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<QSkeletonLoader::Status>(), backendSkeleton.status());
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isIntermediate,
-                 false);
-
-        arbiter.events.clear();
-
-        // WHEN
-        backendSkeleton.setStatus(QSkeletonLoader::Error);
-
-        // THEN
-        QCOMPARE(backendSkeleton.status(), QSkeletonLoader::Error);
-        QCOMPARE(arbiter.events.count(), 0);
-
-        arbiter.events.clear();
-    }
-
     void checkCreateFrontendJoint_data()
     {
         QTest::addColumn<QMatrix4x4>("inverseBindMatrix");

@@ -63,7 +63,7 @@ private Q_SLOTS:
         skeleton.setRootJoint(rootJoint);
 
         // WHEN
-        simulateInitialization(&skeleton, &backendSkeleton);
+        simulateInitializationSync(&skeleton, &backendSkeleton);
 
         // THEN - nothing mirrored from frontend
         QCOMPARE(backendSkeleton.peerId(), skeleton.id());
@@ -127,37 +127,15 @@ private Q_SLOTS:
         Handler handler;
         Skeleton backendSkeleton;
         backendSkeleton.setHandler(&handler);
-        QPropertyUpdatedChangePtr updateChange;
+        QSkeleton skeleton;
+        simulateInitializationSync(&skeleton, &backendSkeleton);
 
         // WHEN
-        updateChange = QPropertyUpdatedChangePtr::create(QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendSkeleton.sceneChangeEvent(updateChange);
+        skeleton.setEnabled(false);
+        backendSkeleton.syncFromFrontEnd(&skeleton, false);
 
         // THEN
-        QCOMPARE(backendSkeleton.isEnabled(), true);
-
-        // GIVEN
-        const QVector<QString> names = (QVector<QString>()
-                                        << QLatin1String("root")
-                                        << QLatin1String("child1")
-                                        << QLatin1String("child2"));
-        const QVector<Sqt> localPoses = (QVector<Sqt>() << Sqt() << Sqt() << Sqt());
-
-        // WHEN
-        JointNamesAndLocalPoses namesAndPoses;
-        namesAndPoses.names = names;
-        namesAndPoses.localPoses = localPoses;
-
-        updateChange = QPropertyUpdatedChangePtr::create(QNodeId());
-        updateChange->setPropertyName("jointNamesAndLocalPoses");
-        updateChange->setValue(QVariant::fromValue(namesAndPoses));
-        backendSkeleton.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(backendSkeleton.jointNames(), names);
-        QCOMPARE(backendSkeleton.jointLocalPoses(), localPoses);
+        QCOMPARE(backendSkeleton.isEnabled(), false);
     }
 
     void checkJointTransforms_data()

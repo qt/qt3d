@@ -74,6 +74,7 @@ public:
 
     int m_jointCount;
     QVector<Sqt> m_localPoses;
+    QVector<QString> m_jointNames;
 };
 
 } // namespace Qt3DCore

@@ -119,9 +119,9 @@ void Skeleton::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         }
         m_createJoints = loaderNode->isCreateJointsEnabled();
 
-        if ((loaderNode->rootJoint() && loaderNode->rootJoint()->id() != m_rootJointId) ||
-            (!loaderNode->rootJoint() && !m_rootJointId.isNull())) {
-            m_rootJointId = loaderNode->rootJoint() ? loaderNode->rootJoint()->id() : Qt3DCore::QNodeId{};
+        auto newJointId = Qt3DCore::qIdForNode(loaderNode->rootJoint());
+        if (newJointId != m_rootJointId) {
+            m_rootJointId = newJointId;
 
             // If using a QSkeletonLoader to create frontend QJoints, when those joints are
             // set on the skeleton, we end up here. In order to allow the subsequent call
@@ -156,25 +156,6 @@ void Skeleton::setStatus(QSkeletonLoader::Status status)
     }
 }
 
-void Skeleton::notifyJointCount()
-{
-    Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("jointCount");
-    e->setValue(jointCount());
-    notifyObservers(e);
-}
-
-void Skeleton::notifyJointNamesAndPoses()
-{
-    auto e = QPropertyUpdatedChangePtr::create(peerId());
-    JointNamesAndLocalPoses payload{m_skeletonData.jointNames, m_skeletonData.localPoses};
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::BackendNodes);
-    e->setPropertyName("jointNamesAndLocalPoses");
-    e->setValue(QVariant::fromValue(payload));
-    notifyObservers(e);
-}
-
 void Skeleton::loadSkeleton()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_source;
@@ -204,8 +185,6 @@ void Skeleton::loadSkeleton()
         else
             setStatus(QSkeletonLoader::Ready);
     }
-    notifyJointCount();
-    notifyJointNamesAndPoses();
 
     qCDebug(Jobs) << "Loaded skeleton data:" << *this;
 }
