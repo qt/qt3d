@@ -76,7 +76,7 @@ public:
     void removeRenderPass(QRenderPass *pass);
     QVector<QRenderPass *> renderPasses() const;
 
-    Q_DECL_DEPRECATED QGraphicsApiFilter *graphicsApiFilter();
+    QGraphicsApiFilter *graphicsApiFilter();
     const QGraphicsApiFilter *graphicsApiFilter() const;
 
 protected:

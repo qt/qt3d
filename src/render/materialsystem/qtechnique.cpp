@@ -373,7 +373,6 @@ QVector<QParameter *> QTechnique::parameters() const
     return d->m_parameters;
 }
 
-// TODO Qt 6 -> Remove
 QGraphicsApiFilter *QTechnique::graphicsApiFilter()
 {
     Q_D(QTechnique);
