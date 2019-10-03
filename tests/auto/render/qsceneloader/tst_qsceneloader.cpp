@@ -137,59 +137,6 @@ private Q_SLOTS:
         arbiter.dirtyNodes.clear();
     }
 
-    // DEPRECATED
-//    void checkStatusPropertyUpdate()
-//    {
-//        // GIVEN
-//        qRegisterMetaType<Qt3DRender::QSceneLoader::Status>("Status");
-//        TestArbiter arbiter;
-//        QScopedPointer<Qt3DRender::QSceneLoader> sceneLoader(new Qt3DRender::QSceneLoader());
-//        arbiter.setArbiterOnNode(sceneLoader.data());
-//        QSignalSpy spy(sceneLoader.data(), SIGNAL(statusChanged(Status)));
-
-
-//        // WHEN
-//        const Qt3DRender::QSceneLoader::Status newStatus = Qt3DRender::QSceneLoader::Ready;
-//        sceneLoader->setStatus(newStatus);
-
-//        // THEN
-//        QVERIFY(arbiter.events.empty());
-//        QCOMPARE(spy.count(), 1);
-
-//        spy.clear();
-//    }
-
-    void checkPropertyChanges()
-    {
-        // GIVEN
-        Qt3DCore::QScene scene;
-        Qt3DCore::QEntity rootEntity;
-        QScopedPointer<Qt3DRender::QSceneLoader> sceneLoader(new Qt3DRender::QSceneLoader());
-        Qt3DCore::QNodePrivate::get(&rootEntity)->setScene(&scene);
-        Qt3DCore::QNodePrivate::get(sceneLoader.data())->setScene(&scene);
-        rootEntity.addComponent(sceneLoader.data());
-
-        // WHEN
-        Qt3DCore::QEntity backendCreatedSubtree;
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("scene");
-        valueChange->setValue(QVariant::fromValue(&backendCreatedSubtree));
-        sceneLoader->sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(static_cast<Qt3DRender::QSceneLoaderPrivate *>(Qt3DCore::QNodePrivate::get(sceneLoader.data()))->m_subTreeRoot, &backendCreatedSubtree);
-
-        // WHEN
-        const Qt3DRender::QSceneLoader::Status newStatus = Qt3DRender::QSceneLoader::Ready;
-        valueChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        valueChange->setPropertyName("status");
-        valueChange->setValue(QVariant::fromValue(newStatus));
-        sceneLoader->sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(sceneLoader->status(), newStatus);
-    }
-
     void checkEntities()
     {
         // GIVEN

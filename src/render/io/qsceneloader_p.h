@@ -67,6 +67,7 @@ public:
     QSceneLoaderPrivate();
 
     void setStatus(QSceneLoader::Status status);
+    void setSceneRoot(Qt3DCore::QEntity *root);
 
     Q_DECLARE_PUBLIC(QSceneLoader)
 

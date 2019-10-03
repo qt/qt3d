@@ -66,16 +66,6 @@ void Scene::cleanup()
     m_source.clear();
 }
 
-void Scene::setStatus(QSceneLoader::Status status)
-{
-    // Send the new subtree to the frontend or notify failure
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("status");
-    e->setValue(QVariant::fromValue(status));
-    notifyObservers(e);
-}
-
 void Scene::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
     const QSceneLoader *node = qobject_cast<const QSceneLoader *>(frontEnd);
@@ -97,22 +87,6 @@ void Scene::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 QUrl Scene::source() const
 {
     return m_source;
-}
-
-void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
-{
-    if (subTree) {
-        // Move scene sub tree to the application thread so that it can be grafted in.
-        const auto appThread = QCoreApplication::instance()->thread();
-        subTree->moveToThread(appThread);
-    }
-
-    // Send the new subtree to the frontend or notify failure
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("scene");
-    e->setValue(QVariant::fromValue(subTree));
-    notifyObservers(e);
 }
 
 void Scene::setSceneManager(SceneManager *manager)
