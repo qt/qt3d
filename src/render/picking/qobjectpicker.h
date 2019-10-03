@@ -90,9 +90,6 @@ Q_SIGNALS:
     void containsMouseChanged(bool containsMouse);
     Q_REVISION(13) void priorityChanged(int priority);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
 private:
     Q_DECLARE_PRIVATE(QObjectPicker)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;

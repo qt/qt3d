@@ -91,7 +91,6 @@ public:
         Moved
     };
 
-    QPickEvent *resolvePickEvent(Qt3DCore::QPropertyUpdatedChangePtr e);
     void propagateEvent(QPickEvent *event, EventType type);
 
     void pressedEvent(QPickEvent *event);

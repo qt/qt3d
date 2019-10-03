@@ -43,7 +43,6 @@
 #include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -100,7 +99,6 @@ void ObjectPicker::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstT
         markDirty(AbstractRenderer::AllDirty);
         notifyJob();
     }
-
 }
 
 void ObjectPicker::notifyJob()
@@ -124,58 +122,9 @@ bool ObjectPicker::isDragEnabled() const
     return m_dragEnabled;
 }
 
-void ObjectPicker::onClicked(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId)
+void ObjectPicker::setPressed(bool pressed)
 {
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("clicked");
-    e->setValue(QVariant::fromValue(QObjectPickerEvent { event, viewportNodeId }));
-    notifyObservers(e);
-}
-
-void ObjectPicker::onMoved(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("moved");
-    e->setValue(QVariant::fromValue(QObjectPickerEvent { event, viewportNodeId }));
-    notifyObservers(e);
-}
-
-void ObjectPicker::onPressed(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("pressed");
-    e->setValue(QVariant::fromValue(QObjectPickerEvent { event, viewportNodeId }));
-    m_isPressed = true;
-    notifyObservers(e);
-}
-
-void ObjectPicker::onReleased(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("released");
-    e->setValue(QVariant::fromValue(QObjectPickerEvent { event, viewportNodeId }));
-    m_isPressed = false;
-    notifyObservers(e);
-}
-
-void ObjectPicker::onEntered()
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("entered");
-    notifyObservers(e);
-}
-
-void ObjectPicker::onExited()
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("exited");
-    notifyObservers(e);
+    m_isPressed = pressed;
 }
 
 void ObjectPicker::setPriority(int priority)

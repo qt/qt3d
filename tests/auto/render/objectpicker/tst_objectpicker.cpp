@@ -137,65 +137,6 @@ private Q_SLOTS:
             QVERIFY(renderer.dirtyBits() != 0);
         }
     }
-
-    void checkBackendPropertyNotifications()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        Qt3DRender::Render::ObjectPicker objectPicker;
-        Qt3DCore::QBackendNodePrivate::get(&objectPicker)->setArbiter(&arbiter);
-        Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent);
-
-        // WHEN
-        objectPicker.onPressed(event, Qt3DCore::QNodeId());
-
-        // THEN
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "pressed");
-
-        arbiter.events.clear();
-
-        // WHEN
-        objectPicker.onReleased(event, Qt3DCore::QNodeId());
-
-        // THEN
-        QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "released");
-
-        arbiter.events.clear();
-
-        // WHEN
-        objectPicker.onClicked(event, Qt3DCore::QNodeId());
-
-        // THEN
-        QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "clicked");
-
-        arbiter.events.clear();
-
-        // WHEN
-        objectPicker.onEntered();
-
-        // THEN
-        QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "entered");
-
-        arbiter.events.clear();
-
-        // WHEN
-        objectPicker.onExited();
-
-        // THEN
-        QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "exited");
-
-        arbiter.events.clear();
-    }
 };
 
 

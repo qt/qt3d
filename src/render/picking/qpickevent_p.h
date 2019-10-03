@@ -37,6 +37,9 @@
 **
 ****************************************************************************/
 
+#ifndef QT3DRENDER_QPICKEVENT_P_H
+#define QT3DRENDER_QPICKEVENT_P_H
+
 //
 //  W A R N I N G
 //  -------------
@@ -95,3 +98,4 @@ public:
 
 QT_END_NAMESPACE
 
+#endif // QT3DRENDER_QPICKEVENT_P_H
