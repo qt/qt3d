@@ -52,6 +52,7 @@ private Q_SLOTS:
         QCOMPARE(backendParameter.name(), QString());
         QCOMPARE(backendParameter.uniformValue(), Qt3DRender::Render::UniformValue());
         QCOMPARE(backendParameter.nameId(), -1);
+        QCOMPARE(backendParameter.backendValue(), QVariant());
     }
 
     void checkCleanupState()
@@ -73,6 +74,7 @@ private Q_SLOTS:
         QCOMPARE(backendParameter.name(), QString());
         QCOMPARE(backendParameter.uniformValue(), Qt3DRender::Render::UniformValue());
         QCOMPARE(backendParameter.nameId(), -1);
+        QCOMPARE(backendParameter.backendValue(), QVariant());
     }
 
     void checkInitializeFromPeer()
@@ -155,6 +157,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(backendParameter.uniformValue(), newValue);
+            QCOMPARE(backendParameter.backendValue(), value);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::ParameterDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }

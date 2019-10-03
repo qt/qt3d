@@ -67,6 +67,7 @@ void Parameter::cleanup()
     m_nameId = -1;
     m_name.clear();
     m_uniformValue = UniformValue();
+    m_backendValue = {};
 }
 
 void Parameter::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
