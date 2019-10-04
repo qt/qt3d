@@ -251,17 +251,17 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
             d->m_surfaceEventFilter->setSurface(window);
 
             if (window) {
-                d->m_widthConn = QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
+                d->m_widthConn = QObject::connect(window, &QWindow::widthChanged, [=] (int) {
                     d->update();
                 });
-                d->m_heightConn = QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
+                d->m_heightConn = QObject::connect(window, &QWindow::heightChanged, [=] (int) {
                     d->update();
                 });
                 d->m_screenConn = QObject::connect(window, &QWindow::screenChanged, [=] (QScreen *screen) {
-                    if (screen && surfacePixelRatio() != screen->devicePixelRatio())
-                        setSurfacePixelRatio(screen->devicePixelRatio());
+                    if (screen && !qFuzzyCompare(surfacePixelRatio(), float(screen->devicePixelRatio())))
+                        setSurfacePixelRatio(float(screen->devicePixelRatio()));
                 });
-                setSurfacePixelRatio(window->devicePixelRatio());
+                setSurfacePixelRatio(float(window->devicePixelRatio()));
             }
 
             break;
@@ -291,7 +291,7 @@ QSize QRenderSurfaceSelector::externalRenderTargetSize() const
 void QRenderSurfaceSelector::setSurfacePixelRatio(float ratio)
 {
     Q_D(QRenderSurfaceSelector);
-    if (d->m_surfacePixelRatio == ratio)
+    if (qFuzzyCompare(d->m_surfacePixelRatio, ratio))
         return;
     d->m_surfacePixelRatio = ratio;
     emit surfacePixelRatioChanged(ratio);

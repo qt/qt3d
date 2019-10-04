@@ -51,16 +51,16 @@ static QVector4D vec4dFromColor(const QColor &color)
 {
     if (!color.isValid())
         return QVector4D(0.0f, 0.0f, 0.0f, 1.0f);
-    return QVector4D(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+    return QVector4D(float(color.redF()), float(color.greenF()), float(color.blueF()), float(color.alphaF()));
 }
 
 ClearBuffers::ClearBuffers()
     : FrameGraphNode(FrameGraphNode::ClearBuffers)
     , m_type(QClearBuffers::None)
+    , m_clearColor(vec4dFromColor(m_clearColorAsColor))
+    , m_clearColorAsColor(Qt::black)
     , m_clearDepthValue(1.f)
     , m_clearStencilValue(0)
-    , m_clearColorAsColor(Qt::black)
-    , m_clearColor(vec4dFromColor(m_clearColorAsColor))
 {
 }
 
@@ -78,7 +78,7 @@ void ClearBuffers::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         markDirty(AbstractRenderer::FrameGraphDirty);
     }
 
-    if (m_clearDepthValue != node->clearDepthValue()) {
+    if (!qFuzzyCompare(m_clearDepthValue, node->clearDepthValue())) {
         m_clearDepthValue = node->clearDepthValue();
         markDirty(AbstractRenderer::FrameGraphDirty);
     }

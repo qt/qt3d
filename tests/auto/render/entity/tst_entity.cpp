@@ -462,8 +462,8 @@ private slots:
         Qt3DCore::QEntity frontendEntityA, frontendEntityB, frontendEntityC;
 
         auto backendA = createEntity(renderer, nodeManagers, frontendEntityA);
-        auto backendB = createEntity(renderer, nodeManagers, frontendEntityB);
-        auto backendC = createEntity(renderer, nodeManagers, frontendEntityC);
+        createEntity(renderer, nodeManagers, frontendEntityB);
+        createEntity(renderer, nodeManagers, frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
@@ -497,8 +497,8 @@ private slots:
         frontendEntityC.setEnabled(false);
 
         auto backendA = createEntity(renderer, nodeManagers, frontendEntityA);
-        auto backendB = createEntity(renderer, nodeManagers, frontendEntityB);
-        auto backendC = createEntity(renderer, nodeManagers, frontendEntityC);
+        createEntity(renderer, nodeManagers, frontendEntityB);
+        createEntity(renderer, nodeManagers, frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
@@ -538,8 +538,8 @@ private slots:
         frontendEntityC.setEnabled(false);
 
         auto backendA = createEntity(renderer, nodeManagers, frontendEntityA);
-        auto backendB = createEntity(renderer, nodeManagers, frontendEntityB);
-        auto backendC = createEntity(renderer, nodeManagers, frontendEntityC);
+        createEntity(renderer, nodeManagers, frontendEntityB);
+        createEntity(renderer, nodeManagers, frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
