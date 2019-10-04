@@ -520,7 +520,8 @@ void Renderer::releaseGraphicsResources()
 
     QOpenGLContext *context = m_submissionContext->openGLContext();
     Q_ASSERT(context);
-    if (context->makeCurrent(offscreenSurface)) {
+
+    if (context->thread() == QThread::currentThread() && context->makeCurrent(offscreenSurface)) {
 
         // Clean up the graphics context and any resources
         const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
