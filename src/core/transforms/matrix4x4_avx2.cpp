@@ -47,12 +47,12 @@ namespace Qt3DCore {
 
 QDebug operator<<(QDebug dbg, const Matrix4x4_AVX2 &m)
 {
-    dbg.nospace() << "Matrix4x4_AVX2(" << endl
+    dbg.nospace() << "Matrix4x4_AVX2(" << Qt::endl
                   << qSetFieldWidth(10)
-                  << m.m11() << m.m12() << m.m13() << m.m14() << endl
-                  << m.m21() << m.m22() << m.m23() << m.m24() << endl
-                  << m.m31() << m.m32() << m.m33() << m.m34() << endl
-                  << m.m41() << m.m42() << m.m43() << m.m44() << endl
+                  << m.m11() << m.m12() << m.m13() << m.m14() << Qt::endl
+                  << m.m21() << m.m22() << m.m23() << m.m24() << Qt::endl
+                  << m.m31() << m.m32() << m.m33() << m.m34() << Qt::endl
+                  << m.m41() << m.m42() << m.m43() << m.m44() << Qt::endl
                   << qSetFieldWidth(0) << ')';
     return dbg;
 }

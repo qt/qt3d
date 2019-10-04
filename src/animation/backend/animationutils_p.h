@@ -97,10 +97,10 @@ struct MappingData
 inline QDebug operator<<(QDebug dbg, const MappingData &mapping)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "targetId =" << mapping.targetId << endl
-        << "jointIndex =" << mapping.jointIndex << endl
-        << "jointTransformComponent: " << mapping.jointTransformComponent << endl
-        << "propertyName:" << mapping.propertyName << endl
+    dbg << "targetId =" << mapping.targetId << Qt::endl
+        << "jointIndex =" << mapping.jointIndex << Qt::endl
+        << "jointTransformComponent: " << mapping.jointTransformComponent << Qt::endl
+        << "propertyName:" << mapping.propertyName << Qt::endl
         << "channelIndices:" << mapping.channelIndices;
     return dbg;
 }
@@ -250,7 +250,7 @@ inline QDebug operator<<(QDebug dbg, const ClipFormat &format)
             dbg << format.sourceClipIndices[j] << "";
 
         dbg << "src clip mask =" << format.sourceClipMask[i];
-        dbg << endl;
+        dbg << Qt::endl;
         sourceIndex += componentCount;
     }
     return dbg;

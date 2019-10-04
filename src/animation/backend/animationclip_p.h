@@ -129,10 +129,10 @@ private:
 inline QDebug operator<<(QDebug dbg, const AnimationClip &animationClip)
 {
     QDebugStateSaver saver(dbg);
-    dbg << "QNodeId =" << animationClip.peerId() << endl
-        << "Name =" << animationClip.name() << endl
-        << "Duration: " << animationClip.duration() << endl
-        << "Channels:" << endl;
+    dbg << "QNodeId =" << animationClip.peerId() << Qt::endl
+        << "Name =" << animationClip.name() << Qt::endl
+        << "Duration: " << animationClip.duration() << Qt::endl
+        << "Channels:" << Qt::endl;
 
     const QVector<Channel> channels = animationClip.channels();
     for (const auto &channel : channels) {
