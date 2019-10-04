@@ -48,12 +48,12 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
-import Qt3D.Input 2.0
-import Qt3D.Extras 2.0
+import Qt3D.Core 2.14
+import Qt3D.Render 2.14
+import Qt3D.Input 2.14
+import Qt3D.Extras 2.14
 
-import QtQuick 2.0 as QQ2
+import QtQuick 2.14 as QQ2
 
 
 Entity {
