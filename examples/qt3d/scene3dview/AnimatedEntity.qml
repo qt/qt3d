@@ -79,7 +79,7 @@ Entity {
             activeFrameGraph: ForwardRenderer {
                 camera: camera
                 clearColor: "transparent"
-                clearBuffers: sceneRoot.clearColor ? ClearBuffers.ColorDepthBuffer : ClearBuffers.DepthBuffer
+                buffersToClear: sceneRoot.clearColor ? ClearBuffers.ColorDepthBuffer : ClearBuffers.DepthBuffer
             }
         },
         InputSettings { }
