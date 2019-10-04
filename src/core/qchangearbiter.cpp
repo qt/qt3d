@@ -249,14 +249,15 @@ void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangeList &e)
 
 void QChangeArbiter::addDirtyFrontEndNode(QNode *node)
 {
-    if (!m_dirtyFrontEndNodes.contains(node))
+    if (!m_dirtyFrontEndNodes.contains(node)) {
         m_dirtyFrontEndNodes += node;
+        emit receivedChange();
+    }
 }
 
 void QChangeArbiter::addDirtyFrontEndNode(QNode *node, QNode *subNode, const char *property, ChangeFlag change)
 {
-    if (!m_dirtyFrontEndNodes.contains(node))
-        m_dirtyFrontEndNodes += node;
+    addDirtyFrontEndNode(node);
     m_dirtySubNodeChanges.push_back({node, subNode, change, property});
 }
 
