@@ -66,9 +66,6 @@ public:
 Q_SIGNALS:
     void valueChanged(float value);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
 private:
     Q_DECLARE_PRIVATE(QAxis)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;

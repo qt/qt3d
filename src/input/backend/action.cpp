@@ -41,7 +41,6 @@
 
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/qaction_p.h>
 
@@ -66,16 +65,8 @@ void Action::cleanup()
 
 void Action::setActionTriggered(bool actionTriggered)
 {
-    if (isEnabled() && (actionTriggered != m_actionTriggered)) {
+    if (isEnabled() && (actionTriggered != m_actionTriggered))
         m_actionTriggered = actionTriggered;
-
-        // Send change to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("active");
-        e->setValue(m_actionTriggered);
-        notifyObservers(e);
-    }
 }
 
 void Action::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)

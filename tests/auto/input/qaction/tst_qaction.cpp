@@ -131,22 +131,6 @@ private Q_SLOTS:
         arbiter.events.clear();
     }
 
-    void checkActivePropertyChanged()
-    {
-        // GIVEN
-        QCOMPARE(isActive(), false);
-
-        // Note: simulate backend change to frontend
-        // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("active");
-        valueChange->setValue(true);
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(isActive(), true);
-    }
-
     void checkActionInputBookkeeping()
     {
         // GIVEN

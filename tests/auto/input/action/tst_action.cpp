@@ -138,38 +138,6 @@ private Q_SLOTS:
         QCOMPARE(backendAction.inputs().size(), 0);
     }
 
-    void checkActivePropertyBackendNotification()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        Qt3DInput::Input::Action backendAction;
-        backendAction.setEnabled(true);
-        Qt3DCore::QBackendNodePrivate::get(&backendAction)->setArbiter(&arbiter);
-        const bool currentActionTriggeredValue = backendAction.actionTriggered();
-
-        // WHEN
-        backendAction.setActionTriggered(true);
-
-        // THEN
-        QVERIFY(currentActionTriggeredValue != backendAction.actionTriggered());
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "active");
-        QCOMPARE(change->value().toBool(), backendAction.actionTriggered());
-
-
-        arbiter.events.clear();
-
-        // WHEN
-        backendAction.setActionTriggered(true);
-
-        // THEN
-        QVERIFY(currentActionTriggeredValue != backendAction.actionTriggered());
-        QCOMPARE(arbiter.events.count(), 0);
-
-        arbiter.events.clear();
-    }
-
     void shouldNotActivateWhenDisabled()
     {
         // GIVEN

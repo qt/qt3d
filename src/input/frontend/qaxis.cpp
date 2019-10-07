@@ -168,16 +168,6 @@ float QAxis::value() const
     return d->m_value;
 }
 
-/*! \internal */
-void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QAxis);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("value")) {
-        d->setValue(e->value().toFloat());
-    }
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QAxis::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisData>::create(this);

@@ -41,7 +41,6 @@
 
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qabstractaxisinput.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/qaxis_p.h>
 #include <algorithm>
@@ -67,16 +66,8 @@ void Axis::cleanup()
 
 void Axis::setAxisValue(float axisValue)
 {
-    if (isEnabled() && (!qFuzzyCompare(axisValue, m_axisValue))) {
+    if (isEnabled() && (!qFuzzyCompare(axisValue, m_axisValue)))
         m_axisValue = axisValue;
-
-        // Send a change to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId()); // TODOSYNC replace with direct access
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("value");
-        e->setValue(m_axisValue);
-        notifyObservers(e);
-    }
 }
 
 void Axis::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)

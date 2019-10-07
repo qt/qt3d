@@ -149,16 +149,6 @@ QVector<QAbstractActionInput *> QAction::inputs() const
     return d->m_inputs;
 }
 
-/*! \internal */
-void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QAction);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("active")) {
-        d->setActive(e->value().toBool());
-    }
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QAction::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QActionData>::create(this);
