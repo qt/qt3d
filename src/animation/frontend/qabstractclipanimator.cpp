@@ -138,6 +138,11 @@ void QAbstractClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &ch
 QAbstractClipAnimator::~QAbstractClipAnimator()
 {
 }
+/*!
+    \qmlproperty bool Qt3DAnimation::AbstractClipAnimator::running
+
+    This property holds a boolean indicating whether the animation is currently running.
+*/
 
 /*!
     \property Qt3DAnimation::QAbstractClipAnimator::running
@@ -153,6 +158,13 @@ bool QAbstractClipAnimator::isRunning() const
     Q_D(const QAbstractClipAnimator);
     return d->m_running;
 }
+
+/*!
+    \qmlproperty ChannelMapper Qt3DAnimation::AbstractClipAnimator::channelMapper
+
+    This property holds the ChannelMapper that controls how the channels in
+    the animation clip map onto the properties of the target objects.
+*/
 
 /*!
     \property Qt3DAnimation::QAbstractClipAnimator::channelMapper
@@ -212,6 +224,12 @@ int QAbstractClipAnimator::loopCount() const
     return d->m_loops;
 }
 /*!
+    \qmlproperty Clock Qt3DAnimation::AbstractClipAnimator::clock
+
+    The clock controls the speed with which an animation is played.
+*/
+
+/*!
     \property Qt3DAnimation::QAbstractClipAnimator::clock
 
     The clock controls the speed with which an animation is played.
@@ -221,7 +239,11 @@ QClock *QAbstractClipAnimator::clock() const
     Q_D(const QAbstractClipAnimator);
     return d->m_clock;
 }
+/*!
+    \qmlproperty real Qt3DAnimation::AbstractClipAnimator::normalizedTime
 
+    This property holds the clips normalized time.
+*/
 /*!
     \property Qt3DAnimation::QAbstractClipAnimator::normalizedTime
 
