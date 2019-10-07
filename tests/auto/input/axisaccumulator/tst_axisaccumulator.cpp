@@ -143,58 +143,6 @@ private Q_SLOTS:
         QCOMPARE(backendAxisAccumulator.scale(), 3.0f);
     }
 
-    void checkValuePropertyBackendNotification()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        Qt3DInput::Input::AxisAccumulator backendAxisAccumulator;
-        backendAxisAccumulator.setEnabled(true);
-        Qt3DCore::QBackendNodePrivate::get(&backendAxisAccumulator)->setArbiter(&arbiter);
-
-        // WHEN
-        backendAxisAccumulator.setValue(454.0f);
-
-        // THEN
-        QCOMPARE(backendAxisAccumulator.value(), 454.0f);
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "value");
-        QCOMPARE(change->value().toFloat(), backendAxisAccumulator.value());
-
-        arbiter.events.clear();
-
-        // WHEN
-        backendAxisAccumulator.setValue(454.0f);
-
-        // THEN
-        QCOMPARE(backendAxisAccumulator.value(), 454.0f);
-        QCOMPARE(arbiter.events.count(), 0);
-
-        arbiter.events.clear();
-
-
-        // WHEN
-        backendAxisAccumulator.setVelocity(383.0f);
-
-        // THEN
-        QCOMPARE(backendAxisAccumulator.velocity(), 383.0f);
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr velocityChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(velocityChange->propertyName(), "velocity");
-        QCOMPARE(velocityChange->value().toFloat(), backendAxisAccumulator.velocity());
-
-        arbiter.events.clear();
-
-        // WHEN
-        backendAxisAccumulator.setVelocity(383.0f);
-
-        // THEN
-        QCOMPARE(backendAxisAccumulator.velocity(), 383.0f);
-        QCOMPARE(arbiter.events.count(), 0);
-
-        arbiter.events.clear();
-    }
-
     void shouldNotChangeValueWhenDisabled()
     {
         // GIVEN

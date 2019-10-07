@@ -155,33 +155,6 @@ private Q_SLOTS:
         arbiter.dirtyNodes.clear();
     }
 
-    void checkValuePropertyChanged()
-    {
-        // GIVEN
-        QCOMPARE(value(), 0.0f);
-
-        // Note: simulate backend change to frontend
-        // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("value");
-        valueChange->setValue(383.0f);
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(value(), 383.0f);
-        QCOMPARE(velocity(), 0.0f);
-
-        // WHEN
-        valueChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        valueChange->setPropertyName("velocity");
-        valueChange->setValue(123.0f);
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(value(), 383.0f);
-        QCOMPARE(velocity(), 123.0f);
-    }
-
     void checkAxisInputBookkeeping()
     {
         // GIVEN

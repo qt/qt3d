@@ -291,17 +291,6 @@ void QAxisAccumulator::setScale(float scale)
 }
 
 /*! \internal */
-void QAxisAccumulator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QAxisAccumulator);
-    auto e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("value"))
-        d->setValue(e->value().toFloat());
-    else if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("velocity"))
-        d->setVelocity(e->value().toFloat());
-}
-
-/*! \internal */
 Qt3DCore::QNodeCreatedChangeBasePtr QAxisAccumulator::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisAccumulatorData>::create(this);

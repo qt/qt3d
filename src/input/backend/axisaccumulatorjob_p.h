@@ -62,6 +62,7 @@ namespace Input {
 
 class AxisAccumulatorManager;
 class AxisManager;
+class AxisAccumulatorJobPrivate;
 
 class Q_AUTOTEST_EXPORT AxisAccumulatorJob : public Qt3DCore::QAspectJob
 {
@@ -74,6 +75,8 @@ public:
     void run() override;
 
 private:
+    Q_DECLARE_PRIVATE(AxisAccumulatorJob)
+
     AxisAccumulatorManager *m_axisAccumulatorManager;
     AxisManager *m_axisManager;
     float m_dt;

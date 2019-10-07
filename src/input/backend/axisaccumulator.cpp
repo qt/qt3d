@@ -39,7 +39,6 @@
 
 #include "axisaccumulator_p.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/qaxisaccumulator_p.h>
@@ -70,30 +69,14 @@ void AxisAccumulator::cleanup()
 
 void AxisAccumulator::setValue(float value)
 {
-    if (isEnabled() && value != m_value) {
+    if (isEnabled() && value != m_value)
         m_value = value;
-
-        // Send a change to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("value");
-        e->setValue(m_value);
-        notifyObservers(e);
-    }
 }
 
 void AxisAccumulator::setVelocity(float velocity)
 {
-    if (isEnabled() && velocity != m_velocity) {
+    if (isEnabled() && velocity != m_velocity)
         m_velocity = velocity;
-
-        // Send a change to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("velocity");
-        e->setValue(m_velocity);
-        notifyObservers(e);
-    }
 }
 
 void AxisAccumulator::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
