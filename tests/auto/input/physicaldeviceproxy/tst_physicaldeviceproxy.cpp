@@ -109,27 +109,6 @@ private Q_SLOTS:
         QCOMPARE(pendingWrappers.first(), deviceProxy.id());
     }
 
-    void checkDeviceLoadedNotification()
-    {
-        // GIVEN
-        Qt3DInput::Input::PhysicalDeviceProxy backendPhysicalDeviceProxy;
-        TestPhysicalDevice physicalDevice;
-        TestArbiter arbiter;
-
-        // WHEN
-        Qt3DCore::QBackendNodePrivate::get(&backendPhysicalDeviceProxy)->setArbiter(&arbiter);
-
-        backendPhysicalDeviceProxy.setDevice(&physicalDevice);
-
-        // THEN
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "device");
-        QCOMPARE(change->value().value<Qt3DInput::QAbstractPhysicalDevice *>(), &physicalDevice);
-        QCOMPARE(change->subjectId(), backendPhysicalDeviceProxy.peerId());
-        QCOMPARE(backendPhysicalDeviceProxy.physicalDeviceId(), physicalDevice.id());
-    }
-
     void checkCleanupState()
     {
         // GIVEN

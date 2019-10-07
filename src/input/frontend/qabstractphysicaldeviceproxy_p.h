@@ -88,13 +88,10 @@ Q_SIGNALS:
     void statusChanged(QAbstractPhysicalDeviceProxy::DeviceStatus status);
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
     QAbstractPhysicalDeviceProxy(QAbstractPhysicalDeviceProxyPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 
 private:
-    void setDevice(QAbstractPhysicalDevice *device);
     Q_DECLARE_PRIVATE(QAbstractPhysicalDeviceProxy)
 
 };

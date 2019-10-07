@@ -40,7 +40,6 @@
 #include "physicaldeviceproxy_p.h"
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QCoreApplication>
 
 #include <Qt3DInput/private/inputmanagers_p.h>
@@ -90,12 +89,6 @@ void PhysicalDeviceProxy::setDevice(QAbstractPhysicalDevice *device)
         m_physicalDeviceId = device->id();
         device->moveToThread(QCoreApplication::instance()->thread());
     }
-
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("device");
-    e->setValue(QVariant::fromValue(device));
-    notifyObservers(e);
 }
 
 Qt3DCore::QNodeId PhysicalDeviceProxy::physicalDeviceId() const
