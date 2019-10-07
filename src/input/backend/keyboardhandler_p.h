@@ -71,7 +71,6 @@ public:
     Qt3DCore::QNodeId keyboardDevice() const;
     void setInputHandler(InputHandler *handler);
     void setFocus(bool focus);
-    void keyEvent(const QKeyEventPtr &event);
 
     inline bool focus() const { return m_focus; }
 

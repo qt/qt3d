@@ -76,23 +76,8 @@ void KeyboardHandler::setInputHandler(InputHandler *handler)
 // Sends a change notification so that the frontend can update itself
 void KeyboardHandler::setFocus(bool focus)
 {
-    if (focus != m_focus) {
+    if (focus != m_focus)
         m_focus = focus;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("focus");
-        e->setValue(m_focus);
-        notifyObservers(e);
-    }
-}
-
-void KeyboardHandler::keyEvent(const QKeyEventPtr &event)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("event");
-    e->setValue(QVariant::fromValue(event));
-    notifyObservers(e);
 }
 
 void KeyboardHandler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)

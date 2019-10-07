@@ -61,6 +61,7 @@ namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
+class KeyEventDispatcherJobPrivate;
 
 class KeyEventDispatcherJob : public Qt3DCore::QAspectJob
 {
@@ -70,9 +71,9 @@ public:
     void run() override;
 
 private:
+    Q_DECLARE_PRIVATE(KeyEventDispatcherJob)
+
     InputHandler *m_inputHandler;
-    const Qt3DCore::QNodeId m_keyboardHandler;
-    const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_events;
 };
 
 } // namespace Input
