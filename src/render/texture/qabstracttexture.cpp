@@ -708,11 +708,7 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
         if (!textureImage->parent())
             textureImage->setParent(this);
 
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), textureImage);
-            change->setPropertyName("textureImage");
-            d->notifyObservers(change);
-        }
+        d->updateNode(textureImage, "textureImage", PropertyValueAdded);
     }
 }
 
@@ -723,11 +719,7 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
 {
     Q_ASSERT(textureImage);
     Q_D(QAbstractTexture);
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), textureImage);
-        change->setPropertyName("textureImage");
-        d->notifyObservers(change);
-    }
+    d->updateNode(textureImage, "textureImage", PropertyValueRemoved);
     d->m_textureImages.removeOne(textureImage);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(textureImage);

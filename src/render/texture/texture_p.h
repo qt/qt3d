@@ -156,14 +156,11 @@ public:
     DirtyFlags dirtyFlags();
     void unsetDirty();
 
-    void addTextureImage(Qt3DCore::QNodeId id);
-    void removeTextureImage(Qt3DCore::QNodeId id);
     void cleanup();
 
     void addTextureDataUpdate(const QTextureDataUpdate &update);
     QVector<QTextureDataUpdate> takePendingTextureDataUpdates() { return std::move(m_pendingTextureDataUpdates); }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     inline const TextureProperties& properties() const { return m_properties; }

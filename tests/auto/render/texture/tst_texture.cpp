@@ -28,9 +28,6 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
-#include <Qt3DCore/qdynamicpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DRender/private/texture_p.h>
 
 #include "testpostmanarbiter.h"
@@ -209,25 +206,21 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
     texture.addTextureImage(&img);
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    const auto addedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-    QCOMPARE(addedChange->propertyName(), "textureImage");
-    QCOMPARE(addedChange->addedNodeId(), img.id());
-    QCOMPARE(addedChange->type(), Qt3DCore::PropertyValueAdded);
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
 
-    arbiter.events.clear();
+    arbiter.dirtyNodes.clear();
 
     // WHEN
     texture.removeTextureImage(&img);
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 1);
-    const auto removedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-    QCOMPARE(removedChange->propertyName(), "textureImage");
-    QCOMPARE(removedChange->removedNodeId(), img.id());
-    QCOMPARE(removedChange->type(), Qt3DCore::PropertyValueRemoved);
+    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes.size(), 1);
+    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
 
-    arbiter.events.clear();
+    arbiter.dirtyNodes.clear();
 }
 
 template <typename FrontendTextureType, Qt3DRender::QAbstractTexture::Target Target>
@@ -458,9 +451,8 @@ void tst_RenderTexture::checkPropertyChanges()
 
     // WHEN
     Qt3DRender::QTextureImage img;
-    const auto imageAddChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &img);
-    imageAddChange->setPropertyName("textureImage");
-    backend.sceneChangeEvent(imageAddChange);
+    frontend.addTextureImage(&img);
+    backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
     QCOMPARE(backend.textureImageIds().size(), 1);
