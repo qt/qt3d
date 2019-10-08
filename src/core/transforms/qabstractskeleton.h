@@ -64,7 +64,6 @@ Q_SIGNALS:
 
 protected:
     QAbstractSkeleton(QAbstractSkeletonPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void sceneChangeEvent(const QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QAbstractSkeleton)

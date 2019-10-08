@@ -34,9 +34,7 @@
 #include <Qt3DCore/qskeletonloader.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>
 #include <testrenderer.h>
@@ -48,24 +46,6 @@ using namespace Qt3DRender::Render;
 Q_DECLARE_METATYPE(Qt3DRender::Render::JointInfo)
 Q_DECLARE_METATYPE(Qt3DRender::Render::SkeletonData)
 Q_DECLARE_METATYPE(Qt3DCore::Sqt)
-
-namespace {
-
-void linearizeTreeHelper(QJoint *joint, QVector<QJoint *> &joints)
-{
-    joints.push_back(joint);
-    for (const auto child : joint->childJoints())
-        linearizeTreeHelper(child, joints);
-}
-
-QVector<QJoint *> linearizeTree(QJoint *rootJoint)
-{
-    QVector<QJoint *> joints;
-    linearizeTreeHelper(rootJoint, joints);
-    return joints;
-}
-
-}
 
 class tst_Skeleton : public Qt3DCore::QBackendNodeTester
 {
@@ -155,7 +135,6 @@ private Q_SLOTS:
         backendSkeleton.setRenderer(&renderer);
         backendSkeleton.setSkeletonManager(nodeManagers.skeletonManager());
         backendSkeleton.setDataType(Skeleton::File);
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // Initialize to ensure skeleton manager is set
         QSkeletonLoader skeleton;
@@ -225,7 +204,7 @@ private Q_SLOTS:
         QTest::addColumn<SkeletonData>("skeletonData");
         QTest::addColumn<QJoint *>("expectedRootJoint");
 
-        QTest::newRow("empty") << SkeletonData() << (QJoint*)nullptr;
+        QTest::newRow("empty") << SkeletonData() << static_cast<QJoint*>(nullptr);
 
         SkeletonData skeletonData;
         JointInfo rootJointInfo;

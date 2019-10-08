@@ -39,7 +39,6 @@
 
 #include "qabstractskeleton.h"
 #include "qabstractskeleton_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -126,16 +125,6 @@ void QAbstractSkeletonPrivate::setJointCount(int jointCount)
     const bool block = q->blockNotifications(true);
     emit q->jointCountChanged(jointCount);
     q->blockNotifications(block);
-}
-
-void QAbstractSkeleton::sceneChangeEvent(const QSceneChangePtr &change)
-{
-    Q_D(QAbstractSkeleton);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("jointCount"))
-            d->setJointCount(e->value().toInt());
-    }
 }
 
 } // namespace Qt3DCore
