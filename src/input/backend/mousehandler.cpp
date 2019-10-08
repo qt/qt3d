@@ -75,26 +75,6 @@ void MouseHandler::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void MouseHandler::mouseEvent(const QMouseEventPtr &event)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("mouse");
-    e->setValue(QVariant::fromValue(event));
-    notifyObservers(e);
-}
-
-#if QT_CONFIG(wheelevent)
-void MouseHandler::wheelEvent(const QWheelEventPtr &event)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("wheel");
-    e->setValue(QVariant::fromValue(event));
-    notifyObservers(e);
-}
-#endif
-
 void MouseHandler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
     BackendNode::syncFromFrontEnd(frontEnd, firstTime);

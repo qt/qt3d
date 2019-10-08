@@ -335,24 +335,6 @@ void QMouseHandler::setContainsMouse(bool contains)
     }
 }
 
-/*! \internal */
-void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QMouseHandler);
-    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
-    if (e->type() == PropertyUpdated) {
-        if (e->propertyName() == QByteArrayLiteral("mouse")) {
-            QMouseEventPtr ev = e->value().value<QMouseEventPtr>();
-            d->mouseEvent(ev);
-#if QT_CONFIG(wheelevent)
-        } else if (e->propertyName() == QByteArrayLiteral("wheel")) {
-            QWheelEventPtr ev = e->value().value<QWheelEventPtr>();
-            emit wheel(ev.data());
-#endif
-        }
-    }
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QMouseHandler::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QMouseHandlerData>::create(this);
