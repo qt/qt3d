@@ -80,6 +80,9 @@ namespace Qt3DRender {
     \note Instances of this component shouldn't be shared, not respecting that
     condition will most likely result in undefined behavior.
 
+    \note The camera far plane value affects picking and produces incorrect results due to
+    floating-point precision if it is greater than ~100 000.
+
     \since 5.6
 */
 
@@ -113,6 +116,9 @@ namespace Qt3DRender {
 
     \note Instances of this component shouldn't be shared, not respecting that
     condition will most likely result in undefined behavior.
+
+    \note The camera far plane value affects picking and produces incorrect results due to
+    floating-point precision if it is greater than ~100 000.
  */
 
 /*!
