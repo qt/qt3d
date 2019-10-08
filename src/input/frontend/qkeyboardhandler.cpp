@@ -41,7 +41,6 @@
 #include "qkeyboardhandler_p.h"
 
 #include <Qt3DInput/qkeyboarddevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

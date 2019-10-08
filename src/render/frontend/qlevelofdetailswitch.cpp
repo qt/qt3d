@@ -42,7 +42,6 @@
 #include "qlevelofdetail_p.h"
 #include "qglobal.h"
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

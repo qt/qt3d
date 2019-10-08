@@ -32,7 +32,6 @@
 #include <Qt3DCore/private/qtransform_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <private/qbackendnode_p.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"

@@ -41,7 +41,6 @@
 
 #include <Qt3DInput/qkeyboarddevice.h>
 #include <Qt3DInput/qkeyboardhandler.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QVariant>
 
 #include <Qt3DInput/private/inputhandler_p.h>

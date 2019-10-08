@@ -42,7 +42,6 @@
 
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DInput/qmouseevent.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QTimer>
 
 QT_BEGIN_NAMESPACE

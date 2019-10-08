@@ -71,7 +71,6 @@ public:
 
 protected:
     explicit QKeyboardDevice(QKeyboardDevicePrivate &dd, QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 Q_SIGNALS:
     void activeInputChanged(QKeyboardHandler *activeInput);

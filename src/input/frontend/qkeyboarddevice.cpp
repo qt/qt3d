@@ -41,7 +41,6 @@
 #include "qkeyboarddevice_p.h"
 
 #include <Qt3DInput/qkeyboardhandler.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DCore/private/qscene_p.h>
 
@@ -310,16 +309,6 @@ QKeyboardDevice::QKeyboardDevice(QKeyboardDevicePrivate &dd, QNode *parent)
 {
 }
 
-/*! \internal */
-void QKeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QKeyboardDevice);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
-        Qt3DCore::QNodeId activeInputId = e->value().value<Qt3DCore::QNodeId>();
-        setActiveInput(qobject_cast<QKeyboardHandler *>(d->scene()->lookupNode(activeInputId)));
-    }
-}
 /*!
  * Set the active input to \a activeInput
  */

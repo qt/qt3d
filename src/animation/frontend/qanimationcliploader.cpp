@@ -36,7 +36,6 @@
 
 #include "qanimationcliploader.h"
 #include "qanimationcliploader_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

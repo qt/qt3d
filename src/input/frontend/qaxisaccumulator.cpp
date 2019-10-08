@@ -42,7 +42,6 @@
 
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
