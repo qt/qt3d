@@ -188,7 +188,7 @@ void QEffect::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->update();
+        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -202,7 +202,7 @@ void QEffect::removeParameter(QParameter *parameter)
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
-    d->update();
+    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
 }
 
 /*!
@@ -234,7 +234,7 @@ void QEffect::addTechnique(QTechnique *t)
         if (!t->parent())
             t->setParent(this);
 
-        d->update();
+        d->updateNode(t, "technique", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -245,7 +245,7 @@ void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
     if (t)
-        d->update();
+        d->updateNode(t, "technique", Qt3DCore::PropertyValueRemoved);
     d->m_techniques.removeOne(t);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(t);
