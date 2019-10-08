@@ -89,8 +89,6 @@
 #include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/renderviewbuilder_p.h>
-#include <Qt3DRender/private/commandthread_p.h>
-#include <Qt3DRender/private/glcommands_p.h>
 #include <Qt3DRender/private/setfence_p.h>
 #include <Qt3DRender/private/subtreeenabler_p.h>
 
@@ -166,7 +164,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_submissionContext(nullptr)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : nullptr)
-    , m_commandThread(new CommandThread(this))
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(m_renderThread != nullptr))
     , m_waitForInitializationToBeCompleted(0)
     , m_hasBeenInitializedMutex()
@@ -334,18 +331,11 @@ QOpenGLContext *Renderer::shareContext() const
                              : nullptr);
 }
 
-// Executed in the command thread
+// Executed in the reloadDirtyShader job
 void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
-#ifdef SHADER_LOADING_IN_COMMAND_THREAD
-    Q_UNUSED(shaderHandle);
-    Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
-    LoadShaderCommand cmd(shader);
-    m_commandThread->executeCommand(&cmd);
-#else
     Q_UNUSED(shader);
     m_dirtyShaders.push_back(shaderHandle);
-#endif
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -406,7 +396,6 @@ void Renderer::initialize()
 
         // Set shader cache on submission context and command thread
         m_submissionContext->setShaderCache(m_shaderCache);
-        m_commandThread->setShaderCache(m_shaderCache);
 
         // Note: we don't have a surface at this point
         // The context will be made current later on (at render time)
@@ -419,13 +408,6 @@ void Renderer::initialize()
         // (MS Windows), an offscreen surface is just a hidden QWindow.
         m_format = ctx->format();
         QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
-
-        // Initialize command thread (uses the offscreen surface to make its own ctx current)
-        m_commandThread->initialize(ctx, m_offscreenHelper);
-        // Note: the offscreen surface is also used at shutdown time to release resources
-        // of the submission gl context (when the window is already gone).
-        // By that time (in releaseGraphicResources), the commandThread has been destroyed
-        // and the offscreenSurface can be reused
     }
 
     // Awake setScenegraphRoot in case it was waiting
@@ -456,8 +438,6 @@ void Renderer::shutdown()
     qDeleteAll(m_renderQueue->nextFrameQueue());
     m_renderQueue->reset();
     lockRenderQueue.unlock();
-
-    m_commandThread->shutdown();
 
     if (!m_renderThread) {
         releaseGraphicsResources();

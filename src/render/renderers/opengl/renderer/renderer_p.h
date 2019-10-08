@@ -144,7 +144,6 @@ class RenderView;
 class Effect;
 class RenderPass;
 class RenderThread;
-class CommandThread;
 class RenderStateSet;
 class VSyncFrameAdvanceService;
 class PickEventFilter;
@@ -320,7 +319,6 @@ private:
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
-    QScopedPointer<CommandThread> m_commandThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     QSemaphore m_submitRenderViewsSemaphore;
