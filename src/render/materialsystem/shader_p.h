@@ -122,8 +122,8 @@ public:
     inline QString log() const { return m_log; }
     inline QShaderProgram::Status status() const { return m_status; }
 
-    void submitPendingNotifications();
-    inline bool hasPendingNotifications() const { return !m_pendingNotifications.empty(); }
+    inline bool requiresFrontendSync() const { return m_requiresFrontendSync; }
+    inline void unsetRequiresFrontendSync() { m_requiresFrontendSync = false; }
 
 private:
     QVector<QString> m_uniformsNames;
@@ -155,8 +155,7 @@ private:
     QMetaObject::Connection m_contextConnection;
     QString m_log;
     QShaderProgram::Status m_status;
-
-    QVector<Qt3DCore::QPropertyUpdatedChangePtr> m_pendingNotifications;
+    bool m_requiresFrontendSync;
 
     void updateDNA();
 

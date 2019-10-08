@@ -52,6 +52,8 @@
 //
 
 #include <private/qnode_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qshaderprogrambuilder.h>
 
 #include <QtCore/qurl.h>
@@ -60,7 +62,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QShaderProgramBuilderPrivate : public Qt3DCore::QNodePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QShaderProgramBuilderPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QShaderProgramBuilderPrivate();
@@ -80,6 +82,8 @@ public:
     QByteArray m_geometryShaderCode;
     QByteArray m_fragmentShaderCode;
     QByteArray m_computeShaderCode;
+
+    void setShaderCode(const QByteArray &code, QShaderProgram::ShaderType type);
 };
 
 struct QShaderProgramBuilderData

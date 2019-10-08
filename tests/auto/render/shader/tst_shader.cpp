@@ -103,7 +103,7 @@ void tst_RenderShader::matchesFrontendPeer()
 
     for (int i = Qt3DRender::QShaderProgram::Vertex; i <= Qt3DRender::QShaderProgram::Compute; ++i)
         QCOMPARE(backend.shaderCode()[i],
-                 frontend->shaderCode( static_cast<const Qt3DRender::QShaderProgram::ShaderType>(i)));
+                 frontend->shaderCode(static_cast<Qt3DRender::QShaderProgram::ShaderType>(i)));
 }
 
 void tst_RenderShader::cleanupLeavesACoherentState()

@@ -117,7 +117,6 @@ Q_SIGNALS:
 
 protected:
     explicit QShaderProgramBuilder(QShaderProgramBuilderPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QShaderProgramBuilder)

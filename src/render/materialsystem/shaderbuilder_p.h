@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
 
@@ -60,18 +61,16 @@ namespace Qt3DRender {
 
 namespace Render {
 
+struct ShaderBuilderUpdate
+{
+    Qt3DCore::QNodeId builderId;
+    Qt3DRender::QShaderProgram::ShaderType shaderType;
+    QByteArray shaderCode;
+};
+
 class Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderBuilder : public BackendNode
 {
 public:
-    enum ShaderType {
-        Vertex = 0,
-        TessellationControl,
-        TessellationEvaluation,
-        Geometry,
-        Fragment,
-        Compute
-    };
-
     static QString getPrototypesFile();
     static void setPrototypesFile(const QString &file);
     static QStringList getPrototypeNames();
@@ -86,15 +85,17 @@ public:
     GraphicsApiFilterData graphicsApi() const;
     void setGraphicsApi(const GraphicsApiFilterData &graphicsApi);
 
-    QUrl shaderGraph(ShaderType type) const;
-    void setShaderGraph(ShaderType type, const QUrl &url);
+    QUrl shaderGraph(QShaderProgram::ShaderType type) const;
+    void setShaderGraph(QShaderProgram::ShaderType type, const QUrl &url);
 
-    QByteArray shaderCode(ShaderType type) const;
-    bool isShaderCodeDirty(ShaderType type) const;
+    QByteArray shaderCode(QShaderProgram::ShaderType type) const;
+    bool isShaderCodeDirty(QShaderProgram::ShaderType type) const;
 
-    void generateCode(ShaderType type);
+    void generateCode(QShaderProgram::ShaderType type);
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
+
+    QVector<ShaderBuilderUpdate> &updates() { return m_pendingUpdates; }
 
 private:
     void setEnabledLayers(const QStringList &layers);
@@ -102,9 +103,10 @@ private:
     GraphicsApiFilterData m_graphicsApi;
     Qt3DCore::QNodeId m_shaderProgramId;
     QStringList m_enabledLayers;
-    QHash<ShaderType, QUrl> m_graphs;
-    QHash<ShaderType, QByteArray> m_codes;
-    QSet<ShaderType> m_dirtyTypes;
+    QHash<QShaderProgram::ShaderType, QUrl> m_graphs;
+    QHash<QShaderProgram::ShaderType, QByteArray> m_codes;
+    QSet<QShaderProgram::ShaderType> m_dirtyTypes;
+    QVector<ShaderBuilderUpdate> m_pendingUpdates;
 };
 
 } // namespace Render

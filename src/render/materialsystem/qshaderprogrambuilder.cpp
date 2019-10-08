@@ -79,6 +79,47 @@ QShaderProgramBuilderPrivate::QShaderProgramBuilderPrivate()
 {
 }
 
+void QShaderProgramBuilderPrivate::setShaderCode(const QByteArray &code, QShaderProgram::ShaderType type)
+{
+    Q_Q(QShaderProgramBuilder);
+    const bool blocked = q->blockNotifications(true);
+
+    switch (type) {
+    case QShaderProgram::Vertex: {
+        m_vertexShaderCode = code;
+        emit q->vertexShaderCodeChanged(m_vertexShaderCode);
+        break;
+    }
+    case QShaderProgram::Fragment:{
+        m_fragmentShaderCode = code;
+        emit q->fragmentShaderCodeChanged(m_fragmentShaderCode);
+        break;
+    }
+    case QShaderProgram::Geometry: {
+        m_geometryShaderCode = code;
+        emit q->geometryShaderCodeChanged(m_geometryShaderCode);
+        break;
+    }
+    case QShaderProgram::Compute: {
+        m_computeShaderCode = code;
+        emit q->computeShaderCodeChanged(m_computeShaderCode);
+        break;
+    }
+    case QShaderProgram::TessellationControl: {
+        m_tessControlShaderCode = code;
+        emit q->tessellationControlShaderCodeChanged(m_tessControlShaderCode);
+        break;
+    }
+    case QShaderProgram::TessellationEvaluation: {
+        m_tessEvalShaderCode = code;
+        emit q->tessellationEvaluationShaderCodeChanged(m_tessEvalShaderCode);
+        break;
+    }
+    }
+
+    q->blockNotifications(blocked);
+}
+
 QShaderProgramBuilder::QShaderProgramBuilder(QNode *parent)
     : QNode(*new QShaderProgramBuilderPrivate, parent)
 {
@@ -92,53 +133,6 @@ QShaderProgramBuilder::~QShaderProgramBuilder()
 QShaderProgramBuilder::QShaderProgramBuilder(QShaderProgramBuilderPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-void QShaderProgramBuilder::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QShaderProgramBuilder);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("generatedShaderCode")) {
-            const bool blocked = blockNotifications(true);
-            const QPair<int, QByteArray> data = e->value().value<QPair<int, QByteArray>>();
-
-            switch (data.first) {
-            case QShaderProgram::Vertex: {
-                d->m_vertexShaderCode = data.second;
-                emit vertexShaderCodeChanged(d->m_vertexShaderCode);
-                break;
-            }
-            case QShaderProgram::Fragment:{
-                d->m_fragmentShaderCode = data.second;
-                emit fragmentShaderCodeChanged(d->m_fragmentShaderCode);
-                break;
-            }
-            case QShaderProgram::Geometry: {
-                d->m_geometryShaderCode = data.second;
-                emit geometryShaderCodeChanged(d->m_geometryShaderCode);
-                break;
-            }
-            case QShaderProgram::Compute: {
-                d->m_computeShaderCode = data.second;
-                emit computeShaderCodeChanged(d->m_computeShaderCode);
-                break;
-            }
-            case QShaderProgram::TessellationControl: {
-                d->m_tessControlShaderCode = data.second;
-                emit tessellationControlShaderCodeChanged(d->m_tessControlShaderCode);
-                break;
-            }
-            case QShaderProgram::TessellationEvaluation: {
-                d->m_tessEvalShaderCode = data.second;
-                emit tessellationEvaluationShaderCodeChanged(d->m_tessEvalShaderCode);
-                break;
-            }
-            }
-
-            blockNotifications(blocked);
-        }
-    }
 }
 
 /*!

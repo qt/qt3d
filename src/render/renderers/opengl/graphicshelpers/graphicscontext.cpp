@@ -279,7 +279,7 @@ void GraphicsContext::introspectShaderInterface(Shader *shader, QOpenGLShaderPro
 }
 
 
-// Called by GL Command Thread
+// Called by Renderer::updateGLResources
 void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
 {
     bool wasPresent = false;
@@ -317,7 +317,8 @@ void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
 
         shader->setGraphicsContext(this);
         shader->setLoaded(true);
-        shader->markDirty(AbstractRenderer::AllDirty);
+        // Will force notifications to be sent to frontend at next frame
+        shader->markDirty(AbstractRenderer::ShadersDirty);
     }
 }
 

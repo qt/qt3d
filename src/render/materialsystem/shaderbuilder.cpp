@@ -115,31 +115,6 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-
-namespace {
-
-QShaderProgram::ShaderType toQShaderProgramType(ShaderBuilder::ShaderType type)
-{
-    switch (type) {
-    case ShaderBuilder::ShaderType::Vertex:
-        return QShaderProgram::Vertex;
-    case ShaderBuilder::ShaderType::TessellationControl:
-        return QShaderProgram::TessellationControl;
-    case ShaderBuilder::ShaderType::TessellationEvaluation:
-        return QShaderProgram::TessellationEvaluation;
-    case ShaderBuilder::ShaderType::Geometry:
-        return QShaderProgram::Geometry;
-    case ShaderBuilder::ShaderType::Fragment:
-        return QShaderProgram::Fragment;
-    case ShaderBuilder::ShaderType::Compute:
-        return QShaderProgram::Compute;
-    default:
-        Q_UNREACHABLE();
-    }
-}
-
-} // anonymous
-
 QString ShaderBuilder::getPrototypesFile()
 {
     return qt3dGlobalShaderPrototypes->prototypesFile();
@@ -191,7 +166,7 @@ void ShaderBuilder::setEnabledLayers(const QStringList &layers)
 
     m_enabledLayers = layers;
 
-    for (QHash<ShaderType, QUrl>::const_iterator it = m_graphs.cbegin(); it != m_graphs.cend(); ++it) {
+    for (auto it = m_graphs.cbegin(); it != m_graphs.cend(); ++it) {
         if (!it.value().isEmpty())
             m_dirtyTypes.insert(it.key());
     }
@@ -208,18 +183,18 @@ void ShaderBuilder::setGraphicsApi(const GraphicsApiFilterData &graphicsApi)
         return;
 
     m_graphicsApi = graphicsApi;
-    for (QHash<ShaderType, QUrl>::const_iterator it = m_graphs.cbegin(); it != m_graphs.cend(); ++it) {
+    for (auto it = m_graphs.cbegin(); it != m_graphs.cend(); ++it) {
         if (!it.value().isEmpty())
             m_dirtyTypes.insert(it.key());
     }
 }
 
-QUrl ShaderBuilder::shaderGraph(ShaderBuilder::ShaderType type) const
+QUrl ShaderBuilder::shaderGraph(QShaderProgram::ShaderType type) const
 {
     return m_graphs.value(type);
 }
 
-void ShaderBuilder::setShaderGraph(ShaderBuilder::ShaderType type, const QUrl &url)
+void ShaderBuilder::setShaderGraph(QShaderProgram::ShaderType type, const QUrl &url)
 {
     if (url != m_graphs.value(type)) {
         m_graphs.insert(type, url);
@@ -227,17 +202,17 @@ void ShaderBuilder::setShaderGraph(ShaderBuilder::ShaderType type, const QUrl &u
     }
 }
 
-QByteArray ShaderBuilder::shaderCode(ShaderBuilder::ShaderType type) const
+QByteArray ShaderBuilder::shaderCode(QShaderProgram::ShaderType type) const
 {
     return m_codes.value(type);
 }
 
-bool ShaderBuilder::isShaderCodeDirty(ShaderBuilder::ShaderType type) const
+bool ShaderBuilder::isShaderCodeDirty(QShaderProgram::ShaderType type) const
 {
     return m_dirtyTypes.contains(type);
 }
 
-void ShaderBuilder::generateCode(ShaderBuilder::ShaderType type)
+void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
 {
     const auto graphPath = QUrlHelper::urlToLocalFileOrQrc(shaderGraph(type));
     QFile file(graphPath);
@@ -273,12 +248,9 @@ void ShaderBuilder::generateCode(ShaderBuilder::ShaderType type)
     m_codes.insert(type, QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl")));
     m_dirtyTypes.remove(type);
 
-    // Send notification to the frontend
-    Qt3DCore::QPropertyUpdatedChangePtr propertyChange = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    propertyChange->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    propertyChange->setPropertyName("generatedShaderCode");
-    propertyChange->setValue(QVariant::fromValue(qMakePair(int(toQShaderProgramType(type)), m_codes.value(type))));
-    notifyObservers(propertyChange);
+    m_pendingUpdates.push_back({ peerId(),
+                                 type,
+                                 m_codes.value(type) });
 }
 
 void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
@@ -305,13 +277,13 @@ void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         markDirty(AbstractRenderer::ShadersDirty);
     }
 
-    static const std::pair<ShaderType, QUrl (QShaderProgramBuilder::*)() const> shaderTypesToGetters[] = {
-        {Vertex, &QShaderProgramBuilder::vertexShaderGraph},
-        {TessellationControl, &QShaderProgramBuilder::tessellationControlShaderGraph},
-        {TessellationEvaluation, &QShaderProgramBuilder::tessellationEvaluationShaderGraph},
-        {Geometry, &QShaderProgramBuilder::geometryShaderGraph},
-        {Fragment, &QShaderProgramBuilder::fragmentShaderGraph},
-        {Compute, &QShaderProgramBuilder::computeShaderGraph},
+    static const std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const> shaderTypesToGetters[] = {
+        {QShaderProgram::Vertex, &QShaderProgramBuilder::vertexShaderGraph},
+        {QShaderProgram::TessellationControl, &QShaderProgramBuilder::tessellationControlShaderGraph},
+        {QShaderProgram::TessellationEvaluation, &QShaderProgramBuilder::tessellationEvaluationShaderGraph},
+        {QShaderProgram::Geometry, &QShaderProgramBuilder::geometryShaderGraph},
+        {QShaderProgram::Fragment, &QShaderProgramBuilder::fragmentShaderGraph},
+        {QShaderProgram::Compute, &QShaderProgramBuilder::computeShaderGraph},
     };
 
     for (auto it = std::cbegin(shaderTypesToGetters), end = std::cend(shaderTypesToGetters); it != end; ++it) {
