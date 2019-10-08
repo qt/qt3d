@@ -66,7 +66,7 @@ public:
 };
 
 LoadSkeletonJob::LoadSkeletonJob(const HSkeleton &handle)
-    : QAspectJob()
+    : QAspectJob(*new LoadSkeletonJobPrivate)
     , m_handle(handle)
     , m_nodeManagers(nullptr)
 {
