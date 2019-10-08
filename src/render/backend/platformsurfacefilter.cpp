@@ -107,10 +107,6 @@ bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
             // If we remove it, the call to isSurfaceValid will
             // implicitely return false
             PlatformSurfaceFilter::m_surfacesValidity.remove(m_surface);
-            if (m_obj) {
-                m_obj->removeEventFilter(this);
-                m_obj = nullptr;
-            }
             break;
         }
 
