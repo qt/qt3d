@@ -72,6 +72,7 @@ void OffscreenSurfaceHelper::createOffscreenSurface()
     m_offscreenSurface = new QOffscreenSurface;
     m_offscreenSurface->setParent(this);
     m_offscreenSurface->setFormat(m_renderer->format());
+    m_offscreenSurface->setScreen(m_renderer->screen());
     m_offscreenSurface->create();
 }
 

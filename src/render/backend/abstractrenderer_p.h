@@ -64,6 +64,7 @@ QT_BEGIN_NAMESPACE
 
 class QSurface;
 class QSize;
+class QScreen;
 
 namespace Qt3DCore {
 class QAbstractFrameAdvanceService;
@@ -177,6 +178,8 @@ public:
 
     // For QtQuick rendering
     virtual void setOpenGLContext(QOpenGLContext *ctx) = 0;
+    virtual void setScreen(QScreen *) {}
+    virtual QScreen *screen() const { return nullptr; }
 
     virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
     virtual QSurfaceFormat format() = 0;

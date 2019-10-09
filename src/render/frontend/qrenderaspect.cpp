@@ -564,6 +564,7 @@ void QRenderAspect::onRegistered()
 
     // TO DO: Load proper Renderer class based on Qt configuration preferences
     d->m_renderer = new Render::Renderer(d->m_renderType);
+    d->m_renderer->setScreen(d->m_screen);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
     // Create a helper for deferring creation of an offscreen surface used during cleanup

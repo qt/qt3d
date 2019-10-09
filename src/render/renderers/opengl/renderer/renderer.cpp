@@ -357,6 +357,16 @@ void Renderer::setOpenGLContext(QOpenGLContext *context)
     m_glContext = context;
 }
 
+void Renderer::setScreen(QScreen *scr)
+{
+    m_screen = scr;
+}
+
+QScreen *Renderer::screen() const
+{
+    return m_screen;
+}
+
 // Called in RenderThread context by the run method of RenderThread
 // RenderThread has locked the mutex already and unlocks it when this
 // method termintates
@@ -374,6 +384,8 @@ void Renderer::initialize()
         // we need to create it
         if (!m_glContext) {
             ctx = new QOpenGLContext;
+            if (m_screen)
+                ctx->setScreen(m_screen);
             ctx->setShareContext(qt_gl_global_share_context());
 
             // TO DO: Shouldn't we use the highest context available and trust
@@ -403,6 +415,8 @@ void Renderer::initialize()
 
         if (!ctx->shareContext()) {
             m_shareContext = new QOpenGLContext;
+            if (ctx->screen())
+                m_shareContext->setScreen(ctx->screen());
             m_shareContext->setFormat(ctx->format());
             m_shareContext->setShareContext(ctx);
             m_shareContext->create();

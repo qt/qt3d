@@ -106,6 +106,7 @@ QT_BEGIN_NAMESPACE
 
 class QSurface;
 class QMouseEvent;
+class QScreen;
 
 namespace Qt3DCore {
 class QEntity;
@@ -294,6 +295,8 @@ public:
     ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
     RendererCache *cache() { return &m_cache; }
+    void setScreen(QScreen *scr) override;
+    QScreen *screen() const override;
 
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
@@ -421,6 +424,7 @@ private:
 
     QMetaObject::Connection m_contextConnection;
     RendererCache m_cache;
+    QScreen *m_screen = nullptr;
 };
 
 } // namespace Render
