@@ -66,6 +66,7 @@
 #include <QtQuick/qquickrendercontrol.h>
 
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 #include <scene3dcleaner_p.h>
 #include <scene3dlogging_p.h>
 #include <scene3drenderer_p.h>
@@ -301,6 +302,7 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
             m_dummySurface = new QOffscreenSurface;
             m_dummySurface->setParent(qGuiApp); // parent to something suitably long-living
             m_dummySurface->setFormat(rw->format());
+            m_dummySurface->setScreen(rw->screen());
             m_dummySurface->create();
             surfaceSelector->setSurface(m_dummySurface);
         } else {
@@ -388,6 +390,9 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     // If the render aspect wasn't created yet, do so now
     if (m_renderAspect == nullptr) {
         m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
+        auto *rw = QQuickRenderControl::renderWindowFor(window());
+        static_cast<Qt3DRender::QRenderAspectPrivate *>(Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))->m_screen =
+                (rw ? rw->screen() : window()->screen());
         m_aspectEngine->registerAspect(m_renderAspect);
     }
 

@@ -60,6 +60,7 @@
 QT_BEGIN_NAMESPACE
 
 class QSurface;
+class QScreen;
 
 namespace Qt3DRender {
 
@@ -104,6 +105,7 @@ public:
     QVector<Render::QRenderPlugin *> m_renderPlugins;
     QRenderAspect::RenderType m_renderType;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;
+    QScreen *m_screen = nullptr;
 
     static QMutex m_pluginLock;
     static QVector<QString> m_pluginConfig;

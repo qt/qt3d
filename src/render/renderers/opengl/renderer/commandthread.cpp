@@ -97,6 +97,7 @@ void CommandThread::initialize(QOpenGLContext *mainContext, OffscreenSurfaceHelp
     // thread the wglShareLists call is made on)
     m_localContext.reset(new QOpenGLContext());
     m_localContext->setFormat(m_mainContext->format());
+    m_localContext->setScreen(m_mainContext->screen());
     m_localContext->setShareContext(m_mainContext);
     if (!m_localContext->create())
         qWarning("CommandThread: Failed to create local context");
