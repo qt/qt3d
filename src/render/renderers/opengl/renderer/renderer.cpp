@@ -1805,11 +1805,12 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     const bool frameGraphDirty = dirtyBitsForFrame & AbstractRenderer::FrameGraphDirty;
     const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty || frameGraphDirty;
+    const bool shadersDirty = dirtyBitsForFrame & AbstractRenderer::ShadersDirty;
     const bool materialDirty = dirtyBitsForFrame & AbstractRenderer::MaterialDirty;
     const bool lightsDirty = dirtyBitsForFrame & AbstractRenderer::LightsDirty;
     const bool computeableDirty = dirtyBitsForFrame & AbstractRenderer::ComputeDirty;
     const bool renderableDirty = dirtyBitsForFrame & AbstractRenderer::GeometryDirty;
-    const bool materialCacheNeedsToBeRebuilt = materialDirty || frameGraphDirty;
+    const bool materialCacheNeedsToBeRebuilt = shadersDirty || materialDirty || frameGraphDirty;
 
     // Rebuild Entity Layers list if layers are dirty
     if (layersDirty)
