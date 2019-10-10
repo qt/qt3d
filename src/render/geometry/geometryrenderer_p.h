@@ -54,6 +54,7 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometryfactory.h>
+#include <Qt3DRender/qmesh.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,6 +67,12 @@ namespace Render {
 
 class GeometryRendererManager;
 
+struct GeometryFunctorResult
+{
+    QGeometry *geometry;
+    QMesh::Status status;
+};
+
 class Q_AUTOTEST_EXPORT GeometryRenderer : public BackendNode
 {
 public:
@@ -75,7 +82,7 @@ public:
     void cleanup();
     void setManager(GeometryRendererManager *manager);
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
-    void executeFunctor();
+    GeometryFunctorResult executeFunctor();
 
     inline Qt3DCore::QNodeId geometryId() const { return m_geometryId; }
     inline int instanceCount() const { return m_instanceCount; }
