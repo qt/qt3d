@@ -69,6 +69,8 @@ QEffectPrivate::QEffectPrivate()
 
     An QEffect instance should be shared among several QMaterial instances when possible.
 
+    \note QEffect node can not be disabled.
+
     \code
     QEffect *effect = new QEffect();
 
@@ -114,6 +116,8 @@ QEffectPrivate::QEffectPrivate()
 
     A Parameter defined on an Effect is overridden by a QParameter (of the same
     name) defined in a Material, TechniqueFilter, RenderPassFilter.
+
+    \note Effect node can not be disabled.
 
     \code
     Effect {
