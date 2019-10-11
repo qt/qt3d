@@ -1115,7 +1115,7 @@ void Renderer::reloadDirtyShaders()
 
                         if (shaderBuilder->isShaderCodeDirty(shaderType)) {
                             shaderBuilder->generateCode(shaderType);
-                            m_shaderBuilderUpdates.append(std::move(shaderBuilder->updates()));
+                            m_shaderBuilderUpdates.append(shaderBuilder->takePendingUpdates());
                         }
 
                         const auto code = shaderBuilder->shaderCode(shaderType);
@@ -1143,9 +1143,9 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
         if (s->requiresFrontendSync()) {
             QShaderProgram *frontend = static_cast<decltype(frontend)>(manager->lookupNode(s->peerId()));
             QShaderProgramPrivate *dFrontend = static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
+            s->unsetRequiresFrontendSync();
             dFrontend->setStatus(s->status());
             dFrontend->setLog(s->log());
-            s->unsetRequiresFrontendSync();
         }
     }
 

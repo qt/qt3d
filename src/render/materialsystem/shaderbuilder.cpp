@@ -145,6 +145,7 @@ void ShaderBuilder::cleanup()
     m_enabledLayers.clear();
     m_graphs.clear();
     m_dirtyTypes.clear();
+    m_pendingUpdates.clear();
     QBackendNode::setEnabled(false);
 }
 

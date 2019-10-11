@@ -95,7 +95,7 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    QVector<ShaderBuilderUpdate> &updates() { return m_pendingUpdates; }
+    QVector<ShaderBuilderUpdate> takePendingUpdates() { return std::move(m_pendingUpdates); }
 
 private:
     void setEnabledLayers(const QStringList &layers);
