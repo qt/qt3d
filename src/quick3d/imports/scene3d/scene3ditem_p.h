@@ -129,6 +129,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void applyRootEntityChange();
     void onBeforeSync();
+    void requestUpdate();
 
 private:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) override;
