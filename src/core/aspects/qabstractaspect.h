@@ -81,6 +81,7 @@ protected:
     template<class Frontend, bool supportsSyncing>
     void registerBackendType(const QBackendNodeMapperPtr &functor);
     void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor);
+    void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor, bool supportsSyncing);
     template<class Frontend>
     void unregisterBackendType();
     void unregisterBackendType(const QMetaObject &);
@@ -88,7 +89,6 @@ protected:
 private:
     void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
     void syncDirtyFrontEndSubNodes(const QVector<NodeRelationshipChange> &nodes);
-    void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor, bool supportsSyncing);
 
     virtual QVariant executeCommand(const QStringList &args);
 

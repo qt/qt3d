@@ -42,8 +42,6 @@
 #include "scene2devent_p.h"
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -190,15 +188,6 @@ QScene2DPrivate::~QScene2DPrivate()
     delete m_renderManager;
 }
 
-void QScene2DPrivate::setScene(Qt3DCore::QScene *scene)
-{
-    Q_Q(QScene2D);
-    QNodePrivate::setScene(scene);
-    const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(q->id());
-    change->setPropertyName("sceneInitialized");
-    notifyObservers(change);
-}
-
 
 /*!
     The constructor creates a new QScene2D instance with the specified \a parent.
@@ -311,6 +300,15 @@ QVector<Qt3DCore::QEntity*> QScene2D::entities()
 }
 
 /*!
+    Retrieve entities associated with the QScene2D.
+ */
+QVector<Qt3DCore::QEntity*> QScene2D::entities() const
+{
+    Q_D(const QScene2D);
+    return d->m_entities;
+}
+
+/*!
     Adds an \a entity to the the QScene2D object. If the entities have QObjectPicker,
     the pick events from that entity are sent to QScene2D and converted to mouse events.
 */
@@ -321,12 +319,7 @@ void QScene2D::addEntity(Qt3DCore::QEntity *entity)
         d->m_entities.append(entity);
 
         d->registerDestructionHelper(entity, &QScene2D::removeEntity, d->m_entities);
-
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), entity);
-            change->setPropertyName("entities");
-            d->notifyObservers(change);
-        }
+        d->updateNode(entity, "entities", PropertyValueAdded);
     }
 }
 
@@ -340,12 +333,7 @@ void QScene2D::removeEntity(Qt3DCore::QEntity *entity)
         d->m_entities.removeAll(entity);
 
         d->unregisterDestructionHelper(entity);
-
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), entity);
-            change->setPropertyName("entities");
-            d->notifyObservers(change);
-        }
+        d->updateNode(entity, "entities", PropertyValueRemoved);
     }
 }
 

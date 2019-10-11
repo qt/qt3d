@@ -74,8 +74,6 @@ public:
     QScene2DPrivate();
     ~QScene2DPrivate();
 
-    void setScene(Qt3DCore::QScene *scene) override;
-
     Scene2DManager *m_renderManager;
     QMetaObject::Connection m_textureDestroyedConnection;
     Qt3DRender::QRenderTargetOutput *m_output;

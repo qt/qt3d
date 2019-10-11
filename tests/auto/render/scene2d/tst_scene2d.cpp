@@ -128,7 +128,7 @@ private Q_SLOTS:
             // WHEN
             QScopedPointer<Scene2D> backendScene2d(new Scene2D());
             backendScene2d->setRenderer(&renderer);
-            simulateInitialization(&frontend, backendScene2d.data());
+            simulateInitializationSync(&frontend, backendScene2d.data());
 
             // THEN
             QCOMPARE(backendScene2d->isEnabled(), true);
@@ -144,7 +144,7 @@ private Q_SLOTS:
             QScopedPointer<Scene2D> backendScene2d(new Scene2D());
             frontend.setEnabled(false);
             backendScene2d->setRenderer(&renderer);
-            simulateInitialization(&frontend, backendScene2d.data());
+            simulateInitializationSync(&frontend, backendScene2d.data());
 
             // THEN
             QCOMPARE(backendScene2d->peerId(), frontend.id());
@@ -156,18 +156,18 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DRender::Quick::QScene2D frontend;
         QScopedPointer<Scene2D> backendScene2d(new Scene2D());
         TestRenderer renderer;
         QScopedPointer<Qt3DRender::QRenderTargetOutput> output(new Qt3DRender::QRenderTargetOutput());
         backendScene2d->setRenderer(&renderer);
+        simulateInitializationSync(&frontend, backendScene2d.data());
 
         {
              // WHEN
              const bool newValue = false;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("enabled");
-             change->setValue(newValue);
-             backendScene2d->sceneChangeEvent(change);
+             frontend.setEnabled(false);
+             backendScene2d->syncFromFrontEnd(&frontend, false);
 
              // THEN
             QCOMPARE(backendScene2d->isEnabled(), newValue);
@@ -175,10 +175,8 @@ private Q_SLOTS:
         {
              // WHEN
              const Qt3DCore::QNodeId newValue = output.data()->id();
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("output");
-             change->setValue(QVariant::fromValue(newValue));
-             backendScene2d->sceneChangeEvent(change);
+             frontend.setOutput(output.data());
+             backendScene2d->syncFromFrontEnd(&frontend, false);
 
              // THEN
             QCOMPARE(backendScene2d->m_outputId, newValue);
@@ -186,10 +184,8 @@ private Q_SLOTS:
         {
              // WHEN
              const QScene2D::RenderPolicy newValue = QScene2D::SingleShot;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("renderPolicy");
-             change->setValue(QVariant::fromValue(newValue));
-             backendScene2d->sceneChangeEvent(change);
+             frontend.setRenderPolicy(newValue);
+             backendScene2d->syncFromFrontEnd(&frontend, false);
 
              // THEN
             QCOMPARE(backendScene2d->m_renderPolicy, newValue);
@@ -197,10 +193,7 @@ private Q_SLOTS:
         {
              // WHEN
              const bool newValue = false;
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("mouseEnabled");
-             change->setValue(newValue);
-             backendScene2d->sceneChangeEvent(change);
+             frontend.setMouseEnabled(newValue);
 
              // THEN
             QCOMPARE(backendScene2d->isEnabled(), newValue);
@@ -209,10 +202,11 @@ private Q_SLOTS:
         backendScene2d->cleanup();
     }
 
-
     void testCoordinateCalculation()
     {
         // GIVEN
+        qputenv("QT3D_SCENE2D_DISABLE_RENDERING", "1");
+
         QScopedPointer<TestWindow> testWindow(new TestWindow());
         Scene2DSharedObjectPtr sharedObject(new Scene2DSharedObject(nullptr));
         QScopedPointer<Scene2D> scene2d(new Scene2D());
@@ -336,7 +330,8 @@ private Q_SLOTS:
             QVector3D uvw(1.0, 0.0f, 0.0f);
             Qt3DRender::QPickEventPtr ev = Qt3DRender::QPickEventPtr(PICK_TRIANGLE(0, 0, 1, 2, uvw));
             Qt3DRender::QPickEventPrivate::get(ev.data())->m_entity = entity->id();
-            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev);
+            Qt3DRender::QPickEventPrivate::get(ev.data())->m_entityPtr = entity.data();
+            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev.data());
 
             QCoreApplication::processEvents();
 
@@ -350,7 +345,8 @@ private Q_SLOTS:
             QVector3D uvw(0.0, 1.0f, 0.0f);
             Qt3DRender::QPickEventPtr ev = Qt3DRender::QPickEventPtr(PICK_TRIANGLE(0, 0, 1, 2, uvw));
             Qt3DRender::QPickEventPrivate::get(ev.data())->m_entity = entity->id();
-            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev);
+            Qt3DRender::QPickEventPrivate::get(ev.data())->m_entityPtr = entity.data();
+            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev.data());
 
             QCoreApplication::processEvents();
 
@@ -364,7 +360,8 @@ private Q_SLOTS:
             QVector3D uvw(0.0, 0.0f, 1.0f);
             Qt3DRender::QPickEventPtr ev = Qt3DRender::QPickEventPtr(PICK_TRIANGLE(0, 0, 1, 2, uvw));
             Qt3DRender::QPickEventPrivate::get(ev.data())->m_entity = entity->id();
-            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev);
+            Qt3DRender::QPickEventPrivate::get(ev.data())->m_entityPtr = entity.data();
+            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev.data());
 
             QCoreApplication::processEvents();
 
@@ -378,7 +375,8 @@ private Q_SLOTS:
             QVector3D uvw(1.0, 0.0f, 0.0f);
             Qt3DRender::QPickEventPtr ev = Qt3DRender::QPickEventPtr(PICK_TRIANGLE(1, 3, 4, 5, uvw));
             Qt3DRender::QPickEventPrivate::get(ev.data())->m_entity = entity->id();
-            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev);
+            Qt3DRender::QPickEventPrivate::get(ev.data())->m_entityPtr = entity.data();
+            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev.data());
 
             QCoreApplication::processEvents();
 
@@ -392,7 +390,8 @@ private Q_SLOTS:
             QVector3D uvw(0.0, 1.0f, 0.0f);
             Qt3DRender::QPickEventPtr ev = Qt3DRender::QPickEventPtr(PICK_TRIANGLE(1, 3, 4, 5, uvw));
             Qt3DRender::QPickEventPrivate::get(ev.data())->m_entity = entity->id();
-            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev);
+            Qt3DRender::QPickEventPrivate::get(ev.data())->m_entityPtr = entity.data();
+            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev.data());
 
             QCoreApplication::processEvents();
 
@@ -406,7 +405,8 @@ private Q_SLOTS:
             QVector3D uvw(0.0, 0.0f, 1.0f);
             Qt3DRender::QPickEventPtr ev = Qt3DRender::QPickEventPtr(PICK_TRIANGLE(1, 3, 4, 5, uvw));
             Qt3DRender::QPickEventPrivate::get(ev.data())->m_entity = entity->id();
-            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev);
+            Qt3DRender::QPickEventPrivate::get(ev.data())->m_entityPtr = entity.data();
+            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev.data());
 
             QCoreApplication::processEvents();
 
@@ -420,12 +420,13 @@ private Q_SLOTS:
             QVector3D uvw(0.5f, 0.25f, 0.25f);
             Qt3DRender::QPickEventPtr ev = Qt3DRender::QPickEventPtr(PICK_TRIANGLE(0, 0, 1, 2, uvw));
             Qt3DRender::QPickEventPrivate::get(ev.data())->m_entity = entity->id();
-            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev);
+            Qt3DRender::QPickEventPrivate::get(ev.data())->m_entityPtr = entity.data();
+            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev.data());
 
             QCoreApplication::processEvents();
 
             // THEN
-            QVERIFY(testWindow->verifyEventPos(0, QEvent::MouseButtonPress, QPointF(512.0f, 768.0f)));
+            QVERIFY(testWindow->verifyEventPos(0, QEvent::MouseButtonPress, QPointF(512.0, 768.0)));
             testWindow->clear();
         }
 
@@ -434,14 +435,17 @@ private Q_SLOTS:
             QVector3D uvw(0.875f, 0.09375f, 0.03125f);
             Qt3DRender::QPickEventPtr ev = Qt3DRender::QPickEventPtr(PICK_TRIANGLE(1, 3, 4, 5, uvw));
             Qt3DRender::QPickEventPrivate::get(ev.data())->m_entity = entity->id();
-            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev);
+            Qt3DRender::QPickEventPrivate::get(ev.data())->m_entityPtr = entity.data();
+            scene2d->handlePickEvent(QEvent::MouseButtonPress, ev.data());
 
             QCoreApplication::processEvents();
 
             // THEN
-            QVERIFY(testWindow->verifyEventPos(0, QEvent::MouseButtonPress, QPointF(96.0f, 896.0f)));
+            QVERIFY(testWindow->verifyEventPos(0, QEvent::MouseButtonPress, QPointF(96.0, 896.0)));
             testWindow->clear();
         }
+
+        scene2d.reset();
     }
 };
 
