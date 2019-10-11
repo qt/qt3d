@@ -419,6 +419,10 @@ void Scene3DRenderer::render()
 
         // Restore QtQuick FBO
         QOpenGLFramebufferObject::bindDefault();
+
+        // Only show the node once Qt3D has rendered to it
+        // Avoids showing garbage on the first frame
+        m_node->show();
     }
 
     // Reset the state used by the Qt Quick scenegraph to avoid any
