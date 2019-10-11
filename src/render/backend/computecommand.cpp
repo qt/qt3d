@@ -53,6 +53,7 @@ ComputeCommand::ComputeCommand()
     : BackendNode(ReadWrite)
     , m_frameCount(0)
     , m_runType(QComputeCommand::Continuous)
+    , m_hasReachedFrameCount(false)
 {
     m_workGroups[0] = 1;
     m_workGroups[1] = 1;
@@ -71,6 +72,7 @@ void ComputeCommand::cleanup()
     m_workGroups[2] = 1;
     m_frameCount = 0;
     m_runType = QComputeCommand::Continuous;
+    m_hasReachedFrameCount = false;
 }
 
 void ComputeCommand::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
@@ -100,6 +102,7 @@ void ComputeCommand::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
     const QComputeCommandPrivate *d = static_cast<const QComputeCommandPrivate *>(Qt3DCore::QNodePrivate::get(node));
     if (d->m_frameCount != m_frameCount) {
         m_frameCount = d->m_frameCount;
+        m_hasReachedFrameCount = m_frameCount <= 0;
         markDirty(AbstractRenderer::ComputeDirty);
     }
 
@@ -112,14 +115,19 @@ void ComputeCommand::updateFrameCount()
 {
     // Disable frontend node when reaching 0
     --m_frameCount;
-    if (m_frameCount <= 0) {
-        setEnabled(false);
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("enabled");
-        e->setValue(false);
-        notifyObservers(e);
-    }
+    if (m_frameCount <= 0)
+        m_hasReachedFrameCount = true;
+    // Backend will be disabled on the next sync
+}
+
+void ComputeCommand::resetHasReachedFrameCount()
+{
+    m_hasReachedFrameCount = false;
+}
+
+bool ComputeCommand::hasReachedFrameCount() const
+{
+    return m_hasReachedFrameCount;
 }
 
 } // Render

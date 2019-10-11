@@ -383,7 +383,7 @@ private:
     SynchronizerJobPtr m_textureGathererJob;
     SynchronizerPostFramePtr m_sendTextureChangesToFrontendJob;
     SynchronizerJobPtr m_sendSetFenceHandlesToFrontendJob;
-    SynchronizerJobPtr m_sendDisablesToFrontendJob;
+    SynchronizerPostFramePtr m_sendDisablesToFrontendJob;
     SynchronizerPostFramePtr m_introspectShaderJob;
     SynchronizerJobPtr m_syncLoadingJobs;
 
@@ -395,7 +395,7 @@ private:
     void sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendSetFenceHandlesToFrontend();
-    void sendDisablesToFrontend();
+    void sendDisablesToFrontend(Qt3DCore::QAspectManager *manager);
 
     QMutex m_abandonedVaosMutex;
     QVector<HVao> m_abandonedVaos;
@@ -406,7 +406,7 @@ private:
     QVector<HTexture> m_dirtyTextures;
     QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
     QVector<QPair<Qt3DCore::QNodeId, GLFence>> m_updatedSetFences;
-    QVector<Qt3DCore::QNodeId> m_updatedDisables;
+    QVector<Qt3DCore::QNodeId> m_updatedDisableSubtreeEnablers;
     Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
     QVector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
 

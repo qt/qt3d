@@ -79,11 +79,14 @@ public:
 
     // Called from a job
     void updateFrameCount();
+    bool hasReachedFrameCount() const;
+    void resetHasReachedFrameCount();
 
 private:
     int m_workGroups[3];
     int m_frameCount;
     QComputeCommand::RunType m_runType;
+    bool m_hasReachedFrameCount;
 };
 
 } // Render

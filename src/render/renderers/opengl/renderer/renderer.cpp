@@ -200,7 +200,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
                                                                          [this] (Qt3DCore::QAspectManager *m) { sendTextureChangesToFrontend(m); },
                                                                          JobTypes::SendTextureChangesToFrontend))
     , m_sendSetFenceHandlesToFrontendJob(SynchronizerJobPtr::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
-    , m_sendDisablesToFrontendJob(SynchronizerJobPtr::create([this] { sendDisablesToFrontend(); }, JobTypes::SendDisablesToFrontend))
+    , m_sendDisablesToFrontendJob(SynchronizerPostFramePtr::create([] {},
+                                                                   [this] (Qt3DCore::QAspectManager *m) { sendDisablesToFrontend(m); },
+                                                                   JobTypes::SendDisablesToFrontend))
     , m_introspectShaderJob(SynchronizerPostFramePtr::create([this] { reloadDirtyShaders(); },
                                                              [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
                                                              JobTypes::DirtyShaderGathering))
@@ -1231,17 +1233,24 @@ void Renderer::sendSetFenceHandlesToFrontend()
     }
 }
 
-// Executed in a job
-void Renderer::sendDisablesToFrontend()
+// Executed in a job postFrame
+void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
 {
-    const auto updatedDisables = std::move(m_updatedDisables);
-    FrameGraphManager *fgManager = m_nodesManager->frameGraphManager();
+    // SubtreeEnabled
+    const auto updatedDisables = std::move(m_updatedDisableSubtreeEnablers);
     for (const auto &nodeId : updatedDisables) {
-        FrameGraphNode *fgNode = fgManager->lookupNode(nodeId);
-        if (fgNode != nullptr) { // Node could have been deleted before we got a chance to notify it
-            Q_ASSERT(fgNode->nodeType() == FrameGraphNode::SubtreeEnabler);
-            SubtreeEnabler *enabler = static_cast<SubtreeEnabler *>(fgNode);
-            enabler->sendDisableToFrontend();
+        QSubtreeEnabler *frontend = static_cast<decltype(frontend)>(manager->lookupNode(nodeId));
+        frontend->setEnabled(false);
+    }
+
+    // Compute Commands
+    const QVector<HComputeCommand> activeCommands = m_nodesManager->computeJobManager()->activeHandles();
+    for (const HComputeCommand &handle :activeCommands) {
+        ComputeCommand *c = m_nodesManager->computeJobManager()->data(handle);
+        if (c->hasReachedFrameCount()) {
+            QComputeCommand *frontend = static_cast<decltype(frontend)>(manager->lookupNode(c->peerId()));
+            frontend->setEnabled(false);
+            c->resetHasReachedFrameCount();
         }
     }
 }
@@ -1773,7 +1782,6 @@ QVector<QAspectJobPtr> Renderer::preRenderingJobs()
 QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
     QVector<QAspectJobPtr> renderBinJobs;
-
     // Create the jobs to build the frame
     const QVector<QAspectJobPtr> bufferJobs = createRenderBufferJobs();
 
@@ -1824,7 +1832,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_updateSkinningPaletteJob);
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_cleanupJob);
-
+    renderBinJobs.push_back(m_sendDisablesToFrontendJob);
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
@@ -1874,9 +1882,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             // Handle single shot subtree enablers
             const auto subtreeEnablers = visitor.takeEnablersToDisable();
             for (auto *node : subtreeEnablers)
-                m_updatedDisables.push_back(node->peerId());
-            if (m_updatedDisables.size() > 0)
-                renderBinJobs.push_back(m_sendDisablesToFrontendJob);
+                m_updatedDisableSubtreeEnablers.push_back(node->peerId());
         }
 
         const int fgBranchCount = m_frameGraphLeaves.size();
