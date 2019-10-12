@@ -36,6 +36,7 @@
 #include <Qt3DRender/private/renderviewbuilder_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/renderqueue_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 class tst_Renderer : public QObject
 {
@@ -170,8 +171,23 @@ private Q_SLOTS:
         //                   syncRenderViewCommandBuilderJob
         //                   n * (RenderViewCommandBuildJobs)
 
-        // WHEN (nothing dirty, no buffers, no layers to be rebuilt, no materials to be rebuilt)
+        // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = renderer.renderBinJobs();
+
+        // THEN
+        QCOMPARE(jobs.size(),
+                 1 + // updateLevelOfDetailJob
+                 1 + // cleanupJob
+                 1 + // VAOGatherer
+                 1 + // updateSkinningPaletteJob
+                 1); // SyncLoadingJobs
+
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
+
+        // WHEN (nothing dirty, no buffers, no layers to be rebuilt, no materials to be rebuilt)
+        renderer.markDirty(Qt3DRender::Render::AbstractRenderer::FrameGraphDirty, nullptr);
+        jobs = renderer.renderBinJobs();
 
         // THEN (level
         QCOMPARE(jobs.size(),
@@ -180,7 +196,9 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 singleRenderViewJobCount); // Only valid for the first call to renderBinJobs(), since subsequent calls won't have the renderqueue reset
+                 singleRenderViewJobCount +
+                 renderViewBuilderMaterialCacheJobCount +
+                 layerCacheJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         renderQueue->reset();
@@ -293,23 +311,6 @@ private Q_SLOTS:
                  1 + // updateSkinningPaletteJob
                  1 + // SyncTexturesGathererJob
                  singleRenderViewJobCount);
-
-        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-        renderQueue->reset();
-
-        // WHEN
-        renderer.markDirty(Qt3DRender::Render::AbstractRenderer::FrameGraphDirty, nullptr);
-        jobs = renderer.renderBinJobs();
-
-        QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
-                 1 + // cleanupJob
-                 1 + // VAOGatherer
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
-                 singleRenderViewJobCount +
-                 layerCacheJobCount +
-                 renderViewBuilderMaterialCacheJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         renderQueue->reset();

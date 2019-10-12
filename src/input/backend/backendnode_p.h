@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_SCENE_P_H
-#define QT3DRENDER_RENDER_SCENE_P_H
+#ifndef QT3DINPUT_INPUT_BACKENDNODE_H
+#define QT3DINPUT_INPUT_BACKENDNODE_H
 
 //
 //  W A R N I N G
@@ -51,56 +51,29 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/qsceneloader.h>
-#include <QtGlobal>
-#include <QUrl>
+#include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QEntity;
-}
+namespace Qt3DInput {
+namespace Input {
 
-namespace Qt3DRender {
-namespace Render {
-
-class SceneManager;
-
-class Q_AUTOTEST_EXPORT Scene : public BackendNode
+class Q_3DINPUTSHARED_PRIVATE_EXPORT BackendNode : public Qt3DCore::QBackendNode
 {
 public:
-    Scene();
+    BackendNode(Qt3DCore::QBackendNode::Mode mode = ReadOnly);
+    ~BackendNode();
 
-    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
-    QUrl source() const;
-    void setSceneSubtree(Qt3DCore::QEntity *subTree);
-    void setSceneManager(SceneManager *manager);
+    virtual void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
 
-    void cleanup();
-    void setStatus(QSceneLoader::Status status);
-
-private:
-    SceneManager *m_sceneManager;
-    QUrl m_source;
+protected:
+    explicit BackendNode(Qt3DCore::QBackendNodePrivate &dd);
 };
 
-class RenderSceneFunctor : public Qt3DCore::QBackendNodeMapper
-{
-public:
-    explicit RenderSceneFunctor(AbstractRenderer *renderer, SceneManager *sceneManager);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
-    void destroy(Qt3DCore::QNodeId id) const override;
-
-private:
-    SceneManager *m_sceneManager;
-    AbstractRenderer *m_renderer;
-};
-
-} // namespace Render
-} // namespace Qt3DRender
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_SCENE_P_H
+#endif // QT3DINPUT_INPUT_BACKENDNODE_H

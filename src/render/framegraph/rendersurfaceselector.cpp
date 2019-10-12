@@ -122,12 +122,7 @@ QSize RenderSurfaceSelector::renderTargetSize() const
 {
     if (m_renderTargetSize.isValid())
         return m_renderTargetSize;
-    {
-        SurfaceLocker lock(m_surface);
-        if (lock.isSurfaceValid() && m_surface && m_surface->size().isValid())
-            return m_surface->size();
-    }
-    return QSize();
+    return QSize(m_width, m_height);
 }
 
 } // namespace Render

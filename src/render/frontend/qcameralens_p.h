@@ -65,6 +65,25 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+struct CameraLensCommand
+{
+    QString name;
+    QVariant data;
+    Qt3DCore::QNodeCommand::CommandId commandId;
+
+    inline operator bool() const { return !name.isEmpty(); }
+};
+
+inline bool operator ==(const CameraLensCommand &a, const CameraLensCommand &b) noexcept
+{
+    return a.name == b.name && a.data == b.data && a.commandId == b.commandId;
+}
+
+inline bool operator !=(const CameraLensCommand &a, const CameraLensCommand &b) noexcept
+{
+    return !(a == b);
+}
+
 class Q_3DRENDERSHARED_PRIVATE_EXPORT QCameraLensPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
@@ -106,7 +125,7 @@ public:
 
     float m_exposure;
 
-    Qt3DCore::QNodeCommand::CommandId m_pendingViewAllCommand;
+    CameraLensCommand m_pendingViewAllCommand;
     void processViewAllCommand(Qt3DCore::QNodeCommand::CommandId commandId, const QVariant &data);
 
 private:

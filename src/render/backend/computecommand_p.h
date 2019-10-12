@@ -69,7 +69,7 @@ public:
     ~ComputeCommand();
 
     void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     inline int x() const Q_DECL_NOTHROW { return m_workGroups[0]; }
     inline int y() const Q_DECL_NOTHROW { return m_workGroups[1]; }
@@ -81,7 +81,6 @@ public:
     void updateFrameCount();
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
     int m_workGroups[3];
     int m_frameCount;
     QComputeCommand::RunType m_runType;

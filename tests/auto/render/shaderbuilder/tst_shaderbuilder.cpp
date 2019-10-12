@@ -141,9 +141,11 @@ private slots:
         // GIVEN
         QFETCH(Qt3DRender::QShaderProgramBuilder*, frontend);
         Qt3DRender::Render::ShaderBuilder backend;
+        TestRenderer renderer;
 
         // WHEN
-        simulateInitialization(frontend, &backend);
+        backend.setRenderer(&renderer);
+        simulateInitializationSync(frontend, &backend);
 
         // THEN
         QVERIFY(backend.isEnabled() == frontend->isEnabled());
@@ -199,25 +201,14 @@ private slots:
     {
         // GIVEN
         Qt3DRender::Render::ShaderBuilder backend;
+        Qt3DRender::QShaderProgramBuilder frontend;
         TestRenderer renderer;
         backend.setRenderer(&renderer);
+        simulateInitializationSync(&frontend, &backend);
 
         // WHEN
-        auto updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(true);
-        updateChange->setPropertyName("enabled");
-        backend.sceneChangeEvent(updateChange);
-
-        // THEN
-        QVERIFY(backend.isEnabled());
-        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
-        renderer.resetDirty();
-
-        // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(false);
-        updateChange->setPropertyName("enabled");
-        backend.sceneChangeEvent(updateChange);
+        frontend.setEnabled(false);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QVERIFY(!backend.isEnabled());
@@ -225,10 +216,8 @@ private slots:
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(true);
-        updateChange->setPropertyName("enabled");
-        backend.sceneChangeEvent(updateChange);
+        frontend.setEnabled(true);
+        backend.syncFromFrontEnd(&frontend, false);
         // AND
         backend.cleanup();
 
@@ -242,26 +231,24 @@ private slots:
     {
         // GIVEN
         Qt3DRender::Render::ShaderBuilder backend;
+        Qt3DRender::QShaderProgramBuilder frontend;
         TestRenderer renderer;
         backend.setRenderer(&renderer);
-        const auto programId = Qt3DCore::QNodeId::createId();
+        simulateInitializationSync(&frontend, &backend);
 
         // WHEN
-        auto updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(QVariant::fromValue(programId));
-        updateChange->setPropertyName("shaderProgram");
-        backend.sceneChangeEvent(updateChange);
+        Qt3DRender::QShaderProgram prog;
+        frontend.setShaderProgram(&prog);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
-        QCOMPARE(backend.shaderProgramId(), programId);
+        QCOMPARE(backend.shaderProgramId(), prog.id());
         QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(QVariant::fromValue(Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("shaderProgram");
-        backend.sceneChangeEvent(updateChange);
+        frontend.setShaderProgram(nullptr);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QVERIFY(backend.shaderProgramId().isNull());
@@ -269,10 +256,8 @@ private slots:
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(QVariant::fromValue(programId));
-        updateChange->setPropertyName("shaderProgram");
-        backend.sceneChangeEvent(updateChange);
+        frontend.setShaderProgram(&prog);
+        backend.syncFromFrontEnd(&frontend, false);
         // AND
         backend.cleanup();
 
@@ -286,21 +271,34 @@ private slots:
     {
         // GIVEN
         Qt3DRender::Render::ShaderBuilder backend;
+        Qt3DRender::QShaderProgramBuilder frontend;
         TestRenderer renderer;
         backend.setRenderer(&renderer);
+        simulateInitializationSync(&frontend, &backend);
         const auto layers = QStringList() << "foo" << "bar";
 
-        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
-            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+        static const std::pair<
+                Qt3DRender::Render::ShaderBuilder::ShaderType,
+                void (Qt3DRender::QShaderProgramBuilder::*)(const QUrl &)
+                >
+                shaderTypesToSetters[] = {
+            {Qt3DRender::Render::ShaderBuilder::Vertex, &Qt3DRender::QShaderProgramBuilder::setVertexShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::TessellationControl, &Qt3DRender::QShaderProgramBuilder::setTessellationControlShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::TessellationEvaluation, &Qt3DRender::QShaderProgramBuilder::setTessellationEvaluationShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::Geometry, &Qt3DRender::QShaderProgramBuilder::setGeometryShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::Fragment, &Qt3DRender::QShaderProgramBuilder::setFragmentShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::Compute, &Qt3DRender::QShaderProgramBuilder::setComputeShaderGraph},
+        };
+
+
+        for (auto it = std::begin(shaderTypesToSetters), end = std::end(shaderTypesToSetters); it != end; ++it) {
             const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
-            backend.setShaderGraph(type, graphUrl);
+            (frontend.*(it->second))(graphUrl);
         }
 
         // WHEN
-        auto updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(layers);
-        updateChange->setPropertyName("enabledLayers");
-        backend.sceneChangeEvent(updateChange);
+        frontend.setEnabledLayers(layers);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.enabledLayers(), layers);
@@ -313,10 +311,8 @@ private slots:
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(layers);
-        updateChange->setPropertyName("enabledLayers");
-        backend.sceneChangeEvent(updateChange);
+        frontend.setEnabledLayers(layers);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.enabledLayers(), layers);
@@ -325,14 +321,12 @@ private slots:
             QVERIFY(!backend.isShaderCodeDirty(type));
             backend.generateCode(type); // Resets the dirty flag
         }
-        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
+        QCOMPARE(renderer.dirtyBits(), 0);
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(QStringList());
-        updateChange->setPropertyName("enabledLayers");
-        backend.sceneChangeEvent(updateChange);
+        frontend.setEnabledLayers(QStringList());
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QVERIFY(backend.shaderProgramId().isNull());
@@ -345,10 +339,8 @@ private slots:
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(layers);
-        updateChange->setPropertyName("enabledLayers");
-        backend.sceneChangeEvent(updateChange);
+        frontend.setEnabledLayers(layers);
+        backend.syncFromFrontEnd(&frontend, false);
         // AND
         backend.cleanup();
 
@@ -365,64 +357,68 @@ private slots:
 
     void shouldHandleShaderGraphPropertiesChanges_data()
     {
-        QTest::addColumn<QByteArray>("property");
         QTest::addColumn<Qt3DRender::Render::ShaderBuilder::ShaderType>("type");
         QTest::addColumn<QUrl>("graphUrl");
 
-        QTest::newRow("vertex") << QByteArrayLiteral("vertexShaderGraph")
-                                << Qt3DRender::Render::ShaderBuilder::Vertex
+        QTest::newRow("vertex") << Qt3DRender::Render::ShaderBuilder::Vertex
                                 << QUrl::fromEncoded("qrc:/vertex.json");
 
-        QTest::newRow("tessControl") << QByteArrayLiteral("tessellationControlShaderGraph")
-                                     << Qt3DRender::Render::ShaderBuilder::TessellationControl
+        QTest::newRow("tessControl") << Qt3DRender::Render::ShaderBuilder::TessellationControl
                                      << QUrl::fromEncoded("qrc:/tesscontrol.json");
 
-        QTest::newRow("tessEval") << QByteArrayLiteral("tessellationEvaluationShaderGraph")
-                                  << Qt3DRender::Render::ShaderBuilder::TessellationEvaluation
+        QTest::newRow("tessEval") << Qt3DRender::Render::ShaderBuilder::TessellationEvaluation
                                   << QUrl::fromEncoded("qrc:/tesseval.json");
 
-        QTest::newRow("geometry") << QByteArrayLiteral("geometryShaderGraph")
-                                  << Qt3DRender::Render::ShaderBuilder::Geometry
+        QTest::newRow("geometry") << Qt3DRender::Render::ShaderBuilder::Geometry
                                   << QUrl::fromEncoded("qrc:/geometry.json");
 
-        QTest::newRow("fragment") << QByteArrayLiteral("fragmentShaderGraph")
-                                  << Qt3DRender::Render::ShaderBuilder::Fragment
+        QTest::newRow("fragment") << Qt3DRender::Render::ShaderBuilder::Fragment
                                   << QUrl::fromEncoded("qrc:/fragment.json");
 
-        QTest::newRow("compute") << QByteArrayLiteral("computeShaderGraph")
-                                 << Qt3DRender::Render::ShaderBuilder::Compute
+        QTest::newRow("compute") << Qt3DRender::Render::ShaderBuilder::Compute
                                  << QUrl::fromEncoded("qrc:/compute.json");
     }
 
     void shouldHandleShaderGraphPropertiesChanges()
     {
         // GIVEN
-        QFETCH(QByteArray, property);
         QFETCH(Qt3DRender::Render::ShaderBuilder::ShaderType, type);
         QFETCH(QUrl, graphUrl);
 
         Qt3DRender::Render::ShaderBuilder backend;
+        Qt3DRender::QShaderProgramBuilder frontend;
         TestRenderer renderer;
         backend.setRenderer(&renderer);
+        simulateInitializationSync(&frontend, &backend);
+
+        static const QHash<
+                Qt3DRender::Render::ShaderBuilder::ShaderType,
+                void (Qt3DRender::QShaderProgramBuilder::*)(const QUrl &)
+                >
+                shaderTypesToSetters = {
+            {Qt3DRender::Render::ShaderBuilder::Vertex, &Qt3DRender::QShaderProgramBuilder::setVertexShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::TessellationControl, &Qt3DRender::QShaderProgramBuilder::setTessellationControlShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::TessellationEvaluation, &Qt3DRender::QShaderProgramBuilder::setTessellationEvaluationShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::Geometry, &Qt3DRender::QShaderProgramBuilder::setGeometryShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::Fragment, &Qt3DRender::QShaderProgramBuilder::setFragmentShaderGraph},
+            {Qt3DRender::Render::ShaderBuilder::Compute, &Qt3DRender::QShaderProgramBuilder::setComputeShaderGraph},
+        };
 
         // WHEN
-        auto updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(QUrl());
-        updateChange->setPropertyName(property);
-        backend.sceneChangeEvent(updateChange);
+
+        (frontend.*(shaderTypesToSetters[type]))(QUrl());
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.shaderGraph(type), QUrl());
         QVERIFY(!backend.isShaderCodeDirty(type));
         QVERIFY(backend.shaderCode(type).isEmpty());
-        QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
+        QCOMPARE(renderer.dirtyBits(), 0);
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(graphUrl);
-        updateChange->setPropertyName(property);
-        backend.sceneChangeEvent(updateChange);
+        (frontend.*(shaderTypesToSetters[type]))(graphUrl);
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.shaderGraph(type), graphUrl);
@@ -432,10 +428,8 @@ private slots:
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(QUrl());
-        updateChange->setPropertyName(property);
-        backend.sceneChangeEvent(updateChange);
+        (frontend.*(shaderTypesToSetters[type]))(QUrl());
+        backend.syncFromFrontEnd(&frontend, false);
 
         // THEN
         QCOMPARE(backend.shaderGraph(type), QUrl());
@@ -445,10 +439,8 @@ private slots:
         renderer.resetDirty();
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setValue(graphUrl);
-        updateChange->setPropertyName(property);
-        backend.sceneChangeEvent(updateChange);
+        (frontend.*(shaderTypesToSetters[type]))(graphUrl);
+        backend.syncFromFrontEnd(&frontend, false);
         // AND
         backend.cleanup();
 

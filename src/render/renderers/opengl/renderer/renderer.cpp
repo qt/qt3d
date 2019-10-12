@@ -92,6 +92,7 @@
 #include <Qt3DRender/private/commandthread_p.h>
 #include <Qt3DRender/private/glcommands_p.h>
 #include <Qt3DRender/private/setfence_p.h>
+#include <Qt3DRender/private/subtreeenabler_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -197,6 +198,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_sendTextureChangesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendTextureChangesToFrontend(); }, JobTypes::SendTextureChangesToFrontend))
     , m_sendSetFenceHandlesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
+    , m_sendDisablesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendDisablesToFrontend(); }, JobTypes::SendDisablesToFrontend))
     , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     , m_syncLoadingJobs(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncLoadingJobs))
     , m_ownedContext(false)
@@ -894,7 +896,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                     if (rGeometry->isDirty())
                         m_dirtyGeometry.push_back(rGeometry);
 
-                    if (!command->m_attributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
+                    if (!command->m_activeAttributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
                         Profiling::GLTimeRecorder recorder(Profiling::VAOUpload);
                         // Activate shader
                         m_submissionContext->activateShader(shader->dna());
@@ -916,9 +918,8 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
                 shader->prepareUniforms(command->m_parameterPack);
 
-                // TO DO: The step below could be performed by the RenderCommand builder job
                 { // Scoped to show extent
-                    command->m_isValid = !command->m_attributes.empty();
+                    command->m_isValid = !command->m_activeAttributes.empty();
                     if (!command->m_isValid)
                         continue;
 
@@ -939,7 +940,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                             indirectAttribute = attribute;
                             break;
                         case QAttribute::VertexAttribute: {
-                            if (command->m_attributes.contains(attribute->nameId()))
+                            if (command->m_activeAttributes.contains(attribute->nameId()))
                                 estimatedCount = qMax(attribute->count(), estimatedCount);
                             break;
                         }
@@ -1200,6 +1201,21 @@ void Renderer::sendSetFenceHandlesToFrontend()
             SetFence *setFenceNode = static_cast<SetFence *>(fgNode);
             setFenceNode->setHandleType(QSetFence::OpenGLFenceId);
             setFenceNode->setHandle(QVariant::fromValue(pair.second));
+        }
+    }
+}
+
+// Executed in a job
+void Renderer::sendDisablesToFrontend()
+{
+    const auto updatedDisables = std::move(m_updatedDisables);
+    FrameGraphManager *fgManager = m_nodesManager->frameGraphManager();
+    for (const auto &nodeId : updatedDisables) {
+        FrameGraphNode *fgNode = fgManager->lookupNode(nodeId);
+        if (fgNode != nullptr) { // Node could have been deleted before we got a chance to notify it
+            Q_ASSERT(fgNode->nodeType() == FrameGraphNode::SubtreeEnabler);
+            SubtreeEnabler *enabler = static_cast<SubtreeEnabler *>(fgNode);
+            enabler->sendDisableToFrontend();
         }
     }
 }
@@ -1808,26 +1824,32 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         // populate the RenderView with a set of RenderCommands that get
         // their details from the RenderNodes that are visible to the
         // Camera selected by the framegraph configuration
-        FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
-        const QVector<FrameGraphNode *> fgLeaves = visitor.traverse(frameGraphRoot());
+        if (frameGraphDirty) {
+            FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
+            m_frameGraphLeaves = visitor.traverse(frameGraphRoot());
+            // Remove leaf nodes that no longer exist from cache
+            const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
+            for (FrameGraphNode *leafNode : keys) {
+                if (!m_frameGraphLeaves.contains(leafNode))
+                    m_cache.leafNodeCache.remove(leafNode);
+            }
 
-        // Remove leaf nodes that no longer exist from cache
-        const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
-        for (FrameGraphNode *leafNode : keys) {
-            if (!fgLeaves.contains(leafNode))
-                m_cache.leafNodeCache.remove(leafNode);
+            // Handle single shot subtree enablers
+            const auto subtreeEnablers = visitor.takeEnablersToDisable();
+            for (auto *node : subtreeEnablers)
+                m_updatedDisables.push_back(node->peerId());
+            if (m_updatedDisables.size() > 0)
+                renderBinJobs.push_back(m_sendDisablesToFrontendJob);
         }
 
-        const int fgBranchCount = fgLeaves.size();
+        const int fgBranchCount = m_frameGraphLeaves.size();
         for (int i = 0; i < fgBranchCount; ++i) {
-            RenderViewBuilder builder(fgLeaves.at(i), i, this);
+            RenderViewBuilder builder(m_frameGraphLeaves.at(i), i, this);
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt);
             builder.setRenderableCacheNeedsToBeRebuilt(renderableDirty);
             builder.setComputableCacheNeedsToBeRebuilt(computeableDirty);
             builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
             builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt);
-            builder.setRenderableCacheNeedsToBeRebuilt(renderableDirty);
-            builder.setComputableCacheNeedsToBeRebuilt(computeableDirty);
             builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
 
             builder.prepareJobs();
@@ -2150,7 +2172,7 @@ bool Renderer::updateVAOWithAttributes(Geometry *geometry,
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate)
                 m_submissionContext->specifyIndices(buffer);
             // Vertex Attribute
-        } else if (command->m_attributes.contains(attribute->nameId())) {
+        } else if (command->m_activeAttributes.contains(attribute->nameId())) {
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate) {
                 // Find the location for the attribute
                 const QVector<ShaderAttribute> shaderAttributes = shader->attributes();
@@ -2195,7 +2217,7 @@ bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
             continue;
 
         if ((attribute->attributeType() == QAttribute::IndexAttribute && attribute->isDirty()) ||
-                (command->m_attributes.contains(attribute->nameId()) && attribute->isDirty()))
+                (command->m_activeAttributes.contains(attribute->nameId()) && attribute->isDirty()))
             return true;
     }
     return false;

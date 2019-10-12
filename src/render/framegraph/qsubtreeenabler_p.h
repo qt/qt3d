@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Ford Motor Company
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_SCENE_P_H
-#define QT3DRENDER_RENDER_SCENE_P_H
+#ifndef QT3DRENDER_QSUBTREEENABLER_P_H
+#define QT3DRENDER_QSUBTREEENABLER_P_H
 
 //
 //  W A R N I N G
@@ -51,56 +51,30 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/qsceneloader.h>
-#include <QtGlobal>
-#include <QUrl>
+#include "qsubtreeenabler.h"
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QEntity;
-}
-
 namespace Qt3DRender {
-namespace Render {
 
-class SceneManager;
-
-class Q_AUTOTEST_EXPORT Scene : public BackendNode
+class QSubtreeEnablerPrivate : public QFrameGraphNodePrivate
 {
 public:
-    Scene();
+    QSubtreeEnablerPrivate() = default;
 
-    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
-    QUrl source() const;
-    void setSceneSubtree(Qt3DCore::QEntity *subTree);
-    void setSceneManager(SceneManager *manager);
+    QSubtreeEnabler::Enablement m_enablement = QSubtreeEnabler::Persistent;
 
-    void cleanup();
-    void setStatus(QSceneLoader::Status status);
-
-private:
-    SceneManager *m_sceneManager;
-    QUrl m_source;
+    Q_DECLARE_PUBLIC(QSubtreeEnabler)
 };
 
-class RenderSceneFunctor : public Qt3DCore::QBackendNodeMapper
+struct QSubtreeEnablerData
 {
-public:
-    explicit RenderSceneFunctor(AbstractRenderer *renderer, SceneManager *sceneManager);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
-    void destroy(Qt3DCore::QNodeId id) const override;
-
-private:
-    SceneManager *m_sceneManager;
-    AbstractRenderer *m_renderer;
+    QSubtreeEnabler::Enablement enablement;
 };
 
-} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_SCENE_P_H
+#endif // QT3DRENDER_QSUBTREEENABLER_P_H

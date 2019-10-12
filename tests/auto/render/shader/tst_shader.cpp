@@ -97,7 +97,7 @@ void tst_RenderShader::matchesFrontendPeer()
     Qt3DRender::Render::Shader backend;
 
     backend.setRenderer(&renderer);
-    simulateInitialization(frontend.data(), &backend);
+    simulateInitializationSync(frontend.data(), &backend);
     QCOMPARE(backend.isLoaded(), false);
     QVERIFY(backend.dna() != 0U);
 
@@ -113,7 +113,7 @@ void tst_RenderShader::cleanupLeavesACoherentState()
     Qt3DRender::Render::Shader shader;
 
     shader.setRenderer(&renderer);
-    simulateInitialization(frontend.data(), &shader);
+    simulateInitializationSync(frontend.data(), &shader);
 
     shader.cleanup();
 
@@ -130,73 +130,61 @@ void tst_RenderShader::cleanupLeavesACoherentState()
 
 void tst_RenderShader::dealWithPropertyChanges_data()
 {
-    QTest::addColumn<QByteArray>("property");
     QTest::addColumn<Qt3DRender::QShaderProgram::ShaderType>("type");
 
-    QTest::newRow("vertex") << QByteArrayLiteral("vertexShaderCode")
-                            << Qt3DRender::QShaderProgram::Vertex;
+    QTest::newRow("vertex") << Qt3DRender::QShaderProgram::Vertex;
 
-    QTest::newRow("tessControl") << QByteArrayLiteral("tessellationControlShaderCode")
-                                 << Qt3DRender::QShaderProgram::TessellationControl;
+    QTest::newRow("tessControl") << Qt3DRender::QShaderProgram::TessellationControl;
 
-    QTest::newRow("tessEval") << QByteArrayLiteral("tessellationEvaluationShaderCode")
-                              << Qt3DRender::QShaderProgram::TessellationEvaluation;
+    QTest::newRow("tessEval") << Qt3DRender::QShaderProgram::TessellationEvaluation;
 
-    QTest::newRow("geometry") << QByteArrayLiteral("geometryShaderCode")
-                              << Qt3DRender::QShaderProgram::Geometry;
+    QTest::newRow("geometry") << Qt3DRender::QShaderProgram::Geometry;
 
-    QTest::newRow("fragment") << QByteArrayLiteral("fragmentShaderCode")
-                              << Qt3DRender::QShaderProgram::Fragment;
+    QTest::newRow("fragment") << Qt3DRender::QShaderProgram::Fragment;
 
-    QTest::newRow("compute") << QByteArrayLiteral("computeShaderCode")
-                             << Qt3DRender::QShaderProgram::Compute;
+    QTest::newRow("compute") << Qt3DRender::QShaderProgram::Compute;
 }
 
 void tst_RenderShader::dealWithPropertyChanges()
 {
     // GIVEN
-    QFETCH(QByteArray, property);
     QFETCH(Qt3DRender::QShaderProgram::ShaderType, type);
 
     Qt3DRender::Render::Shader backend;
+    Qt3DRender::QShaderProgram shader;
     backend.setLoaded(true);
     TestRenderer renderer;
     backend.setRenderer(&renderer);
+    simulateInitializationSync(&shader, &backend);
 
     // WHEN
-    auto updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QStringLiteral("foo"));
-    updateChange->setPropertyName(property);
-    backend.sceneChangeEvent(updateChange);
+    shader.setShaderCode(type, QByteArrayLiteral("foo"));
+    backend.syncFromFrontEnd(&shader, false);
 
     // THEN
-    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
+    QCOMPARE(backend.shaderCode().at(type), QByteArrayLiteral("foo"));
     QVERIFY(!backend.isLoaded());
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
     backend.setLoaded(true);
 
     // WHEN
-    updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QStringLiteral("foo"));
-    updateChange->setPropertyName(property);
-    backend.sceneChangeEvent(updateChange);
+    shader.setShaderCode(type, QByteArrayLiteral("foo"));
+    backend.syncFromFrontEnd(&shader, false);
 
     // THEN
-    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
+    QCOMPARE(backend.shaderCode().at(type), QByteArrayLiteral("foo"));
     QVERIFY(backend.isLoaded());
     QCOMPARE(renderer.dirtyBits(), 0);
     renderer.resetDirty();
     backend.setLoaded(true);
 
     // WHEN
-    updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-    updateChange->setValue(QStringLiteral("bar"));
-    updateChange->setPropertyName(property);
-    backend.sceneChangeEvent(updateChange);
+    shader.setShaderCode(type, QByteArrayLiteral("bar"));
+    backend.syncFromFrontEnd(&shader, false);
 
     // THEN
-    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("bar"));
+    QCOMPARE(backend.shaderCode().at(type), QByteArrayLiteral("bar"));
     QVERIFY(!backend.isLoaded());
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
@@ -216,7 +204,7 @@ void tst_RenderShader::checkSetRendererDirtyOnInitialization()
     QCOMPARE(renderer.dirtyBits(), 0);
 
     // WHEN
-    simulateInitialization(frontend.data(), &shader);
+    simulateInitializationSync(frontend.data(), &shader);
 
     // THEN
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);

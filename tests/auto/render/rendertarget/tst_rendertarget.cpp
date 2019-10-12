@@ -75,6 +75,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::QRenderTarget renderTarget;
         Qt3DRender::QRenderTargetOutput renderTargetOuput;
         renderTarget.addOutput(&renderTargetOuput);
@@ -82,8 +83,8 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::RenderTarget backendRenderTarget;
-            simulateInitialization(&renderTarget, &backendRenderTarget);
-
+            backendRenderTarget.setRenderer(&renderer);
+            simulateInitializationSync(&renderTarget, &backendRenderTarget);
             // THEN
             QCOMPARE(backendRenderTarget.isEnabled(), true);
             QCOMPARE(backendRenderTarget.peerId(), renderTarget.id());
@@ -93,7 +94,8 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::RenderTarget backendRenderTarget;
             renderTarget.setEnabled(false);
-            simulateInitialization(&renderTarget, &backendRenderTarget);
+            backendRenderTarget.setRenderer(&renderer);
+            simulateInitializationSync(&renderTarget, &backendRenderTarget);
 
             // THEN
             QCOMPARE(backendRenderTarget.peerId(), renderTarget.id());
@@ -168,17 +170,17 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DRender::QRenderTarget renderTarget;
         Qt3DRender::Render::RenderTarget backendRenderTarget;
         TestRenderer renderer;
         backendRenderTarget.setRenderer(&renderer);
+        simulateInitializationSync(&renderTarget, &backendRenderTarget);
 
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendRenderTarget.sceneChangeEvent(change);
+            renderTarget.setEnabled(newValue);
+            backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
 
             // THEN
             QCOMPARE(backendRenderTarget.isEnabled(), newValue);
@@ -186,21 +188,23 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::QRenderTargetOutput targetOutput;
-            const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &targetOutput);
-            addChange->setPropertyName("output");
-            backendRenderTarget.sceneChangeEvent(addChange);
+            renderTarget.addOutput(&targetOutput);
+            backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
 
             // THEN
             QCOMPARE(backendRenderTarget.renderOutputs().size(), 1);
             QCOMPARE(backendRenderTarget.renderOutputs().first(), targetOutput.id());
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
             // WHEN
-            const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &targetOutput);
-            removeChange->setPropertyName("output");
-            backendRenderTarget.sceneChangeEvent(removeChange);
+            renderTarget.removeOutput(&targetOutput);
+            backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
 
             // THEN
             QCOMPARE(backendRenderTarget.renderOutputs().size(), 0);
+            QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
     }
 

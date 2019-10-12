@@ -381,6 +381,7 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_sendTextureChangesToFrontendJob;
     GenericLambdaJobPtr<std::function<void ()>> m_sendSetFenceHandlesToFrontendJob;
+    GenericLambdaJobPtr<std::function<void ()>> m_sendDisablesToFrontendJob;
     IntrospectShadersJobPtr m_introspectShaderJob;
 
     SynchronizerJobPtr m_syncLoadingJobs;
@@ -392,6 +393,7 @@ private:
     void reloadDirtyShaders();
     void sendTextureChangesToFrontend();
     void sendSetFenceHandlesToFrontend();
+    void sendDisablesToFrontend();
 
     QMutex m_abandonedVaosMutex;
     QVector<HVao> m_abandonedVaos;
@@ -402,6 +404,7 @@ private:
     QVector<HTexture> m_dirtyTextures;
     QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
     QVector<QPair<Qt3DCore::QNodeId, GLFence>> m_updatedSetFences;
+    QVector<Qt3DCore::QNodeId> m_updatedDisables;
     Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
 
     bool m_ownedContext;
@@ -421,6 +424,8 @@ private:
     QMetaObject::Connection m_contextConnection;
     RendererCache m_cache;
     bool m_shouldSwapBuffers;
+
+    QVector<FrameGraphNode *> m_frameGraphLeaves;
 };
 
 } // namespace Render

@@ -80,7 +80,7 @@ public:
 
     virtual StateMask mask() const = 0;
     virtual bool equalTo(const RenderStateImpl &renderState) const = 0;
-    virtual void updateProperty(const char *name, const QVariant &value);
+    virtual void updateProperties(const QRenderState *);
 };
 
 template <class StateSetImpl, StateMask stateMask, typename ... T>

@@ -342,13 +342,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            {
-                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-                QCOMPARE(change->propertyName(), "frameCount");
-                QCOMPARE(change->value().value<int>(), 1);
-                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            }
+            QCOMPARE(arbiter.events.size(), 0);
             QCOMPARE(arbiter.dirtyNodes.size(), 1);
             QCOMPARE(arbiter.dirtyNodes.front(), &computeCommand);
             QCOMPARE(computeCommand.isEnabled(), true);
@@ -356,7 +350,6 @@ private Q_SLOTS:
             computeCommand.setEnabled(false);
             QCoreApplication::processEvents();
             arbiter.dirtyNodes.clear();
-            arbiter.events.clear();
         }
 
         {
@@ -365,13 +358,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            {
-                auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-                QCOMPARE(change->propertyName(), "frameCount");
-                QCOMPARE(change->value().value<int>(), 2);
-                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            }
+            QCOMPARE(arbiter.events.size(), 0);
             QCOMPARE(arbiter.dirtyNodes.size(), 1);
             QCOMPARE(arbiter.dirtyNodes.front(), &computeCommand);
             QCOMPARE(computeCommand.isEnabled(), true);
@@ -388,13 +375,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            {
-                auto change = arbiter.events.at(0).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-                QCOMPARE(change->propertyName(), "frameCount");
-                QCOMPARE(change->value().value<int>(), 1);
-                QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            }
+            QCOMPARE(arbiter.events.size(), 0);
             QCOMPARE(arbiter.dirtyNodes.size(), 1);
             QCOMPARE(arbiter.dirtyNodes.front(), &computeCommand);
             QCOMPARE(computeCommand.isEnabled(), true);

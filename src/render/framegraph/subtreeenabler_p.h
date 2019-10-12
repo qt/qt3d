@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <Qt3DRender/qsubtreeenabler.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -63,6 +64,13 @@ class Q_AUTOTEST_EXPORT SubtreeEnabler : public FrameGraphNode
 {
 public:
     SubtreeEnabler();
+    QSubtreeEnabler::Enablement enablement() const { return m_enablement; }
+    void sendDisableToFrontend();
+
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
+
+private:
+    QSubtreeEnabler::Enablement m_enablement = QSubtreeEnabler::Persistent;
 };
 
 } //Render

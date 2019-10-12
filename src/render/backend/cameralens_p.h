@@ -54,6 +54,7 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DCore/private/qnodecommand_p.h>
 #include <Qt3DCore/private/matrix4x4_p.h>
+#include <Qt3DRender/private/qcameralens_p.h>
 #include <QRectF>
 
 QT_BEGIN_NAMESPACE
@@ -96,21 +97,20 @@ public:
 
     void setExposure(float exposure);
     inline float exposure() const { return m_exposure; }
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void notifySceneBoundingVolume(const Sphere &sphere, Qt3DCore::QNodeCommand::CommandId commandId);
 
     static bool viewMatrixForCamera(EntityManager *manager, Qt3DCore::QNodeId cameraId,
                                     Matrix4x4 &viewMatrix, Matrix4x4 &projectionMatrix);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void computeSceneBoundingVolume(Qt3DCore::QNodeId entityId,
                                     Qt3DCore::QNodeId cameraId,
                                     Qt3DCore::QNodeCommand::CommandId commandId);
 
     QRenderAspect *m_renderAspect;
-    Qt3DCore::QNodeCommand::CommandId m_pendingViewAllCommand;
+    CameraLensCommand m_pendingViewAllCommand;
     Matrix4x4 m_projection;
     float m_exposure;
 };

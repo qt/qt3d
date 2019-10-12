@@ -1156,6 +1156,7 @@ void TextureDownloadRequest::onCompleted()
 
 /*!
     \class Qt3DRender::QTexture1D
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target1D target format.
@@ -1176,6 +1177,7 @@ QTexture1D::~QTexture1D()
 
 /*!
     \class Qt3DRender::QTexture1DArray
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target1DArray target format.
@@ -1196,6 +1198,7 @@ QTexture1DArray::~QTexture1DArray()
 
 /*!
     \class Qt3DRender::QTexture2D
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target2D target format.
@@ -1216,6 +1219,7 @@ QTexture2D::~QTexture2D()
 
 /*!
     \class Qt3DRender::QTexture2DArray
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target2DArray target format.
@@ -1236,6 +1240,7 @@ QTexture2DArray::~QTexture2DArray()
 
 /*!
     \class Qt3DRender::QTexture3D
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target3D target format.
@@ -1256,6 +1261,7 @@ QTexture3D::~QTexture3D()
 
 /*!
     \class Qt3DRender::QTextureCubeMap
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a TargetCubeMap target format.
@@ -1276,6 +1282,7 @@ QTextureCubeMap::~QTextureCubeMap()
 
 /*!
     \class Qt3DRender::QTextureCubeMapArray
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a TargetCubeMapArray target format.
@@ -1296,6 +1303,7 @@ QTextureCubeMapArray::~QTextureCubeMapArray()
 
 /*!
     \class Qt3DRender::QTexture2DMultisample
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target2DMultisample target format.
@@ -1316,6 +1324,7 @@ QTexture2DMultisample::~QTexture2DMultisample()
 
 /*!
     \class Qt3DRender::QTexture2DMultisampleArray
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target2DMultisampleArray target format.
@@ -1336,6 +1345,7 @@ QTexture2DMultisampleArray::~QTexture2DMultisampleArray()
 
 /*!
     \class Qt3DRender::QTextureRectangle
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a TargetRectangle target format.
@@ -1356,6 +1366,7 @@ QTextureRectangle::~QTextureRectangle()
 
 /*!
     \class Qt3DRender::QTextureBuffer
+    \inheaderfile Qt3DRender/QTexture
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a TargetBuffer target format.
@@ -1395,6 +1406,7 @@ void QTextureLoaderPrivate::updateGenerator()
 
 /*!
    \class Qt3DRender::QTextureLoader
+   \inheaderfile Qt3DRender/QTexture
    \inmodule Qt3DRender
    \brief Handles the texture loading and setting the texture's properties.
 */
@@ -1608,8 +1620,9 @@ bool QTextureFromSourceGenerator::isMirrored() const
 }
 
 /*!
- * \class QSharedGLTexture
+ * \class Qt3DRender::QSharedGLTexture
  * \inmodule Qt3DRender
+ * \inheaderfile Qt3DRender/QTexture
  * \brief Allows to use a textureId from a separate OpenGL context in a Qt 3D scene.
  *
  * Depending on the rendering mode used by Qt 3D, the shared context will either be:
@@ -1636,6 +1649,14 @@ bool QTextureFromSourceGenerator::isMirrored() const
  * specify the correct sampler type to be used.
  */
 
+/*!
+    \qmltype SharedGLTexture
+    \instantiates Qt3DRender::QSharedGLTexture
+    \inqmlmodule Qt3D.Render
+    \brief Allows to use a textureId from a separate OpenGL context in a Qt 3D scene.
+    \since 5.13
+*/
+
 QSharedGLTexture::QSharedGLTexture(Qt3DCore::QNode *parent)
     : QAbstractTexture(parent)
 {
@@ -1648,7 +1669,7 @@ QSharedGLTexture::~QSharedGLTexture()
 }
 
 /*!
- * \qmlproperty textureId
+ * \qmlproperty int SharedGLTexture::textureId
  *
  * The OpenGL texture id value that you want Qt3D to gain access to.
  */

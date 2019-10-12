@@ -71,6 +71,7 @@ public:
     Q_ENUM(RenderPolicy) // LCOV_EXCL_LINE
 
     QPickingSettings* pickingSettings();
+    const QPickingSettings* pickingSettings() const;
     QFrameGraphNode *activeFrameGraph() const;
     RenderPolicy renderPolicy() const;
 

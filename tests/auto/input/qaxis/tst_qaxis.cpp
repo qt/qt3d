@@ -113,24 +113,20 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeAddedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(change->propertyName(), "input");
-        QCOMPARE(change->addedNodeId(), input->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axis.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         axis->removeInput(input);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-        QCOMPARE(nodeRemovedChange->propertyName(), "input");
-        QCOMPARE(nodeRemovedChange->removedNodeId(), input->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), axis.data());
 
         arbiter.events.clear();
     }

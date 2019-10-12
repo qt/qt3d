@@ -69,7 +69,7 @@ public:
     ~ObjectPicker();
 
     void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     bool isPressed() const;
     bool isHoverEnabled() const;
     bool isDragEnabled() const;
@@ -86,7 +86,6 @@ public:
     int priority() const;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
     void notifyJob();
 
     int m_priority;

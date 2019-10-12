@@ -41,6 +41,7 @@
 #include "framegraphvisitor_p.h"
 
 #include "framegraphnode_p.h"
+#include "subtreeenabler_p.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <QThreadPool>
@@ -61,6 +62,7 @@ FrameGraphVisitor::FrameGraphVisitor(const FrameGraphManager *manager)
 QVector<FrameGraphNode *> FrameGraphVisitor::traverse(FrameGraphNode *root)
 {
     m_leaves.clear();
+    m_enablersToDisable.clear();
 
     Q_ASSERT_X(root, Q_FUNC_INFO, "The FrameGraphRoot is null");
 
@@ -72,10 +74,23 @@ QVector<FrameGraphNode *> FrameGraphVisitor::traverse(FrameGraphNode *root)
     return m_leaves;
 }
 
+// intended to be called after traverse
+// (returns data that is captured during the traverse)
+QVector<FrameGraphNode *> &&FrameGraphVisitor::takeEnablersToDisable()
+{
+    return std::move(m_enablersToDisable);
+}
+
 void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 {
-    if (node->nodeType() == Render::FrameGraphNode::SubtreeEnabler && !node->isEnabled())
-        return;
+    if (node->nodeType() == Render::FrameGraphNode::SubtreeEnabler) {
+        if (!node->isEnabled())
+            return;
+        if (static_cast<SubtreeEnabler*>(node)->enablement() == QSubtreeEnabler::SingleShot) {
+            node->setEnabled(false);
+            m_enablersToDisable.push_back(node);
+        }
+    }
 
     // Recurse to children (if we have any), otherwise if this is a leaf node,
     // initiate a rendering from the current camera

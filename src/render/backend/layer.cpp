@@ -67,27 +67,22 @@ void Layer::cleanup()
     QBackendNode::setEnabled(false);
 }
 
-void Layer::sceneChangeEvent(const QSceneChangePtr &e)
+void Layer::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-        if (propertyName == QByteArrayLiteral("recursive")) {
-            m_recursive = propertyChange->value().toBool();
-            markDirty(AbstractRenderer::LayersDirty);
-        }
-        if (propertyName == QByteArrayLiteral("enabled"))
-            markDirty(AbstractRenderer::LayersDirty);
-    }
-    BackendNode::sceneChangeEvent(e);
-}
+    const QLayer *node = qobject_cast<const QLayer *>(frontEnd);
+    if (!node)
+        return;
 
-void Layer::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerData>>(change);
-    const auto &data = typedChange->data;
-    m_recursive = data.m_recursive;
-    markDirty(AbstractRenderer::LayersDirty);
+    const bool oldEnabled = isEnabled();
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+
+    if (isEnabled() != oldEnabled || firstTime)
+        markDirty(AbstractRenderer::LayersDirty);
+
+    if (node->recursive() != m_recursive) {
+        m_recursive = node->recursive();
+        markDirty(AbstractRenderer::LayersDirty);
+    }
 }
 
 bool Layer::recursive() const

@@ -94,6 +94,12 @@ QAbstractTextureImagePrivate::~QAbstractTextureImagePrivate()
 {
 }
 
+QTextureImageDataGeneratorPtr QAbstractTextureImagePrivate::dataGenerator() const
+{
+    Q_Q(const QAbstractTextureImage);
+    return q->dataGenerator();
+}
+
 /*!
     \qmltype AbstractTextureImage
     \instantiates Qt3DRender::QAbstractTextureImage

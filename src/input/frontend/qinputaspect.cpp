@@ -61,6 +61,7 @@
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QPluginLoader>
 
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/axis_p.h>
@@ -109,6 +110,13 @@ QInputAspectPrivate::QInputAspectPrivate()
 {
 }
 
+void QInputAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const
+{
+    Input::BackendNode *renderBackend = static_cast<Input::BackendNode *>(backend);
+    renderBackend->syncFromFrontEnd(node, firstTime);
+}
+
+
 /*!
     \class Qt3DInput::QInputAspect
     \inherits Qt3DCore::QAbstractAspect
@@ -141,7 +149,7 @@ QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
     registerBackendType<QKeyboardHandler>(QBackendNodeMapperPtr(new Input::KeyboardHandlerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QMouseDevice>(QBackendNodeMapperPtr(new Input::MouseDeviceFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QMouseHandler>(QBackendNodeMapperPtr(new Input::MouseHandlerFunctor(d_func()->m_inputHandler.data())));
-    registerBackendType<QAxis>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Axis, Input::AxisManager>(d_func()->m_inputHandler->axisManager())));
+    registerBackendType<QAxis, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Axis, Input::AxisManager>(d_func()->m_inputHandler->axisManager())));
     registerBackendType<QAxisAccumulator>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisAccumulator, Input::AxisAccumulatorManager>(d_func()->m_inputHandler->axisAccumulatorManager())));
     registerBackendType<QAnalogAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AnalogAxisInput, Input::AnalogAxisInputManager>(d_func()->m_inputHandler->analogAxisInputManager())));
     registerBackendType<QButtonAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ButtonAxisInput, Input::ButtonAxisInputManager>(d_func()->m_inputHandler->buttonAxisInputManager())));

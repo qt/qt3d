@@ -71,6 +71,8 @@ public:
     QFrameGraphNode *m_activeFrameGraph;
     QRenderSettings::RenderPolicy m_renderPolicy;
 
+    void invalidateFrame();
+
     void _q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod);
     void _q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode);
     void _q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode);
