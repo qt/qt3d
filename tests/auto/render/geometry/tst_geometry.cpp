@@ -32,8 +32,6 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testrenderer.h"
 #include "testpostmanarbiter.h"

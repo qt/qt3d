@@ -57,8 +57,6 @@
 
 #include "qcameralens.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
-
 #include <QtGui/qmatrix4x4.h>
 
 QT_BEGIN_NAMESPACE

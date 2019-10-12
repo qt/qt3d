@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
@@ -34,10 +35,6 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaxisaccumulator.h>
 #include <Qt3DInput/private/qaxisaccumulator_p.h>
-
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
 
 #include "testpostmanarbiter.h"
 
@@ -156,33 +153,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.dirtyNodes.front(), accumulator.data());
 
         arbiter.dirtyNodes.clear();
-    }
-
-    void checkValuePropertyChanged()
-    {
-        // GIVEN
-        QCOMPARE(value(), 0.0f);
-
-        // Note: simulate backend change to frontend
-        // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("value");
-        valueChange->setValue(383.0f);
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(value(), 383.0f);
-        QCOMPARE(velocity(), 0.0f);
-
-        // WHEN
-        valueChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        valueChange->setPropertyName("velocity");
-        valueChange->setValue(123.0f);
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(value(), 383.0f);
-        QCOMPARE(velocity(), 123.0f);
     }
 
     void checkAxisInputBookkeeping()

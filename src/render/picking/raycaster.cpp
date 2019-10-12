@@ -45,8 +45,6 @@
 #include <Qt3DRender/private/qabstractraycaster_p.h>
 #include <Qt3DRender/private/raycastingjob_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -176,24 +174,6 @@ void RayCaster::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime
         m_type = d->m_rayCasterType;
         notifyJob();
         markDirty(AbstractRenderer::AllDirty);
-    }
-}
-
-void RayCaster::dispatchHits(const QAbstractRayCaster::Hits &hits)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("hits");
-    e->setValue(QVariant::fromValue(hits));
-    notifyObservers(e);
-
-    if (m_runMode == QAbstractRayCaster::SingleShot) {
-        setEnabled(false);
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("enabled");
-        e->setValue(false);
-        notifyObservers(e);
     }
 }
 

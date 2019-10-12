@@ -41,10 +41,7 @@
 #include "qentity_p.h"
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qcomponentaddedchange.h>
-#include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
 
@@ -102,13 +99,8 @@ void QEntityPrivate::removeDestroyedComponent(QComponent *comp)
 
     Q_CHECK_PTR(comp);
     qCDebug(Nodes) << Q_FUNC_INFO << comp;
-    Q_Q(QEntity);
 
-    if (m_changeArbiter) {
-        const auto componentRemovedChange = QComponentRemovedChangePtr::create(q, comp);  // TODOSYNC notify backend directly
-        notifyObservers(componentRemovedChange);
-    }
-
+    updateNode(comp, nullptr, ComponentRemoved);
     m_components.removeOne(comp);
 
     // Remove bookkeeping connection
@@ -187,10 +179,7 @@ void QEntity::addComponent(QComponent *comp)
     // Ensures proper bookkeeping
     d->registerPrivateDestructionHelper(comp, &QEntityPrivate::removeDestroyedComponent);
 
-    if (d->m_changeArbiter) {
-        const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);     // TODOSYNC notify backend directly
-        d->notifyObservers(componentAddedChange);
-    }
+    d->updateNode(comp, nullptr, ComponentAdded);
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);
 }
 
@@ -205,10 +194,7 @@ void QEntity::removeComponent(QComponent *comp)
 
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->removeEntity(this);
 
-    if (d->m_changeArbiter) {
-        const auto componentRemovedChange = QComponentRemovedChangePtr::create(this, comp);
-        d->notifyObservers(componentRemovedChange);
-    }
+    d->updateNode(comp, nullptr, ComponentRemoved);
 
     d->m_components.removeOne(comp);
 

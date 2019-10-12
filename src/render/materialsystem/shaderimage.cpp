@@ -39,7 +39,6 @@
 
 #include "shaderimage_p.h"
 #include <Qt3DRender/private/qshaderimage_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qabstracttexture.h>
 
 

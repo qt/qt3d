@@ -58,6 +58,12 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+
+class QBackendNodePrivate;
+
+}
+
 namespace Qt3DRender {
 
 namespace Render {
@@ -78,6 +84,7 @@ public:
     QSharedPointer<RenderBackendResourceAccessor> resourceAccessor();
 
 protected:
+    explicit BackendNode(Qt3DCore::QBackendNodePrivate &dd);
     void markDirty(AbstractRenderer::BackendNodeDirtySet changes);
     AbstractRenderer *m_renderer;
 };

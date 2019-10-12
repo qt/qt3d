@@ -49,6 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 class QAspectJobPrivate;
+class QAspectManager;
 
 class Q_3DCORESHARED_EXPORT QAspectJob
 {
@@ -62,14 +63,15 @@ public:
     QVector<QWeakPointer<QAspectJob> > dependencies() const;
 
     virtual void run() = 0;
+    void postFrame(QAspectManager *aspectManager);
 
 protected:
     explicit QAspectJob(QAspectJobPrivate &dd);
+    QAspectJobPrivate *d_ptr;
 
 private:
     Q_DISABLE_COPY(QAspectJob)
     Q_DECLARE_PRIVATE(QAspectJob)
-    QAspectJobPrivate *d_ptr;
 };
 
 typedef QSharedPointer<QAspectJob> QAspectJobPtr;

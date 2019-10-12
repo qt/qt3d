@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DInput/qkeyevent.h>
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -63,7 +63,7 @@ namespace Input {
 
 class InputHandler;
 
-class Q_AUTOTEST_EXPORT KeyboardHandler : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT KeyboardHandler : public BackendNode
 {
 public:
     KeyboardHandler();
@@ -71,19 +71,16 @@ public:
     Qt3DCore::QNodeId keyboardDevice() const;
     void setInputHandler(InputHandler *handler);
     void setFocus(bool focus);
-    void keyEvent(const QKeyEventPtr &event);
 
     inline bool focus() const { return m_focus; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 protected:
     void requestFocus();
     void setSourcerDevice(Qt3DCore::QNodeId device);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     InputHandler *m_inputHandler;
     Qt3DCore::QNodeId m_keyboardDevice;
     bool m_focus;

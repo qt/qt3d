@@ -41,7 +41,6 @@
 
 #include <Qt3DInput/qanalogaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <Qt3DInput/private/qanalogaxisinput_p.h>
@@ -59,29 +58,20 @@ AnalogAxisInput::AnalogAxisInput()
 {
 }
 
-void AnalogAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnalogAxisInputData>>(change);
-    const auto &data = typedChange->data;
-    m_axis = data.axis;
-    AbstractAxisInput::initializeFromPeer(change);
-}
-
 void AnalogAxisInput::cleanup()
 {
     m_axis = 0;
     AbstractAxisInput::cleanup();
 }
 
-void AnalogAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void AnalogAxisInput::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("axis")) {
-            m_axis = propertyChange->value().toInt();
-        }
-    }
-    AbstractAxisInput::sceneChangeEvent(e);
+    AbstractAxisInput::syncFromFrontEnd(frontEnd, firstTime);
+    const QAnalogAxisInput *node = qobject_cast<const QAnalogAxisInput *>(frontEnd);
+    if (!node)
+        return;
+
+    m_axis = node->axis();
 }
 
 float AnalogAxisInput::process(InputHandler *inputHandler, qint64 currentTime)

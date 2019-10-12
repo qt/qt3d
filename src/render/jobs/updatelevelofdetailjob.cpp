@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "updatelevelofdetailjob_p.h"
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DRender/QLevelOfDetail>
 #include <Qt3DRender/private/entityvisitor_p.h>
 #include <Qt3DRender/private/job_common_p.h>
@@ -66,9 +67,11 @@ public:
         , m_filterValue(filterValue)
         , m_frameGraphRoot(frameGraphRoot)
     {
+        m_updatedIndices.reserve(manager->levelOfDetailManager()->count());
     }
 
     double filterValue() const { return m_filterValue; }
+    const QVector<QPair<Qt3DCore::QNodeId, int>> &updatedIndices() const { return m_updatedIndices; }
 
     Operation visit(Qt3DRender::Render::Entity *entity = nullptr) override {
         using namespace Qt3DRender;
@@ -102,6 +105,7 @@ public:
 private:
     double m_filterValue = 0.;
     Qt3DRender::Render::FrameGraphNode *m_frameGraphRoot;
+    QVector<QPair<Qt3DCore::QNodeId, int>> m_updatedIndices;
 
     void updateEntityLodByDistance(Qt3DRender::Render::Entity *entity, Qt3DRender::Render::LevelOfDetail *lod)
     {
@@ -128,8 +132,10 @@ private:
             if (dist <= thresholds[i] || i == n -1) {
                 m_filterValue = approxRollingAverage<30>(m_filterValue, i);
                 i = qBound(0, static_cast<int>(qRound(m_filterValue)), n - 1);
-                if (lod->currentIndex() != i)
+                if (lod->currentIndex() != i) {
                     lod->setCurrentIndex(i);
+                    m_updatedIndices.push_back({lod->peerId(), i});
+                }
                 break;
             }
         }
@@ -172,8 +178,10 @@ private:
             if (thresholds[i] < area || i == n -1) {
                 m_filterValue = approxRollingAverage<30>(m_filterValue, i);
                 i = qBound(0, static_cast<int>(qRound(m_filterValue)), n - 1);
-                if (lod->currentIndex() != i)
+                if (lod->currentIndex() != i) {
                     lod->setCurrentIndex(i);
+                    m_updatedIndices.push_back({lod->peerId(), i});
+                }
                 break;
             }
         }
@@ -199,13 +207,24 @@ private:
 namespace Qt3DRender {
 namespace Render {
 
+class UpdateLevelOfDetailJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    UpdateLevelOfDetailJobPrivate() { }
+
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    QVector<QPair<Qt3DCore::QNodeId, int>> m_updatedIndices;
+};
+
 UpdateLevelOfDetailJob::UpdateLevelOfDetailJob()
-    : m_manager(nullptr)
+    : Qt3DCore::QAspectJob(*new UpdateLevelOfDetailJobPrivate)
+    , m_manager(nullptr)
     , m_frameGraphRoot(nullptr)
     , m_root(nullptr)
     , m_filterValue(0.)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateLevelOfDetail, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateLevelOfDetail, 0)
 }
 
 UpdateLevelOfDetailJob::~UpdateLevelOfDetailJob()
@@ -229,23 +248,32 @@ void UpdateLevelOfDetailJob::setFrameGraphRoot(FrameGraphNode *frameGraphRoot)
 
 void UpdateLevelOfDetailJob::run()
 {
+    Q_D(UpdateLevelOfDetailJob);
+
     Q_ASSERT(m_frameGraphRoot && m_root && m_manager);
 
     // short-circuit if no LoDs exist
     if (m_manager->levelOfDetailManager()->count() == 0)
         return;
 
-
-    if (m_manager->levelOfDetailManager()->count() == 0)
-        return; // no LODs, lets bail out early
-
     LODUpdateVisitor visitor(m_filterValue, m_frameGraphRoot, m_manager);
     visitor.apply(m_root);
     m_filterValue = visitor.filterValue();
+    d->m_updatedIndices = visitor.updatedIndices();
+}
+
+void UpdateLevelOfDetailJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    for (const auto &updatedNode: qAsConst(m_updatedIndices)) {
+        QLevelOfDetail *node = qobject_cast<QLevelOfDetail *>(manager->lookupNode(updatedNode.first));
+        if (!node)
+            continue;
+
+        node->setCurrentIndex(updatedNode.second);
+    }
 }
 
 } // Render
-
 } // Qt3DRender
 
 QT_END_NAMESPACE

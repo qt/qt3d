@@ -160,26 +160,6 @@ int QAbstractPhysicalDeviceProxy::buttonIdentifier(const QString &name) const
 /*!
     \internal
  */
-void QAbstractPhysicalDeviceProxy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QAbstractPhysicalDeviceProxy);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        if (e->propertyName() == QByteArrayLiteral("device")) {
-            QAbstractPhysicalDevice *device = e->value().value<Qt3DInput::QAbstractPhysicalDevice *>();
-            QAbstractPhysicalDevice *oldDevice = d->m_device;
-            setDevice(device);
-            // Delete the old device if it existed
-            if (oldDevice != nullptr)
-                delete oldDevice;
-        }
-    }
-    QAbstractPhysicalDevice::sceneChangeEvent(change);
-}
-
-/*!
-    \internal
- */
 QAbstractPhysicalDeviceProxy::QAbstractPhysicalDeviceProxy(QAbstractPhysicalDeviceProxyPrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractPhysicalDevice(dd, parent)
 {
@@ -202,32 +182,45 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractPhysicalDeviceProxy::createNodeCrea
 /*!
     \internal
  */
-void QAbstractPhysicalDeviceProxy::setDevice(QAbstractPhysicalDevice *device)
+void QAbstractPhysicalDeviceProxyPrivate::setDevice(QAbstractPhysicalDevice *device)
 {
-    Q_D(QAbstractPhysicalDeviceProxy);
+    Q_Q(QAbstractPhysicalDeviceProxy);
 
     // Note: technically book keeping could be optional since we are the parent
     // of the device. But who knows if someone plays with the object tree...
 
     // Unset bookkeeper
-    if (d->m_device != nullptr) {
+    if (m_device != nullptr) {
         // Note: we cannot delete the device here as we don't how if we are
         // called by the bookkeeper (in which case we would do a double free)
         // or by the sceneChangeEvent
-        d->unregisterDestructionHelper(d->m_device);
-        d->setStatus(QAbstractPhysicalDeviceProxy::NotFound);
+        unregisterDestructionHelper(m_device);
+        setStatus(QAbstractPhysicalDeviceProxy::NotFound);
     }
 
     // Set parent so that node is created in the backend
     if (device != nullptr && device->parent() == nullptr)
-        device->setParent(this);
+        device->setParent(q);
 
-    d->m_device = device;
+    m_device = device;
 
     // Set bookkeeper
     if (device != nullptr) {
-       d->setStatus(QAbstractPhysicalDeviceProxy::Ready);
-       d->registerDestructionHelper(d->m_device, &QAbstractPhysicalDeviceProxy::setDevice, d->m_device);
+       setStatus(QAbstractPhysicalDeviceProxy::Ready);
+       registerPrivateDestructionHelper(m_device, &QAbstractPhysicalDeviceProxyPrivate::resetDevice);
+    }
+}
+
+void QAbstractPhysicalDeviceProxyPrivate::resetDevice(QAbstractPhysicalDevice *device)
+{
+    if (m_device == device) {
+        // Note: we cannot delete the device here as we don't how if we are
+        // called by the bookkeeper (in which case we would do a double free)
+        // or by the sceneChangeEvent
+        unregisterDestructionHelper(m_device);
+        setStatus(QAbstractPhysicalDeviceProxy::NotFound);
+
+        m_device = nullptr;
     }
 }
 

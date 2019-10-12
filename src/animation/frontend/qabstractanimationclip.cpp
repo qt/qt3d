@@ -153,19 +153,6 @@ float QAbstractAnimationClip::duration() const
     return d->m_duration;
 }
 
-/*!
-    \internal
-*/
-void QAbstractAnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QAbstractAnimationClip);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("duration"))
-            d->setDuration(e->value().toFloat());
-    }
-}
-
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE

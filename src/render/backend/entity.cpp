@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "entity_p.h"
+#include "entity_p_p.h"
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/qabstractlight.h>
@@ -59,10 +60,7 @@
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/qarmature.h>
-#include <Qt3DCore/qcomponentaddedchange.h>
-#include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/qnodecreatedchange.h>
@@ -77,8 +75,33 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
+
+EntityPrivate::EntityPrivate()
+    : Qt3DCore::QBackendNodePrivate(Entity::ReadOnly)
+{
+}
+
+EntityPrivate *EntityPrivate::get(Entity *node)
+{
+    return node->d_func();
+}
+
+void EntityPrivate::componentAdded(Qt3DCore::QNode *frontend)
+{
+    Q_Q(Entity);
+    const auto componentIdAndType = QNodeIdTypePair(frontend->id(), QNodePrivate::findStaticMetaObject(frontend->metaObject()));
+    q->addComponent(componentIdAndType);
+}
+
+void EntityPrivate::componentRemoved(Qt3DCore::QNode *frontend)
+{
+    Q_Q(Entity);
+    q->removeComponent(frontend->id());
+}
+
+
 Entity::Entity()
-    : BackendNode()
+    : BackendNode(*new EntityPrivate)
     , m_nodeManagers(nullptr)
     , m_boundingDirty(false)
     , m_treeEnabled(true)
@@ -160,31 +183,6 @@ void Entity::setHandle(HEntity handle)
     m_handle = handle;
 }
 
-void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-
-    case ComponentAdded: {
-        QComponentAddedChangePtr change = qSharedPointerCast<QComponentAddedChange>(e);
-        const auto componentIdAndType = QNodeIdTypePair(change->componentId(), change->componentMetaObject());
-        addComponent(componentIdAndType);
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added. Id =" << change->componentId();
-        break;
-    }
-
-    case ComponentRemoved: {
-        QComponentRemovedChangePtr change = qSharedPointerCast<QComponentRemovedChange>(e);
-        removeComponent(change->componentId());
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed. Id =" << change->componentId();
-        break;
-    }
-
-    default:
-        break;
-    }
-    BackendNode::sceneChangeEvent(e);
-}
-
 void Entity::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
     const Qt3DCore::QEntity *node = qobject_cast<const Qt3DCore::QEntity *>(frontEnd);
@@ -263,16 +261,6 @@ void Entity::removeFromParentChildHandles()
     auto p = parent();
     if (p)
         p->removeChildHandle(m_handle);
-}
-
-void Entity::appendChildHandle(HEntity childHandle)
-{
-    if (!m_childrenHandles.contains(childHandle)) {
-        m_childrenHandles.append(childHandle);
-        Entity *child = m_nodeManagers->renderNodesManager()->data(childHandle);
-        if (child != nullptr)
-            child->m_parentHandle = m_handle;
-    }
 }
 
 QVector<Entity *> Entity::children() const

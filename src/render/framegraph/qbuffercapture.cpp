@@ -40,7 +40,6 @@
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/private/qbuffercapture_p.h>
 #include <Qt3DCore/QSceneChange>
-#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DRender/QFrameGraphNodeCreatedChange>
 
 QT_BEGIN_NAMESPACE

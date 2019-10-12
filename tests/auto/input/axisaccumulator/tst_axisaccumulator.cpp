@@ -28,11 +28,9 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/axisaccumulator_p.h>
 #include <Qt3DInput/private/qabstractaxisinput_p.h>
@@ -61,7 +59,7 @@ private Q_SLOTS:
         axisAccumulator.setScale(2.0f);
 
         // WHEN
-        simulateInitialization(&axisAccumulator, &backendAccumulator);
+        simulateInitializationSync(&axisAccumulator, &backendAccumulator);
 
         // THEN
         QCOMPARE(backendAccumulator.peerId(), axisAccumulator.id());
@@ -95,7 +93,7 @@ private Q_SLOTS:
         axisAccumulator.setEnabled(true);
 
         // WHEN
-        simulateInitialization(&axisAccumulator, &backendAxisAccumulator);
+        simulateInitializationSync(&axisAccumulator, &backendAxisAccumulator);
         backendAxisAccumulator.cleanup();
 
         // THEN
@@ -110,98 +108,39 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DInput::QAxisAccumulator axisAccumulator;
         Qt3DInput::Input::AxisAccumulator backendAxisAccumulator;
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
+        simulateInitializationSync(&axisAccumulator, &backendAxisAccumulator);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendAxisAccumulator.sceneChangeEvent(updateChange);
+        axisAccumulator.setEnabled(false);
+        backendAxisAccumulator.syncFromFrontEnd(&axisAccumulator, false);
 
         // THEN
-        QCOMPARE(backendAxisAccumulator.isEnabled(), true);
+        QCOMPARE(backendAxisAccumulator.isEnabled(), false);
 
         // WHEN
         Qt3DInput::QAxis axis;
         const Qt3DCore::QNodeId axisId = axis.id();
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("sourceAxis");
-        updateChange->setValue(QVariant::fromValue(axisId));
-        backendAxisAccumulator.sceneChangeEvent(updateChange);
+        axisAccumulator.setSourceAxis(&axis);
+        backendAxisAccumulator.syncFromFrontEnd(&axisAccumulator, false);
 
         // THEN
         QCOMPARE(backendAxisAccumulator.sourceAxisId(), axisId);
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("sourceAxisType");
-        updateChange->setValue(Qt3DInput::QAxisAccumulator::Acceleration);
-        backendAxisAccumulator.sceneChangeEvent(updateChange);
+        axisAccumulator.setSourceAxisType(Qt3DInput::QAxisAccumulator::Acceleration);
+        backendAxisAccumulator.syncFromFrontEnd(&axisAccumulator, false);
 
         // THEN
         QCOMPARE(backendAxisAccumulator.sourceAxisType(), Qt3DInput::QAxisAccumulator::Acceleration);
 
         // WHEN
-        updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("scale");
-        updateChange->setValue(3.0f);
-        backendAxisAccumulator.sceneChangeEvent(updateChange);
+        axisAccumulator.setScale(3.f);
+        backendAxisAccumulator.syncFromFrontEnd(&axisAccumulator, false);
 
         // THEN
         QCOMPARE(backendAxisAccumulator.scale(), 3.0f);
-    }
-
-    void checkValuePropertyBackendNotification()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        Qt3DInput::Input::AxisAccumulator backendAxisAccumulator;
-        backendAxisAccumulator.setEnabled(true);
-        Qt3DCore::QBackendNodePrivate::get(&backendAxisAccumulator)->setArbiter(&arbiter);
-
-        // WHEN
-        backendAxisAccumulator.setValue(454.0f);
-
-        // THEN
-        QCOMPARE(backendAxisAccumulator.value(), 454.0f);
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "value");
-        QCOMPARE(change->value().toFloat(), backendAxisAccumulator.value());
-
-        arbiter.events.clear();
-
-        // WHEN
-        backendAxisAccumulator.setValue(454.0f);
-
-        // THEN
-        QCOMPARE(backendAxisAccumulator.value(), 454.0f);
-        QCOMPARE(arbiter.events.count(), 0);
-
-        arbiter.events.clear();
-
-
-        // WHEN
-        backendAxisAccumulator.setVelocity(383.0f);
-
-        // THEN
-        QCOMPARE(backendAxisAccumulator.velocity(), 383.0f);
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr velocityChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(velocityChange->propertyName(), "velocity");
-        QCOMPARE(velocityChange->value().toFloat(), backendAxisAccumulator.velocity());
-
-        arbiter.events.clear();
-
-        // WHEN
-        backendAxisAccumulator.setVelocity(383.0f);
-
-        // THEN
-        QCOMPARE(backendAxisAccumulator.velocity(), 383.0f);
-        QCOMPARE(arbiter.events.count(), 0);
-
-        arbiter.events.clear();
     }
 
     void shouldNotChangeValueWhenDisabled()
@@ -288,7 +227,7 @@ private Q_SLOTS:
         axisAccumulator.setScale(scale);
         axisAccumulator.setSourceAxisType(sourceAxisType);
         axisAccumulator.setEnabled(true);
-        simulateInitialization(&axisAccumulator, &backendAxisAccumulator);
+        simulateInitializationSync(&axisAccumulator, &backendAxisAccumulator);
 
         backendAxisAccumulator.stepIntegration(&axisManager, dt);
 

@@ -38,10 +38,6 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
-
 #include "testpostmanarbiter.h"
 
 class TestFactory : public Qt3DRender::QGeometryFactory

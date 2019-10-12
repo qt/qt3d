@@ -55,30 +55,6 @@ private Q_SLOTS:
         QVERIFY(abstractPhysicalDeviceProxy.device() == nullptr);
     }
 
-
-    void checkDeviceLoading()
-    {
-        // GIVEN
-        TestProxy abstractPhysicalDeviceProxy;
-
-        // WHEN
-        TestPhysicalDevice *device = new TestPhysicalDevice();
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        change->setPropertyName("device");
-        change->setValue(QVariant::fromValue(device));
-
-        abstractPhysicalDeviceProxy.simulateSceneChangeEvent(change);
-
-        // THEN
-        QCOMPARE(abstractPhysicalDeviceProxy.deviceName(), QLatin1String("TestProxy"));
-        QCOMPARE(abstractPhysicalDeviceProxy.status(), Qt3DInput::QAbstractPhysicalDeviceProxy::Ready);
-        QCOMPARE(abstractPhysicalDeviceProxy.axisCount(), device->axisCount());
-        QCOMPARE(abstractPhysicalDeviceProxy.buttonCount(), device->buttonCount());
-        QCOMPARE(abstractPhysicalDeviceProxy.axisNames(), device->axisNames());
-        QCOMPARE(abstractPhysicalDeviceProxy.buttonNames(), device->buttonNames());
-        QVERIFY(abstractPhysicalDeviceProxy.device() == device);
-    }
-
     void checkDeviceBookkeeping()
     {
         // GIVEN
@@ -86,11 +62,7 @@ private Q_SLOTS:
 
         // WHEN
         TestPhysicalDevice *device = new TestPhysicalDevice();
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        change->setPropertyName("device");
-        change->setValue(QVariant::fromValue(device));
-
-        abstractPhysicalDeviceProxy->simulateSceneChangeEvent(change);
+        abstractPhysicalDeviceProxy->setDevice(device);
 
         // THEN
         QVERIFY(abstractPhysicalDeviceProxy->device() == device);

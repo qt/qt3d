@@ -40,7 +40,6 @@
 #include "viewportnode_p.h"
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/private/qviewport_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

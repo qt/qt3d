@@ -42,9 +42,6 @@
 #include <Qt3DAnimation/private/animationclip_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
-#include <Qt3DAnimation/private/qanimationcallbacktrigger_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -144,27 +141,6 @@ void ClipAnimator::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstT
 
     if (firstTime)
         setDirty(Handler::ClipAnimatorDirty);
-}
-
-void ClipAnimator::sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes)
-{
-    for (const Qt3DCore::QSceneChangePtr &change : changes)
-        notifyObservers(change);
-}
-
-void ClipAnimator::sendCallbacks(const QVector<AnimationCallbackAndValue> &callbacks)
-{
-    for (const AnimationCallbackAndValue &callback : callbacks) {
-        if (callback.flags.testFlag(QAnimationCallback::OnThreadPool)) {
-            callback.callback->valueChanged(callback.value);
-        } else {
-            auto e = QAnimationCallbackTriggerPtr::create(peerId());
-            e->setCallback(callback.callback);
-            e->setValue(callback.value);
-            e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-            notifyObservers(e);
-        }
-    }
 }
 
 qint64 ClipAnimator::nsSincePreviousFrame(qint64 currentGlobalTimeNS)

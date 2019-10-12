@@ -108,6 +108,9 @@ public:
     QServiceLocator *serviceLocator() const;
     void setPostConstructorInit(NodePostConstructorInit *postConstructorInit);
 
+    QNode *lookupNode(QNodeId id) const;
+    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
+
 private:
     bool event(QEvent *event) override;
     void requestNextFrame();

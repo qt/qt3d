@@ -41,7 +41,6 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

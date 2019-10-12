@@ -41,8 +41,6 @@
 
 #include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -168,16 +166,6 @@ float QAxis::value() const
 {
     Q_D(const QAxis);
     return d->m_value;
-}
-
-/*! \internal */
-void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QAxis);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("value")) {
-        d->setValue(e->value().toFloat());
-    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QAxis::createNodeCreationChange() const

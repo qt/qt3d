@@ -33,7 +33,6 @@
 #include <Qt3DAnimation/private/qclipblendvalue_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>

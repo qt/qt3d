@@ -32,7 +32,6 @@
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qlerpclipblend_p.h>
 #include <Qt3DAnimation/private/lerpclipblend_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
 using namespace Qt3DAnimation::Animation;

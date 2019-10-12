@@ -56,20 +56,10 @@ namespace Qt3DInput {
 namespace Input {
 
 KeyboardHandler::KeyboardHandler()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_inputHandler(nullptr)
     , m_focus(false)
 {
-}
-
-void KeyboardHandler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QKeyboardHandlerData>>(change);
-    const auto &data = typedChange->data;
-    setSourcerDevice(data.keyboardDeviceId);
-    m_focus = false;
-    if (data.focus)
-        requestFocus();
 }
 
 Qt3DCore::QNodeId KeyboardHandler::keyboardDevice() const
@@ -86,43 +76,32 @@ void KeyboardHandler::setInputHandler(InputHandler *handler)
 // Sends a change notification so that the frontend can update itself
 void KeyboardHandler::setFocus(bool focus)
 {
-    if (focus != m_focus) {
+    if (focus != m_focus)
         m_focus = focus;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("focus");
-        e->setValue(m_focus);
-        notifyObservers(e);
-    }
 }
 
-void KeyboardHandler::keyEvent(const QKeyEventPtr &event)
+void KeyboardHandler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("event");
-    e->setValue(QVariant::fromValue(event));
-    notifyObservers(e);
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const Qt3DInput::QKeyboardHandler *node = qobject_cast<const Qt3DInput::QKeyboardHandler *>(frontEnd);
+    if (!node)
+        return;
 
-void KeyboardHandler::sceneChangeEvent(const QSceneChangePtr &e)
-{
+    if (firstTime)
+        m_focus = false;
+
     bool focusRequest = false;
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
-            const QNodeId newId = propertyChange->value().value<QNodeId>();
-            if (m_keyboardDevice != newId) {
-                setSourcerDevice(newId);
-                focusRequest = m_focus;
-            }
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("focus")) {
-            focusRequest = propertyChange->value().toBool();
-        }
+    auto id = Qt3DCore::qIdForNode(node->sourceDevice());
+    if (m_keyboardDevice != id) {
+        setSourcerDevice(id);
+        focusRequest = m_focus;
     }
+
+    if (m_focus != node->focus())
+        focusRequest = node->focus();
+
     if (focusRequest)
         requestFocus();
-    QBackendNode::sceneChangeEvent(e);
 }
 
 void KeyboardHandler::requestFocus()

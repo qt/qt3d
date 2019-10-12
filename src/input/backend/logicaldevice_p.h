@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -62,7 +62,7 @@ namespace Input {
 
 class LogicalDeviceManager;
 
-class Q_AUTOTEST_EXPORT LogicalDevice : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT LogicalDevice : public BackendNode
 {
 public:
     LogicalDevice();
@@ -71,11 +71,9 @@ public:
     inline QVector<Qt3DCore::QNodeId> axes() const { return m_axes; }
     inline QVector<Qt3DCore::QNodeId> actions() const { return m_actions; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     QVector<Qt3DCore::QNodeId> m_axes;
     QVector<Qt3DCore::QNodeId> m_actions;
 };

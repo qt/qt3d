@@ -1,8 +1,6 @@
 INCLUDEPATH += $$PWD
 
 SOURCES += \
-    $$PWD/commandthread.cpp \
-    $$PWD/glcommands.cpp \
     $$PWD/openglvertexarrayobject.cpp \
     $$PWD/rendercommand.cpp \
     $$PWD/renderer.cpp \
@@ -12,8 +10,6 @@ SOURCES += \
     $$PWD/shaderparameterpack.cpp
 
 HEADERS += \
-    $$PWD/commandthread_p.h \
-    $$PWD/glcommands_p.h \
     $$PWD/openglvertexarrayobject_p.h \
     $$PWD/renderercache_p.h \
     $$PWD/rendercommand_p.h \

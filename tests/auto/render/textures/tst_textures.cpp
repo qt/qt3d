@@ -207,7 +207,6 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
                 texImgBackend->setRenderer(renderer);
                 simulateInitializationSync(texImgFrontend, texImgBackend);
             }
-            backend->addTextureImage(texImgFrontend->id());
         }
 
         return backend;

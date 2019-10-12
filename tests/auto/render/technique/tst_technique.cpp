@@ -39,9 +39,6 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 

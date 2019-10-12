@@ -39,6 +39,9 @@
 
 #include "updateworldtransformjob_p.h"
 
+#include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/private/qtransform_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/transform_p.h>
@@ -56,10 +59,17 @@ namespace Render {
 
 namespace {
 
-void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform)
+struct TransformUpdate
+{
+    Qt3DCore::QNodeId peerId;
+    QMatrix4x4 worldTransformMatrix;
+};
+
+QVector<TransformUpdate> updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform)
 {
     Matrix4x4 worldTransform(parentTransform);
     Transform *nodeTransform = node->renderComponent<Transform>();
+    QVector<TransformUpdate> updatedTransforms;
 
     const bool hasTransformComponent = nodeTransform != nullptr && nodeTransform->isEnabled();
     if (hasTransformComponent)
@@ -68,21 +78,33 @@ void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Ma
     if (*(node->worldTransform()) != worldTransform) {
         *(node->worldTransform()) = worldTransform;
         if (hasTransformComponent)
-            nodeTransform->notifyWorldTransformChanged(worldTransform);
+            updatedTransforms.push_back({nodeTransform->peerId(), convertToQMatrix4x4(worldTransform)});
     }
 
     const auto childrenHandles = node->childrenHandles();
     for (const HEntity &handle : childrenHandles) {
         Entity *child = manager->renderNodesManager()->data(handle);
         if (child)
-            updateWorldTransformAndBounds(manager, child, worldTransform);
+            updatedTransforms += updateWorldTransformAndBounds(manager, child, worldTransform);
     }
+    return updatedTransforms;
 }
 
 }
+
+class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateWorldTransformJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    UpdateWorldTransformJobPrivate() {}
+    ~UpdateWorldTransformJobPrivate() override {}
+
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    QVector<TransformUpdate> m_updatedTransforms;
+};
 
 UpdateWorldTransformJob::UpdateWorldTransformJob()
-    : Qt3DCore::QAspectJob()
+    : Qt3DCore::QAspectJob(*new UpdateWorldTransformJobPrivate())
     , m_node(nullptr)
     , m_manager(nullptr)
 {
@@ -108,15 +130,30 @@ void UpdateWorldTransformJob::run()
     // TODO: Parallelise this on each level using a parallel_for
     // implementation.
 
+    Q_D(UpdateWorldTransformJob);
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
     Matrix4x4 parentTransform;
     Entity *parent = m_node->parent();
     if (parent != nullptr)
         parentTransform = *(parent->worldTransform());
-    updateWorldTransformAndBounds(m_manager, m_node, parentTransform);
+    d->m_updatedTransforms = updateWorldTransformAndBounds(m_manager, m_node, parentTransform);
 
     qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
+}
+
+void UpdateWorldTransformJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    const QVector<TransformUpdate> updatedTransforms = std::move(m_updatedTransforms);
+    for (const TransformUpdate &t : updatedTransforms) {
+        Qt3DCore::QTransform *node =
+                qobject_cast<Qt3DCore::QTransform *>(manager->lookupNode(t.peerId));
+        if (!node)
+            continue;
+        Qt3DCore::QTransformPrivate *dNode =
+                static_cast<Qt3DCore::QTransformPrivate *>(Qt3DCore::QNodePrivate::get(node));
+        dNode->setWorldMatrix(t.worldTransformMatrix);
+    }
 }
 
 } // namespace Render

@@ -95,6 +95,26 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
     return n->d_func();
 }
 
+void QBackendNodePrivate::addedToEntity(QNode *frontend)
+{
+    Q_UNUSED(frontend)
+}
+
+void QBackendNodePrivate::removedFromEntity(QNode *frontend)
+{
+    Q_UNUSED(frontend)
+}
+
+void QBackendNodePrivate::componentAdded(QNode *frontend)
+{
+    Q_UNUSED(frontend)
+}
+
+void QBackendNodePrivate::componentRemoved(QNode *frontend)
+{
+    Q_UNUSED(frontend)
+}
+
 /*!
  * \class Qt3DCore::QBackendNodeMapper
  * \inheaderfile Qt3DCore/QBackendNodeMapper

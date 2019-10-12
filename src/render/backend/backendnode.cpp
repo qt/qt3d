@@ -56,6 +56,12 @@ BackendNode::BackendNode(Mode mode)
 {
 }
 
+BackendNode::BackendNode(Qt3DCore::QBackendNodePrivate &dd)
+    : QBackendNode(dd)
+    , m_renderer(nullptr)
+{
+}
+
 BackendNode::~BackendNode()
 {
 }

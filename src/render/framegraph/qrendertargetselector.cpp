@@ -40,7 +40,6 @@
 #include "qrendertargetselector.h"
 #include "qrendertargetselector_p.h"
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qrenderpass_p.h>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 

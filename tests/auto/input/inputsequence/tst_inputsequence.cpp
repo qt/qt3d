@@ -30,9 +30,6 @@
 #include <qbackendnodetester.h>
 #include "testdevice.h"
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
@@ -56,7 +53,7 @@ private Q_SLOTS:
         inputSequence.addSequence(&actionInput);
 
         // WHEN
-        simulateInitialization(&inputSequence, &backendInputSequence);
+        simulateInitializationSync(&inputSequence, &backendInputSequence);
 
         // THEN
         QCOMPARE(backendInputSequence.peerId(), inputSequence.id());
@@ -93,7 +90,7 @@ private Q_SLOTS:
         inputSequence.addSequence(&actionInput);
 
         // WHEN
-        simulateInitialization(&inputSequence, &backendInputSequence);
+        simulateInitializationSync(&inputSequence, &backendInputSequence);
         backendInputSequence.cleanup();
 
         // THEN
@@ -106,50 +103,44 @@ private Q_SLOTS:
     void shouldHandlePropertyChanges()
     {
         // GIVEN
+        Qt3DInput::QInputSequence inputSequence;
         Qt3DInput::Input::InputSequence backendInputSequence;
+        simulateInitializationSync(&inputSequence, &backendInputSequence);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setValue(250);
-        updateChange->setPropertyName("timeout");
-        backendInputSequence.sceneChangeEvent(updateChange);
+        inputSequence.setTimeout(250);
+        backendInputSequence.syncFromFrontEnd(&inputSequence, false);
 
         // THEN
         QCOMPARE(backendInputSequence.timeout(), 250000000);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setValue(150);
-        updateChange->setPropertyName("buttonInterval");
-        backendInputSequence.sceneChangeEvent(updateChange);
+        inputSequence.setButtonInterval(150);
+        backendInputSequence.syncFromFrontEnd(&inputSequence, false);
 
         // THEN
         QCOMPARE(backendInputSequence.buttonInterval(), 150000000);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendInputSequence.sceneChangeEvent(updateChange);
+        inputSequence.setEnabled(false);
+        backendInputSequence.syncFromFrontEnd(&inputSequence, false);
 
         // THEN
-        QCOMPARE(backendInputSequence.isEnabled(), true);
+        QCOMPARE(backendInputSequence.isEnabled(), false);
 
         // WHEN
         Qt3DInput::QActionInput input;
         const Qt3DCore::QNodeId inputId = input.id();
-        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &input);
-        nodeAddedChange->setPropertyName("sequence");
-        backendInputSequence.sceneChangeEvent(nodeAddedChange);
+        inputSequence.addSequence(&input);
+        backendInputSequence.syncFromFrontEnd(&inputSequence, false);
 
         // THEN
         QCOMPARE(backendInputSequence.sequences().size(), 1);
         QCOMPARE(backendInputSequence.sequences().first(), inputId);
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &input);
-        nodeRemovedChange->setPropertyName("sequence");
-        backendInputSequence.sceneChangeEvent(nodeRemovedChange);
+        inputSequence.removeSequence(&input);
+        backendInputSequence.syncFromFrontEnd(&inputSequence, false);
 
         // THEN
         QCOMPARE(backendInputSequence.sequences().size(), 0);
@@ -168,19 +159,19 @@ private Q_SLOTS:
         firstInput->setButtons(QVector<int>() << Qt::Key_Q << Qt::Key_A);
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
-        simulateInitialization(firstInput, backendFirstInput);
+        simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
         secondInput->setButtons(QVector<int>() << Qt::Key_S << Qt::Key_W);
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
-        simulateInitialization(secondInput, backendSecondInput);
+        simulateInitializationSync(secondInput, backendSecondInput);
 
         auto thirdInput = new Qt3DInput::QActionInput;
         thirdInput->setButtons(QVector<int>() << Qt::Key_D << Qt::Key_E);
         thirdInput->setSourceDevice(device);
         auto backendThirdInput = handler.actionInputManager()->getOrCreateResource(thirdInput->id());
-        simulateInitialization(thirdInput, backendThirdInput);
+        simulateInitializationSync(thirdInput, backendThirdInput);
 
         Qt3DInput::Input::InputSequence backendInputSequence;
         Qt3DInput::QInputSequence inputSequence;
@@ -190,7 +181,7 @@ private Q_SLOTS:
         inputSequence.addSequence(firstInput);
         inputSequence.addSequence(secondInput);
         inputSequence.addSequence(thirdInput);
-        simulateInitialization(&inputSequence, &backendInputSequence);
+        simulateInitializationSync(&inputSequence, &backendInputSequence);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Up, true);
@@ -294,19 +285,19 @@ private Q_SLOTS:
         firstInput->setButtons(QVector<int>() << Qt::Key_Q << Qt::Key_A);
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
-        simulateInitialization(firstInput, backendFirstInput);
+        simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
         secondInput->setButtons(QVector<int>() << Qt::Key_S << Qt::Key_W);
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
-        simulateInitialization(secondInput, backendSecondInput);
+        simulateInitializationSync(secondInput, backendSecondInput);
 
         auto thirdInput = new Qt3DInput::QActionInput;
         thirdInput->setButtons(QVector<int>() << Qt::Key_D << Qt::Key_E);
         thirdInput->setSourceDevice(device);
         auto backendThirdInput = handler.actionInputManager()->getOrCreateResource(thirdInput->id());
-        simulateInitialization(thirdInput, backendThirdInput);
+        simulateInitializationSync(thirdInput, backendThirdInput);
 
         Qt3DInput::Input::InputSequence backendInputSequence;
         Qt3DInput::QInputSequence inputSequence;
@@ -316,7 +307,7 @@ private Q_SLOTS:
         inputSequence.addSequence(firstInput);
         inputSequence.addSequence(secondInput);
         inputSequence.addSequence(thirdInput);
-        simulateInitialization(&inputSequence, &backendInputSequence);
+        simulateInitializationSync(&inputSequence, &backendInputSequence);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
@@ -352,19 +343,19 @@ private Q_SLOTS:
         firstInput->setButtons(QVector<int>() << Qt::Key_Q << Qt::Key_A);
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
-        simulateInitialization(firstInput, backendFirstInput);
+        simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
         secondInput->setButtons(QVector<int>() << Qt::Key_S << Qt::Key_W);
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
-        simulateInitialization(secondInput, backendSecondInput);
+        simulateInitializationSync(secondInput, backendSecondInput);
 
         auto thirdInput = new Qt3DInput::QActionInput;
         thirdInput->setButtons(QVector<int>() << Qt::Key_D << Qt::Key_E);
         thirdInput->setSourceDevice(device);
         auto backendThirdInput = handler.actionInputManager()->getOrCreateResource(thirdInput->id());
-        simulateInitialization(thirdInput, backendThirdInput);
+        simulateInitializationSync(thirdInput, backendThirdInput);
 
         Qt3DInput::Input::InputSequence backendInputSequence;
         Qt3DInput::QInputSequence inputSequence;
@@ -374,7 +365,7 @@ private Q_SLOTS:
         inputSequence.addSequence(firstInput);
         inputSequence.addSequence(secondInput);
         inputSequence.addSequence(thirdInput);
-        simulateInitialization(&inputSequence, &backendInputSequence);
+        simulateInitializationSync(&inputSequence, &backendInputSequence);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
@@ -410,13 +401,13 @@ private Q_SLOTS:
         firstInput->setButtons(QVector<int>() << Qt::Key_Q);
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
-        simulateInitialization(firstInput, backendFirstInput);
+        simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
         secondInput->setButtons(QVector<int>() << Qt::Key_S);
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
-        simulateInitialization(secondInput, backendSecondInput);
+        simulateInitializationSync(secondInput, backendSecondInput);
 
         Qt3DInput::Input::InputSequence backendInputSequence;
         Qt3DInput::QInputSequence inputSequence;
@@ -425,7 +416,7 @@ private Q_SLOTS:
         inputSequence.setTimeout(450);
         inputSequence.addSequence(firstInput);
         inputSequence.addSequence(secondInput);
-        simulateInitialization(&inputSequence, &backendInputSequence);
+        simulateInitializationSync(&inputSequence, &backendInputSequence);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, true);

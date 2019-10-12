@@ -41,9 +41,6 @@
 #include "qtechnique_p.h"
 #include "qparameter.h"
 #include "qgraphicsapifilter.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -376,7 +373,6 @@ QVector<QParameter *> QTechnique::parameters() const
     return d->m_parameters;
 }
 
-// TODO Qt 6 -> Remove
 QGraphicsApiFilter *QTechnique::graphicsApiFilter()
 {
     Q_D(QTechnique);

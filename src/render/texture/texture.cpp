@@ -93,20 +93,6 @@ void Texture::unsetDirty()
     m_dirty = Texture::NotDirty;
 }
 
-void Texture::addTextureImage(Qt3DCore::QNodeId id)
-{
-    if (!m_textureImageIds.contains(id)) {
-        m_textureImageIds.push_back(id);
-        addDirtyFlag(DirtyImageGenerators);
-    }
-}
-
-void Texture::removeTextureImage(Qt3DCore::QNodeId id)
-{
-    m_textureImageIds.removeAll(id);
-    addDirtyFlag(DirtyImageGenerators);
-}
-
 // This is called by Renderer::updateGLResources
 // when the texture has been marked for cleanup
 void Texture::cleanup()
@@ -123,38 +109,6 @@ void Texture::cleanup()
     m_parameters = {};
 
     m_dirty = NotDirty;
-}
-
-// ChangeArbiter/Aspect Thread
-void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    DirtyFlags dirty;
-
-    switch (e->type()) {
-
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("textureImage")) {
-            addTextureImage(change->addedNodeId());
-        }
-    }
-        break;
-
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("textureImage")) {
-            removeTextureImage(change->removedNodeId());
-        }
-    }
-        break;
-
-    default:
-        break;
-
-    }
-
-    addDirtyFlag(dirty);
-    BackendNode::sceneChangeEvent(e);
 }
 
 void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
@@ -203,8 +157,12 @@ void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             addTextureDataUpdate(pendingUpdate);
         dnode->m_pendingDataUpdates.clear();
 
-        for (const auto imgNode : dnode->m_textureImages)
-            addTextureImage(imgNode->id());
+        auto ids = Qt3DCore::qIdsForNodes(dnode->m_textureImages);
+        std::sort(std::begin(ids), std::end(ids));
+        if (ids != m_textureImageIds) {
+            m_textureImageIds = ids;
+            addDirtyFlag(DirtyImageGenerators);
+        }
     }
 
     if (dnode->m_sharedTextureId != m_sharedTextureId) {
@@ -218,88 +176,6 @@ void Texture::setDataGenerator(const QTextureGeneratorPtr &generator)
 {
     m_dataFunctor = generator;
     addDirtyFlag(DirtyDataGenerator);
-}
-
-// Called by sendTextureChangesToFrontendJob once GLTexture and sharing
-// has been performed
-void Texture::updatePropertiesAndNotify(const TextureUpdateInfo &updateInfo)
-{
-    // If we are Dirty, some property has changed and the properties we have
-    // received are potentially already outdated
-    if (m_dirty != NotDirty)
-        return;
-
-    // Note we don't update target has it is constant for frontend nodes
-
-    if (updateInfo.properties.width != m_properties.width) {
-        m_properties.width = updateInfo.properties.width;
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("width");
-        change->setValue(updateInfo.properties.width);
-        notifyObservers(change);
-    }
-
-    if (updateInfo.properties.height != m_properties.height) {
-        m_properties.height = updateInfo.properties.height;
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("height");
-        change->setValue(updateInfo.properties.height);
-        notifyObservers(change);
-    }
-
-    if (updateInfo.properties.depth != m_properties.depth) {
-        m_properties.depth = updateInfo.properties.depth;
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("depth");
-        change->setValue(updateInfo.properties.depth);
-        notifyObservers(change);
-    }
-
-    if (updateInfo.properties.layers != m_properties.layers) {
-        m_properties.layers = updateInfo.properties.layers;
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("layers");
-        change->setValue(updateInfo.properties.layers);
-        notifyObservers(change);
-    }
-
-    if (updateInfo.properties.format != m_properties.format) {
-        m_properties.format = updateInfo.properties.format;
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("format");
-        change->setValue(updateInfo.properties.format);
-        notifyObservers(change);
-    }
-
-    if (updateInfo.properties.status != m_properties.status) {
-        m_properties.status = updateInfo.properties.status;
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("status");
-        change->setValue(updateInfo.properties.status);
-        notifyObservers(change);
-    }
-
-    {
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("handleType");
-        change->setValue(updateInfo.handleType);
-        notifyObservers(change);
-    }
-
-    {
-        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        change->setPropertyName("handle");
-        change->setValue(updateInfo.handle);
-        notifyObservers(change);
-    }
 }
 
 bool Texture::isValid(TextureImageManager *manager) const
@@ -336,8 +212,9 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_dataFunctor = data.dataFunctor;
     m_sharedTextureId = data.sharedTextureId;
 
-    for (const QNodeId &imgId : data.textureImageIds)
-        addTextureImage(imgId);
+    m_textureImageIds = data.textureImageIds;
+    if (m_textureImageIds.size())
+        addDirtyFlag(DirtyImageGenerators);
 
     const QVector<QTextureDataUpdate> initialDataUpdates = data.initialDataUpdates;
     for (const QTextureDataUpdate &initialUpdate : initialDataUpdates)

@@ -102,6 +102,9 @@ void ComputeCommand::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
         m_frameCount = d->m_frameCount;
         markDirty(AbstractRenderer::ComputeDirty);
     }
+
+    if (firstTime)
+        markDirty(AbstractRenderer::ComputeDirty);
 }
 
 // Called from buildComputeRenderCommands in a job

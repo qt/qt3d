@@ -32,7 +32,6 @@
 #include <Qt3DRender/QLevelOfDetailBoundingSphere>
 #include <Qt3DRender/private/levelofdetail_p.h>
 #include <Qt3DRender/private/qlevelofdetail_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"

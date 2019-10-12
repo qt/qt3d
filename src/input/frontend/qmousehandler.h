@@ -87,7 +87,6 @@ Q_SIGNALS:
 #endif
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
     void setContainsMouse(bool contains);
 
 private:

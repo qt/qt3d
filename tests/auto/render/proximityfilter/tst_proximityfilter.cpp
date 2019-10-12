@@ -31,7 +31,6 @@
 #include <Qt3DRender/qproximityfilter.h>
 #include <Qt3DRender/private/qproximityfilter_p.h>
 #include <Qt3DRender/private/proximityfilter_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 
@@ -103,7 +102,7 @@ private Q_SLOTS:
              // WHEN
              const bool newValue = false;
              proximityFilter.setEnabled(newValue);
-             backendProximityFilter.syncFromFrontEnd(&proximityFilter, &backendProximityFilter);
+             backendProximityFilter.syncFromFrontEnd(&proximityFilter, false);
 
              // THEN
             QCOMPARE(backendProximityFilter.isEnabled(), newValue);
@@ -114,7 +113,7 @@ private Q_SLOTS:
              // WHEN
              const float newValue = 383.0f;
              proximityFilter.setDistanceThreshold(newValue);
-             backendProximityFilter.syncFromFrontEnd(&proximityFilter, &backendProximityFilter);
+             backendProximityFilter.syncFromFrontEnd(&proximityFilter, false);
 
 
              // THEN
@@ -126,7 +125,7 @@ private Q_SLOTS:
              // WHEN
              Qt3DCore::QEntity e;
              proximityFilter.setEntity(&e);
-             backendProximityFilter.syncFromFrontEnd(&proximityFilter, &backendProximityFilter);
+             backendProximityFilter.syncFromFrontEnd(&proximityFilter, false);
 
              // THEN
             QCOMPARE(backendProximityFilter.entityId(), e.id());

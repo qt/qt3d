@@ -41,8 +41,6 @@
 #include "scene2devent_p.h"
 #include "scene2dsharedobject_p.h"
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;

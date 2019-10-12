@@ -36,10 +36,6 @@
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAction>
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
-
 #include "testpostmanarbiter.h"
 
 class tst_QLogicalDevice: public QObject
@@ -122,56 +118,48 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeAddedChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(nodeAddedChange->propertyName(), "action");
-        QCOMPARE(nodeAddedChange->addedNodeId(), action->id());
-        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), logicalDevice.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         logicalDevice->removeAction(action);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-        QCOMPARE(nodeRemovedChange->propertyName(), "action");
-        QCOMPARE(nodeRemovedChange->removedNodeId(), action->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), logicalDevice.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         Qt3DInput::QAxis *axis = new Qt3DInput::QAxis(logicalDevice.data());
         QCoreApplication::processEvents();
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         logicalDevice->addAxis(axis);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(nodeAddedChange->propertyName(), "axis");
-        QCOMPARE(nodeAddedChange->addedNodeId(), axis->id());
-        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), logicalDevice.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         logicalDevice->removeAxis(axis);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-        QCOMPARE(nodeRemovedChange->propertyName(), "axis");
-        QCOMPARE(nodeRemovedChange->removedNodeId(), axis->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), logicalDevice.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
     }
 
     void checkAxisBookkeeping()

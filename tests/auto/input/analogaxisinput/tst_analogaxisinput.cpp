@@ -55,7 +55,7 @@ private Q_SLOTS:
         axisInput.setSourceDevice(&sourceDevice);
 
         // WHEN
-        simulateInitialization(&axisInput, &backendAxisInput);
+        simulateInitializationSync(&axisInput, &backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput.peerId(), axisInput.id());
@@ -83,7 +83,7 @@ private Q_SLOTS:
         axisInput.setSourceDevice(&sourceDevice);
 
         // WHEN
-        simulateInitialization(&axisInput, &backendAxisInput);
+        simulateInitializationSync(&axisInput, &backendAxisInput);
         backendAxisInput.cleanup();
 
         // THEN
@@ -95,32 +95,28 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DInput::QAnalogAxisInput axisInput;
         Qt3DInput::Input::AnalogAxisInput backendAxisInput;
+        simulateInitializationSync(&axisInput, &backendAxisInput);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setValue(32);
-        updateChange->setPropertyName("axis");
-        backendAxisInput.sceneChangeEvent(updateChange);
+        axisInput.setAxis(32);
+        backendAxisInput.syncFromFrontEnd(&axisInput, false);
 
         // THEN
         QCOMPARE(backendAxisInput.axis(), 32);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendAxisInput.sceneChangeEvent(updateChange);
+        axisInput.setEnabled(false);
+        backendAxisInput.syncFromFrontEnd(&axisInput, false);
 
         // THEN
-        QCOMPARE(backendAxisInput.isEnabled(), true);
+        QCOMPARE(backendAxisInput.isEnabled(), false);
 
         // WHEN
         TestDevice device;
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("sourceDevice");
-        updateChange->setValue(QVariant::fromValue(device.id()));
-        backendAxisInput.sceneChangeEvent(updateChange);
+        axisInput.setSourceDevice(&device);
+        backendAxisInput.syncFromFrontEnd(&axisInput, false);
 
         // THEN
         QCOMPARE(backendAxisInput.sourceDevice(), device.id());
@@ -142,7 +138,7 @@ private Q_SLOTS:
         axisInput.setEnabled(true);
         axisInput.setAxis(2);
         axisInput.setSourceDevice(device);
-        simulateInitialization(&axisInput, &backendAxisInput);
+        simulateInitializationSync(&axisInput, &backendAxisInput);
         QCOMPARE(backendAxisInput.axis(), 2);
 
         // WHEN
@@ -176,7 +172,7 @@ private Q_SLOTS:
         axisInput.setEnabled(false);
         axisInput.setAxis(2);
         axisInput.setSourceDevice(device);
-        simulateInitialization(&axisInput, &backendAxisInput);
+        simulateInitializationSync(&axisInput, &backendAxisInput);
         QCOMPARE(backendAxisInput.axis(), 2);
 
         // WHEN

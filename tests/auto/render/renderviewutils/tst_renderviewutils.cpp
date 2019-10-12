@@ -34,7 +34,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/qshaderdata.h>
-
+#include "testrenderer.h"
 #include "testpostmanarbiter.h"
 
 class tst_RenderViewUtils : public Qt3DCore::QBackendNodeTester
@@ -54,20 +54,22 @@ private Q_SLOTS:
     void shouldNotifyDynamicPropertyChanges();
 
 private:
-    void initBackendShaderData(Qt3DRender::QShaderData *frontend,
+    void initBackendShaderData(Qt3DRender::Render::AbstractRenderer *renderer,
+                               Qt3DRender::QShaderData *frontend,
                                Qt3DRender::Render::ShaderDataManager *manager)
     {
         // Create children first
         for (QObject *c : frontend->children()) {
             Qt3DRender::QShaderData *cShaderData = qobject_cast<Qt3DRender::QShaderData *>(c);
             if (cShaderData)
-                initBackendShaderData(cShaderData, manager);
+                initBackendShaderData(renderer, cShaderData, manager);
         }
 
         // Create backend element for frontend one
         Qt3DRender::Render::ShaderData *backend = manager->getOrCreateResource(frontend->id());
         // Init the backend element
-        simulateInitialization(frontend, backend);
+        backend->setRenderer(renderer);
+        simulateInitializationSync(frontend, backend);
     }
 
     void initBackendTexture(Qt3DRender::QAbstractTexture *frontend,
@@ -345,13 +347,14 @@ private:
 void tst_RenderViewUtils::topLevelScalarValueNoUniforms()
 {
     // GIVEN
+    TestRenderer renderer;
     QScopedPointer<ScalarShaderData> shaderData(new ScalarShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
     QScopedPointer<Qt3DRender::Render::TextureManager> textureManager(new Qt3DRender::Render::TextureManager());
 
     // WHEN
     shaderData->setScalar(883.0f);
-    initBackendShaderData(shaderData.data(), manager.data());
+    initBackendShaderData(&renderer, shaderData.data(), manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
@@ -373,13 +376,14 @@ void tst_RenderViewUtils::topLevelScalarValueNoUniforms()
 void tst_RenderViewUtils::topLevelScalarValue()
 {
     // GIVEN
+    TestRenderer renderer;
     QScopedPointer<ScalarShaderData> shaderData(new ScalarShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
     QScopedPointer<Qt3DRender::Render::TextureManager> textureManager(new Qt3DRender::Render::TextureManager());
 
     // WHEN
     shaderData->setScalar(883.0f);
-    initBackendShaderData(shaderData.data(), manager.data());
+    initBackendShaderData(&renderer, shaderData.data(), manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
@@ -413,6 +417,7 @@ void tst_RenderViewUtils::topLevelScalarValue()
 void tst_RenderViewUtils::topLevelTextureValueNoUniforms()
 {
     // GIVEN
+    TestRenderer renderer;
     QScopedPointer<TextureShaderData> shaderData(new TextureShaderData);
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager);
     QScopedPointer<Qt3DRender::QAbstractTexture> texture(new Qt3DRender::QTexture2D);
@@ -420,7 +425,7 @@ void tst_RenderViewUtils::topLevelTextureValueNoUniforms()
 
     // WHEN
     shaderData->setTexture(texture.data());
-    initBackendShaderData(shaderData.data(), manager.data());
+    initBackendShaderData(&renderer, shaderData.data(), manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
@@ -442,6 +447,7 @@ void tst_RenderViewUtils::topLevelTextureValueNoUniforms()
 void tst_RenderViewUtils::topLevelTextureValue()
 {
     // GIVEN
+    TestRenderer renderer;
     QScopedPointer<TextureShaderData> shaderData(new TextureShaderData);
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager);
     QScopedPointer<Qt3DRender::QAbstractTexture> texture(new Qt3DRender::QTexture2D);
@@ -450,7 +456,7 @@ void tst_RenderViewUtils::topLevelTextureValue()
     // WHEN
     initBackendTexture(texture.data(), textureManager.data());
     shaderData->setTexture(texture.data());
-    initBackendShaderData(shaderData.data(), manager.data());
+    initBackendShaderData(&renderer, shaderData.data(), manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
@@ -484,6 +490,7 @@ void tst_RenderViewUtils::topLevelTextureValue()
 void tst_RenderViewUtils::topLevelArrayValue()
 {
     // GIVEN
+    TestRenderer renderer;
     QScopedPointer<ArrayShaderData> shaderData(new ArrayShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
     QScopedPointer<Qt3DRender::Render::TextureManager> textureManager(new Qt3DRender::Render::TextureManager());
@@ -491,7 +498,7 @@ void tst_RenderViewUtils::topLevelArrayValue()
     // WHEN
     QVariantList arrayValues = QVariantList() << 454 << 350 << 383 << 427 << 552;
     shaderData->setArray(arrayValues);
-    initBackendShaderData(shaderData.data(), manager.data());
+    initBackendShaderData(&renderer, shaderData.data(), manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
@@ -525,6 +532,7 @@ void tst_RenderViewUtils::topLevelArrayValue()
 void tst_RenderViewUtils::nestedShaderDataValue()
 {
     // GIVEN
+    TestRenderer renderer;
     QScopedPointer<ArrayShaderData> arrayShaderData(new ArrayShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
     QScopedPointer<Qt3DRender::Render::TextureManager> textureManager(new Qt3DRender::Render::TextureManager());
@@ -549,7 +557,7 @@ void tst_RenderViewUtils::nestedShaderDataValue()
     // WHEN
     const QVariantList arrayValues = QVariantList() << QVariant::fromValue(id1) << QVariant::fromValue(id2) << QVariant::fromValue(id3);
     arrayShaderData->setArray(arrayValues);
-    initBackendShaderData(arrayShaderData.data(), manager.data());
+    initBackendShaderData(&renderer, arrayShaderData.data(), manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendArrayShaderData = manager->lookupResource(arrayShaderData->id());
@@ -624,13 +632,14 @@ void tst_RenderViewUtils::topLevelStructValue_data()
 void tst_RenderViewUtils::topLevelStructValue()
 {
     // GIVEN
+    TestRenderer renderer;
     QFETCH(StructShaderData *, shaderData);
     QFETCH(QString, blockName);
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
     QScopedPointer<Qt3DRender::Render::TextureManager> textureManager(new Qt3DRender::Render::TextureManager());
 
     // WHEN
-    initBackendShaderData(shaderData, manager.data());
+    initBackendShaderData(&renderer, shaderData, manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
@@ -665,6 +674,7 @@ void tst_RenderViewUtils::topLevelStructValue()
 void tst_RenderViewUtils::topLevelDynamicProperties()
 {
     // GIVEN
+    TestRenderer renderer;
     QScopedPointer<Qt3DRender::QShaderData> shaderData(new Qt3DRender::QShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
     QScopedPointer<Qt3DRender::QAbstractTexture> texture(new Qt3DRender::QTexture2D);
@@ -675,7 +685,7 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
     shaderData->setProperty("scalar", 883.0f);
     shaderData->setProperty("array", QVariantList() << 454 << 350 << 383 << 427 << 552);
     shaderData->setProperty("texture", QVariant::fromValue(texture.data()));
-    initBackendShaderData(shaderData.data(), manager.data());
+    initBackendShaderData(&renderer, shaderData.data(), manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
@@ -709,6 +719,7 @@ void tst_RenderViewUtils::transformedProperties()
     // GIVEN
     QScopedPointer<Qt3DRender::QShaderData> shaderData(new Qt3DRender::QShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
+    TestRenderer renderer;
 
     // WHEN
     const Vector3D position = Vector3D(15.0f, -5.0f, 10.0f);
@@ -733,7 +744,7 @@ void tst_RenderViewUtils::transformedProperties()
     shaderData->setProperty("position1Transformed", Qt3DRender::Render::ShaderData::ModelToEye);
     shaderData->setProperty("position2Transformed", Qt3DRender::Render::ShaderData::ModelToWorld);
     shaderData->setProperty("position3Transformed", Qt3DRender::Render::ShaderData::ModelToWorldDirection);
-    initBackendShaderData(shaderData.data(), manager.data());
+    initBackendShaderData(&renderer, shaderData.data(), manager.data());
 
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
@@ -751,7 +762,7 @@ void tst_RenderViewUtils::transformedProperties()
     const QVariant position0Value = backendShaderData->getTransformedProperty(QStringLiteral("position0"), viewMatrix);
 
     // THEN
-    QCOMPARE(position0Value, QVariant());
+    QCOMPARE(position0Value, positionQt);
     QCOMPARE(position1Value, viewMatrix * worldMatrix * position);
     QCOMPARE(position2Value, worldMatrix * position);
     QCOMPARE(position3Value, Vector3D((worldMatrix * Vector4D(position, 0.0f))));

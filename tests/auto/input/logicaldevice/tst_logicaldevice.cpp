@@ -33,9 +33,6 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/private/qlogicaldevice_p.h>
 #include <Qt3DInput/private/logicaldevice_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include "qbackendnodetester.h"
 
 class tst_LogicalDevice : public Qt3DCore::QBackendNodeTester
@@ -59,24 +56,19 @@ private Q_SLOTS:
     void checkCleanupState()
     {
         // GIVEN
+        Qt3DInput::QLogicalDevice logicalDevice;
         Qt3DInput::Input::LogicalDevice backendLogicalDevice;
+        simulateInitializationSync(&logicalDevice, &backendLogicalDevice);
 
         // WHEN
         backendLogicalDevice.setEnabled(true);
 
         // WHEN
-        {
-            Qt3DInput::QAxis newValue;
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &newValue);
-            change->setPropertyName("axis");
-            backendLogicalDevice.sceneChangeEvent(change);
-        }
-        {
-            Qt3DInput::QAction newValue;
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &newValue);
-            change->setPropertyName("action");
-            backendLogicalDevice.sceneChangeEvent(change);
-        }
+        Qt3DInput::QAxis newAxisValue;
+        Qt3DInput::QAction newActionValue;
+        logicalDevice.addAxis(&newAxisValue);
+        logicalDevice.addAction(&newActionValue);
+        backendLogicalDevice.syncFromFrontEnd(&logicalDevice, false);
 
         // THEN
         QCOMPARE(backendLogicalDevice.axes().size(), 1);
@@ -104,7 +96,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DInput::Input::LogicalDevice backendLogicalDevice;
-            simulateInitialization(&logicalDevice, &backendLogicalDevice);
+            simulateInitializationSync(&logicalDevice, &backendLogicalDevice);
 
             // THEN
             QCOMPARE(backendLogicalDevice.isEnabled(), true);
@@ -118,7 +110,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DInput::Input::LogicalDevice backendLogicalDevice;
             logicalDevice.setEnabled(false);
-            simulateInitialization(&logicalDevice, &backendLogicalDevice);
+            simulateInitializationSync(&logicalDevice, &backendLogicalDevice);
 
             // THEN
             QCOMPARE(backendLogicalDevice.isEnabled(), false);
@@ -128,15 +120,15 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
+        Qt3DInput::QLogicalDevice logicalDevice;
         Qt3DInput::Input::LogicalDevice backendLogicalDevice;
+        simulateInitializationSync(&logicalDevice, &backendLogicalDevice);
 
         {
             // WHEN
             const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendLogicalDevice.sceneChangeEvent(change);
+            logicalDevice.setEnabled(newValue);
+            backendLogicalDevice.syncFromFrontEnd(&logicalDevice, false);
 
             // THEN
             QCOMPARE(backendLogicalDevice.isEnabled(), newValue);
@@ -144,18 +136,16 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DInput::QAxis newValue;
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &newValue);
-            change->setPropertyName("axis");
-            backendLogicalDevice.sceneChangeEvent(change);
+            logicalDevice.addAxis(&newValue);
+            backendLogicalDevice.syncFromFrontEnd(&logicalDevice, false);
 
             // THEN
             QCOMPARE(backendLogicalDevice.axes().size(), 1);
             QCOMPARE(backendLogicalDevice.axes().first(), newValue.id());
 
             // WHEN
-            const auto change2 = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &newValue);
-            change2->setPropertyName("axis");
-            backendLogicalDevice.sceneChangeEvent(change2);
+            logicalDevice.removeAxis(&newValue);
+            backendLogicalDevice.syncFromFrontEnd(&logicalDevice, false);
 
             // THEN
             QCOMPARE(backendLogicalDevice.axes().size(), 0);
@@ -163,18 +153,16 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DInput::QAction newValue;
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &newValue);
-            change->setPropertyName("action");
-            backendLogicalDevice.sceneChangeEvent(change);
+            logicalDevice.addAction(&newValue);
+            backendLogicalDevice.syncFromFrontEnd(&logicalDevice, false);
 
             // THEN
             QCOMPARE(backendLogicalDevice.actions().size(), 1);
             QCOMPARE(backendLogicalDevice.actions().first(), newValue.id());
 
             // WHEN
-            const auto change2 = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &newValue);
-            change2->setPropertyName("action");
-            backendLogicalDevice.sceneChangeEvent(change2);
+            logicalDevice.removeAction(&newValue);
+            backendLogicalDevice.syncFromFrontEnd(&logicalDevice, false);
 
             // THEN
             QCOMPARE(backendLogicalDevice.actions().size(), 0);

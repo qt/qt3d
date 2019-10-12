@@ -1,6 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_COMMANDTHREAD_P_H
-#define QT3DRENDER_RENDER_COMMANDTHREAD_P_H
+#ifndef QT3DRENDER_RENDER_ENTITY_P_P_H
+#define QT3DRENDER_RENDER_ENTITY_P_P_H
 
 //
 //  W A R N I N G
@@ -51,65 +52,36 @@
 // We mean it.
 //
 
-#include <QtCore/QThread>
-#include <QtCore/QSemaphore>
-#include <QtCore/QMutex>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLContext;
+namespace Qt3DCore {
+class QNode;
+}
 
 namespace Qt3DRender {
 
+class QRenderAspect;
+
 namespace Render {
 
-class Renderer;
-class GLCommand;
-class OffscreenSurfaceHelper;
-class GraphicsContext;
-class ShaderCache;
-
-class CommandThread : public QThread
-{
-    Q_OBJECT
+class Q_AUTOTEST_EXPORT EntityPrivate : public Qt3DCore::QBackendNodePrivate {
 public:
-    explicit CommandThread(Renderer *renderer);
-    ~CommandThread();
+    EntityPrivate();
 
-    Render::Renderer* renderer() const { return m_renderer; }
+    Q_DECLARE_PUBLIC(Entity)
 
-    void setShaderCache(ShaderCache *shaderCache);
-    ShaderCache *shaderCache() const { return m_shaderCache; }
+    static EntityPrivate *get(Entity *node);
 
-    void initialize(QOpenGLContext *mainContext, OffscreenSurfaceHelper *offsreenSurfaceHelper);
-    void shutdown();
-
-    void executeCommand(GLCommand *command);
-
-private:
-    void run() override;
-    void executeCommandInternal(Qt3DRender::Render::GLCommand *command);
-
-private:
-    Renderer* m_renderer;
-    QSemaphore m_waitForStartSemaphore;
-    QSemaphore m_initializedSemaphore;
-    QSemaphore m_commandRequestedSemaphore;
-    QSemaphore m_commandExecutionSemaphore;
-    QMutex m_blockingCallerMutex;
-    QOpenGLContext *m_mainContext;
-    ShaderCache *m_shaderCache;
-    OffscreenSurfaceHelper *m_offsreenSurfaceHelper;
-    QScopedPointer<QOpenGLContext> m_localContext;
-    QScopedPointer<GraphicsContext> m_graphicsContext;
-    GLCommand *m_currentCommand;
-    QAtomicInt m_running;
+    void componentAdded(Qt3DCore::QNode *frontend) override;
+    void componentRemoved(Qt3DCore::QNode *frontend) override;
 };
 
-} // Render
-
-} // Qt3DRender
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_COMMANDTHREAD_P_H
+#endif // QT3DRENDER_RENDER_ENTITY_P_P_H

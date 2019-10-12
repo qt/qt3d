@@ -60,6 +60,14 @@ const QAbstractSkeletonPrivate *QAbstractSkeletonPrivate::get(const QAbstractSke
 }
 
 /*!
+    \internal
+ */
+QAbstractSkeletonPrivate *QAbstractSkeletonPrivate::get(QAbstractSkeleton *q)
+{
+    return q->d_func();
+}
+
+/*!
     \qmltype AbstractSkeleton
     \inqmlmodule Qt3D.Core
     \inherits Node

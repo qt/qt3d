@@ -39,8 +39,7 @@
 
 #include "axisaccumulator_p.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
-
+#include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/qaxisaccumulator_p.h>
 
@@ -50,24 +49,13 @@ namespace Qt3DInput {
 namespace Input {
 
 AxisAccumulator::AxisAccumulator()
-    : Qt3DCore::QBackendNode(ReadWrite)
+    : BackendNode(ReadWrite)
     , m_sourceAxisId()
     , m_sourceAxisType(QAxisAccumulator::Velocity)
     , m_scale(1.0f)
     , m_value(0.0f)
     , m_velocity(0.0f)
 {
-}
-
-void AxisAccumulator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisAccumulatorData>>(change);
-    const auto &data = typedChange->data;
-    m_sourceAxisId = data.sourceAxisId;
-    m_sourceAxisType = data.sourceAxisType;
-    m_scale = data.scale;
-    m_value = 0.0f;
-    m_velocity = 0.0f;
 }
 
 void AxisAccumulator::cleanup()
@@ -81,50 +69,31 @@ void AxisAccumulator::cleanup()
 
 void AxisAccumulator::setValue(float value)
 {
-    if (isEnabled() && value != m_value) {
+    if (isEnabled() && value != m_value)
         m_value = value;
-
-        // Send a change to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("value");
-        e->setValue(m_value);
-        notifyObservers(e);
-    }
 }
 
 void AxisAccumulator::setVelocity(float velocity)
 {
-    if (isEnabled() && velocity != m_velocity) {
+    if (isEnabled() && velocity != m_velocity)
         m_velocity = velocity;
-
-        // Send a change to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("velocity");
-        e->setValue(m_velocity);
-        notifyObservers(e);
-    }
 }
 
-void AxisAccumulator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void AxisAccumulator::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    switch (e->type()) {
-    case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("sourceAxis"))
-            m_sourceAxisId = change->value().value<Qt3DCore::QNodeId>();
-        else if (change->propertyName() == QByteArrayLiteral("sourceAxisType"))
-            m_sourceAxisType = change->value().value<QAxisAccumulator::SourceAxisType>();
-        else if (change->propertyName() == QByteArrayLiteral("scale"))
-            m_scale = change->value().toFloat();
-        break;
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAxisAccumulator *node = qobject_cast<const QAxisAccumulator *>(frontEnd);
+    if (!node)
+        return;
 
-    default:
-        break;
+    m_sourceAxisId = Qt3DCore::qIdForNode(node->sourceAxis());
+    m_sourceAxisType = node->sourceAxisType();
+    m_scale = node->scale();
+
+    if (firstTime) {
+        m_value = 0.f;
+        m_velocity = 0.f;
     }
-    QBackendNode::sceneChangeEvent(e);
 }
 
 void AxisAccumulator::stepIntegration(AxisManager *axisManager, float dt)

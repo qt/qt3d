@@ -30,9 +30,6 @@
 #include <qbackendnodetester.h>
 #include "testdevice.h"
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputchord_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
@@ -55,7 +52,7 @@ private Q_SLOTS:
         inputChord.addChord(&actionInput);
 
         // WHEN
-        simulateInitialization(&inputChord, &backendInputChord);
+        simulateInitializationSync(&inputChord, &backendInputChord);
 
         // THEN
         QCOMPARE(backendInputChord.peerId(), inputChord.id());
@@ -89,7 +86,7 @@ private Q_SLOTS:
         inputChord.addChord(&actionInput);
 
         // WHEN
-        simulateInitialization(&inputChord, &backendInputChord);
+        simulateInitializationSync(&inputChord, &backendInputChord);
         backendInputChord.cleanup();
 
         // THEN
@@ -101,41 +98,37 @@ private Q_SLOTS:
     void shouldHandlePropertyChanges()
     {
         // GIVEN
+        Qt3DInput::QInputChord inputChord;
         Qt3DInput::Input::InputChord backendInputChord;
+        simulateInitializationSync(&inputChord, &backendInputChord);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setValue(250);
-        updateChange->setPropertyName("timeout");
-        backendInputChord.sceneChangeEvent(updateChange);
+        inputChord.setTimeout(250);
+        backendInputChord.syncFromFrontEnd(&inputChord, false);
 
         // THEN
         QCOMPARE(backendInputChord.timeout(), 250000000);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendInputChord.sceneChangeEvent(updateChange);
+        inputChord.setEnabled(false);
+        backendInputChord.syncFromFrontEnd(&inputChord, false);
 
         // THEN
-        QCOMPARE(backendInputChord.isEnabled(), true);
+        QCOMPARE(backendInputChord.isEnabled(), false);
 
         // WHEN
         Qt3DInput::QActionInput input;
         const Qt3DCore::QNodeId inputId = input.id();
-        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &input);
-        nodeAddedChange->setPropertyName("chord");
-        backendInputChord.sceneChangeEvent(nodeAddedChange);
+        inputChord.addChord(&input);
+        backendInputChord.syncFromFrontEnd(&inputChord, false);
 
         // THEN
         QCOMPARE(backendInputChord.chords().size(), 1);
         QCOMPARE(backendInputChord.chords().first(), inputId);
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &input);
-        nodeRemovedChange->setPropertyName("chord");
-        backendInputChord.sceneChangeEvent(nodeRemovedChange);
+        inputChord.removeChord(&input);
+        backendInputChord.syncFromFrontEnd(&inputChord, false);
 
         // THEN
         QCOMPARE(backendInputChord.chords().size(), 0);
@@ -154,13 +147,13 @@ private Q_SLOTS:
         firstInput->setButtons(QVector<int>() << Qt::Key_Q << Qt::Key_W);
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
-        simulateInitialization(firstInput, backendFirstInput);
+        simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
         secondInput->setButtons(QVector<int>() << Qt::Key_A << Qt::Key_S);
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
-        simulateInitialization(secondInput, backendSecondInput);
+        simulateInitializationSync(secondInput, backendSecondInput);
 
         Qt3DInput::Input::InputChord backendInputChord;
         Qt3DInput::QInputChord inputChord;
@@ -168,7 +161,7 @@ private Q_SLOTS:
         inputChord.setTimeout(300);
         inputChord.addChord(firstInput);
         inputChord.addChord(secondInput);
-        simulateInitialization(&inputChord, &backendInputChord);
+        simulateInitializationSync(&inputChord, &backendInputChord);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Up, true);
@@ -242,13 +235,13 @@ private Q_SLOTS:
         firstInput->setButtons(QVector<int>() << Qt::Key_Q);
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
-        simulateInitialization(firstInput, backendFirstInput);
+        simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
         secondInput->setButtons(QVector<int>() << Qt::Key_W);
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
-        simulateInitialization(secondInput, backendSecondInput);
+        simulateInitializationSync(secondInput, backendSecondInput);
 
         Qt3DInput::Input::InputChord backendInputChord;
         Qt3DInput::QInputChord inputChord;
@@ -256,7 +249,7 @@ private Q_SLOTS:
         inputChord.setTimeout(300);
         inputChord.addChord(firstInput);
         inputChord.addChord(secondInput);
-        simulateInitialization(&inputChord, &backendInputChord);
+        simulateInitializationSync(&inputChord, &backendInputChord);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
@@ -290,13 +283,13 @@ private Q_SLOTS:
         firstInput->setButtons(QVector<int>() << Qt::Key_Q);
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
-        simulateInitialization(firstInput, backendFirstInput);
+        simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
         secondInput->setButtons(QVector<int>() << Qt::Key_W);
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
-        simulateInitialization(secondInput, backendSecondInput);
+        simulateInitializationSync(secondInput, backendSecondInput);
 
         Qt3DInput::Input::InputChord backendInputChord;
         Qt3DInput::QInputChord inputChord;
@@ -304,7 +297,7 @@ private Q_SLOTS:
         inputChord.setTimeout(300);
         inputChord.addChord(firstInput);
         inputChord.addChord(secondInput);
-        simulateInitialization(&inputChord, &backendInputChord);
+        simulateInitializationSync(&inputChord, &backendInputChord);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, true);

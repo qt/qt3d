@@ -41,7 +41,6 @@
 #include "qcameraselector_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE

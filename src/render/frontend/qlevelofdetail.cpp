@@ -40,7 +40,6 @@
 #include "qlevelofdetail.h"
 #include "qlevelofdetail_p.h"
 #include "qcamera.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +52,15 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
     , m_thresholdType(QLevelOfDetail::DistanceToCameraThreshold)
     , m_volumeOverride()
 {
+}
+
+void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
+{
+    Q_Q(QLevelOfDetail);
+    if (m_currentIndex != currentIndex) {
+        m_currentIndex = currentIndex;
+        emit q->currentIndexChanged(m_currentIndex);
+    }
 }
 
 /*!
@@ -317,20 +325,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLevelOfDetail::createNodeCreationChange() c
     return creationChange;
 }
 
-/*! \internal */
-void QLevelOfDetail::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QLevelOfDetail);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        if (e->propertyName() == QByteArrayLiteral("currentIndex")) {
-            int ndx = e->value().value<int>();
-            d->m_currentIndex = ndx;
-            emit currentIndexChanged(ndx);
-        }
-    }
-}
-
 QCamera *QLevelOfDetail::camera() const
 {
     Q_D(const QLevelOfDetail);
@@ -367,10 +361,7 @@ int QLevelOfDetail::currentIndex() const
 void QLevelOfDetail::setCurrentIndex(int currentIndex)
 {
     Q_D(QLevelOfDetail);
-    if (d->m_currentIndex != currentIndex) {
-        d->m_currentIndex = currentIndex;
-        emit currentIndexChanged(d->m_currentIndex);
-    }
+    d->setCurrentIndex(currentIndex);
 }
 
 QLevelOfDetail::ThresholdType QLevelOfDetail::thresholdType() const

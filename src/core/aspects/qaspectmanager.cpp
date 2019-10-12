@@ -62,6 +62,7 @@
 #include <Qt3DCore/private/qtickclockservice_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qscene_p.h>
 
 #include <QtCore/QCoreApplication>
 
@@ -379,6 +380,24 @@ void QAspectManager::setPostConstructorInit(NodePostConstructorInit *postConstru
     m_postConstructorInit = postConstructorInit;
 }
 
+QNode *QAspectManager::lookupNode(QNodeId id) const
+{
+    if (!m_root)
+        return nullptr;
+
+    QNodePrivate *d = QNodePrivate::get(m_root);
+    return d->m_scene ? d->m_scene->lookupNode(id) : nullptr;
+}
+
+QVector<QNode *> QAspectManager::lookupNodes(const QVector<QNodeId> &ids) const
+{
+    if (!m_root)
+        return {};
+
+    QNodePrivate *d = QNodePrivate::get(m_root);
+    return d->m_scene ? d->m_scene->lookupNodes(ids) : QVector<QNode *>{};
+}
+
 /*!
     \internal
     \brief Drives the Qt3D simulation loop in the main thread
@@ -456,11 +475,18 @@ void QAspectManager::processFrame()
         }
     }
 
+    // Sync node / subnode relationship changes
+    const auto dirtySubNodes = m_changeArbiter->takeDirtyFrontEndSubNodes();
+    if (dirtySubNodes.size())
+        for (QAbstractAspect *aspect : qAsConst(m_aspects))
+            aspect->syncDirtyFrontEndSubNodes(dirtySubNodes);
+
     // Sync property updates
     const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
     if (dirtyFrontEndNodes.size())
         for (QAbstractAspect *aspect : qAsConst(m_aspects))
            aspect->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
+
     // TO DO: Having this done in the main thread actually means aspects could just
     // as simply read info out of the Frontend classes without risk of introducing
     // races. This could therefore be removed for Qt 6.

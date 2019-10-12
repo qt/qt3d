@@ -103,9 +103,10 @@ public:
         return d->m_device;
     }
 
-    void simulateSceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+    void setDevice(TestPhysicalDevice *device)
     {
-        Qt3DInput::QAbstractPhysicalDeviceProxy::sceneChangeEvent(change);
+        Q_D(TestProxy);
+        d->setDevice(device);
     }
 
 private:

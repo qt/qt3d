@@ -58,11 +58,22 @@ namespace Qt3DRender {
 namespace Render {
 
 AbstractPickingJob::AbstractPickingJob()
-    : m_manager(nullptr)
+    : Qt3DCore::QAspectJob()
+    , m_manager(nullptr)
     , m_node(nullptr)
     , m_frameGraphRoot(nullptr)
     , m_renderSettings(nullptr)
 {
+}
+
+AbstractPickingJob::AbstractPickingJob(Qt3DCore::QAspectJobPrivate &dd)
+    : Qt3DCore::QAspectJob(dd)
+    , m_manager(nullptr)
+    , m_node(nullptr)
+    , m_frameGraphRoot(nullptr)
+    , m_renderSettings(nullptr)
+{
+
 }
 
 void AbstractPickingJob::setRoot(Entity *root)

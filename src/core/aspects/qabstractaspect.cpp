@@ -43,8 +43,13 @@
 #include <QMetaObject>
 #include <QMetaProperty>
 
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertyvalueaddedchange.h>
+#include <Qt3DCore/qpropertyvalueremovedchange.h>
+#include <Qt3DCore/qcomponentaddedchange.h>
+#include <Qt3DCore/qcomponentremovedchange.h>
 
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
@@ -209,6 +214,12 @@ void QAbstractAspect::syncDirtyFrontEndNodes(const QVector<QNode *> &nodes)
     d->syncDirtyFrontEndNodes(nodes);
 }
 
+void QAbstractAspect::syncDirtyFrontEndSubNodes(const QVector<NodeRelationshipChange> &nodes)
+{
+    Q_D(QAbstractAspect);
+    d->syncDirtyFrontEndSubNodes(nodes);
+}
+
 QAbstractAspectPrivate::BackendNodeMapperAndInfo QAbstractAspectPrivate::mapperForNode(const QMetaObject *metaObj) const
 {
     Q_ASSERT(metaObj);
@@ -240,6 +251,103 @@ void QAbstractAspectPrivate::syncDirtyFrontEndNodes(const QVector<QNode *> &node
             syncDirtyFrontEndNode(node, backend, false);
         else
             sendPropertyMessages(node, backend);
+    }
+}
+
+void QAbstractAspectPrivate::syncDirtyFrontEndSubNodes(const QVector<NodeRelationshipChange> &nodes)
+{
+    for (const auto &nodeChange: qAsConst(nodes)) {
+        auto getBackend = [this](QNode *node) -> std::tuple<QBackendNode *, bool> {
+            const QMetaObject *metaObj = QNodePrivate::get(node)->m_typeInfo;
+            const BackendNodeMapperAndInfo backendNodeMapperInfo = mapperForNode(metaObj);
+            const QBackendNodeMapperPtr backendNodeMapper = backendNodeMapperInfo.first;
+
+            if (!backendNodeMapper)
+                return {};
+
+            QBackendNode *backend = backendNodeMapper->get(node->id());
+            if (!backend)
+                return {};
+
+            const bool supportsSyncing = backendNodeMapperInfo.second & SupportsSyncing;
+
+            return std::tuple<QBackendNode *, bool>(backend, supportsSyncing);
+        };
+
+        auto nodeInfo = getBackend(nodeChange.node);
+        if (!std::get<0>(nodeInfo))
+            continue;
+
+        auto subNodeInfo = getBackend(nodeChange.subNode);
+        if (!std::get<0>(subNodeInfo))
+            continue;
+
+        switch (nodeChange.change) {
+        case PropertyValueAdded: {
+            if (std::get<1>(nodeInfo))
+                break; // do nothing as the node will be dirty anyway
+
+            QPropertyValueAddedChange change(nodeChange.node->id());
+            change.setPropertyName(nodeChange.property);
+            change.setAddedValue(QVariant::fromValue(nodeChange.subNode->id()));
+            QPropertyValueAddedChangePtr pChange(&change, [](QPropertyValueAddedChange *) { });
+            std::get<0>(nodeInfo)->sceneChangeEvent(pChange);
+        }
+        break;
+        case PropertyValueRemoved: {
+            if (std::get<1>(nodeInfo))
+                break; // do nothing as the node will be dirty anyway
+
+            QPropertyValueRemovedChange change(nodeChange.node->id());
+            change.setPropertyName(nodeChange.property);
+            change.setRemovedValue(QVariant::fromValue(nodeChange.subNode->id()));
+            QPropertyValueRemovedChangePtr pChange(&change, [](QPropertyValueRemovedChange *) { });
+            std::get<0>(nodeInfo)->sceneChangeEvent(pChange);
+        }
+        break;
+        case ComponentAdded: {
+            // let the entity know it has a new component
+            if (std::get<1>(nodeInfo)) {
+                QBackendNodePrivate::get(std::get<0>(nodeInfo))->componentAdded(nodeChange.subNode);
+            } else {
+                QComponentAddedChange change(qobject_cast<Qt3DCore::QComponent *>(nodeChange.subNode), qobject_cast<Qt3DCore::QEntity *>(nodeChange.node));
+                QComponentAddedChangePtr pChange(&change, [](QComponentAddedChange *) { });
+                std::get<0>(nodeInfo)->sceneChangeEvent(pChange);
+            }
+
+            // let the component know it was added to an entity
+            if (std::get<1>(subNodeInfo)) {
+                QBackendNodePrivate::get(std::get<0>(subNodeInfo))->addedToEntity(nodeChange.node);
+            } else {
+                QComponentAddedChange change(qobject_cast<Qt3DCore::QComponent *>(nodeChange.subNode), qobject_cast<Qt3DCore::QEntity *>(nodeChange.node));
+                QComponentAddedChangePtr pChange(&change, [](QComponentAddedChange *) { });
+                std::get<0>(subNodeInfo)->sceneChangeEvent(pChange);
+            }
+        }
+        break;
+        case ComponentRemoved: {
+            // let the entity know a component was removed
+            if (std::get<1>(nodeInfo)) {
+                QBackendNodePrivate::get(std::get<0>(nodeInfo))->componentRemoved(nodeChange.subNode);
+            } else {
+                QComponentRemovedChange change(qobject_cast<Qt3DCore::QComponent *>(nodeChange.subNode), qobject_cast<Qt3DCore::QEntity *>(nodeChange.node));
+                QComponentRemovedChangePtr pChange(&change, [](QComponentRemovedChange *) { });
+                std::get<0>(nodeInfo)->sceneChangeEvent(pChange);
+            }
+
+            // let the component know it was removed from an entity
+            if (std::get<1>(subNodeInfo)) {
+                QBackendNodePrivate::get(std::get<0>(subNodeInfo))->removedFromEntity(nodeChange.node);
+            } else {
+                QComponentRemovedChange change(qobject_cast<Qt3DCore::QEntity *>(nodeChange.node), qobject_cast<Qt3DCore::QComponent *>(nodeChange.subNode));
+                QComponentRemovedChangePtr pChange(&change, [](QComponentRemovedChange *) { });
+                std::get<0>(nodeInfo)->sceneChangeEvent(pChange);
+            }
+        }
+        break;
+        default:
+            break;
+        }
     }
 }
 

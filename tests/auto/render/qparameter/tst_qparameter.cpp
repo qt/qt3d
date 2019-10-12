@@ -31,7 +31,6 @@
 #include <Qt3DRender/private/qparameter_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qentity.h>

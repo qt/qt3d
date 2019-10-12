@@ -31,7 +31,6 @@
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
 

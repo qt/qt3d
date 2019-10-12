@@ -65,6 +65,7 @@ class Entity;
 class NodeManagers;
 class LevelOfDetail;
 class FrameGraphNode;
+class UpdateLevelOfDetailJobPrivate;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateLevelOfDetailJob : public Qt3DCore::QAspectJob
 {
@@ -81,6 +82,8 @@ public:
     Entity *root() const { return m_root; }
 
 private:
+    Q_DECLARE_PRIVATE(UpdateLevelOfDetailJob)
+
     NodeManagers *m_manager;
     FrameGraphNode *m_frameGraphRoot;
     Entity *m_root;

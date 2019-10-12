@@ -43,8 +43,6 @@
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <Qt3DRender/private/qmesh_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qtypedpropertyupdatechange_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
@@ -148,7 +146,7 @@ void GeometryRenderer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     markDirty(AbstractRenderer::GeometryDirty);
 }
 
-void GeometryRenderer::executeFunctor()
+GeometryFunctorResult GeometryRenderer::executeFunctor()
 {
     Q_ASSERT(m_geometryFactory);
 
@@ -169,7 +167,8 @@ void GeometryRenderer::executeFunctor()
     }
 
     // Load geometry
-    std::unique_ptr<QGeometry> geometry((*m_geometryFactory)());
+    QGeometry *geometry = (*m_geometryFactory)();
+    QMesh::Status meshLoaderStatus = QMesh::None;
 
     // If the geometry is null, then we were either unable to load it (Error)
     // or the mesh is located at a remote url and needs to be downloaded first (Loading)
@@ -178,24 +177,15 @@ void GeometryRenderer::executeFunctor()
         // corresponding QGeometryRenderer
         const auto appThread = QCoreApplication::instance()->thread();
         geometry->moveToThread(appThread);
-
-        auto e = QGeometryChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        e->setPropertyName("geometry");
-        e->data = std::move(geometry);
-        notifyObservers(e);
     }
 
     // Send Status
     if (isQMeshFunctor) {
         QSharedPointer<MeshLoaderFunctor> meshLoader = qSharedPointerCast<MeshLoaderFunctor>(m_geometryFactory);
-
-        auto e = QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-        e->setPropertyName("status");
-        e->setValue(meshLoader->status());
-        notifyObservers(e);
+        meshLoaderStatus = meshLoader->status();
     }
+
+    return { geometry, meshLoaderStatus };
 }
 
 void GeometryRenderer::unsetDirty()

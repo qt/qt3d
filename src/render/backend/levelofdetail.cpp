@@ -41,7 +41,6 @@
 #include <Qt3DRender/QLevelOfDetail>
 #include <Qt3DRender/private/qlevelofdetail_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/QCamera>
 #include <QVariant>
 
@@ -111,14 +110,8 @@ void LevelOfDetail::cleanup()
 
 void LevelOfDetail::setCurrentIndex(int currentIndex)
 {
-    if (m_currentIndex != currentIndex) {
+    if (m_currentIndex != currentIndex)
         m_currentIndex = currentIndex;
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("currentIndex");
-        e->setValue(m_currentIndex);
-        notifyObservers(e);
-    }
 }
 
 } // namespace Render

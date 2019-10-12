@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Q_AUTOTEST_EXPORT Action : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Action : public BackendNode
 {
 public:
     Action();
@@ -68,11 +68,9 @@ public:
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline bool actionTriggered() const { return m_actionTriggered; }
     void setActionTriggered(bool actionTriggered);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     QVector<Qt3DCore::QNodeId> m_inputs;
     bool m_actionTriggered;
 };

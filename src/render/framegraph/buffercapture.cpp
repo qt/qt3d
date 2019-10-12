@@ -40,7 +40,6 @@
 
 #include <Qt3DRender/private/qbuffercapture_p.h>
 #include <Qt3DRender/private/buffercapture_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

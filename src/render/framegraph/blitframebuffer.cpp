@@ -39,7 +39,6 @@
 
 #include <Qt3DRender/private/qblitframebuffer_p.h>
 #include <Qt3DRender/private/blitframebuffer_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

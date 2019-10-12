@@ -139,37 +139,6 @@ private Q_SLOTS:
         QCOMPARE(backendAxis.inputs().size(), 0);
     }
 
-    void checkValuePropertyBackendNotification()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        Qt3DInput::Input::Axis backendAxis;
-        backendAxis.setEnabled(true);
-        Qt3DCore::QBackendNodePrivate::get(&backendAxis)->setArbiter(&arbiter);
-
-        // WHEN
-        backendAxis.setAxisValue(454.0f);
-
-        // THEN
-        QCOMPARE(backendAxis.axisValue(), 454.0f);
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "value");
-        QCOMPARE(change->value().toFloat(), backendAxis.axisValue());
-
-        arbiter.events.clear();
-
-        // WHEN
-        backendAxis.setAxisValue(454.0f);
-
-        // THEN
-        QCOMPARE(backendAxis.axisValue(), 454.0f);
-        QCOMPARE(arbiter.events.count(), 0);
-
-        arbiter.events.clear();
-
-    }
-
     void shouldNotChangeValueWhenDisabled()
     {
         // GIVEN

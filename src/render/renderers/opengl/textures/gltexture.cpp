@@ -54,9 +54,6 @@
 #include <Qt3DRender/private/qabstracttexture_p.h>
 #include <Qt3DRender/private/renderbuffer_p.h>
 #include <Qt3DRender/private/qtextureimagedata_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #if !defined(QT_OPENGL_ES_2)
 #include <QOpenGLFunctions_3_1>

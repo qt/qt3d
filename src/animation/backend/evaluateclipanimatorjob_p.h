@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DAnimation/private/abstractevaluateclipanimatorjob_p.h>
 #include <Qt3DAnimation/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +58,7 @@ namespace Animation {
 
 class Handler;
 
-class EvaluateClipAnimatorJob : public Qt3DCore::QAspectJob
+class EvaluateClipAnimatorJob : public AbstractEvaluateClipAnimatorJob
 {
 public:
     EvaluateClipAnimatorJob();

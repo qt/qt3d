@@ -30,7 +30,6 @@
 #include <qbackendnodetester.h>
 #include "testdevice.h"
 
-#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/QActionInput>
@@ -50,7 +49,7 @@ private Q_SLOTS:
         actionInput.setSourceDevice(&sourceDevice);
 
         // WHEN
-        simulateInitialization(&actionInput, &backendActionInput);
+        simulateInitializationSync(&actionInput, &backendActionInput);
 
         // THEN
         QCOMPARE(backendActionInput.peerId(), actionInput.id());
@@ -78,7 +77,7 @@ private Q_SLOTS:
         actionInput.setSourceDevice(&sourceDevice);
 
         // WHEN
-        simulateInitialization(&actionInput, &backendActionInput);
+        simulateInitializationSync(&actionInput, &backendActionInput);
         backendActionInput.cleanup();
 
         // THEN
@@ -90,32 +89,28 @@ private Q_SLOTS:
     void shouldHandlePropertyChanges()
     {
         // GIVEN
+        Qt3DInput::QActionInput actionInput;
         Qt3DInput::Input::ActionInput backendActionInput;
+        simulateInitializationSync(&actionInput, &backendActionInput);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(QVector<int>() << 64));
-        updateChange->setPropertyName("buttons");
-        backendActionInput.sceneChangeEvent(updateChange);
+        actionInput.setButtons(QVector<int>() << 64);
+        backendActionInput.syncFromFrontEnd(&actionInput, false);
 
         // THEN
         QCOMPARE(backendActionInput.buttons(), QVector<int>() << 64);
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendActionInput.sceneChangeEvent(updateChange);
+        actionInput.setEnabled(false);
+        backendActionInput.syncFromFrontEnd(&actionInput, false);
 
         // THEN
-        QCOMPARE(backendActionInput.isEnabled(), true);
+        QCOMPARE(backendActionInput.isEnabled(), false);
 
         // WHEN
         TestDevice device;
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("sourceDevice");
-        updateChange->setValue(QVariant::fromValue(device.id()));
-        backendActionInput.sceneChangeEvent(updateChange);
+        actionInput.setSourceDevice(&device);
+        backendActionInput.syncFromFrontEnd(&actionInput, false);
 
         // THEN
         QCOMPARE(backendActionInput.sourceDevice(), device.id());
@@ -135,7 +130,7 @@ private Q_SLOTS:
         actionInput.setEnabled(true);
         actionInput.setButtons(QVector<int>() << Qt::Key_Space << Qt::Key_Return);
         actionInput.setSourceDevice(device);
-        simulateInitialization(&actionInput, &backendActionInput);
+        simulateInitializationSync(&actionInput, &backendActionInput);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Up, true);
@@ -188,7 +183,7 @@ private Q_SLOTS:
         actionInput.setEnabled(false);
         actionInput.setButtons(QVector<int>() << Qt::Key_Space << Qt::Key_Return);
         actionInput.setSourceDevice(device);
-        simulateInitialization(&actionInput, &backendActionInput);
+        simulateInitializationSync(&actionInput, &backendActionInput);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Space, true);

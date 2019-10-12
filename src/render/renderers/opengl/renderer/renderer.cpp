@@ -89,14 +89,13 @@
 #include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/renderviewbuilder_p.h>
-#include <Qt3DRender/private/commandthread_p.h>
-#include <Qt3DRender/private/glcommands_p.h>
 #include <Qt3DRender/private/setfence_p.h>
 #include <Qt3DRender/private/subtreeenabler_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 
 #if QT_CONFIG(qt3d_profile_jobs)
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
@@ -165,7 +164,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_submissionContext(nullptr)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : nullptr)
-    , m_commandThread(new CommandThread(this))
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(m_renderThread != nullptr))
     , m_waitForInitializationToBeCompleted(0)
     , m_hasBeenInitializedMutex()
@@ -196,7 +194,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
-    , m_sendTextureChangesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendTextureChangesToFrontend(); }, JobTypes::SendTextureChangesToFrontend))
+    , m_sendTextureChangesToFrontendJob(decltype(m_sendTextureChangesToFrontendJob)::create([] {},
+                                                                                            [this] (Qt3DCore::QAspectManager *m) { sendTextureChangesToFrontend(m); },
+                                                                                            JobTypes::SendTextureChangesToFrontend))
     , m_sendSetFenceHandlesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
     , m_sendDisablesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendDisablesToFrontend(); }, JobTypes::SendDisablesToFrontend))
     , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
@@ -331,18 +331,11 @@ QOpenGLContext *Renderer::shareContext() const
                              : nullptr);
 }
 
-// Executed in the command thread
+// Executed in the reloadDirtyShader job
 void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
-#ifdef SHADER_LOADING_IN_COMMAND_THREAD
-    Q_UNUSED(shaderHandle);
-    Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
-    LoadShaderCommand cmd(shader);
-    m_commandThread->executeCommand(&cmd);
-#else
     Q_UNUSED(shader);
     m_dirtyShaders.push_back(shaderHandle);
-#endif
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -403,7 +396,6 @@ void Renderer::initialize()
 
         // Set shader cache on submission context and command thread
         m_submissionContext->setShaderCache(m_shaderCache);
-        m_commandThread->setShaderCache(m_shaderCache);
 
         // Note: we don't have a surface at this point
         // The context will be made current later on (at render time)
@@ -416,13 +408,6 @@ void Renderer::initialize()
         // (MS Windows), an offscreen surface is just a hidden QWindow.
         m_format = ctx->format();
         QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
-
-        // Initialize command thread (uses the offscreen surface to make its own ctx current)
-        m_commandThread->initialize(ctx, m_offscreenHelper);
-        // Note: the offscreen surface is also used at shutdown time to release resources
-        // of the submission gl context (when the window is already gone).
-        // By that time (in releaseGraphicResources), the commandThread has been destroyed
-        // and the offscreenSurface can be reused
     }
 
     // Awake setScenegraphRoot in case it was waiting
@@ -453,8 +438,6 @@ void Renderer::shutdown()
     qDeleteAll(m_renderQueue->nextFrameQueue());
     m_renderQueue->reset();
     lockRenderQueue.unlock();
-
-    m_commandThread->shutdown();
 
     if (!m_renderThread) {
         releaseGraphicsResources();
@@ -1167,24 +1150,39 @@ void Renderer::reloadDirtyShaders()
     }
 }
 
-// Executed in a job
-void Renderer::sendTextureChangesToFrontend()
+// Executed in a job (as postFrame)
+void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     const QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
     for (const auto &pair : updateTextureProperties) {
-        // Prepare change notification
-
         const Qt3DCore::QNodeIdVector targetIds = pair.second;
         for (const Qt3DCore::QNodeId targetId: targetIds) {
+
             // Lookup texture
             Texture *t = m_nodesManager->textureManager()->lookupResource(targetId);
-
-            // Texture might have been deleted between previous and current frame
-            if (t == nullptr)
+            // If backend texture is Dirty, some property has changed and the properties we are
+            // about to send are already outdate
+            if (t == nullptr || t->dirtyFlags() != Texture::NotDirty)
                 continue;
 
-            // Send change and update backend
-            t->updatePropertiesAndNotify(pair.first);
+            QAbstractTexture *texture = static_cast<QAbstractTexture *>(manager->lookupNode(targetId));
+            if (!texture)
+                continue;
+           const TextureProperties &properties = pair.first.properties;
+
+           const bool blocked = texture->blockNotifications(true);
+           texture->setWidth(properties.width);
+           texture->setHeight(properties.height);
+           texture->setDepth(properties.depth);
+           texture->setLayers(properties.layers);
+           texture->setFormat(properties.format);
+           texture->blockNotifications(blocked);
+
+           QAbstractTexturePrivate *dTexture = static_cast<QAbstractTexturePrivate *>(QNodePrivate::get(texture));
+
+           dTexture->setStatus(properties.status);
+           dTexture->setHandleType(pair.first.handleType);
+           dTexture->setHandle(pair.first.handle);
         }
     }
 }
@@ -1807,11 +1805,12 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     const bool frameGraphDirty = dirtyBitsForFrame & AbstractRenderer::FrameGraphDirty;
     const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty || frameGraphDirty;
+    const bool shadersDirty = dirtyBitsForFrame & AbstractRenderer::ShadersDirty;
     const bool materialDirty = dirtyBitsForFrame & AbstractRenderer::MaterialDirty;
     const bool lightsDirty = dirtyBitsForFrame & AbstractRenderer::LightsDirty;
     const bool computeableDirty = dirtyBitsForFrame & AbstractRenderer::ComputeDirty;
     const bool renderableDirty = dirtyBitsForFrame & AbstractRenderer::GeometryDirty;
-    const bool materialCacheNeedsToBeRebuilt = materialDirty || frameGraphDirty;
+    const bool materialCacheNeedsToBeRebuilt = shadersDirty || materialDirty || frameGraphDirty;
 
     // Rebuild Entity Layers list if layers are dirty
     if (layersDirty)

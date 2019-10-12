@@ -40,7 +40,6 @@
 #include "qframegraphnode.h"
 #include "qframegraphnode_p.h"
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DCore/QNode>
 

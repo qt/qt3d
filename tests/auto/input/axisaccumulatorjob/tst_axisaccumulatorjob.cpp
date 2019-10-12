@@ -30,9 +30,6 @@
 #include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/axisaccumulator_p.h>
 #include <Qt3DInput/private/axisaccumulatorjob_p.h>
@@ -79,7 +76,7 @@ private Q_SLOTS:
             axisAccumulator->setSourceAxis(axis);
             axisAccumulator->setScale(scale);
             axisAccumulator->setSourceAxisType(sourceAxisType);
-            simulateInitialization(axisAccumulator, backendAxisAccumulator);
+            simulateInitializationSync(axisAccumulator, backendAxisAccumulator);
         }
 
         // WHEN

@@ -83,6 +83,7 @@ public:
     virtual QAbstractPostman *postman() const = 0;
     virtual void addDirtyFrontEndNode(QNode *node) = 0;
     virtual void removeDirtyFrontEndNode(QNode *node) = 0;
+    virtual void addDirtyFrontEndNode(QNode *node, QNode *subNode, const char *property, ChangeFlag change) = 0;
 };
 
 class Q_3DCORE_PRIVATE_EXPORT QChangeArbiter final
@@ -109,8 +110,10 @@ public:
     void sceneChangeEventWithLock(const QSceneChangeList &e) override; // QLockableObserverInterface impl
 
     void addDirtyFrontEndNode(QNode *node) override;
+    void addDirtyFrontEndNode(QNode *node, QNode *subNode, const char *property, ChangeFlag change) override;
     void removeDirtyFrontEndNode(QNode *node) override;
     QVector<QNode *> takeDirtyFrontEndNodes();
+    QVector<NodeRelationshipChange> takeDirtyFrontEndSubNodes();
 
     void setPostman(Qt3DCore::QAbstractPostman *postman);
     void setScene(Qt3DCore::QScene *scene);
@@ -159,6 +162,7 @@ private:
     QScene *m_scene;
 
     QVector<QNode *> m_dirtyFrontEndNodes;
+    QVector<NodeRelationshipChange> m_dirtySubNodeChanges;
 };
 
 } // namespace Qt3DCore

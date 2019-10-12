@@ -41,9 +41,6 @@
 
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <Qt3DInput/private/qaction_p.h>
 
@@ -54,16 +51,9 @@ namespace Qt3DInput {
 namespace Input {
 
 Action::Action()
-    : Qt3DCore::QBackendNode(ReadWrite)
+    : BackendNode(ReadWrite)
     , m_actionTriggered(false)
 {
-}
-
-void Action::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QActionData>>(change);
-    const auto &data = typedChange->data;
-    m_inputs = data.inputIds;
 }
 
 void Action::cleanup()
@@ -75,38 +65,19 @@ void Action::cleanup()
 
 void Action::setActionTriggered(bool actionTriggered)
 {
-    if (isEnabled() && (actionTriggered != m_actionTriggered)) {
+    if (isEnabled() && (actionTriggered != m_actionTriggered))
         m_actionTriggered = actionTriggered;
-
-        // Send change to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("active");
-        e->setValue(m_actionTriggered);
-        notifyObservers(e);
-    }
 }
 
-void Action::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void Action::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    switch (e->type()) {
-    case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("input"))
-            m_inputs.push_back(change->addedNodeId());
-        break;
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const Qt3DInput::QAction *node = qobject_cast<const Qt3DInput::QAction *>(frontEnd);
+    if (!node)
+        return;
 
-    case Qt3DCore::PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("input"))
-            m_inputs.removeOne(change->removedNodeId());
-    }
-
-    default:
-        break;
-    }
-    QBackendNode::sceneChangeEvent(e);
+    auto ids = Qt3DCore::qIdsForNodes(node->inputs());
+    m_inputs = ids;
 }
 
 } // Input

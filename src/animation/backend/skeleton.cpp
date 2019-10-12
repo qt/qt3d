@@ -36,6 +36,7 @@
 
 #include "skeleton_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/private/qabstractskeleton_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,40 +63,20 @@ void Skeleton::cleanup()
     m_jointLocalPoses.clear();
 }
 
-// TODOSYNC remove once backend > backend communication no longer requires messages
-void Skeleton::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void Skeleton::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    // Get the joint names and initial local poses from a change sent
-    // by the render aspect when the skeleton has been loaded.
-    switch (e->type()) {
-    case PropertyUpdated: {
-        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("jointNamesAndLocalPoses")) {
-            const auto payload = change->value().value<JointNamesAndLocalPoses>();
-            m_jointNames = payload.names;
-            m_jointLocalPoses = payload.localPoses;
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 
-            // TODO: Mark joint info as dirty so we can rebuild any indexes used
-            // by the animators and channel mappings.
-        }
+    const Qt3DCore::QAbstractSkeleton *node = qobject_cast<const Qt3DCore::QAbstractSkeleton *>(frontEnd);
+    if (!node)
+        return;
 
-        break;
-    }
+    auto dnode = Qt3DCore::QAbstractSkeletonPrivate::get(node);
 
-    default:
-        break;
-    }
-
-    BackendNode::sceneChangeEvent(e);
-}
-
-void Skeleton::sendLocalPoses()
-{
-    auto e = QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::BackendNodes);
-    e->setPropertyName("localPoses");
-    e->setValue(QVariant::fromValue(m_jointLocalPoses));
-    notifyObservers(e);
+    // TODO: Mark joint info as dirty so we can rebuild any indexes used
+    // by the animators and channel mappings.
+    m_jointNames = dnode->m_jointNames;
+    m_jointLocalPoses = dnode->m_localPoses;
 }
 
 } // namespace Animation

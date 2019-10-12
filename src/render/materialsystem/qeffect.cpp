@@ -42,10 +42,6 @@
 #include "qtechnique.h"
 #include "qparameter.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -172,7 +168,7 @@ QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
 */
 
 /*!
- * Adds \a parameter to the effect. It sends a QPropertyNodeAddedChange to the backend.
+ * Adds \a parameter to the effect. It sends an update to the backend.
  * The \a parameter will be used to set a corresponding uniform value in the shader used
  * by this effect.
  */
@@ -219,7 +215,7 @@ QVector<QParameter *> QEffect::parameters() const
 }
 
 /*!
- * Adds a new technique \a t to the effect. It sends a QPropertyNodeAddedChange to the backend.
+ * Adds a new technique \a t to the effect. It sends an update to the backend.
  */
 void QEffect::addTechnique(QTechnique *t)
 {

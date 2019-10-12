@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qscenechange.h>
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
 
@@ -86,6 +87,7 @@ protected:
 
 private:
     void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
+    void syncDirtyFrontEndSubNodes(const QVector<NodeRelationshipChange> &nodes);
     void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor, bool supportsSyncing);
 
     virtual QVariant executeCommand(const QStringList &args);

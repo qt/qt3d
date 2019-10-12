@@ -61,6 +61,7 @@ namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
+class MouseEventDispatcherJobPrivate;
 
 class MouseEventDispatcherJob : public Qt3DCore::QAspectJob
 {
@@ -75,12 +76,9 @@ public:
     void run() final;
 
 private:
+    Q_DECLARE_PRIVATE(MouseEventDispatcherJob)
+
     InputHandler *m_inputHandler;
-    const Qt3DCore::QNodeId m_mouseInput;
-    const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> m_mouseEvents;
-#if QT_CONFIG(wheelevent)
-    const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> m_wheelEvents;
-#endif
 };
 
 } // namespace Input

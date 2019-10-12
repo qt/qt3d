@@ -67,6 +67,7 @@ namespace Input {
 class AbstractAxisInput;
 class ButtonAxisInput;
 class InputHandler;
+class UpdateAxisActionJobPrivate;
 
 class UpdateAxisActionJob : public Qt3DCore::QAspectJob
 {
@@ -75,6 +76,8 @@ public:
     void run() final;
 
 private:
+    Q_DECLARE_PRIVATE(UpdateAxisActionJob)
+
     void updateAction(LogicalDevice *device);
     bool processActionInput(const Qt3DCore::QNodeId actionInputId);
     void updateAxis(LogicalDevice *device);

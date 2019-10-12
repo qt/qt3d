@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -62,7 +62,7 @@ namespace Input {
 
 class InputHandler;
 
-class Q_AUTOTEST_EXPORT AbstractActionInput : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT AbstractActionInput : public BackendNode
 {
 public:
     AbstractActionInput();

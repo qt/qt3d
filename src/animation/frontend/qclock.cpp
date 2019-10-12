@@ -36,7 +36,6 @@
 
 #include "qclock.h"
 #include "qclock_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

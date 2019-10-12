@@ -44,11 +44,9 @@
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <cmath>
+#include <algorithm>
 
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
@@ -132,51 +130,14 @@ Input::AxisSetting *QAbstractPhysicalDeviceBackendNodePrivate::getAxisSetting(Qt
     return axisSetting;
 }
 
-QVector<Input::AxisIdSetting> QAbstractPhysicalDeviceBackendNodePrivate::convertToAxisIdSettingVector(Qt3DCore::QNodeId axisSettingId) const
-{
-    const auto axisSetting = getAxisSetting(axisSettingId);
-    const auto axisIds = axisSetting->axes();
-
-    auto result = QVector<Input::AxisIdSetting>();
-    result.reserve(axisIds.size());
-    std::transform(axisIds.constBegin(), axisIds.constEnd(),
-                   std::back_inserter(result),
-                   [axisSettingId] (int axisId) {
-                       return Input::AxisIdSetting{ axisId, axisSettingId };
-                   });
-    return result;
-}
-
-void QAbstractPhysicalDeviceBackendNodePrivate::updatePendingAxisSettings()
-{
-    if (m_pendingAxisSettingIds.isEmpty())
-        return;
-
-    m_axisSettings = std::accumulate(
-                m_pendingAxisSettingIds.constBegin(), m_pendingAxisSettingIds.constEnd(),
-                QVector<Input::AxisIdSetting>(),
-                [this] (const QVector<Input::AxisIdSetting> &current, Qt3DCore::QNodeId axisSettingId) {
-                    return current + convertToAxisIdSettingVector(axisSettingId);
-                });
-    m_pendingAxisSettingIds.clear();
-}
-
 QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode)
-    : Qt3DCore::QBackendNode(*new QAbstractPhysicalDeviceBackendNodePrivate(mode))
+    : Input::BackendNode(*new QAbstractPhysicalDeviceBackendNodePrivate(mode))
 {
 }
 
 QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode(QAbstractPhysicalDeviceBackendNodePrivate &dd)
-    : Qt3DCore::QBackendNode(dd)
+    : Input::BackendNode(dd)
 {
-}
-
-void QAbstractPhysicalDeviceBackendNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto deviceChange = qSharedPointerCast<QPhysicalDeviceCreatedChangeBase>(change);
-    Q_D(QAbstractPhysicalDeviceBackendNode);
-    // Store the axis setting Ids. We will update the settings themselves when needed
-    d->m_pendingAxisSettingIds = deviceChange->axisSettingIds();
 }
 
 void QAbstractPhysicalDeviceBackendNode::cleanup()
@@ -188,33 +149,34 @@ void QAbstractPhysicalDeviceBackendNode::cleanup()
     d->m_inputAspect = nullptr;
 }
 
-void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void QAbstractPhysicalDeviceBackendNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
     Q_D(QAbstractPhysicalDeviceBackendNode);
-    switch (e->type()) {
-    case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("axisSettings")) {
-            const auto axisSettingId = change->addedNodeId();
-            Input::AxisSetting *axisSetting = d->getAxisSetting(axisSettingId);
-            const auto axisIds = axisSetting->axes();
-            for (int axisId : axisIds)
-                d->addAxisSetting(axisId, axisSettingId);
-        }
-        break;
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const Qt3DInput::QAbstractPhysicalDevice *node = qobject_cast<const Qt3DInput::QAbstractPhysicalDevice *>(frontEnd);
+    if (!node)
+        return;
 
-    case Qt3DCore::PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("axisSettings"))
-            d->removeAxisSetting(change->removedNodeId());
-        break;
-    }
+    auto settings = Qt3DCore::qIdsForNodes(node->axisSettings());
+    std::sort(std::begin(settings), std::end(settings));
+    Qt3DCore::QNodeIdVector addedSettings;
+    Qt3DCore::QNodeIdVector removedSettings;
+    std::set_difference(std::begin(settings), std::end(settings),
+                        std::begin(d->m_currentAxisSettingIds), std::end(d->m_currentAxisSettingIds),
+                        std::inserter(addedSettings, addedSettings.end()));
+    std::set_difference(std::begin(d->m_currentAxisSettingIds), std::end(d->m_currentAxisSettingIds),
+                        std::begin(settings), std::end(settings),
+                        std::inserter(removedSettings, removedSettings.end()));
+    d->m_currentAxisSettingIds = settings;
 
-    default:
-        break;
+    for (const auto &axisSettingId: qAsConst(addedSettings)) {
+        Input::AxisSetting *axisSetting = d->getAxisSetting(axisSettingId);
+        const auto axisIds = axisSetting->axes();
+        for (int axisId : axisIds)
+            d->addAxisSetting(axisId, axisSettingId);
     }
-    QBackendNode::sceneChangeEvent(e);
+    for (const auto &axisSettingId: qAsConst(removedSettings))
+        d->removeAxisSetting(axisSettingId);
 }
 
 void QAbstractPhysicalDeviceBackendNode::setInputAspect(QInputAspect *aspect)
@@ -232,7 +194,6 @@ QInputAspect *QAbstractPhysicalDeviceBackendNode::inputAspect() const
 float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier)
 {
     Q_D(QAbstractPhysicalDeviceBackendNode);
-    d->updatePendingAxisSettings();
 
     // Find axis settings for this axis (if any)
     Qt3DCore::QNodeId axisSettingId;
