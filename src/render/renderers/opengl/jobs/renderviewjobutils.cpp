@@ -513,7 +513,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
             // the shaderdata cannot hold transformed properties for multiple
             // thread contexts at once
             activeUniformNamesToValue.insert(StringToInt::lookupId(varName),
-                                             currentShaderData->getTransformedProperty(qmlPropertyName.toLatin1(), viewMatrix));
+                                             currentShaderData->getTransformedProperty(qmlPropertyName, viewMatrix));
         }
     }
 }
