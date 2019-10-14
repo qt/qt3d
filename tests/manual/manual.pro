@@ -66,7 +66,8 @@ SUBDIRS += \
     qtbug-72236 \
     qtbug-76766 \
     shader-image-qml \
-    scene3d-in-sync
+    scene3d-in-sync \
+    compressed_textures
 
 qtHaveModule(multimedia): {
     SUBDIRS += \
