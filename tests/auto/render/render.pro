@@ -41,6 +41,7 @@ qtConfig(private_tests) {
 #        qboundingvolumedebug \
 #        boundingvolumedebug \
         ddstextures \
+        ktxtextures \
         shadercache \
         layerfiltering \
         filterentitybycomponent \
