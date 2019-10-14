@@ -1483,6 +1483,11 @@ void QTextureLoader::setSource(const QUrl& source)
     Q_D(QTextureLoader);
     if (source != d->m_source) {
         d->m_source = source;
+
+        // Reset target and format
+        d->m_target = TargetAutomatic;
+        setFormat(NoFormat);
+
         d->updateGenerator();
         const bool blocked = blockNotifications(true);
         emit sourceChanged(source);
