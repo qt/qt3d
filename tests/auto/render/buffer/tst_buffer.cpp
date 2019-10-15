@@ -113,25 +113,39 @@ private Q_SLOTS:
 
         // GIVEN
         Qt3DRender::QBuffer frontendBuffer;
-        frontendBuffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
-        frontendBuffer.setData(QByteArrayLiteral("C7KR4"));
-        frontendBuffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(73)));
 
         // WHEN
         backendBuffer.setManager(&bufferManager);
         backendBuffer.setRenderer(&renderer);
         simulateInitializationSync(&frontendBuffer, &backendBuffer);
 
-        frontendBuffer.updateData(2, QByteArrayLiteral("LS5"));
+        // THEN
+        QCOMPARE(backendBuffer.isDirty(), true);
+        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
+        QVERIFY(backendBuffer.data().isEmpty());
+        QVERIFY(backendBuffer.dataGenerator().isNull());
+        QVERIFY(backendBuffer.pendingBufferUpdates().empty());
+
+        // WHEN
+        frontendBuffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
+        frontendBuffer.setData(QByteArrayLiteral("C7KR4"));
+        frontendBuffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(73)));
         backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
         QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::DynamicCopy);
         QCOMPARE(backendBuffer.isDirty(), true);
-        QCOMPARE(backendBuffer.data(), QByteArrayLiteral("C7LS5"));
+        QCOMPARE(backendBuffer.data(), QByteArrayLiteral("C7KR4"));
         QVERIFY(!backendBuffer.dataGenerator().isNull());
         QVERIFY(!backendBuffer.pendingBufferUpdates().empty());
 
+        // WHEN
+        frontendBuffer.updateData(2, QByteArrayLiteral("LS5"));
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
+
+        // THEN
+        QCOMPARE(backendBuffer.isDirty(), true);
+        QCOMPARE(backendBuffer.data(), QByteArrayLiteral("C7LS5"));
         // WHEN
         backendBuffer.cleanup();
 

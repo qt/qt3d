@@ -123,6 +123,7 @@ QVector<FrameGraphNode *> FrameGraphNode::children() const
 void FrameGraphNode::cleanup()
 {
     setParentId({});
+    markDirty(AbstractRenderer::FrameGraphDirty);
 }
 
 void FrameGraphNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
