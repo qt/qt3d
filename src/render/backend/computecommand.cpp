@@ -100,7 +100,10 @@ void ComputeCommand::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
         markDirty(AbstractRenderer::ComputeDirty);
     }
     const QComputeCommandPrivate *d = static_cast<const QComputeCommandPrivate *>(Qt3DCore::QNodePrivate::get(node));
-    if (d->m_frameCount != m_frameCount) {
+    // Check frame count only if frontend is enabled
+    // If disabled that means we might have disabled the frontend because
+    // framecount reached 0
+    if (d->m_enabled && d->m_frameCount != m_frameCount) {
         m_frameCount = d->m_frameCount;
         m_hasReachedFrameCount = m_frameCount <= 0;
         markDirty(AbstractRenderer::ComputeDirty);
