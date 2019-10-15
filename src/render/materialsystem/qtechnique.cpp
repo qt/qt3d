@@ -87,6 +87,8 @@ QTechniquePrivate::~QTechniquePrivate()
     QSurfaceFormat::setDefaultFormat(). Setting the QSurfaceFormat on the view
     will likely have no effect on Qt3D related rendering.
 
+    \note Technique node can not be disabled.
+
     \qml
     Technique {
         id: gl3Technique
@@ -151,6 +153,8 @@ QTechniquePrivate::~QTechniquePrivate()
     customize the QSurfaceFormat, do not forget to apply it with
     QSurfaceFormat::setDefaultFormat(). Setting the QSurfaceFormat on the view
     will likely have no effect on Qt3D related rendering.
+
+    \note QTechnique node can not be disabled.
 
     \code
     QTechnique *gl3Technique = new QTechnique();

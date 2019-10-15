@@ -202,12 +202,12 @@ void PickBoundingVolumeJob::setRoot(Entity *root)
 
 void PickBoundingVolumeJob::setMouseEvents(const QList<QPair<QObject*, QMouseEvent>> &pendingEvents)
 {
-    m_pendingMouseEvents = pendingEvents;
+    m_pendingMouseEvents.append(pendingEvents);
 }
 
 void PickBoundingVolumeJob::setKeyEvents(const QList<QKeyEvent> &pendingEvents)
 {
-    m_pendingKeyEvents = pendingEvents;
+    m_pendingKeyEvents.append(pendingEvents);
 }
 
 void PickBoundingVolumeJob::markPickersDirty()
