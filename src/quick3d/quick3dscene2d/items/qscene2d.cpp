@@ -70,6 +70,8 @@ namespace Quick {
     with the item; if an entity has a QObjectPicker component, the pick events from that picker
     are sent to the QScene2D and converted to mouse events and finally sent to the item.
 
+    \note Only mouse events are supported. The item does not support keyboard input.
+
     \since 5.9
 */
 
@@ -90,6 +92,8 @@ namespace Quick {
     The entities using the Scene2D can be associated with the type to enable interaction
     with the item; if an entity has an ObjectPicker component, the pick events from that picker
     are sent to the Scene2D and converted to mouse events and finally sent to the item.
+
+    \note Only mouse events are supported. The item does not support keyboard input.
 
     Usage:
     \qml
