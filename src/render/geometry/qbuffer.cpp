@@ -329,7 +329,7 @@ void QBuffer::setData(const QByteArray &bytes)
     Q_D(QBuffer);
     if (bytes != d->m_data) {
         d->m_data = bytes;
-        Qt3DCore::QNodePrivate::get(this)->update();
+        d->update();
         emit dataChanged(bytes);
     }
 }

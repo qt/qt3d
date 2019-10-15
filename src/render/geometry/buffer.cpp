@@ -130,8 +130,10 @@ void Buffer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     if (!node)
         return;
 
-    if (firstTime && m_manager != nullptr)
+    if (firstTime && m_manager != nullptr) {
         m_manager->addBufferReference(peerId());
+        m_bufferDirty = true;
+    }
 
     m_syncData = node->isSyncData();
     m_access = node->accessType();
