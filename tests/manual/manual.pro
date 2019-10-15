@@ -69,6 +69,8 @@ SUBDIRS += \
     scene3d-in-sync \
     compressed_textures
 
+!macos:!uikit: SUBDIRS += compute-manual
+
 qtHaveModule(multimedia): {
     SUBDIRS += \
         sharedtexture \
