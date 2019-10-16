@@ -211,8 +211,35 @@ private Q_SLOTS:
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         renderQueue->reset();
 
-        // WHEN (nothing dirty, no buffers, no layers to be rebuilt, no materials to be rebuilt)
+        // WHEN (nothing dirty, no buffers, no layers to be rebuilt, no materials to be rebuilt) (Nothing in cache)
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::FrameGraphDirty, nullptr);
+        jobs = renderer.renderBinJobs();
+
+        // THEN (level
+        QCOMPARE(jobs.size(),
+                 1 + // updateLevelOfDetailJob
+                 1 + // cleanupJob
+                 1 + // VAOGatherer
+                 1 + // updateSkinningPaletteJob
+                 1 + // SyncLoadingJobs
+                 1 + // sendDisablesToFrontend
+                 1 + // LightGathererJob
+                 1 + // CacheLightJob
+                 1 + // RenderableEntityFilterJob
+                 1 + // CacheRenderableEntitiesJob
+                 1 + // ComputableEntityFilterJob
+                 1 + // CacheComputableEntitiesJob
+                 singleRenderViewJobCount +
+                 singleRenderViewCommandRebuildJobCount +
+                 renderViewBuilderMaterialCacheJobCount +
+                 layerCacheJobCount);
+
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderQueue->reset();
+
+        // WHEN (nothing dirty, no buffers, no layers to be rebuilt, no materials to be rebuilt) (RV leaf in cache)
+        renderer.markDirty(Qt3DRender::Render::AbstractRenderer::FrameGraphDirty, nullptr);
+        renderer.cache()->leafNodeCache[renderer.m_frameGraphLeaves.first()] = {};
         jobs = renderer.renderBinJobs();
 
         // THEN (level

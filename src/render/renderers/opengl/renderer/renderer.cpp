@@ -1887,14 +1887,17 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
         const int fgBranchCount = m_frameGraphLeaves.size();
         for (int i = 0; i < fgBranchCount; ++i) {
-            RenderViewBuilder builder(m_frameGraphLeaves.at(i), i, this);
-            builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt);
-            builder.setRenderableCacheNeedsToBeRebuilt(renderableDirty);
-            builder.setComputableCacheNeedsToBeRebuilt(computeableDirty);
-            builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
-            builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt);
-            builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty);
-            builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty);
+            FrameGraphNode *leaf = m_frameGraphLeaves.at(i);
+            RenderViewBuilder builder(leaf, i, this);
+            // If we have a new RV (wasn't in the cache before, then it contains no cached data)
+            const bool isNewRV = !m_cache.leafNodeCache.contains(leaf);
+            builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt || isNewRV);
+            builder.setRenderableCacheNeedsToBeRebuilt(renderableDirty || isNewRV);
+            builder.setComputableCacheNeedsToBeRebuilt(computeableDirty || isNewRV);
+            builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty || isNewRV);
+            builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt || isNewRV);
+            builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty || isNewRV);
+            builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty || isNewRV);
 
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
