@@ -164,7 +164,7 @@ void QSubtreeEnabler::setEnablement(QSubtreeEnabler::Enablement enablement)
 /*!
     Requests that the subtree be enabled.
 
-    A conveninence method intended to be used with \c SingleShot enablement.
+    A convenience method intended to be used with \c SingleShot enablement.
  */
 void QSubtreeEnabler::requestUpdate()
 {
