@@ -310,23 +310,6 @@ QBuffer::~QBuffer()
 }
 
 /*!
- * \internal
- */
-void QBuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    if (change->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
-        const QByteArray propertyName = e->propertyName();
-        if (propertyName == QByteArrayLiteral("downloadedData")) {
-            const bool blocked = blockNotifications(true);
-            setData(e->value().toByteArray());
-            blockNotifications(blocked);
-            Q_EMIT dataAvailable();
-        }
-    }
-}
-
-/*!
  * Sets \a bytes as data.
  */
 void QBuffer::setData(const QByteArray &bytes)

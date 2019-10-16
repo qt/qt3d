@@ -88,7 +88,7 @@ private Q_SLOTS:
                  1); // SendRenderCaptureJob
 
         // WHEN
-        renderer.m_sendBufferCaptureJob->addRequest({nullptr, {}});
+        renderer.m_sendBufferCaptureJob->addRequest({Qt3DCore::QNodeId(), {}});
         jobs = renderer.preRenderingJobs();
 
         // THEN

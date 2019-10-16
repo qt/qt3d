@@ -401,7 +401,7 @@ private:
     QVector<HVao> m_abandonedVaos;
 
     QVector<HBuffer> m_dirtyBuffers;
-    QVector<HBuffer> m_downloadableBuffers;
+    QVector<Qt3DCore::QNodeId> m_downloadableBuffers;
     QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
     QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;

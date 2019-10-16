@@ -118,9 +118,6 @@ public Q_SLOTS:
     void setSyncData(bool syncData);
     void setAccessType(AccessType access);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
 Q_SIGNALS:
     void dataChanged(const QByteArray &bytes);
     void typeChanged(BufferType type);

@@ -306,6 +306,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
     m_updateEntityLayersJob->setManager(m_nodesManager);
     m_updateTreeEnabledJob->setManagers(m_nodesManager);
+    m_sendBufferCaptureJob->setManagers(m_nodesManager);
 }
 
 void Renderer::setServices(QServiceLocator *services)
@@ -1045,6 +1046,7 @@ void Renderer::lookForDirtyBuffers()
     }
 }
 
+// Called in prepareSubmission
 void Renderer::lookForDownloadableBuffers()
 {
     m_downloadableBuffers.clear();
@@ -1052,7 +1054,7 @@ void Renderer::lookForDownloadableBuffers()
     for (const HBuffer &handle : activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         if (buffer->access() & QBuffer::Read)
-            m_downloadableBuffers.push_back(handle);
+            m_downloadableBuffers.push_back(buffer->peerId());
     }
 }
 
@@ -1358,6 +1360,9 @@ void Renderer::updateGLResources()
         // Record ids of texture to cleanup while we are still blocking the aspect thread
         m_textureIdsToCleanup += m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
     }
+
+    // Record list of buffer that might need uploading
+    lookForDownloadableBuffers();
 }
 
 // Render Thread
@@ -1440,12 +1445,18 @@ void Renderer::cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId)
 // Called by SubmitRenderView
 void Renderer::downloadGLBuffers()
 {
-    lookForDownloadableBuffers();
-    const QVector<HBuffer> downloadableHandles = std::move(m_downloadableBuffers);
-    for (const HBuffer &handle : downloadableHandles) {
-        Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
-        QByteArray content = m_submissionContext->downloadBufferContent(buffer);
-        m_sendBufferCaptureJob->addRequest(QPair<Buffer*, QByteArray>(buffer, content));
+    const QVector<Qt3DCore::QNodeId> downloadableHandles = std::move(m_downloadableBuffers);
+    for (const Qt3DCore::QNodeId &bufferId : downloadableHandles) {
+        BufferManager *bufferManager = m_nodesManager->bufferManager();
+        BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
+        Buffer *buffer = bufferManager->lookupResource(bufferId);
+        // Buffer could have been destroyed at this point
+        if (!buffer)
+            continue;
+        // locker is protecting us from the buffer being destroy while we're looking
+        // up its content
+        const QByteArray content = m_submissionContext->downloadBufferContent(buffer);
+        m_sendBufferCaptureJob->addRequest(QPair<Qt3DCore::QNodeId, QByteArray>(bufferId, content));
     }
 }
 
