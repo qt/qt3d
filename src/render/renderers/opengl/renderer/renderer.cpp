@@ -93,6 +93,7 @@
 #include <Qt3DRender/private/subtreeenabler_p.h>
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
 #include <Qt3DRender/private/qshaderprogram_p.h>
+#include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -138,6 +139,82 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
+
+namespace {
+
+class SyncLightsGatherer
+{
+public:
+    explicit SyncLightsGatherer(LightGathererPtr gatherJob,
+                                RendererCache *cache)
+        : m_gatherJob(gatherJob)
+        , m_cache(cache)
+    {
+    }
+
+    void operator()()
+    {
+        QMutexLocker lock(m_cache->mutex());
+        m_cache->gatheredLights = m_gatherJob->lights();
+        m_cache->environmentLight = m_gatherJob->takeEnvironmentLight();
+    }
+
+private:
+    LightGathererPtr m_gatherJob;
+    RendererCache *m_cache;
+};
+
+class SyncRenderableEntities
+{
+public:
+    explicit SyncRenderableEntities(RenderableEntityFilterPtr gatherJob,
+                                    RendererCache *cache)
+        : m_gatherJob(gatherJob)
+        , m_cache(cache)
+    {
+    }
+
+    void operator()()
+    {
+        QVector<Entity *> selectedEntities = m_gatherJob->filteredEntities();
+        std::sort(selectedEntities.begin(), selectedEntities.end());
+
+        QMutexLocker lock(m_cache->mutex());
+        m_cache->renderableEntities = selectedEntities;
+    }
+
+private:
+    RenderableEntityFilterPtr m_gatherJob;
+    RendererCache *m_cache;
+};
+
+class SyncComputableEntities
+{
+public:
+    explicit SyncComputableEntities(ComputableEntityFilterPtr gatherJob,
+                                    RendererCache *cache)
+        : m_gatherJob(gatherJob)
+        , m_cache(cache)
+    {
+    }
+
+    void operator()()
+    {
+        QVector<Entity *> selectedEntities = m_gatherJob->filteredEntities();
+        std::sort(selectedEntities.begin(), selectedEntities.end());
+
+        QMutexLocker lock(m_cache->mutex());
+        m_cache->computeEntities = selectedEntities;
+    }
+
+private:
+    ComputableEntityFilterPtr m_gatherJob;
+    RendererCache *m_cache;
+};
+
+} // anonymous
+
+
 /*!
     \internal
 
@@ -193,6 +270,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_updateEntityLayersJob(Render::UpdateEntityLayersJobPtr::create())
+    , m_lightGathererJob(Render::LightGathererPtr::create())
+    , m_renderableEntityFilterJob(Render::RenderableEntityFilterPtr::create())
+    , m_computableEntityFilterJob(Render::ComputableEntityFilterPtr::create())
     , m_bufferGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(SynchronizerJobPtr::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
@@ -207,6 +287,12 @@ Renderer::Renderer(QRenderAspect::RenderType type)
                                                              [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
                                                              JobTypes::DirtyShaderGathering))
     , m_syncLoadingJobs(SynchronizerJobPtr::create([] {}, JobTypes::SyncLoadingJobs))
+    , m_cacheRenderableEntitiesJob(SynchronizerJobPtr::create(SyncRenderableEntities(m_renderableEntityFilterJob, &m_cache),
+                                                              JobTypes::EntityComponentTypeFiltering))
+    , m_cacheComputableEntitiesJob(SynchronizerJobPtr::create(SyncComputableEntities(m_computableEntityFilterJob, &m_cache),
+                                                              JobTypes::EntityComponentTypeFiltering))
+    , m_cacheLightsJob(SynchronizerJobPtr::create(SyncLightsGatherer(m_lightGathererJob, &m_cache),
+                                                  JobTypes::EntityComponentTypeFiltering))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
     , m_shouldSwapBuffers(true)
@@ -239,6 +325,10 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_rayCastingJob->addDependency(m_updateMeshTriangleListJob);
 
     m_introspectShaderJob->addDependency(m_filterCompatibleTechniqueJob);
+
+    m_cacheLightsJob->addDependency(m_lightGathererJob);
+    m_cacheRenderableEntitiesJob->addDependency(m_renderableEntityFilterJob);
+    m_cacheComputableEntitiesJob->addDependency(m_computableEntityFilterJob);
 
     m_filterCompatibleTechniqueJob->setRenderer(this);
 
@@ -309,6 +399,9 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateEntityLayersJob->setManager(m_nodesManager);
     m_updateTreeEnabledJob->setManagers(m_nodesManager);
     m_sendBufferCaptureJob->setManagers(m_nodesManager);
+    m_lightGathererJob->setManager(m_nodesManager->renderNodesManager());
+    m_renderableEntityFilterJob->setManager(m_nodesManager->renderNodesManager());
+    m_computableEntityFilterJob->setManager(m_nodesManager->renderNodesManager());
 }
 
 void Renderer::setServices(QServiceLocator *services)
@@ -1862,6 +1955,21 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     if (layersDirty)
         renderBinJobs.push_back(m_updateEntityLayersJob);
 
+    if (renderableDirty) {
+        renderBinJobs.push_back(m_renderableEntityFilterJob);
+        renderBinJobs.push_back(m_cacheRenderableEntitiesJob);
+    }
+
+    if (computeableDirty) {
+        renderBinJobs.push_back(m_computableEntityFilterJob);
+        renderBinJobs.push_back(m_cacheComputableEntitiesJob);
+    }
+
+    if (lightsDirty) {
+        renderBinJobs.push_back(m_lightGathererJob);
+        renderBinJobs.push_back(m_cacheLightsJob);
+    }
+
     QMutexLocker lock(m_renderQueue->mutex());
     if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
         // Traverse the current framegraph. For each leaf node create a
@@ -1892,11 +2000,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             // If we have a new RV (wasn't in the cache before, then it contains no cached data)
             const bool isNewRV = !m_cache.leafNodeCache.contains(leaf);
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt || isNewRV);
-            builder.setRenderableCacheNeedsToBeRebuilt(renderableDirty || isNewRV);
-            builder.setComputableCacheNeedsToBeRebuilt(computeableDirty || isNewRV);
-            builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty || isNewRV);
             builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt || isNewRV);
-            builder.setLightGathererCacheNeedsToBeRebuilt(lightsDirty || isNewRV);
             builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty || isNewRV);
 
             builder.prepareJobs();

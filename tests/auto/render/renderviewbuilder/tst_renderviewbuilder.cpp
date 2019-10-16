@@ -52,6 +52,7 @@
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -280,39 +281,6 @@ private Q_SLOTS:
             // mark jobs dirty and recheck
             QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 9 + 2 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
         }
-
-        {
-            // WHEN
-            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
-            renderViewBuilder.setLightGathererCacheNeedsToBeRebuilt(true);
-            renderViewBuilder.prepareJobs();
-
-             // THEN
-            QCOMPARE(renderViewBuilder.lightGathererCacheNeedsToBeRebuilt(), true);
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 10 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
-        }
-
-        {
-            // WHEN
-            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
-            renderViewBuilder.setRenderableCacheNeedsToBeRebuilt(true);
-            renderViewBuilder.prepareJobs();
-
-             // THEN
-            QCOMPARE(renderViewBuilder.renderableCacheNeedsToBeRebuilt(), true);
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 10 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
-        }
-
-        {
-            // WHEN
-            Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
-            renderViewBuilder.setComputableCacheNeedsToBeRebuilt(true);
-            renderViewBuilder.prepareJobs();
-
-             // THEN
-            QCOMPARE(renderViewBuilder.computableCacheNeedsToBeRebuilt(), true);
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 10 + 1 * Qt3DRender::Render::RenderViewBuilder::optimalJobCount());
-        }
     }
 
     void checkCheckJobDependencies()
@@ -365,13 +333,14 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
 
 
-            QCOMPARE(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 6);
+            QCOMPARE(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 7);
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.filterProximityJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.frustumCullingJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->bufferGathererJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->textureGathererJob()));
+            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->cacheLightJob()));
 
             // Step 5
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewCommandUpdaterJobs()) {
@@ -487,21 +456,18 @@ private Q_SLOTS:
         Qt3DRender::QViewport *viewport = new Qt3DRender::QViewport();
         Qt3DRender::QClearBuffers *clearBuffer = new Qt3DRender::QClearBuffers(viewport);
         Qt3DRender::TestAspect testAspect(buildSimpleScene(viewport));
+        Qt3DRender::Render::Renderer *renderer = testAspect.renderer();
 
         // THEN
         Qt3DRender::Render::FrameGraphNode *leafNode = testAspect.nodeManagers()->frameGraphManager()->lookupNode(clearBuffer->id());
         QVERIFY(leafNode != nullptr);
 
         // WHEN
-        Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
-        renderViewBuilder.setLightGathererCacheNeedsToBeRebuilt(true);
-        renderViewBuilder.prepareJobs();
-        renderViewBuilder.buildJobHierachy();
-        renderViewBuilder.lightGathererJob()->run();
+        renderer->lightGathererJob()->run();
 
         // THEN
-        QCOMPARE(renderViewBuilder.lightGathererJob()->lights().size(), 2);
-        QVERIFY(renderViewBuilder.lightGathererJob()->takeEnvironmentLight() != nullptr);
+        QCOMPARE(renderer->lightGathererJob()->lights().size(), 2);
+        QVERIFY(renderer->lightGathererJob()->takeEnvironmentLight() != nullptr);
     }
 
     void checkRenderableEntitiesFilteringExecution()
@@ -510,20 +476,17 @@ private Q_SLOTS:
         Qt3DRender::QViewport *viewport = new Qt3DRender::QViewport();
         Qt3DRender::QClearBuffers *clearBuffer = new Qt3DRender::QClearBuffers(viewport);
         Qt3DRender::TestAspect testAspect(buildSimpleScene(viewport));
+        Qt3DRender::Render::Renderer *renderer = testAspect.renderer();
 
         // THEN
         Qt3DRender::Render::FrameGraphNode *leafNode = testAspect.nodeManagers()->frameGraphManager()->lookupNode(clearBuffer->id());
         QVERIFY(leafNode != nullptr);
 
         // WHEN
-        Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
-        renderViewBuilder.setRenderableCacheNeedsToBeRebuilt(true);
-        renderViewBuilder.prepareJobs();
-        renderViewBuilder.buildJobHierachy();
-        renderViewBuilder.renderableEntityFilterJob()->run();
+        renderer->renderableEntityFilterJob()->run();
 
         // THEN
-        QCOMPARE(renderViewBuilder.renderableEntityFilterJob()->filteredEntities().size(), 1);
+        QCOMPARE(renderer->renderableEntityFilterJob()->filteredEntities().size(), 1);
     }
 
     void checkComputableEntitiesFilteringExecution()
@@ -532,20 +495,17 @@ private Q_SLOTS:
         Qt3DRender::QViewport *viewport = new Qt3DRender::QViewport();
         Qt3DRender::QClearBuffers *clearBuffer = new Qt3DRender::QClearBuffers(viewport);
         Qt3DRender::TestAspect testAspect(buildSimpleScene(viewport));
+        Qt3DRender::Render::Renderer *renderer = testAspect.renderer();
 
         // THEN
         Qt3DRender::Render::FrameGraphNode *leafNode = testAspect.nodeManagers()->frameGraphManager()->lookupNode(clearBuffer->id());
         QVERIFY(leafNode != nullptr);
 
         // WHEN
-        Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
-        renderViewBuilder.setComputableCacheNeedsToBeRebuilt(true);
-        renderViewBuilder.prepareJobs();
-        renderViewBuilder.buildJobHierachy();
-        renderViewBuilder.computableEntityFilterJob()->run();
+        renderer->computableEntityFilterJob()->run();
 
         // THEN
-        QCOMPARE(renderViewBuilder.computableEntityFilterJob()->filteredEntities().size(), 1);
+        QCOMPARE(renderer->computableEntityFilterJob()->filteredEntities().size(), 1);
     }
 
     void checkSyncRenderViewInitializationExecution()
@@ -662,24 +622,28 @@ private Q_SLOTS:
         Qt3DRender::QLayer *layer = new Qt3DRender::QLayer();
         layerFilter->addLayer(layer);
         Qt3DRender::TestAspect testAspect(buildEntityFilterTestScene(viewport, layer));
+        Qt3DRender::Render::Renderer *renderer = testAspect.renderer();
 
         // THEN
         Qt3DRender::Render::FrameGraphNode *leafNode = testAspect.nodeManagers()->frameGraphManager()->lookupNode(layerFilter->id());
         QVERIFY(leafNode != nullptr);
 
         // WHEN
+        renderer->markDirty(Qt3DRender::Render::AbstractRenderer::AllDirty, nullptr);
+
         Qt3DRender::Render::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
         renderViewBuilder.setLayerCacheNeedsToBeRebuilt(true);
-        renderViewBuilder.setRenderableCacheNeedsToBeRebuilt(true);
         renderViewBuilder.prepareJobs();
         renderViewBuilder.buildJobHierachy();
 
+        renderer->renderableEntityFilterJob()->run();
+        renderer->cacheRenderableEntitiesJob()->run();
+
         renderViewBuilder.renderViewJob()->run();
-        renderViewBuilder.renderableEntityFilterJob()->run();
         renderViewBuilder.syncRenderViewPostInitializationJob()->run();
         renderViewBuilder.filterEntityByLayerJob()->run();
 
-        QVector<Qt3DRender::Render::Entity *> renderableEntity = renderViewBuilder.renderableEntityFilterJob()->filteredEntities();
+        QVector<Qt3DRender::Render::Entity *> renderableEntity = renderer->renderableEntityFilterJob()->filteredEntities();
         QVector<Qt3DRender::Render::Entity *> filteredEntity = renderViewBuilder.filterEntityByLayerJob()->filteredEntities();
 
         // THEN
