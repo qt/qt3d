@@ -58,6 +58,15 @@ QBufferPrivate::QBufferPrivate()
 {
 }
 
+void QBufferPrivate::setData(const QByteArray &data)
+{
+    Q_Q(QBuffer);
+    const bool blocked = q->blockNotifications(true);
+    m_data = data;
+    emit q->dataChanged(data);
+    q->blockNotifications(blocked);
+}
+
 /*!
  * \qmltype Buffer
  * \instantiates Qt3DRender::QBuffer
@@ -308,11 +317,7 @@ void QBuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     if (change->type() == PropertyUpdated) {
         QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
         const QByteArray propertyName = e->propertyName();
-        if (propertyName == QByteArrayLiteral("data")) {
-            const bool blocked = blockNotifications(true);
-            setData(e->value().toByteArray());
-            blockNotifications(blocked);
-        } else if (propertyName == QByteArrayLiteral("downloadedData")) {
+        if (propertyName == QByteArrayLiteral("downloadedData")) {
             const bool blocked = blockNotifications(true);
             setData(e->value().toByteArray());
             blockNotifications(blocked);
@@ -328,9 +333,8 @@ void QBuffer::setData(const QByteArray &bytes)
 {
     Q_D(QBuffer);
     if (bytes != d->m_data) {
-        d->m_data = bytes;
+        d->setData(bytes);
         d->update();
-        emit dataChanged(bytes);
     }
 }
 
