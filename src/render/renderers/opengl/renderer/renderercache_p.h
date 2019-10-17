@@ -70,7 +70,7 @@ struct RendererCache
     {
         QVector<Entity *> filterEntitiesByLayer;
         MaterialParameterGathererData materialParameterGatherer;
-        QVector<EntityRenderCommandData> renderCommandData;
+        EntityRenderCommandData renderCommandData;
     };
 
     // Shared amongst all RV cache

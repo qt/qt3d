@@ -268,11 +268,7 @@ public:
             // This should happen fairly infrequently (FrameGraph Change, Geometry/Material change)
             // and allow to skip that step most of the time
             if (m_fullRebuild) {
-                // Clear previous cache
-                RendererCache::LeafNodeData &writableCacheForLeaf = cache->leafNodeCache[m_leafNode];
-                writableCacheForLeaf.renderCommandData.clear();
-
-                QVector<EntityRenderCommandData> commandData;
+                EntityRenderCommandData commandData;
                 // Reduction
                 {
                     int totalCommandCount = 0;
@@ -282,10 +278,12 @@ public:
                     for (const RenderViewCommandBuilderJobPtr &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
                         commandData += std::move(renderViewCommandBuilder->commandData());
                 }
-                // Store in cache
+
+                // Store new cache
+                RendererCache::LeafNodeData &writableCacheForLeaf = cache->leafNodeCache[m_leafNode];
                 writableCacheForLeaf.renderCommandData = std::move(commandData);
             }
-            const QVector<EntityRenderCommandData> commandData = dataCacheForLeaf.renderCommandData;
+            const EntityRenderCommandData commandData = dataCacheForLeaf.renderCommandData;
 
             const QVector<Entity *> filteredEntities = dataCacheForLeaf.filterEntitiesByLayer;
             QVector<Entity *> renderableEntities = isDraw ? cache->renderableEntities : cache->computeEntities;
@@ -317,26 +315,28 @@ public:
 
             // Filter out Render commands for which the Entity wasn't selected because
             // of frustum, proximity or layer filtering
-            QVector<EntityRenderCommandData *> filteredCommandData;
+            EntityRenderCommandData filteredCommandData;
             filteredCommandData.reserve(renderableEntities.size());
             // Because dataCacheForLeaf.renderableEntities or computeEntities are sorted
             // What we get out of EntityRenderCommandData is also sorted by Entity
             auto eIt = std::cbegin(renderableEntities);
-            auto cIt = std::cbegin(commandData);
             const auto eEnd = std::cend(renderableEntities);
-            const auto cEnd = std::cend(commandData);
+            int cIt = 0;
+            const int cEnd = commandData.size();
 
             while (eIt != eEnd) {
                 const Entity *targetEntity = *eIt;
                 // Advance until we have commands whose Entity has a lower address
                 // than the selected filtered entity
-                while (cIt->entity < targetEntity && cIt != cEnd)
+                while (cIt != cEnd && commandData.entities.at(cIt) < targetEntity)
                     ++cIt;
 
                 // Push pointers to command data for all commands that match the
                 // entity
-                while (cIt->entity == targetEntity && cIt != cEnd) {
-                    filteredCommandData.push_back(const_cast<EntityRenderCommandData *>(&(*cIt)));
+                while (cIt != cEnd && commandData.entities.at(cIt) == targetEntity) {
+                    filteredCommandData.push_back(commandData.entities.at(cIt),
+                                                  commandData.commands.at(cIt),
+                                                  commandData.passesData.at(cIt));
                     ++cIt;
                 }
                 ++eIt;

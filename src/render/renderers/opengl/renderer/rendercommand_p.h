@@ -131,10 +131,57 @@ inline bool operator!=(const RenderCommand &lhs, const RenderCommand &rhs) noexc
 
 struct EntityRenderCommandData
 {
-    Entity *entity;
-    RenderCommand command;
-    RenderPassParameterData passData;
+    QVector<Entity *> entities;
+    QVector<RenderCommand> commands;
+    QVector<RenderPassParameterData> passesData;
+
+    void reserve(int size)
+    {
+        entities.reserve(size);
+        commands.reserve(size);
+        passesData.reserve(size);
+    }
+
+    inline int size() const { return entities.size(); }
+
+    inline void push_back(Entity *e, const RenderCommand &c, const RenderPassParameterData &p)
+    {
+        entities.push_back(e);
+        commands.push_back(c);
+        passesData.push_back(p);
+    }
+
+    inline void push_back(Entity *e, RenderCommand &&c, RenderPassParameterData &&p)
+    {
+        entities.push_back(e);
+        commands.push_back(std::move(c));
+        passesData.push_back(std::move(p));
+    }
+
+    EntityRenderCommandData &operator+=(const EntityRenderCommandData &t)
+    {
+        entities += t.entities;
+        commands += t.commands;
+        passesData += t.passesData;
+        return *this;
+    }
+
+    EntityRenderCommandData &operator+=(EntityRenderCommandData &&t)
+    {
+        entities += std::move(t.entities);
+        commands += std::move(t.commands);
+        passesData += std::move(t.passesData);
+        return *this;
+    }
+
+    EntityRenderCommandData mid(int idx, int len) const
+    {
+        return { entities.mid(idx, len), commands.mid(idx, len), passesData.mid(idx, len) };
+    }
+
+
 };
+
 
 } // namespace Render
 

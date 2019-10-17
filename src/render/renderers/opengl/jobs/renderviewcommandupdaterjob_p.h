@@ -71,7 +71,7 @@ public:
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
     inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
-    inline void setRenderables(const QVector<EntityRenderCommandData *> &renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
+    inline void setRenderables(const EntityRenderCommandData &renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
 
     QVector<RenderCommand> &commands() Q_DECL_NOTHROW { return m_commands; }
 
@@ -80,7 +80,7 @@ public:
 private:
     RenderView *m_renderView;
     Renderer *m_renderer;
-    QVector<EntityRenderCommandData *> m_renderables;
+    EntityRenderCommandData m_renderables;
     QVector<RenderCommand> m_commands;
 };
 
