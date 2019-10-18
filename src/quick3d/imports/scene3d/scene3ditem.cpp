@@ -68,7 +68,6 @@
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
-#include <scene3dcleaner_p.h>
 #include <scene3dlogging_p.h>
 #include <scene3drenderer_p.h>
 #include <scene3dsgnode_p.h>
@@ -150,8 +149,8 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_viewHolderFG(nullptr)
     , m_aspectEngine(new Qt3DCore::QAspectEngine())
     , m_renderAspect(nullptr)
+    , m_aspectToDelete(nullptr)
     , m_renderer(nullptr)
-    , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
     , m_dirty(true)
     , m_dirtyViews(false)
@@ -179,6 +178,8 @@ Scene3DItem::~Scene3DItem()
     // When the window is closed, it first destroys all of its children. At
     // this point, Scene3DItem is destroyed but the Renderer, AspectEngine and
     // Scene3DSGNode still exist and will perform their cleanup on their own.
+    m_aspectEngine->deleteLater();
+    m_renderer->deleteLater();
 }
 
 /*!
@@ -204,18 +205,11 @@ QStringList Scene3DItem::aspects() const
  */
 Qt3DCore::QEntity *Scene3DItem::entity() const
 {
-    return m_entity;
+    return m_entity.data();
 }
 
-void Scene3DItem::setAspects(const QStringList &aspects)
+void Scene3DItem::applyAspects()
 {
-    if (!m_aspects.isEmpty()) {
-        qCWarning(Scene3D) << "Aspects already set on the Scene3D, ignoring";
-        return;
-    }
-
-    m_aspects = aspects;
-
     // Aspects are owned by the aspect engine
     for (const QString &aspect : qAsConst(m_aspects)) {
         if (aspect == QLatin1String("render")) // This one is hardwired anyway
@@ -246,16 +240,26 @@ void Scene3DItem::setAspects(const QStringList &aspects)
         }
         m_aspectEngine->registerAspect(aspect);
     }
+}
+
+void Scene3DItem::setAspects(const QStringList &aspects)
+{
+    if (!m_aspects.isEmpty()) {
+        qWarning() << "Aspects already set on the Scene3D, ignoring";
+        return;
+    }
+
+    m_aspects = aspects;
 
     emit aspectsChanged();
 }
 
 void Scene3DItem::setEntity(Qt3DCore::QEntity *entity)
 {
-    if (entity == m_entity)
+    if (entity == m_entity.data())
         return;
 
-    m_entity = entity;
+    m_entity.reset(entity);
     emit entityChanged();
 }
 
@@ -398,14 +402,21 @@ void Scene3DItem::removeView(Scene3DView *view)
 
 void Scene3DItem::applyRootEntityChange()
 {
-    if (m_aspectEngine->rootEntity() != m_entity) {
-        m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_entity));
+    if (m_aspectEngine->rootEntity() != m_entity.data()) {
+        m_aspectEngine->setRootEntity(m_entity);
+
+        /* If we changed window, the old aspect engine must be deleted only after we have set
+           the root entity for the new one so that it doesn't delete the root node. */
+        if (m_aspectToDelete) {
+            delete m_aspectToDelete;
+            m_aspectToDelete = nullptr;
+        }
 
         // Set the render surface
         if (!m_entity)
             return;
 
-        setWindowSurface(m_entity);
+        setWindowSurface(entity());
 
         if (m_cameraAspectRatioMode == AutomaticAspectRatio) {
             // Set aspect ratio of first camera to match the window
@@ -481,6 +492,8 @@ void Scene3DItem::onBeforeSync()
     // if the Scene3D item is not visible
     if (!isVisible() && dontRenderWhenHidden)
         return;
+    if (m_renderer->m_resetRequested)
+        return;
 
     Q_ASSERT(QThread::currentThread() == thread());
 
@@ -496,7 +509,7 @@ void Scene3DItem::onBeforeSync()
     // Make renderer aware of any Scene3DView we are dealing with
     if (m_dirtyViews) {
         // Scene3DViews checks
-        if (m_entity != m_viewHolderEntity) {
+        if (entity() != m_viewHolderEntity) {
             qCWarning(Scene3D) << "Scene3DView is not supported if the Scene3D entity property has been set";
         }
         if (!usesFBO) {
@@ -544,29 +557,47 @@ void Scene3DItem::requestUpdate()
     }
 }
 
+void Scene3DItem::updateWindowSurface()
+{
+    if (!m_entity || !m_dummySurface)
+        return;
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector =
+        Qt3DRender::QRenderSurfaceSelectorPrivate::find(entity());
+    if (surfaceSelector) {
+        if (QWindow *rw = QQuickRenderControl::renderWindowFor(this->window())) {
+            m_dummySurface->deleteLater();
+            createDummySurface(rw, surfaceSelector);
+        }
+    }
+}
+
 void Scene3DItem::setWindowSurface(QObject *rootObject)
 {
     Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(rootObject);
-
     // Set the item's window surface if it appears
     // the surface wasn't set on the surfaceSelector
     if (surfaceSelector && !surfaceSelector->surface()) {
         // We may not have a real, exposed QQuickWindow when the Quick rendering
         // is redirected via QQuickRenderControl (f.ex. QQuickWidget).
         if (QWindow *rw = QQuickRenderControl::renderWindowFor(this->window())) {
-            // rw is the top-level window that is backed by a native window. Do
-            // not use that though since we must not clash with e.g. the widget
-            // backingstore compositor in the gui thread.
-            m_dummySurface = new QOffscreenSurface;
-            m_dummySurface->setParent(qGuiApp); // parent to something suitably long-living
-            m_dummySurface->setFormat(rw->format());
-            m_dummySurface->setScreen(rw->screen());
-            m_dummySurface->create();
-            surfaceSelector->setSurface(m_dummySurface);
+            createDummySurface(rw, surfaceSelector);
         } else {
             surfaceSelector->setSurface(this->window());
         }
     }
+}
+
+void Scene3DItem::createDummySurface(QWindow *rw, Qt3DRender::QRenderSurfaceSelector *surfaceSelector)
+{
+    // rw is the top-level window that is backed by a native window. Do
+    // not use that though since we must not clash with e.g. the widget
+    // backingstore compositor in the gui thread.
+    m_dummySurface = new QOffscreenSurface;
+    m_dummySurface->setParent(qGuiApp); // parent to something suitably long-living
+    m_dummySurface->setFormat(rw->format());
+    m_dummySurface->setScreen(rw->screen());
+    m_dummySurface->create();
+    surfaceSelector->setSurface(m_dummySurface);
 }
 /*!
     \qmlmethod void Scene3D::setItemAreaAndDevicePixelRatio(size area, real devicePixelRatio)
@@ -575,7 +606,8 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
  */
 void Scene3DItem::setItemAreaAndDevicePixelRatio(QSize area, qreal devicePixelRatio)
 {
-    Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(m_entity);
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
+            = Qt3DRender::QRenderSurfaceSelectorPrivate::find(entity());
     if (surfaceSelector) {
         surfaceSelector->setExternalRenderTargetSize(area);
         surfaceSelector->setSurfacePixelRatio(devicePixelRatio);
@@ -665,6 +697,16 @@ void Scene3DItem::setMultisample(bool enable)
 
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
 {
+    // m_resetRequested is set to true by Scene3DRenderer::shutdown()
+    if (m_renderer && m_renderer->m_resetRequested) {
+        QObject::disconnect(m_windowConnection);
+        m_renderAspect = nullptr;
+        m_aspectToDelete = m_aspectEngine;
+        m_aspectEngine = new Qt3DCore::QAspectEngine();
+        m_aspectEngine->setRunMode(Qt3DCore::QAspectEngine::Manual);
+        applyAspects();
+        m_renderer->m_resetRequested = false;
+    }
     // If the render aspect wasn't created yet, do so now
     if (m_renderAspect == nullptr) {
         m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
@@ -675,16 +717,24 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
 
         // Before Synchronizing is in the SG Thread, we want beforeSync to be triggered
         // in the context of the main thread
-        QObject::connect(window(), &QQuickWindow::afterAnimating,
-                         this, &Scene3DItem::onBeforeSync, Qt::DirectConnection);
+        m_windowConnection = QObject::connect(window(), &QQuickWindow::afterAnimating,
+                                    this, &Scene3DItem::onBeforeSync, Qt::DirectConnection);
         auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
         QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
                          this, [this] { m_dirty = true; }, Qt::DirectConnection);
     }
 
     if (m_renderer == nullptr) {
-        m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
-        m_renderer->setCleanerHelper(m_rendererCleaner);
+        m_renderer = new Scene3DRenderer();
+        m_renderer->init(this, m_aspectEngine, m_renderAspect);
+    } else if (m_renderer->renderAspect() != m_renderAspect) {
+        // If the renderer's renderAspect is not equal to the aspect used
+        // by the item, then it means that we have created a new one due to
+        // the fact that shutdown() was called on the renderer previously.
+        // This is a typical situation when the window the item is in has
+        // moved from one screen to another.
+        updateWindowSurface();
+        m_renderer->init(this, m_aspectEngine, m_renderAspect);
     }
     const bool usesFBO = m_compositingMode == FBO;
     const bool hasScene3DViews = !m_views.empty();
