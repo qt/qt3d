@@ -244,13 +244,13 @@ void Shader::prepareUniforms(ShaderParameterPack &pack)
 {
     const PackUniformHash &values = pack.uniforms();
 
-    auto it = values.cbegin();
-    const auto end = values.cend();
+    auto it = values.keys.cbegin();
+    const auto end = values.keys.cend();
 
     while (it != end) {
         // Find if there's a uniform with the same name id
         for (const ShaderUniform &uniform : qAsConst(m_uniforms)) {
-            if (uniform.m_nameId == it.key()) {
+            if (uniform.m_nameId == *it) {
                 pack.setSubmissionUniform(uniform);
                 break;
             }

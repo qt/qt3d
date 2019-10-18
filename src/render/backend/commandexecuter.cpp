@@ -248,10 +248,10 @@ QJsonObject parameterPackToJson(const Render::ShaderParameterPack &pack)
 
     const Render::PackUniformHash &uniforms = pack.uniforms();
     QJsonArray uniformsArray;
-    for (auto it = uniforms.cbegin(), end = uniforms.cend(); it != end; ++it) {
+    for (int i = 0, m = uniforms.keys.size(); i < m; ++i) {
         QJsonObject uniformObj;
-        uniformObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(it.key()));
-        const Render::UniformValue::ValueType type = it.value().valueType();
+        uniformObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(uniforms.keys.at(i)));
+        const Render::UniformValue::ValueType type = uniforms.values.at(i).valueType();
         uniformObj.insert(QLatin1String("type"),
                           type == Render::UniformValue::ScalarValue
                           ? QLatin1String("value")

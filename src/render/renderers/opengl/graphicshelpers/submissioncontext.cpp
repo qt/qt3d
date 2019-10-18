@@ -1171,7 +1171,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
         if (uniformValues.contains(namedTex.glslNameId)) {
             GLTexture *t = manager->glTextureManager()->lookupResource(namedTex.nodeId);
             if (t != nullptr) {
-                UniformValue &texUniform = uniformValues[namedTex.glslNameId];
+                UniformValue &texUniform = uniformValues.value(namedTex.glslNameId);
                 if (texUniform.valueType() == UniformValue::TextureValue) {
                     const int texUnit = m_textureContext.activateTexture(TextureSubmissionContext::TextureScopeMaterial, m_gl, t);
                     texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
@@ -1201,7 +1201,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
                     qCWarning(Backend) << "Shader Image referencing invalid texture";
                     continue;
                 } else {
-                    UniformValue &imgUniform = uniformValues[namedTex.glslNameId];
+                    UniformValue &imgUniform = uniformValues.value(namedTex.glslNameId);
                     if (imgUniform.valueType() == UniformValue::ShaderImageValue) {
                         const int imgUnit = m_imageContext.activateImage(img, t);
                         imgUniform.data<int>()[namedTex.uniformArrayIndex] = imgUnit;
@@ -1260,7 +1260,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     for (const ShaderUniform &uniform : activeUniforms) {
         // We can use [] as we are sure the the uniform wouldn't
         // be un activeUniforms if there wasn't a matching value
-        const UniformValue &v = values[uniform.m_nameId];
+        const UniformValue &v = values.value(uniform.m_nameId);
 
         // skip invalid textures/images
         if ((v.valueType() == UniformValue::TextureValue ||

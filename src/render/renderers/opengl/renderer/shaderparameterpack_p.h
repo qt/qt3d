@@ -89,7 +89,56 @@ struct BlockToSSBO {
 QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, BlockToSSBO, Q_PRIMITIVE_TYPE)
 
 
-typedef QHash<int, UniformValue> PackUniformHash;
+struct PackUniformHash
+{
+    QVector<int> keys;
+    QVector<UniformValue> values;
+
+    PackUniformHash()
+    {
+        keys.reserve(10);
+        values.reserve(10);
+    }
+
+    void insert(int key, const UniformValue &value)
+    {
+        const int idx = keys.indexOf(key);
+        if (idx != -1) {
+            values[idx] = value;
+        } else {
+            keys.push_back(key);
+            values.push_back(value);
+        }
+    }
+
+    UniformValue value(int key) const
+    {
+        const int idx = keys.indexOf(key);
+        if (idx != -1)
+            return values.at(idx);
+        return UniformValue();
+    }
+
+    UniformValue& value(int key)
+    {
+        const int idx = keys.indexOf(key);
+        if (idx != -1)
+            return values[idx];
+        insert(key, UniformValue());
+        return value(key);
+    }
+
+    void erase(int idx)
+    {
+        keys.removeAt(idx);
+        values.removeAt(idx);
+    }
+
+    bool contains(int key) const
+    {
+        return keys.contains(key);
+    }
+};
 
 class Q_AUTOTEST_EXPORT ShaderParameterPack
 {
