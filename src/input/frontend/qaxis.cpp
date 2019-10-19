@@ -115,7 +115,7 @@ void QAxis::addInput(QAbstractAxisInput *input)
 
         // Ensures proper bookkeeping
         d->registerDestructionHelper(input, &QAxis::removeInput, d->m_inputs);
-        d->update();
+        d->updateNode(input, "input", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -137,7 +137,7 @@ void QAxis::removeInput(QAbstractAxisInput *input)
     Q_D(QAxis);
     if (d->m_inputs.contains(input)) {
 
-        d->update();
+        d->updateNode(input, "input", Qt3DCore::PropertyValueRemoved);
 
         d->m_inputs.removeOne(input);
 

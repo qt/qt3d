@@ -91,6 +91,8 @@
 #include <Qt3DRender/private/renderviewbuilder_p.h>
 #include <Qt3DRender/private/setfence_p.h>
 #include <Qt3DRender/private/subtreeenabler_p.h>
+#include <Qt3DRender/private/qshaderprogrambuilder_p.h>
+#include <Qt3DRender/private/qshaderprogram_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -191,16 +193,18 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_updateEntityLayersJob(Render::UpdateEntityLayersJobPtr::create())
-    , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
-    , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
-    , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
-    , m_sendTextureChangesToFrontendJob(decltype(m_sendTextureChangesToFrontendJob)::create([] {},
-                                                                                            [this] (Qt3DCore::QAspectManager *m) { sendTextureChangesToFrontend(m); },
-                                                                                            JobTypes::SendTextureChangesToFrontend))
-    , m_sendSetFenceHandlesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
-    , m_sendDisablesToFrontendJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { sendDisablesToFrontend(); }, JobTypes::SendDisablesToFrontend))
-    , m_introspectShaderJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { reloadDirtyShaders(); }, JobTypes::DirtyShaderGathering))
-    , m_syncLoadingJobs(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncLoadingJobs))
+    , m_bufferGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
+    , m_vaoGathererJob(SynchronizerJobPtr::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
+    , m_textureGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
+    , m_sendTextureChangesToFrontendJob(SynchronizerPostFramePtr::create([] {},
+                                                                         [this] (Qt3DCore::QAspectManager *m) { sendTextureChangesToFrontend(m); },
+                                                                         JobTypes::SendTextureChangesToFrontend))
+    , m_sendSetFenceHandlesToFrontendJob(SynchronizerJobPtr::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
+    , m_sendDisablesToFrontendJob(SynchronizerJobPtr::create([this] { sendDisablesToFrontend(); }, JobTypes::SendDisablesToFrontend))
+    , m_introspectShaderJob(SynchronizerPostFramePtr::create([this] { reloadDirtyShaders(); },
+                                                             [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
+                                                             JobTypes::DirtyShaderGathering))
+    , m_syncLoadingJobs(SynchronizerJobPtr::create([] {}, JobTypes::SyncLoadingJobs))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
     , m_shouldSwapBuffers(true)
@@ -343,6 +347,16 @@ void Renderer::setOpenGLContext(QOpenGLContext *context)
     m_glContext = context;
 }
 
+void Renderer::setScreen(QScreen *scr)
+{
+    m_screen = scr;
+}
+
+QScreen *Renderer::screen() const
+{
+    return m_screen;
+}
+
 // Called in RenderThread context by the run method of RenderThread
 // RenderThread has locked the mutex already and unlocks it when this
 // method termintates
@@ -360,6 +374,8 @@ void Renderer::initialize()
         // we need to create it
         if (!m_glContext) {
             ctx = new QOpenGLContext;
+            if (m_screen)
+                ctx->setScreen(m_screen);
             ctx->setShareContext(qt_gl_global_share_context());
 
             // TO DO: Shouldn't we use the highest context available and trust
@@ -389,6 +405,8 @@ void Renderer::initialize()
 
         if (!ctx->shareContext()) {
             m_shareContext = new QOpenGLContext;
+            if (ctx->screen())
+                m_shareContext->setScreen(ctx->screen());
             m_shareContext->setFormat(ctx->format());
             m_shareContext->setShareContext(ctx);
             m_shareContext->create();
@@ -482,7 +500,8 @@ void Renderer::releaseGraphicsResources()
 
     QOpenGLContext *context = m_submissionContext->openGLContext();
     Q_ASSERT(context);
-    if (context->makeCurrent(offscreenSurface)) {
+
+    if (context->thread() == QThread::currentThread() && context->makeCurrent(offscreenSurface)) {
 
         // Clean up the graphics context and any resources
         const QVector<HGLTexture> activeTexturesHandles = m_nodesManager->glTextureManager()->activeHandles();
@@ -1104,49 +1123,53 @@ void Renderer::reloadDirtyShaders()
                 if (shaderBuilder) {
                     shaderBuilder->setGraphicsApi(*technique->graphicsApiFilter());
 
-                    for (int i = 0; i <= ShaderBuilder::Compute; i++) {
-                        const auto builderType = static_cast<ShaderBuilder::ShaderType>(i);
-                        if (!shaderBuilder->shaderGraph(builderType).isValid())
+                    for (int i = 0; i <= QShaderProgram::Compute; i++) {
+                        const auto shaderType = static_cast<QShaderProgram::ShaderType>(i);
+                        if (!shaderBuilder->shaderGraph(shaderType).isValid())
                             continue;
 
-                        if (shaderBuilder->isShaderCodeDirty(builderType)) {
-                            shaderBuilder->generateCode(builderType);
+                        if (shaderBuilder->isShaderCodeDirty(shaderType)) {
+                            shaderBuilder->generateCode(shaderType);
+                            m_shaderBuilderUpdates.append(shaderBuilder->takePendingUpdates());
                         }
 
-                        QShaderProgram::ShaderType shaderType = QShaderProgram::Vertex;
-                        switch (builderType) {
-                        case ShaderBuilder::Vertex:
-                            shaderType = QShaderProgram::Vertex;
-                            break;
-                        case ShaderBuilder::TessellationControl:
-                            shaderType = QShaderProgram::TessellationControl;
-                            break;
-                        case ShaderBuilder::TessellationEvaluation:
-                            shaderType = QShaderProgram::TessellationEvaluation;
-                            break;
-                        case ShaderBuilder::Geometry:
-                            shaderType = QShaderProgram::Geometry;
-                            break;
-                        case ShaderBuilder::Fragment:
-                            shaderType = QShaderProgram::Fragment;
-                            break;
-                        case ShaderBuilder::Compute:
-                            shaderType = QShaderProgram::Compute;
-                            break;
-                        }
-
-                        const auto code = shaderBuilder->shaderCode(builderType);
+                        const auto code = shaderBuilder->shaderCode(shaderType);
                         shader->setShaderCode(shaderType, code);
                     }
                 }
 
-                if (Q_UNLIKELY(shader->hasPendingNotifications()))
-                    shader->submitPendingNotifications();
-                // If the shader hasn't be loaded, load it
+                // If the shader hasn't been loaded, load it
                 if (shader != nullptr && !shader->isLoaded())
                     loadShader(shader, shaderHandle);
             }
         }
+    }
+}
+
+// Executed in job postFrame
+void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
+{
+    Q_ASSERT(isRunning());
+
+    // Sync Shader
+    const QVector<HShader> activeShaders = m_nodesManager->shaderManager()->activeHandles();
+    for (const HShader &handle :activeShaders) {
+        Shader *s = m_nodesManager->shaderManager()->data(handle);
+        if (s->requiresFrontendSync()) {
+            QShaderProgram *frontend = static_cast<decltype(frontend)>(manager->lookupNode(s->peerId()));
+            QShaderProgramPrivate *dFrontend = static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
+            s->unsetRequiresFrontendSync();
+            dFrontend->setStatus(s->status());
+            dFrontend->setLog(s->log());
+        }
+    }
+
+    // Sync ShaderBuilder
+    const QVector<ShaderBuilderUpdate> shaderBuilderUpdates = std::move(m_shaderBuilderUpdates);
+    for (const ShaderBuilderUpdate &update : shaderBuilderUpdates) {
+        QShaderProgramBuilder *builder = static_cast<decltype(builder)>(manager->lookupNode(update.builderId));
+        QShaderProgramBuilderPrivate *dBuilder = static_cast<decltype(dBuilder)>(QNodePrivate::get(builder));
+        dBuilder->setShaderCode(update.shaderCode, update.shaderType);
     }
 }
 

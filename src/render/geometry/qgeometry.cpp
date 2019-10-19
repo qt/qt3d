@@ -194,7 +194,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
         if (!attribute->parent())
             attribute->setParent(this);
 
-        d->update();
+        d->updateNode(attribute, "attribute", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -209,7 +209,7 @@ void QGeometry::removeAttribute(QAttribute *attribute)
     d->m_attributes.removeOne(attribute);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(attribute);
-    d->update();
+    d->updateNode(attribute, "attribute", Qt3DCore::PropertyValueRemoved);
 }
 
 void QGeometry::setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute)

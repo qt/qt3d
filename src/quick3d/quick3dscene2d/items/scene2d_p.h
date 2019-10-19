@@ -94,16 +94,13 @@ public:
     void setOutput(Qt3DCore::QNodeId outputId);
     void initializeSharedObject();
 
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     bool updateFbo(QOpenGLTexture *texture);
     void syncRenderControl();
-    void startGrabbing();
-    void stopGrabbing();
-    bool registerObjectPickerEvents(Qt3DCore::QNodeId entityId);
+    bool registerObjectPickerEvents(Qt3DCore::QEntity *qentity);
     void unregisterObjectPickerEvents(Qt3DCore::QNodeId entityId);
-    void handlePickEvent(int type, const Qt3DRender::QPickEventPtr &ev);
+    void handlePickEvent(int type, const QPickEvent *ev);
 
     QOpenGLContext *m_context;
     QOpenGLContext *m_shareContext;
@@ -126,6 +123,7 @@ public:
 #ifdef QT_OPENGL_ES_2_ANGLE
     bool m_usingAngle;
 #endif
+    QVector<QMetaObject::Connection> m_connections;
 };
 
 } // Quick

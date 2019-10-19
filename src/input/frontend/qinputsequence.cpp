@@ -207,7 +207,7 @@ void QInputSequence::addSequence(QAbstractActionInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        d->update();
+        d->updateNode(input, "input", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -220,7 +220,7 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
 {
     Q_D(QInputSequence);
     if (d->m_sequences.contains(input)) {
-        d->update();
+        d->updateNode(input, "input", Qt3DCore::PropertyValueRemoved);
 
         d->m_sequences.removeOne(input);
 

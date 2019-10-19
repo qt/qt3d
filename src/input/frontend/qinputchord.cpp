@@ -154,7 +154,7 @@ void QInputChord::addChord(QAbstractActionInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        d->update();
+        d->updateNode(input, "input", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -167,7 +167,7 @@ void QInputChord::removeChord(QAbstractActionInput *input)
 {
     Q_D(QInputChord);
     if (d->m_chords.contains(input)) {
-        d->update();
+        d->updateNode(input, "input", Qt3DCore::PropertyValueRemoved);
 
         d->m_chords.removeOne(input);
 

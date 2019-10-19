@@ -173,7 +173,7 @@ void QLogicalDevice::addAction(QAction *action)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(action, &QLogicalDevice::removeAction, d->m_actions);
 
-        d->update();
+        d->updateNode(action, "action", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -184,7 +184,7 @@ void QLogicalDevice::removeAction(QAction *action)
 {
     Q_D(QLogicalDevice);
     if (d->m_actions.contains(action)) {
-        d->update();
+        d->updateNode(action, "action", Qt3DCore::PropertyValueRemoved);
 
         d->m_actions.removeOne(action);
 
@@ -224,7 +224,7 @@ void QLogicalDevice::addAxis(QAxis *axis)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(axis, &QLogicalDevice::removeAxis, d->m_axes);
 
-        d->update();
+        d->updateNode(axis, "axis", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -235,7 +235,7 @@ void QLogicalDevice::removeAxis(QAxis *axis)
 {
     Q_D(QLogicalDevice);
     if (d->m_axes.contains(axis)) {
-        d->update();
+        d->updateNode(axis, "axis", Qt3DCore::PropertyValueRemoved);
 
         d->m_axes.removeOne(axis);
 

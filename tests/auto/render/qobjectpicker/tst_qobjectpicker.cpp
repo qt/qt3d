@@ -234,24 +234,6 @@ private Q_SLOTS:
         QTest::newRow("objectPicker_all_true") << objectPicker;
     }
 
-    // TODO: Avoid cloning here
-//    void checkCloning()
-//    {
-//        // GIVEN
-//        QFETCH(Qt3DRender::QObjectPicker *, objectPicker);
-
-//        // WHEN
-//        Qt3DRender::QObjectPicker *clone = static_cast<Qt3DRender::QObjectPicker *>(QNode::clone(objectPicker));
-//        QCoreApplication::processEvents();
-
-//        // THEN
-//        QVERIFY(clone != nullptr);
-//        QCOMPARE(objectPicker->id(), clone->id());
-//        QCOMPARE(objectPicker->isHoverEnabled(), clone->isHoverEnabled());
-//        QCOMPARE(objectPicker->isPressed(), clone->isPressed());
-//        QCOMPARE(objectPicker->containsMouse(), clone->containsMouse());
-//    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -271,68 +253,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.dirtyNodes.front(), objectPicker.data());
 
         arbiter.dirtyNodes.clear();
-    }
-
-    void checkBackendUpdates_data()
-    {
-        QTest::addColumn<QByteArray>("signalPrototype");
-        QTest::addColumn<QByteArray>("propertyName");
-        QTest::addColumn<bool>("requiresEvent");
-
-        QTest::newRow("clicked")
-                << QByteArray(SIGNAL(clicked(Qt3DRender::QPickEvent *)))
-                << QByteArrayLiteral("clicked")
-                << true;
-
-        QTest::newRow("pressed")
-                << QByteArray(SIGNAL(pressed(Qt3DRender::QPickEvent *)))
-                << QByteArrayLiteral("pressed")
-                << true;
-
-        QTest::newRow("released")
-                << QByteArray(SIGNAL(released(Qt3DRender::QPickEvent *)))
-                << QByteArrayLiteral("released")
-                << true;
-
-        QTest::newRow("entered")
-                << QByteArray(SIGNAL(entered()))
-                << QByteArrayLiteral("entered")
-                << false;
-
-        QTest::newRow("exited")
-                << QByteArray(SIGNAL(exited()))
-                << QByteArrayLiteral("exited")
-                << false;
-    }
-
-    void checkBackendUpdates()
-    {
-        // GIVEN
-        QFETCH(QByteArray, signalPrototype);
-        QFETCH(QByteArray, propertyName);
-        QFETCH(bool, requiresEvent);
-        Qt3DCore::QScene scene;
-        QScopedPointer<MyObjectPicker> objectPicker(new MyObjectPicker());
-        Qt3DCore::QNodePrivate::get(objectPicker.data())->setScene(&scene);
-
-        QSignalSpy spy(objectPicker.data(), signalPrototype.constData());
-        Qt3DRender::QObjectPickerEvent event {Qt3DRender::QPickEventPtr::create(), Qt3DCore::QNodeId()};
-
-        // WHEN
-        // Create Backend Change and distribute it to frontend node
-        Qt3DCore::QPropertyUpdatedChangePtr e(new Qt3DCore::QPropertyUpdatedChange(objectPicker->id()));
-        e->setPropertyName(propertyName.constData());
-        if (requiresEvent)
-        {
-            QVariant v;
-            v.setValue<Qt3DRender::QObjectPickerEvent>(event);
-            e->setValue(v);
-        }
-        objectPicker->sceneChangeEvent(e);
-
-        // THEN
-        // Check that the QObjectPicker triggers the expected signal
-        QCOMPARE(spy.count(), 1);
     }
 };
 

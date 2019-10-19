@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qpicktriangleevent.h"
+#include "qpicktriangleevent_p.h"
 #include "qpickevent_p.h"
 #include <private/qobject_p.h>
 
@@ -45,24 +46,42 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QPickTriangleEventPrivate : public QPickEventPrivate
-{
-public:
-    QPickTriangleEventPrivate()
-        : QPickEventPrivate()
-        , m_triangleIndex(0)
-        , m_vertex1Index(0)
-        , m_vertex2Index(0)
-        , m_vertex3Index(0)
-    {
-    }
 
-    uint m_triangleIndex;
-    uint m_vertex1Index;
-    uint m_vertex2Index;
-    uint m_vertex3Index;
-    QVector3D m_uvw;
-};
+Qt3DRender::QPickTriangleEventPrivate::QPickTriangleEventPrivate()
+    : QPickEventPrivate()
+    , m_triangleIndex(0)
+    , m_vertex1Index(0)
+    , m_vertex2Index(0)
+    , m_vertex3Index(0)
+{
+}
+
+const QPickTriangleEventPrivate *QPickTriangleEventPrivate::get(const QPickTriangleEvent *ev)
+{
+    return ev->d_func();
+}
+
+QPickTriangleEvent *QPickTriangleEventPrivate::clone() const
+{
+    auto res = new QPickTriangleEvent();
+    res->d_func()->m_accepted = m_accepted;
+    res->d_func()->m_position = m_position;
+    res->d_func()->m_worldIntersection = m_worldIntersection;
+    res->d_func()->m_localIntersection = m_localIntersection;
+    res->d_func()->m_distance = m_distance;
+    res->d_func()->m_button = m_button;
+    res->d_func()->m_buttons = m_buttons;
+    res->d_func()->m_modifiers = m_modifiers;
+    res->d_func()->m_entity = m_entity;
+    res->d_func()->m_entityPtr = m_entityPtr;
+    res->d_func()->m_viewport = m_viewport;
+    res->d_func()->m_triangleIndex = m_triangleIndex;
+    res->d_func()->m_vertex1Index = m_vertex1Index;
+    res->d_func()->m_vertex2Index = m_vertex2Index;
+    res->d_func()->m_vertex3Index = m_vertex3Index;
+    return res;
+}
+
 
 /*!
     \class Qt3DRender::QPickTriangleEvent

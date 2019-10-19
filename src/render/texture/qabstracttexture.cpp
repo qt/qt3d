@@ -139,6 +139,27 @@ void QAbstractTexturePrivate::setHandleType(QAbstractTexture::HandleType type)
  */
 
 /*!
+    \qmltype AbstractTexture
+    \instantiates Qt3DRender::QAbstractTexture
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief A base class to be used to provide textures.
+
+    The AbstractTexture class shouldn't be used directly but rather through one
+    of its subclasses. Each subclass implements a given texture target (2D,
+    2DArray, 3D, CubeMap ...) Each subclass provides a set of functors for each
+    layer, cube map face and mipmap level. In turn the backend uses those
+    functor to properly fill a corresponding OpenGL texture with data. It is
+    expected the functor does as minimal processing as possible so as not to
+    slow down textures generation and upload. If the content of a texture is
+    the result of a slow procedural generation process, it is recommended not
+    to implement this directly in a functor.
+
+    All textures are unique. If you instantiate twice the same texture this
+    will create 2 identical textures on the GPU, no sharing will take place.
+ */
+
+/*!
     \enum Qt3DRender::QAbstractTexture::CubeMapFace
 
     This enum identifies the faces of a cube map texture
@@ -409,6 +430,12 @@ void QAbstractTexture::setSize(int w, int h, int d)
     Holds the width of the texture provider.
  */
 /*!
+    \qmlproperty int Qt3DRender::QAbstractTexture::width
+
+    Holds the width of the texture provider.
+ */
+
+/*!
     Set the width of the texture provider to \a width.
 */
 void QAbstractTexture::setWidth(int width)
@@ -426,6 +453,11 @@ void QAbstractTexture::setWidth(int width)
     Holds the height of the texture provider.
  */
 /*!
+    \qmlproperty int Qt3DRender::QAbstractTexture::height
+
+    Holds the height of the texture provider.
+ */
+/*!
     Set the height to \a height.
 */
 void QAbstractTexture::setHeight(int height)
@@ -439,6 +471,11 @@ void QAbstractTexture::setHeight(int height)
 
 /*!
     \property Qt3DRender::QAbstractTexture::depth
+
+    Holds the depth of the texture provider.
+ */
+/*!
+    \qmlproperty int Qt3DRender::QAbstractTexture::depth
 
     Holds the depth of the texture provider.
  */
@@ -491,6 +528,15 @@ int QAbstractTexture::depth() const
     array target formats.
  */
 /*!
+    \qmlproperty int Qt3DRender::QAbstractTexture::layers
+
+    Holds the maximum layer count of the texture provider. By default, the
+    maximum layer count is 1.
+
+    \note this has a meaning only for texture providers that have 3D or
+    array target formats.
+ */
+/*!
     Set the maximum layer count to \a layers.
 */
 void QAbstractTexture::setLayers(int layers)
@@ -516,6 +562,15 @@ int QAbstractTexture::layers() const
 
 /*!
     \property Qt3DRender::QAbstractTexture::samples
+
+    Holds the number of samples per texel for the texture provider.
+    By default, the number of samples is 1.
+
+    \note this has a meaning only for texture providers that have multisample
+    formats.
+ */
+/*!
+    \qmlproperty int Qt3DRender::QAbstractTexture::samples
 
     Holds the number of samples per texel for the texture provider.
     By default, the number of samples is 1.
@@ -553,6 +608,11 @@ int QAbstractTexture::samples() const
     Holds the format of the texture provider.
  */
 /*!
+    \qmlproperty TextureFormat Qt3DRender::QAbstractTexture::format
+
+    Holds the format of the texture provider.
+ */
+/*!
     Set the texture format to \a format.
 */
 void QAbstractTexture::setFormat(TextureFormat format)
@@ -575,6 +635,11 @@ QAbstractTexture::TextureFormat QAbstractTexture::format() const
 
 /*!
     \property Qt3DRender::QAbstractTexture::status readonly
+
+    Holds the current status of the texture provider.
+ */
+/*!
+    \qmlproperty Status Qt3DRender::QAbstractTexture::status readonly
 
     Holds the current status of the texture provider.
  */
@@ -642,6 +707,13 @@ QAbstractTexture::Status QAbstractTexture::status() const
 
 /*!
     \property Qt3DRender::QAbstractTexture::target readonly
+
+    Holds the target format of the texture provider.
+
+    \note The target format can only be set once.
+ */
+/*!
+    \qmlproperty Target Qt3DRender::QAbstractTexture::target readonly
 
     Holds the target format of the texture provider.
 
@@ -741,6 +813,11 @@ QVector<QAbstractTextureImage *> QAbstractTexture::textureImages() const
     Holds whether the texture provider should auto generate mipmaps.
  */
 /*!
+    \qmlproperty bool Qt3DRender::QAbstractTexture::generateMipMaps
+
+    Holds whether the texture provider should auto generate mipmaps.
+ */
+/*!
     Boolean parameter \a gen sets a flag indicating whether the
     texture provider should generate mipmaps or not.
 */
@@ -761,6 +838,11 @@ bool QAbstractTexture::generateMipMaps() const
 
 /*!
     \property Qt3DRender::QAbstractTexture::minificationFilter
+
+    Holds the minification filter of the texture provider.
+ */
+/*!
+    \qmlproperty Filter Qt3DRender::QAbstractTexture::minificationFilter
 
     Holds the minification filter of the texture provider.
  */
@@ -799,6 +881,11 @@ void QAbstractTexture::setMinificationFilter(Filter f)
     Holds the magnification filter of the texture provider.
  */
 /*!
+    \qmlproperty Filter Qt3DRender::QAbstractTexture::magnificationFilter
+
+    Holds the magnification filter of the texture provider.
+ */
+/*!
     Set the magnification filter to \a f.
 */
 void QAbstractTexture::setMagnificationFilter(Filter f)
@@ -824,6 +911,11 @@ QAbstractTexture::Filter QAbstractTexture::magnificationFilter() const
 
 /*!
     \property Qt3DRender::QAbstractTexture::wrapMode
+
+    Holds the wrap mode of the texture provider.
+ */
+/*!
+    \qmlproperty QTextureWrapMode Qt3DRender::QAbstractTexture::wrapMode
 
     Holds the wrap mode of the texture provider.
  */
@@ -859,6 +951,11 @@ QTextureWrapMode *QAbstractTexture::wrapMode()
     Holds the maximum anisotropy of the texture provider.
  */
 /*!
+    \qmlproperty bool Qt3DRender::QAbstractTexture::maximumAnisotropy
+
+    Holds the maximum anisotropy of the texture provider.
+ */
+/*!
     Sets the maximum anisotropy to \a anisotropy.
 */
 void QAbstractTexture::setMaximumAnisotropy(float anisotropy)
@@ -885,6 +982,11 @@ float QAbstractTexture::maximumAnisotropy() const
     Holds the comparison function of the texture provider.
  */
 /*!
+    \qmlproperty ComparisonFunction Qt3DRender::QAbstractTexture::ComparisonFunction
+
+    Holds the comparison function of the texture provider.
+ */
+/*!
     Set the comparison function to \a function.
 */
 void QAbstractTexture::setComparisonFunction(QAbstractTexture::ComparisonFunction function)
@@ -907,6 +1009,12 @@ QAbstractTexture::ComparisonFunction QAbstractTexture::comparisonFunction() cons
 
 /*!
     \property Qt3DRender::QAbstractTexture::ComparisonMode
+
+    Holds the comparison mode of the texture provider.
+ */
+
+/*!
+    \qmlproperty ComparisonMode Qt3DRender::QAbstractTexture::ComparisonMode
 
     Holds the comparison mode of the texture provider.
  */

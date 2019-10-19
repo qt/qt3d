@@ -56,6 +56,7 @@ QBlendedClipAnimatorPrivate::QBlendedClipAnimatorPrivate()
     \qmltype BlendedClipAnimator
     \instantiates Qt3DAnimation::QBlendedClipAnimator
     \inqmlmodule Qt3D.Animation
+    \inherits AbstractClipAnimator
     \since 5.9
 
     \brief BlendedClipAnimator is a component providing animation playback capabilities of a tree

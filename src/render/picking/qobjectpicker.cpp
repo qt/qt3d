@@ -82,6 +82,9 @@ namespace Qt3DRender {
     \note Instances of this component shouldn't be shared, not respecting that
     condition will most likely result in undefined behavior.
 
+    \note The camera far plane value affects picking and produces incorrect results due to
+    floating-point precision if it is greater than ~100 000.
+
     \since 5.6
 */
 
@@ -115,6 +118,9 @@ namespace Qt3DRender {
 
     \note Instances of this component shouldn't be shared, not respecting that
     condition will most likely result in undefined behavior.
+
+    \note The camera far plane value affects picking and produces incorrect results due to
+    floating-point precision if it is greater than ~100 000.
  */
 
 /*!
@@ -352,33 +358,6 @@ int QObjectPicker::priority() const
     return d->m_priority;
 }
 
-/*! \internal */
-void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QObjectPicker);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        // TO DO: Complete this part
-        // to emit the correct signals
-        const QByteArray propertyName = e->propertyName();
-        if (propertyName == QByteArrayLiteral("pressed")) {
-            d->pressedEvent(d->resolvePickEvent(e));
-        } else if (propertyName == QByteArrayLiteral("released")) {
-            d->releasedEvent(d->resolvePickEvent(e));
-        } else if (propertyName == QByteArrayLiteral("clicked")) {
-            d->clickedEvent(d->resolvePickEvent(e));
-        } else if (propertyName == QByteArrayLiteral("moved")) {
-            d->movedEvent(d->resolvePickEvent(e));
-        } else if (propertyName == QByteArrayLiteral("entered")) {
-            emit entered();
-            d->setContainsMouse(true);
-        } else if (propertyName == QByteArrayLiteral("exited")) {
-            d->setContainsMouse(false);
-            emit exited();
-        }
-    }
-}
-
 /*!
     \internal
  */
@@ -405,15 +384,6 @@ void QObjectPickerPrivate::setContainsMouse(bool containsMouse)
         emit q->containsMouseChanged(containsMouse);
         q->blockNotifications(blocked);
     }
-}
-
-QPickEvent *QObjectPickerPrivate::resolvePickEvent(Qt3DCore::QPropertyUpdatedChangePtr e)
-{
-    QObjectPickerEvent ev = e->value().value<QObjectPickerEvent>();
-    QPickEvent *pickEvent = ev.event.data();
-    pickEvent->d_func()->m_viewport = static_cast<QViewport *>(scene()->lookupNode(ev.viewportNodeId));
-    pickEvent->d_func()->m_entityPtr = static_cast<Qt3DCore::QEntity *>(scene()->lookupNode(pickEvent->d_func()->m_entity));
-    return pickEvent;
 }
 
 void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)

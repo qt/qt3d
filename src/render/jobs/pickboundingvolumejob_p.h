@@ -70,6 +70,7 @@ namespace Qt3DRender {
 class QViewport;
 
 namespace Render {
+class PickBoundingVolumeJobPrivate;
 
 namespace PickingUtils {
 typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
@@ -101,6 +102,8 @@ protected:
                             Qt3DCore::QNodeId viewportNodeId);
 
 private:
+    Q_DECLARE_PRIVATE(PickBoundingVolumeJob)
+
     void clearPreviouslyHoveredPickers();
 
     QList<QPair<QObject*, QMouseEvent>> m_pendingMouseEvents;

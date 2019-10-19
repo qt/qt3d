@@ -81,6 +81,7 @@
 #include <Qt3DRender/private/renderercache_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/glfence_p.h>
+#include <Qt3DRender/private/shaderbuilder_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -105,6 +106,7 @@ QT_BEGIN_NAMESPACE
 
 class QSurface;
 class QMouseEvent;
+class QScreen;
 
 namespace Qt3DCore {
 class QEntity;
@@ -154,7 +156,7 @@ class UpdateLevelOfDetailJob;
 typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
-using IntrospectShadersJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+using SynchronizerPostFramePtr = GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>>;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
@@ -220,7 +222,7 @@ public:
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
     inline SynchronizerJobPtr syncLoadingJobs() const { return m_syncLoadingJobs; }
     inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
-    inline IntrospectShadersJobPtr introspectShadersJob() const { return m_introspectShaderJob; }
+    inline SynchronizerPostFramePtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
     inline Qt3DCore::QAspectJobPtr sendTextureChangesToFrontendJob() const { return m_sendTextureChangesToFrontendJob; }
@@ -292,6 +294,8 @@ public:
     ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
     RendererCache *cache() { return &m_cache; }
+    void setScreen(QScreen *scr) override;
+    QScreen *screen() const override;
 
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
@@ -374,14 +378,13 @@ private:
                            HVao *previousVAOHandle,
                            OpenGLVertexArrayObject **vao);
 
-    GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
-    GenericLambdaJobPtr<std::function<void ()>> m_vaoGathererJob;
-    GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
-    GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>> m_sendTextureChangesToFrontendJob;
-    GenericLambdaJobPtr<std::function<void ()>> m_sendSetFenceHandlesToFrontendJob;
-    GenericLambdaJobPtr<std::function<void ()>> m_sendDisablesToFrontendJob;
-    IntrospectShadersJobPtr m_introspectShaderJob;
-
+    SynchronizerJobPtr m_bufferGathererJob;
+    SynchronizerJobPtr m_vaoGathererJob;
+    SynchronizerJobPtr m_textureGathererJob;
+    SynchronizerPostFramePtr m_sendTextureChangesToFrontendJob;
+    SynchronizerJobPtr m_sendSetFenceHandlesToFrontendJob;
+    SynchronizerJobPtr m_sendDisablesToFrontendJob;
+    SynchronizerPostFramePtr m_introspectShaderJob;
     SynchronizerJobPtr m_syncLoadingJobs;
 
     void lookForAbandonedVaos();
@@ -389,6 +392,7 @@ private:
     void lookForDownloadableBuffers();
     void lookForDirtyTextures();
     void reloadDirtyShaders();
+    void sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendSetFenceHandlesToFrontend();
     void sendDisablesToFrontend();
@@ -404,6 +408,7 @@ private:
     QVector<QPair<Qt3DCore::QNodeId, GLFence>> m_updatedSetFences;
     QVector<Qt3DCore::QNodeId> m_updatedDisables;
     Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
+    QVector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
 
     bool m_ownedContext;
 
@@ -424,6 +429,7 @@ private:
     bool m_shouldSwapBuffers;
 
     QVector<FrameGraphNode *> m_frameGraphLeaves;
+    QScreen *m_screen = nullptr;
 };
 
 } // namespace Render

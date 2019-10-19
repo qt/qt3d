@@ -266,6 +266,24 @@ private Q_SLOTS:
         }
     }
 
+    void checCleanupMarksDirty()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        Qt3DRender::Render::FrameGraphNode *backendFGNode = new MyFrameGraphNode();
+
+        backendFGNode->setRenderer(&renderer);
+
+        // THEN
+        QVERIFY(renderer.dirtyBits() == 0);
+
+        // WHEN
+        backendFGNode->cleanup();
+
+        // THEN
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
+    }
+
 };
 
 QTEST_MAIN(tst_FrameGraphNode)

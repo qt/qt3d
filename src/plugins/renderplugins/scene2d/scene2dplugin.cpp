@@ -96,7 +96,7 @@ bool Scene2DPlugin::registerBackendTypes(QRenderAspect *aspect,
 {
     registerBackendType(aspect, Qt3DRender::Quick::QScene2D::staticMetaObject,
                 QSharedPointer<Scene2DBackendNodeMapper<Render::Quick::Scene2D> >
-                    ::create(renderer, m_scene2dNodeManager));
+                    ::create(renderer, m_scene2dNodeManager), true);
     return true;
 }
 bool Scene2DPlugin::unregisterBackendTypes(QRenderAspect *aspect)

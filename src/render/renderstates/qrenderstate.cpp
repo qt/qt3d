@@ -59,6 +59,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype RenderState
+    \inqmlmodule Qt3D.Render
     \brief An abstract base type for all render states.
     \since 5.7
     \inherits Node

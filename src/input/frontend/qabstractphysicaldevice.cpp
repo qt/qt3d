@@ -165,7 +165,7 @@ void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
     if (axisSetting && !d->m_axisSettings.contains(axisSetting)) {
-        d->update();
+        d->updateNode(axisSetting, "axisSettings", Qt3DCore::PropertyValueAdded);
         d->m_axisSettings.push_back(axisSetting);
     }
 }
@@ -177,7 +177,7 @@ void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
     if (axisSetting && d->m_axisSettings.contains(axisSetting)) {
-        d->update();
+        d->updateNode(axisSetting, "axisSettings", Qt3DCore::PropertyValueRemoved);
         d->m_axisSettings.removeOne(axisSetting);
     }
 }

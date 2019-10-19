@@ -66,6 +66,7 @@
 
 #include <Qt3DQuickExtras/private/qt3dquickwindowlogging_p.h>
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -132,6 +133,8 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     QSurfaceFormat::setDefaultFormat(format);
 
     d->m_renderAspect = new Qt3DRender::QRenderAspect;
+    if (parent && parent->screen())
+        static_cast<Qt3DRender::QRenderAspectPrivate*>(Qt3DRender::QRenderAspectPrivate::get(d->m_renderAspect))->m_screen = parent->screen();
     d->m_inputAspect = new Qt3DInput::QInputAspect;
     d->m_logicAspect = new Qt3DLogic::QLogicAspect;
     d->m_engine = new Qt3DCore::Quick::QQmlAspectEngine;
