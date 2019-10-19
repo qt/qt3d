@@ -108,11 +108,9 @@ public:
     bool wasPressed() const;
     float sensitivity() const;
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     InputHandler *m_inputHandler;
 
     MouseState m_mouseState;

@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <QtCore/QPointer>
 
 QT_BEGIN_NAMESPACE
@@ -62,18 +62,15 @@ namespace Input {
 
 class InputHandler;
 
-class InputSettings : public Qt3DCore::QBackendNode
+class InputSettings : public BackendNode
 {
 public:
     InputSettings();
     inline QObject *eventSource() const { return m_eventSource; }
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     QPointer<QObject> m_eventSource;
 };
 

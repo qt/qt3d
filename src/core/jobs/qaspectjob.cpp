@@ -59,9 +59,16 @@ QAspectJobPrivate::QAspectJobPrivate()
 {
 }
 
+QAspectJobPrivate::~QAspectJobPrivate() = default;
+
 QAspectJobPrivate *QAspectJobPrivate::get(QAspectJob *job)
 {
     return job->d_func();
+}
+
+void QAspectJobPrivate::postFrame(QAspectManager *aspectManager)
+{
+    Q_UNUSED(aspectManager)
 }
 
 QAspectJob::QAspectJob()
@@ -131,6 +138,13 @@ QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
 {
     Q_D(const QAspectJob);
     return d->m_dependencies;
+}
+
+void QAspectJob::postFrame(QAspectManager *aspectManager)
+{
+    Q_D(QAspectJob);
+    if (aspectManager)
+        d->postFrame(aspectManager);
 }
 
 } // namespace Qt3DCore

@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include <Qt3DRender/private/rendertargetoutput_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/private/qrendertargetoutput_p.h>
 #include <QVariant>

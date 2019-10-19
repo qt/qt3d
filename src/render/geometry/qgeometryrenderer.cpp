@@ -41,9 +41,6 @@
 #include "qgeometryrenderer_p.h"
 
 #include <private/qcomponent_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -481,19 +478,6 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
         return;
     d->m_geometryFactory = factory;
     d->update();
-}
-
-/*!
-    \internal
- */
-void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    auto change = qSharedPointerCast<QStaticPropertyUpdatedChangeBase>(e);
-    if (change->type() == PropertyUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
-        auto typedChange = qSharedPointerCast<QGeometryChange>(e);
-        auto geometry = std::move(typedChange->data);
-        setGeometry(geometry.release());
-    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QGeometryRenderer::createNodeCreationChange() const

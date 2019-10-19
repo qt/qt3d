@@ -829,13 +829,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.last().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-            QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
-            QCOMPARE(change->propertyName(), "textureImage");
-            QCOMPARE(change->addedNodeId(), image.id());
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &abstractTexture);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
     }
 
@@ -854,13 +852,11 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.last().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-            QCOMPARE(change->type(), Qt3DCore::PropertyValueRemoved);
-            QCOMPARE(change->propertyName(), "textureImage");
-            QCOMPARE(change->removedNodeId(), image.id());
+            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes.front(), &abstractTexture);
 
-            arbiter.events.clear();
+            arbiter.dirtyNodes.clear();
         }
     }
 

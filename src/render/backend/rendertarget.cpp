@@ -41,9 +41,6 @@
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DRender/private/qrendertarget_p.h>
 #include <Qt3DRender/qrendertargetoutput.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE

@@ -39,7 +39,6 @@
 
 #include "nodraw_p.h"
 #include <Qt3DRender/qnodraw.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

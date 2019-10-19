@@ -43,9 +43,6 @@
 #include "qeffect.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include "qparameter.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 /*!
     \qmltype Material

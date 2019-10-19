@@ -90,6 +90,7 @@ public:
     void updatePropertyTrackMode();
 
     void update();
+    void updateNode(QNode *node, const char* property, ChangeFlag change);
 
     Q_DECLARE_PUBLIC(QNode)
 

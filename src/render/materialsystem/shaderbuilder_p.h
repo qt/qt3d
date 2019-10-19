@@ -53,7 +53,6 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

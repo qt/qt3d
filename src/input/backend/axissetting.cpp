@@ -40,7 +40,6 @@
 #include "axissetting_p.h"
 
 #include <Qt3DInput/qaxissetting.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/qaxissetting_p.h>
 
@@ -50,20 +49,11 @@ namespace Qt3DInput {
 namespace Input {
 
 AxisSetting::AxisSetting()
-    : Qt3DCore::QBackendNode()
+    : BackendNode()
     , m_deadZoneRadius(0.0f)
     , m_axes(0)
     , m_smooth(false)
 {
-}
-
-void AxisSetting::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisSettingData>>(change);
-    const auto &data = typedChange->data;
-    m_deadZoneRadius = data.deadZoneRadius;
-    m_axes = data.axes;
-    m_smooth = data.smooth;
 }
 
 void AxisSetting::cleanup()
@@ -74,19 +64,16 @@ void AxisSetting::cleanup()
     m_smooth = false;
 }
 
-void AxisSetting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void AxisSetting::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("deadZoneRadius")) {
-            m_deadZoneRadius = propertyChange->value().toFloat();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("axes")) {
-            m_axes = propertyChange->value().value<QVector<int>>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("smooth")) {
-            m_smooth = propertyChange->value().toBool();
-        }
-    }
-    QBackendNode::sceneChangeEvent(e);
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAxisSetting *node = qobject_cast<const QAxisSetting *>(frontEnd);
+    if (!node)
+        return;
+
+    m_deadZoneRadius = node->deadZoneRadius();
+    m_axes = node->axes();
+    m_smooth = node->isSmoothEnabled();
 }
 
 } // namespace Input

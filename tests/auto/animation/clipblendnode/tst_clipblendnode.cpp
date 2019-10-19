@@ -33,9 +33,6 @@
 #include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
 #include <Qt3DAnimation/private/clipblendnode_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include "qbackendnodetester.h"
 
 #include <random>

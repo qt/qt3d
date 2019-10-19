@@ -75,6 +75,12 @@ class SkeletonManager;
 class Q_AUTOTEST_EXPORT Skeleton : public BackendNode
 {
 public:
+    enum SkeletonDataType {
+        Unknown,
+        File,
+        Data
+    };
+
     Skeleton();
 
     void setSkeletonManager(SkeletonManager *skeletonManager) { m_skeletonManager = skeletonManager; }
@@ -84,52 +90,40 @@ public:
     JointManager *jointManager() const { return m_jointManager; }
 
     void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void setStatus(Qt3DCore::QSkeletonLoader::Status status);
     Qt3DCore::QSkeletonLoader::Status status() const { return m_status; }
 
     QUrl source() const { return m_source; }
+    SkeletonDataType dataType() const { return m_dataType; }
+    bool createJoints() const { return m_createJoints; }
 
     void setName(const QString &name) { m_name = name; }
     QString name() const { return m_name; }
 
     int jointCount() const { return m_skeletonData.joints.size(); }
-    void notifyJointCount();
-    void notifyJointNamesAndPoses();
     QVector<JointInfo> joints() const { return m_skeletonData.joints; }
+    QVector<QString> jointNames() const { return m_skeletonData.jointNames; }
+    QVector<Qt3DCore::Sqt> localPoses() const { return m_skeletonData.localPoses; }
 
     Qt3DCore::QNodeId rootJointId() const { return m_rootJointId; }
 
     // Called from jobs
-    void loadSkeleton();
     void setLocalPose(HJoint jointHandle, const Qt3DCore::Sqt &localPose);
     QVector<QMatrix4x4> calculateSkinningMatrixPalette();
 
+    void clearData();
+    void setSkeletonData(const SkeletonData &data);
+    const SkeletonData &skeletonData() const { return m_skeletonData; }
+    SkeletonData skeletonData() { return m_skeletonData; }
+
     // Allow unit tests to set the data type
-#if !defined(QT_BUILD_INTERNAL)
-private:
-#endif
-    enum SkeletonDataType {
-        Unknown,
-        File,
-        Data
-    };
 #if defined(QT_BUILD_INTERNAL)
 public:
     void setDataType(SkeletonDataType dataType) { m_dataType = dataType; }
 #endif
 
 private:
-    void loadSkeletonFromUrl();
-    void loadSkeletonFromData();
-    Qt3DCore::QJoint *createFrontendJoints(const SkeletonData &skeletonData) const;
-    Qt3DCore::QJoint *createFrontendJoint(const QString &jointName,
-                                          const Qt3DCore::Sqt &localPose,
-                                          const QMatrix4x4 &inverseBindMatrix) const;
-    void processJointHierarchy(Qt3DCore::QNodeId jointId, int parentJointIndex, SkeletonData &skeletonData);
-    void clearData();
-
     QVector<QMatrix4x4> m_skinningPalette;
 
     // QSkeletonLoader Properties

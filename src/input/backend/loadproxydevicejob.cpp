@@ -38,7 +38,9 @@
 ****************************************************************************/
 
 #include "loadproxydevicejob_p.h"
-
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DInput/private/qabstractphysicaldeviceproxy_p.h>
+#include <Qt3DInput/private/qabstractphysicaldeviceproxy_p_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/job_common_p.h>
@@ -48,12 +50,22 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
+class LoadProxyDeviceJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    LoadProxyDeviceJobPrivate() { }
+    ~LoadProxyDeviceJobPrivate() override { }
+
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    QVector<QPair<Qt3DCore::QNodeId, QAbstractPhysicalDevice *>> updates;
+};
+
 LoadProxyDeviceJob::LoadProxyDeviceJob()
-    : Qt3DCore::QAspectJob()
+    : Qt3DCore::QAspectJob(*new LoadProxyDeviceJobPrivate)
     , m_inputHandler(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::DeviceProxyLoading, 0);
-
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::DeviceProxyLoading, 0)
 }
 
 LoadProxyDeviceJob::~LoadProxyDeviceJob()
@@ -82,6 +94,9 @@ QVector<Qt3DCore::QNodeId> LoadProxyDeviceJob::proxies() const
 
 void LoadProxyDeviceJob::run()
 {
+    Q_D(LoadProxyDeviceJob);
+    d->updates.reserve(m_proxies.size());
+
     Q_ASSERT(m_inputHandler);
     for (const Qt3DCore::QNodeId id : qAsConst(m_proxies)) {
         PhysicalDeviceProxy *proxy = m_inputHandler->physicalDeviceProxyManager()->lookupResource(id);
@@ -89,8 +104,26 @@ void LoadProxyDeviceJob::run()
         if (device != nullptr)
             proxy->setDevice(device);
     }
-    m_proxies.clear();
 }
+
+void LoadProxyDeviceJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    for (const auto &res : qAsConst(updates)) {
+        QAbstractPhysicalDeviceProxy *node = qobject_cast<QAbstractPhysicalDeviceProxy *>(manager->lookupNode(res.first));
+        if (!node)
+            continue;
+
+        auto *device = res.second;
+        QAbstractPhysicalDeviceProxyPrivate *dnode = static_cast<QAbstractPhysicalDeviceProxyPrivate *>(QAbstractPhysicalDeviceProxyPrivate::get(node));
+        QAbstractPhysicalDevice *oldDevice = dnode->m_device;
+        dnode->setDevice(device);
+        // Delete the old device if it existed
+        delete oldDevice;
+    }
+
+    updates.clear();
+}
+
 
 } // namespace Input
 } // namespace Qt3DInput

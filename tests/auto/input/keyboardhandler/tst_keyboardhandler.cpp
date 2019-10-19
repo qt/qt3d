@@ -31,7 +31,6 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
@@ -54,7 +53,7 @@ private Q_SLOTS:
         auto keyboardDevice = new Qt3DInput::QKeyboardDevice;
         auto backendKeyboardDevice = inputHandler.keyboardDeviceManager()->getOrCreateResource(keyboardDevice->id());
         backendKeyboardDevice->setInputHandler(&inputHandler);
-        simulateInitialization(keyboardDevice, backendKeyboardDevice);
+        simulateInitializationSync(keyboardDevice, backendKeyboardDevice);
 
         Qt3DInput::QKeyboardHandler keyboardHandler;
         auto backendKeyboardHandler = inputHandler.keyboardInputManager()->getOrCreateResource(keyboardHandler.id());
@@ -64,7 +63,7 @@ private Q_SLOTS:
         keyboardHandler.setSourceDevice(keyboardDevice);
 
         // WHEN
-        simulateInitialization(&keyboardHandler, backendKeyboardHandler);
+        simulateInitializationSync(&keyboardHandler, backendKeyboardHandler);
 
         // THEN
         QCOMPARE(backendKeyboardHandler->peerId(), keyboardHandler.id());
@@ -90,50 +89,45 @@ private Q_SLOTS:
         // GIVEN
         Qt3DInput::Input::InputHandler inputHandler;
 
+        Qt3DInput::QKeyboardHandler keyboardHandler;
+        keyboardHandler.setEnabled(false);
+        Qt3DInput::Input::KeyboardHandler backendKeyboardHandler;
+        backendKeyboardHandler.setInputHandler(&inputHandler);
+
         Qt3DInput::QKeyboardDevice device;
         Qt3DInput::Input::KeyboardDevice *backendKeyboardDevice =
             inputHandler.keyboardDeviceManager()->getOrCreateResource(device.id());
         backendKeyboardDevice->setInputHandler(&inputHandler);
 
-        Qt3DInput::Input::KeyboardHandler *backendKeyboardHandler
-                = inputHandler.keyboardInputManager()->getOrCreateResource(Qt3DCore::QNodeId::createId());
-        backendKeyboardHandler->setInputHandler(&inputHandler);
+        simulateInitializationSync(&keyboardHandler, &backendKeyboardHandler);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("sourceDevice");
-        updateChange->setValue(QVariant::fromValue(device.id()));
-        backendKeyboardHandler->sceneChangeEvent(updateChange);
+        keyboardHandler.setSourceDevice(&device);
+        backendKeyboardHandler.syncFromFrontEnd(&keyboardHandler, false);
 
         // THEN
-        QCOMPARE(backendKeyboardHandler->keyboardDevice(), device.id());
+        QCOMPARE(backendKeyboardHandler.keyboardDevice(), device.id());
 
         // WHEN (still disabled, nothing should happen)
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("focus");
-        updateChange->setValue(true);
-        backendKeyboardHandler->sceneChangeEvent(updateChange);
+        keyboardHandler.setFocus(true);
+        backendKeyboardHandler.syncFromFrontEnd(&keyboardHandler, false);
 
         // THEN
         QVERIFY(backendKeyboardDevice->lastKeyboardInputRequester().isNull());
 
         // WHEN
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("enabled");
-        updateChange->setValue(true);
-        backendKeyboardHandler->sceneChangeEvent(updateChange);
+        keyboardHandler.setEnabled(true);
+        backendKeyboardHandler.syncFromFrontEnd(&keyboardHandler, false);
 
         // THEN
-        QCOMPARE(backendKeyboardHandler->isEnabled(), true);
+        QCOMPARE(backendKeyboardHandler.isEnabled(), true);
 
         // WHEN (now enabled, should request focus)
-        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-        updateChange->setPropertyName("focus");
-        updateChange->setValue(true);
-        backendKeyboardHandler->sceneChangeEvent(updateChange);
+        keyboardHandler.setFocus(true);
+        backendKeyboardHandler.syncFromFrontEnd(&keyboardHandler, false);
 
         // THEN
-        QCOMPARE(backendKeyboardDevice->lastKeyboardInputRequester(), backendKeyboardHandler->peerId());
+        QCOMPARE(backendKeyboardDevice->lastKeyboardInputRequester(), backendKeyboardHandler.peerId());
     }
 };
 

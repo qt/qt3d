@@ -69,7 +69,6 @@ public:
     Joint();
 
     void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     Qt3DCore::Sqt localPose() const { return m_localPose; }

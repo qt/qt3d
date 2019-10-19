@@ -63,6 +63,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QNode;
+
 class Q_3DCORE_PRIVATE_EXPORT QBackendNodePrivate
         : public QObserverInterface
         , public QObservableInterface
@@ -84,6 +86,11 @@ public:
     QLockableObserverInterface *m_arbiter;
     QNodeId m_peerId;
     bool m_enabled;
+
+    virtual void addedToEntity(QNode *frontend);
+    virtual void removedFromEntity(QNode *frontend);
+    virtual void componentAdded(QNode *frontend);
+    virtual void componentRemoved(QNode *frontend);
 
 private:
     Q_DISABLE_COPY(QBackendNodePrivate)

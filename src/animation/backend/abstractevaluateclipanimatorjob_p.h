@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_LOADANIMATIONCLIPJOB_H
-#define QT3DANIMATION_ANIMATION_LOADANIMATIONCLIPJOB_H
+#ifndef QT3DANIMATION_ANIMATION_ABSTRACTEVALUATECLIPANIMATORJOB_P_H
+#define QT3DANIMATION_ANIMATION_ABSTRACTEVALUATECLIPANIMATORJOB_P_H
 
 //
 //  W A R N I N G
@@ -49,42 +49,29 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DAnimation/private/handle_types_p.h>
-#include <QtCore/qvector.h>
+#include <Qt3DAnimation/private/animationutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 namespace Animation {
 
-class Handler;
-class FindGraphJob;
-class LoadAnimationClipJobPrivate;
+class AbstractEvaluateClipAnimatorJobPrivate;
 
-class LoadAnimationClipJob : public Qt3DCore::QAspectJob
+class AbstractEvaluateClipAnimatorJob : public Qt3DCore::QAspectJob
 {
-public:
-    LoadAnimationClipJob();
-
-    void setHandler(Handler *handler) { m_handler = handler; }
-    Handler *handler() const { return m_handler; }
-
-    void addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles);
-    void clearDirtyAnimationClips();
-
 protected:
-    void run() override;
+    AbstractEvaluateClipAnimatorJob();
+
+    void setPostFrameData(const AnimationRecord &record, const QVector<AnimationCallbackAndValue> &callbacks);
 
 private:
-    Q_DECLARE_PRIVATE(LoadAnimationClipJob)
-
-    QVector<HAnimationClip> m_animationClipHandles;
-    Handler *m_handler;
+    Q_DECLARE_PRIVATE(AbstractEvaluateClipAnimatorJob)
 };
 
-} // namespace Animation
-} // namespace Qt3DAnimation
+} // Animation
+} // Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_LOADANIMATIONCLIPJOB_H
+#endif // QT3DANIMATION_ANIMATION_ABSTRACTEVALUATECLIPANIMATORJOB_P_H

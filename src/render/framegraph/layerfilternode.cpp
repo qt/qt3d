@@ -40,9 +40,6 @@
 #include "layerfilternode_p.h"
 #include "qlayerfilter.h"
 #include <Qt3DRender/private/qlayerfilter_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <algorithm>
 
 QT_BEGIN_NAMESPACE

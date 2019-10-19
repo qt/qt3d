@@ -66,13 +66,11 @@ public:
     void cleanup() final;
 
     inline int axis() const { return m_axis; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) final;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) final;
 
     float process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     int m_axis;
 };
 

@@ -9,6 +9,7 @@ HEADERS += \
     $$PWD/qlevelofdetail.h \
     $$PWD/qlevelofdetail_p.h \
     $$PWD/qlevelofdetailswitch.h \
+    $$PWD/qlevelofdetailswitch_p.h \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
     $$PWD/sphere_p.h \

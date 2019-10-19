@@ -40,10 +40,11 @@
 #include "genericdevicebackendnode_p.h"
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/qgenericinputdevice_p.h>
+#include <Qt3DInput/private/qabstractphysicaldevice_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,19 +61,24 @@ GenericDeviceBackendNode::~GenericDeviceBackendNode()
 {
 }
 
-void GenericDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void GenericDeviceBackendNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("axisEvent")) {
-            QPair<int, qreal> val = propertyChange->value().value<QPair<int, qreal>>();
-            const QMutexLocker lock(&m_mutex);
+    QAbstractPhysicalDeviceBackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const Qt3DInput::QGenericInputDevice *node = qobject_cast<const Qt3DInput::QGenericInputDevice *>(frontEnd);
+    if (!node)
+        return;
+
+    auto *d = static_cast<Qt3DInput::QAbstractPhysicalDevicePrivate *>( Qt3DCore::QNodePrivate::get(const_cast<Qt3DCore::QNode *>(frontEnd)) );
+
+    {
+        const QMutexLocker lock(&m_mutex);
+        for (const auto &val: qAsConst(d->m_pendingAxisEvents))
             m_axesValues[val.first] = val.second;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttonEvent")) {
-            QPair<int, qreal> val = propertyChange->value().value<QPair<int, qreal>>();
-            const QMutexLocker lock(&m_mutex);
+        for (const auto &val: qAsConst(d->m_pendingButtonsEvents))
             m_buttonsValues[val.first] = val.second;
-        }
+
+        d->m_pendingAxisEvents.clear();
+        d->m_pendingButtonsEvents.clear();
     }
 }
 

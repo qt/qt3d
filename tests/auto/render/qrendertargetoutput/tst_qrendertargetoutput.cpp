@@ -34,7 +34,6 @@
 #include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qtexture.h>
 #include <QSignalSpy>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include "testpostmanarbiter.h"

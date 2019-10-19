@@ -56,20 +56,13 @@ namespace Qt3DInput {
 namespace Input {
 
 MouseHandler::MouseHandler()
-    : QBackendNode(ReadWrite)
+    : BackendNode(ReadWrite)
     , m_inputHandler(nullptr)
 {
 }
 
 MouseHandler::~MouseHandler()
 {
-}
-
-void MouseHandler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMouseHandlerData>>(change);
-    const auto &data = typedChange->data;
-    setDevice(data.mouseDeviceId);
 }
 
 Qt3DCore::QNodeId MouseHandler::mouseDevice() const
@@ -82,38 +75,16 @@ void MouseHandler::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void MouseHandler::mouseEvent(const QMouseEventPtr &event)
+void MouseHandler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("mouse");
-    e->setValue(QVariant::fromValue(event));
-    notifyObservers(e);
-}
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const Qt3DInput::QMouseHandler *node = qobject_cast<const Qt3DInput::QMouseHandler *>(frontEnd);
+    if (!node)
+        return;
 
-#if QT_CONFIG(wheelevent)
-void MouseHandler::wheelEvent(const QWheelEventPtr &event)
-{
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("wheel");
-    e->setValue(QVariant::fromValue(event));
-    notifyObservers(e);
-}
-#endif
-
-void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("device")) {
-            const QNodeId newId = propertyChange->value().value<QNodeId>();
-            if (m_mouseDevice != newId) {
-                setDevice(newId);
-            }
-        }
-    }
-    QBackendNode::sceneChangeEvent(e);
+    const auto newId = Qt3DCore::qIdForNode(node->sourceDevice());
+    if (m_mouseDevice != newId)
+        setDevice(newId);
 }
 
 void MouseHandler::setDevice(Qt3DCore::QNodeId device)

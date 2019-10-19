@@ -39,7 +39,6 @@
 
 #include "waitfence_p.h"
 #include <Qt3DRender/private/qwaitfence_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 //
 //  W A R N I N G

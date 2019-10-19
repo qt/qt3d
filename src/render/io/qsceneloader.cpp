@@ -219,6 +219,27 @@ void QSceneLoaderPrivate::setStatus(QSceneLoader::Status status)
     }
 }
 
+void QSceneLoaderPrivate::setSceneRoot(QEntity *root)
+{
+    // If we already have a scene sub tree, delete it
+    if (m_subTreeRoot) {
+        delete m_subTreeRoot;
+        m_subTreeRoot = nullptr;
+    }
+
+    // If we have successfully loaded a scene, graft it in
+    if (root) {
+        // Get the entity to which this component is attached
+        const Qt3DCore::QNodeIdVector entities = m_scene->entitiesForComponent(m_id);
+        Q_ASSERT(entities.size() == 1);
+        Qt3DCore::QNodeId parentEntityId = entities.first();
+        QEntity *parentEntity = qobject_cast<QEntity *>(m_scene->lookupNode(parentEntityId));
+        root->setParent(parentEntity);
+        m_subTreeRoot = root;
+        populateEntityMap(m_subTreeRoot);
+    }
+}
+
 /*!
     The constructor creates an instance with the specified \a parent.
  */
@@ -236,38 +257,6 @@ QSceneLoader::~QSceneLoader()
 QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
 {
-}
-
-// Called in main thread
-/*! \internal */
-void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QSceneLoader);
-    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
-    if (e->type() == PropertyUpdated) {
-        if (e->propertyName() == QByteArrayLiteral("scene")) {
-            // If we already have a scene sub tree, delete it
-            if (d->m_subTreeRoot) {
-                delete d->m_subTreeRoot;
-                d->m_subTreeRoot = nullptr;
-            }
-
-            // If we have successfully loaded a scene, graft it in
-            auto *subTreeRoot = e->value().value<Qt3DCore::QEntity *>();
-            if (subTreeRoot) {
-                // Get the entity to which this component is attached
-                const Qt3DCore::QNodeIdVector entities = d->m_scene->entitiesForComponent(d->m_id);
-                Q_ASSERT(entities.size() == 1);
-                Qt3DCore::QNodeId parentEntityId = entities.first();
-                QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(parentEntityId));
-                subTreeRoot->setParent(parentEntity);
-                d->m_subTreeRoot = subTreeRoot;
-                d->populateEntityMap(d->m_subTreeRoot);
-            }
-        } else if (e->propertyName() == QByteArrayLiteral("status")) {
-            d->setStatus(e->value().value<QSceneLoader::Status>());
-        }
-    }
 }
 
 QUrl QSceneLoader::source() const

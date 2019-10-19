@@ -31,7 +31,6 @@
 #include <Qt3DRender/qblitframebuffer.h>
 #include <Qt3DRender/private/qblitframebuffer_p.h>
 #include <Qt3DRender/private/blitframebuffer_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 

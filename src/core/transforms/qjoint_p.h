@@ -60,7 +60,7 @@ namespace Qt3DCore {
 
 class QJoint;
 
-class QJointPrivate : public QNodePrivate
+class Q_3DCORE_PRIVATE_EXPORT QJointPrivate : public QNodePrivate
 {
 public:
     QJointPrivate();

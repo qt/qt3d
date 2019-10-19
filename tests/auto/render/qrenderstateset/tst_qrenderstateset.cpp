@@ -37,10 +37,6 @@
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/private/qrenderstateset_p.h>
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-
 #include "testpostmanarbiter.h"
 
 class MyStateSet;

@@ -40,10 +40,10 @@
 #include "physicaldeviceproxy_p.h"
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QCoreApplication>
 
 #include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/qabstractphysicaldeviceproxy_p.h>
 #include <Qt3DInput/private/qabstractphysicaldeviceproxy_p_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -53,7 +53,7 @@ namespace Qt3DInput {
 namespace Input {
 
 PhysicalDeviceProxy::PhysicalDeviceProxy()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_manager(nullptr)
 {
 }
@@ -89,12 +89,6 @@ void PhysicalDeviceProxy::setDevice(QAbstractPhysicalDevice *device)
         m_physicalDeviceId = device->id();
         device->moveToThread(QCoreApplication::instance()->thread());
     }
-
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("device");
-    e->setValue(QVariant::fromValue(device));
-    notifyObservers(e);
 }
 
 Qt3DCore::QNodeId PhysicalDeviceProxy::physicalDeviceId() const
@@ -102,14 +96,20 @@ Qt3DCore::QNodeId PhysicalDeviceProxy::physicalDeviceId() const
     return m_physicalDeviceId;
 }
 
-void PhysicalDeviceProxy::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void PhysicalDeviceProxy::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractPhysicalDeviceProxyData>>(change);
-    const QAbstractPhysicalDeviceProxyData &data = typedChange->data;
-    m_deviceName = data.deviceName;
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 
-    // Request to load the actual device
-    m_manager->addPendingProxyToLoad(peerId());
+    if (firstTime) {
+        const QAbstractPhysicalDeviceProxy *node = qobject_cast<const QAbstractPhysicalDeviceProxy *>(frontEnd);
+        if (!node)
+            return;
+
+        m_deviceName = node->deviceName();
+
+        // Request to load the actual device
+        m_manager->addPendingProxyToLoad(peerId());
+    }
 }
 
 PhysicalDeviceProxyNodeFunctor::PhysicalDeviceProxyNodeFunctor(PhysicalDeviceProxyManager *manager)

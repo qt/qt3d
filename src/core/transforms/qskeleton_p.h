@@ -60,7 +60,7 @@ namespace Qt3DCore {
 
 class QJoint;
 
-class QSkeletonPrivate : public QAbstractSkeletonPrivate
+class Q_3DCORE_PRIVATE_EXPORT QSkeletonPrivate : public QAbstractSkeletonPrivate
 {
 public:
     QSkeletonPrivate();

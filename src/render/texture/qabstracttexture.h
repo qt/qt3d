@@ -350,6 +350,7 @@ protected:
     explicit QAbstractTexture(QAbstractTexturePrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
+    // TO DO Qt6, should be on private class
     void setStatus(Status status);
     void setHandle(const QVariant &handle);
     void setHandleType(HandleType type);

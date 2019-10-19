@@ -178,43 +178,6 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.source(), newSource);
     }
 
-    void checkStatusPropertyBackendNotification()
-    {
-        // GIVEN
-        TestRenderer renderer;
-        NodeManagers nodeManagers;
-        renderer.setNodeManagers(&nodeManagers);
-        TestArbiter arbiter;
-        Skeleton backendSkeleton;
-        backendSkeleton.setRenderer(&renderer);
-        backendSkeleton.setSkeletonManager(nodeManagers.skeletonManager());
-        backendSkeleton.setEnabled(true);
-        Qt3DCore::QBackendNodePrivate::get(&backendSkeleton)->setArbiter(&arbiter);
-
-        // WHEN
-        backendSkeleton.setStatus(QSkeletonLoader::Error);
-
-        // THEN
-        QCOMPARE(backendSkeleton.status(), QSkeletonLoader::Error);
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<QSkeletonLoader::Status>(), backendSkeleton.status());
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isIntermediate,
-                 false);
-
-        arbiter.events.clear();
-
-        // WHEN
-        backendSkeleton.setStatus(QSkeletonLoader::Error);
-
-        // THEN
-        QCOMPARE(backendSkeleton.status(), QSkeletonLoader::Error);
-        QCOMPARE(arbiter.events.count(), 0);
-
-        arbiter.events.clear();
-    }
-
     void checkCreateFrontendJoint_data()
     {
         QTest::addColumn<QMatrix4x4>("inverseBindMatrix");
@@ -255,30 +218,6 @@ private Q_SLOTS:
         joint->setInverseBindMatrix(m);
         joint->setName(name);
         QTest::newRow("inverseBind") << m << localPose << name << joint;
-    }
-
-    void checkCreateFrontendJoint()
-    {
-        // GIVEN
-        Skeleton backendSkeleton;
-        QFETCH(QMatrix4x4, inverseBindMatrix);
-        QFETCH(Qt3DCore::Sqt, localPose);
-        QFETCH(QString, jointName);
-        QFETCH(QJoint *, expectedJoint);
-
-        // WHEN
-        const QJoint *actualJoint = backendSkeleton.createFrontendJoint(jointName, localPose, inverseBindMatrix);
-
-        // THEN
-        QCOMPARE(actualJoint->scale(), expectedJoint->scale());
-        QCOMPARE(actualJoint->rotation(), expectedJoint->rotation());
-        QCOMPARE(actualJoint->translation(), expectedJoint->translation());
-        QCOMPARE(actualJoint->inverseBindMatrix(), expectedJoint->inverseBindMatrix());
-        QCOMPARE(actualJoint->name(), expectedJoint->name());
-
-        // Cleanup
-        delete actualJoint;
-        delete expectedJoint;
     }
 
     void checkCreateFrontendJoints_data()
@@ -343,46 +282,6 @@ private Q_SLOTS:
         }
 
         QTest::newRow("deep") << skeletonData << rootJoint;
-    }
-
-    void checkCreateFrontendJoints()
-    {
-        // GIVEN
-        Skeleton backendSkeleton;
-        QFETCH(SkeletonData, skeletonData);
-        QFETCH(QJoint *, expectedRootJoint);
-
-        // WHEN
-        QJoint *actualRootJoint = backendSkeleton.createFrontendJoints(skeletonData);
-
-        // THEN
-        if (skeletonData.joints.isEmpty()) {
-            QVERIFY(actualRootJoint == expectedRootJoint); // nullptr
-            return;
-        }
-
-        // Linearise the tree of joints and check them against the skeletonData
-        QVector<QJoint *> joints = linearizeTree(actualRootJoint);
-        QCOMPARE(joints.size(), skeletonData.joints.size());
-        for (int i = 0; i < joints.size(); ++i) {
-            // Check the translations match
-            QCOMPARE(joints[i]->translation(), skeletonData.localPoses[i].translation);
-        }
-
-        // Now we know the order of Joints match. Check the parents match too
-        for (int i = 0; i < joints.size(); ++i) {
-            // Get parent index from joint info
-            const int parentIndex = skeletonData.joints[i].parentIndex;
-            if (parentIndex == -1) {
-                QVERIFY(joints[i]->parent() == nullptr);
-            } else {
-                QCOMPARE(joints[i]->parent(), joints[parentIndex]);
-            }
-        }
-
-        // Cleanup
-        delete actualRootJoint;
-        delete expectedRootJoint;
     }
 };
 

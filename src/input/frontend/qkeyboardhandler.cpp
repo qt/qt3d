@@ -170,23 +170,6 @@ QKeyboardHandler::~QKeyboardHandler()
 {
 }
 
-/*! \internal */
-void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QKeyboardHandler);
-    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
-    if (e->type() == PropertyUpdated) {
-        if (e->propertyName() == QByteArrayLiteral("focus")) {
-            bool block = blockNotifications(true);
-            setFocus(e->value().toBool());
-            blockNotifications(block);
-        } else if (e->propertyName() == QByteArrayLiteral("event")) {
-            QKeyEventPtr ev = e->value().value<QKeyEventPtr>();
-            d->keyEvent(ev.data());
-        }
-    }
-}
-
 /*!
     \qmlproperty KeyboardDevice Qt3D.Input::KeyboardHandler::sourceDevice
 */

@@ -30,7 +30,6 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qclock.h>
 #include <Qt3DAnimation/private/qclock_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>

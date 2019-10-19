@@ -43,9 +43,6 @@
 #include <Qt3DRender/private/qrenderstateset_p.h>
 #include <Qt3DRender/private/genericstate_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 

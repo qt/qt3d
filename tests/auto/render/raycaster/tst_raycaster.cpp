@@ -106,26 +106,6 @@ private Q_SLOTS:
             QVERIFY(renderer.dirtyBits() != 0);
         }
     }
-
-    void checkBackendPropertyNotifications()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        Qt3DRender::Render::RayCaster rayCaster;
-        Qt3DCore::QBackendNodePrivate::get(&rayCaster)->setArbiter(&arbiter);
-        Qt3DRender::QAbstractRayCaster::Hits hits;
-
-        // WHEN
-        rayCaster.dispatchHits(hits);
-
-        // THEN
-        QCOMPARE(arbiter.events.count(), 2);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "hits");
-        QVERIFY(!rayCaster.isEnabled());
-
-        arbiter.events.clear();
-    }
 };
 
 

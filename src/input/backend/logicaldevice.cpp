@@ -42,9 +42,6 @@
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qlogicaldevice.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/qlogicaldevice_p.h>
@@ -56,16 +53,8 @@ namespace Qt3DInput {
 namespace Input {
 
 LogicalDevice::LogicalDevice()
-    : QBackendNode()
+    : BackendNode()
 {
-}
-
-void LogicalDevice::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLogicalDeviceData>>(change);
-    const auto &data = typedChange->data;
-    m_actions = data.actionIds;
-    m_axes = data.axisIds;
 }
 
 void LogicalDevice::cleanup()
@@ -75,31 +64,15 @@ void LogicalDevice::cleanup()
     m_axes.clear();
 }
 
-void LogicalDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void LogicalDevice::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    switch (e->type()) {
-    case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("axis"))
-            m_axes.push_back(change->addedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("action"))
-            m_actions.push_back(change->addedNodeId());
-        break;
-    }
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QLogicalDevice *node = qobject_cast<const QLogicalDevice *>(frontEnd);
+    if (!node)
+        return;
 
-    case Qt3DCore::PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("axis"))
-            m_axes.removeOne(change->removedNodeId());
-        else if (change->propertyName() == QByteArrayLiteral("action"))
-            m_actions.removeOne(change->removedNodeId());
-        break;
-    }
-
-    default:
-        break;
-    }
-    QBackendNode::sceneChangeEvent(e);
+    m_actions = Qt3DCore::qIdsForNodes(node->actions());
+    m_axes = Qt3DCore::qIdsForNodes(node->axes());
 }
 
 LogicalDeviceNodeFunctor::LogicalDeviceNodeFunctor(LogicalDeviceManager *manager)

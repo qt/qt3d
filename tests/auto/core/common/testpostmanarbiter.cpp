@@ -94,6 +94,13 @@ void TestArbiter::addDirtyFrontEndNode(Qt3DCore::QNode *node)
         dirtyNodes << node;
 }
 
+void TestArbiter::addDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QNode *subNode, const char *property, Qt3DCore::ChangeFlag change)
+{
+    if (!dirtyNodes.contains(node))
+        dirtyNodes << node;
+    dirtySubNodes.push_back({node, subNode, change, property});
+}
+
 void TestArbiter::removeDirtyFrontEndNode(Qt3DCore::QNode *node)
 {
     dirtyNodes.removeOne(node);

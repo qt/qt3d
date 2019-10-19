@@ -240,28 +240,6 @@ private Q_SLOTS:
 
     }
 
-    void checkStatusUpdate()
-    {
-        // GIVEN
-        qRegisterMetaType<Qt3DRender::QMesh::Status>("Status");
-        MyQMesh mesh;
-        QSignalSpy spy(&mesh, SIGNAL(statusChanged(Status)));
-
-        // THEN
-        QCOMPARE(mesh.status(), Qt3DRender::QMesh::None);
-
-        // WHEN
-        const Qt3DRender::QMesh::Status newStatus = Qt3DRender::QMesh::Error;
-        Qt3DCore::QPropertyUpdatedChangePtr e(new Qt3DCore::QPropertyUpdatedChange(mesh.id()));
-        e->setPropertyName("status");
-        e->setValue(QVariant::fromValue(newStatus));
-        mesh.sceneChangeEvent(e);
-
-        // THEN
-        QCOMPARE(mesh.status(), newStatus);
-        QCOMPARE(spy.count(), 1);
-    }
-
     void checkGeometryFactoryIsAccessibleEvenWithNoScene() // QTBUG-65506
     {
         // GIVEN

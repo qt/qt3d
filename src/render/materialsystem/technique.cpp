@@ -48,9 +48,6 @@
 #include <Qt3DRender/private/qtechnique_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>

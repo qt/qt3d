@@ -96,6 +96,10 @@ public :
     QTextureGeneratorPtr dataFunctor() const;
     void setDataFunctor(const QTextureGeneratorPtr &generator);
 
+    void setStatus(QAbstractTexture::Status status);
+    void setHandle(const QVariant &handle);
+    void setHandleType(QAbstractTexture::HandleType type);
+
     QVector<QTextureDataUpdate> m_pendingDataUpdates;
 
 private:

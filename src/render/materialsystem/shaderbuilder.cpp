@@ -39,6 +39,8 @@
 
 #include "shaderbuilder_p.h"
 
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/private/qshaderprogram_p.h>

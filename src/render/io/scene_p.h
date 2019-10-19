@@ -74,7 +74,6 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     QUrl source() const;
-    void setSceneSubtree(Qt3DCore::QEntity *subTree);
     void setSceneManager(SceneManager *manager);
 
     void cleanup();

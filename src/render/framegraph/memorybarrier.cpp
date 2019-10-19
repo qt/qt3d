@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "memorybarrier_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qmemorybarrier_p.h>
 
 QT_BEGIN_NAMESPACE

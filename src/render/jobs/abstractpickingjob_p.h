@@ -90,6 +90,8 @@ public:
                                               const QRect &viewport);
 
 protected:
+    AbstractPickingJob(Qt3DCore::QAspectJobPrivate &dd);
+
     void run() final;
 
     NodeManagers *m_manager;

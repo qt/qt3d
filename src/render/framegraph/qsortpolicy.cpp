@@ -102,6 +102,8 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 
     \value FrontToBack sort the objects from front to back. The opposite of
     BackToFront.
+
+    \value [since 5.14] Texture sort the objects to minimize texture changes.
 */
 
 /*!
@@ -124,6 +126,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     \li Material - sort the objects based on their material value
     \li FrontToBack - sort the objects from front to back. The opposite of
         BackToFront.
+    \li [since 5.14] Texture - sort the objects to minimize texture changes.
     \endlist
 */
 

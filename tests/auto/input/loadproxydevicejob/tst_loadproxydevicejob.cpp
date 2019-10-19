@@ -118,13 +118,14 @@ private Q_SLOTS:
             {
                 backendProxy->setManager(manager);
                 Qt3DCore::QBackendNodeTester backendNodeCreator;
-                backendNodeCreator.simulateInitialization(&proxy, backendProxy);
+                backendNodeCreator.simulateInitializationSync(&proxy, backendProxy);
                 Qt3DCore::QBackendNodePrivate::get(backendProxy)->setArbiter(&arbiter);
             }
 
             // THEN
             QCOMPARE(manager->lookupResource(proxy.id()), backendProxy);
             QCOMPARE(backendProxy->deviceName(), QStringLiteral("TestProxy"));
+            QVERIFY(backendProxy->physicalDeviceId().isNull());
 
             const QVector<Qt3DCore::QNodeId> pendingProxies = manager->takePendingProxiesToLoad();
             QCOMPARE(pendingProxies.size(), 1);
@@ -138,11 +139,7 @@ private Q_SLOTS:
             job.run();
 
             // THEN -> PhysicalDeviceWrapper::setDevice should have been called
-            QCOMPARE(arbiter.events.count(), 1);
-            Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "device");
-            QVERIFY(change->value().value<Qt3DInput::QAbstractPhysicalDevice *>() != nullptr);
-            QCOMPARE(change->subjectId(), proxy.id());
+            QVERIFY(!backendProxy->physicalDeviceId().isNull());
         }
 
         // WHEN -> invalid name
@@ -155,7 +152,7 @@ private Q_SLOTS:
             {
                 backendProxy->setManager(manager);
                 Qt3DCore::QBackendNodeTester backendNodeCreator;
-                backendNodeCreator.simulateInitialization(&proxy, backendProxy);
+                backendNodeCreator.simulateInitializationSync(&proxy, backendProxy);
                 Qt3DCore::QBackendNodePrivate::get(backendProxy)->setArbiter(&arbiter);
             }
 

@@ -41,9 +41,6 @@
 #include "qjoint_p.h"
 
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -353,7 +350,7 @@ void QJoint::addChildJoint(QJoint *joint)
         d->registerDestructionHelper(joint, &QJoint::removeChildJoint, d->m_childJoints);
 
         if (d->m_changeArbiter != nullptr)
-            d->update();
+            d->updateNode(joint, "childJoint", PropertyValueAdded);
     }
 }
 
@@ -365,9 +362,8 @@ void QJoint::removeChildJoint(QJoint *joint)
 {
     Q_D(QJoint);
     if (d->m_childJoints.contains(joint)) {
-
         if (d->m_changeArbiter != nullptr)
-            d->update();
+            d->updateNode(joint, "childJoint", PropertyValueRemoved);
 
         d->m_childJoints.removeOne(joint);
 

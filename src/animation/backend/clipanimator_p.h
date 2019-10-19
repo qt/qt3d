@@ -93,9 +93,6 @@ public:
     int currentLoop() const { return m_currentLoop; }
     void setCurrentLoop(int currentLoop) { m_currentLoop = currentLoop; }
 
-    void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
-    void sendCallbacks(const QVector<AnimationCallbackAndValue> &callbacks);
-
     void animationClipMarkedDirty() { setDirty(Handler::ClipAnimatorDirty); }
 
     void setClipFormat(const ClipFormat &clipFormat) { m_clipFormat = clipFormat; }

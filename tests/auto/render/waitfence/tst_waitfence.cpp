@@ -43,7 +43,6 @@
 #include <Qt3DRender/qwaitfence.h>
 #include <Qt3DRender/private/qwaitfence_p.h>
 #include <Qt3DRender/private/waitfence_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 

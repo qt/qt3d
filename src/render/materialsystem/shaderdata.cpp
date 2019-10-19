@@ -64,8 +64,6 @@ const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
 }
 
-QVector<Qt3DCore::QNodeId> ShaderData::m_updatedShaderData;
-
 ShaderData::ShaderData()
     : m_managers(nullptr)
 {
@@ -80,50 +78,81 @@ void ShaderData::setManagers(NodeManagers *managers)
     m_managers = managers;
 }
 
-void ShaderData::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+void ShaderData::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderDataData>>(change);
-    const QShaderDataData &data = typedChange->data;
+    const QShaderData *node = qobject_cast<const QShaderData *>(frontEnd);
+    if (!node)
+        return;
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 
-    m_propertyReader = data.propertyReader;
+    if (firstTime) {
+        m_propertyReader = node->propertyReader();
 
-    for (const QPair<QByteArray, QVariant> &entry : data.properties) {
-        if (entry.first == QByteArrayLiteral("data") ||
-                entry.first == QByteArrayLiteral("childNodes")) // We don't handle default Node properties
-            continue;
-        const QVariant &propertyValue = entry.second;
-        const QString propertyName = QString::fromLatin1(entry.first);
+        const QMetaObject *metaObj = node->metaObject();
+        const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
+        const int propertyCount = metaObj->propertyCount();
+        // Dynamic properties names
+        const auto dynamicPropertyNames = node->dynamicPropertyNames();
 
-        m_originalProperties.insert(propertyName, propertyValue);
+        QVector<QString> propertyNames;
+        propertyNames.reserve(propertyCount - propertyOffset + dynamicPropertyNames.size());
 
-        // We check if the property is a QNodeId or QVector<QNodeId> so that we can
-        // check nested QShaderData for update
-        if (propertyValue.userType() == qNodeIdTypeId) {
-            m_nestedShaderDataProperties.insert(propertyName, propertyValue);
-        } else if (propertyValue.userType() == QMetaType::QVariantList) {
-            QVariantList list = propertyValue.value<QVariantList>();
-            if (list.count() > 0 && list.at(0).userType() == qNodeIdTypeId)
-                m_nestedShaderDataProperties.insert(propertyName, propertyValue);
+        // Statiically defined properties
+        for (int i = propertyOffset; i < propertyCount; ++i) {
+            const QMetaProperty pro = metaObj->property(i);
+            if (pro.isWritable())
+                propertyNames.push_back(QString::fromLatin1(pro.name()));
         }
-    }
+        // Dynamic properties
+        for (const QByteArray &propertyName : dynamicPropertyNames)
+            propertyNames.push_back(QString::fromLatin1(propertyName));
 
-    // We look for transformed properties once the complete hash of
-    // originalProperties is available
-    QHash<QString, QVariant>::iterator it = m_originalProperties.begin();
-    const QHash<QString, QVariant>::iterator end = m_originalProperties.end();
+        for (const QString &propertyName : propertyNames) {
+            if (propertyName == QStringLiteral("data") ||
+                    propertyName == QStringLiteral("childNodes")) // We don't handle default Node properties
+                continue;
 
-    while (it != end) {
-        if (it.value().type() == QVariant::Vector3D) {
-            // if there is a matching QShaderData::TransformType propertyTransformed
-            QVariant value = m_originalProperties.value(it.key() + QLatin1String("Transformed"));
-            // if that's the case, we apply a space transformation to the property
-            if (value.isValid() && value.type() == QVariant::Int)
-                m_transformedProperties.insert(it.key(), static_cast<TransformType>(value.toInt()));
+            const QVariant &propertyValue = m_propertyReader->readProperty(node->property(propertyName.toLatin1()));
+            bool isNested = false;
+            bool isTransformed = false;
+
+            // We check if the property is a QNodeId
+            isNested = (propertyValue.userType() == qNodeIdTypeId);
+            // We check if QVector<QNodeId>
+            if (propertyValue.userType() == QMetaType::QVariantList) {
+                QVariantList list = propertyValue.value<QVariantList>();
+                if (list.count() > 0 && list.at(0).userType() == qNodeIdTypeId)
+                    isNested = true;
+            }
+
+            // We check if property is a Transformed property
+            if (propertyValue.userType() == QVariant::Vector3D) {
+                // if there is a matching QShaderData::TransformType propertyTransformed
+                isTransformed = propertyNames.contains(propertyName + QLatin1String("Transformed"));
+            }
+            m_originalProperties.insert(propertyName, { propertyValue, isNested, isTransformed });
         }
-        ++it;
+        BackendNode::markDirty(AbstractRenderer::ParameterDirty);
+    } else {
+        // Updates
+        if (!m_propertyReader.isNull()) {
+            auto it = m_originalProperties.begin();
+            const auto end = m_originalProperties.end();
+
+            while (it != end) {
+                const QVariant newValue = m_propertyReader->readProperty(node->property(it.key().toLatin1()));
+                PropertyValue &propValue = it.value();
+                if (propValue.value != newValue) {
+                    // Note we aren't notified about nested QShaderData in this call
+                    // only scalar / vec properties
+                    propValue.value = newValue;
+                    BackendNode::markDirty(AbstractRenderer::ParameterDirty);
+                }
+                ++it;
+            }
+        }
     }
 }
-
 
 ShaderData *ShaderData::lookupResource(NodeManagers *managers, QNodeId id)
 {
@@ -135,120 +164,62 @@ ShaderData *ShaderData::lookupResource(QNodeId id)
     return ShaderData::lookupResource(m_managers, id);
 }
 
-// Call by cleanup job (single thread)
-void ShaderData::clearUpdatedProperties()
-{
-    // DISABLED: Is only useful when building UBO from a ShaderData, which is disable since 5.7
-    //    const QHash<QString, QVariant>::const_iterator end = m_nestedShaderDataProperties.end();
-    //    QHash<QString, QVariant>::const_iterator it = m_nestedShaderDataProperties.begin();
-
-    //    while (it != end) {
-    //        if (it.value().userType() == QMetaType::QVariantList) {
-    //            const auto values = it.value().value<QVariantList>();
-    //            for (const QVariant &v : values) {
-    //                ShaderData *nested = lookupResource(v.value<QNodeId>());
-    //                if (nested != nullptr)
-    //                    nested->clearUpdatedProperties();
-    //            }
-    //        } else {
-    //            ShaderData *nested = lookupResource(it.value().value<QNodeId>());
-    //            if (nested != nullptr)
-    //                nested->clearUpdatedProperties();
-    //        }
-    //        ++it;
-    //    }
-}
-
 void ShaderData::cleanup(NodeManagers *managers)
 {
     Q_UNUSED(managers)
-    // DISABLED: Is only useful when building UBO from a ShaderData, which is disable since 5.7
-    //    for (Qt3DCore::QNodeId id : qAsConst(m_updatedShaderData)) {
-    //        ShaderData *shaderData = ShaderData::lookupResource(managers, id);
-    //        if (shaderData)
-    //            shaderData->clearUpdatedProperties();
-    //    }
-    m_updatedShaderData.clear();
 }
 
+// RenderCommand updater jobs
 QVariant ShaderData::getTransformedProperty(const QString &name, const Matrix4x4 &viewMatrix)
 {
     // Note protecting m_worldMatrix at this point as we assume all world updates
     // have been performed when reaching this point
-    auto it = m_transformedProperties.find(name);
-    if (it != m_transformedProperties.end()) {
-        const TransformType transformType = it.value();
-        switch (transformType) {
-        case ModelToEye:
-            return QVariant::fromValue(viewMatrix * m_worldMatrix * Vector3D(m_originalProperties.value(name).value<QVector3D>()));
-        case ModelToWorld:
-            return QVariant::fromValue(m_worldMatrix * Vector3D(m_originalProperties.value(it.key()).value<QVector3D>()));
-        case ModelToWorldDirection:
-            return QVariant::fromValue(Vector3D(m_worldMatrix * Vector4D(m_originalProperties.value(it.key()).value<QVector3D>(), 0.0f)));
-        case NoTransform:
-            break;
+    const auto it = m_originalProperties.constFind(name);
+    if (it != m_originalProperties.constEnd()) {
+        const PropertyValue &propertyValue = it.value();
+        if (propertyValue.isTransformed) {
+            const auto transformedIt = m_originalProperties.constFind(name + QLatin1String("Transformed"));
+            if (transformedIt != m_originalProperties.constEnd()) {
+                const PropertyValue &transformedValue = transformedIt.value();
+                const TransformType transformType = static_cast<TransformType>(transformedValue.value.toInt());
+                switch (transformType) {
+                case ModelToEye:
+                    return QVariant::fromValue(viewMatrix * m_worldMatrix * Vector3D(propertyValue.value.value<QVector3D>()));
+                case ModelToWorld:
+                    return QVariant::fromValue(m_worldMatrix * Vector3D(propertyValue.value.value<QVector3D>()));
+                case ModelToWorldDirection:
+                    return QVariant::fromValue(Vector3D(m_worldMatrix * Vector4D(propertyValue.value.value<QVector3D>(), 0.0f)));
+                case NoTransform:
+                    break;
+                }
+            }
         }
+        return propertyValue.value;
     }
     return QVariant();
+}
+
+// Unit tests only
+ShaderData::TransformType ShaderData::propertyTransformType(const QString &name) const
+{
+    const auto it = m_originalProperties.constFind(name);
+    if (it != m_originalProperties.constEnd()) {
+        const PropertyValue &propertyValue = it.value();
+        if (propertyValue.isTransformed) {
+            auto transformedIt = m_originalProperties.constFind(name + QLatin1String("Transformed"));
+            if (transformedIt != m_originalProperties.end())
+                return static_cast<TransformType>(transformedIt.value().value.toInt());
+        }
+    }
+    return NoTransform;
 }
 
 // Called by FramePreparationJob or by RenderView when dealing with lights
 void ShaderData::updateWorldTransform(const Matrix4x4 &worldMatrix)
 {
-    QMutexLocker lock(&m_mutex);
     if (m_worldMatrix != worldMatrix) {
         m_worldMatrix = worldMatrix;
     }
-}
-
-// This will add the ShaderData to be cleared from updates at the end of the frame
-// by the cleanup job
-// Called by renderview jobs (several concurrent threads)
-void ShaderData::markDirty()
-{
-    QMutexLocker lock(&m_mutex);
-    if (!ShaderData::m_updatedShaderData.contains(peerId()))
-        ShaderData::m_updatedShaderData.append(peerId());
-}
-
-/*!
-  \internal
-  Lookup if the current ShaderData or a nested ShaderData has updated properties.
-  UpdateProperties contains either the value of the propertie of a QNodeId if it's another ShaderData.
-  Transformed properties are updated for all of ShaderData that have ones at the point.
-
-  \note This needs to be performed for every top level ShaderData every time it is used.
-  As we don't know if the transformed properties use the same viewMatrix for all RenderViews.
- */
-
-ShaderData::TransformType ShaderData::propertyTransformType(const QString &name) const
-{
-    return m_transformedProperties.value(name, TransformType::NoTransform);
-}
-
-void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (!m_propertyReader.isNull() && e->type() == PropertyUpdated) {
-        QString propertyName;
-        QVariant propertyValue;
-
-        if (auto propertyChange = qSharedPointerDynamicCast<QPropertyUpdatedChange>(e)) {
-            propertyName = QString::fromLatin1(propertyChange->propertyName());
-            propertyValue =  m_propertyReader->readProperty(propertyChange->value());
-        } else if (auto propertyChange = qSharedPointerDynamicCast<QDynamicPropertyUpdatedChange>(e)) {
-            propertyName = QString::fromLatin1(propertyChange->propertyName());
-            propertyValue = m_propertyReader->readProperty(propertyChange->value());
-        } else {
-            Q_UNREACHABLE();
-        }
-
-        // Note we aren't notified about nested QShaderData in this call
-        // only scalar / vec properties
-        m_originalProperties.insert(propertyName, propertyValue);
-        BackendNode::markDirty(AbstractRenderer::ParameterDirty);
-    }
-
-    BackendNode::sceneChangeEvent(e);
 }
 
 RenderShaderDataFunctor::RenderShaderDataFunctor(AbstractRenderer *renderer, NodeManagers *managers)

@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DInput/qaxisaccumulator.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
 
@@ -62,7 +63,7 @@ namespace Input {
 
 class AxisManager;
 
-class Q_AUTOTEST_EXPORT AxisAccumulator : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT AxisAccumulator : public BackendNode
 {
 public:
     AxisAccumulator();
@@ -78,13 +79,11 @@ public:
     float velocity() const Q_DECL_NOTHROW { return  m_velocity; }
     void setVelocity(float velocity);
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void stepIntegration(AxisManager *axisManager, float dt);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Qt3DCore::QNodeId m_sourceAxisId;
     QAxisAccumulator::SourceAxisType m_sourceAxisType;
     float m_scale;

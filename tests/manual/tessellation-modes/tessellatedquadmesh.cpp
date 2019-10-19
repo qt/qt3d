@@ -61,7 +61,7 @@ public:
     TessellatedGeometry(Qt3DCore::QNode *parent = nullptr)
         : Qt3DRender::QGeometry(parent)
         , m_positionAttribute(new Qt3DRender::QAttribute(this))
-        , m_vertexBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this))
+        , m_vertexBuffer(new Qt3DRender::QBuffer(this))
     {
         const float positionData[] = {
             -0.8f, -0.8f, 0.0f,

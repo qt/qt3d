@@ -34,9 +34,6 @@
 #include <Qt3DRender/private/qeffect_p.h>
 #include <Qt3DRender/private/effect_p.h>
 #include <Qt3DRender/private/shaderparameterpack_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 

@@ -72,6 +72,8 @@ public:
     void _q_radiusChanged(float radius);
     void _q_centerChanged(const QVector3D &center);
 
+    virtual void setCurrentIndex(int currentIndex);
+
     QCamera *m_camera;
     int m_currentIndex;
     QLevelOfDetail::ThresholdType m_thresholdType;

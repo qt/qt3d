@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
@@ -35,16 +36,9 @@
 #include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/private/qaxis_p.h>
 
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
-
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// We need to call QAxis::sceneChangeEvent which is protected
-// So we sublcass QAxis instead of QObject
-class tst_QAxis: public Qt3DInput::QAxis
+class tst_QAxis: public QObject
 {
     Q_OBJECT
 public:
@@ -129,22 +123,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.dirtyNodes.front(), axis.data());
 
         arbiter.events.clear();
-    }
-
-    void checkValuePropertyChanged()
-    {
-        // GIVEN
-        QCOMPARE(value(), 0.0f);
-
-        // Note: simulate backend change to frontend
-        // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("value");
-        valueChange->setValue(383.0f);
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(value(), 383.0f);
     }
 
     void checkAxisInputBookkeeping()

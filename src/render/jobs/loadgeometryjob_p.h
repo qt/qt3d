@@ -62,6 +62,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class NodeManagers;
+class LoadGeometryJobPrivate;
 
 class Q_AUTOTEST_EXPORT LoadGeometryJob : public Qt3DCore::QAspectJob
 {
@@ -75,6 +76,9 @@ protected:
     void run() override;
     HGeometryRenderer m_handle;
     NodeManagers *m_nodeManagers;
+
+private:
+    Q_DECLARE_PRIVATE(LoadGeometryJob)
 };
 
 typedef QSharedPointer<LoadGeometryJob> LoadGeometryJobPtr;

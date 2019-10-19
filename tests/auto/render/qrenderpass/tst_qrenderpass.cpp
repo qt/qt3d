@@ -36,7 +36,6 @@
 #include <Qt3DRender/private/qrenderpass_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>

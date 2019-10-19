@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
@@ -35,10 +36,6 @@
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/private/qaction_p.h>
 #include <Qt3DInput/private/qactioninput_p.h>
-
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
 
 #include "testpostmanarbiter.h"
 
@@ -116,42 +113,22 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeAddedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(change->propertyName(), "input");
-        QCOMPARE(change->addedNodeId(), input->id());
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), action.data());
 
-        arbiter.events.clear();
+        arbiter.dirtyNodes.clear();
 
         // WHEN
         action->removeInput(input);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-        QCOMPARE(nodeRemovedChange->propertyName(), "input");
-        QCOMPARE(nodeRemovedChange->removedNodeId(), input->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), action.data());
 
         arbiter.events.clear();
-    }
-
-    void checkActivePropertyChanged()
-    {
-        // GIVEN
-        QCOMPARE(isActive(), false);
-
-        // Note: simulate backend change to frontend
-        // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("active");
-        valueChange->setValue(true);
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(isActive(), true);
     }
 
     void checkActionInputBookkeeping()

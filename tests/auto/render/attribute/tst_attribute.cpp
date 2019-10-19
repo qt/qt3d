@@ -30,7 +30,6 @@
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testrenderer.h"
 
 class tst_Attribute : public Qt3DCore::QBackendNodeTester

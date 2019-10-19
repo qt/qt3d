@@ -40,7 +40,6 @@
 
 #include "renderstates_p.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/qcullface.h>
 #include <Qt3DRender/qpointsize.h>

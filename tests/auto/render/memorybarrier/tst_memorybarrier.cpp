@@ -31,7 +31,6 @@
 #include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/private/qmemorybarrier_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 

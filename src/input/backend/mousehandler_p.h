@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DInput/qmouseevent.h>
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,7 +61,7 @@ namespace Input {
 
 class InputHandler;
 
-class MouseHandler : public Qt3DCore::QBackendNode
+class MouseHandler : public BackendNode
 {
 public:
     MouseHandler();
@@ -69,18 +69,12 @@ public:
 
     Qt3DCore::QNodeId mouseDevice() const;
     void setInputHandler(InputHandler *handler);
-    void mouseEvent(const QMouseEventPtr &event);
-#if QT_CONFIG(wheelevent)
-    void wheelEvent(const QWheelEventPtr &event);
-#endif
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void setDevice(Qt3DCore::QNodeId device);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Qt3DCore::QNodeId m_mouseDevice;
     InputHandler *m_inputHandler;
 };

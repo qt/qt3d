@@ -73,6 +73,8 @@ public:
     QAbstractPhysicalDeviceProxy::DeviceStatus m_status;
     QAbstractPhysicalDevice *m_device;
 
+    void setDevice(QAbstractPhysicalDevice *device);
+    void resetDevice(QAbstractPhysicalDevice *device);
     void setStatus(QAbstractPhysicalDeviceProxy::DeviceStatus status);
 };
 

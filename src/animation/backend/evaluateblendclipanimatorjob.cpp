@@ -35,6 +35,9 @@
 ****************************************************************************/
 
 #include "evaluateblendclipanimatorjob_p.h"
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qskeleton_p.h>
+#include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
@@ -50,9 +53,9 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 EvaluateBlendClipAnimatorJob::EvaluateBlendClipAnimatorJob()
-    : Qt3DCore::QAspectJob()
+    : AbstractEvaluateClipAnimatorJob()
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateBlendClipAnimator, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateBlendClipAnimator, 0)
 }
 
 void EvaluateBlendClipAnimatorJob::run()
@@ -105,7 +108,7 @@ void EvaluateBlendClipAnimatorJob::run()
         AnimationClip *clip = clipLoaderManager->lookupResource(valueNode->clipId());
         Q_ASSERT(clip);
 
-        ClipResults rawClipResults = evaluateClipAtPhase(clip, phase);
+        ClipResults rawClipResults = evaluateClipAtPhase(clip, float(phase));
 
         // Reformat the clip results into the layout used by this animator/blend tree
         const ClipFormat format = valueNode->clipFormat(blendedClipAnimator->peerId());
@@ -120,24 +123,23 @@ void EvaluateBlendClipAnimatorJob::run()
     const double localTime = phase * duration;
     blendedClipAnimator->setLastGlobalTimeNS(globalTimeNS);
     blendedClipAnimator->setLastLocalTime(localTime);
-    blendedClipAnimator->setLastNormalizedLocalTime(phase);
+    blendedClipAnimator->setLastNormalizedLocalTime(float(phase));
     blendedClipAnimator->setNormalizedLocalTime(-1.0f); // Re-set to something invalid.
     blendedClipAnimator->setCurrentLoop(animatorData.currentLoop);
-    const bool finalFrame = isFinalFrame(localTime, duration, animatorData.currentLoop, animatorData.loopCount);
 
-    // Prepare the property change events
+    // Prepare the change record
+    const bool finalFrame = isFinalFrame(localTime, duration, animatorData.currentLoop, animatorData.loopCount);
     const QVector<MappingData> mappingData = blendedClipAnimator->mappingData();
-    const QVector<Qt3DCore::QSceneChangePtr> changes = preparePropertyChanges(blendedClipAnimator->peerId(),
-                                                                              mappingData,
-                                                                              blendedResults,
-                                                                              finalFrame,
-                                                                              phase);
-    // Send the property changes
-    blendedClipAnimator->sendPropertyChanges(changes);
+    auto record = prepareAnimationRecord(blendedClipAnimator->peerId(),
+                                         mappingData,
+                                         blendedResults,
+                                         finalFrame,
+                                         float(phase));
 
     // Trigger callbacks either on this thread or by notifying the gui thread.
-    const QVector<AnimationCallbackAndValue> callbacks = prepareCallbacks(mappingData, blendedResults);
-    blendedClipAnimator->sendCallbacks(callbacks);
+    auto callbacks = prepareCallbacks(mappingData, blendedResults);
+
+    setPostFrameData(record, callbacks);
 }
 
 } // Animation

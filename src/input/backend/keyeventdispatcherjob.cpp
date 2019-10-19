@@ -38,7 +38,9 @@
 ****************************************************************************/
 
 #include "keyeventdispatcherjob_p.h"
-
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DInput/qkeyboardhandler.h>
+#include <Qt3DInput/private/qkeyboardhandler_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/job_common_p.h>
@@ -49,13 +51,26 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-KeyEventDispatcherJob::KeyEventDispatcherJob(Qt3DCore::QNodeId input, const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
-    : QAspectJob()
-    , m_inputHandler(nullptr)
-    , m_keyboardHandler(input)
-    , m_events(events)
+class KeyEventDispatcherJobPrivate : public Qt3DCore::QAspectJobPrivate
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::KeyEventDispatcher, 0);
+public:
+    KeyEventDispatcherJobPrivate() { }
+    ~KeyEventDispatcherJobPrivate() override { }
+
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    Qt3DCore::QNodeId m_keyboardHandler;
+    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_events;
+};
+
+KeyEventDispatcherJob::KeyEventDispatcherJob(Qt3DCore::QNodeId input, const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
+    : QAspectJob(*new KeyEventDispatcherJobPrivate)
+    , m_inputHandler(nullptr)
+{
+    Q_D(KeyEventDispatcherJob);
+    d->m_keyboardHandler = input;
+    d->m_events = events;
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::KeyEventDispatcher, 0)
 }
 
 void KeyEventDispatcherJob::setInputHandler(InputHandler *handler)
@@ -65,12 +80,22 @@ void KeyEventDispatcherJob::setInputHandler(InputHandler *handler)
 
 void KeyEventDispatcherJob::run()
 {
-    KeyboardHandler *input = m_inputHandler->keyboardInputManager()->lookupResource(m_keyboardHandler);
-    if (input)
-        for (const QT_PREPEND_NAMESPACE(QKeyEvent) &e : qAsConst(m_events)) {
-            // Send events to frontend
-            input->keyEvent(QKeyEventPtr::create(e));
-        }
+    // NOP
+}
+
+void KeyEventDispatcherJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    QKeyboardHandler *node = qobject_cast<QKeyboardHandler *>(manager->lookupNode(m_keyboardHandler));
+    if (!node)
+        return;
+
+    QKeyboardHandlerPrivate *dnode = static_cast<QKeyboardHandlerPrivate *>(QKeyboardHandlerPrivate::get(node));
+    for (const auto &e: qAsConst(m_events)) {
+        QKeyEvent ke(e);
+        dnode->keyEvent(&ke);
+    }
+
+    m_events.clear();
 }
 
 } // namespace Input

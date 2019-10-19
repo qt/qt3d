@@ -34,7 +34,6 @@
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/private/qanimationclip_p.h>
 #include <Qt3DAnimation/private/qclipanimator_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>

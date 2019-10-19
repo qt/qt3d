@@ -28,16 +28,14 @@
 
 #include <QtTest/QtTest>
 #include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/entity_p_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entityvisitor_p.h>
 #include <Qt3DRender/private/entityaccumulator_p.h>
 
 #include <Qt3DRender/QCameraLens>
-#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QComponentAddedChange>
-#include <Qt3DCore/QComponentRemovedChange>
 #include <Qt3DCore/QTransform>
 
 #include <Qt3DRender/QEnvironmentLight>
@@ -145,19 +143,18 @@ private slots:
         QVERIFY(entity.layerIds().isEmpty());
 
         // WHEN
-        for (QComponent *component : components) {
-            const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
-            entity.sceneChangeEvent(addChange);
-        }
+        for (QComponent *component : components)
+            EntityPrivate::get(&entity)->componentAdded(component);
 
         Qt3DCore::QEntity dummyFrontendEntityChild;
         // Create nodes in the backend manager
         nodeManagers.renderNodesManager()->getOrCreateResource(dummyFrontendEntity.id());
         nodeManagers.renderNodesManager()->getOrCreateResource(dummyFrontendEntityChild.id());
-        // Send children added event to entity
-        const auto addEntityChange = QPropertyNodeAddedChangePtr::create(dummyFrontendEntity.id(), &dummyFrontendEntityChild);
-        entity.sceneChangeEvent(addEntityChange);
 
+// TODOSYNC clean up
+//        // Send children added event to entity
+//        const auto addEntityChange = QPropertyNodeAddedChangePtr::create(dummyFrontendEntity.id(), &dummyFrontendEntityChild);
+//        entity.sceneChangeEvent(addEntityChange);
 
         // THEN
         QVERIFY(!entity.componentUuid<Transform>().isNull());
@@ -383,8 +380,7 @@ private slots:
         QVERIFY(method(&entity).isNull());
 
         // WHEN
-        const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
-        entity.sceneChangeEvent(addChange);
+        EntityPrivate::get(&entity)->componentAdded(component);
 
         // THEN
         QCOMPARE(method(&entity), component->id());
@@ -392,8 +388,7 @@ private slots:
 
         // WHEN
         renderer.resetDirty();
-        const auto removeChange = QComponentRemovedChangePtr::create(&dummyFrontendEntity, component);
-        entity.sceneChangeEvent(removeChange);
+        EntityPrivate::get(&entity)->componentRemoved(component);
 
         // THEN
         QVERIFY(method(&entity).isNull());
@@ -438,10 +433,8 @@ private slots:
         QVERIFY(method(&entity).isEmpty());
 
         // WHEN
-        for (QComponent *component : components) {
-            const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
-            entity.sceneChangeEvent(addChange);
-        }
+        for (QComponent *component : components)
+            EntityPrivate::get(&entity)->componentAdded(component);
 
         // THEN
         QCOMPARE(method(&entity).size(), components.size());
@@ -452,8 +445,7 @@ private slots:
 
         // WHEN
         renderer.resetDirty();
-        const auto removeChange = QComponentRemovedChangePtr::create(&dummyFrontendEntity, components.first());
-        entity.sceneChangeEvent(removeChange);
+        EntityPrivate::get(&entity)->componentRemoved(components.first());
 
         // THEN
         QCOMPARE(method(&entity).size(), components.size() - 1);
@@ -470,8 +462,8 @@ private slots:
         Qt3DCore::QEntity frontendEntityA, frontendEntityB, frontendEntityC;
 
         auto backendA = createEntity(renderer, nodeManagers, frontendEntityA);
-        auto backendB = createEntity(renderer, nodeManagers, frontendEntityB);
-        auto backendC = createEntity(renderer, nodeManagers, frontendEntityC);
+        createEntity(renderer, nodeManagers, frontendEntityB);
+        createEntity(renderer, nodeManagers, frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
@@ -505,8 +497,8 @@ private slots:
         frontendEntityC.setEnabled(false);
 
         auto backendA = createEntity(renderer, nodeManagers, frontendEntityA);
-        auto backendB = createEntity(renderer, nodeManagers, frontendEntityB);
-        auto backendC = createEntity(renderer, nodeManagers, frontendEntityC);
+        createEntity(renderer, nodeManagers, frontendEntityB);
+        createEntity(renderer, nodeManagers, frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
@@ -546,8 +538,8 @@ private slots:
         frontendEntityC.setEnabled(false);
 
         auto backendA = createEntity(renderer, nodeManagers, frontendEntityA);
-        auto backendB = createEntity(renderer, nodeManagers, frontendEntityB);
-        auto backendC = createEntity(renderer, nodeManagers, frontendEntityC);
+        createEntity(renderer, nodeManagers, frontendEntityB);
+        createEntity(renderer, nodeManagers, frontendEntityC);
 
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());

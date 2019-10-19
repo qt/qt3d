@@ -215,18 +215,6 @@ QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
 {
 }
 
-/*! \internal */
-void QMesh::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QMesh);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("status"))
-            d->setStatus(e->value().value<QMesh::Status>());
-    }
-    Qt3DRender::QGeometryRenderer::sceneChangeEvent(change);
-}
-
 void QMesh::setSource(const QUrl& source)
 {
     Q_D(QMesh);

@@ -526,10 +526,11 @@ void QNodePrivate::_q_ensureBackendNodeCreated()
  * Sends the \a change QSceneChangePtr to any QBackendNodes in the registered
  * aspects that correspond to this QNode.
  *
- * For the common case of a QObject property change, QNode handles this for you
- * automatically by sending a QPropertyUpdatedChange event to the backend nodes.
  * You only need to call this function if you wish to send a specific type of
  * change in place of the automatic handling.
+ *
+ * Note: as of Qt 5.14, change messages are deprecated and should not be used,
+ * in particular for properties.
  */
 void QNode::notifyObservers(const QSceneChangePtr &change)
 {
@@ -676,6 +677,14 @@ void QNodePrivate::update()
     if (m_changeArbiter) {
         Q_Q(QNode);
         m_changeArbiter->addDirtyFrontEndNode(q);
+    }
+}
+
+void QNodePrivate::updateNode(QNode *node, const char *property, ChangeFlag change)
+{
+    if (m_changeArbiter) {
+        Q_Q(QNode);
+        m_changeArbiter->addDirtyFrontEndNode(q, node, property, change);
     }
 }
 

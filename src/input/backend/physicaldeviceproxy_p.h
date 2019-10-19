@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/backendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,7 +64,7 @@ namespace Input {
 
 class PhysicalDeviceProxyManager;
 
-class Q_AUTOTEST_EXPORT PhysicalDeviceProxy : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT PhysicalDeviceProxy : public BackendNode
 {
 public:
     PhysicalDeviceProxy();
@@ -79,9 +79,9 @@ public:
     void setDevice(QAbstractPhysicalDevice *device);
     Qt3DCore::QNodeId physicalDeviceId() const;
 
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
+private:
     QString m_deviceName;
     PhysicalDeviceProxyManager *m_manager;
     Qt3DCore::QNodeId m_physicalDeviceId;

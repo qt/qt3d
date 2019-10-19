@@ -29,7 +29,6 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/sortpolicy_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testrenderer.h"
 
 class tst_SortPolicy : public Qt3DCore::QBackendNodeTester

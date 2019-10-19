@@ -41,7 +41,6 @@
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/private/qlayer_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE

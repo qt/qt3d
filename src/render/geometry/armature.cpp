@@ -38,7 +38,6 @@
 
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qabstractskeleton.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DCore/private/qarmature_p.h>
 

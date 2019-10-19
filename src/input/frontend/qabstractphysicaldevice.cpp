@@ -42,9 +42,6 @@
 
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -168,12 +165,7 @@ void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
     if (axisSetting && !d->m_axisSettings.contains(axisSetting)) {
-        if (d->m_changeArbiter) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), axisSetting);
-            change->setPropertyName("axisSettings");
-            d->notifyObservers(change);
-        }
-
+        d->update();
         d->m_axisSettings.push_back(axisSetting);
     }
 }
@@ -185,12 +177,7 @@ void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
     if (axisSetting && d->m_axisSettings.contains(axisSetting)) {
-        if (d->m_changeArbiter) {
-            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), axisSetting);
-            change->setPropertyName("axisSettings");
-            d->notifyObservers(change);
-        }
-
+        d->update();
         d->m_axisSettings.removeOne(axisSetting);
     }
 }
@@ -209,11 +196,8 @@ QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
  */
 void QAbstractPhysicalDevicePrivate::postAxisEvent(int axis, qreal value)
 {
-    Q_Q(QAbstractPhysicalDevice);
-    Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(q->id()));
-    change->setPropertyName("axisEvent");
-    change->setValue(QVariant::fromValue(QPair<int, qreal>(axis, value)));
-    notifyObservers(change);
+    m_pendingAxisEvents.push_back({axis, value});
+    update();
 }
 
 /*
@@ -221,11 +205,8 @@ void QAbstractPhysicalDevicePrivate::postAxisEvent(int axis, qreal value)
  */
 void QAbstractPhysicalDevicePrivate::postButtonEvent(int button, qreal value)
 {
-    Q_Q(QAbstractPhysicalDevice);
-    Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(q->id()));
-    change->setPropertyName("buttonEvent");
-    change->setValue(QVariant::fromValue(QPair<int, qreal>(button, value)));
-    notifyObservers(change);
+    m_pendingButtonsEvents.push_back({button, value});
+    update();
 }
 
 /*!

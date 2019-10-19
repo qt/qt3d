@@ -92,9 +92,6 @@ public:
     void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
     QVector<MappingData> mappingData() const { return m_mappingData; }
 
-    void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
-    void sendCallbacks(const QVector<AnimationCallbackAndValue> &callbacks);
-
     void animationClipMarkedDirty() { setDirty(Handler::BlendedClipAnimatorDirty); }
 
     qint64 nsSincePreviousFrame(qint64 currentGlobalTimeNS);

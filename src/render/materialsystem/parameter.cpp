@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "parameter_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/private/qparameter_p.h>
 #include <Qt3DRender/qtexture.h>
@@ -68,6 +67,7 @@ void Parameter::cleanup()
     m_nameId = -1;
     m_name.clear();
     m_uniformValue = UniformValue();
+    m_backendValue = {};
 }
 
 void Parameter::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)

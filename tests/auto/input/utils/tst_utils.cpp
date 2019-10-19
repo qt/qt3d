@@ -31,7 +31,6 @@
 #include <Qt3DInput/private/utils_p.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/qanalogaxisinput.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testdeviceproxy.h"
 
@@ -94,7 +93,7 @@ private Q_SLOTS:
 
         // WHEN -> Create backend AnalogAxisInput
         Qt3DInput::Input::AnalogAxisInput *backendAxisInput = handler.analogAxisInputManager()->getOrCreateResource(analogAxisInput.id());
-        simulateInitialization(&analogAxisInput, backendAxisInput);
+        simulateInitializationSync(&analogAxisInput, backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput->axis(), analogAxisInput.axis());
@@ -125,7 +124,7 @@ private Q_SLOTS:
 
         // WHEN -> Create backend AnalogAxisInput
         Qt3DInput::Input::AnalogAxisInput *backendAxisInput = handler.analogAxisInputManager()->getOrCreateResource(analogAxisInput.id());
-        simulateInitialization(&analogAxisInput, backendAxisInput);
+        simulateInitializationSync(&analogAxisInput, backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput->axis(), analogAxisInput.axis());
@@ -165,7 +164,7 @@ private Q_SLOTS:
 
         // WHEN -> Create backend AnalogAxisInput
         Qt3DInput::Input::AnalogAxisInput *backendAxisInput = handler.analogAxisInputManager()->getOrCreateResource(analogAxisInput.id());
-        simulateInitialization(&analogAxisInput, backendAxisInput);
+        simulateInitializationSync(&analogAxisInput, backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput->axis(), analogAxisInput.axis());
@@ -196,7 +195,7 @@ private Q_SLOTS:
 
         // WHEN -> Create backend AnalogAxisInput
         Qt3DInput::Input::AnalogAxisInput *backendAxisInput = handler.analogAxisInputManager()->getOrCreateResource(analogAxisInput.id());
-        simulateInitialization(&analogAxisInput, backendAxisInput);
+        simulateInitializationSync(&analogAxisInput, backendAxisInput);
 
         // THEN
         QCOMPARE(backendAxisInput->axis(), analogAxisInput.axis());

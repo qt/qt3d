@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "sortpolicy_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qsortpolicy_p.h>
 
 QT_BEGIN_NAMESPACE

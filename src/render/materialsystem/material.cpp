@@ -46,10 +46,6 @@
 #include "qeffect.h"
 #include <Qt3DRender/private/qmaterial_p.h>
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-
 using namespace Qt3DCore;
 
 QT_BEGIN_NAMESPACE

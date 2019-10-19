@@ -849,56 +849,6 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
             uniformPack.setUniformBuffer(std::move(uniformBlockUBO));
             // Buffer update to GL buffer will be done at render time
         }
-
-
-        //ShaderData *shaderData = nullptr;
-        // if ((shaderData = m_manager->shaderDataManager()->lookupResource(value.value<Qt3DCore::QNodeId>())) != nullptr) {
-        // UBO are indexed by <ShaderId, ShaderDataId> so that a same QShaderData can be used among different shaders
-        // while still making sure that if they have a different layout everything will still work
-        // If two shaders define the same block with the exact same layout, in that case the UBO could be shared
-        // but how do we know that ? We'll need to compare ShaderUniformBlocks
-
-        // Note: we assume that if a buffer is shared across multiple shaders
-        // then it implies that they share the same layout
-
-        // Temporarly disabled
-
-        //        BufferShaderKey uboKey(shaderData->peerId(),
-        //                               shader->peerId());
-
-        //        BlockToUBO uniformBlockUBO;
-        //        uniformBlockUBO.m_blockIndex = block.m_index;
-        //        uniformBlockUBO.m_shaderDataID = shaderData->peerId();
-        //        bool uboNeedsUpdate = false;
-
-        //        // build UBO at uboId if not created before
-        //        if (!m_manager->glBufferManager()->contains(uboKey)) {
-        //            m_manager->glBufferManager()->getOrCreateResource(uboKey);
-        //            uboNeedsUpdate = true;
-        //        }
-
-        //        // If shaderData  has been updated (property has changed or one of the nested properties has changed)
-        //        // foreach property defined in the QShaderData, we try to fill the value of the corresponding active uniform(s)
-        //        // for all the updated properties (all the properties if the UBO was just created)
-        //        if (shaderData->updateViewTransform(*m_data->m_viewMatrix) || uboNeedsUpdate) {
-        //            // Clear previous values remaining in the hash
-        //            m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
-        //            // Update only update properties if uboNeedsUpdate is true, otherwise update the whole block
-        //            m_data->m_uniformBlockBuilder.updatedPropertiesOnly = uboNeedsUpdate;
-        //            // Retrieve names and description of each active uniforms in the uniform block
-        //            m_data->m_uniformBlockBuilder.uniforms = shader->activeUniformsForUniformBlock(block.m_index);
-        //            // Builds the name-value map for the block
-        //            m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, block.m_name);
-        //            if (!uboNeedsUpdate)
-        //                shaderData->markDirty();
-        //            // copy the name-value map into the BlockToUBO
-        //            uniformBlockUBO.m_updatedProperties = m_data->m_uniformBlockBuilder.activeUniformNamesToValue;
-        //            uboNeedsUpdate = true;
-        //        }
-
-        //        uniformBlockUBO.m_needsUpdate = uboNeedsUpdate;
-        //        uniformPack.setUniformBuffer(std::move(uniformBlockUBO));
-        // }
     }
 }
 

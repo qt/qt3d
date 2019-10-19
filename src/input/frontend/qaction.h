@@ -67,9 +67,6 @@ public:
 Q_SIGNALS:
     void activeChanged(bool isActive);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
 private:
     Q_DECLARE_PRIVATE(QAction)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;

@@ -40,8 +40,6 @@
 #include <Qt3DAnimation/private/clipblendnode_p.h>
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
 #include <Qt3DAnimation/private/clipblendvalue_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector4d.h>
@@ -407,13 +405,17 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float>
     return QVariant();
 }
 
-QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
-                                                          const QVector<MappingData> &mappingDataVec,
-                                                          const QVector<float> &channelResults,
-                                                          bool finalFrame,
-                                                          float normalizedLocalTime)
+AnimationRecord prepareAnimationRecord(Qt3DCore::QNodeId animatorId,
+                                       const QVector<MappingData> &mappingDataVec,
+                                       const QVector<float> &channelResults,
+                                       bool finalFrame,
+                                       float normalizedLocalTime)
 {
-    QVector<Qt3DCore::QSceneChangePtr> changes;
+    AnimationRecord record;
+    record.finalFrame = finalFrame;
+    record.animatorId = animatorId;
+    record.normalizedTime = normalizedLocalTime;
+
     QVarLengthArray<Skeleton *, 4> dirtySkeletons;
 
     // Iterate over the mappings
@@ -453,43 +455,14 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
                 break;
             }
         } else {
-            // TODOSYNC remove once we've found a way to propagate animation changes
-            // Construct a property update change, set target, property and delivery options
-            auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(mappingData.targetId);
-            e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-            e->setPropertyName(mappingData.propertyName);
-            // Handle intermediate updates vs final flag properly
-            Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isIntermediate = !finalFrame;
-            // Assign new value and send
-            e->setValue(v);
-            changes.push_back(e);
+            record.targetChanges.push_back({mappingData.targetId, mappingData.propertyName, v});
         }
     }
 
     for (const auto skeleton : dirtySkeletons)
-        skeleton->sendLocalPoses();
+        record.skeletonChanges.push_back({skeleton->peerId(), skeleton->joints()});
 
-    if (isValidNormalizedTime(normalizedLocalTime)) {
-        // TODOSYNC remove once we've found a way to propagate animation changes
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("normalizedTime");
-        e->setValue(normalizedLocalTime);
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isIntermediate = !finalFrame;
-        changes.push_back(e);
-    }
-
-    // If it's the final frame, notify the frontend that we've stopped
-    if (finalFrame) {
-        // TODOSYNC remove once we've found a way to propagate animation changes
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("running");
-        e->setValue(false);
-        changes.push_back(e);
-    }
-
-    return changes;
+    return record;
 }
 
 QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &mappingDataVec,

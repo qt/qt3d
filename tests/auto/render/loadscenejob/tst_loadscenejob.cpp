@@ -148,27 +148,9 @@ private Q_SLOTS:
         loadSceneJob.run();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 4);
-        auto change = arbiter.events.at(0).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::None);
-
-        change = arbiter.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Loading);
-
-        change = arbiter.events.at(2).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "scene");
-        QVERIFY(change->value().value<Qt3DCore::QEntity *>() != nullptr);
-        delete change->value().value<Qt3DCore::QEntity *>();
-
-        change = arbiter.events.at(3).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Ready);
+        Qt3DRender::Render::LoadSceneJobPrivate *dJob = static_cast<decltype(dJob)>(Qt3DCore::QAspectJobPrivate::get(&loadSceneJob));
+        QCOMPARE(dJob->m_status, Qt3DRender::QSceneLoader::Ready);
+        QVERIFY(dJob->m_sceneSubtree != nullptr);
     }
 
     void checkEmptySource()
@@ -192,21 +174,9 @@ private Q_SLOTS:
         loadSceneJob.run();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 3);
-        auto change = arbiter.events.at(0).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::None);
-
-        change = arbiter.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "scene");
-        QVERIFY(change->value().value<Qt3DCore::QEntity *>() == nullptr);
-
-        change = arbiter.events.at(2).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::None);
+        Qt3DRender::Render::LoadSceneJobPrivate *dJob = static_cast<decltype(dJob)>(Qt3DCore::QAspectJobPrivate::get(&loadSceneJob));
+        QCOMPARE(dJob->m_status, Qt3DRender::QSceneLoader::None);
+        QVERIFY(dJob->m_sceneSubtree == nullptr);
     }
 
     void checkRunValidSourceUnsupportedFormat()
@@ -233,21 +203,9 @@ private Q_SLOTS:
         loadSceneJob.run();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 3);
-        auto change = arbiter.events.at(0).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::None);
-
-        change = arbiter.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "scene");
-        QVERIFY(change->value().value<Qt3DCore::QEntity *>() == nullptr);
-
-        change = arbiter.events.at(2).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Error);
+        Qt3DRender::Render::LoadSceneJobPrivate *dJob = static_cast<decltype(dJob)>(Qt3DCore::QAspectJobPrivate::get(&loadSceneJob));
+        QCOMPARE(dJob->m_status, Qt3DRender::QSceneLoader::Error);
+        QVERIFY(dJob->m_sceneSubtree == nullptr);
     }
 
     void checkRunErrorAtLoading()
@@ -271,22 +229,10 @@ private Q_SLOTS:
         loadSceneJob.run();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 3);
-        auto change = arbiter.events.at(0).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::None);
-
-        change = arbiter.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "scene");
-        QVERIFY(change->value().value<Qt3DCore::QEntity *>() == nullptr);
-        delete change->value().value<Qt3DCore::QEntity *>();
-
-        change = arbiter.events.at(2).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Error);
+        // THEN
+        Qt3DRender::Render::LoadSceneJobPrivate *dJob = static_cast<decltype(dJob)>(Qt3DCore::QAspectJobPrivate::get(&loadSceneJob));
+        QCOMPARE(dJob->m_status, Qt3DRender::QSceneLoader::Error);
+        QVERIFY(dJob->m_sceneSubtree == nullptr);
     }
 };
 

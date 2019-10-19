@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GLCOMMANDS_P_H
-#define QT3DRENDER_RENDER_GLCOMMANDS_P_H
+#ifndef QT3DRENDER_QLEVELOFDETAILSWITCH_P_H
+#define QT3DRENDER_QLEVELOFDETAILSWITCH_P_H
 
 //
 //  W A R N I N G
@@ -51,39 +51,27 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/qlevelofdetail_p.h>
+#include <Qt3DRender/qlevelofdetailswitch.h>
+
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
-
 namespace Qt3DRender {
 
-namespace Render {
-
-class GraphicsContext;
-class Renderer;
-class Shader;
-
-class GLCommand
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QLevelOfDetailSwitchPrivate : public QLevelOfDetailPrivate
 {
 public:
-    virtual void execute(Renderer *renderer, GraphicsContext *ctx) = 0;
+    QLevelOfDetailSwitchPrivate();
+
+    Q_DECLARE_PUBLIC(QLevelOfDetailSwitch)
+
+    void setCurrentIndex(int currentIndex) override;
 };
 
-class Q_AUTOTEST_EXPORT LoadShaderCommand : public GLCommand
-{
-public:
-    explicit LoadShaderCommand(Shader *shader);
-    Shader *shader() const { return m_shader; }
-    void execute(Renderer *renderer, GraphicsContext *ctx) Q_DECL_OVERRIDE;
-
-private:
-    Shader *m_shader = nullptr;
-};
-} // Render
-
-} // Qt3DRender
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_GLCOMMANDS_P_H
+#endif // QT3DRENDER_QLEVELOFDETAILSWITCH_P_H

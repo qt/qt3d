@@ -61,7 +61,7 @@ class Q_3DEXTRASSHARED_EXPORT QForwardRenderer : public Qt3DRender::QTechniqueFi
     Q_PROPERTY(QObject *window READ surface WRITE setSurface NOTIFY surfaceChanged)
     Q_PROPERTY(QRectF viewportRect READ viewportRect WRITE setViewportRect NOTIFY viewportRectChanged)
     Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
-    Q_PROPERTY(Qt3DRender::QClearBuffers::BufferType clearBuffers READ clearBuffers WRITE setClearBuffers NOTIFY clearBuffersChanged REVISION 14)
+    Q_PROPERTY(Qt3DRender::QClearBuffers::BufferType buffersToClear READ buffersToClear WRITE setBuffersToClear NOTIFY buffersToClearChanged REVISION 14)
     Q_PROPERTY(Qt3DCore::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
     Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize WRITE setExternalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
     Q_PROPERTY(bool frustumCulling READ isFrustumCullingEnabled WRITE setFrustumCullingEnabled NOTIFY frustumCullingEnabledChanged)
@@ -72,7 +72,7 @@ public:
 
     QRectF viewportRect() const;
     QColor clearColor() const;
-    Qt3DRender::QClearBuffers::BufferType clearBuffers() const;
+    Qt3DRender::QClearBuffers::BufferType buffersToClear() const;
     Qt3DCore::QEntity *camera() const;
     QObject *surface() const;
     QSize externalRenderTargetSize() const;
@@ -82,7 +82,7 @@ public:
 public Q_SLOTS:
     void setViewportRect(const QRectF &viewportRect);
     void setClearColor(const QColor &clearColor);
-    void setClearBuffers(Qt3DRender::QClearBuffers::BufferType);
+    void setBuffersToClear(Qt3DRender::QClearBuffers::BufferType);
     void setCamera(Qt3DCore::QEntity *camera);
     void setSurface(QObject * surface);
     void setExternalRenderTargetSize(const QSize &size);
@@ -92,7 +92,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void viewportRectChanged(const QRectF &viewportRect);
     void clearColorChanged(const QColor &clearColor);
-    void clearBuffersChanged(Qt3DRender::QClearBuffers::BufferType);
+    void buffersToClearChanged(Qt3DRender::QClearBuffers::BufferType);
     void cameraChanged(Qt3DCore::QEntity *camera);
     void surfaceChanged(QObject *surface);
     void externalRenderTargetSizeChanged(const QSize &size);

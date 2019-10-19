@@ -41,7 +41,6 @@
 
 #include <Qt3DInput/qbuttonaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <Qt3DInput/private/qbuttonaxisinput_p.h>
@@ -61,17 +60,6 @@ ButtonAxisInput::ButtonAxisInput()
     , m_speedRatio(0.0f)
     , m_lastUpdateTime(0)
 {
-}
-
-void ButtonAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QButtonAxisInputData>>(change);
-    const auto &data = typedChange->data;
-    m_buttons = data.buttons;
-    m_scale = data.scale;
-    m_acceleration = data.acceleration;
-    m_deceleration = data.deceleration;
-    AbstractAxisInput::initializeFromPeer(change);
 }
 
 void ButtonAxisInput::cleanup()
@@ -101,21 +89,17 @@ void ButtonAxisInput::updateSpeedRatio(qint64 currentTime, ButtonAxisInput::Upda
         m_lastUpdateTime = currentTime;
 }
 
-void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void ButtonAxisInput::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("scale")) {
-            m_scale = propertyChange->value().toFloat();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
-            m_buttons = propertyChange->value().value<QVector<int>>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("acceleration")) {
-            m_acceleration = propertyChange->value().toFloat();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("deceleration")) {
-            m_deceleration = propertyChange->value().toFloat();
-        }
-    }
-    AbstractAxisInput::sceneChangeEvent(e);
+    AbstractAxisInput::syncFromFrontEnd(frontEnd, firstTime);
+    const QButtonAxisInput *node = qobject_cast<const QButtonAxisInput *>(frontEnd);
+    if (!node)
+        return;
+
+    m_scale = node->scale();
+    m_buttons = node->buttons();
+    m_acceleration = node->acceleration();
+    m_deceleration = node->deceleration();
 }
 
 namespace {

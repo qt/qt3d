@@ -41,7 +41,6 @@
 #include "qabstractaxisinput_p.h"
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DInput/private/abstractaxisinput_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
@@ -54,15 +53,8 @@ namespace Qt3DInput {
 namespace Input {
 
 AbstractAxisInput::AbstractAxisInput()
-    : Qt3DCore::QBackendNode()
+    : BackendNode()
 {
-}
-
-void AbstractAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractAxisInputData>>(change);
-    const auto &data = typedChange->data;
-    m_sourceDevice = data.sourceDeviceId;
 }
 
 void AbstractAxisInput::cleanup()
@@ -71,15 +63,14 @@ void AbstractAxisInput::cleanup()
     m_sourceDevice = Qt3DCore::QNodeId();
 }
 
-void AbstractAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void AbstractAxisInput::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
-            m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
-        }
-    }
-    QBackendNode::sceneChangeEvent(e);
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    const QAbstractAxisInput *node = qobject_cast<const QAbstractAxisInput *>(frontEnd);
+    if (!node)
+        return;
+
+    m_sourceDevice = Qt3DCore::qIdForNode(node->sourceDevice());
 }
 
 } // Input

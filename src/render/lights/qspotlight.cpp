@@ -40,7 +40,6 @@
 #include "qspotlight.h"
 #include "qspotlight_p.h"
 #include "shaderdata_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

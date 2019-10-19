@@ -130,6 +130,7 @@ public:
     QBackendNode *createBackendNode(const NodeTreeChange &change) const;
     void clearBackendNode(const NodeTreeChange &change) const;
     void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
+    void syncDirtyFrontEndSubNodes(const QVector<NodeRelationshipChange> &nodes);
     virtual void syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const;
     void sendPropertyMessages(QNode *node, QBackendNode *backend) const;
 

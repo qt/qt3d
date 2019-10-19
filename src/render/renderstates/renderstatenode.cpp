@@ -37,7 +37,6 @@
 #include "renderstatenode_p.h"
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qalphatest.h>

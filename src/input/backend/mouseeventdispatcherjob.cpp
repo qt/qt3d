@@ -38,7 +38,9 @@
 ****************************************************************************/
 
 #include "mouseeventdispatcherjob_p.h"
-
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DInput/qmousehandler.h>
+#include <Qt3DInput/private/qmousehandler_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/job_common_p.h>
@@ -49,21 +51,37 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
+class MouseEventDispatcherJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    MouseEventDispatcherJobPrivate() { }
+    ~MouseEventDispatcherJobPrivate() override { }
+
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    Qt3DCore::QNodeId m_mouseInput;
+    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> m_mouseEvents;
+#if QT_CONFIG(wheelevent)
+    QList<QT_PREPEND_NAMESPACE(QWheelEvent)> m_wheelEvents;
+#endif
+};
+
 MouseEventDispatcherJob::MouseEventDispatcherJob(Qt3DCore::QNodeId input,
                                                  const QList<QT_PREPEND_NAMESPACE (QMouseEvent)> &mouseEvents
 #if QT_CONFIG(wheelevent)
                                                , const QList<QT_PREPEND_NAMESPACE (QWheelEvent)> &wheelEvents
 #endif
                                                                                                              )
-    : QAspectJob()
+    : QAspectJob(*new MouseEventDispatcherJobPrivate)
     , m_inputHandler(nullptr)
-    , m_mouseInput(input)
-    , m_mouseEvents(mouseEvents)
-#if QT_CONFIG(wheelevent)
-    , m_wheelEvents(wheelEvents)
-#endif
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::MouseEventDispatcher, 0);
+    Q_D(MouseEventDispatcherJob);
+    d->m_mouseInput = input;
+    d->m_mouseEvents = mouseEvents;
+#if QT_CONFIG(wheelevent)
+    d->m_wheelEvents = wheelEvents;
+#endif
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::MouseEventDispatcher, 0)
 }
 
 void MouseEventDispatcherJob::setInputHandler(InputHandler *handler)
@@ -73,16 +91,25 @@ void MouseEventDispatcherJob::setInputHandler(InputHandler *handler)
 
 void MouseEventDispatcherJob::run()
 {
-    MouseHandler *input = m_inputHandler->mouseInputManager()->lookupResource(m_mouseInput);
-    if (input) {
-        // Send mouse and wheel events to frontend
-        for (const QT_PREPEND_NAMESPACE(QMouseEvent) &e : m_mouseEvents)
-            input->mouseEvent(QMouseEventPtr::create(e));
+    // NOP
+}
+
+void MouseEventDispatcherJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    QMouseHandler *node = qobject_cast<QMouseHandler *>(manager->lookupNode(m_mouseInput));
+    if (!node)
+        return;
+
+    QMouseHandlerPrivate *dnode = static_cast<QMouseHandlerPrivate *>(QMouseHandlerPrivate::get(node));
+
+    for (const QT_PREPEND_NAMESPACE(QMouseEvent) &e : m_mouseEvents)
+        dnode->mouseEvent(QMouseEventPtr::create(e));
 #if QT_CONFIG(wheelevent)
-        for (const QT_PREPEND_NAMESPACE(QWheelEvent) &e : m_wheelEvents)
-            input->wheelEvent(QWheelEventPtr::create(e));
-#endif
+    for (const QT_PREPEND_NAMESPACE(QWheelEvent) &e : m_wheelEvents) {
+        QWheelEvent we(e);
+        emit node->wheel(&we);
     }
+#endif
 }
 
 } // namespace Input

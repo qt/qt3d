@@ -31,7 +31,6 @@
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/private/qfilterkey_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 
