@@ -53,6 +53,7 @@ namespace Input {
 
 MouseEventFilter::MouseEventFilter(QObject *parent)
     : QObject(parent)
+    , m_inputHandler(nullptr)
 {
 }
 

@@ -154,6 +154,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_disableClearWindow(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
     , m_compositingMode(FBO)
+    , m_dummySurface(nullptr)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);

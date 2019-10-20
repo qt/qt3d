@@ -53,13 +53,8 @@ public:
 
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    Q_DECLARE_PUBLIC(AbstractEvaluateClipAnimatorJob)
-
     AnimationRecord m_record;
     QVector<AnimationCallbackAndValue> m_callbacks;
-
-private:
-    AbstractEvaluateClipAnimatorJob *q_ptr;
 };
 
 AbstractEvaluateClipAnimatorJob::AbstractEvaluateClipAnimatorJob()

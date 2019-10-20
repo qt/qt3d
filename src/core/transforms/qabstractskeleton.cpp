@@ -47,6 +47,7 @@ namespace Qt3DCore {
 
 QAbstractSkeletonPrivate::QAbstractSkeletonPrivate()
     : Qt3DCore::QNodePrivate()
+    , m_type(QSkeletonCreatedChangeBase::Skeleton)
     , m_jointCount(0)
 {
 }

@@ -71,7 +71,9 @@ struct Sqt
     Sqt()
         : rotation()
         , scale(1.0f, 1.0f, 1.0f)
+        , pad1(0.f)
         , translation()
+        , pad2(0.f)
     {}
 
     inline QMatrix4x4 toMatrix() const

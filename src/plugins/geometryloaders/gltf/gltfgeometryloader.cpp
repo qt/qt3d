@@ -139,7 +139,8 @@ GLTFGeometryLoader::BufferData::BufferData(const QJsonObject &json)
 }
 
 GLTFGeometryLoader::AccessorData::AccessorData()
-    : type(QAttribute::Float)
+    : bufferViewIndex(0)
+    , type(QAttribute::Float)
     , dataSize(0)
     , count(0)
     , offset(0)

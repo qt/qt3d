@@ -162,6 +162,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_shouldRender(false)
     , m_dirtyViews(false)
     , m_allowRendering(0)
+    , m_compositingMode(Scene3DItem::FBO)
 {
     Q_CHECK_PTR(m_item);
     Q_CHECK_PTR(m_item->window());

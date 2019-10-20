@@ -107,6 +107,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_serviceLocator(new QServiceLocator())
     , m_simulationLoopRunning(false)
     , m_driveMode(QAspectEngine::Automatic)
+    , m_postConstructorInit(nullptr)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
     qCDebug(Aspects) << Q_FUNC_INFO;

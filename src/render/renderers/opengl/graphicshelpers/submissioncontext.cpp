@@ -538,9 +538,9 @@ GLuint SubmissionContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
             // ### TODO QTBUG-64757 this check is insufficient since the
             // texture may have changed to another one with the same size. That
             // case is not handled atm.
-            needsResize |= (rTex != nullptr && rTex->size() != s);
-            if (isActiveRenderTarget) {
-                if (attachment.m_point == QRenderTargetOutput::Color0)
+            if (rTex) {
+                needsResize |= rTex->size() != s;
+                if (isActiveRenderTarget && attachment.m_point == QRenderTargetOutput::Color0)
                     m_renderTargetFormat = rTex->properties().format;
             }
         }

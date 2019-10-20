@@ -63,6 +63,7 @@ AbstractPickingJob::AbstractPickingJob()
     , m_node(nullptr)
     , m_frameGraphRoot(nullptr)
     , m_renderSettings(nullptr)
+    , m_oneEnabledAtLeast(false)
 {
 }
 
@@ -72,6 +73,7 @@ AbstractPickingJob::AbstractPickingJob(Qt3DCore::QAspectJobPrivate &dd)
     , m_node(nullptr)
     , m_frameGraphRoot(nullptr)
     , m_renderSettings(nullptr)
+    , m_oneEnabledAtLeast(false)
 {
 
 }
