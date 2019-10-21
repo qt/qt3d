@@ -68,7 +68,8 @@ SUBDIRS += \
     shader-image-qml \
     scene3d-in-sync \
     compressed_textures \
-    subtree-enabler-qml
+    subtree-enabler-qml \
+    scene3d-visibility
 
 !macos:!uikit: SUBDIRS += compute-manual
 
