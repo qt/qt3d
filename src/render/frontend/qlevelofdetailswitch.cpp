@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "qlevelofdetailswitch.h"
-#include "qlevelofdetailswitch_p.h"
 #include "qlevelofdetail_p.h"
 #include "qglobal.h"
 #include <Qt3DCore/QEntity>
@@ -46,38 +45,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-QLevelOfDetailSwitchPrivate::QLevelOfDetailSwitchPrivate()
-    : QLevelOfDetailPrivate()
-{
-
-}
-
-void QLevelOfDetailSwitchPrivate::setCurrentIndex(int currentIndex)
-{
-    Q_Q(QLevelOfDetailSwitch);
-
-    bool changed = m_currentIndex != currentIndex;
-    QLevelOfDetailPrivate::setCurrentIndex(currentIndex);
-
-    if (!changed)
-        return;
-
-    int entityIndex = 0;
-    const auto entities = q->entities();
-    for (Qt3DCore::QEntity *entity : entities) {
-        const auto childNodes = entity->childNodes();
-        for (Qt3DCore::QNode *childNode : childNodes) {
-            Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(childNode);
-            if (childEntity) {
-                childEntity->setEnabled(entityIndex == currentIndex);
-                entityIndex++;
-            }
-        }
-
-        break; // only work on the first entity, LOD should not be shared
-    }
-}
 
 /*!
     \class Qt3DRender::QLevelOfDetailSwitch
@@ -116,9 +83,9 @@ void QLevelOfDetailSwitchPrivate::setCurrentIndex(int currentIndex)
   Constructs a new QLevelOfDetailSwitch with the specified \a parent.
  */
 QLevelOfDetailSwitch::QLevelOfDetailSwitch(QNode *parent)
-    : QLevelOfDetail(*new QLevelOfDetailSwitchPrivate(), parent)
+    : QLevelOfDetail(parent)
 {
-    Q_D(QLevelOfDetailSwitch);
+    Q_D(QLevelOfDetail);
     d->m_currentIndex = -1;
 }
 

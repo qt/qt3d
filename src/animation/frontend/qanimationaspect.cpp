@@ -104,34 +104,34 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     qRegisterMetaType<QVector<Qt3DCore::Sqt>>();
     qRegisterMetaType<Qt3DAnimation::QAbstractAnimationClip*>();
 
-    registerBackendType<QAbstractAnimationClip, true>(
+    d->registerBackendType<QAbstractAnimationClip, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::AnimationClip, Animation::AnimationClipLoaderManager>>::create(d->m_handler.data(),
                                                                                                                         d->m_handler->animationClipLoaderManager()));
-    registerBackendType<QClock, true>(
+    d->registerBackendType<QClock, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::Clock, Animation::ClockManager>>::create(d->m_handler.data(),
                                                                                                   d->m_handler->clockManager()));
-    registerBackendType<QClipAnimator, true>(
+    d->registerBackendType<QClipAnimator, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::ClipAnimator, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                 d->m_handler->clipAnimatorManager()));
-    registerBackendType<QBlendedClipAnimator, true>(
+    d->registerBackendType<QBlendedClipAnimator, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::BlendedClipAnimator, Animation::BlendedClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                               d->m_handler->blendedClipAnimatorManager()));
-    registerBackendType<QAbstractChannelMapping, true>(
+    d->registerBackendType<QAbstractChannelMapping, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapping, Animation::ChannelMappingManager>>::create(d->m_handler.data(),
                                                                                                                     d->m_handler->channelMappingManager()));
-    registerBackendType<QChannelMapper, true>(
+    d->registerBackendType<QChannelMapper, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapper, Animation::ChannelMapperManager>>::create(d->m_handler.data(),
                                                                                                                   d->m_handler->channelMapperManager()));
-    registerBackendType<QLerpClipBlend, true>(
+    d->registerBackendType<QLerpClipBlend, true>(
                 QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::LerpClipBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                   d->m_handler->clipBlendNodeManager()));
-    registerBackendType<QAdditiveClipBlend, true>(
+    d->registerBackendType<QAdditiveClipBlend, true>(
                 QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::AdditiveClipBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                       d->m_handler->clipBlendNodeManager()));
-    registerBackendType<QClipBlendValue, true>(
+    d->registerBackendType<QClipBlendValue, true>(
                 QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::ClipBlendValue, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                    d->m_handler->clipBlendNodeManager()));
-    registerBackendType<Qt3DCore::QAbstractSkeleton, true>(
+    d->registerBackendType<Qt3DCore::QAbstractSkeleton, true>(
         QSharedPointer<Animation::NodeFunctor<Animation::Skeleton, Animation::SkeletonManager>>::create(d->m_handler.data(),
                                                                                                         d->m_handler->skeletonManager()));
 }
