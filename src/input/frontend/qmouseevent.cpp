@@ -49,7 +49,7 @@ template<typename EventClass, typename QtEventClass>
 typename EventClass::Modifiers modifiersForEvent(const QtEventClass &event)
 {
     const Qt::KeyboardModifiers eventModifiers = event.modifiers();
-    typename EventClass::Modifiers modifiers = EventClass::NoModifier;
+    int modifiers = EventClass::NoModifier;
 
     if (eventModifiers & Qt::ShiftModifier)
         modifiers |= EventClass::ShiftModifier;
@@ -66,7 +66,9 @@ typename EventClass::Modifiers modifiersForEvent(const QtEventClass &event)
     if (eventModifiers & Qt::KeypadModifier)
         modifiers |= EventClass::KeypadModifier;
 
-    return modifiers;
+    // Abuse the int used to store an enum to store multiple
+    // modifiers into one
+    return static_cast<typename EventClass::Modifiers>(modifiers);
 }
 
 } // anonymous
