@@ -238,18 +238,6 @@ void QSkeletonLoader::setRootJoint(QJoint *rootJoint)
 /*! \internal */
 void QSkeletonLoader::sceneChangeEvent(const QSceneChangePtr &change)
 {
-    Q_D(QSkeletonLoader);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        auto propertyChange = qSharedPointerCast<QStaticPropertyUpdatedChangeBase>(change);
-        if (propertyChange->propertyName() == QByteArrayLiteral("status")) {
-            const auto e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-            d->setStatus(static_cast<QSkeletonLoader::Status>(e->value().toInt()));
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("rootJoint")) {
-            auto typedChange = qSharedPointerCast<QJointChange>(propertyChange);
-            auto rootJoint = std::move(typedChange->data);
-            setRootJoint(rootJoint.release());
-        }
-    }
     QAbstractSkeleton::sceneChangeEvent(change);
 }
 
