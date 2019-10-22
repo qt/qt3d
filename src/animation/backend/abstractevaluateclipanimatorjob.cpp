@@ -75,7 +75,7 @@ void AbstractEvaluateClipAnimatorJob::setPostFrameData(const AnimationRecord &re
                     }), mainThreadCB.end());
     // Should now only have callbacks to be called on main thread
 
-    Q_D(AbstractEvaluateClipAnimatorJob);
+    Q_DJOB(AbstractEvaluateClipAnimatorJob);
     d->m_record = record;
     d->m_callbacks = mainThreadCB;
 }

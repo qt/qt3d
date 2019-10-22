@@ -77,9 +77,6 @@ public:
 protected:
     HBuffer m_handle;
     NodeManagers *m_nodeManagers;
-
-private:
-    Q_DECLARE_PRIVATE(LoadBufferJob)
 };
 
 typedef QSharedPointer<LoadBufferJob> LoadBufferJobPtr;

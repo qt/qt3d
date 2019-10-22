@@ -248,7 +248,7 @@ void UpdateLevelOfDetailJob::setFrameGraphRoot(FrameGraphNode *frameGraphRoot)
 
 void UpdateLevelOfDetailJob::run()
 {
-    Q_D(UpdateLevelOfDetailJob);
+    Q_DJOB(UpdateLevelOfDetailJob);
 
     Q_ASSERT(m_frameGraphRoot && m_root && m_manager);
 

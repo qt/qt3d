@@ -64,9 +64,6 @@ protected:
     AbstractEvaluateClipAnimatorJob();
 
     void setPostFrameData(const AnimationRecord &record, const QVector<AnimationCallbackAndValue> &callbacks);
-
-private:
-    Q_DECLARE_PRIVATE(AbstractEvaluateClipAnimatorJob)
 };
 
 } // Animation

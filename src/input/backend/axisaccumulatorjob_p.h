@@ -75,8 +75,6 @@ public:
     void run() override;
 
 private:
-    Q_DECLARE_PRIVATE(AxisAccumulatorJob)
-
     AxisAccumulatorManager *m_axisAccumulatorManager;
     AxisManager *m_axisManager;
     float m_dt;

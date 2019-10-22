@@ -76,8 +76,6 @@ public:
 
     void run() final;
 private:
-    Q_DECLARE_PRIVATE(LoadProxyDeviceJob)
-
     InputHandler *m_inputHandler;
     QVector<Qt3DCore::QNodeId> m_proxies;
 };

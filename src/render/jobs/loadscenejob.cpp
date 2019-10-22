@@ -139,7 +139,7 @@ void LoadSceneJob::run()
         }
     }
 
-    Q_D(LoadSceneJob);
+    Q_DJOB(LoadSceneJob);
     d->m_sceneSubtree = sceneSubTree;
     d->m_status = finalStatus;
 

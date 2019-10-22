@@ -78,7 +78,6 @@ public:
 private:
     Entity *m_node;
     NodeManagers *m_manager;
-    Q_DECLARE_PRIVATE(UpdateWorldTransformJob)
 };
 
 typedef QSharedPointer<UpdateWorldTransformJob> UpdateWorldTransformJobPtr;

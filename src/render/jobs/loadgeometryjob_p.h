@@ -76,9 +76,6 @@ protected:
     void run() override;
     HGeometryRenderer m_handle;
     NodeManagers *m_nodeManagers;
-
-private:
-    Q_DECLARE_PRIVATE(LoadGeometryJob)
 };
 
 typedef QSharedPointer<LoadGeometryJob> LoadGeometryJobPtr;

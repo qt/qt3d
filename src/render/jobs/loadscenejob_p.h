@@ -113,7 +113,6 @@ private:
     Qt3DCore::QEntity *tryLoadScene(QSceneLoader::Status &finalStatus,
                                     const QStringList &extensions,
                                     const std::function<void (QSceneImporter *)> &importerSetupFunc);
-    Q_DECLARE_PRIVATE(LoadSceneJob)
 };
 
 typedef QSharedPointer<LoadSceneJob> LoadSceneJobPtr;

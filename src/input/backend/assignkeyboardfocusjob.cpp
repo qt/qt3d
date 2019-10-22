@@ -77,7 +77,7 @@ void AssignKeyboardFocusJob::setInputHandler(InputHandler *handler)
 
 void AssignKeyboardFocusJob::run()
 {
-    Q_D(AssignKeyboardFocusJob);
+    Q_DJOB(AssignKeyboardFocusJob);
 
     KeyboardDevice *keyboardDevice = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
     const auto handles = m_inputHandler->keyboardInputManager()->activeHandles();
