@@ -237,6 +237,7 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 /*!
     \internal
  */
+// TODO Unused remove in Qt6
 void QTransform::sceneChangeEvent(const QSceneChangePtr &change)
 {
     Q_D(QTransform);

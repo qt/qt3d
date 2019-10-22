@@ -289,6 +289,11 @@ void QAxisAccumulator::setScale(float scale)
     emit scaleChanged(scale);
 }
 
+// TODO Unused remove in Qt6
+void QAxisAccumulator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 /*! \internal */
 Qt3DCore::QNodeCreatedChangeBasePtr QAxisAccumulator::createNodeCreationChange() const
 {

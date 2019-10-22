@@ -309,6 +309,11 @@ QKeyboardDevice::QKeyboardDevice(QKeyboardDevicePrivate &dd, QNode *parent)
 {
 }
 
+// TODO Unused remove in Qt6
+void QKeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 /*!
  * Set the active input to \a activeInput
  */

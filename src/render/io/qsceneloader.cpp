@@ -252,6 +252,11 @@ QSceneLoader::~QSceneLoader()
 {
 }
 
+// TODO Unused remove in Qt6
+void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &)
+{
+}
+
 /*! \internal */
 QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
     : Qt3DCore::QComponent(dd, parent)

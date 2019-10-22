@@ -298,6 +298,11 @@ void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
     }
 }
 
+// TODO Unused remove in Qt6
+void QMouseHandler::sceneChangeEvent(const QSceneChangePtr &)
+{
+}
+
 /*!
  * \property Qt3DInput::QMouseHandler::sourceDevice
  *

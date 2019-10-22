@@ -148,6 +148,11 @@ QVector<QAbstractActionInput *> QAction::inputs() const
     return d->m_inputs;
 }
 
+// TODO Unused remove in Qt6
+void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QAction::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QActionData>::create(this);

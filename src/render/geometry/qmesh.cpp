@@ -215,6 +215,11 @@ QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
 {
 }
 
+// TODO Unused remove in Qt6
+void QMesh::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 void QMesh::setSource(const QUrl& source)
 {
     Q_D(QMesh);

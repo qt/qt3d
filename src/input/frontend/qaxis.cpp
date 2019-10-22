@@ -167,6 +167,11 @@ float QAxis::value() const
     return d->m_value;
 }
 
+// TODO Unused remove in Qt6
+void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QAxis::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisData>::create(this);

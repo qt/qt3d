@@ -292,6 +292,11 @@ void QObjectPicker::setPriority(int priority)
     }
 }
 
+// TODO Unused remove in Qt6
+void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::dragEnabled
 */

@@ -237,6 +237,11 @@ void QKeyboardHandler::setFocus(bool focus)
     }
 }
 
+// TODO Unused remove in Qt6
+void QKeyboardHandler::sceneChangeEvent(const QSceneChangePtr &)
+{
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardHandler::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QKeyboardHandlerData>::create(this);

@@ -134,6 +134,8 @@ Q_SIGNALS:
 
 protected:
     explicit QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    // TODO Unused remove in Qt6
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QGeometryRenderer)

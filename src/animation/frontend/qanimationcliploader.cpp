@@ -112,6 +112,11 @@ QAnimationClipLoader::QAnimationClipLoader(QAnimationClipLoaderPrivate &dd, Qt3D
 {
 }
 
+// TODO Unused remove in Qt6
+void QAnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 QAnimationClipLoader::~QAnimationClipLoader()
 {
 }
