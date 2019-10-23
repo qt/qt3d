@@ -414,6 +414,8 @@ bool QAspectManager::event(QEvent *e)
         // the loop
         if (m_simulationLoopRunning && m_driveMode == QAspectEngine::Automatic)
             requestNextFrame();
+
+        return true;
     }
 
     return QObject::event(e);
@@ -424,7 +426,7 @@ void QAspectManager::requestNextFrame()
     qCDebug(Aspects) << "Requesting new Frame";
     // Post event in the event loop to force
     // next frame to be processed
-    qApp->postEvent(this, new RequestFrameEvent());
+    QCoreApplication::postEvent(this, new RequestFrameEvent());
 }
 
 void QAspectManager::processFrame()
@@ -436,6 +438,8 @@ void QAspectManager::processFrame()
             m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
 
     const qint64 t = frameAdvanceService->waitForNextFrame();
+    if (t < 0)
+        return;
 
     // Distribute accumulated changes. This includes changes sent from the frontend
     // to the backend nodes. We call this before the call to m_scheduler->update() to ensure
