@@ -79,6 +79,9 @@ void Scene::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
             m_sceneManager->addSceneData(m_source, peerId());
         else
             m_sceneManager->startSceneDownload(m_source, peerId());
+
+        const auto d = static_cast<const QSceneLoaderPrivate *>(Qt3DCore::QNodePrivate::get(node));
+        const_cast<QSceneLoaderPrivate *>(d)->setStatus(QSceneLoader::Loading);
     }
     markDirty(AbstractRenderer::AllDirty);
 }
