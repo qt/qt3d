@@ -126,6 +126,10 @@ Q_SIGNALS:
     void accessTypeChanged(AccessType access);
     void dataAvailable();
 
+protected:
+    // TODO Unused remove in Qt6
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
+
 private:
     Q_DECLARE_PRIVATE(QBuffer)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;

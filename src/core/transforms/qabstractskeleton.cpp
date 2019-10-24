@@ -105,6 +105,13 @@ QAbstractSkeleton::~QAbstractSkeleton()
 {
 }
 
+/*! \internal */
+void QAbstractSkeleton::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    // TODO Unused remove in Qt6
+    Q_UNUSED(change)
+}
+
 /*!
     \property Qt3DCore::QAbstractSkeleton::jointCount
 

@@ -433,6 +433,13 @@ void QBuffer::setAccessType(QBuffer::AccessType access)
     }
 }
 
+/*! \internal */
+void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    // TODO Unused remove in Qt6
+    Q_UNUSED(change)
+}
+
 bool QBuffer::isSyncData() const
 {
     Q_D(const QBuffer);
