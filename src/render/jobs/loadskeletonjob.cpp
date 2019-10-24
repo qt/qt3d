@@ -288,7 +288,7 @@ void LoadSkeletonJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
         dloaderNode->setStatus(m_backendSkeleton->status());
 
         if (m_loadedRootJoint) {
-            dloaderNode->m_rootJoint = m_loadedRootJoint;
+            dloaderNode->setRootJoint(m_loadedRootJoint);
             m_loadedRootJoint = nullptr;
         }
     }

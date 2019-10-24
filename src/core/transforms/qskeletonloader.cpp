@@ -68,6 +68,27 @@ void QSkeletonLoaderPrivate::setStatus(QSkeletonLoader::Status status)
     }
 }
 
+void QSkeletonLoaderPrivate::setRootJoint(QJoint *rootJoint)
+{
+    Q_Q(QSkeletonLoader);
+    if (rootJoint == m_rootJoint)
+        return;
+
+    if (m_rootJoint)
+        unregisterDestructionHelper(m_rootJoint);
+
+    if (rootJoint && !rootJoint->parent())
+        rootJoint->setParent(q);
+
+    m_rootJoint = rootJoint;
+
+    // Ensures proper bookkeeping
+    if (m_rootJoint)
+        registerPrivateDestructionHelper(m_rootJoint, &QSkeletonLoaderPrivate::setRootJoint);
+
+    emit q->rootJointChanged(m_rootJoint);
+}
+
 /*!
     \qmltype SkeletonLoader
     \inqmlmodule Qt3D.Core
@@ -217,22 +238,7 @@ void QSkeletonLoader::setCreateJointsEnabled(bool createJoints)
 void QSkeletonLoader::setRootJoint(QJoint *rootJoint)
 {
     Q_D(QSkeletonLoader);
-    if (rootJoint == d->m_rootJoint)
-        return;
-
-    if (d->m_rootJoint)
-        d->unregisterDestructionHelper(d->m_rootJoint);
-
-    if (rootJoint && !rootJoint->parent())
-        rootJoint->setParent(this);
-
-    d->m_rootJoint = rootJoint;
-
-    // Ensures proper bookkeeping
-    if (d->m_rootJoint)
-        d->registerDestructionHelper(d->m_rootJoint, &QSkeletonLoader::setRootJoint, d->m_rootJoint);
-
-    emit rootJointChanged(d->m_rootJoint);
+    d->setRootJoint(rootJoint);
 }
 
 /*! \internal */
