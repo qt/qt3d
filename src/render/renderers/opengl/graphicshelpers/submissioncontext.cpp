@@ -687,8 +687,8 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
     GLint samples = 0;
     m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
     if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer)) {
-        qWarning () << Q_FUNC_INFO << "Unable to capture multisampled framebuffer; "
-                       "Required feature BlitFramebuffer is missing.";
+        qCWarning(Backend) << Q_FUNC_INFO << "Unable to capture multisampled framebuffer; "
+                                             "Required feature BlitFramebuffer is missing.";
         return img;
     }
 
@@ -711,7 +711,7 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
         if (status != GL_FRAMEBUFFER_COMPLETE) {
             gl->glDeleteRenderbuffers(1, &rb);
             gl->glDeleteFramebuffers(1, &fbo);
-            qWarning () << Q_FUNC_INFO << "Copy-framebuffer not complete: " << status;
+            qCWarning(Backend) << Q_FUNC_INFO << "Copy-framebuffer not complete: " << status;
             return img;
         }
 
@@ -797,7 +797,7 @@ bool SubmissionContext::activateShader(ProgramDNA shaderDNA)
             m_activeShaderDNA = shaderDNA;
         } else {
             m_glHelper->useProgram(0);
-            qWarning() << "No shader program found for DNA";
+            qCWarning(Backend) << "No shader program found for DNA";
             m_activeShaderDNA = 0;
             return false;
         }
@@ -855,7 +855,7 @@ void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
             }
         }
     } else {
-        qWarning() << "FBO incomplete";
+        qCWarning(Backend) << "FBO incomplete";
     }
 }
 
@@ -1179,7 +1179,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
                         if (namedTex.glslNameId != irradianceId &&
                             namedTex.glslNameId != specularId) {
                             // Only return false if we are not dealing with env light textures
-                            qWarning() << "Unable to find suitable Texture Unit";
+                            qCWarning(Backend) << "Unable to find suitable Texture Unit";
                             return false;
                         }
                     }
@@ -1198,7 +1198,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
             if (img != nullptr) {
                 GLTexture *t = manager->glTextureManager()->lookupResource(img->textureId());
                 if (t == nullptr) {
-                    qWarning() << "Shader Image referencing invalid texture";
+                    qCWarning(Backend) << "Shader Image referencing invalid texture";
                     continue;
                 } else {
                     UniformValue &imgUniform = uniformValues[namedTex.glslNameId];
@@ -1206,7 +1206,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
                         const int imgUnit = m_imageContext.activateImage(img, t);
                         imgUniform.data<int>()[namedTex.uniformArrayIndex] = imgUnit;
                         if (imgUnit == -1) {
-                            qWarning() << "Unable to bind Image to Texture";
+                            qCWarning(Backend) << "Unable to bind Image to Texture";
                             return false;
                         }
                     }
