@@ -683,6 +683,11 @@ void QNodePrivate::update()
 void QNodePrivate::updateNode(QNode *node, const char *property, ChangeFlag change)
 {
     if (m_changeArbiter) {
+        // Ensure node has its postConstructorInit called if we reach this
+        // point, we could otherwise endup referencing a node that has yet
+        // to be created in the backend
+        QNodePrivate::get(node)->_q_ensureBackendNodeCreated();
+
         Q_Q(QNode);
         m_changeArbiter->addDirtyFrontEndNode(q, node, property, change);
     }
