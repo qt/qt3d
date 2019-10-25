@@ -581,25 +581,45 @@ bool Scene3DItem::isHoverEnabled() const
 
 void Scene3DItem::setCameraAspectModeHelper()
 {
-    switch (m_cameraAspectRatioMode) {
-    case AutomaticAspectRatio:
-        connect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
-        connect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
-        // Update the aspect ratio the first time the surface is set
-        updateCameraAspectRatio();
-        break;
-    case UserAspectRatio:
-        disconnect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
-        disconnect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
-        break;
+    if (m_compositingMode == FBO) {
+        switch (m_cameraAspectRatioMode) {
+        case AutomaticAspectRatio:
+            connect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            connect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            // Update the aspect ratio the first time the surface is set
+            updateCameraAspectRatio();
+            break;
+        case UserAspectRatio:
+            disconnect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            disconnect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            break;
+        }
+    } else {
+        // In Underlay mode, we rely on the window for aspect ratio and not the size of the Scene3DItem
+        switch (m_cameraAspectRatioMode) {
+        case AutomaticAspectRatio:
+            connect(window(), &QWindow::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            connect(window(), &QWindow::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            // Update the aspect ratio the first time the surface is set
+            updateCameraAspectRatio();
+            break;
+        case UserAspectRatio:
+            disconnect(window(), &QWindow::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            disconnect(window(), &QWindow::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            break;
+        }
     }
 }
 
 void Scene3DItem::updateCameraAspectRatio()
 {
     if (m_camera) {
-        m_camera->setAspectRatio(static_cast<float>(width()) /
-                                 static_cast<float>(height()));
+        if (m_compositingMode == FBO)
+            m_camera->setAspectRatio(static_cast<float>(width()) /
+                                     static_cast<float>(height()));
+        else
+            m_camera->setAspectRatio(static_cast<float>(window()->width()) /
+                                     static_cast<float>(window()->height()));
     }
 }
 
