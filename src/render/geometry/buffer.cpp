@@ -88,15 +88,6 @@ void Buffer::executeFunctor()
     m_data = (*m_functor)();
     // Request data to be loaded
     forceDataUpload();
-
-    if (m_syncData) {
-        // Send data back to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("data");
-        e->setValue(QVariant::fromValue(m_data));
-        notifyObservers(e);
-    }
 }
 
 //Called from th sendBufferJob
@@ -105,12 +96,6 @@ void Buffer::updateDataFromGPUToCPU(QByteArray data)
     // Note: when this is called, data is what's currently in GPU memory
     // so m_data shouldn't be reuploaded
     m_data = data;
-    // Send data back to the frontend
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("downloadedData");
-    e->setValue(QVariant::fromValue(m_data));
-    notifyObservers(e);
 }
 
 void Buffer::forceDataUpload()

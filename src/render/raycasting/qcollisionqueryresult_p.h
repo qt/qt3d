@@ -86,8 +86,10 @@ public:
 
         Hit(Qt3DCore::QNodeId entity, const Vector3D &intersection, float distance, const Vector3D &uvw)
             : m_entityId(entity)
+            , m_type(Entity)
             , m_intersection(intersection)
             , m_distance(distance)
+            , m_primitiveIndex(0U)
             , m_uvw(uvw)
         {
         }

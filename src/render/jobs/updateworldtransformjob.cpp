@@ -65,11 +65,10 @@ struct TransformUpdate
     QMatrix4x4 worldTransformMatrix;
 };
 
-QVector<TransformUpdate> updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform)
+void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform, QVector<TransformUpdate> &updatedTransforms)
 {
     Matrix4x4 worldTransform(parentTransform);
     Transform *nodeTransform = node->renderComponent<Transform>();
-    QVector<TransformUpdate> updatedTransforms;
 
     const bool hasTransformComponent = nodeTransform != nullptr && nodeTransform->isEnabled();
     if (hasTransformComponent)
@@ -85,9 +84,8 @@ QVector<TransformUpdate> updateWorldTransformAndBounds(NodeManagers *manager, En
     for (const HEntity &handle : childrenHandles) {
         Entity *child = manager->renderNodesManager()->data(handle);
         if (child)
-            updatedTransforms += updateWorldTransformAndBounds(manager, child, worldTransform);
+            updateWorldTransformAndBounds(manager, child, worldTransform, updatedTransforms);
     }
-    return updatedTransforms;
 }
 
 }
@@ -130,14 +128,14 @@ void UpdateWorldTransformJob::run()
     // TODO: Parallelise this on each level using a parallel_for
     // implementation.
 
-    Q_D(UpdateWorldTransformJob);
+    Q_DJOB(UpdateWorldTransformJob);
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
     Matrix4x4 parentTransform;
     Entity *parent = m_node->parent();
     if (parent != nullptr)
         parentTransform = *(parent->worldTransform());
-    d->m_updatedTransforms = updateWorldTransformAndBounds(m_manager, m_node, parentTransform);
+    updateWorldTransformAndBounds(m_manager, m_node, parentTransform, d->m_updatedTransforms);
 
     qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }

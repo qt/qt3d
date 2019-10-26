@@ -75,7 +75,7 @@ LoadSkeletonJob::LoadSkeletonJob(const HSkeleton &handle)
 
 void LoadSkeletonJob::run()
 {
-    Q_D(LoadSkeletonJob);
+    Q_DJOB(LoadSkeletonJob);
     d->m_backendSkeleton = nullptr;
 
     Skeleton *skeleton = m_nodeManagers->skeletonManager()->data(m_handle);
@@ -120,7 +120,7 @@ void LoadSkeletonJob::loadSkeleton(Skeleton *skeleton)
 
 void LoadSkeletonJob::loadSkeletonFromUrl(Skeleton *skeleton)
 {
-    Q_D(LoadSkeletonJob);
+    Q_DJOB(LoadSkeletonJob);
 
     using namespace Qt3DCore;
 
@@ -288,7 +288,7 @@ void LoadSkeletonJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
         dloaderNode->setStatus(m_backendSkeleton->status());
 
         if (m_loadedRootJoint) {
-            dloaderNode->m_rootJoint = m_loadedRootJoint;
+            dloaderNode->setRootJoint(m_loadedRootJoint);
             m_loadedRootJoint = nullptr;
         }
     }

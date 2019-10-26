@@ -57,6 +57,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 QFrameAllocatorPrivate::QFrameAllocatorPrivate()
+    : m_maxObjectSize(0U)
+    , m_alignment(0U)
 {
 }
 

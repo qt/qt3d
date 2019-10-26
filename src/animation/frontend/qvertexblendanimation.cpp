@@ -192,8 +192,8 @@ void QVertexBlendAnimationPrivate::updateAnimation(float position)
     Qt3DRender::QGeometry *geometry = m_target->geometry();
 
     // remove attributes from previous frame
-    if ((m_currentBase && (base != m_currentBase))
-        || (m_currentTarget && (target != m_currentTarget))) {
+    if (m_currentBase && m_currentTarget &&
+        (base != m_currentBase || target != m_currentTarget)) {
         const QVector<Qt3DRender::QAttribute *> baseAttributes = m_currentBase->attributeList();
         const QVector<Qt3DRender::QAttribute *> targetAttributes = m_currentTarget->attributeList();
         for (int i = 0; i < baseAttributes.size(); ++i) {

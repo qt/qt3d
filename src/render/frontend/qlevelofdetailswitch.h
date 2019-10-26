@@ -45,7 +45,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-class QLevelOfDetailSwitchPrivate;
 
 class Q_3DRENDERSHARED_EXPORT QLevelOfDetailSwitch : public QLevelOfDetail
 {
@@ -57,9 +56,11 @@ public:
 
 protected:
     explicit QLevelOfDetailSwitch(QLevelOfDetailPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    // TODO Unused remove in Qt6
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
-    Q_DECLARE_PRIVATE(QLevelOfDetailSwitch)
+    Q_DECLARE_PRIVATE(QLevelOfDetail)
 };
 
 } // namespace Qt3DRender

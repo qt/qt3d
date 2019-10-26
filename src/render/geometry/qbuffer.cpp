@@ -58,6 +58,15 @@ QBufferPrivate::QBufferPrivate()
 {
 }
 
+void QBufferPrivate::setData(const QByteArray &data)
+{
+    Q_Q(QBuffer);
+    const bool blocked = q->blockNotifications(true);
+    m_data = data;
+    emit q->dataChanged(data);
+    q->blockNotifications(blocked);
+}
+
 /*!
  * \qmltype Buffer
  * \instantiates Qt3DRender::QBuffer
@@ -301,36 +310,14 @@ QBuffer::~QBuffer()
 }
 
 /*!
- * \internal
- */
-void QBuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    if (change->type() == PropertyUpdated) {
-        QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
-        const QByteArray propertyName = e->propertyName();
-        if (propertyName == QByteArrayLiteral("data")) {
-            const bool blocked = blockNotifications(true);
-            setData(e->value().toByteArray());
-            blockNotifications(blocked);
-        } else if (propertyName == QByteArrayLiteral("downloadedData")) {
-            const bool blocked = blockNotifications(true);
-            setData(e->value().toByteArray());
-            blockNotifications(blocked);
-            Q_EMIT dataAvailable();
-        }
-    }
-}
-
-/*!
  * Sets \a bytes as data.
  */
 void QBuffer::setData(const QByteArray &bytes)
 {
     Q_D(QBuffer);
     if (bytes != d->m_data) {
-        d->m_data = bytes;
+        d->setData(bytes);
         d->update();
-        emit dataChanged(bytes);
     }
 }
 
@@ -444,6 +431,13 @@ void QBuffer::setAccessType(QBuffer::AccessType access)
         d->m_access = access;
         Q_EMIT accessTypeChanged(access);
     }
+}
+
+/*! \internal */
+void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    // TODO Unused remove in Qt6
+    Q_UNUSED(change)
 }
 
 bool QBuffer::isSyncData() const

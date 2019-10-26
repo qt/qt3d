@@ -54,14 +54,60 @@ const int RenderViewBuilder::m_optimalParallelJobCount = std::max(std::min(4, QT
 
 namespace {
 
-class SyncRenderViewCommandBuilders
+class SyncPreCommandBuilding
 {
 public:
-    explicit SyncRenderViewCommandBuilders(const RenderViewInitializerJobPtr &renderViewJob,
-                                           const QVector<RenderViewBuilderJobPtr> &renderViewBuilderJobs,
-                                           Renderer *renderer)
+    explicit SyncPreCommandBuilding(RenderViewInitializerJobPtr renderViewInitializerJob,
+                                    const QVector<RenderViewCommandBuilderJobPtr> &renderViewCommandBuilderJobs,
+                                    Renderer *renderer,
+                                    FrameGraphNode *leafNode)
+        : m_renderViewInitializer(renderViewInitializerJob)
+        , m_renderViewCommandBuilderJobs(renderViewCommandBuilderJobs)
+        , m_renderer(renderer)
+        , m_leafNode(leafNode)
+    {
+    }
+
+    void operator()()
+    {
+        // Split commands to build among jobs
+        QMutexLocker lock(m_renderer->cache()->mutex());
+        // Rebuild RenderCommands for all entities in RV (ignoring filtering)
+        const RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
+        RenderView *rv = m_renderViewInitializer->renderView();
+        const auto entities = !rv->isCompute() ? dataCacheForLeaf.renderableEntities : dataCacheForLeaf.computeEntities;
+
+        rv->setMaterialParameterTable(dataCacheForLeaf.materialParameterGatherer);
+
+        lock.unlock();
+
+        // Split among the number of command builders
+        int i = 0;
+        const int m = RenderViewBuilder::optimalJobCount() - 1;
+        const int packetSize = entities.size() / RenderViewBuilder::optimalJobCount();
+        while (i < m) {
+            const RenderViewCommandBuilderJobPtr renderViewCommandBuilder = m_renderViewCommandBuilderJobs.at(i);
+            renderViewCommandBuilder->setEntities(entities.mid(i * packetSize, packetSize));
+            ++i;
+        }
+        m_renderViewCommandBuilderJobs.at(i)->setEntities(entities.mid(i * packetSize, packetSize + entities.size() % (m + 1)));
+    }
+
+private:
+    RenderViewInitializerJobPtr m_renderViewInitializer;
+    QVector<RenderViewCommandBuilderJobPtr> m_renderViewCommandBuilderJobs;
+    Renderer *m_renderer;
+    FrameGraphNode *m_leafNode;
+};
+
+class SyncRenderViewPostCommandUpdate
+{
+public:
+    explicit SyncRenderViewPostCommandUpdate(const RenderViewInitializerJobPtr &renderViewJob,
+                                             const QVector<RenderViewCommandUpdaterJobPtr> &renderViewCommandUpdateJobs,
+                                             Renderer *renderer)
         : m_renderViewJob(renderViewJob)
-        , m_renderViewBuilderJobs(renderViewBuilderJobs)
+        , m_renderViewCommandUpdaterJobs(renderViewCommandUpdateJobs)
         , m_renderer(renderer)
     {}
 
@@ -71,17 +117,19 @@ public:
         RenderView *rv = m_renderViewJob->renderView();
 
         int totalCommandCount = 0;
-        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
+        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandUpdaterJobs))
             totalCommandCount += renderViewCommandBuilder->commands().size();
 
-        QVector<RenderCommand *> commands;
+        QVector<RenderCommand> commands;
         commands.reserve(totalCommandCount);
 
         // Reduction
-        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
+        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandUpdaterJobs))
             commands += std::move(renderViewCommandBuilder->commands());
+
         rv->setCommands(commands);
 
+        // TO DO: Find way to store commands once or at least only when required
         // Sort the commands
         rv->sort();
 
@@ -91,15 +139,15 @@ public:
 
 private:
     RenderViewInitializerJobPtr m_renderViewJob;
-    QVector<RenderViewBuilderJobPtr> m_renderViewBuilderJobs;
+    QVector<RenderViewCommandUpdaterJobPtr> m_renderViewCommandUpdaterJobs;
     Renderer *m_renderer;
 };
 
-class SyncFrustumCulling
+class SyncPreFrustumCulling
 {
 public:
-    explicit SyncFrustumCulling(const RenderViewInitializerJobPtr &renderViewJob,
-                                const FrustumCullingJobPtr &frustumCulling)
+    explicit SyncPreFrustumCulling(const RenderViewInitializerJobPtr &renderViewJob,
+                                   const FrustumCullingJobPtr &frustumCulling)
         : m_renderViewJob(renderViewJob)
         , m_frustumCullingJob(frustumCulling)
     {}
@@ -120,21 +168,23 @@ private:
     FrustumCullingJobPtr m_frustumCullingJob;
 };
 
-class SyncRenderViewInitialization
+class SyncRenderViewPostInitialization
 {
 public:
-    explicit SyncRenderViewInitialization(const RenderViewInitializerJobPtr &renderViewJob,
-                                          const FrustumCullingJobPtr &frustumCullingJob,
-                                          const FilterLayerEntityJobPtr &filterEntityByLayerJob,
-                                          const FilterProximityDistanceJobPtr &filterProximityJob,
-                                          const QVector<MaterialParameterGathererJobPtr> &materialGathererJobs,
-                                          const QVector<RenderViewBuilderJobPtr> &renderViewBuilderJobs)
+    explicit SyncRenderViewPostInitialization(const RenderViewInitializerJobPtr &renderViewJob,
+                                              const FrustumCullingJobPtr &frustumCullingJob,
+                                              const FilterLayerEntityJobPtr &filterEntityByLayerJob,
+                                              const FilterProximityDistanceJobPtr &filterProximityJob,
+                                              const QVector<MaterialParameterGathererJobPtr> &materialGathererJobs,
+                                              const QVector<RenderViewCommandUpdaterJobPtr> &renderViewCommandUpdaterJobs,
+                                              const QVector<RenderViewCommandBuilderJobPtr> &renderViewCommandBuilderJobs)
         : m_renderViewJob(renderViewJob)
         , m_frustumCullingJob(frustumCullingJob)
         , m_filterEntityByLayerJob(filterEntityByLayerJob)
         , m_filterProximityJob(filterProximityJob)
         , m_materialGathererJobs(materialGathererJobs)
-        , m_renderViewBuilderJobs(renderViewBuilderJobs)
+        , m_renderViewCommandUpdaterJobs(renderViewCommandUpdaterJobs)
+        , m_renderViewCommandBuilderJobs(renderViewCommandBuilderJobs)
     {}
 
     void operator()()
@@ -154,8 +204,10 @@ public:
             materialGatherer->setTechniqueFilter(const_cast<TechniqueFilter *>(rv->techniqueFilter()));
         }
 
-        // Command builders
-        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
+        // Command builders and updates
+        for (const auto &renderViewCommandUpdater : qAsConst(m_renderViewCommandUpdaterJobs))
+            renderViewCommandUpdater->setRenderView(rv);
+        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
             renderViewCommandBuilder->setRenderView(rv);
 
         // Set whether frustum culling is enabled or not
@@ -168,26 +220,31 @@ private:
     FilterLayerEntityJobPtr m_filterEntityByLayerJob;
     FilterProximityDistanceJobPtr m_filterProximityJob;
     QVector<MaterialParameterGathererJobPtr> m_materialGathererJobs;
-    QVector<RenderViewBuilderJobPtr> m_renderViewBuilderJobs;
+    QVector<RenderViewCommandUpdaterJobPtr> m_renderViewCommandUpdaterJobs;
+    QVector<RenderViewCommandBuilderJobPtr> m_renderViewCommandBuilderJobs;
 };
 
-class SyncRenderCommandBuilding
+class SyncRenderViewPreCommandUpdate
 {
 public:
-    explicit SyncRenderCommandBuilding(const RenderViewInitializerJobPtr &renderViewJob,
-                                       const FrustumCullingJobPtr &frustumCullingJob,
-                                       const FilterProximityDistanceJobPtr &filterProximityJob,
-                                       const QVector<MaterialParameterGathererJobPtr> &materialGathererJobs,
-                                       const QVector<RenderViewBuilderJobPtr> &renderViewBuilderJobs,
-                                       Renderer *renderer,
-                                       FrameGraphNode *leafNode)
+    explicit SyncRenderViewPreCommandUpdate(const RenderViewInitializerJobPtr &renderViewJob,
+                                            const FrustumCullingJobPtr &frustumCullingJob,
+                                            const FilterProximityDistanceJobPtr &filterProximityJob,
+                                            const QVector<MaterialParameterGathererJobPtr> &materialGathererJobs,
+                                            const QVector<RenderViewCommandUpdaterJobPtr> &renderViewCommandUpdaterJobs,
+                                            const QVector<RenderViewCommandBuilderJobPtr> &renderViewCommandBuilderJobs,
+                                            Renderer *renderer,
+                                            FrameGraphNode *leafNode,
+                                            bool fullCommandRebuild)
         : m_renderViewJob(renderViewJob)
         , m_frustumCullingJob(frustumCullingJob)
         , m_filterProximityJob(filterProximityJob)
         , m_materialGathererJobs(materialGathererJobs)
-        , m_renderViewBuilderJobs(renderViewBuilderJobs)
+        , m_renderViewCommandUpdaterJobs(renderViewCommandUpdaterJobs)
+        , m_renderViewCommandBuilderJobs(renderViewCommandBuilderJobs)
         , m_renderer(renderer)
         , m_leafNode(leafNode)
+        , m_fullRebuild(fullCommandRebuild)
     {}
 
     void operator()()
@@ -197,21 +254,45 @@ public:
         RenderView *rv = m_renderViewJob->renderView();
 
         if (!rv->noDraw()) {
-            QVector<Entity *> renderableEntities;
-            const bool isDraw = !rv->isCompute();
+            ///////// CACHE LOCKED ////////////
+            // Retrieve Data from Cache
             QMutexLocker lock(m_renderer->cache()->mutex());
-            const auto& cacheData =  m_renderer->cache()->leafNodeCache.value(m_leafNode);
+            Q_ASSERT(m_renderer->cache()->leafNodeCache.contains(m_leafNode));
 
-            if (isDraw)
-                renderableEntities = cacheData.renderableEntities;
-            else
-                renderableEntities = cacheData.computeEntities;
+            const bool isDraw = !rv->isCompute();
+            const RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
 
-            const QVector<Entity *> filteredEntities = cacheData.filterEntitiesByLayer;
-            QVector<LightSource> lightSources = cacheData.gatheredLights;
-            rv->setEnvironmentLight(cacheData.environmentLight);
+            // Rebuild RenderCommands if required
+            // This should happen fairly infrequently (FrameGraph Change, Geometry/Material change)
+            // and allow to skip that step most of the time
+            if (m_fullRebuild) {
+                // Clear previous cache
+                RendererCache::LeafNodeData &writableCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
+                writableCacheForLeaf.renderCommandData.clear();
 
+                QVector<EntityRenderCommandData> commandData;
+                // Reduction
+                {
+                    int totalCommandCount = 0;
+                    for (const RenderViewCommandBuilderJobPtr &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
+                        totalCommandCount += renderViewCommandBuilder->commandData().size();
+                    commandData.reserve(totalCommandCount);
+                    for (const RenderViewCommandBuilderJobPtr &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
+                        commandData += std::move(renderViewCommandBuilder->commandData());
+                }
+                // Store in cache
+                writableCacheForLeaf.renderCommandData = std::move(commandData);
+            }
+            const QVector<EntityRenderCommandData> commandData = dataCacheForLeaf.renderCommandData;
+
+            QVector<Entity *> renderableEntities = isDraw ? dataCacheForLeaf.renderableEntities : dataCacheForLeaf.computeEntities;
+            const QVector<Entity *> filteredEntities = dataCacheForLeaf.filterEntitiesByLayer;
+            QVector<LightSource> lightSources = dataCacheForLeaf.gatheredLights;
+
+            rv->setMaterialParameterTable(dataCacheForLeaf.materialParameterGatherer);
+            rv->setEnvironmentLight(dataCacheForLeaf.environmentLight);
             lock.unlock();
+            ///////// END OF CACHE LOCKED ////////////
 
             // Filter out entities that weren't selected by the layer filters
             // Remove all entities from the compute and renderable vectors that aren't in the filtered layer vector
@@ -232,20 +313,43 @@ public:
                 renderableEntities = RenderViewBuilder::entitiesInSubset(renderableEntities, m_filterProximityJob->filteredEntities());
             }
 
+            // Filter out Render commands for which the Entity wasn't selected because
+            // of frustum, proximity or layer filtering
+            QVector<EntityRenderCommandData *> filteredCommandData;
+            filteredCommandData.reserve(renderableEntities.size());
+            // Because dataCacheForLeaf.renderableEntities or computeEntities are sorted
+            // What we get out of EntityRenderCommandData is also sorted by Entity
+            auto eIt = std::cbegin(renderableEntities);
+            auto cIt = std::cbegin(commandData);
+            const auto eEnd = std::cend(renderableEntities);
+            const auto cEnd = std::cend(commandData);
+
+            while (eIt != eEnd) {
+                const Entity *targetEntity = *eIt;
+                // Advance until we have commands whose Entity has a lower address
+                // than the selected filtered entity
+                while (cIt->entity < targetEntity && cIt != cEnd)
+                    ++cIt;
+
+                // Push pointers to command data for all commands that match the
+                // entity
+                while (cIt->entity == targetEntity && cIt != cEnd) {
+                    filteredCommandData.push_back(const_cast<EntityRenderCommandData *>(&(*cIt)));
+                    ++cIt;
+                }
+                ++eIt;
+            }
+
             // Split among the number of command builders
             int i = 0;
             const int m = RenderViewBuilder::optimalJobCount() - 1;
-            const int packetSize = renderableEntities.size() / RenderViewBuilder::optimalJobCount();
+            const int packetSize = filteredCommandData.size() / RenderViewBuilder::optimalJobCount();
             while (i < m) {
-                const RenderViewBuilderJobPtr renderViewCommandBuilder = m_renderViewBuilderJobs.at(i);
-                renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize));
+                const RenderViewCommandUpdaterJobPtr renderViewCommandBuilder = m_renderViewCommandUpdaterJobs.at(i);
+                renderViewCommandBuilder->setRenderables(filteredCommandData.mid(i * packetSize, packetSize));
                 ++i;
             }
-            m_renderViewBuilderJobs.at(i)->setRenderables(renderableEntities.mid(i * packetSize, packetSize + renderableEntities.size() % (m + 1)));
-            {
-                QMutexLocker rendererCacheLock(m_renderer->cache()->mutex());
-                rv->setMaterialParameterTable(m_renderer->cache()->leafNodeCache.value(m_leafNode).materialParameterGatherer);
-            }
+            m_renderViewCommandUpdaterJobs.at(i)->setRenderables(filteredCommandData.mid(i * packetSize, packetSize + filteredCommandData.size() % (m + 1)));
         }
     }
 
@@ -254,9 +358,11 @@ private:
     FrustumCullingJobPtr m_frustumCullingJob;
     FilterProximityDistanceJobPtr m_filterProximityJob;
     QVector<MaterialParameterGathererJobPtr> m_materialGathererJobs;
-    QVector<RenderViewBuilderJobPtr> m_renderViewBuilderJobs;
+    QVector<RenderViewCommandUpdaterJobPtr> m_renderViewCommandUpdaterJobs;
+    QVector<RenderViewCommandBuilderJobPtr> m_renderViewCommandBuilderJobs;
     Renderer *m_renderer;
     FrameGraphNode *m_leafNode;
+    bool m_fullRebuild;
 };
 
 class SetClearDrawBufferIndex
@@ -365,8 +471,8 @@ class SyncRenderableEntities
 {
 public:
     explicit SyncRenderableEntities(RenderableEntityFilterPtr gatherJob,
-                                Renderer *renderer,
-                                FrameGraphNode *leafNode)
+                                    Renderer *renderer,
+                                    FrameGraphNode *leafNode)
         : m_gatherJob(gatherJob)
         , m_renderer(renderer)
         , m_leafNode(leafNode)
@@ -375,10 +481,12 @@ public:
 
     void operator()()
     {
+        QVector<Entity *> selectedEntities = m_gatherJob->filteredEntities();
+        std::sort(selectedEntities.begin(), selectedEntities.end());
+
         QMutexLocker lock(m_renderer->cache()->mutex());
         RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
-        dataCacheForLeaf.renderableEntities = m_gatherJob->filteredEntities();
-        std::sort(dataCacheForLeaf.renderableEntities.begin(), dataCacheForLeaf.renderableEntities.end());
+        dataCacheForLeaf.renderableEntities = selectedEntities;
     }
 
 private:
@@ -391,8 +499,8 @@ class SyncComputableEntities
 {
 public:
     explicit SyncComputableEntities(ComputableEntityFilterPtr gatherJob,
-                                Renderer *renderer,
-                                FrameGraphNode *leafNode)
+                                    Renderer *renderer,
+                                    FrameGraphNode *leafNode)
         : m_gatherJob(gatherJob)
         , m_renderer(renderer)
         , m_leafNode(leafNode)
@@ -401,10 +509,12 @@ public:
 
     void operator()()
     {
+        QVector<Entity *> selectedEntities = m_gatherJob->filteredEntities();
+        std::sort(selectedEntities.begin(), selectedEntities.end());
+
         QMutexLocker lock(m_renderer->cache()->mutex());
         RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
-        dataCacheForLeaf.computeEntities = m_gatherJob->filteredEntities();
-        std::sort(dataCacheForLeaf.computeEntities.begin(), dataCacheForLeaf.computeEntities.end());
+        dataCacheForLeaf.computeEntities = selectedEntities;
     }
 
 private:
@@ -424,10 +534,11 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     , m_lightsCacheNeedsToBeRebuilt(false)
     , m_renderableCacheNeedsToBeRebuilt(false)
     , m_computableCacheNeedsToBeRebuilt(false)
+    , m_renderCommandCacheNeedsToBeRebuilt(false)
     , m_renderViewJob(RenderViewInitializerJobPtr::create())
     , m_filterEntityByLayerJob()
     , m_frustumCullingJob(new Render::FrustumCullingJob())
-    , m_syncFrustumCullingJob(SynchronizerJobPtr::create(SyncFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling))
+    , m_syncPreFrustumCullingJob(SynchronizerJobPtr::create(SyncPreFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling))
     , m_setClearDrawBufferIndexJob(SynchronizerJobPtr::create(SetClearDrawBufferIndex(m_renderViewJob), JobTypes::ClearBufferDrawIndex))
     , m_syncFilterEntityByLayerJob()
     , m_filterProximityJob(Render::FilterProximityDistanceJobPtr::create())
@@ -464,9 +575,14 @@ FrustumCullingJobPtr RenderViewBuilder::frustumCullingJob() const
     return m_frustumCullingJob;
 }
 
-QVector<RenderViewBuilderJobPtr> RenderViewBuilder::renderViewBuilderJobs() const
+QVector<RenderViewCommandUpdaterJobPtr> RenderViewBuilder::renderViewCommandUpdaterJobs() const
 {
-    return m_renderViewBuilderJobs;
+    return m_renderViewCommandUpdaterJobs;
+}
+
+QVector<RenderViewCommandBuilderJobPtr> RenderViewBuilder::renderViewCommandBuilderJobs() const
+{
+    return m_renderViewCommandBuilderJobs;
 }
 
 QVector<MaterialParameterGathererJobPtr> RenderViewBuilder::materialGathererJobs() const
@@ -474,24 +590,29 @@ QVector<MaterialParameterGathererJobPtr> RenderViewBuilder::materialGathererJobs
     return m_materialGathererJobs;
 }
 
-SynchronizerJobPtr RenderViewBuilder::syncRenderViewInitializationJob() const
+SynchronizerJobPtr RenderViewBuilder::syncRenderViewPostInitializationJob() const
 {
-    return m_syncRenderViewInitializationJob;
+    return m_syncRenderViewPostInitializationJob;
 }
 
-SynchronizerJobPtr RenderViewBuilder::syncFrustumCullingJob() const
+SynchronizerJobPtr RenderViewBuilder::syncPreFrustumCullingJob() const
 {
-    return m_syncFrustumCullingJob;
+    return m_syncPreFrustumCullingJob;
 }
 
-SynchronizerJobPtr RenderViewBuilder::syncRenderCommandBuildingJob() const
+SynchronizerJobPtr RenderViewBuilder::syncRenderViewPreCommandBuildingJob() const
 {
-    return m_syncRenderCommandBuildingJob;
+    return m_syncRenderViewPreCommandBuildingJob;
 }
 
-SynchronizerJobPtr RenderViewBuilder::syncRenderViewCommandBuildersJob() const
+SynchronizerJobPtr RenderViewBuilder::syncRenderViewPreCommandUpdateJob() const
 {
-    return m_syncRenderViewCommandBuildersJob;
+    return m_syncRenderViewPreCommandUpdateJob;
+}
+
+SynchronizerJobPtr RenderViewBuilder::syncRenderViewPostCommandUpdateJob() const
+{
+    return m_syncRenderViewPostCommandUpdateJob;
 }
 
 SynchronizerJobPtr RenderViewBuilder::setClearDrawBufferIndexJob() const
@@ -526,7 +647,7 @@ void RenderViewBuilder::prepareJobs()
         m_lightGathererJob->setManager(entityManager);
 
         m_cacheLightsJob = SynchronizerJobPtr::create(SyncLightsGatherer(m_lightGathererJob,  m_renderer, m_leafNode),
-            JobTypes::EntityComponentTypeFiltering);
+                                                      JobTypes::EntityComponentTypeFiltering);
         m_cacheLightsJob->addDependency(m_lightGathererJob);
     }
 
@@ -535,8 +656,8 @@ void RenderViewBuilder::prepareJobs()
         m_renderableEntityFilterJob->setManager(entityManager);
 
         m_cacheRenderableEntitiesJob = SynchronizerJobPtr::create(
-            SyncRenderableEntities(m_renderableEntityFilterJob, m_renderer, m_leafNode),
-            JobTypes::EntityComponentTypeFiltering);
+                    SyncRenderableEntities(m_renderableEntityFilterJob, m_renderer, m_leafNode),
+                    JobTypes::EntityComponentTypeFiltering);
         m_cacheRenderableEntitiesJob->addDependency(m_renderableEntityFilterJob);
     }
 
@@ -545,9 +666,23 @@ void RenderViewBuilder::prepareJobs()
         m_computableEntityFilterJob->setManager(entityManager);
 
         m_cacheComputableEntitiesJob = SynchronizerJobPtr::create(
-            SyncComputableEntities(m_computableEntityFilterJob, m_renderer, m_leafNode),
-            JobTypes::EntityComponentTypeFiltering);
+                    SyncComputableEntities(m_computableEntityFilterJob, m_renderer, m_leafNode),
+                    JobTypes::EntityComponentTypeFiltering);
         m_cacheComputableEntitiesJob->addDependency(m_computableEntityFilterJob);
+    }
+
+    if (m_renderCommandCacheNeedsToBeRebuilt) {
+
+        m_renderViewCommandBuilderJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
+        for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
+            auto renderViewCommandBuilder = Render::RenderViewCommandBuilderJobPtr::create();
+            m_renderViewCommandBuilderJobs.push_back(renderViewCommandBuilder);
+        }
+        m_syncRenderViewPreCommandBuildingJob = SynchronizerJobPtr::create(SyncPreCommandBuilding(m_renderViewJob,
+                                                                                                  m_renderViewCommandBuilderJobs,
+                                                                                                  m_renderer,
+                                                                                                  m_leafNode),
+                                                                           JobTypes::SyncRenderViewPreCommandBuilding);
     }
 
     m_renderViewJob->setRenderer(m_renderer);
@@ -556,12 +691,11 @@ void RenderViewBuilder::prepareJobs()
 
     // RenderCommand building is the most consuming task -> split it
     // Estimate the number of jobs to create based on the number of entities
-    m_renderViewBuilderJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
+    m_renderViewCommandUpdaterJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
     for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
-        auto renderViewCommandBuilder = Render::RenderViewBuilderJobPtr::create();
-        renderViewCommandBuilder->setIndex(m_renderViewIndex);
-        renderViewCommandBuilder->setRenderer(m_renderer);
-        m_renderViewBuilderJobs.push_back(renderViewCommandBuilder);
+        auto renderViewCommandUpdater = Render::RenderViewCommandUpdaterJobPtr::create();
+        renderViewCommandUpdater->setRenderer(m_renderer);
+        m_renderViewCommandUpdaterJobs.push_back(renderViewCommandUpdater);
     }
 
     if (m_materialGathererCacheNeedsToBeRebuilt) {
@@ -582,7 +716,7 @@ void RenderViewBuilder::prepareJobs()
         m_syncMaterialGathererJob = SynchronizerJobPtr::create(SyncMaterialParameterGatherer(m_materialGathererJobs,
                                                                                              m_renderer,
                                                                                              m_leafNode),
-                                                                  JobTypes::SyncMaterialGatherer);
+                                                               JobTypes::SyncMaterialGatherer);
     }
 
     if (m_layerCacheNeedsToBeRebuilt) {
@@ -594,34 +728,37 @@ void RenderViewBuilder::prepareJobs()
                                                                   JobTypes::SyncFilterEntityByLayer);
     }
 
-    m_syncRenderCommandBuildingJob = SynchronizerJobPtr::create(SyncRenderCommandBuilding(m_renderViewJob,
-                                                                                          m_frustumCullingJob,
-                                                                                          m_filterProximityJob,
-                                                                                          m_materialGathererJobs,
-                                                                                          m_renderViewBuilderJobs,
-                                                                                          m_renderer,
-                                                                                          m_leafNode),
-                                                                JobTypes::SyncRenderViewCommandBuilding);
+    m_syncRenderViewPreCommandUpdateJob = SynchronizerJobPtr::create(SyncRenderViewPreCommandUpdate(m_renderViewJob,
+                                                                                                    m_frustumCullingJob,
+                                                                                                    m_filterProximityJob,
+                                                                                                    m_materialGathererJobs,
+                                                                                                    m_renderViewCommandUpdaterJobs,
+                                                                                                    m_renderViewCommandBuilderJobs,
+                                                                                                    m_renderer,
+                                                                                                    m_leafNode,
+                                                                                                    m_renderCommandCacheNeedsToBeRebuilt),
+                                                                     JobTypes::SyncRenderViewPreCommandUpdate);
 
-    m_syncRenderViewCommandBuildersJob = SynchronizerJobPtr::create(SyncRenderViewCommandBuilders(m_renderViewJob,
-                                                                                                  m_renderViewBuilderJobs,
-                                                                                                  m_renderer),
-                                                                    JobTypes::SyncRenderViewCommandBuilder);
+    m_syncRenderViewPostCommandUpdateJob = SynchronizerJobPtr::create(SyncRenderViewPostCommandUpdate(m_renderViewJob,
+                                                                                                      m_renderViewCommandUpdaterJobs,
+                                                                                                      m_renderer),
+                                                                      JobTypes::SyncRenderViewPostCommandUpdate);
 
-    m_syncRenderViewInitializationJob = SynchronizerJobPtr::create(SyncRenderViewInitialization(m_renderViewJob,
-                                                                                                m_frustumCullingJob,
-                                                                                                m_filterEntityByLayerJob,
-                                                                                                m_filterProximityJob,
-                                                                                                m_materialGathererJobs,
-                                                                                                m_renderViewBuilderJobs),
-                                                                   JobTypes::SyncRenderViewInitialization);
+    m_syncRenderViewPostInitializationJob = SynchronizerJobPtr::create(SyncRenderViewPostInitialization(m_renderViewJob,
+                                                                                                        m_frustumCullingJob,
+                                                                                                        m_filterEntityByLayerJob,
+                                                                                                        m_filterProximityJob,
+                                                                                                        m_materialGathererJobs,
+                                                                                                        m_renderViewCommandUpdaterJobs,
+                                                                                                        m_renderViewCommandBuilderJobs),
+                                                                       JobTypes::SyncRenderViewInitialization);
 }
 
 QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
 {
     QVector<Qt3DCore::QAspectJobPtr> jobs;
 
-    jobs.reserve(m_materialGathererJobs.size() + m_renderViewBuilderJobs.size() + 11);
+    jobs.reserve(m_materialGathererJobs.size() + m_renderViewCommandUpdaterJobs.size() + 11);
 
     // Set dependencies
 
@@ -629,36 +766,36 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     // TODO: Maybe only update skinning palettes for non-culled entities
     m_renderViewJob->addDependency(m_renderer->updateSkinningPaletteJob());
 
-    m_syncFrustumCullingJob->addDependency(m_renderer->updateWorldTransformJob());
-    m_syncFrustumCullingJob->addDependency(m_renderer->updateShaderDataTransformJob());
-    m_syncFrustumCullingJob->addDependency(m_syncRenderViewInitializationJob);
+    m_syncPreFrustumCullingJob->addDependency(m_renderer->updateWorldTransformJob());
+    m_syncPreFrustumCullingJob->addDependency(m_renderer->updateShaderDataTransformJob());
+    m_syncPreFrustumCullingJob->addDependency(m_syncRenderViewPostInitializationJob);
 
     m_frustumCullingJob->addDependency(m_renderer->expandBoundingVolumeJob());
-    m_frustumCullingJob->addDependency(m_syncFrustumCullingJob);
+    m_frustumCullingJob->addDependency(m_syncPreFrustumCullingJob);
 
-    m_setClearDrawBufferIndexJob->addDependency(m_syncRenderViewInitializationJob);
+    m_setClearDrawBufferIndexJob->addDependency(m_syncRenderViewPostInitializationJob);
 
-    m_syncRenderViewInitializationJob->addDependency(m_renderViewJob);
+    m_syncRenderViewPostInitializationJob->addDependency(m_renderViewJob);
 
     m_filterProximityJob->addDependency(m_renderer->expandBoundingVolumeJob());
-    m_filterProximityJob->addDependency(m_syncRenderViewInitializationJob);
+    m_filterProximityJob->addDependency(m_syncRenderViewPostInitializationJob);
 
-    m_syncRenderCommandBuildingJob->addDependency(m_syncRenderViewInitializationJob);
-    m_syncRenderCommandBuildingJob->addDependency(m_filterProximityJob);
-    m_syncRenderCommandBuildingJob->addDependency(m_frustumCullingJob);
+    m_syncRenderViewPreCommandUpdateJob->addDependency(m_syncRenderViewPostInitializationJob);
+    m_syncRenderViewPreCommandUpdateJob->addDependency(m_filterProximityJob);
+    m_syncRenderViewPreCommandUpdateJob->addDependency(m_frustumCullingJob);
 
     // Ensure the RenderThread won't be able to process dirtyResources
     // before they have been completely gathered
-    m_syncRenderCommandBuildingJob->addDependency(m_renderer->introspectShadersJob());
-    m_syncRenderCommandBuildingJob->addDependency(m_renderer->bufferGathererJob());
-    m_syncRenderCommandBuildingJob->addDependency(m_renderer->textureGathererJob());
+    m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->introspectShadersJob());
+    m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->bufferGathererJob());
+    m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->textureGathererJob());
 
-    for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) {
-        renderViewCommandBuilder->addDependency(m_syncRenderCommandBuildingJob);
-        m_syncRenderViewCommandBuildersJob->addDependency(renderViewCommandBuilder);
+    for (const auto &renderViewCommandUpdater : qAsConst(m_renderViewCommandUpdaterJobs)) {
+        renderViewCommandUpdater->addDependency(m_syncRenderViewPreCommandUpdateJob);
+        m_syncRenderViewPostCommandUpdateJob->addDependency(renderViewCommandUpdater);
     }
 
-    m_renderer->frameCleanupJob()->addDependency(m_syncRenderViewCommandBuildersJob);
+    m_renderer->frameCleanupJob()->addDependency(m_syncRenderViewPostCommandUpdateJob);
     m_renderer->frameCleanupJob()->addDependency(m_setClearDrawBufferIndexJob);
 
     // Add jobs
@@ -667,59 +804,75 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     if (m_lightsCacheNeedsToBeRebuilt) {
         jobs.push_back(m_lightGathererJob); // Step 1
         jobs.push_back(m_cacheLightsJob);
-        m_syncRenderCommandBuildingJob->addDependency(m_cacheLightsJob);
+        m_syncRenderViewPreCommandUpdateJob->addDependency(m_cacheLightsJob);
     }
 
     if (m_renderableCacheNeedsToBeRebuilt) {
         jobs.push_back(m_renderableEntityFilterJob); // Step 1
         jobs.push_back(m_cacheRenderableEntitiesJob);
-        m_syncRenderCommandBuildingJob->addDependency(m_cacheRenderableEntitiesJob);
     }
 
     if (m_computableCacheNeedsToBeRebuilt) {
         // Note: do it only if OpenGL 4.3+ available
         jobs.push_back(m_computableEntityFilterJob); // Step 1
         jobs.push_back(m_cacheComputableEntitiesJob);
-        m_syncRenderCommandBuildingJob->addDependency(m_cacheComputableEntitiesJob);
     }
 
-    jobs.push_back(m_syncRenderViewInitializationJob); // Step 2
+    jobs.push_back(m_syncRenderViewPostInitializationJob); // Step 2
+
+    if (m_renderCommandCacheNeedsToBeRebuilt) { // Step 3
+        m_syncRenderViewPreCommandBuildingJob->addDependency(m_cacheComputableEntitiesJob);
+        m_syncRenderViewPreCommandBuildingJob->addDependency(m_cacheRenderableEntitiesJob);
+        m_syncRenderViewPreCommandBuildingJob->addDependency(m_syncRenderViewPostInitializationJob);
+
+        if (m_materialGathererCacheNeedsToBeRebuilt)
+            m_syncRenderViewPreCommandBuildingJob->addDependency(m_syncMaterialGathererJob);
+
+        jobs.push_back(m_syncRenderViewPreCommandBuildingJob);
+
+        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs)) {
+            renderViewCommandBuilder->addDependency(m_syncRenderViewPreCommandBuildingJob);
+            m_syncRenderViewPreCommandUpdateJob->addDependency(renderViewCommandBuilder);
+            jobs.push_back(renderViewCommandBuilder);
+        }
+    }
 
     if (m_layerCacheNeedsToBeRebuilt) {
         m_filterEntityByLayerJob->addDependency(m_renderer->updateEntityLayersJob());
-        m_filterEntityByLayerJob->addDependency(m_syncRenderViewInitializationJob);
+        m_filterEntityByLayerJob->addDependency(m_syncRenderViewPostInitializationJob);
         m_filterEntityByLayerJob->addDependency(m_renderer->updateTreeEnabledJob());
 
         m_syncFilterEntityByLayerJob->addDependency(m_filterEntityByLayerJob);
-        m_syncRenderCommandBuildingJob->addDependency(m_syncFilterEntityByLayerJob);
+        m_syncRenderViewPreCommandUpdateJob->addDependency(m_syncFilterEntityByLayerJob);
 
         jobs.push_back(m_filterEntityByLayerJob); // Step 3
         jobs.push_back(m_syncFilterEntityByLayerJob); // Step 4
     }
-    jobs.push_back(m_syncFrustumCullingJob); // Step 3
+    jobs.push_back(m_syncPreFrustumCullingJob); // Step 3
     jobs.push_back(m_filterProximityJob); // Step 3
     jobs.push_back(m_setClearDrawBufferIndexJob); // Step 3
 
     if (m_materialGathererCacheNeedsToBeRebuilt) {
         for (const auto &materialGatherer : qAsConst(m_materialGathererJobs))  {
-            materialGatherer->addDependency(m_syncRenderViewInitializationJob);
+            materialGatherer->addDependency(m_syncRenderViewPostInitializationJob);
             materialGatherer->addDependency(m_renderer->introspectShadersJob());
             materialGatherer->addDependency(m_renderer->filterCompatibleTechniqueJob());
             jobs.push_back(materialGatherer); // Step3
             m_syncMaterialGathererJob->addDependency(materialGatherer);
         }
-        m_syncRenderCommandBuildingJob->addDependency(m_syncMaterialGathererJob);
+        m_syncRenderViewPreCommandUpdateJob->addDependency(m_syncMaterialGathererJob);
 
         jobs.push_back(m_syncMaterialGathererJob); // Step 3
     }
 
     jobs.push_back(m_frustumCullingJob); // Step 4
-    jobs.push_back(m_syncRenderCommandBuildingJob); // Step 5
+    jobs.push_back(m_syncRenderViewPreCommandUpdateJob); // Step 5
 
-    for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) // Step 6
+    // Build RenderCommands or Update RenderCommand Uniforms
+    for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandUpdaterJobs)) // Step 6
         jobs.push_back(renderViewCommandBuilder);
 
-    jobs.push_back(m_syncRenderViewCommandBuildersJob); // Step 7
+    jobs.push_back(m_syncRenderViewPostCommandUpdateJob); // Step 7
 
     return jobs;
 }
@@ -782,6 +935,16 @@ void RenderViewBuilder::setLightGathererCacheNeedsToBeRebuilt(bool needsToBeRebu
 bool RenderViewBuilder::lightGathererCacheNeedsToBeRebuilt() const
 {
     return m_lightsCacheNeedsToBeRebuilt;
+}
+
+void RenderViewBuilder::setRenderCommandCacheNeedsToBeRebuilt(bool needsToBeRebuilt)
+{
+    m_renderCommandCacheNeedsToBeRebuilt = needsToBeRebuilt;
+}
+
+bool RenderViewBuilder::renderCommandCacheNeedsToBeRebuilt() const
+{
+    return m_renderCommandCacheNeedsToBeRebuilt;
 }
 
 int RenderViewBuilder::optimalJobCount()

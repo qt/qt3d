@@ -42,7 +42,6 @@
 
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DInput/qmouseevent.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QTimer>
 
 QT_BEGIN_NAMESPACE
@@ -297,6 +296,11 @@ void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
 
         emit sourceDeviceChanged(mouseDevice);
     }
+}
+
+// TODO Unused remove in Qt6
+void QMouseHandler::sceneChangeEvent(const QSceneChangePtr &)
+{
 }
 
 /*!

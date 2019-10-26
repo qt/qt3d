@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/lightsource_p.h>
+#include <Qt3DRender/private/rendercommand_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +74,7 @@ struct RendererCache
         QVector<Entity *> renderableEntities;
         QVector<Entity *> computeEntities;
         EnvironmentLight* environmentLight;
+        QVector<EntityRenderCommandData> renderCommandData;
     };
 
     QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;

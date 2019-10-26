@@ -193,7 +193,7 @@ void Scene2D::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
     if (id != m_outputId)
         setOutput(id);
 
-    auto ids = Qt3DCore::qIdsForNodes(node->entities());
+    auto ids = Qt3DCore::qIdsForNodes(const_cast<QScene2D *>(node)->entities());
     std::sort(std::begin(ids), std::end(ids));
     Qt3DCore::QNodeIdVector addedEntities;
     Qt3DCore::QNodeIdVector removedEntities;
@@ -208,11 +208,16 @@ void Scene2D::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
         if (!entity)
             return;
 
-        registerObjectPickerEvents(entity);
+        if (registerObjectPickerEvents(entity))
+            m_entities.push_back(id);
+        else
+            Qt3DCore::QNodePrivate::get(const_cast<Qt3DCore::QNode *>(frontEnd))->update();
     }
-    for (const auto &id: removedEntities)
+    for (const auto &id: removedEntities) {
+        m_entities.removeOne(id);
         unregisterObjectPickerEvents(id);
-    m_entities = ids;
+    }
+    std::sort(std::begin(m_entities), std::end(m_entities));
 
     if (firstTime)
         setSharedObject(dnode->m_renderManager->m_sharedObject);
@@ -428,8 +433,11 @@ bool Scene2D::registerObjectPickerEvents(Qt3DCore::QEntity *qentity)
 {
     Entity *entity = nullptr;
     if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::EntityHandle,
-                                            qentity->id(), (void**)&entity, nullptr))
+                                            qentity->id(), (void**)&entity, nullptr)) {
+        qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO
+                                              << "Entity not yet available in backend";
         return false;
+    }
 
     if (!entity->containsComponentsOfType<ObjectPicker>() ||
         !entity->containsComponentsOfType<GeometryRenderer>()) {

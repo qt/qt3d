@@ -76,8 +76,6 @@ public:
     void run() final;
 
 private:
-    Q_DECLARE_PRIVATE(MouseEventDispatcherJob)
-
     InputHandler *m_inputHandler;
 };
 

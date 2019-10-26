@@ -76,8 +76,6 @@ public:
     void run() final;
 
 private:
-    Q_DECLARE_PRIVATE(UpdateAxisActionJob)
-
     void updateAction(LogicalDevice *device);
     bool processActionInput(const Qt3DCore::QNodeId actionInputId);
     void updateAxis(LogicalDevice *device);

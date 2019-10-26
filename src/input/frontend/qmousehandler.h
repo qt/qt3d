@@ -87,6 +87,8 @@ Q_SIGNALS:
 #endif
 
 protected:
+    // TODO Unused remove in Qt6
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
     void setContainsMouse(bool contains);
 
 private:

@@ -76,8 +76,6 @@ protected:
     void run() override;
 
 private:
-    Q_DECLARE_PRIVATE(LoadAnimationClipJob)
-
     QVector<HAnimationClip> m_animationClipHandles;
     Handler *m_handler;
 };

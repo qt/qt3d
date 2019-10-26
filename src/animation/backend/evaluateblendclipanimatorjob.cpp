@@ -54,6 +54,7 @@ namespace Animation {
 
 EvaluateBlendClipAnimatorJob::EvaluateBlendClipAnimatorJob()
     : AbstractEvaluateClipAnimatorJob()
+    , m_handler(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateBlendClipAnimator, 0)
 }

@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <QMutex>
@@ -67,6 +68,7 @@ class NodeManagers;
 class Entity;
 class Renderer;
 class Buffer;
+class SendBufferCaptureJobPrivate;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT SendBufferCaptureJob : public Qt3DCore::QAspectJob
 {
@@ -74,15 +76,14 @@ public:
     explicit SendBufferCaptureJob();
     ~SendBufferCaptureJob();
 
-    void addRequest(QPair<Buffer*, QByteArray> request);
+    void setManagers(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
+    void addRequest(QPair<Qt3DCore::QNodeId, QByteArray> request);
     bool hasRequests() const;
 
     void run() final;
 
 private:
-    QMutex m_mutex;
-
-    QVector<QPair<Buffer*, QByteArray> > m_pendingSendBufferCaptures;
+    NodeManagers *m_nodeManagers;
 };
 
 typedef QSharedPointer<SendBufferCaptureJob> SendBufferCaptureJobPtr;

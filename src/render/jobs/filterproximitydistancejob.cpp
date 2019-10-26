@@ -43,8 +43,10 @@ namespace Render {
 
 FilterProximityDistanceJob::FilterProximityDistanceJob()
     : m_manager(nullptr)
+    , m_targetEntity(nullptr)
+    , m_distanceThresholdSquared(0.)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ProximityFiltering, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ProximityFiltering, 0)
 }
 
 void FilterProximityDistanceJob::run()

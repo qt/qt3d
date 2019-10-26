@@ -88,9 +88,6 @@ protected:
 
     HSkeleton m_handle;
     NodeManagers *m_nodeManagers;
-
-private:
-    Q_DECLARE_PRIVATE(LoadSkeletonJob)
 };
 
 typedef QSharedPointer<LoadSkeletonJob> LoadSkeletonJobPtr;

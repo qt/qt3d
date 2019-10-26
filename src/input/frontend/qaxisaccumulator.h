@@ -87,6 +87,10 @@ Q_SIGNALS:
     void velocityChanged(float value);
     void scaleChanged(float scale);
 
+protected:
+    // TODO Unused remove in Qt6
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
+
 private:
     Q_DECLARE_PRIVATE(QAxisAccumulator)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;

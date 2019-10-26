@@ -28,6 +28,7 @@
 
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qscenechange_p.h>
 
 QT_BEGIN_NAMESPACE
 

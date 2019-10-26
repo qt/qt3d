@@ -39,9 +39,11 @@
 
 #include "loadbufferjob_p.h"
 #include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,13 +51,24 @@ namespace Qt3DRender {
 
 namespace Render {
 
+class LoadBufferJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    LoadBufferJobPrivate() {}
+    ~LoadBufferJobPrivate() {}
+
+    void postFrame(Qt3DCore::QAspectManager *aspectManager) override;
+
+    Buffer *m_bufferToUpdate = nullptr;
+};
+
 
 LoadBufferJob::LoadBufferJob(const HBuffer &handle)
-    : QAspectJob()
+    : QAspectJob(*new LoadBufferJobPrivate)
     , m_handle(handle)
     , m_nodeManagers(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadBuffer, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadBuffer, 0)
 }
 
 LoadBufferJob::~LoadBufferJob()
@@ -64,10 +77,25 @@ LoadBufferJob::~LoadBufferJob()
 
 void LoadBufferJob::run()
 {
+    Q_DJOB(LoadBufferJob);
     // Let's leave it for the moment until this has been properly tested
     qCDebug(Jobs) << Q_FUNC_INFO;
     Buffer *buffer = m_nodeManagers->data<Buffer, BufferManager>(m_handle);
     buffer->executeFunctor();
+    if (buffer->isSyncData())
+        d->m_bufferToUpdate = buffer;
+}
+
+void LoadBufferJobPrivate::postFrame(Qt3DCore::QAspectManager *aspectManager)
+{
+    if (m_bufferToUpdate == nullptr)
+        return;
+    QBuffer *frontendBuffer = static_cast<decltype(frontendBuffer)>(aspectManager->lookupNode(m_bufferToUpdate->peerId()));
+    QBufferPrivate *dFrontend = static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontendBuffer));
+    // Calling frontendBuffer->setData would result in forcing a sync against the backend
+    // which isn't necessary
+    dFrontend->setData(m_bufferToUpdate->data());
+    m_bufferToUpdate = nullptr;
 }
 
 } // namespace Render

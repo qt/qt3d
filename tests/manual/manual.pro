@@ -67,7 +67,13 @@ SUBDIRS += \
     qtbug-76766 \
     shader-image-qml \
     scene3d-in-sync \
-    compressed_textures
+    compressed_textures \
+    subtree-enabler-qml \
+    scene3d-visibility \
+    manual-renderloop
+
+!macos:!uikit: SUBDIRS += compute-manual
+
 
 qtHaveModule(multimedia): {
     SUBDIRS += \

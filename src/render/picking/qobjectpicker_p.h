@@ -50,7 +50,6 @@
 
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 

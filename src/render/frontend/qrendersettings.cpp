@@ -161,12 +161,6 @@ QPickingSettings *QRenderSettings::pickingSettings()
     return &(d->m_pickingSettings);
 }
 
-const QPickingSettings *QRenderSettings::pickingSettings() const
-{
-    Q_D(const QRenderSettings);
-    return &(d->m_pickingSettings);
-}
-
 /*!
     \qmlproperty FrameGraphNode RenderSettings::activeFrameGraph
 

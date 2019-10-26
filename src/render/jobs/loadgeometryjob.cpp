@@ -75,7 +75,7 @@ LoadGeometryJob::~LoadGeometryJob()
 
 void LoadGeometryJob::run()
 {
-    Q_D(LoadGeometryJob);
+    Q_DJOB(LoadGeometryJob);
     GeometryRenderer *geometryRenderer = m_nodeManagers->geometryRendererManager()->data(m_handle);
     if (geometryRenderer != nullptr)
         d->m_updates.push_back({ geometryRenderer->peerId(), geometryRenderer->executeFunctor() });

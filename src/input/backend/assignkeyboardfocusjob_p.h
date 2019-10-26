@@ -70,8 +70,6 @@ public:
     void run() override;
 
 private:
-    Q_DECLARE_PRIVATE(AssignKeyboardFocusJob)
-
     InputHandler *m_inputHandler;
     const Qt3DCore::QNodeId m_keyboardDevice;
 };

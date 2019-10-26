@@ -64,6 +64,7 @@ public:
 LoadAnimationClipJob::LoadAnimationClipJob()
     : Qt3DCore::QAspectJob(*new LoadAnimationClipJobPrivate)
     , m_animationClipHandles()
+    , m_handler(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadAnimationClip, 0)
 }
@@ -84,7 +85,7 @@ void LoadAnimationClipJob::clearDirtyAnimationClips()
 void LoadAnimationClipJob::run()
 {
     Q_ASSERT(m_handler);
-    Q_D(LoadAnimationClipJob);
+    Q_DJOB(LoadAnimationClipJob);
 
     d->m_updatedNodes.reserve(m_animationClipHandles.size());
     AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();

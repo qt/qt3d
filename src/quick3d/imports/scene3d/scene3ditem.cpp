@@ -137,6 +137,11 @@ namespace Qt3DRender {
     \li The Scene3D instance is instantiated prior to any Scene3DView
     \li The Scene3D entity property is left unset
     \endlist
+
+    \note Śetting the visibility of the Scene3D element to false will halt the
+    Qt 3D simulation loop. This means that binding the visible property to an
+    expression that depends on property updates driven by the Qt 3D simulation
+    loop (FrameAction) will never reavaluates.
  */
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
@@ -154,6 +159,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_disableClearWindow(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
     , m_compositingMode(FBO)
+    , m_dummySurface(nullptr)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
@@ -454,6 +460,12 @@ bool Scene3DItem::needsRender()
 // processFrame will block and wait for renderer to have been finished
 void Scene3DItem::onBeforeSync()
 {
+    // If we are not visible, don't processFrame changes as we would end up
+    // waiting forever for the scene to be rendered which won't happen
+    // if the Scene3D item is not visible
+    if (!isVisible())
+        return;
+
     // Has anything in the 3D scene actually changed that requires us to render?
     if (!needsRender())
         return;

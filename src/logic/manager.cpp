@@ -56,6 +56,8 @@ namespace Logic {
 
 Manager::Manager()
     : m_logicHandlerManager(new HandlerManager)
+    , m_logicAspect(nullptr)
+    , m_executor(nullptr)
     , m_dt(0.0f)
 {
 }

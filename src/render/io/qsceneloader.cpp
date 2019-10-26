@@ -41,7 +41,6 @@
 #include "qsceneloader_p.h"
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qgeometryrenderer.h>
@@ -250,6 +249,11 @@ QSceneLoader::QSceneLoader(QNode *parent)
 
 /*! \internal */
 QSceneLoader::~QSceneLoader()
+{
+}
+
+// TODO Unused remove in Qt6
+void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &)
 {
 }
 

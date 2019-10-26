@@ -39,6 +39,7 @@
 
 #include "qlevelofdetail.h"
 #include "qlevelofdetail_p.h"
+#include "qlevelofdetailswitch.h"
 #include "qcamera.h"
 
 QT_BEGIN_NAMESPACE
@@ -60,6 +61,25 @@ void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
     if (m_currentIndex != currentIndex) {
         m_currentIndex = currentIndex;
         emit q->currentIndexChanged(m_currentIndex);
+
+        // TODO use derived pimpl
+        QLevelOfDetailSwitch *qswitch = qobject_cast<QLevelOfDetailSwitch *>(q);
+        if (qswitch) {
+            int entityIndex = 0;
+            const auto entities = q->entities();
+            if (entities.size()) {
+                // only work on the first entity, LOD should not be shared
+                Qt3DCore::QEntity *entity = entities.front();
+                const auto childNodes = entity->childNodes();
+                for (Qt3DCore::QNode *childNode : childNodes) {
+                    Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(childNode);
+                    if (childEntity) {
+                        childEntity->setEnabled(entityIndex == currentIndex);
+                        entityIndex++;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -323,6 +343,11 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLevelOfDetail::createNodeCreationChange() c
     data.volumeOverride = d->m_volumeOverride;
 
     return creationChange;
+}
+
+// TODO Unused remove in Qt6
+void QLevelOfDetail::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
 }
 
 QCamera *QLevelOfDetail::camera() const

@@ -122,7 +122,6 @@ private:
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_changeArbiter;
     QScopedPointer<QServiceLocator> m_serviceLocator;
-    bool m_mainLoopRunning;
     bool m_simulationLoopRunning;
     QAspectEngine::RunMode m_driveMode;
     QVector<NodeTreeChange> m_nodeTreeChanges;

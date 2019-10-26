@@ -95,7 +95,6 @@ public:
     void renderInitialize(QOpenGLContext *context);
     void renderSynchronous(bool swapBuffers = true);
     void renderShutdown();
-    void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
     QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
 
     Render::NodeManagers *m_nodeManagers;

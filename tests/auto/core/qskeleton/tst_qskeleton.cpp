@@ -30,7 +30,6 @@
 #include <Qt3DCore/qskeleton.h>
 #include <Qt3DCore/private/qskeleton_p.h>
 #include <Qt3DCore/qjoint.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -159,41 +158,6 @@ private Q_SLOTS:
 
             // THEN Should not crash when the joint is destroyed (tests for failed removal of destruction helper)
         }
-    }
-
-    void checkJointCountPropertyUpdate()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        arbiter.setArbiterOnNode(this);
-        QSignalSpy spy(this, SIGNAL(jointCountChanged(int)));
-        const int newJointCount = 99;
-
-        // THEN
-        QVERIFY(spy.isValid());
-
-        // WHEN
-        auto valueChange = QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-        valueChange->setPropertyName("jointCount");
-        valueChange->setValue(QVariant(newJointCount));
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(spy.count(), 1);
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(jointCount(), newJointCount);
-
-        // WHEN
-        spy.clear();
-        sceneChangeEvent(valueChange);
-
-        // THEN
-        QCOMPARE(spy.count(), 0);
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(jointCount(), newJointCount);
-
-        // Cleanup
-        QNodePrivate::get(this)->setArbiter(nullptr);
     }
 };
 

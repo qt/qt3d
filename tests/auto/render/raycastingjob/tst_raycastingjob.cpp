@@ -285,7 +285,7 @@ private Q_SLOTS:
         initializeJob(&rayCastingJob, test.data());
 
         bool earlyReturn = !rayCastingJob.runHelper();
-        rayCastingJob.postFrame(test->aspectManager());
+        Qt3DCore::QAspectJobPrivate::get(&rayCastingJob)->postFrame(test->aspectManager());
         QCoreApplication::processEvents();
 
         // THEN
@@ -345,7 +345,7 @@ private Q_SLOTS:
         initializeJob(&rayCastingJob, test.data());
 
         bool earlyReturn = !rayCastingJob.runHelper();
-        rayCastingJob.postFrame(test->aspectManager());
+        Qt3DCore::QAspectJobPrivate::get(&rayCastingJob)->postFrame(test->aspectManager());
         QCoreApplication::processEvents();
 
         // THEN

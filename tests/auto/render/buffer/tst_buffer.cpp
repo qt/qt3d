@@ -237,10 +237,7 @@ private Q_SLOTS:
         backendBuffer.executeFunctor();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "data");
-        QCOMPARE(change->value().toByteArray(), QByteArrayLiteral("454"));
+        QCOMPARE(arbiter.events.count(), 0);
         QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
         QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, -1);
 

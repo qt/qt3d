@@ -32,7 +32,6 @@
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qraycaster.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
 

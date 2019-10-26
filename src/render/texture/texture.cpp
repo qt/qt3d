@@ -163,11 +163,11 @@ void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             m_textureImageIds = ids;
             addDirtyFlag(DirtyImageGenerators);
         }
-    }
 
-    if (dnode->m_sharedTextureId != m_sharedTextureId) {
-        m_sharedTextureId = dnode->m_sharedTextureId;
-        addDirtyFlag(DirtySharedTextureId);
+        if (dnode->m_sharedTextureId != m_sharedTextureId) {
+            m_sharedTextureId = dnode->m_sharedTextureId;
+            addDirtyFlag(DirtySharedTextureId);
+        }
     }
 }
 

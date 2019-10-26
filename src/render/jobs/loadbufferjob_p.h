@@ -63,6 +63,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class NodeManagers;
+class LoadBufferJobPrivate;
 
 class Q_AUTOTEST_EXPORT LoadBufferJob : public Qt3DCore::QAspectJob
 {

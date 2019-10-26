@@ -39,11 +39,12 @@
 
 #include "sendbuffercapturejob_p.h"
 
-
-#include "Qt3DRender/private/renderer_p.h"
-#include "Qt3DRender/private/nodemanagers_p.h"
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DRender/private/qbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,36 +52,75 @@ namespace Qt3DRender {
 
 namespace Render {
 
-SendBufferCaptureJob::SendBufferCaptureJob()
-    : Qt3DCore::QAspectJob()
+class SendBufferCaptureJobPrivate : public Qt3DCore::QAspectJobPrivate
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendBufferCapture, 0);
+public:
+    SendBufferCaptureJobPrivate() {}
+    ~SendBufferCaptureJobPrivate() {}
+
+    void postFrame(Qt3DCore::QAspectManager *aspectManager) override;
+
+    mutable QMutex m_mutex;
+    QVector<QPair<Qt3DCore::QNodeId, QByteArray>> m_buffersToCapture;
+    QVector<QPair<Qt3DCore::QNodeId, QByteArray>> m_buffersToNotify;
+};
+
+SendBufferCaptureJob::SendBufferCaptureJob()
+    : Qt3DCore::QAspectJob(*new SendBufferCaptureJobPrivate)
+    , m_nodeManagers(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendBufferCapture, 0)
 }
 
 SendBufferCaptureJob::~SendBufferCaptureJob()
 {
 }
 
-void SendBufferCaptureJob::addRequest(QPair<Buffer *, QByteArray> request)
+// Called from SubmitRenderView while rendering
+void SendBufferCaptureJob::addRequest(QPair<Qt3DCore::QNodeId, QByteArray> request)
 {
-    QMutexLocker locker(&m_mutex);
-    m_pendingSendBufferCaptures.push_back(request);
+    Q_DJOB(SendBufferCaptureJob);
+    QMutexLocker locker(&d->m_mutex);
+    d->m_buffersToCapture.push_back(request);
 }
 
-// Called by aspect thread jobs to execute (no concurrency at that point)
+// Called by aspect thread jobs to execute (we may still be rendering at this point)
 bool SendBufferCaptureJob::hasRequests() const
 {
-    return m_pendingSendBufferCaptures.size() > 0;
+    Q_DJOB(const SendBufferCaptureJob);
+    QMutexLocker locker(&d->m_mutex);
+    return d->m_buffersToCapture.size() > 0;
 }
 
 void SendBufferCaptureJob::run()
 {
-    QMutexLocker locker(&m_mutex);
-    for (const QPair<Buffer*, QByteArray> &pendingCapture : qAsConst(m_pendingSendBufferCaptures)) {
-        pendingCapture.first->updateDataFromGPUToCPU(pendingCapture.second);
+    Q_ASSERT(m_nodeManagers);
+    Q_DJOB(SendBufferCaptureJob);
+    QMutexLocker locker(&d->m_mutex);
+    for (const QPair<Qt3DCore::QNodeId, QByteArray> &pendingCapture : qAsConst(d->m_buffersToCapture)) {
+        Buffer *buffer = m_nodeManagers->bufferManager()->lookupResource(pendingCapture.first);
+        // Buffer might have been destroyed between the time addRequest is made and this job gets run
+        // If it exists however, it cannot be destroyed before this job is done running
+        if (buffer != nullptr)
+            buffer->updateDataFromGPUToCPU(pendingCapture.second);
     }
+    d->m_buffersToNotify = std::move(d->m_buffersToCapture);
+}
 
-    m_pendingSendBufferCaptures.clear();
+void SendBufferCaptureJobPrivate::postFrame(Qt3DCore::QAspectManager *aspectManager)
+{
+    QMutexLocker locker(&m_mutex);
+    const QVector<QPair<Qt3DCore::QNodeId, QByteArray>> pendingSendBufferCaptures = std::move(m_buffersToNotify);
+    for (const auto &bufferDataPair : pendingSendBufferCaptures) {
+        QBuffer *frontendBuffer = static_cast<decltype(frontendBuffer)>(aspectManager->lookupNode(bufferDataPair.first));
+        if (!frontendBuffer)
+            continue;
+        QBufferPrivate *dFrontend = static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontendBuffer));
+        // Calling frontendBuffer->setData would result in forcing a sync against the backend
+        // which isn't necessary
+        dFrontend->setData(bufferDataPair.second);
+        Q_EMIT frontendBuffer->dataAvailable();
+    }
 }
 
 } // Render

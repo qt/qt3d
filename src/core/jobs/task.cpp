@@ -57,6 +57,7 @@ RunnableInterface::~RunnableInterface()
 
 AspectTaskRunnable::AspectTaskRunnable()
     : m_pooler(nullptr)
+    , m_id(0)
     , m_reserved(false)
 {
 }
