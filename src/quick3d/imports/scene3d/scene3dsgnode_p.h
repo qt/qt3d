@@ -78,6 +78,8 @@ public:
     void setRect(const QRectF &rect, const QRectF textureRect = QRectF(0.0f, 1.0f, 1.0f, -1.0f));
     QRectF rect() const Q_DECL_NOTHROW { return m_rect; }
 
+    void show();
+
 private:
     Scene3DSGMaterial m_material;
     Scene3DSGMaterial m_opaqueMaterial;

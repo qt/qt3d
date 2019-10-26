@@ -29,6 +29,10 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entity_p.h>
@@ -43,6 +47,40 @@ namespace {
 Qt3DCore::QEntity *buildEntityAtDistance(float distance, Qt3DCore::QEntity *parent)
 {
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(parent);
+
+    // create geometry with a valid bounding volume - a single point is sufficient
+    auto geometry = new Qt3DRender::QGeometry;
+    auto vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, geometry);
+
+    auto positionAttribute = new Qt3DRender::QAttribute;
+    positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
+    positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+    positionAttribute->setVertexSize(3);
+    positionAttribute->setByteStride(3 * sizeof(float));
+    positionAttribute->setBuffer(vertexBuffer);
+
+    QByteArray vertexBufferData;
+    vertexBufferData.resize(static_cast<int>(3 * sizeof(float)));
+
+    auto vertexArray = reinterpret_cast<float*>(vertexBufferData.data());
+
+    int i = 0;
+    vertexArray[i++] = 0.0f;
+    vertexArray[i++] = 0.0f;
+    vertexArray[i++] = 0.0f;
+
+    vertexBuffer->setData(vertexBufferData);
+    positionAttribute->setCount(1);
+
+    geometry->addAttribute(positionAttribute);
+
+    auto geometryRenderer = new Qt3DRender::QGeometryRenderer;
+    geometryRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Points);
+    geometryRenderer->setGeometry(geometry);
+
+    entity->addComponent(geometryRenderer);
+
     Qt3DCore::QTransform *transform = new Qt3DCore::QTransform(parent);
     const QVector3D t = QVector3D(1.0f, 0.0f, 0.0f) * distance;
 

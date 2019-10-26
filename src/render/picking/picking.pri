@@ -7,6 +7,7 @@ HEADERS += \
     $$PWD/qpicklineevent.h \
     $$PWD/qpickpointevent.h \
     $$PWD/qpicktriangleevent.h \
+    $$PWD/qpicktriangleevent_p.h \
     $$PWD/objectpicker_p.h \
     $$PWD/pickeventfilter_p.h \
     $$PWD/qobjectpicker_p.h \

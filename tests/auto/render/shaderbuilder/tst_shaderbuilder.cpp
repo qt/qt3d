@@ -36,7 +36,6 @@
 #include "testrenderer.h"
 #include "testpostmanarbiter.h"
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::ShaderBuilder::ShaderType)
 Q_DECLARE_METATYPE(Qt3DRender::QShaderProgram::ShaderType)
 
 class tst_ShaderBuilder : public Qt3DCore::QBackendNodeTester
@@ -78,8 +77,8 @@ private slots:
         // THEN
         QVERIFY(!shaderBuilder.isEnabled());
         QVERIFY(shaderBuilder.enabledLayers().isEmpty());
-        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
-            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+        for (int i = 0; i <= Qt3DRender::QShaderProgram::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::QShaderProgram::ShaderType>(i);
             QCOMPARE(shaderBuilder.shaderGraph(type), QUrl());
             QCOMPARE(shaderBuilder.shaderCode(type), QByteArray());
             QVERIFY(!shaderBuilder.isShaderCodeDirty(type));
@@ -158,29 +157,29 @@ private slots:
 
         QCOMPARE(backend.enabledLayers(), frontend->enabledLayers());
 
-        QCOMPARE(backend.shaderGraph(Qt3DRender::Render::ShaderBuilder::Vertex), frontend->vertexShaderGraph());
-        QCOMPARE(backend.shaderCode(Qt3DRender::Render::ShaderBuilder::Vertex), QByteArray());
-        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::Render::ShaderBuilder::Vertex), !frontend->vertexShaderGraph().isEmpty());
+        QCOMPARE(backend.shaderGraph(Qt3DRender::QShaderProgram::Vertex), frontend->vertexShaderGraph());
+        QCOMPARE(backend.shaderCode(Qt3DRender::QShaderProgram::Vertex), QByteArray());
+        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::QShaderProgram::Vertex), !frontend->vertexShaderGraph().isEmpty());
 
-        QCOMPARE(backend.shaderGraph(Qt3DRender::Render::ShaderBuilder::TessellationControl), frontend->tessellationControlShaderGraph());
-        QCOMPARE(backend.shaderCode(Qt3DRender::Render::ShaderBuilder::TessellationControl), QByteArray());
-        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::Render::ShaderBuilder::TessellationControl), !frontend->tessellationControlShaderGraph().isEmpty());
+        QCOMPARE(backend.shaderGraph(Qt3DRender::QShaderProgram::TessellationControl), frontend->tessellationControlShaderGraph());
+        QCOMPARE(backend.shaderCode(Qt3DRender::QShaderProgram::TessellationControl), QByteArray());
+        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::QShaderProgram::TessellationControl), !frontend->tessellationControlShaderGraph().isEmpty());
 
-        QCOMPARE(backend.shaderGraph(Qt3DRender::Render::ShaderBuilder::TessellationEvaluation), frontend->tessellationEvaluationShaderGraph());
-        QCOMPARE(backend.shaderCode(Qt3DRender::Render::ShaderBuilder::TessellationEvaluation), QByteArray());
-        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::Render::ShaderBuilder::TessellationEvaluation), !frontend->tessellationEvaluationShaderGraph().isEmpty());
+        QCOMPARE(backend.shaderGraph(Qt3DRender::QShaderProgram::TessellationEvaluation), frontend->tessellationEvaluationShaderGraph());
+        QCOMPARE(backend.shaderCode(Qt3DRender::QShaderProgram::TessellationEvaluation), QByteArray());
+        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::QShaderProgram::TessellationEvaluation), !frontend->tessellationEvaluationShaderGraph().isEmpty());
 
-        QCOMPARE(backend.shaderGraph(Qt3DRender::Render::ShaderBuilder::Geometry), frontend->geometryShaderGraph());
-        QCOMPARE(backend.shaderCode(Qt3DRender::Render::ShaderBuilder::Geometry), QByteArray());
-        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::Render::ShaderBuilder::Geometry), !frontend->geometryShaderGraph().isEmpty());
+        QCOMPARE(backend.shaderGraph(Qt3DRender::QShaderProgram::Geometry), frontend->geometryShaderGraph());
+        QCOMPARE(backend.shaderCode(Qt3DRender::QShaderProgram::Geometry), QByteArray());
+        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::QShaderProgram::Geometry), !frontend->geometryShaderGraph().isEmpty());
 
-        QCOMPARE(backend.shaderGraph(Qt3DRender::Render::ShaderBuilder::Fragment), frontend->fragmentShaderGraph());
-        QCOMPARE(backend.shaderCode(Qt3DRender::Render::ShaderBuilder::Fragment), QByteArray());
-        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::Render::ShaderBuilder::Fragment), !frontend->fragmentShaderGraph().isEmpty());
+        QCOMPARE(backend.shaderGraph(Qt3DRender::QShaderProgram::Fragment), frontend->fragmentShaderGraph());
+        QCOMPARE(backend.shaderCode(Qt3DRender::QShaderProgram::Fragment), QByteArray());
+        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::QShaderProgram::Fragment), !frontend->fragmentShaderGraph().isEmpty());
 
-        QCOMPARE(backend.shaderGraph(Qt3DRender::Render::ShaderBuilder::Compute), frontend->computeShaderGraph());
-        QCOMPARE(backend.shaderCode(Qt3DRender::Render::ShaderBuilder::Compute), QByteArray());
-        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::Render::ShaderBuilder::Compute), !frontend->computeShaderGraph().isEmpty());
+        QCOMPARE(backend.shaderGraph(Qt3DRender::QShaderProgram::Compute), frontend->computeShaderGraph());
+        QCOMPARE(backend.shaderCode(Qt3DRender::QShaderProgram::Compute), QByteArray());
+        QCOMPARE(backend.isShaderCodeDirty(Qt3DRender::QShaderProgram::Compute), !frontend->computeShaderGraph().isEmpty());
 
         // WHEN
         backend.cleanup();
@@ -188,8 +187,8 @@ private slots:
         // THEN
         QVERIFY(!backend.isEnabled());
         QVERIFY(backend.enabledLayers().isEmpty());
-        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
-            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+        for (int i = 0; i <= Qt3DRender::QShaderProgram::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::QShaderProgram::ShaderType>(i);
             QCOMPARE(backend.shaderGraph(type), QUrl());
             QCOMPARE(backend.shaderCode(type), QByteArray());
             QVERIFY(!backend.isShaderCodeDirty(type));
@@ -279,16 +278,16 @@ private slots:
         const auto layers = QStringList() << "foo" << "bar";
 
         static const std::pair<
-                Qt3DRender::Render::ShaderBuilder::ShaderType,
+                Qt3DRender::QShaderProgram::ShaderType,
                 void (Qt3DRender::QShaderProgramBuilder::*)(const QUrl &)
                 >
                 shaderTypesToSetters[] = {
-            {Qt3DRender::Render::ShaderBuilder::Vertex, &Qt3DRender::QShaderProgramBuilder::setVertexShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::TessellationControl, &Qt3DRender::QShaderProgramBuilder::setTessellationControlShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::TessellationEvaluation, &Qt3DRender::QShaderProgramBuilder::setTessellationEvaluationShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::Geometry, &Qt3DRender::QShaderProgramBuilder::setGeometryShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::Fragment, &Qt3DRender::QShaderProgramBuilder::setFragmentShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::Compute, &Qt3DRender::QShaderProgramBuilder::setComputeShaderGraph},
+            {Qt3DRender::QShaderProgram::Vertex, &Qt3DRender::QShaderProgramBuilder::setVertexShaderGraph},
+            {Qt3DRender::QShaderProgram::TessellationControl, &Qt3DRender::QShaderProgramBuilder::setTessellationControlShaderGraph},
+            {Qt3DRender::QShaderProgram::TessellationEvaluation, &Qt3DRender::QShaderProgramBuilder::setTessellationEvaluationShaderGraph},
+            {Qt3DRender::QShaderProgram::Geometry, &Qt3DRender::QShaderProgramBuilder::setGeometryShaderGraph},
+            {Qt3DRender::QShaderProgram::Fragment, &Qt3DRender::QShaderProgramBuilder::setFragmentShaderGraph},
+            {Qt3DRender::QShaderProgram::Compute, &Qt3DRender::QShaderProgramBuilder::setComputeShaderGraph},
         };
 
 
@@ -303,8 +302,8 @@ private slots:
 
         // THEN
         QCOMPARE(backend.enabledLayers(), layers);
-        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
-            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+        for (int i = 0; i <= Qt3DRender::QShaderProgram::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::QShaderProgram::ShaderType>(i);
             QVERIFY(backend.isShaderCodeDirty(type));
             backend.generateCode(type); // Resets the dirty flag
         }
@@ -317,8 +316,8 @@ private slots:
 
         // THEN
         QCOMPARE(backend.enabledLayers(), layers);
-        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
-            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+        for (int i = 0; i <= Qt3DRender::QShaderProgram::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::QShaderProgram::ShaderType>(i);
             QVERIFY(!backend.isShaderCodeDirty(type));
             backend.generateCode(type); // Resets the dirty flag
         }
@@ -331,8 +330,8 @@ private slots:
 
         // THEN
         QVERIFY(backend.shaderProgramId().isNull());
-        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
-            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+        for (int i = 0; i <= Qt3DRender::QShaderProgram::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::QShaderProgram::ShaderType>(i);
             QVERIFY(backend.isShaderCodeDirty(type));
             backend.generateCode(type); // Resets the dirty flag
         }
@@ -347,8 +346,8 @@ private slots:
 
         // THEN
         QVERIFY(backend.enabledLayers().isEmpty());
-        for (int i = 0; i <= Qt3DRender::Render::ShaderBuilder::Compute; i++) {
-            const auto type = static_cast<Qt3DRender::Render::ShaderBuilder::ShaderType>(i);
+        for (int i = 0; i <= Qt3DRender::QShaderProgram::Compute; i++) {
+            const auto type = static_cast<Qt3DRender::QShaderProgram::ShaderType>(i);
             QVERIFY(!backend.isShaderCodeDirty(type));
             backend.generateCode(type); // Resets the dirty flag
         }
@@ -358,32 +357,32 @@ private slots:
 
     void shouldHandleShaderGraphPropertiesChanges_data()
     {
-        QTest::addColumn<Qt3DRender::Render::ShaderBuilder::ShaderType>("type");
+        QTest::addColumn<Qt3DRender::QShaderProgram::ShaderType>("type");
         QTest::addColumn<QUrl>("graphUrl");
 
-        QTest::newRow("vertex") << Qt3DRender::Render::ShaderBuilder::Vertex
+        QTest::newRow("vertex") << Qt3DRender::QShaderProgram::Vertex
                                 << QUrl::fromEncoded("qrc:/vertex.json");
 
-        QTest::newRow("tessControl") << Qt3DRender::Render::ShaderBuilder::TessellationControl
+        QTest::newRow("tessControl") << Qt3DRender::QShaderProgram::TessellationControl
                                      << QUrl::fromEncoded("qrc:/tesscontrol.json");
 
-        QTest::newRow("tessEval") << Qt3DRender::Render::ShaderBuilder::TessellationEvaluation
+        QTest::newRow("tessEval") << Qt3DRender::QShaderProgram::TessellationEvaluation
                                   << QUrl::fromEncoded("qrc:/tesseval.json");
 
-        QTest::newRow("geometry") << Qt3DRender::Render::ShaderBuilder::Geometry
+        QTest::newRow("geometry") << Qt3DRender::QShaderProgram::Geometry
                                   << QUrl::fromEncoded("qrc:/geometry.json");
 
-        QTest::newRow("fragment") << Qt3DRender::Render::ShaderBuilder::Fragment
+        QTest::newRow("fragment") << Qt3DRender::QShaderProgram::Fragment
                                   << QUrl::fromEncoded("qrc:/fragment.json");
 
-        QTest::newRow("compute") << Qt3DRender::Render::ShaderBuilder::Compute
+        QTest::newRow("compute") << Qt3DRender::QShaderProgram::Compute
                                  << QUrl::fromEncoded("qrc:/compute.json");
     }
 
     void shouldHandleShaderGraphPropertiesChanges()
     {
         // GIVEN
-        QFETCH(Qt3DRender::Render::ShaderBuilder::ShaderType, type);
+        QFETCH(Qt3DRender::QShaderProgram::ShaderType, type);
         QFETCH(QUrl, graphUrl);
 
         Qt3DRender::Render::ShaderBuilder backend;
@@ -393,16 +392,16 @@ private slots:
         simulateInitializationSync(&frontend, &backend);
 
         static const QHash<
-                Qt3DRender::Render::ShaderBuilder::ShaderType,
+                Qt3DRender::QShaderProgram::ShaderType,
                 void (Qt3DRender::QShaderProgramBuilder::*)(const QUrl &)
                 >
                 shaderTypesToSetters = {
-            {Qt3DRender::Render::ShaderBuilder::Vertex, &Qt3DRender::QShaderProgramBuilder::setVertexShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::TessellationControl, &Qt3DRender::QShaderProgramBuilder::setTessellationControlShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::TessellationEvaluation, &Qt3DRender::QShaderProgramBuilder::setTessellationEvaluationShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::Geometry, &Qt3DRender::QShaderProgramBuilder::setGeometryShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::Fragment, &Qt3DRender::QShaderProgramBuilder::setFragmentShaderGraph},
-            {Qt3DRender::Render::ShaderBuilder::Compute, &Qt3DRender::QShaderProgramBuilder::setComputeShaderGraph},
+            {Qt3DRender::QShaderProgram::Vertex, &Qt3DRender::QShaderProgramBuilder::setVertexShaderGraph},
+            {Qt3DRender::QShaderProgram::TessellationControl, &Qt3DRender::QShaderProgramBuilder::setTessellationControlShaderGraph},
+            {Qt3DRender::QShaderProgram::TessellationEvaluation, &Qt3DRender::QShaderProgramBuilder::setTessellationEvaluationShaderGraph},
+            {Qt3DRender::QShaderProgram::Geometry, &Qt3DRender::QShaderProgramBuilder::setGeometryShaderGraph},
+            {Qt3DRender::QShaderProgram::Fragment, &Qt3DRender::QShaderProgramBuilder::setFragmentShaderGraph},
+            {Qt3DRender::QShaderProgram::Compute, &Qt3DRender::QShaderProgramBuilder::setComputeShaderGraph},
         };
 
         // WHEN
@@ -455,14 +454,14 @@ private slots:
 
     void shouldHandleShaderCodeGeneration_data()
     {
-        QTest::addColumn<Qt3DRender::Render::ShaderBuilder::ShaderType>("type");
+        QTest::addColumn<Qt3DRender::QShaderProgram::ShaderType>("type");
 
-        QTest::newRow("vertex") << Qt3DRender::Render::ShaderBuilder::Vertex;
-        QTest::newRow("tessControl") << Qt3DRender::Render::ShaderBuilder::TessellationControl;
-        QTest::newRow("tessEval") << Qt3DRender::Render::ShaderBuilder::TessellationEvaluation;
-        QTest::newRow("geometry") << Qt3DRender::Render::ShaderBuilder::Geometry;
-        QTest::newRow("fragment") << Qt3DRender::Render::ShaderBuilder::Fragment;
-        QTest::newRow("compute") << Qt3DRender::Render::ShaderBuilder::Compute;
+        QTest::newRow("vertex") << Qt3DRender::QShaderProgram::Vertex;
+        QTest::newRow("tessControl") << Qt3DRender::QShaderProgram::TessellationControl;
+        QTest::newRow("tessEval") << Qt3DRender::QShaderProgram::TessellationEvaluation;
+        QTest::newRow("geometry") << Qt3DRender::QShaderProgram::Geometry;
+        QTest::newRow("fragment") << Qt3DRender::QShaderProgram::Fragment;
+        QTest::newRow("compute") << Qt3DRender::QShaderProgram::Compute;
     }
 
     void shouldHandleShaderCodeGeneration()
@@ -471,7 +470,7 @@ private slots:
         Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
         QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
 
-        QFETCH(Qt3DRender::Render::ShaderBuilder::ShaderType, type);
+        QFETCH(Qt3DRender::QShaderProgram::ShaderType, type);
 
         const auto gl3Api = []{
             auto api = Qt3DRender::GraphicsApiFilterData();
@@ -540,15 +539,15 @@ private slots:
 
     void checkCodeUpdatedNotification_data()
     {
-        QTest::addColumn<Qt3DRender::Render::ShaderBuilder::ShaderType>("type");
+        QTest::addColumn<Qt3DRender::QShaderProgram::ShaderType>("type");
         QTest::addColumn<Qt3DRender::QShaderProgram::ShaderType>("notificationType");
 
-        QTest::newRow("vertex") << Qt3DRender::Render::ShaderBuilder::Vertex << Qt3DRender::QShaderProgram::Vertex;
-        QTest::newRow("tessControl") << Qt3DRender::Render::ShaderBuilder::TessellationControl << Qt3DRender::QShaderProgram::TessellationControl;
-        QTest::newRow("tessEval") << Qt3DRender::Render::ShaderBuilder::TessellationEvaluation << Qt3DRender::QShaderProgram::TessellationEvaluation;
-        QTest::newRow("geometry") << Qt3DRender::Render::ShaderBuilder::Geometry << Qt3DRender::QShaderProgram::Geometry;
-        QTest::newRow("fragment") << Qt3DRender::Render::ShaderBuilder::Fragment << Qt3DRender::QShaderProgram::Fragment;
-        QTest::newRow("compute") << Qt3DRender::Render::ShaderBuilder::Compute << Qt3DRender::QShaderProgram::Compute;
+        QTest::newRow("vertex") << Qt3DRender::QShaderProgram::Vertex << Qt3DRender::QShaderProgram::Vertex;
+        QTest::newRow("tessControl") << Qt3DRender::QShaderProgram::TessellationControl << Qt3DRender::QShaderProgram::TessellationControl;
+        QTest::newRow("tessEval") << Qt3DRender::QShaderProgram::TessellationEvaluation << Qt3DRender::QShaderProgram::TessellationEvaluation;
+        QTest::newRow("geometry") << Qt3DRender::QShaderProgram::Geometry << Qt3DRender::QShaderProgram::Geometry;
+        QTest::newRow("fragment") << Qt3DRender::QShaderProgram::Fragment << Qt3DRender::QShaderProgram::Fragment;
+        QTest::newRow("compute") << Qt3DRender::QShaderProgram::Compute << Qt3DRender::QShaderProgram::Compute;
     }
 
 
@@ -559,7 +558,7 @@ private slots:
 
         Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
         QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
-        QFETCH(Qt3DRender::Render::ShaderBuilder::ShaderType, type);
+        QFETCH(Qt3DRender::QShaderProgram::ShaderType, type);
         QFETCH(Qt3DRender::QShaderProgram::ShaderType, notificationType);
 
         const auto gl3Api = []{
@@ -603,15 +602,6 @@ private slots:
         QCOMPARE(backend.shaderGraph(type), graphUrl);
         QVERIFY(!backend.isShaderCodeDirty(type));
         QCOMPARE(backend.shaderCode(type), gl3Code);
-
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(arbiter.events.count(), 1);
-        QCOMPARE(change->propertyName(), "generatedShaderCode");
-        const QPair<int, QByteArray> value = change->value().value<QPair<int, QByteArray>>();
-        QCOMPARE(value.first, int(notificationType));
-        QCOMPARE(value.second, gl3Code);
-
-        arbiter.events.clear();
     }
 };
 

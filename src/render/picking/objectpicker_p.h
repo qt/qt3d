@@ -74,12 +74,7 @@ public:
     bool isHoverEnabled() const;
     bool isDragEnabled() const;
 
-    void onClicked(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId);
-    void onMoved(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId);
-    void onPressed(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId);
-    void onReleased(QPickEventPtr event, Qt3DCore::QNodeId viewportNodeId);
-    void onEntered();
-    void onExited();
+    void setPressed(bool pressed);
 
     // Needed for unit tests
     void setPriority(int priority);

@@ -191,7 +191,7 @@ void QRenderStateSet::addRenderState(QRenderState *state)
         if (!state->parent())
             state->setParent(this);
 
-        d->update();
+        d->updateNode(state, "renderState", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -203,7 +203,7 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
     Q_ASSERT(state);
     Q_D(QRenderStateSet);
 
-    d->update();
+    d->updateNode(state, "renderState", Qt3DCore::PropertyValueRemoved);
     d->m_renderStates.removeOne(state);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(state);

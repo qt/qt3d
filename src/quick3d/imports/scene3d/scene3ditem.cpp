@@ -500,10 +500,16 @@ void Scene3DItem::onBeforeSync()
     // make Qt3D enter a locked state
     m_renderer->allowRender();
 
-    // Request refresh for next frame
+    // Note: it's too early to request an update at this point as
+    // beforeSync() triggered by afterAnimating  is considered
+    // to be as being part of the current frame update
+}
 
+void Scene3DItem::requestUpdate()
+{
     // When using the FBO mode, only the QQuickItem needs to be updated
     // When using the Underlay mode, the whole windows needs updating
+    const bool usesFBO = m_compositingMode == FBO;
     if (usesFBO) {
         QQuickItem::update();
         for (Scene3DView *view : m_views)
@@ -529,6 +535,7 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
             m_dummySurface = new QOffscreenSurface;
             m_dummySurface->setParent(qGuiApp); // parent to something suitably long-living
             m_dummySurface->setFormat(rw->format());
+            m_dummySurface->setScreen(rw->screen());
             m_dummySurface->create();
             surfaceSelector->setSurface(m_dummySurface);
         } else {
@@ -616,6 +623,9 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     // If the render aspect wasn't created yet, do so now
     if (m_renderAspect == nullptr) {
         m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
+        auto *rw = QQuickRenderControl::renderWindowFor(window());
+        static_cast<Qt3DRender::QRenderAspectPrivate *>(Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))->m_screen =
+                (rw ? rw->screen() : window()->screen());
         m_aspectEngine->registerAspect(m_renderAspect);
 
         // Before Synchronizing is in the SG Thread, we want beforeSync to be triggered
@@ -625,8 +635,6 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
         QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
                          this, [this] { m_dirty = true; }, Qt::DirectConnection);
-        QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
-                         this, &QQuickItem::update, Qt::AutoConnection);
     }
 
     if (m_renderer == nullptr) {
@@ -667,6 +675,12 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         if (m_clearsWindowByDefault)
             window()->setClearBeforeRendering(false);
     }
+
+    // Request update for next frame so that we can check whether we need to
+    // render again or not
+    static int requestUpdateMethodIdx =  Scene3DItem::staticMetaObject.indexOfMethod("requestUpdate()");
+    static QMetaMethod requestUpdateMethod =Scene3DItem::staticMetaObject.method(requestUpdateMethodIdx);
+    requestUpdateMethod.invoke(this, Qt::QueuedConnection);
 
     return fboNode;
 }

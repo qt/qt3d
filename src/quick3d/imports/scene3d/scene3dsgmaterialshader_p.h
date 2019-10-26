@@ -74,6 +74,7 @@ protected:
 private:
     int m_matrixId;
     int m_opacityId;
+    int m_visibleId;
 };
 
 } // namespace Qt3DRender

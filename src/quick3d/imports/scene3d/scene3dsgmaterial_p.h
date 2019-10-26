@@ -75,8 +75,12 @@ public:
     QSGMaterialType *type() const final { return &Scene3DSGMaterialShader::type; }
     QSGMaterialShader *createShader() const final { return new Scene3DSGMaterialShader(); }
 
+    void show() { m_visible = true; }
+    bool visible() const { return m_visible; }
+
 private:
     QSGTexture *m_texture;
+    bool m_visible;
 };
 
 } // namespace Qt3DRender

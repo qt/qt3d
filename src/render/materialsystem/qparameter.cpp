@@ -76,6 +76,8 @@
     \note when the targeted uniform is an array, the name should be the name
     of the uniform with [0] appended to it.
 
+    \note Parameter node can not be disabled.
+
     \code
     Parameter {
         name: "diffuseValues[0]"
@@ -137,6 +139,8 @@
 
     \note when the targeted uniform is an array, the name should be the name
     of the uniform with [0] appended to it.
+
+    \note QParameter node can not be disabled.
 
     \code
     QParameter *param = new QParameter();

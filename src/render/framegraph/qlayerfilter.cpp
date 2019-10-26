@@ -203,7 +203,7 @@ void QLayerFilter::addLayer(QLayer *layer)
         if (!layer->parent())
             layer->setParent(this);
 
-        d->update();
+        d->updateNode(layer, "layer", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -214,7 +214,7 @@ void QLayerFilter::removeLayer(QLayer *layer)
 {
     Q_ASSERT(layer);
     Q_D(QLayerFilter);
-    d->update();
+    d->updateNode(layer, "layer", Qt3DCore::PropertyValueRemoved);
     d->m_layers.removeOne(layer);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(layer);

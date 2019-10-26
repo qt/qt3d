@@ -84,6 +84,12 @@ void Scene3DSGNode::setRect(const QRectF &rect, const QRectF textureRect)
     }
 }
 
+void Scene3DSGNode::show()
+{
+    m_material.show();
+    m_opaqueMaterial.show();
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

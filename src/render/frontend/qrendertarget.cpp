@@ -123,7 +123,7 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
         if (!output->parent())
             output->setParent(this);
 
-        d->update();
+        d->updateNode(output, "output", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -134,7 +134,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
 
-    d->update();
+    d->updateNode(output, "output", Qt3DCore::PropertyValueRemoved);
     d->m_outputs.removeOne(output);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(output);

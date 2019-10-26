@@ -272,7 +272,7 @@ void QMaterial::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->update();
+        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -283,7 +283,7 @@ void QMaterial::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QMaterial);
-    d->update();
+    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
     d->m_parameters.removeOne(parameter);
 }
 

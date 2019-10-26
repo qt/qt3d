@@ -139,7 +139,7 @@ void QRenderPassFilter::addMatch(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        d->update();
+        d->updateNode(filterKey, "match", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -151,7 +151,7 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
     Q_ASSERT(filterKey);
     Q_D(QRenderPassFilter);
 
-    d->update();
+    d->updateNode(filterKey, "match", Qt3DCore::PropertyValueRemoved);
     d->m_matchList.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
@@ -177,7 +177,7 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->update();
+        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
     }
 }
 
@@ -189,7 +189,7 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QRenderPassFilter);
 
-    d->update();
+    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);

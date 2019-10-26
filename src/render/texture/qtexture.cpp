@@ -1161,6 +1161,13 @@ void TextureDownloadRequest::onCompleted()
     \since 5.5
     \brief A QAbstractTexture with a Target1D target format.
  */
+/*!
+    \qmltype Texture1D
+    \instantiates Qt3DRender::QTexture1D
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a Target1D target format.
+ */
 
 /*!
     Constructs a new Qt3DRender::QTexture1D instance with \a parent as parent.
@@ -1181,6 +1188,13 @@ QTexture1D::~QTexture1D()
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target1DArray target format.
+ */
+/*!
+    \qmltype Texture1DArray
+    \instantiates Qt3DRender::QTexture1DArray
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a Target1DArray target format.
  */
 
 /*!
@@ -1203,6 +1217,13 @@ QTexture1DArray::~QTexture1DArray()
     \since 5.5
     \brief A QAbstractTexture with a Target2D target format.
  */
+/*!
+    \qmltype Texture2D
+    \instantiates Qt3DRender::QTexture2D
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a Target2D target format.
+ */
 
 /*!
     Constructs a new Qt3DRender::QTexture2D instance with \a parent as parent.
@@ -1223,6 +1244,13 @@ QTexture2D::~QTexture2D()
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target2DArray target format.
+ */
+/*!
+    \qmltype Texture2DArray
+    \instantiates Qt3DRender::QTexture2DArray
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a Target2DArray target format.
  */
 
 /*!
@@ -1245,6 +1273,13 @@ QTexture2DArray::~QTexture2DArray()
     \since 5.5
     \brief A QAbstractTexture with a Target3D target format.
  */
+/*!
+    \qmltype Texture3D
+    \instantiates Qt3DRender::QTexture3D
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a Target3D target format.
+ */
 
 /*!
     Constructs a new Qt3DRender::QTexture3D instance with \a parent as parent.
@@ -1265,6 +1300,13 @@ QTexture3D::~QTexture3D()
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a TargetCubeMap target format.
+ */
+/*!
+    \qmltype TextureCubeMap
+    \instantiates Qt3DRender::QTextureCubeMap
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a TargetCubeMap target format.
  */
 
 /*!
@@ -1287,6 +1329,13 @@ QTextureCubeMap::~QTextureCubeMap()
     \since 5.5
     \brief A QAbstractTexture with a TargetCubeMapArray target format.
  */
+/*!
+    \qmltype TextureCubeMapArray
+    \instantiates Qt3DRender::QTextureCubeMapArray
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a TargetCubeMapArray target format.
+ */
 
 /*!
     Constructs a new Qt3DRender::QTextureCubeMapArray instance with \a parent as parent.
@@ -1307,6 +1356,13 @@ QTextureCubeMapArray::~QTextureCubeMapArray()
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a Target2DMultisample target format.
+ */
+/*!
+    \qmltype Texture2DMultisample
+    \instantiates Qt3DRender::QTexture2DMultisample
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a Target2DMultisample target format.
  */
 
 /*!
@@ -1329,6 +1385,13 @@ QTexture2DMultisample::~QTexture2DMultisample()
     \since 5.5
     \brief A QAbstractTexture with a Target2DMultisampleArray target format.
  */
+/*!
+    \qmltype Texture2DMultisampleArray
+    \instantiates Qt3DRender::QTexture2DMultisampleArray
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a Target2DMultisampleArray target format.
+ */
 
 /*!
     Constructs a new Qt3DRender::QTexture2DMultisampleArray instance with \a parent as parent.
@@ -1350,6 +1413,13 @@ QTexture2DMultisampleArray::~QTexture2DMultisampleArray()
     \since 5.5
     \brief A QAbstractTexture with a TargetRectangle target format.
  */
+/*!
+    \qmltype TextureRectangle
+    \instantiates Qt3DRender::QTextureRectangle
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a TargetRectangle target format.
+ */
 
 /*!
     Constructs a new Qt3DRender::QTextureRectangle instance with \a parent as parent.
@@ -1370,6 +1440,13 @@ QTextureRectangle::~QTextureRectangle()
     \inmodule Qt3DRender
     \since 5.5
     \brief A QAbstractTexture with a TargetBuffer target format.
+ */
+/*!
+    \qmltype TextureBuffer
+    \instantiates Qt3DRender::QTextureBuffer
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief An AbstractTexture with a TargetBuffer target format.
  */
 
 /*!
@@ -1483,6 +1560,11 @@ void QTextureLoader::setSource(const QUrl& source)
     Q_D(QTextureLoader);
     if (source != d->m_source) {
         d->m_source = source;
+
+        // Reset target and format
+        d->m_target = TargetAutomatic;
+        setFormat(NoFormat);
+
         d->updateGenerator();
         const bool blocked = blockNotifications(true);
         emit sourceChanged(source);
