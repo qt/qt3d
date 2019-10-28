@@ -1010,7 +1010,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 if (lightIdx == MAX_LIGHTS)
                     break;
                 Entity *lightEntity = lightSource.entity;
-                const Vector3D worldPos = lightEntity->worldBoundingVolume()->center();
+                const Matrix4x4 lightWorldTransform = *(lightEntity->worldTransform());
+                const Vector3D worldPos = lightWorldTransform * Vector3D(0.0f, 0.0f, 0.0f);
                 for (Light *light : lightSource.lights) {
                     if (!light->isEnabled())
                         continue;
