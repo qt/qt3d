@@ -48,6 +48,7 @@
 
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DCore/private/qloadgltf_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -102,12 +103,7 @@ bool GLTFGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
 {
     Q_UNUSED(subMesh);
 
-    QByteArray jsonData = ioDev->readAll();
-    QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(jsonData);
-    if (sceneDocument.isNull())
-        sceneDocument = QJsonDocument::fromJson(jsonData);
-
-    if (Q_UNLIKELY(!setJSON(sceneDocument))) {
+    if (Q_UNLIKELY(!setJSON(qLoadGLTF(ioDev->readAll())))) {
         qCWarning(GLTFGeometryLoaderLog, "not a JSON document");
         return false;
     }
