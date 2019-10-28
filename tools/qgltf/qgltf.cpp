@@ -43,6 +43,7 @@
 #include <qjsondocument.h>
 #include <qjsonobject.h>
 #include <qjsonarray.h>
+#include <qcborvalue.h>
 #include <qmath.h>
 
 #define GLT_UNSIGNED_SHORT 0x1403
@@ -216,6 +217,9 @@ static inline QVector<float> ai2qt(const aiMatrix4x4 &matrix)
 
 struct Options {
     QString outDir;
+#if QT_CONFIG(cborstreamwriter)
+    bool genBin;
+#endif
     bool compact;
     bool compress;
     bool genTangents;
@@ -1302,7 +1306,6 @@ private:
     ProgramInfo *chooseProgram(uint materialIndex);
 
     QJsonObject m_obj;
-    QJsonDocument m_doc;
     QVector<ProgramInfo> m_progs;
 
     struct TechniqueInfo {
@@ -2445,23 +2448,34 @@ void GltfExporter::save(const QString &inputFilename)
 
     exportTechniques(m_obj, basename);
 
-    m_doc.setObject(m_obj);
-
     QString gltfName = opts.outDir + basename + QStringLiteral(".qgltf");
     f.setFileName(gltfName);
 
+#if QT_CONFIG(cborstreamwriter)
+    if (opts.showLog)
+        qDebug().noquote() << (opts.genBin ? "Writing (CBOR)" : "Writing") << gltfName;
+
+    const QIODevice::OpenMode openMode = opts.genBin
+            ? (QIODevice::WriteOnly | QIODevice::Truncate)
+            : (QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+    const QByteArray data = opts.genBin
+            ? QCborValue::fromJsonValue(m_obj).toCbor()
+            : QJsonDocument(m_obj).toJson(opts.compact ? QJsonDocument::Compact
+                                                       : QJsonDocument::Indented);
+#else
     if (opts.showLog)
         qDebug().noquote() << "Writing" << gltfName;
 
     const QIODevice::OpenMode openMode
             = QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text;
-    const QByteArray json
-            = m_doc.toJson(opts.compact ? QJsonDocument::Compact : QJsonDocument::Indented);
+    const QByteArray data
+            = QJsonDocument(m_obj).toJson(opts.compact ? QJsonDocument::Compact
+                                                       : QJsonDocument::Indented);
+#endif
 
     if (f.open(openMode)) {
         m_files.insert(QFileInfo(f.fileName()).fileName());
-        QByteArray json = m_doc.toJson(opts.compact ? QJsonDocument::Compact : QJsonDocument::Indented);
-        f.write(json);
+        f.write(data);
         f.close();
     }
 
@@ -2505,8 +2519,8 @@ int main(int argc, char **argv)
     cmdLine.setApplicationDescription(QString::fromUtf8(description));
     QCommandLineOption outDirOpt(QStringLiteral("d"), QStringLiteral("Place all output data into <dir>"), QStringLiteral("dir"));
     cmdLine.addOption(outDirOpt);
-#ifndef QT_BOOTSTRAPPED
-    QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store binary JSON data in the .qgltf file"));
+#if QT_CONFIG(cborstreamwriter)
+    QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store CBOR data in the .qgltf file"));
     cmdLine.addOption(binOpt);
 #endif
     QCommandLineOption compactOpt(QStringLiteral("m"), QStringLiteral("Store compact JSON in the .qgltf file"));
@@ -2531,6 +2545,9 @@ int main(int argc, char **argv)
     cmdLine.addOption(silentOpt);
     cmdLine.process(app);
     opts.outDir = cmdLine.value(outDirOpt);
+#if QT_CONFIG(cborstreamwriter)
+    opts.genBin = cmdLine.isSet(binOpt);
+#endif
     opts.compact = cmdLine.isSet(compactOpt);
     opts.compress = cmdLine.isSet(compOpt);
     opts.genTangents = cmdLine.isSet(tangentOpt);
