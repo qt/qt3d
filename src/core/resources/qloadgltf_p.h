@@ -60,11 +60,13 @@
 
 inline QJsonDocument qLoadGLTF(const QByteArray &gltfData)
 {
+#if QT_CONFIG(binaryjson)
     {
         QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(gltfData);
         if (!sceneDocument.isNull())
             return sceneDocument;
     }
+#endif
     {
         const QCborValue cbor = QCborValue::fromCbor(gltfData);
         if (cbor.isMap())
