@@ -232,7 +232,6 @@ void GLTexture::loadTextureDataFromImages()
 GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
 {
     TextureUpdateInfo textureInfo;
-    m_properties.status = QAbstractTexture::Error;
     m_wasTextureRecreated = false;
 
     const bool hasSharedTextureId = m_sharedTextureId > 0;
