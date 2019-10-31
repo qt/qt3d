@@ -487,7 +487,12 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
                 }
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
-            QString varName = blockName + QLatin1String(".") + qmlPropertyName + QLatin1String("[0]");
+            QString varName;
+            varName.reserve(blockName.length() + 1 + qmlPropertyName.length() + 3);
+            varName.append(blockName);
+            varName.append(QLatin1String("."));
+            varName.append(qmlPropertyName);
+            varName.append(QLatin1String("[0]"));
             if (uniforms.contains(varName)) {
                 qCDebug(Shaders) << "UBO array member " << varName << " set for update";
                 activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
@@ -505,7 +510,11 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
             activeUniformNamesToValue.insert(varId, value);
         }
     } else { // Scalar / Vec
-        QString varName = blockName + QLatin1Char('.') + qmlPropertyName;
+        QString varName;
+        varName.reserve(blockName.length() + 1 + qmlPropertyName.length());
+        varName.append(blockName);
+        varName.append(QLatin1String("."));
+        varName.append(qmlPropertyName);
         if (uniforms.contains(varName)) {
             qCDebug(Shaders) << "UBO scalar member " << varName << " set for update";
 
@@ -525,11 +534,15 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(Shader
     const auto end = properties.end();
 
     while (it != end) {
-        const auto prefix = qmlPropertyName.isEmpty() ? QLatin1String("") : QLatin1String(".");
-        buildActiveUniformNameValueMapHelper(rShaderData,
-                                             blockName + prefix + qmlPropertyName,
-                                             it.key(),
-                                             it.value().value);
+        QString fullBlockName;
+        fullBlockName.reserve(blockName.length() + 1 + qmlPropertyName.length());
+        fullBlockName.append(blockName);
+        if (!qmlPropertyName.isEmpty()) {
+            fullBlockName.append(QLatin1String("."));
+            fullBlockName.append(qmlPropertyName);
+        }
+        buildActiveUniformNameValueMapHelper(rShaderData, fullBlockName,
+                                             it.key(), it.value().value);
         ++it;
     }
 }
