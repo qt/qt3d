@@ -223,12 +223,6 @@ private Q_SLOTS:
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
                  1 + // sendDisablesToFrontend
-                 1 + // LightGathererJob
-                 1 + // CacheLightJob
-                 1 + // RenderableEntityFilterJob
-                 1 + // CacheRenderableEntitiesJob
-                 1 + // ComputableEntityFilterJob
-                 1 + // CacheComputableEntitiesJob
                  singleRenderViewJobCount +
                  singleRenderViewCommandRebuildJobCount +
                  renderViewBuilderMaterialCacheJobCount +

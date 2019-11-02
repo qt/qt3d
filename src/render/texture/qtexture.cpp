@@ -1125,7 +1125,7 @@ TextureDownloadRequest::TextureDownloadRequest(const QTextureFromSourceGenerator
 
 }
 
-// Executed in aspect thread
+// Executed in main thread
 void TextureDownloadRequest::onCompleted()
 {
     if (cancelled() || !succeeded())
@@ -1142,16 +1142,11 @@ void TextureDownloadRequest::onCompleted()
 
     QTextureFromSourceGeneratorPtr oldGenerator = qSharedPointerCast<QTextureFromSourceGenerator>(texture->dataGenerator());
 
-    // We create a new functor
-    // Which is a copy of the old one + the downloaded sourceData
-    auto newGenerator = QTextureFromSourceGeneratorPtr::create(*oldGenerator);
-
     // Set raw data on functor so that it can really load something
-    newGenerator->m_sourceData = m_data;
+    oldGenerator->m_sourceData = m_data;
 
-    // Set new generator on texture
-    // it implictely marks the texture as dirty so that the functor runs again with the downloaded data
-    texture->setDataGenerator(newGenerator);
+    // Mark the texture as dirty so that the functor runs again with the downloaded data
+    texture->addDirtyFlag(Render::Texture::DirtyDataGenerator);
 }
 
 /*!
@@ -1520,7 +1515,10 @@ QTextureLoader::QTextureLoader(QNode *parent)
     // Regenerate the texture functor when properties we support overriding
     // from QAbstractTexture get changed.
     Q_D(QTextureLoader);
-    auto regenerate = [=] () { d->updateGenerator(); };
+    auto regenerate = [=] () {
+        if (!notificationsBlocked())    // check the change doesn't come from the backend
+            d->updateGenerator();
+    };
     connect(this, &QAbstractTexture::formatChanged, regenerate);
 }
 

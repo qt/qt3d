@@ -278,6 +278,8 @@ QSGNode *Scene3DView::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     if (m_dirtyFlags & DirtyTexture) {
         fboNode->setTexture(m_texture);
         m_dirtyFlags.setFlag(DirtyTexture, false);
+        // Show FBO Node at this point
+        fboNode->show();
     }
     if (m_dirtyFlags & DirtyNode) {
         fboNode->markDirty(QSGNode::DirtyMaterial);

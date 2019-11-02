@@ -68,14 +68,14 @@ public:
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
     inline void setEntities(const QVector<Entity *> &entities) { m_entities = entities; }
-    inline QVector<EntityRenderCommandData> &commandData() { return m_commandData; }
+    inline EntityRenderCommandData &commandData() { return m_commandData; }
 
     void run() final;
 
 private:
     RenderView *m_renderView;
     QVector<Entity *> m_entities;
-    QVector<EntityRenderCommandData> m_commandData;
+    EntityRenderCommandData m_commandData;
 };
 
 typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobPtr;

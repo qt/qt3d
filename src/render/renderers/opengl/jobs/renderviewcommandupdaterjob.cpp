@@ -70,11 +70,7 @@ void RenderViewCommandUpdaterJob::run()
 
         // Copy commands out of cached -> ensures we can submit them for rendering
         // while cache is rebuilt or modified for next frame
-        QVector<RenderCommand> commands;
-        commands.reserve(m_renderables.size());
-        for (const EntityRenderCommandData *data : m_renderables)
-            commands.push_back(data->command);
-        m_commands = commands;
+        m_commands = m_renderables.commands;
     }
 }
 

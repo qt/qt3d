@@ -62,6 +62,14 @@ QBufferCapturePrivate::QBufferCapturePrivate()
     \inmodule Qt3DRender
     \brief Exchanges buffer data between GPU and CPU.
 */
+
+/*!
+    \qmltype BufferCapture
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QBufferCapture
+    \brief Exchanges buffer data between GPU and CPU.
+*/
+
 QBufferCapture::QBufferCapture(Qt3DCore::QNode *parent)
     : QFrameGraphNode(*new QBufferCapturePrivate, parent)
 {

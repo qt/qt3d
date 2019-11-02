@@ -48,9 +48,6 @@
 **
 ****************************************************************************/
 
-#include <QThread>
-#include <QMutex>
-
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLVertexArrayObject>
@@ -90,7 +87,6 @@ private:
     QOpenGLVertexArrayObject m_vao;
     QOpenGLShaderProgram m_shader;
     QOpenGLTexture m_texture;
-    QMutex m_mutex;
 };
 
 
@@ -108,12 +104,12 @@ Q_SIGNALS:
 };
 
 
-class VideoPlayerThread : public QThread
+class VideoPlayer : public QObject
 {
     Q_OBJECT
 public:
-    VideoPlayerThread(TextureWidget *textureWidget);
-    ~VideoPlayerThread();
+    VideoPlayer(TextureWidget *textureWidget);
+    ~VideoPlayer();
 
 private:
     TextureWidget *m_textureWidget;

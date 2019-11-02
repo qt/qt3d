@@ -70,13 +70,16 @@ struct RendererCache
     {
         QVector<Entity *> filterEntitiesByLayer;
         MaterialParameterGathererData materialParameterGatherer;
-        QVector<LightSource> gatheredLights;
-        QVector<Entity *> renderableEntities;
-        QVector<Entity *> computeEntities;
-        EnvironmentLight* environmentLight;
-        QVector<EntityRenderCommandData> renderCommandData;
+        EntityRenderCommandData renderCommandData;
     };
 
+    // Shared amongst all RV cache
+    QVector<Entity *> renderableEntities;
+    QVector<Entity *> computeEntities;
+    QVector<LightSource> gatheredLights;
+    EnvironmentLight* environmentLight;
+
+    // Per RV cache
     QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
 
     QMutex *mutex() { return &m_mutex; }

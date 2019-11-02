@@ -227,11 +227,11 @@ public:
 
     RenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
-    QVector<EntityRenderCommandData> buildDrawRenderCommands(const QVector<Entity *> &entities) const;
-    QVector<EntityRenderCommandData> buildComputeRenderCommands(const QVector<Entity *> &entities) const;
+    EntityRenderCommandData buildDrawRenderCommands(const QVector<Entity *> &entities) const;
+    EntityRenderCommandData buildComputeRenderCommands(const QVector<Entity *> &entities) const;
 
 
-    void updateRenderCommand(QVector<EntityRenderCommandData *> &renderCommandData);
+    void updateRenderCommand(EntityRenderCommandData &renderCommandData);
 
 
     void setCommands(const QVector<RenderCommand> &commands) Q_DECL_NOTHROW { m_commands = commands; }

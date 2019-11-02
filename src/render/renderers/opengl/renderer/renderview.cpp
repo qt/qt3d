@@ -621,11 +621,11 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
 }
 
 // If we are there, we know that entity had a GeometryRenderer + Material
-QVector<EntityRenderCommandData> RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities) const
+EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities) const
 {
-    QVector<EntityRenderCommandData> commands;
-    commands.reserve(entities.size());
+    EntityRenderCommandData commands;
 
+    commands.reserve(entities.size());
 
     for (Entity *entity : entities) {
         GeometryRenderer *geometryRenderer = nullptr;
@@ -662,8 +662,9 @@ QVector<EntityRenderCommandData> RenderView::buildDrawRenderCommands(const QVect
                 }
                 command.m_shader = m_manager->lookupHandle<Shader, ShaderManager, HShader>(pass->shaderProgram());
 
-                const EntityRenderCommandData commandData = { entity, command, passData };
-                commands.append(commandData);
+                commands.push_back(entity,
+                                   std::move(command),
+                                   std::move(passData));
             }
         }
     }
@@ -671,15 +672,17 @@ QVector<EntityRenderCommandData> RenderView::buildDrawRenderCommands(const QVect
     return commands;
 }
 
-QVector<EntityRenderCommandData> RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities) const
+EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities) const
 {
     // If the RenderView contains only a ComputeDispatch then it cares about
     // A ComputeDispatch is also implicitely a NoDraw operation
     // enabled flag
     // layer component
     // material/effect/technique/parameters/filters/
-    QVector<EntityRenderCommandData> commands;
+    EntityRenderCommandData commands;
+
     commands.reserve(entities.size());
+
     for (Entity *entity : entities) {
         ComputeCommand *computeJob = nullptr;
         HComputeCommand computeCommandHandle = entity->componentHandle<ComputeCommand>();
@@ -712,8 +715,9 @@ QVector<EntityRenderCommandData> RenderView::buildComputeRenderCommands(const QV
                 command.m_workGroups[1] = std::max(m_workGroups[1], computeJob->y());
                 command.m_workGroups[2] = std::max(m_workGroups[2], computeJob->z());
 
-                const EntityRenderCommandData commandData = { entity, command, passData };
-                commands.append(commandData);
+                commands.push_back(entity,
+                                   std::move(command),
+                                   std::move(passData));
             }
         }
     }
@@ -721,7 +725,7 @@ QVector<EntityRenderCommandData> RenderView::buildComputeRenderCommands(const QV
     return commands;
 }
 
-void RenderView::updateRenderCommand(QVector<EntityRenderCommandData *> &renderCommandData)
+void RenderView::updateRenderCommand(EntityRenderCommandData &renderCommandData)
 {
     // Note: since many threads can be building render commands
     // we need to ensure that the UniformBlockValueBuilder they are using
@@ -731,10 +735,10 @@ void RenderView::updateRenderCommand(QVector<EntityRenderCommandData *> &renderC
     builder->textureManager = m_manager->textureManager();
     m_localData.setLocalData(builder);
 
-    for (EntityRenderCommandData *commandData : renderCommandData) {
-        Entity *entity = commandData->entity;
-        RenderPassParameterData passData = commandData->passData;
-        RenderCommand &command = commandData->command;
+    for (int i = 0, m = renderCommandData.size(); i < m; ++i) {
+        Entity *entity = renderCommandData.entities.at(i);
+        const RenderPassParameterData passData = renderCommandData.passesData.at(i);
+        RenderCommand &command = renderCommandData.commands[i];
 
         // Pick which lights to take in to account.
         // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
@@ -1010,7 +1014,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 if (lightIdx == MAX_LIGHTS)
                     break;
                 Entity *lightEntity = lightSource.entity;
-                const Vector3D worldPos = lightEntity->worldBoundingVolume()->center();
+                const Matrix4x4 lightWorldTransform = *(lightEntity->worldTransform());
+                const Vector3D worldPos = lightWorldTransform * Vector3D(0.0f, 0.0f, 0.0f);
                 for (Light *light : lightSource.lights) {
                     if (!light->isEnabled())
                         continue;
