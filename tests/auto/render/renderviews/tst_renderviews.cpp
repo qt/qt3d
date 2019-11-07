@@ -253,6 +253,7 @@ private Q_SLOTS:
 
         // WHEN
         renderView.setCommands(rawCommands);
+        renderView.addSortType((QVector<QSortPolicy::SortType>() << QSortPolicy::Uniform));
         renderView.sort();
 
         // THEN

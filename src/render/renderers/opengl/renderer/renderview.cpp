@@ -467,6 +467,8 @@ int findSubRange(const QVector<RenderCommand> &commands,
         return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::FrontToBack>::adjacentSubRange);
     case QSortPolicy::Texture:
         return advanceUntilNonAdjacent(commands, begin, end, AdjacentSubRangeFinder<QSortPolicy::Texture>::adjacentSubRange);
+    case QSortPolicy::Uniform:
+        return end;
     default:
         Q_UNREACHABLE();
         return end;
@@ -513,6 +515,8 @@ void sortCommandRange(QVector<RenderCommand> &commands, int begin, const int end
     case QSortPolicy::Texture:
         SubRangeSorter<QSortPolicy::Texture>::sortSubRange(commands.begin() + begin, commands.begin() + end);
         break;
+    case QSortPolicy::Uniform:
+        break;
     default:
         Q_UNREACHABLE();
     }
@@ -535,6 +539,10 @@ void RenderView::sort()
 
     // For RenderCommand with the same shader
     // We compute the adjacent change cost
+
+     // Only perform uniform minimization if we explicitly asked for it
+     if (!m_data.m_sortingTypes.contains(QSortPolicy::Uniform))
+        return;
 
     // Minimize uniform changes
     int i = 0;

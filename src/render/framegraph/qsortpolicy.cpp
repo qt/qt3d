@@ -98,12 +98,14 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     projection of the camera-to-object-center vector onto the camera's view
     vector.
 
-    \value Material sort the objects based on their material value
+    \value Material sort the objects based on their material (shader) value.
 
     \value FrontToBack sort the objects from front to back. The opposite of
     BackToFront.
 
     \value [since 5.14] Texture sort the objects to minimize texture changes.
+
+    \value [since 5.15] Uniform sort the objects to minimize uniform changes.
 */
 
 /*!
@@ -123,10 +125,11 @@ QSortPolicyPrivate::QSortPolicyPrivate()
         order. More accurately, the sorting key is the z component of the
         projection of the camera-to-object-center vector onto the camera's view
         vector.
-    \li Material - sort the objects based on their material value
+    \li Material - sort the objects based on their material (shader) value.
     \li FrontToBack - sort the objects from front to back. The opposite of
         BackToFront.
     \li [since 5.14] Texture - sort the objects to minimize texture changes.
+    \li [since 5.15] Uniform - sort the objects to minimize uniform changes.
     \endlist
 */
 

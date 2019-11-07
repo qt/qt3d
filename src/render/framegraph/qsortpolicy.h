@@ -62,6 +62,7 @@ public:
         Material = (1 << 2),
         FrontToBack = (1 << 3),
         Texture = (1 << 4),
+        Uniform = (1 << 5)
     };
     Q_ENUM(SortType) // LCOV_EXCL_LINE
 
