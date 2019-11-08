@@ -57,7 +57,6 @@ namespace Render {
 
 ShaderParameterPack::~ShaderParameterPack()
 {
-    m_uniforms.clear();
 }
 
 void ShaderParameterPack::setUniform(const int glslNameId, const UniformValue &val)
