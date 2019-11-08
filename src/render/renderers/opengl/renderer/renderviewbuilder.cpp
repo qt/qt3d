@@ -310,7 +310,8 @@ public:
                 if (rv->frustumCulling())
                     renderableEntities = RenderViewBuilder::entitiesInSubset(renderableEntities, m_frustumCullingJob->visibleEntities());
                 // Filter out entities which didn't satisfy proximity filtering
-                renderableEntities = RenderViewBuilder::entitiesInSubset(renderableEntities, m_filterProximityJob->filteredEntities());
+                if (!rv->proximityFilterIds().empty())
+                    renderableEntities = RenderViewBuilder::entitiesInSubset(renderableEntities, m_filterProximityJob->filteredEntities());
             }
 
             // Filter out Render commands for which the Entity wasn't selected because
