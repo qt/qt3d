@@ -161,7 +161,7 @@ public:
     {
         m_destructionConnections.erase(std::remove_if(m_destructionConnections.begin(),
                                                       m_destructionConnections.end(),
-                                                      [this, node] (const QPair<QNode *, QMetaObject::Connection> &nodeConnectionPair) {
+                                                      [node] (const QPair<QNode *, QMetaObject::Connection> &nodeConnectionPair) {
                                                           if (nodeConnectionPair.first == node) {
                                                               QObject::disconnect(nodeConnectionPair.second);
                                                               return true;
