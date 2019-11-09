@@ -792,10 +792,9 @@ QNode::~QNode()
 {
     Q_D(QNode);
     // Disconnect each connection that was stored
-    for (auto it = d->m_destructionConnections.begin(), end = d->m_destructionConnections.end(); it != end; ++it)
-        QObject::disconnect(it.value());
+    for (const auto &nodeConnectionPair : qAsConst(d->m_destructionConnections))
+        QObject::disconnect(nodeConnectionPair.second);
     d->m_destructionConnections.clear();
-
     Q_EMIT nodeDestroyed();
 
     // Notify the backend that the parent lost this node as a child and
