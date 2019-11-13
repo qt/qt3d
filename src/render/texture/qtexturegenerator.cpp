@@ -52,8 +52,7 @@ QTextureGenerator::~QTextureGenerator()
 }
 
 /*!
-   \class QTextureGenerator
-   \inherits QAbstractFunctor
+   \class Qt3DRender::QTextureGenerator
    \inmodule Qt3DRender
    \brief Provides the image data for a texture.
 */

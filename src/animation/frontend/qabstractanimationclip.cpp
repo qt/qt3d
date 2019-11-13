@@ -121,7 +121,7 @@ void QAbstractAnimationClipPrivate::setDuration(float duration)
     animator->setRunning(true);
     \endcode
 
-    \sa QAnimationClip, QAnimationClipLoader
+    \sa Qt3DAnimation::QAnimationClip, Qt3DAnimation::QAnimationClipLoader
 */
 
 /*!

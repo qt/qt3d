@@ -42,7 +42,7 @@
     Advanced custom material example shows more complex shaders, and demonstrates controlling your
     shader properties with QtQuick user interface and Animation. Water is a 3D mesh, that is
     modeled and uv mapped inside Blender, and then brought into Scene 3D as an \c {.obj} file.
-    Shader properties that user can control, are defined in \l {advancedcustommaterial/WaterMaterial.qml}{WaterMaterial}.
+    Shader properties that user can control, are defined in \c {advancedcustommaterial/WaterMaterial.qml}.
 
     \section1 Controls
     \section2 Texture scale slider
@@ -53,7 +53,7 @@
     \section2 Texture speed slider
 
     Offsets values for texture coordinates which are animated in
-    \l {advancedcustommaterial/Water.qml}{Water.qml} and then passed to vertex shader.
+    \c {advancedcustommaterial/Water.qml} and then passed to vertex shader.
     Creates the effect of textures scrolling over the surface.
 
     \section2 Specularity
@@ -80,5 +80,5 @@
 
     \section2 Mesh rotation
 
-    Rotates the water mesh in \l {advancedcustommaterial/Water.qml}{Water.qml}.
+    Rotates the water mesh in \c {advancedcustommaterial/Water.qml}.
 */

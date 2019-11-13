@@ -51,11 +51,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \namespace Qt3DRender::Quick
-
-    \brief Internal namespace to import QML types.
-*/
 namespace Quick {
 
 class QScene2DPrivate;

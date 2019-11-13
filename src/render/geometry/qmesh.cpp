@@ -148,17 +148,6 @@ void QMeshPrivate::setStatus(QMesh::Status status)
  */
 
 /*!
-    \enum QMesh::Status
-
-    This enum identifies the status of shader used.
-
-    \value None              A source mesh hasn't been assigned a source yet
-    \value Loading           The mesh geometry is loading
-    \value Ready             The mesh geometry was successfully loaded
-    \value Error             An error occurred while loading the mesh
-*/
-
-/*!
     \qmlproperty enumeration Mesh::status
 
     Holds the status of the mesh loading.
@@ -195,6 +184,17 @@ void QMeshPrivate::setStatus(QMesh::Status status)
  *
  * \sa Qt3DRender::QSceneLoader
  */
+
+/*!
+    \enum Qt3DRender::QMesh::Status
+
+    This enum identifies the status of shader used.
+
+    \value None              A source mesh hasn't been assigned a source yet
+    \value Loading           The mesh geometry is loading
+    \value Ready             The mesh geometry was successfully loaded
+    \value Error             An error occurred while loading the mesh
+*/
 
 /*!
  * Constructs a new QMesh with \a parent.

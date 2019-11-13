@@ -197,21 +197,21 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
     \qmlsignal Qt3D.Input::MouseHandler::wheel(MouseEvent mouse)
 
     This signal is emitted when the mouse wheel is used with the event details
-    being contained within \a wheel
+    being contained within \a mouse.
  */
 
 /*!
     \fn Qt3DInput::QMouseHandler::clicked(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is clicked with the event details
-    being contained within \a mouse
+    being contained within \a mouse.
  */
 
 /*!
     \fn Qt3DInput::QMouseHandler::doubleClicked(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is double clicked with the event
-    details being contained within \a mouse
+    details being contained within \a mouse.
  */
 
 /*!

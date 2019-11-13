@@ -48,7 +48,7 @@
 
     \section1 Specifying the Material
 
-    The material is specified in \l{simplecustommaterial/SimpleMaterial.qml}{SimpleMaterial.qml}
+    The material is specified in \c {simplecustommaterial/SimpleMaterial.qml}
     using \l Material type. First the material specifies parameters,
     which are mapped to the corresponding uniforms in the shaders so that they can be
     changed from the qml.

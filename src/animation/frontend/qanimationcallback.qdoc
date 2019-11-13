@@ -1,0 +1,51 @@
+/****************************************************************************
+**
+** Copyright (C) 2019 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \class Qt3DAnimation::QAnimationCallback
+    \inmodule Qt3DAnimation
+    \brief Represents an animation callback object.
+*/
+
+/*!
+    \enum Qt3DAnimation::QAnimationCallback::Flag
+
+    Flags to indicate how the valueChanged() function is called.
+
+    \value OnOwningThread
+           Callback function is called on the owning (GUI or main) thread.
+    \value OnThreadPool
+           Callback function is called on the thread pool's worker thread.
+*/
+
+/*!
+    \fn Qt3DAnimation::QAnimationCallback::valueChanged(const QVariant &value)
+
+    Callback function that is triggered for changes in the animated \a value.
+
+    \sa QCallbackMapping::setCallback()
+*/
