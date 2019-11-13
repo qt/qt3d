@@ -1137,7 +1137,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange()
     data.dataFunctor = d->m_dataFunctor;
     data.sharedTextureId = d->m_sharedTextureId;
     data.initialDataUpdates = d->m_pendingDataUpdates;
-    return std::move(creationChange);
+    return creationChange;
 }
 
 /*!
