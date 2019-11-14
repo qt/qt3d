@@ -69,6 +69,7 @@ public:
 
 private:
     virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
+    virtual void jobsDone() = 0;
 
     friend class QScheduler;
 };

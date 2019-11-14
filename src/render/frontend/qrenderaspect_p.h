@@ -87,6 +87,7 @@ public:
     static QRenderAspectPrivate* findPrivate(Qt3DCore::QAspectEngine *engine);
 
     void syncDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QBackendNode *backend, bool firstTime) const override;
+    void jobsDone() override;
 
     void registerBackendTypes();
     void unregisterBackendTypes();
@@ -101,6 +102,7 @@ public:
     Render::AbstractRenderer *m_renderer;
 
     bool m_initialized;
+    bool m_renderAfterJobs;
     QList<QSceneImporter *> m_sceneImporter;
     QVector<QString> m_loadedPlugins;
     QVector<Render::QRenderPlugin *> m_renderPlugins;

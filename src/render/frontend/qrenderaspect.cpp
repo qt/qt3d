@@ -170,12 +170,52 @@
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/private/qservicelocator_p.h>
 
-#include <QDebug>
-#include <QOffscreenSurface>
 #include <QThread>
-#include <QWindow>
+
+#ifdef Q_OS_MACOS
+#include <mach-o/dyld.h>
+#include <dlfcn.h>
+#endif
 
 QT_BEGIN_NAMESPACE
+
+#ifdef Q_OS_MACOS
+namespace  {
+
+// adapted from qcocoahelpers.mm in QtBase
+typedef QPair<QOperatingSystemVersion, QOperatingSystemVersion> VersionTuple;
+
+VersionTuple versionsForImage(const mach_header *machHeader)
+{
+    static auto makeVersionTuple = [](uint32_t dt, uint32_t sdk) {
+        return qMakePair(
+            QOperatingSystemVersion(QOperatingSystemVersion::MacOS,
+                                    dt >> 16 & 0xffff, dt >> 8 & 0xff, dt & 0xff),
+            QOperatingSystemVersion(QOperatingSystemVersion::MacOS,
+                                    sdk >> 16 & 0xffff, sdk >> 8 & 0xff, sdk & 0xff)
+            );
+    };
+
+    auto commandCursor = uintptr_t(machHeader) + sizeof(mach_header_64);
+    for (uint32_t i = 0; i < machHeader->ncmds; ++i) {
+        load_command *loadCommand = reinterpret_cast<load_command *>(commandCursor);
+        if (loadCommand->cmd == LC_VERSION_MIN_MACOSX) {
+            auto versionCommand = reinterpret_cast<version_min_command *>(loadCommand);
+            return makeVersionTuple(versionCommand->version, versionCommand->sdk);
+#if QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(__MAC_10_13)
+        } else if (loadCommand->cmd == LC_BUILD_VERSION) {
+            auto versionCommand = reinterpret_cast<build_version_command *>(loadCommand);
+            return makeVersionTuple(versionCommand->minos, versionCommand->sdk);
+#endif
+        }
+        commandCursor += loadCommand->cmdsize;
+    }
+    Q_ASSERT_X(false, "QCocoaIntegration", "Could not find any version load command");
+    Q_UNREACHABLE();
+}
+
+}
+#endif
 
 using namespace Qt3DCore;
 
@@ -202,11 +242,30 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_nodeManagers(nullptr)
     , m_renderer(nullptr)
     , m_initialized(false)
+    , m_renderAfterJobs(false)
     , m_renderType(type)
     , m_offscreenHelper(nullptr)
 {
     m_instances.append(this);
     loadSceneParsers();
+#ifdef Q_OS_MACOS
+    static VersionTuple version = []() {
+        const mach_header *executableHeader = nullptr;
+        for (uint32_t i = 0; i < _dyld_image_count(); ++i) {
+            auto header = _dyld_get_image_header(i);
+            if (header->filetype == MH_EXECUTE) {
+                executableHeader = header;
+                break;
+            }
+        }
+        Q_ASSERT_X(executableHeader, "QCocoaIntegration", "Failed to resolve Mach-O header of executable");
+        return versionsForImage(executableHeader);
+    }();
+    if (m_renderType == QRenderAspect::Threaded && version.second >= QOperatingSystemVersion(QOperatingSystemVersion::MacOSMojave)) {
+        m_renderType = QRenderAspect::Synchronous;
+        m_renderAfterJobs = true;
+    }
+#endif
 }
 
 /*! \internal */
@@ -237,6 +296,12 @@ void QRenderAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *back
 {
     Render::BackendNode *renderBackend = static_cast<Render::BackendNode *>(backend);
     renderBackend->syncFromFrontEnd(node, firstTime);
+}
+
+void QRenderAspectPrivate::jobsDone()
+{
+    if (m_renderAfterJobs)
+        m_renderer->doRender(true);
 }
 
 /*! \internal */
@@ -539,6 +604,8 @@ QVariant QRenderAspect::executeCommand(const QStringList &args)
 void QRenderAspect::onEngineStartup()
 {
     Q_D(QRenderAspect);
+    if (d->m_renderAfterJobs)   // synchronous rendering but using QWindow
+        d->m_renderer->initialize();
     Render::NodeManagers *managers = d->m_renderer->nodeManagers();
     Render::Entity *rootEntity = managers->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
     Q_ASSERT(rootEntity);
