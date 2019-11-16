@@ -170,10 +170,8 @@
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/private/qservicelocator_p.h>
 
-#include <QDebug>
-#include <QOffscreenSurface>
 #include <QThread>
-#include <QWindow>
+#include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
@@ -202,11 +200,16 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_nodeManagers(nullptr)
     , m_renderer(nullptr)
     , m_initialized(false)
+    , m_renderAfterJobs(false)
     , m_renderType(type)
     , m_offscreenHelper(nullptr)
 {
     m_instances.append(this);
     loadSceneParsers();
+    if (m_renderType == QRenderAspect::Threaded && !QOpenGLContext::supportsThreadedOpenGL()) {
+        m_renderType = QRenderAspect::Synchronous;
+        m_renderAfterJobs = true;
+    }
 }
 
 /*! \internal */
@@ -237,6 +240,12 @@ void QRenderAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *back
 {
     Render::BackendNode *renderBackend = static_cast<Render::BackendNode *>(backend);
     renderBackend->syncFromFrontEnd(node, firstTime);
+}
+
+void QRenderAspectPrivate::jobsDone()
+{
+    if (m_renderAfterJobs)
+        m_renderer->doRender(true);
 }
 
 /*! \internal */
@@ -539,6 +548,8 @@ QVariant QRenderAspect::executeCommand(const QStringList &args)
 void QRenderAspect::onEngineStartup()
 {
     Q_D(QRenderAspect);
+    if (d->m_renderAfterJobs)   // synchronous rendering but using QWindow
+        d->m_renderer->initialize();
     Render::NodeManagers *managers = d->m_renderer->nodeManagers();
     Render::Entity *rootEntity = managers->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
     Q_ASSERT(rootEntity);

@@ -508,6 +508,11 @@ QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
     return res;
 }
 
+void QAbstractAspectPrivate::jobsDone()
+{
+
+}
+
 /*!
  * Called in the context of the aspect thread once the aspect has been registered.
  * This provides an opportunity for the aspect to do any initialization tasks that

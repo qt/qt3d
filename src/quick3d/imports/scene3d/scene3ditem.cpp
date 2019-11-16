@@ -558,7 +558,7 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
 /*!
     \qmlmethod void Scene3D::setItemAreaAndDevicePixelRatio(size area, real devicePixelRatio)
 
-    \brief \TODO
+    Sets the item area to \a area and the pixel ratio to \a devicePixelRatio.
  */
 void Scene3DItem::setItemAreaAndDevicePixelRatio(QSize area, qreal devicePixelRatio)
 {

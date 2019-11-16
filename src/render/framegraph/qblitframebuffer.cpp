@@ -70,6 +70,10 @@ namespace Qt3DRender {
 
     Specifies the interpolation applied if the image is stretched.
 
+    \value Nearest
+           Nearest-neighbor interpolation.
+    \value Linear
+           Linear interpolation.
 */
 /*!
     \property Qt3DRender::QBlitFramebuffer::destination

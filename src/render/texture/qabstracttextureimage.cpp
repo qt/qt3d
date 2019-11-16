@@ -131,8 +131,8 @@ QTextureImageDataGeneratorPtr QAbstractTextureImagePrivate::dataGenerator() cons
 /*!
    \fn Qt3DRender::QTextureImageDataGeneratorPtr Qt3DRender::QAbstractTextureImage::dataGenerator() const
 
-    Implement this method to return the \l QTextureImageDataGeneratorPtr, which will
-    provide the data for the texture image.
+    Implement this method to return the QTextureImageDataGeneratorPtr instance,
+    which will provide the data for the texture image.
 */
 
 /*!

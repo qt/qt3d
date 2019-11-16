@@ -86,8 +86,8 @@ namespace Qt3DAnimation {
 */
 /*!
     \qmlmethod MorphTarget Qt3D.Animation::MorphTarget::fromGeometry(geometry, stringList)
-    Returns a morph target based on the attributes defined by the given stringList from
-    the given geometry.
+    Returns a morph target based on the attributes defined by the given \a stringList from
+    the given \a geometry.
 */
 
 QMorphTargetPrivate::QMorphTargetPrivate()

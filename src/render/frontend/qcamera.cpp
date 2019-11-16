@@ -235,7 +235,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  * \qmlmethod void Qt3D.Render::Camera::viewEntity(Entity entity)
  *
  * Rotates and moves the camera so that it's viewCenter is the center of the entity's bounding volume
- * and the entire entity fits in the view port.
+ * and the entire \a entity fits in the view port.
  *
  * \note Only works if the lens is in perspective projection mode.
  * \sa Qt3D.Render::Camera::projectionType

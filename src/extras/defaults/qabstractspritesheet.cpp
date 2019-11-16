@@ -100,7 +100,7 @@ QAbstractSpriteSheet::~QAbstractSpriteSheet()
 }
 
 /*!
-    \property QAbstractSpriteSheet::texture
+    \property Qt3DExtras::QAbstractSpriteSheet::texture
 
     Holds the current texture used by the material.
 */

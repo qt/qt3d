@@ -342,7 +342,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
  */
 
 /*!
-    \qmlproperty Qt3DRender::QShaderImage::mipLevel
+    \qmlproperty int Qt3D.Render::ShaderImage::mipLevel
 
     Holds which mipLevel out of the referenced texture should be used for the
     ShaderImage.
@@ -351,7 +351,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
  */
 
 /*!
-    \qmlproperty Qt3DRender::QShaderImage::layer
+    \qmlproperty int Qt3D.Render::ShaderImage::layer
 
     Holds which layer out of the referenced texture should be used for the
     ShaderImage. This property does nothing if \a layered is set to true or if
@@ -365,11 +365,11 @@ QShaderImagePrivate::~QShaderImagePrivate()
     cubeMapFace = layer - (cubeMapLayer * 6)
     \endcode
 
-    \default 0
+    Default value is 0.
  */
 
 /*!
- * \qmlproperty Qt3DRender::QShaderImage::layered
+ * \qmlproperty bool Qt3D.Render::ShaderImage::layered
 
     If set to true, if the referenced texture is a one-dimensional array,
     two-dimensional array, three-dimensional, cube map, cube map array, or
@@ -377,21 +377,28 @@ QShaderImagePrivate::~QShaderImagePrivate()
     for all layers. If set to false, only the single layer specified by the \a
     layer property will be bound.
 
-    \default false
+    Default value is \c false.
  */
 
 /*!
-    \qmlproperty Qt3DRender::QShaderImage::access
+    \qmlproperty enumeration Qt3D.Render::ShaderImage::access
 
     Specifies the type of access we want to allow from our shader instances to
     the image. If a shader tries to write or read from an image that has
     incompatible access, the behavior is undefined.
 
-    \default ShaderImage.ReadWrite
+    \value ShaderImage.ReadOnly
+           Read-only access.
+    \value ShaderImage.WriteOnly
+           Write-only access.
+    \value ShaderImage.ReadWrite
+           Read-write access.
+
+    Default value is ShaderImage.ReadWrite.
  */
 
 /*!
-    \qmlproperty Qt3DRender::QShaderImage::format
+    \qmlproperty enumeration Qt3D.Render::ShaderImage::format
 
     Specifies the image format, which is essentially important when storing values
     in the ShaderImage from a shader.
@@ -407,7 +414,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     By default Qt3D will try to set the image format to match that of the
     referenced texture.
 
-    \default ShaderImage.Automatic
+    Default value is ShaderImage.Automatic.
  */
 
 /*!

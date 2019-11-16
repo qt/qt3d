@@ -51,16 +51,11 @@ void compareShaderParameterPacks(const ShaderParameterPack &t1,
     const PackUniformHash hash1 = t1.uniforms();
     const PackUniformHash hash2 = t2.uniforms();
 
-    QCOMPARE(hash1.size(), hash2.size());
+    QCOMPARE(hash1.keys.size(), hash2.keys.size());
 
-    auto it = hash1.constBegin();
-    const auto end = hash1.constEnd();
-
-    while (it != end) {
-        const auto h2It = hash2.find(it.key());
-        QVERIFY(h2It != hash2.cend());
-        QCOMPARE(it.value(), h2It.value());
-        ++it;
+    for (int i = 0, m = hash1.keys.size(); i < m; ++i) {
+        const int key = hash1.keys.at(i);
+        QCOMPARE(hash1.value(key), hash2.value(key));
     }
 }
 

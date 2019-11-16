@@ -152,7 +152,7 @@ namespace Qt3DRender {
 
     This signal is emitted when the bounding volume defined by the
     pickAttribute property intersects with a ray on a mouse click. Intersection
-    information are accessible through the pick \a parameter.
+    information are accessible through the \a pick parameter.
 */
 
 /*!

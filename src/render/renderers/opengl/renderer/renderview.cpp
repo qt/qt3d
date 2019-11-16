@@ -552,10 +552,8 @@ void RenderView::sort()
                 // We need the reference here as we are modifying the original container
                 // not the copy
                 PackUniformHash &uniforms = m_commands[j].m_parameterPack.m_uniforms;
-                PackUniformHash::iterator it = uniforms.begin();
-                const PackUniformHash::iterator end = uniforms.end();
 
-                while (it != end) {
+                for (int u = 0; u < uniforms.keys.size();) {
                     // We are comparing the values:
                     // - raw uniform values
                     // - the texture Node id if the uniform represents a texture
@@ -563,15 +561,17 @@ void RenderView::sort()
                     // sharing the same material (shader) are rendered, we can't have the case
                     // where two uniforms, referencing the same texture eventually have 2 different
                     // texture unit values
-                    const UniformValue refValue = cachedUniforms.value(it.key());
-                    if (it.value() == refValue) {
-                        it = uniforms.erase(it);
+                    const int uniformNameId = uniforms.keys.at(u);
+                    const UniformValue &refValue = cachedUniforms.value(uniformNameId);
+                    const UniformValue &newValue = uniforms.values.at(u);
+                    if (newValue == refValue) {
+                        uniforms.erase(u);
                     } else {
                         // Record updated value so that subsequent comparison
                         // for the next command will be made againts latest
                         // uniform value
-                        cachedUniforms.insert(it.key(), it.value());
-                        ++it;
+                        cachedUniforms.insert(uniformNameId, newValue);
+                        ++u;
                     }
                 }
                 ++j;
