@@ -51,7 +51,6 @@ QCallbackMappingPrivate::QCallbackMappingPrivate()
     , m_channelName()
     , m_type(static_cast<int>(QVariant::Invalid))
     , m_callback(nullptr)
-    , m_callbackFlags(0)
 {
     m_mappingType = QChannelMappingCreatedChangeBase::CallbackMapping;
 }

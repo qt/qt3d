@@ -1889,9 +1889,9 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
 
     const BackendNodeDirtySet dirtyBitsForFrame = m_dirtyBits.marked | m_dirtyBits.remaining;
-    m_dirtyBits.marked = 0;
-    m_dirtyBits.remaining = 0;
-    BackendNodeDirtySet notCleared = 0;
+    m_dirtyBits.marked = {};
+    m_dirtyBits.remaining = {};
+    BackendNodeDirtySet notCleared = {};
 
     // Add jobs
     const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;

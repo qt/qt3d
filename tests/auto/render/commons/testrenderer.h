@@ -90,7 +90,7 @@ public:
 
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;
-    Qt3DRender::Render::NodeManagers *m_managers;
+    Qt3DRender::Render::NodeManagers *m_managers = nullptr;
 };
 
 QT_END_NAMESPACE

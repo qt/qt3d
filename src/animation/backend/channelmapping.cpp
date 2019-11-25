@@ -59,7 +59,6 @@ ChannelMapping::ChannelMapping()
     , m_componentCount(0)
     , m_propertyName(nullptr)
     , m_callback(nullptr)
-    , m_callbackFlags(0)
     , m_skeletonId()
     , m_mappingType(MappingType::ChannelMappingType)
 {
@@ -74,7 +73,7 @@ void ChannelMapping::cleanup()
     m_propertyName = nullptr;
     m_componentCount = 0;
     m_callback = nullptr;
-    m_callbackFlags = 0;
+    m_callbackFlags = {};
     m_skeletonId = Qt3DCore::QNodeId();
 }
 
