@@ -460,10 +460,12 @@ bool Scene3DItem::needsRender()
 // processFrame will block and wait for renderer to have been finished
 void Scene3DItem::onBeforeSync()
 {
+    static bool dontRenderWhenHidden = !qgetenv("QT3D_SCENE3D_STOP_RENDER_HIDDEN").isEmpty();
+
     // If we are not visible, don't processFrame changes as we would end up
     // waiting forever for the scene to be rendered which won't happen
     // if the Scene3D item is not visible
-    if (!isVisible())
+    if (!isVisible() && dontRenderWhenHidden)
         return;
 
     // Has anything in the 3D scene actually changed that requires us to render?
