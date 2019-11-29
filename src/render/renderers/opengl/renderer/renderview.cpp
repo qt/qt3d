@@ -725,7 +725,9 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
     return commands;
 }
 
-void RenderView::updateRenderCommand(EntityRenderCommandData &renderCommandData)
+void RenderView::updateRenderCommand(EntityRenderCommandData *renderCommandData,
+                                     int offset,
+                                     int count)
 {
     // Note: since many threads can be building render commands
     // we need to ensure that the UniformBlockValueBuilder they are using
@@ -735,10 +737,11 @@ void RenderView::updateRenderCommand(EntityRenderCommandData &renderCommandData)
     builder->textureManager = m_manager->textureManager();
     m_localData.setLocalData(builder);
 
-    for (int i = 0, m = renderCommandData.size(); i < m; ++i) {
-        Entity *entity = renderCommandData.entities.at(i);
-        const RenderPassParameterData passData = renderCommandData.passesData.at(i);
-        RenderCommand &command = renderCommandData.commands[i];
+    for (int i = 0, m = count; i < m; ++i) {
+        const int idx = offset + i;
+        Entity *entity = renderCommandData->entities.at(idx);
+        const RenderPassParameterData passData = renderCommandData->passesData.at(idx);
+        RenderCommand &command = renderCommandData->commands[idx];
 
         // Pick which lights to take in to account.
         // For now decide based on the distance by taking the MAX_LIGHTS closest lights.

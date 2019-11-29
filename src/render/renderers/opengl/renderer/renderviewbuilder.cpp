@@ -117,16 +117,11 @@ public:
         // Append all the commands and sort them
         RenderView *rv = m_renderViewJob->renderView();
 
-        int totalCommandCount = 0;
-        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandUpdaterJobs))
-            totalCommandCount += renderViewCommandBuilder->commands().size();
+        const EntityRenderCommandData *commandData = m_renderViewCommandUpdaterJobs.first()->renderables();
+        const QVector<RenderCommand> commands = std::move(commandData->commands);
 
-        QVector<RenderCommand> commands;
-        commands.reserve(totalCommandCount);
-
-        // Reduction
-        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandUpdaterJobs))
-            commands += std::move(renderViewCommandBuilder->commands());
+        // TO DO: Cache the EntityRenderCommandData so that it can be reused if nothing in the scene has changed
+        delete commandData;
 
         rv->setCommands(commands);
 
@@ -316,8 +311,8 @@ public:
 
             // Filter out Render commands for which the Entity wasn't selected because
             // of frustum, proximity or layer filtering
-            EntityRenderCommandData filteredCommandData;
-            filteredCommandData.reserve(renderableEntities.size());
+            EntityRenderCommandData *filteredCommandData = new EntityRenderCommandData();
+            filteredCommandData->reserve(renderableEntities.size());
             // Because dataCacheForLeaf.renderableEntities or computeEntities are sorted
             // What we get out of EntityRenderCommandData is also sorted by Entity
             auto eIt = std::cbegin(renderableEntities);
@@ -335,9 +330,9 @@ public:
                 // Push pointers to command data for all commands that match the
                 // entity
                 while (cIt != cEnd && commandData.entities.at(cIt) == targetEntity) {
-                    filteredCommandData.push_back(commandData.entities.at(cIt),
-                                                  commandData.commands.at(cIt),
-                                                  commandData.passesData.at(cIt));
+                    filteredCommandData->push_back(commandData.entities.at(cIt),
+                                                   commandData.commands.at(cIt),
+                                                   commandData.passesData.at(cIt));
                     ++cIt;
                 }
                 ++eIt;
@@ -346,13 +341,15 @@ public:
             // Split among the number of command builders
             int i = 0;
             const int m = RenderViewBuilder::optimalJobCount() - 1;
-            const int packetSize = filteredCommandData.size() / RenderViewBuilder::optimalJobCount();
+            const int packetSize = filteredCommandData->size() / RenderViewBuilder::optimalJobCount();
             while (i < m) {
                 const RenderViewCommandUpdaterJobPtr renderViewCommandBuilder = m_renderViewCommandUpdaterJobs.at(i);
-                renderViewCommandBuilder->setRenderables(filteredCommandData.mid(i * packetSize, packetSize));
+                renderViewCommandBuilder->setRenderables(filteredCommandData, i * packetSize, packetSize);
                 ++i;
             }
-            m_renderViewCommandUpdaterJobs.at(i)->setRenderables(filteredCommandData.mid(i * packetSize, packetSize + filteredCommandData.size() % (m + 1)));
+            m_renderViewCommandUpdaterJobs.at(i)->setRenderables(filteredCommandData,
+                                                                 i * packetSize,
+                                                                 packetSize + filteredCommandData->size() % (m + 1));
         }
     }
 

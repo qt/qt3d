@@ -54,6 +54,8 @@ int renderViewInstanceCounter = 0;
 
 RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
     : Qt3DCore::QAspectJob()
+    , m_offset(0)
+    , m_count(0)
     , m_renderView(nullptr)
     , m_renderer(nullptr)
 {
@@ -66,11 +68,7 @@ void RenderViewCommandUpdaterJob::run()
     // if a child has a mesh in the view frustum while its parent isn't contained in it.
     if (!m_renderView->noDraw()) {
         // Update Render Commands (Uniform Change, Depth Change)
-        m_renderView->updateRenderCommand(m_renderables);
-
-        // Copy commands out of cached -> ensures we can submit them for rendering
-        // while cache is rebuilt or modified for next frame
-        m_commands = m_renderables.commands;
+        m_renderView->updateRenderCommand(m_renderables, m_offset, m_count);
     }
 }
 

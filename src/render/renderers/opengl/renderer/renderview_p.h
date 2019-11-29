@@ -231,7 +231,8 @@ public:
     EntityRenderCommandData buildComputeRenderCommands(const QVector<Entity *> &entities) const;
 
 
-    void updateRenderCommand(EntityRenderCommandData &renderCommandData);
+    void updateRenderCommand(EntityRenderCommandData *renderCommandData,
+                             int offset, int count);
 
 
     void setCommands(const QVector<RenderCommand> &commands) Q_DECL_NOTHROW { m_commands = commands; }
