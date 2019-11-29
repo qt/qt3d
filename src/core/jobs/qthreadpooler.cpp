@@ -66,16 +66,19 @@ QThreadPooler::QThreadPooler(QObject *parent)
     , m_futureInterface(nullptr)
     , m_mutex()
     , m_taskCount(0)
+    , m_threadPool(QThreadPool::globalInstance())
 {
     const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
     if (!maxThreadCount.isEmpty()) {
         bool conversionOK = false;
         const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
         if (conversionOK)
-            m_threadPool.setMaxThreadCount(maxThreadCountValue);
+            m_threadPool->setMaxThreadCount(maxThreadCountValue);
     }
+
+
     // Ensures that threads will never be recycled
-    m_threadPool.setExpiryTimeout(-1);
+    m_threadPool->setExpiryTimeout(-1);
 #if QT_CONFIG(qt3d_profile_jobs)
     QThreadPooler::m_jobsStatTimer.start();
 #endif
@@ -105,7 +108,7 @@ void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
         if (!hasDependencies(*it) && !(*it)->reserved()) {
             (*it)->setReserved(true);
             (*it)->setPooler(this);
-            m_threadPool.start((*it));
+            m_threadPool->start((*it));
         }
     }
 }
@@ -125,7 +128,7 @@ void QThreadPooler::taskFinished(RunnableInterface *task)
                 if (!aspectTask->reserved()) {
                     aspectTask->setReserved(true);
                     aspectTask->setPooler(this);
-                    m_threadPool.start(aspectTask);
+                    m_threadPool->start(aspectTask);
                 }
             }
         }
@@ -188,7 +191,7 @@ int QThreadPooler::currentCount() const
 
 int QThreadPooler::maxThreadCount() const
 {
-    return m_threadPool.maxThreadCount();
+    return m_threadPool->maxThreadCount();
 }
 
 #if QT_CONFIG(qt3d_profile_jobs)
