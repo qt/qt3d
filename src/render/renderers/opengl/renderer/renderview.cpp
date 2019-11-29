@@ -643,12 +643,15 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
             const HMaterial materialHandle = entity->componentHandle<Material>();
             const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
 
+            HGeometry geometryHandle = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
+            Geometry *geometry = m_manager->geometryManager()->data(geometryHandle);
+
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
             for (const RenderPassParameterData &passData : renderPassData) {
                 // Add the RenderPass Parameters
                 RenderCommand command = {};
                 command.m_geometryRenderer = geometryRendererHandle;
-                command.m_geometry = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
+                command.m_geometry = geometryHandle;
 
                 command.m_material = materialHandle;
                 // For RenderPass based states we use the globally set RenderState
@@ -664,6 +667,73 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
                     command.m_changeCost = m_renderer->defaultRenderState()->changeCost(command.m_stateSet.data());
                 }
                 command.m_shader = m_manager->lookupHandle<Shader, ShaderManager, HShader>(pass->shaderProgram());
+
+                { // Scoped to show extent
+
+                    // Update the draw command with what's going to be needed for the drawing
+                    int primitiveCount = geometryRenderer->vertexCount();
+                    int estimatedCount = 0;
+                    Attribute *indexAttribute = nullptr;
+                    Attribute *indirectAttribute = nullptr;
+
+                    const QVector<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
+                    for (Qt3DCore::QNodeId attributeId : attributeIds) {
+                        Attribute *attribute = m_manager->attributeManager()->lookupResource(attributeId);
+                        switch (attribute->attributeType()) {
+                        case QAttribute::IndexAttribute:
+                            indexAttribute = attribute;
+                            break;
+                        case QAttribute::DrawIndirectAttribute:
+                            indirectAttribute = attribute;
+                            break;
+                        case QAttribute::VertexAttribute: {
+                            if (command.m_activeAttributes.contains(attribute->nameId()))
+                                estimatedCount = std::max(int(attribute->count()), estimatedCount);
+                            break;
+                        }
+                        default:
+                            Q_UNREACHABLE();
+                            break;
+                        }
+                    }
+
+                    command.m_drawIndexed = (indexAttribute != nullptr);
+                    command.m_drawIndirect = (indirectAttribute != nullptr);
+
+                    // Update the draw command with all the information required for the drawing
+                    if (command.m_drawIndexed) {
+                        command.m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
+                        command.m_indexAttributeByteOffset = indexAttribute->byteOffset() + geometryRenderer->indexBufferByteOffset();
+                    }
+
+                    // Note: we only care about the primitiveCount when using direct draw calls
+                    // For indirect draw calls it is assumed the buffer was properly set already
+                    if (command.m_drawIndirect) {
+                        command.m_indirectAttributeByteOffset = indirectAttribute->byteOffset();
+                        command.m_indirectDrawBuffer = m_manager->bufferManager()->lookupHandle(indirectAttribute->bufferId());
+                    } else {
+                        // Use the count specified by the GeometryRender
+                        // If not specify use the indexAttribute count if present
+                        // Otherwise tries to use the count from the attribute with the highest count
+                        if (primitiveCount == 0) {
+                            if (indexAttribute)
+                                primitiveCount = indexAttribute->count();
+                            else
+                                primitiveCount = estimatedCount;
+                        }
+                    }
+
+                    command.m_primitiveCount = primitiveCount;
+                    command.m_primitiveType = geometryRenderer->primitiveType();
+                    command.m_primitiveRestartEnabled = geometryRenderer->primitiveRestartEnabled();
+                    command.m_restartIndexValue = geometryRenderer->restartIndexValue();
+                    command.m_firstInstance = geometryRenderer->firstInstance();
+                    command.m_instanceCount = geometryRenderer->instanceCount();
+                    command.m_firstVertex = geometryRenderer->firstVertex();
+                    command.m_indexOffset = geometryRenderer->indexOffset();
+                    command.m_verticesPerPatch = geometryRenderer->verticesPerPatch();
+                } // scope
+
 
                 commands.push_back(entity,
                                    std::move(command),
@@ -985,6 +1055,10 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
 
             // Set default attributes
             command->m_activeAttributes = attributeNamesIds;
+
+            // At this point we know whether the command is a valid draw command or not
+            // We still need to process the uniforms as the command could be a compute command
+            command->m_isValid = !command->m_activeAttributes.empty();
 
             // Parameters remaining could be
             // -> uniform scalar / vector
