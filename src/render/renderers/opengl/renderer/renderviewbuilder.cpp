@@ -50,9 +50,17 @@ namespace Render {
 // In some cases having less jobs is better (especially on fast cpus where
 // splitting just adds more overhead). Ideally, we should try to set the value
 // depending on the platform/CPU/nbr of cores
-const int RenderViewBuilder::m_optimalParallelJobCount = std::max(std::min(4, QThread::idealThreadCount()), 2);
+const int RenderViewBuilder::m_optimalParallelJobCount = QThread::idealThreadCount();
 
 namespace {
+
+int findIdealNumberOfWorkers(int elementCount, int packetSize = 100)
+{
+    if (elementCount == 0 || packetSize == 0)
+        return 0;
+    return std::min(std::max(elementCount / packetSize, 1), RenderViewBuilder::optimalJobCount());
+}
+
 
 class SyncPreCommandBuilding
 {
@@ -82,16 +90,16 @@ public:
 
         lock.unlock();
 
-        // Split among the number of command builders
-        int i = 0;
-        const int m = RenderViewBuilder::optimalJobCount() - 1;
-        const int packetSize = entities.size() / RenderViewBuilder::optimalJobCount();
-        while (i < m) {
+        // Split among the ideal number of command builders
+        const int idealPacketSize = std::min(std::max(100, entities.size() / RenderViewBuilder::optimalJobCount()), entities.size());
+        // Try to split work into an ideal number of workers
+        const int m = findIdealNumberOfWorkers(entities.size(), idealPacketSize);
+
+        for (int i = 0; i < m; ++i) {
             const RenderViewCommandBuilderJobPtr renderViewCommandBuilder = m_renderViewCommandBuilderJobs.at(i);
-            renderViewCommandBuilder->setEntities(entities.mid(i * packetSize, packetSize));
-            ++i;
+            const int count = (i == m - 1) ? entities.size() - (i * idealPacketSize) : idealPacketSize;
+            renderViewCommandBuilder->setEntities(entities, i * idealPacketSize, count);
         }
-        m_renderViewCommandBuilderJobs.at(i)->setEntities(entities.mid(i * packetSize, packetSize + entities.size() % (m + 1)));
     }
 
 private:
@@ -118,16 +126,19 @@ public:
         RenderView *rv = m_renderViewJob->renderView();
 
         const EntityRenderCommandData *commandData = m_renderViewCommandUpdaterJobs.first()->renderables();
-        const QVector<RenderCommand> commands = std::move(commandData->commands);
 
-        // TO DO: Cache the EntityRenderCommandData so that it can be reused if nothing in the scene has changed
-        delete commandData;
+        if (commandData != nullptr) {
+            const QVector<RenderCommand> commands = std::move(commandData->commands);
 
-        rv->setCommands(commands);
+            // TO DO: Cache the EntityRenderCommandData so that it can be reused if nothing in the scene has changed
+            delete commandData;
 
-        // TO DO: Find way to store commands once or at least only when required
-        // Sort the commands
-        rv->sort();
+            rv->setCommands(commands);
+
+            // TO DO: Find way to store commands once or at least only when required
+            // Sort the commands
+            rv->sort();
+        }
 
         // Enqueue our fully populated RenderView with the RenderThread
         m_renderer->enqueueRenderView(rv, m_renderViewJob->submitOrderIndex());
@@ -274,12 +285,12 @@ public:
                         commandData += std::move(renderViewCommandBuilder->commandData());
                 }
 
+
                 // Store new cache
                 RendererCache::LeafNodeData &writableCacheForLeaf = cache->leafNodeCache[m_leafNode];
                 writableCacheForLeaf.renderCommandData = std::move(commandData);
             }
             const EntityRenderCommandData commandData = dataCacheForLeaf.renderCommandData;
-
             const QVector<Entity *> filteredEntities = dataCacheForLeaf.filterEntitiesByLayer;
             QVector<Entity *> renderableEntities = isDraw ? cache->renderableEntities : cache->computeEntities;
             QVector<LightSource> lightSources = cache->gatheredLights;
@@ -339,17 +350,15 @@ public:
             }
 
             // Split among the number of command builders
-            int i = 0;
-            const int m = RenderViewBuilder::optimalJobCount() - 1;
-            const int packetSize = filteredCommandData->size() / RenderViewBuilder::optimalJobCount();
-            while (i < m) {
+            // The idealPacketSize is at least 100 entities per worker
+            const int idealPacketSize = std::min(std::max(100, filteredCommandData->size() / RenderViewBuilder::optimalJobCount()), filteredCommandData->size());
+            const int m = findIdealNumberOfWorkers(filteredCommandData->size(), idealPacketSize);
+
+            for (int i = 0; i < m; ++i) {
                 const RenderViewCommandUpdaterJobPtr renderViewCommandBuilder = m_renderViewCommandUpdaterJobs.at(i);
-                renderViewCommandBuilder->setRenderables(filteredCommandData, i * packetSize, packetSize);
-                ++i;
+                const int count = (i == m - 1) ? filteredCommandData->size() - (i * idealPacketSize) : idealPacketSize;
+                renderViewCommandBuilder->setRenderables(filteredCommandData, i * idealPacketSize, count);
             }
-            m_renderViewCommandUpdaterJobs.at(i)->setRenderables(filteredCommandData,
-                                                                 i * packetSize,
-                                                                 packetSize + filteredCommandData->size() % (m + 1));
         }
     }
 

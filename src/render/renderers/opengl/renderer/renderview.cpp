@@ -621,13 +621,16 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
 }
 
 // If we are there, we know that entity had a GeometryRenderer + Material
-EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities) const
+EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities,
+                                                            int offset, int count) const
 {
     EntityRenderCommandData commands;
 
-    commands.reserve(entities.size());
+    commands.reserve(count);
 
-    for (Entity *entity : entities) {
+    for (int i = 0; i < count; ++i) {
+        const int idx = offset + i;
+        Entity *entity = entities.at(idx);
         GeometryRenderer *geometryRenderer = nullptr;
         HGeometryRenderer geometryRendererHandle = entity->componentHandle<GeometryRenderer>();
 
@@ -672,7 +675,8 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
     return commands;
 }
 
-EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities) const
+EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities,
+                                                               int offset, int count) const
 {
     // If the RenderView contains only a ComputeDispatch then it cares about
     // A ComputeDispatch is also implicitely a NoDraw operation
@@ -681,9 +685,11 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
     // material/effect/technique/parameters/filters/
     EntityRenderCommandData commands;
 
-    commands.reserve(entities.size());
+    commands.reserve(count);
 
-    for (Entity *entity : entities) {
+    for (int i = 0; i < count; ++i) {
+        const int idx = offset + i;
+        Entity *entity = entities.at(idx);
         ComputeCommand *computeJob = nullptr;
         HComputeCommand computeCommandHandle = entity->componentHandle<ComputeCommand>();
         if ((computeJob = nodeManagers()->computeJobManager()->data(computeCommandHandle)) != nullptr
