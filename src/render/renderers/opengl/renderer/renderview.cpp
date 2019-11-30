@@ -211,7 +211,7 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
         return UniformValue(Matrix4x4(viewportMatrix.inverted()));
     }
     case AspectRatio:
-        return float(m_surfaceSize.width()) / float(m_surfaceSize.height());
+        return float(m_surfaceSize.width()) / std::max(1.f, float(m_surfaceSize.height()));
     case Exposure:
         return UniformValue(m_data.m_renderCameraLens ? m_data.m_renderCameraLens->exposure() : 0.0f);
     case Gamma:

@@ -67,6 +67,9 @@ struct TransformUpdate
 
 void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform, QVector<TransformUpdate> &updatedTransforms)
 {
+    if (!node->isEnabled())
+        return;
+
     Matrix4x4 worldTransform(parentTransform);
     Transform *nodeTransform = node->renderComponent<Transform>();
 
