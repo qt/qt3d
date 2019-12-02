@@ -53,7 +53,7 @@ class QPropertyNodeRemovedChangePrivate;
 class Q_3DCORESHARED_EXPORT QPropertyNodeRemovedChange : public QStaticPropertyValueRemovedChangeBase
 {
 public:
-    explicit QPropertyNodeRemovedChange(QNodeId subjectId, QNode *node);
+    Q3D_DECL_DEPRECATED explicit QPropertyNodeRemovedChange(QNodeId subjectId, QNode *node);
     ~QPropertyNodeRemovedChange();
 
     QNodeId removedNodeId() const;
@@ -63,7 +63,7 @@ private:
     Q_DECLARE_PRIVATE(QPropertyNodeRemovedChange)
 };
 
-typedef QSharedPointer<QPropertyNodeRemovedChange> QPropertyNodeRemovedChangePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QPropertyNodeRemovedChange> QPropertyNodeRemovedChangePtr;
 
 } // namespace Qt3DCore
 

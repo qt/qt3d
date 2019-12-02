@@ -35,7 +35,6 @@
 #include <Qt3DRender/private/entityaccumulator_p.h>
 
 #include <Qt3DRender/QCameraLens>
-#include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QTransform>
 
 #include <Qt3DRender/QEnvironmentLight>
@@ -150,11 +149,6 @@ private slots:
         // Create nodes in the backend manager
         nodeManagers.renderNodesManager()->getOrCreateResource(dummyFrontendEntity.id());
         nodeManagers.renderNodesManager()->getOrCreateResource(dummyFrontendEntityChild.id());
-
-// TODOSYNC clean up
-//        // Send children added event to entity
-//        const auto addEntityChange = QPropertyNodeAddedChangePtr::create(dummyFrontendEntity.id(), &dummyFrontendEntityChild);
-//        entity.sceneChangeEvent(addEntityChange);
 
         // THEN
         QVERIFY(!entity.componentUuid<Transform>().isNull());

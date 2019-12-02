@@ -42,7 +42,6 @@
 #include <Qt3DRender/QFrameGraphNode>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/qrendersettings_p.h>
-#include <Qt3DCore/qnodecommand.h>
 
 QT_BEGIN_NAMESPACE
 

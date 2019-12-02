@@ -51,7 +51,7 @@ class QNodeCreatedChangeBasePrivate;
 class Q_3DCORESHARED_EXPORT QNodeCreatedChangeBase : public QSceneChange
 {
 public:
-    explicit QNodeCreatedChangeBase(const QNode *node);
+    Q3D_DECL_DEPRECATED explicit QNodeCreatedChangeBase(const QNode *node);
     ~QNodeCreatedChangeBase();
 
     QNodeId parentId() const Q_DECL_NOTHROW;
@@ -65,7 +65,7 @@ private:
     Q_DECLARE_PRIVATE(QNodeCreatedChangeBase)
 };
 
-typedef QSharedPointer<QNodeCreatedChangeBase> QNodeCreatedChangeBasePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QNodeCreatedChangeBase> QNodeCreatedChangeBasePtr;
 
 template<typename T>
 class QNodeCreatedChange : public QNodeCreatedChangeBase
@@ -81,7 +81,7 @@ public:
 };
 
 template<typename T>
-using QNodeCreatedChangePtr = QSharedPointer<QNodeCreatedChange<T>>;
+Q3D_DECL_DEPRECATED using QNodeCreatedChangePtr = QSharedPointer<QNodeCreatedChange<T>>;
 
 } // namespace Qt3DCore
 

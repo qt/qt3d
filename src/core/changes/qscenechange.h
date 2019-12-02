@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-enum ChangeFlag {
+enum Q3D_DECL_DEPRECATED ChangeFlag {
     NodeCreated             = 1 << 0,
     NodeDeleted             = 1 << 1,
     PropertyUpdated         = 1 << 2,
@@ -87,9 +87,9 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QSceneChange)
-    explicit QSceneChange(ChangeFlag type, QNodeId subjectId);
-    explicit QSceneChange(QSceneChangePrivate &dd,
-                 ChangeFlag type, QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QSceneChange(ChangeFlag type, QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QSceneChange(QSceneChangePrivate &dd,
+                                              ChangeFlag type, QNodeId subjectId);
     QSceneChangePrivate *d_ptr;
 
 private:
@@ -98,7 +98,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QSceneChange::DeliveryFlags)
 
-typedef QSharedPointer<QSceneChange> QSceneChangePtr;
+Q3D_DECL_DEPRECATED typedef Q3D_DECL_DEPRECATED QSharedPointer<QSceneChange> QSceneChangePtr;
 
 } // namespace Qt3DCore
 

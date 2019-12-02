@@ -179,7 +179,7 @@ private Q_SLOTS:
         // WHEN
         // we set an empty/null scene root...
         engine.setRootEntity(QEntityPtr());
-        QTimer::singleShot(1000, &eventLoop, SLOT(quit()));
+        QTimer::singleShot(600, &eventLoop, SLOT(quit()));
 
         // ...and allow events to process...
         eventLoop.exec();

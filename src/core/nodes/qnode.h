@@ -99,9 +99,9 @@ public:
     void clearPropertyTracking(const QString &propertyName);
     void clearPropertyTrackings();
 
-    QNodeCommand::CommandId sendCommand(const QString &name, const QVariant &data = QVariant(),
-                                        QNodeCommand::CommandId replyTo = QNodeCommand::CommandId());
-    void sendReply(const QNodeCommandPtr &command);
+    Q3D_DECL_DEPRECATED QNodeCommand::CommandId sendCommand(const QString &name, const QVariant &data = QVariant(),
+                                                          QNodeCommand::CommandId replyTo = QNodeCommand::CommandId());
+    Q3D_DECL_DEPRECATED void sendReply(const QNodeCommandPtr &command);
 
 public Q_SLOTS:
     void setParent(QNode *parent);
@@ -116,12 +116,12 @@ Q_SIGNALS:
 
 protected:
     explicit QNode(QNodePrivate &dd, QNode *parent = nullptr);
-    void notifyObservers(const QSceneChangePtr &change);
-    virtual void sceneChangeEvent(const QSceneChangePtr &change);
+    Q3D_DECL_DEPRECATED void notifyObservers(const QSceneChangePtr &change);
+    Q3D_DECL_DEPRECATED virtual void sceneChangeEvent(const QSceneChangePtr &change);
 
 private:
     Q_DECLARE_PRIVATE(QNode)
-    virtual QNodeCreatedChangeBasePtr createNodeCreationChange() const;
+    Q3D_DECL_DEPRECATED virtual QNodeCreatedChangeBasePtr createNodeCreationChange() const;
 
     // We only want setParent(QNode *) to be callable
     // when dealing with QNode objects

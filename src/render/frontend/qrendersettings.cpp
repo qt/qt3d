@@ -104,25 +104,25 @@ void QRenderSettingsPrivate::invalidateFrame()
 /*! \internal */
 void QRenderSettingsPrivate::_q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod)
 {
-    notifyPropertyChange("pickMethod", pickMethod);// TODOSYNC
+    notifyPropertyChange("pickMethod", pickMethod);
 }
 
 /*! \internal */
 void QRenderSettingsPrivate::_q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode)
 {
-    notifyPropertyChange("pickResultMode", pickResultMode);// TODOSYNC
+    notifyPropertyChange("pickResultMode", pickResultMode);
 }
 
 /*! \internal */
 void QRenderSettingsPrivate::_q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode)
 {
-    notifyPropertyChange("faceOrientationPickingMode", faceOrientationPickingMode);// TODOSYNC
+    notifyPropertyChange("faceOrientationPickingMode", faceOrientationPickingMode);
 }
 
 /*! \internal */
 void QRenderSettingsPrivate::_q_onWorldSpaceToleranceChanged(float worldSpaceTolerance)
 {
-    notifyPropertyChange("pickWorldSpaceTolerance", worldSpaceTolerance);// TODOSYNC
+    notifyPropertyChange("pickWorldSpaceTolerance", worldSpaceTolerance);
 }
 
 QRenderSettings::QRenderSettings(Qt3DCore::QNode *parent)

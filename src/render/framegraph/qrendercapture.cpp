@@ -36,8 +36,8 @@
 
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/private/qrendercapture_p.h>
-#include <Qt3DCore/QSceneChange>
-#include <Qt3DCore/QPropertyUpdatedChange>
+#include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 #include <QPointer>

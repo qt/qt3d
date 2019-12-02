@@ -382,7 +382,7 @@ void QNodePrivate::unregisterNotifiedProperties()
 
 void QNodePrivate::propertyChanged(int propertyIndex)
 {
-    Q_UNUSED(propertyIndex);
+    Q_UNUSED(propertyIndex)
 
     // Bail out early if we can to avoid the cost below
     if (m_blockNotifications)
@@ -539,6 +539,8 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
 }
 
 /*!
+    \obsolete
+
     Called when one or more backend aspects sends a notification \a change to the
     current Qt3DCore::QNode instance.
 
@@ -547,7 +549,7 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
 */
 void QNode::sceneChangeEvent(const QSceneChangePtr &change)
 {
-    Q_UNUSED(change);
+    Q_UNUSED(change)
     if (change->type() == Qt3DCore::PropertyUpdated) {
         // TODO: Do this more efficiently. We could pass the metaobject and property
         //       index to the animation aspect via the QChannelMapping. This would
@@ -594,8 +596,8 @@ QScene *QNodePrivate::scene() const
  */
 void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(value);
+    Q_UNUSED(name)
+    Q_UNUSED(value)
 
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)
@@ -606,8 +608,8 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 
 void QNodePrivate::notifyDynamicPropertyChange(const QByteArray &name, const QVariant &value)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(value);
+    Q_UNUSED(name)
+    Q_UNUSED(value)
 
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)
@@ -997,6 +999,9 @@ void QNode::clearPropertyTrackings()
     d->updatePropertyTrackMode();
 }
 
+/*!
+ * \obsolete
+ */
 QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const
 {
     // Uncomment this when implementing new frontend and backend types.
@@ -1049,6 +1054,7 @@ QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const
 */
 /*!
  * \brief Sends a command message to the backend node
+ * \obsolete
  *
  * Creates a QNodeCommand message and dispatches it to the backend node. The
  * command is given and a \a name and some \a data which can be used in the
@@ -1079,6 +1085,7 @@ QNodeCommand::CommandId QNode::sendCommand(const QString &name,
 
 /*!
  * \brief Send a \a command back to the backend node.
+ * \obsolete
  *
  * Assumes the command is to be to sent back in reply to itself to the backend node.
  *
