@@ -102,6 +102,8 @@ protected:
                             Qt3DCore::QNodeId viewportNodeId);
 
 private:
+    Q_DECLARE_PRIVATE(PickBoundingVolumeJob)
+
     void clearPreviouslyHoveredPickers();
 
     QList<QPair<QObject*, QMouseEvent>> m_pendingMouseEvents;

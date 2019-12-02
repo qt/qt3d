@@ -85,7 +85,7 @@ void LoadAnimationClipJob::clearDirtyAnimationClips()
 void LoadAnimationClipJob::run()
 {
     Q_ASSERT(m_handler);
-    Q_DJOB(LoadAnimationClipJob);
+    Q_D(LoadAnimationClipJob);
 
     d->m_updatedNodes.reserve(m_animationClipHandles.size());
     AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();

@@ -82,6 +82,8 @@ protected:
     void dispatchHits(RayCaster *rayCaster, const PickingUtils::HitList &sphereHits);
 
 private:
+    Q_DECLARE_PRIVATE(RayCastingJob)
+
     bool m_castersDirty;
     bool m_oneEnabledAtLeast;
 };

@@ -73,7 +73,7 @@ AxisAccumulatorJob::AxisAccumulatorJob(AxisAccumulatorManager *axisAccumulatorma
 
 void AxisAccumulatorJob::run()
 {
-    Q_DJOB(AxisAccumulatorJob);
+    Q_D(AxisAccumulatorJob);
     // Iterate over the accumulators and ask each to step the integrations
     const auto activeHandles = m_axisAccumulatorManager->activeHandles();
     d->updates.reserve(activeHandles.size());

@@ -83,6 +83,7 @@ public:
     void run() final;
 
 private:
+    Q_DECLARE_PRIVATE(SendBufferCaptureJob)
     NodeManagers *m_nodeManagers;
 };
 

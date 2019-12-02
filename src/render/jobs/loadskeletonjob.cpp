@@ -75,7 +75,7 @@ LoadSkeletonJob::LoadSkeletonJob(const HSkeleton &handle)
 
 void LoadSkeletonJob::run()
 {
-    Q_DJOB(LoadSkeletonJob);
+    Q_D(LoadSkeletonJob);
     d->m_backendSkeleton = nullptr;
 
     Skeleton *skeleton = m_nodeManagers->skeletonManager()->data(m_handle);
@@ -120,7 +120,7 @@ void LoadSkeletonJob::loadSkeleton(Skeleton *skeleton)
 
 void LoadSkeletonJob::loadSkeletonFromUrl(Skeleton *skeleton)
 {
-    Q_DJOB(LoadSkeletonJob);
+    Q_D(LoadSkeletonJob);
 
     using namespace Qt3DCore;
 

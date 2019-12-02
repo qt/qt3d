@@ -131,7 +131,7 @@ void UpdateWorldTransformJob::run()
     // TODO: Parallelise this on each level using a parallel_for
     // implementation.
 
-    Q_DJOB(UpdateWorldTransformJob);
+    Q_D(UpdateWorldTransformJob);
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
     Matrix4x4 parentTransform;

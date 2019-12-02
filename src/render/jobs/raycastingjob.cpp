@@ -273,7 +273,7 @@ void RayCastingJob::dispatchHits(RayCaster *rayCaster, const PickingUtils::HitLi
         };
     }
 
-    Q_DJOB(RayCastingJob);
+    Q_D(RayCastingJob);
     d->dispatches.push_back({rayCaster, hits});
 }
 

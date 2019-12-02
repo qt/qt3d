@@ -75,7 +75,7 @@ MouseEventDispatcherJob::MouseEventDispatcherJob(Qt3DCore::QNodeId input,
     : QAspectJob(*new MouseEventDispatcherJobPrivate)
     , m_inputHandler(nullptr)
 {
-    Q_DJOB(MouseEventDispatcherJob);
+    Q_D(MouseEventDispatcherJob);
     d->m_mouseInput = input;
     d->m_mouseEvents = mouseEvents;
 #if QT_CONFIG(wheelevent)

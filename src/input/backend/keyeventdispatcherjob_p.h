@@ -71,6 +71,8 @@ public:
     void run() override;
 
 private:
+    Q_DECLARE_PRIVATE(KeyEventDispatcherJob)
+
     InputHandler *m_inputHandler;
 };
 

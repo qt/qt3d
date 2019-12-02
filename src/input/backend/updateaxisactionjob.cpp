@@ -89,7 +89,7 @@ void UpdateAxisActionJob::run()
 
 void UpdateAxisActionJob::updateAction(LogicalDevice *device)
 {
-    Q_DJOB(UpdateAxisActionJob);
+    Q_D(UpdateAxisActionJob);
     const auto actionIds = device->actions();
     d->m_triggeredActions.reserve(actionIds.size());
 
@@ -117,7 +117,7 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
 
 void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
 {
-    Q_DJOB(UpdateAxisActionJob);
+    Q_D(UpdateAxisActionJob);
     const auto axisIds = device->axes();
     d->m_triggeredAxis.reserve(axisIds.size());
 

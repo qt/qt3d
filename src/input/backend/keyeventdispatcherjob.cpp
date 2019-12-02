@@ -67,7 +67,7 @@ KeyEventDispatcherJob::KeyEventDispatcherJob(Qt3DCore::QNodeId input, const QLis
     : QAspectJob(*new KeyEventDispatcherJobPrivate)
     , m_inputHandler(nullptr)
 {
-    Q_DJOB(KeyEventDispatcherJob);
+    Q_D(KeyEventDispatcherJob);
     d->m_keyboardHandler = input;
     d->m_events = events;
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::KeyEventDispatcher, 0)

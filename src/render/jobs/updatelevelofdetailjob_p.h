@@ -82,6 +82,8 @@ public:
     Entity *root() const { return m_root; }
 
 private:
+    Q_DECLARE_PRIVATE(UpdateLevelOfDetailJob)
+
     NodeManagers *m_manager;
     FrameGraphNode *m_frameGraphRoot;
     Entity *m_root;

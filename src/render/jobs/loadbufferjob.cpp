@@ -68,7 +68,7 @@ LoadBufferJob::LoadBufferJob(const HBuffer &handle)
     , m_handle(handle)
     , m_nodeManagers(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadBuffer, 0)
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadBuffer, 0);
 }
 
 LoadBufferJob::~LoadBufferJob()
@@ -77,7 +77,7 @@ LoadBufferJob::~LoadBufferJob()
 
 void LoadBufferJob::run()
 {
-    Q_DJOB(LoadBufferJob);
+    Q_D(LoadBufferJob);
     // Let's leave it for the moment until this has been properly tested
     qCDebug(Jobs) << Q_FUNC_INFO;
     Buffer *buffer = m_nodeManagers->data<Buffer, BufferManager>(m_handle);

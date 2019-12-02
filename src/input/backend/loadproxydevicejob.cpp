@@ -94,7 +94,7 @@ QVector<Qt3DCore::QNodeId> LoadProxyDeviceJob::proxies() const
 
 void LoadProxyDeviceJob::run()
 {
-    Q_DJOB(LoadProxyDeviceJob);
+    Q_D(LoadProxyDeviceJob);
     d->updates.reserve(m_proxies.size());
 
     Q_ASSERT(m_inputHandler);

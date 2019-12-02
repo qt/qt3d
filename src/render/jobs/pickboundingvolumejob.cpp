@@ -380,7 +380,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                bool allHitsRequested,
                                                Qt3DCore::QNodeId viewportNodeId)
 {
-    Q_DJOB(PickBoundingVolumeJob);
+    Q_D(PickBoundingVolumeJob);
 
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
     // If we have hits
@@ -541,7 +541,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
 {
-    Q_DJOB(PickBoundingVolumeJob);
+    Q_D(PickBoundingVolumeJob);
 
     for (const HObjectPicker &pickHandle : qAsConst(m_hoveredPickersToClear)) {
         ObjectPicker *pick = m_manager->objectPickerManager()->data(pickHandle);

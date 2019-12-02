@@ -111,7 +111,6 @@ public:
     virtual ~QAspectJobPrivate();
 
     static QAspectJobPrivate *get(QAspectJob *job);
-    static const QAspectJobPrivate *get(const QAspectJob *job);
 
     virtual void postFrame(QAspectManager *aspectManager);
 
@@ -122,9 +121,6 @@ public:
 };
 
 } // Qt3D
-
-#define Q_DJOB(Class) \
-    Class##Private *d = static_cast<Class##Private *>(Qt3DCore::QAspectJobPrivate::get(this))
 
 #if QT_CONFIG(qt3d_profile_jobs)
 
