@@ -560,6 +560,7 @@ private slots:
         QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
         QFETCH(Qt3DRender::QShaderProgram::ShaderType, type);
         QFETCH(Qt3DRender::QShaderProgram::ShaderType, notificationType);
+        Q_UNUSED(notificationType)
 
         const auto gl3Api = []{
             auto api = Qt3DRender::GraphicsApiFilterData();

@@ -71,7 +71,7 @@ private:
     bool isReadyToSubmit()
     {
         m_submitSemaphore.acquire(1);
-        return m_running.load() == 1;
+        return m_running.loadRelaxed() == 1;
     }
 
     Qt3DRender::Render::VSyncFrameAdvanceService *m_tickService;

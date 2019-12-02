@@ -166,13 +166,13 @@ void tst_QCircularBuffer::construction()
     QVERIFY(circ4.size() == 2);
     QVERIFY(circ4.at(0) == 10);
     QVERIFY(circ4.at(1) == 10);
-    QVERIFY(circ4.refCount().load() == 1);
+    QVERIFY(circ4.refCount().loadRelaxed() == 1);
 
     // Copy construct from circ4. Both circ4 and circ5 should now have a
     // refCount() of 2 since we are using implicit sharing.
     QCircularBuffer<int> circ5(circ4);
-    QVERIFY(circ4.refCount().load() == 2);
-    QVERIFY(circ5.refCount().load() == 2);
+    QVERIFY(circ4.refCount().loadRelaxed() == 2);
+    QVERIFY(circ5.refCount().loadRelaxed() == 2);
     QVERIFY(circ5.capacity() == 5);
     QVERIFY(circ5.size() == 2);
     QVERIFY(circ5.at(0) == 10);
@@ -199,7 +199,7 @@ void tst_QCircularBuffer::destruction()
     cir->append(MyComplexType(2));
     cir->append(MyComplexType(3));
     cir->remove(0);
-    Q_UNUSED(cir);
+    Q_UNUSED(cir)
 
     // Check that the dtor was called 2 times fewer than the constructor.
     // At this stage will still have 2 items in the circular buffer.
@@ -208,7 +208,7 @@ void tst_QCircularBuffer::destruction()
     // Destroy the circular buffer and check that the active count
     // is 0. (Same number of calls to dtor as have been made to the constructors)
     delete cir;
-    cir = 0;
+    cir = nullptr;
     QVERIFY(MyComplexType::ms_activeCount == 0);
 }
 
@@ -273,7 +273,7 @@ void tst_QCircularBuffer::clear()
     circ.clear();
     QVERIFY(circ.size() == 0);
     QVERIFY(circ.capacity() == 3);
-    QVERIFY(circ.refCount().load() == 1);
+    QVERIFY(circ.refCount().loadRelaxed() == 1);
 }
 
 void tst_QCircularBuffer::contains()

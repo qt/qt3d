@@ -1047,7 +1047,7 @@ private Q_SLOTS:
             mapping.type = static_cast<int>(QVariant::Vector3D);
             mapping.channelIndices = QVector<int>() << 0 << 1 << 2;
             mapping.callback = &callback;
-            mapping.callbackFlags = 0;
+            mapping.callbackFlags = {};
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 1.0f << 2.0f << 3.0f;
 
@@ -1073,7 +1073,7 @@ private Q_SLOTS:
             mapping.type = static_cast<int>(QVariant::Double);
             mapping.channelIndices = QVector<int>() << 0;
             mapping.callback = &callback;
-            mapping.callbackFlags = 0;
+            mapping.callbackFlags = {};
             mappingData.push_back(mapping);
             channelResults = QVector<float>() << 1.0f;
 
