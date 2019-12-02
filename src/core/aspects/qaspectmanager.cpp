@@ -484,13 +484,13 @@ void QAspectManager::processFrame()
     const auto dirtySubNodes = m_changeArbiter->takeDirtyFrontEndSubNodes();
     if (dirtySubNodes.size())
         for (QAbstractAspect *aspect : qAsConst(m_aspects))
-            QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndSubNodes(dirtySubNodes);
+            aspect->syncDirtyFrontEndSubNodes(dirtySubNodes);
 
     // Sync property updates
     const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
     if (dirtyFrontEndNodes.size())
         for (QAbstractAspect *aspect : qAsConst(m_aspects))
-           QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
+           aspect->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
 
     // TO DO: Having this done in the main thread actually means aspects could just
     // as simply read info out of the Frontend classes without risk of introducing

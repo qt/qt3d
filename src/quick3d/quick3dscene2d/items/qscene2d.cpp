@@ -310,6 +310,15 @@ QVector<Qt3DCore::QEntity*> QScene2D::entities()
 }
 
 /*!
+    Retrieve entities associated with the QScene2D.
+ */
+QVector<Qt3DCore::QEntity*> QScene2D::entities() const
+{
+    Q_D(const QScene2D);
+    return d->m_entities;
+}
+
+/*!
     Adds an \a entity to the the QScene2D object. If the entities have QObjectPicker,
     the pick events from that entity are sent to QScene2D and converted to mouse events.
 */

@@ -140,6 +140,13 @@ QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
     return d->m_dependencies;
 }
 
+void QAspectJob::postFrame(QAspectManager *aspectManager)
+{
+    Q_D(QAspectJob);
+    if (aspectManager)
+        d->postFrame(aspectManager);
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

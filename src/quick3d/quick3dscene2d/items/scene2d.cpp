@@ -193,7 +193,7 @@ void Scene2D::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
     if (id != m_outputId)
         setOutput(id);
 
-    auto ids = Qt3DCore::qIdsForNodes(const_cast<QScene2D *>(node)->entities());
+    auto ids = Qt3DCore::qIdsForNodes(node->entities());
     std::sort(std::begin(ids), std::end(ids));
     Qt3DCore::QNodeIdVector addedEntities;
     Qt3DCore::QNodeIdVector removedEntities;

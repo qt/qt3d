@@ -63,6 +63,7 @@ public:
     QVector<QWeakPointer<QAspectJob> > dependencies() const;
 
     virtual void run() = 0;
+    void postFrame(QAspectManager *aspectManager);
 
 protected:
     explicit QAspectJob(QAspectJobPrivate &dd);

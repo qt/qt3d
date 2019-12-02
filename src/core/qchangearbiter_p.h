@@ -53,7 +53,6 @@
 
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
-#include <Qt3DCore/private/qscenechange_p.h>
 #include <QtCore/QFlags>
 #include <QtCore/QMutex>
 #include <QtCore/QObject>

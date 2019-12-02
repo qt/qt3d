@@ -92,13 +92,6 @@ void QAbstractAspectPrivate::onEngineAboutToShutdown()
 }
 
 /*! \internal */
-void QAbstractAspectPrivate::registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor, bool supportsSyncing)
-{
-    const auto f = supportsSyncing ? QAbstractAspectPrivate::SupportsSyncing : QAbstractAspectPrivate::DefaultMapper;
-    m_backendCreatorFunctors.insert(&obj, {functor, f});
-}
-
-/*! \internal */
 void QAbstractAspectPrivate::unregisterBackendType(const QMetaObject &mo)
 {
     m_backendCreatorFunctors.remove(&mo);
@@ -190,6 +183,13 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
     d->m_backendCreatorFunctors.insert(&obj, {functor, QAbstractAspectPrivate::DefaultMapper});
 }
 
+void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor, bool supportsSyncing)
+{
+    Q_D(QAbstractAspect);
+    const auto f = supportsSyncing ? QAbstractAspectPrivate::SupportsSyncing : QAbstractAspectPrivate::DefaultMapper;
+    d->m_backendCreatorFunctors.insert(&obj, {functor, f});
+}
+
 void QAbstractAspect::unregisterBackendType(const QMetaObject &obj)
 {
     Q_D(QAbstractAspect);
@@ -198,14 +198,26 @@ void QAbstractAspect::unregisterBackendType(const QMetaObject &obj)
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
     return QVariant();
 }
 
 QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
 {
-    Q_UNUSED(time)
+    Q_UNUSED(time);
     return QVector<QAspectJobPtr>();
+}
+
+void QAbstractAspect::syncDirtyFrontEndNodes(const QVector<QNode *> &nodes)
+{
+    Q_D(QAbstractAspect);
+    d->syncDirtyFrontEndNodes(nodes);
+}
+
+void QAbstractAspect::syncDirtyFrontEndSubNodes(const QVector<NodeRelationshipChange> &nodes)
+{
+    Q_D(QAbstractAspect);
+    d->syncDirtyFrontEndSubNodes(nodes);
 }
 
 QAbstractAspectPrivate::BackendNodeMapperAndInfo QAbstractAspectPrivate::mapperForNode(const QMetaObject *metaObj) const

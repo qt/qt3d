@@ -40,9 +40,10 @@
 #include "qscheduler_p.h"
 
 #include <Qt3DCore/qabstractaspect.h>
-#include <Qt3DCore/private/qaspectjob_p.h>
+
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 
 QT_BEGIN_NAMESPACE

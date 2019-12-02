@@ -60,14 +60,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-//! internal
-struct NodeRelationshipChange {
-    QNode *node;
-    QNode *subNode;
-    ChangeFlag change;
-    const char *property;
-};
-
 class QSceneChange;
 class QNodeId;
 

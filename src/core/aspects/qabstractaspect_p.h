@@ -57,7 +57,6 @@
 #include <Qt3DCore/private/qaspectjobproviderinterface_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/private/qscenechange_p.h>
 #include <QtCore/private/qobject_p.h>
 
 #include <QMutex>
@@ -138,10 +137,7 @@ public:
 
     virtual void onEngineAboutToShutdown();
 
-    // TODO: Make public at some point
-    template<class Frontend, bool supportsSyncing>
-    void registerBackendType(const QBackendNodeMapperPtr &functor);
-    void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor, bool supportsSyncing);
+    // TODO: Make these public in 5.8
     template<class Frontend>
     void unregisterBackendType();
     void unregisterBackendType(const QMetaObject &mo);
@@ -166,12 +162,6 @@ public:
 
     static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
 };
-
-template<class Frontend, bool supportsSyncing>
-void QAbstractAspectPrivate::registerBackendType(const QBackendNodeMapperPtr &functor)
-{
-    registerBackendType(Frontend::staticMetaObject, functor, supportsSyncing);
-}
 
 template<class Frontend>
 void QAbstractAspectPrivate::unregisterBackendType()

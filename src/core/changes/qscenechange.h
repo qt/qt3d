@@ -64,6 +64,14 @@ Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
 
 class QNode;
+//! internal
+struct NodeRelationshipChange {
+    QNode *node;
+    QNode *subNode;
+    ChangeFlag change;
+    const char *property;
+};
+
 class QSceneChangePrivate;
 
 class Q_3DCORESHARED_EXPORT QSceneChange
