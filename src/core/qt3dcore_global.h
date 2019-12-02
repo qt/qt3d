@@ -55,6 +55,12 @@ QT_BEGIN_NAMESPACE
 #  define Q_3DCORESHARED_EXPORT
 #endif
 
+#ifdef BUILD_QT3D_MODULE
+#define Q3D_DECL_DEPRECATED
+#else
+#define Q3D_DECL_DEPRECATED Q_DECL_DEPRECATED
+#endif
+
 #define QT3D_DECLARE_TYPEINFO(NS, Class, Flags) \
     } /* NS */ \
     Q_DECLARE_TYPEINFO(NS :: Class, Flags); \
