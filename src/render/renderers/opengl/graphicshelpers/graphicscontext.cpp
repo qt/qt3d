@@ -265,17 +265,15 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
     return shaderProgram.take();
 }
 
-// Called by GL Command Thread (can't use global glHelpers)
 // That assumes that the shaderProgram in Shader stays the same
 void GraphicsContext::introspectShaderInterface(Shader *shader, QOpenGLShaderProgram *shaderProgram)
 {
-    QScopedPointer<GraphicsHelperInterface> glHelper(resolveHighestOpenGLFunctions());
-    shader->initializeUniforms(glHelper->programUniformsAndLocations(shaderProgram->programId()));
-    shader->initializeAttributes(glHelper->programAttributesAndLocations(shaderProgram->programId()));
+    shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
+    shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
     if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
-        shader->initializeUniformBlocks(glHelper->programUniformBlocks(shaderProgram->programId()));
+        shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
     if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
-        shader->initializeShaderStorageBlocks(glHelper->programShaderStorageBlocks(shaderProgram->programId()));
+        shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(shaderProgram->programId()));
 }
 
 
