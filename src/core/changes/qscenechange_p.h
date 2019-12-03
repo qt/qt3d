@@ -63,6 +63,13 @@ namespace Qt3DCore {
 class QSceneChange;
 class QNodeId;
 
+struct NodeRelationshipChange {
+    QNode *node;
+    QNode *subNode;
+    ChangeFlag change;
+    const char *property;
+};
+
 class Q_3DCORE_PRIVATE_EXPORT QSceneChangePrivate
 {
 public :

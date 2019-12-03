@@ -57,6 +57,7 @@
 #include <Qt3DCore/private/qaspectjobproviderinterface_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/private/qscenechange_p.h>
 #include <QtCore/private/qobject_p.h>
 
 #include <QMutex>
