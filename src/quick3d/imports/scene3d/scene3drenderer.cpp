@@ -161,6 +161,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_forceRecreate(false)
     , m_shouldRender(false)
     , m_dirtyViews(false)
+    , m_skipFrame(false)
     , m_allowRendering(0)
     , m_compositingMode(Scene3DItem::FBO)
 {
@@ -278,6 +279,19 @@ void Scene3DRenderer::beforeSynchronize()
         // We could otherwise enter a deadlock state
         if (!m_allowRendering.tryAcquire(std::max(m_allowRendering.available(), 1)))
             return;
+
+        // In the case of OnDemand rendering, we still need to get to this
+        // point to ensure we have processed jobs for all aspects.
+        // We also still need to call render() to allow proceeding with the
+        // next frame. However it won't be performing any 3d rendering at all
+        // so we do it here and return early. This prevents a costly QtQuick
+        // SceneGraph update for nothing
+        if (m_skipFrame) {
+            m_skipFrame = false;
+            static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(false);
+            return;
+        }
+
         m_shouldRender = true;
 
         // Check size / multisampling
@@ -358,6 +372,11 @@ void Scene3DRenderer::allowRender()
 void Scene3DRenderer::setCompositingMode(Scene3DItem::CompositingMode mode)
 {
     m_compositingMode = mode;
+}
+
+void Scene3DRenderer::setSkipFrame(bool skip)
+{
+    m_skipFrame = skip;
 }
 
 // Main Thread, Render Thread locked

@@ -55,7 +55,7 @@ public:
     void doRender(bool swapBuffers) override { Q_UNUSED(swapBuffers); }
     void cleanGraphicsResources() override {}
     bool isRunning() const override { return true; }
-    bool shouldRender() override { return true; }
+    bool shouldRender() const override { return true; }
     void skipNextFrame() override {}
     QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
