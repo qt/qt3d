@@ -125,11 +125,9 @@ class QAbstractShapeMesh;
 struct GraphicsApiFilterData;
 class QSceneImporter;
 
-#if QT_CONFIG(qt3d_profile_jobs)
 namespace Debug {
 class CommandExecuter;
 }
-#endif
 
 namespace Render {
 
@@ -428,10 +426,7 @@ private:
     OffscreenSurfaceHelper *m_offscreenHelper;
     QMutex m_offscreenSurfaceMutex;
 
-#if QT_CONFIG(qt3d_profile_jobs)
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
-    friend class Qt3DRender::Debug::CommandExecuter;
-#endif
 
 #ifdef QT_BUILD_INTERNAL
     friend class ::tst_Renderer;

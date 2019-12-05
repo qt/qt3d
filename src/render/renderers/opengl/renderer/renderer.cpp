@@ -94,6 +94,7 @@
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
 #include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DRender/private/filterentitybycomponentjob_p.h>
+#include <Qt3DRender/private/commandexecuter_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -101,10 +102,6 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qsysteminformationservice_p.h>
 #include <Qt3DCore/private/qsysteminformationservice_p_p.h>
-
-#if QT_CONFIG(qt3d_profile_jobs)
-#include <Qt3DCore/private/aspectcommanddebugger_p.h>
-#endif
 
 #include <QStack>
 #include <QOffscreenSurface>
@@ -117,19 +114,9 @@
 #include <QUrl>
 #include <QOffscreenSurface>
 #include <QWindow>
-
-#include <QtGui/private/qopenglcontext_p.h>
-
-// For Debug purposes only
 #include <QThread>
 
-
-#if QT_CONFIG(qt3d_profile_jobs)
-#include <Qt3DCore/private/qthreadpooler_p.h>
-#include <Qt3DRender/private/job_common_p.h>
-#include <Qt3DRender/private/commandexecuter_p.h>
-#endif
-
+#include <QtGui/private/qopenglcontext_p.h>
 #include <Qt3DRender/private/frameprofiler_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -290,10 +277,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
                                                   JobTypes::EntityComponentTypeFiltering))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
-    , m_shouldSwapBuffers(true)
-    #if QT_CONFIG(qt3d_profile_jobs)
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
-    #endif
+    , m_shouldSwapBuffers(true)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -798,10 +783,8 @@ void Renderer::doRender(bool swapBuffers)
             }
         }
 
-#if QT_CONFIG(qt3d_profile_jobs)
         // Execute the pending shell commands
         m_commandExecuter->performAsynchronousCommandExecution(renderViews);
-#endif
 
         // Delete all the RenderViews which will clear the allocators
         // that were used for their allocation
@@ -899,12 +882,7 @@ bool Renderer::isReadyToSubmit()
 // Main thread
 QVariant Renderer::executeCommand(const QStringList &args)
 {
-#if QT_CONFIG(qt3d_profile_jobs)
     return m_commandExecuter->executeCommand(args);
-#else
-    Q_UNUSED(args);
-#endif
-    return QVariant();
 }
 
 /*!

@@ -58,10 +58,6 @@
 #include <Qt3DCore/private/qsysteminformationservice_p.h>
 #include <Qt3DCore/qt3dcore-config.h>
 
-#if QT_CONFIG(qt3d_profile_jobs)
-#include <Qt3DCore/private/aspectcommanddebugger_p.h>
-#endif
-
 QT_BEGIN_NAMESPACE
 
 namespace{
@@ -123,9 +119,6 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     , m_scene(nullptr)
     , m_initialized(false)
     , m_runMode(QAspectEngine::Automatic)
-    #if QT_CONFIG(qt3d_profile_jobs)
-    , m_commandDebugger(new Debug::AspectCommandDebugger(q_func()))
-    #endif
 {
     qRegisterMetaType<Qt3DCore::QAbstractAspect *>();
     qRegisterMetaType<Qt3DCore::QObserverInterface *>();
@@ -277,11 +270,6 @@ void QAspectEnginePrivate::initialize()
     arbiter->setScene(m_scene);
     m_initialized = true;
     m_aspectManager->setPostConstructorInit(m_scene->postConstructorInit());
-    Q_Q(QAspectEngine);
-#if QT_CONFIG(qt3d_profile_jobs)
-    m_commandDebugger->setAspectEngine(q_func());
-    m_commandDebugger->initialize();
-#endif
 }
 
 /*!

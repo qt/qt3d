@@ -66,6 +66,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+namespace Debug {
+class AspectCommandDebugger;
+} // Debug
+
 union Q_3DCORE_PRIVATE_EXPORT JobId
 {
     JobId() : id(0L) { }
@@ -114,6 +118,8 @@ public:
 
     QScopedPointer<QFile> m_traceFile;
     quint32 m_frameId;
+
+    Debug::AspectCommandDebugger *m_commandDebugger;
 
     Q_DECLARE_PUBLIC(QSystemInformationService)
 };

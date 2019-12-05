@@ -67,16 +67,21 @@ class Q_3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceP
 {
     Q_OBJECT
     Q_PROPERTY(bool traceEnabled READ isTraceEnabled WRITE setTraceEnabled NOTIFY traceEnabledChanged)
+    Q_PROPERTY(bool commandServerEnabled READ isCommandServerEnabled CONSTANT)
 public:
     QSystemInformationService(QAspectEngine *aspectEngine);
 
     bool isTraceEnabled() const;
+    bool isCommandServerEnabled() const;
+
     void setTraceEnabled(bool traceEnabled);
 
     QStringList aspectNames() const;
     int threadPoolThreadCount() const;
 
     void writePreviousFrameTraces();
+
+    QVariant executeCommand(const QString &command);
 
 signals:
     void traceEnabledChanged(bool traceEnabled);

@@ -51,8 +51,9 @@
 #include <QtCore/QCoreApplication>
 
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DCore/private/qaspectengine_p.h>
 #include <Qt3DCore/QAbstractAspect>
+#include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/private/aspectcommanddebugger_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -86,10 +87,17 @@ QSystemInformationServicePrivate::QSystemInformationServicePrivate(QAspectEngine
     , m_aspectEngine(aspectEngine)
     , m_submissionStorage(nullptr)
     , m_frameId(0)
+    , m_commandDebugger(nullptr)
 {
     m_traceEnabled = qEnvironmentVariableIsSet("QT3D_TRACE_ENABLED");
     if (m_traceEnabled)
         m_jobsStatTimer.start();
+
+    const bool commandServerEnabled = qEnvironmentVariableIsSet("QT3D_COMMAND_SERVER_ENABLED");
+    if (commandServerEnabled) {
+        m_commandDebugger = new Debug::AspectCommandDebugger(q_func());
+        m_commandDebugger->initialize();
+    }
 }
 
 QSystemInformationServicePrivate::~QSystemInformationServicePrivate() = default;
@@ -285,6 +293,12 @@ bool QSystemInformationService::isTraceEnabled() const
     return d->m_traceEnabled;
 }
 
+bool QSystemInformationService::isCommandServerEnabled() const
+{
+    Q_D(const QSystemInformationService);
+    return d->m_commandDebugger != nullptr;
+}
+
 void QSystemInformationService::setTraceEnabled(bool traceEnabled)
 {
     Q_D(QSystemInformationService);
@@ -342,6 +356,23 @@ void QSystemInformationService::writePreviousFrameTraces()
 {
     Q_D(QSystemInformationService);
     d->writeFrameJobLogStats();
+}
+
+QVariant QSystemInformationService::executeCommand(const QString &command)
+{
+    Q_D(QSystemInformationService);
+
+    if (command == QLatin1String("tracing on")) {
+        setTraceEnabled(true);
+        return  {isTraceEnabled()};
+    }
+
+    if (command == QLatin1String("tracing off")) {
+        setTraceEnabled(false);
+        return  {isTraceEnabled()};
+    }
+
+    return d->m_aspectEngine->executeCommand(command);
 }
 
 }
