@@ -243,21 +243,21 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(engine.executeCommand("list aspects").toString(),
-                 QString("Loaded aspects:\n * fake"));
+                 QString("fake"));
 
         // WHEN
         engine.registerAspect("otherfake");
 
         // THEN
         QCOMPARE(engine.executeCommand("list aspects").toString(),
-                 QString("Loaded aspects:\n * fake\n * otherfake"));
+                 QString("fake\notherfake"));
 
         // WHEN
         engine.registerAspect(new FakeAspect3);
 
         // THEN
         QCOMPARE(engine.executeCommand("list aspects").toString(),
-                 QString("Loaded aspects:\n * fake\n * otherfake\n * <unnamed>"));
+                 QString("fake\notherfake\n<unnamed>"));
     }
 
     void shouldDelegateCommandsToAspects()

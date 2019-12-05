@@ -52,7 +52,7 @@ class DummySystemInfoService : public QSystemInformationService
 {
 public:
     DummySystemInfoService()
-        : QSystemInformationService(QStringLiteral("Dummy System Information Service"))
+        : QSystemInformationService(nullptr, QStringLiteral("Dummy System Information Service"))
     {}
 };
 

@@ -68,7 +68,7 @@ class Q_3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceP
     Q_OBJECT
     Q_PROPERTY(bool traceEnabled READ isTraceEnabled WRITE setTraceEnabled NOTIFY traceEnabledChanged)
 public:
-    QSystemInformationService();
+    QSystemInformationService(QAspectEngine *aspectEngine);
 
     bool isTraceEnabled() const;
     void setTraceEnabled(bool traceEnabled);
@@ -83,7 +83,7 @@ signals:
 
 protected:
     Q_DECLARE_PRIVATE(QSystemInformationService)
-    QSystemInformationService(const QString &description);
+    QSystemInformationService(QAspectEngine *aspectEngine, const QString &description);
     QSystemInformationService(QSystemInformationServicePrivate &dd);
 };
 

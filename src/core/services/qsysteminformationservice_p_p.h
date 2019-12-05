@@ -88,7 +88,7 @@ public:
         quint64 threadId;
     };
 
-    QSystemInformationServicePrivate(const QString &description);
+    QSystemInformationServicePrivate(QAspectEngine *aspectEngine, const QString &description);
     ~QSystemInformationServicePrivate();
 
     static QSystemInformationServicePrivate *get(QSystemInformationService *q);
@@ -101,6 +101,7 @@ public:
 
     void writeFrameJobLogStats();
 
+    QAspectEngine *m_aspectEngine;
     bool m_traceEnabled;
 
     QElapsedTimer m_jobsStatTimer;

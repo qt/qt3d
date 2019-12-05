@@ -50,6 +50,10 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QCoreApplication>
 
+#include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/QAbstractAspect>
+
 QT_BEGIN_NAMESPACE
 
 namespace  {
@@ -76,8 +80,10 @@ struct FrameHeader
 }
 namespace Qt3DCore {
 
-QSystemInformationServicePrivate::QSystemInformationServicePrivate(const QString &description)
+QSystemInformationServicePrivate::QSystemInformationServicePrivate(QAspectEngine *aspectEngine,
+                                                                   const QString &description)
     : QAbstractServiceProviderPrivate(QServiceLocator::SystemInformation, description)
+    , m_aspectEngine(aspectEngine)
     , m_submissionStorage(nullptr)
     , m_frameId(0)
 {
@@ -255,13 +261,13 @@ qint64 QTaskLogger::restart()
     instantiate a QSystemInformationService object.
 */
 
-QSystemInformationService::QSystemInformationService()
-    : QAbstractServiceProvider(*new QSystemInformationServicePrivate(QLatin1String("Default System Information Service")))
+QSystemInformationService::QSystemInformationService(QAspectEngine *aspectEngine)
+    : QAbstractServiceProvider(*new QSystemInformationServicePrivate(aspectEngine, QLatin1String("Default System Information Service")))
 {
 }
 
-QSystemInformationService::QSystemInformationService(const QString &description)
-    : QAbstractServiceProvider(*new QSystemInformationServicePrivate(description))
+QSystemInformationService::QSystemInformationService(QAspectEngine *aspectEngine, const QString &description)
+    : QAbstractServiceProvider(*new QSystemInformationServicePrivate(aspectEngine, description))
 {
 }
 
@@ -301,7 +307,25 @@ void QSystemInformationService::setTraceEnabled(bool traceEnabled)
 */
 QStringList QSystemInformationService::aspectNames() const
 {
-    return {};
+    Q_D(const QSystemInformationService);
+    if (!d->m_aspectEngine)
+        return {};
+
+    QStringList res;
+    const auto aspects = d->m_aspectEngine->aspects();
+    if (aspects.isEmpty())
+        return { QLatin1String("No loaded aspects") };
+
+    QAspectEnginePrivate *dengine = QAspectEnginePrivate::get(d->m_aspectEngine);
+    for (auto aspect: aspects) {
+        const QString name = dengine->m_factory.aspectName(aspect);
+        if (!name.isEmpty())
+            res << name;
+        else
+            res << QLatin1String("<unnamed>");
+    }
+
+    return  res;
 }
 
 /*

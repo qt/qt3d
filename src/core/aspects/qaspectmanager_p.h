@@ -73,6 +73,7 @@ class QScheduler;
 class QChangeArbiter;
 class QAbstractAspect;
 class QAbstractAspectJobManager;
+class QAspectEngine;
 class QServiceLocator;
 class NodePostConstructorInit;
 struct NodeTreeChange;
@@ -81,7 +82,7 @@ class Q_3DCORE_PRIVATE_EXPORT QAspectManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAspectManager(QObject *parent = nullptr);
+    explicit QAspectManager(QAspectEngine *parent = nullptr);
     ~QAspectManager();
 
     void setRunMode(QAspectEngine::RunMode mode);
@@ -115,6 +116,7 @@ private:
     bool event(QEvent *event) override;
     void requestNextFrame();
 
+    QAspectEngine *m_engine;
     QVector<QAbstractAspect *> m_aspects;
     QEntity *m_root;
     QVariantMap m_data;

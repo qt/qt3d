@@ -99,13 +99,14 @@ int RequestFrameEvent::requestEventType = QEvent::registerEventType();
     \class Qt3DCore::QAspectManager
     \internal
 */
-QAspectManager::QAspectManager(QObject *parent)
+QAspectManager::QAspectManager(QAspectEngine *parent)
     : QObject(parent)
+    , m_engine(parent)
     , m_root(nullptr)
     , m_scheduler(new QScheduler(this))
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
-    , m_serviceLocator(new QServiceLocator())
+    , m_serviceLocator(new QServiceLocator(parent))
     , m_simulationLoopRunning(false)
     , m_driveMode(QAspectEngine::Automatic)
     , m_postConstructorInit(nullptr)

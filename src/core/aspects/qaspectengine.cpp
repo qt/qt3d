@@ -55,6 +55,7 @@
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qsysteminformationservice_p.h>
 #include <Qt3DCore/qt3dcore-config.h>
 
 #if QT_CONFIG(qt3d_profile_jobs)
@@ -276,6 +277,7 @@ void QAspectEnginePrivate::initialize()
     arbiter->setScene(m_scene);
     m_initialized = true;
     m_aspectManager->setPostConstructorInit(m_scene->postConstructorInit());
+    Q_Q(QAspectEngine);
 #if QT_CONFIG(qt3d_profile_jobs)
     m_commandDebugger->setAspectEngine(q_func());
     m_commandDebugger->initialize();
@@ -419,16 +421,8 @@ QVariant QAspectEngine::executeCommand(const QString &command)
         if (d->m_aspects.isEmpty())
             return QLatin1String("No loaded aspect");
 
-        QString reply;
-        reply += QLatin1String("Loaded aspects:");
-        for (QAbstractAspect *aspect : qAsConst(d->m_aspects)) {
-            const QString name = d->m_factory.aspectName(aspect);
-            if (!name.isEmpty())
-                reply += QLatin1String("\n * ") + name;
-            else
-                reply += QLatin1String("\n * <unnamed>");
-        }
-        return reply;
+        const QStringList names = d->m_aspectManager->serviceLocator()->systemInformation()->aspectNames();
+        return names.join(QLatin1String("\n"));
     }
 
     QStringList args = command.split(QLatin1Char(' '));

@@ -86,11 +86,14 @@ QString QAbstractServiceProvider::description() const
 }
 
 
+class QAspectEngine;
+
 class QServiceLocatorPrivate
 {
 public:
-    QServiceLocatorPrivate()
-        : m_nonNullDefaultServices(0)
+    QServiceLocatorPrivate(QAspectEngine *aspectEngine)
+        : m_systemInfo(aspectEngine)
+        , m_nonNullDefaultServices(0)
     {}
 
     QHash<int, QAbstractServiceProvider *> m_services;
@@ -129,8 +132,8 @@ public:
 /*
     Creates an instance of QServiceLocator.
 */
-QServiceLocator::QServiceLocator()
-    : d_ptr(new QServiceLocatorPrivate)
+QServiceLocator::QServiceLocator(QAspectEngine *aspectEngine)
+    : d_ptr(new QServiceLocatorPrivate(aspectEngine))
 {
 }
 
