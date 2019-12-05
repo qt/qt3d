@@ -68,7 +68,7 @@ LoadBufferJob::LoadBufferJob(const HBuffer &handle)
     , m_handle(handle)
     , m_nodeManagers(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadBuffer, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadBuffer, 0)
 }
 
 LoadBufferJob::~LoadBufferJob()

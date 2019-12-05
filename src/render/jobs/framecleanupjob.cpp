@@ -55,7 +55,7 @@ FrameCleanupJob::FrameCleanupJob()
     : m_managers(nullptr)
     , m_root(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0)
 }
 
 FrameCleanupJob::~FrameCleanupJob()

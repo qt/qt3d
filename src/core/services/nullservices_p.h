@@ -54,24 +54,10 @@
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <Qt3DCore/private/qopenglinformationservice_p.h>
-#include <Qt3DCore/private/qsysteminformationservice_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-
-class NullSystemInformationService : public QSystemInformationService
-{
-public:
-    NullSystemInformationService()
-        : QSystemInformationService(QStringLiteral("Null System Information Service"))
-    {}
-    ~NullSystemInformationService() {}
-
-    QStringList aspectNames() const final { return QStringList(); }
-    int threadPoolThreadCount() const final { return 0; }
-};
-
 
 class NullOpenGLInformationService : public QOpenGLInformationService
 {

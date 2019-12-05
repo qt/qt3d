@@ -73,7 +73,7 @@ UpdateTreeEnabledJob::UpdateTreeEnabledJob()
     , m_node(nullptr)
     , m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTreeEnabled, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTreeEnabled, 0)
 }
 
 void UpdateTreeEnabledJob::setRoot(Entity *root)

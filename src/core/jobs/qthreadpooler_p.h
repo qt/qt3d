@@ -60,10 +60,6 @@
 #include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/private/task_p.h>
 
-#if QT_CONFIG(qt3d_profile_jobs)
-#include <QtCore/QElapsedTimer>
-#endif
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -81,17 +77,6 @@ public:
     QFuture<void> future();
 
     int maxThreadCount() const;
-#if QT_CONFIG(qt3d_profile_jobs)
-    static QElapsedTimer m_jobsStatTimer;
-
-    // Aspects + Job threads
-    static void addJobLogStatsEntry(JobRunStats &stats);
-    static void writeFrameJobLogStats();
-
-    // Submission thread
-    static void addSubmissionLogStatsEntry(JobRunStats &stats);
-
-#endif
 
 private:
     void enqueueTasks(const QVector<RunnableInterface *> &tasks);

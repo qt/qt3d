@@ -60,7 +60,7 @@ RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
     , m_renderer(nullptr)
     , m_renderables(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++)
 }
 
 void RenderViewCommandUpdaterJob::run()

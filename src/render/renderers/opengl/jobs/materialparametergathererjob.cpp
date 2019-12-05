@@ -63,7 +63,7 @@ MaterialParameterGathererJob::MaterialParameterGathererJob()
     , m_techniqueFilter(nullptr)
     , m_renderPassFilter(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::MaterialParameterGathering, materialParameterGathererCounter++);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::MaterialParameterGathering, materialParameterGathererCounter++)
 }
 
 // TechniqueFilter / RenderPassFilter

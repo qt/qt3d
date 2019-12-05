@@ -57,6 +57,7 @@
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qsysteminformationservice_p_p.h>
 #include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DCore/private/qtickclock_p.h>
 #include <Qt3DCore/private/qtickclockservice_p.h>
@@ -449,57 +450,49 @@ void QAspectManager::processFrame()
     //
     // Doing this as the first call in the new frame ensures the lock free approach works
     // without any such data race.
-#if QT_CONFIG(qt3d_profile_jobs)
-    const quint32 arbiterId = 4096;
-    JobRunStats changeArbiterStats;
-    changeArbiterStats.jobId.typeAndInstance[0] = arbiterId;
-    changeArbiterStats.jobId.typeAndInstance[1] = 0;
-    changeArbiterStats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
-    changeArbiterStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-#endif
+    {
+        // scope for QTaskLogger
+        QTaskLogger logger(m_serviceLocator->systemInformation(), 4096, 0);
 
-    // Tell the NodePostConstructorInit to process any pending nodes which will add them to our list of
-    // tree changes
-    m_postConstructorInit->processNodes();
+        // Tell the NodePostConstructorInit to process any pending nodes which will add them to our list of
+        // tree changes
+        m_postConstructorInit->processNodes();
 
-    // Add and Remove Nodes
-    const QVector<NodeTreeChange> nodeTreeChanges = std::move(m_nodeTreeChanges);
-    for (const NodeTreeChange &change : nodeTreeChanges) {
-        // Buckets ensure that even if we have intermingled node added / removed
-        // buckets, we preserve the order of the sequences
+        // Add and Remove Nodes
+        const QVector<NodeTreeChange> nodeTreeChanges = std::move(m_nodeTreeChanges);
+        for (const NodeTreeChange &change : nodeTreeChanges) {
+            // Buckets ensure that even if we have intermingled node added / removed
+            // buckets, we preserve the order of the sequences
 
-        for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
-            switch (change.type) {
-            case NodeTreeChange::Added:
-                aspect->d_func()->createBackendNode(change);
-                break;
-            case NodeTreeChange::Removed:
-                aspect->d_func()->clearBackendNode(change);
-                break;
+            for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+                switch (change.type) {
+                case NodeTreeChange::Added:
+                    aspect->d_func()->createBackendNode(change);
+                    break;
+                case NodeTreeChange::Removed:
+                    aspect->d_func()->clearBackendNode(change);
+                    break;
+                }
             }
         }
+
+        // Sync node / subnode relationship changes
+        const auto dirtySubNodes = m_changeArbiter->takeDirtyFrontEndSubNodes();
+        if (dirtySubNodes.size())
+            for (QAbstractAspect *aspect : qAsConst(m_aspects))
+                QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndSubNodes(dirtySubNodes);
+
+        // Sync property updates
+        const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
+        if (dirtyFrontEndNodes.size())
+            for (QAbstractAspect *aspect : qAsConst(m_aspects))
+                QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
+
+        // TO DO: Having this done in the main thread actually means aspects could just
+        // as simply read info out of the Frontend classes without risk of introducing
+        // races. This could therefore be removed for Qt 6.
+        m_changeArbiter->syncChanges();
     }
-
-    // Sync node / subnode relationship changes
-    const auto dirtySubNodes = m_changeArbiter->takeDirtyFrontEndSubNodes();
-    if (dirtySubNodes.size())
-        for (QAbstractAspect *aspect : qAsConst(m_aspects))
-            QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndSubNodes(dirtySubNodes);
-
-    // Sync property updates
-    const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
-    if (dirtyFrontEndNodes.size())
-        for (QAbstractAspect *aspect : qAsConst(m_aspects))
-           QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
-
-    // TO DO: Having this done in the main thread actually means aspects could just
-    // as simply read info out of the Frontend classes without risk of introducing
-    // races. This could therefore be removed for Qt 6.
-    m_changeArbiter->syncChanges();
-#if QT_CONFIG(qt3d_profile_jobs)
-    changeArbiterStats.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-    QThreadPooler::addJobLogStatsEntry(changeArbiterStats);
-#endif
 
     // For each Aspect
     // Ask them to launch set of jobs for the current frame
@@ -512,8 +505,6 @@ void QAspectManager::processFrame()
 #if defined(QT3D_CORE_JOB_TIMING)
     qDebug() << "Jobs took" << timer.nsecsElapsed() / 1.0e6;
 #endif
-
-    // TODO sync backend changes to frontend
 }
 
 } // namespace Qt3DCore

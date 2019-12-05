@@ -53,7 +53,7 @@ CalcGeometryTriangleVolumes::CalcGeometryTriangleVolumes(const Qt3DCore::QNodeId
     , m_geometryRendererId(geometryRendererId)
     , m_manager(manager)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcTriangleVolume, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcTriangleVolume, 0)
 }
 
 void CalcGeometryTriangleVolumes::run()

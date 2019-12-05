@@ -46,6 +46,7 @@
 #include <Qt3DCore/private/qdownloadhelperservice_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qtickclockservice_p.h>
+#include <Qt3DCore/private/qsysteminformationservice_p.h>
 
 
 QT_BEGIN_NAMESPACE
@@ -94,7 +95,7 @@ public:
 
     QHash<int, QAbstractServiceProvider *> m_services;
 
-    NullSystemInformationService m_nullSystemInfo;
+    QSystemInformationService m_systemInfo;
     NullOpenGLInformationService m_nullOpenGLInfo;
     QTickClockService m_defaultFrameAdvanceService;
     QEventFilterService m_eventFilterService;
@@ -196,7 +197,7 @@ int QServiceLocator::serviceCount() const
 QSystemInformationService *QServiceLocator::systemInformation()
 {
     Q_D(QServiceLocator);
-    return static_cast<QSystemInformationService *>(d->m_services.value(SystemInformation, &d->m_nullSystemInfo));
+    return static_cast<QSystemInformationService *>(d->m_services.value(SystemInformation, &d->m_systemInfo));
 }
 
 /*

@@ -65,7 +65,7 @@ RenderViewInitializerJob::RenderViewInitializerJob()
     , m_index(0)
     , m_renderView(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView, renderViewInstanceCounter++);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView, renderViewInstanceCounter++)
 }
 
 RenderViewInitializerJob::~RenderViewInitializerJob()

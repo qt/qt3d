@@ -51,7 +51,7 @@ SendRenderCaptureJob::SendRenderCaptureJob()
     : Qt3DCore::QAspectJob()
     , m_managers(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendRenderCapture, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendRenderCapture, 0)
 }
 
 SendRenderCaptureJob::~SendRenderCaptureJob()

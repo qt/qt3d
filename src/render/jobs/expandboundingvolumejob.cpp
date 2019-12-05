@@ -84,7 +84,7 @@ ExpandBoundingVolumeJob::ExpandBoundingVolumeJob()
     : m_node(nullptr)
     , m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpandBoundingVolume, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpandBoundingVolume, 0)
 }
 
 void ExpandBoundingVolumeJob::setRoot(Entity *root)

@@ -69,7 +69,7 @@ SendBufferCaptureJob::SendBufferCaptureJob()
     : Qt3DCore::QAspectJob(*new SendBufferCaptureJobPrivate)
     , m_nodeManagers(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendBufferCapture, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendBufferCapture, 0)
 }
 
 SendBufferCaptureJob::~SendBufferCaptureJob()

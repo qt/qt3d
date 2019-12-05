@@ -58,7 +58,7 @@ FrustumCullingJob::FrustumCullingJob()
     , m_manager(nullptr)
     , m_active(false)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrustumCulling, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrustumCulling, 0)
 }
 
 void FrustumCullingJob::run()

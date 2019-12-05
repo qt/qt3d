@@ -99,6 +99,8 @@
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qsysteminformationservice_p.h>
+#include <Qt3DCore/private/qsysteminformationservice_p_p.h>
 
 #if QT_CONFIG(qt3d_profile_jobs)
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
@@ -752,19 +754,12 @@ void Renderer::doRender(bool swapBuffers)
     // RenderQueue is complete (but that means it may be of size 0)
     if (canSubmit && (queueIsComplete && !queueIsEmpty)) {
         const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
-
-#if QT_CONFIG(qt3d_profile_jobs)
-        // Save start of frame
-        JobRunStats submissionStatsPart1;
-        JobRunStats submissionStatsPart2;
-        submissionStatsPart1.jobId.typeAndInstance[0] = JobTypes::FrameSubmissionPart1;
-        submissionStatsPart1.jobId.typeAndInstance[1] = 0;
-        submissionStatsPart1.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
-        submissionStatsPart1.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-        submissionStatsPart2.jobId.typeAndInstance[0] = JobTypes::FrameSubmissionPart2;
-        submissionStatsPart2.jobId.typeAndInstance[1] = 0;
-        submissionStatsPart2.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
-#endif
+        QTaskLogger submissionStatsPart1(m_services->systemInformation(),
+                                         {JobTypes::FrameSubmissionPart1, 0},
+                                         QTaskLogger::Submission);
+        QTaskLogger submissionStatsPart2(m_services->systemInformation(),
+                                         {JobTypes::FrameSubmissionPart2, 0},
+                                         QTaskLogger::Submission);
 
         if (canRender()) {
             { // Scoped to destroy surfaceLock
@@ -797,15 +792,11 @@ void Renderer::doRender(bool swapBuffers)
             m_vsyncFrameAdvanceService->proceedToNextFrame();
             hasCleanedQueueAndProceeded = true;
 
-#if QT_CONFIG(qt3d_profile_jobs)
-            if (preprocessingComplete) {
-                submissionStatsPart2.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-                submissionStatsPart1.endTime = submissionStatsPart2.startTime;
-            }
-#endif
             // Only try to submit the RenderViews if the preprocessing was successful
             // This part of the submission is happening in parallel to the RV building for the next frame
             if (preprocessingComplete) {
+                submissionStatsPart1.end(submissionStatsPart2.restart());
+
                 // 3) Submit the render commands for frame n (making sure we never reference something that could be changing)
                 // Render using current device state and renderer configuration
                 submissionData = submitRenderViews(renderViews);
@@ -823,24 +814,11 @@ void Renderer::doRender(bool swapBuffers)
         // Delete all the RenderViews which will clear the allocators
         // that were used for their allocation
         qDeleteAll(renderViews);
-
-#if QT_CONFIG(qt3d_profile_jobs)
-        if (preprocessingComplete) {
-            // Save submission elapsed time
-            submissionStatsPart2.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-            // Note this is safe since proceedToNextFrame is the one going to trigger
-            // the write to the file, and this is performed after this step
-            Qt3DCore::QThreadPooler::addSubmissionLogStatsEntry(submissionStatsPart1);
-            Qt3DCore::QThreadPooler::addSubmissionLogStatsEntry(submissionStatsPart2);
-            Profiling::GLTimeRecorder::writeResults();
-        }
-#endif
     }
 
     // If hasCleanedQueueAndProceeded isn't true this implies that something went wrong
     // with the rendering and/or the renderqueue is incomplete from some reason
     // or alternatively it could be complete but empty (RenderQueue of size 0)
-
 
     if (!hasCleanedQueueAndProceeded) {
         // RenderQueue was full but something bad happened when

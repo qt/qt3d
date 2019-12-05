@@ -53,7 +53,7 @@ LightGatherer::LightGatherer()
     , m_manager(nullptr)
     , m_environmentLight(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LightGathering, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LightGathering, 0)
 }
 
 void LightGatherer::run()

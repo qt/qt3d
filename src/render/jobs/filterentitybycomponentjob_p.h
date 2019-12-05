@@ -74,7 +74,7 @@ public:
         : Qt3DCore::QAspectJob()
         , m_manager(nullptr)
     {
-        SET_JOB_RUN_STAT_TYPE(this, JobTypes::EntityComponentTypeFiltering, 0);
+        SET_JOB_RUN_STAT_TYPE(this, JobTypes::EntityComponentTypeFiltering, 0)
     }
 
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }

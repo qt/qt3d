@@ -61,16 +61,29 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 class QSystemInformationServicePrivate;
+struct JobRunStats;
 
 class Q_3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceProvider
 {
     Q_OBJECT
+    Q_PROPERTY(bool traceEnabled READ isTraceEnabled WRITE setTraceEnabled NOTIFY traceEnabledChanged)
 public:
-    virtual QStringList aspectNames() const = 0;
-    virtual int threadPoolThreadCount() const = 0;
+    QSystemInformationService();
+
+    bool isTraceEnabled() const;
+    void setTraceEnabled(bool traceEnabled);
+
+    QStringList aspectNames() const;
+    int threadPoolThreadCount() const;
+
+    void writePreviousFrameTraces();
+
+signals:
+    void traceEnabledChanged(bool traceEnabled);
 
 protected:
-    QSystemInformationService(const QString &description = QString());
+    Q_DECLARE_PRIVATE(QSystemInformationService)
+    QSystemInformationService(const QString &description);
     QSystemInformationService(QSystemInformationServicePrivate &dd);
 };
 

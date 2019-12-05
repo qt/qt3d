@@ -53,7 +53,7 @@ FilterCompatibleTechniqueJob::FilterCompatibleTechniqueJob()
     : m_manager(nullptr)
     , m_renderer(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FilterCompatibleTechniques, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FilterCompatibleTechniques, 0)
 }
 
 void FilterCompatibleTechniqueJob::setManager(TechniqueManager *manager)

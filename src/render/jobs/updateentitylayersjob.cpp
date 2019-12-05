@@ -52,7 +52,7 @@ namespace Render {
 UpdateEntityLayersJob::UpdateEntityLayersJob()
     : m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateLayerEntity, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateLayerEntity, 0)
 
 }
 

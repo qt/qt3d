@@ -63,7 +63,7 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId sceneComponent)
     , m_sceneComponent(sceneComponent)
     , m_managers(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadScene, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadScene, 0)
 }
 
 void LoadSceneJob::setData(const QByteArray &data)

@@ -182,7 +182,7 @@ void massTestFunction(QVector3D *data)
 
 void tst_ThreadPooler::initTestCase()
 {
-    m_jobManager = new JobManager(this);
+    m_jobManager = new JobManager(nullptr);
 }
 
 void tst_ThreadPooler::cleanupTestCase()

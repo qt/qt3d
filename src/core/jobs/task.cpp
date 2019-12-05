@@ -44,6 +44,7 @@
 #include <QtCore/QMutexLocker>
 
 #include <Qt3DCore/private/qthreadpooler_p.h>
+#include <Qt3DCore/private/qsysteminformationservice_p_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,8 +56,9 @@ RunnableInterface::~RunnableInterface()
 
 // Aspect task
 
-AspectTaskRunnable::AspectTaskRunnable()
-    : m_pooler(nullptr)
+AspectTaskRunnable::AspectTaskRunnable(QSystemInformationService *service)
+    : m_service(service)
+    , m_pooler(nullptr)
     , m_id(0)
     , m_reserved(false)
 {
@@ -69,21 +71,9 @@ AspectTaskRunnable::~AspectTaskRunnable()
 void AspectTaskRunnable::run()
 {
     if (m_job) {
-#if QT_CONFIG(qt3d_profile_jobs)
         QAspectJobPrivate *jobD = QAspectJobPrivate::get(m_job.data());
-        if (m_pooler) {
-            jobD->m_stats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-            jobD->m_stats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
-        }
-#endif
+        QTaskLogger logger(m_pooler ? m_service : nullptr, jobD->m_jobId, QTaskLogger::AspectJob);
         m_job->run();
-#if QT_CONFIG(qt3d_profile_jobs)
-        if (m_pooler) {
-            jobD->m_stats.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-            // Add current job's stats to log output
-            QThreadPooler::addJobLogStatsEntry(jobD->m_stats);
-        }
-#endif
     }
 
     // We could have an append sub task or something in here

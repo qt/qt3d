@@ -40,26 +40,9 @@
 #include "qthreadpooler_p.h"
 #include <QtCore/QDebug>
 
-#if QT_CONFIG(qt3d_profile_jobs)
-
-#ifdef Q_OS_ANDROID
-#include <QtCore/QStandardPaths>
-#endif
-
-#include <QtCore/QCoreApplication>
-#include <QtCore/QFile>
-#include <QtCore/QThreadStorage>
-#include <QtCore/QDateTime>
-#include <QtCore/QCoreApplication>
-#endif
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-
-#if QT_CONFIG(qt3d_profile_jobs)
-QElapsedTimer QThreadPooler::m_jobsStatTimer;
-#endif
 
 QThreadPooler::QThreadPooler(QObject *parent)
     : QObject(parent)
@@ -76,12 +59,8 @@ QThreadPooler::QThreadPooler(QObject *parent)
             m_threadPool->setMaxThreadCount(maxThreadCountValue);
     }
 
-
     // Ensures that threads will never be recycled
     m_threadPool->setExpiryTimeout(-1);
-#if QT_CONFIG(qt3d_profile_jobs)
-    QThreadPooler::m_jobsStatTimer.start();
-#endif
 }
 
 QThreadPooler::~QThreadPooler()
@@ -193,102 +172,6 @@ int QThreadPooler::maxThreadCount() const
 {
     return m_threadPool->maxThreadCount();
 }
-
-#if QT_CONFIG(qt3d_profile_jobs)
-
-QThreadStorage<QVector<JobRunStats> *> jobStatsCached;
-
-QVector<QVector<JobRunStats> *> localStorages;
-QVector<JobRunStats> *submissionStorage = nullptr;
-
-QMutex localStoragesMutex;
-
-// Called by the jobs
-void QThreadPooler::addJobLogStatsEntry(JobRunStats &stats)
-{
-    if (!jobStatsCached.hasLocalData()) {
-        auto jobVector = new QVector<JobRunStats>;
-        jobStatsCached.setLocalData(jobVector);
-        QMutexLocker lock(&localStoragesMutex);
-        localStorages.push_back(jobVector);
-    }
-    jobStatsCached.localData()->push_back(stats);
-}
-
-// Called after jobs have been executed (MainThread QAspectJobManager::enqueueJobs)
-void QThreadPooler::writeFrameJobLogStats()
-{
-    static QScopedPointer<QFile> traceFile;
-    static quint32 frameId = 0;
-    if (!traceFile) {
-        const QString fileName = QStringLiteral("trace_") + QCoreApplication::applicationName() + QDateTime::currentDateTime().toString(QStringLiteral("_ddd_dd_MM_yy-hh_mm_ss_"))+ QSysInfo::productType() + QStringLiteral("_") + QSysInfo::buildAbi() + QStringLiteral(".qt3d");
-#ifdef Q_OS_ANDROID
-        traceFile.reset(new QFile(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + QStringLiteral("/") + fileName));
-#else
-        traceFile.reset(new QFile(fileName));
-#endif
-        if (!traceFile->open(QFile::WriteOnly|QFile::Truncate))
-            qCritical("Failed to open trace file");
-    }
-
-    // Write Aspect + Job threads
-    {
-        FrameHeader header;
-        header.frameId = frameId;
-        header.jobCount = 0;
-
-        for (const QVector<JobRunStats> *storage : qAsConst(localStorages))
-            header.jobCount += storage->size();
-
-        traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
-
-        for (QVector<JobRunStats> *storage : qAsConst(localStorages)) {
-            for (const JobRunStats &stat : *storage)
-                traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
-            storage->clear();
-        }
-    }
-
-    // Write submission thread
-    {
-        QMutexLocker lock(&localStoragesMutex);
-        const int submissionJobSize = submissionStorage != nullptr ? submissionStorage->size() : 0;
-        if (submissionJobSize > 0) {
-            FrameHeader header;
-            header.frameId = frameId;
-            header.jobCount = submissionJobSize;
-            header.frameType = FrameHeader::Submission;
-
-            traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
-
-            for (const JobRunStats &stat : *submissionStorage)
-                traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
-            submissionStorage->clear();
-        }
-    }
-
-    traceFile->flush();
-    ++frameId;
-}
-
-// Called from Submission thread (which can be main thread in Manual drive mode)
-void QThreadPooler::addSubmissionLogStatsEntry(JobRunStats &stats)
-{
-    QMutexLocker lock(&localStoragesMutex);
-    if (!jobStatsCached.hasLocalData()) {
-        submissionStorage = new QVector<JobRunStats>;
-        jobStatsCached.setLocalData(submissionStorage);
-    }
-
-    // Handle the case where submission thread is also the main thread (Scene/Manual drive modes with no RenderThread)
-    if (submissionStorage == nullptr && jobStatsCached.hasLocalData())
-        submissionStorage = new QVector<JobRunStats>;
-
-    // When having no submission thread this can be null
-    submissionStorage->push_back(stats);
-}
-
-#endif
 
 } // namespace Qt3DCore
 

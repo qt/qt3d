@@ -109,7 +109,7 @@ UpdateWorldTransformJob::UpdateWorldTransformJob()
     , m_node(nullptr)
     , m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTransform, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTransform, 0)
 }
 
 void UpdateWorldTransformJob::setRoot(Entity *root)
