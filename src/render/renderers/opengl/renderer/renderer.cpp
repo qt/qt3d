@@ -265,7 +265,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
-    , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create())
     , m_sendBufferCaptureJob(Render::SendBufferCaptureJobPtr::create())
     , m_updateSkinningPaletteJob(Render::UpdateSkinningPaletteJobPtr::create())
     , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
@@ -393,7 +392,6 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_rayCastingJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
-    m_sendRenderCaptureJob->setManagers(m_nodesManager);
     m_updateLevelOfDetailJob->setManagers(m_nodesManager);
     m_updateSkinningPaletteJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
@@ -1658,7 +1656,8 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             Render::RenderCapture *renderCapture =
                     static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderView->renderCaptureNodeId()));
             renderCapture->addRenderCapture(request.captureId, image);
-            addRenderCaptureSendRequest(renderView->renderCaptureNodeId());
+            if (!m_pendingRenderCaptureSendRequests.contains(renderView->renderCaptureNodeId()))
+                m_pendingRenderCaptureSendRequests.push_back(renderView->renderCaptureNodeId());
         }
 
         if (renderView->isDownloadBuffersEnable())
@@ -1751,6 +1750,19 @@ void Renderer::skipNextFrame()
     m_submitRenderViewsSemaphore.release(1);
 }
 
+void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
+{
+    // called in main thread once all jobs are done running
+
+    // sync captured renders to frontend
+    const QVector<Qt3DCore::QNodeId> pendingCaptureIds = std::move(m_pendingRenderCaptureSendRequests);
+    for (const Qt3DCore::QNodeId &id : qAsConst(pendingCaptureIds)) {
+        auto *backend = static_cast<Qt3DRender::Render::RenderCapture *>
+            (m_nodesManager->frameGraphManager()->lookupNode(id));
+        backend->syncRenderCapturesToFrontend(manager);
+    }
+}
+
 // Jobs we may have to run even if no rendering will happen
 QVector<QAspectJobPtr> Renderer::preRenderingJobs()
 {
@@ -1764,11 +1776,6 @@ QVector<QAspectJobPtr> Renderer::preRenderingJobs()
     if (m_updatedSetFences.size() > 0)
         jobs.push_back(m_sendSetFenceHandlesToFrontendJob);
 
-    const QVector<Qt3DCore::QNodeId> pendingCaptureIds = takePendingRenderCaptureSendRequests();
-    if (pendingCaptureIds.size() > 0) {
-        m_sendRenderCaptureJob->setPendingCaptureRequests(pendingCaptureIds);
-        jobs.push_back(m_sendRenderCaptureJob);
-    }
     if (m_sendBufferCaptureJob->hasRequests())
         jobs.push_back(m_sendBufferCaptureJob);
 
@@ -2332,17 +2339,6 @@ const GraphicsApiFilterData *Renderer::contextInfo() const
 SubmissionContext *Renderer::submissionContext() const
 {
     return m_submissionContext.data();
-}
-
-void Renderer::addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId)
-{
-    if (!m_pendingRenderCaptureSendRequests.contains(nodeId))
-        m_pendingRenderCaptureSendRequests.push_back(nodeId);
-}
-
-const QVector<Qt3DCore::QNodeId> Renderer::takePendingRenderCaptureSendRequests()
-{
-    return std::move(m_pendingRenderCaptureSendRequests);
 }
 
 // Returns a vector of jobs to be performed for dirty buffers

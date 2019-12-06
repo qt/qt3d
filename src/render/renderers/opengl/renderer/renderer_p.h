@@ -71,7 +71,6 @@
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
-#include <Qt3DRender/private/sendrendercapturejob_p.h>
 #include <Qt3DRender/private/sendbuffercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
@@ -209,6 +208,7 @@ public:
 #endif
     bool shouldRender() override;
     void skipNextFrame() override;
+    void jobsDone(Qt3DCore::QAspectManager *manager) override;
 
     QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
@@ -283,9 +283,6 @@ public:
 
     QList<QPair<QObject*, QMouseEvent>> pendingPickingEvents() const;
     QList<QKeyEvent> pendingKeyEvents() const;
-
-    void addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId);
-    const QVector<Qt3DCore::QNodeId> takePendingRenderCaptureSendRequests();
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool isReadyToSubmit();
@@ -376,7 +373,6 @@ private:
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
     UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
-    SendRenderCaptureJobPtr m_sendRenderCaptureJob;
     SendBufferCaptureJobPtr m_sendBufferCaptureJob;
     UpdateSkinningPaletteJobPtr m_updateSkinningPaletteJob;
     UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;

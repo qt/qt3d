@@ -66,9 +66,9 @@ public:
     bool wasCaptureRequested() const;
     QRenderCaptureRequest takeCaptureRequest();
     void addRenderCapture(int captureId, const QImage &image);
-    void sendRenderCaptures();
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
+    void syncRenderCapturesToFrontend(Qt3DCore::QAspectManager *manager);
 
 private:
 

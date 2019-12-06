@@ -242,8 +242,9 @@ void QRenderAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *back
     renderBackend->syncFromFrontEnd(node, firstTime);
 }
 
-void QRenderAspectPrivate::jobsDone()
+void QRenderAspectPrivate::jobsDone(QAspectManager *manager)
 {
+    m_renderer->jobsDone(manager);
     if (m_renderAfterJobs)
         m_renderer->doRender(true);
 }

@@ -508,9 +508,9 @@ QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
     return res;
 }
 
-void QAbstractAspectPrivate::jobsDone()
+void QAbstractAspectPrivate::jobsDone(QAspectManager *manager)
 {
-
+    Q_UNUSED(manager)
 }
 
 /*!

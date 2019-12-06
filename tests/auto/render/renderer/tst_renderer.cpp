@@ -78,16 +78,6 @@ private Q_SLOTS:
                  1); // RayCastingJob
 
         // WHEN
-        renderer.addRenderCaptureSendRequest(Qt3DCore::QNodeId::createId());
-        jobs = renderer.preRenderingJobs();
-
-        // THEN
-        QCOMPARE(jobs.size(),
-                 1 + // PickBoundingVolumeJob
-                 1 + // RayCastingJob
-                 1); // SendRenderCaptureJob
-
-        // WHEN
         renderer.m_sendBufferCaptureJob->addRequest({Qt3DCore::QNodeId(), {}});
         jobs = renderer.preRenderingJobs();
 

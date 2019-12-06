@@ -87,7 +87,7 @@ public:
     static QRenderAspectPrivate* findPrivate(Qt3DCore::QAspectEngine *engine);
 
     void syncDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QBackendNode *backend, bool firstTime) const override;
-    void jobsDone() override;
+    void jobsDone(Qt3DCore::QAspectManager *manager) override;
 
     void registerBackendTypes();
     void unregisterBackendTypes();

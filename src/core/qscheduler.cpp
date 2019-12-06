@@ -93,11 +93,15 @@ void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
 
     m_aspectManager->jobManager()->waitForAllJobs();
 
-    for (auto &job : qAsConst(jobQueue))
-        QAspectJobPrivate::get(job.data())->postFrame(m_aspectManager);
+    {
+        QTaskLogger logger(m_aspectManager->serviceLocator()->systemInformation(), 4097, 0);
 
-    for (QAbstractAspect *aspect : aspects)
-        QAbstractAspectPrivate::get(aspect)->jobsDone();
+        for (auto &job : qAsConst(jobQueue))
+            QAspectJobPrivate::get(job.data())->postFrame(m_aspectManager);
+
+        for (QAbstractAspect *aspect : aspects)
+            QAbstractAspectPrivate::get(aspect)->jobsDone(m_aspectManager);
+    }
 }
 
 } // namespace Qt3DCore
