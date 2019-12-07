@@ -233,7 +233,6 @@ public:
     inline SynchronizerPostFramePtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
-    inline Qt3DCore::QAspectJobPtr sendTextureChangesToFrontendJob() const { return m_sendTextureChangesToFrontendJob; }
     inline UpdateEntityLayersJobPtr updateEntityLayersJob() const { return m_updateEntityLayersJob; }
     inline LightGathererPtr lightGathererJob() const { return m_lightGathererJob; }
     inline RenderableEntityFilterPtr renderableEntityFilterJob() const { return m_renderableEntityFilterJob; }
@@ -394,9 +393,7 @@ private:
     SynchronizerJobPtr m_bufferGathererJob;
     SynchronizerJobPtr m_vaoGathererJob;
     SynchronizerJobPtr m_textureGathererJob;
-    SynchronizerPostFramePtr m_sendTextureChangesToFrontendJob;
     SynchronizerJobPtr m_sendSetFenceHandlesToFrontendJob;
-    SynchronizerPostFramePtr m_sendDisablesToFrontendJob;
     SynchronizerPostFramePtr m_introspectShaderJob;
     SynchronizerJobPtr m_syncLoadingJobs;
     SynchronizerJobPtr m_cacheRenderableEntitiesJob;

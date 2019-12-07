@@ -277,13 +277,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(SynchronizerJobPtr::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
-    , m_sendTextureChangesToFrontendJob(SynchronizerPostFramePtr::create([] {},
-                                                                         [this] (Qt3DCore::QAspectManager *m) { sendTextureChangesToFrontend(m); },
-                                                                         JobTypes::SendTextureChangesToFrontend))
     , m_sendSetFenceHandlesToFrontendJob(SynchronizerJobPtr::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
-    , m_sendDisablesToFrontendJob(SynchronizerPostFramePtr::create([] {},
-                                                                   [this] (Qt3DCore::QAspectManager *m) { sendDisablesToFrontend(m); },
-                                                                   JobTypes::SendDisablesToFrontend))
     , m_introspectShaderJob(SynchronizerPostFramePtr::create([this] { reloadDirtyShaders(); },
                                                              [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
                                                              JobTypes::DirtyShaderGathering))
@@ -434,7 +428,7 @@ QOpenGLContext *Renderer::shareContext() const
 // Executed in the reloadDirtyShader job
 void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
-    Q_UNUSED(shader);
+    Q_UNUSED(shader)
     m_dirtyShaders.push_back(shaderHandle);
 }
 
@@ -1114,7 +1108,7 @@ void Renderer::reloadDirtyShaders()
         // If api of the renderer matches the one from the technique
         if (technique->isCompatibleWithRenderer()) {
             const auto passIds = technique->renderPasses();
-            for (const QNodeId passId : passIds) {
+            for (const QNodeId &passId : passIds) {
                 RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
                 HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
                 Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
@@ -1154,7 +1148,7 @@ void Renderer::reloadDirtyShaders()
     }
 }
 
-// Executed in job postFrame
+// Executed in job (in main thread when jobs are done)
 void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     Q_ASSERT(isRunning());
@@ -1181,14 +1175,13 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     }
 }
 
-// Executed in a job (as postFrame)
+// Executed in a job (in main thread when jobs are done)
 void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     const QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
     for (const auto &pair : updateTextureProperties) {
         const Qt3DCore::QNodeIdVector targetIds = pair.second;
-        for (const Qt3DCore::QNodeId targetId: targetIds) {
-
+        for (const Qt3DCore::QNodeId &targetId: targetIds) {
             // Lookup texture
             Texture *t = m_nodesManager->textureManager()->lookupResource(targetId);
             // If backend texture is Dirty, some property has changed and the properties we are
@@ -1234,7 +1227,7 @@ void Renderer::sendSetFenceHandlesToFrontend()
     }
 }
 
-// Executed in a job postFrame
+// Executed in a job (in main thread when jobs done)
 void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     // SubtreeEnabled
@@ -1713,7 +1706,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
 void Renderer::markDirty(BackendNodeDirtySet changes, BackendNode *node)
 {
-    Q_UNUSED(node);
+    Q_UNUSED(node)
     m_dirtyBits.marked |= changes;
 }
 
@@ -1760,16 +1753,18 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
             (m_nodesManager->frameGraphManager()->lookupNode(id));
         backend->syncRenderCapturesToFrontend(manager);
     }
+
+    // Do we need to notify any texture about property changes?
+    if (m_updatedTextureProperties.size() > 0)
+        sendTextureChangesToFrontend(manager);
+
+    sendDisablesToFrontend(manager);
 }
 
 // Jobs we may have to run even if no rendering will happen
 QVector<QAspectJobPtr> Renderer::preRenderingJobs()
 {
     QVector<QAspectJobPtr> jobs;
-
-    // Do we need to notify any texture about property changes?
-    if (m_updatedTextureProperties.size() > 0)
-        jobs.push_back(m_sendTextureChangesToFrontendJob);
 
     // Do we need to notify frontend about fence change?
     if (m_updatedSetFences.size() > 0)
@@ -1841,7 +1836,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_updateSkinningPaletteJob);
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_cleanupJob);
-    renderBinJobs.push_back(m_sendDisablesToFrontendJob);
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload

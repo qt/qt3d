@@ -54,11 +54,6 @@ public:
     ~tst_Renderer() {
         shutdown();
     }
-
-    Qt3DRender::Render::SynchronizerPostFramePtr sendDisablesToFrontendJob() const
-    {
-        return m_sendDisablesToFrontendJob;
-    }
 };
 
 
@@ -337,8 +332,7 @@ private Q_SLOTS:
         QCOMPARE(computeCommand.isEnabled(), true);
 
         // WHEN
-        auto sendDisablesJob = renderer.sendDisablesToFrontendJob();
-        Qt3DCore::QAspectJobPrivate::get(sendDisablesJob.data())->postFrame(&manager);
+        renderer.jobsDone(&manager);    // so Renderer::sendDisablesToFrontend gets called
 
         // THEN
         QCOMPARE(computeCommand.isEnabled(), false);

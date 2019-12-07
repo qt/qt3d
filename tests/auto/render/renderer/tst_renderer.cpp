@@ -100,20 +100,6 @@ private Q_SLOTS:
                  1); // SendSetFenceHandlesJob
         // Note: pending set fence handles are only cleared when the job is run
 
-        // WHEN
-        renderer.m_updatedTextureProperties.push_back({{}, {}});
-        jobs = renderer.preRenderingJobs();
-
-        // THEN
-        QCOMPARE(jobs.size(),
-                 1 + // PickBoundingVolumeJob
-                 1 + // RayCastingJob
-                 1 + // SendBufferCaptureJob
-                 1 + // SendSetFenceHandlesJob
-                 1); // SendTextureChangesToFrontend
-
-        // Note: pending texture changes are only cleared when the job is run
-
         // Properly shutdown command thread
         renderer.shutdown();
     }
@@ -182,7 +168,6 @@ private Q_SLOTS:
                  1 + // SyncLoadingJobs
                  1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
-                 1 + // sendDisablesToFrontend
                  1 + // VAOGatherer
                  1 + // BufferGathererJob
                  1 + // TexturesGathererJob
@@ -212,7 +197,6 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 1 + // sendDisablesToFrontend
                  singleRenderViewJobCount +
                  singleRenderViewCommandRebuildJobCount +
                  renderViewBuilderMaterialCacheJobCount +
@@ -233,7 +217,6 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 1 + // sendDisablesToFrontend
                  singleRenderViewJobCount +
                  singleRenderViewCommandRebuildJobCount +
                  renderViewBuilderMaterialCacheJobCount +
@@ -253,7 +236,6 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 1 + // sendDisablesToFrontend
                  1 + // EntityEnabledDirty
                  singleRenderViewJobCount +
                  layerCacheJobCount);
@@ -275,7 +257,6 @@ private Q_SLOTS:
                  1 + // UpdateShaderDataTransform
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 1 + // sendDisablesToFrontend
                  1 + // ExpandBoundingVolumeJob
                  singleRenderViewJobCount);
 
@@ -293,7 +274,6 @@ private Q_SLOTS:
                  1 + // VAOGatherer
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
-                 1 + // sendDisablesToFrontend
                  singleRenderViewJobCount +
                  singleRenderViewCommandRebuildJobCount +
                  renderViewBuilderMaterialCacheJobCount);
@@ -317,7 +297,6 @@ private Q_SLOTS:
                  1 + // ExpandBoundingVolumeJob
                  1 + // RenderableEntityFilterPtr
                  1 + // SyncRenderableEntities
-                 1 + // sendDisablesToFrontend
                  singleRenderViewCommandRebuildJobCount +
                  singleRenderViewJobCount);
 
@@ -338,7 +317,6 @@ private Q_SLOTS:
                  1 + // CalculateBoundingVolumeJob
                  1 + // UpdateMeshTriangleListJob
                  1 + // BufferGathererJob
-                 1 + // sendDisablesToFrontend
                  singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -356,7 +334,6 @@ private Q_SLOTS:
                  1 + // TexturesGathererJob
                  1 + // updateSkinningPaletteJob
                  1 + // SyncTexturesGathererJob
-                 1 + // sendDisablesToFrontend
                  singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
