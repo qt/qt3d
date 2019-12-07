@@ -168,7 +168,7 @@ private Q_SLOTS:
         engine.setRootEntity(entity);
 
         QEventLoop eventLoop;
-        QTimer::singleShot(100, &eventLoop, SLOT(quit()));
+        QTimer::singleShot(1000, &eventLoop, SLOT(quit()));
         eventLoop.exec();
 
         // THEN

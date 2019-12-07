@@ -53,6 +53,8 @@ int renderViewInstanceCounter = 0;
 
 RenderViewCommandBuilderJob::RenderViewCommandBuilderJob()
     : Qt3DCore::QAspectJob()
+    , m_offset(0)
+    , m_count(0)
     , m_renderView(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderViewCommandBuilder, renderViewInstanceCounter++)
@@ -61,11 +63,14 @@ RenderViewCommandBuilderJob::RenderViewCommandBuilderJob()
 void RenderViewCommandBuilderJob::run()
 {
     if (!m_renderView->noDraw()) {
+        if (m_count == 0)
+            return;
+
         const bool isDraw = !m_renderView->isCompute();
         if (isDraw)
-            m_commandData = m_renderView->buildDrawRenderCommands(m_entities);
+            m_commandData = m_renderView->buildDrawRenderCommands(m_entities, m_offset, m_count);
         else
-            m_commandData = m_renderView->buildComputeRenderCommands(m_entities);
+            m_commandData = m_renderView->buildComputeRenderCommands(m_entities, m_offset, m_count);
     }
 }
 

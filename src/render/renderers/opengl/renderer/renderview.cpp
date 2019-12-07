@@ -119,29 +119,29 @@ RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniform
 {
     RenderView::StandardUniformsNameToTypeHash setters;
 
-    setters.insert(StringToInt::lookupId(QLatin1String("modelMatrix")), ModelMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewMatrix")), ViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("projectionMatrix")), ProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelView")), ModelViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewProjectionMatrix")), ViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelViewProjection")), ModelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("mvp")), ModelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelMatrix")), InverseModelMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewMatrix")), InverseViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseProjectionMatrix")), InverseProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelView")), InverseModelViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewProjectionMatrix")), InverseViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelViewProjection")), InverseModelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelNormalMatrix")), ModelNormalMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), ModelViewNormalMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), ViewportMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), InverseViewportMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("aspectRatio")), AspectRatio);
-    setters.insert(StringToInt::lookupId(QLatin1String("exposure")), Exposure);
-    setters.insert(StringToInt::lookupId(QLatin1String("gamma")), Gamma);
-    setters.insert(StringToInt::lookupId(QLatin1String("time")), Time);
-    setters.insert(StringToInt::lookupId(QLatin1String("eyePosition")), EyePosition);
-    setters.insert(StringToInt::lookupId(QLatin1String("skinningPalette[0]")), SkinningPalette);
+    setters.insert(Shader::modelMatrixNameId, ModelMatrix);
+    setters.insert(Shader::viewMatrixNameId, ViewMatrix);
+    setters.insert(Shader::projectionMatrixNameId, ProjectionMatrix);
+    setters.insert(Shader::modelViewMatrixNameId, ModelViewMatrix);
+    setters.insert(Shader::viewProjectionMatrixNameId, ViewProjectionMatrix);
+    setters.insert(Shader::modelViewProjectionNameId, ModelViewProjectionMatrix);
+    setters.insert(Shader::mvpNameId, ModelViewProjectionMatrix);
+    setters.insert(Shader::inverseModelMatrixNameId, InverseModelMatrix);
+    setters.insert(Shader::inverseViewMatrixNameId, InverseViewMatrix);
+    setters.insert(Shader::inverseProjectionMatrixNameId, InverseProjectionMatrix);
+    setters.insert(Shader::inverseModelViewNameId, InverseModelViewMatrix);
+    setters.insert(Shader::inverseViewProjectionMatrixNameId, InverseViewProjectionMatrix);
+    setters.insert(Shader::inverseModelViewProjectionNameId, InverseModelViewProjectionMatrix);
+    setters.insert(Shader::modelNormalMatrixNameId, ModelNormalMatrix);
+    setters.insert(Shader::modelViewNormalNameId, ModelViewNormalMatrix);
+    setters.insert(Shader::viewportMatrixNameId, ViewportMatrix);
+    setters.insert(Shader::inverseViewportMatrixNameId, InverseViewportMatrix);
+    setters.insert(Shader::aspectRatioNameId, AspectRatio);
+    setters.insert(Shader::exposureNameId, Exposure);
+    setters.insert(Shader::gammaNameId, Gamma);
+    setters.insert(Shader::timeNameId, Time);
+    setters.insert(Shader::eyePositionNameId, EyePosition);
+    setters.insert(Shader::skinningPaletteNameId, SkinningPalette);
 
     return setters;
 }
@@ -621,13 +621,16 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
 }
 
 // If we are there, we know that entity had a GeometryRenderer + Material
-EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities) const
+EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities,
+                                                            int offset, int count) const
 {
     EntityRenderCommandData commands;
 
-    commands.reserve(entities.size());
+    commands.reserve(count);
 
-    for (Entity *entity : entities) {
+    for (int i = 0; i < count; ++i) {
+        const int idx = offset + i;
+        Entity *entity = entities.at(idx);
         GeometryRenderer *geometryRenderer = nullptr;
         HGeometryRenderer geometryRendererHandle = entity->componentHandle<GeometryRenderer>();
 
@@ -640,12 +643,15 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
             const HMaterial materialHandle = entity->componentHandle<Material>();
             const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
 
+            HGeometry geometryHandle = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
+            Geometry *geometry = m_manager->geometryManager()->data(geometryHandle);
+
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
             for (const RenderPassParameterData &passData : renderPassData) {
                 // Add the RenderPass Parameters
                 RenderCommand command = {};
                 command.m_geometryRenderer = geometryRendererHandle;
-                command.m_geometry = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
+                command.m_geometry = geometryHandle;
 
                 command.m_material = materialHandle;
                 // For RenderPass based states we use the globally set RenderState
@@ -662,6 +668,73 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
                 }
                 command.m_shader = m_manager->lookupHandle<Shader, ShaderManager, HShader>(pass->shaderProgram());
 
+                { // Scoped to show extent
+
+                    // Update the draw command with what's going to be needed for the drawing
+                    int primitiveCount = geometryRenderer->vertexCount();
+                    int estimatedCount = 0;
+                    Attribute *indexAttribute = nullptr;
+                    Attribute *indirectAttribute = nullptr;
+
+                    const QVector<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
+                    for (Qt3DCore::QNodeId attributeId : attributeIds) {
+                        Attribute *attribute = m_manager->attributeManager()->lookupResource(attributeId);
+                        switch (attribute->attributeType()) {
+                        case QAttribute::IndexAttribute:
+                            indexAttribute = attribute;
+                            break;
+                        case QAttribute::DrawIndirectAttribute:
+                            indirectAttribute = attribute;
+                            break;
+                        case QAttribute::VertexAttribute: {
+                            if (command.m_activeAttributes.contains(attribute->nameId()))
+                                estimatedCount = std::max(int(attribute->count()), estimatedCount);
+                            break;
+                        }
+                        default:
+                            Q_UNREACHABLE();
+                            break;
+                        }
+                    }
+
+                    command.m_drawIndexed = (indexAttribute != nullptr);
+                    command.m_drawIndirect = (indirectAttribute != nullptr);
+
+                    // Update the draw command with all the information required for the drawing
+                    if (command.m_drawIndexed) {
+                        command.m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
+                        command.m_indexAttributeByteOffset = indexAttribute->byteOffset() + geometryRenderer->indexBufferByteOffset();
+                    }
+
+                    // Note: we only care about the primitiveCount when using direct draw calls
+                    // For indirect draw calls it is assumed the buffer was properly set already
+                    if (command.m_drawIndirect) {
+                        command.m_indirectAttributeByteOffset = indirectAttribute->byteOffset();
+                        command.m_indirectDrawBuffer = m_manager->bufferManager()->lookupHandle(indirectAttribute->bufferId());
+                    } else {
+                        // Use the count specified by the GeometryRender
+                        // If not specify use the indexAttribute count if present
+                        // Otherwise tries to use the count from the attribute with the highest count
+                        if (primitiveCount == 0) {
+                            if (indexAttribute)
+                                primitiveCount = indexAttribute->count();
+                            else
+                                primitiveCount = estimatedCount;
+                        }
+                    }
+
+                    command.m_primitiveCount = primitiveCount;
+                    command.m_primitiveType = geometryRenderer->primitiveType();
+                    command.m_primitiveRestartEnabled = geometryRenderer->primitiveRestartEnabled();
+                    command.m_restartIndexValue = geometryRenderer->restartIndexValue();
+                    command.m_firstInstance = geometryRenderer->firstInstance();
+                    command.m_instanceCount = geometryRenderer->instanceCount();
+                    command.m_firstVertex = geometryRenderer->firstVertex();
+                    command.m_indexOffset = geometryRenderer->indexOffset();
+                    command.m_verticesPerPatch = geometryRenderer->verticesPerPatch();
+                } // scope
+
+
                 commands.push_back(entity,
                                    std::move(command),
                                    std::move(passData));
@@ -672,7 +745,8 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
     return commands;
 }
 
-EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities) const
+EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities,
+                                                               int offset, int count) const
 {
     // If the RenderView contains only a ComputeDispatch then it cares about
     // A ComputeDispatch is also implicitely a NoDraw operation
@@ -681,9 +755,11 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
     // material/effect/technique/parameters/filters/
     EntityRenderCommandData commands;
 
-    commands.reserve(entities.size());
+    commands.reserve(count);
 
-    for (Entity *entity : entities) {
+    for (int i = 0; i < count; ++i) {
+        const int idx = offset + i;
+        Entity *entity = entities.at(idx);
         ComputeCommand *computeJob = nullptr;
         HComputeCommand computeCommandHandle = entity->componentHandle<ComputeCommand>();
         if ((computeJob = nodeManagers()->computeJobManager()->data(computeCommandHandle)) != nullptr
@@ -725,7 +801,9 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
     return commands;
 }
 
-void RenderView::updateRenderCommand(EntityRenderCommandData &renderCommandData)
+void RenderView::updateRenderCommand(EntityRenderCommandData *renderCommandData,
+                                     int offset,
+                                     int count)
 {
     // Note: since many threads can be building render commands
     // we need to ensure that the UniformBlockValueBuilder they are using
@@ -735,10 +813,11 @@ void RenderView::updateRenderCommand(EntityRenderCommandData &renderCommandData)
     builder->textureManager = m_manager->textureManager();
     m_localData.setLocalData(builder);
 
-    for (int i = 0, m = renderCommandData.size(); i < m; ++i) {
-        Entity *entity = renderCommandData.entities.at(i);
-        const RenderPassParameterData passData = renderCommandData.passesData.at(i);
-        RenderCommand &command = renderCommandData.commands[i];
+    for (int i = 0, m = count; i < m; ++i) {
+        const int idx = offset + i;
+        Entity *entity = renderCommandData->entities.at(idx);
+        const RenderPassParameterData passData = renderCommandData->passesData.at(idx);
+        RenderCommand &command = renderCommandData->commands[idx];
 
         // Pick which lights to take in to account.
         // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
@@ -944,6 +1023,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
         // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
         // equals to the parameter name
         const QVector<int> uniformNamesIds = shader->uniformsNamesIds();
+        const QVector<int> standardUniformNamesIds = shader->standardUniformNameIds();
         const QVector<int> uniformBlockNamesIds = shader->uniformBlockNamesIds();
         const QVector<int> shaderStorageBlockNamesIds = shader->storageBlockNamesIds();
         const QVector<int> attributeNamesIds = shader->attributeNamesIds();
@@ -963,19 +1043,22 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 shader->setFragOutputs(fragOutputs);
         }
 
-        if (!uniformNamesIds.isEmpty() || !attributeNamesIds.isEmpty() ||
+        if (!uniformNamesIds.isEmpty() || !standardUniformNamesIds.isEmpty() ||
+                !attributeNamesIds.isEmpty() ||
                 !shaderStorageBlockNamesIds.isEmpty() || !attributeNamesIds.isEmpty()) {
 
             // Set default standard uniforms without bindings
             const Matrix4x4 worldTransform = *(entity->worldTransform());
 
-            for (const int uniformNameId : uniformNamesIds) {
-                if (ms_standardUniformSetters.contains(uniformNameId))
+            for (const int uniformNameId : standardUniformNamesIds)
                     setStandardUniformValue(command->m_parameterPack, uniformNameId, uniformNameId, entity, worldTransform);
-            }
 
             // Set default attributes
             command->m_activeAttributes = attributeNamesIds;
+
+            // At this point we know whether the command is a valid draw command or not
+            // We still need to process the uniforms as the command could be a compute command
+            command->m_isValid = !command->m_activeAttributes.empty();
 
             // Parameters remaining could be
             // -> uniform scalar / vector

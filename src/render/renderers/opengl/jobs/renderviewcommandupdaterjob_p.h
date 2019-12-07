@@ -71,16 +71,24 @@ public:
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
     inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
-    inline void setRenderables(const EntityRenderCommandData &renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
+    inline void setRenderables(EntityRenderCommandData *renderables, int offset, int count) Q_DECL_NOTHROW
+    {
+        m_offset = offset;
+        m_count = count;
+        m_renderables = renderables;
+    }
+    EntityRenderCommandData *renderables() const { return m_renderables; }
 
     QVector<RenderCommand> &commands() Q_DECL_NOTHROW { return m_commands; }
 
     void run() final;
 
 private:
+    int m_offset;
+    int m_count;
     RenderView *m_renderView;
     Renderer *m_renderer;
-    EntityRenderCommandData m_renderables;
+    EntityRenderCommandData *m_renderables;
     QVector<RenderCommand> m_commands;
 };
 

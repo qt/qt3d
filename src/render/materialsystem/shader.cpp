@@ -57,6 +57,29 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
+const int Shader::modelMatrixNameId = StringToInt::lookupId(QLatin1String("modelMatrix"));
+const int Shader::viewMatrixNameId = StringToInt::lookupId(QLatin1String("viewMatrix"));
+const int Shader::projectionMatrixNameId = StringToInt::lookupId(QLatin1String("projectionMatrix"));
+const int Shader::modelViewMatrixNameId = StringToInt::lookupId(QLatin1String("modelView"));
+const int Shader::viewProjectionMatrixNameId = StringToInt::lookupId(QLatin1String("viewProjectionMatrix"));
+const int Shader::modelViewProjectionNameId = StringToInt::lookupId(QLatin1String("modelViewProjection"));
+const int Shader::mvpNameId = StringToInt::lookupId(QLatin1String("mvp"));
+const int Shader::inverseModelMatrixNameId = StringToInt::lookupId(QLatin1String("inverseModelMatrix"));
+const int Shader::inverseViewMatrixNameId = StringToInt::lookupId(QLatin1String("inverseViewMatrix"));
+const int Shader::inverseProjectionMatrixNameId = StringToInt::lookupId(QLatin1String("inverseProjectionMatrix"));
+const int Shader::inverseModelViewNameId = StringToInt::lookupId(QLatin1String("inverseModelView"));
+const int Shader::inverseViewProjectionMatrixNameId = StringToInt::lookupId(QLatin1String("inverseViewProjectionMatrix"));
+const int Shader::inverseModelViewProjectionNameId = StringToInt::lookupId(QLatin1String("inverseModelViewProjection"));
+const int Shader::modelNormalMatrixNameId = StringToInt::lookupId(QLatin1String("modelNormalMatrix"));
+const int Shader::modelViewNormalNameId = StringToInt::lookupId(QLatin1String("modelViewNormal"));
+const int Shader::viewportMatrixNameId = StringToInt::lookupId(QLatin1String("viewportMatrix"));
+const int Shader::inverseViewportMatrixNameId = StringToInt::lookupId(QLatin1String("inverseViewportMatrix"));
+const int Shader::aspectRatioNameId = StringToInt::lookupId(QLatin1String("aspectRatio"));
+const int Shader::exposureNameId = StringToInt::lookupId(QLatin1String("exposure"));
+const int Shader::gammaNameId = StringToInt::lookupId(QLatin1String("gamma"));
+const int Shader::timeNameId = StringToInt::lookupId(QLatin1String("time"));
+const int Shader::eyePositionNameId = StringToInt::lookupId(QLatin1String("eyePosition"));
+const int Shader::skinningPaletteNameId = StringToInt::lookupId(QLatin1String("skinningPalette[0]"));
 
 Shader::Shader()
     : BackendNode(ReadWrite)
@@ -308,13 +331,47 @@ void Shader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescriptio
 {
     m_uniforms = uniformsDescription;
     m_uniformsNames.resize(uniformsDescription.size());
-    m_uniformsNamesIds.resize(uniformsDescription.size());
+    m_uniformsNamesIds.reserve(uniformsDescription.size());
+    m_standardUniformNamesIds.reserve(5);
     QHash<QString, ShaderUniform> activeUniformsInDefaultBlock;
+
+    static const QVector<int> standardUniformNameIds = {
+        modelMatrixNameId,
+        viewMatrixNameId,
+        projectionMatrixNameId,
+        modelViewMatrixNameId,
+        viewProjectionMatrixNameId,
+        modelViewProjectionNameId,
+        mvpNameId,
+        inverseModelMatrixNameId,
+        inverseViewMatrixNameId,
+        inverseProjectionMatrixNameId,
+        inverseModelViewNameId,
+        inverseViewProjectionMatrixNameId,
+        inverseModelViewProjectionNameId,
+        modelNormalMatrixNameId,
+        modelViewNormalNameId,
+        viewportMatrixNameId,
+        inverseViewportMatrixNameId,
+        aspectRatioNameId,
+        exposureNameId,
+        gammaNameId,
+        timeNameId,
+        eyePositionNameId,
+        skinningPaletteNameId,
+    };
 
     for (int i = 0, m = uniformsDescription.size(); i < m; i++) {
         m_uniformsNames[i] = m_uniforms[i].m_name;
-        m_uniforms[i].m_nameId = StringToInt::lookupId(m_uniformsNames[i]);
-        m_uniformsNamesIds[i] = m_uniforms[i].m_nameId;
+        const int nameId = StringToInt::lookupId(m_uniformsNames[i]);
+        m_uniforms[i].m_nameId = nameId;
+
+        // Is the uniform a Qt3D "Standard" uniform or a user defined one?
+        if (standardUniformNameIds.contains(nameId))
+            m_standardUniformNamesIds.push_back(nameId);
+        else
+            m_uniformsNamesIds.push_back(nameId);
+
         if (uniformsDescription[i].m_blockIndex == -1) { // Uniform is in default block
             qCDebug(Shaders) << "Active Uniform in Default Block " << uniformsDescription[i].m_name << uniformsDescription[i].m_blockIndex;
             activeUniformsInDefaultBlock.insert(uniformsDescription[i].m_name, uniformsDescription[i]);
@@ -394,6 +451,7 @@ void Shader::initializeFromReference(const Shader &other)
 {
     Q_ASSERT(m_dna == other.m_dna);
     m_uniformsNamesIds = other.m_uniformsNamesIds;
+    m_standardUniformNamesIds = other.m_standardUniformNamesIds;
     m_uniformsNames = other.m_uniformsNames;
     m_uniforms = other.m_uniforms;
     m_attributesNames = other.m_attributesNames;

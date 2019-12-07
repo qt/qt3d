@@ -103,7 +103,7 @@ private:
     QFutureInterface<void> *m_futureInterface;
     QMutex m_mutex;
     QAtomicInt m_taskCount;
-    QThreadPool m_threadPool;
+    QThreadPool *m_threadPool;
 };
 
 } // namespace Qt3DCore
