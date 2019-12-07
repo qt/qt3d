@@ -140,13 +140,18 @@ void traverseSegmentStripIndexed(Index *indices,
 
     uint ndx[2];
     Vector3D abc[2];
-    ndx[0] = indices[0];
+
+    startLinePrimitive:ndx[0] = indices[i];
     uint idx = ndx[0] * verticesStride;
     for (uint j = 0; j < maxVerticesDataSize; ++j)
         abc[0][j] = vertices[idx + j];
     while (i < indexInfo.count - 1) {
         ndx[1] = indices[i + 1];
         if (ndx[0] != ndx[1]) {
+            if (indexInfo.restartEnabled && indexInfo.restartIndexValue == static_cast<int>(ndx[1])) {
+                i += 2;
+                goto startLinePrimitive;
+            }
             idx = ndx[1] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j)
                 abc[1][j] = vertices[idx + j];
