@@ -90,7 +90,8 @@ QSystemInformationServicePrivate::QSystemInformationServicePrivate(QAspectEngine
     , m_commandDebugger(nullptr)
 {
     m_traceEnabled = qEnvironmentVariableIsSet("QT3D_TRACE_ENABLED");
-    if (m_traceEnabled)
+    m_graphicsTraceEnabled = qEnvironmentVariableIsSet("QT3D_GRAPHICS_TRACE_ENABLED");
+    if (m_traceEnabled || m_graphicsTraceEnabled)
         m_jobsStatTimer.start();
 
     const bool commandServerEnabled = qEnvironmentVariableIsSet("QT3D_COMMAND_SERVER_ENABLED");
@@ -110,7 +111,7 @@ QSystemInformationServicePrivate *QSystemInformationServicePrivate::get(QSystemI
 // Called by the jobs
 void QSystemInformationServicePrivate::addJobLogStatsEntry(QSystemInformationServicePrivate::JobRunStats &stats)
 {
-    if (!m_traceEnabled)
+    if (!m_traceEnabled && !m_graphicsTraceEnabled)
         return;
 
     if (!m_jobStatsCached.hasLocalData()) {
@@ -125,7 +126,7 @@ void QSystemInformationServicePrivate::addJobLogStatsEntry(QSystemInformationSer
 // Called from Submission thread (which can be main thread in Manual drive mode)
 void QSystemInformationServicePrivate::addSubmissionLogStatsEntry(QSystemInformationServicePrivate::JobRunStats &stats)
 {
-    if (!m_traceEnabled)
+    if (!m_traceEnabled && !m_graphicsTraceEnabled)
         return;
 
     QMutexLocker lock(&m_localStoragesMutex);
@@ -145,13 +146,15 @@ void QSystemInformationServicePrivate::addSubmissionLogStatsEntry(QSystemInforma
 // Called after jobs have been executed (MainThread QAspectJobManager::enqueueJobs)
 void QSystemInformationServicePrivate::writeFrameJobLogStats()
 {
-    if (!m_traceEnabled)
+    if (!m_traceEnabled && !m_graphicsTraceEnabled)
         return;
 
     using JobRunStats = QSystemInformationServicePrivate::JobRunStats;
 
     if (!m_traceFile) {
-        const QString fileName = QStringLiteral("trace_") + QCoreApplication::applicationName() + QDateTime::currentDateTime().toString(QStringLiteral("_ddd_dd_MM_yy-hh_mm_ss_"))+ QSysInfo::productType() + QStringLiteral("_") + QSysInfo::buildAbi() + QStringLiteral(".qt3d");
+        const QString fileName = QStringLiteral("trace_") + QCoreApplication::applicationName() +
+                                 QDateTime::currentDateTime().toString(QStringLiteral("_yyMMdd-hhmmss_")) +
+                                 QSysInfo::productType() + QStringLiteral("_") + QSysInfo::buildAbi() + QStringLiteral(".qt3d");
 #ifdef Q_OS_ANDROID
         m_traceFile.reset(new QFile(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + QStringLiteral("/") + fileName));
 #else
@@ -200,6 +203,16 @@ void QSystemInformationServicePrivate::writeFrameJobLogStats()
 
     m_traceFile->flush();
     ++m_frameId;
+}
+
+void QSystemInformationServicePrivate::updateTracing()
+{
+    if (m_traceEnabled || m_graphicsTraceEnabled) {
+        if (!m_jobsStatTimer.isValid())
+            m_jobsStatTimer.start();
+    } else {
+        m_traceFile.reset();
+    }
 }
 
 
@@ -293,6 +306,12 @@ bool QSystemInformationService::isTraceEnabled() const
     return d->m_traceEnabled;
 }
 
+bool QSystemInformationService::isGraphicsTraceEnabled() const
+{
+    Q_D(const QSystemInformationService);
+    return d->m_graphicsTraceEnabled;
+}
+
 bool QSystemInformationService::isCommandServerEnabled() const
 {
     Q_D(const QSystemInformationService);
@@ -305,12 +324,17 @@ void QSystemInformationService::setTraceEnabled(bool traceEnabled)
     if (d->m_traceEnabled != traceEnabled) {
         d->m_traceEnabled = traceEnabled;
         emit traceEnabledChanged(d->m_traceEnabled);
-        if (d->m_traceEnabled) {
-            if (!d->m_jobsStatTimer.isValid())
-                d->m_jobsStatTimer.start();
-        } else {
-            d->m_traceFile.reset();
-        }
+        d->updateTracing();
+    }
+}
+
+void QSystemInformationService::setGraphicsTraceEnabled(bool graphicsTraceEnabled)
+{
+    Q_D(QSystemInformationService);
+    if (d->m_graphicsTraceEnabled != graphicsTraceEnabled) {
+        d->m_graphicsTraceEnabled = graphicsTraceEnabled;
+        emit graphicsTraceEnabledChanged(d->m_graphicsTraceEnabled);
+        d->updateTracing();
     }
 }
 
@@ -369,6 +393,16 @@ QVariant QSystemInformationService::executeCommand(const QString &command)
 
     if (command == QLatin1String("tracing off")) {
         setTraceEnabled(false);
+        return  {isTraceEnabled()};
+    }
+
+    if (command == QLatin1String("glprofiling on")) {
+        setGraphicsTraceEnabled(true);
+        return  {isTraceEnabled()};
+    }
+
+    if (command == QLatin1String("glprofiling off")) {
+        setGraphicsTraceEnabled(false);
         return  {isTraceEnabled()};
     }
 

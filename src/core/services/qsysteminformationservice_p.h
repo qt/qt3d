@@ -67,14 +67,17 @@ class Q_3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceP
 {
     Q_OBJECT
     Q_PROPERTY(bool traceEnabled READ isTraceEnabled WRITE setTraceEnabled NOTIFY traceEnabledChanged)
+    Q_PROPERTY(bool graphicsTraceEnabled READ isGraphicsTraceEnabled WRITE setGraphicsTraceEnabled NOTIFY graphicsTraceEnabledChanged)
     Q_PROPERTY(bool commandServerEnabled READ isCommandServerEnabled CONSTANT)
 public:
     QSystemInformationService(QAspectEngine *aspectEngine);
 
     bool isTraceEnabled() const;
+    bool isGraphicsTraceEnabled() const;
     bool isCommandServerEnabled() const;
 
     void setTraceEnabled(bool traceEnabled);
+    void setGraphicsTraceEnabled(bool graphicsTraceEnabled);
 
     QStringList aspectNames() const;
     int threadPoolThreadCount() const;
@@ -85,6 +88,7 @@ public:
 
 signals:
     void traceEnabledChanged(bool traceEnabled);
+    void graphicsTraceEnabledChanged(bool graphicsTraceEnabled);
 
 protected:
     Q_DECLARE_PRIVATE(QSystemInformationService)

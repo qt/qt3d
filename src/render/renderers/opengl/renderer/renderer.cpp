@@ -469,6 +469,9 @@ void Renderer::initialize()
             else
                 qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
             m_ownedContext = true;
+
+            QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
+                             [this] { m_frameProfiler.reset(); });
         } else {
             // Context is not owned by us, so we need to know if it gets destroyed
             m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
@@ -602,6 +605,7 @@ void Renderer::releaseGraphicsResources()
             vao->destroy();
         }
 
+        m_frameProfiler.reset();
         context->doneCurrent();
     } else {
         qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
@@ -789,6 +793,9 @@ void Renderer::doRender(bool swapBuffers)
         // Delete all the RenderViews which will clear the allocators
         // that were used for their allocation
         qDeleteAll(renderViews);
+
+        if (preprocessingComplete && activeProfiler())
+            m_frameProfiler->writeResults();
     }
 
     // If hasCleanedQueueAndProceeded isn't true this implies that something went wrong
@@ -859,6 +866,18 @@ bool Renderer::canRender() const
     // Rather than having checks for the surface everywhere
 
     return true;
+}
+
+Profiling::FrameProfiler *Renderer::activeProfiler() const
+{
+    if (m_services && m_services->systemInformation()->isGraphicsTraceEnabled()) {
+        if (m_frameProfiler.isNull())
+            m_frameProfiler.reset(new Profiling::FrameProfiler(m_services->systemInformation()));
+
+        return m_frameProfiler.data();
+    }
+
+    return nullptr;
 }
 
 bool Renderer::isReadyToSubmit()
@@ -946,7 +965,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                         m_dirtyGeometry.push_back(rGeometry);
 
                     if (!command.m_activeAttributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
-                        Profiling::GLTimeRecorder recorder(Profiling::VAOUpload);
+                        Profiling::GLTimeRecorder recorder(Profiling::VAOUpload, activeProfiler());
                         // Activate shader
                         m_submissionContext->activateShader(shader->dna());
                         // Bind VAO
@@ -1259,7 +1278,7 @@ void Renderer::updateGLResources()
     }
 
     {
-        Profiling::GLTimeRecorder recorder(Profiling::BufferUpload);
+        Profiling::GLTimeRecorder recorder(Profiling::BufferUpload, activeProfiler());
         const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
         for (const HBuffer &handle: dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
@@ -1280,7 +1299,7 @@ void Renderer::updateGLResources()
 
 #ifndef SHADER_LOADING_IN_COMMAND_THREAD
     {
-        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
+        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload, activeProfiler());
         const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
         for (const HShader &handle: dirtyShaderHandles) {
@@ -1297,7 +1316,7 @@ void Renderer::updateGLResources()
 #endif
 
     {
-        Profiling::GLTimeRecorder recorder(Profiling::TextureUpload);
+        Profiling::GLTimeRecorder recorder(Profiling::TextureUpload, activeProfiler());
         const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
         for (const HTexture &handle: activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
@@ -1560,7 +1579,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         RenderStateSet *renderViewStateSet = renderView->stateSet();
 
         {
-            Profiling::GLTimeRecorder recorder(Profiling::StateUpdate);
+            Profiling::GLTimeRecorder recorder(Profiling::StateUpdate, activeProfiler());
             // Set the RV state if not null,
             if (renderViewStateSet != nullptr)
                 m_submissionContext->setCurrentStateSet(renderViewStateSet);
@@ -1571,14 +1590,14 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         // Set RenderTarget ...
         // Activate RenderTarget
         {
-            Profiling::GLTimeRecorder recorder(Profiling::RenderTargetUpdate);
+            Profiling::GLTimeRecorder recorder(Profiling::RenderTargetUpdate, activeProfiler());
             m_submissionContext->activateRenderTarget(renderView->renderTargetId(),
                                                     renderView->attachmentPack(),
                                                     lastBoundFBOId);
         }
 
         {
-            Profiling::GLTimeRecorder recorder(Profiling::ClearBuffer);
+            Profiling::GLTimeRecorder recorder(Profiling::ClearBuffer, activeProfiler());
             // set color, depth, stencil clear values (only if needed)
             auto clearBufferTypes = renderView->clearTypes();
             if (clearBufferTypes & QClearBuffers::ColorBuffer) {
@@ -2009,7 +2028,7 @@ void Renderer::performDraw(RenderCommand *command)
 
         // TO DO: Add glMulti Draw variants
         if (command->m_drawIndexed) {
-            Profiling::GLTimeRecorder recorder(Profiling::DrawElement);
+            Profiling::GLTimeRecorder recorder(Profiling::DrawElement, activeProfiler());
             m_submissionContext->drawElementsInstancedBaseVertexBaseInstance(command->m_primitiveType,
                                                                            command->m_primitiveCount,
                                                                            command->m_indexAttributeDataType,
@@ -2018,7 +2037,7 @@ void Renderer::performDraw(RenderCommand *command)
                                                                            command->m_indexOffset,
                                                                            command->m_firstInstance);
         } else {
-            Profiling::GLTimeRecorder recorder(Profiling::DrawArray);
+            Profiling::GLTimeRecorder recorder(Profiling::DrawArray, activeProfiler());
             m_submissionContext->drawArraysInstancedBaseInstance(command->m_primitiveType,
                                                                command->m_firstVertex,
                                                                command->m_primitiveCount,
@@ -2040,15 +2059,15 @@ void Renderer::performDraw(RenderCommand *command)
 void Renderer::performCompute(const RenderView *, RenderCommand *command)
 {
     {
-        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate);
+        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate, activeProfiler());
         m_submissionContext->activateShader(command->m_shaderDna);
     }
     {
-        Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate);
+        Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate, activeProfiler());
         m_submissionContext->setParameters(command->m_parameterPack);
     }
     {
-        Profiling::GLTimeRecorder recorder(Profiling::DispatchCompute);
+        Profiling::GLTimeRecorder recorder(Profiling::DispatchCompute, activeProfiler());
         m_submissionContext->dispatchCompute(command->m_workGroups[0],
                 command->m_workGroups[1],
                 command->m_workGroups[2]);
@@ -2121,7 +2140,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             }
 
             {
-                Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate);
+                Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate, activeProfiler());
                 //// We activate the shader here
                 if (!m_submissionContext->activateShader(command.m_shaderDna)) {
                     allCommandsIssued = false;
@@ -2130,13 +2149,13 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             }
 
             {
-                Profiling::GLTimeRecorder recorder(Profiling::VAOUpdate);
+                Profiling::GLTimeRecorder recorder(Profiling::VAOUpdate, activeProfiler());
                 // Bind VAO
                 vao->bind();
             }
 
             {
-                Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate);
+                Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate, activeProfiler());
                 //// Update program uniforms
                 if (!m_submissionContext->setParameters(command.m_parameterPack)) {
                     allCommandsIssued = false;
@@ -2153,7 +2172,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
 
 
             {
-                Profiling::GLTimeRecorder recorder(Profiling::StateUpdate);
+                Profiling::GLTimeRecorder recorder(Profiling::StateUpdate, activeProfiler());
                 // Merge the RenderCommand state with the globalState of the RenderView
                 // Or restore the globalState if no stateSet for the RenderCommand
                 if (localState != nullptr) {

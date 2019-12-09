@@ -131,6 +131,10 @@ class CommandExecuter;
 
 namespace Render {
 
+namespace Profiling {
+class FrameProfiler;
+}
+
 class CameraLens;
 class SubmissionContext;
 class FrameGraphNode;
@@ -312,6 +316,7 @@ public:
 private:
 #endif
     bool canRender() const;
+    Profiling::FrameProfiler *activeProfiler() const;
 
     Qt3DCore::QServiceLocator *m_services;
     NodeManagers *m_nodesManager;
@@ -427,6 +432,8 @@ private:
     QMutex m_offscreenSurfaceMutex;
 
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
+
+    mutable QScopedPointer<Qt3DRender::Render::Profiling::FrameProfiler> m_frameProfiler;
 
 #ifdef QT_BUILD_INTERNAL
     friend class ::tst_Renderer;

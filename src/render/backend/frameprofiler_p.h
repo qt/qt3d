@@ -40,12 +40,20 @@
 // We mean it.
 //
 
-#include <QOpenGLTimeMonitor>
+#include <QOpenGLTimerQuery>
 #include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <memory>
 
 QT_BEGIN_NAMESPACE
+
+#if !defined(QT_NO_OPENGL) && !defined(QT_OPENGL_ES_2)
+#define QT3D_SUPPORTS_GL_MONITOR
+#endif
+
+namespace Qt3DCore {
+class QSystemInformationService;
+}
 
 namespace Qt3DRender {
 
@@ -70,13 +78,13 @@ enum RecordingType
     RenderTargetUpdate
 };
 
-#if QT_CONFIG(qt3d_profile_gl)
-
 class FrameTimeRecorder
 {
 public:
-    FrameTimeRecorder()
-    {}
+    FrameTimeRecorder(Qt3DCore::QSystemInformationService *service)
+        : m_service(service)
+    {
+    }
 
     ~FrameTimeRecorder()
     {
@@ -84,6 +92,7 @@ public:
 
     void init(int eventCount)
     {
+#ifdef QT3D_SUPPORTS_GL_MONITOR
         if (m_monitor.isCreated()) {
             m_remainingEvents = m_monitor.sampleCount();
             reset();
@@ -92,28 +101,37 @@ public:
             m_monitor.create();
             m_remainingEvents = eventCount;
         }
+#else
+        m_remainingEvents = eventCount;
+#endif
     }
 
     void startRecordEvent()
     {
+#ifdef QT3D_SUPPORTS_GL_MONITOR
         m_monitor.recordSample();
+#endif
         --m_remainingEvents;
     }
 
     void recordEvent(RecordingType type)
     {
+#ifdef QT3D_SUPPORTS_GL_MONITOR
         m_monitor.recordSample();
+#endif
         --m_remainingEvents;
 
         GLRecording rec;
         rec.type = type;
-        rec.startTime = Qt3DCore::QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+        rec.startTime = Qt3DCore::QSystemInformationServicePrivate::get(m_service)->m_jobsStatTimer.nsecsElapsed();
         m_recordings.push_back(rec);
     }
 
     void reset()
     {
+#ifdef QT3D_SUPPORTS_GL_MONITOR
         m_monitor.reset();
+#endif
         m_recordings.clear();
     }
 
@@ -121,14 +139,17 @@ public:
 
     bool tryWriteResults()
     {
+#ifdef QT3D_SUPPORTS_GL_MONITOR
         if (m_monitor.isResultAvailable()) {
             const QVector<GLuint64> samples = m_monitor.waitForSamples();
             Q_ASSERT(samples.count() >= 2 * m_recordings.count());
 
+            Qt3DCore::QSystemInformationServicePrivate *dservice = Qt3DCore::QSystemInformationServicePrivate::get(m_service);
+
             int j = 0;
             for (int i = 0, m = m_recordings.size(); i < m; ++i) {
                 const GLRecording rec = m_recordings.at(i);
-                Qt3DCore::JobRunStats glRecordingStat;
+                Qt3DCore::QSystemInformationServicePrivate::JobRunStats glRecordingStat;
 
                 glRecordingStat.jobId.typeAndInstance[0] = rec.type;
                 glRecordingStat.jobId.typeAndInstance[1] = 0;
@@ -136,11 +157,12 @@ public:
                 glRecordingStat.startTime = rec.startTime;
                 glRecordingStat.endTime = rec.startTime + (samples.at(j + 1) - (samples.at(j)));
 
-                Qt3DCore::QThreadPooler::addSubmissionLogStatsEntry(glRecordingStat);
+                dservice->addSubmissionLogStatsEntry(glRecordingStat);
                 j += 2;
             }
             return true;
         }
+#endif
         return false;
     }
 
@@ -153,7 +175,10 @@ private:
 
     static const int GLThreadID = 0x454;
 
+    Qt3DCore::QSystemInformationService *m_service;
+#ifdef QT3D_SUPPORTS_GL_MONITOR
     QOpenGLTimeMonitor m_monitor;
+#endif
     QVector<GLRecording> m_recordings;
     int m_remainingEvents = 0;
 };
@@ -161,8 +186,9 @@ private:
 class FrameProfiler
 {
 public:
-    FrameProfiler()
-        : m_currentRecorder(nullptr)
+    FrameProfiler(Qt3DCore::QSystemInformationService *service)
+        : m_service(service)
+        , m_currentRecorder(nullptr)
     {}
 
     ~FrameProfiler()
@@ -176,7 +202,7 @@ public:
             if (!m_availableRecorders.empty()) {
                 m_currentRecorder = m_availableRecorders.takeFirst();
             } else {
-                m_recorders.push_back(new FrameTimeRecorder());
+                m_recorders.push_back(new FrameTimeRecorder(m_service));
                 m_currentRecorder = m_recorders.last();
             }
             // We record events 10 by 10
@@ -205,51 +231,35 @@ public:
     }
 
 private:
+    Qt3DCore::QSystemInformationService *m_service;
     QVector<FrameTimeRecorder *> m_recorders;
     QVector<FrameTimeRecorder *> m_availableRecorders;
     QVector<FrameTimeRecorder *> m_busyRecorders;
     FrameTimeRecorder *m_currentRecorder;
 };
 
-#endif
 
 class GLTimeRecorder
 {
 public:
-    explicit GLTimeRecorder(RecordingType type)
+    explicit GLTimeRecorder(RecordingType type, FrameProfiler *profiler)
         : m_type(type)
+        , m_frameProfiler(profiler)
     {
-#if QT_CONFIG(qt3d_profile_gl)
-        frameProfiler.startRecordEvent();
-#endif
+        if (m_frameProfiler)
+            m_frameProfiler->startRecordEvent();
     }
 
     ~GLTimeRecorder()
     {
-#if QT_CONFIG(qt3d_profile_gl)
-        frameProfiler.recordEvent(m_type);
-#else
-        Q_UNUSED(m_type);
-#endif
-    }
-
-    static void writeResults()
-    {
-#if QT_CONFIG(qt3d_profile_gl)
-        frameProfiler.writeResults();
-#endif
+        if (m_frameProfiler)
+            m_frameProfiler->recordEvent(m_type);
     }
 
 private:
-#if QT_CONFIG(qt3d_profile_gl)
-    static FrameProfiler frameProfiler;
-#endif
     RecordingType m_type;
+    FrameProfiler *m_frameProfiler;
 };
-
-#if QT_CONFIG(qt3d_profile_gl)
-FrameProfiler GLTimeRecorder::frameProfiler;
-#endif
 
 } // Profiling
 

@@ -104,9 +104,11 @@ public:
     void addSubmissionLogStatsEntry(JobRunStats &stats);
 
     void writeFrameJobLogStats();
+    void updateTracing();
 
     QAspectEngine *m_aspectEngine;
     bool m_traceEnabled;
+    bool m_graphicsTraceEnabled;
 
     QElapsedTimer m_jobsStatTimer;
     QThreadStorage<QVector<JobRunStats> *> m_jobStatsCached;
