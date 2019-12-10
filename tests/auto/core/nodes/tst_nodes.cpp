@@ -944,6 +944,7 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
     // GIVEN
     ObserverSpy spy;
     Qt3DCore::QAspectEngine engine;
+    engine.setRunMode(Qt3DCore::QAspectEngine::Manual);
     QScopedPointer<MyQEntity> root(new MyQEntity());
     root->setArbiterAndEngine(&spy, &engine);
     auto aspect = new TestAspect;
@@ -953,6 +954,7 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
     MyQNode *child2(new MyQNode(root.data()));
 
     QCoreApplication::processEvents();
+    engine.processFrame();
 
     // Due to the way we create root, it has a backend
     QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->m_hasBackendNode == true);
@@ -983,6 +985,7 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
 
     // WHEN
     QCoreApplication::processEvents();
+    engine.processFrame();
 
     // THEN
     QCOMPARE(spy.events.size(), 2);
@@ -1059,6 +1062,7 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
 
     // WHEN
     QCoreApplication::processEvents();
+    engine.processFrame();
 
     // THEN
     QCOMPARE(spy.events.size(), 2);
@@ -1237,6 +1241,7 @@ void tst_Nodes::checkAllBackendCreationDoneInSingleFrame()
     // GIVEN
     ObserverSpy spy;
     Qt3DCore::QAspectEngine engine;
+    engine.setRunMode(Qt3DCore::QAspectEngine::Manual);
     auto aspect = new TestAspect;
     engine.registerAspect(aspect);
 
@@ -1269,6 +1274,7 @@ void tst_Nodes::checkAllBackendCreationDoneInSingleFrame()
 
     // WHEN
     QCoreApplication::processEvents();
+    engine.processFrame();
 
     // THEN - both children have their backend nodes actually created.
     QCOMPARE(aspect->events.count(), 2);

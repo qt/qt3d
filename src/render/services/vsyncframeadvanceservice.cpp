@@ -80,12 +80,7 @@ qint64 VSyncFrameAdvanceService::waitForNextFrame()
 {
     Q_D(VSyncFrameAdvanceService);
 
-#ifdef Q_OS_MACOS
-    if (!d->m_semaphore.tryAcquire(std::max(d->m_semaphore.available(), 1), 4))
-        return -1;
-#else
     d->m_semaphore.acquire(std::max(d->m_semaphore.available(), 1));
-#endif
 
     const qint64 currentTime = d->m_elapsed.nsecsElapsed();
     qCDebug(VSyncAdvanceService) << "Elapsed nsecs since last call " << currentTime - d->m_elapsedTimeSincePreviousFrame;
