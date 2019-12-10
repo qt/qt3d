@@ -146,6 +146,10 @@ private Q_SLOTS:
 
     void shouldNotCrashInNormalStartupShutdownSequence()
     {
+#ifdef Q_OS_MACOS
+        QSKIP("Test frequently times out. See QTBUG-80660.");
+#endif
+
         // GIVEN
         // An initialized aspect engine...
         QAspectEngine engine;
