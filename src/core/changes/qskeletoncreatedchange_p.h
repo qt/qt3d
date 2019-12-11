@@ -90,7 +90,7 @@ public:
 };
 
 template<typename T>
-Q3D_DECL_DEPRECATED using QSkeletonCreatedChangePtr = QSharedPointer<QSkeletonCreatedChange<T>>;
+using QSkeletonCreatedChangePtr Q3D_DECL_DEPRECATED = QSharedPointer<QSkeletonCreatedChange<T>>;
 
 } // namespace Qt3DCore
 

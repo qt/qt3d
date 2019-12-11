@@ -98,7 +98,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QSceneChange::DeliveryFlags)
 
-Q3D_DECL_DEPRECATED typedef Q3D_DECL_DEPRECATED QSharedPointer<QSceneChange> QSceneChangePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QSceneChange> QSceneChangePtr;
 
 } // namespace Qt3DCore
 
