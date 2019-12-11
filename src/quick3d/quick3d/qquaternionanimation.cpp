@@ -144,7 +144,7 @@ void QQuaternionAnimation::setType(Type type)
     switch (type) {
     case Nlerp:
 QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC(-Wcast-function-type)
+QT_WARNING_DISABLE_GCC("-Wcast-function-type")
         d->interpolator = reinterpret_cast<QVariantAnimation::Interpolator>(&q_quaternionNlerpInterpolator);
 QT_WARNING_POP
         break;
