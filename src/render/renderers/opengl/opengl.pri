@@ -6,6 +6,8 @@ include (textures/textures.pri)
 include (graphicshelpers/graphicshelpers.pri)
 include (renderstates/renderstates.pri)
 
+!integrity: include (debug/debug.pri)
+
 gcov {
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage

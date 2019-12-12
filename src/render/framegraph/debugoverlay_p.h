@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QFORWARDRENDERER_P_H
-#define QT3DEXTRAS_QFORWARDRENDERER_P_H
+#ifndef DEBUGOVERLAY_P_H
+#define DEBUGOVERLAY_P_H
 
 //
 //  W A R N I N G
@@ -51,44 +51,25 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/qtechniquefilter_p.h>
+#include <Qt3DRender/private/qdebugoverlay_p.h>
+#include <Qt3DRender/private/framegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QForwardRenderer;
-class QViewport;
-class QClearBuffers;
-class QCameraSelector;
-class QFrustumCulling;
-class QRenderSurfaceSelector;
-class QDebugOverlay;
+namespace Render {
 
-} // namespace Qt3DRender
-
-namespace Qt3DExtras {
-
-class QForwardRendererPrivate: public Qt3DRender::QTechniqueFilterPrivate
+class Q_AUTOTEST_EXPORT DebugOverlay : public FrameGraphNode
 {
 public:
-    QForwardRendererPrivate();
-
-    Qt3DRender::QRenderSurfaceSelector *m_surfaceSelector;
-    Qt3DRender::QViewport *m_viewport;
-    Qt3DRender::QCameraSelector *m_cameraSelector;
-    Qt3DRender::QClearBuffers *m_clearBuffer;
-    Qt3DRender::QFrustumCulling *m_frustumCulling;
-    Qt3DRender::QDebugOverlay *m_debugOverlay;
-
-    void init();
-
-    Q_DECLARE_PUBLIC(QForwardRenderer)
+    DebugOverlay();
 };
 
-} // Qt3DExtras
+} //Render
+
+} //Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QFORWARDRENDERER_P_H
-
+#endif // DEBUGOVERLAY_P_H

@@ -69,7 +69,10 @@ HEADERS += \
     $$PWD/nopicking_p.h \
     $$PWD/qsubtreeenabler.h \
     $$PWD/qsubtreeenabler_p.h \
-    $$PWD/subtreeenabler_p.h
+    $$PWD/subtreeenabler_p.h \
+    $$PWD/qdebugoverlay.h \
+    $$PWD/qdebugoverlay_p.h \
+    $$PWD/debugoverlay_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -119,4 +122,6 @@ SOURCES += \
     $$PWD/qnopicking.cpp \
     $$PWD/nopicking.cpp \
     $$PWD/qsubtreeenabler.cpp \
-    $$PWD/subtreeenabler.cpp
+    $$PWD/subtreeenabler.cpp \
+    $$PWD/qdebugoverlay.cpp \
+    $$PWD/debugoverlay.cpp

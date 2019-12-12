@@ -88,6 +88,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QForwardRenderer>(uri, 2, 0, "ForwardRenderer");
     qmlRegisterType<Qt3DExtras::QForwardRenderer, 9>(uri, 2, 9, "ForwardRenderer");
     qmlRegisterType<Qt3DExtras::QForwardRenderer, 14>(uri, 2, 14, "ForwardRenderer");
+    qmlRegisterType<Qt3DExtras::QForwardRenderer, 15>(uri, 2, 15, "ForwardRenderer");
 
     // Entities
     qmlRegisterType<Qt3DExtras::QSkyboxEntity>(uri, 2, 0, "SkyboxEntity");

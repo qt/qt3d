@@ -95,6 +95,9 @@
 #include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 #include <Qt3DRender/private/commandexecuter_p.h>
+#ifndef Q_OS_INTEGRITY
+#include <Qt3DRender/private/imguirenderer_p.h>
+#endif
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -279,6 +282,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_offscreenHelper(nullptr)
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     , m_shouldSwapBuffers(true)
+    , m_imGuiRenderer(nullptr)
+    , m_jobsInLastFrame(0)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -330,6 +335,10 @@ Renderer::~Renderer()
 
     if (!m_ownedContext)
         QObject::disconnect(m_contextConnection);
+
+#ifndef Q_OS_INTEGRITY
+    delete  m_imGuiRenderer;
+#endif
 }
 
 void Renderer::dumpInfo() const
@@ -1485,6 +1494,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     }
     QSurface *lastUsedSurface = nullptr;
 
+    bool imGuiOverlayShown = false;
     for (int i = 0; i < renderViewsCount; ++i) {
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
@@ -1668,6 +1678,22 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
                                                  interpolationMethod);
         }
 
+#ifndef Q_OS_INTEGRITY
+        if (!imGuiOverlayShown && renderView->showDebugOverlay()) {
+            imGuiOverlayShown = true;
+            if (!m_imGuiRenderer)
+                m_imGuiRenderer = new Debug::ImGuiRenderer(this);
+
+            {
+                QMutexLocker l(&m_frameEventsMutex);
+                for (auto &keyEvent: m_frameKeyEvents)
+                    m_imGuiRenderer->processEvent(&keyEvent);
+                for (auto &mouseEvent: m_frameMouseEvents)
+                    m_imGuiRenderer->processEvent(&mouseEvent.second);
+            }
+            m_imGuiRenderer->renderDebugOverlay(renderViews, renderView, m_jobsInLastFrame);
+        }
+#endif
 
         frameElapsed = timer.elapsed() - frameElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
@@ -1742,6 +1768,7 @@ void Renderer::skipNextFrame()
 void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
 {
     // called in main thread once all jobs are done running
+    m_jobsInLastFrame = manager->jobsInLastFrame();
 
     // sync captured renders to frontend
     const QVector<Qt3DCore::QNodeId> pendingCaptureIds = std::move(m_pendingRenderCaptureSendRequests);
@@ -1761,6 +1788,24 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
 // Jobs we may have to run even if no rendering will happen
 QVector<QAspectJobPtr> Renderer::preRenderingJobs()
 {
+    {
+        QMutexLocker l(&m_frameEventsMutex);
+        m_frameMouseEvents = m_pickEventFilter->pendingMouseEvents();
+        m_frameKeyEvents = m_pickEventFilter->pendingKeyEvents();
+    }
+
+    // Set values on picking jobs
+    RenderSettings *renderSetting = settings();
+    if (renderSetting != nullptr) {
+        m_pickBoundingVolumeJob->setRenderSettings(renderSetting);
+        m_pickBoundingVolumeJob->setFrameGraphRoot(frameGraphRoot());
+        m_pickBoundingVolumeJob->setMouseEvents(m_frameMouseEvents);
+        m_pickBoundingVolumeJob->setKeyEvents(m_frameKeyEvents);
+
+        m_rayCastingJob->setRenderSettings(renderSetting);
+        m_rayCastingJob->setFrameGraphRoot(frameGraphRoot());
+    }
+
     QVector<QAspectJobPtr> jobs;
 
     // Do we need to notify frontend about fence change?
@@ -1941,27 +1986,11 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
 QAspectJobPtr Renderer::pickBoundingVolumeJob()
 {
-    // Set values on pickBoundingVolumeJob
-    RenderSettings *renderSetting = settings();
-    if (renderSetting != nullptr) {
-        m_pickBoundingVolumeJob->setRenderSettings(renderSetting);
-        m_pickBoundingVolumeJob->setFrameGraphRoot(frameGraphRoot());
-        m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
-        m_pickBoundingVolumeJob->setKeyEvents(pendingKeyEvents());
-    }
-
     return m_pickBoundingVolumeJob;
 }
 
 QAspectJobPtr Renderer::rayCastingJob()
 {
-    // Set values on rayCastingJob
-    RenderSettings *renderSetting = settings();
-    if (renderSetting != nullptr) {
-        m_rayCastingJob->setRenderSettings(renderSetting);
-        m_rayCastingJob->setFrameGraphRoot(frameGraphRoot());
-    }
-
     return m_rayCastingJob;
 }
 
@@ -2309,16 +2338,6 @@ void Renderer::cleanGraphicsResources()
             m_nodesManager->vaoManager()->releaseResource(vao->key());
         }
     }
-}
-
-QList<QPair<QObject *, QMouseEvent>> Renderer::pendingPickingEvents() const
-{
-    return m_pickEventFilter->pendingMouseEvents();
-}
-
-QList<QKeyEvent> Renderer::pendingKeyEvents() const
-{
-    return m_pickEventFilter->pendingKeyEvents();
 }
 
 const GraphicsApiFilterData *Renderer::contextInfo() const

@@ -14,4 +14,5 @@ load(qt_parts)
 #gcov: SUBDIRS -= sub_tools
 
 OTHER_FILES += \
-    sync.profile
+    sync.profile \
+    .qmake.conf

@@ -104,7 +104,8 @@ public:
         BlitFramebuffer,
         SetFence,
         WaitFence,
-        NoPicking
+        NoPicking,
+        DebugOverlay,
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

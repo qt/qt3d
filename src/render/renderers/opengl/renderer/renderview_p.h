@@ -201,6 +201,8 @@ public:
     const int *computeWorkGroups() const Q_DECL_NOTHROW { return m_workGroups; }
     inline bool frustumCulling() const Q_DECL_NOTHROW { return m_frustumCulling; }
     void setFrustumCulling(bool frustumCulling) Q_DECL_NOTHROW { m_frustumCulling = frustumCulling; }
+    bool showDebugOverlay() const Q_DECL_NOTHROW { return m_showDebugOverlay; }
+    void setShowDebugOverlay(bool showDebugOverlay) Q_DECL_NOTHROW { m_showDebugOverlay = showDebugOverlay; }
 
     inline void setMaterialParameterTable(const MaterialParameterGathererData &parameters) Q_DECL_NOTHROW { m_parameters = parameters; }
 
@@ -334,6 +336,7 @@ private:
     bool m_noDraw:1;
     bool m_compute:1;
     bool m_frustumCulling:1;
+    bool m_showDebugOverlay:1;
     int m_workGroups[3];
     QMemoryBarrier::Operations m_memoryBarrier;
     QVector<Qt3DCore::QNodeId> m_insertFenceIds;

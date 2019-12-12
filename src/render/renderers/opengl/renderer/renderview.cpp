@@ -250,6 +250,7 @@ RenderView::RenderView()
     , m_noDraw(false)
     , m_compute(false)
     , m_frustumCulling(false)
+    , m_showDebugOverlay(false)
     , m_memoryBarrier(QMemoryBarrier::None)
     , m_environmentLight(nullptr)
 {

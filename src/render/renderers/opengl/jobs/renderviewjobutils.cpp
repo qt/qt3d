@@ -236,6 +236,11 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 }
                 break;
             }
+
+            case FrameGraphNode::DebugOverlay:
+                rv->setShowDebugOverlay(true);
+                break;
+
             case FrameGraphNode::RenderCapture: {
                 auto *renderCapture = const_cast<Render::RenderCapture *>(
                                             static_cast<const Render::RenderCapture *>(node));

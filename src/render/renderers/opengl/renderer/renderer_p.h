@@ -167,6 +167,10 @@ using FilterEntityByComponentJobPtr = QSharedPointer<FilterEntityByComponentJob<
 using ComputableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::ComputeCommand, Render::Material>;
 using RenderableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::GeometryRenderer, Render::Material>;
 
+namespace Debug {
+class ImGuiRenderer;
+}
+
 class Q_3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
 public:
@@ -281,9 +285,6 @@ public:
     SubmissionContext *submissionContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
-
-    QList<QPair<QObject*, QMouseEvent>> pendingPickingEvents() const;
-    QList<QKeyEvent> pendingKeyEvents() const;
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool isReadyToSubmit();
@@ -445,6 +446,12 @@ private:
 
     QVector<FrameGraphNode *> m_frameGraphLeaves;
     QScreen *m_screen = nullptr;
+
+    Debug::ImGuiRenderer *m_imGuiRenderer;
+    QList<QPair<QObject *, QMouseEvent>> m_frameMouseEvents;
+    QList<QKeyEvent> m_frameKeyEvents;
+    QMutex m_frameEventsMutex;
+    int m_jobsInLastFrame;
 };
 
 } // namespace Render

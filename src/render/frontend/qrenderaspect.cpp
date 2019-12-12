@@ -92,6 +92,7 @@
 #include <Qt3DRender/qwaitfence.h>
 #include <Qt3DRender/qshaderimage.h>
 #include <Qt3DRender/qsubtreeenabler.h>
+#include <Qt3DRender/qdebugoverlay.h>
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qskeletonloader.h>
@@ -159,6 +160,7 @@
 #include <Qt3DRender/private/setfence_p.h>
 #include <Qt3DRender/private/waitfence_p.h>
 #include <Qt3DRender/private/shaderimage_p.h>
+#include <Qt3DRender/private/debugoverlay_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -330,6 +332,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QWaitFence, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::WaitFence, QWaitFence> >::create(m_renderer));
     q->registerBackendType<QNoPicking, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::NoPicking, QNoPicking> >::create(m_renderer));
     q->registerBackendType<QSubtreeEnabler, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SubtreeEnabler, QSubtreeEnabler> >::create(m_renderer));
+    q->registerBackendType<QDebugOverlay, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::DebugOverlay, QDebugOverlay> >::create(m_renderer));
 
     // Picking
     q->registerBackendType<QObjectPicker, true>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
@@ -404,6 +407,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QSetFence>();
     unregisterBackendType<QWaitFence>();
     unregisterBackendType<QSubtreeEnabler>();
+    unregisterBackendType<QDebugOverlay>();
 
     // Picking
     unregisterBackendType<QObjectPicker>();
@@ -565,7 +569,6 @@ QVariant QRenderAspect::executeCommand(const QStringList &args)
         }
         if (args.front() == QLatin1String("scenegraph"))
             return droot->dumpSceneGraph();
-        return {};
     }
 
     return d->m_renderer->executeCommand(args);
