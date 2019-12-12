@@ -70,7 +70,7 @@ QAspectManager *QScheduler::aspectManager() const
     return m_aspectManager;
 }
 
-void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
+int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
 {
     QVector<QAspectJobPtr> jobQueue;
 
@@ -102,6 +102,8 @@ void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
         for (QAbstractAspect *aspect : aspects)
             QAbstractAspectPrivate::get(aspect)->jobsDone(m_aspectManager);
     }
+
+    return jobQueue.size();
 }
 
 } // namespace Qt3DCore

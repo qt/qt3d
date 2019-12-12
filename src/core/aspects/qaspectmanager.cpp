@@ -110,6 +110,7 @@ QAspectManager::QAspectManager(QAspectEngine *parent)
     , m_simulationLoopRunning(false)
     , m_driveMode(QAspectEngine::Automatic)
     , m_postConstructorInit(nullptr)
+    , m_jobsInLastFrame(0)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -502,7 +503,7 @@ void QAspectManager::processFrame()
     QElapsedTimer timer;
     timer.start();
 #endif
-    m_scheduler->scheduleAndWaitForFrameAspectJobs(t);
+    m_jobsInLastFrame = m_scheduler->scheduleAndWaitForFrameAspectJobs(t);
 #if defined(QT3D_CORE_JOB_TIMING)
     qDebug() << "Jobs took" << timer.nsecsElapsed() / 1.0e6;
 #endif

@@ -112,6 +112,8 @@ public:
     QNode *lookupNode(QNodeId id) const;
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
 
+    int jobsInLastFrame() const { return m_jobsInLastFrame; }
+
 private:
     bool event(QEvent *event) override;
     void requestNextFrame();
@@ -128,7 +130,7 @@ private:
     QAspectEngine::RunMode m_driveMode;
     QVector<NodeTreeChange> m_nodeTreeChanges;
     NodePostConstructorInit* m_postConstructorInit;
-
+    int m_jobsInLastFrame;
 };
 
 } // namespace Qt3DCore
