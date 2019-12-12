@@ -1632,7 +1632,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         }
 
         // Set the Viewport
-        m_submissionContext->setViewport(renderView->viewport(), renderView->surfaceSize() * renderView->devicePixelRatio());
+        m_submissionContext->setViewport(renderView->viewport(), renderView->surfaceSize());
 
         // Execute the render commands
         if (!executeCommandsSubmission(renderView))
@@ -1643,7 +1643,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         // renderViewStateSet or m_defaultRenderStateSet)
         if (!renderView->renderCaptureNodeId().isNull()) {
             const QRenderCaptureRequest request = renderView->renderCaptureRequest();
-            const QSize size = m_submissionContext->renderTargetSize(renderView->surfaceSize() * renderView->devicePixelRatio());
+            const QSize size = m_submissionContext->renderTargetSize(renderView->surfaceSize());
             QRect rect(QPoint(0, 0), size);
             if (!request.rect.isEmpty())
                 rect = rect.intersected(request.rect);
