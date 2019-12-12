@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/qstringlist.h>
+#include <QtCore/qvariant.h>
 
 #include <Qt3DCore/private/qservicelocator_p.h>
 
@@ -76,15 +77,17 @@ public:
     bool isGraphicsTraceEnabled() const;
     bool isCommandServerEnabled() const;
 
-    void setTraceEnabled(bool traceEnabled);
-    void setGraphicsTraceEnabled(bool graphicsTraceEnabled);
-
     QStringList aspectNames() const;
     int threadPoolThreadCount() const;
 
     void writePreviousFrameTraces();
+    Q_INVOKABLE void revealLogFolder();
 
+public Q_SLOTS:
+    void setTraceEnabled(bool traceEnabled);
+    void setGraphicsTraceEnabled(bool graphicsTraceEnabled);
     QVariant executeCommand(const QString &command);
+    void dumpCommand(const QString &command);
 
 signals:
     void traceEnabledChanged(bool traceEnabled);

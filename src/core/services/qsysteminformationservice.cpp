@@ -48,10 +48,13 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
 #include <QtCore/QDateTime>
-#include <QtCore/QCoreApplication>
+#include <QtCore/QUrl>
+#include <QtCore/QDir>
+#include <QtGui/QDesktopServices>
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QAbstractAspect>
+#include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
 
@@ -382,6 +385,11 @@ void QSystemInformationService::writePreviousFrameTraces()
     d->writeFrameJobLogStats();
 }
 
+void QSystemInformationService::revealLogFolder()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::currentPath()));
+}
+
 QVariant QSystemInformationService::executeCommand(const QString &command)
 {
     Q_D(QSystemInformationService);
@@ -407,6 +415,22 @@ QVariant QSystemInformationService::executeCommand(const QString &command)
     }
 
     return d->m_aspectEngine->executeCommand(command);
+}
+
+void QSystemInformationService::dumpCommand(const QString &command)
+{
+    QVariant res = executeCommand(command);
+    QObject *obj = res.value<QObject *>();
+    if (obj) {
+        auto reply = qobject_cast<Qt3DCore::Debug::AsynchronousCommandReply*>(obj);
+        if (reply) {
+            connect(reply, &Debug::AsynchronousCommandReply::finished, this, [reply]() {
+                qWarning() << qPrintable( QLatin1String(reply->data()) );
+            });
+            return;
+        }
+    }
+    qWarning() << res;
 }
 
 }
