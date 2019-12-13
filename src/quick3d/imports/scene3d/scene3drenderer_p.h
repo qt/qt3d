@@ -87,7 +87,7 @@ public:
     void setCleanerHelper(Scene3DCleaner *cleaner);
     void allowRender();
     void setCompositingMode(Scene3DItem::CompositingMode mode);
-
+    void setSkipFrame(bool skip);
     void setScene3DViews(const QVector<Scene3DView *> views);
 
 public Q_SLOTS:
@@ -119,6 +119,7 @@ private:
     bool m_forceRecreate;
     bool m_shouldRender;
     bool m_dirtyViews;
+    bool m_skipFrame;
     QSemaphore m_allowRendering;
     Scene3DItem::CompositingMode m_compositingMode;
     QVector<Scene3DView *> m_views;
