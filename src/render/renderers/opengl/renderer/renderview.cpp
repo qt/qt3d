@@ -282,6 +282,7 @@ RenderView::RenderView()
 
 RenderView::~RenderView()
 {
+    delete m_stateSet;
 }
 
 namespace {
