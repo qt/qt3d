@@ -158,6 +158,9 @@ QEnvironmentLight::~QEnvironmentLight()
     Holds the current environment irradiance map texture.
 
     By default, the environment irradiance texture is null.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 
 /*!
@@ -166,6 +169,9 @@ QEnvironmentLight::~QEnvironmentLight()
     Holds the current environment irradiance map texture.
 
     By default, the environment irradiance texture is null.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 QAbstractTexture *QEnvironmentLight::irradiance() const
 {
@@ -179,6 +185,9 @@ QAbstractTexture *QEnvironmentLight::irradiance() const
     Holds the current environment specular map texture.
 
     By default, the environment specular texture is null.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 
 /*!
@@ -187,6 +196,9 @@ QAbstractTexture *QEnvironmentLight::irradiance() const
     Holds the current environment specular map texture.
 
     By default, the environment specular texture is null.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 QAbstractTexture *QEnvironmentLight::specular() const
 {

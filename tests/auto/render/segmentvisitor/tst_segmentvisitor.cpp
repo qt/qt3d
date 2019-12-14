@@ -426,12 +426,15 @@ private Q_SLOTS:
         simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
-        indexData.resize(sizeof(uint) * 2 * 4);
+        indexData.resize(sizeof(uint) * 7);
         uint *iDataPtr = reinterpret_cast<uint *>(indexData.data());
         iDataPtr[0] = 0;
         iDataPtr[1] = 1;
         iDataPtr[2] = 2;
         iDataPtr[3] = 3;
+        iDataPtr[4] = static_cast<uint>(-1);
+        iDataPtr[5] = 0;
+        iDataPtr[6] = 1;
         indexDataBuffer->setData(indexData);
 
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
@@ -450,7 +453,7 @@ private Q_SLOTS:
 
         indexAttribute->setBuffer(indexDataBuffer.data());
         indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
-        indexAttribute->setCount(4);
+        indexAttribute->setCount(7);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
         geometry->addAttribute(positionAttribute.data());
@@ -458,6 +461,8 @@ private Q_SLOTS:
 
         geometryRenderer->setGeometry(geometry);
         geometryRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::LineStrip);
+        geometryRenderer->setPrimitiveRestartEnabled(true);
+        geometryRenderer->setRestartIndexValue(-1);
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
@@ -480,10 +485,11 @@ private Q_SLOTS:
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
 
         // THEN
-        QCOMPARE(visitor.segmentCount(), uint(3));
+        QCOMPARE(visitor.segmentCount(), uint(4));
         QVERIFY(visitor.verifySegment(0, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
         QVERIFY(visitor.verifySegment(1, 1,2, Vector3D(1,0,0), Vector3D(1,1,0)));
         QVERIFY(visitor.verifySegment(2, 2,3, Vector3D(1,1,0), Vector3D(0,1,0)));
+        QVERIFY(visitor.verifySegment(3, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
     }
 
     void testVisitLineLoop()
@@ -588,12 +594,16 @@ private Q_SLOTS:
         simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
-        indexData.resize(sizeof(uint) * 2 * 4);
+        indexData.resize(sizeof(uint) * 8);
         uint *iDataPtr = reinterpret_cast<uint *>(indexData.data());
         iDataPtr[0] = 0;
         iDataPtr[1] = 1;
         iDataPtr[2] = 2;
         iDataPtr[3] = 3;
+        iDataPtr[4] = static_cast<uint>(-1);
+        iDataPtr[5] = 0;
+        iDataPtr[6] = 1;
+        iDataPtr[7] = 2;
         indexDataBuffer->setData(indexData);
 
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
@@ -612,7 +622,7 @@ private Q_SLOTS:
 
         indexAttribute->setBuffer(indexDataBuffer.data());
         indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
-        indexAttribute->setCount(4);
+        indexAttribute->setCount(8);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
         geometry->addAttribute(positionAttribute.data());
@@ -620,6 +630,8 @@ private Q_SLOTS:
 
         geometryRenderer->setGeometry(geometry);
         geometryRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::LineLoop);
+        geometryRenderer->setPrimitiveRestartEnabled(true);
+        geometryRenderer->setRestartIndexValue(-1);
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
@@ -642,11 +654,14 @@ private Q_SLOTS:
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
 
         // THEN
-        QCOMPARE(visitor.segmentCount(), uint(4));
+        QCOMPARE(visitor.segmentCount(), uint(7));
         QVERIFY(visitor.verifySegment(0, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
         QVERIFY(visitor.verifySegment(1, 1,2, Vector3D(1,0,0), Vector3D(1,1,0)));
         QVERIFY(visitor.verifySegment(2, 2,3, Vector3D(1,1,0), Vector3D(0,1,0)));
         QVERIFY(visitor.verifySegment(3, 3,0, Vector3D(0,1,0), Vector3D(0,0,0)));
+        QVERIFY(visitor.verifySegment(4, 0,1, Vector3D(0,0,0), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifySegment(5, 1,2, Vector3D(1,0,0), Vector3D(1,1,0)));
+        QVERIFY(visitor.verifySegment(6, 2,0, Vector3D(1,1,0), Vector3D(0,0,0)));
     }
 
     void testVisitLineAdjacency()

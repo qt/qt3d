@@ -206,7 +206,7 @@ public:
 #if defined(QT_BUILD_INTERNAL)
     void clearDirtyBits(BackendNodeDirtySet changes) override;
 #endif
-    bool shouldRender() override;
+    bool shouldRender() const override;
     void skipNextFrame() override;
     void jobsDone(Qt3DCore::QAspectManager *manager) override;
 

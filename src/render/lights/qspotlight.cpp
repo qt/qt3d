@@ -140,12 +140,18 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 
 /*!
   \qmlproperty float Qt3D.Render::SpotLight::constantAttenuation
-    Specifies the constant attenuation of the spot light
+    Specifies the constant attenuation of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 
 /*!
   \property Qt3DRender::QSpotLight::constantAttenuation
-    Specifies the constant attenuation of the spot light
+    Specifies the constant attenuation of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
  */
 float QSpotLight::constantAttenuation() const
 {
@@ -164,12 +170,18 @@ void QSpotLight::setConstantAttenuation(float value)
 
 /*!
   \qmlproperty float Qt3D.Render::SpotLight::linearAttenuation
-    Specifies the linear attenuation of the spot light
+    Specifies the linear attenuation of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 
 /*!
   \property Qt3DRender::QSpotLight::linearAttenuation
-    Specifies the linear attenuation of the spot light
+    Specifies the linear attenuation of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
  */
 float QSpotLight::linearAttenuation() const
 {
@@ -188,12 +200,18 @@ void QSpotLight::setLinearAttenuation(float value)
 
 /*!
   \qmlproperty float Qt3D.Render::SpotLight::quadraticAttenuation
-    Specifies the quadratic attenuation of the spot light
+    Specifies the quadratic attenuation of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 
 /*!
   \property Qt3DRender::QSpotLight::quadraticAttenuation
-    Specifies the quadratic attenuation of the spot light
+    Specifies the quadratic attenuation of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
  */
 float QSpotLight::quadraticAttenuation() const
 {
@@ -212,12 +230,18 @@ void QSpotLight::setQuadraticAttenuation(float value)
 
 /*!
   \qmlproperty vector3d Qt3D.Render::SpotLight::localDirection
-    Specifies the local direction of the spot light
+    Specifies the local direction of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 
 /*!
   \property Qt3DRender::QSpotLight::localDirection
-    Specifies the local direction of the spot light
+    Specifies the local direction of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
  */
 QVector3D QSpotLight::localDirection() const
 {
@@ -227,12 +251,18 @@ QVector3D QSpotLight::localDirection() const
 
 /*!
   \qmlproperty float Qt3D.Render::SpotLight::cutOffAngle
-    Specifies the cut off angle of the spot light
+    Specifies the cut off angle of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 
 /*!
   \property Qt3DRender::QSpotLight::cutOffAngle
-    Specifies the cut off angle of the spot light
+    Specifies the cut off angle of the spot light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
  */
 float QSpotLight::cutOffAngle() const
 {

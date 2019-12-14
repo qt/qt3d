@@ -282,6 +282,7 @@ RenderView::RenderView()
 
 RenderView::~RenderView()
 {
+    delete m_stateSet;
 }
 
 namespace {
@@ -686,11 +687,9 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
                         case QAttribute::DrawIndirectAttribute:
                             indirectAttribute = attribute;
                             break;
-                        case QAttribute::VertexAttribute: {
-                            if (command.m_activeAttributes.contains(attribute->nameId()))
-                                estimatedCount = std::max(int(attribute->count()), estimatedCount);
+                        case QAttribute::VertexAttribute:
+                            estimatedCount = std::max(int(attribute->count()), estimatedCount);
                             break;
-                        }
                         default:
                             Q_UNREACHABLE();
                             break;

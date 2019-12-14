@@ -149,6 +149,8 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
                 indexBufferInfo.byteOffset = indexAttribute->byteOffset();
                 indexBufferInfo.byteStride = indexAttribute->byteStride();
                 indexBufferInfo.count = indexAttribute->count();
+                indexBufferInfo.restartEnabled = renderer->primitiveRestartEnabled();
+                indexBufferInfo.restartIndexValue = renderer->restartIndexValue();
 
                 IndexExecutor executor;
                 executor.m_vertexBufferInfo = vertexBufferInfo;

@@ -433,12 +433,26 @@ void Scene3DItem::applyRootEntityChange()
 
 bool Scene3DItem::needsRender()
 {
+    // We need the dirty flag which is connected to the change arbiter
+    // receiving updates to know whether something in the scene has changed
+
+    // Ideally we would use shouldRender() alone but given that it becomes true
+    // only after the arbiter has sync the changes and might be reset before
+    // process jobs is completed, we cannot fully rely on it. It would require
+    // splitting processFrame in 2 parts.
+
+    // We only use it for cases where Qt3D render may require several loops of
+    // the simulation to fully process a frame (e.g shaders are loaded in frame
+    // n and we can only build render commands for the new shader at frame n +
+    // This is where renderer->shouldRender() comes into play as it knows
+    // whether some states remain dirty or not (even after processFrame is
+    // called)
+
     auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
     const bool dirty = m_dirty
             || (renderAspectPriv
                 && renderAspectPriv->m_renderer
-                && renderAspectPriv->m_renderer->settings()
-                && renderAspectPriv->m_renderer->settings()->renderPolicy() == QRenderSettings::Always);
+                && renderAspectPriv->m_renderer->shouldRender());
     m_dirty = false;
     return dirty;
 }
@@ -466,10 +480,6 @@ void Scene3DItem::onBeforeSync()
     // waiting forever for the scene to be rendered which won't happen
     // if the Scene3D item is not visible
     if (!isVisible() && dontRenderWhenHidden)
-        return;
-
-    // Has anything in the 3D scene actually changed that requires us to render?
-    if (!needsRender())
         return;
 
     Q_ASSERT(QThread::currentThread() == thread());
@@ -512,6 +522,7 @@ void Scene3DItem::onBeforeSync()
     // start rendering before this function has been called
     // We add in a safety to skip such frames as this could otherwise
     // make Qt3D enter a locked state
+    m_renderer->setSkipFrame(!needsRender());
     m_renderer->allowRender();
 
     // Note: it's too early to request an update at this point as
