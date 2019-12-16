@@ -58,7 +58,7 @@ RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
     , m_count(0)
     , m_renderView(nullptr)
     , m_renderer(nullptr)
-    , m_renderables(nullptr)
+    , m_renderables()
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++);
 }
@@ -71,7 +71,7 @@ void RenderViewCommandUpdaterJob::run()
         if (m_count == 0)
             return;
         // Update Render Commands (Uniform Change, Depth Change)
-        m_renderView->updateRenderCommand(m_renderables, m_offset, m_count);
+        m_renderView->updateRenderCommand(m_renderables.data(), m_offset, m_count);
     }
 }
 

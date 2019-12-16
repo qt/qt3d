@@ -158,14 +158,6 @@ struct EntityRenderCommandData
         passesData.push_back(std::move(p));
     }
 
-    EntityRenderCommandData &operator+=(const EntityRenderCommandData &t)
-    {
-        entities += t.entities;
-        commands += t.commands;
-        passesData += t.passesData;
-        return *this;
-    }
-
     EntityRenderCommandData &operator+=(EntityRenderCommandData &&t)
     {
         entities += std::move(t.entities);
@@ -174,13 +166,9 @@ struct EntityRenderCommandData
         return *this;
     }
 
-    EntityRenderCommandData mid(int idx, int len) const
-    {
-        return { entities.mid(idx, len), commands.mid(idx, len), passesData.mid(idx, len) };
-    }
-
-
 };
+
+using EntityRenderCommandDataPtr = QSharedPointer<EntityRenderCommandData>;
 
 
 } // namespace Render
