@@ -125,14 +125,10 @@ public:
         // Append all the commands and sort them
         RenderView *rv = m_renderViewJob->renderView();
 
-        const EntityRenderCommandData *commandData = m_renderViewCommandUpdaterJobs.first()->renderables();
+        const EntityRenderCommandDataPtr commandData = m_renderViewCommandUpdaterJobs.first()->renderables();
 
-        if (commandData != nullptr) {
+        if (commandData) {
             const QVector<RenderCommand> commands = std::move(commandData->commands);
-
-            // TO DO: Cache the EntityRenderCommandData so that it can be reused if nothing in the scene has changed
-            delete commandData;
-
             rv->setCommands(commands);
 
             // TO DO: Find way to store commands once or at least only when required
@@ -320,9 +316,13 @@ public:
                     renderableEntities = RenderViewBuilder::entitiesInSubset(renderableEntities, m_filterProximityJob->filteredEntities());
             }
 
+            // Early return in case we have nothing to filter
+            if (renderableEntities.size() == 0)
+                return;
+
             // Filter out Render commands for which the Entity wasn't selected because
             // of frustum, proximity or layer filtering
-            EntityRenderCommandData *filteredCommandData = new EntityRenderCommandData();
+            EntityRenderCommandDataPtr filteredCommandData = EntityRenderCommandDataPtr::create();
             filteredCommandData->reserve(renderableEntities.size());
             // Because dataCacheForLeaf.renderableEntities or computeEntities are sorted
             // What we get out of EntityRenderCommandData is also sorted by Entity
