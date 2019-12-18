@@ -94,7 +94,7 @@ private Q_SLOTS:
         {
             Qt3DRender::QFrameGraphNode *nodeWithNestedChildren = new MyFrameGraphNode();
             Qt3DRender::QFrameGraphNode *child = new MyFrameGraphNode(nodeWithNestedChildren);
-            Qt3DCore::QNode *dummy = new Qt3DCore::QNode(nodeWithNestedChildren);
+            new Qt3DCore::QNode(nodeWithNestedChildren);
             Qt3DRender::QFrameGraphNode *grandChild = new MyFrameGraphNode(nodeWithNestedChildren);
             QVector<Qt3DCore::QNodeId> childIds = {child->id(), grandChild->id()};
             QTest::newRow("nodeWithNestedChildren") << nodeWithNestedChildren << childIds << true << 4;

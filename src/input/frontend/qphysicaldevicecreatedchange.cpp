@@ -54,7 +54,7 @@ QPhysicalDeviceCreatedChangeBasePrivate::QPhysicalDeviceCreatedChangeBasePrivate
 }
 
 /*!
-    \class QPhysicalDeviceCreatedChangeBase
+    \class Qt3DInput::QPhysicalDeviceCreatedChangeBase
     \inmodule Qt3DInput
     \brief Base class for handling changes in physical devices.
 */

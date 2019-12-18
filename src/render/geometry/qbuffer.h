@@ -118,9 +118,6 @@ public Q_SLOTS:
     void setSyncData(bool syncData);
     void setAccessType(AccessType access);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
 Q_SIGNALS:
     void dataChanged(const QByteArray &bytes);
     void typeChanged(BufferType type);
@@ -128,6 +125,10 @@ Q_SIGNALS:
     void syncDataChanged(bool syncData);
     void accessTypeChanged(AccessType access);
     void dataAvailable();
+
+protected:
+    // TODO Unused remove in Qt6
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)

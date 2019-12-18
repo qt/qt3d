@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/lightsource_p.h>
+#include <Qt3DRender/private/rendercommand_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,12 +70,16 @@ struct RendererCache
     {
         QVector<Entity *> filterEntitiesByLayer;
         MaterialParameterGathererData materialParameterGatherer;
-        QVector<LightSource> gatheredLights;
-        QVector<Entity *> renderableEntities;
-        QVector<Entity *> computeEntities;
-        EnvironmentLight* environmentLight;
+        EntityRenderCommandData renderCommandData;
     };
 
+    // Shared amongst all RV cache
+    QVector<Entity *> renderableEntities;
+    QVector<Entity *> computeEntities;
+    QVector<LightSource> gatheredLights;
+    EnvironmentLight* environmentLight;
+
+    // Per RV cache
     QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
 
     QMutex *mutex() { return &m_mutex; }

@@ -153,6 +153,10 @@ void traverseTriangleStripIndexed(index *indices,
     uint ndx[3];
     Vector3D abc[3];
     while (i < indexInfo.count - 2) {
+        if (indexInfo.restartEnabled && indexInfo.restartIndexValue == static_cast<int>(indices[i + 2])) {
+            i += 3;
+            continue;
+        }
         bool degenerate = false;
         for (uint u = 0; u < 3; ++u) {
             ndx[u] = indices[i + u];
@@ -216,6 +220,11 @@ void traverseTriangleFanIndexed(index *indices,
     ndx[0] = indices[0];
     uint i = 1;
     while (i < indexInfo.count - 1) {
+        if (indexInfo.restartEnabled && indexInfo.restartIndexValue == static_cast<int>(indices[i + 1])) {
+            ndx[0] = indices[i + 2];
+            i += 3;
+            continue;
+        }
         for (uint u = 0; u < 2; ++u) {
             ndx[u + 1] = indices[i + u];
             uint idx = ndx[u + 1] * verticesStride;
@@ -224,7 +233,7 @@ void traverseTriangleFanIndexed(index *indices,
             }
         }
         visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[0], abc[0]);
-        i += 1;
+        ++i;
     }
 }
 

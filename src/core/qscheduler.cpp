@@ -43,6 +43,7 @@
 
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -69,7 +70,7 @@ QAspectManager *QScheduler::aspectManager() const
     return m_aspectManager;
 }
 
-void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
+int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
 {
     QVector<QAspectJobPtr> jobQueue;
 
@@ -92,8 +93,17 @@ void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
 
     m_aspectManager->jobManager()->waitForAllJobs();
 
-    for (auto &job : qAsConst(jobQueue))
-        job->postFrame(m_aspectManager);
+    {
+        QTaskLogger logger(m_aspectManager->serviceLocator()->systemInformation(), 4097, 0);
+
+        for (auto &job : qAsConst(jobQueue))
+            QAspectJobPrivate::get(job.data())->postFrame(m_aspectManager);
+
+        for (QAbstractAspect *aspect : aspects)
+            QAbstractAspectPrivate::get(aspect)->jobsDone(m_aspectManager);
+    }
+
+    return jobQueue.size();
 }
 
 } // namespace Qt3DCore

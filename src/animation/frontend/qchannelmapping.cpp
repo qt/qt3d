@@ -161,7 +161,7 @@ void QChannelMappingPrivate::updatePropertyNameTypeAndComponentCount()
 }
 
 /*!
-    \class QChannelMapping
+    \class Qt3DAnimation::QChannelMapping
     \inherits Qt3DCore::QNode
     \inmodule Qt3DAnimation
     \brief Allows to map the channels within the clip onto properties of

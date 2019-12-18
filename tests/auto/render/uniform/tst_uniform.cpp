@@ -112,7 +112,7 @@ private Q_SLOTS:
             QCOMPARE(v.constData<float>()[0], 572.0f);
             QCOMPARE(v.constData<float>()[1], 355.0f);
             QCOMPARE(v.constData<float>()[2], 383.0f);
-            QCOMPARE(v.constData<float>()[4], 0.0f);
+            QCOMPARE(v.constData<float>()[3], 0.0f);
         }
         {
             // GIVEN

@@ -74,6 +74,8 @@ struct BufferInfo
         , count(0)
         , byteStride(0)
         , byteOffset(0)
+        , restartEnabled(false)
+        , restartIndexValue(-1)
     {}
 
     QByteArray data;
@@ -82,6 +84,8 @@ struct BufferInfo
     uint count;
     uint byteStride;
     uint byteOffset;
+    bool restartEnabled;
+    int restartIndexValue;
 };
 
 

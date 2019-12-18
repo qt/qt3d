@@ -59,7 +59,6 @@ ChannelMapping::ChannelMapping()
     , m_componentCount(0)
     , m_propertyName(nullptr)
     , m_callback(nullptr)
-    , m_callbackFlags(0)
     , m_skeletonId()
     , m_mappingType(MappingType::ChannelMappingType)
 {
@@ -74,7 +73,7 @@ void ChannelMapping::cleanup()
     m_propertyName = nullptr;
     m_componentCount = 0;
     m_callback = nullptr;
-    m_callbackFlags = 0;
+    m_callbackFlags = {};
     m_skeletonId = Qt3DCore::QNodeId();
 }
 
@@ -106,9 +105,9 @@ void ChannelMapping::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
     const QCallbackMapping *callbackMapping = qobject_cast<const QCallbackMapping *>(frontEnd);
     if (callbackMapping) {
         m_mappingType = ChannelMappingType;
-        m_channelName = channelMapping->channelName();
+        m_channelName = callbackMapping->channelName();
 
-        const QCallbackMappingPrivate *d = static_cast<const QCallbackMappingPrivate *>(Qt3DCore::QNodePrivate::get(channelMapping));
+        const QCallbackMappingPrivate *d = static_cast<const QCallbackMappingPrivate *>(Qt3DCore::QNodePrivate::get(callbackMapping));
         m_type = d->m_type;
         m_callback = d->m_callback;
         m_callbackFlags = d->m_callbackFlags;

@@ -32,7 +32,6 @@
 #include <Qt3DAnimation/private/skeleton_p.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>

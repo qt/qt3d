@@ -88,15 +88,6 @@ void Buffer::executeFunctor()
     m_data = (*m_functor)();
     // Request data to be loaded
     forceDataUpload();
-
-    if (m_syncData) {
-        // Send data back to the frontend
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("data");
-        e->setValue(QVariant::fromValue(m_data));
-        notifyObservers(e);
-    }
 }
 
 //Called from th sendBufferJob
@@ -105,12 +96,6 @@ void Buffer::updateDataFromGPUToCPU(QByteArray data)
     // Note: when this is called, data is what's currently in GPU memory
     // so m_data shouldn't be reuploaded
     m_data = data;
-    // Send data back to the frontend
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("downloadedData");
-    e->setValue(QVariant::fromValue(m_data));
-    notifyObservers(e);
 }
 
 void Buffer::forceDataUpload()
@@ -152,20 +137,31 @@ void Buffer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             m_manager->addDirtyBuffer(peerId());
     }
     {
-        QVariant v = node->property("QT3D_updateData");
-        if (v.isValid()) {
+        const QVariant v = node->property("QT3D_updateData");
+
+        // Make sure we record data if it's the first time we are called
+        // or if we have no partial updates
+        if (firstTime || !v.isValid()){
+            const QByteArray newData = node->data();
+            const bool dirty = m_data != newData;
+            m_bufferDirty |= dirty;
+            m_data = newData;
+
+            // Since frontend applies partial updates to its m_data
+            // if we enter this code block, there's no problem in actually
+            // ignoring the partial updates
+            if (v.isValid())
+                const_cast<QBuffer *>(node)->setProperty("QT3D_updateData", {});
+
+            if (dirty && !m_data.isEmpty())
+                forceDataUpload();
+        } else if (v.isValid()) {
+            // Apply partial updates and record them to allow partial upload to the GPU
             Qt3DRender::QBufferUpdate updateData = v.value<Qt3DRender::QBufferUpdate>();
             m_data.replace(updateData.offset, updateData.data.size(), updateData.data);
             m_bufferUpdates.push_back(updateData);
             m_bufferDirty = true;
             const_cast<QBuffer *>(node)->setProperty("QT3D_updateData", {});
-        } else {
-            QByteArray newData = node->data();
-            bool dirty = m_data != newData;
-            m_bufferDirty |= dirty;
-            m_data = newData;
-            if (dirty && !m_data.isEmpty())
-                forceDataUpload();
         }
     }
     markDirty(AbstractRenderer::BuffersDirty);

@@ -85,11 +85,12 @@ class QSystemInformationService;
 class QServiceLocatorPrivate;
 class QEventFilterService;
 class QDownloadHelperService;
+class QAspectEngine;
 
 class Q_3DCORESHARED_EXPORT QServiceLocator
 {
 public:
-    QServiceLocator();
+    QServiceLocator(QAspectEngine *aspectEngine = nullptr);
     ~QServiceLocator();
 
     enum ServiceType {

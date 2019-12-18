@@ -54,7 +54,8 @@ QSetFencePrivate::QSetFencePrivate()
 }
 
 /*!
-    \class QSetFence
+    \class Qt3DRender::QSetFence
+    \inmodule Qt3DRender
     \brief FrameGraphNode used to insert a fence in the graphics command stream.
 
     Fence allow to synchronosize GPU and CPU workloads. GPU commands usually
@@ -100,7 +101,7 @@ QSetFence::QSetFence(QSetFencePrivate &dd, Qt3DCore::QNode *parent)
     are supported.
 */
 /*!
-    \property QSetFence::handleType
+    \property Qt3DRender::QSetFence::handleType
 
     Specifies the type of handle being used. Currently only OpenGL Fence ids
     are supported.
@@ -123,12 +124,12 @@ void QSetFencePrivate::setHandleType(QSetFence::HandleType type)
 }
 
 /*!
-    \qmlproperty variant AbstractFence::handle
+    \qmlproperty variant SetFence::handle
 
     Holds the underlying fence handle wrapped in a variant.
 */
 /*!
-    \property QAbstractFence::handle
+    \property Qt3DRender::QSetFence::handle
 
     Holds the underlying fence handle wrapped in a QVariant.
 */

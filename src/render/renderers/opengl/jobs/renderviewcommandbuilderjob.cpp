@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Paul Lemire
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,9 +37,8 @@
 **
 ****************************************************************************/
 
-#include "renderviewbuilderjob_p.h"
+#include "renderviewcommandbuilderjob_p.h"
 #include <Qt3DRender/private/job_common_p.h>
-#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/renderview_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,22 +51,26 @@ namespace {
 int renderViewInstanceCounter = 0;
 } // anonymous
 
-RenderViewBuilderJob::RenderViewBuilderJob()
-    : Qt3DCore::QAspectJob(),
-      m_renderView(nullptr)
+RenderViewCommandBuilderJob::RenderViewCommandBuilderJob()
+    : Qt3DCore::QAspectJob()
+    , m_offset(0)
+    , m_count(0)
+    , m_renderView(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderViewBuilder, renderViewInstanceCounter++);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderViewCommandBuilder, renderViewInstanceCounter++)
 }
 
-void RenderViewBuilderJob::run()
+void RenderViewCommandBuilderJob::run()
 {
-    // Build RenderCommand should perform the culling as we have no way to determine
-    // if a child has a mesh in the view frustum while its parent isn't contained in it.
     if (!m_renderView->noDraw()) {
-        if (!m_renderView->isCompute())
-            m_commands = m_renderView->buildDrawRenderCommands(m_renderables);
+        if (m_count == 0)
+            return;
+
+        const bool isDraw = !m_renderView->isCompute();
+        if (isDraw)
+            m_commandData = m_renderView->buildDrawRenderCommands(m_entities, m_offset, m_count);
         else
-            m_commands = m_renderView->buildComputeRenderCommands(m_renderables);
+            m_commandData = m_renderView->buildComputeRenderCommands(m_entities, m_offset, m_count);
     }
 }
 

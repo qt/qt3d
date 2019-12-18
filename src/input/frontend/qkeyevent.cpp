@@ -160,7 +160,7 @@ QKeyEvent::~QKeyEvent()
 /*!
     \qmlmethod bool Qt3D.Input::KeyEvent::matches(StandardKey key)
 
-    Returns \c true if the key event matches the given standard key; otherwise
+    Returns \c true if the key event matches the given standard \a key; otherwise
     returns \c false.
 
     \sa QKeySequence::StandardKey
@@ -174,7 +174,7 @@ QKeyEvent::~QKeyEvent()
 
     See \l [CPP] {Qt::Key}{Qt.Key} for the list of keyboard codes.
 
-    \sa {QKeyEvent::key}
+    \b {See also} \l [QtGui] {QKeyEvent::key()}.
 */
 
 /*!
@@ -194,7 +194,7 @@ QKeyEvent::~QKeyEvent()
     This property holds the keyboard modifier flags that existed immediately
     before the event occurred.
 
-    \sa {QKeyEvent::modifiers}
+    \b {See also} \l [QtGui] {QKeyEvent::modifiers()}.
 */
 
 /*!

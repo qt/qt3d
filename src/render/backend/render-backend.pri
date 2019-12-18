@@ -37,7 +37,8 @@ HEADERS += \
     $$PWD/resourceaccessor_p.h \
     $$PWD/visitorutils_p.h \
     $$PWD/segmentsvisitor_p.h \
-    $$PWD/pointsvisitor_p.h
+    $$PWD/pointsvisitor_p.h \
+    $$PWD/commandexecuter_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -67,11 +68,5 @@ SOURCES += \
     $$PWD/offscreensurfacehelper.cpp \
     $$PWD/resourceaccessor.cpp \
     $$PWD/segmentsvisitor.cpp \
-    $$PWD/pointsvisitor.cpp
-
-include($$QT3D_BUILD_ROOT/src/core/qt3dcore-config.pri)
-QT_FOR_CONFIG += 3dcore-private
-qtConfig(qt3d-profile-jobs): {
-  HEADERS += $$PWD/commandexecuter_p.h
-  SOURCES += $$PWD/commandexecuter.cpp
-}
+    $$PWD/pointsvisitor.cpp \
+    $$PWD/commandexecuter.cpp

@@ -51,16 +51,11 @@ void compareShaderParameterPacks(const ShaderParameterPack &t1,
     const PackUniformHash hash1 = t1.uniforms();
     const PackUniformHash hash2 = t2.uniforms();
 
-    QCOMPARE(hash1.size(), hash2.size());
+    QCOMPARE(hash1.keys.size(), hash2.keys.size());
 
-    auto it = hash1.constBegin();
-    const auto end = hash1.constEnd();
-
-    while (it != end) {
-        const auto h2It = hash2.find(it.key());
-        QVERIFY(h2It != hash2.cend());
-        QCOMPARE(it.value(), h2It.value());
-        ++it;
+    for (int i = 0, m = hash1.keys.size(); i < m; ++i) {
+        const int key = hash1.keys.at(i);
+        QCOMPARE(hash1.value(key), hash2.value(key));
     }
 }
 
@@ -138,14 +133,14 @@ private Q_SLOTS:
     {
         // GIVEN
         RenderView renderView;
-        QVector<RenderCommand *> rawCommands;
+        QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
 
         sortTypes.push_back(QSortPolicy::BackToFront);
 
         for (int i = 0; i < 200; ++i) {
-            RenderCommand *c = new RenderCommand();
-            c->m_depth = float(i);
+            RenderCommand c;
+            c.m_depth = float(i);
             rawCommands.push_back(c);
         }
 
@@ -155,10 +150,10 @@ private Q_SLOTS:
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands.size(), sortedCommands.size());
         for (int j = 1; j < sortedCommands.size(); ++j)
-            QVERIFY(sortedCommands.at(j - 1)->m_depth > sortedCommands.at(j)->m_depth);
+            QVERIFY(sortedCommands.at(j - 1).m_depth > sortedCommands.at(j).m_depth);
 
         // RenderCommands are deleted by RenderView dtor
     }
@@ -167,7 +162,7 @@ private Q_SLOTS:
     {
         // GIVEN
         RenderView renderView;
-        QVector<RenderCommand *> rawCommands;
+        QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
 
         sortTypes.push_back(QSortPolicy::Material);
@@ -181,8 +176,8 @@ private Q_SLOTS:
         };
 
         for (int i = 0; i < 20; ++i) {
-            RenderCommand *c = new RenderCommand();
-            c->m_shaderDna = dnas[i % 5];
+            RenderCommand c;
+            c.m_shaderDna = dnas[i % 5];
             rawCommands.push_back(c);
         }
 
@@ -192,18 +187,18 @@ private Q_SLOTS:
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands.size(), sortedCommands.size());
         ProgramDNA targetDNA;
 
         for (int j = 0; j < sortedCommands.size(); ++j) {
 
             if (j % 4 == 0) {
-                targetDNA = sortedCommands.at(j)->m_shaderDna;
+                targetDNA = sortedCommands.at(j).m_shaderDna;
                 if (j > 0)
-                    QVERIFY(targetDNA != sortedCommands.at(j - 1)->m_shaderDna);
+                    QVERIFY(targetDNA != sortedCommands.at(j - 1).m_shaderDna);
             }
-            QCOMPARE(targetDNA, sortedCommands.at(j)->m_shaderDna);
+            QCOMPARE(targetDNA, sortedCommands.at(j).m_shaderDna);
         }
 
         // RenderCommands are deleted by RenderView dtor
@@ -247,12 +242,12 @@ private Q_SLOTS:
         QFETCH(QVector<ShaderParameterPack>, expectedMinimizedParameters);
 
         RenderView renderView;
-        QVector<RenderCommand *> rawCommands;
+        QVector<RenderCommand> rawCommands;
 
         for (int i = 0, m = programDNAs.size(); i < m; ++i) {
-            RenderCommand *c = new RenderCommand();
-            c->m_shaderDna = programDNAs.at(i);
-            c->m_parameterPack = rawParameters.at(i);
+            RenderCommand c;
+            c.m_shaderDna = programDNAs.at(i);
+            c.m_parameterPack = rawParameters.at(i);
             rawCommands.push_back(c);
         }
 
@@ -261,13 +256,13 @@ private Q_SLOTS:
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands, sortedCommands);
 
         for (int i = 0, m = programDNAs.size(); i < m; ++i) {
-            const RenderCommand *c = sortedCommands.at(i);
-            QCOMPARE(c->m_shaderDna, programDNAs.at(i));
-            compareShaderParameterPacks(c->m_parameterPack, expectedMinimizedParameters.at(i));
+            const RenderCommand c = sortedCommands.at(i);
+            QCOMPARE(c.m_shaderDna, programDNAs.at(i));
+            compareShaderParameterPacks(c.m_parameterPack, expectedMinimizedParameters.at(i));
         }
     }
 
@@ -276,14 +271,14 @@ private Q_SLOTS:
     {
         // GIVEN
         RenderView renderView;
-        QVector<RenderCommand *> rawCommands;
+        QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
 
         sortTypes.push_back(QSortPolicy::FrontToBack);
 
         for (int i = 0; i < 200; ++i) {
-            RenderCommand *c = new RenderCommand();
-            c->m_depth = float(i);
+            RenderCommand c;
+            c.m_depth = float(i);
             rawCommands.push_back(c);
         }
 
@@ -293,10 +288,10 @@ private Q_SLOTS:
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands.size(), sortedCommands.size());
         for (int j = 1; j < sortedCommands.size(); ++j)
-            QVERIFY(sortedCommands.at(j - 1)->m_depth < sortedCommands.at(j)->m_depth);
+            QVERIFY(sortedCommands.at(j - 1).m_depth < sortedCommands.at(j).m_depth);
 
         // RenderCommands are deleted by RenderView dtor
     }
@@ -305,14 +300,14 @@ private Q_SLOTS:
     {
         // GIVEN
         RenderView renderView;
-        QVector<RenderCommand *> rawCommands;
+        QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
 
         sortTypes.push_back(QSortPolicy::StateChangeCost);
 
         for (int i = 0; i < 200; ++i) {
-            RenderCommand *c = new RenderCommand();
-            c->m_changeCost = i;
+            RenderCommand c;
+            c.m_changeCost = i;
             rawCommands.push_back(c);
         }
 
@@ -322,10 +317,10 @@ private Q_SLOTS:
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands.size(), sortedCommands.size());
         for (int j = 1; j < sortedCommands.size(); ++j)
-            QVERIFY(sortedCommands.at(j - 1)->m_changeCost > sortedCommands.at(j)->m_changeCost);
+            QVERIFY(sortedCommands.at(j - 1).m_changeCost > sortedCommands.at(j).m_changeCost);
 
         // RenderCommands are deleted by RenderView dtor
     }
@@ -334,7 +329,7 @@ private Q_SLOTS:
     {
         // GIVEN
         RenderView renderView;
-        QVector<RenderCommand *> rawCommands;
+        QVector<RenderCommand> rawCommands;
         QVector<QSortPolicy::SortType> sortTypes;
 
         sortTypes.push_back(QSortPolicy::StateChangeCost);
@@ -360,24 +355,24 @@ private Q_SLOTS:
         };
 
         auto buildRC = [] (ProgramDNA dna, float depth, int changeCost) {
-            RenderCommand *c = new RenderCommand();
-            c->m_shaderDna = dna;
-            c->m_depth = depth;
-            c->m_changeCost = changeCost;
+            RenderCommand c;
+            c.m_shaderDna = dna;
+            c.m_depth = depth;
+            c.m_changeCost = changeCost;
             return c;
         };
 
-        RenderCommand *c5 = buildRC(dna[3], depth[1], stateChangeCost[1]);
-        RenderCommand *c3 = buildRC(dna[3], depth[0], stateChangeCost[1]);
-        RenderCommand *c4 = buildRC(dna[2], depth[1], stateChangeCost[1]);
-        RenderCommand *c8 = buildRC(dna[1], depth[1], stateChangeCost[1]);
-        RenderCommand *c0 = buildRC(dna[0], depth[2], stateChangeCost[1]);
+        RenderCommand c5 = buildRC(dna[3], depth[1], stateChangeCost[1]);
+        RenderCommand c3 = buildRC(dna[3], depth[0], stateChangeCost[1]);
+        RenderCommand c4 = buildRC(dna[2], depth[1], stateChangeCost[1]);
+        RenderCommand c8 = buildRC(dna[1], depth[1], stateChangeCost[1]);
+        RenderCommand c0 = buildRC(dna[0], depth[2], stateChangeCost[1]);
 
-        RenderCommand *c2 = buildRC(dna[2], depth[2], stateChangeCost[0]);
-        RenderCommand *c9 = buildRC(dna[2], depth[0], stateChangeCost[0]);
-        RenderCommand *c1 = buildRC(dna[1], depth[0], stateChangeCost[0]);
-        RenderCommand *c7 = buildRC(dna[0], depth[2], stateChangeCost[0]);
-        RenderCommand *c6 = buildRC(dna[0], depth[1], stateChangeCost[0]);
+        RenderCommand c2 = buildRC(dna[2], depth[2], stateChangeCost[0]);
+        RenderCommand c9 = buildRC(dna[2], depth[0], stateChangeCost[0]);
+        RenderCommand c1 = buildRC(dna[1], depth[0], stateChangeCost[0]);
+        RenderCommand c7 = buildRC(dna[0], depth[2], stateChangeCost[0]);
+        RenderCommand c6 = buildRC(dna[0], depth[1], stateChangeCost[0]);
 
         rawCommands << c0 << c1 << c2 << c3 << c4 << c5 << c6 << c7 << c8 << c9;
 
@@ -387,11 +382,8 @@ private Q_SLOTS:
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand *> sortedCommands = renderView.commands();
+        const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands.size(), sortedCommands.size());
-
-        for (RenderCommand *rc : sortedCommands)
-            qDebug() << rc->m_changeCost << rc->m_shaderDna << rc->m_depth;
 
         // Ordered by higher state, higher shaderDNA and higher depth
         QCOMPARE(c0, sortedCommands.at(4));
@@ -423,61 +415,60 @@ private Q_SLOTS:
         Qt3DCore::QNodeId tex3 = Qt3DCore::QNodeId::createId();
         Qt3DCore::QNodeId tex4 = Qt3DCore::QNodeId::createId();
 
-        RenderCommand *a = new RenderCommand();
+        RenderCommand a;
         {
             ShaderParameterPack pack;
             pack.setTexture(0, 0, tex1);
             pack.setTexture(1, 0, tex3);
             pack.setTexture(2, 0, tex4);
             pack.setTexture(3, 0, tex2);
-            a->m_parameterPack = pack;
+            a.m_parameterPack = pack;
         }
-        RenderCommand *b = new RenderCommand();
-        RenderCommand *c = new RenderCommand();
+        RenderCommand b;
+        RenderCommand c;
         {
             ShaderParameterPack pack;
             pack.setTexture(0, 0, tex1);
             pack.setTexture(3, 0, tex2);
-            c->m_parameterPack = pack;
+            c.m_parameterPack = pack;
         }
-        RenderCommand *d = new RenderCommand();
+        RenderCommand d;
         {
             ShaderParameterPack pack;
             pack.setTexture(1, 0, tex3);
             pack.setTexture(2, 0, tex4);
-            d->m_parameterPack = pack;
+            d.m_parameterPack = pack;
         }
-        RenderCommand *e = new RenderCommand();
+        RenderCommand e;
         {
             ShaderParameterPack pack;
             pack.setTexture(3, 0, tex2);
-            e->m_parameterPack = pack;
+            e.m_parameterPack = pack;
         }
-        RenderCommand *f = new RenderCommand();
+        RenderCommand f;
         {
             ShaderParameterPack pack;
             pack.setTexture(3, 0, tex2);
-            f->m_parameterPack = pack;
+            f.m_parameterPack = pack;
         }
-        RenderCommand *g = new RenderCommand();
+        RenderCommand g;
         {
             ShaderParameterPack pack;
             pack.setTexture(0, 0, tex1);
             pack.setTexture(1, 0, tex3);
             pack.setTexture(2, 0, tex4);
             pack.setTexture(3, 0, tex2);
-            g->m_parameterPack = pack;
+            g.m_parameterPack = pack;
         }
 
         // WHEN
-        QVector<RenderCommand *> rawCommands = {a, b, c, d, e, f, g};
+        QVector<RenderCommand> rawCommands = {a, b, c, d, e, f, g};
         renderView.addSortType(sortTypes);
         renderView.setCommands(rawCommands);
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand *> sortedCommands = renderView.commands();
-        qDebug() << rawCommands << sortedCommands;
+        const QVector<RenderCommand> sortedCommands = renderView.commands();
         QCOMPARE(rawCommands.size(), sortedCommands.size());
         QCOMPARE(sortedCommands.at(0), a);
         QCOMPARE(sortedCommands.at(1), g);

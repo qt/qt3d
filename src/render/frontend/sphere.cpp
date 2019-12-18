@@ -93,54 +93,6 @@ bool intersectRaySphere(const Qt3DRender::RayCasting::QRay3D &ray, const Qt3DRen
     return true;
 }
 
-inline QPair<int, int> findExtremePoints(const QVector<Vector3D> &points)
-{
-    // Find indices of extreme points along x, y, and z axes
-    int xMin = 0, xMax = 0, yMin = 0, yMax = 0, zMin = 0, zMax = 0;
-    for (int i = 1; i < points.size(); ++i) {
-        const Vector3D &p = points.at(i);
-        if (p.x() < points[xMin].x())
-            xMin = i;
-        if (p.x() > points[xMax].x())
-            xMax = i;
-        if (p.y() < points[yMin].y())
-            yMin = i;
-        if (p.y() > points[yMax].y())
-            yMax = i;
-        if (p.z() < points[zMin].z())
-            zMin = i;
-        if (p.z() > points[zMax].z())
-            zMax = i;
-    }
-
-    // Calculate squared distance for the pairs of points
-    const float xDist2 = (points.at(xMax) - points.at(xMin)).lengthSquared();
-    const float yDist2 = (points.at(yMax) - points.at(yMin)).lengthSquared();
-    const float zDist2 = (points.at(zMax) - points.at(zMin)).lengthSquared();
-
-    // Select most distant pair
-    QPair<int, int> extremeIndices(xMin, xMax);
-    if (yDist2 > xDist2 && yDist2 > zDist2)
-        extremeIndices = qMakePair(yMin, yMax);
-    if (zDist2 > xDist2 && zDist2 > yDist2)
-        extremeIndices = qMakePair(zMin, zMax);
-
-    return extremeIndices;
-}
-
-inline void sphereFromExtremePoints(Qt3DRender::Render::Sphere &s, const QVector<Vector3D> &points)
-{
-    // Find two most separated points on any of the basis vectors
-    QPair<int, int> extremeIndices = findExtremePoints(points);
-
-    // Construct sphere to contain these two points
-    const Vector3D &p = points.at(extremeIndices.first);
-    const Vector3D &q = points.at(extremeIndices.second);
-    const Vector3D c = 0.5f * (p + q);
-    s.setCenter(c);
-    s.setRadius((q - c).length());
-}
-
 inline void constructRitterSphere(Qt3DRender::Render::Sphere &s, const QVector<Vector3D> &points)
 {
     //def bounding_sphere(points):

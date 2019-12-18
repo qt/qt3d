@@ -30,11 +30,7 @@
 
 QT_BEGIN_NAMESPACE
 
-TestRenderer::TestRenderer()
-    : m_changes(0)
-    , m_managers(nullptr)
-{
-}
+TestRenderer::TestRenderer() = default;
 
 TestRenderer::~TestRenderer()
 {
@@ -60,7 +56,7 @@ void TestRenderer::clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendN
 
 void TestRenderer::resetDirty()
 {
-    m_changes = 0;
+    m_changes = {};
 }
 
 QVariant TestRenderer::executeCommand(const QStringList &args)

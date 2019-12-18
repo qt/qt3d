@@ -227,10 +227,19 @@ public:
 
     RenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
-    QVector<RenderCommand *> buildDrawRenderCommands(const QVector<Entity *> &entities) const;
-    QVector<RenderCommand *> buildComputeRenderCommands(const QVector<Entity *> &entities) const;
-    void setCommands(QVector<RenderCommand *> &commands) Q_DECL_NOTHROW { m_commands = commands; }
-    QVector<RenderCommand *> commands() const Q_DECL_NOTHROW { return m_commands; }
+    EntityRenderCommandData buildDrawRenderCommands(const QVector<Entity *> &entities,
+                                                    int offset, int count) const;
+    EntityRenderCommandData buildComputeRenderCommands(const QVector<Entity *> &entities,
+                                                       int offset, int count) const;
+
+
+    void updateRenderCommand(EntityRenderCommandData *renderCommandData,
+                             int offset, int count);
+
+
+    void setCommands(const QVector<RenderCommand> &commands) Q_DECL_NOTHROW { m_commands = commands; }
+    QVector<RenderCommand> &commands() { return m_commands; }
+    QVector<RenderCommand> commands() const { return m_commands; }
 
     void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
     const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
@@ -291,7 +300,6 @@ public:
 
 private:
     void setShaderAndUniforms(RenderCommand *command,
-                              RenderPass *pass,
                               ParameterInfoList &parameters,
                               Entity *entity,
                               const QVector<LightSource> &activeLightSources,
@@ -331,10 +339,7 @@ private:
     QVector<Qt3DCore::QNodeId> m_insertFenceIds;
     QVector<QWaitFenceData> m_waitFences;
 
-    // We do not use pointers to RenderNodes or Drawable's here so that the
-    // render aspect is free to change the drawables on the next frame whilst
-    // the render thread is submitting these commands.
-    QVector<RenderCommand *> m_commands;
+    QVector<RenderCommand> m_commands;
     mutable QVector<LightSource> m_lightSources;
     EnvironmentLight *m_environmentLight;
 

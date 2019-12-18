@@ -135,6 +135,11 @@ QShaderProgramBuilder::QShaderProgramBuilder(QShaderProgramBuilderPrivate &dd, Q
 {
 }
 
+// TODO Unused remove in Qt6
+void QShaderProgramBuilder::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 /*!
     \qmlproperty string ShaderProgramBuilder::shaderProgram
 

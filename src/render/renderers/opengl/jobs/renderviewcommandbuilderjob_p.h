@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Paul Lemire
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERVIEWBUILDERJOB_P_H
-#define QT3DRENDER_RENDER_RENDERVIEWBUILDERJOB_P_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#define QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H
 
 //
 //  W A R N I N G
@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/rendercommand_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,32 +61,31 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class RenderView;
-class Renderer;
-class RenderCommand;
-
-class Q_AUTOTEST_EXPORT RenderViewBuilderJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT RenderViewCommandBuilderJob : public Qt3DCore::QAspectJob
 {
 public:
-    RenderViewBuilderJob();
+    RenderViewCommandBuilderJob();
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
-    inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
-    inline void setIndex(int index) Q_DECL_NOTHROW { m_index = index; }
-    inline void setRenderables(const QVector<Entity *> &renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
-    QVector<RenderCommand *> &commands() Q_DECL_NOTHROW { return m_commands; }
+    inline void setEntities(const QVector<Entity *> &entities, int offset, int count)
+    {
+        m_offset = offset;
+        m_count = count;
+        m_entities = entities;
+    }
+    inline EntityRenderCommandData &commandData() { return m_commandData; }
 
     void run() final;
 
 private:
+    int m_offset;
+    int m_count;
     RenderView *m_renderView;
-    Renderer *m_renderer;
-    int m_index;
-    QVector<Entity *> m_renderables;
-    QVector<RenderCommand *> m_commands;
+    QVector<Entity *> m_entities;
+    EntityRenderCommandData m_commandData;
 };
 
-typedef QSharedPointer<RenderViewBuilderJob> RenderViewBuilderJobPtr;
+typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobPtr;
 
 } // Render
 
@@ -93,4 +93,4 @@ typedef QSharedPointer<RenderViewBuilderJob> RenderViewBuilderJobPtr;
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERVIEWBUILDERJOB_P_H
+#endif // QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H

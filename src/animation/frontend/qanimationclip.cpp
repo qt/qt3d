@@ -51,8 +51,8 @@ QAnimationClipPrivate::QAnimationClipPrivate()
 }
 
 /*!
-    \class QAnimationClip
-    \inherits QAbstractAnimationClip
+    \class Qt3DAnimation::QAnimationClip
+    \inherits Qt3dAnimation::QAbstractAnimationClip
     \inmodule Qt3DAnimation
     \brief Specifies key frame animation data.
 */

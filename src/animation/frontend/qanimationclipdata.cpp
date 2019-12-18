@@ -53,7 +53,7 @@ public:
 };
 
 /*!
-    \class QAnimationClipData
+    \class Qt3DAnimation::QAnimationClipData
     \inmodule Qt3DAnimation
     \brief Class containing the animation data.
 */

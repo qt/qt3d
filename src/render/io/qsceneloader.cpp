@@ -41,7 +41,6 @@
 #include "qsceneloader_p.h"
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qgeometryrenderer.h>
@@ -253,6 +252,11 @@ QSceneLoader::~QSceneLoader()
 {
 }
 
+// TODO Unused remove in Qt6
+void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &)
+{
+}
+
 /*! \internal */
 QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
@@ -313,7 +317,7 @@ QStringList QSceneLoader::entityNames() const
 
 /*!
     \qmlmethod Entity SceneLoader::component(string entityName, enumeration componentType)
-    Returns a component matching \a componentType of a loaded entity with an \a objectName matching
+    Returns a component matching \a componentType of a loaded entity with an \e objectName matching
     the \a entityName.
     If the entity has multiple matching components, the first match in the component list of
     the entity is returned.

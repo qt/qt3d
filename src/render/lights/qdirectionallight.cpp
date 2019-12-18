@@ -115,12 +115,18 @@ QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent
 
 /*!
   \qmlproperty vector3d Qt3D.Render::DirectionalLight::worldDirection
-    Specifies the world direction of the directional light
+    Specifies the world direction of the directional light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
 */
 
 /*!
   \property Qt3DRender::QDirectionalLight::worldDirection
-    Specifies the world direction of the directional light
+    Specifies the world direction of the directional light.
+
+    \note The exact meaning and use of this property is up to the
+          material implementation.
  */
 void QDirectionalLight::setWorldDirection(const QVector3D &direction)
 {

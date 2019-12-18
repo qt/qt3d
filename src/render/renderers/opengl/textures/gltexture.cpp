@@ -232,11 +232,9 @@ void GLTexture::loadTextureDataFromImages()
 GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
 {
     TextureUpdateInfo textureInfo;
-    m_properties.status = QAbstractTexture::Error;
     m_wasTextureRecreated = false;
 
     const bool hasSharedTextureId = m_sharedTextureId > 0;
-
     // Only load texture data if we are not using a sharedTextureId
     // Check if dataFunctor or images have changed
     if (!hasSharedTextureId) {
@@ -269,17 +267,17 @@ GLTexture::TextureUpdateInfo GLTexture::createOrUpdateGLTexture()
             // Reset image flag
             setDirtyFlag(TextureImageData, false);
         }
-    }
 
-    // Don't try to create the texture if the target or format was still not set
-    // Format should either be set by user or if Automatic
-    // by either the dataGenerator of the texture or the first Image
-    // Target should explicitly be set by the user or the dataGenerator
-    if (m_properties.target == QAbstractTexture::TargetAutomatic ||
-        m_properties.format == QAbstractTexture::Automatic ||
-        m_properties.format == QAbstractTexture::NoFormat) {
-        textureInfo.properties.status = QAbstractTexture::Error;
-        return textureInfo;
+        // Don't try to create the texture if the target or format was still not set
+        // Format should either be set by user or if Automatic
+        // by either the dataGenerator of the texture or the first Image
+        // Target should explicitly be set by the user or the dataGenerator
+        if (m_properties.target == QAbstractTexture::TargetAutomatic ||
+            m_properties.format == QAbstractTexture::Automatic ||
+            m_properties.format == QAbstractTexture::NoFormat) {
+            textureInfo.properties.status = QAbstractTexture::Error;
+            return textureInfo;
+        }
     }
 
     // If the properties changed or texture has become a shared texture from a

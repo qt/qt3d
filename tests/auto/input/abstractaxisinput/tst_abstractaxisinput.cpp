@@ -30,11 +30,9 @@
 #include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/private/abstractaxisinput_p.h>
 #include <Qt3DInput/QAbstractAxisInput>
 #include <Qt3DInput/private/qabstractaxisinput_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testdevice.h"
 
 class DummyAxisInput : public Qt3DInput::QAbstractAxisInput

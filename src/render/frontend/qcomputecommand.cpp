@@ -92,15 +92,15 @@ namespace Qt3DRender {
  */
 
 /*!
-    \qmlproperty QComputeCommand::runType
+    \qmlproperty enumeration ComputeCommand::runType
 
     Specifies whether the compute command should be performed every frame or
     manually triggered.
 
-    \value Continuous Compute command is executed everyframe. This is the
+    \value ComputeCommand.Continuous Compute command is executed everyframe. This is the
     default.
 
-    \value Manual CompouteCommand is executed for a given number of frames and
+    \value ComputeCommand.Manual CompouteCommand is executed for a given number of frames and
     then the component disables itself.
  */
 

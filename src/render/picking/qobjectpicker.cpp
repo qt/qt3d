@@ -152,7 +152,7 @@ namespace Qt3DRender {
 
     This signal is emitted when the bounding volume defined by the
     pickAttribute property intersects with a ray on a mouse click. Intersection
-    information are accessible through the pick \a parameter.
+    information are accessible through the \a pick parameter.
 */
 
 /*!
@@ -290,6 +290,11 @@ void QObjectPicker::setPriority(int priority)
         d->m_priority = priority;
         emit priorityChanged(priority);
     }
+}
+
+// TODO Unused remove in Qt6
+void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
 }
 
 /*!

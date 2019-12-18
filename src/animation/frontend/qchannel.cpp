@@ -54,7 +54,7 @@ public:
 };
 
 /*!
-    \class QChannel
+    \class Qt3DAnimation::QChannel
     \inmodule Qt3DAnimation
     \brief Defines a channel for a QAnimationClipData.
     The animation system interpolates each channel component independently

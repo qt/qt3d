@@ -354,7 +354,7 @@ CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
     : m_manager(nullptr)
     , m_node(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0)
 }
 
 void CalculateBoundingVolumeJob::run()

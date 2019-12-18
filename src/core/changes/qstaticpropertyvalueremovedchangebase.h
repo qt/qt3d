@@ -59,7 +59,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QStaticPropertyValueRemovedChangeBase)
-    explicit QStaticPropertyValueRemovedChangeBase(QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QStaticPropertyValueRemovedChangeBase(QNodeId subjectId);
     QStaticPropertyValueRemovedChangeBase(QStaticPropertyValueRemovedChangeBasePrivate &dd,
                                         QNodeId subjectId);
 };

@@ -80,7 +80,7 @@ namespace JobTypes {
         LayerFiltering,
         EntityComponentTypeFiltering,
         MaterialParameterGathering,
-        RenderViewBuilder,
+        RenderCommandUpdater,
         GenericLambda,
         FrustumCulling,
         LightGathering,
@@ -92,9 +92,9 @@ namespace JobTypes {
         DirtyShaderGathering,
         SendRenderCapture,
         SendBufferCapture,
-        SyncRenderViewCommandBuilding,
+        SyncRenderViewPreCommandUpdate,
         SyncRenderViewInitialization,
-        SyncRenderViewCommandBuilder,
+        SyncRenderViewPostCommandUpdate,
         SyncFrustumCulling,
         ClearBufferDrawIndex,
         UpdateMeshTriangleList,
@@ -109,7 +109,9 @@ namespace JobTypes {
         UpdateLayerEntity,
         SendTextureChangesToFrontend,
         SendSetFenceHandlesToFrontend,
-        SendDisablesToFrontend
+        SendDisablesToFrontend,
+        RenderViewCommandBuilder,
+        SyncRenderViewPreCommandBuilding
     };
 
 } // JobTypes

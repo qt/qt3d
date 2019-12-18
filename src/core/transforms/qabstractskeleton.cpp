@@ -39,7 +39,6 @@
 
 #include "qabstractskeleton.h"
 #include "qabstractskeleton_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,6 +46,7 @@ namespace Qt3DCore {
 
 QAbstractSkeletonPrivate::QAbstractSkeletonPrivate()
     : Qt3DCore::QNodePrivate()
+    , m_type(QSkeletonCreatedChangeBase::Skeleton)
     , m_jointCount(0)
 {
 }
@@ -105,6 +105,13 @@ QAbstractSkeleton::~QAbstractSkeleton()
 {
 }
 
+/*! \internal */
+void QAbstractSkeleton::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    // TODO Unused remove in Qt6
+    Q_UNUSED(change)
+}
+
 /*!
     \property Qt3DCore::QAbstractSkeleton::jointCount
 
@@ -125,16 +132,6 @@ void QAbstractSkeletonPrivate::setJointCount(int jointCount)
     const bool block = q->blockNotifications(true);
     emit q->jointCountChanged(jointCount);
     q->blockNotifications(block);
-}
-
-void QAbstractSkeleton::sceneChangeEvent(const QSceneChangePtr &change)
-{
-    Q_D(QAbstractSkeleton);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("jointCount"))
-            d->setJointCount(e->value().toInt());
-    }
 }
 
 } // namespace Qt3DCore

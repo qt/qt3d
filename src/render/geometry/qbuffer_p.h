@@ -75,6 +75,8 @@ public:
     QBufferDataGeneratorPtr m_functor;
     bool m_syncData;
     QBuffer::AccessType m_access;
+
+    void setData(const QByteArray &data);
 };
 
 struct QBufferData

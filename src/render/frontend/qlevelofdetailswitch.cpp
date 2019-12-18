@@ -42,7 +42,6 @@
 #include "qlevelofdetail_p.h"
 #include "qglobal.h"
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -131,6 +130,11 @@ QLevelOfDetailSwitch::~QLevelOfDetailSwitch()
 /*! \internal */
 QLevelOfDetailSwitch::QLevelOfDetailSwitch(QLevelOfDetailPrivate &dd, QNode *parent)
     : QLevelOfDetail(dd, parent)
+{
+}
+
+// TODO Unused remove in Qt6
+void QLevelOfDetailSwitch::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 

@@ -60,7 +60,7 @@ class QSkeletonCreatedChangeBasePrivate;
 class Q_3DCORESHARED_EXPORT QSkeletonCreatedChangeBase : public QNodeCreatedChangeBase
 {
 public:
-    explicit QSkeletonCreatedChangeBase(const QAbstractSkeleton *skeleton);
+    Q3D_DECL_DEPRECATED explicit QSkeletonCreatedChangeBase(const QAbstractSkeleton *skeleton);
     ~QSkeletonCreatedChangeBase();
 
     enum SkeletonType {
@@ -74,7 +74,7 @@ private:
     Q_DECLARE_PRIVATE(QSkeletonCreatedChangeBase)
 };
 
-typedef QSharedPointer<QSkeletonCreatedChangeBase> QSkeletonCreatedChangeBasePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QSkeletonCreatedChangeBase> QSkeletonCreatedChangeBasePtr;
 
 template<typename T>
 class QSkeletonCreatedChange : public QSkeletonCreatedChangeBase
@@ -90,7 +90,7 @@ public:
 };
 
 template<typename T>
-using QSkeletonCreatedChangePtr = QSharedPointer<QSkeletonCreatedChange<T>>;
+using QSkeletonCreatedChangePtr Q3D_DECL_DEPRECATED = QSharedPointer<QSkeletonCreatedChange<T>>;
 
 } // namespace Qt3DCore
 

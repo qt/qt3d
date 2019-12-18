@@ -69,12 +69,6 @@ class QAspectManager;
 class QPostman;
 class QScene;
 
-#if QT_CONFIG(qt3d_profile_jobs)
-namespace Debug {
-class AspectCommandDebugger;
-} // Debug
-#endif
-
 class Q_3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate
 {
 public:
@@ -92,10 +86,6 @@ public:
     QHash<QString, QAbstractAspect *> m_namedAspects;
     bool m_initialized;
     QAspectEngine::RunMode m_runMode;
-
-#if QT_CONFIG(qt3d_profile_jobs)
-    Debug::AspectCommandDebugger *m_commandDebugger;
-#endif
 
     void initialize();
     void shutdown();

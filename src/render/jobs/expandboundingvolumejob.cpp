@@ -62,7 +62,7 @@ void expandWorldBoundingVolume(NodeManagers *manager, Entity *node)
     const auto childrenHandles = node->childrenHandles();
     for (const HEntity &handle : childrenHandles) {
         Entity *c = manager->renderNodesManager()->data(handle);
-        if (c)
+        if (c && c->isEnabled())
             expandWorldBoundingVolume(manager, c);
     }
 
@@ -72,7 +72,7 @@ void expandWorldBoundingVolume(NodeManagers *manager, Entity *node)
         Qt3DRender::Render::Sphere *parentBoundingVolume = node->worldBoundingVolumeWithChildren();
         for (const HEntity &handle : childrenHandles) {
             Entity *c = manager->renderNodesManager()->data(handle);
-            if (c)
+            if (c && c->isEnabled())
                 parentBoundingVolume->expandToContain(*c->worldBoundingVolumeWithChildren());
         }
     }
@@ -84,7 +84,7 @@ ExpandBoundingVolumeJob::ExpandBoundingVolumeJob()
     : m_node(nullptr)
     , m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpandBoundingVolume, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpandBoundingVolume, 0)
 }
 
 void ExpandBoundingVolumeJob::setRoot(Entity *root)

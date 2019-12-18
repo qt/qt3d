@@ -51,13 +51,12 @@ QCallbackMappingPrivate::QCallbackMappingPrivate()
     , m_channelName()
     , m_type(static_cast<int>(QVariant::Invalid))
     , m_callback(nullptr)
-    , m_callbackFlags(0)
 {
     m_mappingType = QChannelMappingCreatedChangeBase::CallbackMapping;
 }
 
 /*!
-    \class QCallbackMapping
+    \class Qt3DAnimation::QCallbackMapping
     \inherits Qt3DCore::QAbstractChannelMapping
     \inmodule Qt3DAnimation
     \brief Allows to map the channels within the clip onto an invocation

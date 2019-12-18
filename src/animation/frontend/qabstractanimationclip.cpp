@@ -36,7 +36,6 @@
 
 #include "qabstractanimationclip.h"
 #include "qabstractanimationclip_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -122,7 +121,7 @@ void QAbstractAnimationClipPrivate::setDuration(float duration)
     animator->setRunning(true);
     \endcode
 
-    \sa QAnimationClip, QAnimationClipLoader
+    \sa Qt3DAnimation::QAnimationClip, Qt3DAnimation::QAnimationClipLoader
 */
 
 /*!
@@ -131,6 +130,11 @@ void QAbstractAnimationClipPrivate::setDuration(float duration)
 QAbstractAnimationClip::QAbstractAnimationClip(QAbstractAnimationClipPrivate &dd,
                                                Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(dd, parent)
+{
+}
+
+// TODO Unused remove in Qt6
+void QAbstractAnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 

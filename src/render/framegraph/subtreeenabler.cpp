@@ -52,29 +52,11 @@ SubtreeEnabler::SubtreeEnabler()
 {
 }
 
-void SubtreeEnabler::sendDisableToFrontend()
-{
-    if (m_enablement != QSubtreeEnabler::SingleShot)
-        return;
-
-    if (isEnabled())
-        return;
-
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("enabled");
-    e->setValue(false);
-    notifyObservers(e);
-}
-
 void SubtreeEnabler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
     const QSubtreeEnabler *node = qobject_cast<const QSubtreeEnabler *>(frontEnd);
     if (!node)
         return;
-
-    if (node->isEnabled() != isEnabled())
-        markDirty(AbstractRenderer::AllDirty);
 
     FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
 

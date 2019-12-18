@@ -149,6 +149,8 @@ void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     auto newGenerator = node->dataGenerator();
     if (newGenerator != m_dataFunctor) {
         setDataGenerator(newGenerator);
+        QAbstractTexturePrivate *dTexture = static_cast<QAbstractTexturePrivate *>(QNodePrivate::get(const_cast<QNode *>(frontEnd)));
+        dTexture->setStatus(QAbstractTexture::Loading);
     }
 
     QAbstractTexturePrivate *dnode = dynamic_cast<QAbstractTexturePrivate *>(QAbstractTexturePrivate::get(const_cast<QAbstractTexture *>(node)));
@@ -163,11 +165,11 @@ void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             m_textureImageIds = ids;
             addDirtyFlag(DirtyImageGenerators);
         }
-    }
 
-    if (dnode->m_sharedTextureId != m_sharedTextureId) {
-        m_sharedTextureId = dnode->m_sharedTextureId;
-        addDirtyFlag(DirtySharedTextureId);
+        if (dnode->m_sharedTextureId != m_sharedTextureId) {
+            m_sharedTextureId = dnode->m_sharedTextureId;
+            addDirtyFlag(DirtySharedTextureId);
+        }
     }
 }
 

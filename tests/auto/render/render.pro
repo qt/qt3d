@@ -137,7 +137,6 @@ qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
         renderviews \
         renderqueue \
         renderviewbuilder \
-        sendrendercapturejob \
         gltexture
 
     qtConfig(qt3d-extras) {

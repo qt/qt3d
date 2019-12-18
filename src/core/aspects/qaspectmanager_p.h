@@ -73,6 +73,7 @@ class QScheduler;
 class QChangeArbiter;
 class QAbstractAspect;
 class QAbstractAspectJobManager;
+class QAspectEngine;
 class QServiceLocator;
 class NodePostConstructorInit;
 struct NodeTreeChange;
@@ -81,7 +82,7 @@ class Q_3DCORE_PRIVATE_EXPORT QAspectManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAspectManager(QObject *parent = nullptr);
+    explicit QAspectManager(QAspectEngine *parent = nullptr);
     ~QAspectManager();
 
     void setRunMode(QAspectEngine::RunMode mode);
@@ -111,10 +112,13 @@ public:
     QNode *lookupNode(QNodeId id) const;
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
 
+    int jobsInLastFrame() const { return m_jobsInLastFrame; }
+
 private:
     bool event(QEvent *event) override;
     void requestNextFrame();
 
+    QAspectEngine *m_engine;
     QVector<QAbstractAspect *> m_aspects;
     QEntity *m_root;
     QVariantMap m_data;
@@ -122,12 +126,11 @@ private:
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_changeArbiter;
     QScopedPointer<QServiceLocator> m_serviceLocator;
-    bool m_mainLoopRunning;
     bool m_simulationLoopRunning;
     QAspectEngine::RunMode m_driveMode;
     QVector<NodeTreeChange> m_nodeTreeChanges;
     NodePostConstructorInit* m_postConstructorInit;
-
+    int m_jobsInLastFrame;
 };
 
 } // namespace Qt3DCore

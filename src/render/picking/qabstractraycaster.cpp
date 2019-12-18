@@ -58,10 +58,6 @@ QAbstractRayCasterPrivate::QAbstractRayCasterPrivate()
     m_shareable = false;
 }
 
-/*!
-    \property Qt3DRender::QAbstractRayCaster::Hits
-*/
-
 QAbstractRayCasterPrivate *QAbstractRayCasterPrivate::get(QAbstractRayCaster *obj)
 {
     return obj->d_func();

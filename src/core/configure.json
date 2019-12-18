@@ -44,7 +44,7 @@
             "output": [ "privateFeature" ]
         },
         "qt3d-profile-jobs": {
-            "label": "Output Qt3D Job traces",
+            "label": "Output Qt3D Job traces (deprecated)",
             "autoDetect": false,
             "output": [ "privateFeature" ]
         },
@@ -112,7 +112,6 @@
             "entries": [
                 "assimp",
                 "system-assimp",
-                "qt3d-profile-jobs",
                 "qt3d-profile-gl",
                 "qt3d-simd-sse2",
                 "qt3d-simd-avx2",

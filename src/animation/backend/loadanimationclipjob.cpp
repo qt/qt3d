@@ -64,6 +64,7 @@ public:
 LoadAnimationClipJob::LoadAnimationClipJob()
     : Qt3DCore::QAspectJob(*new LoadAnimationClipJobPrivate)
     , m_animationClipHandles()
+    , m_handler(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadAnimationClip, 0)
 }

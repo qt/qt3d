@@ -63,12 +63,13 @@ namespace Qt3DCore {
 
 class QThreadPooler;
 class DependencyHandler;
+class QAspectManager;
 
 class Q_3DCORE_PRIVATE_EXPORT QAspectJobManager : public QAbstractAspectJobManager
 {
     Q_OBJECT
 public:
-    explicit QAspectJobManager(QObject *parent = 0);
+    explicit QAspectJobManager(QAspectManager *parent = nullptr);
     ~QAspectJobManager();
 
     void initialize() override;
@@ -81,6 +82,7 @@ public:
 
 private:
     QThreadPooler *m_threadPooler;
+    QAspectManager *m_aspectManager;
 };
 
 } // namespace Qt3DCore

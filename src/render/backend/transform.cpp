@@ -39,7 +39,6 @@
 
 #include "transform_p.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/private/qtransform_p.h>

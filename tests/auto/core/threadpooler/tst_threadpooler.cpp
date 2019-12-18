@@ -182,7 +182,7 @@ void massTestFunction(QVector3D *data)
 
 void tst_ThreadPooler::initTestCase()
 {
-    m_jobManager = new JobManager(this);
+    m_jobManager = new JobManager(nullptr);
 }
 
 void tst_ThreadPooler::cleanupTestCase()
@@ -195,13 +195,13 @@ void tst_ThreadPooler::defaultPerThread()
     // GIVEN
     QAtomicInt callCounter;
     int maxThreadCount = QThread::idealThreadCount();
-    callCounter.store(0);
+    callCounter.storeRelaxed(0);
 
     // WHEN
     m_jobManager->waitForPerThreadFunction(perThreadFunction, &callCounter);
 
     // THEN
-    QVERIFY(maxThreadCount == callCounter.load());
+    QVERIFY(maxThreadCount == callCounter.loadRelaxed());
 }
 
 void tst_ThreadPooler::defaultAspectQueue()
@@ -210,7 +210,7 @@ void tst_ThreadPooler::defaultAspectQueue()
     QAtomicInt callCounter;
     int value = 0; // Not used in this test
     QVector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
-    callCounter.store(0);
+    callCounter.storeRelaxed(0);
     const int jobCount = 5;
 
     // WHEN
@@ -223,7 +223,7 @@ void tst_ThreadPooler::defaultAspectQueue()
     m_jobManager->waitForAllJobs();
 
     // THEN
-    QVERIFY(jobCount == callCounter.load());
+    QVERIFY(jobCount == callCounter.loadRelaxed());
 }
 
 /*
@@ -236,7 +236,7 @@ void tst_ThreadPooler::doubleAspectQueue()
     QAtomicInt callCounter;
     int value = 0; // Not used in this test
     QVector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
-    callCounter.store(0);
+    callCounter.storeRelaxed(0);
     const int jobCount = 3;
 
     // WHEN
@@ -258,7 +258,7 @@ void tst_ThreadPooler::doubleAspectQueue()
     m_jobManager->waitForAllJobs();
 
     // THEN
-    QVERIFY(jobCount * 2 == callCounter.load());
+    QVERIFY(jobCount * 2 == callCounter.loadRelaxed());
 }
 
 /*
@@ -335,7 +335,7 @@ public:
 
     quint64 globalAtomicValue() const
     {
-        return m_globalAtomic.load();
+        return m_globalAtomic.loadRelaxed();
     }
 
 private:

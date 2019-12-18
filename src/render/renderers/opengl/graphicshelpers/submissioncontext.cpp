@@ -538,9 +538,9 @@ GLuint SubmissionContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
             // ### TODO QTBUG-64757 this check is insufficient since the
             // texture may have changed to another one with the same size. That
             // case is not handled atm.
-            needsResize |= (rTex != nullptr && rTex->size() != s);
-            if (isActiveRenderTarget) {
-                if (attachment.m_point == QRenderTargetOutput::Color0)
+            if (rTex) {
+                needsResize |= rTex->size() != s;
+                if (isActiveRenderTarget && attachment.m_point == QRenderTargetOutput::Color0)
                     m_renderTargetFormat = rTex->properties().format;
             }
         }
@@ -687,8 +687,8 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
     GLint samples = 0;
     m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
     if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer)) {
-        qWarning () << Q_FUNC_INFO << "Unable to capture multisampled framebuffer; "
-                       "Required feature BlitFramebuffer is missing.";
+        qCWarning(Backend) << Q_FUNC_INFO << "Unable to capture multisampled framebuffer; "
+                                             "Required feature BlitFramebuffer is missing.";
         return img;
     }
 
@@ -711,7 +711,7 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
         if (status != GL_FRAMEBUFFER_COMPLETE) {
             gl->glDeleteRenderbuffers(1, &rb);
             gl->glDeleteFramebuffers(1, &fbo);
-            qWarning () << Q_FUNC_INFO << "Copy-framebuffer not complete: " << status;
+            qCWarning(Backend) << Q_FUNC_INFO << "Copy-framebuffer not complete: " << status;
             return img;
         }
 
@@ -797,7 +797,7 @@ bool SubmissionContext::activateShader(ProgramDNA shaderDNA)
             m_activeShaderDNA = shaderDNA;
         } else {
             m_glHelper->useProgram(0);
-            qWarning() << "No shader program found for DNA";
+            qCWarning(Backend) << "No shader program found for DNA";
             m_activeShaderDNA = 0;
             return false;
         }
@@ -855,7 +855,7 @@ void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
             }
         }
     } else {
-        qWarning() << "FBO incomplete";
+        qCWarning(Backend) << "FBO incomplete";
     }
 }
 
@@ -1171,7 +1171,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
         if (uniformValues.contains(namedTex.glslNameId)) {
             GLTexture *t = manager->glTextureManager()->lookupResource(namedTex.nodeId);
             if (t != nullptr) {
-                UniformValue &texUniform = uniformValues[namedTex.glslNameId];
+                UniformValue &texUniform = uniformValues.value(namedTex.glslNameId);
                 if (texUniform.valueType() == UniformValue::TextureValue) {
                     const int texUnit = m_textureContext.activateTexture(TextureSubmissionContext::TextureScopeMaterial, m_gl, t);
                     texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
@@ -1179,7 +1179,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
                         if (namedTex.glslNameId != irradianceId &&
                             namedTex.glslNameId != specularId) {
                             // Only return false if we are not dealing with env light textures
-                            qWarning() << "Unable to find suitable Texture Unit";
+                            qCWarning(Backend) << "Unable to find suitable Texture Unit";
                             return false;
                         }
                     }
@@ -1198,15 +1198,15 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
             if (img != nullptr) {
                 GLTexture *t = manager->glTextureManager()->lookupResource(img->textureId());
                 if (t == nullptr) {
-                    qWarning() << "Shader Image referencing invalid texture";
+                    qCWarning(Backend) << "Shader Image referencing invalid texture";
                     continue;
                 } else {
-                    UniformValue &imgUniform = uniformValues[namedTex.glslNameId];
+                    UniformValue &imgUniform = uniformValues.value(namedTex.glslNameId);
                     if (imgUniform.valueType() == UniformValue::ShaderImageValue) {
                         const int imgUnit = m_imageContext.activateImage(img, t);
                         imgUniform.data<int>()[namedTex.uniformArrayIndex] = imgUnit;
                         if (imgUnit == -1) {
-                            qWarning() << "Unable to bind Image to Texture";
+                            qCWarning(Backend) << "Unable to bind Image to Texture";
                             return false;
                         }
                     }
@@ -1260,7 +1260,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     for (const ShaderUniform &uniform : activeUniforms) {
         // We can use [] as we are sure the the uniform wouldn't
         // be un activeUniforms if there wasn't a matching value
-        const UniformValue &v = values[uniform.m_nameId];
+        const UniformValue &v = values.value(uniform.m_nameId);
 
         // skip invalid textures/images
         if ((v.valueType() == UniformValue::TextureValue ||

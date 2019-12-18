@@ -42,7 +42,6 @@
 #include <Qt3DRender/QFrameGraphNode>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/qrendersettings_p.h>
-#include <Qt3DCore/qnodecommand.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,20 +78,21 @@ void RenderSettings::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
         m_renderPolicy = node->renderPolicy();
     }
 
-    if (node->pickingSettings()->pickMethod() != m_pickMethod) {
-        m_pickMethod = node->pickingSettings()->pickMethod();
+    auto ncnode = const_cast<QRenderSettings *>(node);
+    if (ncnode->pickingSettings()->pickMethod() != m_pickMethod) {
+        m_pickMethod = ncnode->pickingSettings()->pickMethod();
     }
 
-    if (node->pickingSettings()->pickResultMode() != m_pickResultMode) {
-        m_pickResultMode = node->pickingSettings()->pickResultMode();
+    if (ncnode->pickingSettings()->pickResultMode() != m_pickResultMode) {
+        m_pickResultMode = ncnode->pickingSettings()->pickResultMode();
     }
 
-    if (node->pickingSettings()->worldSpaceTolerance() != m_pickWorldSpaceTolerance) {
-        m_pickWorldSpaceTolerance = node->pickingSettings()->worldSpaceTolerance();
+    if (ncnode->pickingSettings()->worldSpaceTolerance() != m_pickWorldSpaceTolerance) {
+        m_pickWorldSpaceTolerance = ncnode->pickingSettings()->worldSpaceTolerance();
     }
 
-    if (node->pickingSettings()->faceOrientationPickingMode() != m_faceOrientationPickingMode) {
-        m_faceOrientationPickingMode = node->pickingSettings()->faceOrientationPickingMode();
+    if (ncnode->pickingSettings()->faceOrientationPickingMode() != m_faceOrientationPickingMode) {
+        m_faceOrientationPickingMode = ncnode->pickingSettings()->faceOrientationPickingMode();
     }
 
     // Either because something above as changed or if QRenderSettingsPrivate::invalidFrame()

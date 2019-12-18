@@ -56,8 +56,8 @@ QWaitFencePrivate::QWaitFencePrivate()
 }
 
 /*!
-    \class QWaitFence
-
+    \class Qt3DRender::QWaitFence
+    \inmodule Qt3DRender
     \brief FrameGraphNode used to wait for a fence in the graphics command
     stream to become signaled.
 
@@ -98,7 +98,7 @@ QWaitFence::~QWaitFence()
     become signaled. This is false by default.
 */
 /*!
-    \property QWaitFence::waitOnCPU
+    \property Qt3DRender::QWaitFence::waitOnCPU
 
     Specifies whether the CPU should be block while waiting for the fence to
     become signaled. This is false by default.
@@ -125,7 +125,7 @@ void QWaitFence::setWaitOnCPU(bool waitOnCPU)
     to become signaled.
 */
 /*!
-    \property QWaitFence::timeout
+    \property Qt3DRender::QWaitFence::timeout
 
     Specifies the maximum amount of time in nanoseconds to wait for the fence
     to become signaled.
@@ -157,7 +157,7 @@ QWaitFence::QWaitFence(QWaitFencePrivate &dd, Qt3DCore::QNode *parent)
     are supported.
 */
 /*!
-    \property QWaitFence::handleType
+    \property Qt3DRender::QWaitFence::handleType
 
     Specifies the type of handle being used. Currently only OpenGL Fence ids
     are supported.
@@ -183,7 +183,7 @@ void QWaitFence::setHandleType(QWaitFence::HandleType type)
     Holds the underlying fence handle wrapped in a variant.
 */
 /*!
-    \property QWaitFence::handle
+    \property Qt3DRender::QWaitFence::handle
 
     Holds the underlying fence handle wrapped in a QVariant.
 */

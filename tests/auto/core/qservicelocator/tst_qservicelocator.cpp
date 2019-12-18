@@ -52,11 +52,8 @@ class DummySystemInfoService : public QSystemInformationService
 {
 public:
     DummySystemInfoService()
-        : QSystemInformationService(QStringLiteral("Dummy System Information Service"))
+        : QSystemInformationService(nullptr, QStringLiteral("Dummy System Information Service"))
     {}
-
-    QStringList aspectNames() const final { return QStringList(); }
-    int threadPoolThreadCount() const final { return 4; }
 };
 
 
@@ -90,8 +87,8 @@ void tst_QServiceLocator::defaultServices()
 
     QSystemInformationService *sysInfo = locator.systemInformation();
     QVERIFY(sysInfo != nullptr);
-    QVERIFY(sysInfo->description() == QStringLiteral("Null System Information Service"));
-    QVERIFY(sysInfo->threadPoolThreadCount() == 0);
+    QVERIFY(sysInfo->description() == QStringLiteral("Default System Information Service"));
+    QVERIFY(sysInfo->threadPoolThreadCount() != 0);
 }
 
 void tst_QServiceLocator::addRemoveDefaultService()
@@ -105,7 +102,6 @@ void tst_QServiceLocator::addRemoveDefaultService()
     // Get the service from the locator and check it works as expected
     QSystemInformationService *service = locator.systemInformation();
     QVERIFY(service == dummy.data());
-    QVERIFY(service->threadPoolThreadCount() == 4);
 
     // Ensure the other default services work
     QOpenGLInformationService *glInfo = locator.openGLInformation();
@@ -118,7 +114,7 @@ void tst_QServiceLocator::addRemoveDefaultService()
     QVERIFY(locator.serviceCount() == QServiceLocator::DefaultServiceCount);
 
     // Check the dummy service still exists
-    QVERIFY(dummy->threadPoolThreadCount() == 4);
+    QVERIFY(!dummy.isNull());
 }
 
 void tst_QServiceLocator::addRemoveUserService()
@@ -138,8 +134,8 @@ void tst_QServiceLocator::addRemoveUserService()
     // Ensure the default services work
     QSystemInformationService *sysInfo = locator.systemInformation();
     QVERIFY(sysInfo != nullptr);
-    QVERIFY(sysInfo->description() == QStringLiteral("Null System Information Service"));
-    QVERIFY(sysInfo->threadPoolThreadCount() == 0);
+    QVERIFY(sysInfo->description() == QStringLiteral("Default System Information Service"));
+    QVERIFY(sysInfo->threadPoolThreadCount() != 0);
 
     // Remove custom service
     locator.unregisterServiceProvider(dummy->type());

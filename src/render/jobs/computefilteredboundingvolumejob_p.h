@@ -64,6 +64,7 @@ namespace Render {
 class Entity;
 class NodeManagers;
 class Sphere;
+class ComputeFilteredBoundingVolumeJobPrivate;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT ComputeFilteredBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
@@ -76,9 +77,10 @@ public:
     void run() override;
 
 protected:
-    virtual void finished(const Qt3DRender::Render::Sphere &sphere);
+    virtual void finished(Qt3DCore::QAspectManager *aspectManager, const Qt3DRender::Render::Sphere &sphere);    // called in main thread
 
 private:
+    Q_DECLARE_PRIVATE(ComputeFilteredBoundingVolumeJob)
     Entity *m_root;
     Entity *m_ignoreSubTree;
     NodeManagers *m_manager;

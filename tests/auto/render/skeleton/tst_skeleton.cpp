@@ -34,9 +34,7 @@
 #include <Qt3DCore/qskeletonloader.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>
 #include <testrenderer.h>
@@ -48,24 +46,6 @@ using namespace Qt3DRender::Render;
 Q_DECLARE_METATYPE(Qt3DRender::Render::JointInfo)
 Q_DECLARE_METATYPE(Qt3DRender::Render::SkeletonData)
 Q_DECLARE_METATYPE(Qt3DCore::Sqt)
-
-namespace {
-
-void linearizeTreeHelper(QJoint *joint, QVector<QJoint *> &joints)
-{
-    joints.push_back(joint);
-    for (const auto child : joint->childJoints())
-        linearizeTreeHelper(child, joints);
-}
-
-QVector<QJoint *> linearizeTree(QJoint *rootJoint)
-{
-    QVector<QJoint *> joints;
-    linearizeTreeHelper(rootJoint, joints);
-    return joints;
-}
-
-}
 
 class tst_Skeleton : public Qt3DCore::QBackendNodeTester
 {
@@ -155,7 +135,6 @@ private Q_SLOTS:
         backendSkeleton.setRenderer(&renderer);
         backendSkeleton.setSkeletonManager(nodeManagers.skeletonManager());
         backendSkeleton.setDataType(Skeleton::File);
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // Initialize to ensure skeleton manager is set
         QSkeletonLoader skeleton;
@@ -218,70 +197,6 @@ private Q_SLOTS:
         joint->setInverseBindMatrix(m);
         joint->setName(name);
         QTest::newRow("inverseBind") << m << localPose << name << joint;
-    }
-
-    void checkCreateFrontendJoints_data()
-    {
-        QTest::addColumn<SkeletonData>("skeletonData");
-        QTest::addColumn<QJoint *>("expectedRootJoint");
-
-        QTest::newRow("empty") << SkeletonData() << (QJoint*)nullptr;
-
-        SkeletonData skeletonData;
-        JointInfo rootJointInfo;
-        skeletonData.joints.push_back(rootJointInfo);
-        skeletonData.jointNames.push_back(QLatin1String("rootJoint"));
-        skeletonData.localPoses.push_back(Qt3DCore::Sqt());
-        const int childCount = 10;
-        for (int i = 0; i < childCount; ++i) {
-            JointInfo childJointInfo;
-            childJointInfo.parentIndex = 0;
-            skeletonData.joints.push_back(childJointInfo);
-
-            const float x = static_cast<float>(i);
-            Qt3DCore::Sqt localPose;
-            localPose.translation = QVector3D(x, x, x);
-            skeletonData.localPoses.push_back(localPose);
-
-            skeletonData.jointNames.push_back(QString("Child-%1").arg(i));
-        }
-
-        QJoint *rootJoint = new QJoint();
-        for (int i = 0; i < childCount; ++i) {
-            QJoint *childJoint = new QJoint();
-            const float x = static_cast<float>(i);
-            childJoint->setTranslation(QVector3D(x, x, x));
-            rootJoint->addChildJoint(childJoint);
-        }
-
-        QTest::newRow("wide") << skeletonData << rootJoint;
-
-        skeletonData.joints.clear();
-        skeletonData.joints.push_back(rootJointInfo);
-        for (int i = 0; i < childCount; ++i) {
-            JointInfo childJointInfo;
-            childJointInfo.parentIndex = i;
-            skeletonData.joints.push_back(childJointInfo);
-
-            const float x = static_cast<float>(i);
-            Qt3DCore::Sqt localPose;
-            localPose.translation = QVector3D(x, x, x);
-            skeletonData.localPoses.push_back(localPose);
-
-            skeletonData.jointNames.push_back(QString("Child-%1").arg(i));
-        }
-
-        rootJoint = new QJoint();
-        QJoint *previousJoint = rootJoint;
-        for (int i = 0; i < childCount; ++i) {
-            QJoint *childJoint = new QJoint();
-            const float x = static_cast<float>(i);
-            childJoint->setTranslation(QVector3D(x, x, x));
-            previousJoint->addChildJoint(childJoint);
-            previousJoint = childJoint;
-        }
-
-        QTest::newRow("deep") << skeletonData << rootJoint;
     }
 };
 

@@ -71,6 +71,7 @@ class QAbstractFrameAdvanceService;
 class QEventFilterService;
 class QAbstractAspectJobManager;
 class QServiceLocator;
+class QAspectManager;
 }
 
 namespace Qt3DRender {
@@ -151,8 +152,9 @@ public:
 #if defined(QT_BUILD_INTERNAL)
     virtual void clearDirtyBits(BackendNodeDirtySet changes) = 0;
 #endif
-    virtual bool shouldRender() = 0;
+    virtual bool shouldRender() const = 0;
     virtual void skipNextFrame() = 0;
+    virtual void jobsDone(Qt3DCore::QAspectManager *manager) = 0;
 
     virtual QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() = 0;
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;

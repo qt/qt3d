@@ -157,6 +157,61 @@ private Q_SLOTS:
         QVERIFY(backendBuffer.pendingBufferUpdates().empty());
     }
 
+
+    void checkForceFullUploadOnFirstTime()
+    {
+        // GIVEN
+        Qt3DRender::Render::Buffer backendBuffer;
+        Qt3DRender::Render::BufferManager bufferManager;
+        TestRenderer renderer;
+        Qt3DRender::QBuffer frontendBuffer;
+
+        QByteArray data("111456789\0");
+
+        frontendBuffer.setData(data);
+        frontendBuffer.updateData(1, QByteArray("23\0"));
+
+        // THEN
+        QCOMPARE(frontendBuffer.data(), QByteArray("123456789\0"));
+
+        // WHEN
+        backendBuffer.setManager(&bufferManager);
+        backendBuffer.setRenderer(&renderer);
+        simulateInitializationSync(&frontendBuffer, &backendBuffer);
+
+        // THEN
+        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
+        Qt3DRender::QBufferUpdate fullUpdate = backendBuffer.pendingBufferUpdates().first();
+        QCOMPARE(fullUpdate.offset, -1);
+        QVERIFY(fullUpdate.data.isEmpty());
+        QCOMPARE(frontendBuffer.data(), backendBuffer.data());
+
+        backendBuffer.pendingBufferUpdates().clear();
+
+        // WHEN
+        frontendBuffer.updateData(1, QByteArray("00\0"));
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
+
+        // THEN
+        QCOMPARE(frontendBuffer.data(), QByteArray("100456789\0"));
+        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
+        fullUpdate = backendBuffer.pendingBufferUpdates().first();
+        QCOMPARE(fullUpdate.offset, 1);
+        QCOMPARE(fullUpdate.data, QByteArray("00\0"));
+        QCOMPARE(frontendBuffer.data(), backendBuffer.data());
+
+        // WHEN
+        frontendBuffer.updateData(1, QByteArray("22\0"));
+        backendBuffer.syncFromFrontEnd(&frontendBuffer, true);
+
+        // THEN
+        QCOMPARE(frontendBuffer.data(), QByteArray("122456789\0"));
+        fullUpdate = backendBuffer.pendingBufferUpdates().first();
+        QCOMPARE(fullUpdate.offset, -1);
+        QVERIFY(fullUpdate.data.isEmpty());
+        QCOMPARE(frontendBuffer.data(), backendBuffer.data());
+    }
+
     void checkPropertyChanges()
     {
         // GIVEN
@@ -237,10 +292,7 @@ private Q_SLOTS:
         backendBuffer.executeFunctor();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "data");
-        QCOMPARE(change->value().toByteArray(), QByteArrayLiteral("454"));
+        QCOMPARE(arbiter.events.count(), 0);
         QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
         QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, -1);
 

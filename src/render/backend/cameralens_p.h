@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DCore/private/qnodecommand_p.h>
 #include <Qt3DCore/private/matrix4x4_p.h>
 #include <Qt3DRender/private/qcameralens_p.h>
 #include <QRectF>
@@ -99,7 +98,7 @@ public:
     inline float exposure() const { return m_exposure; }
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    void notifySceneBoundingVolume(const Sphere &sphere, Qt3DCore::QNodeCommand::CommandId commandId);
+    void processViewAllResult(Qt3DCore::QAspectManager *aspectManager, const Sphere &sphere, Qt3DCore::QNodeId commandId);
 
     static bool viewMatrixForCamera(EntityManager *manager, Qt3DCore::QNodeId cameraId,
                                     Matrix4x4 &viewMatrix, Matrix4x4 &projectionMatrix);
@@ -107,10 +106,10 @@ public:
 private:
     void computeSceneBoundingVolume(Qt3DCore::QNodeId entityId,
                                     Qt3DCore::QNodeId cameraId,
-                                    Qt3DCore::QNodeCommand::CommandId commandId);
+                                    Qt3DCore::QNodeId requestId);
 
     QRenderAspect *m_renderAspect;
-    CameraLensCommand m_pendingViewAllCommand;
+    CameraLensRequest m_pendingViewAllRequest;
     Matrix4x4 m_projection;
     float m_exposure;
 };

@@ -41,7 +41,6 @@
 #include "qkeyboardhandler_p.h"
 
 #include <Qt3DInput/qkeyboarddevice.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -236,6 +235,11 @@ void QKeyboardHandler::setFocus(bool focus)
         d->m_focus = focus;
         emit focusChanged(focus);
     }
+}
+
+// TODO Unused remove in Qt6
+void QKeyboardHandler::sceneChangeEvent(const QSceneChangePtr &)
+{
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardHandler::createNodeCreationChange() const

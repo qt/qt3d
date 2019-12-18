@@ -71,7 +71,6 @@
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
-#include <Qt3DRender/private/sendrendercapturejob_p.h>
 #include <Qt3DRender/private/sendbuffercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
@@ -82,6 +81,7 @@
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/glfence_p.h>
 #include <Qt3DRender/private/shaderbuilder_p.h>
+#include <Qt3DRender/private/lightgatherer_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -125,11 +125,9 @@ class QAbstractShapeMesh;
 struct GraphicsApiFilterData;
 class QSceneImporter;
 
-#if QT_CONFIG(qt3d_profile_jobs)
 namespace Debug {
 class CommandExecuter;
 }
-#endif
 
 namespace Render {
 
@@ -157,6 +155,13 @@ typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 using SynchronizerPostFramePtr = GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>>;
+
+template<typename T, typename ... Ts>
+class FilterEntityByComponentJob;
+template<typename T, typename ... Ts>
+using FilterEntityByComponentJobPtr = QSharedPointer<FilterEntityByComponentJob<T, Ts...>>;
+using ComputableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::ComputeCommand, Render::Material>;
+using RenderableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::GeometryRenderer, Render::Material>;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
@@ -199,8 +204,9 @@ public:
 #if defined(QT_BUILD_INTERNAL)
     void clearDirtyBits(BackendNodeDirtySet changes) override;
 #endif
-    bool shouldRender() override;
+    bool shouldRender() const override;
     void skipNextFrame() override;
+    void jobsDone(Qt3DCore::QAspectManager *manager) override;
 
     QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
@@ -225,8 +231,13 @@ public:
     inline SynchronizerPostFramePtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
-    inline Qt3DCore::QAspectJobPtr sendTextureChangesToFrontendJob() const { return m_sendTextureChangesToFrontendJob; }
     inline UpdateEntityLayersJobPtr updateEntityLayersJob() const { return m_updateEntityLayersJob; }
+    inline LightGathererPtr lightGathererJob() const { return m_lightGathererJob; }
+    inline RenderableEntityFilterPtr renderableEntityFilterJob() const { return m_renderableEntityFilterJob; }
+    inline ComputableEntityFilterPtr computableEntityFilterJob() const { return m_computableEntityFilterJob; }
+    inline SynchronizerJobPtr cacheLightJob() const { return m_cacheLightsJob; }
+    inline SynchronizerJobPtr cacheRenderableEntitiesJob() const { return m_cacheRenderableEntitiesJob; }
+    inline SynchronizerJobPtr cacheComputableEntitiesJob() const { return m_cacheComputableEntitiesJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
 
@@ -254,12 +265,12 @@ public:
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
     bool updateVAOWithAttributes(Geometry *geometry,
-                                 RenderCommand *command,
+                                 const RenderCommand *command,
                                  Shader *shader,
                                  bool forceUpdate);
 
     bool requiresVAOAttributeUpdate(Geometry *geometry,
-                                    RenderCommand *command) const;
+                                    const RenderCommand *command) const;
 
     void setOpenGLContext(QOpenGLContext *context) override;
     const GraphicsApiFilterData *contextInfo() const;
@@ -269,9 +280,6 @@ public:
 
     QList<QPair<QObject*, QMouseEvent>> pendingPickingEvents() const;
     QList<QKeyEvent> pendingKeyEvents() const;
-
-    void addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId);
-    const QVector<Qt3DCore::QNodeId> takePendingRenderCaptureSendRequests();
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool isReadyToSubmit();
@@ -338,8 +346,8 @@ private:
     QAtomicInt m_exposed;
 
     struct DirtyBits {
-        BackendNodeDirtySet marked = 0; // marked dirty since last job build
-        BackendNodeDirtySet remaining = 0; // remaining dirty after jobs have finished
+        BackendNodeDirtySet marked; // marked dirty since last job build
+        BackendNodeDirtySet remaining; // remaining dirty after jobs have finished
     };
     DirtyBits m_dirtyBits;
 
@@ -362,13 +370,15 @@ private:
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
     UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
-    SendRenderCaptureJobPtr m_sendRenderCaptureJob;
     SendBufferCaptureJobPtr m_sendBufferCaptureJob;
     UpdateSkinningPaletteJobPtr m_updateSkinningPaletteJob;
     UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
     UpdateEntityLayersJobPtr m_updateEntityLayersJob;
+    LightGathererPtr m_lightGathererJob;
+    RenderableEntityFilterPtr m_renderableEntityFilterJob;
+    ComputableEntityFilterPtr m_computableEntityFilterJob;
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
@@ -381,11 +391,12 @@ private:
     SynchronizerJobPtr m_bufferGathererJob;
     SynchronizerJobPtr m_vaoGathererJob;
     SynchronizerJobPtr m_textureGathererJob;
-    SynchronizerPostFramePtr m_sendTextureChangesToFrontendJob;
     SynchronizerJobPtr m_sendSetFenceHandlesToFrontendJob;
-    SynchronizerJobPtr m_sendDisablesToFrontendJob;
     SynchronizerPostFramePtr m_introspectShaderJob;
     SynchronizerJobPtr m_syncLoadingJobs;
+    SynchronizerJobPtr m_cacheRenderableEntitiesJob;
+    SynchronizerJobPtr m_cacheComputableEntitiesJob;
+    SynchronizerJobPtr m_cacheLightsJob;
 
     void lookForAbandonedVaos();
     void lookForDirtyBuffers();
@@ -395,18 +406,18 @@ private:
     void sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendSetFenceHandlesToFrontend();
-    void sendDisablesToFrontend();
+    void sendDisablesToFrontend(Qt3DCore::QAspectManager *manager);
 
     QMutex m_abandonedVaosMutex;
     QVector<HVao> m_abandonedVaos;
 
     QVector<HBuffer> m_dirtyBuffers;
-    QVector<HBuffer> m_downloadableBuffers;
+    QVector<Qt3DCore::QNodeId> m_downloadableBuffers;
     QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
     QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
     QVector<QPair<Qt3DCore::QNodeId, GLFence>> m_updatedSetFences;
-    QVector<Qt3DCore::QNodeId> m_updatedDisables;
+    QVector<Qt3DCore::QNodeId> m_updatedDisableSubtreeEnablers;
     Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
     QVector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
 
@@ -415,10 +426,7 @@ private:
     OffscreenSurfaceHelper *m_offscreenHelper;
     QMutex m_offscreenSurfaceMutex;
 
-#if QT_CONFIG(qt3d_profile_jobs)
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
-    friend class Qt3DRender::Debug::CommandExecuter;
-#endif
 
 #ifdef QT_BUILD_INTERNAL
     friend class ::tst_Renderer;

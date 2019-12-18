@@ -52,6 +52,7 @@ namespace Animation {
 
 EvaluateClipAnimatorJob::EvaluateClipAnimatorJob()
     : AbstractEvaluateClipAnimatorJob()
+    , m_handler(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateClipAnimator, 0)
 }

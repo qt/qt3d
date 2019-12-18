@@ -54,32 +54,30 @@
 //
 
 #include <QTcpServer>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAspectEngine;
+class QSystemInformationService;
 
 namespace Debug {
 
 class AsynchronousCommandReply;
 
-class Q_AUTOTEST_EXPORT AspectCommandDebugger : public QTcpServer
+class Q_3DCORE_PRIVATE_EXPORT AspectCommandDebugger : public QTcpServer
 {
     Q_OBJECT
 public:
-    explicit AspectCommandDebugger(QObject *parent = nullptr);
+    explicit AspectCommandDebugger(QSystemInformationService *parent = nullptr);
 
     void initialize();
-    void setAspectEngine(QAspectEngine *engine);
 
-    struct ReadBuffer {
-        ReadBuffer();
-
+    struct Q_3DCORE_PRIVATE_EXPORT ReadBuffer {
         QByteArray buffer;
-        int startIdx;
-        int endIdx;
+        int startIdx = 0;
+        int endIdx = 0;
 
         inline int size() const { return endIdx - startIdx; }
         void insert(const QByteArray &array);
@@ -95,7 +93,7 @@ private:
     void executeCommand(const QString &command, QTcpSocket *socket);
 
     QVector<QTcpSocket *> m_connections;
-    QAspectEngine *m_aspectEngine;
+    QSystemInformationService *m_service;
 
     ReadBuffer m_readBuffer;
     QHash<AsynchronousCommandReply *, QTcpSocket *> m_asyncCommandToSocketEntries;

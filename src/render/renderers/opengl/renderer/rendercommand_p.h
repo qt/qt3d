@@ -55,6 +55,7 @@
 #include <qglobal.h>
 #include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
@@ -69,6 +70,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class RenderStateSet;
+using RenderStateSetPtr = QSharedPointer<RenderStateSet>;
 
 class Q_AUTOTEST_EXPORT RenderCommand
 {
@@ -80,12 +82,13 @@ public:
     HMaterial m_material; // Purely used to ease sorting (minimize stage changes, binding changes ....)
     ShaderParameterPack m_parameterPack; // Might need to be reworked so as to be able to destroy the
                             // Texture while submission is happening.
-    RenderStateSet *m_stateSet;
+    RenderStateSetPtr m_stateSet;
 
     HGeometry m_geometry;
     HGeometryRenderer m_geometryRenderer;
 
     HBuffer m_indirectDrawBuffer; // Reference to indirect draw buffer (valid only m_drawIndirect == true)
+    HComputeCommand m_computeCommand;
 
     // A QAttribute pack might be interesting
     // This is a temporary fix in the meantime, to remove the hacked methods in Technique
@@ -120,6 +123,53 @@ public:
     bool m_primitiveRestartEnabled;
     bool m_isValid;
 };
+
+Q_AUTOTEST_EXPORT bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept;
+
+inline bool operator!=(const RenderCommand &lhs, const RenderCommand &rhs) noexcept
+{ return !operator==(lhs, rhs); }
+
+struct EntityRenderCommandData
+{
+    QVector<Entity *> entities;
+    QVector<RenderCommand> commands;
+    QVector<RenderPassParameterData> passesData;
+
+    void reserve(int size)
+    {
+        entities.reserve(size);
+        commands.reserve(size);
+        passesData.reserve(size);
+    }
+
+    inline int size() const { return entities.size(); }
+
+    inline void push_back(Entity *e, const RenderCommand &c, const RenderPassParameterData &p)
+    {
+        entities.push_back(e);
+        commands.push_back(c);
+        passesData.push_back(p);
+    }
+
+    inline void push_back(Entity *e, RenderCommand &&c, RenderPassParameterData &&p)
+    {
+        entities.push_back(e);
+        commands.push_back(std::move(c));
+        passesData.push_back(std::move(p));
+    }
+
+    EntityRenderCommandData &operator+=(EntityRenderCommandData &&t)
+    {
+        entities += std::move(t.entities);
+        commands += std::move(t.commands);
+        passesData += std::move(t.passesData);
+        return *this;
+    }
+
+};
+
+using EntityRenderCommandDataPtr = QSharedPointer<EntityRenderCommandData>;
+
 
 } // namespace Render
 

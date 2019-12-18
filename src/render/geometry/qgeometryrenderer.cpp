@@ -218,6 +218,11 @@ QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent
 {
 }
 
+// TODO Unused remove in Qt6
+void QGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &)
+{
+}
+
 /*!
     \property QGeometryRenderer::instanceCount
 

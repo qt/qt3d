@@ -57,6 +57,7 @@
 #include <Qt3DCore/private/qaspectjobproviderinterface_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/private/qscenechange_p.h>
 #include <QtCore/private/qobject_p.h>
 
 #include <QMutex>
@@ -126,6 +127,7 @@ public:
     QAbstractAspectJobManager *jobManager() const;
 
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) override;
+    void jobsDone(Qt3DCore::QAspectManager *manager) override;
 
     QBackendNode *createBackendNode(const NodeTreeChange &change) const;
     void clearBackendNode(const NodeTreeChange &change) const;

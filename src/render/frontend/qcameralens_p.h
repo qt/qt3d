@@ -53,7 +53,6 @@
 
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DCore/private/qnodecommand_p.h>
 
 #include "qcameralens.h"
 
@@ -63,21 +62,21 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-struct CameraLensCommand
+struct CameraLensRequest
 {
-    QString name;
-    QVariant data;
-    Qt3DCore::QNodeCommand::CommandId commandId;
+    Qt3DCore::QNodeId requestId;
+    Qt3DCore::QNodeId cameraId;
+    Qt3DCore::QNodeId entityId;
 
-    inline operator bool() const { return !name.isEmpty(); }
+    inline operator bool() const { return !requestId.isNull(); }
 };
 
-inline bool operator ==(const CameraLensCommand &a, const CameraLensCommand &b) noexcept
+inline bool operator ==(const CameraLensRequest &a, const CameraLensRequest &b) noexcept
 {
-    return a.name == b.name && a.data == b.data && a.commandId == b.commandId;
+    return a.cameraId == b.cameraId && a.entityId == b.entityId && a.requestId == b.requestId;
 }
 
-inline bool operator !=(const CameraLensCommand &a, const CameraLensCommand &b) noexcept
+inline bool operator !=(const CameraLensRequest &a, const CameraLensRequest &b) noexcept
 {
     return !(a == b);
 }
@@ -123,8 +122,8 @@ public:
 
     float m_exposure;
 
-    CameraLensCommand m_pendingViewAllCommand;
-    void processViewAllCommand(Qt3DCore::QNodeCommand::CommandId commandId, const QVariant &data);
+    CameraLensRequest m_pendingViewAllRequest;
+    void processViewAllResult(Qt3DCore::QNodeId requestId, const QVector3D &center, float radius);
 
 private:
     inline void updatePerpectiveProjection()

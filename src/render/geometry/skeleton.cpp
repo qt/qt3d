@@ -60,6 +60,8 @@ namespace Render {
 Skeleton::Skeleton()
     : BackendNode(Qt3DCore::QBackendNode::ReadWrite)
     , m_status(Qt3DCore::QSkeletonLoader::NotReady)
+    , m_createJoints(false)
+    , m_dataType(Unknown)
     , m_skeletonManager(nullptr)
     , m_jointManager(nullptr)
 {

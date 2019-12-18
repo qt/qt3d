@@ -217,9 +217,6 @@ struct RenderData {
 
 void QText2DEntityPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &runs)
 {
-    if (runs.isEmpty())
-        return;
-
     // For each distinct texture, we need a separate DistanceFieldTextRenderer,
     // for which we need vertex and index data
     QHash<Qt3DRender::QAbstractTexture*, RenderData> renderData;
@@ -294,6 +291,11 @@ void QText2DEntityPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &runs)
         }
     }
 
+    // de-ref all glyphs for previous QGlyphRuns
+    for (int i = 0; i < m_currentGlyphRuns.size(); i++)
+        m_glyphCache->derefGlyphs(m_currentGlyphRuns[i]);
+    m_currentGlyphRuns = runs;
+
     // make sure we have the correct number of DistanceFieldTextRenderers
     // TODO: we might keep one renderer at all times, so we won't delete and
     // re-allocate one every time the text changes from an empty to a non-empty string
@@ -314,11 +316,6 @@ void QText2DEntityPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &runs)
     for (auto it = renderData.begin(); it != renderData.end(); ++it) {
         m_renderers[rendererIdx++]->setGlyphData(it.key(), it.value().vertex, it.value().index);
     }
-
-    // de-ref all glyphs for previous QGlyphRuns
-    for (int i = 0; i < m_currentGlyphRuns.size(); i++)
-        m_glyphCache->derefGlyphs(m_currentGlyphRuns[i]);
-    m_currentGlyphRuns = runs;
 }
 
 void QText2DEntityPrivate::clearCurrentGlyphRuns()
