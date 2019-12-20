@@ -192,7 +192,7 @@ void QEffect::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -206,7 +206,7 @@ void QEffect::removeParameter(QParameter *parameter)
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
-    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
+    d->update();
 }
 
 /*!
@@ -238,7 +238,7 @@ void QEffect::addTechnique(QTechnique *t)
         if (!t->parent())
             t->setParent(this);
 
-        d->updateNode(t, "technique", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -248,8 +248,7 @@ void QEffect::addTechnique(QTechnique *t)
 void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
-    if (t)
-        d->updateNode(t, "technique", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_techniques.removeOne(t);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(t);
@@ -262,16 +261,6 @@ QVector<QTechnique *> QEffect::techniques() const
 {
     Q_D(const QEffect);
     return d->m_techniques;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QEffect::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QEffectData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QEffect);
-    data.parameterIds = qIdsForNodes(d->m_parameters);
-    data.techniqueIds = qIdsForNodes(d->m_techniques);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

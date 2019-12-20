@@ -41,7 +41,6 @@
 #include "qmousedevice_p.h"
 
 #include <Qt3DInput/qmouseevent.h>
-#include <Qt3DInput/qphysicaldevicecreatedchange.h>
 #include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
@@ -257,24 +256,6 @@ void QMouseDevice::setUpdateAxesContinuously(bool updateAxesContinuously)
 
     d->m_updateContinuously = updateAxesContinuously;
     emit updateAxesContinuouslyChanged(updateAxesContinuously);
-}
-
-/*! \internal */
-void QMouseDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_UNUSED(change);
-    // TODO: To be completed as the mouse input aspect takes shape
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QMouseDevice::createNodeCreationChange() const
-{
-    auto creationChange = QPhysicalDeviceCreatedChangePtr<QMouseDeviceData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QMouseDevice);
-    data.sensitivity = d->m_sensitivity;
-
-    return creationChange;
 }
 
 } // namespace Qt3DInput

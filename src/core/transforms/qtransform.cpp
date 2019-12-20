@@ -40,8 +40,6 @@
 #include "qtransform.h"
 #include "qtransform_p.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
-
 #include <Qt3DCore/private/qmath3d_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -234,35 +232,15 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 {
 }
 
-/*!
-    \internal
- */
-// TODO Unused remove in Qt6
-void QTransform::sceneChangeEvent(const QSceneChangePtr &change)
-{
-    Q_D(QTransform);
-    switch (change->type()) {
-    case PropertyUpdated: {
-        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (propertyChange->propertyName() == QByteArrayLiteral("worldMatrix")) {
-            const bool blocked = blockNotifications(true);
-            d->setWorldMatrix(propertyChange->value().value<QMatrix4x4>());
-            blockNotifications(blocked);
-        }
-        break;
-    }
-    default:
-        break;
-    }
-}
-
 void QTransformPrivate::setWorldMatrix(const QMatrix4x4 &worldMatrix)
 {
     Q_Q(QTransform);
     if (m_worldMatrix == worldMatrix)
         return;
+    const bool blocked = q->blockNotifications(true);
     m_worldMatrix = worldMatrix;
     emit q->worldMatrixChanged(worldMatrix);
+    q->blockNotifications(blocked);
 }
 
 void QTransform::setMatrix(const QMatrix4x4 &m)
@@ -629,19 +607,6 @@ QMatrix4x4 QTransform::rotateFromAxes(const QVector3D &xAxis, const QVector3D &y
                       xAxis.y(), yAxis.y(), zAxis.y(), 0.0f,
                       xAxis.z(), yAxis.z(), zAxis.z(), 0.0f,
                       0.0f, 0.0f, 0.0f, 1.0f);
-}
-
-QNodeCreatedChangeBasePtr QTransform::createNodeCreationChange() const
-{
-    auto creationChange = QNodeCreatedChangePtr<QTransformData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QTransform);
-    data.rotation = d->m_rotation;
-    data.scale = d->m_scale;
-    data.translation = d->m_translation;
-
-    return creationChange;
 }
 
 } // namespace Qt3DCore

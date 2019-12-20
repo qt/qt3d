@@ -32,9 +32,7 @@
 #include <Qt3DRender/private/qfilterkey_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QFilterKey : public QObject
 {
@@ -97,61 +95,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QFilterKey filterKey;
-
-        filterKey.setValue(QVariant(QStringLiteral("Taylor")));
-        filterKey.setName(QStringLiteral("Craig"));
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&filterKey);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QFilterKeyData>>(creationChanges.first());
-            const Qt3DRender::QFilterKeyData cloneData = creationChangeData->data;
-
-            QCOMPARE(filterKey.value(), cloneData.value);
-            QCOMPARE(filterKey.name(), cloneData.name);
-            QCOMPARE(filterKey.id(), creationChangeData->subjectId());
-            QCOMPARE(filterKey.isEnabled(), true);
-            QCOMPARE(filterKey.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(filterKey.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        filterKey.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&filterKey);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QFilterKeyData>>(creationChanges.first());
-            const Qt3DRender::QFilterKeyData cloneData = creationChangeData->data;
-
-            QCOMPARE(filterKey.value(), cloneData.value);
-            QCOMPARE(filterKey.name(), cloneData.name);
-            QCOMPARE(filterKey.id(), creationChangeData->subjectId());
-            QCOMPARE(filterKey.isEnabled(), false);
-            QCOMPARE(filterKey.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(filterKey.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkValueUpdate()
     {
         // GIVEN
@@ -165,11 +108,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &filterKey);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &filterKey);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -178,8 +120,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -197,11 +138,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &filterKey);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &filterKey);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -210,8 +150,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

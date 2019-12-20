@@ -127,9 +127,9 @@ JointFunctor::JointFunctor(AbstractRenderer *renderer,
 {
 }
 
-Qt3DCore::QBackendNode *JointFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *JointFunctor::create(Qt3DCore::QNodeId id) const
 {
-    Joint *backend = m_jointManager->getOrCreateResource(change->subjectId());
+    Joint *backend = m_jointManager->getOrCreateResource(id);
     backend->setRenderer(m_renderer);
     backend->setJointManager(m_jointManager);
     backend->setSkeletonManager(m_skeletonManager);

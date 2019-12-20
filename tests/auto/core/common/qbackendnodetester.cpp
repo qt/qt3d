@@ -52,35 +52,6 @@ void QBackendNodeTester::setPeerId(QBackendNode *backend, QNodeId id)
     backend->setPeerId(id);
 }
 
-void QBackendNodeTester::simulateInitialization(QNode *frontend, QBackendNode *backend)
-{
-    Q_ASSERT(frontend);
-    Q_ASSERT(backend);
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    const auto change = frontend->createNodeCreationChange();
-    backend->setPeerId(change->subjectId());
-    backend->setEnabled(change->isNodeEnabled());
-    backend->initializeFromPeer(change);
-    QT_WARNING_POP
-}
-
-void QBackendNodeTester::sceneChangeEvent(QBackendNode *backend, const Qt3DCore::QSceneChangePtr &e)
-{
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    backend->sceneChangeEvent(e);
-    QT_WARNING_POP
-}
-
-QNodeCreatedChangeBasePtr QBackendNodeTester::creationChange(QNode *frontend) const
-{
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    return frontend->createNodeCreationChange();
-    QT_WARNING_POP
-}
-
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

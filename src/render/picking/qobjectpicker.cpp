@@ -292,11 +292,6 @@ void QObjectPicker::setPriority(int priority)
     }
 }
 
-// TODO Unused remove in Qt6
-void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::dragEnabled
 */
@@ -476,17 +471,6 @@ void QObjectPickerPrivate::releasedEvent(QPickEvent *event)
         event->setAccepted(false);
         propagateEvent(event, Released);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QObjectPicker::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QObjectPickerData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QObjectPicker);
-    data.hoverEnabled = d->m_hoverEnabled;
-    data.dragEnabled = d->m_dragEnabled;
-    data.priority = d->m_priority;
-    return creationChange;
 }
 
 } // Qt3DRender

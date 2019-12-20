@@ -112,11 +112,6 @@ QAnimationClipLoader::QAnimationClipLoader(QAnimationClipLoaderPrivate &dd, Qt3D
 {
 }
 
-// TODO Unused remove in Qt6
-void QAnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
 QAnimationClipLoader::~QAnimationClipLoader()
 {
 }
@@ -144,15 +139,6 @@ void QAnimationClipLoader::setSource(const QUrl &source)
 
     d->m_source = source;
     emit sourceChanged(source);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClipLoader::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAnimationClipLoaderData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QAnimationClipLoader);
-    data.source = d->m_source;
-    return creationChange;
 }
 
 } // namespace Qt3DAnimation

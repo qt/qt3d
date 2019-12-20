@@ -50,7 +50,6 @@
 #include <QtCore/QBuffer>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qdownloadhelperservice_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
@@ -212,11 +211,6 @@ QMesh::~QMesh()
 /*! \internal */
 QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
     : QGeometryRenderer(dd, parent)
-{
-}
-
-// TODO Unused remove in Qt6
-void QMesh::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 

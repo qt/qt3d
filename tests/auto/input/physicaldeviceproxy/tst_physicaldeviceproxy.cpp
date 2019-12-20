@@ -35,7 +35,7 @@
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "qbackendnodetester.h"
 #include "testdeviceproxy.h"
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 
 class tst_PhysicalDeviceProxy : public Qt3DCore::QBackendNodeTester

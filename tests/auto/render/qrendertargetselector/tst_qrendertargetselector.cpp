@@ -30,12 +30,11 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qrendertargetselector.h>
 #include <Qt3DRender/private/qrendertargetselector_p.h>
 #include <Qt3DRender/qrendertarget.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QRenderTargetSelector: public QObject
 {
@@ -51,59 +50,6 @@ private Q_SLOTS:
         QCOMPARE(defaultTargetSelector->outputs().count(), 0);
     }
 
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QRenderTargetSelector *>("renderTargetSelector");
-        QTest::addColumn<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >("outputs");
-        QTest::addColumn<Qt3DRender::QRenderTarget * >("target");
-
-        Qt3DRender::QRenderTargetSelector *defaultConstructed = new Qt3DRender::QRenderTargetSelector();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>() << static_cast<Qt3DRender::QRenderTarget *>(nullptr);
-
-        Qt3DRender::QRenderTargetSelector *renderTargetSelectorWithTarget = new Qt3DRender::QRenderTargetSelector();
-        Qt3DRender::QRenderTarget *target1 = new Qt3DRender::QRenderTarget();
-        renderTargetSelectorWithTarget->setTarget(target1);
-        QTest::newRow("renderTargetSelectorWithTarget") << renderTargetSelectorWithTarget << QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>() << target1;
-
-        Qt3DRender::QRenderTargetSelector *renderTargetSelectorWithTargetAndBuffers = new Qt3DRender::QRenderTargetSelector();
-        Qt3DRender::QRenderTarget *target2 = new Qt3DRender::QRenderTarget();
-        renderTargetSelectorWithTargetAndBuffers->setTarget(target2);
-        QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> attachmentPoints = QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>() << Qt3DRender::QRenderTargetOutput::Color0 << Qt3DRender::QRenderTargetOutput::Depth;
-        renderTargetSelectorWithTargetAndBuffers->setOutputs(attachmentPoints);
-        QTest::newRow("renderTargetSelectorWithTargetAndDrawBuffers") << renderTargetSelectorWithTargetAndBuffers << attachmentPoints << target2;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QRenderTargetSelector*, renderTargetSelector);
-        QFETCH(QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>, outputs);
-        QFETCH(Qt3DRender::QRenderTarget *, target);
-
-        // THEN
-        QCOMPARE(renderTargetSelector->outputs(), outputs);
-        QCOMPARE(renderTargetSelector->target(), target);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(renderTargetSelector);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + (renderTargetSelector->target() ? 1 : 0));
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QRenderTargetSelectorData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderTargetSelectorData>>(creationChanges.first());
-        const Qt3DRender::QRenderTargetSelectorData &cloneData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(renderTargetSelector->id(), creationChangeData->subjectId());
-        QCOMPARE(renderTargetSelector->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(renderTargetSelector->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(renderTargetSelector->target() ? renderTargetSelector->target()->id() : Qt3DCore::QNodeId(), cloneData.targetId);
-
-        delete renderTargetSelector;
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -117,30 +63,27 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), renderTargetSelector.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), renderTargetSelector.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         renderTargetSelector->setTarget(target);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
         // WHEN
         renderTargetSelector->setTarget(nullptr);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), renderTargetSelector.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), renderTargetSelector.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> outputs;
@@ -149,30 +92,27 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), renderTargetSelector.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), renderTargetSelector.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         renderTargetSelector->setOutputs(outputs);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
         // WHEN
         renderTargetSelector->setOutputs(QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), renderTargetSelector.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), renderTargetSelector.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkRenderTargetBookkeeping()

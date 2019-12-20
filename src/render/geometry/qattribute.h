@@ -127,8 +127,6 @@ public Q_SLOTS:
     void setName(const QString &name);
     void setVertexBaseType(VertexBaseType type);
     void setVertexSize(uint size);
-    QT_DEPRECATED void setDataType(VertexBaseType type);
-    QT_DEPRECATED void setDataSize(uint size);
     void setCount(uint count);
     void setByteStride(uint byteStride);
     void setByteOffset(uint byteOffset);
@@ -150,7 +148,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QAttribute)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // Qt3DRender

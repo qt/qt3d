@@ -31,10 +31,8 @@
 #include <Qt3DRender/private/qproximityfilter_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qentity.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QProximityFilter : public QObject
 {
@@ -105,62 +103,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QProximityFilter proximityFilter;
-        Qt3DCore::QEntity entity;
-
-        proximityFilter.setEntity(&entity);
-        proximityFilter.setDistanceThreshold(1584.0f);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&proximityFilter);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // Entity creation change is the second change
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QProximityFilterData>>(creationChanges.first());
-            const Qt3DRender::QProximityFilterData cloneData = creationChangeData->data;
-
-            QCOMPARE(proximityFilter.entity()->id(), cloneData.entityId);
-            QCOMPARE(proximityFilter.distanceThreshold(), cloneData.distanceThreshold);
-            QCOMPARE(proximityFilter.id(), creationChangeData->subjectId());
-            QCOMPARE(proximityFilter.isEnabled(), true);
-            QCOMPARE(proximityFilter.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(proximityFilter.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        proximityFilter.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&proximityFilter);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // Entity creation change is the second change
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QProximityFilterData>>(creationChanges.first());
-            const Qt3DRender::QProximityFilterData cloneData = creationChangeData->data;
-
-            QCOMPARE(proximityFilter.entity()->id(), cloneData.entityId);
-            QCOMPARE(proximityFilter.distanceThreshold(), cloneData.distanceThreshold);
-            QCOMPARE(proximityFilter.id(), creationChangeData->subjectId());
-            QCOMPARE(proximityFilter.isEnabled(), false);
-            QCOMPARE(proximityFilter.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(proximityFilter.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkEntityUpdate()
     {
         // GIVEN
@@ -175,11 +117,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &proximityFilter);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &proximityFilter);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -188,8 +129,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -207,11 +147,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &proximityFilter);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &proximityFilter);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -220,8 +159,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

@@ -275,20 +275,6 @@ void QRenderSettings::setRenderPolicy(QRenderSettings::RenderPolicy renderPolicy
     emit renderPolicyChanged(renderPolicy);
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderSettings::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSettingsData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRenderSettings);
-    data.activeFrameGraphId = qIdForNode(d->m_activeFrameGraph);
-    data.renderPolicy = d->m_renderPolicy;
-    data.pickMethod = d->m_pickingSettings.pickMethod();
-    data.pickResultMode = d->m_pickingSettings.pickResultMode();
-    data.faceOrientationPickingMode = d->m_pickingSettings.faceOrientationPickingMode();
-    data.pickWorldSpaceTolerance = d->m_pickingSettings.worldSpaceTolerance();
-    return creationChange;
-}
-
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE

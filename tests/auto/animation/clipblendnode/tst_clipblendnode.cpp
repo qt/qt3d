@@ -131,7 +131,7 @@ private Q_SLOTS:
             ClipBlendNodeManager manager;
             TestClipBlendNode backendClipBlendNode;
             backendClipBlendNode.setClipBlendNodeManager(&manager);
-            simulateInitialization(&clipBlendNode, &backendClipBlendNode);
+            simulateInitializationSync(&clipBlendNode, &backendClipBlendNode);
 
             // THEN
             QCOMPARE(backendClipBlendNode.isEnabled(), true);
@@ -146,7 +146,7 @@ private Q_SLOTS:
             TestClipBlendNode backendClipBlendNode;
             clipBlendNode.setEnabled(false);
             backendClipBlendNode.setClipBlendNodeManager(&manager);
-            simulateInitialization(&clipBlendNode, &backendClipBlendNode);
+            simulateInitializationSync(&clipBlendNode, &backendClipBlendNode);
 
             // THEN
             QCOMPARE(backendClipBlendNode.peerId(), clipBlendNode.id());

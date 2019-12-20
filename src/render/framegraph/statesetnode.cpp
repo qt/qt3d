@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/qrenderstateset_p.h>
 #include <Qt3DRender/private/genericstate_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 

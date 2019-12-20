@@ -40,7 +40,6 @@
 #include "qstenciloperation.h"
 #include "qstenciloperation_p.h"
 #include "qstenciloperationarguments.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -146,13 +145,6 @@ QStencilOperationArguments *QStencilOperation::back() const
 {
     Q_D(const QStencilOperation);
     return d->m_back;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QStencilOperation::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QStencilOperationData>::create(this);
-    d_func()->fillData(creationChange->data);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

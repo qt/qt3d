@@ -32,7 +32,7 @@
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qraycaster.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 #include "testrenderer.h"
 
 class tst_RayCaster : public Qt3DCore::QBackendNodeTester

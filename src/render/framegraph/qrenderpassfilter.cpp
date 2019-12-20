@@ -42,7 +42,6 @@
 
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -139,7 +138,7 @@ void QRenderPassFilter::addMatch(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        d->updateNode(filterKey, "match", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -151,7 +150,7 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
     Q_ASSERT(filterKey);
     Q_D(QRenderPassFilter);
 
-    d->updateNode(filterKey, "match", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_matchList.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
@@ -177,7 +176,7 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -189,7 +188,7 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QRenderPassFilter);
 
-    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
@@ -202,16 +201,6 @@ QVector<QParameter *> QRenderPassFilter::parameters() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_parameters;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderPassFilter::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderPassFilterData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRenderPassFilter);
-    data.matchIds = qIdsForNodes(d->m_matchList);
-    data.parameterIds = qIdsForNodes(d->m_parameters);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

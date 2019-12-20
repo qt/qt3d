@@ -115,13 +115,8 @@ Q_SIGNALS:
     void pressed(Qt3DInput::QKeyEvent *event);
     void released(Qt3DInput::QKeyEvent *event);
 
-protected:
-    // TODO Unused remove in Qt6
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
 private:
     Q_DECLARE_PRIVATE(QKeyboardHandler)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DInput

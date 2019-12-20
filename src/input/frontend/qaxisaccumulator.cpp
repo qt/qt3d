@@ -41,7 +41,6 @@
 #include "qaxisaccumulator_p.h"
 
 #include <Qt3DInput/qaxis.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -287,23 +286,6 @@ void QAxisAccumulator::setScale(float scale)
 
     d->m_scale = scale;
     emit scaleChanged(scale);
-}
-
-// TODO Unused remove in Qt6
-void QAxisAccumulator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QAxisAccumulator::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisAccumulatorData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QAxisAccumulator);
-    data.sourceAxisId = qIdForNode(d->m_sourceAxis);
-    data.sourceAxisType = d->m_sourceAxisType;
-    data.scale = d->m_scale;
-    return creationChange;
 }
 
 } // namespace Qt3DInput

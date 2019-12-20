@@ -41,7 +41,6 @@
 #include "qtextureimage_p.h"
 #include "qtexture_p.h"
 #include "qabstracttextureimage_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDateTime>
 
@@ -257,18 +256,6 @@ void QTextureImage::setStatus(Status status)
 QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
 {
     return QTextureImageDataGeneratorPtr(new QImageTextureDataFunctor(source(), isMirrored()));
-}
-
-/*!
-    Sets the scene change event to \a change.
-    \param change
- */
-void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-
-    if (e->propertyName() == QByteArrayLiteral("status"))
-        setStatus(static_cast<QTextureImage::Status>(e->value().toInt()));
 }
 
 /*

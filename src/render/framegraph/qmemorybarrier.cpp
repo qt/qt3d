@@ -39,7 +39,6 @@
 
 #include "qmemorybarrier.h"
 #include "qmemorybarrier_p.h"
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -154,16 +153,6 @@ QMemoryBarrier::QMemoryBarrier(QMemoryBarrierPrivate &dd, Qt3DCore::QNode *paren
     : QFrameGraphNode(dd, parent)
 {
 }
-
-Qt3DCore::QNodeCreatedChangeBasePtr QMemoryBarrier::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QMemoryBarrierData>::create(this);
-    QMemoryBarrierData &data = creationChange->data;
-    Q_D(const QMemoryBarrier);
-    data.waitOperations = d->m_waitOperations;
-    return creationChange;
-}
-
 
 } // Qt3DRender
 

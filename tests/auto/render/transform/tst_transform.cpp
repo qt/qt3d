@@ -35,7 +35,7 @@
 #include <private/qbackendnode_p.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_Transform : public Qt3DCore::QBackendNodeTester
 {

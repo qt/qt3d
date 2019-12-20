@@ -41,7 +41,6 @@
 
 #include "qcullface.h"
 #include "qcullface_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -188,15 +187,6 @@ void QCullFace::setMode(QCullFace::CullingMode mode)
         d->m_mode = mode;
         emit modeChanged(mode);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QCullFace::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QCullFaceData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QCullFace);
-    data.mode = d->m_mode;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

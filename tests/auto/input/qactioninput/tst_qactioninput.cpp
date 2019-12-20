@@ -30,14 +30,13 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/private/qactioninput_p.h>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>
 
-#include "testpostmanarbiter.h"
 #include "testdevice.h"
+#include <testarbiter.h>
 
 class tst_QActionInput: public QObject
 {
@@ -49,47 +48,6 @@ public:
     }
 
 private Q_SLOTS:
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DInput::QActionInput *>("actionInput");
-
-        Qt3DInput::QActionInput *defaultConstructed = new Qt3DInput::QActionInput();
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        Qt3DInput::QActionInput *actionInputWithKeys = new Qt3DInput::QActionInput();
-        actionInputWithKeys->setButtons(QVector<int>() << ((1 << 1) | (1 << 5)));
-        QTest::newRow("actionInputWithKeys") << actionInputWithKeys;
-
-        Qt3DInput::QActionInput *actionInputWithKeysAndSourceDevice = new Qt3DInput::QActionInput();
-        TestDevice *device = new TestDevice();
-        actionInputWithKeysAndSourceDevice->setButtons(QVector<int>() << ((1 << 1) | (1 << 5)));
-        actionInputWithKeysAndSourceDevice->setSourceDevice(device);
-        QTest::newRow("actionInputWithKeysAndSourceDevice") << actionInputWithKeysAndSourceDevice;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DInput::QActionInput *, actionInput);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(actionInput);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + (actionInput->sourceDevice() ? 1 : 0));
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QActionInputData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QActionInputData>>(creationChanges.first());
-        const Qt3DInput::QActionInputData &cloneData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(actionInput->id(), creationChangeData->subjectId());
-        QCOMPARE(actionInput->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(actionInput->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(actionInput->buttons(), cloneData.buttons);
-        QCOMPARE(actionInput->sourceDevice() ? actionInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
-    }
 
     void checkPropertyUpdates()
     {
@@ -103,23 +61,22 @@ private Q_SLOTS:
         actionInput->setButtons(buttons);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), actionInput.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), actionInput.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         TestDevice *device = new TestDevice(actionInput.data());
         QCoreApplication::processEvents();
-        arbiter.events.clear();
 
         actionInput->setSourceDevice(device);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), actionInput.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), actionInput.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkSourceDeviceBookkeeping()

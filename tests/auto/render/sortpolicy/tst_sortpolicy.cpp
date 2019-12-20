@@ -55,7 +55,7 @@ private Q_SLOTS:
         Qt3DRender::QFrameGraphNode parent;
         auto parentBackend = new Qt3DRender::Render::FrameGraphNode;
         parentBackend->setRenderer(&renderer);
-        simulateInitialization(&parent, parentBackend);
+        simulateInitializationSync(&parent, parentBackend);
 
         Qt3DRender::Render::FrameGraphManager manager;
         manager.appendNode(parent.id(), parentBackend);

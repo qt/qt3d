@@ -33,10 +33,7 @@
 #include <Qt3DAnimation/private/qclipblendvalue_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include <testarbiter.h>
 
 class tst_QClipBlendValue : public QObject
 {
@@ -83,59 +80,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DAnimation::QClipBlendValue clipBlendNode;
-        Qt3DAnimation::QAnimationClipLoader clip;
-
-        clipBlendNode.setClip(&clip);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&clipBlendNode);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // 1 + 1 clip
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QClipBlendValueData>>(creationChanges.first());
-            const Qt3DAnimation::QClipBlendValueData cloneData = creationChangeData->data;
-
-            QCOMPARE(clipBlendNode.id(), creationChangeData->subjectId());
-            QCOMPARE(clipBlendNode.isEnabled(), true);
-            QCOMPARE(clipBlendNode.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(clipBlendNode.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(cloneData.clipId, clip.id());
-        }
-
-        // WHEN
-        clipBlendNode.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&clipBlendNode);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // 1 + 1 clip
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QClipBlendValueData>>(creationChanges.first());
-            const Qt3DAnimation::QClipBlendValueData cloneData = creationChangeData->data;
-
-            QCOMPARE(clipBlendNode.id(), creationChangeData->subjectId());
-            QCOMPARE(clipBlendNode.isEnabled(), false);
-            QCOMPARE(clipBlendNode.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(clipBlendNode.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(cloneData.clipId, clip.id());
-        }
-    }
-
     void checkClipUpdate()
     {
         // GIVEN
@@ -149,10 +93,10 @@ private Q_SLOTS:
             clipBlendNode.setClip(clip);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &clipBlendNode);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &clipBlendNode);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -160,7 +104,7 @@ private Q_SLOTS:
             clipBlendNode.setClip(clip);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 

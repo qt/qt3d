@@ -31,10 +31,8 @@
 #include <Qt3DRender/private/qparameter_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qentity.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QParameter : public QObject
 {
@@ -97,61 +95,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QParameter parameter;
-
-        parameter.setName(QStringLiteral("TwinCam"));
-        parameter.setValue(QVariant(427));
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&parameter);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QParameterData>>(creationChanges.first());
-            const Qt3DRender::QParameterData cloneData = creationChangeData->data;
-
-            QCOMPARE(parameter.name(), cloneData.name);
-            QCOMPARE(parameter.value(), cloneData.backendValue);
-            QCOMPARE(parameter.id(), creationChangeData->subjectId());
-            QCOMPARE(parameter.isEnabled(), true);
-            QCOMPARE(parameter.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(parameter.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        parameter.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&parameter);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QParameterData>>(creationChanges.first());
-            const Qt3DRender::QParameterData cloneData = creationChangeData->data;
-
-            QCOMPARE(parameter.name(), cloneData.name);
-            QCOMPARE(parameter.value(), cloneData.backendValue);
-            QCOMPARE(parameter.id(), creationChangeData->subjectId());
-            QCOMPARE(parameter.isEnabled(), false);
-            QCOMPARE(parameter.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(parameter.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkNameUpdate()
     {
         // GIVEN
@@ -165,11 +108,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &parameter);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &parameter);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -178,8 +120,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -197,11 +138,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &parameter);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &parameter);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -210,8 +150,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         // WHEN -> QNode -> QNodeId
@@ -224,11 +163,10 @@ private Q_SLOTS:
                 QCoreApplication::processEvents();
 
                 // THEN
-                QCOMPARE(arbiter.events.size(), 0);
-                QCOMPARE(arbiter.dirtyNodes.size(), 1);
-                QCOMPARE(arbiter.dirtyNodes.front(), &parameter);
+                QCOMPARE(arbiter.dirtyNodes().size(), 1);
+                QCOMPARE(arbiter.dirtyNodes().front(), &parameter);
 
-                arbiter.dirtyNodes.clear();
+                arbiter.clear();
             }
 
             {
@@ -237,8 +175,7 @@ private Q_SLOTS:
                 QCoreApplication::processEvents();
 
                 // THEN
-                QCOMPARE(arbiter.events.size(), 0);
-                QCOMPARE(arbiter.dirtyNodes.size(), 0);
+                QCOMPARE(arbiter.dirtyNodes().size(), 0);
             }
 
         }

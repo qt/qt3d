@@ -33,7 +33,7 @@
 #include <Qt3DRender/private/levelofdetail_p.h>
 #include <Qt3DRender/private/qlevelofdetail_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 #include "testrenderer.h"
 
 class tst_LevelOfDetail : public Qt3DCore::QBackendNodeTester

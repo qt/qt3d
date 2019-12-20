@@ -145,26 +145,26 @@ QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
 
     qRegisterMetaType<Qt3DInput::QAbstractPhysicalDevice*>();
 
-    registerBackendType<QKeyboardDevice, true>(QBackendNodeMapperPtr(new Input::KeyboardDeviceFunctor(this, d_func()->m_inputHandler.data())));
-    registerBackendType<QKeyboardHandler, true>(QBackendNodeMapperPtr(new Input::KeyboardHandlerFunctor(d_func()->m_inputHandler.data())));
-    registerBackendType<QMouseDevice, true>(QBackendNodeMapperPtr(new Input::MouseDeviceFunctor(this, d_func()->m_inputHandler.data())));
-    registerBackendType<QMouseHandler, true>(QBackendNodeMapperPtr(new Input::MouseHandlerFunctor(d_func()->m_inputHandler.data())));
-    registerBackendType<QAxis, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Axis, Input::AxisManager>(d_func()->m_inputHandler->axisManager())));
-    registerBackendType<QAxisAccumulator, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisAccumulator, Input::AxisAccumulatorManager>(d_func()->m_inputHandler->axisAccumulatorManager())));
-    registerBackendType<QAnalogAxisInput, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AnalogAxisInput, Input::AnalogAxisInputManager>(d_func()->m_inputHandler->analogAxisInputManager())));
-    registerBackendType<QButtonAxisInput, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ButtonAxisInput, Input::ButtonAxisInputManager>(d_func()->m_inputHandler->buttonAxisInputManager())));
-    registerBackendType<QAxisSetting, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));
-    registerBackendType<Qt3DInput::QAction, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Action, Input::ActionManager>(d_func()->m_inputHandler->actionManager())));
-    registerBackendType<QActionInput,  true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ActionInput, Input::ActionInputManager>(d_func()->m_inputHandler->actionInputManager())));
-    registerBackendType<QInputChord, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::InputChord, Input::InputChordManager>(d_func()->m_inputHandler->inputChordManager())));
-    registerBackendType<QInputSequence, true>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::InputSequence, Input::InputSequenceManager>(d_func()->m_inputHandler->inputSequenceManager())));
-    registerBackendType<QLogicalDevice, true>(QBackendNodeMapperPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
-    registerBackendType<QGenericInputDevice, true>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
-    registerBackendType<QInputSettings, true>(QBackendNodeMapperPtr(new Input::InputSettingsFunctor(d_func()->m_inputHandler.data())));
-    registerBackendType<QAbstractPhysicalDeviceProxy, true>(QBackendNodeMapperPtr(new Input::PhysicalDeviceProxyNodeFunctor(d_func()->m_inputHandler->physicalDeviceProxyManager())));
+    registerBackendType<QKeyboardDevice>(QBackendNodeMapperPtr(new Input::KeyboardDeviceFunctor(this, d_func()->m_inputHandler.data())));
+    registerBackendType<QKeyboardHandler>(QBackendNodeMapperPtr(new Input::KeyboardHandlerFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QMouseDevice>(QBackendNodeMapperPtr(new Input::MouseDeviceFunctor(this, d_func()->m_inputHandler.data())));
+    registerBackendType<QMouseHandler>(QBackendNodeMapperPtr(new Input::MouseHandlerFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QAxis>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Axis, Input::AxisManager>(d_func()->m_inputHandler->axisManager())));
+    registerBackendType<QAxisAccumulator>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisAccumulator, Input::AxisAccumulatorManager>(d_func()->m_inputHandler->axisAccumulatorManager())));
+    registerBackendType<QAnalogAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AnalogAxisInput, Input::AnalogAxisInputManager>(d_func()->m_inputHandler->analogAxisInputManager())));
+    registerBackendType<QButtonAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ButtonAxisInput, Input::ButtonAxisInputManager>(d_func()->m_inputHandler->buttonAxisInputManager())));
+    registerBackendType<QAxisSetting>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));
+    registerBackendType<Qt3DInput::QAction>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Action, Input::ActionManager>(d_func()->m_inputHandler->actionManager())));
+    registerBackendType<QActionInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ActionInput, Input::ActionInputManager>(d_func()->m_inputHandler->actionInputManager())));
+    registerBackendType<QInputChord>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::InputChord, Input::InputChordManager>(d_func()->m_inputHandler->inputChordManager())));
+    registerBackendType<QInputSequence>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::InputSequence, Input::InputSequenceManager>(d_func()->m_inputHandler->inputSequenceManager())));
+    registerBackendType<QLogicalDevice>(QBackendNodeMapperPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
+    registerBackendType<QGenericInputDevice>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
+    registerBackendType<QInputSettings>(QBackendNodeMapperPtr(new Input::InputSettingsFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QAbstractPhysicalDeviceProxy>(QBackendNodeMapperPtr(new Input::PhysicalDeviceProxyNodeFunctor(d_func()->m_inputHandler->physicalDeviceProxyManager())));
 
 #ifdef HAVE_QGAMEPAD
-    registerBackendType<QGamepadInput, true>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
+    registerBackendType<QGamepadInput>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
 #endif
 
     Q_D(QInputAspect);

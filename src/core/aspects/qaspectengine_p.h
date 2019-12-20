@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <QtCore/qsharedpointer.h>
 
 #include <Qt3DCore/private/qaspectfactory_p.h>
@@ -66,7 +65,6 @@ namespace Qt3DCore {
 class QEntity;
 class QNode;
 class QAspectManager;
-class QPostman;
 class QScene;
 
 class Q_3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate
@@ -79,7 +77,6 @@ public:
 
     QAspectFactory m_factory;
     QAspectManager *m_aspectManager;
-    QPostman *m_postman;
     QScene *m_scene;
     QSharedPointer<QEntity> m_root;
     QVector<QAbstractAspect*> m_aspects;

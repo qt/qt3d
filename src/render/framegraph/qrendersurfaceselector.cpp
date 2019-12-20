@@ -45,7 +45,6 @@
 #include <QtGui/QOffscreenSurface>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qrendersettings.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -313,17 +312,6 @@ void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
         d->setExternalRenderTargetSize(size);
         emit externalRenderTargetSizeChanged(size);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRenderSurfaceSelector);
-    data.surface = QPointer<QObject>(surface());
-    data.externalRenderTargetSize = d->m_externalRenderTargetSize;
-    data.surfacePixelRatio = d->m_surfacePixelRatio;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

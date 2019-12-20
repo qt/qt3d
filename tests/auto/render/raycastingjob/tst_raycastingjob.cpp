@@ -27,12 +27,11 @@
 ****************************************************************************/
 
 #include "qmlscenereader.h"
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 #include <QtTest/QTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
@@ -279,7 +278,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::RayCaster *backendRayCaster = test->nodeManagers()->rayCasterManager()->lookupResource(rayCaster->id());
         QVERIFY(backendRayCaster);
-        Qt3DCore::QBackendNodePrivate::get(backendRayCaster)->setArbiter(test->arbiter());
 
         // WHEN
         Qt3DRender::Render::RayCastingJob rayCastingJob;
@@ -339,7 +337,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::RayCaster *backendRayCaster = test->nodeManagers()->rayCasterManager()->lookupResource(rayCaster->id());
         QVERIFY(backendRayCaster);
-        Qt3DCore::QBackendNodePrivate::get(backendRayCaster)->setArbiter(test->arbiter());
 
         // WHEN
         Qt3DRender::Render::RayCastingJob rayCastingJob;

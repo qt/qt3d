@@ -40,7 +40,6 @@
 
 #include "qfrontface.h"
 #include "qfrontface_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -117,15 +116,6 @@ void QFrontFace::setDirection(QFrontFace::WindingDirection direction)
         d->m_direction = direction;
         emit directionChanged(direction);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QFrontFace::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QFrontFaceData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QFrontFace);
-    data.direction = d->m_direction;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

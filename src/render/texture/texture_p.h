@@ -172,8 +172,6 @@ public:
     void setDataGenerator(const QTextureGeneratorPtr &generator);
     bool isValid(TextureImageManager *manager) const;
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     DirtyFlags m_dirty;
     TextureProperties m_properties;
     TextureParameters m_parameters;
@@ -191,7 +189,7 @@ class Q_AUTOTEST_EXPORT TextureFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit TextureFunctor(AbstractRenderer *renderer,
                             TextureManager *textureNodeManager);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const final;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
     void destroy(Qt3DCore::QNodeId id) const final;
 

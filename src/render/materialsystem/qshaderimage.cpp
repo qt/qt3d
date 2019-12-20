@@ -971,21 +971,6 @@ void QShaderImage::setFormat(QShaderImage::ImageFormat format)
     Q_EMIT formatChanged(format);
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr Qt3DRender::QShaderImage::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderImageData>::create(this);
-    QShaderImageData &data = creationChange->data;
-    Q_D(const QShaderImage);
-    data.textureId = Qt3DCore::qIdForNode(d->m_texture);
-    data.layer = d->m_layer;
-    data.mipLevel = d->m_mipLevel;
-    data.access = d->m_access;
-    data.format = d->m_format;
-    data.layered = d->m_layered;
-    return creationChange;
-
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

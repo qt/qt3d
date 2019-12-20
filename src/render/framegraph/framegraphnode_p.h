@@ -146,9 +146,9 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const override
     {
-        return createBackendFrameGraphNode(change);
+        return createBackendFrameGraphNode(id);
     }
 
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override
@@ -162,16 +162,16 @@ public:
     }
 
 protected:
-    Backend *createBackendFrameGraphNode(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+    Backend *createBackendFrameGraphNode(const Qt3DCore::QNodeId &id) const
     {
-        if (!m_manager->containsNode(change->subjectId())) {
+        if (!m_manager->containsNode(id)) {
             Backend *backend = new Backend();
             backend->setFrameGraphManager(m_manager);
             backend->setRenderer(m_renderer);
-            m_manager->appendNode(change->subjectId(), backend);
+            m_manager->appendNode(id, backend);
             return backend;
         }
-        return static_cast<Backend *>(m_manager->lookupNode(change->subjectId()));
+        return static_cast<Backend *>(m_manager->lookupNode(id));
     }
 
 private:

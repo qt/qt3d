@@ -40,8 +40,6 @@
 #include "qblitframebuffer.h"
 #include "qblitframebuffer_p.h"
 
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -432,25 +430,6 @@ void QBlitFramebuffer::setInterpolationMethod(QBlitFramebuffer::InterpolationMet
         d->m_interpolationMethod = interpolationMethod;
         emit interpolationMethodChanged();
     }
-}
-
-/*!
-    \internal
- */
-Qt3DCore::QNodeCreatedChangeBasePtr QBlitFramebuffer::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QBlitFramebufferData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QBlitFramebuffer);
-    data.m_sourceRect = d->m_sourceRect;
-    data.m_destinationRect = d->m_destinationRect;
-    data.m_sourceRenderTargetId = Qt3DCore::qIdForNode(d->m_source);
-    data.m_destinationRenderTargetId = Qt3DCore::qIdForNode(d->m_destination);
-    data.m_sourceAttachmentPoint = d->m_sourceAttachmentPoint;
-    data.m_destinationAttachmentPoint = d->m_destinationAttachmentPoint;
-    data.m_interpolationMethod = d->m_interpolationMethod;
-
-    return creationChange;
 }
 
 } // namespace Qt3DRender

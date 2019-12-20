@@ -306,21 +306,6 @@ void QBlendedClipAnimator::setBlendTree(QAbstractClipBlendNode *blendTree)
     emit blendTreeChanged(blendTree);
 }
 
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QBlendedClipAnimator::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QBlendedClipAnimatorData>::create(this);
-    QBlendedClipAnimatorData &data = creationChange->data;
-    Q_D(const QBlendedClipAnimator);
-    data.blendTreeRootId = Qt3DCore::qIdForNode(d->m_blendTreeRoot);
-    data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
-    data.clockId = Qt3DCore::qIdForNode(d->m_clock);
-    data.running = d->m_running;
-    data.loops = d->m_loops;
-    data.normalizedTime = d->m_normalizedTime;
-    return creationChange;
-}
-
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE

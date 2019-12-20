@@ -29,13 +29,12 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaxisaccumulator.h>
 #include <Qt3DInput/private/qaxisaccumulator_p.h>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QAxisAccumulator: public Qt3DInput::QAxisAccumulator
 {
@@ -46,76 +45,6 @@ public:
     }
 
 private Q_SLOTS:
-
-    void checkCreationChange_data()
-    {
-        QTest::addColumn<QSharedPointer<Qt3DInput::QAxisAccumulator>>("accumulator");
-        QTest::addColumn<Qt3DInput::QAxis *>("sourceAxis");
-        QTest::addColumn<Qt3DInput::QAxisAccumulator::SourceAxisType>("sourceAxisType");
-        QTest::addColumn<float>("scale");
-
-        {
-            auto accumulator = QSharedPointer<Qt3DInput::QAxisAccumulator>::create();
-            QTest::newRow("defaultConstructed")
-                    << accumulator
-                    << static_cast<Qt3DInput::QAxis *>(nullptr)
-                    << Qt3DInput::QAxisAccumulator::Velocity
-                    << 1.0f;
-        }
-
-        {
-            auto accumulator = QSharedPointer<Qt3DInput::QAxisAccumulator>::create();
-            Qt3DInput::QAxis *axis = new Qt3DInput::QAxis();
-            accumulator->setSourceAxis(axis);
-            QTest::newRow("withSourceAxis")
-                    << accumulator
-                    << axis
-                    << Qt3DInput::QAxisAccumulator::Velocity
-                    << 1.0f;
-        }
-
-        {
-            auto accumulator = QSharedPointer<Qt3DInput::QAxisAccumulator>::create();
-            accumulator->setSourceAxisType(Qt3DInput::QAxisAccumulator::Acceleration);
-            accumulator->setScale(2.5f);
-            Qt3DInput::QAxis *axis = new Qt3DInput::QAxis();
-            accumulator->setSourceAxis(axis);
-            QTest::newRow("accelerationNonUniformScale")
-                    << accumulator
-                    << axis
-                    << Qt3DInput::QAxisAccumulator::Acceleration
-                    << 2.5f;
-        }
-    }
-
-    void checkCreationChange()
-    {
-        // GIVEN
-        QFETCH(QSharedPointer<Qt3DInput::QAxisAccumulator>, accumulator);
-        QFETCH(Qt3DInput::QAxis *, sourceAxis);
-        QFETCH(Qt3DInput::QAxisAccumulator::SourceAxisType, sourceAxisType);
-        QFETCH(float, scale);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(accumulator.data());
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), sourceAxis ? 2 : 1);
-
-        const auto creationChangeData =
-               qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAxisAccumulatorData>>(creationChanges.first());
-        const Qt3DInput::QAxisAccumulatorData &creationData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(accumulator->id(), creationChangeData->subjectId());
-        QCOMPARE(accumulator->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(accumulator->metaObject(), creationChangeData->metaObject());
-        if (sourceAxis)
-            QCOMPARE(sourceAxis->id(), creationData.sourceAxisId);
-        QCOMPARE(sourceAxisType, creationData.sourceAxisType);
-        QCOMPARE(scale, creationData.scale);
-    }
 
     void checkPropertyUpdates()
     {
@@ -129,29 +58,29 @@ private Q_SLOTS:
         accumulator->setSourceAxis(axis);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), accumulator.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), accumulator.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
 
         // WHEN
         accumulator->setScale(2.0f);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), accumulator.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), accumulator.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         accumulator->setSourceAxisType(Qt3DInput::QAxisAccumulator::Acceleration);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), accumulator.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), accumulator.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkAxisInputBookkeeping()

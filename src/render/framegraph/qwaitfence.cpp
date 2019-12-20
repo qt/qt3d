@@ -40,7 +40,6 @@
 #include "qwaitfence.h"
 #include "qwaitfence_p.h"
 #include <Qt3DRender/private/qframegraphnode_p.h>
-#include <Qt3DRender/private/qframegraphnodecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -200,18 +199,6 @@ void QWaitFence::setHandle(QVariant handle)
         d->m_handle = handle;
         emit handleChanged(handle);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QWaitFence::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QWaitFenceData>::create(this);
-    QWaitFenceData &data = creationChange->data;
-    Q_D(const QWaitFence);
-    data.handleType = d->m_handleType;
-    data.handle = d->m_handle;
-    data.timeout = d->m_timeout;
-    data.waitOnCPU = d->m_waitOnCPU;
-    return creationChange;
 }
 
 } // Qt3DRender

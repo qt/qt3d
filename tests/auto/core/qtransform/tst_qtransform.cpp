@@ -26,28 +26,18 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QtTest>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/private/qtransform_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QtCore/qscopedpointer.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 using namespace Qt3DCore;
 
 class FakeTransform : public Qt3DCore::QTransform
 {
 public:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override
-    {
-        Qt3DCore::QTransform::sceneChangeEvent(change);
-    }
 };
 
 class tst_QTransform : public QObject
@@ -73,63 +63,6 @@ private Q_SLOTS:
         QCOMPARE(transform.translation(), QVector3D(0.0f, 0.0f, 0.0f));
     }
 
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DCore::QTransform *>("transform");
-
-        Qt3DCore::QTransform *defaultConstructed = new Qt3DCore::QTransform();
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        Qt3DCore::QTransform *matrixPropertySet = new Qt3DCore::QTransform();
-        matrixPropertySet->setMatrix(Qt3DCore::QTransform::rotateAround(QVector3D(0.1877f, 0.6868f, 0.3884f), 45.0f, QVector3D(0.0f, 0.0f, 1.0f)));
-        QTest::newRow("matrixPropertySet") << matrixPropertySet;
-
-        Qt3DCore::QTransform *translationSet = new Qt3DCore::QTransform();
-        translationSet->setTranslation(QVector3D(0.1877f, 0.6868f, 0.3884f));
-        QTest::newRow("translationSet") << translationSet;
-
-        Qt3DCore::QTransform *scaleSet = new Qt3DCore::QTransform();
-        scaleSet->setScale3D(QVector3D(0.1f, 0.6f, 0.3f));
-        QTest::newRow("scaleSet") << scaleSet;
-
-        Qt3DCore::QTransform *rotationSet = new Qt3DCore::QTransform();
-        scaleSet->setRotation(Qt3DCore::QTransform::fromAxisAndAngle(0.0f, 0.0f, 1.0f, 30.0f));
-        QTest::newRow("rotationSet") << rotationSet;
-
-        Qt3DCore::QTransform *eulerRotationSet = new Qt3DCore::QTransform();
-        eulerRotationSet->setRotationX(90.0f);
-        eulerRotationSet->setRotationY(10.0f);
-        eulerRotationSet->setRotationZ(1.0f);
-        QTest::newRow("eulerRotationSet") << eulerRotationSet;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DCore::QTransform *, transform);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(transform);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1);
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DCore::QTransformData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DCore::QTransformData>>(creationChanges.first());
-        const Qt3DCore::QTransformData &cloneData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(creationChangeData->subjectId(), transform->id());
-        QCOMPARE(creationChangeData->isNodeEnabled(), transform->isEnabled());
-        QCOMPARE(creationChangeData->metaObject(), transform->metaObject());
-        QCOMPARE(creationChangeData->parentId(), transform->parentNode() ? transform->parentNode()->id() : Qt3DCore::QNodeId());
-        QCOMPARE(transform->translation(), cloneData.translation);
-        QCOMPARE(transform->scale3D(), cloneData.scale);
-        QCOMPARE(transform->rotation(), cloneData.rotation);
-        QCOMPARE(transform->worldMatrix(), QMatrix4x4());
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -141,30 +74,30 @@ private Q_SLOTS:
         transform->setTranslation(QVector3D(454.0f, 427.0f, 383.0f));
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), transform.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         QQuaternion q = Qt3DCore::QTransform::fromAxisAndAngle(QVector3D(0.0f, 1.0f, 0.0f), 90.0f);
         transform->setRotation(q);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), transform.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         transform->setScale3D(QVector3D(883.0f, 1200.0f, 1340.0f));
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), transform.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         // Force the transform to update its matrix
@@ -173,20 +106,20 @@ private Q_SLOTS:
         transform->setMatrix(QMatrix4x4());
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), transform.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         transform->setRotationX(20.0f);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), transform.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), transform.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkSignalEmittion()
@@ -353,27 +286,26 @@ private Q_SLOTS:
         QVERIFY(spy.isValid());
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("worldMatrix");
+        QTransformPrivate *dT = static_cast<QTransformPrivate *>(QNodePrivate::get(&t));
         const QMatrix4x4 newValue(1.0f, 2.0f, 3.0f, 4.0f,
                                   5.0f, 6.0f, 7.0f, 8.0f,
                                   9.0f, 10.0f, 11.0f, 12.0f,
                                   13.0f, 14.0f, 15.0f, 16.0f);
-        valueChange->setValue(newValue);
-        t.sceneChangeEvent(valueChange);
+        dT->setWorldMatrix(newValue);
+
 
         // THEN
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
         QCOMPARE(t.worldMatrix(), newValue);
 
         // WHEN
         spy.clear();
-        t.sceneChangeEvent(valueChange);
+        dT->setWorldMatrix(newValue);
 
         // THEN
         QCOMPARE(spy.count(), 0);
-        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
         QCOMPARE(t.worldMatrix(), newValue);
     }
 };

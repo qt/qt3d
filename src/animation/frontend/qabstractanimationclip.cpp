@@ -133,11 +133,6 @@ QAbstractAnimationClip::QAbstractAnimationClip(QAbstractAnimationClipPrivate &dd
 {
 }
 
-// TODO Unused remove in Qt6
-void QAbstractAnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
 /*!
     Destroys this animation clip.
 */

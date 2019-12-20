@@ -30,14 +30,13 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qrenderpassfilter.h>
 #include <Qt3DRender/private/qrenderpassfilter_p.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qfilterkey.h>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QRenderPassFilter: public QObject
 {
@@ -53,90 +52,6 @@ private Q_SLOTS:
         QCOMPARE(defaultRenderPassFilter->parameters().count(), 0);
     }
 
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QRenderPassFilter *>("renderPassFilter");
-        QTest::addColumn<QVector<Qt3DRender::QParameter *> >("parameters");
-        QTest::addColumn<QVector<Qt3DRender::QFilterKey *> >("filterKeys");
-
-        Qt3DRender::QRenderPassFilter *defaultConstructed = new Qt3DRender::QRenderPassFilter();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QParameter *>() << QVector<Qt3DRender::QFilterKey *>();
-
-        Qt3DRender::QRenderPassFilter *renderPassFilterWithParams = new Qt3DRender::QRenderPassFilter();
-        Qt3DRender::QParameter *parameter1 = new Qt3DRender::QParameter(QStringLiteral("displacement"), 454.0f);
-        Qt3DRender::QParameter *parameter2 = new Qt3DRender::QParameter(QStringLiteral("torque"), 650);
-        QVector<Qt3DRender::QParameter *> params1 = QVector<Qt3DRender::QParameter *>() << parameter1 << parameter2;
-        renderPassFilterWithParams->addParameter(parameter1);
-        renderPassFilterWithParams->addParameter(parameter2);
-        QTest::newRow("renderPassFilterWithParams") << renderPassFilterWithParams << params1 << QVector<Qt3DRender::QFilterKey *>();
-
-        Qt3DRender::QRenderPassFilter *renderPassFilterWithAnnotations = new Qt3DRender::QRenderPassFilter();
-        Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
-        Qt3DRender::QFilterKey *filterKey2 = new Qt3DRender::QFilterKey();
-        filterKey1->setName(QStringLiteral("hasSuperCharger"));
-        filterKey1->setValue(true);
-        filterKey1->setName(QStringLiteral("hasNitroKit"));
-        filterKey1->setValue(false);
-        QVector<Qt3DRender::QFilterKey *> filterKeys1 = QVector<Qt3DRender::QFilterKey *>() << filterKey1 << filterKey2;
-        renderPassFilterWithAnnotations->addMatch(filterKey1);
-        renderPassFilterWithAnnotations->addMatch(filterKey2);
-        QTest::newRow("renderPassFilterWithAnnotations") << renderPassFilterWithAnnotations << QVector<Qt3DRender::QParameter *>() << filterKeys1;
-
-        Qt3DRender::QRenderPassFilter *renderPassFilterWithParamsAndAnnotations = new Qt3DRender::QRenderPassFilter();
-        Qt3DRender::QParameter *parameter3 = new Qt3DRender::QParameter(QStringLiteral("displacement"), 383.0f);
-        Qt3DRender::QParameter *parameter4 = new Qt3DRender::QParameter(QStringLiteral("torque"), 555);
-        Qt3DRender::QFilterKey *filterKey3 = new Qt3DRender::QFilterKey();
-        Qt3DRender::QFilterKey *filterKey4 = new Qt3DRender::QFilterKey();
-        filterKey3->setName(QStringLiteral("hasSuperCharger"));
-        filterKey3->setValue(false);
-        filterKey4->setName(QStringLiteral("hasNitroKit"));
-        filterKey4->setValue(true);
-        QVector<Qt3DRender::QParameter *> params2 = QVector<Qt3DRender::QParameter *>() << parameter3 << parameter4;
-        QVector<Qt3DRender::QFilterKey *> filterKeys2 = QVector<Qt3DRender::QFilterKey *>() << filterKey3 << filterKey4;
-        renderPassFilterWithParamsAndAnnotations->addParameter(parameter3);
-        renderPassFilterWithParamsAndAnnotations->addParameter(parameter4);
-        renderPassFilterWithParamsAndAnnotations->addMatch(filterKey3);
-        renderPassFilterWithParamsAndAnnotations->addMatch(filterKey4);
-        QTest::newRow("renderPassFilterWithParamsAndAnnotations") << renderPassFilterWithParamsAndAnnotations << params2 << filterKeys2 ;
-    }
-
-    // TODO: Avoid cloning here
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QRenderPassFilter*, renderPassFilter);
-        QFETCH(QVector<Qt3DRender::QParameter *>, parameters);
-        QFETCH(QVector<Qt3DRender::QFilterKey *>, filterKeys);
-
-        // THEN
-        QCOMPARE(renderPassFilter->parameters(), parameters);
-        QCOMPARE(renderPassFilter->matchAny(), filterKeys);
-
-        // WHEN
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(renderPassFilter);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + renderPassFilter->parameters().size() + renderPassFilter->matchAny().size());
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QRenderPassFilterData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderPassFilterData>>(creationChanges.first());
-        const Qt3DRender::QRenderPassFilterData &cloneData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(renderPassFilter->id(), creationChangeData->subjectId());
-        QCOMPARE(renderPassFilter->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(renderPassFilter->metaObject(), creationChangeData->metaObject());
-
-        QCOMPARE(renderPassFilter->matchAny().count(), cloneData.matchIds.count());
-        QCOMPARE(renderPassFilter->parameters().count(), cloneData.parameterIds.count());
-
-        // TO DO: Add unit tests for QParameter / QFilterKey
-
-        delete renderPassFilter;
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -150,30 +65,27 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(renderPassFilter.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(renderPassFilter.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         renderPassFilter->addParameter(param1);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
         // WHEN
         renderPassFilter->removeParameter(param1);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(renderPassFilter.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(renderPassFilter.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
@@ -181,30 +93,27 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(renderPassFilter.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(renderPassFilter.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         renderPassFilter->addMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
         // WHEN
         renderPassFilter->removeMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(renderPassFilter.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(renderPassFilter.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkParameterBookkeeping()

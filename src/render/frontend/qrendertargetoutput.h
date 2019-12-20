@@ -111,7 +111,6 @@ protected:
     explicit QRenderTargetOutput(QRenderTargetOutputPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
     Q_DECLARE_PRIVATE(QRenderTargetOutput)
 };
 

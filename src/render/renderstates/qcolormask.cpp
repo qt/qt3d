@@ -39,7 +39,6 @@
 
 #include "qcolormask.h"
 #include "qcolormask_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -181,18 +180,6 @@ void QColorMask::setAlphaMasked(bool alphaMasked)
         d->m_alphaMasked = alphaMasked;
         emit alphaMaskedChanged(alphaMasked);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QColorMask::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QColorMaskData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QColorMask);
-    data.redMasked = d->m_redMasked;
-    data.greenMasked = d->m_greenMasked;
-    data.blueMasked = d->m_blueMasked;
-    data.alphaMasked = d->m_alphaMasked;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

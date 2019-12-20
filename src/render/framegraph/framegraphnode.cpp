@@ -40,7 +40,6 @@
 #include "framegraphnode_p.h"
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

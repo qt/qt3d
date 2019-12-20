@@ -72,9 +72,9 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const final
     {
-        Backend *backend = m_manager->getOrCreateResource(change->subjectId());
+        Backend *backend = m_manager->getOrCreateResource(id);
         backend->setRenderer(m_renderer);
         return backend;
     }

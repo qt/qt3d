@@ -82,7 +82,7 @@ Q_SIGNALS:
     void mirroredChanged(bool mirrored);
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
+    // TO DO Qt6 -> should be on private class
     void setStatus(Status status);
 
 private:

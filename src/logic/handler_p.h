@@ -57,6 +57,10 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QNode;
+}
+
 namespace Qt3DLogic {
 namespace Logic {
 
@@ -70,12 +74,9 @@ public:
     void setManager(Manager *manager) { m_logicManager = manager; }
     Manager *logicManager() const { return m_logicManager; }
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) override;
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
-
     Manager *m_logicManager;
 };
 
@@ -85,7 +86,7 @@ class HandlerFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit HandlerFunctor(Manager *handler);
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const override;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
     void destroy(Qt3DCore::QNodeId id) const override;
 

@@ -131,38 +131,6 @@ bool QShaderData::event(QEvent *event)
     return QComponent::event(event);
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() const
-{
-    Q_D(const QShaderData);
-
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderDataData>::create(this);
-    QShaderDataData &data = creationChange->data;
-
-    data.propertyReader = d->m_propertyReader;
-
-    const QMetaObject *metaObj = metaObject();
-    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
-    const int propertyCount = metaObj->propertyCount();
-
-    const auto propertyNames = dynamicPropertyNames();
-    data.properties.reserve(propertyCount - propertyOffset + propertyNames.size());
-
-    for (int i = propertyOffset; i < propertyCount; ++i) {
-        const QMetaProperty pro = metaObj->property(i);
-        if (pro.isWritable()) {
-            data.properties.push_back(qMakePair(pro.name(),
-                                                propertyReader()->readProperty(property(pro.name()))));
-        }
-    }
-
-    for (const QByteArray &propertyName : propertyNames) {
-        data.properties.push_back(qMakePair(propertyName,
-                                            propertyReader()->readProperty(property(propertyName))));
-    }
-
-    return creationChange;
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

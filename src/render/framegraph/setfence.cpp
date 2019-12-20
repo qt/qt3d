@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "setfence_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,24 +52,6 @@ SetFence::SetFence()
 
 SetFence::~SetFence()
 {
-}
-
-void SetFence::setHandle(const QVariant &handle)
-{
-    auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-    change->setPropertyName("handle");
-    change->setValue(handle);
-    notifyObservers(change);
-}
-
-void SetFence::setHandleType(QSetFence::HandleType type)
-{
-    auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    change->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
-    change->setPropertyName("handleType");
-    change->setValue(QVariant::fromValue(type));
-    notifyObservers(change);
 }
 
 } // namespace Render

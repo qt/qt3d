@@ -40,7 +40,6 @@
 #include "qproximityfilter.h"
 #include "qproximityfilter_p.h"
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -179,16 +178,6 @@ void QProximityFilter::setDistanceThreshold(float distanceThreshold)
 
     d->m_distanceThreshold = distanceThreshold;
     emit distanceThresholdChanged(distanceThreshold);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QProximityFilter::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QProximityFilterData>::create(this);
-    QProximityFilterData &data = creationChange->data;
-    Q_D(const QProximityFilter);
-    data.entityId = Qt3DCore::qIdForNode(d->m_entity);
-    data.distanceThreshold = d->m_distanceThreshold;
-    return creationChange;
 }
 
 } // Qt3DRender

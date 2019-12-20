@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include "qmlscenereader.h"
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 #include <QtTest/QTest>
 #include <Qt3DCore/qentity.h>
@@ -797,7 +797,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker1 = test->nodeManagers()->objectPickerManager()->lookupResource(picker1->id());
         QVERIFY(backendPicker1);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker1)->setArbiter(test->arbiter());
 
         QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
         QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
@@ -929,7 +928,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker1 = test->nodeManagers()->objectPickerManager()->lookupResource(picker1->id());
         QVERIFY(backendPicker1);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker1)->setArbiter(&arbiter);
 
         QSignalSpy mouseButtonPressedSpy(picker1, &Qt3DRender::QObjectPicker::pressed);
         QSignalSpy mouseMovedSpy(picker1, &Qt3DRender::QObjectPicker::moved);
@@ -1038,7 +1036,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker1 = test->nodeManagers()->objectPickerManager()->lookupResource(picker1->id());
         QVERIFY(backendPicker1);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker1)->setArbiter(&arbiter);
 
         QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
         QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
@@ -1142,7 +1139,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker = test->nodeManagers()->objectPickerManager()->lookupResource(picker->id());
         QVERIFY(backendPicker);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker)->setArbiter(&arbiter);
 
         QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
         QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
@@ -1294,11 +1290,9 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker1 = test->nodeManagers()->objectPickerManager()->lookupResource(picker1->id());
         QVERIFY(backendPicker1);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker1)->setArbiter(&arbiter1);
 
         Qt3DRender::Render::ObjectPicker *backendPicker2 = test->nodeManagers()->objectPickerManager()->lookupResource(picker2->id());
         QVERIFY(backendPicker2);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker2)->setArbiter(&arbiter2);
 
         QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
         QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
@@ -1416,7 +1410,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker = test->nodeManagers()->objectPickerManager()->lookupResource(picker->id());
         QVERIFY(backendPicker);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker)->setArbiter(&arbiter);
 
         QSignalSpy mouseEntered(picker, &Qt3DRender::QObjectPicker::entered);
         QSignalSpy mouseExited(picker, &Qt3DRender::QObjectPicker::exited);
@@ -1486,7 +1479,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker = test->nodeManagers()->objectPickerManager()->lookupResource(picker->id());
         QVERIFY(backendPicker);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker)->setArbiter(&arbiter);
 
         QSignalSpy mouseEntered(picker, &Qt3DRender::QObjectPicker::entered);
         QSignalSpy mouseExited(picker, &Qt3DRender::QObjectPicker::exited);
@@ -1605,7 +1597,6 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker = test->nodeManagers()->objectPickerManager()->lookupResource(picker->id());
         QVERIFY(backendPicker);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker)->setArbiter(&arbiter);
 
         QSignalSpy mouseEntered(picker, &Qt3DRender::QObjectPicker::entered);
         QSignalSpy mouseExited(picker, &Qt3DRender::QObjectPicker::exited);
@@ -1674,11 +1665,9 @@ private Q_SLOTS:
 
         Qt3DRender::Render::ObjectPicker *backendPicker1 = test->nodeManagers()->objectPickerManager()->lookupResource(picker1->id());
         QVERIFY(backendPicker1);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker1)->setArbiter(&arbiter1);
 
         Qt3DRender::Render::ObjectPicker *backendPicker2 = test->nodeManagers()->objectPickerManager()->lookupResource(picker2->id());
         QVERIFY(backendPicker2);
-        Qt3DCore::QBackendNodePrivate::get(backendPicker2)->setArbiter(&arbiter2);
 
         QSignalSpy mouseEntered1(picker1, &Qt3DRender::QObjectPicker::entered);
         QSignalSpy mouseExited1(picker1, &Qt3DRender::QObjectPicker::exited);

@@ -42,9 +42,7 @@
 #include <Qt3DRender/private/qboundingvolume_p.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <Qt3DRender/private/qmesh_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/private/qtypedpropertyupdatechange_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <QtCore/qcoreapplication.h>
 
@@ -219,9 +217,9 @@ GeometryRendererFunctor::GeometryRendererFunctor(AbstractRenderer *renderer, Geo
 {
 }
 
-Qt3DCore::QBackendNode *GeometryRendererFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *GeometryRendererFunctor::create(Qt3DCore::QNodeId id) const
 {
-    GeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(change->subjectId());
+    GeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(id);
     geometryRenderer->setManager(m_manager);
     geometryRenderer->setRenderer(m_renderer);
     return geometryRenderer;

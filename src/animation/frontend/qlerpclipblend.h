@@ -75,7 +75,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QLerpClipBlend)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // Qt3DAnimation

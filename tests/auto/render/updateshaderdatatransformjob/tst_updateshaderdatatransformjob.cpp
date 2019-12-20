@@ -37,7 +37,6 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include "qmlscenereader.h"
 

@@ -42,9 +42,6 @@
 #include <QDebug>
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
@@ -173,7 +170,7 @@ void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     }
 }
 
-// Called by sceneChangeEvent or TextureDownloadRequest (both in AspectThread context)
+// Called by syncFromFrontend or TextureDownloadRequest (both in AspectThread context)
 void Texture::setDataGenerator(const QTextureGeneratorPtr &generator)
 {
     m_dataFunctor = generator;
@@ -190,43 +187,6 @@ bool Texture::isValid(TextureImageManager *manager) const
     return true;
 }
 
-void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureData>>(change);
-    const auto &data = typedChange->data;
-
-    m_properties.target = data.target;
-    m_properties.format = data.format;
-    m_properties.width = data.width;
-    m_properties.height = data.height;
-    m_properties.depth = data.depth;
-    m_properties.generateMipMaps = data.autoMipMap;
-    m_properties.layers = data.layers;
-    m_properties.samples = data.samples;
-    m_parameters.minificationFilter = data.minFilter;
-    m_parameters.magnificationFilter = data.magFilter;
-    m_parameters.wrapModeX = data.wrapModeX;
-    m_parameters.wrapModeY = data.wrapModeY;
-    m_parameters.wrapModeZ = data.wrapModeZ;
-    m_parameters.maximumAnisotropy = data.maximumAnisotropy;
-    m_parameters.comparisonFunction = data.comparisonFunction;
-    m_parameters.comparisonMode = data.comparisonMode;
-    m_dataFunctor = data.dataFunctor;
-    m_sharedTextureId = data.sharedTextureId;
-
-    m_textureImageIds = data.textureImageIds;
-    if (m_textureImageIds.size())
-        addDirtyFlag(DirtyImageGenerators);
-
-    const QVector<QTextureDataUpdate> initialDataUpdates = data.initialDataUpdates;
-    for (const QTextureDataUpdate &initialUpdate : initialDataUpdates)
-        addTextureDataUpdate(initialUpdate);
-
-    addDirtyFlag(DirtyFlags(DirtyImageGenerators|DirtyProperties|DirtyParameters));
-    if (m_sharedTextureId > 0)
-        addDirtyFlag(DirtySharedTextureId);
-}
-
 void Texture::addTextureDataUpdate(const QTextureDataUpdate &update)
 {
     m_pendingTextureDataUpdates.push_back(update);
@@ -241,14 +201,14 @@ TextureFunctor::TextureFunctor(AbstractRenderer *renderer,
 {
 }
 
-Qt3DCore::QBackendNode *TextureFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *TextureFunctor::create(Qt3DCore::QNodeId id) const
 {
-    Texture *backend = m_textureNodeManager->getOrCreateResource(change->subjectId());
+    Texture *backend = m_textureNodeManager->getOrCreateResource(id);
     backend->setRenderer(m_renderer);
     // Remove id from cleanupList if for some reason we were in the dirty list of texture
     // (Can happen when a node destroyed is followed by a node created change
     // in the same loop, when changing parent for instance)
-    m_textureNodeManager->removeTextureIdToCleanup(change->subjectId());
+    m_textureNodeManager->removeTextureIdToCleanup(id);
     return backend;
 }
 

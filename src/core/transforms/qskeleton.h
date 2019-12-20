@@ -69,7 +69,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QSkeleton)
-    QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DCore

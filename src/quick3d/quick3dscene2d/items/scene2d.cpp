@@ -34,9 +34,6 @@
 **
 ****************************************************************************/
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DQuickScene2D/qscene2d.h>
 #include <Qt3DRender/qpicktriangleevent.h>
@@ -457,9 +454,6 @@ bool Scene2D::registerObjectPickerEvents(Qt3DCore::QEntity *qentity)
         handlePickEvent(QEvent::MouseMove, pick);
     });
 
-    Qt3DCore::QBackendNodePrivate *priv = Qt3DCore::QBackendNodePrivate::get(this);
-    Qt3DCore::QChangeArbiter *arbiter = static_cast<Qt3DCore::QChangeArbiter*>(priv->m_arbiter);
-    arbiter->registerObserver(d_ptr, entity->componentUuid<ObjectPicker>());
     return true;
 }
 
@@ -469,10 +463,6 @@ void Scene2D::unregisterObjectPickerEvents(Qt3DCore::QNodeId entityId)
     if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::EntityHandle,
                                             entityId, (void**)&entity, nullptr))
         return;
-
-    Qt3DCore::QBackendNodePrivate *priv = Qt3DCore::QBackendNodePrivate::get(this);
-    Qt3DCore::QChangeArbiter *arbiter = static_cast<Qt3DCore::QChangeArbiter*>(priv->m_arbiter);
-    arbiter->unregisterObserver(d_ptr, entity->componentUuid<ObjectPicker>());
 }
 
 void Scene2D::handlePickEvent(int type, const Qt3DRender::QPickEvent *ev)

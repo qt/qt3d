@@ -39,7 +39,6 @@
 
 #include "qpolygonoffset.h"
 #include "qpolygonoffset_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -137,16 +136,6 @@ void QPolygonOffset::setDepthSteps(float depthSteps)
         d->m_depthSteps = depthSteps;
         emit depthStepsChanged(d->m_depthSteps);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QPolygonOffset::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QPolygonOffsetData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QPolygonOffset);
-    data.scaleFactor = d->m_scaleFactor;
-    data.depthSteps = d->m_depthSteps;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

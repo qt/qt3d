@@ -70,7 +70,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QStencilMask)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DRender

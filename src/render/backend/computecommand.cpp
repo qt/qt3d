@@ -39,7 +39,6 @@
 
 #include "computecommand_p.h"
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qcomputecommand_p.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 

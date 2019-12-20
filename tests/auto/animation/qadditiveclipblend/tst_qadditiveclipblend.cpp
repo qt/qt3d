@@ -33,10 +33,7 @@
 #include <Qt3DAnimation/private/qadditiveclipblend_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QAdditiveClipBlend : public QObject
 {
@@ -125,97 +122,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DAnimation::QAdditiveClipBlend addBlend;
-        Qt3DAnimation::QAdditiveClipBlend baseClip;
-        Qt3DAnimation::QAdditiveClipBlend additiveClip;
-
-        addBlend.setBaseClip(&baseClip);
-        addBlend.setAdditiveClip(&additiveClip);
-        addBlend.setAdditiveFactor(0.8f);
-
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&addBlend);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 3); // 1 + 2 clips
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QAdditiveClipBlendData>>(creationChanges.first());
-            const Qt3DAnimation::QAdditiveClipBlendData cloneData = creationChangeData->data;
-
-            QCOMPARE(addBlend.additiveFactor(), cloneData.additiveFactor);
-            QCOMPARE(addBlend.id(), creationChangeData->subjectId());
-            QCOMPARE(addBlend.isEnabled(), true);
-            QCOMPARE(addBlend.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(addBlend.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(cloneData.baseClipId, baseClip.id());
-            QCOMPARE(cloneData.additiveClipId, additiveClip.id());
-        }
-
-        // WHEN
-        addBlend.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&addBlend);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 3); // 1 + 2 clips
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QAdditiveClipBlendData>>(creationChanges.first());
-            const Qt3DAnimation::QAdditiveClipBlendData cloneData = creationChangeData->data;
-
-            QCOMPARE(addBlend.additiveFactor(), cloneData.additiveFactor);
-            QCOMPARE(addBlend.id(), creationChangeData->subjectId());
-            QCOMPARE(addBlend.isEnabled(), false);
-            QCOMPARE(addBlend.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(addBlend.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(cloneData.baseClipId, baseClip.id());
-            QCOMPARE(cloneData.additiveClipId, additiveClip.id());
-        }
-    }
-
-    void checkAdditiveFactorUpdate()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        Qt3DAnimation::QAdditiveClipBlend addBlend;
-        arbiter.setArbiterOnNode(&addBlend);
-
-        {
-            // WHEN
-            addBlend.setAdditiveFactor(0.4f);
-
-            // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &addBlend);
-
-            arbiter.dirtyNodes.clear();
-        }
-
-        {
-            // WHEN
-            addBlend.setAdditiveFactor(0.4f);
-
-            // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
-        }
-
-    }
-
     void checkBaseClipUpdate()
     {
         // GIVEN
@@ -229,11 +135,10 @@ private Q_SLOTS:
             addBlend.setBaseClip(baseClip);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &addBlend);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &addBlend);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -241,8 +146,7 @@ private Q_SLOTS:
             addBlend.setBaseClip(baseClip);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
@@ -259,19 +163,16 @@ private Q_SLOTS:
             addBlend.setAdditiveClip(additiveClip);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &addBlend);
-            arbiter.dirtyNodes.clear();
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &addBlend);
+            arbiter.clear();
         }
 
         {
             // WHEN
             addBlend.setAdditiveClip(additiveClip);
 
-            //
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 

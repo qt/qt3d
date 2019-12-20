@@ -41,7 +41,6 @@
 #include "qaction_p.h"
 
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -118,7 +117,7 @@ void QAction::addInput(QAbstractActionInput *input)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(input, &QAction::removeInput, d->m_inputs);
 
-        d->updateNode(input, "inputs", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -130,7 +129,7 @@ void QAction::removeInput(QAbstractActionInput *input)
     Q_D(QAction);
     if (d->m_inputs.contains(input)) {
 
-        d->updateNode(input, "inputs", Qt3DCore::PropertyValueRemoved);
+        d->update();
 
         d->m_inputs.removeOne(input);
 
@@ -146,19 +145,6 @@ QVector<QAbstractActionInput *> QAction::inputs() const
 {
     Q_D(const QAction);
     return d->m_inputs;
-}
-
-// TODO Unused remove in Qt6
-void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QAction::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QActionData>::create(this);
-    auto &data = creationChange->data;
-    data.inputIds = qIdsForNodes(inputs());
-    return creationChange;
 }
 
 } // Qt3DInput

@@ -30,7 +30,6 @@
 #include <QtTest/QTest>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include "testrenderer.h"
 #include "qbackendnodetester.h"
 

@@ -84,7 +84,7 @@ class LogicalDeviceNodeFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit LogicalDeviceNodeFunctor(LogicalDeviceManager *manager);
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const final;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
     void destroy(Qt3DCore::QNodeId id) const final;
 

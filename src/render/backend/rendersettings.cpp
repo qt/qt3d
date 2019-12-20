@@ -109,9 +109,8 @@ RenderSettingsFunctor::RenderSettingsFunctor(AbstractRenderer *renderer)
 {
 }
 
-Qt3DCore::QBackendNode *RenderSettingsFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *RenderSettingsFunctor::create(Qt3DCore::QNodeId) const
 {
-    Q_UNUSED(change)
     if (m_renderer->settings() != nullptr) {
         qWarning() << "Renderer settings already exists";
         return nullptr;

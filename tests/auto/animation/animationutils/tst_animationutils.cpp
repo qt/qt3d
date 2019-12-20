@@ -46,7 +46,7 @@
 #include <QtCore/qbitarray.h>
 
 #include <qbackendnodetester.h>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 using namespace Qt3DAnimation::Animation;
 

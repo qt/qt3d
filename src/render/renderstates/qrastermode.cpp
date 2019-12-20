@@ -39,7 +39,6 @@
 
 #include "qrastermode.h"
 #include "qrastermode_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -178,16 +177,6 @@ void QRasterMode::setFaceMode(QRasterMode::FaceMode faceMode)
         d->m_faceMode = faceMode;
         emit faceModeChanged(faceMode);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QRasterMode::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QRasterModeData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRasterMode);
-    data.rasterMode = d->m_rasterMode;
-    data.faceMode = d->m_faceMode;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

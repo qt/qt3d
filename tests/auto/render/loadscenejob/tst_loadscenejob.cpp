@@ -32,10 +32,9 @@
 #include <Qt3DRender/private/qsceneimporter_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class TestSceneImporter : public Qt3DRender::QSceneImporter
 {
@@ -139,7 +138,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(scene != nullptr);
-        Qt3DCore::QBackendNodePrivate::get(scene)->setArbiter(&arbiter);
 
         // WHEN
         Qt3DRender::Render::LoadSceneJob loadSceneJob(url, sceneId);
@@ -165,7 +163,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(scene != nullptr);
-        Qt3DCore::QBackendNodePrivate::get(scene)->setArbiter(&arbiter);
 
         // WHEN
         Qt3DRender::Render::LoadSceneJob loadSceneJob(url, sceneId);
@@ -194,7 +191,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(scene != nullptr);
-        Qt3DCore::QBackendNodePrivate::get(scene)->setArbiter(&arbiter);
 
         // WHEN
         Qt3DRender::Render::LoadSceneJob loadSceneJob(url, sceneId);
@@ -212,7 +208,6 @@ private Q_SLOTS:
     {
         // GIVEN
         const QUrl url(QStringLiteral("file:///URL"));
-        TestArbiter arbiter;
         Qt3DRender::Render::NodeManagers nodeManagers;
         TestSceneImporter fakeImporter(true, true);
         Qt3DCore::QNodeId sceneId = Qt3DCore::QNodeId::createId();
@@ -220,7 +215,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(scene != nullptr);
-        Qt3DCore::QBackendNodePrivate::get(scene)->setArbiter(&arbiter);
 
         // WHEN
         Qt3DRender::Render::LoadSceneJob loadSceneJob(url, sceneId);

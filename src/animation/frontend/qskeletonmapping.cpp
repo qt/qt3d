@@ -41,8 +41,6 @@
 #include "qskeletonmapping_p.h"
 #include <Qt3DCore/qabstractskeleton.h>
 
-#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
@@ -51,7 +49,7 @@ QSkeletonMappingPrivate::QSkeletonMappingPrivate()
     : QAbstractChannelMappingPrivate()
     , m_skeleton(nullptr)
 {
-    m_mappingType = QChannelMappingCreatedChangeBase::SkeletonMapping;
+    m_mappingType = QAbstractChannelMappingPrivate::SkeletonMapping;
 }
 
 QSkeletonMapping::QSkeletonMapping(Qt3DCore::QNode *parent)
@@ -92,15 +90,6 @@ void QSkeletonMapping::setSkeleton(Qt3DCore::QAbstractSkeleton *skeleton)
         d->registerDestructionHelper(d->m_skeleton, &QSkeletonMapping::setSkeleton, d->m_skeleton);
 
     emit skeletonChanged(skeleton);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QSkeletonMapping::createNodeCreationChange() const
-{
-    auto creationChange = QChannelMappingCreatedChangePtr<QSkeletonMappingData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QSkeletonMapping);
-    data.skeletonId = Qt3DCore::qIdForNode(d->m_skeleton);
-    return creationChange;
 }
 
 } // namespace Qt3DAnimation

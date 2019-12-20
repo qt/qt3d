@@ -40,7 +40,6 @@
 #include "qskeleton.h"
 #include "qskeleton_p.h"
 #include <Qt3DCore/qjoint.h>
-#include <Qt3DCore/private/qskeletoncreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +49,7 @@ QSkeletonPrivate::QSkeletonPrivate()
     : QAbstractSkeletonPrivate()
     , m_rootJoint(nullptr)
 {
-    m_type = QSkeletonCreatedChangeBase::Skeleton;
+    m_type = Skeleton;
 }
 
 /*!
@@ -135,16 +134,6 @@ void QSkeleton::setRootJoint(Qt3DCore::QJoint *rootJoint)
 
         emit rootJointChanged(rootJoint);
     }
-}
-
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QSkeleton::createNodeCreationChange() const
-{
-    auto creationChange = QSkeletonCreatedChangePtr<QSkeletonData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QSkeleton);
-    data.rootJointId = qIdForNode(d->m_rootJoint);
-    return creationChange;
 }
 
 } // namespace Qt3DCore

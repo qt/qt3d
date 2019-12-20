@@ -35,9 +35,8 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 #include "testrenderer.h"
 
 class TestFunctor : public Qt3DRender::QBufferDataGenerator
@@ -292,15 +291,13 @@ private Q_SLOTS:
 
         // WHEN
         TestArbiter arbiter;
-        Qt3DCore::QBackendNodePrivate::get(&backendBuffer)->setArbiter(&arbiter);
         backendBuffer.executeFunctor();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 0);
         QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
         QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, -1);
 
-        arbiter.events.clear();
+        arbiter.clear();
         backendBuffer.pendingBufferUpdates().clear();
 
         // WHEN

@@ -48,8 +48,6 @@ HEADERS += \
     $$PWD/qbuffercapture.h \
     $$PWD/qbuffercapture_p.h \
     $$PWD/buffercapture_p.h \
-    $$PWD/qframegraphnodecreatedchange.h \
-    $$PWD/qframegraphnodecreatedchange_p.h \
     $$PWD/qmemorybarrier.h \
     $$PWD/qmemorybarrier_p.h \
     $$PWD/memorybarrier_p.h \
@@ -108,7 +106,6 @@ SOURCES += \
     $$PWD/rendercapture.cpp \
     $$PWD/qbuffercapture.cpp \
     $$PWD/buffercapture.cpp \
-    $$PWD/qframegraphnodecreatedchange.cpp \
     $$PWD/qmemorybarrier.cpp \
     $$PWD/memorybarrier.cpp \
     $$PWD/qproximityfilter.cpp \

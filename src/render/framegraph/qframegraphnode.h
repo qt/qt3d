@@ -61,7 +61,6 @@ public:
 
 protected:
     explicit QFrameGraphNode(QFrameGraphNodePrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 
 private Q_SLOTS:
     void onParentChanged(QObject *);

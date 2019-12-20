@@ -84,7 +84,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QAlphaTest)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DRender

@@ -29,71 +29,16 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/qclearbuffers_p.h>
-
-#include "testpostmanarbiter.h"
+#include <testarbiter.h>
 
 class tst_QClearBuffers: public QObject
 {
     Q_OBJECT
 
 private Q_SLOTS:
-
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QClearBuffers *>("clearBuffers");
-        QTest::addColumn<Qt3DRender::QClearBuffers::BufferType>("bufferType");
-
-        Qt3DRender::QClearBuffers *defaultConstructed = new Qt3DRender::QClearBuffers();
-        QTest::newRow("defaultConstructed") << defaultConstructed << Qt3DRender::QClearBuffers::None;
-
-        Qt3DRender::QClearBuffers *allBuffers = new Qt3DRender::QClearBuffers();
-        allBuffers->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
-        QTest::newRow("allBuffers") << allBuffers << Qt3DRender::QClearBuffers::AllBuffers;
-
-        Qt3DRender::QClearBuffers *depthBuffer = new Qt3DRender::QClearBuffers();
-        depthBuffer->setBuffers(Qt3DRender::QClearBuffers::DepthBuffer);
-        QTest::newRow("depthBuffer") << depthBuffer << Qt3DRender::QClearBuffers::DepthBuffer;
-
-        Qt3DRender::QClearBuffers *colorDepthBuffer = new Qt3DRender::QClearBuffers();
-        colorDepthBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
-        QTest::newRow("colorDepthBuffer") << colorDepthBuffer << Qt3DRender::QClearBuffers::ColorDepthBuffer;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QClearBuffers *, clearBuffers);
-        QFETCH(Qt3DRender::QClearBuffers::BufferType, bufferType);
-
-        // THEN
-        QCOMPARE(clearBuffers->buffers(), bufferType);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(clearBuffers);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1);
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QClearBuffersData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QClearBuffersData>>(creationChanges.first());
-        const Qt3DRender::QClearBuffersData &cloneData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(clearBuffers->id(), creationChangeData->subjectId());
-        QCOMPARE(clearBuffers->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(clearBuffers->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(clearBuffers->buffers(), cloneData.buffersType);
-        QCOMPARE(clearBuffers->clearColor(), cloneData.clearColor);
-        QCOMPARE(clearBuffers->clearDepthValue(), cloneData.clearDepthValue);
-        QCOMPARE(clearBuffers->clearStencilValue(), cloneData.clearStencilValue);
-
-        delete clearBuffers;
-    }
 
     void checkPropertyUpdates()
     {
@@ -106,28 +51,25 @@ private Q_SLOTS:
         clearBuffer->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), clearBuffer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), clearBuffer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         clearBuffer->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
         // WHEN
         clearBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), clearBuffer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), clearBuffer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 };
 

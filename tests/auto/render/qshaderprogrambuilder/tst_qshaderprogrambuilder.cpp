@@ -33,10 +33,7 @@
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QShaderProgramBuilder : public Qt3DRender::QShaderProgramBuilder
 {
@@ -264,79 +261,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QShaderProgramBuilder builder;
-
-        builder.setShaderProgram(new Qt3DRender::QShaderProgram(&builder));
-        builder.setEnabledLayers({"foo", "bar"});
-        builder.setVertexShaderGraph(QUrl::fromEncoded("qrc:/vertex.json"));
-        builder.setTessellationControlShaderGraph(QUrl::fromEncoded("qrc:/tesscontrol.json"));
-        builder.setTessellationEvaluationShaderGraph(QUrl::fromEncoded("qrc:/tesseval.json"));
-        builder.setGeometryShaderGraph(QUrl::fromEncoded("qrc:/geometry.json"));
-        builder.setFragmentShaderGraph(QUrl::fromEncoded("qrc:/fragment.json"));
-        builder.setComputeShaderGraph(QUrl::fromEncoded("qrc:/compute.json"));
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&builder);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // second one is for the shader program child
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QShaderProgramBuilderData>>(creationChanges.first());
-            const Qt3DRender::QShaderProgramBuilderData cloneData = creationChangeData->data;
-
-            QCOMPARE(builder.shaderProgram()->id(), cloneData.shaderProgramId);
-            QCOMPARE(builder.enabledLayers(), cloneData.enabledLayers);
-            QCOMPARE(builder.vertexShaderGraph(), cloneData.vertexShaderGraph);
-            QCOMPARE(builder.tessellationControlShaderGraph(), cloneData.tessellationControlShaderGraph);
-            QCOMPARE(builder.tessellationEvaluationShaderGraph(), cloneData.tessellationEvaluationShaderGraph);
-            QCOMPARE(builder.geometryShaderGraph(), cloneData.geometryShaderGraph);
-            QCOMPARE(builder.fragmentShaderGraph(), cloneData.fragmentShaderGraph);
-            QCOMPARE(builder.computeShaderGraph(), cloneData.computeShaderGraph);
-            QCOMPARE(builder.id(), creationChangeData->subjectId());
-            QCOMPARE(builder.isEnabled(), true);
-            QCOMPARE(builder.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(builder.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        builder.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&builder);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // second one is for the shader program child
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QShaderProgramBuilderData>>(creationChanges.first());
-            const Qt3DRender::QShaderProgramBuilderData cloneData = creationChangeData->data;
-
-            QCOMPARE(builder.shaderProgram()->id(), cloneData.shaderProgramId);
-            QCOMPARE(builder.enabledLayers(), cloneData.enabledLayers);
-            QCOMPARE(builder.vertexShaderGraph(), cloneData.vertexShaderGraph);
-            QCOMPARE(builder.tessellationControlShaderGraph(), cloneData.tessellationControlShaderGraph);
-            QCOMPARE(builder.tessellationEvaluationShaderGraph(), cloneData.tessellationEvaluationShaderGraph);
-            QCOMPARE(builder.geometryShaderGraph(), cloneData.geometryShaderGraph);
-            QCOMPARE(builder.fragmentShaderGraph(), cloneData.fragmentShaderGraph);
-            QCOMPARE(builder.computeShaderGraph(), cloneData.computeShaderGraph);
-            QCOMPARE(builder.id(), creationChangeData->subjectId());
-            QCOMPARE(builder.isEnabled(), false);
-            QCOMPARE(builder.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(builder.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkShaderProgramUpdate()
     {
         // GIVEN
@@ -351,11 +275,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &builder);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &builder);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -364,8 +287,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
@@ -383,11 +305,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &builder);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &builder);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -396,8 +317,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
@@ -414,11 +334,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &builder);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &builder);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -427,8 +346,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -446,11 +364,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &builder);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &builder);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -459,8 +376,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -478,11 +394,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &builder);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &builder);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -491,8 +406,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -510,11 +424,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &builder);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &builder);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -523,8 +436,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -542,11 +454,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &builder);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &builder);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -555,8 +466,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -574,11 +484,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &builder);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &builder);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -587,8 +496,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 

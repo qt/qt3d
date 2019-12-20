@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,7 +68,13 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractChannelMapping)
 
-    QChannelMappingCreatedChangeBase::MappingType m_mappingType;
+    enum MappingType {
+        ChannelMapping = 0,
+        SkeletonMapping,
+        CallbackMapping
+    };
+
+    MappingType m_mappingType;
 };
 
 struct QAbstractChannelMappingData

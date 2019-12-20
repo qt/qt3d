@@ -42,7 +42,6 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qscenechange.h>
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
 
@@ -78,10 +77,7 @@ protected:
 
     template<class Frontend>
     void registerBackendType(const QBackendNodeMapperPtr &functor);
-    template<class Frontend, bool supportsSyncing>
-    void registerBackendType(const QBackendNodeMapperPtr &functor);
     void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor);
-    void registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor, bool supportsSyncing);
     template<class Frontend>
     void unregisterBackendType();
     void unregisterBackendType(const QMetaObject &);
@@ -108,12 +104,6 @@ void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
     registerBackendType(Frontend::staticMetaObject, functor);
 }
 
-template<class Frontend, bool supportsSyncing>
-void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
-{
-    registerBackendType(Frontend::staticMetaObject, functor, supportsSyncing);
-}
-
 template<class Frontend>
 void QAbstractAspect::unregisterBackendType()
 {
@@ -128,7 +118,6 @@ QT_END_NAMESPACE
     QT_BEGIN_NAMESPACE \
     namespace Qt3DCore { \
         typedef QAbstractAspect *(*AspectCreateFunction)(QObject *); \
-        QT_DEPRECATED Q_3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &, const QMetaObject *, AspectCreateFunction); \
         Q_3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1String &, const QMetaObject *, AspectCreateFunction); \
     } \
     QT_END_NAMESPACE \

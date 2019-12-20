@@ -37,18 +37,13 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QTest>
 #include <Qt3DRender/qsetfence.h>
 #include <Qt3DRender/private/qsetfence_p.h>
 #include <Qt3DRender/private/setfence_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_SetFence : public Qt3DCore::QBackendNodeTester
 {
@@ -119,50 +114,6 @@ private Q_SLOTS:
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::FrameGraphDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
         }
-    }
-
-    void checkSetHandleType()
-    {
-        // GIVEN
-        Qt3DRender::Render::SetFence backendSetFence;
-        TestRenderer renderer;
-        TestArbiter arbiter;
-
-        Qt3DCore::QBackendNodePrivate::get(&backendSetFence)->setArbiter(&arbiter);
-        backendSetFence.setRenderer(&renderer);
-
-        // WHEN
-        backendSetFence.setHandleType(Qt3DRender::QSetFence::OpenGLFenceId);
-
-        // THEN
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(arbiter.events.count(), 1);
-        QCOMPARE(change->propertyName(), "handleType");
-        QCOMPARE(change->value().value<Qt3DRender::QSetFence::HandleType>(), Qt3DRender::QSetFence::OpenGLFenceId);
-
-        arbiter.events.clear();
-    }
-
-    void checkSetHandle()
-    {
-        // GIVEN
-        Qt3DRender::Render::SetFence backendSetFence;
-        TestRenderer renderer;
-        TestArbiter arbiter;
-
-        Qt3DCore::QBackendNodePrivate::get(&backendSetFence)->setArbiter(&arbiter);
-        backendSetFence.setRenderer(&renderer);
-
-        // WHEN
-        backendSetFence.setHandle(QVariant(984));
-
-        // THEN
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(arbiter.events.count(), 1);
-        QCOMPARE(change->propertyName(), "handle");
-        QCOMPARE(change->value(), QVariant(984));
-
-        arbiter.events.clear();
     }
 };
 

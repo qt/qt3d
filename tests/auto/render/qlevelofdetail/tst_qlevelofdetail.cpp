@@ -29,56 +29,17 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qlevelofdetail.h>
 #include <Qt3DRender/private/qlevelofdetail_p.h>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QLevelOfDetail: public QObject
 {
     Q_OBJECT
 
 private Q_SLOTS:
-
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QLevelOfDetail *>("lod");
-
-        Qt3DRender::QLevelOfDetail *defaultConstructed = new Qt3DRender::QLevelOfDetail();
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        Qt3DRender::QLevelOfDetail *lodDst = new Qt3DRender::QLevelOfDetail();
-        QTest::newRow("distLod") << lodDst;
-
-        Qt3DRender::QLevelOfDetail *lodPx = new Qt3DRender::QLevelOfDetail();
-        QTest::newRow("pxLod") << lodPx;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QLevelOfDetail *, lod);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(lod);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1);
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QLevelOfDetailData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QLevelOfDetailData>>(creationChanges.first());
-        const Qt3DRender::QLevelOfDetailData &cloneData = creationChangeData->data;
-
-        QCOMPARE(lod->id(), creationChangeData->subjectId());
-        QCOMPARE(lod->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(lod->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(lod->currentIndex(), cloneData.currentIndex);
-        QCOMPARE(lod->thresholdType(), cloneData.thresholdType);
-        QCOMPARE(lod->thresholds(), cloneData.thresholds);
-    }
 
     void checkPropertyUpdates()
     {
@@ -93,11 +54,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), lod.data());
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), lod.data());
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -107,11 +67,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), lod.data());
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), lod.data());
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
     }
 };

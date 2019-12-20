@@ -30,13 +30,11 @@
 #include <QtTest/QSignalSpy>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DRender/QRayCaster>
+#include <Qt3DRender/private/qabstractraycaster_p.h>
 #include <Qt3DRender/QLayer>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class MyRayCaster : public Qt3DRender::QRayCaster
 {
@@ -46,11 +44,6 @@ public:
         : Qt3DRender::QRayCaster(parent)
     {
         qRegisterMetaType<Qt3DRender::QAbstractRayCaster::Hits>("Hits");
-    }
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) final
-    {
-        Qt3DRender::QRayCaster::sceneChangeEvent(change);
     }
 
 private:
@@ -112,11 +105,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), rayCaster.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), rayCaster.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         auto layer = new Qt3DRender::QLayer(rayCaster.data());
@@ -125,12 +117,9 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), rayCaster.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
 
-        arbiter.dirtyNodes.clear();
-        arbiter.events.clear();
+        arbiter.clear();
 
         // WHEN
         layer = new Qt3DRender::QLayer(rayCaster.data());
@@ -139,12 +128,9 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), rayCaster.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
 
-        arbiter.dirtyNodes.clear();
-        arbiter.events.clear();
+        arbiter.clear();
 
         // WHEN
         layer = rayCaster->layers().at(0);
@@ -152,12 +138,9 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), rayCaster.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
 
-        arbiter.dirtyNodes.clear();
-        arbiter.events.clear();
+        arbiter.clear();
     }
 
     void checkLayerBookkeeping()
@@ -194,14 +177,23 @@ private Q_SLOTS:
         }
     }
 
-    void checkBackendUpdates_data()
-    {
-        QTest::addColumn<QByteArray>("signalPrototype");
-        QTest::addColumn<QByteArray>("propertyName");
 
-        QTest::newRow("hits")
-                << QByteArray(SIGNAL(hitsChanged(const Hits &)))
-                << QByteArrayLiteral("hits");
+    void checkBackendUpdates()
+    {
+        // GIVEN
+        QScopedPointer<MyRayCaster> rayCaster(new MyRayCaster());
+        QSignalSpy spy(rayCaster.data(), SIGNAL(hitsChanged(const Hits &)));
+        Qt3DRender::QRayCaster::Hits hits;
+
+        QVERIFY(spy.isValid());
+
+        // WHEN
+        Qt3DRender::QAbstractRayCasterPrivate *d = Qt3DRender::QAbstractRayCasterPrivate::get(rayCaster.data());
+        d->dispatchHits(hits);
+
+        // THEN
+        // Check that the QRayCaster triggers the expected signal
+        QCOMPARE(spy.count(), 1);
     }
 };
 

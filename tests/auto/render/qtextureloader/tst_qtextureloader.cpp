@@ -35,9 +35,7 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <Qt3DRender/private/qtexture_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QTextureLoader : public QObject
 {
@@ -107,56 +105,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QTextureLoader textureLoader;
-
-        textureLoader.setSource(QUrl(QStringLiteral("SomeUrl")));
-        textureLoader.setMirrored(false);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&textureLoader);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QAbstractTextureData>>(creationChanges.first());
-            const Qt3DRender::QAbstractTextureData cloneData = creationChangeData->data;
-
-            QCOMPARE(textureLoader.id(), creationChangeData->subjectId());
-            QCOMPARE(textureLoader.isEnabled(), true);
-            QCOMPARE(textureLoader.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(textureLoader.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        textureLoader.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&textureLoader);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QAbstractTextureData>>(creationChanges.first());
-
-            QCOMPARE(textureLoader.id(), creationChangeData->subjectId());
-            QCOMPARE(textureLoader.isEnabled(), false);
-            QCOMPARE(textureLoader.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(textureLoader.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkSourceUpdate()
     {
         // GIVEN
@@ -170,26 +118,16 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &textureLoader);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &textureLoader);
 
             Qt3DRender::QAbstractTexturePrivate *d = dynamic_cast<Qt3DRender::QAbstractTexturePrivate *>(Qt3DRender::QAbstractTexturePrivate::get(&textureLoader));
             const auto generator = qSharedPointerCast<Qt3DRender::QTextureFromSourceGenerator>(d->dataFunctor());
             QVERIFY(generator);
             QCOMPARE(generator->url(), QUrl(QStringLiteral("Gary")));
 
-            arbiter.events.clear();
+            arbiter.clear();
         }
-
-        {
-            // WHEN
-            textureLoader.setSource(QUrl(QStringLiteral("Gary")));
-            QCoreApplication::processEvents();
-
-            // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-        }
-
     }
 
     void checkMirroredUpdate()
@@ -205,15 +143,15 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &textureLoader);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &textureLoader);
 
             Qt3DRender::QAbstractTexturePrivate *d = dynamic_cast<Qt3DRender::QAbstractTexturePrivate *>(Qt3DRender::QAbstractTexturePrivate::get(&textureLoader));
             const auto generator = qSharedPointerCast<Qt3DRender::QTextureFromSourceGenerator>(d->dataFunctor());
             QVERIFY(generator);
             QCOMPARE(generator->isMirrored(), false);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -222,7 +160,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

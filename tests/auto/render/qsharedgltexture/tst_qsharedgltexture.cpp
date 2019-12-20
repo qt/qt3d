@@ -35,9 +35,7 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <Qt3DRender/private/qtexture_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QSharedGLTexture : public QObject
 {
@@ -81,58 +79,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QSharedGLTexture glTexture;
-
-        glTexture.setTextureId(1200);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&glTexture);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QAbstractTextureData>>(creationChanges.first());
-            const Qt3DRender::QAbstractTextureData cloneData = creationChangeData->data;
-
-            QCOMPARE(glTexture.id(), creationChangeData->subjectId());
-            QCOMPARE(glTexture.isEnabled(), true);
-            QCOMPARE(glTexture.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(glTexture.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(cloneData.sharedTextureId, 1200);
-        }
-
-        // WHEN
-        glTexture.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&glTexture);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QAbstractTextureData>>(creationChanges.first());
-            const Qt3DRender::QAbstractTextureData cloneData = creationChangeData->data;
-
-            QCOMPARE(glTexture.id(), creationChangeData->subjectId());
-            QCOMPARE(glTexture.isEnabled(), false);
-            QCOMPARE(glTexture.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(glTexture.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(cloneData.sharedTextureId, 1200);
-        }
-    }
-
     void checkTextureIdUpdate()
     {
         // GIVEN
@@ -146,11 +92,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &glTexture);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &glTexture);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -159,8 +104,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

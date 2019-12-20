@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <private/qt3drender_global_p.h>
 

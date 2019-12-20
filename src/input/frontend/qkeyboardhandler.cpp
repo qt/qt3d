@@ -237,23 +237,6 @@ void QKeyboardHandler::setFocus(bool focus)
     }
 }
 
-// TODO Unused remove in Qt6
-void QKeyboardHandler::sceneChangeEvent(const QSceneChangePtr &)
-{
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardHandler::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QKeyboardHandlerData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QKeyboardHandler);
-    data.keyboardDeviceId = qIdForNode(d->m_keyboardDevice);
-    data.focus = d->m_focus;
-
-    return creationChange;
-}
-
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit0Pressed(KeyEvent event)
 

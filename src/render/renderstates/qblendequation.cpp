@@ -66,7 +66,6 @@
 
 #include "qblendequation.h"
 #include "qblendequation_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -120,14 +119,6 @@ void QBlendEquation::setBlendFunction(QBlendEquation::BlendFunction blendFunctio
         d->m_blendFunction = blendFunction;
         emit blendFunctionChanged(blendFunction);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QBlendEquation::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QBlendEquationData>::create(this);
-    auto &data = creationChange->data;
-    data.blendFunction = d_func()->m_blendFunction;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

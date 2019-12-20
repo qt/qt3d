@@ -37,8 +37,6 @@
 #include "qchannelmapping.h"
 #include "qchannelmapping_p.h"
 
-#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
-
 #include <QtCore/qmetaobject.h>
 #include <QtCore/QMetaProperty>
 
@@ -110,7 +108,7 @@ QChannelMappingPrivate::QChannelMappingPrivate()
     , m_type(static_cast<int>(QVariant::Invalid))
     , m_componentCount(0)
 {
-    m_mappingType = QChannelMappingCreatedChangeBase::ChannelMapping;
+    m_mappingType = ChannelMapping;
 }
 
 /*!
@@ -246,19 +244,6 @@ void QChannelMapping::setProperty(const QString &property)
     blockNotifications(blocked);
 
     d->updatePropertyNameTypeAndComponentCount();
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() const
-{
-    auto creationChange = QChannelMappingCreatedChangePtr<QChannelMappingData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QChannelMapping);
-    data.channelName = d->m_channelName;
-    data.targetId = Qt3DCore::qIdForNode(d->m_target);
-    data.type = d->m_type;
-    data.componentCount = d->m_componentCount;
-    data.propertyName = d->m_propertyName;
-    return creationChange;
 }
 
 } // namespace Qt3DAnimation

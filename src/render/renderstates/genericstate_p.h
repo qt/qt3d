@@ -53,7 +53,6 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRender/private/statemask_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>

@@ -42,8 +42,6 @@
 #include "qshaderdata_p.h"
 #include <QMetaProperty>
 #include <QMetaObject>
-#include <Qt3DCore/qdynamicpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <private/qbackendnode_p.h>
 #include <private/managers_p.h>
 #include <private/nodemanagers_p.h>
@@ -220,9 +218,9 @@ RenderShaderDataFunctor::RenderShaderDataFunctor(AbstractRenderer *renderer, Nod
 {
 }
 
-Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(Qt3DCore::QNodeId id) const
 {
-    ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(change->subjectId());
+    ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(id);
     backend->setManagers(m_managers);
     backend->setRenderer(m_renderer);
     return backend;

@@ -35,7 +35,6 @@
 ****************************************************************************/
 
 #include "clipblendvalue_p.h"
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 #include <Qt3DAnimation/qclipblendvalue.h>
 #include <Qt3DAnimation/private/qclipblendvalue_p.h>
 

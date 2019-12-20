@@ -65,10 +65,6 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT SetFence : public FrameGraphNode
 public:
     SetFence();
     ~SetFence();
-
-    // Called by a job
-    void setHandle(const QVariant &handle);
-    void setHandleType(QSetFence::HandleType type);
 };
 
 } // namespace Render

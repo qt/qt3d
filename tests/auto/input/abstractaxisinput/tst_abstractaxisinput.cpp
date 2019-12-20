@@ -43,15 +43,6 @@ public:
         : Qt3DInput::QAbstractAxisInput(*new Qt3DInput::QAbstractAxisInputPrivate, parent)
     {
     }
-
-private:
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override
-    {
-        auto creationChange = Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAbstractAxisInputData>::create(this);
-        auto &data = creationChange->data;
-        data.sourceDeviceId = qIdForNode(sourceDevice());
-        return creationChange;
-    }
 };
 
 class DummyAxisInputBackend : public Qt3DInput::Input::AbstractAxisInput

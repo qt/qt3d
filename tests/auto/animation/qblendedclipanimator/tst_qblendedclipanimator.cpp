@@ -32,11 +32,9 @@
 #include <Qt3DAnimation/private/qblendedclipanimator_p.h>
 #include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qchannelmapper.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 class tst_QBlendedClipAnimator : public QObject
 {
@@ -187,68 +185,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
-        Qt3DAnimation::QChannelMapper channelMapper;
-        Qt3DAnimation::QLerpClipBlend blendRoot;
-
-        blendedClipAnimator.setBlendTree(&blendRoot);
-        blendedClipAnimator.setChannelMapper(&channelMapper);
-        blendedClipAnimator.setRunning(true);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&blendedClipAnimator);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 3); // 1 + mapper + blend tree root
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QBlendedClipAnimatorData>>(creationChanges.first());
-            const Qt3DAnimation::QBlendedClipAnimatorData cloneData = creationChangeData->data;
-
-            QCOMPARE(blendedClipAnimator.blendTree()->id(), cloneData.blendTreeRootId);
-            QCOMPARE(blendedClipAnimator.channelMapper()->id(), cloneData.mapperId);
-            QCOMPARE(blendedClipAnimator.isRunning(), cloneData.running);
-            QCOMPARE(blendedClipAnimator.id(), creationChangeData->subjectId());
-            QCOMPARE(blendedClipAnimator.isEnabled(), true);
-            QCOMPARE(blendedClipAnimator.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(blendedClipAnimator.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(blendedClipAnimator.loopCount(), cloneData.loops);
-            QCOMPARE(blendedClipAnimator.normalizedTime(), cloneData.normalizedTime);
-        }
-
-        // WHEN
-        blendedClipAnimator.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&blendedClipAnimator);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 3); // 1 + mapper + blend tree root
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QBlendedClipAnimatorData>>(creationChanges.first());
-            const Qt3DAnimation::QBlendedClipAnimatorData cloneData = creationChangeData->data;
-
-            QCOMPARE(blendedClipAnimator.blendTree()->id(), cloneData.blendTreeRootId);
-            QCOMPARE(blendedClipAnimator.channelMapper()->id(), cloneData.mapperId);
-            QCOMPARE(blendedClipAnimator.isRunning(), cloneData.running);
-            QCOMPARE(blendedClipAnimator.id(), creationChangeData->subjectId());
-            QCOMPARE(blendedClipAnimator.isEnabled(), false);
-            QCOMPARE(blendedClipAnimator.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(blendedClipAnimator.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkBlendTreeUpdate()
     {
         // GIVEN
@@ -262,11 +198,10 @@ private Q_SLOTS:
             blendedClipAnimator.setBlendTree(&blendRoot);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &blendedClipAnimator);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &blendedClipAnimator);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -274,8 +209,7 @@ private Q_SLOTS:
             blendedClipAnimator.setBlendTree(&blendRoot);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -310,11 +244,10 @@ private Q_SLOTS:
             blendedClipAnimator.setChannelMapper(&channelMapper);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &blendedClipAnimator);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &blendedClipAnimator);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -322,8 +255,7 @@ private Q_SLOTS:
             blendedClipAnimator.setChannelMapper(&channelMapper);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -357,11 +289,10 @@ private Q_SLOTS:
             blendedClipAnimator.setRunning(true);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &blendedClipAnimator);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &blendedClipAnimator);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -369,8 +300,7 @@ private Q_SLOTS:
             blendedClipAnimator.setRunning(true);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -387,11 +317,10 @@ private Q_SLOTS:
             blendedClipAnimator.setLoopCount(1584);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &blendedClipAnimator);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &blendedClipAnimator);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -399,8 +328,7 @@ private Q_SLOTS:
             blendedClipAnimator.setLoopCount(1584);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -417,11 +345,10 @@ private Q_SLOTS:
             blendedClipAnimator.setNormalizedTime(0.5f);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &blendedClipAnimator);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &blendedClipAnimator);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -429,8 +356,7 @@ private Q_SLOTS:
             blendedClipAnimator.setNormalizedTime(0.5f);
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

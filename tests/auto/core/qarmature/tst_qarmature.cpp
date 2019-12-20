@@ -33,9 +33,7 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-
-#include "testpostmanarbiter.h"
+#include <testarbiter.h>
 
 using namespace Qt3DCore;
 
@@ -50,44 +48,6 @@ public:
 
 private Q_SLOTS:
 
-    void checkCreationChange_data()
-    {
-        QTest::addColumn<QArmature *>("armature");
-
-        QArmature *defaultConstructed = new QArmature();
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        QArmature *armatureWithSkeleton = new QArmature();
-        armatureWithSkeleton->setSkeleton(new QSkeleton());
-        QTest::newRow("skeletonWithOneJoint") << armatureWithSkeleton;
-    }
-
-    void checkCreationChange()
-    {
-        // GIVEN
-        QFETCH(QArmature *, armature);
-
-        // WHEN
-        QNodeCreatedChangeGenerator creationChangeGenerator(armature);
-        QVector<QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        const int skeletonCount = armature->skeleton() ? 1 : 0;
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + skeletonCount);
-
-        const auto creationChangeData = qSharedPointerCast<QNodeCreatedChange<QArmatureData>>(creationChanges.first());
-        const QArmatureData &data = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(armature->id(), creationChangeData->subjectId());
-        QCOMPARE(armature->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(armature->metaObject(), creationChangeData->metaObject());
-        if (armature->skeleton()) {
-            QCOMPARE(armature->skeleton()->id(), data.skeletonId);
-        }
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -100,19 +60,19 @@ private Q_SLOTS:
         armature->setSkeleton(skeleton);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), armature.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), armature.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         armature->setSkeleton(nullptr);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), armature.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), armature.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkSkeletonBookkeeping()

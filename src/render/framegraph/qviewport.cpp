@@ -40,8 +40,6 @@
 #include "qviewport.h"
 #include "qviewport_p.h"
 
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -153,16 +151,6 @@ void QViewport::setGamma(float gamma)
         d->m_gamma = gamma;
         emit gammaChanged(gamma);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QViewport::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QViewportData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QViewport);
-    data.normalizedRect = d->m_normalizedRect;
-    data.gamma = d->m_gamma;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

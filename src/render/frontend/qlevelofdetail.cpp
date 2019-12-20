@@ -308,28 +308,6 @@ QLevelOfDetail::QLevelOfDetail(QLevelOfDetailPrivate &dd, QNode *parent)
 {
 }
 
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QLevelOfDetail::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLevelOfDetailData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QLevelOfDetail);
-    if (d->m_camera)
-        data.camera = d->m_camera->id();
-    data.currentIndex = d->m_currentIndex;
-    data.thresholdType = d->m_thresholdType;
-    data.thresholds = d->m_thresholds;
-    data.volumeOverride = d->m_volumeOverride;
-
-    return creationChange;
-}
-
-// TODO Unused remove in Qt6
-void QLevelOfDetail::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
 QCamera *QLevelOfDetail::camera() const
 {
     Q_D(const QLevelOfDetail);

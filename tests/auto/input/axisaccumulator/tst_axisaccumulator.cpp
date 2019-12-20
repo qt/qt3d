@@ -38,7 +38,7 @@
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAxisAccumulator>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_AxisAccumulator: public Qt3DCore::QBackendNodeTester
 {
@@ -147,7 +147,6 @@ private Q_SLOTS:
         // GIVEN
         TestArbiter arbiter;
         Qt3DInput::Input::AxisAccumulator backendAxisAccumulator;
-        Qt3DCore::QBackendNodePrivate::get(&backendAxisAccumulator)->setArbiter(&arbiter);
         backendAxisAccumulator.setEnabled(false);
 
         // WHEN
@@ -155,7 +154,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAxisAccumulator.value(), 0.0f);
-        QCOMPARE(arbiter.events.count(), 0);
+        QCOMPARE(arbiter.dirtyNodes().count(), 0);
     }
 
     void checkIntegration_data()

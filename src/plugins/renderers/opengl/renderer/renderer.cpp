@@ -97,6 +97,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <Qt3DRender/private/setfence_p.h>
+#include <Qt3DRender/private/qsetfence_p.h>
 
 #include <glbuffer_p.h>
 #include <graphicscontext_p.h>
@@ -269,7 +270,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(SynchronizerJobPtr::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
-    , m_sendSetFenceHandlesToFrontendJob(SynchronizerJobPtr::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
     , m_introspectShaderJob(SynchronizerPostFramePtr::create([this] { reloadDirtyShaders(); },
                                                              [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
                                                              JobTypes::DirtyShaderGathering))
@@ -1275,8 +1275,8 @@ void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
     }
 }
 
-// Executed in a job
-void Renderer::sendSetFenceHandlesToFrontend()
+// Executed in main thread when jobs done
+void Renderer::sendSetFenceHandlesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     const QVector<QPair<Qt3DCore::QNodeId, GLFence>> updatedSetFence = std::move(m_updatedSetFences);
     FrameGraphManager *fgManager = m_nodesManager->frameGraphManager();
@@ -1284,14 +1284,15 @@ void Renderer::sendSetFenceHandlesToFrontend()
         FrameGraphNode *fgNode = fgManager->lookupNode(pair.first);
         if (fgNode != nullptr) { // Node could have been deleted before we got a chance to notify it
             Q_ASSERT(fgNode->nodeType() == FrameGraphNode::SetFence);
-            SetFence *setFenceNode = static_cast<SetFence *>(fgNode);
-            setFenceNode->setHandleType(QSetFence::OpenGLFenceId);
-            setFenceNode->setHandle(QVariant::fromValue(pair.second));
+            QSetFence *frontend = static_cast<decltype(frontend)>(manager->lookupNode(fgNode->peerId()));
+            QSetFencePrivate *dFrontend = static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
+            dFrontend->setHandleType(QSetFence::OpenGLFenceId);
+            dFrontend->setHandle(QVariant::fromValue(pair.second));
         }
     }
 }
 
-// Executed in a job (in main thread when jobs done)
+// Executed in main thread when jobs done
 void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     // SubtreeEnabled
@@ -1853,6 +1854,7 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
         sendTextureChangesToFrontend(manager);
 
     sendDisablesToFrontend(manager);
+    sendSetFenceHandlesToFrontend(manager);
 }
 
 // Jobs we may have to run even if no rendering will happen
@@ -1877,10 +1879,6 @@ QVector<QAspectJobPtr> Renderer::preRenderingJobs()
     }
 
     QVector<QAspectJobPtr> jobs;
-
-    // Do we need to notify frontend about fence change?
-    if (m_updatedSetFences.size() > 0)
-        jobs.push_back(m_sendSetFenceHandlesToFrontendJob);
 
     if (m_sendBufferCaptureJob->hasRequests())
         jobs.push_back(m_sendBufferCaptureJob);

@@ -41,7 +41,6 @@
 #include "qentity_p.h"
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
 
@@ -144,7 +143,7 @@ void QEntityPrivate::removeDestroyedComponent(QComponent *comp)
     Q_CHECK_PTR(comp);
     qCDebug(Nodes) << Q_FUNC_INFO << comp;
 
-    updateNode(comp, nullptr, ComponentRemoved);
+    updateComponentRelationShip(comp, ComponentRelationshipChange::Removed);
     m_components.removeOne(comp);
 
     // Remove bookkeeping connection
@@ -223,7 +222,7 @@ void QEntity::addComponent(QComponent *comp)
     // Ensures proper bookkeeping
     d->registerPrivateDestructionHelper(comp, &QEntityPrivate::removeDestroyedComponent);
 
-    d->updateNode(comp, nullptr, ComponentAdded);
+    d->updateComponentRelationShip(comp, ComponentRelationshipChange::Added);
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);
 }
 
@@ -238,7 +237,7 @@ void QEntity::removeComponent(QComponent *comp)
 
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->removeEntity(this);
 
-    d->updateNode(comp, nullptr, ComponentRemoved);
+    d->updateComponentRelationShip(comp, ComponentRelationshipChange::Removed);
 
     d->m_components.removeOne(comp);
 
@@ -294,35 +293,17 @@ QString QEntityPrivate::dumpSceneGraph() const
     return dumpSG(q).join('\n');
 }
 
-QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
+void QEntityPrivate::updateComponentRelationShip(QComponent *component, ComponentRelationshipChange::RelationShip change)
 {
-    auto creationChange = QNodeCreatedChangePtr<QEntityData>::create(this);
-    auto &data = creationChange->data;
+    if (m_changeArbiter) {
+        // Ensure node has its postConstructorInit called if we reach this
+        // point, we could otherwise endup referencing a node that has yet
+        // to be created in the backend
+        QNodePrivate::get(component)->_q_ensureBackendNodeCreated();
 
-    Q_D(const QEntity);
-    data.parentEntityId = parentEntity() ? parentEntity()->id() : Qt3DCore::QNodeId();
-
-    // Find all child entities
-    QQueue<QNode *> queue;
-    queue.append(childNodes().toList());
-    data.childEntityIds.reserve(queue.size());
-    while (!queue.isEmpty()) {
-        auto *child = queue.dequeue();
-        auto *childEntity = qobject_cast<QEntity *>(child);
-        if (childEntity != nullptr)
-            data.childEntityIds.push_back(childEntity->id());
-        else
-            queue.append(child->childNodes().toList());
+        Q_Q(QEntity);
+        m_changeArbiter->addDirtyEntityComponentNodes(q, component, change);
     }
-
-    data.componentIdsAndTypes.reserve(d->m_components.size());
-    const QComponentVector &components = d->m_components;
-    for (QComponent *c : components) {
-        const auto idAndType = QNodeIdTypePair(c->id(), QNodePrivate::findStaticMetaObject(c->metaObject()));
-        data.componentIdsAndTypes.push_back(idAndType);
-    }
-
-    return creationChange;
 }
 
 void QEntity::onParentChanged(QObject *)

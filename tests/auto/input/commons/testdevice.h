@@ -60,7 +60,7 @@ public:
     explicit TestDeviceBackendNode(TestDevice *device)
         : Qt3DInput::QAbstractPhysicalDeviceBackendNode(ReadOnly)
     {
-        Qt3DCore::QBackendNodeTester().simulateInitialization(device, this);
+        Qt3DCore::QBackendNodeTester().simulateInitializationSync(device, this);
     }
 
     float axisValue(int axisIdentifier) const final

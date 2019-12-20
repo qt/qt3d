@@ -41,7 +41,6 @@
 #include "qrenderstateset_p.h"
 
 #include <Qt3DRender/qrenderstate.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -191,7 +190,7 @@ void QRenderStateSet::addRenderState(QRenderState *state)
         if (!state->parent())
             state->setParent(this);
 
-        d->updateNode(state, "renderState", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -203,7 +202,7 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
     Q_ASSERT(state);
     Q_D(QRenderStateSet);
 
-    d->updateNode(state, "renderState", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_renderStates.removeOne(state);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(state);
@@ -216,15 +215,6 @@ QVector<QRenderState *> QRenderStateSet::renderStates() const
 {
     Q_D(const QRenderStateSet);
     return d->m_renderStates;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderStateSet::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderStateSetData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRenderStateSet);
-    data.renderStateIds = qIdsForNodes(d->m_renderStates);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

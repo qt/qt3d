@@ -72,11 +72,9 @@ Q_SIGNALS:
 
 protected:
    explicit QSetFence(QSetFencePrivate &dd, Qt3DCore::QNode *parent = nullptr);
-   void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QSetFence)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // Qt3DRender

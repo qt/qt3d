@@ -93,7 +93,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QRenderPass)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 }

@@ -55,6 +55,7 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,6 +70,7 @@ public :
     Q_DECLARE_PUBLIC(QEntity)
 
     QNodeId parentEntityId() const;
+    void updateComponentRelationShip(QComponent *component, ComponentRelationshipChange::RelationShip change);
 
     template<class T>
     QVector<T*> componentsOfType() const

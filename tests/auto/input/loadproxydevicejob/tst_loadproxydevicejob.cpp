@@ -36,7 +36,7 @@
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "qbackendnodetester.h"
 #include "testdeviceproxy.h"
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class FakeInputDeviceIntegration : public Qt3DInput::QInputDeviceIntegration
 {
@@ -118,7 +118,6 @@ private Q_SLOTS:
                 backendProxy->setManager(manager);
                 Qt3DCore::QBackendNodeTester backendNodeCreator;
                 backendNodeCreator.simulateInitializationSync(&proxy, backendProxy);
-                Qt3DCore::QBackendNodePrivate::get(backendProxy)->setArbiter(&arbiter);
             }
 
             // THEN
@@ -152,7 +151,6 @@ private Q_SLOTS:
                 backendProxy->setManager(manager);
                 Qt3DCore::QBackendNodeTester backendNodeCreator;
                 backendNodeCreator.simulateInitializationSync(&proxy, backendProxy);
-                Qt3DCore::QBackendNodePrivate::get(backendProxy)->setArbiter(&arbiter);
             }
 
             // THEN
@@ -171,7 +169,7 @@ private Q_SLOTS:
             job.run();
 
             // THEN -> PhysicalDeviceWrapper::setDevice should not have been called
-            QCOMPARE(arbiter.events.count(), 0);
+            QCOMPARE(arbiter.dirtyNodes().count(), 0);
         }
     }
 

@@ -29,65 +29,17 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/private/qviewport_p.h>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QViewport: public QObject
 {
     Q_OBJECT
 
 private Q_SLOTS:
-
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QViewport *>("viewport");
-        QTest::addColumn<QRectF>("normalizedRect");
-        QTest::addColumn<float>("gamma");
-
-        Qt3DRender::QViewport *defaultConstructed = new Qt3DRender::QViewport();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QRectF(0.0f, 0.0f, 1.0f, 1.0f) << 2.2f;
-
-        Qt3DRender::QViewport *smallGreenViewport = new Qt3DRender::QViewport();
-        smallGreenViewport->setNormalizedRect(QRectF(0.2f, 0.2f, 0.6f, 0.6f));
-        smallGreenViewport->setGamma(1.8f);
-        QTest::newRow("smallGreenViewport") << smallGreenViewport << QRectF(0.2f, 0.2f, 0.6f, 0.6f) << 1.8f;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QViewport *, viewport);
-        QFETCH(QRectF, normalizedRect);
-        QFETCH(float, gamma);
-
-        // THEN
-        QCOMPARE(viewport->normalizedRect(), normalizedRect);
-        QCOMPARE(viewport->gamma(), gamma);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(viewport);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1);
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QViewportData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QViewportData>>(creationChanges.first());
-        const Qt3DRender::QViewportData &cloneData = creationChangeData->data;
-
-        QCOMPARE(viewport->id(), creationChangeData->subjectId());
-        QCOMPARE(viewport->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(viewport->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(viewport->normalizedRect(), cloneData.normalizedRect);
-        QCOMPARE(viewport->gamma(), cloneData.gamma);
-
-        delete viewport;
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -101,31 +53,28 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), viewport.data());
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), viewport.data());
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             viewport->setNormalizedRect(QRectF(0.5, 0.5, 1.0, 1.0));
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
             // WHEN
             viewport->setNormalizedRect(QRectF(0.0, 0.0, 1.0, 1.0));
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), viewport.data());
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), viewport.data());
         }
 
-        arbiter.events.clear();
+        arbiter.clear();
 
         {
             // WHEN
@@ -133,28 +82,25 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), viewport.data());
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), viewport.data());
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             viewport->setGamma(1.8f);
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
             // WHEN
             viewport->setGamma(2.0f);
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), viewport.data());
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), viewport.data());
         }
     }
 };

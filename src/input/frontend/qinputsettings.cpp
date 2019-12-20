@@ -40,8 +40,6 @@
 #include "qinputsettings.h"
 #include "qinputsettings_p.h"
 
-#include <Qt3DCore/qnodecreatedchange.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
@@ -130,17 +128,6 @@ void QInputSettings::eventSourceDestroyed()
     QObject::disconnect(d->m_connection);
     d->m_eventSource = nullptr;
     emit eventSourceChanged(nullptr);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QInputSettings::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputSettingsData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QInputSettings);
-    data.eventSource = d->m_eventSource;
-
-    return creationChange;
 }
 
 } // Qt3DInput

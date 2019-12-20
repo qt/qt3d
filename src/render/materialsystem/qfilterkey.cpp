@@ -142,16 +142,6 @@ QString QFilterKey::name() const
     return d->m_name;
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QFilterKey::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QFilterKeyData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QFilterKey);
-    data.name = d->m_name;
-    data.value = d->m_value;
-    return creationChange;
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

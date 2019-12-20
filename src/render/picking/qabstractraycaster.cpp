@@ -40,9 +40,6 @@
 #include "qabstractraycaster.h"
 #include "qabstractraycaster_p.h"
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DRender/qlayer.h>
@@ -337,7 +334,7 @@ void QAbstractRayCaster::addLayer(QLayer *layer)
         if (!layer->parent())
             layer->setParent(this);
 
-        d->updateNode(layer, "layer", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -348,7 +345,7 @@ void QAbstractRayCaster::removeLayer(QLayer *layer)
 {
     Q_ASSERT(layer);
     Q_D(QAbstractRayCaster);
-    d->updateNode(layer, "layer", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_layers.removeOne(layer);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(layer);
@@ -361,39 +358,6 @@ QVector<QLayer *> QAbstractRayCaster::layers() const
 {
     Q_D(const QAbstractRayCaster);
     return d->m_layers;
-}
-
-/*! \internal */
-void QAbstractRayCaster::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QAbstractRayCaster);
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        const QByteArray propertyName = e->propertyName();
-        if (propertyName == QByteArrayLiteral("hits")) {
-            Hits hits = e->value().value<Hits>();
-            d->dispatchHits(hits);
-        }
-    }
-
-    QComponent::sceneChangeEvent(change);
-}
-
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QAbstractRayCaster::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractRayCasterData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QAbstractRayCaster);
-    data.casterType = d->m_rayCasterType;
-    data.runMode = d->m_runMode;
-    data.origin = d->m_origin;
-    data.direction = d->m_direction;
-    data.length = d->m_length;
-    data.position = d->m_position;
-    data.filterMode = d->m_filterMode;
-    data.layerIds = qIdsForNodes(d->m_layers);
-    return creationChange;
 }
 
 } // Qt3DRender

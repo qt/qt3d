@@ -43,9 +43,7 @@
 #include <QtCore/QHash>
 #include <QtCore/QReadLocker>
 
-#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,10 +63,8 @@ public:
     QAspectEngine *m_engine;
     QHash<QNodeId, QNode *> m_nodeLookupTable;
     QMultiHash<QNodeId, QNodeId> m_componentToEntities;
-    QMultiHash<QNodeId, QObservableInterface *> m_observablesLookupTable;
-    QHash<QObservableInterface *, QNodeId> m_observableToUuid;
     QHash<QNodeId, QScene::NodePropertyTrackData> m_nodePropertyTrackModeLookupTable;
-    QAbstractArbiter *m_arbiter;
+    QChangeArbiter *m_arbiter;
     QScopedPointer<NodePostConstructorInit> m_postConstructorInit;
     mutable QReadWriteLock m_lock;
     mutable QReadWriteLock m_nodePropertyTrackModeLock;
@@ -91,17 +87,6 @@ QAspectEngine *QScene::engine() const
     return d->m_engine;
 }
 
-// Called by any thread
-void QScene::addObservable(QObservableInterface *observable, QNodeId id)
-{
-    Q_D(QScene);
-    QWriteLocker lock(&d->m_lock);
-    d->m_observablesLookupTable.insert(id, observable);
-    d->m_observableToUuid.insert(observable, id);
-    if (d->m_arbiter != nullptr)
-        observable->setArbiter(d->m_arbiter);
-}
-
 // Called by main thread only
 void QScene::addObservable(QNode *observable)
 {
@@ -114,41 +99,16 @@ void QScene::addObservable(QNode *observable)
     }
 }
 
-// Called by any thread
-void QScene::removeObservable(QObservableInterface *observable, QNodeId id)
-{
-    Q_D(QScene);
-    QWriteLocker lock(&d->m_lock);
-    d->m_observablesLookupTable.remove(id, observable);
-    d->m_observableToUuid.remove(observable);
-    observable->setArbiter(nullptr);
-}
-
 // Called by main thread
 void QScene::removeObservable(QNode *observable)
 {
     Q_D(QScene);
     if (observable != nullptr) {
         QWriteLocker lock(&d->m_lock);
-        QNodeId nodeUuid = observable->id();
-        const auto p = d->m_observablesLookupTable.equal_range(nodeUuid); // must be non-const equal_range to ensure p.second stays valid
-        auto it = p.first;
-        while (it != p.second) {
-            it.value()->setArbiter(nullptr);
-            d->m_observableToUuid.remove(it.value());
-            it = d->m_observablesLookupTable.erase(it);
-        }
+        const QNodeId nodeUuid = observable->id();
         d->m_nodeLookupTable.remove(nodeUuid);
         observable->d_func()->setArbiter(nullptr);
     }
-}
-
-// Called by any thread
-QObservableList QScene::lookupObservables(QNodeId id) const
-{
-    Q_D(const QScene);
-    QReadLocker lock(&d->m_lock);
-    return d->m_observablesLookupTable.values(id);
 }
 
 // Called by any thread
@@ -170,26 +130,19 @@ QVector<QNode *> QScene::lookupNodes(const QVector<QNodeId> &ids) const
     return nodes;
 }
 
-QNodeId QScene::nodeIdFromObservable(QObservableInterface *observable) const
-{
-    Q_D(const QScene);
-    QReadLocker lock(&d->m_lock);
-    return d->m_observableToUuid.value(observable);
-}
-
 QNode *QScene::rootNode() const
 {
     Q_D(const QScene);
     return d->m_rootNode;
 }
 
-void QScene::setArbiter(QAbstractArbiter *arbiter)
+void QScene::setArbiter(QChangeArbiter *arbiter)
 {
     Q_D(QScene);
     d->m_arbiter = arbiter;
 }
 
-QAbstractArbiter *QScene::arbiter() const
+QChangeArbiter *QScene::arbiter() const
 {
     Q_D(const QScene);
     return d->m_arbiter;

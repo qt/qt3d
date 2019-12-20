@@ -298,10 +298,6 @@ void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
     }
 }
 
-// TODO Unused remove in Qt6
-void QMouseHandler::sceneChangeEvent(const QSceneChangePtr &)
-{
-}
 
 /*!
  * \property Qt3DInput::QMouseHandler::sourceDevice
@@ -337,17 +333,6 @@ void QMouseHandler::setContainsMouse(bool contains)
         d->m_containsMouse = contains;
         emit containsMouseChanged(contains);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QMouseHandler::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QMouseHandlerData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QMouseHandler);
-    data.mouseDeviceId = qIdForNode(d->m_mouseDevice);
-
-    return creationChange;
 }
 
 } // namespace Qt3DInput

@@ -40,8 +40,6 @@
 #include "qjoint.h"
 #include "qjoint_p.h"
 
-#include <Qt3DCore/qnodecreatedchange.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -350,7 +348,7 @@ void QJoint::addChildJoint(QJoint *joint)
         d->registerDestructionHelper(joint, &QJoint::removeChildJoint, d->m_childJoints);
 
         if (d->m_changeArbiter != nullptr)
-            d->updateNode(joint, "childJoint", PropertyValueAdded);
+            d->update();
     }
 }
 
@@ -363,7 +361,7 @@ void QJoint::removeChildJoint(QJoint *joint)
     Q_D(QJoint);
     if (d->m_childJoints.contains(joint)) {
         if (d->m_changeArbiter != nullptr)
-            d->updateNode(joint, "childJoint", PropertyValueRemoved);
+            d->update();
 
         d->m_childJoints.removeOne(joint);
 
@@ -388,21 +386,6 @@ QString QJoint::name() const
 {
     Q_D(const QJoint);
     return d->m_name;
-}
-
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QJoint::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QJointData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QJoint);
-    data.inverseBindMatrix = d->m_inverseBindMatrix;
-    data.childJointIds = qIdsForNodes(d->m_childJoints);
-    data.rotation = d->m_rotation;
-    data.scale = d->m_scale;
-    data.translation = d->m_translation;
-    data.name = d->m_name;
-    return creationChange;
 }
 
 } // namespace Qt3DCore

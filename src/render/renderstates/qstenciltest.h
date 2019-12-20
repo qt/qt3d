@@ -64,7 +64,6 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QStencilTest)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DRender

@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qscenechange.h>
 #include <QtCore/QFlags>
 #include <QtCore/QMutex>
 #include <QtCore/QObject>
@@ -62,9 +61,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QVector>
 
-#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/private/qscenechange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,103 +73,48 @@ class QAbstractAspectJobManager;
 class QSceneObserverInterface;
 class QAbstractPostman;
 class QScene;
+class QEntity;
+class QComponent;
 
-
-class Q_3DCORE_PRIVATE_EXPORT QAbstractArbiter : public QLockableObserverInterface
+struct ComponentRelationshipChange
 {
-public:
-    virtual QAbstractPostman *postman() const = 0;
-    virtual void addDirtyFrontEndNode(QNode *node) = 0;
-    virtual void removeDirtyFrontEndNode(QNode *node) = 0;
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    virtual void addDirtyFrontEndNode(QNode *node, QNode *subNode, const char *property, ChangeFlag change) = 0;
-    QT_WARNING_POP
+    QNode *node;
+    QNode *subNode;
+
+    enum RelationShip {
+        Added = 0,
+        Removed
+    };
+    RelationShip change;
 };
 
-class Q_3DCORE_PRIVATE_EXPORT QChangeArbiter final
+class Q_3DCORE_PRIVATE_EXPORT QChangeArbiter
         : public QObject
-        , public QAbstractArbiter
 {
     Q_OBJECT
 public:
     explicit QChangeArbiter(QObject *parent = nullptr);
     ~QChangeArbiter();
 
-    void initialize(Qt3DCore::QAbstractAspectJobManager *jobManager);
+    void addDirtyFrontEndNode(QNode *node);
+    void addDirtyEntityComponentNodes(QEntity *entity, QComponent *component,
+                                      ComponentRelationshipChange::RelationShip change);
 
-    void syncChanges();
-
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    void registerObserver(QObserverInterface *observer,
-                          QNodeId nodeId,
-                          ChangeFlags changeFlags = AllChanges);
-    QT_WARNING_POP
-    void unregisterObserver(QObserverInterface *observer,
-                            QNodeId nodeId);
-
-    void sceneChangeEvent(const QSceneChangePtr &e) override;         // QLockableObserverInterface impl
-    void sceneChangeEventWithLock(const QSceneChangePtr &e) override; // QLockableObserverInterface impl
-    void sceneChangeEventWithLock(const QSceneChangeList &e) override; // QLockableObserverInterface impl
-
-    void addDirtyFrontEndNode(QNode *node) override;
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    void addDirtyFrontEndNode(QNode *node, QNode *subNode, const char *property, ChangeFlag change) override;
-    QT_WARNING_POP
-    void removeDirtyFrontEndNode(QNode *node) override;
+    void removeDirtyFrontEndNode(QNode *node);
     QVector<QNode *> takeDirtyFrontEndNodes();
-    QVector<NodeRelationshipChange> takeDirtyFrontEndSubNodes();
+    QVector<ComponentRelationshipChange> takeDirtyEntityComponentNodes();
 
-    void setPostman(Qt3DCore::QAbstractPostman *postman);
     void setScene(Qt3DCore::QScene *scene);
 
-    QAbstractPostman *postman() const final;
     QScene *scene() const;
-
-    static void createUnmanagedThreadLocalChangeQueue(void *changeArbiter);
-    static void destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter);
-    static void createThreadLocalChangeQueue(void *changeArbiter);
-    static void destroyThreadLocalChangeQueue(void *changeArbiter);
 
 Q_SIGNALS:
     void receivedChange();
 
 protected:
-    typedef std::vector<QSceneChangePtr> QChangeQueue;
-    typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
-    typedef QVector<QObserverPair> QObserverList;
-
-    void distributeQueueChanges(QChangeQueue *queue);
-
-    QThreadStorage<QChangeQueue *> *tlsChangeQueue();
-    void appendChangeQueue(QChangeQueue *queue);
-    void removeChangeQueue(QChangeQueue *queue);
-    void appendLockingChangeQueue(QChangeQueue *queue);
-    void removeLockingChangeQueue(QChangeQueue *queue);
-
-private:
-    mutable QRecursiveMutex m_mutex;
-    QAbstractAspectJobManager *m_jobManager;
-
-    // The lists of observers indexed by observable (QNodeId).
-    // m_nodeObservations is for observables in the main thread's object tree
-    QHash<QNodeId, QObserverList> m_nodeObservations;
-
-    // Each thread has a TLS ChangeQueue so we never need to lock whilst
-    // receiving a QSceneChange.
-    QThreadStorage<QChangeQueue *> m_tlsChangeQueue;
-
-    // We store a list of the ChangeQueue's from each thread. This will only
-    // be accessed from the aspect thread during the syncChanges() phase.
-    QList<QChangeQueue *> m_changeQueues;
-    QList<QChangeQueue *> m_lockingChangeQueues;
-    QAbstractPostman *m_postman;
     QScene *m_scene;
-
     QVector<QNode *> m_dirtyFrontEndNodes;
-    QVector<NodeRelationshipChange> m_dirtySubNodeChanges;
+    QVector<ComponentRelationshipChange> m_dirtyEntityComponentNodeChanges;
 };
 
 } // namespace Qt3DCore

@@ -30,14 +30,13 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qrenderstateset.h>
 #include <Qt3DRender/private/qrenderstate_p.h>
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/private/qrenderstateset_p.h>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class MyStateSet;
 class MyStateSetPrivate : public Qt3DRender::QRenderStatePrivate
@@ -73,56 +72,6 @@ private Q_SLOTS:
         QVERIFY(defaultstateSet->renderStates().isEmpty());
     }
 
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QRenderStateSet *>("stateSet");
-        QTest::addColumn<QVector<Qt3DRender::QRenderState *> >("states");
-
-        Qt3DRender::QRenderStateSet *defaultConstructed = new Qt3DRender::QRenderStateSet();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QRenderState *>();
-
-        Qt3DRender::QRenderStateSet *stateSetWithStates = new Qt3DRender::QRenderStateSet();
-        Qt3DRender::QRenderState *state1 = new MyStateSet();
-        Qt3DRender::QRenderState *state2 = new MyStateSet();
-        QVector<Qt3DRender::QRenderState *> states = QVector<Qt3DRender::QRenderState *>() << state1 << state2;
-        stateSetWithStates->addRenderState(state1);
-        stateSetWithStates->addRenderState(state2);
-        QTest::newRow("stateSetWithStates") << stateSetWithStates << states;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QRenderStateSet*, stateSet);
-        QFETCH(QVector<Qt3DRender::QRenderState *>, states);
-
-        // THEN
-        QCOMPARE(stateSet->renderStates(), states);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(stateSet);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + states.size());
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QRenderStateSetData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderStateSetData>>(creationChanges.first());
-        const Qt3DRender::QRenderStateSetData &cloneData = creationChangeData->data;
-
-        QCOMPARE(stateSet->id(), creationChangeData->subjectId());
-        QCOMPARE(stateSet->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(stateSet->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(stateSet->renderStates().count(), cloneData.renderStateIds.count());
-
-        for (int i = 0, m = states.count(); i < m; ++i) {
-            Qt3DRender::QRenderState *sOrig = states.at(i);
-            QCOMPARE(sOrig->id(), cloneData.renderStateIds.at(i));
-        }
-
-        delete stateSet;
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -136,29 +85,26 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(stateSet.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(stateSet.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         stateSet->addRenderState(state1);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
         // WHEN
         stateSet->removeRenderState(state1);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(stateSet.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(stateSet.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkRenderStateBookkeeping()

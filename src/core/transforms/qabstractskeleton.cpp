@@ -46,7 +46,7 @@ namespace Qt3DCore {
 
 QAbstractSkeletonPrivate::QAbstractSkeletonPrivate()
     : Qt3DCore::QNodePrivate()
-    , m_type(QSkeletonCreatedChangeBase::Skeleton)
+    , m_type(Skeleton)
     , m_jointCount(0)
 {
 }
@@ -103,13 +103,6 @@ QAbstractSkeleton::QAbstractSkeleton(QAbstractSkeletonPrivate &dd, Qt3DCore::QNo
 /*! \internal */
 QAbstractSkeleton::~QAbstractSkeleton()
 {
-}
-
-/*! \internal */
-void QAbstractSkeleton::sceneChangeEvent(const QSceneChangePtr &change)
-{
-    // TODO Unused remove in Qt6
-    Q_UNUSED(change)
 }
 
 /*!

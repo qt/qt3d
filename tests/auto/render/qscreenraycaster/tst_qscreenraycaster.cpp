@@ -32,7 +32,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DRender/QScreenRayCaster>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class MyRayCaster : public Qt3DRender::QScreenRayCaster
 {
@@ -42,11 +42,6 @@ public:
         : Qt3DRender::QScreenRayCaster(parent)
     {
         qRegisterMetaType<Qt3DRender::QAbstractRayCaster::Hits>("Hits");
-    }
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) final
-    {
-        Qt3DRender::QScreenRayCaster::sceneChangeEvent(change);
     }
 
 private:
@@ -103,11 +98,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), rayCaster.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), rayCaster.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkBackendUpdates_data()

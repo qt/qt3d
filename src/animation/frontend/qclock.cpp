@@ -81,15 +81,6 @@ void QClock::setPlaybackRate(double playbackRate)
     emit playbackRateChanged(playbackRate);
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QClock::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClockData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QClock);
-    data.playbackRate = d->m_playbackRate;
-    return creationChange;
-}
-
 }
 
 QT_END_NAMESPACE

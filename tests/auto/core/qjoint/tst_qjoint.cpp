@@ -29,11 +29,9 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/private/qjoint_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 using namespace Qt3DCore;
 
@@ -241,71 +239,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        QJoint joint;
-
-        joint.setScale(QVector3D(3.5f, 2.0f, 1.3f));
-        joint.setRotation(QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 30.0f));
-        joint.setTranslation(QVector3D(3.0f, 2.0f, 1.0f));
-        QMatrix4x4 ibm;
-        ibm.scale(5.2f);
-        joint.setInverseBindMatrix(ibm);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&joint);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData
-                = qSharedPointerCast<QNodeCreatedChange<QJointData>>(creationChanges.first());
-            const QJointData data = creationChangeData->data;
-
-            QCOMPARE(joint.id(), creationChangeData->subjectId());
-            QCOMPARE(joint.isEnabled(), true);
-            QCOMPARE(joint.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(joint.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(joint.scale(), data.scale);
-            QCOMPARE(joint.rotation(), data.rotation);
-            QCOMPARE(joint.translation(), data.translation);
-            QCOMPARE(joint.inverseBindMatrix(), data.inverseBindMatrix);
-        }
-
-        // WHEN
-        joint.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&joint);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData
-                = qSharedPointerCast<QNodeCreatedChange<QJointData>>(creationChanges.first());
-            const QJointData data = creationChangeData->data;
-
-            QCOMPARE(joint.id(), creationChangeData->subjectId());
-            QCOMPARE(joint.isEnabled(), false);
-            QCOMPARE(joint.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(joint.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(joint.scale(), data.scale);
-            QCOMPARE(joint.rotation(), data.rotation);
-            QCOMPARE(joint.translation(), data.translation);
-            QCOMPARE(joint.inverseBindMatrix(), data.inverseBindMatrix);
-        }
-    }
-
     void checkPropertyUpdateChanges()
     {
         // GIVEN
@@ -318,16 +251,16 @@ private Q_SLOTS:
             joint.setScale(QVector3D(2.0f, 1.0f, 3.0f));
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &joint);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &joint);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             joint.setScale(QVector3D(2.0f, 1.0f, 3.0f));
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         {
@@ -336,16 +269,16 @@ private Q_SLOTS:
             joint.setRotation(newValue);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &joint);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &joint);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             joint.setRotation(newValue);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         {
@@ -354,16 +287,16 @@ private Q_SLOTS:
             joint.setTranslation(newValue);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &joint);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &joint);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             joint.setTranslation(newValue);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         {
@@ -373,16 +306,16 @@ private Q_SLOTS:
             joint.setInverseBindMatrix(newValue);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &joint);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &joint);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             joint.setInverseBindMatrix(newValue);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 };

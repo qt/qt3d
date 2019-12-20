@@ -88,8 +88,6 @@ private Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(QEntity)
-
-    QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 typedef QSharedPointer<QEntity> QEntityPtr;

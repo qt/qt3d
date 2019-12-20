@@ -88,12 +88,8 @@ Q_SIGNALS:
     void sensitivityChanged(float value);
     void updateAxesContinuouslyChanged(bool updateAxesContinuously);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
 private:
     Q_DECLARE_PRIVATE(QMouseDevice)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DInput

@@ -93,14 +93,6 @@ QAbstractLightPrivate::~QAbstractLightPrivate()
     \value DirectionalLight
     \value SpotLight
 */
-Qt3DCore::QNodeCreatedChangeBasePtr QAbstractLight::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractLightData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QAbstractLight);
-    data.shaderDataId = qIdForNode(d->m_shaderData);
-    return creationChange;
-}
 
 /*!
     \class Qt3DRender::QAbstractLight

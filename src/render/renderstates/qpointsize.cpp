@@ -39,7 +39,6 @@
 
 #include "qpointsize.h"
 #include "qpointsize_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -135,16 +134,6 @@ void QPointSize::setValue(float size)
     Q_D(QPointSize);
     d->m_value = size;
     emit valueChanged(size);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QPointSize::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QPointSizeData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QPointSize);
-    data.sizeMode = d->m_sizeMode;
-    data.value = d->m_value;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

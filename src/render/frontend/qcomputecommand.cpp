@@ -276,19 +276,6 @@ void QComputeCommand::trigger(int workGroupX, int workGroupY, int workGroupZ, in
     setEnabled(true);
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QComputeCommand::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QComputeCommandData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QComputeCommand);
-    data.workGroupX = d->m_workGroupX;
-    data.workGroupY = d->m_workGroupY;
-    data.workGroupZ = d->m_workGroupZ;
-    data.runType = d->m_runType;
-    data.frameCount = d->m_frameCount;
-    return creationChange;
-}
-
 } // Render
 
 QT_END_NAMESPACE

@@ -41,7 +41,6 @@
 
 #include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -207,7 +206,7 @@ void QInputSequence::addSequence(QAbstractActionInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        d->updateNode(input, "input", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -220,7 +219,7 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
 {
     Q_D(QInputSequence);
     if (d->m_sequences.contains(input)) {
-        d->updateNode(input, "input", Qt3DCore::PropertyValueRemoved);
+        d->update();
 
         d->m_sequences.removeOne(input);
 
@@ -236,19 +235,6 @@ QVector<QAbstractActionInput *> QInputSequence::sequences() const
 {
     Q_D(const QInputSequence);
     return d->m_sequences;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QInputSequence::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputSequenceData>::create(this);
-    QInputSequenceData &data = creationChange->data;
-
-    Q_D(const QInputSequence);
-    data.sequenceIds = qIdsForNodes(sequences());
-    data.timeout = d->m_timeout;
-    data.buttonInterval = d->m_buttonInterval;
-
-    return creationChange;
 }
 
 } // Qt3DInput

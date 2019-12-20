@@ -77,7 +77,7 @@ class RenderLightFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit RenderLightFunctor(AbstractRenderer *renderer, NodeManagers *managers);
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const override;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const final;
     void destroy(Qt3DCore::QNodeId id) const final;
 

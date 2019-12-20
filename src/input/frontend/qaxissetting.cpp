@@ -40,8 +40,6 @@
 #include "qaxissetting.h"
 #include "qaxissetting_p.h"
 
-#include <Qt3DCore/qnodecreatedchange.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
@@ -224,19 +222,6 @@ void QAxisSetting::setSmoothEnabled(bool enabled)
 
     d->m_smooth = enabled;
     emit smoothChanged(enabled);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QAxisSetting::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisSettingData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QAxisSetting);
-    data.deadZoneRadius = d->m_deadZoneRadius;
-    data.axes = d->m_axes;
-    data.smooth = d->m_smooth;
-
-    return creationChange;
 }
 
 } // namespace Qt3DInput

@@ -42,7 +42,6 @@
 #include <Qt3DAnimation/private/qchannelmapping_p.h>
 #include <Qt3DAnimation/private/qskeletonmapping_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
-#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DCore/qabstractskeleton.h>
 

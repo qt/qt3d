@@ -300,19 +300,6 @@ QAbstractTexture::CubeMapFace QRenderTargetOutput::face() const
     return d->m_face;
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderTargetOutput::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderTargetOutputData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRenderTargetOutput);
-    data.textureId = qIdForNode(texture());
-    data.attachmentPoint = d->m_attachmentPoint;
-    data.mipLevel = d->m_mipLevel;
-    data.layer = d->m_layer;
-    data.face = d->m_face;
-    return creationChange;
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

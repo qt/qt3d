@@ -187,15 +187,6 @@ QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
 {
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QLayer::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLayerData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QLayer);
-    data.m_recursive = d->m_recursive;
-    return creationChange;
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

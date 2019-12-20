@@ -52,7 +52,6 @@
 #include <Qt3DAnimation/private/clock_p.h>
 #include <Qt3DAnimation/qanimationcallback.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/private/sqt_p.h>
 
 #include <QtCore/qbitarray.h>

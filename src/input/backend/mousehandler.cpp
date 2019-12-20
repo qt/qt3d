@@ -96,9 +96,9 @@ MouseHandlerFunctor::MouseHandlerFunctor(InputHandler *handler)
 {
 }
 
-Qt3DCore::QBackendNode *MouseHandlerFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *MouseHandlerFunctor::create(Qt3DCore::QNodeId id) const
 {
-    MouseHandler *input = m_handler->mouseInputManager()->getOrCreateResource(change->subjectId());
+    MouseHandler *input = m_handler->mouseInputManager()->getOrCreateResource(id);
     input->setInputHandler(m_handler);
     return input;
 }

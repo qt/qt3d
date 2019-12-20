@@ -68,7 +68,6 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QLogicalDevice)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // Qt3DInput

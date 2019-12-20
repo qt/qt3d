@@ -40,8 +40,6 @@
 #include "qlinewidth.h"
 #include "qlinewidth_p.h"
 
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -108,16 +106,6 @@ void QLineWidth::setSmooth(bool enabled)
         d->m_smooth = enabled;
         emit smoothChanged(enabled);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QLineWidth::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QLineWidthData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QLineWidth);
-    data.value = d->m_value;
-    data.smooth = d->m_smooth;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

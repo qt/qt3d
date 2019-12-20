@@ -40,7 +40,6 @@
 
 #include "qalphatest.h"
 #include "qalphatest_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -158,16 +157,6 @@ void QAlphaTest::setReferenceValue(float referenceValue)
         d->m_referenceValue = referenceValue;
         emit referenceValueChanged(referenceValue);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QAlphaTest::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QAlphaTestData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QAlphaTest);
-    data.alphaFunction = d->m_alphaFunction;
-    data.referenceValue = d->m_referenceValue;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -29,7 +29,7 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <private/memorybarrier_p.h>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 #include <testrenderer.h>
 #include <private/shader_p.h>
 #include <Qt3DRender/qshaderprogram.h>

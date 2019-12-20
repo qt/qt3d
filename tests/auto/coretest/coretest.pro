@@ -6,12 +6,6 @@ DEFINES += QT_NO_CAST_FROM_ASCII
 PRECOMPILED_HEADER =
 INCLUDEPATH += $$PWD
 
-SOURCES += \
-    $$PWD/testpostmanarbiter.cpp
-
-HEADERS += \
-    $$PWD/testpostmanarbiter_p.h
-
 qtConfig(private_tests) {
     SOURCES += \
         $$PWD/qbackendnodetester.cpp

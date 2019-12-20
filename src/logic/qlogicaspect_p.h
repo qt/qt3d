@@ -79,6 +79,9 @@ class QLogicAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
     QScopedPointer<Logic::Manager> m_manager;
     QScopedPointer<Logic::Executor> m_executor;
     QSharedPointer<Logic::CallbackJob> m_callbackJob;
+
+    void syncDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QBackendNode *backend, bool firstTime) const override;
+
 };
 
 } // namespace Qt3DLogic

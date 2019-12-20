@@ -57,7 +57,6 @@
 
 #include <Qt3DCore/private/propertychangehandler_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <QtCore/private/qobject_p.h>
 #include <QQueue>
@@ -69,7 +68,7 @@ namespace Qt3DCore {
 class QNode;
 class QAspectEngine;
 
-class Q_3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate, public QObservableInterface
+class Q_3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate
 {
 public:
     QNodePrivate();
@@ -80,26 +79,21 @@ public:
     virtual void setScene(QScene *scene);
     QScene *scene() const;
 
-    void setArbiter(QLockableObserverInterface *arbiter) override;
+    void setArbiter(QChangeArbiter *arbiter);
 
     void notifyPropertyChange(const char *name, const QVariant &value);
     void notifyDynamicPropertyChange(const QByteArray &name, const QVariant &value);
-    void notifyObservers(const QSceneChangePtr &change) override;
 
     void insertTree(QNode *treeRoot, int depth = 0);
     void updatePropertyTrackMode();
 
     void update();
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    void updateNode(QNode *node, const char* property, ChangeFlag change);
-    QT_WARNING_POP
 
     Q_DECLARE_PUBLIC(QNode)
 
     // For now this just protects access to the m_changeArbiter.
     // Later on we may decide to extend support for multiple observers.
-    QAbstractArbiter *m_changeArbiter;
+    QChangeArbiter *m_changeArbiter;
     QMetaObject *m_typeInfo;
     QScene *m_scene;
     mutable QNodeId m_id;

@@ -33,9 +33,7 @@
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QRenderSurfaceSelector: public QObject
 {
@@ -184,68 +182,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        QWindow newValue;
-        Qt3DRender::QRenderSurfaceSelector renderSurfaceSelector;
-
-        renderSurfaceSelector.setSurface(&newValue);
-        renderSurfaceSelector.setExternalRenderTargetSize(QSize(128, 128));
-        renderSurfaceSelector.setSurfacePixelRatio(25.0f);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&renderSurfaceSelector);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderSurfaceSelectorData>>(creationChanges.first());
-            const Qt3DRender::QRenderSurfaceSelectorData cloneData = creationChangeData->data;
-
-            QCOMPARE(renderSurfaceSelector.surface(), cloneData.surface.data());
-            QCOMPARE(renderSurfaceSelector.externalRenderTargetSize(), cloneData.externalRenderTargetSize);
-            QCOMPARE(renderSurfaceSelector.surfacePixelRatio(), cloneData.surfacePixelRatio);
-            QCOMPARE(renderSurfaceSelector.id(), creationChangeData->subjectId());
-            QCOMPARE(renderSurfaceSelector.isEnabled(), true);
-            QCOMPARE(renderSurfaceSelector.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(renderSurfaceSelector.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        renderSurfaceSelector.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&renderSurfaceSelector);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderSurfaceSelectorData>>(creationChanges.first());
-            const Qt3DRender::QRenderSurfaceSelectorData cloneData = creationChangeData->data;
-
-            QCOMPARE(renderSurfaceSelector.surface(), cloneData.surface.data());
-            QCOMPARE(renderSurfaceSelector.externalRenderTargetSize(), cloneData.externalRenderTargetSize);
-            QCOMPARE(renderSurfaceSelector.surfacePixelRatio(), cloneData.surfacePixelRatio);
-            QCOMPARE(renderSurfaceSelector.id(), creationChangeData->subjectId());
-            QCOMPARE(renderSurfaceSelector.isEnabled(), false);
-            QCOMPARE(renderSurfaceSelector.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(renderSurfaceSelector.metaObject(), creationChangeData->metaObject());
-        }
-
-        // Prevents crashes with temporary window being destroyed
-        renderSurfaceSelector.setSurface(nullptr);
-    }
-
     void checkSurfaceUpdate()
     {
         // GIVEN
@@ -260,11 +196,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderSurfaceSelector);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderSurfaceSelector);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -273,8 +208,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         // Prevents crashes with temporary window being destroyed
@@ -294,11 +228,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderSurfaceSelector);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderSurfaceSelector);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -307,8 +240,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -326,11 +258,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderSurfaceSelector);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderSurfaceSelector);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -339,8 +270,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

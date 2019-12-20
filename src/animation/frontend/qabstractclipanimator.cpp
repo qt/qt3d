@@ -122,11 +122,6 @@ QAbstractClipAnimator::QAbstractClipAnimator(QAbstractClipAnimatorPrivate &dd, Q
 {
 }
 
-// TODO Unused remove in Qt6
-void QAbstractClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
 QAbstractClipAnimator::~QAbstractClipAnimator()
 {
 }

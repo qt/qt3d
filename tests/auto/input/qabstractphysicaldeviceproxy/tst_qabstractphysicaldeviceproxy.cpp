@@ -29,8 +29,6 @@
 
 #include <QtTest/QTest>
 
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 #include "testdeviceproxy.h"
 
 class tst_QAbstractPhysicalDeviceProxy : public QObject
@@ -72,58 +70,6 @@ private Q_SLOTS:
         // THEN -> should not crash
         QVERIFY(abstractPhysicalDeviceProxy->device() == nullptr);
     }
-
-    void checkCreationData()
-    {
-        // GIVEN
-        TestProxy abstractPhysicalDeviceProxy;
-
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&abstractPhysicalDeviceProxy);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAbstractPhysicalDeviceProxyData>>(creationChanges.first());
-            const Qt3DInput::QAbstractPhysicalDeviceProxyData cloneData = creationChangeData->data;
-
-            QCOMPARE(abstractPhysicalDeviceProxy.deviceName(), cloneData.deviceName);
-            QCOMPARE(abstractPhysicalDeviceProxy.id(), creationChangeData->subjectId());
-            QCOMPARE(abstractPhysicalDeviceProxy.isEnabled(), true);
-            QCOMPARE(abstractPhysicalDeviceProxy.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(abstractPhysicalDeviceProxy.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        abstractPhysicalDeviceProxy.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&abstractPhysicalDeviceProxy);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAbstractPhysicalDeviceProxyData>>(creationChanges.first());
-            const Qt3DInput::QAbstractPhysicalDeviceProxyData cloneData = creationChangeData->data;
-
-            QCOMPARE(abstractPhysicalDeviceProxy.deviceName(), cloneData.deviceName);
-            QCOMPARE(abstractPhysicalDeviceProxy.id(), creationChangeData->subjectId());
-            QCOMPARE(abstractPhysicalDeviceProxy.isEnabled(), false);
-            QCOMPARE(abstractPhysicalDeviceProxy.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(abstractPhysicalDeviceProxy.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
 };
 
 QTEST_MAIN(tst_QAbstractPhysicalDeviceProxy)

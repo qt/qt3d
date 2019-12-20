@@ -30,8 +30,8 @@
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/texture_p.h>
 
-#include "testpostmanarbiter.h"
 #include "testrenderer.h"
+#include <testarbiter.h>
 
 class DummyTexture : public Qt3DRender::QAbstractTexture
 {
@@ -111,116 +111,104 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), &texture);
 
-    arbiter.dirtyNodes.clear();
+    arbiter.clear();
 
     // WHEN
     texture.setWidth(512);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
     // WHEN
     texture.setHeight(256);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), &texture);
 
-    arbiter.dirtyNodes.clear();
+    arbiter.clear();
 
     // WHEN
     texture.setHeight(256);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
     // WHEN
     texture.setDepth(128);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), &texture);
 
-    arbiter.dirtyNodes.clear();
+    arbiter.clear();
 
     // WHEN
     texture.setDepth(128);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.events.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
     // WHEN
     texture.setLayers(16);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), &texture);
 
-    arbiter.dirtyNodes.clear();
+    arbiter.clear();
 
     // WHEN
     texture.setLayers(16);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
     // WHEN
     texture.setSamples(32);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), &texture);
 
-    arbiter.dirtyNodes.clear();
+    arbiter.clear();
 
     // WHEN
     texture.setSamples(32);
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 0);
+    QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
     // WHEN
     Qt3DRender::QTextureImage img;
     texture.addTextureImage(&img);
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), &texture);
 
-    arbiter.dirtyNodes.clear();
+    arbiter.clear();
 
     // WHEN
     texture.removeTextureImage(&img);
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), &texture);
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), &texture);
 
-    arbiter.dirtyNodes.clear();
+    arbiter.clear();
 }
 
 template <typename FrontendTextureType, Qt3DRender::QAbstractTexture::Target Target>

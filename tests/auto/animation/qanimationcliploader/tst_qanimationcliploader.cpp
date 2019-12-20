@@ -30,11 +30,9 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qanimationcliploader_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 class tst_QAnimationClipLoader : public Qt3DAnimation::QAnimationClipLoader
 {
@@ -78,56 +76,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DAnimation::QAnimationClipLoader clip;
-
-        clip.setSource(QUrl(QStringLiteral("http://someRemoteURL.com")));
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&clip);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QAnimationClipLoaderData>>(creationChanges.first());
-            const Qt3DAnimation::QAnimationClipLoaderData data = creationChangeData->data;
-
-            QCOMPARE(clip.id(), creationChangeData->subjectId());
-            QCOMPARE(clip.isEnabled(), true);
-            QCOMPARE(clip.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(clip.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(clip.source(), data.source);
-        }
-
-        // WHEN
-        clip.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&clip);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QAnimationClipLoaderData>>(creationChanges.first());
-
-            QCOMPARE(clip.id(), creationChangeData->subjectId());
-            QCOMPARE(clip.isEnabled(), false);
-            QCOMPARE(clip.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(clip.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkSourceUpdate()
     {
         // GIVEN
@@ -140,11 +88,10 @@ private Q_SLOTS:
             clip.setSource(QUrl(QStringLiteral("qrc:/toyplane.qlip")));
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &clip);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &clip);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -152,8 +99,7 @@ private Q_SLOTS:
             clip.setSource(QStringLiteral("qrc:/toyplane.qlip"));
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

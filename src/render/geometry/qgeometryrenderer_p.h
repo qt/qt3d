@@ -55,7 +55,6 @@
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
-#include <Qt3DCore/private/qtypedpropertyupdatechange_p.h>
 #include <memory>
 
 QT_BEGIN_NAMESPACE
@@ -99,10 +98,6 @@ struct QGeometryRendererData
     QGeometryRenderer::PrimitiveType primitiveType;
     QGeometryFactoryPtr geometryFactory;
 };
-
-class QGeometry;
-typedef Qt3DCore::QTypedPropertyUpdatedChange<std::unique_ptr<QGeometry>> QGeometryChange;
-typedef Qt3DCore::QTypedPropertyUpdatedChangePtr<std::unique_ptr<QGeometry>> QGeometryChangePtr;
 
 } // namespace Qt3DRender
 

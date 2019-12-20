@@ -43,7 +43,6 @@
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qinputaspect.h>
-#include <Qt3DInput/qphysicaldevicecreatedchange.h>
 
 #include <cmath>
 #include <algorithm>

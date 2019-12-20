@@ -89,11 +89,9 @@ Q_SIGNALS:
 
 protected:
     explicit QSkeletonLoader(QSkeletonLoaderPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QSkeletonLoader)
-    QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
     void setRootJoint(QJoint *rootJoint); // Needed for lifetime management of created joints
 };
 

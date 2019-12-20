@@ -40,7 +40,6 @@
 #include "qlogicaldevice.h"
 #include "qlogicaldevice_p.h"
 
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxis.h>
 
@@ -173,7 +172,7 @@ void QLogicalDevice::addAction(QAction *action)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(action, &QLogicalDevice::removeAction, d->m_actions);
 
-        d->updateNode(action, "action", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -184,7 +183,7 @@ void QLogicalDevice::removeAction(QAction *action)
 {
     Q_D(QLogicalDevice);
     if (d->m_actions.contains(action)) {
-        d->updateNode(action, "action", Qt3DCore::PropertyValueRemoved);
+        d->update();
 
         d->m_actions.removeOne(action);
 
@@ -224,7 +223,7 @@ void QLogicalDevice::addAxis(QAxis *axis)
         // Ensures proper bookkeeping
         d->registerDestructionHelper(axis, &QLogicalDevice::removeAxis, d->m_axes);
 
-        d->updateNode(axis, "axis", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -235,7 +234,7 @@ void QLogicalDevice::removeAxis(QAxis *axis)
 {
     Q_D(QLogicalDevice);
     if (d->m_axes.contains(axis)) {
-        d->updateNode(axis, "axis", Qt3DCore::PropertyValueRemoved);
+        d->update();
 
         d->m_axes.removeOne(axis);
 
@@ -251,15 +250,6 @@ QVector<QAxis *> QLogicalDevice::axes() const
 {
     Q_D(const QLogicalDevice);
     return d->m_axes;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QLogicalDevice::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLogicalDeviceData>::create(this);
-    auto &data = creationChange->data;
-    data.actionIds = qIdsForNodes(actions());
-    data.axisIds = qIdsForNodes(axes());
-    return creationChange;
 }
 
 } // Qt3DInput

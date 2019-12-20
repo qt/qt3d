@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,54 +34,31 @@
 **
 ****************************************************************************/
 
-#include "qrenderstatecreatedchange_p.h"
-#include <Qt3DCore/private/qnodecreatedchange_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-
-/*!
- * \internal
- * \class Qt3DRender::QRenderStateCreatedChange
- * \inheaderfile Qt3DRender/QRenderStateCreatedChange
- * \brief The QRenderStateCreatedChange class
- * \since 5.7
- * \inmodule Qt3DRender
- * \ingroup renderstates
- */
-
-/*! \internal */
-class QRenderStateCreatedChangeBasePrivate : public Qt3DCore::QNodeCreatedChangeBasePrivate
+class TestArbiter : public Qt3DCore::QChangeArbiter
 {
 public:
-    QRenderStateCreatedChangeBasePrivate(const QRenderState *renderState)
-        : Qt3DCore::QNodeCreatedChangeBasePrivate(renderState)
-        , m_type(QRenderStatePrivate::get(renderState)->m_type)
+
+    void setArbiterOnNode(Qt3DCore::QNode *node)
     {
+        Qt3DCore::QNodePrivate::get(node)->setArbiter(this);
+        const auto childNodes = node->childNodes();
+        for (Qt3DCore::QNode *n : childNodes)
+            setArbiterOnNode(n);
     }
 
-    Render::StateMask m_type;
+    QVector<Qt3DCore::QNode *> dirtyNodes() const { return m_dirtyFrontEndNodes; }
+    QVector<Qt3DCore::ComponentRelationshipChange> dirtyComponents() const { return m_dirtyEntityComponentNodeChanges; }
+
+    void clear()
+    {
+        m_dirtyFrontEndNodes.clear();
+        m_dirtyEntityComponentNodeChanges.clear();
+    }
 };
 
-/*
- * The constructor creates a new QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase
- * instance with the specified \a renderState.
- */
-QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase(const QRenderState *renderState)
-    : QNodeCreatedChangeBase(*new QRenderStateCreatedChangeBasePrivate(renderState), renderState)
-{
-}
-
-/*
- * Returns the current render state type.
- */
-Render::StateMask QRenderStateCreatedChangeBase::renderStateType() const
-{
-    Q_D(const QRenderStateCreatedChangeBase);
-    return d->m_type;
-}
-
 QT_END_NAMESPACE
-
-} // namespace Qt3DRender

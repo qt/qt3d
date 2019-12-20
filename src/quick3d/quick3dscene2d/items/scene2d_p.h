@@ -49,7 +49,6 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DQuickScene2D/qscene2d.h>
 

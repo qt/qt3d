@@ -73,7 +73,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QSubtreeEnabler)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } //Qt3DRender

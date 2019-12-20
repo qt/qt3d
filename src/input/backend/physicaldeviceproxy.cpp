@@ -117,9 +117,9 @@ PhysicalDeviceProxyNodeFunctor::PhysicalDeviceProxyNodeFunctor(PhysicalDevicePro
 {
 }
 
-Qt3DCore::QBackendNode *PhysicalDeviceProxyNodeFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *PhysicalDeviceProxyNodeFunctor::create(Qt3DCore::QNodeId id) const
 {
-    HPhysicalDeviceProxy handle = m_manager->getOrAcquireHandle(change->subjectId());
+    HPhysicalDeviceProxy handle = m_manager->getOrAcquireHandle(id);
     PhysicalDeviceProxy *backend = m_manager->data(handle);
     backend->setManager(m_manager);
     return backend;

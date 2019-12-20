@@ -74,8 +74,10 @@ void Manager::setExecutor(Executor *executor)
 void Manager::appendHandler(Handler *handler)
 {
     HHandler handle = m_logicHandlerManager->lookupHandle(handler->peerId());
-    m_logicHandlers.append(handle);
-    m_logicComponentIds.append(handler->peerId());
+    if (!m_logicHandlers.contains(handle)) {
+        m_logicHandlers.append(handle);
+        m_logicComponentIds.append(handler->peerId());
+    }
 }
 
 void Manager::removeHandler(Qt3DCore::QNodeId id)

@@ -33,10 +33,9 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <QSignalSpy>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 using namespace Qt3DCore;
 
@@ -59,44 +58,6 @@ private Q_SLOTS:
         QCOMPARE(skeleton.jointCount(), 0);
     }
 
-    void checkCreationChange_data()
-    {
-        QTest::addColumn<QSkeleton *>("skeleton");
-
-        QSkeleton *defaultConstructed = new QSkeleton();
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        QSkeleton *skeletonWithOneJoint = new QSkeleton();
-        skeletonWithOneJoint->setRootJoint(new QJoint());
-        QTest::newRow("skeletonWithOneJoint") << skeletonWithOneJoint;
-    }
-
-    void checkCreationChange()
-    {
-        // GIVEN
-        QFETCH(QSkeleton *, skeleton);
-
-        // WHEN
-        QNodeCreatedChangeGenerator creationChangeGenerator(skeleton);
-        QVector<QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        const int jointCount = skeleton->rootJoint() ? 1 : 0;
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + jointCount);
-
-        const auto creationChangeData = qSharedPointerCast<QNodeCreatedChange<QSkeletonData>>(creationChanges.first());
-        const QSkeletonData &data = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(skeleton->id(), creationChangeData->subjectId());
-        QCOMPARE(skeleton->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(skeleton->metaObject(), creationChangeData->metaObject());
-        if (skeleton->rootJoint()) {
-            QCOMPARE(skeleton->rootJoint()->id(), data.rootJointId);
-        }
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -106,24 +67,24 @@ private Q_SLOTS:
 
         // WHEN
         QJoint *joint = new QJoint(skeleton.data());
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         skeleton->setRootJoint(joint);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), skeleton.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), skeleton.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         skeleton->setRootJoint(nullptr);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), skeleton.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), skeleton.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkRootJointBookkeeping()

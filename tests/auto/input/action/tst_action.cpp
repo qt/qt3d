@@ -30,13 +30,11 @@
 #include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QAction>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class DummyActionInput : public Qt3DInput::QActionInput
 {
@@ -140,17 +138,14 @@ private Q_SLOTS:
     void shouldNotActivateWhenDisabled()
     {
         // GIVEN
-        TestArbiter arbiter;
         Qt3DInput::Input::Action backendAction;
         backendAction.setEnabled(false);
-        Qt3DCore::QBackendNodePrivate::get(&backendAction)->setArbiter(&arbiter);
 
         // WHEN
         backendAction.setActionTriggered(true);
 
         // THEN
         QVERIFY(!backendAction.actionTriggered());
-        QCOMPARE(arbiter.events.count(), 0);
     }
 };
 

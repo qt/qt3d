@@ -40,7 +40,6 @@
 
 #include "qscissortest.h"
 #include "qscissortest_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -186,18 +185,6 @@ void QScissorTest::setHeight(int height)
         d->m_height = height;
         emit heightChanged(height);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QScissorTest::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QScissorTestData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QScissorTest);
-    data.left = d->m_left;
-    data.bottom = d->m_bottom;
-    data.width = d->m_width;
-    data.height = d->m_height;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

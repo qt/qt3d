@@ -34,9 +34,7 @@
 #include <Qt3DRender/private/qenvironmentlight_p.h>
 #include <Qt3DRender/private/qshaderdata_p.h>
 
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QEnvironmentLight: public QObject
 {
@@ -339,57 +337,6 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(shaderData->property("specularSize").value<QVector3D>(),
                      QVector3D());
-        }
-    }
-
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QEnvironmentLight light;
-        auto shaderData = light.findChild<Qt3DRender::QShaderData*>();
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&light);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // EnvironmentLight + ShaderData
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QEnvironmentLightData>>(creationChanges.first());
-            const Qt3DRender::QEnvironmentLightData cloneData = creationChangeData->data;
-
-            QCOMPARE(cloneData.shaderDataId, shaderData->id());
-            QCOMPARE(light.id(), creationChangeData->subjectId());
-            QCOMPARE(light.isEnabled(), true);
-            QCOMPARE(light.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(light.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        light.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&light);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // EnvironmentLight + ShaderData
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QEnvironmentLightData>>(creationChanges.first());
-            const Qt3DRender::QEnvironmentLightData cloneData = creationChangeData->data;
-
-            QCOMPARE(cloneData.shaderDataId, shaderData->id());
-            QCOMPARE(light.id(), creationChangeData->subjectId());
-            QCOMPARE(light.isEnabled(), false);
-            QCOMPARE(light.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(light.metaObject(), creationChangeData->metaObject());
         }
     }
 };

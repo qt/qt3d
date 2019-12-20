@@ -35,7 +35,7 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtGui/qvector3d.h>
 #include <qbackendnodetester.h>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 #include <testrenderer.h>
 
 using namespace Qt3DCore;

@@ -54,15 +54,11 @@ Handler::Handler()
 {
 }
 
-void Handler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Handler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    Q_UNUSED(change);
-    m_logicManager->appendHandler(this);
-}
-
-void Handler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    QBackendNode::sceneChangeEvent(e);
+    Q_UNUSED(frontEnd)
+    if (firstTime)
+        m_logicManager->appendHandler(this);
 }
 
 HandlerFunctor::HandlerFunctor(Manager *manager)
@@ -70,9 +66,9 @@ HandlerFunctor::HandlerFunctor(Manager *manager)
 {
 }
 
-Qt3DCore::QBackendNode *HandlerFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *HandlerFunctor::create(Qt3DCore::QNodeId id) const
 {
-    Handler *handler = m_manager->logicHandlerManager()->getOrCreateResource(change->subjectId());
+    Handler *handler = m_manager->logicHandlerManager()->getOrCreateResource(id);
     handler->setManager(m_manager);
     return handler;
 }

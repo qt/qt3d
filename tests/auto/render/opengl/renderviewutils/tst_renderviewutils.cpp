@@ -28,7 +28,6 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
-#include <Qt3DCore/qdynamicpropertyupdatedchange.h>
 #include <renderviewjobutils_p.h>
 #include <shadervariables_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
@@ -36,7 +35,7 @@
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include "testrenderer.h"
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_RenderViewUtils : public Qt3DCore::QBackendNodeTester
 {
@@ -79,7 +78,7 @@ private:
         // Create backend element for frontend one
         Qt3DRender::Render::Texture *backend = manager->getOrCreateResource(frontend->id());
         // Init the backend element
-        simulateInitialization(frontend, backend);
+        simulateInitializationSync(frontend, backend);
     }
 };
 
@@ -780,20 +779,18 @@ void tst_RenderViewUtils::shouldNotifyDynamicPropertyChanges()
     shaderData->setProperty("scalar", 883.0f);
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), shaderData.data());
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), shaderData.data());
 
-    arbiter.dirtyNodes.clear();
+    arbiter.clear();
 
     // WHEN
     QScopedPointer<Qt3DRender::QAbstractTexture> texture(new Qt3DRender::QTexture2D);
     shaderData->setProperty("texture", QVariant::fromValue(texture.data()));
 
     // THEN
-    QCOMPARE(arbiter.events.size(), 0);
-    QCOMPARE(arbiter.dirtyNodes.size(), 1);
-    QCOMPARE(arbiter.dirtyNodes.front(), shaderData.data());
+    QCOMPARE(arbiter.dirtyNodes().size(), 1);
+    QCOMPARE(arbiter.dirtyNodes().front(), shaderData.data());
 }
 
 QTEST_MAIN(tst_RenderViewUtils)

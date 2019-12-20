@@ -48,7 +48,6 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -83,8 +82,8 @@ const int Shader::skinningPaletteNameId = StringToInt::lookupId(QLatin1String("s
 
 Shader::Shader()
     : BackendNode(ReadWrite)
-    , m_requiresFrontendSync(false)
     , m_status(QShaderProgram::NotReady)
+    , m_requiresFrontendSync(false)
     , m_format(QShaderProgram::GLSL)
     , m_dirty(false)
 {
@@ -190,9 +189,9 @@ ShaderFunctor::ShaderFunctor(AbstractRenderer *renderer, ShaderManager *manager)
 {
 }
 
-QBackendNode *ShaderFunctor::create(const QNodeCreatedChangeBasePtr &change) const
+QBackendNode *ShaderFunctor::create(const QNodeId id) const
 {
-    Shader *backend = m_shaderManager->getOrCreateResource(change->subjectId());
+    Shader *backend = m_shaderManager->getOrCreateResource(id);
     backend->setRenderer(m_renderer);
     return backend;
 }

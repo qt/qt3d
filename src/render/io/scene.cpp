@@ -103,9 +103,9 @@ RenderSceneFunctor::RenderSceneFunctor(AbstractRenderer *renderer, SceneManager 
 {
 }
 
-Qt3DCore::QBackendNode *RenderSceneFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *RenderSceneFunctor::create(Qt3DCore::QNodeId id) const
 {
-    Scene *scene = m_sceneManager->getOrCreateResource(change->subjectId());
+    Scene *scene = m_sceneManager->getOrCreateResource(id);
     scene->setSceneManager(m_sceneManager);
     scene->setRenderer(m_renderer);
     return scene;

@@ -33,7 +33,6 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometryfactory.h>
@@ -42,7 +41,7 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class TestFactory : public Qt3DRender::QGeometryFactory
 {
@@ -76,80 +75,6 @@ class tst_QGeometryRenderer: public QObject
 
 private Q_SLOTS:
 
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QGeometryRenderer *>("geometryRenderer");
-
-        Qt3DRender::QGeometryRenderer *defaultConstructed = new Qt3DRender::QGeometryRenderer();
-        QTest::newRow("defaultConstructed") << defaultConstructed ;
-
-        Qt3DRender::QGeometryRenderer *geometry1 = new Qt3DRender::QGeometryRenderer();
-        geometry1->setGeometry(new Qt3DRender::QGeometry());
-        geometry1->setInstanceCount(1);
-        geometry1->setIndexOffset(0);
-        geometry1->setFirstInstance(55);
-        geometry1->setIndexBufferByteOffset(48);
-        geometry1->setRestartIndexValue(-1);
-        geometry1->setPrimitiveRestartEnabled(false);
-        geometry1->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
-        geometry1->setVertexCount(15);
-        geometry1->setVerticesPerPatch(2);
-        geometry1->setGeometryFactory(Qt3DRender::QGeometryFactoryPtr(new TestFactory(383)));
-        QTest::newRow("triangle") << geometry1;
-
-        Qt3DRender::QGeometryRenderer *geometry2 = new Qt3DRender::QGeometryRenderer();
-        geometry2->setGeometry(new Qt3DRender::QGeometry());
-        geometry2->setInstanceCount(200);
-        geometry2->setIndexOffset(58);
-        geometry2->setFirstInstance(10);
-        geometry2->setIndexBufferByteOffset(96);
-        geometry2->setRestartIndexValue(65535);
-        geometry2->setVertexCount(2056);
-        geometry2->setPrimitiveRestartEnabled(true);
-        geometry2->setVerticesPerPatch(3);
-        geometry2->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-        geometry2->setGeometryFactory(Qt3DRender::QGeometryFactoryPtr(new TestFactory(305)));
-        QTest::newRow("lines with restart") << geometry2;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QGeometryRenderer *, geometryRenderer);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(geometryRenderer);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + (geometryRenderer->geometry() ? 1 : 0));
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QGeometryRendererData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QGeometryRendererData>>(creationChanges.first());
-        const Qt3DRender::QGeometryRendererData &cloneData = creationChangeData->data;
-
-        QCOMPARE(geometryRenderer->id(), creationChangeData->subjectId());
-        QCOMPARE(geometryRenderer->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(geometryRenderer->metaObject(), creationChangeData->metaObject());
-
-        QCOMPARE(cloneData.instanceCount, geometryRenderer->instanceCount());
-        QCOMPARE(cloneData.vertexCount, geometryRenderer->vertexCount());
-        QCOMPARE(cloneData.indexOffset, geometryRenderer->indexOffset());
-        QCOMPARE(cloneData.firstInstance, geometryRenderer->firstInstance());
-        QCOMPARE(cloneData.indexBufferByteOffset, geometryRenderer->indexBufferByteOffset());
-        QCOMPARE(cloneData.restartIndexValue, geometryRenderer->restartIndexValue());
-        QCOMPARE(cloneData.primitiveRestart, geometryRenderer->primitiveRestartEnabled());
-        QCOMPARE(cloneData.primitiveType, geometryRenderer->primitiveType());
-        QCOMPARE(cloneData.verticesPerPatch, geometryRenderer->verticesPerPatch());
-
-        if (geometryRenderer->geometry() != nullptr)
-            QCOMPARE(cloneData.geometryId, geometryRenderer->geometry()->id());
-
-        QCOMPARE(cloneData.geometryFactory, geometryRenderer->geometryFactory());
-        if (geometryRenderer->geometryFactory())
-            QVERIFY(*cloneData.geometryFactory == *geometryRenderer->geometryFactory());
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -162,99 +87,90 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         geometryRenderer->setVertexCount(1340);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         geometryRenderer->setIndexOffset(883);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         geometryRenderer->setFirstInstance(1200);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         geometryRenderer->setIndexBufferByteOffset(91);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         geometryRenderer->setRestartIndexValue(65535);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         geometryRenderer->setVerticesPerPatch(2);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         geometryRenderer->setPrimitiveRestartEnabled(true);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         geometryRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(555));
@@ -262,11 +178,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         Qt3DRender::QGeometry geom;
@@ -274,11 +189,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         Qt3DRender::QGeometry geom2;
@@ -286,11 +200,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), geometryRenderer.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkGeometryBookkeeping()

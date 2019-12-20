@@ -40,10 +40,7 @@
 #ifndef QT3DCORE_QNODE_H
 #define QT3DCORE_QNODE_H
 
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qnodecommand.h>
-#include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/QObject>
 
@@ -99,10 +96,6 @@ public:
     void clearPropertyTracking(const QString &propertyName);
     void clearPropertyTrackings();
 
-    Q3D_DECL_DEPRECATED QNodeCommand::CommandId sendCommand(const QString &name, const QVariant &data = QVariant(),
-                                                          QNodeCommand::CommandId replyTo = QNodeCommand::CommandId());
-    Q3D_DECL_DEPRECATED void sendReply(const QNodeCommandPtr &command);
-
 public Q_SLOTS:
     void setParent(QNode *parent);
     void setEnabled(bool isEnabled);
@@ -116,12 +109,9 @@ Q_SIGNALS:
 
 protected:
     explicit QNode(QNodePrivate &dd, QNode *parent = nullptr);
-    Q3D_DECL_DEPRECATED void notifyObservers(const QSceneChangePtr &change);
-    Q3D_DECL_DEPRECATED virtual void sceneChangeEvent(const QSceneChangePtr &change);
 
 private:
     Q_DECLARE_PRIVATE(QNode)
-    Q3D_DECL_DEPRECATED virtual QNodeCreatedChangeBasePtr createNodeCreationChange() const;
 
     // We only want setParent(QNode *) to be callable
     // when dealing with QNode objects
@@ -135,8 +125,6 @@ private:
     friend class QAspectEngine;
     friend class QAspectEnginePrivate;
     friend class QAbstractAspectPrivate;
-    friend class QNodeCreatedChangeGenerator;
-    friend class QPostman;
     friend class QScene;
 
 #if defined(QT_BUILD_INTERNAL)

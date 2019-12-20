@@ -29,7 +29,6 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
@@ -55,11 +54,6 @@ public:
     MyObjectPicker(Qt3DCore::QNode *parent = nullptr)
         : Qt3DRender::QObjectPicker(parent)
     {}
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) final
-    {
-        Qt3DRender::QObjectPicker::sceneChangeEvent(change);
-    }
 };
 
 class PickableEntity : public QEntity

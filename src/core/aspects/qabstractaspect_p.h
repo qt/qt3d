@@ -52,12 +52,11 @@
 //
 
 #include <Qt3DCore/qabstractaspect.h>
-#include <Qt3DCore/qnodedestroyedchange.h>
 
 #include <Qt3DCore/private/qaspectjobproviderinterface_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/private/qscenechange_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 #include <QtCore/private/qobject_p.h>
 
 #include <QMutex>
@@ -72,7 +71,6 @@ class QBackendNode;
 class QEntity;
 class QAspectManager;
 class QAbstractAspectJobManager;
-class QChangeArbiter;
 class QServiceLocator;
 
 namespace Debug {
@@ -133,7 +131,7 @@ public:
     QBackendNode *createBackendNode(const NodeTreeChange &change) const;
     void clearBackendNode(const NodeTreeChange &change) const;
     void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
-    void syncDirtyFrontEndSubNodes(const QVector<NodeRelationshipChange> &nodes);
+    void syncDirtyEntityComponentNodes(const QVector<ComponentRelationshipChange> &nodes);
     virtual void syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const;
     void sendPropertyMessages(QNode *node, QBackendNode *backend) const;
 
@@ -146,19 +144,14 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
-    enum NodeMapperInfo {
-        DefaultMapper = 0,
-        SupportsSyncing = 1 << 0
-    };
-    using BackendNodeMapperAndInfo = QPair<QBackendNodeMapperPtr, NodeMapperInfo>;
-    BackendNodeMapperAndInfo mapperForNode(const QMetaObject *metaObj) const;
+    QBackendNodeMapperPtr mapperForNode(const QMetaObject *metaObj) const;
 
     QEntity *m_root;
     QNodeId m_rootId;
     QAspectManager *m_aspectManager;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
-    QHash<const QMetaObject*, BackendNodeMapperAndInfo> m_backendCreatorFunctors;
+    QHash<const QMetaObject*, QBackendNodeMapperPtr> m_backendCreatorFunctors;
     QMutex m_singleShotMutex;
     QVector<QAspectJobPtr> m_singleShotJobs;
 

@@ -95,8 +95,7 @@ private Q_SLOTS:
         QCOMPARE(jobs.size(),
                  1 + // PickBoundingVolumeJob
                  1 + // RayCastingJob
-                 1 + // SendBufferCaptureJob
-                 1); // SendSetFenceHandlesJob
+                 1); // SendBufferCaptureJob´
         // Note: pending set fence handles are only cleared when the job is run
 
         // Properly shutdown command thread

@@ -31,7 +31,7 @@
 #include <Qt3DRender/private/qtextureimagedata_p.h>
 #include <Qt3DRender/qtextureimagedata.h>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject

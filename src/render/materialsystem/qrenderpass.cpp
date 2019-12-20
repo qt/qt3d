@@ -274,7 +274,7 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        d->updateNode(filterKey, "filterKeys", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -285,7 +285,7 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QRenderPass);
-    d->updateNode(filterKey, "filterKeys", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_filterKeyList.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
@@ -322,7 +322,7 @@ void QRenderPass::addRenderState(QRenderState *state)
         if (!state->parent())
             state->setParent(this);
 
-        d->updateNode(state, "renderState", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -333,7 +333,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
 {
     Q_ASSERT(state);
     Q_D(QRenderPass);
-    d->updateNode(state, "renderState", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_renderStates.removeOne(state);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(state);
@@ -369,7 +369,7 @@ void QRenderPass::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -380,7 +380,7 @@ void QRenderPass::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QRenderPass);
-    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
@@ -393,18 +393,6 @@ ParameterList QRenderPass::parameters() const
 {
     Q_D(const QRenderPass);
     return d->m_parameters;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderPass::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderPassData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRenderPass);
-    data.filterKeyIds = qIdsForNodes(d->m_filterKeyList);
-    data.parameterIds = qIdsForNodes(d->m_parameters);
-    data.renderStateIds = qIdsForNodes(d->m_renderStates);
-    data.shaderId = qIdForNode(d->m_shader);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

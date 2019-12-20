@@ -53,12 +53,13 @@
 
 #include <Qt3DRender/private/qframegraphnode_p.h>
 #include <Qt3DRender/qsetfence.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QSetFencePrivate : public QFrameGraphNodePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QSetFencePrivate : public QFrameGraphNodePrivate
 {
 public:
     QSetFencePrivate();

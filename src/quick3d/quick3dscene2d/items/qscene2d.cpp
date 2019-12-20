@@ -280,20 +280,6 @@ void QScene2D::setOutput(Qt3DRender::QRenderTargetOutput *output)
     }
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QScene2D::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QScene2DData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QScene2D);
-    data.renderPolicy = d->m_renderManager->m_renderPolicy;
-    data.sharedObject = d->m_renderManager->m_sharedObject;
-    data.output = d->m_output ? d->m_output->id() : Qt3DCore::QNodeId();
-    for (Qt3DCore::QEntity *e : d->m_entities)
-        data.entityIds.append(e->id());
-    data.mouseEnabled = d->m_renderManager->m_mouseEnabled;
-    return creationChange;
-}
-
 bool QScene2D::isMouseEnabled() const
 {
     Q_D(const QScene2D);
@@ -329,7 +315,7 @@ void QScene2D::addEntity(Qt3DCore::QEntity *entity)
         d->m_entities.append(entity);
 
         d->registerDestructionHelper(entity, &QScene2D::removeEntity, d->m_entities);
-        d->updateNode(entity, "entities", PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -343,7 +329,7 @@ void QScene2D::removeEntity(Qt3DCore::QEntity *entity)
         d->m_entities.removeAll(entity);
 
         d->unregisterDestructionHelper(entity);
-        d->updateNode(entity, "entities", PropertyValueRemoved);
+        d->update();
     }
 }
 

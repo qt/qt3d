@@ -100,9 +100,6 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QScene2D)
-
-private:
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Quick

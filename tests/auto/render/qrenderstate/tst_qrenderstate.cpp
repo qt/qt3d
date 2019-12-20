@@ -55,7 +55,7 @@
 #include <Qt3DRender/QStencilOperationArguments>
 #include <Qt3DRender/QClipPlane>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
@@ -201,9 +201,8 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), frontend1);
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), frontend1);
 
         // WHEN
         backend1->syncFromFrontEnd(frontend1, false);
@@ -211,7 +210,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(backend1->impl() == backend2->impl());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkStencilUpdates_data()
@@ -285,17 +284,14 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), frontend1);
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), frontend1);
 
         // WHEN
         backend1->syncFromFrontEnd(frontend1, false);
 
         // THEN
         QVERIFY(backend1->impl() == backend2->impl());
-
-        arbiter.events.clear();
     }
 };
 

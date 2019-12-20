@@ -133,7 +133,6 @@ qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
             geometryloaders \
             picking \
             boundingsphere \
-            qdefaultmeshes \
             pickboundingvolumejob \
             gltfplugins \
             updatemeshtrianglelistjob \

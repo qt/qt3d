@@ -40,7 +40,6 @@
 #include <private/buffermanager_p.h>
 #include <Qt3DRender/qpicktriangleevent.h>
 #include <private/qpickevent_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <qbackendnodetester.h>
 #include "testrenderer.h"
 

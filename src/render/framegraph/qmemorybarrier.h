@@ -89,7 +89,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QMemoryBarrier)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // Qt3DRender

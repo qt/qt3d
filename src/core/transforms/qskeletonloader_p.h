@@ -54,8 +54,6 @@
 #include <Qt3DCore/private/qabstractskeleton_p.h>
 #include "qskeletonloader.h"
 
-#include <Qt3DCore/private/qtypedpropertyupdatechange_p.h>
-
 #include <memory>
 
 QT_BEGIN_NAMESPACE
@@ -89,8 +87,6 @@ struct QSkeletonLoaderData
 };
 
 class QJoint;
-typedef QTypedPropertyUpdatedChange<std::unique_ptr<QJoint>> QJointChange;
-typedef QTypedPropertyUpdatedChangePtr<std::unique_ptr<QJoint>> QJointChangePtr;
 
 } // namespace Qt3DCore
 

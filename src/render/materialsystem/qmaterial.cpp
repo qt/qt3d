@@ -272,7 +272,7 @@ void QMaterial::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -283,7 +283,7 @@ void QMaterial::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QMaterial);
-    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_parameters.removeOne(parameter);
 }
 
@@ -294,16 +294,6 @@ QVector<QParameter *> QMaterial::parameters() const
 {
     Q_D(const QMaterial);
     return d->m_parameters;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QMaterial::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QMaterialData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QMaterial);
-    data.parameterIds = qIdsForNodes(d->m_parameters);
-    data.effectId = qIdForNode(d->m_effect);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -55,8 +55,8 @@ void tst_GLShaderManager::adopt()
 
     backendShaderNode1.setRenderer(&renderer);
     backendShaderNode2.setRenderer(&renderer);
-    simulateInitialization(&frontendShader1, &backendShaderNode1);
-    simulateInitialization(&frontendShader2, &backendShaderNode2);
+    simulateInitializationSync(&frontendShader1, &backendShaderNode1);
+    simulateInitializationSync(&frontendShader2, &backendShaderNode2);
 
     // THEN
     QVERIFY(cache.lookupResource(backendShaderNode1.peerId()) == nullptr);
@@ -96,8 +96,8 @@ void tst_GLShaderManager::lookupResource()
 
     backendShaderNode1.setRenderer(&renderer);
     backendShaderNode2.setRenderer(&renderer);
-    simulateInitialization(&frontendShader1, &backendShaderNode1);
-    simulateInitialization(&frontendShader2, &backendShaderNode2);
+    simulateInitializationSync(&frontendShader1, &backendShaderNode1);
+    simulateInitializationSync(&frontendShader2, &backendShaderNode2);
 
     // WHEN
     cache.createOrAdoptExisting(&backendShaderNode1);
@@ -126,8 +126,8 @@ void tst_GLShaderManager::abandon()
 
     backendShaderNode1.setRenderer(&renderer);
     backendShaderNode2.setRenderer(&renderer);
-    simulateInitialization(&frontendShader1, &backendShaderNode1);
-    simulateInitialization(&frontendShader2, &backendShaderNode2);
+    simulateInitializationSync(&frontendShader1, &backendShaderNode1);
+    simulateInitializationSync(&frontendShader2, &backendShaderNode2);
     cache.createOrAdoptExisting(&backendShaderNode1);
     cache.createOrAdoptExisting(&backendShaderNode2);
 
@@ -162,7 +162,7 @@ void tst_GLShaderManager::insertAfterRemoval()
 
 
     backendShaderNode.setRenderer(&renderer);
-    simulateInitialization(&frontendShader, &backendShaderNode);
+    simulateInitializationSync(&frontendShader, &backendShaderNode);
 
     // WHEN
     Qt3DRender::Render::OpenGL::GLShader *apiShader1 = cache.createOrAdoptExisting(&backendShaderNode);

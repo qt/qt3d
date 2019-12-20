@@ -79,7 +79,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QParameter)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DRender

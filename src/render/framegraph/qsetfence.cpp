@@ -39,8 +39,6 @@
 
 #include "qsetfence.h"
 #include "qsetfence_p.h"
-#include <Qt3DRender/private/qframegraphnodecreatedchange_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -148,26 +146,6 @@ void QSetFencePrivate::setHandle(QVariant handle)
         emit q->handleChanged(handle);
         q->blockNotifications(blocked);
     }
-}
-
-void QSetFence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (e->type() == Qt3DCore::PropertyUpdated) {
-        Q_D(QSetFence);
-        if (e->propertyName() == QByteArrayLiteral("handle"))
-            d->setHandle(e->value());
-        else if (e->propertyName() == QByteArrayLiteral("handleType"))
-            d->setHandleType(static_cast<Qt3DRender::QSetFence::HandleType>(e->value().toInt()));
-    }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QSetFence::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QSetFenceData>::create(this);
-    QSetFenceData &data = creationChange->data;
-    Q_UNUSED(data); // Might be of use later
-    return creationChange;
 }
 
 } // Qt3DRender

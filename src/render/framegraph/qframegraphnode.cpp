@@ -39,7 +39,6 @@
 
 #include "qframegraphnode.h"
 #include "qframegraphnode_p.h"
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 #include <Qt3DCore/QNode>
 
@@ -303,15 +302,6 @@ QStringList QFrameGraphNodePrivate::dumpFrameGraphPaths() const
 QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QFrameGraphNode::createNodeCreationChange() const
-{
-    // connect to the parentChanged signal here rather than constructor because
-    // until now there's no backend node to notify when parent changes
-    connect(this, &QNode::parentChanged, this, &QFrameGraphNode::onParentChanged);
-
-    return QFrameGraphNodeCreatedChangeBasePtr::create(this);
 }
 
 void QFrameGraphNode::onParentChanged(QObject *)

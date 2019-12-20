@@ -37,8 +37,6 @@
 #include "qcallbackmapping.h"
 #include "qcallbackmapping_p.h"
 
-#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
-
 #include <QtCore/qmetaobject.h>
 #include <QtCore/QMetaProperty>
 
@@ -52,7 +50,7 @@ QCallbackMappingPrivate::QCallbackMappingPrivate()
     , m_type(static_cast<int>(QVariant::Invalid))
     , m_callback(nullptr)
 {
-    m_mappingType = QChannelMappingCreatedChangeBase::CallbackMapping;
+    m_mappingType = QAbstractChannelMappingPrivate::CallbackMapping;
 }
 
 /*!
@@ -138,18 +136,6 @@ void QCallbackMapping::setCallback(int type, QAnimationCallback *callback, QAnim
         d->m_callbackFlags = flags;
         d->update();
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QCallbackMapping::createNodeCreationChange() const
-{
-    auto creationChange = QChannelMappingCreatedChangePtr<QCallbackMappingData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QCallbackMapping);
-    data.channelName = d->m_channelName;
-    data.type = d->m_type;
-    data.callback = d->m_callback;
-    data.callbackFlags = d->m_callbackFlags;
-    return creationChange;
 }
 
 } // namespace Qt3DAnimation

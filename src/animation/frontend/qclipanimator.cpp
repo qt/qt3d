@@ -163,21 +163,6 @@ void QClipAnimator::setClip(QAbstractAnimationClip *clip)
     emit clipChanged(clip);
 }
 
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClipAnimatorData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QClipAnimator);
-    data.clipId = Qt3DCore::qIdForNode(d->m_clip);
-    data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
-    data.clockId = Qt3DCore::qIdForNode(d->m_clock);
-    data.running = d->m_running;
-    data.loops = d->m_loops;
-    data.normalizedTime = d->m_normalizedTime;
-    return creationChange;
-}
-
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE

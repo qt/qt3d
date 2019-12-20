@@ -54,6 +54,7 @@
 #include <Qt3DAnimation/qt3danimation_global.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DAnimation/private/handler_p.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 

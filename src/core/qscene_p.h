@@ -55,7 +55,6 @@
 
 #include <Qt3DCore/qnode.h>
 #include <QtCore/qscopedpointer.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -65,9 +64,7 @@ namespace Qt3DCore {
 class QScenePrivate;
 class QAspectEngine;
 class NodePostConstructorInit;
-class QAbstractArbiter;
-
-typedef QList<QObservableInterface *> QObservableList;
+class QChangeArbiter;
 
 class Q_3DCORE_PRIVATE_EXPORT QScene
 {
@@ -77,20 +74,16 @@ public:
 
     QAspectEngine *engine() const;
 
-    void addObservable(QObservableInterface *observable, QNodeId id);
     void addObservable(QNode *observable);
-    void removeObservable(QObservableInterface *observable, QNodeId id);
     void removeObservable(QNode *observable);
-    QObservableList lookupObservables(QNodeId id) const;
 
     QNode *lookupNode(QNodeId id) const;
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
-    QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
 
     QNode *rootNode() const;
 
-    void setArbiter(QAbstractArbiter *arbiter);
-    QAbstractArbiter *arbiter() const;
+    void setArbiter(QChangeArbiter *arbiter);
+    QChangeArbiter *arbiter() const;
 
     // Component -> Entities
     QVector<QNodeId> entitiesForComponent(QNodeId id) const;

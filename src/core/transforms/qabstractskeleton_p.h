@@ -51,8 +51,8 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qabstractskeleton.h>
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/private/qskeletoncreatedchange_p.h>
 #include <Qt3DCore/private/sqt_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -62,6 +62,11 @@ namespace Qt3DCore {
 class Q_3DCORE_PRIVATE_EXPORT QAbstractSkeletonPrivate : public Qt3DCore::QNodePrivate
 {
 public:
+    enum SkeletonType {
+        Skeleton = 0,
+        SkeletonLoader
+    };
+
     QAbstractSkeletonPrivate();
 
     void setJointCount(int jointCount);
@@ -70,7 +75,7 @@ public:
     static const QAbstractSkeletonPrivate *get(const QAbstractSkeleton *q);
     static QAbstractSkeletonPrivate *get(QAbstractSkeleton *q);
 
-    QSkeletonCreatedChangeBase::SkeletonType m_type;
+    SkeletonType m_type;
 
     int m_jointCount;
     QVector<Sqt> m_localPoses;

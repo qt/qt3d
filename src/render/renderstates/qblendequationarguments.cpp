@@ -40,7 +40,6 @@
 
 #include "qblendequationarguments.h"
 #include "qblendequationarguments_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -289,19 +288,6 @@ void QBlendEquationArguments::setBufferIndex(int bufferIndex)
         d->m_bufferIndex = bufferIndex;
         emit bufferIndexChanged(bufferIndex);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QBlendEquationArguments::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QBlendEquationArgumentsData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QBlendEquationArguments);
-    data.sourceRgb = d->m_sourceRgb;
-    data.sourceAlpha = d->m_sourceAlpha;
-    data.destinationRgb = d->m_destinationRgb;
-    data.destinationAlpha = d->m_destinationAlpha;
-    data.bufferIndex = d->m_bufferIndex;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

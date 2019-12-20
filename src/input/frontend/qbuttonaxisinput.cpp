@@ -176,21 +176,6 @@ void QButtonAxisInput::setDeceleration(float deceleration)
     }
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QButtonAxisInput::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QButtonAxisInputData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QButtonAxisInput);
-    data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
-    data.buttons = d->m_buttons;
-    data.scale = d->m_scale;
-    data.acceleration = d->m_acceleration;
-    data.deceleration = d->m_deceleration;
-
-    return creationChange;
-}
-
 } // Qt3DInput
 
 QT_END_NAMESPACE

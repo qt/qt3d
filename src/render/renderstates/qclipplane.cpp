@@ -39,7 +39,6 @@
 
 #include "qclipplane.h"
 #include "qclipplane_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -162,17 +161,6 @@ void QClipPlane::setDistance(float distance)
         d->m_distance = distance;
         Q_EMIT distanceChanged(distance);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QClipPlane::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QClipPlaneData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QClipPlane);
-    data.normal = d->m_normal;
-    data.distance = d->m_distance;
-    data.planeIndex = d->m_planeIndex;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

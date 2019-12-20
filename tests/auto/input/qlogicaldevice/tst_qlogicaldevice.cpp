@@ -29,14 +29,13 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QLogicalDevice>
 #include <Qt3DInput/private/qlogicaldevice_p.h>
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAction>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QLogicalDevice: public QObject
 {
@@ -49,59 +48,6 @@ public:
 
 private Q_SLOTS:
 
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DInput::QLogicalDevice *>("logicalDevice");
-
-        Qt3DInput::QLogicalDevice *defaultConstructed = new Qt3DInput::QLogicalDevice();
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        Qt3DInput::QLogicalDevice *logicalDeviceWithActions = new Qt3DInput::QLogicalDevice();
-        logicalDeviceWithActions->addAction(new Qt3DInput::QAction());
-        logicalDeviceWithActions->addAction(new Qt3DInput::QAction());
-        logicalDeviceWithActions->addAction(new Qt3DInput::QAction());
-        QTest::newRow("logicalDeviceWithActions") << logicalDeviceWithActions;
-
-        Qt3DInput::QLogicalDevice *logicalDeviceWithAxes = new Qt3DInput::QLogicalDevice();
-        logicalDeviceWithAxes->addAxis(new Qt3DInput::QAxis());
-        logicalDeviceWithAxes->addAxis(new Qt3DInput::QAxis());
-        logicalDeviceWithAxes->addAxis(new Qt3DInput::QAxis());
-        QTest::newRow("logicalDeviceWithAxes") << logicalDeviceWithAxes;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DInput::QLogicalDevice *, logicalDevice);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(logicalDevice);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        const int axesCount = logicalDevice->axes().count();
-        const int actionsCount = logicalDevice->actions().count();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + axesCount + actionsCount);
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QLogicalDeviceData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QLogicalDeviceData>>(creationChanges.first());
-        const Qt3DInput::QLogicalDeviceData &cloneData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(logicalDevice->id(), creationChangeData->subjectId());
-        QCOMPARE(logicalDevice->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(logicalDevice->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(axesCount, cloneData.axisIds.count());
-        QCOMPARE(actionsCount, cloneData.actionIds.count());
-
-        for (int i = 0; i < axesCount; ++i)
-            QCOMPARE(logicalDevice->axes().at(i)->id(), cloneData.axisIds.at(i));
-
-        for (int i = 0; i < actionsCount; ++i)
-            QCOMPARE(logicalDevice->actions().at(i)->id(), cloneData.actionIds.at(i));
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -112,54 +58,50 @@ private Q_SLOTS:
         // WHEN
         Qt3DInput::QAction *action = new Qt3DInput::QAction(logicalDevice.data());
         QCoreApplication::processEvents();
-        arbiter.events.clear();
+        arbiter.clear();
 
         logicalDevice->addAction(action);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), logicalDevice.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), logicalDevice.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         logicalDevice->removeAction(action);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), logicalDevice.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), logicalDevice.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         Qt3DInput::QAxis *axis = new Qt3DInput::QAxis(logicalDevice.data());
         QCoreApplication::processEvents();
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         logicalDevice->addAxis(axis);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), logicalDevice.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), logicalDevice.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         logicalDevice->removeAxis(axis);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), logicalDevice.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), logicalDevice.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkAxisBookkeeping()

@@ -118,9 +118,9 @@ TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer,
 {
 }
 
-Qt3DCore::QBackendNode *TextureImageFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *TextureImageFunctor::create(Qt3DCore::QNodeId id) const
 {
-    TextureImage *backend = m_textureImageManager->getOrCreateResource(change->subjectId());
+    TextureImage *backend = m_textureImageManager->getOrCreateResource(id);
     backend->setRenderer(m_renderer);
     return backend;
 }

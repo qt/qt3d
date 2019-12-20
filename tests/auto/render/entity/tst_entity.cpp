@@ -26,10 +26,6 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QtTest>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/entity_p_p.h>

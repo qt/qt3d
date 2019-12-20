@@ -218,11 +218,6 @@ QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent
 {
 }
 
-// TODO Unused remove in Qt6
-void QGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &)
-{
-}
-
 /*!
     \property QGeometryRenderer::instanceCount
 
@@ -483,26 +478,6 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
         return;
     d->m_geometryFactory = factory;
     d->update();
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QGeometryRenderer::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QGeometryRendererData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QGeometryRenderer);
-    data.instanceCount = d->m_instanceCount;
-    data.vertexCount = d->m_vertexCount;
-    data.indexOffset = d->m_indexOffset;
-    data.firstInstance = d->m_firstInstance;
-    data.firstVertex = d->m_firstVertex;
-    data.indexBufferByteOffset = d->m_indexBufferByteOffset;
-    data.restartIndexValue = d->m_restartIndexValue;
-    data.verticesPerPatch = d->m_verticesPerPatch;
-    data.primitiveRestart = d->m_primitiveRestart;
-    data.geometryId = qIdForNode(d->m_geometry);
-    data.primitiveType = d->m_primitiveType;
-    data.geometryFactory = d->m_geometryFactory;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

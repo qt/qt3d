@@ -41,7 +41,6 @@
 #include "qrendertargetselector_p.h"
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DRender/private/qrenderpass_p.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -169,16 +168,6 @@ QVector<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() c
 QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderTargetSelector::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderTargetSelectorData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QRenderTargetSelector);
-    data.targetId = qIdForNode(d->m_target);
-    data.outputs = d->m_outputs;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

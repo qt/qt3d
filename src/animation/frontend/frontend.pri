@@ -15,8 +15,6 @@ HEADERS += \
     $$PWD/qchannelmapper_p.h \
     $$PWD/qchannelmapping.h \
     $$PWD/qchannelmapping_p.h \
-    $$PWD/qclipblendnodecreatedchange.h \
-    $$PWD/qclipblendnodecreatedchange_p.h \
     $$PWD/qanimationcontroller.h \
     $$PWD/qanimationcontroller_p.h \
     $$PWD/qanimationgroup.h \
@@ -46,13 +44,10 @@ HEADERS += \
     $$PWD/qanimationclip.h \
     $$PWD/qanimationclip_p.h \
     $$PWD/qanimationcallback.h \
-    $$PWD/qanimationcallbacktrigger_p.h \
     $$PWD/qclock.h \
     $$PWD/qclock_p.h \
     $$PWD/qabstractchannelmapping.h \
     $$PWD/qabstractchannelmapping_p.h \
-    $$PWD/qchannelmappingcreatedchange_p.h \
-    $$PWD/qchannelmappingcreatedchange_p_p.h \
     $$PWD/qskeletonmapping.h \
     $$PWD/qskeletonmapping_p.h \
     $$PWD/qcallbackmapping.h \
@@ -67,7 +62,6 @@ SOURCES += \
     $$PWD/qblendedclipanimator.cpp \
     $$PWD/qchannelmapper.cpp \
     $$PWD/qchannelmapping.cpp \
-    $$PWD/qclipblendnodecreatedchange.cpp \
     $$PWD/qanimationcontroller.cpp \
     $$PWD/qanimationgroup.cpp \
     $$PWD/qkeyframeanimation.cpp \
@@ -84,10 +78,8 @@ SOURCES += \
     $$PWD/qchannelcomponent.cpp \
     $$PWD/qkeyframe.cpp \
     $$PWD/qanimationclip.cpp \
-    $$PWD/qanimationcallbacktrigger.cpp \
     $$PWD/qclock.cpp \
     $$PWD/qabstractchannelmapping.cpp \
-    $$PWD/qchannelmappingcreatedchange.cpp \
     $$PWD/qskeletonmapping.cpp \
     $$PWD/qcallbackmapping.cpp
 

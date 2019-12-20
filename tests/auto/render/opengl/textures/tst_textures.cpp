@@ -644,7 +644,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::QAbstractTexture* frontendTexture = createQTexture(1, {1}, true);
 
-        Qt3DRender::Render::Texture *backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(creationChange(frontendTexture)));
+        Qt3DRender::Render::Texture *backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(frontendTexture->id()));
         backendTexture->setRenderer(&renderer);
         simulateInitializationSync(frontendTexture, backendTexture);
 
@@ -678,7 +678,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::QAbstractTexture* frontendTexture = createQTexture(1, {1}, true);
 
-        Qt3DRender::Render::Texture *backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(creationChange(frontendTexture)));
+        Qt3DRender::Render::Texture *backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(frontendTexture->id()));
         backendTexture->setRenderer(&renderer);
         simulateInitializationSync(frontendTexture, backendTexture);
 
@@ -691,7 +691,7 @@ private Q_SLOTS:
         QVERIFY(texMgr->lookupResource(frontendTexture->id()) == nullptr);
 
         // WHEN
-        backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(creationChange(frontendTexture)));
+        backendTexture = static_cast<Qt3DRender::Render::Texture *>(textureBackendNodeMapper.create(frontendTexture->id()));
         backendTexture->setRenderer(&renderer);
         simulateInitializationSync(frontendTexture, backendTexture);
 

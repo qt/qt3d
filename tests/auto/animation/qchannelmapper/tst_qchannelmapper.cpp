@@ -29,13 +29,12 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/private/qchannelmapper_p.h>
 #include <Qt3DAnimation/qchannelmapping.h>
 
-#include "testpostmanarbiter.h"
+#include <testarbiter.h>
 
 class tst_QChannelmapper : public Qt3DAnimation::QChannelMapper
 {
@@ -47,47 +46,6 @@ public:
     }
 
 private Q_SLOTS:
-    void checkCreationChange_data()
-    {
-        QTest::addColumn<Qt3DAnimation::QChannelMapper *>("mapper");
-
-        Qt3DAnimation::QChannelMapper *defaultConstructed = new Qt3DAnimation::QChannelMapper;
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        Qt3DAnimation::QChannelMapper *mapperWithMappings = new Qt3DAnimation::QChannelMapper;
-        mapperWithMappings->addMapping(new Qt3DAnimation::QChannelMapping);
-        mapperWithMappings->addMapping(new Qt3DAnimation::QChannelMapping);
-        mapperWithMappings->addMapping(new Qt3DAnimation::QChannelMapping);
-        QTest::newRow("mapperWithMappings") << mapperWithMappings;
-    }
-
-    void checkCreationChange()
-    {
-        // GIVEN
-        QFETCH(Qt3DAnimation::QChannelMapper *, mapper);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(mapper);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        const int mappingCount = mapper->mappings().count();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + mappingCount);
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DAnimation::QChannelMapperData> creationChange =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QChannelMapperData>>(creationChanges.first());
-        const Qt3DAnimation::QChannelMapperData &creationData = creationChange->data;
-
-        // THEN
-        QCOMPARE(mapper->id(), creationChange->subjectId());
-        QCOMPARE(mapper->isEnabled(), creationChange->isNodeEnabled());
-        QCOMPARE(mapper->metaObject(), creationChange->metaObject());
-        QCOMPARE(mappingCount, creationData.mappingIds.count());
-
-        for (int i = 0; i < mappingCount; ++i)
-            QCOMPARE(mapper->mappings().at(i)->id(), creationData.mappingIds.at(i));
-    }
 
     void checkPropertyUpdates()
     {
@@ -100,10 +58,10 @@ private Q_SLOTS:
         mapper->setEnabled(false);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), mapper.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), mapper.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkMappingBookkeeping()

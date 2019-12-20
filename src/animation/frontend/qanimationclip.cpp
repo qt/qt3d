@@ -92,15 +92,6 @@ void QAnimationClip::setClipData(const Qt3DAnimation::QAnimationClipData &clipDa
     emit clipDataChanged(clipData);
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClip::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAnimationClipChangeData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QAnimationClip);
-    data.clipData = d->m_clipData;
-    return creationChange;
-}
-
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE

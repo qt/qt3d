@@ -73,7 +73,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QClipAnimator)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DAnimation

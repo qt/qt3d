@@ -29,13 +29,12 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/private/qattribute_p.h>
 #include <Qt3DRender/QBuffer>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QAttribute: public QObject
 {
@@ -77,80 +76,6 @@ private Q_SLOTS:
                  Qt3DRender::QAttribute::defaultJointWeightsAttributeName());
     }
 
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QAttribute *>("attribute");
-
-        Qt3DRender::QAttribute *defaultConstructed = new Qt3DRender::QAttribute();
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        Qt3DRender::QAttribute *customVertex = new Qt3DRender::QAttribute();
-        Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer();
-        customVertex->setBuffer(buffer);
-        customVertex->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
-        customVertex->setCount(454);
-        customVertex->setByteStride(427);
-        customVertex->setByteOffset(305);
-        customVertex->setDivisor(235);
-        customVertex->setName("BB");
-        customVertex->setVertexBaseType(Qt3DRender::QAttribute::Float);
-        customVertex->setVertexSize(4);
-        QTest::newRow("vertex") << customVertex;
-
-        Qt3DRender::QAttribute *customIndex = new Qt3DRender::QAttribute();
-        Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer();
-        customIndex->setBuffer(indexBuffer);
-        customIndex->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-        customIndex->setCount(383);
-        customIndex->setByteStride(350);
-        customIndex->setByteOffset(327);
-        customIndex->setDivisor(355);
-        customIndex->setName("SB");
-        customIndex->setVertexBaseType(Qt3DRender::QAttribute::Float);
-        customIndex->setVertexSize(3);
-        QTest::newRow("index") << customIndex;
-
-        Qt3DRender::QAttribute *customIndirect = new Qt3DRender::QAttribute();
-        Qt3DRender::QBuffer *indirectBuffer = new Qt3DRender::QBuffer();
-        customIndirect->setBuffer(indirectBuffer);
-        customIndirect->setAttributeType(Qt3DRender::QAttribute::DrawIndirectAttribute);
-        customIndirect->setCount(1);
-        customIndirect->setByteStride(12);
-        customIndirect->setByteOffset(0);
-        customIndirect->setName("DrawIndirect");
-        QTest::newRow("index") << customIndirect;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QAttribute *, attribute);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(attribute);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + (attribute->buffer() ? 1 : 0));
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QAttributeData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QAttributeData>>(creationChanges.first());
-        const Qt3DRender::QAttributeData &cloneData = creationChangeData->data;
-
-        QCOMPARE(attribute->id(), creationChangeData->subjectId());
-        QCOMPARE(attribute->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(attribute->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(attribute->name(), cloneData.name);
-        QCOMPARE(attribute->count(), cloneData.count);
-        QCOMPARE(attribute->byteStride(), cloneData.byteStride);
-        QCOMPARE(attribute->byteOffset(), cloneData.byteOffset);
-        QCOMPARE(attribute->divisor(), cloneData.divisor);
-        QCOMPARE(attribute->vertexBaseType(), cloneData.vertexBaseType);
-        QCOMPARE(attribute->vertexSize(), cloneData.vertexSize);
-        QVERIFY(attribute->attributeType() == cloneData.attributeType);
-        QCOMPARE(attribute->buffer() ? attribute->buffer()->id() : Qt3DCore::QNodeId(), cloneData.bufferId);
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -162,93 +87,93 @@ private Q_SLOTS:
         attribute->setVertexBaseType(Qt3DRender::QAttribute::Double);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         attribute->setVertexSize(4);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         attribute->setName(QStringLiteral("Duntov"));
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         attribute->setCount(883);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         attribute->setByteStride(1340);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         attribute->setByteOffset(1584);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         attribute->setDivisor(1450);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         attribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         Qt3DRender::QBuffer buf;
         attribute->setBuffer(&buf);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         Qt3DRender::QBuffer buf2;
         attribute->setBuffer(&buf2);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), attribute.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), attribute.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkBufferBookkeeping()

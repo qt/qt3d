@@ -348,16 +348,6 @@ void QAttribute::setVertexSize(uint size)
     emit dataSizeChanged(size);
 }
 
-void QAttribute::setDataType(VertexBaseType type)
-{
-    setVertexBaseType(type);
-}
-
-void QAttribute::setDataSize(uint size)
-{
-    setVertexSize(size);
-}
-
 void QAttribute::setCount(uint count)
 {
     Q_D(QAttribute);
@@ -485,24 +475,6 @@ QString QAttribute::defaultTextureCoordinate2AttributeName()
 {
     return QStringLiteral("vertexTexCoord2");
 }
-
-Qt3DCore::QNodeCreatedChangeBasePtr QAttribute::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAttributeData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QAttribute);
-    data.bufferId = qIdForNode(d->m_buffer);
-    data.name = d->m_name;
-    data.vertexBaseType = d->m_vertexBaseType;
-    data.vertexSize = d->m_vertexSize;
-    data.count = d->m_count;
-    data.byteStride = d->m_byteStride;
-    data.byteOffset = d->m_byteOffset;
-    data.divisor = d->m_divisor;
-    data.attributeType = d->m_attributeType;
-    return creationChange;
-}
-
 
 /*!
 \fn Qt3DRender::QAttribute::dataSizeChanged(uint vertexSize)

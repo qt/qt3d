@@ -75,10 +75,6 @@ protected:
     {
         aspect->registerBackendType(obj, functor);
     }
-    void registerBackendType(QRenderAspect *aspect, const QMetaObject &obj, const Qt3DCore::QBackendNodeMapperPtr &functor, bool supportsSyncing)
-    {
-        aspect->registerBackendType(obj, functor, supportsSyncing);
-    }
     void unregisterBackendType(QRenderAspect *aspect, const QMetaObject &obj)
     {
         aspect->unregisterBackendType(obj);

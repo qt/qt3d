@@ -38,7 +38,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_ChannelMapper : public Qt3DCore::QBackendNodeTester
 {

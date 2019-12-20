@@ -40,8 +40,6 @@
 #include "qabstractphysicaldeviceproxy_p.h"
 #include "qabstractphysicaldeviceproxy_p_p.h"
 
-#include <Qt3DInput/qphysicaldevicecreatedchange.h>
-
 
 QT_BEGIN_NAMESPACE
 
@@ -162,20 +160,6 @@ int QAbstractPhysicalDeviceProxy::buttonIdentifier(const QString &name) const
 QAbstractPhysicalDeviceProxy::QAbstractPhysicalDeviceProxy(QAbstractPhysicalDeviceProxyPrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractPhysicalDevice(dd, parent)
 {
-}
-
-/*!
-    \internal
- */
-Qt3DCore::QNodeCreatedChangeBasePtr QAbstractPhysicalDeviceProxy::createNodeCreationChange() const
-{
-    auto creationChange = QPhysicalDeviceCreatedChangePtr<QAbstractPhysicalDeviceProxyData>::create(this);
-    QAbstractPhysicalDeviceProxyData &data = creationChange->data;
-
-    Q_D(const QAbstractPhysicalDeviceProxy);
-    data.deviceName = d->m_deviceName;
-
-    return creationChange;
 }
 
 /*!

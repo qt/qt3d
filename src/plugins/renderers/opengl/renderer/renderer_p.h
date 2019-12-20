@@ -415,7 +415,6 @@ private:
     SynchronizerJobPtr m_bufferGathererJob;
     SynchronizerJobPtr m_vaoGathererJob;
     SynchronizerJobPtr m_textureGathererJob;
-    SynchronizerJobPtr m_sendSetFenceHandlesToFrontendJob;
     SynchronizerPostFramePtr m_introspectShaderJob;
     SynchronizerJobPtr m_syncLoadingJobs;
     SynchronizerJobPtr m_cacheRenderableEntitiesJob;
@@ -429,7 +428,7 @@ private:
     void reloadDirtyShaders();
     void sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager);
-    void sendSetFenceHandlesToFrontend();
+    void sendSetFenceHandlesToFrontend(Qt3DCore::QAspectManager *manager);
     void sendDisablesToFrontend(Qt3DCore::QAspectManager *manager);
 
     QMutex m_abandonedVaosMutex;

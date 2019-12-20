@@ -33,10 +33,7 @@
 #include <Qt3DAnimation/private/qlerpclipblend_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QLerpClipBlend : public QObject
 {
@@ -125,67 +122,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DAnimation::QLerpClipBlend lerpBlend;
-        Qt3DAnimation::QLerpClipBlend startClip;
-        Qt3DAnimation::QLerpClipBlend endClip;
-
-        lerpBlend.setStartClip(&startClip);
-        lerpBlend.setEndClip(&endClip);
-        lerpBlend.setBlendFactor(0.8f);
-
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&lerpBlend);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 3); // 1 + 2 clips
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QLerpClipBlendData>>(creationChanges.first());
-            const Qt3DAnimation::QLerpClipBlendData cloneData = creationChangeData->data;
-
-            QCOMPARE(lerpBlend.blendFactor(), cloneData.blendFactor);
-            QCOMPARE(lerpBlend.id(), creationChangeData->subjectId());
-            QCOMPARE(lerpBlend.isEnabled(), true);
-            QCOMPARE(lerpBlend.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(lerpBlend.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(cloneData.startClipId, startClip.id());
-            QCOMPARE(cloneData.endClipId, endClip.id());
-        }
-
-        // WHEN
-        lerpBlend.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&lerpBlend);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 3); // 1 + 2 clips
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QLerpClipBlendData>>(creationChanges.first());
-            const Qt3DAnimation::QLerpClipBlendData cloneData = creationChangeData->data;
-
-            QCOMPARE(lerpBlend.blendFactor(), cloneData.blendFactor);
-            QCOMPARE(lerpBlend.id(), creationChangeData->subjectId());
-            QCOMPARE(lerpBlend.isEnabled(), false);
-            QCOMPARE(lerpBlend.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(lerpBlend.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(cloneData.startClipId, startClip.id());
-            QCOMPARE(cloneData.endClipId, endClip.id());
-        }
-    }
-
     void checkBlendFactorUpdate()
     {
         // GIVEN
@@ -198,10 +134,10 @@ private Q_SLOTS:
             lerpBlend.setBlendFactor(0.4f);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &lerpBlend);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &lerpBlend);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -209,7 +145,7 @@ private Q_SLOTS:
             lerpBlend.setBlendFactor(0.4f);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -227,10 +163,10 @@ private Q_SLOTS:
             lerpBlend.setStartClip(startClip);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &lerpBlend);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &lerpBlend);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -238,7 +174,7 @@ private Q_SLOTS:
             lerpBlend.setStartClip(startClip);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
@@ -255,10 +191,10 @@ private Q_SLOTS:
             lerpBlend.setEndClip(endClip);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &lerpBlend);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &lerpBlend);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -266,7 +202,7 @@ private Q_SLOTS:
             lerpBlend.setEndClip(endClip);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 

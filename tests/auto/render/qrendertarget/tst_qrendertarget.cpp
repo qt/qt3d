@@ -32,9 +32,7 @@
 #include <Qt3DRender/private/qrendertarget_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QRenderTarget : public QObject
 {
@@ -95,62 +93,6 @@ private Q_SLOTS:
         QCOMPARE(renderTarget.outputs().size(), 0);
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QRenderTarget renderTarget;
-        Qt3DRender::QRenderTargetOutput output;
-
-        renderTarget.addOutput(&output);
-
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&renderTarget);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // Target + Output
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderTargetData>>(creationChanges.first());
-            const Qt3DRender::QRenderTargetData cloneData = creationChangeData->data;
-
-            QCOMPARE(renderTarget.id(), creationChangeData->subjectId());
-            QCOMPARE(renderTarget.isEnabled(), true);
-            QCOMPARE(renderTarget.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(renderTarget.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(renderTarget.outputs().size(), cloneData.outputIds.size());
-            QCOMPARE(output.id(), cloneData.outputIds.first());
-        }
-
-        // WHEN
-        renderTarget.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&renderTarget);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // Target + Output
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderTargetData>>(creationChanges.first());
-            const Qt3DRender::QRenderTargetData cloneData = creationChangeData->data;
-
-            QCOMPARE(renderTarget.id(), creationChangeData->subjectId());
-            QCOMPARE(renderTarget.isEnabled(), false);
-            QCOMPARE(renderTarget.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(renderTarget.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(renderTarget.outputs().size(), cloneData.outputIds.size());
-            QCOMPARE(output.id(), cloneData.outputIds.first());
-        }
-    }
-
     void checkRenderTargetOutputUpdate()
     {
         // GIVEN
@@ -165,11 +107,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderTarget);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderTarget);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -178,11 +119,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderTarget);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderTarget);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
     }
 };

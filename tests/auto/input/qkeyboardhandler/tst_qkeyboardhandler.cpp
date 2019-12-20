@@ -29,13 +29,11 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QKeyboardDevice>
 #include <Qt3DInput/QKeyboardHandler>
 #include <Qt3DInput/private/qkeyboardhandler_p.h>
-
-#include "testpostmanarbiter.h"
+#include <testarbiter.h>
 
 class tst_QKeyboardHandler : public QObject
 {
@@ -47,44 +45,6 @@ public:
     }
 
 private Q_SLOTS:
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DInput::QKeyboardHandler *>("keyboardHandler");
-
-        auto defaultConstructed = new Qt3DInput::QKeyboardHandler;
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        auto handlerWithDevice = new Qt3DInput::QKeyboardHandler;
-        handlerWithDevice->setSourceDevice(new Qt3DInput::QKeyboardDevice);
-        QTest::newRow("handlerWithDevice") << handlerWithDevice;
-
-        auto handlerWithDeviceAndFocus = new Qt3DInput::QKeyboardHandler;
-        handlerWithDeviceAndFocus->setSourceDevice(new Qt3DInput::QKeyboardDevice);
-        handlerWithDeviceAndFocus->setFocus(true);
-        QTest::newRow("handlerWithDeviceAndFocus") << handlerWithDeviceAndFocus;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DInput::QKeyboardHandler *, keyboardHandler);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(keyboardHandler);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + (keyboardHandler->sourceDevice() ? 1 : 0));
-
-        auto creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QKeyboardHandlerData>>(creationChanges.first());
-        const Qt3DInput::QKeyboardHandlerData &cloneData = creationChangeData->data;
-        QCOMPARE(keyboardHandler->id(), creationChangeData->subjectId());
-        QCOMPARE(keyboardHandler->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(keyboardHandler->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(keyboardHandler->focus(), cloneData.focus);
-        QCOMPARE(keyboardHandler->sourceDevice() ? keyboardHandler->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.keyboardDeviceId);
-    }
 
     void checkPropertyUpdates()
     {
@@ -97,23 +57,23 @@ private Q_SLOTS:
         keyboardHandler->setFocus(true);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), keyboardHandler.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), keyboardHandler.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         auto device = new Qt3DInput::QKeyboardDevice(keyboardHandler.data());
         QCoreApplication::processEvents();
-        arbiter.events.clear();
+        arbiter.clear();
 
         keyboardHandler->setSourceDevice(device);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), keyboardHandler.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), keyboardHandler.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkSourceDeviceBookkeeping()

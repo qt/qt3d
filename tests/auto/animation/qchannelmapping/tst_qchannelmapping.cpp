@@ -30,14 +30,11 @@
 #include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/private/qabstractchannelmapping_p.h>
 #include <Qt3DAnimation/private/qchannelmapping_p.h>
-#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>
 #include <QSignalSpy>
 #include <QQuaternion>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 class tst_QTargetEntity : public Qt3DCore::QEntity
 {
@@ -169,71 +166,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DAnimation::QChannelMapping mapping;
-        auto target = new tst_QTargetEntity;
-
-        mapping.setChannelName(QStringLiteral("Location"));
-        mapping.setTarget(target);
-        mapping.setProperty(QStringLiteral("translation"));
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mapping);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // 1 for mapping, 1 for target
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QChannelMappingCreatedChange<Qt3DAnimation::QChannelMappingData>>(creationChanges.first());
-            const Qt3DAnimation::QChannelMappingData data = creationChangeData->data;
-
-            QCOMPARE(mapping.id(), creationChangeData->subjectId());
-            QCOMPARE(mapping.isEnabled(), true);
-            QCOMPARE(mapping.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mapping.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::ChannelMapping);
-            QCOMPARE(mapping.channelName(), data.channelName);
-            QCOMPARE(mapping.target()->id(), data.targetId);
-            QVERIFY(qstrcmp(mapping.property().toLatin1().constData(), data.propertyName) == 0);
-            QCOMPARE(data.type, static_cast<int>(QVariant::Vector3D));
-            QCOMPARE(data.componentCount, 3);
-        }
-
-        // WHEN
-        mapping.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mapping);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // 1 for mapping, 1 for target
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QChannelMappingCreatedChange<Qt3DAnimation::QChannelMappingData>>(creationChanges.first());
-            const Qt3DAnimation::QChannelMappingData data = creationChangeData->data;
-
-            QCOMPARE(mapping.id(), creationChangeData->subjectId());
-            QCOMPARE(mapping.isEnabled(), false);
-            QCOMPARE(mapping.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mapping.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::ChannelMapping);
-            QCOMPARE(mapping.channelName(), data.channelName);
-            QCOMPARE(mapping.target()->id(), data.targetId);
-            QVERIFY(qstrcmp(mapping.property().toLatin1().constData(), data.propertyName) == 0);
-            QCOMPARE(data.type, static_cast<int>(QVariant::Vector3D));
-            QCOMPARE(data.componentCount, 3);
-        }
-    }
-
     void checkPropertyUpdateChanges()
     {
         // GIVEN
@@ -247,16 +179,16 @@ private Q_SLOTS:
             mapping.setChannelName(QStringLiteral("Scale"));
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mapping);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             mapping.setChannelName(QStringLiteral("Scale"));
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         {
@@ -264,16 +196,16 @@ private Q_SLOTS:
             mapping.setTarget(target.data());
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mapping);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             mapping.setTarget(target.data());
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         {
@@ -283,19 +215,17 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mapping);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             mapping.setProperty(QStringLiteral("scale"));
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
@@ -341,16 +271,16 @@ private Q_SLOTS:
             target->setProperty(propertyName.constData(), value);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), target.data());
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), target.data());
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // THEN
             mapping.setProperty(QString::fromLatin1(propertyName));
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
         }
     }
 

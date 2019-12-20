@@ -31,12 +31,9 @@
 #include <Qt3DCore/qskeletonloader.h>
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/private/qskeletonloader_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 using namespace Qt3DCore;
 
@@ -102,60 +99,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        QSkeletonLoader skeleton;
-
-        skeleton.setSource(QUrl(QStringLiteral("http://someRemoteURL.com/dem-bones.skel")));
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            QNodeCreatedChangeGenerator creationChangeGenerator(&skeleton);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<QNodeCreatedChange<QSkeletonLoaderData>>(creationChanges.first());
-            const QSkeletonLoaderData data = creationChangeData->data;
-
-            QCOMPARE(skeleton.id(), creationChangeData->subjectId());
-            QCOMPARE(skeleton.isEnabled(), true);
-            QCOMPARE(skeleton.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(skeleton.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(skeleton.source(), data.source);
-            QCOMPARE(skeleton.isCreateJointsEnabled(), data.createJoints);
-        }
-
-        // WHEN
-        skeleton.setEnabled(false);
-
-        {
-            QNodeCreatedChangeGenerator creationChangeGenerator(&skeleton);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<QNodeCreatedChange<QSkeletonLoaderData>>(creationChanges.first());
-            const QSkeletonLoaderData data = creationChangeData->data;
-
-            QCOMPARE(skeleton.id(), creationChangeData->subjectId());
-            QCOMPARE(skeleton.isEnabled(), false);
-            QCOMPARE(skeleton.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(skeleton.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(skeleton.source(), data.source);
-            QCOMPARE(skeleton.isCreateJointsEnabled(), data.createJoints);
-        }
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
@@ -169,11 +112,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes[0], &skeleton);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes()[0], &skeleton);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -182,8 +124,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         {
@@ -192,11 +133,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes[0], &skeleton);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes()[0], &skeleton);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -205,8 +145,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 };

@@ -63,7 +63,6 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 
 #include <QMatrix4x4>
 #include <QString>
@@ -427,9 +426,9 @@ RenderEntityFunctor::RenderEntityFunctor(AbstractRenderer *renderer, NodeManager
 {
 }
 
-Qt3DCore::QBackendNode *RenderEntityFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *RenderEntityFunctor::create(Qt3DCore::QNodeId id) const
 {
-    HEntity renderNodeHandle = m_nodeManagers->renderNodesManager()->getOrAcquireHandle(change->subjectId());
+    HEntity renderNodeHandle = m_nodeManagers->renderNodesManager()->getOrAcquireHandle(id);
     Entity *entity = m_nodeManagers->renderNodesManager()->data(renderNodeHandle);
     entity->setNodeManagers(m_nodeManagers);
     entity->setHandle(renderNodeHandle);

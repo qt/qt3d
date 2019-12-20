@@ -316,16 +316,6 @@ QVariant QParameter::value() const
     return d->m_value;
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QParameter::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QParameterData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QParameter);
-    data.name = d->m_name;
-    data.backendValue = d->m_backendValue;
-    return creationChange;
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

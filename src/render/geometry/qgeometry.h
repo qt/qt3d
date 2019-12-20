@@ -77,11 +77,9 @@ Q_SIGNALS:
     Q_REVISION(13) void maxExtentChanged(const QVector3D &maxExtent);
 protected:
     explicit QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QGeometry)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DRender

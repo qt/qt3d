@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include "qmlscenereader.h"
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 #include <QUrl>
 

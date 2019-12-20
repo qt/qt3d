@@ -68,7 +68,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QAnalogAxisInput)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // Qt3DInput

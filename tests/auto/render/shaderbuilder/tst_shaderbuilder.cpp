@@ -28,13 +28,12 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qshaderprogrambuilder.h>
 #include "testrenderer.h"
-#include "testpostmanarbiter.h"
+#include <testarbiter.h>
 
 Q_DECLARE_METATYPE(Qt3DRender::QShaderProgram::ShaderType)
 
@@ -583,7 +582,6 @@ private slots:
 
         Qt3DRender::Render::ShaderBuilder backend;
         TestArbiter arbiter;
-        Qt3DCore::QBackendNodePrivate::get(&backend)->setArbiter(&arbiter);
 
 
         // WHEN

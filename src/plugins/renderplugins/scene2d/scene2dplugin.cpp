@@ -58,9 +58,9 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const final
     {
-        Backend *backend = m_manager->getOrCreateResource(change->subjectId());
+        Backend *backend = m_manager->getOrCreateResource(id);
         backend->setRenderer(m_renderer);
         return backend;
     }
@@ -96,7 +96,7 @@ bool Scene2DPlugin::registerBackendTypes(QRenderAspect *aspect,
 {
     registerBackendType(aspect, Qt3DRender::Quick::QScene2D::staticMetaObject,
                 QSharedPointer<Scene2DBackendNodeMapper<Render::Quick::Scene2D> >
-                    ::create(renderer, m_scene2dNodeManager), true);
+                    ::create(renderer, m_scene2dNodeManager));
     return true;
 }
 bool Scene2DPlugin::unregisterBackendTypes(QRenderAspect *aspect)

@@ -31,11 +31,9 @@
 #include <Qt3DAnimation/private/qskeletonmapping_p.h>
 #include <Qt3DCore/qskeleton.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 class tst_QSkeletonMapping : public QObject
 {
@@ -82,61 +80,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DAnimation::QSkeletonMapping mapping;
-        auto target = new Qt3DCore::QSkeleton;
-
-        mapping.setSkeleton(target);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mapping);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // 1 for mapping, 1 for skeleton
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QChannelMappingCreatedChange<Qt3DAnimation::QSkeletonMappingData>>(creationChanges.first());
-            const Qt3DAnimation::QSkeletonMappingData data = creationChangeData->data;
-
-            QCOMPARE(mapping.id(), creationChangeData->subjectId());
-            QCOMPARE(mapping.isEnabled(), true);
-            QCOMPARE(mapping.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mapping.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::SkeletonMapping);
-            QCOMPARE(mapping.skeleton()->id(), data.skeletonId);
-        }
-
-        // WHEN
-        mapping.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mapping);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 2); // 1 for mapping, 1 for skeleton
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QChannelMappingCreatedChange<Qt3DAnimation::QSkeletonMappingData>>(creationChanges.first());
-            const Qt3DAnimation::QSkeletonMappingData data = creationChangeData->data;
-
-            QCOMPARE(mapping.id(), creationChangeData->subjectId());
-            QCOMPARE(mapping.isEnabled(), false);
-            QCOMPARE(mapping.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mapping.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::SkeletonMapping);
-            QCOMPARE(mapping.skeleton()->id(), data.skeletonId);
-        }
-    }
-
     void checkPropertyUpdateChanges()
     {
         // GIVEN
@@ -150,16 +93,16 @@ private Q_SLOTS:
             mapping.setSkeleton(target);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mapping);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             mapping.setSkeleton(target);
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 };

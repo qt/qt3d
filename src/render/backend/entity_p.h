@@ -55,7 +55,6 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/private/qhandle_p.h>
 #include <QVector>
@@ -306,7 +305,7 @@ class Q_AUTOTEST_EXPORT RenderEntityFunctor : public Qt3DCore::QBackendNodeMappe
 {
 public:
     explicit RenderEntityFunctor(AbstractRenderer *renderer, NodeManagers *manager);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const override;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
     void destroy(Qt3DCore::QNodeId id) const override;
 

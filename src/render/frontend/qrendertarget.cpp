@@ -123,7 +123,7 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
         if (!output->parent())
             output->setParent(this);
 
-        d->updateNode(output, "output", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -134,7 +134,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
 
-    d->updateNode(output, "output", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_outputs.removeOne(output);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(output);
@@ -147,14 +147,6 @@ QVector<QRenderTargetOutput *> QRenderTarget::outputs() const
 {
     Q_D(const QRenderTarget);
     return d->m_outputs;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderTarget::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderTargetData>::create(this);
-    auto &data = creationChange->data;
-    data.outputIds = qIdsForNodes(outputs());
-    return creationChange;
 }
 
 } // namespace Qt3DRender

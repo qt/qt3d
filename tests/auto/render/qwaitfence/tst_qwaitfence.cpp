@@ -43,9 +43,7 @@
 #include <Qt3DRender/private/qwaitfence_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QWaitFence : public QObject
 {
@@ -153,67 +151,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QWaitFence waitFence;
-
-        waitFence.setHandleType(Qt3DRender::QWaitFence::OpenGLFenceId);
-        waitFence.setHandle(QVariant(1200));
-        waitFence.setWaitOnCPU(true);
-        waitFence.setTimeout(1584);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&waitFence);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QWaitFenceData>>(creationChanges.first());
-            const Qt3DRender::QWaitFenceData cloneData = creationChangeData->data;
-
-            QCOMPARE(waitFence.handleType(), cloneData.handleType);
-            QCOMPARE(waitFence.handle(), cloneData.handle);
-            QCOMPARE(waitFence.waitOnCPU(), cloneData.waitOnCPU);
-            QCOMPARE(waitFence.timeout(), cloneData.timeout);
-            QCOMPARE(waitFence.id(), creationChangeData->subjectId());
-            QCOMPARE(waitFence.isEnabled(), true);
-            QCOMPARE(waitFence.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(waitFence.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        waitFence.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&waitFence);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QWaitFenceData>>(creationChanges.first());
-            const Qt3DRender::QWaitFenceData cloneData = creationChangeData->data;
-
-            QCOMPARE(waitFence.handleType(), cloneData.handleType);
-            QCOMPARE(waitFence.handle(), cloneData.handle);
-            QCOMPARE(waitFence.waitOnCPU(), cloneData.waitOnCPU);
-            QCOMPARE(waitFence.timeout(), cloneData.timeout);
-            QCOMPARE(waitFence.id(), creationChangeData->subjectId());
-            QCOMPARE(waitFence.isEnabled(), false);
-            QCOMPARE(waitFence.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(waitFence.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkHandleTypeUpdate()
     {
         // GIVEN
@@ -227,11 +164,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &waitFence);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &waitFence);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -240,8 +176,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
@@ -258,11 +193,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &waitFence);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &waitFence);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -271,8 +205,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
@@ -289,11 +222,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &waitFence);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &waitFence);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -302,8 +234,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
@@ -320,11 +251,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &waitFence);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &waitFence);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -333,8 +263,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 };

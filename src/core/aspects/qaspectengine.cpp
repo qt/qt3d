@@ -52,7 +52,6 @@
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
-#include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/private/qsysteminformationservice_p.h>
@@ -115,17 +114,14 @@ QAspectEnginePrivate *QAspectEnginePrivate::get(QAspectEngine *q)
 QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
     , m_aspectManager(nullptr)
-    , m_postman(nullptr)
     , m_scene(nullptr)
     , m_initialized(false)
     , m_runMode(QAspectEngine::Automatic)
 {
     qRegisterMetaType<Qt3DCore::QAbstractAspect *>();
-    qRegisterMetaType<Qt3DCore::QObserverInterface *>();
     qRegisterMetaType<Qt3DCore::QNode *>();
     qRegisterMetaType<Qt3DCore::QEntity *>();
     qRegisterMetaType<Qt3DCore::QScene *>();
-    qRegisterMetaType<Qt3DCore::QAbstractPostman *>();
 }
 
 QAspectEnginePrivate::~QAspectEnginePrivate()
@@ -226,8 +222,6 @@ QAspectEngine::QAspectEngine(QObject *parent)
     qCDebug(Aspects) << Q_FUNC_INFO;
     Q_D(QAspectEngine);
     d->m_scene = new QScene(this);
-    d->m_postman = new QPostman(this);
-    d->m_postman->setScene(d->m_scene);
     d->m_aspectManager = new QAspectManager(this);
 }
 
@@ -248,7 +242,6 @@ QAspectEngine::~QAspectEngine()
     for (auto aspect : aspects)
         unregisterAspect(aspect);
 
-    delete d->m_postman;
     delete d->m_scene;
 }
 
@@ -265,8 +258,6 @@ void QAspectEnginePrivate::initialize()
     m_aspectManager->initialize();
     QChangeArbiter *arbiter = m_aspectManager->changeArbiter();
     m_scene->setArbiter(arbiter);
-    QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
-    arbiter->setPostman(m_postman);
     arbiter->setScene(m_scene);
     m_initialized = true;
     m_aspectManager->setPostConstructorInit(m_scene->postConstructorInit());
@@ -283,19 +274,12 @@ void QAspectEnginePrivate::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    // Flush any change batch waiting in the postman that may contain node
-    // destruction changes that the aspects should process before we exit
-    // the simulation loop
-    m_postman->submitChangeBatch();
-
     // Exit the simulation loop. Waits for this to be completed on the aspect
     // thread before returning
     exitSimulationLoop();
 
     // Cleanup the scene before quitting the backend
     m_scene->setArbiter(nullptr);
-    QChangeArbiter *arbiter = m_aspectManager->changeArbiter();
-    QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
     m_initialized = false;
 }
 

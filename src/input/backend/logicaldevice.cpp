@@ -80,9 +80,9 @@ LogicalDeviceNodeFunctor::LogicalDeviceNodeFunctor(LogicalDeviceManager *manager
 {
 }
 
-Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(Qt3DCore::QNodeId id) const
 {
-    HLogicalDevice handle = m_manager->getOrAcquireHandle(change->subjectId());
+    HLogicalDevice handle = m_manager->getOrAcquireHandle(id);
     LogicalDevice *backend = m_manager->data(handle);
     m_manager->addActiveDevice(handle);
     return backend;

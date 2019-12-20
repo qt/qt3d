@@ -32,9 +32,7 @@
 #include <private/qscene2d_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 using namespace Qt3DRender::Quick;
 
@@ -148,65 +146,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::Quick::QScene2D scene2d;
-        QScopedPointer<Qt3DRender::QRenderTargetOutput> output(new Qt3DRender::QRenderTargetOutput());
-
-        scene2d.setOutput(output.data());
-        scene2d.setRenderPolicy(QScene2D::SingleShot);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&scene2d);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<
-                    Qt3DRender::Quick::QScene2DData>>(creationChanges.first());
-            const Qt3DRender::Quick::QScene2DData cloneData = creationChangeData->data;
-
-            QCOMPARE(scene2d.output()->id(), cloneData.output);
-            QCOMPARE(scene2d.renderPolicy(), cloneData.renderPolicy);
-            QCOMPARE(scene2d.id(), creationChangeData->subjectId());
-            QCOMPARE(scene2d.isEnabled(), true);
-            QCOMPARE(scene2d.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(scene2d.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(scene2d.isMouseEnabled(), cloneData.mouseEnabled);
-        }
-
-        // WHEN
-        scene2d.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&scene2d);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<
-                    Qt3DRender::Quick::QScene2DData>>(creationChanges.first());
-            const Qt3DRender::Quick::QScene2DData cloneData = creationChangeData->data;
-
-            QCOMPARE(scene2d.output()->id(), cloneData.output);
-            QCOMPARE(scene2d.renderPolicy(), cloneData.renderPolicy);
-            QCOMPARE(scene2d.id(), creationChangeData->subjectId());
-            QCOMPARE(scene2d.isEnabled(), false);
-            QCOMPARE(scene2d.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(scene2d.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkOutputUpdate()
     {
         // GIVEN
@@ -221,11 +160,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &scene2d);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &scene2d);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -234,8 +172,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -253,11 +190,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &scene2d);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &scene2d);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -266,8 +202,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -285,11 +220,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &scene2d);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &scene2d);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -298,8 +232,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

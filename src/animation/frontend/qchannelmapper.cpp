@@ -36,7 +36,6 @@
 
 #include "qchannelmapper.h"
 #include "qchannelmapper_p.h"
-#include <Qt3DCore/qscenechange.h>
 #include <Qt3DAnimation/qchannelmapping.h>
 
 QT_BEGIN_NAMESPACE
@@ -86,7 +85,7 @@ void QChannelMapper::addMapping(QAbstractChannelMapping *mapping)
         if (!mapping->parent())
             mapping->setParent(this);
 
-        d->updateNode(mapping, "mappings", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -95,7 +94,7 @@ void QChannelMapper::removeMapping(QAbstractChannelMapping *mapping)
     Q_ASSERT(mapping);
     Q_D(QChannelMapper);
     d->m_mappings.removeOne(mapping);
-    d->updateNode(mapping, "mappings", Qt3DCore::PropertyValueRemoved);
+    d->update();
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(mapping);
 }
@@ -104,15 +103,6 @@ QVector<QAbstractChannelMapping *> QChannelMapper::mappings() const
 {
     Q_D(const QChannelMapper);
     return d->m_mappings;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapper::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QChannelMapperData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QChannelMapper);
-    data.mappingIds = Qt3DCore::qIdsForNodes(d->m_mappings);
-    return creationChange;
 }
 
 } // namespace Qt3DAnimation

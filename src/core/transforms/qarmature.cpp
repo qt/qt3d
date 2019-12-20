@@ -157,16 +157,6 @@ void QArmature::setSkeleton(Qt3DCore::QAbstractSkeleton *skeleton)
     }
 }
 
-/*! \internal */
-Qt3DCore::QNodeCreatedChangeBasePtr QArmature::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QArmatureData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QArmature);
-    data.skeletonId = qIdForNode(d->m_skeleton);
-    return creationChange;
-}
-
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

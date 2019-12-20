@@ -79,7 +79,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QCullFace)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DRender

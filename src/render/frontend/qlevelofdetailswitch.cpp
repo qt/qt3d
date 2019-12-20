@@ -133,11 +133,6 @@ QLevelOfDetailSwitch::QLevelOfDetailSwitch(QLevelOfDetailPrivate &dd, QNode *par
 {
 }
 
-// TODO Unused remove in Qt6
-void QLevelOfDetailSwitch::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
-{
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

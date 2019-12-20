@@ -39,7 +39,6 @@
 
 #include "qclearbuffers.h"
 #include "qclearbuffers_p.h"
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -230,19 +229,6 @@ void QClearBuffers::setColorBuffer(QRenderTargetOutput *buffer)
         d->m_buffer = buffer;
         emit colorBufferChanged(buffer);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QClearBuffers::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QClearBuffersData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QClearBuffers);
-    data.buffersType = d->m_buffersType;
-    data.clearColor = d->m_clearColor;
-    data.clearDepthValue = d->m_clearDepthValue;
-    data.clearStencilValue = d->m_clearStencilValue;
-    data.bufferId = Qt3DCore::qIdForNode(d->m_buffer);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

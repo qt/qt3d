@@ -32,9 +32,7 @@
 #include <Qt3DRender/private/qdispatchcompute_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QDispatchCompute : public QObject
 {
@@ -117,64 +115,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QDispatchCompute dispatchCompute;
-
-        dispatchCompute.setWorkGroupX(427);
-        dispatchCompute.setWorkGroupY(454);
-        dispatchCompute.setWorkGroupZ(383);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&dispatchCompute);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QDispatchComputeData>>(creationChanges.first());
-            const Qt3DRender::QDispatchComputeData cloneData = creationChangeData->data;
-
-            QCOMPARE(dispatchCompute.workGroupX(), cloneData.workGroupX);
-            QCOMPARE(dispatchCompute.workGroupY(), cloneData.workGroupY);
-            QCOMPARE(dispatchCompute.workGroupZ(), cloneData.workGroupZ);
-            QCOMPARE(dispatchCompute.id(), creationChangeData->subjectId());
-            QCOMPARE(dispatchCompute.isEnabled(), true);
-            QCOMPARE(dispatchCompute.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(dispatchCompute.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        dispatchCompute.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&dispatchCompute);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QDispatchComputeData>>(creationChanges.first());
-            const Qt3DRender::QDispatchComputeData cloneData = creationChangeData->data;
-
-            QCOMPARE(dispatchCompute.workGroupX(), cloneData.workGroupX);
-            QCOMPARE(dispatchCompute.workGroupY(), cloneData.workGroupY);
-            QCOMPARE(dispatchCompute.workGroupZ(), cloneData.workGroupZ);
-            QCOMPARE(dispatchCompute.id(), creationChangeData->subjectId());
-            QCOMPARE(dispatchCompute.isEnabled(), false);
-            QCOMPARE(dispatchCompute.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(dispatchCompute.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkWorkGroupXUpdate()
     {
         // GIVEN
@@ -188,11 +128,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &dispatchCompute);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &dispatchCompute);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -201,8 +140,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -220,11 +158,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &dispatchCompute);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &dispatchCompute);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -233,8 +170,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -252,11 +188,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &dispatchCompute);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &dispatchCompute);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -265,8 +200,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

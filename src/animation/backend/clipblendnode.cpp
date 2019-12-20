@@ -35,7 +35,6 @@
 ****************************************************************************/
 
 #include "clipblendnode_p.h"
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 #include <Qt3DAnimation/qabstractanimationclip.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,11 +57,6 @@ ClipBlendNode::~ClipBlendNode()
 void ClipBlendNode::setClipBlendNodeManager(ClipBlendNodeManager *manager)
 {
     m_manager = manager;
-}
-
-void ClipBlendNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    Q_UNUSED(change);
 }
 
 ClipBlendNode::BlendType Animation::ClipBlendNode::blendType() const

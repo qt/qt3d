@@ -42,7 +42,6 @@
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DRender/qattribute.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,6 +61,20 @@ QGeometryPrivate::QGeometryPrivate()
 
 QGeometryPrivate::~QGeometryPrivate()
 {
+}
+
+void QGeometryPrivate::setExtent(const QVector3D &minExtent, const QVector3D &maxExtent)
+{
+    Q_Q(QGeometry);
+    if (m_minExtent != minExtent) {
+        m_minExtent = minExtent;
+        emit q->minExtentChanged(minExtent);
+    }
+
+    if (m_maxExtent != maxExtent) {
+        m_maxExtent = maxExtent;
+        emit q->maxExtentChanged(maxExtent);
+    }
 }
 
 /*!
@@ -151,28 +164,6 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
 {
 }
 
-void QGeometry::sceneChangeEvent(const QSceneChangePtr &change)
-{
-    Q_D(QGeometry);
-    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
-    if (e->type() == PropertyUpdated) {
-        const bool blocked = blockNotifications(true);
-        if (e->propertyName() == QByteArrayLiteral("extent")) {
-            const QPair<QVector3D, QVector3D> extent = e->value().value<QPair<QVector3D, QVector3D>>();
-
-            if (extent.first != d->m_minExtent) {
-                d->m_minExtent = extent.first;
-                emit minExtentChanged(extent.first);
-            }
-            if (extent.second != d->m_maxExtent) {
-                d->m_maxExtent = extent.second;
-                emit maxExtentChanged(d->m_maxExtent);
-            }
-        }
-        blockNotifications(blocked);
-    }
-}
-
 /*!
     \fn void Qt3DRender::QGeometry::addAttribute(Qt3DRender::QAttribute *attribute)
     Adds an \a attribute to this geometry.
@@ -194,7 +185,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
         if (!attribute->parent())
             attribute->setParent(this);
 
-        d->updateNode(attribute, "attribute", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -209,7 +200,7 @@ void QGeometry::removeAttribute(QAttribute *attribute)
     d->m_attributes.removeOne(attribute);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(attribute);
-    d->updateNode(attribute, "attribute", Qt3DCore::PropertyValueRemoved);
+    d->update();
 }
 
 void QGeometry::setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute)
@@ -268,16 +259,6 @@ QVector<QAttribute *> QGeometry::attributes() const
 {
     Q_D(const QGeometry);
     return d->m_attributes;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QGeometry::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QGeometryData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QGeometry);
-    data.attributeIds = qIdsForNodes(d->m_attributes);
-    data.boundingVolumePositionAttributeId = qIdForNode(d->m_boundingVolumePositionAttribute);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -222,9 +222,9 @@ TechniqueFunctor::TechniqueFunctor(AbstractRenderer *renderer, NodeManagers *man
 {
 }
 
-QBackendNode *TechniqueFunctor::create(const QNodeCreatedChangeBasePtr &change) const
+QBackendNode *TechniqueFunctor::create(Qt3DCore::QNodeId id) const
 {
-    Technique *technique = m_manager->techniqueManager()->getOrCreateResource(change->subjectId());
+    Technique *technique = m_manager->techniqueManager()->getOrCreateResource(id);
     technique->setNodeManager(m_manager);
     technique->setRenderer(m_renderer);
     return technique;

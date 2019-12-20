@@ -217,9 +217,6 @@ void QAspectManager::exitSimulationLoop()
     for (QAbstractAspect *aspect : qAsConst(m_aspects))
         aspect->d_func()->onEngineAboutToShutdown();
 
-    // Process any pending changes from the frontend before we shut the aspects down
-    m_changeArbiter->syncChanges();
-
     // Give aspects a chance to perform any shutdown actions. This may include unqueuing
     // any blocking work on the main thread that could potentially deadlock during shutdown.
     qCDebug(Aspects) << "Calling onEngineShutdown() for each aspect";
@@ -249,7 +246,6 @@ void QAspectManager::initialize()
     qCDebug(Aspects) << Q_FUNC_INFO;
     m_jobManager->initialize();
     m_scheduler->setAspectManager(this);
-    m_changeArbiter->initialize(m_jobManager);
 }
 
 /*!
@@ -517,21 +513,16 @@ void QAspectManager::processFrame()
         }
 
         // Sync node / subnode relationship changes
-        const auto dirtySubNodes = m_changeArbiter->takeDirtyFrontEndSubNodes();
+        const auto dirtySubNodes = m_changeArbiter->takeDirtyEntityComponentNodes();
         if (dirtySubNodes.size())
             for (QAbstractAspect *aspect : qAsConst(m_aspects))
-                QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndSubNodes(dirtySubNodes);
+                QAbstractAspectPrivate::get(aspect)->syncDirtyEntityComponentNodes(dirtySubNodes);
 
         // Sync property updates
         const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
         if (dirtyFrontEndNodes.size())
             for (QAbstractAspect *aspect : qAsConst(m_aspects))
                 QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
-
-        // TO DO: Having this done in the main thread actually means aspects could just
-        // as simply read info out of the Frontend classes without risk of introducing
-        // races. This could therefore be removed for Qt 6.
-        m_changeArbiter->syncChanges();
     }
 
     // For each Aspect

@@ -252,11 +252,6 @@ QSceneLoader::~QSceneLoader()
 {
 }
 
-// TODO Unused remove in Qt6
-void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &)
-{
-}
-
 /*! \internal */
 QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
@@ -371,21 +366,6 @@ QComponent *QSceneLoader::component(const QString &entityName,
         }
     }
     return nullptr;
-}
-
-/*! \internal */
-void QSceneLoader::setStatus(QSceneLoader::Status status)
-{
-    Q_D(QSceneLoader);
-    d->setStatus(status);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QSceneLoader::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QSceneLoaderData>::create(this);
-    auto &data = creationChange->data;
-    data.source = d_func()->m_source;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

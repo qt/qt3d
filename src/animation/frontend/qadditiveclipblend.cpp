@@ -36,7 +36,6 @@
 
 #include "qadditiveclipblend.h"
 #include "qadditiveclipblend_p.h"
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -133,17 +132,6 @@ QAdditiveClipBlend::QAdditiveClipBlend(QAdditiveClipBlendPrivate &dd, Qt3DCore::
 
 QAdditiveClipBlend::~QAdditiveClipBlend()
 {
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QAdditiveClipBlend::createNodeCreationChange() const
-{
-    Q_D(const QAdditiveClipBlend);
-    auto creationChange = QClipBlendNodeCreatedChangePtr<QAdditiveClipBlendData>::create(this);
-    QAdditiveClipBlendData &data = creationChange->data;
-    data.baseClipId = Qt3DCore::qIdForNode(d->m_baseClip);
-    data.additiveClipId = Qt3DCore::qIdForNode(d->m_additiveClip);
-    data.additiveFactor = d->m_additiveFactor;
-    return creationChange;
 }
 
 /*!

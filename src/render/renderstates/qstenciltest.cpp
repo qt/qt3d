@@ -41,7 +41,6 @@
 #include "qstenciltest.h"
 #include "qstenciltest_p.h"
 #include "qstenciltestarguments.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -149,13 +148,6 @@ QStencilTestArguments *QStencilTest::back() const
 {
     Q_D(const QStencilTest);
     return d->m_back;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QStencilTest::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QStencilTestData>::create(this);
-    d_func()->fillData(creationChange->data);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -41,7 +41,6 @@
 #include "qtechniquefilter_p.h"
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -144,7 +143,7 @@ void QTechniqueFilter::addMatch(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        d->updateNode(filterKey, "matchAll", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -155,7 +154,7 @@ void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QTechniqueFilter);
-    d->updateNode(filterKey, "matchAll", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_matchList.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
@@ -181,7 +180,7 @@ void QTechniqueFilter::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -192,7 +191,7 @@ void QTechniqueFilter::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QTechniqueFilter);
-    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
@@ -205,16 +204,6 @@ QVector<QParameter *> QTechniqueFilter::parameters() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_parameters;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QTechniqueFilter::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QTechniqueFilterData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QTechniqueFilter);
-    data.matchIds = qIdsForNodes(d->m_matchList);
-    data.parameterIds = qIdsForNodes(d->m_parameters);
-    return creationChange;
 }
 
 } // namespace Qt3DRender

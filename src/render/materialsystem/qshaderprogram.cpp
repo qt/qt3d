@@ -39,7 +39,6 @@
 
 #include "qshaderprogram.h"
 #include "qshaderprogram_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <QDebug>
 #include <QFile>
@@ -392,21 +391,6 @@ QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
 }
 
 /*!
-    Posts a scene change with parameter \a change.
-*/
-void QShaderProgram::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QShaderProgram);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("log"))
-            d->setLog(e->value().toString());
-        else if (e->propertyName() == QByteArrayLiteral("status"))
-            d->setStatus(static_cast<QShaderProgram::Status>(e->value().toInt()));
-    }
-}
-
-/*!
     \qmlproperty string ShaderProgram::vertexShaderCode
 
     Holds the vertex shader code used by this shader program.
@@ -727,21 +711,6 @@ QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
     return QShaderProgramPrivate::deincludify(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QShaderProgram::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderProgramData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QShaderProgram);
-    data.vertexShaderCode = d->m_vertexShaderCode;
-    data.tessellationControlShaderCode = d->m_tessControlShaderCode;
-    data.tessellationEvaluationShaderCode = d->m_tessEvalShaderCode;
-    data.geometryShaderCode = d->m_geometryShaderCode;
-    data.fragmentShaderCode = d->m_fragmentShaderCode;
-    data.computeShaderCode = d->m_computeShaderCode;
-    data.format = d->m_format;
-    return creationChange;
 }
 
 } // of namespace Qt3DRender

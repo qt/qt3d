@@ -617,20 +617,6 @@ float QCameraLens::exposure() const
     return d->m_exposure;
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QCameraLens::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QCameraLensData>::create(this);
-    auto &data = creationChange->data;
-    data.projectionMatrix = d_func()->m_projectionMatrix;
-    data.exposure = d_func()->m_exposure;
-    return creationChange;
-}
-
-void QCameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_UNUSED(change)
-}
-
 } // Qt3DRender
 
 QT_END_NAMESPACE

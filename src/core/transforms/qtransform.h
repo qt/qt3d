@@ -119,12 +119,9 @@ Q_SIGNALS:
 
 protected:
     explicit QTransform(QTransformPrivate &dd, QNode *parent = nullptr);
-    // TODO Unused remove in Qt6
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QTransform)
-    QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DCore

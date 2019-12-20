@@ -36,9 +36,6 @@
 
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/private/qrendercapture_p.h>
-#include <Qt3DCore/qscenechange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 #include <QPointer>
 #include <QMutexLocker>
@@ -118,17 +115,6 @@ namespace Qt3DRender {
  *
  * \since 5.9
  */
-
-#if QT_DEPRECATED_SINCE(5, 9)
-/*!
- * \qmlmethod void Qt3D.Render::RenderCaptureReply::saveToFile(fileName)
- * \deprecated
- *
- * Saves the render capture result as an image to \a fileName.
- *
- * Deprecated in 5.9. Use saveImage().
- */
-#endif
 
 /*!
  * \qmlmethod RenderCaptureReply Qt3D.Render::RenderCapture::requestCapture(int captureId)
@@ -227,21 +213,6 @@ bool QRenderCaptureReply::saveImage(const QString &fileName) const
     }
     return false;
 }
-
-#if QT_DEPRECATED_SINCE(5, 9)
-/*!
- * \deprecated
- * Saves the render capture result as an image to \a fileName.
- *
- * Deprecated in 5.9. Use saveImage().
- */
-void QRenderCaptureReply::saveToFile(const QString &fileName) const
-{
-    Q_D(const QRenderCaptureReply);
-    if (d->m_complete)
-        d->m_image.save(fileName);
-}
-#endif
 
 /*!
  * \internal
@@ -371,41 +342,6 @@ QRenderCaptureReply *QRenderCapture::requestCapture(const QRect &rect)
 Qt3DRender::QRenderCaptureReply *QRenderCapture::requestCapture()
 {
     return requestCapture(QRect());
-}
-
-/*!
- * \internal
- */
-void QRenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
-{
-    Q_D(QRenderCapture);
-    Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-    if (propertyChange->type() == Qt3DCore::PropertyUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("renderCaptureData")) {
-            RenderCaptureDataPtr data = propertyChange->value().value<RenderCaptureDataPtr>();
-            QPointer<QRenderCaptureReply> reply = d->takeReply(data.data()->captureId);
-            if (reply) {
-                d->setImage(reply, data.data()->image);
-                emit reply->completed();
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-                if (reply)
-                    emit reply->completeChanged(true);
-QT_WARNING_POP
-            }
-        }
-    }
-}
-
-/*!
- * \internal
- */
-Qt3DCore::QNodeCreatedChangeBasePtr QRenderCapture::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderCaptureInitData>::create(this);
-    QRenderCaptureInitData &data = creationChange->data;
-    data.captureId = 0;
-    return creationChange;
 }
 
 } // Qt3DRender

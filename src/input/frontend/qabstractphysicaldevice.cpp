@@ -41,7 +41,6 @@
 #include "qabstractphysicaldevice_p.h"
 
 #include <Qt3DInput/qaxissetting.h>
-#include <Qt3DInput/qphysicaldevicecreatedchange.h>
 
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -165,7 +164,7 @@ void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
     if (axisSetting && !d->m_axisSettings.contains(axisSetting)) {
-        d->updateNode(axisSetting, "axisSettings", Qt3DCore::PropertyValueAdded);
+        d->update();
         d->m_axisSettings.push_back(axisSetting);
     }
 }
@@ -177,7 +176,7 @@ void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
     if (axisSetting && d->m_axisSettings.contains(axisSetting)) {
-        d->updateNode(axisSetting, "axisSettings", Qt3DCore::PropertyValueRemoved);
+        d->update();
         d->m_axisSettings.removeOne(axisSetting);
     }
 }
@@ -207,15 +206,6 @@ void QAbstractPhysicalDevicePrivate::postButtonEvent(int button, qreal value)
 {
     m_pendingButtonsEvents.push_back({button, value});
     update();
-}
-
-/*!
-    \internal
-*/
-Qt3DCore::QNodeCreatedChangeBasePtr QAbstractPhysicalDevice::createNodeCreationChange() const
-{
-    auto creationChange = QPhysicalDeviceCreatedChangeBasePtr::create(this);
-    return creationChange;
 }
 
 }

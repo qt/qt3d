@@ -34,8 +34,8 @@
 #include <Qt3DInput/QAbstractPhysicalDevice>
 #include <Qt3DInput/private/qabstractaxisinput_p.h>
 
-#include "testpostmanarbiter.h"
 #include "testdevice.h"
+#include <testarbiter.h>
 
 class DummyAxisInput : public Qt3DInput::QAbstractAxisInput
 {
@@ -68,15 +68,15 @@ private Q_SLOTS:
         // WHEN
         TestDevice *device = new TestDevice(axisInput.data());
         QCoreApplication::processEvents();
-        arbiter.events.clear();
+        arbiter.clear();
 
         axisInput->setSourceDevice(device);
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QCOMPARE(arbiter.dirtyNodes.front(), axisInput.data());
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), axisInput.data());
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkSourceDeviceBookkeeping()

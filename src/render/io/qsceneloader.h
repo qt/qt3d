@@ -41,7 +41,6 @@
 #define QT3DRENDER_QSCENELOADER_H
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qscenechange.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <QtCore/QUrl>
 
@@ -60,8 +59,6 @@ public:
     explicit QSceneLoader(Qt3DCore::QNode *parent = nullptr);
     ~QSceneLoader();
 
-    // TODO Unused remove in Qt6
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
     enum Status {
         None = 0,
         Loading,
@@ -90,7 +87,6 @@ public:
 
 public Q_SLOTS:
     void setSource(const QUrl &arg);
-    QT_DEPRECATED void setStatus(Status status);
 
 Q_SIGNALS:
     void sourceChanged(const QUrl &source);
@@ -101,7 +97,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QSceneLoader)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DRender

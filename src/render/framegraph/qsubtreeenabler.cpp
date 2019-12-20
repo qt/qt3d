@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "qsubtreeenabler_p.h"
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -169,15 +168,6 @@ void QSubtreeEnabler::setEnablement(QSubtreeEnabler::Enablement enablement)
 void QSubtreeEnabler::requestUpdate()
 {
     setEnabled(true);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QSubtreeEnabler::createNodeCreationChange() const
-{
-    auto creationChange = QFrameGraphNodeCreatedChangePtr<QSubtreeEnablerData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QSubtreeEnabler);
-    data.enablement = d->m_enablement;
-    return creationChange;
 }
 
 } //Qt3DRender

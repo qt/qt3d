@@ -40,8 +40,6 @@
 #include "qbuffer.h"
 #include "qbuffer_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-
 
 QT_BEGIN_NAMESPACE
 
@@ -433,13 +431,6 @@ void QBuffer::setAccessType(QBuffer::AccessType access)
     }
 }
 
-/*! \internal */
-void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
-{
-    // TODO Unused remove in Qt6
-    Q_UNUSED(change)
-}
-
 bool QBuffer::isSyncData() const
 {
     Q_D(const QBuffer);
@@ -466,19 +457,6 @@ void QBuffer::setType(QBuffer::BufferType type)
         d->m_type = type;
         emit typeChanged(type);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QBuffer::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QBufferData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QBuffer);
-    data.data = d->m_data;
-    data.usage = d->m_usage;
-    data.functor = d->m_functor;
-    data.syncData = d->m_syncData;
-    data.access = d->m_access;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

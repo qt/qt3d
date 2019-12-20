@@ -39,8 +39,6 @@
 
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/private/qbuffercapture_p.h>
-#include <Qt3DCore/qscenechange.h>
-#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

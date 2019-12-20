@@ -40,7 +40,6 @@
 
 #include "qdepthtest.h"
 #include "qdepthtest_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -144,15 +143,6 @@ void QDepthTest::setDepthFunction(QDepthTest::DepthFunction depthFunction)
         d->m_depthFunction = depthFunction;
         emit depthFunctionChanged(depthFunction);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QDepthTest::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QDepthTestData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QDepthTest);
-    data.depthFunction = d->m_depthFunction;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

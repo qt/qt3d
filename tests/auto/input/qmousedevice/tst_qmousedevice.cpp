@@ -33,9 +33,7 @@
 #include <Qt3DInput/private/qmousedevice_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QMouseDevice : public QObject
 {
@@ -118,58 +116,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DInput::QMouseDevice mouseDevice;
-
-        mouseDevice.setSensitivity(0.8f);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mouseDevice);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QMouseDeviceData>>(creationChanges.first());
-            const Qt3DInput::QMouseDeviceData cloneData = creationChangeData->data;
-
-            QCOMPARE(mouseDevice.sensitivity(), cloneData.sensitivity);
-            QCOMPARE(mouseDevice.id(), creationChangeData->subjectId());
-            QCOMPARE(mouseDevice.isEnabled(), true);
-            QCOMPARE(mouseDevice.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mouseDevice.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        mouseDevice.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mouseDevice);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QMouseDeviceData>>(creationChanges.first());
-            const Qt3DInput::QMouseDeviceData cloneData = creationChangeData->data;
-
-            QCOMPARE(mouseDevice.sensitivity(), cloneData.sensitivity);
-            QCOMPARE(mouseDevice.id(), creationChangeData->subjectId());
-            QCOMPARE(mouseDevice.isEnabled(), false);
-            QCOMPARE(mouseDevice.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mouseDevice.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkSensitivityUpdate()
     {
         // GIVEN
@@ -181,16 +127,16 @@ private Q_SLOTS:
             // WHEN
             mouseDevice.setSensitivity(0.7f);
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mouseDevice);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mouseDevice);
         }
 
         {
             // WHEN
             mouseDevice.setSensitivity(0.7f);
 
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mouseDevice);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mouseDevice);
         }
 
     }
@@ -206,16 +152,16 @@ private Q_SLOTS:
             // WHEN
             mouseDevice.setUpdateAxesContinuously(true);
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mouseDevice);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mouseDevice);
         }
 
         {
             // WHEN
             mouseDevice.setSensitivity(true);
 
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mouseDevice);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mouseDevice);
         }
 
     }

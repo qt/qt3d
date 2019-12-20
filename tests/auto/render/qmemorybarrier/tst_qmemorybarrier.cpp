@@ -32,9 +32,7 @@
 #include <Qt3DRender/private/qmemorybarrier_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QMemoryBarrier : public QObject
 {
@@ -82,58 +80,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QMemoryBarrier memoryBarrier;
-
-        memoryBarrier.setWaitOperations(Qt3DRender::QMemoryBarrier::Command);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&memoryBarrier);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QMemoryBarrierData>>(creationChanges.first());
-            const Qt3DRender::QMemoryBarrierData cloneData = creationChangeData->data;
-
-            QCOMPARE(memoryBarrier.waitOperations(), cloneData.waitOperations);
-            QCOMPARE(memoryBarrier.id(), creationChangeData->subjectId());
-            QCOMPARE(memoryBarrier.isEnabled(), true);
-            QCOMPARE(memoryBarrier.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(memoryBarrier.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        memoryBarrier.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&memoryBarrier);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QMemoryBarrierData>>(creationChanges.first());
-            const Qt3DRender::QMemoryBarrierData cloneData = creationChangeData->data;
-
-            QCOMPARE(memoryBarrier.waitOperations(), cloneData.waitOperations);
-            QCOMPARE(memoryBarrier.id(), creationChangeData->subjectId());
-            QCOMPARE(memoryBarrier.isEnabled(), false);
-            QCOMPARE(memoryBarrier.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(memoryBarrier.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkTypesUpdate()
     {
         // GIVEN
@@ -147,11 +93,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &memoryBarrier);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &memoryBarrier);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -160,8 +105,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

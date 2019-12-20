@@ -29,13 +29,12 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
 #include <Qt3DRender/private/qlayerfilter_p.h>
 
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QLayerFilter: public QObject
 {
@@ -48,60 +47,6 @@ public:
     }
 
 private Q_SLOTS:
-
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DRender::QLayerFilter *>("layerFilter");
-        QTest::addColumn<QVector<Qt3DRender::QLayer*>>("layers");
-
-
-        Qt3DRender::QLayerFilter *defaultConstructed = new Qt3DRender::QLayerFilter();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QLayer*>();
-
-        Qt3DRender::QLayerFilter *singleLayer = new Qt3DRender::QLayerFilter();
-        auto layer = QVector<Qt3DRender::QLayer*>() << new Qt3DRender::QLayer();
-        QCoreApplication::processEvents();
-        singleLayer->addLayer(layer.first());
-        QTest::newRow("single layer") << singleLayer << layer;
-
-        Qt3DRender::QLayerFilter *multiLayers = new Qt3DRender::QLayerFilter();
-        auto layers = QVector<Qt3DRender::QLayer*>() << new Qt3DRender::QLayer()
-                                                     << new Qt3DRender::QLayer()
-                                                     << new Qt3DRender::QLayer();
-        QCoreApplication::processEvents();
-        for (Qt3DRender::QLayer *layer : qAsConst(layers))
-            multiLayers->addLayer(layer);
-        QTest::newRow("multi layers") << multiLayers << layers;
-     }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QLayerFilter *, layerFilter);
-        QFETCH(QVector<Qt3DRender::QLayer*>, layers);
-
-        // THEN
-        QCOMPARE(layerFilter->layers(), layers);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(layerFilter);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), layers.size() + 1);
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QLayerFilterData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QLayerFilterData>>(creationChanges.first());
-        const Qt3DRender::QLayerFilterData &cloneData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(layerFilter->id(), creationChangeData->subjectId());
-        QCOMPARE(layerFilter->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(layerFilter->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(Qt3DCore::qIdsForNodes(layerFilter->layers()), cloneData.layerIds);
-
-        delete layerFilter;
-    }
 
     void checkPropertyUpdates()
     {
@@ -117,11 +62,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(layerFilter.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(layerFilter.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         layer = new Qt3DRender::QLayer(layerFilter.data());
@@ -130,11 +74,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(layerFilter.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(layerFilter.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
 
         // WHEN
         layer = layerFilter->layers().at(0);
@@ -142,11 +85,10 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-        QCOMPARE(arbiter.dirtyNodes.size(), 1);
-        QVERIFY(arbiter.dirtyNodes.contains(layerFilter.data()));
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QVERIFY(arbiter.dirtyNodes().contains(layerFilter.data()));
 
-        arbiter.dirtyNodes.clear();
+        arbiter.clear();
     }
 
     void checkLayerBookkeeping()

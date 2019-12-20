@@ -40,7 +40,6 @@
 #include "qshaderprogrambuilder.h"
 #include "qshaderprogrambuilder_p.h"
 #include "qshaderprogram.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <QDebug>
 #include <QFile>
@@ -132,11 +131,6 @@ QShaderProgramBuilder::~QShaderProgramBuilder()
 /*! \internal */
 QShaderProgramBuilder::QShaderProgramBuilder(QShaderProgramBuilderPrivate &dd, QNode *parent)
     : QNode(dd, parent)
-{
-}
-
-// TODO Unused remove in Qt6
-void QShaderProgramBuilder::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 
@@ -463,22 +457,6 @@ QByteArray QShaderProgramBuilder::computeShaderCode() const
 {
     Q_D(const QShaderProgramBuilder);
     return d->m_computeShaderCode;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QShaderProgramBuilder::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderProgramBuilderData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QShaderProgramBuilder);
-    data.shaderProgramId = d->m_shaderProgram ? d->m_shaderProgram->id() : Qt3DCore::QNodeId();
-    data.enabledLayers = d->m_enabledLayers;
-    data.vertexShaderGraph = d->m_vertexShaderGraph;
-    data.tessellationControlShaderGraph = d->m_tessControlShaderGraph;
-    data.tessellationEvaluationShaderGraph = d->m_tessEvalShaderGraph;
-    data.geometryShaderGraph = d->m_geometryShaderGraph;
-    data.fragmentShaderGraph = d->m_fragmentShaderGraph;
-    data.computeShaderGraph = d->m_computeShaderGraph;
-    return creationChange;
 }
 
 } // of namespace Qt3DRender

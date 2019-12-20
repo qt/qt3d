@@ -66,7 +66,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QClock)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 };
 
 } // namespace Qt3DAnimation

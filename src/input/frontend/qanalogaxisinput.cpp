@@ -109,18 +109,6 @@ int QAnalogAxisInput::axis() const
     return d->m_axis;
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QAnalogAxisInput::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAnalogAxisInputData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QAnalogAxisInput);
-    data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
-    data.axis = d->m_axis;
-
-    return creationChange;
-}
-
 } // Qt3DInput
 
 QT_END_NAMESPACE

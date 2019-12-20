@@ -88,7 +88,6 @@ public:
 
 protected:
     explicit ClipBlendNode(BlendType blendType);
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) override;
     virtual ClipResults doBlend(const QVector<ClipResults> &blendData) const = 0;
 
 private:
@@ -110,14 +109,14 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const final
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const final
     {
-        if (m_manager->containsNode(change->subjectId()))
-            return static_cast<Backend *>(m_manager->lookupNode(change->subjectId()));
+        if (m_manager->containsNode(id))
+            return static_cast<Backend *>(m_manager->lookupNode(id));
         Backend *backend = new Backend();
         backend->setClipBlendNodeManager(m_manager);
         backend->setHandler(m_handler);
-        m_manager->appendNode(change->subjectId(), backend);
+        m_manager->appendNode(id, backend);
         return backend;
     }
 

@@ -98,8 +98,6 @@ Q_SIGNALS:
 
 protected:
     explicit QAbstractRayCaster(QAbstractRayCasterPrivate &dd, QNode *parent = nullptr);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const override;
 
 private:
     Q_DECLARE_PRIVATE(QAbstractRayCaster)

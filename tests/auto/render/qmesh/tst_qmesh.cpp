@@ -35,11 +35,8 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <Qt3DRender/private/qmesh_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class MyQMesh : public Qt3DRender::QMesh
 {
@@ -48,11 +45,6 @@ public:
     explicit MyQMesh(Qt3DCore::QNode *parent = nullptr)
         : Qt3DRender::QMesh(parent)
     {}
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) final
-    {
-        Qt3DRender::QMesh::sceneChangeEvent(change);
-    }
 };
 
 class tst_QMesh : public QObject
@@ -117,58 +109,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QMesh mesh;
-
-        mesh.setSource(QUrl(QStringLiteral("http://someRemoteURL.com")));
-        mesh.setMeshName(QStringLiteral("RearPropeller"));
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mesh);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QGeometryRendererData>>(creationChanges.first());
-            const Qt3DRender::QGeometryRendererData cloneData = creationChangeData->data;
-
-            // Geometry factory shouldn't be null
-            QVERIFY(cloneData.geometryFactory != nullptr);
-            QCOMPARE(mesh.id(), creationChangeData->subjectId());
-            QCOMPARE(mesh.isEnabled(), true);
-            QCOMPARE(mesh.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mesh.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        mesh.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mesh);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QGeometryRendererData>>(creationChanges.first());
-
-            QCOMPARE(mesh.id(), creationChangeData->subjectId());
-            QCOMPARE(mesh.isEnabled(), false);
-            QCOMPARE(mesh.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mesh.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkSourceUpdate()
     {
         // GIVEN
@@ -181,7 +121,7 @@ private Q_SLOTS:
         Qt3DCore::QNodePrivate *meshd = Qt3DCore::QNodePrivate::get(&mesh);
         meshd->setScene(scene);
         QCoreApplication::processEvents();
-        arbiter.events.clear();
+        arbiter.clear();
 
         {
             // WHEN
@@ -189,10 +129,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mesh);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mesh);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -201,7 +141,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -218,7 +158,7 @@ private Q_SLOTS:
         Qt3DCore::QNodePrivate *meshd = Qt3DCore::QNodePrivate::get(&mesh);
         meshd->setScene(scene);
         QCoreApplication::processEvents();
-        arbiter.events.clear();
+        arbiter.clear();
 
         {
             // WHEN
@@ -226,10 +166,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mesh);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mesh);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -238,7 +178,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

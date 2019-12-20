@@ -258,7 +258,7 @@ void QTechnique::addFilterKey(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        d->updateNode(filterKey, "filterKeys", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -269,7 +269,7 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QTechnique);
-    d->updateNode(filterKey, "filterKeys", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_filterKeys.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
@@ -305,7 +305,7 @@ void QTechnique::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -316,7 +316,7 @@ void QTechnique::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QTechnique);
-    d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
+    d->update();
     d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
@@ -342,7 +342,7 @@ void QTechnique::addRenderPass(QRenderPass *pass)
         if (!pass->parent())
             pass->setParent(this);
 
-        d->updateNode(pass, "pass", Qt3DCore::PropertyValueAdded);
+        d->update();
     }
 }
 
@@ -353,7 +353,7 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
 {
     Q_ASSERT(pass);
     Q_D(QTechnique);
-    d->updateNode(pass, "pass", Qt3DCore::PropertyValueAdded);
+    d->update();
     d->m_renderPasses.removeOne(pass);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(pass);
@@ -387,20 +387,6 @@ const QGraphicsApiFilter *QTechnique::graphicsApiFilter() const
 {
     Q_D(const QTechnique);
     return &d->m_graphicsApiFilter;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QTechnique::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QTechniqueData>::create(this);
-    QTechniqueData &data = creationChange->data;
-
-    Q_D(const QTechnique);
-    data.graphicsApiFilterData = QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&d->m_graphicsApiFilter))->m_data;
-    data.filterKeyIds = qIdsForNodes(d->m_filterKeys);
-    data.parameterIds = qIdsForNodes(d->m_parameters);
-    data.renderPassIds = qIdsForNodes(d->m_renderPasses);
-
-    return creationChange;
 }
 
 } // of namespace Qt3DRender

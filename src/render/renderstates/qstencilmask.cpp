@@ -39,7 +39,6 @@
 
 #include "qstencilmask.h"
 #include "qstencilmask_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -140,16 +139,6 @@ uint QStencilMask::backOutputMask() const
 {
     Q_D(const QStencilMask);
     return d->m_backOutputMask;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QStencilMask::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QStencilMaskData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QStencilMask);
-    data.frontOutputMask = d->m_frontOutputMask;
-    data.backOutputMask = d->m_backOutputMask;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

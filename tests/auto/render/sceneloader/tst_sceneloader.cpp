@@ -31,11 +31,9 @@
 #include <Qt3DRender/qsceneloader.h>
 #include <Qt3DRender/private/scene_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 #include "testrenderer.h"
 
 class tst_SceneLoader : public Qt3DCore::QBackendNodeTester

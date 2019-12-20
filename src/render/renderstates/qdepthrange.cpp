@@ -39,7 +39,6 @@
 
 #include "qdepthrange.h"
 #include "qdepthrange_p.h"
-#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -139,16 +138,6 @@ void QDepthRange::setFarValue(double value)
         d->m_farValue = value;
         Q_EMIT farValueChanged(value);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QDepthRange::createNodeCreationChange() const
-{
-    auto creationChange = QRenderStateCreatedChangePtr<QDepthRangeData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QDepthRange);
-    data.nearValue = d->m_nearValue;
-    data.farValue = d->m_farValue;
-    return creationChange;
 }
 
 } // namespace Qt3DRender

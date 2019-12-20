@@ -36,7 +36,6 @@
 
 #include <Qt3DRender/private/qrendercapture_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 
@@ -115,10 +114,6 @@ void RenderCapture::syncRenderCapturesToFrontend(Qt3DCore::QAspectManager *manag
         if (reply) {
             dfrontend->setImage(reply, data.data()->image);
             emit reply->completed();
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-            emit reply->completeChanged(true);
-QT_WARNING_POP
         }
     }
     m_renderCaptureData.clear();

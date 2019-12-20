@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qnodeid.h>
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
 #include <QtCore/QSemaphore>

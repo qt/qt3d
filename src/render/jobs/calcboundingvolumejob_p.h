@@ -64,6 +64,7 @@ namespace Render {
 
 class NodeManagers;
 class Entity;
+class CalculateBoundingVolumeJobPrivate;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
@@ -77,6 +78,7 @@ public:
 private:
     NodeManagers *m_manager;
     Entity *m_node;
+    Q_DECLARE_PRIVATE(CalculateBoundingVolumeJob)
 };
 
 typedef QSharedPointer<CalculateBoundingVolumeJob> CalculateBoundingVolumeJobPtr;

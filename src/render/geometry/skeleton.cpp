@@ -45,7 +45,6 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/private/qskeletoncreatedchange_p.h>
 #include <Qt3DCore/private/qskeleton_p.h>
 #include <Qt3DCore/private/qskeletonloader_p.h>
 #include <Qt3DCore/private/qmath3d_p.h>
@@ -201,9 +200,9 @@ SkeletonFunctor::SkeletonFunctor(AbstractRenderer *renderer,
 {
 }
 
-Qt3DCore::QBackendNode *SkeletonFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *SkeletonFunctor::create(Qt3DCore::QNodeId id) const
 {
-    Skeleton *backend = m_skeletonManager->getOrCreateResource(change->subjectId());
+    Skeleton *backend = m_skeletonManager->getOrCreateResource(id);
     backend->setRenderer(m_renderer);
     backend->setSkeletonManager(m_skeletonManager);
     backend->setJointManager(m_jointManager);

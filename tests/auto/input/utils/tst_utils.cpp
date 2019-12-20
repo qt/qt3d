@@ -133,7 +133,7 @@ private Q_SLOTS:
         // WHEN -> Create backend PhysicalProxiDevice
         Qt3DInput::Input::PhysicalDeviceProxy *backendProxyDevice = handler.physicalDeviceProxyManager()->getOrCreateResource(testProxyPhysicalDevice.id());
         backendProxyDevice->setManager(handler.physicalDeviceProxyManager());
-        simulateInitialization(&testProxyPhysicalDevice, backendProxyDevice);
+        simulateInitializationSync(&testProxyPhysicalDevice, backendProxyDevice);
         backendProxyDevice->setDevice(&testPhysicalDevice);
 
         // THEN
@@ -204,7 +204,7 @@ private Q_SLOTS:
         // WHEN -> Create backend PhysicalProxiDevice
         Qt3DInput::Input::PhysicalDeviceProxy *backendProxyDevice = handler.physicalDeviceProxyManager()->getOrCreateResource(testProxyPhysicalDevice.id());
         backendProxyDevice->setManager(handler.physicalDeviceProxyManager());
-        simulateInitialization(&testProxyPhysicalDevice, backendProxyDevice);
+        simulateInitializationSync(&testProxyPhysicalDevice, backendProxyDevice);
         backendProxyDevice->setDevice(&testPhysicalDevice2);
 
         // THEN

@@ -220,9 +220,9 @@ CameraLensFunctor::CameraLensFunctor(AbstractRenderer *renderer, QRenderAspect *
 {
 }
 
-QBackendNode *CameraLensFunctor::create(const QNodeCreatedChangeBasePtr &change) const
+QBackendNode *CameraLensFunctor::create(const QNodeId id) const
 {
-    CameraLens *backend = m_manager->getOrCreateResource(change->subjectId());
+    CameraLens *backend = m_manager->getOrCreateResource(id);
     backend->setRenderer(m_renderer);
     backend->setRenderAspect(m_renderAspect);
     return backend;

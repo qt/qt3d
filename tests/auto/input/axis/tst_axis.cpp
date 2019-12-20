@@ -30,14 +30,12 @@
 #include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/qabstractaxisinput_p.h>
 #include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/QAxis>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class DummyAxisInput : public Qt3DInput::QAbstractAxisInput
 {
@@ -141,9 +139,7 @@ private Q_SLOTS:
     void shouldNotChangeValueWhenDisabled()
     {
         // GIVEN
-        TestArbiter arbiter;
         Qt3DInput::Input::Axis backendAxis;
-        Qt3DCore::QBackendNodePrivate::get(&backendAxis)->setArbiter(&arbiter);
         backendAxis.setEnabled(false);
 
         // WHEN
@@ -151,7 +147,6 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAxis.axisValue(), 0.0f);
-        QCOMPARE(arbiter.events.count(), 0);
     }
 };
 

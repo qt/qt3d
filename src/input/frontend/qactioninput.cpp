@@ -41,7 +41,6 @@
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -196,18 +195,6 @@ void QActionInput::setButtons(const QVector<int> &buttons)
         d->m_buttons = buttons;
         emit buttonsChanged(buttons);
     }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QActionInput::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QActionInputData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QActionInput);
-    data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
-    data.buttons = d->m_buttons;
-
-    return creationChange;
 }
 
 } // Qt3DInput

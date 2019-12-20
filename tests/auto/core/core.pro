@@ -20,7 +20,6 @@ qtConfig(private_tests) {
         qentity \
         qtransform \
         threadpooler \
-        qpostman \
         vector4d_base \
         vector3d_base \
         aspectcommanddebugger \

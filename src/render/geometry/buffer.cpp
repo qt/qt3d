@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "buffer_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 
@@ -179,9 +178,9 @@ BufferFunctor::BufferFunctor(AbstractRenderer *renderer, BufferManager *manager)
 {
 }
 
-Qt3DCore::QBackendNode *BufferFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+Qt3DCore::QBackendNode *BufferFunctor::create(Qt3DCore::QNodeId id) const
 {
-    Buffer *buffer = m_manager->getOrCreateResource(change->subjectId());
+    Buffer *buffer = m_manager->getOrCreateResource(id);
     buffer->setManager(m_manager);
     buffer->setRenderer(m_renderer);
     return buffer;

@@ -40,7 +40,6 @@
 #include "qclipblendvalue.h"
 #include "qclipblendvalue_p.h"
 #include <Qt3DAnimation/qabstractanimationclip.h>
-#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -118,15 +117,6 @@ void QClipBlendValue::setClip(Qt3DAnimation::QAbstractAnimationClip *clip)
     if (d->m_clip)
         d->registerDestructionHelper(d->m_clip, &QClipBlendValue::setClip, d->m_clip);
     emit clipChanged(clip);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QClipBlendValue::createNodeCreationChange() const
-{
-    Q_D(const QClipBlendValue);
-    auto creationChange = QClipBlendNodeCreatedChangePtr<QClipBlendValueData>::create(this);
-    QClipBlendValueData &data = creationChange->data;
-    data.clipId = Qt3DCore::qIdForNode(d->m_clip);
-    return creationChange;
 }
 
 } // namespace Qt3DAnimation

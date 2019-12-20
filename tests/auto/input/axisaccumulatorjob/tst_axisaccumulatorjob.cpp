@@ -39,7 +39,7 @@
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAxisAccumulator>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_AxisAccumulatorJob : public Qt3DCore::QBackendNodeTester
 {

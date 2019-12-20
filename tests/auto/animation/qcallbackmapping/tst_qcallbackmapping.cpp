@@ -29,13 +29,10 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qcallbackmapping.h>
 #include <Qt3DAnimation/private/qcallbackmapping_p.h>
-#include <Qt3DAnimation/private/qchannelmappingcreatedchange_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <testpostmanarbiter.h>
+#include <testarbiter.h>
 
 class DummyCallback : public Qt3DAnimation::QAnimationCallback
 {
@@ -93,66 +90,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DAnimation::QCallbackMapping mapping;
-        auto callback = new DummyCallback();
-
-        mapping.setChannelName(QStringLiteral("Location"));
-        mapping.setCallback(QVariant::Vector3D, callback);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mapping);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QChannelMappingCreatedChange<Qt3DAnimation::QCallbackMappingData>>(creationChanges.first());
-            const Qt3DAnimation::QCallbackMappingData data = creationChangeData->data;
-
-            QCOMPARE(mapping.id(), creationChangeData->subjectId());
-            QCOMPARE(mapping.isEnabled(), true);
-            QCOMPARE(mapping.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mapping.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::CallbackMapping);
-            QCOMPARE(mapping.channelName(), data.channelName);
-            QCOMPARE(mapping.callback(), data.callback);
-            QCOMPARE(int(QVariant::Vector3D), data.type);
-        }
-
-        // WHEN
-        mapping.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&mapping);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QChannelMappingCreatedChange<Qt3DAnimation::QCallbackMappingData>>(creationChanges.first());
-            const Qt3DAnimation::QCallbackMappingData data = creationChangeData->data;
-
-            QCOMPARE(mapping.id(), creationChangeData->subjectId());
-            QCOMPARE(mapping.isEnabled(), false);
-            QCOMPARE(mapping.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(mapping.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(creationChangeData->type(), Qt3DAnimation::QChannelMappingCreatedChangeBase::CallbackMapping);
-            QCOMPARE(mapping.channelName(), data.channelName);
-            QCOMPARE(mapping.callback(), data.callback);
-            QCOMPARE(QVariant::Vector3D, data.type);
-        }
-    }
-
     void checkPropertyUpdateChanges()
     {
         // GIVEN
@@ -165,16 +102,16 @@ private Q_SLOTS:
             mapping.setChannelName(QStringLiteral("Scale"));
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mapping);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             mapping.setChannelName(QStringLiteral("Scale"));
 
             // THEN
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
         {
@@ -184,19 +121,17 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &mapping);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &mapping);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
 
             // WHEN
             mapping.setCallback(QVariant::Vector3D, callback, Qt3DAnimation::QAnimationCallback::OnThreadPool);
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 };

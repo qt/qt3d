@@ -72,7 +72,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QCallbackMapping)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DAnimation

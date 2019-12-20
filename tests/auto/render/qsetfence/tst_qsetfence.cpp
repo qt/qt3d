@@ -37,25 +37,17 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QTest>
 #include <Qt3DRender/qsetfence.h>
 #include <Qt3DRender/private/qsetfence_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class MySetFence : public Qt3DRender::QSetFence
 {
 public:
-    using Qt3DRender::QSetFence::sceneChangeEvent;
 };
 
 class tst_QSetFence : public QObject
@@ -95,10 +87,8 @@ private Q_SLOTS:
             QVERIFY(spy.isValid());
 
             // THEN
-            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            valueChange->setPropertyName("handleType");
-            valueChange->setValue(QVariant::fromValue(Qt3DRender::QSetFence::OpenGLFenceId));
-            setFence.sceneChangeEvent(valueChange);
+            auto *dNode = static_cast<Qt3DRender::QSetFencePrivate *>(Qt3DRender::QSetFencePrivate::get(&setFence));
+            dNode->setHandleType(Qt3DRender::QSetFence::OpenGLFenceId);
 
             // THEN
             QCOMPARE(setFence.handleType(), Qt3DRender::QSetFence::OpenGLFenceId);
@@ -106,7 +96,7 @@ private Q_SLOTS:
 
             // WHEN
             spy.clear();
-            setFence.sceneChangeEvent(valueChange);
+            dNode->setHandleType(Qt3DRender::QSetFence::OpenGLFenceId);
 
             // THEN
             QCOMPARE(spy.count(), 0);
@@ -120,10 +110,8 @@ private Q_SLOTS:
             QVERIFY(spy.isValid());
 
             // WHEN
-            Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            valueChange->setPropertyName("handle");
-            valueChange->setValue(QVariant(984));
-            setFence.sceneChangeEvent(valueChange);
+            auto *dNode = static_cast<Qt3DRender::QSetFencePrivate *>(Qt3DRender::QSetFencePrivate::get(&setFence));
+            dNode->setHandle(QVariant(984));
 
             // THEN
             QCOMPARE(setFence.handle(),QVariant(984));
@@ -131,60 +119,12 @@ private Q_SLOTS:
 
             // WHEN
             spy.clear();
-            setFence.sceneChangeEvent(valueChange);
+            dNode->setHandle(QVariant(984));
 
             // THEN
             QCOMPARE(spy.count(), 0);
         }
     }
-
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QSetFence setFence;
-
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&setFence);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QSetFenceData>>(creationChanges.first());
-
-            QCOMPARE(setFence.id(), creationChangeData->subjectId());
-            QCOMPARE(setFence.isEnabled(), true);
-            QCOMPARE(setFence.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(setFence.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        setFence.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&setFence);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QSetFenceData>>(creationChanges.first());
-
-            QCOMPARE(setFence.id(), creationChangeData->subjectId());
-            QCOMPARE(setFence.isEnabled(), false);
-            QCOMPARE(setFence.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(setFence.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
 };
 
 QTEST_MAIN(tst_QSetFence)

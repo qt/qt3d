@@ -34,9 +34,7 @@
 #include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qtexture.h>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QRenderTargetOutput : public QObject
 {
@@ -170,69 +168,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QRenderTargetOutput renderTargetOutput;
-
-        renderTargetOutput.setAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color5);
-        renderTargetOutput.setMipLevel(10);
-        renderTargetOutput.setLayer(2);
-        renderTargetOutput.setFace(Qt3DRender::QAbstractTexture::CubeMapNegativeY);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&renderTargetOutput);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderTargetOutputData>>(creationChanges.first());
-            const Qt3DRender::QRenderTargetOutputData cloneData = creationChangeData->data;
-
-            QCOMPARE(renderTargetOutput.attachmentPoint(), cloneData.attachmentPoint);
-            QCOMPARE(Qt3DCore::QNodeId(), cloneData.textureId);
-            QCOMPARE(renderTargetOutput.mipLevel(), cloneData.mipLevel);
-            QCOMPARE(renderTargetOutput.layer(), cloneData.layer);
-            QCOMPARE(renderTargetOutput.face(), cloneData.face);
-            QCOMPARE(renderTargetOutput.id(), creationChangeData->subjectId());
-            QCOMPARE(renderTargetOutput.isEnabled(), true);
-            QCOMPARE(renderTargetOutput.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(renderTargetOutput.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        renderTargetOutput.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&renderTargetOutput);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 1);
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderTargetOutputData>>(creationChanges.first());
-            const Qt3DRender::QRenderTargetOutputData cloneData = creationChangeData->data;
-
-            QCOMPARE(renderTargetOutput.attachmentPoint(), cloneData.attachmentPoint);
-            QCOMPARE(Qt3DCore::QNodeId(), cloneData.textureId);
-            QCOMPARE(renderTargetOutput.mipLevel(), cloneData.mipLevel);
-            QCOMPARE(renderTargetOutput.layer(), cloneData.layer);
-            QCOMPARE(renderTargetOutput.face(), cloneData.face);
-            QCOMPARE(renderTargetOutput.id(), creationChangeData->subjectId());
-            QCOMPARE(renderTargetOutput.isEnabled(), false);
-            QCOMPARE(renderTargetOutput.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(renderTargetOutput.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkAttachmentPointUpdate()
     {
         // GIVEN
@@ -246,11 +181,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderTargetOutput);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderTargetOutput);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -259,8 +193,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -279,11 +212,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderTargetOutput);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderTargetOutput);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -292,8 +224,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -311,11 +242,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderTargetOutput);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderTargetOutput);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -324,8 +254,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -343,11 +272,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderTargetOutput);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderTargetOutput);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -356,8 +284,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }
@@ -375,11 +302,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &renderTargetOutput);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &renderTargetOutput);
 
-            arbiter.dirtyNodes.clear();
+            arbiter.clear();
         }
 
         {
@@ -388,8 +314,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
     }

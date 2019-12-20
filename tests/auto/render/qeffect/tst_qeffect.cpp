@@ -34,9 +34,7 @@
 #include <Qt3DRender/private/qeffect_p.h>
 #include <QObject>
 #include <QSignalSpy>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include "testpostmanarbiter.h"
+#include "testarbiter.h"
 
 class tst_QEffect : public QObject
 {
@@ -101,67 +99,6 @@ private Q_SLOTS:
         }
     }
 
-    void checkCreationData()
-    {
-        // GIVEN
-        Qt3DRender::QEffect effect;
-
-        Qt3DRender::QParameter parameter;
-        effect.addParameter(&parameter);
-        Qt3DRender::QTechnique technique;
-        effect.addTechnique(&technique);
-
-        // WHEN
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&effect);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 3); // Effect + Parameter + Technique
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QEffectData>>(creationChanges.first());
-            const Qt3DRender::QEffectData cloneData = creationChangeData->data;
-
-            QCOMPARE(cloneData.parameterIds.size(), 1);
-            QCOMPARE(parameter.id(), cloneData.parameterIds.first());
-            QCOMPARE(cloneData.techniqueIds.size(), 1);
-            QCOMPARE(technique.id(), cloneData.techniqueIds.first());
-            QCOMPARE(effect.id(), creationChangeData->subjectId());
-            QCOMPARE(effect.isEnabled(), true);
-            QCOMPARE(effect.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(effect.metaObject(), creationChangeData->metaObject());
-        }
-
-        // WHEN
-        effect.setEnabled(false);
-
-        {
-            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&effect);
-            creationChanges = creationChangeGenerator.creationChanges();
-        }
-
-        // THEN
-        {
-            QCOMPARE(creationChanges.size(), 3); // Effect + Parameter + Technique
-
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QEffectData>>(creationChanges.first());
-            const Qt3DRender::QEffectData cloneData = creationChangeData->data;
-
-            QCOMPARE(cloneData.parameterIds.size(), 1);
-            QCOMPARE(parameter.id(), cloneData.parameterIds.first());
-            QCOMPARE(cloneData.techniqueIds.size(), 1);
-            QCOMPARE(technique.id(), cloneData.techniqueIds.first());
-            QCOMPARE(effect.id(), creationChangeData->subjectId());
-            QCOMPARE(effect.isEnabled(), false);
-            QCOMPARE(effect.isEnabled(), creationChangeData->isNodeEnabled());
-            QCOMPARE(effect.metaObject(), creationChangeData->metaObject());
-        }
-    }
-
     void checkParameterBookkeeping()
     {
         // GIVEN
@@ -214,8 +151,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &effect);
             QVERIFY(effect.parameters().contains(&parameter));
+            arbiter.clear();
         }
 
         {
@@ -224,8 +163,10 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &effect);
             QVERIFY(!effect.parameters().contains(&parameter));
+            arbiter.clear();
         }
 
     }
@@ -244,10 +185,9 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &effect);
-            arbiter.dirtyNodes.clear();
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &effect);
+            arbiter.clear();
         }
 
         {
@@ -256,10 +196,9 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-            QCOMPARE(arbiter.dirtyNodes.size(), 1);
-            QCOMPARE(arbiter.dirtyNodes.front(), &effect);
-            arbiter.dirtyNodes.clear();
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &effect);
+            arbiter.clear();
         }
 
     }
