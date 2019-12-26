@@ -61,7 +61,6 @@
 #include <renderviewcommandbuilderjob_p.h>
 #include <renderviewcommandupdaterjob_p.h>
 #include <materialparametergathererjob_p.h>
-#include <renderviewbuilderjob_p.h>
 #include <renderview_p.h>
 
 QT_BEGIN_NAMESPACE

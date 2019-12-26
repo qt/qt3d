@@ -75,6 +75,7 @@
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
 #include <algorithm>
+#include <atomic>
 
 #include <QDebug>
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
@@ -113,7 +114,7 @@ int LIGHT_COLOR_UNROLL_NAMES[MAX_LIGHTS];
 int LIGHT_INTENSITY_UNROLL_NAMES[MAX_LIGHTS];
 QString LIGHT_STRUCT_UNROLL_NAMES[MAX_LIGHTS];
 
-bool wasInitialized = false;
+std::atomic_bool wasInitialized{};
 
 } // anonymous namespace
 
@@ -263,10 +264,10 @@ RenderView::RenderView()
     m_workGroups[1] = 1;
     m_workGroups[2] = 1;
 
-    if (Q_UNLIKELY(!wasInitialized)) {
+    if (Q_UNLIKELY(!wasInitialized.exchange(true))) {
         // Needed as we can control the init order of static/global variables across compile units
         // and this hash relies on the static StringToInt class
-        wasInitialized = true;
+
         RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
         LIGHT_COUNT_NAME_ID = StringToInt::lookupId(QLatin1String("lightCount"));
         for (int i = 0; i < MAX_LIGHTS; ++i) {

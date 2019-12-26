@@ -43,9 +43,9 @@
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qpickingsettings.h>
+#include <QtGui/qtguiglobal.h>
 
 QT_BEGIN_NAMESPACE
-
 namespace Qt3DRender {
 
 class QFrameGraphNode;

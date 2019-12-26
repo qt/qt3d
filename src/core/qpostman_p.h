@@ -69,7 +69,7 @@ public:
     virtual bool shouldNotifyFrontend(const QSceneChangePtr &change) = 0;
 };
 
-class Q_AUTOTEST_EXPORT QPostman final
+class Q_3DCORE_PRIVATE_EXPORT QPostman final
         : public QObject
         , public QAbstractPostman
 {

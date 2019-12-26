@@ -74,6 +74,7 @@ const int Shader::modelNormalMatrixNameId = StringToInt::lookupId(QLatin1String(
 const int Shader::modelViewNormalNameId = StringToInt::lookupId(QLatin1String("modelViewNormal"));
 const int Shader::viewportMatrixNameId = StringToInt::lookupId(QLatin1String("viewportMatrix"));
 const int Shader::inverseViewportMatrixNameId = StringToInt::lookupId(QLatin1String("inverseViewportMatrix"));
+const int Shader::textureTransformMatrixNameId = StringToInt::lookupId(QLatin1String("textureTransformMatrix"));
 const int Shader::aspectRatioNameId = StringToInt::lookupId(QLatin1String("aspectRatio"));
 const int Shader::exposureNameId = StringToInt::lookupId(QLatin1String("exposure"));
 const int Shader::gammaNameId = StringToInt::lookupId(QLatin1String("gamma"));

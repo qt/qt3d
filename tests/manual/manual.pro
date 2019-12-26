@@ -11,7 +11,8 @@ SUBDIRS += \
     deferred-renderer-cpp \
     raster-cpp \
     qtbug-72236 \
-    manual-renderloop
+    manual-renderloop \
+    rhi
 
 
 qtHaveModule(multimedia): {

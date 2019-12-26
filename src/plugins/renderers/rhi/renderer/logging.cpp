@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Paul Lemire
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,10 +37,7 @@
 **
 ****************************************************************************/
 
-#include "renderviewcommandupdaterjob_p.h"
-#include <Qt3DRender/private/job_common_p.h>
-#include <renderer_p.h>
-#include <renderview_p.h>
+#include "logging_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -48,39 +45,25 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace OpenGL {
+namespace Rhi {
 
-namespace {
-int renderViewInstanceCounter = 0;
-} // anonymous
+Q_LOGGING_CATEGORY(Backend, "Qt3D.Renderer.OpenGL.Backend", QtWarningMsg)
+Q_LOGGING_CATEGORY(Frontend, "Qt3D.Renderer.OpenGL.Frontend", QtWarningMsg)
+Q_LOGGING_CATEGORY(Io, "Qt3D.Renderer.OpenGL.IO", QtWarningMsg)
+Q_LOGGING_CATEGORY(Jobs, "Qt3D.Renderer.OpenGL.Jobs", QtWarningMsg)
+Q_LOGGING_CATEGORY(SceneLoaders, "Qt3D.Renderer.OpenGL.SceneLoaders", QtWarningMsg)
+Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Renderer.OpenGL.Framegraph", QtWarningMsg)
+Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Renderer.OpenGL.RenderNodes", QtWarningMsg)
+Q_LOGGING_CATEGORY(Rendering, "Qt3D.Renderer.OpenGL.Rendering", QtWarningMsg)
+Q_LOGGING_CATEGORY(Memory, "Qt3D.Renderer.OpenGL.Memory", QtWarningMsg)
+Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.OpenGL.Shaders", QtWarningMsg)
+Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.OpenGL.RenderStates", QtWarningMsg)
+Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.OpenGL.VsyncAdvanceService", QtWarningMsg)
 
-RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
-    : Qt3DCore::QAspectJob()
-    , m_offset(0)
-    , m_count(0)
-    , m_renderView(nullptr)
-    , m_renderer(nullptr)
-    , m_renderables(nullptr)
-{
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++);
-}
+} // namespace Rhi
 
-void RenderViewCommandUpdaterJob::run()
-{
-    // Build RenderCommand should perform the culling as we have no way to determine
-    // if a child has a mesh in the view frustum while its parent isn't contained in it.
-    if (!m_renderView->noDraw()) {
-        if (m_count == 0)
-            return;
-        // Update Render Commands (Uniform Change, Depth Change)
-        m_renderView->updateRenderCommand(m_renderables, m_offset, m_count);
-    }
-}
+} // namespace Render
 
-} // OpenGL
-
-} // Render
-
-} // Qt3DRender
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

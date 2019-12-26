@@ -67,7 +67,8 @@ public:
         OpenGLES = QSurfaceFormat::OpenGLES, // 2
         OpenGL = QSurfaceFormat::OpenGL,     // 1
         Vulkan = 3,                          // 3
-        DirectX                              // 4
+        DirectX,                             // 4
+        RHI,                                 // 5
     };
     Q_ENUM(Api) // LCOV_EXCL_LINE
 

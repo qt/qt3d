@@ -92,7 +92,6 @@ class BackendNode;
 class OffscreenSurfaceHelper;
 class Shader;
 class RenderBackendResourceAccessor;
-
 class Q_3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
 public:

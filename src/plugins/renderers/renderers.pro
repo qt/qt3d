@@ -7,3 +7,7 @@ QT_FOR_CONFIG += 3drender-private
 #SUBDIRS += dummy
 
 qtConfig(qt3d-opengl-renderer): SUBDIRS += opengl
+
+qtConfig(qt3d-rhi-renderer): {
+    qtHaveModule(shadertools): SUBDIRS += rhi
+}
