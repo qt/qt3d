@@ -57,13 +57,13 @@
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <QOpenGLShaderProgram>
-#include <glresourcemanagers_p.h>
+#include <resourcemanagers_p.h>
 #include <graphicshelperinterface_p.h>
 #include <texture_p.h>
 #include <rendercommand_p.h>
 #include <renderer_p.h>
 #include <renderbuffer_p.h>
-#include <glshader_p.h>
+#include <shader_p.h>
 
 #if !defined(QT_OPENGL_ES_2)
 #include <QOpenGLFunctions_2_0>

@@ -40,7 +40,7 @@
 #include "openglvertexarrayobject_p.h"
 #include <submissioncontext_p.h>
 #include <renderer_p.h>
-#include <glresourcemanagers_p.h>
+#include <resourcemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE

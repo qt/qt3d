@@ -68,8 +68,8 @@
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/qblitframebuffer_p.h>
-#include <gl_handle_types_p.h>
-#include <glbuffer_p.h>
+#include <handle_types_p.h>
+#include <buffer_p.h>
 #include <shaderparameterpack_p.h>
 #include <graphicshelperinterface_p.h>
 #include <qmath.h>

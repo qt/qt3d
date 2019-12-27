@@ -54,10 +54,10 @@
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <texture_p.h>
-#include <glbuffer_p.h>
-#include <glfence_p.h>
+#include <buffer_p.h>
+#include <fence_p.h>
 #include <openglvertexarrayobject_p.h>
-#include <glshader_p.h>
+#include <shader_p.h>
 #include <Qt3DRender/private/apishadermanager_p.h>
 
 QT_BEGIN_NAMESPACE

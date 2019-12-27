@@ -1,8 +1,8 @@
 INCLUDEPATH += $$PWD
 
 SOURCES += \
-    $$PWD/glbuffer.cpp
+    $$PWD/buffer.cpp
 
 HEADERS += \
-    $$PWD/glbuffer_p.h
+    $$PWD/buffer_p.h
 

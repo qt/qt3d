@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "glbuffer_p.h"
+#include "buffer_p.h"
 #include <graphicscontext_p.h>
 
 #if !defined(GL_UNIFORM_BUFFER)

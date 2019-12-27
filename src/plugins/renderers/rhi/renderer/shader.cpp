@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "glshader_p.h"
+#include "shader_p.h"
 #include <QMutexLocker>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <graphicscontext_p.h>

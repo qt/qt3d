@@ -95,7 +95,7 @@
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <Qt3DRender/private/setfence_p.h>
 
-#include <glbuffer_p.h>
+#include <buffer_p.h>
 #include <graphicscontext_p.h>
 #include <rendercommand_p.h>
 #include <renderqueue_p.h>
@@ -103,7 +103,7 @@
 #include <texture_p.h>
 #include <openglvertexarrayobject_p.h>
 #include <renderviewbuilder_p.h>
-#include <glresourcemanagers_p.h>
+#include <resourcemanagers_p.h>
 #include <commandexecuter_p.h>
 
 #include <QStack>

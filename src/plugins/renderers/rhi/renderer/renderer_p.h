@@ -85,8 +85,8 @@
 #include <filtercompatibletechniquejob_p.h>
 #include <renderercache_p.h>
 #include <logging_p.h>
-#include <gl_handle_types_p.h>
-#include <glfence_p.h>
+#include <handle_types_p.h>
+#include <fence_p.h>
 #include <renderercache_p.h>
 
 #include <QHash>

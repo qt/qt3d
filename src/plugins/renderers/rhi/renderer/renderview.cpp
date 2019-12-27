@@ -71,7 +71,7 @@
 #include <renderer_p.h>
 #include <graphicscontext_p.h>
 #include <submissioncontext_p.h>
-#include <glresourcemanagers_p.h>
+#include <resourcemanagers_p.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
 #include <algorithm>

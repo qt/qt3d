@@ -60,9 +60,9 @@
 #include <rendercommand_p.h>
 #include <graphicshelperinterface_p.h>
 #include <renderer_p.h>
-#include <glresourcemanagers_p.h>
+#include <resourcemanagers_p.h>
 #include <renderbuffer_p.h>
-#include <glshader_p.h>
+#include <shader_p.h>
 #include <openglvertexarrayobject_p.h>
 #include <QOpenGLShaderProgram>
 

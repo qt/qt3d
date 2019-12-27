@@ -53,8 +53,8 @@
 //
 
 
-#include <glbuffer_p.h>
-#include <glfence_p.h>
+#include <buffer_p.h>
+#include <fence_p.h>
 #include <graphicscontext_p.h>
 #include <texturesubmissioncontext_p.h>
 #include <imagesubmissioncontext_p.h>

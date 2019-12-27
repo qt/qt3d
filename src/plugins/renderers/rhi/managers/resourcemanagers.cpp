@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "glresourcemanagers_p.h"
+#include "resourcemanagers_p.h"
 
 QT_BEGIN_NAMESPACE
 
