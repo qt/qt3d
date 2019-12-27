@@ -64,6 +64,7 @@
 #include <private/qrendersettings_p.h>
 
 #include <QEvent>
+#include <QVulkanInstance>
 
 static void initResources()
 {
@@ -91,7 +92,7 @@ Qt3DWindowPrivate::Qt3DWindowPrivate()
 {
 }
 
-Qt3DWindow::Qt3DWindow(QScreen *screen)
+Qt3DWindow::Qt3DWindow(QScreen *screen, QSurface::SurfaceType surfaceType)
     : QWindow(*new Qt3DWindowPrivate(), nullptr)
 {
     Q_D(Qt3DWindow);
@@ -101,7 +102,33 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     if (!d->parentWindow)
         d->connectToScreen(screen ? screen : d->topLevelScreen.data());
 
-    setSurfaceType(QSurface::OpenGLSurface);
+    switch(surfaceType)
+    {
+    case QSurface::VulkanSurface:
+    {
+        static QVulkanInstance inst;
+#ifndef Q_OS_ANDROID
+        inst.setLayers(QByteArrayList() << "VK_LAYER_LUNARG_standard_validation");
+#else
+        inst.setLayers(QByteArrayList()
+                       << "VK_LAYER_GOOGLE_threading"
+                       << "VK_LAYER_LUNARG_parameter_validation"
+                       << "VK_LAYER_LUNARG_object_tracker"
+                       << "VK_LAYER_LUNARG_core_validation"
+                       << "VK_LAYER_LUNARG_image"
+                       << "VK_LAYER_LUNARG_swapchain"
+                       << "VK_LAYER_GOOGLE_unique_objects");
+#endif
+        inst.setExtensions(QByteArrayList()
+                           << "VK_KHR_get_physical_device_properties2");
+        Q_ASSERT (inst.create());
+        setVulkanInstance(&inst);
+    }
+    default:
+        break;
+    }
+
+    setSurfaceType(surfaceType);
 
     resize(1024, 768);
 
