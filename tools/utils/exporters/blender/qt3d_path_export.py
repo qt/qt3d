@@ -41,8 +41,8 @@
 bl_info = {
            "name": "Qt3D Path Exporter",
            "author": "Sean Harmer <sean.harmer@kdab.com>, Robert Brock <robert.brock@kdab.com>",
-           "version": (0, 1),
-           "blender": (2, 78, 0),
+           "version": (0, 2),
+           "blender": (2, 80, 0),
            "location": "File > Export > Qt3D Path Exporter (.json)",
            "description": "Export path to json to use with Qt3D",
            "warning": "",
@@ -73,6 +73,9 @@ def jsonBuilder():
 
     obj = bpy.context.object
     curve = obj.data
+    if not hasattr(curve, 'splines'):
+        return pathList
+
     spline = curve.splines.active
 
     for point in spline.points:
@@ -93,7 +96,7 @@ class Qt3DPathDataConverter:
         return jsonData
 
 
-class Qt3DTDPathExporter(bpy.types.Operator, ExportHelper):
+class Qt3DPathExporter(bpy.types.Operator, ExportHelper):
     """Qt3D Exporter"""
     bl_idname       = "export_scene.qt3d_td_path_exporter";
     bl_label        = "Qt3DPathExporter";
@@ -126,11 +129,17 @@ def createBlenderMenu(self, context):
 # Register against Blender
 def register():
     bpy.utils.register_class(Qt3DPathExporter)
-    bpy.types.INFO_MT_file_export.append(createBlenderMenu)
+    if bpy.app.version < (2, 80, 0):
+        bpy.types.INFO_MT_file_export.append(createBlenderMenu)
+    else:
+        bpy.types.TOPBAR_MT_file_export.append(createBlenderMenu)
 
 def unregister():
     bpy.utils.unregister_class(Qt3DPathExporter)
-    bpy.types.INFO_MT_file_export.remove(createBlenderMenu)
+    if bpy.app.version < (2, 80, 0):
+        bpy.types.INFO_MT_file_export.remove(createBlenderMenu)
+    else:
+        bpy.types.TOPBAR_MT_file_export.remove(createBlenderMenu)
 
 # Handle running the script from Blender's text editor.
 if (__name__ == "__main__"):

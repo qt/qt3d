@@ -41,8 +41,8 @@
 bl_info = {
            "name": "Qt3D Animation Exporter",
            "author": "Sean Harmer <sean.harmer@kdab.com>, Paul Lemire <paul.lemire@kdab.com>",
-           "version": (0, 4),
-           "blender": (2, 72, 0),
+           "version": (0, 5),
+           "blender": (2, 80, 0),
            "location": "File > Export > Qt3D Animation (.json)",
            "description": "Export animations to json to use with Qt3D",
            "warning": "",
@@ -426,11 +426,17 @@ def createBlenderMenu(self, context):
 # Register against Blender
 def register():
     bpy.utils.register_class(Qt3DExporter)
-    bpy.types.INFO_MT_file_export.append(createBlenderMenu)
+    if bpy.app.version < (2, 80, 0):
+        bpy.types.INFO_MT_file_export.append(createBlenderMenu)
+    else:
+        bpy.types.TOPBAR_MT_file_export.append(createBlenderMenu)
 
 def unregister():
     bpy.utils.unregister_class(Qt3DExporter)
-    bpy.types.INFO_MT_file_export.remove(createBlenderMenu)
+    if bpy.app.version < (2, 80, 0):
+        bpy.types.INFO_MT_file_export.remove(createBlenderMenu)
+    else:
+        bpy.types.TOPBAR_MT_file_export.remove(createBlenderMenu)
 
 # Handle running the script from Blender's text editor.
 if (__name__ == "__main__"):
