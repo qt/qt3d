@@ -60,8 +60,12 @@ enum Q3D_DECL_DEPRECATED ChangeFlag {
     CallbackTriggered       = 1 << 8,
     AllChanges              = 0xFFFFFFFF
 };
+
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
+QT_WARNING_POP
 
 class QNode;
 class QSceneChangePrivate;
@@ -78,7 +82,10 @@ public:
 
     virtual ~QSceneChange();
 
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     ChangeFlag type() const Q_DECL_NOTHROW;
+    QT_WARNING_POP
 
     void setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOTHROW;
     DeliveryFlags deliveryFlags() const Q_DECL_NOTHROW;
@@ -87,9 +94,12 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QSceneChange)
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     Q3D_DECL_DEPRECATED explicit QSceneChange(ChangeFlag type, QNodeId subjectId);
     Q3D_DECL_DEPRECATED explicit QSceneChange(QSceneChangePrivate &dd,
                                               ChangeFlag type, QNodeId subjectId);
+    QT_WARNING_POP
     QSceneChangePrivate *d_ptr;
 
 private:
@@ -98,7 +108,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QSceneChange::DeliveryFlags)
 
-Q3D_DECL_DEPRECATED typedef QSharedPointer<QSceneChange> QSceneChangePtr;
+typedef QSharedPointer<QSceneChange> QSceneChangePtr;
 
 } // namespace Qt3DCore
 

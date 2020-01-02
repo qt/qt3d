@@ -76,7 +76,7 @@ private:
     Q_DECLARE_PRIVATE(QNodeCommand)
 };
 
-Q3D_DECL_DEPRECATED typedef QSharedPointer<QNodeCommand> QNodeCommandPtr;
+typedef QSharedPointer<QNodeCommand> QNodeCommandPtr;
 
 } // namespace Qt3DCore
 

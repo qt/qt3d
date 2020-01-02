@@ -65,7 +65,7 @@ private:
     Q_DECLARE_PRIVATE(QNodeCreatedChangeBase)
 };
 
-Q3D_DECL_DEPRECATED typedef QSharedPointer<QNodeCreatedChangeBase> QNodeCreatedChangeBasePtr;
+typedef QSharedPointer<QNodeCreatedChangeBase> QNodeCreatedChangeBasePtr;
 
 template<typename T>
 class QNodeCreatedChange : public QNodeCreatedChangeBase
