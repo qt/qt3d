@@ -151,7 +151,7 @@ static QIODevice::OpenMode openModeFromText(const char *name) noexcept
 {
     static const struct OpenModeMapping {
         char name[2];
-        ushort mode;
+        int mode;
     } openModeMapping[] = {
         { { 'r',   0 },  QIODevice::ReadOnly  },
         { { 'r', '+' },  QIODevice::ReadWrite },
