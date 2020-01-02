@@ -60,7 +60,7 @@
 
 inline QJsonDocument qLoadGLTF(const QByteArray &gltfData)
 {
-#if QT_CONFIG(binaryjson)
+#if 0 //QT_CONFIG(binaryjson)
     {
         QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(gltfData);
         if (!sceneDocument.isNull())

@@ -75,6 +75,7 @@ typedef Qt3DCore::QHandle<RHITexture> HRHITexture;
 
 } // namespace Qt3DRender
 
+#define RHI_UNIMPLEMENTED do { qDebug() << "Unimplemented: " << __PRETTY_FUNCTION__; } while(0)
 QT_END_NAMESPACE
 
 #endif // QT3DRENDER_RENDER_RHI_HANDLE_TYPES_P_H

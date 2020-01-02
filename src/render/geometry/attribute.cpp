@@ -58,6 +58,7 @@ Attribute::Attribute()
     , m_byteStride(0)
     , m_byteOffset(0)
     , m_divisor(0)
+    , m_location(0)
     , m_attributeType(QAttribute::VertexAttribute)
     , m_attributeDirty(false)
 {
@@ -75,6 +76,7 @@ void Attribute::cleanup()
     m_byteStride = 0;
     m_byteOffset = 0;
     m_divisor = 0;
+    m_location = 0;
     m_attributeType = QAttribute::VertexAttribute;
     m_bufferId = Qt3DCore::QNodeId();
     m_name.clear();
@@ -117,6 +119,10 @@ void Attribute::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     }
     if (m_divisor != node->divisor()) {
         m_divisor = node->divisor();
+        m_attributeDirty = true;
+    }
+    if (m_location != node->location()) {
+        m_location = node->location();
         m_attributeDirty = true;
     }
     if (m_attributeType != node->attributeType()) {

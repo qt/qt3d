@@ -56,7 +56,7 @@
 #include <qbytearray.h>
 
 QT_BEGIN_NAMESPACE
-
+class QRhiBuffer;
 namespace Qt3DRender {
 
 namespace Render {
@@ -85,22 +85,24 @@ public:
     bool release(GraphicsContext *ctx);
     bool create(GraphicsContext *ctx);
     void destroy(GraphicsContext *ctx);
-    void allocate(GraphicsContext *ctx, uint size, bool dynamic = true);
-    void allocate(GraphicsContext *ctx, const void *data, uint size, bool dynamic = true);
-    void update(GraphicsContext *ctx, const void *data, uint size, int offset = 0);
+    void orphan(GraphicsContext *ctx);
+    void allocate(GraphicsContext *ctx, const QByteArray& data, bool dynamic = true);
+    void update(GraphicsContext *ctx, const QByteArray& data, int offset = 0);
     QByteArray download(GraphicsContext *ctx, uint size);
     void bindBufferBase(GraphicsContext *ctx, int bindingPoint, Type t);
     void bindBufferBase(GraphicsContext *ctx, int bindingPoint);
 
-    inline GLuint bufferId() const { return m_bufferId; }
-    inline bool isCreated() const { return m_isCreated; }
-    inline bool isBound() const { return m_bound; }
 
+    QRhiBuffer* rhiBuffer() const noexcept { return m_rhiBuffer; }
 private:
     GLuint m_bufferId;
-    bool m_isCreated;
-    bool m_bound;
+    bool m_dynamic;
+    int m_allocSize{};
     GLenum m_lastTarget;
+
+    QRhiBuffer* m_rhiBuffer{};
+
+    std::vector<std::pair<QByteArray /*data*/, int /*offset*/>> m_datasToUpload;
 };
 
 } // namespace Rhi

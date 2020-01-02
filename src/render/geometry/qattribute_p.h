@@ -77,6 +77,7 @@ public:
     uint m_byteStride;
     uint m_byteOffset;
     uint m_divisor;
+    uint m_location;
     QAttribute::AttributeType m_attributeType;
 };
 
@@ -90,6 +91,7 @@ struct QAttributeData
     uint byteStride;
     uint byteOffset;
     uint divisor;
+    uint location;
     QAttribute::AttributeType attributeType;
 };
 

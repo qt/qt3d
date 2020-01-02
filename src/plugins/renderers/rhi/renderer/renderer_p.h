@@ -375,8 +375,6 @@ private:
 
     QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
-    QOpenGLContext *m_shareContext;
-    mutable QMutex m_shareContextMutex;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
     RayCastingJobPtr m_rayCastingJob;
 
@@ -429,6 +427,8 @@ private:
     void sendSetFenceHandlesToFrontend();
     void sendDisablesToFrontend(Qt3DCore::QAspectManager *manager);
 
+    void rhiRender();
+
     QMutex m_abandonedVaosMutex;
     QVector<HVao> m_abandonedVaos;
 
@@ -470,6 +470,9 @@ private:
     QOffscreenSurface *m_fallbackSurface{};
 
     bool m_hasSwapChain = false;
+    void setupRHICommand(RenderCommand& command);
+    bool performDraw(QRhiCommandBuffer *cb, const RenderView *rv, RenderCommand &command);
+    bool prepareDraw(QRhiCommandBuffer *cb, const RenderView *rv, RenderCommand &command);
 };
 
 } // namespace Rhi

@@ -79,6 +79,7 @@ public:
     inline uint byteStride() const { return m_byteStride; }
     inline uint byteOffset() const { return m_byteOffset; }
     inline uint divisor() const { return m_divisor; }
+    inline uint location() const { return m_location; }
     inline QAttribute::AttributeType attributeType() const { return m_attributeType; }
     inline bool isDirty() const { return m_attributeDirty; }
     void unsetDirty();
@@ -93,6 +94,7 @@ private:
     uint m_byteStride;
     uint m_byteOffset;
     uint m_divisor;
+    uint m_location;
     QAttribute::AttributeType m_attributeType;
     bool m_attributeDirty;
 };

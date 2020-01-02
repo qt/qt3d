@@ -651,7 +651,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
 
             const Qt3DCore::QNodeId materialComponentId = entity->componentUuid<Material>();
             const HMaterial materialHandle = entity->componentHandle<Material>();
-            const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
+            const QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
 
             HGeometry geometryHandle = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
             Geometry *geometry = m_manager->geometryManager()->data(geometryHandle);
@@ -681,6 +681,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
 
                 // It takes two frames to have a valid command as we can only
                 // reference a glShader at frame n if it has been loaded at frame n - 1
+
                 if (!command.m_glShader)
                     continue;
 
@@ -804,6 +805,7 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
 
                 // It takes two frames to have a valid command as we can only
                 // reference a glShader at frame n if it has been loaded at frame n - 1
+                assert(command.m_glShader);
                 if (!command.m_glShader)
                     continue;
 

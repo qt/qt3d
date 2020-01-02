@@ -135,11 +135,12 @@ GraphicsContext::GraphicsContext()
     , m_maxTextureUnits(0)
     , m_maxImageUnits(0)
     , m_defaultFBO(0)
-    , m_gl(nullptr)
-    , m_glHelper(nullptr)
+//*    , m_gl(nullptr)
+//*    , m_glHelper(nullptr)
     , m_debugLogger(nullptr)
     , m_currentVAO(nullptr)
 {
+    m_contextInfo.m_api = QGraphicsApiFilter::RHI;
 }
 
 GraphicsContext::~GraphicsContext()
@@ -148,32 +149,34 @@ GraphicsContext::~GraphicsContext()
 
 void GraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
 {
-    Q_ASSERT(ctx);
-    m_gl = ctx;
+    RHI_UNIMPLEMENTED;
+//*     Q_ASSERT(ctx);
+//*     m_gl = ctx;
 }
 
 void GraphicsContext::initialize()
 {
     m_initialized = true;
 
-    Q_ASSERT(m_gl);
+//*    Q_ASSERT(m_gl);
+//*
+//*    m_gl->functions()->glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &m_maxTextureUnits);
+//*    qCDebug(Backend) << "context supports" << m_maxTextureUnits << "texture units";
+//*    m_gl->functions()->glGetIntegerv(GL_MAX_IMAGE_UNITS, &m_maxImageUnits);
+//*    qCDebug(Backend) << "context supports" << m_maxImageUnits << "image units";
+//*
+//*    if (m_gl->format().majorVersion() >= 3) {
+//*        m_supportsVAO = true;
+//*    } else {
+//*        QSet<QByteArray> extensions = m_gl->extensions();
+//*        m_supportsVAO = extensions.contains(QByteArrayLiteral("GL_OES_vertex_array_object"))
+//*                || extensions.contains(QByteArrayLiteral("GL_ARB_vertex_array_object"))
+//*                || extensions.contains(QByteArrayLiteral("GL_APPLE_vertex_array_object"));
+//*    }
+//*
+//*    m_defaultFBO = m_gl->defaultFramebufferObject();
+//*    qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 
-    m_gl->functions()->glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &m_maxTextureUnits);
-    qCDebug(Backend) << "context supports" << m_maxTextureUnits << "texture units";
-    m_gl->functions()->glGetIntegerv(GL_MAX_IMAGE_UNITS, &m_maxImageUnits);
-    qCDebug(Backend) << "context supports" << m_maxImageUnits << "image units";
-
-    if (m_gl->format().majorVersion() >= 3) {
-        m_supportsVAO = true;
-    } else {
-        QSet<QByteArray> extensions = m_gl->extensions();
-        m_supportsVAO = extensions.contains(QByteArrayLiteral("GL_OES_vertex_array_object"))
-                || extensions.contains(QByteArrayLiteral("GL_ARB_vertex_array_object"))
-                || extensions.contains(QByteArrayLiteral("GL_APPLE_vertex_array_object"));
-    }
-
-    m_defaultFBO = m_gl->defaultFramebufferObject();
-    qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
 void GraphicsContext::clearBackBuffer(QClearBuffers::BufferTypeFlags buffers)
@@ -188,13 +191,16 @@ void GraphicsContext::clearBackBuffer(QClearBuffers::BufferTypeFlags buffers)
         if (buffers & QClearBuffers::StencilBuffer)
             mask |= GL_STENCIL_BUFFER_BIT;
 
-        m_gl->functions()->glClear(mask);
+        RHI_UNIMPLEMENTED;
+//*        m_gl->functions()->glClear(mask);
     }
 }
 
 bool GraphicsContext::hasValidGLHelper() const
 {
-    return m_glHelper != nullptr;
+    RHI_UNIMPLEMENTED;
+//*    return m_glHelper != nullptr;
+    return true;
 }
 
 bool GraphicsContext::isInitialized() const
@@ -204,79 +210,85 @@ bool GraphicsContext::isInitialized() const
 
 bool GraphicsContext::makeCurrent(QSurface *surface)
 {
-    Q_ASSERT(m_gl);
-    if (!m_gl->makeCurrent(surface)) {
-        qCWarning(Backend) << Q_FUNC_INFO << "makeCurrent failed";
-        return false;
-    }
-
-    initializeHelpers(surface);
+    RHI_UNIMPLEMENTED;
+//*    Q_ASSERT(m_gl);
+//*    if (!m_gl->makeCurrent(surface)) {
+//*        qCWarning(Backend) << Q_FUNC_INFO << "makeCurrent failed";
+//*        return false;
+//*    }
+//*
+//*    initializeHelpers(surface);
 
     return true;
 }
 
 void GraphicsContext::initializeHelpers(QSurface *surface)
 {
+    RHI_UNIMPLEMENTED;
     // Set the correct GL Helper depending on the surface
     // If no helper exists, create one
-    m_glHelper = m_glHelpers.value(surface);
-    if (!m_glHelper) {
-        m_glHelper = resolveHighestOpenGLFunctions();
-        m_glHelpers.insert(surface, m_glHelper);
-    }
+//*    m_glHelper = m_glHelpers.value(surface);
+//*    if (!m_glHelper) {
+//*        m_glHelper = resolveHighestOpenGLFunctions();
+//*        m_glHelpers.insert(surface, m_glHelper);
+//*    }
 }
 
 void GraphicsContext::doneCurrent()
 {
-    Q_ASSERT(m_gl);
-    m_gl->doneCurrent();
-    m_glHelper = nullptr;
+    RHI_UNIMPLEMENTED;
+    //* Q_ASSERT(m_gl);
+    //* m_gl->doneCurrent();
+    //* m_glHelper = nullptr;
 }
 
 // Called by GL Command Thread
 GraphicsContext::ShaderCreationInfo GraphicsContext::createShaderProgram(RHIShader *shader)
 {
-    QOpenGLShaderProgram *shaderProgram = shader->shaderProgram();
-
-    // Compile shaders
-    const auto shaderCode = shader->shaderCode();
-
-    QString logs;
-    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-        const QShaderProgram::ShaderType type = static_cast<QShaderProgram::ShaderType>(i);
-        if (!shaderCode.at(i).isEmpty()) {
-            // Note: logs only return the error but not all the shader code
-            // we could append it
-            if (!shaderProgram->addCacheableShaderFromSourceCode(shaderType(type), shaderCode.at(i)))
-                logs += shaderProgram->log();
-        }
-    }
-
-    // Call glBindFragDataLocation and link the program
-    // Since we are sharing shaders in the backend, we assume that if using custom
-    // fragOutputs, they should all be the same for a given shader
-    bindFragOutputs(shaderProgram->programId(), shader->fragOutputs());
-
-    const bool linkSucceeded = shaderProgram->link();
-    logs += shaderProgram->log();
-
-    // Perform shader introspection
-    introspectShaderInterface(shader);
-
-    return {linkSucceeded, logs};
+    RHI_UNIMPLEMENTED;
+    return {true, {}};
+//*    QOpenGLShaderProgram *shaderProgram = shader->shaderProgram();
+//*
+//*    // Compile shaders
+//*    const auto shaderCode = shader->shaderCode();
+//*
+//*    QString logs;
+//*    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+//*        const QShaderProgram::ShaderType type = static_cast<QShaderProgram::ShaderType>(i);
+//*        if (!shaderCode.at(i).isEmpty()) {
+//*            // Note: logs only return the error but not all the shader code
+//*            // we could append it
+//*            if (!shaderProgram->addCacheableShaderFromSourceCode(shaderType(type), shaderCode.at(i)))
+//*                logs += shaderProgram->log();
+//*        }
+//*    }
+//*
+//*    // Call glBindFragDataLocation and link the program
+//*    // Since we are sharing shaders in the backend, we assume that if using custom
+//*    // fragOutputs, they should all be the same for a given shader
+//*    bindFragOutputs(shaderProgram->programId(), shader->fragOutputs());
+//*
+//*    const bool linkSucceeded = shaderProgram->link();
+//*    logs += shaderProgram->log();
+//*
+//*    // Perform shader introspection
+//*    introspectShaderInterface(shader);
+//*
+//*    return {linkSucceeded, logs};
 }
 
 // That assumes that the shaderProgram in Shader stays the same
 void GraphicsContext::introspectShaderInterface(RHIShader *shader)
 {
-    QOpenGLShaderProgram *shaderProgram = shader->shaderProgram();
-    GraphicsHelperInterface *glHelper = resolveHighestOpenGLFunctions();
-    shader->initializeUniforms(glHelper->programUniformsAndLocations(shaderProgram->programId()));
-    shader->initializeAttributes(glHelper->programAttributesAndLocations(shaderProgram->programId()));
-    if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
-        shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
-    if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
-        shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(shaderProgram->programId()));
+    RHI_UNIMPLEMENTED;
+//*    QOpenGLShaderProgram *shaderProgram = shader->shaderProgram();
+//*    GraphicsHelperInterface *glHelper = resolveHighestOpenGLFunctions();
+//*    shader->initializeUniforms(glHelper->programUniformsAndLocations(shaderProgram->programId()));
+//*    shader->initializeAttributes(glHelper->programAttributesAndLocations(shaderProgram->programId()));
+//*     if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
+//*         shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
+//*     if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
+//*         shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(shaderProgram->programId()));
 }
 
 
@@ -285,6 +297,7 @@ void GraphicsContext::loadShader(Shader *shaderNode,
                                  ShaderManager *shaderManager,
                                  RHIShaderManager *rhiShaderManager)
 {
+    RHI_UNIMPLEMENTED;
     const Qt3DCore::QNodeId shaderId = shaderNode->peerId();
     RHIShader *glShader = rhiShaderManager->lookupResource(shaderId);
 
@@ -326,23 +339,25 @@ void GraphicsContext::loadShader(Shader *shaderNode,
 
 void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
-    const QVector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
-
-    if (m_glHelper->checkFrameBufferComplete()) {
-        if (activeDrawBuffers.size() > 1) {// We need MRT
-            if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT)) {
-                // Set up MRT, glDrawBuffers...
-                m_glHelper->drawBuffers(activeDrawBuffers.size(), activeDrawBuffers.data());
-            }
-        }
-    } else {
-        qWarning() << "FBO incomplete";
-    }
+    RHI_UNIMPLEMENTED;
+//*    const QVector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
+//*
+//*    if (m_glHelper->checkFrameBufferComplete()) {
+//*        if (activeDrawBuffers.size() > 1) {// We need MRT
+//*            if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT)) {
+//*                // Set up MRT, glDrawBuffers...
+//*                m_glHelper->drawBuffers(activeDrawBuffers.size(), activeDrawBuffers.data());
+//*            }
+//*        }
+//*    } else {
+//*        qWarning() << "FBO incomplete";
+//*    }
 }
 
 void GraphicsContext::rasterMode(GLenum faceMode, GLenum rasterMode)
 {
-    m_glHelper->rasterMode(faceMode, rasterMode);
+    RHI_UNIMPLEMENTED;
+//* m_glHelper->rasterMode(faceMode, rasterMode);
 }
 
 /*!
@@ -352,88 +367,91 @@ void GraphicsContext::rasterMode(GLenum faceMode, GLenum rasterMode)
  */
 GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
 {
-    Q_ASSERT(m_gl);
-    GraphicsHelperInterface *glHelper = nullptr;
-
-    if (m_gl->isOpenGLES()) {
-        if (m_gl->format().majorVersion() >= 3) {
-            if (m_gl->format().minorVersion() >= 2) {
-                glHelper = new GraphicsHelperES3_2;
-                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.2 Helper";
-            } else if (m_gl->format().minorVersion() >= 1) {
-                glHelper = new GraphicsHelperES3_1;
-                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.1 Helper";
-            } else {
-                glHelper = new GraphicsHelperES3();
-                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.0 Helper";
-            }
-        } else {
-            glHelper = new GraphicsHelperES2();
-            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES2 Helper";
-        }
-        glHelper->initializeHelper(m_gl, nullptr);
-    }
-#ifndef QT_OPENGL_ES_2
-    else {
-        QAbstractOpenGLFunctions *glFunctions = nullptr;
-        if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != nullptr) {
-            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
-            glHelper = new GraphicsHelperGL4();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != nullptr) {
-            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
-            glHelper = new GraphicsHelperGL3_3();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
-            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
-            glHelper = new GraphicsHelperGL3_2();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
-            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
-            glHelper = new GraphicsHelperGL2();
-        }
-        Q_ASSERT_X(glHelper, "GraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
-        glHelper->initializeHelper(m_gl, glFunctions);
-    }
-#endif
-
-    // Note: at this point we are certain the context (m_gl) is current with a surface
-    const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
-    const bool enableDebugLogging = !debugLoggingMode.isEmpty();
-
-    if (enableDebugLogging && !m_debugLogger) {
-        if (m_gl->hasExtension("GL_KHR_debug")) {
-            qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
-            m_debugLogger.reset(new QOpenGLDebugLogger);
-            if (m_debugLogger->initialize()) {
-                QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
-                const QString mode = QString::fromLocal8Bit(debugLoggingMode);
-                m_debugLogger->startLogging(mode.startsWith(QLatin1String("sync"), Qt::CaseInsensitive)
-                                            ? QOpenGLDebugLogger::SynchronousLogging
-                                            : QOpenGLDebugLogger::AsynchronousLogging);
-
-                const auto msgs = m_debugLogger->loggedMessages();
-                for (const QOpenGLDebugMessage &msg : msgs)
-                    logOpenGLDebugMessage(msg);
-            }
-        } else {
-            qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
-        }
-    }
-
+    RHI_UNIMPLEMENTED;
+//*    Q_ASSERT(m_gl);
+//*    GraphicsHelperInterface *glHelper = nullptr;
+//*
+//*    if (m_gl->isOpenGLES()) {
+//*        if (m_gl->format().majorVersion() >= 3) {
+//*            if (m_gl->format().minorVersion() >= 2) {
+//*                glHelper = new GraphicsHelperES3_2;
+//*                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.2 Helper";
+//*            } else if (m_gl->format().minorVersion() >= 1) {
+//*                glHelper = new GraphicsHelperES3_1;
+//*                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.1 Helper";
+//*            } else {
+//*                glHelper = new GraphicsHelperES3();
+//*                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.0 Helper";
+//*            }
+//*        } else {
+//*            glHelper = new GraphicsHelperES2();
+//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES2 Helper";
+//*        }
+//*        glHelper->initializeHelper(m_gl, nullptr);
+//*    }
+//*#ifndef QT_OPENGL_ES_2
+//*    else {
+//*        QAbstractOpenGLFunctions *glFunctions = nullptr;
+//*        if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != nullptr) {
+//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
+//*            glHelper = new GraphicsHelperGL4();
+//*        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != nullptr) {
+//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
+//*            glHelper = new GraphicsHelperGL3_3();
+//*        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
+//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
+//*            glHelper = new GraphicsHelperGL3_2();
+//*        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
+//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
+//*            glHelper = new GraphicsHelperGL2();
+//*        }
+//*        Q_ASSERT_X(glHelper, "GraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
+//*        glHelper->initializeHelper(m_gl, glFunctions);
+//*    }
+//*#endif
+//*
+//*    // Note: at this point we are certain the context (m_gl) is current with a surface
+//*    const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
+//*    const bool enableDebugLogging = !debugLoggingMode.isEmpty();
+//*
+//*    if (enableDebugLogging && !m_debugLogger) {
+//*        if (m_gl->hasExtension("GL_KHR_debug")) {
+//*            qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
+//*            m_debugLogger.reset(new QOpenGLDebugLogger);
+//*            if (m_debugLogger->initialize()) {
+//*                QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
+//*                const QString mode = QString::fromLocal8Bit(debugLoggingMode);
+//*                m_debugLogger->startLogging(mode.startsWith(QLatin1String("sync"), Qt::CaseInsensitive)
+//*                                            ? QOpenGLDebugLogger::SynchronousLogging
+//*                                            : QOpenGLDebugLogger::AsynchronousLogging);
+//*
+//*                const auto msgs = m_debugLogger->loggedMessages();
+//*                for (const QOpenGLDebugMessage &msg : msgs)
+//*                    logOpenGLDebugMessage(msg);
+//*            }
+//*        } else {
+//*            qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
+//*        }
+//*    }
+//*
 
     // Set Vendor and Extensions of reference GraphicsApiFilter
     // TO DO: would that vary like the glHelper ?
 
     QStringList extensions;
-    const auto exts = m_gl->extensions();
-    for (const QByteArray &ext : exts)
-        extensions << QString::fromUtf8(ext);
-    m_contextInfo.m_major = m_gl->format().version().first;
-    m_contextInfo.m_minor = m_gl->format().version().second;
-    m_contextInfo.m_api = m_gl->isOpenGLES() ? QGraphicsApiFilter::OpenGLES : QGraphicsApiFilter::OpenGL;
-    m_contextInfo.m_profile = static_cast<QGraphicsApiFilter::OpenGLProfile>(m_gl->format().profile());
+    //const auto exts = m_gl->extensions();
+    //for (const QByteArray &ext : exts)
+    //    extensions << QString::fromUtf8(ext);
+    m_contextInfo.m_major = 3;
+    m_contextInfo.m_minor = 2;
+    // m_contextInfo.m_major = m_gl->format().version().first;
+    // m_contextInfo.m_minor = m_gl->format().version().second;
+    m_contextInfo.m_api = QGraphicsApiFilter::RHI;
+    //m_contextInfo.m_profile = static_cast<QGraphicsApiFilter::OpenGLProfile>(m_gl->format().profile());
     m_contextInfo.m_extensions = extensions;
-    m_contextInfo.m_vendor = QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR)));
+    //m_contextInfo.m_vendor = QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR)));
 
-    return glHelper;
+    return nullptr;
 }
 
 const GraphicsApiFilterData *GraphicsContext::contextInfo() const
@@ -443,7 +461,8 @@ const GraphicsApiFilterData *GraphicsContext::contextInfo() const
 
 bool GraphicsContext::supportsDrawBuffersBlend() const
 {
-    return m_glHelper->supportsFeature(GraphicsHelperInterface::DrawBuffersBlend);
+    return false;
+//*    return m_glHelper->supportsFeature(GraphicsHelperInterface::DrawBuffersBlend);
 }
 
 /*!
@@ -460,13 +479,14 @@ void GraphicsContext::drawElementsInstancedBaseVertexBaseInstance(GLenum primiti
                                                                   GLint baseVertex,
                                                                   GLint baseInstance)
 {
-    m_glHelper->drawElementsInstancedBaseVertexBaseInstance(primitiveType,
-                                                            primitiveCount,
-                                                            indexType,
-                                                            indices,
-                                                            instances,
-                                                            baseVertex,
-                                                            baseInstance);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawElementsInstancedBaseVertexBaseInstance(primitiveType,
+//*                                                            primitiveCount,
+//*                                                            indexType,
+//*                                                            indices,
+//*                                                            instances,
+//*                                                            baseVertex,
+//*                                                            baseInstance);
 }
 
 /*!
@@ -478,19 +498,21 @@ void GraphicsContext::drawArraysInstanced(GLenum primitiveType,
                                           GLsizei count,
                                           GLsizei instances)
 {
-    m_glHelper->drawArraysInstanced(primitiveType,
-                                    first,
-                                    count,
-                                    instances);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawArraysInstanced(primitiveType,
+//*                                    first,
+//*                                    count,
+//*                                    instances);
 }
 
 void GraphicsContext::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseinstance)
 {
-    m_glHelper->drawArraysInstancedBaseInstance(primitiveType,
-                                                first,
-                                                count,
-                                                instances,
-                                                baseinstance);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawArraysInstancedBaseInstance(primitiveType,
+//*                                                first,
+//*                                                count,
+//*                                                instances,
+//*                                                baseinstance);
 }
 
 /*!
@@ -503,18 +525,20 @@ void GraphicsContext::drawElements(GLenum primitiveType,
                                    void *indices,
                                    GLint baseVertex)
 {
-    m_glHelper->drawElements(primitiveType,
-                             primitiveCount,
-                             indexType,
-                             indices,
-                             baseVertex);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawElements(primitiveType,
+//*                             primitiveCount,
+//*                             indexType,
+//*                             indices,
+//*                             baseVertex);
 }
 
 void GraphicsContext::drawElementsIndirect(GLenum mode,
                                            GLenum type,
                                            void *indirect)
 {
-    m_glHelper->drawElementsIndirect(mode, type, indirect);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawElementsIndirect(mode, type, indirect);
 }
 
 /*!
@@ -525,350 +549,398 @@ void GraphicsContext::drawArrays(GLenum primitiveType,
                                  GLint first,
                                  GLsizei count)
 {
-    m_glHelper->drawArrays(primitiveType,
-                           first,
-                           count);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawArrays(primitiveType,
+//*                           first,
+//*                           count);
 }
 
 void GraphicsContext::drawArraysIndirect(GLenum mode, void *indirect)
 {
-    m_glHelper->drawArraysIndirect(mode, indirect);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawArraysIndirect(mode, indirect);
 }
 
 void GraphicsContext::setVerticesPerPatch(GLint verticesPerPatch)
 {
-    m_glHelper->setVerticesPerPatch(verticesPerPatch);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->setVerticesPerPatch(verticesPerPatch);
 }
 
 void GraphicsContext::blendEquation(GLenum mode)
 {
-    m_glHelper->blendEquation(mode);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->blendEquation(mode);
 }
 
 void GraphicsContext::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
 {
-    m_glHelper->blendFunci(buf, sfactor, dfactor);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->blendFunci(buf, sfactor, dfactor);
 }
 
 void GraphicsContext::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha)
 {
-    m_glHelper->blendFuncSeparatei(buf, sRGB, dRGB, sAlpha, dAlpha);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->blendFuncSeparatei(buf, sRGB, dRGB, sAlpha, dAlpha);
 }
 
 void GraphicsContext::alphaTest(GLenum mode1, GLenum mode2)
 {
-    m_glHelper->alphaTest(mode1, mode2);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->alphaTest(mode1, mode2);
 }
 
 void GraphicsContext::bindFramebuffer(GLuint fbo, GraphicsHelperInterface::FBOBindMode mode)
 {
-    m_glHelper->bindFrameBufferObject(fbo, mode);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->bindFrameBufferObject(fbo, mode);
 }
 
 void GraphicsContext::depthRange(GLdouble nearValue, GLdouble farValue)
 {
-    m_glHelper->depthRange(nearValue, farValue);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->depthRange(nearValue, farValue);
 }
 
 void GraphicsContext::depthTest(GLenum mode)
 {
-    m_glHelper->depthTest(mode);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->depthTest(mode);
 }
 
 void GraphicsContext::depthMask(GLenum mode)
 {
-    m_glHelper->depthMask(mode);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->depthMask(mode);
 }
 
 void GraphicsContext::frontFace(GLenum mode)
 {
-    m_glHelper->frontFace(mode);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->frontFace(mode);
 }
 
 void GraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs)
 {
-    if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT) &&
-            m_glHelper->supportsFeature(GraphicsHelperInterface::BindableFragmentOutputs))
-        m_glHelper->bindFragDataLocation(shader, outputs);
+    RHI_UNIMPLEMENTED;
+//*    if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT) &&
+//*            m_glHelper->supportsFeature(GraphicsHelperInterface::BindableFragmentOutputs))
+//*        m_glHelper->bindFragDataLocation(shader, outputs);
 }
 
 void GraphicsContext::bindImageTexture(GLuint imageUnit, GLuint texture,
                                        GLint mipLevel, GLboolean layered,
                                        GLint layer, GLenum access, GLenum format)
 {
-    m_glHelper->bindImageTexture(imageUnit,
-                                 texture,
-                                 mipLevel,
-                                 layered,
-                                 layer,
-                                 access,
-                                 format);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->bindImageTexture(imageUnit,
+//*                                 texture,
+//*                                 mipLevel,
+//*                                 layered,
+//*                                 layer,
+//*                                 access,
+//*                                 format);
 }
 
 void GraphicsContext::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
-    m_glHelper->bindUniformBlock(programId, uniformBlockIndex, uniformBlockBinding);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->bindUniformBlock(programId, uniformBlockIndex, uniformBlockBinding);
 }
 
 void GraphicsContext::bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding)
 {
-    m_glHelper->bindShaderStorageBlock(programId, shaderStorageBlockIndex, shaderStorageBlockBinding);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->bindShaderStorageBlock(programId, shaderStorageBlockIndex, shaderStorageBlockBinding);
 }
 
 void GraphicsContext::bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer)
 {
-    m_glHelper->bindBufferBase(target, bindingIndex, buffer);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->bindBufferBase(target, bindingIndex, buffer);
 }
 
 void GraphicsContext::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
-    m_glHelper->buildUniformBuffer(v, description, buffer);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->buildUniformBuffer(v, description, buffer);
 }
 
 void GraphicsContext::setMSAAEnabled(bool enabled)
 {
-    m_glHelper->setMSAAEnabled(enabled);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->setMSAAEnabled(enabled);
 }
 
 void GraphicsContext::setAlphaCoverageEnabled(bool enabled)
 {
-    m_glHelper->setAlphaCoverageEnabled(enabled);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->setAlphaCoverageEnabled(enabled);
 }
 
 void GraphicsContext::clearBufferf(GLint drawbuffer, const QVector4D &values)
 {
-    m_glHelper->clearBufferf(drawbuffer, values);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->clearBufferf(drawbuffer, values);
 }
 
 GLuint GraphicsContext::boundFrameBufferObject()
 {
-    return m_glHelper->boundFrameBufferObject();
+    RHI_UNIMPLEMENTED;
+    return false;
+//*    return m_glHelper->boundFrameBufferObject();
 }
 
 void GraphicsContext::clearColor(const QColor &color)
 {
-    m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+    RHI_UNIMPLEMENTED;
+//*    m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 }
 
 void GraphicsContext::clearDepthValue(float depth)
 {
-    m_gl->functions()->glClearDepthf(depth);
+    RHI_UNIMPLEMENTED;
+//*    m_gl->functions()->glClearDepthf(depth);
 }
 
 void GraphicsContext::clearStencilValue(int stencil)
 {
-    m_gl->functions()->glClearStencil(stencil);
+    RHI_UNIMPLEMENTED;
+//*    m_gl->functions()->glClearStencil(stencil);
 }
 
 void GraphicsContext::enableClipPlane(int clipPlane)
 {
-    m_glHelper->enableClipPlane(clipPlane);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->enableClipPlane(clipPlane);
 }
 
 void GraphicsContext::disableClipPlane(int clipPlane)
 {
-    m_glHelper->disableClipPlane(clipPlane);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->disableClipPlane(clipPlane);
 }
 
 void GraphicsContext::setClipPlane(int clipPlane, const QVector3D &normal, float distance)
 {
-    m_glHelper->setClipPlane(clipPlane, normal, distance);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->setClipPlane(clipPlane, normal, distance);
 }
 
 GLint GraphicsContext::maxClipPlaneCount()
 {
-    return m_glHelper->maxClipPlaneCount();
+    RHI_UNIMPLEMENTED;
+//*    return m_glHelper->maxClipPlaneCount();
 }
 
 GLint GraphicsContext::maxTextureUnitsCount() const
 {
-    return m_maxTextureUnits;
+    RHI_UNIMPLEMENTED;
+//*    return m_maxTextureUnits;
 }
 
 GLint GraphicsContext::maxImageUnitsCount() const
 {
-    return m_maxImageUnits;
+    RHI_UNIMPLEMENTED;
+//*    return m_maxImageUnits;
 }
 
 
 void GraphicsContext::enablePrimitiveRestart(int restartIndex)
 {
-    if (m_glHelper->supportsFeature(GraphicsHelperInterface::PrimitiveRestart))
-        m_glHelper->enablePrimitiveRestart(restartIndex);
+    RHI_UNIMPLEMENTED;
+//*    if (m_glHelper->supportsFeature(GraphicsHelperInterface::PrimitiveRestart))
+//*        m_glHelper->enablePrimitiveRestart(restartIndex);
 }
 
 void GraphicsContext::disablePrimitiveRestart()
 {
-    if (m_glHelper->supportsFeature(GraphicsHelperInterface::PrimitiveRestart))
-        m_glHelper->disablePrimitiveRestart();
+    RHI_UNIMPLEMENTED;
+//*    if (m_glHelper->supportsFeature(GraphicsHelperInterface::PrimitiveRestart))
+//*        m_glHelper->disablePrimitiveRestart();
 }
 
 void GraphicsContext::pointSize(bool programmable, GLfloat value)
 {
-    m_glHelper->pointSize(programmable, value);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->pointSize(programmable, value);
 }
 
 void GraphicsContext::dispatchCompute(int x, int y, int z)
 {
-    if (m_glHelper->supportsFeature(GraphicsHelperInterface::Compute))
-        m_glHelper->dispatchCompute(x, y, z);
+    RHI_UNIMPLEMENTED;
+//*    if (m_glHelper->supportsFeature(GraphicsHelperInterface::Compute))
+//*        m_glHelper->dispatchCompute(x, y, z);
 }
 
 GLboolean GraphicsContext::unmapBuffer(GLenum target)
 {
-    return m_glHelper->unmapBuffer(target);
+    RHI_UNIMPLEMENTED;
+    return true;
+//*    return m_glHelper->unmapBuffer(target);
 }
 
 char *GraphicsContext::mapBuffer(GLenum target, GLsizeiptr size)
 {
-    return m_glHelper->mapBuffer(target, size);
+    RHI_UNIMPLEMENTED;
+    return nullptr;
+//*    return m_glHelper->mapBuffer(target, size);
 }
 
 void GraphicsContext::enablei(GLenum cap, GLuint index)
 {
-    m_glHelper->enablei(cap, index);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->enablei(cap, index);
 }
 
 void GraphicsContext::disablei(GLenum cap, GLuint index)
 {
-    m_glHelper->disablei(cap, index);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->disablei(cap, index);
 }
 
 void GraphicsContext::setSeamlessCubemap(bool enable)
 {
-    m_glHelper->setSeamlessCubemap(enable);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->setSeamlessCubemap(enable);
 }
 
 void GraphicsContext::readBuffer(GLenum mode)
 {
-    m_glHelper->readBuffer(mode);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->readBuffer(mode);
 }
 
 void GraphicsContext::drawBuffer(GLenum mode)
 {
-    m_glHelper->drawBuffer(mode);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawBuffer(mode);
 }
 
 void GraphicsContext::drawBuffers(GLsizei n, const int *bufs)
 {
-    m_glHelper->drawBuffers(n, bufs);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->drawBuffers(n, bufs);
 }
 
 void GraphicsContext::applyUniform(const ShaderUniform &description, const UniformValue &v)
 {
-    const UniformType type = m_glHelper->uniformTypeFromGLType(description.m_type);
-
-    switch (type) {
-    case UniformType::Float:
-        // See QTBUG-57510 and uniform_p.h
-        if (v.storedType() == Int) {
-            float value = float(*v.constData<int>());
-            UniformValue floatV(value);
-            applyUniformHelper<UniformType::Float>(description, floatV);
-        } else {
-            applyUniformHelper<UniformType::Float>(description, v);
-        }
-        break;
-    case UniformType::Vec2:
-        applyUniformHelper<UniformType::Vec2>(description, v);
-        break;
-    case UniformType::Vec3:
-        applyUniformHelper<UniformType::Vec3>(description, v);
-        break;
-    case UniformType::Vec4:
-        applyUniformHelper<UniformType::Vec4>(description, v);
-        break;
-
-    case UniformType::Double:
-        applyUniformHelper<UniformType::Double>(description, v);
-        break;
-    case UniformType::DVec2:
-        applyUniformHelper<UniformType::DVec2>(description, v);
-        break;
-    case UniformType::DVec3:
-        applyUniformHelper<UniformType::DVec3>(description, v);
-        break;
-    case UniformType::DVec4:
-        applyUniformHelper<UniformType::DVec4>(description, v);
-        break;
-
-    case UniformType::Sampler:
-    case UniformType::Image:
-    case UniformType::Int:
-        applyUniformHelper<UniformType::Int>(description, v);
-        break;
-    case UniformType::IVec2:
-        applyUniformHelper<UniformType::IVec2>(description, v);
-        break;
-    case UniformType::IVec3:
-        applyUniformHelper<UniformType::IVec3>(description, v);
-        break;
-    case UniformType::IVec4:
-        applyUniformHelper<UniformType::IVec4>(description, v);
-        break;
-
-    case UniformType::UInt:
-        applyUniformHelper<UniformType::UInt>(description, v);
-        break;
-    case UniformType::UIVec2:
-        applyUniformHelper<UniformType::UIVec2>(description, v);
-        break;
-    case UniformType::UIVec3:
-        applyUniformHelper<UniformType::UIVec3>(description, v);
-        break;
-    case UniformType::UIVec4:
-        applyUniformHelper<UniformType::UIVec4>(description, v);
-        break;
-
-    case UniformType::Bool:
-        applyUniformHelper<UniformType::Bool>(description, v);
-        break;
-    case UniformType::BVec2:
-        applyUniformHelper<UniformType::BVec2>(description, v);
-        break;
-    case UniformType::BVec3:
-        applyUniformHelper<UniformType::BVec3>(description, v);
-        break;
-    case UniformType::BVec4:
-        applyUniformHelper<UniformType::BVec4>(description, v);
-        break;
-
-    case UniformType::Mat2:
-        applyUniformHelper<UniformType::Mat2>(description, v);
-        break;
-    case UniformType::Mat3:
-        applyUniformHelper<UniformType::Mat3>(description, v);
-        break;
-    case UniformType::Mat4:
-        applyUniformHelper<UniformType::Mat4>(description, v);
-        break;
-    case UniformType::Mat2x3:
-        applyUniformHelper<UniformType::Mat2x3>(description, v);
-        break;
-    case UniformType::Mat3x2:
-        applyUniformHelper<UniformType::Mat3x2>(description, v);
-        break;
-    case UniformType::Mat2x4:
-        applyUniformHelper<UniformType::Mat2x4>(description, v);
-        break;
-    case UniformType::Mat4x2:
-        applyUniformHelper<UniformType::Mat4x2>(description, v);
-        break;
-    case UniformType::Mat3x4:
-        applyUniformHelper<UniformType::Mat3x4>(description, v);
-        break;
-    case UniformType::Mat4x3:
-        applyUniformHelper<UniformType::Mat4x3>(description, v);
-        break;
-
-    default:
-        break;
-    }
+    RHI_UNIMPLEMENTED;
+    //* const UniformType type = m_glHelper->uniformTypeFromGLType(description.m_type);
+    //*
+    //* switch (type) {
+    //* case UniformType::Float:
+    //*     // See QTBUG-57510 and uniform_p.h
+    //*     if (v.storedType() == Int) {
+    //*         float value = float(*v.constData<int>());
+    //*         UniformValue floatV(value);
+    //*         applyUniformHelper<UniformType::Float>(description, floatV);
+    //*     } else {
+    //*         applyUniformHelper<UniformType::Float>(description, v);
+    //*     }
+    //*     break;
+    //* case UniformType::Vec2:
+    //*     applyUniformHelper<UniformType::Vec2>(description, v);
+    //*     break;
+    //* case UniformType::Vec3:
+    //*     applyUniformHelper<UniformType::Vec3>(description, v);
+    //*     break;
+    //* case UniformType::Vec4:
+    //*     applyUniformHelper<UniformType::Vec4>(description, v);
+    //*     break;
+    //*
+    //* case UniformType::Double:
+    //*     applyUniformHelper<UniformType::Double>(description, v);
+    //*     break;
+    //* case UniformType::DVec2:
+    //*     applyUniformHelper<UniformType::DVec2>(description, v);
+    //*     break;
+    //* case UniformType::DVec3:
+    //*     applyUniformHelper<UniformType::DVec3>(description, v);
+    //*     break;
+    //* case UniformType::DVec4:
+    //*     applyUniformHelper<UniformType::DVec4>(description, v);
+    //*     break;
+    //*
+    //* case UniformType::Sampler:
+    //* case UniformType::Image:
+    //* case UniformType::Int:
+    //*     applyUniformHelper<UniformType::Int>(description, v);
+    //*     break;
+    //* case UniformType::IVec2:
+    //*     applyUniformHelper<UniformType::IVec2>(description, v);
+    //*     break;
+    //* case UniformType::IVec3:
+    //*     applyUniformHelper<UniformType::IVec3>(description, v);
+    //*     break;
+    //* case UniformType::IVec4:
+    //*     applyUniformHelper<UniformType::IVec4>(description, v);
+    //*     break;
+    //*
+    //* case UniformType::UInt:
+    //*     applyUniformHelper<UniformType::UInt>(description, v);
+    //*     break;
+    //* case UniformType::UIVec2:
+    //*     applyUniformHelper<UniformType::UIVec2>(description, v);
+    //*     break;
+    //* case UniformType::UIVec3:
+    //*     applyUniformHelper<UniformType::UIVec3>(description, v);
+    //*     break;
+    //* case UniformType::UIVec4:
+    //*     applyUniformHelper<UniformType::UIVec4>(description, v);
+    //*     break;
+    //*
+    //* case UniformType::Bool:
+    //*     applyUniformHelper<UniformType::Bool>(description, v);
+    //*     break;
+    //* case UniformType::BVec2:
+    //*     applyUniformHelper<UniformType::BVec2>(description, v);
+    //*     break;
+    //* case UniformType::BVec3:
+    //*     applyUniformHelper<UniformType::BVec3>(description, v);
+    //*     break;
+    //* case UniformType::BVec4:
+    //*     applyUniformHelper<UniformType::BVec4>(description, v);
+    //*     break;
+    //*
+    //* case UniformType::Mat2:
+    //*     applyUniformHelper<UniformType::Mat2>(description, v);
+    //*     break;
+    //* case UniformType::Mat3:
+    //*     applyUniformHelper<UniformType::Mat3>(description, v);
+    //*     break;
+    //* case UniformType::Mat4:
+    //*     applyUniformHelper<UniformType::Mat4>(description, v);
+    //*     break;
+    //* case UniformType::Mat2x3:
+    //*     applyUniformHelper<UniformType::Mat2x3>(description, v);
+    //*     break;
+    //* case UniformType::Mat3x2:
+    //*     applyUniformHelper<UniformType::Mat3x2>(description, v);
+    //*     break;
+    //* case UniformType::Mat2x4:
+    //*     applyUniformHelper<UniformType::Mat2x4>(description, v);
+    //*     break;
+    //* case UniformType::Mat4x2:
+    //*     applyUniformHelper<UniformType::Mat4x2>(description, v);
+    //*     break;
+    //* case UniformType::Mat3x4:
+    //*     applyUniformHelper<UniformType::Mat3x4>(description, v);
+    //*     break;
+    //* case UniformType::Mat4x3:
+    //*     applyUniformHelper<UniformType::Mat4x3>(description, v);
+    //*     break;
+    //*
+    //* default:
+    //*     break;
+    //* }
 }
 
 void GraphicsContext::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
-    m_glHelper->memoryBarrier(barriers);
+    RHI_UNIMPLEMENTED;
+    //* m_glHelper->memoryBarrier(barriers);
 }
 
 GLint GraphicsContext::elementType(GLint type)

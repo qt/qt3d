@@ -114,7 +114,7 @@ qtHaveModule(quick) {
 
 SUBDIRS += src_core
 
-QT_FOR_CONFIG += 3dcore
+QT_FOR_CONFIG += 3dcore shadertools
 include($$OUT_PWD/core/qt3dcore-config.pri)
 
 qtConfig(qt3d-input): SUBDIRS += src_input

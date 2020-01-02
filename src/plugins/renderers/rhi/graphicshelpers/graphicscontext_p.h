@@ -80,6 +80,10 @@ class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
 class QOpenGLDebugLogger;
 
+class QRhi;
+class QRhiSwapChain;
+class QRhiResourceUpdateBatch;
+
 namespace Qt3DRender {
 
 namespace Render {
@@ -93,7 +97,6 @@ namespace Rhi {
 class GraphicsHelperInterface;
 class RHIShader;
 class RHIShaderManager;
-
 typedef QPair<QString, int> NamedUniformLocation;
 
 class Q_AUTOTEST_EXPORT GraphicsContext
@@ -103,7 +106,7 @@ public:
     ~GraphicsContext();
 
     void setOpenGLContext(QOpenGLContext* ctx);
-    QOpenGLContext *openGLContext() { return m_gl; }
+    //QOpenGLContext *openGLContext() { return m_gl; }
     bool makeCurrent(QSurface *surface);
     void doneCurrent();
     bool hasValidGLHelper() const;
@@ -196,15 +199,19 @@ public:
     GLint m_maxTextureUnits;
     GLint m_maxImageUnits;
     GLuint m_defaultFBO;
-    QOpenGLContext *m_gl;
-    GraphicsHelperInterface *m_glHelper;
+    //* QOpenGLContext *m_gl;
+    //* GraphicsHelperInterface *m_glHelper;
 
-    QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
+    //* QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
     GraphicsApiFilterData m_contextInfo;
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
 
     friend class RHIVertexArrayObject;
     RHIVertexArrayObject *m_currentVAO;
+
+    QRhi* m_rhi{};
+    QRhiSwapChain* m_sc{};
+    QRhiResourceUpdateBatch *m_currentUpdates{};
 
     void applyUniform(const ShaderUniform &description, const UniformValue &v);
 
@@ -223,8 +230,8 @@ void GraphicsContext::applyUniformHelper<UniformTypeEnum>(const ShaderUniform &d
     template<> \
     void GraphicsContext::applyUniformHelper<UniformTypeEnum>(const ShaderUniform &description, const UniformValue &value) const \
 { \
-    const int count = qMin(description.m_size, int(value.byteSize() / description.m_rawByteSize)); \
-    m_glHelper->Func(description.m_location, count, value.constData<BaseType>()); \
+    /*/ const int count = qMin(description.m_size, int(value.byteSize() / description.m_rawByteSize)); \
+    m_glHelper->Func(description.m_location, count, value.constData<BaseType>()); */ \
 }
 
 

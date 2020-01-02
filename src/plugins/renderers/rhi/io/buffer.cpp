@@ -62,6 +62,7 @@
 #define GL_DRAW_INDIRECT_BUFFER 0x8F3F
 #endif
 
+#include <QtGui/private/qrhi_p.h>
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -89,57 +90,122 @@ GLenum glBufferTypes[] = {
 
 RHIBuffer::RHIBuffer()
     : m_bufferId(0)
-    , m_isCreated(false)
-    , m_bound(false)
+    , m_dynamic(true)
     , m_lastTarget(GL_ARRAY_BUFFER)
 {
 }
 
 bool RHIBuffer::bind(GraphicsContext *ctx, Type t)
 {
-    if (m_bufferId == 0)
-        return false;
-    m_lastTarget = glBufferTypes[t];
-    ctx->openGLContext()->functions()->glBindBuffer(m_lastTarget, m_bufferId);
-    m_bound = true;
+    assert(ctx->m_currentUpdates);
+    if(this->m_datasToUpload.empty())
+        return bool(m_rhiBuffer);
+
+    if(!m_rhiBuffer)
+    {
+        const auto kind = m_dynamic ? QRhiBuffer::Dynamic : QRhiBuffer::Static;
+        const auto usage = [&] {
+            if(t == Type::ArrayBuffer) return QRhiBuffer::VertexBuffer;
+            if(t == Type::IndexBuffer) return QRhiBuffer::IndexBuffer;
+            if(t == Type::UniformBuffer) return QRhiBuffer::UniformBuffer;
+            RHI_UNIMPLEMENTED;
+            return QRhiBuffer::StorageBuffer;
+        }();
+
+        if(m_allocSize <= 0)
+            return false;
+
+        if(m_rhiBuffer && m_rhiBuffer->type() != t)
+        {
+            m_rhiBuffer->release();
+            delete m_rhiBuffer;
+            m_rhiBuffer = nullptr;
+        }
+
+        if(!m_rhiBuffer)
+        {
+            m_rhiBuffer = ctx->m_rhi->newBuffer(kind, usage, m_allocSize);
+        }
+        assert(m_rhiBuffer);
+
+        m_rhiBuffer->build();
+        {
+            // debug: set to zero
+            char* ptr = (char*)alloca(m_allocSize);
+            std::fill_n(ptr, m_allocSize, 0);
+            if(m_dynamic)
+            {
+                ctx->m_currentUpdates->updateDynamicBuffer(m_rhiBuffer, 0, m_allocSize, ptr);
+            }
+            else
+            {
+                ctx->m_currentUpdates->uploadStaticBuffer(m_rhiBuffer, 0, m_allocSize, ptr);
+            }
+        }
+    }
+
+    if(m_dynamic)
+    {
+        for(const auto& [data, offset] : this->m_datasToUpload)
+        {
+            ctx->m_currentUpdates->updateDynamicBuffer(m_rhiBuffer, offset, data.size(), data.constData());
+        }
+    }
+    else
+    {
+        for(const auto& [data, offset] : this->m_datasToUpload)
+        {
+            ctx->m_currentUpdates->uploadStaticBuffer(m_rhiBuffer, offset, data.size(), data.constData());
+        }
+    }
+    this->m_datasToUpload.clear();
     return true;
 }
 
 bool RHIBuffer::release(GraphicsContext *ctx)
 {
-    m_bound = false;
-    ctx->openGLContext()->functions()->glBindBuffer(m_lastTarget, 0);
+    if(m_rhiBuffer)
+        m_rhiBuffer->release();
     return true;
 }
 
 bool RHIBuffer::create(GraphicsContext *ctx)
 {
-    ctx->openGLContext()->functions()->glGenBuffers(1, &m_bufferId);
-    m_isCreated = true;
-    return m_bufferId != 0;
+    return true;
 }
 
 void RHIBuffer::destroy(GraphicsContext *ctx)
 {
-    ctx->openGLContext()->functions()->glDeleteBuffers(1, &m_bufferId);
-    m_isCreated = false;
+    if(m_rhiBuffer)
+    {
+        m_rhiBuffer->releaseAndDestroyLater();
+        m_rhiBuffer = nullptr;
+    }
+    m_allocSize = 0;
 }
 
-void RHIBuffer::allocate(GraphicsContext *ctx, uint size, bool dynamic)
+void RHIBuffer::orphan(GraphicsContext *)
 {
-    // Either GL_STATIC_DRAW OR GL_DYNAMIC_DRAW depending on  the use case
-    // TO DO: find a way to know how a buffer/QShaderData will be used to use the right usage
-    ctx->openGLContext()->functions()->glBufferData(m_lastTarget, size, NULL, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    m_datasToUpload.clear();
+    if(m_rhiBuffer)
+    {
+        m_rhiBuffer->releaseAndDestroyLater();
+        m_rhiBuffer = nullptr;
+    }
+    m_allocSize = 0;
 }
 
-void RHIBuffer::allocate(GraphicsContext *ctx, const void *data, uint size, bool dynamic)
+void RHIBuffer::allocate(GraphicsContext *ctx, const QByteArray& data, bool dynamic)
 {
-    ctx->openGLContext()->functions()->glBufferData(m_lastTarget, size, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    m_datasToUpload.clear();
+    m_datasToUpload.push_back({data, 0});
+    m_allocSize = data.size();
+    m_dynamic = dynamic;
 }
 
-void RHIBuffer::update(GraphicsContext *ctx, const void *data, uint size, int offset)
+void RHIBuffer::update(GraphicsContext *ctx, const QByteArray& data, int offset)
 {
-    ctx->openGLContext()->functions()->glBufferSubData(m_lastTarget, offset, size, data);
+    m_datasToUpload.push_back({data, offset});
 }
 
 QByteArray RHIBuffer::download(GraphicsContext *ctx, uint size)

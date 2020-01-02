@@ -278,6 +278,7 @@ public:
                     for (const RenderViewCommandBuilderJobPtr &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
                         totalCommandCount += renderViewCommandBuilder->commandData().size();
                     commandData.reserve(totalCommandCount);
+                    //assert(totalCommandCount != 0);
                     for (const RenderViewCommandBuilderJobPtr &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
                         commandData += std::move(renderViewCommandBuilder->commandData());
                 }

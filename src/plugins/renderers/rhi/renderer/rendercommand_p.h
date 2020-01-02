@@ -61,8 +61,11 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QMatrix4x4>
+#include <QtGui/private/qrhi_p.h>
 
 QT_BEGIN_NAMESPACE
+class QRhiGraphicsPipeline;
+class QRhiShaderResourceBindings;
 
 class QOpenGLVertexArrayObject;
 
@@ -103,6 +106,8 @@ public:
     float m_depth;
     int m_changeCost;
 
+    QRhiShaderResourceBindings *srb = nullptr;
+    QRhiGraphicsPipeline *ps = nullptr;
     enum CommandType {
         Draw,
         Compute
@@ -127,6 +132,11 @@ public:
     bool m_drawIndirect;
     bool m_primitiveRestartEnabled;
     bool m_isValid;
+
+    QVarLengthArray<QRhiCommandBuffer::VertexInput, 8> vertex_input;
+
+    const Attribute* indexAttribute{};
+    QRhiBuffer* indexBuffer{};
 };
 
 Q_AUTOTEST_EXPORT bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept;

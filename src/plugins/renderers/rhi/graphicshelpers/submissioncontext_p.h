@@ -200,7 +200,6 @@ private:
     QRectF m_viewport;
     GLuint m_activeFBO;
 
-    RHIBuffer *m_boundArrayBuffer;
     RenderStateSet* m_stateSet;
     Renderer *m_renderer;
     QByteArray m_uboTempArray;

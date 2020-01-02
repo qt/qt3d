@@ -62,11 +62,11 @@ void RHIShader::setGraphicsContext(GraphicsContext *context)
 {
     QMutexLocker lock(&m_mutex);
     m_graphicsContext = context;
-    if (m_graphicsContext) {
-        m_contextConnection = QObject::connect(m_graphicsContext->openGLContext(),
-                                               &QOpenGLContext::aboutToBeDestroyed,
-                                               [this] { setGraphicsContext(nullptr); });
-    }
+    // if (m_graphicsContext) {
+    //     m_contextConnection = QObject::connect(m_graphicsContext->openGLContext(),
+    //                                            &QOpenGLContext::aboutToBeDestroyed,
+    //                                            [this] { setGraphicsContext(nullptr); });
+    // }
 }
 
 GraphicsContext *RHIShader::graphicsContext()

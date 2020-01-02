@@ -11,3 +11,6 @@ dependencies:
   ../qtimageformats:
     ref: b9b0e50aa3b7ff7c4b39bdb84e6c0b8027447fb8
     required: false
+  ../qtshadertools:
+    ref: ff102f01ed25b80abb770c6c6ef82d877dd508a3
+    required: false

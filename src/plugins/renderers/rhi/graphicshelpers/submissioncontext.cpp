@@ -159,6 +159,7 @@ void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint stride
 }
 
 // Render States Helpers
+/*
 template<typename GenericState>
 void applyStateHelper(const GenericState *state, SubmissionContext *gc)
 {
@@ -355,7 +356,7 @@ void applyStateHelper<LineWidth>(const LineWidth *state, SubmissionContext *gc)
 
     gc->openGLContext()->functions()->glLineWidth(std::get<0>(values));
 }
-
+*/
 } // anonymous
 
 
@@ -371,7 +372,6 @@ SubmissionContext::SubmissionContext()
     , m_currClearColorValue(0,0,0,0)
     , m_material(nullptr)
     , m_activeFBO(0)
-    , m_boundArrayBuffer(nullptr)
     , m_stateSet(nullptr)
     , m_renderer(nullptr)
     , m_uboTempArray(QByteArray(1024, 0))
@@ -396,33 +396,35 @@ void SubmissionContext::initialize()
 
 void SubmissionContext::resolveRenderTargetFormat()
 {
-    const QSurfaceFormat format = m_gl->format();
-    const uint a = (format.alphaBufferSize() == -1) ? 0 : format.alphaBufferSize();
-    const uint r = format.redBufferSize();
-    const uint g = format.greenBufferSize();
-    const uint b = format.blueBufferSize();
+    RHI_UNIMPLEMENTED;
 
-#define RGBA_BITS(r,g,b,a) (r | (g << 6) | (b << 12) | (a << 18))
-
-    const uint bits = RGBA_BITS(r,g,b,a);
-    switch (bits) {
-    case RGBA_BITS(8,8,8,8):
-        m_renderTargetFormat = QAbstractTexture::RGBA8_UNorm;
-        break;
-    case RGBA_BITS(8,8,8,0):
-        m_renderTargetFormat = QAbstractTexture::RGB8_UNorm;
-        break;
-    case RGBA_BITS(5,6,5,0):
-        m_renderTargetFormat = QAbstractTexture::R5G6B5;
-        break;
-    }
-#undef RGBA_BITS
+//*     const QSurfaceFormat format = m_gl->format();
+//*     const uint a = (format.alphaBufferSize() == -1) ? 0 : format.alphaBufferSize();
+//*     const uint r = format.redBufferSize();
+//*     const uint g = format.greenBufferSize();
+//*     const uint b = format.blueBufferSize();
+//*
+//* #define RGBA_BITS(r,g,b,a) (r | (g << 6) | (b << 12) | (a << 18))
+//*
+//*     const uint bits = RGBA_BITS(r,g,b,a);
+//*     switch (bits) {
+//*     case RGBA_BITS(8,8,8,8):
+//*         m_renderTargetFormat = QAbstractTexture::RGBA8_UNorm;
+//*         break;
+//*     case RGBA_BITS(8,8,8,0):
+//*         m_renderTargetFormat = QAbstractTexture::RGB8_UNorm;
+//*         break;
+//*     case RGBA_BITS(5,6,5,0):
+//*         m_renderTargetFormat = QAbstractTexture::R5G6B5;
+//*         break;
+//*     }
+//* #undef RGBA_BITS
 }
 
 bool SubmissionContext::beginDrawing(QSurface *surface)
 {
     Q_ASSERT(surface);
-    Q_ASSERT(m_gl);
+//*    Q_ASSERT(m_gl);
 
     m_surface = surface;
 
@@ -436,9 +438,9 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
     // Makes the surface current on the OpenGLContext
     // and sets the right glHelper
-    m_ownCurrent = !(m_gl->surface() == m_surface);
-    if (m_ownCurrent && !makeCurrent(m_surface))
-        return false;
+    // m_ownCurrent = !(m_gl->surface() == m_surface);
+    // if (m_ownCurrent && !makeCurrent(m_surface))
+    //     return false;
 
     // TODO: cache surface format somewhere rather than doing this every time render surface changes
     resolveRenderTargetFormat();
@@ -452,33 +454,41 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
     if (!isInitialized())
         initialize();
-    initializeHelpers(m_surface);
+    // initializeHelpers(m_surface);
 
     // need to reset these values every frame, may get overwritten elsewhere
-    m_gl->functions()->glClearColor(m_currClearColorValue.redF(), m_currClearColorValue.greenF(), m_currClearColorValue.blueF(), m_currClearColorValue.alphaF());
-    m_gl->functions()->glClearDepthf(m_currClearDepthValue);
-    m_gl->functions()->glClearStencil(m_currClearStencilValue);
+    RHI_UNIMPLEMENTED;
+//* m_gl->functions()->glClearColor(m_currClearColorValue.redF(), m_currClearColorValue.greenF(), m_currClearColorValue.blueF(), m_currClearColorValue.alphaF());
+//* m_gl->functions()->glClearDepthf(m_currClearDepthValue);
+//* m_gl->functions()->glClearStencil(m_currClearStencilValue);
 
     if (m_activeShader) {
         m_activeShader = nullptr;
     }
 
-    m_boundArrayBuffer = nullptr;
+
+    m_rhi->beginFrame(m_sc);
     return true;
 }
 
 void SubmissionContext::endDrawing(bool swapBuffers)
 {
-    if (swapBuffers)
-        m_gl->swapBuffers(m_surface);
-    if (m_ownCurrent)
-        m_gl->doneCurrent();
+    m_rhi->endFrame(m_sc, {});
+    RHI_UNIMPLEMENTED;
+//* if (swapBuffers)
+//*     m_gl->swapBuffers(m_surface);
+//* if (m_ownCurrent)
+//*     m_gl->doneCurrent();
     m_textureContext.endDrawing();
     m_imageContext.endDrawing();
+//*    static int i = 0;
+//*    if(i++ == 10)
+//*        std::exit(0);
 }
 
 void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, GLuint defaultFboId)
 {
+    RHI_UNIMPLEMENTED;
     GLuint fboId = defaultFboId; // Default FBO
     if (renderTargetNodeId) {
         // New RenderTarget
@@ -488,246 +498,256 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
                 // Insert FBO into hash
                 m_renderTargets.insert(renderTargetNodeId, fboId);
             } else {
+                RHI_UNIMPLEMENTED;
                 fboId = createRenderTarget(renderTargetNodeId, attachments);
             }
         } else {
+            RHI_UNIMPLEMENTED;
             fboId = updateRenderTarget(renderTargetNodeId, attachments, true);
         }
     }
     m_activeFBO = fboId;
-    m_glHelper->bindFrameBufferObject(m_activeFBO, GraphicsHelperInterface::FBODraw);
+//*    m_glHelper->bindFrameBufferObject(m_activeFBO, GraphicsHelperInterface::FBODraw);
     // Set active drawBuffers
     activateDrawBuffers(attachments);
 }
 
 GLuint SubmissionContext::createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments)
 {
-    const GLuint fboId = m_glHelper->createFrameBufferObject();
-    if (fboId) {
-        // The FBO is created and its attachments are set once
-        // Insert FBO into hash
-        m_renderTargets.insert(renderTargetNodeId, fboId);
-        // Bind FBO
-        m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
-        bindFrameBufferAttachmentHelper(fboId, attachments);
-    } else {
-        qCritical("Failed to create FBO");
-    }
-    return fboId;
+    RHI_UNIMPLEMENTED;
+    return 0;
+//*    const GLuint fboId = m_glHelper->createFrameBufferObject();
+//*    if (fboId) {
+//*        // The FBO is created and its attachments are set once
+//*        // Insert FBO into hash
+//*        m_renderTargets.insert(renderTargetNodeId, fboId);
+//*        // Bind FBO
+//*        m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
+//*        bindFrameBufferAttachmentHelper(fboId, attachments);
+//*    } else {
+//*        qCritical("Failed to create FBO");
+//*    }
+//*    return fboId;
 }
 
 GLuint SubmissionContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, bool isActiveRenderTarget)
 {
-    const GLuint fboId = m_renderTargets.value(renderTargetNodeId);
-
-    // We need to check if  one of the attachment was resized
-    bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
-    if (!needsResize) {
-        // render target exists, has attachment been resized?
-        RHITextureManager *rhiTextureManager = m_renderer->rhiResourceManagers()->rhiTextureManager();
-        const QSize s = m_renderTargetsSize[fboId];
-        const auto attachments_ = attachments.attachments();
-        for (const Attachment &attachment : attachments_) {
-            RHITexture *rTex = rhiTextureManager->lookupResource(attachment.m_textureUuid);
-            // ### TODO QTBUG-64757 this check is insufficient since the
-            // texture may have changed to another one with the same size. That
-            // case is not handled atm.
-            if (rTex) {
-                needsResize |= rTex->size() != s;
-                if (isActiveRenderTarget && attachment.m_point == QRenderTargetOutput::Color0)
-                    m_renderTargetFormat = rTex->properties().format;
-            }
-        }
-    }
-
-    if (needsResize) {
-        m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
-        bindFrameBufferAttachmentHelper(fboId, attachments);
-    }
-
-    return fboId;
+    RHI_UNIMPLEMENTED;
+    return 0;
+//*    const GLuint fboId = m_renderTargets.value(renderTargetNodeId);
+//*
+//*    // We need to check if  one of the attachment was resized
+//*    bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
+//*    if (!needsResize) {
+//*        // render target exists, has attachment been resized?
+//*        RHITextureManager *rhiTextureManager = m_renderer->rhiResourceManagers()->rhiTextureManager();
+//*        const QSize s = m_renderTargetsSize[fboId];
+//*        const auto attachments_ = attachments.attachments();
+//*        for (const Attachment &attachment : attachments_) {
+//*            RHITexture *rTex = rhiTextureManager->lookupResource(attachment.m_textureUuid);
+//*            // ### TODO QTBUG-64757 this check is insufficient since the
+//*            // texture may have changed to another one with the same size. That
+//*            // case is not handled atm.
+//*            if (rTex) {
+//*                needsResize |= rTex->size() != s;
+//*                if (isActiveRenderTarget && attachment.m_point == QRenderTargetOutput::Color0)
+//*                    m_renderTargetFormat = rTex->properties().format;
+//*            }
+//*        }
+//*    }
+//*
+//*    if (needsResize) {
+//*        m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
+//*        bindFrameBufferAttachmentHelper(fboId, attachments);
+//*    }
+//*
+//*    return fboId;
 }
 
 QSize SubmissionContext::renderTargetSize(const QSize &surfaceSize) const
 {
-    QSize renderTargetSize;
-    if (m_activeFBO != m_defaultFBO) {
-        // For external FBOs we may not have a m_renderTargets entry.
-        if (m_renderTargetsSize.contains(m_activeFBO)) {
-            renderTargetSize = m_renderTargetsSize[m_activeFBO];
-        } else if (surfaceSize.isValid()) {
-            renderTargetSize = surfaceSize;
-        } else {
-            // External FBO (when used with QtQuick2 Scene3D)
-
-            // Query FBO color attachment 0 size
-            GLint attachmentObjectType = GL_NONE;
-            GLint attachment0Name = 0;
-            m_gl->functions()->glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
-                                                                     GL_COLOR_ATTACHMENT0,
-                                                                     GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
-                                                                     &attachmentObjectType);
-            m_gl->functions()->glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
-                                                                     GL_COLOR_ATTACHMENT0,
-                                                                     GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
-                                                                     &attachment0Name);
-
-            if (attachmentObjectType == GL_RENDERBUFFER && m_glHelper->supportsFeature(GraphicsHelperInterface::RenderBufferDimensionRetrieval))
-                renderTargetSize = m_glHelper->getRenderBufferDimensions(attachment0Name);
-            else if (attachmentObjectType == GL_TEXTURE && m_glHelper->supportsFeature(GraphicsHelperInterface::TextureDimensionRetrieval))
-                // Assumes texture level 0 and GL_TEXTURE_2D target
-                renderTargetSize = m_glHelper->getTextureDimensions(attachment0Name, GL_TEXTURE_2D);
-            else
-                return renderTargetSize;
-        }
-    } else {
-        renderTargetSize = m_surface->size();
-        if (m_surface->surfaceClass() == QSurface::Window) {
-            const float dpr = static_cast<QWindow *>(m_surface)->devicePixelRatio();
-            renderTargetSize *= dpr;
-        }
-    }
-    return renderTargetSize;
+    RHI_UNIMPLEMENTED;
+    return surfaceSize;
+//*    QSize renderTargetSize{};
+//*    if (m_activeFBO != m_defaultFBO) {
+//*        // For external FBOs we may not have a m_renderTargets entry.
+//*        if (m_renderTargetsSize.contains(m_activeFBO)) {
+//*            renderTargetSize = m_renderTargetsSize[m_activeFBO];
+//*        } else if (surfaceSize.isValid()) {
+//*            renderTargetSize = surfaceSize;
+//*        } else {
+//*            // External FBO (when used with QtQuick2 Scene3D)
+//*
+//*            // Query FBO color attachment 0 size
+//*            GLint attachmentObjectType = GL_NONE;
+//*            GLint attachment0Name = 0;
+//*            m_gl->functions()->glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
+//*                                                                     GL_COLOR_ATTACHMENT0,
+//*                                                                     GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
+//*                                                                     &attachmentObjectType);
+//*            m_gl->functions()->glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
+//*                                                                     GL_COLOR_ATTACHMENT0,
+//*                                                                     GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
+//*                                                                     &attachment0Name);
+//*
+//*            if (attachmentObjectType == GL_RENDERBUFFER && m_glHelper->supportsFeature(GraphicsHelperInterface::RenderBufferDimensionRetrieval))
+//*                renderTargetSize = m_glHelper->getRenderBufferDimensions(attachment0Name);
+//*            else if (attachmentObjectType == GL_TEXTURE && m_glHelper->supportsFeature(GraphicsHelperInterface::TextureDimensionRetrieval))
+//*                // Assumes texture level 0 and GL_TEXTURE_2D target
+//*                renderTargetSize = m_glHelper->getTextureDimensions(attachment0Name, GL_TEXTURE_2D);
+//*            else
+//*                return renderTargetSize;
+//*        }
+//*    } else {
+//*        renderTargetSize = m_surface->size();
+//*        if (m_surface->surfaceClass() == QSurface::Window) {
+//*            const float dpr = static_cast<QWindow *>(m_surface)->devicePixelRatio();
+//*            renderTargetSize *= dpr;
+//*        }
+//*    }
+//*    return renderTargetSize;
 }
 
 QImage SubmissionContext::readFramebuffer(const QRect &rect)
 {
-    QImage img;
-    const unsigned int area = rect.width() * rect.height();
-    unsigned int bytes;
-    GLenum format, type;
-    QImage::Format imageFormat;
-    uint stride;
-
-    /* format value should match GL internalFormat */
-    GLenum internalFormat = m_renderTargetFormat;
-
-    switch (m_renderTargetFormat) {
-    case QAbstractTexture::RGBAFormat:
-    case QAbstractTexture::RGBA8_SNorm:
-    case QAbstractTexture::RGBA8_UNorm:
-    case QAbstractTexture::RGBA8U:
-    case QAbstractTexture::SRGB8_Alpha8:
-#ifdef QT_OPENGL_ES_2
-        format = GL_RGBA;
-        imageFormat = QImage::Format_RGBA8888_Premultiplied;
-#else
-        format = GL_BGRA;
-        imageFormat = QImage::Format_ARGB32_Premultiplied;
-        internalFormat = GL_RGBA8;
-#endif
-        type = GL_UNSIGNED_BYTE;
-        bytes = area * 4;
-        stride = rect.width() * 4;
-        break;
-    case QAbstractTexture::SRGB8:
-    case QAbstractTexture::RGBFormat:
-    case QAbstractTexture::RGB8U:
-    case QAbstractTexture::RGB8_UNorm:
-#ifdef QT_OPENGL_ES_2
-        format = GL_RGBA;
-        imageFormat = QImage::Format_RGBX8888;
-#else
-        format = GL_BGRA;
-        imageFormat = QImage::Format_RGB32;
-        internalFormat = GL_RGB8;
-#endif
-        type = GL_UNSIGNED_BYTE;
-        bytes = area * 4;
-        stride = rect.width() * 4;
-        break;
-#ifndef QT_OPENGL_ES_2
-    case QAbstractTexture::RG11B10F:
-        bytes = area * 4;
-        format = GL_RGB;
-        type = GL_UNSIGNED_INT_10F_11F_11F_REV;
-        imageFormat = QImage::Format_RGB30;
-        stride = rect.width() * 4;
-        break;
-    case QAbstractTexture::RGB10A2:
-        bytes = area * 4;
-        format = GL_RGBA;
-        type = GL_UNSIGNED_INT_2_10_10_10_REV;
-        imageFormat = QImage::Format_A2BGR30_Premultiplied;
-        stride = rect.width() * 4;
-        break;
-    case QAbstractTexture::R5G6B5:
-        bytes = area * 2;
-        format = GL_RGB;
-        type = GL_UNSIGNED_SHORT;
-        internalFormat = GL_UNSIGNED_SHORT_5_6_5_REV;
-        imageFormat = QImage::Format_RGB16;
-        stride = rect.width() * 2;
-        break;
-    case QAbstractTexture::RGBA16F:
-    case QAbstractTexture::RGBA16U:
-    case QAbstractTexture::RGBA32F:
-    case QAbstractTexture::RGBA32U:
-        bytes = area * 16;
-        format = GL_RGBA;
-        type = GL_FLOAT;
-        imageFormat = QImage::Format_ARGB32_Premultiplied;
-        stride = rect.width() * 16;
-        break;
-#endif
-    default:
-        auto warning = qWarning();
-        warning << "Unable to convert";
-        QtDebugUtils::formatQEnum(warning, m_renderTargetFormat);
-        warning << "render target texture format to QImage.";
-        return img;
-    }
-
-    GLint samples = 0;
-    m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
-    if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer)) {
-        qCWarning(Backend) << Q_FUNC_INFO << "Unable to capture multisampled framebuffer; "
-                                             "Required feature BlitFramebuffer is missing.";
-        return img;
-    }
-
-    img = QImage(rect.width(), rect.height(), imageFormat);
-
-    QScopedArrayPointer<uchar> data(new uchar [bytes]);
-
-    if (samples > 0) {
-        // resolve multisample-framebuffer to renderbuffer and read pixels from it
-        GLuint fbo, rb;
-        QOpenGLFunctions *gl = m_gl->functions();
-        gl->glGenFramebuffers(1, &fbo);
-        gl->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-        gl->glGenRenderbuffers(1, &rb);
-        gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
-        gl->glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, rect.width(), rect.height());
-        gl->glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rb);
-
-        const GLenum status = gl->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
-        if (status != GL_FRAMEBUFFER_COMPLETE) {
-            gl->glDeleteRenderbuffers(1, &rb);
-            gl->glDeleteFramebuffers(1, &fbo);
-            qCWarning(Backend) << Q_FUNC_INFO << "Copy-framebuffer not complete: " << status;
-            return img;
-        }
-
-        m_glHelper->blitFramebuffer(rect.x(), rect.y(), rect.x() + rect.width(), rect.y() + rect.height(),
-                                    0, 0, rect.width(), rect.height(),
-                                    GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        gl->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
-        gl->glReadPixels(0,0,rect.width(), rect.height(), format, type, data.data());
-
-        copyGLFramebufferDataToImage(img, data.data(), stride, rect.width(), rect.height(), m_renderTargetFormat);
-
-        gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
-        gl->glDeleteRenderbuffers(1, &rb);
-        gl->glBindFramebuffer(GL_FRAMEBUFFER, m_activeFBO);
-        gl->glDeleteFramebuffers(1, &fbo);
-    } else {
-        // read pixels directly from framebuffer
-        m_gl->functions()->glReadPixels(rect.x(), rect.y(), rect.width(), rect.height(), format, type, data.data());
-        copyGLFramebufferDataToImage(img, data.data(), stride, rect.width(), rect.height(), m_renderTargetFormat);
-    }
-
-    return img;
+    RHI_UNIMPLEMENTED;
+    return {};
+//*    QImage img;
+//*    const unsigned int area = rect.width() * rect.height();
+//*    unsigned int bytes;
+//*    GLenum format, type;
+//*    QImage::Format imageFormat;
+//*    uint stride;
+//*
+//*    /* format value should match GL internalFormat */
+//*    GLenum internalFormat = m_renderTargetFormat;
+//*
+//*    switch (m_renderTargetFormat) {
+//*    case QAbstractTexture::RGBAFormat:
+//*    case QAbstractTexture::RGBA8_SNorm:
+//*    case QAbstractTexture::RGBA8_UNorm:
+//*    case QAbstractTexture::RGBA8U:
+//*    case QAbstractTexture::SRGB8_Alpha8:
+//*#ifdef QT_OPENGL_ES_2
+//*        format = GL_RGBA;
+//*        imageFormat = QImage::Format_RGBA8888_Premultiplied;
+//*#else
+//*        format = GL_BGRA;
+//*        imageFormat = QImage::Format_ARGB32_Premultiplied;
+//*        internalFormat = GL_RGBA8;
+//*#endif
+//*        type = GL_UNSIGNED_BYTE;
+//*        bytes = area * 4;
+//*        stride = rect.width() * 4;
+//*        break;
+//*    case QAbstractTexture::SRGB8:
+//*    case QAbstractTexture::RGBFormat:
+//*    case QAbstractTexture::RGB8U:
+//*    case QAbstractTexture::RGB8_UNorm:
+//*#ifdef QT_OPENGL_ES_2
+//*        format = GL_RGBA;
+//*        imageFormat = QImage::Format_RGBX8888;
+//*#else
+//*        format = GL_BGRA;
+//*        imageFormat = QImage::Format_RGB32;
+//*        internalFormat = GL_RGB8;
+//*#endif
+//*        type = GL_UNSIGNED_BYTE;
+//*        bytes = area * 4;
+//*        stride = rect.width() * 4;
+//*        break;
+//*#ifndef QT_OPENGL_ES_2
+//*    case QAbstractTexture::RG11B10F:
+//*        bytes = area * 4;
+//*        format = GL_RGB;
+//*        type = GL_UNSIGNED_INT_10F_11F_11F_REV;
+//*        imageFormat = QImage::Format_RGB30;
+//*        stride = rect.width() * 4;
+//*        break;
+//*    case QAbstractTexture::RGB10A2:
+//*        bytes = area * 4;
+//*        format = GL_RGBA;
+//*        type = GL_UNSIGNED_INT_2_10_10_10_REV;
+//*        imageFormat = QImage::Format_A2BGR30_Premultiplied;
+//*        stride = rect.width() * 4;
+//*        break;
+//*    case QAbstractTexture::R5G6B5:
+//*        bytes = area * 2;
+//*        format = GL_RGB;
+//*        type = GL_UNSIGNED_SHORT;
+//*        internalFormat = GL_UNSIGNED_SHORT_5_6_5_REV;
+//*        imageFormat = QImage::Format_RGB16;
+//*        stride = rect.width() * 2;
+//*        break;
+//*    case QAbstractTexture::RGBA16F:
+//*    case QAbstractTexture::RGBA16U:
+//*    case QAbstractTexture::RGBA32F:
+//*    case QAbstractTexture::RGBA32U:
+//*        bytes = area * 16;
+//*        format = GL_RGBA;
+//*        type = GL_FLOAT;
+//*        imageFormat = QImage::Format_ARGB32_Premultiplied;
+//*        stride = rect.width() * 16;
+//*        break;
+//*#endif
+//*    default:
+//*        auto warning = qWarning();
+//*        warning << "Unable to convert";
+//*        QtDebugUtils::formatQEnum(warning, m_renderTargetFormat);
+//*        warning << "render target texture format to QImage.";
+//*        return img;
+//*    }
+//*
+//*    GLint samples = 0;
+//*    m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
+//*    if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer)) {
+//*        qCWarning(Backend) << Q_FUNC_INFO << "Unable to capture multisampled framebuffer; "
+//*                                             "Required feature BlitFramebuffer is missing.";
+//*        return img;
+//*    }
+//*
+//*    img = QImage(rect.width(), rect.height(), imageFormat);
+//*
+//*    QScopedArrayPointer<uchar> data(new uchar [bytes]);
+//*
+//*    if (samples > 0) {
+//*        // resolve multisample-framebuffer to renderbuffer and read pixels from it
+//*        GLuint fbo, rb;
+//*        QOpenGLFunctions *gl = m_gl->functions();
+//*        gl->glGenFramebuffers(1, &fbo);
+//*        gl->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+//*        gl->glGenRenderbuffers(1, &rb);
+//*        gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
+//*        gl->glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, rect.width(), rect.height());
+//*        gl->glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rb);
+//*
+//*        const GLenum status = gl->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+//*        if (status != GL_FRAMEBUFFER_COMPLETE) {
+//*            gl->glDeleteRenderbuffers(1, &rb);
+//*            gl->glDeleteFramebuffers(1, &fbo);
+//*            qCWarning(Backend) << Q_FUNC_INFO << "Copy-framebuffer not complete: " << status;
+//*            return img;
+//*        }
+//*
+//*        m_glHelper->blitFramebuffer(rect.x(), rect.y(), rect.x() + rect.width(), rect.y() + rect.height(),
+//*                                    0, 0, rect.width(), rect.height(),
+//*                                    GL_COLOR_BUFFER_BIT, GL_NEAREST);
+//*        gl->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+//*        gl->glReadPixels(0,0,rect.width(), rect.height(), format, type, data.data());
+//*
+//*        copyGLFramebufferDataToImage(img, data.data(), stride, rect.width(), rect.height(), m_renderTargetFormat);
+//*
+//*        gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
+//*        gl->glDeleteRenderbuffers(1, &rb);
+//*        gl->glBindFramebuffer(GL_FRAMEBUFFER, m_activeFBO);
+//*        gl->glDeleteFramebuffers(1, &fbo);
+//*    } else {
+//*        // read pixels directly from framebuffer
+//*        m_gl->functions()->glReadPixels(rect.x(), rect.y(), rect.width(), rect.height(), format, type, data.data());
+//*        copyGLFramebufferDataToImage(img, data.data(), stride, rect.width(), rect.height(), m_renderTargetFormat);
+//*    }
+//*
+//*    return img;
 }
 
 void SubmissionContext::setViewport(const QRectF &viewport, const QSize &surfaceSize)
@@ -751,10 +771,12 @@ void SubmissionContext::setViewport(const QRectF &viewport, const QSize &surface
     //      1                                0---------------------> 1
     // The Viewport is defined between 0 and 1 which allows us to automatically
     // scale to the size of the provided window surface
-    m_gl->functions()->glViewport(m_viewport.x() * size.width(),
-                                  (1.0 - m_viewport.y() - m_viewport.height()) * size.height(),
-                                  m_viewport.width() * size.width(),
-                                  m_viewport.height() * size.height());
+
+    RHI_UNIMPLEMENTED;
+    //* m_gl->functions()->glViewport(m_viewport.x() * size.width(),
+    //*                               (1.0 - m_viewport.y() - m_viewport.height()) * size.height(),
+    //*                               m_viewport.width() * size.width(),
+    //*                               m_viewport.height() * size.height());
 }
 
 void SubmissionContext::releaseOpenGL()
@@ -771,83 +793,87 @@ void SubmissionContext::releaseOpenGL()
 // The OpenGLContext is not current on any surface at this point
 void SubmissionContext::setOpenGLContext(QOpenGLContext* ctx)
 {
-    Q_ASSERT(ctx);
-
-    releaseOpenGL();
-    m_gl = ctx;
+    RHI_UNIMPLEMENTED;
+    //* Q_ASSERT(ctx);
+    //*
+    //* releaseOpenGL();
+    //* m_gl = ctx;
 }
 
 // Called only from RenderThread
 bool SubmissionContext::activateShader(RHIShader *shader)
 {
-    if (shader->shaderProgram() != m_activeShader) {
-        // Ensure material uniforms are re-applied
-        m_material = nullptr;
-
-        m_activeShader = shader->shaderProgram();
-        if (Q_LIKELY(m_activeShader != nullptr)) {
-            m_activeShader->bind();
-        } else {
-            m_glHelper->useProgram(0);
-            qWarning() << "No shader program found";
-            return false;
-        }
-    }
+    RHI_UNIMPLEMENTED;
+    //* if (shader->shaderProgram() != m_activeShader) {
+    //*     // Ensure material uniforms are re-applied
+    //*     m_material = nullptr;
+    //*
+    //*     m_activeShader = shader->shaderProgram();
+    //*     if (Q_LIKELY(m_activeShader != nullptr)) {
+    //*         m_activeShader->bind();
+    //*     } else {
+    //*         m_glHelper->useProgram(0);
+    //*         qWarning() << "No shader program found";
+    //*         return false;
+    //*     }
+    //* }
     return true;
 }
 
 void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
 {
+    RHI_UNIMPLEMENTED;
     // Set FBO attachments. These are normally textures, except that on Open GL
     // ES <= 3.1 we must use a renderbuffer if a combined depth+stencil is
     // desired since this cannot be achieved neither with a single texture (not
     // before GLES 3.2) nor with separate textures (no suitable format for
     // stencil before 3.1 with the appropriate extension).
 
-    QSize fboSize;
-    RHITextureManager *rhiTextureManager = m_renderer->rhiResourceManagers()->rhiTextureManager();
-    const auto attachments_ = attachments.attachments();
-    for (const Attachment &attachment : attachments_) {
-        RHITexture *rTex = rhiTextureManager->lookupResource(attachment.m_textureUuid);
-        if (!m_glHelper->frameBufferNeedsRenderBuffer(attachment)) {
-            QOpenGLTexture *glTex = rTex ? rTex->getGLTexture() : nullptr;
-            if (glTex != nullptr) {
-                // The texture can not be rendered simultaniously by another renderer
-                Q_ASSERT(!rTex->isExternalRenderingEnabled());
-                if (fboSize.isEmpty())
-                    fboSize = QSize(glTex->width(), glTex->height());
-                else
-                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
-                m_glHelper->bindFrameBufferAttachment(glTex, attachment);
-            }
-        } else {
-            RenderBuffer *renderBuffer = rTex ? rTex->getOrCreateRenderBuffer() : nullptr;
-            if (renderBuffer) {
-                if (fboSize.isEmpty())
-                    fboSize = QSize(renderBuffer->width(), renderBuffer->height());
-                else
-                    fboSize = QSize(qMin(fboSize.width(), renderBuffer->width()), qMin(fboSize.height(), renderBuffer->height()));
-                m_glHelper->bindFrameBufferAttachment(renderBuffer, attachment);
-            }
-        }
-    }
-    m_renderTargetsSize.insert(fboId, fboSize);
+    //* QSize fboSize;
+    //* RHITextureManager *rhiTextureManager = m_renderer->rhiResourceManagers()->rhiTextureManager();
+    //* const auto attachments_ = attachments.attachments();
+    //* for (const Attachment &attachment : attachments_) {
+    //*     RHITexture *rTex = rhiTextureManager->lookupResource(attachment.m_textureUuid);
+    //*     if (!m_glHelper->frameBufferNeedsRenderBuffer(attachment)) {
+    //*         QOpenGLTexture *glTex = rTex ? rTex->getGLTexture() : nullptr;
+    //*         if (glTex != nullptr) {
+    //*             // The texture can not be rendered simultaniously by another renderer
+    //*             Q_ASSERT(!rTex->isExternalRenderingEnabled());
+    //*             if (fboSize.isEmpty())
+    //*                 fboSize = QSize(glTex->width(), glTex->height());
+    //*             else
+    //*                 fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
+    //*             m_glHelper->bindFrameBufferAttachment(glTex, attachment);
+    //*         }
+    //*     } else {
+    //*         RenderBuffer *renderBuffer = rTex ? rTex->getOrCreateRenderBuffer() : nullptr;
+    //*         if (renderBuffer) {
+    //*             if (fboSize.isEmpty())
+    //*                 fboSize = QSize(renderBuffer->width(), renderBuffer->height());
+    //*             else
+    //*                 fboSize = QSize(qMin(fboSize.width(), renderBuffer->width()), qMin(fboSize.height(), renderBuffer->height()));
+    //*             m_glHelper->bindFrameBufferAttachment(renderBuffer, attachment);
+    //*         }
+    //*     }
+    //* }
+    //* m_renderTargetsSize.insert(fboId, fboSize);
 }
 
 void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
-    const QVector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
-
-    if (m_glHelper->checkFrameBufferComplete()) {
-        if (activeDrawBuffers.size() > 1) {// We need MRT
-            if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT)) {
-                // Set up MRT, glDrawBuffers...
-                m_glHelper->drawBuffers(activeDrawBuffers.size(), activeDrawBuffers.data());
-            }
-        }
-    } else {
-        qCWarning(Backend) << "FBO incomplete";
-    }
+    RHI_UNIMPLEMENTED;
+    //* const QVector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
+    //*
+    //* if (m_glHelper->checkFrameBufferComplete()) {
+    //*     if (activeDrawBuffers.size() > 1) {// We need MRT
+    //*         if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT)) {
+    //*             // Set up MRT, glDrawBuffers...
+    //*             m_glHelper->drawBuffers(activeDrawBuffers.size(), activeDrawBuffers.data());
+    //*         }
+    //*     }
+    //* } else {
+    //*     qCWarning(Backend) << "FBO incomplete";
+    //* }
 }
 
 
@@ -877,185 +903,188 @@ RenderStateSet *SubmissionContext::currentStateSet() const
 
 void SubmissionContext::applyState(const StateVariant &stateVariant)
 {
-    switch (stateVariant.type) {
+    RHI_UNIMPLEMENTED;
 
-    case AlphaCoverageStateMask: {
-        applyStateHelper<AlphaCoverage>(static_cast<const AlphaCoverage *>(stateVariant.constState()), this);
-        break;
-    }
-    case AlphaTestMask: {
-        applyStateHelper<AlphaFunc>(static_cast<const AlphaFunc *>(stateVariant.constState()), this);
-        break;
-    }
-    case BlendStateMask: {
-        applyStateHelper<BlendEquation>(static_cast<const BlendEquation *>(stateVariant.constState()), this);
-        break;
-    }
-    case BlendEquationArgumentsMask: {
-        applyStateHelper<BlendEquationArguments>(static_cast<const BlendEquationArguments *>(stateVariant.constState()), this);
-        break;
-    }
-    case MSAAEnabledStateMask: {
-        applyStateHelper<MSAAEnabled>(static_cast<const MSAAEnabled *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case CullFaceStateMask: {
-        applyStateHelper<CullFace>(static_cast<const CullFace *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case DepthWriteStateMask: {
-        applyStateHelper<NoDepthMask>(static_cast<const NoDepthMask *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case DepthTestStateMask: {
-        applyStateHelper<DepthTest>(static_cast<const DepthTest *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case DepthRangeMask: {
-        applyStateHelper<DepthRange>(static_cast<const DepthRange *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case RasterModeMask: {
-        applyStateHelper<RasterMode>(static_cast<const RasterMode *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case FrontFaceStateMask: {
-        applyStateHelper<FrontFace>(static_cast<const FrontFace *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case ScissorStateMask: {
-        applyStateHelper<ScissorTest>(static_cast<const ScissorTest *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case StencilTestStateMask: {
-        applyStateHelper<StencilTest>(static_cast<const StencilTest *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case PointSizeMask: {
-        applyStateHelper<PointSize>(static_cast<const PointSize *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case PolygonOffsetStateMask: {
-        applyStateHelper<PolygonOffset>(static_cast<const PolygonOffset *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case ColorStateMask: {
-        applyStateHelper<ColorMask>(static_cast<const ColorMask *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case ClipPlaneMask: {
-        applyStateHelper<ClipPlane>(static_cast<const ClipPlane *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case SeamlessCubemapMask: {
-        applyStateHelper<SeamlessCubemap>(static_cast<const SeamlessCubemap *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case StencilOpMask: {
-        applyStateHelper<StencilOp>(static_cast<const StencilOp *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case StencilWriteStateMask: {
-        applyStateHelper<StencilMask>(static_cast<const StencilMask *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case DitheringStateMask: {
-        applyStateHelper<Dithering>(static_cast<const Dithering *>(stateVariant.constState()), this);
-        break;
-    }
-
-    case LineWidthMask: {
-        applyStateHelper<LineWidth>(static_cast<const LineWidth *>(stateVariant.constState()), this);
-        break;
-    }
-    default:
-        Q_UNREACHABLE();
-    }
+//*    switch (stateVariant.type) {
+//*
+//*    case AlphaCoverageStateMask: {
+//*        applyStateHelper<AlphaCoverage>(static_cast<const AlphaCoverage *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*    case AlphaTestMask: {
+//*        applyStateHelper<AlphaFunc>(static_cast<const AlphaFunc *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*    case BlendStateMask: {
+//*        applyStateHelper<BlendEquation>(static_cast<const BlendEquation *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*    case BlendEquationArgumentsMask: {
+//*        applyStateHelper<BlendEquationArguments>(static_cast<const BlendEquationArguments *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*    case MSAAEnabledStateMask: {
+//*        applyStateHelper<MSAAEnabled>(static_cast<const MSAAEnabled *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case CullFaceStateMask: {
+//*        applyStateHelper<CullFace>(static_cast<const CullFace *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case DepthWriteStateMask: {
+//*        applyStateHelper<NoDepthMask>(static_cast<const NoDepthMask *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case DepthTestStateMask: {
+//*        applyStateHelper<DepthTest>(static_cast<const DepthTest *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case DepthRangeMask: {
+//*        applyStateHelper<DepthRange>(static_cast<const DepthRange *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case RasterModeMask: {
+//*        applyStateHelper<RasterMode>(static_cast<const RasterMode *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case FrontFaceStateMask: {
+//*        applyStateHelper<FrontFace>(static_cast<const FrontFace *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case ScissorStateMask: {
+//*        applyStateHelper<ScissorTest>(static_cast<const ScissorTest *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case StencilTestStateMask: {
+//*        applyStateHelper<StencilTest>(static_cast<const StencilTest *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case PointSizeMask: {
+//*        applyStateHelper<PointSize>(static_cast<const PointSize *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case PolygonOffsetStateMask: {
+//*        applyStateHelper<PolygonOffset>(static_cast<const PolygonOffset *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case ColorStateMask: {
+//*        applyStateHelper<ColorMask>(static_cast<const ColorMask *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case ClipPlaneMask: {
+//*        applyStateHelper<ClipPlane>(static_cast<const ClipPlane *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case SeamlessCubemapMask: {
+//*        applyStateHelper<SeamlessCubemap>(static_cast<const SeamlessCubemap *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case StencilOpMask: {
+//*        applyStateHelper<StencilOp>(static_cast<const StencilOp *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case StencilWriteStateMask: {
+//*        applyStateHelper<StencilMask>(static_cast<const StencilMask *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case DitheringStateMask: {
+//*        applyStateHelper<Dithering>(static_cast<const Dithering *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*
+//*    case LineWidthMask: {
+//*        applyStateHelper<LineWidth>(static_cast<const LineWidth *>(stateVariant.constState()), this);
+//*        break;
+//*    }
+//*    default:
+//*        Q_UNREACHABLE();
+//*    }
 }
 
 void SubmissionContext::resetMasked(qint64 maskOfStatesToReset)
 {
-    // TO DO -> Call gcHelper methods instead of raw GL
-    // QOpenGLFunctions shouldn't be used here directly
-    QOpenGLFunctions *funcs = m_gl->functions();
-
-    if (maskOfStatesToReset & ScissorStateMask)
-        funcs->glDisable(GL_SCISSOR_TEST);
-
-    if (maskOfStatesToReset & BlendStateMask)
-        funcs->glDisable(GL_BLEND);
-
-    if (maskOfStatesToReset & StencilWriteStateMask)
-        funcs->glStencilMask(0);
-
-    if (maskOfStatesToReset & StencilTestStateMask)
-        funcs->glDisable(GL_STENCIL_TEST);
-
-    if (maskOfStatesToReset & DepthRangeMask)
-        depthRange(0.0f, 1.0f);
-
-    if (maskOfStatesToReset & DepthTestStateMask)
-        funcs->glDisable(GL_DEPTH_TEST);
-
-    if (maskOfStatesToReset & DepthWriteStateMask)
-        funcs->glDepthMask(GL_TRUE); // reset to default
-
-    if (maskOfStatesToReset & FrontFaceStateMask)
-        funcs->glFrontFace(GL_CCW); // reset to default
-
-    if (maskOfStatesToReset & CullFaceStateMask)
-        funcs->glDisable(GL_CULL_FACE);
-
-    if (maskOfStatesToReset & DitheringStateMask)
-        funcs->glDisable(GL_DITHER);
-
-    if (maskOfStatesToReset & AlphaCoverageStateMask)
-        setAlphaCoverageEnabled(false);
-
-    if (maskOfStatesToReset & PointSizeMask)
-        pointSize(false, 1.0f);    // reset to default
-
-    if (maskOfStatesToReset & PolygonOffsetStateMask)
-        funcs->glDisable(GL_POLYGON_OFFSET_FILL);
-
-    if (maskOfStatesToReset & ColorStateMask)
-        funcs->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-    if (maskOfStatesToReset & ClipPlaneMask) {
-        GLint max = maxClipPlaneCount();
-        for (GLint i = 0; i < max; ++i)
-            disableClipPlane(i);
-    }
-
-    if (maskOfStatesToReset & SeamlessCubemapMask)
-        setSeamlessCubemap(false);
-
-    if (maskOfStatesToReset & StencilOpMask)
-        funcs->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
-    if (maskOfStatesToReset & LineWidthMask)
-        funcs->glLineWidth(1.0f);
-
-#ifndef QT_OPENGL_ES_2
-    if (maskOfStatesToReset & RasterModeMask)
-        m_glHelper->rasterMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif
+    RHI_UNIMPLEMENTED;
+//*     // TO DO -> Call gcHelper methods instead of raw GL
+//*     // QOpenGLFunctions shouldn't be used here directly
+//*     QOpenGLFunctions *funcs = m_gl->functions();
+//*
+//*     if (maskOfStatesToReset & ScissorStateMask)
+//*         funcs->glDisable(GL_SCISSOR_TEST);
+//*
+//*     if (maskOfStatesToReset & BlendStateMask)
+//*         funcs->glDisable(GL_BLEND);
+//*
+//*     if (maskOfStatesToReset & StencilWriteStateMask)
+//*         funcs->glStencilMask(0);
+//*
+//*     if (maskOfStatesToReset & StencilTestStateMask)
+//*         funcs->glDisable(GL_STENCIL_TEST);
+//*
+//*     if (maskOfStatesToReset & DepthRangeMask)
+//*         depthRange(0.0f, 1.0f);
+//*
+//*     if (maskOfStatesToReset & DepthTestStateMask)
+//*         funcs->glDisable(GL_DEPTH_TEST);
+//*
+//*     if (maskOfStatesToReset & DepthWriteStateMask)
+//*         funcs->glDepthMask(GL_TRUE); // reset to default
+//*
+//*     if (maskOfStatesToReset & FrontFaceStateMask)
+//*         funcs->glFrontFace(GL_CCW); // reset to default
+//*
+//*     if (maskOfStatesToReset & CullFaceStateMask)
+//*         funcs->glDisable(GL_CULL_FACE);
+//*
+//*     if (maskOfStatesToReset & DitheringStateMask)
+//*         funcs->glDisable(GL_DITHER);
+//*
+//*     if (maskOfStatesToReset & AlphaCoverageStateMask)
+//*         setAlphaCoverageEnabled(false);
+//*
+//*     if (maskOfStatesToReset & PointSizeMask)
+//*         pointSize(false, 1.0f);    // reset to default
+//*
+//*     if (maskOfStatesToReset & PolygonOffsetStateMask)
+//*         funcs->glDisable(GL_POLYGON_OFFSET_FILL);
+//*
+//*     if (maskOfStatesToReset & ColorStateMask)
+//*         funcs->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+//*
+//*     if (maskOfStatesToReset & ClipPlaneMask) {
+//*         GLint max = maxClipPlaneCount();
+//*         for (GLint i = 0; i < max; ++i)
+//*             disableClipPlane(i);
+//*     }
+//*
+//*     if (maskOfStatesToReset & SeamlessCubemapMask)
+//*         setSeamlessCubemap(false);
+//*
+//*     if (maskOfStatesToReset & StencilOpMask)
+//*         funcs->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+//*
+//*     if (maskOfStatesToReset & LineWidthMask)
+//*         funcs->glLineWidth(1.0f);
+//*
+//* #ifndef QT_OPENGL_ES_2
+//*     if (maskOfStatesToReset & RasterModeMask)
+//*         m_glHelper->rasterMode(GL_FRONT_AND_BACK, GL_FILL);
+//* #endif
 }
 
 void SubmissionContext::applyStateSet(RenderStateSet *ss)
@@ -1088,53 +1117,63 @@ void SubmissionContext::applyStateSet(RenderStateSet *ss)
 
 void SubmissionContext::clearColor(const QColor &color)
 {
-    if (m_currClearColorValue != color) {
-        m_currClearColorValue = color;
-        m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
-    }
+    RHI_UNIMPLEMENTED;
+//*    if (m_currClearColorValue != color) {
+//*        m_currClearColorValue = color;
+//*        m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+//*    }
 }
 
 void SubmissionContext::clearDepthValue(float depth)
 {
-    if (m_currClearDepthValue != depth) {
-        m_currClearDepthValue = depth;
-        m_gl->functions()->glClearDepthf(depth);
-    }
+    RHI_UNIMPLEMENTED;
+//*    if (m_currClearDepthValue != depth) {
+//*        m_currClearDepthValue = depth;
+//*        m_gl->functions()->glClearDepthf(depth);
+//*    }
 }
 
 void SubmissionContext::clearStencilValue(int stencil)
 {
-    if (m_currClearStencilValue != stencil) {
-        m_currClearStencilValue = stencil;
-        m_gl->functions()->glClearStencil(stencil);
-    }
+    RHI_UNIMPLEMENTED;
+//*    if (m_currClearStencilValue != stencil) {
+//*        m_currClearStencilValue = stencil;
+//*        m_gl->functions()->glClearStencil(stencil);
+//*    }
 }
 
 RHIFence SubmissionContext::fenceSync()
 {
-    return m_glHelper->fenceSync();
+    RHI_UNIMPLEMENTED;
+    return {};
+//*    return m_glHelper->fenceSync();
 }
 
 void SubmissionContext::clientWaitSync(RHIFence sync, GLuint64 nanoSecTimeout)
 {
-    qDebug() << Q_FUNC_INFO << sync;
-    m_glHelper->clientWaitSync(sync, nanoSecTimeout);
+    RHI_UNIMPLEMENTED;
+//*    qDebug() << Q_FUNC_INFO << sync;
+//*    m_glHelper->clientWaitSync(sync, nanoSecTimeout);
 }
 
 void SubmissionContext::waitSync(RHIFence sync)
 {
-    qDebug() << Q_FUNC_INFO << sync;
-    m_glHelper->waitSync(sync);
+    RHI_UNIMPLEMENTED;
+//*    qDebug() << Q_FUNC_INFO << sync;
+//*    m_glHelper->waitSync(sync);
 }
 
 bool SubmissionContext::wasSyncSignaled(RHIFence sync)
 {
-    return m_glHelper->wasSyncSignaled(sync);
+    RHI_UNIMPLEMENTED;
+    return true;
+//*    return m_glHelper->wasSyncSignaled(sync);
 }
 
 void SubmissionContext::deleteSync(RHIFence sync)
 {
-    m_glHelper->deleteSync(sync);
+    RHI_UNIMPLEMENTED;
+//*    m_glHelper->deleteSync(sync);
 }
 
 // It will be easier if the QGraphicContext applies the QUniformPack
@@ -1155,31 +1194,33 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     // Fill Texture Uniform Value with proper texture units
     // so that they can be applied as regular uniforms in a second step
     for (int i = 0; i < parameterPack.textures().size(); ++i) {
-        const ShaderParameterPack::NamedResource &namedTex = parameterPack.textures().at(i);
-        // Given a Texture QNodeId, we retrieve the associated shared RHITexture
-        if (uniformValues.contains(namedTex.glslNameId)) {
-            RHITexture *t = m_renderer->rhiResourceManagers()->rhiTextureManager()->lookupResource(namedTex.nodeId);
-            if (t != nullptr) {
-                UniformValue &texUniform = uniformValues.value(namedTex.glslNameId);
-                if (texUniform.valueType() == UniformValue::TextureValue) {
-                    const int texUnit = m_textureContext.activateTexture(TextureSubmissionContext::TextureScopeMaterial, m_gl, t);
-                    texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
-                    if (texUnit == -1) {
-                        if (namedTex.glslNameId != irradianceId &&
-                            namedTex.glslNameId != specularId) {
-                            // Only return false if we are not dealing with env light textures
-                            qCWarning(Backend) << "Unable to find suitable Texture Unit";
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
+        RHI_UNIMPLEMENTED;
+        //* const ShaderParameterPack::NamedResource &namedTex = parameterPack.textures().at(i);
+        //* // Given a Texture QNodeId, we retrieve the associated shared RHITexture
+        //* if (uniformValues.contains(namedTex.glslNameId)) {
+        //*     RHITexture *t = m_renderer->rhiResourceManagers()->rhiTextureManager()->lookupResource(namedTex.nodeId);
+        //*     if (t != nullptr) {
+        //*         UniformValue &texUniform = uniformValues.value(namedTex.glslNameId);
+        //*         if (texUniform.valueType() == UniformValue::TextureValue) {
+        //*             const int texUnit = m_textureContext.activateTexture(TextureSubmissionContext::TextureScopeMaterial, m_gl, t);
+        //*             texUniform.data<int>()[namedTex.uniformArrayIndex] = texUnit;
+        //*             if (texUnit == -1) {
+        //*                 if (namedTex.glslNameId != irradianceId &&
+        //*                     namedTex.glslNameId != specularId) {
+        //*                     // Only return false if we are not dealing with env light textures
+        //*                     qCWarning(Backend) << "Unable to find suitable Texture Unit";
+        //*                     return false;
+        //*                 }
+        //*             }
+        //*         }
+        //*     }
+        //* }
     }
 
     // Fill Image Uniform Value with proper image units
     // so that they can be applied as regular uniforms in a second step
     for (int i = 0; i < parameterPack.images().size(); ++i) {
+        RHI_UNIMPLEMENTED;
         const ShaderParameterPack::NamedResource &namedTex = parameterPack.images().at(i);
         // Given a Texture QNodeId, we retrieve the associated shared RHITexture
         if (uniformValues.contains(namedTex.glslNameId)) {
@@ -1212,6 +1253,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     // Bind Shader Storage block to SSBO and update SSBO
     const QVector<BlockToSSBO> blockToSSBOs = parameterPack.shaderStorageBuffers();
     for (const BlockToSSBO b : blockToSSBOs) {
+        RHI_UNIMPLEMENTED;
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         RHIBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer);
         // bindShaderStorageBlock
@@ -1231,6 +1273,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     const QVector<BlockToUBO> blockToUBOs = parameterPack.uniformBuffers();
     int uboIndex = 0;
     for (const BlockToUBO &b : blockToUBOs) {
+        RHI_UNIMPLEMENTED;
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         RHIBuffer *ubo = glBufferForRenderBuffer(cpuBuffer);
         bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);
@@ -1264,26 +1307,29 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
 
 void SubmissionContext::enableAttribute(const VAOVertexAttribute &attr)
 {
-    // Bind buffer within the current VAO
-    RHIBuffer *buf = m_renderer->rhiResourceManagers()->rhiBufferManager()->data(attr.bufferHandle);
-    Q_ASSERT(buf);
-    bindGLBuffer(buf, attr.attributeType);
-
-    // Don't use QOpenGLShaderProgram::setAttributeBuffer() because of QTBUG-43199.
-    // Use the introspection data and set the attribute explicitly
-    m_glHelper->enableVertexAttributeArray(attr.location);
-    m_glHelper->vertexAttributePointer(attr.shaderDataType,
-                                       attr.location,
-                                       attr.vertexSize,
-                                       attr.dataType,
-                                       GL_TRUE, // TODO: Support normalization property on QAttribute
-                                       attr.byteStride,
-                                       reinterpret_cast<const void *>(qintptr(attr.byteOffset)));
-
-
-    // Done by the helper if it supports it
-    if (attr.divisor != 0)
-        m_glHelper->vertexAttribDivisor(attr.location, attr.divisor);
+    RHI_UNIMPLEMENTED;
+//*    // Bind buffer within the current VAO
+//*    RHIBuffer *buf = m_renderer->rhiResourceManagers()->rhiBufferManager()->data(attr.bufferHandle);
+//*    Q_ASSERT(buf);
+//*    bindGLBuffer(buf, attr.attributeType);
+//*
+//*    // Don't use QOpenGLShaderProgram::setAttributeBuffer() because of QTBUG-43199.
+//*    // Use the introspection data and set the attribute explicitly
+//*    m_glHelper->enableVertexAttributeArray(attr.location);
+//*    m_glHelper->vertexAttributePointer(attr.shaderDataType,
+//*                                       attr.location,
+//*                                       attr.vertexSize,
+//*                                       attr.dataType,
+//*                                       GL_TRUE, // TODO: Support normalization property on QAttribute
+//*                                       attr.byteStride,
+//*                                       reinterpret_cast<const void *>(qintptr(attr.byteOffset)));
+//*
+//*
+//*    // Done by the helper if it supports it
+//*    if (attr.divisor != 0)
+//*    {
+//*         m_glHelper->vertexAttribDivisor(attr.location, attr.divisor);
+//*    }
 }
 
 void SubmissionContext::disableAttribute(const SubmissionContext::VAOVertexAttribute &attr)
@@ -1404,32 +1450,19 @@ RHIBuffer *SubmissionContext::glBufferForRenderBuffer(Buffer *buf)
 
 HRHIBuffer SubmissionContext::createGLBufferFor(Buffer *buffer)
 {
-    RHIBuffer *b = m_renderer->rhiResourceManagers()->rhiBufferManager()->getOrCreateResource(buffer->peerId());
-    //    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
-    Q_ASSERT(b);
-    if (!b->create(this))
-        qCWarning(Io) << Q_FUNC_INFO << "buffer creation failed";
-
+    m_renderer->rhiResourceManagers()->rhiBufferManager()->getOrCreateResource(buffer->peerId());
     return m_renderer->rhiResourceManagers()->rhiBufferManager()->lookupHandle(buffer->peerId());
 }
 
 bool SubmissionContext::bindGLBuffer(RHIBuffer *buffer, RHIBuffer::Type type)
 {
-    if (type == RHIBuffer::ArrayBuffer && buffer == m_boundArrayBuffer)
-        return true;
-
-    if (buffer->bind(this, type)) {
-        if (type == RHIBuffer::ArrayBuffer)
-            m_boundArrayBuffer = buffer;
-        return true;
-    }
-    return false;
+    return buffer->bind(this, type);
 }
 
 void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, RHIBuffer *b, bool releaseBuffer)
 {
-    if (!bindGLBuffer(b, RHIBuffer::ArrayBuffer)) // We're uploading, the type doesn't matter here
-        qCWarning(Io) << Q_FUNC_INFO << "buffer bind failed";
+    // if (!bindGLBuffer(b, RHIBuffer::ArrayBuffer)) // We're uploading, the type doesn't matter here
+    //     qCWarning(Io) << Q_FUNC_INFO << "buffer bind failed";
     // If the buffer is dirty (hence being called here)
     // there are two possible cases
     // * setData was called changing the whole data or functor (or the usage pattern)
@@ -1457,20 +1490,18 @@ void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, RHIBuffer *b, bool 
             }
             // TO DO: based on the number of updates .., it might make sense to
             // sometime use glMapBuffer rather than glBufferSubData
-            b->update(this, update->data.constData(), update->data.size(), update->offset);
+            b->update(this, update->data, update->offset);
         } else {
             // We have an update that was done by calling QBuffer::setData
             // which is used to resize or entirely clear the buffer
             // Note: we use the buffer data directly in that case
-            const int bufferSize = buffer->data().size();
-            b->allocate(this, bufferSize, false); // orphan the buffer
-            b->allocate(this, buffer->data().constData(), bufferSize, false);
+            b->orphan(this); // orphan the buffer
+            b->allocate(this, buffer->data(), false);
         }
     }
 
     if (releaseBuffer) {
         b->release(this);
-        m_boundArrayBuffer = nullptr;
     }
     qCDebug(Io) << "uploaded buffer size=" << buffer->data().size();
 }
@@ -1492,81 +1523,82 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
                                         QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
                                         QBlitFramebuffer::InterpolationMethod interpolationMethod)
 {
-    GLuint inputFboId = defaultFboId;
-    bool inputBufferIsDefault = true;
-    if (!inputRenderTargetId.isNull()) {
-        RenderTarget *renderTarget = m_renderer->nodeManagers()->renderTargetManager()->lookupResource(inputRenderTargetId);
-        if (renderTarget) {
-            AttachmentPack attachments(renderTarget, m_renderer->nodeManagers()->attachmentManager());
-            if (m_renderTargets.contains(inputRenderTargetId))
-                inputFboId = updateRenderTarget(inputRenderTargetId, attachments, false);
-            else
-                inputFboId = createRenderTarget(inputRenderTargetId, attachments);
-        }
-        inputBufferIsDefault = false;
-    }
-
-    GLuint outputFboId = defaultFboId;
-    bool outputBufferIsDefault = true;
-    if (!outputRenderTargetId.isNull()) {
-        RenderTarget *renderTarget = m_renderer->nodeManagers()->renderTargetManager()->lookupResource(outputRenderTargetId);
-        if (renderTarget) {
-            AttachmentPack attachments(renderTarget, m_renderer->nodeManagers()->attachmentManager());
-            if (m_renderTargets.contains(outputRenderTargetId))
-                outputFboId = updateRenderTarget(outputRenderTargetId, attachments, false);
-            else
-                outputFboId = createRenderTarget(outputRenderTargetId, attachments);
-        }
-        outputBufferIsDefault = false;
-    }
-
-    // Up until this point the input and output rects are normal Qt rectangles.
-    // Convert them to GL rectangles (Y at bottom).
-    const int inputFboHeight = inputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[inputFboId].height();
-    const GLint srcX0 = inputRect.left();
-    const GLint srcY0 = inputFboHeight - (inputRect.top() + inputRect.height());
-    const GLint srcX1 = srcX0 + inputRect.width();
-    const GLint srcY1 = srcY0 + inputRect.height();
-
-    const int outputFboHeight = outputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[outputFboId].height();
-    const GLint dstX0 = outputRect.left();
-    const GLint dstY0 = outputFboHeight - (outputRect.top() + outputRect.height());
-    const GLint dstX1 = dstX0 + outputRect.width();
-    const GLint dstY1 = dstY0 + outputRect.height();
-
-    //Get the last bounded framebuffers
-    const GLuint lastDrawFboId = boundFrameBufferObject();
-
-    // Activate input framebuffer for reading
-    bindFramebuffer(inputFboId, GraphicsHelperInterface::FBORead);
-
-    // Activate output framebuffer for writing
-    bindFramebuffer(outputFboId, GraphicsHelperInterface::FBODraw);
-
-    //Bind texture
-    if (!inputBufferIsDefault)
-        readBuffer(GL_COLOR_ATTACHMENT0 + inputAttachmentPoint);
-
-    if (!outputBufferIsDefault) {
-        // Note that we use glDrawBuffers, not glDrawBuffer. The
-        // latter is not available with GLES.
-        const int buf = outputAttachmentPoint;
-        drawBuffers(1, &buf);
-    }
-
-    // Blit framebuffer
-    const GLenum mode = interpolationMethod ? GL_NEAREST : GL_LINEAR;
-    m_glHelper->blitFramebuffer(srcX0, srcY0, srcX1, srcY1,
-                                dstX0, dstY0, dstX1, dstY1,
-                                GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT,
-                                mode);
-
-    // Reset draw buffer
-    bindFramebuffer(lastDrawFboId, GraphicsHelperInterface::FBOReadAndDraw);
-    if (outputAttachmentPoint != QRenderTargetOutput::Color0) {
-        const int buf = QRenderTargetOutput::Color0;
-        drawBuffers(1, &buf);
-    }
+    RHI_UNIMPLEMENTED;
+//*    GLuint inputFboId = defaultFboId;
+//*    bool inputBufferIsDefault = true;
+//*    if (!inputRenderTargetId.isNull()) {
+//*        RenderTarget *renderTarget = m_renderer->nodeManagers()->renderTargetManager()->lookupResource(inputRenderTargetId);
+//*        if (renderTarget) {
+//*            AttachmentPack attachments(renderTarget, m_renderer->nodeManagers()->attachmentManager());
+//*            if (m_renderTargets.contains(inputRenderTargetId))
+//*                inputFboId = updateRenderTarget(inputRenderTargetId, attachments, false);
+//*            else
+//*                inputFboId = createRenderTarget(inputRenderTargetId, attachments);
+//*        }
+//*        inputBufferIsDefault = false;
+//*    }
+//*
+//*    GLuint outputFboId = defaultFboId;
+//*    bool outputBufferIsDefault = true;
+//*    if (!outputRenderTargetId.isNull()) {
+//*        RenderTarget *renderTarget = m_renderer->nodeManagers()->renderTargetManager()->lookupResource(outputRenderTargetId);
+//*        if (renderTarget) {
+//*            AttachmentPack attachments(renderTarget, m_renderer->nodeManagers()->attachmentManager());
+//*            if (m_renderTargets.contains(outputRenderTargetId))
+//*                outputFboId = updateRenderTarget(outputRenderTargetId, attachments, false);
+//*            else
+//*                outputFboId = createRenderTarget(outputRenderTargetId, attachments);
+//*        }
+//*        outputBufferIsDefault = false;
+//*    }
+//*
+//*    // Up until this point the input and output rects are normal Qt rectangles.
+//*    // Convert them to GL rectangles (Y at bottom).
+//*    const int inputFboHeight = inputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[inputFboId].height();
+//*    const GLint srcX0 = inputRect.left();
+//*    const GLint srcY0 = inputFboHeight - (inputRect.top() + inputRect.height());
+//*    const GLint srcX1 = srcX0 + inputRect.width();
+//*    const GLint srcY1 = srcY0 + inputRect.height();
+//*
+//*    const int outputFboHeight = outputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[outputFboId].height();
+//*    const GLint dstX0 = outputRect.left();
+//*    const GLint dstY0 = outputFboHeight - (outputRect.top() + outputRect.height());
+//*    const GLint dstX1 = dstX0 + outputRect.width();
+//*    const GLint dstY1 = dstY0 + outputRect.height();
+//*
+//*    //Get the last bounded framebuffers
+//*    const GLuint lastDrawFboId = boundFrameBufferObject();
+//*
+//*    // Activate input framebuffer for reading
+//*    bindFramebuffer(inputFboId, GraphicsHelperInterface::FBORead);
+//*
+//*    // Activate output framebuffer for writing
+//*    bindFramebuffer(outputFboId, GraphicsHelperInterface::FBODraw);
+//*
+//*    //Bind texture
+//*    if (!inputBufferIsDefault)
+//*        readBuffer(GL_COLOR_ATTACHMENT0 + inputAttachmentPoint);
+//*
+//*    if (!outputBufferIsDefault) {
+//*        // Note that we use glDrawBuffers, not glDrawBuffer. The
+//*        // latter is not available with GLES.
+//*        const int buf = outputAttachmentPoint;
+//*        drawBuffers(1, &buf);
+//*    }
+//*
+//*    // Blit framebuffer
+//*    const GLenum mode = interpolationMethod ? GL_NEAREST : GL_LINEAR;
+//*    m_glHelper->blitFramebuffer(srcX0, srcY0, srcX1, srcY1,
+//*                                dstX0, dstY0, dstX1, dstY1,
+//*                                GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT,
+//*                                mode);
+//*
+//*    // Reset draw buffer
+//*    bindFramebuffer(lastDrawFboId, GraphicsHelperInterface::FBOReadAndDraw);
+//*    if (outputAttachmentPoint != QRenderTargetOutput::Color0) {
+//*        const int buf = QRenderTargetOutput::Color0;
+//*        drawBuffers(1, &buf);
+//*    }
 }
 
 } // namespace Rhi

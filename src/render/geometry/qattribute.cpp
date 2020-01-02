@@ -213,6 +213,17 @@ QString QAttribute::name() const
 }
 
 /*!
+ * \property QAttribute::location
+ *
+ * Holds the location.
+ */
+uint QAttribute::location() const
+{
+    Q_D(const QAttribute);
+    return d->m_location;
+}
+
+/*!
  * \property QAttribute::vertexSize
  *
  * Holds the data size, it can only be 1 to 4 units (scalars and vectors),
@@ -323,6 +334,16 @@ void QAttribute::setName(const QString &name)
 
     d->m_name = name;
     emit nameChanged(name);
+}
+
+void QAttribute::setLocation(uint location)
+{
+    Q_D(QAttribute);
+    if (d->m_location == location)
+        return;
+
+    d->m_location = location;
+    emit locationChanged(location);
 }
 
 void QAttribute::setVertexBaseType(VertexBaseType type)
@@ -499,6 +520,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAttribute::createNodeCreationChange() const
     data.byteStride = d->m_byteStride;
     data.byteOffset = d->m_byteOffset;
     data.divisor = d->m_divisor;
+    data.location = d->m_location;
     data.attributeType = d->m_attributeType;
     return creationChange;
 }

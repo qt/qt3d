@@ -1,5 +1,5 @@
 TARGET = rhirenderer
-QT += core-private gui-private 3dcore 3dcore-private 3drender 3drender-private
+QT += core-private gui-private 3dcore 3dcore-private 3drender 3drender-private shadertools shadertools-private
 QT_PRIVATE = openglextensions
 
 # Qt3D is free of Q_FOREACH - make sure it stays that way:
