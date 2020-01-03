@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DRender/qt3drender_global.h>
+#include <QtGui/private/qshaderdescription_p.h>
 #include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
@@ -64,84 +65,49 @@ namespace Rhi {
 
 struct ShaderAttribute
 {
-    ShaderAttribute()
-        : m_nameId(-1)
-        , m_type(0)
-        , m_size(0)
-        , m_location(-1)
-    {}
-
     QString m_name;
-    int m_nameId;
-    GLenum m_type;
-    int m_size;
-    int m_location;
+    int m_nameId{-1};
+    QShaderDescription::VariableType m_type{};
+    int m_size{};
+    int m_location{-1};
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderAttribute, Q_MOVABLE_TYPE)
 
 struct ShaderUniform
 {
-    ShaderUniform()
-        : m_nameId(-1)
-        , m_type(GL_NONE)
-        , m_size(0)
-        , m_offset(-1)
-        , m_location(-1)
-        , m_blockIndex(-1)
-        , m_arrayStride(-1)
-        , m_matrixStride(-1)
-        , m_rawByteSize(0)
-    {}
-
     QString m_name;
-    int m_nameId;
-    GLenum m_type;
-    int m_size;
-    int m_offset; // -1 default, >= 0 if uniform defined in uniform block
-    int m_location; // -1 if uniform defined in a uniform block
-    int m_blockIndex; // -1 is the default, >= 0 if uniform defined in uniform block
-    int m_arrayStride; // -1 is the default, >= 0 if uniform defined in uniform block and if it's an array
-    int m_matrixStride; // -1 is the default, >= 0 uniform defined in uniform block and is a matrix
-    uint m_rawByteSize; // contains byte size (size / type / strides)
+    int m_nameId{-1};
+    QShaderDescription::VariableType m_type{QShaderDescription::Unknown};
+    int m_size{0};
+    int m_offset{-1}; // -1 default, >= 0 if uniform defined in uniform block
+    int m_location{-1}; // -1 if uniform defined in a uniform block
+    int m_blockIndex{-1}; // -1 is the default, >= 0 if uniform defined in uniform block
+    int m_arrayStride{-1}; // -1 is the default, >= 0 if uniform defined in uniform block and if it's an array
+    int m_matrixStride{-1}; // -1 is the default, >= 0 uniform defined in uniform block and is a matrix
+    uint m_rawByteSize{0}; // contains byte size (size / type / strides)
     // size, offset and strides are in bytes
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderUniform, Q_MOVABLE_TYPE)
 
 struct ShaderUniformBlock
 {
-    ShaderUniformBlock()
-        : m_nameId(-1)
-        , m_index(-1)
-        , m_binding(-1)
-        , m_activeUniformsCount(0)
-        , m_size(0)
-    {}
-
     QString m_name;
-    int m_nameId;
-    int m_index;
-    int m_binding;
-    int m_activeUniformsCount;
-    int m_size;
+    int m_nameId{-1};
+    int m_index{-1};
+    int m_binding{-1};
+    int m_activeUniformsCount{0};
+    int m_size{0};
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderUniformBlock, Q_MOVABLE_TYPE)
 
 struct ShaderStorageBlock
 {
-    ShaderStorageBlock()
-        : m_nameId(-1)
-        , m_index(-1)
-        , m_binding(-1)
-        , m_size(0)
-        , m_activeVariablesCount(0)
-    {}
-
     QString m_name;
-    int m_nameId;
-    int m_index;
-    int m_binding;
-    int m_size;
-    int m_activeVariablesCount;
+    int m_nameId{-1};
+    int m_index{-1};
+    int m_binding{-1};
+    int m_size{0};
+    int m_activeVariablesCount{0};
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderStorageBlock, Q_MOVABLE_TYPE)
 

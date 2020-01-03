@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -66,34 +66,11 @@
 #include <openglvertexarrayobject_p.h>
 #include <QOpenGLShaderProgram>
 
-#if !defined(QT_OPENGL_ES_2)
-#include <QOpenGLFunctions_2_0>
-#include <QOpenGLFunctions_3_2_Core>
-#include <QOpenGLFunctions_3_3_Core>
-#include <QOpenGLFunctions_4_3_Core>
-#include <graphicshelpergl2_p.h>
-#include <graphicshelpergl3_2_p.h>
-#include <graphicshelpergl3_3_p.h>
-#include <graphicshelpergl4_p.h>
-#endif
-#include <graphicshelperes2_p.h>
-#include <graphicshelperes3_p.h>
-
 #include <private/qdebug_p.h>
 #include <QSurface>
 #include <QWindow>
-#include <QOpenGLTexture>
-#include <QOpenGLDebugLogger>
 
 QT_BEGIN_NAMESPACE
-
-#ifndef GL_READ_FRAMEBUFFER
-#define GL_READ_FRAMEBUFFER 0x8CA8
-#endif
-
-#ifndef GL_DRAW_FRAMEBUFFER
-#define GL_DRAW_FRAMEBUFFER 0x8CA9
-#endif
 
 namespace Qt3DRender {
 namespace Render {
@@ -782,22 +759,12 @@ void SubmissionContext::setViewport(const QRectF &viewport, const QSize &surface
 void SubmissionContext::releaseOpenGL()
 {
     m_renderBufferHash.clear();
-
-    // Stop and destroy the OpenGL logger
-    if (m_debugLogger) {
-        m_debugLogger->stopLogging();
-        m_debugLogger.reset(nullptr);
-    }
-}
-
-// The OpenGLContext is not current on any surface at this point
-void SubmissionContext::setOpenGLContext(QOpenGLContext* ctx)
-{
     RHI_UNIMPLEMENTED;
-    //* Q_ASSERT(ctx);
-    //*
-    //* releaseOpenGL();
-    //* m_gl = ctx;
+//*    // Stop and destroy the OpenGL logger
+//*    if (m_debugLogger) {
+//*        m_debugLogger->stopLogging();
+//*        m_debugLogger.reset(nullptr);
+//*    }
 }
 
 // Called only from RenderThread
@@ -1334,8 +1301,9 @@ void SubmissionContext::enableAttribute(const VAOVertexAttribute &attr)
 
 void SubmissionContext::disableAttribute(const SubmissionContext::VAOVertexAttribute &attr)
 {
-    QOpenGLShaderProgram *prog = activeShader();
-    prog->disableAttributeArray(attr.location);
+    RHI_UNIMPLEMENTED;
+//*    QOpenGLShaderProgram *prog = activeShader();
+//*    prog->disableAttributeArray(attr.location);
 }
 
 // Note: needs to be called while VAO is bound

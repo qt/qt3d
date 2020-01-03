@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
@@ -70,15 +70,8 @@
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLFunctions_4_3_Core>
-#include <graphicshelpergl2_p.h>
-#include <graphicshelpergl3_2_p.h>
-#include <graphicshelpergl3_3_p.h>
-#include <graphicshelpergl4_p.h>
 #endif
-#include <graphicshelperes2_p.h>
-#include <graphicshelperes3_p.h>
-#include <graphicshelperes3_1_p.h>
-#include <graphicshelperes3_2_p.h>
+#include <QShaderBaker>
 
 #include <QSurface>
 #include <QWindow>
@@ -131,7 +124,6 @@ void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 
 GraphicsContext::GraphicsContext()
     : m_initialized(false)
-    , m_supportsVAO(false)
     , m_maxTextureUnits(0)
     , m_maxImageUnits(0)
     , m_defaultFBO(0)
@@ -145,13 +137,6 @@ GraphicsContext::GraphicsContext()
 
 GraphicsContext::~GraphicsContext()
 {
-}
-
-void GraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
-{
-    RHI_UNIMPLEMENTED;
-//*     Q_ASSERT(ctx);
-//*     m_gl = ctx;
 }
 
 void GraphicsContext::initialize()
@@ -196,13 +181,6 @@ void GraphicsContext::clearBackBuffer(QClearBuffers::BufferTypeFlags buffers)
     }
 }
 
-bool GraphicsContext::hasValidGLHelper() const
-{
-    RHI_UNIMPLEMENTED;
-//*    return m_glHelper != nullptr;
-    return true;
-}
-
 bool GraphicsContext::isInitialized() const
 {
     return m_initialized;
@@ -243,43 +221,69 @@ void GraphicsContext::doneCurrent()
 }
 
 // Called by GL Command Thread
+
+static constexpr QShader::Stage rhiShaderStage(QShaderProgram::ShaderType type) noexcept
+{
+    switch(type)
+    {
+      case QShaderProgram::Vertex: return QShader::VertexStage;
+      case QShaderProgram::Fragment: return QShader::FragmentStage;
+      case QShaderProgram::TessellationControl: return QShader::TessellationControlStage;
+      case QShaderProgram::TessellationEvaluation: return QShader::TessellationEvaluationStage;
+      case QShaderProgram::Geometry: return QShader::GeometryStage;
+      case QShaderProgram::Compute: return QShader::ComputeStage;
+      default: std::abort();
+    }
+}
 GraphicsContext::ShaderCreationInfo GraphicsContext::createShaderProgram(RHIShader *shader)
 {
-    RHI_UNIMPLEMENTED;
-    return {true, {}};
-//*    QOpenGLShaderProgram *shaderProgram = shader->shaderProgram();
-//*
-//*    // Compile shaders
-//*    const auto shaderCode = shader->shaderCode();
-//*
-//*    QString logs;
-//*    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-//*        const QShaderProgram::ShaderType type = static_cast<QShaderProgram::ShaderType>(i);
-//*        if (!shaderCode.at(i).isEmpty()) {
-//*            // Note: logs only return the error but not all the shader code
-//*            // we could append it
-//*            if (!shaderProgram->addCacheableShaderFromSourceCode(shaderType(type), shaderCode.at(i)))
-//*                logs += shaderProgram->log();
-//*        }
-//*    }
-//*
-//*    // Call glBindFragDataLocation and link the program
-//*    // Since we are sharing shaders in the backend, we assume that if using custom
-//*    // fragOutputs, they should all be the same for a given shader
-//*    bindFragOutputs(shaderProgram->programId(), shader->fragOutputs());
-//*
-//*    const bool linkSucceeded = shaderProgram->link();
-//*    logs += shaderProgram->log();
-//*
-//*    // Perform shader introspection
-//*    introspectShaderInterface(shader);
-//*
-//*    return {linkSucceeded, logs};
+    // Compile shaders
+    const auto& shaderCode = shader->shaderCode();
+    QShaderBaker b;
+    b.setGeneratedShaders({
+                              {QShader::SpirvShader, 100},
+                              {QShader::GlslShader, 120}, // Only GLSL version supported by RHI right now.
+                              {QShader::HlslShader, 100},
+                              {QShader::MslShader, 100},
+                          });
+    b.setGeneratedShaderVariants({QShader::Variant{},
+                                  QShader::Variant{},
+                                  QShader::Variant{},
+                                  QShader::Variant{}});
+
+    // TODO handle caching as QShader does not have a built-in mechanism for that
+    QString logs;
+    bool success = true;
+    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+        const QShaderProgram::ShaderType type = static_cast<QShaderProgram::ShaderType>(i);
+        if (!shaderCode.at(i).isEmpty()) {
+            // Note: logs only return the error but not all the shader code
+            // we could append it
+
+            const auto rhiStage = rhiShaderStage(type);
+            b.setSourceString(shaderCode.at(i), rhiStage);
+            auto bakedShader = b.bake();
+            if(b.errorMessage() != QString{})
+            {
+                qDebug() << "Vertex Shader Error: " << b.errorMessage();
+                logs += b.errorMessage();
+                success = false;
+            }
+            shader->m_stages[rhiStage] = std::move(bakedShader);
+        }
+    }
+
+    // Perform shader introspection
+    introspectShaderInterface(shader);
+
+    return {success, logs};
 }
 
 // That assumes that the shaderProgram in Shader stays the same
+
 void GraphicsContext::introspectShaderInterface(RHIShader *shader)
 {
+    shader->introspect();
     RHI_UNIMPLEMENTED;
 //*    QOpenGLShaderProgram *shaderProgram = shader->shaderProgram();
 //*    GraphicsHelperInterface *glHelper = resolveHighestOpenGLFunctions();
@@ -360,99 +364,6 @@ void GraphicsContext::rasterMode(GLenum faceMode, GLenum rasterMode)
 //* m_glHelper->rasterMode(faceMode, rasterMode);
 }
 
-/*!
- * \internal
- * Finds the highest supported opengl version and internally use the most optimized
- * helper for a given version.
- */
-GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
-{
-    RHI_UNIMPLEMENTED;
-//*    Q_ASSERT(m_gl);
-//*    GraphicsHelperInterface *glHelper = nullptr;
-//*
-//*    if (m_gl->isOpenGLES()) {
-//*        if (m_gl->format().majorVersion() >= 3) {
-//*            if (m_gl->format().minorVersion() >= 2) {
-//*                glHelper = new GraphicsHelperES3_2;
-//*                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.2 Helper";
-//*            } else if (m_gl->format().minorVersion() >= 1) {
-//*                glHelper = new GraphicsHelperES3_1;
-//*                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.1 Helper";
-//*            } else {
-//*                glHelper = new GraphicsHelperES3();
-//*                qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES 3.0 Helper";
-//*            }
-//*        } else {
-//*            glHelper = new GraphicsHelperES2();
-//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES2 Helper";
-//*        }
-//*        glHelper->initializeHelper(m_gl, nullptr);
-//*    }
-//*#ifndef QT_OPENGL_ES_2
-//*    else {
-//*        QAbstractOpenGLFunctions *glFunctions = nullptr;
-//*        if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != nullptr) {
-//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
-//*            glHelper = new GraphicsHelperGL4();
-//*        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != nullptr) {
-//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
-//*            glHelper = new GraphicsHelperGL3_3();
-//*        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
-//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
-//*            glHelper = new GraphicsHelperGL3_2();
-//*        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
-//*            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
-//*            glHelper = new GraphicsHelperGL2();
-//*        }
-//*        Q_ASSERT_X(glHelper, "GraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
-//*        glHelper->initializeHelper(m_gl, glFunctions);
-//*    }
-//*#endif
-//*
-//*    // Note: at this point we are certain the context (m_gl) is current with a surface
-//*    const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
-//*    const bool enableDebugLogging = !debugLoggingMode.isEmpty();
-//*
-//*    if (enableDebugLogging && !m_debugLogger) {
-//*        if (m_gl->hasExtension("GL_KHR_debug")) {
-//*            qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
-//*            m_debugLogger.reset(new QOpenGLDebugLogger);
-//*            if (m_debugLogger->initialize()) {
-//*                QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
-//*                const QString mode = QString::fromLocal8Bit(debugLoggingMode);
-//*                m_debugLogger->startLogging(mode.startsWith(QLatin1String("sync"), Qt::CaseInsensitive)
-//*                                            ? QOpenGLDebugLogger::SynchronousLogging
-//*                                            : QOpenGLDebugLogger::AsynchronousLogging);
-//*
-//*                const auto msgs = m_debugLogger->loggedMessages();
-//*                for (const QOpenGLDebugMessage &msg : msgs)
-//*                    logOpenGLDebugMessage(msg);
-//*            }
-//*        } else {
-//*            qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
-//*        }
-//*    }
-//*
-
-    // Set Vendor and Extensions of reference GraphicsApiFilter
-    // TO DO: would that vary like the glHelper ?
-
-    QStringList extensions;
-    //const auto exts = m_gl->extensions();
-    //for (const QByteArray &ext : exts)
-    //    extensions << QString::fromUtf8(ext);
-    m_contextInfo.m_major = 3;
-    m_contextInfo.m_minor = 2;
-    // m_contextInfo.m_major = m_gl->format().version().first;
-    // m_contextInfo.m_minor = m_gl->format().version().second;
-    m_contextInfo.m_api = QGraphicsApiFilter::RHI;
-    //m_contextInfo.m_profile = static_cast<QGraphicsApiFilter::OpenGLProfile>(m_gl->format().profile());
-    m_contextInfo.m_extensions = extensions;
-    //m_contextInfo.m_vendor = QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR)));
-
-    return nullptr;
-}
 
 const GraphicsApiFilterData *GraphicsContext::contextInfo() const
 {
@@ -461,6 +372,7 @@ const GraphicsApiFilterData *GraphicsContext::contextInfo() const
 
 bool GraphicsContext::supportsDrawBuffersBlend() const
 {
+    RHI_UNIMPLEMENTED;
     return false;
 //*    return m_glHelper->supportsFeature(GraphicsHelperInterface::DrawBuffersBlend);
 }

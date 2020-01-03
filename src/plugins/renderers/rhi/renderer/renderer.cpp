@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
@@ -535,7 +535,7 @@ void Renderer::initialize()
             m_rp = m_sc->newCompatibleRenderPassDescriptor();
             m_sc->setRenderPassDescriptor(m_rp);
         }
-/*
+
         // Awake setScenegraphRoot in case it was waiting
         m_waitForInitializationToBeCompleted.release(1);
 
@@ -543,76 +543,10 @@ void Renderer::initialize()
         m_vsyncFrameAdvanceService->proceedToNextFrame();
 
         // Force initial refresh
-        markDirty(AllDirty, nullptr);*/
+        markDirty(AllDirty, nullptr);
+        return;
     }
 
-
-
-
-
-
-
-
-
-    /*
-    QOpenGLContext* ctx = m_glContext;
-
-    {
-        // If we are using our own context (not provided by QtQuick),
-        // we need to create it
-        if (!m_glContext) {
-            ctx = new QOpenGLContext;
-            if (m_screen)
-                ctx->setScreen(m_screen);
-            ctx->setShareContext(qt_gl_global_share_context());
-
-            // TO DO: Shouldn't we use the highest context available and trust
-            // QOpenGLContext to fall back on the best lowest supported ?
-            const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
-
-            if (!debugLoggingMode.isEmpty()) {
-                QSurfaceFormat sf = ctx->format();
-                sf.setOption(QSurfaceFormat::DebugContext);
-                ctx->setFormat(sf);
-            }
-
-            // Create OpenGL context<<<<<<< HEAD
-
-            if (ctx->create())
-                qCDebug(Backend) << "OpenGL context created with actual format" << ctx->format();
-            else
-                qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
-            m_ownedContext = true;
-        } else {
-            // Context is not owned by us, so we need to know if it gets destroyed
-            m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
-                                                   [this] { releaseGraphicsResources(); });
-        }
-
-        qCDebug(Backend) << "Qt3D shared context:" << ctx->shareContext();
-        qCDebug(Backend) << "Qt global shared context:" << qt_gl_global_share_context();
-
-        // Note: we don't have a surface at this point
-        // The context will be made current later on (at render time)
-        m_submissionContext->setOpenGLContext(ctx);
-
-        // Store the format used by the context and queue up creating an
-        // offscreen surface in the main thread so that it is available
-        // for use when we want to shutdown the renderer. We need to create
-        // the offscreen surface on the main thread because on some platforms
-        // (MS Windows), an offscreen surface is just a hidden QWindow.
-        m_format = ctx->format();
-        QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
-    }
-    */
-
-    // Awake setScenegraphRoot in case it was waiting
-    m_waitForInitializationToBeCompleted.release(1);
-    // Allow the aspect manager to proceed
-    m_vsyncFrameAdvanceService->proceedToNextFrame();
-
-    // Force initial refresh
-    markDirty(AllDirty, nullptr);
 }
 
 /*!
@@ -905,7 +839,7 @@ void Renderer::doRender(bool swapBuffers)
                     beganDrawing = m_submissionContext->beginDrawing(surface);
                     if (beganDrawing) {
                         // 1) Execute commands for buffer uploads, texture updates, shader loading first
-                        updateGLResources();
+                        updateResources();
                         // 2) Update VAO and copy data into commands to allow concurrent submission
                         prepareCommandsSubmission(renderViews);
                         preprocessingComplete = true;
@@ -1056,12 +990,8 @@ QSurfaceFormat Renderer::format()
 {
     return m_format;
 }
-void Renderer::setupRHICommand(RenderCommand& cmd)
+void Renderer::setupDrawCommand(RenderCommand& cmd)
 {
-    auto shaders = cmd.m_glShader->shaderCode();
-    if(shaders.empty())
-        return;
-
     // Create UBOs
     auto standard_ubuf = m_r->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(float) * 16);
     standard_ubuf->build();
@@ -1074,8 +1004,12 @@ void Renderer::setupRHICommand(RenderCommand& cmd)
     this->m_submissionContext->m_currentUpdates->updateDynamicBuffer(custom_ubuf, 0, sizeof(float), &f);
 
 
-    cmd.srb = m_r->newShaderResourceBindings();
-    cmd.srb->setBindings({
+    bool ok = true;
+
+    cmd.shaderResourceBindings = m_r->newShaderResourceBindings();
+    assert(cmd.shaderResourceBindings);
+
+    cmd.shaderResourceBindings->setBindings({
         QRhiShaderResourceBinding::uniformBuffer(
                            0,
                            QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage,
@@ -1085,54 +1019,47 @@ void Renderer::setupRHICommand(RenderCommand& cmd)
                            QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage,
                            custom_ubuf),
     });
-    cmd.srb->build();
-
+    ok = cmd.shaderResourceBindings->build();
+    assert(ok);
 
     // Create pipeline
-    cmd.ps = m_r->newGraphicsPipeline();
-    auto vert = shaders[0];
-    auto frag = shaders[1];
-    QShaderBaker b;
-    b.setGeneratedShaders({
-                              {QShader::SpirvShader, 100},
-                              {QShader::GlslShader, 120}, // Only GLSL version supported by RHI right now.
-                              {QShader::HlslShader, 100},
-                              {QShader::MslShader, 100},
-                          });
-    b.setGeneratedShaderVariants({QShader::Variant{},
-                                  QShader::Variant{},
-                                  QShader::Variant{},
-                                  QShader::Variant{}});
+    cmd.graphicsPipeline = m_r->newGraphicsPipeline();
+    assert(cmd.graphicsPipeline);
 
-    b.setSourceString(vert, QShader::VertexStage);
-    auto vs = b.bake();
-    if(b.errorMessage() != QString{})
-        qDebug() << "Vertex Shader Error: " << b.errorMessage();
-
-    b.setSourceString(frag, QShader::FragmentStage);
-    auto fs = b.bake();
-    if(b.errorMessage() != QString{})
-        qDebug() << "Fragment Shader Error: " << b.errorMessage();
-
-    cmd.ps->setShaderStages({
-        { QRhiShaderStage::Vertex, vs },
-        { QRhiShaderStage::Fragment, fs }
+    cmd.graphicsPipeline->setShaderStages({
+        { QRhiShaderStage::Vertex, cmd.m_glShader->shaderStage(QShader::VertexStage) },
+        { QRhiShaderStage::Fragment, cmd.m_glShader->shaderStage(QShader::FragmentStage) }
     });
 
-    QRhiVertexInputLayout inputLayout;
-    inputLayout.setBindings({
-        { 3 * sizeof(float) }
-    });
-    inputLayout.setAttributes({
-        { 0, 0, QRhiVertexInputAttribute::Float3, 0 },
-        //{ 0, 1, QRhiVertexInputAttribute::Float4, 3 * sizeof(float) }
-    });
+    QRhiVertexInputLayout inputLayout = cmd.m_glShader->inputLayout();
+    QVarLengthArray<QRhiVertexInputBinding, 8> inputBindings;
 
-    cmd.ps->setVertexInputLayout(inputLayout);
-    cmd.ps->setShaderResourceBindings(cmd.srb);
-    cmd.ps->setRenderPassDescriptor(m_rp);
+    const auto geom = cmd.m_geometry;
+    const auto& attributes = geom->attributes();
+    for(Qt3DCore::QNodeId attribute_id : attributes)
+    {
+        Attribute* attrib = m_nodesManager->attributeManager()->lookupResource(attribute_id);
+        if(attrib->attributeType() == QAttribute::VertexAttribute)
+        {
+            inputBindings.resize(std::max((std::size_t)inputBindings.size(), (std::size_t)attrib->location() + 1));
+            // TODO handle the other arguments to QRhiVertexInputBinding
+            inputBindings[attrib->location()] = QRhiVertexInputBinding{attrib->byteStride()};
+        }
+    }
 
-    cmd.ps->build();
+    inputLayout.setBindings(inputBindings.begin(), inputBindings.end());
+
+    cmd.graphicsPipeline->setVertexInputLayout(inputLayout);
+    cmd.graphicsPipeline->setShaderResourceBindings(cmd.shaderResourceBindings);
+    cmd.graphicsPipeline->setRenderPassDescriptor(m_rp);
+
+    ok = cmd.graphicsPipeline->build();
+    assert(ok);
+}
+
+void Renderer::setupComputeCommand(RenderCommand &command)
+{
+
 }
 
 // When this function is called, we must not be processing the commands for frame n+1
@@ -1203,7 +1130,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
                 shader->prepareUniforms(command.m_parameterPack);
 
-                setupRHICommand(command);
+                setupDrawCommand(command);
 
             } else if (command.m_type == RenderCommand::Compute) {
                 RHI_UNIMPLEMENTED;
@@ -1475,7 +1402,7 @@ void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
 // may contain destruction changes targeting resources. When the above
 // happens, this can result in the dirtyResource vectors containing handles of
 // objects that may already have been destroyed
-void Renderer::updateGLResources()
+void Renderer::updateResources()
 {
     {
         // Update active fence objects:
@@ -1918,11 +1845,14 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     // lastBoundFBOId != m_graphicsContext->activeFBO() when the last FrameGraph leaf node/renderView
     // contains RenderTargetSelector/RenderTarget
     if (lastBoundFBOId != m_submissionContext->activeFBO())
-        m_submissionContext->bindFramebuffer(lastBoundFBOId, GraphicsHelperInterface::FBOReadAndDraw);
+    {
+        RHI_UNIMPLEMENTED;
+//*         m_submissionContext->bindFramebuffer(lastBoundFBOId, GraphicsHelperInterface::FBOReadAndDraw);
+    }
 
     // Reset state and call doneCurrent if the surface
     // is valid and was actually activated
-    if (lastUsedSurface && m_submissionContext->hasValidGLHelper()) {
+    if (lastUsedSurface) {
         // Reset state to the default state if the last stateset is not the
         // defaultRenderStateSet
         if (m_submissionContext->currentStateSet() != m_defaultRenderStateSet)
@@ -2391,14 +2321,22 @@ bool Renderer::prepareDraw(QRhiCommandBuffer *cb, const RenderView *rv, RenderCo
             break;
         }
     }
+
+    for(const BlockToUBO& pack : command.m_parameterPack.uniformBuffers())
+    {
+        qDebug() << pack.m_bufferID;
+        Buffer *cpuBuffer = nodeManagers()->bufferManager()->lookupResource(pack.m_bufferID);
+        RHIBuffer *ubo = m_submissionContext->glBufferForRenderBuffer(cpuBuffer);
+        ubo->bind(&*m_submissionContext, RHIBuffer::UniformBuffer);
+    }
     return true;
 }
 
 bool Renderer::performDraw(QRhiCommandBuffer *cb, const RenderView *rv, RenderCommand& command)
 {
     // Setup the rendering pass
-    cb->setGraphicsPipeline(command.ps);
-    cb->setShaderResources(command.ps->shaderResourceBindings());
+    cb->setGraphicsPipeline(command.graphicsPipeline);
+    cb->setShaderResources(command.graphicsPipeline->shaderResourceBindings());
 
     // Send the draw command
     if (Q_UNLIKELY(!command.indexBuffer))

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -82,9 +82,6 @@ public:
 
     bool isAbandoned(GeometryManager *geomMgr, RHIShaderManager *shaderMgr);
 
-    QOpenGLVertexArrayObject *vao() { return m_vao.data(); }
-    const QOpenGLVertexArrayObject *vao() const { return m_vao.data(); }
-
     void setSpecified(bool b) { m_specified = b; }
     bool isSpecified() const { return m_specified; }
 
@@ -92,9 +89,7 @@ public:
 private:
     QMutex m_mutex;
     SubmissionContext *m_ctx;
-    QScopedPointer<QOpenGLVertexArrayObject> m_vao;
     bool m_specified;
-    bool m_supportsVao;
     VAOIdentifier m_owners;
 
     friend class SubmissionContext;

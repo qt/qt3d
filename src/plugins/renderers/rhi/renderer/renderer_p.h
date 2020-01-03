@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
@@ -265,7 +265,7 @@ public:
     void loadShader(Shader *shader, Qt3DRender::Render::HShader shaderHandle) override;
 
 
-    void updateGLResources();
+    void updateResources();
     void updateTexture(Texture *texture);
     void cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId);
     void cleanupShader(const Shader *shader);
@@ -470,9 +470,12 @@ private:
     QOffscreenSurface *m_fallbackSurface{};
 
     bool m_hasSwapChain = false;
-    void setupRHICommand(RenderCommand& command);
-    bool performDraw(QRhiCommandBuffer *cb, const RenderView *rv, RenderCommand &command);
+
+    void setupDrawCommand(RenderCommand& command);
     bool prepareDraw(QRhiCommandBuffer *cb, const RenderView *rv, RenderCommand &command);
+    bool performDraw(QRhiCommandBuffer *cb, const RenderView *rv, RenderCommand &command);
+
+    void setupComputeCommand(RenderCommand& command);
 };
 
 } // namespace Rhi

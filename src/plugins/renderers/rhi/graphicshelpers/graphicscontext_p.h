@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
@@ -105,11 +105,8 @@ public:
     GraphicsContext();
     ~GraphicsContext();
 
-    void setOpenGLContext(QOpenGLContext* ctx);
-    //QOpenGLContext *openGLContext() { return m_gl; }
     bool makeCurrent(QSurface *surface);
     void doneCurrent();
-    bool hasValidGLHelper() const;
     bool isInitialized() const;
 
     // Shaders
@@ -188,21 +185,15 @@ public:
     static GLint glDataTypeFromAttributeDataType(QAttribute::VertexBaseType dataType);
 
     bool supportsDrawBuffersBlend() const;
-    bool supportsVAO() const { return m_supportsVAO; }
 
     void initialize();
     void initializeHelpers(QSurface *surface);
-    GraphicsHelperInterface *resolveHighestOpenGLFunctions();
 
     bool m_initialized;
-    bool m_supportsVAO;
     GLint m_maxTextureUnits;
     GLint m_maxImageUnits;
     GLuint m_defaultFBO;
-    //* QOpenGLContext *m_gl;
-    //* GraphicsHelperInterface *m_glHelper;
 
-    //* QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
     GraphicsApiFilterData m_contextInfo;
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
 

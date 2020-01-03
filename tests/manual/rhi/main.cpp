@@ -108,6 +108,9 @@ static const constexpr auto fragment_shader = R"_(#version 450
 
 layout(location = 0) out vec4 fragColor;
 
+layout(std140, binding = 0) uniform qt3d_uniforms {
+  mat4 mvp;
+};
 layout(std140, binding = 1) uniform custom_uniforms { 
   float example;
 };

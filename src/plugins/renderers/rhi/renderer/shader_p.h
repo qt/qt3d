@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -56,6 +56,8 @@
 #include <shaderparameterpack_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <QMutex>
+#include <QtGui/private/qshader_p.h>
+#include <QtGui/private/qrhi_p.h>
 
 
 QT_BEGIN_NAMESPACE
@@ -115,8 +117,16 @@ public:
     void setShaderCode(const QVector<QByteArray> shaderCode) { m_shaderCode = shaderCode; }
     QVector<QByteArray> shaderCode() const;
 
+    const QShader& shaderStage(QShader::Stage stage) const noexcept { return m_stages[stage]; }
+    const QRhiVertexInputLayout& inputLayout() const noexcept { return m_input; }
+
+    void introspect();
 private:
     bool m_isLoaded;
+    QShader m_stages[6];
+
+    QRhiVertexInputLayout m_input;
+
     QOpenGLShaderProgram m_shader;
     GraphicsContext *m_graphicsContext;
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -99,6 +99,181 @@ QVector<QString> RHIShader::storageBlockNames() const
 QVector<QByteArray> RHIShader::shaderCode() const
 {
     return m_shaderCode;
+}
+
+static auto rhiInputType(QShaderDescription::VariableType type)
+{
+    switch(type)
+    {
+    case QShaderDescription::Vec4: return QRhiVertexInputAttribute::Float4;
+    case QShaderDescription::Vec3: return QRhiVertexInputAttribute::Float3;
+    case QShaderDescription::Vec2: return QRhiVertexInputAttribute::Float2;
+    case QShaderDescription::Float: return QRhiVertexInputAttribute::Float;
+    default:
+        // TODO UNormByte4, UNormByte2, UNormByte
+        RHI_UNIMPLEMENTED;
+        return QRhiVertexInputAttribute::UNormByte;
+        break;
+    }
+}
+
+static constexpr int rhiTypeSize(QShaderDescription::VariableType type)
+{
+    switch(type)
+    {
+    case QShaderDescription::Unknown: return 0;
+
+    case QShaderDescription::Float: return 1;
+    case QShaderDescription::Vec2: return 2;
+    case QShaderDescription::Vec3: return 3;
+    case QShaderDescription::Vec4: return 4;
+    case QShaderDescription::Mat2: return 2*2;
+    case QShaderDescription::Mat2x3: return 2*3;
+    case QShaderDescription::Mat2x4: return 2*4;
+    case QShaderDescription::Mat3: return 3*3;
+    case QShaderDescription::Mat3x2: return 3*2;
+    case QShaderDescription::Mat3x4: return 3*4;
+    case QShaderDescription::Mat4: return 4*4;
+    case QShaderDescription::Mat4x2: return 4*2;
+    case QShaderDescription::Mat4x3: return 4*3;
+
+    case QShaderDescription::Int: return 1;
+    case QShaderDescription::Int2: return 2;
+    case QShaderDescription::Int3: return 3;
+    case QShaderDescription::Int4: return 4;
+
+    case QShaderDescription::Uint: return 1;
+    case QShaderDescription::Uint2: return 2;
+    case QShaderDescription::Uint3: return 3;
+    case QShaderDescription::Uint4: return 4;
+
+    case QShaderDescription::Bool: return 1;
+    case QShaderDescription::Bool2: return 2;
+    case QShaderDescription::Bool3: return 3;
+    case QShaderDescription::Bool4: return 4;
+
+    case QShaderDescription::Double: return 1;
+    case QShaderDescription::Double2: return 2;
+    case QShaderDescription::Double3: return 3;
+    case QShaderDescription::Double4: return 4;
+    case QShaderDescription::DMat2: return 2*2;
+    case QShaderDescription::DMat2x3: return 2*3;
+    case QShaderDescription::DMat2x4: return 2*4;
+    case QShaderDescription::DMat3: return 3*3;
+    case QShaderDescription::DMat3x2: return 3*2;
+    case QShaderDescription::DMat3x4: return 3*4;
+    case QShaderDescription::DMat4: return 4*4;
+    case QShaderDescription::DMat4x2: return 4*2;
+    case QShaderDescription::DMat4x3: return 4*3;
+
+    case QShaderDescription::Sampler1D: return 0;
+    case QShaderDescription::Sampler2D: return 0;
+    case QShaderDescription::Sampler2DMS: return 0;
+    case QShaderDescription::Sampler3D: return 0;
+    case QShaderDescription::SamplerCube: return 0;
+    case QShaderDescription::Sampler1DArray: return 0;
+    case QShaderDescription::Sampler2DArray: return 0;
+    case QShaderDescription::Sampler2DMSArray: return 0;
+    case QShaderDescription::Sampler3DArray: return 0;
+    case QShaderDescription::SamplerCubeArray: return 0;
+    case QShaderDescription::SamplerRect: return 0;
+    case QShaderDescription::SamplerBuffer: return 0;
+
+    case QShaderDescription::Image1D: return 0;
+    case QShaderDescription::Image2D: return 0;
+    case QShaderDescription::Image2DMS: return 0;
+    case QShaderDescription::Image3D: return 0;
+    case QShaderDescription::ImageCube: return 0;
+    case QShaderDescription::Image1DArray: return 0;
+    case QShaderDescription::Image2DArray: return 0;
+    case QShaderDescription::Image2DMSArray: return 0;
+    case QShaderDescription::Image3DArray: return 0;
+    case QShaderDescription::ImageCubeArray: return 0;
+    case QShaderDescription::ImageRect: return 0;
+    case QShaderDescription::ImageBuffer: return 0;
+
+    case QShaderDescription::Struct: return 0;
+    default: return 0;
+    }
+}
+
+template<typename T, typename Pred>
+auto stableRemoveDuplicates(QVector<T> in, Pred predicate)
+{
+    QVector<T> out;
+    for(const auto& element : in)
+    {
+        if(std::none_of(out.begin(), out.end(), [&] (auto& other) { return predicate(element, other); }))
+            out.push_back(element);
+    }
+    return out;
+}
+void RHIShader::introspect()
+{
+    QVector<QShaderDescription::UniformBlock> rhiUBO;
+    QVector<QShaderDescription::StorageBlock> rhiSSBO;
+
+    QVector<ShaderUniformBlock> uniformBlocks;
+    QVector<ShaderStorageBlock> storageBlocks;
+    QVector<ShaderAttribute> attributes;
+
+    QRhiVertexInputLayout lay;
+
+    // Introspect shader vertex input
+    if(m_stages[QShader::VertexStage].isValid())
+    {
+        const QShaderDescription& vtx = m_stages[QShader::VertexStage].description();
+
+        QVarLengthArray<QRhiVertexInputAttribute, 8> rhiAttributes;
+
+        for(const QShaderDescription::InOutVariable& input : vtx.inputVariables())
+        {
+            // TODO offset ?
+            rhiAttributes.push_back({ 0, input.location, rhiInputType(input.type), 0 });
+            qDebug() << "Pushing attribute: " << rhiAttributes.back();
+
+            attributes.push_back(ShaderAttribute{input.name, -1, input.type, rhiTypeSize(input.type), input.location});
+        }
+        lay.setAttributes(rhiAttributes.begin(), rhiAttributes.end());
+
+        for(const auto& var: vtx.uniformBlocks())
+            rhiUBO.push_back(var);
+        for(const auto& var: vtx.storageBlocks())
+            rhiSSBO.push_back(var);
+    }
+    m_input = std::move(lay);
+
+    // Introspect shader uniforms
+
+    if(m_stages[QShader::FragmentStage].isValid())
+    {
+        const QShaderDescription& frag = m_stages[QShader::FragmentStage].description();
+        for(const auto& var: frag.uniformBlocks())
+            rhiUBO.push_back(var);
+        for(const auto& var: frag.storageBlocks())
+            rhiSSBO.push_back(var);
+    }
+
+    rhiUBO = stableRemoveDuplicates(rhiUBO, [] (const QShaderDescription::UniformBlock& lhs, const QShaderDescription::UniformBlock& rhs) {
+       return lhs.blockName == rhs.blockName;
+    });
+    rhiSSBO = stableRemoveDuplicates(rhiSSBO, [] (const QShaderDescription::StorageBlock& lhs, const QShaderDescription::StorageBlock& rhs) {
+        return lhs.blockName == rhs.blockName;
+    });
+
+    for(const QShaderDescription::UniformBlock& ubo : rhiUBO)
+    {
+        uniformBlocks.push_back(ShaderUniformBlock{ubo.blockName, -1, -1, ubo.binding, 0, 0});
+    }
+
+    for(const QShaderDescription::StorageBlock& ssbo : rhiSSBO)
+    {
+        storageBlocks.push_back(ShaderStorageBlock{ssbo.blockName, -1, -1, ssbo.binding, 0, 0});
+    }
+
+    initializeAttributes(attributes);
+    initializeUniformBlocks(uniformBlocks);
+    initializeShaderStorageBlocks(storageBlocks);
 }
 
 QHash<QString, ShaderUniform> RHIShader::activeUniformsForUniformBlock(int blockIndex) const

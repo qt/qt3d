@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
@@ -100,7 +100,6 @@ public:
     bool beginDrawing(QSurface *surface);
     void endDrawing(bool swapBuffers);
     void releaseOpenGL();
-    void setOpenGLContext(QOpenGLContext* ctx);
 
     // Viewport
     void setViewport(const QRectF &viewport, const QSize &surfaceSize);

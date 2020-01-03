@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,29 +39,6 @@
 
 #include "buffer_p.h"
 #include <graphicscontext_p.h>
-
-#if !defined(GL_UNIFORM_BUFFER)
-#define GL_UNIFORM_BUFFER 0x8A11
-#endif
-#if !defined(GL_ARRAY_BUFFER)
-#define GL_ARRAY_BUFFER 0x8892
-#endif
-#if !defined(GL_ELEMENT_ARRAY_BUFFER)
-#define GL_ELEMENT_ARRAY_BUFFER 0x8893
-#endif
-#if !defined(GL_SHADER_STORAGE_BUFFER)
-#define GL_SHADER_STORAGE_BUFFER 0x90D2
-#endif
-#if !defined(GL_PIXEL_PACK_BUFFER)
-#define GL_PIXEL_PACK_BUFFER 0x88EB
-#endif
-#if !defined(GL_PIXEL_UNPACK_BUFFER)
-#define GL_PIXEL_UNPACK_BUFFER 0x88EC
-#endif
-#if !defined(GL_DRAW_INDIRECT_BUFFER)
-#define GL_DRAW_INDIRECT_BUFFER 0x8F3F
-#endif
-
 #include <QtGui/private/qrhi_p.h>
 QT_BEGIN_NAMESPACE
 
@@ -73,20 +50,6 @@ namespace Rhi {
 
 // A UBO is created for each ShaderData Shader Pair
 // That means a UBO is unique to a shader/shaderdata
-
-namespace {
-
-GLenum glBufferTypes[] = {
-    GL_ARRAY_BUFFER,
-    GL_UNIFORM_BUFFER,
-    GL_ELEMENT_ARRAY_BUFFER,
-    GL_SHADER_STORAGE_BUFFER,
-    GL_PIXEL_PACK_BUFFER,
-    GL_PIXEL_UNPACK_BUFFER,
-    GL_DRAW_INDIRECT_BUFFER
-};
-
-} // anonymous
 
 RHIBuffer::RHIBuffer()
     : m_bufferId(0)
@@ -105,21 +68,23 @@ bool RHIBuffer::bind(GraphicsContext *ctx, Type t)
     {
         const auto kind = m_dynamic ? QRhiBuffer::Dynamic : QRhiBuffer::Static;
         const auto usage = [&] {
-            if(t == Type::ArrayBuffer) return QRhiBuffer::VertexBuffer;
-            if(t == Type::IndexBuffer) return QRhiBuffer::IndexBuffer;
-            if(t == Type::UniformBuffer) return QRhiBuffer::UniformBuffer;
-            RHI_UNIMPLEMENTED;
-            return QRhiBuffer::StorageBuffer;
+            switch(t) {
+            case Type::ArrayBuffer: return QRhiBuffer::VertexBuffer;
+            case Type::IndexBuffer: return QRhiBuffer::IndexBuffer;
+            case Type::UniformBuffer: return QRhiBuffer::UniformBuffer;
+            default:
+                RHI_UNIMPLEMENTED;
+                return QRhiBuffer::StorageBuffer;
+            }
         }();
 
         if(m_allocSize <= 0)
             return false;
 
-        if(m_rhiBuffer && m_rhiBuffer->type() != t)
+        if(m_rhiBuffer)
         {
-            m_rhiBuffer->release();
-            delete m_rhiBuffer;
-            m_rhiBuffer = nullptr;
+            // RHI does not seem to support using the same buffer with different types
+            assert(m_rhiBuffer->usage() == usage);
         }
 
         if(!m_rhiBuffer)
@@ -210,24 +175,28 @@ void RHIBuffer::update(GraphicsContext *ctx, const QByteArray& data, int offset)
 
 QByteArray RHIBuffer::download(GraphicsContext *ctx, uint size)
 {
-    char *gpu_ptr = ctx->mapBuffer(m_lastTarget, size);
-    QByteArray data;
-    if (gpu_ptr != nullptr) {
-        data.resize(size);
-        std::copy(gpu_ptr, gpu_ptr+size, data.data());
-    }
-    ctx->unmapBuffer(m_lastTarget);
-    return data;
+    RHI_UNIMPLEMENTED;
+    return {};
+//*     char *gpu_ptr = ctx->mapBuffer(m_lastTarget, size);
+//*     QByteArray data;
+//*     if (gpu_ptr != nullptr) {
+//*         data.resize(size);
+//*         std::copy(gpu_ptr, gpu_ptr+size, data.data());
+//*     }
+//*     ctx->unmapBuffer(m_lastTarget);
+//*     return data;
 }
 
 void RHIBuffer::bindBufferBase(GraphicsContext *ctx, int bindingPoint, RHIBuffer::Type t)
 {
-    ctx->bindBufferBase(glBufferTypes[t], bindingPoint, m_bufferId);
+    RHI_UNIMPLEMENTED;
+//*     ctx->bindBufferBase(glBufferTypes[t], bindingPoint, m_bufferId);
 }
 
 void RHIBuffer::bindBufferBase(GraphicsContext *ctx, int bindingPoint)
 {
-    ctx->bindBufferBase(m_lastTarget, bindingPoint, m_bufferId);
+    RHI_UNIMPLEMENTED;
+//*     ctx->bindBufferBase(m_lastTarget, bindingPoint, m_bufferId);
 }
 
 } // namespace Rhi

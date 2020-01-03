@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -52,17 +52,12 @@ namespace Rhi {
 RHIVertexArrayObject::RHIVertexArrayObject()
     : m_ctx(nullptr)
     , m_specified(false)
-    , m_supportsVao(false)
 {}
 
 void RHIVertexArrayObject::bind()
 {
     Q_ASSERT(m_ctx);
-    if (m_supportsVao) {
-        Q_ASSERT(!m_vao.isNull());
-        Q_ASSERT(m_vao->isCreated());
-        m_vao->bind();
-    } else {
+    {
         // Unbind any other VAO that may have been bound and not released correctly
         if (m_ctx->m_currentVAO != nullptr && m_ctx->m_currentVAO != this)
             m_ctx->m_currentVAO->release();
@@ -80,11 +75,7 @@ void RHIVertexArrayObject::bind()
 void RHIVertexArrayObject::release()
 {
     Q_ASSERT(m_ctx);
-    if (m_supportsVao) {
-        Q_ASSERT(!m_vao.isNull());
-        Q_ASSERT(m_vao->isCreated());
-        m_vao->release();
-    } else {
+    {
         if (m_ctx->m_currentVAO == this) {
             for (const SubmissionContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
                 m_ctx->disableAttribute(attr);
@@ -98,14 +89,10 @@ void RHIVertexArrayObject::create(SubmissionContext *ctx, const VAOIdentifier &k
 {
     QMutexLocker lock(&m_mutex);
 
-    Q_ASSERT(!m_ctx && !m_vao);
+    Q_ASSERT(!m_ctx);
 
     m_ctx = ctx;
-    m_supportsVao = m_ctx->supportsVAO();
-    if (m_supportsVao) {
-        m_vao.reset(new QOpenGLVertexArrayObject());
-        m_vao->create();
-    }
+
     m_owners = key;
 }
 
@@ -125,10 +112,8 @@ void RHIVertexArrayObject::destroy()
 
 void RHIVertexArrayObject::cleanup()
 {
-    m_vao.reset();
     m_ctx = nullptr;
     m_specified = false;
-    m_supportsVao = false;
     m_indexAttribute = SubmissionContext::VAOIndexAttribute();
     m_vertexAttributes.clear();
 }
