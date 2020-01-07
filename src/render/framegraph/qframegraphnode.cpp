@@ -49,6 +49,51 @@ using namespace Qt3DCore;
 
 QT_BEGIN_NAMESPACE
 
+namespace {
+
+QString dumpNode(const Qt3DRender::QFrameGraphNode *n) {
+    QString res = QLatin1String(n->metaObject()->className());
+    if (!n->objectName().isEmpty())
+        res += QString(QLatin1String(" (%1)")).arg(n->objectName());
+    if (!n->isEnabled())
+        res += QLatin1String(" [D]");
+    return res;
+}
+
+QStringList dumpFG(const Qt3DRender::QFrameGraphNode *n, int level = 0)
+{
+    QStringList reply;
+    QString res = dumpNode(n);
+    reply += res.rightJustified(res.length() + level * 2, ' ');
+
+    const auto children = n->childNodes();
+    for (auto *child: children) {
+        auto *childFGNode = qobject_cast<Qt3DRender::QFrameGraphNode *>(child);
+        if (childFGNode != nullptr)
+            reply += dumpFG(childFGNode, level + 1);
+    }
+
+    return reply;
+}
+
+void dumpFGPaths(const Qt3DRender::QFrameGraphNode *n, QStringList &result, QStringList parents = {})
+{
+    parents += dumpNode(n);
+
+    const auto children = n->childNodes();
+    if (children.length()) {
+        for (auto *child: children) {
+            auto *childFGNode = qobject_cast<Qt3DRender::QFrameGraphNode *>(child);
+            if (childFGNode != nullptr)
+                dumpFGPaths(childFGNode, result, parents);
+        }
+    } else {
+        result << QLatin1String("[ ") + parents.join(QLatin1String(", ")) + QLatin1String(" ]");
+    }
+}
+
+}
+
 namespace Qt3DRender {
 
 QFrameGraphNodePrivate::QFrameGraphNodePrivate()
@@ -237,6 +282,20 @@ QVector<QFrameGraphNode *> QFrameGraphNodePrivate::childFrameGraphNodes() const
         else
             queue.append(child->childNodes().toList());
     }
+    return result;
+}
+
+QString QFrameGraphNodePrivate::dumpFrameGraph() const
+{
+    Q_Q(const QFrameGraphNode);
+    return dumpFG(q).join('\n');
+}
+
+QStringList QFrameGraphNodePrivate::dumpFrameGraphPaths() const
+{
+    Q_Q(const QFrameGraphNode);
+    QStringList result;
+    dumpFGPaths(q, result);
     return result;
 }
 

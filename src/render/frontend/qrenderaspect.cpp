@@ -169,6 +169,8 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qentity_p.h>
 
 #include <QThread>
 #include <QOpenGLContext>
@@ -550,6 +552,22 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 QVariant QRenderAspect::executeCommand(const QStringList &args)
 {
     Q_D(QRenderAspect);
+
+    if (args.size() == 1) {
+        Render::RenderSettings *settings = d->m_renderer->settings();
+        auto *droot = static_cast<Qt3DCore::QEntityPrivate *>(Qt3DCore::QNodePrivate::get(d->m_root));
+        auto *fg = qobject_cast<Qt3DRender::QFrameGraphNode *>(droot->m_scene->lookupNode(settings->activeFrameGraphID()));
+        if (fg) {
+            if (args.front() == QLatin1String("framegraph"))
+                return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraph();
+            if (args.front() == QLatin1String("framepaths"))
+                return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphPaths().join(QLatin1String("\n"));
+        }
+        if (args.front() == QLatin1String("scenegraph"))
+            return droot->dumpSceneGraph();
+        return {};
+    }
+
     return d->m_renderer->executeCommand(args);
 }
 

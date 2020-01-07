@@ -53,6 +53,50 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace {
+
+QString dumpNode(const Qt3DCore::QEntity *n) {
+    auto formatNode = [](const Qt3DCore::QNode *n) {
+        QString res = QString(QLatin1String("%1{%2}"))
+                          .arg(QLatin1String(n->metaObject()->className()))
+                          .arg(n->id().id());
+        if (!n->objectName().isEmpty())
+            res += QString(QLatin1String(" (%1)")).arg(n->objectName());
+        if (!n->isEnabled())
+            res += QLatin1String(" [D]");
+        return res;
+    };
+
+    QString res = formatNode(n);
+    const auto &components = n->components();
+    if (components.size()) {
+        QStringList componentNames;
+        for (const auto &c : components)
+            componentNames += formatNode(c);
+        res += QString(QLatin1String(" [ %1 ]")).arg(componentNames.join(QLatin1String(", ")));
+    }
+
+    return res;
+}
+
+QStringList dumpSG(const Qt3DCore::QEntity *n, int level = 0)
+{
+    QStringList reply;
+    QString res = dumpNode(n);
+    reply += res.rightJustified(res.length() + level * 2, ' ');
+
+    const auto children = n->childNodes();
+    for (auto *child: children) {
+        auto *childFGNode = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childFGNode != nullptr)
+            reply += dumpSG(childFGNode, level + 1);
+    }
+
+    return reply;
+}
+
+}
+
 namespace Qt3DCore {
 
 /*!
@@ -242,6 +286,12 @@ QNodeId QEntityPrivate::parentEntityId() const
     if (m_parentEntityId.isNull())
         q->parentEntity();
     return m_parentEntityId;
+}
+
+QString QEntityPrivate::dumpSceneGraph() const
+{
+    Q_Q(const QEntity);
+    return dumpSG(q).join('\n');
 }
 
 QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const

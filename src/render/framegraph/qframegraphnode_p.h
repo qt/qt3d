@@ -70,6 +70,9 @@ public:
     static QFrameGraphNodePrivate *get(QFrameGraphNode *node) { return node->d_func(); }
     static const QFrameGraphNodePrivate *get(const QFrameGraphNode *node) { return node->d_func(); }
 
+    QString dumpFrameGraph() const;
+    QStringList dumpFrameGraphPaths() const;
+
     Q_DECLARE_PUBLIC(QFrameGraphNode)
 };
 

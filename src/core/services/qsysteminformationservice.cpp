@@ -430,7 +430,7 @@ void QSystemInformationService::dumpCommand(const QString &command)
             return;
         }
     }
-    qWarning() << res;
+    qWarning() << qPrintable(res.toString());
 }
 
 }
