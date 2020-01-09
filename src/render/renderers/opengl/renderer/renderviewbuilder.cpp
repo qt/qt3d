@@ -326,8 +326,8 @@ public:
             filteredCommandData->reserve(renderableEntities.size());
             // Because dataCacheForLeaf.renderableEntities or computeEntities are sorted
             // What we get out of EntityRenderCommandData is also sorted by Entity
-            auto eIt = std::cbegin(renderableEntities);
-            const auto eEnd = std::cend(renderableEntities);
+            auto eIt = renderableEntities.cbegin();
+            const auto eEnd = renderableEntities.cend();
             int cIt = 0;
             const int cEnd = commandData.size();
 
