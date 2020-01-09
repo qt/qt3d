@@ -232,7 +232,7 @@ QCameraLensPrivate::QCameraLensPrivate()
 void QCameraLens::viewAll(Qt3DCore::QNodeId cameraId)
 {
     Q_D(QCameraLens);
-    if (d->m_projectionType == PerspectiveProjection) {
+    if (d->m_projectionType == PerspectiveProjection || d->m_projectionType == OrthographicProjection) {
         QVariant v;
         v.setValue(cameraId);
         d->m_pendingViewAllCommand = {QLatin1String("QueryRootBoundingVolume"),
@@ -245,7 +245,7 @@ void QCameraLens::viewAll(Qt3DCore::QNodeId cameraId)
 void QCameraLens::viewEntity(Qt3DCore::QNodeId entityId, Qt3DCore::QNodeId cameraId)
 {
     Q_D(QCameraLens);
-    if (d->m_projectionType == PerspectiveProjection) {
+    if (d->m_projectionType == PerspectiveProjection || d->m_projectionType == OrthographicProjection) {
         QVector<Qt3DCore::QNodeId> ids = {entityId, cameraId};
         QVariant v;
         v.setValue(ids);
