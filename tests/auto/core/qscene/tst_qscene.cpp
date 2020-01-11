@@ -26,6 +26,10 @@
 **
 ****************************************************************************/
 
+// TODO Remove in Qt6
+#include <QtCore/qcompilerdetection.h>
+QT_WARNING_DISABLE_DEPRECATED
+
 #include <QtTest/QtTest>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnode.h>

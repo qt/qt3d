@@ -26,6 +26,10 @@
 **
 ****************************************************************************/
 
+// TODO Remove in Qt6
+#include <QtCore/qcompilerdetection.h>
+QT_WARNING_DISABLE_DEPRECATED
+
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>

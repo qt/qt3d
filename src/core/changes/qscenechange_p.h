@@ -63,12 +63,15 @@ namespace Qt3DCore {
 class QSceneChange;
 class QNodeId;
 
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
 struct NodeRelationshipChange {
     QNode *node;
     QNode *subNode;
     ChangeFlag change;
     const char *property;
 };
+QT_WARNING_POP
 
 class Q_3DCORE_PRIVATE_EXPORT QSceneChangePrivate
 {
@@ -82,7 +85,10 @@ public :
 
     QNodeId m_subjectId;
     QSceneChange::DeliveryFlags m_deliveryFlags;
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     ChangeFlag m_type;
+    QT_WARNING_POP
 };
 
 } // Qt3D

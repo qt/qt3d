@@ -2,6 +2,7 @@ TARGET     = Qt3DCore
 MODULE     = 3dcore
 
 QT         = core-private gui-private network
+DEFINES   += BUILD_QT3D_MODULE
 
 gcov {
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage

@@ -69,6 +69,8 @@ public:
 private:
     void createCreationChange(QNode *node)
     {
+        QT_WARNING_PUSH
+        QT_WARNING_DISABLE_DEPRECATED
         const auto creationChange = node->createNodeCreationChange();
         m_creationChanges.push_back(creationChange);
 
@@ -82,6 +84,7 @@ private:
 
         // Mark this node as having been handled for creation so that it is picked up
         d->m_hasBackendNode = true;
+        QT_WARNING_POP
     }
 
     QVector<QNodeCreatedChangeBasePtr> m_creationChanges;

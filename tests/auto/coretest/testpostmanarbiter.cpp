@@ -26,6 +26,10 @@
 **
 ****************************************************************************/
 
+// TODO Remove in Qt6
+#include <QtCore/qcompilerdetection.h>
+QT_WARNING_DISABLE_DEPRECATED
+
 #include "testpostmanarbiter_p.h"
 #include <Qt3DCore/private/qnode_p.h>
 

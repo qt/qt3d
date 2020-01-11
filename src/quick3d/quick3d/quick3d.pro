@@ -1,5 +1,6 @@
 TARGET   = Qt3DQuick
 MODULE   = 3dquick
+DEFINES += BUILD_QT3D_MODULE
 
 QT      += core-private gui-private qml qml-private quick quick-private 3dcore 3dcore-private
 

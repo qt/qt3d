@@ -80,17 +80,20 @@ template<typename T>
 class QSkeletonCreatedChange : public QSkeletonCreatedChangeBase
 {
 public:
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     explicit QSkeletonCreatedChange(const QAbstractSkeleton *_skeleton)
         : QSkeletonCreatedChangeBase(_skeleton)
         , data()
     {
     }
+    QT_WARNING_POP
 
     T data;
 };
 
 template<typename T>
-using QSkeletonCreatedChangePtr Q3D_DECL_DEPRECATED = QSharedPointer<QSkeletonCreatedChange<T>>;
+using QSkeletonCreatedChangePtr = QSharedPointer<QSkeletonCreatedChange<T>>;
 
 } // namespace Qt3DCore
 

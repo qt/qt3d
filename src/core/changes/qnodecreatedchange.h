@@ -71,11 +71,14 @@ template<typename T>
 class QNodeCreatedChange : public QNodeCreatedChangeBase
 {
 public:
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     explicit QNodeCreatedChange(const QNode *_node)
         : QNodeCreatedChangeBase(_node)
         , data()
     {
     }
+    QT_WARNING_POP
 
     T data;
 };

@@ -90,7 +90,10 @@ public:
     void updatePropertyTrackMode();
 
     void update();
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     void updateNode(QNode *node, const char* property, ChangeFlag change);
+    QT_WARNING_POP
 
     Q_DECLARE_PUBLIC(QNode)
 

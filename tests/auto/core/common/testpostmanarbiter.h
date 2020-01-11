@@ -70,7 +70,10 @@ public:
 
     void setArbiterOnNode(Qt3DCore::QNode *node);
     void addDirtyFrontEndNode(Qt3DCore::QNode *node) final;
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     void addDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QNode *subNode, const char *property, Qt3DCore::ChangeFlag change) final;
+    QT_WARNING_POP
     void removeDirtyFrontEndNode(Qt3DCore::QNode *node) final;
 
 private:
