@@ -52,6 +52,7 @@ namespace Qt3DInput {
 QMouseDevicePrivate::QMouseDevicePrivate()
     : QAbstractPhysicalDevicePrivate()
     , m_sensitivity(0.1f)
+    , m_updateContinuously(false)
 {
 }
 
@@ -106,6 +107,27 @@ QMouseDevicePrivate::QMouseDevicePrivate()
     Default is 0.1.
  */
 
+/*!
+    \property Qt3DInput::QMouseDevice::updateAxesContinously
+
+    If true, axes will be updated anytime they change regardless of whether
+    any mouse button is being pressed. Otherwise, axes are updated only when
+    one of the mouse buttons is being pressed.
+
+    \since 5.15
+    \default false
+*/
+
+/*!
+    \qmlproperty bool MouseDevice::updateAxesContinously
+
+    If true, axes will be updated anytime they change regardless of whether
+    any mouse button is being pressed. Otherwise, axes are updated only when
+    one of the mouse buttons is being pressed.
+
+    \since 5.15
+    \default false
+*/
 
 /*!
     Constructs a new QMouseDevice instance with parent \a parent.
@@ -211,6 +233,12 @@ float QMouseDevice::sensitivity() const
     return d->m_sensitivity;
 }
 
+bool QMouseDevice::updateAxesContinuously() const
+{
+    Q_D(const QMouseDevice);
+    return d->m_updateContinuously;
+}
+
 void QMouseDevice::setSensitivity(float value)
 {
     Q_D(QMouseDevice);
@@ -219,6 +247,16 @@ void QMouseDevice::setSensitivity(float value)
 
     d->m_sensitivity = value;
     emit sensitivityChanged(value);
+}
+
+void QMouseDevice::setUpdateAxesContinuously(bool updateAxesContinuously)
+{
+    Q_D(QMouseDevice);
+    if (d->m_updateContinuously == updateAxesContinuously)
+        return;
+
+    d->m_updateContinuously = updateAxesContinuously;
+    emit updateAxesContinuouslyChanged(updateAxesContinuously);
 }
 
 /*! \internal */

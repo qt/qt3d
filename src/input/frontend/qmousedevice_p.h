@@ -67,6 +67,7 @@ public:
     Q_DECLARE_PUBLIC(QMouseDevice)
 
     float m_sensitivity;
+    bool m_updateContinuously;
 };
 
 struct QMouseDeviceData
