@@ -76,6 +76,9 @@ class QAbstractAspectJobManager;
 class QServiceLocator;
 class NodePostConstructorInit;
 struct NodeTreeChange;
+#if QT_CONFIG(animation)
+class RequestFrameAnimation;
+#endif
 
 class Q_3DCORE_PRIVATE_EXPORT QAspectManager : public QObject
 {
@@ -112,7 +115,9 @@ public:
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
 
 private:
+#if !QT_CONFIG(animation)
     bool event(QEvent *event) override;
+#endif
     void requestNextFrame();
 
     QVector<QAbstractAspect *> m_aspects;
@@ -126,7 +131,9 @@ private:
     QAspectEngine::RunMode m_driveMode;
     QVector<NodeTreeChange> m_nodeTreeChanges;
     NodePostConstructorInit* m_postConstructorInit;
-
+#if QT_CONFIG(animation)
+    RequestFrameAnimation *m_simulationAnimation;
+#endif
 };
 
 } // namespace Qt3DCore
