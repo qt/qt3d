@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 
     QQuickView view;
 
-    view.resize(500, 500);
+    view.resize(1024, 768);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();

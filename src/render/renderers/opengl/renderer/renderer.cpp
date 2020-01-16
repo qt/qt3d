@@ -1681,8 +1681,11 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 #ifndef Q_OS_INTEGRITY
         if (!imGuiOverlayShown && renderView->showDebugOverlay()) {
             imGuiOverlayShown = true;
-            if (!m_imGuiRenderer)
+            if (!m_imGuiRenderer) {
                 m_imGuiRenderer = new Debug::ImGuiRenderer(this);
+                if (m_settings)
+                    m_imGuiRenderer->setCapabilities(m_settings->capabilities());
+            }
 
             {
                 QMutexLocker l(&m_frameEventsMutex);

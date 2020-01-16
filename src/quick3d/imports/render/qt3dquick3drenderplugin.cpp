@@ -119,6 +119,7 @@
 #include <Qt3DRender/qnopicking.h>
 #include <Qt3DRender/qshaderimage.h>
 #include <Qt3DRender/qsubtreeenabler.h>
+#include <Qt3DRender/qrendercapabilities.h>
 
 #include <QtGui/qwindow.h>
 
@@ -169,7 +170,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Renderer setttings
     qmlRegisterType<Qt3DRender::QRenderSettings>(uri, 2, 0, "RenderSettings");
+    qmlRegisterType<Qt3DRender::QRenderSettings, 15>(uri, 2, 15, "RenderSettings");
     qmlRegisterType<Qt3DRender::QPickingSettings>(uri, 2, 0, "PickingSettings");
+    qmlRegisterUncreatableType<Qt3DRender::QRenderCapabilities>(uri, 2, 15, "RenderCapabilities", "Only available as a property of RenderSettings");
 
     // @uri Qt3D.Render
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QSceneLoader, Qt3DRender::Render::Quick::Quick3DScene>("QSceneLoader", "Qt3D.Render/SceneLoader", uri, 2, 0, "SceneLoader");

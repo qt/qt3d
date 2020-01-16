@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERSETTINGS_H
-#define QT3DRENDER_RENDER_RENDERSETTINGS_H
+#ifndef QT3DRENDER_QRENDERCAPABILITIES_P_H
+#define QT3DRENDER_QRENDERCAPABILITIES_P_H
 
 //
 //  W A R N I N G
@@ -51,60 +51,55 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/qrendersettings.h>
-#include <Qt3DRender/qpickingsettings.h>
+#include <QtCore/private/qobject_p.h>
+#include <Qt3DRender/qrendercapabilities.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-class AbstractRenderer;
-
-class Q_AUTOTEST_EXPORT RenderSettings : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderCapabilitiesPrivate : public QObjectPrivate
 {
 public:
-    RenderSettings();
+    QRenderCapabilitiesPrivate();
 
-    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
+    Q_DECLARE_PUBLIC(QRenderCapabilities)
+    static const QRenderCapabilitiesPrivate *get(const QRenderCapabilities *q);
 
-    Qt3DCore::QNodeId activeFrameGraphID() const { return m_activeFrameGraph; }
-    QRenderSettings::RenderPolicy renderPolicy() const { return m_renderPolicy; }
-    QPickingSettings::PickMethod pickMethod() const { return m_pickMethod; }
-    QPickingSettings::PickResultMode pickResultMode() const { return m_pickResultMode; }
-    QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode() const { return m_faceOrientationPickingMode; }
-    float pickWorldSpaceTolerance() const { return m_pickWorldSpaceTolerance; }
-    QString capabilities() const { return m_capabilities; }
+    bool m_valid;
+    QRenderCapabilities::API m_api = QRenderCapabilities::OpenGL;
+    QRenderCapabilities::Profile m_profile = QRenderCapabilities::NoProfile;
+    int m_majorVersion = 0;
+    int m_minorVersion = 0;
+    QStringList m_extensions;
+    QString m_vendor;
+    QString m_renderer;
+    QString m_version;
+    QString m_glslVersion;
+    int m_maxSamples = 0;
+    int m_maxTextureSize = 0;
+    int m_maxTextureUnits = 0;
+    int m_maxTextureLayers = 0;
+    bool m_supportsUBO = false;
+    int m_maxUBOSize = 0;
+    int m_maxUBOBindings = 0;
+    bool m_supportsSSBO = false;
+    int m_maxSSBOSize = 0;
+    int m_maxSSBOBindings = 0;
+    bool m_supportsImageStore = false;
+    int m_maxImageUnits = 0;
+    bool m_supportCompute = false;
+    int m_maxWorkGroupCount[3] = { 0, 0, 0 };
+    int m_maxWorkGroupSize[3] = { 0, 0, 0 };
+    int m_maxComputeInvocations = 0;
+    int m_maxComputeSharedMemorySize = 0;
 
-    // For unit test purposes
-    void setActiveFrameGraphId(Qt3DCore::QNodeId frameGraphNodeId) { m_activeFrameGraph = frameGraphNodeId; }
-
-private:
-    QRenderSettings::RenderPolicy m_renderPolicy;
-    QPickingSettings::PickMethod m_pickMethod;
-    QPickingSettings::PickResultMode m_pickResultMode;
-    QPickingSettings::FaceOrientationPickingMode m_faceOrientationPickingMode;
-    float m_pickWorldSpaceTolerance;
-    Qt3DCore::QNodeId m_activeFrameGraph;
-    QString m_capabilities;
+    QString toString() const;
 };
 
-class RenderSettingsFunctor : public Qt3DCore::QBackendNodeMapper
-{
-public:
-    explicit RenderSettingsFunctor(AbstractRenderer *renderer);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const override;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
-    void destroy(Qt3DCore::QNodeId id) const override;
-
-private:
-    AbstractRenderer *m_renderer;
-};
-
-} // namespace Render
-} // namespace Qt3DRender
+} // namespace Qt3Drender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERSETTINGS_H
+#endif // QT3DRENDER_QRENDERCAPABILITIES_P_H

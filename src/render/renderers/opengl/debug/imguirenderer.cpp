@@ -300,28 +300,15 @@ void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews,
     renderDrawList(ImGui::GetDrawData());
 }
 
+void ImGuiRenderer::setCapabilities(const QString &capabilities)
+{
+    m_capabilities = capabilities.toLatin1();
+}
+
 void ImGuiRenderer::showGLInfo()
 {
-    const GraphicsApiFilterData *contextInfo = m_renderer->submissionContext()->contextInfo();
-
     ImGui::Begin("Open GL Details", &m_showGLInfoWindow);
-
-    ImGui::Text("API: %s %d.%d", contextInfo->m_api == QGraphicsApiFilter::OpenGL ? "OpenGL" : "OpenGLES"
-                , contextInfo->m_major, contextInfo->m_minor);
-    if (contextInfo->m_api == QGraphicsApiFilter::OpenGL)
-        ImGui::Text("Profile: %s", contextInfo->m_profile == QGraphicsApiFilter::CoreProfile ? "Core" :
-                                   contextInfo->m_profile == QGraphicsApiFilter::CompatibilityProfile ? "Compatibity" : "Node");
-
-    // TODO show capabilities
-    GLint maxTextureSize, maxTextureUnits;
-    m_funcs->glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-    m_funcs->glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
-    ImGui::Text("Texture max size: %d   Units: %d", maxTextureSize, maxTextureUnits);
-
-    if (ImGui::Button("Dump"))
-        QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
-                                  Qt::QueuedConnection, Q_ARG(QString, QLatin1String("render glinfo")));
-
+    ImGui::Text("%s", m_capabilities.data());
     ImGui::End();
 }
 

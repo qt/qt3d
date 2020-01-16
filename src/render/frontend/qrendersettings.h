@@ -49,12 +49,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QFrameGraphNode;
+class QRenderCapabilities;
 class QRenderSettingsPrivate;
 
 class Q_3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
 {
     Q_OBJECT
-
+    Q_PROPERTY(Qt3DRender::QRenderCapabilities* renderCapabilities READ renderCapabilities CONSTANT REVISION 15)
     Q_PROPERTY(Qt3DRender::QPickingSettings* pickingSettings READ pickingSettings CONSTANT)
     Q_PROPERTY(RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
     Q_PROPERTY(Qt3DRender::QFrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
@@ -70,6 +71,7 @@ public:
     };
     Q_ENUM(RenderPolicy) // LCOV_EXCL_LINE
 
+    QRenderCapabilities* renderCapabilities();
     QPickingSettings* pickingSettings();
     QFrameGraphNode *activeFrameGraph() const;
     RenderPolicy renderPolicy() const;

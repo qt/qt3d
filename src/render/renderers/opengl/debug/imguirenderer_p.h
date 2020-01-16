@@ -88,6 +88,8 @@ public:
     void processEvent(QEvent *event);
     void renderDebugOverlay(const QVector<Render::RenderView *> &renderViews, const Render::RenderView *renderView, int jobsInLastFrame);
 
+    void setCapabilities(const QString &capabilities);
+
 private:
     bool newFrame(const RenderView *renderView);
     void renderDrawList(ImDrawData *draw_data);
@@ -121,6 +123,8 @@ private:
     float        m_jobsLog[IMGUI_PERF_LOG_SIZE];
     std::pair<float, float> m_fpsRange;
     std::pair<float, float> m_jobsRange;
+
+    QByteArray   m_capabilities;
 };
 
 } // namespace Debug
