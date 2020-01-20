@@ -67,7 +67,6 @@
 #include <Qt3DRender/private/qblitframebuffer_p.h>
 #include <Qt3DRender/private/qwaitfence_p.h>
 
-#include <Qt3DCore/private/qframeallocator_p.h>
 #include <Qt3DRender/private/aligned_malloc_p.h>
 
 // TODO: Move out once this is all refactored

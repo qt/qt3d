@@ -29,8 +29,6 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <private/renderview_p.h>
-#include <private/qframeallocator_p.h>
-#include <private/qframeallocator_p_p.h>
 #include <private/memorybarrier_p.h>
 #include <private/renderviewjobutils_p.h>
 #include <private/rendercommand_p.h>

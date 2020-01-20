@@ -42,8 +42,6 @@
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/texture_p.h>
 
-#include <Qt3DCore/private/qframeallocator_p.h>
-
 #include <QOpenGLShaderProgram>
 #include <QDebug>
 #include <QColor>

@@ -1,3 +1,4 @@
+qtHaveModule(opengl): QT += opengl
 
 include (renderer/renderer.pri)
 include (jobs/jobs.pri)

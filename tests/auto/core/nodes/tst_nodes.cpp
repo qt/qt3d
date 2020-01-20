@@ -1290,7 +1290,8 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
 
     // WHEN
     spy.events.clear();
-    qDeleteAll(root->children());
+    auto cl = root->children();
+    qDeleteAll(cl);
 
     // THEN
     QVERIFY(root->children().count() == 0);

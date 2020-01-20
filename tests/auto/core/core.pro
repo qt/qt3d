@@ -3,8 +3,6 @@ TEMPLATE = subdirs
 SUBDIRS = \
     handle \
     qresourcemanager \
-    qcircularbuffer \
-    qboundedcircularbuffer \
     nodes \
     qaspectengine \
     qaspectfactory \
@@ -20,7 +18,6 @@ SUBDIRS = \
 qtConfig(private_tests) {
     SUBDIRS += \
         qentity \
-        qframeallocator \
         qtransform \
         threadpooler \
         qpostman \

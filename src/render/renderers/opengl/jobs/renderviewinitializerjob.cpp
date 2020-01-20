@@ -84,7 +84,6 @@ void RenderViewInitializerJob::run()
 #endif
 
     // Create a RenderView object
-    // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
     m_renderView = new RenderView;
 
     // RenderView should allocate heap resources using only the currentFrameAllocator

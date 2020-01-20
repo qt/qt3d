@@ -110,7 +110,6 @@ class QScreen;
 
 namespace Qt3DCore {
 class QEntity;
-class QFrameAllocator;
 class QEventFilterService;
 }
 
@@ -338,8 +337,8 @@ private:
     QAtomicInt m_exposed;
 
     struct DirtyBits {
-        BackendNodeDirtySet marked = 0; // marked dirty since last job build
-        BackendNodeDirtySet remaining = 0; // remaining dirty after jobs have finished
+        BackendNodeDirtySet marked = {}; // marked dirty since last job build
+        BackendNodeDirtySet remaining = {}; // remaining dirty after jobs have finished
     };
     DirtyBits m_dirtyBits;
 

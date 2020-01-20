@@ -31,8 +31,7 @@
 QT_BEGIN_NAMESPACE
 
 TestRenderer::TestRenderer()
-    : m_changes(0)
-    , m_managers(nullptr)
+    : m_managers(nullptr)
 {
 }
 
@@ -42,7 +41,7 @@ TestRenderer::~TestRenderer()
 
 void TestRenderer::markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node)
 {
-    Q_UNUSED(node);
+    Q_UNUSED(node)
     m_changes |= changes;
 }
 
@@ -60,7 +59,7 @@ void TestRenderer::clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendN
 
 void TestRenderer::resetDirty()
 {
-    m_changes = 0;
+    m_changes = {};
 }
 
 QVariant TestRenderer::executeCommand(const QStringList &args)
@@ -71,7 +70,7 @@ QVariant TestRenderer::executeCommand(const QStringList &args)
 
 void TestRenderer::setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper)
 {
-    Q_UNUSED(helper);
+    Q_UNUSED(helper)
 }
 
 QSurfaceFormat TestRenderer::format()

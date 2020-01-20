@@ -62,10 +62,6 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QFrameAllocator;
-}
-
 namespace Qt3DRender {
 namespace Render {
 
