@@ -80,6 +80,7 @@ void QForwardRendererPrivate::init()
     initResources();
 
     m_debugOverlay->setParent(m_frustumCulling);
+    m_debugOverlay->setEnabled(false);
     m_frustumCulling->setParent(m_clearBuffer);
     m_clearBuffer->setParent(m_cameraSelector);
     m_cameraSelector->setParent(m_viewport);
