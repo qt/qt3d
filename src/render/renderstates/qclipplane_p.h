@@ -71,13 +71,6 @@ public:
     float m_distance;
 };
 
-struct QClipPlaneData
-{
-    QVector3D normal;
-    float distance;
-    int planeIndex;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -75,14 +75,6 @@ public:
     int m_height;
 };
 
-struct QScissorTestData
-{
-    int left;
-    int bottom;
-    int width;
-    int height;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

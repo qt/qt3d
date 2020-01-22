@@ -82,17 +82,6 @@ public:
     static QByteArray deincludify(const QString &filePath);
 };
 
-struct QShaderProgramData
-{
-    QByteArray vertexShaderCode;
-    QByteArray tessellationControlShaderCode;
-    QByteArray tessellationEvaluationShaderCode;
-    QByteArray geometryShaderCode;
-    QByteArray fragmentShaderCode;
-    QByteArray computeShaderCode;
-    QShaderProgram::Format format;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -85,13 +85,6 @@ public:
     QMetaObject::Connection m_screenConn;
 };
 
-struct QRenderSurfaceSelectorData
-{
-    QPointer<QObject> surface;
-    QSize externalRenderTargetSize;
-    float surfacePixelRatio;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

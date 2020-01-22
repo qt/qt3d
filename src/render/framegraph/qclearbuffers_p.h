@@ -71,15 +71,6 @@ public:
     QRenderTargetOutput *m_buffer;
 };
 
-struct QClearBuffersData
-{
-    QClearBuffers::BufferType buffersType;
-    QColor clearColor;
-    float clearDepthValue;
-    int clearStencilValue;
-    Qt3DCore::QNodeId bufferId;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

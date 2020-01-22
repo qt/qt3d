@@ -69,13 +69,6 @@ public:
     int m_workGroupZ;
 };
 
-struct QDispatchComputeData
-{
-    int workGroupX;
-    int workGroupY;
-    int workGroupZ;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

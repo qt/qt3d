@@ -69,11 +69,6 @@ public :
     QDepthTest::DepthFunction m_depthFunction;
 };
 
-struct QDepthTestData
-{
-    QDepthTest::DepthFunction depthFunction;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

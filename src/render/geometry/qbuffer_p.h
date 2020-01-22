@@ -79,15 +79,6 @@ public:
     void setData(const QByteArray &data);
 };
 
-struct QBufferData
-{
-    QByteArray data;
-    QBuffer::UsageType usage;
-    QBufferDataGeneratorPtr functor;
-    bool syncData;
-    QBuffer::AccessType access;
-};
-
 struct QBufferUpdate
 {
     int offset;

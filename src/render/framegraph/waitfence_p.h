@@ -67,11 +67,19 @@ public:
     WaitFence();
     ~WaitFence();
 
-    inline QWaitFenceData data() const { return m_data; }
+    struct Data
+    {
+        QWaitFence::HandleType handleType;
+        QVariant handle;
+        bool waitOnCPU;
+        quint64 timeout;
+    };
+
+    inline Data data() const { return m_data; }
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    QWaitFenceData m_data;
+    Data m_data;
 };
 
 } // namespace Render

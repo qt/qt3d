@@ -72,11 +72,6 @@ public:
     QShaderData *m_shaderData;
 };
 
-struct QAbstractLightData
-{
-    Qt3DCore::QNodeId shaderDataId;
-};
-
 }
 
 QT_END_NAMESPACE

@@ -66,11 +66,6 @@ public:
     QMemoryBarrier::Operations m_waitOperations;
 };
 
-struct QMemoryBarrierData
-{
-    QMemoryBarrier::Operations waitOperations;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -69,11 +69,6 @@ public:
     QCullFace::CullingMode m_mode;
 };
 
-struct QCullFaceData
-{
-    QCullFace::CullingMode mode;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

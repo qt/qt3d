@@ -77,17 +77,6 @@ public:
     Q_DECLARE_PUBLIC(QBlitFramebuffer)
 };
 
-struct QBlitFramebufferData
-{
-    Qt3DCore::QNodeId m_sourceRenderTargetId;
-    Qt3DCore::QNodeId m_destinationRenderTargetId;
-    QRect m_sourceRect;
-    QRect m_destinationRect;
-    Qt3DRender::QRenderTargetOutput::AttachmentPoint m_sourceAttachmentPoint;
-    Qt3DRender::QRenderTargetOutput::AttachmentPoint m_destinationAttachmentPoint;
-    QBlitFramebuffer::InterpolationMethod m_interpolationMethod;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

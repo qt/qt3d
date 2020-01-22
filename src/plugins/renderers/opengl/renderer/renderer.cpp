@@ -98,6 +98,7 @@
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <Qt3DRender/private/setfence_p.h>
 #include <Qt3DRender/private/qsetfence_p.h>
+#include <Qt3DRender/private/waitfence_p.h>
 
 #include <glbuffer_p.h>
 #include <graphicscontext_p.h>
@@ -1634,8 +1635,8 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         }
 
         // Wait for fences if needed
-        const QVector<QWaitFenceData> waitFences = renderView->waitFences();
-        for (const QWaitFenceData &waitFence : waitFences) {
+        const QVector<WaitFence::Data> waitFences = renderView->waitFences();
+        for (const auto &waitFence : waitFences) {
             // TO DO
             if (waitFence.handleType != QWaitFence::OpenGLFenceId) {
                 qWarning() << "WaitFence handleType should be OpenGLFenceId when using the Qt 3D OpenGL renderer";
@@ -1645,12 +1646,10 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             if (fence == nullptr)
                 continue;
 
-            if (waitFence.waitOnCPU) {
-                m_submissionContext->clientWaitSync(fence,
-                                                    waitFence.timeout);
-            } else {
+            if (waitFence.waitOnCPU)
+                m_submissionContext->clientWaitSync(fence, waitFence.timeout);
+            else
                 m_submissionContext->waitSync(fence);
-            }
         }
 
         // Note: the RenderStateSet is allocated once per RV if needed

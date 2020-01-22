@@ -86,18 +86,6 @@ public:
     void setShaderCode(const QByteArray &code, QShaderProgram::ShaderType type);
 };
 
-struct QShaderProgramBuilderData
-{
-    Qt3DCore::QNodeId shaderProgramId;
-    QStringList enabledLayers;
-    QUrl vertexShaderGraph;
-    QUrl tessellationControlShaderGraph;
-    QUrl tessellationEvaluationShaderGraph;
-    QUrl geometryShaderGraph;
-    QUrl fragmentShaderGraph;
-    QUrl computeShaderGraph;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

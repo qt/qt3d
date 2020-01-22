@@ -93,12 +93,6 @@ public:
     Q_DECLARE_PUBLIC(QRenderCaptureReply)
 };
 
-// used by initializeFromPeer
-struct QRenderCaptureInitData
-{
-    int captureId;
-};
-
 // used by backend to send render capture to frontend
 struct RenderCaptureData
 {

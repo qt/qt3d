@@ -69,11 +69,6 @@ public:
     QFrontFace::WindingDirection m_direction;
 };
 
-struct QFrontFaceData
-{
-    QFrontFace::WindingDirection direction;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

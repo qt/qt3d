@@ -101,13 +101,6 @@ public:
     void setContainsMouse(bool containsMouse);
 };
 
-struct QObjectPickerData
-{
-    bool hoverEnabled;
-    bool dragEnabled;
-    int priority;
-};
-
 struct QObjectPickerEvent
 {
     QPickEventPtr event;

@@ -68,11 +68,6 @@ public:
     Q_DECLARE_PUBLIC(QSubtreeEnabler)
 };
 
-struct QSubtreeEnablerData
-{
-    QSubtreeEnabler::Enablement enablement;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

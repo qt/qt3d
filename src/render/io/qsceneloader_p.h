@@ -79,11 +79,6 @@ public:
     QHash<QString, Qt3DCore::QEntity *> m_entityMap;
 };
 
-struct QSceneLoaderData
-{
-    QUrl source;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

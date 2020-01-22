@@ -74,14 +74,6 @@ public:
     Q_DECLARE_PUBLIC(QColorMask)
 };
 
-struct QColorMaskData
-{
-    bool redMasked;
-    bool greenMasked;
-    bool blueMasked;
-    bool alphaMasked;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

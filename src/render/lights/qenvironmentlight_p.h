@@ -77,11 +77,6 @@ private:
     void _q_updateEnvMapsSize();
 };
 
-struct QEnvironmentLightData
-{
-    Qt3DCore::QNodeId shaderDataId;
-};
-
 }
 
 QT_END_NAMESPACE

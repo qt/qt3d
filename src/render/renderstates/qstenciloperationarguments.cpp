@@ -44,6 +44,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+QStencilOperationArgumentsPrivate::~QStencilOperationArgumentsPrivate() = default;
+
 /*!
     \class Qt3DRender::QStencilOperationArguments
     \brief The QStencilOperationArguments class sets the actions to be taken

@@ -72,12 +72,6 @@ public:
     double m_farValue;
 };
 
-struct QDepthRangeData
-{
-    double nearValue;
-    double farValue;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

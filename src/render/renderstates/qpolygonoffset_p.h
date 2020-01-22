@@ -72,12 +72,6 @@ public:
     Q_DECLARE_PUBLIC(QPolygonOffset)
 };
 
-struct QPolygonOffsetData
-{
-    float scaleFactor;
-    float depthSteps;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -71,12 +71,6 @@ public :
     QRasterMode::FaceMode m_faceMode;
 };
 
-struct QRasterModeData
-{
-    QRasterMode::FaceMode faceMode;
-    QRasterMode::RasterMode rasterMode;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

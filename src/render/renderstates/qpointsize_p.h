@@ -71,12 +71,6 @@ public:
     Q_DECLARE_PUBLIC(QPointSize)
 };
 
-struct QPointSizeData
-{
-    QPointSize::SizeMode sizeMode;
-    float value;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

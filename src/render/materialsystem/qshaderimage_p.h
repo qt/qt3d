@@ -76,16 +76,6 @@ public:
     bool m_layered;
 };
 
-struct QShaderImageData
-{
-    Qt3DCore::QNodeId textureId;
-    int mipLevel;
-    int layer;
-    QShaderImage::Access access;
-    QShaderImage::ImageFormat format;
-    bool layered;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

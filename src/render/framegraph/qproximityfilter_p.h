@@ -69,12 +69,6 @@ public:
     float m_distanceThreshold;
 };
 
-struct QProximityFilterData
-{
-    Qt3DCore::QNodeId entityId;
-    float distanceThreshold;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

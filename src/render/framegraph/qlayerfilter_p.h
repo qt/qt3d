@@ -70,12 +70,6 @@ public:
     QLayerFilter::FilterMode m_filterMode;
 };
 
-struct QLayerFilterData
-{
-    Qt3DCore::QNodeIdVector layerIds;
-    QLayerFilter::FilterMode filterMode;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

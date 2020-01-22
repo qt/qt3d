@@ -45,6 +45,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+QStencilOperationPrivate::~QStencilOperationPrivate() = default;
+
 /*!
     \class Qt3DRender::QStencilOperation
     \brief The QStencilOperation class specifies stencil operation.

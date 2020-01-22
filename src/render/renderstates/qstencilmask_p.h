@@ -69,12 +69,6 @@ public:
     uint m_backOutputMask;
 };
 
-struct QStencilMaskData
-{
-    uint frontOutputMask;
-    uint backOutputMask;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

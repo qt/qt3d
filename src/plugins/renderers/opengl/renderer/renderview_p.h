@@ -64,7 +64,7 @@
 #include <Qt3DRender/private/qmemorybarrier_p.h>
 #include <Qt3DRender/private/qrendercapture_p.h>
 #include <Qt3DRender/private/qblitframebuffer_p.h>
-#include <Qt3DRender/private/qwaitfence_p.h>
+#include <Qt3DRender/private/waitfence_p.h>
 
 #include <Qt3DRender/private/aligned_malloc_p.h>
 
@@ -168,8 +168,8 @@ public:
     // We prefix with get to avoid confusion when it is called
     inline Qt3DCore::QNodeIdVector insertFenceIds() const { return m_insertFenceIds; }
 
-    inline void appendWaitFence(const QWaitFenceData &data) { m_waitFences.push_back(data); }
-    inline QVector<QWaitFenceData> waitFences() const { return m_waitFences; }
+    inline void appendWaitFence(const WaitFence::Data &data) { m_waitFences.push_back(data); }
+    inline QVector<WaitFence::Data> waitFences() const { return m_waitFences; }
 
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_data.m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_data.m_passFilter; }
@@ -329,7 +329,7 @@ private:
     int m_workGroups[3];
     QMemoryBarrier::Operations m_memoryBarrier;
     QVector<Qt3DCore::QNodeId> m_insertFenceIds;
-    QVector<QWaitFenceData> m_waitFences;
+    QVector<WaitFence::Data> m_waitFences;
 
     QVector<RenderCommand> m_commands;
     mutable QVector<LightSource> m_lightSources;

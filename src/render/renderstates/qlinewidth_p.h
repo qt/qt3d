@@ -70,12 +70,6 @@ public:
     Q_DECLARE_PUBLIC(QLineWidth)
 };
 
-struct QLineWidthData
-{
-    float value;
-    bool smooth;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -93,18 +93,6 @@ public:
     Q_DECLARE_PUBLIC(QAbstractRayCaster)
 };
 
-struct QAbstractRayCasterData
-{
-    QAbstractRayCaster::RunMode runMode;
-    QAbstractRayCasterPrivate::RayCasterType casterType;
-    QPoint position;
-    QVector3D origin;
-    QVector3D direction;
-    float length = 1.f;
-    QAbstractRayCaster::FilterMode filterMode;
-    Qt3DCore::QNodeIdVector layerIds;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

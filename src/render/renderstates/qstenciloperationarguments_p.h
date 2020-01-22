@@ -68,6 +68,7 @@ public:
     {
 
     }
+    ~QStencilOperationArgumentsPrivate();
 
     QStencilOperationArguments::FaceMode m_face;
     QStencilOperationArguments::Operation m_stencilTestFailureOperation;

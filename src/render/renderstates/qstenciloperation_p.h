@@ -72,6 +72,7 @@ public:
         , m_front(new QStencilOperationArguments(QStencilOperationArguments::Front, q_ptr))
         , m_back(new QStencilOperationArguments(QStencilOperationArguments::Back, q_ptr))
     {}
+    ~QStencilOperationPrivate();
 
     QStencilOperationArguments *m_front;
     QStencilOperationArguments *m_back;

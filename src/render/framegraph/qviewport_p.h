@@ -70,12 +70,6 @@ public :
     float m_gamma;
 };
 
-struct QViewportData
-{
-    QRectF normalizedRect;
-    float gamma;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

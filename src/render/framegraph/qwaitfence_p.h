@@ -69,14 +69,6 @@ public:
     quint64 m_timeout;
 };
 
-struct QWaitFenceData
-{
-    QWaitFence::HandleType handleType;
-    QVariant handle;
-    bool waitOnCPU;
-    quint64 timeout;
-};
-
 } // Qt3DRender
 
 QT_END_NAMESPACE

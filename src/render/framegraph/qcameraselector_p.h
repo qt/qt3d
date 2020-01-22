@@ -69,11 +69,6 @@ public:
     Qt3DCore::QEntity *m_camera;
 };
 
-struct QCameraSelectorData
-{
-    Qt3DCore::QNodeId cameraId;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

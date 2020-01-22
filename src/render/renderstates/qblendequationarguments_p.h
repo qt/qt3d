@@ -78,15 +78,6 @@ public:
     int m_bufferIndex;
 };
 
-struct QBlendEquationArgumentsData
-{
-    QBlendEquationArguments::Blending sourceRgb;
-    QBlendEquationArguments::Blending sourceAlpha;
-    QBlendEquationArguments::Blending destinationRgb;
-    QBlendEquationArguments::Blending destinationAlpha;
-    int bufferIndex;
-};
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

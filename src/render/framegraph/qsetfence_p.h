@@ -72,10 +72,6 @@ public:
     Q_DECLARE_PUBLIC(QSetFence)
 };
 
-struct QSetFenceData
-{
-};
-
 } // Qt3DRender
 
 QT_END_NAMESPACE
