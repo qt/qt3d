@@ -40,7 +40,8 @@
 #ifndef QT3DRENDER_QTEXTUREIMAGEDATAGENERATOR_H
 #define QT3DRENDER_QTEXTUREIMAGEDATAGENERATOR_H
 
-#include <Qt3DRender/qabstractfunctor.h>
+#include <Qt3DCore/qabstractfunctor.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QtCore/QSharedPointer>
 
 // TO DO TexImageDataPtr -> QImageDataPtr + d_ptr
@@ -55,7 +56,7 @@ namespace Qt3DRender {
 class QTextureImageData;
 typedef QSharedPointer<QTextureImageData> QTextureImageDataPtr;
 
-class Q_3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public QAbstractFunctor
+class Q_3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public Qt3DCore::QAbstractFunctor
 {
 public:
     virtual ~QTextureImageDataGenerator();

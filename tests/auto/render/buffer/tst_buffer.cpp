@@ -26,14 +26,10 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/buffer_p.h>
-#include <Qt3DRender/private/qbuffer_p.h>
+#include <Qt3DCore/private/qbuffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testarbiter.h"
@@ -49,11 +45,11 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
-        Qt3DRender::QBuffer buffer;
+        Qt3DCore::QBuffer buffer;
         Qt3DRender::Render::BufferManager bufferManager;
         TestRenderer renderer;
 
-        buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
+        buffer.setUsage(Qt3DCore::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("Corvette"));
 
         // WHEN
@@ -79,13 +75,13 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendBuffer.isDirty(), false);
-        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
+        QCOMPARE(backendBuffer.usage(), Qt3DCore::QBuffer::StaticDraw);
         QVERIFY(backendBuffer.data().isEmpty());
         QVERIFY(backendBuffer.peerId().isNull());
         QVERIFY(backendBuffer.pendingBufferUpdates().empty());
 
         // GIVEN
-        Qt3DRender::QBuffer frontendBuffer;
+        Qt3DCore::QBuffer frontendBuffer;
 
         // WHEN
         backendBuffer.setManager(&bufferManager);
@@ -94,17 +90,17 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendBuffer.isDirty(), true);
-        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
+        QCOMPARE(backendBuffer.usage(), Qt3DCore::QBuffer::StaticDraw);
         QVERIFY(backendBuffer.data().isEmpty());
         QVERIFY(backendBuffer.pendingBufferUpdates().empty());
 
         // WHEN
-        frontendBuffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
+        frontendBuffer.setUsage(Qt3DCore::QBuffer::DynamicCopy);
         frontendBuffer.setData(QByteArrayLiteral("C7KR4"));
         backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
-        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::DynamicCopy);
+        QCOMPARE(backendBuffer.usage(), Qt3DCore::QBuffer::DynamicCopy);
         QCOMPARE(backendBuffer.isDirty(), true);
         QCOMPARE(backendBuffer.data(), QByteArrayLiteral("C7KR4"));
         QVERIFY(!backendBuffer.pendingBufferUpdates().empty());
@@ -121,7 +117,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendBuffer.isDirty(), false);
-        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
+        QCOMPARE(backendBuffer.usage(), Qt3DCore::QBuffer::StaticDraw);
         QVERIFY(backendBuffer.data().isEmpty());
         QVERIFY(backendBuffer.pendingBufferUpdates().empty());
     }
@@ -133,7 +129,7 @@ private Q_SLOTS:
         Qt3DRender::Render::Buffer backendBuffer;
         Qt3DRender::Render::BufferManager bufferManager;
         TestRenderer renderer;
-        Qt3DRender::QBuffer frontendBuffer;
+        Qt3DCore::QBuffer frontendBuffer;
 
         QByteArray data("111456789\0");
 
@@ -150,7 +146,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
-        Qt3DRender::QBufferUpdate fullUpdate = backendBuffer.pendingBufferUpdates().first();
+        Qt3DCore::QBufferUpdate fullUpdate = backendBuffer.pendingBufferUpdates().first();
         QCOMPARE(fullUpdate.offset, -1);
         QVERIFY(fullUpdate.data.isEmpty());
         QCOMPARE(frontendBuffer.data(), backendBuffer.data());
@@ -185,24 +181,24 @@ private Q_SLOTS:
     {
         // GIVEN
         TestRenderer renderer;
-        Qt3DRender::QBuffer frontendBuffer;
+        Qt3DCore::QBuffer frontendBuffer;
         Qt3DRender::Render::Buffer backendBuffer;
         backendBuffer.setRenderer(&renderer);
         simulateInitializationSync(&frontendBuffer, &backendBuffer);
 
         // THEN
         QVERIFY(backendBuffer.data().isEmpty());
-        QVERIFY(backendBuffer.usage() != Qt3DRender::QBuffer::DynamicRead);
+        QVERIFY(backendBuffer.usage() != Qt3DCore::QBuffer::DynamicRead);
         QVERIFY(!backendBuffer.isDirty());
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         // WHEN
-        frontendBuffer.setUsage(Qt3DRender::QBuffer::DynamicRead);
+        frontendBuffer.setUsage(Qt3DCore::QBuffer::DynamicRead);
         backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
-        QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::DynamicRead);
+        QCOMPARE(backendBuffer.usage(), Qt3DCore::QBuffer::DynamicRead);
         QVERIFY(backendBuffer.isDirty());
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
@@ -252,7 +248,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
-        Qt3DRender::QBuffer buffer;
+        Qt3DCore::QBuffer buffer;
         Qt3DRender::Render::BufferManager bufferManager;
         TestRenderer renderer;
 
@@ -278,7 +274,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
-        Qt3DRender::QBuffer buffer;
+        Qt3DCore::QBuffer buffer;
         Qt3DRender::Render::BufferManager bufferManager;
         TestRenderer renderer;
 

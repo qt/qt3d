@@ -42,14 +42,15 @@
 #include <QtCore/QScopedPointer>
 #include <QtCore/private/qfactoryloader_p.h>
 
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qgeometry.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qgeometry.h>
 
 #include <Qt3DRender/private/qgeometryloaderfactory_p.h>
 #include <Qt3DRender/private/qgeometryloaderinterface_p.h>
 
 #include "../../../../src/plugins/geometryloaders/qtgeometryloaders-config.h"
 
+using namespace Qt3DCore;
 using namespace Qt3DRender;
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, geometryLoader,

@@ -40,8 +40,8 @@
 #include "qtorusgeometry.h"
 #include "qtorusgeometry_p.h"
 
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
 #include <QtGui/QVector3D>
 #include <QtGui/QVector4D>
 
@@ -49,7 +49,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DRender;
+using namespace Qt3DCore;
 
 namespace  Qt3DExtras {
 
@@ -176,8 +176,8 @@ void QTorusGeometryPrivate::init()
     m_texCoordAttribute = new QAttribute(q);
     m_tangentAttribute = new QAttribute(q);
     m_indexAttribute = new QAttribute(q);
-    m_vertexBuffer = new Qt3DRender::QBuffer(q);
-    m_indexBuffer = new Qt3DRender::QBuffer(q);
+    m_vertexBuffer = new Qt3DCore::QBuffer(q);
+    m_indexBuffer = new Qt3DCore::QBuffer(q);
     // vec3 pos, vec2 tex, vec3 normal, vec4 tangent
     const quint32 elementSize = 3 + 2 + 3 + 4;
     const quint32 stride = elementSize * sizeof(float);
@@ -311,7 +311,7 @@ QByteArray QTorusGeometryPrivate::generateIndexData() const
  * \brief The QTorusGeometry class allows creation of a torus in 3D space.
  * \since 5.7
  * \ingroup geometries
- * \inherits Qt3DRender::QGeometry
+ * \inherits Qt3DCore::QGeometry
  *
  * The QTorusGeometry class is most commonly used internally by the QTorusMesh
  * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.

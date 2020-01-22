@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,13 +73,13 @@ public:
     inline Qt3DCore::QNodeId bufferId() const { return m_bufferId; }
     inline QString name() const { return m_name; }
     inline int nameId() const { return m_nameId; }
-    inline QAttribute::VertexBaseType vertexBaseType() const { return m_vertexBaseType; }
+    inline Qt3DCore::QAttribute::VertexBaseType vertexBaseType() const { return m_vertexBaseType; }
     inline uint vertexSize() const { return m_vertexSize; }
     inline uint count() const { return m_count; }
     inline uint byteStride() const { return m_byteStride; }
     inline uint byteOffset() const { return m_byteOffset; }
     inline uint divisor() const { return m_divisor; }
-    inline QAttribute::AttributeType attributeType() const { return m_attributeType; }
+    inline Qt3DCore::QAttribute::AttributeType attributeType() const { return m_attributeType; }
     inline bool isDirty() const { return m_attributeDirty; }
     void unsetDirty();
 
@@ -87,13 +87,13 @@ private:
     Qt3DCore::QNodeId m_bufferId;
     QString m_name;
     int m_nameId;
-    QAttribute::VertexBaseType m_vertexBaseType;
+    Qt3DCore::QAttribute::VertexBaseType m_vertexBaseType;
     uint m_vertexSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;
     uint m_divisor;
-    QAttribute::AttributeType m_attributeType;
+    Qt3DCore::QAttribute::AttributeType m_attributeType;
     bool m_attributeDirty;
 };
 

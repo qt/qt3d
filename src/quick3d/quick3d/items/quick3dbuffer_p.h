@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,32 +37,66 @@
 **
 ****************************************************************************/
 
-#include "qurlhelper_p.h"
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/QBuffer>
+
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+class QQmlEngine;
+class QJSValue;
 
-QString QUrlHelper::urlToLocalFileOrQrc(const QUrl &url)
-{
-    const QString scheme(url.scheme().toLower());
-    if (scheme == QLatin1String("qrc")) {
-        if (url.authority().isEmpty())
-            return QLatin1Char(':') + url.path();
-        return QString();
-    }
-
-#if defined(Q_OS_ANDROID)
-    if (scheme == QLatin1String("assets")) {
-        if (url.authority().isEmpty())
-            return url.toString();
-        return QString();
-    }
-#endif
-
-    return url.toLocalFile();
+namespace QV4 {
+struct ExecutionEngine;
 }
 
-} // Qt3DRender
+namespace Qt3DCore {
+
+namespace Quick {
+
+class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DBuffer : public Qt3DCore::QBuffer
+{
+    Q_OBJECT
+    Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)
+public:
+    explicit Quick3DBuffer(Qt3DCore::QNode *parent = nullptr);
+
+    QVariant bufferData() const;
+    void setBufferData(const QVariant &bufferData);
+
+    Q_INVOKABLE QVariant readBinaryFile(const QUrl &fileUrl);
+
+public Q_SLOTS:
+    void updateData(int offset, const QVariant &bytes);
+
+Q_SIGNALS:
+    void bufferDataChanged();
+
+private:
+    QQmlEngine *m_engine;
+    QV4::ExecutionEngine *m_v4engine;
+    void initEngines();
+    QByteArray convertToRawData(const QJSValue &jsValue);
+};
+
+} // Quick
+
+} // Qt3DCore
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H

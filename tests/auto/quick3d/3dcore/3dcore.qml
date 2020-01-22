@@ -50,4 +50,8 @@ Item {
     QQ3Core210.Joint {}
 
     QQ3Core214.Transform {}
+
+    QQ3Core20.Attribute {}                   //Qt3DCore::QAttribute
+    QQ3Core20.Buffer {}                      //Qt3DCore::Quick::Quick3DBuffer
+    QQ3Core20.Geometry {}                    //Qt3DCore::QGeometry, Qt3DCore::Quick::Quick3DGeometry
 }

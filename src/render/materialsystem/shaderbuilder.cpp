@@ -42,7 +42,7 @@
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/private/qshaderprogram_p.h>
-#include <Qt3DRender/private/qurlhelper_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 
 #include <QtGui/private/qshaderformat_p.h>
 #include <QtGui/private/qshadergraphloader_p.h>
@@ -213,7 +213,7 @@ bool ShaderBuilder::isShaderCodeDirty(QShaderProgram::ShaderType type) const
 
 void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
 {
-    const auto graphPath = QUrlHelper::urlToLocalFileOrQrc(shaderGraph(type));
+    const auto graphPath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(shaderGraph(type));
     QFile file(graphPath);
     if (!file.open(QFile::ReadOnly)) {
         qWarning() << "Couldn't open file:" << graphPath;

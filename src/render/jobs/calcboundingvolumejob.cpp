@@ -52,7 +52,7 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/buffervisitor_p.h>
 #include <Qt3DRender/private/entityaccumulator_p.h>
-#include <Qt3DRender/private/qgeometry_p.h>
+#include <Qt3DCore/private/qgeometry_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 
 #include <QtCore/qmath.h>
@@ -62,6 +62,8 @@
 #include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
+
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -271,7 +273,7 @@ QVector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, Entity *
 
             for (Qt3DCore::QNodeId attrNodeId : attributes) {
                 Qt3DRender::Render::Attribute *attr = manager->lookupResource<Attribute, AttributeManager>(attrNodeId);
-                if (attr && attr->attributeType() == Qt3DRender::QAttribute::IndexAttribute) {
+                if (attr && attr->attributeType() == QAttribute::IndexAttribute) {
                     indexBuf = manager->lookupResource<Buffer, BufferManager>(attr->bufferId());
                     if (indexBuf) {
                         indexAttribute = attr;
@@ -361,10 +363,10 @@ public:
     void postFrame(Qt3DCore::QAspectManager *manager) override
     {
         for (Geometry *backend : qAsConst(m_updatedGeometries)) {
-            QGeometry *node = qobject_cast<QGeometry *>(manager->lookupNode(backend->peerId()));
+            Qt3DCore::QGeometry *node = qobject_cast<Qt3DCore::QGeometry *>(manager->lookupNode(backend->peerId()));
             if (!node)
                 continue;
-            QGeometryPrivate *dNode = static_cast<QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(node));
+            Qt3DCore::QGeometryPrivate *dNode = static_cast<Qt3DCore::QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(node));
             dNode->setExtent(backend->min(), backend->max());
         }
     }

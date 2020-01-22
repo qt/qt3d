@@ -29,9 +29,9 @@
 #include <QtTest/QTest>
 #include <QObject>
 #include <Qt3DExtras/qtorusgeometry.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
-#include <qopenglcontext.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <QtGui/qopenglcontext.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector4d.h>
@@ -57,14 +57,14 @@ private Q_SLOTS:
         QCOMPARE(geometry.radius(), 1.0f);
         QCOMPARE(geometry.minorRadius(), 1.0f);
         QVERIFY(geometry.positionAttribute() != nullptr);
-        QCOMPARE(geometry.positionAttribute()->name(), Qt3DRender::QAttribute::defaultPositionAttributeName());
+        QCOMPARE(geometry.positionAttribute()->name(), Qt3DCore::QAttribute::defaultPositionAttributeName());
         QVERIFY(geometry.normalAttribute() != nullptr);
-        QCOMPARE(geometry.normalAttribute()->name(), Qt3DRender::QAttribute::defaultNormalAttributeName());
+        QCOMPARE(geometry.normalAttribute()->name(), Qt3DCore::QAttribute::defaultNormalAttributeName());
         QVERIFY(geometry.texCoordAttribute() != nullptr);
-        QCOMPARE(geometry.texCoordAttribute()->name(), Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName());
+        QCOMPARE(geometry.texCoordAttribute()->name(), Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName());
         // TODO: Expose tangent attribute in Qt 5.8 and see below
 //        QVERIFY(geometry.tangentAttribute() != nullptr);
-//        QCOMPARE(geometry.tangentAttribute()->name(), Qt3DRender::QAttribute::defaultTangentAttributeName());
+//        QCOMPARE(geometry.tangentAttribute()->name(), Qt3DCore::QAttribute::defaultTangentAttributeName());
         QVERIFY(geometry.indexAttribute() != nullptr);
     }
 
@@ -299,12 +299,12 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DExtras::QTorusGeometry geometry;
-        const QVector<Qt3DRender::QAttribute *> attributes = geometry.attributes();
-        Qt3DRender::QAttribute *positionAttribute = geometry.positionAttribute();
-        Qt3DRender::QAttribute *normalAttribute = geometry.normalAttribute();
-        Qt3DRender::QAttribute *texCoordAttribute = geometry.texCoordAttribute();
-//        Qt3DRender::QAttribute *tangentAttribute = geometry.tangentAttribute();
-        Qt3DRender::QAttribute *indexAttribute = geometry.indexAttribute();
+        const QVector<Qt3DCore::QAttribute *> attributes = geometry.attributes();
+        Qt3DCore::QAttribute *positionAttribute = geometry.positionAttribute();
+        Qt3DCore::QAttribute *normalAttribute = geometry.normalAttribute();
+        Qt3DCore::QAttribute *texCoordAttribute = geometry.texCoordAttribute();
+//        Qt3DCore::QAttribute *tangentAttribute = geometry.tangentAttribute();
+        Qt3DCore::QAttribute *indexAttribute = geometry.indexAttribute();
 
         // WHEN
         QFETCH(int, rings);
@@ -320,7 +320,7 @@ private Q_SLOTS:
 
         // Check buffer of each attribute is valid and actually has some data
         for (const auto &attribute : attributes) {
-            Qt3DRender::QBuffer *buffer = attribute->buffer();
+            Qt3DCore::QBuffer *buffer = attribute->buffer();
             QVERIFY(buffer != nullptr);
             QVERIFY(buffer->data().size() != 0);
         }

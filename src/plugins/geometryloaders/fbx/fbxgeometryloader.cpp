@@ -41,9 +41,9 @@
 
 #include <QtCore/QFileDevice>
 
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
 #include <Qt3DRender/private/renderlogging_p.h>
 
 #include <fbxsdk.h>

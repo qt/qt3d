@@ -64,7 +64,7 @@ public:
     void updateAttributeNames();
 
     QStringList m_attributeNames;
-    QVector<Qt3DRender::QAttribute *> m_targetAttributes;
+    QVector<Qt3DCore::QAttribute *> m_targetAttributes;
 
     Q_DECLARE_PUBLIC(QMorphTarget)
 };

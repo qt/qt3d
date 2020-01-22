@@ -59,14 +59,16 @@ QT_BEGIN_NAMESPACE
 
 class QIODevice;
 
-namespace Qt3DRender {
-
+namespace Qt3DCore {
 class QGeometry;
+}
+
+namespace Qt3DRender {
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT QGeometryLoaderInterface : public QObject
 {
 public:
-    virtual QGeometry *geometry() const = 0;
+    virtual Qt3DCore::QGeometry *geometry() const = 0;
 
     virtual bool load(QIODevice *ioDev, const QString &subMesh = QString()) = 0;
 };

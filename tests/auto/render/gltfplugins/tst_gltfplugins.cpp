@@ -56,8 +56,8 @@
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
 #include <Qt3DRender/qpointlight.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qtechnique.h>
@@ -111,12 +111,12 @@ private:
                             Qt3DCore::QComponent *comp2 = nullptr,
                             Qt3DCore::QComponent *comp3 = nullptr,
                             Qt3DCore::QEntity *parent = nullptr);
-    void addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,
-                                        Qt3DRender::QBuffer *buffer, int count);
-    void addIndexAttributeToGeometry(Qt3DRender::QGeometry *geometry,
-                                     Qt3DRender::QBuffer *buffer, int count);
-    void addColorAttributeToGeometry(Qt3DRender::QGeometry *geometry,
-                                     Qt3DRender::QBuffer *buffer, int count);
+    void addPositionAttributeToGeometry(Qt3DCore::QGeometry *geometry,
+                                        Qt3DCore::QBuffer *buffer, int count);
+    void addIndexAttributeToGeometry(Qt3DCore::QGeometry *geometry,
+                                     Qt3DCore::QBuffer *buffer, int count);
+    void addColorAttributeToGeometry(Qt3DCore::QGeometry *geometry,
+                                     Qt3DCore::QBuffer *buffer, int count);
     Qt3DCore::QEntity *findChildEntity(Qt3DCore::QEntity *entity, const QString &name);
     Qt3DCore::QTransform *transformComponent(Qt3DCore::QEntity *entity);
     Qt3DRender::QAbstractLight *lightComponent(Qt3DCore::QEntity *entity);
@@ -124,10 +124,10 @@ private:
     Qt3DRender::QGeometryRenderer *meshComponent(Qt3DCore::QEntity *entity);
     Qt3DRender::QMaterial *materialComponent(Qt3DCore::QEntity *entity);
     void compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QComponent *c2);
-    Qt3DRender::QAttribute *findAttribute(const QString &name,
-                                          Qt3DRender::QAttribute::AttributeType type,
-                                          Qt3DRender::QGeometry *geometry);
-    void compareAttributes(Qt3DRender::QAttribute *a1, Qt3DRender::QAttribute *a2);
+    Qt3DCore::QAttribute *findAttribute(const QString &name,
+                                          Qt3DCore::QAttribute::AttributeType type,
+                                          Qt3DCore::QGeometry *geometry);
+    void compareAttributes(Qt3DCore::QAttribute *a1, Qt3DCore::QAttribute *a2);
     void compareParameters(const QVector<Qt3DRender::QParameter *> &params1,
                            const QVector<Qt3DRender::QParameter *> &params2);
     void compareRenderPasses(const QVector<Qt3DRender::QRenderPass *> &passes1,
@@ -515,8 +515,8 @@ void tst_gltfPlugins::createTestScene()
         transform->setRotation(Qt3DCore::QTransform::fromAxisAndAngle(1.0f, 1.0f, 1.0f, 270.0f));
 
         Qt3DRender::QGeometryRenderer *boxMesh = createCustomCube();
-        Qt3DRender::QBuffer *colorDataBuffer =
-                new Qt3DRender::QBuffer(boxMesh->geometry());
+        Qt3DCore::QBuffer *colorDataBuffer =
+                new Qt3DCore::QBuffer(boxMesh->geometry());
         QByteArray colorBufferData;
         colorBufferData.resize(8 * 4 * sizeof(float));
 
@@ -570,8 +570,8 @@ void tst_gltfPlugins::createTestScene()
         transform->setTranslation(QVector3D(0.0f, 2.0f, -40.0f));
         transform->setRotation(Qt3DCore::QTransform::fromAxisAndAngle(1.0f, 2.0f, 3.0f, 90.0f));
         Qt3DRender::QGeometryRenderer *boxMesh = createCustomCube();
-        Qt3DRender::QBuffer *offsetBuffer =
-                new Qt3DRender::QBuffer(boxMesh->geometry());
+        Qt3DCore::QBuffer *offsetBuffer =
+                new Qt3DCore::QBuffer(boxMesh->geometry());
         QByteArray offsetBufferData;
         offsetBufferData.resize(8 * 3 * sizeof(float));
 
@@ -584,10 +584,10 @@ void tst_gltfPlugins::createTestScene()
 
         offsetBuffer->setData(offsetBufferData);
 
-        Qt3DRender::QAttribute *customAttribute = new Qt3DRender::QAttribute();
-        customAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        Qt3DCore::QAttribute *customAttribute = new Qt3DCore::QAttribute();
+        customAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         customAttribute->setBuffer(offsetBuffer);
-        customAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        customAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
         customAttribute->setVertexSize(3);
         customAttribute->setByteOffset(0);
         customAttribute->setByteStride(0);
@@ -614,29 +614,29 @@ void tst_gltfPlugins::createTestScene()
 #endif
 }
 
-void tst_gltfPlugins::addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,
-                                                     Qt3DRender::QBuffer *buffer, int count)
+void tst_gltfPlugins::addPositionAttributeToGeometry(Qt3DCore::QGeometry *geometry,
+                                                     Qt3DCore::QBuffer *buffer, int count)
 {
-    Qt3DRender::QAttribute *posAttribute = new Qt3DRender::QAttribute();
-    posAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    Qt3DCore::QAttribute *posAttribute = new Qt3DCore::QAttribute();
+    posAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
     posAttribute->setBuffer(buffer);
-    posAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+    posAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
     posAttribute->setVertexSize(3);
     posAttribute->setByteOffset(0);
     posAttribute->setByteStride(0);
     posAttribute->setCount(count);
-    posAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
+    posAttribute->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
 
     geometry->addAttribute(posAttribute);
 }
 
-void tst_gltfPlugins::addIndexAttributeToGeometry(Qt3DRender::QGeometry *geometry,
-                                                  Qt3DRender::QBuffer *buffer, int count)
+void tst_gltfPlugins::addIndexAttributeToGeometry(Qt3DCore::QGeometry *geometry,
+                                                  Qt3DCore::QBuffer *buffer, int count)
 {
-    Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute();
-    indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+    Qt3DCore::QAttribute *indexAttribute = new Qt3DCore::QAttribute();
+    indexAttribute->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
     indexAttribute->setBuffer(buffer);
-    indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
+    indexAttribute->setVertexBaseType(Qt3DCore::QAttribute::UnsignedShort);
     indexAttribute->setVertexSize(1);
     indexAttribute->setByteOffset(0);
     indexAttribute->setByteStride(0);
@@ -645,18 +645,18 @@ void tst_gltfPlugins::addIndexAttributeToGeometry(Qt3DRender::QGeometry *geometr
     geometry->addAttribute(indexAttribute);
 }
 
-void tst_gltfPlugins::addColorAttributeToGeometry(Qt3DRender::QGeometry *geometry,
-                                                  Qt3DRender::QBuffer *buffer, int count)
+void tst_gltfPlugins::addColorAttributeToGeometry(Qt3DCore::QGeometry *geometry,
+                                                  Qt3DCore::QBuffer *buffer, int count)
 {
-    Qt3DRender::QAttribute *colorAttribute = new Qt3DRender::QAttribute();
-    colorAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    Qt3DCore::QAttribute *colorAttribute = new Qt3DCore::QAttribute();
+    colorAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
     colorAttribute->setBuffer(buffer);
-    colorAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+    colorAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
     colorAttribute->setVertexSize(4);
     colorAttribute->setByteOffset(0);
     colorAttribute->setByteStride(0);
     colorAttribute->setCount(count);
-    colorAttribute->setName(Qt3DRender::QAttribute::defaultColorAttributeName());
+    colorAttribute->setName(Qt3DCore::QAttribute::defaultColorAttributeName());
 
     geometry->addAttribute(colorAttribute);
 }
@@ -736,46 +736,46 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
             auto geometry2 = mesh2->geometry();
             // Check that attributes match.
             compareAttributes(
-                        findAttribute(Qt3DRender::QAttribute::defaultPositionAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultPositionAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry1),
-                        findAttribute(Qt3DRender::QAttribute::defaultPositionAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultPositionAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry2));
             compareAttributes(
-                        findAttribute(Qt3DRender::QAttribute::defaultNormalAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultNormalAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry1),
-                        findAttribute(Qt3DRender::QAttribute::defaultNormalAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultNormalAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry2));
             compareAttributes(
-                        findAttribute(Qt3DRender::QAttribute::defaultTangentAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultTangentAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry1),
-                        findAttribute(Qt3DRender::QAttribute::defaultTangentAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultTangentAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry2));
             compareAttributes(
-                        findAttribute(Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry1),
-                        findAttribute(Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry2));
             compareAttributes(
-                        findAttribute(Qt3DRender::QAttribute::defaultColorAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultColorAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry1),
-                        findAttribute(Qt3DRender::QAttribute::defaultColorAttributeName(),
-                                      Qt3DRender::QAttribute::VertexAttribute,
+                        findAttribute(Qt3DCore::QAttribute::defaultColorAttributeName(),
+                                      Qt3DCore::QAttribute::VertexAttribute,
                                       geometry2));
             compareAttributes(
                         findAttribute(QStringLiteral(""),
-                                      Qt3DRender::QAttribute::IndexAttribute,
+                                      Qt3DCore::QAttribute::IndexAttribute,
                                       geometry1),
                         findAttribute(QStringLiteral(""),
-                                      Qt3DRender::QAttribute::IndexAttribute,
+                                      Qt3DCore::QAttribute::IndexAttribute,
                                       geometry2));
         } else {
             int count = c1->metaObject()->propertyCount();
@@ -840,12 +840,12 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
     }
 }
 
-Qt3DRender::QAttribute *tst_gltfPlugins::findAttribute(const QString &name,
-                                                       Qt3DRender::QAttribute::AttributeType type,
-                                                       Qt3DRender::QGeometry *geometry)
+Qt3DCore::QAttribute *tst_gltfPlugins::findAttribute(const QString &name,
+                                                       Qt3DCore::QAttribute::AttributeType type,
+                                                       Qt3DCore::QGeometry *geometry)
 {
     for (auto att : geometry->attributes()) {
-        if ((type == Qt3DRender::QAttribute::IndexAttribute && type == att->attributeType())
+        if ((type == Qt3DCore::QAttribute::IndexAttribute && type == att->attributeType())
                 || name == att->name()) {
             return att;
         }
@@ -853,7 +853,7 @@ Qt3DRender::QAttribute *tst_gltfPlugins::findAttribute(const QString &name,
     return nullptr;
 }
 
-void tst_gltfPlugins::compareAttributes(Qt3DRender::QAttribute *a1, Qt3DRender::QAttribute *a2)
+void tst_gltfPlugins::compareAttributes(Qt3DCore::QAttribute *a1, Qt3DCore::QAttribute *a2)
 {
     QCOMPARE(a1 == nullptr, a2 == nullptr);
     if (a1) {
@@ -962,11 +962,11 @@ QUrl tst_gltfPlugins::getTextureUrl(Qt3DRender::QAbstractTexture *tex)
 Qt3DRender::QGeometryRenderer *tst_gltfPlugins::createCustomCube()
 {
     Qt3DRender::QGeometryRenderer *boxMesh = new Qt3DRender::QGeometryRenderer;
-    Qt3DRender::QGeometry *boxGeometry = new Qt3DRender::QGeometry(boxMesh);
-    Qt3DRender::QBuffer *boxDataBuffer =
-            new Qt3DRender::QBuffer(boxGeometry);
-    Qt3DRender::QBuffer *indexDataBuffer =
-            new Qt3DRender::QBuffer(boxGeometry);
+    Qt3DCore::QGeometry *boxGeometry = new Qt3DCore::QGeometry(boxMesh);
+    Qt3DCore::QBuffer *boxDataBuffer =
+            new Qt3DCore::QBuffer(boxGeometry);
+    Qt3DCore::QBuffer *indexDataBuffer =
+            new Qt3DCore::QBuffer(boxGeometry);
     QByteArray vertexBufferData;
     QByteArray indexBufferData;
 

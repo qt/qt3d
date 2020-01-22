@@ -26,23 +26,19 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
-#include <Qt3DRender/qgeometry.h>
+#include <Qt3DCore/qgeometry.h>
 #include "testrenderer.h"
 
-class DummyGeometry : public Qt3DRender::QGeometry
+class DummyGeometry : public Qt3DCore::QGeometry
 {
     Q_OBJECT
 public:
     DummyGeometry(Qt3DCore::QNode *parent = nullptr)
-        : Qt3DRender::QGeometry(parent)
+        : Qt3DCore::QGeometry(parent)
     {}
 };
 
@@ -57,7 +53,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
         Qt3DRender::QGeometryRenderer geometryRenderer;
-        Qt3DRender::QGeometry geometry;
+        Qt3DCore::QGeometry geometry;
         Qt3DRender::Render::GeometryRendererManager geometryRendererManager;
         TestRenderer renderer;
 
@@ -115,7 +111,7 @@ private Q_SLOTS:
 
         // GIVEN
         Qt3DRender::QGeometryRenderer geometryRenderer;
-        Qt3DRender::QGeometry geometry;
+        Qt3DCore::QGeometry geometry;
         TestRenderer renderer;
 
         geometryRenderer.setInstanceCount(454);

@@ -44,7 +44,7 @@
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DRender/private/qbuffer_p.h>
+#include <Qt3DCore/private/qbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -112,10 +112,10 @@ void SendBufferCaptureJobPrivate::postFrame(Qt3DCore::QAspectManager *aspectMana
     QMutexLocker locker(&m_mutex);
     const QVector<QPair<Qt3DCore::QNodeId, QByteArray>> pendingSendBufferCaptures = std::move(m_buffersToNotify);
     for (const auto &bufferDataPair : pendingSendBufferCaptures) {
-        QBuffer *frontendBuffer = static_cast<decltype(frontendBuffer)>(aspectManager->lookupNode(bufferDataPair.first));
+        Qt3DCore::QBuffer *frontendBuffer = static_cast<decltype(frontendBuffer)>(aspectManager->lookupNode(bufferDataPair.first));
         if (!frontendBuffer)
             continue;
-        QBufferPrivate *dFrontend = static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontendBuffer));
+        Qt3DCore::QBufferPrivate *dFrontend = static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontendBuffer));
         // Calling frontendBuffer->setData would result in forcing a sync against the backend
         // which isn't necessary
         dFrontend->setData(bufferDataPair.second);

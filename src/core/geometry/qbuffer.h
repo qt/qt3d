@@ -37,21 +37,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QBUFFER_H
-#define QT3DRENDER_QBUFFER_H
+#ifndef QT3DCORE_QBUFFER_H
+#define QT3DCORE_QBUFFER_H
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/QSharedPointer>
 
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
 class QBufferPrivate;
 
-class Q_3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QNode
+class Q_3DCORESHARED_EXPORT QBuffer : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
@@ -121,8 +121,8 @@ private:
     Q_DECLARE_PRIVATE(QBuffer)
 };
 
-} // namespace Qt3DRender
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QBUFFER_H
+#endif // QT3DCORE_QBUFFER_H

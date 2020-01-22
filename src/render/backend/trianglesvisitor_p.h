@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DRender/QAttribute>
 #include <Qt3DRender/private/bufferutils_p.h>
 #include <Qt3DCore/private/vector3d_p.h>
 #include <Qt3DCore/private/vector4d_p.h>

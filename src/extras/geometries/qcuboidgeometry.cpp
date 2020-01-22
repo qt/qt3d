@@ -40,16 +40,16 @@
 #include "qcuboidgeometry.h"
 #include "qcuboidgeometry_p.h"
 
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/private/corelogging_p.h>
 
 #include <limits>
 
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DRender;
+using namespace Qt3DCore;
 
 namespace  Qt3DExtras {
 
@@ -406,13 +406,13 @@ QCuboidGeometryPrivate::QCuboidGeometryPrivate()
 void QCuboidGeometryPrivate::init()
 {
     Q_Q(QCuboidGeometry);
-    m_positionAttribute = new Qt3DRender::QAttribute(q);
-    m_normalAttribute = new Qt3DRender::QAttribute(q);
-    m_texCoordAttribute = new Qt3DRender::QAttribute(q);
-    m_tangentAttribute = new Qt3DRender::QAttribute(q);
-    m_indexAttribute = new Qt3DRender::QAttribute(q);
-    m_vertexBuffer = new Qt3DRender::QBuffer(q);
-    m_indexBuffer = new Qt3DRender::QBuffer(q);
+    m_positionAttribute = new Qt3DCore::QAttribute(q);
+    m_normalAttribute = new Qt3DCore::QAttribute(q);
+    m_texCoordAttribute = new Qt3DCore::QAttribute(q);
+    m_tangentAttribute = new Qt3DCore::QAttribute(q);
+    m_indexAttribute = new Qt3DCore::QAttribute(q);
+    m_vertexBuffer = new Qt3DCore::QBuffer(q);
+    m_indexBuffer = new Qt3DCore::QBuffer(q);
 
     // vec3 pos vec2 tex vec3 normal vec4 tangent
     const quint32 stride = (3 + 2 + 3 + 4) * sizeof(float);
@@ -578,7 +578,7 @@ QByteArray QCuboidGeometryPrivate::generateIndexData() const
  * \brief The QCuboidGeometry class allows creation of a cuboid in 3D space.
  * \since 5.7
  * \ingroup geometries
- * \inherits Qt3DRender::QGeometry
+ * \inherits Qt3DCore::QGeometry
  *
  * The QCuboidGeometry class is most commonly used internally by the QCuboidMesh
  * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.

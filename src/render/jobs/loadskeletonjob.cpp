@@ -42,10 +42,10 @@
 #include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qskeletonloader_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/job_common_p.h>
-#include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/private/gltfskeletonloader_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QtCore/QCoreApplication>
@@ -128,7 +128,7 @@ void LoadSkeletonJob::loadSkeletonFromUrl(Skeleton *skeleton)
     using namespace Qt3DCore;
 
     // TODO: Handle remote files
-    QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(skeleton->source());
+    QString filePath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(skeleton->source());
     QFileInfo info(filePath);
     if (!info.exists()) {
         qWarning() << "Could not open skeleton file:" << filePath;

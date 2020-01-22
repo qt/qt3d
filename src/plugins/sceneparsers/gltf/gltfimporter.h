@@ -52,8 +52,8 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
 #include <QtCore/qjsondocument.h>
 #include <QtCore/qjsonobject.h>
 #include <QtCore/qhash.h>
@@ -135,7 +135,7 @@ private:
         explicit AccessorData(const QJsonObject& json, int major, int minor);
 
         QString bufferViewName;
-        QAttribute::VertexBaseType type;
+        Qt3DCore::QAttribute::VertexBaseType type;
         uint dataSize;
         int count;
         int offset;
@@ -178,7 +178,7 @@ private:
     QByteArray resolveLocalData(const QString &path) const;
 
     QVariant parameterValueFromJSON(int type, const QJsonValue &value) const;
-    static QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
+    static Qt3DCore::QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
     static uint accessorDataSizeFromJson(const QString &type);
 
     static QRenderState *buildStateEnable(int state);
@@ -212,7 +212,7 @@ private:
     QHash<QString, QMaterial*> m_materialCache;
 
     QHash<QString, BufferData> m_bufferDatas;
-    QHash<QString, Qt3DRender::QBuffer*> m_buffers;
+    QHash<QString, Qt3DCore::QBuffer*> m_buffers;
 
     QHash<QString, QString> m_shaderPaths;
     QHash<QString, QShaderProgram*> m_programs;

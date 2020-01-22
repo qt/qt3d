@@ -381,8 +381,8 @@ struct SubRangeSorter
 {
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
-        Q_UNUSED(begin);
-        Q_UNUSED(end);
+        Q_UNUSED(begin)
+        Q_UNUSED(end)
         Q_UNREACHABLE();
     }
 };
@@ -705,13 +705,13 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
                     for (Qt3DCore::QNodeId attributeId : attributeIds) {
                         Attribute *attribute = m_manager->attributeManager()->lookupResource(attributeId);
                         switch (attribute->attributeType()) {
-                        case QAttribute::IndexAttribute:
+                        case Qt3DCore::QAttribute::IndexAttribute:
                             indexAttribute = attribute;
                             break;
-                        case QAttribute::DrawIndirectAttribute:
+                        case Qt3DCore::QAttribute::DrawIndirectAttribute:
                             indirectAttribute = attribute;
                             break;
-                        case QAttribute::VertexAttribute:
+                        case Qt3DCore::QAttribute::VertexAttribute:
                             estimatedCount = std::max(int(attribute->count()), estimatedCount);
                             break;
                         default:

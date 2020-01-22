@@ -60,9 +60,9 @@
 #include <QMatrix4x4>
 #include <QBitArray>
 #include <QImage>
+#include <Qt3DCore/qattribute.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/shader_p.h>
-#include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
@@ -184,7 +184,7 @@ public:
     static GLint elementType(GLint type);
     static GLint tupleSizeFromType(GLint type);
     static GLuint byteSizeFromType(GLint type);
-    static GLint glDataTypeFromAttributeDataType(QAttribute::VertexBaseType dataType);
+    static GLint glDataTypeFromAttributeDataType(Qt3DCore::QAttribute::VertexBaseType dataType);
 
     bool supportsDrawBuffersBlend() const;
     bool supportsVAO() const { return m_supportsVAO; }

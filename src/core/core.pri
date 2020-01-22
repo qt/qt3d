@@ -7,6 +7,7 @@ HEADERS += \
     $$PWD/corelogging_p.h \
     $$PWD/qchangearbiter_p.h \
     $$PWD/qt3dcore_global_p.h \
+    $$PWD/qurlhelper_p.h \
     $$PWD/qscene_p.h
 
 SOURCES += \
@@ -14,4 +15,5 @@ SOURCES += \
     $$PWD/qscheduler.cpp \
     $$PWD/qchangearbiter.cpp \
     $$PWD/corelogging.cpp \
+    $$PWD/qurlhelper.cpp \
     $$PWD/qscene.cpp

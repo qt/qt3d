@@ -51,9 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DCore/private/qgeometryfactory_p.h>
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/private/qgeometryfactory_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <memory>
 
@@ -78,9 +78,9 @@ public:
     int m_restartIndexValue;
     int m_verticesPerPatch;
     bool m_primitiveRestart;
-    QGeometry *m_geometry;
+    Qt3DCore::QGeometry *m_geometry;
     QGeometryRenderer::PrimitiveType m_primitiveType;
-    QGeometryFactoryPtr m_geometryFactory;
+    Qt3DCore::QGeometryFactoryPtr m_geometryFactory;
 };
 
 } // namespace Qt3DRender

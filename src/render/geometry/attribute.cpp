@@ -38,8 +38,7 @@
 ****************************************************************************/
 
 #include "attribute_p.h"
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/private/qattribute_p.h>
+#include <Qt3DCore/private/qattribute_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE

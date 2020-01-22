@@ -87,7 +87,7 @@ private:
     void setFirstInstance(int firstInstance);
     void setRestartIndexValue(int index);
     void setPrimitiveRestartEnabled(bool enabled);
-    void setGeometry(Qt3DRender::QGeometry *geometry);
+    void setGeometry(Qt3DCore::QGeometry *geometry);
     void setPrimitiveType(PrimitiveType primitiveType);
 };
 

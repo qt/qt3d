@@ -29,7 +29,7 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qbuffer.h>
 #include <private/trianglesvisitor_p.h>
 #include <private/nodemanagers_p.h>
 #include <private/managers_p.h>
@@ -115,11 +115,11 @@ private Q_SLOTS:
     void checkSetGeometry()
     {
         QScopedPointer<NodeManagers> nodeManagers(new NodeManagers());
-        Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry();
+        Qt3DCore::QGeometry *geometry = new Qt3DCore::QGeometry();
         QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(
                     new Qt3DRender::QGeometryRenderer());
-        QScopedPointer<Qt3DRender::QAttribute> positionAttribute(new Qt3DRender::QAttribute());
-        QScopedPointer<Qt3DRender::QBuffer> dataBuffer(new Qt3DRender::QBuffer());
+        QScopedPointer<Qt3DCore::QAttribute> positionAttribute(new Qt3DCore::QAttribute());
+        QScopedPointer<Qt3DCore::QBuffer> dataBuffer(new Qt3DCore::QBuffer());
         TestReader reader(nodeManagers.data());
         TestRenderer renderer;
 
@@ -152,13 +152,13 @@ private Q_SLOTS:
         simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
-        positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+        positionAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
         positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3 * 4);
         positionAttribute->setByteOffset(0);
-        positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        positionAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         geometry->addAttribute(positionAttribute.data());
 
         geometryRenderer->setGeometry(geometry);
@@ -182,13 +182,13 @@ private Q_SLOTS:
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer,
-                                      Qt3DRender::QAttribute::defaultPositionAttributeName());
+                                      Qt3DCore::QAttribute::defaultPositionAttributeName());
 
         // THEN
         QCOMPARE(ret, true);
         QCOMPARE(reader.attribute(), backendAttribute);
         QCOMPARE(reader.buffer(), backendBuffer);
-        QCOMPARE(reader.bufferInfo().type, Qt3DRender::QAttribute::Float);
+        QCOMPARE(reader.bufferInfo().type, Qt3DCore::QAttribute::Float);
         QCOMPARE(reader.bufferInfo().dataSize, 3u);
         QCOMPARE(reader.bufferInfo().count, 6u);
         QCOMPARE(reader.bufferInfo().byteStride, 12u);
@@ -198,11 +198,11 @@ private Q_SLOTS:
     void testReadCoordinate()
     {
         QScopedPointer<NodeManagers> nodeManagers(new NodeManagers());
-        Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry();
+        Qt3DCore::QGeometry *geometry = new Qt3DCore::QGeometry();
         QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(
                     new Qt3DRender::QGeometryRenderer());
-        QScopedPointer<Qt3DRender::QAttribute> positionAttribute(new Qt3DRender::QAttribute());
-        QScopedPointer<Qt3DRender::QBuffer> dataBuffer(new Qt3DRender::QBuffer());
+        QScopedPointer<Qt3DCore::QAttribute> positionAttribute(new Qt3DCore::QAttribute());
+        QScopedPointer<Qt3DCore::QBuffer> dataBuffer(new Qt3DCore::QBuffer());
         TestReader reader(nodeManagers.data());
         TestRenderer renderer;
 
@@ -235,13 +235,13 @@ private Q_SLOTS:
         simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
-        positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+        positionAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
         positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3 * 4);
         positionAttribute->setByteOffset(0);
-        positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        positionAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         geometry->addAttribute(positionAttribute.data());
 
         geometryRenderer->setGeometry(geometry);
@@ -265,7 +265,7 @@ private Q_SLOTS:
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer,
-                                      Qt3DRender::QAttribute::defaultPositionAttributeName());
+                                      Qt3DCore::QAttribute::defaultPositionAttributeName());
 
         // THEN
         QCOMPARE(ret, true);
@@ -281,11 +281,11 @@ private Q_SLOTS:
     void testReadCoordinateVec4()
     {
         QScopedPointer<NodeManagers> nodeManagers(new NodeManagers());
-        Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry();
+        Qt3DCore::QGeometry *geometry = new Qt3DCore::QGeometry();
         QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(
                     new Qt3DRender::QGeometryRenderer());
-        QScopedPointer<Qt3DRender::QAttribute> positionAttribute(new Qt3DRender::QAttribute());
-        QScopedPointer<Qt3DRender::QBuffer> dataBuffer(new Qt3DRender::QBuffer());
+        QScopedPointer<Qt3DCore::QAttribute> positionAttribute(new Qt3DCore::QAttribute());
+        QScopedPointer<Qt3DCore::QBuffer> dataBuffer(new Qt3DCore::QBuffer());
         TestReader reader(nodeManagers.data());
         TestRenderer renderer;
 
@@ -329,13 +329,13 @@ private Q_SLOTS:
         simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
-        positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+        positionAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
         positionAttribute->setVertexSize(4);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(4 * 4);
         positionAttribute->setByteOffset(0);
-        positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        positionAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         geometry->addAttribute(positionAttribute.data());
 
         geometryRenderer->setGeometry(geometry);
@@ -359,7 +359,7 @@ private Q_SLOTS:
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer,
-                                      Qt3DRender::QAttribute::defaultPositionAttributeName());
+                                      Qt3DCore::QAttribute::defaultPositionAttributeName());
 
         // THEN
         QCOMPARE(ret, true);
@@ -375,12 +375,12 @@ private Q_SLOTS:
     void testReadCoordinateFromAttribute()
     {
         QScopedPointer<NodeManagers> nodeManagers(new NodeManagers());
-        Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry();
+        Qt3DCore::QGeometry *geometry = new Qt3DCore::QGeometry();
         QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(
                     new Qt3DRender::QGeometryRenderer());
-        QScopedPointer<Qt3DRender::QAttribute> positionAttribute(new Qt3DRender::QAttribute());
-        QScopedPointer<Qt3DRender::QAttribute> texcoordAttribute(new Qt3DRender::QAttribute());
-        QScopedPointer<Qt3DRender::QBuffer> dataBuffer(new Qt3DRender::QBuffer());
+        QScopedPointer<Qt3DCore::QAttribute> positionAttribute(new Qt3DCore::QAttribute());
+        QScopedPointer<Qt3DCore::QAttribute> texcoordAttribute(new Qt3DCore::QAttribute());
+        QScopedPointer<Qt3DCore::QBuffer> dataBuffer(new Qt3DCore::QBuffer());
         TestReader reader(nodeManagers.data());
         TestRenderer renderer;
 
@@ -418,23 +418,23 @@ private Q_SLOTS:
         simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         positionAttribute->setBuffer(dataBuffer.data());
-        positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+        positionAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
         positionAttribute->setVertexSize(3);
         positionAttribute->setCount(3);
         positionAttribute->setByteStride(3 * 4 * 2);
         positionAttribute->setByteOffset(0);
-        positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        positionAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         geometry->addAttribute(positionAttribute.data());
 
         texcoordAttribute->setBuffer(dataBuffer.data());
-        texcoordAttribute->setName(Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName());
-        texcoordAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        texcoordAttribute->setName(Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName());
+        texcoordAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
         texcoordAttribute->setVertexSize(3);
         texcoordAttribute->setCount(6);
         texcoordAttribute->setByteStride(3 * 4 * 2);
         texcoordAttribute->setByteOffset(3 * 4);
-        texcoordAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        texcoordAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         geometry->addAttribute(texcoordAttribute.data());
 
         geometryRenderer->setGeometry(geometry);
@@ -463,7 +463,7 @@ private Q_SLOTS:
 
         // WHEN
         bool ret = reader.setGeometry(backendRenderer,
-                                      Qt3DRender::QAttribute::defaultPositionAttributeName());
+                                      Qt3DCore::QAttribute::defaultPositionAttributeName());
 
         // THEN
         QCOMPARE(ret, true);
@@ -474,7 +474,7 @@ private Q_SLOTS:
 
         // WHEN
         ret = reader.setGeometry(backendRenderer,
-                                 Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName());
+                                 Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName());
 
         // THEN
         QCOMPARE(ret, true);

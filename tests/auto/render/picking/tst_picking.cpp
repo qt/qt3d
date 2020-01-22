@@ -36,8 +36,8 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DExtras/qspheremesh.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
 #include <Qt3DExtras/qspheregeometry.h>
 #include <Qt3DRender/qpickevent.h>
 
@@ -72,7 +72,7 @@ public:
         mesh->setRadius(radius);
         QSphereGeometry *g = static_cast<QSphereGeometry *>(mesh->geometry());
         QAttribute *positionAttr = static_cast<QAttribute *>(g->attributes().first());
-        Qt3DRender::QBuffer *vertexBuffer = static_cast<Qt3DRender::QBuffer *>(positionAttr->buffer());
+        Qt3DCore::QBuffer *vertexBuffer = static_cast<Qt3DCore::QBuffer *>(positionAttr->buffer());
 
         transform->setTranslation(position);
 

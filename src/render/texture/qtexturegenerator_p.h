@@ -51,7 +51,7 @@
 #ifndef QT3DRENDER_QTEXTUREGENERATOR_P_H
 #define QT3DRENDER_QTEXTUREGENERATOR_P_H
 
-#include <Qt3DRender/qabstractfunctor.h>
+#include <Qt3DCore/qabstractfunctor.h>
 #include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qtexturewrapmode.h>
 #include <QtCore/QSharedPointer>
@@ -63,7 +63,7 @@ namespace Qt3DRender {
 class QTextureData;
 typedef QSharedPointer<QTextureData> QTextureDataPtr;
 
-class Q_3DRENDERSHARED_EXPORT QTextureGenerator : public QAbstractFunctor
+class Q_3DRENDERSHARED_EXPORT QTextureGenerator : public Qt3DCore::QAbstractFunctor
 {
 public:
     virtual ~QTextureGenerator();

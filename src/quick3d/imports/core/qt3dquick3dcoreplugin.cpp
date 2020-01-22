@@ -44,6 +44,9 @@
 #include <Qt3DCore/qskeletonloader.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qjoint.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qgeometry.h>
 #include <QtCore/qvariantanimation.h>
 
 #include <Qt3DQuick/private/quick3dnodev9_p.h>
@@ -53,6 +56,8 @@
 #include <Qt3DQuick/private/quick3djoint_p.h>
 #include <Qt3DQuick/private/qquaternionanimation_p.h>
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
+#include <Qt3DQuick/private/quick3dbuffer_p.h>
+#include <Qt3DQuick/private/quick3dgeometry_p.h>
 
 #include <QtQml/qqml.h>
 
@@ -73,6 +78,13 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DCore::QArmature>(uri, 2, 10, "Armature");
     qmlRegisterUncreatableType<Qt3DCore::QAbstractSkeleton>(uri, 2, 10, "AbstractSkeleton", QStringLiteral("AbstractSkeleton is an abstract base class"));
     qmlRegisterType<Qt3DCore::QSkeletonLoader>(uri, 2, 10, "SkeletonLoader");
+    qmlRegisterType<Qt3DCore::QAttribute>(uri, 2, 0, "Attribute");
+    qmlRegisterType<Qt3DCore::QAttribute, 10>(uri, 2, 10, "Attribute");
+    qmlRegisterType<Qt3DCore::QAttribute, 11>(uri, 2, 11, "Attribute");
+    qmlRegisterUncreatableType<Qt3DCore::QBuffer>(uri, 2, 0, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
+    qmlRegisterUncreatableType<Qt3DCore::QBuffer, 9>(uri, 2, 9, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
+    qmlRegisterType<Qt3DCore::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
+    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QGeometry, Qt3DCore::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Core/Geometry", uri, 2, 0, "Geometry");
 
     qmlRegisterType<Qt3DCore::Quick::QQuaternionAnimation>(uri, 2, 0, "QuaternionAnimation");
     qRegisterAnimationInterpolator<QQuaternion>(Qt3DCore::Quick::q_quaternionInterpolator);

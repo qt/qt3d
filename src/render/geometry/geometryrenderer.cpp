@@ -142,7 +142,7 @@ void GeometryRenderer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         if (m_geometryFactory && m_manager != nullptr) {
             m_manager->addDirtyGeometryRenderer(peerId());
 
-            const bool isQMeshFunctor = m_geometryFactory->id() == Qt3DRender::functorTypeId<MeshLoaderFunctor>();
+            const bool isQMeshFunctor = m_geometryFactory->id() == Qt3DCore::functorTypeId<MeshLoaderFunctor>();
             if (isQMeshFunctor) {
                 const QMesh *meshNode = static_cast<const QMesh *>(node);
                 QMeshPrivate *dmeshNode = QMeshPrivate::get(const_cast<QMesh *>(meshNode));
@@ -159,7 +159,7 @@ GeometryFunctorResult GeometryRenderer::executeFunctor()
     Q_ASSERT(m_geometryFactory);
 
     // What kind of functor are we dealing with?
-    const bool isQMeshFunctor = m_geometryFactory->id() == Qt3DRender::functorTypeId<MeshLoaderFunctor>();
+    const bool isQMeshFunctor = m_geometryFactory->id() == Qt3DCore::functorTypeId<MeshLoaderFunctor>();
 
     if (isQMeshFunctor) {
         QSharedPointer<MeshLoaderFunctor> meshLoader = qSharedPointerCast<MeshLoaderFunctor>(m_geometryFactory);
@@ -171,7 +171,7 @@ GeometryFunctorResult GeometryRenderer::executeFunctor()
         if (meshLoader->downloaderService() == nullptr) {
             Qt3DCore::QServiceLocator *services = m_renderer->services();
             meshLoader->setDownloaderService(services->service<Qt3DCore::QDownloadHelperService>(Qt3DCore::QServiceLocator::DownloadHelperService));
-        };
+        }
     }
 
     // Load geometry

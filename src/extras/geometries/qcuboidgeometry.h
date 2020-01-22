@@ -41,22 +41,22 @@
 #define QT3DEXTRAS_QCUBOIDGEOMETRY_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qgeometry.h>
+#include <Qt3DCore/qgeometry.h>
 #include <QtCore/QSize>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
 class QAttribute;
 
-} // Qt3DRender
+} // Qt3DCore
 
 namespace Qt3DExtras {
 
 class QCuboidGeometryPrivate;
 
-class Q_3DEXTRASSHARED_EXPORT QCuboidGeometry : public Qt3DRender::QGeometry
+class Q_3DEXTRASSHARED_EXPORT QCuboidGeometry : public Qt3DCore::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(float xExtent READ xExtent WRITE setXExtent NOTIFY xExtentChanged)
@@ -65,11 +65,11 @@ class Q_3DEXTRASSHARED_EXPORT QCuboidGeometry : public Qt3DRender::QGeometry
     Q_PROPERTY(QSize xyMeshResolution READ xyMeshResolution WRITE setXYMeshResolution NOTIFY xyMeshResolutionChanged)
     Q_PROPERTY(QSize yzMeshResolution READ yzMeshResolution WRITE setYZMeshResolution NOTIFY yzMeshResolutionChanged)
     Q_PROPERTY(QSize xzMeshResolution READ xzMeshResolution WRITE setXZMeshResolution NOTIFY xzMeshResolutionChanged)
-    Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute CONSTANT)
-    Q_PROPERTY(Qt3DRender::QAttribute *normalAttribute READ normalAttribute CONSTANT)
-    Q_PROPERTY(Qt3DRender::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
-    Q_PROPERTY(Qt3DRender::QAttribute *tangentAttribute READ tangentAttribute CONSTANT)
-    Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *positionAttribute READ positionAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *normalAttribute READ normalAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *tangentAttribute READ tangentAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
     explicit QCuboidGeometry(QNode *parent = nullptr);
@@ -85,11 +85,11 @@ public:
     QSize xyMeshResolution() const;
     QSize xzMeshResolution() const;
 
-    Qt3DRender::QAttribute *positionAttribute() const;
-    Qt3DRender::QAttribute *normalAttribute() const;
-    Qt3DRender::QAttribute *texCoordAttribute() const;
-    Qt3DRender::QAttribute *tangentAttribute() const;
-    Qt3DRender::QAttribute *indexAttribute() const;
+    Qt3DCore::QAttribute *positionAttribute() const;
+    Qt3DCore::QAttribute *normalAttribute() const;
+    Qt3DCore::QAttribute *texCoordAttribute() const;
+    Qt3DCore::QAttribute *tangentAttribute() const;
+    Qt3DCore::QAttribute *indexAttribute() const;
 
 public Q_SLOTS:
     void setXExtent(float xExtent);

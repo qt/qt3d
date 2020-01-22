@@ -39,11 +39,11 @@
 
 #include "qattribute.h"
 #include "qattribute_p.h"
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qbuffer.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
 QAttributePrivate::QAttributePrivate()
     : QNodePrivate()
@@ -61,8 +61,8 @@ QAttributePrivate::QAttributePrivate()
 
 /*!
  * \qmltype Attribute
- * \instantiates Qt3DRender::QAttribute
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DCore::QAttribute
+ * \inqmlmodule Qt3D.Core
  * \brief Defines an attribute and how data should be read from a Buffer.
  *
  * There are 3 types of attributes.
@@ -84,9 +84,9 @@ QAttributePrivate::QAttributePrivate()
  */
 
 /*!
- * \class Qt3DRender::QAttribute
- * \inheaderfile Qt3DRender/QAttribute
- * \inmodule Qt3DRender
+ * \class Qt3DCore::QAttribute
+ * \inheaderfile Qt3DCore/QAttribute
+ * \inmodule Qt3DCore
  *
  * \inherits Qt3DCore::QNode
  *
@@ -113,8 +113,8 @@ QAttributePrivate::QAttributePrivate()
  */
 
 /*!
- * \typedef Qt3DRender::QBufferPtr
- * \relates Qt3DRender::QAttribute
+ * \typedef Qt3DCore::QBufferPtr
+ * \relates Qt3DCore::QAttribute
  */
 
 /*!
@@ -477,17 +477,16 @@ QString QAttribute::defaultTextureCoordinate2AttributeName()
 }
 
 /*!
-\fn Qt3DRender::QAttribute::dataSizeChanged(uint vertexSize)
+\fn Qt3DCore::QAttribute::dataSizeChanged(uint vertexSize)
 
 The signal is emitted with \a vertexSize when the dataSize changes.
 */
 /*!
-\fn Qt3DRender::QAttribute::dataTypeChanged(Qt3DRender::QAttribute::VertexBaseType vertexBaseType)
+\fn Qt3DCore::QAttribute::dataTypeChanged(Qt3DCore::QAttribute::VertexBaseType vertexBaseType)
 
 The signal is emitted with \a vertexBaseType when the dataType changed.
 */
 
-
-} // Qt3DRender
+} // Qt3DCore
 
 QT_END_NAMESPACE

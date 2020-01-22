@@ -193,7 +193,7 @@ GLTFImporter::BufferView::BufferView(const QJsonObject &json)
 }
 
 GLTFImporter::AccessorData::AccessorData()
-    : type(Qt3DRender::QAttribute::Float)
+    : type(Qt3DCore::QAttribute::Float)
     , dataSize(0)
     , count(0)
     , byteOffset(0)
@@ -369,39 +369,39 @@ GLTFImporter::Node::Node(const QJsonObject &json)
         skinIndex = skinValue.toInt();
 }
 
-Qt3DRender::QAttribute::VertexBaseType GLTFImporter::accessorTypeFromJSON(int componentType)
+Qt3DCore::QAttribute::VertexBaseType GLTFImporter::accessorTypeFromJSON(int componentType)
 {
     if (componentType == GL_BYTE)
-        return Qt3DRender::QAttribute::Byte;
+        return Qt3DCore::QAttribute::Byte;
     else if (componentType == GL_UNSIGNED_BYTE)
-        return Qt3DRender::QAttribute::UnsignedByte;
+        return Qt3DCore::QAttribute::UnsignedByte;
     else if (componentType == GL_SHORT)
-        return Qt3DRender::QAttribute::Short;
+        return Qt3DCore::QAttribute::Short;
     else if (componentType == GL_UNSIGNED_SHORT)
-        return Qt3DRender::QAttribute::UnsignedShort;
+        return Qt3DCore::QAttribute::UnsignedShort;
     else if (componentType == GL_UNSIGNED_INT)
-        return Qt3DRender::QAttribute::UnsignedInt;
+        return Qt3DCore::QAttribute::UnsignedInt;
     else if (componentType == GL_FLOAT)
-        return Qt3DRender::QAttribute::Float;
+        return Qt3DCore::QAttribute::Float;
 
     // There shouldn't be an invalid case here
     qWarning("unsupported accessor type %d", componentType);
-    return Qt3DRender::QAttribute::Float;
+    return Qt3DCore::QAttribute::Float;
 }
 
-uint GLTFImporter::accessorTypeSize(Qt3DRender::QAttribute::VertexBaseType componentType)
+uint GLTFImporter::accessorTypeSize(Qt3DCore::QAttribute::VertexBaseType componentType)
 {
     switch (componentType) {
-    case Qt3DRender::QAttribute::Byte:
-    case Qt3DRender::QAttribute::UnsignedByte:
+    case Qt3DCore::QAttribute::Byte:
+    case Qt3DCore::QAttribute::UnsignedByte:
          return 1;
 
-    case Qt3DRender::QAttribute::Short:
-    case Qt3DRender::QAttribute::UnsignedShort:
+    case Qt3DCore::QAttribute::Short:
+    case Qt3DCore::QAttribute::UnsignedShort:
         return 2;
 
-    case Qt3DRender::QAttribute::Int:
-    case Qt3DRender::QAttribute::Float:
+    case Qt3DCore::QAttribute::Int:
+    case Qt3DCore::QAttribute::Float:
         return 4;
 
     default:
@@ -522,12 +522,12 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
         const auto &inputAccessor = m_accessors[sampler.inputAccessorIndex];
         const auto &outputAccessor = m_accessors[sampler.outputAccessorIndex];
 
-        if (inputAccessor.type != Qt3DRender::QAttribute::Float) {
+        if (inputAccessor.type != Qt3DCore::QAttribute::Float) {
             qWarning() << "Input accessor has wrong data type. Skipping channel.";
             continue;
         }
 
-        if (outputAccessor.type != Qt3DRender::QAttribute::Float) {
+        if (outputAccessor.type != Qt3DCore::QAttribute::Float) {
             qWarning() << "Output accessor has wrong data type. Skipping channel.";
             continue;
         }

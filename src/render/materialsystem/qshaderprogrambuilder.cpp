@@ -40,7 +40,6 @@
 #include "qshaderprogrambuilder.h"
 #include "qshaderprogrambuilder_p.h"
 #include "qshaderprogram.h"
-#include <Qt3DRender/private/qurlhelper_p.h>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>

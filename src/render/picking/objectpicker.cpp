@@ -41,7 +41,6 @@
 #include "qpickevent.h"
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/private/qobjectpicker_p.h>
-#include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 
 QT_BEGIN_NAMESPACE

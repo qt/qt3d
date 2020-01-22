@@ -42,7 +42,7 @@
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/gltfimporter_p.h>
-#include <Qt3DRender/private/qurlhelper_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 
 #include <QtCore/qbytearray.h>
 #include <QtCore/qfile.h>
@@ -187,7 +187,7 @@ void AnimationClip::loadAnimation()
 void AnimationClip::loadAnimationFromUrl()
 {
     // TODO: Handle remote files
-    QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_source);
+    QString filePath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(m_source);
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Could not find animation clip:" << filePath;

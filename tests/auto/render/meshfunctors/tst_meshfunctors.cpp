@@ -26,19 +26,14 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QtTest>
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/private/qgeometryfactory_p.h>
-#include <Qt3DRender/qgeometry.h>
+#include <Qt3DCore/qgeometry.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/private/qmesh_p.h>
 #include <Qt3DCore/qaspectengine.h>
 
-class MeshFunctorA : public Qt3DRender::QGeometryFactory
+class MeshFunctorA : public Qt3DCore::QGeometryFactory
 {
 public:
     MeshFunctorA()
@@ -47,20 +42,20 @@ public:
     ~MeshFunctorA()
     {}
 
-    Qt3DRender::QGeometry *operator ()() override
+    Qt3DCore::QGeometry *operator ()() override
     {
         return nullptr;
     }
 
-    bool operator ==(const Qt3DRender::QGeometryFactory &other) const override
+    bool operator ==(const Qt3DCore::QGeometryFactory &other) const override
     {
-        return Qt3DRender::functor_cast<MeshFunctorA>(&other);
+        return Qt3DCore::functor_cast<MeshFunctorA>(&other);
     }
 
     QT3D_FUNCTOR(MeshFunctorA)
 };
 
-class MeshFunctorB : public Qt3DRender::QGeometryFactory
+class MeshFunctorB : public Qt3DCore::QGeometryFactory
 {
 public:
     MeshFunctorB()
@@ -69,14 +64,14 @@ public:
     ~MeshFunctorB()
     {}
 
-    Qt3DRender::QGeometry *operator ()() override
+    Qt3DCore::QGeometry *operator ()() override
     {
         return nullptr;
     }
 
-    bool operator ==(const Qt3DRender::QGeometryFactory &other) const override
+    bool operator ==(const Qt3DCore::QGeometryFactory &other) const override
     {
-        return Qt3DRender::functor_cast<MeshFunctorB>(&other);
+        return Qt3DCore::functor_cast<MeshFunctorB>(&other);
     }
 
     QT3D_FUNCTOR(MeshFunctorB)
@@ -91,9 +86,9 @@ public:
     ~MeshFunctorASub()
     {}
 
-    bool operator ==(const Qt3DRender::QGeometryFactory &other) const override
+    bool operator ==(const Qt3DCore::QGeometryFactory &other) const override
     {
-        return Qt3DRender::functor_cast<MeshFunctorASub>(&other);
+        return Qt3DCore::functor_cast<MeshFunctorASub>(&other);
     }
 
     QT3D_FUNCTOR(MeshFunctorASub)
@@ -190,7 +185,7 @@ private Q_SLOTS:
             Qt3DRender::MeshLoaderFunctor functor(&mesh);
 
             // WHEN
-            const Qt3DRender::QGeometry *g = functor();
+            const Qt3DCore::QGeometry *g = functor();
 
             // THEN
             QVERIFY(g == nullptr);
@@ -204,7 +199,7 @@ private Q_SLOTS:
             Qt3DRender::MeshLoaderFunctor functor(&mesh);
 
             // WHEN
-            const Qt3DRender::QGeometry *g = functor();
+            const Qt3DCore::QGeometry *g = functor();
 
             // THEN
             QVERIFY(g == nullptr);
@@ -218,7 +213,7 @@ private Q_SLOTS:
             Qt3DRender::MeshLoaderFunctor functor(&mesh);
 
             // WHEN
-            const Qt3DRender::QGeometry *g = functor();
+            const Qt3DCore::QGeometry *g = functor();
 
             // THEN
             QVERIFY(g == nullptr);

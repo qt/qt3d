@@ -37,57 +37,50 @@
 **
 ****************************************************************************/
 
-#include <Qt3DQuickRender/private/quick3dgeometry_p.h>
+#ifndef QT3DCORE_QGEOMETRY_P_H
+#define QT3DCORE_QGEOMETRY_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qgeometry.h>
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-namespace Render {
-namespace Quick {
+namespace Qt3DCore {
 
-Quick3DGeometry::Quick3DGeometry(QObject *parent)
-    : QObject(parent)
+class QAttribute;
+
+class Q_3DCORESHARED_EXPORT QGeometryPrivate : public QNodePrivate
 {
-}
+public:
+    Q_DECLARE_PUBLIC(QGeometry)
+    QGeometryPrivate();
+    ~QGeometryPrivate();
 
-QQmlListProperty<Qt3DRender::QAttribute> Quick3DGeometry::attributeList()
-{
-    return QQmlListProperty<Qt3DRender::QAttribute>(this, 0,
-                                                            &Quick3DGeometry::appendAttribute,
-                                                            &Quick3DGeometry::attributesCount,
-                                                            &Quick3DGeometry::attributeAt,
-                                                            &Quick3DGeometry::clearAttributes);
-}
+    void setExtent(const QVector3D &minExtent, const QVector3D &maxExtent);
 
-void Quick3DGeometry::appendAttribute(QQmlListProperty<Qt3DRender::QAttribute> *list, Qt3DRender::QAttribute *attribute)
-{
-    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    geometry->m_managedAttributes.append(attribute);
-    geometry->parentGeometry()->addAttribute(attribute);
-}
 
-Qt3DRender::QAttribute *Quick3DGeometry::attributeAt(QQmlListProperty<Qt3DRender::QAttribute> *list, int index)
-{
-    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    return geometry->parentGeometry()->attributes().at(index);
-}
+    QVector<QAttribute *> m_attributes;
+    QAttribute *m_boundingVolumePositionAttribute;
+    QVector3D m_minExtent;
+    QVector3D m_maxExtent;
+};
 
-int Quick3DGeometry::attributesCount(QQmlListProperty<Qt3DRender::QAttribute> *list)
-{
-    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    return geometry->parentGeometry()->attributes().count();
-}
-
-void Quick3DGeometry::clearAttributes(QQmlListProperty<Qt3DRender::QAttribute> *list)
-{
-    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    for (Qt3DRender::QAttribute *attribute : qAsConst(geometry->m_managedAttributes))
-        geometry->parentGeometry()->removeAttribute(attribute);
-    geometry->m_managedAttributes.clear();
-}
-
-} // namespace Quick
-} // namespace Render
-} // namespace Qt3DRender
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#endif // QT3DCORE_QGEOMETRY_P_H
+

@@ -1116,7 +1116,7 @@ void Renderer::lookForDownloadableBuffers()
     const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
     for (const HBuffer &handle : activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
-        if (buffer->access() & QBuffer::Read)
+        if (buffer->access() & Qt3DCore::QBuffer::Read)
             m_downloadableBuffers.push_back(buffer->peerId());
     }
 }

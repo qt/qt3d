@@ -37,10 +37,10 @@
 **
 ****************************************************************************/
 
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qgeometry.h>
 #include <Qt3DRender/qmaterial.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 
 #include <Qt3DExtras/private/qtext2dmaterial_p.h>
@@ -77,33 +77,33 @@ void DistanceFieldTextRendererPrivate::init()
     m_renderer = new Qt3DRender::QGeometryRenderer(q);
     m_renderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
 
-    m_geometry = new Qt3DRender::QGeometry(m_renderer);
+    m_geometry = new Qt3DCore::QGeometry(m_renderer);
     m_renderer->setGeometry(m_geometry);
 
-    m_vertexBuffer = new Qt3DRender::QBuffer(m_geometry);
-    m_indexBuffer = new Qt3DRender::QBuffer(m_geometry);
+    m_vertexBuffer = new Qt3DCore::QBuffer(m_geometry);
+    m_indexBuffer = new Qt3DCore::QBuffer(m_geometry);
 
-    m_positionAttr = new Qt3DRender::QAttribute(m_geometry);
-    m_positionAttr->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-    m_positionAttr->setVertexBaseType(Qt3DRender::QAttribute::Float);
-    m_positionAttr->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    m_positionAttr = new Qt3DCore::QAttribute(m_geometry);
+    m_positionAttr->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+    m_positionAttr->setVertexBaseType(Qt3DCore::QAttribute::Float);
+    m_positionAttr->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
     m_positionAttr->setVertexSize(3);
     m_positionAttr->setByteStride(5 * sizeof(float));
     m_positionAttr->setByteOffset(0);
     m_positionAttr->setBuffer(m_vertexBuffer);
 
-    m_texCoordAttr = new Qt3DRender::QAttribute(m_geometry);
-    m_texCoordAttr->setName(Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName());
-    m_texCoordAttr->setVertexBaseType(Qt3DRender::QAttribute::Float);
-    m_texCoordAttr->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    m_texCoordAttr = new Qt3DCore::QAttribute(m_geometry);
+    m_texCoordAttr->setName(Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName());
+    m_texCoordAttr->setVertexBaseType(Qt3DCore::QAttribute::Float);
+    m_texCoordAttr->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
     m_texCoordAttr->setVertexSize(2);
     m_texCoordAttr->setByteStride(5 * sizeof(float));
     m_texCoordAttr->setByteOffset(3 * sizeof(float));
     m_texCoordAttr->setBuffer(m_vertexBuffer);
 
-    m_indexAttr = new Qt3DRender::QAttribute(m_geometry);
-    m_indexAttr->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-    m_indexAttr->setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
+    m_indexAttr = new Qt3DCore::QAttribute(m_geometry);
+    m_indexAttr->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
+    m_indexAttr->setVertexBaseType(Qt3DCore::QAttribute::UnsignedShort);
     m_indexAttr->setBuffer(m_indexBuffer);
 
     m_geometry->addAttribute(m_positionAttr);

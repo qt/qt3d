@@ -26,18 +26,14 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometry.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qgeometry.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 
 #include "testarbiter.h"
@@ -146,7 +142,7 @@ private Q_SLOTS:
         arbiter.clear();
 
         // WHEN
-        Qt3DRender::QGeometry geom;
+        Qt3DCore::QGeometry geom;
         geometryRenderer->setGeometry(&geom);
         QCoreApplication::processEvents();
 
@@ -157,7 +153,7 @@ private Q_SLOTS:
         arbiter.clear();
 
         // WHEN
-        Qt3DRender::QGeometry geom2;
+        Qt3DCore::QGeometry geom2;
         geometryRenderer->setGeometry(&geom2);
         QCoreApplication::processEvents();
 
@@ -174,7 +170,7 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(new Qt3DRender::QGeometryRenderer);
         {
             // WHEN
-            Qt3DRender::QGeometry geometry;
+            Qt3DCore::QGeometry geometry;
             geometryRenderer->setGeometry(&geometry);
 
             // THEN
@@ -187,7 +183,7 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::QGeometryRenderer someOtherGeometryRenderer;
-            QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry(&someOtherGeometryRenderer));
+            QScopedPointer<Qt3DCore::QGeometry> geometry(new Qt3DCore::QGeometry(&someOtherGeometryRenderer));
             geometryRenderer->setGeometry(geometry.data());
 
             // THEN

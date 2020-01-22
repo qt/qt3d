@@ -29,10 +29,10 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DRender/qgeometry.h>
+#include <Qt3DCore/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entity_p.h>
@@ -53,13 +53,13 @@ Qt3DCore::QEntity *buildEntityAtDistance(float distance, Qt3DCore::QEntity *pare
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(parent);
 
     // create geometry with a valid bounding volume - a single point is sufficient
-    auto geometry = new Qt3DRender::QGeometry;
-    auto vertexBuffer = new Qt3DRender::QBuffer(geometry);
+    auto geometry = new Qt3DCore::QGeometry;
+    auto vertexBuffer = new Qt3DCore::QBuffer(geometry);
 
-    auto positionAttribute = new Qt3DRender::QAttribute;
-    positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-    positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
-    positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+    auto positionAttribute = new Qt3DCore::QAttribute;
+    positionAttribute->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+    positionAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
+    positionAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
     positionAttribute->setVertexSize(3);
     positionAttribute->setByteStride(3 * sizeof(float));
     positionAttribute->setBuffer(vertexBuffer);

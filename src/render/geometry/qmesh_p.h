@@ -98,7 +98,7 @@ private:
     Render::NodeManagers *m_nodeManagers;
 };
 
-class Q_AUTOTEST_EXPORT MeshLoaderFunctor : public QGeometryFactory
+class Q_AUTOTEST_EXPORT MeshLoaderFunctor : public Qt3DCore::QGeometryFactory
 {
 public :
     MeshLoaderFunctor(QMesh *mesh, const QByteArray &sourceData = QByteArray());
@@ -118,12 +118,9 @@ public :
 
     QMesh::Status status() const { return m_status; }
 
-    QGeometry *operator()() override;
-    bool operator ==(const QGeometryFactory &other) const override;
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+    Qt3DCore::QGeometry *operator()() override;
+    bool operator ==(const Qt3DCore::QGeometryFactory &other) const override;
     QT3D_FUNCTOR(MeshLoaderFunctor)
-    QT_WARNING_POP
 
 private:
     Qt3DCore::QNodeId m_mesh;

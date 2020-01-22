@@ -50,7 +50,7 @@ namespace Qt3DAnimation {
 
     A Qt3DAnimation::QMorphingAnimation class implements blend-shape morphing animation
     to a target \l {Qt3DRender::QGeometryRenderer}{QGeometryRenderer}. The QMorphingAnimation
-    sets the correct \l {Qt3DRender::QAttribute}{QAttributes} from the
+    sets the correct \l {Qt3DCore::QAttribute}{QAttributes} from the
     \l {Qt3DAnimation::QMorphTarget}{morph targets} to the target
     \l {Qt3DRender::QGeometryRenderer::geometry} {QGeometryRenderer::geometry} and calculates
     interpolator for the current position. The actual blending between the attributes must
@@ -248,16 +248,16 @@ void QMorphingAnimationPrivate::updateAnimation(float position)
 void QMorphingAnimationPrivate::setTargetInterpolated(int morphTarget)
 {
     QMorphTarget *target = m_morphTargets[morphTarget];
-    Qt3DRender::QGeometry *geometry = m_target->geometry();
+    Qt3DCore::QGeometry *geometry = m_target->geometry();
 
     // remove attributes from previous frame
     if (m_currentTarget && (target != m_currentTarget)) {
-        const QVector<Qt3DRender::QAttribute *> targetAttributes = m_currentTarget->attributeList();
+        const QVector<Qt3DCore::QAttribute *> targetAttributes = m_currentTarget->attributeList();
         for (int i = 0; i < targetAttributes.size(); ++i)
             geometry->removeAttribute(targetAttributes.at(i));
     }
 
-    const QVector<Qt3DRender::QAttribute *> targetAttributes = target->attributeList();
+    const QVector<Qt3DCore::QAttribute *> targetAttributes = target->attributeList();
 
     // add attributes from current frame to the geometry
     if (target != m_currentTarget) {

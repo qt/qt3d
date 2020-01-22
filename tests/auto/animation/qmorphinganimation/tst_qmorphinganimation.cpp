@@ -35,11 +35,11 @@ class tst_QMorphingAnimation : public QObject
 {
     Q_OBJECT
 
-    bool verifyAttribute(Qt3DRender::QGeometry *geometry, QString name,
-                         Qt3DRender::QAttribute *attribute)
+    bool verifyAttribute(Qt3DCore::QGeometry *geometry, QString name,
+                         Qt3DCore::QAttribute *attribute)
     {
-        const QVector<Qt3DRender::QAttribute *> attributes = geometry->attributes();
-        for (const Qt3DRender::QAttribute *attr : attributes) {
+        const QVector<Qt3DCore::QAttribute *> attributes = geometry->attributes();
+        for (const Qt3DCore::QAttribute *attr : attributes) {
             if (attr->name() == name) {
                 if (attr == attribute)
                     return true;
@@ -161,15 +161,15 @@ private Q_SLOTS:
         const QString baseName("position");
         const QString targetName("positionTarget");
         Qt3DAnimation::QMorphingAnimation morphingAnimation;
-        Qt3DRender::QAttribute *base = new Qt3DRender::QAttribute;
+        Qt3DCore::QAttribute *base = new Qt3DCore::QAttribute;
 
-        Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry;
+        Qt3DCore::QGeometry *geometry = new Qt3DCore::QGeometry;
         Qt3DAnimation::QMorphTarget *mt1 = new Qt3DAnimation::QMorphTarget(&morphingAnimation);
         Qt3DAnimation::QMorphTarget *mt2 = new Qt3DAnimation::QMorphTarget(&morphingAnimation);
         Qt3DAnimation::QMorphTarget *mt3 = new Qt3DAnimation::QMorphTarget(&morphingAnimation);
-        Qt3DRender::QAttribute *a1 = new Qt3DRender::QAttribute(geometry);
-        Qt3DRender::QAttribute *a2 = new Qt3DRender::QAttribute(geometry);
-        Qt3DRender::QAttribute *a3 = new Qt3DRender::QAttribute(geometry);
+        Qt3DCore::QAttribute *a1 = new Qt3DCore::QAttribute(geometry);
+        Qt3DCore::QAttribute *a2 = new Qt3DCore::QAttribute(geometry);
+        Qt3DCore::QAttribute *a3 = new Qt3DCore::QAttribute(geometry);
         Qt3DRender::QGeometryRenderer gr;
 
         base->setName(baseName);

@@ -49,9 +49,9 @@ namespace Qt3DAnimation {
     \inherits QObject
 
     A Qt3DAnimation::QMorphTarget class is a convenience class, which provides a list
-    of \l {Qt3DRender::QAttribute} {QAttributes}, which the QMorphingAnimation uses
+    of \l {Qt3DCore::QAttribute} {QAttributes}, which the QMorphingAnimation uses
     to animate geometry. A QMorphTarget can also be created based on existing
-    \l Qt3DRender::QGeometry.
+    \l Qt3DCore::QGeometry.
 
 */
 /*!
@@ -99,7 +99,7 @@ QMorphTargetPrivate::QMorphTargetPrivate()
 void QMorphTargetPrivate::updateAttributeNames()
 {
     m_attributeNames.clear();
-    for (const Qt3DRender::QAttribute *attr : qAsConst(m_targetAttributes))
+    for (const Qt3DCore::QAttribute *attr : qAsConst(m_targetAttributes))
         m_attributeNames.push_back(attr->name());
 }
 
@@ -115,7 +115,7 @@ QMorphTarget::QMorphTarget(QObject *parent)
 /*!
     Returns a list of attributes contained in the morph target.
 */
-QVector<Qt3DRender::QAttribute *> QMorphTarget::attributeList() const
+QVector<Qt3DCore::QAttribute *> QMorphTarget::attributeList() const
 {
     Q_D(const QMorphTarget);
     return d->m_targetAttributes;
@@ -130,12 +130,12 @@ QStringList QMorphTarget::attributeNames() const
 /*!
     Sets \a attributes to the morph target. Old attributes are cleared.
 */
-void QMorphTarget::setAttributes(const QVector<Qt3DRender::QAttribute *> &attributes)
+void QMorphTarget::setAttributes(const QVector<Qt3DCore::QAttribute *> &attributes)
 {
     Q_D(QMorphTarget);
     d->m_targetAttributes = attributes;
     d->m_attributeNames.clear();
-    for (const Qt3DRender::QAttribute *attr : attributes)
+    for (const Qt3DCore::QAttribute *attr : attributes)
         d->m_attributeNames.push_back(attr->name());
 
     emit attributeNamesChanged(d->m_attributeNames);
@@ -145,10 +145,10 @@ void QMorphTarget::setAttributes(const QVector<Qt3DRender::QAttribute *> &attrib
     Adds an \a attribute the morph target. An attribute with the same
     name must not have been added previously to the morph target.
 */
-void QMorphTarget::addAttribute(Qt3DRender::QAttribute *attribute)
+void QMorphTarget::addAttribute(Qt3DCore::QAttribute *attribute)
 {
     Q_D(QMorphTarget);
-    for (const Qt3DRender::QAttribute *attr : qAsConst(d->m_targetAttributes)) {
+    for (const Qt3DCore::QAttribute *attr : qAsConst(d->m_targetAttributes)) {
         if (attr->name() == attribute->name())
             return;
     }
@@ -160,7 +160,7 @@ void QMorphTarget::addAttribute(Qt3DRender::QAttribute *attribute)
 /*!
     Removes an \a attribute from the morph target.
 */
-void QMorphTarget::removeAttribute(Qt3DRender::QAttribute *attribute)
+void QMorphTarget::removeAttribute(Qt3DCore::QAttribute *attribute)
 {
     Q_D(QMorphTarget);
     if (d->m_targetAttributes.contains(attribute)) {
@@ -173,11 +173,11 @@ void QMorphTarget::removeAttribute(Qt3DRender::QAttribute *attribute)
 /*!
     Returns a morph target based on the \a attributes in the given \a geometry.
 */
-QMorphTarget *QMorphTarget::fromGeometry(Qt3DRender::QGeometry *geometry, const QStringList &attributes)
+QMorphTarget *QMorphTarget::fromGeometry(Qt3DCore::QGeometry *geometry, const QStringList &attributes)
 {
     QMorphTarget *target = new QMorphTarget();
     const auto geometryAttributes = geometry->attributes();
-    for (Qt3DRender::QAttribute *attr : geometryAttributes) {
+    for (Qt3DCore::QAttribute *attr : geometryAttributes) {
         if (attributes.contains(attr->name()))
             target->addAttribute(attr);
     }

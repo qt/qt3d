@@ -44,8 +44,8 @@
 #include "qconegeometry.h"
 
 #include <Qt3DExtras/qconemesh.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
 #include <QtGui/QVector3D>
 
 #include <qmath.h>

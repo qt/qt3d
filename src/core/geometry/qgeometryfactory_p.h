@@ -37,53 +37,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QGEOMETRY_H
-#define QT3DRENDER_QGEOMETRY_H
+#ifndef QT3DCORE_QGEOMETRYFACTORY_P_H
+#define QT3DCORE_QGEOMETRYFACTORY_P_H
 
-#include <Qt3DCore/qnode.h>
-#include <Qt3DRender/qt3drender_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qabstractfunctor.h>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class QAttribute;
-class QGeometryPrivate;
+class QGeometry;
 
-class Q_3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
+class Q_3DCORESHARED_EXPORT QGeometryFactory : public QAbstractFunctor
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QAttribute *boundingVolumePositionAttribute READ boundingVolumePositionAttribute WRITE setBoundingVolumePositionAttribute NOTIFY boundingVolumePositionAttributeChanged)
-    Q_PROPERTY(QVector3D minExtent READ minExtent NOTIFY minExtentChanged REVISION 13)
-    Q_PROPERTY(QVector3D maxExtent READ maxExtent NOTIFY maxExtentChanged REVISION 13)
 public:
-    explicit QGeometry(Qt3DCore::QNode *parent = nullptr);
-    ~QGeometry();
-
-    QVector<QAttribute *> attributes() const;
-    Q_INVOKABLE void addAttribute(Qt3DRender::QAttribute *attribute);
-    Q_INVOKABLE void removeAttribute(Qt3DRender::QAttribute *attribute);
-
-    QAttribute *boundingVolumePositionAttribute() const;
-    QVector3D minExtent() const;
-    QVector3D maxExtent() const;
-
-public Q_SLOTS:
-    void setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute);
-
-Q_SIGNALS:
-    void boundingVolumePositionAttributeChanged(QAttribute *boundingVolumePositionAttribute);
-    Q_REVISION(13) void minExtentChanged(const QVector3D &minExtent);
-    Q_REVISION(13) void maxExtentChanged(const QVector3D &maxExtent);
-protected:
-    explicit QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-
-private:
-    Q_DECLARE_PRIVATE(QGeometry)
+    virtual ~QGeometryFactory();
+    virtual QGeometry *operator()() = 0;
+    virtual bool operator ==(const QGeometryFactory &other) const = 0;
 };
+
+typedef QSharedPointer<QGeometryFactory> QGeometryFactoryPtr;
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QGEOMETRY_H
+Q_DECLARE_METATYPE(Qt3DCore::QGeometryFactoryPtr) // LCOV_EXCL_LINE
+
+#endif // QT3DCORE_QGEOMETRYFACTORY_P_H

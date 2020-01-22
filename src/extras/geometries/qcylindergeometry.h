@@ -41,30 +41,30 @@
 #define QT3DEXTRAS_QCYLINDERGEOMETRY_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qgeometry.h>
+#include <Qt3DCore/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
 class QAttribute;
 
-} // namespace Qt3DRender
+} // namespace Qt3DCore
 
 namespace Qt3DExtras {
 
 class QCylinderGeometryPrivate;
-class Q_3DEXTRASSHARED_EXPORT QCylinderGeometry : public Qt3DRender::QGeometry
+class Q_3DEXTRASSHARED_EXPORT QCylinderGeometry : public Qt3DCore::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)
     Q_PROPERTY(int slices READ slices WRITE setSlices NOTIFY slicesChanged)
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
-    Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute CONSTANT)
-    Q_PROPERTY(Qt3DRender::QAttribute *normalAttribute READ normalAttribute CONSTANT)
-    Q_PROPERTY(Qt3DRender::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
-    Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *positionAttribute READ positionAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *normalAttribute READ normalAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
+    Q_PROPERTY(Qt3DCore::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
     explicit QCylinderGeometry(QNode *parent = nullptr);
@@ -78,10 +78,10 @@ public:
     float radius() const;
     float length() const;
 
-    Qt3DRender::QAttribute *positionAttribute() const;
-    Qt3DRender::QAttribute *normalAttribute() const;
-    Qt3DRender::QAttribute *texCoordAttribute() const;
-    Qt3DRender::QAttribute *indexAttribute() const;
+    Qt3DCore::QAttribute *positionAttribute() const;
+    Qt3DCore::QAttribute *normalAttribute() const;
+    Qt3DCore::QAttribute *texCoordAttribute() const;
+    Qt3DCore::QAttribute *indexAttribute() const;
 
 public Q_SLOTS:
     void setRings(int rings);

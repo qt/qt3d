@@ -28,7 +28,7 @@
 
 
 #include <QtTest/QTest>
-#include <Qt3DQuickRender/private/quick3dbuffer_p.h>
+#include <Qt3DQuick/private/quick3dbuffer_p.h>
 #include <QObject>
 #include <QVector3D>
 
@@ -53,7 +53,7 @@ private Q_SLOTS:
     void checkInvalidBinaryFile()
     {
         // GIVEN
-        Qt3DRender::Render::Quick::Quick3DBuffer buf;
+        Qt3DCore::Quick::Quick3DBuffer buf;
 
         // WHEN
         QVariant data = buf.readBinaryFile(QUrl::fromLocalFile(QLatin1String("this_should_not_exist.bin")));
@@ -66,7 +66,7 @@ private Q_SLOTS:
     void checkValidBinaryFile()
     {
         // GIVEN
-        Qt3DRender::Render::Quick::Quick3DBuffer buf;
+        Qt3DCore::Quick::Quick3DBuffer buf;
         QVector<QVector3D> dataArray = QVector<QVector3D>()
                 << QVector3D(327.0f, 350.0f, 355.0f)
                 << QVector3D(383.0f, 427.0f, 454.0f);

@@ -60,21 +60,21 @@ namespace Quick {
 class Q_3DQUICKANIMATIONSHARED_PRIVATE_EXPORT QQuick3DMorphTarget : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAttribute> attributes READ attributes)
+    Q_PROPERTY(QQmlListProperty<Qt3DCore::QAttribute> attributes READ attributes)
 
 public:
     QQuick3DMorphTarget(QObject *parent = nullptr);
 
     inline QMorphTarget *parentMorphTarget() const { return qobject_cast<QMorphTarget *>(parent()); }
 
-    QQmlListProperty<Qt3DRender::QAttribute> attributes();
+    QQmlListProperty<Qt3DCore::QAttribute> attributes();
 
 private:
 
-    static void appendAttribute(QQmlListProperty<Qt3DRender::QAttribute> *list, Qt3DRender::QAttribute *bar);
-    static Qt3DRender::QAttribute *attributeAt(QQmlListProperty<Qt3DRender::QAttribute> *list, int index);
-    static int attributeCount(QQmlListProperty<Qt3DRender::QAttribute> *list);
-    static void clearAttributes(QQmlListProperty<Qt3DRender::QAttribute> *list);
+    static void appendAttribute(QQmlListProperty<Qt3DCore::QAttribute> *list, Qt3DCore::QAttribute *bar);
+    static Qt3DCore::QAttribute *attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, int index);
+    static int attributeCount(QQmlListProperty<Qt3DCore::QAttribute> *list);
+    static void clearAttributes(QQmlListProperty<Qt3DCore::QAttribute> *list);
 };
 
 } // namespace Quick

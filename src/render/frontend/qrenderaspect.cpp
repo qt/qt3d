@@ -70,9 +70,6 @@
 #include <Qt3DRender/qnodraw.h>
 #include <Qt3DRender/qnopicking.h>
 #include <Qt3DRender/qcameralens.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qraycaster.h>
@@ -170,7 +167,9 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qgeometry.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/private/qservicelocator_p.h>
@@ -267,13 +266,14 @@ void QRenderAspectPrivate::registerBackendTypes()
 {
     Q_Q(QRenderAspect);
 
-    qRegisterMetaType<Qt3DRender::QBuffer*>();
+    qRegisterMetaType<Qt3DCore::QBuffer*>();
+    qRegisterMetaType<Qt3DCore::QJoint*>();
+
     qRegisterMetaType<Qt3DRender::QEffect*>();
     qRegisterMetaType<Qt3DRender::QFrameGraphNode *>();
     qRegisterMetaType<Qt3DRender::QCamera*>();
     qRegisterMetaType<Qt3DRender::QShaderProgram*>();
     qRegisterMetaType<Qt3DRender::QViewport*>();
-    qRegisterMetaType<Qt3DCore::QJoint*>();
 
     q->registerBackendType<Qt3DCore::QEntity>(QSharedPointer<Render::RenderEntityFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<Qt3DCore::QTransform>(QSharedPointer<Render::NodeFunctor<Render::Transform, Render::TransformManager> >::create(m_renderer));
@@ -289,8 +289,8 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QRenderState>(QSharedPointer<Render::NodeFunctor<Render::RenderStateNode, Render::RenderStateManager> >::create(m_renderer));
 
     // Geometry + Compute
-    q->registerBackendType<QAttribute>(QSharedPointer<Render::NodeFunctor<Render::Attribute, Render::AttributeManager> >::create(m_renderer));
-    q->registerBackendType<QBuffer>(QSharedPointer<Render::BufferFunctor>::create(m_renderer, m_nodeManagers->bufferManager()));
+    q->registerBackendType<Qt3DCore::QAttribute>(QSharedPointer<Render::NodeFunctor<Render::Attribute, Render::AttributeManager> >::create(m_renderer));
+    q->registerBackendType<Qt3DCore::QBuffer>(QSharedPointer<Render::BufferFunctor>::create(m_renderer, m_nodeManagers->bufferManager()));
     q->registerBackendType<QComputeCommand>(QSharedPointer<Render::NodeFunctor<Render::ComputeCommand, Render::ComputeCommandManager> >::create(m_renderer));
     q->registerBackendType<QGeometry>(QSharedPointer<Render::NodeFunctor<Render::Geometry, Render::GeometryManager> >::create(m_renderer));
     q->registerBackendType<QGeometryRenderer>(QSharedPointer<Render::GeometryRendererFunctor>::create(m_renderer, m_nodeManagers->geometryRendererManager()));
@@ -369,8 +369,8 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QRenderState>();
 
     // Geometry + Compute
-    unregisterBackendType<QAttribute>();
-    unregisterBackendType<QBuffer>();
+    unregisterBackendType<Qt3DCore::QAttribute>();
+    unregisterBackendType<Qt3DCore::QBuffer>();
     unregisterBackendType<QComputeCommand>();
     unregisterBackendType<QGeometry>();
     unregisterBackendType<QGeometryRenderer>();

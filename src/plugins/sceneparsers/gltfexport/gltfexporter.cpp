@@ -58,14 +58,15 @@
 #include <QtGui/qmatrix4x4.h>
 
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qgeometry.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qblendequation.h>
 #include <Qt3DRender/qblendequationarguments.h>
 #include <Qt3DRender/qeffect.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
@@ -74,7 +75,6 @@
 #include <Qt3DRender/qpointlight.h>
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
-#include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qalphacoverage.h>

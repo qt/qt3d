@@ -51,8 +51,8 @@
 // We mean it.
 //
 
+#include <Qt3DCore/private/qgeometryfactory_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/qgeometryfactory_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qmesh.h>
 
@@ -69,7 +69,7 @@ class GeometryRendererManager;
 
 struct GeometryFunctorResult
 {
-    QGeometry *geometry;
+    Qt3DCore::QGeometry *geometry;
     QMesh::Status status;
 };
 
@@ -96,7 +96,7 @@ public:
     inline bool primitiveRestartEnabled() const { return m_primitiveRestartEnabled; }
     inline QGeometryRenderer::PrimitiveType primitiveType() const { return m_primitiveType; }
     inline bool isDirty() const { return m_dirty; }
-    inline QGeometryFactoryPtr geometryFactory() const { return m_geometryFactory; }
+    inline Qt3DCore::QGeometryFactoryPtr geometryFactory() const { return m_geometryFactory; }
     void unsetDirty();
 
     // Build triangle data Job thread
@@ -117,7 +117,7 @@ private:
     bool m_primitiveRestartEnabled;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;
-    QGeometryFactoryPtr m_geometryFactory;
+    Qt3DCore::QGeometryFactoryPtr m_geometryFactory;
     GeometryRendererManager *m_manager;
     QVector<RayCasting::QBoundingVolume *> m_triangleVolumes;
 };

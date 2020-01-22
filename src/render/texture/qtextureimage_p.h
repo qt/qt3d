@@ -55,7 +55,6 @@
 
 #include <Qt3DRender/private/qabstracttextureimage_p.h>
 #include <Qt3DRender/qtextureimage.h>
-#include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/qtextureimagedatagenerator.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 

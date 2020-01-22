@@ -67,9 +67,9 @@ int main(int argc, char* argv[])
     view.setSource(QUrl("qrc:/main.qml"));
 
     QObject *rootObject = view.rootObject();
-    Qt3DRender::QBuffer *buffer = rootObject->findChild<Qt3DRender::QBuffer*>("buffer");
+    Qt3DCore::QBuffer *buffer = rootObject->findChild<Qt3DCore::QBuffer*>("buffer");
 
-    QObject::connect(buffer, &Qt3DRender::QBuffer::dataChanged,
+    QObject::connect(buffer, &Qt3DCore::QBuffer::dataChanged,
                      [=](const QByteArray &bytes) {
         //I know I'm receiving int data
         const uint *data = reinterpret_cast<const uint*>(bytes.data());

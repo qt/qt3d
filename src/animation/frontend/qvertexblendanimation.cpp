@@ -51,7 +51,7 @@ namespace Qt3DAnimation {
 
     A Qt3DAnimation::QVertexBlendAnimation class implements vertex-blend morphing animation
     to a target \l {Qt3DRender::QGeometryRenderer}{QGeometryRenderer}. The QVertexBlendAnimation
-    sets the correct \l {Qt3DRender::QAttribute}{QAttributes} from the
+    sets the correct \l {Qt3DCore::QAttribute}{QAttributes} from the
     \l {Qt3DAnimation::QMorphTarget}{morph targets} to the target
     \l {Qt3DRender::QGeometryRenderer::geometry} {QGeometryRenderer::geometry} and calculates
     interpolator for the current position. Unlike with QMorphingAnimation, where the blending is
@@ -189,21 +189,21 @@ void QVertexBlendAnimationPrivate::updateAnimation(float position)
     base = m_morphTargets.at(target0);
     target = m_morphTargets.at(target1);
 
-    Qt3DRender::QGeometry *geometry = m_target->geometry();
+    Qt3DCore::QGeometry *geometry = m_target->geometry();
 
     // remove attributes from previous frame
     if (m_currentBase && m_currentTarget &&
         (base != m_currentBase || target != m_currentTarget)) {
-        const QVector<Qt3DRender::QAttribute *> baseAttributes = m_currentBase->attributeList();
-        const QVector<Qt3DRender::QAttribute *> targetAttributes = m_currentTarget->attributeList();
+        const QVector<Qt3DCore::QAttribute *> baseAttributes = m_currentBase->attributeList();
+        const QVector<Qt3DCore::QAttribute *> targetAttributes = m_currentTarget->attributeList();
         for (int i = 0; i < baseAttributes.size(); ++i) {
             geometry->removeAttribute(baseAttributes.at(i));
             geometry->removeAttribute(targetAttributes.at(i));
         }
     }
 
-    const QVector<Qt3DRender::QAttribute *> baseAttributes = base->attributeList();
-    const QVector<Qt3DRender::QAttribute *> targetAttributes = target->attributeList();
+    const QVector<Qt3DCore::QAttribute *> baseAttributes = base->attributeList();
+    const QVector<Qt3DCore::QAttribute *> targetAttributes = target->attributeList();
     const QStringList attributeNames = base->attributeNames();
 
     // add attributes from current frame to the geometry

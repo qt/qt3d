@@ -38,21 +38,19 @@
 ****************************************************************************/
 
 #include "buffer_p.h"
+#include <Qt3DCore/private/qbuffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
-#include <Qt3DRender/private/qbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
-
-using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
 
 Buffer::Buffer()
     : BackendNode(QBackendNode::ReadWrite)
-    , m_usage(QBuffer::StaticDraw)
+    , m_usage(Qt3DCore::QBuffer::StaticDraw)
     , m_bufferDirty(false)
-    , m_access(QBuffer::Write)
+    , m_access(Qt3DCore::QBuffer::Write)
     , m_manager(nullptr)
 {
     // Maybe it could become read write if we want to inform
@@ -65,11 +63,11 @@ Buffer::~Buffer()
 
 void Buffer::cleanup()
 {
-    m_usage = QBuffer::StaticDraw;
+    m_usage = Qt3DCore::QBuffer::StaticDraw;
     m_data.clear();
     m_bufferUpdates.clear();
     m_bufferDirty = false;
-    m_access = QBuffer::Write;
+    m_access = Qt3DCore::QBuffer::Write;
 }
 
 
@@ -90,16 +88,16 @@ void Buffer::forceDataUpload()
 {
     // We push back an update with offset = -1
     // As this is the way to force data to be loaded
-    QBufferUpdate updateNewData;
+    Qt3DCore::QBufferUpdate updateNewData;
     updateNewData.offset = -1;
     m_bufferUpdates.clear(); //previous updates are pointless
     m_bufferUpdates.push_back(updateNewData);
 }
 
-void Buffer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
+void Buffer::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
     BackendNode::syncFromFrontEnd(frontEnd, firstTime);
-    const QBuffer *node = qobject_cast<const QBuffer *>(frontEnd);
+    const Qt3DCore::QBuffer *node = qobject_cast<const Qt3DCore::QBuffer *>(frontEnd);
     if (!node)
         return;
 
@@ -128,17 +126,17 @@ void Buffer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             // if we enter this code block, there's no problem in actually
             // ignoring the partial updates
             if (v.isValid())
-                const_cast<QBuffer *>(node)->setProperty("QT3D_updateData", {});
+                const_cast<Qt3DCore::QBuffer *>(node)->setProperty("QT3D_updateData", {});
 
             if (dirty && !m_data.isEmpty())
                 forceDataUpload();
         } else if (v.isValid()) {
             // Apply partial updates and record them to allow partial upload to the GPU
-            Qt3DRender::QBufferUpdate updateData = v.value<Qt3DRender::QBufferUpdate>();
+            Qt3DCore::QBufferUpdate updateData = v.value<Qt3DCore::QBufferUpdate>();
             m_data.replace(updateData.offset, updateData.data.size(), updateData.data);
             m_bufferUpdates.push_back(updateData);
             m_bufferDirty = true;
-            const_cast<QBuffer *>(node)->setProperty("QT3D_updateData", {});
+            const_cast<Qt3DCore::QBuffer *>(node)->setProperty("QT3D_updateData", {});
         }
     }
     markDirty(AbstractRenderer::BuffersDirty);

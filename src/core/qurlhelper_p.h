@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QURLHELPER_P_H
-#define QT3DRENDER_QURLHELPER_P_H
+#ifndef QT3DCORE_QURLHELPER_P_H
+#define QT3DCORE_QURLHELPER_P_H
 
 //
 //  W A R N I N G
@@ -51,21 +51,21 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class Q_3DRENDERSHARED_EXPORT QUrlHelper
+class Q_3DCORESHARED_EXPORT QUrlHelper
 {
 public:
     static QString urlToLocalFileOrQrc(const QUrl &url);
 };
 
-} // Qt3DRender
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QURLHELPER_P_H
+#endif // QT3DCORE_QURLHELPER_P_H

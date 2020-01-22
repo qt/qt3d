@@ -40,20 +40,17 @@
 #include <QtQml/QJSValue>
 #include <QtQml/QQmlEngine>
 
-#include <Qt3DQuickRender/private/quick3dbuffer_p.h>
+#include <Qt3DQuick/private/quick3dbuffer_p.h>
 #include <QtQml/private/qqmlengine_p.h>
 #include <QtQml/private/qjsvalue_p.h>
 #include <QtQml/private/qv4typedarray_p.h>
 #include <QtQml/private/qv4arraybuffer_p.h>
-#include <Qt3DRender/private/qurlhelper_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 #include <QtCore/qfile.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-
-namespace Render {
-
+namespace Qt3DCore {
 namespace Quick {
 
 namespace {
@@ -61,11 +58,11 @@ const int jsValueTypeId = qMetaTypeId<QJSValue>();
 }
 
 Quick3DBuffer::Quick3DBuffer(Qt3DCore::QNode *parent)
-    : Qt3DRender::QBuffer(parent)
+    : Qt3DCore::QBuffer(parent)
     , m_engine(nullptr)
     , m_v4engine(nullptr)
 {
-    QObject::connect(this, &Qt3DRender::QBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
+    QObject::connect(this, &Qt3DCore::QBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
 }
 
 QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)
@@ -120,7 +117,7 @@ void Quick3DBuffer::updateData(int offset, const QVariant &bufferData)
  */
 QVariant Quick3DBuffer::readBinaryFile(const QUrl &fileUrl)
 {
-    QFile f(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(fileUrl));
+    QFile f(Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(fileUrl));
     QByteArray data;
 
     if (f.open(QIODevice::ReadOnly))
@@ -137,9 +134,6 @@ void Quick3DBuffer::initEngines()
 }
 
 } // Quick
-
-} // Render
-
-} // Qt3DRender
+} // Qt3DCore
 
 QT_END_NAMESPACE

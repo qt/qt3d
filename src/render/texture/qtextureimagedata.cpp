@@ -38,9 +38,9 @@
 ****************************************************************************/
 
 #include "qtextureimagedata_p.h"
-#include <QDebug>
 #include <QFileInfo>
 #include <QFile>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 

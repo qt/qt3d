@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DRender/QAttribute>
+#include <Qt3DCore/qattribute.h>
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
@@ -72,7 +72,7 @@ namespace Qt3DRender {
 namespace Render {
 
 
-template <typename ValueType, QAttribute::VertexBaseType VertexBaseType, uint dataSize>
+template <typename ValueType, Qt3DCore::QAttribute::VertexBaseType VertexBaseType, uint dataSize>
 class Q_AUTOTEST_EXPORT BufferVisitor
 {
 public:
@@ -137,20 +137,20 @@ public:
         if (indexAttribute) {
             auto indexData = m_manager->lookupResource<Buffer, BufferManager>(indexAttribute->bufferId())->data();
             switch (indexAttribute->vertexBaseType()) {
-            case QAttribute::UnsignedShort: {
-                auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedShort>(indexData, indexAttribute->byteOffset());
+            case Qt3DCore::QAttribute::UnsignedShort: {
+                auto indexBuffer = BufferTypeInfo::castToType<Qt3DCore::QAttribute::UnsignedShort>(indexData, indexAttribute->byteOffset());
                 traverseCoordinateIndexed(vertexBuffer, indexBuffer, attribute->byteStride(), drawVertexCount,
                                           primitiveRestartEnabled, primitiveRestartIndex);
                 break;
             }
-            case QAttribute::UnsignedInt: {
-                auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedInt>(indexData, indexAttribute->byteOffset());
+            case Qt3DCore::QAttribute::UnsignedInt: {
+                auto indexBuffer = BufferTypeInfo::castToType<Qt3DCore::QAttribute::UnsignedInt>(indexData, indexAttribute->byteOffset());
                 traverseCoordinateIndexed(vertexBuffer, indexBuffer, attribute->byteStride(), drawVertexCount,
                                           primitiveRestartEnabled, primitiveRestartIndex);
                 break;
             }
-            case QAttribute::UnsignedByte: {
-                auto indexBuffer = BufferTypeInfo::castToType<QAttribute::UnsignedByte>(indexData, indexAttribute->byteOffset());
+            case Qt3DCore::QAttribute::UnsignedByte: {
+                auto indexBuffer = BufferTypeInfo::castToType<Qt3DCore::QAttribute::UnsignedByte>(indexData, indexAttribute->byteOffset());
                 traverseCoordinateIndexed(vertexBuffer, indexBuffer, attribute->byteStride(), drawVertexCount,
                                           primitiveRestartEnabled, primitiveRestartIndex);
                 break;
@@ -292,7 +292,7 @@ protected:
     NodeManagers *m_manager;
 };
 
-typedef BufferVisitor<float, QAttribute::Float, 3> Buffer3fVisitor;
+typedef BufferVisitor<float, Qt3DCore::QAttribute::Float, 3> Buffer3fVisitor;
 
 } // namespace Render
 

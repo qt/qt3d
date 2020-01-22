@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DRender/QAttribute>
+#include <Qt3DCore/QAttribute>
 #include <QByteArray>
 
 QT_BEGIN_NAMESPACE
@@ -69,7 +69,7 @@ class Buffer;
 struct BufferInfo
 {
     BufferInfo()
-        : type(QAttribute::VertexBaseType::Float)
+        : type(Qt3DCore::QAttribute::VertexBaseType::Float)
         , dataSize(0)
         , count(0)
         , byteStride(0)
@@ -79,7 +79,7 @@ struct BufferInfo
     {}
 
     QByteArray data;
-    QAttribute::VertexBaseType type;
+    Qt3DCore::QAttribute::VertexBaseType type;
     uint dataSize;
     uint count;
     uint byteStride;
@@ -91,17 +91,17 @@ struct BufferInfo
 
 namespace BufferTypeInfo {
 
-    template <QAttribute::VertexBaseType> struct EnumToType;
-    template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
-    template <> struct EnumToType<QAttribute::UnsignedByte> { typedef const uchar type; };
-    template <> struct EnumToType<QAttribute::Short> { typedef const short type; };
-    template <> struct EnumToType<QAttribute::UnsignedShort> { typedef const ushort type; };
-    template <> struct EnumToType<QAttribute::Int> { typedef const int type; };
-    template <> struct EnumToType<QAttribute::UnsignedInt> { typedef const uint type; };
-    template <> struct EnumToType<QAttribute::Float> { typedef const float type; };
-    template <> struct EnumToType<QAttribute::Double> { typedef const double type; };
+    template <Qt3DCore::QAttribute::VertexBaseType> struct EnumToType;
+    template <> struct EnumToType<Qt3DCore::QAttribute::Byte> { typedef const char type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedByte> { typedef const uchar type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::Short> { typedef const short type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedShort> { typedef const ushort type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::Int> { typedef const int type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedInt> { typedef const uint type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::Float> { typedef const float type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::Double> { typedef const double type; };
 
-    template<QAttribute::VertexBaseType v>
+    template<Qt3DCore::QAttribute::VertexBaseType v>
     typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
     {
         return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);

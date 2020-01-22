@@ -44,8 +44,8 @@
 
     \section2 Buffer
 
-    The Qt3DRender::QBuffer class stores the raw data. This acts purely as an
-    array of memory. In most cases a Qt3DRender::QBuffer will be used
+    The Qt3DCore::QBuffer class stores the raw data. This acts purely as an
+    array of memory. In most cases a Qt3DCore::QBuffer will be used
     indirectly by being referenced by one or more Qt3DRender::QAttributes.
     However there are times when a QBuffer may be used directly as the value
     property of a QParameter when dealing with Uniform Buffer Objects (UBO) or
@@ -61,9 +61,9 @@
 
     \section2 Attribute
 
-    Qt3DRender::QAttribute specifies how data contained in the referenced
+    Qt3DCore::QAttribute specifies how data contained in the referenced
     buffer should be extracted and passed to an input of a vertex shader. It
-    references a Qt3DRender::QBuffer and can specify the layout of the
+    references a Qt3DCore::QBuffer and can specify the layout of the
     attributes by definining the vertex size, the data type, the stride between
     two vertices and a starting offset. The type of the attribute will also
     define whether it is to be used as a vertex buffer or as an index buffer.
@@ -87,7 +87,7 @@
 
     \section2 Geometry
 
-    A Qt3DRender::QGeometry aggregates various attributes to form a piece of
+    A Qt3DCore::QGeometry aggregates various attributes to form a piece of
     geometry. Usually a proper geometry will provide an attribute for vertex
     positions, an attribute for vertex normals and an attribute for texture
     coordinates. If you want your geometry to also work with normal mapped
@@ -122,7 +122,7 @@
     \section2 GeometryRenderer
 
     Qt3DRender::QGeometryRenderer is a QComponent which when aggregated by a
-    QEntity allows to draw the Qt3DRender::QGeometry it references. It provides
+    QEntity allows to draw the Qt3DCore::QGeometry it references. It provides
     properties to control the draw call such as the number of instances to be
     drawn, the starting instance, the type of
     Qt3DRender::QGeometryRenderer::PrimitiveType to be used, etc. A

@@ -30,16 +30,16 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRender/qgeometry.h>
-#include <Qt3DRender/private/qgeometry_p.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qgeometry.h>
+#include <Qt3DCore/private/qgeometry_p.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
 
 #include <QSignalSpy>
 
 #include "testarbiter.h"
 
-class FakeGeometry : public Qt3DRender::QGeometry
+class FakeGeometry : public Qt3DCore::QGeometry
 {
     Q_OBJECT
 };
@@ -54,11 +54,11 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
-        QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry());
+        QScopedPointer<Qt3DCore::QGeometry> geometry(new Qt3DCore::QGeometry());
         arbiter.setArbiterOnNode(geometry.data());
 
         // WHEN
-        Qt3DRender::QAttribute attr;
+        Qt3DCore::QAttribute attr;
         geometry->addAttribute(&attr);
         QCoreApplication::processEvents();
 
@@ -87,10 +87,10 @@ private Q_SLOTS:
     void checkAttributeBookkeeping()
     {
         // GIVEN
-        QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry);
+        QScopedPointer<Qt3DCore::QGeometry> geometry(new Qt3DCore::QGeometry);
         {
             // WHEN
-            Qt3DRender::QAttribute attribute;
+            Qt3DCore::QAttribute attribute;
             geometry->addAttribute(&attribute);
 
             // THEN
@@ -102,8 +102,8 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DRender::QGeometry someOtherGeometry;
-            QScopedPointer<Qt3DRender::QAttribute> attribute(new Qt3DRender::QAttribute(&someOtherGeometry));
+            Qt3DCore::QGeometry someOtherGeometry;
+            QScopedPointer<Qt3DCore::QAttribute> attribute(new Qt3DCore::QAttribute(&someOtherGeometry));
             geometry->addAttribute(attribute.data());
 
             // THEN
@@ -134,7 +134,7 @@ private Q_SLOTS:
         QCOMPARE(geometry->maxExtent(), QVector3D());
 
         // WHEN
-        auto dNode = static_cast<Qt3DRender::QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(geometry.data()));
+        auto dNode = static_cast<Qt3DCore::QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(geometry.data()));
         const QVector3D minExt(-1.0f, -1.0f, -1.0f);
         const QVector3D maxExt(1.0f, 1.0f, 1.0f);
         dNode->setExtent(minExt, maxExt);

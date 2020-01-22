@@ -30,9 +30,9 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/private/qattribute_p.h>
-#include <Qt3DRender/QBuffer>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/private/qattribute_p.h>
+#include <Qt3DCore/QBuffer>
 
 #include "testarbiter.h"
 
@@ -42,49 +42,49 @@ class tst_QAttribute: public QObject
 public:
     tst_QAttribute()
     {
-        qRegisterMetaType<Qt3DRender::QBuffer*>("Qt3DCore::QBuffer*");
+        qRegisterMetaType<Qt3DCore::QBuffer*>("Qt3DCore::QBuffer*");
     }
 
 private Q_SLOTS:
     void shouldHaveDefaultAttributeNames()
     {
         // GIVEN
-        Qt3DRender::QAttribute attribute;
+        Qt3DCore::QAttribute attribute;
 
         // THEN
-        QCOMPARE(Qt3DRender::QAttribute::defaultPositionAttributeName(), QStringLiteral("vertexPosition"));
-        QCOMPARE(Qt3DRender::QAttribute::defaultNormalAttributeName(), QStringLiteral("vertexNormal"));
-        QCOMPARE(Qt3DRender::QAttribute::defaultColorAttributeName(), QStringLiteral("vertexColor"));
-        QCOMPARE(Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(), QStringLiteral("vertexTexCoord"));
-        QCOMPARE(Qt3DRender::QAttribute::defaultTangentAttributeName(), QStringLiteral("vertexTangent"));
-        QCOMPARE(Qt3DRender::QAttribute::defaultJointIndicesAttributeName(), QStringLiteral("vertexJointIndices"));
-        QCOMPARE(Qt3DRender::QAttribute::defaultJointWeightsAttributeName(), QStringLiteral("vertexJointWeights"));
+        QCOMPARE(Qt3DCore::QAttribute::defaultPositionAttributeName(), QStringLiteral("vertexPosition"));
+        QCOMPARE(Qt3DCore::QAttribute::defaultNormalAttributeName(), QStringLiteral("vertexNormal"));
+        QCOMPARE(Qt3DCore::QAttribute::defaultColorAttributeName(), QStringLiteral("vertexColor"));
+        QCOMPARE(Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName(), QStringLiteral("vertexTexCoord"));
+        QCOMPARE(Qt3DCore::QAttribute::defaultTangentAttributeName(), QStringLiteral("vertexTangent"));
+        QCOMPARE(Qt3DCore::QAttribute::defaultJointIndicesAttributeName(), QStringLiteral("vertexJointIndices"));
+        QCOMPARE(Qt3DCore::QAttribute::defaultJointWeightsAttributeName(), QStringLiteral("vertexJointWeights"));
 
         QCOMPARE(attribute.property("defaultPositionAttributeName").toString(),
-                 Qt3DRender::QAttribute::defaultPositionAttributeName());
+                 Qt3DCore::QAttribute::defaultPositionAttributeName());
         QCOMPARE(attribute.property("defaultNormalAttributeName").toString(),
-                 Qt3DRender::QAttribute::defaultNormalAttributeName());
+                 Qt3DCore::QAttribute::defaultNormalAttributeName());
         QCOMPARE(attribute.property("defaultColorAttributeName").toString(),
-                 Qt3DRender::QAttribute::defaultColorAttributeName());
+                 Qt3DCore::QAttribute::defaultColorAttributeName());
         QCOMPARE(attribute.property("defaultTextureCoordinateAttributeName").toString(),
-                 Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName());
+                 Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName());
         QCOMPARE(attribute.property("defaultTangentAttributeName").toString(),
-                 Qt3DRender::QAttribute::defaultTangentAttributeName());
+                 Qt3DCore::QAttribute::defaultTangentAttributeName());
         QCOMPARE(attribute.property("defaultJointIndicesAttributeName").toString(),
-                 Qt3DRender::QAttribute::defaultJointIndicesAttributeName());
+                 Qt3DCore::QAttribute::defaultJointIndicesAttributeName());
         QCOMPARE(attribute.property("defaultJointWeightsAttributeName").toString(),
-                 Qt3DRender::QAttribute::defaultJointWeightsAttributeName());
+                 Qt3DCore::QAttribute::defaultJointWeightsAttributeName());
     }
 
     void checkPropertyUpdates()
     {
         // GIVEN
         TestArbiter arbiter;
-        QScopedPointer<Qt3DRender::QAttribute> attribute(new Qt3DRender::QAttribute());
+        QScopedPointer<Qt3DCore::QAttribute> attribute(new Qt3DCore::QAttribute());
         arbiter.setArbiterOnNode(attribute.data());
 
         // WHEN
-        attribute->setVertexBaseType(Qt3DRender::QAttribute::Double);
+        attribute->setVertexBaseType(Qt3DCore::QAttribute::Double);
 
         // THEN
         QCOMPARE(arbiter.dirtyNodes().size(), 1);
@@ -147,7 +147,7 @@ private Q_SLOTS:
         arbiter.clear();
 
         // WHEN
-        attribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+        attribute->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
 
         // THEN
         QCOMPARE(arbiter.dirtyNodes().size(), 1);
@@ -156,7 +156,7 @@ private Q_SLOTS:
         arbiter.clear();
 
         // WHEN
-        Qt3DRender::QBuffer buf;
+        Qt3DCore::QBuffer buf;
         attribute->setBuffer(&buf);
 
         // THEN
@@ -166,7 +166,7 @@ private Q_SLOTS:
         arbiter.clear();
 
         // WHEN
-        Qt3DRender::QBuffer buf2;
+        Qt3DCore::QBuffer buf2;
         attribute->setBuffer(&buf2);
 
         // THEN
@@ -179,10 +179,10 @@ private Q_SLOTS:
     void checkBufferBookkeeping()
     {
         // GIVEN
-        QScopedPointer<Qt3DRender::QAttribute> attribute(new Qt3DRender::QAttribute);
+        QScopedPointer<Qt3DCore::QAttribute> attribute(new Qt3DCore::QAttribute);
         {
             // WHEN
-            Qt3DRender::QBuffer buf;
+            Qt3DCore::QBuffer buf;
             attribute->setBuffer(&buf);
 
             // THEN
@@ -194,8 +194,8 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DRender::QAttribute someOtherAttribute;
-            QScopedPointer<Qt3DRender::QBuffer> buf(new Qt3DRender::QBuffer(&someOtherAttribute));
+            Qt3DCore::QAttribute someOtherAttribute;
+            QScopedPointer<Qt3DCore::QBuffer> buf(new Qt3DCore::QBuffer(&someOtherAttribute));
             attribute->setBuffer(buf.data());
 
             // THEN

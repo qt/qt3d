@@ -87,10 +87,6 @@ Item {
     QQ3Render213.SetFence {}                   //Qt3DRender::QSetFence
 
     // Geometry
-    QQ3Render20.Attribute {}                   //Qt3DRender::QAttribute
-    //QQ3Render20.BufferBase                   // (uncreatable) Qt3DRender::QBuffer
-    QQ3Render20.Buffer {}                      //Qt3DRender::Render::Quick::Quick3DBuffer
-    QQ3Render20.Geometry {}                    //Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry
     QQ3Render20.GeometryRenderer {}            //Qt3DRender::QGeometryRenderer
 
     // Mesh

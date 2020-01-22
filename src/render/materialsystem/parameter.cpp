@@ -42,7 +42,6 @@
 #include <Qt3DRender/private/qparameter_p.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qshaderdata.h>
-#include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/private/buffer_p.h>
 
 #include <Qt3DRender/private/managers_p.h>

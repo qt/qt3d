@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QATTRIBUTE_P_H
-#define QT3DRENDER_QATTRIBUTE_P_H
+#ifndef QT3DCORE_QBUFFER_P_H
+#define QT3DCORE_QBUFFER_P_H
 
 //
 //  W A R N I N G
@@ -51,37 +51,40 @@
 // We mean it.
 //
 
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <private/qnode_p.h>
-#include <private/qt3drender_global_p.h>
+#include <QByteArray>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class QAttribute;
-
-class Q_3DRENDERSHARED_PRIVATE_EXPORT QAttributePrivate : public Qt3DCore::QNodePrivate
+class Q_3DCORESHARED_EXPORT QBufferPrivate : public Qt3DCore::QNodePrivate
 {
 public:
-    Q_DECLARE_PUBLIC(QAttribute)
+    Q_DECLARE_PUBLIC(QBuffer)
 
-    QAttributePrivate();
+    QBufferPrivate();
 
-    QBuffer *m_buffer;
-    QString m_name;
-    QAttribute::VertexBaseType m_vertexBaseType;
-    uint m_vertexSize;
-    uint m_count;
-    uint m_byteStride;
-    uint m_byteOffset;
-    uint m_divisor;
-    QAttribute::AttributeType m_attributeType;
+    QByteArray m_data;
+    QBuffer::BufferType m_type;
+    QBuffer::UsageType m_usage;
+    QBuffer::AccessType m_access;
+
+    void setData(const QByteArray &data);
 };
 
-} // Qt3DRender
+struct QBufferUpdate
+{
+    int offset;
+    QByteArray data;
+};
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
+Q_DECLARE_METATYPE(Qt3DCore::QBufferUpdate) // LCOV_EXCL_LINE
 
-#endif // QT3DRENDER_QATTRIBUTE_P_H
+#endif // QT3DCORE_QBUFFER_P_H

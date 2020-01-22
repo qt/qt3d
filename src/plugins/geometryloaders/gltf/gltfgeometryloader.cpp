@@ -46,8 +46,8 @@
 
 #include <QOpenGLTexture>
 
-#include <Qt3DRender/QGeometry>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DCore/QGeometry>
 #include <Qt3DCore/private/qloadgltf_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,6 +56,8 @@ QT_BEGIN_NAMESPACE
 #  define qUtf16PrintableImpl(string) \
     static_cast<const wchar_t*>(static_cast<const void*>(string.utf16()))
 #endif
+
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -326,7 +328,7 @@ void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObj
                   qUtf16PrintableImpl(bufferData.path), qUtf16PrintableImpl(id));
     }
 
-    Qt3DRender::QBuffer *b = new Qt3DRender::QBuffer();
+    Qt3DCore::QBuffer *b = new Qt3DCore::QBuffer();
     b->setData(bytes);
     m_gltf1.m_buffers[id] = b;
 }
@@ -363,7 +365,7 @@ void GLTFGeometryLoader::processJSONBufferViewV2(const QJsonObject &json)
                   qUtf16PrintableImpl(bufferData.path));
     }
 
-    auto b = new Qt3DRender::QBuffer;
+    auto b = new Qt3DCore::QBuffer;
     b->setData(bytes);
     m_gltf2.m_buffers.push_back(b);
 }
@@ -409,7 +411,7 @@ void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &j
                 attributeName = attrName;
 
             //Get buffer handle for accessor
-            Qt3DRender::QBuffer *buffer = m_gltf1.m_buffers.value(accessorIt->bufferViewName, nullptr);
+            Qt3DCore::QBuffer *buffer = m_gltf1.m_buffers.value(accessorIt->bufferViewName, nullptr);
             if (Q_UNLIKELY(!buffer)) {
                 qCWarning(GLTFGeometryLoaderLog, "unknown buffer-view: %ls processing accessor: %ls",
                           qUtf16PrintableImpl(accessorIt->bufferViewName), qUtf16PrintableImpl(id));
@@ -436,7 +438,7 @@ void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &j
                           qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
             } else {
                 //Get buffer handle for accessor
-                Qt3DRender::QBuffer *buffer = m_gltf1.m_buffers.value(accessorIt->bufferViewName, nullptr);
+                Qt3DCore::QBuffer *buffer = m_gltf1.m_buffers.value(accessorIt->bufferViewName, nullptr);
                 if (Q_UNLIKELY(!buffer)) {
                     qCWarning(GLTFGeometryLoaderLog, "unknown buffer-view: %ls processing accessor: %ls",
                               qUtf16PrintableImpl(accessorIt->bufferViewName), qUtf16PrintableImpl(id));
@@ -489,7 +491,7 @@ void GLTFGeometryLoader::processJSONMeshV2(const QJsonObject &json)
                           accessor.bufferViewIndex, qUtf16PrintableImpl(json.value(KEY_NAME).toString()));
                 continue;
             }
-            Qt3DRender::QBuffer *buffer = m_gltf2.m_buffers[accessor.bufferViewIndex];
+            Qt3DCore::QBuffer *buffer = m_gltf2.m_buffers[accessor.bufferViewIndex];
 
             QAttribute *attribute = new QAttribute(buffer,
                                                    attributeName,
@@ -517,7 +519,7 @@ void GLTFGeometryLoader::processJSONMeshV2(const QJsonObject &json)
                               accessor.bufferViewIndex, qUtf16PrintableImpl(json.value(KEY_NAME).toString()));
                     continue;
                 }
-                Qt3DRender::QBuffer *buffer = m_gltf2.m_buffers[accessor.bufferViewIndex];
+                Qt3DCore::QBuffer *buffer = m_gltf2.m_buffers[accessor.bufferViewIndex];
 
                 QAttribute *attribute = new QAttribute(buffer,
                                                        accessor.type,

@@ -56,12 +56,15 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-class QGeometryRenderer;
+namespace Qt3DCore {
 class QGeometry;
 class QMaterial;
 class QAttribute;
 class QBuffer;
+}
+
+namespace Qt3DRender {
+class QGeometryRenderer;
 }
 
 namespace Qt3DExtras {
@@ -79,12 +82,12 @@ public:
     void init();
 
     Qt3DRender::QGeometryRenderer *m_renderer;
-    Qt3DRender::QGeometry *m_geometry;
-    Qt3DRender::QAttribute *m_positionAttr;
-    Qt3DRender::QAttribute *m_texCoordAttr;
-    Qt3DRender::QAttribute *m_indexAttr;
-    Qt3DRender::QBuffer *m_vertexBuffer;
-    Qt3DRender::QBuffer *m_indexBuffer;
+    Qt3DCore::QGeometry *m_geometry;
+    Qt3DCore::QAttribute *m_positionAttr;
+    Qt3DCore::QAttribute *m_texCoordAttr;
+    Qt3DCore::QAttribute *m_indexAttr;
+    Qt3DCore::QBuffer *m_vertexBuffer;
+    Qt3DCore::QBuffer *m_indexBuffer;
     QText2DMaterial *m_material;
 };
 

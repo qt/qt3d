@@ -45,14 +45,15 @@
 #include "qcylindermesh.h"
 
 #include <Qt3DExtras/qcylindergeometry.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
 #include <QtGui/QVector3D>
 
 #include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt3DCore;
 using namespace Qt3DRender;
 
 namespace Qt3DExtras {

@@ -61,17 +61,17 @@ namespace Render {
 
 namespace Visitor {
 
-template <QAttribute::VertexBaseType> struct EnumToType;
-template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
-template <> struct EnumToType<QAttribute::UnsignedByte> { typedef const uchar type; };
-template <> struct EnumToType<QAttribute::Short> { typedef const short type; };
-template <> struct EnumToType<QAttribute::UnsignedShort> { typedef const ushort type; };
-template <> struct EnumToType<QAttribute::Int> { typedef const int type; };
-template <> struct EnumToType<QAttribute::UnsignedInt> { typedef const uint type; };
-template <> struct EnumToType<QAttribute::Float> { typedef const float type; };
-template <> struct EnumToType<QAttribute::Double> { typedef const double type; };
+template <Qt3DCore::QAttribute::VertexBaseType> struct EnumToType;
+template <> struct EnumToType<Qt3DCore::QAttribute::Byte> { typedef const char type; };
+template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedByte> { typedef const uchar type; };
+template <> struct EnumToType<Qt3DCore::QAttribute::Short> { typedef const short type; };
+template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedShort> { typedef const ushort type; };
+template <> struct EnumToType<Qt3DCore::QAttribute::Int> { typedef const int type; };
+template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedInt> { typedef const uint type; };
+template <> struct EnumToType<Qt3DCore::QAttribute::Float> { typedef const float type; };
+template <> struct EnumToType<Qt3DCore::QAttribute::Double> { typedef const double type; };
 
-template<QAttribute::VertexBaseType v>
+template<Qt3DCore::QAttribute::VertexBaseType v>
 inline typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
 {
     return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
@@ -81,21 +81,21 @@ template<typename Func>
 void processBuffer(const BufferInfo &info, Func &f)
 {
     switch (info.type) {
-    case QAttribute::Byte: f(info, castToType<QAttribute::Byte>(info.data, info.byteOffset));
+    case Qt3DCore::QAttribute::Byte: f(info, castToType<Qt3DCore::QAttribute::Byte>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedByte: f(info, castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset));
+    case Qt3DCore::QAttribute::UnsignedByte: f(info, castToType<Qt3DCore::QAttribute::UnsignedByte>(info.data, info.byteOffset));
         return;
-    case QAttribute::Short: f(info, castToType<QAttribute::Short>(info.data, info.byteOffset));
+    case Qt3DCore::QAttribute::Short: f(info, castToType<Qt3DCore::QAttribute::Short>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedShort: f(info, castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset));
+    case Qt3DCore::QAttribute::UnsignedShort: f(info, castToType<Qt3DCore::QAttribute::UnsignedShort>(info.data, info.byteOffset));
         return;
-    case QAttribute::Int: f(info, castToType<QAttribute::Int>(info.data, info.byteOffset));
+    case Qt3DCore::QAttribute::Int: f(info, castToType<Qt3DCore::QAttribute::Int>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedInt: f(info, castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset));
+    case Qt3DCore::QAttribute::UnsignedInt: f(info, castToType<Qt3DCore::QAttribute::UnsignedInt>(info.data, info.byteOffset));
         return;
-    case QAttribute::Float: f(info, castToType<QAttribute::Float>(info.data, info.byteOffset));
+    case Qt3DCore::QAttribute::Float: f(info, castToType<Qt3DCore::QAttribute::Float>(info.data, info.byteOffset));
         return;
-    case QAttribute::Double: f(info, castToType<QAttribute::Double>(info.data, info.byteOffset));
+    case Qt3DCore::QAttribute::Double: f(info, castToType<Qt3DCore::QAttribute::Double>(info.data, info.byteOffset));
         return;
     default:
         return;
@@ -119,9 +119,9 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
         for (const Qt3DCore::QNodeId attrId : attrIds) {
             attribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
             if (attribute){
-                if (!positionAttribute && attribute->name() == QAttribute::defaultPositionAttributeName())
+                if (!positionAttribute && attribute->name() == Qt3DCore::QAttribute::defaultPositionAttributeName())
                     positionAttribute = attribute;
-                else if (attribute->attributeType() == QAttribute::IndexAttribute)
+                else if (attribute->attributeType() == Qt3DCore::QAttribute::IndexAttribute)
                     indexAttribute = attribute;
             }
         }

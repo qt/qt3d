@@ -33,18 +33,18 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/geometry_p.h>
-#include <Qt3DRender/qgeometry.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qgeometry.h>
+#include <Qt3DCore/qattribute.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testrenderer.h"
 #include "testarbiter.h"
 
-class DummyAttribute : public Qt3DRender::QAttribute
+class DummyAttribute : public Qt3DCore::QAttribute
 {
     Q_OBJECT
 public:
     DummyAttribute(Qt3DCore::QNode *parent = nullptr)
-        : Qt3DRender::QAttribute(parent)
+        : Qt3DCore::QAttribute(parent)
     {}
 };
 
@@ -60,11 +60,11 @@ private Q_SLOTS:
         Qt3DRender::Render::Geometry renderGeometry;
         TestRenderer renderer;
 
-        Qt3DRender::QGeometry geometry;
-        Qt3DRender::QAttribute attr1;
-        Qt3DRender::QAttribute attr2;
-        Qt3DRender::QAttribute attr4;
-        Qt3DRender::QAttribute attr3;
+        Qt3DCore::QGeometry geometry;
+        Qt3DCore::QAttribute attr1;
+        Qt3DCore::QAttribute attr2;
+        Qt3DCore::QAttribute attr4;
+        Qt3DCore::QAttribute attr3;
 
         geometry.addAttribute(&attr1);
         geometry.addAttribute(&attr2);
@@ -91,7 +91,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Geometry renderGeometry;
-        Qt3DRender::QGeometry geometry;
+        Qt3DCore::QGeometry geometry;
         TestRenderer renderer;
 
         renderGeometry.setRenderer(&renderer);
@@ -120,11 +120,11 @@ private Q_SLOTS:
         QCOMPARE(renderGeometry.boundingPositionAttribute(), Qt3DCore::QNodeId());
 
         // GIVEN
-        Qt3DRender::QGeometry geometry;
-        Qt3DRender::QAttribute attr1;
-        Qt3DRender::QAttribute attr2;
-        Qt3DRender::QAttribute attr4;
-        Qt3DRender::QAttribute attr3;
+        Qt3DCore::QGeometry geometry;
+        Qt3DCore::QAttribute attr1;
+        Qt3DCore::QAttribute attr2;
+        Qt3DCore::QAttribute attr4;
+        Qt3DCore::QAttribute attr3;
         geometry.setBoundingVolumePositionAttribute(&attr1);
 
         geometry.addAttribute(&attr1);
@@ -148,7 +148,7 @@ private Q_SLOTS:
         TestRenderer renderer;
         Qt3DRender::Render::Geometry renderGeometry;
         renderGeometry.setRenderer(&renderer);
-        Qt3DRender::QGeometry geometry;
+        Qt3DCore::QGeometry geometry;
 
         simulateInitializationSync(&geometry, &renderGeometry);
 

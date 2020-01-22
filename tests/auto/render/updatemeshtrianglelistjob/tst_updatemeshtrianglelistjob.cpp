@@ -146,8 +146,8 @@ struct NodeCollection
 {
     explicit NodeCollection(Qt3DRender::TestAspect *aspect, QObject *frontendRoot)
         : geometryRenderers(frontendRoot->findChildren<Qt3DRender::QGeometryRenderer *>())
-        , attributes(frontendRoot->findChildren<Qt3DRender::QAttribute *>())
-        , buffers(frontendRoot->findChildren<Qt3DRender::QBuffer *>())
+        , attributes(frontendRoot->findChildren<Qt3DCore::QAttribute *>())
+        , buffers(frontendRoot->findChildren<Qt3DCore::QBuffer *>())
     {
         // THEN
         QCOMPARE(aspect->nodeManagers()->geometryManager()->activeHandles().size(), geometryRenderers.size());
@@ -160,13 +160,13 @@ struct NodeCollection
             backendGeometryRenderer.push_back(backend);
         }
 
-        for (const Qt3DRender::QAttribute *a : qAsConst(attributes)) {
+        for (const Qt3DCore::QAttribute *a : qAsConst(attributes)) {
             Qt3DRender::Render::Attribute *backend = aspect->nodeManagers()->attributeManager()->lookupResource(a->id());
             QVERIFY(backend != nullptr);
             backendAttributes.push_back(backend);
         }
 
-        for (const Qt3DRender::QBuffer *b : qAsConst(buffers)) {
+        for (const Qt3DCore::QBuffer *b : qAsConst(buffers)) {
             Qt3DRender::Render::Buffer *backend = aspect->nodeManagers()->bufferManager()->lookupResource(b->id());
             QVERIFY(backend != nullptr);
             backendBuffers.push_back(backend);
@@ -174,8 +174,8 @@ struct NodeCollection
     }
 
     QList<Qt3DRender::QGeometryRenderer *> geometryRenderers;
-    QList<Qt3DRender::QAttribute *> attributes;
-    QList<Qt3DRender::QBuffer *> buffers;
+    QList<Qt3DCore::QAttribute *> attributes;
+    QList<Qt3DCore::QBuffer *> buffers;
 
     QVector<Qt3DRender::Render::GeometryRenderer *> backendGeometryRenderer;
     QVector<Qt3DRender::Render::Attribute *> backendAttributes;

@@ -43,9 +43,9 @@
 #include <QCoreApplication>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/qsceneimporter_p.h>
-#include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/qsceneloader.h>
 #include <Qt3DRender/private/qsceneloader_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
@@ -106,7 +106,7 @@ void LoadSceneJob::run()
         finalStatus = QSceneLoader::Error;
 
         if (m_data.isEmpty()) {
-            const QString path = QUrlHelper::urlToLocalFileOrQrc(m_source);
+            const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(m_source);
             const QFileInfo finfo(path);
             qCDebug(SceneLoaders) << Q_FUNC_INFO << "Attempting to load" << finfo.filePath();
             if (finfo.exists()) {

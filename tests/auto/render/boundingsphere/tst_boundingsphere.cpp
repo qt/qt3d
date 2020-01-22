@@ -422,8 +422,8 @@ private Q_SLOTS:
 
         QScopedPointer<Qt3DCore::QEntity> entity(new Qt3DCore::QEntity);
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(entity.data()));
-        Qt3DRender::QBuffer *vbuffer = new Qt3DRender::QBuffer;
-        Qt3DRender::QBuffer *ibuffer = new Qt3DRender::QBuffer;
+        Qt3DCore::QBuffer *vbuffer = new Qt3DCore::QBuffer;
+        Qt3DCore::QBuffer *ibuffer = new Qt3DCore::QBuffer;
 
         vbuffer->setData(vdata);
         Qt3DRender::Render::Buffer *vbufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(vbuffer->id());
@@ -437,15 +437,15 @@ private Q_SLOTS:
         ibufferBackend->setManager(test->nodeManagers()->bufferManager());
         simulateInitializationSync(ibuffer, ibufferBackend);
 
-        Qt3DRender::QGeometry *g = new Qt3DRender::QGeometry;
+        Qt3DCore::QGeometry *g = new Qt3DCore::QGeometry;
         for (int i = 0; i < 2; ++i)
-            g->addAttribute(new Qt3DRender::QAttribute);
+            g->addAttribute(new Qt3DCore::QAttribute);
 
-        const QVector<Qt3DRender::QAttribute *> attrs = g->attributes();
-        Qt3DRender::QAttribute *attr = attrs[0];
+        const QVector<Qt3DCore::QAttribute *> attrs = g->attributes();
+        Qt3DCore::QAttribute *attr = attrs[0];
         attr->setBuffer(vbuffer);
-        attr->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        attr->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        attr->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+        attr->setVertexBaseType(Qt3DCore::QAttribute::Float);
         attr->setVertexSize(3);
         attr->setCount(6);
         attr->setByteOffset(0);
@@ -453,8 +453,8 @@ private Q_SLOTS:
 
         attr = attrs[1];
         attr->setBuffer(ibuffer);
-        attr->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-        attr->setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
+        attr->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
+        attr->setVertexBaseType(Qt3DCore::QAttribute::UnsignedShort);
         attr->setVertexSize(1);
         attr->setCount(indexCount);
         attr->setByteOffset(indexByteOffset);
@@ -534,7 +534,7 @@ private Q_SLOTS:
 
         QScopedPointer<Qt3DCore::QEntity> entity(new Qt3DCore::QEntity);
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(entity.data()));
-        Qt3DRender::QBuffer *vbuffer = new Qt3DRender::QBuffer;
+        Qt3DCore::QBuffer *vbuffer = new Qt3DCore::QBuffer;
 
         vbuffer->setData(vdata);
         Qt3DRender::Render::Buffer *vbufferBackend = test->nodeManagers()->bufferManager()->getOrCreateResource(vbuffer->id());
@@ -542,14 +542,14 @@ private Q_SLOTS:
         vbufferBackend->setManager(test->nodeManagers()->bufferManager());
         simulateInitializationSync(vbuffer, vbufferBackend);
 
-        Qt3DRender::QGeometry *g = new Qt3DRender::QGeometry;
-        g->addAttribute(new Qt3DRender::QAttribute);
+        Qt3DCore::QGeometry *g = new Qt3DCore::QGeometry;
+        g->addAttribute(new Qt3DCore::QAttribute);
 
-        const QVector<Qt3DRender::QAttribute *> attrs = g->attributes();
-        Qt3DRender::QAttribute *attr = attrs[0];
+        const QVector<Qt3DCore::QAttribute *> attrs = g->attributes();
+        Qt3DCore::QAttribute *attr = attrs[0];
         attr->setBuffer(vbuffer);
-        attr->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        attr->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        attr->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+        attr->setVertexBaseType(Qt3DCore::QAttribute::Float);
         attr->setVertexSize(3);
         attr->setCount(6);
         attr->setByteOffset(0);

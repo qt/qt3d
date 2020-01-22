@@ -41,13 +41,11 @@
 #include "qgeometryfactory_p.h"
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
-
-namespace Qt3DRender {
 
 QGeometryFactory::~QGeometryFactory()
 {
@@ -79,8 +77,8 @@ void QGeometryPrivate::setExtent(const QVector3D &minExtent, const QVector3D &ma
 
 /*!
     \qmltype Geometry
-    \instantiates Qt3DRender::QGeometry
-    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DCore::QGeometry
+    \inqmlmodule Qt3D.Core
     \inherits Node
     \since 5.7
     \brief Encapsulates geometry.
@@ -91,14 +89,14 @@ void QGeometryPrivate::setExtent(const QVector3D &minExtent, const QVector3D &ma
  */
 
 /*!
-    \class Qt3DRender::QGeometry
-    \inmodule Qt3DRender
+    \class Qt3DCore::QGeometry
+    \inmodule Qt3DCore
     \since 5.7
     \brief Encapsulates geometry.
 
-    A Qt3DRender::QGeometry class is used to group a list of Qt3DRender::QAttribute
+    A Qt3DCore::QGeometry class is used to group a list of Qt3DCore::QAttribute
     objects together to form a geometric shape Qt3D is able to render using
-    Qt3DRender::QGeometryRenderer. Special attribute can be set in order to calculate
+    Qt3DCore::QGeometryRenderer. Special attribute can be set in order to calculate
     bounding volume of the shape.
  */
 
@@ -128,7 +126,7 @@ void QGeometryPrivate::setExtent(const QVector3D &minExtent, const QVector3D &ma
     If unspecified, the system will look for the attribute using the name returned by
     QAttribute::defaultPositionAttributeName.
 
-    \sa Qt3DRender::QAttribute
+    \sa Qt3DCore::QAttribute
  */
 
 
@@ -139,12 +137,12 @@ QGeometry::QGeometry(QNode *parent)
     : QGeometry(*new QGeometryPrivate(), parent) {}
 
 /*!
-    \fn Qt3DRender::QGeometryFactory::operator()()
+    \fn Qt3DCore::QGeometryFactory::operator()()
 
      Returns the generated geometry.
 */
 /*!
-    \fn bool Qt3DRender::QGeometryFactory::operator==(const QGeometryFactory &other) const = 0
+    \fn bool Qt3DCore::QGeometryFactory::operator==(const QGeometryFactory &other) const = 0
 
     Compares the factory with the factory specified in \a other.
     Returns true if they are equal.
@@ -165,7 +163,7 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
-    \fn void Qt3DRender::QGeometry::addAttribute(Qt3DRender::QAttribute *attribute)
+    \fn void Qt3DCore::QGeometry::addAttribute(Qt3DCore::QAttribute *attribute)
     Adds an \a attribute to this geometry.
  */
 void QGeometry::addAttribute(QAttribute *attribute)
@@ -190,7 +188,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
 }
 
 /*!
-    \fn void Qt3DRender::QGeometry::removeAttribute(Qt3DRender::QAttribute *attribute)
+    \fn void Qt3DCore::QGeometry::removeAttribute(Qt3DCore::QAttribute *attribute)
     Removes the given \a attribute from this geometry.
  */
 void QGeometry::removeAttribute(QAttribute *attribute)
@@ -260,8 +258,6 @@ QVector<QAttribute *> QGeometry::attributes() const
     Q_D(const QGeometry);
     return d->m_attributes;
 }
-
-} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

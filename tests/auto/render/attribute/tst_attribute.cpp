@@ -29,7 +29,7 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/attribute_p.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qbuffer.h>
 #include "testrenderer.h"
 
 class tst_Attribute : public Qt3DCore::QBackendNodeTester
@@ -45,18 +45,18 @@ private Q_SLOTS:
         Qt3DRender::Render::Attribute renderAttribute;
         renderAttribute.setRenderer(&renderer);
 
-        Qt3DRender::QAttribute attribute;
-        attribute.setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+        Qt3DCore::QAttribute attribute;
+        attribute.setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
         attribute.setByteOffset(1200);
         attribute.setByteStride(883);
         attribute.setCount(427);
         attribute.setDivisor(305);
         attribute.setName(QStringLiteral("C3"));
-        attribute.setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
+        attribute.setVertexBaseType(Qt3DCore::QAttribute::UnsignedShort);
         attribute.setVertexSize(3);
 
-        Qt3DRender::QBuffer buffer;
-        buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
+        Qt3DCore::QBuffer buffer;
+        buffer.setUsage(Qt3DCore::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("Corvette"));
         attribute.setBuffer(&buffer);
 
@@ -89,26 +89,26 @@ private Q_SLOTS:
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);
-        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DRender::QAttribute::Float);
+        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DCore::QAttribute::Float);
         QCOMPARE(renderAttribute.vertexSize(), 1U);
-        QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::VertexAttribute);
+        QCOMPARE(renderAttribute.attributeType(), Qt3DCore::QAttribute::VertexAttribute);
         QCOMPARE(renderAttribute.byteOffset(), 0U);
         QCOMPARE(renderAttribute.byteStride(), 0U);
         QCOMPARE(renderAttribute.count(), 0U);
         QCOMPARE(renderAttribute.divisor(), 0U);
 
         // GIVEN
-        Qt3DRender::QAttribute attribute;
-        attribute.setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+        Qt3DCore::QAttribute attribute;
+        attribute.setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
         attribute.setByteOffset(1200);
         attribute.setByteStride(883);
         attribute.setCount(427);
         attribute.setDivisor(305);
         attribute.setName(QStringLiteral("C3"));
-        attribute.setVertexBaseType(Qt3DRender::QAttribute::Double);
+        attribute.setVertexBaseType(Qt3DCore::QAttribute::Double);
         attribute.setVertexSize(4);
-        Qt3DRender::QBuffer buffer;
-        buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
+        Qt3DCore::QBuffer buffer;
+        buffer.setUsage(Qt3DCore::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("C7"));
         attribute.setBuffer(&buffer);
 
@@ -120,9 +120,9 @@ private Q_SLOTS:
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);
-        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DRender::QAttribute::Float);
+        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DCore::QAttribute::Float);
         QCOMPARE(renderAttribute.vertexSize(), 1U);
-        QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::VertexAttribute);
+        QCOMPARE(renderAttribute.attributeType(), Qt3DCore::QAttribute::VertexAttribute);
         QCOMPARE(renderAttribute.byteOffset(), 0U);
         QCOMPARE(renderAttribute.byteStride(), 0U);
         QCOMPARE(renderAttribute.count(), 0U);
@@ -132,7 +132,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DRender::QAttribute attribute;
+        Qt3DCore::QAttribute attribute;
         TestRenderer renderer;
         Qt3DRender::Render::Attribute renderAttribute;
         renderAttribute.setRenderer(&renderer);
@@ -144,11 +144,11 @@ private Q_SLOTS:
         QVERIFY(!renderer.dirtyBits());
 
         // WHEN
-        attribute.setVertexBaseType(Qt3DRender::QAttribute::Int);
+        attribute.setVertexBaseType(Qt3DCore::QAttribute::Int);
         renderAttribute.syncFromFrontEnd(&attribute, false);
 
         // THEN
-        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DRender::QAttribute::Int);
+        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DCore::QAttribute::Int);
         QVERIFY(renderAttribute.isDirty());
         QVERIFY(renderer.dirtyBits() != 0);
 
@@ -171,11 +171,11 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        attribute.setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+        attribute.setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
         renderAttribute.syncFromFrontEnd(&attribute, false);
 
         // THEN
-        QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::IndexAttribute);
+        QCOMPARE(renderAttribute.attributeType(), Qt3DCore::QAttribute::IndexAttribute);
         QVERIFY(renderAttribute.isDirty());
         QVERIFY(renderer.dirtyBits() != 0);
 
@@ -184,11 +184,11 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        attribute.setAttributeType(Qt3DRender::QAttribute::DrawIndirectAttribute);
+        attribute.setAttributeType(Qt3DCore::QAttribute::DrawIndirectAttribute);
         renderAttribute.syncFromFrontEnd(&attribute, false);
 
         // THEN
-        QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::DrawIndirectAttribute);
+        QCOMPARE(renderAttribute.attributeType(), Qt3DCore::QAttribute::DrawIndirectAttribute);
         QVERIFY(renderAttribute.isDirty());
         QVERIFY(renderer.dirtyBits() != 0);
 
@@ -262,7 +262,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        auto buffer = new Qt3DRender::QBuffer();
+        auto buffer = new Qt3DCore::QBuffer();
         attribute.setBuffer(buffer);
         renderAttribute.syncFromFrontEnd(&attribute, false);
 

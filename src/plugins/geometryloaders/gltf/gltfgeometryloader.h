@@ -54,12 +54,16 @@
 #include <QtCore/QJsonDocument>
 
 #include <Qt3DRender/private/qgeometryloaderinterface_p.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
 
 #include <private/qlocale_tools_p.h>
 
 QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+class QGeometry;
+}
 
 namespace Qt3DRender {
 
@@ -77,7 +81,6 @@ class QRenderState;
 class QTechnique;
 class QParameter;
 class QGeometryRenderer;
-class QGeometry;
 
 class GLTFGeometryLoader : public QGeometryLoaderInterface
 {
@@ -111,7 +114,7 @@ class GLTFGeometryLoader : public QGeometryLoaderInterface
 
         QString bufferViewName;
         int bufferViewIndex;
-        QAttribute::VertexBaseType type;
+        Qt3DCore::QAttribute::VertexBaseType type;
         uint dataSize;
         int count;
         int offset;
@@ -122,13 +125,13 @@ class GLTFGeometryLoader : public QGeometryLoaderInterface
     {
         QHash<QString, AccessorData> m_accessorDict;
         QHash<QString, BufferData> m_bufferDatas;
-        QHash<QString, Qt3DRender::QBuffer*> m_buffers;
+        QHash<QString, Qt3DCore::QBuffer*> m_buffers;
     };
 
     struct Gltf2
     {
         QVector<BufferData> m_bufferDatas;
-        QVector<Qt3DRender::QBuffer*> m_buffers;
+        QVector<Qt3DCore::QBuffer*> m_buffers;
         QVector<AccessorData> m_accessors;
     };
 
@@ -137,7 +140,7 @@ public:
     GLTFGeometryLoader();
     ~GLTFGeometryLoader();
 
-    QGeometry *geometry() const final;
+    Qt3DCore::QGeometry *geometry() const final;
 
     bool load(QIODevice *ioDev, const QString &subMesh = QString()) final;
 
@@ -170,7 +173,7 @@ protected:
 
     QByteArray resolveLocalData(const QString &path) const;
 
-    static QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
+    static Qt3DCore::QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
     static uint accessorDataSizeFromJson(const QString &type);
 
 private:
@@ -181,7 +184,7 @@ private:
     Gltf1 m_gltf1;
     Gltf2 m_gltf2;
 
-    QGeometry *m_geometry;
+    Qt3DCore::QGeometry *m_geometry;
 };
 
 } // namespace Qt3DRender

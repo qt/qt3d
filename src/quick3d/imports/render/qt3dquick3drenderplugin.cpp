@@ -42,10 +42,8 @@
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qalphatest.h>
-#include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qblendequation.h>
 #include <Qt3DRender/qblendequationarguments.h>
-#include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qcameralens.h>
@@ -65,7 +63,6 @@
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qfrontface.h>
 #include <Qt3DRender/qfrustumculling.h>
-#include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qlayer.h>
@@ -125,9 +122,7 @@
 
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
-#include <Qt3DQuickRender/private/quick3dbuffer_p.h>
 #include <Qt3DQuickRender/private/quick3deffect_p.h>
-#include <Qt3DQuickRender/private/quick3dgeometry_p.h>
 #include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
 #include <Qt3DQuickRender/private/quick3dmemorybarrier_p.h>
@@ -223,13 +218,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QShaderImage>(uri, 2, 14, "ShaderImage");
 
     // Geometry
-    qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
-    qmlRegisterType<Qt3DRender::QAttribute, 10>(uri, 2, 10, "Attribute");
-    qmlRegisterType<Qt3DRender::QAttribute, 11>(uri, 2, 11, "Attribute");
-    qmlRegisterUncreatableType<Qt3DRender::QBuffer>(uri, 2, 0, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
-    qmlRegisterUncreatableType<Qt3DRender::QBuffer, 9>(uri, 2, 9, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
-    qmlRegisterType<Qt3DRender::Render::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
-    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Render/Geometry", uri, 2, 0, "Geometry");
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
     qmlRegisterType<Qt3DRender::QLevelOfDetail>(uri, 2, 9, "LevelOfDetail");
     qmlRegisterType<Qt3DRender::QLevelOfDetailSwitch>(uri, 2, 9, "LevelOfDetailSwitch");

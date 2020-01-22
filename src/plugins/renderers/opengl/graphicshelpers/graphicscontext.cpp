@@ -52,9 +52,7 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
-#include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
-#include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <QOpenGLShaderProgram>
 #include <glresourcemanagers_p.h>
@@ -971,8 +969,10 @@ GLuint GraphicsContext::byteSizeFromType(GLint type)
     return 0;
 }
 
-GLint GraphicsContext::glDataTypeFromAttributeDataType(QAttribute::VertexBaseType dataType)
+GLint GraphicsContext::glDataTypeFromAttributeDataType(Qt3DCore::QAttribute::VertexBaseType dataType)
 {
+    using namespace Qt3DCore;
+
     switch (dataType) {
     case QAttribute::Byte:
         return GL_BYTE;

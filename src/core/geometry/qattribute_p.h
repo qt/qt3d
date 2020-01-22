@@ -37,71 +37,51 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QABSTRACTFUNCTOR_H
-#define QT3DRENDER_QABSTRACTFUNCTOR_H
+#ifndef QT3DCORE_QATTRIBUTE_P_H
+#define QT3DCORE_QATTRIBUTE_P_H
 
-#include <Qt3DRender/qt3drender_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <private/qnode_p.h>
+#include <private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-// This will generate a unique id() function per type
-// <=> 1 unique function address per type
-template<class T>
-struct FunctorType
-{
-    static qintptr id()
-    {
-        // The MSVC linker can under some cases optimize all the template
-        // functions into a single function. The code below is there to ensure
-        // that the linker won't collapse all these distincts functions into one
-        static T *t = nullptr;
-        return reinterpret_cast<qintptr>(t);
-    }
-};
+class QAttribute;
 
-template<class T>
-qintptr functorTypeId()
-{
-    return reinterpret_cast<qintptr>(&FunctorType<T>::id);
-}
-
-#define QT3D_FUNCTOR(Class)                     \
-   qintptr id() const override {         \
-        return Qt3DRender::functorTypeId<Class>();    \
-   }
-
-
-class Q_3DRENDERSHARED_EXPORT QAbstractFunctor
+class Q_3DCORE_PRIVATE_EXPORT QAttributePrivate : public Qt3DCore::QNodePrivate
 {
 public:
-    QAbstractFunctor() = default;
-    virtual ~QAbstractFunctor();
-    virtual qintptr id() const = 0;
+    Q_DECLARE_PUBLIC(QAttribute)
 
-    // TODO: Remove when moving a copy of this to Qt3DCore
-    template<class T>
-    const T *functor_cast(const QAbstractFunctor *other) const
-    {
-        if (other->id() == functorTypeId<T>())
-            return static_cast<const T *>(other);
-        return nullptr;
-    }
-private:
-    Q_DISABLE_COPY(QAbstractFunctor)
+    QAttributePrivate();
+
+    QBuffer *m_buffer;
+    QString m_name;
+    QAttribute::VertexBaseType m_vertexBaseType;
+    uint m_vertexSize;
+    uint m_count;
+    uint m_byteStride;
+    uint m_byteOffset;
+    uint m_divisor;
+    QAttribute::AttributeType m_attributeType;
 };
 
-template<class T>
-const T *functor_cast(const QAbstractFunctor *other)
-{
-    if (other->id() == functorTypeId<T>())
-        return static_cast<const T *>(other);
-    return nullptr;
-}
-
-} // Qt3D
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QABSTRACTFUNCTOR_H
+#endif // QT3DCORE_QATTRIBUTE_P_H

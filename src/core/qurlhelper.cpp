@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,56 +37,32 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK3DGEOMETRY_P_H
-#define QT3D_QUICK3DGEOMETRY_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/QGeometry>
-#include <QtQml/QQmlListProperty>
-
-#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include "qurlhelper_p.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-namespace Render {
-namespace Quick {
+namespace Qt3DCore {
 
-class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DGeometry : public QObject
+QString QUrlHelper::urlToLocalFileOrQrc(const QUrl &url)
 {
-    Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAttribute> attributes READ attributeList)
-    Q_CLASSINFO("DefaultProperty", "attributes")
+    const QString scheme(url.scheme().toLower());
+    if (scheme == QLatin1String("qrc")) {
+        if (url.authority().isEmpty())
+            return QLatin1Char(':') + url.path();
+        return QString();
+    }
 
-public:
-    explicit Quick3DGeometry(QObject *parent = 0);
-    inline QGeometry *parentGeometry() const { return qobject_cast<QGeometry *>(parent()); }
+#if defined(Q_OS_ANDROID)
+    if (scheme == QLatin1String("assets")) {
+        if (url.authority().isEmpty())
+            return url.toString();
+        return QString();
+    }
+#endif
 
-    QQmlListProperty<Qt3DRender::QAttribute> attributeList();
+    return url.toLocalFile();
+}
 
-private:
-    static void appendAttribute(QQmlListProperty<Qt3DRender::QAttribute> *list, Qt3DRender::QAttribute *provider);
-    static Qt3DRender::QAttribute *attributeAt(QQmlListProperty<Qt3DRender::QAttribute> *list, int index);
-    static int attributesCount(QQmlListProperty<Qt3DRender::QAttribute> *list);
-    static void clearAttributes(QQmlListProperty<Qt3DRender::QAttribute> *list);
-
-    QVector<Qt3DRender::QAttribute *> m_managedAttributes;
-};
-
-} // namespace Quick
-} // namespace Render
-} // namespace Qt3DRender
+} // Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QUICK3DGEOMETRY_P_H

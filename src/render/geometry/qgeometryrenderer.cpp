@@ -88,7 +88,7 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
     \brief Encapsulates geometry rendering.
 
     A Qt3DRender::QGeometryRenderer holds all the information necessary to draw
-    a Qt3DRender::QGeometry. A QGeometry holds the coordinates of the geometry data -
+    a Qt3DCore::QGeometry. A QGeometry holds the coordinates of the geometry data -
     QGeometryRenderer specifies how to interpret that data.
  */
 

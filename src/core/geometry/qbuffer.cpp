@@ -39,13 +39,13 @@
 
 #include "qbuffer.h"
 #include "qbuffer_p.h"
-#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
 QBufferPrivate::QBufferPrivate()
     : QNodePrivate()
@@ -66,7 +66,7 @@ void QBufferPrivate::setData(const QByteArray &data)
 
 /*!
  * \qmltype Buffer
- * \instantiates Qt3DRender::QBuffer
+ * \instantiates Qt3DCore::QBuffer
  * \inqmlmodule Qt3D.Render
  *
  * \brief Provides a data store for raw data to later be used as vertices or
@@ -88,9 +88,9 @@ void QBufferPrivate::setData(const QByteArray &data)
  */
 
 /*!
- * \class Qt3DRender::QBuffer
- * \inheaderfile Qt3DRender/QBuffer
- * \inmodule Qt3DRender
+ * \class Qt3DCore::QBuffer
+ * \inheaderfile Qt3DCore/QBuffer
+ * \inmodule Qt3DCore
  *
  * \inherits Qt3DCore::QNode
  *
@@ -101,13 +101,13 @@ void QBufferPrivate::setData(const QByteArray &data)
  */
 
 /*!
- * \fn void Qt3DRender::QBuffer::dataChanged(const QByteArray &bytes)
+ * \fn void Qt3DCore::QBuffer::dataChanged(const QByteArray &bytes)
  *
  * This signal is emitted with \a bytes when data changes.
  */
 
 /*!
- * \fn void Qt3DRender::QBuffer::dataAvailable()
+ * \fn void Qt3DCore::QBuffer::dataAvailable()
  *
  * This signal is emitted when data becomes available.
  */
@@ -172,8 +172,8 @@ void QBufferPrivate::setData(const QByteArray &data)
  */
 
 /*!
- * \typedef Qt3DRender::QBufferDataGeneratorPtr
- * \relates Qt3DRender::QBuffer
+ * \typedef Qt3DCore::QBufferDataGeneratorPtr
+ * \relates Qt3DCore::QBuffer
  */
 
 /*!
@@ -288,7 +288,7 @@ void QBuffer::setAccessType(QBuffer::AccessType access)
 }
 
 /*!
- * \property Qt3DRender::QBuffer::accessType
+ * \property Qt3DCore::QBuffer::accessType
  *
  * Returns the \l {QBuffer::}{AccessType} of the buffer.
  *
@@ -309,6 +309,6 @@ void QBuffer::setType(QBuffer::BufferType type)
     }
 }
 
-} // namespace Qt3DRender
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

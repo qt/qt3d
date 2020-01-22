@@ -62,7 +62,7 @@ public:
     }
 
     bool operator ==(const Qt3DRender::QTextureImageDataGenerator &other) const override {
-        const TestImageDataGenerator *otherFunctor = Qt3DRender::functor_cast<TestImageDataGenerator>(&other);
+        const TestImageDataGenerator *otherFunctor = Qt3DCore::functor_cast<TestImageDataGenerator>(&other);
         return (otherFunctor != nullptr && otherFunctor->m_id == m_id);
     }
 
@@ -83,7 +83,7 @@ public:
     }
 
     bool operator ==(const Qt3DRender::QTextureGenerator &other) const override {
-        const TestTextureGenerator *otherFunctor = Qt3DRender::functor_cast<TestTextureGenerator>(&other);
+        const TestTextureGenerator *otherFunctor = Qt3DCore::functor_cast<TestTextureGenerator>(&other);
         return (otherFunctor != nullptr && otherFunctor->m_id == m_id);
     }
 

@@ -37,61 +37,55 @@
 **
 ****************************************************************************/
 
-#include "qabstractfunctor.h"
+#include <Qt3DQuick/private/quick3dgeometry_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
+namespace Quick {
 
-/*!
-    \class Qt3DRender::QAbstractFunctor
-    \inmodule Qt3DRender
-    \since 5.7
-    \brief QAbstractFunctor is an abstract base class for all functors.
-
-    The QAbstractFunctor is used as a base class for all functors and data
-    generators in Qt3DRender module.
-
-    When user defines a new functor or generator, they need to implement the
-    \l QAbstractFunctor::id() method, which should be done using the \c {QT3D_FUNCTOR}
-    macro in the class definition.
- */
-/*!
-    \fn qintptr Qt3DRender::QAbstractFunctor::id() const
-
-    Returns a pointer to the id of the functor.
- */
-/*!
-   \fn qintptr Qt3DRender::functorTypeId()
-
-   Returns a pointer to the type id of the functor.
-*/
-/*!
-    \macro QT3D_FUNCTOR(Class)
-    \relates Qt3DRender::QAbstractFunctor
-
-    This macro assigns functor id to the \a Class, which is used by QAbstractFunctor::functor_cast
-    to determine if the cast can be done.
- */
-
-/*!
-    \fn template<class T> const T * Qt3DRender::QAbstractFunctor::functor_cast(const QAbstractFunctor *other) const
-
-    This method is used to cast functor \a other to type T if the other is of
-    type T (or of subclass); otherwise returns 0. This method works similarly
-    to \l [QtCore] {qobject_cast(const QObject *object)}{qobject_cast()},
-    except with functors derived from QAbstractFunctor.
-
-    \warning If T was not declared with \l QT3D_FUNCTOR macro, then the results are undefined.
-  */
-
-/*! Desctructor */
-QAbstractFunctor::~QAbstractFunctor()
+Quick3DGeometry::Quick3DGeometry(QObject *parent)
+    : QObject(parent)
 {
-
 }
 
-} // Qt3D
+QQmlListProperty<Qt3DCore::QAttribute> Quick3DGeometry::attributeList()
+{
+    return QQmlListProperty<Qt3DCore::QAttribute>(this, nullptr,
+                                                  &Quick3DGeometry::appendAttribute,
+                                                  &Quick3DGeometry::attributesCount,
+                                                  &Quick3DGeometry::attributeAt,
+                                                  &Quick3DGeometry::clearAttributes);
+}
+
+void Quick3DGeometry::appendAttribute(QQmlListProperty<Qt3DCore::QAttribute> *list, Qt3DCore::QAttribute *attribute)
+{
+    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    geometry->m_managedAttributes.append(attribute);
+    geometry->parentGeometry()->addAttribute(attribute);
+}
+
+Qt3DCore::QAttribute *Quick3DGeometry::attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, int index)
+{
+    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    return geometry->parentGeometry()->attributes().at(index);
+}
+
+int Quick3DGeometry::attributesCount(QQmlListProperty<Qt3DCore::QAttribute> *list)
+{
+    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    return geometry->parentGeometry()->attributes().count();
+}
+
+void Quick3DGeometry::clearAttributes(QQmlListProperty<Qt3DCore::QAttribute> *list)
+{
+    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    for (Qt3DCore::QAttribute *attribute : qAsConst(geometry->m_managedAttributes))
+        geometry->parentGeometry()->removeAttribute(attribute);
+    geometry->m_managedAttributes.clear();
+}
+
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
-

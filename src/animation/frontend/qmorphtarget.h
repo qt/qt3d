@@ -37,8 +37,8 @@
 #ifndef QT3DANIMATION_QMORPHTARGET_H
 #define QT3DANIMATION_QMORPHTARGET_H
 
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qgeometry.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qgeometry.h>
 
 #include <QtCore/qstringlist.h>
 
@@ -58,14 +58,14 @@ class Q_3DANIMATIONSHARED_EXPORT QMorphTarget : public QObject
 public:
     explicit QMorphTarget(QObject *parent = nullptr);
 
-    QVector<Qt3DRender::QAttribute *> attributeList() const;
+    QVector<Qt3DCore::QAttribute *> attributeList() const;
     QStringList attributeNames() const;
 
-    void setAttributes(const QVector<Qt3DRender::QAttribute *> &attributes);
-    void addAttribute(Qt3DRender::QAttribute *attribute);
-    void removeAttribute(Qt3DRender::QAttribute *attribute);
+    void setAttributes(const QVector<Qt3DCore::QAttribute *> &attributes);
+    void addAttribute(Qt3DCore::QAttribute *attribute);
+    void removeAttribute(Qt3DCore::QAttribute *attribute);
 
-    Q_INVOKABLE static QMorphTarget *fromGeometry(Qt3DRender::QGeometry *geometry,
+    Q_INVOKABLE static QMorphTarget *fromGeometry(Qt3DCore::QGeometry *geometry,
                                                   const QStringList &attributes);
 
 Q_SIGNALS:

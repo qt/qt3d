@@ -48,10 +48,10 @@
 #include <QtGui/private/qfont_p.h>
 #include <QtGui/private/qdistancefield_p.h>
 
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qgeometry.h>
 #include <Qt3DRender/qmaterial.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 
 #include <Qt3DCore/private/qscene_p.h>

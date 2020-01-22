@@ -67,9 +67,11 @@ QT_BEGIN_NAMESPACE
 class QIODevice;
 class QString;
 
-namespace Qt3DRender {
-
+namespace Qt3DCore {
 class QGeometry;
+}
+
+namespace Qt3DRender {
 
 class BaseGeometryLoader : public QGeometryLoaderInterface
 {
@@ -96,7 +98,7 @@ public:
     QVector<QVector4D> tangents() const { return m_tangents; }
     QVector<unsigned int> indices() const { return m_indices; }
 
-    QGeometry *geometry() const override;
+    Qt3DCore::QGeometry *geometry() const override;
 
     bool load(QIODevice *ioDev, const QString &subMesh = QString()) override;
 
@@ -124,7 +126,7 @@ protected:
     QVector<QVector4D> m_tangents;
     QVector<unsigned int> m_indices;
 
-    QGeometry *m_geometry;
+    Qt3DCore::QGeometry *m_geometry;
 };
 
 struct FaceIndices

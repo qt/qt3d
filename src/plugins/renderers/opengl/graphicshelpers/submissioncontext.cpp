@@ -39,6 +39,7 @@
 
 #include "submissioncontext_p.h"
 
+#include <Qt3DCore/private/qbuffer_p.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qcullface.h>
@@ -54,7 +55,6 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
-#include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <gltexture_p.h>
 #include <rendercommand_p.h>
@@ -96,6 +96,8 @@ QT_BEGIN_NAMESPACE
 #ifndef GL_DRAW_FRAMEBUFFER
 #define GL_DRAW_FRAMEBUFFER 0x8CA9
 #endif
+
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -1461,7 +1463,7 @@ void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool r
     // * partial buffer updates where received
 
     // TO DO: Handle usage pattern
-    QVector<Qt3DRender::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
+    QVector<Qt3DCore::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
     for (auto it = updates.begin(); it != updates.end(); ++it) {
         auto update = it;
         // We have a partial update

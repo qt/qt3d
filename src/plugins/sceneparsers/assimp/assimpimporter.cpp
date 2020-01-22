@@ -41,20 +41,20 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DExtras/qdiffusemapmaterial.h>
-#include <Qt3DExtras/qdiffusespecularmapmaterial.h>
-#include <Qt3DExtras/qphongmaterial.h>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qgeometry.h>
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qeffect.h>
-#include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtextureimagedatagenerator.h>
+#include <Qt3DExtras/qdiffusemapmaterial.h>
+#include <Qt3DExtras/qdiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DExtras/qmorphphongmaterial.h>
 #include <Qt3DExtras/qdiffusemapmaterial.h>
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
@@ -67,8 +67,8 @@
 #include <qmath.h>
 
 #include <Qt3DCore/private/qabstractnodefactory_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DRender/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -394,7 +394,7 @@ bool AssimpImporter::areAssimpExtensions(const QStringList &extensions)
  */
 void AssimpImporter::setSource(const QUrl &source)
 {
-    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo file(path);
     m_sceneDir = file.absoluteDir();
     if (!file.exists()) {
@@ -702,12 +702,12 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
     QGeometryRenderer *geometryRenderer = QAbstractNodeFactory::createNode<QGeometryRenderer>("QGeometryRenderer");
     QGeometry *meshGeometry = QAbstractNodeFactory::createNode<QGeometry>("QGeometry");
     meshGeometry->setParent(geometryRenderer);
-    Qt3DRender::QBuffer *vertexBuffer = QAbstractNodeFactory::createNode<Qt3DRender::QBuffer>("QBuffer");
+    Qt3DCore::QBuffer *vertexBuffer = QAbstractNodeFactory::createNode<Qt3DCore::QBuffer>("QBuffer");
     vertexBuffer->setParent(meshGeometry);
-    vertexBuffer->setType(Qt3DRender::QBuffer::VertexBuffer);
-    Qt3DRender::QBuffer *indexBuffer = QAbstractNodeFactory::createNode<Qt3DRender::QBuffer>("QBuffer");
+    vertexBuffer->setType(Qt3DCore::QBuffer::VertexBuffer);
+    Qt3DCore::QBuffer *indexBuffer = QAbstractNodeFactory::createNode<Qt3DCore::QBuffer>("QBuffer");
     indexBuffer->setParent(meshGeometry);
-    indexBuffer->setType(Qt3DRender::QBuffer::IndexBuffer);
+    indexBuffer->setType(Qt3DCore::QBuffer::IndexBuffer);
 
     geometryRenderer->setGeometry(meshGeometry);
 
@@ -922,8 +922,8 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
                 }
             }
 
-            Qt3DRender::QBuffer *targetBuffer
-                    = QAbstractNodeFactory::createNode<Qt3DRender::QBuffer>("QBuffer");
+            Qt3DCore::QBuffer *targetBuffer
+                    = QAbstractNodeFactory::createNode<Qt3DCore::QBuffer>("QBuffer");
             targetBuffer->setData(targetBufferArray);
             targetBuffer->setParent(meshGeometry);
 

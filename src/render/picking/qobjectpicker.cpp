@@ -76,7 +76,7 @@ namespace Qt3DRender {
 
     For generalised ray casting queries, see Qt3DRender::QRayCaster and Qt3DRender::QScreenRayCaster.
 
-    \sa Qt3DRender::QPickingSettings, Qt3DRender::QGeometry, Qt3DRender::QAttribute,
+    \sa Qt3DRender::QPickingSettings, Qt3DCore::QGeometry, Qt3DCore::QAttribute,
         Qt3DRender::QPickEvent, Qt3DRender::QPickTriangleEvent, Qt3DRender::QNoPicking
 
     \note Instances of this component shouldn't be shared, not respecting that

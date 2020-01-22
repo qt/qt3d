@@ -53,14 +53,15 @@
 
 #include <QtCore>
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DCore/qbuffer.h>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+    struct QBufferUpdate;
+}
+
 namespace Qt3DRender {
-
-struct QBufferUpdate;
-
 namespace Render {
 
 class BufferManager;
@@ -76,21 +77,21 @@ public:
 
     void setManager(BufferManager *manager);
     void updateDataFromGPUToCPU(QByteArray data);
-    inline QBuffer::UsageType usage() const { return m_usage; }
+    inline Qt3DCore::QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
-    inline QVector<Qt3DRender::QBufferUpdate> &pendingBufferUpdates() { return m_bufferUpdates; }
+    inline QVector<Qt3DCore::QBufferUpdate> &pendingBufferUpdates() { return m_bufferUpdates; }
     inline bool isDirty() const { return m_bufferDirty; }
-    inline QBuffer::AccessType access() const { return m_access; }
+    inline Qt3DCore::QBuffer::AccessType access() const { return m_access; }
     void unsetDirty();
 
 private:
     void forceDataUpload();
 
-    QBuffer::UsageType m_usage;
+    Qt3DCore::QBuffer::UsageType m_usage;
     QByteArray m_data;
-    QVector<Qt3DRender::QBufferUpdate> m_bufferUpdates;
+    QVector<Qt3DCore::QBufferUpdate> m_bufferUpdates;
     bool m_bufferDirty;
-    QBuffer::AccessType m_access;
+    Qt3DCore::QBuffer::AccessType m_access;
     BufferManager *m_manager;
 };
 
@@ -107,7 +108,6 @@ private:
 };
 
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -108,8 +108,8 @@ int main(int argc, char **argv)
     cylinder3->setRadius(1.0f);
 
     QStringList attributes;
-    attributes.push_back(Qt3DRender::QAttribute::defaultPositionAttributeName());
-    attributes.push_back(Qt3DRender::QAttribute::defaultNormalAttributeName());
+    attributes.push_back(Qt3DCore::QAttribute::defaultPositionAttributeName());
+    attributes.push_back(Qt3DCore::QAttribute::defaultNormalAttributeName());
 
     QVector<Qt3DAnimation::QMorphTarget*> morphTargets;
     morphTargets.push_back(Qt3DAnimation::QMorphTarget::fromGeometry(cylinder1, attributes));

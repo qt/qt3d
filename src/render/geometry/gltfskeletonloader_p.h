@@ -49,7 +49,7 @@
 //
 
 #include <QtGlobal>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qattribute.h>
 
 #include <QtGui/qmatrix4x4.h>
 #include <QtCore/qjsondocument.h>
@@ -96,7 +96,7 @@ class GLTFSkeletonLoader
         explicit AccessorData(const QJsonObject &json);
 
         int bufferViewIndex;
-        QAttribute::VertexBaseType type;
+        Qt3DCore::QAttribute::VertexBaseType type;
         uint dataSize;
         int count;
         int byteOffset;
@@ -139,8 +139,8 @@ public:
     SkeletonData createSkeleton(const QString &skeletonName);
 
 private:
-    static QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
-    static uint accessorTypeSize(QAttribute::VertexBaseType componentType);
+    static Qt3DCore::QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
+    static uint accessorTypeSize(Qt3DCore::QAttribute::VertexBaseType componentType);
     static uint accessorDataSizeFromJson(const QString &type);
 
     struct RawData

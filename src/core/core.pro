@@ -10,6 +10,7 @@ gcov {
 
 include(core.pri)
 include(aspects/aspects.pri)
+include(geometry/geometry.pri)
 include(jobs/jobs.pri)
 include(nodes/nodes.pri)
 include(transforms/transforms.pri)

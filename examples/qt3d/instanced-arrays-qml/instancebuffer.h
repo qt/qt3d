@@ -51,9 +51,9 @@
 #ifndef INSTANCEBUFFER_H
 #define INSTANCEBUFFER_H
 
-#include <Qt3DRender/QBuffer>
+#include <Qt3DCore/QBuffer>
 
-class InstanceBuffer : public Qt3DRender::QBuffer
+class InstanceBuffer : public Qt3DCore::QBuffer
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)

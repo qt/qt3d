@@ -39,9 +39,9 @@
 
 #include "loadbufferjob_p.h"
 #include <Qt3DRender/private/buffer_p.h>
-#include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DCore/private/qbuffer_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 
@@ -90,8 +90,8 @@ void LoadBufferJobPrivate::postFrame(Qt3DCore::QAspectManager *aspectManager)
 {
     if (m_bufferToUpdate == nullptr)
         return;
-    QBuffer *frontendBuffer = static_cast<decltype(frontendBuffer)>(aspectManager->lookupNode(m_bufferToUpdate->peerId()));
-    QBufferPrivate *dFrontend = static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontendBuffer));
+    Qt3DCore::QBuffer *frontendBuffer = static_cast<decltype(frontendBuffer)>(aspectManager->lookupNode(m_bufferToUpdate->peerId()));
+    Qt3DCore::QBufferPrivate *dFrontend = static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontendBuffer));
     // Calling frontendBuffer->setData would result in forcing a sync against the backend
     // which isn't necessary
     dFrontend->setData(m_bufferToUpdate->data());

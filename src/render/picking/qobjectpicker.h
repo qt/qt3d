@@ -47,7 +47,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAttribute;
 class QObjectPickerPrivate;
 class QPickEvent;
 

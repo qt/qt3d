@@ -26,16 +26,12 @@
 **
 ****************************************************************************/
 
-// TODO Remove in Qt6
-#include <QtCore/qcompilerdetection.h>
-QT_WARNING_DISABLE_DEPRECATED
-
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/private/qbuffer_p.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/private/qbuffer_p.h>
 
 #include "testarbiter.h"
 
@@ -49,11 +45,11 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
-        QScopedPointer<Qt3DRender::QBuffer> buffer(new Qt3DRender::QBuffer);
+        QScopedPointer<Qt3DCore::QBuffer> buffer(new Qt3DCore::QBuffer);
         arbiter.setArbiterOnNode(buffer.data());
 
         // WHEN
-        buffer->setUsage(Qt3DRender::QBuffer::DynamicCopy);
+        buffer->setUsage(Qt3DCore::QBuffer::DynamicCopy);
 
         // THEN
         QCOMPARE(arbiter.dirtyNodes().size(), 1);

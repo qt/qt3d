@@ -41,7 +41,7 @@
 #define QT3DRENDER_QBUFFERCAPTURE_H
 
 #include <Qt3DRender/QFrameGraphNode>
-#include <Qt3DRender/QBuffer>
+#include <Qt3DCore/QBuffer>
 #include <QtCore/QByteArray>
 
 QT_BEGIN_NAMESPACE

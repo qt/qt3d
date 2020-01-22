@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
+#ifndef QT3D_QUICK3DGEOMETRY_P_H
+#define QT3D_QUICK3DGEOMETRY_P_H
 
 //
 //  W A R N I N G
@@ -51,56 +51,40 @@
 // We mean it.
 //
 
-#include <Qt3DRender/QBuffer>
+#include <Qt3DCore/QGeometry>
+#include <QtQml/QQmlListProperty>
 
-#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class QQmlEngine;
-class QJSValue;
-
-namespace QV4 {
-struct ExecutionEngine;
-}
-
-namespace Qt3DRender {
-
-namespace Render {
-
+namespace Qt3DCore {
 namespace Quick {
 
-class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DBuffer : public Qt3DRender::QBuffer
+class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DGeometry : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)
+    Q_PROPERTY(QQmlListProperty<Qt3DCore::QAttribute> attributes READ attributeList)
+    Q_CLASSINFO("DefaultProperty", "attributes")
+
 public:
-    explicit Quick3DBuffer(Qt3DCore::QNode *parent = nullptr);
+    explicit Quick3DGeometry(QObject *parent = nullptr);
+    inline QGeometry *parentGeometry() const { return qobject_cast<QGeometry *>(parent()); }
 
-    QVariant bufferData() const;
-    void setBufferData(const QVariant &bufferData);
-
-    Q_INVOKABLE QVariant readBinaryFile(const QUrl &fileUrl);
-
-public Q_SLOTS:
-    void updateData(int offset, const QVariant &bytes);
-
-Q_SIGNALS:
-    void bufferDataChanged();
+    QQmlListProperty<Qt3DCore::QAttribute> attributeList();
 
 private:
-    QQmlEngine *m_engine;
-    QV4::ExecutionEngine *m_v4engine;
-    void initEngines();
-    QByteArray convertToRawData(const QJSValue &jsValue);
+    static void appendAttribute(QQmlListProperty<Qt3DCore::QAttribute> *list, Qt3DCore::QAttribute *provider);
+    static Qt3DCore::QAttribute *attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, int index);
+    static int attributesCount(QQmlListProperty<Qt3DCore::QAttribute> *list);
+    static void clearAttributes(QQmlListProperty<Qt3DCore::QAttribute> *list);
+
+    QVector<Qt3DCore::QAttribute *> m_managedAttributes;
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3DRender
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
+#endif // QT3D_QUICK3DGEOMETRY_P_H

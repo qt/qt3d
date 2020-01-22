@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,54 +37,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QBUFFER_P_H
-#define QT3DRENDER_QBUFFER_P_H
+#ifndef QT3DCORE_QGEOMETRY_H
+#define QT3DCORE_QGEOMETRY_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qt3drender_global.h>
-#include <private/qnode_p.h>
-#include <QByteArray>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class Q_3DRENDERSHARED_EXPORT QBufferPrivate : public Qt3DCore::QNodePrivate
+class QAttribute;
+class QGeometryPrivate;
+
+class Q_3DCORESHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
+    Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QAttribute *boundingVolumePositionAttribute READ boundingVolumePositionAttribute WRITE setBoundingVolumePositionAttribute NOTIFY boundingVolumePositionAttributeChanged)
+    Q_PROPERTY(QVector3D minExtent READ minExtent NOTIFY minExtentChanged REVISION 13)
+    Q_PROPERTY(QVector3D maxExtent READ maxExtent NOTIFY maxExtentChanged REVISION 13)
 public:
-    Q_DECLARE_PUBLIC(QBuffer)
+    explicit QGeometry(Qt3DCore::QNode *parent = nullptr);
+    ~QGeometry();
 
-    QBufferPrivate();
+    QVector<QAttribute *> attributes() const;
+    Q_INVOKABLE void addAttribute(Qt3DCore::QAttribute *attribute);
+    Q_INVOKABLE void removeAttribute(Qt3DCore::QAttribute *attribute);
 
-    QByteArray m_data;
-    QBuffer::BufferType m_type;
-    QBuffer::UsageType m_usage;
-    QBuffer::AccessType m_access;
+    QAttribute *boundingVolumePositionAttribute() const;
+    QVector3D minExtent() const;
+    QVector3D maxExtent() const;
 
-    void setData(const QByteArray &data);
+public Q_SLOTS:
+    void setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute);
+
+Q_SIGNALS:
+    void boundingVolumePositionAttributeChanged(QAttribute *boundingVolumePositionAttribute);
+    Q_REVISION(13) void minExtentChanged(const QVector3D &minExtent);
+    Q_REVISION(13) void maxExtentChanged(const QVector3D &maxExtent);
+protected:
+    explicit QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QGeometry)
 };
 
-struct QBufferUpdate
-{
-    int offset;
-    QByteArray data;
-};
-
-} // namespace Qt3DRender
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
-Q_DECLARE_METATYPE(Qt3DRender::QBufferUpdate) // LCOV_EXCL_LINE
 
-#endif // QT3DRENDER_QBUFFER_P_H
+#endif // QT3DCORE_QGEOMETRY_H

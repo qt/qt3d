@@ -46,23 +46,23 @@ QQuick3DMorphTarget::QQuick3DMorphTarget(QObject *parent)
 {
 }
 
-QQmlListProperty<Qt3DRender::QAttribute> QQuick3DMorphTarget::attributes()
+QQmlListProperty<Qt3DCore::QAttribute> QQuick3DMorphTarget::attributes()
 {
-    return QQmlListProperty<Qt3DRender::QAttribute>(this, 0,
+    return QQmlListProperty<Qt3DCore::QAttribute>(this, 0,
                                        &QQuick3DMorphTarget::appendAttribute,
                                        &QQuick3DMorphTarget::attributeCount,
                                        &QQuick3DMorphTarget::attributeAt,
                                        &QQuick3DMorphTarget::clearAttributes);
 }
 
-void QQuick3DMorphTarget::appendAttribute(QQmlListProperty<Qt3DRender::QAttribute> *list, Qt3DRender::QAttribute *bar)
+void QQuick3DMorphTarget::appendAttribute(QQmlListProperty<Qt3DCore::QAttribute> *list, Qt3DCore::QAttribute *bar)
 {
     QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
     if (target)
         target->parentMorphTarget()->addAttribute(bar);
 }
 
-int QQuick3DMorphTarget::attributeCount(QQmlListProperty<Qt3DRender::QAttribute> *list)
+int QQuick3DMorphTarget::attributeCount(QQmlListProperty<Qt3DCore::QAttribute> *list)
 {
     QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
     if (target)
@@ -70,19 +70,19 @@ int QQuick3DMorphTarget::attributeCount(QQmlListProperty<Qt3DRender::QAttribute>
     return 0;
 }
 
-Qt3DRender::QAttribute *QQuick3DMorphTarget::attributeAt(QQmlListProperty<Qt3DRender::QAttribute> *list, int index)
+Qt3DCore::QAttribute *QQuick3DMorphTarget::attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, int index)
 {
     QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
     if (target)
-        return qobject_cast<Qt3DRender::QAttribute *>(target->parentMorphTarget()->attributeList().at(index));
+        return qobject_cast<Qt3DCore::QAttribute *>(target->parentMorphTarget()->attributeList().at(index));
     return nullptr;
 }
 
-void QQuick3DMorphTarget::clearAttributes(QQmlListProperty<Qt3DRender::QAttribute> *list)
+void QQuick3DMorphTarget::clearAttributes(QQmlListProperty<Qt3DCore::QAttribute> *list)
 {
     QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
     if (target) {
-        QVector<Qt3DRender::QAttribute *> emptyList;
+        QVector<Qt3DCore::QAttribute *> emptyList;
         target->parentMorphTarget()->setAttributes(emptyList);
     }
 }

@@ -37,26 +37,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QATTRIBUTE_H
-#define QT3DRENDER_QATTRIBUTE_H
+#ifndef QT3DCORE_QATTRIBUTE_H
+#define QT3DCORE_QATTRIBUTE_H
 
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
 #include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
 class QBuffer;
 class QAttributePrivate;
 
 typedef QSharedPointer<QBuffer> QBufferPtr;
 
-class Q_3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
+class Q_3DCORESHARED_EXPORT QAttribute : public QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
+    Q_PROPERTY(Qt3DCore::QBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(VertexBaseType vertexBaseType READ vertexBaseType WRITE setVertexBaseType NOTIFY vertexBaseTypeChanged)
     Q_PROPERTY(uint vertexSize READ vertexSize WRITE setVertexSize NOTIFY vertexSizeChanged)
@@ -150,8 +150,8 @@ private:
     Q_DECLARE_PRIVATE(QAttribute)
 };
 
-} // Qt3DRender
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QATTRIBUTE_H
+#endif // QT3DCORE_QATTRIBUTE_H

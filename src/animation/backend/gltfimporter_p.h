@@ -50,7 +50,7 @@
 
 #include <QtGlobal>
 #include <Qt3DAnimation/private/fcurve_p.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qattribute.h>
 #include <Qt3DCore/private/sqt_p.h>
 #include <Qt3DCore/private/qmath3d_p.h>
 
@@ -100,7 +100,7 @@ public:
         explicit AccessorData(const QJsonObject &json);
 
         int bufferViewIndex;
-        Qt3DRender::QAttribute::VertexBaseType type;
+        Qt3DCore::QAttribute::VertexBaseType type;
         uint dataSize;
         int count;
         int byteOffset;
@@ -190,8 +190,8 @@ public:
     AnimationNameAndChannels createAnimationData(int animationIndex, const QString &animationName = QString()) const;
 
 private:
-    static Qt3DRender::QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
-    static uint accessorTypeSize(Qt3DRender::QAttribute::VertexBaseType componentType);
+    static Qt3DCore::QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
+    static uint accessorTypeSize(Qt3DCore::QAttribute::VertexBaseType componentType);
     static uint accessorDataSizeFromJson(const QString &type);
 
     struct RawData

@@ -50,8 +50,8 @@
 
 #include "qextrudedtextgeometry.h"
 #include "qextrudedtextgeometry_p.h"
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qattribute.h>
 #include <private/qtriangulator_p.h>
 #include <qmath.h>
 #include <QVector3D>
@@ -162,35 +162,35 @@ QExtrudedTextGeometryPrivate::QExtrudedTextGeometryPrivate()
 void QExtrudedTextGeometryPrivate::init()
 {
     Q_Q(QExtrudedTextGeometry);
-    m_positionAttribute = new Qt3DRender::QAttribute(q);
-    m_normalAttribute = new Qt3DRender::QAttribute(q);
-    m_indexAttribute = new Qt3DRender::QAttribute(q);
-    m_vertexBuffer = new Qt3DRender::QBuffer(q);
-    m_indexBuffer = new Qt3DRender::QBuffer(q);
+    m_positionAttribute = new Qt3DCore::QAttribute(q);
+    m_normalAttribute = new Qt3DCore::QAttribute(q);
+    m_indexAttribute = new Qt3DCore::QAttribute(q);
+    m_vertexBuffer = new Qt3DCore::QBuffer(q);
+    m_indexBuffer = new Qt3DCore::QBuffer(q);
 
     const quint32 elementSize = 3 + 3;
     const quint32 stride = elementSize * sizeof(float);
 
-    m_positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-    m_positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+    m_positionAttribute->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+    m_positionAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
     m_positionAttribute->setVertexSize(3);
-    m_positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    m_positionAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
     m_positionAttribute->setBuffer(m_vertexBuffer);
     m_positionAttribute->setByteStride(stride);
     m_positionAttribute->setByteOffset(0);
     m_positionAttribute->setCount(0);
 
-    m_normalAttribute->setName(Qt3DRender::QAttribute::defaultNormalAttributeName());
-    m_normalAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+    m_normalAttribute->setName(Qt3DCore::QAttribute::defaultNormalAttributeName());
+    m_normalAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
     m_normalAttribute->setVertexSize(3);
-    m_normalAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    m_normalAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
     m_normalAttribute->setBuffer(m_vertexBuffer);
     m_normalAttribute->setByteStride(stride);
     m_normalAttribute->setByteOffset(3 * sizeof(float));
     m_normalAttribute->setCount(0);
 
-    m_indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-    m_indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
+    m_indexAttribute->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
+    m_indexAttribute->setVertexBaseType(Qt3DCore::QAttribute::UnsignedInt);
     m_indexAttribute->setBuffer(m_indexBuffer);
     m_indexAttribute->setCount(0);
 
@@ -255,7 +255,7 @@ void QExtrudedTextGeometryPrivate::init()
  * in 3D space.
  * \since 5.9
  * \ingroup geometries
- * \inherits Qt3DRender::QGeometry
+ * \inherits Qt3DCore::QGeometry
  *
  * The QExtrudedTextGeometry class is most commonly used internally by the QText3DMesh
  * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
@@ -469,7 +469,7 @@ float QExtrudedTextGeometry::extrusionLength() const
  *
  * Holds the geometry position attribute.
  */
-Qt3DRender::QAttribute *QExtrudedTextGeometry::positionAttribute() const
+Qt3DCore::QAttribute *QExtrudedTextGeometry::positionAttribute() const
 {
     Q_D(const QExtrudedTextGeometry);
     return d->m_positionAttribute;
@@ -480,7 +480,7 @@ Qt3DRender::QAttribute *QExtrudedTextGeometry::positionAttribute() const
  *
  * Holds the geometry normal attribute.
  */
-Qt3DRender::QAttribute *QExtrudedTextGeometry::normalAttribute() const
+Qt3DCore::QAttribute *QExtrudedTextGeometry::normalAttribute() const
 {
     Q_D(const QExtrudedTextGeometry);
     return d->m_normalAttribute;
@@ -491,7 +491,7 @@ Qt3DRender::QAttribute *QExtrudedTextGeometry::normalAttribute() const
  *
  * Holds the geometry index attribute.
  */
-Qt3DRender::QAttribute *QExtrudedTextGeometry::indexAttribute() const
+Qt3DCore::QAttribute *QExtrudedTextGeometry::indexAttribute() const
 {
     Q_D(const QExtrudedTextGeometry);
     return d->m_indexAttribute;

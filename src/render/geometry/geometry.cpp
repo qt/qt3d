@@ -38,9 +38,9 @@
 ****************************************************************************/
 
 #include "geometry_p.h"
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qgeometry.h>
-#include <Qt3DRender/private/qgeometry_p.h>
+#include <Qt3DCore/private/qgeometry_p.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qgeometry.h>
 
 #include <algorithm>
 

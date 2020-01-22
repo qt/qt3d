@@ -50,6 +50,7 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/qgeometry.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qcamera.h>
@@ -74,7 +75,6 @@
 #include <Qt3DRender/qstenciltestarguments.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qfrontface.h>
-#include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
@@ -1522,7 +1522,7 @@ void GLTFImporter::processJSONBufferView(const QString &id, const QJsonObject& j
                   qUtf16PrintableImpl(bufferData.path), qUtf16PrintableImpl(id));
     }
 
-    Qt3DRender::QBuffer *b = new Qt3DRender::QBuffer();
+    Qt3DCore::QBuffer *b = new Qt3DCore::QBuffer();
     b->setData(bytes);
     m_buffers[id] = b;
 }
@@ -1768,7 +1768,7 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
                     attributeName = attrName;
 
                 //Get buffer handle for accessor
-                Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
+                Qt3DCore::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
                 if (Q_UNLIKELY(!buffer)) {
                     qCWarning(GLTFImporterLog, "unknown buffer-view: %ls processing accessor: %ls",
                               qUtf16PrintableImpl(accessorIt->bufferViewName),
@@ -1796,7 +1796,7 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
                               qUtf16PrintableImpl(accIndex), qUtf16PrintableImpl(id));
                 } else {
                     //Get buffer handle for accessor
-                    Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
+                    Qt3DCore::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
                     if (Q_UNLIKELY(!buffer)) {
                         qCWarning(GLTFImporterLog, "unknown buffer-view: %ls processing accessor: %ls",
                                   qUtf16PrintableImpl(accessorIt->bufferViewName),

@@ -52,6 +52,8 @@
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt3DCore;
+
 namespace {
 
 void jsonArrayToSqt(const QJsonArray &jsonArray, Qt3DCore::Sqt &sqt)

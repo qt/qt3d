@@ -39,7 +39,7 @@
 
 #include "qshaderprogram.h"
 #include "qshaderprogram_p.h"
-#include <Qt3DRender/private/qurlhelper_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
@@ -710,7 +710,7 @@ QByteArray QShaderProgramPrivate::deincludify(const QByteArray &contents, const 
 QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
-    return QShaderProgramPrivate::deincludify(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
+    return QShaderProgramPrivate::deincludify(Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
 }
 
 } // of namespace Qt3DRender

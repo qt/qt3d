@@ -4,7 +4,6 @@ HEADERS += \
     $$PWD/qaxisalignedboundingbox_p.h \
     $$PWD/qsceneloader.h \
     $$PWD/qsceneloader_p.h \
-    $$PWD/qurlhelper_p.h \
     $$PWD/scene_p.h \
     $$PWD/scenemanager_p.h \
     $$PWD/qsceneimporter_p.h \
@@ -19,7 +18,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/qaxisalignedboundingbox.cpp \
     $$PWD/qsceneloader.cpp \
-    $$PWD/qurlhelper.cpp \
     $$PWD/scene.cpp \
     $$PWD/scenemanager.cpp \
     $$PWD/qsceneimporter.cpp \

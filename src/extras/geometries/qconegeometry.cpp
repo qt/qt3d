@@ -45,7 +45,7 @@
  * \brief The QConeGeometry class allows creation of a cone in 3D space.
  * \since 5.7
  * \ingroup geometries
- * \inherits Qt3DRender::QGeometry
+ * \inherits Qt3DCore::QGeometry
  *
  * The QConeGeometry class is most commonly used internally by the QConeMesh
  * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses. The class
@@ -59,15 +59,15 @@
 #include "qconegeometry.h"
 #include "qconegeometry_p.h"
 
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
 #include <QtGui/QVector3D>
 
 #include <cmath>
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DRender;
+using namespace Qt3DCore;
 
 namespace Qt3DExtras {
 
@@ -249,8 +249,8 @@ void QConeGeometryPrivate::init()
     m_normalAttribute = new QAttribute(q);
     m_texCoordAttribute = new QAttribute(q);
     m_indexAttribute = new QAttribute(q);
-    m_vertexBuffer = new Qt3DRender::QBuffer(q);
-    m_indexBuffer = new Qt3DRender::QBuffer(q);
+    m_vertexBuffer = new Qt3DCore::QBuffer(q);
+    m_indexBuffer = new Qt3DCore::QBuffer(q);
 
     // vec3 pos, vec2 tex, vec3 normal
     const quint32 elementSize = 3 + 2 + 3;
