@@ -131,7 +131,6 @@
 #include <Qt3DRender/private/raycaster_p.h>
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/private/calcgeometrytrianglevolumes_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
@@ -504,7 +503,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // 2 CalculateBoundingVolumeJob (depends on LoadBuffer)
     // 3 WorldTransformJob
     // 4 UpdateBoundingVolume, FramePreparationJob (depend on WorlTransformJob)
-    // 5 CalcGeometryTriangleVolumes (frame preparation job), RenderViewJobs
+    // 5 RenderViewJobs
     // 6 PickBoundingVolumeJob
     // 7 Cleanup Job (depends on RV)
 

@@ -53,7 +53,6 @@
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
-#include <Qt3DRender/private/calcgeometrytrianglevolumes_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
@@ -186,14 +185,6 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
     Qt3DRender::Render::UpdateMeshTriangleListJob updateTriangleList;
     updateTriangleList.setManagers(test->nodeManagers());
     updateTriangleList.run();
-
-    // For each geometry id
-    QVector<Qt3DRender::Render::HGeometryRenderer> geometryRenderHandles = test->nodeManagers()->geometryRendererManager()->activeHandles();
-    for (auto geometryRenderHandle : geometryRenderHandles) {
-        Qt3DCore::QNodeId geometryRendererId = test->nodeManagers()->geometryRendererManager()->data(geometryRenderHandle)->peerId();
-        Qt3DRender::Render::CalcGeometryTriangleVolumes calcGeometryTriangles(geometryRendererId, test->nodeManagers());
-        calcGeometryTriangles.run();
-    }
 }
 
 } // anonymous

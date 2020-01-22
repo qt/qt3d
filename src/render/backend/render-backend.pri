@@ -20,7 +20,6 @@ HEADERS += \
     $$PWD/boundingvolumedebug_p.h \
     $$PWD/nodemanagers_p.h \
     $$PWD/triangleboundingvolume_p.h \
-    $$PWD/trianglesextractor_p.h \
     $$PWD/buffervisitor_p.h \
     $$PWD/bufferutils_p.h \
     $$PWD/trianglesvisitor_p.h \
@@ -54,7 +53,6 @@ SOURCES += \
     $$PWD/boundingvolumedebug.cpp \
     $$PWD/nodemanagers.cpp \
     $$PWD/triangleboundingvolume.cpp \
-    $$PWD/trianglesextractor.cpp \
     $$PWD/trianglesvisitor.cpp \
     $$PWD/computecommand.cpp \
     $$PWD/rendersettings.cpp \

@@ -113,7 +113,6 @@ qtConfig(private_tests) {
       SUBDIRS += \
         qray3d \
         raycasting \
-        trianglesextractor \
         triangleboundingvolume \
     }
 }

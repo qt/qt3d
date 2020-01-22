@@ -8,7 +8,6 @@ HEADERS += \
     $$PWD/loadgeometryjob_p.h \
     $$PWD/calcboundingvolumejob_p.h \
     $$PWD/pickboundingvolumejob_p.h \
-    $$PWD/calcgeometrytrianglevolumes_p.h \
     $$PWD/computefilteredboundingvolumejob_p.h \
     $$PWD/job_common_p.h \
     $$PWD/filterlayerentityjob_p.h \
@@ -39,7 +38,6 @@ SOURCES += \
     $$PWD/loadgeometryjob.cpp \
     $$PWD/calcboundingvolumejob.cpp \
     $$PWD/pickboundingvolumejob.cpp \
-    $$PWD/calcgeometrytrianglevolumes.cpp \
     $$PWD/computefilteredboundingvolumejob.cpp \
     $$PWD/filterlayerentityjob.cpp \
     $$PWD/frustumcullingjob.cpp \
