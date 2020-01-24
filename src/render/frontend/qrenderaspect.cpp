@@ -173,6 +173,7 @@
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 
 #include <QThread>
 #include <QOpenGLContext>
@@ -246,9 +247,14 @@ void QRenderAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *back
     renderBackend->syncFromFrontEnd(node, firstTime);
 }
 
-void QRenderAspectPrivate::jobsDone(QAspectManager *manager)
+void QRenderAspectPrivate::jobsDone()
 {
-    m_renderer->jobsDone(manager);
+    m_renderer->jobsDone(m_aspectManager);
+}
+
+void QRenderAspectPrivate::frameDone()
+{
+    m_renderer->setJobsInLastFrame(m_aspectManager->jobsInLastFrame());
     if (m_renderAfterJobs)
         m_renderer->doRender(true);
 }

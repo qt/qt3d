@@ -68,10 +68,6 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QAbstractAnimation>
 
-#if defined(QT3D_CORE_JOB_TIMING)
-#include <QElapsedTimer>
-#endif
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -496,7 +492,7 @@ void QAspectManager::processFrame()
     // without any such data race.
     {
         // scope for QTaskLogger
-        QTaskLogger logger(m_serviceLocator->systemInformation(), 4096, 0);
+        QTaskLogger logger(m_serviceLocator->systemInformation(), 4096, 0, QTaskLogger::AspectJob);
 
         // Tell the NodePostConstructorInit to process any pending nodes which will add them to our list of
         // tree changes
@@ -541,14 +537,11 @@ void QAspectManager::processFrame()
     // For each Aspect
     // Ask them to launch set of jobs for the current frame
     // Updates matrices, bounding volumes, render bins ...
-#if defined(QT3D_CORE_JOB_TIMING)
-    QElapsedTimer timer;
-    timer.start();
-#endif
     m_jobsInLastFrame = m_scheduler->scheduleAndWaitForFrameAspectJobs(t);
-#if defined(QT3D_CORE_JOB_TIMING)
-    qDebug() << "Jobs took" << timer.nsecsElapsed() / 1.0e6;
-#endif
+
+    // Tell the aspect the frame is complete (except rendering)
+    for (QAbstractAspect *aspect : qAsConst(m_aspects))
+        QAbstractAspectPrivate::get(aspect)->frameDone();
 }
 
 } // namespace Qt3DCore

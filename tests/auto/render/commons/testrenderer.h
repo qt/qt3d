@@ -43,6 +43,7 @@ public:
     API api() const override { return AbstractRenderer::OpenGL; }
     qint64 time() const override { return 0; }
     void setTime(qint64 time) override { Q_UNUSED(time) }
+    void setJobsInLastFrame(int jobsInLastFrame) override { Q_UNUSED(jobsInLastFrame) }
     void setNodeManagers(Qt3DRender::Render::NodeManagers *m) override { m_managers = m; }
     void setServices(Qt3DCore::QServiceLocator *services) override { Q_UNUSED(services) }
     void setSurfaceExposed(bool exposed) override { Q_UNUSED(exposed) }

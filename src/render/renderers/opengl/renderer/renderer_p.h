@@ -182,6 +182,7 @@ public:
 
     qint64 time() const override;
     void setTime(qint64 time) override;
+    void setJobsInLastFrame(int jobsInLastFrame) override;
 
     void setNodeManagers(NodeManagers *managers) override;
     void setServices(Qt3DCore::QServiceLocator *services) override;

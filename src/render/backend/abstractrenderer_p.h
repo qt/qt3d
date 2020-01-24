@@ -126,6 +126,7 @@ public:
 
     virtual qint64 time() const = 0;
     virtual void setTime(qint64 time) = 0;
+    virtual void setJobsInLastFrame(int jobsInLastFrame) = 0;
 
     virtual void setNodeManagers(NodeManagers *managers) = 0;
     virtual void setServices(Qt3DCore::QServiceLocator *services) = 0;

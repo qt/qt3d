@@ -368,6 +368,11 @@ void Renderer::setTime(qint64 time)
     m_time = time;
 }
 
+void Renderer::setJobsInLastFrame(int jobsInLastFrame)
+{
+    m_jobsInLastFrame = jobsInLastFrame;
+}
+
 void Renderer::setNodeManagers(NodeManagers *managers)
 {
     m_nodesManager = managers;
@@ -1771,7 +1776,6 @@ void Renderer::skipNextFrame()
 void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
 {
     // called in main thread once all jobs are done running
-    m_jobsInLastFrame = manager->jobsInLastFrame();
 
     // sync captured renders to frontend
     const QVector<Qt3DCore::QNodeId> pendingCaptureIds = std::move(m_pendingRenderCaptureSendRequests);

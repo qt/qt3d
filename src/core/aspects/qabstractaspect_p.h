@@ -127,7 +127,8 @@ public:
     QAbstractAspectJobManager *jobManager() const;
 
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) override;
-    void jobsDone(Qt3DCore::QAspectManager *manager) override;
+    void jobsDone() override;      // called when all the jobs are completed
+    void frameDone() override;     // called when frame is completed (after the jobs), safe to wait until next frame here
 
     QBackendNode *createBackendNode(const NodeTreeChange &change) const;
     void clearBackendNode(const NodeTreeChange &change) const;

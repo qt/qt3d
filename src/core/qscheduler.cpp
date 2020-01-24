@@ -94,13 +94,10 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
     m_aspectManager->jobManager()->waitForAllJobs();
 
     {
-        QTaskLogger logger(m_aspectManager->serviceLocator()->systemInformation(), 4097, 0);
+        QTaskLogger logger(m_aspectManager->serviceLocator()->systemInformation(), 4097, 0, QTaskLogger::AspectJob);
 
         for (auto &job : qAsConst(jobQueue))
             QAspectJobPrivate::get(job.data())->postFrame(m_aspectManager);
-
-        for (QAbstractAspect *aspect : aspects)
-            QAbstractAspectPrivate::get(aspect)->jobsDone(m_aspectManager);
     }
 
     return jobQueue.size();

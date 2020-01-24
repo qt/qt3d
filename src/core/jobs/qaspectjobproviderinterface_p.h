@@ -61,7 +61,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 class QScheduler;
-class QAspectManager;
 
 class QAspectJobProviderInterface
 {
@@ -70,7 +69,8 @@ public:
 
 private:
     virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
-    virtual void jobsDone(QAspectManager *manager) = 0;
+    virtual void jobsDone() = 0;
+    virtual void frameDone() = 0;
 
     friend class QScheduler;
 };
