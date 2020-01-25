@@ -77,6 +77,9 @@ class QAspectEngine;
 class QServiceLocator;
 class NodePostConstructorInit;
 struct NodeTreeChange;
+#if QT_CONFIG(animation)
+class RequestFrameAnimation;
+#endif
 
 class Q_3DCORE_PRIVATE_EXPORT QAspectManager : public QObject
 {
@@ -115,7 +118,9 @@ public:
     int jobsInLastFrame() const { return m_jobsInLastFrame; }
 
 private:
+#if !QT_CONFIG(animation)
     bool event(QEvent *event) override;
+#endif
     void requestNextFrame();
 
     QAspectEngine *m_engine;
@@ -130,6 +135,10 @@ private:
     QAspectEngine::RunMode m_driveMode;
     QVector<NodeTreeChange> m_nodeTreeChanges;
     NodePostConstructorInit* m_postConstructorInit;
+
+#if QT_CONFIG(animation)
+    RequestFrameAnimation *m_simulationAnimation;
+#endif
     int m_jobsInLastFrame;
 };
 

@@ -232,7 +232,7 @@ QCameraLensPrivate::QCameraLensPrivate()
 void QCameraLens::viewAll(Qt3DCore::QNodeId cameraId)
 {
     Q_D(QCameraLens);
-    if (d->m_projectionType == PerspectiveProjection) {
+    if (d->m_projectionType == PerspectiveProjection || d->m_projectionType == OrthographicProjection) {
         d->m_pendingViewAllRequest = {Qt3DCore::QNodeId::createId(), cameraId, {}};
         d->update();
     }
@@ -241,7 +241,7 @@ void QCameraLens::viewAll(Qt3DCore::QNodeId cameraId)
 void QCameraLens::viewEntity(Qt3DCore::QNodeId entityId, Qt3DCore::QNodeId cameraId)
 {
     Q_D(QCameraLens);
-    if (d->m_projectionType == PerspectiveProjection) {
+    if (d->m_projectionType == PerspectiveProjection || d->m_projectionType == OrthographicProjection) {
         d->m_pendingViewAllRequest = {Qt3DCore::QNodeId::createId(), cameraId, entityId};
         d->update();
     }

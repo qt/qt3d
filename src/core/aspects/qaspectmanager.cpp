@@ -66,6 +66,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QAbstractAnimation>
 
 #if defined(QT3D_CORE_JOB_TIMING)
 #include <QElapsedTimer>
@@ -75,6 +76,23 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+#if QT_CONFIG(animation)
+class RequestFrameAnimation final : public QAbstractAnimation
+{
+public:
+    RequestFrameAnimation(QObject *parent)
+        : QAbstractAnimation(parent)
+    {
+    }
+
+    ~RequestFrameAnimation() override;
+
+    int duration() const override { return 1; }
+    void updateCurrentTime(int currentTime) override { Q_UNUSED(currentTime) }
+};
+
+RequestFrameAnimation::~RequestFrameAnimation() = default;
+#else
 namespace  {
 
 class RequestFrameEvent : public QEvent
@@ -93,7 +111,7 @@ private:
 int RequestFrameEvent::requestEventType = QEvent::registerEventType();
 
 } // anonymous
-
+#endif
 
 /*!
     \class Qt3DCore::QAspectManager
@@ -110,6 +128,9 @@ QAspectManager::QAspectManager(QAspectEngine *parent)
     , m_simulationLoopRunning(false)
     , m_driveMode(QAspectEngine::Automatic)
     , m_postConstructorInit(nullptr)
+#if QT_CONFIG(animation)
+    , m_simulationAnimation(nullptr)
+#endif
     , m_jobsInLastFrame(0)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
@@ -152,8 +173,19 @@ void QAspectManager::enterSimulationLoop()
     qCDebug(Aspects) << "Done calling onEngineStartup() for each aspect";
 
     // Start running loop if Qt3D is in charge of driving it
-    if (m_driveMode == QAspectEngine::Automatic)
+    if (m_driveMode == QAspectEngine::Automatic) {
+#if QT_CONFIG(animation)
+        if (!m_simulationAnimation) {
+            m_simulationAnimation = new RequestFrameAnimation(this);
+            connect(m_simulationAnimation, &QAbstractAnimation::finished, this, [this]() {
+                processFrame();
+                if (m_simulationLoopRunning && m_driveMode == QAspectEngine::Automatic)
+                    requestNextFrame();
+            });
+        }
+#endif
         requestNextFrame();
+    }
 }
 
 // Main thread (called by QAspectEngine)
@@ -166,6 +198,11 @@ void QAspectManager::exitSimulationLoop()
         qCDebug(Aspects) << "Simulation loop was not running. Nothing to do";
         return;
     }
+
+#if QT_CONFIG(animation)
+    if (m_simulationAnimation)
+        m_simulationAnimation->stop();
+#endif
 
     QAbstractFrameAdvanceService *frameAdvanceService =
             m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
@@ -195,7 +232,6 @@ void QAspectManager::exitSimulationLoop()
         aspect->onEngineShutdown();
     }
     qCDebug(Aspects) << "Done calling onEngineShutdown() for each aspect";
-
 
     m_simulationLoopRunning = false;
     qCDebug(Aspects) << "exitSimulationLoop completed";
@@ -402,6 +438,7 @@ QVector<QNode *> QAspectManager::lookupNodes(const QVector<QNodeId> &ids) const
     return d->m_scene ? d->m_scene->lookupNodes(ids) : QVector<QNode *>{};
 }
 
+#if !QT_CONFIG(animation)
 /*!
     \internal
     \brief Drives the Qt3D simulation loop in the main thread
@@ -423,13 +460,18 @@ bool QAspectManager::event(QEvent *e)
 
     return QObject::event(e);
 }
+#endif
 
 void QAspectManager::requestNextFrame()
 {
     qCDebug(Aspects) << "Requesting new Frame";
     // Post event in the event loop to force
     // next frame to be processed
+#if QT_CONFIG(animation)
+    m_simulationAnimation->start();
+#else
     QCoreApplication::postEvent(this, new RequestFrameEvent());
+#endif
 }
 
 void QAspectManager::processFrame()
