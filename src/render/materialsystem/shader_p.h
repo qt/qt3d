@@ -111,13 +111,13 @@ public:
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
 
-    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId);
-    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex);
-    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName);
+    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId) const;
+    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex) const;
+    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName) const;
 
-    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex);
-    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId);
-    ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
+    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex) const;
+    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId) const;
+    ShaderStorageBlock storageBlockForBlockName(const QString &blockName) const;
 
     inline QString log() const { return m_log; }
     inline QShaderProgram::Status status() const { return m_status; }

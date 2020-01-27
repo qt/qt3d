@@ -202,59 +202,56 @@ QHash<QString, ShaderUniform> Shader::activeUniformsForUniformBlock(int blockInd
     return m_uniformBlockIndexToShaderUniforms.value(blockIndex);
 }
 
-ShaderUniformBlock Shader::uniformBlockForBlockIndex(int blockIndex)
+ShaderUniformBlock Shader::uniformBlockForBlockIndex(int blockIndex) const
 {
-    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
-        if (m_uniformBlocks[i].m_index == blockIndex) {
-            return m_uniformBlocks[i];
-        }
+    for (const ShaderUniformBlock &block : qAsConst(m_uniformBlocks)) {
+        if (block.m_index == blockIndex)
+            return block;
     }
     return ShaderUniformBlock();
 }
 
-ShaderUniformBlock Shader::uniformBlockForBlockNameId(int blockNameId)
+ShaderUniformBlock Shader::uniformBlockForBlockNameId(int blockNameId) const
 {
-    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
-        if (m_uniformBlocks[i].m_nameId == blockNameId) {
-            return m_uniformBlocks[i];
-        }
+    for (const ShaderUniformBlock &block : qAsConst(m_uniformBlocks)) {
+        if (block.m_nameId == blockNameId)
+            return block;
     }
     return ShaderUniformBlock();
 }
 
-ShaderUniformBlock Shader::uniformBlockForBlockName(const QString &blockName)
+ShaderUniformBlock Shader::uniformBlockForBlockName(const QString &blockName) const
 {
-    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
-        if (m_uniformBlocks[i].m_name == blockName) {
-            return m_uniformBlocks[i];
-        }
+    for (const ShaderUniformBlock &block : qAsConst(m_uniformBlocks)) {
+        if (block.m_name == blockName)
+            return block;
     }
     return ShaderUniformBlock();
 }
 
-ShaderStorageBlock Shader::storageBlockForBlockIndex(int blockIndex)
+ShaderStorageBlock Shader::storageBlockForBlockIndex(int blockIndex) const
 {
-    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
-        if (m_shaderStorageBlocks[i].m_index == blockIndex)
-            return m_shaderStorageBlocks[i];
+    for (const ShaderStorageBlock &block: qAsConst(m_shaderStorageBlocks)) {
+        if (block.m_index == blockIndex)
+            return block;
     }
     return ShaderStorageBlock();
 }
 
-ShaderStorageBlock Shader::storageBlockForBlockNameId(int blockNameId)
+ShaderStorageBlock Shader::storageBlockForBlockNameId(int blockNameId) const
 {
-    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
-        if (m_shaderStorageBlocks[i].m_nameId == blockNameId)
-            return m_shaderStorageBlocks[i];
+    for (const ShaderStorageBlock &block: qAsConst(m_shaderStorageBlocks)) {
+        if (block.m_nameId == blockNameId)
+            return block;
     }
     return ShaderStorageBlock();
 }
 
-ShaderStorageBlock Shader::storageBlockForBlockName(const QString &blockName)
+ShaderStorageBlock Shader::storageBlockForBlockName(const QString &blockName) const
 {
-    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
-        if (m_shaderStorageBlocks[i].m_name == blockName)
-            return m_shaderStorageBlocks[i];
+    for (const ShaderStorageBlock &block: qAsConst(m_shaderStorageBlocks)) {
+        if (block.m_name == blockName)
+            return block;
     }
     return ShaderStorageBlock();
 }
