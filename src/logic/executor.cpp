@@ -89,7 +89,9 @@ bool Executor::event(QEvent *e)
 */
 void Executor::processLogicFrameUpdates(float dt)
 {
-    Q_ASSERT(m_scene);
+    if (!m_scene || m_nodeIds.isEmpty())
+        return;
+
     const QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
     for (QNode *node : nodes) {
         QFrameAction *frameAction = qobject_cast<QFrameAction *>(node);
