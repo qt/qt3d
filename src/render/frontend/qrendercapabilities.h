@@ -40,8 +40,8 @@
 #ifndef QT3DRENDER_QRENDERCAPABILITIES_H
 #define QT3DRENDER_QRENDERCAPABILITIES_H
 
-#include <QObject>
-#include <QSurfaceFormat>
+#include <QtCore/qobject.h>
+#include <QtGui/qsurfaceformat.h>
 #include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
