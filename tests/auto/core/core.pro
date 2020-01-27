@@ -26,7 +26,8 @@ qtConfig(private_tests) {
         qpostman \
         vector4d_base \
         vector3d_base \
-        aspectcommanddebugger
+        aspectcommanddebugger \
+        qscheduler
 
         QT_FOR_CONFIG += 3dcore-private
         qtConfig(qt3d-simd-sse2) {

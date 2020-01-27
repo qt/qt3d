@@ -60,7 +60,7 @@ namespace Qt3DCore {
 
 class QAspectManager;
 
-class QScheduler : public QObject
+class Q_AUTOTEST_EXPORT QScheduler : public QObject
 {
     Q_OBJECT
 public:
