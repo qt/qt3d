@@ -103,9 +103,7 @@ bool GLTFGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
     Q_UNUSED(subMesh);
 
     QByteArray jsonData = ioDev->readAll();
-    QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(jsonData);
-    if (sceneDocument.isNull())
-        sceneDocument = QJsonDocument::fromJson(jsonData);
+    QJsonDocument sceneDocument = QJsonDocument::fromJson(jsonData);
 
     if (Q_UNLIKELY(!setJSON(sceneDocument))) {
         qCWarning(GLTFGeometryLoaderLog, "not a JSON document");

@@ -216,7 +216,6 @@ static inline QVector<float> ai2qt(const aiMatrix4x4 &matrix)
 
 struct Options {
     QString outDir;
-    bool genBin;
     bool compact;
     bool compress;
     bool genTangents;
@@ -2451,22 +2450,13 @@ void GltfExporter::save(const QString &inputFilename)
     QString gltfName = opts.outDir + basename + QStringLiteral(".qgltf");
     f.setFileName(gltfName);
     if (opts.showLog)
-        qDebug().noquote() << (opts.genBin ? "Writing (binary JSON)" : "Writing") << gltfName;
+        qDebug().noquote() << "Writing" << gltfName;
 
-    if (opts.genBin) {
-        if (f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            m_files.insert(QFileInfo(f.fileName()).fileName());
-            QByteArray json = m_doc.toBinaryData();
-            f.write(json);
-            f.close();
-        }
-    } else {
-        if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-            m_files.insert(QFileInfo(f.fileName()).fileName());
-            QByteArray json = m_doc.toJson(opts.compact ? QJsonDocument::Compact : QJsonDocument::Indented);
-            f.write(json);
-            f.close();
-        }
+    if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        m_files.insert(QFileInfo(f.fileName()).fileName());
+        QByteArray json = m_doc.toJson(opts.compact ? QJsonDocument::Compact : QJsonDocument::Indented);
+        f.write(json);
+        f.close();
     }
 
     QString qrcName = opts.outDir + basename + QStringLiteral(".qrc");
@@ -2509,8 +2499,6 @@ int main(int argc, char **argv)
     cmdLine.setApplicationDescription(QString::fromUtf8(description));
     QCommandLineOption outDirOpt(QStringLiteral("d"), QStringLiteral("Place all output data into <dir>"), QStringLiteral("dir"));
     cmdLine.addOption(outDirOpt);
-    QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store binary JSON data in the .qgltf file"));
-    cmdLine.addOption(binOpt);
     QCommandLineOption compactOpt(QStringLiteral("m"), QStringLiteral("Store compact JSON in the .qgltf file"));
     cmdLine.addOption(compactOpt);
     QCommandLineOption compOpt(QStringLiteral("c"), QStringLiteral("qCompress() vertex/index data in the .bin file"));
@@ -2533,7 +2521,6 @@ int main(int argc, char **argv)
     cmdLine.addOption(silentOpt);
     cmdLine.process(app);
     opts.outDir = cmdLine.value(outDirOpt);
-    opts.genBin = cmdLine.isSet(binOpt);
     opts.compact = cmdLine.isSet(compactOpt);
     opts.compress = cmdLine.isSet(compOpt);
     opts.genTangents = cmdLine.isSet(tangentOpt);

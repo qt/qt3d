@@ -284,9 +284,7 @@ GLTFExporter::~GLTFExporter()
 // options    : Export options.
 //
 // Supported options are:
-// "binaryJson"  (bool): Generates a binary JSON file, which is more efficient to parse.
 // "compactJson" (bool): Removes unnecessary whitespace from the generated JSON file.
-//                       Ignored if "binaryJson" option is true.
 
 /*!
     Exports the scene to the GLTF format
@@ -322,8 +320,6 @@ bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
     m_renderPassCount = 0;
     m_effectCount = 0;
 
-    m_gltfOpts.binaryJson = options.value(QStringLiteral("binaryJson"),
-                                          QVariant(false)).toBool();
     m_gltfOpts.compactJson = options.value(QStringLiteral("compactJson"),
                                            QVariant(false)).toBool();
 
@@ -1582,32 +1578,18 @@ bool GLTFExporter::saveScene()
 
     QString gltfName = m_exportDir + m_exportName + QStringLiteral(".qgltf");
     f.setFileName(gltfName);
-    qCDebug(GLTFExporterLog, "  Writing %sJSON file: '%ls'",
-            m_gltfOpts.binaryJson ? "binary " : "", qUtf16PrintableImpl(gltfName));
+    qCDebug(GLTFExporterLog, "  Writing JSON file: '%ls'", qUtf16PrintableImpl(gltfName));
 
-    if (m_gltfOpts.binaryJson) {
-        if (f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            m_exportedFiles.insert(QFileInfo(f.fileName()).fileName());
-            QByteArray json = m_doc.toBinaryData();
-            f.write(json);
-            f.close();
-        } else {
-            qCWarning(GLTFExporterLog, "  Writing binary JSON file '%ls' failed!",
-                      qUtf16PrintableImpl(gltfName));
-            return false;
-        }
+    if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        m_exportedFiles.insert(QFileInfo(f.fileName()).fileName());
+        QByteArray json = m_doc.toJson(m_gltfOpts.compactJson ? QJsonDocument::Compact
+                                                              : QJsonDocument::Indented);
+        f.write(json);
+        f.close();
     } else {
-        if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-            m_exportedFiles.insert(QFileInfo(f.fileName()).fileName());
-            QByteArray json = m_doc.toJson(m_gltfOpts.compactJson ? QJsonDocument::Compact
-                                                                  : QJsonDocument::Indented);
-            f.write(json);
-            f.close();
-        } else {
-            qCWarning(GLTFExporterLog, "  Writing JSON file '%ls' failed!",
-                      qUtf16PrintableImpl(gltfName));
-            return false;
-        }
+        qCWarning(GLTFExporterLog, "  Writing JSON file '%ls' failed!",
+                  qUtf16PrintableImpl(gltfName));
+        return false;
     }
 
     QString qrcName = m_exportDir + m_exportName + QStringLiteral(".qrc");

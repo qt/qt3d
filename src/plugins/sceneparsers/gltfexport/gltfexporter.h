@@ -94,7 +94,6 @@ public:
                      const QString &exportName, const QVariantHash &options) final;
 
     struct GltfOptions {
-        bool binaryJson;
         bool compactJson;
     };
 

@@ -1131,20 +1131,16 @@ Qt3DCore::QEntity *tst_gltfPlugins::findCameraChild(Qt3DCore::QEntity *entity,
 
 void tst_gltfPlugins::exportAndImport_data()
 {
-    QTest::addColumn<bool>("binaryJson");
     QTest::addColumn<bool>("compactJson");
 
-    QTest::newRow("No options") << false << false;
+    QTest::newRow("No options") << false;
 #ifndef VISUAL_CHECK
-    QTest::newRow("Binary json") << true << false;
-    QTest::newRow("Compact json") << false << true;
-    QTest::newRow("Binary/Compact json") << true << true; // Compact is ignored in this case
+    QTest::newRow("Compact json") << true;
 #endif
 }
 
 void tst_gltfPlugins::exportAndImport()
 {
-    QFETCH(bool, binaryJson);
     QFETCH(bool, compactJson);
 
     createTestScene();
@@ -1164,7 +1160,6 @@ void tst_gltfPlugins::exportAndImport()
                 Qt3DRender::QSceneExportFactory::create(key, QStringList());
         if (exporter != nullptr && key == QStringLiteral("gltfexport")) {
             QVariantHash options;
-            options.insert(QStringLiteral("binaryJson"), QVariant(binaryJson));
             options.insert(QStringLiteral("compactJson"), QVariant(compactJson));
             exporter->exportScene(m_sceneRoot1, exportDir, sceneName, options);
             break;

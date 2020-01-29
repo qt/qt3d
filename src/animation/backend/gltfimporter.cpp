@@ -435,9 +435,7 @@ GLTFImporter::GLTFImporter()
 bool GLTFImporter::load(QIODevice *ioDev)
 {
     QByteArray jsonData = ioDev->readAll();
-    QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(jsonData);
-    if (sceneDocument.isNull())
-        sceneDocument = QJsonDocument::fromJson(jsonData);
+    QJsonDocument sceneDocument = QJsonDocument::fromJson(jsonData);
 
     if (Q_UNLIKELY(!setJSON(sceneDocument))) {
         qWarning("not a JSON document");

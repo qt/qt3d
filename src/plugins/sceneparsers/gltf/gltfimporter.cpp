@@ -411,9 +411,7 @@ void GLTFImporter::setSource(const QUrl &source)
     f.open(QIODevice::ReadOnly);
 
     QByteArray jsonData = f.readAll();
-    QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(jsonData);
-    if (sceneDocument.isNull())
-        sceneDocument = QJsonDocument::fromJson(jsonData);
+    QJsonDocument sceneDocument = QJsonDocument::fromJson(jsonData);
 
     if (Q_UNLIKELY(!setJSON(sceneDocument))) {
         qCWarning(GLTFImporterLog, "not a JSON document");
@@ -430,9 +428,7 @@ void GLTFImporter::setSource(const QUrl &source)
  */
 void GLTFImporter::setData(const QByteArray& data, const QString &basePath)
 {
-    QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(data);
-    if (sceneDocument.isNull())
-        sceneDocument = QJsonDocument::fromJson(data);
+    QJsonDocument sceneDocument = QJsonDocument::fromJson(data);
 
     if (Q_UNLIKELY(!setJSON(sceneDocument))) {
         qCWarning(GLTFImporterLog, "not a JSON document");
