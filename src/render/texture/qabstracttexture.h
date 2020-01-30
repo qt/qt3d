@@ -306,7 +306,7 @@ public:
     int depth() const;
     int layers() const;
     int samples() const;
-    QTextureGeneratorPtr dataGenerator() const;
+    Q3D_DECL_DEPRECATED QTextureGeneratorPtr dataGenerator() const;
     HandleType handleType() const;
     QVariant handle() const;
 

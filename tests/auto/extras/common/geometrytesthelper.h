@@ -42,9 +42,12 @@ inline void generateGeometry(Qt3DRender::QGeometry &geometry)
     // Get all unique data generators from the buffers referenced by the attributes
     QHash<Qt3DRender::QBufferDataGeneratorPtr, Qt3DRender::QBuffer *> dataGenerators;
     for (const auto attribute : attributes) {
+        QT_WARNING_PUSH
+        QT_WARNING_DISABLE_DEPRECATED
         const auto dataGenerator = attribute->buffer()->dataGenerator();
         if (!dataGenerators.contains(dataGenerator))
             dataGenerators.insert(dataGenerator, attribute->buffer());
+        QT_WARNING_POP
     }
 
     // Generate data for each buffer

@@ -1182,7 +1182,7 @@ void QAbstractTexture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     }
     default:
         break;
-    };
+    }
 }
 
 

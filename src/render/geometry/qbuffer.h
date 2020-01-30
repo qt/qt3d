@@ -107,8 +107,8 @@ public:
     void setData(const QByteArray &bytes);
     QByteArray data() const;
 
-    void setDataGenerator(const QBufferDataGeneratorPtr &functor);
-    QBufferDataGeneratorPtr dataGenerator() const;
+    Q3D_DECL_DEPRECATED void setDataGenerator(const QBufferDataGeneratorPtr &functor);
+    Q3D_DECL_DEPRECATED QBufferDataGeneratorPtr dataGenerator() const;
 
     Q_INVOKABLE void updateData(int offset, const QByteArray &bytes);
 

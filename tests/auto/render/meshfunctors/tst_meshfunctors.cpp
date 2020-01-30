@@ -26,6 +26,10 @@
 **
 ****************************************************************************/
 
+// TODO Remove in Qt6
+#include <QtCore/qcompilerdetection.h>
+QT_WARNING_DISABLE_DEPRECATED
+
 #include <QtTest/QtTest>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qgeometryfactory.h>

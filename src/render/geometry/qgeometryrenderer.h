@@ -103,8 +103,8 @@ public:
     QGeometry *geometry() const;
     PrimitiveType primitiveType() const;
 
-    QGeometryFactoryPtr geometryFactory() const;
-    void setGeometryFactory(const QGeometryFactoryPtr &factory);
+    Q3D_DECL_DEPRECATED QGeometryFactoryPtr geometryFactory() const;
+    Q3D_DECL_DEPRECATED void setGeometryFactory(const QGeometryFactoryPtr &factory);
 
 public Q_SLOTS:
     void setInstanceCount(int instanceCount);
