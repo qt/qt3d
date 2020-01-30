@@ -40,7 +40,6 @@
 // We mean it.
 //
 
-#include <QOpenGLTimeMonitor>
 #include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <memory>

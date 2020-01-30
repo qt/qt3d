@@ -80,7 +80,9 @@
 #include <QSurface>
 #include <QWindow>
 #include <QOpenGLTexture>
-#include <QOpenGLDebugLogger>
+#ifdef QT_OPENGL_LIB
+#include <QtOpenGL/QOpenGLDebugLogger>
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -118,10 +120,12 @@ namespace Render {
 
 namespace {
 
+#ifdef QT_OPENGL_LIB
 void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 {
     qDebug() << "OpenGL debug message:" << debugMessage;
 }
+#endif
 
 } // anonymous
 
@@ -134,7 +138,9 @@ GraphicsContext::GraphicsContext()
     , m_gl(nullptr)
     , m_glHelper(nullptr)
     , m_shaderCache(nullptr)
+#ifdef QT_OPENGL_LIB
     , m_debugLogger(nullptr)
+#endif
     , m_currentVAO(nullptr)
 {
 }
@@ -401,6 +407,7 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
     const bool enableDebugLogging = !debugLoggingMode.isEmpty();
 
+#ifdef QT_OPENGL_LIB
     if (enableDebugLogging && !m_debugLogger) {
         if (m_gl->hasExtension("GL_KHR_debug")) {
             qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
@@ -420,7 +427,7 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
             qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
         }
     }
-
+#endif
 
     // Set Vendor and Extensions of reference GraphicsApiFilter
     // TO DO: would that vary like the glHelper ?

@@ -78,7 +78,9 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
+#ifdef QT_OPENGL_LIB
 class QOpenGLDebugLogger;
+#endif
 
 namespace Qt3DRender {
 
@@ -195,7 +197,9 @@ public:
     QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
     GraphicsApiFilterData m_contextInfo;
     ShaderCache *m_shaderCache;
+#ifdef QT_OPENGL_LIB
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
+#endif
 
     friend class OpenGLVertexArrayObject;
     OpenGLVertexArrayObject *m_currentVAO;

@@ -81,7 +81,9 @@
 #include <QSurface>
 #include <QWindow>
 #include <QOpenGLTexture>
-#include <QOpenGLDebugLogger>
+#ifdef QT_OPENGL_LIB
+#include <QtOpenGL/QOpenGLDebugLogger>
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -769,10 +771,12 @@ void SubmissionContext::releaseOpenGL()
     m_renderBufferHash.clear();
 
     // Stop and destroy the OpenGL logger
+#ifdef QT_OPENGL_LIB
     if (m_debugLogger) {
         m_debugLogger->stopLogging();
         m_debugLogger.reset(nullptr);
     }
+#endif
 }
 
 // The OpenGLContext is not current on any surface at this point
