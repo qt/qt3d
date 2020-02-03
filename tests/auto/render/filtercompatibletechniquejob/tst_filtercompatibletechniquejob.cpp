@@ -53,6 +53,7 @@ public:
         : Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous)
         , m_jobManager(new Qt3DCore::QAspectJobManager())
         , m_window(new QWindow())
+        , m_contextCreationSuccessful(false)
     {
         m_window->setSurfaceType(QWindow::OpenGLSurface);
         m_window->setGeometry(0, 0, 10, 10);
@@ -67,6 +68,8 @@ public:
             qWarning() << "Failed to make OpenGL context current";
             return;
         }
+
+        m_contextCreationSuccessful = true;
 
         Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
         QRenderAspect::onRegistered();
@@ -100,6 +103,11 @@ public:
             ? d_func()->m_renderer->nodeManagers() : nullptr;
     }
 
+    bool contextCreationSuccessful() const
+    {
+        return m_contextCreationSuccessful;
+    }
+
     void initializeRenderer()
     {
         renderer()->setOpenGLContext(&m_glContext);
@@ -119,6 +127,7 @@ private:
     QScopedPointer<Qt3DCore::QAspectJobManager> m_jobManager;
     QScopedPointer<QWindow> m_window;
     QOpenGLContext m_glContext;
+    bool m_contextCreationSuccessful;
 };
 
 } // namespace Qt3DRender
@@ -210,6 +219,11 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::FilterCompatibleTechniqueJob backendFilterCompatibleTechniqueJob;
         Qt3DRender::TestAspect testAspect(buildTestScene());
+
+        const bool unableToCreateContext = !testAspect.contextCreationSuccessful();
+
+        if (unableToCreateContext)
+            QSKIP("Initialization failed, unable to create GL context");
 
         // WHEN
         Qt3DRender::Render::NodeManagers *nodeManagers = testAspect.nodeManagers();
