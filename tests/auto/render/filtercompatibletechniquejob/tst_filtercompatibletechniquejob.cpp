@@ -94,7 +94,8 @@ public:
 
     ~TestAspect()
     {
-        QRenderAspect::onUnregistered();
+        if (m_contextCreationSuccessful)
+            QRenderAspect::onUnregistered();
     }
 
     Qt3DRender::Render::NodeManagers *nodeManagers() const
