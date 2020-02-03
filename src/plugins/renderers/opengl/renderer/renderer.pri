@@ -25,4 +25,6 @@ HEADERS += \
     $$PWD/glshader_p.h \
     $$PWD/glfence_p.h \
     $$PWD/logging_p.h \
-    $$PWD/commandexecuter_p.h
+    $$PWD/commandexecuter_p.h \
+    $$PWD/frameprofiler_p.h
+

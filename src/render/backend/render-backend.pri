@@ -31,7 +31,6 @@ HEADERS += \
     $$PWD/backendnode_p.h \
     $$PWD/rendertargetoutput_p.h \
     $$PWD/uniform_p.h \
-    $$PWD/frameprofiler_p.h \
     $$PWD/offscreensurfacehelper_p.h \
     $$PWD/resourceaccessor_p.h \
     $$PWD/visitorutils_p.h \

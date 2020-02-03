@@ -123,7 +123,7 @@
 #include <QThread>
 
 #include <QtGui/private/qopenglcontext_p.h>
-#include <Qt3DRender/private/frameprofiler_p.h>
+#include "frameprofiler_p.h"
 
 QT_BEGIN_NAMESPACE
 
