@@ -38,8 +38,8 @@
 ****************************************************************************/
 
 #include "renderbuffer_p.h"
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
 
 QT_BEGIN_NAMESPACE
 

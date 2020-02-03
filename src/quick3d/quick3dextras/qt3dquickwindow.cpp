@@ -60,7 +60,7 @@
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
-#include <QtGui/qopenglcontext.h>
+#include <qopenglcontext.h>
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlincubator.h>
 

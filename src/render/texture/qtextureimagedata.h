@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_TEXTUREIMAGEDATA_H
 #define QT3DRENDER_TEXTUREIMAGEDATA_H
 
-#include <QtGui/QOpenGLTexture>
+#include <QOpenGLTexture>
 #include <QtGui/QImage>
 #include <QtCore/QSharedPointer>
 #include <Qt3DRender/qt3drender_global.h>
