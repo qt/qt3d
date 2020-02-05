@@ -209,6 +209,7 @@ private Q_SLOTS:
 
         QScopedPointer<TestWindow> testWindow(new TestWindow());
         Scene2DSharedObjectPtr sharedObject(new Scene2DSharedObject(nullptr));
+        TestRenderer renderer;
         QScopedPointer<Scene2D> scene2d(new Scene2D());
         QScopedPointer<NodeManagers> nodeManagers(new NodeManagers());
         Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry();
@@ -218,7 +219,6 @@ private Q_SLOTS:
         Qt3DRender::QBuffer *dataBuffer =new Qt3DRender::QBuffer();
         QScopedPointer<Qt3DCore::QEntity> entity(new Qt3DCore::QEntity());
         entity->addComponent(geometryRenderer);
-        TestRenderer renderer;
         renderer.setNodeManagers(nodeManagers.data());
         scene2d->setRenderer(&renderer);
         scene2d->setEnabled(true);

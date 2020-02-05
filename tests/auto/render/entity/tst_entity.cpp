@@ -126,9 +126,11 @@ private slots:
         TestRenderer renderer;
         NodeManagers nodeManagers;
         Qt3DRender::Render::Entity entity;
-        Qt3DCore::QEntity dummyFrontendEntity;
         entity.setRenderer(&renderer);
         entity.setNodeManagers(&nodeManagers);
+
+        // THEN
+        QCOMPARE(renderer.dirtyBits(), 0);
 
         // THEN
         QVERIFY(entity.componentUuid<Transform>().isNull());
@@ -144,15 +146,16 @@ private slots:
         QVERIFY(!entity.isBoundingVolumeDirty());
         QVERIFY(entity.childrenHandles().isEmpty());
         QVERIFY(entity.layerIds().isEmpty());
+        QCOMPARE(entity.renderer(), &renderer);
+
+        QCOMPARE(renderer.dirtyBits(), 0);
 
         // WHEN
         for (QComponent *component : components)
             EntityPrivate::get(&entity)->componentAdded(component);
 
-        Qt3DCore::QEntity dummyFrontendEntityChild;
-        // Create nodes in the backend manager
-        nodeManagers.renderNodesManager()->getOrCreateResource(dummyFrontendEntity.id());
-        nodeManagers.renderNodesManager()->getOrCreateResource(dummyFrontendEntityChild.id());
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
 
         // THEN
         QVERIFY(!entity.componentUuid<Transform>().isNull());
@@ -168,7 +171,7 @@ private slots:
         QVERIFY(entity.isBoundingVolumeDirty());
         QVERIFY(entity.childrenHandles().isEmpty());
         QVERIFY(!entity.layerIds().isEmpty());
-        QVERIFY(renderer.dirtyBits() != 0);
+        QCOMPARE(renderer.dirtyBits(), 0);
         bool containsAll = entity.containsComponentsOfType<Transform,
                 CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand, Armature>();
         QVERIFY(containsAll);
@@ -193,6 +196,9 @@ private slots:
         containsAll = entity.containsComponentsOfType<Transform,
                 CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand, Armature>();
         QVERIFY(!containsAll);
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
     }
 
     void checkEntityReparenting()
@@ -215,6 +221,9 @@ private slots:
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
+
         // WHEN
         auto sendParentChange = [&nodeManagers](const Qt3DCore::QEntity &entity) {
             Entity *backendEntity = nodeManagers.renderNodesManager()->getOrCreateResource(entity.id());
@@ -236,6 +245,9 @@ private slots:
         QCOMPARE(backendB->childrenHandles().count(), 1);
         QVERIFY(backendC->childrenHandles().isEmpty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
+
           // WHEN - reparent C to A
         frontendEntityC.setParent(&frontendEntityA);
         sendParentChange(frontendEntityC);
@@ -248,6 +260,9 @@ private slots:
         QCOMPARE(backendA->childrenHandles().size(), 2);
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
 
         // WHEN - reparent B to null.
         frontendEntityB.setParent(static_cast<Qt3DCore::QNode *>(nullptr));
@@ -262,6 +277,9 @@ private slots:
         QVERIFY(!backendA->childrenHandles().contains(backendB->handle()));
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
       }
 
     void checkEntityCleanup()
@@ -296,6 +314,9 @@ private slots:
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
+
         // WHEN - cleaning up a child
         backendC->cleanup();
 
@@ -310,6 +331,9 @@ private slots:
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
+
         // WHEN (cleaning up parent)
         backendA->cleanup();
 
@@ -322,6 +346,9 @@ private slots:
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
+
         // WHEN
         backendB->cleanup();
 
@@ -333,6 +360,9 @@ private slots:
         QVERIFY(backendA->parent() == nullptr);
         QVERIFY(backendB->parent() == nullptr);
         QVERIFY(backendC->parent() == nullptr);
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+        renderer.resetDirty();
     }
 
     void shouldHandleSingleComponentEvents_data()

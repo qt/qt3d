@@ -156,6 +156,10 @@ void Entity::cleanup()
     m_parentHandle = {};
     m_boundingDirty = false;
     QBackendNode::setEnabled(false);
+
+    // Ensure we rebuild caches when an Entity gets cleaned up
+    if (m_renderer)
+        markDirty(AbstractRenderer::AllDirty);
 }
 
 void Entity::setParentHandle(HEntity parentHandle)
