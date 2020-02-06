@@ -36,7 +36,7 @@
 
 #include "gltfskeletonloader_p.h"
 
-#include <QtGui/qopengl.h>
+#include <qopengl.h>
 #include <QtCore/qdir.h>
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>

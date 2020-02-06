@@ -60,7 +60,7 @@
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
 #include <Qt3DRender/qcamera.h>
-#include <QtGui/qopenglcontext.h>
+#include <qopenglcontext.h>
 #include <private/qrendersettings_p.h>
 
 #include <QEvent>

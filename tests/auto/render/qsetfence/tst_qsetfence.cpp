@@ -153,7 +153,6 @@ private Q_SLOTS:
             QCOMPARE(creationChanges.size(), 1);
 
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QSetFenceData>>(creationChanges.first());
-            const Qt3DRender::QSetFenceData cloneData = creationChangeData->data;
 
             QCOMPARE(setFence.id(), creationChangeData->subjectId());
             QCOMPARE(setFence.isEnabled(), true);
@@ -174,7 +173,6 @@ private Q_SLOTS:
             QCOMPARE(creationChanges.size(), 1);
 
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QSetFenceData>>(creationChanges.first());
-            const Qt3DRender::QSetFenceData cloneData = creationChangeData->data;
 
             QCOMPARE(setFence.id(), creationChangeData->subjectId());
             QCOMPARE(setFence.isEnabled(), false);

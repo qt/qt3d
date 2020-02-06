@@ -44,7 +44,7 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QVersionNumber>
 
-#include <QtGui/QOpenGLTexture>
+#include <QOpenGLTexture>
 
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/private/renderlogging_p.h>

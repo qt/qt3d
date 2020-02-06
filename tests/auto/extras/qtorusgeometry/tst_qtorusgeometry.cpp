@@ -32,7 +32,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
-#include <QtGui/qopenglcontext.h>
+#include <qopenglcontext.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector4d.h>

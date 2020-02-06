@@ -29,7 +29,7 @@
 #include <QtTest/QTest>
 #include <QObject>
 #include <Qt3DRender/qgraphicsapifilter.h>
-#include <QtGui/qopenglcontext.h>
+#include <qopenglcontext.h>
 #include <QtCore/qsharedpointer.h>
 #include <QSignalSpy>
 

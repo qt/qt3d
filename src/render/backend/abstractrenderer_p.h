@@ -58,7 +58,7 @@
 #include <Qt3DCore/qnodeid.h>
 #include <QtGui/qsurfaceformat.h>
 
-#include <QtGui/qopenglcontext.h>
+#include <qopenglcontext.h>
 
 QT_BEGIN_NAMESPACE
 

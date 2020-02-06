@@ -50,7 +50,7 @@
 
 #include "touchsettings.h"
 #include <QtGui/QGuiApplication>
-#include <QtGui/QOpenGLContext>
+#include <QOpenGLContext>
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlContext>

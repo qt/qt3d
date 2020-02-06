@@ -1,4 +1,4 @@
-qtHaveModule(opengl): QT += opengl
+qtHaveModule(opengl): QT += opengl opengl-private
 
 include (renderer/renderer.pri)
 include (jobs/jobs.pri)

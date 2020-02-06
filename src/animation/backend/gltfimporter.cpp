@@ -39,7 +39,7 @@
 #include <Qt3DAnimation/private/fcurve_p.h>
 #include <Qt3DAnimation/private/keyframe_p.h>
 
-#include <QtGui/qopengl.h>
+#include <qopengl.h>
 #include <QtGui/qquaternion.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector3d.h>

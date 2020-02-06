@@ -50,7 +50,7 @@ Qt3DCore::QEntity *buildEntityAtDistance(float distance, Qt3DCore::QEntity *pare
 
     // create geometry with a valid bounding volume - a single point is sufficient
     auto geometry = new Qt3DRender::QGeometry;
-    auto vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, geometry);
+    auto vertexBuffer = new Qt3DRender::QBuffer(geometry);
 
     auto positionAttribute = new Qt3DRender::QAttribute;
     positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());

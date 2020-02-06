@@ -39,8 +39,8 @@
 
 #include "scene3dsgmaterialshader_p.h"
 
-#include <QtGui/qopenglcontext.h>
-#include <QtGui/qopenglfunctions.h>
+#include <qopenglcontext.h>
+#include <qopenglfunctions.h>
 #include <QtGui/qsurfaceformat.h>
 
 #include <scene3dsgmaterial_p.h>
