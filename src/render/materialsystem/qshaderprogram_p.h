@@ -51,14 +51,15 @@
 // We mean it.
 //
 
-#include <private/qnode_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QShaderProgramPrivate : public Qt3DCore::QNodePrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QShaderProgramPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QShaderProgramPrivate();
@@ -72,6 +73,7 @@ public:
     QByteArray m_computeShaderCode;
     QString m_log;
     QShaderProgram::Status m_status;
+    QShaderProgram::Format m_format;
 
     void setLog(const QString &log);
     void setStatus(QShaderProgram::Status status);
@@ -88,6 +90,7 @@ struct QShaderProgramData
     QByteArray geometryShaderCode;
     QByteArray fragmentShaderCode;
     QByteArray computeShaderCode;
+    QShaderProgram::Format format;
 };
 
 } // namespace Qt3DRender

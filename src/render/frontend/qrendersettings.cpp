@@ -39,6 +39,7 @@
 
 #include "qrendersettings.h"
 #include "qrendersettings_p.h"
+#include "qrendercapabilities.h"
 #include "qframegraphnode.h"
 #include "qrendersurfaceselector.h"
 #include "qrendersurfaceselector_p.h"
@@ -104,25 +105,25 @@ void QRenderSettingsPrivate::invalidateFrame()
 /*! \internal */
 void QRenderSettingsPrivate::_q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod)
 {
-    notifyPropertyChange("pickMethod", pickMethod);// TODOSYNC
+    notifyPropertyChange("pickMethod", pickMethod);
 }
 
 /*! \internal */
 void QRenderSettingsPrivate::_q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode)
 {
-    notifyPropertyChange("pickResultMode", pickResultMode);// TODOSYNC
+    notifyPropertyChange("pickResultMode", pickResultMode);
 }
 
 /*! \internal */
 void QRenderSettingsPrivate::_q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode)
 {
-    notifyPropertyChange("faceOrientationPickingMode", faceOrientationPickingMode);// TODOSYNC
+    notifyPropertyChange("faceOrientationPickingMode", faceOrientationPickingMode);
 }
 
 /*! \internal */
 void QRenderSettingsPrivate::_q_onWorldSpaceToleranceChanged(float worldSpaceTolerance)
 {
-    notifyPropertyChange("pickWorldSpaceTolerance", worldSpaceTolerance);// TODOSYNC
+    notifyPropertyChange("pickWorldSpaceTolerance", worldSpaceTolerance);
 }
 
 QRenderSettings::QRenderSettings(Qt3DCore::QNode *parent)
@@ -142,6 +143,26 @@ QRenderSettings::~QRenderSettings()
 }
 
 /*!
+    \qmlproperty RenderCapabilities RenderSettings::renderCapabilities
+
+    Holds the details of the supported rendering engine
+
+    \readonly
+*/
+/*!
+    \property QRenderSettings::renderCapabilities
+
+    Holds the details of the supported rendering engine
+
+    \readonly
+*/
+QRenderCapabilities *QRenderSettings::renderCapabilities()
+{
+    Q_D(QRenderSettings);
+    return &(d->m_renderCapabilities);
+}
+
+/*!
     \qmlproperty PickingSettings RenderSettings::pickingSettings
 
     Holds the current pick settings for the \l{Qt 3D Render Framegraph}{FrameGraph}.
@@ -158,12 +179,6 @@ QRenderSettings::~QRenderSettings()
 QPickingSettings *QRenderSettings::pickingSettings()
 {
     Q_D(QRenderSettings);
-    return &(d->m_pickingSettings);
-}
-
-const QPickingSettings *QRenderSettings::pickingSettings() const
-{
-    Q_D(const QRenderSettings);
     return &(d->m_pickingSettings);
 }
 

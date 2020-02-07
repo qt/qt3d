@@ -1,0 +1,16 @@
+[
+    {
+        "Id": "imgui",
+        "Name": "Dear ImGui",
+        "QDocModule": "qtrhi",
+        "Description": "Dear ImGui",
+        "QtUsage": "Used in tests to demonstrate and verify the integration of an external GUI library.",
+
+        "Homepage": "https://github.com/ocornut/imgui",
+        "Version": "v1.66b",
+        "License": "MIT License",
+        "LicenseId": "MIT",
+        "LicenseFile": "LICENSE.txt",
+        "Copyright": "Copyright (c) 2014-2018 Omar Cornut"
+    }
+]

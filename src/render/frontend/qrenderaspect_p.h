@@ -87,6 +87,8 @@ public:
     static QRenderAspectPrivate* findPrivate(Qt3DCore::QAspectEngine *engine);
 
     void syncDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QBackendNode *backend, bool firstTime) const override;
+    void jobsDone() override;
+    void frameDone() override;
 
     void registerBackendTypes();
     void unregisterBackendTypes();
@@ -97,11 +99,13 @@ public:
     void renderShutdown();
     void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
     QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
+    Render::AbstractRenderer *loadRendererPlugin();
 
     Render::NodeManagers *m_nodeManagers;
     Render::AbstractRenderer *m_renderer;
 
     bool m_initialized;
+    bool m_renderAfterJobs;
     QList<QSceneImporter *> m_sceneImporter;
     QVector<QString> m_loadedPlugins;
     QVector<Render::QRenderPlugin *> m_renderPlugins;

@@ -64,7 +64,7 @@ namespace Render {
 
 class Renderer;
 
-class CameraSelector : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT CameraSelector : public FrameGraphNode
 {
 public:
     CameraSelector();

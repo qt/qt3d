@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,11 +54,14 @@ LightGatherer::LightGatherer()
     , m_manager(nullptr)
     , m_environmentLight(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LightGathering, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LightGathering, 0)
 }
 
 void LightGatherer::run()
 {
+    m_lights.clear();
+    m_environmentLight = nullptr;
+
     const QVector<HEntity> handles = m_manager->activeHandles();
     int envLightCount = 0;
 

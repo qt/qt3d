@@ -36,7 +36,6 @@
 
 #include "qanimationcliploader.h"
 #include "qanimationcliploader_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -110,6 +109,11 @@ QAnimationClipLoader::QAnimationClipLoader(const QUrl &source,
 
 QAnimationClipLoader::QAnimationClipLoader(QAnimationClipLoaderPrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractAnimationClip(dd, parent)
+{
+}
+
+// TODO Unused remove in Qt6
+void QAnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 

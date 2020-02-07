@@ -63,8 +63,9 @@ namespace Qt3DRender {
 namespace Render {
 
 class NodeManagers;
+class LoadBufferJobPrivate;
 
-class Q_AUTOTEST_EXPORT LoadBufferJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT LoadBufferJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit LoadBufferJob(const HBuffer &handle);
@@ -76,6 +77,9 @@ public:
 protected:
     HBuffer m_handle;
     NodeManagers *m_nodeManagers;
+
+private:
+    Q_DECLARE_PRIVATE(LoadBufferJob)
 };
 
 typedef QSharedPointer<LoadBufferJob> LoadBufferJobPtr;

@@ -137,6 +137,11 @@ namespace Qt3DRender {
     \li The Scene3D instance is instantiated prior to any Scene3DView
     \li The Scene3D entity property is left unset
     \endlist
+
+    \note Śetting the visibility of the Scene3D element to false will halt the
+    Qt 3D simulation loop. This means that binding the visible property to an
+    expression that depends on property updates driven by the Qt 3D simulation
+    loop (FrameAction) will never reavaluates.
  */
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
@@ -154,6 +159,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_disableClearWindow(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
     , m_compositingMode(FBO)
+    , m_dummySurface(nullptr)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
@@ -427,12 +433,26 @@ void Scene3DItem::applyRootEntityChange()
 
 bool Scene3DItem::needsRender()
 {
+    // We need the dirty flag which is connected to the change arbiter
+    // receiving updates to know whether something in the scene has changed
+
+    // Ideally we would use shouldRender() alone but given that it becomes true
+    // only after the arbiter has sync the changes and might be reset before
+    // process jobs is completed, we cannot fully rely on it. It would require
+    // splitting processFrame in 2 parts.
+
+    // We only use it for cases where Qt3D render may require several loops of
+    // the simulation to fully process a frame (e.g shaders are loaded in frame
+    // n and we can only build render commands for the new shader at frame n +
+    // This is where renderer->shouldRender() comes into play as it knows
+    // whether some states remain dirty or not (even after processFrame is
+    // called)
+
     auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
     const bool dirty = m_dirty
             || (renderAspectPriv
                 && renderAspectPriv->m_renderer
-                && renderAspectPriv->m_renderer->settings()
-                && renderAspectPriv->m_renderer->settings()->renderPolicy() == QRenderSettings::Always);
+                && renderAspectPriv->m_renderer->shouldRender());
     m_dirty = false;
     return dirty;
 }
@@ -454,8 +474,12 @@ bool Scene3DItem::needsRender()
 // processFrame will block and wait for renderer to have been finished
 void Scene3DItem::onBeforeSync()
 {
-    // Has anything in the 3D scene actually changed that requires us to render?
-    if (!needsRender())
+    static bool dontRenderWhenHidden = !qgetenv("QT3D_SCENE3D_STOP_RENDER_HIDDEN").isEmpty();
+
+    // If we are not visible, don't processFrame changes as we would end up
+    // waiting forever for the scene to be rendered which won't happen
+    // if the Scene3D item is not visible
+    if (!isVisible() && dontRenderWhenHidden)
         return;
 
     Q_ASSERT(QThread::currentThread() == thread());
@@ -498,6 +522,7 @@ void Scene3DItem::onBeforeSync()
     // start rendering before this function has been called
     // We add in a safety to skip such frames as this could otherwise
     // make Qt3D enter a locked state
+    m_renderer->setSkipFrame(!needsRender());
     m_renderer->allowRender();
 
     // Note: it's too early to request an update at this point as
@@ -546,7 +571,7 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
 /*!
     \qmlmethod void Scene3D::setItemAreaAndDevicePixelRatio(size area, real devicePixelRatio)
 
-    \brief \TODO
+    Sets the item area to \a area and the pixel ratio to \a devicePixelRatio.
  */
 void Scene3DItem::setItemAreaAndDevicePixelRatio(QSize area, qreal devicePixelRatio)
 {
@@ -569,25 +594,45 @@ bool Scene3DItem::isHoverEnabled() const
 
 void Scene3DItem::setCameraAspectModeHelper()
 {
-    switch (m_cameraAspectRatioMode) {
-    case AutomaticAspectRatio:
-        connect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
-        connect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
-        // Update the aspect ratio the first time the surface is set
-        updateCameraAspectRatio();
-        break;
-    case UserAspectRatio:
-        disconnect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
-        disconnect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
-        break;
+    if (m_compositingMode == FBO) {
+        switch (m_cameraAspectRatioMode) {
+        case AutomaticAspectRatio:
+            connect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            connect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            // Update the aspect ratio the first time the surface is set
+            updateCameraAspectRatio();
+            break;
+        case UserAspectRatio:
+            disconnect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            disconnect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            break;
+        }
+    } else {
+        // In Underlay mode, we rely on the window for aspect ratio and not the size of the Scene3DItem
+        switch (m_cameraAspectRatioMode) {
+        case AutomaticAspectRatio:
+            connect(window(), &QWindow::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            connect(window(), &QWindow::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            // Update the aspect ratio the first time the surface is set
+            updateCameraAspectRatio();
+            break;
+        case UserAspectRatio:
+            disconnect(window(), &QWindow::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            disconnect(window(), &QWindow::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+            break;
+        }
     }
 }
 
 void Scene3DItem::updateCameraAspectRatio()
 {
     if (m_camera) {
-        m_camera->setAspectRatio(static_cast<float>(width()) /
-                                 static_cast<float>(height()));
+        if (m_compositingMode == FBO)
+            m_camera->setAspectRatio(static_cast<float>(width()) /
+                                     static_cast<float>(height()));
+        else
+            m_camera->setAspectRatio(static_cast<float>(window()->width()) /
+                                     static_cast<float>(window()->height()));
     }
 }
 

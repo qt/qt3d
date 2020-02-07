@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -63,7 +63,7 @@ namespace Render {
 class Entity;
 class Light;
 
-struct LightSource {
+struct Q_3DRENDERSHARED_PRIVATE_EXPORT LightSource {
     LightSource();
     LightSource(Entity *entity, const QVector<Light *> &lights);
 

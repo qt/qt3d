@@ -82,8 +82,11 @@ public:
         Qt3DRender::QBuffer *vertexBuffer = static_cast<Qt3DRender::QBuffer *>(positionAttr->buffer());
 
         // Load the geometry
+        QT_WARNING_PUSH
+        QT_WARNING_DISABLE_DEPRECATED
         const QByteArray data = (*vertexBuffer->dataGenerator())();
         vertexBuffer->setData(data);
+        QT_WARNING_POP
 
         transform->setTranslation(position);
 

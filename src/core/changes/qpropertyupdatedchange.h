@@ -51,7 +51,7 @@ class QPropertyUpdatedChangePrivate;
 class Q_3DCORESHARED_EXPORT QPropertyUpdatedChange : public QStaticPropertyUpdatedChangeBase
 {
 public:
-    explicit QPropertyUpdatedChange(QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QPropertyUpdatedChange(QNodeId subjectId);
     virtual ~QPropertyUpdatedChange();
 
     QVariant value() const;
@@ -62,7 +62,7 @@ protected:
     QPropertyUpdatedChange(QPropertyUpdatedChangePrivate &dd, QNodeId subjectId);
 };
 
-typedef QSharedPointer<QPropertyUpdatedChange> QPropertyUpdatedChangePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QPropertyUpdatedChange> QPropertyUpdatedChangePtr;
 
 } // namespace Qt3DCore
 

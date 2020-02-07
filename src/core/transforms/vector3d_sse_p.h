@@ -350,13 +350,13 @@ public:
 
 #ifdef __AVX2__
     friend class Matrix4x4_AVX2;
-    friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_AVX2 &matrix);
-    friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_AVX2 &matrix, const Vector3D_SSE &vector);
+    friend Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_AVX2 &matrix);
+    friend Vector3D_SSE operator*(const Matrix4x4_AVX2 &matrix, const Vector3D_SSE &vector);
 #endif
 
     friend class Matrix4x4_SSE;
-    friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_SSE &matrix);
-    friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_SSE &matrix, const Vector3D_SSE &vector);
+    friend Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_SSE &matrix);
+    friend Vector3D_SSE operator*(const Matrix4x4_SSE &matrix, const Vector3D_SSE &vector);
 
     friend Q_ALWAYS_INLINE const Vector3D_SSE operator+(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 += v2; }
     friend Q_ALWAYS_INLINE const Vector3D_SSE operator-(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 -= v2; }

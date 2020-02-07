@@ -278,7 +278,7 @@ void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         markDirty(AbstractRenderer::ShadersDirty);
     }
 
-    static const std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const> shaderTypesToGetters[] = {
+    static const QVector<std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const>> shaderTypesToGetters = {
         {QShaderProgram::Vertex, &QShaderProgramBuilder::vertexShaderGraph},
         {QShaderProgram::TessellationControl, &QShaderProgramBuilder::tessellationControlShaderGraph},
         {QShaderProgram::TessellationEvaluation, &QShaderProgramBuilder::tessellationEvaluationShaderGraph},
@@ -287,7 +287,7 @@ void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         {QShaderProgram::Compute, &QShaderProgramBuilder::computeShaderGraph},
     };
 
-    for (auto it = std::cbegin(shaderTypesToGetters), end = std::cend(shaderTypesToGetters); it != end; ++it) {
+    for (auto it = shaderTypesToGetters.cbegin(), end = shaderTypesToGetters.cend(); it != end; ++it) {
         const QUrl url = (node->*(it->second))();
         if (url != m_graphs.value(it->first)) {
             setShaderGraph(it->first, url);

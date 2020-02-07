@@ -33,5 +33,5 @@ void main()
     FP float maxAlpha = threshold + range;
 
     FP float distVal = texture2D(distanceFieldTexture, texCoord).r;
-    gl_FragColor = color * smoothstep(minAlpha, maxAlpha, distVal);
+    gl_FragColor = vec4(color.rgb, color.a * smoothstep(minAlpha, maxAlpha, distVal));
 }

@@ -57,11 +57,11 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QPropertyValueRemovedChangeBase)
-    explicit QPropertyValueRemovedChangeBase(QNodeId subjectId);
-    explicit QPropertyValueRemovedChangeBase(QPropertyValueRemovedChangeBasePrivate &dd, QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QPropertyValueRemovedChangeBase(QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QPropertyValueRemovedChangeBase(QPropertyValueRemovedChangeBasePrivate &dd, QNodeId subjectId);
 };
 
-typedef QSharedPointer<QPropertyValueRemovedChangeBase> QPropertyValueRemovedChangeBasePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QPropertyValueRemovedChangeBase> QPropertyValueRemovedChangeBasePtr;
 
 } // namespace Qt3DCore
 

@@ -40,12 +40,10 @@
 
 #include <private/qrendertargetoutput_p.h>
 #include <private/nodemanagers_p.h>
-#include <private/texture_p.h>
 #include <private/rendertargetoutput_p.h>
-#include <private/gltexturemanager_p.h>
 #include <private/managers_p.h>
-#include <private/gltexture_p.h>
 
+#include <Qt3DRender/qt3drender-config.h>
 #include <QtCore/qmutex.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,8 +56,8 @@ RenderBackendResourceAccessor::~RenderBackendResourceAccessor()
 
 }
 
-ResourceAccessor::ResourceAccessor(NodeManagers *mgr)
-    : m_glTextureManager(mgr->glTextureManager())
+ResourceAccessor::ResourceAccessor(AbstractRenderer *renderer, NodeManagers *mgr)
+    : m_renderer(renderer)
     , m_textureManager(mgr->textureManager())
     , m_attachmentManager(mgr->attachmentManager())
     , m_entityManager(mgr->renderNodesManager())
@@ -68,35 +66,28 @@ ResourceAccessor::ResourceAccessor(NodeManagers *mgr)
 }
 
 // called by render plugins from arbitrary thread
-bool ResourceAccessor::accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock)
+bool ResourceAccessor::accessResource(ResourceType type,
+                                      Qt3DCore::QNodeId nodeId,
+                                      void **handle,
+                                      QMutex **lock)
 {
     switch (type) {
 
+    // This is purely made so that Scene2D works, this should be completely
+    // redesigned to avoid introducing this kind of coupling and reliance on
+    // OpenGL
     case RenderBackendResourceAccessor::OGLTextureWrite:
         Q_FALLTHROUGH();
     case RenderBackendResourceAccessor::OGLTextureRead:
     {
-        Texture *tex = m_textureManager->lookupResource(nodeId);
-        if (!tex)
+        if (m_renderer->api() != AbstractRenderer::OpenGL) {
+            qWarning() << "Renderer plugin is not compatible with Scene2D";
             return false;
-
-        GLTexture *glTex = m_glTextureManager->lookupResource(tex->peerId());
-        if (!glTex)
-            return false;
-
-        if (glTex->isDirty())
-            return false;
-
-        if (type == RenderBackendResourceAccessor::OGLTextureWrite)
-            glTex->setExternalRenderingEnabled(true);
-
-        QOpenGLTexture **glTextureHandle = reinterpret_cast<QOpenGLTexture **>(handle);
-        *glTextureHandle = glTex->getGLTexture();
-
-        if (type == RenderBackendResourceAccessor::OGLTextureWrite)
-            *lock = glTex->externalRenderingLock();
-
-        return true;
+        }
+        return m_renderer->accessOpenGLTexture(nodeId,
+                                               reinterpret_cast<QOpenGLTexture **>(handle),
+                                               lock,
+                                               type == RenderBackendResourceAccessor::OGLTextureRead);
     }
 
     case RenderBackendResourceAccessor::OutputAttachment: {

@@ -52,6 +52,12 @@ namespace Qt3DRender {
 namespace Quick {
 
 /*!
+    \namespace Qt3DRender::Quick
+    \inmodule Qt3DScene2D
+    \brief Internal namespace to import QML types.
+*/
+
+/*!
     \class Qt3DRender::Quick::QScene2D
     \inheaderfile Qt3DQuickScene2D/QScene2D
     \inmodule Qt3DScene2D

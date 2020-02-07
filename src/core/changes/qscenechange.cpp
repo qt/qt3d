@@ -48,6 +48,7 @@ namespace Qt3DCore {
 /*!
  * \enum Qt3DCore::ChangeFlag
  * \relates Qt3DCore::QSceneChange
+ * \obsolete
  *
  * The types of change that can be sent and received by Qt3D's change notification system.
  *

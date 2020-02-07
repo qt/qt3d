@@ -51,7 +51,7 @@ CallbackJob::CallbackJob()
     : QAspectJob()
     , m_logicManager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::Callback, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::Callback, 0)
 }
 
 void CallbackJob::setManager(Manager *manager)

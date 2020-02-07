@@ -181,7 +181,7 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 /*!
     \qmlsignal Qt3D.Input::ActionInput::buttonsChanged(const QVector<int> &buttons)
 
-    This signal is emitted when the buttons associated with the action input is changed.
+    This signal is emitted when the \a buttons associated with the action input is changed.
 
     The corresponding handler is \c onbuttonsChanged
 */

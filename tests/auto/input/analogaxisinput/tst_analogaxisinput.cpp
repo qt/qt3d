@@ -32,11 +32,9 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/private/analogaxisinput_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/QAnalogAxisInput>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 
 class tst_AnalogAxisInput: public Qt3DCore::QBackendNodeTester
 {

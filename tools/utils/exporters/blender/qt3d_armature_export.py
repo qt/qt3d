@@ -41,8 +41,8 @@
 bl_info = {
            "name": "Qt3D Armature Exporter",
            "author": "Sean Harmer <sean.harmer@kdab.com>, Robert Brock <robert.brock@kdab.com>",
-           "version": (0, 1),
-           "blender": (2, 78, 0),
+           "version": (0, 2),
+           "blender": (2, 80, 0),
            "location": "File > Export > Qt3D Armature Exporter (.json)",
            "description": "Export Armature to json to use with Qt3D",
            "warning": "",
@@ -74,6 +74,9 @@ def jsonBuilder():
     boneParent = ""
 
     ob = bpy.context.object.data
+
+    if not hasattr(ob, 'bones'):
+        return bonesList
 
     for bone in ob.bones:
 
@@ -146,11 +149,17 @@ def createBlenderMenu(self, context):
 # Register against Blender
 def register():
     bpy.utils.register_class(Qt3DArmatureExporter)
-    bpy.types.INFO_MT_file_export.append(createBlenderMenu)
+    if bpy.app.version < (2, 80, 0):
+        bpy.types.INFO_MT_file_export.append(createBlenderMenu)
+    else:
+        bpy.types.TOPBAR_MT_file_export.append(createBlenderMenu)
 
 def unregister():
     bpy.utils.unregister_class(Qt3DArmatureExporter)
-    bpy.types.INFO_MT_file_export.remove(createBlenderMenu)
+    if bpy.app.version < (2, 80, 0):
+        bpy.types.INFO_MT_file_export.remove(createBlenderMenu)
+    else:
+        bpy.types.TOPBAR_MT_file_export.remove(createBlenderMenu)
 
 # Handle running the script from Blender's text editor.
 if (__name__ == "__main__"):

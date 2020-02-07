@@ -61,7 +61,7 @@ namespace Render {
 UpdateShaderDataTransformJob::UpdateShaderDataTransformJob()
     : m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateShaderDataTransform, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateShaderDataTransform, 0)
 }
 
 UpdateShaderDataTransformJob::~UpdateShaderDataTransformJob()

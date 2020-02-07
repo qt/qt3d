@@ -50,8 +50,9 @@ namespace Animation {
 
 BuildBlendTreesJob::BuildBlendTreesJob()
     : Qt3DCore::QAspectJob()
+     , m_handler(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::BuildBlendTree, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::BuildBlendTree, 0)
 }
 
 void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnimator> &blendedClipAnimatorHandles)

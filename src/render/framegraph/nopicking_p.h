@@ -39,6 +39,7 @@
 
 #ifndef QT3DRENDER_RENDER_NOPICKING_P_H
 #define QT3DRENDER_RENDER_NOPICKING_P_H
+
 //
 //  W A R N I N G
 //  -------------

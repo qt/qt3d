@@ -49,15 +49,16 @@
 ****************************************************************************/
 
 import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+import Qt3D.Render 2.15
 import Qt3D.Input 2.0
-import Qt3D.Extras 2.0
+import Qt3D.Extras 2.15
 
 import QtQuick 2.0 as QQ2
 
 
 Entity {
     id: sceneRoot
+    property RenderCapabilities capabilities : renderSettings.renderCapabilities
 
     Camera {
         id: camera
@@ -74,9 +75,11 @@ Entity {
 
     components: [
         RenderSettings {
+            id: renderSettings
             activeFrameGraph: ForwardRenderer {
                 camera: camera
                 clearColor: "transparent"
+                showDebugOverlay: true
             }
         },
         InputSettings { }

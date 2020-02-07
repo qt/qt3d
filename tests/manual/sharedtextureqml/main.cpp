@@ -108,8 +108,7 @@ int main(int argc, char* argv[])
 
     // Multimedia player
     TextureWidget textureWidget;
-    VideoPlayerThread *videoPlayer = new VideoPlayerThread(&textureWidget);
-    videoPlayer->start();
+    VideoPlayer *videoPlayer = new VideoPlayer(&textureWidget);
 
     textureWidget.resize(800, 600);
     textureWidget.show();

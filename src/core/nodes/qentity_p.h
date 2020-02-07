@@ -82,6 +82,7 @@ public :
         return typedComponents;
     }
 
+    QString dumpSceneGraph() const;
     void removeDestroyedComponent(QComponent *comp);
 
     QComponentVector m_components;

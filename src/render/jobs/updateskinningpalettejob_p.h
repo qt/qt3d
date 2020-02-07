@@ -53,6 +53,7 @@
 #include <QtCore/qsharedpointer.h>
 
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,7 +62,7 @@ namespace Render {
 
 class NodeManagers;
 
-class UpdateSkinningPaletteJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateSkinningPaletteJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit UpdateSkinningPaletteJob();

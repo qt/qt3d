@@ -56,7 +56,7 @@ QCallbackMappingPrivate::QCallbackMappingPrivate()
 }
 
 /*!
-    \class QCallbackMapping
+    \class Qt3DAnimation::QCallbackMapping
     \inherits Qt3DCore::QAbstractChannelMapping
     \inmodule Qt3DAnimation
     \brief Allows to map the channels within the clip onto an invocation

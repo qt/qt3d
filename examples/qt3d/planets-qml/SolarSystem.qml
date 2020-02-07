@@ -133,8 +133,8 @@ Entity {
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
         aspectRatio: width / height
-        nearPlane: 2500000.0
-        farPlane: 20000000.0
+        nearPlane: 2500.0
+        farPlane: 20000.0
         position: defaultCameraPosition
         upVector: defaultUp
         viewCenter: Qt.vector3d( xLookAtOffset, yLookAtOffset, zLookAtOffset )
@@ -211,9 +211,9 @@ Entity {
         //saturnRing.makeRing()
         //uranusRing.makeRing()
         saturnRingOuterRadius = planetData[Planets.SATURN].radius + Planets.saturnOuterRadius
-        saturnRingInnerRadius = planetData[Planets.SATURN].radius + 6.630
+        saturnRingInnerRadius = planetData[Planets.SATURN].radius + 0.006630
         uranusRingOuterRadius = planetData[Planets.URANUS].radius + Planets.uranusOuterRadius
-        uranusRingInnerRadius = planetData[Planets.URANUS].radius + 2
+        uranusRingInnerRadius = planetData[Planets.URANUS].radius + 0.002
         ready = true
         changeScale(1200)
         changeSpeed(0.2)
@@ -286,7 +286,7 @@ Entity {
             // Limit minimum scaling in focus mode to avoid jitter caused by rounding errors
             if (actualScale <= focusedMinimumScale) {
                 planetScale = focusedMinimumScale
-                changeScale(focusedMinimumScale, true)
+                changeScale(focusedMinimumSfocusedPlanetcale, true)
             }
             focusedScaling = true
         } else if (focusedScaling === true) {
@@ -423,7 +423,7 @@ Entity {
             return
 
         var scaling = setScale(scale, focused)
-        sun.r = planetData[Planets.SUN].radius * scaling / 100
+        sun.r = planetData[Planets.SUN].radius * scaling / 10
         mercury.r = planetData[Planets.MERCURY].radius * scaling
         venus.r = planetData[Planets.VENUS].radius * scaling
         earth.r = planetData[Planets.EARTH].radius * scaling
@@ -511,7 +511,7 @@ Entity {
         }
 
         property Transform transformStarfield: Transform {
-            scale: 8500000
+            scale: 8500
             translation: Qt.vector3d(0, 0, 0)
         }
 

@@ -41,7 +41,7 @@
 
     \section1 Qt Quick 2D Implementation
 
-    The Qt Quick Implementation \l{audio-visualizer-qml/main.qml}{main.qml} of the example uses
+    The Qt Quick Implementation in \c {audio-visualizer-qml/main.qml} of the example uses
     \c{MediaPlayer} to play audio content.
 
     \snippet audio-visualizer-qml/main.qml 0
@@ -57,8 +57,8 @@
 
     \section1 Qt 3D Implementation
 
-    The 3D elements of the example are created in the
-    \l{audio-visualizer-qml/Visualizer.qml}{Visualizer.qml}. The camera is set to a fixed position
+    The 3D elements of the example are created in
+    \c {audio-visualizer-qml/Visualizer.qml}. The camera is set to a fixed position
     to show the visualized bars from a correct angle.
 
     \snippet audio-visualizer-qml/Visualizer.qml 0
@@ -73,7 +73,7 @@
 
     \snippet audio-visualizer-qml/Visualizer.qml 2
 
-    In \l{audio-visualizer-qml/BarEntity.qml}{BarEntity.qml} there are animations for rotating the
+    In \c {audio-visualizer-qml/BarEntity.qml} there are animations for rotating the
     bars and changing the bar color. The bars are rotated on a level following a ring form. At the
     same time the color of the bars is animated.
 

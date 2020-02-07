@@ -62,7 +62,7 @@ namespace Render {
 
 class ComputeJobPrivate;
 
-class Q_AUTOTEST_EXPORT ComputeCommand : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT ComputeCommand : public BackendNode
 {
 public:
     ComputeCommand();
@@ -79,11 +79,14 @@ public:
 
     // Called from a job
     void updateFrameCount();
+    bool hasReachedFrameCount() const;
+    void resetHasReachedFrameCount();
 
 private:
     int m_workGroups[3];
     int m_frameCount;
     QComputeCommand::RunType m_runType;
+    bool m_hasReachedFrameCount;
 };
 
 } // Render

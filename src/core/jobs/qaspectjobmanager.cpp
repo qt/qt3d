@@ -44,7 +44,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QThread>
 #include <QtCore/QFuture>
-
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DCore/private/task_p.h>
 
@@ -52,9 +52,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QAspectJobManager::QAspectJobManager(QObject *parent)
+QAspectJobManager::QAspectJobManager(QAspectManager *parent)
     : QAbstractAspectJobManager(parent)
     , m_threadPooler(new QThreadPooler(this))
+    , m_aspectManager(parent)
 {
 }
 
@@ -69,12 +70,16 @@ void QAspectJobManager::initialize()
 // Adds all Aspect Jobs to be processed for a frame
 void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 {
+    auto systemService = m_aspectManager ? m_aspectManager->serviceLocator()->systemInformation() : nullptr;
+    if (systemService)
+        systemService->writePreviousFrameTraces();
+
     // Convert QJobs to Tasks
     QHash<QAspectJob *, AspectTaskRunnable *> tasksMap;
     QVector<RunnableInterface *> taskList;
     taskList.reserve(jobQueue.size());
     for (const QAspectJobPtr &job : jobQueue) {
-        AspectTaskRunnable *task = new AspectTaskRunnable();
+        AspectTaskRunnable *task = new AspectTaskRunnable(systemService);
         task->m_job = job;
         tasksMap.insert(job.data(), task);
 
@@ -99,9 +104,6 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
         taskDepender->m_dependerCount += dependerCount;
     }
 
-#if QT_CONFIG(qt3d_profile_jobs)
-    QThreadPooler::writeFrameJobLogStats();
-#endif
     m_threadPooler->mapDependables(taskList);
 }
 

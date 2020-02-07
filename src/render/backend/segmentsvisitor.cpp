@@ -135,34 +135,44 @@ void traverseSegmentStripIndexed(Index *indices,
                                  bool loop)
 {
     uint i = 0;
+    uint stripStartIndex = 0;
+
     const uint verticesStride = vertexInfo.byteStride / sizeof(Vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[2];
     Vector3D abc[2];
-    ndx[0] = indices[0];
-    uint idx = ndx[0] * verticesStride;
-    for (uint j = 0; j < maxVerticesDataSize; ++j)
-        abc[0][j] = vertices[idx + j];
-    while (i < indexInfo.count - 1) {
-        ndx[1] = indices[i + 1];
-        if (ndx[0] != ndx[1]) {
-            idx = ndx[1] * verticesStride;
-            for (uint j = 0; j < maxVerticesDataSize; ++j)
-                abc[1][j] = vertices[idx + j];
-            visitor->visit(ndx[0], abc[0], ndx[1], abc[1]);
+    while (i < indexInfo.count) {
+        if (indexInfo.restartEnabled && indexInfo.restartIndexValue == static_cast<int>(indices[i])) {
+            ++i;
+            continue;
         }
+        stripStartIndex = i;
+        ndx[0] = indices[stripStartIndex];
+        uint idx = ndx[0] * verticesStride;
+        for (uint j = 0; j < maxVerticesDataSize; ++j)
+            abc[0][j] = vertices[idx + j];
         ++i;
-        ndx[0] = ndx[1];
-        abc[0] = abc[1];
-    }
-    if (loop) {
-        ndx[1] = indices[0];
-        if (ndx[0] != ndx[1]) {
-            idx = ndx[1] * verticesStride;
-            for (uint j = 0; j < maxVerticesDataSize; ++j)
-                abc[1][j] = vertices[idx + j];
-            visitor->visit(ndx[0], abc[0], ndx[1], abc[1]);
+        while (i < indexInfo.count && (!indexInfo.restartEnabled || indexInfo.restartIndexValue != static_cast<int>(indices[i]))) {
+            ndx[1] = indices[i];
+            if (ndx[0] != ndx[1]) {
+                idx = ndx[1] * verticesStride;
+                for (uint j = 0; j < maxVerticesDataSize; ++j)
+                    abc[1][j] = vertices[idx + j];
+                visitor->visit(ndx[0], abc[0], ndx[1], abc[1]);
+            }
+            ++i;
+            ndx[0] = ndx[1];
+            abc[0] = abc[1];
+        }
+        if (loop) {
+            ndx[1] = indices[stripStartIndex];
+            if (ndx[0] != ndx[1]) {
+                idx = ndx[1] * verticesStride;
+                for (uint j = 0; j < maxVerticesDataSize; ++j)
+                    abc[1][j] = vertices[idx + j];
+                visitor->visit(ndx[0], abc[0], ndx[1], abc[1]);
+            }
         }
     }
 }

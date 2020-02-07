@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "framecleanupjob_p.h"
-#include <private/renderer_p.h>
 #include <private/nodemanagers_p.h>
 #include <private/entity_p.h>
 #include <private/shaderdata_p.h>
@@ -55,7 +54,7 @@ FrameCleanupJob::FrameCleanupJob()
     : m_managers(nullptr)
     , m_root(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0)
 }
 
 FrameCleanupJob::~FrameCleanupJob()
@@ -69,9 +68,6 @@ void FrameCleanupJob::setRoot(Entity *root)
 
 void FrameCleanupJob::run()
 {
-    // mark each ShaderData clean
-    ShaderData::cleanup(m_managers);
-
     // Debug bounding volume debug
     updateBoundingVolumesDebug(m_root);
 }

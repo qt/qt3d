@@ -64,6 +64,7 @@
 
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/private/qscenechange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,7 +84,10 @@ public:
     virtual QAbstractPostman *postman() const = 0;
     virtual void addDirtyFrontEndNode(QNode *node) = 0;
     virtual void removeDirtyFrontEndNode(QNode *node) = 0;
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     virtual void addDirtyFrontEndNode(QNode *node, QNode *subNode, const char *property, ChangeFlag change) = 0;
+    QT_WARNING_POP
 };
 
 class Q_3DCORE_PRIVATE_EXPORT QChangeArbiter final
@@ -99,9 +103,12 @@ public:
 
     void syncChanges();
 
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     void registerObserver(QObserverInterface *observer,
                           QNodeId nodeId,
                           ChangeFlags changeFlags = AllChanges);
+    QT_WARNING_POP
     void unregisterObserver(QObserverInterface *observer,
                             QNodeId nodeId);
 
@@ -110,7 +117,10 @@ public:
     void sceneChangeEventWithLock(const QSceneChangeList &e) override; // QLockableObserverInterface impl
 
     void addDirtyFrontEndNode(QNode *node) override;
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     void addDirtyFrontEndNode(QNode *node, QNode *subNode, const char *property, ChangeFlag change) override;
+    QT_WARNING_POP
     void removeDirtyFrontEndNode(QNode *node) override;
     QVector<QNode *> takeDirtyFrontEndNodes();
     QVector<NodeRelationshipChange> takeDirtyFrontEndSubNodes();

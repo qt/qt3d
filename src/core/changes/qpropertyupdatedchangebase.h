@@ -56,12 +56,12 @@ public:
     ~QPropertyUpdatedChangeBase();
 
 protected:
-    explicit QPropertyUpdatedChangeBase(QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QPropertyUpdatedChangeBase(QNodeId subjectId);
     QPropertyUpdatedChangeBase(QPropertyUpdatedChangeBasePrivate &dd, QNodeId subjectId);
     Q_DECLARE_PRIVATE(QPropertyUpdatedChangeBase)
 };
 
-typedef QSharedPointer<QPropertyUpdatedChangeBase> QPropertyUpdatedChangeBasePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QPropertyUpdatedChangeBase> QPropertyUpdatedChangeBasePtr;
 
 } // namespace Qt3DCore
 

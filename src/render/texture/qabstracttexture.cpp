@@ -977,7 +977,7 @@ float QAbstractTexture::maximumAnisotropy() const
 }
 
 /*!
-    \property Qt3DRender::QAbstractTexture::ComparisonFunction
+    \property Qt3DRender::QAbstractTexture::comparisonFunction
 
     Holds the comparison function of the texture provider.
  */
@@ -1008,7 +1008,7 @@ QAbstractTexture::ComparisonFunction QAbstractTexture::comparisonFunction() cons
 }
 
 /*!
-    \property Qt3DRender::QAbstractTexture::ComparisonMode
+    \property Qt3DRender::QAbstractTexture::comparisonMode
 
     Holds the comparison mode of the texture provider.
  */
@@ -1055,9 +1055,12 @@ QTextureGeneratorPtr QAbstractTexture::dataGenerator() const
  */
 
 /*!
- * \qmlproperty handleType
+ * \qmlproperty enumeration AbstractTexture::handleType
  *
  * Holds the current texture handle type.
+ *
+ * \value AbstractTexture.NoHandle
+ * \value AbstractTexture.OpenGLTextureId
  */
 
 /*!
@@ -1070,7 +1073,6 @@ QAbstractTexture::HandleType QAbstractTexture::handleType() const
     return d->m_handleType;
 }
 
-
 /*!
  * \property Qt3DRender::QAbstractTexture::handle
  *
@@ -1079,7 +1081,7 @@ QAbstractTexture::HandleType QAbstractTexture::handleType() const
  */
 
 /*!
- * \qmlproperty handle
+ * \qmlproperty var AbstractTexture::handle
  *
  * Holds the current texture handle, if Qt 3D is using the OpenGL renderer,
  * handle is a texture id integer.
@@ -1098,8 +1100,8 @@ QVariant QAbstractTexture::handle() const
 }
 
 /*!
- * Allow to update a sub region of the texture without having to change the data
- * generator or rely on adding or removing texture images.
+ * Updates a sub region of the texture, defined by \a update, without having
+ * to change the data generator or rely on adding or removing texture images.
  * \since 5.14
  */
 void QAbstractTexture::updateData(const QTextureDataUpdate &update)
@@ -1135,7 +1137,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange()
     data.dataFunctor = d->m_dataFunctor;
     data.sharedTextureId = d->m_sharedTextureId;
     data.initialDataUpdates = d->m_pendingDataUpdates;
-    return std::move(creationChange);
+    return creationChange;
 }
 
 /*!
@@ -1180,7 +1182,7 @@ void QAbstractTexture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     }
     default:
         break;
-    };
+    }
 }
 
 

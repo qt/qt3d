@@ -68,6 +68,7 @@ AnimationClip::AnimationClip()
     , m_name()
     , m_channels()
     , m_duration(0.0f)
+    , m_channelComponentCount(0)
 {
 }
 
@@ -81,6 +82,7 @@ void AnimationClip::cleanup()
     m_dataType = Unknown;
     m_channels.clear();
     m_duration = 0.0f;
+    m_channelComponentCount = 0;
 
     clearData();
 }

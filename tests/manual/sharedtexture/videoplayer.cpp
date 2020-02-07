@@ -57,8 +57,6 @@ TextureWidget::TextureWidget(QWidget *parent)
     : QOpenGLWidget(parent)
     , m_texture(QOpenGLTexture::Target2D)
 {
-    // Lock mutex so that we never process a frame until we have been initialized
-    m_mutex.lock();
 }
 
 // Main thread
@@ -104,14 +102,11 @@ void TextureWidget::initializeGL()
     qDebug() << Q_FUNC_INFO << context()->shareContext();
 
     m_vao.create();
-    // Allow rendering/frame acquisition to go on
-    m_mutex.unlock();
 }
 
 // Main thread
 void TextureWidget::paintGL()
 {
-    QMutexLocker lock(&m_mutex);
     glViewport(0, 0, width(), height());
 
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -131,12 +126,8 @@ void TextureWidget::paintGL()
     m_shader.release();
 }
 
-// Video Player thread
 void TextureWidget::setVideoFrame(const QVideoFrame &frame)
 {
-    // Ensure we won't be rendering while we are processing the frame
-    QMutexLocker lock(&m_mutex);
-
     QVideoFrame f = frame;
 
     // Map frame
@@ -194,16 +185,14 @@ bool GLVideoSurface::present(const QVideoFrame &frame)
     return true;
 }
 
-VideoPlayerThread::VideoPlayerThread(TextureWidget *textureWidget)
-    : QThread(textureWidget)
+VideoPlayer::VideoPlayer(TextureWidget *textureWidget)
+    : QObject(textureWidget)
     , m_player(new QMediaPlayer(nullptr, QMediaPlayer::VideoSurface))
     , m_surface(new GLVideoSurface())
 {
-    m_player->moveToThread(this);
-    m_player->setMedia(QUrl("https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_1mb.mp4"));
+    m_player->setMedia(QUrl("https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4"));
 
     // Tell player to render on GLVideoSurface
-    m_surface->moveToThread(this);
     m_player->setVideoOutput(m_surface.get());
 
     // Display errors
@@ -218,16 +207,13 @@ VideoPlayerThread::VideoPlayerThread(TextureWidget *textureWidget)
             m_player->play();
     });
 
-    // Start playing when thread starts
-    QObject::connect(this, &QThread::started, this, [this] { m_player->play(); });
-
-    // Direct connection between 2 objects living in different threads
     QObject::connect(m_surface.get(), &GLVideoSurface::onNewFrame,
                      textureWidget, &TextureWidget::setVideoFrame, Qt::DirectConnection);
+
+    // Start playing
+    m_player->play();
 }
 
-VideoPlayerThread::~VideoPlayerThread()
+VideoPlayer::~VideoPlayer()
 {
-    exit(0);
-    wait();
 }

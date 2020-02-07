@@ -57,12 +57,12 @@ public:
     void setPropertyName(const char *name);
 
 protected:
-    explicit QStaticPropertyUpdatedChangeBase(QNodeId subjectId);
-    explicit QStaticPropertyUpdatedChangeBase(QStaticPropertyUpdatedChangeBasePrivate &dd, QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QStaticPropertyUpdatedChangeBase(QNodeId subjectId);
+    Q3D_DECL_DEPRECATED explicit QStaticPropertyUpdatedChangeBase(QStaticPropertyUpdatedChangeBasePrivate &dd, QNodeId subjectId);
     Q_DECLARE_PRIVATE(QStaticPropertyUpdatedChangeBase)
 };
 
-typedef QSharedPointer<QStaticPropertyUpdatedChangeBase> QStaticPropertyUpdatedChangeBasePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QStaticPropertyUpdatedChangeBase> QStaticPropertyUpdatedChangeBasePtr;
 
 } // namespace Qt3DCore
 

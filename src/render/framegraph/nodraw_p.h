@@ -59,7 +59,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class NoDraw : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT NoDraw : public FrameGraphNode
 {
 public:
     NoDraw();

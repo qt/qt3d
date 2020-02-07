@@ -80,7 +80,7 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::QRayCaster> rayCaster(new Qt3DRender::QRayCaster());
 
         QVERIFY(!rayCaster->isEnabled());
-        QVERIFY(rayCaster->direction().length() > 0.);
+        QVERIFY(rayCaster->direction().length() > 0.f);
         QCOMPARE(rayCaster->runMode(), Qt3DRender::QAbstractRayCaster::SingleShot);
 
         // WHEN
@@ -125,13 +125,11 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        auto addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(addChange->propertyName(), "layer");
-        QCOMPARE(addChange->subjectId(), rayCaster->id());
-        QCOMPARE(addChange->addedNodeId(), rayCaster->layers().at(0)->id());
-        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), rayCaster.data());
 
+        arbiter.dirtyNodes.clear();
         arbiter.events.clear();
 
         // WHEN
@@ -141,13 +139,11 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(addChange->propertyName(), "layer");
-        QCOMPARE(addChange->subjectId(), rayCaster->id());
-        QCOMPARE(addChange->addedNodeId(), rayCaster->layers().at(1)->id());
-        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), rayCaster.data());
 
+        arbiter.dirtyNodes.clear();
         arbiter.events.clear();
 
         // WHEN
@@ -156,13 +152,11 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        auto removeChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
-        QCOMPARE(removeChange->propertyName(), "layer");
-        QCOMPARE(removeChange->subjectId(), rayCaster->id());
-        QCOMPARE(removeChange->removedNodeId(), layer->id());
-        QCOMPARE(removeChange->type(), Qt3DCore::PropertyValueRemoved);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(arbiter.dirtyNodes.size(), 1);
+        QCOMPARE(arbiter.dirtyNodes.front(), rayCaster.data());
 
+        arbiter.dirtyNodes.clear();
         arbiter.events.clear();
     }
 
@@ -208,29 +202,6 @@ private Q_SLOTS:
         QTest::newRow("hits")
                 << QByteArray(SIGNAL(hitsChanged(const Hits &)))
                 << QByteArrayLiteral("hits");
-    }
-
-    void checkBackendUpdates()
-    {
-        // GIVEN
-        QFETCH(QByteArray, signalPrototype);
-        QFETCH(QByteArray, propertyName);
-        QScopedPointer<MyRayCaster> rayCaster(new MyRayCaster());
-        QSignalSpy spy(rayCaster.data(), signalPrototype.constData());
-        Qt3DRender::QRayCaster::Hits hits;
-
-        // WHEN
-        // Create Backend Change and distribute it to frontend node
-        Qt3DCore::QPropertyUpdatedChangePtr e(new Qt3DCore::QPropertyUpdatedChange(rayCaster->id()));
-        e->setPropertyName(propertyName.constData());
-        QVariant v;
-        v.setValue<Qt3DRender::QRayCaster::Hits>(hits);
-        e->setValue(v);
-        rayCaster->sceneChangeEvent(e);
-
-        // THEN
-        // Check that the QRayCaster triggers the expected signal
-        QCOMPARE(spy.count(), 1);
     }
 };
 

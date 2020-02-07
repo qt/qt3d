@@ -42,7 +42,6 @@
 
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DInput/qmouseevent.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtCore/QTimer>
 
 QT_BEGIN_NAMESPACE
@@ -198,21 +197,21 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
     \qmlsignal Qt3D.Input::MouseHandler::wheel(MouseEvent mouse)
 
     This signal is emitted when the mouse wheel is used with the event details
-    being contained within \a wheel
+    being contained within \a mouse.
  */
 
 /*!
     \fn Qt3DInput::QMouseHandler::clicked(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is clicked with the event details
-    being contained within \a mouse
+    being contained within \a mouse.
  */
 
 /*!
     \fn Qt3DInput::QMouseHandler::doubleClicked(Qt3DInput::QMouseEvent *mouse)
 
     This signal is emitted when a mouse button is double clicked with the event
-    details being contained within \a mouse
+    details being contained within \a mouse.
  */
 
 /*!
@@ -297,6 +296,11 @@ void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
 
         emit sourceDeviceChanged(mouseDevice);
     }
+}
+
+// TODO Unused remove in Qt6
+void QMouseHandler::sceneChangeEvent(const QSceneChangePtr &)
+{
 }
 
 /*!

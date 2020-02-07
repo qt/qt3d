@@ -50,7 +50,7 @@ class QNodeDestroyedChangePrivate;
 class Q_3DCORESHARED_EXPORT QNodeDestroyedChange : public QSceneChange
 {
 public:
-    explicit QNodeDestroyedChange(const QNode *node, const QVector<QNodeIdTypePair> &subtreeIdsAndTypes);
+    Q3D_DECL_DEPRECATED explicit QNodeDestroyedChange(const QNode *node, const QVector<QNodeIdTypePair> &subtreeIdsAndTypes);
     ~QNodeDestroyedChange();
 
     QVector<QNodeIdTypePair> subtreeIdsAndTypes() const;
@@ -59,7 +59,7 @@ private:
     Q_DECLARE_PRIVATE(QNodeDestroyedChange)
 };
 
-typedef QSharedPointer<QNodeDestroyedChange> QNodeDestroyedChangePtr;
+Q3D_DECL_DEPRECATED typedef QSharedPointer<QNodeDestroyedChange> QNodeDestroyedChangePtr;
 
 } // namespace Qt3DCore
 

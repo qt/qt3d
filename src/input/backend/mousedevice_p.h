@@ -107,6 +107,7 @@ public:
     QPointF previousPos() const;
     bool wasPressed() const;
     float sensitivity() const;
+    bool updateAxesContinuously() const;
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
@@ -117,6 +118,7 @@ private:
     QPointF m_previousPos;
     bool m_wasPressed;
     float m_sensitivity;
+    bool m_updateAxesContinuously;
 };
 
 class MouseDeviceFunctor : public Qt3DCore::QBackendNodeMapper

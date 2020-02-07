@@ -46,7 +46,6 @@
 
 #include <Qt3DRender/private/qrenderpass_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
-#include <Qt3DRender/private/renderstateset_p.h>
 
 #include <algorithm>
 

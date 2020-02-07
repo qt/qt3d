@@ -37,6 +37,8 @@
 #include <Qt3DRender/private/qrendercapture_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -99,17 +101,25 @@ void RenderCapture::addRenderCapture(int captureId, const QImage &image)
     m_renderCaptureData.push_back(data);
 }
 
-// called by send render capture job thread
-void RenderCapture::sendRenderCaptures()
+// called to send render capture in main thread
+void RenderCapture::syncRenderCapturesToFrontend(Qt3DCore::QAspectManager *manager)
 {
-    QMutexLocker lock(&m_mutex);
+    auto *frontend = manager->lookupNode(peerId());
+    if (!frontend)
+        return;
+    QRenderCapturePrivate *dfrontend = static_cast<QRenderCapturePrivate *>(Qt3DCore::QNodePrivate::get(frontend));
 
+    QMutexLocker lock(&m_mutex);
     for (const RenderCaptureDataPtr &data : qAsConst(m_renderCaptureData)) {
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        e->setPropertyName("renderCaptureData");
-        e->setValue(QVariant::fromValue(data));
-        notifyObservers(e);
+        QPointer<QRenderCaptureReply> reply = dfrontend->takeReply(data.data()->captureId);
+        if (reply) {
+            dfrontend->setImage(reply, data.data()->image);
+            emit reply->completed();
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
+            emit reply->completeChanged(true);
+QT_WARNING_POP
+        }
     }
     m_renderCaptureData.clear();
 }

@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Armature : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Armature : public BackendNode
 {
 public:
     Armature();

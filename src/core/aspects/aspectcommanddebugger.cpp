@@ -39,12 +39,12 @@
 
 #include "aspectcommanddebugger_p.h"
 
-#include <Qt3DCore/qaspectengine.h>
 #include <QtNetwork/QTcpSocket>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 
 #include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DCore/private/qsysteminformationservice_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,13 +64,6 @@ struct CommandHeader
 
 } // anonymous
 
-AspectCommandDebugger::ReadBuffer::ReadBuffer()
-    : buffer()
-    , startIdx(0)
-    , endIdx(0)
-{
-}
-
 void AspectCommandDebugger::ReadBuffer::insert(const QByteArray &array)
 {
     buffer.insert(endIdx, array);
@@ -88,9 +81,9 @@ void AspectCommandDebugger::ReadBuffer::trim()
     }
 }
 
-AspectCommandDebugger::AspectCommandDebugger(QObject *parent)
+AspectCommandDebugger::AspectCommandDebugger(QSystemInformationService *parent)
     : QTcpServer(parent)
-    , m_aspectEngine(nullptr)
+    , m_service(parent)
 {
 }
 
@@ -113,11 +106,6 @@ void AspectCommandDebugger::initialize()
     const bool listening = listen(QHostAddress::Any, 8883);
     if (!listening)
         qWarning() << Q_FUNC_INFO << "failed to listen on port 8883";
-}
-
-void AspectCommandDebugger::setAspectEngine(QAspectEngine *engine)
-{
-    m_aspectEngine = engine;
 }
 
 void AspectCommandDebugger::asynchronousReplyFinished(AsynchronousCommandReply *reply)
@@ -189,7 +177,7 @@ void AspectCommandDebugger::executeCommand(const QString &command,
                                            QTcpSocket *socket)
 {
     // Only a single aspect is going to reply
-    const QVariant response = m_aspectEngine->executeCommand(command);
+    const QVariant response = m_service->executeCommand(command);
     if (response.userType() == qMetaTypeId<AsynchronousCommandReply *>()) { // AsynchronousCommand
         // Store the command | socket in a table
         AsynchronousCommandReply *reply = response.value<AsynchronousCommandReply *>();

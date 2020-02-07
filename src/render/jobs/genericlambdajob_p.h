@@ -68,7 +68,7 @@ public:
         : Qt3DCore::QAspectJob()
         , m_callable(callable)
     {
-        SET_JOB_RUN_STAT_TYPE(this, type, 0);
+        SET_JOB_RUN_STAT_TYPE(this, type, 0)
     }
 
     // QAspectJob interface
@@ -111,7 +111,7 @@ public:
         : Qt3DCore::QAspectJob(*new GenericLambdaJobAndPostFramePrivate<T, U>(postFrameCallable))
         , m_runCallable(runCallable)
     {
-        SET_JOB_RUN_STAT_TYPE(this, type, 0);
+        SET_JOB_RUN_STAT_TYPE(this, type, 0)
     }
 
     // QAspectJob interface

@@ -139,8 +139,16 @@ void GeometryRenderer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     if (functorDirty) {
         m_dirty = true;
         m_geometryFactory = newFunctor;
-        if (m_geometryFactory && m_manager != nullptr)
+        if (m_geometryFactory && m_manager != nullptr) {
             m_manager->addDirtyGeometryRenderer(peerId());
+
+            const bool isQMeshFunctor = m_geometryFactory->id() == Qt3DRender::functorTypeId<MeshLoaderFunctor>();
+            if (isQMeshFunctor) {
+                const QMesh *meshNode = static_cast<const QMesh *>(node);
+                QMeshPrivate *dmeshNode = QMeshPrivate::get(const_cast<QMesh *>(meshNode));
+                dmeshNode->setStatus(QMesh::Loading);
+            }
+        }
     }
 
     markDirty(AbstractRenderer::GeometryDirty);

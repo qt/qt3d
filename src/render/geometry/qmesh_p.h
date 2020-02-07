@@ -120,7 +120,10 @@ public :
 
     QGeometry *operator()() override;
     bool operator ==(const QGeometryFactory &other) const override;
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     QT3D_FUNCTOR(MeshLoaderFunctor)
+    QT_WARNING_POP
 
 private:
     Qt3DCore::QNodeId m_mesh;

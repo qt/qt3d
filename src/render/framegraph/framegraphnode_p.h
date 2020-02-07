@@ -74,7 +74,7 @@ namespace Render {
 
 class FrameGraphManager;
 
-class Q_AUTOTEST_EXPORT FrameGraphNode : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT FrameGraphNode : public BackendNode
 {
 public:
     FrameGraphNode();
@@ -104,7 +104,8 @@ public:
         BlitFramebuffer,
         SetFence,
         WaitFence,
-        NoPicking
+        NoPicking,
+        DebugOverlay,
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

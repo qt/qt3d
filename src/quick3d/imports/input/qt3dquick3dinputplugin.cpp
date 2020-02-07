@@ -86,6 +86,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 #endif
     qmlRegisterType<Qt3DInput::QMouseHandler>(uri, 2, 0, "MouseHandler");
     qmlRegisterType<Qt3DInput::QMouseDevice>(uri, 2, 0, "MouseDevice");
+    qmlRegisterType<Qt3DInput::QMouseDevice, 15>(uri, 2, 15, "MouseDevice");
 
     qmlRegisterExtendedType<Qt3DInput::QLogicalDevice, Qt3DInput::Input::Quick::Quick3DLogicalDevice>(uri, 2, 0, "LogicalDevice");
     qmlRegisterUncreatableType<Qt3DInput::QAbstractActionInput>(uri, 2, 0, "AbstractActionInput", QStringLiteral("AbstractActionInput is abstract"));

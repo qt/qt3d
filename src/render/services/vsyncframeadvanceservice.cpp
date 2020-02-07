@@ -62,7 +62,7 @@ public:
 
     QSemaphore m_semaphore;
     QElapsedTimer m_elapsed;
-    quint64 m_elapsedTimeSincePreviousFrame;
+    qint64 m_elapsedTimeSincePreviousFrame;
     bool m_drivenByRenderThread;
 };
 
@@ -75,14 +75,14 @@ VSyncFrameAdvanceService::~VSyncFrameAdvanceService()
 {
 }
 
-// Aspect Thread
+// Main Thread
 qint64 VSyncFrameAdvanceService::waitForNextFrame()
 {
     Q_D(VSyncFrameAdvanceService);
 
     d->m_semaphore.acquire(std::max(d->m_semaphore.available(), 1));
 
-    const quint64 currentTime = d->m_elapsed.nsecsElapsed();
+    const qint64 currentTime = d->m_elapsed.nsecsElapsed();
     qCDebug(VSyncAdvanceService) << "Elapsed nsecs since last call " << currentTime - d->m_elapsedTimeSincePreviousFrame;
     d->m_elapsedTimeSincePreviousFrame = currentTime;
     return currentTime;

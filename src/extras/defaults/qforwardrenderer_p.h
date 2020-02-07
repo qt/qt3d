@@ -63,6 +63,7 @@ class QClearBuffers;
 class QCameraSelector;
 class QFrustumCulling;
 class QRenderSurfaceSelector;
+class QDebugOverlay;
 
 } // namespace Qt3DRender
 
@@ -78,6 +79,7 @@ public:
     Qt3DRender::QCameraSelector *m_cameraSelector;
     Qt3DRender::QClearBuffers *m_clearBuffer;
     Qt3DRender::QFrustumCulling *m_frustumCulling;
+    Qt3DRender::QDebugOverlay *m_debugOverlay;
 
     void init();
 

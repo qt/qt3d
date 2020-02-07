@@ -70,6 +70,7 @@ public:
     QSkeletonLoaderPrivate();
 
     void setStatus(QSkeletonLoader::Status status);
+    void setRootJoint(QJoint *rootJoint);
 
     Q_DECLARE_PUBLIC(QSkeletonLoader)
 

@@ -48,7 +48,7 @@ namespace Qt3DRender {
 /*!
     \class Qt3DRender::QRasterMode
     \brief The QRasterMode render state allows to control the type of
-    rasterization to be performed
+           rasterization to be performed.
     \since 5.14
     \inmodule Qt3DRender
     \ingroup renderstates
@@ -65,7 +65,7 @@ namespace Qt3DRender {
 /*!
     \qmltype RasterMode
     \brief The RasterMode render state allows to control the type of
-    rasterization to be performed
+           rasterization to be performed.
     \since 5.14
     \inqmlmodule Qt3D.Render
     \inherits RenderState

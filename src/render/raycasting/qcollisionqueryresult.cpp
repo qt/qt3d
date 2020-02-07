@@ -46,6 +46,7 @@ namespace RayCasting {
 
 QCollisionQueryResultPrivate::QCollisionQueryResultPrivate()
     : QSharedData()
+    , m_handle(0)
 {
 }
 

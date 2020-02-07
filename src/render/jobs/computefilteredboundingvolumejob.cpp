@@ -39,7 +39,6 @@
 
 #include "computefilteredboundingvolumejob_p.h"
 
-#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/sphere_p.h>
@@ -74,12 +73,25 @@ void expandWorldBoundingVolume(NodeManagers *manager,
 
 } // namespace
 
+class ComputeFilteredBoundingVolumeJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    ComputeFilteredBoundingVolumeJobPrivate(ComputeFilteredBoundingVolumeJob *job) : Qt3DCore::QAspectJobPrivate(), m_job(job) {}
+    ~ComputeFilteredBoundingVolumeJobPrivate() {}
+
+    void postFrame(Qt3DCore::QAspectManager *aspectManager) override;
+
+    ComputeFilteredBoundingVolumeJob *m_job;
+    Qt3DRender::Render::Sphere m_sphere;
+};
+
 ComputeFilteredBoundingVolumeJob::ComputeFilteredBoundingVolumeJob()
-    : m_root(nullptr)
+    : Qt3DCore::QAspectJob(*new ComputeFilteredBoundingVolumeJobPrivate(this))
+    , m_root(nullptr)
     , m_ignoreSubTree(nullptr)
     , m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpandBoundingVolume, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpandBoundingVolume, 0)
 }
 
 void ComputeFilteredBoundingVolumeJob::setRoot(Entity *root)
@@ -100,11 +112,13 @@ void ComputeFilteredBoundingVolumeJob::ignoreSubTree(Entity *node)
 void ComputeFilteredBoundingVolumeJob::run()
 {
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
+    Q_D(ComputeFilteredBoundingVolumeJob);
+    d->m_sphere = {};
 
     if (!m_root)
         return;
     if (!m_ignoreSubTree) {
-        finished(*m_root->worldBoundingVolumeWithChildren());
+        d->m_sphere = *m_root->worldBoundingVolumeWithChildren();
         return;
     }
 
@@ -118,20 +132,24 @@ void ComputeFilteredBoundingVolumeJob::run()
         parent = parent->parent();
     }
     if (!isFilterChildOfRoot) {
-        finished(*m_root->worldBoundingVolumeWithChildren());
+        d->m_sphere = *m_root->worldBoundingVolumeWithChildren();
         return;
     }
 
-    Qt3DRender::Render::Sphere sphere;
-    expandWorldBoundingVolume(m_manager, &sphere, m_root, m_ignoreSubTree);
-    finished(sphere);
+    expandWorldBoundingVolume(m_manager, &d->m_sphere, m_root, m_ignoreSubTree);
 
     qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }
 
-void ComputeFilteredBoundingVolumeJob::finished(const Qt3DRender::Render::Sphere &sphere)
+void ComputeFilteredBoundingVolumeJob::finished(Qt3DCore::QAspectManager *aspectManager, const Qt3DRender::Render::Sphere &sphere)
 {
-    Q_UNUSED(sphere);
+    Q_UNUSED(aspectManager)
+    Q_UNUSED(sphere)
+}
+
+void ComputeFilteredBoundingVolumeJobPrivate::postFrame(Qt3DCore::QAspectManager *aspectManager)
+{
+    m_job->finished(aspectManager, m_sphere);
 }
 
 } // namespace Render

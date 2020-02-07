@@ -39,7 +39,6 @@
 
 #include "scene_p.h"
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qdownloadhelperservice_p.h>
@@ -80,6 +79,9 @@ void Scene::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
             m_sceneManager->addSceneData(m_source, peerId());
         else
             m_sceneManager->startSceneDownload(m_source, peerId());
+
+        const auto d = static_cast<const QSceneLoaderPrivate *>(Qt3DCore::QNodePrivate::get(node));
+        const_cast<QSceneLoaderPrivate *>(d)->setStatus(QSceneLoader::Loading);
     }
     markDirty(AbstractRenderer::AllDirty);
 }

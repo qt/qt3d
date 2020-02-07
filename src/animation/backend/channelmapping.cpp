@@ -105,9 +105,9 @@ void ChannelMapping::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
     const QCallbackMapping *callbackMapping = qobject_cast<const QCallbackMapping *>(frontEnd);
     if (callbackMapping) {
         m_mappingType = ChannelMappingType;
-        m_channelName = channelMapping->channelName();
+        m_channelName = callbackMapping->channelName();
 
-        const QCallbackMappingPrivate *d = static_cast<const QCallbackMappingPrivate *>(Qt3DCore::QNodePrivate::get(channelMapping));
+        const QCallbackMappingPrivate *d = static_cast<const QCallbackMappingPrivate *>(Qt3DCore::QNodePrivate::get(callbackMapping));
         m_type = d->m_type;
         m_callback = d->m_callback;
         m_callbackFlags = d->m_callbackFlags;

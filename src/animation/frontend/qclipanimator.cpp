@@ -107,7 +107,8 @@ bool QClipAnimatorPrivate::canPlay() const
     The properties for controlling the animator are provided by the QAbstractClipAnimator base
     class.
 
-    \sa QAbstractClipAnimator, QAbstractAnimationClip, QChannelMapper, QBlendedClipAnimator
+    \sa Qt3DAnimation::QAbstractClipAnimator, Qt3DAnimation::QAbstractAnimationClip,
+        Qt3DAnimation::QChannelMapper, Qt3DAnimation::QBlendedClipAnimator
 */
 
 QClipAnimator::QClipAnimator(Qt3DCore::QNode *parent)

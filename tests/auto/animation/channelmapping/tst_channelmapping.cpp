@@ -38,7 +38,6 @@
 #include <Qt3DCore/qskeleton.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"
 
@@ -181,16 +180,31 @@ private Q_SLOTS:
 
         const char *testName = "translation";
         QCOMPARE(qstrcmp(testName, backendMapping.propertyName()), 0);
+    }
 
-//        // WHEN
-//        const auto skeletonId = Qt3DCore::QNodeId::createId();
-//        updateChange = QSharedPointer<Qt3DCore::QPropertyUpdatedChange>::create(Qt3DCore::QNodeId());
-//        updateChange->setPropertyName("skeleton");
-//        updateChange->setValue(QVariant::fromValue(skeletonId));
-//        backendMapping.sceneChangeEvent(updateChange);
+    void checkSkeletonPropertyUpdate()
+    {
+        // GIVEN
+        Qt3DAnimation::QSkeletonMapping mapping;
+        Qt3DAnimation::Animation::Handler handler;
+        Qt3DAnimation::Animation::ChannelMapping backendMapping;
+        backendMapping.setHandler(&handler);
+        simulateInitializationSync(&mapping, &backendMapping);
 
-//        // THEN
-//        QCOMPARE(backendMapping.skeletonId(), skeletonId);
+        // WHEN
+        mapping.setEnabled(false);
+        backendMapping.syncFromFrontEnd(&mapping, false);
+
+        // THEN
+        QCOMPARE(backendMapping.isEnabled(), false);
+
+        // WHEN
+        auto skeleton = new Qt3DCore::QSkeleton;
+        mapping.setSkeleton(skeleton);
+        backendMapping.syncFromFrontEnd(&mapping, false);
+
+        // THEN
+        QCOMPARE(backendMapping.skeletonId(), skeleton->id());
     }
 };
 

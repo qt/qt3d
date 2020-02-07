@@ -47,6 +47,7 @@
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
+#include <Qt3DRender/qdebugoverlay.h>
 
 static void initResources()
 {
@@ -68,6 +69,7 @@ QForwardRendererPrivate::QForwardRendererPrivate()
     , m_cameraSelector(new QCameraSelector())
     , m_clearBuffer(new QClearBuffers())
     , m_frustumCulling(new QFrustumCulling())
+    , m_debugOverlay(new QDebugOverlay())
 {
 }
 
@@ -77,13 +79,15 @@ void QForwardRendererPrivate::init()
 
     initResources();
 
+    m_debugOverlay->setParent(m_frustumCulling);
+    m_debugOverlay->setEnabled(false);
     m_frustumCulling->setParent(m_clearBuffer);
     m_clearBuffer->setParent(m_cameraSelector);
     m_cameraSelector->setParent(m_viewport);
     m_viewport->setParent(m_surfaceSelector);
     m_surfaceSelector->setParent(q);
 
-    m_viewport->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
+    m_viewport->setNormalizedRect(QRectF(0.0, 0.0, 1.0, 1.0));
     m_clearBuffer->setClearColor(Qt::white);
     m_clearBuffer->setBuffers(QClearBuffers::ColorDepthBuffer);
 
@@ -146,6 +150,7 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     QObject::connect(d->m_surfaceSelector, &QRenderSurfaceSelector::externalRenderTargetSizeChanged, this, &QForwardRenderer::externalRenderTargetSizeChanged);
     QObject::connect(d->m_frustumCulling, &QFrustumCulling::enabledChanged, this, &QForwardRenderer::frustumCullingEnabledChanged);
     QObject::connect(d->m_viewport, &QViewport::gammaChanged, this, &QForwardRenderer::gammaChanged);
+    QObject::connect(d->m_debugOverlay, &QDebugOverlay::enabledChanged, this, &QForwardRenderer::showDebugOverlayChanged);
     d->init();
 }
 
@@ -199,6 +204,12 @@ void QForwardRenderer::setGamma(float gamma)
 {
     Q_D(QForwardRenderer);
     d->m_viewport->setGamma(gamma);
+}
+
+void QForwardRenderer::setShowDebugOverlay(bool showDebugOverlay)
+{
+    Q_D(QForwardRenderer);
+    d->m_debugOverlay->setEnabled(showDebugOverlay);
 }
 
 /*!
@@ -354,6 +365,12 @@ float QForwardRenderer::gamma() const
 {
     Q_D(const QForwardRenderer);
     return d->m_viewport->gamma();
+}
+
+bool QForwardRenderer::showDebugOverlay() const
+{
+    Q_D(const QForwardRenderer);
+    return d->m_debugOverlay->isEnabled();
 }
 
 } // namespace Qt3DExtras

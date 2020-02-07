@@ -59,7 +59,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class FrustumCulling : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT FrustumCulling : public FrameGraphNode
 {
 public:
     FrustumCulling();

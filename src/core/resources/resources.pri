@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/qloadgltf_p.h \
     $$PWD/qresourcemanager_p.h \
     $$PWD/qhandle_p.h
 

@@ -276,7 +276,7 @@ void Qt3DQuickWindow::updateCameraAspectRatio()
     Q_D(Qt3DQuickWindow);
     if (d->m_camera) {
         d->m_camera->setAspectRatio(static_cast<float>(width()) /
-                                    static_cast<float>(height()));
+                                    std::max(1.f, static_cast<float>(height())));
     }
 }
 

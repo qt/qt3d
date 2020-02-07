@@ -149,7 +149,7 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
  */
 
 /*!
-    \qmlproperty int GeometryRenderer::restartIndex
+    \qmlproperty int GeometryRenderer::restartIndexValue
 
     Holds the restart index.
  */
@@ -161,7 +161,7 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
  */
 
 /*!
-    \qmlproperty bool GeometryRenderer::primitiveRestart
+    \qmlproperty bool GeometryRenderer::primitiveRestartEnabled
 
     Holds the primitive restart flag.
  */
@@ -215,6 +215,11 @@ QGeometryRenderer::~QGeometryRenderer()
  */
 QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
+{
+}
+
+// TODO Unused remove in Qt6
+void QGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &)
 {
 }
 

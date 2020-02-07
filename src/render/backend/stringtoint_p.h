@@ -54,6 +54,7 @@
 
 #include <QVector>
 #include <QString>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,7 +62,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT StringToInt
+class Q_3DRENDERSHARED_PRIVATE_EXPORT StringToInt
 {
 public:
     static int lookupId(const QString &str);

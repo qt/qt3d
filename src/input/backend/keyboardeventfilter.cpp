@@ -53,6 +53,7 @@ namespace Input {
 
 KeyboardEventFilter::KeyboardEventFilter(QObject *parent)
     : QObject(parent)
+    , m_inputHandler(nullptr)
 {
 }
 

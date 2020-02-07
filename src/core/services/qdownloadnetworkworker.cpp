@@ -109,7 +109,7 @@ void QDownloadNetworkWorker::onRequestFinished(QNetworkReply *reply)
         return;
 
     auto request = (*it).first;
-    if (reply->error() == QNetworkReply::NoError) {
+    if (reply->networkError() == QNetworkReply::NoError) {
         request->m_succeeded = true;
     }
     request->onDownloaded();

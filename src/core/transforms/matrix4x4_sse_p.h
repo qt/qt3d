@@ -372,6 +372,7 @@ public:
     friend Q_ALWAYS_INLINE Vector3D operator*(const Matrix4x4_SSE &matrix, const Vector3D &vector);
 
     friend Q_3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Matrix4x4_SSE &m);
+
 private:
     // Internally we will store the matrix as indicated below
     //  Q_DECL_ALIGN(16)  // aligned on 16 bytes boundary for SSE (column major)
@@ -482,7 +483,7 @@ Q_ALWAYS_INLINE Vector3D operator*(const Vector3D &vector, const Matrix4x4_SSE &
     return v;
 }
 
-Q_3DCORE_PRIVATE_EXPORT Q_ALWAYS_INLINE Vector3D operator*(const Matrix4x4_SSE &matrix, const Vector3D &vector)
+Q_ALWAYS_INLINE Vector3D operator*(const Matrix4x4_SSE &matrix, const Vector3D &vector)
 {
     const Matrix4x4_SSE transposed = matrix.transposed();
     return vector * transposed;

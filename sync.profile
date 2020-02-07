@@ -16,5 +16,7 @@
 %moduleheaders = ( # restrict the module headers to those found in relative path
 );
 
+@ignore_headers = ( "imconfig.h", "imgui.h", "imgui_internal.h", "imstb_rectpack.h", "imstb_textedit.h", "imstb_truetype.h" );
+
 # Force generation of camel case headers for classes inside Qt3D* namespaces
 $publicclassregexp = "Qt3D.*::.+";

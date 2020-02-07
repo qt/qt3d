@@ -39,7 +39,6 @@
 
 #include "abstractpickingjob_p.h"
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
@@ -63,6 +62,7 @@ AbstractPickingJob::AbstractPickingJob()
     , m_node(nullptr)
     , m_frameGraphRoot(nullptr)
     , m_renderSettings(nullptr)
+    , m_oneEnabledAtLeast(false)
 {
 }
 
@@ -72,6 +72,7 @@ AbstractPickingJob::AbstractPickingJob(Qt3DCore::QAspectJobPrivate &dd)
     , m_node(nullptr)
     , m_frameGraphRoot(nullptr)
     , m_renderSettings(nullptr)
+    , m_oneEnabledAtLeast(false)
 {
 
 }

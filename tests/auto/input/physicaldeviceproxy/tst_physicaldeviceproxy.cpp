@@ -32,9 +32,7 @@
 #include <Qt3DInput/private/qabstractphysicaldeviceproxy_p_p.h>
 #include <Qt3DInput/private/physicaldeviceproxy_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "qbackendnodetester.h"
 #include "testdeviceproxy.h"
 #include "testpostmanarbiter.h"

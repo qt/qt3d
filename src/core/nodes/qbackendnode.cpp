@@ -220,6 +220,7 @@ QBackendNode::QBackendNode(QBackendNodePrivate &dd)
 
 /*!
  * Notifies observers of scene change \a e.
+ * \obsolete
  */
 void QBackendNode::notifyObservers(const QSceneChangePtr &e)
 {
@@ -228,6 +229,8 @@ void QBackendNode::notifyObservers(const QSceneChangePtr &e)
 }
 
 /*!
+    \obsolete
+
     Send the command named \a name with contents \a data,
     and specify \a replyTo as the command id to which the
     reply needs to be sent.
@@ -247,6 +250,7 @@ QNodeCommand::CommandId QBackendNode::sendCommand(const QString &name,
 
 /*!
     Send the reply to \a command.
+    \obsolete
 */
 void QBackendNode::sendReply(const QNodeCommandPtr &command)
 {
@@ -254,9 +258,12 @@ void QBackendNode::sendReply(const QNodeCommandPtr &command)
     notifyObservers(command);
 }
 
+/*!
+ * \obsolete
+ */
 void QBackendNode::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 {
-    Q_UNUSED(change);
+    Q_UNUSED(change)
     qCDebug(Nodes) << Q_FUNC_INFO << change->metaObject()->className() << "does not override";
 }
 
@@ -270,8 +277,7 @@ void QBackendNode::setEnabled(bool enabled) Q_DECL_NOTHROW
 }
 
 /*!
- * TODO
- * \a e
+ * \obsolete
  */
 void QBackendNode::sceneChangeEvent(const QSceneChangePtr &e)
 {

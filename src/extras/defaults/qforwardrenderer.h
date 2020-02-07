@@ -66,6 +66,7 @@ class Q_3DEXTRASSHARED_EXPORT QForwardRenderer : public Qt3DRender::QTechniqueFi
     Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize WRITE setExternalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
     Q_PROPERTY(bool frustumCulling READ isFrustumCullingEnabled WRITE setFrustumCullingEnabled NOTIFY frustumCullingEnabledChanged)
     Q_PROPERTY(float gamma READ gamma WRITE setGamma NOTIFY gammaChanged REVISION 9)
+    Q_PROPERTY(bool showDebugOverlay READ showDebugOverlay WRITE setShowDebugOverlay NOTIFY showDebugOverlayChanged REVISION 15)
 public:
     explicit QForwardRenderer(Qt3DCore::QNode *parent = nullptr);
     ~QForwardRenderer();
@@ -78,6 +79,7 @@ public:
     QSize externalRenderTargetSize() const;
     bool isFrustumCullingEnabled() const;
     float gamma() const;
+    bool showDebugOverlay() const;
 
 public Q_SLOTS:
     void setViewportRect(const QRectF &viewportRect);
@@ -88,6 +90,7 @@ public Q_SLOTS:
     void setExternalRenderTargetSize(const QSize &size);
     void setFrustumCullingEnabled(bool enabled);
     void setGamma(float gamma);
+    void setShowDebugOverlay(bool showDebugOverlay);
 
 Q_SIGNALS:
     void viewportRectChanged(const QRectF &viewportRect);
@@ -98,6 +101,7 @@ Q_SIGNALS:
     void externalRenderTargetSizeChanged(const QSize &size);
     void frustumCullingEnabledChanged(bool enabled);
     void gammaChanged(float gamma);
+    void showDebugOverlayChanged(bool showDebugOverlay);
 
 private:
     Q_DECLARE_PRIVATE(QForwardRenderer)

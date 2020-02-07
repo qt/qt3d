@@ -41,7 +41,7 @@
 #include "qrenderaspect_p.h"
 
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
@@ -56,8 +56,10 @@
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpassfilter.h>
+#include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qrendertargetselector.h>
 #include <Qt3DRender/qtechniquefilter.h>
+#include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DRender/qclearbuffers.h>
@@ -92,6 +94,7 @@
 #include <Qt3DRender/qwaitfence.h>
 #include <Qt3DRender/qshaderimage.h>
 #include <Qt3DRender/qsubtreeenabler.h>
+#include <Qt3DRender/qdebugoverlay.h>
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qskeletonloader.h>
@@ -102,7 +105,7 @@
 #include <Qt3DRender/private/cameralens_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/renderpassfilternode_p.h>
 #include <Qt3DRender/private/rendertargetselectornode_p.h>
@@ -159,9 +162,12 @@
 #include <Qt3DRender/private/setfence_p.h>
 #include <Qt3DRender/private/waitfence_p.h>
 #include <Qt3DRender/private/shaderimage_p.h>
+#include <Qt3DRender/private/debugoverlay_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
+
+#include <Qt3DRender/private/qrendererpluginfactory_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -169,11 +175,12 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 
-#include <QDebug>
-#include <QOffscreenSurface>
 #include <QThread>
-#include <QWindow>
+#include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
@@ -202,11 +209,16 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_nodeManagers(nullptr)
     , m_renderer(nullptr)
     , m_initialized(false)
+    , m_renderAfterJobs(false)
     , m_renderType(type)
     , m_offscreenHelper(nullptr)
 {
     m_instances.append(this);
     loadSceneParsers();
+    if (m_renderType == QRenderAspect::Threaded && !QOpenGLContext::supportsThreadedOpenGL()) {
+        m_renderType = QRenderAspect::Synchronous;
+        m_renderAfterJobs = true;
+    }
 }
 
 /*! \internal */
@@ -237,6 +249,18 @@ void QRenderAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *back
 {
     Render::BackendNode *renderBackend = static_cast<Render::BackendNode *>(backend);
     renderBackend->syncFromFrontEnd(node, firstTime);
+}
+
+void QRenderAspectPrivate::jobsDone()
+{
+    m_renderer->jobsDone(m_aspectManager);
+}
+
+void QRenderAspectPrivate::frameDone()
+{
+    m_renderer->setJobsInLastFrame(m_aspectManager->jobsInLastFrame());
+    if (m_renderAfterJobs)
+        m_renderer->doRender(true);
 }
 
 /*! \internal */
@@ -289,7 +313,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QParameter, true>(QSharedPointer<Render::NodeFunctor<Render::Parameter, Render::ParameterManager> >::create(m_renderer));
     q->registerBackendType<QRenderPass, true>(QSharedPointer<Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager> >::create(m_renderer));
     q->registerBackendType<QShaderData, true>(QSharedPointer<Render::RenderShaderDataFunctor>::create(m_renderer, m_nodeManagers));
-    q->registerBackendType<QShaderProgram, true>(QSharedPointer<Render::NodeFunctor<Render::Shader, Render::ShaderManager> >::create(m_renderer));
+    q->registerBackendType<QShaderProgram, true>(QSharedPointer<Render::ShaderFunctor>::create(m_renderer, m_nodeManagers->shaderManager()));
     q->registerBackendType<QShaderProgramBuilder, true>(QSharedPointer<Render::NodeFunctor<Render::ShaderBuilder, Render::ShaderBuilderManager> >::create(m_renderer));
     q->registerBackendType<QTechnique, true>(QSharedPointer<Render::TechniqueFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<QShaderImage, true>(QSharedPointer<Render::NodeFunctor<Render::ShaderImage, Render::ShaderImageManager>>::create(m_renderer));
@@ -318,6 +342,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QWaitFence, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::WaitFence, QWaitFence> >::create(m_renderer));
     q->registerBackendType<QNoPicking, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::NoPicking, QNoPicking> >::create(m_renderer));
     q->registerBackendType<QSubtreeEnabler, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SubtreeEnabler, QSubtreeEnabler> >::create(m_renderer));
+    q->registerBackendType<QDebugOverlay, true>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::DebugOverlay, QDebugOverlay> >::create(m_renderer));
 
     // Picking
     q->registerBackendType<QObjectPicker, true>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
@@ -392,6 +417,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QSetFence>();
     unregisterBackendType<QWaitFence>();
     unregisterBackendType<QSubtreeEnabler>();
+    unregisterBackendType<QDebugOverlay>();
 
     // Picking
     unregisterBackendType<QObjectPicker>();
@@ -540,12 +566,29 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 QVariant QRenderAspect::executeCommand(const QStringList &args)
 {
     Q_D(QRenderAspect);
+
+    if (args.size() == 1) {
+        Render::RenderSettings *settings = d->m_renderer->settings();
+        auto *droot = static_cast<Qt3DCore::QEntityPrivate *>(Qt3DCore::QNodePrivate::get(d->m_root));
+        auto *fg = qobject_cast<Qt3DRender::QFrameGraphNode *>(droot->m_scene->lookupNode(settings->activeFrameGraphID()));
+        if (fg) {
+            if (args.front() == QLatin1String("framegraph"))
+                return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraph();
+            if (args.front() == QLatin1String("framepaths"))
+                return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphPaths().join(QLatin1String("\n"));
+        }
+        if (args.front() == QLatin1String("scenegraph"))
+            return droot->dumpSceneGraph();
+    }
+
     return d->m_renderer->executeCommand(args);
 }
 
 void QRenderAspect::onEngineStartup()
 {
     Q_D(QRenderAspect);
+    if (d->m_renderAfterJobs)   // synchronous rendering but using QWindow
+        d->m_renderer->initialize();
     Render::NodeManagers *managers = d->m_renderer->nodeManagers();
     Render::Entity *rootEntity = managers->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
     Q_ASSERT(rootEntity);
@@ -560,8 +603,9 @@ void QRenderAspect::onRegistered()
     Q_D(QRenderAspect);
     d->m_nodeManagers = new Render::NodeManagers();
 
-    // TO DO: Load proper Renderer class based on Qt configuration preferences
-    d->m_renderer = new Render::Renderer(d->m_renderType);
+    // Load proper Renderer class based on Qt configuration preferences
+    d->m_renderer = d->loadRendererPlugin();
+    Q_ASSERT(d->m_renderer);
     d->m_renderer->setScreen(d->m_screen);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
@@ -606,6 +650,8 @@ void QRenderAspect::onUnregistered()
 
     d->unregisterBackendTypes();
 
+    d->m_renderer->releaseGraphicsResources();
+
     delete d->m_nodeManagers;
     d->m_nodeManagers = nullptr;
 
@@ -646,6 +692,27 @@ void QRenderAspectPrivate::loadSceneParsers()
         if (sceneIOHandler != nullptr)
             m_sceneImporter.append(sceneIOHandler);
     }
+}
+
+Render::AbstractRenderer *QRenderAspectPrivate::loadRendererPlugin()
+{
+    // Note: for now we load the first renderer plugin that is successfully loaded
+    // In the future we might want to offer the user a way to hint at which renderer
+    // plugin would best be loaded
+
+    const QByteArray envTarget = qgetenv("QT3D_RENDERER");
+    const QString targetKey = !envTarget.isEmpty() ? QString::fromLatin1(envTarget) : QStringLiteral("opengl");
+    const QStringList keys = Render::QRendererPluginFactory::keys();
+    for (const QString &key : keys) {
+        if (key != targetKey)
+            continue;
+        Render::AbstractRenderer *renderer = Render::QRendererPluginFactory::create(key, m_renderType);
+        if (renderer)
+            return renderer;
+    }
+    const QByteArray targetKeyName = targetKey.toLatin1();
+    qFatal("Unable to find renderer plugin for %s", targetKeyName.constData());
+    return nullptr;
 }
 
 void QRenderAspectPrivate::loadRenderPlugin(const QString &pluginName)

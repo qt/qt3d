@@ -107,8 +107,8 @@ public:
     void setData(const QByteArray &bytes);
     QByteArray data() const;
 
-    void setDataGenerator(const QBufferDataGeneratorPtr &functor);
-    QBufferDataGeneratorPtr dataGenerator() const;
+    Q3D_DECL_DEPRECATED void setDataGenerator(const QBufferDataGeneratorPtr &functor);
+    Q3D_DECL_DEPRECATED QBufferDataGeneratorPtr dataGenerator() const;
 
     Q_INVOKABLE void updateData(int offset, const QByteArray &bytes);
 
@@ -118,9 +118,6 @@ public Q_SLOTS:
     void setSyncData(bool syncData);
     void setAccessType(AccessType access);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
-
 Q_SIGNALS:
     void dataChanged(const QByteArray &bytes);
     void typeChanged(BufferType type);
@@ -128,6 +125,10 @@ Q_SIGNALS:
     void syncDataChanged(bool syncData);
     void accessTypeChanged(AccessType access);
     void dataAvailable();
+
+protected:
+    // TODO Unused remove in Qt6
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)

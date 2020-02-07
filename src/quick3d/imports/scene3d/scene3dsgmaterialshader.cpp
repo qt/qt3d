@@ -76,6 +76,7 @@ Scene3DSGMaterialShader::Scene3DSGMaterialShader()
     : QSGMaterialShader()
     , m_matrixId(-1)
     , m_opacityId(-1)
+    , m_visibleId(-1)
 {
 }
 

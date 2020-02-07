@@ -50,7 +50,7 @@ UpdateSkinningPaletteJob::UpdateSkinningPaletteJob()
     , m_nodeManagers(nullptr)
     , m_root()
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateSkinningPalette, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateSkinningPalette, 0)
 }
 
 UpdateSkinningPaletteJob::~UpdateSkinningPaletteJob()

@@ -38,10 +38,11 @@
 ****************************************************************************/
 
 #include <private/backendnode_p.h>
-#include <private/renderer_p.h>
+#include <private/abstractrenderer_p.h>
 #include <private/resourceaccessor_p.h>
 #include <private/nodemanagers_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,10 +83,9 @@ void BackendNode::markDirty(AbstractRenderer::BackendNodeDirtySet changes)
     m_renderer->markDirty(changes, this);
 }
 
-QSharedPointer<RenderBackendResourceAccessor> BackendNode::resourceAccessor()
+QSharedPointer<RenderBackendResourceAccessor> BackendNode::resourceAccessor() const
 {
-    Render::Renderer *r = static_cast<Render::Renderer *>(renderer());
-    return r->nodeManagers()->resourceAccessor();
+    return m_renderer->resourceAccessor();
 }
 
 void BackendNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)

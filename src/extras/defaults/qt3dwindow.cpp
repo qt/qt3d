@@ -237,7 +237,7 @@ void Qt3DWindow::showEvent(QShowEvent *e)
 void Qt3DWindow::resizeEvent(QResizeEvent *)
 {
     Q_D(Qt3DWindow);
-    d->m_defaultCamera->setAspectRatio(float(width()) / float(height()));
+    d->m_defaultCamera->setAspectRatio(float(width()) / std::max(1.f, static_cast<float>(height())));
 }
 
 /*!

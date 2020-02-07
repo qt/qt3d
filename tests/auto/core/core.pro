@@ -22,10 +22,11 @@ qtConfig(private_tests) {
         threadpooler \
         qpostman \
         vector4d_base \
-        vector3d_base
+        vector3d_base \
+        aspectcommanddebugger \
+        qscheduler
 
         QT_FOR_CONFIG += 3dcore-private
-        qtConfig(qt3d-profile-jobs): SUBDIRS += aspectcommanddebugger
         qtConfig(qt3d-simd-sse2) {
             SUBDIRS += \
                 vector4d_sse \

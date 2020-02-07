@@ -65,7 +65,7 @@ namespace Render {
 class Renderer;
 class TransformManager;
 
-class Q_AUTOTEST_EXPORT Transform : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Transform : public BackendNode
 {
 public:
     Transform();

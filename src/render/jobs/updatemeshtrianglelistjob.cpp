@@ -60,7 +60,7 @@ namespace Render {
 UpdateMeshTriangleListJob::UpdateMeshTriangleListJob()
     : m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateMeshTriangleList, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateMeshTriangleList, 0)
 }
 
 UpdateMeshTriangleListJob::~UpdateMeshTriangleListJob()

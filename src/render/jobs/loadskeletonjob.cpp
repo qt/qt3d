@@ -47,6 +47,9 @@
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/private/gltfskeletonloader_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QFileInfo>
 
 QT_BEGIN_NAMESPACE
 
@@ -288,7 +291,7 @@ void LoadSkeletonJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
         dloaderNode->setStatus(m_backendSkeleton->status());
 
         if (m_loadedRootJoint) {
-            dloaderNode->m_rootJoint = m_loadedRootJoint;
+            dloaderNode->setRootJoint(m_loadedRootJoint);
             m_loadedRootJoint = nullptr;
         }
     }

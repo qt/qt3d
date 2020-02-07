@@ -50,9 +50,18 @@ namespace Render {
 
 namespace {
 
-QReadWriteLock lock;
-QHash<QString, int> map = QHash<QString, int>();
-QVector<QString> reverseMap = QVector<QString>();
+struct StringToIntCache
+{
+    QReadWriteLock lock;
+    QHash<QString, int> map = QHash<QString, int>();
+    QVector<QString> reverseMap = QVector<QString>();
+
+    static StringToIntCache& instance()
+    {
+        static StringToIntCache c;
+        return c;
+    }
+};
 
 } // anonymous
 
@@ -64,20 +73,21 @@ int StringToInt::lookupId(QLatin1String str)
 
 int StringToInt::lookupId(const QString &str)
 {
+    auto& cache = StringToIntCache::instance();
     int idx;
     {
-        QReadLocker readLocker(&lock);
-        idx = map.value(str, -1);
+        QReadLocker readLocker(&cache.lock);
+        idx = cache.map.value(str, -1);
     }
 
     if (Q_UNLIKELY(idx < 0)) {
-        QWriteLocker writeLocker(&lock);
-        idx = map.value(str, -1);
+        QWriteLocker writeLocker(&cache.lock);
+        idx = cache.map.value(str, -1);
         if (idx < 0) {
-            idx = reverseMap.size();
-            Q_ASSERT(map.size() == reverseMap.size());
-            map.insert(str, idx);
-            reverseMap.append(str);
+            idx = cache.reverseMap.size();
+            Q_ASSERT(cache.map.size() == cache.reverseMap.size());
+            cache.map.insert(str, idx);
+            cache.reverseMap.append(str);
         }
     }
     return idx;
@@ -85,9 +95,10 @@ int StringToInt::lookupId(const QString &str)
 
 QString StringToInt::lookupString(int idx)
 {
-    QReadLocker readLocker(&lock);
-    if (Q_LIKELY(reverseMap.size() > idx))
-        return reverseMap.at(idx);
+    auto& cache = StringToIntCache::instance();
+    QReadLocker readLocker(&cache.lock);
+    if (Q_LIKELY(cache.reverseMap.size() > idx))
+        return cache.reverseMap.at(idx);
 
     return QString();
 }

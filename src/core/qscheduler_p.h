@@ -60,17 +60,17 @@ namespace Qt3DCore {
 
 class QAspectManager;
 
-class QScheduler : public QObject
+class Q_AUTOTEST_EXPORT QScheduler : public QObject
 {
     Q_OBJECT
 public:
-    explicit QScheduler(QObject *parent = 0);
+    explicit QScheduler(QObject *parent = nullptr);
     ~QScheduler();
 
     void setAspectManager(QAspectManager *aspectManager);
     QAspectManager *aspectManager() const;
 
-    virtual void scheduleAndWaitForFrameAspectJobs(qint64 time);
+    virtual int scheduleAndWaitForFrameAspectJobs(qint64 time);
 
 private:
     QAspectManager *m_aspectManager;

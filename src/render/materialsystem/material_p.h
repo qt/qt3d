@@ -54,7 +54,6 @@
 #include <QVariant>
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -72,7 +71,7 @@ class Technique;
 class Effect;
 class MaterialManager;
 
-class Q_AUTOTEST_EXPORT Material : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT Material : public BackendNode
 {
 public:
     Material();

@@ -65,12 +65,14 @@ QT_BEGIN_NAMESPACE
 class QSurface;
 class QSize;
 class QScreen;
+class QOpenGLTexture;
 
 namespace Qt3DCore {
 class QAbstractFrameAdvanceService;
 class QEventFilterService;
 class QAbstractAspectJobManager;
 class QServiceLocator;
+class QAspectManager;
 }
 
 namespace Qt3DRender {
@@ -86,6 +88,7 @@ class RenderSettings;
 class BackendNode;
 class OffscreenSurfaceHelper;
 class Shader;
+class RenderBackendResourceAccessor;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
@@ -125,6 +128,7 @@ public:
 
     virtual qint64 time() const = 0;
     virtual void setTime(qint64 time) = 0;
+    virtual void setJobsInLastFrame(int jobsInLastFrame) = 0;
 
     virtual void setNodeManagers(NodeManagers *managers) = 0;
     virtual void setServices(Qt3DCore::QServiceLocator *services) = 0;
@@ -151,8 +155,9 @@ public:
 #if defined(QT_BUILD_INTERNAL)
     virtual void clearDirtyBits(BackendNodeDirtySet changes) = 0;
 #endif
-    virtual bool shouldRender() = 0;
+    virtual bool shouldRender() const = 0;
     virtual void skipNextFrame() = 0;
+    virtual void jobsDone(Qt3DCore::QAspectManager *manager) = 0;
 
     virtual QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() = 0;
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
@@ -174,10 +179,12 @@ public:
 
     virtual QVariant executeCommand(const QStringList &args) = 0;
 
-    // For QtQuick rendering
+    // For QtQuick rendering (Scene2D)
     virtual void setOpenGLContext(QOpenGLContext *ctx) = 0;
     virtual void setScreen(QScreen *) {}
     virtual QScreen *screen() const { return nullptr; }
+    virtual bool accessOpenGLTexture(Qt3DCore::QNodeId nodeId, QOpenGLTexture **texture, QMutex **lock, bool readonly) = 0;
+    virtual QSharedPointer<RenderBackendResourceAccessor> resourceAccessor() const = 0;
 
     virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
     virtual QSurfaceFormat format() = 0;

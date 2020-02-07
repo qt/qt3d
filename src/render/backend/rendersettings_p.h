@@ -62,7 +62,7 @@ namespace Render {
 
 class AbstractRenderer;
 
-class Q_AUTOTEST_EXPORT RenderSettings : public BackendNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderSettings : public BackendNode
 {
 public:
     RenderSettings();
@@ -75,6 +75,7 @@ public:
     QPickingSettings::PickResultMode pickResultMode() const { return m_pickResultMode; }
     QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode() const { return m_faceOrientationPickingMode; }
     float pickWorldSpaceTolerance() const { return m_pickWorldSpaceTolerance; }
+    QString capabilities() const { return m_capabilities; }
 
     // For unit test purposes
     void setActiveFrameGraphId(Qt3DCore::QNodeId frameGraphNodeId) { m_activeFrameGraph = frameGraphNodeId; }
@@ -86,6 +87,7 @@ private:
     QPickingSettings::FaceOrientationPickingMode m_faceOrientationPickingMode;
     float m_pickWorldSpaceTolerance;
     Qt3DCore::QNodeId m_activeFrameGraph;
+    QString m_capabilities;
 };
 
 class RenderSettingsFunctor : public Qt3DCore::QBackendNodeMapper

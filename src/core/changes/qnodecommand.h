@@ -57,7 +57,7 @@ public:
     typedef quint32 CommandId;
 #endif
 
-    explicit QNodeCommand(QNodeId id);
+    Q3D_DECL_DEPRECATED explicit QNodeCommand(QNodeId id);
     ~QNodeCommand();
 
     CommandId commandId() const;

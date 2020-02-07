@@ -30,10 +30,7 @@
 
 QT_BEGIN_NAMESPACE
 
-TestRenderer::TestRenderer()
-    : m_managers(nullptr)
-{
-}
+TestRenderer::TestRenderer() = default;
 
 TestRenderer::~TestRenderer()
 {

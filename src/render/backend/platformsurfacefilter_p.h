@@ -67,7 +67,7 @@ namespace Render {
 
 class AbstractRenderer;
 
-class PlatformSurfaceFilter : public QObject
+class Q_3DRENDERSHARED_PRIVATE_EXPORT PlatformSurfaceFilter : public QObject
 {
     Q_OBJECT
 

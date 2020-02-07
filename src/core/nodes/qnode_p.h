@@ -90,7 +90,10 @@ public:
     void updatePropertyTrackMode();
 
     void update();
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     void updateNode(QNode *node, const char* property, ChangeFlag change);
+    QT_WARNING_POP
 
     Q_DECLARE_PUBLIC(QNode)
 
@@ -124,7 +127,7 @@ public:
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
         auto f = [q, func]() { (static_cast<Caller *>(q)->*func)(nullptr); };
-        m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
     }
 
     template<typename Caller, typename NodeType>
@@ -133,7 +136,7 @@ public:
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
         auto f = [q, func, node]() { (static_cast<Caller *>(q)->*func)(node); };
-        m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
     }
 
     template<typename Caller, typename ValueType>
@@ -146,7 +149,7 @@ public:
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
         auto f = [q, func, resetValue]() { (static_cast<Caller *>(q)->*func)(resetValue); };
-        m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
     }
 
     template<typename Caller, typename NodeType>
@@ -154,12 +157,21 @@ public:
     {
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         auto f = [this, func, node]() { (static_cast<Caller *>(this)->*func)(node); };
-        m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
     }
 
     void unregisterDestructionHelper(QNode *node)
     {
-        QObject::disconnect(m_destructionConnections.take(node));
+        m_destructionConnections.erase(std::remove_if(m_destructionConnections.begin(),
+                                                      m_destructionConnections.end(),
+                                                      [node] (const QPair<QNode *, QMetaObject::Connection> &nodeConnectionPair) {
+                                                          if (nodeConnectionPair.first == node) {
+                                                              QObject::disconnect(nodeConnectionPair.second);
+                                                              return true;
+                                                          }
+                                                          return false;
+                                                      }),
+                                       m_destructionConnections.end());
     }
 
     static const QMetaObject *findStaticMetaObject(const QMetaObject *metaObject);
@@ -184,7 +196,7 @@ private:
     friend class PropertyChangeHandler<QNodePrivate>;
     bool m_propertyChangesSetup;
     PropertyChangeHandler<QNodePrivate> m_signals;
-    QHash<QNode *, QMetaObject::Connection> m_destructionConnections;
+    QVector<QPair<QNode *, QMetaObject::Connection>> m_destructionConnections;
 };
 
 class NodePostConstructorInit : public QObject

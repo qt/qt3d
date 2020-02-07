@@ -48,8 +48,9 @@ namespace Animation {
 
 FindRunningClipAnimatorsJob::FindRunningClipAnimatorsJob()
     : Qt3DCore::QAspectJob()
+    , m_handler(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FindRunningClipAnimator, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FindRunningClipAnimator, 0)
 }
 
 void FindRunningClipAnimatorsJob::setDirtyClipAnimators(const QVector<HClipAnimator> &clipAnimatorHandles)

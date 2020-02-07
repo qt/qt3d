@@ -52,12 +52,13 @@
 //
 
 #include "qtextureimagedata.h"
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTextureImageDataPrivate
+class Q_3DRENDERSHARED_PRIVATE_EXPORT QTextureImageDataPrivate
 {
 public:
     QTextureImageDataPrivate();

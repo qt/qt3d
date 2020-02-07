@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/qstringlist.h>
+#include <QtCore/qvariant.h>
 
 #include <Qt3DCore/private/qservicelocator_p.h>
 
@@ -61,16 +62,40 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 class QSystemInformationServicePrivate;
+struct JobRunStats;
 
 class Q_3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceProvider
 {
     Q_OBJECT
+    Q_PROPERTY(bool traceEnabled READ isTraceEnabled WRITE setTraceEnabled NOTIFY traceEnabledChanged)
+    Q_PROPERTY(bool graphicsTraceEnabled READ isGraphicsTraceEnabled WRITE setGraphicsTraceEnabled NOTIFY graphicsTraceEnabledChanged)
+    Q_PROPERTY(bool commandServerEnabled READ isCommandServerEnabled CONSTANT)
 public:
-    virtual QStringList aspectNames() const = 0;
-    virtual int threadPoolThreadCount() const = 0;
+    QSystemInformationService(QAspectEngine *aspectEngine);
+
+    bool isTraceEnabled() const;
+    bool isGraphicsTraceEnabled() const;
+    bool isCommandServerEnabled() const;
+
+    QStringList aspectNames() const;
+    int threadPoolThreadCount() const;
+
+    void writePreviousFrameTraces();
+    Q_INVOKABLE void revealLogFolder();
+
+public Q_SLOTS:
+    void setTraceEnabled(bool traceEnabled);
+    void setGraphicsTraceEnabled(bool graphicsTraceEnabled);
+    QVariant executeCommand(const QString &command);
+    void dumpCommand(const QString &command);
+
+signals:
+    void traceEnabledChanged(bool traceEnabled);
+    void graphicsTraceEnabledChanged(bool graphicsTraceEnabled);
 
 protected:
-    QSystemInformationService(const QString &description = QString());
+    Q_DECLARE_PRIVATE(QSystemInformationService)
+    QSystemInformationService(QAspectEngine *aspectEngine, const QString &description);
     QSystemInformationService(QSystemInformationServicePrivate &dd);
 };
 

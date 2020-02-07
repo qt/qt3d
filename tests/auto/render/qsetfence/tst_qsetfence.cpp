@@ -37,6 +37,10 @@
 **
 ****************************************************************************/
 
+// TODO Remove in Qt6
+#include <QtCore/qcompilerdetection.h>
+QT_WARNING_DISABLE_DEPRECATED
+
 #include <QtTest/QTest>
 #include <Qt3DRender/qsetfence.h>
 #include <Qt3DRender/private/qsetfence_p.h>

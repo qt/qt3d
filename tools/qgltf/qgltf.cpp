@@ -2449,10 +2449,16 @@ void GltfExporter::save(const QString &inputFilename)
 
     QString gltfName = opts.outDir + basename + QStringLiteral(".qgltf");
     f.setFileName(gltfName);
+
     if (opts.showLog)
         qDebug().noquote() << "Writing" << gltfName;
 
-    if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+    const QIODevice::OpenMode openMode
+            = QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text;
+    const QByteArray json
+            = m_doc.toJson(opts.compact ? QJsonDocument::Compact : QJsonDocument::Indented);
+
+    if (f.open(openMode)) {
         m_files.insert(QFileInfo(f.fileName()).fileName());
         QByteArray json = m_doc.toJson(opts.compact ? QJsonDocument::Compact : QJsonDocument::Indented);
         f.write(json);
@@ -2499,6 +2505,10 @@ int main(int argc, char **argv)
     cmdLine.setApplicationDescription(QString::fromUtf8(description));
     QCommandLineOption outDirOpt(QStringLiteral("d"), QStringLiteral("Place all output data into <dir>"), QStringLiteral("dir"));
     cmdLine.addOption(outDirOpt);
+#ifndef QT_BOOTSTRAPPED
+    QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store binary JSON data in the .qgltf file"));
+    cmdLine.addOption(binOpt);
+#endif
     QCommandLineOption compactOpt(QStringLiteral("m"), QStringLiteral("Store compact JSON in the .qgltf file"));
     cmdLine.addOption(compactOpt);
     QCommandLineOption compOpt(QStringLiteral("c"), QStringLiteral("qCompress() vertex/index data in the .bin file"));

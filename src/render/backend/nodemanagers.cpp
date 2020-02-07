@@ -42,14 +42,11 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
-#include <Qt3DRender/private/gltexturemanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/armature_p.h>
 #include <Qt3DRender/private/skeleton_p.h>
-#include <private/resourceaccessor_p.h>
 
-#include <QOpenGLVertexArrayObject>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +59,6 @@ NodeManagers::NodeManagers()
     , m_renderNodesManager(new EntityManager())
     , m_materialManager(new MaterialManager())
     , m_worldMatrixManager(new MatrixManager())
-    , m_vaoManager(new VAOManager())
     , m_shaderManager(new ShaderManager())
     , m_shaderBuilderManager(new ShaderBuilderManager())
     , m_techniqueManager(new TechniqueManager())
@@ -70,7 +66,6 @@ NodeManagers::NodeManagers()
     , m_renderPassManager(new RenderPassManager())
     , m_textureManager(new TextureManager())
     , m_textureImageManager(new TextureImageManager())
-    , m_glTextureManager(new GLTextureManager())
     , m_layerManager(new LayerManager())
     , m_levelOfDetailManager(new LevelOfDetailManager())
     , m_filterKeyManager(new FilterKeyManager())
@@ -81,8 +76,6 @@ NodeManagers::NodeManagers()
     , m_attachmentManager(new AttachmentManager())
     , m_parameterManager(new ParameterManager())
     , m_shaderDataManager(new ShaderDataManager())
-    , m_glBufferManager(new GLBufferManager())
-    , m_glFenceManager(new GLFenceManager())
     , m_bufferManager(new BufferManager())
     , m_attributeManager(new AttributeManager())
     , m_geometryManager(new GeometryManager())
@@ -98,7 +91,6 @@ NodeManagers::NodeManagers()
     , m_skeletonManager(new SkeletonManager())
     , m_jointManager(new JointManager())
     , m_shaderImageManager(new ShaderImageManager())
-    , m_resourceAccessor(new ResourceAccessor(this))
 {
 }
 
@@ -107,13 +99,11 @@ NodeManagers::~NodeManagers()
     delete m_cameraManager;
     delete m_materialManager;
     delete m_worldMatrixManager;
-    delete m_vaoManager;
     delete m_shaderManager;
     delete m_shaderBuilderManager;
     delete m_techniqueManager;
     delete m_effectManager;
     delete m_renderPassManager;
-    delete m_glTextureManager;
     delete m_textureManager;
     delete m_layerManager;
     delete m_levelOfDetailManager;
@@ -124,8 +114,6 @@ NodeManagers::~NodeManagers()
     delete m_attachmentManager;
     delete m_parameterManager;
     delete m_shaderDataManager;
-    delete m_glBufferManager;
-    delete m_glFenceManager;
     delete m_textureImageManager;
     delete m_bufferManager;
     delete m_attributeManager;
@@ -147,11 +135,6 @@ NodeManagers::~NodeManagers()
     delete m_skeletonManager;
     delete m_jointManager;
     delete m_shaderImageManager;
-}
-
-QSharedPointer<ResourceAccessor> NodeManagers::resourceAccessor()
-{
-    return m_resourceAccessor;
 }
 
 template<>
@@ -176,12 +159,6 @@ template<>
 MatrixManager *NodeManagers::manager<Matrix4x4>() const noexcept
 {
     return m_worldMatrixManager;
-}
-
-template<>
-VAOManager *NodeManagers::manager<OpenGLVertexArrayObject>() const noexcept
-{
-    return m_vaoManager;
 }
 
 template<>
@@ -278,12 +255,6 @@ template<>
 ShaderDataManager *NodeManagers::manager<ShaderData>() const noexcept
 {
     return m_shaderDataManager;
-}
-
-template<>
-GLBufferManager *NodeManagers::manager<GLBuffer>() const noexcept
-{
-    return m_glBufferManager;
 }
 
 template<>

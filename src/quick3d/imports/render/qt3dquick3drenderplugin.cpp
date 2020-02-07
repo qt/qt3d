@@ -119,6 +119,7 @@
 #include <Qt3DRender/qnopicking.h>
 #include <Qt3DRender/qshaderimage.h>
 #include <Qt3DRender/qsubtreeenabler.h>
+#include <Qt3DRender/qrendercapabilities.h>
 
 #include <QtGui/qwindow.h>
 
@@ -169,7 +170,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Renderer setttings
     qmlRegisterType<Qt3DRender::QRenderSettings>(uri, 2, 0, "RenderSettings");
+    qmlRegisterType<Qt3DRender::QRenderSettings, 15>(uri, 2, 15, "RenderSettings");
     qmlRegisterType<Qt3DRender::QPickingSettings>(uri, 2, 0, "PickingSettings");
+    qmlRegisterUncreatableType<Qt3DRender::QRenderCapabilities>(uri, 2, 15, "RenderCapabilities", "Only available as a property of RenderSettings");
 
     // @uri Qt3D.Render
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QSceneLoader, Qt3DRender::Render::Quick::Quick3DScene>("QSceneLoader", "Qt3D.Render/SceneLoader", uri, 2, 0, "SceneLoader");
@@ -184,6 +187,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderPass, Qt3DRender::Render::Quick::Quick3DRenderPass>("QRenderPass", "Qt3D.Render/RenderPass", uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3DRender::QShaderProgram>(uri, 2, 0, "ShaderProgram");
     qmlRegisterType<Qt3DRender::QShaderProgram, 9>(uri, 2, 9, "ShaderProgram");
+    qmlRegisterType<Qt3DRender::QShaderProgram, 15>(uri, 2, 15, "ShaderProgram");
     qmlRegisterType<Qt3DRender::QShaderProgramBuilder>(uri, 2, 10, "ShaderProgramBuilder");
     qmlRegisterType<Qt3DRender::QShaderProgramBuilder, 13>(uri, 2, 13, "ShaderProgramBuilder");
     qmlRegisterUncreatableType<Qt3DRender::QShaderData>(uri, 2, 0, "QShaderData", "Quick3D should instantiate Quick3DShaderData only");

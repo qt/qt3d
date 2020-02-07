@@ -42,7 +42,7 @@
 #include <Qt3DRender/QFrameGraphNode>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DRender/private/qrendersettings_p.h>
-#include <Qt3DCore/qnodecommand.h>
+#include <Qt3DRender/private/qrendercapabilities_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,21 +79,25 @@ void RenderSettings::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
         m_renderPolicy = node->renderPolicy();
     }
 
-    if (node->pickingSettings()->pickMethod() != m_pickMethod) {
-        m_pickMethod = node->pickingSettings()->pickMethod();
+    auto ncnode = const_cast<QRenderSettings *>(node);
+    if (ncnode->pickingSettings()->pickMethod() != m_pickMethod) {
+        m_pickMethod = ncnode->pickingSettings()->pickMethod();
     }
 
-    if (node->pickingSettings()->pickResultMode() != m_pickResultMode) {
-        m_pickResultMode = node->pickingSettings()->pickResultMode();
+    if (ncnode->pickingSettings()->pickResultMode() != m_pickResultMode) {
+        m_pickResultMode = ncnode->pickingSettings()->pickResultMode();
     }
 
-    if (node->pickingSettings()->worldSpaceTolerance() != m_pickWorldSpaceTolerance) {
-        m_pickWorldSpaceTolerance = node->pickingSettings()->worldSpaceTolerance();
+    if (!qFuzzyCompare(ncnode->pickingSettings()->worldSpaceTolerance(), m_pickWorldSpaceTolerance)) {
+        m_pickWorldSpaceTolerance = ncnode->pickingSettings()->worldSpaceTolerance();
     }
 
-    if (node->pickingSettings()->faceOrientationPickingMode() != m_faceOrientationPickingMode) {
-        m_faceOrientationPickingMode = node->pickingSettings()->faceOrientationPickingMode();
+    if (ncnode->pickingSettings()->faceOrientationPickingMode() != m_faceOrientationPickingMode) {
+        m_faceOrientationPickingMode = ncnode->pickingSettings()->faceOrientationPickingMode();
     }
+
+    if (firstTime)
+        m_capabilities = QRenderCapabilitiesPrivate::get(const_cast<QRenderSettings *>(node)->renderCapabilities())->toString();
 
     // Either because something above as changed or if QRenderSettingsPrivate::invalidFrame()
     // was called
@@ -107,7 +111,7 @@ RenderSettingsFunctor::RenderSettingsFunctor(AbstractRenderer *renderer)
 
 Qt3DCore::QBackendNode *RenderSettingsFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    Q_UNUSED(change);
+    Q_UNUSED(change)
     if (m_renderer->settings() != nullptr) {
         qWarning() << "Renderer settings already exists";
         return nullptr;
@@ -121,13 +125,13 @@ Qt3DCore::QBackendNode *RenderSettingsFunctor::create(const Qt3DCore::QNodeCreat
 
 Qt3DCore::QBackendNode *RenderSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
-    Q_UNUSED(id);
+    Q_UNUSED(id)
     return m_renderer->settings();
 }
 
 void RenderSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
-    Q_UNUSED(id);
+    Q_UNUSED(id)
     // Deletes the old settings object
     auto settings = m_renderer->settings();
     if (settings && settings->peerId() == id) {

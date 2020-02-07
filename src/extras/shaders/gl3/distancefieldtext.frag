@@ -34,6 +34,6 @@ void main()
     float maxAlpha = threshold + range;
 
     float distVal = texture(distanceFieldTexture, texCoord).r;
-    fragColor = color * smoothstep(minAlpha, maxAlpha, distVal);
-    gl_FragDepth = gl_FragCoord.z - zValue * 0.00001;
+    fragColor = vec4(color.rgb, color.a * smoothstep(minAlpha, maxAlpha, distVal));
+    gl_FragDepth = gl_FragCoord.z - zValue * 0.000001;
 }

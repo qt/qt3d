@@ -382,7 +382,7 @@ void QNodePrivate::unregisterNotifiedProperties()
 
 void QNodePrivate::propertyChanged(int propertyIndex)
 {
-    Q_UNUSED(propertyIndex);
+    Q_UNUSED(propertyIndex)
 
     // Bail out early if we can to avoid the cost below
     if (m_blockNotifications)
@@ -539,6 +539,8 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
 }
 
 /*!
+    \obsolete
+
     Called when one or more backend aspects sends a notification \a change to the
     current Qt3DCore::QNode instance.
 
@@ -547,7 +549,7 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
 */
 void QNode::sceneChangeEvent(const QSceneChangePtr &change)
 {
-    Q_UNUSED(change);
+    Q_UNUSED(change)
     if (change->type() == Qt3DCore::PropertyUpdated) {
         // TODO: Do this more efficiently. We could pass the metaobject and property
         //       index to the animation aspect via the QChannelMapping. This would
@@ -594,8 +596,8 @@ QScene *QNodePrivate::scene() const
  */
 void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(value);
+    Q_UNUSED(name)
+    Q_UNUSED(value)
 
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)
@@ -606,8 +608,8 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 
 void QNodePrivate::notifyDynamicPropertyChange(const QByteArray &name, const QVariant &value)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(value);
+    Q_UNUSED(name)
+    Q_UNUSED(value)
 
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)
@@ -683,6 +685,11 @@ void QNodePrivate::update()
 void QNodePrivate::updateNode(QNode *node, const char *property, ChangeFlag change)
 {
     if (m_changeArbiter) {
+        // Ensure node has its postConstructorInit called if we reach this
+        // point, we could otherwise endup referencing a node that has yet
+        // to be created in the backend
+        QNodePrivate::get(node)->_q_ensureBackendNodeCreated();
+
         Q_Q(QNode);
         m_changeArbiter->addDirtyFrontEndNode(q, node, property, change);
     }
@@ -787,10 +794,9 @@ QNode::~QNode()
 {
     Q_D(QNode);
     // Disconnect each connection that was stored
-    for (auto it = d->m_destructionConnections.begin(), end = d->m_destructionConnections.end(); it != end; ++it)
-        QObject::disconnect(it.value());
+    for (const auto &nodeConnectionPair : qAsConst(d->m_destructionConnections))
+        QObject::disconnect(nodeConnectionPair.second);
     d->m_destructionConnections.clear();
-
     Q_EMIT nodeDestroyed();
 
     // Notify the backend that the parent lost this node as a child and
@@ -993,6 +999,9 @@ void QNode::clearPropertyTrackings()
     d->updatePropertyTrackMode();
 }
 
+/*!
+ * \obsolete
+ */
 QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const
 {
     // Uncomment this when implementing new frontend and backend types.
@@ -1045,6 +1054,7 @@ QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const
 */
 /*!
  * \brief Sends a command message to the backend node
+ * \obsolete
  *
  * Creates a QNodeCommand message and dispatches it to the backend node. The
  * command is given and a \a name and some \a data which can be used in the
@@ -1075,6 +1085,7 @@ QNodeCommand::CommandId QNode::sendCommand(const QString &name,
 
 /*!
  * \brief Send a \a command back to the backend node.
+ * \obsolete
  *
  * Assumes the command is to be to sent back in reply to itself to the backend node.
  *

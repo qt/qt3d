@@ -38,7 +38,6 @@
 #include <Qt3DAnimation/private/additiveclipblend_p.h>
 #include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector4d.h>
@@ -57,7 +56,6 @@ Q_DECLARE_METATYPE(Clock *)
 Q_DECLARE_METATYPE(ChannelMapper *)
 Q_DECLARE_METATYPE(AnimationClip *)
 Q_DECLARE_METATYPE(QVector<MappingData>)
-Q_DECLARE_METATYPE(QVector<Qt3DCore::QPropertyUpdatedChangePtr>)
 Q_DECLARE_METATYPE(Channel)
 Q_DECLARE_METATYPE(AnimatorEvaluationData)
 Q_DECLARE_METATYPE(ClipEvaluationData)

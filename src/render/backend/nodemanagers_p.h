@@ -75,7 +75,6 @@ class RayCasterManager;
 class BoundingVolumeDebugManager;
 class MaterialManager;
 class MatrixManager;
-class VAOManager;
 class ShaderManager;
 class ShaderBuilderManager;
 class TechniqueManager;
@@ -86,13 +85,10 @@ class SceneManager;
 class AttachmentManager;
 class ParameterManager;
 class ShaderDataManager;
-class GLBufferManager;
-class GLFenceManager;
 class TextureImageManager;
 class FilterKeyManager;
 class FrameGraphManager;
 class TransformManager;
-class GLTextureManager;
 class TextureManager;
 class TextureDataManager;
 class TextureImageDataManager;
@@ -127,7 +123,6 @@ class RenderTargetOutput;
 class RenderTarget;
 class ShaderData;
 class Parameter;
-class GLBuffer;
 class TextureImage;
 class Buffer;
 class Attribute;
@@ -143,10 +138,8 @@ class RenderStateNode;
 class Armature;
 class Skeleton;
 class Joint;
-class OpenGLVertexArrayObject;
 class ShaderImage;
 
-class ResourceAccessor;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
@@ -192,13 +185,11 @@ public:
     inline EntityManager *renderNodesManager() const noexcept { return m_renderNodesManager; }
     inline MaterialManager *materialManager() const noexcept { return m_materialManager; }
     inline MatrixManager *worldMatrixManager() const noexcept { return m_worldMatrixManager; }
-    inline VAOManager *vaoManager() const noexcept { return m_vaoManager; }
     inline ShaderManager *shaderManager() const noexcept { return m_shaderManager; }
     inline ShaderBuilderManager *shaderBuilderManager() const noexcept { return m_shaderBuilderManager; }
     inline TechniqueManager *techniqueManager() const noexcept { return m_techniqueManager; }
     inline EffectManager *effectManager() const noexcept { return m_effectManager; }
     inline RenderPassManager *renderPassManager() const noexcept { return m_renderPassManager; }
-    inline GLTextureManager *glTextureManager() const noexcept { return m_glTextureManager; }
     inline TextureManager *textureManager() const noexcept { return m_textureManager; }
     inline LayerManager *layerManager() const noexcept { return m_layerManager; }
     inline LevelOfDetailManager *levelOfDetailManager() const noexcept { return m_levelOfDetailManager; }
@@ -210,8 +201,6 @@ public:
     inline AttachmentManager *attachmentManager() const noexcept { return m_attachmentManager; }
     inline ParameterManager *parameterManager() const noexcept { return m_parameterManager; }
     inline ShaderDataManager *shaderDataManager() const noexcept { return m_shaderDataManager; }
-    inline GLBufferManager *glBufferManager() const noexcept { return m_glBufferManager; }
-    inline GLFenceManager *glFenceManager() const noexcept { return m_glFenceManager; }
     inline TextureImageManager *textureImageManager() const noexcept { return m_textureImageManager; }
     inline BufferManager *bufferManager() const noexcept { return m_bufferManager; }
     inline AttributeManager *attributeManager() const noexcept { return m_attributeManager; }
@@ -229,14 +218,11 @@ public:
     inline JointManager *jointManager() const noexcept { return m_jointManager; }
     inline ShaderImageManager *shaderImageManager() const noexcept { return m_shaderImageManager; }
 
-    QSharedPointer<ResourceAccessor> resourceAccessor();
-
 private:
     CameraManager *m_cameraManager;
     EntityManager *m_renderNodesManager;
     MaterialManager *m_materialManager;
     MatrixManager *m_worldMatrixManager;
-    VAOManager *m_vaoManager;
     ShaderManager *m_shaderManager;
     ShaderBuilderManager *m_shaderBuilderManager;
     TechniqueManager *m_techniqueManager;
@@ -244,7 +230,6 @@ private:
     RenderPassManager *m_renderPassManager;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
-    GLTextureManager *m_glTextureManager;
     LayerManager *m_layerManager;
     LevelOfDetailManager *m_levelOfDetailManager;
     FilterKeyManager *m_filterKeyManager;
@@ -255,8 +240,6 @@ private:
     AttachmentManager *m_attachmentManager;
     ParameterManager *m_parameterManager;
     ShaderDataManager *m_shaderDataManager;
-    GLBufferManager *m_glBufferManager;
-    GLFenceManager *m_glFenceManager;
     BufferManager *m_bufferManager;
     AttributeManager *m_attributeManager;
     GeometryManager *m_geometryManager;
@@ -272,8 +255,6 @@ private:
     SkeletonManager *m_skeletonManager;
     JointManager *m_jointManager;
     ShaderImageManager *m_shaderImageManager;
-
-    QSharedPointer<ResourceAccessor> m_resourceAccessor;
 };
 
 // Specializations
@@ -289,9 +270,6 @@ Q_3DRENDERSHARED_PRIVATE_EXPORT MaterialManager *NodeManagers::manager<Material>
 
 template<>
 Q_3DRENDERSHARED_PRIVATE_EXPORT MatrixManager *NodeManagers::manager<QMatrix4x4*>() const noexcept;
-
-template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT VAOManager *NodeManagers::manager<OpenGLVertexArrayObject>() const noexcept;
 
 template<>
 Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderManager *NodeManagers::manager<Shader>() const noexcept;
@@ -342,13 +320,10 @@ template<>
 Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderDataManager *NodeManagers::manager<ShaderData>() const noexcept;
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT GLBufferManager *NodeManagers::manager<GLBuffer>() const noexcept;
+Q_3DRENDERSHARED_PRIVATE_EXPORT BufferManager *NodeManagers::manager<Buffer>() const noexcept;
 
 template<>
 Q_3DRENDERSHARED_PRIVATE_EXPORT TextureImageManager *NodeManagers::manager<TextureImage>() const noexcept;
-
-template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT BufferManager *NodeManagers::manager<Buffer>() const noexcept;
 
 template<>
 Q_3DRENDERSHARED_PRIVATE_EXPORT AttributeManager *NodeManagers::manager<Attribute>() const noexcept;

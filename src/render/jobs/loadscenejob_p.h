@@ -58,6 +58,7 @@
 #include <QSharedPointer>
 #include <QUrl>
 #include <functional>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,7 +89,7 @@ private:
     LoadSceneJob *q_ptr;
 };
 
-class Q_AUTOTEST_EXPORT LoadSceneJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT LoadSceneJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId sceneComponent);

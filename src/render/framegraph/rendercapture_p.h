@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RenderCapture : public FrameGraphNode
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderCapture : public FrameGraphNode
 {
 public:
     RenderCapture();
@@ -66,9 +66,9 @@ public:
     bool wasCaptureRequested() const;
     QRenderCaptureRequest takeCaptureRequest();
     void addRenderCapture(int captureId, const QImage &image);
-    void sendRenderCaptures();
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
+    void syncRenderCapturesToFrontend(Qt3DCore::QAspectManager *manager);
 
 private:
 

@@ -108,6 +108,7 @@
 #include <Qt3DExtras/qtorusmesh.h>
 
 #include <private/qurlhelper_p.h>
+#include <private/qloadgltf_p.h>
 
 /**
   * glTF 2.0 conformance report
@@ -410,10 +411,7 @@ void GLTFImporter::setSource(const QUrl &source)
     QFile f(path);
     f.open(QIODevice::ReadOnly);
 
-    QByteArray jsonData = f.readAll();
-    QJsonDocument sceneDocument = QJsonDocument::fromJson(jsonData);
-
-    if (Q_UNLIKELY(!setJSON(sceneDocument))) {
+    if (Q_UNLIKELY(!setJSON(qLoadGLTF(f.readAll())))) {
         qCWarning(GLTFImporterLog, "not a JSON document");
         return;
     }
@@ -428,9 +426,7 @@ void GLTFImporter::setSource(const QUrl &source)
  */
 void GLTFImporter::setData(const QByteArray& data, const QString &basePath)
 {
-    QJsonDocument sceneDocument = QJsonDocument::fromJson(data);
-
-    if (Q_UNLIKELY(!setJSON(sceneDocument))) {
+    if (Q_UNLIKELY(!setJSON(qLoadGLTF(data)))) {
         qCWarning(GLTFImporterLog, "not a JSON document");
         return;
     }

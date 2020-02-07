@@ -57,6 +57,7 @@ class Q_3DINPUTSHARED_EXPORT QMouseDevice : public Qt3DInput::QAbstractPhysicalD
 {
     Q_OBJECT
     Q_PROPERTY(float sensitivity READ sensitivity WRITE setSensitivity NOTIFY sensitivityChanged)
+    Q_PROPERTY(bool updateAxesContinuously READ updateAxesContinuously WRITE setUpdateAxesContinuously NOTIFY updateAxesContinuouslyChanged REVISION 15)
 public:
     explicit QMouseDevice(Qt3DCore::QNode *parent = nullptr);
     ~QMouseDevice();
@@ -77,12 +78,15 @@ public:
     int buttonIdentifier(const QString &name) const final;
 
     float sensitivity() const;
+    bool updateAxesContinuously() const;
 
 public Q_SLOTS:
     void setSensitivity(float value);
+    void setUpdateAxesContinuously(bool updateAxesContinuously);
 
 Q_SIGNALS:
     void sensitivityChanged(float value);
+    void updateAxesContinuouslyChanged(bool updateAxesContinuously);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;

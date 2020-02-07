@@ -46,6 +46,7 @@ namespace Qt3DAnimation {
 
 QAbstractChannelMappingPrivate::QAbstractChannelMappingPrivate()
     : Qt3DCore::QNodePrivate()
+    , m_mappingType(QChannelMappingCreatedChangeBase::ChannelMapping)
 {
 }
 

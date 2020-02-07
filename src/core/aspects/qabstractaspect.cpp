@@ -198,26 +198,14 @@ void QAbstractAspect::unregisterBackendType(const QMetaObject &obj)
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
 {
-    Q_UNUSED(args);
+    Q_UNUSED(args)
     return QVariant();
 }
 
 QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
 {
-    Q_UNUSED(time);
+    Q_UNUSED(time)
     return QVector<QAspectJobPtr>();
-}
-
-void QAbstractAspect::syncDirtyFrontEndNodes(const QVector<QNode *> &nodes)
-{
-    Q_D(QAbstractAspect);
-    d->syncDirtyFrontEndNodes(nodes);
-}
-
-void QAbstractAspect::syncDirtyFrontEndSubNodes(const QVector<NodeRelationshipChange> &nodes)
-{
-    Q_D(QAbstractAspect);
-    d->syncDirtyFrontEndSubNodes(nodes);
 }
 
 QAbstractAspectPrivate::BackendNodeMapperAndInfo QAbstractAspectPrivate::mapperForNode(const QMetaObject *metaObj) const
@@ -518,6 +506,14 @@ QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
     }
 
     return res;
+}
+
+void QAbstractAspectPrivate::jobsDone()
+{
+}
+
+void QAbstractAspectPrivate::frameDone()
+{
 }
 
 /*!

@@ -38,6 +38,10 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/filterproximitydistancejob_p.h>
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
+#include <Qt3DRender/private/updateworldtransformjob_p.h>
+#include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
+#include <Qt3DRender/private/calcboundingvolumejob_p.h>
+#include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/qproximityfilter.h>
 
 #include "testaspect.h"
@@ -117,14 +121,20 @@ private Q_SLOTS:
 
         {
             Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
-            Qt3DCore::QEntity *childEntity1 = new Qt3DCore::QEntity(rootEntity);
-            Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
-            Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *targetEntity = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity1 = buildEntityAtDistance(50.0f, rootEntity);
+            Qt3DCore::QEntity *childEntity2 = buildEntityAtDistance(25.0f, rootEntity);
+            Qt3DCore::QEntity *childEntity3 = buildEntityAtDistance(75.0f, rootEntity);
+
+            Qt3DRender::QProximityFilter *proximityFilter = new Qt3DRender::QProximityFilter(rootEntity);
+            proximityFilter->setDistanceThreshold(200.0f);
+            proximityFilter->setEntity(targetEntity);
 
             QTest::newRow("ShouldSelectAll") << rootEntity
-                                             << Qt3DCore::QNodeIdVector()
+                                             << (Qt3DCore::QNodeIdVector() << proximityFilter->id())
                                              << (Qt3DCore::QNodeIdVector()
                                                  << rootEntity->id()
+                                                 << targetEntity->id()
                                                  << childEntity1->id()
                                                  << childEntity2->id()
                                                  << childEntity3->id()

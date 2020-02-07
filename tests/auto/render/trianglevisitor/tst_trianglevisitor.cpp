@@ -454,7 +454,7 @@ private Q_SLOTS:
         simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
-        indexData.resize(sizeof(uint) * 3 * 4);
+        indexData.resize(sizeof(uint) * 4 * 4);
         uint *iDataPtr = reinterpret_cast<uint *>(indexData.data());
         iDataPtr[0] = 0;
         iDataPtr[1] = 1;
@@ -468,6 +468,10 @@ private Q_SLOTS:
         iDataPtr[9] = 4;
         iDataPtr[10] = 3;
         iDataPtr[11] = 2;
+        iDataPtr[12] = static_cast<uint>(-1);
+        iDataPtr[13] = 0;
+        iDataPtr[14] = 1;
+        iDataPtr[15] = 2;
         indexDataBuffer->setData(indexData);
 
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
@@ -486,7 +490,7 @@ private Q_SLOTS:
 
         indexAttribute->setBuffer(indexDataBuffer.data());
         indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
-        indexAttribute->setCount(3*4);
+        indexAttribute->setCount(4*4);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
         geometry->addAttribute(positionAttribute.data());
@@ -494,6 +498,8 @@ private Q_SLOTS:
 
         geometryRenderer->setGeometry(geometry);
         geometryRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::TriangleStrip);
+        geometryRenderer->setPrimitiveRestartEnabled(true);
+        geometryRenderer->setRestartIndexValue(-1);
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
@@ -516,7 +522,7 @@ private Q_SLOTS:
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
 
         // THEN
-        QVERIFY(visitor.triangleCount() == 8);
+        QCOMPARE(visitor.triangleCount(), 9U);
         QVERIFY(visitor.verifyTriangle(0, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
         QVERIFY(visitor.verifyTriangle(1, 3,2,1, Vector3D(0,0,1), Vector3D(0,1,0), Vector3D(1,0,0)));
         QVERIFY(visitor.verifyTriangle(2, 4,3,2, Vector3D(1,0,0), Vector3D(0,0,1), Vector3D(0,1,0)));
@@ -525,6 +531,7 @@ private Q_SLOTS:
         QVERIFY(visitor.verifyTriangle(5, 4,0,1, Vector3D(1,0,0), Vector3D(0,0,1), Vector3D(1,0,0)));
         QVERIFY(visitor.verifyTriangle(6, 3,4,0, Vector3D(0,0,1), Vector3D(1,0,0), Vector3D(0,0,1)));
         QVERIFY(visitor.verifyTriangle(7, 2,3,4, Vector3D(0,1,0), Vector3D(0,0,1), Vector3D(1,0,0)));
+        QVERIFY(visitor.verifyTriangle(8, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
     }
 
     void testVisitTriangleFan()
@@ -643,7 +650,7 @@ private Q_SLOTS:
         simulateInitializationSync(dataBuffer.data(), backendBuffer);
 
         QByteArray indexData;
-        indexData.resize(sizeof(uint) * 3 * 2);
+        indexData.resize(sizeof(uint) * 10);
         uint *iDataPtr = reinterpret_cast<uint *>(indexData.data());
         iDataPtr[0] = 0;
         iDataPtr[1] = 1;
@@ -651,6 +658,10 @@ private Q_SLOTS:
         iDataPtr[3] = 3;
         iDataPtr[4] = 4;
         iDataPtr[5] = 5;
+        iDataPtr[6] = static_cast<uint>(-1);
+        iDataPtr[7] = 0;
+        iDataPtr[8] = 1;
+        iDataPtr[9] = 2;
         indexDataBuffer->setData(indexData);
 
         Buffer *backendIndexBuffer = nodeManagers->bufferManager()->getOrCreateResource(indexDataBuffer->id());
@@ -669,7 +680,7 @@ private Q_SLOTS:
 
         indexAttribute->setBuffer(indexDataBuffer.data());
         indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
-        indexAttribute->setCount(3*2);
+        indexAttribute->setCount(10);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
         geometry->addAttribute(positionAttribute.data());
@@ -677,6 +688,8 @@ private Q_SLOTS:
 
         geometryRenderer->setGeometry(geometry);
         geometryRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::TriangleFan);
+        geometryRenderer->setPrimitiveRestartEnabled(true);
+        geometryRenderer->setRestartIndexValue(-1);
 
         Attribute *backendAttribute = nodeManagers->attributeManager()->getOrCreateResource(positionAttribute->id());
         backendAttribute->setRenderer(&renderer);
@@ -699,11 +712,12 @@ private Q_SLOTS:
         visitor.apply(backendRenderer, Qt3DCore::QNodeId());
 
         // THEN
-        QVERIFY(visitor.triangleCount() == 4);
+        QCOMPARE(visitor.triangleCount(), 5U);
         QVERIFY(visitor.verifyTriangle(0, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
         QVERIFY(visitor.verifyTriangle(1, 3,2,0, Vector3D(0,0,1), Vector3D(0,1,0), Vector3D(0,0,1)));
         QVERIFY(visitor.verifyTriangle(2, 4,3,0, Vector3D(1,0,0), Vector3D(0,0,1), Vector3D(0,0,1)));
         QVERIFY(visitor.verifyTriangle(3, 5,4,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
+        QVERIFY(visitor.verifyTriangle(4, 2,1,0, Vector3D(0,1,0), Vector3D(1,0,0), Vector3D(0,0,1)));
     }
 
     void testVisitTrianglesAdjacency()

@@ -544,6 +544,41 @@
 
     The default value is 0.5.
 */
+/*!
+    \qmlproperty BlendEquationArguments::Blending PhongAlphaMaterial::sourceRgbArg
+
+    Holds the blend equation source RGB blending argument.
+
+    \sa Qt3DRender::QBlendEquationArguments::Blending
+*/
+/*!
+    \qmlproperty BlendEquationArguments::Blending PhongAlphaMaterial::destinationRgbArg
+
+    Holds the blend equation destination RGB blending argument.
+
+    \sa Qt3DRender::QBlendEquationArguments::Blending
+*/
+/*!
+    \qmlproperty BlendEquationArguments::Blending PhongAlphaMaterial::sourceAlphaArg
+
+    Holds the blend equation source alpha blending argument.
+
+    \sa Qt3DRender::QBlendEquationArguments::Blending
+*/
+/*!
+    \qmlproperty BlendEquationArguments::Blending PhongAlphaMaterial::destinationAlphaArg
+
+    Holds the blend equation destination alpha blending argument.
+
+    \sa Qt3DRender::QBlendEquationArguments::Blending
+*/
+/*!
+    \qmlproperty BlendEquation::BlendFunction PhongAlphaMaterial::blendFunctionArg
+
+    Holds the blend equation function argument.
+
+    \sa Qt3DRender::QBlendEquation::BlendFunction
+*/
 
 /*!
     \qmltype PhongMaterial

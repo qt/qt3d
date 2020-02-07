@@ -75,7 +75,7 @@ class Q_AUTOTEST_EXPORT QPostman final
 {
     Q_OBJECT
 public:
-    explicit QPostman(QObject *parent = 0);
+    explicit QPostman(QObject *parent = nullptr);
     ~QPostman();
 
     void setScene(QScene *sceneLookup) final;

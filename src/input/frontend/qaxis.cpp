@@ -40,7 +40,6 @@
 #include "qaxis_p.h"
 
 #include <Qt3DInput/qabstractaxisinput.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -166,6 +165,11 @@ float QAxis::value() const
 {
     Q_D(const QAxis);
     return d->m_value;
+}
+
+// TODO Unused remove in Qt6
+void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QAxis::createNodeCreationChange() const

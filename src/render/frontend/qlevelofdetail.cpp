@@ -325,6 +325,11 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLevelOfDetail::createNodeCreationChange() c
     return creationChange;
 }
 
+// TODO Unused remove in Qt6
+void QLevelOfDetail::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+{
+}
+
 QCamera *QLevelOfDetail::camera() const
 {
     Q_D(const QLevelOfDetail);

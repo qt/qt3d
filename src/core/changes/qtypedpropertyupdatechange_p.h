@@ -61,11 +61,14 @@ template<typename T>
 class QTypedPropertyUpdatedChange : public QStaticPropertyUpdatedChangeBase
 {
 public:
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
     explicit QTypedPropertyUpdatedChange(QNodeId _subjectId)
         : QStaticPropertyUpdatedChangeBase(_subjectId)
         , data()
     {
     }
+    QT_WARNING_POP
 
     T data;
 };
