@@ -499,7 +499,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // Create jobs that will get executed by the threadpool
     QVector<QAspectJobPtr> jobs;
 
-    // 1 LoadBufferJobs, GeometryJobs, SceneLoaderJobs, LoadTextureJobs
+    // 1 GeometryJobs, SceneLoaderJobs, LoadTextureJobs
     // 2 CalculateBoundingVolumeJob (depends on LoadBuffer)
     // 3 WorldTransformJob
     // 4 UpdateBoundingVolume, FramePreparationJob (depend on WorlTransformJob)

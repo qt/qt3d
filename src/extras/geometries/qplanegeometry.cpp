@@ -42,7 +42,6 @@
 
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 
 #include <limits>
 
@@ -145,71 +144,6 @@ QByteArray createPlaneIndexData(const QSize &resolution)
 }
 
 } // anonymous
-
-class PlaneVertexBufferFunctor : public QBufferDataGenerator
-{
-public:
-    explicit PlaneVertexBufferFunctor(float w, float h, const QSize &resolution, bool mirrored)
-        : m_width(w)
-        , m_height(h)
-        , m_resolution(resolution)
-        , m_mirrored(mirrored)
-    {}
-
-    ~PlaneVertexBufferFunctor() {}
-
-    QByteArray operator()() final
-    {
-        return createPlaneVertexData(m_width, m_height, m_resolution, m_mirrored);
-    }
-
-    bool operator ==(const QBufferDataGenerator &other) const final
-    {
-        const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return (otherFunctor->m_width == m_width &&
-                    otherFunctor->m_height == m_height &&
-                    otherFunctor->m_resolution == m_resolution &&
-                    otherFunctor->m_mirrored == m_mirrored);
-        return false;
-    }
-
-    QT3D_FUNCTOR(PlaneVertexBufferFunctor)
-
-    private:
-        float m_width;
-    float m_height;
-    QSize m_resolution;
-    bool m_mirrored;
-};
-
-class PlaneIndexBufferFunctor : public QBufferDataGenerator
-{
-public:
-    explicit PlaneIndexBufferFunctor(const QSize &resolution)
-        : m_resolution(resolution)
-    {}
-
-    ~PlaneIndexBufferFunctor() {}
-
-    QByteArray operator()() final
-    {
-        return createPlaneIndexData(m_resolution);
-    }
-
-    bool operator ==(const QBufferDataGenerator &other) const final
-    {
-        const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return (otherFunctor->m_resolution == m_resolution);
-        return false;
-    }
-
-    QT3D_FUNCTOR(PlaneIndexBufferFunctor)
-
-    private:
-        QSize m_resolution;
-};
 
 /*!
  * \qmltype PlaneGeometry
@@ -330,7 +264,7 @@ void QPlaneGeometry::updateVertices()
     d->m_normalAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_tangentAttribute->setCount(nVerts);
-    d->m_vertexBuffer->setDataGenerator(QSharedPointer<PlaneVertexBufferFunctor>::create(d->m_width, d->m_height, d->m_meshResolution, d->m_mirrored));
+    d->m_vertexBuffer->setData(d->generateVertexData());
 }
 
 /*!
@@ -342,7 +276,7 @@ void QPlaneGeometry::updateIndices()
     const int faces = 2 * (d->m_meshResolution.width() - 1) * (d->m_meshResolution.height() - 1);
     // Each primitive has 3 vertices
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setDataGenerator(QSharedPointer<PlaneIndexBufferFunctor>::create(d->m_meshResolution));
+    d->m_indexBuffer->setData(d->generateIndexData());
 
 }
 
@@ -560,14 +494,24 @@ void QPlaneGeometryPrivate::init()
     // Each primitive has 3 vertives
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setDataGenerator(QSharedPointer<PlaneVertexBufferFunctor>::create(m_width, m_height, m_meshResolution, m_mirrored));
-    m_indexBuffer->setDataGenerator(QSharedPointer<PlaneIndexBufferFunctor>::create(m_meshResolution));
+    m_vertexBuffer->setData(generateVertexData());
+    m_indexBuffer->setData(generateIndexData());
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
     q->addAttribute(m_normalAttribute);
     q->addAttribute(m_tangentAttribute);
     q->addAttribute(m_indexAttribute);
+}
+
+QByteArray QPlaneGeometryPrivate::generateVertexData() const
+{
+    return createPlaneVertexData(m_width, m_height, m_meshResolution, m_mirrored);
+}
+
+QByteArray QPlaneGeometryPrivate::generateIndexData() const
+{
+    return createPlaneIndexData(m_meshResolution);
 }
 
 } //  Qt3DExtras

@@ -83,6 +83,9 @@ public:
     Qt3DRender::QBuffer *m_indexBuffer;
 
     Q_DECLARE_PUBLIC(QSphereGeometry);
+
+    QByteArray generateVertexData() const;
+    QByteArray generateIndexData() const;
 };
 
 } // Qt3DExtras

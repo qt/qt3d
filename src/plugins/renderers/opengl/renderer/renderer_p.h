@@ -232,8 +232,6 @@ public:
     Qt3DCore::QAspectJobPtr syncLoadingJobs() override;
     Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() override;
 
-    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
-
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
     inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
     inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }

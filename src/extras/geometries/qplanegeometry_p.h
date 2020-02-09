@@ -85,6 +85,9 @@ public:
     Qt3DRender::QBuffer *m_indexBuffer;
 
     Q_DECLARE_PUBLIC(QPlaneGeometry)
+
+    QByteArray generateVertexData() const;
+    QByteArray generateIndexData() const;
 };
 
 } // Qt3DExtras

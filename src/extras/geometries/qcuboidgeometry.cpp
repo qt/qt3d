@@ -42,7 +42,6 @@
 
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 
 #include <limits>
@@ -386,91 +385,6 @@ QByteArray createCuboidIndexData(const QSize &yzResolution,
 
 } // anonymous
 
-class CuboidVertexBufferFunctor : public QBufferDataGenerator
-{
-public:
-    explicit CuboidVertexBufferFunctor(float xExtent,
-                                       float yExtent,
-                                       float zExtent,
-                                       const QSize &yzResolution,
-                                       const QSize &xzResolution,
-                                       const QSize &xyResolution)
-        : m_xExtent(xExtent)
-        , m_yExtent(yExtent)
-        , m_zExtent(zExtent)
-        , m_yzFaceResolution(yzResolution)
-        , m_xzFaceResolution(xzResolution)
-        , m_xyFaceResolution(xyResolution)
-    {}
-
-    ~CuboidVertexBufferFunctor() {}
-
-    QByteArray operator()() final
-    {
-        return createCuboidVertexData(m_xExtent, m_yExtent, m_zExtent,
-                                      m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution);
-    }
-
-    bool operator ==(const QBufferDataGenerator &other) const final
-    {
-        const CuboidVertexBufferFunctor *otherFunctor = functor_cast<CuboidVertexBufferFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return (otherFunctor->m_xExtent == m_xExtent &&
-                    otherFunctor->m_yExtent == m_yExtent &&
-                    otherFunctor->m_zExtent == m_zExtent &&
-                    otherFunctor->m_yzFaceResolution == m_yzFaceResolution &&
-                    otherFunctor->m_xzFaceResolution == m_xzFaceResolution &&
-                    otherFunctor->m_xyFaceResolution == m_xyFaceResolution);
-        return false;
-    }
-
-    QT3D_FUNCTOR(CuboidVertexBufferFunctor)
-
-private:
-    float m_xExtent;
-    float m_yExtent;
-    float m_zExtent;
-    QSize m_yzFaceResolution;
-    QSize m_xzFaceResolution;
-    QSize m_xyFaceResolution;
-};
-
-class CuboidIndexBufferFunctor : public QBufferDataGenerator
-{
-public:
-    explicit CuboidIndexBufferFunctor(const QSize &yzResolution,
-                                      const QSize &xzResolution,
-                                      const QSize &xyResolution)
-        : m_yzFaceResolution(yzResolution)
-        , m_xzFaceResolution(xzResolution)
-        , m_xyFaceResolution(xyResolution)
-    {}
-
-    ~CuboidIndexBufferFunctor() {}
-
-    QByteArray operator()() final
-    {
-        return createCuboidIndexData(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution);
-    }
-
-    bool operator ==(const QBufferDataGenerator &other) const final
-    {
-        const CuboidIndexBufferFunctor *otherFunctor = functor_cast<CuboidIndexBufferFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return (otherFunctor->m_yzFaceResolution == m_yzFaceResolution &&
-                    otherFunctor->m_xzFaceResolution == m_xzFaceResolution &&
-                    otherFunctor->m_xyFaceResolution == m_xyFaceResolution);
-        return false;
-    }
-
-    QT3D_FUNCTOR(CuboidIndexBufferFunctor)
-
-private:
-    QSize m_yzFaceResolution;
-    QSize m_xzFaceResolution;
-    QSize m_xyFaceResolution;
-};
-
 QCuboidGeometryPrivate::QCuboidGeometryPrivate()
     : QGeometryPrivate()
     , m_xExtent(1.0f)
@@ -553,15 +467,25 @@ void QCuboidGeometryPrivate::init()
 
     m_indexAttribute->setCount(indexCount);
 
-    m_vertexBuffer->setDataGenerator(QSharedPointer<CuboidVertexBufferFunctor>::create(m_xExtent, m_yExtent, m_zExtent,
-                                                                                       m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution));
-    m_indexBuffer->setDataGenerator(QSharedPointer<CuboidIndexBufferFunctor>::create(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution));
+    m_vertexBuffer->setData(generateVertexData());
+    m_indexBuffer->setData(generateIndexData());
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
     q->addAttribute(m_normalAttribute);
     q->addAttribute(m_tangentAttribute);
     q->addAttribute(m_indexAttribute);
+}
+
+QByteArray QCuboidGeometryPrivate::generateVertexData() const
+{
+    return createCuboidVertexData(m_xExtent, m_yExtent, m_zExtent,
+                                  m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution);
+}
+
+QByteArray QCuboidGeometryPrivate::generateIndexData() const
+{
+    return createCuboidIndexData(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution);
 }
 
 /*!
@@ -699,8 +623,7 @@ void QCuboidGeometry::updateIndices()
     const int indexCount = 2 * (yzIndices + xzIndices + xyIndices);
 
     d->m_indexAttribute->setCount(indexCount);
-    d->m_indexBuffer->setDataGenerator(QSharedPointer<CuboidIndexBufferFunctor>::create(d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution));
-
+    d->m_indexBuffer->setData(d->generateIndexData());
 }
 
 /*!
@@ -719,8 +642,7 @@ void QCuboidGeometry::updateVertices()
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_tangentAttribute->setCount(nVerts);
 
-    d->m_vertexBuffer->setDataGenerator(QSharedPointer<CuboidVertexBufferFunctor>::create(d->m_xExtent, d->m_yExtent, d->m_zExtent,
-                                                                                          d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution));
+    d->m_vertexBuffer->setData(d->generateVertexData());
 }
 
 void QCuboidGeometry::setXExtent(float xExtent)

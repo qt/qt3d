@@ -66,7 +66,6 @@
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
@@ -77,7 +76,6 @@
 #include <Qt3DRender/qdirectionallight.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qalphatest.h>
@@ -779,15 +777,7 @@ void GLTFExporter::parseMeshes()
             }
         } else {
             meshInfo.meshComponent = nullptr;
-            QGeometry *meshGeometry = nullptr;
-            QGeometryFactoryPtr geometryFunctorPtr = mesh->geometryFactory();
-            if (!geometryFunctorPtr.data()) {
-                meshGeometry = mesh->geometry();
-            } else {
-                // Execute the geometry functor to get the geometry, if it is available.
-                // Functor gives us the latest data if geometry has changed.
-                meshGeometry = geometryFunctorPtr.data()->operator()();
-            }
+            QGeometry *meshGeometry = mesh->geometry();
 
             if (!meshGeometry) {
                 qCWarning(GLTFExporterLog, "Ignoring mesh without geometry!");

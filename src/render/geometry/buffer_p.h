@@ -54,7 +54,6 @@
 #include <QtCore>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,13 +75,11 @@ public:
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     void setManager(BufferManager *manager);
-    void executeFunctor();
     void updateDataFromGPUToCPU(QByteArray data);
     inline QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
     inline QVector<Qt3DRender::QBufferUpdate> &pendingBufferUpdates() { return m_bufferUpdates; }
     inline bool isDirty() const { return m_bufferDirty; }
-    inline QBufferDataGeneratorPtr dataGenerator() const { return m_functor; }
     inline bool isSyncData() const { return m_syncData; }
     inline QBuffer::AccessType access() const { return m_access; }
     void unsetDirty();
@@ -96,7 +93,6 @@ private:
     bool m_bufferDirty;
     bool m_syncData;
     QBuffer::AccessType m_access;
-    QBufferDataGeneratorPtr m_functor;
     BufferManager *m_manager;
 };
 

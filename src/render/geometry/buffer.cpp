@@ -69,7 +69,6 @@ void Buffer::cleanup()
     m_usage = QBuffer::StaticDraw;
     m_data.clear();
     m_bufferUpdates.clear();
-    m_functor.reset();
     m_bufferDirty = false;
     m_syncData = false;
     m_access = QBuffer::Write;
@@ -79,14 +78,6 @@ void Buffer::cleanup()
 void Buffer::setManager(BufferManager *manager)
 {
     m_manager = manager;
-}
-
-void Buffer::executeFunctor()
-{
-    Q_ASSERT(m_functor);
-    m_data = (*m_functor)();
-    // Request data to be loaded
-    forceDataUpload();
 }
 
 //Called from th sendBufferJob
@@ -124,16 +115,6 @@ void Buffer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     if (m_usage != node->usage()) {
         m_usage = node->usage();
         m_bufferDirty = true;
-    }
-    {
-        QBufferDataGeneratorPtr newGenerator = node->dataGenerator();
-        bool dirty = (newGenerator && m_functor && !(*newGenerator == *m_functor)) ||
-                     (newGenerator.isNull() && !m_functor.isNull()) ||
-                     (!newGenerator.isNull() && m_functor.isNull());
-        m_bufferDirty |= dirty;
-        m_functor = newGenerator;
-        if (m_functor && m_manager != nullptr)
-            m_manager->addDirtyBuffer(peerId());
     }
     {
         const QVariant v = node->property("QT3D_updateData");

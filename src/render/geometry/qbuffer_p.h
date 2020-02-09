@@ -53,7 +53,6 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <private/qnode_p.h>
 #include <QByteArray>
@@ -72,7 +71,6 @@ public:
     QByteArray m_data;
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
-    QBufferDataGeneratorPtr m_functor;
     bool m_syncData;
     QBuffer::AccessType m_access;
 

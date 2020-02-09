@@ -39,32 +39,6 @@ QT_WARNING_DISABLE_DEPRECATED
 #include "testarbiter.h"
 #include "testrenderer.h"
 
-class TestFunctor : public Qt3DRender::QBufferDataGenerator
-{
-public:
-    explicit TestFunctor(int size)
-        : m_size(size)
-    {}
-
-    QByteArray operator ()() final
-    {
-        return QByteArrayLiteral("454");
-    }
-
-    bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const final
-    {
-        const TestFunctor *otherFunctor = Qt3DRender::functor_cast<TestFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return otherFunctor->m_size == m_size;
-        return false;
-    }
-
-    QT3D_FUNCTOR(TestFunctor)
-
-private:
-    int m_size;
-};
-
 class tst_RenderBuffer : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
@@ -81,7 +55,6 @@ private Q_SLOTS:
 
         buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("Corvette"));
-        buffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(883)));
 
         // WHEN
         renderBuffer.setRenderer(&renderer);
@@ -93,8 +66,6 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.isDirty(), true);
         QCOMPARE(renderBuffer.usage(), buffer.usage());
         QCOMPARE(renderBuffer.data(), buffer.data());
-        QCOMPARE(renderBuffer.dataGenerator(), buffer.dataGenerator());
-        QVERIFY(*renderBuffer.dataGenerator() == *buffer.dataGenerator());
         QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1);
         QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, -1);
     }
@@ -111,7 +82,6 @@ private Q_SLOTS:
         QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(backendBuffer.data().isEmpty());
         QVERIFY(backendBuffer.peerId().isNull());
-        QVERIFY(backendBuffer.dataGenerator().isNull());
         QVERIFY(backendBuffer.pendingBufferUpdates().empty());
 
         // GIVEN
@@ -126,20 +96,17 @@ private Q_SLOTS:
         QCOMPARE(backendBuffer.isDirty(), true);
         QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(backendBuffer.data().isEmpty());
-        QVERIFY(backendBuffer.dataGenerator().isNull());
         QVERIFY(backendBuffer.pendingBufferUpdates().empty());
 
         // WHEN
         frontendBuffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         frontendBuffer.setData(QByteArrayLiteral("C7KR4"));
-        frontendBuffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(73)));
         backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
         // THEN
         QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::DynamicCopy);
         QCOMPARE(backendBuffer.isDirty(), true);
         QCOMPARE(backendBuffer.data(), QByteArrayLiteral("C7KR4"));
-        QVERIFY(!backendBuffer.dataGenerator().isNull());
         QVERIFY(!backendBuffer.pendingBufferUpdates().empty());
 
         // WHEN
@@ -156,7 +123,6 @@ private Q_SLOTS:
         QCOMPARE(backendBuffer.isDirty(), false);
         QCOMPARE(backendBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(backendBuffer.data().isEmpty());
-        QVERIFY(backendBuffer.dataGenerator().isNull());
         QVERIFY(backendBuffer.pendingBufferUpdates().empty());
     }
 
@@ -264,21 +230,6 @@ private Q_SLOTS:
         QVERIFY(!backendBuffer.isDirty());
 
         // WHEN
-        Qt3DRender::QBufferDataGeneratorPtr functor(new TestFunctor(355));
-        frontendBuffer.setDataGenerator(functor);
-        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
-
-        // THEN
-        QCOMPARE(backendBuffer.dataGenerator(), functor);
-        QVERIFY(backendBuffer.isDirty());
-
-        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
-        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-
-        backendBuffer.unsetDirty();
-        QVERIFY(!backendBuffer.isDirty());
-
-        // WHEN
         frontendBuffer.setSyncData(true);
         backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
 
@@ -288,17 +239,6 @@ private Q_SLOTS:
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-
-        // WHEN
-        TestArbiter arbiter;
-        backendBuffer.executeFunctor();
-
-        // THEN
-        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
-        QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, -1);
-
-        arbiter.clear();
-        backendBuffer.pendingBufferUpdates().clear();
 
         // WHEN
         frontendBuffer.updateData(2, QByteArrayLiteral("LS5"));

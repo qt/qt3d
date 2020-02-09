@@ -18,7 +18,6 @@ HEADERS += \
     $$PWD/qmesh_p.h \
     $$PWD/qattribute_p.h \
     $$PWD/qattribute.h \
-    $$PWD/qbufferdatagenerator.h \
     $$PWD/armature_p.h \
     $$PWD/skeleton_p.h \
     $$PWD/gltfskeletonloader_p.h \

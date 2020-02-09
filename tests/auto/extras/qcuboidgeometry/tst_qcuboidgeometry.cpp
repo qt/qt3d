@@ -31,7 +31,6 @@
 #include <Qt3DExtras/qcuboidgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <qopenglcontext.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector3d.h>
@@ -541,8 +540,6 @@ private Q_SLOTS:
         geometry.setXYMeshResolution(xyMeshResolution);
         geometry.setYZMeshResolution(yzMeshResolution);
         geometry.setXZMeshResolution(xzMeshResolution);
-
-        generateGeometry(geometry);
 
         // THEN
 

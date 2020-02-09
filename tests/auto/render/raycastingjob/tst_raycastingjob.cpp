@@ -55,7 +55,6 @@
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
-#include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
@@ -176,14 +175,6 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
     updateWorldTransform.setRoot(test->sceneRoot());
     updateWorldTransform.setManagers(test->nodeManagers());
     updateWorldTransform.run();
-
-    // For each buffer
-    QVector<Qt3DRender::Render::HBuffer> bufferHandles = test->nodeManagers()->bufferManager()->activeHandles();
-    for (auto bufferHandle : bufferHandles) {
-        Qt3DRender::Render::LoadBufferJob loadBuffer(bufferHandle);
-        loadBuffer.setNodeManager(test->nodeManagers());
-        loadBuffer.run();
-    }
 
     Qt3DRender::Render::CalculateBoundingVolumeJob calcBVolume;
     calcBVolume.setManagers(test->nodeManagers());

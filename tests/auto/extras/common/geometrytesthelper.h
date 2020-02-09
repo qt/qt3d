@@ -31,35 +31,7 @@
 
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qgeometry.h>
-
-inline void generateGeometry(Qt3DRender::QGeometry &geometry)
-{
-    // Get all attributes
-    const QVector<Qt3DRender::QAttribute *> attributes = geometry.attributes();
-
-    // Get all unique data generators from the buffers referenced by the attributes
-    QHash<Qt3DRender::QBufferDataGeneratorPtr, Qt3DRender::QBuffer *> dataGenerators;
-    for (const auto attribute : attributes) {
-        QT_WARNING_PUSH
-        QT_WARNING_DISABLE_DEPRECATED
-        const auto dataGenerator = attribute->buffer()->dataGenerator();
-        if (!dataGenerators.contains(dataGenerator))
-            dataGenerators.insert(dataGenerator, attribute->buffer());
-        QT_WARNING_POP
-    }
-
-    // Generate data for each buffer
-    const auto end = dataGenerators.end();
-    for (auto it = dataGenerators.begin(); it != end; ++it) {
-        Qt3DRender::QBufferDataGeneratorPtr dataGenerator = it.key();
-        const QByteArray data = (*dataGenerator)();
-
-        Qt3DRender::QBuffer *buffer = it.value();
-        buffer->setData(data);
-    }
-}
 
 template<typename IndexType>
 IndexType extractIndexData(Qt3DRender::QAttribute *attribute, int index)

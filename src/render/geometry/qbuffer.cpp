@@ -109,12 +109,7 @@ void QBufferPrivate::setData(const QByteArray &data)
  * \brief Provides a data store for raw data to later be used as vertices or
  * uniforms.
  *
- * Data can either be provided directly using QBuffer::setData() or by
- * specifying a generator with QBuffer::setDataGenerator() and providing a
- * Qt3DRender::QBufferDataGeneratorPtr.
- *
- * When using a generator the data will be loaded asynchronously in a job. The
- * loaded data can be read back if the QBuffer::syncData flag is set to true.
+ * Data can be provided directly using QBuffer::setData().
  */
 
 /*!
@@ -127,93 +122,6 @@ void QBufferPrivate::setData(const QByteArray &data)
  * \fn void Qt3DRender::QBuffer::dataAvailable()
  *
  * This signal is emitted when data becomes available.
- */
-
-/*!
-    \class Qt3DRender::QBufferDataGenerator
-    \inmodule Qt3DRender
-
-    \inherits Qt3DRender::QAbstractFunctor
-
-    \brief Provides a mechanism to generate buffer data from a job.
-
-    The Qt3DRender::QBufferDataGenerator should be subclassed to provide a way
-    to fill the data of a Qt3DRender::QBuffer. Such functors are executed at
-    runtime in a Qt 3D job (likely in parallel with many other jobs). When
-    providing a functor you must implement the operator() which will be called
-    to generate the actual data. You must make sure that you have stored copies
-    of anything you might need for it to execute properly. You should also
-    implement the operator==. It will be used to compare with other functors
-    and based on that allow the renderer to decide if a new functor should be
-    executed or not.
-
-    \note functors are useful when you can build data from a few set of
-    attributes (e.g: building a sphere from a radius property). If you already
-    have access to the buffer data, using Qt3DRender::QBuffer::setData() is
-    likely more efficient.
-
-    \code
-
-    QByteArray createSphereMeshVertexData(float radius, int rings, int slices)
-    {
-        ...
-    }
-
-    class SphereVertexDataFunctor : public QBufferDataGenerator
-    {
-    public:
-        SphereVertexDataFunctor(int rings, int slices, float radius)
-            : m_rings(rings)
-            , m_slices(slices)
-            , m_radius(radius)
-        {}
-
-        QByteArray operator ()() override
-        {
-            return createSphereMeshVertexData(m_radius, m_rings, m_slices);
-        }
-
-        bool operator ==(const QBufferDataGenerator &other) const override
-        {
-            const SphereVertexDataFunctor *otherFunctor = functor_cast<SphereVertexDataFunctor>(&other);
-            if (otherFunctor != nullptr)
-                return (otherFunctor->m_rings == m_rings &&
-                        otherFunctor->m_slices == m_slices &&
-                        otherFunctor->m_radius == m_radius);
-            return false;
-        }
-
-        QT3D_FUNCTOR(SphereVertexDataFunctor)
-
-    private:
-        int m_rings;
-        int m_slices;
-        float m_radius;
-    };
-
-    \endcode
-
-    The QT3D_FUNCTOR macro should be added when subclassing. This allows you to
-    use functor_cast in your comparison operator to make sure that the other
-    functor is of the same type as the one your are trying to compare against.
-*/
-
-/*!
-    \fn Qt3DRender::QBufferDataGenerator::operator()()
-
-    Should be implemented to return the buffer data as a QByteArray when called.
-  */
-
-/*!
-    \fn Qt3DRender::QBufferDataGenerator::operator ==(const QBufferDataGenerator &other) const
-
-    Should be reimplemented to return true when two generators (the one you are
-    comparing against and the \a other generator) are identical,
-    false otherwise.
-
-    \note The renderer uses this comparison to decide whether data for a buffer
-    needs to be reuploaded or not when the functor on a Qt3DRender::QBuffer
-    changes.
  */
 
 /*!
@@ -380,27 +288,6 @@ QBuffer::BufferType QBuffer::type() const
 {
     Q_D(const QBuffer);
     return d->m_type;
-}
-
-/*!
- * Sets the buffer \a functor.
- */
-void QBuffer::setDataGenerator(const QBufferDataGeneratorPtr &functor)
-{
-    Q_D(QBuffer);
-    if (functor && d->m_functor && *functor == *d->m_functor)
-        return;
-    d->m_functor = functor;
-    d->update();
-}
-
-/*!
- * \return the buffer functor.
- */
-QBufferDataGeneratorPtr QBuffer::dataGenerator() const
-{
-    Q_D(const QBuffer);
-    return d->m_functor;
 }
 
 /*!

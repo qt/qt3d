@@ -50,8 +50,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QBufferPrivate;
-class QBufferDataGenerator;
-typedef QSharedPointer<QBufferDataGenerator> QBufferDataGeneratorPtr;
 
 class Q_3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QNode
 {
@@ -106,9 +104,6 @@ public:
 
     void setData(const QByteArray &bytes);
     QByteArray data() const;
-
-    Q3D_DECL_DEPRECATED void setDataGenerator(const QBufferDataGeneratorPtr &functor);
-    Q3D_DECL_DEPRECATED QBufferDataGeneratorPtr dataGenerator() const;
 
     Q_INVOKABLE void updateData(int offset, const QByteArray &bytes);
 

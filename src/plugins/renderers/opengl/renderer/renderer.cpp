@@ -74,7 +74,6 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
-#include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/updatelevelofdetailjob_p.h>
 #include <Qt3DRender/private/buffercapture_p.h>
@@ -1895,16 +1894,10 @@ QVector<QAspectJobPtr> Renderer::preRenderingJobs()
 QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
     QVector<QAspectJobPtr> renderBinJobs;
-    // Create the jobs to build the frame
-    const QVector<QAspectJobPtr> bufferJobs = createRenderBufferJobs();
 
     // Remove previous dependencies
     m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
     m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
-
-    // Set dependencies
-    for (const QAspectJobPtr &bufferJob : bufferJobs)
-        m_calculateBoundingVolumeJob->addDependency(bufferJob);
 
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
 
@@ -1945,7 +1938,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_updateSkinningPaletteJob);
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_cleanupJob);
-    renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
     renderBinJobs.push_back(m_vaoGathererJob);
@@ -2427,27 +2419,6 @@ const GraphicsApiFilterData *Renderer::contextInfo() const
 SubmissionContext *Renderer::submissionContext() const
 {
     return m_submissionContext.data();
-}
-
-// Returns a vector of jobs to be performed for dirty buffers
-// 1 dirty buffer == 1 job, all job can be performed in parallel
-QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBufferJobs() const
-{
-    const QVector<QNodeId> dirtyBuffers = m_nodesManager->bufferManager()->takeDirtyBuffers();
-    QVector<QAspectJobPtr> dirtyBuffersJobs;
-    dirtyBuffersJobs.reserve(dirtyBuffers.size());
-
-    for (const QNodeId bufId : dirtyBuffers) {
-        Render::HBuffer bufferHandle = m_nodesManager->lookupHandle<Render::Buffer, Render::BufferManager, Render::HBuffer>(bufId);
-        if (!bufferHandle.isNull()) {
-            // Create new buffer job
-            auto job = Render::LoadBufferJobPtr::create(bufferHandle);
-            job->setNodeManager(m_nodesManager);
-            dirtyBuffersJobs.push_back(job);
-        }
-    }
-
-    return dirtyBuffersJobs;
 }
 
 } // namespace OpenGL

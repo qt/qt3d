@@ -38,7 +38,6 @@
 #include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DExtras/qspheregeometry.h>
 #include <Qt3DRender/qpickevent.h>
 
@@ -74,13 +73,6 @@ public:
         QSphereGeometry *g = static_cast<QSphereGeometry *>(mesh->geometry());
         QAttribute *positionAttr = static_cast<QAttribute *>(g->attributes().first());
         Qt3DRender::QBuffer *vertexBuffer = static_cast<Qt3DRender::QBuffer *>(positionAttr->buffer());
-
-        // Load the geometry
-        QT_WARNING_PUSH
-        QT_WARNING_DISABLE_DEPRECATED
-        const QByteArray data = (*vertexBuffer->dataGenerator())();
-        vertexBuffer->setData(data);
-        QT_WARNING_POP
 
         transform->setTranslation(position);
 

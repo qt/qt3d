@@ -45,7 +45,6 @@
 
 #include <Qt3DExtras/qconemesh.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
 #include <QtGui/QVector3D>
 

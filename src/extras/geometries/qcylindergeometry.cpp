@@ -45,7 +45,6 @@
 #include "qcylindergeometry_p.h"
 
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
 #include <QtGui/QVector3D>
 
@@ -181,102 +180,6 @@ void createDiscIndices(quint16 *&indicesPtr,
 
 } // anonymous
 
-
-class CylinderVertexDataFunctor : public QBufferDataGenerator
-{
-public:
-    CylinderVertexDataFunctor(int rings, int slices, float radius, float length)
-        : m_rings(rings)
-        , m_slices(slices)
-        , m_radius(radius)
-        , m_length(length)
-    {}
-
-    QByteArray operator ()() override
-    {
-        const int verticesCount = vertexCount(m_slices, m_rings);
-        // vec3 pos, vec2 texCoord, vec3 normal
-        const quint32 vertexSize = (3 + 2 + 3) * sizeof(float);
-
-        QByteArray verticesData;
-        verticesData.resize(vertexSize * verticesCount);
-        float *verticesPtr = reinterpret_cast<float*>(verticesData.data());
-
-        createSidesVertices(verticesPtr, m_rings, m_slices, m_radius, m_length);
-        createDiscVertices(verticesPtr, m_slices, m_radius, -m_length * 0.5f);
-        createDiscVertices(verticesPtr, m_slices, m_radius, m_length * 0.5f);
-
-        return verticesData;
-    }
-
-    bool operator ==(const QBufferDataGenerator &other) const override
-    {
-        const CylinderVertexDataFunctor *otherFunctor = functor_cast<CylinderVertexDataFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return (otherFunctor->m_rings == m_rings &&
-                    otherFunctor->m_slices == m_slices &&
-                    otherFunctor->m_radius == m_radius &&
-                    otherFunctor->m_length == m_length);
-        return false;
-    }
-
-    QT3D_FUNCTOR(CylinderVertexDataFunctor)
-
-private:
-    int m_rings;
-    int m_slices;
-    float m_radius;
-    float m_length;
-};
-
-class CylinderIndexDataFunctor : public QBufferDataGenerator
-{
-public:
-    CylinderIndexDataFunctor(int rings, int slices, float length)
-        : m_rings(rings)
-        , m_slices(slices)
-        , m_length(length)
-    {
-    }
-
-    QByteArray operator ()() override
-    {
-        const int facesCount = faceCount(m_slices, m_rings);
-        const int indicesCount = facesCount * 3;
-        const int indexSize = sizeof(quint16);
-        Q_ASSERT(indicesCount < 65536);
-
-        QByteArray indicesBytes;
-        indicesBytes.resize(indicesCount * indexSize);
-        quint16 *indicesPtr = reinterpret_cast<quint16*>(indicesBytes.data());
-
-        createSidesIndices(indicesPtr, m_rings, m_slices);
-        createDiscIndices(indicesPtr, m_rings * (m_slices + 1), m_slices, -m_length * 0.5);
-        createDiscIndices(indicesPtr, m_rings * (m_slices + 1) + m_slices + 2, m_slices, m_length * 0.5);
-        Q_ASSERT(indicesPtr == (reinterpret_cast<quint16*>(indicesBytes.data()) + indicesCount));
-
-        return indicesBytes;
-    }
-
-    bool operator ==(const QBufferDataGenerator &other) const override
-    {
-        const CylinderIndexDataFunctor *otherFunctor = functor_cast<CylinderIndexDataFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return (otherFunctor->m_rings == m_rings &&
-                    otherFunctor->m_slices == m_slices &&
-                    otherFunctor->m_length == m_length);
-        return false;
-    }
-
-    QT3D_FUNCTOR(CylinderIndexDataFunctor)
-
-private:
-    int m_rings;
-    int m_slices;
-    float m_length;
-};
-
-
 QCylinderGeometryPrivate::QCylinderGeometryPrivate()
     : QGeometryPrivate()
     , m_rings(16)
@@ -340,13 +243,49 @@ void QCylinderGeometryPrivate::init()
 
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setDataGenerator(QSharedPointer<CylinderVertexDataFunctor>::create(m_rings, m_slices, m_radius, m_length));
-    m_indexBuffer->setDataGenerator(QSharedPointer<CylinderIndexDataFunctor>::create(m_rings, m_slices, m_length));
+    m_vertexBuffer->setData(generateVertexData());
+    m_indexBuffer->setData(generateIndexData());
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
     q->addAttribute(m_normalAttribute);
     q->addAttribute(m_indexAttribute);
+}
+
+QByteArray QCylinderGeometryPrivate::generateVertexData() const
+{
+    const int verticesCount = vertexCount(m_slices, m_rings);
+    // vec3 pos, vec2 texCoord, vec3 normal
+    const quint32 vertexSize = (3 + 2 + 3) * sizeof(float);
+
+    QByteArray verticesData;
+    verticesData.resize(vertexSize * verticesCount);
+    float *verticesPtr = reinterpret_cast<float*>(verticesData.data());
+
+    createSidesVertices(verticesPtr, m_rings, m_slices, m_radius, m_length);
+    createDiscVertices(verticesPtr, m_slices, m_radius, -m_length * 0.5f);
+    createDiscVertices(verticesPtr, m_slices, m_radius, m_length * 0.5f);
+
+    return verticesData;
+}
+
+QByteArray QCylinderGeometryPrivate::generateIndexData() const
+{
+    const int facesCount = faceCount(m_slices, m_rings);
+    const int indicesCount = facesCount * 3;
+    const int indexSize = sizeof(quint16);
+    Q_ASSERT(indicesCount < 65536);
+
+    QByteArray indicesBytes;
+    indicesBytes.resize(indicesCount * indexSize);
+    quint16 *indicesPtr = reinterpret_cast<quint16*>(indicesBytes.data());
+
+    createSidesIndices(indicesPtr, m_rings, m_slices);
+    createDiscIndices(indicesPtr, m_rings * (m_slices + 1), m_slices, -m_length * 0.5);
+    createDiscIndices(indicesPtr, m_rings * (m_slices + 1) + m_slices + 2, m_slices, m_length * 0.5);
+    Q_ASSERT(indicesPtr == (reinterpret_cast<quint16*>(indicesBytes.data()) + indicesCount));
+
+    return indicesBytes;
 }
 
 /*!
@@ -459,7 +398,7 @@ void QCylinderGeometry::updateVertices()
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
 
-    d->m_vertexBuffer->setDataGenerator(QSharedPointer<CylinderVertexDataFunctor>::create(d->m_rings, d->m_slices, d->m_radius, d->m_length));
+    d->m_vertexBuffer->setData(d->generateVertexData());
 }
 
 /*!
@@ -470,7 +409,7 @@ void QCylinderGeometry::updateIndices()
     Q_D(QCylinderGeometry);
     const int faces = faceCount(d->m_slices, d->m_rings);
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setDataGenerator(QSharedPointer<CylinderIndexDataFunctor>::create(d->m_rings, d->m_slices, d->m_length));
+    d->m_indexBuffer->setData(d->generateIndexData());
 }
 
 void QCylinderGeometry::setRings(int rings)

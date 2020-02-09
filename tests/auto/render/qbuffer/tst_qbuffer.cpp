@@ -36,35 +36,8 @@ QT_WARNING_DISABLE_DEPRECATED
 
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/private/qbuffer_p.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 
 #include "testarbiter.h"
-
-class TestFunctor : public Qt3DRender::QBufferDataGenerator
-{
-public:
-    explicit TestFunctor(int size)
-        : m_size(size)
-    {}
-
-    QByteArray operator ()() final
-    {
-        return QByteArray();
-    }
-
-    bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const final
-    {
-        const TestFunctor *otherFunctor = Qt3DRender::functor_cast<TestFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return otherFunctor->m_size == m_size;
-        return false;
-    }
-
-    QT3D_FUNCTOR(TestFunctor)
-
-private:
-    int m_size;
-};
 
 class tst_QBuffer: public QObject
 {
@@ -90,17 +63,6 @@ private Q_SLOTS:
 
         // WHEN
         buffer->setData(QByteArrayLiteral("Z28"));
-
-        // THEN
-        QCOMPARE(arbiter.dirtyNodes().size(), 1);
-        QCOMPARE(arbiter.dirtyNodes().front(), buffer.data());
-
-        arbiter.clear();
-
-        // WHEN
-        Qt3DRender::QBufferDataGeneratorPtr functor(new TestFunctor(355));
-        buffer->setDataGenerator(functor);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.dirtyNodes().size(), 1);

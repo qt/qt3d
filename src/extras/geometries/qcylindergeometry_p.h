@@ -83,6 +83,9 @@ public:
     Qt3DRender::QAttribute *m_indexAttribute;
     Qt3DRender::QBuffer *m_vertexBuffer;
     Qt3DRender::QBuffer *m_indexBuffer;
+
+    QByteArray generateVertexData() const;
+    QByteArray generateIndexData() const;
 };
 
 } // Qt3DExtras

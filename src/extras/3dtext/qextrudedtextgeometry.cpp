@@ -51,7 +51,6 @@
 #include "qextrudedtextgeometry.h"
 #include "qextrudedtextgeometry_p.h"
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
 #include <private/qtriangulator_p.h>
 #include <qmath.h>
