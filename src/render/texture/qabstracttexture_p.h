@@ -55,8 +55,8 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qtexturewrapmode.h>
-#include <Qt3DRender/qtexturegenerator.h>
 #include <Qt3DRender/qtexturedataupdate.h>
+#include <Qt3DRender/private/qtexturegenerator_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE

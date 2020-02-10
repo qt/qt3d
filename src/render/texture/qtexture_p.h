@@ -54,7 +54,7 @@
 #include <Qt3DCore/QNodeId>
 #include <Qt3DCore/private/qdownloadhelperservice_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
-#include <Qt3DRender/qtexturegenerator.h>
+#include <Qt3DRender/private/qtexturegenerator_p.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 

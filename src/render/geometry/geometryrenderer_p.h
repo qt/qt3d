@@ -52,8 +52,8 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/qgeometryfactory_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qmesh.h>
 
 QT_BEGIN_NAMESPACE

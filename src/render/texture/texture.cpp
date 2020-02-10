@@ -143,14 +143,14 @@ void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         addDirtyFlag(DirtyParameters);
     }
 
-    auto newGenerator = node->dataGenerator();
+    QAbstractTexturePrivate *dnode = static_cast<QAbstractTexturePrivate *>(QAbstractTexturePrivate::get(const_cast<QAbstractTexture *>(node)));
+    auto newGenerator = dnode->dataFunctor();
     if (newGenerator != m_dataFunctor) {
         setDataGenerator(newGenerator);
         QAbstractTexturePrivate *dTexture = static_cast<QAbstractTexturePrivate *>(QNodePrivate::get(const_cast<QNode *>(frontEnd)));
         dTexture->setStatus(QAbstractTexture::Loading);
     }
 
-    QAbstractTexturePrivate *dnode = dynamic_cast<QAbstractTexturePrivate *>(QAbstractTexturePrivate::get(const_cast<QAbstractTexture *>(node)));
     if (dnode) {
         for (const QTextureDataUpdate &pendingUpdate : dnode->m_pendingDataUpdates)
             addTextureDataUpdate(pendingUpdate);

@@ -35,39 +35,12 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <Qt3DCore/private/qscene_p.h>
 
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 
 #include "testarbiter.h"
-
-class TestFactory : public Qt3DRender::QGeometryFactory
-{
-public:
-    explicit TestFactory(int size)
-        : m_size(size)
-    {}
-
-    Qt3DRender::QGeometry *operator ()() final
-    {
-        return nullptr;
-    }
-
-    bool operator ==(const Qt3DRender::QGeometryFactory &other) const final
-    {
-        const TestFactory *otherFactory = Qt3DRender::functor_cast<TestFactory>(&other);
-        if (otherFactory != nullptr)
-            return otherFactory->m_size == m_size;
-        return false;
-    }
-
-    QT3D_FUNCTOR(TestFactory)
-
-private:
-    int m_size;
-};
 
 class tst_QGeometryRenderer: public QObject
 {
@@ -164,17 +137,6 @@ private Q_SLOTS:
 
         // WHEN
         geometryRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.dirtyNodes().size(), 1);
-        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
-
-        arbiter.clear();
-
-        // WHEN
-        Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(555));
-        geometryRenderer->setGeometryFactory(factory);
         QCoreApplication::processEvents();
 
         // THEN

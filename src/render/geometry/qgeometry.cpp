@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "qgeometry.h"
-#include "qgeometryfactory.h"
+#include "qgeometryfactory_p.h"
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DRender/qattribute.h>

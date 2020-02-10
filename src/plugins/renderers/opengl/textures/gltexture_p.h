@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtextureimagedata.h>
-#include <Qt3DRender/qtexturegenerator.h>
+#include <Qt3DRender/private/qtexturegenerator_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/texture_p.h>

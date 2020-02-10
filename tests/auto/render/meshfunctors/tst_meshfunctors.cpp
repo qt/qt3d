@@ -32,7 +32,7 @@ QT_WARNING_DISABLE_DEPRECATED
 
 #include <QtTest/QtTest>
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/qgeometryfactory.h>
+#include <Qt3DRender/private/qgeometryfactory_p.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/private/qmesh_p.h>

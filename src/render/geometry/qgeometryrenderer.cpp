@@ -339,15 +339,6 @@ QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
     return d->m_primitiveType;
 }
 
-/*!
-    Returns the geometry functor.
- */
-QGeometryFactoryPtr QGeometryRenderer::geometryFactory() const
-{
-    Q_D(const QGeometryRenderer);
-    return d->m_geometryFactory;
-}
-
 void QGeometryRenderer::setInstanceCount(int instanceCount)
 {
     Q_D(QGeometryRenderer);
@@ -466,18 +457,6 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
 
     d->m_primitiveType = primitiveType;
     emit primitiveTypeChanged(primitiveType);
-}
-
-/*!
-    Sets the geometry \a factory.
- */
-void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
-{
-    Q_D(QGeometryRenderer);
-    if (factory && d->m_geometryFactory && *factory == *d->m_geometryFactory)
-        return;
-    d->m_geometryFactory = factory;
-    d->update();
 }
 
 } // namespace Qt3DRender

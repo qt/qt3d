@@ -192,7 +192,7 @@ private Q_SLOTS:
         mesh.setSource(QUrl(QStringLiteral("some_path")));
 
         // THEN
-        QVERIFY(!mesh.geometryFactory().isNull());
+        QVERIFY(!Qt3DRender::QMeshPrivate::get(&mesh)->m_geometryFactory.isNull());
     }
 };
 

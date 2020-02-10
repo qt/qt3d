@@ -47,6 +47,8 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+QTextureImageDataGenerator::~QTextureImageDataGenerator() = default;
+
 /*!
     \class Qt3DRender::QTextureImageDataGenerator
     \inmodule Qt3DRender

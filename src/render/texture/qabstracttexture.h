@@ -51,9 +51,7 @@ namespace Qt3DRender {
 class QAbstractTexturePrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
-class QTextureGenerator;
 class QTextureDataUpdate;
-typedef QSharedPointer<QTextureGenerator> QTextureGeneratorPtr;
 
 class Q_3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
 {
@@ -306,7 +304,6 @@ public:
     int depth() const;
     int layers() const;
     int samples() const;
-    Q3D_DECL_DEPRECATED QTextureGeneratorPtr dataGenerator() const;
     HandleType handleType() const;
     QVariant handle() const;
 

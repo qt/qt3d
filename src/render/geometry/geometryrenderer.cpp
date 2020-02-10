@@ -130,7 +130,9 @@ void GeometryRenderer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     m_primitiveType = node->primitiveType();
     m_dirty |= (node->geometry() && m_geometryId != node->geometry()->id()) || (!node->geometry() && !m_geometryId.isNull());
     m_geometryId = node->geometry() ? node->geometry()->id() : Qt3DCore::QNodeId();
-    QGeometryFactoryPtr newFunctor = node->geometryFactory();
+
+    const QGeometryRendererPrivate *dnode = static_cast<const QGeometryRendererPrivate *>(QNodePrivate::get(frontEnd));
+    QGeometryFactoryPtr newFunctor = dnode->m_geometryFactory;
     const bool functorDirty = ((m_geometryFactory && !newFunctor)
                                || (!m_geometryFactory && newFunctor)
                                || (m_geometryFactory && newFunctor && !(*newFunctor == *m_geometryFactory)));

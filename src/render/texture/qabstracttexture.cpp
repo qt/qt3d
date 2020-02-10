@@ -1037,15 +1037,6 @@ QAbstractTexture::ComparisonMode QAbstractTexture::comparisonMode() const
 }
 
 /*!
- * Returns the current data generator.
- */
-QTextureGeneratorPtr QAbstractTexture::dataGenerator() const
-{
-    Q_D(const QAbstractTexture);
-    return d->m_dataFunctor;
-}
-
-/*!
  * \property Qt3DRender::QAbstractTexture::handleType
  *
  * Holds the current texture handle type.

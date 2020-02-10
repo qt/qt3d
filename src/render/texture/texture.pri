@@ -16,7 +16,7 @@ HEADERS += \
     $$PWD/qtextureimagedata.h \
     $$PWD/qtexturedata.h \
     $$PWD/qtextureimagedatagenerator.h \
-    $$PWD/qtexturegenerator.h \
+    $$PWD/qtexturegenerator_p.h \
     $$PWD/qtexture_p.h \
     $$PWD/qpaintedtextureimage.h \
     $$PWD/qpaintedtextureimage_p.h \

@@ -35,34 +35,7 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/qgeometry.h>
-#include <Qt3DRender/qgeometryfactory.h>
 #include "testrenderer.h"
-
-class TestFactory : public Qt3DRender::QGeometryFactory
-{
-public:
-    explicit TestFactory(int size)
-        : m_size(size)
-    {}
-
-    Qt3DRender::QGeometry *operator ()() final
-    {
-        return nullptr;
-    }
-
-    bool operator ==(const Qt3DRender::QGeometryFactory &other) const final
-    {
-        const TestFactory *otherFactory = Qt3DRender::functor_cast<TestFactory>(&other);
-        if (otherFactory != nullptr)
-            return otherFactory->m_size == m_size;
-        return false;
-    }
-
-    QT3D_FUNCTOR(TestFactory)
-
-    private:
-        int m_size;
-};
 
 class DummyGeometry : public Qt3DRender::QGeometry
 {
@@ -85,7 +58,6 @@ private Q_SLOTS:
         Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
         Qt3DRender::QGeometryRenderer geometryRenderer;
         Qt3DRender::QGeometry geometry;
-        Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(1200));
         Qt3DRender::Render::GeometryRendererManager geometryRendererManager;
         TestRenderer renderer;
 
@@ -98,7 +70,6 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveRestartEnabled(true);
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
-        geometryRenderer.setGeometryFactory(factory);
         geometryRenderer.setEnabled(false);
 
         // WHEN
@@ -118,9 +89,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), geometryRenderer.primitiveRestartEnabled());
         QCOMPARE(renderGeometryRenderer.primitiveType(), geometryRenderer.primitiveType());
         QCOMPARE(renderGeometryRenderer.geometryId(), geometry.id());
-        QCOMPARE(renderGeometryRenderer.geometryFactory(), factory);
         QCOMPARE(renderGeometryRenderer.isEnabled(), false);
-        QVERIFY(*renderGeometryRenderer.geometryFactory() == *factory);
     }
 
     void checkInitialAndCleanedUpState()
@@ -147,7 +116,6 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::QGeometryRenderer geometryRenderer;
         Qt3DRender::QGeometry geometry;
-        Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(1200));
         TestRenderer renderer;
 
         geometryRenderer.setInstanceCount(454);
@@ -159,7 +127,6 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveRestartEnabled(true);
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
-        geometryRenderer.setGeometryFactory(factory);
         geometryRenderer.setEnabled(true);
 
         // WHEN
@@ -179,7 +146,6 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.restartIndexValue(), -1);
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
-        QVERIFY(renderGeometryRenderer.geometryFactory().isNull());
         QVERIFY(!renderGeometryRenderer.isEnabled());
     }
 
@@ -302,30 +268,6 @@ private Q_SLOTS:
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         backEndRenderer.unsetDirty();
-        QVERIFY(!backEndRenderer.isDirty());
-
-        // WHEN
-        Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(1450));
-        frontEndRenderer.setGeometryFactory(factory);
-        backEndRenderer.syncFromFrontEnd(&frontEndRenderer, false);
-
-        // THEN
-        QCOMPARE(backEndRenderer.geometryFactory(), factory);
-        QVERIFY(backEndRenderer.isDirty());
-
-        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
-        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-
-        backEndRenderer.unsetDirty();
-        QVERIFY(!backEndRenderer.isDirty());
-
-        // WHEN we set an identical factory again
-        Qt3DRender::QGeometryFactoryPtr factory2(new TestFactory(1450));
-        frontEndRenderer.setGeometryFactory(factory2);
-        backEndRenderer.syncFromFrontEnd(&frontEndRenderer, false);
-
-        // THEN not dirty and still uses original factory
-        QCOMPARE(backEndRenderer.geometryFactory(), factory);
         QVERIFY(!backEndRenderer.isDirty());
 
         // WHEN

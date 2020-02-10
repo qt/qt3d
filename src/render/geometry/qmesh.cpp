@@ -88,7 +88,8 @@ void QMeshPrivate::setScene(Qt3DCore::QScene *scene)
 void QMeshPrivate::updateFunctor()
 {
     Q_Q(QMesh);
-    q->setGeometryFactory(QGeometryFactoryPtr(new MeshLoaderFunctor(q)));
+    m_geometryFactory = QGeometryFactoryPtr(new MeshLoaderFunctor(q));
+    update();
 }
 
 void QMeshPrivate::setStatus(QMesh::Status status)

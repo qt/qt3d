@@ -37,8 +37,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QTEXTUREGENERATOR_H
-#define QT3DRENDER_QTEXTUREGENERATOR_H
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#ifndef QT3DRENDER_QTEXTUREGENERATOR_P_H
+#define QT3DRENDER_QTEXTUREGENERATOR_P_H
 
 #include <Qt3DRender/qabstractfunctor.h>
 #include <Qt3DRender/qabstracttexture.h>
@@ -68,4 +79,4 @@ QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::QTextureGeneratorPtr) // LCOV_EXCL_LINE
 
-#endif // QT3DRENDER_QTEXTUREGENERATOR_H
+#endif // QT3DRENDER_QTEXTUREGENERATOR_P_H

@@ -58,7 +58,7 @@ typedef QSharedPointer<QTextureImageData> QTextureImageDataPtr;
 class Q_3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public QAbstractFunctor
 {
 public:
-    virtual ~QTextureImageDataGenerator() {}
+    virtual ~QTextureImageDataGenerator();
     virtual QTextureImageDataPtr operator()() = 0;
     virtual bool operator ==(const QTextureImageDataGenerator &other) const = 0;
 };

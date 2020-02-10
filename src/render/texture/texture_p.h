@@ -54,9 +54,9 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
+#include <Qt3DRender/private/qtexturegenerator_p.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtexturedata.h>
-#include <Qt3DRender/qtexturegenerator.h>
 #include <QOpenGLContext>
 #include <QMutex>
 

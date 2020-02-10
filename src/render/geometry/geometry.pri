@@ -11,7 +11,7 @@ HEADERS += \
     $$PWD/qbuffer_p.h \
     $$PWD/qgeometry.h \
     $$PWD/qgeometry_p.h \
-    $$PWD/qgeometryfactory.h \
+    $$PWD/qgeometryfactory_p.h \
     $$PWD/qgeometryrenderer.h \
     $$PWD/qgeometryrenderer_p.h \
     $$PWD/qmesh.h \

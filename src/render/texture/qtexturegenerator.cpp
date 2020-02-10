@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qtexturegenerator.h"
+#include "qtexturegenerator_p.h"
 
 QT_BEGIN_NAMESPACE
 
