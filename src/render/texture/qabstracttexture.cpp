@@ -791,8 +791,9 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
 {
     Q_ASSERT(textureImage);
     Q_D(QAbstractTexture);
+    if (!d->m_textureImages.removeOne(textureImage))
+        return;
     d->updateNode(textureImage, "textureImage", PropertyValueRemoved);
-    d->m_textureImages.removeOne(textureImage);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(textureImage);
 }

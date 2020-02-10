@@ -134,8 +134,9 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
 
+    if (!d->m_outputs.removeOne(output))
+        return;
     d->updateNode(output, "output", Qt3DCore::PropertyValueRemoved);
-    d->m_outputs.removeOne(output);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(output);
 }

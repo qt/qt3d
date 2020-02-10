@@ -285,8 +285,9 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QRenderPass);
+    if (!d->m_filterKeyList.removeOne(filterKey))
+        return;
     d->updateNode(filterKey, "filterKeys", Qt3DCore::PropertyValueRemoved);
-    d->m_filterKeyList.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
 }
@@ -333,8 +334,9 @@ void QRenderPass::removeRenderState(QRenderState *state)
 {
     Q_ASSERT(state);
     Q_D(QRenderPass);
+    if (!d->m_renderStates.removeOne(state))
+        return;
     d->updateNode(state, "renderState", Qt3DCore::PropertyValueRemoved);
-    d->m_renderStates.removeOne(state);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(state);
 }
@@ -380,8 +382,9 @@ void QRenderPass::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QRenderPass);
+    if (!d->m_parameters.removeOne(parameter))
+        return;
     d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
-    d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
 }

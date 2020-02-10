@@ -203,7 +203,8 @@ void QEffect::removeParameter(QParameter *parameter)
 {
     Q_D(QEffect);
 
-    d->m_parameters.removeOne(parameter);
+    if (!d->m_parameters.removeOne(parameter))
+        return;
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
     d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
@@ -248,9 +249,9 @@ void QEffect::addTechnique(QTechnique *t)
 void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
-    if (t)
-        d->updateNode(t, "technique", Qt3DCore::PropertyValueRemoved);
-    d->m_techniques.removeOne(t);
+    if (!d->m_techniques.removeOne(t))
+        return;
+    d->updateNode(t, "technique", Qt3DCore::PropertyValueRemoved);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(t);
 }

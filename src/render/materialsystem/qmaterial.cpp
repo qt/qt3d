@@ -283,8 +283,10 @@ void QMaterial::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QMaterial);
+    if (!d->m_parameters.removeOne(parameter))
+        return;
+    d->unregisterDestructionHelper(parameter);
     d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
-    d->m_parameters.removeOne(parameter);
 }
 
 /*!
