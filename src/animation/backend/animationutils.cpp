@@ -158,11 +158,13 @@ ComponentIndices channelComponentsToIndices(const Channel &channel,
 #if defined Q_COMPILER_UNIFORM_INIT
     static const QVector<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
     static const QVector<char> quaternionSuffixes = { 'W', 'X', 'Y', 'Z' };
-    static const QVector<char> colorSuffixes = { 'R', 'G', 'B' };
+    static const QVector<char> colorSuffixesRGB = { 'R', 'G', 'B' };
+    static const QVector<char> colorSuffixesRGBA = { 'R', 'G', 'B', 'A' };
 #else
     static const QVector<char> standardSuffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
     static const QVector<char> quaternionSuffixes = (QVector<char>() << 'W' << 'X' << 'Y' << 'Z');
-    static const QVector<char> colorSuffixes = (QVector<char>() << 'R' << 'G' << 'B');
+    static const QVector<char> colorSuffixesRGB = (QVector<char>() << 'R' << 'G' << 'B');
+    static const QVector<char> colorSuffixesRGBA = (QVector<char>() << 'R' << 'G' << 'B' << 'A');
 #endif
 
     switch (dataType) {
@@ -170,8 +172,12 @@ ComponentIndices channelComponentsToIndices(const Channel &channel,
         return channelComponentsToIndicesHelper(channel, expectedComponentCount,
                                                 offset, quaternionSuffixes);
     case QVariant::Color:
+        if (expectedComponentCount == 3)
+            return channelComponentsToIndicesHelper(channel, expectedComponentCount,
+                                                    offset, colorSuffixesRGB);
+        Q_ASSERT(expectedComponentCount == 4);
         return channelComponentsToIndicesHelper(channel, expectedComponentCount,
-                                                offset, colorSuffixes);
+                                                offset, colorSuffixesRGBA);
     default:
         return channelComponentsToIndicesHelper(channel, expectedComponentCount,
                                                 offset, standardSuffixes);
@@ -385,10 +391,12 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float>
     }
 
     case QVariant::Color: {
+        // A color can either be a vec3 or a vec4
         const QColor color =
                 QColor::fromRgbF(channelResults[mappingData.channelIndices[0]],
                 channelResults[mappingData.channelIndices[1]],
-                channelResults[mappingData.channelIndices[2]]);
+                channelResults[mappingData.channelIndices[2]],
+                mappingData.channelIndices.size() > 3 ? channelResults[mappingData.channelIndices[3]] : 1.0f);
         return QVariant::fromValue(color);
     }
 
