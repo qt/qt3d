@@ -56,7 +56,6 @@ class Q_3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
-    Q_PROPERTY(bool syncData READ isSyncData WRITE setSyncData NOTIFY syncDataChanged)
     Q_PROPERTY(AccessType accessType READ accessType WRITE setAccessType NOTIFY accessTypeChanged REVISION 9)
 
 public:
@@ -99,7 +98,6 @@ public:
 
     UsageType usage() const;
     QT_DEPRECATED BufferType type() const;
-    bool isSyncData() const;
     AccessType accessType() const;
 
     void setData(const QByteArray &bytes);
@@ -110,14 +108,12 @@ public:
 public Q_SLOTS:
     QT_DEPRECATED void setType(BufferType type);
     void setUsage(UsageType usage);
-    void setSyncData(bool syncData);
     void setAccessType(AccessType access);
 
 Q_SIGNALS:
     void dataChanged(const QByteArray &bytes);
     void typeChanged(BufferType type);
     void usageChanged(UsageType usage);
-    void syncDataChanged(bool syncData);
     void accessTypeChanged(AccessType access);
     void dataAvailable();
 

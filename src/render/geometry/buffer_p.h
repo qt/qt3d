@@ -80,7 +80,6 @@ public:
     inline QByteArray data() const { return m_data; }
     inline QVector<Qt3DRender::QBufferUpdate> &pendingBufferUpdates() { return m_bufferUpdates; }
     inline bool isDirty() const { return m_bufferDirty; }
-    inline bool isSyncData() const { return m_syncData; }
     inline QBuffer::AccessType access() const { return m_access; }
     void unsetDirty();
 
@@ -91,7 +90,6 @@ private:
     QByteArray m_data;
     QVector<Qt3DRender::QBufferUpdate> m_bufferUpdates;
     bool m_bufferDirty;
-    bool m_syncData;
     QBuffer::AccessType m_access;
     BufferManager *m_manager;
 };

@@ -51,7 +51,6 @@ QBufferPrivate::QBufferPrivate()
     : QNodePrivate()
     , m_type(QBuffer::VertexBuffer)
     , m_usage(QBuffer::StaticDraw)
-    , m_syncData(false)
     , m_access(QBuffer::Write)
 {
 }
@@ -86,17 +85,6 @@ void QBufferPrivate::setData(const QByteArray &data)
  * Holds the buffer type.
  *
  * \deprecated
- */
-
-/*!
- * \qmlproperty bool Buffer::syncData
- *
- * Holds the syncData flag. When syncData is true, this will force data created
- * by a Qt3DRender::QBufferDataGenerator to also be updated on the frontend
- * Qt3DRender::QBuffer node. By default syncData is false.
- *
- * \note: This has no effect if the buffer's data was set directly using the data
- * property.
  */
 
 /*!
@@ -290,25 +278,6 @@ QBuffer::BufferType QBuffer::type() const
     return d->m_type;
 }
 
-/*!
- * \property QBuffer::syncData
- *
- * Holds the syncData flag. When syncData is true, this will force data created
- * by a Qt3DRender::QBufferDataGenerator to also be updated on the frontend
- * Qt3DRender::QBuffer node. By default syncData is false.
- *
- * \note: This has no effect if the buffer's data was set directly using the data
- * property.
- */
-void QBuffer::setSyncData(bool syncData)
-{
-    Q_D(QBuffer);
-    if (d->m_syncData != syncData) {
-        d->m_syncData = syncData;
-        emit syncDataChanged(syncData);
-    }
-}
-
 void QBuffer::setAccessType(QBuffer::AccessType access)
 {
     Q_D(QBuffer);
@@ -316,12 +285,6 @@ void QBuffer::setAccessType(QBuffer::AccessType access)
         d->m_access = access;
         Q_EMIT accessTypeChanged(access);
     }
-}
-
-bool QBuffer::isSyncData() const
-{
-    Q_D(const QBuffer);
-    return d->m_syncData;
 }
 
 /*!

@@ -52,7 +52,6 @@ Buffer::Buffer()
     : BackendNode(QBackendNode::ReadWrite)
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)
-    , m_syncData(false)
     , m_access(QBuffer::Write)
     , m_manager(nullptr)
 {
@@ -70,7 +69,6 @@ void Buffer::cleanup()
     m_data.clear();
     m_bufferUpdates.clear();
     m_bufferDirty = false;
-    m_syncData = false;
     m_access = QBuffer::Write;
 }
 
@@ -110,7 +108,6 @@ void Buffer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         m_bufferDirty = true;
     }
 
-    m_syncData = node->isSyncData();
     m_access = node->accessType();
     if (m_usage != node->usage()) {
         m_usage = node->usage();

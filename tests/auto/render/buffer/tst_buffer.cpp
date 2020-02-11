@@ -229,14 +229,6 @@ private Q_SLOTS:
         backendBuffer.unsetDirty();
         QVERIFY(!backendBuffer.isDirty());
 
-        // WHEN
-        frontendBuffer.setSyncData(true);
-        backendBuffer.syncFromFrontEnd(&frontendBuffer, false);
-
-        // THEN
-        QCOMPARE(backendBuffer.isSyncData(), true);
-        QVERIFY(!backendBuffer.isDirty());
-
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 

@@ -71,15 +71,6 @@ private Q_SLOTS:
         arbiter.clear();
 
         // WHEN
-        buffer->setSyncData(true);
-
-        // THEN
-        QCOMPARE(arbiter.dirtyNodes().size(), 1);
-        QCOMPARE(arbiter.dirtyNodes().front(), buffer.data());
-
-        arbiter.clear();
-
-        // WHEN
         buffer->updateData(1, QByteArrayLiteral("L1"));
         QCoreApplication::processEvents();
 

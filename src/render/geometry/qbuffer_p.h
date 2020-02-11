@@ -71,7 +71,6 @@ public:
     QByteArray m_data;
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
-    bool m_syncData;
     QBuffer::AccessType m_access;
 
     void setData(const QByteArray &data);
