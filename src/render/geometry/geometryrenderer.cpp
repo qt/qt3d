@@ -107,46 +107,55 @@ void GeometryRenderer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     const QGeometryRenderer *node = qobject_cast<const QGeometryRenderer *>(frontEnd);
     if (!node)
         return;
+    const Qt3DCore::QGeometryView *view = node->view();
 
-    m_dirty |= m_instanceCount != node->instanceCount();
-    m_instanceCount = node->instanceCount();
-    m_dirty |= m_vertexCount != node->vertexCount();
-    m_vertexCount = node->vertexCount();
-    m_dirty |= m_indexOffset != node->indexOffset();
-    m_indexOffset = node->indexOffset();
-    m_dirty |= m_firstInstance != node->firstInstance();
-    m_firstInstance = node->firstInstance();
-    m_dirty |= m_firstVertex != node->firstVertex();
-    m_firstVertex = node->firstVertex();
-    m_dirty |= m_indexBufferByteOffset != node->indexBufferByteOffset();
-    m_indexBufferByteOffset = node->indexBufferByteOffset();
-    m_dirty |= m_restartIndexValue != node->restartIndexValue();
-    m_restartIndexValue = node->restartIndexValue();
-    m_dirty |= m_verticesPerPatch != node->verticesPerPatch();
-    m_verticesPerPatch = node->verticesPerPatch();
-    m_dirty |= m_primitiveRestartEnabled != node->primitiveRestartEnabled();
-    m_primitiveRestartEnabled = node->primitiveRestartEnabled();
-    m_dirty |= m_primitiveType != node->primitiveType();
-    m_primitiveType = node->primitiveType();
-    m_dirty |= (node->geometry() && m_geometryId != node->geometry()->id()) || (!node->geometry() && !m_geometryId.isNull());
-    m_geometryId = node->geometry() ? node->geometry()->id() : Qt3DCore::QNodeId();
+    auto propertyUpdater = [this](const auto *node) {
+        m_dirty |= m_instanceCount != node->instanceCount();
+        m_instanceCount = node->instanceCount();
+        m_dirty |= m_vertexCount != node->vertexCount();
+        m_vertexCount = node->vertexCount();
+        m_dirty |= m_indexOffset != node->indexOffset();
+        m_indexOffset = node->indexOffset();
+        m_dirty |= m_firstInstance != node->firstInstance();
+        m_firstInstance = node->firstInstance();
+        m_dirty |= m_firstVertex != node->firstVertex();
+        m_firstVertex = node->firstVertex();
+        m_dirty |= m_indexBufferByteOffset != node->indexBufferByteOffset();
+        m_indexBufferByteOffset = node->indexBufferByteOffset();
+        m_dirty |= m_restartIndexValue != node->restartIndexValue();
+        m_restartIndexValue = node->restartIndexValue();
+        m_dirty |= m_verticesPerPatch != node->verticesPerPatch();
+        m_verticesPerPatch = node->verticesPerPatch();
+        m_dirty |= m_primitiveRestartEnabled != node->primitiveRestartEnabled();
+        m_primitiveRestartEnabled = node->primitiveRestartEnabled();
+        m_dirty |= m_primitiveType != static_cast<QGeometryRenderer::PrimitiveType>(node->primitiveType());
+        m_primitiveType = static_cast<QGeometryRenderer::PrimitiveType>(node->primitiveType());
+        m_dirty |= (node->geometry() && m_geometryId != node->geometry()->id()) || (!node->geometry() && !m_geometryId.isNull());
+        m_geometryId = node->geometry() ? node->geometry()->id() : Qt3DCore::QNodeId();
+    };
 
-    const QGeometryRendererPrivate *dnode = static_cast<const QGeometryRendererPrivate *>(QNodePrivate::get(frontEnd));
-    QGeometryFactoryPtr newFunctor = dnode->m_geometryFactory;
-    const bool functorDirty = ((m_geometryFactory && !newFunctor)
-                               || (!m_geometryFactory && newFunctor)
-                               || (m_geometryFactory && newFunctor && !(*newFunctor == *m_geometryFactory)));
-    if (functorDirty) {
-        m_dirty = true;
-        m_geometryFactory = newFunctor;
-        if (m_geometryFactory && m_manager != nullptr) {
-            m_manager->addDirtyGeometryRenderer(peerId());
+    if (view) {
+        propertyUpdater(view);
+    } else {
+        propertyUpdater(node);
 
-            const bool isQMeshFunctor = m_geometryFactory->id() == Qt3DCore::functorTypeId<MeshLoaderFunctor>();
-            if (isQMeshFunctor) {
-                const QMesh *meshNode = static_cast<const QMesh *>(node);
-                QMeshPrivate *dmeshNode = QMeshPrivate::get(const_cast<QMesh *>(meshNode));
-                dmeshNode->setStatus(QMesh::Loading);
+        const QGeometryRendererPrivate *dnode = static_cast<const QGeometryRendererPrivate *>(QNodePrivate::get(frontEnd));
+        QGeometryFactoryPtr newFunctor = dnode->m_geometryFactory;
+        const bool functorDirty = ((m_geometryFactory && !newFunctor)
+                                   || (!m_geometryFactory && newFunctor)
+                                   || (m_geometryFactory && newFunctor && !(*newFunctor == *m_geometryFactory)));
+        if (functorDirty) {
+            m_dirty = true;
+            m_geometryFactory = newFunctor;
+            if (m_geometryFactory && m_manager != nullptr) {
+                m_manager->addDirtyGeometryRenderer(peerId());
+
+                const bool isQMeshFunctor = m_geometryFactory->id() == Qt3DCore::functorTypeId<MeshLoaderFunctor>();
+                if (isQMeshFunctor) {
+                    const QMesh *meshNode = static_cast<const QMesh *>(node);
+                    QMeshPrivate *dmeshNode = QMeshPrivate::get(const_cast<QMesh *>(meshNode));
+                    dmeshNode->setStatus(QMesh::Loading);
+                }
             }
         }
     }

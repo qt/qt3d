@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QGEOMETRYRENDERER_P_H
-#define QT3DRENDER_QGEOMETRYRENDERER_P_H
+#ifndef QT3DCORE_QGEOMETRYVIEW_P_H
+#define QT3DCORE_QGEOMETRYVIEW_P_H
 
 //
 //  W A R N I N G
@@ -51,23 +51,23 @@
 // We mean it.
 //
 
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qgeometryview.h>
 #include <Qt3DCore/private/qgeometryfactory_p.h>
-#include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <memory>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class Q_3DRENDERSHARED_PRIVATE_EXPORT QGeometryRendererPrivate : public Qt3DCore::QComponentPrivate
+class Q_3DCORESHARED_EXPORT QGeometryViewPrivate : public Qt3DCore::QNodePrivate
 {
 public:
-    QGeometryRendererPrivate();
-    ~QGeometryRendererPrivate();
+    QGeometryViewPrivate();
+    ~QGeometryViewPrivate();
 
-    Q_DECLARE_PUBLIC(QGeometryRenderer)
+    Q_DECLARE_PUBLIC(QGeometryView)
 
     int m_instanceCount;
     int m_vertexCount;
@@ -78,16 +78,14 @@ public:
     int m_restartIndexValue;
     int m_verticesPerPatch;
     bool m_primitiveRestart;
-    Qt3DCore::QGeometry *m_geometry;
-    QGeometryRenderer::PrimitiveType m_primitiveType;
-    Qt3DCore::QGeometryFactoryPtr m_geometryFactory;
-    Qt3DCore::QGeometryView *m_view;
+    QGeometry *m_geometry;
+    QGeometryView::PrimitiveType m_primitiveType;
 };
 
-} // namespace Qt3DRender
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
 
-#endif // QT3DRENDER_QGEOMETRYRENDERER_P_H
+#endif // QT3DCORE_QGEOMETRYVIEW_P_H
 

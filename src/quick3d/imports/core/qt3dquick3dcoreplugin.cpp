@@ -47,6 +47,7 @@
 #include <Qt3DCore/qattribute.h>
 #include <Qt3DCore/qbuffer.h>
 #include <Qt3DCore/qgeometry.h>
+#include <Qt3DCore/qgeometryview.h>
 #include <QtCore/qvariantanimation.h>
 
 #include <Qt3DQuick/private/quick3dnodev9_p.h>
@@ -85,6 +86,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DCore::QBuffer, 9>(uri, 2, 9, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
     qmlRegisterType<Qt3DCore::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
     Qt3DCore::Quick::registerExtendedType<Qt3DCore::QGeometry, Qt3DCore::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Core/Geometry", uri, 2, 0, "Geometry");
+    qmlRegisterType<Qt3DCore::QGeometryView>(uri, 2, 16, "GeometryView");
 
     qmlRegisterType<Qt3DCore::Quick::QQuaternionAnimation>(uri, 2, 0, "QuaternionAnimation");
     qRegisterAnimationInterpolator<QQuaternion>(Qt3DCore::Quick::q_quaternionInterpolator);

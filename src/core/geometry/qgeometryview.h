@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QGEOMETRYRENDERER_H
-#define QT3DRENDER_QGEOMETRYRENDERER_H
+#ifndef QT3DCORE_QGEOMETRYVIEW_H
+#define QT3DCORE_QGEOMETRYVIEW_H
 
-#include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qgeometry.h>
-#include <Qt3DCore/qgeometryview.h>
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class QGeometryRendererPrivate;
+class QGeometryViewPrivate;
+class QGeometryFactory;
 
-class Q_3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
+typedef QSharedPointer<QGeometryFactory> QGeometryFactoryPtr;
+
+class Q_3DCORESHARED_EXPORT QGeometryView : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)
@@ -65,10 +67,10 @@ class Q_3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
     Q_PROPERTY(bool primitiveRestartEnabled READ primitiveRestartEnabled WRITE setPrimitiveRestartEnabled NOTIFY primitiveRestartEnabledChanged)
     Q_PROPERTY(Qt3DCore::QGeometry* geometry READ geometry WRITE setGeometry NOTIFY geometryChanged)
     Q_PROPERTY(PrimitiveType primitiveType READ primitiveType WRITE setPrimitiveType NOTIFY primitiveTypeChanged)
-    Q_PROPERTY(Qt3DCore::QGeometryView* view READ view WRITE setView NOTIFY viewChanged)
+
 public:
-    explicit QGeometryRenderer(Qt3DCore::QNode *parent = nullptr);
-    ~QGeometryRenderer();
+    explicit QGeometryView(Qt3DCore::QNode *parent = nullptr);
+    ~QGeometryView();
 
     enum PrimitiveType {
         Points = 0x0000,
@@ -98,9 +100,11 @@ public:
     int restartIndexValue() const;
     int verticesPerPatch() const;
     bool primitiveRestartEnabled() const;
-    Qt3DCore::QGeometry *geometry() const;
+    QGeometry *geometry() const;
     PrimitiveType primitiveType() const;
-    Qt3DCore::QGeometryView *view() const;
+
+    QGeometryFactoryPtr geometryFactory() const;
+    void setGeometryFactory(const QGeometryFactoryPtr &factory);
 
 public Q_SLOTS:
     void setInstanceCount(int instanceCount);
@@ -112,9 +116,8 @@ public Q_SLOTS:
     void setRestartIndexValue(int index);
     void setVerticesPerPatch(int verticesPerPatch);
     void setPrimitiveRestartEnabled(bool enabled);
-    void setGeometry(Qt3DCore::QGeometry *geometry);
+    void setGeometry(QGeometry *geometry);
     void setPrimitiveType(PrimitiveType primitiveType);
-    void setView(Qt3DCore::QGeometryView *view);
 
 Q_SIGNALS:
     void instanceCountChanged(int instanceCount);
@@ -126,19 +129,18 @@ Q_SIGNALS:
     void restartIndexValueChanged(int restartIndexValue);
     void verticesPerPatchChanged(int verticesPerPatch);
     void primitiveRestartEnabledChanged(bool primitiveRestartEnabled);
-    void geometryChanged(Qt3DCore::QGeometry *geometry);
+    void geometryChanged(QGeometry *geometry);
     void primitiveTypeChanged(PrimitiveType primitiveType);
-    void viewChanged(Qt3DCore::QGeometryView *view);
 
 protected:
-    explicit QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QGeometryView(QGeometryViewPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
-    Q_DECLARE_PRIVATE(QGeometryRenderer)
+    Q_DECLARE_PRIVATE(QGeometryView)
 };
 
-} // namespace Qt3DRender
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QGEOMETRYRENDERER_H
+#endif // QT3DCORE_QGEOMETRYVIEW_H

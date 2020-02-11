@@ -8,10 +8,14 @@ HEADERS += \
     $$PWD/qbuffer_p.h \
     $$PWD/qgeometry_p.h \
     $$PWD/qgeometry.h \
-    $$PWD/qgeometryfactory_p.h
+    $$PWD/qgeometryfactory_p.h \
+    $$PWD/qgeometryview_p.h \
+    $$PWD/qgeometryview.h
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
     $$PWD/qattribute.cpp \
     $$PWD/qbuffer.cpp \
     $$PWD/qgeometry.cpp \
+    $$PWD/qgeometryview.cpp
+
