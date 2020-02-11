@@ -61,14 +61,17 @@ Entity {
     property alias resolution: mesh.meshResolution
     property Material material
 
-    components: [ transform, mesh, root.material ]
+    components: [ transform, renderer, root.material ]
 
     Transform { id: transform }
 
-    PlaneMesh {
-        id: mesh
-        width: 1.0
-        height: 1.0
-        meshResolution: Qt.size(2, 2)
+    GeometryRenderer {
+        id: renderer
+        view: PlaneMesh {
+            id: mesh
+            width: 1.0
+            height: 1.0
+            meshResolution: Qt.size(2, 2)
+        }
     }
 }

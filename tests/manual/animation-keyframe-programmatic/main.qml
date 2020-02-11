@@ -66,7 +66,8 @@ DefaultSceneEntity {
 
                 onTranslationChanged: console.log("t = " + translation)
             },
-            CuboidMesh {
+            GeometryRenderer {
+                view: CuboidMesh { }
             },
             PhongMaterial {
                 id: cubeMaterial

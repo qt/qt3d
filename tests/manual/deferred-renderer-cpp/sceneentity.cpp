@@ -44,6 +44,7 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QLayer>
+#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DCore/QTransform>
 
 QT_BEGIN_NAMESPACE
@@ -56,6 +57,9 @@ SceneEntity::SceneEntity(Qt3DCore::QNode *parent)
     Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh(this);
     sphereMesh->setRings(50);
     sphereMesh->setSlices(100);
+
+    auto renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(sphereMesh);
 
     {
         Qt3DRender::QPointLight *light1 = new Qt3DRender::QPointLight(this);
@@ -81,7 +85,7 @@ SceneEntity::SceneEntity(Qt3DCore::QNode *parent)
 
         sphereOne->addComponent(sphereOneTransform);
         sphereOne->addComponent(sphereOneMaterial);
-        sphereOne->addComponent(sphereMesh);
+        sphereOne->addComponent(renderer);
         sphereOne->addComponent(m_layer);
         sphereOne->addComponent(light2);
     }
@@ -96,13 +100,12 @@ SceneEntity::SceneEntity(Qt3DCore::QNode *parent)
         light3->setColor(Qt::blue);
         light3->setIntensity(0.5f);
 
-        sphereTwo->addComponent(sphereMesh);
+        sphereTwo->addComponent(renderer);
         sphereTwo->addComponent(m_layer);
         sphereTwo->addComponent(sphereTwoMaterial);
         sphereTwo->addComponent(light3);
     }
 }
-
 
 Qt3DRender::QLayer *SceneEntity::layer() const
 {

@@ -106,9 +106,12 @@ int main(int argc, char **argv)
     Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial(rootEntity);
     material->setDiffuse(Qt::red);
 
+    auto renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(mesh);
+
     // Cylinder
     Qt3DCore::QEntity *cylinder = new Qt3DCore::QEntity(rootEntity);
-    cylinder->addComponent(mesh);
+    cylinder->addComponent(renderer);
     cylinder->addComponent(transform);
     cylinder->addComponent(material);
 

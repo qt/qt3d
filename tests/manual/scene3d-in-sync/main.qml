@@ -113,10 +113,12 @@ Item {
                 Entity {
                     id: trackingCube
                     components: [
-                        CuboidMesh {
-                            xExtent: 100
-                            yExtent: 100
-                            zExtent: 2
+                        GeometryRenderer {
+                            view: CuboidMesh {
+                                xExtent: 100
+                                yExtent: 100
+                                zExtent: 2
+                            }
                         },
 
                         PhongMaterial {

@@ -116,11 +116,13 @@ QQ2.Item {
                 InputSettings {}
             ]
 
-            PlaneMesh {
+            GeometryRenderer {
                 id: planeMesh
-                width: 4
-                height: 4
-                mirrored: true
+                view: PlaneMesh {
+                    width: 4
+                    height: 4
+                    mirrored: true
+                }
             }
 
             Entity {

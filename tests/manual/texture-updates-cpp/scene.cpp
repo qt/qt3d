@@ -56,6 +56,7 @@
 
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTextureDataUpdate>
 #include <cstring>
 
@@ -85,9 +86,12 @@ Scene::Scene(Qt3DCore::QEntity *rootEntity)
     mat->setSpecular(QColor(255, 255, 255));
     mat->setDiffuse(m_texture);
 
+    auto renderer = new Qt3DRender::QGeometryRenderer();
+    renderer->setView(cuboid);
+
     //Cuboid
     m_cuboidEntity = new Qt3DCore::QEntity(m_rootEntity);
-    m_cuboidEntity->addComponent(cuboid);
+    m_cuboidEntity->addComponent(renderer);
     m_cuboidEntity->addComponent(mat);
     m_cuboidEntity->addComponent(m_transform);
 }

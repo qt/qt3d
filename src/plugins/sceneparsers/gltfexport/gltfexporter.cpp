@@ -734,10 +734,13 @@ void GLTFExporter::parseMeshes()
     int meshCount = 0;
     for (auto it = m_meshMap.constBegin(); it != m_meshMap.constEnd(); ++it) {
         Node *node = it.key();
-        QGeometryRenderer *mesh = it.value();
+        QGeometryRenderer *renderer = it.value();
+        QGeometryView *mesh = renderer->view();
+        if (!mesh)
+            continue;
 
         MeshInfo meshInfo;
-        meshInfo.originalName = mesh->objectName();
+        meshInfo.originalName = mesh->objectName().isEmpty() ? renderer->objectName() : mesh->objectName();
         meshInfo.name = newMeshName();
         meshInfo.materialName = m_materialInfo.value(m_materialMap.value(node)).name;
 
@@ -764,7 +767,7 @@ void GLTFExporter::parseMeshes()
         }
 
         if (meshInfo.meshType != TypeNone) {
-            meshInfo.meshComponent = mesh;
+            meshInfo.meshComponent = renderer;
             cacheDefaultProperties(meshInfo.meshType);
 
             if (GLTFExporterLog().isDebugEnabled()) {
@@ -973,7 +976,7 @@ void GLTFExporter::parseMeshes()
         }
 
         meshCount++;
-        m_meshInfo.insert(mesh, meshInfo);
+        m_meshInfo.insert(renderer, meshInfo);
     }
 
     qCDebug(GLTFExporterLog, "Total buffer size: %i", m_buffer.size());
@@ -1249,7 +1252,7 @@ bool GLTFExporter::saveScene()
         mesh["name"] = meshInfo.originalName;
         if (meshInfo.meshType != TypeNone) {
             QJsonObject properties;
-            exportGenericProperties(properties, meshInfo.meshType, meshInfo.meshComponent);
+            exportGenericProperties(properties, meshInfo.meshType, meshInfo.meshComponent->view());
             mesh["type"] = meshInfo.meshTypeStr;
             mesh["properties"] = properties;
             mesh["material"] = meshInfo.materialName;

@@ -56,10 +56,12 @@ import Qt3D.Extras 2.0
 Entity {
     components: [ mesh, phongMaterial, transform ]
 
-    ConeMesh {
-        id: mesh
-        bottomRadius: 1.5
-        length: 3
+    GeometryRenderer {
+        view: ConeMesh {
+            id: mesh
+            bottomRadius: 1.5
+            length: 3
+        }
     }
 
     PhongMaterial {

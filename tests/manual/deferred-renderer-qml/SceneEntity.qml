@@ -81,10 +81,12 @@ Entity {
         viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
     }
 
-    SphereMesh {
+    GeometryRenderer {
         id : sphereMesh
-        rings: 50
-        slices: 100
+        view: SphereMesh {
+            rings: 50
+            slices: 100
+        }
     }
 
     SceneEffect { id : sceneMaterialEffect }

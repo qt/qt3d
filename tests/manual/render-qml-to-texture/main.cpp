@@ -56,6 +56,7 @@
 #include <Qt3DRender/QTextureWrapMode>
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QTexture>
+#include <Qt3DRender/QGeometryRenderer>
 
 #include "qt3dwindow.h"
 #include "qfirstpersoncameracontroller.h"
@@ -112,7 +113,9 @@ int main(int argc, char *argv[])
     Qt3DExtras::QPlaneMesh* planeMesh = new Qt3DExtras::QPlaneMesh(planeEntity);
     planeMesh->setWidth(4);
     planeMesh->setHeight(4);
-    planeEntity->addComponent(planeMesh);
+    auto renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(planeMesh);
+    planeEntity->addComponent(renderer);
 
     PlaneMaterial* material = new PlaneMaterial(offscreenTexture, planeEntity);
     planeEntity->addComponent(material);

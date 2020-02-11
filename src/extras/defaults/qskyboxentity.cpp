@@ -54,6 +54,7 @@
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -184,7 +185,9 @@ void QSkyboxEntityPrivate::init()
     m_skyboxTexture->addTextureImage(m_negYImage);
     m_skyboxTexture->addTextureImage(m_negZImage);
 
-    q_func()->addComponent(m_mesh);
+    QGeometryRenderer *renderer = new QGeometryRenderer;
+    renderer->setView(m_mesh);
+    q_func()->addComponent(renderer);
     q_func()->addComponent(m_material);
 }
 

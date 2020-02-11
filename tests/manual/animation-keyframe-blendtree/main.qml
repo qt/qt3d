@@ -75,7 +75,8 @@ DefaultSceneEntity {
                 translation: Qt.vector3d(5, 0, 0)
                 onTranslationChanged: console.log("t = " + translation)
             },
-            CuboidMesh {
+            GeometryRenderer {
+                view: CuboidMesh { }
             },
             PhongMaterial {
                 id: cubeMaterial

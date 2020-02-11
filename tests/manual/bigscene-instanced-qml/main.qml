@@ -112,17 +112,20 @@ Entity {
         parameters: Parameter { name: "instanceCount"; value: cylinderMeshInstanced.instanceCount }
     }
 
-    CylinderMesh {
-        id: cylinderMeshInstanced
-        instanceCount: 2000
-        rings: 50
-        slices: 30
-        radius: 2.5
-        length: 5.0
+    GeometryRenderer {
+        id: cylinderMeshRenderer
+        view: CylinderMesh {
+            id: cylinderMeshInstanced
+            instanceCount: 2000
+            rings: 50
+            slices: 30
+            radius: 2.5
+            length: 5.0
+        }
     }
 
     Entity {
         id: torusEntity
-        components: [ cylinderMeshInstanced, instancedPhongMaterial ]
+        components: [ cylinderMeshRenderer, instancedPhongMaterial ]
     }
 }

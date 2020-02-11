@@ -51,6 +51,7 @@
 #include <QGuiApplication>
 
 #include <Qt3DRender/qcamera.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DExtras/qcylindermesh.h>
 #include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DExtras/qphongmaterial.h>
@@ -127,10 +128,16 @@ int main(int argc, char **argv)
     cylinderMesh->setRings(5);
     cylinderMesh->setSlices(40);
 
+    auto cylinderRenderer = new Qt3DRender::QGeometryRenderer;
+    cylinderRenderer->setView(cylinderMesh);
+
     // Sphere mesh data
     Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh();
     sphereMesh->setRings(20);
     sphereMesh->setSlices(40);
+
+    auto sphereRenderer = new Qt3DRender::QGeometryRenderer;
+    sphereRenderer->setView(sphereMesh);
 
     // Transform for cylinder
     Qt3DCore::QTransform *transform = new Qt3DCore::QTransform;
@@ -150,7 +157,7 @@ int main(int argc, char **argv)
     view.setRootEntity(rootEntity);
     view.show();
 
-    ComponentSwapper *swapper = new ComponentSwapper(cylinder, cylinderMesh, sphereMesh);
+    ComponentSwapper *swapper = new ComponentSwapper(cylinder, cylinderRenderer, sphereRenderer);
     QTimer *timer = new QTimer;
     QObject::connect(timer, SIGNAL(timeout()), swapper, SLOT(swapComponents()));
     timer->start(2000);

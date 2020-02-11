@@ -93,14 +93,14 @@ namespace  Qt3DExtras {
  * Constructs a new QSphereMesh with \a parent.
  */
 QSphereMesh::QSphereMesh(QNode *parent)
-    : QGeometryRenderer(parent)
+    : Qt3DCore::QGeometryView(parent)
 {
     QSphereGeometry *geometry = new QSphereGeometry(this);
     QObject::connect(geometry, &QSphereGeometry::radiusChanged, this, &QSphereMesh::radiusChanged);
     QObject::connect(geometry, &QSphereGeometry::ringsChanged, this, &QSphereMesh::ringsChanged);
     QObject::connect(geometry, &QSphereGeometry::slicesChanged, this, &QSphereMesh::slicesChanged);
     QObject::connect(geometry, &QSphereGeometry::generateTangentsChanged, this, &QSphereMesh::generateTangentsChanged);
-    QGeometryRenderer::setGeometry(geometry);
+    QGeometryView::setGeometry(geometry);
 }
 
 /*! \internal */

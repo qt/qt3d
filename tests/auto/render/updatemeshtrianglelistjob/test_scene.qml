@@ -97,6 +97,6 @@ Entity {
     ]
 
     Entity {
-        components: CuboidMesh { id: cubeMesh }
+        components: GeometryRenderer { id: cubeMesh; view: CuboidMesh { } }
     }
 }

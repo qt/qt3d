@@ -74,11 +74,11 @@
     \section1 Rendering Qt Quick into a Texture
 
     We begin by declaring the Entity that will become our control panel. It consists of
-    a CuboidMesh onto which we will place the texture containing a rendering of the Qt Quick
-    scene. In this case we are using a simple cube for the geometry, but we could use
-    any valid 3D geometry as long as it has texture coordinates. The texture coordinates
-    are used for projecting the texture onto the 3D surface, and also for calculating the
-    coordinates of mouse events to be passed to the originating Qt Quick scene.
+    a GeometryRenderer with a CuboidMesh view onto which we will place the texture containing
+    a rendering of the Qt Quick scene. In this case we are using a simple cube for the
+    geometry, but we could use any valid 3D geometry as long as it has texture coordinates.
+    The texture coordinates are used for projecting the texture onto the 3D surface, and also
+    for calculating the coordinates of mouse events to be passed to the originating Qt Quick scene.
 
     \skipto Entity {
     \printto Behavior

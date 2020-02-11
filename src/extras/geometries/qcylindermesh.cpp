@@ -54,7 +54,6 @@
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
-using namespace Qt3DRender;
 
 namespace Qt3DExtras {
 
@@ -104,7 +103,7 @@ namespace Qt3DExtras {
  * Constructs a new QCylinderMesh with \a parent.
  */
 QCylinderMesh::QCylinderMesh(QNode *parent)
-    : QGeometryRenderer(parent)
+    : Qt3DCore::QGeometryView(parent)
 {
     QCylinderGeometry *geometry = new QCylinderGeometry(this);
     QObject::connect(geometry, &QCylinderGeometry::radiusChanged, this, &QCylinderMesh::radiusChanged);
@@ -112,7 +111,7 @@ QCylinderMesh::QCylinderMesh(QNode *parent)
     QObject::connect(geometry, &QCylinderGeometry::slicesChanged, this, &QCylinderMesh::slicesChanged);
     QObject::connect(geometry, &QCylinderGeometry::lengthChanged, this, &QCylinderMesh::lengthChanged);
 
-    QGeometryRenderer::setGeometry(geometry);
+    QGeometryView::setGeometry(geometry);
 }
 
 /*! \internal */

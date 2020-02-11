@@ -41,14 +41,14 @@
 #define QT3DEXTRAS_QPLANEMESH_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DCore/qgeometryview.h>
 #include <QtCore/QSize>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class Q_3DEXTRASSHARED_EXPORT QPlaneMesh : public Qt3DRender::QGeometryRenderer
+class Q_3DEXTRASSHARED_EXPORT QPlaneMesh : public Qt3DCore::QGeometryView
 {
     Q_OBJECT
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)

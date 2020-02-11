@@ -1740,6 +1740,7 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
             const QString material = (m_majorVersion > 1) ? QString::number(matValue.toInt()) : matValue.toString();
 
             QGeometryRenderer *geometryRenderer = new QGeometryRenderer;
+            QGeometryView *geometryView = new QGeometryView;
             QGeometry *meshGeometry = new QGeometry(geometryRenderer);
 
             //Set Primitive Type
@@ -1815,7 +1816,8 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
                 }
             } // of has indices
 
-            geometryRenderer->setGeometry(meshGeometry);
+            geometryView->setGeometry(meshGeometry);
+            geometryRenderer->setView(geometryView);
             geometryRenderer->setObjectName(meshName);
 
             m_meshDict.insert(id, geometryRenderer);
@@ -1823,17 +1825,23 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
     } else {
         QGeometryRenderer *mesh = nullptr;
         if (meshType == QStringLiteral("cone")) {
-            mesh = new QConeMesh;
+            mesh = new QGeometryRenderer;
+            mesh->setView(new QConeMesh);
         } else if (meshType == QStringLiteral("cuboid")) {
-            mesh = new QCuboidMesh;
+            mesh = new QGeometryRenderer;
+            mesh->setView(new QCuboidMesh);
         } else if (meshType == QStringLiteral("cylinder")) {
-            mesh = new QCylinderMesh;
+            mesh = new QGeometryRenderer;
+            mesh->setView(new QCylinderMesh);
         } else if (meshType == QStringLiteral("plane")) {
-            mesh = new QPlaneMesh;
+            mesh = new QGeometryRenderer;
+            mesh->setView(new QPlaneMesh);
         } else if (meshType == QStringLiteral("sphere")) {
-            mesh = new QSphereMesh;
+            mesh = new QGeometryRenderer;
+            mesh->setView(new QSphereMesh);
         } else if (meshType == QStringLiteral("torus")) {
-            mesh = new QTorusMesh;
+            mesh = new QGeometryRenderer;
+            mesh->setView(new QTorusMesh);
         } else {
             qCWarning(GLTFImporterLog,
                       "Invalid mesh type: %ls for mesh: %ls",
@@ -1844,30 +1852,34 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
         if (mesh) {
             // Read and set properties
             const QJsonObject propObj = json.value(KEY_PROPERTIES).toObject();
+            QObject *target = mesh;
+            if (mesh->view())
+                target = mesh->view();
             for (auto it = propObj.begin(), end = propObj.end(); it != end; ++it) {
                 const QByteArray propName = it.key().toLatin1();
                 // Basic mesh types only have bool, int, float, and QSize type properties
                 if (it.value().isBool()) {
-                    mesh->setProperty(propName.constData(), QVariant(it.value().toBool()));
+                    target->setProperty(propName.constData(), QVariant(it.value().toBool()));
                 } else if (it.value().isArray()) {
                     const QJsonArray valueArray = it.value().toArray();
                     if (valueArray.size() == 2) {
                         QSize size;
                         size.setWidth(valueArray.at(0).toInt());
                         size.setHeight(valueArray.at(1).toInt());
-                        mesh->setProperty(propName.constData(), QVariant(size));
+                        target->setProperty(propName.constData(), QVariant(size));
                     }
                 } else {
-                    const QVariant::Type propType = mesh->property(propName.constData()).type();
+                    const QVariant::Type propType = target->property(propName.constData()).type();
                     if (propType == QVariant::Int) {
-                        mesh->setProperty(propName.constData(), QVariant(it.value().toInt()));
+                        target->setProperty(propName.constData(), QVariant(it.value().toInt()));
                     } else {
-                        mesh->setProperty(propName.constData(),
-                                          QVariant(float(it.value().toDouble())));
+                        target->setProperty(propName.constData(),
+                                            QVariant(float(it.value().toDouble())));
                     }
                 }
             }
             mesh->setObjectName(meshName);
+            mesh->view()->setObjectName(meshName);
             m_meshMaterialDict[mesh] = (m_majorVersion > 1) ?
                         QString::number(json.value(KEY_MATERIAL).toInt()) :
                         json.value(KEY_MATERIAL).toString();

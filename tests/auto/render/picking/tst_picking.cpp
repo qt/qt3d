@@ -34,6 +34,7 @@
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/qobjectpicker.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DCore/qattribute.h>
@@ -76,8 +77,11 @@ public:
 
         transform->setTranslation(position);
 
+        auto renderer = new Qt3DRender::QGeometryRenderer;
+        renderer->setView(mesh);
+
         addComponent(picker);
-        addComponent(mesh);
+        addComponent(renderer);
         addComponent(transform);
 
         QObject::connect(picker, &QObjectPicker::pressed, this, &PickableEntity::onPressed);

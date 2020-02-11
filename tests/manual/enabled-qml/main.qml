@@ -111,9 +111,11 @@ Entity {
 
     // Sphere
     Entity {
-        SphereMesh {
+        GeometryRenderer {
             id: sphereMesh
-            enabled: counter !== 0
+            view: SphereMesh {
+                enabled: counter !== 0
+            }
         }
 
         PhongMaterial {
@@ -184,10 +186,12 @@ Entity {
 
     // Floor
     Entity {
-        PlaneMesh {
+        GeometryRenderer {
             id: planeMesh
-            width: 25.0
-            height: 10
+            view: PlaneMesh {
+                width: 25.0
+                height: 10
+            }
         }
 
         PhongMaterial {

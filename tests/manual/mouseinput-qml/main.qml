@@ -81,9 +81,11 @@ Entity {
         InputSettings {}
     ]
 
-    SphereMesh {
+    GeometryRenderer{
         id: sphereMesh
-        radius: 3
+        SphereMesh {
+            radius: 3
+        }
     }
 
     PhongMaterial {

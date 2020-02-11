@@ -99,7 +99,7 @@ Entity {
         }
     ]
 
-    CuboidMesh { id: cubeMesh }
+    GeometryRenderer { id: cubeMesh; view: CuboidMesh { } }
     PhongMaterial { id: material }
 
     // Entity 1

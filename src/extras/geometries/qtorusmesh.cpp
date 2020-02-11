@@ -96,7 +96,7 @@ namespace  Qt3DExtras {
  * Constructs a new QTorusMesh with \a parent.
  */
 QTorusMesh::QTorusMesh(QNode *parent)
-    : QGeometryRenderer(parent)
+    : Qt3DCore::QGeometryView(parent)
 {
     QTorusGeometry *geometry = new QTorusGeometry(this);
     QObject::connect(geometry, &QTorusGeometry::radiusChanged, this, &QTorusMesh::radiusChanged);
@@ -104,7 +104,7 @@ QTorusMesh::QTorusMesh(QNode *parent)
     QObject::connect(geometry, &QTorusGeometry::slicesChanged, this, &QTorusMesh::slicesChanged);
     QObject::connect(geometry, &QTorusGeometry::minorRadiusChanged, this, &QTorusMesh::minorRadiusChanged);
 
-    QGeometryRenderer::setGeometry(geometry);
+    QGeometryView::setGeometry(geometry);
 }
 
 /*! \internal */

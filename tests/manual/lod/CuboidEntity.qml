@@ -56,11 +56,13 @@ import Qt3D.Extras 2.0
 Entity {
     components: [ mesh, phongMaterial, transform ]
 
-    CuboidMesh {
+    GeometryRenderer {
         id: mesh
-        yzMeshResolution: Qt.size(2, 2)
-        xzMeshResolution: Qt.size(2, 2)
-        xyMeshResolution: Qt.size(2, 2)
+        view: CuboidMesh {
+            yzMeshResolution: Qt.size(2, 2)
+            xzMeshResolution: Qt.size(2, 2)
+            xyMeshResolution: Qt.size(2, 2)
+        }
     }
 
     PhongMaterial {

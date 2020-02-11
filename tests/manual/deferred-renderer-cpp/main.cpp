@@ -51,8 +51,6 @@
 #include <Qt3DCore/QEntity>
 
 #include <Qt3DRender/QMaterial>
-#include <Qt3DExtras/QSphereMesh>
-#include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QCamera>

@@ -150,7 +150,7 @@ Entity {
         InputSettings {}
     ]
 
-    CuboidMesh { id: cubeMesh }
+    GeometryRenderer { id: cubeMesh; view: CuboidMesh { } }
 
     PickableEntity {
         id: cube1

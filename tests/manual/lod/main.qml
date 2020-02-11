@@ -104,14 +104,16 @@ Entity {
 
         Entity {
             components: [
-                CylinderMesh {
+                GeometryRenderer {
                     id: mesh
-                    radius: 1
-                    length: 3
-                    rings: 2
-                    slices: sliceValues[lod.currentIndex]
+                    view: CylinderMesh {
+                        radius: 1
+                        length: 3
+                        rings: 2
+                        slices: sliceValues[lod.currentIndex]
 
-                    property var sliceValues: [20, 10, 6, 4]
+                        property var sliceValues: [20, 10, 6, 4]
+                    }
                 },
                 Transform {
                     scale: 1.5

@@ -83,6 +83,9 @@ int main(int argc, char **argv)
     // Cylinder shape data
     Qt3DExtras::QCylinderMesh *mesh = new Qt3DExtras::QCylinderMesh();
 
+    auto renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(mesh);
+
     qDebug() << "Setup complete.  Creating cylinders\n";
 
     // simple setParent from nullptr (OK for QTBUG-73905)
@@ -103,7 +106,7 @@ int main(int argc, char **argv)
         parentNode->setObjectName("Green Parent");
         leafNode->setObjectName("Green Leaf");
 
-        leafNode->addComponent(mesh);
+        leafNode->addComponent(renderer);
         leafNode->addComponent(greenMaterial);
         parentNode->addComponent(leftTransform);
 
@@ -130,7 +133,7 @@ int main(int argc, char **argv)
         grandParentNode->setObjectName("Yellow Grandparent");
         parentNode->setObjectName("Yellow Parent");
 
-        leafNode->addComponent(mesh);
+        leafNode->addComponent(renderer);
         leafNode->addComponent(yellowMaterial);
         parentNode->addComponent(leftTransform);
 
@@ -169,9 +172,10 @@ int main(int argc, char **argv)
         Qt3DExtras::QPhongMaterial *redMaterial = new Qt3DExtras::QPhongMaterial(rootEntity);
         redMaterial->setDiffuse(Qt::red);
         redMaterial->setObjectName("Red Material");
+
         Qt3DCore::QEntity *leafNode = new Qt3DCore::QEntity();
         leafNode->setObjectName("Red Leaf");
-        leafNode->addComponent(mesh);
+        leafNode->addComponent(renderer);
         leafNode->addComponent(redMaterial);
 
         tree1node2->addComponent(wrongRedTransform);
@@ -217,7 +221,7 @@ int main(int argc, char **argv)
         blueMaterial->setObjectName("Blue Material");
         blueMaterial->setDiffuse(Qt::blue);
         Qt3DCore::QEntity *leafNode = new Qt3DCore::QEntity(rootEntity);
-        leafNode->addComponent(mesh);
+        leafNode->addComponent(renderer);
         leafNode->addComponent(blueMaterial);
         leafNode->setObjectName("Blue Leaf");
 

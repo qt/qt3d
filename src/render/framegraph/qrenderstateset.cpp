@@ -145,7 +145,7 @@ QRenderStateSetPrivate::QRenderStateSetPrivate()
         Entity {
             id: sphereEntity
             components: [
-                SphereMesh {},
+                GeometryRenderer { view: SphereMesh {} },
                 PhongMaterial {}
             ]
         }

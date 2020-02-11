@@ -124,8 +124,11 @@ int main(int argc, char **argv)
     times.push_back(8.0f);
     times.push_back(12.0f);
 
+    auto renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(mesh);
+
     animation->setTargetPositions(times);
-    animation->setTarget(mesh);
+    animation->setTarget(renderer);
     animation->setMorphTargets(morphTargets);
 
     // Material
@@ -137,7 +140,7 @@ int main(int argc, char **argv)
 
     // Cylinder
     Qt3DCore::QEntity *morphingEntity = new Qt3DCore::QEntity(rootEntity);
-    morphingEntity->addComponent(mesh);
+    morphingEntity->addComponent(renderer);
     morphingEntity->addComponent(transform);
     morphingEntity->addComponent(material);
 
@@ -158,8 +161,11 @@ int main(int argc, char **argv)
     cylinderMaterial->setDiffuse(Qt::red);
 
     // Cylinder
+    renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(cylinderMesh);
+
     Qt3DCore::QEntity *cylinder = new Qt3DCore::QEntity(rootEntity);
-    cylinder->addComponent(cylinderMesh);
+    cylinder->addComponent(renderer);
     cylinder->addComponent(cylinderTransform);
     cylinder->addComponent(cylinderMaterial);
 

@@ -152,11 +152,12 @@ void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
             thresholdType: LevelOfDetail.DistanceToCameraThreshold
         }
 
-        CylinderMesh {
+        GeometryRenderer {
             id: mesh
-
-            property var sliceValues: [20, 10, 6, 4]
-            slices: sliceValues[lod.currentIndex]
+            view: CylinderMesh {
+                property var sliceValues: [20, 10, 6, 4]
+                slices: sliceValues[lod.currentIndex]
+            }
         }
 
         Entity {

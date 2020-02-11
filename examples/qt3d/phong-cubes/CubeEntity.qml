@@ -60,11 +60,13 @@ Entity {
 
     components: [mesh, material, transform]
 
-    CuboidMesh {
+    GeometryRenderer {
         id: mesh
-        xExtent: 0.5
-        yExtent: xExtent
-        zExtent: xExtent
+        view: CuboidMesh {
+            xExtent: 0.5
+            yExtent: xExtent
+            zExtent: xExtent
+        }
     }
 
     Transform {

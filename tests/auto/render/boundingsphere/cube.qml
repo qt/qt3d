@@ -61,7 +61,7 @@ Entity {
     Entity {
 
         components: [
-            CuboidMesh { id: testMesh; objectName: "testMesh" },
+            GeometryRenderer { id: testMesh; objectName: "testMesh"; view: CuboidMesh { } },
             PhongMaterial { id: material }
         ]
     }

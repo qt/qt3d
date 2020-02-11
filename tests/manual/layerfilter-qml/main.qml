@@ -148,10 +148,12 @@ Entity {
 
     components: [external_forward_renderer, inputSettings]
 
-    PlaneMesh {
+    GeometryRenderer {
         id: backgroundMesh
-        width: 0.5
-        height: 0.5
+        view: PlaneMesh {
+            width: 0.5
+            height: 0.5
+        }
     }
 
     Transform {
@@ -175,10 +177,12 @@ Entity {
         ambient: "red"
     }
 
-    PlaneMesh {
+    GeometryRenderer {
         id: mesh
-        width: 1
-        height: 1
+        view: PlaneMesh {
+            width: 1
+            height: 1
+        }
     }
 
     Transform {

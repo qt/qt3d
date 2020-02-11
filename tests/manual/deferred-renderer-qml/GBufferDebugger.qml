@@ -47,10 +47,12 @@ Entity {
     components : [
         Layer { id: debugLayer },
 
-        PlaneMesh {
-            width: 2.0
-            height: 2.0
-            meshResolution: Qt.size(2, 2)
+        GeometryRenderer {
+            view: PlaneMesh {
+                width: 2.0
+                height: 2.0
+                meshResolution: Qt.size(2, 2)
+            }
         },
 
         Transform { // We rotate the plane so that it faces us

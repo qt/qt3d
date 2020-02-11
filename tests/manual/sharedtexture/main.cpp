@@ -60,6 +60,7 @@
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QDirectionalLight>
+#include <Qt3DRender/QGeometryRenderer>
 
 #include <Qt3DInput/QInputAspect>
 
@@ -97,7 +98,10 @@ Qt3DCore::QEntity *createScene(Qt3DExtras::Qt3DWindow *view, Qt3DRender::QAbstra
     cubeRotateTransformAnimation->setLoopCount(-1);
     cubeRotateTransformAnimation->start();
 
-    sphereEntity->addComponent(cuboidMesh);
+    auto renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(cuboidMesh);
+
+    sphereEntity->addComponent(renderer);
     sphereEntity->addComponent(transform);
     sphereEntity->addComponent(material);
 

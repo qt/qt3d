@@ -56,9 +56,11 @@ import Qt3D.Extras 2.0
 Entity {
     components: [ mesh, material, transform ]
 
-    SphereMesh {
+    GeometryRenderer {
         id: mesh
-        radius: 1
+        SphereMesh {
+            radius: 1
+        }
     }
 
     PhongMaterial {

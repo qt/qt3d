@@ -94,14 +94,14 @@ namespace  Qt3DExtras {
  * Constructs a new QPlaneMesh with \a parent.
  */
 QPlaneMesh::QPlaneMesh(QNode *parent)
-    : QGeometryRenderer(parent)
+    : Qt3DCore::QGeometryView(parent)
 {
     QPlaneGeometry *geometry = new QPlaneGeometry(this);
     QObject::connect(geometry, &QPlaneGeometry::widthChanged, this, &QPlaneMesh::widthChanged);
     QObject::connect(geometry, &QPlaneGeometry::heightChanged, this, &QPlaneMesh::heightChanged);
     QObject::connect(geometry, &QPlaneGeometry::resolutionChanged, this, &QPlaneMesh::meshResolutionChanged);
     QObject::connect(geometry, &QPlaneGeometry::mirroredChanged, this, &QPlaneMesh::mirroredChanged);
-    QGeometryRenderer::setGeometry(geometry);
+    QGeometryView::setGeometry(geometry);
 }
 
 /*! \internal */

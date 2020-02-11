@@ -41,7 +41,7 @@
 #define QT3DEXTRAS_QSPHEREMESH_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DCore/QGeometryView>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,7 +49,7 @@ namespace Qt3DExtras {
 
 class QSphereMeshPrivate;
 
-class Q_3DEXTRASSHARED_EXPORT QSphereMesh : public Qt3DRender::QGeometryRenderer
+class Q_3DEXTRASSHARED_EXPORT QSphereMesh : public Qt3DCore::QGeometryView
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

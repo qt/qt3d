@@ -96,9 +96,11 @@ Entity {
         id: mainEntity
         objectName: "mainEntity"
 
-        ConeMesh {
+        GeometryRenderer {
             id: coneMesh
-            length: 4
+            view: ConeMesh {
+                length: 4
+            }
         }
 
         PhongMaterial {
@@ -122,12 +124,14 @@ Entity {
         objectName: "draggerEntity"
         property vector3d position: Qt.vector3d(0, 0, 0)
 
-        CylinderMesh {
+        GeometryRenderer {
             id: mesh
-            radius: .5
-            length: 3
-            rings: 2
-            slices: 20
+            view: CylinderMesh {
+                radius: .5
+                length: 3
+                rings: 2
+                slices: 20
+            }
         }
 
         Transform {
@@ -166,7 +170,7 @@ Entity {
         id: obstructionEntity
 
         components: [
-            CuboidMesh { },
+            GeometryRenderer { view: CuboidMesh { } },
             PhongMaterial { diffuse: "blue" },
             Transform {
                 scale: 2

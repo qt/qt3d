@@ -109,7 +109,7 @@ namespace  Qt3DExtras {
  * Constructs a new QCuboidMesh with \a parent.
  */
 QCuboidMesh::QCuboidMesh(QNode *parent)
-    : QGeometryRenderer(parent)
+    : Qt3DCore::QGeometryView(parent)
 {
     QCuboidGeometry *geometry = new QCuboidGeometry(this);
     QObject::connect(geometry, &QCuboidGeometry::xExtentChanged, this, &QCuboidMesh::xExtentChanged);
@@ -118,7 +118,7 @@ QCuboidMesh::QCuboidMesh(QNode *parent)
     QObject::connect(geometry, &QCuboidGeometry::xyMeshResolutionChanged, this, &QCuboidMesh::xyMeshResolutionChanged);
     QObject::connect(geometry, &QCuboidGeometry::xzMeshResolutionChanged, this, &QCuboidMesh::xzMeshResolutionChanged);
     QObject::connect(geometry, &QCuboidGeometry::yzMeshResolutionChanged, this, &QCuboidMesh::yzMeshResolutionChanged);
-    QGeometryRenderer::setGeometry(geometry);
+    QGeometryView::setGeometry(geometry);
 }
 
 /*! \internal */

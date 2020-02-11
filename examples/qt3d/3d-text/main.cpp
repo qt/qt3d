@@ -50,6 +50,7 @@
 
 #include <QCoreApplication>
 #include <Qt3DCore/Qt3DCore>
+#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/Qt3DExtras>
 #include <Qt3DExtras/QExtrudedTextMesh>
 
@@ -71,8 +72,11 @@ int main(int argc, char *argv[])
         planeTransform->setTranslation(QVector3D(0, 0, 0));
         planeMaterial->setDiffuse(QColor(150, 150, 150));
 
+        auto renderer = new Qt3DRender::QGeometryRenderer;
+        renderer->setView(planeMesh);
+
         plane->addComponent(planeMaterial);
-        plane->addComponent(planeMesh);
+        plane->addComponent(renderer);
         plane->addComponent(planeTransform);
     }
 

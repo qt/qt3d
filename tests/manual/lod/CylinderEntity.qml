@@ -56,10 +56,12 @@ import Qt3D.Extras 2.0
 Entity {
     components: [ mesh, phongMaterial, transform ]
 
-    CylinderMesh {
+    GeometryRenderer {
         id: mesh
-        radius: 1
-        length: 3
+        view: CylinderMesh {
+            radius: 1
+            length: 3
+        }
     }
 
     PhongMaterial {

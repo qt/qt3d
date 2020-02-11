@@ -62,6 +62,7 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QGeometryRenderer>
 
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
@@ -94,7 +95,9 @@ Qt3DCore::QEntity *createScene()
     torusTransform->setScale3D(QVector3D(1.5, 1, 0.5));
     torusTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
 
-    torusEntity->addComponent(torusMesh);
+    auto renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(torusMesh);
+    torusEntity->addComponent(renderer);
     torusEntity->addComponent(torusTransform);
     torusEntity->addComponent(material);
 
@@ -117,7 +120,10 @@ Qt3DCore::QEntity *createScene()
     sphereRotateTransformAnimation->setLoopCount(-1);
     sphereRotateTransformAnimation->start();
 
-    sphereEntity->addComponent(sphereMesh);
+    renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(sphereMesh);
+
+    sphereEntity->addComponent(renderer);
     sphereEntity->addComponent(sphereTransform);
     sphereEntity->addComponent(material);
 

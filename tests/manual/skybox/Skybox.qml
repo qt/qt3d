@@ -86,11 +86,13 @@ Entity {
         fragmentShaderCode: loadSource("qrc:/shaders/es2/skybox.frag")
     }
 
-    CuboidMesh {
+    GeometryRenderer {
         id: cuboidMesh
-        yzMeshResolution: Qt.size(2, 2)
-        xzMeshResolution: Qt.size(2, 2)
-        xyMeshResolution: Qt.size(2, 2)
+        view: CuboidMesh {
+            yzMeshResolution: Qt.size(2, 2)
+            xzMeshResolution: Qt.size(2, 2)
+            xyMeshResolution: Qt.size(2, 2)
+        }
     }
 
     Transform {

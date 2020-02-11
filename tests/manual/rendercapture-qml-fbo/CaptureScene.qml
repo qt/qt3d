@@ -157,12 +157,14 @@ Entity {
         id: material
     }
 
-    TorusMesh {
+    GeometryRenderer {
         id: torusMesh
-        radius: 5
-        minorRadius: 1
-        rings: 100
-        slices: 20
+        view: TorusMesh {
+            radius: 5
+            minorRadius: 1
+            rings: 100
+            slices: 20
+        }
     }
 
     Transform {
@@ -176,9 +178,11 @@ Entity {
         components: [ torusMesh, material, torusTransform ]
     }
 
-    SphereMesh {
+    GeometryRenderer {
         id: sphereMesh
-        radius: 3
+        view: SphereMesh {
+            radius: 3
+        }
     }
 
     Transform {

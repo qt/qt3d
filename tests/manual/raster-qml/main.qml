@@ -90,12 +90,14 @@ Entity {
 
     components: [external_forward_renderer, inputSettings]
 
-    CylinderMesh {
+    GeometryRenderer {
         id: mesh
-        radius: 1
-        length: 3
-        rings: 100
-        slices: 20
+        view: CylinderMesh {
+            radius: 1
+            length: 3
+            rings: 100
+            slices: 20
+        }
     }
 
     Transform {

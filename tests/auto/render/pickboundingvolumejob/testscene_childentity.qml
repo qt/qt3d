@@ -96,7 +96,7 @@ Entity {
         }
     ]
 
-    CuboidMesh { id: cubeMesh }
+    GeometryRenderer { id: cubeMesh; view: CuboidMesh { } }
     PhongMaterial { id: material }
 
     // Parent Entity

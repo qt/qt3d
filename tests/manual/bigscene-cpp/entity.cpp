@@ -50,7 +50,6 @@
 
 #include "entity.h"
 
-#include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
 #include <Qt3DCore/QTransform>

@@ -105,12 +105,14 @@ Entity {
         }
     ]
 
-    CylinderMesh {
+    GeometryRenderer {
         id: mesh
-        radius: 1
-        length: 3
-        rings: 10
-        slices: 10
+        view: CylinderMesh {
+            radius: 1
+            length: 3
+            rings: 10
+            slices: 10
+        }
     }
     PhongMaterial { id: material }
 

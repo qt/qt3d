@@ -131,7 +131,7 @@ QQ2.Item {
                 InputSettings { }
             ]
 
-            CuboidMesh { id: mesh }
+            GeometryRenderer {  id: mesh; view: CuboidMesh { } }
 
             NodeInstantiator {
                 id: instantiator

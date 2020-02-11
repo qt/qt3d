@@ -87,12 +87,14 @@ Entity {
         diffuse: "yellow"
     }
 
-    TorusMesh {
+    GeometryRenderer {
         id: torusMesh
-        radius: 5
-        minorRadius: 1
-        rings: 100
-        slices: 20
+        view: TorusMesh {
+            radius: 5
+            minorRadius: 1
+            rings: 100
+            slices: 20
+        }
     }
 
     Transform {

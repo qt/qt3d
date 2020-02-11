@@ -91,7 +91,7 @@ Entity {
 
     Entity {
         components: [
-            SphereMesh { radius: 5 },
+            GeometryRenderer { view: SphereMesh { radius: 5 } },
             PhongMaterial { diffuse: "dodgerblue" }
         ]
     }

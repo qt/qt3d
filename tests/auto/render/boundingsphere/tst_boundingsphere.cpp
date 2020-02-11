@@ -57,12 +57,6 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 
-#include <Qt3DExtras/qspheremesh.h>
-#include <Qt3DExtras/qcylindermesh.h>
-#include <Qt3DExtras/qtorusmesh.h>
-#include <Qt3DExtras/qcuboidmesh.h>
-#include <Qt3DExtras/qplanemesh.h>
-
 #include <qbackendnodetester.h>
 
 QT_BEGIN_NAMESPACE

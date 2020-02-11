@@ -67,11 +67,13 @@ Entity {
                                                        normal.y * center.y +
                                                        normal.z * center.z))
 
-    PlaneMesh {
+    GeometryRenderer {
         id: mesh
-        width: 20.0
-        height: 20.0
-        meshResolution: Qt.size(2, 2)
+        view: PlaneMesh {
+            width: 20.0
+            height: 20.0
+            meshResolution: Qt.size(2, 2)
+        }
     }
 
     Transform {

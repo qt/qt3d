@@ -83,12 +83,14 @@ Scene3D {
 
         components: [renderSettings]
 
-        TorusMesh {
-            id: mesh
-            radius: 5
-            minorRadius: 1
-            rings: 100
-            slices: 20
+        GeometryRenderer {
+            id: torusMesh
+            view: TorusMesh {
+                radius: 5
+                minorRadius: 1
+                rings: 100
+                slices: 20
+            }
         }
 
         Transform {

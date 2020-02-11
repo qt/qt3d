@@ -62,7 +62,7 @@ Entity {
 
     PhongMaterial { id: material }
 
-    SphereMesh { id: sphereMesh }
+    GeometryRenderer { id: sphereMesh; view: SphereMesh { } }
 
     Transform {
         id: transform

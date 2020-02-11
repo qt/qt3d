@@ -157,11 +157,13 @@ Entity {
 
     //![1]
     // Bars
-    CuboidMesh {
+    GeometryRenderer {
         id: barMesh
-        xExtent: 0.1
-        yExtent: 0.1
-        zExtent: 0.1
+        view: CuboidMesh {
+            xExtent: 0.1
+            yExtent: 0.1
+            zExtent: 0.1
+        }
     }
 
     NodeInstantiator {
@@ -189,10 +191,12 @@ Entity {
         Entity {
             id: titlePlane
 
-            PlaneMesh {
+            GeometryRenderer {
                 id: titlePlaneMesh
-                width: 550
-                height: 100
+                view: PlaneMesh {
+                    width: 550
+                    height: 100
+                }
             }
 
             Transform {

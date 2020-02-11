@@ -115,7 +115,7 @@ namespace Qt3DExtras {
  */
 
 QConeMesh::QConeMesh(QNode *parent)
-    : QGeometryRenderer(parent)
+    : Qt3DCore::QGeometryView(parent)
 {
     QConeGeometry *geometry = new QConeGeometry(this);
     QObject::connect(geometry, &QConeGeometry::hasTopEndcapChanged, this, &QConeMesh::hasTopEndcapChanged);
@@ -126,7 +126,7 @@ QConeMesh::QConeMesh(QNode *parent)
     QObject::connect(geometry, &QConeGeometry::slicesChanged, this, &QConeMesh::slicesChanged);
     QObject::connect(geometry, &QConeGeometry::lengthChanged, this, &QConeMesh::lengthChanged);
 
-    QGeometryRenderer::setGeometry(geometry);
+    QGeometryView::setGeometry(geometry);
 }
 
 /*! \internal */

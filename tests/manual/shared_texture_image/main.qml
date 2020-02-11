@@ -93,7 +93,7 @@ Entity {
         source: "qrc:/image.png"
     }
 
-    readonly property GeometryRenderer mesh: CuboidMesh {}
+    readonly property GeometryRenderer mesh: GeometryRenderer { view: CuboidMesh {} }
 
     Entity {
         id: leftCube

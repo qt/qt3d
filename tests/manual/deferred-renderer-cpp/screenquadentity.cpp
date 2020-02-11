@@ -42,6 +42,7 @@
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QLayer>
+#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPlaneMesh>
 
@@ -63,10 +64,13 @@ ScreenQuadEntity::ScreenQuadEntity(Qt3DCore::QNode *parent)
     planeMesh->setWidth(2.0f);
     planeMesh->setHeight(2.0f);
 
+    auto renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setView(planeMesh);
+
     addComponent(m_layer);
     addComponent(screenPlaneTransform);
     addComponent(screenQuadMaterial);
-    addComponent(planeMesh);
+    addComponent(renderer);
 }
 
 Qt3DRender::QLayer *ScreenQuadEntity::layer() const
