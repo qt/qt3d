@@ -326,9 +326,19 @@ private Q_SLOTS:
                                                       qMetaTypeId<QVector<float>>(),
                                                       6,
                                                       channelMapping->peerId() };
+            ChannelNameAndType rgbColor = { QLatin1String("rgbColor"),
+                                            static_cast<int>(QVariant::Color),
+                                            3,
+                                            channelMapping->peerId() };
+
+            ChannelNameAndType rgbaColor = { QLatin1String("rgbaColor"),
+                                            static_cast<int>(QVariant::Color),
+                                            4,
+                                            channelMapping->peerId() };
+
             QVector<ChannelNameAndType> channelNamesAndTypes
                     = { rotation, location, baseColor, metalness, roughness,
-                        morphTargetWeightsList, morphTargetWeightsVec };
+                        morphTargetWeightsList, morphTargetWeightsVec, rgbColor, rgbaColor };
 
             // And the matching indices
             ComponentIndices rotationIndices = { 0, 1, 2, 3 };
@@ -338,10 +348,12 @@ private Q_SLOTS:
             ComponentIndices roughnessIndices = { 11 };
             ComponentIndices morphTargetListIndices = { 12, 13, 14, 15, 16 };
             ComponentIndices morphTargetVecIndices = { 17, 18, 19, 20, 21, 22 };
+            ComponentIndices rgbColorIndices = { 23, 24, 25 };
+            ComponentIndices rgbaColorIndices = { 26, 27, 28, 29 };
             QVector<ComponentIndices> channelComponentIndices
                     = { rotationIndices, locationIndices, baseColorIndices,
                         metalnessIndices, roughnessIndices, morphTargetListIndices,
-                        morphTargetVecIndices };
+                        morphTargetVecIndices, rgbColorIndices, rgbaColorIndices };
 
             QVector<QBitArray> sourceClipMask = { QBitArray(4, true),
                                                   QBitArray(3, true),
@@ -349,7 +361,10 @@ private Q_SLOTS:
                                                   QBitArray(1, true),
                                                   QBitArray(1, true),
                                                   QBitArray(5, true),
-                                                  QBitArray(6, true) };
+                                                  QBitArray(6, true),
+                                                  QBitArray(3, true),
+                                                  QBitArray(4, true),
+                                                };
 
             MappingData expectedMapping;
             expectedMapping.targetId = channelMapping->targetId();
@@ -1700,7 +1715,7 @@ private Q_SLOTS:
             expectedResults.clear();
         }
 
-        // color with and without offset
+        // color with and without offset 3 components
         {
             channel = Channel();
             channel.name = QLatin1String("Color");
@@ -1715,7 +1730,7 @@ private Q_SLOTS:
             suffixes = (QVector<char>() << 'R' << 'G' << 'B');
             expectedResults = (QVector<int>() << 0 << 1 << 2);
 
-            QTest::newRow("QColor Color, offset = 0")
+            QTest::newRow("QColor RGB Color, offset = 0")
                     << channel << dataType << expectedChannelComponentCount
                     << offset << suffixes << expectedResults;
 
@@ -1723,7 +1738,39 @@ private Q_SLOTS:
 
             offset = 10;
             expectedResults = (QVector<int>() << 10 << 11 << 12);
-            QTest::newRow("QColor Color, offset = 10")
+            QTest::newRow("QColor RGB Color, offset = 10")
+                    << channel << dataType << expectedChannelComponentCount
+                    << offset << suffixes << expectedResults;
+
+            suffixes.clear();
+            expectedResults.clear();
+        }
+
+        // color with and without offset 4 components
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Color");
+            channel.channelComponents.resize(4);
+            channel.channelComponents[0].name = QLatin1String("Color R");
+            channel.channelComponents[1].name = QLatin1String("Color G");
+            channel.channelComponents[2].name = QLatin1String("Color B");
+            channel.channelComponents[3].name = QLatin1String("Color A");
+
+            dataType = static_cast<int>(QVariant::Color);
+            expectedChannelComponentCount = 4;
+            offset = 0;
+            suffixes = (QVector<char>() << 'R' << 'G' << 'B' << 'A');
+            expectedResults = (QVector<int>() << 0 << 1 << 2 << 3);
+
+            QTest::newRow("QColor RGBA Color, offset = 0")
+                    << channel << dataType << expectedChannelComponentCount
+                    << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 10;
+            expectedResults = (QVector<int>() << 10 << 11 << 12 << 13);
+            QTest::newRow("QColor RGBA Color, offset = 10")
                     << channel << dataType << expectedChannelComponentCount
                     << offset << suffixes << expectedResults;
 
@@ -1890,14 +1937,41 @@ private Q_SLOTS:
             offset = 0;
             expectedResults = (QVector<int>() << 0 << 1 << 2);
 
-            QTest::newRow("QColor Color, offset = 0")
+            QTest::newRow("QColor RGB Color, offset = 0")
                     << channel << dataType << componentCount << offset << expectedResults;
 
             expectedResults.clear();
 
             offset = 10;
             expectedResults = (QVector<int>() << 10 << 11 << 12);
-            QTest::newRow("QColor Color, offset = 10")
+            QTest::newRow("QColor RGB Color, offset = 10")
+                    << channel << dataType << componentCount << offset << expectedResults;
+
+            expectedResults.clear();
+        }
+
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Color");
+            channel.channelComponents.resize(4);
+            channel.channelComponents[0].name = QLatin1String("Color R");
+            channel.channelComponents[1].name = QLatin1String("Color G");
+            channel.channelComponents[2].name = QLatin1String("Color B");
+            channel.channelComponents[3].name = QLatin1String("Color A");
+
+            dataType = static_cast<int>(QVariant::Color);
+            componentCount = 4;
+            offset = 0;
+            expectedResults = (QVector<int>() << 0 << 1 << 2 << 3);
+
+            QTest::newRow("QColor RGBA Color, offset = 0")
+                    << channel << dataType << componentCount << offset << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 10;
+            expectedResults = (QVector<int>() << 10 << 11 << 12 << 13);
+            QTest::newRow("QColor RGBA Color, offset = 10")
                     << channel << dataType << componentCount << offset << expectedResults;
 
             expectedResults.clear();
