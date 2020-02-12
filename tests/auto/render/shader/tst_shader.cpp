@@ -29,6 +29,7 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include "testrenderer.h"
 
@@ -46,6 +47,7 @@ private slots:
     void checkSetRendererDirtyOnInitialization();
     void allowToChangeShaderCode_data();
     void allowToChangeShaderCode();
+    void checkShaderManager();
 };
 
 
@@ -276,6 +278,48 @@ void tst_RenderShader::allowToChangeShaderCode()
     QCOMPARE(backend.shaderCode().at(type), QStringLiteral("bar"));
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
+}
+
+void tst_RenderShader::checkShaderManager()
+{
+    // GIVEN
+    Qt3DRender::QShaderProgram shader;
+    TestRenderer renderer;
+    Qt3DRender::Render::ShaderManager manager;
+    Qt3DRender::Render::ShaderFunctor creationFunctor(&renderer, &manager);
+
+    // THEN
+    QVERIFY(manager.shaderIdsToCleanup().isEmpty());
+
+    // WHEN
+    Qt3DCore::QNodeCreatedChangeBase changeObj(&shader);
+    Qt3DCore::QNodeCreatedChangeBasePtr changePtr(&changeObj, [](Qt3DCore::QNodeCreatedChangeBase *) {});
+    auto backend = creationFunctor.create(changePtr);
+
+    // THEN
+    QVERIFY(backend != nullptr);
+    QVERIFY(manager.shaderIdsToCleanup().isEmpty());
+
+    {
+        // WHEN
+        auto sameBackend = creationFunctor.get(shader.id());
+        // THEN
+        QCOMPARE(backend, sameBackend);
+    }
+
+    // WHEN
+    creationFunctor.destroy(shader.id());
+
+    // THEN -> Should be in list of ids to remove and return null on get
+    QVERIFY(manager.hasShaderIdToCleanup(shader.id()));
+    QVERIFY(creationFunctor.get(shader.id()) == nullptr);
+
+    // WHEN -> Should be removed from list of ids to remove
+    creationFunctor.create(changePtr);
+
+    // THEN
+    QVERIFY(manager.shaderIdsToCleanup().isEmpty());
+    QCOMPARE(creationFunctor.get(shader.id()), backend);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderShader)

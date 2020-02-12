@@ -141,7 +141,7 @@ inline QDebug operator<<(QDebug dbg, const Shader &shader)
 }
 #endif
 
-class ShaderFunctor : public Qt3DCore::QBackendNodeMapper
+class Q_AUTOTEST_EXPORT ShaderFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit ShaderFunctor(AbstractRenderer *renderer,

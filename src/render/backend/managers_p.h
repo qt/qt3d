@@ -211,6 +211,21 @@ public:
         m_shaderIdsToCleanup.push_back(id);
     }
 
+    void removeShaderIdFromIdsToCleanup(Qt3DCore::QNodeId id)
+    {
+        m_shaderIdsToCleanup.removeAll(id);
+    }
+
+    bool hasShaderIdToCleanup(Qt3DCore::QNodeId id) const
+    {
+        return m_shaderIdsToCleanup.contains(id);
+    }
+
+    QVector<Qt3DCore::QNodeId> shaderIdsToCleanup() const
+    {
+        return m_shaderIdsToCleanup;
+    }
+
     // Called by RenderThread in updateGLResources (locked)
     QVector<Qt3DCore::QNodeId> takeShaderIdsToCleanup()
     {

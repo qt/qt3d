@@ -1178,6 +1178,10 @@ void Renderer::reloadDirtyShaders()
                 HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
                 Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
 
+                // Shader could be null if the pass doesn't reference one yet
+                if (!shader)
+                    continue;
+
                 ShaderBuilder *shaderBuilder = nullptr;
                 for (const HShaderBuilder &builderHandle : activeBuilders) {
                     ShaderBuilder *builder = m_nodesManager->shaderBuilderManager()->data(builderHandle);
@@ -1205,7 +1209,7 @@ void Renderer::reloadDirtyShaders()
                     }
                 }
 
-                if (shader != nullptr && shader->isDirty())
+                if (shader->isDirty())
                     loadShader(shader, shaderHandle);
             }
         }
