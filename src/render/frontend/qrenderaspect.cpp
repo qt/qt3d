@@ -284,7 +284,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QLevelOfDetail, true>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
     q->registerBackendType<QLevelOfDetailSwitch, true>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
     q->registerBackendType<QSceneLoader, true>(QSharedPointer<Render::RenderSceneFunctor>::create(m_renderer, m_nodeManagers->sceneManager()));
-    q->registerBackendType<QRenderTarget, true>(QSharedPointer<Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager> >::create(m_renderer));
+    q->registerBackendType<QRenderTarget, true>(QSharedPointer<Render::RenderTargetFunctor>::create(m_renderer, m_nodeManagers->renderTargetManager()));
     q->registerBackendType<QRenderTargetOutput, true>(QSharedPointer<Render::NodeFunctor<Render::RenderTargetOutput, Render::AttachmentManager> >::create(m_renderer));
     q->registerBackendType<QRenderSettings, true>(QSharedPointer<Render::RenderSettingsFunctor>::create(m_renderer));
     q->registerBackendType<QRenderState, true>(QSharedPointer<Render::NodeFunctor<Render::RenderStateNode, Render::RenderStateManager> >::create(m_renderer));

@@ -500,6 +500,14 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
     activateDrawBuffers(attachments);
 }
 
+void SubmissionContext::releaseRenderTarget(const Qt3DCore::QNodeId id)
+{
+    if (m_renderTargets.contains(id)) {
+        const GLuint fboId = m_renderTargets.take(id);
+        m_glHelper->releaseFrameBufferObject(fboId);
+    }
+}
+
 GLuint SubmissionContext::createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments)
 {
     const GLuint fboId = m_glHelper->createFrameBufferObject();

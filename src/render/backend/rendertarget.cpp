@@ -41,6 +41,7 @@
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DRender/private/qrendertarget_p.h>
 #include <Qt3DRender/qrendertargetoutput.h>
+#include <Qt3DRender/private/managers_p.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -92,6 +93,33 @@ void RenderTarget::removeRenderOutput(QNodeId outputId)
 QVector<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
 {
     return m_renderOutputs;
+}
+
+RenderTargetFunctor::RenderTargetFunctor(AbstractRenderer *renderer, RenderTargetManager *manager)
+    : m_renderer(renderer)
+    , m_renderTargetManager(manager)
+{
+}
+
+QBackendNode *RenderTargetFunctor::create(const QNodeCreatedChangeBasePtr &change) const
+{
+    RenderTarget *backend = m_renderTargetManager->getOrCreateResource(change->subjectId());
+    // Remove from the list of ids to destroy in case we were added to it
+    m_renderTargetManager->removeRenderTargetToCleanup(change->subjectId());
+    backend->setRenderer(m_renderer);
+    return backend;
+}
+
+QBackendNode *RenderTargetFunctor::get(QNodeId id) const
+{
+    return m_renderTargetManager->lookupResource(id);
+}
+
+void RenderTargetFunctor::destroy(QNodeId id) const
+{
+    // We add ourselves to the dirty list to tell the renderer that this rendertarget has been destroyed
+    m_renderTargetManager->addRenderTargetIdToCleanup(id);
+    m_renderTargetManager->releaseResource(id);
 }
 
 } // namespace Render
