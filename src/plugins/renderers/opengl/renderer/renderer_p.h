@@ -329,6 +329,7 @@ public:
     RendererCache *cache() { return &m_cache; }
     void setScreen(QScreen *scr) override;
     QScreen *screen() const override;
+    NodeManagers *nodesManager() const { return m_nodesManager; }
 
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:

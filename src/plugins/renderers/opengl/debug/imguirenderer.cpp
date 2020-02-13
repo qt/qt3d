@@ -334,7 +334,8 @@ void ImGuiRenderer::showRenderDetails(const QVector<RenderView *> &renderViews)
             int j = 1;
             const auto commands = view->commands();
             for (const RenderCommand &command: commands) {
-                QString label(QLatin1String("Command ") + QString::number(j++));
+                GeometryRenderer *rGeometryRenderer = m_renderer->nodeManagers()->data<GeometryRenderer, GeometryRendererManager>(command.m_geometryRenderer);
+                QString label = QString(QLatin1String("Command %1 {%2}")).arg(QString::number(j++), QString::number(rGeometryRenderer->peerId().id()));
                 if (ImGui::TreeNode(label.toLatin1().data())) {
                     ImGui::Text("Primitive Type: %s %s", primitiveTypeName(command.m_primitiveType),
                                 command.m_drawIndexed ? "(indexed)" : "");
