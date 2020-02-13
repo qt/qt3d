@@ -289,7 +289,10 @@ void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews,
         if (ImGui::Button("FrameGraph Paths##1"))
             QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
                                       Qt::QueuedConnection, Q_ARG(QString, QLatin1String("render framepaths")));
-
+        ImGui::SameLine();
+        if (ImGui::Button("JobsGraph##1"))
+            QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
+                                      Qt::QueuedConnection, Q_ARG(QString, QLatin1String("dump jobs")));
         ImGui::End();
 
         if (m_showGLInfoWindow)

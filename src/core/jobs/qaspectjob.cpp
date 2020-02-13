@@ -56,6 +56,7 @@ bool isDependencyNull(const QWeakPointer<QAspectJob> &dep)
 } // anonymous
 
 QAspectJobPrivate::QAspectJobPrivate()
+    : m_jobName(QLatin1String("UnknowJob"))
 {
 }
 

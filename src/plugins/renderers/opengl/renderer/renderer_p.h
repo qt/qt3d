@@ -165,6 +165,8 @@ using RenderableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::Geometry
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 using SynchronizerPostFramePtr = GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>>;
+#define CreateSynchronizerPostFramePtr(lambda, postlambda, type) \
+    SynchronizerPostFramePtr::create(lambda, postlambda, type, #type)
 
 namespace Debug {
 class ImGuiRenderer;

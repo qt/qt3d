@@ -463,8 +463,8 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     , m_renderViewJob(RenderViewInitializerJobPtr::create())
     , m_filterEntityByLayerJob()
     , m_frustumCullingJob(new Render::FrustumCullingJob())
-    , m_syncPreFrustumCullingJob(SynchronizerJobPtr::create(SyncPreFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling))
-    , m_setClearDrawBufferIndexJob(SynchronizerJobPtr::create(SetClearDrawBufferIndex(m_renderViewJob), JobTypes::ClearBufferDrawIndex))
+    , m_syncPreFrustumCullingJob(CreateSynchronizerJobPtr(SyncPreFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling))
+    , m_setClearDrawBufferIndexJob(CreateSynchronizerJobPtr(SetClearDrawBufferIndex(m_renderViewJob), JobTypes::ClearBufferDrawIndex))
     , m_syncFilterEntityByLayerJob()
     , m_filterProximityJob(Render::FilterProximityDistanceJobPtr::create())
 {
@@ -558,7 +558,7 @@ void RenderViewBuilder::prepareJobs()
             auto renderViewCommandBuilder = Render::OpenGL::RenderViewCommandBuilderJobPtr::create();
             m_renderViewCommandBuilderJobs.push_back(renderViewCommandBuilder);
         }
-        m_syncRenderViewPreCommandBuildingJob = SynchronizerJobPtr::create(SyncPreCommandBuilding(m_renderViewJob,
+        m_syncRenderViewPreCommandBuildingJob = CreateSynchronizerJobPtr(SyncPreCommandBuilding(m_renderViewJob,
                                                                                                   m_renderViewCommandBuilderJobs,
                                                                                                   m_renderer,
                                                                                                   m_leafNode),
@@ -593,7 +593,7 @@ void RenderViewBuilder::prepareJobs()
                 materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob));
             m_materialGathererJobs.push_back(materialGatherer);
         }
-        m_syncMaterialGathererJob = SynchronizerJobPtr::create(SyncMaterialParameterGatherer(m_materialGathererJobs,
+        m_syncMaterialGathererJob = CreateSynchronizerJobPtr(SyncMaterialParameterGatherer(m_materialGathererJobs,
                                                                                              m_renderer,
                                                                                              m_leafNode),
                                                                JobTypes::SyncMaterialGatherer);
@@ -602,13 +602,13 @@ void RenderViewBuilder::prepareJobs()
     if (m_layerCacheNeedsToBeRebuilt) {
         m_filterEntityByLayerJob = Render::FilterLayerEntityJobPtr::create();
         m_filterEntityByLayerJob->setManager(m_renderer->nodeManagers());
-        m_syncFilterEntityByLayerJob = SynchronizerJobPtr::create(SyncFilterEntityByLayer(m_filterEntityByLayerJob,
+        m_syncFilterEntityByLayerJob = CreateSynchronizerJobPtr(SyncFilterEntityByLayer(m_filterEntityByLayerJob,
                                                                                           m_renderer,
                                                                                           m_leafNode),
                                                                   JobTypes::SyncFilterEntityByLayer);
     }
 
-    m_syncRenderViewPreCommandUpdateJob = SynchronizerJobPtr::create(SyncRenderViewPreCommandUpdate(m_renderViewJob,
+    m_syncRenderViewPreCommandUpdateJob = CreateSynchronizerJobPtr(SyncRenderViewPreCommandUpdate(m_renderViewJob,
                                                                                                     m_frustumCullingJob,
                                                                                                     m_filterProximityJob,
                                                                                                     m_materialGathererJobs,
@@ -619,12 +619,12 @@ void RenderViewBuilder::prepareJobs()
                                                                                                     m_renderCommandCacheNeedsToBeRebuilt),
                                                                      JobTypes::SyncRenderViewPreCommandUpdate);
 
-    m_syncRenderViewPostCommandUpdateJob = SynchronizerJobPtr::create(SyncRenderViewPostCommandUpdate(m_renderViewJob,
+    m_syncRenderViewPostCommandUpdateJob = CreateSynchronizerJobPtr(SyncRenderViewPostCommandUpdate(m_renderViewJob,
                                                                                                       m_renderViewCommandUpdaterJobs,
                                                                                                       m_renderer),
                                                                       JobTypes::SyncRenderViewPostCommandUpdate);
 
-    m_syncRenderViewPostInitializationJob = SynchronizerJobPtr::create(SyncRenderViewPostInitialization(m_renderViewJob,
+    m_syncRenderViewPostInitializationJob = CreateSynchronizerJobPtr(SyncRenderViewPostInitialization(m_renderViewJob,
                                                                                                         m_frustumCullingJob,
                                                                                                         m_filterEntityByLayerJob,
                                                                                                         m_filterProximityJob,

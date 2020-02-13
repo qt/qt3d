@@ -64,11 +64,11 @@ template<typename T>
 class GenericLambdaJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit GenericLambdaJob(T callable, JobTypes::JobType type = JobTypes::GenericLambda)
+    explicit GenericLambdaJob(T callable, JobTypes::JobType type = JobTypes::GenericLambda, const char *name = "GenericLambda")
         : Qt3DCore::QAspectJob()
         , m_callable(callable)
     {
-        SET_JOB_RUN_STAT_TYPE(this, type, 0)
+        SET_JOB_RUN_STAT_TYPE_AND_NAME(this, type, name, 0)
     }
 
     // QAspectJob interface
@@ -107,11 +107,11 @@ template<typename T, typename U>
 class GenericLambdaJobAndPostFrame : public Qt3DCore::QAspectJob
 {
 public:
-    explicit GenericLambdaJobAndPostFrame(T runCallable, U postFrameCallable, JobTypes::JobType type = JobTypes::GenericLambda)
+    explicit GenericLambdaJobAndPostFrame(T runCallable, U postFrameCallable, JobTypes::JobType type = JobTypes::GenericLambda, const char *name = "GenericLambda")
         : Qt3DCore::QAspectJob(*new GenericLambdaJobAndPostFramePrivate<T, U>(postFrameCallable))
         , m_runCallable(runCallable)
     {
-        SET_JOB_RUN_STAT_TYPE(this, type, 0)
+        SET_JOB_RUN_STAT_TYPE_AND_NAME(this, type, name, 0)
     }
 
     // QAspectJob interface

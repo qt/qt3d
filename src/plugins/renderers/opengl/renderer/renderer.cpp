@@ -266,20 +266,20 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_lightGathererJob(Render::LightGathererPtr::create())
     , m_renderableEntityFilterJob(Render::RenderableEntityFilterPtr::create())
     , m_computableEntityFilterJob(Render::ComputableEntityFilterPtr::create())
-    , m_bufferGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
-    , m_vaoGathererJob(SynchronizerJobPtr::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
-    , m_textureGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
-    , m_sendSetFenceHandlesToFrontendJob(SynchronizerJobPtr::create([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
-    , m_introspectShaderJob(SynchronizerPostFramePtr::create([this] { reloadDirtyShaders(); },
-                                                             [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
-                                                             JobTypes::DirtyShaderGathering))
-    , m_syncLoadingJobs(SynchronizerJobPtr::create([] {}, JobTypes::SyncLoadingJobs))
-    , m_cacheRenderableEntitiesJob(SynchronizerJobPtr::create(SyncRenderableEntities(m_renderableEntityFilterJob, &m_cache),
-                                                              JobTypes::EntityComponentTypeFiltering))
-    , m_cacheComputableEntitiesJob(SynchronizerJobPtr::create(SyncComputableEntities(m_computableEntityFilterJob, &m_cache),
-                                                              JobTypes::EntityComponentTypeFiltering))
-    , m_cacheLightsJob(SynchronizerJobPtr::create(SyncLightsGatherer(m_lightGathererJob, &m_cache),
-                                                  JobTypes::EntityComponentTypeFiltering))
+    , m_bufferGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
+    , m_vaoGathererJob(CreateSynchronizerJobPtr([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
+    , m_textureGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
+    , m_sendSetFenceHandlesToFrontendJob(CreateSynchronizerJobPtr([this] { sendSetFenceHandlesToFrontend(); }, JobTypes::SendSetFenceHandlesToFrontend))
+    , m_introspectShaderJob(CreateSynchronizerPostFramePtr([this] { reloadDirtyShaders(); },
+                                                           [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
+                                                           JobTypes::DirtyShaderGathering))
+    , m_syncLoadingJobs(CreateSynchronizerJobPtr([] {}, JobTypes::SyncLoadingJobs))
+    , m_cacheRenderableEntitiesJob(CreateSynchronizerJobPtr(SyncRenderableEntities(m_renderableEntityFilterJob, &m_cache),
+                                                            JobTypes::EntityComponentTypeFiltering))
+    , m_cacheComputableEntitiesJob(CreateSynchronizerJobPtr(SyncComputableEntities(m_computableEntityFilterJob, &m_cache),
+                                                            JobTypes::EntityComponentTypeFiltering))
+    , m_cacheLightsJob(CreateSynchronizerJobPtr(SyncLightsGatherer(m_lightGathererJob, &m_cache),
+                                                JobTypes::EntityComponentTypeFiltering))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
     , m_glResourceManagers(nullptr)

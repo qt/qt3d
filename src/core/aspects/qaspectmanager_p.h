@@ -116,6 +116,7 @@ public:
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
 
     int jobsInLastFrame() const { return m_jobsInLastFrame; }
+    void dumpJobsOnNextFrame();
 
 private:
 #if !QT_CONFIG(animation)
@@ -140,6 +141,7 @@ private:
     RequestFrameAnimation *m_simulationAnimation;
 #endif
     int m_jobsInLastFrame;
+    bool m_dumpJobs;
 };
 
 } // namespace Qt3DCore
