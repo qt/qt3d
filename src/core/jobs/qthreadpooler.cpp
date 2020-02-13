@@ -50,6 +50,7 @@ QThreadPooler::QThreadPooler(QObject *parent)
     , m_mutex()
     , m_taskCount(0)
     , m_threadPool(QThreadPool::globalInstance())
+    , m_totalRunJobs(0)
 {
     const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
     if (!maxThreadCount.isEmpty()) {
@@ -75,6 +76,7 @@ void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
     // The caller have to set the mutex
     const QVector<RunnableInterface *>::const_iterator end = tasks.cend();
 
+    m_totalRunJobs = 0;
     for (QVector<RunnableInterface *>::const_iterator it = tasks.cbegin();
          it != end; ++it) {
 
@@ -86,8 +88,36 @@ void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
 
         if (!hasDependencies(*it) && !(*it)->reserved()) {
             (*it)->setReserved(true);
-            (*it)->setPooler(this);
-            m_threadPool->start((*it));
+            if ((*it)->isRequired()) {
+                (*it)->setPooler(this);
+                m_threadPool->start((*it));
+            } else {
+                release();
+                enqueueDepencies(*it);
+            }
+        }
+    }
+}
+
+void QThreadPooler::enqueueDepencies(RunnableInterface *task)
+{
+    if (task->type() == RunnableInterface::RunnableType::AspectTask) {
+        AspectTaskRunnable *aspectTask = static_cast<AspectTaskRunnable *>(task);
+        const auto &dependers = aspectTask->m_dependers;
+        for (auto it = dependers.begin(); it != dependers.end(); ++it) {
+            AspectTaskRunnable *dependerTask = static_cast<AspectTaskRunnable *>(*it);
+            if (--dependerTask->m_dependerCount == 0) {
+                if (!dependerTask->reserved()) {
+                    dependerTask->setReserved(true);
+                    if ((*it)->isRequired()) {
+                        dependerTask->setPooler(this);
+                        m_threadPool->start(dependerTask);
+                    } else {
+                        release();
+                        enqueueDepencies(*it);
+                    }
+                }
+            }
         }
     }
 }
@@ -97,21 +127,9 @@ void QThreadPooler::taskFinished(RunnableInterface *task)
     const QMutexLocker locker(&m_mutex);
 
     release();
+    m_totalRunJobs++;
 
-    if (task->type() == RunnableInterface::RunnableType::AspectTask) {
-        AspectTaskRunnable *aspectTask = static_cast<AspectTaskRunnable *>(task);
-        const auto &dependers = aspectTask->m_dependers;
-        for (auto it = dependers.begin(); it != dependers.end(); ++it) {
-            aspectTask = static_cast<AspectTaskRunnable *>(*it);
-            if (--aspectTask->m_dependerCount == 0) {
-                if (!aspectTask->reserved()) {
-                    aspectTask->setReserved(true);
-                    aspectTask->setPooler(this);
-                    m_threadPool->start(aspectTask);
-                }
-            }
-        }
-    }
+    enqueueDepencies(task);
 
     if (currentCount() == 0) {
         if (m_futureInterface) {
@@ -135,6 +153,12 @@ QFuture<void> QThreadPooler::mapDependables(QVector<RunnableInterface *> &taskQu
     enqueueTasks(taskQueue);
 
     return QFuture<void>(m_futureInterface);
+}
+
+int QThreadPooler::waitForAllJobs()
+{
+    future().waitForFinished();
+    return m_totalRunJobs;
 }
 
 QFuture<void> QThreadPooler::future()

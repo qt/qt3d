@@ -72,6 +72,7 @@ public:
 
     static QAspectJobPrivate *get(QAspectJob *job);
 
+    virtual bool isRequired();
     virtual void postFrame(QAspectManager *aspectManager);
 
     QVector<QWeakPointer<QAspectJob> > m_dependencies;

@@ -77,6 +77,7 @@ public:
 
     virtual ~RunnableInterface();
 
+    virtual bool isRequired() = 0;
     virtual void run() = 0;
 
     virtual int id() = 0;
@@ -96,6 +97,7 @@ public:
     AspectTaskRunnable(QSystemInformationService *service);
     ~AspectTaskRunnable();
 
+    bool isRequired() override;
     void run() override;
 
     void setPooler(QThreadPooler *pooler) override { m_pooler = pooler; }
@@ -127,6 +129,7 @@ public:
                               QAtomicInt *atomicCount);
     ~SyncTaskRunnable();
 
+    bool isRequired() override;
     void run() override;
 
     void setPooler(QThreadPooler *pooler) override { m_pooler = pooler; }

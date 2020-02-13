@@ -66,6 +66,11 @@ QAspectJobPrivate *QAspectJobPrivate::get(QAspectJob *job)
     return job->d_func();
 }
 
+bool QAspectJobPrivate::isRequired()
+{
+    return true;
+}
+
 void QAspectJobPrivate::postFrame(QAspectManager *aspectManager)
 {
     Q_UNUSED(aspectManager)

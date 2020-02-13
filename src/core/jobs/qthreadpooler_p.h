@@ -69,10 +69,11 @@ class Q_3DCORE_PRIVATE_EXPORT QThreadPooler : public QObject
     Q_OBJECT
 
 public:
-    explicit QThreadPooler(QObject *parent = 0);
+    explicit QThreadPooler(QObject *parent = nullptr);
     ~QThreadPooler();
 
     QFuture<void> mapDependables(QVector<RunnableInterface *> &taskQueue);
+    int waitForAllJobs();
     void taskFinished(RunnableInterface *task);
     QFuture<void> future();
 
@@ -80,6 +81,7 @@ public:
 
 private:
     void enqueueTasks(const QVector<RunnableInterface *> &tasks);
+    void enqueueDepencies(RunnableInterface *task);
     void acquire(int add);
     void release();
     int currentCount() const;
@@ -89,6 +91,7 @@ private:
     QMutex m_mutex;
     QAtomicInt m_taskCount;
     QThreadPool *m_threadPool;
+    int m_totalRunJobs;
 };
 
 } // namespace Qt3DCore

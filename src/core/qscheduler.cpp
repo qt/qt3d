@@ -91,7 +91,7 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
     // Do any other work here that the aspect thread can usefully be doing
     // whilst the threadpool works its way through the jobs
 
-    m_aspectManager->jobManager()->waitForAllJobs();
+    int totalJobs = m_aspectManager->jobManager()->waitForAllJobs();
 
     {
         QTaskLogger logger(m_aspectManager->serviceLocator()->systemInformation(), 4097, 0, QTaskLogger::AspectJob);
@@ -103,7 +103,7 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
             QAbstractAspectPrivate::get(aspect)->jobsDone();
     }
 
-    return jobQueue.size();
+    return totalJobs;
 }
 
 } // namespace Qt3DCore
