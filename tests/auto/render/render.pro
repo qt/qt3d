@@ -134,7 +134,6 @@ qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
             boundingsphere \
             pickboundingvolumejob \
             gltfplugins \
-            updatemeshtrianglelistjob \
             updateshaderdatatransformjob
     }
 

@@ -161,7 +161,6 @@ private Q_SLOTS:
                  1 + // UpdateShaderDataTransform
                  1 + // ExpandBoundingVolumeJob
                  1 + // CalculateBoundingVolumeJob
-                 1 + // UpdateMeshTriangleListJob
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
                  1 + // updateLevelOfDetailJob
@@ -289,7 +288,6 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // CalculateBoundingVolumeJob
-                 1 + // UpdateMeshTriangleListJob
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
                  1 + // ExpandBoundingVolumeJob
@@ -313,7 +311,6 @@ private Q_SLOTS:
                  1 + // updateSkinningPaletteJob
                  1 + // SyncLoadingJobs
                  1 + // CalculateBoundingVolumeJob
-                 1 + // UpdateMeshTriangleListJob
                  1 + // BufferGathererJob
                  singleRenderViewJobCount);
 

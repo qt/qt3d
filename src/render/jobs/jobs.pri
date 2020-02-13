@@ -18,7 +18,6 @@ HEADERS += \
     $$PWD/updateworldboundingvolumejob_p.h \
     $$PWD/updateshaderdatatransformjob_p.h \
     $$PWD/updatelevelofdetailjob_p.h \
-    $$PWD/updatemeshtrianglelistjob_p.h \
     $$PWD/pickboundingvolumeutils_p.h \
     $$PWD/updatetreeenabledjob_p.h \
     $$PWD/sendbuffercapturejob_p.h \
@@ -43,7 +42,6 @@ SOURCES += \
     $$PWD/expandboundingvolumejob.cpp \
     $$PWD/updateworldboundingvolumejob.cpp \
     $$PWD/updateshaderdatatransformjob.cpp \
-    $$PWD/updatemeshtrianglelistjob.cpp \
     $$PWD/updatelevelofdetailjob.cpp \
     $$PWD/pickboundingvolumeutils.cpp \
     $$PWD/updatetreeenabledjob.cpp \

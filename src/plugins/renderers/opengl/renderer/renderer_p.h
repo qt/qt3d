@@ -71,7 +71,6 @@
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/sendbuffercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
-#include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
 #include <Qt3DRender/private/updateskinningpalettejob_p.h>
 #include <Qt3DRender/private/updateentitylayersjob_p.h>
 #include <Qt3DRender/private/shaderbuilder_p.h>
@@ -241,7 +240,6 @@ public:
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
     inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
     inline UpdateLevelOfDetailJobPtr updateLevelOfDetailJob() const { return m_updateLevelOfDetailJob; }
-    inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
     inline SynchronizerJobPtr syncLoadingJobs() const { return m_syncLoadingJobs; }
     inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
@@ -398,7 +396,6 @@ private:
     SendBufferCaptureJobPtr m_sendBufferCaptureJob;
     UpdateSkinningPaletteJobPtr m_updateSkinningPaletteJob;
     UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
-    UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
     UpdateEntityLayersJobPtr m_updateEntityLayersJob;
     LightGathererPtr m_lightGathererJob;

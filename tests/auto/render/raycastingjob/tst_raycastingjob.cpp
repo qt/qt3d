@@ -50,7 +50,6 @@
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/raycastingjob_p.h>
 #include <Qt3DRender/private/pickboundingvolumeutils_p.h>
-#include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
@@ -189,10 +188,6 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
     expandBVolume.setRoot(test->sceneRoot());
     expandBVolume.setManagers(test->nodeManagers());
     expandBVolume.run();
-
-    Qt3DRender::Render::UpdateMeshTriangleListJob updateTriangleList;
-    updateTriangleList.setManagers(test->nodeManagers());
-    updateTriangleList.run();
 }
 
 void initializeJob(Qt3DRender::Render::RayCastingJob *job, Qt3DRender::TestAspect *test)

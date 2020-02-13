@@ -261,7 +261,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_sendBufferCaptureJob(Render::SendBufferCaptureJobPtr::create())
     , m_updateSkinningPaletteJob(Render::UpdateSkinningPaletteJobPtr::create())
     , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
-    , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(FilterCompatibleTechniqueJobPtr::create())
     , m_updateEntityLayersJob(Render::UpdateEntityLayersJobPtr::create())
     , m_lightGathererJob(Render::LightGathererPtr::create())
@@ -307,11 +306,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
     // Ensures all skeletons are loaded before we try to update them
     m_updateSkinningPaletteJob->addDependency(m_syncLoadingJobs);
-
-    // All world stuff depends on the RenderEntity's localBoundingVolume
-    m_updateLevelOfDetailJob->addDependency(m_updateMeshTriangleListJob);
-    m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
-    m_rayCastingJob->addDependency(m_updateMeshTriangleListJob);
 
     m_introspectShaderJob->addDependency(m_filterCompatibleTechniqueJob);
 
@@ -393,7 +387,6 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_updateLevelOfDetailJob->setManagers(m_nodesManager);
     m_updateSkinningPaletteJob->setManagers(m_nodesManager);
-    m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
     m_updateEntityLayersJob->setManager(m_nodesManager);
     m_updateTreeEnabledJob->setManagers(m_nodesManager);
@@ -1946,7 +1939,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
         dirtyBitsForFrame & AbstractRenderer::BuffersDirty) {
         renderBinJobs.push_back(m_calculateBoundingVolumeJob);
-        renderBinJobs.push_back(m_updateMeshTriangleListJob);
     }
 
     if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
