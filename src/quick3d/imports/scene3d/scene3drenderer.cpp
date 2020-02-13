@@ -288,6 +288,7 @@ void Scene3DRenderer::beforeSynchronize()
         // SceneGraph update for nothing
         if (m_skipFrame) {
             m_skipFrame = false;
+            ContextSaver saver;
             static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(false);
             return;
         }
