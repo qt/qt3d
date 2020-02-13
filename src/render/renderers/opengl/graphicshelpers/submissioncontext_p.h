@@ -111,6 +111,7 @@ public:
     // FBO
     GLuint activeFBO() const { return m_activeFBO; }
     void activateRenderTarget(const Qt3DCore::QNodeId id, const AttachmentPack &attachments, GLuint defaultFboId);
+    void releaseRenderTarget(const Qt3DCore::QNodeId id);
     QSize renderTargetSize(const QSize &surfaceSize) const;
     QImage readFramebuffer(const QRect &rect);
     void blitFramebuffer(Qt3DCore::QNodeId outputRenderTargetId, Qt3DCore::QNodeId inputRenderTargetId,

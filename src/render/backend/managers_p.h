@@ -282,6 +282,35 @@ class RenderTargetManager : public Qt3DCore::QResourceManager<
 {
 public:
     RenderTargetManager() {}
+
+    // Called in AspectThread by RenderTarget node functor destroy
+    void addRenderTargetIdToCleanup(Qt3DCore::QNodeId id)
+    {
+        m_renderTargetIdsToCleanup.push_back(id);
+    }
+
+    // Called in AspectThread by RenderTarget node functor create
+    void removeRenderTargetToCleanup(Qt3DCore::QNodeId id)
+    {
+        m_renderTargetIdsToCleanup.removeAll(id);
+    }
+
+    // Called by RenderThread in updateGLResources (locked)
+    QVector<Qt3DCore::QNodeId> takeRenderTargetIdsToCleanup()
+    {
+        return std::move(m_renderTargetIdsToCleanup);
+    }
+
+#ifdef QT_BUILD_INTERNAL
+    // For unit testing purposes only
+    QVector<Qt3DCore::QNodeId> renderTargetIdsToCleanup() const
+    {
+        return m_renderTargetIdsToCleanup;
+    }
+#endif
+
+private:
+    QVector<Qt3DCore::QNodeId> m_renderTargetIdsToCleanup;
 };
 
 class RenderPassManager : public Qt3DCore::QResourceManager<

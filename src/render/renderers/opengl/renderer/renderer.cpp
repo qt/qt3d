@@ -1397,6 +1397,13 @@ void Renderer::updateGLResources()
 
     // Record list of buffer that might need uploading
     lookForDownloadableBuffers();
+
+    // Remove destroyed FBOs
+    {
+        const QNodeIdVector destroyedRenderTargetIds = m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
+        for (const Qt3DCore::QNodeId &renderTargetId : destroyedRenderTargetIds)
+            m_submissionContext->releaseRenderTarget(renderTargetId);
+    }
 }
 
 // Render Thread

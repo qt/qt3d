@@ -32,6 +32,7 @@
 #include <Qt3DRender/qrendertargetoutput.h>
 #include <Qt3DRender/private/qrendertarget_p.h>
 #include <Qt3DRender/private/rendertarget_p.h>
+#include <Qt3DRender/private/managers_p.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
 
@@ -205,6 +206,47 @@ private Q_SLOTS:
         }
     }
 
+    void checkRenderTargetManager()
+    {
+        // GIVEN
+        Qt3DRender::QRenderTarget renderTarget;
+        TestRenderer renderer;
+        Qt3DRender::Render::RenderTargetManager manager;
+        Qt3DRender::Render::RenderTargetFunctor creationFunctor(&renderer, &manager);
+
+        // THEN
+        QVERIFY(manager.renderTargetIdsToCleanup().isEmpty());
+
+        // WHEN
+        Qt3DCore::QNodeCreatedChangeBase changeObj(&renderTarget);
+        Qt3DCore::QNodeCreatedChangeBasePtr changePtr(&changeObj, [](Qt3DCore::QNodeCreatedChangeBase *) {});
+        auto backend = creationFunctor.create(changePtr);
+
+        // THEN
+        QVERIFY(backend != nullptr);
+        QVERIFY(manager.renderTargetIdsToCleanup().isEmpty());
+
+        {
+            // WHEN
+            auto sameBackend = creationFunctor.get(renderTarget.id());
+            // THEN
+            QCOMPARE(backend, sameBackend);
+        }
+
+        // WHEN
+        creationFunctor.destroy(renderTarget.id());
+
+        // THEN -> Should be in list of ids to remove and return null on get
+        QVERIFY(manager.renderTargetIdsToCleanup().contains(renderTarget.id()));
+        QVERIFY(creationFunctor.get(renderTarget.id()) == nullptr);
+
+        // WHEN -> Should be removed from list of ids to remove
+        creationFunctor.create(changePtr);
+
+        // THEN
+        QVERIFY(manager.renderTargetIdsToCleanup().isEmpty());
+        QVERIFY(creationFunctor.get(renderTarget.id()) != nullptr);
+    }
 };
 
 QTEST_MAIN(tst_RenderTarget)
