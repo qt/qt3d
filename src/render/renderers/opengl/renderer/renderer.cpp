@@ -1307,6 +1307,13 @@ void Renderer::updateGLResources()
     const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
     for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds)
         cleanupTexture(textureCleanedUpId);
+
+    // Remove destroyed FBOs
+    {
+        const QNodeIdVector destroyedRenderTargetIds = m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
+        for (const Qt3DCore::QNodeId &renderTargetId : destroyedRenderTargetIds)
+            m_submissionContext->releaseRenderTarget(renderTargetId);
+    }
 }
 
 // Render Thread

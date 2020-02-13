@@ -44,6 +44,7 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DRender/private/managers_p.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -112,6 +113,33 @@ void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     BackendNode::sceneChangeEvent(e);
+}
+
+RenderTargetFunctor::RenderTargetFunctor(AbstractRenderer *renderer, RenderTargetManager *manager)
+    : m_renderer(renderer)
+    , m_renderTargetManager(manager)
+{
+}
+
+QBackendNode *RenderTargetFunctor::create(const QNodeCreatedChangeBasePtr &change) const
+{
+    RenderTarget *backend = m_renderTargetManager->getOrCreateResource(change->subjectId());
+    // Remove from the list of ids to destroy in case we were added to it
+    m_renderTargetManager->removeRenderTargetToCleanup(change->subjectId());
+    backend->setRenderer(m_renderer);
+    return backend;
+}
+
+QBackendNode *RenderTargetFunctor::get(QNodeId id) const
+{
+    return m_renderTargetManager->lookupResource(id);
+}
+
+void RenderTargetFunctor::destroy(QNodeId id) const
+{
+    // We add ourselves to the dirty list to tell the renderer that this rendertarget has been destroyed
+    m_renderTargetManager->addRenderTargetIdToCleanup(id);
+    m_renderTargetManager->releaseResource(id);
 }
 
 } // namespace Render
