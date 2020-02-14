@@ -65,6 +65,7 @@ namespace OpenGL {
 
 class RenderView;
 class Renderer;
+class RenderViewCommandUpdaterJobPrivate;
 
 class Q_AUTOTEST_EXPORT RenderViewCommandUpdaterJob : public Qt3DCore::QAspectJob
 {
@@ -92,6 +93,8 @@ private:
     Renderer *m_renderer;
     EntityRenderCommandDataPtr m_renderables;
     QVector<RenderCommand> m_commands;
+
+    Q_DECLARE_PRIVATE(RenderViewCommandUpdaterJob)
 };
 
 typedef QSharedPointer<RenderViewCommandUpdaterJob> RenderViewCommandUpdaterJobPtr;

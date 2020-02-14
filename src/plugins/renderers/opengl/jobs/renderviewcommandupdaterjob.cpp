@@ -54,9 +54,36 @@ namespace {
 int renderViewInstanceCounter = 0;
 } // anonymous
 
+class RenderViewCommandUpdaterJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    RenderViewCommandUpdaterJobPrivate(RenderViewCommandUpdaterJob *q) : q_ptr(q) { }
+    ~RenderViewCommandUpdaterJobPrivate() override = default;
+
+    bool isRequired() override;
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    RenderViewCommandUpdaterJob *q_ptr;
+    Q_DECLARE_PUBLIC(RenderViewCommandUpdaterJob)
+};
+
+bool RenderViewCommandUpdaterJobPrivate::isRequired()
+{
+    Q_Q(RenderViewCommandUpdaterJob);
+
+    return q->m_renderView && !q->m_renderView->noDraw() && q->m_count > 0;
+}
+
+void RenderViewCommandUpdaterJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    Q_UNUSED(manager)
+
+    // reset to 0 after every frame, stops the number growing indefinitely
+    renderViewInstanceCounter = 0;
+}
 
 RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
-    : Qt3DCore::QAspectJob()
+    : Qt3DCore::QAspectJob(*new RenderViewCommandUpdaterJobPrivate(this))
     , m_offset(0)
     , m_count(0)
     , m_renderView(nullptr)
