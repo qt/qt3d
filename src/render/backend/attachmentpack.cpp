@@ -88,6 +88,32 @@ int AttachmentPack::getDrawBufferIndex(QRenderTargetOutput::AttachmentPoint atta
     return -1;
 }
 
+bool operator ==(const Attachment &a, const Attachment &b)
+{
+    return (a.m_name == b.m_name &&
+            a.m_mipLevel == b.m_mipLevel &&
+            a.m_layer == b.m_layer &&
+            a.m_textureUuid == b.m_textureUuid &&
+            a.m_point == b.m_point &&
+            a.m_face == b.m_face);
+}
+
+bool operator !=(const Attachment &a, const Attachment &b)
+{
+    return !(a == b);
+}
+
+bool operator ==(const AttachmentPack &packA, const AttachmentPack &packB)
+{
+    return (packA.attachments() == packB.attachments() &&
+            packA.getGlDrawBuffers() == packB.getGlDrawBuffers());
+}
+
+bool operator !=(const AttachmentPack &packA, const AttachmentPack &packB)
+{
+    return !(packA == packB);
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

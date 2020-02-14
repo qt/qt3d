@@ -99,6 +99,12 @@ private:
     QVector<int> m_drawBuffers;
 };
 
+bool operator ==(const Attachment &a, const Attachment &b);
+bool operator !=(const Attachment &a, const Attachment &b);
+
+bool operator ==(const AttachmentPack &packA, const AttachmentPack &packB);
+bool operator !=(const AttachmentPack &packA, const AttachmentPack &packB);
+
 } // namespace Render
 } // namespace Qt3DRender
 

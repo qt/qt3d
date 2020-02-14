@@ -478,9 +478,8 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
         // New RenderTarget
         if (!m_renderTargets.contains(renderTargetNodeId)) {
             if (m_defaultFBO && fboId == m_defaultFBO) {
-                // this is the default fbo that some platforms create (iOS), we just register it
-                // Insert FBO into hash
-                m_renderTargets.insert(renderTargetNodeId, fboId);
+                // this is the default fbo that some platforms create (iOS), we never
+                // register it
             } else {
                 fboId = createRenderTarget(renderTargetNodeId, attachments);
             }
@@ -489,6 +488,7 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
         }
     }
     m_activeFBO = fboId;
+    m_activeFBONodeId = renderTargetNodeId;
     m_glHelper->bindFrameBufferObject(m_activeFBO, GraphicsHelperInterface::FBODraw);
     // Set active drawBuffers
     activateDrawBuffers(attachments);
@@ -497,7 +497,8 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
 void SubmissionContext::releaseRenderTarget(const Qt3DCore::QNodeId id)
 {
     if (m_renderTargets.contains(id)) {
-        const GLuint fboId = m_renderTargets.take(id);
+        const RenderTargetInfo targetInfo = m_renderTargets.take(id);
+        const GLuint fboId = targetInfo.fboId;
         m_glHelper->releaseFrameBufferObject(fboId);
     }
 }
@@ -507,11 +508,11 @@ GLuint SubmissionContext::createRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
     const GLuint fboId = m_glHelper->createFrameBufferObject();
     if (fboId) {
         // The FBO is created and its attachments are set once
-        // Insert FBO into hash
-        m_renderTargets.insert(renderTargetNodeId, fboId);
         // Bind FBO
         m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
-        bindFrameBufferAttachmentHelper(fboId, attachments);
+        // Insert FBO into hash
+        const RenderTargetInfo info = bindFrameBufferAttachmentHelper(fboId, attachments);
+        m_renderTargets.insert(renderTargetNodeId, info);
     } else {
         qCritical("Failed to create FBO");
     }
@@ -520,31 +521,38 @@ GLuint SubmissionContext::createRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
 
 GLuint SubmissionContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, bool isActiveRenderTarget)
 {
-    const GLuint fboId = m_renderTargets.value(renderTargetNodeId);
+    const RenderTargetInfo fboInfo = m_renderTargets.value(renderTargetNodeId);
+    const GLuint fboId =fboInfo.fboId;
 
-    // We need to check if  one of the attachment was resized
-    bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
-    if (!needsResize) {
+    // We need to check if  one of the attachnent have changed QTBUG-64757
+    bool needsRebuild = attachments != fboInfo.attachments;
+
+    // Even if the attachment packs are the same, one of the inner texture might have
+    // been resized or recreated, we need to check for that
+    if (!needsRebuild) {
         // render target exists, has attachment been resized?
         GLTextureManager *glTextureManager = m_renderer->nodeManagers()->glTextureManager();
-        const QSize s = m_renderTargetsSize[fboId];
+        const QSize s = fboInfo.size;
+
         const auto attachments_ = attachments.attachments();
         for (const Attachment &attachment : attachments_) {
+            const bool textureWasUpdated = m_updateTextureIds.contains(attachment.m_textureUuid);
             GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
-            // ### TODO QTBUG-64757 this check is insufficient since the
-            // texture may have changed to another one with the same size. That
-            // case is not handled atm.
-            needsResize |= (rTex != nullptr && rTex->size() != s);
-            if (isActiveRenderTarget) {
-                if (attachment.m_point == QRenderTargetOutput::Color0)
+            if (rTex) {
+                const bool sizeHasChanged = rTex->size() != s;
+                needsRebuild |= sizeHasChanged;
+                if (isActiveRenderTarget && attachment.m_point == QRenderTargetOutput::Color0)
                     m_renderTargetFormat = rTex->properties().format;
             }
+            needsRebuild |= textureWasUpdated;
         }
     }
 
-    if (needsResize) {
+    if (needsRebuild) {
         m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
-        bindFrameBufferAttachmentHelper(fboId, attachments);
+        const RenderTargetInfo updatedInfo = bindFrameBufferAttachmentHelper(fboId, attachments);
+        // Update our stored Render Target Info
+        m_renderTargets.insert(renderTargetNodeId, updatedInfo);
     }
 
     return fboId;
@@ -555,8 +563,8 @@ QSize SubmissionContext::renderTargetSize(const QSize &surfaceSize) const
     QSize renderTargetSize;
     if (m_activeFBO != m_defaultFBO) {
         // For external FBOs we may not have a m_renderTargets entry.
-        if (m_renderTargetsSize.contains(m_activeFBO)) {
-            renderTargetSize = m_renderTargetsSize[m_activeFBO];
+        if (m_renderTargets.contains(m_activeFBONodeId)) {
+            renderTargetSize = m_renderTargets[m_activeFBONodeId].size;
         } else if (surfaceSize.isValid()) {
             renderTargetSize = surfaceSize;
         } else {
@@ -801,7 +809,7 @@ bool SubmissionContext::activateShader(ProgramDNA shaderDNA)
     return true;
 }
 
-void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
+SubmissionContext::RenderTargetInfo SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
 {
     // Set FBO attachments. These are normally textures, except that on Open GL
     // ES <= 3.1 we must use a renderbuffer if a combined depth+stencil is
@@ -836,7 +844,7 @@ void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Atta
             }
         }
     }
-    m_renderTargetsSize.insert(fboId, fboSize);
+    return {fboId, fboSize, attachments};
 }
 
 void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
@@ -1094,6 +1102,11 @@ void SubmissionContext::clearStencilValue(int stencil)
         m_currClearStencilValue = stencil;
         m_gl->functions()->glClearStencil(stencil);
     }
+}
+
+void SubmissionContext::setUpdatedTexture(const Qt3DCore::QNodeIdVector &updatedTextureIds)
+{
+    m_updateTextureIds = updatedTextureIds;
 }
 
 // It will be easier if the QGraphicContext applies the QUniformPack
@@ -1454,13 +1467,13 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
 
     // Up until this point the input and output rects are normal Qt rectangles.
     // Convert them to GL rectangles (Y at bottom).
-    const int inputFboHeight = inputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[inputFboId].height();
+    const int inputFboHeight = inputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargets[inputRenderTargetId].size.height();
     const GLint srcX0 = inputRect.left();
     const GLint srcY0 = inputFboHeight - (inputRect.top() + inputRect.height());
     const GLint srcX1 = srcX0 + inputRect.width();
     const GLint srcY1 = srcY0 + inputRect.height();
 
-    const int outputFboHeight = outputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargetsSize[outputFboId].height();
+    const int outputFboHeight = outputFboId == defaultFboId ? m_surfaceSize.height() : m_renderTargets[outputRenderTargetId].size.height();
     const GLint dstX0 = outputRect.left();
     const GLint dstY0 = outputFboHeight - (outputRect.top() + outputRect.height());
     const GLint dstX1 = dstX0 + outputRect.width();

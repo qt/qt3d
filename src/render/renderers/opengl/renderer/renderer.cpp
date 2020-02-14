@@ -1277,12 +1277,15 @@ void Renderer::updateGLResources()
             if (texture ==  nullptr)
                 continue;
 
-            // Create or Update GLTexture
+            // Create or Update GLTexture (the GLTexture instance is created
+            // (not the underlying GL instance) if required and all things that
+            // can take place without a GL context are done here)
             updateTexture(texture);
         }
         // We want to upload textures data at this point as the SubmissionThread and
         // AspectThread are locked ensuring no races between Texture/TextureImage and
         // GLTexture
+        QNodeIdVector updatedTexturesForFrame;
         if (m_submissionContext != nullptr) {
             GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
             const QVector<GLTexture *> glTextures = glTextureManager->activeResources();
@@ -1295,10 +1298,16 @@ void Renderer::updateGLResources()
                 // Gather these information and store them to be distributed by a change next frame
                 const QNodeIdVector referenceTextureIds = glTextureManager->referencedTextureIds(glTexture);
                 // Store properties and referenceTextureIds
-                if (info.wasUpdated)
+                if (info.wasUpdated) {
                     m_updatedTextureProperties.push_back({info.properties, referenceTextureIds});
+                    updatedTexturesForFrame += referenceTextureIds;
+                }
             }
         }
+
+        // If the underlying GL Texture was for whatever reason recreated, we need to make sure
+        // that if it is used as a color attachment, we rebuild the FBO next time it is used
+        m_submissionContext->setUpdatedTexture(std::move(updatedTexturesForFrame));
     }
     // When Textures are cleaned up, their id is saved so that they can be
     // cleaned up in the render thread Note: we perform this step in second so
