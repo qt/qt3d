@@ -1213,6 +1213,29 @@ void RenderView::setHasBlitFramebufferInfo(bool hasBlitFramebufferInfo)
     m_hasBlitFramebufferInfo = hasBlitFramebufferInfo;
 }
 
+bool RenderView::shouldSkipSubmission() const
+{
+    if (!m_commands.empty())
+        return false;
+
+    if (m_hasBlitFramebufferInfo)
+        return false;
+
+    if (m_isDownloadBuffersEnable)
+        return false;
+
+    if (m_showDebugOverlay)
+        return false;
+
+    if (!m_waitFences.empty() || !m_insertFenceIds.empty())
+        return false;
+
+    if (m_clearBuffer != QClearBuffers::None)
+        return false;
+
+    return true;
+}
+
 BlitFramebufferInfo RenderView::blitFrameBufferInfo() const
 {
     return m_blitFrameBufferInfo;

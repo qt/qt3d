@@ -1579,6 +1579,9 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         // If the RenderView has a RenderStateSet defined
         const RenderView *renderView = renderViews.at(i);
 
+        if (renderView->shouldSkipSubmission())
+            continue;
+
         // Check if using the same surface as the previous RenderView.
         // If not, we have to free up the context from the previous surface
         // and make the context current on the new surface

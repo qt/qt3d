@@ -290,6 +290,8 @@ public:
     bool hasBlitFramebufferInfo() const;
     void setHasBlitFramebufferInfo(bool hasBlitFramebufferInfo);
 
+    bool shouldSkipSubmission() const;
+
 private:
     void setShaderAndUniforms(RenderCommand *command,
                               ParameterInfoList &parameters,
