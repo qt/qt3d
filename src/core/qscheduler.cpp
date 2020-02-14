@@ -71,6 +71,12 @@ void dumpJobs(QVector<Qt3DCore::QAspectJobPtr> jobs) {
 
     QTextStream stream(&f);
     stream << "digraph qt3d_jobs {" << Qt::endl;
+
+    for (const auto &job: jobs) {
+        if (!Qt3DCore::QAspectJobPrivate::get(job.data())->isRequired())
+            stream << QLatin1String("\t") << formatJob(job.data()) << QLatin1String(" [style=dotted]") << Qt::endl;
+    }
+
     for (const auto &job: jobs) {
         auto dependencies = job->dependencies();
         for (const auto &dependency: dependencies)
