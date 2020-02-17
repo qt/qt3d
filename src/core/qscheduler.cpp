@@ -46,7 +46,47 @@
 #include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDateTime>
+#include <QtCore/QRegularExpression>
+
 QT_BEGIN_NAMESPACE
+
+namespace {
+
+// Creates a graphviz dot file. To view online: https://dreampuf.github.io/GraphvizOnline/
+void dumpJobs(QVector<Qt3DCore::QAspectJobPtr> jobs) {
+    const QString fileName = QStringLiteral("qt3djobs_") + QCoreApplication::applicationName() +
+        QDateTime::currentDateTime().toString(QStringLiteral("_yyMMdd-hhmmss")) + QStringLiteral(".dot");
+
+    QFile f(fileName);
+    if (!f.open(QFile::WriteOnly))
+        return;
+
+    auto formatJob = [](Qt3DCore::QAspectJob *job) -> QString {
+        auto jobId = Qt3DCore::QAspectJobPrivate::get(job)->m_jobId;
+        auto type = Qt3DCore::QAspectJobPrivate::get(job)->m_jobName.replace(QRegularExpression(QLatin1String("(^.*::)")), QLatin1String(""));
+        return QString(QLatin1String("\"%1_%2\"")).arg(type).arg(jobId.typeAndInstance[1]);
+    };
+
+    QTextStream stream(&f);
+    stream << "digraph qt3d_jobs {" << Qt::endl;
+
+    for (const auto &job: jobs) {
+        if (!Qt3DCore::QAspectJobPrivate::get(job.data())->isRequired())
+            stream << QLatin1String("\t") << formatJob(job.data()) << QLatin1String(" [style=dotted]") << Qt::endl;
+    }
+
+    for (const auto &job: jobs) {
+        auto dependencies = job->dependencies();
+        for (const auto &dependency: dependencies)
+            stream << QLatin1String("\t") << formatJob(job.data()) << QLatin1String(" -> ") << formatJob(dependency.toStrongRef().data()) << Qt::endl;
+    }
+
+    stream << "}" << Qt::endl;
+}
+
+}
 
 namespace Qt3DCore {
 
@@ -70,7 +110,7 @@ QAspectManager *QScheduler::aspectManager() const
     return m_aspectManager;
 }
 
-int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
+int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
 {
     QVector<QAspectJobPtr> jobQueue;
 
@@ -86,12 +126,15 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
         jobQueue << aspectJobs;
     }
 
+    if (dumpJobs)
+        ::dumpJobs(jobQueue);
+
     m_aspectManager->jobManager()->enqueueJobs(jobQueue);
 
     // Do any other work here that the aspect thread can usefully be doing
     // whilst the threadpool works its way through the jobs
 
-    m_aspectManager->jobManager()->waitForAllJobs();
+    int totalJobs = m_aspectManager->jobManager()->waitForAllJobs();
 
     {
         QTaskLogger logger(m_aspectManager->serviceLocator()->systemInformation(), 4097, 0, QTaskLogger::AspectJob);
@@ -103,7 +146,7 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
             QAbstractAspectPrivate::get(aspect)->jobsDone();
     }
 
-    return jobQueue.size();
+    return totalJobs;
 }
 
 } // namespace Qt3DCore

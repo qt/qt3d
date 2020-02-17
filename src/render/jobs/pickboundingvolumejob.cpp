@@ -71,9 +71,10 @@ namespace Render {
 class PickBoundingVolumeJobPrivate : public Qt3DCore::QAspectJobPrivate
 {
 public:
-    PickBoundingVolumeJobPrivate() = default;
+    PickBoundingVolumeJobPrivate(PickBoundingVolumeJob *q) : q_ptr(q) { }
     ~PickBoundingVolumeJobPrivate() override = default;
 
+    bool isRequired() override;
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
     enum CustomEventType {
@@ -88,8 +89,16 @@ public:
     };
 
     QVector<EventDetails> dispatches;
+    PickBoundingVolumeJob *q_ptr;
+    Q_DECLARE_PUBLIC(PickBoundingVolumeJob)
 };
 
+
+bool PickBoundingVolumeJobPrivate::isRequired()
+{
+    Q_Q(PickBoundingVolumeJob);
+    return !q->m_pendingMouseEvents.isEmpty() || q->m_pickersDirty || q->m_oneEnabledAtLeast;
+}
 
 void PickBoundingVolumeJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
@@ -188,7 +197,7 @@ void setEventButtonAndModifiers(const QMouseEvent &event, QPickEvent::Buttons &e
 } // anonymous
 
 PickBoundingVolumeJob::PickBoundingVolumeJob()
-    : AbstractPickingJob(*new PickBoundingVolumeJobPrivate)
+    : AbstractPickingJob(*new PickBoundingVolumeJobPrivate(this))
     , m_pickersDirty(true)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0)

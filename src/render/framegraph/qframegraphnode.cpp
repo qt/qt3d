@@ -41,7 +41,7 @@
 #include "qframegraphnode_p.h"
 
 #include <Qt3DCore/QNode>
-
+#include <QVector>
 #include <QQueue>
 
 using namespace Qt3DCore;
@@ -59,35 +59,87 @@ QString dumpNode(const Qt3DRender::QFrameGraphNode *n) {
     return res;
 }
 
-QStringList dumpFG(const Qt3DRender::QFrameGraphNode *n, int level = 0)
+QStringList dumpFG(const Qt3DCore::QNode *n, int level = 0)
 {
     QStringList reply;
-    QString res = dumpNode(n);
-    reply += res.rightJustified(res.length() + level * 2, ' ');
+
+    const Qt3DRender::QFrameGraphNode *fgNode = qobject_cast<const Qt3DRender::QFrameGraphNode *>(n);
+    if (fgNode) {
+        QString res = dumpNode(fgNode);
+        reply += res.rightJustified(res.length() + level * 2, ' ');
+    }
 
     const auto children = n->childNodes();
+    const int inc = fgNode ? 1 : 0;
     for (auto *child: children) {
-        auto *childFGNode = qobject_cast<Qt3DRender::QFrameGraphNode *>(child);
+        auto *childFGNode = qobject_cast<Qt3DCore::QNode *>(child);
         if (childFGNode != nullptr)
-            reply += dumpFG(childFGNode, level + 1);
+            reply += dumpFG(childFGNode, level + inc);
     }
 
     return reply;
 }
 
-void dumpFGPaths(const Qt3DRender::QFrameGraphNode *n, QStringList &result, QStringList parents = {})
+struct HierarchyFGNode
 {
-    parents += dumpNode(n);
+    const Qt3DRender::QFrameGraphNode *root;
+    QVector<QSharedPointer<HierarchyFGNode>> children;
+};
+using HierarchyFGNodePtr = QSharedPointer<HierarchyFGNode>;
+
+HierarchyFGNodePtr buildFGHierarchy(const Qt3DCore::QNode *n, HierarchyFGNodePtr lastFGParent = HierarchyFGNodePtr())
+{
+    const Qt3DRender::QFrameGraphNode *fgNode = qobject_cast<const Qt3DRender::QFrameGraphNode *>(n);
+
+    // Only happens for the root case
+    if (!lastFGParent) {
+        lastFGParent = HierarchyFGNodePtr::create();
+        lastFGParent->root = fgNode;
+    } else {
+        if (fgNode != nullptr) {
+            HierarchyFGNodePtr hN = HierarchyFGNodePtr::create();
+            hN->root = fgNode;
+            if (lastFGParent)
+                lastFGParent->children.push_back(hN);
+            lastFGParent = hN;
+        }
+    }
 
     const auto children = n->childNodes();
-    if (children.length()) {
-        for (auto *child: children) {
-            auto *childFGNode = qobject_cast<Qt3DRender::QFrameGraphNode *>(child);
-            if (childFGNode != nullptr)
-                dumpFGPaths(childFGNode, result, parents);
+    for (auto *child: children)
+        buildFGHierarchy(child, lastFGParent);
+
+    return lastFGParent;
+}
+
+void findFGLeaves(const HierarchyFGNodePtr root, QVector<const Qt3DRender::QFrameGraphNode *> &fgLeaves)
+{
+    const auto children = root->children;
+    for (const auto &child : children)
+        findFGLeaves(child, fgLeaves);
+
+    if (children.empty())
+        fgLeaves.push_back(root->root);
+}
+
+void dumpFGPaths(const Qt3DRender::QFrameGraphNode *n, QStringList &result)
+{
+    // Build FG node hierarchy
+    const HierarchyFGNodePtr rootHFg = buildFGHierarchy(n);
+
+    // Gather FG leaves
+    QVector<const Qt3DRender::QFrameGraphNode *> fgLeaves;
+    findFGLeaves(rootHFg, fgLeaves);
+
+    // Traverse back to root
+    for (const Qt3DRender::QFrameGraphNode *fgNode : fgLeaves) {
+        QStringList parents;
+        while (fgNode != nullptr) {
+            parents.prepend(dumpNode(fgNode));
+            fgNode = fgNode->parentFrameGraphNode();
         }
-    } else {
-        result << QLatin1String("[ ") + parents.join(QLatin1String(", ")) + QLatin1String(" ]");
+        if (parents.size())
+            result << QLatin1String("[ ") + parents.join(QLatin1String(", ")) + QLatin1String(" ]");
     }
 }
 

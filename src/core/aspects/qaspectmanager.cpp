@@ -128,6 +128,7 @@ QAspectManager::QAspectManager(QAspectEngine *parent)
     , m_simulationAnimation(nullptr)
 #endif
     , m_jobsInLastFrame(0)
+    , m_dumpJobs(false)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -430,6 +431,11 @@ QVector<QNode *> QAspectManager::lookupNodes(const QVector<QNodeId> &ids) const
     return d->m_scene ? d->m_scene->lookupNodes(ids) : QVector<QNode *>{};
 }
 
+void QAspectManager::dumpJobsOnNextFrame()
+{
+    m_dumpJobs = true;
+}
+
 #if !QT_CONFIG(animation)
 /*!
     \internal
@@ -528,7 +534,8 @@ void QAspectManager::processFrame()
     // For each Aspect
     // Ask them to launch set of jobs for the current frame
     // Updates matrices, bounding volumes, render bins ...
-    m_jobsInLastFrame = m_scheduler->scheduleAndWaitForFrameAspectJobs(t);
+    m_jobsInLastFrame = m_scheduler->scheduleAndWaitForFrameAspectJobs(t, m_dumpJobs);
+    m_dumpJobs = false;
 
     // Tell the aspect the frame is complete (except rendering)
     for (QAbstractAspect *aspect : qAsConst(m_aspects))

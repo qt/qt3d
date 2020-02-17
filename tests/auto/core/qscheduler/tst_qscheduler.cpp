@@ -181,7 +181,7 @@ private Q_SLOTS:
         QVERIFY(!second->postFrameCalled());
 
         // WHEN
-        const int count = scheduler.scheduleAndWaitForFrameAspectJobs(0);
+        const int count = scheduler.scheduleAndWaitForFrameAspectJobs(0, false);
 
         // THEN
         QCOMPARE(count, 2);

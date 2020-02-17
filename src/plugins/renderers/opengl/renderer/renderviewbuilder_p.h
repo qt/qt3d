@@ -75,6 +75,8 @@ namespace OpenGL {
 class Renderer;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+#define CreateSynchronizerJobPtr(lambda, type) \
+    SynchronizerJobPtr::create(lambda, type, #type)
 
 class Q_AUTOTEST_EXPORT RenderViewBuilder
 {

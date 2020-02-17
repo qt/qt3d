@@ -86,7 +86,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
         taskList << task;
     }
 
-    for (const QSharedPointer<QAspectJob> &job : jobQueue) {
+    for (const QAspectJobPtr &job : jobQueue) {
         const QVector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
         AspectTaskRunnable *taskDepender = tasksMap.value(job.data());
 
@@ -108,9 +108,9 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 }
 
 // Wait for all aspects jobs to be completed
-void QAspectJobManager::waitForAllJobs()
+int QAspectJobManager::waitForAllJobs()
 {
-    m_threadPooler->future().waitForFinished();
+    return m_threadPooler->waitForAllJobs();
 }
 
 void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)

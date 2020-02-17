@@ -189,15 +189,21 @@ ShaderFunctor::ShaderFunctor(AbstractRenderer *renderer, ShaderManager *manager)
 {
 }
 
-QBackendNode *ShaderFunctor::create(const QNodeId id) const
+QBackendNode *ShaderFunctor::create(QNodeId id) const
 {
     Shader *backend = m_shaderManager->getOrCreateResource(id);
+    // Remove from the list of ids to destroy in case we were added to it
+    m_shaderManager->removeShaderIdFromIdsToCleanup(id);
     backend->setRenderer(m_renderer);
     return backend;
 }
 
 QBackendNode *ShaderFunctor::get(QNodeId id) const
 {
+    // If we are marked for destruction, return nullptr so that
+    // if we were to be recreated, create would be called again
+    if (m_shaderManager->hasShaderIdToCleanup(id))
+        return nullptr;
     return m_shaderManager->lookupResource(id);
 }
 

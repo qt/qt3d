@@ -56,6 +56,7 @@ bool isDependencyNull(const QWeakPointer<QAspectJob> &dep)
 } // anonymous
 
 QAspectJobPrivate::QAspectJobPrivate()
+    : m_jobName(QLatin1String("UnknowJob"))
 {
 }
 
@@ -64,6 +65,11 @@ QAspectJobPrivate::~QAspectJobPrivate() = default;
 QAspectJobPrivate *QAspectJobPrivate::get(QAspectJob *job)
 {
     return job->d_func();
+}
+
+bool QAspectJobPrivate::isRequired()
+{
+    return true;
 }
 
 void QAspectJobPrivate::postFrame(QAspectManager *aspectManager)

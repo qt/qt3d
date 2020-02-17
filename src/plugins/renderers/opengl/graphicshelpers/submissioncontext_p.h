@@ -61,6 +61,7 @@
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/attachmentpack_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -113,6 +114,7 @@ public:
     // FBO
     GLuint activeFBO() const { return m_activeFBO; }
     void activateRenderTarget(const Qt3DCore::QNodeId id, const AttachmentPack &attachments, GLuint defaultFboId);
+    void releaseRenderTarget(const Qt3DCore::QNodeId id);
     QSize renderTargetSize(const QSize &surfaceSize) const;
     QImage readFramebuffer(const QRect &rect);
     void blitFramebuffer(Qt3DCore::QNodeId outputRenderTargetId, Qt3DCore::QNodeId inputRenderTargetId,
@@ -159,7 +161,16 @@ public:
     bool    wasSyncSignaled(GLFence sync);
     void    deleteSync(GLFence sync);
 
+    // Textures
+    void setUpdatedTexture(const Qt3DCore::QNodeIdVector &updatedTextureIds);
+
 private:
+    struct RenderTargetInfo {
+        GLuint fboId;
+        QSize size;
+        AttachmentPack attachments;
+    };
+
     void initialize();
 
     // Material
@@ -167,7 +178,7 @@ private:
     void setActiveMaterial(Material* rmat);
 
     // FBO
-    void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
+    RenderTargetInfo bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
     void resolveRenderTargetFormat();
     GLuint createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments);
@@ -187,8 +198,9 @@ private:
     QOpenGLShaderProgram *m_activeShader;
 
     QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
-    QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
-    QHash<GLuint, QSize> m_renderTargetsSize;
+
+
+    QHash<Qt3DCore::QNodeId, RenderTargetInfo> m_renderTargets;
     QAbstractTexture::TextureFormat m_renderTargetFormat;
 
     // cache some current state, to make sure we don't issue unnecessary GL calls
@@ -199,6 +211,7 @@ private:
     Material* m_material;
     QRectF m_viewport;
     GLuint m_activeFBO;
+    Qt3DCore::QNodeId m_activeFBONodeId;
 
     GLBuffer *m_boundArrayBuffer;
     RenderStateSet* m_stateSet;
@@ -227,6 +240,8 @@ private:
     using VAOIndexAttribute = HGLBuffer;
     void enableAttribute(const VAOVertexAttribute &attr);
     void disableAttribute(const VAOVertexAttribute &attr);
+
+    Qt3DCore::QNodeIdVector m_updateTextureIds;
 };
 
 } // namespace OpenGL

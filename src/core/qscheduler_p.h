@@ -70,7 +70,7 @@ public:
     void setAspectManager(QAspectManager *aspectManager);
     QAspectManager *aspectManager() const;
 
-    virtual int scheduleAndWaitForFrameAspectJobs(qint64 time);
+    virtual int scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs);
 
 private:
     QAspectManager *m_aspectManager;

@@ -267,19 +267,19 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_lightGathererJob(Render::LightGathererPtr::create())
     , m_renderableEntityFilterJob(Render::RenderableEntityFilterPtr::create())
     , m_computableEntityFilterJob(Render::ComputableEntityFilterPtr::create())
-    , m_bufferGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
-    , m_vaoGathererJob(SynchronizerJobPtr::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
-    , m_textureGathererJob(SynchronizerJobPtr::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
-    , m_introspectShaderJob(SynchronizerPostFramePtr::create([this] { reloadDirtyShaders(); },
-                                                             [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
-                                                             JobTypes::DirtyShaderGathering))
-    , m_syncLoadingJobs(SynchronizerJobPtr::create([] {}, JobTypes::SyncLoadingJobs))
-    , m_cacheRenderableEntitiesJob(SynchronizerJobPtr::create(SyncRenderableEntities(m_renderableEntityFilterJob, &m_cache),
-                                                              JobTypes::EntityComponentTypeFiltering))
-    , m_cacheComputableEntitiesJob(SynchronizerJobPtr::create(SyncComputableEntities(m_computableEntityFilterJob, &m_cache),
-                                                              JobTypes::EntityComponentTypeFiltering))
-    , m_cacheLightsJob(SynchronizerJobPtr::create(SyncLightsGatherer(m_lightGathererJob, &m_cache),
-                                                  JobTypes::EntityComponentTypeFiltering))
+    , m_bufferGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
+    , m_vaoGathererJob(CreateSynchronizerJobPtr([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
+    , m_textureGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
+    , m_introspectShaderJob(CreateSynchronizerPostFramePtr([this] { reloadDirtyShaders(); },
+                                                           [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
+                                                           JobTypes::DirtyShaderGathering))
+    , m_syncLoadingJobs(CreateSynchronizerJobPtr([] {}, JobTypes::SyncLoadingJobs))
+    , m_cacheRenderableEntitiesJob(CreateSynchronizerJobPtr(SyncRenderableEntities(m_renderableEntityFilterJob, &m_cache),
+                                                            JobTypes::EntityComponentTypeFiltering))
+    , m_cacheComputableEntitiesJob(CreateSynchronizerJobPtr(SyncComputableEntities(m_computableEntityFilterJob, &m_cache),
+                                                            JobTypes::EntityComponentTypeFiltering))
+    , m_cacheLightsJob(CreateSynchronizerJobPtr(SyncLightsGatherer(m_lightGathererJob, &m_cache),
+                                                JobTypes::EntityComponentTypeFiltering))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
     , m_glResourceManagers(nullptr)
@@ -300,6 +300,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
+    m_updateLevelOfDetailJob->addDependency(m_expandBoundingVolumeJob);
     m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
     m_rayCastingJob->addDependency(m_expandBoundingVolumeJob);
     // m_calculateBoundingVolumeJob's dependency on m_updateTreeEnabledJob is set in renderBinJobs
@@ -1178,6 +1179,10 @@ void Renderer::reloadDirtyShaders()
                 HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
                 Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
 
+                // Shader could be null if the pass doesn't reference one yet
+                if (!shader)
+                    continue;
+
                 ShaderBuilder *shaderBuilder = nullptr;
                 for (const HShaderBuilder &builderHandle : activeBuilders) {
                     ShaderBuilder *builder = m_nodesManager->shaderBuilderManager()->data(builderHandle);
@@ -1205,7 +1210,7 @@ void Renderer::reloadDirtyShaders()
                     }
                 }
 
-                if (shader != nullptr && shader->isDirty())
+                if (shader->isDirty())
                     loadShader(shader, shaderHandle);
             }
         }
@@ -1393,13 +1398,15 @@ void Renderer::updateGLResources()
             if (texture ==  nullptr)
                 continue;
 
-            // Create or Update GLTexture (the GLTexture instance is created if required
-            // and all things that can take place without a GL context are done here)
+            // Create or Update GLTexture (the GLTexture instance is created
+            // (not the underlying GL instance) if required and all things that
+            // can take place without a GL context are done here)
             updateTexture(texture);
         }
         // We want to upload textures data at this point as the SubmissionThread and
         // AspectThread are locked ensuring no races between Texture/TextureImage and
         // GLTexture
+        QNodeIdVector updatedTexturesForFrame;
         if (m_submissionContext != nullptr) {
             GLTextureManager *glTextureManager = m_glResourceManagers->glTextureManager();
             const QVector<HGLTexture> glTextureHandles = glTextureManager->activeHandles();
@@ -1421,9 +1428,14 @@ void Renderer::updateGLResources()
                     updateInfo.handleType = QAbstractTexture::OpenGLTextureId;
                     updateInfo.handle = info.texture ? QVariant(info.texture->textureId()) : QVariant();
                     m_updatedTextureProperties.push_back({updateInfo, referenceTextureIds});
+                    updatedTexturesForFrame += referenceTextureIds;
                 }
             }
         }
+
+        // If the underlying GL Texture was for whatever reason recreated, we need to make sure
+        // that if it is used as a color attachment, we rebuild the FBO next time it is used
+        m_submissionContext->setUpdatedTexture(std::move(updatedTexturesForFrame));
 
         // Record ids of texture to cleanup while we are still blocking the aspect thread
         m_textureIdsToCleanup += m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
@@ -1431,6 +1443,13 @@ void Renderer::updateGLResources()
 
     // Record list of buffer that might need uploading
     lookForDownloadableBuffers();
+
+    // Remove destroyed FBOs
+    {
+        const QNodeIdVector destroyedRenderTargetIds = m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
+        for (const Qt3DCore::QNodeId &renderTargetId : destroyedRenderTargetIds)
+            m_submissionContext->releaseRenderTarget(renderTargetId);
+    }
 }
 
 // Render Thread
@@ -1568,6 +1587,9 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
         const RenderView *renderView = renderViews.at(i);
+
+        if (renderView->shouldSkipSubmission())
+            continue;
 
         // Check if using the same surface as the previous RenderView.
         // If not, we have to free up the context from the previous surface

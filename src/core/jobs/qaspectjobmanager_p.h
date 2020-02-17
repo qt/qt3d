@@ -76,7 +76,7 @@ public:
 
     void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) override;
 
-    void waitForAllJobs() override;
+    int waitForAllJobs() override;
 
     void waitForPerThreadFunction(JobFunction func, void *arg) override;
 

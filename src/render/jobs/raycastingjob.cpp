@@ -86,14 +86,24 @@ public:
 class Qt3DRender::Render::RayCastingJobPrivate : public Qt3DCore::QAspectJobPrivate
 {
 public:
-    RayCastingJobPrivate() { }
+    RayCastingJobPrivate(RayCastingJob *q) : q_ptr(q) { }
     ~RayCastingJobPrivate() override { Q_ASSERT(dispatches.isEmpty()); }
 
+    bool isRequired() override;
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
     QVector<QPair<RayCaster *, QAbstractRayCaster::Hits>> dispatches;
+
+    RayCastingJob *q_ptr;
+    Q_DECLARE_PUBLIC(RayCastingJob)
 };
 
+
+bool RayCastingJobPrivate::isRequired()
+{
+    Q_Q(RayCastingJob);
+    return q->m_castersDirty || q->m_oneEnabledAtLeast;
+}
 
 void RayCastingJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
@@ -116,7 +126,7 @@ void RayCastingJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 
 
 RayCastingJob::RayCastingJob()
-    : AbstractPickingJob(*new RayCastingJobPrivate())
+    : AbstractPickingJob(*new RayCastingJobPrivate(this))
     , m_castersDirty(true)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RayCasting, 0)

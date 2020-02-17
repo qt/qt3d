@@ -239,7 +239,7 @@ void GraphicsContext::doneCurrent()
     m_glHelper = nullptr;
 }
 
-// Called by GL Command Thread
+// Called by GraphicsContext::loadShader itself called by Renderer::updateGLResources
 GraphicsContext::ShaderCreationInfo GraphicsContext::createShaderProgram(GLShader *shader)
 {
     QOpenGLShaderProgram *shaderProgram = shader->shaderProgram();
@@ -309,14 +309,17 @@ void GraphicsContext::loadShader(Shader *shaderNode,
 
     const QVector<Qt3DCore::QNodeId> sharedShaderIds = glShaderManager->shaderIdsForProgram(glShader);
     if (sharedShaderIds.size() == 1) {
-        // Shader in the cache hasn't been loaded yet
-        glShader->setGraphicsContext(this);
-        glShader->setShaderCode(shaderNode->shaderCode());
-        const ShaderCreationInfo loadResult = createShaderProgram(glShader);
-        shaderNode->setStatus(loadResult.linkSucceeded ? QShaderProgram::Ready : QShaderProgram::Error);
-        shaderNode->setLog(loadResult.logs);
-        // Loaded in the sense we tried to load it (and maybe it failed)
-        glShader->setLoaded(true);
+        // The Shader could already be loaded if we retrieved one
+        // that had been marked for destruction
+        if (!glShader->isLoaded()) {
+            glShader->setGraphicsContext(this);
+            glShader->setShaderCode(shaderNode->shaderCode());
+            const ShaderCreationInfo loadResult = createShaderProgram(glShader);
+            shaderNode->setStatus(loadResult.linkSucceeded ? QShaderProgram::Ready : QShaderProgram::Error);
+            shaderNode->setLog(loadResult.logs);
+            // Loaded in the sense we tried to load it (and maybe it failed)
+            glShader->setLoaded(true);
+        }
     } else {
         // Find an already loaded shader that shares the same QOpenGLShaderProgram
         for (const Qt3DCore::QNodeId sharedShaderId : sharedShaderIds) {

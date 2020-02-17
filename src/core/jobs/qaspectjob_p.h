@@ -72,18 +72,31 @@ public:
 
     static QAspectJobPrivate *get(QAspectJob *job);
 
+    virtual bool isRequired();
     virtual void postFrame(QAspectManager *aspectManager);
 
     QVector<QWeakPointer<QAspectJob> > m_dependencies;
     JobId m_jobId;
+    QString m_jobName;
 };
 } // Qt3D
 
 #define SET_JOB_RUN_STAT_TYPE(job, type, instance) \
     { \
-        auto &jobId = Qt3DCore::QAspectJobPrivate::get(job)->m_jobId; \
+        auto djob = Qt3DCore::QAspectJobPrivate::get(job); \
+        auto &jobId = djob->m_jobId; \
         jobId.typeAndInstance[0] = type; \
         jobId.typeAndInstance[1] = instance; \
+        djob->m_jobName = QLatin1String(#type); \
+    }
+
+#define SET_JOB_RUN_STAT_TYPE_AND_NAME(job, type, name, instance) \
+    { \
+        auto djob = Qt3DCore::QAspectJobPrivate::get(job); \
+        auto &jobId = djob->m_jobId; \
+        jobId.typeAndInstance[0] = type; \
+        jobId.typeAndInstance[1] = instance; \
+        djob->m_jobName = QLatin1String(name); \
     }
 
 QT_END_NAMESPACE

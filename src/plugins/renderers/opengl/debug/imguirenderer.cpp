@@ -289,7 +289,10 @@ void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews,
         if (ImGui::Button("FrameGraph Paths##1"))
             QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
                                       Qt::QueuedConnection, Q_ARG(QString, QLatin1String("render framepaths")));
-
+        ImGui::SameLine();
+        if (ImGui::Button("JobsGraph##1"))
+            QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
+                                      Qt::QueuedConnection, Q_ARG(QString, QLatin1String("dump jobs")));
         ImGui::End();
 
         if (m_showGLInfoWindow)
@@ -334,7 +337,8 @@ void ImGuiRenderer::showRenderDetails(const QVector<RenderView *> &renderViews)
             int j = 1;
             const auto commands = view->commands();
             for (const RenderCommand &command: commands) {
-                QString label(QLatin1String("Command ") + QString::number(j++));
+                GeometryRenderer *rGeometryRenderer = m_renderer->nodeManagers()->data<GeometryRenderer, GeometryRendererManager>(command.m_geometryRenderer);
+                QString label = QString(QLatin1String("Command %1 {%2}")).arg(QString::number(j++), QString::number(rGeometryRenderer->peerId().id()));
                 if (ImGui::TreeNode(label.toLatin1().data())) {
                     ImGui::Text("Primitive Type: %s %s", primitiveTypeName(command.m_primitiveType),
                                 command.m_drawIndexed ? "(indexed)" : "");

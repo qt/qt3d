@@ -68,6 +68,11 @@ AspectTaskRunnable::~AspectTaskRunnable()
 {
 }
 
+bool AspectTaskRunnable::isRequired()
+{
+    return m_job ? QAspectJobPrivate::get(m_job.data())->isRequired() : false;
+}
+
 void AspectTaskRunnable::run()
 {
     if (m_job) {
@@ -98,6 +103,11 @@ SyncTaskRunnable::SyncTaskRunnable(QAbstractAspectJobManager::JobFunction func,
 
 SyncTaskRunnable::~SyncTaskRunnable()
 {
+}
+
+bool SyncTaskRunnable::isRequired()
+{
+    return true;
 }
 
 void SyncTaskRunnable::run()

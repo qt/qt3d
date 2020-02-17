@@ -396,6 +396,10 @@ QVariant QAspectEngine::executeCommand(const QString &command)
         const QStringList names = d->m_aspectManager->serviceLocator()->systemInformation()->aspectNames();
         return names.join(QLatin1String("\n"));
     }
+    if (command == QLatin1String("dump jobs")) {
+        d->m_aspectManager->dumpJobsOnNextFrame();
+        return QLatin1String("Dump in next frame in working directory");
+    }
 
     QStringList args = command.split(QLatin1Char(' '));
     QString aspectName = args.takeFirst();
