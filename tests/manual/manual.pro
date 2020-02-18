@@ -88,8 +88,3 @@ qtHaveModule(widgets): {
         rendercapture-cpp \
         texture-updates-cpp
 }
-
-qtHaveModule(quickwidgets): {
-    SUBDIRS += quickwidget-switch
-}
-
