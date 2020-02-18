@@ -250,7 +250,6 @@ void Scene3DItem::setAspects(const QStringList &aspects)
     }
 
     m_aspects = aspects;
-    applyAspects();
 
     emit aspectsChanged();
 }
