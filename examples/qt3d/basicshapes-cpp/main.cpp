@@ -63,8 +63,6 @@
 #include <QtWidgets/QCommandLinkButton>
 #include <QtGui/QScreen>
 
-#include <Qt3DInput/QInputAspect>
-
 #include <Qt3DExtras/qtorusmesh.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qtechnique.h>
@@ -102,9 +100,6 @@ int main(int argc, char **argv)
     hLayout->addLayout(vLayout);
 
     widget->setWindowTitle(QStringLiteral("Basic shapes"));
-
-    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    view->registerAspect(input);
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
