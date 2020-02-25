@@ -168,14 +168,14 @@ QT3D_DECLARE_TYPEINFO(Qt3DRender, ByteArraySplitterEntry, Q_PRIMITIVE_TYPE)
 class ByteArraySplitter
 {
 public:
-    explicit ByteArraySplitter(const char *begin, const char *end, char delimiter, QString::SplitBehavior splitBehavior)
+    explicit ByteArraySplitter(const char *begin, const char *end, char delimiter, Qt::SplitBehavior splitBehavior)
         : m_input(begin)
     {
         int position = 0;
         int lastPosition = 0;
         for (auto it = begin; it != end; ++it) {
             if (*it == delimiter) {
-                if (position > lastPosition || splitBehavior == QString::KeepEmptyParts) { // skip multiple consecutive delimiters
+                if (position > lastPosition || splitBehavior == Qt::KeepEmptyParts) { // skip multiple consecutive delimiters
                     const ByteArraySplitterEntry entry = { lastPosition, position - lastPosition };
                     m_entries.append(entry);
                 }
@@ -214,7 +214,7 @@ public:
         return QString::fromLatin1(m_input + m_entries[index].start, m_entries[index].size);
     }
 
-    ByteArraySplitter splitterAt(int index, char delimiter, QString::SplitBehavior splitBehavior) const
+    ByteArraySplitter splitterAt(int index, char delimiter, Qt::SplitBehavior splitBehavior) const
     {
         return ByteArraySplitter(m_input + m_entries[index].start, m_input + m_entries[index].start + m_entries[index].size, delimiter, splitBehavior);
     }

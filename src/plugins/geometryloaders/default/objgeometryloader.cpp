@@ -105,7 +105,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
             while (line[lineSize - 1] == ' ' || line[lineSize - 1] == '\t')
                 --lineSize; // chop trailing spaces
 
-            const ByteArraySplitter tokens(line, line + lineSize, ' ', QString::SkipEmptyParts);
+            const ByteArraySplitter tokens(line, line + lineSize, ' ', Qt::SkipEmptyParts);
 
             if (qstrncmp(tokens.charPtrAt(0), "v ", 2) == 0) {
                 if (tokens.size() < 4) {
@@ -155,7 +155,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
 
                 for (int i = 0; i < faceVertices; i++) {
                     FaceIndices faceIndices;
-                    const ByteArraySplitter indices = tokens.splitterAt(i + 1, '/', QString::KeepEmptyParts);
+                    const ByteArraySplitter indices = tokens.splitterAt(i + 1, '/', Qt::KeepEmptyParts);
                     switch (indices.size()) {
                     case 3:
                         faceIndices.normalIndex = indices.intAt(2) - 1 - normalsOffset;  // fall through

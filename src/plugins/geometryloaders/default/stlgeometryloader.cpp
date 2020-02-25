@@ -79,7 +79,7 @@ bool StlGeometryLoader::loadAscii(QIODevice *ioDev)
         const char *begin = lineBuffer.constData();
         const char *end = begin + lineBuffer.size();
 
-        const ByteArraySplitter tokens(begin, end, ' ', QString::SkipEmptyParts);
+        const ByteArraySplitter tokens(begin, end, ' ', Qt::SkipEmptyParts);
 
         if (qstrncmp(tokens.charPtrAt(0), "vertex ", 7) == 0) {
             if (tokens.size() < 4) {
