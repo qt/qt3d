@@ -32,6 +32,7 @@
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <ctime>
 #include <cstdlib>
+#include <random>
 
 class tst_QResourceManager : public QObject
 {
@@ -77,7 +78,7 @@ void benchmarkAllocateResources()
         for (int i = 0; i < max; i++)
             c = manager.getOrCreateResource(i);
     }
-    Q_UNUSED(c);
+    Q_UNUSED(c)
 }
 
 template<typename Resource>
@@ -94,7 +95,7 @@ void benchmarkAccessResources()
         for (int i = 0; i < max; i++)
             c = manager.data(handles[i]);
     }
-    Q_UNUSED(c);
+    Q_UNUSED(c)
 }
 
 template<typename Resource>
@@ -105,14 +106,16 @@ void benchmarkRandomAccessResource() {
     for (int i = 0; i < max; i++)
         handles[i] = manager.acquire();
 
-    std::srand(std::time(0));
-    std::random_shuffle(handles.begin(), handles.end());
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(handles.begin(), handles.end(), g);
+
     volatile Resource *c;
     QBENCHMARK {
         for (int i = 0; i < max; i++)
             c = manager.data(handles[i]);
     }
-    Q_UNUSED(c);
+    Q_UNUSED(c)
 }
 
 template<typename Resource>
@@ -128,7 +131,7 @@ void benchmarkLookupResources()
         for (int i = 0; i < max; i++)
             c = manager.lookupResource(i);
     }
-    Q_UNUSED(c);
+    Q_UNUSED(c)
 }
 
 template<typename Resource>
@@ -141,14 +144,17 @@ void benchmarkRandomLookupResources()
         manager.getOrCreateResource(i);
         resourcesIndices[i] = i;
     }
-    std::srand(std::time(0));
-    std::random_shuffle(resourcesIndices.begin(), resourcesIndices.end());
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(resourcesIndices.begin(), resourcesIndices.end(), g);
+
     volatile Resource *c;
     QBENCHMARK {
         for (int i = 0; i < max; i++)
             c = manager.lookupResource(resourcesIndices[i]);
     }
-    Q_UNUSED(c);
+    Q_UNUSED(c)
 }
 
 template<typename Resource>
