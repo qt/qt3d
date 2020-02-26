@@ -72,7 +72,6 @@ public:
     void setScene(QScene *scene) override;
     void update() override;
     void setExtent(const QVector3D &minExtent, const QVector3D &maxExtent);
-
     static QGeometryPrivate *get(QGeometry *q);
 
     QVector<QAttribute *> m_attributes;

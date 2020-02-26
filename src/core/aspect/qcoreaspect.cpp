@@ -39,12 +39,16 @@
 
 #include "qcoreaspect.h"
 #include "qcoreaspect_p.h"
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/calcboundingvolumejob_p.h>
 
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
 
 QCoreAspectPrivate::QCoreAspectPrivate()
+    : Qt3DCore::QAbstractAspectPrivate()
 {
 
 }
@@ -65,7 +69,7 @@ void QCoreAspectPrivate::frameDone()
 }
 
 QCoreAspect::QCoreAspect(QObject *parent)
-    : Qt3DCore::QAbstractAspect(parent)
+    : Qt3DCore::QAbstractAspect(*new QCoreAspectPrivate, parent)
 {
 
 }
@@ -75,10 +79,28 @@ QCoreAspect::~QCoreAspect()
 
 }
 
+QAspectJobPtr QCoreAspect::calculateBoundingVolumeJob() const
+{
+    Q_D(const QCoreAspect);
+    return d->m_calculateBoundingVolumeJob;
+}
+
 QVector<QAspectJobPtr> QCoreAspect::jobsToExecute(qint64 time)
 {
+    Q_D(QCoreAspect);
     Q_UNUSED(time)
-    return {};
+
+    QVector<QAspectJobPtr> jobs;
+
+    auto scene = d->m_aspectManager->scene();
+    auto dirtyBits = scene->dirtyBits();
+
+    if (dirtyBits & QScene::GeometryDirty ||
+        dirtyBits & QScene::BuffersDirty) {
+        jobs.push_back(d->m_calculateBoundingVolumeJob);
+    }
+
+    return jobs;
 }
 
 QVariant QCoreAspect::executeCommand(const QStringList &args)
@@ -89,12 +111,25 @@ QVariant QCoreAspect::executeCommand(const QStringList &args)
 
 void QCoreAspect::onRegistered()
 {
+    Q_D(QCoreAspect);
 
+    if (d->m_calculateBoundingVolumeJob.isNull())
+        d->m_calculateBoundingVolumeJob = CalculateBoundingVolumeJobPtr::create();
 }
 
-void QCoreAspect::onUnregistered()
+void QCoreAspect::onEngineStartup()
 {
+    Q_D(QCoreAspect);
 
+    Q_ASSERT(d->m_calculateBoundingVolumeJob);
+    d->m_calculateBoundingVolumeJob->setRoot(d->m_root);
+}
+
+void QCoreAspect::frameDone()
+{
+    Q_D(QCoreAspect);
+    auto scene = d->m_aspectManager->scene();
+    scene->clearDirtyBits();
 }
 
 QT_END_NAMESPACE

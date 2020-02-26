@@ -37,86 +37,77 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QGEOMETRYVIEW_P_H
-#define QT3DCORE_QGEOMETRYVIEW_P_H
+#ifndef QT3DCORE_CALCBOUNDINGVOLUMEJOB_H
+#define QT3DCORE_CALCBOUNDINGVOLUMEJOB_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qgeometryview.h>
-#include <Qt3DCore/private/qgeometryfactory_p.h>
+#include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 
+#include <QtCore/QSharedPointer>
 #include <QtGui/qvector3d.h>
-#include <memory>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class Q_3DCORESHARED_EXPORT QGeometryViewPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QGeometryViewPrivate();
-    ~QGeometryViewPrivate();
+class CalculateBoundingVolumeJobPrivate;
+class QEntity;
+class QAttribute;
+class QBoundingVolume;
 
-    static QGeometryViewPrivate *get(QGeometryView *q);
+struct BoundingVolumeComputeData {
+    QEntity *entity = nullptr;
+    QBoundingVolume *provider = nullptr;
+    QAttribute *positionAttribute = nullptr;
+    QAttribute *indexAttribute = nullptr;
+    int vertexCount = 0;
 
-    void update() override;
-
-    Q_DECLARE_PUBLIC(QGeometryView)
-
-    int m_instanceCount;
-    int m_vertexCount;
-    int m_indexOffset;
-    int m_firstInstance;
-    int m_firstVertex;
-    int m_indexBufferByteOffset;
-    int m_restartIndexValue;
-    int m_verticesPerPatch;
-    bool m_primitiveRestart;
-    QGeometry *m_geometry;
-    QGeometryView::PrimitiveType m_primitiveType;
-    bool m_dirty;
+    bool valid() const { return positionAttribute != nullptr; }
 };
 
-class BoundingVolumeCalculator
-{
-public:
-    BoundingVolumeCalculator() = default;
-
-    const QVector3D min() const { return m_min; }
-    const QVector3D max() const { return m_max; }
-    const QVector3D center() const { return m_center; }
-    float radius() const { return m_radius; }
-    bool isValid() const { return m_radius >= 0.f; }
-
-    bool apply(QAttribute *positionAttribute,
-               QAttribute *indexAttribute,
-               int drawVertexCount,
-               bool primitiveRestartEnabled,
-               int primitiveRestartIndex);
-
-private:
+struct BoundingVolumeComputeResult {
+    QEntity *entity = nullptr;
+    QBoundingVolume *provider = nullptr;
+    QAttribute *positionAttribute = nullptr;
+    QAttribute *indexAttribute = nullptr;
     QVector3D m_min;
     QVector3D m_max;
     QVector3D m_center;
     float m_radius = -1.f;
+
+    bool valid() const { return m_radius >= 0.f; }
 };
+
+class Q_3DCORE_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
+{
+public:
+    explicit CalculateBoundingVolumeJob();
+
+    void setRoot(QEntity *root) { m_root = root; }
+    void run() override;
+    void postFrame(QAspectEngine *aspectEngine) override;
+
+private:
+    Q_DECLARE_PRIVATE(CalculateBoundingVolumeJob)
+    QEntity *m_root;
+    QVector<BoundingVolumeComputeResult> m_results;
+};
+
+typedef QSharedPointer<CalculateBoundingVolumeJob> CalculateBoundingVolumeJobPtr;
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-
-#endif // QT3DCORE_QGEOMETRYVIEW_P_H
-
+#endif // QT3DCORE_CALCBOUNDINGVOLUMEJOB_H

@@ -55,6 +55,8 @@ public:
     explicit QCoreAspect(QObject *parent = nullptr);
     ~QCoreAspect();
 
+    QAspectJobPtr calculateBoundingVolumeJob() const;
+
 protected:
     Q_DECLARE_PRIVATE(QCoreAspect)
 
@@ -62,7 +64,8 @@ private:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
     QVariant executeCommand(const QStringList &args) override;
     void onRegistered() override;
-    void onUnregistered() override;
+    void onEngineStartup() override;
+    void frameDone() override;
 };
 
 }

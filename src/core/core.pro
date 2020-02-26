@@ -1,7 +1,8 @@
-TARGET     = Qt3DCore
-MODULE     = 3dcore
+TARGET = Qt3DCore
+MODULE = 3dcore
 
-QT         = core-private gui-private network
+QT = core-private gui-private network
+QT_FOR_PRIVATE = concurrent
 
 gcov {
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage

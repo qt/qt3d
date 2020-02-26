@@ -55,9 +55,14 @@
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 
+#include <QSharedPointer>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
+
+class CalculateBoundingVolumeJob;
+using CalculateBoundingVolumeJobPtr = QSharedPointer<CalculateBoundingVolumeJob>;
 
 class Q_3DCORE_PRIVATE_EXPORT QCoreAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
@@ -71,6 +76,7 @@ public:
     void frameDone() override;
 
     bool m_initialized;
+    CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
 };
 
 }

@@ -12,7 +12,9 @@ HEADERS += \
     $$PWD/qgeometry.h \
     $$PWD/qgeometryfactory_p.h \
     $$PWD/qgeometryview_p.h \
-    $$PWD/qgeometryview.h
+    $$PWD/qgeometryview.h \
+    $$PWD/bufferutils_p.h \
+    $$PWD/buffervisitor_p.h
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \

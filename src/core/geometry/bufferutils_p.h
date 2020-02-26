@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Paul Lemire paul.lemire350@gmail.com
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QGEOMETRYVIEW_P_H
-#define QT3DCORE_QGEOMETRYVIEW_P_H
+#ifndef QT3DCORE_BUFFERUTILS_P_H
+#define QT3DCORE_BUFFERUTILS_P_H
 
 //
 //  W A R N I N G
@@ -51,72 +51,63 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qgeometryview.h>
-#include <Qt3DCore/private/qgeometryfactory_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-
-#include <QtGui/qvector3d.h>
-#include <memory>
+#include <Qt3DCore/QAttribute>
+#include <QByteArray>
 
 QT_BEGIN_NAMESPACE
 
+
 namespace Qt3DCore {
 
-class Q_3DCORESHARED_EXPORT QGeometryViewPrivate : public Qt3DCore::QNodePrivate
+class QGeometryView;
+class QBuffer;
+
+struct BufferInfo
 {
-public:
-    QGeometryViewPrivate();
-    ~QGeometryViewPrivate();
+    BufferInfo()
+        : type(Qt3DCore::QAttribute::VertexBaseType::Float)
+        , dataSize(0)
+        , count(0)
+        , byteStride(0)
+        , byteOffset(0)
+        , restartEnabled(false)
+        , restartIndexValue(-1)
+    {}
 
-    static QGeometryViewPrivate *get(QGeometryView *q);
-
-    void update() override;
-
-    Q_DECLARE_PUBLIC(QGeometryView)
-
-    int m_instanceCount;
-    int m_vertexCount;
-    int m_indexOffset;
-    int m_firstInstance;
-    int m_firstVertex;
-    int m_indexBufferByteOffset;
-    int m_restartIndexValue;
-    int m_verticesPerPatch;
-    bool m_primitiveRestart;
-    QGeometry *m_geometry;
-    QGeometryView::PrimitiveType m_primitiveType;
-    bool m_dirty;
+    QByteArray data;
+    Qt3DCore::QAttribute::VertexBaseType type;
+    uint dataSize;
+    uint count;
+    uint byteStride;
+    uint byteOffset;
+    bool restartEnabled;
+    int restartIndexValue;
 };
 
-class BoundingVolumeCalculator
-{
-public:
-    BoundingVolumeCalculator() = default;
 
-    const QVector3D min() const { return m_min; }
-    const QVector3D max() const { return m_max; }
-    const QVector3D center() const { return m_center; }
-    float radius() const { return m_radius; }
-    bool isValid() const { return m_radius >= 0.f; }
+namespace BufferTypeInfo {
 
-    bool apply(QAttribute *positionAttribute,
-               QAttribute *indexAttribute,
-               int drawVertexCount,
-               bool primitiveRestartEnabled,
-               int primitiveRestartIndex);
+    template <Qt3DCore::QAttribute::VertexBaseType> struct EnumToType;
+    template <> struct EnumToType<Qt3DCore::QAttribute::Byte> { typedef const char type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedByte> { typedef const uchar type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::Short> { typedef const short type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedShort> { typedef const ushort type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::Int> { typedef const int type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::UnsignedInt> { typedef const uint type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::Float> { typedef const float type; };
+    template <> struct EnumToType<Qt3DCore::QAttribute::Double> { typedef const double type; };
 
-private:
-    QVector3D m_min;
-    QVector3D m_max;
-    QVector3D m_center;
-    float m_radius = -1.f;
-};
+    template<Qt3DCore::QAttribute::VertexBaseType v>
+    typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
+    {
+        return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
+    }
+
+} // namespace BufferTypeInfo
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
 
-#endif // QT3DCORE_QGEOMETRYVIEW_P_H
-
+#endif // QT3DCORE_BUFFERUTILS_P_H
