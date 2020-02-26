@@ -81,7 +81,6 @@ public:
     QQuickItem *item() const;
     bool isMouseEnabled() const;
 
-    Q_DECL_DEPRECATED QVector<Qt3DCore::QEntity *> entities();
     QVector<Qt3DCore::QEntity *> entities() const;
     void addEntity(Qt3DCore::QEntity *entity);
     void removeEntity(Qt3DCore::QEntity *entity);

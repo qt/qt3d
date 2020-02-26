@@ -82,8 +82,8 @@ const int Shader::skinningPaletteNameId = StringToInt::lookupId(QLatin1String("s
 
 Shader::Shader()
     : BackendNode(ReadWrite)
-    , m_status(QShaderProgram::NotReady)
     , m_requiresFrontendSync(false)
+    , m_status(QShaderProgram::NotReady)
     , m_format(QShaderProgram::GLSL)
     , m_dirty(false)
 {

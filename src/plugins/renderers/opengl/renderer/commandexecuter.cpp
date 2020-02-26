@@ -67,21 +67,8 @@ QJsonObject typeToJsonObj(const Type &)
 template<typename Type>
 QJsonValue typeToJsonValue(const Type &t)
 {
-    Q_UNUSED(t);
+    Q_UNUSED(t)
     return QJsonValue();
-}
-
-template<>
-QJsonObject typeToJsonObj<QRectF>(const QRectF &rect)
-{
-    QJsonObject obj;
-
-    obj.insert(QLatin1String("x"), rect.x());
-    obj.insert(QLatin1String("y"), rect.y());
-    obj.insert(QLatin1String("width"), rect.width());
-    obj.insert(QLatin1String("height"), rect.height());
-
-    return obj;
 }
 
 template<>
@@ -98,17 +85,6 @@ QJsonValue typeToJsonValue<QRectF>(const QRectF &rect)
 }
 
 template<>
-QJsonObject typeToJsonObj<QSize>(const QSize &s)
-{
-    QJsonObject obj;
-
-    obj.insert(QLatin1String("width"), s.width());
-    obj.insert(QLatin1String("height"), s.height());
-
-    return obj;
-}
-
-template<>
 QJsonValue typeToJsonValue<QSize>(const QSize &s)
 {
     QJsonArray value;
@@ -117,18 +93,6 @@ QJsonValue typeToJsonValue<QSize>(const QSize &s)
     value.push_back(s.height());
 
     return value;
-}
-
-template<>
-QJsonObject typeToJsonObj<QVector3D>(const QVector3D &v)
-{
-    QJsonObject obj;
-
-    obj.insert(QLatin1String("x"), v.x());
-    obj.insert(QLatin1String("y"), v.y());
-    obj.insert(QLatin1String("z"), v.z());
-
-    return obj;
 }
 
 template<>
@@ -144,31 +108,10 @@ QJsonValue typeToJsonValue<QVector3D>(const QVector3D &v)
 }
 
 template<>
-QJsonObject typeToJsonObj<Qt3DCore::QNodeId>(const Qt3DCore::QNodeId &v)
-{
-    QJsonObject obj;
-    obj.insert(QLatin1String("id"), qint64(v.id()));
-    return obj;
-}
-
-template<>
 QJsonValue typeToJsonValue<Qt3DCore::QNodeId>(const Qt3DCore::QNodeId &v)
 {
     QJsonValue value(qint64(v.id()));
     return value;
-}
-
-template<>
-QJsonObject typeToJsonObj<QVector4D>(const QVector4D &v)
-{
-    QJsonObject obj;
-
-    obj.insert(QLatin1String("x"), v.x());
-    obj.insert(QLatin1String("y"), v.y());
-    obj.insert(QLatin1String("z"), v.z());
-    obj.insert(QLatin1String("w"), v.w());
-
-    return obj;
 }
 
 template<>
@@ -182,19 +125,6 @@ QJsonValue typeToJsonValue<QVector4D>(const QVector4D &v)
     value.push_back(v.w());
 
     return value;
-}
-
-template<>
-QJsonObject typeToJsonObj<QMatrix4x4>(const QMatrix4x4 &v)
-{
-    QJsonObject obj;
-
-    obj.insert(QLatin1String("row 0"), typeToJsonObj(v.row(0)));
-    obj.insert(QLatin1String("row 1"), typeToJsonObj(v.row(0)));
-    obj.insert(QLatin1String("row 2"), typeToJsonObj(v.row(0)));
-    obj.insert(QLatin1String("row 3"), typeToJsonObj(v.row(0)));
-
-    return obj;
 }
 
 template<>

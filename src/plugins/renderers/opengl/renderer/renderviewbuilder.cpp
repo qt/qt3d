@@ -441,8 +441,13 @@ public:
         RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
         dataCacheForLeaf.materialParameterGatherer.clear();
 
-        for (const auto &materialGatherer : qAsConst(m_materialParameterGathererJobs))
-            dataCacheForLeaf.materialParameterGatherer.unite(materialGatherer->materialToPassAndParameter());
+        for (const auto &materialGatherer : qAsConst(m_materialParameterGathererJobs)) {
+            const MaterialParameterGathererData &source = materialGatherer->materialToPassAndParameter();
+            for (auto it = std::begin(source); it != std::end(source); ++it) {
+                Q_ASSERT(!dataCacheForLeaf.materialParameterGatherer.contains(it.key()));
+                dataCacheForLeaf.materialParameterGatherer.insert(it.key(), it.value());
+            }
+        }
     }
 
 private:

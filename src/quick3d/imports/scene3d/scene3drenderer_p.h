@@ -123,6 +123,7 @@ private:
     QSemaphore m_allowRendering;
     Scene3DItem::CompositingMode m_compositingMode;
     QVector<Scene3DView *> m_views;
+    quint32 m_textureId;
 
     friend class Scene3DCleaner;
 };
