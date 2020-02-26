@@ -68,10 +68,14 @@ public:
 
     QBufferPrivate();
 
+    static QBufferPrivate *get(QBuffer *q);
+
     QByteArray m_data;
     QBuffer::UsageType m_usage;
     QBuffer::AccessType m_access;
+    bool m_dirty;
 
+    void update() override;
     void setData(const QByteArray &data);
 };
 

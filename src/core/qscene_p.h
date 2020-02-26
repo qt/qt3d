@@ -69,6 +69,16 @@ class QChangeArbiter;
 class Q_3DCORE_PRIVATE_EXPORT QScene
 {
 public:
+    // Changes made to backend nodes are reported to the Renderer
+    enum DirtyNodeFlag {
+        TransformDirty      = 1 << 0,
+        GeometryDirty       = 1 << 1,
+        EntityEnabledDirty  = 1 << 2,
+        BuffersDirty        = 1 << 3,
+        AllDirty            = 0xffffff
+    };
+    Q_DECLARE_FLAGS(DirtyNodeSet, DirtyNodeFlag)
+
     QScene(QAspectEngine *engine = nullptr);
     ~QScene();
 
@@ -102,6 +112,10 @@ public:
     void removePropertyTrackDataForNode(QNodeId id);
 
     NodePostConstructorInit* postConstructorInit() const;
+
+    void markDirty(DirtyNodeSet changes);
+    DirtyNodeSet dirtyBits();
+    void clearDirtyBits();
 
 private:
     Q_DECLARE_PRIVATE(QScene)

@@ -75,6 +75,7 @@ class QAbstractAspect;
 class QAbstractAspectJobManager;
 class QAspectEngine;
 class QServiceLocator;
+class QScene;
 class NodePostConstructorInit;
 struct NodeTreeChange;
 #if QT_CONFIG(animation)
@@ -118,6 +119,7 @@ public:
 
     QNode *lookupNode(QNodeId id) const;
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
+    QScene *scene() const;
 
     int jobsInLastFrame() const { return m_jobsInLastFrame; }
     void dumpJobsOnNextFrame();

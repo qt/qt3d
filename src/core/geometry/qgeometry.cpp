@@ -61,17 +61,42 @@ QGeometryPrivate::~QGeometryPrivate()
 {
 }
 
+QGeometryPrivate *QGeometryPrivate::get(QGeometry *q)
+{
+    return q->d_func();
+}
+
+void QGeometryPrivate::setScene(QScene *scene)
+{
+    QNodePrivate::setScene(scene);
+    if (scene)
+        scene->markDirty(QScene::GeometryDirty);
+}
+
+void QGeometryPrivate::update()
+{
+    if (!m_blockNotifications) {
+        m_dirty = true;
+        markDirty(QScene::GeometryDirty);
+    }
+    QNodePrivate::update();
+}
+
 void QGeometryPrivate::setExtent(const QVector3D &minExtent, const QVector3D &maxExtent)
 {
     Q_Q(QGeometry);
     if (m_minExtent != minExtent) {
         m_minExtent = minExtent;
+        const auto wasBlocked = q->blockNotifications(true);
         emit q->minExtentChanged(minExtent);
+        q->blockNotifications(wasBlocked);
     }
 
     if (m_maxExtent != maxExtent) {
         m_maxExtent = maxExtent;
+        const auto wasBlocked = q->blockNotifications(true);
         emit q->maxExtentChanged(maxExtent);
+        q->blockNotifications(wasBlocked);
     }
 }
 

@@ -67,6 +67,8 @@ public:
     QGeometryViewPrivate();
     ~QGeometryViewPrivate();
 
+    void update() override;
+
     Q_DECLARE_PUBLIC(QGeometryView)
 
     int m_instanceCount;
@@ -80,6 +82,7 @@ public:
     bool m_primitiveRestart;
     QGeometry *m_geometry;
     QGeometryView::PrimitiveType m_primitiveType;
+    bool m_dirty;
 };
 
 } // namespace Qt3DCore

@@ -243,6 +243,14 @@ void QTransformPrivate::setWorldMatrix(const QMatrix4x4 &worldMatrix)
     q->blockNotifications(blocked);
 }
 
+void QTransformPrivate::update()
+{
+    if (!m_blockNotifications)
+        m_dirty = true;
+    markDirty(QScene::TransformDirty);
+    QNodePrivate::update();
+}
+
 void QTransform::setMatrix(const QMatrix4x4 &m)
 {
     Q_D(QTransform);

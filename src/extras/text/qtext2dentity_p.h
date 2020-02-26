@@ -105,7 +105,7 @@ public:
 
     void setCurrentGlyphRuns(const QVector<QGlyphRun> &runs);
     void clearCurrentGlyphRuns();
-    void update();
+    void updateGlyphs();
 
     struct CacheEntry
     {

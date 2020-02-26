@@ -69,13 +69,17 @@ public:
     QGeometryPrivate();
     ~QGeometryPrivate();
 
+    void setScene(QScene *scene) override;
+    void update() override;
     void setExtent(const QVector3D &minExtent, const QVector3D &maxExtent);
 
+    static QGeometryPrivate *get(QGeometry *q);
 
     QVector<QAttribute *> m_attributes;
     QAttribute *m_boundingVolumePositionAttribute;
     QVector3D m_minExtent;
     QVector3D m_maxExtent;
+    bool m_dirty;
 };
 
 } // namespace Qt3DCore

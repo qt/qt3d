@@ -57,6 +57,7 @@
 
 #include <Qt3DCore/private/propertychangehandler_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <QtCore/private/qobject_p.h>
 #include <QQueue>
@@ -87,7 +88,8 @@ public:
     void insertTree(QNode *treeRoot, int depth = 0);
     void updatePropertyTrackMode();
 
-    void update();
+    virtual void update();
+    void markDirty(QScene::DirtyNodeSet changes);
 
     Q_DECLARE_PUBLIC(QNode)
 

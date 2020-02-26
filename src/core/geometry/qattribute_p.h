@@ -68,6 +68,9 @@ public:
     Q_DECLARE_PUBLIC(QAttribute)
 
     QAttributePrivate();
+    void update() override;
+
+    static QAttributePrivate *get(QAttribute *q);
 
     QBuffer *m_buffer;
     QString m_name;
@@ -78,6 +81,7 @@ public:
     uint m_byteOffset;
     uint m_divisor;
     QAttribute::AttributeType m_attributeType;
+    bool m_dirty;
 };
 
 } // Qt3DCore

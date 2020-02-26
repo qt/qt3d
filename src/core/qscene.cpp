@@ -69,6 +69,7 @@ public:
     mutable QReadWriteLock m_lock;
     mutable QReadWriteLock m_nodePropertyTrackModeLock;
     QNode *m_rootNode;
+    QScene::DirtyNodeSet m_dirtyBits;
 };
 
 
@@ -206,6 +207,24 @@ NodePostConstructorInit *QScene::postConstructorInit() const
 {
     Q_D(const QScene);
     return d->m_postConstructorInit.get();
+}
+
+QScene::DirtyNodeSet QScene::dirtyBits()
+{
+    Q_D(QScene);
+    return d->m_dirtyBits;
+}
+
+void QScene::clearDirtyBits()
+{
+    Q_D(QScene);
+    d->m_dirtyBits = {};
+}
+
+void QScene::markDirty(QScene::DirtyNodeSet changes)
+{
+    Q_D(QScene);
+    d->m_dirtyBits |= changes;
 }
 
 void QScene::setRootNode(QNode *root)

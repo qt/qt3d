@@ -440,6 +440,15 @@ QVector<QNode *> QAspectManager::lookupNodes(const QVector<QNodeId> &ids) const
     return d->m_scene ? d->m_scene->lookupNodes(ids) : QVector<QNode *>{};
 }
 
+QScene *QAspectManager::scene() const
+{
+    if (!m_root)
+        return nullptr;
+
+    QNodePrivate *d = QNodePrivate::get(m_root);
+    return d->m_scene;
+}
+
 void QAspectManager::dumpJobsOnNextFrame()
 {
     m_dumpJobs = true;

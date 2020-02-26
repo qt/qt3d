@@ -68,6 +68,7 @@ public :
     ~QEntityPrivate();
 
     Q_DECLARE_PUBLIC(QEntity)
+    static QEntityPrivate *get(QEntity *q);
 
     QNodeId parentEntityId() const;
     void updateComponentRelationShip(QComponent *component, ComponentRelationshipChange::RelationShip change);
@@ -89,6 +90,7 @@ public :
 
     QComponentVector m_components;
     mutable QNodeId m_parentEntityId;
+    bool m_dirty;
 };
 
 struct QEntityData

@@ -51,11 +51,27 @@ QBufferPrivate::QBufferPrivate()
     : QNodePrivate()
     , m_usage(QBuffer::StaticDraw)
     , m_access(QBuffer::Write)
+    , m_dirty(false)
 {
+}
+
+QBufferPrivate *QBufferPrivate::get(QBuffer *q)
+{
+    return q->d_func();
+}
+
+void QBufferPrivate::update()
+{
+    if (!m_blockNotifications) {
+        m_dirty = true;
+        markDirty(QScene::BuffersDirty);
+    }
+    QNodePrivate::update();
 }
 
 void QBufferPrivate::setData(const QByteArray &data)
 {
+    // this is called when date is loaded from backend, should not set dirty flag
     Q_Q(QBuffer);
     const bool blocked = q->blockNotifications(true);
     m_data = data;

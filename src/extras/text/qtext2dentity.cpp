@@ -186,7 +186,7 @@ void QText2DEntityPrivate::setScene(Qt3DCore::QScene *scene)
         m_glyphCache = entry.glyphCache;
         ++entry.count;
         // Update to populate glyphCache if needed
-        update();
+        updateGlyphs();
     }
 }
 
@@ -325,7 +325,7 @@ void QText2DEntityPrivate::clearCurrentGlyphRuns()
     m_currentGlyphRuns.clear();
 }
 
-void QText2DEntityPrivate::update()
+void QText2DEntityPrivate::updateGlyphs()
 {
     if (m_glyphCache == nullptr)
         return;
@@ -387,7 +387,7 @@ void QText2DEntity::setFont(const QFont &font)
         emit fontChanged(font);
 
         if (!d->m_text.isEmpty())
-            d->update();
+            d->updateGlyphs();
     }
 }
 
@@ -434,7 +434,7 @@ void QText2DEntity::setText(const QString &text)
         d->m_text = text;
         emit textChanged(text);
 
-        d->update();
+        d->updateGlyphs();
     }
 }
 
@@ -468,7 +468,7 @@ void QText2DEntity::setWidth(float width)
     if (width != d->m_width) {
         d->m_width = width;
         emit widthChanged(width);
-        d->update();
+        d->updateGlyphs();
     }
 }
 
@@ -478,7 +478,7 @@ void QText2DEntity::setHeight(float height)
     if (height != d->m_height) {
         d->m_height = height;
         emit heightChanged(height);
-        d->update();
+        d->updateGlyphs();
     }
 }
 

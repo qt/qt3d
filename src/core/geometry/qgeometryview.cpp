@@ -57,11 +57,19 @@ QGeometryViewPrivate::QGeometryViewPrivate()
     , m_primitiveRestart(false)
     , m_geometry(nullptr)
     , m_primitiveType(QGeometryView::Triangles)
+    , m_dirty(false)
 {
 }
 
 QGeometryViewPrivate::~QGeometryViewPrivate()
 {
+}
+
+void QGeometryViewPrivate::update()
+{
+    if (!m_blockNotifications)
+        m_dirty = true;
+    QNodePrivate::update();
 }
 
 /*!

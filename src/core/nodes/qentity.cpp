@@ -128,11 +128,18 @@ namespace Qt3DCore {
 QEntityPrivate::QEntityPrivate()
     : QNodePrivate()
     , m_parentEntityId()
+    , m_dirty(false)
 {}
 
 /*! \internal */
 QEntityPrivate::~QEntityPrivate()
 {
+}
+
+/*! \internal */
+QEntityPrivate *QEntityPrivate::get(QEntity *q)
+{
+    return q->d_func();
 }
 
 /*! \internal */
@@ -145,6 +152,7 @@ void QEntityPrivate::removeDestroyedComponent(QComponent *comp)
 
     updateComponentRelationShip(comp, ComponentRelationshipChange::Removed);
     m_components.removeOne(comp);
+    m_dirty = true;
 
     // Remove bookkeeping connection
     unregisterDestructionHelper(comp);
@@ -218,6 +226,7 @@ void QEntity::addComponent(QComponent *comp)
     QNodePrivate::get(comp)->_q_ensureBackendNodeCreated();
 
     d->m_components.append(comp);
+    d->m_dirty = true;
 
     // Ensures proper bookkeeping
     d->registerPrivateDestructionHelper(comp, &QEntityPrivate::removeDestroyedComponent);
@@ -240,6 +249,7 @@ void QEntity::removeComponent(QComponent *comp)
     d->updateComponentRelationShip(comp, ComponentRelationshipChange::Removed);
 
     d->m_components.removeOne(comp);
+    d->m_dirty = true;
 
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(comp);

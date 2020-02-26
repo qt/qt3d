@@ -56,7 +56,20 @@ QAttributePrivate::QAttributePrivate()
     , m_byteOffset(0)
     , m_divisor(0)
     , m_attributeType(QAttribute::VertexAttribute)
+    , m_dirty(false)
 {
+}
+
+void QAttributePrivate::update()
+{
+    if (!m_blockNotifications)
+        m_dirty = true;
+    QNodePrivate::update();
+}
+
+QAttributePrivate *QAttributePrivate::get(QAttribute *q)
+{
+    return q->d_func();
 }
 
 /*!

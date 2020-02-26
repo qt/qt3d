@@ -595,6 +595,12 @@ void QNodePrivate::update()
     }
 }
 
+void QNodePrivate::markDirty(QScene::DirtyNodeSet changes)
+{
+    if (m_scene)
+        m_scene->markDirty(changes);
+}
+
 /*!
     \internal
  */

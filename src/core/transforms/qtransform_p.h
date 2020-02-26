@@ -78,7 +78,10 @@ public:
 
     QMatrix4x4 m_worldMatrix;
 
+    bool m_dirty;
+
     void setWorldMatrix(const QMatrix4x4 &worldMatrix);
+    void update() override;
 };
 
 struct QTransformData
