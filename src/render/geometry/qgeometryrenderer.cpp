@@ -49,7 +49,7 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 QGeometryRendererPrivate::QGeometryRendererPrivate()
-    : QComponentPrivate()
+    : Qt3DCore::QBoundingVolumePrivate()
     , m_instanceCount(1)
     , m_vertexCount(0)
     , m_indexOffset(0)
@@ -61,12 +61,39 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
     , m_primitiveRestart(false)
     , m_geometry(nullptr)
     , m_primitiveType(QGeometryRenderer::Triangles)
-    , m_view(nullptr)
 {
+    m_primaryProvider = false;
 }
 
 QGeometryRendererPrivate::~QGeometryRendererPrivate()
 {
+}
+
+void QGeometryRendererPrivate::setView(QGeometryView *view)
+{
+    Q_Q(QGeometryRenderer);
+    if (m_view == view)
+        return;
+
+    if (m_view)
+        m_view->disconnect(q);
+
+    QBoundingVolumePrivate::setView(view);
+
+    // Ensures proper bookkeeping
+    if (m_view) {
+        QObject::connect(view, &QGeometryView::instanceCountChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::vertexCountChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::indexOffsetChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::firstInstanceChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::firstVertexChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::indexBufferByteOffsetChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::restartIndexValueChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::verticesPerPatchChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::primitiveRestartEnabledChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::geometryChanged, q, [this]() { update(); });
+        QObject::connect(view, &QGeometryView::primitiveTypeChanged, q, [this]() { update(); });
+    }
 }
 
 /*!
@@ -200,7 +227,7 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
     Constructs a new QGeometryRenderer with \a parent.
  */
 QGeometryRenderer::QGeometryRenderer(QNode *parent)
-    : QComponent(*new QGeometryRendererPrivate(), parent)
+    : Qt3DCore::QBoundingVolume(*new QGeometryRendererPrivate(), parent)
 {
 }
 
@@ -215,7 +242,7 @@ QGeometryRenderer::~QGeometryRenderer()
     \internal
  */
 QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent)
-    : QComponent(dd, parent)
+    : Qt3DCore::QBoundingVolume(dd, parent)
 {
 }
 
@@ -340,12 +367,6 @@ QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
     return d->m_primitiveType;
 }
 
-QGeometryView *QGeometryRenderer::view() const
-{
-    Q_D(const QGeometryRenderer);
-    return d->m_view;
-}
-
 void QGeometryRenderer::setInstanceCount(int instanceCount)
 {
     Q_D(QGeometryRenderer);
@@ -464,41 +485,6 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
 
     d->m_primitiveType = primitiveType;
     emit primitiveTypeChanged(primitiveType);
-}
-
-void QGeometryRenderer::setView(QGeometryView *view)
-{
-    Q_D(QGeometryRenderer);
-    if (d->m_view == view)
-        return;
-
-    if (d->m_view) {
-        d->unregisterDestructionHelper(d->m_view);
-        d->m_view->disconnect(this);
-    }
-
-    if (view && !view->parent())
-        view->setParent(this);
-
-    d->m_view = view;
-
-    // Ensures proper bookkeeping
-    if (d->m_view) {
-        d->registerDestructionHelper(d->m_view, &QGeometryRenderer::setView, d->m_view);
-        connect(view, &QGeometryView::instanceCountChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::vertexCountChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::indexOffsetChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::firstInstanceChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::firstVertexChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::indexBufferByteOffsetChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::restartIndexValueChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::verticesPerPatchChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::primitiveRestartEnabledChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::geometryChanged, this, [d]() { d->update(); });
-        connect(view, &QGeometryView::primitiveTypeChanged, this, [d]() { d->update(); });
-    }
-
-    emit viewChanged(view);
 }
 
 } // namespace Qt3DRender

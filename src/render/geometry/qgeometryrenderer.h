@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QGEOMETRYRENDERER_H
 #define QT3DRENDER_QGEOMETRYRENDERER_H
 
-#include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qboundingvolume.h>
 #include <Qt3DCore/qgeometry.h>
 #include <Qt3DCore/qgeometryview.h>
 #include <Qt3DRender/qt3drender_global.h>
@@ -51,7 +51,7 @@ namespace Qt3DRender {
 
 class QGeometryRendererPrivate;
 
-class Q_3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
+class Q_3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QBoundingVolume
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)
@@ -65,7 +65,6 @@ class Q_3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
     Q_PROPERTY(bool primitiveRestartEnabled READ primitiveRestartEnabled WRITE setPrimitiveRestartEnabled NOTIFY primitiveRestartEnabledChanged)
     Q_PROPERTY(Qt3DCore::QGeometry* geometry READ geometry WRITE setGeometry NOTIFY geometryChanged)
     Q_PROPERTY(PrimitiveType primitiveType READ primitiveType WRITE setPrimitiveType NOTIFY primitiveTypeChanged)
-    Q_PROPERTY(Qt3DCore::QGeometryView* view READ view WRITE setView NOTIFY viewChanged)
 public:
     explicit QGeometryRenderer(Qt3DCore::QNode *parent = nullptr);
     ~QGeometryRenderer();
@@ -100,7 +99,6 @@ public:
     bool primitiveRestartEnabled() const;
     Qt3DCore::QGeometry *geometry() const;
     PrimitiveType primitiveType() const;
-    Qt3DCore::QGeometryView *view() const;
 
 public Q_SLOTS:
     void setInstanceCount(int instanceCount);
@@ -114,7 +112,6 @@ public Q_SLOTS:
     void setPrimitiveRestartEnabled(bool enabled);
     void setGeometry(Qt3DCore::QGeometry *geometry);
     void setPrimitiveType(PrimitiveType primitiveType);
-    void setView(Qt3DCore::QGeometryView *view);
 
 Q_SIGNALS:
     void instanceCountChanged(int instanceCount);
@@ -128,7 +125,6 @@ Q_SIGNALS:
     void primitiveRestartEnabledChanged(bool primitiveRestartEnabled);
     void geometryChanged(Qt3DCore::QGeometry *geometry);
     void primitiveTypeChanged(PrimitiveType primitiveType);
-    void viewChanged(Qt3DCore::QGeometryView *view);
 
 protected:
     explicit QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = nullptr);

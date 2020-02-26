@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,58 +37,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QGEOMETRYRENDERER_P_H
-#define QT3DRENDER_QGEOMETRYRENDERER_P_H
+#ifndef QT3DCORE_QBOUNDINGVOLUME_H
+#define QT3DCORE_QBOUNDINGVOLUME_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qgeometryfactory_p.h>
-#include <Qt3DCore/private/qboundingvolume_p.h>
-#include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
-#include <memory>
+#include <QtGui/qvector3d.h>
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qgeometryview.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class Q_3DRENDERSHARED_PRIVATE_EXPORT QGeometryRendererPrivate : public Qt3DCore::QBoundingVolumePrivate
+class QBoundingVolumePrivate;
+
+class Q_3DCORESHARED_EXPORT QBoundingVolume : public Qt3DCore::QComponent
 {
+    Q_OBJECT
+    Q_PROPERTY(QGeometryView* view READ view WRITE setView NOTIFY viewChanged)
+    Q_PROPERTY(QVector3D implicitMinPoint READ implicitMinPoint NOTIFY implicitMinPointChanged)
+    Q_PROPERTY(QVector3D implicitMaxPoint READ implicitMaxPoint NOTIFY implicitMaxPointChanged)
+    Q_PROPERTY(bool implicitPointsValid READ areImplicitPointsValid NOTIFY implicitPointsValidChanged)
 public:
-    QGeometryRendererPrivate();
-    ~QGeometryRendererPrivate();
+    explicit QBoundingVolume(Qt3DCore::QNode *parent = nullptr);
+    ~QBoundingVolume();
 
-    Q_DECLARE_PUBLIC(QGeometryRenderer)
+    QGeometryView* view() const;
+    QVector3D implicitMinPoint() const;
+    QVector3D implicitMaxPoint() const;
+    bool areImplicitPointsValid() const;
 
-    void setView(Qt3DCore::QGeometryView *view) override;
+public Q_SLOTS:
+    void setView(QGeometryView *view);
 
-    int m_instanceCount;
-    int m_vertexCount;
-    int m_indexOffset;
-    int m_firstInstance;
-    int m_firstVertex;
-    int m_indexBufferByteOffset;
-    int m_restartIndexValue;
-    int m_verticesPerPatch;
-    bool m_primitiveRestart;
-    Qt3DCore::QGeometry *m_geometry;
-    QGeometryRenderer::PrimitiveType m_primitiveType;
-    Qt3DCore::QGeometryFactoryPtr m_geometryFactory;
+Q_SIGNALS:
+    void viewChanged(QGeometryView *view);
+    void implicitMinPointChanged(const QVector3D &implicitMinPoint);
+    void implicitMaxPointChanged(const QVector3D &implicitMaxPoint);
+    void implicitPointsValidChanged(bool implicitPointsValid);
+
+protected:
+    QBoundingVolume(QBoundingVolumePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QBoundingVolume)
 };
 
-} // namespace Qt3DRender
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-
-#endif // QT3DRENDER_QGEOMETRYRENDERER_P_H
-
+#endif // QT3DCORE_QBOUNDINGVOLUME_H
