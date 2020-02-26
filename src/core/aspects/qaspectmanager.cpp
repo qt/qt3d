@@ -51,6 +51,7 @@
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DCore/private/qaspectjob_p.h>
@@ -393,6 +394,12 @@ void QAspectManager::unregisterAspect(Qt3DCore::QAbstractAspect *aspect)
 const QVector<QAbstractAspect *> &QAspectManager::aspects() const
 {
     return m_aspects;
+}
+
+QAbstractAspect *QAspectManager::aspect(const QString &name) const
+{
+    auto dengine = QAspectEnginePrivate::get(m_engine);
+    return dengine->m_namedAspects.value(name, nullptr);
 }
 
 QAbstractAspectJobManager *QAspectManager::jobManager() const

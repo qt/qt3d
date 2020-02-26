@@ -110,6 +110,7 @@ public Q_SLOTS:
 
 public:
     const QVector<QAbstractAspect *> &aspects() const;
+    QAbstractAspect *aspect(const QString &name) const;
     QAbstractAspectJobManager *jobManager() const;
     QChangeArbiter *changeArbiter() const;
     QServiceLocator *serviceLocator() const;

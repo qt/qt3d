@@ -296,10 +296,13 @@ void QAspectEnginePrivate::exitSimulationLoop()
 void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
     Q_D(QAspectEngine);
-    // The aspect is moved to the AspectThread
-    // AspectManager::registerAspect is called in the context
-    // of the AspectThread. This is turns call aspect->onInitialize
-    // still in the same AspectThread context
+
+    const QStringList dependencies = aspect->dependencies();
+    for (const auto &name: dependencies) {
+        if (!d->m_namedAspects.contains(name))
+            registerAspect(name);
+    }
+
     d->m_aspects << aspect;
     d->m_aspectManager->registerAspect(aspect);
 }
@@ -375,6 +378,17 @@ QVector<QAbstractAspect *> QAspectEngine::aspects() const
 {
     Q_D(const QAspectEngine);
     return d->m_aspects;
+}
+
+/*!
+ * \return the asepect matching the \a name
+ *
+ * \note Required that the aspect was registered by name
+ */
+QAbstractAspect *QAspectEngine::aspect(const QString &name) const
+{
+    Q_D(const QAspectEngine);
+    return d->m_namedAspects.value(name, nullptr);
 }
 
 /*!

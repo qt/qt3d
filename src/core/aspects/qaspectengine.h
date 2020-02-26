@@ -82,6 +82,7 @@ public:
     void unregisterAspect(const QString &name);
 
     QVector<QAbstractAspect*> aspects() const;
+    QAbstractAspect *aspect(const QString &name) const;
 
     QVariant executeCommand(const QString &command);
 

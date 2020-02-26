@@ -69,6 +69,7 @@ public:
     ~QAbstractAspect();
 
     void scheduleSingleShotJob(const Qt3DCore::QAspectJobPtr &job);
+    virtual QStringList dependencies() const;
 
 protected:
     explicit QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = nullptr);

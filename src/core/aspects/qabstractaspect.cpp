@@ -422,6 +422,11 @@ void QAbstractAspect::scheduleSingleShotJob(const Qt3DCore::QAspectJobPtr &job)
     d->m_singleShotJobs.push_back(job);
 }
 
+QStringList QAbstractAspect::dependencies() const
+{
+    return {};
+}
+
 namespace Debug {
 
 AsynchronousCommandReply::AsynchronousCommandReply(const QString &commandName, QObject *parent)

@@ -72,12 +72,12 @@ private:
     QNodeId m_rootEntityId;
 };
 
-#define FAKE_ASPECT(ClassName) \
+#define FAKE_ASPECT(ClassName, dependAspects) \
 class ClassName : public QAbstractAspect \
 { \
     Q_OBJECT \
 public: \
-    explicit ClassName(QObject *parent = 0) \
+    explicit ClassName(QObject *parent = nullptr) \
         : QAbstractAspect(parent) {} \
     \
 private: \
@@ -100,14 +100,17 @@ private: \
         \
         return QVariant(); \
     } \
+    QStringList dependencies() const override { return dependAspects; } \
 };
 
-FAKE_ASPECT(FakeAspect)
-FAKE_ASPECT(FakeAspect2)
-FAKE_ASPECT(FakeAspect3)
+FAKE_ASPECT(FakeAspect, {})
+FAKE_ASPECT(FakeAspect2, {})
+FAKE_ASPECT(FakeAspect3, {})
+FAKE_ASPECT(FakeAspectDependent, {QLatin1String("fake")})
 
 QT3D_REGISTER_ASPECT("fake", FakeAspect)
 QT3D_REGISTER_ASPECT("otherfake", FakeAspect2)
+QT3D_REGISTER_ASPECT("dependfake", FakeAspectDependent)
 
 
 class tst_QAspectEngine : public QObject
@@ -297,6 +300,23 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(!output.isValid());
+    }
+
+    void shouldRegisterDependentAspects()
+    {
+        // GIVEN
+        QAspectEngine engine;
+
+        // THEN
+        QVERIFY(engine.aspects().isEmpty());
+
+        // WHEN
+        engine.registerAspect("dependfake");
+
+        // THEN
+        QCOMPARE(engine.aspects().size(), 2);
+        QVERIFY(qobject_cast<FakeAspect*>(engine.aspects().at(0)));
+        QVERIFY(qobject_cast<FakeAspectDependent*>(engine.aspects().at(1)));
     }
 };
 
