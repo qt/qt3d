@@ -6,7 +6,6 @@ SUBDIRS += \
         graphicshelpergl3_2 \
         graphicshelpergl2 \
         glshadermanager \
-        materialparametergathererjob \
         textures \
         renderer \
         renderviewutils \
@@ -16,4 +15,8 @@ SUBDIRS += \
         qgraphicsutils \
         computecommand
 
+qtHaveModule(quick) {
+    SUBDIRS += \
+        materialparametergathererjob
+}
 !macos: SUBDIRS += graphicshelpergl4

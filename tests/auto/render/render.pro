@@ -97,7 +97,6 @@ qtConfig(private_tests) {
         qraycaster \
         raycaster \
         qscreenraycaster \
-        raycastingjob \
         qcamera \
         qsetfence \
         qwaitfence \
@@ -117,6 +116,11 @@ qtConfig(private_tests) {
         trianglesextractor \
         triangleboundingvolume \
     }
+
+    qtHaveModule(quick) {
+      SUBDIRS += \
+        raycastingjob
+    }
 }
 
 # Tests related to the OpenGL renderer
@@ -125,26 +129,31 @@ QT_FOR_CONFIG += 3drender-private
 qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
 
     SUBDIRS += \
-        opengl \
-        scene2d
+        opengl
 
     qtConfig(qt3d-extras) {
+        qtHaveModule(quick) {
+          SUBDIRS += \
+            boundingsphere \
+            pickboundingvolumejob \
+            updatemeshtrianglelistjob \
+            updateshaderdatatransformjob
+        }
+
         SUBDIRS += \
             qmaterial \
             geometryloaders \
             picking \
-            boundingsphere \
             qdefaultmeshes \
-            pickboundingvolumejob \
-            gltfplugins \
-            updatemeshtrianglelistjob \
-            updateshaderdatatransformjob
+            gltfplugins
     }
 
     qtConfig(qt3d-input) {
-        SUBDIRS += \
-            qscene2d \
-            scene2d
+        qtHaveModule(quick) {
+            SUBDIRS += \
+                qscene2d \
+                scene2d
+        }
     }
 
     qtConfig(qt3d-simd-avx2): SUBDIRS += alignedresourcesmanagers-avx

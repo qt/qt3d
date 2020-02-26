@@ -1,30 +1,8 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    simple-qml \
     simple-cpp \
-    multiviewport \
-    wireframe \
-    shadow-map-qml \
-    wave \
-    scene3d \
-    controls \
-    anaglyph-rendering \
-    planets-qml \
-    instanced-arrays-qml \
-    lights \
-    compute-particles \
-    3d-text \
-    qardboard \
-    advancedcustommaterial \
-    simplecustommaterial \
-    scene2d \
-    phong-cubes \
-    pbr-materials \
-    controlsunderlay \
-    scene3dview
-
-qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
+    3d-text
 
 # qmake seems to break in some CI configurations, disable this for now
 #SUBDIRS += qgltf
@@ -35,6 +13,34 @@ qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 qtHaveModule(widgets) {
     SUBDIRS += basicshapes-cpp
     qtHaveModule(quickwidgets): SUBDIRS += widgets-scene3d
+}
+
+qtHaveModule(quick) {
+    qtHaveModule(multimedia) {
+        SUBDIRS += audio-visualizer-qml
+    }
+
+    SUBDIRS += \
+        simple-qml \
+        shadow-map-qml \
+        instanced-arrays-qml \
+        planets-qml \
+        advancedcustommaterial \
+        anaglyph-rendering \
+        compute-particles \
+        phong-cubes \
+        lights \
+        scene3dview \
+        controlsunderlay \
+        simplecustommaterial \
+        qardboard \
+        pbr-materials \
+        scene2d \
+        multiviewport \
+        wireframe \
+        wave \
+        scene3d \
+        controls
 }
 
 EXAMPLE_FILES += \

@@ -15,7 +15,11 @@ qtConfig(qt3d-animation): SUBDIRS += animation
 qtConfig(qt3d-extras): SUBDIRS += extras
 qtConfig(qt3d-render) {
     SUBDIRS += geometryloaders
-    qtConfig(qt3d-input): SUBDIRS += quick3d
+    qtConfig(qt3d-input) {
+        qtHaveModule(quick) {
+            SUBDIRS += quick3d
+        }
+    }
 }
 
 for(subdir, SUBDIRS) {
