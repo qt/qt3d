@@ -224,6 +224,11 @@ void QAbstractAspectPrivate::syncDirtyFrontEndNodes(const QVector<QNode *> &node
     }
 }
 
+void QAbstractAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const
+{
+    backend->syncFromFrontEnd(node, firstTime);
+}
+
 void QAbstractAspectPrivate::syncDirtyEntityComponentNodes(const QVector<ComponentRelationshipChange> &changes)
 {
     auto getBackend = [this] (QNode *node) -> QBackendNode* {
@@ -256,11 +261,6 @@ void QAbstractAspectPrivate::syncDirtyEntityComponentNodes(const QVector<Compone
             break;
         }
     }
-}
-
-void QAbstractAspectPrivate::syncDirtyFrontEndNode(QNode *, QBackendNode *, bool) const
-{
-    // this would usually be overloaded in derived aspect classes
 }
 
 QBackendNode *QAbstractAspectPrivate::createBackendNode(const NodeTreeChange &change) const

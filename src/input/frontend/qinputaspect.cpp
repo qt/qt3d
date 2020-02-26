@@ -110,13 +110,6 @@ QInputAspectPrivate::QInputAspectPrivate()
 {
 }
 
-void QInputAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const
-{
-    Input::BackendNode *renderBackend = static_cast<Input::BackendNode *>(backend);
-    renderBackend->syncFromFrontEnd(node, firstTime);
-}
-
-
 /*!
     \class Qt3DInput::QInputAspect
     \inherits Qt3DCore::QAbstractAspect

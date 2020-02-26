@@ -93,13 +93,6 @@ void QLogicAspectPrivate::registerBackendTypes()
     q->registerBackendType<QFrameAction>(QBackendNodeMapperPtr(new Logic::HandlerFunctor(m_manager.data())));
 }
 
-
-void QLogicAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const
-{
-    Logic::Handler *handler = static_cast<Logic::Handler *>(backend);
-    handler->syncFromFrontEnd(node, firstTime);
-}
-
 /*!
   Constructs a new Qt3DLogic::QLogicAspect instance with \a parent.
 */

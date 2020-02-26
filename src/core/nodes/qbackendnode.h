@@ -47,6 +47,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QNode;
 class QBackendNodePrivate;
 class QBackendNode;
 class QAspectEngine;
@@ -83,6 +84,8 @@ public:
     bool isEnabled() const Q_DECL_NOEXCEPT;
 
     Mode mode() const Q_DECL_NOEXCEPT;
+
+    virtual void syncFromFrontEnd(const QNode *frontEnd, bool firstTime);
 
 protected:
     Q_DECLARE_PRIVATE(QBackendNode)

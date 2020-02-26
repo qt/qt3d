@@ -69,12 +69,6 @@ QAnimationAspectPrivate::QAnimationAspectPrivate()
 {
 }
 
-void QAnimationAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const
-{
-    Animation::BackendNode *renderBackend = static_cast<Animation::BackendNode *>(backend);
-    renderBackend->syncFromFrontEnd(node, firstTime);
-}
-
 /*!
     \class Qt3DAnimation::QAnimationAspect
     \inherits Qt3DCore::QAbstractAspect

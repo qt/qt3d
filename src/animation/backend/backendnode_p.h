@@ -69,7 +69,7 @@ public:
 
     void setHandler(Handler *handler);
 
-    virtual void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 protected:
     void setDirty(Handler::DirtyFlag flag);

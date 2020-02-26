@@ -243,12 +243,6 @@ QRenderAspectPrivate *QRenderAspectPrivate::findPrivate(Qt3DCore::QAspectEngine 
     return nullptr;
 }
 
-void QRenderAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const
-{
-    Render::BackendNode *renderBackend = static_cast<Render::BackendNode *>(backend);
-    renderBackend->syncFromFrontEnd(node, firstTime);
-}
-
 void QRenderAspectPrivate::jobsDone()
 {
     m_renderer->jobsDone(m_aspectManager);

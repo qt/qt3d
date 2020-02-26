@@ -65,6 +65,7 @@ class Q_3DCORE_PRIVATE_EXPORT QBackendNodePrivate
 {
 public:
     QBackendNodePrivate(QBackendNode::Mode mode);
+    virtual ~QBackendNodePrivate();
 
     void setEnabled(bool enabled);
 

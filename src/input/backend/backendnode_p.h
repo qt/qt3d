@@ -66,7 +66,7 @@ public:
     BackendNode(Qt3DCore::QBackendNode::Mode mode = ReadOnly);
     ~BackendNode();
 
-    virtual void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 protected:
     explicit BackendNode(Qt3DCore::QBackendNodePrivate &dd);
