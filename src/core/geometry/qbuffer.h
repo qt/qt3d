@@ -54,23 +54,10 @@ class QBufferPrivate;
 class Q_3DCORESHARED_EXPORT QBuffer : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
     Q_PROPERTY(AccessType accessType READ accessType WRITE setAccessType NOTIFY accessTypeChanged REVISION 9)
 
 public:
-    enum BufferType
-    {
-        VertexBuffer        = 0x8892, // GL_ARRAY_BUFFER
-        IndexBuffer         = 0x8893, // GL_ELEMENT_ARRAY_BUFFER
-        PixelPackBuffer     = 0x88EB, // GL_PIXEL_PACK_BUFFER
-        PixelUnpackBuffer   = 0x88EC, // GL_PIXEL_UNPACK_BUFFER
-        UniformBuffer       = 0x8A11, // GL_UNIFORM_BUFFER
-        ShaderStorageBuffer = 0x90D2, // GL_SHADER_STORAGE_BUFFER
-        DrawIndirectBuffer  = 0x8F3F  // GL_DRAW_INDIRECT_BUFFER
-    };
-    Q_ENUM(BufferType) // LCOV_EXCL_LINE
-
     enum UsageType
     {
         StreamDraw          = 0x88E0, // GL_STREAM_DRAW
@@ -93,11 +80,9 @@ public:
     Q_ENUM(AccessType) // LCOV_EXCL_LINE
 
     explicit QBuffer(Qt3DCore::QNode *parent = nullptr);
-    QT_DEPRECATED explicit QBuffer(BufferType ty, Qt3DCore::QNode *parent = nullptr);
     ~QBuffer();
 
     UsageType usage() const;
-    QT_DEPRECATED BufferType type() const;
     AccessType accessType() const;
 
     void setData(const QByteArray &bytes);
@@ -106,13 +91,11 @@ public:
     Q_INVOKABLE void updateData(int offset, const QByteArray &bytes);
 
 public Q_SLOTS:
-    QT_DEPRECATED void setType(BufferType type);
     void setUsage(UsageType usage);
     void setAccessType(AccessType access);
 
 Q_SIGNALS:
     void dataChanged(const QByteArray &bytes);
-    void typeChanged(BufferType type);
     void usageChanged(UsageType usage);
     void accessTypeChanged(AccessType access);
     void dataAvailable();

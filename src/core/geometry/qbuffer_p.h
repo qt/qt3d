@@ -69,7 +69,6 @@ public:
     QBufferPrivate();
 
     QByteArray m_data;
-    QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
     QBuffer::AccessType m_access;
 

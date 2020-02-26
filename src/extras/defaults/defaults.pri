@@ -44,7 +44,6 @@ HEADERS += \
     $$PWD/qtexturematerial_p.h \
     $$PWD/qmetalroughmaterial.h \
     $$PWD/qmetalroughmaterial_p.h \
-    $$PWD/qtexturedmetalroughmaterial.h \
     $$PWD/qmorphphongmaterial.h \
     $$PWD/qmorphphongmaterial_p.h
 
@@ -71,6 +70,5 @@ SOURCES += \
     $$PWD/qspritesheetitem.cpp \
     $$PWD/qtexturematerial.cpp \
     $$PWD/qmetalroughmaterial.cpp \
-    $$PWD/qtexturedmetalroughmaterial.cpp \
     $$PWD/qmorphphongmaterial.cpp
 

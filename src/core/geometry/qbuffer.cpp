@@ -49,7 +49,6 @@ namespace Qt3DCore {
 
 QBufferPrivate::QBufferPrivate()
     : QNodePrivate()
-    , m_type(QBuffer::VertexBuffer)
     , m_usage(QBuffer::StaticDraw)
     , m_access(QBuffer::Write)
 {
@@ -185,18 +184,6 @@ QBuffer::QBuffer(QNode *parent)
 }
 
 /*!
- * Constructs a new QBuffer of buffer type \a ty with \a parent.
- *
- * \deprecated
- */
-QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
-    : QNode(*new QBufferPrivate(), parent)
-{
-    Q_D(QBuffer);
-    d->m_type = ty;
-}
-
-/*!
  * \internal
  */
 QBuffer::~QBuffer()
@@ -265,19 +252,6 @@ void QBuffer::setUsage(QBuffer::UsageType usage)
     }
 }
 
-/*!
- * \property QBuffer::type
- *
- * Holds the buffer type.
- *
- * \deprecated
- */
-QBuffer::BufferType QBuffer::type() const
-{
-    Q_D(const QBuffer);
-    return d->m_type;
-}
-
 void QBuffer::setAccessType(QBuffer::AccessType access)
 {
     Q_D(QBuffer);
@@ -298,15 +272,6 @@ QBuffer::AccessType QBuffer::accessType() const
 {
     Q_D(const QBuffer);
     return d->m_access;
-}
-
-void QBuffer::setType(QBuffer::BufferType type)
-{
-    Q_D(QBuffer);
-    if (type != d->m_type) {
-        d->m_type = type;
-        emit typeChanged(type);
-    }
 }
 
 } // namespace Qt3DCore

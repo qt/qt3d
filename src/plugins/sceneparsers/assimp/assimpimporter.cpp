@@ -704,10 +704,8 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
     meshGeometry->setParent(geometryRenderer);
     Qt3DCore::QBuffer *vertexBuffer = QAbstractNodeFactory::createNode<Qt3DCore::QBuffer>("QBuffer");
     vertexBuffer->setParent(meshGeometry);
-    vertexBuffer->setType(Qt3DCore::QBuffer::VertexBuffer);
     Qt3DCore::QBuffer *indexBuffer = QAbstractNodeFactory::createNode<Qt3DCore::QBuffer>("QBuffer");
     indexBuffer->setParent(meshGeometry);
-    indexBuffer->setType(Qt3DCore::QBuffer::IndexBuffer);
 
     geometryRenderer->setGeometry(meshGeometry);
 

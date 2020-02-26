@@ -71,7 +71,6 @@
 #include <Qt3DExtras/qspritesheetitem.h>
 #include <Qt3DExtras/qtext2dentity.h>
 #include <Qt3DExtras/qtexturematerial.h>
-#include <Qt3DExtras/qtexturedmetalroughmaterial.h>
 #include <Qt3DExtras/qtorusgeometry.h>
 #include <Qt3DExtras/qtorusmesh.h>
 
@@ -115,11 +114,6 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QDiffuseSpecularMaterial>(uri, 2, 10, "DiffuseSpecularMaterial");
     qmlRegisterType<Qt3DExtras::QMetalRoughMaterial>(uri, 2, 9, "MetalRoughMaterial");
     qmlRegisterType<Qt3DExtras::QMetalRoughMaterial, 10>(uri, 2, 10, "MetalRoughMaterial");
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-    qmlRegisterType<Qt3DExtras::QTexturedMetalRoughMaterial>(uri, 2, 9, "TexturedMetalRoughMaterial");
-QT_WARNING_POP
-    qmlRegisterType<Qt3DExtras::QMorphPhongMaterial>(uri, 2, 9, "MorphPhongMaterial");
 
     qmlRegisterType<Qt3DExtras::QSpriteGrid>(uri, 2, 10, "SpriteGrid");
     qmlRegisterType<Qt3DExtras::QSpriteSheetItem>(uri, 2, 10, "SpriteItem");
