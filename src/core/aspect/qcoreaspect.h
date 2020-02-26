@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,73 +37,36 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_H
-#define QT3DRENDER_QRENDERASPECT_H
+#ifndef QT3DCORE_QCOREASPECT_H
+#define QT3DCORE_QCOREASPECT_H
 
-#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
 
-class QOpenGLContext;
+class QCoreAspectPrivate;
 
-namespace Qt3DRender {
-
-#if defined(QT_BUILD_INTERNAL)
-class TestAspect;
-#endif
-
-namespace Render {
-class Renderer;
-class QRenderPlugin;
-}
-
-class QRenderAspectPrivate;
-
-#if defined(QT_BUILD_INTERNAL)
-class QRenderAspectTester;
-#endif
-
-class Q_3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
+class Q_3DCORESHARED_EXPORT QCoreAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:
-    enum RenderType {
-        Synchronous,
-        Threaded
-    };
-
-    explicit QRenderAspect(QObject *parent = nullptr);
-    explicit QRenderAspect(RenderType type, QObject *parent = nullptr);
-    ~QRenderAspect();
+    explicit QCoreAspect(QObject *parent = nullptr);
+    ~QCoreAspect();
 
 protected:
-    QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
-    Q_DECLARE_PRIVATE(QRenderAspect)
+    Q_DECLARE_PRIVATE(QCoreAspect)
 
 private:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
-
     QVariant executeCommand(const QStringList &args) override;
-
     void onRegistered() override;
     void onUnregistered() override;
-
-    void onEngineStartup() override;
-
-    QStringList dependencies() const override;
-
-    friend class Render::Renderer;
-    friend class Render::QRenderPlugin;
-#if defined(QT_BUILD_INTERNAL)
-    friend class QRenderAspectTester;
-    friend class TestAspect;
-#endif
 };
 
 }
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERASPECT_H
+#endif // QT3DCORE_QCOREASPECT_H

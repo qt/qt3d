@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qcoreaspect.h>
 #include <Qt3DExtras/qforwardrenderer.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrenderaspect.h>
@@ -120,6 +121,7 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     setFormat(format);
     QSurfaceFormat::setDefaultFormat(format);
 
+    d->m_aspectEngine->registerAspect(new Qt3DCore::QCoreAspect);
     d->m_aspectEngine->registerAspect(d->m_renderAspect);
     d->m_aspectEngine->registerAspect(d->m_inputAspect);
     d->m_aspectEngine->registerAspect(d->m_logicAspect);

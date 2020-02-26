@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,73 +37,66 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_H
-#define QT3DRENDER_QRENDERASPECT_H
-
-#include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qabstractaspect.h>
+#include "qcoreaspect.h"
+#include "qcoreaspect_p.h"
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt3DCore;
 
-class QOpenGLContext;
+QCoreAspectPrivate::QCoreAspectPrivate()
+{
 
-namespace Qt3DRender {
-
-#if defined(QT_BUILD_INTERNAL)
-class TestAspect;
-#endif
-
-namespace Render {
-class Renderer;
-class QRenderPlugin;
 }
 
-class QRenderAspectPrivate;
-
-#if defined(QT_BUILD_INTERNAL)
-class QRenderAspectTester;
-#endif
-
-class Q_3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
+QCoreAspectPrivate::~QCoreAspectPrivate()
 {
-    Q_OBJECT
-public:
-    enum RenderType {
-        Synchronous,
-        Threaded
-    };
 
-    explicit QRenderAspect(QObject *parent = nullptr);
-    explicit QRenderAspect(RenderType type, QObject *parent = nullptr);
-    ~QRenderAspect();
+}
 
-protected:
-    QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
-    Q_DECLARE_PRIVATE(QRenderAspect)
+void QCoreAspectPrivate::jobsDone()
+{
 
-private:
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
+}
 
-    QVariant executeCommand(const QStringList &args) override;
+void QCoreAspectPrivate::frameDone()
+{
 
-    void onRegistered() override;
-    void onUnregistered() override;
+}
 
-    void onEngineStartup() override;
+QCoreAspect::QCoreAspect(QObject *parent)
+    : Qt3DCore::QAbstractAspect(parent)
+{
 
-    QStringList dependencies() const override;
+}
 
-    friend class Render::Renderer;
-    friend class Render::QRenderPlugin;
-#if defined(QT_BUILD_INTERNAL)
-    friend class QRenderAspectTester;
-    friend class TestAspect;
-#endif
-};
+QCoreAspect::~QCoreAspect()
+{
+
+}
+
+QVector<QAspectJobPtr> QCoreAspect::jobsToExecute(qint64 time)
+{
+    Q_UNUSED(time)
+    return {};
+}
+
+QVariant QCoreAspect::executeCommand(const QStringList &args)
+{
+    Q_UNUSED(args)
+    return {};
+}
+
+void QCoreAspect::onRegistered()
+{
+
+}
+
+void QCoreAspect::onUnregistered()
+{
 
 }
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERASPECT_H
+QT3D_REGISTER_NAMESPACED_ASPECT("core", QT_PREPEND_NAMESPACE(Qt3DCore), QCoreAspect)

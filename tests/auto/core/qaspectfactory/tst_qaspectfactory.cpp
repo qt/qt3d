@@ -66,8 +66,10 @@ private Q_SLOTS:
         QAspectFactory factory;
 
         // THEN
-        QCOMPARE(factory.availableFactories().size(), 1);
-        QCOMPARE(factory.availableFactories().first(), QLatin1String("default"));
+        QCOMPARE(factory.availableFactories().size(), 2);
+        // order is not deterministic
+        QVERIFY(factory.availableFactories().contains(QLatin1String("core")));
+        QVERIFY(factory.availableFactories().contains(QLatin1String("default")));
 
         // WHEN
         QAbstractAspect *aspect = factory.createAspect(QLatin1String("default"));

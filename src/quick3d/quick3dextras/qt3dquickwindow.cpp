@@ -58,6 +58,7 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
+#include <Qt3DCore/qcoreaspect.h>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
 #include <qopenglcontext.h>
@@ -132,6 +133,7 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     setFormat(format);
     QSurfaceFormat::setDefaultFormat(format);
 
+    auto coreAspect = new Qt3DCore::QCoreAspect;
     d->m_renderAspect = new Qt3DRender::QRenderAspect;
     if (parent && parent->screen())
         static_cast<Qt3DRender::QRenderAspectPrivate*>(Qt3DRender::QRenderAspectPrivate::get(d->m_renderAspect))->m_screen = parent->screen();
@@ -139,6 +141,7 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     d->m_logicAspect = new Qt3DLogic::QLogicAspect;
     d->m_engine = new Qt3DCore::Quick::QQmlAspectEngine;
 
+    d->m_engine->aspectEngine()->registerAspect(coreAspect);
     d->m_engine->aspectEngine()->registerAspect(d->m_renderAspect);
     d->m_engine->aspectEngine()->registerAspect(d->m_inputAspect);
     d->m_engine->aspectEngine()->registerAspect(d->m_logicAspect);

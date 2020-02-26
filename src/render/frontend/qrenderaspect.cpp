@@ -689,6 +689,11 @@ void QRenderAspect::onEngineStartup()
     d->onEngineStartup();
 }
 
+QStringList QRenderAspect::dependencies() const
+{
+    return { QLatin1String("core") };
+}
+
 void QRenderAspect::onRegistered()
 {
     // Create a renderer each time as this is destroyed in onUnregistered below. If

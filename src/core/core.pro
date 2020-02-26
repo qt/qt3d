@@ -16,5 +16,6 @@ include(nodes/nodes.pri)
 include(transforms/transforms.pri)
 include(resources/resources.pri)
 include(services/services.pri)
+include(aspect/aspect.pri)
 
 load(qt_module)

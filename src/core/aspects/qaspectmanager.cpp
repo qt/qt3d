@@ -402,6 +402,15 @@ QAbstractAspect *QAspectManager::aspect(const QString &name) const
     return dengine->m_namedAspects.value(name, nullptr);
 }
 
+QAbstractAspect *QAspectManager::aspect(const QMetaObject *metaType) const
+{
+    for (auto *a: m_aspects) {
+        if (a->metaObject() == metaType)
+            return a;
+    }
+    return nullptr;
+}
+
 QAbstractAspectJobManager *QAspectManager::jobManager() const
 {
     return m_jobManager;

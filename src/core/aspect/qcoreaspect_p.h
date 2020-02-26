@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,73 +37,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_H
-#define QT3DRENDER_QRENDERASPECT_H
+#ifndef QT3DCORE_QCOREASPECT_P_H
+#define QT3DCORE_QCOREASPECT_P_H
 
-#include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qabstractaspect.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/qcoreaspect.h>
+#include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
 
-class QOpenGLContext;
-
-namespace Qt3DRender {
-
-#if defined(QT_BUILD_INTERNAL)
-class TestAspect;
-#endif
-
-namespace Render {
-class Renderer;
-class QRenderPlugin;
-}
-
-class QRenderAspectPrivate;
-
-#if defined(QT_BUILD_INTERNAL)
-class QRenderAspectTester;
-#endif
-
-class Q_3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
+class Q_3DCORE_PRIVATE_EXPORT QCoreAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
-    Q_OBJECT
 public:
-    enum RenderType {
-        Synchronous,
-        Threaded
-    };
+    QCoreAspectPrivate();
+    ~QCoreAspectPrivate();
 
-    explicit QRenderAspect(QObject *parent = nullptr);
-    explicit QRenderAspect(RenderType type, QObject *parent = nullptr);
-    ~QRenderAspect();
+    Q_DECLARE_PUBLIC(QCoreAspect)
 
-protected:
-    QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
-    Q_DECLARE_PRIVATE(QRenderAspect)
+    void jobsDone() override;
+    void frameDone() override;
 
-private:
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
-
-    QVariant executeCommand(const QStringList &args) override;
-
-    void onRegistered() override;
-    void onUnregistered() override;
-
-    void onEngineStartup() override;
-
-    QStringList dependencies() const override;
-
-    friend class Render::Renderer;
-    friend class Render::QRenderPlugin;
-#if defined(QT_BUILD_INTERNAL)
-    friend class QRenderAspectTester;
-    friend class TestAspect;
-#endif
+    bool m_initialized;
 };
 
 }
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERASPECT_H
+#endif // QT3DCORE_QCOREASPECT_P_H
