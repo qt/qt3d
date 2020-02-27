@@ -51,7 +51,8 @@
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/buffervisitor_p.h>
-#include <Qt3DRender/private/entityaccumulator_p.h>
+#include <Qt3DRender/private/entityvisitor_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 
 #include <QtCore/qmath.h>
 #if QT_CONFIG(concurrent)
@@ -83,9 +84,8 @@ public:
     {
         FindExtremePoints findExtremePoints(m_manager);
         if (!findExtremePoints.apply(positionAttribute, indexAttribute, drawVertexCount,
-                                     primitiveRestartEnabled, primitiveRestartIndex)) {
+                                     primitiveRestartEnabled, primitiveRestartIndex))
             return false;
-        }
 
         m_min = QVector3D(findExtremePoints.xMin, findExtremePoints.yMin, findExtremePoints.zMin);
         m_max = QVector3D(findExtremePoints.xMax, findExtremePoints.yMax, findExtremePoints.zMax);
@@ -93,9 +93,8 @@ public:
         FindMaxDistantPoint maxDistantPointY(m_manager);
         maxDistantPointY.setReferencePoint = true;
         if (!maxDistantPointY.apply(positionAttribute, indexAttribute, drawVertexCount,
-                                     primitiveRestartEnabled, primitiveRestartIndex)) {
+                                     primitiveRestartEnabled, primitiveRestartIndex))
             return false;
-        }
         if (maxDistantPointY.hasNoPoints)
             return false;
 
@@ -216,113 +215,138 @@ private:
     };
 };
 
-QVector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
+struct BoundingVolumeComputeData {
+    Entity *entity = nullptr;
+    Geometry *geometry = nullptr;
+    Attribute *positionAttribute = nullptr;
+    Attribute *indexAttribute = nullptr;
+    bool primitiveRestartEnabled = false;
+    int primitiveRestartIndex = -1;
+    int vertexCount = 0;
+
+    bool valid() const { return entity != nullptr; }
+};
+
+BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, Entity *node)
+{
+    GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
+    GeometryManager *geometryManager = manager->geometryManager();
+    if (!gRenderer || gRenderer->primitiveType() == QGeometryRenderer::Patches)
+        return {};
+
+    Geometry *geom = geometryManager->lookupResource(gRenderer->geometryId());
+    if (!geom)
+        return {};
+
+    int drawVertexCount = gRenderer->vertexCount(); // may be 0, gets changed below if so
+
+    Qt3DRender::Render::Attribute *positionAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
+
+    // Use the default position attribute if attribute is null
+    if (!positionAttribute) {
+        const auto attrIds = geom->attributes();
+        for (const Qt3DCore::QNodeId &attrId : attrIds) {
+            positionAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
+            if (positionAttribute &&
+                positionAttribute->name() == QAttribute::defaultPositionAttributeName())
+                break;
+        }
+    }
+
+    if (!positionAttribute
+        || positionAttribute->attributeType() != QAttribute::VertexAttribute
+        || positionAttribute->vertexBaseType() != QAttribute::Float
+        || positionAttribute->vertexSize() < 3) {
+        qWarning("findBoundingVolumeComputeData: Position attribute not suited for bounding volume computation");
+        return {};
+    }
+
+    Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
+    // No point in continuing if the positionAttribute doesn't have a suitable buffer
+    if (!buf) {
+        qWarning("findBoundingVolumeComputeData: Position attribute not referencing a valid buffer");
+        return {};
+    }
+
+    // Check if there is an index attribute.
+    Qt3DRender::Render::Attribute *indexAttribute = nullptr;
+    Buffer *indexBuf = nullptr;
+    const QVector<Qt3DCore::QNodeId> attributes = geom->attributes();
+
+    for (Qt3DCore::QNodeId attrNodeId : attributes) {
+        Qt3DRender::Render::Attribute *attr = manager->lookupResource<Attribute, AttributeManager>(attrNodeId);
+        if (attr && attr->attributeType() == QAttribute::IndexAttribute) {
+            indexBuf = manager->lookupResource<Buffer, BufferManager>(attr->bufferId());
+            if (indexBuf) {
+                indexAttribute = attr;
+
+                if (!drawVertexCount)
+                    drawVertexCount = indexAttribute->count();
+
+                const QAttribute::VertexBaseType validIndexTypes[] = {
+                    QAttribute::UnsignedShort,
+                    QAttribute::UnsignedInt,
+                    QAttribute::UnsignedByte
+                };
+
+                if (std::find(std::begin(validIndexTypes),
+                              std::end(validIndexTypes),
+                              indexAttribute->vertexBaseType()) == std::end(validIndexTypes)) {
+                    qWarning() << "findBoundingVolumeComputeData: Unsupported index attribute type" << indexAttribute->name() << indexAttribute->vertexBaseType();
+                    return {};
+                }
+
+                break;
+            }
+        }
+    }
+
+    if (!indexAttribute && !drawVertexCount)
+        drawVertexCount = positionAttribute->count();
+
+    // Buf will be set to not dirty once it's loaded
+    // in a job executed after this one
+    // We need to recompute the bounding volume
+    // If anything in the GeometryRenderer has changed
+    if (buf->isDirty()
+        || node->isBoundingVolumeDirty()
+        || positionAttribute->isDirty()
+        || geom->isDirty()
+        || gRenderer->isDirty()
+        || (indexAttribute && indexAttribute->isDirty())
+        || (indexBuf && indexBuf->isDirty())) {
+        BoundingVolumeComputeData res;
+        res.entity = node;
+        res.geometry = geom;
+        res.positionAttribute = positionAttribute;
+        res.indexAttribute = indexAttribute;
+        res.primitiveRestartEnabled = gRenderer->primitiveRestartEnabled();
+        res.primitiveRestartIndex = gRenderer->restartIndexValue();
+        res.vertexCount = drawVertexCount;
+        return res;
+    }
+
+    return {};
+}
+
+QVector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, const BoundingVolumeComputeData &data)
 {
     // The Bounding volume will only be computed if the position Buffer
     // isDirty
 
     QVector<Geometry *> updatedGeometries;
 
-    if (!node->isTreeEnabled())
-        return updatedGeometries;
+    BoundingVolumeCalculator reader(manager);
+    if (reader.apply(data.positionAttribute, data.indexAttribute, data.vertexCount,
+                     data.primitiveRestartEnabled, data.primitiveRestartIndex)) {
+        data.entity->localBoundingVolume()->setCenter(reader.result().center());
+        data.entity->localBoundingVolume()->setRadius(reader.result().radius());
+        data.entity->unsetBoundingVolumeDirty();
 
-    GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
-    GeometryManager *geometryManager = manager->geometryManager();
-    if (gRenderer && gRenderer->primitiveType() != QGeometryRenderer::Patches) {
-        Geometry *geom = geometryManager->lookupResource(gRenderer->geometryId());
-
-        if (geom) {
-            int drawVertexCount = gRenderer->vertexCount(); // may be 0, gets changed below if so
-
-            Qt3DRender::Render::Attribute *positionAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
-
-            // Use the default position attribute if attribute is null
-            if (!positionAttribute) {
-                const auto attrIds = geom->attributes();
-                for (const Qt3DCore::QNodeId attrId : attrIds) {
-                    positionAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
-                    if (positionAttribute &&
-                            positionAttribute->name() == QAttribute::defaultPositionAttributeName())
-                        break;
-                }
-            }
-
-            if (!positionAttribute
-                    || positionAttribute->attributeType() != QAttribute::VertexAttribute
-                    || positionAttribute->vertexBaseType() != QAttribute::Float
-                    || positionAttribute->vertexSize() < 3) {
-                qWarning("calculateLocalBoundingVolume: Position attribute not suited for bounding volume computation");
-                return updatedGeometries;
-            }
-
-            Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
-            // No point in continuing if the positionAttribute doesn't have a suitable buffer
-            if (!buf) {
-                qWarning("calculateLocalBoundingVolume: Position attribute not referencing a valid buffer");
-                return updatedGeometries;
-            }
-
-            // Check if there is an index attribute.
-            Qt3DRender::Render::Attribute *indexAttribute = nullptr;
-            Buffer *indexBuf = nullptr;
-            const QVector<Qt3DCore::QNodeId> attributes = geom->attributes();
-
-            for (Qt3DCore::QNodeId attrNodeId : attributes) {
-                Qt3DRender::Render::Attribute *attr = manager->lookupResource<Attribute, AttributeManager>(attrNodeId);
-                if (attr && attr->attributeType() == Qt3DRender::QAttribute::IndexAttribute) {
-                    indexBuf = manager->lookupResource<Buffer, BufferManager>(attr->bufferId());
-                    if (indexBuf) {
-                        indexAttribute = attr;
-
-                        if (!drawVertexCount)
-                            drawVertexCount = indexAttribute->count();
-
-                        const QAttribute::VertexBaseType validIndexTypes[] = {
-                            QAttribute::UnsignedShort,
-                            QAttribute::UnsignedInt,
-                            QAttribute::UnsignedByte
-                        };
-
-                        if (std::find(std::begin(validIndexTypes),
-                                      std::end(validIndexTypes),
-                                      indexAttribute->vertexBaseType()) == std::end(validIndexTypes)) {
-                            qWarning() << "calculateLocalBoundingVolume: Unsupported index attribute type" << indexAttribute->name() << indexAttribute->vertexBaseType();
-                            return updatedGeometries;
-                        }
-
-                        break;
-                    }
-                }
-            }
-
-            if (!indexAttribute && !drawVertexCount)
-                drawVertexCount = positionAttribute->count();
-
-            // Buf will be set to not dirty once it's loaded
-            // in a job executed after this one
-            // We need to recompute the bounding volume
-            // If anything in the GeometryRenderer has changed
-            if (buf->isDirty()
-                || node->isBoundingVolumeDirty()
-                || positionAttribute->isDirty()
-                || geom->isDirty()
-                || gRenderer->isDirty()
-                || (indexAttribute && indexAttribute->isDirty())
-                || (indexBuf && indexBuf->isDirty())) {
-                BoundingVolumeCalculator reader(manager);
-                if (reader.apply(positionAttribute, indexAttribute, drawVertexCount,
-                                 gRenderer->primitiveRestartEnabled(), gRenderer->restartIndexValue())) {
-                    node->localBoundingVolume()->setCenter(reader.result().center());
-                    node->localBoundingVolume()->setRadius(reader.result().radius());
-                    node->unsetBoundingVolumeDirty();
-
-                    // Record min/max vertex in Geometry
-                    geom->updateExtent(reader.min(), reader.max());
-                    // Mark geometry as requiring a call to update its frontend
-                    updatedGeometries.push_back(geom);
-                }
-            }
-        }
+        // Record min/max vertex in Geometry
+        data.geometry->updateExtent(reader.min(), reader.max());
+        // Mark geometry as requiring a call to update its frontend
+        updatedGeometries.push_back(data.geometry);
     }
 
     return updatedGeometries;
@@ -334,9 +358,9 @@ struct UpdateBoundFunctor
 
     // This define is required to work with QtConcurrent
     typedef QVector<Geometry *> result_type;
-    QVector<Geometry *> operator ()(Qt3DRender::Render::Entity *node)
+    QVector<Geometry *> operator ()(const BoundingVolumeComputeData &data)
     {
-        return calculateLocalBoundingVolume(manager, node);
+        return calculateLocalBoundingVolume(manager, data);
     }
 };
 
@@ -346,6 +370,27 @@ struct ReduceUpdateBoundFunctor
     {
         result += values;
     }
+};
+
+class DirtyEntityAccumulator : public EntityVisitor
+{
+public:
+    DirtyEntityAccumulator(NodeManagers *manager)
+        : EntityVisitor(manager)
+    {
+    }
+
+    EntityVisitor::Operation visit(Entity *entity) override
+    {
+        if (!entity->isTreeEnabled())
+            return Prune;
+        auto data = findBoundingVolumeComputeData(m_manager, entity);
+        if (data.valid())
+            m_entities.push_back(data);
+        return Continue;
+    }
+
+    std::vector<BoundingVolumeComputeData> m_entities;
 };
 
 } // anonymous
@@ -359,10 +404,10 @@ CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
 
 void CalculateBoundingVolumeJob::run()
 {
-    EntityAccumulator accumulator([](Entity *entity) {
-        return !entity->componentUuid<GeometryRenderer>().isNull();
-    }, m_manager);
-    auto entities = accumulator.apply(m_node);
+    DirtyEntityAccumulator accumulator(m_manager);
+    accumulator.apply(m_node);
+
+    std::vector<BoundingVolumeComputeData> entities = std::move(accumulator.m_entities);
 
     QVector<Geometry *> updatedGeometries;
     updatedGeometries.reserve(entities.size());
@@ -376,8 +421,8 @@ void CalculateBoundingVolumeJob::run()
     } else
 #endif
     {
-        for (Entity *child : entities)
-            updatedGeometries += calculateLocalBoundingVolume(m_manager, child);
+        for (const auto &data: entities)
+            updatedGeometries += calculateLocalBoundingVolume(m_manager, data);
     }
 
     // Send extent updates to frontend
