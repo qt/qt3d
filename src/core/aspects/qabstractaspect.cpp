@@ -393,6 +393,28 @@ void QAbstractAspect::onEngineShutdown()
 {
 }
 
+/*!
+ * Called in the main thread once all the jobs have been executed.
+ *
+ * \note This is called after QAspectJob::postFrame is called on every jobs.
+ *
+ * \sa QAspectJob::postFrame
+ */
+void QAbstractAspect::jobsDone()
+{
+    Q_D(QAbstractAspect);
+    d->jobsDone();
+}
+
+/*!
+ * Called in the main thread when the frame processing is complete.
+ */
+void QAbstractAspect::frameDone()
+{
+    Q_D(QAbstractAspect);
+    d->frameDone();
+}
+
 void QAbstractAspect::scheduleSingleShotJob(const Qt3DCore::QAspectJobPtr &job)
 {
     Q_D(QAbstractAspect);

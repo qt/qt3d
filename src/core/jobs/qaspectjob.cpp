@@ -40,6 +40,9 @@
 #include "qaspectjob.h"
 #include "qaspectjob_p.h"
 
+#include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
+
 #include <QtCore/QByteArray>
 
 QT_BEGIN_NAMESPACE
@@ -91,7 +94,7 @@ QAspectJob::QAspectJob()
 
 /*!
  * \fn void Qt3DCore::QAspectJob::run()
- * Executes the job.
+ * Executes the job. This is called on a separate thread by the scheduler.
  */
 
 /*!
@@ -146,11 +149,28 @@ QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
     return d->m_dependencies;
 }
 
-void QAspectJob::postFrame(QAspectManager *aspectManager)
+/*!
+ * This is called, in the main thread, when all the jobs have completed.
+ * It's a good point to push changes back to the frontend.
+ */
+void QAspectJob::postFrame(QAspectEngine *aspectEngine)
 {
     Q_D(QAspectJob);
-    if (aspectManager)
-        d->postFrame(aspectManager);
+    if (aspectEngine) {
+        auto manager = QAspectEnginePrivate::get(aspectEngine)->m_aspectManager;
+        d->postFrame(manager);
+    }
+}
+
+/*!
+ * Should return true (default) if the job has actually something to do.
+ * If returning false, the job will not be scheduled (but it's dependencies
+ * will be).
+ */
+bool QAspectJob::isRequired()
+{
+    Q_D(QAspectJob);
+    return d->isRequired();
 }
 
 } // namespace Qt3DCore

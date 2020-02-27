@@ -425,6 +425,18 @@ void QAspectEngine::processFrame()
     d->m_aspectManager->processFrame();
 }
 
+QNode *QAspectEngine::lookupNode(QNodeId id) const
+{
+    Q_D(const QAspectEngine);
+    return d->m_scene ? d->m_scene->lookupNode(id) : nullptr;
+}
+
+QVector<QNode *> QAspectEngine::lookupNodes(const QVector<QNodeId> &ids) const
+{
+    Q_D(const QAspectEngine);
+    return d->m_scene ? d->m_scene->lookupNodes(ids) : QVector<QNode *>{};
+}
+
 /*!
  * Sets the \a root entity for the aspect engine.
  */

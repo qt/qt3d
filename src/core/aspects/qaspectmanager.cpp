@@ -541,7 +541,7 @@ void QAspectManager::processFrame()
 
     // Tell the aspect the frame is complete (except rendering)
     for (QAbstractAspect *aspect : qAsConst(m_aspects))
-        QAbstractAspectPrivate::get(aspect)->frameDone();
+        aspect->frameDone();
 }
 
 } // namespace Qt3DCore

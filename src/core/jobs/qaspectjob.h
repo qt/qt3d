@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 class QAspectJobPrivate;
-class QAspectManager;
+class QAspectEngine;
 
 class Q_3DCORESHARED_EXPORT QAspectJob
 {
@@ -63,7 +63,8 @@ public:
     QVector<QWeakPointer<QAspectJob> > dependencies() const;
 
     virtual void run() = 0;
-    void postFrame(QAspectManager *aspectManager);
+    virtual void postFrame(QAspectEngine *aspectEngine);
+    virtual bool isRequired();
 
 protected:
     explicit QAspectJob(QAspectJobPrivate &dd);

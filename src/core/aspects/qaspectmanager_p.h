@@ -88,6 +88,9 @@ public:
     explicit QAspectManager(QAspectEngine *parent = nullptr);
     ~QAspectManager();
 
+    QAspectEngine * engine() const { return  m_engine; }
+    QScheduler *scheduler() const { return m_scheduler; }
+
     void setRunMode(QAspectEngine::RunMode mode);
     void enterSimulationLoop();
     void exitSimulationLoop();

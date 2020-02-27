@@ -93,9 +93,13 @@ private:
     virtual void onEngineStartup();
     virtual void onEngineShutdown();
 
+    virtual void jobsDone();
+    virtual void frameDone();
+
     Q_DECLARE_PRIVATE(QAbstractAspect)
     friend class QAspectEngine;
     friend class QAspectManager;
+    friend class QScheduler;
 };
 
 template<class Frontend>

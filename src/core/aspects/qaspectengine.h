@@ -41,6 +41,7 @@
 #define QT3DCORE_QASPECTENGINE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qnodeid.h>
 #include <QtCore/QObject>
 #include <QtCore/QVector>
 
@@ -85,6 +86,9 @@ public:
     QVariant executeCommand(const QString &command);
 
     void processFrame();
+
+    QNode *lookupNode(QNodeId id) const;
+    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
 
 private:
     Q_DECLARE_PRIVATE(QAspectEngine)

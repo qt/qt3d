@@ -30,6 +30,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qabstractaspect.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
 #include <private/qabstractaspect_p.h>
 #include <private/qaspectjob_p.h>
@@ -162,13 +163,15 @@ private Q_SLOTS:
     void checkScheduleAndWaitForFrameAspectJobs()
     {
         // GIVEN
-        QScheduler scheduler;
-        QAspectManager manager;
+        Qt3DCore::QAspectEngine engine;
+        auto manager = Qt3DCore::QAspectEnginePrivate::get(&engine)->m_aspectManager;
+        QVERIFY(manager);
+        manager->initialize();
+
         Aspect aspect;
         AspectPrivate *aspectPriv = static_cast<AspectPrivate *>(QObjectPrivate::get(&aspect));
 
-        manager.registerAspect(&aspect);
-        scheduler.setAspectManager(&manager);
+        engine.registerAspect(&aspect);
 
         // THEN
         const JobPtr first = aspect.firstJob();
@@ -181,7 +184,7 @@ private Q_SLOTS:
         QVERIFY(!second->postFrameCalled());
 
         // WHEN
-        const int count = scheduler.scheduleAndWaitForFrameAspectJobs(0, false);
+        const int count = manager->scheduler()->scheduleAndWaitForFrameAspectJobs(0, false);
 
         // THEN
         QCOMPARE(count, 2);
@@ -192,7 +195,7 @@ private Q_SLOTS:
         QVERIFY(aspectPriv->jobsDoneCalled());
         QVERIFY(!aspectPriv->frameDoneCalled());
 
-        manager.unregisterAspect(&aspect);
+        engine.unregisterAspect(&aspect);
     }
 };
 

@@ -152,6 +152,7 @@ public:
     Qt3DRender::Render::RenderSettings *renderSettings() const { return d_func()->m_renderer->settings(); }
     Qt3DRender::Render::Entity *sceneRoot() const { return m_sceneRoot; }
     Qt3DCore::QAspectManager *aspectManager() const { return  d_func()->m_aspectManager; }
+    Qt3DCore::QAspectEngine *aspectEngine() const { return m_engine; }
     Qt3DCore::QChangeArbiter *arbiter() const { return d_func()->m_arbiter; }
 private:
     Qt3DCore::QAspectEngine *m_engine;
@@ -261,7 +262,7 @@ private Q_SLOTS:
         initializeJob(&rayCastingJob, test.data());
 
         bool earlyReturn = !rayCastingJob.runHelper();
-        rayCastingJob.postFrame(test->aspectManager());
+        rayCastingJob.postFrame(test->aspectEngine());
         QCoreApplication::processEvents();
 
         // THEN
@@ -320,7 +321,7 @@ private Q_SLOTS:
         initializeJob(&rayCastingJob, test.data());
 
         bool earlyReturn = !rayCastingJob.runHelper();
-        rayCastingJob.postFrame(test->aspectManager());
+        rayCastingJob.postFrame(test->aspectEngine());
         QCoreApplication::processEvents();
 
         // THEN

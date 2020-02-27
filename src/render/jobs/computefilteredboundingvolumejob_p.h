@@ -58,6 +58,10 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QAspectManager;
+}
+
 namespace Qt3DRender {
 namespace Render {
 
