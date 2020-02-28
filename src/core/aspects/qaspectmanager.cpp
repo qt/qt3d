@@ -66,7 +66,9 @@
 #include <Qt3DCore/private/qscene_p.h>
 
 #include <QtCore/QCoreApplication>
+#if QT_CONFIG(animation)
 #include <QtCore/QAbstractAnimation>
+#endif
 
 QT_BEGIN_NAMESPACE
 
