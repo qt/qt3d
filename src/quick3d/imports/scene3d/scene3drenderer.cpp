@@ -48,7 +48,7 @@
 
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
-#include <scene3dcleaner_p.h>
+
 #include <scene3ditem_p.h>
 #include <scene3dlogging_p.h>
 #include <scene3dsgnode_p.h>
@@ -123,16 +123,15 @@ private:
     signal of the window is not called. Therefore the cleanup method is invoked
     to properly destroy the aspect engine.
  */
-Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEngine, QRenderAspect *renderAspect)
+Scene3DRenderer::Scene3DRenderer()
     : QObject()
-    , m_item(item)
-    , m_aspectEngine(aspectEngine)
-    , m_renderAspect(renderAspect)
+    , m_item(nullptr)
+    , m_aspectEngine(nullptr)
+    , m_renderAspect(nullptr)
     , m_multisampledFBO(nullptr)
     , m_finalFBO(nullptr)
     , m_texture(nullptr)
     , m_node(nullptr)
-    , m_cleaner(nullptr)
     , m_window(nullptr)
     , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
     , m_lastMultisample(false)
@@ -140,6 +139,17 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_blocking(false)
     , m_forceRecreate(false)
 {
+}
+
+void Scene3DRenderer::init(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEngine,
+                           QRenderAspect *renderAspect)
+{
+    m_item = item;
+    m_window = m_item->window();
+    m_aspectEngine = aspectEngine;
+    m_renderAspect = renderAspect;
+    m_needsShutdown = true;
+
     Q_CHECK_PTR(m_item);
     Q_CHECK_PTR(m_item->window());
 
@@ -192,20 +202,13 @@ void Scene3DRenderer::scheduleRootEntityChange()
     QMetaObject::invokeMethod(m_item, "applyRootEntityChange", Qt::QueuedConnection);
 }
 
-void Scene3DRenderer::setCleanerHelper(Scene3DCleaner *cleaner)
-{
-    m_cleaner = cleaner;
-    if (m_cleaner) {
-        // Window closed case
-        QObject::connect(m_item->window(), &QQuickWindow::destroyed, m_cleaner, &Scene3DCleaner::cleanup);
-        m_cleaner->setRenderer(this);
-    }
-}
-
 // Executed in the QtQuick render thread (which may even be the gui/main with QQuickWidget / RenderControl).
 void Scene3DRenderer::shutdown()
 {
     qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
+
+    // In case the same item is rendered on another window reset it
+    m_resetRequested = true;
 
     // Set to null so that subsequent calls to render
     // would return early
@@ -220,8 +223,13 @@ void Scene3DRenderer::shutdown()
 
     // Shutdown the Renderer Aspect while the OpenGL context
     // is still valid
-    if (m_renderAspect)
+    if (m_renderAspect) {
         static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderShutdown();
+        m_renderAspect = nullptr;
+    }
+    m_aspectEngine = nullptr;
+    m_finalFBO.reset();
+    m_multisampledFBO.reset();
 }
 
 // QtQuick render thread (which may also be the gui/main thread with QQuickWidget / RenderControl)
@@ -231,7 +239,6 @@ void Scene3DRenderer::onSceneGraphInvalidated()
     if (m_needsShutdown) {
         m_needsShutdown = false;
         shutdown();
-        QMetaObject::invokeMethod(m_cleaner, "cleanup");
     }
 }
 
@@ -242,7 +249,6 @@ void Scene3DRenderer::onWindowChanged(QQuickWindow *w)
         if (m_needsShutdown) {
             m_needsShutdown = false;
             shutdown();
-            QMetaObject::invokeMethod(m_cleaner, "cleanup");
         }
     }
 }

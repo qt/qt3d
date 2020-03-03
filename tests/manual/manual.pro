@@ -70,3 +70,5 @@ qtHaveModule(widgets): {
         paintedtexture-cpp \
         rendercapture-cpp
 }
+
+qtHaveModule(quickwidgets): SUBDIRS += quickwidget-switch

@@ -68,7 +68,7 @@ namespace Qt3DRender {
 class QCamera;
 class QRenderAspect;
 class Scene3DRenderer;
-class Scene3DCleaner;
+class QRenderSurfaceSelector;
 
 class Scene3DItem : public QQuickItem
 {
@@ -120,14 +120,18 @@ private:
     void setCameraAspectModeHelper();
     void updateCameraAspectRatio();
     void mousePressEvent(QMouseEvent *event) override;
+    void updateWindowSurface();
+    void createDummySurface(QWindow *window, QRenderSurfaceSelector *surfaceSelector);
+    void applyAspects();
 
     QStringList m_aspects;
-    Qt3DCore::QEntity *m_entity;
+    // Store as shared pointer so that aspect engine doesn't delete it.
+    QSharedPointer<Qt3DCore::QEntity> m_entity;
 
     Qt3DCore::QAspectEngine *m_aspectEngine;
+    Qt3DCore::QAspectEngine *m_aspectToDelete;
     QRenderAspect *m_renderAspect;
     Scene3DRenderer *m_renderer;
-    Scene3DCleaner *m_rendererCleaner;
 
     bool m_multisample;
 
