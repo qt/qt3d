@@ -189,24 +189,11 @@ void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews,
     }
 
     {
-        bool pj = m_renderer->services()->systemInformation()->isTraceEnabled();
-        bool pg = m_renderer->services()->systemInformation()->isGraphicsTraceEnabled();
-
         ImGui::Begin("Qt3D Profiling");
         char caption[50];
         sprintf(caption, "Avg %.3f ms/frame (%.1f FPS)", static_cast<double>(1000.0f / ImGui::GetIO().Framerate), static_cast<double>(ImGui::GetIO().Framerate));
         ImGui::PlotLines("FPS", m_fpsLog, logIndex + 1, 0, caption, m_fpsRange.first, m_fpsRange.second, ImVec2(0, 80));
         ImGui::PlotHistogram("Jobs", m_jobsLog, logIndex + 1, 0, nullptr, m_jobsRange.first, m_jobsRange.second, ImVec2(0, 80));
-        ImGui::Text("Profiling: ");
-        ImGui::SameLine();
-        if (ImGui::Checkbox("Jobs", &pj))
-            QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "setTraceEnabled", Qt::QueuedConnection, Q_ARG(bool, pj));
-        ImGui::SameLine();
-        if (ImGui::Checkbox("GL", &pg))
-            QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "setGraphicsTraceEnabled", Qt::QueuedConnection, Q_ARG(bool, pg));
-        ImGui::SameLine();
-        if (ImGui::Button("Reveal"))
-            QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "revealLogFolder", Qt::QueuedConnection);
 
         int nCommands = 0;
         int nVertices = 0;
@@ -265,6 +252,16 @@ void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews,
 
         ImGui::Columns(1);
         ImGui::Separator();
+
+        bool pj = m_renderer->services()->systemInformation()->isTraceEnabled();
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Profiling: ");
+        ImGui::SameLine();
+        if (ImGui::Checkbox("Jobs", &pj))
+            QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "setTraceEnabled", Qt::QueuedConnection, Q_ARG(bool, pj));
+        ImGui::SameLine();
+        if (ImGui::Button("Reveal"))
+            QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "revealLogFolder", Qt::QueuedConnection);
 
         ImGui::AlignTextToFramePadding();
         ImGui::Text("Show:");
