@@ -52,7 +52,6 @@ Quick3DNodeV9::Quick3DNodeV9(QObject *parent)
 
 /*!
     \qmlproperty QJSValue Qt3DCore::Node::propertyTrackingOverrides
-    \default {}
 
     Assuming a Qt3DCore::Node needs to override the PropertyTrackingMode on two
     properties (enabled and displacement), the value should be set as shown
@@ -65,6 +64,7 @@ Quick3DNodeV9::Quick3DNodeV9(QObject *parent)
     }
     \endcode
 
+    By default, there are no override values set.
     \since 2.9
 */
 

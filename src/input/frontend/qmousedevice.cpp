@@ -110,23 +110,23 @@ QMouseDevicePrivate::QMouseDevicePrivate()
 /*!
     \property Qt3DInput::QMouseDevice::updateAxesContinuously
 
-    If true, axes will be updated anytime they change regardless of whether
+    If \c true, axes will be updated anytime they change regardless of whether
     any mouse button is being pressed. Otherwise, axes are updated only when
     one of the mouse buttons is being pressed.
 
+    The default value is \c false.
     \since 5.15
-    \default false
 */
 
 /*!
     \qmlproperty bool MouseDevice::updateAxesContinuously
 
-    If true, axes will be updated anytime they change regardless of whether
+    If \c true, axes will be updated anytime they change regardless of whether
     any mouse button is being pressed. Otherwise, axes are updated only when
     one of the mouse buttons is being pressed.
 
+    The default value is \c false.
     \since 5.15
-    \default false
 */
 
 /*!

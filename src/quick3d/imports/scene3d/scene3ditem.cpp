@@ -303,8 +303,8 @@ void Scene3DItem::setHoverEnabled(bool enabled)
            Additionally when using this mode, the window clearBeforeRendering
            will be set to false automatically.
 
+    The default value is \c FBO.
     \since 5.14
-    \default FBO
  */
 void Scene3DItem::setCompositingMode(Scene3DItem::CompositingMode mode)
 {
