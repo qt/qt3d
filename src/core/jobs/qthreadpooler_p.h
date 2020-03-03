@@ -81,6 +81,7 @@ public:
 
 private:
     void enqueueTasks(const QVector<RunnableInterface *> &tasks);
+    void skipTask(RunnableInterface *task);
     void enqueueDepencies(RunnableInterface *task);
     void acquire(int add);
     void release();

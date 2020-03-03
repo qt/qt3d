@@ -317,7 +317,7 @@ struct AdjacentSubRangeFinder<QSortPolicy::BackToFront>
 {
     static bool adjacentSubRange(const RenderCommand &a, const RenderCommand &b)
     {
-        return a.m_depth == b.m_depth;
+        return qFuzzyCompare(a.m_depth, b.m_depth);
     }
 };
 
@@ -335,7 +335,7 @@ struct AdjacentSubRangeFinder<QSortPolicy::FrontToBack>
 {
     static bool adjacentSubRange(const RenderCommand &a, const RenderCommand &b)
     {
-        return a.m_depth == b.m_depth;
+        return qFuzzyCompare(a.m_depth, b.m_depth);
     }
 };
 
@@ -381,8 +381,8 @@ struct SubRangeSorter
 {
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
-        Q_UNUSED(begin);
-        Q_UNUSED(end);
+        Q_UNUSED(begin)
+        Q_UNUSED(end)
         Q_UNREACHABLE();
     }
 };
