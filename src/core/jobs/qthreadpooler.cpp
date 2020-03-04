@@ -92,15 +92,31 @@ void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
                 (*it)->setPooler(this);
                 m_threadPool->start((*it));
             } else {
-                release();
-                enqueueDepencies(*it);
+                skipTask(*it);
             }
         }
     }
 }
 
+void QThreadPooler::skipTask(RunnableInterface *task)
+{
+    enqueueDepencies(task);
+
+    if (currentCount() == 0) {
+        if (m_futureInterface) {
+            m_futureInterface->reportFinished();
+            delete m_futureInterface;
+        }
+        m_futureInterface = nullptr;
+    }
+
+    delete task; // normally gets deleted by threadpool
+}
+
 void QThreadPooler::enqueueDepencies(RunnableInterface *task)
 {
+    release();
+
     if (task->type() == RunnableInterface::RunnableType::AspectTask) {
         AspectTaskRunnable *aspectTask = static_cast<AspectTaskRunnable *>(task);
         const auto &dependers = aspectTask->m_dependers;
@@ -113,8 +129,7 @@ void QThreadPooler::enqueueDepencies(RunnableInterface *task)
                         dependerTask->setPooler(this);
                         m_threadPool->start(dependerTask);
                     } else {
-                        release();
-                        enqueueDepencies(*it);
+                        skipTask(*it);
                     }
                 }
             }
@@ -126,7 +141,6 @@ void QThreadPooler::taskFinished(RunnableInterface *task)
 {
     const QMutexLocker locker(&m_mutex);
 
-    release();
     m_totalRunJobs++;
 
     enqueueDepencies(task);
