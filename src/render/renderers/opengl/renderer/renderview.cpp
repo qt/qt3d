@@ -647,6 +647,9 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
             HGeometry geometryHandle = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
             Geometry *geometry = m_manager->geometryManager()->data(geometryHandle);
 
+            if (geometry == nullptr)
+                continue;
+
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
             for (const RenderPassParameterData &passData : renderPassData) {
                 // Add the RenderPass Parameters
