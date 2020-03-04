@@ -54,6 +54,16 @@
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/expandboundingvolumejob_p.h>
+#include <Qt3DRender/private/updateworldtransformjob_p.h>
+#include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
+#include <Qt3DRender/private/calcboundingvolumejob_p.h>
+#include <Qt3DRender/private/updateskinningpalettejob_p.h>
+#include <Qt3DRender/private/updateentitylayersjob_p.h>
+#include <Qt3DRender/private/updatetreeenabledjob_p.h>
+#include <Qt3DRender/private/genericlambdajob_p.h>
+#include <Qt3DRender/private/pickboundingvolumejob_p.h>
+#include <Qt3DRender/private/raycastingjob_p.h>
 
 #include <QtCore/qmutex.h>
 
@@ -74,6 +84,12 @@ class QRenderPlugin;
 
 namespace Render {
 class OffscreenSurfaceHelper;
+class PickEventFilter;
+
+using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+
+class UpdateLevelOfDetailJob;
+typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
 }
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
@@ -85,10 +101,14 @@ public:
     Q_DECLARE_PUBLIC(QRenderAspect)
 
     static QRenderAspectPrivate* findPrivate(Qt3DCore::QAspectEngine *engine);
+    static QRenderAspectPrivate *get(QRenderAspect *q);
 
     void syncDirtyFrontEndNode(Qt3DCore::QNode *node, Qt3DCore::QBackendNode *backend, bool firstTime) const override;
     void jobsDone() override;
     void frameDone() override;
+
+    void createNodeManagers();
+    void onEngineStartup();
 
     void registerBackendTypes();
     void unregisterBackendTypes();
@@ -98,7 +118,9 @@ public:
     void renderSynchronous(bool swapBuffers = true);
     void renderShutdown();
     void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
+    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs() const;
+    QVector<Qt3DCore::QAspectJobPtr> createPreRendererJobs() const;
+    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
     Render::AbstractRenderer *loadRendererPlugin();
 
     Render::NodeManagers *m_nodeManagers;
@@ -112,6 +134,20 @@ public:
     QRenderAspect::RenderType m_renderType;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;
     QScreen *m_screen = nullptr;
+
+    Render::UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
+    Render::UpdateWorldTransformJobPtr m_worldTransformJob;
+    Render::ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
+    Render::CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
+    Render::UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
+    Render::UpdateSkinningPaletteJobPtr m_updateSkinningPaletteJob;
+    Render::UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
+    Render::UpdateEntityLayersJobPtr m_updateEntityLayersJob;
+    Render::SynchronizerJobPtr m_syncLoadingJobs;
+    Render::PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
+    Render::RayCastingJobPtr m_rayCastingJob;
+
+    QScopedPointer<Render::PickEventFilter> m_pickEventFilter;
 
     static QMutex m_pluginLock;
     static QVector<QString> m_pluginConfig;

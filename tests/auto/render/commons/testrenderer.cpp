@@ -38,7 +38,7 @@ TestRenderer::~TestRenderer()
 
 void TestRenderer::markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node)
 {
-    Q_UNUSED(node);
+    Q_UNUSED(node)
     m_changes |= changes;
 }
 
@@ -50,7 +50,7 @@ Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet TestRenderer::dirtyBit
 #if defined(QT_BUILD_INTERNAL)
 void TestRenderer::clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes)
 {
-    m_changes &= changes;
+    m_changes &= ~changes;
 }
 #endif
 

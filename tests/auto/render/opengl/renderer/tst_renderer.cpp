@@ -30,12 +30,15 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QThread>
-#include <Qt3DRender/private/viewportnode_p.h>
 #include <renderer_p.h>
 #include <renderview_p.h>
 #include <renderviewbuilder_p.h>
-#include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <renderqueue_p.h>
+#include <Qt3DRender/private/viewportnode_p.h>
+#include <Qt3DRender/private/offscreensurfacehelper_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
+
+#include "testaspect.h"
 
 class tst_Renderer : public QObject
 {
@@ -72,19 +75,14 @@ private Q_SLOTS:
         QVector<Qt3DCore::QAspectJobPtr> jobs = renderer.preRenderingJobs();
 
         // THEN
-        QCOMPARE(jobs.size(),
-                 1 + // PickBoundingVolumeJob
-                 1); // RayCastingJob
+        QCOMPARE(jobs.size(), 0);
 
         // WHEN
         renderer.m_sendBufferCaptureJob->addRequest({Qt3DCore::QNodeId(), {}});
         jobs = renderer.preRenderingJobs();
 
         // THEN
-        QCOMPARE(jobs.size(),
-                 1 + // PickBoundingVolumeJob
-                 1 + // RayCastingJob
-                 1); // SendBufferCaptureJob
+        QCOMPARE(jobs.size(), 1); // SendBufferCaptureJob
         // Note: pending render buffer captures are only cleared when the job is run
 
         // WHEN
@@ -93,8 +91,6 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(jobs.size(),
-                 1 + // PickBoundingVolumeJob
-                 1 + // RayCastingJob
                  1 + // SendBufferCaptureJob
                  1); // SendSetFenceHandlesJob
         // Note: pending set fence handles are only cleared when the job is run
@@ -106,8 +102,12 @@ private Q_SLOTS:
     void checkRenderBinJobs()
     {
         // GIVEN
+        Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+        QScopedPointer<Qt3DRender::TestAspect> aspect(new Qt3DRender::TestAspect(rootEntity));
+        auto daspect = Qt3DRender::QRenderAspectPrivate::get(aspect.data());
+
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Qt3DRender::Render::OpenGL::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        auto &renderer = *(static_cast<Qt3DRender::Render::OpenGL::Renderer *>(daspect->m_renderer));
         Qt3DRender::Render::OpenGL::RenderQueue *renderQueue = renderer.renderQueue();
         Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
         Qt3DRender::Render::RenderSettings settings;
@@ -156,21 +156,11 @@ private Q_SLOTS:
         // (Renderer is not initialized so FilterCompatibleTechniqueJob
         // and ShaderGathererJob are not added here)
         QCOMPARE(jobs.size(),
-                 1 + // EntityEnabledDirty
-                 1 + // WorldTransformJob
-                 1 + // UpdateWorldBoundingVolume
                  1 + // UpdateShaderDataTransform
-                 1 + // ExpandBoundingVolumeJob
-                 1 + // CalculateBoundingVolumeJob
-                 1 + // UpdateMeshTriangleListJob
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // BufferGathererJob
                  1 + // TexturesGathererJob
-                 1 + // UpdateEntityLayersJob
                  1 + // LightGathererJob
                  1 + // CacheLightJob
                  1 + // RenderableEntityFilterJob
@@ -191,11 +181,8 @@ private Q_SLOTS:
 
         // THEN (level
         QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
                  singleRenderViewJobCount +
                  singleRenderViewCommandRebuildJobCount +
                  renderViewBuilderMaterialCacheJobCount +
@@ -211,11 +198,8 @@ private Q_SLOTS:
 
         // THEN (level
         QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
                  singleRenderViewJobCount +
                  singleRenderViewCommandRebuildJobCount +
                  renderViewBuilderMaterialCacheJobCount +
@@ -230,12 +214,8 @@ private Q_SLOTS:
 
         // THEN (level
         QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
-                 1 + // EntityEnabledDirty
                  singleRenderViewJobCount +
                  layerCacheJobCount);
 
@@ -248,15 +228,9 @@ private Q_SLOTS:
 
         // THEN (level
         QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
-                 1 + // WorldTransformJob
-                 1 + // UpdateWorldBoundingVolume
                  1 + // UpdateShaderDataTransform
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
-                 1 + // ExpandBoundingVolumeJob
                  singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -268,11 +242,8 @@ private Q_SLOTS:
 
         // THEN (level
         QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
                  singleRenderViewJobCount +
                  singleRenderViewCommandRebuildJobCount +
                  renderViewBuilderMaterialCacheJobCount);
@@ -286,14 +257,8 @@ private Q_SLOTS:
 
         // THEN (level
         QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
-                 1 + // CalculateBoundingVolumeJob
-                 1 + // UpdateMeshTriangleListJob
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
-                 1 + // ExpandBoundingVolumeJob
                  1 + // RenderableEntityFilterPtr
                  1 + // SyncRenderableEntities
                  singleRenderViewCommandRebuildJobCount +
@@ -308,13 +273,8 @@ private Q_SLOTS:
 
         // THEN (level
         QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncLoadingJobs
-                 1 + // CalculateBoundingVolumeJob
-                 1 + // UpdateMeshTriangleListJob
                  1 + // BufferGathererJob
                  singleRenderViewJobCount);
 
@@ -327,12 +287,9 @@ private Q_SLOTS:
 
         // THEN (level
         QCOMPARE(jobs.size(),
-                 1 + // updateLevelOfDetailJob
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // TexturesGathererJob
-                 1 + // updateSkinningPaletteJob
-                 1 + // SyncTexturesGathererJob
                  singleRenderViewJobCount);
 
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);

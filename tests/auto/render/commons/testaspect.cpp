@@ -95,6 +95,11 @@ Render::NodeManagers *TestAspect::nodeManagers() const
     return d_func()->m_renderer->nodeManagers();
 }
 
+void TestAspect::onEngineStartup()
+{
+    QRenderAspect::onEngineStartup();
+}
+
 void TestAspect::onRegistered()
 {
     QRenderAspect::onRegistered();

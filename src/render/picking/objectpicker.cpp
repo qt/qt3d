@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -103,8 +104,8 @@ void ObjectPicker::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstT
 
 void ObjectPicker::notifyJob()
 {
-    if (m_renderer && m_renderer->pickBoundingVolumeJob())
-        qSharedPointerCast<PickBoundingVolumeJob>(m_renderer->pickBoundingVolumeJob())->markPickersDirty();
+    if (m_renderer && m_renderer->aspect())
+        QRenderAspectPrivate::get(m_renderer->aspect())->m_pickBoundingVolumeJob->markPickersDirty();
 }
 
 bool ObjectPicker::isPressed() const

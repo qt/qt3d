@@ -48,6 +48,7 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/computefilteredboundingvolumejob_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
@@ -167,7 +168,7 @@ void CameraLens::computeSceneBoundingVolume(QNodeId entityId,
 
     Entity *camNode = nodeManagers->renderNodesManager()->lookupResource(cameraId);
     ComputeFilteredBoundingVolumeJobPtr job(new GetBoundingVolumeWithoutCameraJob(this, requestId));
-    job->addDependency(m_renderer->expandBoundingVolumeJob());
+    job->addDependency(QRenderAspectPrivate::get(m_renderer->aspect())->m_expandBoundingVolumeJob);
     job->setRoot(root);
     job->setManagers(nodeManagers);
     job->ignoreSubTree(camNode);
