@@ -67,6 +67,7 @@
 #include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/private/lightgatherer_p.h>
 #include <Qt3DRender/private/texture_p.h>
+#include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 #include <shaderparameterpack_p.h>
 #include <renderviewinitializerjob_p.h>
 #include <filtercompatibletechniquejob_p.h>
@@ -142,15 +143,10 @@ class VSyncFrameAdvanceService;
 class NodeManagers;
 class ResourceAccessor;
 
-class UpdateLevelOfDetailJob;
-typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
-
-template<typename T, typename ... Ts>
-class FilterEntityByComponentJob;
-template<typename T, typename ... Ts>
-using FilterEntityByComponentJobPtr = QSharedPointer<FilterEntityByComponentJob<T, Ts...>>;
-using ComputableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::ComputeCommand, Render::Material>;
-using RenderableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::GeometryRenderer, Render::Material>;
+using ComputableEntityFilter = FilterEntityByComponentJob<Render::ComputeCommand, Render::Material>;
+using ComputableEntityFilterPtr = QSharedPointer<ComputableEntityFilter>;
+using RenderableEntityFilter = FilterEntityByComponentJob<Render::GeometryRenderer, Render::Material>;
+using RenderableEntityFilterPtr = QSharedPointer<RenderableEntityFilter>;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 using SynchronizerPostFramePtr = GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>>;
@@ -233,9 +229,6 @@ public:
     inline LightGathererPtr lightGathererJob() const { return m_lightGathererJob; }
     inline RenderableEntityFilterPtr renderableEntityFilterJob() const { return m_renderableEntityFilterJob; }
     inline ComputableEntityFilterPtr computableEntityFilterJob() const { return m_computableEntityFilterJob; }
-    inline SynchronizerJobPtr cacheLightJob() const { return m_cacheLightsJob; }
-    inline SynchronizerJobPtr cacheRenderableEntitiesJob() const { return m_cacheRenderableEntitiesJob; }
-    inline SynchronizerJobPtr cacheComputableEntitiesJob() const { return m_cacheComputableEntitiesJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
 
@@ -384,9 +377,6 @@ private:
     SynchronizerJobPtr m_textureGathererJob;
     SynchronizerJobPtr m_sendSetFenceHandlesToFrontendJob;
     SynchronizerPostFramePtr m_introspectShaderJob;
-    SynchronizerJobPtr m_cacheRenderableEntitiesJob;
-    SynchronizerJobPtr m_cacheComputableEntitiesJob;
-    SynchronizerJobPtr m_cacheLightsJob;
 
     void lookForAbandonedVaos();
     void lookForDirtyBuffers();

@@ -344,7 +344,7 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->bufferGathererJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->textureGathererJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->cacheLightJob()));
+            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->lightGathererJob()));
 
             // Step 5
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewCommandUpdaterJobs()) {
@@ -471,7 +471,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderer->lightGathererJob()->lights().size(), 2);
-        QVERIFY(renderer->lightGathererJob()->takeEnvironmentLight() != nullptr);
+        QVERIFY(renderer->lightGathererJob()->environmentLight() != nullptr);
     }
 
     void checkRenderableEntitiesFilteringExecution()
@@ -642,7 +642,6 @@ private Q_SLOTS:
         renderViewBuilder.buildJobHierachy();
 
         renderer->renderableEntityFilterJob()->run();
-        renderer->cacheRenderableEntitiesJob()->run();
 
         renderViewBuilder.renderViewJob()->run();
         renderViewBuilder.syncRenderViewPostInitializationJob()->run();

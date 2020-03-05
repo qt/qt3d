@@ -676,7 +676,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->introspectShadersJob());
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->bufferGathererJob());
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->textureGathererJob());
-    m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->cacheLightJob());
+    m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->lightGathererJob());
 
     for (const auto &renderViewCommandUpdater : qAsConst(m_renderViewCommandUpdaterJobs)) {
         renderViewCommandUpdater->addDependency(m_syncRenderViewPreCommandUpdateJob);
@@ -692,8 +692,8 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     jobs.push_back(m_syncRenderViewPostInitializationJob); // Step 2
 
     if (m_renderCommandCacheNeedsToBeRebuilt) { // Step 3
-        m_syncRenderViewPreCommandBuildingJob->addDependency(m_renderer->cacheComputableEntitiesJob());
-        m_syncRenderViewPreCommandBuildingJob->addDependency(m_renderer->cacheRenderableEntitiesJob());
+        m_syncRenderViewPreCommandBuildingJob->addDependency(m_renderer->computableEntityFilterJob());
+        m_syncRenderViewPreCommandBuildingJob->addDependency(m_renderer->renderableEntityFilterJob());
         m_syncRenderViewPreCommandBuildingJob->addDependency(m_syncRenderViewPostInitializationJob);
 
         if (m_materialGathererCacheNeedsToBeRebuilt)

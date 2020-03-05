@@ -162,11 +162,8 @@ private Q_SLOTS:
                  1 + // BufferGathererJob
                  1 + // TexturesGathererJob
                  1 + // LightGathererJob
-                 1 + // CacheLightJob
                  1 + // RenderableEntityFilterJob
-                 1 + // CacheRenderableEntitiesJob
                  1 + // ComputableEntityFilterJob
-                 1 + // CacheComputableEntitiesJob
                  singleRenderViewJobCount +
                  singleRenderViewCommandRebuildJobCount +
                  layerCacheJobCount +
@@ -260,7 +257,6 @@ private Q_SLOTS:
                  1 + // cleanupJob
                  1 + // VAOGatherer
                  1 + // RenderableEntityFilterPtr
-                 1 + // SyncRenderableEntities
                  singleRenderViewCommandRebuildJobCount +
                  singleRenderViewJobCount);
 
