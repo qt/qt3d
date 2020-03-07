@@ -40,10 +40,14 @@
 
 #include "calcboundingvolumejob_p.h"
 
+#include <Qt3DCore/qboundingvolume.h>
+#include <Qt3DCore/qabstractfrontendnodemanager.h>
+#include <Qt3DCore/private/qgeometry_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
@@ -52,8 +56,6 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/buffervisitor_p.h>
 #include <Qt3DRender/private/entityvisitor_p.h>
-#include <Qt3DCore/private/qgeometry_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 
 #include <QtCore/qmath.h>
 #if QT_CONFIG(concurrent)
@@ -220,34 +222,39 @@ private:
 
 struct BoundingVolumeComputeData {
     Entity *entity = nullptr;
+    GeometryRenderer *renderer = nullptr;
     Geometry *geometry = nullptr;
     Attribute *positionAttribute = nullptr;
     Attribute *indexAttribute = nullptr;
-    bool primitiveRestartEnabled = false;
-    int primitiveRestartIndex = -1;
-    int vertexCount = 0;
+    int vertexCount = -1;
 
-    bool valid() const { return entity != nullptr; }
+    bool valid() const { return vertexCount >= 0; }
 };
 
 BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, Entity *node)
 {
-    GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
+    BoundingVolumeComputeData res;
+    res.entity = node;
+
+    res.renderer = node->renderComponent<GeometryRenderer>();
+    if (!res.renderer || res.renderer->primitiveType() == QGeometryRenderer::Patches)
+        return res;
+
     GeometryManager *geometryManager = manager->geometryManager();
-    if (!gRenderer || gRenderer->primitiveType() == QGeometryRenderer::Patches)
-        return {};
+    res.geometry = geometryManager->lookupResource(res.renderer->geometryId());
+    if (!res.geometry)
+        return res;
 
-    Geometry *geom = geometryManager->lookupResource(gRenderer->geometryId());
-    if (!geom)
-        return {};
+    if (res.renderer->hasView())
+        return res;
 
-    int drawVertexCount = gRenderer->vertexCount(); // may be 0, gets changed below if so
+    int drawVertexCount = res.renderer->vertexCount(); // may be 0, gets changed below if so
 
-    Qt3DRender::Render::Attribute *positionAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
+    Qt3DRender::Render::Attribute *positionAttribute = manager->lookupResource<Attribute, AttributeManager>(res.geometry->boundingPositionAttribute());
 
     // Use the default position attribute if attribute is null
     if (!positionAttribute) {
-        const auto attrIds = geom->attributes();
+        const auto attrIds = res.geometry->attributes();
         for (const Qt3DCore::QNodeId &attrId : attrIds) {
             positionAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
             if (positionAttribute &&
@@ -261,20 +268,20 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, E
         || positionAttribute->vertexBaseType() != QAttribute::Float
         || positionAttribute->vertexSize() < 3) {
         qWarning("findBoundingVolumeComputeData: Position attribute not suited for bounding volume computation");
-        return {};
+        return res;
     }
 
     Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
     // No point in continuing if the positionAttribute doesn't have a suitable buffer
     if (!buf) {
         qWarning("findBoundingVolumeComputeData: Position attribute not referencing a valid buffer");
-        return {};
+        return res;
     }
 
     // Check if there is an index attribute.
     Qt3DRender::Render::Attribute *indexAttribute = nullptr;
     Buffer *indexBuf = nullptr;
-    const QVector<Qt3DCore::QNodeId> attributes = geom->attributes();
+    const QVector<Qt3DCore::QNodeId> attributes = res.geometry->attributes();
 
     for (Qt3DCore::QNodeId attrNodeId : attributes) {
         Qt3DRender::Render::Attribute *attr = manager->lookupResource<Attribute, AttributeManager>(attrNodeId);
@@ -296,7 +303,7 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, E
                               std::end(validIndexTypes),
                               indexAttribute->vertexBaseType()) == std::end(validIndexTypes)) {
                     qWarning() << "findBoundingVolumeComputeData: Unsupported index attribute type" << indexAttribute->name() << indexAttribute->vertexBaseType();
-                    return {};
+                    return res;
                 }
 
                 break;
@@ -314,17 +321,16 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, E
     if (buf->isDirty()
         || node->isBoundingVolumeDirty()
         || positionAttribute->isDirty()
-        || geom->isDirty()
-        || gRenderer->isDirty()
+        || res.geometry->isDirty()
+        || res.renderer->isDirty()
         || (indexAttribute && indexAttribute->isDirty())
         || (indexBuf && indexBuf->isDirty())) {
-        return {
-            node, geom, positionAttribute, indexAttribute,
-            gRenderer->primitiveRestartEnabled(), gRenderer->restartIndexValue(), drawVertexCount
-        };
+        res.vertexCount = drawVertexCount;
+        res.positionAttribute = positionAttribute;
+        res.indexAttribute = indexAttribute;
     }
 
-    return {};
+    return res;
 }
 
 QVector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, const BoundingVolumeComputeData &data)
@@ -336,7 +342,7 @@ QVector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, const Bo
 
     BoundingVolumeCalculator reader(manager);
     if (reader.apply(data.positionAttribute, data.indexAttribute, data.vertexCount,
-                     data.primitiveRestartEnabled, data.primitiveRestartIndex)) {
+                     data.renderer->primitiveRestartEnabled(), data.renderer->restartIndexValue())) {
         data.entity->localBoundingVolume()->setCenter(reader.result().center());
         data.entity->localBoundingVolume()->setRadius(reader.result().radius());
         data.entity->unsetBoundingVolumeDirty();
@@ -383,49 +389,56 @@ public:
         if (!entity->isTreeEnabled())
             return Prune;
         auto data = findBoundingVolumeComputeData(m_manager, entity);
-        if (data.valid())
+
+        if (data.valid()) {
+            // only valid if front end is a QGeometryRenderer without a view. All other cases handled by core aspect
             m_entities.push_back(data);
+        } else {
+            if (!data.renderer || data.renderer->primitiveType() == QGeometryRenderer::Patches
+                || !data.renderer->hasView())    // should have been handled above
+                return Continue;
+
+            // renderer has a view, we can pull the data from the front end
+            QBoundingVolume *frontEndBV = qobject_cast<QBoundingVolume *>(m_frontEndNodeManager->lookupNode(data.renderer->peerId()));
+            if (!frontEndBV)
+                return Continue;
+            auto dFrontEndBV = QGeometryRendererPrivate::get(frontEndBV);
+
+            // copy data to the entity
+            entity->localBoundingVolume()->setCenter(Vector3D(dFrontEndBV->m_implicitCenter));
+            entity->localBoundingVolume()->setRadius(dFrontEndBV->m_implicitRadius);
+            entity->unsetBoundingVolumeDirty();
+            // copy the data to the geometry
+            data.geometry->updateExtent(dFrontEndBV->m_implicitMinPoint, dFrontEndBV->m_implicitMaxPoint);
+        }
+
         return Continue;
     }
 
+    NodeManagers *m_nodeNanager;
+    Qt3DCore::QAbstractFrontEndNodeManager *m_frontEndNodeManager = nullptr;
     std::vector<BoundingVolumeComputeData> m_entities;
 };
 
 } // anonymous
 
-class CalculateBoundingVolumeJobPrivate : public Qt3DCore::QAspectJobPrivate
-{
-public:
-    CalculateBoundingVolumeJobPrivate() { }
-    ~CalculateBoundingVolumeJobPrivate() override { }
-
-    void postFrame(Qt3DCore::QAspectManager *manager) override
-    {
-        for (Geometry *backend : qAsConst(m_updatedGeometries)) {
-            Qt3DCore::QGeometry *node = qobject_cast<Qt3DCore::QGeometry *>(manager->lookupNode(backend->peerId()));
-            if (!node)
-                continue;
-            Qt3DCore::QGeometryPrivate *dNode = static_cast<Qt3DCore::QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(node));
-            dNode->setExtent(backend->min(), backend->max());
-        }
-
-        m_updatedGeometries.clear();
-    }
-
-    QVector<Geometry *> m_updatedGeometries;
-};
 
 CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
-    : Qt3DCore::QAspectJob(*new CalculateBoundingVolumeJobPrivate())
+    : Qt3DCore::QAspectJob()
     , m_manager(nullptr)
     , m_node(nullptr)
+    , m_frontEndNodeManager(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0)
 }
 
 void CalculateBoundingVolumeJob::run()
 {
+    Q_ASSERT(m_frontEndNodeManager);
+
     DirtyEntityAccumulator accumulator(m_manager);
+    accumulator.m_frontEndNodeManager = m_frontEndNodeManager;
+    accumulator.m_nodeNanager = m_manager;
     accumulator.apply(m_node);
 
     std::vector<BoundingVolumeComputeData> entities = std::move(accumulator.m_entities);
@@ -446,8 +459,21 @@ void CalculateBoundingVolumeJob::run()
             updatedGeometries += calculateLocalBoundingVolume(m_manager, data);
     }
 
-    Q_D(CalculateBoundingVolumeJob);
-    d->m_updatedGeometries = std::move(updatedGeometries);
+    m_updatedGeometries = std::move(updatedGeometries);
+}
+
+void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
+{
+    Q_UNUSED(aspectEngine)
+    for (Geometry *backend : qAsConst(m_updatedGeometries)) {
+        Qt3DCore::QGeometry *node = qobject_cast<Qt3DCore::QGeometry *>(m_frontEndNodeManager->lookupNode(backend->peerId()));
+        if (!node)
+            continue;
+        Qt3DCore::QGeometryPrivate *dNode = static_cast<Qt3DCore::QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(node));
+        dNode->setExtent(backend->min(), backend->max());
+    }
+
+    m_updatedGeometries.clear();
 }
 
 void CalculateBoundingVolumeJob::setRoot(Entity *node)
@@ -458,6 +484,11 @@ void CalculateBoundingVolumeJob::setRoot(Entity *node)
 void CalculateBoundingVolumeJob::setManagers(NodeManagers *manager)
 {
     m_manager = manager;
+}
+
+void CalculateBoundingVolumeJob::setFrontEndNodeManager(Qt3DCore::QAbstractFrontEndNodeManager *manager)
+{
+    m_frontEndNodeManager = manager;
 }
 
 } // namespace Render

@@ -291,6 +291,7 @@ private Q_SLOTS:
 
         // GIVEN
         QScopedPointer<Qt3DRender::TestAspect> aspect(new Qt3DRender::TestAspect(entitySubtree));
+        aspect->registerTree(entitySubtree);
 
         // WHEN
         Qt3DRender::Render::Entity *backendRoot = aspect->nodeManagers()->renderNodesManager()->getOrCreateResource(entitySubtree->id());
@@ -308,6 +309,7 @@ private Q_SLOTS:
         Qt3DRender::Render::CalculateBoundingVolumeJob calcBVolume;
         calcBVolume.setManagers(aspect->nodeManagers());
         calcBVolume.setRoot(backendRoot);
+        calcBVolume.setFrontEndNodeManager(aspect.data());
         calcBVolume.run();
 
         Qt3DRender::Render::UpdateWorldBoundingVolumeJob updateWorldBVolume;

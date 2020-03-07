@@ -92,8 +92,6 @@ void GeometryRenderer::cleanup()
     m_geometryId = Qt3DCore::QNodeId();
     m_dirty = false;
     m_geometryFactory.reset();
-    qDeleteAll(m_triangleVolumes);
-    m_triangleVolumes.clear();
 }
 
 void GeometryRenderer::setManager(GeometryRendererManager *manager)
@@ -135,8 +133,12 @@ void GeometryRenderer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     };
 
     if (view) {
+        m_dirty |= !m_hasView;
+        m_hasView = true;
         propertyUpdater(view);
     } else {
+        m_dirty |= m_hasView;
+        m_hasView = false;
         propertyUpdater(node);
 
         const QGeometryRendererPrivate *dnode = static_cast<const QGeometryRendererPrivate *>(QNodePrivate::get(frontEnd));
@@ -208,18 +210,6 @@ GeometryFunctorResult GeometryRenderer::executeFunctor()
 void GeometryRenderer::unsetDirty()
 {
     m_dirty = false;
-}
-
-
-void GeometryRenderer::setTriangleVolumes(const QVector<RayCasting::QBoundingVolume *> &volumes)
-{
-    qDeleteAll(m_triangleVolumes);
-    m_triangleVolumes = volumes;
-}
-
-QVector<RayCasting::QBoundingVolume *> GeometryRenderer::triangleData() const
-{
-    return m_triangleVolumes;
 }
 
 GeometryRendererFunctor::GeometryRendererFunctor(AbstractRenderer *renderer, GeometryRendererManager *manager)

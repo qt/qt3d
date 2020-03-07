@@ -273,7 +273,7 @@ bool BoundingVolumeCalculator::apply(QAttribute *positionAttribute,
 
     const float radius = (center - maxDistantPointCenter.maxDistPt).length();
 
-    if (center == Vector3D{} || radius < 0.f)
+    if (center == Vector3D{} && radius < 0.f)
         return false;
 
     m_radius = radius;

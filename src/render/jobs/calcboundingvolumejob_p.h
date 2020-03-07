@@ -59,12 +59,16 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QAbstractFrontEndNodeManager;
+}
+
 namespace Qt3DRender {
 namespace Render {
 
 class NodeManagers;
 class Entity;
-class CalculateBoundingVolumeJobPrivate;
+class Geometry;
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
@@ -73,12 +77,16 @@ public:
 
     void setRoot(Entity *node);
     void setManagers(NodeManagers *manager);
+    void setFrontEndNodeManager(Qt3DCore::QAbstractFrontEndNodeManager *manager);
     void run() override;
+
+    void postFrame(Qt3DCore::QAspectEngine *aspectEngine) override;
 
 private:
     NodeManagers *m_manager;
     Entity *m_node;
-    Q_DECLARE_PRIVATE(CalculateBoundingVolumeJob)
+    Qt3DCore::QAbstractFrontEndNodeManager *m_frontEndNodeManager;
+    QVector<Geometry *> m_updatedGeometries;
 };
 
 typedef QSharedPointer<CalculateBoundingVolumeJob> CalculateBoundingVolumeJobPtr;

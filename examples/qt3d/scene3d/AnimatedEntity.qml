@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
+import Qt3D.Core 2.15
 import Qt3D.Render 2.15
 import Qt3D.Input 2.0
 import Qt3D.Extras 2.15
@@ -59,6 +59,10 @@ import QtQuick 2.0 as QQ2
 Entity {
     id: sceneRoot
     property RenderCapabilities capabilities : renderSettings.renderCapabilities
+
+    property bool validBounds: sphereMesh.implicitPointsValid
+    property vector3d sphereMinPt: sphereMesh.implicitMinPoint
+    property vector3d sphereMaxPt: sphereMesh.implicitMaxPoint
 
     Camera {
         id: camera

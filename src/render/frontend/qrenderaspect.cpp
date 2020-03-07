@@ -95,6 +95,7 @@
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qskeletonloader.h>
+#include <Qt3DCore/qcoreaspect.h>
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
@@ -297,6 +298,8 @@ void QRenderAspectPrivate::createNodeManagers()
     m_updateEntityLayersJob->setManager(m_nodeManagers);
     m_pickBoundingVolumeJob->setManagers(m_nodeManagers);
     m_rayCastingJob->setManagers(m_nodeManagers);
+
+    m_calculateBoundingVolumeJob->setFrontEndNodeManager(m_aspectManager);
 }
 
 void QRenderAspectPrivate::onEngineStartup()
@@ -316,6 +319,13 @@ void QRenderAspectPrivate::onEngineStartup()
 
     // Ensures all skeletons are loaded before we try to update them
     m_updateSkinningPaletteJob->addDependency(m_syncLoadingJobs);
+
+    // make sure bv job in core aspect runs before the one in render aspect
+    if (m_aspectManager) {
+        auto *coreAspect = qobject_cast<Qt3DCore::QCoreAspect *>(m_aspectManager->aspect(&Qt3DCore::QCoreAspect::staticMetaObject));
+        Q_ASSERT(coreAspect);
+        m_calculateBoundingVolumeJob->addDependency(coreAspect->calculateBoundingVolumeJob());
+    }
 }
 
 /*! \internal */

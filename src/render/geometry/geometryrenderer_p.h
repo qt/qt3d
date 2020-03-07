@@ -98,6 +98,7 @@ public:
     inline bool isDirty() const { return m_dirty; }
     inline Qt3DCore::QGeometryFactoryPtr geometryFactory() const { return m_geometryFactory; }
     void unsetDirty();
+    bool hasView() const { return m_hasView; }
 
     // Build triangle data Job thread
     void setTriangleVolumes(const  QVector<RayCasting::QBoundingVolume *> &volumes);
@@ -117,9 +118,9 @@ private:
     bool m_primitiveRestartEnabled;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;
+    bool m_hasView;
     Qt3DCore::QGeometryFactoryPtr m_geometryFactory;
     GeometryRendererManager *m_manager;
-    QVector<RayCasting::QBoundingVolume *> m_triangleVolumes;
 };
 
 class GeometryRendererFunctor : public Qt3DCore::QBackendNodeMapper

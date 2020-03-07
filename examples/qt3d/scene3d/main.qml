@@ -151,6 +151,27 @@ Item {
         }
     }
 
+    Rectangle {
+        radius: 10
+        color: "#aaffffff"
+        border.width: 1
+        border.color: "black"
+        width: childrenRect.width + anchors.margins
+        height: childrenRect.height + anchors.margins
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.margins: 20
+        visible: rootEntity.validBounds
+
+        Column {
+            x: parent.anchors.margins / 2
+            y: x
+
+            Text { text: "Sphere:\n  Min Extent: " + rootEntity.sphereMinPt }
+            Text { text: "  Max Extent: " + rootEntity.sphereMaxPt }
+        }
+    }
+
     SequentialAnimation {
         id: animation
 
