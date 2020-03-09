@@ -219,6 +219,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Geometry
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
+    qmlRegisterType<Qt3DRender::QGeometryRenderer, 16>(uri, 2, 16, "GeometryRenderer");
     qmlRegisterType<Qt3DRender::QLevelOfDetail>(uri, 2, 9, "LevelOfDetail");
     qmlRegisterType<Qt3DRender::QLevelOfDetailSwitch>(uri, 2, 9, "LevelOfDetailSwitch");
     qRegisterMetaType<Qt3DRender::QLevelOfDetailBoundingSphere>("LevelOfDetailBoundingSphere");

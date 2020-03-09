@@ -77,8 +77,11 @@ public:
     QVector3D m_implicitMinPoint;
     QVector3D m_implicitMaxPoint;
     QVector3D m_implicitCenter;
+    QVector3D m_minPoint;
+    QVector3D m_maxPoint;
     float m_implicitRadius;
     bool m_implicitPointsValid;
+    bool m_explicitPointsValid;
     bool m_primaryProvider;
 };
 

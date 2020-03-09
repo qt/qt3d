@@ -65,18 +65,9 @@ class CalculateBoundingVolumeJobPrivate;
 class QEntity;
 class QAttribute;
 class QBoundingVolume;
+class QGeometryView;
 
-struct BoundingVolumeComputeData {
-    QEntity *entity = nullptr;
-    QBoundingVolume *provider = nullptr;
-    QAttribute *positionAttribute = nullptr;
-    QAttribute *indexAttribute = nullptr;
-    int vertexCount = 0;
-
-    bool valid() const { return positionAttribute != nullptr; }
-};
-
-struct BoundingVolumeComputeResult {
+struct Q_3DCORE_PRIVATE_EXPORT BoundingVolumeComputeResult {
     QEntity *entity = nullptr;
     QBoundingVolume *provider = nullptr;
     QAttribute *positionAttribute = nullptr;
@@ -87,6 +78,19 @@ struct BoundingVolumeComputeResult {
     float m_radius = -1.f;
 
     bool valid() const { return m_radius >= 0.f; }
+};
+
+struct Q_3DCORE_PRIVATE_EXPORT BoundingVolumeComputeData {
+    QEntity *entity = nullptr;
+    QBoundingVolume *provider = nullptr;
+    QAttribute *positionAttribute = nullptr;
+    QAttribute *indexAttribute = nullptr;
+    int vertexCount = 0;
+
+    static BoundingVolumeComputeData fromView(QGeometryView *view);
+
+    bool valid() const { return positionAttribute != nullptr; }
+    BoundingVolumeComputeResult compute() const;
 };
 
 class Q_3DCORE_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob

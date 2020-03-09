@@ -145,19 +145,6 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(QGeometryView *node)
     return { nullptr, nullptr, positionAttribute, indexAttribute, drawVertexCount };
 }
 
-BoundingVolumeComputeResult calculateLocalBoundingVolume(const BoundingVolumeComputeData &data) {
-    BoundingVolumeCalculator calculator;
-    if (calculator.apply(data.positionAttribute, data.indexAttribute, data.vertexCount,
-                         data.provider->view()->primitiveRestartEnabled(),
-                         data.provider->view()->restartIndexValue()))
-        return {
-            data.entity, data.provider, data.positionAttribute, data.indexAttribute,
-            calculator.min(), calculator.max(),
-            calculator.center(), calculator.radius()
-        };
-    return {};
-}
-
 bool isTreeEnabled(QEntity *entity) {
     if (!entity->isEnabled())
         return false;
@@ -178,7 +165,7 @@ struct UpdateBoundFunctor
     typedef QVector<BoundingVolumeComputeResult> result_type;
     result_type operator ()(const BoundingVolumeComputeData &data)
     {
-        return { calculateLocalBoundingVolume(data) };
+        return { data.compute() };
     }
 };
 
@@ -192,25 +179,26 @@ struct ReduceUpdateBoundFunctor
 
 } // anonymous
 
-//class CalculateBoundingVolumeJobPrivate : public Qt3DCore::QAspectJobPrivate
-//{
-//public:
-//    CalculateBoundingVolumeJobPrivate() { }
-//    ~CalculateBoundingVolumeJobPrivate() override { }
 
-//    void postFrame(Qt3DCore::QAspectManager *manager) override
-//    {
-//        Q_UNUSED(manager)
-////        for (Geometry *backend : qAsConst(m_updatedGeometries)) {
-////            Qt3DCore::QGeometry *node = qobject_cast<Qt3DCore::QGeometry *>(manager->lookupNode(backend->peerId()));
-////            if (!node)
-////                continue;
-////            Qt3DCore::QGeometryPrivate *dNode = static_cast<Qt3DCore::QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(node));
-////            dNode->setExtent(backend->min(), backend->max());
-////        }
-//    }
+BoundingVolumeComputeData BoundingVolumeComputeData::fromView(QGeometryView *view)
+{
+    return findBoundingVolumeComputeData(view);
+}
 
-//};
+BoundingVolumeComputeResult BoundingVolumeComputeData::compute() const
+{
+    BoundingVolumeCalculator calculator;
+    if (calculator.apply(positionAttribute, indexAttribute, vertexCount,
+                         provider->view()->primitiveRestartEnabled(),
+                         provider->view()->restartIndexValue()))
+        return {
+            entity, provider, positionAttribute, indexAttribute,
+            calculator.min(), calculator.max(),
+            calculator.center(), calculator.radius()
+        };
+    return {};
+}
+
 
 CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
     : Qt3DCore::QAspectJob()
@@ -237,17 +225,22 @@ void CalculateBoundingVolumeJob::run()
         // or THE primary provider
         bool foundBV = false;
         for (auto bv: bvProviders) {
-            if (!bv->view())
-                continue;
             auto dbv = QBoundingVolumePrivate::get(bv);
             if (foundBV && !dbv->m_primaryProvider)
                 continue;
 
-            auto bvdata = findBoundingVolumeComputeData(bv->view());
-            if (!bvdata.valid())
+            BoundingVolumeComputeData bvdata;
+            if (!dbv->m_explicitPointsValid && bv->view()) {
+                bvdata = findBoundingVolumeComputeData(bv->view());
+                if (!bvdata.valid())
+                    continue;
+                bvdata.entity = entity;
+                bvdata.provider = bv;
+            } else {
+                // bounds are explicitly set, don't bother computing
+                // or no view, can't compute
                 continue;
-            bvdata.entity = entity;
-            bvdata.provider = bv;
+            }
 
             bool dirty = QEntityPrivate::get(entity)->m_dirty;
             dirty |= QGeometryViewPrivate::get(bv->view())->m_dirty;
@@ -279,7 +272,7 @@ void CalculateBoundingVolumeJob::run()
 #endif
     {
         for (auto it = dirtyEntities.begin(); it != dirtyEntities.end(); ++it) {
-            auto res = calculateLocalBoundingVolume(it.value());
+            auto res = it.value().compute();
             if (res.valid())
                 m_results.push_back(res); // How do we push it to the backends????
         }

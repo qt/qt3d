@@ -40,6 +40,7 @@
 #include "qboundingvolume.h"
 #include "qboundingvolume_p.h"
 #include <Qt3DCore/private/corelogging_p.h>
+#include <Qt3DCore/private/calcboundingvolumejob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +54,7 @@ QBoundingVolumePrivate::QBoundingVolumePrivate()
     : QComponentPrivate()
     , m_view(nullptr)
     , m_implicitPointsValid(false)
+    , m_explicitPointsValid(false)
     , m_primaryProvider(true)
 {
 }
@@ -178,10 +180,62 @@ bool QBoundingVolume::areImplicitPointsValid() const
     return d->m_implicitPointsValid;
 }
 
+QVector3D QBoundingVolume::minPoint() const
+{
+    Q_D(const QBoundingVolume);
+    return d->m_minPoint;
+}
+
+QVector3D QBoundingVolume::maxPoint() const
+{
+    Q_D(const QBoundingVolume);
+    return d->m_maxPoint;
+}
+
 void QBoundingVolume::setView(QGeometryView *view)
 {
     Q_D(QBoundingVolume);
     d->setView(view);
+}
+
+void QBoundingVolume::setMinPoint(const QVector3D &minPoint)
+{
+    Q_D(QBoundingVolume);
+    if (d->m_minPoint != minPoint) {
+        d->m_minPoint = minPoint;
+        d->m_explicitPointsValid = true;
+        d->markDirty(QScene::GeometryDirty);
+        emit minPointChanged(d->m_minPoint);
+    }
+}
+
+void QBoundingVolume::setMaxPoint(const QVector3D &maxPoint)
+{
+    Q_D(QBoundingVolume);
+    if (d->m_maxPoint != maxPoint) {
+        d->m_maxPoint = maxPoint;
+        d->m_explicitPointsValid = true;
+        d->markDirty(QScene::GeometryDirty);
+        emit maxPointChanged(d->m_maxPoint);
+    }
+}
+
+bool QBoundingVolume::updateImplicitBounds()
+{
+    Q_D(QBoundingVolume);
+    if (!d->m_view)
+        return false;
+
+    auto data = BoundingVolumeComputeData::fromView(d->m_view);
+    if (!data.valid())
+        return false;
+
+    auto res = data.compute();
+    if (!res.valid())
+        return false;
+
+    d->setImplicitBounds(res.m_min, res.m_max, res.m_center, res.m_radius);
+    return true;
 }
 
 } // namespace Qt3DCore

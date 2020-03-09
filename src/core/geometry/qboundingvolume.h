@@ -58,6 +58,8 @@ class Q_3DCORESHARED_EXPORT QBoundingVolume : public Qt3DCore::QComponent
     Q_PROPERTY(QVector3D implicitMinPoint READ implicitMinPoint NOTIFY implicitMinPointChanged)
     Q_PROPERTY(QVector3D implicitMaxPoint READ implicitMaxPoint NOTIFY implicitMaxPointChanged)
     Q_PROPERTY(bool implicitPointsValid READ areImplicitPointsValid NOTIFY implicitPointsValidChanged)
+    Q_PROPERTY(QVector3D minPoint READ minPoint WRITE setMinPoint NOTIFY minPointChanged)
+    Q_PROPERTY(QVector3D maxPoint READ maxPoint WRITE setMaxPoint NOTIFY maxPointChanged)
 public:
     explicit QBoundingVolume(Qt3DCore::QNode *parent = nullptr);
     ~QBoundingVolume();
@@ -66,15 +68,23 @@ public:
     QVector3D implicitMinPoint() const;
     QVector3D implicitMaxPoint() const;
     bool areImplicitPointsValid() const;
+    QVector3D minPoint() const;
+    QVector3D maxPoint() const;
 
 public Q_SLOTS:
     void setView(QGeometryView *view);
+    void setMinPoint(const QVector3D &minPoint);
+    void setMaxPoint(const QVector3D &maxPoint);
+
+    bool updateImplicitBounds();
 
 Q_SIGNALS:
     void viewChanged(QGeometryView *view);
     void implicitMinPointChanged(const QVector3D &implicitMinPoint);
     void implicitMaxPointChanged(const QVector3D &implicitMaxPoint);
     void implicitPointsValidChanged(bool implicitPointsValid);
+    void minPointChanged(QVector3D minPoint);
+    void maxPointChanged(QVector3D maxPoint);
 
 protected:
     QBoundingVolume(QBoundingVolumePrivate &dd, Qt3DCore::QNode *parent = nullptr);
