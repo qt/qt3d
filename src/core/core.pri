@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/qchangearbiter_p.h \
     $$PWD/qt3dcore_global_p.h \
     $$PWD/qurlhelper_p.h \
-    $$PWD/qscene_p.h
+    $$PWD/qscene_p.h \
+    $$PWD/qabstractfrontendnodemanager.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -16,4 +17,5 @@ SOURCES += \
     $$PWD/qchangearbiter.cpp \
     $$PWD/corelogging.cpp \
     $$PWD/qurlhelper.cpp \
-    $$PWD/qscene.cpp
+    $$PWD/qscene.cpp \
+    $$PWD/qabstractfrontendnodemanager.cpp

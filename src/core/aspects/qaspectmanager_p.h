@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qabstractfrontendnodemanager.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
@@ -82,7 +83,7 @@ struct NodeTreeChange;
 class RequestFrameAnimation;
 #endif
 
-class Q_3DCORE_PRIVATE_EXPORT QAspectManager : public QObject
+class Q_3DCORE_PRIVATE_EXPORT QAspectManager : public QObject, public QAbstractFrontEndNodeManager
 {
     Q_OBJECT
 public:
@@ -117,8 +118,8 @@ public:
     QServiceLocator *serviceLocator() const;
     void setPostConstructorInit(NodePostConstructorInit *postConstructorInit);
 
-    QNode *lookupNode(QNodeId id) const;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
+    QNode *lookupNode(QNodeId id) const override;
+    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const override;
     QScene *scene() const;
 
     int jobsInLastFrame() const { return m_jobsInLastFrame; }

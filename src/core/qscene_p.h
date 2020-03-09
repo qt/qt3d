@@ -54,6 +54,7 @@
 #include <QtCore/QScopedPointer>
 
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qabstractfrontendnodemanager.h>
 #include <QtCore/qscopedpointer.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 
@@ -66,7 +67,7 @@ class QAspectEngine;
 class NodePostConstructorInit;
 class QChangeArbiter;
 
-class Q_3DCORE_PRIVATE_EXPORT QScene
+class Q_3DCORE_PRIVATE_EXPORT QScene : public QAbstractFrontEndNodeManager
 {
 public:
     // Changes made to backend nodes are reported to the Renderer
@@ -87,8 +88,8 @@ public:
     void addObservable(QNode *observable);
     void removeObservable(QNode *observable);
 
-    QNode *lookupNode(QNodeId id) const;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
+    QNode *lookupNode(QNodeId id) const override;
+    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const override;
 
     QNode *rootNode() const;
 

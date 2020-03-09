@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,68 +37,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QASPECTENGINE_H
-#define QT3DCORE_QASPECTENGINE_H
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qabstractfrontendnodemanager.h>
-#include <Qt3DCore/qnodeid.h>
-#include <QtCore/QObject>
-#include <QtCore/QVector>
+#include "qabstractfrontendnodemanager.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAbstractAspect;
-class QAspectThread;
-class QAspectEnginePrivate;
-class QEntity;
-class QNode;
+QAbstractFrontEndNodeManager::QAbstractFrontEndNodeManager() = default;
 
-typedef QSharedPointer<QEntity> QEntityPtr;
+QAbstractFrontEndNodeManager::~QAbstractFrontEndNodeManager() = default;
 
-class Q_3DCORESHARED_EXPORT QAspectEngine : public QObject, public QAbstractFrontEndNodeManager
-{
-    Q_OBJECT
-public:
-    enum RunMode {
-        Manual = 0,
-        Automatic
-    };
-    Q_ENUM(RunMode)
+/*
+\fn QNode *Qt3DCore::QAbstractFrontEndNodeManager::lookupNode(QNodeId id) const
 
-    explicit QAspectEngine(QObject *parent = nullptr);
-    ~QAspectEngine();
+Returns the node instance matching the id, or nullptr if not found.
 
-    void setRootEntity(QEntityPtr root);
-    QEntityPtr rootEntity() const;
+*/
 
-    void setRunMode(RunMode mode);
-    RunMode runMode() const;
+/*
+\fn QVector<QNode *> Qt3DCore::QAbstractFrontEndNodeManager::lookupNodes(const QVector<QNodeId> &ids) const
 
-    void registerAspect(QAbstractAspect *aspect);
-    void registerAspect(const QString &name);
-    void unregisterAspect(QAbstractAspect *aspect);
-    void unregisterAspect(const QString &name);
+Returns the vector of node instance matching the ids.
 
-    QVector<QAbstractAspect*> aspects() const;
-    QAbstractAspect *aspect(const QString &name) const;
+*/
 
-    QVariant executeCommand(const QString &command);
 
-    void processFrame();
-
-    QNode *lookupNode(QNodeId id) const override;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const override;
-
-private:
-    Q_DECLARE_PRIVATE(QAspectEngine)
-};
-
-} // namespace Qt3DCore
+} // Qt3DCore
 
 QT_END_NAMESPACE
-
-
-#endif // QT3DCORE_QASPECTENGINE_H

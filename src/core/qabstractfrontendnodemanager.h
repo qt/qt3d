@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,68 +37,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QASPECTENGINE_H
-#define QT3DCORE_QASPECTENGINE_H
+#ifndef QT3DCORE_QABSTRACTFRONTENDNODEMANAGER_P_H
+#define QT3DCORE_QABSTRACTFRONTENDNODEMANAGER_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qabstractfrontendnodemanager.h>
 #include <Qt3DCore/qnodeid.h>
-#include <QtCore/QObject>
-#include <QtCore/QVector>
+
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAbstractAspect;
-class QAspectThread;
-class QAspectEnginePrivate;
-class QEntity;
 class QNode;
 
-typedef QSharedPointer<QEntity> QEntityPtr;
-
-class Q_3DCORESHARED_EXPORT QAspectEngine : public QObject, public QAbstractFrontEndNodeManager
+class Q_3DCORESHARED_EXPORT QAbstractFrontEndNodeManager
 {
-    Q_OBJECT
 public:
-    enum RunMode {
-        Manual = 0,
-        Automatic
+    // Changes made to backend nodes are reported to the Renderer
+    enum DirtyNodeFlag {
+        TransformDirty      = 1 << 0,
+        GeometryDirty       = 1 << 1,
+        EntityEnabledDirty  = 1 << 2,
+        BuffersDirty        = 1 << 3,
+        AllDirty            = 0xffffff
     };
-    Q_ENUM(RunMode)
+    Q_DECLARE_FLAGS(DirtyNodeSet, DirtyNodeFlag)
 
-    explicit QAspectEngine(QObject *parent = nullptr);
-    ~QAspectEngine();
+    virtual ~QAbstractFrontEndNodeManager();
 
-    void setRootEntity(QEntityPtr root);
-    QEntityPtr rootEntity() const;
+    virtual QNode *lookupNode(QNodeId id) const = 0;
+    virtual QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const = 0;
 
-    void setRunMode(RunMode mode);
-    RunMode runMode() const;
-
-    void registerAspect(QAbstractAspect *aspect);
-    void registerAspect(const QString &name);
-    void unregisterAspect(QAbstractAspect *aspect);
-    void unregisterAspect(const QString &name);
-
-    QVector<QAbstractAspect*> aspects() const;
-    QAbstractAspect *aspect(const QString &name) const;
-
-    QVariant executeCommand(const QString &command);
-
-    void processFrame();
-
-    QNode *lookupNode(QNodeId id) const override;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const override;
-
-private:
-    Q_DECLARE_PRIVATE(QAspectEngine)
+protected:
+    QAbstractFrontEndNodeManager();
 };
 
-} // namespace Qt3DCore
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
-
-#endif // QT3DCORE_QASPECTENGINE_H
+#endif // QT3DCORE_QABSTRACTFRONTENDNODEMANAGER_P_H
