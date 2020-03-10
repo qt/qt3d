@@ -367,6 +367,24 @@ float QForwardRenderer::gamma() const
     return d->m_viewport->gamma();
 }
 
+/*!
+    \qmlproperty bool ForwardRenderer::showDebugOverlay
+
+    If true, a debug overlay will be rendered over the scene. It will show
+    detailed information about the runtime rendering state, let the user
+    turn logging on and off, etc.
+
+    \since 5.15
+*/
+/*!
+    \property QForwardRenderer::showDebugOverlay
+
+    If true, a debug overlay will be rendered over the scene. It will show
+    detailed information about the runtime rendering state, let the user
+    turn logging on and off, etc.
+
+    \since 5.15
+*/
 bool QForwardRenderer::showDebugOverlay() const
 {
     Q_D(const QForwardRenderer);

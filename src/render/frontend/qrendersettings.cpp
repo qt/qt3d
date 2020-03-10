@@ -148,6 +148,7 @@ QRenderSettings::~QRenderSettings()
     Holds the details of the supported rendering engine
 
     \readonly
+    \since 5.15
 */
 /*!
     \property QRenderSettings::renderCapabilities
@@ -155,6 +156,7 @@ QRenderSettings::~QRenderSettings()
     Holds the details of the supported rendering engine
 
     \readonly
+    \since 5.15
 */
 QRenderCapabilities *QRenderSettings::renderCapabilities()
 {
