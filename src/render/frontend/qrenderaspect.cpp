@@ -159,11 +159,13 @@
 #include <Qt3DRender/private/waitfence_p.h>
 #include <Qt3DRender/private/shaderimage_p.h>
 #include <Qt3DRender/private/debugoverlay_p.h>
+#include <Qt3DRender/private/qrendererpluginfactory_p.h>
+#include <Qt3DRender/private/updatelevelofdetailjob_p.h>
+#include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/pickeventfilter_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
-
-#include <Qt3DRender/private/qrendererpluginfactory_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -176,6 +178,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
 
 #include <QThread>
 #include <QOpenGLContext>
@@ -185,6 +188,9 @@ QT_BEGIN_NAMESPACE
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
+
+#define CreateSynchronizerJobPtr(lambda, type) \
+    Render::SynchronizerJobPtr::create(lambda, type, #type)
 
 /*!
  * \class Qt3DRender::QRenderAspect
@@ -210,6 +216,18 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_renderAfterJobs(false)
     , m_renderType(type)
     , m_offscreenHelper(nullptr)
+    , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
+    , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
+    , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
+    , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
+    , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
+    , m_updateSkinningPaletteJob(Render::UpdateSkinningPaletteJobPtr::create())
+    , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
+    , m_updateEntityLayersJob(Render::UpdateEntityLayersJobPtr::create())
+    , m_syncLoadingJobs(CreateSynchronizerJobPtr([] {}, Render::JobTypes::SyncLoadingJobs))
+    , m_pickBoundingVolumeJob(Render::PickBoundingVolumeJobPtr::create())
+    , m_rayCastingJob(Render::RayCastingJobPtr::create())
+    , m_pickEventFilter(new Render::PickEventFilter())
 {
     m_instances.append(this);
     loadSceneParsers();
@@ -217,6 +235,11 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
         m_renderType = QRenderAspect::Synchronous;
         m_renderAfterJobs = true;
     }
+
+    m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
+    m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
+    m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
+    m_updateLevelOfDetailJob->addDependency(m_expandBoundingVolumeJob);
 }
 
 /*! \internal */
@@ -243,6 +266,11 @@ QRenderAspectPrivate *QRenderAspectPrivate::findPrivate(Qt3DCore::QAspectEngine 
     return nullptr;
 }
 
+QRenderAspectPrivate *QRenderAspectPrivate::get(QRenderAspect *q)
+{
+    return q->d_func();
+}
+
 void QRenderAspectPrivate::jobsDone()
 {
     m_renderer->jobsDone(m_aspectManager);
@@ -253,6 +281,41 @@ void QRenderAspectPrivate::frameDone()
     m_renderer->setJobsInLastFrame(m_aspectManager->jobsInLastFrame());
     if (m_renderAfterJobs)
         m_renderer->doRender(true);
+}
+
+void QRenderAspectPrivate::createNodeManagers()
+{
+    m_nodeManagers = new Render::NodeManagers();
+
+    m_updateTreeEnabledJob->setManagers(m_nodeManagers);
+    m_worldTransformJob->setManagers(m_nodeManagers);
+    m_expandBoundingVolumeJob->setManagers(m_nodeManagers);
+    m_calculateBoundingVolumeJob->setManagers(m_nodeManagers);
+    m_updateWorldBoundingVolumeJob->setManager(m_nodeManagers->renderNodesManager());
+    m_updateSkinningPaletteJob->setManagers(m_nodeManagers);
+    m_updateLevelOfDetailJob->setManagers(m_nodeManagers);
+    m_updateEntityLayersJob->setManager(m_nodeManagers);
+    m_pickBoundingVolumeJob->setManagers(m_nodeManagers);
+    m_rayCastingJob->setManagers(m_nodeManagers);
+}
+
+void QRenderAspectPrivate::onEngineStartup()
+{
+    Render::Entity *rootEntity = m_nodeManagers->lookupResource<Render::Entity, Render::EntityManager>(m_rootId);
+    Q_ASSERT(rootEntity);
+    m_renderer->setSceneRoot(rootEntity);
+
+    m_worldTransformJob->setRoot(rootEntity);
+    m_expandBoundingVolumeJob->setRoot(rootEntity);
+    m_calculateBoundingVolumeJob->setRoot(rootEntity);
+    m_updateLevelOfDetailJob->setRoot(rootEntity);
+    m_updateSkinningPaletteJob->setRoot(rootEntity);
+    m_updateTreeEnabledJob->setRoot(rootEntity);
+    m_pickBoundingVolumeJob->setRoot(rootEntity);
+    m_rayCastingJob->setRoot(rootEntity);
+
+    // Ensures all skeletons are loaded before we try to update them
+    m_updateSkinningPaletteJob->addDependency(m_syncLoadingJobs);
 }
 
 /*! \internal */
@@ -483,6 +546,8 @@ void QRenderAspectPrivate::renderShutdown()
 
 QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 {
+    using namespace Render;
+
     Q_D(QRenderAspect);
     d->m_renderer->setTime(time);
 
@@ -506,10 +571,10 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // asked for jobs to execute (this function). If that is the case, the RenderSettings will
     // be null and we should not generate any jobs.
     if (d->m_renderer->isRunning() && d->m_renderer->settings()) {
-
-        Render::NodeManagers *manager = d->m_renderer->nodeManagers();
-        QAspectJobPtr loadingJobSync = d->m_renderer->syncLoadingJobs();
-        loadingJobSync->removeDependency(QWeakPointer<QAspectJob>());
+        NodeManagers *manager = d->m_nodeManagers;
+        d->m_syncLoadingJobs->removeDependency(QWeakPointer<QAspectJob>());
+        d->m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
+        d->m_updateLevelOfDetailJob->setFrameGraphRoot(d->m_renderer->frameGraphRoot());
 
         // Launch skeleton loader jobs once all loading jobs have completed.
         const QVector<Render::HSkeleton> skeletonsToLoad =
@@ -517,7 +582,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         for (const auto &skeletonHandle : skeletonsToLoad) {
             auto loadSkeletonJob = Render::LoadSkeletonJobPtr::create(skeletonHandle);
             loadSkeletonJob->setNodeManagers(manager);
-            loadingJobSync->addDependency(loadSkeletonJob);
+            d->m_syncLoadingJobs->addDependency(loadSkeletonJob);
             jobs.append(loadSkeletonJob);
         }
 
@@ -534,9 +599,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
-        const QVector<QAspectJobPtr> preRenderingJobs = d->m_renderer->preRenderingJobs();
-        jobs.append(preRenderingJobs);
-
         // Don't spawn any rendering jobs, if the renderer decides to skip this frame
         // Note: this only affects rendering jobs (jobs that load buffers,
         // perform picking,... must still be run)
@@ -550,9 +612,51 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // RenderBins with RenderCommands
         // All jobs needed to create the frame and their dependencies are set by
         // renderBinJobs()
+
+        const AbstractRenderer::BackendNodeDirtySet dirtyBitsForFrame = d->m_renderer->dirtyBits();
+
+        // Create the jobs to build the frame
+        const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
+        if (entitiesEnabledDirty) {
+            jobs.push_back(d->m_updateTreeEnabledJob);
+            // This dependency is added here because we clear all dependencies
+            // at the start of this function.
+            d->m_calculateBoundingVolumeJob->addDependency(d->m_updateTreeEnabledJob);
+        }
+
+        if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
+            jobs.push_back(d->m_worldTransformJob);
+            jobs.push_back(d->m_updateWorldBoundingVolumeJob);
+        }
+
+        if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
+            dirtyBitsForFrame & AbstractRenderer::BuffersDirty) {
+            jobs.push_back(d->m_calculateBoundingVolumeJob);
+        }
+
+        if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
+            dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
+            jobs.push_back(d->m_expandBoundingVolumeJob);
+        }
+
+        // TO DO: Conditionally add if skeletons dirty
+        jobs.push_back(d->m_syncLoadingJobs);
+        d->m_updateSkinningPaletteJob->setDirtyJoints(manager->jointManager()->dirtyJoints());
+        jobs.push_back(d->m_updateSkinningPaletteJob);
+        jobs.push_back(d->m_updateLevelOfDetailJob);
+
+        // Rebuild Entity Layers list if layers are dirty
+        const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
+        if (layersDirty)
+            jobs.push_back(d->m_updateEntityLayersJob);
+
+        const QVector<QAspectJobPtr> preRenderingJobs = d->createPreRendererJobs();
+        jobs.append(preRenderingJobs);
+
         const QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
         jobs.append(renderBinJobs);
     }
+
     return jobs;
 }
 
@@ -582,10 +686,7 @@ void QRenderAspect::onEngineStartup()
     Q_D(QRenderAspect);
     if (d->m_renderAfterJobs)   // synchronous rendering but using QWindow
         d->m_renderer->initialize();
-    Render::NodeManagers *managers = d->m_renderer->nodeManagers();
-    Render::Entity *rootEntity = managers->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
-    Q_ASSERT(rootEntity);
-    d->m_renderer->setSceneRoot(rootEntity);
+    d->onEngineStartup();
 }
 
 void QRenderAspect::onRegistered()
@@ -594,12 +695,13 @@ void QRenderAspect::onRegistered()
     // using a threaded renderer, this blocks until the render thread has been created
     // and started.
     Q_D(QRenderAspect);
-    d->m_nodeManagers = new Render::NodeManagers();
+    d->createNodeManagers();
 
     // Load proper Renderer class based on Qt configuration preferences
     d->m_renderer = d->loadRendererPlugin();
     Q_ASSERT(d->m_renderer);
     d->m_renderer->setScreen(d->m_screen);
+    d->m_renderer->setAspect(this);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
     // Create a helper for deferring creation of an offscreen surface used during cleanup
@@ -612,7 +714,6 @@ void QRenderAspect::onRegistered()
     d->registerBackendTypes();
 
     if (!d->m_initialized) {
-
         // Register the VSyncFrameAdvanceService to drive the aspect manager loop
         // depending on the vsync
         if (d->m_aspectManager) {
@@ -628,7 +729,7 @@ void QRenderAspect::onRegistered()
     }
 
     if (d->m_aspectManager)
-        d->m_renderer->registerEventFilter(d->services()->eventFilterService());
+        d->services()->eventFilterService()->registerEventFilter(d->m_pickEventFilter.data(), 1024);
 }
 
 void QRenderAspect::onUnregistered()
@@ -658,14 +759,14 @@ void QRenderAspect::onUnregistered()
     d->m_offscreenHelper = nullptr;
 }
 
-QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs()
+QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs() const
 {
     Render::GeometryRendererManager *geomRendererManager = m_nodeManagers->geometryRendererManager();
     const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
     QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
     dirtyGeometryRendererJobs.reserve(dirtyGeometryRenderers.size());
 
-    for (const QNodeId geoRendererId : dirtyGeometryRenderers) {
+    for (const QNodeId &geoRendererId : dirtyGeometryRenderers) {
         Render::HGeometryRenderer geometryRendererHandle = geomRendererManager->lookupHandle(geoRendererId);
         if (!geometryRendererHandle.isNull()) {
             auto job = Render::LoadGeometryJobPtr::create(geometryRendererHandle);
@@ -675,6 +776,35 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
     }
 
     return dirtyGeometryRendererJobs;
+}
+
+QVector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
+{
+    if (!m_renderer)
+        return {};
+
+    const auto frameMouseEvents = m_pickEventFilter->pendingMouseEvents();
+    const auto frameKeyEvents = m_pickEventFilter->pendingKeyEvents();
+    m_renderer->setPendingEvents(frameMouseEvents, m_pickEventFilter->pendingKeyEvents());
+
+    auto jobs = m_renderer->preRenderingJobs();
+
+    // Set values on picking jobs
+    Render::RenderSettings *renderSetting = m_renderer->settings();
+    if (renderSetting != nullptr) {
+        m_pickBoundingVolumeJob->setRenderSettings(renderSetting);
+        m_pickBoundingVolumeJob->setFrameGraphRoot(m_renderer->frameGraphRoot());
+        m_pickBoundingVolumeJob->setMouseEvents(frameMouseEvents);
+        m_pickBoundingVolumeJob->setKeyEvents(frameKeyEvents);
+
+        m_rayCastingJob->setRenderSettings(renderSetting);
+        m_rayCastingJob->setFrameGraphRoot(m_renderer->frameGraphRoot());
+    }
+
+    jobs.append(m_pickBoundingVolumeJob);
+    jobs.append(m_rayCastingJob);
+
+    return jobs;
 }
 
 void QRenderAspectPrivate::loadSceneParsers()

@@ -10,3 +10,6 @@ SOURCES += tst_renderer.cpp
 
 # Link Against OpenGL Renderer Plugin
 include(../opengl_render_plugin.pri)
+
+CONFIG += useCommonTestAspect
+include(../../commons/commons.pri)

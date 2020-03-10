@@ -71,14 +71,9 @@ public:
 
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
     inline QVector<LightSource> &lights() { return m_lights; }
-    inline EnvironmentLight *takeEnvironmentLight()
-    {
-        auto envLight = m_environmentLight;
-        m_environmentLight = nullptr;
-        return envLight;
-    }
+    inline EnvironmentLight *environmentLight() const { return m_environmentLight; }
 
-    void run() final;
+    void run() override;
 
 private:
     EntityManager *m_manager;

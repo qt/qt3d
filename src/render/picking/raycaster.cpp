@@ -44,6 +44,7 @@
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/private/qabstractraycaster_p.h>
 #include <Qt3DRender/private/raycastingjob_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -178,8 +179,8 @@ void RayCaster::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime
 
 void RayCaster::notifyJob()
 {
-    if (m_renderer && m_renderer->rayCastingJob())
-        qSharedPointerCast<RayCastingJob>(m_renderer->rayCastingJob())->markCastersDirty();
+    if (m_renderer && m_renderer->aspect())
+        QRenderAspectPrivate::get(m_renderer->aspect())->m_rayCastingJob->markCastersDirty();
 }
 
 } // Render

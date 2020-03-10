@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "renderviewbuilder_p.h"
+#include <Qt3DRender/private/qrenderaspect_p.h>
 
 #include <QThread>
 
@@ -642,6 +643,12 @@ void RenderViewBuilder::prepareJobs()
 QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
 {
     QVector<Qt3DCore::QAspectJobPtr> jobs;
+    auto daspect = QRenderAspectPrivate::get(m_renderer->aspect());
+    auto expandBVJob = daspect->m_expandBoundingVolumeJob;
+    auto wordTransformJob = daspect->m_worldTransformJob;
+    auto updateTreeEnabledJob = daspect->m_updateTreeEnabledJob;
+    auto updateSkinningPaletteJob = daspect->m_updateSkinningPaletteJob;
+    auto updateEntityLayersJob = daspect->m_updateEntityLayersJob;
 
     jobs.reserve(m_materialGathererJobs.size() + m_renderViewCommandUpdaterJobs.size() + 11);
 
@@ -649,20 +656,20 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
 
     // Finish the skinning palette job before processing renderviews
     // TODO: Maybe only update skinning palettes for non-culled entities
-    m_renderViewJob->addDependency(m_renderer->updateSkinningPaletteJob());
+    m_renderViewJob->addDependency(updateSkinningPaletteJob);
 
-    m_syncPreFrustumCullingJob->addDependency(m_renderer->updateWorldTransformJob());
+    m_syncPreFrustumCullingJob->addDependency(wordTransformJob);
     m_syncPreFrustumCullingJob->addDependency(m_renderer->updateShaderDataTransformJob());
     m_syncPreFrustumCullingJob->addDependency(m_syncRenderViewPostInitializationJob);
 
-    m_frustumCullingJob->addDependency(m_renderer->expandBoundingVolumeJob());
+    m_frustumCullingJob->addDependency(expandBVJob);
     m_frustumCullingJob->addDependency(m_syncPreFrustumCullingJob);
 
     m_setClearDrawBufferIndexJob->addDependency(m_syncRenderViewPostInitializationJob);
 
     m_syncRenderViewPostInitializationJob->addDependency(m_renderViewJob);
 
-    m_filterProximityJob->addDependency(m_renderer->expandBoundingVolumeJob());
+    m_filterProximityJob->addDependency(expandBVJob);
     m_filterProximityJob->addDependency(m_syncRenderViewPostInitializationJob);
 
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_syncRenderViewPostInitializationJob);
@@ -674,7 +681,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->introspectShadersJob());
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->bufferGathererJob());
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->textureGathererJob());
-    m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->cacheLightJob());
+    m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->lightGathererJob());
 
     for (const auto &renderViewCommandUpdater : qAsConst(m_renderViewCommandUpdaterJobs)) {
         renderViewCommandUpdater->addDependency(m_syncRenderViewPreCommandUpdateJob);
@@ -690,8 +697,8 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     jobs.push_back(m_syncRenderViewPostInitializationJob); // Step 2
 
     if (m_renderCommandCacheNeedsToBeRebuilt) { // Step 3
-        m_syncRenderViewPreCommandBuildingJob->addDependency(m_renderer->cacheComputableEntitiesJob());
-        m_syncRenderViewPreCommandBuildingJob->addDependency(m_renderer->cacheRenderableEntitiesJob());
+        m_syncRenderViewPreCommandBuildingJob->addDependency(m_renderer->computableEntityFilterJob());
+        m_syncRenderViewPreCommandBuildingJob->addDependency(m_renderer->renderableEntityFilterJob());
         m_syncRenderViewPreCommandBuildingJob->addDependency(m_syncRenderViewPostInitializationJob);
 
         if (m_materialGathererCacheNeedsToBeRebuilt)
@@ -707,9 +714,9 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     }
 
     if (m_layerCacheNeedsToBeRebuilt) {
-        m_filterEntityByLayerJob->addDependency(m_renderer->updateEntityLayersJob());
+        m_filterEntityByLayerJob->addDependency(updateEntityLayersJob);
         m_filterEntityByLayerJob->addDependency(m_syncRenderViewPostInitializationJob);
-        m_filterEntityByLayerJob->addDependency(m_renderer->updateTreeEnabledJob());
+        m_filterEntityByLayerJob->addDependency(updateTreeEnabledJob);
 
         m_syncFilterEntityByLayerJob->addDependency(m_filterEntityByLayerJob);
         m_syncRenderViewPreCommandUpdateJob->addDependency(m_syncFilterEntityByLayerJob);

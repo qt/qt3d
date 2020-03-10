@@ -225,9 +225,6 @@ private Q_SLOTS:
         backendBuffer.unsetDirty();
         QVERIFY(!backendBuffer.isDirty());
 
-        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
-        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-
         // WHEN
         frontendBuffer.updateData(2, QByteArrayLiteral("LS5"));
         backendBuffer.syncFromFrontEnd(&frontendBuffer, false);

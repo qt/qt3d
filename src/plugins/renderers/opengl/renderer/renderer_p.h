@@ -58,24 +58,16 @@
 #include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
-#include <Qt3DRender/private/pickboundingvolumejob_p.h>
-#include <Qt3DRender/private/raycastingjob_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
-#include <Qt3DRender/private/expandboundingvolumejob_p.h>
-#include <Qt3DRender/private/updateworldtransformjob_p.h>
-#include <Qt3DRender/private/calcboundingvolumejob_p.h>
 #include <Qt3DRender/private/updateshaderdatatransformjob_p.h>
 #include <Qt3DRender/private/framecleanupjob_p.h>
-#include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
-#include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/sendbuffercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
-#include <Qt3DRender/private/updateskinningpalettejob_p.h>
-#include <Qt3DRender/private/updateentitylayersjob_p.h>
 #include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/private/lightgatherer_p.h>
 #include <Qt3DRender/private/texture_p.h>
+#include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 #include <shaderparameterpack_p.h>
 #include <renderviewinitializerjob_p.h>
 #include <filtercompatibletechniquejob_p.h>
@@ -147,19 +139,13 @@ class RenderPass;
 class RenderThread;
 class RenderStateSet;
 class VSyncFrameAdvanceService;
-class PickEventFilter;
 class NodeManagers;
 class ResourceAccessor;
 
-class UpdateLevelOfDetailJob;
-typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
-
-template<typename T, typename ... Ts>
-class FilterEntityByComponentJob;
-template<typename T, typename ... Ts>
-using FilterEntityByComponentJobPtr = QSharedPointer<FilterEntityByComponentJob<T, Ts...>>;
-using ComputableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::ComputeCommand, Render::Material>;
-using RenderableEntityFilterPtr = FilterEntityByComponentJobPtr<Render::GeometryRenderer, Render::Material>;
+using ComputableEntityFilter = FilterEntityByComponentJob<Render::ComputeCommand, Render::Material>;
+using ComputableEntityFilterPtr = QSharedPointer<ComputableEntityFilter>;
+using RenderableEntityFilter = FilterEntityByComponentJob<Render::GeometryRenderer, Render::Material>;
+using RenderableEntityFilterPtr = QSharedPointer<RenderableEntityFilter>;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 using SynchronizerPostFramePtr = GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>>;
@@ -193,10 +179,12 @@ public:
     void setTime(qint64 time) override;
     void setJobsInLastFrame(int jobsInLastFrame) override;
 
+    void setAspect(QRenderAspect *aspect) override;
     void setNodeManagers(NodeManagers *managers) override;
     void setServices(Qt3DCore::QServiceLocator *services) override;
     void setSurfaceExposed(bool exposed) override;
 
+    QRenderAspect *aspect() const override;
     NodeManagers *nodeManagers() const override;
     Qt3DCore::QServiceLocator *services() const override { return m_services; }
 
@@ -226,37 +214,21 @@ public:
     void skipNextFrame() override;
     void jobsDone(Qt3DCore::QAspectManager *manager) override;
 
+    void setPendingEvents(const QList<QPair<QObject *, QMouseEvent>> &mouseEvents, const QList<QKeyEvent> &keyEvents) override;
+
     QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
-    Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() override;
-    Qt3DCore::QAspectJobPtr rayCastingJob() override;
-    Qt3DCore::QAspectJobPtr syncLoadingJobs() override;
-    Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() override;
-
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
     inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
-    inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
-    inline UpdateTreeEnabledJobPtr updateTreeEnabledJob() const { return m_updateTreeEnabledJob; }
-    inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
-    inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
-    inline UpdateLevelOfDetailJobPtr updateLevelOfDetailJob() const { return m_updateLevelOfDetailJob; }
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
-    inline SynchronizerJobPtr syncLoadingJobs() const { return m_syncLoadingJobs; }
-    inline UpdateSkinningPaletteJobPtr updateSkinningPaletteJob() const { return m_updateSkinningPaletteJob; }
     inline SynchronizerPostFramePtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
-    inline UpdateEntityLayersJobPtr updateEntityLayersJob() const { return m_updateEntityLayersJob; }
     inline LightGathererPtr lightGathererJob() const { return m_lightGathererJob; }
     inline RenderableEntityFilterPtr renderableEntityFilterJob() const { return m_renderableEntityFilterJob; }
     inline ComputableEntityFilterPtr computableEntityFilterJob() const { return m_computableEntityFilterJob; }
-    inline SynchronizerJobPtr cacheLightJob() const { return m_cacheLightsJob; }
-    inline SynchronizerJobPtr cacheRenderableEntitiesJob() const { return m_cacheRenderableEntitiesJob; }
-    inline SynchronizerJobPtr cacheComputableEntitiesJob() const { return m_cacheComputableEntitiesJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
-
-    void registerEventFilter(Qt3DCore::QEventFilterService *service) override;
 
     void setSettings(RenderSettings *settings) override;
     RenderSettings *settings() const override;
@@ -326,7 +298,6 @@ public:
     RendererCache *cache() { return &m_cache; }
     void setScreen(QScreen *scr) override;
     QScreen *screen() const override;
-    NodeManagers *nodesManager() const { return m_nodesManager; }
 
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
@@ -338,6 +309,7 @@ private:
     Profiling::FrameProfiler *activeProfiler() const;
 
     Qt3DCore::QServiceLocator *m_services;
+    QRenderAspect *m_aspect;
     NodeManagers *m_nodesManager;
 
     // Frame graph root
@@ -363,8 +335,6 @@ private:
 
     QAtomicInt m_running;
 
-    QScopedPointer<PickEventFilter> m_pickEventFilter;
-
     QVector<Attribute *> m_dirtyAttributes;
     QVector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
@@ -379,8 +349,6 @@ private:
     QOpenGLContext *m_glContext;
     QOpenGLContext *m_shareContext;
     mutable QMutex m_shareContextMutex;
-    PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
-    RayCastingJobPtr m_rayCastingJob;
 
     qint64 m_time;
 
@@ -388,16 +356,8 @@ private:
 
     UpdateShaderDataTransformJobPtr m_updateShaderDataTransformJob;
     FrameCleanupJobPtr m_cleanupJob;
-    UpdateWorldTransformJobPtr m_worldTransformJob;
-    ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
-    CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
-    UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
-    UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
     SendBufferCaptureJobPtr m_sendBufferCaptureJob;
-    UpdateSkinningPaletteJobPtr m_updateSkinningPaletteJob;
-    UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
-    UpdateEntityLayersJobPtr m_updateEntityLayersJob;
     LightGathererPtr m_lightGathererJob;
     RenderableEntityFilterPtr m_renderableEntityFilterJob;
     ComputableEntityFilterPtr m_computableEntityFilterJob;
@@ -414,10 +374,6 @@ private:
     SynchronizerJobPtr m_vaoGathererJob;
     SynchronizerJobPtr m_textureGathererJob;
     SynchronizerPostFramePtr m_introspectShaderJob;
-    SynchronizerJobPtr m_syncLoadingJobs;
-    SynchronizerJobPtr m_cacheRenderableEntitiesJob;
-    SynchronizerJobPtr m_cacheComputableEntitiesJob;
-    SynchronizerJobPtr m_cacheLightsJob;
 
     void lookForAbandonedVaos();
     void lookForDirtyBuffers();

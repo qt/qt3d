@@ -66,6 +66,8 @@ class QSurface;
 class QSize;
 class QScreen;
 class QOpenGLTexture;
+class QMouseEvent;
+class QKeyEvent;
 
 namespace Qt3DCore {
 class QAbstractFrameAdvanceService;
@@ -130,10 +132,12 @@ public:
     virtual void setTime(qint64 time) = 0;
     virtual void setJobsInLastFrame(int jobsInLastFrame) = 0;
 
+    virtual void setAspect(QRenderAspect *aspect) = 0;
     virtual void setNodeManagers(NodeManagers *managers) = 0;
     virtual void setServices(Qt3DCore::QServiceLocator *services) = 0;
     virtual void setSurfaceExposed(bool exposed) = 0;
 
+    virtual QRenderAspect *aspect() const = 0;
     virtual NodeManagers *nodeManagers() const = 0;
     virtual Qt3DCore::QServiceLocator *services() const = 0;
 
@@ -159,12 +163,10 @@ public:
     virtual void skipNextFrame() = 0;
     virtual void jobsDone(Qt3DCore::QAspectManager *manager) = 0;
 
+    virtual void setPendingEvents(const QList<QPair<QObject *, QMouseEvent>> &mouseEvents, const QList<QKeyEvent> &keyEvents) = 0;
+
     virtual QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() = 0;
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
-    virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;
-    virtual Qt3DCore::QAspectJobPtr rayCastingJob() = 0;
-    virtual Qt3DCore::QAspectJobPtr syncLoadingJobs() = 0;
-    virtual Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() = 0;
 
     virtual void setSceneRoot(Entity *root) = 0;
 
@@ -172,7 +174,6 @@ public:
     virtual FrameGraphNode *frameGraphRoot() const = 0;
 
     virtual Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const = 0;
-    virtual void registerEventFilter(Qt3DCore::QEventFilterService *service) = 0;
 
     virtual void setSettings(RenderSettings *settings) = 0;
     virtual RenderSettings *settings() const = 0;

@@ -347,7 +347,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     Holds which mipLevel out of the referenced texture should be used for the
     ShaderImage.
 
-    \default 0
+    The default value is 0.
  */
 
 /*!
@@ -365,7 +365,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     cubeMapFace = layer - (cubeMapLayer * 6)
     \endcode
 
-    Default value is 0.
+    The default value is 0.
  */
 
 /*!
@@ -377,7 +377,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     for all layers. If set to false, only the single layer specified by the \a
     layer property will be bound.
 
-    Default value is \c false.
+    The default value is \c false.
  */
 
 /*!
@@ -394,7 +394,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     \value ShaderImage.ReadWrite
            Read-write access.
 
-    Default value is ShaderImage.ReadWrite.
+    The default value is ShaderImage.ReadWrite.
  */
 
 /*!
@@ -414,7 +414,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     By default Qt3D will try to set the image format to match that of the
     referenced texture.
 
-    Default value is ShaderImage.Automatic.
+    The default value is ShaderImage.Automatic.
  */
 
 /*!
@@ -695,8 +695,8 @@ QShaderImagePrivate::~QShaderImagePrivate()
     Holds which mipLevel out of the referenced texture should be used for the
     QShaderImage.
 
-    \default 0
- */
+    The default value is 0.
+*/
 
 /*!
     \property Qt3DRender::QShaderImage::layer
@@ -713,7 +713,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     cubeMapFace = layer - (cubeMapLayer * 6)
     \endcode
 
-    \default 0
+    The default value is 0.
  */
 
 /*!
@@ -725,7 +725,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     for all layers. If set to false, only the single layer specified by the \a
     layer property will be bound.
 
-    \default false
+    The default value is \c false.
  */
 
 /*!
@@ -735,7 +735,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     the image. If a shader tries to write or read from an image that has
     incompatible access, the behavior is undefined.
 
-    \default QShaderImage::ReadWrite
+    The default value is QShaderImage::ReadWrite.
  */
 
 /*!
@@ -755,7 +755,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
     By default Qt3D will try to set the image format to match that of the
     referenced texture.
 
-    \default QShaderImage::Automatic
+    The default value is QShaderImage::Automatic.
  */
 
 /*!
