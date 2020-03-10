@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-    coretest \
     core \
     cmake \
     global
@@ -16,10 +15,4 @@ qtConfig(qt3d-extras): SUBDIRS += extras
 qtConfig(qt3d-render) {
     SUBDIRS += geometryloaders
     qtConfig(qt3d-input): SUBDIRS += quick3d
-}
-
-for(subdir, SUBDIRS) {
-    !equals(subdir, coretest) {
-        $${subdir}.depends += coretest
-    }
 }
