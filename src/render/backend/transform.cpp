@@ -105,6 +105,9 @@ void Transform::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         markDirty(AbstractRenderer::TransformDirty);
     }
 
+    if (transform->isEnabled() != isEnabled())
+        markDirty(AbstractRenderer::TransformDirty);
+
     BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 }
 

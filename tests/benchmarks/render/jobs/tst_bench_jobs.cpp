@@ -88,20 +88,26 @@ namespace Qt3DRender {
 
         QVector<Qt3DCore::QAspectJobPtr> worldTransformJob()
         {
-            static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer)->m_worldTransformJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer)->m_worldTransformJob;
+            auto renderer = static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer);
+            auto daspect = Qt3DRender::QRenderAspectPrivate::get(renderer->aspect());
+            daspect->m_worldTransformJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << daspect->m_worldTransformJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> updateBoundingJob()
         {
-            static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer)->m_updateWorldBoundingVolumeJob->setManager(d_func()->m_renderer->nodeManagers()->renderNodesManager());
-            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer)->m_updateWorldBoundingVolumeJob;
+            auto renderer = static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer);
+            auto daspect = Qt3DRender::QRenderAspectPrivate::get(renderer->aspect());
+            daspect->m_updateWorldBoundingVolumeJob->setManager(d_func()->m_renderer->nodeManagers()->renderNodesManager());
+            return QVector<Qt3DCore::QAspectJobPtr>() << daspect->m_updateWorldBoundingVolumeJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> calculateBoundingVolumeJob()
         {
-            static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer)->m_calculateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer)->m_calculateBoundingVolumeJob;
+            auto renderer = static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer);
+            auto daspect = Qt3DRender::QRenderAspectPrivate::get(renderer->aspect());
+            daspect->m_calculateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << daspect->m_calculateBoundingVolumeJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> framePreparationJob()

@@ -80,7 +80,7 @@ public:
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
     inline QVector<Entity *> &filteredEntities() Q_DECL_NOTHROW { return m_filteredEntities; }
 
-    void run() final
+    void run()
     {
         m_filteredEntities.clear();
         const QVector<HEntity> handles = m_manager->activeHandles();
@@ -96,6 +96,9 @@ private:
     EntityManager *m_manager;
     QVector<Entity *> m_filteredEntities;
 };
+
+template<typename T, typename ... Ts>
+using FilterEntityByComponentJobPtr = QSharedPointer<FilterEntityByComponentJob<T, Ts...>>;
 
 } // Render
 

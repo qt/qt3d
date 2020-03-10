@@ -67,7 +67,6 @@
 #include <Qt3DRender/private/techniquefilternode_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
-#include <Qt3DRender/private/pickeventfilter_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
@@ -81,13 +80,12 @@
 #include <Qt3DRender/private/subtreeenabler_p.h>
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
 #include <Qt3DRender/private/qshaderprogram_p.h>
-#include <Qt3DRender/private/filterentitybycomponentjob_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 #ifndef Q_OS_INTEGRITY
 #include <imguirenderer_p.h>
 #endif
 
 #include <Qt3DRender/qcameralens.h>
-#include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qsysteminformationservice_p.h>
@@ -122,6 +120,8 @@
 #include <QOffscreenSurface>
 #include <QWindow>
 #include <QThread>
+#include <QKeyEvent>
+#include <QMouseEvent>
 
 #include <QtGui/private/qopenglcontext_p.h>
 #include "frameprofiler_p.h"
@@ -139,41 +139,41 @@ namespace OpenGL {
 
 namespace {
 
-class SyncLightsGatherer
-{
+class CachingLightGatherer : public LightGatherer {
 public:
-    explicit SyncLightsGatherer(LightGathererPtr gatherJob,
-                                RendererCache *cache)
-        : m_gatherJob(gatherJob)
+    CachingLightGatherer(RendererCache *cache)
+        : LightGatherer()
         , m_cache(cache)
     {
     }
 
-    void operator()()
+    void run() override
     {
+        LightGatherer::run();
+
         QMutexLocker lock(m_cache->mutex());
-        m_cache->gatheredLights = m_gatherJob->lights();
-        m_cache->environmentLight = m_gatherJob->takeEnvironmentLight();
+        m_cache->gatheredLights = lights();
+        m_cache->environmentLight = environmentLight();
     }
 
 private:
-    LightGathererPtr m_gatherJob;
     RendererCache *m_cache;
 };
 
-class SyncRenderableEntities
-{
+class CachingRenderableEntityFilter : public RenderableEntityFilter {
 public:
-    explicit SyncRenderableEntities(RenderableEntityFilterPtr gatherJob,
-                                    RendererCache *cache)
-        : m_gatherJob(gatherJob)
+    CachingRenderableEntityFilter(RendererCache *cache)
+        : RenderableEntityFilter()
         , m_cache(cache)
     {
+
     }
 
-    void operator()()
+    void run() override
     {
-        QVector<Entity *> selectedEntities = m_gatherJob->filteredEntities();
+        RenderableEntityFilter::run();
+
+        QVector<Entity *> selectedEntities = filteredEntities();
         std::sort(selectedEntities.begin(), selectedEntities.end());
 
         QMutexLocker lock(m_cache->mutex());
@@ -181,23 +181,23 @@ public:
     }
 
 private:
-    RenderableEntityFilterPtr m_gatherJob;
     RendererCache *m_cache;
 };
 
-class SyncComputableEntities
-{
+class CachingComputableEntityFilter : public ComputableEntityFilter {
 public:
-    explicit SyncComputableEntities(ComputableEntityFilterPtr gatherJob,
-                                    RendererCache *cache)
-        : m_gatherJob(gatherJob)
+    CachingComputableEntityFilter(RendererCache *cache)
+        : ComputableEntityFilter()
         , m_cache(cache)
     {
+
     }
 
-    void operator()()
+    void run() override
     {
-        QVector<Entity *> selectedEntities = m_gatherJob->filteredEntities();
+        ComputableEntityFilter::run();
+
+        QVector<Entity *> selectedEntities = filteredEntities();
         std::sort(selectedEntities.begin(), selectedEntities.end());
 
         QMutexLocker lock(m_cache->mutex());
@@ -205,7 +205,6 @@ public:
     }
 
 private:
-    ComputableEntityFilterPtr m_gatherJob;
     RendererCache *m_cache;
 };
 
@@ -233,6 +232,7 @@ private:
 
 Renderer::Renderer(QRenderAspect::RenderType type)
     : m_services(nullptr)
+    , m_aspect(nullptr)
     , m_nodesManager(nullptr)
     , m_renderSceneRoot(nullptr)
     , m_defaultRenderStateSet(nullptr)
@@ -242,43 +242,25 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(m_renderThread != nullptr))
     , m_waitForInitializationToBeCompleted(0)
     , m_hasBeenInitializedMutex()
-    , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
     , m_shareContext(nullptr)
-    , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create())
-    , m_rayCastingJob(RayCastingJobPtr::create())
     , m_time(0)
     , m_settings(nullptr)
     , m_updateShaderDataTransformJob(Render::UpdateShaderDataTransformJobPtr::create())
     , m_cleanupJob(Render::FrameCleanupJobPtr::create())
-    , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
-    , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
-    , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
-    , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
-    , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_sendBufferCaptureJob(Render::SendBufferCaptureJobPtr::create())
-    , m_updateSkinningPaletteJob(Render::UpdateSkinningPaletteJobPtr::create())
-    , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
     , m_filterCompatibleTechniqueJob(FilterCompatibleTechniqueJobPtr::create())
-    , m_updateEntityLayersJob(Render::UpdateEntityLayersJobPtr::create())
-    , m_lightGathererJob(Render::LightGathererPtr::create())
-    , m_renderableEntityFilterJob(Render::RenderableEntityFilterPtr::create())
-    , m_computableEntityFilterJob(Render::ComputableEntityFilterPtr::create())
+    , m_lightGathererJob(new CachingLightGatherer(&m_cache))
+    , m_renderableEntityFilterJob(new CachingRenderableEntityFilter(&m_cache))
+    , m_computableEntityFilterJob(new CachingComputableEntityFilter(&m_cache))
     , m_bufferGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_vaoGathererJob(CreateSynchronizerJobPtr([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_introspectShaderJob(CreateSynchronizerPostFramePtr([this] { reloadDirtyShaders(); },
                                                            [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
                                                            JobTypes::DirtyShaderGathering))
-    , m_syncLoadingJobs(CreateSynchronizerJobPtr([] {}, JobTypes::SyncLoadingJobs))
-    , m_cacheRenderableEntitiesJob(CreateSynchronizerJobPtr(SyncRenderableEntities(m_renderableEntityFilterJob, &m_cache),
-                                                            JobTypes::EntityComponentTypeFiltering))
-    , m_cacheComputableEntitiesJob(CreateSynchronizerJobPtr(SyncComputableEntities(m_computableEntityFilterJob, &m_cache),
-                                                            JobTypes::EntityComponentTypeFiltering))
-    , m_cacheLightsJob(CreateSynchronizerJobPtr(SyncLightsGatherer(m_lightGathererJob, &m_cache),
-                                                JobTypes::EntityComponentTypeFiltering))
     , m_ownedContext(false)
     , m_offscreenHelper(nullptr)
     , m_glResourceManagers(nullptr)
@@ -293,25 +275,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     if (m_renderThread)
         m_renderThread->waitForStart();
 
-    // Create jobs to update transforms and bounding volumes
-    // We can only update bounding volumes once all world transforms are known
-    m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
-    m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
-    m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
-    m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
-    m_updateLevelOfDetailJob->addDependency(m_expandBoundingVolumeJob);
-    m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
-    m_rayCastingJob->addDependency(m_expandBoundingVolumeJob);
-    // m_calculateBoundingVolumeJob's dependency on m_updateTreeEnabledJob is set in renderBinJobs
-
-    // Ensures all skeletons are loaded before we try to update them
-    m_updateSkinningPaletteJob->addDependency(m_syncLoadingJobs);
-
     m_introspectShaderJob->addDependency(m_filterCompatibleTechniqueJob);
-
-    m_cacheLightsJob->addDependency(m_lightGathererJob);
-    m_cacheRenderableEntitiesJob->addDependency(m_renderableEntityFilterJob);
-    m_cacheComputableEntitiesJob->addDependency(m_computableEntityFilterJob);
 
     m_filterCompatibleTechniqueJob->setRenderer(this);
 
@@ -371,6 +335,12 @@ void Renderer::setJobsInLastFrame(int jobsInLastFrame)
     m_jobsInLastFrame = jobsInLastFrame;
 }
 
+void Renderer::setAspect(QRenderAspect *aspect)
+{
+    m_aspect = aspect;
+    m_updateShaderDataTransformJob->addDependency(QRenderAspectPrivate::get(aspect)->m_worldTransformJob);
+}
+
 void Renderer::setNodeManagers(NodeManagers *managers)
 {
     m_nodesManager = managers;
@@ -379,17 +349,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
 
     m_updateShaderDataTransformJob->setManagers(m_nodesManager);
     m_cleanupJob->setManagers(m_nodesManager);
-    m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
-    m_expandBoundingVolumeJob->setManagers(m_nodesManager);
-    m_worldTransformJob->setManagers(m_nodesManager);
-    m_pickBoundingVolumeJob->setManagers(m_nodesManager);
-    m_rayCastingJob->setManagers(m_nodesManager);
-    m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
-    m_updateLevelOfDetailJob->setManagers(m_nodesManager);
-    m_updateSkinningPaletteJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
-    m_updateEntityLayersJob->setManager(m_nodesManager);
-    m_updateTreeEnabledJob->setManagers(m_nodesManager);
     m_sendBufferCaptureJob->setManagers(m_nodesManager);
     m_lightGathererJob->setManager(m_nodesManager->renderNodesManager());
     m_renderableEntityFilterJob->setManager(m_nodesManager->renderNodesManager());
@@ -401,6 +361,11 @@ void Renderer::setServices(QServiceLocator *services)
     m_services = services;
 
     m_nodesManager->sceneManager()->setDownloadService(m_services->downloadHelperService());
+}
+
+QRenderAspect *Renderer::aspect() const
+{
+    return m_aspect;
 }
 
 NodeManagers *Renderer::nodeManagers() const
@@ -709,24 +674,10 @@ void Renderer::setSceneRoot(Entity *sgRoot)
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
 
     // Set the scene root on the jobs
-    m_worldTransformJob->setRoot(m_renderSceneRoot);
-    m_expandBoundingVolumeJob->setRoot(m_renderSceneRoot);
-    m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_cleanupJob->setRoot(m_renderSceneRoot);
-    m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
-    m_rayCastingJob->setRoot(m_renderSceneRoot);
-    m_updateLevelOfDetailJob->setRoot(m_renderSceneRoot);
-    m_updateSkinningPaletteJob->setRoot(m_renderSceneRoot);
-    m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
 
     // Set all flags to dirty
     m_dirtyBits.marked |= AbstractRenderer::AllDirty;
-}
-
-void Renderer::registerEventFilter(QEventFilterService *service)
-{
-    qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
-    service->registerEventFilter(m_pickEventFilter.data(), 1024);
 }
 
 void Renderer::setSettings(RenderSettings *settings)
@@ -1870,34 +1821,20 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
     sendSetFenceHandlesToFrontend(manager);
 }
 
+void Renderer::setPendingEvents(const QList<QPair<QObject *, QMouseEvent> > &mouseEvents, const QList<QKeyEvent> &keyEvents)
+{
+    QMutexLocker l(&m_frameEventsMutex);
+    m_frameMouseEvents = mouseEvents;
+    m_frameKeyEvents = keyEvents;
+}
+
 // Jobs we may have to run even if no rendering will happen
 QVector<QAspectJobPtr> Renderer::preRenderingJobs()
 {
-    {
-        QMutexLocker l(&m_frameEventsMutex);
-        m_frameMouseEvents = m_pickEventFilter->pendingMouseEvents();
-        m_frameKeyEvents = m_pickEventFilter->pendingKeyEvents();
-    }
-
-    // Set values on picking jobs
-    RenderSettings *renderSetting = settings();
-    if (renderSetting != nullptr) {
-        m_pickBoundingVolumeJob->setRenderSettings(renderSetting);
-        m_pickBoundingVolumeJob->setFrameGraphRoot(frameGraphRoot());
-        m_pickBoundingVolumeJob->setMouseEvents(m_frameMouseEvents);
-        m_pickBoundingVolumeJob->setKeyEvents(m_frameKeyEvents);
-
-        m_rayCastingJob->setRenderSettings(renderSetting);
-        m_rayCastingJob->setFrameGraphRoot(frameGraphRoot());
-    }
-
     QVector<QAspectJobPtr> jobs;
 
     if (m_sendBufferCaptureJob->hasRequests())
         jobs.push_back(m_sendBufferCaptureJob);
-
-    jobs.append(pickBoundingVolumeJob());
-    jobs.append(rayCastingJob());
 
     return jobs;
 }
@@ -1911,10 +1848,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     QVector<QAspectJobPtr> renderBinJobs;
 
     // Remove previous dependencies
-    m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
     m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
-
-    m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
 
     const BackendNodeDirtySet dirtyBitsForFrame = m_dirtyBits.marked | m_dirtyBits.remaining;
     m_dirtyBits.marked = {};
@@ -1922,35 +1856,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     BackendNodeDirtySet notCleared = {};
 
     // Add jobs
-    const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
-    if (entitiesEnabledDirty) {
-        renderBinJobs.push_back(m_updateTreeEnabledJob);
-        // This dependency is added here because we clear all dependencies
-        // at the start of this function.
-        m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
-    }
-
-    if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
-        renderBinJobs.push_back(m_worldTransformJob);
-        renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
+    if (dirtyBitsForFrame & AbstractRenderer::TransformDirty)
         renderBinJobs.push_back(m_updateShaderDataTransformJob);
-    }
-
-    if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
-        dirtyBitsForFrame & AbstractRenderer::BuffersDirty) {
-        renderBinJobs.push_back(m_calculateBoundingVolumeJob);
-    }
-
-    if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
-        dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
-        renderBinJobs.push_back(m_expandBoundingVolumeJob);
-    }
 
     // TO DO: Conditionally add if skeletons dirty
-    renderBinJobs.push_back(m_syncLoadingJobs);
-    m_updateSkinningPaletteJob->setDirtyJoints(m_nodesManager->jointManager()->dirtyJoints());
-    renderBinJobs.push_back(m_updateSkinningPaletteJob);
-    renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_cleanupJob);
 
     // Jobs to prepare GL Resource upload
@@ -1962,9 +1871,9 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     if (dirtyBitsForFrame & AbstractRenderer::TexturesDirty)
         renderBinJobs.push_back(m_textureGathererJob);
 
-
     // Layer cache is dependent on layers, layer filters (hence FG structure
     // changes) and the enabled flag on entities
+    const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
     const bool frameGraphDirty = dirtyBitsForFrame & AbstractRenderer::FrameGraphDirty;
     const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
     const bool layersCacheNeedsToBeRebuilt = layersDirty || entitiesEnabledDirty || frameGraphDirty;
@@ -1976,24 +1885,14 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     const bool materialCacheNeedsToBeRebuilt = shadersDirty || materialDirty || frameGraphDirty;
     const bool renderCommandsDirty = materialCacheNeedsToBeRebuilt || renderableDirty || computeableDirty;
 
-    // Rebuild Entity Layers list if layers are dirty
-    if (layersDirty)
-        renderBinJobs.push_back(m_updateEntityLayersJob);
-
-    if (renderableDirty) {
+    if (renderableDirty)
         renderBinJobs.push_back(m_renderableEntityFilterJob);
-        renderBinJobs.push_back(m_cacheRenderableEntitiesJob);
-    }
 
-    if (computeableDirty) {
+    if (computeableDirty)
         renderBinJobs.push_back(m_computableEntityFilterJob);
-        renderBinJobs.push_back(m_cacheComputableEntitiesJob);
-    }
 
-    if (lightsDirty) {
+    if (lightsDirty)
         renderBinJobs.push_back(m_lightGathererJob);
-        renderBinJobs.push_back(m_cacheLightsJob);
-    }
 
     QMutexLocker lock(m_renderQueue->mutex());
     if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
@@ -2038,8 +1937,8 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         // FilterLayerEntityJob is part of the RenderViewBuilder jobs and must be run later
         // if none of those jobs are started this frame
         notCleared |= AbstractRenderer::EntityEnabledDirty;
-        notCleared |= AbstractRenderer::FrameGraphDirty;
         notCleared |= AbstractRenderer::LayersDirty;
+        notCleared |= AbstractRenderer::FrameGraphDirty;
     }
 
     if (isRunning() && m_submissionContext->isInitialized()) {
@@ -2055,26 +1954,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_dirtyBits.remaining = dirtyBitsForFrame & notCleared;
 
     return renderBinJobs;
-}
-
-QAspectJobPtr Renderer::pickBoundingVolumeJob()
-{
-    return m_pickBoundingVolumeJob;
-}
-
-QAspectJobPtr Renderer::rayCastingJob()
-{
-    return m_rayCastingJob;
-}
-
-QAspectJobPtr Renderer::syncLoadingJobs()
-{
-    return m_syncLoadingJobs;
-}
-
-QAspectJobPtr Renderer::expandBoundingVolumeJob()
-{
-    return m_expandBoundingVolumeJob;
 }
 
 QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const

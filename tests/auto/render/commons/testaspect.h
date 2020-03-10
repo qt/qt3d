@@ -56,6 +56,7 @@ public:
 
     Qt3DRender::Render::NodeManagers *nodeManagers() const;
 
+    void onEngineStartup();
     void onRegistered();
     void onUnregistered();
 

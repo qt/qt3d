@@ -6,7 +6,7 @@ HEADERS += \
 
 useCommonTestAspect {
   SOURCES += $$PWD/testaspect.cpp
-  SOURCES += $$PWD/testaspect.h
+  HEADERS += $$PWD/testaspect.h
 }
 
 INCLUDEPATH += $$PWD

@@ -53,6 +53,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/filterentitybycomponentjob_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -290,6 +291,11 @@ private Q_SLOTS:
         Qt3DRender::QClearBuffers *clearBuffer = new Qt3DRender::QClearBuffers(viewport);
         Qt3DRender::TestAspect testAspect(buildSimpleScene(viewport));
 
+        auto expandBVJob = Qt3DRender::QRenderAspectPrivate::get(&testAspect)->m_expandBoundingVolumeJob;
+        auto wordTransformJob = Qt3DRender::QRenderAspectPrivate::get(&testAspect)->m_worldTransformJob;
+        auto updateTreeEnabledJob = Qt3DRender::QRenderAspectPrivate::get(&testAspect)->m_updateTreeEnabledJob;
+        auto updateEntityLayerJob = Qt3DRender::QRenderAspectPrivate::get(&testAspect)->m_updateEntityLayersJob;
+
         // THEN
         Qt3DRender::Render::FrameGraphNode *leafNode = testAspect.nodeManagers()->frameGraphManager()->lookupNode(clearBuffer->id());
         QVERIFY(leafNode != nullptr);
@@ -304,7 +310,6 @@ private Q_SLOTS:
             // Step 1
             QCOMPARE(renderViewBuilder.renderViewJob()->dependencies().size(), 1); // Depends upon skinning palette update
 
-
             // Step 2
             QCOMPARE(renderViewBuilder.syncRenderViewPostInitializationJob()->dependencies().size(), 1);
             QCOMPARE(renderViewBuilder.syncRenderViewPostInitializationJob()->dependencies().constFirst().toStrongRef().data(),
@@ -316,7 +321,7 @@ private Q_SLOTS:
 
             QCOMPARE(renderViewBuilder.filterProximityJob()->dependencies().size(), 2);
             QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(expandBVJob));
 
             QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
             QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().constFirst().toStrongRef().data(),
@@ -324,14 +329,13 @@ private Q_SLOTS:
 
             QCOMPARE(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().size(), 3);
             QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateWorldTransformJob()));
+            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(wordTransformJob));
             QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
 
             // Step 4
             QCOMPARE(renderViewBuilder.frustumCullingJob()->dependencies().size(), 2);
             QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(renderViewBuilder.syncPreFrustumCullingJob()));
-            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
-
+            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(expandBVJob));
 
             QCOMPARE(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 7);
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
@@ -340,7 +344,7 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->bufferGathererJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->textureGathererJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->cacheLightJob()));
+            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->lightGathererJob()));
 
             // Step 5
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewCommandUpdaterJobs()) {
@@ -374,16 +378,16 @@ private Q_SLOTS:
 
             // Step 3
             QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->dependencies().size(), 3);
-            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(testAspect.renderer()->updateEntityLayersJob()));
+            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(updateEntityLayerJob));
             QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(testAspect.renderer()->updateTreeEnabledJob()));
+            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(updateTreeEnabledJob));
 
             QCOMPARE(renderViewBuilder.syncFilterEntityByLayerJob()->dependencies().size(), 1);
             QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob()->dependencies().contains(renderViewBuilder.filterEntityByLayerJob()));
 
             QCOMPARE(renderViewBuilder.filterProximityJob()->dependencies().size(), 2);
             QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(expandBVJob));
 
             QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
             QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().constFirst().toStrongRef().data(),
@@ -391,7 +395,7 @@ private Q_SLOTS:
 
             QCOMPARE(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().size(), 3);
             QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateWorldTransformJob()));
+            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(wordTransformJob));
             QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
 
             for (const auto &materialGatherer : renderViewBuilder.materialGathererJobs()) {
@@ -404,7 +408,7 @@ private Q_SLOTS:
             // Step 4
             QCOMPARE(renderViewBuilder.frustumCullingJob()->dependencies().size(), 2);
             QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(renderViewBuilder.syncPreFrustumCullingJob()));
-            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(testAspect.renderer()->expandBoundingVolumeJob()));
+            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(expandBVJob));
 
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
             QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.syncFilterEntityByLayerJob()));
@@ -467,7 +471,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderer->lightGathererJob()->lights().size(), 2);
-        QVERIFY(renderer->lightGathererJob()->takeEnvironmentLight() != nullptr);
+        QVERIFY(renderer->lightGathererJob()->environmentLight() != nullptr);
     }
 
     void checkRenderableEntitiesFilteringExecution()
@@ -638,7 +642,6 @@ private Q_SLOTS:
         renderViewBuilder.buildJobHierachy();
 
         renderer->renderableEntityFilterJob()->run();
-        renderer->cacheRenderableEntitiesJob()->run();
 
         renderViewBuilder.renderViewJob()->run();
         renderViewBuilder.syncRenderViewPostInitializationJob()->run();
