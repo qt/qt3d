@@ -58,6 +58,7 @@
 #include <QVector3D>
 #include <QTextLayout>
 #include <QTime>
+#include <QPainterPath>
 
 QT_BEGIN_NAMESPACE
 
