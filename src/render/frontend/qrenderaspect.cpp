@@ -532,7 +532,7 @@ QRenderAspect::~QRenderAspect()
 // Called by Scene3DRenderer only
 void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 {
-    if (m_renderer->api() == Render::AbstractRenderer::OpenGL)
+    if (m_renderer->api() == API::OpenGL)
         m_renderer->setOpenGLContext(context);
     m_renderer->initialize();
 }

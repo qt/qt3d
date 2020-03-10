@@ -29,6 +29,7 @@ HEADERS += \
     $$PWD/qrenderpluginfactory_p.h \
     $$PWD/qrenderpluginfactoryif_p.h \
     $$PWD/qlevelofdetailboundingsphere.h \
+    $$PWD/qrenderapi.h \
     $$PWD/qrendercapabilities.h \
     $$PWD/qrendercapabilities_p.h
 

@@ -87,7 +87,7 @@ class Q_3DRENDERSHARED_EXPORT QRenderCapabilities : public QObject
 public:
     enum API {
         OpenGL = QSurfaceFormat::OpenGL,
-        OpenGLES = QSurfaceFormat::OpenGLES,
+        OpenGLES = QSurfaceFormat::OpenGLES
     };
     Q_ENUM(API)
 

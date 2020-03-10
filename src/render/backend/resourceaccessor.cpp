@@ -80,7 +80,7 @@ bool ResourceAccessor::accessResource(ResourceType type,
         Q_FALLTHROUGH();
     case RenderBackendResourceAccessor::OGLTextureRead:
     {
-        if (m_renderer->api() != AbstractRenderer::OpenGL) {
+        if (m_renderer->api() != API::OpenGL) {
             qWarning() << "Renderer plugin is not compatible with Scene2D";
             return false;
         }

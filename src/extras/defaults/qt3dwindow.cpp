@@ -65,6 +65,10 @@
 
 #include <QEvent>
 
+#if QT_CONFIG(vulkan)
+#include <QVulkanInstance>
+#endif
+
 static void initResources()
 {
 #ifdef QT_STATIC
@@ -91,7 +95,7 @@ Qt3DWindowPrivate::Qt3DWindowPrivate()
 {
 }
 
-Qt3DWindow::Qt3DWindow(QScreen *screen)
+Qt3DWindow::Qt3DWindow(QScreen *screen, Qt3DRender::API api)
     : QWindow(*new Qt3DWindowPrivate(), nullptr)
 {
     Q_D(Qt3DWindow);
@@ -101,7 +105,72 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     if (!d->parentWindow)
         d->connectToScreen(screen ? screen : d->topLevelScreen.data());
 
-    setSurfaceType(QSurface::OpenGLSurface);
+    // If the user pass an API through the environment, we use that over the one passed as argument.
+    const auto userRequestedApi = qgetenv("QT3D_RHI_DEFAULT_API").toLower();
+    if (!userRequestedApi.isEmpty()) {
+        if (userRequestedApi == QByteArrayLiteral("opengl")) {
+            api = Qt3DRender::API::OpenGL;
+        } else if (userRequestedApi == QByteArrayLiteral("vulkan")) {
+            api = Qt3DRender::API::Vulkan;
+        } else if (userRequestedApi == QByteArrayLiteral("metal")) {
+            api = Qt3DRender::API::Metal;
+        } else if (userRequestedApi == QByteArrayLiteral("d3d11")) {
+            api = Qt3DRender::API::DirectX;
+        } else if (userRequestedApi == QByteArrayLiteral("null")) {
+            api = Qt3DRender::API::Null;
+        }
+    }
+
+    // We have to set the environment so that the backend is able to read it.
+    // Qt6: FIXME
+    switch (api)
+    {
+    case Qt3DRender::API::OpenGL:
+        qputenv("QT3D_RHI_DEFAULT_API", "opengl");
+        setSurfaceType(QSurface::OpenGLSurface);
+        break;
+    case Qt3DRender::API::DirectX:
+        qputenv("QT3D_RHI_DEFAULT_API", "d3d11");
+        setSurfaceType(QSurface::OpenGLSurface);
+        break;
+    case Qt3DRender::API::Null:
+        qputenv("QT3D_RHI_DEFAULT_API", "null");
+        setSurfaceType(QSurface::OpenGLSurface);
+        break;
+    case Qt3DRender::API::Metal:
+        qputenv("QT3D_RHI_DEFAULT_API", "metal");
+        setSurfaceType(QSurface::MetalSurface);
+        break;
+#if QT_CONFIG(vulkan)
+    case Qt3DRender::API::Vulkan:
+    {
+        static QVulkanInstance inst;
+#ifndef Q_OS_ANDROID
+        inst.setLayers(QByteArrayList() << "VK_LAYER_LUNARG_standard_validation");
+#else
+        inst.setLayers(QByteArrayList()
+                       << "VK_LAYER_GOOGLE_threading"
+                       << "VK_LAYER_LUNARG_parameter_validation"
+                       << "VK_LAYER_LUNARG_object_tracker"
+                       << "VK_LAYER_LUNARG_core_validation"
+                       << "VK_LAYER_LUNARG_image"
+                       << "VK_LAYER_LUNARG_swapchain"
+                       << "VK_LAYER_GOOGLE_unique_objects");
+#endif
+        inst.setExtensions(QByteArrayList()
+                           << "VK_KHR_get_physical_device_properties2");
+        Q_ASSERT (inst.create());
+        setVulkanInstance(&inst);
+
+        qputenv("QT3D_RHI_DEFAULT_API", "vulkan");
+        setSurfaceType(QSurface::VulkanSurface);
+        break;
+    }
+#endif
+    default:
+        break;
+    }
+
 
     resize(1024, 768);
 

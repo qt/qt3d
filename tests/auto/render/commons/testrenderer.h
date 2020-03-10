@@ -41,7 +41,7 @@ public:
     ~TestRenderer();
 
     void dumpInfo() const override {}
-    API api() const override { return AbstractRenderer::OpenGL; }
+    Qt3DRender::API api() const override { return Qt3DRender::API::OpenGL; }
     qint64 time() const override { return 0; }
     void setTime(qint64 time) override { Q_UNUSED(time) }
     void setAspect(Qt3DRender::QRenderAspect *aspect) override { m_aspect = aspect; }

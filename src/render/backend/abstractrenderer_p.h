@@ -54,6 +54,7 @@
 #include <QtCore/qmutex.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/qrenderapi.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtGui/qsurfaceformat.h>
@@ -96,12 +97,6 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
 public:
     virtual ~AbstractRenderer() {}
-
-    enum API {
-        OpenGL,
-        Vulkan,
-        DirectX
-    };
 
     // Changes made to backend nodes are reported to the Renderer
     enum BackendNodeDirtyFlag {
