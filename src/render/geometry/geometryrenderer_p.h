@@ -100,11 +100,6 @@ public:
     void unsetDirty();
     bool hasView() const { return m_hasView; }
 
-    // Build triangle data Job thread
-    void setTriangleVolumes(const  QVector<RayCasting::QBoundingVolume *> &volumes);
-    // Pick volumes job
-    QVector<RayCasting::QBoundingVolume *> triangleData() const;
-
 private:
     Qt3DCore::QNodeId m_geometryId;
     int m_instanceCount;

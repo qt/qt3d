@@ -100,7 +100,7 @@ void QGeometryRendererPrivate::setView(QGeometryView *view)
     \qmltype GeometryRenderer
     \instantiates Qt3DRender::QGeometryRenderer
     \inqmlmodule Qt3D.Render
-    \inherits Component3D
+    \inherits BoundingVolume
     \since 5.7
     \brief Encapsulates geometry rendering.
 
