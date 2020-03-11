@@ -367,8 +367,17 @@ void SegmentsVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::QN
 {
     m_nodeId = id;
     if (renderer && renderer->instanceCount() == 1 && isSegmentBased(renderer->primitiveType())) {
-        Visitor::visitPrimitives<VertexExecutor<SegmentsVisitor>,
-                IndexExecutor<SegmentsVisitor>, SegmentsVisitor>(m_manager, renderer, this);
+        Visitor::visitPrimitives<GeometryRenderer, VertexExecutor<SegmentsVisitor>,
+                                 IndexExecutor<SegmentsVisitor>, SegmentsVisitor>(m_manager, renderer, this);
+    }
+}
+
+void SegmentsVisitor::apply(const PickingProxy *proxy, const Qt3DCore::QNodeId id)
+{
+    m_nodeId = id;
+    if (proxy && proxy->instanceCount() == 1 && isSegmentBased(static_cast<Qt3DRender::QGeometryRenderer::PrimitiveType>(proxy->primitiveType()))) {
+        Visitor::visitPrimitives<PickingProxy, VertexExecutor<SegmentsVisitor>,
+                                 IndexExecutor<SegmentsVisitor>, SegmentsVisitor>(m_manager, proxy, this);
     }
 }
 

@@ -200,6 +200,7 @@ private:
     QVector<Qt3DCore::QNodeId> m_lightComponents;
     QVector<Qt3DCore::QNodeId> m_environmentLightComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
+    Qt3DCore::QNodeId m_pickingProxyComponent;
     Qt3DCore::QNodeId m_objectPickerComponent;
     Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
     Qt3DCore::QNodeId m_computeComponent;
@@ -292,6 +293,7 @@ ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(CameraLens, HCamera)
 ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(Transform, HTransform)
 ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(GeometryRenderer, HGeometryRenderer)
 ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(ObjectPicker, HObjectPicker)
+ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(PickingProxy, HPickingProxy)
 ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(ComputeCommand, HComputeCommand)
 ENTITY_COMPONENT_TEMPLATE_SPECIALIZATION(Armature, HArmature)
 ENTITY_COMPONENT_LIST_TEMPLATE_SPECIALIZATION(Layer, HLayer)

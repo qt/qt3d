@@ -176,8 +176,17 @@ void PointsVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::QNod
 {
     m_nodeId = id;
     if (renderer && renderer->instanceCount() == 1) {
-        Visitor::visitPrimitives<VertexExecutor<PointsVisitor>,
-                IndexExecutor<PointsVisitor>, PointsVisitor>(m_manager, renderer, this);
+        Visitor::visitPrimitives<GeometryRenderer, VertexExecutor<PointsVisitor>,
+                                 IndexExecutor<PointsVisitor>, PointsVisitor>(m_manager, renderer, this);
+    }
+}
+
+void PointsVisitor::apply(const PickingProxy *proxy, const Qt3DCore::QNodeId id)
+{
+    m_nodeId = id;
+    if (proxy && proxy->instanceCount() == 1) {
+        Visitor::visitPrimitives<PickingProxy, VertexExecutor<PointsVisitor>,
+                                 IndexExecutor<PointsVisitor>, PointsVisitor>(m_manager, proxy, this);
     }
 }
 

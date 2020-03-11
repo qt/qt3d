@@ -49,7 +49,7 @@
 ****************************************************************************/
 
 import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+import Qt3D.Render 2.16
 import Qt3D.Input 2.0
 import Qt3D.Extras 2.0
 
@@ -146,6 +146,8 @@ Entity {
                     }
                 }
             }
+
+            pickingSettings.pickMethod: PickingSettings.TrianglePicking
         },
         InputSettings {}
     ]
@@ -236,5 +238,58 @@ Entity {
 
             components: [cubeMesh, transform, material, sceneRoot.contentLayer]
         }
+    }
+
+    Entity {
+        id: sphere1
+        property bool toggled: false
+        property real scaleFactor: toggled ? 2.0 : 1.0
+        QQ2.Behavior on scaleFactor { QQ2.NumberAnimation { duration: 200; easing.type: QQ2.Easing.InQuad } }
+
+        readonly property ObjectPicker objectPicker: ObjectPicker {
+            hoverEnabled: true
+            onPressed: sphere1.toggled = !sphere1.toggled
+            onClicked: console.log("Clicked sphere1")
+            onEntered: sphere1.material.diffuse = "white"
+            onExited: sphere1.material.diffuse = "yellow"
+        }
+
+        readonly property Transform transform: Transform {
+            scale: sphere1.scaleFactor
+            translation: Qt.vector3d(3, 6, 0)
+        }
+        readonly property PhongMaterial material: PhongMaterial { diffuse: "yellow" }
+
+        readonly property GeometryRenderer sphereMesh: GeometryRenderer { view: SphereMesh { } }
+
+        components: [sphereMesh, transform, material, sceneRoot.contentLayer, objectPicker]
+    }
+
+    Entity {
+        id: sphere2
+        property bool toggled: false
+        property real scaleFactor: toggled ? 2.0 : 1.0
+        QQ2.Behavior on scaleFactor { QQ2.NumberAnimation { duration: 200; easing.type: QQ2.Easing.InQuad } }
+
+        readonly property ObjectPicker objectPicker: ObjectPicker {
+            hoverEnabled: true
+            onPressed: sphere2.toggled = !sphere2.toggled
+            onClicked: console.log("Clicked sphere2")
+            onEntered: sphere2.material.diffuse = "white"
+            onExited: sphere2.material.diffuse = "green"
+        }
+        readonly property PickingProxy pickingProxy: PickingProxy {
+            view: CuboidMesh { xExtent: 2; yExtent: 2; zExtent: 2 }
+        }
+
+        readonly property Transform transform: Transform {
+            scale: sphere2.scaleFactor
+            translation: Qt.vector3d(-3, 6, 0)
+        }
+        readonly property PhongMaterial material: PhongMaterial { diffuse: "green" }
+
+        readonly property GeometryRenderer sphereMesh: GeometryRenderer { view: SphereMesh { } }
+
+        components: [sphereMesh, transform, material, sceneRoot.contentLayer, objectPicker, pickingProxy]
     }
 }

@@ -91,6 +91,7 @@ NodeManagers::NodeManagers()
     , m_skeletonManager(new SkeletonManager())
     , m_jointManager(new JointManager())
     , m_shaderImageManager(new ShaderImageManager())
+    , m_pickingProxyManager(new PickingProxyManager())
 {
 }
 
@@ -291,6 +292,12 @@ template<>
 ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const noexcept
 {
     return m_objectPickerManager;
+}
+
+template<>
+PickingProxyManager *NodeManagers::manager<PickingProxy>() const noexcept
+{
+    return m_pickingProxyManager;
 }
 
 template<>

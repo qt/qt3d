@@ -102,6 +102,7 @@ class ArmatureManager;
 class SkeletonManager;
 class JointManager;
 class ShaderImageManager;
+class PickingProxyManager;
 
 class FrameGraphNode;
 class Entity;
@@ -139,6 +140,7 @@ class Armature;
 class Skeleton;
 class Joint;
 class ShaderImage;
+class PickingProxy;
 
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
@@ -217,6 +219,7 @@ public:
     inline SkeletonManager *skeletonManager() const noexcept { return m_skeletonManager; }
     inline JointManager *jointManager() const noexcept { return m_jointManager; }
     inline ShaderImageManager *shaderImageManager() const noexcept { return m_shaderImageManager; }
+    inline PickingProxyManager *pickingProxyManager() const noexcept { return m_pickingProxyManager; }
 
 private:
     CameraManager *m_cameraManager;
@@ -255,6 +258,7 @@ private:
     SkeletonManager *m_skeletonManager;
     JointManager *m_jointManager;
     ShaderImageManager *m_shaderImageManager;
+    PickingProxyManager *m_pickingProxyManager;
 };
 
 // Specializations
@@ -366,6 +370,9 @@ Q_3DRENDERSHARED_PRIVATE_EXPORT JointManager *NodeManagers::manager<Joint>() con
 
 template<>
 Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderImageManager *NodeManagers::manager<ShaderImage>() const noexcept;
+
+template<>
+Q_3DRENDERSHARED_PRIVATE_EXPORT PickingProxyManager *NodeManagers::manager<PickingProxy>() const noexcept;
 
 } // Render
 

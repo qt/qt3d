@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/pickingproxy_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/geometry_p.h>
@@ -473,8 +474,17 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
 {
     m_nodeId = id;
     if (renderer && renderer->instanceCount() == 1 && isTriangleBased(renderer->primitiveType())) {
-        Visitor::visitPrimitives<VertexExecutor<TrianglesVisitor>,
+        Visitor::visitPrimitives<GeometryRenderer, VertexExecutor<TrianglesVisitor>,
                 IndexExecutor<TrianglesVisitor>, TrianglesVisitor>(m_manager, renderer, this);
+    }
+}
+
+void TrianglesVisitor::apply(const PickingProxy *proxy, const QNodeId id)
+{
+    m_nodeId = id;
+    if (proxy && proxy->instanceCount() == 1 && isTriangleBased(static_cast<Qt3DRender::QGeometryRenderer::PrimitiveType>(proxy->primitiveType()))) {
+        Visitor::visitPrimitives<PickingProxy, VertexExecutor<TrianglesVisitor>,
+                                 IndexExecutor<TrianglesVisitor>, TrianglesVisitor>(m_manager, proxy, this);
     }
 }
 
@@ -493,7 +503,7 @@ bool CoordinateReader::setGeometry(const GeometryRenderer *renderer, const QStri
     Attribute *attribute = nullptr;
 
     const auto attrIds = geom->attributes();
-    for (const Qt3DCore::QNodeId attrId : attrIds) {
+    for (const Qt3DCore::QNodeId &attrId : attrIds) {
         attribute = m_manager->lookupResource<Attribute, AttributeManager>(attrId);
         if (attribute){
             if (attribute->name() == attributeName

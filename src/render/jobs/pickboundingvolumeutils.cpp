@@ -587,16 +587,27 @@ HitList TriangleCollisionGathererFunctor::pick(const Entity *entity) const
 {
     HitList result;
 
-    GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
-    if (!gRenderer)
-        return result;
+    PickingProxy *proxy = entity->renderComponent<PickingProxy>();
+    if (proxy && proxy->isEnabled() && proxy->isValid()) {
+        if (rayHitsEntity(entity)) {
+            TriangleCollisionVisitor visitor(m_manager, entity, m_ray, m_frontFaceRequested, m_backFaceRequested);
+            visitor.apply(proxy, entity->peerId());
+            result = visitor.hits;
 
-    if (rayHitsEntity(entity)) {
-        TriangleCollisionVisitor visitor(m_manager, entity, m_ray, m_frontFaceRequested, m_backFaceRequested);
-        visitor.apply(gRenderer, entity->peerId());
-        result = visitor.hits;
+            sortHits(result);
+        }
+    } else {
+        GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
+        if (!gRenderer || !gRenderer->isEnabled())
+            return result;
 
-        sortHits(result);
+        if (rayHitsEntity(entity)) {
+            TriangleCollisionVisitor visitor(m_manager, entity, m_ray, m_frontFaceRequested, m_backFaceRequested);
+            visitor.apply(gRenderer, entity->peerId());
+            result = visitor.hits;
+
+            sortHits(result);
+        }
     }
 
     return result;
@@ -634,15 +645,26 @@ HitList LineCollisionGathererFunctor::pick(const Entity *entity) const
 {
     HitList result;
 
-    GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
-    if (!gRenderer)
-        return result;
+    PickingProxy *proxy = entity->renderComponent<PickingProxy>();
+    if (proxy && proxy->isEnabled() && proxy->isValid()) {
+        if (rayHitsEntity(entity)) {
+            LineCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
+            visitor.apply(proxy, entity->peerId());
+            result = visitor.hits;
 
-    if (rayHitsEntity(entity)) {
-        LineCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
-        visitor.apply(gRenderer, entity->peerId());
-        result = visitor.hits;
-        sortHits(result);
+            sortHits(result);
+        }
+    } else {
+        GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
+        if (!gRenderer)
+            return result;
+
+        if (rayHitsEntity(entity)) {
+            LineCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
+            visitor.apply(gRenderer, entity->peerId());
+            result = visitor.hits;
+            sortHits(result);
+        }
     }
 
     return result;
@@ -680,18 +702,29 @@ HitList PointCollisionGathererFunctor::pick(const Entity *entity) const
 {
     HitList result;
 
-    GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
-    if (!gRenderer)
-        return result;
+    PickingProxy *proxy = entity->renderComponent<PickingProxy>();
+    if (proxy && proxy->isEnabled() && proxy->isValid() && proxy->primitiveType() != Qt3DCore::QGeometryView::Points) {
+        if (rayHitsEntity(entity)) {
+            PointCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
+            visitor.apply(proxy, entity->peerId());
+            result = visitor.hits;
 
-    if (gRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Points)
-        return result;
+            sortHits(result);
+        }
+    } else {
+        GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
+        if (!gRenderer)
+            return result;
 
-    if (rayHitsEntity(entity)) {
-        PointCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
-        visitor.apply(gRenderer, entity->peerId());
-        result = visitor.hits;
-        sortHits(result);
+        if (gRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Points)
+            return result;
+
+        if (rayHitsEntity(entity)) {
+            PointCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
+            visitor.apply(gRenderer, entity->peerId());
+            result = visitor.hits;
+            sortHits(result);
+        }
     }
 
     return result;

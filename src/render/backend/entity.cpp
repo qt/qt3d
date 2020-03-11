@@ -53,6 +53,7 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qpickingproxy.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
@@ -138,6 +139,7 @@ void Entity::cleanup()
     m_cameraComponent = Qt3DCore::QNodeId();
     m_materialComponent = Qt3DCore::QNodeId();
     m_geometryRendererComponent = Qt3DCore::QNodeId();
+    m_pickingProxyComponent = Qt3DCore::QNodeId();
     m_objectPickerComponent = QNodeId();
     m_boundingVolumeDebugComponent = QNodeId();
     m_computeComponent = QNodeId();
@@ -219,6 +221,7 @@ void Entity::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         m_materialComponent = QNodeId();
         m_cameraComponent = QNodeId();
         m_geometryRendererComponent = QNodeId();
+        m_pickingProxyComponent = QNodeId();
         m_objectPickerComponent = QNodeId();
         m_boundingVolumeDebugComponent = QNodeId();
         m_computeComponent = QNodeId();
@@ -338,6 +341,8 @@ void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
     } else if (type->inherits(&QGeometryRenderer::staticMetaObject)) {
         m_geometryRendererComponent = id;
         m_boundingDirty = true;
+    } else if (type->inherits(&QPickingProxy::staticMetaObject)) {
+        m_pickingProxyComponent = id;
     } else if (type->inherits(&QObjectPicker::staticMetaObject)) {
         m_objectPickerComponent = id;
 //    } else if (type->inherits(&QBoundingVolumeDebug::staticMetaObject)) {
@@ -369,6 +374,8 @@ void Entity::removeComponent(Qt3DCore::QNodeId nodeId)
     } else if (m_geometryRendererComponent == nodeId) {
         m_geometryRendererComponent = QNodeId();
         m_boundingDirty = true;
+    } else if (m_pickingProxyComponent == nodeId) {
+        m_pickingProxyComponent = QNodeId();
     } else if (m_objectPickerComponent == nodeId) {
         m_objectPickerComponent = QNodeId();
 //    } else if (m_boundingVolumeDebugComponent == nodeId) {
@@ -410,6 +417,7 @@ ENTITY_COMPONENT_TEMPLATE_IMPL(Material, HMaterial, MaterialManager, m_materialC
 ENTITY_COMPONENT_TEMPLATE_IMPL(CameraLens, HCamera, CameraManager, m_cameraComponent)
 ENTITY_COMPONENT_TEMPLATE_IMPL(Transform, HTransform, TransformManager, m_transformComponent)
 ENTITY_COMPONENT_TEMPLATE_IMPL(GeometryRenderer, HGeometryRenderer, GeometryRendererManager, m_geometryRendererComponent)
+ENTITY_COMPONENT_TEMPLATE_IMPL(PickingProxy, HPickingProxy, PickingProxyManager, m_pickingProxyComponent)
 ENTITY_COMPONENT_TEMPLATE_IMPL(ObjectPicker, HObjectPicker, ObjectPickerManager, m_objectPickerComponent)
 ENTITY_COMPONENT_TEMPLATE_IMPL(ComputeCommand, HComputeCommand, ComputeCommandManager, m_computeComponent)
 ENTITY_COMPONENT_TEMPLATE_IMPL(Armature, HArmature, ArmatureManager, m_armatureComponent)

@@ -84,6 +84,7 @@
 #include <Qt3DRender/private/skeleton_p.h>
 #include <Qt3DRender/private/joint_p.h>
 #include <Qt3DRender/private/shaderimage_p.h>
+#include <Qt3DRender/private/pickingproxy_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -486,6 +487,13 @@ private:
     QVector<HJoint> m_dirtyJoints;
 };
 
+class Q_3DRENDERSHARED_PRIVATE_EXPORT PickingProxyManager : public Qt3DCore::QResourceManager<
+        PickingProxy,
+        Qt3DCore::QNodeId,
+        Qt3DCore::NonLockingPolicy>
+{
+};
+
 } // namespace Render
 } // namespace Qt3DRender
 
@@ -512,6 +520,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Skeleton, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Joint, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ShaderBuilder, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ShaderImage, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::PickingProxy, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

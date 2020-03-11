@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,59 +37,36 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_COORDINATESVISITOR_P_H
-#define QT3DRENDER_RENDER_COORDINATESVISITOR_P_H
+#ifndef QT3DRENDER_QPICKINGPROXY_H
+#define QT3DRENDER_QPICKINGPROXY_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/private/vector3d_p.h>
+#include <Qt3DCore/qboundingvolume.h>
+#include <Qt3DCore/qgeometry.h>
+#include <Qt3DCore/qgeometryview.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QEntity;
-}
-
 namespace Qt3DRender {
 
-namespace Render {
+class QPickingProxyPrivate;
 
-class GeometryRenderer;
-class NodeManagers;
-class PickingProxy;
-
-class Q_AUTOTEST_EXPORT PointsVisitor
+class Q_3DRENDERSHARED_EXPORT QPickingProxy : public Qt3DCore::QBoundingVolume
 {
+    Q_OBJECT
 public:
-    explicit PointsVisitor(NodeManagers *manager) : m_manager(manager) { }
-    virtual ~PointsVisitor();
-
-    void apply(const Qt3DCore::QEntity *entity);
-    void apply(const GeometryRenderer *renderer, const Qt3DCore::QNodeId id);
-    void apply(const PickingProxy *proxy, const Qt3DCore::QNodeId id);
-
-    virtual void visit(uint ndx, const Vector3D &c) = 0;
+    explicit QPickingProxy(Qt3DCore::QNode *parent = nullptr);
+    ~QPickingProxy();
 
 protected:
-    NodeManagers *m_manager;
-    Qt3DCore::QNodeId m_nodeId;
-};
+    explicit QPickingProxy(QPickingProxyPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
-} // namespace Render
+private:
+    Q_DECLARE_PRIVATE(QPickingProxy)
+};
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-
-#endif // QT3DRENDER_RENDER_COORDINATESVISITOR_P_H
+#endif // QT3DRENDER_QPICKINGPROXY_H

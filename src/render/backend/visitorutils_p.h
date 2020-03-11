@@ -102,8 +102,8 @@ void processBuffer(const BufferInfo &info, Func &f)
     }
 }
 
-template<typename VertexExecutor, typename IndexExecutor, typename Visitor>
-void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Visitor* visitor)
+template<typename GeometryProvider, typename VertexExecutor, typename IndexExecutor, typename Visitor>
+void visitPrimitives(NodeManagers *manager, const GeometryProvider *renderer, Visitor* visitor)
 {
     Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(renderer->geometryId());
     Attribute *positionAttribute = nullptr;
@@ -154,7 +154,7 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
 
                 IndexExecutor executor;
                 executor.m_vertexBufferInfo = vertexBufferInfo;
-                executor.m_primitiveType = renderer->primitiveType();
+                executor.m_primitiveType = static_cast<Qt3DRender::QGeometryRenderer::PrimitiveType>(renderer->primitiveType());
                 executor.m_visitor = visitor;
 
                 return processBuffer(indexBufferInfo, executor);
@@ -163,7 +163,7 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
 
                 // Check into which type the buffer needs to be casted
                 VertexExecutor executor;
-                executor.m_primitiveType = renderer->primitiveType();
+                executor.m_primitiveType = static_cast<Qt3DRender::QGeometryRenderer::PrimitiveType>(renderer->primitiveType());
                 executor.m_visitor = visitor;
 
                 return processBuffer(vertexBufferInfo, executor);

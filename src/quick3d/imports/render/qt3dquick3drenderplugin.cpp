@@ -76,6 +76,7 @@
 #include <Qt3DRender/qnodepthmask.h>
 #include <Qt3DRender/qnodraw.h>
 #include <Qt3DRender/qobjectpicker.h>
+#include <Qt3DRender/qpickingproxy.h>
 #include <Qt3DRender/qraycaster.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qpickevent.h>
@@ -235,6 +236,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent, 14>(uri, 2, 14, "PickEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DRayCaster>(uri, 2, 11, "RayCaster");
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DScreenRayCaster>(uri, 2, 11, "ScreenRayCaster");
+    qmlRegisterType<Qt3DRender::QPickingProxy>(uri, 2, 16, "PickingProxy");
 
         // Compute Job
     qmlRegisterType<Qt3DRender::QComputeCommand>(uri, 2, 0, "ComputeCommand");

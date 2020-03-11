@@ -92,6 +92,7 @@
 #include <Qt3DRender/qshaderimage.h>
 #include <Qt3DRender/qsubtreeenabler.h>
 #include <Qt3DRender/qdebugoverlay.h>
+#include <Qt3DRender/qpickingproxy.h>
 #include <Qt3DCore/qarmature.h>
 #include <Qt3DCore/qjoint.h>
 #include <Qt3DCore/qskeletonloader.h>
@@ -361,6 +362,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QComputeCommand>(QSharedPointer<Render::NodeFunctor<Render::ComputeCommand, Render::ComputeCommandManager> >::create(m_renderer));
     q->registerBackendType<QGeometry>(QSharedPointer<Render::NodeFunctor<Render::Geometry, Render::GeometryManager> >::create(m_renderer));
     q->registerBackendType<QGeometryRenderer>(QSharedPointer<Render::GeometryRendererFunctor>::create(m_renderer, m_nodeManagers->geometryRendererManager()));
+    q->registerBackendType<QPickingProxy>(QSharedPointer<Render::PickingProxyFunctor>::create(m_renderer, m_nodeManagers->pickingProxyManager()));
     q->registerBackendType<Qt3DCore::QArmature>(QSharedPointer<Render::NodeFunctor<Render::Armature, Render::ArmatureManager>>::create(m_renderer));
     q->registerBackendType<Qt3DCore::QAbstractSkeleton>(QSharedPointer<Render::SkeletonFunctor>::create(m_renderer, m_nodeManagers->skeletonManager(), m_nodeManagers->jointManager()));
     q->registerBackendType<Qt3DCore::QJoint>(QSharedPointer<Render::JointFunctor>::create(m_renderer, m_nodeManagers->jointManager(), m_nodeManagers->skeletonManager()));
@@ -441,6 +443,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QComputeCommand>();
     unregisterBackendType<QGeometry>();
     unregisterBackendType<QGeometryRenderer>();
+    unregisterBackendType<QPickingProxy>();
     unregisterBackendType<Qt3DCore::QArmature>();
     unregisterBackendType<Qt3DCore::QAbstractSkeleton>();
     unregisterBackendType<Qt3DCore::QJoint>();

@@ -15,7 +15,10 @@ HEADERS += \
     $$PWD/skeleton_p.h \
     $$PWD/gltfskeletonloader_p.h \
     $$PWD/skeletondata_p.h \
-    $$PWD/joint_p.h
+    $$PWD/joint_p.h \
+    $$PWD/qpickingproxy.h \
+    $$PWD/qpickingproxy_p.h \
+    $$PWD/pickingproxy_p.h
 
 SOURCES += \
     $$PWD/attribute.cpp \
@@ -30,5 +33,6 @@ SOURCES += \
     $$PWD/skeleton.cpp \
     $$PWD/gltfskeletonloader.cpp \
     $$PWD/skeletondata.cpp \
-    $$PWD/joint.cpp
-
+    $$PWD/joint.cpp \
+    $$PWD/qpickingproxy.cpp \
+    $$PWD/pickingproxy.cpp
