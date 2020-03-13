@@ -46,10 +46,10 @@
 #include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 
-#include <QtGui/private/qshaderformat_p.h>
-#include <QtGui/private/qshadergraphloader_p.h>
-#include <QtGui/private/qshadergenerator_p.h>
-#include <QtGui/private/qshadernodesloader_p.h>
+#include <Qt3DRender/private/qshaderformat_p.h>
+#include <Qt3DRender/private/qshadergraphloader_p.h>
+#include <Qt3DRender/private/qshadergenerator_p.h>
+#include <Qt3DRender/private/qshadernodesloader_p.h>
 
 #include <QFile>
 #include <QFileInfo>
@@ -84,7 +84,7 @@ public:
         load();
     }
 
-    QHash<QString, QShaderNode> prototypes() const
+    QHash<QString, Qt3DRender::QShaderNode> prototypes() const
     {
         return m_prototypes;
     }
@@ -98,14 +98,14 @@ private:
             return;
         }
 
-        QShaderNodesLoader loader;
+        Qt3DRender::QShaderNodesLoader loader;
         loader.setDevice(&file);
         loader.load();
         m_prototypes = loader.nodes();
     }
 
     QString m_fileName;
-    QHash<QString, QShaderNode> m_prototypes;
+    QHash<QString, Qt3DRender::QShaderNode> m_prototypes;
 };
 
 Q_GLOBAL_STATIC(GlobalShaderPrototypes, qt3dGlobalShaderPrototypes)
