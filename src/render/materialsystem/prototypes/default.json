@@ -32,6 +32,15 @@
                 },
                 "substitution": "$type $value = $name;",
                 "headerSnippets": [ "$qualifier $type $name;" ]
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 4,
+                    "minor": 5
+                },
+                "substitution": "$type $value = $name;",
+                "headerSnippets": [ "add-input $qualifier $type $name" ]
             }
         ]
     },
@@ -102,6 +111,15 @@
                 },
                 "substitution": "vec4 $color = texture($name, $coord);",
                 "headerSnippets": [ "uniform sampler2D $name;" ]
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 4,
+                    "minor": 5
+                },
+                "substitution": "vec4 $color = texture($name, $coord);",
+                "headerSnippets": [ "add-sampler sampler2D $name" ]
             }
         ]
     },
@@ -135,6 +153,15 @@
                 },
                 "substitution": "fragColor = $fragColor;",
                 "headerSnippets": [ "out vec4 fragColor;" ]
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 4,
+                    "minor": 5
+                },
+                "substitution": "fragColor = $fragColor;",
+                "headerSnippets": [ "layout(location = 0) out vec4 fragColor;" ]
             }
         ]
     },
@@ -160,6 +187,15 @@
                 },
                 "substitution": "vec3 $eyePosition = eyePosition;",
                 "headerSnippets": [ "uniform vec3 eyePosition;" ]
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 4,
+                    "minor": 5
+                },
+                "substitution": "vec3 $eyePosition = eyePosition;",
+                "headerSnippets": [ "add-uniform vec3 eyePosition" ]
             }
         ]
     },
@@ -185,6 +221,15 @@
                 },
                 "substitution": "float $time = time;",
                 "headerSnippets": [ "uniform float time;" ]
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 4,
+                    "minor": 5
+                },
+                "substitution": "float $time = time;",
+                "headerSnippets": [ "add-uniform float time" ]
             }
         ]
     },
@@ -419,6 +464,15 @@
                 },
                 "substitution": "mat3 $matrix = calcWorldSpaceToTangentSpaceMatrix($worldNormal, $worldTangent);",
                 "headerSnippets": [ "#pragma include :/shaders/gl3/coordinatesystems.inc" ]
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 4,
+                    "minor": 5
+                },
+                "substitution": "mat3 $matrix = calcWorldSpaceToTangentSpaceMatrix($worldNormal, $worldTangent);",
+                "headerSnippets": [ "#pragma include :/shaders/rhi/coordinatesystems.inc" ]
             }
         ]
     },
@@ -453,6 +507,15 @@
                 },
                 "substitution": "vec4 $outputColor = phongFunction($ambient, $diffuse, $specular, $shininess, $worldPosition, $worldView, $worldNormal);",
                 "headerSnippets": [ "#pragma include :/shaders/gl3/phong.inc.frag" ]
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 4,
+                    "minor": 5
+                },
+                "substitution": "vec4 $outputColor = phongFunction($ambient, $diffuse, $specular, $shininess, $worldPosition, $worldView, $worldNormal);",
+                "headerSnippets": [ "#pragma include :/shaders/rhi/phong.inc.frag" ]
             }
         ]
     },
@@ -487,6 +550,15 @@
                 },
                 "substitution": "vec4 $outputColor = metalRoughFunction($baseColor, $metalness, $roughness, $ambientOcclusion, $worldPosition, $worldView, $worldNormal);",
                 "headerSnippets": [ "#pragma include :/shaders/gl3/metalrough.inc.frag" ]
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 4,
+                    "minor": 5
+                },
+                "substitution": "vec4 $outputColor = metalRoughFunction($baseColor, $metalness, $roughness, $ambientOcclusion, $worldPosition, $worldView, $worldNormal);",
+                "headerSnippets": [ "#pragma include :/shaders/rhi/metalrough.inc.frag" ]
             }
         ]
     },

@@ -260,7 +260,7 @@ void tst_QShaderGenerator::shouldGenerateShaderCode_data()
                                           << "}"
                                           << "";
 
-    QTest::newRow("EmptyGraphAndFormat") << QShaderGraph() << QShaderFormat() << QByteArrayLiteral("\nvoid main()\n{\n}\n");
+    QTest::newRow("EmptyGraphAndFormat") << QShaderGraph() << QShaderFormat() << QByteArrayLiteral("\n\n\nvoid main()\n{\n}\n");
     QTest::newRow("LightExposureGraphAndES2") << graph << openGLES2 << (versionGLES2 + es2Code).join('\n');
     QTest::newRow("LightExposureGraphAndGL3") << graph << openGL3 << (versionGL3 + gl3Code).join('\n');
     QTest::newRow("LightExposureGraphAndGL32") << graph << openGL32 << (versionGL32 + gl3Code).join('\n');

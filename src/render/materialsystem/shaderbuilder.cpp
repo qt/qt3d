@@ -246,7 +246,8 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
     generator.graph = graph;
 
     const auto code = generator.createShaderCode(m_enabledLayers);
-    m_codes.insert(type, QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl")));
+    const auto deincludified = QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl"));
+    m_codes.insert(type, deincludified);
     m_dirtyTypes.remove(type);
 
     m_pendingUpdates.push_back({ peerId(),

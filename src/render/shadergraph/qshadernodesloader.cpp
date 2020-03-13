@@ -220,9 +220,10 @@ void QShaderNodesLoader::load(const QJsonObject &prototypesObject)
                             : api == QStringLiteral("OpenGLCoreProfile") ? QShaderFormat::OpenGLCoreProfile
                             : api == QStringLiteral("OpenGLCompatibilityProfile") ? QShaderFormat::OpenGLCompatibilityProfile
                             : api == QStringLiteral("VulkanFlavoredGLSL") ? QShaderFormat::VulkanFlavoredGLSL
+                            : api == QStringLiteral("RHI") ? QShaderFormat::RHI
                             : QShaderFormat::NoApi);
                 if (format.api() == QShaderFormat::NoApi) {
-                    qWarning() << "Format API must be one of: OpenGLES, OpenGLNoProfile, OpenGLCoreProfile or OpenGLCompatibilityProfile, VulkanFlavoredGLSL";
+                    qWarning() << "Format API must be one of: OpenGLES, OpenGLNoProfile, OpenGLCoreProfile OpenGLCompatibilityProfile, VulkanFlavoredGLSL or RHI";
                     hasError = true;
                     break;
                 }

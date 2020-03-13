@@ -1121,7 +1121,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                         shaderData->updateWorldTransform(*worldTransform);
 
                     setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, LIGHT_STRUCT_NAMES[lightIdx]);
-                    setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, LIGHT_STRUCT_UNROLL_NAMES[lightIdx]);
                     ++lightIdx;
                 }
             }
