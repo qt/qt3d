@@ -60,17 +60,16 @@ public:
     RenderViewCommandUpdaterJobPrivate(RenderViewCommandUpdaterJob *q) : q_ptr(q) { }
     ~RenderViewCommandUpdaterJobPrivate() override = default;
 
-    bool isRequired() override;
+    bool isRequired() const override;
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
     RenderViewCommandUpdaterJob *q_ptr;
     Q_DECLARE_PUBLIC(RenderViewCommandUpdaterJob)
 };
 
-bool RenderViewCommandUpdaterJobPrivate::isRequired()
+bool RenderViewCommandUpdaterJobPrivate::isRequired() const
 {
-    Q_Q(RenderViewCommandUpdaterJob);
-
+    Q_Q(const RenderViewCommandUpdaterJob);
     return q->m_renderView && !q->m_renderView->noDraw() && q->m_count > 0;
 }
 

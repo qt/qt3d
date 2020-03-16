@@ -68,7 +68,7 @@ AspectTaskRunnable::~AspectTaskRunnable()
 {
 }
 
-bool AspectTaskRunnable::isRequired()
+bool AspectTaskRunnable::isRequired() const
 {
     return m_job ? QAspectJobPrivate::get(m_job.data())->isRequired() : false;
 }
@@ -105,7 +105,7 @@ SyncTaskRunnable::~SyncTaskRunnable()
 {
 }
 
-bool SyncTaskRunnable::isRequired()
+bool SyncTaskRunnable::isRequired() const
 {
     return true;
 }

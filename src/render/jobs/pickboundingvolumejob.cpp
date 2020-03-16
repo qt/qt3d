@@ -74,7 +74,7 @@ public:
     PickBoundingVolumeJobPrivate(PickBoundingVolumeJob *q) : q_ptr(q) { }
     ~PickBoundingVolumeJobPrivate() override = default;
 
-    bool isRequired() override;
+    bool isRequired() const override;
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
     enum CustomEventType {
@@ -94,9 +94,9 @@ public:
 };
 
 
-bool PickBoundingVolumeJobPrivate::isRequired()
+bool PickBoundingVolumeJobPrivate::isRequired() const
 {
-    Q_Q(PickBoundingVolumeJob);
+    Q_Q(const PickBoundingVolumeJob);
     return !q->m_pendingMouseEvents.isEmpty() || q->m_pickersDirty || q->m_oneEnabledAtLeast;
 }
 
