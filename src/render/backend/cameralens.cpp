@@ -119,8 +119,6 @@ Matrix4x4 CameraLens::viewMatrix(const Matrix4x4 &worldTransform)
              convertToQVector3D(Vector3D(position + viewDirection)),
              convertToQVector3D(Vector3D(upVector)));
 
-    qDebug(Jobs) << Q_FUNC_INFO << "Transform Matrix" << worldTransform << "View Matrix" << m;
-
     return Matrix4x4(m);
 }
 
