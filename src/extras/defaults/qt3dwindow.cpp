@@ -183,7 +183,6 @@ Qt3DWindow::Qt3DWindow(QScreen *screen, Qt3DRender::API api)
         format.setProfile(QSurfaceFormat::CoreProfile);
     }
 #endif
-
     if (!userRequestedApi.isEmpty()) {
         // This is used for RHI
         format.setVersion(1, 0);

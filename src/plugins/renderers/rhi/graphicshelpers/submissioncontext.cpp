@@ -498,6 +498,10 @@ SubmissionContext::SubmissionContext()
 {
     static_contexts[m_id] = this;
     m_contextInfo.m_api = QGraphicsApiFilter::RHI;
+
+    // We set those version numbers because QShaderGenerator wants major > 0
+    m_contextInfo.m_major = 1;
+    m_contextInfo.m_minor = 0;
 }
 
 SubmissionContext::~SubmissionContext()
@@ -1630,12 +1634,14 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
                               {QShader::MslShader, QShaderVersion(12)},
                           });
 
+
     b.setGeneratedShaderVariants({QShader::Variant{},
                               #ifndef QT_NO_OPENGL
                                   QShader::Variant{},
                               #endif
                                   QShader::Variant{},
                                   QShader::Variant{}});
+
 
     // TODO handle caching as QShader does not have a built-in mechanism for that
     QString logs;
@@ -1650,7 +1656,7 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
             b.setSourceString(shaderCode.at(i), rhiStage);
             QShader bakedShader = b.bake();
             if (b.errorMessage() != QString() || !bakedShader.isValid()) {
-                qDebug() << "Shader Error: " << b.errorMessage();
+                qDebug() << "Shader Error: " << b.errorMessage() << shaderCode.at(i).data() << rhiStage;
                 logs += b.errorMessage();
                 success = false;
             }

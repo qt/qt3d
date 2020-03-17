@@ -479,6 +479,7 @@ void RenderView::sort()
     // For RenderCommand with the same shader
     // We compute the adjacent change cost
 
+    /*
     // Minimize uniform changes
     int i = 0;
     const int commandSize = m_commands.size();
@@ -523,6 +524,7 @@ void RenderView::sort()
             }
         }
     }
+    */
 }
 
 void RenderView::setRenderer(Renderer *renderer)
@@ -864,6 +866,7 @@ void RenderView::updateRenderCommand(EntityRenderCommandData *renderCommandData,
         // Update CommandUBO (Qt3D standard uniforms)
         const Matrix4x4 worldTransform = *(entity->worldTransform());
         const Matrix4x4 inverseWorldTransform = worldTransform.inverted();
+        const QMatrix3x3 modelNormalMatrix = convertToQMatrix4x4(worldTransform).normalMatrix();
         const Matrix4x4 modelViewMatrix = m_data.m_viewMatrix * worldTransform;
         const Matrix4x4 inverseModelViewMatrix = modelViewMatrix.inverted();
         const Matrix4x4 mvp = projectionMatrix * modelViewMatrix;
@@ -872,6 +875,20 @@ void RenderView::updateRenderCommand(EntityRenderCommandData *renderCommandData,
             memcpy(&command.m_commandUBO.modelMatrix, &worldTransform, sizeof(Matrix4x4));
             memcpy(&command.m_commandUBO.inverseModelMatrix, &inverseWorldTransform, sizeof(Matrix4x4));
             memcpy(&command.m_commandUBO.modelViewMatrix, &modelViewMatrix, sizeof(Matrix4x4));
+            {
+                float (& normal)[12] = command.m_commandUBO.modelNormalMatrix;
+                normal[0]  = modelNormalMatrix.constData()[0 * 3 + 0];
+                normal[1]  = modelNormalMatrix.constData()[0 * 3 + 1];
+                normal[2]  = modelNormalMatrix.constData()[0 * 3 + 2];
+
+                normal[4]  = modelNormalMatrix.constData()[1 * 3 + 0];
+                normal[5]  = modelNormalMatrix.constData()[1 * 3 + 1];
+                normal[6]  = modelNormalMatrix.constData()[1 * 3 + 2];
+
+                normal[8]  = modelNormalMatrix.constData()[2 * 3 + 0];
+                normal[9]  = modelNormalMatrix.constData()[2 * 3 + 1];
+                normal[10] = modelNormalMatrix.constData()[2 * 3 + 2];
+            }
             memcpy(&command.m_commandUBO.inverseModelViewMatrix, &inverseModelViewMatrix, sizeof(Matrix4x4));
             memcpy(&command.m_commandUBO.mvp, &mvp, sizeof(Matrix4x4));
             memcpy(&command.m_commandUBO.inverseModelViewProjectionMatrix, &inverseModelViewProjection, sizeof(Matrix4x4));
@@ -1148,8 +1165,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
             } else {
                 // with some drivers, samplers (like the envbox sampler) need to be bound even though
                 // they may not be actually used, otherwise draw calls can fail
-                static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight.irradiance"));
-                static const int specularId = StringToInt::lookupId(QLatin1String("envLight.specular"));
+                static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight_irradiance"));
+                static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
 //                setUniformValue(command->m_parameterPack, irradianceId, m_renderer->submissionContext()->maxTextureUnitsCount());
 //                setUniformValue(command->m_parameterPack, specularId, m_renderer->submissionContext()->maxTextureUnitsCount());
             }

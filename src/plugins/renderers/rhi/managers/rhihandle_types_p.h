@@ -76,9 +76,9 @@ typedef Qt3DCore::QHandle<RHIGraphicsPipeline> HRHIGraphicsPipeline;
 } // namespace Qt3DRender
 
 #if defined(_MSC_VER)
-#define RHI_UNIMPLEMENTED do { qDebug() << "Unimplemented: " << __FUNCSIG__; } while (0)
+#define RHI_UNIMPLEMENTED // do { qDebug() << "Unimplemented: " << __FUNCSIG__; } while (0)
 #else
-#define RHI_UNIMPLEMENTED do { qDebug() << "Unimplemented: " << __PRETTY_FUNCTION__; } while (0)
+#define RHI_UNIMPLEMENTED // do { qDebug() << "Unimplemented: " << __PRETTY_FUNCTION__; } while (0)
 #endif
 QT_END_NAMESPACE
 

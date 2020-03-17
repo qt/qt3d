@@ -1,14 +1,20 @@
-#version 150 core
+#version 450
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec3 vertexNormal;
 
-out vec3 worldPosition;
-out vec3 worldNormal;
+layout(location = 0) out vec3 worldPosition;
+layout(location = 1) out vec3 worldNormal;
 
-uniform mat4 modelMatrix;
-uniform mat3 modelNormalMatrix;
-uniform mat4 mvp;
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+  mat4 modelMatrix;
+  mat4 inverseModelMatrix;
+  mat4 modelViewMatrix;
+  mat3 modelNormalMatrix;
+  mat4 inverseModelViewMatrix;
+  mat4 mvp;
+  mat4 inverseModelViewProjectionMatrix;
+};
 
 void main()
 {

@@ -68,8 +68,6 @@ QT_BEGIN_NAMESPACE
 class QRhiGraphicsPipeline;
 class QRhiShaderResourceBindings;
 
-class QOpenGLVertexArrayObject;
-
 namespace Qt3DRender {
 
 namespace Render {
@@ -87,11 +85,12 @@ struct CommandUBO
     float modelMatrix[16];
     float inverseModelMatrix[16];
     float modelViewMatrix[16];
+    float modelNormalMatrix[12];
     float inverseModelViewMatrix[16];
     float mvp[16];
     float inverseModelViewProjectionMatrix[16];
 };
-static_assert(sizeof(CommandUBO) == 6 * (16 * sizeof(float)), "UBO doesn't match std140");
+static_assert(sizeof(CommandUBO) == 6 * (16 * sizeof(float)) + 1 * (12 * sizeof(float)), "UBO doesn't match std140");
 
 class Q_AUTOTEST_EXPORT RenderCommand
 {

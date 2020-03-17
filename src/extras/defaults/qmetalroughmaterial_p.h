@@ -99,6 +99,10 @@ public:
     Qt3DRender::QRenderPass *m_metalRoughES3RenderPass;
     Qt3DRender::QShaderProgram *m_metalRoughES3Shader;
     Qt3DRender::QShaderProgramBuilder *m_metalRoughES3ShaderBuilder;
+    Qt3DRender::QTechnique *m_metalRoughRHITechnique;
+    Qt3DRender::QRenderPass *m_metalRoughRHIRenderPass;
+    Qt3DRender::QShaderProgram *m_metalRoughRHIShader;
+    Qt3DRender::QShaderProgramBuilder *m_metalRoughRHIShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QMetalRoughMaterial)

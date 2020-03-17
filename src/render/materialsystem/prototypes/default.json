@@ -36,8 +36,8 @@
             {
                 "format": {
                     "api": "RHI",
-                    "major": 4,
-                    "minor": 5
+                    "major": 1,
+                    "minor": 0
                 },
                 "substitution": "$type $value = $name;",
                 "headerSnippets": [ "add-input $qualifier $type $name" ]
@@ -68,6 +68,14 @@
                 "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $value = $type($constant);"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
                     "minor": 0
                 },
                 "substitution": "$type $value = $type($constant);"
@@ -115,8 +123,8 @@
             {
                 "format": {
                     "api": "RHI",
-                    "major": 4,
-                    "minor": 5
+                    "major": 1,
+                    "minor": 0
                 },
                 "substitution": "vec4 $color = texture($name, $coord);",
                 "headerSnippets": [ "add-sampler sampler2D $name" ]
@@ -157,8 +165,8 @@
             {
                 "format": {
                     "api": "RHI",
-                    "major": 4,
-                    "minor": 5
+                    "major": 1,
+                    "minor": 0
                 },
                 "substitution": "fragColor = $fragColor;",
                 "headerSnippets": [ "layout(location = 0) out vec4 fragColor;" ]
@@ -191,11 +199,11 @@
             {
                 "format": {
                     "api": "RHI",
-                    "major": 4,
-                    "minor": 5
+                    "major": 1,
+                    "minor": 0
                 },
                 "substitution": "vec3 $eyePosition = eyePosition;",
-                "headerSnippets": [ "add-uniform vec3 eyePosition" ]
+                "headerSnippets": [ ]
             }
         ]
     },
@@ -225,8 +233,8 @@
             {
                 "format": {
                     "api": "RHI",
-                    "major": 4,
-                    "minor": 5
+                    "major": 1,
+                    "minor": 0
                 },
                 "substitution": "float $time = time;",
                 "headerSnippets": [ "add-uniform float time" ]
@@ -262,6 +270,14 @@
                     "minor": 0
                 },
                 "substitution": "$type $output = transpose($input);"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
+                    "minor": 0
+                },
+                "substitution": "$type $output = transpose($input);"
             }
         ]
     },
@@ -291,6 +307,14 @@
                 "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $output = normalize($input);"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
                     "minor": 0
                 },
                 "substitution": "$type $output = normalize($input);"
@@ -327,6 +351,14 @@
                     "minor": 0
                 },
                 "substitution": "$type $difference = $minuend - $subtrahend;"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
+                    "minor": 0
+                },
+                "substitution": "$type $difference = $minuend - $subtrahend;"
             }
         ]
     },
@@ -357,6 +389,14 @@
                 "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $sum = $first + $second;"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
                     "minor": 0
                 },
                 "substitution": "$type $sum = $first + $second;"
@@ -393,6 +433,14 @@
                     "minor": 0
                 },
                 "substitution": "$type $product = $first * $second;"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
+                    "minor": 0
+                },
+                "substitution": "$type $product = $first * $second;"
             }
         ]
     },
@@ -423,6 +471,14 @@
                 "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $input.$fields;"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
                     "minor": 0
                 },
                 "substitution": "$type $output = $input.$fields;"
@@ -468,8 +524,8 @@
             {
                 "format": {
                     "api": "RHI",
-                    "major": 4,
-                    "minor": 5
+                    "major": 1,
+                    "minor": 0
                 },
                 "substitution": "mat3 $matrix = calcWorldSpaceToTangentSpaceMatrix($worldNormal, $worldTangent);",
                 "headerSnippets": [ "#pragma include :/shaders/rhi/coordinatesystems.inc" ]
@@ -511,8 +567,8 @@
             {
                 "format": {
                     "api": "RHI",
-                    "major": 4,
-                    "minor": 5
+                    "major": 1,
+                    "minor": 0
                 },
                 "substitution": "vec4 $outputColor = phongFunction($ambient, $diffuse, $specular, $shininess, $worldPosition, $worldView, $worldNormal);",
                 "headerSnippets": [ "#pragma include :/shaders/rhi/phong.inc.frag" ]
@@ -554,8 +610,8 @@
             {
                 "format": {
                     "api": "RHI",
-                    "major": 4,
-                    "minor": 5
+                    "major": 1,
+                    "minor": 0
                 },
                 "substitution": "vec4 $outputColor = metalRoughFunction($baseColor, $metalness, $roughness, $ambientOcclusion, $worldPosition, $worldView, $worldNormal);",
                 "headerSnippets": [ "#pragma include :/shaders/rhi/metalrough.inc.frag" ]
@@ -592,6 +648,14 @@
                     "minor": 0
                 },
                 "substitution": "$type $output = $type($first, $second);"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $type($first, $second);"
             }
         ]
     },
@@ -623,6 +687,14 @@
                 "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $type($first, $second, $third);"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
                     "minor": 0
                 },
                 "substitution": "$type $output = $type($first, $second, $third);"
@@ -661,6 +733,14 @@
                     "minor": 0
                 },
                 "substitution": "$type $output = $type($first, $second, $third, $fourth);"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $type($first, $second, $third, $fourth);"
             }
         ]
     },
@@ -690,6 +770,14 @@
                 "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
+                    "minor": 0
+                },
+                "substitution": "$type $output = $type($input);"
+            },
+            {
+                "format": {
+                    "api": "RHI",
+                    "major": 1,
                     "minor": 0
                 },
                 "substitution": "$type $output = $type($input);"

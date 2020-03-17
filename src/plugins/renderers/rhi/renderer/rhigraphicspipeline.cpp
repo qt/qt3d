@@ -68,6 +68,9 @@ void RHIGraphicsPipeline::cleanup()
     m_rvUbo = nullptr;
     m_cmdUbo = nullptr;
     m_pipeline = nullptr;
+    m_shaderResourceBindings = nullptr;
+    m_ubos.clear();
+    m_attributeNameIdToBindingIndex.clear();
 }
 
 } // Rhi

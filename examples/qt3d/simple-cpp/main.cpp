@@ -99,6 +99,7 @@ Qt3DCore::QEntity *createScene()
     Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity(rootEntity);
     Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
     sphereMesh->setRadius(3);
+    sphereMesh->setGenerateTangents(true);
 
     Qt3DCore::QTransform *sphereTransform = new Qt3DCore::QTransform;
     OrbitTransformController *controller = new OrbitTransformController(sphereTransform);

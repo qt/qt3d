@@ -98,13 +98,17 @@ public:
     Qt3DRender::QTechnique *m_normalDiffuseGL3Technique;
     Qt3DRender::QTechnique *m_normalDiffuseGL2Technique;
     Qt3DRender::QTechnique *m_normalDiffuseES2Technique;
+    Qt3DRender::QTechnique *m_normalDiffuseRHITechnique;
     Qt3DRender::QRenderPass *m_normalDiffuseGL3RenderPass;
     Qt3DRender::QRenderPass *m_normalDiffuseGL2RenderPass;
     Qt3DRender::QRenderPass *m_normalDiffuseES2RenderPass;
+    Qt3DRender::QRenderPass *m_normalDiffuseRHIRenderPass;
     Qt3DRender::QShaderProgram *m_normalDiffuseGL3Shader;
     Qt3DRender::QShaderProgramBuilder *m_normalDiffuseGL3ShaderBuilder;
     Qt3DRender::QShaderProgram *m_normalDiffuseGL2ES2Shader;
     Qt3DRender::QShaderProgramBuilder *m_normalDiffuseGL2ES2ShaderBuilder;
+    Qt3DRender::QShaderProgram *m_normalDiffuseRHIShader;
+    Qt3DRender::QShaderProgramBuilder *m_normalDiffuseRHIShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QNormalDiffuseMapMaterial)

@@ -1,15 +1,17 @@
-#version 150 core
+#version 450
 
-uniform sampler2D distanceFieldTexture;
-uniform float minAlpha;
-uniform float maxAlpha;
-uniform float textureSize;
-uniform vec4 color;
+layout(location = 0) in vec2 texCoord;
+layout(location = 1) in float zValue;
 
-in vec2 texCoord;
-in float zValue;
+layout(location = 0) out vec4 fragColor;
 
-out vec4 fragColor;
+layout(std140, binding = 2) uniform qt3d_custom_uniforms {
+  float minAlpha;
+  float maxAlpha;
+  float textureSize;
+  vec4 color;
+};
+layout(binding = 3) uniform sampler2D distanceFieldTexture;
 
 void main()
 {

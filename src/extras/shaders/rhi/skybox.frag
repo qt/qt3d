@@ -1,13 +1,33 @@
-#version 330
+#version 450
 
-in vec3 texCoord0;
-out vec4 fragColor;
-uniform samplerCube skyboxTexture;
+layout(location = 0) in vec3 texCoord0;
+layout(location = 0) out vec4 fragColor;
+
 
 // Gamma correction
-uniform float gamma = 2.2;
 
-uniform float gammaStrength;
+layout(std140, binding = 0) uniform qt3d_render_view_uniforms {
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  mat4 viewProjectionMatrix;
+  mat4 inverseViewMatrix;
+  mat4 inverseProjectionMatrix;
+  mat4 inverseViewProjectionMatrix;
+  mat4 viewportMatrix;
+  mat4 inverseViewportMatrix;
+  vec4 textureTransformMatrix;
+  vec3 eyePosition;
+  float aspectRatio;
+  float gamma;
+  float exposure;
+  float time;
+};
+
+layout(std140, binding = 2) uniform qt3d_morph_uniforms {
+  float gammaStrength;
+};
+
+layout(binding = 3) uniform samplerCube skyboxTexture;
 
 vec3 gammaCorrect(const in vec3 color)
 {

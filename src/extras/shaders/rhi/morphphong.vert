@@ -1,17 +1,26 @@
-#version 150 core
+#version 450
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
-in vec3 vertexPositionTarget;
-in vec3 vertexNormalTarget;
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec3 vertexNormal;
+layout(location = 2) in vec3 vertexPositionTarget;
+layout(location = 3) in vec3 vertexNormalTarget;
 
-out vec3 worldPosition;
-out vec3 worldNormal;
+layout(location = 0) out vec3 worldPosition;
+layout(location = 1) out vec3 worldNormal;
 
-uniform mat4 modelMatrix;
-uniform mat3 modelNormalMatrix;
-uniform mat4 modelViewProjection;
-uniform float interpolator;
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+  mat4 modelMatrix;
+  mat4 inverseModelMatrix;
+  mat4 modelViewMatrix;
+  mat3 modelNormalMatrix;
+  mat4 inverseModelViewMatrix;
+  mat4 modelViewProjection;
+  mat4 inverseModelViewProjectionMatrix;
+};
+
+layout(std140, binding = 3) uniform qt3d_morph_uniforms {
+  float interpolator;
+};
 
 void main()
 {

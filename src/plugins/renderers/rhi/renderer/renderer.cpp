@@ -706,6 +706,8 @@ void Renderer::doRender(bool swapBuffers)
     const bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
     const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
 
+    bool mustCleanResources = false;
+
     // When using synchronous rendering (QtQuick)
     // We are not sure that the frame queue is actually complete
     // Since a call to render may not be synched with the completions
@@ -770,7 +772,7 @@ void Renderer::doRender(bool swapBuffers)
                 submissionData = submitRenderViews(rhiPassesInfo);
 
                 // Perform any required cleanup of the Graphics resources (Buffers deleted, Shader deleted...)
-                cleanGraphicsResources();
+                mustCleanResources = true;
             }
         }
 
@@ -813,6 +815,9 @@ void Renderer::doRender(bool swapBuffers)
                 && surfaceLock.isSurfaceValid()
                 && m_shouldSwapBuffers;
         m_submissionContext->endDrawing(swapBuffers);
+
+        if (mustCleanResources)
+            cleanGraphicsResources();
     }
 }
 
@@ -922,9 +927,16 @@ void Renderer::updateGraphicsPipeline(RenderCommand& cmd, RenderView *rv, int re
     }
 
     // Try to retrieve existing pipeline
+    auto& pipelineManager = *m_RHIResourceManagers->rhiGraphicsPipelineManager();
     const GraphicsPipelineIdentifier pipelineKey { cmd.m_geometry, cmd.m_shaderId, renderViewIndex };
-    RHIGraphicsPipeline *graphicsPipeline = m_RHIResourceManagers->rhiGraphicsPipelineManager()->getOrCreateResource(pipelineKey);
+    RHIGraphicsPipeline *graphicsPipeline = pipelineManager.getOrCreateResource(pipelineKey);
     // TO DO: Ensure we find a way to know when the state is dirty to trigger a rebuild
+
+    if (!graphicsPipeline) {
+        qDebug() << "Warning : could not create a graphics pipeline";
+        RHIGraphicsPipeline *graphicsPipeline = m_RHIResourceManagers->rhiGraphicsPipelineManager()->getOrCreateResource(pipelineKey);
+        return;
+    }
 
     // Increase score so that we know the pipeline was used for this frame and shouldn't be destroyed
     graphicsPipeline->increaseScore();
@@ -966,7 +978,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand& cmd, RenderView *rv, int re
                 auto handle = m_RHIResourceManagers->rhiBufferManager()->allocateResource();
                 RHIBuffer *ubo = m_RHIResourceManagers->rhiBufferManager()->data(handle);
                 Q_ASSERT(ubo);
-                const QByteArray rawData(block.m_size, '0');
+                const QByteArray rawData(block.m_size, '\0');
                 ubo->allocate(m_submissionContext.data(), rawData, true);
                 ok = ubo->bind(m_submissionContext.data(), RHIBuffer::UniformBuffer);
                 uboBuffers[block.m_binding] = {handle, ubo};
@@ -1139,7 +1151,8 @@ void Renderer::updateGraphicsPipeline(RenderCommand& cmd, RenderView *rv, int re
     }
 
     // Record RHIGraphicsPipeline into command for later use
-    cmd.pipeline = graphicsPipeline;
+    if (graphicsPipeline && graphicsPipeline->pipeline())
+        cmd.pipeline = graphicsPipeline;
 }
 
 // When this function is called, we must not be processing the commands for frame n+1
@@ -2141,13 +2154,83 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
     }
 
     for (const BlockToUBO& pack : command.m_parameterPack.uniformBuffers()) {
-        qDebug() << pack.m_bufferID;
         Buffer *cpuBuffer = nodeManagers()->bufferManager()->lookupResource(pack.m_bufferID);
         RHIBuffer *ubo = m_submissionContext->rhiBufferForRenderBuffer(cpuBuffer);
         ubo->bind(&*m_submissionContext, RHIBuffer::UniformBuffer);
     }
 
     return true;
+}
+
+namespace
+{
+void printUpload(const UniformValue& value,
+                 const QShaderDescription::BlockVariable& member)
+{
+   switch (member.type)
+   {
+   case QShaderDescription::VariableType::Int:
+       qDebug() << "Updating" << member.name << "with int data: " << *value.constData<int>() << " (offset: " << member.offset << ", size: " << member.size << ")";
+       break;
+   case QShaderDescription::VariableType::Float:
+       qDebug() << "Updating" << member.name << "with float data: " << *value.constData<float>() << " (offset: " << member.offset << ", size: " << member.size << ")";
+       break;
+   case QShaderDescription::VariableType::Vec2:
+       qDebug() << "Updating" << member.name << "with vec2 data: "
+                << value.constData<float>()[0] << ", "
+                << value.constData<float>()[1] << " (offset: " << member.offset << ", size: " << member.size << ")";
+       ;
+       break;
+   case QShaderDescription::VariableType::Vec3:
+       qDebug() << "Updating" << member.name << "with vec3 data: "
+                << value.constData<float>()[0] << ", "
+                << value.constData<float>()[1] << ", "
+                << value.constData<float>()[2] << " (offset: " << member.offset << ", size: " << member.size << ")";
+       ;
+       break;
+   case QShaderDescription::VariableType::Vec4:
+       qDebug() << "Updating" << member.name << "with vec4 data: "
+                << value.constData<float>()[0] << ", "
+                << value.constData<float>()[1] << ", "
+                << value.constData<float>()[2] << ", "
+                << value.constData<float>()[3] << " (offset: " << member.offset << ", size: " << member.size << ")";
+       ;
+       break;
+   default:
+       qDebug() << "Updating" << member.name << "with data: " << value.constData<char>();
+       break;
+   }
+}
+
+void uploadUniform(
+            SubmissionContext& submissionContext,
+            const PackUniformHash &uniforms,
+            const RHIShader::UBO_Member& uboMember,
+            const QHash<int, RHIGraphicsPipeline::UBOBuffer>& uboBuffers,
+            const QString& uniformName,
+            const QShaderDescription::BlockVariable& member)
+{
+    const int uniformNameId = StringToInt::lookupId(uniformName);
+
+    if (!uniforms.contains(uniformNameId))
+        return;
+
+    const UniformValue value = uniforms.value(uniformNameId);
+    const ShaderUniformBlock block = uboMember.block;
+
+    // Update UBO with uniform value
+    Q_ASSERT(uboBuffers.contains(block.m_binding));
+    const RHIGraphicsPipeline::UBOBuffer& ubo = uboBuffers[block.m_binding];
+    RHIBuffer *buffer = ubo.buffer;
+
+    // TODO we should maybe have this thread_local to not reallocate memory every time
+    QByteArray rawData;
+    rawData.resize(member.size);
+    memcpy(rawData.data(), value.constData<char>(), std::min(value.byteSize(), member.size));
+    buffer->update(&submissionContext, rawData, member.offset);
+
+    // printUpload(value, member);
+}
 }
 
 bool Renderer::uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv, const RenderCommand &command)
@@ -2170,41 +2253,39 @@ bool Renderer::uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
         if (!shader)
             return true;
 
-        const QVector<RHIShader::UBO_Member> uboMembers = shader->uboMembers();
-        const QHash<int, RHIGraphicsPipeline::UBOBuffer> uboBuffers = pipeline->ubos();
+        const QVector<RHIShader::UBO_Member>& uboMembers = shader->uboMembers();
+        const QHash<int, RHIGraphicsPipeline::UBOBuffer>& uboBuffers = pipeline->ubos();
         const ShaderParameterPack &parameterPack = command.m_parameterPack;
         const PackUniformHash &uniforms = parameterPack.uniforms();
 
         // Update Buffer CPU side data based on uniforms being set
         for (const RHIShader::UBO_Member &uboMember : uboMembers) {
-            const QVector<QShaderDescription::BlockVariable> members = uboMember.members;
-            for (const QShaderDescription::BlockVariable &member : members) {
-                const int uniformNameId = StringToInt::lookupId(member.name);
+            for (const QShaderDescription::BlockVariable &member : qAsConst(uboMember.members)) {
 
-
-                // Check if key is found in one of the custom UBOs
-                if (uniforms.contains(uniformNameId)) {
-                    const UniformValue value = uniforms.value(uniformNameId);
-                    const ShaderUniformBlock block = uboMember.block;
-
-                    // Update UBO with uniform value
-                    Q_ASSERT(uboBuffers.contains(block.m_binding));
-                    const RHIGraphicsPipeline::UBOBuffer& ubo = uboBuffers[block.m_binding];
-                    RHIBuffer *buffer = ubo.buffer;
-
-                    // TODO we should maybe have this thread_local to not reallocate memory every time
-                    QByteArray rawData;
-                    rawData.resize(member.size);
-                    memcpy(rawData.data(), value.constData<char *>(), std::min(value.byteSize(), member.size));
-                    buffer->update(m_submissionContext.data(), rawData, member.offset);
-                    qDebug() << "Updating" << member.name << "with" << rawData;
+                if (!member.arrayDims.empty()) {
+                    if (!member.structMembers.empty()) {
+                        const int arr0 = member.arrayDims[0];
+                        for (int i = 0; i < arr0; i++) {
+                            for (const QShaderDescription::BlockVariable& structMember : member.structMembers) {
+                                const QString processedName = member.name + "[" + QString::number(i) + "]." + structMember.name;
+                                uploadUniform(*m_submissionContext, uniforms, uboMember, uboBuffers, processedName, structMember);
+                            }
+                        }
+                    } else {
+                        uploadUniform(*m_submissionContext, uniforms, uboMember, uboBuffers, member.name, member);
+                    }
+                }
+                else
+                {
+                    uploadUniform(*m_submissionContext, uniforms, uboMember, uboBuffers, member.name, member);
                 }
             }
         }
         // Upload changes to GPU Buffer
-        for (const RHIGraphicsPipeline::UBOBuffer& ubo : uboBuffers)
+        for (const RHIGraphicsPipeline::UBOBuffer& ubo : uboBuffers) {
             // Binding triggers the upload
             ubo.buffer->bind(m_submissionContext.data(), RHIBuffer::UniformBuffer);
+        }
     }
     return true;
 }
@@ -2351,12 +2432,14 @@ void Renderer::cleanGraphicsResources()
     // Remove unused GraphicsPipeline
     RHIGraphicsPipelineManager *pipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
     const QVector<HRHIGraphicsPipeline> graphicsPipelinesHandles = pipelineManager->activeHandles();
-    for (const HRHIGraphicsPipeline &pipelineHandle : graphicsPipelinesHandles) {
+    for (HRHIGraphicsPipeline pipelineHandle : graphicsPipelinesHandles) {
         RHIGraphicsPipeline *pipeline = pipelineManager->data(pipelineHandle);
         pipeline->decreaseScore();
         // Pipeline wasn't used recently, let's destroy it
         if (pipeline->score() < 0)
-            pipelineManager->release(pipelineHandle);
+        {
+            pipeline->cleanup();
+        }
     }
 
     // Clean buffers

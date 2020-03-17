@@ -93,11 +93,14 @@ public:
     Qt3DRender::QTechnique *m_gl3Technique;
     Qt3DRender::QTechnique *m_gl2Technique;
     Qt3DRender::QTechnique *m_es2Technique;
+    Qt3DRender::QTechnique *m_rhiTechnique;
     Qt3DRender::QRenderPass *m_gl3RenderPass;
     Qt3DRender::QRenderPass *m_gl2RenderPass;
     Qt3DRender::QRenderPass *m_es2RenderPass;
+    Qt3DRender::QRenderPass *m_rhiRenderPass;
     Qt3DRender::QShaderProgram *m_gl3Shader;
     Qt3DRender::QShaderProgram *m_gl2ES2Shader;
+    Qt3DRender::QShaderProgram *m_rhiShader;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QGoochMaterial)
