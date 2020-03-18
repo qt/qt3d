@@ -77,6 +77,7 @@ bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
     }
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
+    case QEvent::MouseButtonDblClick:
     case QEvent::MouseMove:
         // Creates copy and store event to be processed later on in an InputAspect job
         m_inputHandler->appendMouseEvent(QMouseEvent(*static_cast<QMouseEvent *>(e)));
