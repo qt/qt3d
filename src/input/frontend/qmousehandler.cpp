@@ -58,7 +58,7 @@ QMouseHandlerPrivate::QMouseHandlerPrivate()
 {
     m_shareable = false;
     m_pressAndHoldTimer->setSingleShot(true);
-    m_pressAndHoldTimer->setInterval(500);
+    m_pressAndHoldTimer->setInterval(800);
     QObject::connect(m_pressAndHoldTimer, &QTimer::timeout, [this] {
         emit q_func()->pressAndHold(m_lastPressedEvent.data());
     });
@@ -77,15 +77,15 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
 {
     Q_Q(QMouseHandler);
     switch (event->type()) {
-    case QEvent::MouseButtonPress: {
+    case QEvent::MouseButtonPress:
         m_lastPressedEvent = event;
         m_pressAndHoldTimer->start();
         emit q->pressed(event.data());
         break;
-    }
     case QEvent::MouseButtonRelease:
         m_pressAndHoldTimer->stop();
         emit q->released(event.data());
+        emit q->clicked(event.data());
         break;
 #if QT_CONFIG(gestures)
     case QEvent::Gesture:
@@ -96,6 +96,7 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
         emit q->doubleClicked(event.data());
         break;
     case QEvent::MouseMove:
+        m_pressAndHoldTimer->stop();
         emit q->positionChanged(event.data());
         break;
     default:
