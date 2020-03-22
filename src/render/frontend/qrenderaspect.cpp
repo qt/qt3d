@@ -168,6 +168,8 @@
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/pickeventfilter_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
+#include <Qt3DRender/private/qgraphicsapifilter_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -190,6 +192,81 @@ QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
 
+namespace {
+
+QString dumpNode(const Qt3DCore::QEntity *n) {
+    auto formatNode = [](const Qt3DCore::QNode *n) {
+        QString res = QString(QLatin1String("%1{%2}"))
+                          .arg(QLatin1String(n->metaObject()->className()))
+                          .arg(n->id().id());
+        if (!n->objectName().isEmpty())
+            res += QString(QLatin1String(" (%1)")).arg(n->objectName());
+        if (!n->isEnabled())
+            res += QLatin1String(" [D]");
+        return res;
+    };
+
+    return formatNode(n);
+}
+
+QString dumpNodeFilters(const QString &filterType, const QVector<Qt3DRender::QFilterKey*> &filters) {
+    QString res;
+
+    QStringList kv;
+    for (auto filter: filters)
+        kv.push_back(QString(QLatin1String("%1: %2")).arg(filter->name(), filter->value().toString()));
+    if (kv.size())
+        res += QString(QLatin1String("%1 <%2>")).arg(filterType, kv.join(QLatin1String(", ")));
+
+    return res;
+}
+
+QStringList dumpSGFilterState(Qt3DRender::Render::TechniqueManager *manager,
+                              const Qt3DRender::GraphicsApiFilterData *contextData,
+                              const Qt3DCore::QNode *n, int level = 0)
+{
+    using namespace Qt3DRender;
+
+    QStringList reply;
+    const auto *entity = qobject_cast<const Qt3DCore::QEntity *>(n);
+    if (entity != nullptr) {
+        QString res = dumpNode(entity);
+        auto materials = entity->componentsOfType<QMaterial>();
+        if (materials.size() && materials.front()->effect()) {
+            auto m = materials.front();
+            const auto techniques = m->effect()->techniques();
+            for (auto t: m->effect()->techniques()) {
+                auto apiFilter = t->graphicsApiFilter();
+                if (apiFilter) {
+                    auto backendTechnique = manager->lookupResource(t->id());
+                    if (backendTechnique &&
+                        !(*contextData == *backendTechnique->graphicsApiFilter()))
+                        continue; // skip technique that doesn't match current renderer
+                }
+
+                QStringList filters;
+                filters += dumpNodeFilters(QLatin1String("T"), t->filterKeys());
+
+                const auto &renderPasses = t->renderPasses();
+                for (auto r: renderPasses)
+                    filters += dumpNodeFilters(QLatin1String("RP"), r->filterKeys());
+
+                if (filters.size())
+                    res += QLatin1String(" [ %1 ]").arg(filters.join(QLatin1String(" ")));
+            }
+        }
+        reply += res.rightJustified(res.length() + level * 2, ' ');
+        level++;
+    }
+
+    const auto children = n->childNodes();
+    for (auto *child: children)
+        reply += dumpSGFilterState(manager, contextData, child, level);
+
+    return reply;
+}
+
+}
 namespace Qt3DRender {
 
 #define CreateSynchronizerJobPtr(lambda, type) \
@@ -686,6 +763,12 @@ QVariant QRenderAspect::executeCommand(const QStringList &args)
                 return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraph();
             if (args.front() == QLatin1String("framepaths"))
                 return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphPaths().join(QLatin1String("\n"));
+            if (args.front() == QLatin1String("filterstates")) {
+                auto res = Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphFilterState().join(QLatin1String("\n"));
+                res += dumpSGFilterState(d->m_nodeManagers->techniqueManager(),
+                                         d->m_renderer->contextInfo(), d->m_root).join(QLatin1String("\n"));
+                return res;
+            }
         }
         if (args.front() == QLatin1String("scenegraph"))
             return droot->dumpSceneGraph();

@@ -85,6 +85,7 @@ public:
     void resetDirty();
     QVariant executeCommand(const QStringList &args) override;
     QOpenGLContext *shareContext() const override;
+    const Qt3DRender::GraphicsApiFilterData *contextInfo() const override { return  nullptr; }
 
     void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) override;
     QSurfaceFormat format() override;

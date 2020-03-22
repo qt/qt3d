@@ -72,6 +72,7 @@ public:
 
     QString dumpFrameGraph() const;
     QStringList dumpFrameGraphPaths() const;
+    QStringList dumpFrameGraphFilterState() const;
 
     Q_DECLARE_PUBLIC(QFrameGraphNode)
 };

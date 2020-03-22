@@ -81,6 +81,7 @@ class QAspectManager;
 namespace Qt3DRender {
 
 class QRenderAspect;
+struct GraphicsApiFilterData;
 
 namespace Render {
 
@@ -184,7 +185,7 @@ public:
     virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
     virtual QSurfaceFormat format() = 0;
     virtual QOpenGLContext *shareContext() const = 0;
-
+    virtual const GraphicsApiFilterData *contextInfo() const = 0;
 
     // These commands are executed in a dedicated command thread
     // More will be added later

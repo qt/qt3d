@@ -272,7 +272,7 @@ public:
     QSharedPointer<RenderBackendResourceAccessor> resourceAccessor() const override;
 
 
-    const GraphicsApiFilterData *contextInfo() const;
+    const GraphicsApiFilterData *contextInfo() const override;
     SubmissionContext *submissionContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
