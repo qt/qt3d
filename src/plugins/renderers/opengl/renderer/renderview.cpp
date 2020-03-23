@@ -1234,6 +1234,9 @@ bool RenderView::shouldSkipSubmission() const
     if (m_clearBuffer != QClearBuffers::None)
         return false;
 
+    if (!m_renderCaptureNodeId.isNull())
+        return false;
+
     return true;
 }
 
