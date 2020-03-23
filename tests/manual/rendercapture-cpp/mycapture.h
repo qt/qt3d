@@ -75,7 +75,7 @@ public slots:
 
         m_reply->saveImage("capture.bmp");
 
-        delete m_reply;
+        m_reply->deleteLater();
         m_reply = nullptr;
 
         if (m_continuous)

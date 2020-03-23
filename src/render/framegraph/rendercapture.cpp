@@ -112,7 +112,8 @@ void RenderCapture::syncRenderCapturesToFrontend(Qt3DCore::QAspectManager *manag
     QMutexLocker lock(&m_mutex);
     for (const RenderCaptureDataPtr &data : qAsConst(m_renderCaptureData)) {
         QPointer<QRenderCaptureReply> reply = dfrontend->takeReply(data.data()->captureId);
-        if (reply) {
+        // Note: QPointer has no operator bool, we must use isNull() to check it
+        if (!reply.isNull()) {
             dfrontend->setImage(reply, data.data()->image);
             emit reply->completed();
 QT_WARNING_PUSH
