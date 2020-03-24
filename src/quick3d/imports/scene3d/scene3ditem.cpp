@@ -292,14 +292,12 @@ void Scene3DItem::setHoverEnabled(bool enabled)
     \value Underlay
            Suitable for full screen 3D scenes where using an FBO might be too
            resource intensive. Scene3D behaves as a QtQuick underlay.
-
            Please note that when using this mode, the size of the Scene3D and
            its transformations are ignored and the rendering will occupy the
            whole screen. The position of the Scene3D in the QML file won't have
            any effect either. The Qt 3D content will be drawn prior to any Qt
            Quick content. Care has to be taken not to overdraw and hide the Qt
            3D content by overlapping Qt Quick content.
-
            Additionally when using this mode, the window clearBeforeRendering
            will be set to false automatically.
 
