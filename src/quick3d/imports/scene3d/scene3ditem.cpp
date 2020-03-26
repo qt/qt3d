@@ -163,6 +163,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
+    setAcceptHoverEvents(true);
     // TO DO: register the event source in the main thread
 
     // Use manual drive mode when using Scene3D
