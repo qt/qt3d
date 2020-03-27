@@ -129,7 +129,7 @@ void EvaluateBlendClipAnimatorJob::run()
     blendedClipAnimator->setCurrentLoop(animatorData.currentLoop);
 
     // Prepare the change record
-    const bool finalFrame = isFinalFrame(localTime, duration, animatorData.currentLoop, animatorData.loopCount);
+    const bool finalFrame = isFinalFrame(localTime, duration, animatorData.currentLoop, animatorData.loopCount, animatorData.playbackRate);
     const QVector<MappingData> mappingData = blendedClipAnimator->mappingData();
     auto record = prepareAnimationRecord(blendedClipAnimator->peerId(),
                                          mappingData,

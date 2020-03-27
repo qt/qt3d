@@ -2059,6 +2059,114 @@ private Q_SLOTS:
             QTest::newRow("clip1.json, elapsedTime = duration + 1, loops = 2, current_loop = 1")
                     << handler << clip << animatorData << clipData;
         }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = clip->duration();
+            const int loops = 1;
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            animator->setCurrentLoop(1);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = toNsecs(clip->duration() * 0.5); // +1 to ensure beyond end of clip
+
+            Clock clock;
+            clock.setPlaybackRate(-1.0);
+
+            animatorData = evaluationDataForAnimator(animator, &clock, elapsedTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                         animatorData.elapsedTime,
+                                                         animatorData.playbackRate,
+                                                         clip->duration(),
+                                                         animatorData.loopCount,
+                                                         clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = false;
+
+            QTest::newRow("clip1.json, elapsedTime = duration / 2, loops = 1, current_loop = 1, playback_rate = -1")
+                    << handler << clip << animatorData << clipData;
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = clip->duration();
+            const int loops = 1;
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            animator->setCurrentLoop(1);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = toNsecs(clip->duration() + 1); // +1 to ensure beyond end of clip
+
+            Clock clock;
+            clock.setPlaybackRate(-1.0);
+
+            animatorData = evaluationDataForAnimator(animator, &clock, elapsedTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                          animatorData.elapsedTime,
+                                                          animatorData.playbackRate,
+                                                          clip->duration(),
+                                                          animatorData.loopCount,
+                                                          clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = true;
+
+            QTest::newRow("clip1.json, elapsedTime = duration + 1, loops = 1, current_loop = 1, playback_rate = -1")
+                    << handler << clip << animatorData << clipData;
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = clip->duration();
+            const int loops = 2;
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            animator->setCurrentLoop(0);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = toNsecs(clip->duration() + 1); // +1 to ensure beyond end of clip
+
+            Clock clock;
+            clock.setPlaybackRate(-1.0);
+
+            animatorData = evaluationDataForAnimator(animator, &clock, elapsedTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                          animatorData.elapsedTime,
+                                                          animatorData.playbackRate,
+                                                          clip->duration(),
+                                                          animatorData.loopCount,
+                                                          clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = true;
+
+            QTest::newRow("clip1.json, elapsedTime = duration + 1, loops = 2, current_loop = 0, playback_rate = -1")
+                    << handler << clip << animatorData << clipData;
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = clip->duration();
+            const int loops = 2;
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            animator->setCurrentLoop(1);
+            clipData.currentLoop = animator->currentLoop();
+            const qint64 elapsedTimeNS = toNsecs(clip->duration() * 2.0 + 1); // +1 to ensure beyond end of clip
+
+            Clock clock;
+            clock.setPlaybackRate(-1.0);
+
+            animatorData = evaluationDataForAnimator(animator, &clock, elapsedTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromElapsedTime(animatorData.currentTime,
+                                                          animatorData.elapsedTime,
+                                                          animatorData.playbackRate,
+                                                          clip->duration(),
+                                                          animatorData.loopCount,
+                                                          clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = true;
+
+            QTest::newRow("clip1.json, elapsedTime = duration + 1, loops = 2, current_loop = 1, playback_rate = -1")
+                    << handler << clip << animatorData << clipData;
+        }
     }
 
     void checkEvaluationDataForClip()

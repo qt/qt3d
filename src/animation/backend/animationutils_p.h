@@ -318,11 +318,15 @@ AnimatorEvaluationData evaluationDataForAnimator(Animator animator,
 inline bool isFinalFrame(double localTime,
                          double duration,
                          int currentLoop,
-                         int loopCount)
+                         int loopCount,
+                         double playbackRate)
 {
-    return (localTime >= duration &&
-            loopCount != 0 &&
-            currentLoop >= loopCount - 1);
+    // We must be on the final loop and
+    // - if playing forward, localTime must be equal or above the duration
+    // - if playing backward, localTime must be equal or below 0
+    if (playbackRate >= 0.0)
+        return (loopCount != 0 && currentLoop >= loopCount - 1 && localTime >= duration);
+    return (loopCount != 0  && currentLoop <= 0 && localTime <= 0);
 }
 
 inline bool isValidNormalizedTime(float t)
