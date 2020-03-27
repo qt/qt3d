@@ -320,6 +320,8 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateLevelOfDetailJob->addDependency(m_expandBoundingVolumeJob);
+    m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
+    m_rayCastingJob->addDependency(m_expandBoundingVolumeJob);
 }
 
 /*! \internal */
@@ -684,6 +686,9 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
+        const QVector<QAspectJobPtr> preRenderingJobs = d->createPreRendererJobs();
+        jobs.append(preRenderingJobs);
+
         // Don't spawn any rendering jobs, if the renderer decides to skip this frame
         // Note: this only affects rendering jobs (jobs that load buffers,
         // perform picking,... must still be run)
@@ -739,9 +744,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const bool layersDirty = dirtyBitsForFrame & AbstractRenderer::LayersDirty;
         if (layersDirty)
             jobs.push_back(d->m_updateEntityLayersJob);
-
-        const QVector<QAspectJobPtr> preRenderingJobs = d->createPreRendererJobs();
-        jobs.append(preRenderingJobs);
 
         const QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
         jobs.append(renderBinJobs);
@@ -881,7 +883,7 @@ QVector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
 
     const auto frameMouseEvents = m_pickEventFilter->pendingMouseEvents();
     const auto frameKeyEvents = m_pickEventFilter->pendingKeyEvents();
-    m_renderer->setPendingEvents(frameMouseEvents, m_pickEventFilter->pendingKeyEvents());
+    m_renderer->setPendingEvents(frameMouseEvents, frameKeyEvents);
 
     auto jobs = m_renderer->preRenderingJobs();
 
