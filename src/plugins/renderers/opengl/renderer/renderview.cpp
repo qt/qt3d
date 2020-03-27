@@ -438,6 +438,7 @@ struct SubRangeSorter<QSortPolicy::Texture>
 {
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
+#ifndef Q_OS_WIN
         std::stable_sort(begin, end, [] (const RenderCommand &a, const RenderCommand &b) {
             QVector<ShaderParameterPack::NamedResource> texturesA = a.m_parameterPack.textures();
             QVector<ShaderParameterPack::NamedResource> texturesB = b.m_parameterPack.textures();
@@ -456,6 +457,7 @@ struct SubRangeSorter<QSortPolicy::Texture>
 
             return identicalTextureCount < originalTextureASize;
         });
+#endif
     }
 };
 
