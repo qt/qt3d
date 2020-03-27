@@ -111,6 +111,24 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
     Buffer *positionBuffer = nullptr;
     Buffer *indexBuffer = nullptr;
 
+    auto updateStride = [](BufferInfo &info, int stride) {
+        if (stride) {
+            info.byteStride = stride;
+            return;
+        }
+        switch (info.type) {
+        case QAttribute::Byte: info.byteStride = sizeof(qint8) * info.dataSize; return;
+        case QAttribute::UnsignedByte: info.byteStride = sizeof(quint8) * info.dataSize; return;
+        case QAttribute::Short: info.byteStride = sizeof(qint16) * info.dataSize; return;
+        case QAttribute::UnsignedShort: info.byteStride = sizeof(quint16) * info.dataSize; return;
+        case QAttribute::Int: info.byteStride = sizeof(qint32) * info.dataSize; return;
+        case QAttribute::UnsignedInt: info.byteStride = sizeof(quint32) * info.dataSize; return;
+        case QAttribute::Float: info.byteStride = sizeof(float) * info.dataSize; return;
+        case QAttribute::Double: info.byteStride = sizeof(double) * info.dataSize; return;
+        default: return;
+        }
+    };
+
     if (geom) {
         positionAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
 
@@ -137,9 +155,9 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
             vertexBufferInfo.data = positionBuffer->data();
             vertexBufferInfo.type = positionAttribute->vertexBaseType();
             vertexBufferInfo.byteOffset = positionAttribute->byteOffset();
-            vertexBufferInfo.byteStride = positionAttribute->byteStride();
             vertexBufferInfo.dataSize = positionAttribute->vertexSize();
             vertexBufferInfo.count = positionAttribute->count();
+            updateStride(vertexBufferInfo, positionAttribute->byteStride());
 
             if (indexBuffer) { // Indexed
 
@@ -147,10 +165,10 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
                 indexBufferInfo.data = indexBuffer->data();
                 indexBufferInfo.type = indexAttribute->vertexBaseType();
                 indexBufferInfo.byteOffset = indexAttribute->byteOffset();
-                indexBufferInfo.byteStride = indexAttribute->byteStride();
                 indexBufferInfo.count = indexAttribute->count();
                 indexBufferInfo.restartEnabled = renderer->primitiveRestartEnabled();
                 indexBufferInfo.restartIndexValue = renderer->restartIndexValue();
+                updateStride(indexBufferInfo, indexAttribute->byteStride());
 
                 IndexExecutor executor;
                 executor.m_vertexBufferInfo = vertexBufferInfo;
