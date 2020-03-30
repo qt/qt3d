@@ -247,6 +247,8 @@ void QAbstractAspectPrivate::syncDirtyFrontEndSubNodes(const QVector<NodeRelatio
     for (const auto &nodeChange: qAsConst(nodes)) {
         auto getBackend = [this](QNode *node) -> std::tuple<QBackendNode *, bool> {
             const QMetaObject *metaObj = QNodePrivate::get(node)->m_typeInfo;
+            if (!metaObj)
+                return {};
             const BackendNodeMapperAndInfo backendNodeMapperInfo = mapperForNode(metaObj);
             const QBackendNodeMapperPtr backendNodeMapper = backendNodeMapperInfo.first;
 
