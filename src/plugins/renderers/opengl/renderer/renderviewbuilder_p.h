@@ -111,7 +111,10 @@ public:
     void setRenderCommandCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
     bool renderCommandCacheNeedsToBeRebuilt() const;
 
-    static int optimalJobCount();
+    static int defaultJobCount();
+    int optimalJobCount() const;
+    void setOptimalJobCount(int v);
+
     static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset);
 
 private:
@@ -139,7 +142,7 @@ private:
     SynchronizerJobPtr m_syncMaterialGathererJob;
     FilterProximityDistanceJobPtr m_filterProximityJob;
 
-    static const int m_optimalParallelJobCount;
+    int m_optimalParallelJobCount;
 };
 
 } // OpenGL

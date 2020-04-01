@@ -71,6 +71,7 @@ namespace OpenGL {
 class Renderer;
 
 // TO be executed for each FrameGraph branch with a given RenderPassFilter/TechniqueFilter
+class MaterialParameterGathererJobPrivate;
 
 class Q_AUTOTEST_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
 {
@@ -96,6 +97,8 @@ private:
     // Material id to array of RenderPasse with parameters
     MaterialParameterGathererData m_parameters;
     QVector<HMaterial> m_handles;
+
+    Q_DECLARE_PRIVATE(MaterialParameterGathererJob)
 };
 
 typedef QSharedPointer<MaterialParameterGathererJob> MaterialParameterGathererJobPtr;

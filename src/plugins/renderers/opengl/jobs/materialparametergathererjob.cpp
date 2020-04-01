@@ -59,8 +59,32 @@ const int likelyNumberOfParameters = 24;
 
 } // anonymous
 
+class MaterialParameterGathererJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    MaterialParameterGathererJobPrivate(MaterialParameterGathererJob *q) : q_ptr(q) { }
+    ~MaterialParameterGathererJobPrivate() override = default;
+
+    bool isRequired() const override;
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    MaterialParameterGathererJob *q_ptr;
+    Q_DECLARE_PUBLIC(MaterialParameterGathererJob)
+};
+
+bool MaterialParameterGathererJobPrivate::isRequired() const
+{
+    return !q_ptr->m_handles.isEmpty();
+}
+
+void MaterialParameterGathererJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    Q_UNUSED(manager)
+    materialParameterGathererCounter = 0;
+}
+
 MaterialParameterGathererJob::MaterialParameterGathererJob()
-    : Qt3DCore::QAspectJob()
+    : Qt3DCore::QAspectJob(*new MaterialParameterGathererJobPrivate(this))
     , m_manager(nullptr)
     , m_techniqueFilter(nullptr)
     , m_renderPassFilter(nullptr)

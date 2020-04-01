@@ -248,14 +248,15 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.filterEntityByLayerJob().isNull());
             QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob().isNull());
 
-            QCOMPARE(renderViewBuilder.renderViewCommandUpdaterJobs().size(), Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.renderViewCommandUpdaterJobs().size(), Qt3DRender::Render::OpenGL::RenderViewBuilder::defaultJobCount());
             QCOMPARE(renderViewBuilder.materialGathererJobs().size(), 0);
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 8 + 1 * Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 8 + 1 * Qt3DRender::Render::OpenGL::RenderViewBuilder::defaultJobCount());
         }
 
         {
             // WHEN
             Qt3DRender::Render::OpenGL::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+            renderViewBuilder.setOptimalJobCount(2);
             renderViewBuilder.setLayerCacheNeedsToBeRebuilt(true);
             renderViewBuilder.prepareJobs();
 
@@ -265,22 +266,25 @@ private Q_SLOTS:
             QVERIFY(!renderViewBuilder.syncFilterEntityByLayerJob().isNull());
 
             // mark jobs dirty and recheck
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 10 + 1 * Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 10 + renderViewBuilder.optimalJobCount());
         }
 
         {
             // WHEN
             Qt3DRender::Render::OpenGL::RenderViewBuilder renderViewBuilder(leafNode, 0, testAspect.renderer());
+            renderViewBuilder.setOptimalJobCount(2);
             renderViewBuilder.setMaterialGathererCacheNeedsToBeRebuilt(true);
             renderViewBuilder.prepareJobs();
 
             // THEN
             QCOMPARE(renderViewBuilder.materialGathererCacheNeedsToBeRebuilt(), true);
-            QCOMPARE(renderViewBuilder.materialGathererJobs().size(), Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount());
+            // We have elementsPerJob = qMax(materialHandles.size() / m_optimalParallelJobCount, 1)
+            // Given we have 2 materials -> 1 element per job -> so we need 2 jobs
+            QCOMPARE(renderViewBuilder.materialGathererJobs().size(), 2);
             QVERIFY(!renderViewBuilder.syncMaterialGathererJob().isNull());
 
             // mark jobs dirty and recheck
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 9 + 2 * Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount());
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 13);
         }
     }
 

@@ -37,6 +37,7 @@
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DRender/qmaterial.h>
 
 #include "testaspect.h"
 
@@ -115,6 +116,10 @@ private Q_SLOTS:
         Qt3DRender::Render::ViewportNode *fgRoot = new Qt3DRender::Render::ViewportNode();
         const Qt3DCore::QNodeId fgRootId = Qt3DCore::QNodeId::createId();
 
+        // Create fake material so that we crean materialGathererJobs
+        const Qt3DCore::QNodeId materialId = Qt3DCore::QNodeId::createId();
+        nodeManagers.materialManager()->getOrCreateResource(materialId);
+
         nodeManagers.frameGraphManager()->appendNode(fgRootId, fgRoot);
         settings.setActiveFrameGraphId(fgRootId);
 
@@ -129,16 +134,16 @@ private Q_SLOTS:
         // NOTE: FilterCompatibleTechniqueJob and ShaderGathererJob cannot run because the context
         // is not initialized in this test
 
-        const int renderViewBuilderMaterialCacheJobCount = 1 + Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount();
+        const int renderViewBuilderMaterialCacheJobCount = 1 + 1;
         // syncMaterialGathererJob
-        // n * materialGathererJob
+        // n * materialGathererJob (where n depends on the numbers of available threads and the number of materials)
         const int layerCacheJobCount = 2;
         // filterEntityByLayerJob,
         // syncFilterEntityByLayerJob
 
-        const int singleRenderViewCommandRebuildJobCount  = 1 + Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount();
+        const int singleRenderViewCommandRebuildJobCount  = 1 + Qt3DRender::Render::OpenGL::RenderViewBuilder::defaultJobCount();
 
-        const int singleRenderViewJobCount = 8 + 1 * Qt3DRender::Render::OpenGL::RenderViewBuilder::optimalJobCount();
+        const int singleRenderViewJobCount = 8 + 1 * Qt3DRender::Render::OpenGL::RenderViewBuilder::defaultJobCount();
         // RenderViewBuilder renderViewJob,
         //                   syncRenderViewInitializationJob,
         //                   syncFrustumCullingJob,

@@ -318,6 +318,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
 
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
+    m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateLevelOfDetailJob->addDependency(m_expandBoundingVolumeJob);
     m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
@@ -712,12 +713,8 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         jobs.append(bufferJobs);
 
         const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
-        if (entitiesEnabledDirty) {
+        if (entitiesEnabledDirty)
             jobs.push_back(d->m_updateTreeEnabledJob);
-            // This dependency is added here because we clear all dependencies
-            // at the start of this function.
-            d->m_calculateBoundingVolumeJob->addDependency(d->m_updateTreeEnabledJob);
-        }
 
         if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
             jobs.push_back(d->m_worldTransformJob);

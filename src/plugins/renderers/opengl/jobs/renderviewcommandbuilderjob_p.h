@@ -63,6 +63,8 @@ namespace Render {
 
 namespace OpenGL {
 
+class RenderViewCommandBuilderJobPrivate;
+
 class Q_AUTOTEST_EXPORT RenderViewCommandBuilderJob : public Qt3DCore::QAspectJob
 {
 public:
@@ -85,6 +87,8 @@ private:
     RenderView *m_renderView;
     QVector<Entity *> m_entities;
     EntityRenderCommandData m_commandData;
+
+    Q_DECLARE_PRIVATE(RenderViewCommandBuilderJob)
 };
 
 typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobPtr;

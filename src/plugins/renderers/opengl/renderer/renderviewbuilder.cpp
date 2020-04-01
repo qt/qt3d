@@ -49,18 +49,13 @@ namespace Qt3DRender {
 namespace Render {
 namespace OpenGL {
 
-// In some cases having less jobs is better (especially on fast cpus where
-// splitting just adds more overhead). Ideally, we should try to set the value
-// depending on the platform/CPU/nbr of cores
-const int RenderViewBuilder::m_optimalParallelJobCount = QThread::idealThreadCount();
-
 namespace {
 
-int findIdealNumberOfWorkers(int elementCount, int packetSize = 100)
+int findIdealNumberOfWorkers(int elementCount, int packetSize = 100, int maxJobCount = 1)
 {
     if (elementCount == 0 || packetSize == 0)
         return 0;
-    return std::min(std::max(elementCount / packetSize, 1), RenderViewBuilder::optimalJobCount());
+    return std::min(std::max(elementCount / packetSize, 1), maxJobCount);
 }
 
 
@@ -93,9 +88,10 @@ public:
         lock.unlock();
 
         // Split among the ideal number of command builders
-        const int idealPacketSize = std::min(std::max(100, entities.size() / RenderViewBuilder::optimalJobCount()), entities.size());
+        const int jobCount = m_renderViewCommandBuilderJobs.size();
+        const int idealPacketSize = std::min(std::max(100, entities.size() / jobCount), entities.size());
         // Try to split work into an ideal number of workers
-        const int m = findIdealNumberOfWorkers(entities.size(), idealPacketSize);
+        const int m = findIdealNumberOfWorkers(entities.size(), idealPacketSize, jobCount);
 
         for (int i = 0; i < m; ++i) {
             const RenderViewCommandBuilderJobPtr renderViewCommandBuilder = m_renderViewCommandBuilderJobs.at(i);
@@ -353,7 +349,7 @@ public:
 
             // Split among the number of command builders
             // The idealPacketSize is at least 100 entities per worker
-            const int idealPacketSize = std::min(std::max(100, filteredCommandData->size() / RenderViewBuilder::optimalJobCount()), filteredCommandData->size());
+            const int idealPacketSize = std::min(std::max(100, filteredCommandData->size() / RenderViewBuilder::defaultJobCount()), filteredCommandData->size());
             const int m = findIdealNumberOfWorkers(filteredCommandData->size(), idealPacketSize);
 
             for (int i = 0; i < m; ++i) {
@@ -469,6 +465,10 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     , m_syncFilterEntityByLayerJob()
     , m_filterProximityJob(Render::FilterProximityDistanceJobPtr::create())
 {
+    // In some cases having less jobs is better (especially on fast cpus where
+    // splitting just adds more overhead). Ideally, we should try to set the value
+    // depending on the platform/CPU/nbr of cores
+    m_optimalParallelJobCount = QThread::idealThreadCount();
 }
 
 RenderViewInitializerJobPtr RenderViewBuilder::renderViewJob() const
@@ -553,17 +553,16 @@ void RenderViewBuilder::prepareJobs()
     m_frustumCullingJob->setRoot(m_renderer->sceneRoot());
 
     if (m_renderCommandCacheNeedsToBeRebuilt) {
-
-        m_renderViewCommandBuilderJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
-        for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
+        m_renderViewCommandBuilderJobs.reserve(m_optimalParallelJobCount);
+        for (auto i = 0; i < m_optimalParallelJobCount; ++i) {
             auto renderViewCommandBuilder = Render::OpenGL::RenderViewCommandBuilderJobPtr::create();
             m_renderViewCommandBuilderJobs.push_back(renderViewCommandBuilder);
         }
         m_syncRenderViewPreCommandBuildingJob = CreateSynchronizerJobPtr(SyncPreCommandBuilding(m_renderViewJob,
-                                                                                                  m_renderViewCommandBuilderJobs,
-                                                                                                  m_renderer,
-                                                                                                  m_leafNode),
-                                                                           JobTypes::SyncRenderViewPreCommandBuilding);
+                                                                                                m_renderViewCommandBuilderJobs,
+                                                                                                m_renderer,
+                                                                                                m_leafNode),
+                                                                         JobTypes::SyncRenderViewPreCommandBuilding);
     }
 
     m_renderViewJob->setRenderer(m_renderer);
@@ -572,8 +571,8 @@ void RenderViewBuilder::prepareJobs()
 
     // RenderCommand building is the most consuming task -> split it
     // Estimate the number of jobs to create based on the number of entities
-    m_renderViewCommandUpdaterJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
-    for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
+    m_renderViewCommandUpdaterJobs.reserve(m_optimalParallelJobCount);
+    for (auto i = 0; i < m_optimalParallelJobCount; ++i) {
         auto renderViewCommandUpdater = Render::OpenGL::RenderViewCommandUpdaterJobPtr::create();
         renderViewCommandUpdater->setRenderer(m_renderer);
         m_renderViewCommandUpdaterJobs.push_back(renderViewCommandUpdater);
@@ -582,22 +581,23 @@ void RenderViewBuilder::prepareJobs()
     if (m_materialGathererCacheNeedsToBeRebuilt) {
         // Since Material gathering is an heavy task, we split it
         const QVector<HMaterial> materialHandles = m_renderer->nodeManagers()->materialManager()->activeHandles();
-        const int elementsPerJob =  materialHandles.size() / RenderViewBuilder::m_optimalParallelJobCount;
-        const int lastRemaingElements = materialHandles.size() % RenderViewBuilder::m_optimalParallelJobCount;
-        m_materialGathererJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
-        for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
-            auto materialGatherer = MaterialParameterGathererJobPtr::create();
-            materialGatherer->setNodeManagers(m_renderer->nodeManagers());
-            if (i == RenderViewBuilder::m_optimalParallelJobCount - 1)
-                materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob + lastRemaingElements));
-            else
-                materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob));
-            m_materialGathererJobs.push_back(materialGatherer);
+        if (materialHandles.count()) {
+            const int elementsPerJob =  qMax(materialHandles.size() / m_optimalParallelJobCount, 1);
+            m_materialGathererJobs.reserve(m_optimalParallelJobCount);
+            int elementCount = 0;
+            while (elementCount < materialHandles.size()) {
+                auto materialGatherer = MaterialParameterGathererJobPtr::create();
+                materialGatherer->setNodeManagers(m_renderer->nodeManagers());
+                materialGatherer->setHandles(materialHandles.mid(elementCount, elementsPerJob));
+                m_materialGathererJobs.push_back(materialGatherer);
+
+                elementCount += elementsPerJob;
+            }
         }
         m_syncMaterialGathererJob = CreateSynchronizerJobPtr(SyncMaterialParameterGatherer(m_materialGathererJobs,
-                                                                                             m_renderer,
-                                                                                             m_leafNode),
-                                                               JobTypes::SyncMaterialGatherer);
+                                                                                           m_renderer,
+                                                                                           m_leafNode),
+                                                             JobTypes::SyncMaterialGatherer);
     }
 
     if (m_layerCacheNeedsToBeRebuilt) {
@@ -610,29 +610,29 @@ void RenderViewBuilder::prepareJobs()
     }
 
     m_syncRenderViewPreCommandUpdateJob = CreateSynchronizerJobPtr(SyncRenderViewPreCommandUpdate(m_renderViewJob,
-                                                                                                    m_frustumCullingJob,
-                                                                                                    m_filterProximityJob,
-                                                                                                    m_materialGathererJobs,
-                                                                                                    m_renderViewCommandUpdaterJobs,
-                                                                                                    m_renderViewCommandBuilderJobs,
-                                                                                                    m_renderer,
-                                                                                                    m_leafNode,
-                                                                                                    m_renderCommandCacheNeedsToBeRebuilt),
-                                                                     JobTypes::SyncRenderViewPreCommandUpdate);
+                                                                                                  m_frustumCullingJob,
+                                                                                                  m_filterProximityJob,
+                                                                                                  m_materialGathererJobs,
+                                                                                                  m_renderViewCommandUpdaterJobs,
+                                                                                                  m_renderViewCommandBuilderJobs,
+                                                                                                  m_renderer,
+                                                                                                  m_leafNode,
+                                                                                                  m_renderCommandCacheNeedsToBeRebuilt),
+                                                                   JobTypes::SyncRenderViewPreCommandUpdate);
 
     m_syncRenderViewPostCommandUpdateJob = CreateSynchronizerJobPtr(SyncRenderViewPostCommandUpdate(m_renderViewJob,
-                                                                                                      m_renderViewCommandUpdaterJobs,
-                                                                                                      m_renderer),
-                                                                      JobTypes::SyncRenderViewPostCommandUpdate);
+                                                                                                    m_renderViewCommandUpdaterJobs,
+                                                                                                    m_renderer),
+                                                                    JobTypes::SyncRenderViewPostCommandUpdate);
 
     m_syncRenderViewPostInitializationJob = CreateSynchronizerJobPtr(SyncRenderViewPostInitialization(m_renderViewJob,
-                                                                                                        m_frustumCullingJob,
-                                                                                                        m_filterEntityByLayerJob,
-                                                                                                        m_filterProximityJob,
-                                                                                                        m_materialGathererJobs,
-                                                                                                        m_renderViewCommandUpdaterJobs,
-                                                                                                        m_renderViewCommandBuilderJobs),
-                                                                       JobTypes::SyncRenderViewInitialization);
+                                                                                                      m_frustumCullingJob,
+                                                                                                      m_filterEntityByLayerJob,
+                                                                                                      m_filterProximityJob,
+                                                                                                      m_materialGathererJobs,
+                                                                                                      m_renderViewCommandUpdaterJobs,
+                                                                                                      m_renderViewCommandBuilderJobs),
+                                                                     JobTypes::SyncRenderViewInitialization);
 }
 
 QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
@@ -788,9 +788,34 @@ bool RenderViewBuilder::renderCommandCacheNeedsToBeRebuilt() const
     return m_renderCommandCacheNeedsToBeRebuilt;
 }
 
-int RenderViewBuilder::optimalJobCount()
+int RenderViewBuilder::defaultJobCount()
 {
-    return RenderViewBuilder::m_optimalParallelJobCount;
+    static int jobCount = 0;
+    if (jobCount)
+        return jobCount;
+
+    const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
+    if (!maxThreadCount.isEmpty()) {
+        bool conversionOK = false;
+        const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
+        if (conversionOK) {
+            jobCount = maxThreadCountValue;
+            return jobCount;
+        }
+    }
+
+    jobCount = QThread::idealThreadCount();
+    return jobCount;
+}
+
+int RenderViewBuilder::optimalJobCount() const
+{
+    return m_optimalParallelJobCount;
+}
+
+void RenderViewBuilder::setOptimalJobCount(int v)
+{
+    m_optimalParallelJobCount = v;
 }
 
 QVector<Entity *> RenderViewBuilder::entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset)
