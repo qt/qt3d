@@ -278,7 +278,7 @@ void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         markDirty(AbstractRenderer::ShadersDirty);
     }
 
-    static const QVector<std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const>> shaderTypesToGetters = {
+    static const QVarLengthArray<std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const>, 6> shaderTypesToGetters {
         {QShaderProgram::Vertex, &QShaderProgramBuilder::vertexShaderGraph},
         {QShaderProgram::TessellationControl, &QShaderProgramBuilder::tessellationControlShaderGraph},
         {QShaderProgram::TessellationEvaluation, &QShaderProgramBuilder::tessellationEvaluationShaderGraph},
