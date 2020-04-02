@@ -76,19 +76,23 @@ void Material::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     if (!node)
         return;
 
+    AbstractRenderer::BackendNodeDirtySet dirty = firstTime ? AbstractRenderer::MaterialDirty : static_cast<AbstractRenderer::BackendNodeDirtyFlag>(0);
+
     auto parameters = qIdsForNodes(node->parameters());
     std::sort(std::begin(parameters), std::end(parameters));
-    if (m_parameterPack.parameters() != parameters)
+    if (m_parameterPack.parameters() != parameters) {
         m_parameterPack.setParameters(parameters);
+        dirty |= AbstractRenderer::AllDirty;
+    }
 
     const auto effectId = node->effect() ? node->effect()->id() : QNodeId{};
-    if (effectId != m_effectUuid)
+    if (effectId != m_effectUuid) {
         m_effectUuid = effectId;
+        dirty |= AbstractRenderer::AllDirty;
+    }
 
-    if (firstTime)
-        markDirty(AbstractRenderer::MaterialDirty);
-    else
-        markDirty(AbstractRenderer::AllDirty);
+    if (dirty)
+        markDirty(dirty);
 }
 
 QVector<Qt3DCore::QNodeId> Material::parameters() const
