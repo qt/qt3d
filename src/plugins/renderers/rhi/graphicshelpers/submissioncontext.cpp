@@ -1685,15 +1685,14 @@ void preprocessRHIShader(QVector<QByteArray>& shaderCodes)
         }
     }
 }
-}
 
-// Called by GL Command Thread
-SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHIShader *shader)
+int glslVersionForFormat(const QSurfaceFormat& format) noexcept
 {
-#ifndef QT_NO_OPENGL
-    const QSurfaceFormat& format = this->format();
+    const int major = format.majorVersion();
+    const int minor = format.minorVersion();
 
-    const QHash<std::pair<int, int>, int> glVersionToGLSLVersion = {
+    static const QHash<std::pair<int, int>, int> glVersionToGLSLVersion = {
+        { {4, 6}, 460 },
         { {4, 5}, 450 },
         { {4, 4}, 440 },
         { {4, 3}, 430 },
@@ -1702,20 +1701,39 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
         { {4, 0}, 400 },
         { {3, 3}, 330 },
         { {3, 2}, 150 },
-        { {3, 2}, 140 },
-        { {3, 1}, 130 },
+        { {3, 2}, 120 },
+        { {3, 1}, 120 },
     };
-    const int targetGLSLVersion = glVersionToGLSLVersion.value({format.majorVersion(),
-                                                                format.minorVersion()},
-                                                               120);
-#endif
+
+    const auto it = glVersionToGLSLVersion.find({major, minor});
+    if (it == glVersionToGLSLVersion.end())
+    {
+        if (major < 3)
+        {
+            return 120;
+        }
+        else
+        {
+            return major * 100 + minor * 10;
+        }
+    }
+    else
+    {
+        return *it;
+    }
+}
+}
+
+// Called by GL Command Thread
+SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHIShader *shader)
+{
     // Compile shaders
     const auto& shaderCode = shader->shaderCode();
     QShaderBaker b;
     b.setGeneratedShaders({
                               {QShader::SpirvShader, 100},
 #ifndef QT_NO_OPENGL
-                              {QShader::GlslShader, targetGLSLVersion}, // Only GLSL version supported by RHI right now.
+                              {QShader::GlslShader, glslVersionForFormat(format())},
 #endif
                               {QShader::HlslShader, QShaderVersion(50)},
                               {QShader::MslShader, QShaderVersion(12)},
