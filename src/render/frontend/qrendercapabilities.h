@@ -86,8 +86,11 @@ class Q_3DRENDERSHARED_EXPORT QRenderCapabilities : public QObject
     Q_PROPERTY(int maxComputeSharedMemorySize READ maxComputeSharedMemorySize CONSTANT)
 public:
     enum API {
-        OpenGL = QSurfaceFormat::OpenGL,
-        OpenGLES = QSurfaceFormat::OpenGLES
+        OpenGL = QSurfaceFormat::OpenGL,     // 1
+        OpenGLES = QSurfaceFormat::OpenGLES, // 2
+        Vulkan = 3,                          // 3
+        DirectX,                             // 4
+        RHI,                                 // 5
     };
     Q_ENUM(API)
 
