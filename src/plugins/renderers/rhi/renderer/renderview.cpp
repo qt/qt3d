@@ -161,11 +161,30 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
                   fractionalViewport.height() * surfaceSize.height());
 }
 
-static Matrix4x4 getProjectionMatrix(const CameraLens *lens)
+static Matrix4x4 getProjectionMatrix(const CameraLens *lens, bool yIsUp)
 {
     if (!lens)
         qWarning() << "[Qt3D Renderer] No Camera Lens found. Add a CameraSelector to your Frame Graph or make sure that no entities will be rendered.";
-    return lens ? lens->projection() : Matrix4x4();
+    if (lens)
+    {
+        if (yIsUp)
+        {
+            // OpenGL
+            return lens->projection();
+        }
+        else
+        {
+            // Others. Note : this could likely be optimized...
+            auto p = lens->projection();
+            Matrix4x4 rev{0, 0, 0, 0, 0, - 2* p.m22(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            p += rev;
+            return p;
+        }
+    }
+    else
+    {
+        return Matrix4x4();
+    }
 }
 
 RenderView::RenderView()
@@ -765,9 +784,10 @@ void RenderView::updateRenderCommand(EntityRenderCommandData *renderCommandData,
     m_localData.setLocalData(builder);
 
     // Update RenderViewUBO (Qt3D standard uniforms)
-    const Matrix4x4 projectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens);
+    const bool yIsUp = m_renderer->submissionContext()->rhi()->isYUpInFramebuffer();
+    const Matrix4x4 projectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens, yIsUp);
     const Matrix4x4 inverseViewMatrix = m_data.m_viewMatrix.inverted();
-    const Matrix4x4 inversedProjectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens).inverted();
+    const Matrix4x4 inversedProjectionMatrix = projectionMatrix.inverted();
     const Matrix4x4 viewProjectionMatrix = (projectionMatrix * m_data.m_viewMatrix);
     const Matrix4x4 inversedViewProjectionMatrix = viewProjectionMatrix.inverted();
     {
