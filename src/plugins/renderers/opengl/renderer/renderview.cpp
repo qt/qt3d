@@ -1083,6 +1083,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
             // Set default standard uniforms without bindings
             const Matrix4x4 worldTransform = *(entity->worldTransform());
 
+            // Reserve amount of uniforms we are going to need
+            command->m_parameterPack.reserve(uniformNamesIds.size() + standardUniformNamesIds.size() + uniformBlockNamesIds.size() + shaderStorageBlockNamesIds.size());
+
             for (const int uniformNameId : standardUniformNamesIds)
                     setStandardUniformValue(command->m_parameterPack, uniformNameId, uniformNameId, entity, worldTransform);
 

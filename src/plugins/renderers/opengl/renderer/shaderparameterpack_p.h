@@ -97,8 +97,12 @@ struct PackUniformHash
 
     PackUniformHash()
     {
-        keys.reserve(10);
-        values.reserve(10);
+    }
+
+    void reserve(int count)
+    {
+        keys.reserve(count);
+        values.reserve(count);
     }
 
     void insert(int key, const UniformValue &value)
@@ -146,6 +150,7 @@ class Q_AUTOTEST_EXPORT ShaderParameterPack
 public:
     ~ShaderParameterPack();
 
+    void reserve(int uniformCount);
     void setUniform(const int glslNameId, const UniformValue &val);
     void setTexture(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id);
     void setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id);

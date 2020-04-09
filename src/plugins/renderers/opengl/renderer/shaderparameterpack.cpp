@@ -60,6 +60,11 @@ ShaderParameterPack::~ShaderParameterPack()
 {
 }
 
+void ShaderParameterPack::reserve(int uniformCount)
+{
+    m_uniforms.reserve(uniformCount);
+}
+
 void ShaderParameterPack::setUniform(const int glslNameId, const UniformValue &val)
 {
     m_uniforms.insert(glslNameId, val);
