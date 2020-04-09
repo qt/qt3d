@@ -69,6 +69,10 @@
 #include <qmath.h>
 #include <Qt3DExtras/qt3dwindow.h>
 #include <Qt3DExtras/qfirstpersoncameracontroller.h>
+#include <Qt3DRender/QRenderSurfaceSelector>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QViewport>
+#include <Qt3DRender/QNoDraw>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
@@ -77,7 +81,44 @@ int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
     Qt3DExtras::Qt3DWindow view;
-    view.defaultFrameGraph()->setClearColor(Qt::black);
+
+    // FrameGraph
+    {
+        QRenderSurfaceSelector *surfaceSelector = new QRenderSurfaceSelector();
+        QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector(surfaceSelector);
+        cameraSelector->setCamera(view.camera());
+        QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers(cameraSelector);
+        clearBuffers->setClearColor(QColor(Qt::gray));
+        clearBuffers->setBuffers(QClearBuffers::ColorDepthBuffer);
+        new QNoDraw(clearBuffers);
+
+        const QRectF viewports[] = {
+            {0.0f, 0.0f, 0.25f, 0.25f},
+            {0.25f, 0.0f, 0.25f, 0.25f},
+            {0.5f, 0.0f, 0.25f, 0.25f},
+            {0.75f, 0.0f, 0.25f, 0.25f},
+            {0.0f, 0.25f, 0.25f, 0.25f},
+            {0.25f, 0.25f, 0.25f, 0.25f},
+            {0.5f, 0.25f, 0.25f, 0.25f},
+            {0.75f, 0.25f, 0.25f, 0.25f},
+            {0.0f, 0.5f, 0.25f, 0.25f},
+            {0.25f, 0.5f, 0.25f, 0.25f},
+            {0.5f, 0.5f, 0.25f, 0.25f},
+            {0.75f, 0.5f, 0.25f, 0.25f},
+            {0.0f, 0.75f, 0.25f, 0.25f},
+            {0.25f, 0.75f, 0.25f, 0.25f},
+            {0.5f, 0.75f, 0.25f, 0.25f},
+            {0.75f, 0.75f, 0.25f, 0.25f},
+        };
+
+        for (const QRectF &vp : viewports) {
+            QViewport *viewport = new Qt3DRender::QViewport(cameraSelector);
+            viewport->setNormalizedRect(vp);
+        }
+
+        view.setActiveFrameGraph(surfaceSelector);
+    }
+
 
     QEntity *root = new QEntity();
 
