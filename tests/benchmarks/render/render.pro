@@ -3,5 +3,6 @@ TEMPLATE=subdirs
 qtConfig(private_tests) {
     SUBDIRS += jobs \
                layerfiltering \
-               materialparametergathering
+               materialparametergathering \
+               opengl
 }

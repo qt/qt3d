@@ -57,6 +57,9 @@
 #include <Qt3DRender/qshaderprogram.h>
 #include <QMutex>
 
+#ifdef QT_BUILD_INTERNAL
+    class tst_BenchShaderParameterPack;
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -148,6 +151,9 @@ private:
     void initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
 
     friend class GraphicsContext;
+#ifdef QT_BUILD_INTERNAL
+    friend class ::tst_BenchShaderParameterPack;
+#endif
 
     mutable QMutex m_mutex;
     QMetaObject::Connection m_contextConnection;
