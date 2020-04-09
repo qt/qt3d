@@ -763,9 +763,10 @@ QVariant QRenderAspect::executeCommand(const QStringList &args)
             if (args.front() == QLatin1String("framepaths"))
                 return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphPaths().join(QLatin1String("\n"));
             if (args.front() == QLatin1String("filterstates")) {
-                auto res = Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphFilterState().join(QLatin1String("\n"));
-                res += dumpSGFilterState(d->m_nodeManagers->techniqueManager(),
-                                         d->m_renderer->contextInfo(), d->m_root).join(QLatin1String("\n"));
+                const auto activeContextInfo = d->m_renderer->contextInfo();
+                QString res = QLatin1String("Active Graphics API: ") + activeContextInfo->toString() + QLatin1String("\n");
+                res += QLatin1String("Render Views:\n  ") + Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphFilterState().join(QLatin1String("\n  ")) + QLatin1String("\n");
+                res += QLatin1String("Scene Graph:\n  ") + dumpSGFilterState(d->m_nodeManagers->techniqueManager(), activeContextInfo, d->m_root).join(QLatin1String("\n  "));
                 return res;
             }
         }
