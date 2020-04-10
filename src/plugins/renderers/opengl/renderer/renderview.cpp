@@ -1055,11 +1055,11 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
         // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
         // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
         // equals to the parameter name
-        const QVector<int> uniformNamesIds = shader->uniformsNamesIds();
-        const QVector<int> standardUniformNamesIds = shader->standardUniformNameIds();
-        const QVector<int> uniformBlockNamesIds = shader->uniformBlockNamesIds();
-        const QVector<int> shaderStorageBlockNamesIds = shader->storageBlockNamesIds();
-        const QVector<int> attributeNamesIds = shader->attributeNamesIds();
+        const QVector<int> &uniformNamesIds = shader->uniformsNamesIds();
+        const QVector<int> &standardUniformNamesIds = shader->standardUniformNameIds();
+        const QVector<int> &uniformBlockNamesIds = shader->uniformBlockNamesIds();
+        const QVector<int> &shaderStorageBlockNamesIds = shader->storageBlockNamesIds();
+        const QVector<int> &attributeNamesIds = shader->attributeNamesIds();
 
         // Set fragData Name and index
         // Later on we might want to relink the shader if attachments have changed

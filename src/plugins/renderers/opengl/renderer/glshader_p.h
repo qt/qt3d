@@ -87,11 +87,11 @@ public:
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
     const QHash<QString, int> fragOutputs() const;
 
-    inline QVector<int> uniformsNamesIds() const { return m_uniformsNamesIds; }
-    inline QVector<int> standardUniformNameIds() const { return m_standardUniformNamesIds; }
-    inline QVector<int> uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
-    inline QVector<int> storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
-    inline QVector<int> attributeNamesIds() const { return m_attributeNamesIds; }
+    inline const QVector<int> &uniformsNamesIds() const { return m_uniformsNamesIds; }
+    inline const QVector<int> &standardUniformNameIds() const { return m_standardUniformNamesIds; }
+    inline const QVector<int> &uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
+    inline const QVector<int> &storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
+    inline const QVector<int> &attributeNamesIds() const { return m_attributeNamesIds; }
 
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
