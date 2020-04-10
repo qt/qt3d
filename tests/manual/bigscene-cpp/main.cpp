@@ -73,6 +73,7 @@
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QViewport>
 #include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/QDebugOverlay>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
@@ -115,6 +116,8 @@ int main(int ac, char **av)
             QViewport *viewport = new Qt3DRender::QViewport(cameraSelector);
             viewport->setNormalizedRect(vp);
         }
+
+        new QDebugOverlay(qobject_cast<Qt3DCore::QNode *>(cameraSelector->children().last()));
 
         view.setActiveFrameGraph(surfaceSelector);
     }
