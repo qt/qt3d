@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD
 
 SOURCES += \
+    $$PWD/gllights.cpp \
     $$PWD/openglvertexarrayobject.cpp \
     $$PWD/rendercommand.cpp \
     $$PWD/renderer.cpp \
@@ -13,6 +14,7 @@ SOURCES += \
     $$PWD/commandexecuter.cpp
 
 HEADERS += \
+    $$PWD/gllights_p.h \
     $$PWD/openglvertexarrayobject_p.h \
     $$PWD/renderercache_p.h \
     $$PWD/rendercommand_p.h \

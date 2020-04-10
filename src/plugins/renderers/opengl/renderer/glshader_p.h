@@ -88,6 +88,7 @@ public:
     const QHash<QString, int> fragOutputs() const;
 
     inline const QVector<int> &uniformsNamesIds() const { return m_uniformsNamesIds; }
+    inline const QVector<int> &lightUniformsNamesIds() const { return m_lightUniformsNamesIds; }
     inline const QVector<int> &standardUniformNameIds() const { return m_standardUniformNamesIds; }
     inline const QVector<int> &uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
     inline const QVector<int> &storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
@@ -125,6 +126,7 @@ private:
 
     QVector<QString> m_uniformsNames;
     QVector<int> m_uniformsNamesIds;
+    QVector<int> m_lightUniformsNamesIds;
     QVector<int> m_standardUniformNamesIds;
     QVector<ShaderUniform> m_uniforms;
 

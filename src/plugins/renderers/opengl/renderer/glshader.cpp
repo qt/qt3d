@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <graphicscontext_p.h>
 #include <logging_p.h>
+#include <gllights_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,6 +51,40 @@ namespace Qt3DRender {
 namespace Render {
 
 namespace OpenGL {
+
+namespace {
+
+QVector<int> getLightUniformNameIds()
+{
+    QVector<int> names;
+    names.reserve(MAX_LIGHTS * 18 + 1);
+
+    names << GLLights::LIGHT_COUNT_NAME_ID;
+    for (int i = 0; i < MAX_LIGHTS; ++i) {
+        names << GLLights::LIGHT_TYPE_NAMES[i]
+              << GLLights::LIGHT_COLOR_NAMES[i]
+              << GLLights::LIGHT_POSITION_NAMES[i]
+              << GLLights::LIGHT_INTENSITY_NAMES[i]
+              << GLLights::LIGHT_DIRECTION_NAMES[i]
+              << GLLights::LIGHT_LINEAR_ATTENUATION_NAMES[i]
+              << GLLights::LIGHT_QUADRATIC_ATTENUATION_NAMES[i]
+              << GLLights::LIGHT_CONSTANT_ATTENUATION_NAMES[i]
+              << GLLights::LIGHT_CUT_OFF_ANGLE_NAMES[i]
+              << GLLights::LIGHT_TYPE_UNROLL_NAMES[i]
+              << GLLights::LIGHT_COLOR_UNROLL_NAMES[i]
+              << GLLights::LIGHT_POSITION_UNROLL_NAMES[i]
+              << GLLights::LIGHT_INTENSITY_UNROLL_NAMES[i]
+              << GLLights::LIGHT_DIRECTION_UNROLL_NAMES[i]
+              << GLLights::LIGHT_LINEAR_ATTENUATION_UNROLL_NAMES[i]
+              << GLLights::LIGHT_QUADRATIC_ATTENUATION_UNROLL_NAMES[i]
+              << GLLights::LIGHT_CONSTANT_ATTENUATION_UNROLL_NAMES[i]
+              << GLLights::LIGHT_CUT_OFF_ANGLE_UNROLL_NAMES[i];
+    }
+
+    return names;
+}
+
+}
 
 GLShader::GLShader()
     : m_isLoaded(false)
@@ -203,6 +238,7 @@ void GLShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescript
     m_uniformsNames.resize(uniformsDescription.size());
     m_uniformsNamesIds.reserve(uniformsDescription.size());
     m_standardUniformNamesIds.reserve(5);
+    m_lightUniformsNamesIds.reserve(MAX_LIGHTS * 8 + 1);
     QHash<QString, ShaderUniform> activeUniformsInDefaultBlock;
 
     static const QVector<int> standardUniformNameIds = {
@@ -231,14 +267,18 @@ void GLShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescript
         Shader::skinningPaletteNameId,
     };
 
+    static const QVector<int> lightUniformNameIds = getLightUniformNameIds();
+
     for (int i = 0, m = uniformsDescription.size(); i < m; i++) {
         m_uniformsNames[i] = m_uniforms[i].m_name;
         const int nameId = StringToInt::lookupId(m_uniformsNames[i]);
         m_uniforms[i].m_nameId = nameId;
 
-        // Is the uniform a Qt3D "Standard" uniform or a user defined one?
+        // Is the uniform a Qt3D "Standard" uniform, a light uniform or a user defined one?
         if (standardUniformNameIds.contains(nameId))
             m_standardUniformNamesIds.push_back(nameId);
+        else if (lightUniformNameIds.contains(nameId))
+            m_lightUniformsNamesIds.push_back(nameId);
         else
             m_uniformsNamesIds.push_back(nameId);
 
