@@ -1041,9 +1041,16 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 shader->setFragOutputs(fragOutputs);
         }
 
+        // Set default attributes
+        command->m_activeAttributes = attributeNamesIds;
+
+        // At this point we know whether the command is a valid draw command or not
+        // We still need to process the uniforms as the command could be a compute command
+        command->m_isValid = !command->m_activeAttributes.empty();
+
         if (!uniformNamesIds.isEmpty() || !standardUniformNamesIds.isEmpty() ||
             !attributeNamesIds.isEmpty() || !lightUniformNamesIds.isEmpty() ||
-            !shaderStorageBlockNamesIds.isEmpty() || !attributeNamesIds.isEmpty()) {
+            !shaderStorageBlockNamesIds.isEmpty() || command->m_isValid) {
 
             // Set default standard uniforms without bindings
             const Matrix4x4 worldTransform = *(entity->worldTransform());
@@ -1053,13 +1060,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
 
             for (const int uniformNameId : standardUniformNamesIds)
                 setStandardUniformValue(command->m_parameterPack, uniformNameId, uniformNameId, entity, worldTransform);
-
-            // Set default attributes
-            command->m_activeAttributes = attributeNamesIds;
-
-            // At this point we know whether the command is a valid draw command or not
-            // We still need to process the uniforms as the command could be a compute command
-            command->m_isValid = !command->m_activeAttributes.empty();
 
             // Parameters remaining could be
             // -> uniform scalar / vector
@@ -1112,16 +1112,17 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                             break;
 
                         // Note: implicit conversion of values to UniformValue
-                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[lightIdx], worldPos);
-                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
-                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
-                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
-
-                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_UNROLL_NAMES[lightIdx], worldPos);
-                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx], int(QAbstractLight::PointLight));
-                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_UNROLL_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
-                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_UNROLL_NAMES[lightIdx], 0.5f);
-
+                        if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_NAMES[lightIdx])) {
+                            setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[lightIdx], worldPos);
+                            setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
+                            setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
+                            setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
+                        } else if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx])) {
+                            setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_UNROLL_NAMES[lightIdx], worldPos);
+                            setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx], int(QAbstractLight::PointLight));
+                            setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_UNROLL_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
+                            setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_UNROLL_NAMES[lightIdx], 0.5f);
+                        }
 
                         // There is no risk in doing that even if multithreaded
                         // since we are sure that a shaderData is unique for a given light
@@ -1141,15 +1142,17 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 // If no active light sources and no environment light, add a default light
                 if (activeLightSources.isEmpty() && !environmentLight) {
                     // Note: implicit conversion of values to UniformValue
-                    setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
-                    setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
-                    setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
-                    setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_NAMES[0], 0.5f);
-
-                    setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_UNROLL_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
-                    setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_UNROLL_NAMES[0], int(QAbstractLight::PointLight));
-                    setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_UNROLL_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
-                    setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_UNROLL_NAMES[0], 0.5f);
+                    if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_NAMES[0])) {
+                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
+                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
+                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
+                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_NAMES[0], 0.5f);
+                    } else if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx])) {
+                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_UNROLL_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
+                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_UNROLL_NAMES[0], int(QAbstractLight::PointLight));
+                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_UNROLL_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
+                        setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_UNROLL_NAMES[0], 0.5f);
+                    }
                 }
             }
 
