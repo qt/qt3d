@@ -84,9 +84,6 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
     }
 
     case ChannelMappingsDirty: {
-        QMutexLocker lock(&m_mutex);
-        const auto handle = m_channelMapperManager->lookupHandle(nodeId);
-        m_dirtyChannelMappers.push_back(handle);
         break;
     }
 
