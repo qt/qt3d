@@ -127,10 +127,10 @@ Qt3DCore::QNodeId BlendedClipAnimator::blendTreeRootId() const
     return m_blendTreeRootId;
 }
 
-void BlendedClipAnimator::setNormalizedLocalTime(float normalizedTime)
+void BlendedClipAnimator::setNormalizedLocalTime(float normalizedTime, bool allowMarkDirty)
 {
     m_normalizedLocalTime = normalizedTime;
-    if (isValidNormalizedTime(m_normalizedLocalTime))
+    if (isValidNormalizedTime(m_normalizedLocalTime) && allowMarkDirty)
         setDirty(Handler::BlendedClipAnimatorDirty);
 }
 

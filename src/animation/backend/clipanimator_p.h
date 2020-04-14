@@ -77,7 +77,7 @@ public:
     bool isRunning() const { return m_running; }
     void setLoops(int loops) { m_loops = loops; }
     int loops() const { return m_loops; }
-    void setNormalizedLocalTime(float normalizedLocalTime);
+    void setNormalizedLocalTime(float normalizedLocalTime, bool allowMarkDirty = true);
     float normalizedLocalTime() const { return m_normalizedLocalTime; }
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
