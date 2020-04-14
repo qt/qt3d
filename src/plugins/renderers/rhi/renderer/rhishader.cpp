@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <submissioncontext_p.h>
 #include <logging_p.h>
+#include <QRegularExpression>
 
 QT_BEGIN_NAMESPACE
 
@@ -92,6 +93,8 @@ QVector<QByteArray> RHIShader::shaderCode() const
     return m_shaderCode;
 }
 
+namespace
+{
 static constexpr QRhiVertexInputAttribute::Format rhiInputType(QShaderDescription::VariableType type)
 {
     switch (type)
@@ -199,8 +202,120 @@ QVector<T> stableRemoveDuplicates(QVector<T> in, Pred predicate)
     }
     return out;
 }
+
+// Utility function to enumerate an array of dimensions
+// Given dims == [0, 3, 2] and maxs == [4, 4, 4]
+// changes dims into [0, 3, 3]
+// Given dims == [0, 3, 3] and maxs == [4, 4, 4]
+// changes dims into [1, 0, 0]
+bool incrementArray(QVarLengthArray<int>& dims, const QVector<int>& maxs)
+{
+    const int n = dims.size();
+    int i = n;
+    for (; i --> 0 ;)
+    {
+        if (dims[i] == maxs[i] - 1)
+        {
+            if ( i == 0 )
+            {
+                // we're done
+                return false;
+            }
+            continue;
+
+
+        }
+        else
+        {
+            dims[i]++;
+            for (int j = i + 1; j < n; j++) {
+                dims[j] = 0;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+// Call a function with a string such as [0][3][2]
+// for all valable array values, given an array of dimension sizes.
+// Dimensions must all be >= 1
+template<typename F>
+void forEachArrayAccessor(const QVector<int>& maxs, F f)
+{
+    if (std::any_of(maxs.begin(), maxs.end(), [] (int v) { return v <= 0; }))
+        return;
+
+    QVarLengthArray<int> dims;
+    dims.resize(maxs.size());
+
+     // QVarLengthArray does not initialize ints
+    std::fill(dims.begin(), dims.end(), 0);
+
+    QString str;
+
+    do {
+        str.resize(0);
+        for (int k : dims) {
+            str += QStringLiteral("[%1]").arg(k);
+        }
+        f(str);
+    } while (incrementArray(dims, maxs));
+}
+}
+
+void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable& member, QString parentName)
+{
+    const bool isStruct = !member.structMembers.empty();
+    const bool isArray = !member.arrayDims.empty();
+
+    // "foo.bar"
+    const QString fullMemberName = parentName + member.name;
+    m_unqualifiedUniformNames << fullMemberName;
+
+    if (isStruct && !isArray)
+    {
+        m_structNames << fullMemberName;
+        m_structNamesIds << StringToInt::lookupId(fullMemberName);
+
+        for (const QShaderDescription::BlockVariable& bv : member.structMembers)
+        {
+            // recordAllUniforms("baz", "foo.bar.")
+            recordAllUniforms(bv, fullMemberName + QLatin1Char('.'));
+        }
+    }
+    else if (!isStruct && isArray)
+    {
+        // We iterate through all the [l][n][m] by building [0][0][0] and incrementing
+        forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
+            // "foo.bar[1][2]"
+            m_unqualifiedUniformNames << (fullMemberName + str);
+            // Question : does it make sense to also record foo[0], foo[0][0], etc...
+            // if there are e.g. 3 dimensions ?
+        });
+    }
+    else if (isStruct && isArray)
+    {
+        // Record the struct names
+        forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
+            m_structNames << (fullMemberName + str);
+            m_structNamesIds << StringToInt::lookupId(m_structNames.back());
+        });
+
+        // Record the struct members
+        for (const QShaderDescription::BlockVariable& bv : member.structMembers)
+        {
+            forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
+                //recordAllUniforms("baz", "foo.bar[1][2].")
+                recordAllUniforms(bv, fullMemberName + str + QLatin1Char('.'));
+            });
+        }
+    }
+}
+
 void RHIShader::introspect()
 {
+    const thread_local QRegularExpression generatedUBOName{"_[0-9]+"};
     QVector<QShaderDescription::UniformBlock> rhiUBO;
     QVector<QShaderDescription::StorageBlock> rhiSSBO;
 
@@ -246,6 +361,7 @@ void RHIShader::introspect()
 
     for (const QShaderDescription::UniformBlock& ubo : rhiUBO) {
         uniformBlocks.push_back(ShaderUniformBlock{ubo.blockName, StringToInt::lookupId(ubo.blockName), -1, ubo.binding, ubo.members.size(), ubo.size});
+        const bool addUnqualifiedUniforms = ubo.structName.contains(generatedUBOName);
 
         // Parse Uniform Block members so that we can later on map a Parameter name to an actual member
         const QVector<QShaderDescription::BlockVariable> members = ubo.members;
@@ -254,8 +370,11 @@ void RHIShader::introspect()
         namesIds.reserve(members.size());
 
         for (const QShaderDescription::BlockVariable& member : members) {
-            qDebug() << member.name << member.offset << member.size << member.structMembers.size() << member.type;
             namesIds << StringToInt::lookupId(member.name);
+            if (addUnqualifiedUniforms)
+            {
+                recordAllUniforms(member, QStringLiteral(""));
+            }
         }
         m_uniformsNamesIds += namesIds;
         m_uboMembers.push_back({uniformBlocks.last(), members});
@@ -277,7 +396,7 @@ QHash<QString, ShaderUniform> RHIShader::activeUniformsForUniformBlock(int block
     return m_uniformBlockIndexToShaderUniforms.value(blockIndex);
 }
 
-ShaderUniformBlock RHIShader::uniformBlockForBlockIndex(int blockIndex)
+ShaderUniformBlock RHIShader::uniformBlockForBlockIndex(int blockIndex) const noexcept
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_index == blockIndex) {
@@ -287,7 +406,7 @@ ShaderUniformBlock RHIShader::uniformBlockForBlockIndex(int blockIndex)
     return ShaderUniformBlock();
 }
 
-ShaderUniformBlock RHIShader::uniformBlockForBlockNameId(int blockNameId)
+ShaderUniformBlock RHIShader::uniformBlockForBlockNameId(int blockNameId) const noexcept
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_nameId == blockNameId) {
@@ -297,7 +416,7 @@ ShaderUniformBlock RHIShader::uniformBlockForBlockNameId(int blockNameId)
     return ShaderUniformBlock();
 }
 
-ShaderUniformBlock RHIShader::uniformBlockForBlockName(const QString &blockName)
+ShaderUniformBlock RHIShader::uniformBlockForBlockName(const QString &blockName)  const noexcept
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_name == blockName) {
@@ -307,7 +426,7 @@ ShaderUniformBlock RHIShader::uniformBlockForBlockName(const QString &blockName)
     return ShaderUniformBlock();
 }
 
-ShaderStorageBlock RHIShader::storageBlockForBlockIndex(int blockIndex)
+ShaderStorageBlock RHIShader::storageBlockForBlockIndex(int blockIndex) const noexcept
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_index == blockIndex)
@@ -316,7 +435,7 @@ ShaderStorageBlock RHIShader::storageBlockForBlockIndex(int blockIndex)
     return ShaderStorageBlock();
 }
 
-ShaderStorageBlock RHIShader::storageBlockForBlockNameId(int blockNameId)
+ShaderStorageBlock RHIShader::storageBlockForBlockNameId(int blockNameId) const noexcept
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_nameId == blockNameId)
@@ -325,13 +444,39 @@ ShaderStorageBlock RHIShader::storageBlockForBlockNameId(int blockNameId)
     return ShaderStorageBlock();
 }
 
-ShaderStorageBlock RHIShader::storageBlockForBlockName(const QString &blockName)
+ShaderStorageBlock RHIShader::storageBlockForBlockName(const QString &blockName) const noexcept
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_name == blockName)
             return m_shaderStorageBlocks[i];
     }
     return ShaderStorageBlock();
+}
+
+RHIShader::ParameterKind RHIShader::categorizeVariable(int nameId) const noexcept
+{
+    if (m_uniformsNamesIds.contains(nameId))
+        return ParameterKind::Uniform;
+    else if (m_uniformBlockNamesIds.contains(nameId))
+        return ParameterKind::UBO;
+    else if (m_shaderStorageBlockNamesIds.contains(nameId))
+        return ParameterKind::SSBO;
+    else if (m_structNamesIds.contains(nameId))
+        return ParameterKind::Struct;
+    return ParameterKind::Uniform;
+}
+
+bool RHIShader::hasUniform(int nameId) const noexcept
+{
+    return m_uniformsNamesIds.contains(nameId);
+}
+
+bool RHIShader::hasActiveVariables() const noexcept
+{
+    return !m_attributeNamesIds.empty()
+        || !m_uniformsNamesIds.empty()
+        || !m_uniformBlockNamesIds.empty()
+        || !m_shaderStorageBlockNamesIds.empty();
 }
 
 void RHIShader::prepareUniforms(ShaderParameterPack &pack)
@@ -366,60 +511,6 @@ const QHash<QString, int> RHIShader::fragOutputs() const
 {
     QMutexLocker lock(&m_mutex);
     return m_fragOutputs;
-}
-
-void RHIShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescription)
-{
-    m_uniforms = uniformsDescription;
-    m_uniformsNames.resize(uniformsDescription.size());
-    m_uniformsNamesIds.reserve(uniformsDescription.size());
-    m_standardUniformNamesIds.reserve(5);
-    QHash<QString, ShaderUniform> activeUniformsInDefaultBlock;
-
-    static const QVector<int> standardUniformNameIds = {
-        Shader::modelMatrixNameId,
-        Shader::viewMatrixNameId,
-        Shader::projectionMatrixNameId,
-        Shader::modelViewMatrixNameId,
-        Shader::viewProjectionMatrixNameId,
-        Shader::modelViewProjectionNameId,
-        Shader::mvpNameId,
-        Shader::inverseModelMatrixNameId,
-        Shader::inverseViewMatrixNameId,
-        Shader::inverseProjectionMatrixNameId,
-        Shader::inverseModelViewNameId,
-        Shader::inverseViewProjectionMatrixNameId,
-        Shader::inverseModelViewProjectionNameId,
-        Shader::modelNormalMatrixNameId,
-        Shader::modelViewNormalNameId,
-        Shader::viewportMatrixNameId,
-        Shader::inverseViewportMatrixNameId,
-        Shader::textureTransformMatrixNameId,
-        Shader::aspectRatioNameId,
-        Shader::exposureNameId,
-        Shader::gammaNameId,
-        Shader::timeNameId,
-        Shader::eyePositionNameId,
-        Shader::skinningPaletteNameId,
-    };
-
-    for (int i = 0, m = uniformsDescription.size(); i < m; i++) {
-        m_uniformsNames[i] = m_uniforms[i].m_name;
-        const int nameId = StringToInt::lookupId(m_uniformsNames[i]);
-        m_uniforms[i].m_nameId = nameId;
-
-        // Is the uniform a Qt3D "Standard" uniform or a user defined one?
-        if (standardUniformNameIds.contains(nameId))
-            m_standardUniformNamesIds.push_back(nameId);
-        else
-            m_uniformsNamesIds.push_back(nameId);
-
-        if (uniformsDescription[i].m_blockIndex == -1) { // Uniform is in default block
-            qCDebug(Shaders) << "Active Uniform in Default Block " << uniformsDescription[i].m_name << uniformsDescription[i].m_blockIndex;
-            activeUniformsInDefaultBlock.insert(uniformsDescription[i].m_name, uniformsDescription[i]);
-        }
-    }
-    m_uniformBlockIndexToShaderUniforms.insert(-1, activeUniformsInDefaultBlock);
 }
 
 void RHIShader::initializeAttributes(const QVector<ShaderAttribute> &attributesDescription)

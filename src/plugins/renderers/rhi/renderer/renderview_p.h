@@ -346,54 +346,20 @@ private:
 
     MaterialParameterGathererData m_parameters;
 
-    enum StandardUniform
-    {
-        ModelMatrix,
-        ViewMatrix,
-        ProjectionMatrix,
-        ModelViewMatrix,
-        ViewProjectionMatrix,
-        ModelViewProjectionMatrix,
-        InverseModelMatrix,
-        InverseViewMatrix,
-        InverseProjectionMatrix,
-        InverseModelViewMatrix,
-        InverseViewProjectionMatrix,
-        InverseModelViewProjectionMatrix,
-        ModelNormalMatrix,
-        ModelViewNormalMatrix,
-        ViewportMatrix,
-        InverseViewportMatrix,
-        TextureTransformMatrix,
-        AspectRatio,
-        Time,
-        Exposure,
-        Gamma,
-        EyePosition,
-        SkinningPalette
-    };
-
-    typedef QHash<int, StandardUniform> StandardUniformsNameToTypeHash;
-    static StandardUniformsNameToTypeHash ms_standardUniformSetters;
-    static StandardUniformsNameToTypeHash initializeStandardUniformSetters();
-
-    UniformValue standardUniformValue(StandardUniform standardUniformType,
-                                      Entity *entity,
-                                      const Matrix4x4 &model) const;
-
     void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const UniformValue &value) const;
     void setUniformBlockValue(ShaderParameterPack &uniformPack,
-                              RHIShader *shader,
+                              const RHIShader *shader,
                               const ShaderUniformBlock &block,
                               const UniformValue &value) const;
     void setShaderStorageValue(ShaderParameterPack &uniformPack,
-                               RHIShader *shader,
+                               const RHIShader *shader,
                                const ShaderStorageBlock &block,
                                const UniformValue &value) const;
     void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
-                                               RHIShader *shader,
-                                               ShaderData *shaderData,
+                                               const RHIShader *shader,
+                                               const ShaderData *shaderData,
                                                const QString &structName) const;
+    void applyParameter(const Parameter* param, RenderCommand* command, const RHIShader* shader) const noexcept;
 };
 
 } // namespace Rhi

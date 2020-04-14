@@ -111,41 +111,6 @@ std::atomic_bool wasInitialized{};
 
 } // anonymous namespace
 
-RenderView::StandardUniformsNameToTypeHash RenderView::ms_standardUniformSetters;
-
-
-RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniformSetters()
-{
-    RenderView::StandardUniformsNameToTypeHash setters;
-
-    setters.insert(Shader::modelMatrixNameId, ModelMatrix);
-    setters.insert(Shader::viewMatrixNameId, ViewMatrix);
-    setters.insert(Shader::projectionMatrixNameId, ProjectionMatrix);
-    setters.insert(Shader::modelViewMatrixNameId, ModelViewMatrix);
-    setters.insert(Shader::viewProjectionMatrixNameId, ViewProjectionMatrix);
-    setters.insert(Shader::modelViewProjectionNameId, ModelViewProjectionMatrix);
-    setters.insert(Shader::mvpNameId, ModelViewProjectionMatrix);
-    setters.insert(Shader::inverseModelMatrixNameId, InverseModelMatrix);
-    setters.insert(Shader::inverseViewMatrixNameId, InverseViewMatrix);
-    setters.insert(Shader::inverseProjectionMatrixNameId, InverseProjectionMatrix);
-    setters.insert(Shader::inverseModelViewNameId, InverseModelViewMatrix);
-    setters.insert(Shader::inverseViewProjectionMatrixNameId, InverseViewProjectionMatrix);
-    setters.insert(Shader::inverseModelViewProjectionNameId, InverseModelViewProjectionMatrix);
-    setters.insert(Shader::modelNormalMatrixNameId, ModelNormalMatrix);
-    setters.insert(Shader::modelViewNormalNameId, ModelViewNormalMatrix);
-    setters.insert(Shader::viewportMatrixNameId, ViewportMatrix);
-    setters.insert(Shader::inverseViewportMatrixNameId, InverseViewportMatrix);
-    setters.insert(Shader::textureTransformMatrixNameId, TextureTransformMatrix);
-    setters.insert(Shader::aspectRatioNameId, AspectRatio);
-    setters.insert(Shader::exposureNameId, Exposure);
-    setters.insert(Shader::gammaNameId, Gamma);
-    setters.insert(Shader::timeNameId, Time);
-    setters.insert(Shader::eyePositionNameId, EyePosition);
-    setters.insert(Shader::skinningPaletteNameId, SkinningPalette);
-
-    return setters;
-}
-
 // TODO: Move this somewhere global where GraphicsContext::setViewport() can use it too
 static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &surfaceSize)
 {
@@ -157,8 +122,6 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
 
 static Matrix4x4 getProjectionMatrix(const CameraLens *lens, bool yIsUp)
 {
-    if (!lens)
-        qWarning() << "[Qt3D Renderer] No Camera Lens found. Add a CameraSelector to your Frame Graph or make sure that no entities will be rendered.";
     if (lens)
     {
         if (yIsUp)
@@ -177,6 +140,7 @@ static Matrix4x4 getProjectionMatrix(const CameraLens *lens, bool yIsUp)
     }
     else
     {
+        qWarning() << "[Qt3D Renderer] No Camera Lens found. Add a CameraSelector to your Frame Graph or make sure that no entities will be rendered.";
         return Matrix4x4();
     }
 }
@@ -958,7 +922,7 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
 }
 
 void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
-                                      RHIShader *shader,
+                                      const RHIShader *shader,
                                       const ShaderUniformBlock &block,
                                       const UniformValue &value) const
 {
@@ -979,7 +943,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
 }
 
 void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
-                                       RHIShader *shader,
+                                       const RHIShader *shader,
                                        const ShaderStorageBlock &block,
                                        const UniformValue &value) const
 {
@@ -997,7 +961,11 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
     }
 }
 
-void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, RHIShader *shader, ShaderData *shaderData, const QString &structName) const
+void RenderView::setDefaultUniformBlockShaderDataValue(
+        ShaderParameterPack &uniformPack,
+        const RHIShader *shader,
+        const ShaderData *shaderData,
+        const QString &structName) const
 {
     UniformBlockValueBuilder *builder = m_localData.localData();
     builder->activeUniformNamesToValue.clear();
@@ -1007,7 +975,7 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     // Force to update the whole block
     builder->updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
-    builder->uniforms = shader->activeUniformsForUniformBlock(-1);
+    builder->uniforms = shader->unqualifiedUniformNames();
     // Build name-value map for the block
     builder->buildActiveUniformNameValueMapStructHelper(shaderData, structName);
     // Set uniform values for each entrie of the block name-value map
@@ -1018,6 +986,39 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     while (activeValuesIt != activeValuesEnd) {
         setUniformValue(uniformPack, activeValuesIt.key(), UniformValue::fromVariant(activeValuesIt.value()));
         ++activeValuesIt;
+    }
+}
+
+void RenderView::applyParameter(
+        const Parameter *param,
+        RenderCommand *command,
+        const RHIShader *shader) const noexcept
+{
+    const int nameId = param->nameId();
+    const UniformValue &uniformValue = param->uniformValue();
+    switch (shader->categorizeVariable(nameId))
+    {
+    case RHIShader::Uniform: {
+        setUniformValue(command->m_parameterPack, nameId, uniformValue);
+        break;
+    }
+    case RHIShader::UBO: {
+        setUniformBlockValue(command->m_parameterPack, shader, shader->uniformBlockForBlockNameId(nameId), uniformValue);
+        break;
+    }
+    case RHIShader::SSBO: {
+        setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(nameId), uniformValue);
+        break;
+    }
+    case RHIShader::Struct: {
+        ShaderData *shaderData = nullptr;
+        if (uniformValue.valueType() == UniformValue::NodeId &&
+                (shaderData = m_manager->shaderDataManager()->lookupResource(*uniformValue.constData<Qt3DCore::QNodeId>())) != nullptr) {
+            // Try to check if we have a struct or array matching a QShaderData parameter
+            setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(nameId));
+        }
+        break;
+    }
     }
 }
 
@@ -1043,10 +1044,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
         // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
         // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
         // equals to the parameter name
-        const QVector<int> uniformNamesIds = shader->uniformsNamesIds();
-        const QVector<int> uniformBlockNamesIds = shader->uniformBlockNamesIds();
-        const QVector<int> shaderStorageBlockNamesIds = shader->storageBlockNamesIds();
-        const QVector<int> attributeNamesIds = shader->attributeNamesIds();
 
         // Set fragData Name and index
         // Later on we might want to relink the shader if attachments have changed
@@ -1063,12 +1060,13 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 shader->setFragOutputs(fragOutputs);
         }
 
-        if (!uniformNamesIds.isEmpty() ||
-                !attributeNamesIds.isEmpty() ||
-                !shaderStorageBlockNamesIds.isEmpty() || !attributeNamesIds.isEmpty()) {
+        if (shader->hasActiveVariables()) {
+
+            // Unlike the GL engine, the standard uniforms are set a bit before this function,
+            // in RenderView::updateRenderCommand
 
             // Set default attributes
-            command->m_activeAttributes = attributeNamesIds;
+            command->m_activeAttributes = shader->attributeNamesIds();
 
             // At this point we know whether the command is a valid draw command or not
             // We still need to process the uniforms as the command could be a compute command
@@ -1084,27 +1082,12 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
             const ParameterInfoList::const_iterator parametersEnd = parameters.cend();
 
             while (it != parametersEnd) {
-                Parameter *param = m_manager->data<Parameter, ParameterManager>(it->handle);
-                const UniformValue &uniformValue = param->uniformValue();
-                if (uniformBlockNamesIds.indexOf(it->nameId) != -1) { // Parameter is a uniform block
-                    setUniformBlockValue(command->m_parameterPack, shader, shader->uniformBlockForBlockNameId(it->nameId), uniformValue);
-                } else if (shaderStorageBlockNamesIds.indexOf(it->nameId) != -1) { // Parameters is a SSBO
-                    setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(it->nameId), uniformValue);
-                } else { // Parameter is a struct
-                    setUniformValue(command->m_parameterPack, it->nameId, uniformValue);
-//                    ShaderData *shaderData = nullptr;
-//                    if (uniformValue.valueType() == UniformValue::NodeId &&
-//                            (shaderData = m_manager->shaderDataManager()->lookupResource(*uniformValue.constData<Qt3DCore::QNodeId>())) != nullptr) {
-//                        // Try to check if we have a struct or array matching a QShaderData parameter
-//                        setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(it->nameId));
-//                    }
-                    // Otherwise: param unused by current shader
-                }
+                const Parameter *param = m_manager->data<Parameter, ParameterManager>(it->handle);
+                applyParameter(param, command, shader);
                 ++it;
             }
 
             // Lights
-
             int lightIdx = 0;
             for (const LightSource &lightSource : activeLightSources) {
                 if (lightIdx == MAX_LIGHTS)
@@ -1142,7 +1125,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 }
             }
 
-            if (uniformNamesIds.contains(LIGHT_COUNT_NAME_ID))
+            if (shader->hasUniform(LIGHT_COUNT_NAME_ID))
                 setUniformValue(command->m_parameterPack, LIGHT_COUNT_NAME_ID, UniformValue(qMax((environmentLight ? 0 : 1), lightIdx)));
 
             // If no active light sources and no environment light, add a default light
@@ -1161,7 +1144,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
                 ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(environmentLight->shaderData());
                 if (shaderData) {
-                    //setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, QStringLiteral("envLight"));
                     envLightCount = 1;
 
                     // ("specularSize", "irradiance", "irradianceSize", "specular")
@@ -1172,30 +1154,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                     setUniformValue(command->m_parameterPack, specularId, spec);
                 }
             }
-            //if (environmentLight && environmentLight->isEnabled()) {
-            //    ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(environmentLight->shaderData());
-            //    if (shaderData) {
-            //        setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, QStringLiteral("envLight"));
-            //        envLightCount = 1;
-            //    }
-            //} else {
-            //    // with some drivers, samplers (like the envbox sampler) need to be bound even though
-            //    // they may not be actually used, otherwise draw calls can fail
-            //    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight_irradiance"));
-            //    static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
-            //
-            //    // for (const auto& sampler : shader->samplers())
-            //    // {
-            //    //     if (sampler.m_nameId == irradianceId)
-            //    //     {
-            //    //         setUniformValue(command->m_parameterPack, irradianceId, sampler.m_location);
-            //    //     }
-            //    //     else if (sampler.m_nameId == specularId)
-            //    //     {
-            //    //         setUniformValue(command->m_parameterPack, specularId, sampler.m_location);
-            //    //     }
-            //    // }
-            //}
             setUniformValue(command->m_parameterPack, StringToInt::lookupId(QStringLiteral("envLightCount")), envLightCount);
         }
     }
