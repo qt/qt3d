@@ -1172,6 +1172,10 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
         Shader *s = m_nodesManager->shaderManager()->data(handle);
         if (s->requiresFrontendSync()) {
             QShaderProgram *frontend = static_cast<decltype(frontend)>(manager->lookupNode(s->peerId()));
+            // Could happen as a backend shader might live beyong the frontend
+            // the time needed to destroy the GLShader assoicated with it.
+            if (!frontend)
+                continue;
             QShaderProgramPrivate *dFrontend = static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
             s->unsetRequiresFrontendSync();
             dFrontend->setStatus(s->status());

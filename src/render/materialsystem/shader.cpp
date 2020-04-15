@@ -102,6 +102,7 @@ void Shader::cleanup()
     m_status = QShaderProgram::NotReady;
     m_format = QShaderProgram::GLSL;
     m_log.clear();
+    m_requiresFrontendSync = false;
     m_dirty = false;
 }
 
