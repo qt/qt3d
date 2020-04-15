@@ -169,10 +169,6 @@ Qt3DCore::QEntity *Scene3DItem::entity() const
 
 void Scene3DItem::applyAspects()
 {
-    if (!m_aspects.isEmpty()) {
-        qWarning() << "Aspects already set on the Scene3D, ignoring";
-        return;
-    }
     // Aspects are owned by the aspect engine
     for (const QString &aspect : qAsConst(m_aspects)) {
         if (aspect == QLatin1String("render")) // This one is hardwired anyway
