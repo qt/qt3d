@@ -2231,7 +2231,8 @@ void uploadUniform(
             const RHIShader::UBO_Member& uboMember,
             const QHash<int, RHIGraphicsPipeline::UBOBuffer>& uboBuffers,
             const QString& uniformName,
-            const QShaderDescription::BlockVariable& member)
+            const QShaderDescription::BlockVariable& member,
+            int arrayOffset = 0)
 {
     const int uniformNameId = StringToInt::lookupId(uniformName);
 
@@ -2250,7 +2251,7 @@ void uploadUniform(
     QByteArray rawData;
     rawData.resize(member.size);
     memcpy(rawData.data(), value.constData<char>(), std::min(value.byteSize(), member.size));
-    buffer->update(&submissionContext, rawData, member.offset);
+    buffer->update(&submissionContext, rawData, member.offset + arrayOffset);
 
     // printUpload(value, member);
 }
@@ -2291,7 +2292,7 @@ bool Renderer::uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                         for (int i = 0; i < arr0; i++) {
                             for (const QShaderDescription::BlockVariable& structMember : member.structMembers) {
                                 const QString processedName = member.name + "[" + QString::number(i) + "]." + structMember.name;
-                                uploadUniform(*m_submissionContext, uniforms, uboMember, uboBuffers, processedName, structMember);
+                                uploadUniform(*m_submissionContext, uniforms, uboMember, uboBuffers, processedName, structMember, i * member.size / arr0);
                             }
                         }
                     } else {
