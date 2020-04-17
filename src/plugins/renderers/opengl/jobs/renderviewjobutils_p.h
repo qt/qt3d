@@ -166,11 +166,11 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 
     QT3D_ALIGNED_MALLOC_AND_FREE()
 
-    void buildActiveUniformNameValueMapHelper(ShaderData *currentShaderData,
+    void buildActiveUniformNameValueMapHelper(const ShaderData *currentShaderData,
                                               const QString &blockName,
                                               const QString &qmlPropertyName,
                                               const QVariant &value);
-    void buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData,
+    void buildActiveUniformNameValueMapStructHelper(const ShaderData *rShaderData,
                                                     const QString &blockName,
                                                     const QString &qmlPropertyName = QString());
 

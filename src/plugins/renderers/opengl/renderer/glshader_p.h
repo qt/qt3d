@@ -106,13 +106,25 @@ public:
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
 
-    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId);
-    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex);
-    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName);
+    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId) const noexcept;
+    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex) const noexcept;
+    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName) const noexcept;
 
-    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex);
-    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId);
-    ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
+    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex) const noexcept;
+    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId) const noexcept;
+    ShaderStorageBlock storageBlockForBlockName(const QString &blockName) const noexcept;
+
+    enum ParameterKind {
+        Uniform,
+        UBO,
+        SSBO,
+        Struct
+    };
+    ParameterKind categorizeVariable(int nameId) const noexcept;
+
+    bool hasUniform(int nameId) const noexcept;
+    inline bool hasActiveVariables() const noexcept { return m_hasActiveVariables; }
+    inline int parameterPackSize() const noexcept { return m_parameterPackSize; }
 
     QOpenGLShaderProgram *shaderProgram() { return &m_shader; }
 
@@ -145,6 +157,9 @@ private:
 
     QHash<QString, int> m_fragOutputs;
     QVector<QByteArray> m_shaderCode;
+
+    int m_parameterPackSize;
+    int m_hasActiveVariables;
 
     // Private so that only GraphicContext can call it
     void initializeUniforms(const QVector<ShaderUniform> &uniformsDescription);

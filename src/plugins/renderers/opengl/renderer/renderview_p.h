@@ -371,27 +371,25 @@ private:
     static StandardUniformsNameToTypeHash initializeStandardUniformSetters();
 
     UniformValue standardUniformValue(StandardUniform standardUniformType,
-                                      Entity *entity,
-                                      const Matrix4x4 &model) const;
+                                      const Entity *entity) const;
 
     void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const UniformValue &value) const;
     void setStandardUniformValue(ShaderParameterPack &uniformPack,
-                                 int glslNameId,
                                  int nameId,
-                                 Entity *entity,
-                                 const Matrix4x4 &worldTransform) const;
+                                 const Entity *entity) const;
     void setUniformBlockValue(ShaderParameterPack &uniformPack,
-                              GLShader *shader,
                               const ShaderUniformBlock &block,
                               const UniformValue &value) const;
     void setShaderStorageValue(ShaderParameterPack &uniformPack,
-                               GLShader *shader,
                                const ShaderStorageBlock &block,
                                const UniformValue &value) const;
     void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
-                                               GLShader *shader,
-                                               ShaderData *shaderData,
+                                               const GLShader *shader,
+                                               const ShaderData *shaderData,
                                                const QString &structName) const;
+    void applyParameter(const Parameter *param,
+                        RenderCommand *command,
+                        const GLShader *shader) const noexcept;
 };
 
 } // namespace OpenGL

@@ -84,11 +84,19 @@ QVector<int> getLightUniformNameIds()
     return names;
 }
 
+template<typename Vector>
+bool fastContains(const Vector &v, int value)
+{
+    return std::binary_search(v.cbegin(), v.cend(), value);
+}
+
 }
 
 GLShader::GLShader()
     : m_isLoaded(false)
     , m_graphicsContext(nullptr)
+    , m_parameterPackSize(0)
+    , m_hasActiveVariables(false)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
@@ -141,7 +149,7 @@ QHash<QString, ShaderUniform> GLShader::activeUniformsForUniformBlock(int blockI
     return m_uniformBlockIndexToShaderUniforms.value(blockIndex);
 }
 
-ShaderUniformBlock GLShader::uniformBlockForBlockIndex(int blockIndex)
+ShaderUniformBlock GLShader::uniformBlockForBlockIndex(int blockIndex) const noexcept
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_index == blockIndex) {
@@ -151,7 +159,7 @@ ShaderUniformBlock GLShader::uniformBlockForBlockIndex(int blockIndex)
     return ShaderUniformBlock();
 }
 
-ShaderUniformBlock GLShader::uniformBlockForBlockNameId(int blockNameId)
+ShaderUniformBlock GLShader::uniformBlockForBlockNameId(int blockNameId) const noexcept
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_nameId == blockNameId) {
@@ -161,7 +169,7 @@ ShaderUniformBlock GLShader::uniformBlockForBlockNameId(int blockNameId)
     return ShaderUniformBlock();
 }
 
-ShaderUniformBlock GLShader::uniformBlockForBlockName(const QString &blockName)
+ShaderUniformBlock GLShader::uniformBlockForBlockName(const QString &blockName) const noexcept
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_name == blockName) {
@@ -171,7 +179,7 @@ ShaderUniformBlock GLShader::uniformBlockForBlockName(const QString &blockName)
     return ShaderUniformBlock();
 }
 
-ShaderStorageBlock GLShader::storageBlockForBlockIndex(int blockIndex)
+ShaderStorageBlock GLShader::storageBlockForBlockIndex(int blockIndex) const noexcept
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_index == blockIndex)
@@ -180,7 +188,7 @@ ShaderStorageBlock GLShader::storageBlockForBlockIndex(int blockIndex)
     return ShaderStorageBlock();
 }
 
-ShaderStorageBlock GLShader::storageBlockForBlockNameId(int blockNameId)
+ShaderStorageBlock GLShader::storageBlockForBlockNameId(int blockNameId) const noexcept
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_nameId == blockNameId)
@@ -189,13 +197,29 @@ ShaderStorageBlock GLShader::storageBlockForBlockNameId(int blockNameId)
     return ShaderStorageBlock();
 }
 
-ShaderStorageBlock GLShader::storageBlockForBlockName(const QString &blockName)
+ShaderStorageBlock GLShader::storageBlockForBlockName(const QString &blockName) const noexcept
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_name == blockName)
             return m_shaderStorageBlocks[i];
     }
     return ShaderStorageBlock();
+}
+
+GLShader::ParameterKind GLShader::categorizeVariable(int nameId) const noexcept
+{
+    if (fastContains(m_uniformsNamesIds, nameId))
+        return ParameterKind::Uniform;
+    if (fastContains(m_uniformBlockNamesIds, nameId))
+        return ParameterKind::UBO;
+    if (fastContains(m_shaderStorageBlockNamesIds, nameId))
+        return ParameterKind::SSBO;
+    return ParameterKind::Struct;
+}
+
+bool GLShader::hasUniform(int nameId) const noexcept
+{
+    return m_uniformsNamesIds.contains(nameId);
 }
 
 void GLShader::prepareUniforms(ShaderParameterPack &pack)
@@ -223,7 +247,6 @@ void GLShader::setFragOutputs(const QHash<QString, int> &fragOutputs)
         QMutexLocker lock(&m_mutex);
         m_fragOutputs = fragOutputs;
     }
-//    updateDNA();
 }
 
 const QHash<QString, int> GLShader::fragOutputs() const
@@ -288,6 +311,14 @@ void GLShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescript
         }
     }
     m_uniformBlockIndexToShaderUniforms.insert(-1, activeUniformsInDefaultBlock);
+
+    m_parameterPackSize += m_standardUniformNamesIds.size() + m_lightUniformsNamesIds.size() + m_uniformsNamesIds.size();
+    m_hasActiveVariables |= (m_parameterPackSize > 0);
+
+    // Sort by ascending order to make contains check faster
+    std::sort(m_uniformsNamesIds.begin(), m_uniformsNamesIds.end());
+    std::sort(m_lightUniformsNamesIds.begin(), m_lightUniformsNamesIds.end());
+    std::sort(m_standardUniformNamesIds.begin(), m_standardUniformNamesIds.end());
 }
 
 void GLShader::initializeAttributes(const QVector<ShaderAttribute> &attributesDescription)
@@ -301,6 +332,7 @@ void GLShader::initializeAttributes(const QVector<ShaderAttribute> &attributesDe
         m_attributeNamesIds[i] = m_attributes[i].m_nameId;
         qCDebug(Shaders) << "Active Attribute " << attributesDescription[i].m_name;
     }
+    m_hasActiveVariables |= (m_attributeNamesIds.size() > 0);
 }
 
 void GLShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription)
@@ -336,6 +368,12 @@ void GLShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &unifor
         }
         m_uniformBlockIndexToShaderUniforms.insert(uniformBlockDescription[i].m_index, activeUniformsInBlock);
     }
+
+    m_parameterPackSize += m_uniformsNamesIds.size();
+    m_hasActiveVariables |= (m_parameterPackSize > 0);
+
+    // Sort by ascending order to make contains check faster
+    std::sort(m_uniformBlockNamesIds.begin(), m_uniformBlockNamesIds.end());
 }
 
 void GLShader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription)
@@ -350,6 +388,12 @@ void GLShader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &
         m_shaderStorageBlocks[i].m_nameId =m_shaderStorageBlockNamesIds[i];
         qCDebug(Shaders) << "Initializing Shader Storage Block {" << m_shaderStorageBlockNames[i] << "}";
     }
+
+    m_parameterPackSize += m_shaderStorageBlockNamesIds.size();
+    m_hasActiveVariables |= (m_parameterPackSize > 0);
+
+    // Sort by ascending order to make contains check faster
+    std::sort(m_shaderStorageBlockNamesIds.begin(), m_shaderStorageBlockNamesIds.end());
 }
 
 } // OpenGL
