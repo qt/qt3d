@@ -201,23 +201,79 @@ QRhiSampler::CompareOp rhiCompareOpFromTextureCompareOp(QAbstractTexture::Compar
 
 // This uploadGLData where the data is a fullsize subimage
 // as QOpenGLTexture doesn't allow partial subimage uploads
-QRhiTextureUploadEntry uploadRhiData(int level, int layer,
-                                     const QByteArray &bytes, const QTextureImageDataPtr &data) noexcept
+QRhiTextureUploadEntry createUploadEntry(int level, int layer, const QByteArray &bytes) noexcept
 {
-    qDebug() << "Case 1: " << level << layer ;
     QRhiTextureSubresourceUploadDescription description;
     description.setData(bytes);
-    description.setSourceSize({data->width(), data->height()});
-
     return QRhiTextureUploadEntry(layer, level, description);
 }
 
+
+template<typename F>
+void filterLayersAndFaces(const QTextureImageData &data, F f)
+{
+    const int layers = data.layers();
+    const int faces = data.faces();
+    const int miplevels = data.mipLevels();
+
+    if (layers == 1 && faces == 1)
+    {
+        for (int level = 0; level < miplevels; level++) {
+            f(createUploadEntry(level, 0, data.data(0, 0, level)));
+        }
+    }
+    else if (layers > 1 && faces == 1)
+    {
+        qWarning() << Q_FUNC_INFO << "Unsupported case, see QTBUG-83343";
+        /*
+        for (int layer = 0; layer < data.layers(); layer++) {
+            for (int level = 0; level < mipLevels; level++) {
+                f(createUploadEntry(level, layer, data.data(layer, 0, level)));
+            }
+        }
+        */
+    }
+    else if (faces > 1 &&  layers == 1)
+    {
+        // Mip levels do not seem to be supported by cubemaps...
+        for (int face = 0; face < data.faces(); face++) {
+            f(createUploadEntry(0, face, data.data(0, face, 0)));
+        }
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO <<  "Unsupported case";
+    }
+}
+
+template<typename F>
+void filterLayerAndFace(int layer, int face, F f)
+{
+    if (layer == 0 && face == 0)
+    {
+        f(0);
+    }
+    else if (layer > 0 && face == 0)
+    {
+        qWarning() << Q_FUNC_INFO << "Unsupported case, see QTBUG-83343";
+        // f(layer);
+    }
+    else if (layer == 0 && face > 0)
+    {
+        f(face);
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "Unsupported case";
+    }
+}
+
+
 // For partial sub image uploads
-QRhiTextureUploadEntry uploadRhiData(int mipLevel, int layer,
+QRhiTextureUploadEntry createUploadEntry(int mipLevel, int layer,
                                      int xOffset, int yOffset, int zOffset,
                                      const QByteArray &bytes, const QTextureImageDataPtr &data) noexcept
 {
-    qDebug() << "Case 2: " << mipLevel << layer  << xOffset << yOffset << zOffset;
     QRhiTextureSubresourceUploadDescription description;
     description.setData(bytes);
     description.setSourceTopLeft(QPoint(xOffset, yOffset));
@@ -579,11 +635,6 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
     QRhiTexture::Flags rhiFlags{};
     int sampleCount = 1;
 
-    if (m_properties.generateMipMaps) {
-        rhiFlags |= QRhiTexture::UsedWithGenerateMips;
-        rhiFlags |= QRhiTexture::MipMapped;
-    }
-
     const bool issRGB8Format = issRGBFormat(m_properties.format);
     if (issRGB8Format)
         rhiFlags |= QRhiTexture::sRGB;
@@ -594,6 +645,29 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
         // (multisampled textures don't have mipmaps)
         sampleCount = m_properties.samples;
     }
+
+    switch (actualTarget)
+    {
+    case QAbstractTexture::TargetCubeMap:
+    case QAbstractTexture::TargetCubeMapArray:
+    {
+        rhiFlags |= QRhiTexture::CubeMap;
+        break;
+    }
+    default:
+    {
+        // Mipmaps don't see to work with cubemaps at the moment
+        if (m_properties.generateMipMaps) {
+            rhiFlags |= QRhiTexture::UsedWithGenerateMips;
+            rhiFlags |= QRhiTexture::MipMapped;
+        }
+        else if (m_properties.mipLevels > 1) {
+            rhiFlags |= QRhiTexture::MipMapped;
+        }
+        break;
+    }
+    }
+
 
     QRhiTexture* rhiTexture = ctx->rhi()->newTexture(rhiFormat,
                                                      pixelSize,
@@ -610,81 +684,23 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
 
 void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
 {
-    QVector<QRhiTextureUploadEntry> uploadEntries;
+    QVarLengthArray<QRhiTextureUploadEntry> uploadEntries;
 
     // Upload all QTexImageData set by the QTextureGenerator
     if (m_textureData) {
-        const QVector<QTextureImageDataPtr> imgData = m_textureData->imageData();
+        const QVector<QTextureImageDataPtr>& imgData = m_textureData->imageData();
 
-        if (m_properties.samples == 1)
+        for (const QTextureImageDataPtr &data : imgData)
         {
-            for (const QTextureImageDataPtr &data : imgData) {
-                const int mipLevels = m_properties.generateMipMaps ? 1 : data->mipLevels();
-                Q_ASSERT(mipLevels <= ctx->rhi()->mipLevelsForSize({data->width(), data->height()}));
+            const int mipLevels = data->mipLevels();
+            Q_ASSERT(mipLevels <= ctx->rhi()->mipLevelsForSize({data->width(), data->height()}));
 
-                const int maxLevels = (data->layers() == 1 && data->faces() == 1) ? 1
-                        : (data->layers() > 1 && data->faces() == 1) ? data->layers()
-                        : (data->faces() > 1 && data->layers() == 1) ? data->faces()
-                        : 0;
-
-                if (data->layers() == 1 && data->faces() == 1)
-                {
-                    for (int level = 0; level < mipLevels; level++) {
-                        // ensure we don't accidentally cause a detach / copy of the raw bytes
-                        const QByteArray bytes(data->data(0, 0, level));
-                        const QRhiTextureUploadEntry entry = uploadRhiData(level, 0, bytes, data);
-                        uploadEntries.push_back(entry);
-                    }
-                }
-                else if (data->layers() > 1 && data->faces() == 1)
-                {
-                    for (int layer = 0; layer < data->layers(); layer++) {
-                        for (int level = 0; level < mipLevels; level++) {
-                            // ensure we don't accidentally cause a detach / copy of the raw bytes
-                            const QByteArray bytes(data->data(layer, 0, level));
-                            const QRhiTextureUploadEntry entry = uploadRhiData(level, layer, bytes, data);
-                            uploadEntries.push_back(entry);
-                        }
-                    }
-                }
-                else if (data->faces() > 1 && data->layers() == 1)
-                {
-                    for (int face = 0; face < data->faces(); face++) {
-                        for (int level = 0; level < mipLevels; level++) {
-                            // ensure we don't accidentally cause a detach / copy of the raw bytes
-                            const QByteArray bytes(data->data(0, face, level));
-                            const QRhiTextureUploadEntry entry = uploadRhiData(level, face, bytes, data);
-                            uploadEntries.push_back(entry);
-                        }
-                    }
-                }
-                else
-                {
-                    qDebug() << "Unsupported case";
-                }
-            }
-        }
-        else
-        {
-            for (const QTextureImageDataPtr &data : imgData) {
-                const int mipLevels = m_properties.generateMipMaps ? 1 : data->mipLevels();
-
-                for (int layer = 0; layer < data->layers(); layer++) {
-                    for (int face = 0; face < data->faces(); face++) {
-                        for (int level = 0; level < mipLevels; level++) {
-                            // ensure we don't accidentally cause a detach / copy of the raw bytes
-                            const QByteArray bytes(data->data(layer, face, level));
-                            const QRhiTextureUploadEntry entry = uploadRhiData(level, layer,
-                                                                               bytes, data);
-                            uploadEntries.push_back(entry);
-                        }
-                    }
-                }
-            }
-
+            filterLayersAndFaces(*data, [&] (QRhiTextureUploadEntry&& entry) {
+                uploadEntries.push_back(std::move(entry));
+            });
         }
     }
-/*
+
     // Upload all QTexImageData references by the TextureImages
     for (int i = 0; i < std::min(m_images.size(), m_imageData.size()); i++) {
         const QTextureImageDataPtr &imgData = m_imageData.at(i);
@@ -692,11 +708,13 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
         // layer, face or mip level, unlike the QTextureGenerator case where
         // they are in a single blob. Hence QTextureImageData::data() is not suitable.
         const QByteArray bytes(QTextureImageDataPrivate::get(imgData.get())->m_data);
-        const QRhiTextureUploadEntry entry = uploadRhiData(m_images[i].mipLevel, m_images[i].layer,
-                                                           static_cast<QOpenGLTexture::CubeMapFace>(m_images[i].face),
-                                                           bytes, imgData);
-        uploadEntries.push_back(entry);
+        const int layer = m_images[i].layer;
+        const int face = m_images[i].face;
+        filterLayerAndFace(layer, face, [&] (int rhiLayer) {
+            uploadEntries.push_back(createUploadEntry(m_images[i].mipLevel, rhiLayer, bytes));
+        });
     }
+
     // Free up image data once content has been uploaded
     // Note: if data functor stores the data, this won't really free anything though
     m_imageData.clear();
@@ -731,17 +749,21 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
         // layer, face or mip level, unlike the QTextureGenerator case where
         // they are in a single blob. Hence QTextureImageData::data() is not suitable.
 
-        const QRhiTextureUploadEntry entry = uploadRhiData(update.mipLevel(), update.layer(),
-                                                           static_cast<QOpenGLTexture::CubeMapFace>(update.face()),
-                                                           xOffset, yOffset, 0,
-                                                           bytes, imgData);
-        uploadEntries.push_back(entry);
+        const int layer = update.layer();
+        const int face = update.face();
+        filterLayerAndFace(layer, face, [&] (int rhiLayer) {
+            const QRhiTextureUploadEntry entry = createUploadEntry(
+                        update.mipLevel(), rhiLayer, xOffset, yOffset, 0, bytes, imgData);
+            uploadEntries.push_back(entry);
+        });
     }
-*/
+
     QRhiTextureUploadDescription uploadDescription;
     uploadDescription.setEntries(uploadEntries.begin(), uploadEntries.end());
 
     ctx->m_currentUpdates->uploadTexture(m_rhi, uploadDescription);
+    if (m_properties.generateMipMaps)
+        ctx->m_currentUpdates->generateMips(m_rhi);
 }
 
 void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
