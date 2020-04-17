@@ -99,10 +99,10 @@ public:
     QVector<QString> uniformBlockNames() const;
     QVector<QString> storageBlockNames() const;
 
-    inline QVector<ShaderUniform> uniforms() const { return m_uniforms; }
-    inline QVector<ShaderAttribute> attributes() const { return m_attributes; }
-    inline QVector<ShaderUniformBlock> uniformBlocks() const { return m_uniformBlocks; }
-    inline QVector<ShaderStorageBlock> storageBlocks() const { return m_shaderStorageBlocks; }
+    inline const QVector<ShaderUniform> &uniforms() const { return m_uniforms; }
+    inline const QVector<ShaderAttribute> &attributes() const { return m_attributes; }
+    inline const QVector<ShaderUniformBlock> &uniformBlocks() const { return m_uniformBlocks; }
+    inline const QVector<ShaderStorageBlock> &storageBlocks() const { return m_shaderStorageBlocks; }
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
 

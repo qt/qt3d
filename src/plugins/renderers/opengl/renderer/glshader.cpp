@@ -229,14 +229,20 @@ void GLShader::prepareUniforms(ShaderParameterPack &pack)
     auto it = values.keys.cbegin();
     const auto end = values.keys.cend();
 
+    const int shaderUniformsCount = m_uniforms.size();
+    const auto uIt = m_uniforms.cbegin();
+
     while (it != end) {
         // Find if there's a uniform with the same name id
-        for (const ShaderUniform &uniform : qAsConst(m_uniforms)) {
-            if (uniform.m_nameId == *it) {
-                pack.setSubmissionUniform(uniform);
-                break;
-            }
-        }
+
+        int i = 0;
+        const int targetNameId = *it;
+        while (i < shaderUniformsCount && (uIt + i)->m_nameId < targetNameId)
+            ++i;
+
+        if (i < shaderUniformsCount && (uIt + i)->m_nameId == targetNameId)
+            pack.setSubmissionUniformIndex(i);
+
         ++it;
     }
 }
@@ -319,6 +325,10 @@ void GLShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescript
     std::sort(m_uniformsNamesIds.begin(), m_uniformsNamesIds.end());
     std::sort(m_lightUniformsNamesIds.begin(), m_lightUniformsNamesIds.end());
     std::sort(m_standardUniformNamesIds.begin(), m_standardUniformNamesIds.end());
+    std::sort(m_uniforms.begin(), m_uniforms.end(),
+              [] (const ShaderUniform &a, const ShaderUniform &b) {
+        return a.m_nameId < b.m_nameId;
+    });
 }
 
 void GLShader::initializeAttributes(const QVector<ShaderAttribute> &attributesDescription)

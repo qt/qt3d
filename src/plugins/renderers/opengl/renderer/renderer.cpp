@@ -2068,7 +2068,7 @@ void Renderer::performCompute(const RenderView *, RenderCommand *command)
     }
     {
         Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate, activeProfiler());
-        m_submissionContext->setParameters(command->m_parameterPack);
+        m_submissionContext->setParameters(command->m_parameterPack, command->m_glShader);
     }
     {
         Profiling::GLTimeRecorder recorder(Profiling::DispatchCompute, activeProfiler());
@@ -2162,7 +2162,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             {
                 Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate, activeProfiler());
                 //// Update program uniforms
-                if (!m_submissionContext->setParameters(command.m_parameterPack)) {
+                if (!m_submissionContext->setParameters(command.m_parameterPack, command.m_glShader)) {
                     allCommandsIssued = false;
                     // If we have failed to set uniform (e.g unable to bind a texture)
                     // we won't perform the draw call which could show invalid content
