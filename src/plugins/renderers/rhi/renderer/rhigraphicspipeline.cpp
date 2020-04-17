@@ -48,17 +48,15 @@ namespace Render {
 namespace Rhi {
 
 RHIGraphicsPipeline::RHIGraphicsPipeline()
-    : m_rvUbo(nullptr)
-    , m_cmdUbo(nullptr)
-    , m_pipeline(nullptr)
-    , m_shaderResourceBindings(nullptr)
-    , m_score(0)
+    : m_rvUbo(nullptr),
+      m_cmdUbo(nullptr),
+      m_pipeline(nullptr),
+      m_shaderResourceBindings(nullptr),
+      m_score(0)
 {
 }
 
-RHIGraphicsPipeline::~RHIGraphicsPipeline()
-{
-}
+RHIGraphicsPipeline::~RHIGraphicsPipeline() { }
 
 void RHIGraphicsPipeline::cleanup()
 {

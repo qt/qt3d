@@ -51,14 +51,12 @@
 // We mean it.
 //
 
-
 #include <shadervariables_p.h>
 #include <shaderparameterpack_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <QMutex>
 #include <QtGui/private/qshader_p.h>
 #include <QtGui/private/qrhi_p.h>
-
 
 QT_BEGIN_NAMESPACE
 
@@ -117,12 +115,7 @@ public:
     ShaderStorageBlock storageBlockForBlockNameId(int blockNameId) const noexcept;
     ShaderStorageBlock storageBlockForBlockName(const QString &blockName) const noexcept;
 
-    enum ParameterKind {
-        Uniform,
-        UBO,
-        SSBO,
-        Struct
-    };
+    enum ParameterKind { Uniform, UBO, SSBO, Struct };
     ParameterKind categorizeVariable(int nameId) const noexcept;
 
     bool hasUniform(int nameId) const noexcept;
@@ -131,12 +124,16 @@ public:
     void setShaderCode(const QVector<QByteArray> shaderCode) { m_shaderCode = shaderCode; }
     QVector<QByteArray> shaderCode() const;
 
-    const QShader& shaderStage(QShader::Stage stage) const noexcept { return m_stages[stage]; }
+    const QShader &shaderStage(QShader::Stage stage) const noexcept { return m_stages[stage]; }
     QVector<UBO_Member> uboMembers() const { return m_uboMembers; }
 
-    const QSet<QString>& unqualifiedUniformNames() const noexcept { return m_unqualifiedUniformNames; }
+    const QSet<QString> &unqualifiedUniformNames() const noexcept
+    {
+        return m_unqualifiedUniformNames;
+    }
 
     void introspect();
+
 private:
     bool m_isLoaded;
     QShader m_stages[6];
@@ -153,7 +150,7 @@ private:
     QVector<QString> m_uniformBlockNames;
     QVector<int> m_uniformBlockNamesIds;
     QVector<ShaderUniformBlock> m_uniformBlocks;
-    QHash<int, QHash<QString, ShaderUniform> > m_uniformBlockIndexToShaderUniforms;
+    QHash<int, QHash<QString, ShaderUniform>> m_uniformBlockIndexToShaderUniforms;
     QSet<QString> m_unqualifiedUniformNames;
 
     QVector<QString> m_shaderStorageBlockNames;
@@ -178,13 +175,13 @@ private:
     friend class SubmissionContext;
     void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
     void initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription);
-    void initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
+    void
+    initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
     void initializeSamplers(const QVector<ShaderAttribute> &samplerDescription);
     void initializeImages(const QVector<ShaderAttribute> &imageDescription);
     void recordAllUniforms(const QShaderDescription::BlockVariable &ubo, QString parentName);
 
     QVector<UBO_Member> m_uboMembers;
-
 
     mutable QMutex m_mutex;
     QMetaObject::Connection m_contextConnection;

@@ -54,10 +54,7 @@ int renderViewInstanceCounter = 0;
 } // anonymous
 
 RenderViewCommandBuilderJob::RenderViewCommandBuilderJob()
-    : Qt3DCore::QAspectJob()
-    , m_offset(0)
-    , m_count(0)
-    , m_renderView(nullptr)
+    : Qt3DCore::QAspectJob(), m_offset(0), m_count(0), m_renderView(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderViewCommandBuilder, renderViewInstanceCounter++)
 }

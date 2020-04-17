@@ -61,15 +61,13 @@ int renderViewInstanceCounter = 0;
 } // anonymous
 
 RenderViewInitializerJob::RenderViewInitializerJob()
-    : m_renderer(nullptr)
-    , m_fgLeaf(nullptr)
-    , m_index(0)
-    , m_renderView(nullptr)
-{
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView, renderViewInstanceCounter++)
-}
+    : m_renderer(nullptr),
+      m_fgLeaf(nullptr),
+      m_index(0),
+      m_renderView(nullptr) { SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView,
+                                                    renderViewInstanceCounter++) }
 
-RenderViewInitializerJob::~RenderViewInitializerJob()
+      RenderViewInitializerJob::~RenderViewInitializerJob()
 {
     renderViewInstanceCounter--;
 }

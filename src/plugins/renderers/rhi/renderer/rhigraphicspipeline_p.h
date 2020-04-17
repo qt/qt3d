@@ -69,8 +69,8 @@ class RHIGraphicsPipeline
 public:
     struct UBOBuffer
     {
-        HRHIBuffer handle{};
-        RHIBuffer *buffer{};
+        HRHIBuffer handle {};
+        RHIBuffer *buffer {};
     };
 
     RHIGraphicsPipeline();
@@ -80,17 +80,26 @@ public:
     QRhiBuffer *renderViewUBO() const { return m_rvUbo; }
     QRhiGraphicsPipeline *pipeline() const { return m_pipeline; }
     QRhiShaderResourceBindings *shaderResourceBindings() const { return m_shaderResourceBindings; }
-    QHash<int, UBOBuffer> ubos() const { return  m_ubos; }
+    QHash<int, UBOBuffer> ubos() const { return m_ubos; }
     int score() const { return m_score; }
 
     void setPipeline(QRhiGraphicsPipeline *pipeline) { m_pipeline = pipeline; }
     void setCommandUBO(QRhiBuffer *commandUBO) { m_cmdUbo = commandUBO; }
     void setRenderViewUBO(QRhiBuffer *rvUBO) { m_rvUbo = rvUBO; }
-    void setShaderResourceBindings(QRhiShaderResourceBindings *shaderResourceBindings) { m_shaderResourceBindings = shaderResourceBindings; }
+    void setShaderResourceBindings(QRhiShaderResourceBindings *shaderResourceBindings)
+    {
+        m_shaderResourceBindings = shaderResourceBindings;
+    }
     void setUBOs(const QHash<int, UBOBuffer> ubos) { m_ubos = ubos; }
 
-    void setAttributesToBindingHash(const QHash<int, int> &attributeNameToBinding) { m_attributeNameIdToBindingIndex = attributeNameToBinding; }
-    int bindingIndexForAttribute(int attributeNameId) const { return m_attributeNameIdToBindingIndex.value(attributeNameId, -1); }
+    void setAttributesToBindingHash(const QHash<int, int> &attributeNameToBinding)
+    {
+        m_attributeNameIdToBindingIndex = attributeNameToBinding;
+    }
+    int bindingIndexForAttribute(int attributeNameId) const
+    {
+        return m_attributeNameIdToBindingIndex.value(attributeNameId, -1);
+    }
     void increaseScore() { ++m_score; }
     void decreaseScore() { --m_score; }
 
@@ -114,6 +123,5 @@ private:
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
 
 #endif // QT3DRENDER_RENDER_RHI_RHIGRAPHICSPIPELINE_H

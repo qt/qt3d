@@ -60,12 +60,13 @@ const int likelyNumberOfParameters = 24;
 } // anonymous
 
 MaterialParameterGathererJob::MaterialParameterGathererJob()
-    : Qt3DCore::QAspectJob()
-    , m_manager(nullptr)
-    , m_techniqueFilter(nullptr)
-    , m_renderPassFilter(nullptr)
+    : Qt3DCore::QAspectJob(),
+      m_manager(nullptr),
+      m_techniqueFilter(nullptr),
+      m_renderPassFilter(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::MaterialParameterGathering, materialParameterGathererCounter++)
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::MaterialParameterGathering,
+                          materialParameterGathererCounter++)
 }
 
 // TechniqueFilter / RenderPassFilter
@@ -90,7 +91,8 @@ void MaterialParameterGathererJob::run()
         Technique *technique = findTechniqueForEffect(m_manager, m_techniqueFilter, effect);
 
         if (Q_LIKELY(technique != nullptr)) {
-            RenderPassList passes = findRenderPassesForTechnique(m_manager, m_renderPassFilter, technique);
+            RenderPassList passes =
+                    findRenderPassesForTechnique(m_manager, m_renderPassFilter, technique);
             if (Q_LIKELY(passes.size() > 0)) {
                 // Order set:
                 // 1 Pass Filter
@@ -113,13 +115,16 @@ void MaterialParameterGathererJob::run()
                 if (m_techniqueFilter)
                     parametersFromParametersProvider(&parameters, m_manager->parameterManager(),
                                                      m_techniqueFilter);
-                // Get the parameters for our selected rendering setup (override what was defined in the technique/pass filter)
-                parametersFromMaterialEffectTechnique(&parameters, m_manager->parameterManager(), material, effect, technique);
+                // Get the parameters for our selected rendering setup (override what was defined in
+                // the technique/pass filter)
+                parametersFromMaterialEffectTechnique(&parameters, m_manager->parameterManager(),
+                                                      material, effect, technique);
 
                 for (RenderPass *renderPass : passes) {
                     ParameterInfoList globalParameters = parameters;
-                    parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), renderPass);
-                    m_parameters[material->peerId()].push_back({renderPass, globalParameters});
+                    parametersFromParametersProvider(&globalParameters,
+                                                     m_manager->parameterManager(), renderPass);
+                    m_parameters[material->peerId()].push_back({ renderPass, globalParameters });
                 }
             }
         }

@@ -78,7 +78,8 @@ using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 class Q_AUTOTEST_EXPORT RenderViewBuilder
 {
 public:
-    explicit RenderViewBuilder(Render::FrameGraphNode *leafNode, int renderViewIndex, Renderer *renderer);
+    explicit RenderViewBuilder(Render::FrameGraphNode *leafNode, int renderViewIndex,
+                               Renderer *renderer);
 
     RenderViewInitializerJobPtr renderViewJob() const;
     FilterLayerEntityJobPtr filterEntityByLayerJob() const;
@@ -110,7 +111,8 @@ public:
     bool renderCommandCacheNeedsToBeRebuilt() const;
 
     static int optimalJobCount();
-    static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset);
+    static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities,
+                                              const QVector<Entity *> &subset);
 
 private:
     Render::FrameGraphNode *m_leafNode;

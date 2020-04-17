@@ -69,8 +69,7 @@ class RHIBuffer
 public:
     RHIBuffer();
 
-    enum Type
-    {
+    enum Type {
         ArrayBuffer = 0,
         UniformBuffer,
         IndexBuffer,
@@ -85,22 +84,23 @@ public:
     bool create(SubmissionContext *ctx);
     void destroy(SubmissionContext *ctx);
     void orphan(SubmissionContext *ctx);
-    void allocate(SubmissionContext *ctx, const QByteArray& data, bool dynamic = true);
-    void update(SubmissionContext *ctx, const QByteArray& data, int offset = 0);
+    void allocate(SubmissionContext *ctx, const QByteArray &data, bool dynamic = true);
+    void update(SubmissionContext *ctx, const QByteArray &data, int offset = 0);
     QByteArray download(SubmissionContext *ctx, uint size);
     void bindBufferBase(SubmissionContext *ctx, int bindingPoint, Type t);
     void bindBufferBase(SubmissionContext *ctx, int bindingPoint);
 
     void cleanup();
 
-    QRhiBuffer* rhiBuffer() const noexcept { return m_rhiBuffer; }
+    QRhiBuffer *rhiBuffer() const noexcept { return m_rhiBuffer; }
+
 private:
     uint m_bufferId;
     bool m_dynamic;
-    int m_allocSize{};
+    int m_allocSize {};
     int m_lastTarget;
 
-    QRhiBuffer* m_rhiBuffer{};
+    QRhiBuffer *m_rhiBuffer {};
 
     std::vector<std::pair<QByteArray /*data*/, int /*offset*/>> m_datasToUpload;
 };

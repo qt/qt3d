@@ -74,7 +74,8 @@ namespace Rhi {
 
 class GraphicsContext;
 
-struct BlockToUBO {
+struct BlockToUBO
+{
     int m_blockIndex;
     Qt3DCore::QNodeId m_bufferID;
     bool m_needsUpdate;
@@ -82,13 +83,13 @@ struct BlockToUBO {
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, BlockToUBO, Q_MOVABLE_TYPE)
 
-struct BlockToSSBO {
+struct BlockToSSBO
+{
     int m_blockIndex;
     int m_bindingIndex;
     Qt3DCore::QNodeId m_bufferID;
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, BlockToSSBO, Q_PRIMITIVE_TYPE)
-
 
 struct PackUniformHash
 {
@@ -120,7 +121,7 @@ struct PackUniformHash
         return UniformValue();
     }
 
-    UniformValue& value(int key)
+    UniformValue &value(int key)
     {
         const int idx = keys.indexOf(key);
         if (idx != -1)
@@ -135,10 +136,7 @@ struct PackUniformHash
         values.removeAt(idx);
     }
 
-    bool contains(int key) const
-    {
-        return keys.contains(key);
-    }
+    bool contains(int key) const { return keys.contains(key); }
 };
 
 class Q_AUTOTEST_EXPORT ShaderParameterPack
@@ -158,22 +156,19 @@ public:
     inline const PackUniformHash &uniforms() const { return m_uniforms; }
     UniformValue uniform(const int glslNameId) const { return m_uniforms.value(glslNameId); }
 
-
     struct NamedResource
     {
-        enum Type {
-            Texture = 0,
-            Image
-        };
+        enum Type { Texture = 0, Image };
 
-        NamedResource() {}
-        NamedResource(const int glslNameId, Qt3DCore::QNodeId texId,
-                      int uniformArrayIndex, Type type)
-            : glslNameId(glslNameId)
-            , nodeId(texId)
-            , uniformArrayIndex(uniformArrayIndex)
-            , type(type)
-        { }
+        NamedResource() { }
+        NamedResource(const int glslNameId, Qt3DCore::QNodeId texId, int uniformArrayIndex,
+                      Type type)
+            : glslNameId(glslNameId),
+              nodeId(texId),
+              uniformArrayIndex(uniformArrayIndex),
+              type(type)
+        {
+        }
 
         int glslNameId;
         Qt3DCore::QNodeId nodeId;
@@ -182,16 +177,11 @@ public:
 
         bool operator==(const NamedResource &other) const
         {
-            return glslNameId == other.glslNameId &&
-                    nodeId == other.nodeId &&
-                    uniformArrayIndex == other.uniformArrayIndex &&
-                    type == other.type;
+            return glslNameId == other.glslNameId && nodeId == other.nodeId
+                    && uniformArrayIndex == other.uniformArrayIndex && type == other.type;
         }
 
-        bool operator!=(const NamedResource &other) const
-        {
-            return !(*this == other);
-        }
+        bool operator!=(const NamedResource &other) const { return !(*this == other); }
     };
 
     inline QVector<NamedResource> textures() const { return m_textures; }
@@ -199,6 +189,7 @@ public:
     inline QVector<BlockToUBO> uniformBuffers() const { return m_uniformBuffers; }
     inline QVector<BlockToSSBO> shaderStorageBuffers() const { return m_shaderStorageBuffers; }
     inline QVector<ShaderUniform> submissionUniforms() const { return m_submissionUniforms; }
+
 private:
     PackUniformHash m_uniforms;
 
@@ -210,7 +201,8 @@ private:
 
     friend class RenderView;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderParameterPack::NamedResource, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderParameterPack::NamedResource,
+                        Q_PRIMITIVE_TYPE)
 
 } // namespace Rhi
 } // namespace Render

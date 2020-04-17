@@ -48,14 +48,16 @@ namespace Render {
 
 namespace Rhi {
 
-namespace
-{
+namespace {
 QRhiBuffer::UsageFlag bufferTypeToRhi(RHIBuffer::Type t)
 {
     switch (t) {
-    case RHIBuffer::Type::ArrayBuffer: return QRhiBuffer::VertexBuffer;
-    case RHIBuffer::Type::IndexBuffer: return QRhiBuffer::IndexBuffer;
-    case RHIBuffer::Type::UniformBuffer: return QRhiBuffer::UniformBuffer;
+    case RHIBuffer::Type::ArrayBuffer:
+        return QRhiBuffer::VertexBuffer;
+    case RHIBuffer::Type::IndexBuffer:
+        return QRhiBuffer::IndexBuffer;
+    case RHIBuffer::Type::UniformBuffer:
+        return QRhiBuffer::UniformBuffer;
     default:
         RHI_UNIMPLEMENTED;
         return QRhiBuffer::StorageBuffer;
@@ -66,12 +68,7 @@ QRhiBuffer::UsageFlag bufferTypeToRhi(RHIBuffer::Type t)
 // A UBO is created for each ShaderData Shader Pair
 // That means a UBO is unique to a shader/shaderdata
 
-RHIBuffer::RHIBuffer()
-    : m_bufferId(0)
-    , m_dynamic(true)
-    , m_lastTarget(GL_ARRAY_BUFFER)
-{
-}
+RHIBuffer::RHIBuffer() : m_bufferId(0), m_dynamic(true), m_lastTarget(GL_ARRAY_BUFFER) { }
 
 bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
 {
@@ -79,9 +76,9 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
     if (this->m_datasToUpload.empty())
         return bool(m_rhiBuffer);
 
-    const auto uploadMethod = m_dynamic
-            ? &QRhiResourceUpdateBatch::updateDynamicBuffer
-            : qOverload<QRhiBuffer *, int , int , const void *>(&QRhiResourceUpdateBatch::uploadStaticBuffer);
+    const auto uploadMethod = m_dynamic ? &QRhiResourceUpdateBatch::updateDynamicBuffer
+                                        : qOverload<QRhiBuffer *, int, int, const void *>(
+                                                &QRhiResourceUpdateBatch::uploadStaticBuffer);
     if (!m_rhiBuffer) {
         if (m_allocSize <= 0)
             return false;
@@ -101,16 +98,15 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
 #if defined(QT_DEBUG)
         {
             // for debug: we set the buffer to zero
-            auto ptr = new char[m_allocSize]{};
+            auto ptr = new char[m_allocSize] {};
             (ctx->m_currentUpdates->*uploadMethod)(m_rhiBuffer, 0, m_allocSize, ptr);
             delete[] ptr;
         }
 #endif
     }
 
-    for (const std::pair<QByteArray, int>& pair : this->m_datasToUpload)
-    {
-        const QByteArray& data = pair.first;
+    for (const std::pair<QByteArray, int> &pair : this->m_datasToUpload) {
+        const QByteArray &data = pair.first;
         int offset = pair.second;
         (ctx->m_currentUpdates->*uploadMethod)(m_rhiBuffer, offset, data.size(), data.constData());
     }
@@ -133,8 +129,7 @@ bool RHIBuffer::create(SubmissionContext *ctx)
 
 void RHIBuffer::destroy(SubmissionContext *ctx)
 {
-    if (m_rhiBuffer)
-    {
+    if (m_rhiBuffer) {
         m_rhiBuffer->releaseAndDestroyLater();
         m_rhiBuffer = nullptr;
     }
@@ -144,45 +139,44 @@ void RHIBuffer::destroy(SubmissionContext *ctx)
 void RHIBuffer::orphan(SubmissionContext *)
 {
     m_datasToUpload.clear();
-    if (m_rhiBuffer)
-    {
+    if (m_rhiBuffer) {
         m_rhiBuffer->releaseAndDestroyLater();
         m_rhiBuffer = nullptr;
     }
     m_allocSize = 0;
 }
 
-void RHIBuffer::allocate(SubmissionContext *ctx, const QByteArray& data, bool dynamic)
+void RHIBuffer::allocate(SubmissionContext *ctx, const QByteArray &data, bool dynamic)
 {
     m_datasToUpload.clear();
-    m_datasToUpload.push_back({data, 0});
+    m_datasToUpload.push_back({ data, 0 });
     m_allocSize = data.size();
     m_dynamic = dynamic;
 }
 
-void RHIBuffer::update(SubmissionContext *ctx, const QByteArray& data, int offset)
+void RHIBuffer::update(SubmissionContext *ctx, const QByteArray &data, int offset)
 {
-    m_datasToUpload.push_back({data, offset});
+    m_datasToUpload.push_back({ data, offset });
 }
 
 QByteArray RHIBuffer::download(SubmissionContext *ctx, uint size)
 {
     RHI_UNIMPLEMENTED;
-//    char *gpu_ptr = ctx->mapBuffer(m_lastTarget, size);
-//    QByteArray data;
-//    if (gpu_ptr != nullptr) {
-//        data.resize(size);
-//        std::copy(gpu_ptr, gpu_ptr+size, data.data());
-//    }
-//    ctx->unmapBuffer(m_lastTarget);
-//    return data;
+    //    char *gpu_ptr = ctx->mapBuffer(m_lastTarget, size);
+    //    QByteArray data;
+    //    if (gpu_ptr != nullptr) {
+    //        data.resize(size);
+    //        std::copy(gpu_ptr, gpu_ptr+size, data.data());
+    //    }
+    //    ctx->unmapBuffer(m_lastTarget);
+    //    return data;
     return {};
 }
 
 void RHIBuffer::bindBufferBase(SubmissionContext *ctx, int bindingPoint, RHIBuffer::Type t)
 {
     RHI_UNIMPLEMENTED;
-//    ctx->bindBufferBase(glBufferTypes[t], bindingPoint, m_bufferId);
+    //    ctx->bindBufferBase(glBufferTypes[t], bindingPoint, m_bufferId);
 }
 
 void RHIBuffer::bindBufferBase(SubmissionContext *ctx, int bindingPoint)

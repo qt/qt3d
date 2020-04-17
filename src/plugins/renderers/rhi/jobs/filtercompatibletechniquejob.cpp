@@ -51,8 +51,7 @@ namespace Render {
 namespace Rhi {
 
 FilterCompatibleTechniqueJob::FilterCompatibleTechniqueJob()
-    : m_manager(nullptr)
-    , m_renderer(nullptr)
+    : m_manager(nullptr), m_renderer(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FilterCompatibleTechniques, 0)
 }
@@ -86,7 +85,8 @@ void FilterCompatibleTechniqueJob::run()
     for (const Qt3DCore::QNodeId techniqueId : dirtyTechniqueIds) {
         Technique *technique = m_manager->lookupResource(techniqueId);
         if (Q_LIKELY(technique != nullptr))
-            technique->setCompatibleWithRenderer((*m_renderer->contextInfo() == *technique->graphicsApiFilter()));
+            technique->setCompatibleWithRenderer(
+                    (*m_renderer->contextInfo() == *technique->graphicsApiFilter()));
     }
 }
 

@@ -48,10 +48,7 @@ namespace Render {
 namespace Rhi {
 
 RenderBuffer::RenderBuffer(int width, int height, QAbstractTexture::TextureFormat format)
-    : m_size(width, height),
-      m_format(format),
-      m_renderBuffer(0),
-      m_context(nullptr)
+    : m_size(width, height), m_format(format), m_renderBuffer(0), m_context(nullptr)
 {
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx) {

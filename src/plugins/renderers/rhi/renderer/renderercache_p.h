@@ -79,7 +79,7 @@ struct RendererCache
     QVector<Entity *> renderableEntities;
     QVector<Entity *> computeEntities;
     QVector<LightSource> gatheredLights;
-    EnvironmentLight* environmentLight;
+    EnvironmentLight *environmentLight;
 
     // Per RV cache
     QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;

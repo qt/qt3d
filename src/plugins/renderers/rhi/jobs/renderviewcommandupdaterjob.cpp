@@ -55,14 +55,13 @@ namespace {
 int renderViewInstanceCounter = 0;
 } // anonymous
 
-
 RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
-    : Qt3DCore::QAspectJob()
-    , m_offset(0)
-    , m_count(0)
-    , m_renderView(nullptr)
-    , m_renderer(nullptr)
-    , m_renderables()
+    : Qt3DCore::QAspectJob(),
+      m_offset(0),
+      m_count(0),
+      m_renderView(nullptr),
+      m_renderer(nullptr),
+      m_renderables()
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++)
 }

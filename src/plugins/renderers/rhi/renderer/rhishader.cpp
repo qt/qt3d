@@ -52,8 +52,7 @@ namespace Render {
 
 namespace Rhi {
 
-RHIShader::RHIShader()
-    : m_isLoaded(false)
+RHIShader::RHIShader() : m_isLoaded(false)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
@@ -93,16 +92,19 @@ QVector<QByteArray> RHIShader::shaderCode() const
     return m_shaderCode;
 }
 
-namespace
+namespace {
+static constexpr QRhiVertexInputAttribute::Format
+rhiInputType(QShaderDescription::VariableType type)
 {
-static constexpr QRhiVertexInputAttribute::Format rhiInputType(QShaderDescription::VariableType type)
-{
-    switch (type)
-    {
-    case QShaderDescription::Vec4: return QRhiVertexInputAttribute::Float4;
-    case QShaderDescription::Vec3: return QRhiVertexInputAttribute::Float3;
-    case QShaderDescription::Vec2: return QRhiVertexInputAttribute::Float2;
-    case QShaderDescription::Float: return QRhiVertexInputAttribute::Float;
+    switch (type) {
+    case QShaderDescription::Vec4:
+        return QRhiVertexInputAttribute::Float4;
+    case QShaderDescription::Vec3:
+        return QRhiVertexInputAttribute::Float3;
+    case QShaderDescription::Vec2:
+        return QRhiVertexInputAttribute::Float2;
+    case QShaderDescription::Float:
+        return QRhiVertexInputAttribute::Float;
     default:
         // TODO UNormByte4, UNormByte2, UNormByte
         RHI_UNIMPLEMENTED;
@@ -113,81 +115,145 @@ static constexpr QRhiVertexInputAttribute::Format rhiInputType(QShaderDescriptio
 
 static constexpr int rhiTypeSize(QShaderDescription::VariableType type)
 {
-    switch (type)
-    {
-    case QShaderDescription::Unknown: return 0;
+    switch (type) {
+    case QShaderDescription::Unknown:
+        return 0;
 
-    case QShaderDescription::Float: return 1;
-    case QShaderDescription::Vec2: return 2;
-    case QShaderDescription::Vec3: return 3;
-    case QShaderDescription::Vec4: return 4;
-    case QShaderDescription::Mat2: return 2*2;
-    case QShaderDescription::Mat2x3: return 2*3;
-    case QShaderDescription::Mat2x4: return 2*4;
-    case QShaderDescription::Mat3: return 3*3;
-    case QShaderDescription::Mat3x2: return 3*2;
-    case QShaderDescription::Mat3x4: return 3*4;
-    case QShaderDescription::Mat4: return 4*4;
-    case QShaderDescription::Mat4x2: return 4*2;
-    case QShaderDescription::Mat4x3: return 4*3;
+    case QShaderDescription::Float:
+        return 1;
+    case QShaderDescription::Vec2:
+        return 2;
+    case QShaderDescription::Vec3:
+        return 3;
+    case QShaderDescription::Vec4:
+        return 4;
+    case QShaderDescription::Mat2:
+        return 2 * 2;
+    case QShaderDescription::Mat2x3:
+        return 2 * 3;
+    case QShaderDescription::Mat2x4:
+        return 2 * 4;
+    case QShaderDescription::Mat3:
+        return 3 * 3;
+    case QShaderDescription::Mat3x2:
+        return 3 * 2;
+    case QShaderDescription::Mat3x4:
+        return 3 * 4;
+    case QShaderDescription::Mat4:
+        return 4 * 4;
+    case QShaderDescription::Mat4x2:
+        return 4 * 2;
+    case QShaderDescription::Mat4x3:
+        return 4 * 3;
 
-    case QShaderDescription::Int: return 1;
-    case QShaderDescription::Int2: return 2;
-    case QShaderDescription::Int3: return 3;
-    case QShaderDescription::Int4: return 4;
+    case QShaderDescription::Int:
+        return 1;
+    case QShaderDescription::Int2:
+        return 2;
+    case QShaderDescription::Int3:
+        return 3;
+    case QShaderDescription::Int4:
+        return 4;
 
-    case QShaderDescription::Uint: return 1;
-    case QShaderDescription::Uint2: return 2;
-    case QShaderDescription::Uint3: return 3;
-    case QShaderDescription::Uint4: return 4;
+    case QShaderDescription::Uint:
+        return 1;
+    case QShaderDescription::Uint2:
+        return 2;
+    case QShaderDescription::Uint3:
+        return 3;
+    case QShaderDescription::Uint4:
+        return 4;
 
-    case QShaderDescription::Bool: return 1;
-    case QShaderDescription::Bool2: return 2;
-    case QShaderDescription::Bool3: return 3;
-    case QShaderDescription::Bool4: return 4;
+    case QShaderDescription::Bool:
+        return 1;
+    case QShaderDescription::Bool2:
+        return 2;
+    case QShaderDescription::Bool3:
+        return 3;
+    case QShaderDescription::Bool4:
+        return 4;
 
-    case QShaderDescription::Double: return 1;
-    case QShaderDescription::Double2: return 2;
-    case QShaderDescription::Double3: return 3;
-    case QShaderDescription::Double4: return 4;
-    case QShaderDescription::DMat2: return 2*2;
-    case QShaderDescription::DMat2x3: return 2*3;
-    case QShaderDescription::DMat2x4: return 2*4;
-    case QShaderDescription::DMat3: return 3*3;
-    case QShaderDescription::DMat3x2: return 3*2;
-    case QShaderDescription::DMat3x4: return 3*4;
-    case QShaderDescription::DMat4: return 4*4;
-    case QShaderDescription::DMat4x2: return 4*2;
-    case QShaderDescription::DMat4x3: return 4*3;
+    case QShaderDescription::Double:
+        return 1;
+    case QShaderDescription::Double2:
+        return 2;
+    case QShaderDescription::Double3:
+        return 3;
+    case QShaderDescription::Double4:
+        return 4;
+    case QShaderDescription::DMat2:
+        return 2 * 2;
+    case QShaderDescription::DMat2x3:
+        return 2 * 3;
+    case QShaderDescription::DMat2x4:
+        return 2 * 4;
+    case QShaderDescription::DMat3:
+        return 3 * 3;
+    case QShaderDescription::DMat3x2:
+        return 3 * 2;
+    case QShaderDescription::DMat3x4:
+        return 3 * 4;
+    case QShaderDescription::DMat4:
+        return 4 * 4;
+    case QShaderDescription::DMat4x2:
+        return 4 * 2;
+    case QShaderDescription::DMat4x3:
+        return 4 * 3;
 
-    case QShaderDescription::Sampler1D: return 0;
-    case QShaderDescription::Sampler2D: return 0;
-    case QShaderDescription::Sampler2DMS: return 0;
-    case QShaderDescription::Sampler3D: return 0;
-    case QShaderDescription::SamplerCube: return 0;
-    case QShaderDescription::Sampler1DArray: return 0;
-    case QShaderDescription::Sampler2DArray: return 0;
-    case QShaderDescription::Sampler2DMSArray: return 0;
-    case QShaderDescription::Sampler3DArray: return 0;
-    case QShaderDescription::SamplerCubeArray: return 0;
-    case QShaderDescription::SamplerRect: return 0;
-    case QShaderDescription::SamplerBuffer: return 0;
+    case QShaderDescription::Sampler1D:
+        return 0;
+    case QShaderDescription::Sampler2D:
+        return 0;
+    case QShaderDescription::Sampler2DMS:
+        return 0;
+    case QShaderDescription::Sampler3D:
+        return 0;
+    case QShaderDescription::SamplerCube:
+        return 0;
+    case QShaderDescription::Sampler1DArray:
+        return 0;
+    case QShaderDescription::Sampler2DArray:
+        return 0;
+    case QShaderDescription::Sampler2DMSArray:
+        return 0;
+    case QShaderDescription::Sampler3DArray:
+        return 0;
+    case QShaderDescription::SamplerCubeArray:
+        return 0;
+    case QShaderDescription::SamplerRect:
+        return 0;
+    case QShaderDescription::SamplerBuffer:
+        return 0;
 
-    case QShaderDescription::Image1D: return 0;
-    case QShaderDescription::Image2D: return 0;
-    case QShaderDescription::Image2DMS: return 0;
-    case QShaderDescription::Image3D: return 0;
-    case QShaderDescription::ImageCube: return 0;
-    case QShaderDescription::Image1DArray: return 0;
-    case QShaderDescription::Image2DArray: return 0;
-    case QShaderDescription::Image2DMSArray: return 0;
-    case QShaderDescription::Image3DArray: return 0;
-    case QShaderDescription::ImageCubeArray: return 0;
-    case QShaderDescription::ImageRect: return 0;
-    case QShaderDescription::ImageBuffer: return 0;
+    case QShaderDescription::Image1D:
+        return 0;
+    case QShaderDescription::Image2D:
+        return 0;
+    case QShaderDescription::Image2DMS:
+        return 0;
+    case QShaderDescription::Image3D:
+        return 0;
+    case QShaderDescription::ImageCube:
+        return 0;
+    case QShaderDescription::Image1DArray:
+        return 0;
+    case QShaderDescription::Image2DArray:
+        return 0;
+    case QShaderDescription::Image2DMSArray:
+        return 0;
+    case QShaderDescription::Image3DArray:
+        return 0;
+    case QShaderDescription::ImageCubeArray:
+        return 0;
+    case QShaderDescription::ImageRect:
+        return 0;
+    case QShaderDescription::ImageBuffer:
+        return 0;
 
-    case QShaderDescription::Struct: return 0;
-    default: return 0;
+    case QShaderDescription::Struct:
+        return 0;
+    default:
+        return 0;
     }
 }
 
@@ -195,9 +261,9 @@ template<typename T, typename Pred>
 QVector<T> stableRemoveDuplicates(QVector<T> in, Pred predicate)
 {
     QVector<T> out;
-    for (const auto& element : in)
-    {
-        if (std::none_of(out.begin(), out.end(), [&] (T& other) { return predicate(element, other); }))
+    for (const auto &element : in) {
+        if (std::none_of(out.begin(), out.end(),
+                         [&](T &other) { return predicate(element, other); }))
             out.push_back(element);
     }
     return out;
@@ -208,25 +274,19 @@ QVector<T> stableRemoveDuplicates(QVector<T> in, Pred predicate)
 // changes dims into [0, 3, 3]
 // Given dims == [0, 3, 3] and maxs == [4, 4, 4]
 // changes dims into [1, 0, 0]
-bool incrementArray(QVarLengthArray<int>& dims, const QVector<int>& maxs)
+bool incrementArray(QVarLengthArray<int> &dims, const QVector<int> &maxs)
 {
     const int n = dims.size();
     int i = n;
-    for (; i --> 0 ;)
-    {
-        if (dims[i] == maxs[i] - 1)
-        {
-            if ( i == 0 )
-            {
+    for (; i-- > 0;) {
+        if (dims[i] == maxs[i] - 1) {
+            if (i == 0) {
                 // we're done
                 return false;
             }
             continue;
 
-
-        }
-        else
-        {
+        } else {
             dims[i]++;
             for (int j = i + 1; j < n; j++) {
                 dims[j] = 0;
@@ -241,15 +301,15 @@ bool incrementArray(QVarLengthArray<int>& dims, const QVector<int>& maxs)
 // for all valable array values, given an array of dimension sizes.
 // Dimensions must all be >= 1
 template<typename F>
-void forEachArrayAccessor(const QVector<int>& maxs, F f)
+void forEachArrayAccessor(const QVector<int> &maxs, F f)
 {
-    if (std::any_of(maxs.begin(), maxs.end(), [] (int v) { return v <= 0; }))
+    if (std::any_of(maxs.begin(), maxs.end(), [](int v) { return v <= 0; }))
         return;
 
     QVarLengthArray<int> dims;
     dims.resize(maxs.size());
 
-     // QVarLengthArray does not initialize ints
+    // QVarLengthArray does not initialize ints
     std::fill(dims.begin(), dims.end(), 0);
 
     QString str;
@@ -264,7 +324,8 @@ void forEachArrayAccessor(const QVector<int>& maxs, F f)
 }
 }
 
-void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable& member, QString parentName)
+void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable &member,
+                                  QString parentName)
 {
     const bool isStruct = !member.structMembers.empty();
     const bool isArray = !member.arrayDims.empty();
@@ -273,29 +334,24 @@ void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable& membe
     const QString fullMemberName = parentName + member.name;
     m_unqualifiedUniformNames << fullMemberName;
 
-    if (isStruct && !isArray)
-    {
+    if (isStruct && !isArray) {
         m_structNames << fullMemberName;
         m_structNamesIds << StringToInt::lookupId(fullMemberName);
 
-        for (const QShaderDescription::BlockVariable& bv : member.structMembers)
-        {
+        for (const QShaderDescription::BlockVariable& bv : member.structMembers) {
             // recordAllUniforms("baz", "foo.bar.")
             recordAllUniforms(bv, fullMemberName + QLatin1Char('.'));
         }
-    }
-    else if (!isStruct && isArray)
-    {
+    } else if (!isStruct && isArray) {
         // We iterate through all the [l][n][m] by building [0][0][0] and incrementing
-        forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
+        forEachArrayAccessor(member.arrayDims, [&](const QString &str) {
             // "foo.bar[1][2]"
             m_unqualifiedUniformNames << (fullMemberName + str);
             // Question : does it make sense to also record foo[0], foo[0][0], etc...
             // if there are e.g. 3 dimensions ?
         });
     }
-    else if (isStruct && isArray)
-    {
+    else if (isStruct && isArray) {
         // Record the struct names
         forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
             m_structNames << (fullMemberName + str);
@@ -303,8 +359,7 @@ void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable& membe
         });
 
         // Record the struct members
-        for (const QShaderDescription::BlockVariable& bv : member.structMembers)
-        {
+        for (const QShaderDescription::BlockVariable& bv : member.structMembers) {
             forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
                 //recordAllUniforms("baz", "foo.bar[1][2].")
                 recordAllUniforms(bv, fullMemberName + str + QLatin1Char('.'));
@@ -315,7 +370,7 @@ void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable& membe
 
 void RHIShader::introspect()
 {
-    const thread_local QRegularExpression generatedUBOName{"_[0-9]+"};
+    const thread_local QRegularExpression generatedUBOName { "_[0-9]+" };
     QVector<QShaderDescription::UniformBlock> rhiUBO;
     QVector<QShaderDescription::StorageBlock> rhiSSBO;
 
@@ -327,10 +382,12 @@ void RHIShader::introspect()
 
     // Introspect shader vertex input
     if (m_stages[QShader::VertexStage].isValid()) {
-        const QShaderDescription& vtx = m_stages[QShader::VertexStage].description();
+        const QShaderDescription &vtx = m_stages[QShader::VertexStage].description();
 
-        for (const QShaderDescription::InOutVariable& input : vtx.inputVariables()) {
-            attributes.push_back(ShaderAttribute{input.name, StringToInt::lookupId(input.name), input.type, rhiTypeSize(input.type), input.location});
+        for (const QShaderDescription::InOutVariable &input : vtx.inputVariables()) {
+            attributes.push_back(ShaderAttribute { input.name, StringToInt::lookupId(input.name),
+                                                   input.type, rhiTypeSize(input.type),
+                                                   input.location });
         }
 
         rhiUBO += vtx.uniformBlocks();
@@ -340,48 +397,58 @@ void RHIShader::introspect()
     // Introspect shader uniforms
 
     if (m_stages[QShader::FragmentStage].isValid()) {
-        const QShaderDescription& frag = m_stages[QShader::FragmentStage].description();
-        for (const QShaderDescription::InOutVariable& sampler : frag.combinedImageSamplers()) {
-            samplers.push_back(ShaderAttribute{sampler.name, StringToInt::lookupId(sampler.name), sampler.type, rhiTypeSize(sampler.type), sampler.binding});
+        const QShaderDescription &frag = m_stages[QShader::FragmentStage].description();
+        for (const QShaderDescription::InOutVariable &sampler : frag.combinedImageSamplers()) {
+            samplers.push_back(ShaderAttribute { sampler.name, StringToInt::lookupId(sampler.name),
+                                                 sampler.type, rhiTypeSize(sampler.type),
+                                                 sampler.binding });
         }
-        for (const QShaderDescription::InOutVariable& image : frag.storageImages()) {
-            images.push_back(ShaderAttribute{image.name, StringToInt::lookupId(image.name), image.type, rhiTypeSize(image.type), image.binding});
+        for (const QShaderDescription::InOutVariable &image : frag.storageImages()) {
+            images.push_back(ShaderAttribute { image.name, StringToInt::lookupId(image.name),
+                                               image.type, rhiTypeSize(image.type),
+                                               image.binding });
         }
 
         rhiUBO += frag.uniformBlocks();
         rhiSSBO += frag.storageBlocks();
     }
 
-    rhiUBO = stableRemoveDuplicates(rhiUBO, [] (const QShaderDescription::UniformBlock& lhs, const QShaderDescription::UniformBlock& rhs) {
-       return lhs.blockName == rhs.blockName;
-    });
-    rhiSSBO = stableRemoveDuplicates(rhiSSBO, [] (const QShaderDescription::StorageBlock& lhs, const QShaderDescription::StorageBlock& rhs) {
-        return lhs.blockName == rhs.blockName;
-    });
+    rhiUBO = stableRemoveDuplicates(rhiUBO,
+                                    [](const QShaderDescription::UniformBlock &lhs,
+                                       const QShaderDescription::UniformBlock &rhs) {
+                                        return lhs.blockName == rhs.blockName;
+                                    });
+    rhiSSBO = stableRemoveDuplicates(rhiSSBO,
+                                     [](const QShaderDescription::StorageBlock &lhs,
+                                        const QShaderDescription::StorageBlock &rhs) {
+                                         return lhs.blockName == rhs.blockName;
+                                     });
 
-    for (const QShaderDescription::UniformBlock& ubo : rhiUBO) {
-        uniformBlocks.push_back(ShaderUniformBlock{ubo.blockName, StringToInt::lookupId(ubo.blockName), -1, ubo.binding, ubo.members.size(), ubo.size});
+    for (const QShaderDescription::UniformBlock &ubo : rhiUBO) {
+        uniformBlocks.push_back(ShaderUniformBlock { ubo.blockName,
+                                                     StringToInt::lookupId(ubo.blockName), -1,
+                                                     ubo.binding, ubo.members.size(), ubo.size });
         const bool addUnqualifiedUniforms = ubo.structName.contains(generatedUBOName);
 
-        // Parse Uniform Block members so that we can later on map a Parameter name to an actual member
+        // Parse Uniform Block members so that we can later on map a Parameter name to an actual
+        // member
         const QVector<QShaderDescription::BlockVariable> members = ubo.members;
 
         QVector<int> namesIds;
         namesIds.reserve(members.size());
 
-        for (const QShaderDescription::BlockVariable& member : members) {
+        for (const QShaderDescription::BlockVariable &member : members) {
             namesIds << StringToInt::lookupId(member.name);
-            if (addUnqualifiedUniforms)
-            {
+            if (addUnqualifiedUniforms) {
                 recordAllUniforms(member, QStringLiteral(""));
             }
         }
         m_uniformsNamesIds += namesIds;
-        m_uboMembers.push_back({uniformBlocks.last(), members});
+        m_uboMembers.push_back({ uniformBlocks.last(), members });
     }
 
-    for (const QShaderDescription::StorageBlock& ssbo : rhiSSBO) {
-        storageBlocks.push_back(ShaderStorageBlock{ssbo.blockName, -1, -1, ssbo.binding, 0, 0});
+    for (const QShaderDescription::StorageBlock &ssbo : rhiSSBO) {
+        storageBlocks.push_back(ShaderStorageBlock { ssbo.blockName, -1, -1, ssbo.binding, 0, 0 });
     }
 
     initializeAttributes(attributes);
@@ -416,7 +483,7 @@ ShaderUniformBlock RHIShader::uniformBlockForBlockNameId(int blockNameId) const 
     return ShaderUniformBlock();
 }
 
-ShaderUniformBlock RHIShader::uniformBlockForBlockName(const QString &blockName)  const noexcept
+ShaderUniformBlock RHIShader::uniformBlockForBlockName(const QString &blockName) const noexcept
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_name == blockName) {
@@ -473,10 +540,8 @@ bool RHIShader::hasUniform(int nameId) const noexcept
 
 bool RHIShader::hasActiveVariables() const noexcept
 {
-    return !m_attributeNamesIds.empty()
-        || !m_uniformsNamesIds.empty()
-        || !m_uniformBlockNamesIds.empty()
-        || !m_shaderStorageBlockNamesIds.empty();
+    return !m_attributeNamesIds.empty() || !m_uniformsNamesIds.empty()
+            || !m_uniformBlockNamesIds.empty() || !m_shaderStorageBlockNamesIds.empty();
 }
 
 void RHIShader::prepareUniforms(ShaderParameterPack &pack)
@@ -504,7 +569,7 @@ void RHIShader::setFragOutputs(const QHash<QString, int> &fragOutputs)
         QMutexLocker lock(&m_mutex);
         m_fragOutputs = fragOutputs;
     }
-//    updateDNA();
+    //    updateDNA();
 }
 
 const QHash<QString, int> RHIShader::fragOutputs() const
@@ -575,19 +640,24 @@ void RHIShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &unifo
         while (uniformsIt != uniformsEnd && uniformNamesIt != uniformNamesEnd) {
             if (uniformsIt->m_blockIndex == uniformBlockDescription[i].m_index) {
                 QString uniformName = *uniformNamesIt;
-                if (!m_uniformBlockNames[i].isEmpty() && !uniformName.startsWith(m_uniformBlockNames[i]))
+                if (!m_uniformBlockNames[i].isEmpty()
+                    && !uniformName.startsWith(m_uniformBlockNames[i]))
                     uniformName = m_uniformBlockNames[i] + QLatin1Char('.') + *uniformNamesIt;
                 activeUniformsInBlock.insert(uniformName, *uniformsIt);
-                qCDebug(Shaders) << "Active Uniform Block " << uniformName << " in block " << m_uniformBlockNames[i] << " at index " << uniformsIt->m_blockIndex;
+                qCDebug(Shaders) << "Active Uniform Block " << uniformName << " in block "
+                                 << m_uniformBlockNames[i] << " at index "
+                                 << uniformsIt->m_blockIndex;
             }
             ++uniformsIt;
             ++uniformNamesIt;
         }
-        m_uniformBlockIndexToShaderUniforms.insert(uniformBlockDescription[i].m_index, activeUniformsInBlock);
+        m_uniformBlockIndexToShaderUniforms.insert(uniformBlockDescription[i].m_index,
+                                                   activeUniformsInBlock);
     }
 }
 
-void RHIShader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription)
+void RHIShader::initializeShaderStorageBlocks(
+        const QVector<ShaderStorageBlock> &shaderStorageBlockDescription)
 {
     m_shaderStorageBlocks = shaderStorageBlockDescription;
     m_shaderStorageBlockNames.resize(shaderStorageBlockDescription.size());
@@ -596,8 +666,9 @@ void RHIShader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> 
     for (int i = 0, m = shaderStorageBlockDescription.size(); i < m; ++i) {
         m_shaderStorageBlockNames[i] = m_shaderStorageBlocks[i].m_name;
         m_shaderStorageBlockNamesIds[i] = StringToInt::lookupId(m_shaderStorageBlockNames[i]);
-        m_shaderStorageBlocks[i].m_nameId =m_shaderStorageBlockNamesIds[i];
-        qCDebug(Shaders) << "Initializing Shader Storage Block {" << m_shaderStorageBlockNames[i] << "}";
+        m_shaderStorageBlocks[i].m_nameId = m_shaderStorageBlockNamesIds[i];
+        qCDebug(Shaders) << "Initializing Shader Storage Block {" << m_shaderStorageBlockNames[i]
+                         << "}";
     }
 }
 
