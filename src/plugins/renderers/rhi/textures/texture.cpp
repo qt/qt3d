@@ -113,6 +113,7 @@ QRhiTexture::Format rhiFormatFromTextureFormat(QAbstractTexture::TextureFormat f
     case QAbstractTexture::RGBA8_ETC2_EAC:
         return QRhiTexture::ETC2_RGBA8;
     default:
+        Q_UNREACHABLE();
         return QRhiTexture::UnknownFormat;
     }
 }
@@ -145,6 +146,7 @@ QRhiSampler::Filter rhiMipMapFilterFromTextureFilter(QAbstractTexture::Filter fi
     case QAbstractTexture::LinearMipMapLinear:
         return QRhiSampler::Linear;
     default:
+        Q_UNREACHABLE();
         return QRhiSampler::None;
     }
 }
@@ -165,6 +167,8 @@ rhiWrapModeFromTextureWrapMode(QTextureWrapMode::WrapMode x,
             return QRhiSampler::ClampToEdge;
         case Qt3DRender::QTextureWrapMode::MirroredRepeat:
             return QRhiSampler::Mirror;
+        default:
+            Q_UNREACHABLE();
         }
     };
 
@@ -197,19 +201,23 @@ QRhiSampler::CompareOp rhiCompareOpFromTextureCompareOp(QAbstractTexture::Compar
 
 // This uploadGLData where the data is a fullsize subimage
 // as QOpenGLTexture doesn't allow partial subimage uploads
-QRhiTextureUploadEntry uploadRhiData(int level, int layer, QOpenGLTexture::CubeMapFace face,
+QRhiTextureUploadEntry uploadRhiData(int level, int layer,
                                      const QByteArray &bytes, const QTextureImageDataPtr &data) noexcept
 {
+    qDebug() << "Case 1: " << level << layer ;
     QRhiTextureSubresourceUploadDescription description;
     description.setData(bytes);
+    description.setSourceSize({data->width(), data->height()});
+
     return QRhiTextureUploadEntry(layer, level, description);
 }
 
 // For partial sub image uploads
-QRhiTextureUploadEntry uploadRhiData(int mipLevel, int layer, QOpenGLTexture::CubeMapFace cubeFace,
+QRhiTextureUploadEntry uploadRhiData(int mipLevel, int layer,
                                      int xOffset, int yOffset, int zOffset,
                                      const QByteArray &bytes, const QTextureImageDataPtr &data) noexcept
 {
+    qDebug() << "Case 2: " << mipLevel << layer  << xOffset << yOffset << zOffset;
     QRhiTextureSubresourceUploadDescription description;
     description.setData(bytes);
     description.setSourceTopLeft(QPoint(xOffset, yOffset));
@@ -580,14 +588,6 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
     if (issRGB8Format)
         rhiFlags |= QRhiTexture::sRGB;
 
-//    // Set layers count if texture array
-//    if (actualTarget == QAbstractTexture::Target1DArray ||
-//        actualTarget == QAbstractTexture::Target2DArray ||
-//        actualTarget == QAbstractTexture::Target2DMultisampleArray ||
-//        actualTarget == QAbstractTexture::TargetCubeMapArray) {
-//        glTex->setLayers(m_properties.layers);
-//    }
-
     if (actualTarget == QAbstractTexture::Target2DMultisample ||
         actualTarget == QAbstractTexture::Target2DMultisampleArray) {
         // Set samples count if multisampled texture
@@ -616,24 +616,75 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
     if (m_textureData) {
         const QVector<QTextureImageDataPtr> imgData = m_textureData->imageData();
 
-        for (const QTextureImageDataPtr &data : imgData) {
-            const int mipLevels = m_properties.generateMipMaps ? 1 : data->mipLevels();
+        if (m_properties.samples == 1)
+        {
+            for (const QTextureImageDataPtr &data : imgData) {
+                const int mipLevels = m_properties.generateMipMaps ? 1 : data->mipLevels();
+                Q_ASSERT(mipLevels <= ctx->rhi()->mipLevelsForSize({data->width(), data->height()}));
 
-            for (int layer = 0; layer < data->layers(); layer++) {
-                for (int face = 0; face < data->faces(); face++) {
+                const int maxLevels = (data->layers() == 1 && data->faces() == 1) ? 1
+                        : (data->layers() > 1 && data->faces() == 1) ? data->layers()
+                        : (data->faces() > 1 && data->layers() == 1) ? data->faces()
+                        : 0;
+
+                if (data->layers() == 1 && data->faces() == 1)
+                {
                     for (int level = 0; level < mipLevels; level++) {
                         // ensure we don't accidentally cause a detach / copy of the raw bytes
-                        const QByteArray bytes(data->data(layer, face, level));
-                        const QRhiTextureUploadEntry entry = uploadRhiData(level, layer,
-                                                                           static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
-                                                                           bytes, data);
+                        const QByteArray bytes(data->data(0, 0, level));
+                        const QRhiTextureUploadEntry entry = uploadRhiData(level, 0, bytes, data);
                         uploadEntries.push_back(entry);
                     }
                 }
+                else if (data->layers() > 1 && data->faces() == 1)
+                {
+                    for (int layer = 0; layer < data->layers(); layer++) {
+                        for (int level = 0; level < mipLevels; level++) {
+                            // ensure we don't accidentally cause a detach / copy of the raw bytes
+                            const QByteArray bytes(data->data(layer, 0, level));
+                            const QRhiTextureUploadEntry entry = uploadRhiData(level, layer, bytes, data);
+                            uploadEntries.push_back(entry);
+                        }
+                    }
+                }
+                else if (data->faces() > 1 && data->layers() == 1)
+                {
+                    for (int face = 0; face < data->faces(); face++) {
+                        for (int level = 0; level < mipLevels; level++) {
+                            // ensure we don't accidentally cause a detach / copy of the raw bytes
+                            const QByteArray bytes(data->data(0, face, level));
+                            const QRhiTextureUploadEntry entry = uploadRhiData(level, face, bytes, data);
+                            uploadEntries.push_back(entry);
+                        }
+                    }
+                }
+                else
+                {
+                    qDebug() << "Unsupported case";
+                }
             }
         }
-    }
+        else
+        {
+            for (const QTextureImageDataPtr &data : imgData) {
+                const int mipLevels = m_properties.generateMipMaps ? 1 : data->mipLevels();
 
+                for (int layer = 0; layer < data->layers(); layer++) {
+                    for (int face = 0; face < data->faces(); face++) {
+                        for (int level = 0; level < mipLevels; level++) {
+                            // ensure we don't accidentally cause a detach / copy of the raw bytes
+                            const QByteArray bytes(data->data(layer, face, level));
+                            const QRhiTextureUploadEntry entry = uploadRhiData(level, layer,
+                                                                               bytes, data);
+                            uploadEntries.push_back(entry);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+/*
     // Upload all QTexImageData references by the TextureImages
     for (int i = 0; i < std::min(m_images.size(), m_imageData.size()); i++) {
         const QTextureImageDataPtr &imgData = m_imageData.at(i);
@@ -686,7 +737,7 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
                                                            bytes, imgData);
         uploadEntries.push_back(entry);
     }
-
+*/
     QRhiTextureUploadDescription uploadDescription;
     uploadDescription.setEntries(uploadEntries.begin(), uploadEntries.end());
 

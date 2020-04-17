@@ -123,7 +123,6 @@
 
 #include <QtGui/private/qopenglcontext_p.h>
 #include <QGuiApplication>
-#include <QShaderBaker>
 
 QT_BEGIN_NAMESPACE
 
@@ -679,15 +678,6 @@ void Renderer::render()
     }
 }
 
-QShader getShader(const QString &name)
-{
-    QFile f(name);
-    if (f.open(QIODevice::ReadOnly))
-        return QShader::fromSerialized(f.readAll());
-
-    return QShader();
-}
-
 // Either called by render if Qt3D is in charge of the RenderThread
 // or by QRenderAspectPrivate::renderSynchronous (for Scene3D)
 void Renderer::doRender(bool swapBuffers)
@@ -728,25 +718,47 @@ void Renderer::doRender(bool swapBuffers)
         QVector<RHIPassInfo> rhiPassesInfo;
 
         if (canRender()) {
-            { // Scoped to destroy surfaceLock
-                QSurface *surface = nullptr;
-                for (const RenderView *rv: renderViews) {
-                    surface = rv->surface();
-                    if (surface)
-                        break;
-                }
+            QSurface *surface = nullptr;
+            for (const RenderView *rv: renderViews) {
+                surface = rv->surface();
+                if (surface)
+                    break;
+            }
 
+            // In case we did not draw because e.g. there wase no swapchain,
+            // we keep the resource updates from the previous frame.
+            if (!m_submissionContext->m_currentUpdates)
+            {
+                m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
+            }
+
+            // 1) Execute commands for buffer uploads, texture updates, shader loading first
+            updateResources();
+
+            rhiPassesInfo = prepareCommandsSubmission(renderViews);
+            // 2) Update Pipelines and copy data into commands to allow concurrent submission
+            preprocessingComplete = true;
+
+            bool hasCommands = false;
+            for (const RenderView *rv: renderViews) {
+                const auto& commands = rv->commands();
+                hasCommands = std::any_of(
+                            commands.begin(),
+                            commands.end(),
+                            [] (const RenderCommand& cmd) {
+                    return cmd.isValid();
+                });
+                if (hasCommands)
+                    break;
+            }
+
+            if (hasCommands) {
+                // Scoped to destroy surfaceLock
                 SurfaceLocker surfaceLock(surface);
                 const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
                 if (surfaceIsValid) {
                     beganDrawing = m_submissionContext->beginDrawing(surface);
                     if (beganDrawing) {
-                        // 1) Execute commands for buffer uploads, texture updates, shader loading first
-                        updateResources();
-                        // 2) Update Pipelines and copy data into commands to allow concurrent submission
-                        rhiPassesInfo = prepareCommandsSubmission(renderViews);
-                        preprocessingComplete = true;
-
                         // Purge shader which aren't used any longer
                         static int callCount = 0;
                         ++callCount;
@@ -764,7 +776,7 @@ void Renderer::doRender(bool swapBuffers)
 
             // Only try to submit the RenderViews if the preprocessing was successful
             // This part of the submission is happening in parallel to the RV building for the next frame
-            if (preprocessingComplete) {
+            if (beganDrawing) {
                 submissionStatsPart1.end(submissionStatsPart2.restart());
 
                 // 3) Submit the render commands for frame n (making sure we never reference something that could be changing)
@@ -900,7 +912,10 @@ QSurfaceFormat Renderer::format()
 void Renderer::updateGraphicsPipeline(RenderCommand& cmd, RenderView *rv, int renderViewIndex)
 {
     if (!cmd.m_rhiShader)
+    {
+        qDebug() << "Warning: command has no shader";
         return;
+    }
 
     // The Graphics Pipeline defines
     // - Render State (Depth, Culling, Stencil, Blending)
@@ -934,7 +949,6 @@ void Renderer::updateGraphicsPipeline(RenderCommand& cmd, RenderView *rv, int re
 
     if (!graphicsPipeline) {
         qDebug() << "Warning : could not create a graphics pipeline";
-        RHIGraphicsPipeline *graphicsPipeline = m_RHIResourceManagers->rhiGraphicsPipelineManager()->getOrCreateResource(pipelineKey);
         return;
     }
 
@@ -950,6 +964,11 @@ void Renderer::updateGraphicsPipeline(RenderCommand& cmd, RenderView *rv, int re
     // Create pipeline if it doesn't exist or needs to be updated
     if (graphicsPipeline->pipeline() == nullptr || requiredRebuild) {
         bool ok = true;
+
+        const SubmissionContext::SwapChainInfo* swapchain =
+                m_submissionContext->swapChainForSurface(rv->surface());
+        if (!swapchain || !swapchain->swapChain || !swapchain->renderPassDescriptor)
+            return;
 
         // TO DO: Find a way to recycle those
         // Create Per Command UBO
@@ -1124,11 +1143,12 @@ void Renderer::updateGraphicsPipeline(RenderCommand& cmd, RenderView *rv, int re
         inputBindings.resize(uniqueBindings.size());
         for (int i = 0, m = uniqueBindings.size(); i < m; ++i) {
             const BufferBinding binding = uniqueBindings.at(i);
+            /*
             qDebug() << binding.bufferId
                      << binding.stride
                      << binding.classification
                      << binding.attributeDivisor;
-
+            */
             inputBindings[i] = QRhiVertexInputBinding{binding.stride, binding.classification, int(binding.attributeDivisor) };
         }
 
@@ -1138,13 +1158,14 @@ void Renderer::updateGraphicsPipeline(RenderCommand& cmd, RenderView *rv, int re
 
         pipeline->setVertexInputLayout(inputLayout);
         pipeline->setShaderResourceBindings(shaderResourceBindings);
-        pipeline->setRenderPassDescriptor(m_submissionContext->currentRenderPassDescriptor());
+
+        pipeline->setRenderPassDescriptor(swapchain->renderPassDescriptor);
 
         graphicsPipeline->setAttributesToBindingHash(attributeNameToBinding);
 
-
         // Render States
         m_submissionContext->applyStateSet(renderState, pipeline);
+
 
         ok = pipeline->build();
         assert(ok);
@@ -1201,7 +1222,10 @@ QVector<Renderer::RHIPassInfo> Renderer::prepareCommandsSubmission(const QVector
                 // By this time shaders should have been loaded
                 RHIShader *shader = m_RHIResourceManagers->rhiShaderManager()->lookupResource(command.m_shaderId);
                 if (!shader)
+                {
+                    qDebug() << "Warning: could not find shader";
                     continue;
+                }
 
                 // We should never have inserted a command for which these are null
                 // in the first place
@@ -1497,7 +1521,6 @@ void Renderer::updateResources()
     {
         const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
         for (const HTexture &handle: activeTextureHandles) {
-            RHI_UNIMPLEMENTED;
             Texture *texture = m_nodesManager->textureManager()->data(handle);
 
             // Can be null when using Scene3D rendering

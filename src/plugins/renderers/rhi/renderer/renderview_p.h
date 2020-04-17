@@ -133,13 +133,13 @@ struct RenderViewUBO
     float viewportMatrix[16];
     float inverseViewportMatrix[16];
     float textureTransformMatrix[4];
-    float eyePosition[3]; float pad1;
-    float aspectRatio;    float pad2[3];
-    float gamma;          float pad3[3];
-    float exposure;       float pad4[3];
-    float time;           float pad5[3];
+    float eyePosition[3];
+    float aspectRatio;
+    float gamma;
+    float exposure;
+    float time;
 };
-static_assert(sizeof(RenderViewUBO) == sizeof(float) * (8 * 16 + 6 * 4), "UBO doesn't match std140");
+static_assert(sizeof(RenderViewUBO) == sizeof(float) * (8 * 16 + 1 * 4 + 1 * 3 + 4 * 1), "UBO doesn't match std140");
 
 class Q_AUTOTEST_EXPORT RenderView
 {

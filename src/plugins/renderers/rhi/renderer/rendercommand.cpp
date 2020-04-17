@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "rendercommand_p.h"
+#include "renderer/rhigraphicspipeline_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -76,6 +77,11 @@ RenderCommand::RenderCommand()
    m_workGroups[0] = 0;
    m_workGroups[1] = 0;
    m_workGroups[2] = 0;
+}
+
+bool RenderCommand::isValid() const noexcept
+{
+    return m_rhiShader && pipeline && pipeline->pipeline();
 }
 
 bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept

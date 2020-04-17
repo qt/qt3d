@@ -191,6 +191,17 @@ public:
     StateVariant* getState(RenderStateSet *ss,
                           StateMask type) const;
 
+    // Swap chain
+
+
+    struct SwapChainInfo
+    {
+        QRhiSwapChain *swapChain = nullptr;
+        QRhiRenderBuffer *renderBuffer = nullptr;
+        QRhiRenderPassDescriptor *renderPassDescriptor = nullptr;
+    };
+    SwapChainInfo* swapChainForSurface(QSurface* surface) noexcept;
+
 
     QRhiResourceUpdateBatch *m_currentUpdates{};
 
@@ -198,10 +209,10 @@ public:
     QRhiCommandBuffer *currentFrameCommandBuffer() const;
     QRhiRenderTarget *currentFrameRenderTarget() const;
     QRhiRenderPassDescriptor *currentRenderPassDescriptor() const;
+    QRhiSwapChain *currentSwapChain() const;
     QSurfaceFormat format() const noexcept;
 
 private:
-
     // Material
     Material* activeMaterial() const { return m_material; }
     void setActiveMaterial(Material* rmat);
@@ -222,6 +233,7 @@ private:
     // States
     void applyState(const StateVariant &state,
                     QRhiGraphicsPipeline *graphicsPipeline);
+
 
     bool m_ownCurrent;
     const unsigned int m_id;
@@ -249,22 +261,10 @@ private:
     GraphicsApiFilterData m_contextInfo;
 
     QRhi* m_rhi;
-
-    struct SwapChainInfo
-    {
-        QRhiSwapChain *swapChain = nullptr;
-        QRhiRenderBuffer *renderBuffer = nullptr;
-        QRhiRenderPassDescriptor *renderPassDescriptor = nullptr;
-    };
-
     QHash<QSurface *, SwapChainInfo> m_swapChains;
     QRhiSwapChain *m_currentSwapChain;
     QRhiRenderPassDescriptor *m_currentRenderPassDescriptor;
 
-#if QT_CONFIG(vulkan)
-    QVulkanInstance *m_vkInstance;
-    bool m_ownsVkInstance{};
-#endif
 #ifndef QT_NO_OPENGL
     QOffscreenSurface *m_fallbackSurface;
 #endif

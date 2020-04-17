@@ -473,7 +473,7 @@ namespace
 
         int currentInputLocation { 0 };
         int currentOutputLocation { 0 };
-        int currentBinding { 0 };
+        int currentBinding { 2 };
         QByteArrayList ubo;
     };
 

@@ -1157,19 +1157,45 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
             // Environment Light
             int envLightCount = 0;
             if (environmentLight && environmentLight->isEnabled()) {
-                ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(environmentLight->shaderData());
-                if (shaderData) {
-                    setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, QStringLiteral("envLight"));
-                    envLightCount = 1;
-                }
-            } else {
-                // with some drivers, samplers (like the envbox sampler) need to be bound even though
-                // they may not be actually used, otherwise draw calls can fail
                 static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight_irradiance"));
                 static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
-//                setUniformValue(command->m_parameterPack, irradianceId, m_renderer->submissionContext()->maxTextureUnitsCount());
-//                setUniformValue(command->m_parameterPack, specularId, m_renderer->submissionContext()->maxTextureUnitsCount());
+                ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(environmentLight->shaderData());
+                if (shaderData) {
+                    //setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, QStringLiteral("envLight"));
+                    envLightCount = 1;
+
+                    // ("specularSize", "irradiance", "irradianceSize", "specular")
+                    auto irr = shaderData->properties()["irradiance"].value.value<Qt3DCore::QNodeId>();
+                    auto spec = shaderData->properties()["specular"].value.value<Qt3DCore::QNodeId>();
+
+                    setUniformValue(command->m_parameterPack, irradianceId, irr);
+                    setUniformValue(command->m_parameterPack, specularId, spec);
+                }
             }
+            //if (environmentLight && environmentLight->isEnabled()) {
+            //    ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(environmentLight->shaderData());
+            //    if (shaderData) {
+            //        setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, QStringLiteral("envLight"));
+            //        envLightCount = 1;
+            //    }
+            //} else {
+            //    // with some drivers, samplers (like the envbox sampler) need to be bound even though
+            //    // they may not be actually used, otherwise draw calls can fail
+            //    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight_irradiance"));
+            //    static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
+            //
+            //    // for (const auto& sampler : shader->samplers())
+            //    // {
+            //    //     if (sampler.m_nameId == irradianceId)
+            //    //     {
+            //    //         setUniformValue(command->m_parameterPack, irradianceId, sampler.m_location);
+            //    //     }
+            //    //     else if (sampler.m_nameId == specularId)
+            //    //     {
+            //    //         setUniformValue(command->m_parameterPack, specularId, sampler.m_location);
+            //    //     }
+            //    // }
+            //}
             setUniformValue(command->m_parameterPack, StringToInt::lookupId(QStringLiteral("envLightCount")), envLightCount);
         }
     }

@@ -62,6 +62,8 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DRender/private/vulkaninstance_p.h>
+#include <QGuiApplication>
 #include <texture_p.h>
 #include <rendercommand_p.h>
 #include <renderer_p.h>
@@ -91,6 +93,7 @@
 #include <QtGui/private/qrhivulkan_p.h>
 #include <QVulkanInstance>
 #endif
+#include <bitset>
 
 QT_BEGIN_NAMESPACE
 
@@ -489,9 +492,6 @@ SubmissionContext::SubmissionContext()
     , m_rhi(nullptr)
     , m_currentSwapChain(nullptr)
     , m_currentRenderPassDescriptor(nullptr)
-#if QT_CONFIG(vulkan)
-    , m_vkInstance(nullptr)
-#endif
 #ifndef QT_NO_OPENGL
     , m_fallbackSurface(nullptr)
 #endif
@@ -537,34 +537,9 @@ void SubmissionContext::initialize()
 
 #if QT_CONFIG(vulkan)
     if (requestedApi == Qt3DRender::API::Vulkan) {
-        if (!m_vkInstance) {
-            m_vkInstance = new QVulkanInstance();
-            m_ownsVkInstance = true;
-
-#ifndef Q_OS_ANDROID
-            m_vkInstance->setLayers({ "VK_LAYER_LUNARG_standard_validation" });
-#else
-            m_vkInstance->setLayers(QByteArrayList()
-                           << "VK_LAYER_GOOGLE_threading"
-                           << "VK_LAYER_LUNARG_parameter_validation"
-                           << "VK_LAYER_LUNARG_object_tracker"
-                           << "VK_LAYER_LUNARG_core_validation"
-                           << "VK_LAYER_LUNARG_image"
-                           << "VK_LAYER_LUNARG_swapchain"
-                           << "VK_LAYER_GOOGLE_unique_objects");
-#endif
-
-            if (!m_vkInstance->create()) {
-                qWarning("Failed to create Vulkan instance");
-            }
-        }
-
-        Q_ASSERT(m_vkInstance);
-        if (m_vkInstance->isValid()) {
-            QRhiVulkanInitParams params;
-            params.inst = m_vkInstance;
-            m_rhi = QRhi::create(QRhi::Vulkan, &params, rhiFlags);
-        }
+        QRhiVulkanInitParams params;
+        params.inst = &Qt3DRender::staticVulkanInstance();
+        m_rhi = QRhi::create(QRhi::Vulkan, &params, rhiFlags);
     }
 #endif
 
@@ -674,63 +649,38 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     }
 
     // Check if we have a swapchain for the Window, if not create one
-    SwapChainInfo &swapChainInfo = m_swapChains[surface];
-    QRhiSwapChain *swapChain = swapChainInfo.swapChain;
-
-    if (swapChain == nullptr) {
-        swapChain = m_rhi->newSwapChain();
-        Q_ASSERT(surface->surfaceClass() == QSurface::Window);
-        QWindow *window = static_cast<QWindow *>(surface);
-        Q_ASSERT(window != nullptr);
-        const int samples = format().samples();
-
-        swapChain->setWindow(window);
-        swapChain->setFlags(QRhiSwapChain::Flags {});
-        swapChain->setSampleCount(samples);
-
-        QRhiRenderBuffer *renderBuffer  = m_rhi->newRenderBuffer(QRhiRenderBuffer::DepthStencil,
-                                                                 QSize(),
-                                                                 samples,
-                                                                 QRhiRenderBuffer::UsedWithSwapChainOnly);
-        swapChain->setDepthStencil(renderBuffer);
-
-        QRhiRenderPassDescriptor *renderPassDescriptor = swapChain->newCompatibleRenderPassDescriptor();
-        swapChain->setRenderPassDescriptor(renderPassDescriptor);
-
-        // Build swapChain the first time
-        swapChain->buildOrResize();
-
-        swapChainInfo.swapChain = swapChain;
-        swapChainInfo.renderBuffer = renderBuffer;
-        swapChainInfo.renderPassDescriptor = renderPassDescriptor;
-    }
+    SwapChainInfo *swapChainInfo = swapChainForSurface(surface);
+    QRhiSwapChain *swapChain = swapChainInfo->swapChain;
 
     // TO DO: Check if that's required all the time
     {
         // Rebuild RenderPassDescriptor
-        swapChainInfo.renderBuffer->setPixelSize(surface->size());
-        swapChainInfo.renderBuffer->build();
+        // TODO -> this is not necessary, swapChain->buildOrResize already does it
+        // swapChainInfo->renderBuffer->setPixelSize(surface->size());
+        // swapChainInfo->renderBuffer->build();
 
         // Resize swapchain if needed
         if (m_surface->size() != swapChain->surfacePixelSize())
-            swapChain->buildOrResize();
+        {
+            bool couldRebuild = swapChain->buildOrResize();
+            if (!couldRebuild)
+                return false;
+        }
     }
 
     m_currentSwapChain = swapChain;
-    m_currentRenderPassDescriptor = swapChainInfo.renderPassDescriptor;
+    m_currentRenderPassDescriptor = swapChainInfo->renderPassDescriptor;
 
     // Begin Frame
-    m_rhi->beginFrame(m_currentSwapChain);
+    const auto success = m_rhi->beginFrame(m_currentSwapChain);
 
-    // Update Resource Update Batch
-    m_currentUpdates = m_rhi->nextResourceUpdateBatch();
-
-    return true;
+    return success == QRhi::FrameOpSuccess;
 }
 
 void SubmissionContext::endDrawing(bool swapBuffers)
 {
     m_rhi->endFrame(m_currentSwapChain, {});
+    m_currentUpdates = nullptr;
 
     RHI_UNIMPLEMENTED;
 //* if (swapBuffers)
@@ -1031,12 +981,6 @@ void SubmissionContext::releaseResources()
         delete m_rhi;
         m_rhi = nullptr;
 
-#if QT_CONFIG(vulkan)
-        if (m_ownsVkInstance) {
-            delete m_vkInstance;
-            m_vkInstance = nullptr;
-        }
-#endif
 #ifndef QT_NO_OPENGL
         delete m_fallbackSurface;
         m_fallbackSurface = nullptr;
@@ -1276,6 +1220,50 @@ StateVariant *SubmissionContext::getState(RenderStateSet *ss, StateMask type) co
     return nullptr;
 }
 
+
+SubmissionContext::SwapChainInfo *SubmissionContext::swapChainForSurface(QSurface *surface) noexcept
+{
+    SwapChainInfo &swapChainInfo = m_swapChains[surface];
+    auto& swapChain = swapChainInfo.swapChain;
+
+    if (swapChain == nullptr) {
+        swapChain = m_rhi->newSwapChain();
+        Q_ASSERT(surface->surfaceClass() == QSurface::Window);
+        QWindow *window = static_cast<QWindow *>(surface);
+        Q_ASSERT(window != nullptr);
+        const int samples = format().samples();
+
+
+        swapChain->setWindow(window);
+        swapChain->setFlags(QRhiSwapChain::Flags {});
+        swapChain->setSampleCount(samples);
+
+        QRhiRenderBuffer *renderBuffer  = m_rhi->newRenderBuffer(QRhiRenderBuffer::DepthStencil,
+                                                                 QSize(),
+                                                                 samples,
+                                                                 QRhiRenderBuffer::UsedWithSwapChainOnly);
+        swapChain->setDepthStencil(renderBuffer);
+
+        QRhiRenderPassDescriptor *renderPassDescriptor = swapChain->newCompatibleRenderPassDescriptor();
+        swapChain->setRenderPassDescriptor(renderPassDescriptor);
+
+        // Build swapChain the first time
+        if (swapChain->buildOrResize())
+        {
+            swapChainInfo.swapChain = swapChain;
+            swapChainInfo.renderBuffer = renderBuffer;
+            swapChainInfo.renderPassDescriptor = renderPassDescriptor;
+        }
+        else
+        {
+            swapChain->releaseAndDestroyLater();
+            m_swapChains.remove(surface);
+            return nullptr;
+        }
+    }
+    return &swapChainInfo;
+}
+
 QRhiCommandBuffer *SubmissionContext::currentFrameCommandBuffer() const
 {
     return m_currentSwapChain->currentFrameCommandBuffer();
@@ -1284,6 +1272,11 @@ QRhiCommandBuffer *SubmissionContext::currentFrameCommandBuffer() const
 QRhiRenderTarget *SubmissionContext::currentFrameRenderTarget() const
 {
     return m_currentSwapChain->currentFrameRenderTarget();
+}
+
+QRhiSwapChain *SubmissionContext::currentSwapChain() const
+{
+    return m_currentSwapChain;
 }
 
 QRhiRenderPassDescriptor *SubmissionContext::currentRenderPassDescriptor() const
@@ -1305,8 +1298,8 @@ QSurfaceFormat SubmissionContext::format() const noexcept
 // than the other way around
 bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
 {
-    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight.irradiance"));
-    static const int specularId = StringToInt::lookupId(QLatin1String("envLight.specular"));
+    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight_irradiance"));
+    static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
 
@@ -1600,6 +1593,101 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
 //*    }
 }
 
+namespace
+{
+template<std::size_t N>
+constexpr int getFirstAvailableBit(const std::bitset<N>& bits)
+{
+    for (std::size_t i = 0; i < N; i++)
+    {
+        if (!bits.test(i))
+            return i;
+    }
+    return -1;
+}
+// This function ensures that the shader stages all have the same bindings
+void preprocessRHIShader(QVector<QByteArray>& shaderCodes)
+{
+    // Map the variable names to bindings
+    std::map<QByteArray, int> bindings;
+    bindings["qt3d_render_view_uniforms"] = 0;
+    bindings["qt3d_command_uniforms"] = 1;
+    std::bitset<512> assignedBindings;
+    assignedBindings.set(0);
+    assignedBindings.set(1);
+
+    thread_local const QRegularExpression samplerRegex(
+            QStringLiteral("binding\\s*=\\s*([0-9]+).*\\)\\s*uniform\\s*[ui]?sampler[a-zA-Z0-9]+\\s*([a-zA-Z0-9_]+)\\s*;"));
+    thread_local const QRegularExpression uboRegex(
+            QStringLiteral("(?:std140\\s*,\\s*binding\\s*=\\s*([0-9]+).*|binding\\s*=\\s*([0-9]+)\\s*,\\s*std140.*)\\)\\s*uniform\\s*([a-zA-Z0-9_]+)"));
+
+    auto replaceBinding = [&bindings, &assignedBindings] (int& offset, QRegularExpressionMatch& match, QByteArray& code, int indexCapture, int variableCapture) noexcept
+    {
+        int index = match.captured(indexCapture).toInt();
+        QByteArray variable = match.captured(variableCapture).toUtf8();
+
+        auto it = bindings.find(variable);
+        if (it == bindings.end())
+        {
+            // 1. Check if the index is already used
+            if (assignedBindings.test(index))
+            {
+                index = getFirstAvailableBit(assignedBindings);
+                if (index == -1) {
+                    return;
+                }
+
+                const int indexStartOffset = match.capturedStart(indexCapture);
+                const int indexEndOffset = match.capturedEnd(indexCapture);
+                const int indexLength = indexEndOffset - indexStartOffset;
+                code.replace(indexStartOffset, indexLength, QByteArray::number(index));
+            }
+
+            assignedBindings.set(index);
+            bindings.emplace(std::move(variable), index);
+        }
+        else
+        {
+            int indexToUse = it->second;
+            const int indexStartOffset = match.capturedStart(indexCapture);
+            const int indexEndOffset = match.capturedEnd(indexCapture);
+            const int indexLength = indexEndOffset - indexStartOffset;
+            code.replace(indexStartOffset, indexLength, QByteArray::number(indexToUse));
+        }
+        // This may fail in the case where the replaced offset is an incredibly long number,
+        // which seems quite unlikely
+        offset = match.capturedEnd(0);
+    };
+
+    for (QByteArray& shaderCode : shaderCodes)
+    {
+        // Regex for the sampler variables
+        int offset = 0;
+        auto match = samplerRegex.match(shaderCode, offset);
+        while (match.hasMatch())
+        {
+            const int indexCapture = 1;
+            const int variableCapture = 2;
+            replaceBinding(offset, match, shaderCode, indexCapture, variableCapture);
+
+            match = samplerRegex.match(shaderCode, offset);
+        }
+
+        // Regex for the UBOs
+        offset = 0;
+        match = uboRegex.match(shaderCode, offset);
+        while (match.hasMatch())
+        {
+            const int indexCapture = !match.capturedView(1).isEmpty() ? 1 : 2;
+            const int variableCapture = 3;
+            replaceBinding(offset, match, shaderCode, indexCapture, variableCapture);
+
+            match = uboRegex.match(shaderCode, offset);
+        }
+    }
+}
+}
+
 // Called by GL Command Thread
 SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHIShader *shader)
 {
@@ -1665,7 +1753,8 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
     }
 
     // Perform shader introspection
-    shader->introspect();
+    if (success)
+        shader->introspect();
 
     return {success, logs};
 }
@@ -1690,7 +1779,10 @@ void SubmissionContext::loadShader(Shader *shaderNode,
     const QVector<Qt3DCore::QNodeId> sharedShaderIds = rhiShaderManager->shaderIdsForProgram(rhiShader);
     if (sharedShaderIds.size() == 1) {
         // Shader in the cache hasn't been loaded yet
-        rhiShader->setShaderCode(shaderNode->shaderCode());
+        QVector<QByteArray> shaderCodes = shaderNode->shaderCode();
+        preprocessRHIShader(shaderCodes);
+        rhiShader->setShaderCode(shaderCodes);
+
         const ShaderCreationInfo loadResult = createShaderProgram(rhiShader);
         shaderNode->setStatus(loadResult.linkSucceeded ? QShaderProgram::Ready : QShaderProgram::Error);
         shaderNode->setLog(loadResult.logs);

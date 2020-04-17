@@ -97,6 +97,8 @@ class Q_AUTOTEST_EXPORT RenderCommand
 public:
     RenderCommand();
 
+    bool isValid() const noexcept;
+
     HMaterial m_material; // Purely used to ease sorting (minimize stage changes, binding changes ....)
     RHIShader *m_rhiShader; // GL Shader to be used at render time
     Qt3DCore::QNodeId m_shaderId; // Shader for given pass and mesh
