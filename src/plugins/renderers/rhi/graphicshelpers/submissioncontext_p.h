@@ -70,10 +70,6 @@
 
 QT_BEGIN_NAMESPACE
 
-#if QT_CONFIG(vulkan)
-class QVulkanInstance;
-#endif
-
 class QAbstractOpenGLFunctions;
 
 namespace Qt3DRender {

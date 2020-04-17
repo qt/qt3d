@@ -2,7 +2,7 @@ TARGET   = Qt3DQuickExtras
 MODULE   = 3dquickextras
 DEFINES += BUILD_QT3D_MODULE
 
-QT      += core core-private qml qml-private 3dcore 3dinput 3dquick 3dquick-private 3drender 3drender-private 3dlogic 3dextras
+QT      += core core-private qml qml-private 3dcore 3dinput 3dquick 3dquick-private 3drender 3drender-private 3dlogic 3dextras 3dextras-private
 
 CONFIG -= precompile_header
 
