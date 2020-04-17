@@ -995,16 +995,9 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // so we cannot unset its dirtiness at this point
                 if (rGeometryRenderer->isDirty())
                     rGeometryRenderer->unsetDirty();
-
-                // Prepare the ShaderParameterPack based on the active uniforms of the shader
-                shader->prepareUniforms(command.m_parameterPack);
-
             } else if (command.m_type == RenderCommand::Compute) {
                 GLShader *shader = command.m_glShader;
                 Q_ASSERT(shader);
-
-                // Prepare the ShaderParameterPack based on the active uniforms of the shader
-                shader->prepareUniforms(command.m_parameterPack);
             }
         }
     }

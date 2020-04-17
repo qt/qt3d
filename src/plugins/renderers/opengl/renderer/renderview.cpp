@@ -1177,6 +1177,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
             }
             setUniformValue(command->m_parameterPack, StringToInt::lookupId(QStringLiteral("envLightCount")), envLightCount);
         }
+
+        // Prepare the ShaderParameterPack based on the active uniforms of the shader
+        shader->prepareUniforms(command->m_parameterPack);
     }
 }
 
