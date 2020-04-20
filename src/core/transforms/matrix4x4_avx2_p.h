@@ -485,8 +485,8 @@ public:
     friend Vector4D operator*(const Vector4D &vector, const Matrix4x4_AVX2 &matrix);
     friend Vector4D operator*(const Matrix4x4_AVX2 &matrix, const Vector4D &vector);
 
-    friend Q_3DCORE_PRIVATE_EXPORT Vector3D operator*(const Vector3D &vector, const Matrix4x4_AVX2 &matrix);
-    friend Q_3DCORE_PRIVATE_EXPORT Vector3D operator*(const Matrix4x4_AVX2 &matrix, const Vector3D &vector);
+    friend Vector3D operator*(const Vector3D &vector, const Matrix4x4_AVX2 &matrix);
+    friend Vector3D operator*(const Matrix4x4_AVX2 &matrix, const Vector3D &vector);
 
     friend Q_3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Matrix4x4_AVX2 &m);
 
