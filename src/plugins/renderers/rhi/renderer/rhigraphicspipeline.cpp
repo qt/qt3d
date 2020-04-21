@@ -62,6 +62,7 @@ RHIGraphicsPipeline::~RHIGraphicsPipeline()
 
 void RHIGraphicsPipeline::cleanup()
 {
+    delete m_shaderResourceBindings;
     delete m_rvUbo;
     delete m_cmdUbo;
     delete m_pipeline;
