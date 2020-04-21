@@ -214,8 +214,9 @@ void QLayerFilter::removeLayer(QLayer *layer)
 {
     Q_ASSERT(layer);
     Q_D(QLayerFilter);
+    if (!d->m_layers.removeOne(layer))
+        return;
     d->updateNode(layer, "layer", Qt3DCore::PropertyValueRemoved);
-    d->m_layers.removeOne(layer);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(layer);
 }

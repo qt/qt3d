@@ -370,6 +370,7 @@ struct SubRangeSorter<QSortPolicy::Texture>
 {
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
+#ifndef Q_OS_WIN
         std::stable_sort(begin, end, [] (const RenderCommand &a, const RenderCommand &b) {
             QVector<ShaderParameterPack::NamedResource> texturesA = a.m_parameterPack.textures();
             QVector<ShaderParameterPack::NamedResource> texturesB = b.m_parameterPack.textures();
@@ -388,6 +389,7 @@ struct SubRangeSorter<QSortPolicy::Texture>
 
             return identicalTextureCount < originalTextureASize;
         });
+#endif
     }
 };
 
@@ -589,6 +591,9 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
 
             HGeometry geometryHandle = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
             Geometry *geometry = m_manager->geometryManager()->data(geometryHandle);
+
+            if (geometry == nullptr)
+                continue;
 
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
             for (const RenderPassParameterData &passData : renderPassData) {

@@ -97,3 +97,5 @@ qtHaveModule(quick) {
         scene3d-in-sync \
         compressed_textures \
 }
+
+qtHaveModule(quickwidgets): SUBDIRS += quickwidget-switch

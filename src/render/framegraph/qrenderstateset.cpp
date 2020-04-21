@@ -203,8 +203,9 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
     Q_ASSERT(state);
     Q_D(QRenderStateSet);
 
+    if (!d->m_renderStates.removeOne(state))
+        return;
     d->updateNode(state, "renderState", Qt3DCore::PropertyValueRemoved);
-    d->m_renderStates.removeOne(state);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(state);
 }
