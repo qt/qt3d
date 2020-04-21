@@ -679,7 +679,6 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 void SubmissionContext::endDrawing(bool swapBuffers)
 {
     m_rhi->endFrame(m_currentSwapChain, {});
-    m_currentUpdates = nullptr;
 
     RHI_UNIMPLEMENTED;
 //* if (swapBuffers)
