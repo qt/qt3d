@@ -75,6 +75,8 @@ public:
     virtual bool isRequired() const;
     virtual void postFrame(QAspectManager *aspectManager);
 
+    void clearDependencies() { m_dependencies.clear(); }
+
     QVector<QWeakPointer<QAspectJob> > m_dependencies;
     JobId m_jobId;
     QString m_jobName;

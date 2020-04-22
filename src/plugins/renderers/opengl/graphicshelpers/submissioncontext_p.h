@@ -138,7 +138,7 @@ public:
     GLBuffer *glBufferForRenderBuffer(Buffer *buf);
 
     // Parameters
-    bool setParameters(ShaderParameterPack &parameterPack);
+    bool setParameters(ShaderParameterPack &parameterPack, GLShader *shader);
 
     // RenderState
     void setCurrentStateSet(RenderStateSet* ss);

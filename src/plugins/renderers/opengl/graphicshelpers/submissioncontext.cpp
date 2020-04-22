@@ -1160,7 +1160,7 @@ void SubmissionContext::setUpdatedTexture(const Qt3DCore::QNodeIdVector &updated
 
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
-bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
+bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShader *shader)
 {
     static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight.irradiance"));
     static const int specularId = StringToInt::lookupId(QLatin1String("envLight.specular"));
@@ -1225,7 +1225,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
         }
     }
 
-    QOpenGLShaderProgram *shader = activeShader();
+    QOpenGLShaderProgram *glShader = activeShader();
 
     // TO DO: We could cache the binding points somehow and only do the binding when necessary
     // for SSBO and UBO
@@ -1239,7 +1239,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
         // This is currently not required as we are introspecting the bindingIndex
         // value from the shaders and not replacing them, making such a call useless
         // bindShaderStorageBlock(shader->programId(), b.m_blockIndex, b.m_bindingIndex);
-        bindShaderStorageBlock(shader->programId(), b.m_blockIndex, b.m_bindingIndex);
+        bindShaderStorageBlock(glShader->programId(), b.m_blockIndex, b.m_bindingIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
         bindGLBuffer(ssbo, GLBuffer::ShaderStorageBuffer);
@@ -1254,7 +1254,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     for (const BlockToUBO &b : blockToUBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer);
-        bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);
+        bindUniformBlock(glShader->programId(), b.m_blockIndex, uboIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
         bindGLBuffer(ubo, GLBuffer::UniformBuffer);
@@ -1264,11 +1264,11 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
 
     // Update uniforms in the Default Uniform Block
     const PackUniformHash values = parameterPack.uniforms();
-    const QVector<ShaderUniform> activeUniforms = parameterPack.submissionUniforms();
+    const QVector<int> &activeUniformsIndices = parameterPack.submissionUniformIndices();
+    const QVector<ShaderUniform> &shaderUniforms = shader->uniforms();
 
-    for (const ShaderUniform &uniform : activeUniforms) {
-        // We can use [] as we are sure the the uniform wouldn't
-        // be un activeUniforms if there wasn't a matching value
+    for (const int shaderUniformIndex : activeUniformsIndices) {
+        const ShaderUniform &uniform = shaderUniforms[shaderUniformIndex];
         const UniformValue &v = values.value(uniform.m_nameId);
 
         // skip invalid textures/images

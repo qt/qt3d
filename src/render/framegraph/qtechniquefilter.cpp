@@ -155,8 +155,9 @@ void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QTechniqueFilter);
+    if (!d->m_matchList.removeOne(filterKey))
+        return;
     d->updateNode(filterKey, "matchAll", Qt3DCore::PropertyValueRemoved);
-    d->m_matchList.removeOne(filterKey);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(filterKey);
 }
@@ -192,8 +193,9 @@ void QTechniqueFilter::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QTechniqueFilter);
+    if (!d->m_parameters.removeOne(parameter))
+        return;
     d->updateNode(parameter, "parameter", Qt3DCore::PropertyValueRemoved);
-    d->m_parameters.removeOne(parameter);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
 }

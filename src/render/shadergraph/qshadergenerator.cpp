@@ -43,17 +43,17 @@
 #include <QRegularExpression>
 
 #include <cctype>
+#include <qshaderprogram_p.h>
 
 QT_BEGIN_NAMESPACE
-namespace Qt3DRender
-{
+namespace Qt3DRender {
 Q_LOGGING_CATEGORY(ShaderGenerator, "ShaderGenerator", QtWarningMsg)
 
 namespace
 {
-    QByteArray toGlsl(QShaderLanguage::StorageQualifier qualifier, const QShaderFormat &format)
+    QByteArray toGlsl(QShaderLanguage::StorageQualifier qualifier, const QShaderFormat &format) noexcept
     {
-        if (format.version().majorVersion() <= 2) {
+        if (format.version().majorVersion() <= 2 && format.api() != QShaderFormat::RHI) {
             // Note we're assuming fragment shader only here, it'd be different
             // values for vertex shader, will need to be fixed properly at some
             // point but isn't necessary yet (this problem already exists in past
@@ -91,7 +91,7 @@ namespace
         Q_UNREACHABLE();
     }
 
-    QByteArray toGlsl(QShaderLanguage::VariableType type)
+    QByteArray toGlsl(QShaderLanguage::VariableType type) noexcept
     {
         switch (type) {
         case QShaderLanguage::Bool:
@@ -267,7 +267,8 @@ namespace
         Q_UNREACHABLE();
     }
 
-    QByteArray replaceParameters(const QByteArray &original, const QShaderNode &node, const QShaderFormat &format)
+    QByteArray replaceParameters(const QByteArray &original, const QShaderNode &node,
+                                 const QShaderFormat &format) noexcept
     {
         QByteArray result = original;
 
@@ -276,11 +277,13 @@ namespace
             const QByteArray placeholder = QByteArray(QByteArrayLiteral("$") + parameterName.toUtf8());
             const QVariant parameter = node.parameter(parameterName);
             if (parameter.userType() == qMetaTypeId<QShaderLanguage::StorageQualifier>()) {
-                const QShaderLanguage::StorageQualifier qualifier = qvariant_cast<QShaderLanguage::StorageQualifier>(parameter);
+                const QShaderLanguage::StorageQualifier qualifier =
+                        qvariant_cast<QShaderLanguage::StorageQualifier>(parameter);
                 const QByteArray value = toGlsl(qualifier, format);
                 result.replace(placeholder, value);
             } else if (parameter.userType() == qMetaTypeId<QShaderLanguage::VariableType>()) {
-                const QShaderLanguage::VariableType type = qvariant_cast<QShaderLanguage::VariableType>(parameter);
+                const QShaderLanguage::VariableType type =
+                        qvariant_cast<QShaderLanguage::VariableType>(parameter);
                 const QByteArray value = toGlsl(type);
                 result.replace(placeholder, value);
             } else {
@@ -291,64 +294,275 @@ namespace
 
         return result;
     }
+
+    bool intersectsEnabledLayers(const QStringList &enabledLayers, const QStringList &layers) noexcept
+    {
+        return layers.isEmpty()
+                || std::any_of(layers.cbegin(), layers.cend(),
+                               [enabledLayers](const QString &s) { return enabledLayers.contains(s); });
+    }
+
+    struct ShaderGenerationState
+    {
+        ShaderGenerationState(const QShaderGenerator & gen, QStringList layers, QVector<QShaderNode> nodes)
+          : generator{gen}
+          , enabledLayers{layers}
+          , nodes{nodes}
+        {
+
+        }
+
+        const QShaderGenerator &generator;
+        QStringList enabledLayers;
+        QVector<QShaderNode> nodes;
+        QByteArrayList code;
+
+        QVector<QString> globalInputVariables;
+        const QRegularExpression globalInputExtractRegExp { QStringLiteral("^.*\\s+(\\w+).*;$") };
+    };
+
+    class GLSL45HeaderWriter
+    {
+    public:
+        void writeHeader(ShaderGenerationState &state)
+        {
+            const auto &format = state.generator.format;
+            auto &code = state.code;
+            for (const QShaderNode &node : state.nodes) {
+                if (intersectsEnabledLayers(state.enabledLayers, node.layers())) {
+                    const QByteArrayList& headerSnippets = node.rule(format).headerSnippets;
+                    for (const QByteArray &snippet : headerSnippets) {
+                        auto replacedSnippet = replaceParameters(snippet, node, format).trimmed();
+
+                        if (replacedSnippet.startsWith(QByteArrayLiteral("add-input"))) {
+                            onInOut(code, replacedSnippet);
+                        } else if (replacedSnippet.startsWith(QByteArrayLiteral("add-uniform"))) {
+                            onNamedUniform(ubo, replacedSnippet);
+                        } else if (replacedSnippet.startsWith(QByteArrayLiteral("add-sampler"))) {
+                            onNamedSampler(code, replacedSnippet);
+                        } else if (replacedSnippet.startsWith(QByteArrayLiteral("#pragma include "))) {
+                            onInclude(code, replacedSnippet);
+                        } else {
+                            code << replacedSnippet;
+                        }
+                        // If node is an input, record the variable name into the globalInputVariables
+                        // vector
+                        if (node.type() == QShaderNode::Input) {
+                            const QRegularExpressionMatch match = state.globalInputExtractRegExp.match(
+                                    QString::fromUtf8(code.last()));
+                            if (match.hasMatch())
+                                state.globalInputVariables.push_back(match.captured(1));
+                        }
+                    }
+                }
+            }
+
+            if (!ubo.isEmpty()) {
+                code << QByteArrayLiteral("layout(std140, binding = ")
+                                + QByteArray::number(currentBinding++)
+                                + QByteArrayLiteral(") uniform qt3d_shadergraph_generated_uniforms {");
+                code << ubo;
+                code << "};";
+            }
+        }
+
+    private:
+        void onInOut(QByteArrayList &code, const QByteArray &snippet) noexcept
+        {
+            const auto split = snippet.split(' ');
+            if (split.size() < 4) {
+                qDebug() << "Invalid header snippet: " << snippet;
+                return;
+            }
+            const auto &qualifier = split[1];
+            const auto &type = split[2];
+            const auto &name = split[3];
+
+            if (qualifier == QByteArrayLiteral("in")) {
+                code << (QByteArrayLiteral("layout(location = ")
+                         + QByteArray::number(currentInputLocation++) + QByteArrayLiteral(") in ")
+                         + type + ' ' + name + QByteArrayLiteral(";"));
+            } else if (qualifier == QByteArrayLiteral("out")) {
+                code << (QByteArrayLiteral("layout(location = ")
+                         + QByteArray::number(currentOutputLocation++) + QByteArrayLiteral(") out ")
+                         + type + ' ' + name + QByteArrayLiteral(";"));
+            } else if (qualifier == QByteArrayLiteral("uniform")) {
+                ubo << (type + ' ' + name + ';');
+            }
+        }
+
+        void onNamedUniform(QByteArrayList &ubo, const QByteArray &snippet) noexcept
+        {
+            const auto split = snippet.split(' ');
+            if (split.size() < 3) {
+                qDebug() << "Invalid header snippet: " << snippet;
+                return;
+            }
+
+            const auto &type = split[1];
+            const auto &name = split[2];
+
+            ubo << (type + ' ' + name + ';');
+        }
+
+        void onNamedSampler(QByteArrayList &code, const QByteArray &snippet) noexcept
+        {
+            const auto split = snippet.split(' ');
+            if (split.size() < 3) {
+                qDebug() << "Invalid header snippet: " << snippet;
+                return;
+            }
+            const auto binding = QByteArray::number(currentBinding++);
+            const auto &type = split[1];
+            const auto &name = split[2];
+
+            code << (QByteArrayLiteral("layout(binding = ") + binding + QByteArrayLiteral(") uniform ")
+                     + type + ' ' + name + QByteArrayLiteral(";"));
+        }
+
+        void onInclude(QByteArrayList &code, const QByteArray &snippet) noexcept
+        {
+            const auto filepath = QString::fromUtf8(snippet.mid(strlen("#pragma include ")));
+            QString deincluded = QString::fromUtf8(QShaderProgramPrivate::deincludify(filepath));
+
+            // This lambda will replace all occurrences of a string (e.g. "binding = auto") by another,
+            // with the incremented int passed as argument (e.g. "binding = 1", "binding = 2" ...)
+            const auto replaceAndIncrement = [&deincluded](const QRegularExpression &regexp,
+                                                           int &variable,
+                                                           const QString &replacement) noexcept {
+                int matchStart = 0;
+                do {
+                    matchStart = deincluded.indexOf(regexp, matchStart);
+                    if (matchStart != -1) {
+                        const auto match = regexp.match(deincluded.midRef(matchStart));
+                        const auto length = match.capturedLength(0);
+
+                        deincluded.replace(matchStart, length, replacement.arg(variable++));
+                    }
+                } while (matchStart != -1);
+            };
+
+            // 1. Handle uniforms
+            {
+                thread_local const QRegularExpression bindings(
+                        QStringLiteral("binding\\s?+=\\s?+auto"));
+
+                replaceAndIncrement(bindings, currentBinding, QStringLiteral("binding = %1"));
+            }
+
+            // 2. Handle inputs
+            {
+                thread_local const QRegularExpression inLocations(
+                        QStringLiteral("location\\s?+=\\s?+auto\\s?+\\)\\s?+in\\s+"));
+
+                replaceAndIncrement(inLocations, currentInputLocation,
+                                    QStringLiteral("location = %1) in "));
+            }
+
+            // 3. Handle outputs
+            {
+                thread_local const QRegularExpression outLocations(
+                        QStringLiteral("location\\s?+=\\s?+auto\\s?+\\)\\s?+out\\s+"));
+
+                replaceAndIncrement(outLocations, currentOutputLocation,
+                                    QStringLiteral("location = %1) out "));
+            }
+
+            code << deincluded.toUtf8();
+        }
+
+        int currentInputLocation { 0 };
+        int currentOutputLocation { 0 };
+        int currentBinding { 0 };
+        QByteArrayList ubo;
+    };
+
+    struct GLSLHeaderWriter
+    {
+        void writeHeader(ShaderGenerationState &state)
+        {
+            const auto &format = state.generator.format;
+            auto &code = state.code;
+            for (const QShaderNode &node : state.nodes) {
+                if (intersectsEnabledLayers(state.enabledLayers, node.layers())) {
+                    const QByteArrayList& headerSnippets = node.rule(format).headerSnippets;
+                    for (const QByteArray &snippet : headerSnippets) {
+                        code << replaceParameters(snippet, node, format);
+
+                        // If node is an input, record the variable name into the globalInputVariables
+                        // vector
+                        if (node.type() == QShaderNode::Input) {
+                            const QRegularExpressionMatch match = state.globalInputExtractRegExp.match(
+                                    QString::fromUtf8(code.last()));
+                            if (match.hasMatch())
+                                state.globalInputVariables.push_back(match.captured(1));
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    QByteArray versionString(const QShaderFormat &format) noexcept
+    {
+        if (!format.isValid())
+            return {};
+
+        switch (format.api()) {
+        case QShaderFormat::RHI: {
+            return QByteArrayLiteral("#version 450");
+        }
+        case QShaderFormat::VulkanFlavoredGLSL: {
+            const int major = format.version().majorVersion();
+            const int minor = format.version().minorVersion();
+            return (QByteArrayLiteral("#version ") + QByteArray::number(major * 100 + minor * 10));
+        }
+        default: {
+            const bool isGLES = format.api() == QShaderFormat::OpenGLES;
+            const int major = format.version().majorVersion();
+            const int minor = format.version().minorVersion();
+
+            const int version = major == 2 && isGLES ? 100
+                              : major == 3 && isGLES ? 300
+                              : major == 2 ? 100 + 10 * (minor + 1)
+                              : major == 3 && minor <= 2 ? 100 + 10 * (minor + 3)
+                              : major * 100 + minor * 10;
+
+            const QByteArray profile =
+                    isGLES && version > 100 ? QByteArrayLiteral(" es")
+                    : version >= 150 && format.api() == QShaderFormat::OpenGLCoreProfile ? QByteArrayLiteral(" core")
+                    : version >= 150 && format.api() == QShaderFormat::OpenGLCompatibilityProfile ? QByteArrayLiteral(" compatibility")
+                    : QByteArray();
+
+            return (QByteArrayLiteral("#version ") + QByteArray::number(version) + profile);
+        }
+        }
+    }
 }
 
 QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) const
 {
-    auto code = QByteArrayList();
-
-    if (format.isValid()) {
-        const bool isGLES = format.api() == QShaderFormat::OpenGLES;
-        const int major = format.version().majorVersion();
-        const int minor = format.version().minorVersion();
-
-        const int version = major == 2 && isGLES ? 100
-                          : major == 3 && isGLES ? 300
-                          : major == 2 ? 100 + 10 * (minor + 1)
-                          : major == 3 && minor <= 2 ? 100 + 10 * (minor + 3)
-                          : major * 100 + minor * 10
-        ;
-
-        const QByteArray profile = isGLES && version > 100 ? QByteArrayLiteral(" es")
-                                   : version >= 150 && format.api() == QShaderFormat::OpenGLCoreProfile ? QByteArrayLiteral(" core")
-                                   : version >= 150 && format.api() == QShaderFormat::OpenGLCompatibilityProfile ? QByteArrayLiteral(" compatibility")
-                                   : QByteArray();
-
-        code << (QByteArrayLiteral("#version ") + QByteArray::number(version) + profile);
-        code << QByteArray();
-    }
-
-    const auto intersectsEnabledLayers = [enabledLayers] (const QStringList &layers) {
-        return layers.isEmpty()
-            || std::any_of(layers.cbegin(), layers.cend(),
-                           [enabledLayers] (const QString &s) { return enabledLayers.contains(s); });
-    };
-
-    QVector<QString> globalInputVariables;
-    const QRegularExpression globalInputExtractRegExp(QStringLiteral("^.*\\s+(\\w+).*;$"));
-
     const QVector<QShaderNode> nodes = graph.nodes();
-    for (const QShaderNode &node : nodes) {
-        if (intersectsEnabledLayers(node.layers())) {
-            const QByteArrayList headerSnippets = node.rule(format).headerSnippets;
-            for (const QByteArray &snippet : headerSnippets) {
-                code << replaceParameters(snippet, node, format);
+    ShaderGenerationState state(*this, enabledLayers, nodes);
+    QByteArrayList &code = state.code;
 
-                // If node is an input, record the variable name into the globalInputVariables vector
-                if (node.type() == QShaderNode::Input) {
-                    const QRegularExpressionMatch match = globalInputExtractRegExp.match(QString::fromUtf8(code.last()));
-                    if (match.hasMatch())
-                        globalInputVariables.push_back(match.captured(1));
-                }
-            }
-        }
+    code << versionString(format);
+    code << QByteArray();
+
+    if (format.api() == QShaderFormat::VulkanFlavoredGLSL || format.api() == QShaderFormat::RHI) {
+        GLSL45HeaderWriter builder;
+        builder.writeHeader(state);
+    } else {
+        GLSLHeaderWriter builder;
+        builder.writeHeader(state);
     }
 
     code << QByteArray();
     code << QByteArrayLiteral("void main()");
     code << QByteArrayLiteral("{");
 
-    const QRegularExpression temporaryVariableToAssignmentRegExp(QStringLiteral("([^;]*\\s+(v\\d+))\\s*=\\s*([^;]*);"));
+    const QRegularExpression temporaryVariableToAssignmentRegExp(
+            QStringLiteral("([^;]*\\s+(v\\d+))\\s*=\\s*([^;]*);"));
     const QRegularExpression temporaryVariableInAssignmentRegExp(QStringLiteral("\\W*(v\\d+)\\W*"));
     const QRegularExpression statementRegExp(QStringLiteral("\\s*(\\w+)\\s*=\\s*([^;]*);"));
 
@@ -362,11 +576,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
 
     struct Variable
     {
-        enum Type {
-            GlobalInput,
-            TemporaryAssignment,
-            Output
-        };
+        enum Type { GlobalInput, TemporaryAssignment, Output };
 
         QString name;
         QString declaration;
@@ -380,7 +590,8 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
             if (v->substituted)
                 return;
 
-            qCDebug(ShaderGenerator) << "Begin Substituting " << v->name << " = " << v->assignment.expression;
+            qCDebug(ShaderGenerator)
+                    << "Begin Substituting " << v->name << " = " << v->assignment.expression;
             for (Variable *ref : qAsConst(v->assignment.referencedVariables)) {
                 // Recursively substitute
                 Variable::substitute(ref);
@@ -390,14 +601,15 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
                 if (ref->referenceCount == 1 || ref->type == Variable::GlobalInput) {
                     const QRegularExpression r(QStringLiteral("(.*\\b)(%1)(\\b.*)").arg(ref->name));
                     if (v->assignment.referencedVariables.size() == 1)
-                        v->assignment.expression.replace(r,
-                                                         QStringLiteral("\\1%2\\3").arg(ref->assignment.expression));
+                        v->assignment.expression.replace(
+                                r, QStringLiteral("\\1%2\\3").arg(ref->assignment.expression));
                     else
-                        v->assignment.expression.replace(r,
-                                                         QStringLiteral("(\\1%2\\3)").arg(ref->assignment.expression));
+                        v->assignment.expression.replace(
+                                r, QStringLiteral("(\\1%2\\3)").arg(ref->assignment.expression));
                 }
             }
-            qCDebug(ShaderGenerator) << "Done Substituting " << v->name << " = " << v->assignment.expression;
+            qCDebug(ShaderGenerator)
+                    << "Done Substituting " << v->name << " = " << v->assignment.expression;
             v->substituted = true;
         }
     };
@@ -438,13 +650,16 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
         return nullptr;
     };
 
-    auto gatherTemporaryVariablesFromAssignment = [&] (Variable *v, const QString &assignmentContent) {
-        QRegularExpressionMatchIterator subMatchIt = temporaryVariableInAssignmentRegExp.globalMatch(assignmentContent);
+    auto gatherTemporaryVariablesFromAssignment = [&](Variable *v,
+                                                      const QString &assignmentContent) {
+        QRegularExpressionMatchIterator subMatchIt =
+                temporaryVariableInAssignmentRegExp.globalMatch(assignmentContent);
         while (subMatchIt.hasNext()) {
             const QRegularExpressionMatch subMatch = subMatchIt.next();
             const QString variableName = subMatch.captured(1);
 
-            // Variable we care about should already exists -> an expression cannot reference a variable that hasn't been defined
+            // Variable we care about should already exists -> an expression cannot reference a
+            // variable that hasn't been defined
             Variable *u = findVariable(variableName);
             Q_ASSERT(u);
 
@@ -460,7 +675,8 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
         QByteArray line = node.rule(format).substitution;
         const QVector<QShaderNodePort> ports = node.ports();
 
-        struct VariableReplacement {
+        struct VariableReplacement
+        {
             QByteArray placeholder;
             QByteArray variable;
         };
@@ -477,8 +693,8 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
 
             Q_ASSERT(portIndex >= 0);
 
-            const int variableIndex = isInput ? statement.inputs.at(portIndex)
-                                              : statement.outputs.at(portIndex);
+            const int variableIndex =
+                    isInput ? statement.inputs.at(portIndex) : statement.outputs.at(portIndex);
             if (variableIndex < 0)
                 continue;
 
@@ -502,10 +718,11 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
             const int placeholderLength = end - begin;
 
             const QByteArray variableName = line.mid(begin, placeholderLength);
-            const auto replacementIt = std::find_if(variableReplacements.cbegin(), variableReplacements.cend(),
-                                              [&variableName](const VariableReplacement &replacement) {
-                return variableName == replacement.placeholder;
-            });
+            const auto replacementIt =
+                    std::find_if(variableReplacements.cbegin(), variableReplacements.cend(),
+                                 [&variableName](const VariableReplacement &replacement) {
+                                     return variableName == replacement.placeholder;
+                                 });
 
             if (replacementIt != variableReplacements.cend()) {
                 line.replace(begin, placeholderLength, replacementIt->variable);
@@ -526,7 +743,8 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
             matches = statementRegExp.globalMatch(QString::fromUtf8(substitutionedLine));
             break;
         case QShaderNode::Function:
-            matches = temporaryVariableToAssignmentRegExp.globalMatch(QString::fromUtf8(substitutionedLine));
+            matches = temporaryVariableToAssignmentRegExp.globalMatch(
+                    QString::fromUtf8(substitutionedLine));
             break;
         case QShaderNode::Invalid:
             break;
@@ -606,7 +824,8 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
         if (v != nullptr) {
             Variable::substitute(v);
 
-            qCDebug(ShaderGenerator) << "Line " << lineContent.rawContent << "is assigned to temporary" << v->name;
+            qCDebug(ShaderGenerator)
+                    << "Line " << lineContent.rawContent << "is assigned to temporary" << v->name;
 
             // Check number of occurrences a temporary variable is referenced
             if (v->referenceCount == 1 || v->type == Variable::GlobalInput) {
@@ -615,9 +834,10 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
                 lineContent.rawContent.clear();
                 // We assume expression that were referencing vN will have vN properly substituted
             } else {
-                lineContent.rawContent = QStringLiteral("    %1 = %2;").arg(v->declaration)
-                                                                       .arg(v->assignment.expression)
-                                                                       .toUtf8();
+                lineContent.rawContent = QStringLiteral("    %1 = %2;")
+                                                 .arg(v->declaration)
+                                                 .arg(v->assignment.expression)
+                                                 .toUtf8();
             }
 
             qCDebug(ShaderGenerator) << "Updated Line is " << lineContent.rawContent;
@@ -636,5 +856,6 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
 
     return code.join('\n');
 }
+
 }
 QT_END_NAMESPACE

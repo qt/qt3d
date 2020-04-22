@@ -143,6 +143,11 @@ void QMetalRoughMaterialPrivate::init()
     m_metalRoughES3Technique->addRenderPass(m_metalRoughES3RenderPass);
     m_metalRoughEffect->addTechnique(m_metalRoughES3Technique);
 
+    // Given parameters a parent
+    m_baseColorMapParameter->setParent(m_metalRoughEffect);
+    m_metalnessMapParameter->setParent(m_metalRoughEffect);
+    m_roughnessMapParameter->setParent(m_metalRoughEffect);
+
     m_metalRoughEffect->addParameter(m_baseColorParameter);
     m_metalRoughEffect->addParameter(m_metalnessParameter);
     m_metalRoughEffect->addParameter(m_roughnessParameter);
@@ -338,11 +343,13 @@ void QMetalRoughMaterial::setBaseColor(const QVariant &baseColor)
         layers.removeAll(QStringLiteral("baseColor"));
         layers.append(QStringLiteral("baseColorMap"));
         d->m_metalRoughEffect->addParameter(d->m_baseColorMapParameter);
-        d->m_metalRoughEffect->removeParameter(d->m_baseColorParameter);
+        if (d->m_metalRoughEffect->parameters().contains(d->m_baseColorParameter))
+            d->m_metalRoughEffect->removeParameter(d->m_baseColorParameter);
     } else {
         layers.removeAll(QStringLiteral("baseColorMap"));
         layers.append(QStringLiteral("baseColor"));
-        d->m_metalRoughEffect->removeParameter(d->m_baseColorMapParameter);
+        if (d->m_metalRoughEffect->parameters().contains(d->m_baseColorMapParameter))
+            d->m_metalRoughEffect->removeParameter(d->m_baseColorMapParameter);
         d->m_metalRoughEffect->addParameter(d->m_baseColorParameter);
     }
     d->m_metalRoughGL3ShaderBuilder->setEnabledLayers(layers);
@@ -360,11 +367,13 @@ void QMetalRoughMaterial::setMetalness(const QVariant &metalness)
         layers.removeAll(QStringLiteral("metalness"));
         layers.append(QStringLiteral("metalnessMap"));
         d->m_metalRoughEffect->addParameter(d->m_metalnessMapParameter);
-        d->m_metalRoughEffect->removeParameter(d->m_metalnessParameter);
+        if (d->m_metalRoughEffect->parameters().contains(d->m_metalnessParameter))
+            d->m_metalRoughEffect->removeParameter(d->m_metalnessParameter);
     } else {
         layers.removeAll(QStringLiteral("metalnessMap"));
         layers.append(QStringLiteral("metalness"));
-        d->m_metalRoughEffect->removeParameter(d->m_metalnessMapParameter);
+        if (d->m_metalRoughEffect->parameters().contains(d->m_metalnessMapParameter))
+            d->m_metalRoughEffect->removeParameter(d->m_metalnessMapParameter);
         d->m_metalRoughEffect->addParameter(d->m_metalnessParameter);
     }
     d->m_metalRoughGL3ShaderBuilder->setEnabledLayers(layers);
@@ -382,11 +391,13 @@ void QMetalRoughMaterial::setRoughness(const QVariant &roughness)
         layers.removeAll(QStringLiteral("roughness"));
         layers.append(QStringLiteral("roughnessMap"));
         d->m_metalRoughEffect->addParameter(d->m_roughnessMapParameter);
-        d->m_metalRoughEffect->removeParameter(d->m_roughnessParameter);
+        if (d->m_metalRoughEffect->parameters().contains(d->m_roughnessParameter))
+            d->m_metalRoughEffect->removeParameter(d->m_roughnessParameter);
     } else {
         layers.removeAll(QStringLiteral("roughnessMap"));
         layers.append(QStringLiteral("roughness"));
-        d->m_metalRoughEffect->removeParameter(d->m_roughnessMapParameter);
+        if (d->m_metalRoughEffect->parameters().contains(d->m_roughnessMapParameter))
+            d->m_metalRoughEffect->removeParameter(d->m_roughnessMapParameter);
         d->m_metalRoughEffect->addParameter(d->m_roughnessParameter);
     }
     d->m_metalRoughGL3ShaderBuilder->setEnabledLayers(layers);
@@ -406,7 +417,8 @@ void QMetalRoughMaterial::setAmbientOcclusion(const QVariant &ambientOcclusion)
     } else {
         layers.removeAll(QStringLiteral("ambientOcclusionMap"));
         layers.append(QStringLiteral("ambientOcclusion"));
-        d->m_metalRoughEffect->removeParameter(d->m_ambientOcclusionMapParameter);
+        if (d->m_metalRoughEffect->parameters().contains(d->m_ambientOcclusionMapParameter))
+            d->m_metalRoughEffect->removeParameter(d->m_ambientOcclusionMapParameter);
     }
     d->m_metalRoughGL3ShaderBuilder->setEnabledLayers(layers);
     d->m_metalRoughES3ShaderBuilder->setEnabledLayers(layers);
@@ -425,7 +437,8 @@ void QMetalRoughMaterial::setNormal(const QVariant &normal)
     } else {
         layers.removeAll(QStringLiteral("normalMap"));
         layers.append(QStringLiteral("normal"));
-        d->m_metalRoughEffect->removeParameter(d->m_normalMapParameter);
+        if (d->m_metalRoughEffect->parameters().contains(d->m_normalMapParameter))
+            d->m_metalRoughEffect->removeParameter(d->m_normalMapParameter);
     }
     d->m_metalRoughGL3ShaderBuilder->setEnabledLayers(layers);
     d->m_metalRoughES3ShaderBuilder->setEnabledLayers(layers);

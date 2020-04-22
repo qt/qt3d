@@ -148,9 +148,10 @@ static Matrix4x4 getProjectionMatrix(const CameraLens *lens)
 }
 
 UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standardUniformType,
-                                              Entity *entity,
-                                              const Matrix4x4 &model) const
+                                              const Entity *entity) const
 {
+    const Matrix4x4 &model = *(entity->worldTransform());
+
     switch (standardUniformType) {
     case ModelMatrix:
         return UniformValue(model);
@@ -925,21 +926,16 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
 }
 
 void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack,
-                                         int glslNameId,
                                          int nameId,
-                                         Entity *entity,
-                                         const Matrix4x4 &worldTransform) const
+                                         const Entity *entity) const
 {
-    uniformPack.setUniform(glslNameId, standardUniformValue(ms_standardUniformSetters[nameId], entity, worldTransform));
+    uniformPack.setUniform(nameId, standardUniformValue(ms_standardUniformSetters[nameId], entity));
 }
 
 void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
-                                      GLShader *shader,
                                       const ShaderUniformBlock &block,
                                       const UniformValue &value) const
 {
-    Q_UNUSED(shader)
-
     if (value.valueType() == UniformValue::NodeId) {
 
         Buffer *buffer = nullptr;
@@ -955,11 +951,9 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
 }
 
 void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
-                                       GLShader *shader,
                                        const ShaderStorageBlock &block,
                                        const UniformValue &value) const
 {
-    Q_UNUSED(shader)
     if (value.valueType() == UniformValue::NodeId) {
         Buffer *buffer = nullptr;
         if ((buffer = m_manager->bufferManager()->lookupResource(*value.constData<Qt3DCore::QNodeId>())) != nullptr) {
@@ -973,7 +967,10 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
     }
 }
 
-void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, GLShader *shader, ShaderData *shaderData, const QString &structName) const
+void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
+                                                       const GLShader *shader,
+                                                       const ShaderData *shaderData,
+                                                       const QString &structName) const
 {
     UniformBlockValueBuilder *builder = m_localData.localData();
     builder->activeUniformNamesToValue.clear();
@@ -997,6 +994,42 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     }
 }
 
+void RenderView::applyParameter(const Parameter *param,
+                                RenderCommand *command,
+                                const GLShader *shader) const noexcept
+{
+    const int nameId = param->nameId();
+    const UniformValue &uniformValue = param->uniformValue();
+    const GLShader::ParameterKind kind = shader->categorizeVariable(nameId);
+
+    switch (kind) {
+    case GLShader::Uniform: {
+        setUniformValue(command->m_parameterPack, nameId, uniformValue);
+        break;
+    }
+    case GLShader::UBO: {
+        setUniformBlockValue(command->m_parameterPack, shader->uniformBlockForBlockNameId(nameId), uniformValue);
+        break;
+    }
+    case GLShader::SSBO: {
+        setShaderStorageValue(command->m_parameterPack, shader->storageBlockForBlockNameId(nameId), uniformValue);
+        break;
+    }
+    case GLShader::Struct: {
+        ShaderData *shaderData = nullptr;
+        if (uniformValue.valueType() == UniformValue::NodeId &&
+                (shaderData = m_manager->shaderDataManager()->lookupResource(*uniformValue.constData<Qt3DCore::QNodeId>())) != nullptr) {
+            // Try to check if we have a struct or array matching a QShaderData parameter
+            setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(nameId));
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+
 void RenderView::setShaderAndUniforms(RenderCommand *command,
                                       ParameterInfoList &parameters,
                                       Entity *entity,
@@ -1019,12 +1052,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
         // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
         // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
         // equals to the parameter name
-        const QVector<int> &uniformNamesIds = shader->uniformsNamesIds();
-        const QVector<int> &standardUniformNamesIds = shader->standardUniformNameIds();
-        const QVector<int> &lightUniformNamesIds = shader->lightUniformsNamesIds();
-        const QVector<int> &uniformBlockNamesIds = shader->uniformBlockNamesIds();
-        const QVector<int> &shaderStorageBlockNamesIds = shader->storageBlockNamesIds();
-        const QVector<int> &attributeNamesIds = shader->attributeNamesIds();
 
         // Set fragData Name and index
         // Later on we might want to relink the shader if attachments have changed
@@ -1042,56 +1069,32 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
         }
 
         // Set default attributes
-        command->m_activeAttributes = attributeNamesIds;
+        command->m_activeAttributes = shader->attributeNamesIds();
 
         // At this point we know whether the command is a valid draw command or not
         // We still need to process the uniforms as the command could be a compute command
         command->m_isValid = !command->m_activeAttributes.empty();
 
-        if (!uniformNamesIds.isEmpty() || !standardUniformNamesIds.isEmpty() ||
-            !attributeNamesIds.isEmpty() || !lightUniformNamesIds.isEmpty() ||
-            !shaderStorageBlockNamesIds.isEmpty() || command->m_isValid) {
-
-            // Set default standard uniforms without bindings
-            const Matrix4x4 worldTransform = *(entity->worldTransform());
+        if (shader->hasActiveVariables()) {
 
             // Reserve amount of uniforms we are going to need
-            command->m_parameterPack.reserve(uniformNamesIds.size() + standardUniformNamesIds.size() + lightUniformNamesIds.size() + uniformBlockNamesIds.size() + shaderStorageBlockNamesIds.size());
+            command->m_parameterPack.reserve(shader->parameterPackSize());
 
+            const QVector<int> &standardUniformNamesIds = shader->standardUniformNameIds();
             for (const int uniformNameId : standardUniformNamesIds)
-                setStandardUniformValue(command->m_parameterPack, uniformNameId, uniformNameId, entity, worldTransform);
-
-            // Parameters remaining could be
-            // -> uniform scalar / vector
-            // -> uniform struct / arrays
-            // -> uniform block / array (4.3)
-            // -> ssbo block / array (4.3)
+                setStandardUniformValue(command->m_parameterPack, uniformNameId, entity);
 
             ParameterInfoList::const_iterator it = parameters.cbegin();
             const ParameterInfoList::const_iterator parametersEnd = parameters.cend();
 
             while (it != parametersEnd) {
-                Parameter *param = m_manager->data<Parameter, ParameterManager>(it->handle);
-                const UniformValue &uniformValue = param->uniformValue();
-                if (uniformNamesIds.contains(it->nameId)) { // Parameter is a regular uniform
-                    setUniformValue(command->m_parameterPack, it->nameId, uniformValue);
-                } else if (uniformBlockNamesIds.indexOf(it->nameId) != -1) { // Parameter is a uniform block
-                    setUniformBlockValue(command->m_parameterPack, shader, shader->uniformBlockForBlockNameId(it->nameId), uniformValue);
-                } else if (shaderStorageBlockNamesIds.indexOf(it->nameId) != -1) { // Parameters is a SSBO
-                    setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(it->nameId), uniformValue);
-                } else { // Parameter is a struct
-                    ShaderData *shaderData = nullptr;
-                    if (uniformValue.valueType() == UniformValue::NodeId &&
-                            (shaderData = m_manager->shaderDataManager()->lookupResource(*uniformValue.constData<Qt3DCore::QNodeId>())) != nullptr) {
-                        // Try to check if we have a struct or array matching a QShaderData parameter
-                        setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(it->nameId));
-                    }
-                    // Otherwise: param unused by current shader
-                }
+                const Parameter *param = m_manager->data<Parameter, ParameterManager>(it->handle);
+                applyParameter(param, command, shader);
                 ++it;
             }
 
             // Lights
+            const QVector<int> &lightUniformNamesIds = shader->lightUniformsNamesIds();
             if (!lightUniformNamesIds.empty()) {
                 int lightIdx = 0;
                 for (const LightSource &lightSource : activeLightSources) {
@@ -1174,6 +1177,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
             }
             setUniformValue(command->m_parameterPack, StringToInt::lookupId(QStringLiteral("envLightCount")), envLightCount);
         }
+
+        // Prepare the ShaderParameterPack based on the active uniforms of the shader
+        shader->prepareUniforms(command->m_parameterPack);
     }
 }
 

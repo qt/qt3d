@@ -107,12 +107,6 @@ int LIGHT_COLOR_NAMES[MAX_LIGHTS];
 int LIGHT_INTENSITY_NAMES[MAX_LIGHTS];
 QString LIGHT_STRUCT_NAMES[MAX_LIGHTS];
 
-int LIGHT_POSITION_UNROLL_NAMES[MAX_LIGHTS];
-int LIGHT_TYPE_UNROLL_NAMES[MAX_LIGHTS];
-int LIGHT_COLOR_UNROLL_NAMES[MAX_LIGHTS];
-int LIGHT_INTENSITY_UNROLL_NAMES[MAX_LIGHTS];
-QString LIGHT_STRUCT_UNROLL_NAMES[MAX_LIGHTS];
-
 std::atomic_bool wasInitialized{};
 
 } // anonymous namespace
@@ -161,11 +155,30 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
                   fractionalViewport.height() * surfaceSize.height());
 }
 
-static Matrix4x4 getProjectionMatrix(const CameraLens *lens)
+static Matrix4x4 getProjectionMatrix(const CameraLens *lens, bool yIsUp)
 {
     if (!lens)
         qWarning() << "[Qt3D Renderer] No Camera Lens found. Add a CameraSelector to your Frame Graph or make sure that no entities will be rendered.";
-    return lens ? lens->projection() : Matrix4x4();
+    if (lens)
+    {
+        if (yIsUp)
+        {
+            // OpenGL
+            return lens->projection();
+        }
+        else
+        {
+            // Others. Note : this could likely be optimized...
+            auto p = lens->projection();
+            Matrix4x4 rev{0, 0, 0, 0, 0, - 2* p.m22(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            p += rev;
+            return p;
+        }
+    }
+    else
+    {
+        return Matrix4x4();
+    }
 }
 
 RenderView::RenderView()
@@ -202,12 +215,6 @@ RenderView::RenderView()
             LIGHT_TYPE_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_NAMES[i] + LIGHT_TYPE_NAME);
             LIGHT_COLOR_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_NAMES[i] + LIGHT_COLOR_NAME);
             LIGHT_INTENSITY_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_NAMES[i] + LIGHT_INTENSITY_NAME);
-
-            LIGHT_STRUCT_UNROLL_NAMES[i] = QLatin1String("light_") + QLatin1Char(char('0' + i));
-            LIGHT_POSITION_UNROLL_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_UNROLL_NAMES[i] + LIGHT_POSITION_NAME);
-            LIGHT_TYPE_UNROLL_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_UNROLL_NAMES[i] + LIGHT_TYPE_NAME);
-            LIGHT_COLOR_UNROLL_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_UNROLL_NAMES[i] + LIGHT_COLOR_NAME);
-            LIGHT_INTENSITY_UNROLL_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_UNROLL_NAMES[i] + LIGHT_INTENSITY_NAME);
         }
     }
 }
@@ -363,6 +370,7 @@ struct SubRangeSorter<QSortPolicy::Texture>
 {
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
+#ifndef Q_OS_WIN
         std::stable_sort(begin, end, [] (const RenderCommand &a, const RenderCommand &b) {
             QVector<ShaderParameterPack::NamedResource> texturesA = a.m_parameterPack.textures();
             QVector<ShaderParameterPack::NamedResource> texturesB = b.m_parameterPack.textures();
@@ -381,6 +389,7 @@ struct SubRangeSorter<QSortPolicy::Texture>
 
             return identicalTextureCount < originalTextureASize;
         });
+#endif
     }
 };
 
@@ -583,6 +592,9 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
             HGeometry geometryHandle = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
             Geometry *geometry = m_manager->geometryManager()->data(geometryHandle);
 
+            if (geometry == nullptr)
+                continue;
+
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
             for (const RenderPassParameterData &passData : renderPassData) {
                 // Add the RenderPass Parameters
@@ -765,9 +777,10 @@ void RenderView::updateRenderCommand(EntityRenderCommandData *renderCommandData,
     m_localData.setLocalData(builder);
 
     // Update RenderViewUBO (Qt3D standard uniforms)
-    const Matrix4x4 projectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens);
+    const bool yIsUp = m_renderer->submissionContext()->rhi()->isYUpInFramebuffer();
+    const Matrix4x4 projectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens, yIsUp);
     const Matrix4x4 inverseViewMatrix = m_data.m_viewMatrix.inverted();
-    const Matrix4x4 inversedProjectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens).inverted();
+    const Matrix4x4 inversedProjectionMatrix = projectionMatrix.inverted();
     const Matrix4x4 viewProjectionMatrix = (projectionMatrix * m_data.m_viewMatrix);
     const Matrix4x4 inversedViewProjectionMatrix = viewProjectionMatrix.inverted();
     {
@@ -1099,11 +1112,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                     setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
 
-                    setUniformValue(command->m_parameterPack, LIGHT_POSITION_UNROLL_NAMES[lightIdx], worldPos);
-                    setUniformValue(command->m_parameterPack, LIGHT_TYPE_UNROLL_NAMES[lightIdx], int(QAbstractLight::PointLight));
-                    setUniformValue(command->m_parameterPack, LIGHT_COLOR_UNROLL_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
-                    setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_UNROLL_NAMES[lightIdx], 0.5f);
-
 
                     // There is no risk in doing that even if multithreaded
                     // since we are sure that a shaderData is unique for a given light
@@ -1113,7 +1121,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                         shaderData->updateWorldTransform(*worldTransform);
 
                     setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, LIGHT_STRUCT_NAMES[lightIdx]);
-                    setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, LIGHT_STRUCT_UNROLL_NAMES[lightIdx]);
                     ++lightIdx;
                 }
             }
@@ -1128,11 +1135,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
                 setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
                 setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[0], 0.5f);
-
-                setUniformValue(command->m_parameterPack, LIGHT_POSITION_UNROLL_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
-                setUniformValue(command->m_parameterPack, LIGHT_TYPE_UNROLL_NAMES[0], int(QAbstractLight::PointLight));
-                setUniformValue(command->m_parameterPack, LIGHT_COLOR_UNROLL_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
-                setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_UNROLL_NAMES[0], 0.5f);
             }
 
             // Environment Light

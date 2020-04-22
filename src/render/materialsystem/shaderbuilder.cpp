@@ -246,7 +246,8 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
     generator.graph = graph;
 
     const auto code = generator.createShaderCode(m_enabledLayers);
-    m_codes.insert(type, QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl")));
+    const auto deincludified = QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl"));
+    m_codes.insert(type, deincludified);
     m_dirtyTypes.remove(type);
 
     m_pendingUpdates.push_back({ peerId(),
@@ -278,7 +279,7 @@ void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         markDirty(AbstractRenderer::ShadersDirty);
     }
 
-    static const QVector<std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const>> shaderTypesToGetters = {
+    static const QVarLengthArray<std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const>, 6> shaderTypesToGetters {
         {QShaderProgram::Vertex, &QShaderProgramBuilder::vertexShaderGraph},
         {QShaderProgram::TessellationControl, &QShaderProgramBuilder::tessellationControlShaderGraph},
         {QShaderProgram::TessellationEvaluation, &QShaderProgramBuilder::tessellationEvaluationShaderGraph},

@@ -162,7 +162,7 @@ ShaderData *ShaderData::lookupResource(QNodeId id)
 }
 
 // RenderCommand updater jobs
-QVariant ShaderData::getTransformedProperty(const QString &name, const Matrix4x4 &viewMatrix)
+QVariant ShaderData::getTransformedProperty(const QString &name, const Matrix4x4 &viewMatrix) const
 {
     // Note protecting m_worldMatrix at this point as we assume all world updates
     // have been performed when reaching this point
