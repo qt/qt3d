@@ -40,6 +40,7 @@
 #ifndef QT3DRENDER_VULKANINSTANCE_P_H
 #define QT3DRENDER_VULKANINSTANCE_P_H
 
+#include <QtGui/qtguiglobal.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 QT_BEGIN_NAMESPACE
 #if QT_CONFIG(vulkan)
