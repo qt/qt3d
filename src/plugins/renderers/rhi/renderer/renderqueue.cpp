@@ -50,11 +50,11 @@ namespace Render {
 namespace Rhi {
 
 RenderQueue::RenderQueue()
-    : m_noRender(false)
-    , m_wasReset(true)
-    , m_targetRenderViewCount(0)
-    , m_currentRenderViewCount(0)
-    , m_currentWorkQueue(1)
+    : m_noRender(false),
+      m_wasReset(true),
+      m_targetRenderViewCount(0),
+      m_currentRenderViewCount(0),
+      m_currentWorkQueue(1)
 {
 }
 
@@ -125,7 +125,8 @@ void RenderQueue::setTargetRenderViewCount(int targetRenderViewCount)
 bool RenderQueue::isFrameQueueComplete() const
 {
     return (m_noRender
-            || (m_targetRenderViewCount > 0 && m_targetRenderViewCount == m_currentRenderViewCount));
+            || (m_targetRenderViewCount > 0
+                && m_targetRenderViewCount == m_currentRenderViewCount));
 }
 
 } // namespace Rhi

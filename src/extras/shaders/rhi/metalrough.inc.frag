@@ -48,11 +48,6 @@
 **
 ****************************************************************************/
 
-// Exposure correction
-uniform float exposure = 0.0;
-// Gamma correction
-uniform float gamma = 2.2;
-
 #pragma include light.inc.frag
 
 int mipLevelCount(const in samplerCube cube)

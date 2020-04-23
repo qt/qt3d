@@ -94,13 +94,17 @@ class QDiffuseMapMaterialPrivate : public Qt3DRender::QMaterialPrivate
     Qt3DRender::QTechnique *m_diffuseMapGL3Technique;
     Qt3DRender::QTechnique *m_diffuseMapGL2Technique;
     Qt3DRender::QTechnique *m_diffuseMapES2Technique;
+    Qt3DRender::QTechnique *m_diffuseMapRHITechnique;
     Qt3DRender::QRenderPass *m_diffuseMapGL3RenderPass;
     Qt3DRender::QRenderPass *m_diffuseMapGL2RenderPass;
     Qt3DRender::QRenderPass *m_diffuseMapES2RenderPass;
+    Qt3DRender::QRenderPass *m_diffuseMapRHIRenderPass;
     Qt3DRender::QShaderProgram *m_diffuseMapGL3Shader;
     Qt3DRender::QShaderProgramBuilder *m_diffuseMapGL3ShaderBuilder;
     Qt3DRender::QShaderProgram *m_diffuseMapGL2ES2Shader;
     Qt3DRender::QShaderProgramBuilder *m_diffuseMapGL2ES2ShaderBuilder;
+    Qt3DRender::QShaderProgram *m_diffuseMapRHIShader;
+    Qt3DRender::QShaderProgramBuilder *m_diffuseMapRHIShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QDiffuseMapMaterial)

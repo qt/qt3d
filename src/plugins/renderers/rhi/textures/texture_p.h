@@ -107,23 +107,25 @@ public:
 
     enum DirtyFlag {
         None = 0,
-        TextureData  = (1 << 0),     // texture data needs uploading to GPU
-        Properties   = (1 << 1),     // texture needs to be (re-)created
-        Parameters   = (1 << 2),     // texture parameters need to be (re-)set
-        SharedTextureId = (1 << 3),  // texture id from shared context
-        TextureImageData = (1 << 4)  // texture image data needs uploading
+        TextureData = (1 << 0), // texture data needs uploading to GPU
+        Properties = (1 << 1), // texture needs to be (re-)created
+        Parameters = (1 << 2), // texture parameters need to be (re-)set
+        SharedTextureId = (1 << 3), // texture id from shared context
+        TextureImageData = (1 << 4) // texture image data needs uploading
     };
 
     /**
      * Helper class to hold the defining properties of TextureImages
      */
-    struct Image {
+    struct Image
+    {
         QTextureImageDataGeneratorPtr generator;
         int layer;
         int mipLevel;
         QAbstractTexture::CubeMapFace face;
 
-        inline bool operator==(const Image &o) const {
+        inline bool operator==(const Image &o) const
+        {
             bool sameGenerators = (generator == o.generator)
                     || (!generator.isNull() && !o.generator.isNull() && *generator == *o.generator);
             return sameGenerators && layer == o.layer && mipLevel == o.mipLevel && face == o.face;
@@ -167,41 +169,25 @@ public:
      */
     RenderBuffer *getOrCreateRenderBuffer();
 
-
     void destroy();
 
     void cleanup();
 
-    bool isDirty() const
-    {
-        return m_dirtyFlags != None;
-    }
+    bool isDirty() const { return m_dirtyFlags != None; }
 
     bool hasTextureData() const { return !m_textureData.isNull(); }
     bool hasImagesData() const { return !m_imageData.isEmpty(); }
 
     QFlags<DirtyFlag> dirtyFlags() const { return m_dirtyFlags; }
 
-    QMutex *externalRenderingLock()
-    {
-        return &m_externalRenderingMutex;
-    }
+    QMutex *externalRenderingLock() { return &m_externalRenderingMutex; }
 
-    void setExternalRenderingEnabled(bool enable)
-    {
-        m_externalRendering = enable;
-    }
+    void setExternalRenderingEnabled(bool enable) { m_externalRendering = enable; }
 
-    bool isExternalRenderingEnabled() const
-    {
-        return m_externalRendering;
-    }
+    bool isExternalRenderingEnabled() const { return m_externalRendering; }
 
     // Purely for unit testing purposes
-    bool wasTextureRecreated() const
-    {
-        return m_wasTextureRecreated;
-    }
+    bool wasTextureRecreated() const { return m_wasTextureRecreated; }
 
     void setParameters(const TextureParameters &params);
     void setProperties(const TextureProperties &props);
@@ -214,25 +200,13 @@ public:
     QTextureGeneratorPtr dataGenerator() const { return m_dataFunctor; }
 
 private:
-    void requestImageUpload()
-    {
-        m_dirtyFlags |= TextureImageData;
-    }
+    void requestImageUpload() { m_dirtyFlags |= TextureImageData; }
 
-    void requestUpload()
-    {
-        m_dirtyFlags |= TextureData;
-    }
+    void requestUpload() { m_dirtyFlags |= TextureData; }
 
-    bool testDirtyFlag(DirtyFlag flag)
-    {
-        return m_dirtyFlags.testFlag(flag);
-    }
+    bool testDirtyFlag(DirtyFlag flag) { return m_dirtyFlags.testFlag(flag); }
 
-    void setDirtyFlag(DirtyFlag flag, bool value = true)
-    {
-        m_dirtyFlags.setFlag(flag, value);
-    }
+    void setDirtyFlag(DirtyFlag flag, bool value = true) { m_dirtyFlags.setFlag(flag, value); }
 
     QRhiTexture *buildRhiTexture(SubmissionContext *ctx);
     bool loadTextureDataFromGenerator();

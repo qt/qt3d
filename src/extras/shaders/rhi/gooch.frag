@@ -1,22 +1,70 @@
-#version 150 core
+#version 450
 
-// TODO: Replace with a struct
-uniform vec3 kd;            // Diffuse reflectivity
-uniform vec3 ks;            // Specular reflectivity
-uniform vec3 kblue;         // Cool color
-uniform vec3 kyellow;       // Warm color
-uniform float alpha;        // Fraction of diffuse added to kblue
-uniform float beta;         // Fraction of diffuse added to kyellow
-uniform float shininess;    // Specular shininess factor
+layout(location = 0) in vec3 worldPosition;
+layout(location = 1) in vec3 worldNormal;
 
-uniform vec3 eyePosition;
+layout(location = 0) out vec4 fragColor;
 
-in vec3 worldPosition;
-in vec3 worldNormal;
+layout(std140, binding = 0) uniform qt3d_render_view_uniforms {
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  mat4 viewProjectionMatrix;
+  mat4 inverseViewMatrix;
+  mat4 inverseProjectionMatrix;
+  mat4 inverseViewProjectionMatrix;
+  mat4 viewportMatrix;
+  mat4 inverseViewportMatrix;
+  vec4 textureTransformMatrix;
+  vec3 eyePosition;
+  float aspectRatio;
+  float gamma;
+  float exposure;
+  float time;
+};
 
-out vec4 fragColor;
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+  mat4 modelMatrix;
+  mat4 inverseModelMatrix;
+  mat4 modelViewMatrix;
+  mat3 modelNormalMatrix;
+  mat4 inverseModelViewMatrix;
+  mat4 mvp;
+  mat4 inverseModelViewProjectionMatrix;
+};
 
-#pragma include light.inc.frag
+layout(std140, binding = 2) uniform qt3d_custom_uniforms {
+  vec3 kd;            // Diffuse reflectivity
+  vec3 ks;            // Specular reflectivity
+  vec3 kblue;         // Cool color
+  vec3 kyellow;       // Warm color
+  float alpha;        // Fraction of diffuse added to kblue
+  float beta;         // Fraction of diffuse added to kyellow
+  float shininess;    // Specular shininess factor
+};
+
+const int MAX_LIGHTS = 8;
+const int TYPE_POINT = 0;
+const int TYPE_DIRECTIONAL = 1;
+const int TYPE_SPOT = 2;
+
+struct Light {
+    int type;
+    vec3 position;
+    vec3 color;
+    float intensity;
+    vec3 direction;
+    float constantAttenuation;
+    float linearAttenuation;
+    float quadraticAttenuation;
+    float cutOffAngle;
+};
+
+layout(std140, binding = 3) uniform qt3d_light_uniforms {
+  uniform Light lights[MAX_LIGHTS];
+  uniform int lightCount;
+  uniform int envLightCount;
+};
+
 
 vec3 goochModel( const in vec3 pos, const in vec3 n )
 {

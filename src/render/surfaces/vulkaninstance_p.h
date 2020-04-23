@@ -3,7 +3,7 @@
 ** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
@@ -37,45 +37,19 @@
 **
 ****************************************************************************/
 
-#include "rhigraphicspipeline_p.h"
+#ifndef QT3DRENDER_VULKANINSTANCE_P_H
+#define QT3DRENDER_VULKANINSTANCE_P_H
 
+#include <QtGui/qtguiglobal.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 QT_BEGIN_NAMESPACE
-
+#if QT_CONFIG(vulkan)
+class QVulkanInstance;
 namespace Qt3DRender {
-
-namespace Render {
-
-namespace Rhi {
-
-RHIGraphicsPipeline::RHIGraphicsPipeline()
-    : m_rvUbo(nullptr),
-      m_cmdUbo(nullptr),
-      m_pipeline(nullptr),
-      m_shaderResourceBindings(nullptr),
-      m_score(0)
-{
-}
-
-RHIGraphicsPipeline::~RHIGraphicsPipeline() { }
-
-void RHIGraphicsPipeline::cleanup()
-{
-    delete m_shaderResourceBindings;
-    delete m_rvUbo;
-    delete m_cmdUbo;
-    delete m_pipeline;
-    m_rvUbo = nullptr;
-    m_cmdUbo = nullptr;
-    m_pipeline = nullptr;
-    m_shaderResourceBindings = nullptr;
-    m_ubos.clear();
-    m_attributeNameIdToBindingIndex.clear();
-}
-
-} // Rhi
-
-} // Render
-
+Q_3DRENDERSHARED_PRIVATE_EXPORT
+QVulkanInstance& staticVulkanInstance() noexcept;
 } // Qt3DRender
-
+#endif
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_VULKANINSTANCE_P_H

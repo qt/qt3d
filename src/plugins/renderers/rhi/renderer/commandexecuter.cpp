@@ -251,21 +251,22 @@ QJsonObject parameterPackToJson(const Render::Rhi::ShaderParameterPack &pack) no
     QJsonArray uniformsArray;
     for (int i = 0, m = uniforms.keys.size(); i < m; ++i) {
         QJsonObject uniformObj;
-        uniformObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(uniforms.keys.at(i)));
+        uniformObj.insert(QLatin1String("name"),
+                          Render::StringToInt::lookupString(uniforms.keys.at(i)));
         const Render::UniformValue::ValueType type = uniforms.values.at(i).valueType();
         uniformObj.insert(QLatin1String("type"),
-                          type == Render::UniformValue::ScalarValue
-                          ? QLatin1String("value")
-                          : QLatin1String("texture"));
+                          type == Render::UniformValue::ScalarValue ? QLatin1String("value")
+                                                                    : QLatin1String("texture"));
         uniformsArray.push_back(uniformObj);
     }
     obj.insert(QLatin1String("uniforms"), uniformsArray);
 
     QJsonArray texturesArray;
     const QVector<Render::Rhi::ShaderParameterPack::NamedResource> &textures = pack.textures();
-    for (const auto & texture : textures) {
+    for (const auto &texture : textures) {
         QJsonObject textureObj;
-        textureObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(texture.glslNameId));
+        textureObj.insert(QLatin1String("name"),
+                          Render::StringToInt::lookupString(texture.glslNameId));
         textureObj.insert(QLatin1String("id"), qint64(texture.nodeId.id()));
         texturesArray.push_back(textureObj);
     }
@@ -278,7 +279,6 @@ QJsonObject parameterPackToJson(const Render::Rhi::ShaderParameterPack &pack) no
         uboObj.insert(QLatin1String("index"), ubo.m_blockIndex);
         uboObj.insert(QLatin1String("bufferId"), qint64(ubo.m_bufferID.id()));
         ubosArray.push_back(uboObj);
-
     }
     obj.insert(QLatin1String("ubos"), ubosArray);
 
@@ -297,93 +297,99 @@ QJsonObject parameterPackToJson(const Render::Rhi::ShaderParameterPack &pack) no
 
 } // anonymous
 
-CommandExecuter::CommandExecuter(Render::Rhi::Renderer *renderer)
-    : m_renderer(renderer)
-{
-}
+CommandExecuter::CommandExecuter(Render::Rhi::Renderer *renderer) : m_renderer(renderer) { }
 
 // Render thread
-void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::Rhi::RenderView *> &views)
+void CommandExecuter::performAsynchronousCommandExecution(
+        const QVector<Render::Rhi::RenderView *> &views)
 {
     RHI_UNIMPLEMENTED;
-//*    QMutexLocker lock(&m_pendingCommandsMutex);
-//*    const QVector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands = std::move(m_pendingCommands);
-//*    lock.unlock();
-//*
-//*    for (auto *reply : shellCommands) {
-//*        if (reply->commandName() == QLatin1String("glinfo")) {
-//*            QJsonObject replyObj;
-//*            const GraphicsApiFilterData *contextInfo = m_renderer->submissionContext()->contextInfo();
-//*            if (contextInfo != nullptr) {
-//*                replyObj.insert(QLatin1String("api"),
-//*                                contextInfo->m_api == QGraphicsApiFilter::OpenGL
-//*                                ? QLatin1String("OpenGL")
-//*                                : QLatin1String("OpenGLES"));
-//*                const QString versionString =
-//*                        QString::number(contextInfo->m_major)
-//*                        + QStringLiteral(".")
-//*                        + QString::number(contextInfo->m_minor);
-//*                replyObj.insert(QLatin1String("version"), versionString);
-//*                replyObj.insert(QLatin1String("profile"),
-//*                                contextInfo->m_profile == QGraphicsApiFilter::CoreProfile
-//*                                ? QLatin1String("Core")
-//*                                : contextInfo->m_profile == QGraphicsApiFilter::CompatibilityProfile
-//*                                  ? QLatin1String("Compatibility")
-//*                                  : QLatin1String("None"));
-//*            }
-//*            reply->setData(QJsonDocument(replyObj).toJson());
-//*        } else if (reply->commandName() == QLatin1String("rendercommands")) {
-//*            QJsonObject replyObj;
-//*
-//*            QJsonArray viewArray;
-//*            for (Render::Rhi::RenderView *v : views) {
-//*                QJsonObject viewObj;
-//*                viewObj.insert(QLatin1String("viewport"), typeToJsonValue(v->viewport()));
-//*                viewObj.insert(QLatin1String("surfaceSize"), typeToJsonValue(v->surfaceSize()));
-//*                viewObj.insert(QLatin1String("devicePixelRatio"), v->devicePixelRatio());
-//*                viewObj.insert(QLatin1String("noDraw"), v->noDraw());
-//*                viewObj.insert(QLatin1String("frustumCulling"), v->frustumCulling());
-//*                viewObj.insert(QLatin1String("compute"), v->isCompute());
-//*                viewObj.insert(QLatin1String("clearDepthValue"), v->clearDepthValue());
-//*                viewObj.insert(QLatin1String("clearStencilValue"), v->clearStencilValue());
-//*
-//*                QJsonArray renderCommandsArray;
-//*                for (Render::Rhi::RenderCommand &c : v->commands()) {
-//*                    QJsonObject commandObj;
-//*                    Render::NodeManagers *nodeManagers = m_renderer->nodeManagers();
-//*                    commandObj.insert(QLatin1String("shader"), typeToJsonValue(QVariant::fromValue(c.m_shaderId)));
-//*                    commandObj.insert(QLatin1String("vao"),  double(c.m_vao.handle()));
-//*                    commandObj.insert(QLatin1String("instanceCount"), c.m_instanceCount);
-//*                    commandObj.insert(QLatin1String("geometry"),  backendNodeToJSon(c.m_geometry, nodeManagers->geometryManager()));
-//*                    commandObj.insert(QLatin1String("geometryRenderer"),  backendNodeToJSon(c.m_geometryRenderer, nodeManagers->geometryRendererManager()));
-//*                    commandObj.insert(QLatin1String("shaderParameterPack"), parameterPackToJson(c.m_parameterPack));
-//*
-//*                    renderCommandsArray.push_back(commandObj);
-//*                }
-//*                viewObj.insert(QLatin1String("commands"), renderCommandsArray);
-//*                viewArray.push_back(viewObj);
-//*            }
-//*
-//*            replyObj.insert(QLatin1String("renderViews"), viewArray);
-//*            reply->setData(QJsonDocument(replyObj).toJson());
-//*        }
-//*        reply->setFinished(true);
-//*    }
+    //*    QMutexLocker lock(&m_pendingCommandsMutex);
+    //*    const QVector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands =
+    //std::move(m_pendingCommands);
+    //*    lock.unlock();
+    //*
+    //*    for (auto *reply : shellCommands) {
+    //*        if (reply->commandName() == QLatin1String("glinfo")) {
+    //*            QJsonObject replyObj;
+    //*            const GraphicsApiFilterData *contextInfo =
+    //m_renderer->submissionContext()->contextInfo();
+    //*            if (contextInfo != nullptr) {
+    //*                replyObj.insert(QLatin1String("api"),
+    //*                                contextInfo->m_api == QGraphicsApiFilter::OpenGL
+    //*                                ? QLatin1String("OpenGL")
+    //*                                : QLatin1String("OpenGLES"));
+    //*                const QString versionString =
+    //*                        QString::number(contextInfo->m_major)
+    //*                        + QStringLiteral(".")
+    //*                        + QString::number(contextInfo->m_minor);
+    //*                replyObj.insert(QLatin1String("version"), versionString);
+    //*                replyObj.insert(QLatin1String("profile"),
+    //*                                contextInfo->m_profile == QGraphicsApiFilter::CoreProfile
+    //*                                ? QLatin1String("Core")
+    //*                                : contextInfo->m_profile ==
+    //QGraphicsApiFilter::CompatibilityProfile
+    //*                                  ? QLatin1String("Compatibility")
+    //*                                  : QLatin1String("None"));
+    //*            }
+    //*            reply->setData(QJsonDocument(replyObj).toJson());
+    //*        } else if (reply->commandName() == QLatin1String("rendercommands")) {
+    //*            QJsonObject replyObj;
+    //*
+    //*            QJsonArray viewArray;
+    //*            for (Render::Rhi::RenderView *v : views) {
+    //*                QJsonObject viewObj;
+    //*                viewObj.insert(QLatin1String("viewport"), typeToJsonValue(v->viewport()));
+    //*                viewObj.insert(QLatin1String("surfaceSize"),
+    //typeToJsonValue(v->surfaceSize()));
+    //*                viewObj.insert(QLatin1String("devicePixelRatio"), v->devicePixelRatio());
+    //*                viewObj.insert(QLatin1String("noDraw"), v->noDraw());
+    //*                viewObj.insert(QLatin1String("frustumCulling"), v->frustumCulling());
+    //*                viewObj.insert(QLatin1String("compute"), v->isCompute());
+    //*                viewObj.insert(QLatin1String("clearDepthValue"), v->clearDepthValue());
+    //*                viewObj.insert(QLatin1String("clearStencilValue"), v->clearStencilValue());
+    //*
+    //*                QJsonArray renderCommandsArray;
+    //*                for (Render::Rhi::RenderCommand &c : v->commands()) {
+    //*                    QJsonObject commandObj;
+    //*                    Render::NodeManagers *nodeManagers = m_renderer->nodeManagers();
+    //*                    commandObj.insert(QLatin1String("shader"),
+    //typeToJsonValue(QVariant::fromValue(c.m_shaderId)));
+    //*                    commandObj.insert(QLatin1String("vao"),  double(c.m_vao.handle()));
+    //*                    commandObj.insert(QLatin1String("instanceCount"), c.m_instanceCount);
+    //*                    commandObj.insert(QLatin1String("geometry"),
+    //backendNodeToJSon(c.m_geometry, nodeManagers->geometryManager()));
+    //*                    commandObj.insert(QLatin1String("geometryRenderer"),
+    //backendNodeToJSon(c.m_geometryRenderer, nodeManagers->geometryRendererManager()));
+    //*                    commandObj.insert(QLatin1String("shaderParameterPack"),
+    //parameterPackToJson(c.m_parameterPack));
+    //*
+    //*                    renderCommandsArray.push_back(commandObj);
+    //*                }
+    //*                viewObj.insert(QLatin1String("commands"), renderCommandsArray);
+    //*                viewArray.push_back(viewObj);
+    //*            }
+    //*
+    //*            replyObj.insert(QLatin1String("renderViews"), viewArray);
+    //*            reply->setData(QJsonDocument(replyObj).toJson());
+    //*        }
+    //*        reply->setFinished(true);
+    //*    }
 }
 
 // Main thread
 QVariant CommandExecuter::executeCommand(const QStringList &args)
 {
     RHI_UNIMPLEMENTED;
-//*    // Note: The replies will be deleted by the AspectCommandDebugger
-//*    if (args.length() > 0 &&
-//*            (args.first() == QLatin1String("glinfo") ||
-//*             args.first() == QLatin1String("rendercommands"))) {
-//*        auto reply = new Qt3DCore::Debug::AsynchronousCommandReply(args.first());
-//*        QMutexLocker lock(&m_pendingCommandsMutex);
-//*        m_pendingCommands.push_back(reply);
-//*        return QVariant::fromValue(reply);
-//*    }
+    //*    // Note: The replies will be deleted by the AspectCommandDebugger
+    //*    if (args.length() > 0 &&
+    //*            (args.first() == QLatin1String("glinfo") ||
+    //*             args.first() == QLatin1String("rendercommands"))) {
+    //*        auto reply = new Qt3DCore::Debug::AsynchronousCommandReply(args.first());
+    //*        QMutexLocker lock(&m_pendingCommandsMutex);
+    //*        m_pendingCommands.push_back(reply);
+    //*        return QVariant::fromValue(reply);
+    //*    }
     return QVariant();
 }
 

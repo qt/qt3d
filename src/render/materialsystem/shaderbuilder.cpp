@@ -234,6 +234,8 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
 
     auto format = QShaderFormat();
     format.setApi(m_graphicsApi.m_api == QGraphicsApiFilter::OpenGLES ? QShaderFormat::OpenGLES
+                : m_graphicsApi.m_api == QGraphicsApiFilter::Vulkan ? QShaderFormat::VulkanFlavoredGLSL
+                : m_graphicsApi.m_api == QGraphicsApiFilter::RHI ? QShaderFormat::RHI
                 : m_graphicsApi.m_profile == QGraphicsApiFilter::CoreProfile ? QShaderFormat::OpenGLCoreProfile
                 : m_graphicsApi.m_profile == QGraphicsApiFilter::CompatibilityProfile ? QShaderFormat::OpenGLCompatibilityProfile
                 : QShaderFormat::OpenGLNoProfile);

@@ -68,17 +68,13 @@ namespace Render {
 
 namespace Rhi {
 
-class Q_AUTOTEST_EXPORT RHIBufferManager : public Qt3DCore::QResourceManager<
-        RHIBuffer,
-        Qt3DCore::QNodeId,
-        Qt3DCore::NonLockingPolicy>
+class Q_AUTOTEST_EXPORT RHIBufferManager
+    : public Qt3DCore::QResourceManager<RHIBuffer, Qt3DCore::QNodeId, Qt3DCore::NonLockingPolicy>
 {
 };
 
-class Q_AUTOTEST_EXPORT RHITextureManager : public Qt3DCore::QResourceManager<
-        RHITexture,
-        Qt3DCore::QNodeId,
-        Qt3DCore::NonLockingPolicy>
+class Q_AUTOTEST_EXPORT RHITextureManager
+    : public Qt3DCore::QResourceManager<RHITexture, Qt3DCore::QNodeId, Qt3DCore::NonLockingPolicy>
 {
 public:
     QHash<RHITexture *, Qt3DCore::QNodeId> texNodeIdForRHITexture;
@@ -87,9 +83,7 @@ public:
 class Q_AUTOTEST_EXPORT RHIShaderManager : public APIShaderManager<RHIShader>
 {
 public:
-    explicit RHIShaderManager()
-        : APIShaderManager<RHIShader>()
-    {}
+    explicit RHIShaderManager() : APIShaderManager<RHIShader>() { }
 };
 
 // Geometry | Shader | RenderStateMask
@@ -100,13 +94,12 @@ struct GraphicsPipelineIdentifier
     int renderViewIndex;
 };
 
-class Q_AUTOTEST_EXPORT RHIGraphicsPipelineManager : public Qt3DCore::QResourceManager<
-        RHIGraphicsPipeline,
-        GraphicsPipelineIdentifier,
-        Qt3DCore::NonLockingPolicy>
+class Q_AUTOTEST_EXPORT RHIGraphicsPipelineManager
+    : public Qt3DCore::QResourceManager<RHIGraphicsPipeline, GraphicsPipelineIdentifier,
+                                        Qt3DCore::NonLockingPolicy>
 {
 public:
-    RHIGraphicsPipelineManager() {}
+    RHIGraphicsPipelineManager() { }
 };
 
 class Q_AUTOTEST_EXPORT RHIResourceManagers
@@ -118,7 +111,10 @@ public:
     inline RHIShaderManager *rhiShaderManager() const noexcept { return m_rhiShaderManager; }
     inline RHITextureManager *rhiTextureManager() const noexcept { return m_rhiTextureManager; }
     inline RHIBufferManager *rhiBufferManager() const noexcept { return m_rhiBufferManager; }
-    inline RHIGraphicsPipelineManager *rhiGraphicsPipelineManager() const noexcept { return m_rhiGraphicsPipelineManager; }
+    inline RHIGraphicsPipelineManager *rhiGraphicsPipelineManager() const noexcept
+    {
+        return m_rhiGraphicsPipelineManager;
+    }
 
     void releaseAllResources();
 
@@ -131,14 +127,15 @@ private:
 
 inline uint qHash(const GraphicsPipelineIdentifier &key, uint seed)
 {
-    const QPair<HGeometry, Qt3DCore::QNodeId> p = {key.geometry, key.shader};
+    const QPair<HGeometry, Qt3DCore::QNodeId> p = { key.geometry, key.shader };
     using QT_PREPEND_NAMESPACE(qHash);
     return qHash(p, seed) + qHash(key.renderViewIndex, seed);
 }
 
-inline bool operator ==(const GraphicsPipelineIdentifier &a, const GraphicsPipelineIdentifier &b)
+inline bool operator==(const GraphicsPipelineIdentifier &a, const GraphicsPipelineIdentifier &b)
 {
-    return a.geometry == b.geometry && a.shader == b.shader && a.renderViewIndex == b.renderViewIndex;
+    return a.geometry == b.geometry && a.shader == b.shader
+            && a.renderViewIndex == b.renderViewIndex;
 }
 
 } // Rhi

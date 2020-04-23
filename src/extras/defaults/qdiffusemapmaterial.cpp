@@ -72,13 +72,17 @@ QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
     , m_diffuseMapGL3Technique(new QTechnique())
     , m_diffuseMapGL2Technique(new QTechnique())
     , m_diffuseMapES2Technique(new QTechnique())
+    , m_diffuseMapRHITechnique(new QTechnique())
     , m_diffuseMapGL3RenderPass(new QRenderPass())
     , m_diffuseMapGL2RenderPass(new QRenderPass())
     , m_diffuseMapES2RenderPass(new QRenderPass())
+    , m_diffuseMapRHIRenderPass(new QRenderPass())
     , m_diffuseMapGL3Shader(new QShaderProgram())
     , m_diffuseMapGL3ShaderBuilder(new QShaderProgramBuilder())
     , m_diffuseMapGL2ES2Shader(new QShaderProgram())
     , m_diffuseMapGL2ES2ShaderBuilder(new QShaderProgramBuilder())
+    , m_diffuseMapRHIShader(new QShaderProgram())
+    , m_diffuseMapRHIShaderBuilder(new QShaderProgramBuilder())
     , m_filterKey(new QFilterKey)
 {
     m_diffuseTexture->setMagnificationFilter(QAbstractTexture::Linear);
@@ -119,6 +123,14 @@ void QDiffuseMapMaterialPrivate::init()
                                                        QStringLiteral("specular"),
                                                        QStringLiteral("normal")});
 
+    m_diffuseMapRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default.vert"))));
+    m_diffuseMapRHIShaderBuilder->setParent(q);
+    m_diffuseMapRHIShaderBuilder->setShaderProgram(m_diffuseMapRHIShader);
+    m_diffuseMapRHIShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_diffuseMapRHIShaderBuilder->setEnabledLayers({QStringLiteral("diffuseTexture"),
+                                                    QStringLiteral("specular"),
+                                                    QStringLiteral("normal")});
+
     m_diffuseMapGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_diffuseMapGL3Technique->graphicsApiFilter()->setMajorVersion(3);
     m_diffuseMapGL3Technique->graphicsApiFilter()->setMinorVersion(1);
@@ -134,6 +146,10 @@ void QDiffuseMapMaterialPrivate::init()
     m_diffuseMapES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_diffuseMapES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_diffuseMapRHITechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+    m_diffuseMapRHITechnique->graphicsApiFilter()->setMajorVersion(1);
+    m_diffuseMapRHITechnique->graphicsApiFilter()->setMinorVersion(0);
+
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
     m_filterKey->setValue(QStringLiteral("forward"));
@@ -141,18 +157,22 @@ void QDiffuseMapMaterialPrivate::init()
     m_diffuseMapGL3Technique->addFilterKey(m_filterKey);
     m_diffuseMapGL2Technique->addFilterKey(m_filterKey);
     m_diffuseMapES2Technique->addFilterKey(m_filterKey);
+    m_diffuseMapRHITechnique->addFilterKey(m_filterKey);
 
     m_diffuseMapGL3RenderPass->setShaderProgram(m_diffuseMapGL3Shader);
     m_diffuseMapGL2RenderPass->setShaderProgram(m_diffuseMapGL2ES2Shader);
     m_diffuseMapES2RenderPass->setShaderProgram(m_diffuseMapGL2ES2Shader);
+    m_diffuseMapRHIRenderPass->setShaderProgram(m_diffuseMapRHIShader);
 
     m_diffuseMapGL3Technique->addRenderPass(m_diffuseMapGL3RenderPass);
     m_diffuseMapGL2Technique->addRenderPass(m_diffuseMapGL2RenderPass);
     m_diffuseMapES2Technique->addRenderPass(m_diffuseMapES2RenderPass);
+    m_diffuseMapRHITechnique->addRenderPass(m_diffuseMapRHIRenderPass);
 
     m_diffuseMapEffect->addTechnique(m_diffuseMapGL3Technique);
     m_diffuseMapEffect->addTechnique(m_diffuseMapGL2Technique);
     m_diffuseMapEffect->addTechnique(m_diffuseMapES2Technique);
+    m_diffuseMapEffect->addTechnique(m_diffuseMapRHITechnique);
 
     m_diffuseMapEffect->addParameter(m_ambientParameter);
     m_diffuseMapEffect->addParameter(m_diffuseParameter);

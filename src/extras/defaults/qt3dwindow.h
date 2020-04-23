@@ -119,6 +119,9 @@ private:
     Q_DECLARE_PRIVATE(Qt3DWindow)
 };
 
+Q_3DEXTRASSHARED_EXPORT
+void setupWindowSurface(QWindow* window, Qt3DRender::API) noexcept;
+
 } // Qt3DExtras
 
 QT_END_NAMESPACE

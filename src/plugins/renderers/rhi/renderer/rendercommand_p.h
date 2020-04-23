@@ -68,8 +68,6 @@ QT_BEGIN_NAMESPACE
 class QRhiGraphicsPipeline;
 class QRhiShaderResourceBindings;
 
-class QOpenGLVertexArrayObject;
-
 namespace Qt3DRender {
 
 namespace Render {
@@ -87,28 +85,34 @@ struct CommandUBO
     float modelMatrix[16];
     float inverseModelMatrix[16];
     float modelViewMatrix[16];
+    float modelNormalMatrix[12];
     float inverseModelViewMatrix[16];
     float mvp[16];
     float inverseModelViewProjectionMatrix[16];
 };
-static_assert(sizeof(CommandUBO) == 6 * (16 * sizeof(float)), "UBO doesn't match std140");
+static_assert(sizeof(CommandUBO) == 6 * (16 * sizeof(float)) + 1 * (12 * sizeof(float)),
+              "UBO doesn't match std140");
 
 class Q_AUTOTEST_EXPORT RenderCommand
 {
 public:
     RenderCommand();
 
-    HMaterial m_material; // Purely used to ease sorting (minimize stage changes, binding changes ....)
+    bool isValid() const noexcept;
+
+    HMaterial m_material; // Purely used to ease sorting (minimize stage changes, binding changes
+                          // ....)
     RHIShader *m_rhiShader; // GL Shader to be used at render time
     Qt3DCore::QNodeId m_shaderId; // Shader for given pass and mesh
-    ShaderParameterPack m_parameterPack; // Might need to be reworked so as to be able to destroy the
-                            // Texture while submission is happening.
+    ShaderParameterPack m_parameterPack; // Might need to be reworked so as to be able to destroy
+                                         // the Texture while submission is happening.
     RenderStateSetPtr m_stateSet;
 
     HGeometry m_geometry;
     HGeometryRenderer m_geometryRenderer;
 
-    HBuffer m_indirectDrawBuffer; // Reference to indirect draw buffer (valid only m_drawIndirect == true)
+    HBuffer m_indirectDrawBuffer; // Reference to indirect draw buffer (valid only m_drawIndirect ==
+                                  // true)
     HComputeCommand m_computeCommand;
 
     // A QAttribute pack might be interesting
@@ -118,10 +122,7 @@ public:
     float m_depth;
     int m_changeCost;
 
-    enum CommandType {
-        Draw,
-        Compute
-    };
+    enum CommandType { Draw, Compute };
 
     CommandType m_type;
     int m_workGroups[3];
@@ -145,17 +146,19 @@ public:
 
     QVarLengthArray<QRhiCommandBuffer::VertexInput, 8> vertex_input;
 
-    const Attribute* indexAttribute{};
-    QRhiBuffer* indexBuffer{};
+    const Attribute *indexAttribute {};
+    QRhiBuffer *indexBuffer {};
 
     CommandUBO m_commandUBO;
-    RHIGraphicsPipeline *pipeline{};
+    RHIGraphicsPipeline *pipeline {};
 };
 
 Q_AUTOTEST_EXPORT bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept;
 
 inline bool operator!=(const RenderCommand &lhs, const RenderCommand &rhs) noexcept
-{ return !operator==(lhs, rhs); }
+{
+    return !operator==(lhs, rhs);
+}
 
 struct EntityRenderCommandData
 {
@@ -193,7 +196,6 @@ struct EntityRenderCommandData
         passesData += std::move(t.passesData);
         return *this;
     }
-
 };
 
 using EntityRenderCommandDataPtr = QSharedPointer<EntityRenderCommandData>;

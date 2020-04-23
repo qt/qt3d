@@ -64,11 +64,14 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
     , m_vertexGL3Technique(new QTechnique())
     , m_vertexGL2Technique(new QTechnique())
     , m_vertexES2Technique(new QTechnique())
+    , m_vertexRHITechnique(new QTechnique())
     , m_vertexGL3RenderPass(new QRenderPass())
     , m_vertexGL2RenderPass(new QRenderPass())
     , m_vertexES2RenderPass(new QRenderPass())
+    , m_vertexRHIRenderPass(new QRenderPass())
     , m_vertexGL3Shader(new QShaderProgram())
     , m_vertexGL2ES2Shader(new QShaderProgram())
+    , m_vertexRHIShader(new QShaderProgram())
     , m_filterKey(new QFilterKey)
 {
 }
@@ -119,6 +122,8 @@ void QPerVertexColorMaterialPrivate::init()
     m_vertexGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/pervertexcolor.frag"))));
     m_vertexGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/pervertexcolor.vert"))));
     m_vertexGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/pervertexcolor.frag"))));
+    m_vertexRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/pervertexcolor.vert"))));
+    m_vertexRHIShader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/pervertexcolor.frag"))));
 
     m_vertexGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_vertexGL3Technique->graphicsApiFilter()->setMajorVersion(3);
@@ -135,6 +140,10 @@ void QPerVertexColorMaterialPrivate::init()
     m_vertexES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_vertexES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_vertexRHITechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+    m_vertexRHITechnique->graphicsApiFilter()->setMajorVersion(1);
+    m_vertexRHITechnique->graphicsApiFilter()->setMinorVersion(0);
+
     Q_Q(QPerVertexColorMaterial);
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
@@ -143,18 +152,22 @@ void QPerVertexColorMaterialPrivate::init()
     m_vertexGL3Technique->addFilterKey(m_filterKey);
     m_vertexGL2Technique->addFilterKey(m_filterKey);
     m_vertexES2Technique->addFilterKey(m_filterKey);
+    m_vertexRHITechnique->addFilterKey(m_filterKey);
 
     m_vertexGL3RenderPass->setShaderProgram(m_vertexGL3Shader);
     m_vertexGL2RenderPass->setShaderProgram(m_vertexGL2ES2Shader);
     m_vertexES2RenderPass->setShaderProgram(m_vertexGL2ES2Shader);
+    m_vertexRHIRenderPass->setShaderProgram(m_vertexRHIShader);
 
     m_vertexGL3Technique->addRenderPass(m_vertexGL3RenderPass);
     m_vertexGL2Technique->addRenderPass(m_vertexGL2RenderPass);
     m_vertexES2Technique->addRenderPass(m_vertexES2RenderPass);
+    m_vertexRHITechnique->addRenderPass(m_vertexRHIRenderPass);
 
     m_vertexEffect->addTechnique(m_vertexGL3Technique);
     m_vertexEffect->addTechnique(m_vertexGL2Technique);
     m_vertexEffect->addTechnique(m_vertexES2Technique);
+    m_vertexEffect->addTechnique(m_vertexRHITechnique);
 
     q->setEffect(m_vertexEffect);
 }

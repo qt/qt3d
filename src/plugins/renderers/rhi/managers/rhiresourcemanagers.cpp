@@ -48,10 +48,10 @@ namespace Render {
 namespace Rhi {
 
 RHIResourceManagers::RHIResourceManagers()
-    : m_rhiBufferManager(new RHIBufferManager())
-    , m_rhiShaderManager(new RHIShaderManager())
-    , m_rhiTextureManager(new RHITextureManager())
-    , m_rhiGraphicsPipelineManager(new RHIGraphicsPipelineManager())
+    : m_rhiBufferManager(new RHIBufferManager()),
+      m_rhiShaderManager(new RHIShaderManager()),
+      m_rhiTextureManager(new RHITextureManager()),
+      m_rhiGraphicsPipelineManager(new RHIGraphicsPipelineManager())
 {
 }
 
@@ -65,7 +65,7 @@ RHIResourceManagers::~RHIResourceManagers()
 
 void RHIResourceManagers::releaseAllResources()
 {
-    auto releaseAll = [] (auto* manager) noexcept {
+    auto releaseAll = [](auto *manager) noexcept {
         const auto handles = manager->activeHandles();
         for (const auto &handle : handles) {
             manager->release(handle);
@@ -74,7 +74,7 @@ void RHIResourceManagers::releaseAllResources()
 
     releaseAll(m_rhiTextureManager);
     releaseAll(m_rhiBufferManager);
-    //releaseAll(m_rhiShaderManager);
+    // releaseAll(m_rhiShaderManager);
     releaseAll(m_rhiGraphicsPipelineManager);
 }
 

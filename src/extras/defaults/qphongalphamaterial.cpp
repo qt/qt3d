@@ -72,13 +72,17 @@ QPhongAlphaMaterialPrivate::QPhongAlphaMaterialPrivate()
     , m_phongAlphaGL3Technique(new QTechnique())
     , m_phongAlphaGL2Technique(new QTechnique())
     , m_phongAlphaES2Technique(new QTechnique())
+    , m_phongAlphaRHITechnique(new QTechnique())
     , m_phongAlphaGL3RenderPass(new QRenderPass())
     , m_phongAlphaGL2RenderPass(new QRenderPass())
     , m_phongAlphaES2RenderPass(new QRenderPass())
+    , m_phongAlphaRHIRenderPass(new QRenderPass())
     , m_phongAlphaGL3Shader(new QShaderProgram())
     , m_phongAlphaGL3ShaderBuilder(new QShaderProgramBuilder())
     , m_phongAlphaGL2ES2Shader(new QShaderProgram())
     , m_phongAlphaGL2ES2ShaderBuilder(new QShaderProgramBuilder())
+    , m_phongAlphaRHIShader(new QShaderProgram())
+    , m_phongAlphaRHIShaderBuilder(new QShaderProgramBuilder())
     , m_noDepthMask(new QNoDepthMask())
     , m_blendState(new QBlendEquationArguments())
     , m_blendEquation(new QBlendEquation())
@@ -116,6 +120,14 @@ void QPhongAlphaMaterialPrivate::init()
                                                        QStringLiteral("specular"),
                                                        QStringLiteral("normal")});
 
+    m_phongAlphaRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default.vert"))));
+    m_phongAlphaRHIShaderBuilder->setParent(q);
+    m_phongAlphaRHIShaderBuilder->setShaderProgram(m_phongAlphaRHIShader);
+    m_phongAlphaRHIShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_phongAlphaRHIShaderBuilder->setEnabledLayers({QStringLiteral("diffuse"),
+                                                       QStringLiteral("specular"),
+                                                       QStringLiteral("normal")});
+
     m_phongAlphaGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_phongAlphaGL3Technique->graphicsApiFilter()->setMajorVersion(3);
     m_phongAlphaGL3Technique->graphicsApiFilter()->setMinorVersion(1);
@@ -131,6 +143,10 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_phongAlphaES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_phongAlphaRHITechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+    m_phongAlphaRHITechnique->graphicsApiFilter()->setMajorVersion(1);
+    m_phongAlphaRHITechnique->graphicsApiFilter()->setMinorVersion(0);
+
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
     m_filterKey->setValue(QStringLiteral("forward"));
@@ -138,6 +154,7 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaGL3Technique->addFilterKey(m_filterKey);
     m_phongAlphaGL2Technique->addFilterKey(m_filterKey);
     m_phongAlphaES2Technique->addFilterKey(m_filterKey);
+    m_phongAlphaRHITechnique->addFilterKey(m_filterKey);
 
     m_blendState->setSourceRgb(QBlendEquationArguments::SourceAlpha);
     m_blendState->setDestinationRgb(QBlendEquationArguments::OneMinusSourceAlpha);
@@ -146,6 +163,7 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaGL3RenderPass->setShaderProgram(m_phongAlphaGL3Shader);
     m_phongAlphaGL2RenderPass->setShaderProgram(m_phongAlphaGL2ES2Shader);
     m_phongAlphaES2RenderPass->setShaderProgram(m_phongAlphaGL2ES2Shader);
+    m_phongAlphaRHIRenderPass->setShaderProgram(m_phongAlphaRHIShader);
 
     m_phongAlphaGL3RenderPass->addRenderState(m_noDepthMask);
     m_phongAlphaGL3RenderPass->addRenderState(m_blendState);
@@ -159,13 +177,19 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaES2RenderPass->addRenderState(m_blendState);
     m_phongAlphaES2RenderPass->addRenderState(m_blendEquation);
 
+    m_phongAlphaRHIRenderPass->addRenderState(m_noDepthMask);
+    m_phongAlphaRHIRenderPass->addRenderState(m_blendState);
+    m_phongAlphaRHIRenderPass->addRenderState(m_blendEquation);
+
     m_phongAlphaGL3Technique->addRenderPass(m_phongAlphaGL3RenderPass);
     m_phongAlphaGL2Technique->addRenderPass(m_phongAlphaGL2RenderPass);
     m_phongAlphaES2Technique->addRenderPass(m_phongAlphaES2RenderPass);
+    m_phongAlphaRHITechnique->addRenderPass(m_phongAlphaRHIRenderPass);
 
     m_phongEffect->addTechnique(m_phongAlphaGL3Technique);
     m_phongEffect->addTechnique(m_phongAlphaGL2Technique);
     m_phongEffect->addTechnique(m_phongAlphaES2Technique);
+    m_phongEffect->addTechnique(m_phongAlphaRHITechnique);
 
     m_phongEffect->addParameter(m_ambientParameter);
     m_phongEffect->addParameter(m_diffuseParameter);

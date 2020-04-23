@@ -81,11 +81,14 @@ public:
     Qt3DRender::QTechnique *m_vertexGL3Technique;
     Qt3DRender::QTechnique *m_vertexGL2Technique;
     Qt3DRender::QTechnique *m_vertexES2Technique;
+    Qt3DRender::QTechnique *m_vertexRHITechnique;
     Qt3DRender::QRenderPass *m_vertexGL3RenderPass;
     Qt3DRender::QRenderPass *m_vertexGL2RenderPass;
     Qt3DRender::QRenderPass *m_vertexES2RenderPass;
+    Qt3DRender::QRenderPass *m_vertexRHIRenderPass;
     Qt3DRender::QShaderProgram *m_vertexGL3Shader;
     Qt3DRender::QShaderProgram *m_vertexGL2ES2Shader;
+    Qt3DRender::QShaderProgram *m_vertexRHIShader;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QPerVertexColorMaterial)

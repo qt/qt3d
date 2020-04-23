@@ -52,7 +52,6 @@
 // We mean it.
 //
 
-
 #include <rhibuffer_p.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/qattribute.h>
@@ -69,10 +68,6 @@
 #include <QOffscreenSurface>
 
 QT_BEGIN_NAMESPACE
-
-#if QT_CONFIG(vulkan)
-class QVulkanInstance;
-#endif
 
 class QAbstractOpenGLFunctions;
 
@@ -121,11 +116,7 @@ public:
         ShaderImage
     };
 
-    enum FBOBindMode {
-        FBODraw,
-        FBORead,
-        FBOReadAndDraw
-    };
+    enum FBOBindMode { FBODraw, FBORead, FBOReadAndDraw };
 
     SubmissionContext();
     ~SubmissionContext();
@@ -137,7 +128,7 @@ public:
     bool beginDrawing(QSurface *surface);
     void endDrawing(bool swapBuffers);
     void releaseResources();
-    void setOpenGLContext(QOpenGLContext* ctx);
+    void setOpenGLContext(QOpenGLContext *ctx);
     bool isInitialized() const { return m_initialized; }
     const GraphicsApiFilterData *contextInfo() const;
 
@@ -149,7 +140,8 @@ public:
     };
 
     ShaderCreationInfo createShaderProgram(RHIShader *shaderNode);
-    void loadShader(Shader* shader, ShaderManager *shaderManager, RHIShaderManager *rhiShaderManager);
+    void loadShader(Shader *shader, ShaderManager *shaderManager,
+                    RHIShaderManager *rhiShaderManager);
 
     GLuint defaultFBO() const { return m_defaultFBO; }
 
@@ -159,19 +151,19 @@ public:
 
     // FBO
     GLuint activeFBO() const { return m_activeFBO; }
-    void activateRenderTarget(const Qt3DCore::QNodeId id, const AttachmentPack &attachments, GLuint defaultFboId);
+    void activateRenderTarget(const Qt3DCore::QNodeId id, const AttachmentPack &attachments,
+                              GLuint defaultFboId);
     QSize renderTargetSize(const QSize &surfaceSize) const;
     QImage readFramebuffer(const QRect &rect);
-    void blitFramebuffer(Qt3DCore::QNodeId outputRenderTargetId, Qt3DCore::QNodeId inputRenderTargetId,
-                         QRect inputRect,
-                         QRect outputRect, uint defaultFboId,
+    void blitFramebuffer(Qt3DCore::QNodeId outputRenderTargetId,
+                         Qt3DCore::QNodeId inputRenderTargetId, QRect inputRect, QRect outputRect,
+                         uint defaultFboId,
                          QRenderTargetOutput::AttachmentPoint inputAttachmentPoint,
                          QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
                          QBlitFramebuffer::InterpolationMethod interpolationMethod);
 
     // Attributes
-    void specifyAttribute(const Attribute *attribute,
-                          Buffer *buffer,
+    void specifyAttribute(const Attribute *attribute, Buffer *buffer,
                           const ShaderAttribute *attributeDescription);
     void specifyIndices(Buffer *buffer);
 
@@ -186,32 +178,41 @@ public:
     bool setParameters(ShaderParameterPack &parameterPack);
 
     // RenderState
-    void applyStateSet(const RenderStateSet *ss,
-                       QRhiGraphicsPipeline *graphicsPipeline);
-    StateVariant* getState(RenderStateSet *ss,
-                          StateMask type) const;
+    void applyStateSet(const RenderStateSet *ss, QRhiGraphicsPipeline *graphicsPipeline);
+    StateVariant *getState(RenderStateSet *ss, StateMask type) const;
 
+    // Swap chain
 
-    QRhiResourceUpdateBatch *m_currentUpdates{};
+    struct SwapChainInfo
+    {
+        QRhiSwapChain *swapChain = nullptr;
+        QRhiRenderBuffer *renderBuffer = nullptr;
+        QRhiRenderPassDescriptor *renderPassDescriptor = nullptr;
+    };
+    SwapChainInfo *swapChainForSurface(QSurface *surface) noexcept;
+
+    QRhiResourceUpdateBatch *m_currentUpdates {};
 
     QRhi *rhi() const { return m_rhi; }
     QRhiCommandBuffer *currentFrameCommandBuffer() const;
     QRhiRenderTarget *currentFrameRenderTarget() const;
     QRhiRenderPassDescriptor *currentRenderPassDescriptor() const;
+    QRhiSwapChain *currentSwapChain() const;
     QSurfaceFormat format() const noexcept;
 
 private:
-
     // Material
-    Material* activeMaterial() const { return m_material; }
-    void setActiveMaterial(Material* rmat);
+    Material *activeMaterial() const { return m_material; }
+    void setActiveMaterial(Material *rmat);
 
     // FBO
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
     void resolveRenderTargetFormat();
-    GLuint createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments);
-    GLuint updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, bool isActiveRenderTarget);
+    GLuint createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
+                              const AttachmentPack &attachments);
+    GLuint updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
+                              const AttachmentPack &attachments, bool isActiveRenderTarget);
 
     // Buffers
     HRHIBuffer createRHIBufferFor(Buffer *buffer);
@@ -220,8 +221,7 @@ private:
     bool bindRHIBuffer(RHIBuffer *buffer, RHIBuffer::Type type);
 
     // States
-    void applyState(const StateVariant &state,
-                    QRhiGraphicsPipeline *graphicsPipeline);
+    void applyState(const StateVariant &state, QRhiGraphicsPipeline *graphicsPipeline);
 
     bool m_ownCurrent;
     const unsigned int m_id;
@@ -235,12 +235,11 @@ private:
     QHash<GLuint, QSize> m_renderTargetsSize;
     QAbstractTexture::TextureFormat m_renderTargetFormat;
 
-    Material* m_material;
+    Material *m_material;
     GLuint m_activeFBO;
 
     Renderer *m_renderer;
     QByteArray m_uboTempArray;
-
 
     bool m_initialized;
 
@@ -248,27 +247,14 @@ private:
     GLuint m_defaultFBO;
     GraphicsApiFilterData m_contextInfo;
 
-    QRhi* m_rhi;
-
-    struct SwapChainInfo
-    {
-        QRhiSwapChain *swapChain = nullptr;
-        QRhiRenderBuffer *renderBuffer = nullptr;
-        QRhiRenderPassDescriptor *renderPassDescriptor = nullptr;
-    };
-
+    QRhi *m_rhi;
     QHash<QSurface *, SwapChainInfo> m_swapChains;
     QRhiSwapChain *m_currentSwapChain;
     QRhiRenderPassDescriptor *m_currentRenderPassDescriptor;
 
-#if QT_CONFIG(vulkan)
-    QVulkanInstance *m_vkInstance;
-    bool m_ownsVkInstance{};
-#endif
 #ifndef QT_NO_OPENGL
     QOffscreenSurface *m_fallbackSurface;
 #endif
-
 };
 
 } // namespace Rhi

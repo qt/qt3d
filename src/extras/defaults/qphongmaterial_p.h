@@ -91,13 +91,17 @@ public:
     Qt3DRender::QTechnique *m_phongGL3Technique;
     Qt3DRender::QTechnique *m_phongGL2Technique;
     Qt3DRender::QTechnique *m_phongES2Technique;
+    Qt3DRender::QTechnique *m_phongRHITechnique;
     Qt3DRender::QRenderPass *m_phongGL3RenderPass;
     Qt3DRender::QRenderPass *m_phongGL2RenderPass;
     Qt3DRender::QRenderPass *m_phongES2RenderPass;
+    Qt3DRender::QRenderPass *m_phongRHIRenderPass;
     Qt3DRender::QShaderProgram *m_phongGL3Shader;
     Qt3DRender::QShaderProgramBuilder *m_phongGL3ShaderBuilder;
     Qt3DRender::QShaderProgram *m_phongGL2ES2Shader;
     Qt3DRender::QShaderProgramBuilder *m_phongGL2ES2ShaderBuilder;
+    Qt3DRender::QShaderProgram *m_phongRHIShader;
+    Qt3DRender::QShaderProgramBuilder *m_phongRHIShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QPhongMaterial)

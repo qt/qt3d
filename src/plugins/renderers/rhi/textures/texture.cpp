@@ -52,7 +52,6 @@
 #include <renderbuffer_p.h>
 #include <submissioncontext_p.h>
 
-
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -113,6 +112,7 @@ QRhiTexture::Format rhiFormatFromTextureFormat(QAbstractTexture::TextureFormat f
     case QAbstractTexture::RGBA8_ETC2_EAC:
         return QRhiTexture::ETC2_RGBA8;
     default:
+        Q_UNREACHABLE();
         return QRhiTexture::UnknownFormat;
     }
 }
@@ -145,18 +145,16 @@ QRhiSampler::Filter rhiMipMapFilterFromTextureFilter(QAbstractTexture::Filter fi
     case QAbstractTexture::LinearMipMapLinear:
         return QRhiSampler::Linear;
     default:
+        Q_UNREACHABLE();
         return QRhiSampler::None;
     }
 }
 
-std::tuple<QRhiSampler::AddressMode,
-           QRhiSampler::AddressMode,
-           QRhiSampler::AddressMode>
-rhiWrapModeFromTextureWrapMode(QTextureWrapMode::WrapMode x,
-                               QTextureWrapMode::WrapMode y,
+std::tuple<QRhiSampler::AddressMode, QRhiSampler::AddressMode, QRhiSampler::AddressMode>
+rhiWrapModeFromTextureWrapMode(QTextureWrapMode::WrapMode x, QTextureWrapMode::WrapMode y,
                                QTextureWrapMode::WrapMode z) noexcept
 {
-    auto toRhiAddress = [] (QTextureWrapMode::WrapMode mode) noexcept {
+    auto toRhiAddress = [](QTextureWrapMode::WrapMode mode) noexcept {
         switch (mode) {
         case Qt3DRender::QTextureWrapMode::Repeat:
             return QRhiSampler::Repeat;
@@ -165,13 +163,16 @@ rhiWrapModeFromTextureWrapMode(QTextureWrapMode::WrapMode x,
             return QRhiSampler::ClampToEdge;
         case Qt3DRender::QTextureWrapMode::MirroredRepeat:
             return QRhiSampler::Mirror;
+        default:
+            Q_UNREACHABLE();
         }
     };
 
     return { toRhiAddress(x), toRhiAddress(y), toRhiAddress(z) };
 }
 
-QRhiSampler::CompareOp rhiCompareOpFromTextureCompareOp(QAbstractTexture::ComparisonFunction mode) noexcept
+QRhiSampler::CompareOp
+rhiCompareOpFromTextureCompareOp(QAbstractTexture::ComparisonFunction mode) noexcept
 {
     switch (mode) {
     case QAbstractTexture::CompareLessEqual:
@@ -197,18 +198,62 @@ QRhiSampler::CompareOp rhiCompareOpFromTextureCompareOp(QAbstractTexture::Compar
 
 // This uploadGLData where the data is a fullsize subimage
 // as QOpenGLTexture doesn't allow partial subimage uploads
-QRhiTextureUploadEntry uploadRhiData(int level, int layer, QOpenGLTexture::CubeMapFace face,
-                                     const QByteArray &bytes, const QTextureImageDataPtr &data) noexcept
+QRhiTextureUploadEntry createUploadEntry(int level, int layer, const QByteArray &bytes) noexcept
 {
     QRhiTextureSubresourceUploadDescription description;
     description.setData(bytes);
     return QRhiTextureUploadEntry(layer, level, description);
 }
 
+template<typename F>
+void filterLayersAndFaces(const QTextureImageData &data, F f)
+{
+    const int layers = data.layers();
+    const int faces = data.faces();
+    const int miplevels = data.mipLevels();
+
+    if (layers == 1 && faces == 1) {
+        for (int level = 0; level < miplevels; level++) {
+            f(createUploadEntry(level, 0, data.data(0, 0, level)));
+        }
+    } else if (layers > 1 && faces == 1) {
+        qWarning() << Q_FUNC_INFO << "Unsupported case, see QTBUG-83343";
+        /*
+        for (int layer = 0; layer < data.layers(); layer++) {
+            for (int level = 0; level < mipLevels; level++) {
+                f(createUploadEntry(level, layer, data.data(layer, 0, level)));
+            }
+        }
+        */
+    } else if (faces > 1 && layers == 1) {
+        // Mip levels do not seem to be supported by cubemaps...
+        for (int face = 0; face < data.faces(); face++) {
+            f(createUploadEntry(0, face, data.data(0, face, 0)));
+        }
+    } else {
+        qWarning() << Q_FUNC_INFO << "Unsupported case";
+    }
+}
+
+template<typename F>
+void filterLayerAndFace(int layer, int face, F f)
+{
+    if (layer == 0 && face == 0) {
+        f(0);
+    } else if (layer > 0 && face == 0) {
+        qWarning() << Q_FUNC_INFO << "Unsupported case, see QTBUG-83343";
+        // f(layer);
+    } else if (layer == 0 && face > 0) {
+        f(face);
+    } else {
+        qWarning() << Q_FUNC_INFO << "Unsupported case";
+    }
+}
+
 // For partial sub image uploads
-QRhiTextureUploadEntry uploadRhiData(int mipLevel, int layer, QOpenGLTexture::CubeMapFace cubeFace,
-                                     int xOffset, int yOffset, int zOffset,
-                                     const QByteArray &bytes, const QTextureImageDataPtr &data) noexcept
+QRhiTextureUploadEntry createUploadEntry(int mipLevel, int layer, int xOffset, int yOffset,
+                                         int zOffset, const QByteArray &bytes,
+                                         const QTextureImageDataPtr &data) noexcept
 {
     QRhiTextureSubresourceUploadDescription description;
     description.setData(bytes);
@@ -218,23 +263,20 @@ QRhiTextureUploadEntry uploadRhiData(int mipLevel, int layer, QOpenGLTexture::Cu
 
 } // anonymous
 
-
 RHITexture::RHITexture()
-    : m_dirtyFlags(None)
-    , m_rhi(nullptr)
-    , m_rhiSampler(nullptr)
-    , m_renderBuffer(nullptr)
-    , m_dataFunctor()
-    , m_pendingDataFunctor(nullptr)
-    , m_sharedTextureId(-1)
-    , m_externalRendering(false)
-    , m_wasTextureRecreated(false)
+    : m_dirtyFlags(None),
+      m_rhi(nullptr),
+      m_rhiSampler(nullptr),
+      m_renderBuffer(nullptr),
+      m_dataFunctor(),
+      m_pendingDataFunctor(nullptr),
+      m_sharedTextureId(-1),
+      m_externalRendering(false),
+      m_wasTextureRecreated(false)
 {
 }
 
-RHITexture::~RHITexture()
-{
-}
+RHITexture::~RHITexture() { }
 
 // Must be called from RenderThread with active GL context
 void RHITexture::destroy()
@@ -270,16 +312,16 @@ bool RHITexture::loadTextureDataFromGenerator()
 
         // If both target and functor return Automatic we are still
         // probably loading the texture, return false
-        if (m_properties.target == QAbstractTexture::TargetAutomatic &&
-            target == QAbstractTexture::TargetAutomatic) {
+        if (m_properties.target == QAbstractTexture::TargetAutomatic
+            && target == QAbstractTexture::TargetAutomatic) {
             m_textureData.reset();
             return false;
         }
 
-        if (m_properties.target != QAbstractTexture::TargetAutomatic &&
-            target != QAbstractTexture::TargetAutomatic &&
-            m_properties.target != target) {
-            qWarning() << Q_FUNC_INFO << "Generator and Properties not requesting the same texture target";
+        if (m_properties.target != QAbstractTexture::TargetAutomatic
+            && target != QAbstractTexture::TargetAutomatic && m_properties.target != target) {
+            qWarning() << Q_FUNC_INFO
+                       << "Generator and Properties not requesting the same texture target";
             m_textureData.reset();
             return false;
         }
@@ -323,7 +365,8 @@ void RHITexture::loadTextureDataFromImages()
 
         // If the texture doesn't have a texture generator, we will
         // derive some properties from the first TextureImage (layer=0, miplvl=0, face=0)
-        if (!m_textureData && img.layer == 0 && img.mipLevel == 0 && img.face == QAbstractTexture::CubeMapPositiveX) {
+        if (!m_textureData && img.layer == 0 && img.mipLevel == 0
+            && img.face == QAbstractTexture::CubeMapPositiveX) {
             if (imgData->width() != -1 && imgData->height() != -1 && imgData->depth() != -1) {
                 m_properties.width = imgData->width();
                 m_properties.height = imgData->height();
@@ -331,7 +374,8 @@ void RHITexture::loadTextureDataFromImages()
             }
             // Set the format of the texture if the texture format is set to Automatic
             if (m_properties.format == QAbstractTexture::Automatic) {
-                m_properties.format = static_cast<QAbstractTexture::TextureFormat>(imgData->format());
+                m_properties.format =
+                        static_cast<QAbstractTexture::TextureFormat>(imgData->format());
             }
             setDirtyFlag(Properties, true);
         }
@@ -363,7 +407,8 @@ RHITexture::TextureUpdateInfo RHITexture::createOrUpdateRhiTexture(SubmissionCon
                 setDirtyFlag(TextureData, true);
             } else {
                 if (m_pendingDataFunctor != m_dataFunctor.get()) {
-                    qWarning() << "[Qt3DRender::RHITexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+                    qWarning() << "[Qt3DRender::RHITexture] No QTextureData generated from Texture "
+                                  "Generator yet. Texture will be invalid for this frame";
                     m_pendingDataFunctor = m_dataFunctor.get();
                 }
                 textureInfo.properties.status = QAbstractTexture::Loading;
@@ -388,9 +433,9 @@ RHITexture::TextureUpdateInfo RHITexture::createOrUpdateRhiTexture(SubmissionCon
         // Format should either be set by user or if Automatic
         // by either the dataGenerator of the texture or the first Image
         // Target should explicitly be set by the user or the dataGenerator
-        if (m_properties.target == QAbstractTexture::TargetAutomatic ||
-            m_properties.format == QAbstractTexture::Automatic ||
-            m_properties.format == QAbstractTexture::NoFormat) {
+        if (m_properties.target == QAbstractTexture::TargetAutomatic
+            || m_properties.format == QAbstractTexture::Automatic
+            || m_properties.format == QAbstractTexture::NoFormat) {
             textureInfo.properties.status = QAbstractTexture::Error;
             return textureInfo;
         }
@@ -406,8 +451,8 @@ RHITexture::TextureUpdateInfo RHITexture::createOrUpdateRhiTexture(SubmissionCon
         // our content data make sure we are marked for upload
         // TO DO: We should actually check if the textureData is still correct
         // in regard to the size, target and format of the texture though.
-        if (!testDirtyFlag(SharedTextureId) &&
-            (m_textureData || !m_imageData.empty() || !m_pendingTextureDataUpdates.empty()))
+        if (!testDirtyFlag(SharedTextureId)
+            && (m_textureData || !m_imageData.empty() || !m_pendingTextureDataUpdates.empty()))
             setDirtyFlag(TextureData, true);
     }
 
@@ -458,7 +503,8 @@ RenderBuffer *RHITexture::getOrCreateRenderBuffer()
         m_textureData = m_dataFunctor->operator()();
         if (m_textureData) {
             if (m_properties.target != QAbstractTexture::TargetAutomatic)
-                qWarning() << "[Qt3DRender::RHITexture] [renderbuffer] When a texture provides a generator, it's target is expected to be TargetAutomatic";
+                qWarning() << "[Qt3DRender::RHITexture] [renderbuffer] When a texture provides a "
+                              "generator, it's target is expected to be TargetAutomatic";
 
             m_properties.width = m_textureData->width();
             m_properties.height = m_textureData->height();
@@ -467,7 +513,8 @@ RenderBuffer *RHITexture::getOrCreateRenderBuffer()
             setDirtyFlag(Properties);
         } else {
             if (m_pendingDataFunctor != m_dataFunctor.get()) {
-                qWarning() << "[Qt3DRender::RHITexture] [renderbuffer] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+                qWarning() << "[Qt3DRender::RHITexture] [renderbuffer] No QTextureData generated "
+                              "from Texture Generator yet. Texture will be invalid for this frame";
                 m_pendingDataFunctor = m_dataFunctor.get();
             }
             return nullptr;
@@ -480,7 +527,8 @@ RenderBuffer *RHITexture::getOrCreateRenderBuffer()
     }
 
     if (!m_renderBuffer)
-        m_renderBuffer = new RenderBuffer(m_properties.width, m_properties.height, m_properties.format);
+        m_renderBuffer =
+                new RenderBuffer(m_properties.width, m_properties.height, m_properties.format);
 
     setDirtyFlag(Properties, false);
     setDirtyFlag(Parameters, false);
@@ -523,7 +571,6 @@ void RHITexture::setImages(const QVector<Image> &images)
             }
         }
     }
-
 
     if (!same) {
         m_images = images;
@@ -568,37 +615,39 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
 
     const QRhiTexture::Format rhiFormat = rhiFormatFromTextureFormat(m_properties.format);
     const QSize pixelSize(m_properties.width, m_properties.height);
-    QRhiTexture::Flags rhiFlags{};
+    QRhiTexture::Flags rhiFlags {};
     int sampleCount = 1;
-
-    if (m_properties.generateMipMaps) {
-        rhiFlags |= QRhiTexture::UsedWithGenerateMips;
-        rhiFlags |= QRhiTexture::MipMapped;
-    }
 
     const bool issRGB8Format = issRGBFormat(m_properties.format);
     if (issRGB8Format)
         rhiFlags |= QRhiTexture::sRGB;
 
-//    // Set layers count if texture array
-//    if (actualTarget == QAbstractTexture::Target1DArray ||
-//        actualTarget == QAbstractTexture::Target2DArray ||
-//        actualTarget == QAbstractTexture::Target2DMultisampleArray ||
-//        actualTarget == QAbstractTexture::TargetCubeMapArray) {
-//        glTex->setLayers(m_properties.layers);
-//    }
-
-    if (actualTarget == QAbstractTexture::Target2DMultisample ||
-        actualTarget == QAbstractTexture::Target2DMultisampleArray) {
+    if (actualTarget == QAbstractTexture::Target2DMultisample
+        || actualTarget == QAbstractTexture::Target2DMultisampleArray) {
         // Set samples count if multisampled texture
         // (multisampled textures don't have mipmaps)
         sampleCount = m_properties.samples;
     }
 
-    QRhiTexture* rhiTexture = ctx->rhi()->newTexture(rhiFormat,
-                                                     pixelSize,
-                                                     sampleCount,
-                                                     rhiFlags);
+    switch (actualTarget) {
+    case QAbstractTexture::TargetCubeMap:
+    case QAbstractTexture::TargetCubeMapArray: {
+        rhiFlags |= QRhiTexture::CubeMap;
+        break;
+    }
+    default: {
+        // Mipmaps don't see to work with cubemaps at the moment
+        if (m_properties.generateMipMaps) {
+            rhiFlags |= QRhiTexture::UsedWithGenerateMips;
+            rhiFlags |= QRhiTexture::MipMapped;
+        } else if (m_properties.mipLevels > 1) {
+            rhiFlags |= QRhiTexture::MipMapped;
+        }
+        break;
+    }
+    }
+
+    QRhiTexture *rhiTexture = ctx->rhi()->newTexture(rhiFormat, pixelSize, sampleCount, rhiFlags);
 
     if (!rhiTexture->build()) {
         qWarning() << Q_FUNC_INFO << "creating QRhiTexture failed";
@@ -610,27 +659,19 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
 
 void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
 {
-    QVector<QRhiTextureUploadEntry> uploadEntries;
+    QVarLengthArray<QRhiTextureUploadEntry> uploadEntries;
 
     // Upload all QTexImageData set by the QTextureGenerator
     if (m_textureData) {
-        const QVector<QTextureImageDataPtr> imgData = m_textureData->imageData();
+        const QVector<QTextureImageDataPtr> &imgData = m_textureData->imageData();
 
         for (const QTextureImageDataPtr &data : imgData) {
-            const int mipLevels = m_properties.generateMipMaps ? 1 : data->mipLevels();
+            const int mipLevels = data->mipLevels();
+            Q_ASSERT(mipLevels <= ctx->rhi()->mipLevelsForSize({ data->width(), data->height() }));
 
-            for (int layer = 0; layer < data->layers(); layer++) {
-                for (int face = 0; face < data->faces(); face++) {
-                    for (int level = 0; level < mipLevels; level++) {
-                        // ensure we don't accidentally cause a detach / copy of the raw bytes
-                        const QByteArray bytes(data->data(layer, face, level));
-                        const QRhiTextureUploadEntry entry = uploadRhiData(level, layer,
-                                                                           static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
-                                                                           bytes, data);
-                        uploadEntries.push_back(entry);
-                    }
-                }
-            }
+            filterLayersAndFaces(*data, [&](QRhiTextureUploadEntry &&entry) {
+                uploadEntries.push_back(std::move(entry));
+            });
         }
     }
 
@@ -641,11 +682,13 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
         // layer, face or mip level, unlike the QTextureGenerator case where
         // they are in a single blob. Hence QTextureImageData::data() is not suitable.
         const QByteArray bytes(QTextureImageDataPrivate::get(imgData.get())->m_data);
-        const QRhiTextureUploadEntry entry = uploadRhiData(m_images[i].mipLevel, m_images[i].layer,
-                                                           static_cast<QOpenGLTexture::CubeMapFace>(m_images[i].face),
-                                                           bytes, imgData);
-        uploadEntries.push_back(entry);
+        const int layer = m_images[i].layer;
+        const int face = m_images[i].face;
+        filterLayerAndFace(layer, face, [&](int rhiLayer) {
+            uploadEntries.push_back(createUploadEntry(m_images[i].mipLevel, rhiLayer, bytes));
+        });
     }
+
     // Free up image data once content has been uploaded
     // Note: if data functor stores the data, this won't really free anything though
     m_imageData.clear();
@@ -667,10 +710,8 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
         const int yExtent = yOffset + imgData->height();
 
         // Check update is compatible with our texture
-        if (xOffset >= m_rhi->pixelSize().width() ||
-            yOffset >= m_rhi->pixelSize().height() ||
-            xExtent > m_rhi->pixelSize().width() ||
-            yExtent > m_rhi->pixelSize().height()) {
+        if (xOffset >= m_rhi->pixelSize().width() || yOffset >= m_rhi->pixelSize().height()
+            || xExtent > m_rhi->pixelSize().width() || yExtent > m_rhi->pixelSize().height()) {
             qWarning() << Q_FUNC_INFO << "QTextureDataUpdate incompatible with texture";
             continue;
         }
@@ -680,24 +721,29 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
         // layer, face or mip level, unlike the QTextureGenerator case where
         // they are in a single blob. Hence QTextureImageData::data() is not suitable.
 
-        const QRhiTextureUploadEntry entry = uploadRhiData(update.mipLevel(), update.layer(),
-                                                           static_cast<QOpenGLTexture::CubeMapFace>(update.face()),
-                                                           xOffset, yOffset, 0,
-                                                           bytes, imgData);
-        uploadEntries.push_back(entry);
+        const int layer = update.layer();
+        const int face = update.face();
+        filterLayerAndFace(layer, face, [&](int rhiLayer) {
+            const QRhiTextureUploadEntry entry = createUploadEntry(
+                    update.mipLevel(), rhiLayer, xOffset, yOffset, 0, bytes, imgData);
+            uploadEntries.push_back(entry);
+        });
     }
 
     QRhiTextureUploadDescription uploadDescription;
     uploadDescription.setEntries(uploadEntries.begin(), uploadEntries.end());
 
     ctx->m_currentUpdates->uploadTexture(m_rhi, uploadDescription);
+    if (m_properties.generateMipMaps)
+        ctx->m_currentUpdates->generateMips(m_rhi);
 }
 
 void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
 {
     const QAbstractTexture::Target actualTarget = m_properties.target;
-    const bool isMultisampledTexture = (actualTarget == QAbstractTexture::Target2DMultisample ||
-                                        actualTarget == QAbstractTexture::Target2DMultisampleArray);
+    const bool isMultisampledTexture =
+            (actualTarget == QAbstractTexture::Target2DMultisample
+             || actualTarget == QAbstractTexture::Target2DMultisampleArray);
     // Multisampled textures can only be accessed by texelFetch in shaders
     // and don't support wrap modes and mig/mag filtes
     if (isMultisampledTexture)
@@ -709,19 +755,18 @@ void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
         m_rhiSampler = nullptr;
     }
 
-    const QRhiSampler::Filter magFilter = rhiFilterFromTextureFilter(m_parameters.magnificationFilter);
-    const QRhiSampler::Filter minFilter = rhiFilterFromTextureFilter(m_parameters.minificationFilter);
-    const QRhiSampler::Filter mipMapFilter = rhiMipMapFilterFromTextureFilter(m_parameters.magnificationFilter);
-    const auto wrapMode = rhiWrapModeFromTextureWrapMode(m_parameters.wrapModeX,
-                                                         m_parameters.wrapModeY,
-                                                         m_parameters.wrapModeZ);
-    const QRhiSampler::CompareOp compareOp = rhiCompareOpFromTextureCompareOp(m_parameters.comparisonFunction);
-    m_rhiSampler = ctx->rhi()->newSampler(magFilter,
-                                          minFilter,
-                                          mipMapFilter,
-                                          std::get<0>(wrapMode),
-                                          std::get<1>(wrapMode),
-                                          std::get<2>(wrapMode));
+    const QRhiSampler::Filter magFilter =
+            rhiFilterFromTextureFilter(m_parameters.magnificationFilter);
+    const QRhiSampler::Filter minFilter =
+            rhiFilterFromTextureFilter(m_parameters.minificationFilter);
+    const QRhiSampler::Filter mipMapFilter =
+            rhiMipMapFilterFromTextureFilter(m_parameters.magnificationFilter);
+    const auto wrapMode = rhiWrapModeFromTextureWrapMode(
+            m_parameters.wrapModeX, m_parameters.wrapModeY, m_parameters.wrapModeZ);
+    const QRhiSampler::CompareOp compareOp =
+            rhiCompareOpFromTextureCompareOp(m_parameters.comparisonFunction);
+    m_rhiSampler = ctx->rhi()->newSampler(magFilter, minFilter, mipMapFilter, std::get<0>(wrapMode),
+                                          std::get<1>(wrapMode), std::get<2>(wrapMode));
 
     m_rhiSampler->setTextureCompareOp(compareOp);
 
@@ -732,126 +777,138 @@ void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
 
 void RHITexture::introspectPropertiesFromSharedTextureId()
 {
-//    // We know that the context is active when this function is called
-//    QOpenGLContext *ctx = QOpenGLContext::currentContext();
-//    if (!ctx) {
-//        qWarning() << Q_FUNC_INFO << "requires an OpenGL context";
-//        return;
-//    }
-//    QOpenGLFunctions *gl = ctx->functions();
+    //    // We know that the context is active when this function is called
+    //    QOpenGLContext *ctx = QOpenGLContext::currentContext();
+    //    if (!ctx) {
+    //        qWarning() << Q_FUNC_INFO << "requires an OpenGL context";
+    //        return;
+    //    }
+    //    QOpenGLFunctions *gl = ctx->functions();
 
-//    // If the user has set the target format himself, we won't try to deduce it
-//    if (m_properties.target != QAbstractTexture::TargetAutomatic)
-//        return;
+    //    // If the user has set the target format himself, we won't try to deduce it
+    //    if (m_properties.target != QAbstractTexture::TargetAutomatic)
+    //        return;
 
-//    const QAbstractTexture::Target targets[] = {
-//        QAbstractTexture::Target2D,
-//        QAbstractTexture::TargetCubeMap,
-//#ifndef QT_OPENGL_ES_2
-//        QAbstractTexture::Target1D,
-//        QAbstractTexture::Target1DArray,
-//        QAbstractTexture::Target3D,
-//        QAbstractTexture::Target2DArray,
-//        QAbstractTexture::TargetCubeMapArray,
-//        QAbstractTexture::Target2DMultisample,
-//        QAbstractTexture::Target2DMultisampleArray,
-//        QAbstractTexture::TargetRectangle,
-//        QAbstractTexture::TargetBuffer,
-//#endif
-//    };
+    //    const QAbstractTexture::Target targets[] = {
+    //        QAbstractTexture::Target2D,
+    //        QAbstractTexture::TargetCubeMap,
+    //#ifndef QT_OPENGL_ES_2
+    //        QAbstractTexture::Target1D,
+    //        QAbstractTexture::Target1DArray,
+    //        QAbstractTexture::Target3D,
+    //        QAbstractTexture::Target2DArray,
+    //        QAbstractTexture::TargetCubeMapArray,
+    //        QAbstractTexture::Target2DMultisample,
+    //        QAbstractTexture::Target2DMultisampleArray,
+    //        QAbstractTexture::TargetRectangle,
+    //        QAbstractTexture::TargetBuffer,
+    //#endif
+    //    };
 
-//#ifndef QT_OPENGL_ES_2
-//    // Try to find texture target with GL 4.5 functions
-//    const QPair<int, int> ctxGLVersion = ctx->format().version();
-//    if (ctxGLVersion.first > 4 || (ctxGLVersion.first == 4 && ctxGLVersion.second >= 5)) {
-//        // Only for GL 4.5+
-//#ifdef GL_TEXTURE_TARGET
-//        QOpenGLFunctions_4_5_Core *gl5 = ctx->versionFunctions<QOpenGLFunctions_4_5_Core>();
-//        if (gl5 != nullptr)
-//            gl5->glGetTextureParameteriv(m_sharedTextureId, GL_TEXTURE_TARGET, reinterpret_cast<int *>(&m_properties.target));
-//#endif
-//    }
-//#endif
+    //#ifndef QT_OPENGL_ES_2
+    //    // Try to find texture target with GL 4.5 functions
+    //    const QPair<int, int> ctxGLVersion = ctx->format().version();
+    //    if (ctxGLVersion.first > 4 || (ctxGLVersion.first == 4 && ctxGLVersion.second >= 5)) {
+    //        // Only for GL 4.5+
+    //#ifdef GL_TEXTURE_TARGET
+    //        QOpenGLFunctions_4_5_Core *gl5 = ctx->versionFunctions<QOpenGLFunctions_4_5_Core>();
+    //        if (gl5 != nullptr)
+    //            gl5->glGetTextureParameteriv(m_sharedTextureId, GL_TEXTURE_TARGET,
+    //            reinterpret_cast<int *>(&m_properties.target));
+    //#endif
+    //    }
+    //#endif
 
-//    // If GL 4.5 function unavailable or not working, try a slower way
-//    if (m_properties.target == QAbstractTexture::TargetAutomatic) {
-//        //    // OpenGL offers no proper way of querying for the target of a texture given its id
-//        gl->glActiveTexture(GL_TEXTURE0);
+    //    // If GL 4.5 function unavailable or not working, try a slower way
+    //    if (m_properties.target == QAbstractTexture::TargetAutomatic) {
+    //        //    // OpenGL offers no proper way of querying for the target of a texture given its
+    //        id gl->glActiveTexture(GL_TEXTURE0);
 
-//        const GLenum targetBindings[] = {
-//            GL_TEXTURE_BINDING_2D,
-//            GL_TEXTURE_BINDING_CUBE_MAP,
-//#ifndef QT_OPENGL_ES_2
-//            GL_TEXTURE_BINDING_1D,
-//            GL_TEXTURE_BINDING_1D_ARRAY,
-//            GL_TEXTURE_BINDING_3D,
-//            GL_TEXTURE_BINDING_2D_ARRAY,
-//            GL_TEXTURE_BINDING_CUBE_MAP_ARRAY,
-//            GL_TEXTURE_BINDING_2D_MULTISAMPLE,
-//            GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY,
-//            GL_TEXTURE_BINDING_RECTANGLE,
-//            GL_TEXTURE_BINDING_BUFFER
-//#endif
-//        };
+    //        const GLenum targetBindings[] = {
+    //            GL_TEXTURE_BINDING_2D,
+    //            GL_TEXTURE_BINDING_CUBE_MAP,
+    //#ifndef QT_OPENGL_ES_2
+    //            GL_TEXTURE_BINDING_1D,
+    //            GL_TEXTURE_BINDING_1D_ARRAY,
+    //            GL_TEXTURE_BINDING_3D,
+    //            GL_TEXTURE_BINDING_2D_ARRAY,
+    //            GL_TEXTURE_BINDING_CUBE_MAP_ARRAY,
+    //            GL_TEXTURE_BINDING_2D_MULTISAMPLE,
+    //            GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY,
+    //            GL_TEXTURE_BINDING_RECTANGLE,
+    //            GL_TEXTURE_BINDING_BUFFER
+    //#endif
+    //        };
 
-//        Q_ASSERT(sizeof(targetBindings) / sizeof(targetBindings[0] == sizeof(targets) / sizeof(targets[0])));
+    //        Q_ASSERT(sizeof(targetBindings) / sizeof(targetBindings[0] == sizeof(targets) /
+    //        sizeof(targets[0])));
 
-//        for (uint i = 0; i < sizeof(targetBindings) / sizeof(targetBindings[0]); ++i) {
-//            const int target = targets[i];
-//            gl->glBindTexture(target, m_sharedTextureId);
-//            int boundId = 0;
-//            gl->glGetIntegerv(targetBindings[i], &boundId);
-//            gl->glBindTexture(target, 0);
-//            if (boundId == m_sharedTextureId) {
-//                m_properties.target = static_cast<QAbstractTexture::Target>(target);
-//                break;
-//            }
-//        }
-//    }
+    //        for (uint i = 0; i < sizeof(targetBindings) / sizeof(targetBindings[0]); ++i) {
+    //            const int target = targets[i];
+    //            gl->glBindTexture(target, m_sharedTextureId);
+    //            int boundId = 0;
+    //            gl->glGetIntegerv(targetBindings[i], &boundId);
+    //            gl->glBindTexture(target, 0);
+    //            if (boundId == m_sharedTextureId) {
+    //                m_properties.target = static_cast<QAbstractTexture::Target>(target);
+    //                break;
+    //            }
+    //        }
+    //    }
 
-//    // Return early if we weren't able to find texture target
-//    if (std::find(std::begin(targets), std::end(targets), m_properties.target) == std::end(targets)) {
-//        qWarning() << "Unable to determine texture target for shared GL texture";
-//        return;
-//    }
+    //    // Return early if we weren't able to find texture target
+    //    if (std::find(std::begin(targets), std::end(targets), m_properties.target) ==
+    //    std::end(targets)) {
+    //        qWarning() << "Unable to determine texture target for shared GL texture";
+    //        return;
+    //    }
 
-//    // Bind texture once we know its target
-//    gl->glBindTexture(m_properties.target, m_sharedTextureId);
+    //    // Bind texture once we know its target
+    //    gl->glBindTexture(m_properties.target, m_sharedTextureId);
 
-//    // TO DO: Improve by using glGetTextureParameters when available which
-//    // support direct state access
-//#ifndef GL_TEXTURE_MAX_LEVEL
-//#define GL_TEXTURE_MAX_LEVEL        0x813D
-//#endif
+    //    // TO DO: Improve by using glGetTextureParameters when available which
+    //    // support direct state access
+    //#ifndef GL_TEXTURE_MAX_LEVEL
+    //#define GL_TEXTURE_MAX_LEVEL        0x813D
+    //#endif
 
-//#ifndef GL_TEXTURE_WRAP_R
-//#define GL_TEXTURE_WRAP_R           0x8072
-//#endif
+    //#ifndef GL_TEXTURE_WRAP_R
+    //#define GL_TEXTURE_WRAP_R           0x8072
+    //#endif
 
-//    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MAX_LEVEL, reinterpret_cast<int *>(&m_properties.mipLevels));
-//    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MIN_FILTER, reinterpret_cast<int *>(&m_parameters.minificationFilter));
-//    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MAG_FILTER, reinterpret_cast<int *>(&m_parameters.magnificationFilter));
-//    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_R, reinterpret_cast<int *>(&m_parameters.wrapModeX));
-//    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_S, reinterpret_cast<int *>(&m_parameters.wrapModeY));
-//    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_T, reinterpret_cast<int *>(&m_parameters.wrapModeZ));
+    //    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MAX_LEVEL,
+    //    reinterpret_cast<int *>(&m_properties.mipLevels));
+    //    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MIN_FILTER,
+    //    reinterpret_cast<int *>(&m_parameters.minificationFilter));
+    //    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_MAG_FILTER,
+    //    reinterpret_cast<int *>(&m_parameters.magnificationFilter));
+    //    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_R, reinterpret_cast<int
+    //    *>(&m_parameters.wrapModeX)); gl->glGetTexParameteriv(int(m_properties.target),
+    //    GL_TEXTURE_WRAP_S, reinterpret_cast<int *>(&m_parameters.wrapModeY));
+    //    gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_T, reinterpret_cast<int
+    //    *>(&m_parameters.wrapModeZ));
 
-//#ifndef QT_OPENGL_ES_2
-//    // Try to retrieve dimensions (not available on ES 2.0)
-//    if (!ctx->isOpenGLES()) {
-//        QOpenGLFunctions_3_1 *gl3 = ctx->versionFunctions<QOpenGLFunctions_3_1>();
-//        if (!gl3) {
-//            qWarning() << "Failed to retrieve shared texture dimensions";
-//            return;
-//        }
+    //#ifndef QT_OPENGL_ES_2
+    //    // Try to retrieve dimensions (not available on ES 2.0)
+    //    if (!ctx->isOpenGLES()) {
+    //        QOpenGLFunctions_3_1 *gl3 = ctx->versionFunctions<QOpenGLFunctions_3_1>();
+    //        if (!gl3) {
+    //            qWarning() << "Failed to retrieve shared texture dimensions";
+    //            return;
+    //        }
 
-//        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_WIDTH, reinterpret_cast<int *>(&m_properties.width));
-//        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_HEIGHT, reinterpret_cast<int *>(&m_properties.height));
-//        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_DEPTH, reinterpret_cast<int *>(&m_properties.depth));
-//        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_INTERNAL_FORMAT, reinterpret_cast<int *>(&m_properties.format));
-//    }
-//#endif
+    //        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_WIDTH,
+    //        reinterpret_cast<int *>(&m_properties.width));
+    //        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_HEIGHT,
+    //        reinterpret_cast<int *>(&m_properties.height));
+    //        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_DEPTH,
+    //        reinterpret_cast<int *>(&m_properties.depth));
+    //        gl3->glGetTexLevelParameteriv(int(m_properties.target), 0, GL_TEXTURE_INTERNAL_FORMAT,
+    //        reinterpret_cast<int *>(&m_properties.format));
+    //    }
+    //#endif
 
-//    gl->glBindTexture(m_properties.target, 0);
+    //    gl->glBindTexture(m_properties.target, 0);
 }
 
 } // namespace Rhi

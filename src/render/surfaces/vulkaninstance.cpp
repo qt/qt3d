@@ -3,7 +3,7 @@
 ** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
@@ -37,44 +37,38 @@
 **
 ****************************************************************************/
 
-#include "rhigraphicspipeline_p.h"
+#include "vulkaninstance_p.h"
+#include <QVulkanInstance>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
-
-namespace Rhi {
-
-RHIGraphicsPipeline::RHIGraphicsPipeline()
-    : m_rvUbo(nullptr),
-      m_cmdUbo(nullptr),
-      m_pipeline(nullptr),
-      m_shaderResourceBindings(nullptr),
-      m_score(0)
+QVulkanInstance &staticVulkanInstance() noexcept
 {
+    static QVulkanInstance* vkInstance = []
+    {
+        QVulkanInstance* v = new QVulkanInstance;
+#ifndef Q_OS_ANDROID
+        v->setLayers({ "VK_LAYER_LUNARG_standard_validation" });
+#else
+        v->setLayers(QByteArrayList()
+                               << "VK_LAYER_GOOGLE_threading"
+                               << "VK_LAYER_LUNARG_parameter_validation"
+                               << "VK_LAYER_LUNARG_object_tracker"
+                               << "VK_LAYER_LUNARG_core_validation"
+                               << "VK_LAYER_LUNARG_image"
+                               << "VK_LAYER_LUNARG_swapchain"
+                               << "VK_LAYER_GOOGLE_unique_objects");
+#endif
+
+        if (!v->create()) {
+            qWarning("Failed to create Vulkan instance");
+        }
+        return v;
+    }();
+    return *vkInstance;
 }
-
-RHIGraphicsPipeline::~RHIGraphicsPipeline() { }
-
-void RHIGraphicsPipeline::cleanup()
-{
-    delete m_shaderResourceBindings;
-    delete m_rvUbo;
-    delete m_cmdUbo;
-    delete m_pipeline;
-    m_rvUbo = nullptr;
-    m_cmdUbo = nullptr;
-    m_pipeline = nullptr;
-    m_shaderResourceBindings = nullptr;
-    m_ubos.clear();
-    m_attributeNameIdToBindingIndex.clear();
-}
-
-} // Rhi
-
-} // Render
 
 } // Qt3DRender
 

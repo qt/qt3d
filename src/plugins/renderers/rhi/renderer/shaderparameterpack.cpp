@@ -56,18 +56,17 @@ namespace Qt3DRender {
 namespace Render {
 namespace Rhi {
 
-ShaderParameterPack::~ShaderParameterPack()
-{
-}
+ShaderParameterPack::~ShaderParameterPack() { }
 
 void ShaderParameterPack::setUniform(const int glslNameId, const UniformValue &val)
 {
     m_uniforms.insert(glslNameId, val);
 }
 
-void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId texId)
+void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex,
+                                     Qt3DCore::QNodeId texId)
 {
-    for (NamedResource& texture : m_textures) {
+    for (NamedResource &texture : m_textures) {
         if (texture.glslNameId != glslNameId || texture.uniformArrayIndex != uniformArrayIndex)
             continue;
 
@@ -78,9 +77,10 @@ void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex
     m_textures.append(NamedResource(glslNameId, texId, uniformArrayIndex, NamedResource::Texture));
 }
 
-void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id)
+void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex,
+                                   Qt3DCore::QNodeId id)
 {
-    for (NamedResource& image : m_images) {
+    for (NamedResource &image : m_images) {
         if (image.glslNameId != glslNameId || image.uniformArrayIndex != uniformArrayIndex)
             continue;
 

@@ -49,6 +49,7 @@
 ****************************************************************************/
 
 #include <Qt3DQuickExtras/qt3dquickwindow.h>
+#include <Qt3DExtras/Qt3DWindow>
 #include "qt3dquickwindow_p.h"
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <Qt3DQuickExtras/qt3dquickwindow.h>
@@ -113,24 +114,10 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     : QWindow(*new Qt3DQuickWindowPrivate(), parent)
 {
     Q_D(Qt3DQuickWindow);
-    setSurfaceType(QSurface::OpenGLSurface);
 
     resize(1024, 768);
 
-    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-#ifdef QT_OPENGL_ES_2
-    format.setRenderableType(QSurfaceFormat::OpenGLES);
-#else
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-#endif
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
-    format.setStencilBufferSize(8);
-    setFormat(format);
-    QSurfaceFormat::setDefaultFormat(format);
+    Qt3DExtras::setupWindowSurface(this, Qt3DRender::API::OpenGL);
 
     d->m_renderAspect = new Qt3DRender::QRenderAspect;
     if (parent && parent->screen())

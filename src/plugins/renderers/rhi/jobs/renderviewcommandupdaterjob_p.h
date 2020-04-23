@@ -74,7 +74,8 @@ public:
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
     inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
-    inline void setRenderables(const EntityRenderCommandDataPtr &renderables, int offset, int count) Q_DECL_NOTHROW
+    inline void setRenderables(const EntityRenderCommandDataPtr &renderables, int offset,
+                               int count) Q_DECL_NOTHROW
     {
         m_offset = offset;
         m_count = count;

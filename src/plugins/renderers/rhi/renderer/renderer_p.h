@@ -144,11 +144,14 @@ class ResourceAccessor;
 
 using ComputableEntityFilter = FilterEntityByComponentJob<Render::ComputeCommand, Render::Material>;
 using ComputableEntityFilterPtr = QSharedPointer<ComputableEntityFilter>;
-using RenderableEntityFilter = FilterEntityByComponentJob<Render::GeometryRenderer, Render::Material>;
+using RenderableEntityFilter =
+        FilterEntityByComponentJob<Render::GeometryRenderer, Render::Material>;
 using RenderableEntityFilterPtr = QSharedPointer<RenderableEntityFilter>;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
-using SynchronizerPostFramePtr = GenericLambdaJobAndPostFramePtr<std::function<void ()>, std::function<void (Qt3DCore::QAspectManager *)>>;
+using SynchronizerPostFramePtr =
+        GenericLambdaJobAndPostFramePtr<std::function<void()>,
+                                        std::function<void(Qt3DCore::QAspectManager *)>>;
 
 namespace Rhi {
 
@@ -208,20 +211,33 @@ public:
     void skipNextFrame() override;
     void jobsDone(Qt3DCore::QAspectManager *manager) override;
 
-    void setPendingEvents(const QList<QPair<QObject *, QMouseEvent>> &mouseEvents, const QList<QKeyEvent> &keyEvents) override;
+    void setPendingEvents(const QList<QPair<QObject *, QMouseEvent>> &mouseEvents,
+                          const QList<QKeyEvent> &keyEvents) override;
 
     QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
-    inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
-    inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
+    inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const
+    {
+        return m_updateShaderDataTransformJob;
+    }
+    inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const
+    {
+        return m_filterCompatibleTechniqueJob;
+    }
     inline SynchronizerPostFramePtr introspectShadersJob() const { return m_introspectShaderJob; }
     inline Qt3DCore::QAspectJobPtr bufferGathererJob() const { return m_bufferGathererJob; }
     inline Qt3DCore::QAspectJobPtr textureGathererJob() const { return m_textureGathererJob; }
     inline LightGathererPtr lightGathererJob() const { return m_lightGathererJob; }
-    inline RenderableEntityFilterPtr renderableEntityFilterJob() const { return m_renderableEntityFilterJob; }
-    inline ComputableEntityFilterPtr computableEntityFilterJob() const { return m_computableEntityFilterJob; }
+    inline RenderableEntityFilterPtr renderableEntityFilterJob() const
+    {
+        return m_renderableEntityFilterJob;
+    }
+    inline ComputableEntityFilterPtr computableEntityFilterJob() const
+    {
+        return m_computableEntityFilterJob;
+    }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override;
 
@@ -234,18 +250,14 @@ public:
     // Executed in secondary GL thread
     void loadShader(Shader *shader, Qt3DRender::Render::HShader shaderHandle) override;
 
-
     void updateResources();
     void updateTexture(Texture *texture);
     void cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId);
     void cleanupShader(const Shader *shader);
     void downloadGLBuffers();
     void blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
-                         Qt3DCore::QNodeId outputRenderTargetId,
-                         QRect inputRect,
-                         QRect outputRect,
+                         Qt3DCore::QNodeId outputRenderTargetId, QRect inputRect, QRect outputRect,
                          GLuint defaultFramebuffer);
-
 
     struct RHIPassInfo
     {
@@ -260,19 +272,16 @@ public:
 
     // For Scene2D rendering
     void setOpenGLContext(QOpenGLContext *context) override;
-    bool accessOpenGLTexture(Qt3DCore::QNodeId nodeId,
-                             QOpenGLTexture **texture,
-                             QMutex **lock,
+    bool accessOpenGLTexture(Qt3DCore::QNodeId nodeId, QOpenGLTexture **texture, QMutex **lock,
                              bool readonly) override;
     QSharedPointer<RenderBackendResourceAccessor> resourceAccessor() const override;
-
 
     const GraphicsApiFilterData *contextInfo() const;
     SubmissionContext *submissionContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
-    QList<QPair<QObject*, QMouseEvent>> pendingPickingEvents() const;
+    QList<QPair<QObject *, QMouseEvent>> pendingPickingEvents() const;
     QList<QKeyEvent> pendingKeyEvents() const;
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
@@ -284,10 +293,7 @@ public:
 
     struct ViewSubmissionResultData
     {
-        ViewSubmissionResultData()
-            : lastBoundFBOId(0)
-            , surface(nullptr)
-        {}
+        ViewSubmissionResultData() : lastBoundFBOId(0), surface(nullptr) { }
 
         uint lastBoundFBOId;
         QSurface *surface;
@@ -299,8 +305,8 @@ public:
     void setScreen(QScreen *scr) override;
     QScreen *screen() const override;
 
-    float* textureTransform() noexcept { return m_textureTransform; }
-    const float* textureTransform() const noexcept { return m_textureTransform; }
+    float *textureTransform() noexcept { return m_textureTransform; }
+    const float *textureTransform() const noexcept { return m_textureTransform; }
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
 #else
@@ -310,7 +316,7 @@ private:
     bool canRender() const;
 
     Qt3DCore::QServiceLocator *m_services;
-    QRenderAspect* m_aspect;
+    QRenderAspect *m_aspect;
     NodeManagers *m_nodesManager;
 
     // Frame graph root
@@ -339,7 +345,8 @@ private:
     QVector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
 
-    struct DirtyBits {
+    struct DirtyBits
+    {
         BackendNodeDirtySet marked; // marked dirty since last job build
         BackendNodeDirtySet remaining; // remaining dirty after jobs have finished
     };
@@ -407,7 +414,7 @@ private:
     QScreen *m_screen = nullptr;
     QSharedPointer<ResourceAccessor> m_scene2DResourceAccessor;
 
-    QOffscreenSurface *m_fallbackSurface{};
+    QOffscreenSurface *m_fallbackSurface {};
 
     bool m_hasSwapChain = false;
 
@@ -418,10 +425,13 @@ private:
 
     float m_textureTransform[4];
 
-    void updateGraphicsPipeline(RenderCommand& command, RenderView *rv, int renderViewIndex);
-    bool uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv, RenderCommand &command);
-    bool uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv, const RenderCommand &command);
-    bool performDraw(QRhiCommandBuffer *cb, const QRhiViewport& vp, const QRhiScissor* scissor, const RenderCommand &command);
+    void updateGraphicsPipeline(RenderCommand &command, RenderView *rv, int renderViewIndex);
+    bool uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
+                                 RenderCommand &command);
+    bool uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
+                              const RenderCommand &command);
+    bool performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp, const QRhiScissor *scissor,
+                     const RenderCommand &command);
 };
 
 } // namespace Rhi

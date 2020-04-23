@@ -99,7 +99,7 @@ Q_AUTOTEST_EXPORT Technique *findTechniqueForEffect(NodeManagers *manager,
                                                     const TechniqueFilter *techniqueFilter,
                                                     Effect *effect);
 
-typedef QVarLengthArray<RenderPass*, 4> RenderPassList;
+typedef QVarLengthArray<RenderPass *, 4> RenderPassList;
 Q_AUTOTEST_EXPORT RenderPassList findRenderPassesForTechnique(NodeManagers *manager,
                                                               const RenderPassFilter *passFilter,
                                                               Technique *technique);
@@ -135,16 +135,14 @@ using MaterialParameterGathererData = QHash<Qt3DCore::QNodeId, QVector<RenderPas
 
 Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                                              ParameterManager *manager,
-                                                             Material *material,
-                                                             Effect *effect,
+                                                             Material *material, Effect *effect,
                                                              Technique *technique);
 
 Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                                            const QVector<Qt3DCore::QNodeId> &parameterIds);
 
 template<class T>
-void parametersFromParametersProvider(ParameterInfoList *infoList,
-                                      ParameterManager *manager,
+void parametersFromParametersProvider(ParameterInfoList *infoList, ParameterManager *manager,
                                       T *provider)
 {
     addParametersForIds(infoList, manager, provider->parameters());
@@ -154,7 +152,7 @@ Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoL
                                                                   const int nameId);
 
 Q_AUTOTEST_EXPORT void addStatesToRenderStateSet(RenderStateSet *stateSet,
-                                                 const QVector<Qt3DCore::QNodeId>& stateIds,
+                                                 const QVector<Qt3DCore::QNodeId> &stateIds,
                                                  RenderStateManager *manager);
 
 typedef QHash<int, QVariant> UniformBlockValueBuilderHash;
@@ -166,16 +164,16 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 
     QT3D_ALIGNED_MALLOC_AND_FREE()
 
-    void buildActiveUniformNameValueMapHelper(ShaderData *currentShaderData,
+    void buildActiveUniformNameValueMapHelper(const ShaderData *currentShaderData,
                                               const QString &blockName,
                                               const QString &qmlPropertyName,
                                               const QVariant &value);
-    void buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData,
+    void buildActiveUniformNameValueMapStructHelper(const ShaderData *rShaderData,
                                                     const QString &blockName,
                                                     const QString &qmlPropertyName = QString());
 
     bool updatedPropertiesOnly;
-    QHash<QString, ShaderUniform> uniforms;
+    QSet<QString> uniforms;
     UniformBlockValueBuilderHash activeUniformNamesToValue;
     ShaderDataManager *shaderDataManager;
     TextureManager *textureManager;
