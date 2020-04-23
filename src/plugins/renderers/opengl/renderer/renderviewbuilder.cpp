@@ -89,7 +89,7 @@ public:
 
         // Split among the ideal number of command builders
         const int jobCount = m_renderViewCommandBuilderJobs.size();
-        const int idealPacketSize = std::min(std::max(100, entities.size() / jobCount), entities.size());
+        const int idealPacketSize = std::min(std::max(10, entities.size() / jobCount), entities.size());
         // Try to split work into an ideal number of workers
         const int m = findIdealNumberOfWorkers(entities.size(), idealPacketSize, jobCount);
 
@@ -348,9 +348,9 @@ public:
             }
 
             // Split among the number of command builders
-            // The idealPacketSize is at least 100 entities per worker
-            const int idealPacketSize = std::min(std::max(100, filteredCommandData->size() / RenderViewBuilder::defaultJobCount()), filteredCommandData->size());
-            const int m = findIdealNumberOfWorkers(filteredCommandData->size(), idealPacketSize, m_renderViewCommandUpdaterJobs.size());
+            const int jobCount = m_renderViewCommandUpdaterJobs.size();
+            const int idealPacketSize = std::min(std::max(10, filteredCommandData->size() / jobCount), filteredCommandData->size());
+            const int m = findIdealNumberOfWorkers(filteredCommandData->size(), idealPacketSize, jobCount);
 
             for (int i = 0; i < m; ++i) {
                 const RenderViewCommandUpdaterJobPtr renderViewCommandBuilder = m_renderViewCommandUpdaterJobs.at(i);
