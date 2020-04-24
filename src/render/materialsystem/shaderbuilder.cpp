@@ -44,10 +44,10 @@
 #include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DCore/private/qurlhelper_p.h>
 
-#include <QtGui/private/qshaderformat_p.h>
-#include <QtGui/private/qshadergraphloader_p.h>
-#include <QtGui/private/qshadergenerator_p.h>
-#include <QtGui/private/qshadernodesloader_p.h>
+#include <Qt3DRender/private/qshaderformat_p.h>
+#include <Qt3DRender/private/qshadergraphloader_p.h>
+#include <Qt3DRender/private/qshadergenerator_p.h>
+#include <Qt3DRender/private/qshadernodesloader_p.h>
 
 #include <QFile>
 #include <QFileInfo>
@@ -82,7 +82,7 @@ public:
         load();
     }
 
-    QHash<QString, QShaderNode> prototypes() const
+    QHash<QString, Qt3DRender::QShaderNode> prototypes() const
     {
         return m_prototypes;
     }
@@ -96,14 +96,14 @@ private:
             return;
         }
 
-        QShaderNodesLoader loader;
+        Qt3DRender::QShaderNodesLoader loader;
         loader.setDevice(&file);
         loader.load();
         m_prototypes = loader.nodes();
     }
 
     QString m_fileName;
-    QHash<QString, QShaderNode> m_prototypes;
+    QHash<QString, Qt3DRender::QShaderNode> m_prototypes;
 };
 
 Q_GLOBAL_STATIC(GlobalShaderPrototypes, qt3dGlobalShaderPrototypes)
@@ -232,6 +232,8 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
 
     auto format = QShaderFormat();
     format.setApi(m_graphicsApi.m_api == QGraphicsApiFilter::OpenGLES ? QShaderFormat::OpenGLES
+                : m_graphicsApi.m_api == QGraphicsApiFilter::Vulkan ? QShaderFormat::VulkanFlavoredGLSL
+                : m_graphicsApi.m_api == QGraphicsApiFilter::RHI ? QShaderFormat::RHI
                 : m_graphicsApi.m_profile == QGraphicsApiFilter::CoreProfile ? QShaderFormat::OpenGLCoreProfile
                 : m_graphicsApi.m_profile == QGraphicsApiFilter::CompatibilityProfile ? QShaderFormat::OpenGLCompatibilityProfile
                 : QShaderFormat::OpenGLNoProfile);
@@ -244,7 +246,8 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
     generator.graph = graph;
 
     const auto code = generator.createShaderCode(m_enabledLayers);
-    m_codes.insert(type, QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl")));
+    const auto deincludified = QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl"));
+    m_codes.insert(type, deincludified);
     m_dirtyTypes.remove(type);
 
     m_pendingUpdates.push_back({ peerId(),
@@ -276,7 +279,7 @@ void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         markDirty(AbstractRenderer::ShadersDirty);
     }
 
-    static const QVector<std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const>> shaderTypesToGetters = {
+    static const QVarLengthArray<std::pair<QShaderProgram::ShaderType, QUrl (QShaderProgramBuilder::*)() const>, 6> shaderTypesToGetters {
         {QShaderProgram::Vertex, &QShaderProgramBuilder::vertexShaderGraph},
         {QShaderProgram::TessellationControl, &QShaderProgramBuilder::tessellationControlShaderGraph},
         {QShaderProgram::TessellationEvaluation, &QShaderProgramBuilder::tessellationEvaluationShaderGraph},

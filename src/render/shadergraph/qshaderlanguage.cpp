@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Paul Lemire
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
@@ -37,50 +37,21 @@
 **
 ****************************************************************************/
 
-#include "renderviewcommandupdaterjob_p.h"
-#include <Qt3DRender/private/job_common_p.h>
-#include <renderer_p.h>
-#include <renderview_p.h>
+#include "qshaderlanguage_p.h"
+
+#include <QtCore/qcoreapplication.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-
-namespace Render {
-
-namespace OpenGL {
-
-namespace {
-int renderViewInstanceCounter = 0;
-} // anonymous
-
-RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
-    : Qt3DCore::QAspectJob()
-    , m_offset(0)
-    , m_count(0)
-    , m_renderView(nullptr)
-    , m_renderer(nullptr)
-    , m_renderables(nullptr)
+namespace Qt3DRender
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++);
-}
-
-void RenderViewCommandUpdaterJob::run()
+// Note: to be invoked explicitly. Relying for example on
+// Q_COREAPP_STARTUP_FUNCTION would not be acceptable in static builds.
+void qt_register_ShaderLanguage_enums()
 {
-    // Build RenderCommand should perform the culling as we have no way to determine
-    // if a child has a mesh in the view frustum while its parent isn't contained in it.
-    if (!m_renderView->noDraw()) {
-        if (m_count == 0)
-            return;
-        // Update Render Commands (Uniform Change, Depth Change)
-        m_renderView->updateRenderCommand(m_renderables, m_offset, m_count);
-    }
+    qRegisterMetaType<QShaderLanguage::StorageQualifier>();
+    qRegisterMetaType<QShaderLanguage::VariableType>();
 }
-
-} // OpenGL
-
-} // Render
-
-} // Qt3DRender
+}
 
 QT_END_NAMESPACE

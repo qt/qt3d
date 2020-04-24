@@ -220,7 +220,8 @@ void QGeometry::removeAttribute(QAttribute *attribute)
 {
     Q_ASSERT(attribute);
     Q_D(QGeometry);
-    d->m_attributes.removeOne(attribute);
+    if (!d->m_attributes.removeOne(attribute))
+        return;
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(attribute);
     d->update();

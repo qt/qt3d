@@ -93,7 +93,8 @@ void QChannelMapper::removeMapping(QAbstractChannelMapping *mapping)
 {
     Q_ASSERT(mapping);
     Q_D(QChannelMapper);
-    d->m_mappings.removeOne(mapping);
+    if (!d->m_mappings.removeOne(mapping))
+        return;
     d->update();
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(mapping);

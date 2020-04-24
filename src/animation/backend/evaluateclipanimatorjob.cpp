@@ -100,7 +100,6 @@ void EvaluateClipAnimatorJob::run()
     clipAnimator->setLastGlobalTimeNS(globalTimeNS);
     clipAnimator->setLastLocalTime(preEvaluationDataForClip.localTime);
     clipAnimator->setLastNormalizedLocalTime(preEvaluationDataForClip.normalizedLocalTime);
-    clipAnimator->setNormalizedLocalTime(-1.0f); // Re-set to something invalid.
 
     // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
     auto record = prepareAnimationRecord(clipAnimator->peerId(),
@@ -111,6 +110,11 @@ void EvaluateClipAnimatorJob::run()
 
     // Trigger callbacks either on this thread or by notifying the gui thread.
     auto callbacks = prepareCallbacks(clipAnimator->mappingData(), formattedClipResults);
+
+    // Update the normalized time on the backend node so that
+    // frontend <-> backend sync will not mark things dirty
+    // unless the frontend normalized time really is different
+    clipAnimator->setNormalizedLocalTime(record.normalizedTime, false);
 
     setPostFrameData(record, callbacks);
 }

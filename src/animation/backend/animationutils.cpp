@@ -80,7 +80,8 @@ ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
                                                 animatorData.playbackRate, clip->duration(),
                                                 animatorData.loopCount, result.currentLoop);
     result.isFinalFrame = isFinalFrame(result.localTime, clip->duration(),
-                                       result.currentLoop, animatorData.loopCount);
+                                       result.currentLoop, animatorData.loopCount,
+                                       animatorData.playbackRate);
     const bool hasNormalizedTime = isValidNormalizedTime(animatorData.normalizedLocalTime);
     result.normalizedLocalTime = hasNormalizedTime ? animatorData.normalizedLocalTime
                                                    : result.localTime / clip->duration();
@@ -112,9 +113,10 @@ double localTimeFromElapsedTime(double t_current_local,
         t_local = std::fmod(t_local, duration);
 
         // Ensure we clamp to end of final loop
-        if (int(loopNumber) == loopCount) {
+
+        if (int(loopNumber) == loopCount || int(loopNumber) < 0) {
             loopNumber = loopCount - 1;
-            t_local = duration;
+            t_local = playbackRate >= 0.0 ? duration : 0.0;
         }
     }
 

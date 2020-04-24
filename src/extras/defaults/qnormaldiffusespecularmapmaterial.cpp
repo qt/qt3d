@@ -75,13 +75,17 @@ QNormalDiffuseSpecularMapMaterialPrivate::QNormalDiffuseSpecularMapMaterialPriva
     , m_normalDiffuseSpecularGL3Technique(new QTechnique())
     , m_normalDiffuseSpecularGL2Technique(new QTechnique())
     , m_normalDiffuseSpecularES2Technique(new QTechnique())
+    , m_normalDiffuseSpecularRHITechnique(new QTechnique())
     , m_normalDiffuseSpecularGL3RenderPass(new QRenderPass())
     , m_normalDiffuseSpecularGL2RenderPass(new QRenderPass())
     , m_normalDiffuseSpecularES2RenderPass(new QRenderPass())
+    , m_normalDiffuseSpecularRHIRenderPass(new QRenderPass())
     , m_normalDiffuseSpecularGL3Shader(new QShaderProgram())
     , m_normalDiffuseSpecularGL3ShaderBuilder(new QShaderProgramBuilder())
     , m_normalDiffuseSpecularGL2ES2Shader(new QShaderProgram())
     , m_normalDiffuseSpecularGL2ES2ShaderBuilder(new QShaderProgramBuilder())
+    , m_normalDiffuseSpecularRHIShader(new QShaderProgram())
+    , m_normalDiffuseSpecularRHIShaderBuilder(new QShaderProgramBuilder())
     , m_filterKey(new QFilterKey)
 {
     m_diffuseTexture->setMagnificationFilter(QAbstractTexture::Linear);
@@ -136,6 +140,14 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
                                                                   QStringLiteral("specularTexture"),
                                                                   QStringLiteral("normalTexture")});
 
+    m_normalDiffuseSpecularRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default.vert"))));
+    m_normalDiffuseSpecularRHIShaderBuilder->setParent(q);
+    m_normalDiffuseSpecularRHIShaderBuilder->setShaderProgram(m_normalDiffuseSpecularRHIShader);
+    m_normalDiffuseSpecularRHIShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_normalDiffuseSpecularRHIShaderBuilder->setEnabledLayers({QStringLiteral("diffuseTexture"),
+                                                               QStringLiteral("specularTexture"),
+                                                               QStringLiteral("normalTexture")});
+
     m_normalDiffuseSpecularGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_normalDiffuseSpecularGL3Technique->graphicsApiFilter()->setMajorVersion(3);
     m_normalDiffuseSpecularGL3Technique->graphicsApiFilter()->setMinorVersion(1);
@@ -151,6 +163,10 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
     m_normalDiffuseSpecularES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_normalDiffuseSpecularES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_normalDiffuseSpecularRHITechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+    m_normalDiffuseSpecularRHITechnique->graphicsApiFilter()->setMajorVersion(1);
+    m_normalDiffuseSpecularRHITechnique->graphicsApiFilter()->setMinorVersion(0);
+
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
     m_filterKey->setValue(QStringLiteral("forward"));
@@ -158,18 +174,22 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
     m_normalDiffuseSpecularGL3Technique->addFilterKey(m_filterKey);
     m_normalDiffuseSpecularGL2Technique->addFilterKey(m_filterKey);
     m_normalDiffuseSpecularES2Technique->addFilterKey(m_filterKey);
+    m_normalDiffuseSpecularRHITechnique->addFilterKey(m_filterKey);
 
     m_normalDiffuseSpecularGL3RenderPass->setShaderProgram(m_normalDiffuseSpecularGL3Shader);
     m_normalDiffuseSpecularGL2RenderPass->setShaderProgram(m_normalDiffuseSpecularGL2ES2Shader);
     m_normalDiffuseSpecularES2RenderPass->setShaderProgram(m_normalDiffuseSpecularGL2ES2Shader);
+    m_normalDiffuseSpecularRHIRenderPass->setShaderProgram(m_normalDiffuseSpecularRHIShader);
 
     m_normalDiffuseSpecularGL3Technique->addRenderPass(m_normalDiffuseSpecularGL3RenderPass);
     m_normalDiffuseSpecularGL2Technique->addRenderPass(m_normalDiffuseSpecularGL2RenderPass);
     m_normalDiffuseSpecularES2Technique->addRenderPass(m_normalDiffuseSpecularES2RenderPass);
+    m_normalDiffuseSpecularRHITechnique->addRenderPass(m_normalDiffuseSpecularRHIRenderPass);
 
     m_normalDiffuseSpecularEffect->addTechnique(m_normalDiffuseSpecularGL3Technique);
     m_normalDiffuseSpecularEffect->addTechnique(m_normalDiffuseSpecularGL2Technique);
     m_normalDiffuseSpecularEffect->addTechnique(m_normalDiffuseSpecularES2Technique);
+    m_normalDiffuseSpecularEffect->addTechnique(m_normalDiffuseSpecularRHITechnique);
 
     m_normalDiffuseSpecularEffect->addParameter(m_ambientParameter);
     m_normalDiffuseSpecularEffect->addParameter(m_diffuseParameter);

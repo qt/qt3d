@@ -82,3 +82,7 @@ AssimpLog.txt
 *_wrapper.bat
 wrapper.sh
 wrapper.bat
+
+# macOS files
+.DS_Store
+

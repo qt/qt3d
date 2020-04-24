@@ -250,8 +250,7 @@ QRenderCaptureReply *QRenderCapturePrivate::takeReply(int captureId)
     QMutexLocker lock(&m_mutex);
     for (int i = 0; i < m_waitingReplies.size(); ++i) {
         if (m_waitingReplies[i]->d_func()->m_captureId == captureId) {
-            reply = m_waitingReplies[i];
-            m_waitingReplies.remove(i);
+            reply = m_waitingReplies.takeAt(i);
             break;
         }
     }
@@ -285,12 +284,12 @@ QRenderCapture::QRenderCapture(Qt3DCore::QNode *parent)
 }
 
 /*!
- * \deprecated
- * Used to request render capture. User can specify a \a captureId to identify
- * the request. The requestId does not have to be unique. Only one render capture result
- * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
- * The function returns a QRenderCaptureReply object, which receives the captured image
- * when it is done. The user is responsible for deallocating the returned object.
+ * \deprecated Used to request render capture. User can specify a \a captureId
+ * to identify the request. The requestId does not have to be unique. Only one
+ * render capture result is produced per requestCapture call even if the frame
+ * graph has multiple leaf nodes. The function returns a QRenderCaptureReply
+ * object, which receives the captured image when it is done. The user is
+ * responsible for deallocating the returned object by calling deleteLater().
  */
 QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
 {
@@ -309,10 +308,11 @@ QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
 }
 
 /*!
- * Used to request render capture from a specified \a rect. Only one render capture result
- * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
- * The function returns a QRenderCaptureReply object, which receives the captured image
- * when it is done. The user is responsible for deallocating the returned object.
+ * Used to request render capture from a specified \a rect. Only one render
+ * capture result is produced per requestCapture call even if the frame graph
+ * has multiple leaf nodes. The function returns a QRenderCaptureReply object,
+ * which receives the captured image when it is done. The user is responsible
+ * for deallocating the returned object by calling deleteLater().
  */
 QRenderCaptureReply *QRenderCapture::requestCapture(const QRect &rect)
 {
@@ -334,10 +334,11 @@ QRenderCaptureReply *QRenderCapture::requestCapture(const QRect &rect)
 }
 
 /*!
- * Used to request render capture. Only one render capture result is produced per
- * requestCapture call even if the frame graph has multiple leaf nodes.
- * The function returns a QRenderCaptureReply object, which receives the captured image
- * when it is done. The user is responsible for deallocating the returned object.
+ * Used to request render capture. Only one render capture result is produced
+ * per requestCapture call even if the frame graph has multiple leaf nodes. The
+ * function returns a QRenderCaptureReply object, which receives the captured
+ * image when it is done. The user is responsible for deallocating the returned
+ * object by calling deleterLater().
  */
 Qt3DRender::QRenderCaptureReply *QRenderCapture::requestCapture()
 {

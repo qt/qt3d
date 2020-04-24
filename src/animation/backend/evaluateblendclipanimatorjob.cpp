@@ -125,11 +125,10 @@ void EvaluateBlendClipAnimatorJob::run()
     blendedClipAnimator->setLastGlobalTimeNS(globalTimeNS);
     blendedClipAnimator->setLastLocalTime(localTime);
     blendedClipAnimator->setLastNormalizedLocalTime(float(phase));
-    blendedClipAnimator->setNormalizedLocalTime(-1.0f); // Re-set to something invalid.
     blendedClipAnimator->setCurrentLoop(animatorData.currentLoop);
 
     // Prepare the change record
-    const bool finalFrame = isFinalFrame(localTime, duration, animatorData.currentLoop, animatorData.loopCount);
+    const bool finalFrame = isFinalFrame(localTime, duration, animatorData.currentLoop, animatorData.loopCount, animatorData.playbackRate);
     const QVector<MappingData> mappingData = blendedClipAnimator->mappingData();
     auto record = prepareAnimationRecord(blendedClipAnimator->peerId(),
                                          mappingData,
@@ -139,6 +138,11 @@ void EvaluateBlendClipAnimatorJob::run()
 
     // Trigger callbacks either on this thread or by notifying the gui thread.
     auto callbacks = prepareCallbacks(mappingData, blendedResults);
+
+    // Update the normalized time on the backend node so that
+    // frontend <-> backend sync will not mark things dirty
+    // unless the frontend normalized time really is different
+    blendedClipAnimator->setNormalizedLocalTime(record.normalizedTime, false);
 
     setPostFrameData(record, callbacks);
 }

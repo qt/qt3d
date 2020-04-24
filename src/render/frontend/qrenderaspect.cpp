@@ -165,6 +165,8 @@
 #include <Qt3DRender/private/updatelevelofdetailjob_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/pickeventfilter_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
+#include <Qt3DRender/private/qgraphicsapifilter_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -189,6 +191,81 @@ QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
 
+namespace {
+
+QString dumpNode(const Qt3DCore::QEntity *n) {
+    auto formatNode = [](const Qt3DCore::QNode *n) {
+        QString res = QString(QLatin1String("%1{%2}"))
+                          .arg(QLatin1String(n->metaObject()->className()))
+                          .arg(n->id().id());
+        if (!n->objectName().isEmpty())
+            res += QString(QLatin1String(" (%1)")).arg(n->objectName());
+        if (!n->isEnabled())
+            res += QLatin1String(" [D]");
+        return res;
+    };
+
+    return formatNode(n);
+}
+
+QString dumpNodeFilters(const QString &filterType, const QVector<Qt3DRender::QFilterKey*> &filters) {
+    QString res;
+
+    QStringList kv;
+    for (auto filter: filters)
+        kv.push_back(QString(QLatin1String("%1: %2")).arg(filter->name(), filter->value().toString()));
+    if (kv.size())
+        res += QString(QLatin1String("%1 <%2>")).arg(filterType, kv.join(QLatin1String(", ")));
+
+    return res;
+}
+
+QStringList dumpSGFilterState(Qt3DRender::Render::TechniqueManager *manager,
+                              const Qt3DRender::GraphicsApiFilterData *contextData,
+                              const Qt3DCore::QNode *n, int level = 0)
+{
+    using namespace Qt3DRender;
+
+    QStringList reply;
+    const auto *entity = qobject_cast<const Qt3DCore::QEntity *>(n);
+    if (entity != nullptr) {
+        QString res = dumpNode(entity);
+        auto materials = entity->componentsOfType<QMaterial>();
+        if (materials.size() && materials.front()->effect()) {
+            auto m = materials.front();
+            const auto techniques = m->effect()->techniques();
+            for (auto t: m->effect()->techniques()) {
+                auto apiFilter = t->graphicsApiFilter();
+                if (apiFilter) {
+                    auto backendTechnique = manager->lookupResource(t->id());
+                    if (backendTechnique &&
+                        !(*contextData == *backendTechnique->graphicsApiFilter()))
+                        continue; // skip technique that doesn't match current renderer
+                }
+
+                QStringList filters;
+                filters += dumpNodeFilters(QLatin1String("T"), t->filterKeys());
+
+                const auto &renderPasses = t->renderPasses();
+                for (auto r: renderPasses)
+                    filters += dumpNodeFilters(QLatin1String("RP"), r->filterKeys());
+
+                if (filters.size())
+                    res += QLatin1String(" [ %1 ]").arg(filters.join(QLatin1String(" ")));
+            }
+        }
+        reply += res.rightJustified(res.length() + level * 2, ' ');
+        level++;
+    }
+
+    const auto children = n->childNodes();
+    for (auto *child: children)
+        reply += dumpSGFilterState(manager, contextData, child, level);
+
+    return reply;
+}
+
+}
 namespace Qt3DRender {
 
 #define CreateSynchronizerJobPtr(lambda, type) \
@@ -240,8 +317,11 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
 
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
+    m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateLevelOfDetailJob->addDependency(m_expandBoundingVolumeJob);
+    m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
+    m_rayCastingJob->addDependency(m_expandBoundingVolumeJob);
 }
 
 /*! \internal */
@@ -537,7 +617,7 @@ QRenderAspect::~QRenderAspect()
 // Called by Scene3DRenderer only
 void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 {
-    if (m_renderer->api() == Render::AbstractRenderer::OpenGL)
+    if (m_renderer->api() == API::OpenGL)
         m_renderer->setOpenGLContext(context);
     m_renderer->initialize();
 }
@@ -612,6 +692,9 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
+        const QVector<QAspectJobPtr> preRenderingJobs = d->createPreRendererJobs();
+        jobs.append(preRenderingJobs);
+
         // Don't spawn any rendering jobs, if the renderer decides to skip this frame
         // Note: this only affects rendering jobs (jobs that load buffers,
         // perform picking,... must still be run)
@@ -630,12 +713,8 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
         // Create the jobs to build the frame
         const bool entitiesEnabledDirty = dirtyBitsForFrame & AbstractRenderer::EntityEnabledDirty;
-        if (entitiesEnabledDirty) {
+        if (entitiesEnabledDirty)
             jobs.push_back(d->m_updateTreeEnabledJob);
-            // This dependency is added here because we clear all dependencies
-            // at the start of this function.
-            d->m_calculateBoundingVolumeJob->addDependency(d->m_updateTreeEnabledJob);
-        }
 
         if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
             jobs.push_back(d->m_worldTransformJob);
@@ -663,9 +742,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         if (layersDirty)
             jobs.push_back(d->m_updateEntityLayersJob);
 
-        const QVector<QAspectJobPtr> preRenderingJobs = d->createPreRendererJobs();
-        jobs.append(preRenderingJobs);
-
         const QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
         jobs.append(renderBinJobs);
     }
@@ -686,6 +762,13 @@ QVariant QRenderAspect::executeCommand(const QStringList &args)
                 return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraph();
             if (args.front() == QLatin1String("framepaths"))
                 return Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphPaths().join(QLatin1String("\n"));
+            if (args.front() == QLatin1String("filterstates")) {
+                const auto activeContextInfo = d->m_renderer->contextInfo();
+                QString res = QLatin1String("Active Graphics API: ") + activeContextInfo->toString() + QLatin1String("\n");
+                res += QLatin1String("Render Views:\n  ") + Qt3DRender::QFrameGraphNodePrivate::get(fg)->dumpFrameGraphFilterState().join(QLatin1String("\n  ")) + QLatin1String("\n");
+                res += QLatin1String("Scene Graph:\n  ") + dumpSGFilterState(d->m_nodeManagers->techniqueManager(), activeContextInfo, d->m_root).join(QLatin1String("\n  "));
+                return res;
+            }
         }
         if (args.front() == QLatin1String("scenegraph"))
             return droot->dumpSceneGraph();
@@ -803,7 +886,7 @@ QVector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
 
     const auto frameMouseEvents = m_pickEventFilter->pendingMouseEvents();
     const auto frameKeyEvents = m_pickEventFilter->pendingKeyEvents();
-    m_renderer->setPendingEvents(frameMouseEvents, m_pickEventFilter->pendingKeyEvents());
+    m_renderer->setPendingEvents(frameMouseEvents, frameKeyEvents);
 
     auto jobs = m_renderer->preRenderingJobs();
 

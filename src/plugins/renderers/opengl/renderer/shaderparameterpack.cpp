@@ -58,6 +58,12 @@ ShaderParameterPack::~ShaderParameterPack()
 {
 }
 
+void ShaderParameterPack::reserve(int uniformCount)
+{
+    m_uniforms.reserve(uniformCount);
+    m_submissionUniformIndices.reserve(uniformCount);
+}
+
 void ShaderParameterPack::setUniform(const int glslNameId, const UniformValue &val)
 {
     m_uniforms.insert(glslNameId, val);
@@ -100,9 +106,9 @@ void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
     m_shaderStorageBuffers.push_back(std::move(blockToSSBO));
 }
 
-void ShaderParameterPack::setSubmissionUniform(const ShaderUniform &uniform)
+void ShaderParameterPack::setSubmissionUniformIndex(const int uniformIdx)
 {
-    m_submissionUniforms.push_back(uniform);
+    m_submissionUniformIndices.push_back(uniformIdx);
 }
 
 } // namespace OpenGL

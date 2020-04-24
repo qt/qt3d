@@ -66,8 +66,8 @@ public:
         One = 1,
         SourceColor = 0x0300,
         SourceAlpha = 0x0302,
-        Source1Alpha,
-        Source1Color,
+        Source1Alpha, // ### Qt 6: Fix -> has same value as OneMinusSourceAlpha
+        Source1Color, // ### Qt 6: Fix -> has same value as DestinationAlpha
         DestinationColor = 0x0306,
         DestinationAlpha = 0x0304,
         SourceAlphaSaturate = 0x0308,

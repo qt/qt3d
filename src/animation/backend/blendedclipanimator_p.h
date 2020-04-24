@@ -70,7 +70,7 @@ public:
     Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
     Qt3DCore::QNodeId clockId() const { return m_clockId; }
     bool isRunning() const { return m_running; }
-    void setNormalizedLocalTime(float normalizedTime);
+    void setNormalizedLocalTime(float normalizedTime, bool allowMarkDirty = true);
     float normalizedLocalTime() const { return m_normalizedLocalTime; }
 
     //  Called by BuildBlendTreeJob

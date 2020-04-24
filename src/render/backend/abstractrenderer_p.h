@@ -54,6 +54,7 @@
 #include <QtCore/qmutex.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/qrenderapi.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtGui/qsurfaceformat.h>
@@ -80,6 +81,7 @@ class QAspectManager;
 namespace Qt3DRender {
 
 class QRenderAspect;
+struct GraphicsApiFilterData;
 
 namespace Render {
 
@@ -91,17 +93,10 @@ class BackendNode;
 class OffscreenSurfaceHelper;
 class Shader;
 class RenderBackendResourceAccessor;
-
 class Q_3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
 public:
     virtual ~AbstractRenderer() {}
-
-    enum API {
-        OpenGL,
-        Vulkan,
-        DirectX
-    };
 
     // Changes made to backend nodes are reported to the Renderer
     enum BackendNodeDirtyFlag {
@@ -190,7 +185,7 @@ public:
     virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
     virtual QSurfaceFormat format() = 0;
     virtual QOpenGLContext *shareContext() const = 0;
-
+    virtual const GraphicsApiFilterData *contextInfo() const = 0;
 
     // These commands are executed in a dedicated command thread
     // More will be added later

@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_SCENE3DCLEANER_P_H
-#define QT3DRENDER_SCENE3DCLEANER_P_H
+#ifndef QT3DRENDER_QSHADERGRAPHLOADER_P_H
+#define QT3DRENDER_QSHADERGRAPHLOADER_P_H
 
 //
 //  W A R N I N G
@@ -51,32 +51,52 @@
 // We mean it.
 //
 
-#include <QtCore/QObject>
+#include <Qt3DRender/private/qt3drender_global_p.h>
+
+#include <Qt3DRender/private/qshadergraph_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-
-class Scene3DRenderer;
-
-class Scene3DCleaner : public QObject
+class QIODevice;
+namespace Qt3DRender
 {
-    Q_OBJECT
+
+class QShaderGraphLoader
+{
 public:
-    explicit Scene3DCleaner(QObject *parent = 0);
-    ~Scene3DCleaner();
+    enum Status : char {
+        Null,
+        Waiting,
+        Ready,
+        Error
+    };
 
-    void setRenderer(Scene3DRenderer *renderer) { m_renderer = renderer; }
+    Q_3DRENDERSHARED_PRIVATE_EXPORT QShaderGraphLoader() noexcept;
 
-public Q_SLOTS:
-    void cleanup();
+    Q_3DRENDERSHARED_PRIVATE_EXPORT Status status() const noexcept;
+    Q_3DRENDERSHARED_PRIVATE_EXPORT QShaderGraph graph() const noexcept;
+
+    Q_3DRENDERSHARED_PRIVATE_EXPORT QIODevice *device() const noexcept;
+    Q_3DRENDERSHARED_PRIVATE_EXPORT void setDevice(QIODevice *device) noexcept;
+
+    Q_3DRENDERSHARED_PRIVATE_EXPORT QHash<QString, QShaderNode> prototypes() const noexcept;
+    Q_3DRENDERSHARED_PRIVATE_EXPORT void setPrototypes(const QHash<QString, QShaderNode> &prototypes) noexcept;
+
+    Q_3DRENDERSHARED_PRIVATE_EXPORT void load();
 
 private:
-    Scene3DRenderer *m_renderer;
+    Status m_status;
+    QIODevice *m_device;
+    QHash<QString, QShaderNode> m_prototypes;
+    QShaderGraph m_graph;
 };
 
-} // namespace Qt3DRender
 
+}
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGraphLoader, Q_MOVABLE_TYPE);
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_SCENE3DCLEANER_H
+Q_DECLARE_METATYPE(Qt3DRender::QShaderGraphLoader)
+Q_DECLARE_METATYPE(Qt3DRender::QShaderGraphLoader::Status)
+
+#endif // QT3DRENDER_QSHADERGRAPHLOADER_P_H

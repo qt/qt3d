@@ -70,7 +70,7 @@ QAspectJobPrivate *QAspectJobPrivate::get(QAspectJob *job)
     return job->d_func();
 }
 
-bool QAspectJobPrivate::isRequired()
+bool QAspectJobPrivate::isRequired() const
 {
     return true;
 }

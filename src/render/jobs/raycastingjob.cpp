@@ -89,7 +89,7 @@ public:
     RayCastingJobPrivate(RayCastingJob *q) : q_ptr(q) { }
     ~RayCastingJobPrivate() override { Q_ASSERT(dispatches.isEmpty()); }
 
-    bool isRequired() override;
+    bool isRequired() const override;
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
     QVector<QPair<RayCaster *, QAbstractRayCaster::Hits>> dispatches;
@@ -99,9 +99,9 @@ public:
 };
 
 
-bool RayCastingJobPrivate::isRequired()
+bool RayCastingJobPrivate::isRequired() const
 {
-    Q_Q(RayCastingJob);
+    Q_Q(const RayCastingJob);
     return q->m_castersDirty || q->m_oneEnabledAtLeast;
 }
 

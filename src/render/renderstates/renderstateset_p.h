@@ -89,9 +89,10 @@ public:
     int changeCost(RenderStateSet* previousState);
 
     StateMaskSet stateMask() const;
-    void merge(RenderStateSet *other);
+    void merge(const RenderStateSet *other);
 
-    QVector<StateVariant> states() const { return m_states; }
+    const QVector<StateVariant>& states() const noexcept { return m_states; }
+    QVector<StateVariant>& states() noexcept { return m_states; }
 
     bool canAddStateOfType(StateMask type) const;
 

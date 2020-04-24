@@ -73,13 +73,17 @@ QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate()
     , m_diffuseSpecularMapGL3Technique(new QTechnique())
     , m_diffuseSpecularMapGL2Technique(new QTechnique())
     , m_diffuseSpecularMapES2Technique(new QTechnique())
+    , m_diffuseSpecularMapRHITechnique(new QTechnique())
     , m_diffuseSpecularMapGL3RenderPass(new QRenderPass())
     , m_diffuseSpecularMapGL2RenderPass(new QRenderPass())
     , m_diffuseSpecularMapES2RenderPass(new QRenderPass())
+    , m_diffuseSpecularMapRHIRenderPass(new QRenderPass())
     , m_diffuseSpecularMapGL3Shader(new QShaderProgram())
     , m_diffuseSpecularMapGL3ShaderBuilder(new QShaderProgramBuilder())
     , m_diffuseSpecularMapGL2ES2Shader(new QShaderProgram())
     , m_diffuseSpecularMapGL2ES2ShaderBuilder(new QShaderProgramBuilder())
+    , m_diffuseSpecularMapRHIShader(new QShaderProgram())
+    , m_diffuseSpecularMapRHIShaderBuilder(new QShaderProgramBuilder())
     , m_filterKey(new QFilterKey)
 {
     m_diffuseTexture->setMagnificationFilter(QAbstractTexture::Linear);
@@ -126,6 +130,14 @@ void QDiffuseSpecularMapMaterialPrivate::init()
                                                                QStringLiteral("specularTexture"),
                                                                QStringLiteral("normal")});
 
+    m_diffuseSpecularMapRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default.vert"))));
+    m_diffuseSpecularMapRHIShaderBuilder->setParent(q);
+    m_diffuseSpecularMapRHIShaderBuilder->setShaderProgram(m_diffuseSpecularMapRHIShader);
+    m_diffuseSpecularMapRHIShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_diffuseSpecularMapRHIShaderBuilder->setEnabledLayers({QStringLiteral("diffuseTexture"),
+                                                            QStringLiteral("specularTexture"),
+                                                            QStringLiteral("normal")});
+
     m_diffuseSpecularMapGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_diffuseSpecularMapGL3Technique->graphicsApiFilter()->setMajorVersion(3);
     m_diffuseSpecularMapGL3Technique->graphicsApiFilter()->setMinorVersion(1);
@@ -141,6 +153,10 @@ void QDiffuseSpecularMapMaterialPrivate::init()
     m_diffuseSpecularMapES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_diffuseSpecularMapES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_diffuseSpecularMapRHITechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+    m_diffuseSpecularMapRHITechnique->graphicsApiFilter()->setMajorVersion(1);
+    m_diffuseSpecularMapRHITechnique->graphicsApiFilter()->setMinorVersion(0);
+
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
     m_filterKey->setValue(QStringLiteral("forward"));
@@ -148,18 +164,22 @@ void QDiffuseSpecularMapMaterialPrivate::init()
     m_diffuseSpecularMapGL3Technique->addFilterKey(m_filterKey);
     m_diffuseSpecularMapGL2Technique->addFilterKey(m_filterKey);
     m_diffuseSpecularMapES2Technique->addFilterKey(m_filterKey);
+    m_diffuseSpecularMapRHITechnique->addFilterKey(m_filterKey);
 
     m_diffuseSpecularMapGL3RenderPass->setShaderProgram(m_diffuseSpecularMapGL3Shader);
     m_diffuseSpecularMapGL2RenderPass->setShaderProgram(m_diffuseSpecularMapGL2ES2Shader);
     m_diffuseSpecularMapES2RenderPass->setShaderProgram(m_diffuseSpecularMapGL2ES2Shader);
+    m_diffuseSpecularMapRHIRenderPass->setShaderProgram(m_diffuseSpecularMapRHIShader);
 
     m_diffuseSpecularMapGL3Technique->addRenderPass(m_diffuseSpecularMapGL3RenderPass);
     m_diffuseSpecularMapGL2Technique->addRenderPass(m_diffuseSpecularMapGL2RenderPass);
     m_diffuseSpecularMapES2Technique->addRenderPass(m_diffuseSpecularMapES2RenderPass);
+    m_diffuseSpecularMapRHITechnique->addRenderPass(m_diffuseSpecularMapRHIRenderPass);
 
     m_diffuseSpecularMapEffect->addTechnique(m_diffuseSpecularMapGL3Technique);
     m_diffuseSpecularMapEffect->addTechnique(m_diffuseSpecularMapGL2Technique);
     m_diffuseSpecularMapEffect->addTechnique(m_diffuseSpecularMapES2Technique);
+    m_diffuseSpecularMapEffect->addTechnique(m_diffuseSpecularMapRHITechnique);
 
     m_diffuseSpecularMapEffect->addParameter(m_ambientParameter);
     m_diffuseSpecularMapEffect->addParameter(m_diffuseParameter);

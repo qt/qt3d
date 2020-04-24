@@ -173,7 +173,7 @@ public:
     ~Renderer();
 
     void dumpInfo() const override;
-    API api() const override { return AbstractRenderer::OpenGL; }
+    API api() const override { return Qt3DRender::API::OpenGL; }
 
     qint64 time() const override;
     void setTime(qint64 time) override;
@@ -270,7 +270,7 @@ public:
     QSharedPointer<RenderBackendResourceAccessor> resourceAccessor() const override;
 
 
-    const GraphicsApiFilterData *contextInfo() const;
+    const GraphicsApiFilterData *contextInfo() const override;
     SubmissionContext *submissionContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }

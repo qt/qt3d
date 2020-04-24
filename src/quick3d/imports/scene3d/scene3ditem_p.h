@@ -71,6 +71,7 @@ class Scene3DRenderer;
 class Scene3DCleaner;
 class Scene3DView;
 class QFrameGraphNode;
+class QRenderSurfaceSelector;
 
 class Scene3DItem : public QQuickItem
 {
@@ -138,16 +139,20 @@ private:
     void updateCameraAspectRatio();
     void mousePressEvent(QMouseEvent *event) override;
     bool needsRender();
+    void updateWindowSurface();
+    void createDummySurface(QWindow *window, QRenderSurfaceSelector *surfaceSelector);
+    void applyAspects();
 
     QStringList m_aspects;
-    Qt3DCore::QEntity *m_entity;
+    // Store as shared pointer so that aspect engine doesn't delete it.
+    QSharedPointer<Qt3DCore::QEntity> m_entity;
     Qt3DCore::QEntity *m_viewHolderEntity;
     Qt3DRender::QFrameGraphNode *m_viewHolderFG;
 
     Qt3DCore::QAspectEngine *m_aspectEngine;
+    Qt3DCore::QAspectEngine *m_aspectToDelete;
     QRenderAspect *m_renderAspect;
     Scene3DRenderer *m_renderer;
-    Scene3DCleaner *m_rendererCleaner;
 
     bool m_multisample;
     bool m_dirty;
@@ -160,6 +165,7 @@ private:
     CompositingMode m_compositingMode;
     QOffscreenSurface *m_dummySurface;
     QVector<Scene3DView *> m_views;
+    QMetaObject::Connection m_windowConnection;
 };
 
 } // Qt3DRender

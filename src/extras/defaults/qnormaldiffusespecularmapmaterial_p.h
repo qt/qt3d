@@ -99,13 +99,17 @@ public:
     Qt3DRender::QTechnique *m_normalDiffuseSpecularGL3Technique;
     Qt3DRender::QTechnique *m_normalDiffuseSpecularGL2Technique;
     Qt3DRender::QTechnique *m_normalDiffuseSpecularES2Technique;
+    Qt3DRender::QTechnique *m_normalDiffuseSpecularRHITechnique;
     Qt3DRender::QRenderPass *m_normalDiffuseSpecularGL3RenderPass;
     Qt3DRender::QRenderPass *m_normalDiffuseSpecularGL2RenderPass;
     Qt3DRender::QRenderPass *m_normalDiffuseSpecularES2RenderPass;
+    Qt3DRender::QRenderPass *m_normalDiffuseSpecularRHIRenderPass;
     Qt3DRender::QShaderProgram *m_normalDiffuseSpecularGL3Shader;
     Qt3DRender::QShaderProgramBuilder *m_normalDiffuseSpecularGL3ShaderBuilder;
     Qt3DRender::QShaderProgram *m_normalDiffuseSpecularGL2ES2Shader;
     Qt3DRender::QShaderProgramBuilder *m_normalDiffuseSpecularGL2ES2ShaderBuilder;
+    Qt3DRender::QShaderProgram *m_normalDiffuseSpecularRHIShader;
+    Qt3DRender::QShaderProgramBuilder *m_normalDiffuseSpecularRHIShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QNormalDiffuseSpecularMapMaterial)

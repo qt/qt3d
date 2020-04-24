@@ -78,18 +78,19 @@ QString dumpNode(const Qt3DCore::QEntity *n) {
     return res;
 }
 
-QStringList dumpSG(const Qt3DCore::QEntity *n, int level = 0)
+QStringList dumpSG(const Qt3DCore::QNode *n, int level = 0)
 {
     QStringList reply;
-    QString res = dumpNode(n);
-    reply += res.rightJustified(res.length() + level * 2, ' ');
+    const auto *entity = qobject_cast<const Qt3DCore::QEntity *>(n);
+    if (entity != nullptr) {
+        QString res = dumpNode(entity);
+        reply += res.rightJustified(res.length() + level * 2, ' ');
+        level++;
+    }
 
     const auto children = n->childNodes();
-    for (auto *child: children) {
-        auto *childFGNode = qobject_cast<Qt3DCore::QEntity *>(child);
-        if (childFGNode != nullptr)
-            reply += dumpSG(childFGNode, level + 1);
-    }
+    for (auto *child: children)
+        reply += dumpSG(child, level);
 
     return reply;
 }

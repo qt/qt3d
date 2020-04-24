@@ -473,7 +473,10 @@ UniformBlockValueBuilder::~UniformBlockValueBuilder()
 {
 }
 
-void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *currentShaderData, const QString &blockName, const QString &qmlPropertyName, const QVariant &value)
+void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const ShaderData *currentShaderData,
+                                                                    const QString &blockName,
+                                                                    const QString &qmlPropertyName,
+                                                                    const QVariant &value)
 {
     // In the end, values are either scalar or a scalar array
     // Composed elements (structs, structs array) are simplified into simple scalars
@@ -534,7 +537,9 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
     }
 }
 
-void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName)
+void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(const ShaderData *rShaderData,
+                                                                          const QString &blockName,
+                                                                          const QString &qmlPropertyName)
 {
     const QHash<QString, ShaderData::PropertyValue> &properties = rShaderData->properties();
     auto it = properties.begin();

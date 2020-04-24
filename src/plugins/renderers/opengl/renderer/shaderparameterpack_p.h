@@ -93,8 +93,12 @@ struct PackUniformHash
 
     PackUniformHash()
     {
-        keys.reserve(10);
-        values.reserve(10);
+    }
+
+    void reserve(int count)
+    {
+        keys.reserve(count);
+        values.reserve(count);
     }
 
     void insert(int key, const UniformValue &value)
@@ -142,13 +146,14 @@ class Q_AUTOTEST_EXPORT ShaderParameterPack
 public:
     ~ShaderParameterPack();
 
+    void reserve(int uniformCount);
     void setUniform(const int glslNameId, const UniformValue &val);
     void setTexture(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id);
     void setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id);
 
     void setUniformBuffer(BlockToUBO blockToUBO);
     void setShaderStorageBuffer(BlockToSSBO blockToSSBO);
-    void setSubmissionUniform(const ShaderUniform &uniform);
+    void setSubmissionUniformIndex(const int shaderUniformIndex);
 
     inline PackUniformHash &uniforms() { return m_uniforms; }
     inline const PackUniformHash &uniforms() const { return m_uniforms; }
@@ -194,7 +199,7 @@ public:
     inline QVector<NamedResource> images() const { return m_images; }
     inline QVector<BlockToUBO> uniformBuffers() const { return m_uniformBuffers; }
     inline QVector<BlockToSSBO> shaderStorageBuffers() const { return m_shaderStorageBuffers; }
-    inline QVector<ShaderUniform> submissionUniforms() const { return m_submissionUniforms; }
+    inline QVector<int> submissionUniformIndices() const { return m_submissionUniformIndices; }
 private:
     PackUniformHash m_uniforms;
 
@@ -202,7 +207,7 @@ private:
     QVector<NamedResource> m_images;
     QVector<BlockToUBO> m_uniformBuffers;
     QVector<BlockToSSBO> m_shaderStorageBuffers;
-    QVector<ShaderUniform> m_submissionUniforms;
+    QVector<int> m_submissionUniformIndices;
 
     friend class RenderView;
 };

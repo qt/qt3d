@@ -212,7 +212,7 @@ class UpdateLevelOfDetailJobPrivate : public Qt3DCore::QAspectJobPrivate
 public:
     UpdateLevelOfDetailJobPrivate(UpdateLevelOfDetailJob *q) : q_ptr(q) { }
 
-    bool isRequired() override;
+    bool isRequired() const override;
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
     QVector<QPair<Qt3DCore::QNodeId, int>> m_updatedIndices;
@@ -266,9 +266,9 @@ void UpdateLevelOfDetailJob::run()
     d->m_updatedIndices = visitor.updatedIndices();
 }
 
-bool UpdateLevelOfDetailJobPrivate::isRequired()
+bool UpdateLevelOfDetailJobPrivate::isRequired() const
 {
-    Q_Q(UpdateLevelOfDetailJob);
+    Q_Q(const UpdateLevelOfDetailJob);
     return q->m_manager->levelOfDetailManager()->count() > 0;
 }
 

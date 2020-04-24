@@ -55,13 +55,6 @@ uniform float gamma = 2.2;
 
 #pragma include light.inc.frag
 
-int mipLevelCount(const in samplerCube cube)
-{
-   int baseSize = textureSize(cube, 0).x;
-   int nMips = int(log2(float(baseSize > 0 ? baseSize : 1))) + 1;
-   return nMips;
-}
-
 float remapRoughness(const in float roughness)
 {
     // As per page 14 of
@@ -87,10 +80,8 @@ float alphaToMipLevel(float alpha)
     const float k1 = 0.9921;
     float glossiness = (pow(2.0, -10.0 / sqrt(specPower)) - k0) / k1;
 
-    // TODO: Optimize by doing this on CPU and set as
-    // uniform int envLight.specularMipLevels say (if present in shader).
     // Lookup the number of mips in the specular envmap
-    int mipLevels = mipLevelCount(envLight.specular);
+    int mipLevels = envLight.specularMipLevels;
 
     // Offset of smallest miplevel we should use (corresponds to specular
     // power of 1). I.e. in the 32x32 sized mip.

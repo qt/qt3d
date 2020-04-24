@@ -45,6 +45,7 @@
 #include "qtextureatlas_p.h"
 
 #include <QtGui/qfont.h>
+#include <QtGui/qpainterpath.h>
 #include <QtGui/private/qdistancefield_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DExtras/private/qtextureatlas_p.h>

@@ -17,7 +17,9 @@ include (io/io.pri)
 include (picking/picking.pri)
 include (raycasting/raycasting.pri)
 include (services/services.pri)
+include (shadergraph/shadergraph.pri)
 include (texture/texture.pri)
+include (surfaces/surfaces.pri)
 
 gcov {
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage

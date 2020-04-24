@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,38 +37,32 @@
 **
 ****************************************************************************/
 
-#include "scene3dcleaner_p.h"
-
-#include <Qt3DCore/qaspectengine.h>
-#include <QtCore/qthread.h>
-
-#include <scene3dlogging_p.h>
-#include <scene3drenderer_p.h>
+#include "logging_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-Scene3DCleaner::Scene3DCleaner(QObject *parent)
-    : QObject(parent)
-    , m_renderer(nullptr)
-{
-}
+namespace Render {
 
-Scene3DCleaner::~Scene3DCleaner()
-{
-    qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
-}
+namespace Rhi {
 
-void Scene3DCleaner::cleanup()
-{
-    Q_ASSERT(m_renderer);
-    delete m_renderer->m_aspectEngine; // also deletes m_renderer->m_renderAspect
-    m_renderer->m_aspectEngine = nullptr;
-    m_renderer->m_renderAspect = nullptr;
-    m_renderer->deleteLater();
-    deleteLater();
-}
+Q_LOGGING_CATEGORY(Backend, "Qt3D.Renderer.OpenGL.Backend", QtWarningMsg)
+Q_LOGGING_CATEGORY(Frontend, "Qt3D.Renderer.OpenGL.Frontend", QtWarningMsg)
+Q_LOGGING_CATEGORY(Io, "Qt3D.Renderer.OpenGL.IO", QtWarningMsg)
+Q_LOGGING_CATEGORY(Jobs, "Qt3D.Renderer.OpenGL.Jobs", QtWarningMsg)
+Q_LOGGING_CATEGORY(SceneLoaders, "Qt3D.Renderer.OpenGL.SceneLoaders", QtWarningMsg)
+Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Renderer.OpenGL.Framegraph", QtWarningMsg)
+Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Renderer.OpenGL.RenderNodes", QtWarningMsg)
+Q_LOGGING_CATEGORY(Rendering, "Qt3D.Renderer.OpenGL.Rendering", QtWarningMsg)
+Q_LOGGING_CATEGORY(Memory, "Qt3D.Renderer.OpenGL.Memory", QtWarningMsg)
+Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.OpenGL.Shaders", QtWarningMsg)
+Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.OpenGL.RenderStates", QtWarningMsg)
+Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.OpenGL.VsyncAdvanceService", QtWarningMsg)
+
+} // namespace Rhi
+
+} // namespace Render
 
 } // namespace Qt3DRender
 

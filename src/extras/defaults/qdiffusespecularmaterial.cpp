@@ -78,13 +78,17 @@ QDiffuseSpecularMaterialPrivate::QDiffuseSpecularMaterialPrivate()
     , m_gl3Technique(new QTechnique())
     , m_gl2Technique(new QTechnique())
     , m_es2Technique(new QTechnique())
+    , m_rhiTechnique(new QTechnique())
     , m_gl3RenderPass(new QRenderPass())
     , m_gl2RenderPass(new QRenderPass())
     , m_es2RenderPass(new QRenderPass())
+    , m_rhiRenderPass(new QRenderPass())
     , m_gl3Shader(new QShaderProgram())
     , m_gl3ShaderBuilder(new QShaderProgramBuilder())
     , m_gl2es2Shader(new QShaderProgram())
     , m_gl2es2ShaderBuilder(new QShaderProgramBuilder())
+    , m_rhiShader(new QShaderProgram())
+    , m_rhiShaderBuilder(new QShaderProgramBuilder())
     , m_noDepthMask(new QNoDepthMask())
     , m_blendState(new QBlendEquationArguments())
     , m_blendEquation(new QBlendEquation())
@@ -127,6 +131,14 @@ void QDiffuseSpecularMaterialPrivate::init()
                                                   QStringLiteral("specular"),
                                                   QStringLiteral("normal")});
 
+    m_rhiShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default.vert"))));
+    m_rhiShaderBuilder->setParent(q);
+    m_rhiShaderBuilder->setShaderProgram(m_rhiShader);
+    m_rhiShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
+    m_rhiShaderBuilder->setEnabledLayers({QStringLiteral("diffuse"),
+                                               QStringLiteral("specular"),
+                                               QStringLiteral("normal")});
+
 
     m_gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
@@ -143,6 +155,10 @@ void QDiffuseSpecularMaterialPrivate::init()
     m_es2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_es2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_rhiTechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+    m_rhiTechnique->graphicsApiFilter()->setMajorVersion(1);
+    m_rhiTechnique->graphicsApiFilter()->setMinorVersion(0);
+
     m_noDepthMask->setEnabled(false);
     m_blendState->setEnabled(false);
     m_blendState->setSourceRgb(QBlendEquationArguments::SourceAlpha);
@@ -153,6 +169,7 @@ void QDiffuseSpecularMaterialPrivate::init()
     m_gl3RenderPass->setShaderProgram(m_gl3Shader);
     m_gl2RenderPass->setShaderProgram(m_gl2es2Shader);
     m_es2RenderPass->setShaderProgram(m_gl2es2Shader);
+    m_rhiRenderPass->setShaderProgram(m_rhiShader);
 
     m_gl3RenderPass->addRenderState(m_noDepthMask);
     m_gl3RenderPass->addRenderState(m_blendState);
@@ -166,9 +183,14 @@ void QDiffuseSpecularMaterialPrivate::init()
     m_es2RenderPass->addRenderState(m_blendState);
     m_es2RenderPass->addRenderState(m_blendEquation);
 
+    m_rhiRenderPass->addRenderState(m_noDepthMask);
+    m_rhiRenderPass->addRenderState(m_blendState);
+    m_rhiRenderPass->addRenderState(m_blendEquation);
+
     m_gl3Technique->addRenderPass(m_gl3RenderPass);
     m_gl2Technique->addRenderPass(m_gl2RenderPass);
     m_es2Technique->addRenderPass(m_es2RenderPass);
+    m_rhiTechnique->addRenderPass(m_rhiRenderPass);
 
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
@@ -177,10 +199,12 @@ void QDiffuseSpecularMaterialPrivate::init()
     m_gl3Technique->addFilterKey(m_filterKey);
     m_gl2Technique->addFilterKey(m_filterKey);
     m_es2Technique->addFilterKey(m_filterKey);
+    m_rhiTechnique->addFilterKey(m_filterKey);
 
     m_effect->addTechnique(m_gl3Technique);
     m_effect->addTechnique(m_gl2Technique);
     m_effect->addTechnique(m_es2Technique);
+    m_effect->addTechnique(m_rhiTechnique);
 
     m_effect->addParameter(m_ambientParameter);
     m_effect->addParameter(m_diffuseParameter);

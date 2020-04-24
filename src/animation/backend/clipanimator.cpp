@@ -95,10 +95,10 @@ void ClipAnimator::setRunning(bool running)
     setDirty(Handler::ClipAnimatorDirty);
 }
 
-void ClipAnimator::setNormalizedLocalTime(float normalizedTime)
+void ClipAnimator::setNormalizedLocalTime(float normalizedTime, bool allowMarkDirty)
 {
     m_normalizedLocalTime = normalizedTime;
-    if (isValidNormalizedTime(normalizedTime))
+    if (isValidNormalizedTime(normalizedTime) && allowMarkDirty)
         setDirty(Handler::ClipAnimatorDirty);
 }
 

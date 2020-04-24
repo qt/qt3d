@@ -39,6 +39,9 @@
 
 #include "qframegraphnode.h"
 #include "qframegraphnode_p.h"
+#include <Qt3DRender/qfilterkey.h>
+#include <Qt3DRender/qtechniquefilter.h>
+#include <Qt3DRender/qrenderpassfilter.h>
 
 #include <Qt3DCore/QNode>
 #include <QVector>
@@ -56,6 +59,20 @@ QString dumpNode(const Qt3DRender::QFrameGraphNode *n) {
         res += QString(QLatin1String(" (%1)")).arg(n->objectName());
     if (!n->isEnabled())
         res += QLatin1String(" [D]");
+    return res;
+}
+
+QString dumpNodeFilters(const Qt3DRender::QFrameGraphNode *n, const QVector<Qt3DRender::QFilterKey*> &filters) {
+    QString res = QLatin1String(n->metaObject()->className());
+    if (!n->objectName().isEmpty())
+        res += QString(QLatin1String(" (%1)")).arg(n->objectName());
+
+    QStringList kv;
+    for (auto filter: filters)
+        kv.push_back(QString(QLatin1String("%1: %2")).arg(filter->name(), filter->value().toString()));
+    if (kv.size())
+        res += QString(QLatin1String(" <%1>")).arg(kv.join(QLatin1String(", ")));
+
     return res;
 }
 
@@ -132,14 +149,53 @@ void dumpFGPaths(const Qt3DRender::QFrameGraphNode *n, QStringList &result)
     findFGLeaves(rootHFg, fgLeaves);
 
     // Traverse back to root
+    int rv = 1;
     for (const Qt3DRender::QFrameGraphNode *fgNode : fgLeaves) {
         QStringList parents;
         while (fgNode != nullptr) {
             parents.prepend(dumpNode(fgNode));
             fgNode = fgNode->parentFrameGraphNode();
         }
-        if (parents.size())
-            result << QLatin1String("[ ") + parents.join(QLatin1String(", ")) + QLatin1String(" ]");
+        if (parents.size()) {
+            result << QString(QLatin1String("%1 [ %2 ]")).arg(QString::number(rv), parents.join(QLatin1String(", ")));
+            ++rv;
+        }
+    }
+}
+
+void dumpFGFilterState(const Qt3DRender::QFrameGraphNode *n, QStringList &result)
+{
+    // Build FG node hierarchy
+    const HierarchyFGNodePtr rootHFg = buildFGHierarchy(n);
+
+    // Gather FG leaves
+    QVector<const Qt3DRender::QFrameGraphNode *> fgLeaves;
+    findFGLeaves(rootHFg, fgLeaves);
+
+    // Traverse back to root
+    int rv = 1;
+    for (const Qt3DRender::QFrameGraphNode *fgNode : fgLeaves) {
+        int parents = 0;
+        QStringList filters;
+        while (fgNode != nullptr) {
+            ++parents;
+            if (fgNode->isEnabled()) {
+                auto techniqueFilter = qobject_cast<const Qt3DRender::QTechniqueFilter *>(fgNode);
+                if (techniqueFilter && techniqueFilter->matchAll().size())
+                    filters.prepend(dumpNodeFilters(techniqueFilter, techniqueFilter->matchAll()));
+                auto renderPassFilter = qobject_cast<const Qt3DRender::QRenderPassFilter *>(fgNode);
+                if (renderPassFilter)
+                    filters.prepend(dumpNodeFilters(renderPassFilter, renderPassFilter->matchAny()));
+            }
+            fgNode = fgNode->parentFrameGraphNode();
+        }
+        if (parents) {
+            if (filters.size())
+                result << QString(QLatin1String("%1 [ %2 ]")).arg(QString::number(rv), filters.join(QLatin1String(", ")));
+            else
+                result << QString(QObject::tr("%1 [ No Filters ]")).arg(rv);
+            ++rv;
+        }
     }
 }
 
@@ -347,6 +403,14 @@ QStringList QFrameGraphNodePrivate::dumpFrameGraphPaths() const
     Q_Q(const QFrameGraphNode);
     QStringList result;
     dumpFGPaths(q, result);
+    return result;
+}
+
+QStringList QFrameGraphNodePrivate::dumpFrameGraphFilterState() const
+{
+    Q_Q(const QFrameGraphNode);
+    QStringList result;
+    dumpFGFilterState(q, result);
     return result;
 }
 

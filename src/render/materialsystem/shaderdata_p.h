@@ -89,7 +89,7 @@ public:
     // Called by FramePreparationJob
     void updateWorldTransform(const Matrix4x4 &worldMatrix);
 
-    QVariant getTransformedProperty(const QString &name, const Matrix4x4 &viewMatrix);
+    QVariant getTransformedProperty(const QString &name, const Matrix4x4 &viewMatrix) const noexcept;
 
     // Unit tests purposes only
     TransformType propertyTransformType(const QString &name) const;

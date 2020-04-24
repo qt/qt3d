@@ -53,6 +53,28 @@ GraphicsApiFilterData::GraphicsApiFilterData()
     , m_major(0)
 {}
 
+QString GraphicsApiFilterData::toString() const
+{
+    QLatin1String api;
+    switch (m_api) {
+    case QGraphicsApiFilter::OpenGL: api = QLatin1String("OpenGL"); break;
+    case QGraphicsApiFilter::OpenGLES: api = QLatin1String("OpenGL"); break;
+    case QGraphicsApiFilter::Vulkan: api = QLatin1String("Vulkan"); break;
+    case QGraphicsApiFilter::DirectX: api = QLatin1String("DirectX"); break;
+    case QGraphicsApiFilter::RHI: api = QLatin1String("RHI"); break;
+    default: Q_UNREACHABLE();
+    }
+
+    QLatin1String profile;
+    switch (m_profile) {
+    case QGraphicsApiFilter::CoreProfile: profile = QLatin1String(" (Core Profile)"); break;
+    case QGraphicsApiFilter::CompatibilityProfile: profile = QLatin1String(" (Compatibility Profile)"); break;
+    default: break;
+    }
+
+    return QString(QLatin1String("%1 %2.%3%4 (%5)").arg(api, QString::number(m_major), QString::number(m_minor), profile, m_vendor));
+}
+
 bool GraphicsApiFilterData::operator ==(const GraphicsApiFilterData &other) const
 {
     // Check API

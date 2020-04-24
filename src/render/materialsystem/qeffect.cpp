@@ -203,7 +203,8 @@ void QEffect::removeParameter(QParameter *parameter)
 {
     Q_D(QEffect);
 
-    d->m_parameters.removeOne(parameter);
+    if (!d->m_parameters.removeOne(parameter))
+        return;
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(parameter);
     d->update();
@@ -248,8 +249,9 @@ void QEffect::addTechnique(QTechnique *t)
 void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
+    if (!d->m_techniques.removeOne(t))
+        return;
     d->update();
-    d->m_techniques.removeOne(t);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(t);
 }

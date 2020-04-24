@@ -995,16 +995,9 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // so we cannot unset its dirtiness at this point
                 if (rGeometryRenderer->isDirty())
                     rGeometryRenderer->unsetDirty();
-
-                // Prepare the ShaderParameterPack based on the active uniforms of the shader
-                shader->prepareUniforms(command.m_parameterPack);
-
             } else if (command.m_type == RenderCommand::Compute) {
                 GLShader *shader = command.m_glShader;
                 Q_ASSERT(shader);
-
-                // Prepare the ShaderParameterPack based on the active uniforms of the shader
-                shader->prepareUniforms(command.m_parameterPack);
             }
         }
     }
@@ -1172,6 +1165,10 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
         Shader *s = m_nodesManager->shaderManager()->data(handle);
         if (s->requiresFrontendSync()) {
             QShaderProgram *frontend = static_cast<decltype(frontend)>(manager->lookupNode(s->peerId()));
+            // Could happen as a backend shader might live beyong the frontend
+            // the time needed to destroy the GLShader assoicated with it.
+            if (!frontend)
+                continue;
             QShaderProgramPrivate *dFrontend = static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
             s->unsetRequiresFrontendSync();
             dFrontend->setStatus(s->status());
@@ -1917,10 +1914,31 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
                 m_updatedDisableSubtreeEnablers.push_back(node->peerId());
         }
 
+        int idealThreadCount = QThread::idealThreadCount();
+        const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
+        if (!maxThreadCount.isEmpty()) {
+            bool conversionOK = false;
+            const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
+            if (conversionOK)
+                idealThreadCount = maxThreadCountValue;
+        }
+
         const int fgBranchCount = m_frameGraphLeaves.size();
+        if (fgBranchCount > 1) {
+            int workBranches = fgBranchCount;
+            for (auto leaf: qAsConst(m_frameGraphLeaves))
+                if (leaf->nodeType() == FrameGraphNode::NoDraw)
+                    --workBranches;
+
+            if (idealThreadCount > 4 && workBranches && maxThreadCount.isEmpty())
+                idealThreadCount = qMax(4, idealThreadCount / workBranches);
+        }
+
         for (int i = 0; i < fgBranchCount; ++i) {
             FrameGraphNode *leaf = m_frameGraphLeaves.at(i);
             RenderViewBuilder builder(leaf, i, this);
+            builder.setOptimalJobCount(leaf->nodeType() == FrameGraphNode::NoDraw ? 1 : idealThreadCount);
+
             // If we have a new RV (wasn't in the cache before, then it contains no cached data)
             const bool isNewRV = !m_cache.leafNodeCache.contains(leaf);
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt || isNewRV);
@@ -2046,7 +2064,7 @@ void Renderer::performCompute(const RenderView *, RenderCommand *command)
     }
     {
         Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate, activeProfiler());
-        m_submissionContext->setParameters(command->m_parameterPack);
+        m_submissionContext->setParameters(command->m_parameterPack, command->m_glShader);
     }
     {
         Profiling::GLTimeRecorder recorder(Profiling::DispatchCompute, activeProfiler());
@@ -2140,7 +2158,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             {
                 Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate, activeProfiler());
                 //// Update program uniforms
-                if (!m_submissionContext->setParameters(command.m_parameterPack)) {
+                if (!m_submissionContext->setParameters(command.m_parameterPack, command.m_glShader)) {
                     allCommandsIssued = false;
                     // If we have failed to set uniform (e.g unable to bind a texture)
                     // we won't perform the draw call which could show invalid content

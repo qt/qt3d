@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDBUILDERJOB_P_H
-#define QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#ifndef QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#define QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H
 
 //
 //  W A R N I N G
@@ -61,9 +61,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace OpenGL {
-
-class RenderView;
+namespace Rhi {
 
 class Q_AUTOTEST_EXPORT RenderViewCommandBuilderJob : public Qt3DCore::QAspectJob
 {
@@ -91,7 +89,7 @@ private:
 
 typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobPtr;
 
-} // OpenGL
+} // Rhi
 
 } // Render
 
@@ -99,4 +97,4 @@ typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobP
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#endif // QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H

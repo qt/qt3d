@@ -57,6 +57,9 @@
 #include <Qt3DRender/qshaderprogram.h>
 #include <QMutex>
 
+#ifdef QT_BUILD_INTERNAL
+    class tst_BenchShaderParameterPack;
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -84,31 +87,44 @@ public:
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
     const QHash<QString, int> fragOutputs() const;
 
-    inline QVector<int> uniformsNamesIds() const { return m_uniformsNamesIds; }
-    inline QVector<int> standardUniformNameIds() const { return m_standardUniformNamesIds; }
-    inline QVector<int> uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
-    inline QVector<int> storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
-    inline QVector<int> attributeNamesIds() const { return m_attributeNamesIds; }
+    inline const QVector<int> &uniformsNamesIds() const { return m_uniformsNamesIds; }
+    inline const QVector<int> &lightUniformsNamesIds() const { return m_lightUniformsNamesIds; }
+    inline const QVector<int> &standardUniformNameIds() const { return m_standardUniformNamesIds; }
+    inline const QVector<int> &uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
+    inline const QVector<int> &storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
+    inline const QVector<int> &attributeNamesIds() const { return m_attributeNamesIds; }
 
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
     QVector<QString> uniformBlockNames() const;
     QVector<QString> storageBlockNames() const;
 
-    inline QVector<ShaderUniform> uniforms() const { return m_uniforms; }
-    inline QVector<ShaderAttribute> attributes() const { return m_attributes; }
-    inline QVector<ShaderUniformBlock> uniformBlocks() const { return m_uniformBlocks; }
-    inline QVector<ShaderStorageBlock> storageBlocks() const { return m_shaderStorageBlocks; }
+    inline const QVector<ShaderUniform> &uniforms() const { return m_uniforms; }
+    inline const QVector<ShaderAttribute> &attributes() const { return m_attributes; }
+    inline const QVector<ShaderUniformBlock> &uniformBlocks() const { return m_uniformBlocks; }
+    inline const QVector<ShaderStorageBlock> &storageBlocks() const { return m_shaderStorageBlocks; }
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
 
-    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId);
-    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex);
-    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName);
+    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId) const noexcept;
+    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex) const noexcept;
+    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName) const noexcept;
 
-    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex);
-    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId);
-    ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
+    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex) const noexcept;
+    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId) const noexcept;
+    ShaderStorageBlock storageBlockForBlockName(const QString &blockName) const noexcept;
+
+    enum ParameterKind {
+        Uniform,
+        UBO,
+        SSBO,
+        Struct
+    };
+    ParameterKind categorizeVariable(int nameId) const noexcept;
+
+    bool hasUniform(int nameId) const noexcept;
+    inline bool hasActiveVariables() const noexcept { return m_hasActiveVariables; }
+    inline int parameterPackSize() const noexcept { return m_parameterPackSize; }
 
     QOpenGLShaderProgram *shaderProgram() { return &m_shader; }
 
@@ -122,6 +138,7 @@ private:
 
     QVector<QString> m_uniformsNames;
     QVector<int> m_uniformsNamesIds;
+    QVector<int> m_lightUniformsNamesIds;
     QVector<int> m_standardUniformNamesIds;
     QVector<ShaderUniform> m_uniforms;
 
@@ -141,6 +158,9 @@ private:
     QHash<QString, int> m_fragOutputs;
     QVector<QByteArray> m_shaderCode;
 
+    int m_parameterPackSize;
+    int m_hasActiveVariables;
+
     // Private so that only GraphicContext can call it
     void initializeUniforms(const QVector<ShaderUniform> &uniformsDescription);
     void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
@@ -148,6 +168,9 @@ private:
     void initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
 
     friend class GraphicsContext;
+#ifdef QT_BUILD_INTERNAL
+    friend class ::tst_BenchShaderParameterPack;
+#endif
 
     mutable QMutex m_mutex;
     QMetaObject::Connection m_contextConnection;

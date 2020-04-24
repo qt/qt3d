@@ -39,5 +39,23 @@
         <file>shaders/es2/distancefieldtext.vert</file>
         <file>shaders/gl3/morphphong.vert</file>
         <file>shaders/es2/morphphong.vert</file>
+        <file>shaders/graphs/phong.graph</file>
+        <file>shaders/rhi/unlittexture.vert</file>
+        <file>shaders/rhi/unlittexture.frag</file>
+        <file>shaders/rhi/skybox.vert</file>
+        <file>shaders/rhi/skybox.frag</file>
+        <file>shaders/rhi/phong.inc.frag</file>
+        <file>shaders/rhi/pervertexcolor.vert</file>
+        <file>shaders/rhi/pervertexcolor.frag</file>
+        <file>shaders/rhi/morphphong.vert</file>
+        <file>shaders/rhi/metalrough.inc.frag</file>
+        <file>shaders/rhi/light.inc.frag</file>
+        <file>shaders/rhi/gooch.vert</file>
+        <file>shaders/rhi/gooch.frag</file>
+        <file>shaders/rhi/distancefieldtext.vert</file>
+        <file>shaders/rhi/distancefieldtext.frag</file>
+        <file>shaders/rhi/default.vert</file>
+        <file>shaders/rhi/coordinatesystems.inc</file>
+        <file>shaders/rhi/defaultuniforms.inc</file>
     </qresource>
 </RCC>

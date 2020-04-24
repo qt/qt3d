@@ -61,10 +61,15 @@
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
 #include <Qt3DRender/qcamera.h>
+#include <Qt3DRender/private/vulkaninstance_p.h>
 #include <qopenglcontext.h>
 #include <private/qrendersettings_p.h>
 
 #include <QEvent>
+
+#if QT_CONFIG(vulkan)
+#include <QVulkanInstance>
+#endif
 
 static void initResources()
 {
@@ -92,7 +97,7 @@ Qt3DWindowPrivate::Qt3DWindowPrivate()
 {
 }
 
-Qt3DWindow::Qt3DWindow(QScreen *screen)
+Qt3DWindow::Qt3DWindow(QScreen *screen, Qt3DRender::API api)
     : QWindow(*new Qt3DWindowPrivate(), nullptr)
 {
     Q_D(Qt3DWindow);
@@ -102,25 +107,9 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     if (!d->parentWindow)
         d->connectToScreen(screen ? screen : d->topLevelScreen.data());
 
-    setSurfaceType(QSurface::OpenGLSurface);
+    setupWindowSurface(this, api);
 
     resize(1024, 768);
-
-    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-#ifdef QT_OPENGL_ES_2
-    format.setRenderableType(QSurfaceFormat::OpenGLES);
-#else
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-#endif
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
-    format.setStencilBufferSize(8);
-    setFormat(format);
-    QSurfaceFormat::setDefaultFormat(format);
-
     d->m_aspectEngine->registerAspect(new Qt3DCore::QCoreAspect);
     d->m_aspectEngine->registerAspect(d->m_renderAspect);
     d->m_aspectEngine->registerAspect(d->m_inputAspect);
@@ -229,7 +218,6 @@ void Qt3DWindow::showEvent(QShowEvent *e)
 
         d->m_initialized = true;
     }
-
     QWindow::showEvent(e);
 }
 
@@ -257,6 +245,77 @@ bool Qt3DWindow::event(QEvent *e)
         p->invalidateFrame();
     }
     return QWindow::event(e);
+}
+
+void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
+{
+    // If the user pass an API through the environment, we use that over the one passed as argument.
+    const auto userRequestedApi = qgetenv("QT3D_RHI_DEFAULT_API").toLower();
+    if (!userRequestedApi.isEmpty()) {
+        if (userRequestedApi == QByteArrayLiteral("opengl")) {
+            api = Qt3DRender::API::OpenGL;
+        } else if (userRequestedApi == QByteArrayLiteral("vulkan")) {
+            api = Qt3DRender::API::Vulkan;
+        } else if (userRequestedApi == QByteArrayLiteral("metal")) {
+            api = Qt3DRender::API::Metal;
+        } else if (userRequestedApi == QByteArrayLiteral("d3d11")) {
+            api = Qt3DRender::API::DirectX;
+        } else if (userRequestedApi == QByteArrayLiteral("null")) {
+            api = Qt3DRender::API::Null;
+        }
+    }
+
+    // We have to set the environment so that the backend is able to read it.
+    // Qt6: FIXME
+    switch (api)
+    {
+    case Qt3DRender::API::OpenGL:
+        qputenv("QT3D_RHI_DEFAULT_API", "opengl");
+        window->setSurfaceType(QSurface::OpenGLSurface);
+        break;
+    case Qt3DRender::API::DirectX:
+        qputenv("QT3D_RHI_DEFAULT_API", "d3d11");
+        window->setSurfaceType(QSurface::OpenGLSurface);
+        break;
+    case Qt3DRender::API::Null:
+        qputenv("QT3D_RHI_DEFAULT_API", "null");
+        window->setSurfaceType(QSurface::OpenGLSurface);
+        break;
+    case Qt3DRender::API::Metal:
+        qputenv("QT3D_RHI_DEFAULT_API", "metal");
+        window->setSurfaceType(QSurface::MetalSurface);
+        break;
+#if QT_CONFIG(vulkan)
+    case Qt3DRender::API::Vulkan:
+    {
+        qputenv("QT3D_RHI_DEFAULT_API", "vulkan");
+        window->setSurfaceType(QSurface::VulkanSurface);
+        window->setVulkanInstance(&Qt3DRender::staticVulkanInstance());
+        break;
+    }
+#endif
+    default:
+        break;
+    }
+    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+#ifdef QT_OPENGL_ES_2
+    format.setRenderableType(QSurfaceFormat::OpenGLES);
+#else
+    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+        format.setVersion(4, 3);
+        format.setProfile(QSurfaceFormat::CoreProfile);
+    }
+#endif
+    if (!userRequestedApi.isEmpty()) {
+        // This is used for RHI
+        format.setVersion(1, 0);
+    }
+
+    format.setDepthBufferSize(24);
+    format.setSamples(4);
+    format.setStencilBufferSize(8);
+    window->setFormat(format);
+    QSurfaceFormat::setDefaultFormat(format);
 }
 
 } // Qt3DExtras

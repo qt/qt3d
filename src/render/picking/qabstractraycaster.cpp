@@ -345,8 +345,9 @@ void QAbstractRayCaster::removeLayer(QLayer *layer)
 {
     Q_ASSERT(layer);
     Q_D(QAbstractRayCaster);
+    if (!d->m_layers.removeOne(layer))
+        return;
     d->update();
-    d->m_layers.removeOne(layer);
     // Remove bookkeeping connection
     d->unregisterDestructionHelper(layer);
 }

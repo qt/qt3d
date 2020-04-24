@@ -86,6 +86,7 @@ public:
     static const int modelViewNormalNameId;
     static const int viewportMatrixNameId;
     static const int inverseViewportMatrixNameId;
+    static const int textureTransformMatrixNameId;
     static const int aspectRatioNameId;
     static const int exposureNameId;
     static const int gammaNameId;

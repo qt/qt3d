@@ -137,7 +137,6 @@ private:
     QScopedPointer<SkeletonManager> m_skeletonManager;
 
     QVector<HAnimationClip> m_dirtyAnimationClips;
-    QVector<HChannelMapper> m_dirtyChannelMappers;
     QVector<HClipAnimator> m_dirtyClipAnimators;
     QVector<HBlendedClipAnimator> m_dirtyBlendedAnimators;
 

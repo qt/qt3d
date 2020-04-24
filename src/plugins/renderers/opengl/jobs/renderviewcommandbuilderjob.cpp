@@ -53,8 +53,32 @@ namespace {
 int renderViewInstanceCounter = 0;
 } // anonymous
 
+class RenderViewCommandBuilderJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    RenderViewCommandBuilderJobPrivate(RenderViewCommandBuilderJob *q) : q_ptr(q) { }
+    ~RenderViewCommandBuilderJobPrivate() override = default;
+
+    bool isRequired() const override;
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    RenderViewCommandBuilderJob *q_ptr;
+    Q_DECLARE_PUBLIC(RenderViewCommandBuilderJob)
+};
+
+bool RenderViewCommandBuilderJobPrivate::isRequired() const
+{
+    return q_ptr->m_renderView && !q_ptr->m_renderView->noDraw() && q_ptr->m_count > 0;
+}
+
+void RenderViewCommandBuilderJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    Q_UNUSED(manager)
+    renderViewInstanceCounter = 0;
+}
+
 RenderViewCommandBuilderJob::RenderViewCommandBuilderJob()
-    : Qt3DCore::QAspectJob()
+    : Qt3DCore::QAspectJob(*new RenderViewCommandBuilderJobPrivate(this))
     , m_offset(0)
     , m_count(0)
     , m_renderView(nullptr)
@@ -64,17 +88,13 @@ RenderViewCommandBuilderJob::RenderViewCommandBuilderJob()
 
 void RenderViewCommandBuilderJob::run()
 {
-    if (!m_renderView->noDraw()) {
-        if (m_count == 0)
-            return;
-
-        const bool isDraw = !m_renderView->isCompute();
-        if (isDraw)
-            m_commandData = m_renderView->buildDrawRenderCommands(m_entities, m_offset, m_count);
-        else
-            m_commandData = m_renderView->buildComputeRenderCommands(m_entities, m_offset, m_count);
-    }
+    const bool isDraw = !m_renderView->isCompute();
+    if (isDraw)
+        m_commandData = m_renderView->buildDrawRenderCommands(m_entities, m_offset, m_count);
+    else
+        m_commandData = m_renderView->buildComputeRenderCommands(m_entities, m_offset, m_count);
 }
+
 
 } // OpenGL
 

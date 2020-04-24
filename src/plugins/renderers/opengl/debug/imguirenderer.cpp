@@ -283,13 +283,21 @@ void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews,
             QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
                                       Qt::QueuedConnection, Q_ARG(QString, QLatin1String("render framegraph")));
         ImGui::SameLine();
-        if (ImGui::Button("FrameGraph Paths##1"))
+        if (ImGui::Button("Render Views##1"))
             QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
                                       Qt::QueuedConnection, Q_ARG(QString, QLatin1String("render framepaths")));
+
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("     ");
+        ImGui::SameLine();
+        if (ImGui::Button("Filter State##1"))
+            QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
+                                      Qt::QueuedConnection, Q_ARG(QString, QLatin1String("render filterstates")));
         ImGui::SameLine();
         if (ImGui::Button("JobsGraph##1"))
             QMetaObject::invokeMethod(m_renderer->services()->systemInformation(), "dumpCommand",
                                       Qt::QueuedConnection, Q_ARG(QString, QLatin1String("dump jobs")));
+
         ImGui::End();
 
         if (m_showGLInfoWindow)

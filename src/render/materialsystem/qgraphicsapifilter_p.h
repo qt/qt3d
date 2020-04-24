@@ -70,6 +70,8 @@ struct Q_3DRENDERSHARED_PRIVATE_EXPORT GraphicsApiFilterData
     QStringList m_extensions;
     QString m_vendor;
 
+    QString toString() const;
+
     bool operator ==(const GraphicsApiFilterData &other) const;
     bool operator !=(const GraphicsApiFilterData &other) const;
     bool operator <(const GraphicsApiFilterData &other) const;
