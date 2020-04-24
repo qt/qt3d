@@ -112,7 +112,18 @@ struct PackUniformHash
         }
     }
 
-    UniformValue value(int key) const
+    void insert(int key, UniformValue &&value)
+    {
+        const int idx = keys.indexOf(key);
+        if (idx != -1) {
+            values[idx] = std::move(value);
+        } else {
+            keys.push_back(key);
+            values.push_back(std::move(value));
+        }
+    }
+
+    UniformValue value(int key) const noexcept
     {
         const int idx = keys.indexOf(key);
         if (idx != -1)
@@ -129,13 +140,21 @@ struct PackUniformHash
         return value(key);
     }
 
+    template<typename F>
+    void apply(int key, F func) const noexcept
+    {
+        const int idx = keys.indexOf(key);
+        if (idx != -1)
+            func(values[idx]);
+    }
+
     void erase(int idx)
     {
         keys.removeAt(idx);
         values.removeAt(idx);
     }
 
-    bool contains(int key) const
+    bool contains(int key) const noexcept
     {
         return keys.contains(key);
     }
