@@ -842,6 +842,9 @@ void QRenderAspect::onUnregistered()
 
     d->m_renderer->releaseGraphicsResources();
 
+    if (d->m_aspectManager)
+        d->services()->eventFilterService()->unregisterEventFilter(d->m_pickEventFilter.data());
+
     delete d->m_nodeManagers;
     d->m_nodeManagers = nullptr;
 
