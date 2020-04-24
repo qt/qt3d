@@ -1270,21 +1270,20 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
     }
 
     // Update uniforms in the Default Uniform Block
-    const PackUniformHash values = parameterPack.uniforms();
-    const QVector<int> &activeUniformsIndices = parameterPack.submissionUniformIndices();
+    const PackUniformHash& values = parameterPack.uniforms();
+    const auto &activeUniformsIndices = parameterPack.submissionUniformIndices();
     const QVector<ShaderUniform> &shaderUniforms = shader->uniforms();
 
     for (const int shaderUniformIndex : activeUniformsIndices) {
         const ShaderUniform &uniform = shaderUniforms[shaderUniformIndex];
-        const UniformValue &v = values.value(uniform.m_nameId);
+        values.apply(uniform.m_nameId, [&] (const UniformValue& v) {
+            // skip invalid textures/images
+            if (!((v.valueType() == UniformValue::TextureValue ||
+                   v.valueType() == UniformValue::ShaderImageValue) &&
+                  *v.constData<int>() == -1))
+                applyUniform(uniform, v);
+        });
 
-        // skip invalid textures/images
-        if ((v.valueType() == UniformValue::TextureValue ||
-             v.valueType() == UniformValue::ShaderImageValue) &&
-            *v.constData<int>() == -1)
-            continue;
-
-        applyUniform(uniform, v);
     }
     // if not all data is valid, the next frame will be rendered immediately
     return true;
