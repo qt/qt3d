@@ -54,7 +54,6 @@
 
 #include <rhibuffer_p.h>
 #include <Qt3DRender/qclearbuffers.h>
-#include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qblitframebuffer.h>
 #include <Qt3DRender/private/shader_p.h>

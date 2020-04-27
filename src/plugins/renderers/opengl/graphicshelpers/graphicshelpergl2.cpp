@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "graphicshelpergl2_p.h"
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
 #include <QOpenGLFunctions_2_0>
 #include <private/attachmentpack_p.h>
 #include <QtOpenGLExtensions/QOpenGLExtensions>

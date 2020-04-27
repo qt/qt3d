@@ -38,13 +38,13 @@
 #define QT3DANIMATION_QABSTRACTCLIPBLENDNODE_H
 
 #include <Qt3DAnimation/qt3danimation_global.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAbstractAnimationClip;
 class QAbstractClipBlendNodePrivate;
 
 class Q_3DANIMATIONSHARED_EXPORT QAbstractClipBlendNode : public Qt3DCore::QNode

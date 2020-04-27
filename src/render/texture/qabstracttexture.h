@@ -41,6 +41,7 @@
 #define QT3DRENDER_QABSTRACTTEXTURE_H
 
 #include <Qt3DRender/qtextureimagedata.h>
+#include <Qt3DRender/qtexturewrapmode.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
 
@@ -49,7 +50,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QAbstractTexturePrivate;
-class QTextureWrapMode;
 class QAbstractTextureImage;
 class QTextureDataUpdate;
 

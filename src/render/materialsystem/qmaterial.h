@@ -44,15 +44,15 @@
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qabstracttexture.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTexture;
 class QParameter;
 class QMaterialPrivate;
-class QEffect;
 
 class Q_3DRENDERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
 {

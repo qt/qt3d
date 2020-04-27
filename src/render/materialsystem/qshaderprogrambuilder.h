@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qshaderprogram.h>
 
 #include <QtCore/qurl.h>
 
@@ -49,7 +50,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QShaderProgram;
 class QShaderProgramBuilderPrivate;
 
 class Q_3DRENDERSHARED_EXPORT QShaderProgramBuilder : public Qt3DCore::QNode

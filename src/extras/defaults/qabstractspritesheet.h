@@ -42,16 +42,11 @@
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DCore/QNode>
+#include <Qt3DRender/qabstracttexture.h>
 #include <QtGui/QVector2D>
 #include <QtGui/QMatrix3x3>
 
 QT_BEGIN_NAMESPACE
-
-namespace Qt3DRender {
-
-class QAbstractTexture;
-
-} // namespace Qt3DRender
 
 namespace Qt3DExtras {
 

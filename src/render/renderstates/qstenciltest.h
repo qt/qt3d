@@ -42,13 +42,13 @@
 #define QT3DRENDER_QSTENCILTEST_H
 
 #include <Qt3DRender/qrenderstate.h>
+#include <Qt3DRender/qstenciltestarguments.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
 class QStencilTestPrivate;
-class QStencilTestArguments;
 
 class Q_3DRENDERSHARED_EXPORT QStencilTest : public QRenderState
 {

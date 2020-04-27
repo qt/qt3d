@@ -47,6 +47,7 @@ Item {
     QQ3Input20.AxisSetting {}                 //Qt3DInput::QAxisSetting
     QQ3Input20.AnalogAxisInput {}             //Qt3DInput::QAnalogAxisInput
     QQ3Input20.ButtonAxisInput {}             //Qt3DInput::QButtonAxisInput
-    QQ3Input20.GamepadInput {}                //Qt3DInput::QGamepadInput
+    // Disabled for Qt 6
+    //    QQ3Input20.GamepadInput {}                //Qt3DInput::QGamepadInput
 
 }

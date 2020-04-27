@@ -52,7 +52,6 @@ namespace Qt3DCore {
 
 class QNode;
 class QNodePrivate;
-class QEntity;
 class QAspectEngine;
 
 #if defined(QT_BUILD_INTERNAL)

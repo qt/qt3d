@@ -194,8 +194,9 @@ QQueryHandle QRayCastingService::query(const QRay3D &ray,
     // Blocking mapReduce
 
 #if QT_CONFIG(concurrent)
-    FutureQueryResult future = QtConcurrent::run(d, &QRayCastingServicePrivate::collides,
-                                                 ray, provider, mode, handle);
+    FutureQueryResult future = QtConcurrent::run([d, ray, provider, mode, handle]{
+        return d->collides(ray, provider, mode, handle);
+    });
     d->m_results.insert(handle, future);
 #else
     d->m_results.insert(handle, d->collides(ray, provider, mode, handle));

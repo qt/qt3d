@@ -32,12 +32,13 @@
 #include <graphicshelpergl3_2_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <QOpenGLBuffer>
+#include <QOpenGLVersionFunctionsFactory>
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QSurfaceFormat>
 
-#if !defined(QT_OPENGL_ES_2) && defined(QT_OPENGL_3_2)
+#if !QT_CONFIG(opengles2) && defined(QT_OPENGL_3_2)
 
 #define TEST_SHOULD_BE_PERFORMED 1
 
@@ -207,7 +208,7 @@ private Q_SLOTS:
             return;
         }
 
-        if ((m_func = m_glContext.versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
+        if ((m_func = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_2_Core>()) != nullptr) {
             m_glHelper.initializeHelper(&m_glContext, m_func);
             m_initializationSuccessful = true;
         }

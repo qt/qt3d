@@ -42,13 +42,13 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DInput/qmouseevent.h>
+#include <Qt3DInput/qmousedevice.h>
 #include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QMouseDevice;
 class QMouseHandlerPrivate;
 
 class Q_3DINPUTSHARED_EXPORT QMouseHandler : public Qt3DCore::QComponent

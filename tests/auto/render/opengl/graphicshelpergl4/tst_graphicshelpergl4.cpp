@@ -36,8 +36,9 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QSurfaceFormat>
+#include <QtOpenGL/QOpenGLVersionFunctionsFactory>
 
-#if !defined(QT_OPENGL_ES_2) && defined(QT_OPENGL_4_3)
+#if !QT_CONFIG(opengles2) && defined(QT_OPENGL_4_3)
 
 #define TEST_SHOULD_BE_PERFORMED 1
 
@@ -255,7 +256,7 @@ private Q_SLOTS:
             return;
         }
 
-        if ((m_func = m_glContext.versionFunctions<QOpenGLFunctions_4_3_Core>()) != nullptr) {
+        if ((m_func = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_3_Core>()) != nullptr) {
             m_glHelper.initializeHelper(&m_glContext, m_func);
             m_initializationSuccessful = true;
         }

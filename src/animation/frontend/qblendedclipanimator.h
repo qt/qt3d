@@ -42,12 +42,12 @@
 
 #include <Qt3DAnimation/qt3danimation_global.h>
 #include <Qt3DAnimation/qabstractclipanimator.h>
+#include <Qt3DAnimation/qabstractclipblendnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAbstractClipBlendNode;
 class QBlendedClipAnimatorPrivate;
 
 class Q_3DANIMATIONSHARED_EXPORT QBlendedClipAnimator : public Qt3DAnimation::QAbstractClipAnimator

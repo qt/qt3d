@@ -621,6 +621,8 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
 
                     const QVector<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
                     for (Qt3DCore::QNodeId attributeId : attributeIds) {
+                        using namespace Qt3DCore;
+
                         Attribute *attribute =
                                 m_manager->attributeManager()->lookupResource(attributeId);
                         switch (attribute->attributeType()) {

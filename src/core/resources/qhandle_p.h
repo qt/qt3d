@@ -123,6 +123,13 @@ uint qHash(const QHandle<T> &h, uint seed)
     return qHash(h.handle(), seed);
 }
 
+template <typename T>
+uint qHash(const QHandle<T> &h)
+{
+    using QT_PREPEND_NAMESPACE(qHash);
+    return qHash(h.handle());
+}
+
 } // Qt3DCore
 
 // simpler than fighting the Q_DECLARE_TYPEINFO macro, use QString as a dummy to get movable semantics

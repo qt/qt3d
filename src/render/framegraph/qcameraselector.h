@@ -40,6 +40,7 @@
 #ifndef QT3DRENDER_QCAMERASELECTOR_H
 #define QT3DRENDER_QCAMERASELECTOR_H
 
+#include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qframegraphnode.h>
 

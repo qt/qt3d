@@ -41,13 +41,13 @@
 #define QT3DINPUT_QAXISACCUMULATOR_H
 
 #include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DInput/qaxis.h>
 #include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxis;
 class QAxisAccumulatorPrivate;
 
 class Q_3DINPUTSHARED_EXPORT QAxisAccumulator : public Qt3DCore::QComponent

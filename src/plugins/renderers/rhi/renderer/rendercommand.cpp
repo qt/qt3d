@@ -62,7 +62,7 @@ RenderCommand::RenderCommand()
       m_instanceCount(0),
       m_indexOffset(0),
       m_indexAttributeByteOffset(0),
-      m_indexAttributeDataType(Qt3DRender::QAttribute::UnsignedShort),
+      m_indexAttributeDataType(Qt3DCore::QAttribute::UnsignedShort),
       m_indirectAttributeByteOffset(0),
       m_drawIndexed(false),
       m_drawIndirect(false),

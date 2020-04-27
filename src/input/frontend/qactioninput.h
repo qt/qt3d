@@ -41,6 +41,7 @@
 #define QT3DINPUT_QACTIONINPUT_H
 
 #include <Qt3DInput/qabstractactioninput.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
 
@@ -48,7 +49,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractPhysicalDevice;
 class QActionInputPrivate;
 
 class Q_3DINPUTSHARED_EXPORT QActionInput : public Qt3DInput::QAbstractActionInput

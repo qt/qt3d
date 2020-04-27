@@ -42,6 +42,7 @@
 
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/qrendertargetoutput.h>
+#include <Qt3DRender/qrendertarget.h>
 #include <QtCore/QRect>
 
 QT_BEGIN_NAMESPACE
@@ -49,7 +50,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QBlitFramebufferPrivate;
-class QRenderTarget;
 
 class Q_3DRENDERSHARED_EXPORT QBlitFramebuffer : public QFrameGraphNode
 {

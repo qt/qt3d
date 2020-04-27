@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <QtGui/qopenglvertexarrayobject.h>
+#include <QOpenGLVertexArrayObject>
 #include <submissioncontext_p.h>
 
 QT_BEGIN_NAMESPACE

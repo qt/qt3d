@@ -62,7 +62,7 @@
 #include <QOpenGLTexture>
 #include <QMatrix4x4>
 #include <QtGui/private/qrhi_p.h>
-#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 class QRhiGraphicsPipeline;
@@ -137,7 +137,7 @@ public:
     int m_instanceCount;
     int m_indexOffset;
     uint m_indexAttributeByteOffset;
-    Qt3DRender::QAttribute::VertexBaseType m_indexAttributeDataType;
+    Qt3DCore::QAttribute::VertexBaseType m_indexAttributeDataType;
     uint m_indirectAttributeByteOffset;
     bool m_drawIndexed;
     bool m_drawIndirect;

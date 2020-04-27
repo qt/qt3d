@@ -53,15 +53,12 @@
 
 #include <QtQuick/QQuickItem>
 #include <QtCore/QFlags>
+#include <Qt3DCore/qentity.h>
+#include "scene3ditem_p.h"
 
 QT_BEGIN_NAMESPACE
 
 class QSGTexture;
-
-namespace Qt3DCore {
-class QEntity;
-class QNode;
-}
 
 namespace Qt3DRender {
 

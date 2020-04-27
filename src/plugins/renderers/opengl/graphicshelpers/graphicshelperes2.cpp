@@ -79,7 +79,7 @@ GraphicsHelperES2::~GraphicsHelperES2()
 }
 
 void GraphicsHelperES2::initializeHelper(QOpenGLContext *context,
-                                          QAbstractOpenGLFunctions *)
+                                         QAbstractOpenGLFunctions *)
 {
     Q_ASSERT(context);
     m_funcs = context->functions();

@@ -44,13 +44,13 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/qrendertargetoutput.h>
+#include <Qt3DRender/qrendertarget.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
 class QRenderTargetSelectorPrivate;
-class QRenderTarget;
 
 class Q_3DRENDERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphNode
 {

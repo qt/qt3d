@@ -244,7 +244,7 @@ void Scene2D::initializeRender()
 
         m_context->makeCurrent(m_sharedObject->m_surface);
         m_sharedObject->m_renderControl->initialize(m_context);
-#ifdef QT_OPENGL_ES_2_ANGLE
+#if QT_CONFIG(angle)
         m_usingAngle = false;
         if (m_context->isOpenGLES()) {
             const char *versionStr = reinterpret_cast<const char *>(
@@ -309,7 +309,7 @@ void Scene2D::render()
         const Qt3DRender::Render::Attachment *attachmentData = nullptr;
         QMutex *textureLock = nullptr;
 
-#ifdef QT_OPENGL_ES_2_ANGLE
+#if QT_CONFIG(angle)
         QScopedPointer<SurfaceLocker> surfaceLocker;
         if (m_usingAngle)
             surfaceLocker.reset(new SurfaceLocker(m_sharedObject->m_surface));
@@ -329,7 +329,7 @@ void Scene2D::render()
                                             new Scene2DEvent(Scene2DEvent::Render));
                 return;
             }
-#ifdef QT_OPENGL_ES_2_ANGLE
+#if QT_CONFIG(angle)
             if (m_usingAngle == false)
                 textureLock->lock();
 #else
@@ -382,7 +382,7 @@ void Scene2D::render()
         m_context->functions()->glFlush();
         if (texture->isAutoMipMapGenerationEnabled())
             texture->generateMipMaps();
-#ifdef QT_OPENGL_ES_2_ANGLE
+#if QT_CONFIG(angle)
         if (m_usingAngle == false)
             textureLock->unlock();
 #else

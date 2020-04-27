@@ -45,6 +45,7 @@
 #include <private/qopengltexturehelper_p.h>
 #include <QDebug>
 #include <QOpenGLFunctions>
+#include <QtOpenGL/QOpenGLVersionFunctionsFactory>
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
 #include <Qt3DRender/qtexture.h>
@@ -55,7 +56,7 @@
 #include <Qt3DRender/private/qtextureimagedata_p.h>
 #include <renderbuffer_p.h>
 
-#if !defined(QT_OPENGL_ES_2)
+#if !QT_CONFIG(opengles2)
 #include <QOpenGLFunctions_3_1>
 #include <QOpenGLFunctions_4_5_Core>
 #endif
@@ -660,7 +661,7 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
     const QAbstractTexture::Target targets[] = {
         QAbstractTexture::Target2D,
         QAbstractTexture::TargetCubeMap,
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
         QAbstractTexture::Target1D,
         QAbstractTexture::Target1DArray,
         QAbstractTexture::Target3D,
@@ -673,13 +674,13 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
 #endif
     };
 
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
     // Try to find texture target with GL 4.5 functions
     const QPair<int, int> ctxGLVersion = ctx->format().version();
     if (ctxGLVersion.first > 4 || (ctxGLVersion.first == 4 && ctxGLVersion.second >= 5)) {
         // Only for GL 4.5+
 #ifdef GL_TEXTURE_TARGET
-        QOpenGLFunctions_4_5_Core *gl5 = ctx->versionFunctions<QOpenGLFunctions_4_5_Core>();
+        QOpenGLFunctions_4_5_Core *gl5 = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_5_Core>();
         if (gl5 != nullptr)
             gl5->glGetTextureParameteriv(m_sharedTextureId, GL_TEXTURE_TARGET, reinterpret_cast<int *>(&m_properties.target));
 #endif
@@ -694,7 +695,7 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
         const GLenum targetBindings[] = {
             GL_TEXTURE_BINDING_2D,
             GL_TEXTURE_BINDING_CUBE_MAP,
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
             GL_TEXTURE_BINDING_1D,
             GL_TEXTURE_BINDING_1D_ARRAY,
             GL_TEXTURE_BINDING_3D,
@@ -748,10 +749,10 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
     gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_S, reinterpret_cast<int *>(&m_parameters.wrapModeY));
     gl->glGetTexParameteriv(int(m_properties.target), GL_TEXTURE_WRAP_T, reinterpret_cast<int *>(&m_parameters.wrapModeZ));
 
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
     // Try to retrieve dimensions (not available on ES 2.0)
     if (!ctx->isOpenGLES()) {
-        QOpenGLFunctions_3_1 *gl3 = ctx->versionFunctions<QOpenGLFunctions_3_1>();
+        QOpenGLFunctions_3_1 *gl3 = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_1>();
         if (!gl3) {
             qWarning() << "Failed to retrieve shared texture dimensions";
             return;

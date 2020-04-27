@@ -42,12 +42,12 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAttribute;
 class QGeometryPrivate;
 
 class Q_3DCORESHARED_EXPORT QGeometry : public Qt3DCore::QNode

@@ -43,7 +43,7 @@
 #include <QtCore/QUrl>
 #include <QtCore/QEvent>
 
-#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qentity.h>
 
 #include <QtQuick/qquickitem.h>
 

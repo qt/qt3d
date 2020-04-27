@@ -180,7 +180,7 @@ GraphicsHelperES3::~GraphicsHelperES3()
 }
 
 void GraphicsHelperES3::initializeHelper(QOpenGLContext *context,
-                                          QAbstractOpenGLFunctions *functions)
+                                         QAbstractOpenGLFunctions *functions)
 {
     GraphicsHelperES2::initializeHelper(context, functions);
     m_extraFuncs = context->extraFunctions();

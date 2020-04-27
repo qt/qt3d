@@ -32,6 +32,7 @@
 #include <QtCore/qbuffer.h>
 
 #include <Qt3DRender/private/qshadernodesloader_p.h>
+#include <Qt3DRender/private/qshadergraphloader_p.h>
 #include <Qt3DRender/private/qshaderlanguage_p.h>
 
 using namespace Qt3DRender;
@@ -86,10 +87,20 @@ class tst_QShaderNodesLoader : public QObject
 {
     Q_OBJECT
 private slots:
+    void initTestCase();
     void shouldManipulateLoaderMembers();
     void shouldLoadFromJsonStream_data();
     void shouldLoadFromJsonStream();
 };
+
+void tst_QShaderNodesLoader::initTestCase()
+{
+    // Make sure we register the meta types. This is done by the
+    // QShaderGraphLoader ctor usually but in this test, no QShaderGraphLoader
+    // is used so we need to to it ourselves
+    QShaderGraphLoader l;
+    Q_UNUSED(l);
+}
 
 void tst_QShaderNodesLoader::shouldManipulateLoaderMembers()
 {

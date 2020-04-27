@@ -1,9 +1,12 @@
 HEADERS += \
+    $$PWD/qframeallocator_p.h \
+    $$PWD/qframeallocator_p_p.h \
     $$PWD/qloadgltf_p.h \
     $$PWD/qresourcemanager_p.h \
     $$PWD/qhandle_p.h
 
 SOURCES += \
+    $$PWD/qframeallocator.cpp \
     $$PWD/qresourcemanager.cpp
 
 

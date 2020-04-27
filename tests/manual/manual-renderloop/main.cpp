@@ -172,7 +172,7 @@ private:
 int main(int ac, char **av)
 {
     QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-#ifdef QT_OPENGL_ES_2
+#if QT_CONFIG(opengles2)
     format.setRenderableType(QSurfaceFormat::OpenGLES);
 #else
     if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {

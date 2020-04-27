@@ -43,19 +43,15 @@
 #include <QtCore/QObject>
 #include <QtGui/QVector3D>
 #include <QtCore/QPointF>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QEntity;
-}
-
 namespace Qt3DRender {
 
-class QViewport;
 class QPickEventPrivate;
-
 class QPickEvent;
 typedef QSharedPointer<QPickEvent> QPickEventPtr;
 

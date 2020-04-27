@@ -66,7 +66,7 @@
 #include <openglvertexarrayobject_p.h>
 #include <QOpenGLShaderProgram>
 
-#if !defined(QT_OPENGL_ES_2)
+#if !QT_CONFIG(opengles2)
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Core>
@@ -628,7 +628,7 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
     case QAbstractTexture::RGBA8_UNorm:
     case QAbstractTexture::RGBA8U:
     case QAbstractTexture::SRGB8_Alpha8:
-#ifdef QT_OPENGL_ES_2
+#if QT_CONFIG(opengles2)
         format = GL_RGBA;
         imageFormat = QImage::Format_RGBA8888_Premultiplied;
 #else
@@ -644,7 +644,7 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
     case QAbstractTexture::RGBFormat:
     case QAbstractTexture::RGB8U:
     case QAbstractTexture::RGB8_UNorm:
-#ifdef QT_OPENGL_ES_2
+#if QT_CONFIG(opengles2)
         format = GL_RGBA;
         imageFormat = QImage::Format_RGBX8888;
 #else
@@ -656,7 +656,7 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
         bytes = area * 4;
         stride = rect.width() * 4;
         break;
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
     case QAbstractTexture::RG11B10F:
         bytes = area * 4;
         format = GL_RGB;
@@ -1074,7 +1074,7 @@ void SubmissionContext::resetMasked(qint64 maskOfStatesToReset)
     if (maskOfStatesToReset & LineWidthMask)
         funcs->glLineWidth(1.0f);
 
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
     if (maskOfStatesToReset & RasterModeMask)
         m_glHelper->rasterMode(GL_FRONT_AND_BACK, GL_FILL);
 #endif

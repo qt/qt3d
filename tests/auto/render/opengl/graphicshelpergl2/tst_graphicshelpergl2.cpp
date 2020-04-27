@@ -33,13 +33,14 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <QtOpenGLExtensions/QOpenGLExtensions>
 #include <QOpenGLContext>
+#include <QOpenGLVersionFunctionsFactory>
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QSurfaceFormat>
 
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
 
 #define TEST_SHOULD_BE_PERFORMED 1
 
@@ -153,7 +154,7 @@ private Q_SLOTS:
             return;
         }
 
-        if ((m_func = m_glContext.versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
+        if ((m_func = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_2_0>()) != nullptr) {
             if (m_glContext.hasExtension(QByteArrayLiteral("GL_ARB_framebuffer_object"))) {
                 m_fboFuncs = new QOpenGLExtension_ARB_framebuffer_object();
                 m_fboFuncs->initializeOpenGLFunctions();

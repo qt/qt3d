@@ -41,6 +41,7 @@
 #define QT3DRENDER_CAMERA_H
 
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qcameralens.h>
 #include <QtGui/QMatrix4x4>
@@ -48,11 +49,6 @@
 #include <QtGui/QVector3D>
 
 QT_BEGIN_NAMESPACE
-
-namespace Qt3DCore {
-class QEntity;
-class QTransform;
-}
 
 namespace Qt3DRender {
 

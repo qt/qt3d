@@ -63,7 +63,8 @@
 #include <renderbuffer_p.h>
 #include <glshader_p.h>
 
-#if !defined(QT_OPENGL_ES_2)
+#if !QT_CONFIG(opengles2)
+#include <QtOpenGL/QOpenGLVersionFunctionsFactory>
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Core>
@@ -384,19 +385,19 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
         }
         glHelper->initializeHelper(m_gl, nullptr);
     }
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
     else {
         QAbstractOpenGLFunctions *glFunctions = nullptr;
-        if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != nullptr) {
+        if ((glFunctions = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_3_Core>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
             glHelper = new GraphicsHelperGL4();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != nullptr) {
+        } else if ((glFunctions = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
             glHelper = new GraphicsHelperGL3_3();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
+        } else if ((glFunctions = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_2_Core>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
             glHelper = new GraphicsHelperGL3_2();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
+        } else if ((glFunctions = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_2_0>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
             glHelper = new GraphicsHelperGL2();
         }
@@ -892,7 +893,7 @@ GLint GraphicsContext::elementType(GLint type)
     case GL_FLOAT_VEC4:
         return GL_FLOAT;
 
-#ifndef QT_OPENGL_ES_2 // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
+#if !QT_CONFIG(opengles2) // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
     case GL_DOUBLE:
 #ifdef GL_DOUBLE_VEC3 // For compiling on pre GL 4.1 systems
     case GL_DOUBLE_VEC2:
@@ -912,7 +913,7 @@ GLint GraphicsContext::tupleSizeFromType(GLint type)
 {
     switch (type) {
     case GL_FLOAT:
-#ifndef QT_OPENGL_ES_2 // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
+#if !QT_CONFIG(opengles2) // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
     case GL_DOUBLE:
 #endif
     case GL_UNSIGNED_BYTE:
@@ -948,7 +949,7 @@ GLuint GraphicsContext::byteSizeFromType(GLint type)
 {
     switch (type) {
     case GL_FLOAT:          return sizeof(float);
-#ifndef QT_OPENGL_ES_2 // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
+#if !QT_CONFIG(opengles2) // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
     case GL_DOUBLE:         return sizeof(double);
 #endif
     case GL_UNSIGNED_BYTE:  return sizeof(unsigned char);
@@ -990,7 +991,7 @@ GLint GraphicsContext::glDataTypeFromAttributeDataType(Qt3DCore::QAttribute::Ver
 #ifdef GL_HALF_FLOAT
         return GL_HALF_FLOAT;
 #endif
-#ifndef QT_OPENGL_ES_2 // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
+#if !QT_CONFIG(opengles2) // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
     case QAttribute::Double:
         return GL_DOUBLE;
 #endif

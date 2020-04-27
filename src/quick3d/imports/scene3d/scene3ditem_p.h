@@ -53,6 +53,7 @@
 
 #include <QtCore/qpointer.h>
 #include <QtQuick/QQuickItem>
+#include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
 

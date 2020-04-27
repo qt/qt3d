@@ -42,6 +42,7 @@
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qtechniquefilter.h>
+#include <Qt3DCore/qentity.h>
 #include <QtCore/QRectF>
 #include <QtGui/QColor>
 #include <Qt3DRender/QClearBuffers>

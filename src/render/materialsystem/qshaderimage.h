@@ -42,12 +42,12 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qabstracttexture.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTexture;
 class QShaderImagePrivate;
 
 class Q_3DRENDERSHARED_EXPORT QShaderImage : public Qt3DCore::QNode

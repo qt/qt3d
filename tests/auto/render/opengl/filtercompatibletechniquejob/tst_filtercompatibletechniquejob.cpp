@@ -179,7 +179,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         QSurfaceFormat format;
-#ifdef QT_OPENGL_ES_2
+#if QT_CONFIG(opengles2)
         format.setRenderableType(QSurfaceFormat::OpenGLES);
 #else
         if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {

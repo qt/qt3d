@@ -41,13 +41,13 @@
 #define QT3DRENDER_QSTENCILOPERATION_H
 
 #include <Qt3DRender/qrenderstate.h>
+#include <Qt3DRender/qstenciloperationarguments.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
 class QStencilOperationPrivate;
-class QStencilOperationArguments;
 
 class Q_3DRENDERSHARED_EXPORT QStencilOperation : public QRenderState
 {

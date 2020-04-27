@@ -41,6 +41,7 @@
 #define QT3DEXTRAS_QSPRITESHEET_H
 
 #include <Qt3DExtras/qabstractspritesheet.h>
+#include <Qt3DExtras/qspritesheetitem.h>
 #include <QtCore/QRect>
 #include <QtCore/QVector>
 
@@ -48,7 +49,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QSpriteSheetItem;
 class QSpriteSheetPrivate;
 
 class Q_3DEXTRASSHARED_EXPORT QSpriteSheet : public QAbstractSpriteSheet

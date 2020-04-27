@@ -866,7 +866,6 @@ void Renderer::enqueueRenderView(RenderView *renderView, int submitOrder)
 }
 
 bool Renderer::canRender() const
-
 {
     // Make sure that we've not been told to terminate
     if (m_renderThread && !m_running.loadRelaxed()) {

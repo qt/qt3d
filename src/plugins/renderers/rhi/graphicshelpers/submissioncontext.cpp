@@ -39,6 +39,7 @@
 
 #include "submissioncontext_p.h"
 
+#include <Qt3DCore/private/qbuffer_p.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qcullface.h>
@@ -60,7 +61,6 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
-#include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/private/vulkaninstance_p.h>
 #include <QGuiApplication>
@@ -95,6 +95,8 @@
 #include <bitset>
 
 QT_BEGIN_NAMESPACE
+
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -1514,7 +1516,7 @@ void SubmissionContext::uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b, bool
     // Note: we are only storing the updates data CPU side at this point
     // actually upload will be performed when the buffer will be bound
     // as we would otherwise need to know the usage type of the buffer
-    QVector<Qt3DRender::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
+    QVector<Qt3DCore::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
     for (auto it = updates.begin(); it != updates.end(); ++it) {
         auto update = it;
         // We have a partial update

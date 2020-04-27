@@ -40,6 +40,7 @@
 #ifndef QT3DRENDER_QPROXIMITYFILTER_H
 #define QT3DRENDER_QPROXIMITYFILTER_H
 
+#include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE

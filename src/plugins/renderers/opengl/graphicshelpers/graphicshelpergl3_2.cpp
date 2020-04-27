@@ -39,7 +39,7 @@
 
 #include "graphicshelpergl3_2_p.h"
 
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QtOpenGLExtensions/qopenglextensions.h>

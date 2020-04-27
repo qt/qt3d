@@ -40,14 +40,11 @@
 #ifndef QT3DANIMATION_QSKELETONMAPPING_H
 #define QT3DANIMATION_QSKELETONMAPPING_H
 
+#include <Qt3DCore/qabstractskeleton.h>
 #include <Qt3DAnimation/qabstractchannelmapping.h>
 #include <Qt3DAnimation/qt3danimation_global.h>
 
 QT_BEGIN_NAMESPACE
-
-namespace Qt3DCore {
-class QAbstractSkeleton;
-}
 
 namespace Qt3DAnimation {
 

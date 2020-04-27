@@ -42,13 +42,13 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qbuffer.h>
 #include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QBuffer;
 class QAttributePrivate;
 
 typedef QSharedPointer<QBuffer> QBufferPtr;

@@ -47,6 +47,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QEntity;
 class QComponentPrivate;
 
 class Q_3DCORESHARED_EXPORT QComponent : public QNode

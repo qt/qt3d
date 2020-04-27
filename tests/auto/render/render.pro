@@ -143,9 +143,7 @@ qtConfig(qt3d-opengl-renderer):qtConfig(private_tests) {
             qmaterial \
             geometryloaders \
             picking \
-            pickboundingvolumejob \
-            gltfplugins \
-            updateshaderdatatransformjob
+            gltfplugins
     }
 
     qtConfig(qt3d-input) {

@@ -44,6 +44,7 @@
 #include "qdistancefieldglyphcache_p.h"
 #include "qtextureatlas_p.h"
 
+#include <QtGui/qpainterpath.h>
 #include <QtGui/qfont.h>
 #include <QtGui/qpainterpath.h>
 #include <QtGui/private/qdistancefield_p.h>

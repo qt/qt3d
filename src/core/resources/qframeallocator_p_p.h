@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
-#define QT3DINPUT_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
+#ifndef QT3DCORE_QFRAMEALLOCATOR_P_P_H
+#define QT3DCORE_QFRAMEALLOCATOR_P_P_H
 
 //
 //  W A R N I N G
@@ -51,35 +51,88 @@
 // We mean it.
 //
 
-#include <Qt3DInput/qkeyboarddevice.h>
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DInput {
-namespace Input {
+namespace Qt3DCore {
 
-class InputHandler;
-class AssignKeyboardFocusJobPrivate;
+class QFrameAllocator;
 
-class AssignKeyboardFocusJob : public Qt3DCore::QAspectJob
+struct Q_AUTOTEST_EXPORT QFrameChunk
 {
-public:
-    explicit AssignKeyboardFocusJob(Qt3DCore::QNodeId keyboardDevice);
-    void setInputHandler(InputHandler *handler);
-    void run() override;
+    void init(uint blockSize, uchar blocks);
+    void *allocate(uint blockSize);
 
-private:
-    Q_DECLARE_PRIVATE(AssignKeyboardFocusJob)
+    void deallocate(void *p, uint blockSize);
+    bool contains(void *p, uint blockSize);
+    void clear(uint blockSize, uchar blocks);
+    void release();
 
-    InputHandler *m_inputHandler;
-    const Qt3DCore::QNodeId m_keyboardDevice;
+    inline bool isEmpty() const { return m_blocksAvailable == m_maxBlocksAvailable; }
+
+    uchar *m_data;
+    uchar  m_firstAvailableBlock;
+    uchar  m_blocksAvailable;
+    uchar  m_maxBlocksAvailable;
 };
 
-} // namespace Input
-} // namespace Qt3DInput
+class Q_AUTOTEST_EXPORT QFixedFrameAllocator
+{
+public:
+    QFixedFrameAllocator();
+    ~QFixedFrameAllocator();
+
+    void init(uint blockSize, uchar pageSize = 128);
+    void *allocate();
+    void  deallocate(void *ptr);
+    void trim();
+    void release();
+    void clear();
+    bool isEmpty() const;
+
+    inline int chunkCount() const { return m_chunks.size(); }
+    inline uchar pageSize() const { return m_nbrBlock; }
+    inline uint blockSize() const { return m_blockSize; }
+
+private:
+    QFrameChunk &scan();
+
+private:
+    uint m_blockSize;
+    uchar m_nbrBlock;
+    QVector<QFrameChunk> m_chunks;
+    QFrameChunk *m_lastAllocatedChunck;
+    QFrameChunk *m_lastFreedChunck;
+};
+
+class QFrameAllocatorPrivate
+{
+public:
+    QFrameAllocatorPrivate();
+
+    inline void *allocateAtChunk(uint allocatorIndex)
+    {
+        return m_allocatorPool[allocatorIndex].allocate();
+    }
+
+    inline void deallocateAtChunck(void *ptr, uint allocatorIndex)
+    {
+        m_allocatorPool[allocatorIndex].deallocate(ptr);
+    }
+
+    inline uint allocatorIndexFromSize(uint targetSize) const
+    {
+        return (targetSize + m_alignment - 1) / m_alignment - 1;
+    }
+
+    uint m_maxObjectSize;
+    uint m_alignment;
+    QVector<QFixedFrameAllocator> m_allocatorPool;
+};
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
+#endif // QT3DCORE_QFRAMEALLOCATOR_P_P_H

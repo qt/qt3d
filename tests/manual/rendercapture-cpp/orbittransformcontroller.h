@@ -54,12 +54,9 @@
 
 #include <QObject>
 #include <QMatrix4x4>
+#include <Qt3DCore/QTransform>
 
 QT_BEGIN_NAMESPACE
-
-namespace Qt3DCore {
-class QTransform;
-}
 
 class OrbitTransformController : public QObject
 {

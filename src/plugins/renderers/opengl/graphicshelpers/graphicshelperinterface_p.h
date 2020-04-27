@@ -53,6 +53,7 @@
 
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
+#include <QOpenGLVersionFunctions>
 #include <QVector>
 #include <shadervariables_p.h>
 #include <Qt3DRender/private/uniform_p.h>

@@ -43,6 +43,7 @@
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qlevelofdetailboundingsphere.h>
+#include <Qt3DRender/qcamera.h>
 
 #include <QtGui/QVector3D>
 
@@ -50,7 +51,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QCamera;
 class QLevelOfDetailPrivate;
 
 class Q_3DRENDERSHARED_EXPORT QLevelOfDetail : public Qt3DCore::QComponent

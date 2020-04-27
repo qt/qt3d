@@ -53,7 +53,7 @@
 
 #include <graphicshelperinterface_p.h>
 
-#ifndef QT_OPENGL_ES_2
+#if !QT_CONFIG(opengles2)
 
 QT_BEGIN_NAMESPACE
 

@@ -48,10 +48,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QMouseDevicePrivate;
-class QMouseHandler;
-
 class QMouseInput;
-
 
 class Q_3DINPUTSHARED_EXPORT QMouseDevice : public Qt3DInput::QAbstractPhysicalDevice
 {

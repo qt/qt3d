@@ -132,6 +132,13 @@ inline uint qHash(const GraphicsPipelineIdentifier &key, uint seed)
     return qHash(p, seed) + qHash(key.renderViewIndex, seed);
 }
 
+inline uint qHash(const GraphicsPipelineIdentifier &key)
+{
+    const QPair<HGeometry, Qt3DCore::QNodeId> p = { key.geometry, key.shader };
+    using QT_PREPEND_NAMESPACE(qHash);
+    return qHash(p) + qHash(key.renderViewIndex);
+}
+
 inline bool operator==(const GraphicsPipelineIdentifier &a, const GraphicsPipelineIdentifier &b)
 {
     return a.geometry == b.geometry && a.shader == b.shader

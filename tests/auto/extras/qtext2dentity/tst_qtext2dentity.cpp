@@ -77,7 +77,7 @@ private slots:
 
 void tst_qtext2dentity::checkChangeArbiter()
 {
-#if !defined(QT_OPENGL_ES_2_ANGLE)
+#if !QT_CONFIG(angle)
     // GIVEN
     Qt3DExtras::Quick::Qt3DQuickWindow view;
     view.setSource(QUrl("qrc:/qtext2dentity.qml"));
