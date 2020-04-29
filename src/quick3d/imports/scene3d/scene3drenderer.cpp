@@ -163,13 +163,13 @@ Scene3DRenderer::Scene3DRenderer()
     , m_allowRendering(0)
     , m_compositingMode(Scene3DItem::FBO)
 {
+
 }
 
 void Scene3DRenderer::init(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEngine,
                            QRenderAspect *renderAspect)
 {
     m_item = item;
-    m_window = m_item->window();
     m_aspectEngine = aspectEngine;
     m_renderAspect = renderAspect;
     m_needsShutdown = true;
