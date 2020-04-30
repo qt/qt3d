@@ -82,17 +82,16 @@ public:
     }
     EntityRenderCommandDataPtr renderables() const { return m_renderables; }
 
-    QVector<RenderCommand> &commands() Q_DECL_NOTHROW { return m_commands; }
-
+    inline void setRebuildFlags(RebuildFlagSet rebuildFlags) { m_rebuildFlags = rebuildFlags; }
     void run() final;
 
 private:
     int m_offset;
     int m_count;
+    RebuildFlagSet m_rebuildFlags;
     RenderView *m_renderView;
     Renderer *m_renderer;
     EntityRenderCommandDataPtr m_renderables;
-    QVector<RenderCommand> m_commands;
 
     Q_DECLARE_PRIVATE(RenderViewCommandUpdaterJob)
 };

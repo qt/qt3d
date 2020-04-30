@@ -110,6 +110,8 @@ public:
     bool materialGathererCacheNeedsToBeRebuilt() const;
     void setRenderCommandCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
     bool renderCommandCacheNeedsToBeRebuilt() const;
+    void setLightCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
+    bool lightCacheNeedsToBeRebuilt() const;
 
     static int defaultJobCount();
     int optimalJobCount() const;
@@ -121,9 +123,7 @@ private:
     Render::FrameGraphNode *m_leafNode;
     const int m_renderViewIndex;
     Renderer *m_renderer;
-    bool m_layerCacheNeedsToBeRebuilt;
-    bool m_materialGathererCacheNeedsToBeRebuilt;
-    bool m_renderCommandCacheNeedsToBeRebuilt;
+    RebuildFlagSet m_rebuildFlags;
 
     RenderViewInitializerJobPtr m_renderViewJob;
     FilterLayerEntityJobPtr m_filterEntityByLayerJob;

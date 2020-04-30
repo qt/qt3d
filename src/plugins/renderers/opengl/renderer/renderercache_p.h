@@ -70,18 +70,36 @@ struct RendererCache
 {
     struct LeafNodeData
     {
+        // Set by the FilterLayerJob
+        // Contains all Entities that satisfy the layer filtering for the RV
         QVector<Entity *> filterEntitiesByLayer;
+
+        // Set by the MaterialParameterGatherJob
         MaterialParameterGathererData materialParameterGatherer;
+
+        // Set by the SyncRenderViewPreCommandUpdateJob
+        // Contains all Entities that are renderables (either compute or draw
+        // depending on the RV) and that satisfy the layer filtering.
+        QVector<Entity *> layeredFilteredRenderables;
+        QVector<LightSource> layeredFilteredLightSources;
         EntityRenderCommandData renderCommandData;
     };
 
-    // Shared amongst all RV cache
+    // Variabled below are shared amongst all RV
+
+    // Set by CachingRenderableEntityFilterJob
     QVector<Entity *> renderableEntities;
+
+    // Set by CachingComputableEntityFilterJob
     QVector<Entity *> computeEntities;
+
+    // Set by CachingLightGathererJob
     QVector<LightSource> gatheredLights;
+
     EnvironmentLight* environmentLight;
 
     // Per RV cache
+    // Leaves inserted by SyncRenderViewPostInitialization
     QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
 
     QMutex *mutex() { return &m_mutex; }
