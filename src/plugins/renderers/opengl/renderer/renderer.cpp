@@ -935,8 +935,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
     QHash<HVao, bool> updatedTable;
 
     for (RenderView *rv: renderViews) {
-        QVector<RenderCommand> &commands = rv->commands();
-        for (RenderCommand &command : commands) {
+        rv->forEachCommand([&] (RenderCommand &command) {
             // Update/Create VAO
             if (command.m_type == RenderCommand::Draw) {
                 Geometry *rGeometry = m_nodesManager->data<Geometry, GeometryManager>(command.m_geometry);
@@ -995,7 +994,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 GLShader *shader = command.m_glShader;
                 Q_ASSERT(shader);
             }
-        }
+        });
     }
 
     // Make sure we leave nothing bound
@@ -1523,7 +1522,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     for (int i = 0; i < renderViewsCount; ++i) {
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
-        const RenderView *renderView = renderViews.at(i);
+        RenderView *renderView = renderViews.at(i);
 
         if (renderView->shouldSkipSubmission())
             continue;
@@ -1975,7 +1974,7 @@ QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 }
 
 // Called by executeCommands
-void Renderer::performDraw(RenderCommand *command)
+void Renderer::performDraw(const RenderCommand *command)
 {
     // Indirect Draw Calls
     if (command->m_drawIndirect) {
@@ -2101,12 +2100,11 @@ void Renderer::createOrUpdateVAO(RenderCommand *command,
 
 // Called by RenderView->submit() in RenderThread context
 // Returns true, if all RenderCommands were sent to the GPU
-bool Renderer::executeCommandsSubmission(const RenderView *rv)
+bool Renderer::executeCommandsSubmission(RenderView *rv)
 {
     bool allCommandsIssued = true;
 
     // Render drawing commands
-    QVector<RenderCommand> commands = rv->commands();
 
     // Use the graphicscontext to submit the commands to the underlying
     // graphics API (OpenGL)
@@ -2115,7 +2113,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
     RenderStateSet *globalState = m_submissionContext->currentStateSet();
     OpenGLVertexArrayObject *vao = nullptr;
 
-    for (RenderCommand &command : commands) {
+    rv->forEachCommand([&] (RenderCommand &command) {
 
         if (command.m_type == RenderCommand::Compute) { // Compute Call
             performCompute(rv, &command);
@@ -2123,7 +2121,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             // Check if we have a valid command that can be drawn
             if (!command.m_isValid) {
                 allCommandsIssued = false;
-                continue;
+                return;
             }
 
             vao = m_glResourceManagers->vaoManager()->data(command.m_vao);
@@ -2131,7 +2129,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             // something may have went wrong when initializing the VAO
             if (!vao->isSpecified()) {
                 allCommandsIssued = false;
-                continue;
+                return;
             }
 
             {
@@ -2140,7 +2138,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
                 GLShader *shader = command.m_glShader;
                 if (!m_submissionContext->activateShader(shader)) {
                     allCommandsIssued = false;
-                    continue;
+                    return;
                 }
             }
 
@@ -2157,7 +2155,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
                     allCommandsIssued = false;
                     // If we have failed to set uniform (e.g unable to bind a texture)
                     // we won't perform the draw call which could show invalid content
-                    continue;
+                    return;
                 }
             }
 
@@ -2185,7 +2183,7 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             //// Draw Calls
             performDraw(&command);
         }
-    } // end of RenderCommands loop
+    }); // end of RenderCommands loop
 
     // We cache the VAO and release it only at the end of the exectute frame
     // We try to minimize VAO binding between RenderCommands

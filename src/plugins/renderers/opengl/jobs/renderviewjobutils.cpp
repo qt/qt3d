@@ -188,17 +188,13 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::StateSet: {
                 const Render::StateSetNode *rStateSet = static_cast<const Render::StateSetNode *>(node);
-                // Create global RenderStateSet for renderView if no stateSet was set before
-                RenderStateSet *stateSet = rv->stateSet();
-                if (stateSet == nullptr && rStateSet->hasRenderStates()) {
-                    stateSet = new RenderStateSet();
-                    rv->setStateSet(stateSet);
-                }
-
                 // Add states from new stateSet we might be missing
                 // but don' t override existing states (lower StateSetNode always has priority)
-                if (rStateSet->hasRenderStates())
+                if (rStateSet->hasRenderStates()) {
+                    // Create global RenderStateSet for renderView if no stateSet was set before
+                    RenderStateSet *stateSet = rv->getOrCreateStateSet();
                     addStatesToRenderStateSet(stateSet, rStateSet->renderStates(), manager->renderStateManager());
+                }
                 break;
             }
 
