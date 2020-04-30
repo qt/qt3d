@@ -201,19 +201,18 @@ void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews,
         QSet<HGeometryRenderer> inUseGeometries;
         QSet<Qt3DCore::QNodeId> inUseTextures;
         for (int j=0; j<renderViewsCount; j++) {
-            const auto &commands = renderViews.at(j)->commands();
-            nCommands += commands.size();
-            for (int k=0; k<commands.size(); k++) {
-                const RenderCommand &command = commands.at(k);
+            RenderView *rv = renderViews.at(j);
+            nCommands += rv->commandCount();
+            rv->forEachCommand([&] (const RenderCommand &command) {
                 if (command.m_type != RenderCommand::Draw)
-                    continue;
+                    return;
                 nVertices += command.m_primitiveCount;
                 nPrimitives += vertexToPrimitiveCount(command.m_primitiveType, command.m_primitiveCount);
                 inUseGeometries.insert(command.m_geometryRenderer);
                 const auto &textures = command.m_parameterPack.textures();
                 for (const auto &ns: textures)
                     inUseTextures.insert(ns.nodeId);
-            }
+            });
         }
 
         auto columnNumber = [](int i) {
@@ -340,8 +339,8 @@ void ImGuiRenderer::showRenderDetails(const QVector<RenderView *> &renderViews)
             ImGui::Text("Clear Depth Value: %f", static_cast<double>(view->clearDepthValue()));
             ImGui::Text("Clear Stencil Value: %d", view->clearStencilValue());
             int j = 1;
-            const auto commands = view->commands();
-            for (const RenderCommand &command: commands) {
+
+            view->forEachCommand([&] (const RenderCommand &command) {
                 GeometryRenderer *rGeometryRenderer = m_renderer->nodeManagers()->data<GeometryRenderer, GeometryRendererManager>(command.m_geometryRenderer);
                 QString label = QString(QLatin1String("Command %1 {%2}")).arg(QString::number(j++), QString::number(rGeometryRenderer->peerId().id()));
                 if (ImGui::TreeNode(label.toLatin1().data())) {
@@ -352,7 +351,7 @@ void ImGuiRenderer::showRenderDetails(const QVector<RenderView *> &renderViews)
                     ImGui::Text("# Instances: %d", command.m_instanceCount);
                     ImGui::TreePop();
                 }
-            }
+            });
             ImGui::TreePop();
             ImGui::Separator();
         }

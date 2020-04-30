@@ -254,7 +254,7 @@ public:
                          GLuint defaultFramebuffer);
 
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
-    bool executeCommandsSubmission(const RenderView *rv);
+    bool executeCommandsSubmission(RenderView *rv);
     bool updateVAOWithAttributes(Geometry *geometry,
                                  const RenderCommand *command,
                                  GLShader *shader,
@@ -366,7 +366,7 @@ private:
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
-    void performDraw(RenderCommand *command);
+    void performDraw(const RenderCommand *command);
     void performCompute(const RenderView *rv, RenderCommand *command);
     void createOrUpdateVAO(RenderCommand *command,
                            HVao *previousVAOHandle,

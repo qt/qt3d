@@ -141,29 +141,29 @@ public:
     inline void setDevicePixelRatio(qreal r) Q_DECL_NOTHROW { m_devicePixelRatio = r; }
     inline qreal devicePixelRatio() const Q_DECL_NOTHROW { return m_devicePixelRatio; }
 
-    inline void setRenderCameraLens(CameraLens *renderCameraLens) Q_DECL_NOTHROW { m_data.m_renderCameraLens = renderCameraLens; }
-    inline CameraLens *renderCameraLens() const Q_DECL_NOTHROW { return m_data.m_renderCameraLens; }
+    inline void setRenderCameraLens(CameraLens *renderCameraLens) Q_DECL_NOTHROW { m_renderCameraLens = renderCameraLens; }
+    inline CameraLens *renderCameraLens() const Q_DECL_NOTHROW { return m_renderCameraLens; }
 
-    inline void setRenderCameraEntity(Entity *renderCameraNode) Q_DECL_NOTHROW { m_data.m_renderCameraNode = renderCameraNode; }
-    inline Entity *renderCameraEntity() const Q_DECL_NOTHROW { return m_data.m_renderCameraNode; }
+    inline void setRenderCameraEntity(Entity *renderCameraNode) Q_DECL_NOTHROW { m_renderCameraNode = renderCameraNode; }
+    inline Entity *renderCameraEntity() const Q_DECL_NOTHROW { return m_renderCameraNode; }
 
-    inline void setViewMatrix(const Matrix4x4 &viewMatrix) Q_DECL_NOTHROW { m_data.m_viewMatrix = viewMatrix; }
-    inline Matrix4x4 viewMatrix() const Q_DECL_NOTHROW { return m_data.m_viewMatrix; }
+    inline void setViewMatrix(const Matrix4x4 &viewMatrix) Q_DECL_NOTHROW { m_viewMatrix = viewMatrix; }
+    inline Matrix4x4 viewMatrix() const Q_DECL_NOTHROW { return m_viewMatrix; }
 
-    inline void setViewProjectionMatrix(const Matrix4x4 &viewProjectionMatrix) Q_DECL_NOTHROW { m_data.m_viewProjectionMatrix = viewProjectionMatrix; }
-    inline Matrix4x4 viewProjectionMatrix() const Q_DECL_NOTHROW { return m_data.m_viewProjectionMatrix; }
+    inline void setViewProjectionMatrix(const Matrix4x4 &viewProjectionMatrix) Q_DECL_NOTHROW { m_viewProjectionMatrix = viewProjectionMatrix; }
+    inline Matrix4x4 viewProjectionMatrix() const Q_DECL_NOTHROW { return m_viewProjectionMatrix; }
 
-    inline void setEyePosition(const Vector3D &eyePos) Q_DECL_NOTHROW { m_data.m_eyePos = eyePos; }
-    inline Vector3D eyePosition() const Q_DECL_NOTHROW { return m_data.m_eyePos; }
+    inline void setEyePosition(const Vector3D &eyePos) Q_DECL_NOTHROW { m_eyePos = eyePos; }
+    inline Vector3D eyePosition() const Q_DECL_NOTHROW { return m_eyePos; }
 
-    inline void setEyeViewDirection(const Vector3D &dir) Q_DECL_NOTHROW { m_data.m_eyeViewDir = dir; }
-    inline Vector3D eyeViewDirection() const Q_DECL_NOTHROW { return m_data.m_eyeViewDir; }
+    inline void setEyeViewDirection(const Vector3D &dir) Q_DECL_NOTHROW { m_eyeViewDir = dir; }
+    inline Vector3D eyeViewDirection() const Q_DECL_NOTHROW { return m_eyeViewDir; }
 
-    inline void appendLayerFilter(const Qt3DCore::QNodeId layerFilterId) Q_DECL_NOTHROW { m_data.m_layerFilterIds.push_back(layerFilterId); }
-    inline Qt3DCore::QNodeIdVector layerFilters() const Q_DECL_NOTHROW { return m_data.m_layerFilterIds; }
+    inline void appendLayerFilter(const Qt3DCore::QNodeId layerFilterId) Q_DECL_NOTHROW { m_layerFilterIds.push_back(layerFilterId); }
+    inline Qt3DCore::QNodeIdVector layerFilters() const Q_DECL_NOTHROW { return m_layerFilterIds; }
 
-    inline void appendProximityFilterId(const Qt3DCore::QNodeId proximityFilterId) { m_data.m_proximityFilterIds.push_back(proximityFilterId); }
-    inline Qt3DCore::QNodeIdVector proximityFilterIds() const { return m_data.m_proximityFilterIds; }
+    inline void appendProximityFilterId(const Qt3DCore::QNodeId proximityFilterId) { m_proximityFilterIds.push_back(proximityFilterId); }
+    inline Qt3DCore::QNodeIdVector proximityFilterIds() const { return m_proximityFilterIds; }
 
     inline void appendInsertFenceId(const Qt3DCore::QNodeId setFenceId) { m_insertFenceIds.push_back(setFenceId); }
     // We prefix with get to avoid confusion when it is called
@@ -172,14 +172,17 @@ public:
     inline void appendWaitFence(const QWaitFenceData &data) { m_waitFences.push_back(data); }
     inline QVector<QWaitFenceData> waitFences() const { return m_waitFences; }
 
-    inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_data.m_passFilter = rpFilter; }
-    inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_data.m_passFilter; }
+    inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_passFilter = rpFilter; }
+    inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_passFilter; }
 
-    inline void setTechniqueFilter(const TechniqueFilter *filter) Q_DECL_NOTHROW { m_data.m_techniqueFilter = filter; }
-    inline const TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_data.m_techniqueFilter; }
+    inline void setTechniqueFilter(const TechniqueFilter *filter) Q_DECL_NOTHROW { m_techniqueFilter = filter; }
+    inline const TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_techniqueFilter; }
 
-    inline RenderStateSet *stateSet() const Q_DECL_NOTHROW { return m_stateSet; }
-    void setStateSet(RenderStateSet *stateSet) Q_DECL_NOTHROW { m_stateSet = stateSet; }
+    inline void setRenderCommandDataView(const EntityRenderCommandDataViewPtr &renderCommandDataView) Q_DECL_NOTHROW { m_renderCommandDataView = renderCommandDataView; }
+    inline EntityRenderCommandDataViewPtr renderCommandDataView() const Q_DECL_NOTHROW { return m_renderCommandDataView; }
+
+    RenderStateSet *getOrCreateStateSet();
+    RenderStateSet *stateSet() const Q_DECL_NOTHROW { return m_stateSet.data(); }
 
     inline bool noDraw() const Q_DECL_NOTHROW { return m_noDraw; }
     void setNoDraw(bool noDraw) Q_DECL_NOTHROW { m_noDraw = noDraw; }
@@ -224,14 +227,7 @@ public:
     EntityRenderCommandData buildComputeRenderCommands(const QVector<Entity *> &entities,
                                                        int offset, int count) const;
 
-
-    void updateRenderCommand(EntityRenderCommandData *renderCommandData,
-                             int offset, int count);
-
-
-    void setCommands(const QVector<RenderCommand> &commands) Q_DECL_NOTHROW { m_commands = commands; }
-    QVector<RenderCommand> &commands() { return m_commands; }
-    QVector<RenderCommand> commands() const { return m_commands; }
+    void updateRenderCommand(const EntityRenderCommandDataSubView &subView);
 
     void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
     const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
@@ -239,7 +235,7 @@ public:
     void setRenderTargetId(Qt3DCore::QNodeId renderTargetId) Q_DECL_NOTHROW { m_renderTarget = renderTargetId; }
     Qt3DCore::QNodeId renderTargetId() const Q_DECL_NOTHROW { return m_renderTarget; }
 
-    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_data.m_sortingTypes.append(sortTypes); }
+    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_sortingTypes.append(sortTypes); }
 
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }
@@ -257,30 +253,6 @@ public:
     void setMemoryBarrier(QMemoryBarrier::Operations barrier) Q_DECL_NOTHROW { m_memoryBarrier = barrier; }
     QMemoryBarrier::Operations memoryBarrier() const Q_DECL_NOTHROW { return m_memoryBarrier; }
 
-    // Helps making the size of RenderView smaller
-    // Contains all the data needed for the actual building of the RenderView
-    // But that aren't used later by the Renderer
-    struct InnerData {
-        InnerData()
-            : m_renderCameraLens(nullptr)
-            , m_renderCameraNode(nullptr)
-            , m_techniqueFilter(nullptr)
-            , m_passFilter(nullptr)
-        {
-        }
-        CameraLens *m_renderCameraLens;
-        Entity *m_renderCameraNode;
-        const TechniqueFilter *m_techniqueFilter;
-        const RenderPassFilter *m_passFilter;
-        Matrix4x4 m_viewMatrix;
-        Matrix4x4 m_viewProjectionMatrix;
-        Qt3DCore::QNodeIdVector m_layerFilterIds;
-        QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
-        Vector3D m_eyePos;
-        Vector3D m_eyeViewDir;
-        Qt3DCore::QNodeIdVector m_proximityFilterIds;
-    };
-
     bool isDownloadBuffersEnable() const;
     void setIsDownloadBuffersEnable(bool isDownloadBuffersEnable);
 
@@ -292,53 +264,83 @@ public:
 
     bool shouldSkipSubmission() const;
 
+    template<typename F>
+    inline void forEachCommand(F func) const
+    {
+        if (!m_renderCommandDataView)
+            return;
+        m_renderCommandDataView->forEachCommand(func);
+    }
+
+    template<typename F>
+    inline void forEachCommand(F func)
+    {
+        if (!m_renderCommandDataView)
+            return;
+        m_renderCommandDataView->forEachCommand(func);
+    }
+
+    inline int commandCount() const { return m_renderCommandDataView ? m_renderCommandDataView->size() : 0; }
+
 private:
     void setShaderAndUniforms(RenderCommand *command,
-                              ParameterInfoList &parameters,
-                              Entity *entity,
-                              const QVector<LightSource> &activeLightSources,
-                              EnvironmentLight *environmentLight) const;
+                              const ParameterInfoList &parameters,
+                              const Entity *entity) const;
+
+    void updateLightUniforms(RenderCommand *command,
+                             const Entity *entity) const;
+
     mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
+
+    Renderer *m_renderer = nullptr;
+    NodeManagers *m_manager = nullptr;
+    EntityRenderCommandDataViewPtr m_renderCommandDataView;
+
+    QSize m_surfaceSize;
+    float m_devicePixelRatio = 1.0f;
+    QRectF m_viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
+    float m_gamma = 2.2f;
 
     Qt3DCore::QNodeId m_renderCaptureNodeId;
     QRenderCaptureRequest m_renderCaptureRequest;
-    bool m_isDownloadBuffersEnable;
+    bool m_isDownloadBuffersEnable = false;
 
-    bool m_hasBlitFramebufferInfo;
+    bool m_hasBlitFramebufferInfo = false;
     BlitFramebufferInfo m_blitFrameBufferInfo;
 
-    Renderer *m_renderer;
-    NodeManagers *m_manager;
-    QSize m_surfaceSize;
-    qreal m_devicePixelRatio;
-
-    InnerData m_data;
-
-    QRectF m_viewport;
-    float m_gamma;
+    QSurface *m_surface = nullptr;
     Qt3DCore::QNodeId m_renderTarget;
-    QSurface *m_surface;
     AttachmentPack m_attachmentPack;
-    QClearBuffers::BufferTypeFlags m_clearBuffer;
-    float m_clearDepthValue;
-    int m_clearStencilValue;
+    QClearBuffers::BufferTypeFlags m_clearBuffer = QClearBuffers::None;
+    float m_clearDepthValue = 1.0f;
+    int m_clearStencilValue = 0;
     ClearBufferInfo m_globalClearColorBuffer;               // global ClearColor
     QVector<ClearBufferInfo> m_specificClearColorBuffers;   // different draw buffers with distinct colors
-    RenderStateSet *m_stateSet;
-    bool m_noDraw:1;
-    bool m_compute:1;
-    bool m_frustumCulling:1;
-    bool m_showDebugOverlay:1;
-    int m_workGroups[3];
-    QMemoryBarrier::Operations m_memoryBarrier;
+
+    QScopedPointer<RenderStateSet> m_stateSet;
+    CameraLens *m_renderCameraLens = nullptr;
+    Entity *m_renderCameraNode = nullptr;
+    const TechniqueFilter *m_techniqueFilter = nullptr;
+    const RenderPassFilter *m_passFilter = nullptr;
+    bool m_noDraw = false;
+    bool m_compute = false;
+    bool m_frustumCulling = false;
+    bool m_showDebugOverlay = false;
+    int m_workGroups[3] = { 1, 1, 1};
+    QMemoryBarrier::Operations m_memoryBarrier = QMemoryBarrier::None;
     QVector<Qt3DCore::QNodeId> m_insertFenceIds;
     QVector<QWaitFenceData> m_waitFences;
-
-    QVector<RenderCommand> m_commands;
-    mutable QVector<LightSource> m_lightSources;
-    EnvironmentLight *m_environmentLight;
+    QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
+    Qt3DCore::QNodeIdVector m_proximityFilterIds;
+    Qt3DCore::QNodeIdVector m_layerFilterIds;
+    Matrix4x4 m_viewMatrix;
+    Matrix4x4 m_viewProjectionMatrix;
+    Vector3D m_eyePos;
+    Vector3D m_eyeViewDir;
 
     MaterialParameterGathererData m_parameters;
+    mutable QVector<LightSource> m_lightSources;
+    EnvironmentLight *m_environmentLight = nullptr;
 
     enum StandardUniform
     {

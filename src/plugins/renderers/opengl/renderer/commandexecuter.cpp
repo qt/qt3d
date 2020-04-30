@@ -346,7 +346,7 @@ void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::
                 viewObj.insert(QLatin1String("clearStencilValue"), v->clearStencilValue());
 
                 QJsonArray renderCommandsArray;
-                for (Render::OpenGL::RenderCommand &c : v->commands()) {
+                v->forEachCommand([&] (Render::OpenGL::RenderCommand &c) {
                     QJsonObject commandObj;
                     Render::NodeManagers *nodeManagers = m_renderer->nodeManagers();
                     commandObj.insert(QLatin1String("shader"), typeToJsonValue(QVariant::fromValue(c.m_shaderId)));
@@ -357,7 +357,7 @@ void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::
                     commandObj.insert(QLatin1String("shaderParameterPack"), parameterPackToJson(c.m_parameterPack));
 
                     renderCommandsArray.push_back(commandObj);
-                }
+                });
                 viewObj.insert(QLatin1String("commands"), renderCommandsArray);
                 viewArray.push_back(viewObj);
             }

@@ -78,7 +78,6 @@ private Q_SLOTS:
     {
         QSKIP("Allocated Disabled");
         QVERIFY(sizeof(RenderView) <= 192);
-        QVERIFY(sizeof(RenderView::InnerData) <= 192);
     }
 
     void checkRenderViewInitialState()
@@ -137,13 +136,40 @@ private Q_SLOTS:
         // TO DO: Complete tests for other framegraph node types
     }
 
+    void checkDoesntCrashWhenNoCommandsToSort()
+    {
+        // GIVEN
+        Qt3DRender::Render::NodeManagers nodeManagers;
+        Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        RenderView renderView;
+
+        renderer.setNodeManagers(&nodeManagers);
+        renderView.setRenderer(&renderer);
+
+        QVector<QSortPolicy::SortType> sortTypes;
+        sortTypes.push_back(QSortPolicy::BackToFront);
+
+        // WHEN
+        renderView.addSortType(sortTypes);
+
+        EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
+        renderView.setRenderCommandDataView(view);
+
+        // THEN -> shouldn't crash
+        renderView.sort();
+
+        // RenderCommands are deleted by RenderView dtor
+        renderer.shutdown();
+    }
+
     void checkRenderCommandBackToFrontSorting()
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
         Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
-        QVector<RenderCommand> rawCommands;
+        std::vector<RenderCommand> rawCommands;
+
         QVector<QSortPolicy::SortType> sortTypes;
 
         renderer.setNodeManagers(&nodeManagers);
@@ -159,14 +185,25 @@ private Q_SLOTS:
 
         // WHEN
         renderView.addSortType(sortTypes);
-        renderView.setCommands(rawCommands);
+
+        EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
+        view->data.commands = rawCommands;
+        view->indices.resize(rawCommands.size());
+        std::iota(view->indices.begin(), view->indices.end(), 0);
+
+        renderView.setRenderCommandDataView(view);
+
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand> sortedCommands = renderView.commands();
-        QCOMPARE(rawCommands.size(), sortedCommands.size());
-        for (int j = 1; j < sortedCommands.size(); ++j)
-            QVERIFY(sortedCommands.at(j - 1).m_depth > sortedCommands.at(j).m_depth);
+        int j = 0;
+        RenderCommand previousRC;
+        renderView.forEachCommand([&] (const RenderCommand &command) {
+            if (j > 0)
+                QVERIFY(previousRC.m_depth > command.m_depth);
+            previousRC = command;
+            ++j;
+        });
 
         // RenderCommands are deleted by RenderView dtor
         renderer.shutdown();
@@ -178,7 +215,8 @@ private Q_SLOTS:
         Qt3DRender::Render::NodeManagers nodeManagers;
         Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
-        QVector<RenderCommand> rawCommands;
+        std::vector<RenderCommand> rawCommands;
+
         QVector<QSortPolicy::SortType> sortTypes;
 
         renderer.setNodeManagers(&nodeManagers);
@@ -202,23 +240,31 @@ private Q_SLOTS:
 
         // WHEN
         renderView.addSortType(sortTypes);
-        renderView.setCommands(rawCommands);
+
+        EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
+        view->data.commands = rawCommands;
+        view->indices.resize(rawCommands.size());
+        std::iota(view->indices.begin(), view->indices.end(), 0);
+
+        renderView.setRenderCommandDataView(view);
+
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand> sortedCommands = renderView.commands();
-        QCOMPARE(rawCommands.size(), sortedCommands.size());
+        int j = 0;
         GLShader *targetShader;
+        RenderCommand previousRC;
 
-        for (int j = 0; j < sortedCommands.size(); ++j) {
-
+        renderView.forEachCommand([&] (const RenderCommand &command) {
             if (j % 4 == 0) {
-                targetShader = sortedCommands.at(j).m_glShader;
+                targetShader = command.m_glShader;
                 if (j > 0)
-                    QVERIFY(targetShader != sortedCommands.at(j - 1).m_glShader);
+                    QVERIFY(targetShader != previousRC.m_glShader);
             }
-            QCOMPARE(targetShader, sortedCommands.at(j).m_glShader);
-        }
+            QCOMPARE(targetShader, command.m_glShader);
+            previousRC = command;
+            ++j;
+        });
 
         // RenderCommands are deleted by RenderView dtor
         renderer.shutdown();
@@ -280,7 +326,8 @@ private Q_SLOTS:
         }
 
         RenderView renderView;
-        QVector<RenderCommand> rawCommands;
+        std::vector<RenderCommand> rawCommands;
+
         renderView.setRenderer(&renderer);
 
         for (int i = 0, m = shaders.size(); i < m; ++i) {
@@ -292,19 +339,24 @@ private Q_SLOTS:
         }
 
         // WHEN
-        renderView.setCommands(rawCommands);
         renderView.addSortType((QVector<QSortPolicy::SortType>() << QSortPolicy::Uniform));
+
+        EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
+        view->data.commands = rawCommands;
+        view->indices.resize(rawCommands.size());
+        std::iota(view->indices.begin(), view->indices.end(), 0);
+
+        renderView.setRenderCommandDataView(view);
+
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand> sortedCommands = renderView.commands();
-        QCOMPARE(rawCommands, sortedCommands);
-
-        for (int i = 0, m = shaders.size(); i < m; ++i) {
-            const RenderCommand c = sortedCommands.at(i);
-            QCOMPARE(c.m_shaderId, shaders.at(i)->id());
-            compareShaderParameterPacks(c.m_parameterPack, expectedMinimizedParameters.at(i));
-        }
+        int j = 0;
+        renderView.forEachCommand([&] (const RenderCommand &command) {
+            QCOMPARE(command.m_shaderId, shaders.at(j)->id());
+            compareShaderParameterPacks(command.m_parameterPack, expectedMinimizedParameters.at(j));
+            ++j;
+        });
 
         renderer.shutdown();
     }
@@ -316,7 +368,8 @@ private Q_SLOTS:
         Qt3DRender::Render::NodeManagers nodeManagers;
         Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
-        QVector<RenderCommand> rawCommands;
+        std::vector<RenderCommand> rawCommands;
+
         QVector<QSortPolicy::SortType> sortTypes;
 
         renderer.setNodeManagers(&nodeManagers);
@@ -332,14 +385,25 @@ private Q_SLOTS:
 
         // WHEN
         renderView.addSortType(sortTypes);
-        renderView.setCommands(rawCommands);
+
+        EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
+        view->data.commands = rawCommands;
+        view->indices.resize(rawCommands.size());
+        std::iota(view->indices.begin(), view->indices.end(), 0);
+
+        renderView.setRenderCommandDataView(view);
+
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand> sortedCommands = renderView.commands();
-        QCOMPARE(rawCommands.size(), sortedCommands.size());
-        for (int j = 1; j < sortedCommands.size(); ++j)
-            QVERIFY(sortedCommands.at(j - 1).m_depth < sortedCommands.at(j).m_depth);
+        int j = 0;
+        RenderCommand previousRC;
+        renderView.forEachCommand([&] (const RenderCommand &command) {
+            if (j > 0)
+                QVERIFY(previousRC.m_depth < command.m_depth);
+            previousRC = command;
+            ++j;
+        });
 
         // RenderCommands are deleted by RenderView dtor
         renderer.shutdown();
@@ -351,7 +415,8 @@ private Q_SLOTS:
         Qt3DRender::Render::NodeManagers nodeManagers;
         Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
-        QVector<RenderCommand> rawCommands;
+        std::vector<RenderCommand> rawCommands;
+
         QVector<QSortPolicy::SortType> sortTypes;
 
         renderer.setNodeManagers(&nodeManagers);
@@ -367,14 +432,26 @@ private Q_SLOTS:
 
         // WHEN
         renderView.addSortType(sortTypes);
-        renderView.setCommands(rawCommands);
+
+        EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
+        view->data.commands = rawCommands;
+        view->indices.resize(rawCommands.size());
+        std::iota(view->indices.begin(), view->indices.end(), 0);
+
+        renderView.setRenderCommandDataView(view);
+
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand> sortedCommands = renderView.commands();
-        QCOMPARE(rawCommands.size(), sortedCommands.size());
-        for (int j = 1; j < sortedCommands.size(); ++j)
-            QVERIFY(sortedCommands.at(j - 1).m_changeCost > sortedCommands.at(j).m_changeCost);
+        int j = 0;
+        RenderCommand previousRC;
+        renderView.forEachCommand([&] (const RenderCommand &command) {
+            if (j > 0)
+                QVERIFY(previousRC.m_changeCost > command.m_changeCost);
+            previousRC = command;
+            ++j;
+        });
+
 
         // RenderCommands are deleted by RenderView dtor
         renderer.shutdown();
@@ -386,7 +463,8 @@ private Q_SLOTS:
         Qt3DRender::Render::NodeManagers nodeManagers;
         Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         RenderView renderView;
-        QVector<RenderCommand> rawCommands;
+        std::vector<RenderCommand> rawCommands;
+
         QVector<QSortPolicy::SortType> sortTypes;
 
         renderer.setNodeManagers(&nodeManagers);
@@ -435,29 +513,38 @@ private Q_SLOTS:
         RenderCommand c7 = buildRC(dna[0], depth[2], stateChangeCost[0]);
         RenderCommand c6 = buildRC(dna[0], depth[1], stateChangeCost[0]);
 
-        rawCommands << c0 << c1 << c2 << c3 << c4 << c5 << c6 << c7 << c8 << c9;
+        rawCommands = { c0, c1, c2, c3, c4, c5, c6, c7, c8, c9 };
 
         // WHEN
         renderView.addSortType(sortTypes);
-        renderView.setCommands(rawCommands);
+
+        EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
+        view->data.commands = rawCommands;
+        view->indices.resize(rawCommands.size());
+        std::iota(view->indices.begin(), view->indices.end(), 0);
+
+        renderView.setRenderCommandDataView(view);
+
+
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand> sortedCommands = renderView.commands();
+        const std::vector<RenderCommand> &sortedCommands = view->data.commands;
+        const std::vector<size_t> &sortedCommandIndices = view->indices;
         QCOMPARE(rawCommands.size(), sortedCommands.size());
 
         // Ordered by higher state, higher shaderDNA and higher depth
-        QCOMPARE(c0, sortedCommands.at(4));
-        QCOMPARE(c3, sortedCommands.at(1));
-        QCOMPARE(c4, sortedCommands.at(2));
-        QCOMPARE(c5, sortedCommands.at(0));
-        QCOMPARE(c8, sortedCommands.at(3));
+        QCOMPARE(c0, sortedCommands.at(sortedCommandIndices[4]));
+        QCOMPARE(c3, sortedCommands.at(sortedCommandIndices[1]));
+        QCOMPARE(c4, sortedCommands.at(sortedCommandIndices[2]));
+        QCOMPARE(c5, sortedCommands.at(sortedCommandIndices[0]));
+        QCOMPARE(c8, sortedCommands.at(sortedCommandIndices[3]));
 
-        QCOMPARE(c1, sortedCommands.at(7));
-        QCOMPARE(c2, sortedCommands.at(5));
-        QCOMPARE(c6, sortedCommands.at(9));
-        QCOMPARE(c7, sortedCommands.at(8));
-        QCOMPARE(c9, sortedCommands.at(6));
+        QCOMPARE(c1, sortedCommands.at(sortedCommandIndices[7]));
+        QCOMPARE(c2, sortedCommands.at(sortedCommandIndices[5]));
+        QCOMPARE(c6, sortedCommands.at(sortedCommandIndices[9]));
+        QCOMPARE(c7, sortedCommands.at(sortedCommandIndices[8]));
+        QCOMPARE(c9, sortedCommands.at(sortedCommandIndices[6]));
 
         // RenderCommands are deleted by RenderView dtor
         renderer.shutdown();
@@ -524,21 +611,29 @@ private Q_SLOTS:
         }
 
         // WHEN
-        QVector<RenderCommand> rawCommands = {a, b, c, d, e, f, g};
+        std::vector<RenderCommand> rawCommands = {a, b, c, d, e, f, g};
         renderView.addSortType(sortTypes);
-        renderView.setCommands(rawCommands);
+
+        EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
+        view->data.commands = rawCommands;
+        view->indices.resize(rawCommands.size());
+        std::iota(view->indices.begin(), view->indices.end(), 0);
+
+        renderView.setRenderCommandDataView(view);
+
         renderView.sort();
 
         // THEN
-        const QVector<RenderCommand> sortedCommands = renderView.commands();
+        const std::vector<RenderCommand> &sortedCommands = view->data.commands;
+        const std::vector<size_t> &sortedCommandIndices = view->indices;
         QCOMPARE(rawCommands.size(), sortedCommands.size());
-        QCOMPARE(sortedCommands.at(0), a);
-        QCOMPARE(sortedCommands.at(1), g);
-        QCOMPARE(sortedCommands.at(2), d);
-        QCOMPARE(sortedCommands.at(3), c);
-        QCOMPARE(sortedCommands.at(4), e);
-        QCOMPARE(sortedCommands.at(5), f);
-        QCOMPARE(sortedCommands.at(6), b);
+        QCOMPARE(sortedCommands.at(sortedCommandIndices[0]), a);
+        QCOMPARE(sortedCommands.at(sortedCommandIndices[1]), g);
+        QCOMPARE(sortedCommands.at(sortedCommandIndices[2]), d);
+        QCOMPARE(sortedCommands.at(sortedCommandIndices[3]), c);
+        QCOMPARE(sortedCommands.at(sortedCommandIndices[4]), e);
+        QCOMPARE(sortedCommands.at(sortedCommandIndices[5]), f);
+        QCOMPARE(sortedCommands.at(sortedCommandIndices[6]), b);
         // RenderCommands are deleted by RenderView dtor
     }
 private:
