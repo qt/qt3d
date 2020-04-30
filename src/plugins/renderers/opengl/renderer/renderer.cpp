@@ -151,7 +151,6 @@ public:
     {
         LightGatherer::run();
 
-        QMutexLocker lock(m_cache->mutex());
         m_cache->gatheredLights = lights();
         m_cache->environmentLight = environmentLight();
     }
@@ -176,7 +175,6 @@ public:
         QVector<Entity *> selectedEntities = filteredEntities();
         std::sort(selectedEntities.begin(), selectedEntities.end());
 
-        QMutexLocker lock(m_cache->mutex());
         m_cache->renderableEntities = selectedEntities;
     }
 
@@ -200,7 +198,6 @@ public:
         QVector<Entity *> selectedEntities = filteredEntities();
         std::sort(selectedEntities.begin(), selectedEntities.end());
 
-        QMutexLocker lock(m_cache->mutex());
         m_cache->computeEntities = selectedEntities;
     }
 
@@ -1936,6 +1933,12 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt || isNewRV);
             builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt || isNewRV);
             builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty || isNewRV);
+            builder.setLightCacheNeedsToBeRebuilt(lightsDirty);
+
+            // Insert leaf into cache
+            if (isNewRV) {
+                m_cache.leafNodeCache[leaf] = {};
+            }
 
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
