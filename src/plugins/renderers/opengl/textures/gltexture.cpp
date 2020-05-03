@@ -707,7 +707,7 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
 #endif
         };
 
-        Q_ASSERT(sizeof(targetBindings) / sizeof(targetBindings[0] == sizeof(targets) / sizeof(targets[0])));
+        Q_STATIC_ASSERT(sizeof(targetBindings) / sizeof(targetBindings[0]) == sizeof(targets) / sizeof(targets[0]));
 
         for (uint i = 0; i < sizeof(targetBindings) / sizeof(targetBindings[0]); ++i) {
             const int target = targets[i];
