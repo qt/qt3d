@@ -143,7 +143,11 @@ void MaterialParameterGathererJob::run()
                 for (RenderPass *renderPass : passes) {
                     ParameterInfoList globalParameters = parameters;
                     parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), renderPass);
-                    m_parameters[material->peerId()].push_back({renderPass, globalParameters});
+                    auto it = m_parameters.find(material->peerId());
+                    if (it != m_parameters.end())
+                        it->push_back({renderPass, globalParameters});
+                    else
+                        m_parameters.insert(material->peerId(), {{renderPass, globalParameters}});
                 }
             }
         }
