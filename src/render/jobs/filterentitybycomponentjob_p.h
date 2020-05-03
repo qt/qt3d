@@ -85,7 +85,7 @@ public:
         m_filteredEntities.clear();
         const QVector<HEntity> handles = m_manager->activeHandles();
         m_filteredEntities.reserve(handles.size());
-        for (const HEntity handle : handles) {
+        for (const HEntity &handle : handles) {
             Entity *e = m_manager->data(handle);
             if (e->containsComponentsOfType<T, Ts...>())
                 m_filteredEntities.push_back(e);

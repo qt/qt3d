@@ -168,7 +168,7 @@ public:
         int offset = 0;
         const int byteSize = 16 * sizeof(float);
         float *data = m_data.data();
-        for (const auto m : v) {
+        for (const auto &m : v) {
             memcpy(data + offset, m.constData(), byteSize);
             offset += 16;
         }
