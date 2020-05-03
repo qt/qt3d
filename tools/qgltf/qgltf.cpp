@@ -2460,9 +2460,12 @@ void GltfExporter::save(const QString &inputFilename)
     const QIODevice::OpenMode openMode = opts.genBin
             ? (QIODevice::WriteOnly | QIODevice::Truncate)
             : (QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
     const QByteArray json = opts.genBin
             ? m_doc.toBinaryData()
             : m_doc.toJson(opts.compact ? QJsonDocument::Compact : QJsonDocument::Indented);
+QT_WARNING_POP
 #else
     if (opts.showLog)
         qDebug().noquote() << "Writing" << gltfName;

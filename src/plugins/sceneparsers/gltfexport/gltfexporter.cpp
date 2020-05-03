@@ -1588,7 +1588,10 @@ bool GLTFExporter::saveScene()
     if (m_gltfOpts.binaryJson) {
         if (f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             m_exportedFiles.insert(QFileInfo(f.fileName()).fileName());
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
             QByteArray json = m_doc.toBinaryData();
+QT_WARNING_POP
             f.write(json);
             f.close();
         } else {
