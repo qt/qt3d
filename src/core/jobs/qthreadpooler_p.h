@@ -77,7 +77,7 @@ public:
     void taskFinished(RunnableInterface *task);
     QFuture<void> future();
 
-    int maxThreadCount() const;
+    static int maxThreadCount();
 
 private:
     void enqueueTasks(const QVector<RunnableInterface *> &tasks);
