@@ -52,14 +52,7 @@ QThreadPooler::QThreadPooler(QObject *parent)
     , m_threadPool(QThreadPool::globalInstance())
     , m_totalRunJobs(0)
 {
-    const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
-    if (!maxThreadCount.isEmpty()) {
-        bool conversionOK = false;
-        const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
-        if (conversionOK)
-            m_threadPool->setMaxThreadCount(maxThreadCountValue);
-    }
-
+    m_threadPool->setMaxThreadCount(QThreadPooler::maxThreadCount());
     // Ensures that threads will never be recycled
     m_threadPool->setExpiryTimeout(-1);
 }
@@ -206,9 +199,22 @@ int QThreadPooler::currentCount() const
     return m_taskCount.loadRelaxed();
 }
 
-int QThreadPooler::maxThreadCount() const
+int QThreadPooler::maxThreadCount()
 {
-    return m_threadPool->maxThreadCount();
+    static int threadCount = 0;
+
+    if (threadCount == 0) {
+        threadCount = QThread::idealThreadCount();
+        const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
+        if (!maxThreadCount.isEmpty()) {
+            bool conversionOK = false;
+            const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
+            if (conversionOK)
+                threadCount = std::min(threadCount, maxThreadCountValue);
+        }
+    }
+
+    return threadCount;
 }
 
 } // namespace Qt3DCore

@@ -1920,14 +1920,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
                 m_updatedDisableSubtreeEnablers.push_back(node->peerId());
         }
 
-        int idealThreadCount = QThread::idealThreadCount();
-        const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
-        if (!maxThreadCount.isEmpty()) {
-            bool conversionOK = false;
-            const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
-            if (conversionOK)
-                idealThreadCount = maxThreadCountValue;
-        }
+        int idealThreadCount = QThreadPooler::maxThreadCount();
 
         const int fgBranchCount = m_frameGraphLeaves.size();
         if (fgBranchCount > 1) {
@@ -1936,7 +1929,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
                 if (leaf->nodeType() == FrameGraphNode::NoDraw)
                     --workBranches;
 
-            if (idealThreadCount > 4 && workBranches && maxThreadCount.isEmpty())
+            if (idealThreadCount > 4 && workBranches)
                 idealThreadCount = qMax(4, idealThreadCount / workBranches);
         }
 
