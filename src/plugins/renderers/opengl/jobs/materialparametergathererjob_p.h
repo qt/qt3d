@@ -82,7 +82,8 @@ public:
     inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOTHROW { m_techniqueFilter = techniqueFilter; }
     inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOTHROW { m_renderPassFilter = renderPassFilter; }
     inline const MaterialParameterGathererData &materialToPassAndParameter() Q_DECL_NOTHROW { return m_parameters; }
-    inline void setHandles(const QVector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
+    inline void setHandles(std::vector<HMaterial> &&handles) Q_DECL_NOTHROW { m_handles = std::move(handles); }
+    inline void setHandles(const std::vector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
 
     inline TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_techniqueFilter; }
     inline RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_renderPassFilter; }
@@ -96,7 +97,7 @@ private:
 
     // Material id to array of RenderPasse with parameters
     MaterialParameterGathererData m_parameters;
-    QVector<HMaterial> m_handles;
+    std::vector<HMaterial> m_handles;
 
     Q_DECLARE_PRIVATE(MaterialParameterGathererJob)
 };

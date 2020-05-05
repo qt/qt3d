@@ -83,7 +83,7 @@ public:
     void run()
     {
         m_filteredEntities.clear();
-        const QVector<HEntity> handles = m_manager->activeHandles();
+        const std::vector<HEntity> &handles = m_manager->activeHandles();
         m_filteredEntities.reserve(handles.size());
         for (const HEntity &handle : handles) {
             Entity *e = m_manager->data(handle);

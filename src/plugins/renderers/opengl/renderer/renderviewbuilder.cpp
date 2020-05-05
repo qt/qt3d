@@ -614,15 +614,18 @@ void RenderViewBuilder::prepareJobs()
     const bool materialCacheNeedsRebuild = m_rebuildFlags.testFlag(RebuildFlag::MaterialCacheRebuild);
     if (materialCacheNeedsRebuild) {
         // Since Material gathering is an heavy task, we split it
-        const QVector<HMaterial> materialHandles = m_renderer->nodeManagers()->materialManager()->activeHandles();
-        if (materialHandles.count()) {
-            const int elementsPerJob =  qMax(materialHandles.size() / m_optimalParallelJobCount, 1);
+        const std::vector<HMaterial> &materialHandles = m_renderer->nodeManagers()->materialManager()->activeHandles();
+        const size_t handlesCount = materialHandles.size();
+        if (handlesCount) {
             m_materialGathererJobs.reserve(m_optimalParallelJobCount);
-            int elementCount = 0;
-            while (elementCount < materialHandles.size()) {
+            const size_t elementsPerJob =  std::max(handlesCount / m_optimalParallelJobCount, size_t(1));
+            size_t elementCount = 0;
+            while (elementCount < handlesCount) {
                 auto materialGatherer = MaterialParameterGathererJobPtr::create();
                 materialGatherer->setNodeManagers(m_renderer->nodeManagers());
-                materialGatherer->setHandles(materialHandles.mid(elementCount, elementsPerJob));
+                // TO DO: Candidate for std::span if C++20
+                materialGatherer->setHandles({materialHandles.begin() + elementCount,
+                                              materialHandles.begin() + std::min(elementCount + elementsPerJob, handlesCount)});
                 m_materialGathererJobs.push_back(materialGatherer);
 
                 elementCount += elementsPerJob;

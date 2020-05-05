@@ -92,7 +92,7 @@ void FilterProximityDistanceJob::run()
 void FilterProximityDistanceJob::selectAllEntities()
 {
     EntityManager *entityManager = m_manager->renderNodesManager();
-    const QVector<HEntity> handles = entityManager->activeHandles();
+    const std::vector<HEntity> &handles = entityManager->activeHandles();
 
     m_filteredEntities.reserve(handles.size());
     for (const HEntity &handle : handles) {

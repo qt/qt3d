@@ -264,7 +264,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 #endif
                                     ) {
             // Send the events to the mouse handlers that have for sourceDevice controller
-            const QVector<HMouseHandler> activeMouseHandlers = m_mouseInputManager->activeHandles();
+            const std::vector<HMouseHandler> &activeMouseHandlers = m_mouseInputManager->activeHandles();
             for (const HMouseHandler &mouseHandlerHandle : activeMouseHandlers) {
 
                 MouseHandler *mouseHandler = m_mouseInputManager->data(mouseHandlerHandle);

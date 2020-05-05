@@ -598,14 +598,14 @@ void Renderer::releaseGraphicsResources()
     if (context->thread() == QThread::currentThread() && context->makeCurrent(offscreenSurface)) {
 
         // Clean up the graphics context and any resources
-        const QVector<HGLTexture> activeTexturesHandles = m_glResourceManagers->glTextureManager()->activeHandles();
+        const std::vector<HGLTexture> &activeTexturesHandles = m_glResourceManagers->glTextureManager()->activeHandles();
         for (const HGLTexture &textureHandle : activeTexturesHandles) {
             GLTexture *tex = m_glResourceManagers->glTextureManager()->data(textureHandle);
             tex->destroy();
         }
 
         // Do the same thing with buffers
-        const QVector<HGLBuffer> activeBuffers = m_glResourceManagers->glBufferManager()->activeHandles();
+        const std::vector<HGLBuffer> &activeBuffers = m_glResourceManagers->glBufferManager()->activeHandles();
         for (const HGLBuffer &bufferHandle : activeBuffers) {
             GLBuffer *buffer = m_glResourceManagers->glBufferManager()->data(bufferHandle);
             buffer->destroy(m_submissionContext.data());
@@ -616,7 +616,7 @@ void Renderer::releaseGraphicsResources()
         qDeleteAll(shaders);
 
         // Do the same thing with VAOs
-        const QVector<HVao> activeVaos = m_glResourceManagers->vaoManager()->activeHandles();
+        const std::vector<HVao> &activeVaos = m_glResourceManagers->vaoManager()->activeHandles();
         for (const HVao &vaoHandle : activeVaos) {
             OpenGLVertexArrayObject *vao = m_glResourceManagers->vaoManager()->data(vaoHandle);
             vao->destroy();
@@ -1017,7 +1017,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
 // Executed in a job
 void Renderer::lookForAbandonedVaos()
 {
-    const QVector<HVao> activeVaos = m_glResourceManagers->vaoManager()->activeHandles();
+    const std::vector<HVao> &activeVaos = m_glResourceManagers->vaoManager()->activeHandles();
     for (HVao handle : activeVaos) {
         OpenGLVertexArrayObject *vao = m_glResourceManagers->vaoManager()->data(handle);
 
@@ -1034,7 +1034,7 @@ void Renderer::lookForAbandonedVaos()
 // Executed in a job
 void Renderer::lookForDirtyBuffers()
 {
-    const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
+    const std::vector<HBuffer> &activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
     for (const HBuffer &handle: activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         if (buffer->isDirty())
@@ -1046,7 +1046,7 @@ void Renderer::lookForDirtyBuffers()
 void Renderer::lookForDownloadableBuffers()
 {
     m_downloadableBuffers.clear();
-    const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
+    const std::vector<HBuffer> &activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
     for (const HBuffer &handle : activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         if (buffer->access() & Qt3DCore::QBuffer::Read)
@@ -1062,7 +1062,7 @@ void Renderer::lookForDirtyTextures()
     // image has been updated to then notify textures referencing the image
     // that they need to be updated
     TextureImageManager *imageManager = m_nodesManager->textureImageManager();
-    const QVector<HTextureImage> activeTextureImageHandles = imageManager->activeHandles();
+    const std::vector<HTextureImage> &activeTextureImageHandles = imageManager->activeHandles();
     Qt3DCore::QNodeIdVector dirtyImageIds;
     for (const HTextureImage &handle: activeTextureImageHandles) {
         TextureImage *image = imageManager->data(handle);
@@ -1073,7 +1073,7 @@ void Renderer::lookForDirtyTextures()
     }
 
     TextureManager *textureManager = m_nodesManager->textureManager();
-    const QVector<HTexture> activeTextureHandles = textureManager->activeHandles();
+    const std::vector<HTexture> &activeTextureHandles = textureManager->activeHandles();
     for (const HTexture &handle: activeTextureHandles) {
         Texture *texture = textureManager->data(handle);
         const QNodeIdVector imageIds = texture->textureImageIds();
@@ -1100,8 +1100,8 @@ void Renderer::lookForDirtyTextures()
 void Renderer::reloadDirtyShaders()
 {
     Q_ASSERT(isRunning());
-    const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
-    const QVector<HShaderBuilder> activeBuilders = m_nodesManager->shaderBuilderManager()->activeHandles();
+    const std::vector<HTechnique> &activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
+    const std::vector<HShaderBuilder> &activeBuilders = m_nodesManager->shaderBuilderManager()->activeHandles();
     for (const HTechnique &techniqueHandle : activeTechniques) {
         Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
         // If api of the renderer matches the one from the technique
@@ -1156,7 +1156,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     Q_ASSERT(isRunning());
 
     // Sync Shader
-    const QVector<HShader> activeShaders = m_nodesManager->shaderManager()->activeHandles();
+    const std::vector<HShader> &activeShaders = m_nodesManager->shaderManager()->activeHandles();
     for (const HShader &handle :activeShaders) {
         Shader *s = m_nodesManager->shaderManager()->data(handle);
         if (s->requiresFrontendSync()) {
@@ -1245,7 +1245,7 @@ void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
     }
 
     // Compute Commands
-    const QVector<HComputeCommand> activeCommands = m_nodesManager->computeJobManager()->activeHandles();
+    const std::vector<HComputeCommand> &activeCommands = m_nodesManager->computeJobManager()->activeHandles();
     for (const HComputeCommand &handle :activeCommands) {
         ComputeCommand *c = m_nodesManager->computeJobManager()->data(handle);
         if (c->hasReachedFrameCount()) {
@@ -1346,7 +1346,7 @@ void Renderer::updateGLResources()
         QNodeIdVector updatedTexturesForFrame;
         if (m_submissionContext != nullptr) {
             GLTextureManager *glTextureManager = m_glResourceManagers->glTextureManager();
-            const QVector<HGLTexture> glTextureHandles = glTextureManager->activeHandles();
+            const std::vector<HGLTexture> &glTextureHandles = glTextureManager->activeHandles();
             // Upload texture data
             for (const HGLTexture &glTextureHandle : glTextureHandles) {
                 GLTexture *glTexture = glTextureManager->data(glTextureHandle);

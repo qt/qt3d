@@ -399,7 +399,7 @@ void tst_QResourceManager::activeHandles()
         const tHandle newHandle = manager.getOrAcquireHandle(883U);
         // THEN
         QCOMPARE(manager.activeHandles().size(), 1);
-        QCOMPARE(manager.activeHandles().first(), newHandle);
+        QCOMPARE(manager.activeHandles()[0], newHandle);
     }
 
     {
@@ -414,7 +414,7 @@ void tst_QResourceManager::activeHandles()
         const tHandle newHandle = manager.acquire();
         // THEN
         QCOMPARE(manager.activeHandles().size(), 1);
-        QCOMPARE(manager.activeHandles().first(), newHandle);
+        QCOMPARE(manager.activeHandles()[0], newHandle);
 
         // WHEN
         manager.release(newHandle);

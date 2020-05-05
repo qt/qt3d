@@ -74,7 +74,7 @@ public:
 
 bool MaterialParameterGathererJobPrivate::isRequired() const
 {
-    return !q_ptr->m_handles.isEmpty();
+    return !q_ptr->m_handles.empty();
 }
 
 void MaterialParameterGathererJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
