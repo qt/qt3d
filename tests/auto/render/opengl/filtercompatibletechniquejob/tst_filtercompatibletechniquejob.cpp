@@ -238,7 +238,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(testAspect.renderer()->isRunning(), true);
         QCOMPARE(testAspect.renderer()->submissionContext()->isInitialized(), true);
-        const QVector<Qt3DRender::Render::HTechnique> handles = testAspect.nodeManagers()->techniqueManager()->activeHandles();
+        const std::vector<Qt3DRender::Render::HTechnique> &handles = testAspect.nodeManagers()->techniqueManager()->activeHandles();
         QCOMPARE(handles.size(), 3);
 
         // WHEN

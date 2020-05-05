@@ -609,23 +609,23 @@ void RenderViewBuilder::prepareJobs()
 
     if (m_materialGathererCacheNeedsToBeRebuilt) {
         // Since Material gathering is an heavy task, we split it
-        const QVector<HMaterial> materialHandles =
+        const std::vector<HMaterial> &materialHandles =
                 m_renderer->nodeManagers()->materialManager()->activeHandles();
-        const int elementsPerJob =
-                materialHandles.size() / RenderViewBuilder::m_optimalParallelJobCount;
-        const int lastRemaingElements =
-                materialHandles.size() % RenderViewBuilder::m_optimalParallelJobCount;
-        m_materialGathererJobs.reserve(RenderViewBuilder::m_optimalParallelJobCount);
-        for (auto i = 0; i < RenderViewBuilder::m_optimalParallelJobCount; ++i) {
-            auto materialGatherer = MaterialParameterGathererJobPtr::create();
-            materialGatherer->setNodeManagers(m_renderer->nodeManagers());
-            if (i == RenderViewBuilder::m_optimalParallelJobCount - 1)
-                materialGatherer->setHandles(materialHandles.mid(
-                        i * elementsPerJob, elementsPerJob + lastRemaingElements));
-            else
-                materialGatherer->setHandles(
-                        materialHandles.mid(i * elementsPerJob, elementsPerJob));
-            m_materialGathererJobs.push_back(materialGatherer);
+        const size_t handlesCount = materialHandles.size();
+        if (handlesCount) {
+            m_materialGathererJobs.reserve(m_optimalParallelJobCount);
+            const size_t elementsPerJob =  std::max(handlesCount / m_optimalParallelJobCount, size_t(1));
+            size_t elementCount = 0;
+            while (elementCount < handlesCount) {
+                auto materialGatherer = MaterialParameterGathererJobPtr::create();
+                materialGatherer->setNodeManagers(m_renderer->nodeManagers());
+                // TO DO: Candidate for std::span if C++20
+                materialGatherer->setHandles({materialHandles.begin() + elementCount,
+                                              materialHandles.begin() + std::min(elementCount + elementsPerJob, handlesCount)});
+                m_materialGathererJobs.push_back(materialGatherer);
+
+                elementCount += elementsPerJob;
+            }
         }
         m_syncMaterialGathererJob = SynchronizerJobPtr::create(
                 SyncMaterialParameterGatherer(m_materialGathererJobs, m_renderer, m_leafNode),

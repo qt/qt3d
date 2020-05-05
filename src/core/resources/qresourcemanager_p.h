@@ -247,7 +247,7 @@ public:
 
     void releaseResource(const Handle &handle)
     {
-        m_activeHandles.removeOne(handle);
+        m_activeHandles.erase(std::remove(m_activeHandles.begin(), m_activeHandles.end(), handle), m_activeHandles.end());
         typename Handle::Data *d = handle.data_ptr();
         d->nextFree = freeList;
         freeList = d;
@@ -272,7 +272,7 @@ public:
     }
 
     int count() const { return m_activeHandles.size(); }
-    QVector<Handle> activeHandles() const { return m_activeHandles; }
+    const std::vector<Handle> &activeHandles() const { return m_activeHandles; }
 
 private:
     Q_DISABLE_COPY(ArrayAllocatingPolicy)
@@ -290,7 +290,7 @@ private:
     };
 
     Bucket *firstBucket = 0;
-    QVector<Handle > m_activeHandles;
+    std::vector<Handle> m_activeHandles;
     typename Handle::Data *freeList = 0;
     int allocCounter = 1;
 

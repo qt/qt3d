@@ -61,7 +61,7 @@ void UpdateEntityLayersJob::run()
     Q_ASSERT(m_manager);
     EntityManager *entityManager = m_manager->renderNodesManager();
 
-    const QVector<HEntity> handles = entityManager->activeHandles();
+    const std::vector<HEntity> &handles = entityManager->activeHandles();
 
     // Clear list of recursive layerIds
     for (const HEntity &handle : handles) {

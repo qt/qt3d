@@ -1271,7 +1271,7 @@ Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
 // Executed in a job
 void Renderer::lookForDirtyBuffers()
 {
-    const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
+    const std::vector<HBuffer> &activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
     for (const HBuffer &handle : activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         if (buffer->isDirty())
@@ -1283,7 +1283,7 @@ void Renderer::lookForDirtyBuffers()
 void Renderer::lookForDownloadableBuffers()
 {
     m_downloadableBuffers.clear();
-    const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
+    const std::vector<HBuffer> &activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
     for (const HBuffer &handle : activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         if (buffer->access() & QBuffer::Read)
@@ -1299,7 +1299,7 @@ void Renderer::lookForDirtyTextures()
     // image has been updated to then notify textures referencing the image
     // that they need to be updated
     TextureImageManager *imageManager = m_nodesManager->textureImageManager();
-    const QVector<HTextureImage> activeTextureImageHandles = imageManager->activeHandles();
+    const std::vector<HTextureImage> &activeTextureImageHandles = imageManager->activeHandles();
     Qt3DCore::QNodeIdVector dirtyImageIds;
     for (const HTextureImage &handle : activeTextureImageHandles) {
         TextureImage *image = imageManager->data(handle);
@@ -1310,7 +1310,7 @@ void Renderer::lookForDirtyTextures()
     }
 
     TextureManager *textureManager = m_nodesManager->textureManager();
-    const QVector<HTexture> activeTextureHandles = textureManager->activeHandles();
+    const std::vector<HTexture> &activeTextureHandles = textureManager->activeHandles();
     for (const HTexture &handle : activeTextureHandles) {
         Texture *texture = textureManager->data(handle);
         const QNodeIdVector imageIds = texture->textureImageIds();
@@ -1337,9 +1337,9 @@ void Renderer::lookForDirtyTextures()
 void Renderer::reloadDirtyShaders()
 {
     Q_ASSERT(isRunning());
-    const QVector<HTechnique> activeTechniques =
+    const std::vector<HTechnique> &activeTechniques =
             m_nodesManager->techniqueManager()->activeHandles();
-    const QVector<HShaderBuilder> activeBuilders =
+    const std::vector<HShaderBuilder> &activeBuilders =
             m_nodesManager->shaderBuilderManager()->activeHandles();
     for (const HTechnique &techniqueHandle : activeTechniques) {
         Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
@@ -1394,7 +1394,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     Q_ASSERT(isRunning());
 
     // Sync Shader
-    const QVector<HShader> activeShaders = m_nodesManager->shaderManager()->activeHandles();
+    const std::vector<HShader> &activeShaders = m_nodesManager->shaderManager()->activeHandles();
     for (const HShader &handle : activeShaders) {
         Shader *s = m_nodesManager->shaderManager()->data(handle);
         if (s->requiresFrontendSync()) {
@@ -1469,7 +1469,7 @@ void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
     }
 
     // Compute Commands
-    const QVector<HComputeCommand> activeCommands =
+    const std::vector<HComputeCommand> &activeCommands =
             m_nodesManager->computeJobManager()->activeHandles();
     for (const HComputeCommand &handle : activeCommands) {
         ComputeCommand *c = m_nodesManager->computeJobManager()->data(handle);
@@ -1549,7 +1549,7 @@ void Renderer::updateResources()
         // RHITexture
         if (m_submissionContext != nullptr) {
             RHITextureManager *rhiTextureManager = m_RHIResourceManagers->rhiTextureManager();
-            const QVector<HRHITexture> glTextureHandles = rhiTextureManager->activeHandles();
+            const std::vector<HRHITexture> &glTextureHandles = rhiTextureManager->activeHandles();
             // Upload texture data
             for (const HRHITexture &glTextureHandle : glTextureHandles) {
                 RHI_UNIMPLEMENTED;
@@ -2486,7 +2486,7 @@ void Renderer::cleanGraphicsResources()
     // Remove unused GraphicsPipeline
     RHIGraphicsPipelineManager *pipelineManager =
             m_RHIResourceManagers->rhiGraphicsPipelineManager();
-    const QVector<HRHIGraphicsPipeline> graphicsPipelinesHandles = pipelineManager->activeHandles();
+    const std::vector<HRHIGraphicsPipeline> &graphicsPipelinesHandles = pipelineManager->activeHandles();
     for (HRHIGraphicsPipeline pipelineHandle : graphicsPipelinesHandles) {
         RHIGraphicsPipeline *pipeline = pipelineManager->data(pipelineHandle);
         pipeline->decreaseScore();

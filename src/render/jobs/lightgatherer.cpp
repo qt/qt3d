@@ -62,7 +62,7 @@ void LightGatherer::run()
     m_lights.clear();
     m_environmentLight = nullptr;
 
-    const QVector<HEntity> handles = m_manager->activeHandles();
+    const std::vector<HEntity> &handles = m_manager->activeHandles();
     int envLightCount = 0;
 
     for (const HEntity &handle : handles) {
