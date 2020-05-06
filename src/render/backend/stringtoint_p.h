@@ -52,7 +52,6 @@
 //
 
 
-#include <QVector>
 #include <QString>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 

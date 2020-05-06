@@ -38,9 +38,10 @@
 ****************************************************************************/
 
 #include "stringtoint_p.h"
-#include <QMutex>
-#include <QReadWriteLock>
 #include <QHash>
+#include <mutex>
+#include <shared_mutex>
+#include <vector>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,9 +53,9 @@ namespace {
 
 struct StringToIntCache
 {
-    QReadWriteLock lock;
-    QHash<QString, int> map = QHash<QString, int>();
-    QVector<QString> reverseMap = QVector<QString>();
+    std::shared_mutex lock;
+    QHash<QString, int> map;
+    std::vector<QString> reverseMap;
 
     static StringToIntCache& instance()
     {
@@ -76,18 +77,18 @@ int StringToInt::lookupId(const QString &str)
     auto& cache = StringToIntCache::instance();
     int idx;
     {
-        QReadLocker readLocker(&cache.lock);
+        std::shared_lock readLocker(cache.lock);
         idx = cache.map.value(str, -1);
     }
 
     if (Q_UNLIKELY(idx < 0)) {
-        QWriteLocker writeLocker(&cache.lock);
+        std::unique_lock writeLocker(cache.lock);
         idx = cache.map.value(str, -1);
         if (idx < 0) {
             idx = cache.reverseMap.size();
             Q_ASSERT(cache.map.size() == cache.reverseMap.size());
             cache.map.insert(str, idx);
-            cache.reverseMap.append(str);
+            cache.reverseMap.push_back(str);
         }
     }
     return idx;
@@ -96,9 +97,9 @@ int StringToInt::lookupId(const QString &str)
 QString StringToInt::lookupString(int idx)
 {
     auto& cache = StringToIntCache::instance();
-    QReadLocker readLocker(&cache.lock);
-    if (Q_LIKELY(cache.reverseMap.size() > idx))
-        return cache.reverseMap.at(idx);
+    std::shared_lock readLocker(cache.lock);
+    if (Q_LIKELY(cache.reverseMap.size() > size_t(idx)))
+        return cache.reverseMap[idx];
 
     return QString();
 }
