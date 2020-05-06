@@ -1238,7 +1238,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
     // for SSBO and UBO
 
     // Bind Shader Storage block to SSBO and update SSBO
-    const QVector<BlockToSSBO> blockToSSBOs = parameterPack.shaderStorageBuffers();
+    const std::vector<BlockToSSBO> &blockToSSBOs = parameterPack.shaderStorageBuffers();
     for (const BlockToSSBO b : blockToSSBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer);
@@ -1256,7 +1256,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
 
     // Bind UniformBlocks to UBO and update UBO from Buffer
     // TO DO: Convert ShaderData to Buffer so that we can use that generic process
-    const QVector<BlockToUBO> blockToUBOs = parameterPack.uniformBuffers();
+    const std::vector<BlockToUBO> &blockToUBOs = parameterPack.uniformBuffers();
     int uboIndex = 0;
     for (const BlockToUBO &b : blockToUBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);

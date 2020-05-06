@@ -92,8 +92,8 @@ QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, BlockToSSBO, Q_PRIMITIVE_TYP
 
 struct PackUniformHash
 {
-    QVector<int> keys;
-    QVector<UniformValue> values;
+    std::vector<int> keys;
+    std::vector<UniformValue> values;
 
     PackUniformHash()
     {
@@ -105,9 +105,19 @@ struct PackUniformHash
         values.reserve(count);
     }
 
+    inline int indexForKey(int key) const
+    {
+        const auto b = keys.cbegin();
+        const auto e = keys.cend();
+        const auto it = std::find(b, e, key);
+        if (it == e)
+            return -1;
+        return std::distance(b, it);
+    }
+
     void insert(int key, const UniformValue &value)
     {
-        const int idx = keys.indexOf(key);
+        const int idx = indexForKey(key);
         if (idx != -1) {
             values[idx] = value;
         } else {
@@ -118,7 +128,7 @@ struct PackUniformHash
 
     void insert(int key, UniformValue &&value)
     {
-        const int idx = keys.indexOf(key);
+        const int idx = indexForKey(key);
         if (idx != -1) {
             values[idx] = std::move(value);
         } else {
@@ -127,9 +137,9 @@ struct PackUniformHash
         }
     }
 
-    UniformValue value(int key) const
+    UniformValue value(int key) const noexcept
     {
-        const int idx = keys.indexOf(key);
+        const int idx = indexForKey(key);
         if (idx != -1)
             return values.at(idx);
         return UniformValue();
@@ -137,7 +147,7 @@ struct PackUniformHash
 
     UniformValue& value(int key)
     {
-        const int idx = keys.indexOf(key);
+        const int idx = indexForKey(key);
         if (idx != -1)
             return values[idx];
         insert(key, UniformValue());
@@ -147,20 +157,22 @@ struct PackUniformHash
     template<typename F>
     void apply(int key, F func) const noexcept
     {
-        const int idx = keys.indexOf(key);
+        const int idx = indexForKey(key);
         if (idx != -1)
             func(values[idx]);
     }
 
     void erase(int idx)
     {
-        keys.removeAt(idx);
-        values.removeAt(idx);
+        keys.erase(keys.begin() + idx);
+        values.erase(values.begin() + idx);
     }
 
     bool contains(int key) const noexcept
     {
-        return keys.contains(key);
+        const auto b = keys.cbegin();
+        const auto e = keys.cend();
+        return std::find(b, e, key) != e;
     }
 };
 
@@ -218,19 +230,19 @@ public:
         }
     };
 
-    inline QVector<NamedResource> textures() const { return m_textures; }
-    inline QVector<NamedResource> images() const { return m_images; }
-    inline QVector<BlockToUBO> uniformBuffers() const { return m_uniformBuffers; }
-    inline QVector<BlockToSSBO> shaderStorageBuffers() const { return m_shaderStorageBuffers; }
-    inline QVector<int> submissionUniformIndices() const { return m_submissionUniformIndices; }
+    inline const std::vector<NamedResource> &textures() const { return m_textures; }
+    inline const std::vector<NamedResource> &images() const { return m_images; }
+    inline const std::vector<BlockToUBO> &uniformBuffers() const { return m_uniformBuffers; }
+    inline const std::vector<BlockToSSBO> &shaderStorageBuffers() const { return m_shaderStorageBuffers; }
+    inline const std::vector<int> &submissionUniformIndices() const { return m_submissionUniformIndices; }
 private:
     PackUniformHash m_uniforms;
 
-    QVector<NamedResource> m_textures;
-    QVector<NamedResource> m_images;
-    QVector<BlockToUBO> m_uniformBuffers;
-    QVector<BlockToSSBO> m_shaderStorageBuffers;
-    QVector<int> m_submissionUniformIndices;
+    std::vector<NamedResource> m_textures;
+    std::vector<NamedResource> m_images;
+    std::vector<BlockToUBO> m_uniformBuffers;
+    std::vector<BlockToSSBO> m_shaderStorageBuffers;
+    std::vector<int> m_submissionUniformIndices;
 
     friend class RenderView;
 };

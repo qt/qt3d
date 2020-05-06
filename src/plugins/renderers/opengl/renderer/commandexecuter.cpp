@@ -261,7 +261,7 @@ QJsonObject parameterPackToJson(const Render::OpenGL::ShaderParameterPack &pack)
     obj.insert(QLatin1String("uniforms"), uniformsArray);
 
     QJsonArray texturesArray;
-    const QVector<Render::OpenGL::ShaderParameterPack::NamedResource> &textures = pack.textures();
+    const std::vector<Render::OpenGL::ShaderParameterPack::NamedResource> &textures = pack.textures();
     for (const auto & texture : textures) {
         QJsonObject textureObj;
         textureObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(texture.glslNameId));
@@ -270,7 +270,7 @@ QJsonObject parameterPackToJson(const Render::OpenGL::ShaderParameterPack &pack)
     }
     obj.insert(QLatin1String("textures"), texturesArray);
 
-    const QVector<Render::OpenGL::BlockToUBO> &ubos = pack.uniformBuffers();
+    const std::vector<Render::OpenGL::BlockToUBO> &ubos = pack.uniformBuffers();
     QJsonArray ubosArray;
     for (const auto &ubo : ubos) {
         QJsonObject uboObj;
@@ -281,7 +281,7 @@ QJsonObject parameterPackToJson(const Render::OpenGL::ShaderParameterPack &pack)
     }
     obj.insert(QLatin1String("ubos"), ubosArray);
 
-    const QVector<Render::OpenGL::BlockToSSBO> &ssbos = pack.shaderStorageBuffers();
+    const std::vector<Render::OpenGL::BlockToSSBO> &ssbos = pack.shaderStorageBuffers();
     QJsonArray ssbosArray;
     for (const auto &ssbo : ssbos) {
         QJsonObject ssboObj;

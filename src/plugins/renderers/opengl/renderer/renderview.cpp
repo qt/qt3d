@@ -288,17 +288,19 @@ struct AdjacentSubRangeFinder<QSortPolicy::Texture>
     static bool adjacentSubRange(const RenderCommand &a, const RenderCommand &b)
     {
         // Two renderCommands are adjacent if one contains all the other command's textures
-        QVector<ShaderParameterPack::NamedResource> texturesA = a.m_parameterPack.textures();
-        QVector<ShaderParameterPack::NamedResource> texturesB = b.m_parameterPack.textures();
+        const std::vector<ShaderParameterPack::NamedResource> &texturesA = a.m_parameterPack.textures();
+        const std::vector<ShaderParameterPack::NamedResource> &texturesB = b.m_parameterPack.textures();
 
-        if (texturesB.size() > texturesA.size())
-            qSwap(texturesA, texturesB);
+        const bool bBigger = texturesB.size() > texturesA.size();
+        const std::vector<ShaderParameterPack::NamedResource> &smallestVector = bBigger ? texturesA : texturesB;
+        const std::vector<ShaderParameterPack::NamedResource> &biggestVector = bBigger ? texturesB : texturesA;
 
-        // textureB.size() is always <= textureA.size()
-        for (const ShaderParameterPack::NamedResource &texB : qAsConst(texturesB)) {
-            if (!texturesA.contains(texB))
+        const auto e = biggestVector.cend();
+        for (const ShaderParameterPack::NamedResource &tex : smallestVector) {
+            if (std::find(biggestVector.begin(), e, tex) == e)
                 return false;
         }
+
         return true;
     }
 };
@@ -411,22 +413,21 @@ struct SubRangeSorter<QSortPolicy::Texture>
                          [&commands] (const int &iA, const int &iB) {
             const RenderCommand &a = commands[iA];
             const RenderCommand &b = commands[iB];
-            QVector<ShaderParameterPack::NamedResource> texturesA = a.m_parameterPack.textures();
-            QVector<ShaderParameterPack::NamedResource> texturesB = b.m_parameterPack.textures();
+            const std::vector<ShaderParameterPack::NamedResource> &texturesA = a.m_parameterPack.textures();
+            const std::vector<ShaderParameterPack::NamedResource> &texturesB = b.m_parameterPack.textures();
 
-            const int originalTextureASize = texturesA.size();
-
-            if (texturesB.size() > texturesA.size())
-                qSwap(texturesA, texturesB);
+            const bool bBigger = texturesB.size() > texturesA.size();
+            const std::vector<ShaderParameterPack::NamedResource> &smallestVector = bBigger ? texturesA : texturesB;
+            const std::vector<ShaderParameterPack::NamedResource> &biggestVector = bBigger ? texturesB : texturesA;
 
             int identicalTextureCount = 0;
-
-            for (const ShaderParameterPack::NamedResource &texB : qAsConst(texturesB)) {
-                if (texturesA.contains(texB))
+            const auto e = biggestVector.cend();
+            for (const ShaderParameterPack::NamedResource &tex : smallestVector) {
+                if (std::find(biggestVector.begin(), e, tex) != e)
                     ++identicalTextureCount;
             }
 
-            return identicalTextureCount < originalTextureASize;
+            return identicalTextureCount < smallestVector.size();
         });
 #endif
     }

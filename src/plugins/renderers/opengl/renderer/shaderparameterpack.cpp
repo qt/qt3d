@@ -81,7 +81,7 @@ void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex
         return;
     }
 
-    m_textures.append(NamedResource(glslNameId, texId, uniformArrayIndex, NamedResource::Texture));
+    m_textures.push_back(NamedResource(glslNameId, texId, uniformArrayIndex, NamedResource::Texture));
 }
 
 void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id)
@@ -94,13 +94,13 @@ void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex, 
         return;
     }
 
-    m_images.append(NamedResource(glslNameId, id, uniformArrayIndex, NamedResource::Image));
+    m_images.push_back(NamedResource(glslNameId, id, uniformArrayIndex, NamedResource::Image));
 }
 
 // Contains Uniform Block Index and QNodeId of the ShaderData (UBO)
 void ShaderParameterPack::setUniformBuffer(BlockToUBO blockToUBO)
 {
-    m_uniformBuffers.append(std::move(blockToUBO));
+    m_uniformBuffers.push_back(std::move(blockToUBO));
 }
 
 void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
