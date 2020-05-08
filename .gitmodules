@@ -1,0 +1,3 @@
+[submodule "src/3rdparty/assimp/src"]
+	path = src/3rdparty/assimp/src
+	url = ../qtquick3d-assimp.git
