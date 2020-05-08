@@ -1,0 +1,31 @@
+# Generated from qblendedclipanimator.pro.
+
+#####################################################################
+## tst_qblendedclipanimator Test:
+#####################################################################
+
+qt_add_test(tst_qblendedclipanimator
+    SOURCES
+        tst_qblendedclipanimator.cpp
+    INCLUDE_DIRECTORIES
+        ../../core/common
+    PUBLIC_LIBRARIES
+        3DAnimation
+        3DAnimationPrivate
+        Qt::3DCore
+        Qt::3DCorePrivate
+        Qt::CorePrivate
+        Qt::Gui
+)
+
+#### Keys ignored in scope 1:.:.:qblendedclipanimator.pro:<TRUE>:
+# TEMPLATE = "app"
+
+## Scopes:
+#####################################################################
+
+qt_extend_target(tst_qblendedclipanimator CONDITION QT_FEATURE_private_tests
+    SOURCES
+        ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
+        ../../core/common/testarbiter.h
+)

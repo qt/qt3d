@@ -1,0 +1,112 @@
+# Generated from opengl.pro.
+
+#####################################################################
+## OpenGLRendererPlugin Plugin:
+#####################################################################
+
+add_library(OpenGLRendererLib STATIC
+    graphicshelpers/graphicscontext.cpp graphicshelpers/graphicscontext_p.h
+    graphicshelpers/graphicshelperes2.cpp graphicshelpers/graphicshelperes2_p.h
+    graphicshelpers/graphicshelperes3.cpp graphicshelpers/graphicshelperes3_p.h
+    graphicshelpers/graphicshelperes3_1.cpp graphicshelpers/graphicshelperes3_1_p.h
+    graphicshelpers/graphicshelperes3_2.cpp graphicshelpers/graphicshelperes3_2_p.h
+    graphicshelpers/graphicshelpergl2.cpp graphicshelpers/graphicshelpergl2_p.h
+    graphicshelpers/graphicshelpergl3_2.cpp graphicshelpers/graphicshelpergl3_2_p.h
+    graphicshelpers/graphicshelpergl3_3.cpp graphicshelpers/graphicshelpergl3_3_p.h
+    graphicshelpers/graphicshelpergl4.cpp graphicshelpers/graphicshelpergl4_p.h
+    graphicshelpers/graphicshelperinterface_p.h
+    graphicshelpers/imagesubmissioncontext.cpp graphicshelpers/imagesubmissioncontext_p.h
+    graphicshelpers/qgraphicsutils_p.h
+    graphicshelpers/submissioncontext.cpp graphicshelpers/submissioncontext_p.h
+    graphicshelpers/texturesubmissioncontext.cpp graphicshelpers/texturesubmissioncontext_p.h
+    io/glbuffer.cpp io/glbuffer_p.h
+    jobs/filtercompatibletechniquejob.cpp jobs/filtercompatibletechniquejob_p.h
+    jobs/materialparametergathererjob.cpp jobs/materialparametergathererjob_p.h
+    jobs/renderviewcommandbuilderjob.cpp jobs/renderviewcommandbuilderjob_p.h
+    jobs/renderviewcommandupdaterjob.cpp jobs/renderviewcommandupdaterjob_p.h
+    jobs/renderviewinitializerjob.cpp jobs/renderviewinitializerjob_p.h
+    jobs/renderviewjobutils.cpp jobs/renderviewjobutils_p.h
+    managers/gl_handle_types_p.h
+    managers/glresourcemanagers.cpp managers/glresourcemanagers_p.h
+    renderer/commandexecuter.cpp renderer/commandexecuter_p.h
+    renderer/frameprofiler_p.h
+    renderer/glfence_p.h
+    renderer/gllights.cpp renderer/gllights_p.h
+    renderer/glshader.cpp renderer/glshader_p.h
+    renderer/logging.cpp renderer/logging_p.h
+    renderer/openglvertexarrayobject.cpp renderer/openglvertexarrayobject_p.h
+    renderer/rendercommand.cpp renderer/rendercommand_p.h
+    renderer/renderer.cpp renderer/renderer_p.h
+    renderer/renderercache_p.h
+    renderer/renderqueue.cpp renderer/renderqueue_p.h
+    renderer/renderview.cpp renderer/renderview_p.h
+    renderer/renderviewbuilder.cpp renderer/renderviewbuilder_p.h
+    renderer/shaderparameterpack.cpp renderer/shaderparameterpack_p.h
+    renderer/shadervariables_p.h
+    textures/gltexture.cpp textures/gltexture_p.h
+    textures/renderbuffer.cpp textures/renderbuffer_p.h
+)
+
+target_include_directories(OpenGLRendererLib PUBLIC
+    graphicshelpers
+    io
+    jobs
+    managers
+    renderer
+    textures
+)
+
+target_link_libraries(OpenGLRendererLib
+    PRIVATE
+        Qt::OpenGLExtensions
+    PUBLIC
+        Qt::3DCore
+        Qt::3DCorePrivate
+        Qt::3DRender
+        Qt::3DRenderPrivate
+        Qt::Core
+        Qt::CorePrivate
+        Qt::Gui
+        Qt::GuiPrivate
+        Qt::OpenGL
+        Qt::OpenGLPrivate
+)
+
+target_compile_definitions(OpenGLRendererLib PRIVATE
+    BUILD_QT3D_MODULE
+    QT_BUILDING_QT
+    QT_NO_FOREACH
+)
+
+qt_extend_target(OpenGLRendererLib CONDITION NOT INTEGRITY
+    SOURCES
+        debug/imguirenderer.cpp debug/imguirenderer_p.h
+        ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui.cpp
+        ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_draw.cpp
+        ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_widgets.cpp
+    INCLUDE_DIRECTORIES
+        debug
+        ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui
+)
+
+
+qt_internal_add_plugin(OpenGLRendererPlugin
+    OUTPUT_NAME openglrenderer
+    TYPE renderers
+    SOURCES
+        main.cpp
+    LIBRARIES
+        OpenGLRendererLib
+)
+
+## Scopes:
+#####################################################################
+
+qt_extend_target(OpenGLRendererPlugin CONDITION gcov
+    COMPILE_OPTIONS
+        -fprofile-arcs
+        -ftest-coverage
+    LINK_OPTIONS
+        "-fprofile-arcs"
+        "-ftest-coverage"
+)

@@ -81,10 +81,10 @@ namespace Debug {
 
 #define IMGUI_PERF_LOG_SIZE 30
 
-class ImGuiRenderer : public QObject {
-    Q_OBJECT
+class Q_AUTOTEST_EXPORT ImGuiRenderer : public QObject {
 public:
     ImGuiRenderer(Qt3DRender::Render::OpenGL::Renderer *renderer);
+    ~ImGuiRenderer();
 
     void processEvent(QEvent *event);
     void renderDebugOverlay(const QVector<Render::OpenGL::RenderView *> &renderViews, const Render::OpenGL::RenderView *renderView, int jobsInLastFrame);

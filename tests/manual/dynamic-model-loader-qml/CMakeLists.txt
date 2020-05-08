@@ -1,0 +1,41 @@
+# Generated from dynamic-model-loader-qml.pro.
+
+#####################################################################
+## dynamic-model-loader-qml Binary:
+#####################################################################
+
+qt_add_manual_test(dynamic-model-loader-qml
+    GUI
+    SOURCES
+        main.cpp
+    PUBLIC_LIBRARIES
+        Qt::3DCore
+        Qt::3DInput
+        Qt::3DQuick
+        Qt::3DQuickExtras
+        Qt::3DRender
+        Qt::Gui
+        Qt::Qml
+        Qt::Quick
+)
+
+# Resources:
+set(dynamic-model-loader-qml_resource_files
+    "CuboidEntity.qml"
+    "SphereEntity.qml"
+    "main.qml"
+)
+
+qt_add_resource(dynamic-model-loader-qml "dynamic-model-loader-qml"
+    PREFIX
+        "/"
+    FILES
+        ${dynamic-model-loader-qml_resource_files}
+)
+
+
+#### Keys ignored in scope 1:.:.:dynamic-model-loader-qml.pro:<TRUE>:
+# OTHER_FILES = "main.qml" "SphereEntity.qml" "CuboidEntity.qml"
+
+## Scopes:
+#####################################################################

@@ -1,0 +1,21 @@
+# Generated from bigscene-cpp.pro.
+
+#####################################################################
+## bigscene-cpp Binary:
+#####################################################################
+
+qt_add_manual_test(bigscene-cpp
+    GUI
+    SOURCES
+        entity.cpp entity.h
+        main.cpp
+    PUBLIC_LIBRARIES
+        Qt::3DCore
+        Qt::3DExtras
+        Qt::3DInput
+        Qt::3DRender
+        Qt::Gui
+)
+
+## Scopes:
+#####################################################################

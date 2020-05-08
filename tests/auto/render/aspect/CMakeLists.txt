@@ -1,0 +1,23 @@
+# Generated from aspect.pro.
+
+#####################################################################
+## tst_aspect Test:
+#####################################################################
+
+qt_add_test(tst_aspect
+    SOURCES
+        tst_aspect.cpp
+    PUBLIC_LIBRARIES
+        Qt::3DCore
+        Qt::3DCorePrivate
+        Qt::3DRender
+        Qt::3DRenderPrivate
+        Qt::CorePrivate
+        Qt::Gui
+)
+
+#### Keys ignored in scope 1:.:.:aspect.pro:<TRUE>:
+# TEMPLATE = "app"
+
+include(../commons/commons.cmake)
+qt3d_setup_common_render_test(tst_aspect USE_TEST_ASPECT)

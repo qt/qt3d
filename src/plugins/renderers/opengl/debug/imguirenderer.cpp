@@ -163,6 +163,8 @@ ImGuiRenderer::ImGuiRenderer(Qt3DRender::Render::OpenGL::Renderer *renderer)
     m_jobsRange.first = m_jobsRange.second = 0.f;
 }
 
+ImGuiRenderer::~ImGuiRenderer() = default;
+
 void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews, const RenderView *renderView, int jobsInLastFrame)
 {
     if (!newFrame(renderView))

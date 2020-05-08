@@ -37,10 +37,9 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <renderer_p.h>
-#include "qbackendnodetester.h"
 #include "testrenderer.h"
 #include "testarbiter.h"
-
+#include "qbackendnodetester.h"
 
 // tst_Renderer is a friend class of Renderer
 class tst_Renderer : public Qt3DRender::Render::OpenGL::Renderer

@@ -87,10 +87,7 @@ public:
                                         });
     }
 
-    ~TestAspect()
-    {
-        QRenderAspect::onUnregistered();
-    }
+    ~TestAspect();
 
     Qt3DRender::Render::NodeManagers *nodeManagers() const
     {
@@ -115,6 +112,11 @@ public:
 private:
     QScopedPointer<Qt3DCore::QAspectJobManager> m_jobManager;
 };
+
+TestAspect::~TestAspect()
+{
+    QRenderAspect::onUnregistered();
+}
 
 } // namespace Qt3DRender
 
@@ -526,8 +528,8 @@ private Q_SLOTS:
         Qt3DRender::QTechniqueFilter *techniqueFilter = new Qt3DRender::QTechniqueFilter(frustumCulling);
         Qt3DRender::QRenderPassFilter *renderPassFilter = new Qt3DRender::QRenderPassFilter(techniqueFilter);
         Qt3DRender::QLayer *layer = new Qt3DRender::QLayer();
-
         layerFilter->addLayer(layer);
+
         Qt3DRender::TestAspect testAspect(buildSimpleScene(viewport));
 
         // THEN

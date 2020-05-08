@@ -43,7 +43,6 @@
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/private/qblendedclipanimator_p.h>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
-#include "qbackendnodetester.h"
 
 class tst_BlendedClipAnimator : public Qt3DCore::QBackendNodeTester
 {

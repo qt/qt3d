@@ -1,0 +1,41 @@
+# Generated from loader-qml.pro.
+
+#####################################################################
+## loader-qml Binary:
+#####################################################################
+
+qt_add_manual_test(loader-qml
+    GUI
+    SOURCES
+        main.cpp
+    PUBLIC_LIBRARIES
+        Qt::3DCore
+        Qt::3DInput
+        Qt::3DQuick
+        Qt::3DQuickExtras
+        Qt::3DRender
+        Qt::Gui
+        Qt::Qml
+        Qt::Quick
+)
+
+# Resources:
+set(loader-qml_resource_files
+    "CuboidEntity.qml"
+    "SphereEntity.qml"
+    "main.qml"
+)
+
+qt_add_resource(loader-qml "loader-qml"
+    PREFIX
+        "/"
+    FILES
+        ${loader-qml_resource_files}
+)
+
+
+#### Keys ignored in scope 1:.:.:loader-qml.pro:<TRUE>:
+# OTHER_FILES = "main.qml" "SphereEntity.qml" "CuboidEntity.qml"
+
+## Scopes:
+#####################################################################

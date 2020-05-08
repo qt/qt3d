@@ -42,6 +42,8 @@
 #include <submissioncontext_p.h>
 #include <filtercompatibletechniquejob_p.h>
 
+#include "qbackendnodetester.h"
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {

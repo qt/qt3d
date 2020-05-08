@@ -434,13 +434,13 @@ void tst_QResourceManager::checkCleanup()
 
     data->m_value.ref();
     // THEN
-    QCOMPARE(data->m_value.load(), 1);
+    QCOMPARE(data->m_value.loadRelaxed(), 1);
 
     // WHEN
     manager.release(newHandle);
 
     // THEN
-    QCOMPARE(data->m_value.load(), 0);
+    QCOMPARE(data->m_value.loadRelaxed(), 0);
 }
 
 

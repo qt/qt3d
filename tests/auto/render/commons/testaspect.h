@@ -58,9 +58,9 @@ public:
 
     Qt3DRender::Render::NodeManagers *nodeManagers() const;
 
-    void onEngineStartup();
-    void onRegistered();
-    void onUnregistered();
+    void onEngineStartup() override;
+    void onRegistered() override;
+    void onUnregistered() override;
 
     void registerNode(Qt3DCore::QNode *node) { m_frontEndNodes.insert(node->id(), node); }
     void registerTree(Qt3DCore::QEntity *root) {

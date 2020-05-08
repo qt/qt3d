@@ -1,0 +1,35 @@
+# Generated from animation-keyframe-blendtree.pro.
+
+#####################################################################
+## animation-keyframe-blendtree Binary:
+#####################################################################
+
+qt_add_manual_test(animation-keyframe-blendtree
+    GUI
+    SOURCES
+        main.cpp
+    PUBLIC_LIBRARIES
+        Qt::3DQuickAnimation
+        Qt::3DQuickExtras
+        Qt::Gui
+)
+
+# Resources:
+set(main_resource_files
+    "DefaultSceneEntity.qml"
+    "main.qml"
+    "sliding-cube.json"
+    "sliding-pulsing-cube.json"
+)
+
+qt_add_resource(animation-keyframe-blendtree "main"
+    PREFIX
+        "/"
+    FILES
+        ${main_resource_files}
+)
+
+
+#### Keys ignored in scope 1:.:.:animation-keyframe-blendtree.pro:<TRUE>:
+# OTHER_FILES = "main.qml" "DefaultSceneEntity.qml"
+# TEMPLATE = "app"

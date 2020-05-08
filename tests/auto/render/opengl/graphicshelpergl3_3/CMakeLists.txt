@@ -1,0 +1,30 @@
+# Generated from graphicshelpergl3_3.pro.
+
+#####################################################################
+## tst_graphicshelpergl3_3 Test:
+#####################################################################
+
+qt_add_test(tst_graphicshelpergl3_3
+    SOURCES
+        tst_graphicshelpergl3_3.cpp
+)
+
+#### Keys ignored in scope 1:.:.:graphicshelpergl3_3.pro:<TRUE>:
+# TEMPLATE = "app"
+
+## Scopes:
+#####################################################################
+
+include(../../commons/commons.cmake)
+qt3d_setup_common_render_test(tst_graphicshelpergl3_3 USE_TEST_ASPECT)
+include(${PROJECT_SOURCE_DIR}/src/plugins/renderers/opengl/opengl.cmake)
+qt3d_setup_opengl_renderer_target(tst_graphicshelpergl3_3)
+
+qt_extend_target(tst_graphicshelpergl3_3 CONDITION gcov
+    COMPILE_OPTIONS
+        -fprofile-arcs
+        -ftest-coverage
+    LINK_OPTIONS
+        "-fprofile-arcs"
+        "-ftest-coverage"
+)
