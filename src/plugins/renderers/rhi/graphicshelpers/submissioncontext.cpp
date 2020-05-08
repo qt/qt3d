@@ -75,7 +75,7 @@
 #include <private/qdebug_p.h>
 #include <QSurface>
 #include <QWindow>
-#include <QShaderBaker>
+#include <QtShaderTools/private/qshaderbaker_p.h>
 
 #ifdef Q_OS_WIN
 #include <QtGui/private/qrhid3d11_p.h>
