@@ -697,7 +697,6 @@ static QQmlPrivate::AutoParentResult qquick3ditem_autoParent(QObject *obj, QObje
 
 void Quick3D_initialize()
 {
-    Qt3DCore::Quick::Quick3DValueTypes::registerValueTypes();
     QQml_addValueTypeProvider(getValueTypeProvider());
     QQml_setColorProvider(getColorProvider());
     QAbstractNodeFactory::registerNodeFactory(QuickNodeFactory::instance());

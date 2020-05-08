@@ -45,13 +45,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 namespace Quick {
 
-namespace Quick3DValueTypes {
-    void registerValueTypes()
-    {
-        QQmlValueTypeFactory::registerValueTypes("Qt3D.Core", 2, 0);
-    }
-}
-
 QString Quick3DColorValueType::toString() const
 {
     return v.name(v.alpha() != 255 ? QColor::HexArgb : QColor::HexRgb);

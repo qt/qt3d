@@ -66,11 +66,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 namespace Quick {
-namespace Quick3DValueTypes {
-
-Q_3DQUICKSHARED_PRIVATE_EXPORT void registerValueTypes();
-
-}
 
 class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DColorValueType
 {
