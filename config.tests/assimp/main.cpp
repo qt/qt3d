@@ -45,5 +45,9 @@ int main(int , char **)
   aiAnimation anim;
   anim.mNumMorphMeshChannels = 0;
 
+  // Check for something that was set in a recent version
+  aiMaterial aiM;
+  (void)aiM.GetName();
+
   return 0;
 }
