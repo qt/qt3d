@@ -622,6 +622,8 @@ void Renderer::releaseGraphicsResources()
             vao->destroy();
         }
 
+        m_submissionContext->releaseRenderTargets();
+
         m_frameProfiler.reset();
         context->doneCurrent();
     } else {
