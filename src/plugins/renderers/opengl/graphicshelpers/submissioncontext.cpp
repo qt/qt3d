@@ -564,6 +564,13 @@ GLuint SubmissionContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
     return fboId;
 }
 
+void SubmissionContext::releaseRenderTargets()
+{
+    const auto keys = m_renderTargets.keys();
+    for (Qt3DCore::QNodeId renderTargetId : keys)
+        releaseRenderTarget(renderTargetId);
+}
+
 QSize SubmissionContext::renderTargetSize(const QSize &surfaceSize) const
 {
     QSize renderTargetSize;
