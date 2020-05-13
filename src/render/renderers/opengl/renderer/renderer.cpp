@@ -534,6 +534,8 @@ void Renderer::releaseGraphicsResources()
             vao->destroy();
         }
 
+        m_submissionContext->releaseRenderTargets();
+
         context->doneCurrent();
     } else {
         qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
