@@ -53,7 +53,9 @@
 
 #include <QtGui/qtguiglobal.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
+
 QT_BEGIN_NAMESPACE
+
 #if QT_CONFIG(vulkan)
 class QVulkanInstance;
 namespace Qt3DRender {
@@ -61,6 +63,7 @@ Q_3DRENDERSHARED_PRIVATE_EXPORT
 QVulkanInstance& staticVulkanInstance() noexcept;
 } // Qt3DRender
 #endif
+
 QT_END_NAMESPACE
 
 #endif // QT3DRENDER_VULKANINSTANCE_P_H
