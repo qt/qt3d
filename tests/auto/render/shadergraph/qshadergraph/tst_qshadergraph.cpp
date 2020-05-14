@@ -116,6 +116,7 @@ private slots:
     void shouldDealWithEdgesJumpingOverLayers();
     void shouldGenerateDifferentStatementsDependingOnActiveLayers();
     void shouldDealWithBranchesWithoutOutput();
+    void shouldDiscardEdgesConnectedToDiscardedNodes();
 };
 
 void tst_QShaderGraph::shouldHaveEdgeDefaultState()
@@ -812,6 +813,49 @@ void tst_QShaderGraph::shouldDealWithBranchesWithoutOutput()
             << createStatement(function, {0}, {1})
             << createStatement(output, {1}, {})
             << createStatement(danglingFunction, {0}, {2});
+    dumpStatementsIfNeeded(statements, expected);
+    QCOMPARE(statements, expected);
+}
+
+void tst_QShaderGraph::shouldDiscardEdgesConnectedToDiscardedNodes()
+{
+    // GIVEN
+    const auto input = createNode({
+        createPort(QShaderNodePort::Output, "input")
+    });
+    const auto output = createNode({
+        createPort(QShaderNodePort::Input, "output")
+    });
+    const auto function0 = createNode({
+                                          createPort(QShaderNodePort::Input, "function0Input"),
+                                          createPort(QShaderNodePort::Output, "function0Output")
+                                      }, {"0"});
+    const auto function1 = createNode({
+                                          createPort(QShaderNodePort::Input, "function1Input"),
+                                          createPort(QShaderNodePort::Output, "function1Output")
+                                      }, {"1"});
+
+    const auto graph = [=] {
+        auto res = QShaderGraph();
+        res.addNode(input);
+        res.addNode(function0);
+        res.addNode(function1);
+        res.addNode(output);
+        res.addEdge(createEdge(input.uuid(), "input", function0.uuid(), "function0Input", {"0"}));
+        res.addEdge(createEdge(input.uuid(), "input", function1.uuid(), "function1Input"));
+        res.addEdge(createEdge(function0.uuid(), "function0Output", output.uuid(), "output"));
+        res.addEdge(createEdge(function1.uuid(), "function1Output", output.uuid(), "output"));
+        return res;
+    }();
+
+    // WHEN
+    const auto statements = graph.createStatements({"0"});
+
+    // THEN
+    const auto expected = QVector<QShaderGraph::Statement>()
+            << createStatement(input, {}, {0})
+            << createStatement(function0, {0}, {1})
+            << createStatement(output, {1}, {});
     dumpStatementsIfNeeded(statements, expected);
     QCOMPARE(statements, expected);
 }

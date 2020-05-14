@@ -242,21 +242,23 @@ QVector<QShaderGraph::Statement> QShaderGraph::createStatements(const QStringLis
         return res;
     }();
 
-    const QVector<Edge> enabledEdges = [this, intersectsEnabledLayers] {
-        auto res = QVector<Edge>();
-        std::copy_if(m_edges.cbegin(), m_edges.cend(),
-                     std::back_inserter(res),
-                     [intersectsEnabledLayers] (const Edge &edge) {
-                         return intersectsEnabledLayers(edge.layers);
-                     });
-        return res;
-    }();
-
     const QHash<QUuid, Statement> idHash = [enabledNodes] {
         auto nextVarId = 0;
         auto res = QHash<QUuid, Statement>();
         for (const QShaderNode &node : enabledNodes)
             res.insert(node.uuid(), nodeToStatement(node, nextVarId));
+        return res;
+    }();
+
+    const QVector<Edge> enabledEdges = [this, intersectsEnabledLayers, &idHash] {
+        auto res = QVector<Edge>();
+        std::copy_if(m_edges.cbegin(), m_edges.cend(),
+                     std::back_inserter(res),
+                     [intersectsEnabledLayers, &idHash] (const Edge &edge) {
+                         return intersectsEnabledLayers(edge.layers)
+                                 && idHash.contains(edge.sourceNodeUuid)
+                                 && idHash.contains(edge.targetNodeUuid);
+                     });
         return res;
     }();
 
