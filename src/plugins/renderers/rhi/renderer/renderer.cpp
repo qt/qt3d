@@ -390,7 +390,7 @@ QOpenGLContext *Renderer::shareContext() const
 // Executed in the reloadDirtyShader job
 void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
-    Q_UNUSED(shader);
+    Q_UNUSED(shader)
     if (!m_dirtyShaders.contains(shaderHandle))
         m_dirtyShaders.push_back(shaderHandle);
 }
@@ -414,6 +414,7 @@ bool Renderer::accessOpenGLTexture(Qt3DCore::QNodeId nodeId, QOpenGLTexture **te
                                    QMutex **lock, bool readonly)
 {
     RHI_UNIMPLEMENTED;
+    Q_UNUSED(texture)
 
     Texture *tex = m_nodesManager->textureManager()->lookupResource(nodeId);
     if (!tex)
@@ -1315,7 +1316,7 @@ void Renderer::lookForDirtyTextures()
         const QNodeIdVector imageIds = texture->textureImageIds();
 
         // Does the texture reference any of the dirty texture images?
-        for (const QNodeId imageId : imageIds) {
+        for (const QNodeId &imageId : imageIds) {
             if (dirtyImageIds.contains(imageId)) {
                 texture->addDirtyFlag(Texture::DirtyImageGenerators);
                 break;
@@ -2119,6 +2120,7 @@ void Renderer::performDraw(RenderCommand *command)
 void Renderer::performCompute(const RenderView *, RenderCommand *command)
 {
     RHI_UNIMPLEMENTED;
+    Q_UNUSED(command)
     //* {
     //*     RHIShader *shader =
     //m_RHIResourceManagers->rhiShaderManager()->lookupResource(command->m_shaderId);
@@ -2157,6 +2159,8 @@ static auto rhiIndexFormat(QAttribute::VertexBaseType type)
 bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                                        RenderCommand &command)
 {
+    Q_UNUSED(cb)
+    Q_UNUSED(rv)
     RHIGraphicsPipeline *graphicsPipeline = command.pipeline;
     if (!graphicsPipeline)
         return true;
@@ -2283,6 +2287,7 @@ void uploadUniform(SubmissionContext &submissionContext, const PackUniformHash &
 bool Renderer::uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                                     const RenderCommand &command)
 {
+    Q_UNUSED(cb)
     RHIGraphicsPipeline *pipeline = command.pipeline;
     if (!pipeline)
         return true;

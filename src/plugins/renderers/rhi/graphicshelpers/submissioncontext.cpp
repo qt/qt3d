@@ -117,55 +117,55 @@ unsigned int nextFreeContextId() noexcept
 
 namespace {
 
-RHIBuffer::Type attributeTypeToGLBufferType(QAttribute::AttributeType type) noexcept
-{
-    switch (type) {
-    case QAttribute::VertexAttribute:
-        return RHIBuffer::ArrayBuffer;
-    case QAttribute::IndexAttribute:
-        return RHIBuffer::IndexBuffer;
-    case QAttribute::DrawIndirectAttribute:
-        return RHIBuffer::DrawIndirectBuffer;
-    default:
-        Q_UNREACHABLE();
-    }
-}
+//RHIBuffer::Type attributeTypeToGLBufferType(QAttribute::AttributeType type) noexcept
+//{
+//    switch (type) {
+//    case QAttribute::VertexAttribute:
+//        return RHIBuffer::ArrayBuffer;
+//    case QAttribute::IndexAttribute:
+//        return RHIBuffer::IndexBuffer;
+//    case QAttribute::DrawIndirectAttribute:
+//        return RHIBuffer::DrawIndirectBuffer;
+//    default:
+//        Q_UNREACHABLE();
+//    }
+//}
 
-void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint stride, uint width,
-                                  uint height, QAbstractTexture::TextureFormat format) noexcept
-{
-    switch (format) {
-    case QAbstractTexture::RGBA32F: {
-        uchar *srcScanline = const_cast<uchar *>(srcData) + stride * (height - 1);
-        for (uint i = 0; i < height; ++i) {
-            uchar *dstScanline = img.scanLine(i);
-            float *pSrc = reinterpret_cast<float *>(srcScanline);
-            for (uint j = 0; j < width; j++) {
-                *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4 * j + 2], 1.0f));
-                *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4 * j + 1], 1.0f));
-                *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4 * j + 0], 1.0f));
-                *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4 * j + 3], 1.0f));
-            }
-            srcScanline -= stride;
-        }
-    } break;
-    default: {
-        uchar *srcScanline = (uchar *)srcData + stride * (height - 1);
-        for (uint i = 0; i < height; ++i) {
-            memcpy(img.scanLine(i), srcScanline, stride);
-            srcScanline -= stride;
-        }
-    } break;
-    }
-}
+//void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint stride, uint width,
+//                                  uint height, QAbstractTexture::TextureFormat format) noexcept
+//{
+//    switch (format) {
+//    case QAbstractTexture::RGBA32F: {
+//        uchar *srcScanline = const_cast<uchar *>(srcData) + stride * (height - 1);
+//        for (uint i = 0; i < height; ++i) {
+//            uchar *dstScanline = img.scanLine(i);
+//            float *pSrc = reinterpret_cast<float *>(srcScanline);
+//            for (uint j = 0; j < width; j++) {
+//                *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4 * j + 2], 1.0f));
+//                *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4 * j + 1], 1.0f));
+//                *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4 * j + 0], 1.0f));
+//                *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4 * j + 3], 1.0f));
+//            }
+//            srcScanline -= stride;
+//        }
+//    } break;
+//    default: {
+//        uchar *srcScanline = (uchar *)srcData + stride * (height - 1);
+//        for (uint i = 0; i < height; ++i) {
+//            memcpy(img.scanLine(i), srcScanline, stride);
+//            srcScanline -= stride;
+//        }
+//    } break;
+//    }
+//}
 
 // Render States Helpers
 
 template<typename GenericState>
 void applyStateHelper(const GenericState *state, QRhiGraphicsPipeline *gp) noexcept
 {
-    Q_UNUSED(state);
-    Q_UNUSED(gp);
+    Q_UNUSED(state)
+    Q_UNUSED(gp)
     qWarning() << "RHI Unhandled render state" << typeid(GenericState).name();
 }
 
@@ -270,6 +270,7 @@ void applyStateHelper(const BlendEquation *state, QRhiGraphicsPipeline *gp) noex
 void applyStateHelper(const MSAAEnabled *state, QRhiGraphicsPipeline *gp,
                       const QSurfaceFormat &format) noexcept
 {
+    Q_UNUSED(state)
     gp->setSampleCount(format.samples());
 }
 
@@ -689,6 +690,7 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
 void SubmissionContext::endDrawing(bool swapBuffers)
 {
+    Q_UNUSED(swapBuffers)
     m_rhi->endFrame(m_currentSwapChain, {});
 
     RHI_UNIMPLEMENTED;
@@ -732,6 +734,8 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
 GLuint SubmissionContext::createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
                                              const AttachmentPack &attachments)
 {
+    Q_UNUSED(renderTargetNodeId)
+    Q_UNUSED(attachments)
     RHI_UNIMPLEMENTED;
     return 0;
     //*    const GLuint fboId = m_glHelper->createFrameBufferObject();
@@ -752,6 +756,9 @@ GLuint SubmissionContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
                                              const AttachmentPack &attachments,
                                              bool isActiveRenderTarget)
 {
+    Q_UNUSED(renderTargetNodeId)
+    Q_UNUSED(attachments)
+    Q_UNUSED(isActiveRenderTarget)
     RHI_UNIMPLEMENTED;
     return 0;
     //*    const GLuint fboId = m_renderTargets.value(renderTargetNodeId);
@@ -835,6 +842,7 @@ QSize SubmissionContext::renderTargetSize(const QSize &surfaceSize) const
 
 QImage SubmissionContext::readFramebuffer(const QRect &rect)
 {
+    Q_UNUSED(rect)
     RHI_UNIMPLEMENTED;
     return {};
     //*    QImage img;
@@ -1022,6 +1030,7 @@ void SubmissionContext::releaseResources()
 // Called only from RenderThread
 bool SubmissionContext::activateShader(RHIShader *shader)
 {
+    Q_UNUSED(shader)
     RHI_UNIMPLEMENTED;
     //* if (shader->shaderProgram() != m_activeShader) {
     //*     // Ensure material uniforms are re-applied
@@ -1042,6 +1051,8 @@ bool SubmissionContext::activateShader(RHIShader *shader)
 void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId,
                                                         const AttachmentPack &attachments)
 {
+    Q_UNUSED(fboId)
+    Q_UNUSED(attachments)
     RHI_UNIMPLEMENTED;
     // Set FBO attachments. These are normally textures, except that on Open GL
     // ES <= 3.1 we must use a renderbuffer if a combined depth+stencil is
@@ -1084,6 +1095,7 @@ void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId,
 
 void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
+    Q_UNUSED(attachments)
     RHI_UNIMPLEMENTED;
     //* const QVector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
     //*
@@ -1341,8 +1353,8 @@ QSurfaceFormat SubmissionContext::format() const noexcept
 // than the other way around
 bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
 {
-    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight_irradiance"));
-    static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
+//    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight_irradiance"));
+//    static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
 
@@ -1350,7 +1362,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     // to pinable so that we should easily find an available texture unit
     // m_textureContext.deactivateTexturesWithScope(TextureSubmissionContext::TextureScopeMaterial);
     // Update the uniforms with the correct texture unit id's
-    PackUniformHash &uniformValues = parameterPack.uniforms();
+//    PackUniformHash &uniformValues = parameterPack.uniforms();
 
     // Fill Texture Uniform Value with proper texture units
     // so that they can be applied as regular uniforms in a second step
@@ -1379,8 +1391,6 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
         //*     }
         //* }
     }
-
-    RHIShader *shader = activeShader();
 
     // TO DO: We could cache the binding points somehow and only do the binding when necessary
     // for SSBO and UBO
@@ -1568,6 +1578,14 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
                                         QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
                                         QBlitFramebuffer::InterpolationMethod interpolationMethod)
 {
+    Q_UNUSED(inputRenderTargetId)
+    Q_UNUSED(outputRenderTargetId)
+    Q_UNUSED(inputRect)
+    Q_UNUSED(outputRect)
+    Q_UNUSED(defaultFboId)
+    Q_UNUSED(inputAttachmentPoint)
+    Q_UNUSED(outputAttachmentPoint)
+    Q_UNUSED(interpolationMethod)
     RHI_UNIMPLEMENTED;
     //*    GLuint inputFboId = defaultFboId;
     //*    bool inputBufferIsDefault = true;

@@ -255,6 +255,8 @@ QRhiTextureUploadEntry createUploadEntry(int mipLevel, int layer, int xOffset, i
                                          int zOffset, const QByteArray &bytes,
                                          const QTextureImageDataPtr &data) noexcept
 {
+    Q_UNUSED(zOffset)
+    Q_UNUSED(data)
     QRhiTextureSubresourceUploadDescription description;
     description.setData(bytes);
     description.setSourceTopLeft(QPoint(xOffset, yOffset));

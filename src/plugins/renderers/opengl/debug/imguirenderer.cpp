@@ -552,18 +552,6 @@ bool ImGuiRenderer::createDeviceObjects()
         "  gl_FragColor = Frag_Color * texture2D(Texture, Frag_UV.st);\n"
         "}\n";
 
-//    m_shaderHandle = m_funcs->glCreateProgram();
-//    m_vertHandle = m_funcs->glCreateShader(GL_VERTEX_SHADER);
-//    m_fragHandle = m_funcs->glCreateShader(GL_FRAGMENT_SHADER);
-//    auto *glContext = m_renderer->submissionContext()->openGLContext();
-//    m_funcs->glShaderSource(m_vertHandle, 1, &vertex_shader, nullptr);
-//    m_funcs->glShaderSource(m_fragHandle, 1, &fragment_shader, nullptr);
-//    m_funcs->glCompileShader(m_vertHandle);
-//    m_funcs->glCompileShader(m_fragHandle);
-//    m_funcs->glAttachShader(m_shaderHandle, m_vertHandle);
-//    m_funcs->glAttachShader(m_shaderHandle, m_fragHandle);
-//    m_funcs->glLinkProgram(m_shaderHandle);
-
     QString logs;
     m_shader = new QOpenGLShaderProgram(this);
     if (glContext->isOpenGLES()) {

@@ -117,6 +117,7 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
 
 bool RHIBuffer::release(SubmissionContext *ctx)
 {
+    Q_UNUSED(ctx)
     if (m_rhiBuffer)
         m_rhiBuffer->release();
     return true;
@@ -124,11 +125,13 @@ bool RHIBuffer::release(SubmissionContext *ctx)
 
 bool RHIBuffer::create(SubmissionContext *ctx)
 {
+    Q_UNUSED(ctx)
     return true;
 }
 
 void RHIBuffer::destroy(SubmissionContext *ctx)
 {
+    Q_UNUSED(ctx)
     if (m_rhiBuffer) {
         m_rhiBuffer->releaseAndDestroyLater();
         m_rhiBuffer = nullptr;
@@ -148,6 +151,7 @@ void RHIBuffer::orphan(SubmissionContext *)
 
 void RHIBuffer::allocate(SubmissionContext *ctx, const QByteArray &data, bool dynamic)
 {
+    Q_UNUSED(ctx)
     m_datasToUpload.clear();
     m_datasToUpload.push_back({ data, 0 });
     m_allocSize = data.size();
@@ -156,11 +160,14 @@ void RHIBuffer::allocate(SubmissionContext *ctx, const QByteArray &data, bool dy
 
 void RHIBuffer::update(SubmissionContext *ctx, const QByteArray &data, int offset)
 {
+    Q_UNUSED(ctx)
     m_datasToUpload.push_back({ data, offset });
 }
 
 QByteArray RHIBuffer::download(SubmissionContext *ctx, uint size)
 {
+    Q_UNUSED(ctx)
+    Q_UNUSED(size)
     RHI_UNIMPLEMENTED;
     //    char *gpu_ptr = ctx->mapBuffer(m_lastTarget, size);
     //    QByteArray data;
@@ -175,12 +182,17 @@ QByteArray RHIBuffer::download(SubmissionContext *ctx, uint size)
 
 void RHIBuffer::bindBufferBase(SubmissionContext *ctx, int bindingPoint, RHIBuffer::Type t)
 {
+    Q_UNUSED(ctx)
+    Q_UNUSED(bindingPoint)
+    Q_UNUSED(t)
     RHI_UNIMPLEMENTED;
     //    ctx->bindBufferBase(glBufferTypes[t], bindingPoint, m_bufferId);
 }
 
 void RHIBuffer::bindBufferBase(SubmissionContext *ctx, int bindingPoint)
 {
+    Q_UNUSED(ctx)
+    Q_UNUSED(bindingPoint)
     RHI_UNIMPLEMENTED;
     //    ctx->bindBufferBase(m_lastTarget, bindingPoint, m_bufferId);
 }

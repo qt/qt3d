@@ -106,7 +106,7 @@ typedef QVector<QNodeId> QNodeIdVector;
 Q_3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);
 #endif
 
-inline Q_DECL_CONSTEXPR uint qHash(QNodeId id, uint seed = 0) Q_DECL_NOTHROW
+inline Q_DECL_CONSTEXPR size_t qHash(QNodeId id, size_t seed = 0) Q_DECL_NOTHROW
 {
     using QT_PREPEND_NAMESPACE(qHash);
     return qHash(id.id(), seed);

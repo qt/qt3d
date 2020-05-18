@@ -1071,6 +1071,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
                                       const QVector<LightSource> &activeLightSources,
                                       EnvironmentLight *environmentLight) const
 {
+    Q_UNUSED(entity)
+
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex
     // here Set shader, technique, and effect by basically doing :
     // ShaderProgramManager[MaterialManager[frontentEntity->id()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
