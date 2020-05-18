@@ -102,7 +102,7 @@ bool EntityVisitor::apply(Entity *root) {
     if (op == Prune)
         return true;
 
-    const auto childrenHandles = root->childrenHandles();
+    const auto &childrenHandles = root->childrenHandles();
     for (const HEntity &handle : childrenHandles) {
         Entity *child = m_manager->renderNodesManager()->data(handle);
         if (child != nullptr && !apply(child))

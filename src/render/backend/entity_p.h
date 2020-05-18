@@ -101,7 +101,7 @@ public:
     void removeFromParentChildHandles();
     void appendChildHandle(HEntity childHandle);
     void removeChildHandle(HEntity childHandle) { m_childrenHandles.removeOne(childHandle); }
-    QVector<HEntity> childrenHandles() const { return m_childrenHandles; }
+    const QVector<HEntity> &childrenHandles() const { return m_childrenHandles; }
     QVector<Entity *> children() const;
     bool hasChildren() const { return !m_childrenHandles.empty(); }
     void traverse(const std::function<void(Entity *)> &operation);

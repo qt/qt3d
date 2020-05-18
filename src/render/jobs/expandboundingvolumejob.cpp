@@ -58,7 +58,7 @@ namespace {
 void expandWorldBoundingVolume(NodeManagers *manager, Entity *node)
 {
     // Go to the nodes that have the most depth
-    const auto childrenHandles = node->childrenHandles();
+    const auto &childrenHandles = node->childrenHandles();
     for (const HEntity &handle : childrenHandles) {
         Entity *c = manager->renderNodesManager()->data(handle);
         if (c && c->isEnabled())

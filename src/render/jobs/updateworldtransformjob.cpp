@@ -82,7 +82,7 @@ void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Ma
             updatedTransforms.push_back({nodeTransform->peerId(), convertToQMatrix4x4(worldTransform)});
     }
 
-    const auto childrenHandles = node->childrenHandles();
+    const auto &childrenHandles = node->childrenHandles();
     for (const HEntity &handle : childrenHandles) {
         Entity *child = manager->renderNodesManager()->data(handle);
         if (child)

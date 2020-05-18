@@ -833,7 +833,7 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
         }
 
         // and pick children
-        const auto childrenHandles = current.entity->childrenHandles();
+        const auto &childrenHandles = current.entity->childrenHandles();
         for (const HEntity &handle : childrenHandles) {
             Entity *child = manager->renderNodesManager()->data(handle);
             if (child) {
