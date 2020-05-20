@@ -48,8 +48,8 @@
 **
 ****************************************************************************/
 
-#include <QOpenGLWidget>
-#include <QOpenGLFunctions>
+#include <QtOpenGLWidgets/QOpenGLWidget>
+#include <QtGui/QOpenGLFunctions>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <QOpenGLTexture>

@@ -2,7 +2,7 @@
     error( "Couldn't find the manual.pri file!" )
 }
 
-QT += widgets 3dcore 3drender 3dinput 3dextras multimedia
+QT += widgets 3dcore 3drender 3dinput 3dextras multimedia opengl openglwidgets
 
 SOURCES += \
     videoplayer.cpp \

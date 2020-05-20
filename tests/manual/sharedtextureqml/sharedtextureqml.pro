@@ -2,7 +2,7 @@
     error( "Couldn't find the manual.pri file!" )
 }
 
-QT += widgets gui-private 3dcore 3drender 3dinput 3dextras multimedia quick 3dquickextras
+QT += widgets gui-private 3dcore 3drender 3dinput 3dextras multimedia quick 3dquickextras openglwidgets
 
 SOURCES += \
     main.cpp \
