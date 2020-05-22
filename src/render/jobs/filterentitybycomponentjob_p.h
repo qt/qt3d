@@ -80,7 +80,7 @@ public:
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
     inline QVector<Entity *> &filteredEntities() Q_DECL_NOTHROW { return m_filteredEntities; }
 
-    void run()
+    void run() override
     {
         m_filteredEntities.clear();
         const std::vector<HEntity> &handles = m_manager->activeHandles();

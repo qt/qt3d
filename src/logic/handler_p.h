@@ -74,7 +74,7 @@ public:
     void setManager(Manager *manager) { m_logicManager = manager; }
     Manager *logicManager() const { return m_logicManager; }
 
-    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
     Manager *m_logicManager;

@@ -84,7 +84,7 @@ class QExtrudedTextGeometryPrivate : public Qt3DCore::QGeometryPrivate
 public:
     QExtrudedTextGeometryPrivate();
     void init();
-    void update();
+    void update() override;
 
     QString m_text;
     QFont m_font;
