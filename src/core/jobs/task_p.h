@@ -78,7 +78,7 @@ public:
     virtual ~RunnableInterface();
 
     virtual bool isRequired() const = 0;
-    virtual void run() = 0;
+    virtual void run() override = 0;
 
     virtual int id() = 0;
     virtual void setId(int id) = 0;

@@ -102,7 +102,7 @@ public:
     QVector<QByteArray> shaderCode() const;
     void setShaderCode(QShaderProgram::ShaderType type, const QByteArray &code);
 
-    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime);
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     inline QString log() const { return m_log; }
     inline QShaderProgram::Status status() const { return m_status; }

@@ -93,7 +93,7 @@ public Q_SLOTS:
     void enqueueLogicFrameUpdates(const QVector<Qt3DCore::QNodeId> &nodeIds);
 
 protected:
-    bool event(QEvent *e);
+    bool event(QEvent *e) override;
     void processLogicFrameUpdates(float dt);
 
 private:
