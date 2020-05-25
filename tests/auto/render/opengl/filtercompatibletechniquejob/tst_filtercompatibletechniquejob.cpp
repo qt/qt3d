@@ -241,7 +241,7 @@ private Q_SLOTS:
         QCOMPARE(testAspect.renderer()->isRunning(), true);
         QCOMPARE(testAspect.renderer()->submissionContext()->isInitialized(), true);
         const std::vector<Qt3DRender::Render::HTechnique> &handles = testAspect.nodeManagers()->techniqueManager()->activeHandles();
-        QCOMPARE(handles.size(), 3);
+        QCOMPARE(handles.size(), size_t(3));
 
         // WHEN
         backendFilterCompatibleTechniqueJob.run();

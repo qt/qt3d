@@ -1188,7 +1188,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
 
     // Fill Texture Uniform Value with proper texture units
     // so that they can be applied as regular uniforms in a second step
-    for (int i = 0; i < parameterPack.textures().size(); ++i) {
+    for (size_t i = 0; i < parameterPack.textures().size(); ++i) {
         const ShaderParameterPack::NamedResource &namedTex = parameterPack.textures().at(i);
         // Given a Texture QNodeId, we retrieve the associated shared GLTexture
         if (uniformValues.contains(namedTex.glslNameId)) {
@@ -1213,7 +1213,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
 
     // Fill Image Uniform Value with proper image units
     // so that they can be applied as regular uniforms in a second step
-    for (int i = 0; i < parameterPack.images().size(); ++i) {
+    for (size_t i = 0; i < parameterPack.images().size(); ++i) {
         const ShaderParameterPack::NamedResource &namedTex = parameterPack.images().at(i);
         // Given a Texture QNodeId, we retrieve the associated shared GLTexture
         if (uniformValues.contains(namedTex.glslNameId)) {

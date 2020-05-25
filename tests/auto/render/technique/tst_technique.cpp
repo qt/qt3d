@@ -349,7 +349,7 @@ private Q_SLOTS:
         simulateInitializationSync(filterKey5, backendFilterKey5);
 
         // THEN
-        QCOMPARE(nodeManagers.filterKeyManager()->activeHandles().size(), 5);
+        QCOMPARE(nodeManagers.filterKeyManager()->activeHandles().size(), size_t(5));
 
         {
             // WHEN

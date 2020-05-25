@@ -420,7 +420,7 @@ struct SubRangeSorter<QSortPolicy::Texture>
             const std::vector<ShaderParameterPack::NamedResource> &smallestVector = bBigger ? texturesA : texturesB;
             const std::vector<ShaderParameterPack::NamedResource> &biggestVector = bBigger ? texturesB : texturesA;
 
-            int identicalTextureCount = 0;
+            size_t identicalTextureCount = 0;
             const auto e = biggestVector.cend();
             for (const ShaderParameterPack::NamedResource &tex : smallestVector) {
                 if (std::find(biggestVector.begin(), e, tex) != e)
@@ -534,7 +534,7 @@ void RenderView::sort()
         return;
 
     // Minimize uniform changes
-    int i = 0;
+    size_t i = 0;
     std::vector<RenderCommand> &commands = m_renderCommandDataView->data.commands;
     const std::vector<size_t> &indices = m_renderCommandDataView->indices;
     const size_t commandSize = indices.size();

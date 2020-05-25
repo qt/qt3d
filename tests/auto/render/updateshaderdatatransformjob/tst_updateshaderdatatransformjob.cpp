@@ -139,7 +139,7 @@ struct NodeCollection
         : shaderData(frontendRoot->findChildren<Qt3DRender::QShaderData *>())
     {
         // THEN
-        QCOMPARE(aspect->nodeManagers()->shaderDataManager()->activeHandles().size(), shaderData.size());
+        QCOMPARE(aspect->nodeManagers()->shaderDataManager()->activeHandles().size(), size_t(shaderData.size()));
 
         for (const Qt3DRender::QShaderData *s : qAsConst(shaderData)) {
             Qt3DRender::Render::ShaderData *backend = aspect->nodeManagers()->shaderDataManager()->lookupResource(s->id());
