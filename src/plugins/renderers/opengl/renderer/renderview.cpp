@@ -72,6 +72,7 @@
 #include <graphicscontext_p.h>
 #include <submissioncontext_p.h>
 #include <glresourcemanagers_p.h>
+#include <renderviewjobutils_p.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
 #include <algorithm>
@@ -825,14 +826,6 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
 
 void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subView)
 {
-    // Note: since many threads can be building render commands
-    // we need to ensure that the UniformBlockValueBuilder they are using
-    // is only accessed from the same thread
-    UniformBlockValueBuilder *builder = new UniformBlockValueBuilder();
-    builder->shaderDataManager = m_manager->shaderDataManager();
-    builder->textureManager = m_manager->textureManager();
-    m_localData.setLocalData(builder);
-
     subView.forEach([this] (const Entity *entity,
                             const RenderPassParameterData &passData,
                             RenderCommand &command) {
@@ -855,9 +848,6 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
                              passData.parameterInfo,
                              entity);
     });
-
-    // We reset the local data once we are done with it
-    m_localData.setLocalData(nullptr);
 }
 
 void RenderView::updateMatrices()
@@ -962,23 +952,19 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
 
 void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
                                                        const GLShader *shader,
-                                                       const ShaderData *shaderData,
+                                                       ShaderData *shaderData,
                                                        const QString &structName) const
 {
-    UniformBlockValueBuilder *builder = m_localData.localData();
-    builder->activeUniformNamesToValue.clear();
+    UniformBlockValueBuilder builder(shader->uniformsNamesIds(),
+                                     m_manager->shaderDataManager(),
+                                     m_manager->textureManager(),
+                                     m_viewMatrix);
 
-    // Set the view matrix to be used to transform "Transformed" properties in the ShaderData
-    builder->viewMatrix = m_viewMatrix;
-    // Force to update the whole block
-    builder->updatedPropertiesOnly = false;
-    // Retrieve names and description of each active uniforms in the uniform block
-    builder->uniforms = shader->activeUniformsForUniformBlock(-1);
     // Build name-value map for the block
-    builder->buildActiveUniformNameValueMapStructHelper(shaderData, structName);
+    builder.buildActiveUniformNameValueMapStructHelper(shaderData, structName);
     // Set uniform values for each entrie of the block name-value map
-    QHash<int, QVariant>::const_iterator activeValuesIt = builder->activeUniformNamesToValue.constBegin();
-    const QHash<int, QVariant>::const_iterator activeValuesEnd = builder->activeUniformNamesToValue.constEnd();
+    QHash<int, QVariant>::const_iterator activeValuesIt = builder.activeUniformNamesToValue.constBegin();
+    const QHash<int, QVariant>::const_iterator activeValuesEnd = builder.activeUniformNamesToValue.constEnd();
 
     // TO DO: Make the ShaderData store UniformValue
     while (activeValuesIt != activeValuesEnd) {

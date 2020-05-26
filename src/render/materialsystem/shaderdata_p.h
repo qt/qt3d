@@ -53,8 +53,10 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qshaderdata.h>
-#include <QMutex>
 #include <Qt3DCore/private/matrix4x4_p.h>
+#include <mutex>
+#include <shared_mutex>
+#include <unordered_map>
 
 QT_BEGIN_NAMESPACE
 
@@ -77,8 +79,10 @@ public:
     };
     struct PropertyValue {
         QVariant value;
-        bool isNested;
+        bool isNode;
+        bool isArray;
         bool isTransformed;
+        QString transformedPropertyName;
     };
 
     ShaderData();
@@ -89,7 +93,7 @@ public:
     // Called by FramePreparationJob
     void updateWorldTransform(const Matrix4x4 &worldMatrix);
 
-    QVariant getTransformedProperty(const QString &name, const Matrix4x4 &viewMatrix) const noexcept;
+    QVariant getTransformedProperty(const PropertyValue *v, const Matrix4x4 &viewMatrix) const noexcept;
 
     // Unit tests purposes only
     TransformType propertyTransformType(const QString &name) const;
@@ -103,12 +107,21 @@ public:
     void cleanup() {}
 #endif
 
+    // Block.Property nameId, property nameId, PropertyValue *
+    using PropertyValuesForBlock = std::vector<std::tuple<int, int, const PropertyValue *>>;
+
+    bool hasPropertyValuesForBlock(int blockNameId) const;
+    const PropertyValuesForBlock &propertyValuesForBlock(int blockNameId) const;
+    void generatePropertyValuesForBlock(const QString &blockName);
+
 protected:
     PropertyReaderInterfacePtr m_propertyReader;
 
-
     // 1 to 1 match with frontend properties
     QHash<QString, PropertyValue> m_originalProperties;
+
+    // BlockNameId to array of pair of BlockName+PropertyName PropertyValue
+    std::unordered_map<int, PropertyValuesForBlock> m_blockNameToPropertyValues;
 
     Matrix4x4 m_worldMatrix;
     NodeManagers *m_managers;
@@ -117,6 +130,9 @@ protected:
     ShaderData *lookupResource(Qt3DCore::QNodeId id);
 
     friend class RenderShaderDataFunctor;
+
+private:
+    mutable std::shared_mutex m_lock;
 };
 
 class RenderShaderDataFunctor : public Qt3DCore::QBackendNodeMapper

@@ -458,102 +458,97 @@ const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
 
 }
 
-UniformBlockValueBuilder::UniformBlockValueBuilder()
-    : updatedPropertiesOnly(false)
-    , shaderDataManager(nullptr)
-    , textureManager(nullptr)
-{
-}
-
-UniformBlockValueBuilder::~UniformBlockValueBuilder()
+UniformBlockValueBuilder::UniformBlockValueBuilder(
+        const QVector<int> &uniformNamesIds,
+        ShaderDataManager *shaderDataManager,
+        TextureManager *textureManager,
+        const Matrix4x4 &matrix)
+    : m_uniformNamesIds(uniformNamesIds)
+    , m_shaderDataManager(shaderDataManager)
+    , m_textureManager(textureManager)
+    , m_viewMatrix(matrix)
 {
 }
 
 void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const ShaderData *currentShaderData,
                                                                     const QString &blockName,
-                                                                    const QString &qmlPropertyName,
-                                                                    const QVariant &value)
+                                                                    const int propertyInBlockNameId,
+                                                                    const int propertyNameId,
+                                                                    const ShaderData::PropertyValue *value)
 {
     // In the end, values are either scalar or a scalar array
     // Composed elements (structs, structs array) are simplified into simple scalars
-    if (value.userType() == QMetaType::QVariantList) { // Array
-        QVariantList list = value.value<QVariantList>();
-        if (list.at(0).userType() == qNodeIdTypeId) { // Array of struct qmlPropertyName[i].structMember
+    if (value->isArray) { // Array
+        const QVariantList list = value->value.value<QVariantList>();
+        if (value->isNode) { // Array of struct qmlPropertyName[i].structMember
             for (int i = 0; i < list.size(); ++i) {
                 const QVariant variantElement = list.at(i);
                 if (list.at(i).userType() == qNodeIdTypeId) {
                     const auto nodeId = variantElement.value<QNodeId>();
-                    ShaderData *subShaderData = shaderDataManager->lookupResource(nodeId);
+                    ShaderData *subShaderData = m_shaderDataManager->lookupResource(nodeId);
                     if (subShaderData) {
                         buildActiveUniformNameValueMapStructHelper(subShaderData,
-                                                                   blockName + QLatin1Char('.') + qmlPropertyName + blockArray.arg(i),
-                                                                   QLatin1String(""));
+                                                                   blockName + QLatin1Char('.') + StringToInt::lookupString(propertyNameId) + blockArray.arg(i));
                     }
                     // Note: we only handle ShaderData as nested container nodes here
                 }
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
-            QString varName;
-            varName.reserve(blockName.length() + 1 + qmlPropertyName.length() + 3);
-            varName.append(blockName);
-            varName.append(QLatin1String("."));
-            varName.append(qmlPropertyName);
-            varName.append(QLatin1String("[0]"));
-            if (uniforms.contains(varName)) {
-                qCDebug(Shaders) << "UBO array member " << varName << " set for update";
-                activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
+            if (m_uniformNamesIds.contains(propertyInBlockNameId)) {
+                activeUniformNamesToValue.insert(propertyInBlockNameId, value->value);
             }
         }
-    } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
-        const auto nodeId = value.value<QNodeId>();
-        ShaderData *rSubShaderData = shaderDataManager->lookupResource(nodeId);
+    } else if (value->isNode) { // Struct qmlPropertyName.structMember
+        const auto nodeId = value->value.value<QNodeId>();
+        ShaderData *rSubShaderData = m_shaderDataManager->lookupResource(nodeId);
         if (rSubShaderData) {
             buildActiveUniformNameValueMapStructHelper(rSubShaderData,
                                                        blockName,
-                                                       qmlPropertyName);
-        } else if (textureManager->contains(nodeId)) {
-            const auto varId = StringToInt::lookupId(blockName + QLatin1Char('.') + qmlPropertyName);
-            activeUniformNamesToValue.insert(varId, value);
+                                                       StringToInt::lookupString(propertyNameId));
+        } else if (m_textureManager->contains(nodeId)) {
+            activeUniformNamesToValue.insert(propertyInBlockNameId, value->value);
         }
     } else { // Scalar / Vec
-        QString varName;
-        varName.reserve(blockName.length() + 1 + qmlPropertyName.length());
-        varName.append(blockName);
-        varName.append(QLatin1String("."));
-        varName.append(qmlPropertyName);
-        if (uniforms.contains(varName)) {
-            qCDebug(Shaders) << "UBO scalar member " << varName << " set for update";
-
+        if (m_uniformNamesIds.contains(propertyInBlockNameId)) {
             // If the property needs to be transformed, we transform it here as
             // the shaderdata cannot hold transformed properties for multiple
             // thread contexts at once
-            activeUniformNamesToValue.insert(StringToInt::lookupId(varName),
-                                             currentShaderData->getTransformedProperty(qmlPropertyName, viewMatrix));
+            activeUniformNamesToValue.insert(propertyInBlockNameId,
+                                             currentShaderData->getTransformedProperty(value, m_viewMatrix));
         }
     }
 }
 
-void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(const ShaderData *rShaderData,
+void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData,
                                                                           const QString &blockName,
                                                                           const QString &qmlPropertyName)
 {
-    const QHash<QString, ShaderData::PropertyValue> &properties = rShaderData->properties();
-    auto it = properties.begin();
-    const auto end = properties.end();
+    QString fullBlockName;
+    fullBlockName.reserve(blockName.length() + 1 + qmlPropertyName.length());
+    fullBlockName.append(blockName);
+    if (!qmlPropertyName.isEmpty()) {
+        fullBlockName.append(QLatin1String("."));
+        fullBlockName.append(qmlPropertyName);
+    }
 
-    while (it != end) {
-        QString fullBlockName;
-        fullBlockName.reserve(blockName.length() + 1 + qmlPropertyName.length());
-        fullBlockName.append(blockName);
-        if (!qmlPropertyName.isEmpty()) {
-            fullBlockName.append(QLatin1String("."));
-            fullBlockName.append(qmlPropertyName);
-        }
-        buildActiveUniformNameValueMapHelper(rShaderData, fullBlockName,
-                                             it.key(), it.value().value);
-        ++it;
+    // Retrieve set of {NameId -> PropertyValue} for Block
+    const int fullBlockNameId = StringToInt::lookupId(fullBlockName);
+    if (!rShaderData->hasPropertyValuesForBlock(fullBlockNameId))
+        rShaderData->generatePropertyValuesForBlock(fullBlockName);
+    const ShaderData::PropertyValuesForBlock &propertiesForBlock = rShaderData->propertyValuesForBlock(fullBlockNameId);
+
+    for (const auto &nameIdPropertyPair : propertiesForBlock) {
+        buildActiveUniformNameValueMapHelper(rShaderData,
+                                             fullBlockName,
+                                             // Block.Property Name
+                                             std::get<0>(nameIdPropertyPair),
+                                             // Property Name
+                                             std::get<1>(nameIdPropertyPair),
+                                             // PropertyValue
+                                             std::get<2>(nameIdPropertyPair));
     }
 }
+
 
 ParameterInfo::ParameterInfo(const int nameId, const HParameter &handle)
     : nameId(nameId)

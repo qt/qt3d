@@ -69,8 +69,6 @@
 #include <Qt3DRender/private/aligned_malloc_p.h>
 
 #include <renderer_p.h>
-// TODO: Move out once this is all refactored
-#include <renderviewjobutils_p.h>
 
 #include <QVector>
 #include <QSurface>
@@ -289,8 +287,6 @@ private:
     void updateLightUniforms(RenderCommand *command,
                              const Entity *entity) const;
 
-    mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
-
     Renderer *m_renderer = nullptr;
     NodeManagers *m_manager = nullptr;
     EntityRenderCommandDataViewPtr m_renderCommandDataView;
@@ -386,7 +382,7 @@ private:
                                const UniformValue &value) const;
     void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
                                                const GLShader *shader,
-                                               const ShaderData *shaderData,
+                                               ShaderData *shaderData,
                                                const QString &structName) const;
     void applyParameter(const Parameter *param,
                         RenderCommand *command,
