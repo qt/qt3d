@@ -369,13 +369,15 @@ public:
                 // Record the updated viewProjectionMatrix in the cache to allow check to be performed
                 // next frame
                 cacheForLeaf.viewProjectionMatrix = rv->viewProjectionMatrix();
+            }
 
-                // Filter out frustum culled entity for drawable entities and store in cache
-                if (isDraw && rv->frustumCulling()) {
-                    cacheForLeaf.filteredAndCulledRenderables = RenderViewBuilder::entitiesInSubset(
-                                cacheForLeaf.layeredFilteredRenderables,
-                                m_frustumCullingJob->visibleEntities());
-                }
+            // Filter out frustum culled entity for drawable entities and store in cache
+            // We need to check this regardless of whether the camera has moved since
+            // entities in the scene themselves could have moved
+            if (isDraw && rv->frustumCulling()) {
+                cacheForLeaf.filteredAndCulledRenderables = RenderViewBuilder::entitiesInSubset(
+                            cacheForLeaf.layeredFilteredRenderables,
+                            m_frustumCullingJob->visibleEntities());
             }
 
             rv->setMaterialParameterTable(cacheForLeaf.materialParameterGatherer);
@@ -398,10 +400,6 @@ public:
 
             // Set RenderCommandDataView on RV (will be used later on to sort commands ...)
             rv->setRenderCommandDataView(filteredCommandData);
-
-            // Early return in case we have nothing to filter
-            if (renderableEntities.size() == 0)
-                return;
 
             // Filter out Render commands for which the Entity wasn't selected because
             // of frustum, proximity or layer filtering
