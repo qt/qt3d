@@ -1,16 +1,16 @@
 dependencies:
   ../qtbase:
-    ref: e1cab870cbb9672e29aa713816e8dd8d2b15f024
+    ref: 370324f6e2f3ce7d250a1c3686918c08da1f8b06
     required: true
   ../qtdeclarative:
-    ref: 36ac9ab322d00ad8a2139bcf463275e3121bfb1f
+    ref: 27c0034d6bb0df50d4479e42fc82fcd74b03d810
     required: false
 #  ../qtgamepad:
 #    ref: fb20a2012e650917e294d1614ec17d3b01404b25
 #    required: false
   ../qtimageformats:
-    ref: dae70df509ef331aec684ae7d34891794a9aac7a
+    ref: 893acc1f63c0eeb295d333a86de70b8420af02f8
     required: false
   ../qtshadertools:
-    ref: 0c1fbb42115ed37938c2cde53ef2345c1c0b1d42
-    required: true
+    ref: b31938562e0b7f5fe5c4f697aa6bcbd15fa72201
+    required: false

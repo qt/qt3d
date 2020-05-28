@@ -119,9 +119,6 @@ public:
     Qt3DRender::Quick::QScene2D::RenderPolicy m_renderPolicy;
     QVector<Qt3DCore::QNodeId> m_entities;
     Qt3DRender::QPickEventPtr m_cachedPickEvent;
-#if QT_CONFIG(angle)
-    bool m_usingAngle;
-#endif
     QVector<QMetaObject::Connection> m_connections;
 };
 

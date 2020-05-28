@@ -244,15 +244,6 @@ void Scene2D::initializeRender()
 
         m_context->makeCurrent(m_sharedObject->m_surface);
         m_sharedObject->m_renderControl->initialize(m_context);
-#if QT_CONFIG(angle)
-        m_usingAngle = false;
-        if (m_context->isOpenGLES()) {
-            const char *versionStr = reinterpret_cast<const char *>(
-                                                m_context->functions()->glGetString(GL_VERSION));
-            if (strstr(versionStr, "ANGLE"))
-                m_usingAngle = true;
-        }
-#endif
         m_context->doneCurrent();
 
         QCoreApplication::postEvent(m_sharedObject->m_renderManager,
@@ -309,11 +300,6 @@ void Scene2D::render()
         const Qt3DRender::Render::Attachment *attachmentData = nullptr;
         QMutex *textureLock = nullptr;
 
-#if QT_CONFIG(angle)
-        QScopedPointer<SurfaceLocker> surfaceLocker;
-        if (m_usingAngle)
-            surfaceLocker.reset(new SurfaceLocker(m_sharedObject->m_surface));
-#endif
         m_context->makeCurrent(m_sharedObject->m_surface);
 
         if (resourceAccessor()->accessResource(RenderBackendResourceAccessor::OutputAttachment,
@@ -329,12 +315,7 @@ void Scene2D::render()
                                             new Scene2DEvent(Scene2DEvent::Render));
                 return;
             }
-#if QT_CONFIG(angle)
-            if (m_usingAngle == false)
-                textureLock->lock();
-#else
             textureLock->lock();
-#endif
             const QSize textureSize = QSize(texture->width(), texture->height());
             if (m_attachmentData.m_textureUuid != attachmentData->m_textureUuid
                 || m_attachmentData.m_point != attachmentData->m_point
@@ -382,12 +363,7 @@ void Scene2D::render()
         m_context->functions()->glFlush();
         if (texture->isAutoMipMapGenerationEnabled())
             texture->generateMipMaps();
-#if QT_CONFIG(angle)
-        if (m_usingAngle == false)
-            textureLock->unlock();
-#else
         textureLock->unlock();
-#endif
         m_context->doneCurrent();
 
         // gui thread can now continue

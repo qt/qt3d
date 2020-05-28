@@ -334,7 +334,7 @@ void Scene3DRenderer::beforeSynchronize()
             if (generateNewTexture) {
                 m_finalFBO.reset(createFramebufferObject(m_lastSize));
                 m_textureId = m_finalFBO->texture();
-                m_texture.reset(m_window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, &m_textureId,
+                m_texture.reset(m_window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, m_textureId,
                                                                         0, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
             }
 

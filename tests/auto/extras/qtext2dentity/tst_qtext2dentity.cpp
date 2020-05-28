@@ -77,7 +77,6 @@ private slots:
 
 void tst_qtext2dentity::checkChangeArbiter()
 {
-#if !QT_CONFIG(angle)
     // GIVEN
     Qt3DExtras::Quick::Qt3DQuickWindow view;
     view.setSource(QUrl("qrc:/qtext2dentity.qml"));
@@ -91,7 +90,6 @@ void tst_qtext2dentity::checkChangeArbiter()
     QVERIFY(atlases.length() == 1);
     auto atlas = atlases[0];
     QTRY_VERIFY(Qt3DCore::QNodePrivate::get(atlas)->m_changeArbiter);
-#endif
 }
 
 QTEST_MAIN(tst_qtext2dentity)
