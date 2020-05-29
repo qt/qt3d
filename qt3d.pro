@@ -15,4 +15,6 @@ load(qt_parts)
 
 OTHER_FILES += \
     sync.profile \
-    .qmake.conf
+    .qmake.conf \
+    dependencies.yaml \
+    coin/module_config.yaml
