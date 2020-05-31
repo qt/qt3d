@@ -129,7 +129,7 @@ static Matrix4x4 getProjectionMatrix(const CameraLens *lens, bool yIsUp)
         } else {
             // Others. Note : this could likely be optimized...
             auto p = lens->projection();
-            Matrix4x4 rev { 0, 0, 0, 0, 0, -2 * p.m22(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            Matrix4x4 rev { 0, 0, 0, 0, 0, -2 * p(2, 2), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             p += rev;
             return p;
         }
@@ -212,7 +212,7 @@ struct AdjacentSubRangeFinder<QSortPolicy::BackToFront>
 {
     static bool adjacentSubRange(const RenderCommand &a, const RenderCommand &b)
     {
-        return a.m_depth == b.m_depth;
+        return qFuzzyCompare(a.m_depth, b.m_depth);
     }
 };
 
@@ -230,7 +230,7 @@ struct AdjacentSubRangeFinder<QSortPolicy::FrontToBack>
 {
     static bool adjacentSubRange(const RenderCommand &a, const RenderCommand &b)
     {
-        return a.m_depth == b.m_depth;
+        return qFuzzyCompare(a.m_depth, b.m_depth);
     }
 };
 
@@ -275,8 +275,8 @@ struct SubRangeSorter
 {
     static void sortSubRange(CommandIt begin, const CommandIt end)
     {
-        Q_UNUSED(begin);
-        Q_UNUSED(end);
+        Q_UNUSED(begin)
+        Q_UNUSED(end)
         Q_UNREACHABLE();
     }
 };
@@ -350,6 +350,9 @@ struct SubRangeSorter<QSortPolicy::Texture>
 
             return identicalTextureCount < originalTextureASize;
         });
+#else
+        Q_UNUSED(begin)
+        Q_UNUSED(end)
 #endif
     }
 };

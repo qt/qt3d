@@ -339,6 +339,10 @@ public:
         return c;
     }
 
+    Q_ALWAYS_INLINE float operator()(int row, int column) const {
+        return this->row(row)[column];
+    }
+
     Q_ALWAYS_INLINE QMatrix4x4 toQMatrix4x4() const { return QMatrix4x4(m11(), m12(), m13(), m14(),
                                                                         m21(), m22(), m23(), m24(),
                                                                         m31(), m32(), m33(), m34(),

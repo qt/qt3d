@@ -461,6 +461,10 @@ public:
         return c;
     }
 
+    Q_ALWAYS_INLINE float operator()(int row, int column) const {
+        return this->row(row)[column];
+    }
+
     Q_ALWAYS_INLINE Vector3D_SSE map(const Vector3D_SSE &point) const
     {
         return *this * point;
