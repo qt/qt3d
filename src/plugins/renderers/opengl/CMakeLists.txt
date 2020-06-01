@@ -1,11 +1,6 @@
 # Generated from opengl.pro.
 
-#####################################################################
-## OpenGLRendererPlugin Plugin:
-#####################################################################
-
-add_library(OpenGLRendererLib STATIC
-    graphicshelpers/graphicscontext.cpp graphicshelpers/graphicscontext_p.h
+set(openGLRendererSources graphicshelpers/graphicscontext.cpp graphicshelpers/graphicscontext_p.h
     graphicshelpers/graphicshelperes2.cpp graphicshelpers/graphicshelperes2_p.h
     graphicshelpers/graphicshelperes3.cpp graphicshelpers/graphicshelperes3_p.h
     graphicshelpers/graphicshelperes3_1.cpp graphicshelpers/graphicshelperes3_1_p.h
@@ -47,19 +42,82 @@ add_library(OpenGLRendererLib STATIC
     textures/renderbuffer.cpp textures/renderbuffer_p.h
 )
 
-target_include_directories(OpenGLRendererLib PUBLIC
-    graphicshelpers
-    io
-    jobs
-    managers
-    renderer
-    textures
-)
+#####################################################################
+## Static library used for Unit Tests:
+#####################################################################
 
-target_link_libraries(OpenGLRendererLib
-    PRIVATE
+if(QT_FEATURE_private_tests)
+
+    add_library(OpenGLRendererLib STATIC ${openGLRendererSources})
+
+    target_include_directories(OpenGLRendererLib PUBLIC
+        graphicshelpers
+        io
+        jobs
+        managers
+        renderer
+        textures
+    )
+
+    target_link_libraries(OpenGLRendererLib
+        PRIVATE
+            Qt::OpenGLExtensions
+        PUBLIC
+            Qt::3DCore
+            Qt::3DCorePrivate
+            Qt::3DRender
+            Qt::3DRenderPrivate
+            Qt::Core
+            Qt::CorePrivate
+            Qt::Gui
+            Qt::GuiPrivate
+            Qt::OpenGL
+            Qt::OpenGLPrivate
+    )
+
+    target_compile_definitions(OpenGLRendererLib PRIVATE
+        BUILD_QT3D_MODULE
+        QT_BUILDING_QT
+        QT_NO_FOREACH
+    )
+
+    qt_extend_target(OpenGLRendererLib CONDITION NOT INTEGRITY
+        SOURCES
+            debug/imguirenderer.cpp debug/imguirenderer_p.h
+            ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui.cpp
+            ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_draw.cpp
+            ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_widgets.cpp
+        INCLUDE_DIRECTORIES
+            debug
+            ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui
+    )
+
+endif()
+
+#####################################################################
+## OpenGLRendererPlugin Plugin:
+#####################################################################
+
+qt_internal_add_plugin(OpenGLRendererPlugin
+    OUTPUT_NAME openglrenderer
+    TYPE renderers
+    SOURCES
+        main.cpp
+        ${openGLRendererSources}
+    DEFINES
+        BUILD_QT3D_MODULE
+        QT_BUILDING_QT
+        QT_NO_FOREACH
+    INCLUDE_DIRECTORIES
+        graphicshelpers
+        io
+        jobs
+        managers
+        renderer
+        textures
+    LIBRARIES
         Qt::OpenGLExtensions
-    PUBLIC
+    PUBLIC_LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender
@@ -72,13 +130,7 @@ target_link_libraries(OpenGLRendererLib
         Qt::OpenGLPrivate
 )
 
-target_compile_definitions(OpenGLRendererLib PRIVATE
-    BUILD_QT3D_MODULE
-    QT_BUILDING_QT
-    QT_NO_FOREACH
-)
-
-qt_extend_target(OpenGLRendererLib CONDITION NOT INTEGRITY
+qt_extend_target(OpenGLRendererPlugin CONDITION NOT INTEGRITY
     SOURCES
         debug/imguirenderer.cpp debug/imguirenderer_p.h
         ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui.cpp
@@ -87,16 +139,6 @@ qt_extend_target(OpenGLRendererLib CONDITION NOT INTEGRITY
     INCLUDE_DIRECTORIES
         debug
         ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui
-)
-
-
-qt_internal_add_plugin(OpenGLRendererPlugin
-    OUTPUT_NAME openglrenderer
-    TYPE renderers
-    SOURCES
-        main.cpp
-    LIBRARIES
-        OpenGLRendererLib
 )
 
 ## Scopes:
