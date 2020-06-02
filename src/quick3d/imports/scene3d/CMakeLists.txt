@@ -26,6 +26,7 @@ qt_add_qml_module(qtquickscene3dplugin
         Qt::Gui
         Qt::Qml
         Qt::Quick
+        Qt::QuickPrivate
 )
 
 #### Keys ignored in scope 1:.:.:importsscene3d.pro:<TRUE>:
