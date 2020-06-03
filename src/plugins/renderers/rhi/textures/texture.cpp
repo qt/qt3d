@@ -651,7 +651,7 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
 
     QRhiTexture *rhiTexture = ctx->rhi()->newTexture(rhiFormat, pixelSize, sampleCount, rhiFlags);
 
-    if (!rhiTexture->build()) {
+    if (!rhiTexture->create()) {
         qWarning() << Q_FUNC_INFO << "creating QRhiTexture failed";
         delete rhiTexture;
         return nullptr;
@@ -772,7 +772,7 @@ void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
 
     m_rhiSampler->setTextureCompareOp(compareOp);
 
-    if (!m_rhiSampler->build()) {
+    if (!m_rhiSampler->create()) {
         qDebug("Could not build RHI texture sampler");
     }
 }

@@ -673,7 +673,7 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
         // Resize swapchain if needed
         if (m_surface->size() != swapChain->surfacePixelSize()) {
-            bool couldRebuild = swapChain->buildOrResize();
+            bool couldRebuild = swapChain->createOrResize();
             if (!couldRebuild)
                 return false;
         }
@@ -1307,12 +1307,12 @@ SubmissionContext::SwapChainInfo *SubmissionContext::swapChainForSurface(QSurfac
         swapChain->setRenderPassDescriptor(renderPassDescriptor);
 
         // Build swapChain the first time
-        if (swapChain->buildOrResize()) {
+        if (swapChain->createOrResize()) {
             swapChainInfo.swapChain = swapChain;
             swapChainInfo.renderBuffer = renderBuffer;
             swapChainInfo.renderPassDescriptor = renderPassDescriptor;
         } else {
-            swapChain->releaseAndDestroyLater();
+            swapChain->deleteLater();
             m_swapChains.remove(surface);
             return nullptr;
         }

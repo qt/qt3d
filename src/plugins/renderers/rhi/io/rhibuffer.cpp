@@ -94,7 +94,7 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
             m_rhiBuffer = ctx->rhi()->newBuffer(kind, usage, m_allocSize);
         assert(m_rhiBuffer);
 
-        m_rhiBuffer->build();
+        m_rhiBuffer->create();
 #if defined(QT_DEBUG)
         {
             // for debug: we set the buffer to zero
@@ -119,7 +119,7 @@ bool RHIBuffer::release(SubmissionContext *ctx)
 {
     Q_UNUSED(ctx)
     if (m_rhiBuffer)
-        m_rhiBuffer->release();
+        m_rhiBuffer->destroy();
     return true;
 }
 
@@ -133,7 +133,7 @@ void RHIBuffer::destroy(SubmissionContext *ctx)
 {
     Q_UNUSED(ctx)
     if (m_rhiBuffer) {
-        m_rhiBuffer->releaseAndDestroyLater();
+        m_rhiBuffer->deleteLater();
         m_rhiBuffer = nullptr;
     }
     m_allocSize = 0;
@@ -143,7 +143,7 @@ void RHIBuffer::orphan(SubmissionContext *)
 {
     m_datasToUpload.clear();
     if (m_rhiBuffer) {
-        m_rhiBuffer->releaseAndDestroyLater();
+        m_rhiBuffer->deleteLater();
         m_rhiBuffer = nullptr;
     }
     m_allocSize = 0;

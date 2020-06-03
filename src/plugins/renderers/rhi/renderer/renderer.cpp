@@ -969,8 +969,8 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
                 QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(CommandUBO));
         QRhiBuffer *rvUBO = m_submissionContext->rhi()->newBuffer(
                 QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(RenderViewUBO));
-        commandUBO->build();
-        rvUBO->build();
+        commandUBO->create();
+        rvUBO->create();
         graphicsPipeline->setCommandUBO(commandUBO);
         graphicsPipeline->setRenderViewUBO(rvUBO);
 
@@ -1031,7 +1031,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
         assert(shaderResourceBindings);
 
         shaderResourceBindings->setBindings(uboBindings.cbegin(), uboBindings.cend());
-        ok = shaderResourceBindings->build();
+        ok = shaderResourceBindings->create();
         assert(ok);
 
         // Create pipeline
@@ -1161,7 +1161,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
         // Render States
         m_submissionContext->applyStateSet(renderState, pipeline);
 
-        ok = pipeline->build();
+        ok = pipeline->create();
         assert(ok);
     }
 
