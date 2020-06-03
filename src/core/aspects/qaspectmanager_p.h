@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qabstractfrontendnodemanager.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
@@ -68,7 +69,6 @@ class QSurface;
 
 namespace Qt3DCore {
 
-class QNode;
 class QEntity;
 class QScheduler;
 class QChangeArbiter;
