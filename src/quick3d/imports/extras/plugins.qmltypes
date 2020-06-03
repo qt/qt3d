@@ -1790,22 +1790,6 @@ Module {
         }
     }
     Component {
-        name: "Qt3DExtras::QTexturedMetalRoughMaterial"
-        prototype: "Qt3DExtras::QMetalRoughMaterial"
-        exports: ["Qt3D.Extras/TexturedMetalRoughMaterial 2.9"]
-        exportMetaObjectRevisions: [0]
-        Property { name: "ambientOcclusion"; type: "QVariant" }
-        Property { name: "normal"; type: "QVariant" }
-        Signal {
-            name: "ambientOcclusionChanged"
-            Parameter { name: "ambientOcclusion"; type: "QVariant" }
-        }
-        Signal {
-            name: "normalChanged"
-            Parameter { name: "normal"; type: "QVariant" }
-        }
-    }
-    Component {
         name: "Qt3DExtras::QTorusGeometry"
         prototype: "Qt3DRender::QGeometry"
         exports: ["Qt3D.Extras/TorusGeometry 2.0"]

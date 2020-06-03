@@ -52,7 +52,7 @@ import QtQuick 2.1
 import Qt3D.Core 2.0
 import Qt3D.Render 2.9
 import Qt3D.Input 2.0
-import Qt3D.Extras 2.9
+import Qt3D.Extras 2.15
 
 Entity {
     id: root
@@ -117,7 +117,7 @@ Entity {
             Mesh {
                 source: "assets/obj/plane-10x10.obj"
             },
-            TexturedMetalRoughMaterial {
+            MetalRoughMaterial {
                 baseColor: TextureLoader {
                     source: "assets/textures/ceramic_small_diamond/ceramic_small_diamond_basecolor.png"
                     format: Texture.SRGB8_Alpha8
@@ -177,7 +177,7 @@ Entity {
             rotationY: -90
         }
 
-        TexturedMetalRoughMaterial {
+        MetalRoughMaterial {
             id: matSphere1Material
             baseColor:  TextureLoader {
                 source: "assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png"
@@ -206,7 +206,7 @@ Entity {
             rotationY: -90
         }
 
-        TexturedMetalRoughMaterial {
+        MetalRoughMaterial {
             id: matSphere2Material
             baseColor:  TextureLoader {
                 source: "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_basecolor.png"
@@ -235,7 +235,7 @@ Entity {
             rotationY: -90
         }
 
-        TexturedMetalRoughMaterial {
+        MetalRoughMaterial {
             id: matSphere3Material
             baseColor:  TextureLoader {
                 source: "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_basecolor.png"
@@ -264,7 +264,7 @@ Entity {
             rotationY: -90
         }
 
-        TexturedMetalRoughMaterial {
+        MetalRoughMaterial {
             id: matSphere4Material
             baseColor:  TextureLoader {
                 source: "assets/textures/copper_brushed/copper_brushed_basecolor.png"
@@ -293,7 +293,7 @@ Entity {
             rotationY: -90
         }
 
-        TexturedMetalRoughMaterial {
+        MetalRoughMaterial {
             id: matSphere5Material
             baseColor:  TextureLoader {
                 source: "assets/textures/gold_leaf_waste/gold_leaf_waste_basecolor.png"
