@@ -49,6 +49,8 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+const char *QBufferPrivate::UpdateDataPropertyName = "QT3D_updateData";
+
 QBufferPrivate::QBufferPrivate()
     : QNodePrivate()
     , m_type(QBuffer::VertexBuffer)
@@ -338,7 +340,14 @@ void QBuffer::updateData(int offset, const QByteArray &bytes)
     QBufferUpdate updateData;
     updateData.offset = offset;
     updateData.data = bytes;
-    setProperty("QT3D_updateData", QVariant::fromValue(updateData));
+
+    QVariantList updateDataList;
+    const QVariant propertyData = property(QBufferPrivate::UpdateDataPropertyName);
+    if (propertyData.isValid())
+        updateDataList = propertyData.toList();
+    updateDataList.push_back(QVariant::fromValue(updateData));
+
+    setProperty(QBufferPrivate::UpdateDataPropertyName, updateDataList);
     d->update();
 }
 

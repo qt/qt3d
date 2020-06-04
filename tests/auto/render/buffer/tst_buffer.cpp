@@ -365,6 +365,40 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::BuffersDirty);
     }
+
+    void checkHandlesMultipleUpdates()
+    {
+        // GIVEN
+        Qt3DRender::Render::Buffer renderBuffer;
+        Qt3DRender::QBuffer buffer;
+        Qt3DRender::Render::BufferManager bufferManager;
+        TestRenderer renderer;
+
+        const QByteArray initData("000000");
+        buffer.setData(initData);
+
+        renderBuffer.setRenderer(&renderer);
+        renderBuffer.setManager(&bufferManager);
+
+        simulateInitializationSync(&buffer, &renderBuffer);
+
+        // THEN
+        QCOMPARE(renderBuffer.data(), initData);
+        renderBuffer.pendingBufferUpdates().clear();
+
+        // WHEN
+        buffer.updateData(0, QByteArray("012"));
+        buffer.updateData(3, QByteArray("345"));
+        renderBuffer.syncFromFrontEnd(&buffer, false);
+
+        // THEN
+        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 2);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, 0);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().first().data, QByteArray("012"));
+        QCOMPARE(renderBuffer.pendingBufferUpdates().last().offset, 3);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().last().data, QByteArray("345"));
+        QCOMPARE(renderBuffer.data(), QByteArray("012345"));
+    }
 };
 
 
