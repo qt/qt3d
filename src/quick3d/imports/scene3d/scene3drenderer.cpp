@@ -58,6 +58,8 @@
 #include <scene3dsgnode_p.h>
 #include <scene3dview_p.h>
 
+#include <QtQuick/private/qquickwindow_p.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {

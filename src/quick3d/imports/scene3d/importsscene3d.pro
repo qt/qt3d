@@ -3,7 +3,7 @@ TARGET = qtquickscene3dplugin
 TARGETPATH = QtQuick/Scene3D
 IMPORT_VERSION = 2.$$QT_MINOR_VERSION
 
-QT += qml quick 3dcore 3drender 3drender-private
+QT += qml quick 3dcore 3drender 3drender-private quick-private
 
 qtConfig(qt3d-input): QT += 3dinput
 qtConfig(qt3d-logic): QT += 3dlogic
