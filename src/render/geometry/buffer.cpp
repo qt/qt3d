@@ -112,7 +112,7 @@ void Buffer::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
         m_bufferDirty = true;
     }
     {
-        const QVariant v = node->property("QT3D_updateData");
+        const QVariant v = node->property(Qt3DCore::QBufferPrivate::UpdateDataPropertyName);
 
         // Make sure we record data if it's the first time we are called
         // or if we have no partial updates
@@ -126,17 +126,21 @@ void Buffer::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
             // if we enter this code block, there's no problem in actually
             // ignoring the partial updates
             if (v.isValid())
-                const_cast<Qt3DCore::QBuffer *>(node)->setProperty("QT3D_updateData", {});
+                const_cast<Qt3DCore::QBuffer *>(node)->setProperty(Qt3DCore::QBufferPrivate::UpdateDataPropertyName, {});
 
             if (dirty && !m_data.isEmpty())
                 forceDataUpload();
         } else if (v.isValid()) {
             // Apply partial updates and record them to allow partial upload to the GPU
-            Qt3DCore::QBufferUpdate updateData = v.value<Qt3DCore::QBufferUpdate>();
-            m_data.replace(updateData.offset, updateData.data.size(), updateData.data);
-            m_bufferUpdates.push_back(updateData);
-            m_bufferDirty = true;
-            const_cast<Qt3DCore::QBuffer *>(node)->setProperty("QT3D_updateData", {});
+            const QVariantList updateList = v.toList();
+            for (const QVariant &update : updateList) {
+                Qt3DCore::QBufferUpdate updateData = update.value<Qt3DCore::QBufferUpdate>();
+                m_data.replace(updateData.offset, updateData.data.size(), updateData.data);
+                m_bufferUpdates.push_back(updateData);
+                m_bufferDirty = true;
+            }
+
+            const_cast<Qt3DCore::QBuffer *>(node)->setProperty(Qt3DCore::QBufferPrivate::UpdateDataPropertyName, {});
         }
     }
     markDirty(AbstractRenderer::BuffersDirty);

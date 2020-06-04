@@ -77,6 +77,8 @@ public:
 
     void update() override;
     void setData(const QByteArray &data);
+
+    static const char *UpdateDataPropertyName;
 };
 
 struct QBufferUpdate
