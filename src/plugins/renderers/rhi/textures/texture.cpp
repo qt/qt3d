@@ -78,6 +78,7 @@ QRhiTexture::Format rhiFormatFromTextureFormat(QAbstractTexture::TextureFormat f
 {
     switch (format) {
     case QAbstractTexture::RGBA8_UNorm:
+    case QAbstractTexture::SRGB8_Alpha8:
     case QAbstractTexture::SRGB8:
         return QRhiTexture::RGBA8;
     case QAbstractTexture::R8_UNorm:
