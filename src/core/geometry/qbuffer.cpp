@@ -84,7 +84,7 @@ void QBufferPrivate::setData(const QByteArray &data)
 /*!
  * \qmltype Buffer
  * \instantiates Qt3DCore::QBuffer
- * \inqmlmodule Qt3D.Render
+ * \inqmlmodule Qt3D.Core
  *
  * \brief Provides a data store for raw data to later be used as vertices or
  * uniforms.
@@ -94,14 +94,6 @@ void QBufferPrivate::setData(const QByteArray &data)
  * \qmlproperty QBuffer::UsageType Buffer::usage
  *
  * Holds the buffer usage.
- */
-
-/*!
- * \qmlproperty QBuffer::BufferType Buffer::type
- *
- * Holds the buffer type.
- *
- * \deprecated
  */
 
 /*!
