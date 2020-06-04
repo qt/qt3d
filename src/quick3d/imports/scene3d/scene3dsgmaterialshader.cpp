@@ -152,6 +152,7 @@ void Scene3DSGMaterialShader::initialize()
     m_visibleId = program()->uniformLocation("visible");
 }
 
+// TODO QT6 (this will be removed from base class)
 void Scene3DSGMaterialShader::updateState(const RenderState &state, QSGMaterial *newEffect, QSGMaterial *oldEffect)
 {
     Q_ASSERT(oldEffect == 0 || newEffect->type() == oldEffect->type());
@@ -161,8 +162,10 @@ void Scene3DSGMaterialShader::updateState(const RenderState &state, QSGMaterial 
     QSGTexture *t = tx->texture();
 
     if (t != nullptr) {
-        bool npotSupported = const_cast<QOpenGLContext *>(state.context())
-                ->functions()->hasOpenGLFeature(QOpenGLFunctions::NPOTTextureRepeat);
+        // TODO QT6 FIXME
+//        bool npotSupported = const_cast<QOpenGLContext *>(state.context())
+//                ->functions()->hasOpenGLFeature(QOpenGLFunctions::NPOTTextureRepeat);
+        bool npotSupported = true;
         if (!npotSupported) {
             QSize size = t->textureSize();
             const bool isNpot = !isPowerOfTwo(size.width()) || !isPowerOfTwo(size.height());

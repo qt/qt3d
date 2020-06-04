@@ -43,6 +43,7 @@
 #include <QtCore/qatomic.h>
 #include <QtGui/qevent.h>
 #include <QtGui/QOpenGLFunctions>
+#include <QQuickRenderTarget>
 
 #include <private/qscene2d_p.h>
 #include <private/scene2d_p.h>
@@ -336,8 +337,9 @@ void Scene2D::render()
             }
         }
 
-        if (m_fbo != m_sharedObject->m_quickWindow->renderTargetId())
-            m_sharedObject->m_quickWindow->setRenderTarget(m_fbo, m_textureSize);
+        // TODO QT6 FIXME
+//        if (m_fbo != m_sharedObject->m_quickWindow->renderTargetId())
+//            m_sharedObject->m_quickWindow->setRenderTarget(QQuickRenderTarget::fromNativeTexture({m_fbo, 0}, m_textureSize));
 
         // Call disallow rendering while mutex is locked
         if (m_renderPolicy == QScene2D::SingleShot)
