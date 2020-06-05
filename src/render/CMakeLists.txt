@@ -320,6 +320,14 @@ qt_add_resource(3DRender "materialsystem"
 ## Scopes:
 #####################################################################
 
+# special case begin
+set(THREADS_PREFER_PTHREAD_FLAG 1)
+find_package(Threads)
+if(TARGET Threads::Threads)
+    target_link_libraries(3DRender PRIVATE Threads::Threads)
+endif()
+# special case end
+
 qt_extend_target(3DRender CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
