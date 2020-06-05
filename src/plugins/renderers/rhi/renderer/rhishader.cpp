@@ -368,9 +368,25 @@ void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable &membe
     }
 }
 
+namespace {
+// Function to check whether the array conforms to the regex
+// "_[0-9]+" - except QRegularExpression does not support QByteArray
+bool isGeneratedUBOName(const QByteArray& arr)
+{
+    if (arr.size() < 2)
+        return false;
+    if (!arr.startsWith('_'))
+        return false;
+    for (int i = 1, N = arr.size(); i < N; i++) {
+        if (arr[i] < '0' || arr[i] > '9')
+            return false;
+    }
+    return true;
+}
+}
+
 void RHIShader::introspect()
 {
-    const thread_local QRegularExpression generatedUBOName { "_[0-9]+" };
     QVector<QShaderDescription::UniformBlock> rhiUBO;
     QVector<QShaderDescription::StorageBlock> rhiSSBO;
 
@@ -428,7 +444,7 @@ void RHIShader::introspect()
         uniformBlocks.push_back(ShaderUniformBlock { ubo.blockName,
                                                      StringToInt::lookupId(ubo.blockName), -1,
                                                      ubo.binding, ubo.members.size(), ubo.size });
-        const bool addUnqualifiedUniforms = ubo.structName.contains(generatedUBOName);
+        const bool addUnqualifiedUniforms = isGeneratedUBOName(ubo.structName);
 
         // Parse Uniform Block members so that we can later on map a Parameter name to an actual
         // member
