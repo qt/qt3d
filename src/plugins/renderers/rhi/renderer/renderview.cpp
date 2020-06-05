@@ -129,7 +129,7 @@ static Matrix4x4 getProjectionMatrix(const CameraLens *lens, bool yIsUp)
         } else {
             // Others. Note : this could likely be optimized...
             auto p = lens->projection();
-            Matrix4x4 rev { 0, 0, 0, 0, 0, -2 * p(2, 2), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            Matrix4x4 rev { 0, 0, 0, 0, 0, -2 * p(1, 1), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             p += rev;
             return p;
         }
