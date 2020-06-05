@@ -672,7 +672,7 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
         // swapChainInfo->renderBuffer->build();
 
         // Resize swapchain if needed
-        if (m_surface->size() != swapChain->surfacePixelSize()) {
+        if (m_surface->size() != swapChain->currentPixelSize()) {
             bool couldRebuild = swapChain->createOrResize();
             if (!couldRebuild)
                 return false;
