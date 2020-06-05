@@ -153,7 +153,7 @@ void BaseGeometryLoader::generateGeometry()
         }
     } // of buffer filling loop
 
-    QBuffer *buf = new QBuffer();
+    auto *buf = new Qt3DCore::QBuffer();
     buf->setData(bufferBytes);
 
     if (m_geometry)
@@ -199,7 +199,7 @@ void BaseGeometryLoader::generateGeometry()
         memcpy(indexBytes.data(), reinterpret_cast<const char*>(m_indices.data()), indexBytes.size());
     }
 
-    QBuffer *indexBuffer = new QBuffer();
+    auto *indexBuffer = new Qt3DCore::QBuffer();
     indexBuffer->setData(indexBytes);
     QAttribute *indexAttribute = new QAttribute(indexBuffer, ty, 1, m_indices.size());
     indexAttribute->setAttributeType(QAttribute::IndexAttribute);
