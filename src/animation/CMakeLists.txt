@@ -46,7 +46,7 @@ qt_add_module(3DAnimation
         frontend/qanimationcallback.h
         frontend/qanimationclip.cpp frontend/qanimationclip.h frontend/qanimationclip_p.h
         frontend/qanimationclipdata.cpp frontend/qanimationclipdata.h
-        frontend/qanimationcliploader.cpp frontend/qanimationcliploader.h
+        frontend/qanimationcliploader.cpp frontend/qanimationcliploader.h frontend/qanimationcliploader_p.h
         frontend/qanimationcontroller.cpp frontend/qanimationcontroller.h frontend/qanimationcontroller_p.h
         frontend/qanimationgroup.cpp frontend/qanimationgroup.h frontend/qanimationgroup_p.h
         frontend/qblendedclipanimator.cpp frontend/qblendedclipanimator.h frontend/qblendedclipanimator_p.h

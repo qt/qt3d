@@ -50,5 +50,5 @@ qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_logic
 
 qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_animation
     PUBLIC_LIBRARIES
-        3DAnimation
+        Qt::3DAnimation
 )

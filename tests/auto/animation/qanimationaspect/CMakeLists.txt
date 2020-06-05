@@ -8,7 +8,7 @@ qt_add_test(tst_qanimationaspect
     SOURCES
         tst_qanimationaspect.cpp
     PUBLIC_LIBRARIES
-        3DAnimation
+        Qt::3DAnimation
         Qt::CorePrivate
         Qt::Gui
 )

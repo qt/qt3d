@@ -10,8 +10,8 @@ qt_add_test(tst_qchannelmapper
     INCLUDE_DIRECTORIES
         ../../core/common
     PUBLIC_LIBRARIES
-        3DAnimation
-        3DAnimationPrivate
+        Qt::3DAnimation
+        Qt::3DAnimationPrivate
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::CorePrivate

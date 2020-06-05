@@ -21,7 +21,7 @@ qt_add_module(3DQuickAnimation
         Qt::CorePrivate
         Qt::QmlPrivate
     PUBLIC_LIBRARIES
-        3DAnimation
+        Qt::3DAnimation
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DQuick

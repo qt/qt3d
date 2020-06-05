@@ -12,7 +12,7 @@ qt_add_qml_module(quick3danimationplugin
     SOURCES
         qt3dquick3danimationplugin.cpp qt3dquick3danimationplugin.h
     PUBLIC_LIBRARIES
-        3DAnimation
+        Qt::3DAnimation
         Qt::3DCore
         Qt::3DQuick
         Qt::3DQuickPrivate

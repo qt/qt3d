@@ -8,7 +8,7 @@ qt_add_test(tst_qmorphtarget
     SOURCES
         tst_qmorphtarget.cpp
     PUBLIC_LIBRARIES
-        3DAnimation
+        Qt::3DAnimation
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender
