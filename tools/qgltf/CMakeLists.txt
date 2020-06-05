@@ -5,6 +5,7 @@
 #####################################################################
 
 qt_add_tool(qgltf
+    TOOLS_TARGET 3DRender # special case
     SOURCES
         qgltf.cpp
     EXCEPTIONS # special case
