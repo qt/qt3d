@@ -232,7 +232,7 @@ QString QRenderCapabilitiesPrivate::toString() const
         res += QString(QLatin1String("  Max Image Units: %1\n")).arg(m_maxImageUnits);
     res += QString(QLatin1String("Supports Compute Shaders: %1\n")).arg(m_supportCompute ? QLatin1String("True") : QLatin1String("False"));
     if (m_supportCompute)
-        res += QString(QLatin1String("  Max Work Group Size: %1, %2, %3\n  Max Work Group Count: %4, %5, %6\n  Max Invocations: %6\n  Max Shared Memory Size: %7\n"))
+        res += QString(QLatin1String("  Max Work Group Size: %1, %2, %3\n  Max Work Group Count: %4, %5, %6\n  Max Invocations: %7\n  Max Shared Memory Size: %8\n"))
                    .arg(m_maxWorkGroupSize[0]).arg(m_maxWorkGroupSize[1]).arg(m_maxWorkGroupSize[2])
                    .arg(m_maxWorkGroupCount[0]).arg(m_maxWorkGroupCount[1]).arg(m_maxWorkGroupCount[2])
                    .arg(m_maxComputeInvocations).arg(m_maxComputeSharedMemorySize);
