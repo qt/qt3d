@@ -64,6 +64,12 @@ Scene3DSGMaterial::Scene3DSGMaterial()
 {
 }
 
+QSGMaterialShader *Scene3DSGMaterial::createShader() const
+{
+    return new Scene3DSGMaterialShader();
+}
+
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

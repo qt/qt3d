@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shaders/scene3dmaterial.frag.qsb</file>
+        <file>shaders/scene3dmaterial.vert.qsb</file>
+    </qresource>
+</RCC>

@@ -52,3 +52,16 @@ qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_animation
     PUBLIC_LIBRARIES
         Qt::3DAnimation
 )
+
+# Resources:
+set(shader_resource_files
+    "shaders/scene3dmaterial.vert.qsb"
+    "shaders/scene3dmaterial.frag.qsb"
+)
+
+qt6_add_resources(qtquickscene3dplugin "scene3d"
+    PREFIX
+        "/"
+    FILES
+        ${shader_resource_files}
+)

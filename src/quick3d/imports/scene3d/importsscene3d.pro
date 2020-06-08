@@ -29,6 +29,9 @@ SOURCES += \
     scene3dsgmaterial.cpp \
     scene3dview.cpp
 
-OTHER_FILES += qmldir
+OTHER_FILES += qmldir shaders/*
 
 load(qml_plugin)
+
+RESOURCES += \
+    scene3d.qrc

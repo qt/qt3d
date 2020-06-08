@@ -69,10 +69,14 @@ int main(int argc, char **argv)
     }
     QGuiApplication app(argc, argv);
 
+    // Force OpenGL backend
+    QQuickWindow::setSceneGraphBackend(QSGRendererInterface::OpenGLRhi);
     QQuickView view;
 
     view.resize(1024, 768);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
+    view.setPersistentOpenGLContext(true);
+    view.setPersistentSceneGraph(true);
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 

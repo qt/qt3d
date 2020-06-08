@@ -61,20 +61,12 @@ class Scene3DSGMaterialShader : public QSGMaterialShader
 {
 public:
     Scene3DSGMaterialShader();
-    void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
-    const char * const *attributeNames() const final;
-
     static QSGMaterialType type;
 
 protected:
-    const char *vertexShader() const final;
-    const char *fragmentShader() const final;
-    void initialize() final;
-
-private:
-    int m_matrixId;
-    int m_opacityId;
-    int m_visibleId;
+    // QSGMaterialShader interface
+    bool updateUniformData(RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
+    void updateSampledImage(RenderState &state, int binding, QSGTexture **texture, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
 };
 
 } // namespace Qt3DRender
