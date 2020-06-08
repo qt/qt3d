@@ -143,10 +143,6 @@ public:
                     RHIShaderManager *rhiShaderManager);
 
 
-    // Shaders
-    bool activateShader(RHIShader *shader);
-    RHIShader *activeShader() const { return m_activeShader; }
-
     // FBO
     QImage readFramebuffer(const QRect &rect);
     void blitFramebuffer(Qt3DCore::QNodeId outputRenderTargetId,
@@ -195,10 +191,6 @@ public:
     QSurfaceFormat format() const noexcept;
 
 private:
-    // Material
-    Material *activeMaterial() const { return m_material; }
-    void setActiveMaterial(Material *rmat);
-
     // FBO
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
@@ -216,8 +208,6 @@ private:
     const unsigned int m_id;
     QSurface *m_surface;
     QSize m_surfaceSize;
-
-    RHIShader *m_activeShader;
 
     QHash<Qt3DCore::QNodeId, HRHIBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;

@@ -404,8 +404,6 @@ private:
     QScreen *m_screen = nullptr;
     QSharedPointer<ResourceAccessor> m_scene2DResourceAccessor;
 
-    QOffscreenSurface *m_fallbackSurface {};
-
     bool m_hasSwapChain = false;
 
     int m_jobsInLastFrame = 0;

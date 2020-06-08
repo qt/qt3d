@@ -502,7 +502,6 @@ SubmissionContext::SubmissionContext()
     : m_ownCurrent(true),
       m_id(nextFreeContextId()),
       m_surface(nullptr),
-      m_activeShader(nullptr),
       m_renderTargetFormat(QAbstractTexture::NoFormat),
       m_material(nullptr),
       m_renderer(nullptr),
@@ -635,56 +634,20 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
     m_surface = surface;
 
-    // TO DO: Find a way to make to pause work if the window is not exposed
-    //    if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
-    //        qDebug() << Q_FUNC_INFO << 1;
-    //        if (!static_cast<QWindow *>(m_surface)->isExposed())
-    //            return false;
-    //        qDebug() << Q_FUNC_INFO << 2;
-    //    }
-
-    // Makes the surface current on the OpenGLContext
-    // and sets the right glHelper
-    // m_ownCurrent = !(m_gl->surface() == m_surface);
-    // if (m_ownCurrent && !makeCurrent(m_surface))
-    //     return false;
-
     // TODO: cache surface format somewhere rather than doing this every time render surface changes
     resolveRenderTargetFormat();
 
-#if defined(QT3D_RENDER_ASPECT_RHI_DEBUG)
-    GLint err = m_gl->functions()->glGetError();
-    if (err != 0) {
-        qCWarning(Backend) << Q_FUNC_INFO << "glGetError:" << err;
-    }
-#endif
-
     Q_ASSERT(isInitialized());
-
-    // need to reset these values every frame, may get overwritten elsewhere
-    RHI_UNIMPLEMENTED;
-
-    if (m_activeShader) {
-        m_activeShader = nullptr;
-    }
 
     // Check if we have a swapchain for the Window, if not create one
     SwapChainInfo *swapChainInfo = swapChainForSurface(surface);
     QRhiSwapChain *swapChain = swapChainInfo->swapChain;
 
-    // TO DO: Check if that's required all the time
-    {
-        // Rebuild RenderPassDescriptor
-        // TODO -> this is not necessary, swapChain->buildOrResize already does it
-        // swapChainInfo->renderBuffer->setPixelSize(surface->size());
-        // swapChainInfo->renderBuffer->build();
-
-        // Resize swapchain if needed
-        if (m_surface->size() != swapChain->currentPixelSize()) {
-            bool couldRebuild = swapChain->createOrResize();
-            if (!couldRebuild)
-                return false;
-        }
+    // Resize swapchain if needed
+    if (m_surface->size() != swapChain->currentPixelSize()) {
+        bool couldRebuild = swapChain->createOrResize();
+        if (!couldRebuild)
+            return false;
     }
 
     m_currentSwapChain = swapChain;
@@ -700,16 +663,6 @@ void SubmissionContext::endDrawing(bool swapBuffers)
 {
     Q_UNUSED(swapBuffers);
     m_rhi->endFrame(m_currentSwapChain, {});
-
-    RHI_UNIMPLEMENTED;
-    //* if (swapBuffers)
-    //*     m_gl->swapBuffers(m_surface);
-    //* if (m_ownCurrent)
-    //*     m_gl->doneCurrent();
-    // m_textureContext.endDrawing();
-    //*    static int i = 0;
-    //*    if (i++ == 10)
-    //*        std::exit(0);
 }
 
 QImage SubmissionContext::readFramebuffer(const QRect &rect)
@@ -899,27 +852,6 @@ void SubmissionContext::releaseResources()
     //*    }
 }
 
-// Called only from RenderThread
-bool SubmissionContext::activateShader(RHIShader *shader)
-{
-    Q_UNUSED(shader);
-    RHI_UNIMPLEMENTED;
-    //* if (shader->shaderProgram() != m_activeShader) {
-    //*     // Ensure material uniforms are re-applied
-    //*     m_material = nullptr;
-    //*
-    //*     m_activeShader = shader->shaderProgram();
-    //*     if (Q_LIKELY(m_activeShader != nullptr)) {
-    //*         m_activeShader->bind();
-    //*     } else {
-    //*         m_glHelper->useProgram(0);
-    //*         qWarning() << "No shader program found";
-    //*         return false;
-    //*     }
-    //* }
-    return true;
-}
-
 void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId,
                                                         const AttachmentPack &attachments)
 {
@@ -981,15 +913,6 @@ void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
     //* } else {
     //*     qCWarning(Backend) << "FBO incomplete";
     //* }
-}
-
-void SubmissionContext::setActiveMaterial(Material *rmat)
-{
-    if (m_material == rmat)
-        return;
-
-    // m_textureContext.deactivateTexturesWithScope(TextureSubmissionContext::TextureScopeMaterial);
-    m_material = rmat;
 }
 
 void SubmissionContext::applyState(const StateVariant &stateVariant,
