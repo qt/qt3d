@@ -208,7 +208,7 @@ void setParameterValue(const QString &name, QMaterial *material, const QVariant 
     p->setValue(value);
 }
 
-QAttribute *createAttribute(QBuffer *buffer,
+QAttribute *createAttribute(Qt3DCore::QBuffer *buffer,
                             const QString &name,
                             QAttribute::VertexBaseType vertexBaseType,
                             uint vertexSize,
@@ -229,7 +229,7 @@ QAttribute *createAttribute(QBuffer *buffer,
     return attribute;
 }
 
-QAttribute *createIndexAttribute(QBuffer *buffer,
+QAttribute *createIndexAttribute(Qt3DCore::QBuffer *buffer,
                                  QAttribute::VertexBaseType vertexBaseType,
                                  uint vertexSize,
                                  uint count,
