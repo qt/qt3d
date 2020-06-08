@@ -83,7 +83,7 @@ QStringList dumpFG(const Qt3DCore::QNode *n, int level = 0)
     const Qt3DRender::QFrameGraphNode *fgNode = qobject_cast<const Qt3DRender::QFrameGraphNode *>(n);
     if (fgNode) {
         QString res = dumpNode(fgNode);
-        reply += res.rightJustified(res.length() + level * 2, ' ');
+        reply += res.rightJustified(res.length() + level * 2, QLatin1Char(' '));
     }
 
     const auto children = n->childNodes();
@@ -395,7 +395,7 @@ QVector<QFrameGraphNode *> QFrameGraphNodePrivate::childFrameGraphNodes() const
 QString QFrameGraphNodePrivate::dumpFrameGraph() const
 {
     Q_Q(const QFrameGraphNode);
-    return dumpFG(q).join('\n');
+    return dumpFG(q).join(QLatin1Char('\n'));
 }
 
 QStringList QFrameGraphNodePrivate::dumpFrameGraphPaths() const

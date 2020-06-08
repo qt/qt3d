@@ -84,7 +84,7 @@ QStringList dumpSG(const Qt3DCore::QNode *n, int level = 0)
     const auto *entity = qobject_cast<const Qt3DCore::QEntity *>(n);
     if (entity != nullptr) {
         QString res = dumpNode(entity);
-        reply += res.rightJustified(res.length() + level * 2, ' ');
+        reply += res.rightJustified(res.length() + level * 2, QLatin1Char(' '));
         level++;
     }
 
@@ -301,7 +301,7 @@ QNodeId QEntityPrivate::parentEntityId() const
 QString QEntityPrivate::dumpSceneGraph() const
 {
     Q_Q(const QEntity);
-    return dumpSG(q).join('\n');
+    return dumpSG(q).join(QLatin1Char('\n'));
 }
 
 void QEntityPrivate::updateComponentRelationShip(QComponent *component, ComponentRelationshipChange::RelationShip change)

@@ -1499,14 +1499,6 @@ void GLTFImporter::processJSONBufferView(const QString &id, const QJsonObject& j
     }
     const auto &bufferData = *it;
 
-    const QJsonValue targetValue = json.value(KEY_TARGET);
-    int target;
-    if (targetValue.isUndefined()) {
-        target = GL_ARRAY_BUFFER;
-    } else {
-        target = targetValue.toInt();
-    }
-
     quint64 offset = 0;
     const auto byteOffset = json.value(KEY_BYTE_OFFSET);
     if (!byteOffset.isUndefined()) {

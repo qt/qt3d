@@ -1076,7 +1076,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
         QT_PREPEND_NAMESPACE(QBuffer) buffer(&m_sourceData);
         if (buffer.open(QIODevice::ReadOnly)) {
             QString suffix = m_url.toString();
-            suffix = suffix.right(suffix.length() - suffix.lastIndexOf('.'));
+            suffix = suffix.right(suffix.length() - suffix.lastIndexOf(QLatin1Char('.')));
 
             QStringList ext(suffix);
 
