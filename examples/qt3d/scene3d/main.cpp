@@ -75,7 +75,6 @@ int main(int argc, char **argv)
 
     view.resize(1024, 768);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setPersistentOpenGLContext(true);
     view.setPersistentSceneGraph(true);
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();

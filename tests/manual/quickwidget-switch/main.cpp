@@ -48,7 +48,6 @@
 **
 ****************************************************************************/
 
-#include <QDesktopWidget>
 #include <QScreen>
 #include <QApplication>
 #include <QMainWindow>

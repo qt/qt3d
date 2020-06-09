@@ -60,8 +60,6 @@ if(QT_FEATURE_private_tests)
     )
 
     target_link_libraries(OpenGLRendererLib
-        PRIVATE
-            Qt::OpenGLExtensions
         PUBLIC
             Qt::3DCore
             Qt::3DCorePrivate
@@ -115,8 +113,6 @@ qt_internal_add_plugin(OpenGLRendererPlugin
         managers
         renderer
         textures
-    LIBRARIES
-        Qt::OpenGLExtensions
     PUBLIC_LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

@@ -62,8 +62,6 @@ qt_add_test(tst_bench_materialparametergathering
         ../../../../src/plugins/renderers/opengl/renderer
         ../../../../src/plugins/renderers/opengl/textures
         ../../../auto/render/commons
-    LIBRARIES
-        Qt::OpenGLExtensions
     PUBLIC_LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

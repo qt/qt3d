@@ -59,7 +59,6 @@
 QT_BEGIN_NAMESPACE
 
 class QOpenGLFunctions_3_2_Core;
-class QOpenGLExtension_ARB_tessellation_shader;
 
 namespace Qt3DRender {
 namespace Render {
@@ -173,7 +172,6 @@ public:
 
 private:
     QOpenGLFunctions_3_2_Core *m_funcs;
-    QScopedPointer<QOpenGLExtension_ARB_tessellation_shader> m_tessFuncs;
 };
 
 } // namespace OpenGL

@@ -10,7 +10,7 @@ project(Qt3D # special case
 )
 
 find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals Core Gui
-                                           OPTIONAL_COMPONENTS Concurrent Widgets Qml Quick Gamepad OpenGL OpenGLExtensions ShaderTools
+                                           OPTIONAL_COMPONENTS Concurrent Widgets Qml Quick Gamepad OpenGL ShaderTools
 )
 
 if(NOT TARGET Qt::Gui)

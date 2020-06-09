@@ -2,7 +2,7 @@ TEMPLATE = app
 
 TARGET = tst_graphicshelpergl2
 
-QT += 3dcore 3dcore-private 3drender 3drender-private testlib openglextensions
+QT += 3dcore 3dcore-private 3drender 3drender-private testlib
 
 CONFIG += testcase
 

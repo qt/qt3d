@@ -244,7 +244,7 @@ void Scene2D::initializeRender()
         m_context->create();
 
         m_context->makeCurrent(m_sharedObject->m_surface);
-        m_sharedObject->m_renderControl->initialize(m_context);
+        m_sharedObject->m_renderControl->initialize();
         m_context->doneCurrent();
 
         QCoreApplication::postEvent(m_sharedObject->m_renderManager,

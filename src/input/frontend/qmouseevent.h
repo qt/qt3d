@@ -84,8 +84,8 @@ public:
     explicit QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e);
     ~QMouseEvent();
 
-    inline int x() const { return m_event.x(); }
-    inline int y() const { return m_event.y(); }
+    inline int x() const { return int(m_event.position().x()); }
+    inline int y() const { return int(m_event.position().y()); }
     inline bool wasHeld() const {
 #if QT_CONFIG(gestures)
       return static_cast<Qt::GestureType>(m_event.type()) == Qt::TapAndHoldGesture;

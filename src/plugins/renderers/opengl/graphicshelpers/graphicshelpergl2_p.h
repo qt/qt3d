@@ -58,7 +58,7 @@
 QT_BEGIN_NAMESPACE
 
 class QOpenGLFunctions_2_0;
-class QOpenGLExtension_ARB_framebuffer_object;
+class QOpenGLExtraFunctions;
 
 namespace Qt3DRender {
 namespace Render {
@@ -171,7 +171,7 @@ public:
 
 private:
     QOpenGLFunctions_2_0 *m_funcs;
-    QOpenGLExtension_ARB_framebuffer_object *m_fboFuncs;
+    QOpenGLExtraFunctions *m_extraFunctions;
 };
 
 } // namespace OpenGL

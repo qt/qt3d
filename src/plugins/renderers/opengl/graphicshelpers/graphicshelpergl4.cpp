@@ -41,7 +41,6 @@
 
 #if !QT_CONFIG(opengles2)
 #include <QOpenGLFunctions_4_3_Core>
-#include <QtOpenGLExtensions/qopenglextensions.h>
 #include <private/attachmentpack_p.h>
 #include <qgraphicsutils_p.h>
 #include <logging_p.h>

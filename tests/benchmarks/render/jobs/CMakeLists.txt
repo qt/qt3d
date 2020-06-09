@@ -61,8 +61,6 @@ qt_add_benchmark(tst_bench_jobs
         ../../../../src/plugins/renderers/opengl/managers
         ../../../../src/plugins/renderers/opengl/renderer
         ../../../../src/plugins/renderers/opengl/textures
-    LIBRARIES
-        Qt::OpenGLExtensions
     PUBLIC_LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

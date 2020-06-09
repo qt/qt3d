@@ -40,8 +40,8 @@
 #include "graphicshelpergl2_p.h"
 #if !QT_CONFIG(opengles2)
 #include <QOpenGLFunctions_2_0>
+#include <QOpenGLExtraFunctions>
 #include <private/attachmentpack_p.h>
-#include <QtOpenGLExtensions/QOpenGLExtensions>
 #include <qgraphicsutils_p.h>
 #include <logging_p.h>
 
@@ -53,7 +53,6 @@ namespace OpenGL {
 
 GraphicsHelperGL2::GraphicsHelperGL2()
     : m_funcs(nullptr)
-    , m_fboFuncs(nullptr)
 {
 
 }
@@ -66,12 +65,8 @@ void GraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
     const bool ok = m_funcs->initializeOpenGLFunctions();
     Q_ASSERT(ok);
     Q_UNUSED(ok);
-    if (context->hasExtension(QByteArrayLiteral("GL_ARB_framebuffer_object"))) {
-        m_fboFuncs = new QOpenGLExtension_ARB_framebuffer_object();
-        const bool extensionOk = m_fboFuncs->initializeOpenGLFunctions();
-        Q_ASSERT(extensionOk);
-        Q_UNUSED(extensionOk);
-    }
+    m_extraFunctions = context->extraFunctions();
+    Q_ASSERT(m_extraFunctions);
 }
 
 void GraphicsHelperGL2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
@@ -371,28 +366,19 @@ void GraphicsHelperGL2::setAlphaCoverageEnabled(bool enabled)
 
 GLuint GraphicsHelperGL2::createFrameBufferObject()
 {
-    if (m_fboFuncs != nullptr) {
-        GLuint id;
-        m_fboFuncs->glGenFramebuffers(1, &id);
-        return id;
-    }
-    qWarning() << "FBO not supported by your OpenGL hardware";
-    return 0;
+    GLuint id;
+    m_extraFunctions->glGenFramebuffers(1, &id);
+    return id;
 }
 
 void GraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
 {
-    if (m_fboFuncs != nullptr)
-        m_fboFuncs->glDeleteFramebuffers(1, &frameBufferId);
-    else
-        qWarning() << "FBO not supported by your OpenGL hardware";
+    m_extraFunctions->glDeleteFramebuffers(1, &frameBufferId);
 }
 
 bool GraphicsHelperGL2::checkFrameBufferComplete()
 {
-    if (m_fboFuncs != nullptr)
-        return (m_fboFuncs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
-    return false;
+    return m_extraFunctions->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 }
 
 bool GraphicsHelperGL2::frameBufferNeedsRenderBuffer(const Attachment &attachment)
@@ -403,38 +389,32 @@ bool GraphicsHelperGL2::frameBufferNeedsRenderBuffer(const Attachment &attachmen
 
 void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
-    if (m_fboFuncs != nullptr) {
-        GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
+    GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
 
-        if (attachment.m_point <= QRenderTargetOutput::Color15)
-            attr = GL_COLOR_ATTACHMENT0 + attachment.m_point;
-        else if (attachment.m_point == QRenderTargetOutput::Depth)
-            attr = GL_DEPTH_ATTACHMENT;
-        else if (attachment.m_point == QRenderTargetOutput::Stencil)
-            attr = GL_STENCIL_ATTACHMENT;
-        else
-            qCritical() << "DepthStencil Attachment not supported on OpenGL 2.0";
+    if (attachment.m_point <= QRenderTargetOutput::Color15)
+        attr = GL_COLOR_ATTACHMENT0 + attachment.m_point;
+    else if (attachment.m_point == QRenderTargetOutput::Depth)
+        attr = GL_DEPTH_ATTACHMENT;
+    else if (attachment.m_point == QRenderTargetOutput::Stencil)
+        attr = GL_STENCIL_ATTACHMENT;
+    else
+        qCritical() << "DepthStencil Attachment not supported on OpenGL 2.0";
 
-        const QOpenGLTexture::Target target = texture->target();
+    const QOpenGLTexture::Target target = texture->target();
 
-        if (target == QOpenGLTexture::TargetCubeMap && attachment.m_face == QAbstractTexture::AllFaces) {
-            qWarning() << "OpenGL 2.0 doesn't handle attaching all the faces of a cube map texture at once to an FBO";
-            return;
-        }
-
-        texture->bind();
-        if (target == QOpenGLTexture::Target3D)
-            m_fboFuncs->glFramebufferTexture3D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
-        else if (target == QOpenGLTexture::TargetCubeMap)
-            m_fboFuncs->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel);
-        else if (target == QOpenGLTexture::Target1D)
-            m_fboFuncs->glFramebufferTexture1D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel);
-        else if (target == QOpenGLTexture::Target2D || target == QOpenGLTexture::TargetRectangle)
-            m_fboFuncs->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel);
-        else
-            qCritical() << "Texture format not supported for Attachment on OpenGL 2.0";
-        texture->release();
+    if (target == QOpenGLTexture::TargetCubeMap && attachment.m_face == QAbstractTexture::AllFaces) {
+        qWarning() << "OpenGL 2.0 doesn't handle attaching all the faces of a cube map texture at once to an FBO";
+        return;
     }
+
+    texture->bind();
+    if (target == QOpenGLTexture::TargetCubeMap)
+        m_extraFunctions->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel);
+    else if (target == QOpenGLTexture::Target2D || target == QOpenGLTexture::TargetRectangle)
+        m_extraFunctions->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel);
+    else
+        qCritical() << "Texture format not supported for Attachment on OpenGL 2.0";
+    texture->release();
 }
 
 void GraphicsHelperGL2::bindFrameBufferAttachment(RenderBuffer *renderBuffer, const Attachment &attachment)
@@ -448,7 +428,6 @@ bool GraphicsHelperGL2::supportsFeature(GraphicsHelperInterface::Feature feature
 {
     switch (feature) {
     case MRT:
-        return (m_fboFuncs != nullptr);
     case TextureDimensionRetrieval:
     case MapBuffer:
         return true;
@@ -463,7 +442,7 @@ void GraphicsHelperGL2::drawBuffers(GLsizei n, const int *bufs)
 
     for (int i = 0; i < n; i++)
         drawBufs[i] = GL_COLOR_ATTACHMENT0 + bufs[i];
-    m_funcs->glDrawBuffers(n, drawBufs.constData());
+    m_extraFunctions->glDrawBuffers(n, drawBufs.constData());
 }
 
 void GraphicsHelperGL2::bindFragDataLocation(GLuint, const QHash<QString, int> &)
@@ -473,21 +452,17 @@ void GraphicsHelperGL2::bindFragDataLocation(GLuint, const QHash<QString, int> &
 
 void GraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode)
 {
-    if (m_fboFuncs != nullptr) {
-        switch (mode) {
-        case FBODraw:
-            m_fboFuncs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
-            return;
-        case FBORead:
-            m_fboFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
-            return;
-        case FBOReadAndDraw:
-        default:
-            m_fboFuncs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
-            return;
-        }
-    } else {
-        qWarning() << "FBO not supported by your OpenGL hardware";
+    switch (mode) {
+    case FBODraw:
+        m_extraFunctions->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
+        return;
+    case FBORead:
+        m_extraFunctions->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
+        return;
+    case FBOReadAndDraw:
+    default:
+        m_extraFunctions->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+        return;
     }
 }
 
@@ -509,7 +484,7 @@ void GraphicsHelperGL2::bindImageTexture(GLuint imageUnit, GLuint texture,
 GLuint GraphicsHelperGL2::boundFrameBufferObject()
 {
     GLint id = 0;
-    m_funcs->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &id);
+    m_extraFunctions->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &id);
     return id;
 }
 
