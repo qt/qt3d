@@ -14,6 +14,8 @@ function(qt3d_extend_target_for_assimp target)
             WrapAssimp::WrapAssimp
     )
 
+    qt_skip_warnings_are_errors(${target})
+
     qt_extend_target(${target} CONDITION NOT QT_FEATURE_system_assimp OR (CMAKE_CROSSCOMPILING AND host_build)
         SOURCES
             ${assimpDir}/src/code/3DS/3DSExporter.h
