@@ -22,4 +22,9 @@ if(WASM OR NOT QT_FEATURE_opengl)
     return()
 endif()
 
+# special case begin
+# TODO: Fix warnings and remove this
+set(QT_REPO_NOT_WARNINGS_CLEAN TRUE)
+# special case end
+
 qt_build_repo()
