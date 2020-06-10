@@ -48,10 +48,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.0
-import QtQuick.Scene2D 2.9
-import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.2
+import QtQuick 2.15
+import QtQuick.Scene2D 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 Rectangle {
     id: root
@@ -138,8 +138,8 @@ Rectangle {
             Slider {
                 id: color_r
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 255
+                from: 0
+                to: 255
                 value: 128
             }
         }
@@ -148,8 +148,8 @@ Rectangle {
             Slider {
                 id: color_g
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 255
+                from: 0
+                to: 255
                 value: 195
             }
         }
@@ -158,8 +158,8 @@ Rectangle {
             Slider {
                 id: color_b
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 255
+                from: 0
+                to: 255
                 value: 66
             }
         }
@@ -167,8 +167,8 @@ Rectangle {
         Slider {
             id: shining
             Layout.fillWidth: true
-            minimumValue: 30
-            maximumValue: 90
+            from: 30
+            to: 90
             value: 50
         }
     }
@@ -189,8 +189,8 @@ Rectangle {
             Slider {
                 id: rotation_x
                 Layout.fillWidth: true
-                minimumValue: -45
-                maximumValue: 45
+                from: -45
+                to: 45
                 value: d.rotationValue
             }
         }
@@ -199,8 +199,8 @@ Rectangle {
             Slider {
                 id: rotation_y
                 Layout.fillWidth: true
-                minimumValue: -45
-                maximumValue: 45
+                from: -45
+                to: 45
                 value: d.rotationValue
             }
         }
@@ -209,8 +209,8 @@ Rectangle {
             Slider {
                 id: rotation_z
                 Layout.fillWidth: true
-                minimumValue: -45
-                maximumValue: 45
+                from: -45
+                to: 45
                 value: d.rotationValue
             }
         }
@@ -234,8 +234,8 @@ Rectangle {
         Slider {
             id: logoCenter_z
             Layout.fillWidth: true
-            minimumValue: -10
-            maximumValue: 8
+            from: -10
+            to: 8
             value: 0
         }
     }
