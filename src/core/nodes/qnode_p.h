@@ -104,8 +104,6 @@ public:
     bool m_hasBackendNode;
     bool m_enabled;
     bool m_notifiedParent;
-    QNode::PropertyTrackingMode m_defaultPropertyTrackMode;
-    QHash<QString, QNode::PropertyTrackingMode> m_trackedPropertiesOverrides;
 
     static QNodePrivate *get(QNode *q);
     static const QNodePrivate *get(const QNode *q);

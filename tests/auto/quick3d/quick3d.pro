@@ -7,6 +7,5 @@ qtConfig(private_tests) {
         3drender \
         3dinput \
         3dcore \
-        quick3dbuffer \
-        quick3dnode
+        quick3dbuffer
 }

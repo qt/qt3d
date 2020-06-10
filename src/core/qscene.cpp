@@ -63,7 +63,6 @@ public:
     QAspectEngine *m_engine;
     QHash<QNodeId, QNode *> m_nodeLookupTable;
     QMultiHash<QNodeId, QNodeId> m_componentToEntities;
-    QHash<QNodeId, QScene::NodePropertyTrackData> m_nodePropertyTrackModeLookupTable;
     QChangeArbiter *m_arbiter;
     QScopedPointer<NodePostConstructorInit> m_postConstructorInit;
     mutable QReadWriteLock m_lock;
@@ -180,27 +179,6 @@ bool QScene::hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid)
     QReadLocker lock(&d->m_lock);
     const auto range = d->m_componentToEntities.equal_range(componentUuid);
     return std::find(range.first, range.second, entityUuid) != range.second;
-}
-
-QScene::NodePropertyTrackData QScene::lookupNodePropertyTrackData(QNodeId id) const
-{
-    Q_D(const QScene);
-    QReadLocker lock(&d->m_nodePropertyTrackModeLock);
-    return d->m_nodePropertyTrackModeLookupTable.value(id);
-}
-
-void QScene::setPropertyTrackDataForNode(QNodeId nodeId, const QScene::NodePropertyTrackData &data)
-{
-    Q_D(QScene);
-    QWriteLocker lock(&d->m_nodePropertyTrackModeLock);
-    d->m_nodePropertyTrackModeLookupTable.insert(nodeId, data);
-}
-
-void QScene::removePropertyTrackDataForNode(QNodeId nodeId)
-{
-    Q_D(QScene);
-    QWriteLocker lock(&d->m_nodePropertyTrackModeLock);
-    d->m_nodePropertyTrackModeLookupTable.remove(nodeId);
 }
 
 NodePostConstructorInit *QScene::postConstructorInit() const

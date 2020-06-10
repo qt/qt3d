@@ -14,7 +14,6 @@ qt_add_module(3DQuick
         items/quick3djoint.cpp items/quick3djoint_p.h
         items/quick3dnode.cpp items/quick3dnode_p.h
         items/quick3dnodeinstantiator.cpp items/quick3dnodeinstantiator_p.h
-        items/quick3dnodev9.cpp items/quick3dnodev9_p.h
         qqmlaspectengine.cpp qqmlaspectengine.h qqmlaspectengine_p.h
         qquaternionanimation.cpp qquaternionanimation_p.h
         qt3dquick_global.cpp qt3dquick_global.h qt3dquick_global_p.h

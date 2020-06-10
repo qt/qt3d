@@ -206,7 +206,7 @@ private Q_SLOTS:
         const QHash<QString, Qt3DRender::Render::ShaderData::PropertyValue> &props = backendShaderData->properties();
 
         // THEN
-        QCOMPARE(props.size(), 3);
+        QCOMPARE(props.size(), 2);
         QVERIFY(props.contains(QStringLiteral("eyePosition")));
         QVERIFY(props.contains(QStringLiteral("eyePositionTransformed")));
 
@@ -249,7 +249,7 @@ private Q_SLOTS:
         const QHash<QString, Qt3DRender::Render::ShaderData::PropertyValue> &props = backendShaderData->properties();
 
         // THEN
-        QCOMPARE(props.size(), 3);
+        QCOMPARE(props.size(), 2);
         QVERIFY(props.contains(QStringLiteral("position")));
         QVERIFY(props.contains(QStringLiteral("positionTransformed")));
 

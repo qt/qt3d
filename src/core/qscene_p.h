@@ -102,16 +102,6 @@ public:
     void removeEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
     bool hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
 
-    // Node -> Property Update Data
-    struct NodePropertyTrackData
-    {
-        QNode::PropertyTrackingMode defaultTrackMode = QNode::TrackFinalValues;
-        QHash<QString, QNode::PropertyTrackingMode> trackedPropertiesOverrides;
-    };
-    NodePropertyTrackData lookupNodePropertyTrackData(QNodeId id) const;
-    void setPropertyTrackDataForNode(QNodeId id, const NodePropertyTrackData &data);
-    void removePropertyTrackDataForNode(QNodeId id);
-
     NodePostConstructorInit* postConstructorInit() const;
 
     void markDirty(DirtyNodeSet changes);

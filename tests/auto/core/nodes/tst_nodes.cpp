@@ -53,7 +53,6 @@ public:
     ~tst_Nodes() {}
 
 private slots:
-    void initTestCase();
     void defaultNodeConstruction();
     void defaultComponentConstruction();
     void defaultEntityConstrution();
@@ -99,8 +98,6 @@ private slots:
     void checkDefaultConstruction();
     void checkPropertyChanges();
     void checkEnabledUpdate();
-    void checkPropertyTrackModeUpdate();
-    void checkTrackedPropertyNamesUpdate();
 
     void checkNodeRemovedFromDirtyListOnDestruction();
 };
@@ -463,11 +460,6 @@ void verifyChildrenCreatedBeforeParents(Qt3DCore::QNode *root, TestAspect *aspec
         processedNodes.insert(nodeId);
     }
 }
-}
-
-void tst_Nodes::initTestCase()
-{
-    qRegisterMetaType<Qt3DCore::QNode::PropertyTrackingMode>("PropertyTrackingMode");
 }
 
 void tst_Nodes::defaultNodeConstruction()
@@ -1551,7 +1543,6 @@ void tst_Nodes::checkDefaultConstruction()
     // THEN
     QCOMPARE(node.parentNode(), nullptr);
     QCOMPARE(node.isEnabled(), true);
-    QCOMPARE(node.defaultPropertyTrackingMode(), Qt3DCore::QNode::TrackFinalValues);
 }
 
 void tst_Nodes::checkPropertyChanges()
@@ -1598,40 +1589,6 @@ void tst_Nodes::checkPropertyChanges()
         QCOMPARE(node.isEnabled(), newValue);
         QCOMPARE(spy.count(), 0);
     }
-    {
-        // WHEN
-        QSignalSpy spy(&node, SIGNAL(defaultPropertyTrackingModeChanged(PropertyTrackingMode)));
-        const Qt3DCore::QNode::PropertyTrackingMode newValue = Qt3DCore::QNode::TrackAllValues;
-        node.setDefaultPropertyTrackingMode(newValue);
-
-        // THEN
-        QVERIFY(spy.isValid());
-        QCOMPARE(node.defaultPropertyTrackingMode(), newValue);
-        QCOMPARE(spy.count(), 1);
-
-        // WHEN
-        spy.clear();
-        node.setDefaultPropertyTrackingMode(newValue);
-
-        // THEN
-        QCOMPARE(node.defaultPropertyTrackingMode(), newValue);
-        QCOMPARE(spy.count(), 0);
-    }
-    {
-        // WHEN
-        const QString enabledPropertyName = QStringLiteral("enabled");
-        node.setDefaultPropertyTrackingMode(Qt3DCore::QNode::DontTrackValues);
-        node.setPropertyTracking(enabledPropertyName, Qt3DCore::QNode::TrackAllValues);
-
-        // THEN
-        QCOMPARE(node.propertyTracking(enabledPropertyName), Qt3DCore::QNode::TrackAllValues);
-
-        // WHEN
-        node.clearPropertyTracking(enabledPropertyName);
-
-        // THEN
-        QCOMPARE(node.propertyTracking(enabledPropertyName), Qt3DCore::QNode::DontTrackValues);
-    }
 }
 
 void tst_Nodes::checkEnabledUpdate()
@@ -1655,60 +1612,6 @@ void tst_Nodes::checkEnabledUpdate()
     {
         // WHEN
         node.setEnabled(false);
-
-        // THEN
-        QCOMPARE(arbiter.dirtyNodes().size(), 0);
-    }
-
-}
-
-void tst_Nodes::checkPropertyTrackModeUpdate()
-{
-    // GIVEN
-    TestArbiter arbiter;
-    Qt3DCore::QNode node;
-    arbiter.setArbiterOnNode(&node);
-
-    {
-        // WHEN
-        node.setDefaultPropertyTrackingMode(Qt3DCore::QNode::TrackAllValues);
-        QCoreApplication::processEvents();
-
-        // THEN -> this properties is non notifying
-        QCOMPARE(arbiter.dirtyNodes().size(), 0);
-    }
-
-    {
-        // WHEN
-        node.setDefaultPropertyTrackingMode(Qt3DCore::QNode::TrackAllValues);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.dirtyNodes().size(), 0);
-    }
-
-}
-
-void tst_Nodes::checkTrackedPropertyNamesUpdate()
-{
-    // GIVEN
-    TestArbiter arbiter;
-    Qt3DCore::QNode node;
-    arbiter.setArbiterOnNode(&node);
-
-    {
-        // WHEN
-        node.setPropertyTracking(QStringLiteral("883"), Qt3DCore::QNode::TrackAllValues);
-        QCoreApplication::processEvents();
-
-        // THEN -> this properties is non notifying
-        QCOMPARE(arbiter.dirtyNodes().size(), 0);
-    }
-
-    {
-        // WHEN
-        node.setPropertyTracking(QStringLiteral("883"), Qt3DCore::QNode::DontTrackValues);
-        QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
