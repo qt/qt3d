@@ -734,9 +734,10 @@ void Renderer::doRender(bool swapBuffers)
 
             bool hasCommands = false;
             for (const RenderView *rv : renderViews) {
-                const auto &commands = rv->commands();
-                hasCommands = std::any_of(commands.begin(), commands.end(),
-                                          [](const RenderCommand &cmd) { return cmd.isValid(); });
+                // TODO find a way to break earlier with this pattern.
+                rv->forEachCommand([&] (const RenderCommand &cmd) {
+                    hasCommands |= cmd.isValid();
+                });
                 if (hasCommands)
                     break;
             }
@@ -1207,8 +1208,7 @@ Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
 
     for (int i = 0; i < renderViewCount; ++i) {
         RenderView *rv = renderViews.at(i);
-        QVector<RenderCommand> &commands = rv->commands();
-        for (RenderCommand &command : commands) {
+        rv->forEachCommand([&] (RenderCommand &command) {
             // Update/Create GraphicsPipelines
             if (command.m_type == RenderCommand::Draw) {
                 Geometry *rGeometry =
@@ -1221,7 +1221,7 @@ Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
                         command.m_shaderId);
                 if (!shader) {
                     qDebug() << "Warning: could not find shader";
-                    continue;
+                    return;
                 }
 
                 // We should never have inserted a command for which these are null
@@ -1250,7 +1250,7 @@ Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
                 // shader->prepareUniforms(command.m_parameterPack);
             }
-        }
+        });
     }
 
     // Unset dirtiness on Geometry and Attributes
@@ -2042,6 +2042,11 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
                                                              || isNewRV);
             builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty || isNewRV);
 
+            // Insert leaf into cache
+            if (isNewRV) {
+                m_cache.leafNodeCache[leaf] = {};
+            }
+
             builder.prepareJobs();
             renderBinJobs.append(builder.buildJobHierachy());
         }
@@ -2197,7 +2202,6 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
         case QAttribute::IndexAttribute: {
             hbuf->bind(&*m_submissionContext, RHIBuffer::Type::IndexBuffer);
             assert(hbuf->rhiBuffer());
-            assert(command.indexBuffer == nullptr);
 
             command.indexBuffer = hbuf->rhiBuffer();
             command.indexAttribute = attrib;
@@ -2396,15 +2400,12 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
     for (RenderView *rv : renderViews) {
         // Render drawing commands
 
-        QVector<RenderCommand> &commands = rv->commands();
-
-        // Upload all the required data to rhi...
-        for (RenderCommand &command : commands) {
+        rv->forEachCommand([&] (RenderCommand &command) {
             if (command.m_type == RenderCommand::Draw) {
                 uploadBuffersForCommand(cb, rv, command);
                 uploadUBOsForCommand(cb, rv, command);
             }
-        }
+        });
 
         // Record clear information
         if (rv->clearTypes() != QClearBuffers::None) {
@@ -2469,13 +2470,11 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         }
 
         // Render drawing commands
-        const QVector<RenderCommand> &commands = rv->commands();
-
-        for (const RenderCommand &command : commands) {
+        rv->forEachCommand([&] (const RenderCommand &command) {
             if (command.m_type == RenderCommand::Draw) {
                 performDraw(cb, vp, hasScissor ? &scissor : nullptr, command);
             }
-        }
+        });
     }
 
     cb->endPass();

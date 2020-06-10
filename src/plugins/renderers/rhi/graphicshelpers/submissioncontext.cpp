@@ -1351,7 +1351,7 @@ QSurfaceFormat SubmissionContext::format() const noexcept
 
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
-bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
+bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, RHIShader *shader)
 {
 //    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight_irradiance"));
 //    static const int specularId = StringToInt::lookupId(QLatin1String("envLight_specular"));
@@ -1396,7 +1396,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
     // for SSBO and UBO
 
     // Bind Shader Storage block to SSBO and update SSBO
-    const QVector<BlockToSSBO> &blockToSSBOs = parameterPack.shaderStorageBuffers();
+    const auto &blockToSSBOs = parameterPack.shaderStorageBuffers();
     for (const BlockToSSBO &b : blockToSSBOs) {
         RHI_UNIMPLEMENTED;
         Buffer *cpuBuffer =
@@ -1416,7 +1416,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
 
     // Bind UniformBlocks to UBO and update UBO from Buffer
     // TO DO: Convert ShaderData to Buffer so that we can use that generic process
-    const QVector<BlockToUBO> blockToUBOs = parameterPack.uniformBuffers();
+    const auto &blockToUBOs = parameterPack.uniformBuffers();
     int uboIndex = 0;
     for (const BlockToUBO &b : blockToUBOs) {
         RHI_UNIMPLEMENTED;
@@ -1431,24 +1431,24 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack)
         // TO DO: Make sure that there's enough binding points
     }
 
+    /*
     // Update uniforms in the Default Uniform Block
-    const PackUniformHash values = parameterPack.uniforms();
-    const QVector<ShaderUniform> activeUniforms = parameterPack.submissionUniforms();
+    const PackUniformHash& values = parameterPack.uniforms();
+    const auto &activeUniformsIndices = parameterPack.submissionUniformIndices();
+    const QVector<ShaderUniform> &shaderUniforms = shader->uniforms();
 
-    for (const ShaderUniform &uniform : activeUniforms) {
-        RHI_UNIMPLEMENTED;
-        // We can use [] as we are sure the the uniform wouldn't
-        // be un activeUniforms if there wasn't a matching value
-        const UniformValue &v = values.value(uniform.m_nameId);
+    for (const int shaderUniformIndex : activeUniformsIndices) {
+        const ShaderUniform &uniform = shaderUniforms[shaderUniformIndex];
+        values.apply(uniform.m_nameId, [&] (const UniformValue& v) {
+            // skip invalid textures/images
+            if (!((v.valueType() == UniformValue::TextureValue ||
+                   v.valueType() == UniformValue::ShaderImageValue) &&
+                  *v.constData<int>() == -1))
+                applyUniform(uniform, v);
+        });
 
-        // skip invalid textures/images
-        if ((v.valueType() == UniformValue::TextureValue
-             || v.valueType() == UniformValue::ShaderImageValue)
-            && *v.constData<int>() == -1)
-            continue;
-
-        //        applyUniform(uniform, v);
     }
+    */
     // if not all data is valid, the next frame will be rendered immediately
     return true;
 }

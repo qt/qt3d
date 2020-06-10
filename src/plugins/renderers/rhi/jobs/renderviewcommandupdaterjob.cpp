@@ -55,13 +55,38 @@ namespace {
 int renderViewInstanceCounter = 0;
 } // anonymous
 
+class RenderViewCommandUpdaterJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    RenderViewCommandUpdaterJobPrivate(RenderViewCommandUpdaterJob *q) : q_ptr(q) { }
+    ~RenderViewCommandUpdaterJobPrivate() override = default;
+
+    bool isRequired() const override;
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    RenderViewCommandUpdaterJob *q_ptr;
+    Q_DECLARE_PUBLIC(RenderViewCommandUpdaterJob)
+};
+
+bool RenderViewCommandUpdaterJobPrivate::isRequired() const
+{
+    Q_Q(const RenderViewCommandUpdaterJob);
+    return q->m_renderView && !q->m_renderView->noDraw() && q->m_renderablesSubView.count > 0;
+}
+
+void RenderViewCommandUpdaterJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    Q_UNUSED(manager)
+
+    // reset to 0 after every frame, stops the number growing indefinitely
+    renderViewInstanceCounter = 0;
+}
+
 RenderViewCommandUpdaterJob::RenderViewCommandUpdaterJob()
-    : Qt3DCore::QAspectJob(),
-      m_offset(0),
-      m_count(0),
-      m_renderView(nullptr),
-      m_renderer(nullptr),
-      m_renderables()
+    : Qt3DCore::QAspectJob(*new RenderViewCommandUpdaterJobPrivate(this))
+    , m_renderView(nullptr)
+    , m_renderer(nullptr)
+    , m_renderablesSubView()
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++)
 }
@@ -71,10 +96,10 @@ void RenderViewCommandUpdaterJob::run()
     // Build RenderCommand should perform the culling as we have no way to determine
     // if a child has a mesh in the view frustum while its parent isn't contained in it.
     if (!m_renderView->noDraw()) {
-        if (m_count == 0)
+        if (m_renderablesSubView.count == 0)
             return;
         // Update Render Commands (Uniform Change, Depth Change)
-        m_renderView->updateRenderCommand(m_renderables.data(), m_offset, m_count);
+        m_renderView->updateRenderCommand(m_renderablesSubView);
     }
 }
 

@@ -59,6 +59,7 @@
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/aligned_malloc_p.h>
+#include <Qt3DRender/private/shaderdata_p.h>
 #include <shadervariables_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -159,25 +160,28 @@ typedef QHash<int, QVariant> UniformBlockValueBuilderHash;
 
 struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 {
-    UniformBlockValueBuilder();
+    explicit UniformBlockValueBuilder(const QVector<int> &uniformNamesIds,
+                                      ShaderDataManager *shaderDataManager,
+                                      TextureManager *textureManager,
+                                      const Matrix4x4 &matrix);
     ~UniformBlockValueBuilder();
-
-    QT3D_ALIGNED_MALLOC_AND_FREE()
 
     void buildActiveUniformNameValueMapHelper(const ShaderData *currentShaderData,
                                               const QString &blockName,
-                                              const QString &qmlPropertyName,
-                                              const QVariant &value);
-    void buildActiveUniformNameValueMapStructHelper(const ShaderData *rShaderData,
+                                              const int propertyInBlockNameId,
+                                              const int propertyNameId,
+                                              const ShaderData::PropertyValue *value);
+    void buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData,
                                                     const QString &blockName,
                                                     const QString &qmlPropertyName = QString());
 
-    bool updatedPropertiesOnly;
-    QSet<QString> uniforms;
     UniformBlockValueBuilderHash activeUniformNamesToValue;
-    ShaderDataManager *shaderDataManager;
-    TextureManager *textureManager;
-    Matrix4x4 viewMatrix;
+
+private:
+    const QVector<int> &m_uniformNamesIds;
+    ShaderDataManager *m_shaderDataManager = nullptr;
+    TextureManager *m_textureManager = nullptr;
+    const Matrix4x4 &m_viewMatrix;
 };
 
 } // namespace Rhi

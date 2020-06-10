@@ -567,14 +567,20 @@ void RHIShader::prepareUniforms(ShaderParameterPack &pack)
     auto it = values.keys.cbegin();
     const auto end = values.keys.cend();
 
+    const int shaderUniformsCount = m_uniforms.size();
+    const auto uIt = m_uniforms.cbegin();
+
     while (it != end) {
         // Find if there's a uniform with the same name id
-        for (const ShaderUniform &uniform : qAsConst(m_uniforms)) {
-            if (uniform.m_nameId == *it) {
-                pack.setSubmissionUniform(uniform);
-                break;
-            }
-        }
+
+        int i = 0;
+        const int targetNameId = *it;
+        while (i < shaderUniformsCount && (uIt + i)->m_nameId < targetNameId)
+            ++i;
+
+        if (i < shaderUniformsCount && (uIt + i)->m_nameId == targetNameId)
+            pack.setSubmissionUniformIndex(i);
+
         ++it;
     }
 }

@@ -66,6 +66,7 @@ namespace Rhi {
 
 class RenderView;
 class Renderer;
+class RenderViewCommandUpdaterJobPrivate;
 
 class Q_AUTOTEST_EXPORT RenderViewCommandUpdaterJob : public Qt3DCore::QAspectJob
 {
@@ -74,26 +75,22 @@ public:
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
     inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
-    inline void setRenderables(const EntityRenderCommandDataPtr &renderables, int offset,
-                               int count) Q_DECL_NOTHROW
+    inline void setRenderablesSubView(const EntityRenderCommandDataSubView &renderablesSubView) Q_DECL_NOTHROW
     {
-        m_offset = offset;
-        m_count = count;
-        m_renderables = renderables;
+        m_renderablesSubView = renderablesSubView;
     }
-    EntityRenderCommandDataPtr renderables() const { return m_renderables; }
+    EntityRenderCommandDataSubView renderablesSubView() const { return m_renderablesSubView; }
 
-    QVector<RenderCommand> &commands() Q_DECL_NOTHROW { return m_commands; }
-
+    inline void setRebuildFlags(RebuildFlagSet rebuildFlags) { m_rebuildFlags = rebuildFlags; }
     void run() final;
 
 private:
-    int m_offset;
-    int m_count;
+    RebuildFlagSet m_rebuildFlags;
     RenderView *m_renderView;
     Renderer *m_renderer;
-    EntityRenderCommandDataPtr m_renderables;
-    QVector<RenderCommand> m_commands;
+    EntityRenderCommandDataSubView m_renderablesSubView;
+
+    Q_DECLARE_PRIVATE(RenderViewCommandUpdaterJob)
 };
 
 typedef QSharedPointer<RenderViewCommandUpdaterJob> RenderViewCommandUpdaterJobPtr;

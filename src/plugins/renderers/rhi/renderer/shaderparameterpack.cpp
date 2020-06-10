@@ -56,55 +56,61 @@ namespace Qt3DRender {
 namespace Render {
 namespace Rhi {
 
-ShaderParameterPack::~ShaderParameterPack() { }
+ShaderParameterPack::~ShaderParameterPack()
+{
+}
+
+void ShaderParameterPack::reserve(int uniformCount)
+{
+    m_uniforms.reserve(uniformCount);
+    m_submissionUniformIndices.reserve(uniformCount);
+}
 
 void ShaderParameterPack::setUniform(const int glslNameId, const UniformValue &val)
 {
     m_uniforms.insert(glslNameId, val);
 }
 
-void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex,
-                                     Qt3DCore::QNodeId texId)
+void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId texId)
 {
-    for (NamedResource &texture : m_textures) {
-        if (texture.glslNameId != glslNameId || texture.uniformArrayIndex != uniformArrayIndex)
+    for (size_t t = 0; t < m_textures.size(); ++t) {
+        if (m_textures[t].glslNameId != glslNameId || m_textures[t].uniformArrayIndex != uniformArrayIndex)
             continue;
 
-        texture.nodeId = texId;
+        m_textures[t].nodeId = texId;
         return;
     }
 
-    m_textures.append(NamedResource(glslNameId, texId, uniformArrayIndex, NamedResource::Texture));
+    m_textures.push_back(NamedResource(glslNameId, texId, uniformArrayIndex, NamedResource::Texture));
 }
 
-void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex,
-                                   Qt3DCore::QNodeId id)
+void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id)
 {
-    for (NamedResource &image : m_images) {
-        if (image.glslNameId != glslNameId || image.uniformArrayIndex != uniformArrayIndex)
+    for (int i=0, m = m_images.size(); i < m; ++i) {
+        if (m_images[i].glslNameId != glslNameId || m_images[i].uniformArrayIndex != uniformArrayIndex)
             continue;
 
-        image.nodeId = id;
+        m_images[i].nodeId = id;
         return;
     }
 
-    m_images.append(NamedResource(glslNameId, id, uniformArrayIndex, NamedResource::Image));
+    m_images.push_back(NamedResource(glslNameId, id, uniformArrayIndex, NamedResource::Image));
 }
 
 // Contains Uniform Block Index and QNodeId of the ShaderData (UBO)
 void ShaderParameterPack::setUniformBuffer(BlockToUBO blockToUBO)
 {
-    m_uniformBuffers.append(std::move(blockToUBO));
+    m_uniformBuffers.push_back(std::move(blockToUBO));
 }
 
 void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
 {
-    m_shaderStorageBuffers.push_back(blockToSSBO);
+    m_shaderStorageBuffers.push_back(std::move(blockToSSBO));
 }
 
-void ShaderParameterPack::setSubmissionUniform(const ShaderUniform &uniform)
+void ShaderParameterPack::setSubmissionUniformIndex(const int uniformIdx)
 {
-    m_submissionUniforms.push_back(uniform);
+    m_submissionUniformIndices.push_back(uniformIdx);
 }
 
 } // namespace Rhi

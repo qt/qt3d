@@ -251,38 +251,38 @@ QJsonObject parameterPackToJson(const Render::Rhi::ShaderParameterPack &pack) no
     QJsonArray uniformsArray;
     for (int i = 0, m = uniforms.keys.size(); i < m; ++i) {
         QJsonObject uniformObj;
-        uniformObj.insert(QLatin1String("name"),
-                          Render::StringToInt::lookupString(uniforms.keys.at(i)));
+        uniformObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(uniforms.keys.at(i)));
         const Render::UniformValue::ValueType type = uniforms.values.at(i).valueType();
         uniformObj.insert(QLatin1String("type"),
-                          type == Render::UniformValue::ScalarValue ? QLatin1String("value")
-                                                                    : QLatin1String("texture"));
+                          type == Render::UniformValue::ScalarValue
+                          ? QLatin1String("value")
+                          : QLatin1String("texture"));
         uniformsArray.push_back(uniformObj);
     }
     obj.insert(QLatin1String("uniforms"), uniformsArray);
 
     QJsonArray texturesArray;
-    const QVector<Render::Rhi::ShaderParameterPack::NamedResource> &textures = pack.textures();
-    for (const auto &texture : textures) {
+    const std::vector<Render::Rhi::ShaderParameterPack::NamedResource> &textures = pack.textures();
+    for (const auto & texture : textures) {
         QJsonObject textureObj;
-        textureObj.insert(QLatin1String("name"),
-                          Render::StringToInt::lookupString(texture.glslNameId));
+        textureObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(texture.glslNameId));
         textureObj.insert(QLatin1String("id"), qint64(texture.nodeId.id()));
         texturesArray.push_back(textureObj);
     }
     obj.insert(QLatin1String("textures"), texturesArray);
 
-    const QVector<Render::Rhi::BlockToUBO> &ubos = pack.uniformBuffers();
+    const std::vector<Render::Rhi::BlockToUBO> &ubos = pack.uniformBuffers();
     QJsonArray ubosArray;
     for (const auto &ubo : ubos) {
         QJsonObject uboObj;
         uboObj.insert(QLatin1String("index"), ubo.m_blockIndex);
         uboObj.insert(QLatin1String("bufferId"), qint64(ubo.m_bufferID.id()));
         ubosArray.push_back(uboObj);
+
     }
     obj.insert(QLatin1String("ubos"), ubosArray);
 
-    const QVector<Render::Rhi::BlockToSSBO> &ssbos = pack.shaderStorageBuffers();
+    const std::vector<Render::Rhi::BlockToSSBO> &ssbos = pack.shaderStorageBuffers();
     QJsonArray ssbosArray;
     for (const auto &ssbo : ssbos) {
         QJsonObject ssboObj;

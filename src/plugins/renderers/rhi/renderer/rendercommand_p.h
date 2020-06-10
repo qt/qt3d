@@ -75,6 +75,15 @@ namespace Render {
 class RenderStateSet;
 using RenderStateSetPtr = QSharedPointer<RenderStateSet>;
 
+enum RebuildFlag {
+    FullCommandRebuild = 1 << 0,
+    LayerCacheRebuild = 1 << 1,
+    MaterialCacheRebuild = 1 << 2,
+    LightCacheRebuild = 1 << 3
+};
+Q_DECLARE_FLAGS(RebuildFlagSet, RebuildFlag)
+Q_DECLARE_OPERATORS_FOR_FLAGS(RebuildFlagSet)
+
 namespace Rhi {
 
 class RHIShader;
@@ -162,18 +171,18 @@ inline bool operator!=(const RenderCommand &lhs, const RenderCommand &rhs) noexc
 
 struct EntityRenderCommandData
 {
-    QVector<Entity *> entities;
-    QVector<RenderCommand> commands;
-    QVector<RenderPassParameterData> passesData;
+    std::vector<Entity *> entities;
+    std::vector<RenderCommand> commands;
+    std::vector<RenderPassParameterData> passesData;
 
-    void reserve(int size)
+    void reserve(size_t size)
     {
         entities.reserve(size);
         commands.reserve(size);
         passesData.reserve(size);
     }
 
-    inline int size() const { return entities.size(); }
+    inline size_t size() const { return entities.size(); }
 
     inline void push_back(Entity *e, const RenderCommand &c, const RenderPassParameterData &p)
     {
@@ -191,14 +200,67 @@ struct EntityRenderCommandData
 
     EntityRenderCommandData &operator+=(EntityRenderCommandData &&t)
     {
-        entities += std::move(t.entities);
-        commands += std::move(t.commands);
-        passesData += std::move(t.passesData);
+        entities.insert(entities.cend(),
+                        std::make_move_iterator(t.entities.begin()),
+                        std::make_move_iterator(t.entities.end()));
+        commands.insert(commands.cend(),
+                        std::make_move_iterator(t.commands.begin()),
+                        std::make_move_iterator(t.commands.end()));
+        passesData.insert(passesData.cend(),
+                          std::make_move_iterator(t.passesData.begin()),
+                          std::make_move_iterator(t.passesData.end()));
         return *this;
     }
+
 };
 
+
 using EntityRenderCommandDataPtr = QSharedPointer<EntityRenderCommandData>;
+
+struct EntityRenderCommandDataView
+{
+    EntityRenderCommandData data;
+    std::vector<size_t> indices;
+
+    size_t size() const noexcept { return indices.size(); }
+
+    template<typename F>
+    void forEachCommand(F func)
+    {
+        for (size_t idx : indices)
+            func(data.commands[idx]);
+    }
+};
+using EntityRenderCommandDataViewPtr = QSharedPointer<EntityRenderCommandDataView>;
+
+struct EntityRenderCommandDataSubView
+{
+    EntityRenderCommandDataViewPtr view;
+    size_t offset;
+    size_t count;
+
+    template<typename F>
+    void forEach(F func)
+    {
+        for (size_t i = 0, m = size_t(count); i < m; ++i) {
+            const size_t idx = view->indices[offset + i];
+            func(view->data.entities[idx],
+                 view->data.passesData[idx],
+                 view->data.commands[idx]);
+        }
+    }
+
+    template<typename F>
+    void forEach(F func) const
+    {
+        for (size_t i = 0, m = size_t(count); i < m; ++i) {
+            const size_t idx = view->indices[offset + i];
+            func(view->data.entities[idx],
+                 view->data.passesData[idx],
+                 view->data.commands[idx]);
+        }
+    }
+};
 
 } // namespace Rhi
 

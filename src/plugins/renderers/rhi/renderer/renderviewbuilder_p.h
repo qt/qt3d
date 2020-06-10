@@ -74,12 +74,13 @@ namespace Rhi {
 class Renderer;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+#define CreateSynchronizerJobPtr(lambda, type) \
+    SynchronizerJobPtr::create(lambda, type, #type)
 
 class Q_AUTOTEST_EXPORT RenderViewBuilder
 {
 public:
-    explicit RenderViewBuilder(Render::FrameGraphNode *leafNode, int renderViewIndex,
-                               Renderer *renderer);
+    explicit RenderViewBuilder(Render::FrameGraphNode *leafNode, int renderViewIndex, Renderer *renderer);
 
     RenderViewInitializerJobPtr renderViewJob() const;
     FilterLayerEntityJobPtr filterEntityByLayerJob() const;
@@ -109,18 +110,20 @@ public:
     bool materialGathererCacheNeedsToBeRebuilt() const;
     void setRenderCommandCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
     bool renderCommandCacheNeedsToBeRebuilt() const;
+    void setLightCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
+    bool lightCacheNeedsToBeRebuilt() const;
 
-    static int optimalJobCount();
-    static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities,
-                                              const QVector<Entity *> &subset);
+    static int defaultJobCount();
+    int optimalJobCount() const;
+    void setOptimalJobCount(int v);
+
+    static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset);
 
 private:
     Render::FrameGraphNode *m_leafNode;
     const int m_renderViewIndex;
     Renderer *m_renderer;
-    bool m_layerCacheNeedsToBeRebuilt;
-    bool m_materialGathererCacheNeedsToBeRebuilt;
-    bool m_renderCommandCacheNeedsToBeRebuilt;
+    RebuildFlagSet m_rebuildFlags;
 
     RenderViewInitializerJobPtr m_renderViewJob;
     FilterLayerEntityJobPtr m_filterEntityByLayerJob;
@@ -139,7 +142,7 @@ private:
     SynchronizerJobPtr m_syncMaterialGathererJob;
     FilterProximityDistanceJobPtr m_filterProximityJob;
 
-    static const int m_optimalParallelJobCount;
+    int m_optimalParallelJobCount;
 };
 
 } // Rhi

@@ -70,18 +70,42 @@ struct RendererCache
 {
     struct LeafNodeData
     {
+        Matrix4x4 viewProjectionMatrix;
+        // Set by the FilterLayerJob
+        // Contains all Entities that satisfy the layer filtering for the RV
         QVector<Entity *> filterEntitiesByLayer;
+
+        // Set by the MaterialParameterGatherJob
         MaterialParameterGathererData materialParameterGatherer;
-        EntityRenderCommandData renderCommandData;
+
+        // Set by the SyncRenderViewPreCommandUpdateJob
+        // Contains caches of different filtering stages that can
+        // be cached across frame
+        QVector<Entity *> layeredFilteredRenderables; // Changes rarely
+        QVector<Entity *> filteredAndCulledRenderables; // Changes if camera is modified
+        QVector<LightSource> layeredFilteredLightSources;
+
+        // We keep two sets of filtered render commands
+        // and we flip in between them every frame
+        int viewIdx = 0;
+        bool requestFilteringAtNextFrame = false;
+        EntityRenderCommandDataViewPtr filteredRenderCommandDataViews[2];
     };
 
-    // Shared amongst all RV cache
+    // Variabled below are shared amongst all RV
+
+    // Set by CachingRenderableEntityFilterJob
     QVector<Entity *> renderableEntities;
+
+    // Set by CachingComputableEntityFilterJob
     QVector<Entity *> computeEntities;
+
+    // Set by CachingLightGathererJob
     QVector<LightSource> gatheredLights;
     EnvironmentLight *environmentLight;
 
     // Per RV cache
+    // Leaves inserted by SyncRenderViewPostInitialization
     QHash<FrameGraphNode *, LeafNodeData> leafNodeCache;
 
     QMutex *mutex() { return &m_mutex; }
