@@ -434,7 +434,7 @@ namespace
                 do {
                     matchStart = deincluded.indexOf(regexp, matchStart);
                     if (matchStart != -1) {
-                        const auto match = regexp.match(deincluded.midRef(matchStart));
+                        const auto match = regexp.match(QStringView{deincluded}.mid(matchStart));
                         const auto length = match.capturedLength(0);
 
                         deincluded.replace(matchStart, length, replacement.arg(variable++));

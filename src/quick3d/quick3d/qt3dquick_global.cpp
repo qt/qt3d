@@ -158,14 +158,14 @@ public:
     #define ASSERT_VALID_SIZE(size, min) Q_ASSERT(size >= min)
 #endif
 
-    static QVector2D vector2DFromString(const QString &s, bool *ok)
+    static QVector2D vector2DFromString(QStringView s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 1) {
             int index = s.indexOf(QLatin1Char(','));
 
             bool xGood, yGood;
-            float xCoord = s.leftRef(index).toFloat(&xGood);
-            float yCoord = s.midRef(index+1).toFloat(&yGood);
+            float xCoord = s.left(index).toFloat(&xGood);
+            float yCoord = s.mid(index+1).toFloat(&yGood);
 
             if (xGood && yGood) {
                 if (ok) *ok = true;
@@ -177,16 +177,16 @@ public:
         return QVector2D();
     }
 
-    static QVector3D vector3DFromString(const QString &s, bool *ok)
+    static QVector3D vector3DFromString(QStringView s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 2) {
             int index = s.indexOf(QLatin1Char(','));
             int index2 = s.indexOf(QLatin1Char(','), index+1);
 
             bool xGood, yGood, zGood;
-            float xCoord = s.leftRef(index).toFloat(&xGood);
-            float yCoord = s.midRef(index+1, index2-index-1).toFloat(&yGood);
-            float zCoord = s.midRef(index2+1).toFloat(&zGood);
+            float xCoord = s.left(index).toFloat(&xGood);
+            float yCoord = s.mid(index+1, index2-index-1).toFloat(&yGood);
+            float zCoord = s.mid(index2+1).toFloat(&zGood);
 
             if (xGood && yGood && zGood) {
                 if (ok) *ok = true;
@@ -198,7 +198,7 @@ public:
         return QVector3D();
     }
 
-    static QVector4D vector4DFromString(const QString &s, bool *ok)
+    static QVector4D vector4DFromString(QStringView s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 3) {
             int index = s.indexOf(QLatin1Char(','));
@@ -206,10 +206,10 @@ public:
             int index3 = s.indexOf(QLatin1Char(','), index2+1);
 
             bool xGood, yGood, zGood, wGood;
-            float xCoord = s.leftRef(index).toFloat(&xGood);
-            float yCoord = s.midRef(index+1, index2-index-1).toFloat(&yGood);
-            float zCoord = s.midRef(index2+1, index3-index2-1).toFloat(&zGood);
-            float wCoord = s.midRef(index3+1).toFloat(&wGood);
+            float xCoord = s.left(index).toFloat(&xGood);
+            float yCoord = s.mid(index+1, index2-index-1).toFloat(&yGood);
+            float zCoord = s.mid(index2+1, index3-index2-1).toFloat(&zGood);
+            float wCoord = s.mid(index3+1).toFloat(&wGood);
 
             if (xGood && yGood && zGood && wGood) {
                 if (ok) *ok = true;
@@ -221,7 +221,7 @@ public:
         return QVector4D();
     }
 
-    static QQuaternion quaternionFromString(const QString &s, bool *ok)
+    static QQuaternion quaternionFromString(QStringView s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 3) {
             int index = s.indexOf(QLatin1Char(','));
@@ -229,10 +229,10 @@ public:
             int index3 = s.indexOf(QLatin1Char(','), index2+1);
 
             bool sGood, xGood, yGood, zGood;
-            qreal sCoord = s.leftRef(index).toDouble(&sGood);
-            qreal xCoord = s.midRef(index+1, index2-index-1).toDouble(&xGood);
-            qreal yCoord = s.midRef(index2+1, index3-index2-1).toDouble(&yGood);
-            qreal zCoord = s.midRef(index3+1).toDouble(&zGood);
+            qreal sCoord = s.left(index).toDouble(&sGood);
+            qreal xCoord = s.mid(index+1, index2-index-1).toDouble(&xGood);
+            qreal yCoord = s.mid(index2+1, index3-index2-1).toDouble(&yGood);
+            qreal zCoord = s.mid(index3+1).toDouble(&zGood);
 
             if (sGood && xGood && yGood && zGood) {
                 if (ok) *ok = true;
@@ -244,16 +244,15 @@ public:
         return QQuaternion();
     }
 
-    static QMatrix4x4 matrix4x4FromString(const QString &s, bool *ok)
+    static QMatrix4x4 matrix4x4FromString(QStringView s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 15) {
             float matValues[16];
             bool vOK = true;
-            QStringRef mutableStr(&s);
             for (int i = 0; vOK && i < 16; ++i) {
-                int cidx = mutableStr.indexOf(QLatin1Char(','));
-                matValues[i] = mutableStr.left(cidx).toDouble(&vOK);
-                mutableStr = mutableStr.mid(cidx + 1);
+                int cidx = s.indexOf(QLatin1Char(','));
+                matValues[i] = s.left(cidx).toDouble(&vOK);
+                s = s.mid(cidx + 1);
             }
 
             if (vOK) {
