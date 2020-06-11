@@ -28,6 +28,7 @@
 
 #include <QtTest/qtest.h>
 #include <Qt3DAnimation/qabstractanimation.h>
+#include <Qt3DAnimation/private/qabstractanimation_p.h>
 #include <Qt3DCore/qnode.h>
 #include <qobject.h>
 #include <qsignalspy.h>
