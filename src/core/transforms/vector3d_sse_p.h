@@ -178,7 +178,7 @@ public:
         return ((_mm_movemask_ps(_mm_cmpeq_ps(m_xyzw, _mm_set_ps1(0.0f))) & 0x7) == 0x7);
     }
 
-#ifdef __AVX2__
+#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
     Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE unproject(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
     Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE project(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
 #else
@@ -348,7 +348,7 @@ public:
 
     friend class Vector4D_SSE;
 
-#ifdef __AVX2__
+#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
     friend class Matrix4x4_AVX2;
     friend Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_AVX2 &matrix);
     friend Vector3D_SSE operator*(const Matrix4x4_AVX2 &matrix, const Vector3D_SSE &vector);
