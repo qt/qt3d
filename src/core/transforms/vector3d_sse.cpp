@@ -39,7 +39,7 @@
 
 #include <private/qsimd_p.h>
 
-#ifdef __AVX2__
+#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
 #include "matrix4x4_avx2_p.h"
 #else
 #include "matrix4x4_sse_p.h"
@@ -66,7 +66,7 @@ Vector3D_SSE::Vector3D_SSE(const Vector4D_SSE &v)
     m_xyzw = _mm_mul_ps(v.m_xyzw, _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f));
 }
 
-#ifdef __AVX2__
+#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
 
 Vector3D_SSE Vector3D_SSE::unproject(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const
 {
