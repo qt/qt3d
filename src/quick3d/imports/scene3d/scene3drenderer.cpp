@@ -413,7 +413,8 @@ void Scene3DRenderer::render()
 
     // The OpenGL state may be dirty from the previous QtQuick nodes, so reset
     // it here to give Qt3D the clean state it expects
-    m_window->resetOpenGLState();
+    // TODOQT6 Restore functionality
+//    m_window->resetOpenGLState();
 
     // Create and bind FBO if using the FBO compositing mode
     const bool usesFBO = m_compositingMode == Scene3DItem::FBO;
@@ -457,7 +458,8 @@ void Scene3DRenderer::render()
 
     // Reset the state used by the Qt Quick scenegraph to avoid any
     // interference when rendering the rest of the UI.
-    m_window->resetOpenGLState();
+    // TODOQT6 Restore functionality
+//    m_window->resetOpenGLState();
 }
 
 } // namespace Qt3DRender

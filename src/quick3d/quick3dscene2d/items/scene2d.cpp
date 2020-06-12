@@ -361,7 +361,8 @@ void Scene2D::render()
             QCoreApplication::postEvent(m_sharedObject->m_renderManager,
                                         new Scene2DEvent(Scene2DEvent::Rendered));
 
-        m_sharedObject->m_quickWindow->resetOpenGLState();
+        // TODOQT6 Restore functionality
+//        m_sharedObject->m_quickWindow->resetOpenGLState();
         m_context->functions()->glFlush();
         if (texture->isAutoMipMapGenerationEnabled())
             texture->generateMipMaps();
