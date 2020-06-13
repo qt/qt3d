@@ -59,7 +59,7 @@ set(shader_resource_files
     "shaders/scene3dmaterial.frag.qsb"
 )
 
-qt6_add_resources(qtquickscene3dplugin "scene3d"
+qt_add_resource(qtquickscene3dplugin "scene3d"
     PREFIX
         "/"
     FILES
