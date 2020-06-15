@@ -75,6 +75,7 @@ class Q_AUTOTEST_EXPORT GLShader
 {
 public:
     GLShader();
+    ~GLShader();
 
     void setGraphicsContext(GraphicsContext *context);
     GraphicsContext *graphicsContext();
