@@ -74,14 +74,17 @@ qt_add_module(3DAnimation
         frontend
     LIBRARIES
         Qt::CorePrivate
-    PUBLIC_LIBRARIES
         Qt::3DCorePrivate
-        Qt::3DRender
         Qt::3DRenderPrivate
+    PUBLIC_LIBRARIES
+        Qt::3DCore
+        Qt::3DRender
         Qt::Core
         Qt::Gui
     PRIVATE_MODULE_INTERFACE
         Qt::CorePrivate
+        Qt::3DCorePrivate
+        Qt::3DRenderPrivate
 )
 
 #### Keys ignored in scope 1:.:.:animation.pro:<TRUE>:

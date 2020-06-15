@@ -52,7 +52,7 @@
 //
 
 #include <QtCore/QtGlobal>
-#include <private/qnode_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE

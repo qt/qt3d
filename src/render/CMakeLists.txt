@@ -290,13 +290,15 @@ qt_add_module(3DRender
     LIBRARIES
         Qt::Concurrent
         Qt::CorePrivate
-    PUBLIC_LIBRARIES
         Qt::3DCorePrivate
+    PUBLIC_LIBRARIES
+        Qt::3DCore
         Qt::Core
         Qt::OpenGL
     PRIVATE_MODULE_INTERFACE
         Qt::Concurrent
         Qt::CorePrivate
+        Qt::3DCorePrivate
 )
 
 # Resources:

@@ -82,12 +82,14 @@ qt_add_module(3DInput
         frontend
     LIBRARIES
         Qt::CorePrivate
-    PUBLIC_LIBRARIES
         Qt::3DCorePrivate
+    PUBLIC_LIBRARIES
+        Qt::3DCore
         Qt::Core
         Qt::Gui
     PRIVATE_MODULE_INTERFACE
         Qt::CorePrivate
+        Qt::3DCorePrivate
 )
 
 #### Keys ignored in scope 1:.:.:input.pro:<TRUE>:

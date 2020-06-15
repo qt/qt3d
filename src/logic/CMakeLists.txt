@@ -21,14 +21,15 @@ qt_add_module(3DLogic
     LIBRARIES
         Qt::CorePrivate
         Qt::GuiPrivate
+        Qt::3DCorePrivate
     PUBLIC_LIBRARIES
         Qt::3DCore
-        Qt::3DCorePrivate
         Qt::Core
         Qt::Gui
     PRIVATE_MODULE_INTERFACE
         Qt::CorePrivate
         Qt::GuiPrivate
+        Qt::3DCorePrivate
 )
 
 #### Keys ignored in scope 1:.:.:logic.pro:<TRUE>:

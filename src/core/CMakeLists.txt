@@ -107,15 +107,56 @@ qt_extend_target(3DCore CONDITION gcov
         "-ftest-coverage"
 )
 
+function(qt3d_add_simd_part target)
+    qt_parse_all_arguments(arg "qt3d_add_simd_part" "" ""
+       "NAME;SIMD;${__default_private_args};COMPILE_FLAGS" ${ARGN})
+    if ("x${arg_SIMD}" STREQUAL x)
+        message(FATAL_ERROR "qt3d_add_simd_part needs a SIMD type to be set.")
+    endif()
+
+    set(condition "QT_FEATURE_${arg_SIMD}")
+    if("${arg_SIMD}" STREQUAL arch_haswell)
+        set(condition "TEST_subarch_avx2 AND TEST_subarch_bmi AND TEST_subarch_bmi2 AND TEST_subarch_f16c AND TEST_subarch_fma AND TEST_subarch_lzcnt AND TEST_subarch_popcnt")
+    elseif("${arg_SIMD}" STREQUAL avx512common)
+        set(condition "TEST_subarch_avx512cd")
+    elseif("${arg_SIMD}" STREQUAL avx512core)
+        set(condition "TEST_subarch_avx512cd AND TEST_subarch_avx512bw AND TEST_subarch_avx512dq AND TEST_subarch_avx512vl")
+    endif()
+
+    qt_evaluate_config_expression(result ${condition})
+    if(${result})
+        if(QT_CMAKE_DEBUG_EXTEND_TARGET)
+            message("qt3d_add_simd_part(${target} SIMD ${arg_SIMD} ...): Evaluated")
+        endif()
+        string(TOUPPER "QT_CFLAGS_${arg_SIMD}" simd_flags)
+
+        foreach(source IN LISTS arg_SOURCES)
+            set_property(SOURCE "${source}" APPEND
+                PROPERTY COMPILE_OPTIONS
+                ${${simd_flags}}
+                ${arg_COMPILE_FLAGS}
+            )
+        endforeach()
+        set_source_files_properties(${arg_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS TRUE)
+        target_sources(${target} PRIVATE ${arg_SOURCES})
+        target_compile_options("${target}Private" INTERFACE ${${simd_flags}} ${arg_COMPILE_FLAGS})
+        target_compile_definitions("${target}Private" INTERFACE ${simd_flags})
+    else()
+        if(QT_CMAKE_DEBUG_EXTEND_TARGET)
+            message("qt3d_add_simd_part(${target} SIMD ${arg_SIMD} ...): Skipped")
+        endif()
+    endif()
+endfunction()
+
 if(QT_FEATURE_qt3d_simd_sse2)
-    qt_add_simd_part(3DCore SIMD sse2
+    qt3d_add_simd_part(3DCore SIMD sse2
         SOURCES
             transforms/matrix4x4_sse.cpp transforms/matrix4x4_sse_p.h
     )
 endif()
 
 if(QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2)
-    qt_add_simd_part(3DCore SIMD sse2
+    qt3d_add_simd_part(3DCore SIMD sse2
         SOURCES
             transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
             transforms/vector4d_sse.cpp transforms/vector4d_sse_p.h
@@ -123,7 +164,7 @@ if(QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2)
 endif()
 
 if(QT_FEATURE_qt3d_simd_avx2)
-    qt_add_simd_part(3DCore SIMD avx2
+    qt3d_add_simd_part(3DCore SIMD avx2
         SOURCES
             transforms/matrix4x4_avx2.cpp transforms/matrix4x4_avx2_p.h
             transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
