@@ -101,6 +101,12 @@ GLShader::GLShader()
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
 
+GLShader::~GLShader()
+{
+    if (m_contextConnection)
+        QObject::disconnect(m_contextConnection);
+}
+
 void GLShader::setGraphicsContext(GraphicsContext *context)
 {
     QMutexLocker lock(&m_mutex);
