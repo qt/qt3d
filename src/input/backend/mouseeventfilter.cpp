@@ -72,7 +72,7 @@ bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
     case QEvent::HoverMove:
     {
         const QHoverEvent *event = static_cast<QHoverEvent *>(e);
-        m_inputHandler->appendMouseEvent(QMouseEvent(QEvent::MouseMove, event->posF(), Qt::NoButton,  Qt::NoButton, event->modifiers()));
+        m_inputHandler->appendMouseEvent(QMouseEvent(QEvent::MouseMove, event->position(), Qt::NoButton,  Qt::NoButton, event->modifiers()));
         break;
     }
     case QEvent::MouseButtonPress:
