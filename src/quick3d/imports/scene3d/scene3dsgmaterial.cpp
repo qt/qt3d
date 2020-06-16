@@ -64,8 +64,9 @@ Scene3DSGMaterial::Scene3DSGMaterial()
 {
 }
 
-QSGMaterialShader *Scene3DSGMaterial::createShader() const
+QSGMaterialShader *Scene3DSGMaterial::createShader(QSGRendererInterface::RenderMode renderMode) const
 {
+    Q_UNUSED(renderMode);
     return new Scene3DSGMaterialShader();
 }
 

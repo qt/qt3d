@@ -73,7 +73,7 @@ public:
 
     QSGTexture *texture() const Q_DECL_NOTHROW { return m_texture; }
     QSGMaterialType *type() const final { return &Scene3DSGMaterialShader::type; }
-    QSGMaterialShader *createShader() const final;
+    QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const final;
 
     void show() { m_visible = true; }
     bool visible() const { return m_visible; }
