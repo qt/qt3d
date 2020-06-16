@@ -411,11 +411,6 @@ void Scene3DRenderer::render()
 
     ContextSaver saver;
 
-    // The OpenGL state may be dirty from the previous QtQuick nodes, so reset
-    // it here to give Qt3D the clean state it expects
-    // TODOQT6 Restore functionality
-//    m_window->resetOpenGLState();
-
     // Create and bind FBO if using the FBO compositing mode
     const bool usesFBO = m_compositingMode == Scene3DItem::FBO;
     if (usesFBO) {
@@ -427,6 +422,7 @@ void Scene3DRenderer::render()
     }
 
     // Render Qt3D Scene
+    // Qt3D takes care of resetting the GL state to default values
     static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(usesFBO);
 
     // We may have called doneCurrent() so restore the context if the rendering surface was changed

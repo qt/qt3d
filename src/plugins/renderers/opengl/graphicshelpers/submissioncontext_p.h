@@ -144,6 +144,7 @@ public:
     void setCurrentStateSet(RenderStateSet* ss);
     RenderStateSet *currentStateSet() const;
     void applyState(const StateVariant &state);
+    void resetState();
 
     void resetMasked(qint64 maskOfStatesToReset);
     void applyStateSet(RenderStateSet *ss);

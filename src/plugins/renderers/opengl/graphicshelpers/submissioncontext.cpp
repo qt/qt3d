@@ -476,9 +476,7 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     initializeHelpers(m_surface);
 
     // need to reset these values every frame, may get overwritten elsewhere
-    m_gl->functions()->glClearColor(m_currClearColorValue.redF(), m_currClearColorValue.greenF(), m_currClearColorValue.blueF(), m_currClearColorValue.alphaF());
-    m_gl->functions()->glClearDepthf(m_currClearDepthValue);
-    m_gl->functions()->glClearStencil(m_currClearStencilValue);
+    resetState();
 
     if (m_activeShader) {
         m_activeShader = nullptr;
@@ -1033,6 +1031,34 @@ void SubmissionContext::applyState(const StateVariant &stateVariant)
     default:
         Q_UNREACHABLE();
     }
+}
+
+void SubmissionContext::resetState()
+{
+    QOpenGLFunctions *f = m_gl->functions();
+    f->glActiveTexture(GL_TEXTURE0);
+    f->glBindTexture(GL_TEXTURE_2D, 0);
+
+    f->glDisable(GL_DEPTH_TEST);
+    f->glDisable(GL_STENCIL_TEST);
+    f->glDisable(GL_SCISSOR_TEST);
+
+    f->glColorMask(true, true, true, true);
+    f->glClearColor(m_currClearColorValue.redF(), m_currClearColorValue.greenF(), m_currClearColorValue.blueF(), m_currClearColorValue.alphaF());
+
+    f->glDepthMask(true);
+    f->glDepthFunc(GL_LESS);
+    f->glClearDepthf(m_currClearDepthValue);
+
+    f->glStencilMask(0xff);
+    f->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    f->glStencilFunc(GL_ALWAYS, 0, 0xff);
+    f->glClearStencil(m_currClearStencilValue);
+
+    f->glDisable(GL_BLEND);
+    f->glBlendFunc(GL_ONE, GL_ZERO);
+
+    f->glUseProgram(0);
 }
 
 void SubmissionContext::resetMasked(qint64 maskOfStatesToReset)
