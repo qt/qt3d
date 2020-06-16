@@ -138,6 +138,7 @@ QRhiSampler::Filter rhiFilterFromTextureFilter(QAbstractTexture::Filter filter) 
 QRhiSampler::Filter rhiMipMapFilterFromTextureFilter(QAbstractTexture::Filter filter) noexcept
 {
     switch (filter) {
+    case QAbstractTexture::Nearest:
     case QAbstractTexture::NearestMipMapNearest:
     case QAbstractTexture::LinearMipMapNearest:
         return QRhiSampler::Nearest;
