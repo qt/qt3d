@@ -277,11 +277,6 @@ void CalculateBoundingVolumeJob::run()
                 m_results.push_back(res); // How do we push it to the backends????
         }
     }
-
-    for (auto result: qAsConst(m_results)) {
-        // set the results
-        QBoundingVolumePrivate::get(result.provider)->setImplicitBounds(result.m_min, result.m_max, result.m_center, result.m_radius);
-    }
 }
 
 void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
@@ -289,6 +284,9 @@ void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
     Q_UNUSED(aspectEngine)
 
     for (auto result: qAsConst(m_results)) {
+        // set the results
+        QBoundingVolumePrivate::get(result.provider)->setImplicitBounds(result.m_min, result.m_max, result.m_center, result.m_radius);
+
         // reset dirty flags
         QEntityPrivate::get(result.entity)->m_dirty = false;
         QGeometryViewPrivate::get(result.provider->view())->m_dirty = false;
