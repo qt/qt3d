@@ -356,6 +356,23 @@ void applyStateHelper<LineWidth>(const LineWidth *state, SubmissionContext *gc)
     gc->openGLContext()->functions()->glLineWidth(std::get<0>(values));
 }
 
+GLint glAttachmentPoint(const QRenderTargetOutput::AttachmentPoint &attachmentPoint)
+{
+    if (attachmentPoint <= QRenderTargetOutput::Color15)
+        return GL_COLOR_ATTACHMENT0 + attachmentPoint;
+
+    switch (attachmentPoint) {
+    case QRenderTargetOutput::Depth:
+    case QRenderTargetOutput::DepthStencil:
+        return GL_DEPTH_ATTACHMENT;
+    case QRenderTargetOutput::Stencil:
+        return GL_STENCIL_ATTACHMENT;
+    default:
+        Q_UNREACHABLE();
+        return GL_NONE;
+    }
+}
+
 } // anonymous
 
 
@@ -1572,12 +1589,12 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
 
     //Bind texture
     if (!inputBufferIsDefault)
-        readBuffer(GL_COLOR_ATTACHMENT0 + inputAttachmentPoint);
+        readBuffer(glAttachmentPoint(inputAttachmentPoint));
 
     if (!outputBufferIsDefault) {
         // Note that we use glDrawBuffers, not glDrawBuffer. The
         // latter is not available with GLES.
-        const int buf = outputAttachmentPoint;
+        const int buf = glAttachmentPoint(outputAttachmentPoint);
         drawBuffers(1, &buf);
     }
 
