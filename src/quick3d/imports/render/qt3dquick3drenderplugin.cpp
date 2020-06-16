@@ -159,8 +159,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
     Qt3DRender::Quick::Quick3DRender_initialize();
 
-    qmlRegisterUncreatableType<QWindow>(uri, 2, 0, "Window", "Only for assigning window surface property");
-
     // Converters
     QMetaType::registerConverter<Qt3DRender::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);
 
