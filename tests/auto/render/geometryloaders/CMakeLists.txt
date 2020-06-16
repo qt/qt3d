@@ -19,7 +19,6 @@ qt_add_test(tst_geometryloaders
 # Resources:
 set(geometryloaders_resource_files
     "cube.fbx"
-    "cube.gltf"
     "cube.obj"
     "cube.ply"
     "cube.stl"

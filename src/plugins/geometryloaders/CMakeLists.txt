@@ -8,7 +8,6 @@ qt_feature_module_begin(
 include(configure.cmake)
 qt_feature_module_end(NO_MODULE)
 
-add_subdirectory(gltf)
 if(QT_FEATURE_regularexpression)
     add_subdirectory(default)
 endif()
