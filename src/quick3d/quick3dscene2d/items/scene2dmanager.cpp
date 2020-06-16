@@ -90,7 +90,8 @@ Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
 
     // Create window to render the QML with
     m_sharedObject->m_quickWindow = new QQuickWindow(m_sharedObject->m_renderControl);
-    m_sharedObject->m_quickWindow->setClearBeforeRendering(true);
+    // TODOQT6 see qtdeclarative 0d43e21429ee23442ec3a99f641a5665d66e75e2
+    //m_sharedObject->m_quickWindow->setClearBeforeRendering(true);
     m_sharedObject->m_quickWindow->setColor(Qt::transparent);
 
     connect(m_sharedObject->m_renderControl, &QQuickRenderControl::renderRequested,
