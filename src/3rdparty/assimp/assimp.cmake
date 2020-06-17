@@ -480,6 +480,7 @@ function(qt3d_extend_target_for_assimp target)
             ASSIMP_BUILD_NO_X_IMPORTER
             OPENDDL_STATIC_LIBARY
             NOUNCRYPT
+            QT_NO_EMIT
         INCLUDE_DIRECTORIES
             ${assimpDir}
             ${assimpDir}/..
