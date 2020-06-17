@@ -91,11 +91,14 @@ class QTextureMaterialPrivate : public Qt3DRender::QMaterialPrivate
     Qt3DRender::QTechnique *m_textureGL3Technique;
     Qt3DRender::QTechnique *m_textureGL2Technique;
     Qt3DRender::QTechnique *m_textureES2Technique;
+    Qt3DRender::QTechnique *m_textureRHITechnique;
     Qt3DRender::QRenderPass *m_textureGL3RenderPass;
     Qt3DRender::QRenderPass *m_textureGL2RenderPass;
     Qt3DRender::QRenderPass *m_textureES2RenderPass;
+    Qt3DRender::QRenderPass *m_textureRHIRenderPass;
     Qt3DRender::QShaderProgram *m_textureGL3Shader;
     Qt3DRender::QShaderProgram *m_textureGL2ES2Shader;
+    Qt3DRender::QShaderProgram *m_textureRHIShader;
     Qt3DRender::QNoDepthMask *m_noDepthMask;
     Qt3DRender::QBlendEquationArguments *m_blendState;
     Qt3DRender::QBlendEquation *m_blendEquation;

@@ -67,11 +67,14 @@ QTextureMaterialPrivate::QTextureMaterialPrivate()
     , m_textureGL3Technique(new QTechnique)
     , m_textureGL2Technique(new QTechnique)
     , m_textureES2Technique(new QTechnique)
+    , m_textureRHITechnique(new QTechnique)
     , m_textureGL3RenderPass(new QRenderPass)
     , m_textureGL2RenderPass(new QRenderPass)
     , m_textureES2RenderPass(new QRenderPass)
+    , m_textureRHIRenderPass(new QRenderPass)
     , m_textureGL3Shader(new QShaderProgram)
     , m_textureGL2ES2Shader(new QShaderProgram)
+    , m_textureRHIShader(new QShaderProgram)
     , m_noDepthMask(new QNoDepthMask())
     , m_blendState(new QBlendEquationArguments())
     , m_blendEquation(new QBlendEquation())
@@ -90,6 +93,8 @@ void QTextureMaterialPrivate::init()
     m_textureGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/unlittexture.frag"))));
     m_textureGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/unlittexture.vert"))));
     m_textureGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/unlittexture.frag"))));
+    m_textureRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/unlittexture.vert"))));
+    m_textureRHIShader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/unlittexture.frag"))));
 
     m_textureGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_textureGL3Technique->graphicsApiFilter()->setMajorVersion(3);
@@ -106,6 +111,10 @@ void QTextureMaterialPrivate::init()
     m_textureES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_textureES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_textureRHITechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+    m_textureRHITechnique->graphicsApiFilter()->setMajorVersion(1);
+    m_textureRHITechnique->graphicsApiFilter()->setMinorVersion(0);
+
     m_noDepthMask->setEnabled(false);
     m_blendState->setEnabled(false);
     m_blendState->setSourceRgb(QBlendEquationArguments::SourceAlpha);
@@ -121,10 +130,12 @@ void QTextureMaterialPrivate::init()
     m_textureGL3Technique->addFilterKey(m_filterKey);
     m_textureGL2Technique->addFilterKey(m_filterKey);
     m_textureES2Technique->addFilterKey(m_filterKey);
+    m_textureRHITechnique->addFilterKey(m_filterKey);
 
     m_textureGL3RenderPass->setShaderProgram(m_textureGL3Shader);
     m_textureGL2RenderPass->setShaderProgram(m_textureGL2ES2Shader);
     m_textureES2RenderPass->setShaderProgram(m_textureGL2ES2Shader);
+    m_textureRHIRenderPass->setShaderProgram(m_textureRHIShader);
 
     m_textureGL3RenderPass->addRenderState(m_noDepthMask);
     m_textureGL3RenderPass->addRenderState(m_blendState);
@@ -138,13 +149,19 @@ void QTextureMaterialPrivate::init()
     m_textureES2RenderPass->addRenderState(m_blendState);
     m_textureES2RenderPass->addRenderState(m_blendEquation);
 
+    m_textureRHIRenderPass->addRenderState(m_noDepthMask);
+    m_textureRHIRenderPass->addRenderState(m_blendState);
+    m_textureRHIRenderPass->addRenderState(m_blendEquation);
+
     m_textureGL3Technique->addRenderPass(m_textureGL3RenderPass);
     m_textureGL2Technique->addRenderPass(m_textureGL2RenderPass);
     m_textureES2Technique->addRenderPass(m_textureES2RenderPass);
+    m_textureRHITechnique->addRenderPass(m_textureRHIRenderPass);
 
     m_textureEffect->addTechnique(m_textureGL3Technique);
     m_textureEffect->addTechnique(m_textureGL2Technique);
     m_textureEffect->addTechnique(m_textureES2Technique);
+    m_textureEffect->addTechnique(m_textureRHITechnique);
 
     m_textureEffect->addParameter(m_textureParameter);
     m_textureEffect->addParameter(m_textureTransformParameter);
