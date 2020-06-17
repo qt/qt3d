@@ -13,7 +13,6 @@ qt_internal_add_plugin(Scene2DPlugin
     PUBLIC_LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
-        Qt::3DExtras
         Qt::3DQuickScene2D
         Qt::3DQuickScene2DPrivate
         Qt::3DRender

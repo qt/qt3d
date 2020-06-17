@@ -45,7 +45,7 @@ qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_input
 
 qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_logic
     PUBLIC_LIBRARIES
-        3DLogic
+        Qt::3DLogic
 )
 
 qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_animation

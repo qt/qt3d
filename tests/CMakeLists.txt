@@ -5,6 +5,9 @@ if(QT_BUILD_STANDALONE_TESTS)
     # the standalone tests here.
 endif()
 
-qt_build_tests()
+# many tests rely on extras to load data
+if(QT_FEATURE_qt3d_extras)
+    qt_build_tests()
 
-add_subdirectory(manual)  # add here since default seems to be to not build them
+    add_subdirectory(manual)  # add here since default seems to be to not build them
+endif()

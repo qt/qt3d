@@ -43,7 +43,6 @@
 #include <private/rendertargetoutput_p.h>
 #include <private/managers_p.h>
 
-#include <Qt3DRender/qt3drender-config.h>
 #include <QtCore/qmutex.h>
 
 QT_BEGIN_NAMESPACE

@@ -13,12 +13,8 @@ qt_add_qml_module(qtquickscene2dplugin
         qtquickscene2dplugin.cpp qtquickscene2dplugin.h
     PUBLIC_LIBRARIES
         Qt::3DCore
-        Qt::3DInput
-        3DLogic
         Qt::3DQuickScene2D
         Qt::3DQuickScene2DPrivate
-        Qt::3DRender
-        Qt::3DRenderPrivate
         Qt::Core
         Qt::Gui
         Qt::Qml
