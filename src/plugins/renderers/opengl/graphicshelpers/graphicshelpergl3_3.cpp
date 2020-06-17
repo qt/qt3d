@@ -82,10 +82,11 @@ GraphicsHelperGL3_3::~GraphicsHelperGL3_3()
 void GraphicsHelperGL3_3::initializeHelper(QOpenGLContext *context,
                                             QAbstractOpenGLFunctions *functions)
 {
+    Q_UNUSED(context)
     m_funcs = static_cast<QOpenGLFunctions_3_3_Core*>(functions);
     const bool ok = m_funcs->initializeOpenGLFunctions();
     Q_ASSERT(ok);
-    Q_UNUSED(ok);
+    Q_UNUSED(ok)
 }
 
 void GraphicsHelperGL3_3::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,

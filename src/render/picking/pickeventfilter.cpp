@@ -84,7 +84,7 @@ QList<QKeyEvent> PickEventFilter::pendingKeyEvents()
 */
 bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
-    Q_UNUSED(obj);
+    Q_UNUSED(obj)
     switch (e->type()) {
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
@@ -96,7 +96,7 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
         QMutexLocker locker(&m_mutex);
         QHoverEvent *he = static_cast<QHoverEvent *>(e);
         m_pendingMouseEvents.push_back({obj, QMouseEvent(QEvent::MouseMove,
-                                                   he->pos(), Qt::NoButton, Qt::NoButton,
+                                                   he->position(), Qt::NoButton, Qt::NoButton,
                                                    he->modifiers())});
     } break;
     case QEvent::KeyPress:

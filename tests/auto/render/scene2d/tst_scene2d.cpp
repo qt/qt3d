@@ -67,7 +67,7 @@ public:
                 e->type() <= QEvent::MouseMove) {
             QMouseEvent *me = static_cast<QMouseEvent *>(e);
             m_eventTypes.push_back(e->type());
-            m_mousePoints.push_back(me->localPos());
+            m_mousePoints.push_back(me->position());
         }
         return QQuickWindow::event(e);
     }

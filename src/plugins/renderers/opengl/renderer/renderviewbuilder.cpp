@@ -247,8 +247,6 @@ private:
     QVector<MaterialParameterGathererJobPtr> m_materialGathererJobs;
     QVector<RenderViewCommandUpdaterJobPtr> m_renderViewCommandUpdaterJobs;
     QVector<RenderViewCommandBuilderJobPtr> m_renderViewCommandBuilderJobs;
-    Renderer *m_renderer;
-    FrameGraphNode *m_leafNode;
 };
 
 class SyncRenderViewPreCommandUpdate
@@ -509,7 +507,7 @@ public:
         // The cache leaf should already have been created so we don't need to protect the access
         RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
         // Save the filtered by layer subset into the cache
-        dataCacheForLeaf.filterEntitiesByLayer = std::move(m_filterEntityByLayerJob->filteredEntities());
+        dataCacheForLeaf.filterEntitiesByLayer = m_filterEntityByLayerJob->filteredEntities();
     }
 
 private:
