@@ -50,7 +50,6 @@ qt_add_module(3DCore
         resources/qframeallocator_p_p.h
         resources/qhandle_p.h
         resources/qloadgltf_p.h
-        resources/qresourcemanager.cpp resources/qresourcemanager_p.h
         services/nullservices_p.h
         services/qabstractframeadvanceservice.cpp services/qabstractframeadvanceservice_p.h
         services/qabstractframeadvanceservice_p_p.h
@@ -160,6 +159,8 @@ if(QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2)
         SOURCES
             transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
             transforms/vector4d_sse.cpp transforms/vector4d_sse_p.h
+            aligned_malloc_p.h
+            resources/qresourcemanager.cpp resources/qresourcemanager_p.h
     )
 endif()
 
@@ -169,5 +170,15 @@ if(QT_FEATURE_qt3d_simd_avx2)
             transforms/matrix4x4_avx2.cpp transforms/matrix4x4_avx2_p.h
             transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
             transforms/vector4d_sse.cpp transforms/vector4d_sse_p.h
+            aligned_malloc_p.h
+            resources/qresourcemanager.cpp resources/qresourcemanager_p.h
     )
 endif()
+
+qt_extend_target(3DCore
+    CONDITION
+        NOT QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2
+    SOURCES
+        aligned_malloc_p.h
+        resources/qresourcemanager.cpp resources/qresourcemanager_p.h
+)

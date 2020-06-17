@@ -7,7 +7,6 @@
 qt_add_module(3DRender
     PLUGIN_TYPES sceneparsers geometryloaders renderplugins renderers
     SOURCES
-        aligned_malloc_p.h
         backend/abstractrenderer_p.h
         backend/apishadermanager_p.h
         backend/attachmentpack.cpp backend/attachmentpack_p.h

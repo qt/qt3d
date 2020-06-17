@@ -40,7 +40,6 @@ HEADERS += \
     renderlogging_p.h \
     qt3drender_global.h \
     qt3drender_global_p.h \
-    aligned_malloc_p.h \
     qrendererplugin_p.h \
     qrendererpluginfactory_p.h
 

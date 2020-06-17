@@ -44,7 +44,7 @@
 #include <Qt3DCore/private/matrix4x4_p.h>
 #include <Qt3DCore/private/vector3d_p.h>
 #include <Qt3DCore/private/vector4d_p.h>
-#include <Qt3DRender/private/aligned_malloc_p.h>
+#include <Qt3DCore/private/aligned_malloc_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 
 //

@@ -58,7 +58,6 @@
 #include <QMatrix4x4>
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/private/aligned_malloc_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include  <shadervariables_p.h>
 

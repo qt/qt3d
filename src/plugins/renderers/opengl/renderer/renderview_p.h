@@ -66,7 +66,7 @@
 #include <Qt3DRender/private/qblitframebuffer_p.h>
 #include <Qt3DRender/private/waitfence_p.h>
 
-#include <Qt3DRender/private/aligned_malloc_p.h>
+#include <Qt3DCore/private/aligned_malloc_p.h>
 
 #include <renderer_p.h>
 

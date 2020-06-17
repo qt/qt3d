@@ -28,7 +28,7 @@
 
 #include <QtTest/QtTest>
 #include <Qt3DCore/private/matrix4x4_avx2_p.h>
-#include <Qt3DRender/private/aligned_malloc_p.h>
+#include <Qt3DCore/private/aligned_malloc_p.h>
 
 using namespace Qt3DCore;
 
