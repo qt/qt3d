@@ -154,8 +154,6 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_multisample(true)
     , m_dirty(true)
     , m_dirtyViews(false)
-    , m_clearsWindowByDefault(true)
-    , m_disableClearWindow(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
     , m_compositingMode(FBO)
     , m_dummySurface(nullptr)
@@ -764,20 +762,6 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         }
         fboNode->setRect(boundingRect());
     }
-
-    // TODOQT6 see qtdeclarative 0d43e21429ee23442ec3a99f641a5665d66e75e2
-//    if (usesFBO) {
-//        // Reset clear flag if we've set it to false it's still set to that
-//        if (m_disableClearWindow && !window()->clearBeforeRendering())
-//            window()->setClearBeforeRendering(m_clearsWindowByDefault);
-//        m_disableClearWindow = false;
-//    } else {
-//        // Record clearBeforeRendering value before we force it to false
-//        m_clearsWindowByDefault = window()->clearBeforeRendering();
-//        m_disableClearWindow = true;
-//        if (m_clearsWindowByDefault)
-//            window()->setClearBeforeRendering(false);
-//    }
 
     // Request update for next frame so that we can check whether we need to
     // render again or not

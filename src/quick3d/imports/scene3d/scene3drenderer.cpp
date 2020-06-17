@@ -181,7 +181,7 @@ void Scene3DRenderer::init(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEng
 
     m_window = m_item->window();
     QObject::connect(m_item->window(), &QQuickWindow::beforeSynchronizing, this, &Scene3DRenderer::beforeSynchronize, Qt::DirectConnection);
-    QObject::connect(m_item->window(), &QQuickWindow::beforeRendering, this, &Scene3DRenderer::render, Qt::DirectConnection);
+    QObject::connect(m_item->window(), &QQuickWindow::beforeRenderPassRecording, this, &Scene3DRenderer::render, Qt::DirectConnection);
     QObject::connect(m_item->window(), &QQuickWindow::sceneGraphInvalidated, this, &Scene3DRenderer::onSceneGraphInvalidated, Qt::DirectConnection);
     // So that we can schedule the cleanup
     QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChanged, Qt::QueuedConnection);
@@ -451,11 +451,6 @@ void Scene3DRenderer::render()
         if (m_node)
             m_node->show();
     }
-
-    // Reset the state used by the Qt Quick scenegraph to avoid any
-    // interference when rendering the rest of the UI.
-    // TODOQT6 Restore functionality
-//    m_window->resetOpenGLState();
 }
 
 } // namespace Qt3DRender

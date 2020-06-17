@@ -158,8 +158,6 @@ private:
     bool m_multisample;
     bool m_dirty;
     bool m_dirtyViews;
-    bool m_clearsWindowByDefault;
-    bool m_disableClearWindow;
 
     QPointer<Qt3DRender::QCamera> m_camera;
     CameraAspectRatioMode m_cameraAspectRatioMode;
