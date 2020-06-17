@@ -1039,17 +1039,17 @@ void SubmissionContext::resetState()
     f->glActiveTexture(GL_TEXTURE0);
     f->glBindTexture(GL_TEXTURE_2D, 0);
 
-    f->glDisable(GL_DEPTH_TEST);
-    f->glDisable(GL_STENCIL_TEST);
     f->glDisable(GL_SCISSOR_TEST);
 
     f->glColorMask(true, true, true, true);
     f->glClearColor(m_currClearColorValue.redF(), m_currClearColorValue.greenF(), m_currClearColorValue.blueF(), m_currClearColorValue.alphaF());
 
+    f->glEnable(GL_DEPTH_TEST);
     f->glDepthMask(true);
     f->glDepthFunc(GL_LESS);
     f->glClearDepthf(m_currClearDepthValue);
 
+    f->glDisable(GL_STENCIL_TEST);
     f->glStencilMask(0xff);
     f->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     f->glStencilFunc(GL_ALWAYS, 0, 0xff);
