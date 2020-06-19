@@ -651,6 +651,9 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
     }
     }
 
+    // TODO how to detect when that is the case ?
+    rhiFlags |= QRhiTexture::RenderTarget;
+
     QRhiTexture *rhiTexture = ctx->rhi()->newTexture(rhiFormat, pixelSize, sampleCount, rhiFlags);
 
     if (!rhiTexture->create()) {

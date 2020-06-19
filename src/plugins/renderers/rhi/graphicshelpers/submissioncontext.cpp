@@ -494,12 +494,9 @@ SubmissionContext::SubmissionContext()
       m_activeShader(nullptr),
       m_renderTargetFormat(QAbstractTexture::NoFormat),
       m_material(nullptr),
-      m_activeFBO(0),
       m_renderer(nullptr),
       m_uboTempArray(QByteArray(1024, 0)),
       m_initialized(false),
-      m_maxTextureUnits(0),
-      m_defaultFBO(0),
       m_rhi(nullptr),
       m_currentSwapChain(nullptr),
       m_currentRenderPassDescriptor(nullptr)
@@ -702,142 +699,6 @@ void SubmissionContext::endDrawing(bool swapBuffers)
     //*    static int i = 0;
     //*    if (i++ == 10)
     //*        std::exit(0);
-}
-
-void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
-                                             const AttachmentPack &attachments, GLuint defaultFboId)
-{
-    RHI_UNIMPLEMENTED;
-    GLuint fboId = defaultFboId; // Default FBO
-    if (renderTargetNodeId) {
-        // New RenderTarget
-        if (!m_renderTargets.contains(renderTargetNodeId)) {
-            if (m_defaultFBO && fboId == m_defaultFBO) {
-                // this is the default fbo that some platforms create (iOS), we just register it
-                // Insert FBO into hash
-                m_renderTargets.insert(renderTargetNodeId, fboId);
-            } else {
-                RHI_UNIMPLEMENTED;
-                fboId = createRenderTarget(renderTargetNodeId, attachments);
-            }
-        } else {
-            RHI_UNIMPLEMENTED;
-            fboId = updateRenderTarget(renderTargetNodeId, attachments, true);
-        }
-    }
-    m_activeFBO = fboId;
-    //*    m_glHelper->bindFrameBufferObject(m_activeFBO, GraphicsHelperInterface::FBODraw);
-    // Set active drawBuffers
-    activateDrawBuffers(attachments);
-}
-
-GLuint SubmissionContext::createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
-                                             const AttachmentPack &attachments)
-{
-    Q_UNUSED(renderTargetNodeId);
-    Q_UNUSED(attachments);
-    RHI_UNIMPLEMENTED;
-    return 0;
-    //*    const GLuint fboId = m_glHelper->createFrameBufferObject();
-    //*    if (fboId) {
-    //*        // The FBO is created and its attachments are set once
-    //*        // Insert FBO into hash
-    //*        m_renderTargets.insert(renderTargetNodeId, fboId);
-    //*        // Bind FBO
-    //*        m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
-    //*        bindFrameBufferAttachmentHelper(fboId, attachments);
-    //*    } else {
-    //*        qCritical("Failed to create FBO");
-    //*    }
-    //*    return fboId;
-}
-
-GLuint SubmissionContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
-                                             const AttachmentPack &attachments,
-                                             bool isActiveRenderTarget)
-{
-    Q_UNUSED(renderTargetNodeId);
-    Q_UNUSED(attachments);
-    Q_UNUSED(isActiveRenderTarget);
-    RHI_UNIMPLEMENTED;
-    return 0;
-    //*    const GLuint fboId = m_renderTargets.value(renderTargetNodeId);
-    //*
-    //*    // We need to check if  one of the attachment was resized
-    //*    bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
-    //*    if (!needsResize) {
-    //*        // render target exists, has attachment been resized?
-    //*        RHITextureManager *rhiTextureManager =
-    //m_renderer->rhiResourceManagers()->rhiTextureManager();
-    //*        const QSize s = m_renderTargetsSize[fboId];
-    //*        const auto attachments_ = attachments.attachments();
-    //*        for (const Attachment &attachment : attachments_) {
-    //*            RHITexture *rTex = rhiTextureManager->lookupResource(attachment.m_textureUuid);
-    //*            // ### TODO QTBUG-64757 this check is insufficient since the
-    //*            // texture may have changed to another one with the same size. That
-    //*            // case is not handled atm.
-    //*            if (rTex) {
-    //*                needsResize |= rTex->size() != s;
-    //*                if (isActiveRenderTarget && attachment.m_point ==
-    //QRenderTargetOutput::Color0)
-    //*                    m_renderTargetFormat = rTex->properties().format;
-    //*            }
-    //*        }
-    //*    }
-    //*
-    //*    if (needsResize) {
-    //*        m_glHelper->bindFrameBufferObject(fboId, GraphicsHelperInterface::FBODraw);
-    //*        bindFrameBufferAttachmentHelper(fboId, attachments);
-    //*    }
-    //*
-    //*    return fboId;
-}
-
-QSize SubmissionContext::renderTargetSize(const QSize &surfaceSize) const
-{
-    RHI_UNIMPLEMENTED;
-    return surfaceSize;
-    //*    QSize renderTargetSize{};
-    //*    if (m_activeFBO != m_defaultFBO) {
-    //*        // For external FBOs we may not have a m_renderTargets entry.
-    //*        if (m_renderTargetsSize.contains(m_activeFBO)) {
-    //*            renderTargetSize = m_renderTargetsSize[m_activeFBO];
-    //*        } else if (surfaceSize.isValid()) {
-    //*            renderTargetSize = surfaceSize;
-    //*        } else {
-    //*            // External FBO (when used with QtQuick2 Scene3D)
-    //*
-    //*            // Query FBO color attachment 0 size
-    //*            GLint attachmentObjectType = GL_NONE;
-    //*            GLint attachment0Name = 0;
-    //*            m_gl->functions()->glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
-    //*                                                                     GL_COLOR_ATTACHMENT0,
-    //* GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
-    //*                                                                     &attachmentObjectType);
-    //*            m_gl->functions()->glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
-    //*                                                                     GL_COLOR_ATTACHMENT0,
-    //* GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
-    //*                                                                     &attachment0Name);
-    //*
-    //*            if (attachmentObjectType == GL_RENDERBUFFER &&
-    //m_glHelper->supportsFeature(GraphicsHelperInterface::RenderBufferDimensionRetrieval))
-    //*                renderTargetSize = m_glHelper->getRenderBufferDimensions(attachment0Name);
-    //*            else if (attachmentObjectType == GL_TEXTURE &&
-    //m_glHelper->supportsFeature(GraphicsHelperInterface::TextureDimensionRetrieval))
-    //*                // Assumes texture level 0 and GL_TEXTURE_2D target
-    //*                renderTargetSize = m_glHelper->getTextureDimensions(attachment0Name,
-    //GL_TEXTURE_2D);
-    //*            else
-    //*                return renderTargetSize;
-    //*        }
-    //*    } else {
-    //*        renderTargetSize = m_surface->size();
-    //*        if (m_surface->surfaceClass() == QSurface::Window) {
-    //*            const float dpr = static_cast<QWindow *>(m_surface)->devicePixelRatio();
-    //*            renderTargetSize *= dpr;
-    //*        }
-    //*    }
-    //*    return renderTargetSize;
 }
 
 QImage SubmissionContext::readFramebuffer(const QRect &rect)

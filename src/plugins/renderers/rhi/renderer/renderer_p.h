@@ -157,6 +157,7 @@ class SubmissionContext;
 class RenderCommand;
 class RenderQueue;
 class RenderView;
+struct RHIRenderTarget;
 class RHIShader;
 class RHIResourceManagers;
 
@@ -290,9 +291,8 @@ public:
 
     struct ViewSubmissionResultData
     {
-        ViewSubmissionResultData() : lastBoundFBOId(0), surface(nullptr) { }
+        ViewSubmissionResultData() : surface(nullptr) { }
 
-        uint lastBoundFBOId;
         QSurface *surface;
     };
 
@@ -422,6 +422,11 @@ private:
     float m_textureTransform[4];
 
     void updateGraphicsPipeline(RenderCommand &command, RenderView *rv, int renderViewIndex);
+    void cleanupRenderTarget(const RenderTarget *renderTarget);
+
+    void createRenderTarget(RenderView* rv, RHIRenderTarget *);
+    bool setupRenderTarget(RenderView* rv, RHIGraphicsPipeline* graphicsPipeline, QRhiSwapChain* swapchain);
+
     bool uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                                  RenderCommand &command);
     bool uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,

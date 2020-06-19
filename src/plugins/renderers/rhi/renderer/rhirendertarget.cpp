@@ -37,22 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RHI_RHIHANDLE_TYPES_P_H
-#define QT3DRENDER_RENDER_RHI_RHIHANDLE_TYPES_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qhandle_p.h>
-
+#include "rhirendertarget_p.h"
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -61,27 +46,22 @@ namespace Render {
 
 namespace Rhi {
 
-class RHIBuffer;
-class RHITexture;
-class RHIGraphicsPipeline;
-struct RHIRenderTarget;
+void RHIRenderTarget::cleanup()
+{
+    delete renderPassDescriptor;
+    delete renderTarget;
+    delete depthStencilBuffer;
+    renderPassDescriptor = nullptr;
+    renderTarget = nullptr;
+    depthStencilBuffer = nullptr;
+}
 
-typedef Qt3DCore::QHandle<RHIBuffer> HRHIBuffer;
-typedef Qt3DCore::QHandle<RHITexture> HRHITexture;
-typedef Qt3DCore::QHandle<RHIGraphicsPipeline> HRHIGraphicsPipeline;
-typedef Qt3DCore::QHandle<RHIRenderTarget> HRHIRenderTarget;
+RHIRenderTarget::~RHIRenderTarget()
+{
+}
 
 } // namespace Rhi
-
 } // namespace Render
-
 } // namespace Qt3DRender
 
-#if defined(_MSC_VER)
-#define RHI_UNIMPLEMENTED // do { qDebug() << "Unimplemented: " << __FUNCSIG__; } while (0)
-#else
-#define RHI_UNIMPLEMENTED // do { qDebug() << "Unimplemented: " << __PRETTY_FUNCTION__; } while (0)
-#endif
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_RHI_RHIHANDLE_TYPES_P_H

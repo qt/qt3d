@@ -28,6 +28,7 @@ qt_internal_add_plugin(RhiRendererPlugin
         renderer/renderview.cpp renderer/renderview_p.h
         renderer/renderviewbuilder.cpp renderer/renderviewbuilder_p.h
         renderer/rhigraphicspipeline.cpp renderer/rhigraphicspipeline_p.h
+        renderer/rhirendertarget.cpp renderer/rhirendertarget_p.h
         renderer/rhishader.cpp renderer/rhishader_p.h
         renderer/shaderparameterpack.cpp renderer/shaderparameterpack_p.h
         renderer/shadervariables_p.h

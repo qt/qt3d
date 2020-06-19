@@ -51,6 +51,7 @@ RHIResourceManagers::RHIResourceManagers()
     : m_rhiBufferManager(new RHIBufferManager()),
       m_rhiShaderManager(new RHIShaderManager()),
       m_rhiTextureManager(new RHITextureManager()),
+      m_rhiRenderTargetManager(new RHIRenderTargetManager()),
       m_rhiGraphicsPipelineManager(new RHIGraphicsPipelineManager())
 {
 }
@@ -60,6 +61,7 @@ RHIResourceManagers::~RHIResourceManagers()
     delete m_rhiTextureManager;
     delete m_rhiShaderManager;
     delete m_rhiBufferManager;
+    delete m_rhiRenderTargetManager;
     delete m_rhiGraphicsPipelineManager;
 }
 
@@ -75,6 +77,7 @@ void RHIResourceManagers::releaseAllResources()
     releaseAll(m_rhiTextureManager);
     releaseAll(m_rhiBufferManager);
     // releaseAll(m_rhiShaderManager);
+    releaseAll(m_rhiRenderTargetManager);
     releaseAll(m_rhiGraphicsPipelineManager);
 }
 

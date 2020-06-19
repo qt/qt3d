@@ -142,17 +142,12 @@ public:
     void loadShader(Shader *shader, ShaderManager *shaderManager,
                     RHIShaderManager *rhiShaderManager);
 
-    GLuint defaultFBO() const { return m_defaultFBO; }
 
     // Shaders
     bool activateShader(RHIShader *shader);
     RHIShader *activeShader() const { return m_activeShader; }
 
     // FBO
-    GLuint activeFBO() const { return m_activeFBO; }
-    void activateRenderTarget(const Qt3DCore::QNodeId id, const AttachmentPack &attachments,
-                              GLuint defaultFboId);
-    QSize renderTargetSize(const QSize &surfaceSize) const;
     QImage readFramebuffer(const QRect &rect);
     void blitFramebuffer(Qt3DCore::QNodeId outputRenderTargetId,
                          Qt3DCore::QNodeId inputRenderTargetId, QRect inputRect, QRect outputRect,
@@ -208,11 +203,6 @@ private:
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
     void resolveRenderTargetFormat();
-    GLuint createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
-                              const AttachmentPack &attachments);
-    GLuint updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
-                              const AttachmentPack &attachments, bool isActiveRenderTarget);
-
     // Buffers
     HRHIBuffer createRHIBufferFor(Buffer *buffer);
     void uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b, bool releaseBuffer = false);
@@ -235,15 +225,12 @@ private:
     QAbstractTexture::TextureFormat m_renderTargetFormat;
 
     Material *m_material;
-    GLuint m_activeFBO;
 
     Renderer *m_renderer;
     QByteArray m_uboTempArray;
 
     bool m_initialized;
 
-    GLint m_maxTextureUnits;
-    GLuint m_defaultFBO;
     GraphicsApiFilterData m_contextInfo;
 
     QRhi *m_rhi;

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RHI_RHIHANDLE_TYPES_P_H
-#define QT3DRENDER_RENDER_RHI_RHIHANDLE_TYPES_P_H
+#ifndef QT3DRENDER_RENDER_RHI_RHIRENDERTARGET_H
+#define QT3DRENDER_RENDER_RHI_RHIRENDERTARGET_H
 
 //
 //  W A R N I N G
@@ -51,37 +51,32 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qhandle_p.h>
+#include <private/qrhi_p.h>
+#include <rhihandle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
+
 namespace Qt3DRender {
-
 namespace Render {
-
 namespace Rhi {
 
-class RHIBuffer;
-class RHITexture;
-class RHIGraphicsPipeline;
-struct RHIRenderTarget;
+struct RHIRenderTarget {
+    // Note: only used when rendering to a FBO
+    // as we don't want to remove the default framebuffer's rendertarget
+    // TODO: at some point separate render target and graphics pipeline as the former can be reused
+    QRhiRenderTarget *renderTarget{};
+    QRhiRenderPassDescriptor *renderPassDescriptor{};
+    QRhiRenderBuffer *depthStencilBuffer{};
 
-typedef Qt3DCore::QHandle<RHIBuffer> HRHIBuffer;
-typedef Qt3DCore::QHandle<RHITexture> HRHITexture;
-typedef Qt3DCore::QHandle<RHIGraphicsPipeline> HRHIGraphicsPipeline;
-typedef Qt3DCore::QHandle<RHIRenderTarget> HRHIRenderTarget;
+    ~RHIRenderTarget();
+    void cleanup();
+};
 
 } // namespace Rhi
-
 } // namespace Render
-
 } // namespace Qt3DRender
 
-#if defined(_MSC_VER)
-#define RHI_UNIMPLEMENTED // do { qDebug() << "Unimplemented: " << __FUNCSIG__; } while (0)
-#else
-#define RHI_UNIMPLEMENTED // do { qDebug() << "Unimplemented: " << __PRETTY_FUNCTION__; } while (0)
-#endif
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RHI_RHIHANDLE_TYPES_P_H
+#endif // QT3DRENDER_RENDER_RHI_RENDERER_H

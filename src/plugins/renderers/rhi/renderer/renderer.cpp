@@ -39,6 +39,7 @@
 ****************************************************************************/
 
 #include "renderer_p.h"
+#include "rhirendertarget_p.h"
 
 #include <Qt3DCore/qentity.h>
 
@@ -687,6 +688,7 @@ void Renderer::doRender(bool swapBuffers)
     // RenderQueue is complete (but that means it may be of size 0)
     if (canSubmit && (queueIsComplete && !queueIsEmpty)) {
         const QVector<Render::Rhi::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
+
         QTaskLogger submissionStatsPart1(m_services->systemInformation(),
                                          { JobTypes::FrameSubmissionPart1, 0 },
                                          QTaskLogger::Submission);
@@ -802,8 +804,10 @@ void Renderer::doRender(bool swapBuffers)
     if (beganDrawing) {
         SurfaceLocker surfaceLock(submissionData.surface);
         // Finish up with last surface used in the list of RenderViews
-        const bool swapBuffers = submissionData.lastBoundFBOId == m_submissionContext->defaultFBO()
-                && surfaceLock.isSurfaceValid() && m_shouldSwapBuffers;
+        const bool swapBuffers =
+                true // submissionData.lastBoundFBOId == m_submissionContext->defaultFBO()
+                && surfaceLock.isSurfaceValid()
+                && m_shouldSwapBuffers;
         m_submissionContext->endDrawing(swapBuffers);
 
         if (mustCleanResources)
@@ -879,6 +883,46 @@ QSurfaceFormat Renderer::format()
     return m_submissionContext->format();
 }
 
+QRhiVertexInputAttribute::Format rhiAttributeType(Attribute *attr) {
+    switch (attr->vertexBaseType()) {
+    case QAttribute::Byte:
+    case QAttribute::UnsignedByte: {
+        if (attr->vertexSize() == 1)
+            return QRhiVertexInputAttribute::UNormByte;
+        if (attr->vertexSize() == 2)
+            return QRhiVertexInputAttribute::UNormByte2;
+        if (attr->vertexSize() == 4)
+            return QRhiVertexInputAttribute::UNormByte4;
+        break;
+    }
+    case QAttribute::UnsignedInt: {
+        if (attr->vertexSize() == 1)
+            return QRhiVertexInputAttribute::UInt;
+        if (attr->vertexSize() == 2)
+            return QRhiVertexInputAttribute::UInt2;
+        if (attr->vertexSize() == 3)
+            return QRhiVertexInputAttribute::UInt3;
+        if (attr->vertexSize() == 4)
+            return QRhiVertexInputAttribute::UInt4;
+        break;
+    }
+    case QAttribute::Float: {
+        if (attr->vertexSize() == 1)
+            return QRhiVertexInputAttribute::Float;
+        if (attr->vertexSize() == 2)
+            return QRhiVertexInputAttribute::Float2;
+        if (attr->vertexSize() == 3)
+            return QRhiVertexInputAttribute::Float3;
+        if (attr->vertexSize() == 4)
+            return QRhiVertexInputAttribute::Float4;
+        break;
+    }
+    default:
+        qWarning() << "Attribute type not handles by RHI";
+        Q_UNREACHABLE();
+    }
+}
+
 void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int renderViewIndex)
 {
     if (!cmd.m_rhiShader) {
@@ -913,8 +957,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
 
     // Try to retrieve existing pipeline
     auto &pipelineManager = *m_RHIResourceManagers->rhiGraphicsPipelineManager();
-    const GraphicsPipelineIdentifier pipelineKey { cmd.m_geometry, cmd.m_shaderId,
-                                                   renderViewIndex };
+    const GraphicsPipelineIdentifier pipelineKey { cmd.m_geometry, cmd.m_shaderId, rv->renderTargetId(), renderViewIndex };
     RHIGraphicsPipeline *graphicsPipeline = pipelineManager.getOrCreateResource(pipelineKey);
     // TO DO: Ensure we find a way to know when the state is dirty to trigger a rebuild
 
@@ -1017,6 +1060,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
         QRhiGraphicsPipeline *pipeline = m_submissionContext->rhi()->newGraphicsPipeline();
         graphicsPipeline->setShaderResourceBindings(shaderResourceBindings);
         graphicsPipeline->setPipeline(pipeline);
+
         assert(pipeline);
 
         const QShader vertexShader = cmd.m_rhiShader->shaderStage(QShader::VertexStage);
@@ -1043,34 +1087,6 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
         };
         QVector<BufferBinding> uniqueBindings;
 
-        auto rhiAttributeType = [](Attribute *attr) {
-            switch (attr->vertexBaseType()) {
-            case QAttribute::Byte:
-            case QAttribute::UnsignedByte: {
-                if (attr->vertexSize() == 1)
-                    return QRhiVertexInputAttribute::UNormByte;
-                if (attr->vertexSize() == 2)
-                    return QRhiVertexInputAttribute::UNormByte2;
-                if (attr->vertexSize() == 4)
-                    return QRhiVertexInputAttribute::UNormByte4;
-                Q_FALLTHROUGH();
-            }
-            case QAttribute::Float: {
-                if (attr->vertexSize() == 1)
-                    return QRhiVertexInputAttribute::Float;
-                if (attr->vertexSize() == 2)
-                    return QRhiVertexInputAttribute::Float2;
-                if (attr->vertexSize() == 3)
-                    return QRhiVertexInputAttribute::Float3;
-                if (attr->vertexSize() == 4)
-                    return QRhiVertexInputAttribute::Float4;
-                Q_FALLTHROUGH();
-            }
-            default:
-                qWarning() << "Attribute type not handles by RHI";
-                Q_UNREACHABLE();
-            }
-        };
 
         // QRhiVertexInputBinding -> specifies the stride of an attribute, whether it's per vertex
         // or per instance and the instance divisor QRhiVertexInputAttribute -> specifies the format
@@ -1133,12 +1149,15 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
         pipeline->setVertexInputLayout(inputLayout);
         pipeline->setShaderResourceBindings(shaderResourceBindings);
 
-        pipeline->setRenderPassDescriptor(swapchain->renderPassDescriptor);
+        // Setup potential texture render target
 
         graphicsPipeline->setAttributesToBindingHash(attributeNameToBinding);
 
         // Render States
         m_submissionContext->applyStateSet(renderState, pipeline);
+
+        // Render target
+        setupRenderTarget(rv, graphicsPipeline, swapchain->swapChain);
 
         ok = pipeline->create();
         assert(ok);
@@ -1149,6 +1168,146 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
         cmd.pipeline = graphicsPipeline;
 }
 
+void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
+{
+    // Used in case of failure
+    QVarLengthArray<QRhiResource*> resourcesToClean;
+    auto cleanAllocatedResources = [&] {
+        for (auto res : resourcesToClean)
+        {
+            res->destroy(); delete res;
+        }
+    };
+
+    auto &texman = *rhiResourceManagers()->rhiTextureManager();
+    auto &pack = rv->attachmentPack();
+    QRhiTextureRenderTargetDescription desc;
+
+    QSize targetSize{};
+    int targetSamples{1};
+    QVarLengthArray<QRhiColorAttachment, 8> rhiAttachments;
+
+    bool hasDepthTexture = false;
+
+    // Look up attachments to populate the RT description
+    for (const Attachment &attachment : pack.attachments())
+    {
+        RHITexture *tex = texman.lookupResource(attachment.m_textureUuid);
+        if (tex && tex->getRhiTexture())
+        {
+            switch (tex->getRhiTexture()->format())
+            {
+            case QRhiTexture::Format::D16:
+            case QRhiTexture::Format::D32F:
+            {
+                desc.setDepthTexture(tex->getRhiTexture());
+                hasDepthTexture = true;
+                break;
+            }
+            default:
+            {
+                QRhiColorAttachment rhiAtt{tex->getRhiTexture()};
+                // TODO handle cubemap face
+                rhiAtt.setLayer(attachment.m_layer);
+                rhiAtt.setLevel(attachment.m_mipLevel);
+                rhiAttachments.push_back(rhiAtt);
+
+                targetSize = tex->size();
+                targetSamples = tex->properties().samples;
+                break;
+            }
+            }
+        }
+        else
+        {
+            cleanAllocatedResources();
+            return;
+        }
+    }
+
+    if (targetSize.width() <= 0 || targetSize.height() <= 0)
+    {
+        cleanAllocatedResources();
+        return;
+    }
+
+    desc.setColorAttachments(rhiAttachments.begin(), rhiAttachments.end());
+
+    // Potentially create a depth & stencil renderbuffer
+    QRhiRenderBuffer *ds{};
+    if (!hasDepthTexture)
+    {
+      ds = m_submissionContext->rhi()->newRenderBuffer(QRhiRenderBuffer::DepthStencil, targetSize, targetSamples);
+      resourcesToClean << ds;
+
+      if (!ds->create()) {
+          cleanAllocatedResources();
+          return;
+      }
+      desc.setDepthStencilBuffer(ds);
+    }
+
+    // Create the render target
+    auto rt = m_submissionContext->rhi()->newTextureRenderTarget(desc);
+    resourcesToClean << rt;
+
+    auto rp = rt->newCompatibleRenderPassDescriptor();
+    resourcesToClean << rp;
+
+    rt->setRenderPassDescriptor(rp);
+
+    if (!rt->create()) {
+        cleanAllocatedResources();
+        return;
+    }
+
+    target->renderTarget = rt;
+    target->renderPassDescriptor = rp;
+    target->depthStencilBuffer = ds;
+}
+
+bool Renderer::setupRenderTarget(RenderView *rv, RHIGraphicsPipeline *graphicsPipeline, QRhiSwapChain *swapchain)
+{
+    QRhiGraphicsPipeline *rhiPipeline = graphicsPipeline->pipeline();
+
+    const auto &managers = *nodeManagers();
+    auto &renderTargetManager = *managers.renderTargetManager();
+
+    auto *renderTarget = renderTargetManager.lookupResource(rv->renderTargetId());
+    if (renderTarget) {
+        // Render to texture
+        RHIRenderTarget *rhiTarget{};
+        {
+            const auto &renderTargetId = renderTarget->peerId();
+            auto rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
+            rhiTarget = rhiRenderTargetManager->lookupResource(renderTargetId);
+
+            // No RHIRenderTarget associated yet -> create it
+            if (rhiTarget == nullptr) {
+                rhiTarget = rhiRenderTargetManager->getOrCreateResource(renderTargetId);
+
+                createRenderTarget(rv, rhiTarget);
+
+                // In case of error during creation renderTarget won't be set.
+                if (!rhiTarget->renderTarget) {
+                    rhiRenderTargetManager->releaseResource(renderTargetId);
+                    return false;
+                }
+                rhiRenderTargetManager->nodeIdForRHIRenderTarget.insert(rhiTarget, renderTargetId);
+            }
+        }
+
+        rhiPipeline->setRenderPassDescriptor(rhiTarget->renderPassDescriptor);
+        rhiPipeline->setSampleCount(rhiTarget->renderTarget->sampleCount());
+
+        return true;
+    } else {
+        // Render to the default framebuffer
+        rhiPipeline->setRenderPassDescriptor(swapchain->renderPassDescriptor());
+        rhiPipeline->setSampleCount(swapchain->sampleCount());
+        return true;
+    }
+}
 // When this function is called, we must not be processing the commands for frame n+1
 QVector<Renderer::RHIPassInfo>
 Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
@@ -1654,6 +1813,13 @@ void Renderer::cleanupShader(const Shader *shader)
         rhiShaderManager->abandon(glShader, shader);
 }
 
+void Renderer::cleanupRenderTarget(const RenderTarget *renderTarget)
+{
+    RHIRenderTargetManager *rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
+
+    rhiRenderTargetManager->releaseResource(renderTarget->peerId());
+}
+
 // Called by SubmitRenderView
 void Renderer::downloadGLBuffers()
 {
@@ -1687,7 +1853,6 @@ Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
     qCDebug(Memory) << Q_FUNC_INFO << "rendering frame ";
 
     // We might not want to render on the default FBO
-    uint lastBoundFBOId = 0; // m_submissionContext->boundFrameBufferObject();
     QSurface *surface = nullptr;
     QSurface *previousSurface = nullptr;
     QSurface *lastUsedSurface = nullptr;
@@ -1728,8 +1893,9 @@ Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
         const bool surfaceHasChanged = surface != previousSurface;
 
         if (surfaceHasChanged && previousSurface) {
-            const bool swapBuffers = lastBoundFBOId == m_submissionContext->defaultFBO()
-                    && surfaceLock.isSurfaceValid() && m_shouldSwapBuffers;
+            // TODO what should be the swapBuffers condition for RHI ?
+            // lastRenderTarget == swapChain->renderTarget or something like that ?
+            const bool swapBuffers = surfaceLock.isSurfaceValid() && m_shouldSwapBuffers;
             // We only call swap buffer if we are sure the previous surface is still valid
             m_submissionContext->endDrawing(swapBuffers);
         }
@@ -1744,19 +1910,11 @@ Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
             }
 
             previousSurface = surface;
-            //            lastBoundFBOId = m_submissionContext->boundFrameBufferObject();
         }
 
         // Apply Memory Barrier if needed
         //        if (renderView->memoryBarrier() != QMemoryBarrier::None)
         //            qWarning() << "RHI Doesn't support MemoryBarrier";
-
-        // Set RenderTarget ...
-        // Activate RenderTarget
-        {
-            m_submissionContext->activateRenderTarget(rhiPassInfo.renderTargetId,
-                                                      rhiPassInfo.attachmentPack, lastBoundFBOId);
-        }
 
         // Execute the render commands
         if (!executeCommandsSubmission(rhiPassInfo))
@@ -1826,24 +1984,15 @@ Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
         frameElapsed = timer.elapsed();
     }
 
-    // Bind lastBoundFBOId back. Needed also in threaded mode.
-    // lastBoundFBOId != m_graphicsContext->activeFBO() when the last FrameGraph leaf
-    // node/renderView contains RenderTargetSelector/RenderTarget
-    if (lastBoundFBOId != m_submissionContext->activeFBO()) {
-        RHI_UNIMPLEMENTED;
-        //         m_submissionContext->bindFramebuffer(lastBoundFBOId,
-        //         GraphicsHelperInterface::FBOReadAndDraw);
-    }
-
-    // Reset state and call doneCurrent if the surface
-    // is valid and was actually activated
-    if (lastUsedSurface) {
-        RHI_UNIMPLEMENTED;
-        // Reset state to the default state if the last stateset is not the
-        // defaultRenderStateSet
-        //        if (m_submissionContext->currentStateSet() != m_defaultRenderStateSet)
-        //            m_submissionContext->setCurrentStateSet(m_defaultRenderStateSet);
-    }
+    //* TODO: Shouldn't be needed with RHI ? as FBOs, etc.. are per-pipeline
+    //* // Bind lastBoundFBOId back. Needed also in threaded mode.
+    //* // lastBoundFBOId != m_graphicsContext->activeFBO() when the last FrameGraph leaf
+    //* // node/renderView contains RenderTargetSelector/RenderTarget
+    //* if (lastBoundFBOId != m_submissionContext->activeFBO()) {
+    //*     RHI_UNIMPLEMENTED;
+    //*     //         m_submissionContext->bindFramebuffer(lastBoundFBOId,
+    //*     //         GraphicsHelperInterface::FBOReadAndDraw);
+    //* }
 
     queueElapsed = timer.elapsed() - queueElapsed;
     qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed in " << timer.elapsed() << "ms";
@@ -1851,7 +2000,6 @@ Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
     // Stores the necessary information to safely perform
     // the last swap buffer call
     ViewSubmissionResultData resultData;
-    resultData.lastBoundFBOId = lastBoundFBOId;
     resultData.surface = lastUsedSurface;
     return resultData;
 }
@@ -2394,6 +2542,21 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
             clearDepthStencil = { rv->clearDepthValue(), (quint32)rv->clearStencilValue() };
         }
     }
+
+    // Lookup the render target
+    QRhiRenderTarget *rhiRenderTarget{};
+    {
+        const auto &managers = *m_RHIResourceManagers;
+        auto &renderTargetManager = *managers.rhiRenderTargetManager();
+        auto *renderTarget = renderTargetManager.lookupResource(passInfo.renderTargetId);
+
+        if (renderTarget) {
+            rhiRenderTarget = renderTarget->renderTarget;
+        } else {
+            rhiRenderTarget = m_submissionContext->currentSwapChain()->currentFrameRenderTarget();
+        }
+    }
+
     // TO DO: should be moved elsewhere
     // Perform compute actions
     //        cb->beginComputePass(m_submissionContext->m_currentUpdates);
@@ -2408,11 +2571,9 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 
     // Draw the commands
 
-    // TO DO: Retrieve real renderTarget for RHIPassInfo
-    QRhiRenderTarget *renderTarget = m_submissionContext->currentFrameRenderTarget();
-
     // Begin pass
-    cb->beginPass(renderTarget, clearColor, clearDepthStencil,
+
+    cb->beginPass(rhiRenderTarget, clearColor, clearDepthStencil,
                   m_submissionContext->m_currentUpdates);
 
     // Per Pass Global States
@@ -2498,6 +2659,13 @@ void Renderer::cleanGraphicsResources()
         cleanupShader(m_nodesManager->shaderManager()->lookupResource(shaderCleanedUpId));
         // We can really release the texture at this point
         m_nodesManager->shaderManager()->releaseResource(shaderCleanedUpId);
+    }
+
+    const QVector<Qt3DCore::QNodeId> cleanedUpRenderTargetIds =
+            m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
+    for (const Qt3DCore::QNodeId renderTargetCleanedUpId : cleanedUpRenderTargetIds) {
+        cleanupRenderTarget(m_nodesManager->renderTargetManager()->lookupResource(renderTargetCleanedUpId));
+        m_nodesManager->renderTargetManager()->releaseResource(renderTargetCleanedUpId);
     }
 }
 
