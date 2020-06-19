@@ -49,22 +49,17 @@ QVulkanInstance &staticVulkanInstance() noexcept
     static QVulkanInstance* vkInstance = []
     {
         QVulkanInstance* v = new QVulkanInstance;
-#ifndef Q_OS_ANDROID
-        v->setLayers({ "VK_LAYER_LUNARG_standard_validation" });
+#if defined(NDEBUG)
+        constexpr bool debug_mode = false;
 #else
-        v->setLayers(QByteArrayList()
-                               << "VK_LAYER_GOOGLE_threading"
-                               << "VK_LAYER_LUNARG_parameter_validation"
-                               << "VK_LAYER_LUNARG_object_tracker"
-                               << "VK_LAYER_LUNARG_core_validation"
-                               << "VK_LAYER_LUNARG_image"
-                               << "VK_LAYER_LUNARG_swapchain"
-                               << "VK_LAYER_GOOGLE_unique_objects");
+        constexpr bool debug_mode = true;
 #endif
+        if (debug_mode || qgetenv("QT3D_VULKAN_VALIDATION").toInt())
+            v->setLayers({ "VK_LAYER_KHRONOS_validation" });
 
-        if (!v->create()) {
+        if (!v->create())
             qWarning("Failed to create Vulkan instance");
-        }
+
         return v;
     }();
     return *vkInstance;
