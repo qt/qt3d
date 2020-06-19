@@ -54,7 +54,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Qt3DRender::Render::OpenGL::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::OpenGL::Renderer renderer;
         Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
         Qt3DRender::Render::RenderSettings settings;
         // owned by FG manager

@@ -80,19 +80,19 @@ QStringList QRendererPluginFactory::keys(const QString &pluginPath)
     return list;
 }
 
-AbstractRenderer *QRendererPluginFactory::create(const QString &name, QRenderAspect::RenderType renderMode, const QString &pluginPath)
+AbstractRenderer *QRendererPluginFactory::create(const QString &name, const QString &pluginPath)
 {
     if (!pluginPath.isEmpty()) {
 #if QT_CONFIG(library)
         QCoreApplication::addLibraryPath(pluginPath);
-        if (AbstractRenderer *ret = qLoadPlugin<AbstractRenderer, QRendererPlugin>(directLoader(), name, renderMode))
+        if (AbstractRenderer *ret = qLoadPlugin<AbstractRenderer, QRendererPlugin>(directLoader(), name))
             return ret;
 #else
         qWarning() << QObject::tr("Cannot load QRendererPlugin plugin from %1. "
                                   "Library loading is disabled.").arg(pluginPath);
 #endif
     }
-    return qLoadPlugin<AbstractRenderer, QRendererPlugin>(loader(), name, renderMode);
+    return qLoadPlugin<AbstractRenderer, QRendererPlugin>(loader(), name);
 }
 
 } // Render

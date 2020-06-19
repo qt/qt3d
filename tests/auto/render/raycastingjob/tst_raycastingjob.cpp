@@ -110,7 +110,7 @@ class TestAspect : public Qt3DRender::QRenderAspect, public Qt3DCore::QAbstractF
 {
 public:
     TestAspect(Qt3DCore::QNode *root)
-        : Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous)
+        : Qt3DRender::QRenderAspect()
         , m_sceneRoot(nullptr)
     {
         m_engine = new Qt3DCore::QAspectEngine(this);

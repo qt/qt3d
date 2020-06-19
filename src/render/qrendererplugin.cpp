@@ -54,10 +54,9 @@ QRendererPlugin::~QRendererPlugin()
 {
 }
 
-AbstractRenderer *QRendererPlugin::create(const QString &key, QRenderAspect::RenderType renderMode)
+AbstractRenderer *QRendererPlugin::create(const QString &key)
 {
     Q_UNUSED(key)
-    Q_UNUSED(renderMode)
     return nullptr;
 }
 

@@ -287,13 +287,12 @@ namespace Qt3DRender {
     Renderer and QRenderPlugin.
 */
 /*! \internal */
-QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
+QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::SubmissionType submissionType)
     : QAbstractAspectPrivate()
     , m_nodeManagers(nullptr)
     , m_renderer(nullptr)
     , m_initialized(false)
-    , m_renderAfterJobs(false)
-    , m_renderType(type)
+    , m_renderAfterJobs(submissionType == QRenderAspect::Automatic || qEnvironmentVariableIsSet("QT3D_FORCE_SYNCHRONOUS_RENDER"))
     , m_offscreenHelper(nullptr)
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
@@ -307,13 +306,10 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_pickBoundingVolumeJob(Render::PickBoundingVolumeJobPtr::create())
     , m_rayCastingJob(Render::RayCastingJobPtr::create())
     , m_pickEventFilter(new Render::PickEventFilter())
+    , m_submissionType(submissionType)
 {
     m_instances.append(this);
     loadSceneParsers();
-    if (m_renderType == QRenderAspect::Threaded && !QOpenGLContext::supportsThreadedOpenGL()) {
-        m_renderType = QRenderAspect::Synchronous;
-        m_renderAfterJobs = true;
-    }
 
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
@@ -586,21 +582,41 @@ void QRenderAspectPrivate::registerBackendType(const QMetaObject &obj,
 }
 
 /*!
- * The constructor creates a new QRenderAspect::QRenderAspect instance with the
- * specified \a parent.
- * \param parent
+ * \enum QRenderAspect::SubmissionType
+ *
+ * \value Automatic
+ *        The QRenderAspect takes care of submitting rendering commands to the
+ *        GPU.
+ * \value Manual
+ *        The user will take care of telling the QRenderAspect when is the
+ *        appropriate time to submit the rendering commands to the GPU.
  */
-QRenderAspect::QRenderAspect(QObject *parent)
-    : QRenderAspect(Threaded, parent) {}
 
 /*!
  * The constructor creates a new QRenderAspect::QRenderAspect instance with the
- * specified \a type and \a parent.
- * \param type
+ * specified \a parent. This constructor will set the submission type to
+ * Automatic.
  * \param parent
  */
-QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
-    : QRenderAspect(*new QRenderAspectPrivate(type), parent) {}
+QRenderAspect::QRenderAspect(QObject *parent)
+    : QRenderAspect(QRenderAspect::Automatic, parent)
+{
+}
+
+/*!
+ * The constructor creates a new QRenderAspect::QRenderAspect instance with the
+ * specified \a parent. The \a submissionType specifies whether the
+ * RenderAspect is in charge of performing the rendering submission or if the
+ * user will take care of it.
+ * \param parent
+ */
+QRenderAspect::QRenderAspect(QRenderAspect::SubmissionType submissionType,
+                             QObject *parent)
+    : Qt3DCore::QAbstractAspect(*new QRenderAspectPrivate(submissionType),
+                                parent)
+{
+
+}
 
 /*! \internal */
 QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
@@ -930,7 +946,7 @@ Render::AbstractRenderer *QRenderAspectPrivate::loadRendererPlugin()
     for (const QString &key : keys) {
         if (key != targetKey)
             continue;
-        Render::AbstractRenderer *renderer = Render::QRendererPluginFactory::create(key, m_renderType);
+        Render::AbstractRenderer *renderer = Render::QRendererPluginFactory::create(key);
         if (renderer)
             return renderer;
     }

@@ -95,7 +95,7 @@ typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
 class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
 public:
-    QRenderAspectPrivate(QRenderAspect::RenderType type);
+    QRenderAspectPrivate(QRenderAspect::SubmissionType submissionType);
     ~QRenderAspectPrivate();
 
     Q_DECLARE_PUBLIC(QRenderAspect)
@@ -126,11 +126,10 @@ public:
     Render::AbstractRenderer *m_renderer;
 
     bool m_initialized;
-    bool m_renderAfterJobs;
+    const bool m_renderAfterJobs;
     QList<QSceneImporter *> m_sceneImporter;
     QVector<QString> m_loadedPlugins;
     QVector<Render::QRenderPlugin *> m_renderPlugins;
-    QRenderAspect::RenderType m_renderType;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;
     QScreen *m_screen = nullptr;
 
@@ -147,6 +146,7 @@ public:
     Render::RayCastingJobPtr m_rayCastingJob;
 
     QScopedPointer<Render::PickEventFilter> m_pickEventFilter;
+    QRenderAspect::SubmissionType m_submissionType;
 
     static QMutex m_pluginLock;
     static QVector<QString> m_pluginConfig;

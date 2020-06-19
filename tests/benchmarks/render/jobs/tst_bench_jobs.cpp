@@ -63,7 +63,7 @@ namespace Qt3DRender {
         Q_OBJECT
     public:
         QRenderAspectTester(bool withWindow = false)
-            : Qt3DRender::QRenderAspect(QRenderAspect::Synchronous)
+            : Qt3DRender::QRenderAspect(QRenderAspect::Manual)
             , m_jobManager(new Qt3DCore::QAspectJobManager())
         {
             Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();

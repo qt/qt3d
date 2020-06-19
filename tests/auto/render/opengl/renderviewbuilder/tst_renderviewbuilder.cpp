@@ -63,7 +63,7 @@ class TestAspect : public QRenderAspect
 {
 public:
     TestAspect(Qt3DCore::QNode *root)
-        : QRenderAspect(Qt3DRender::QRenderAspect::Synchronous)
+        : QRenderAspect()
         , m_jobManager(new Qt3DCore::QAspectJobManager())
     {
         Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();

@@ -138,7 +138,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Renderer renderer;
         RenderView renderView;
 
         renderer.setNodeManagers(&nodeManagers);
@@ -164,7 +164,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Renderer renderer;
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
@@ -211,7 +211,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Renderer renderer;
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
@@ -312,7 +312,7 @@ private Q_SLOTS:
         QFETCH(QVector<ShaderParameterPack>, expectedMinimizedParameters);
 
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Renderer renderer;
         renderer.setNodeManagers(&nodeManagers);
 
         GLShaderManager *shaderManager = renderer.glResourceManagers()->glShaderManager();
@@ -364,7 +364,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Renderer renderer;
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
@@ -411,7 +411,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Renderer renderer;
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
@@ -459,7 +459,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::NodeManagers nodeManagers;
-        Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Renderer renderer;
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 

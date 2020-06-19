@@ -34,7 +34,6 @@ qt_add_module(3DRender
         backend/rendersettings.cpp backend/rendersettings_p.h
         backend/rendertarget.cpp backend/rendertarget_p.h
         backend/rendertargetoutput.cpp backend/rendertargetoutput_p.h
-        backend/renderthread.cpp backend/renderthread_p.h
         backend/resourceaccessor.cpp backend/resourceaccessor_p.h
         backend/segmentsvisitor.cpp backend/segmentsvisitor_p.h
         backend/stringtoint.cpp backend/stringtoint_p.h

@@ -68,7 +68,7 @@ QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
 }
 
 TestAspect::TestAspect(Qt3DCore::QNode *root)
-    : Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous)
+    : Qt3DRender::QRenderAspect()
     , m_jobManager(new Qt3DCore::QAspectJobManager())
 {
     Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();

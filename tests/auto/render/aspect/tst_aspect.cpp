@@ -87,7 +87,6 @@ private Q_SLOTS:
         Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
         QScopedPointer<TestRendererAspect> aspect(new TestRendererAspect(rootEntity));
         auto daspect = Qt3DRender::QRenderAspectPrivate::get(aspect.data());
-        daspect->m_renderAfterJobs = true;
         aspect->onEngineStartup();
 
         // replace with empty renderer

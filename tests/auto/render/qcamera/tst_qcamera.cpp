@@ -99,7 +99,7 @@ class TestAspect : public Qt3DRender::QRenderAspect
 {
 public:
     TestAspect(Qt3DCore::QNode *root)
-        : Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous)
+        : Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Manual)
         , m_sceneRoot(nullptr)
     {
         QRenderAspect::onRegistered();

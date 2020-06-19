@@ -46,7 +46,7 @@ class tst_Renderer : public Qt3DRender::Render::OpenGL::Renderer
 {
 public:
     tst_Renderer()
-        : Qt3DRender::Render::OpenGL::Renderer(Qt3DRender::QRenderAspect::Synchronous)
+        : Qt3DRender::Render::OpenGL::Renderer()
     {}
 
     ~tst_Renderer() {

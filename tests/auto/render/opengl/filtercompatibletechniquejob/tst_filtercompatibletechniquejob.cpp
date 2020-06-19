@@ -52,7 +52,7 @@ class TestAspect : public Qt3DRender::QRenderAspect
 {
 public:
     TestAspect(Qt3DCore::QNode *root)
-        : Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous)
+        : Qt3DRender::QRenderAspect()
         , m_jobManager(new Qt3DCore::QAspectJobManager())
         , m_window(new QWindow())
         , m_contextCreationSuccessful(false)
@@ -206,7 +206,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::TechniqueManager techniqueManager;
-        Qt3DRender::Render::OpenGL::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        Qt3DRender::Render::OpenGL::Renderer renderer;
         backendFilterCompatibleTechniqueJob.setManager(&techniqueManager);
         backendFilterCompatibleTechniqueJob.setRenderer(&renderer);
 

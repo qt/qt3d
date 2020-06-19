@@ -714,7 +714,7 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     }
     // If the render aspect wasn't created yet, do so now
     if (m_renderAspect == nullptr) {
-        m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
+        m_renderAspect = new QRenderAspect(QRenderAspect::Manual);
         auto *rw = QQuickRenderControl::renderWindowFor(window());
         static_cast<Qt3DRender::QRenderAspectPrivate *>(Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))->m_screen =
                 (rw ? rw->screen() : window()->screen());

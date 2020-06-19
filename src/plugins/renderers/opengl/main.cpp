@@ -47,10 +47,10 @@ class OpenGLRendererPlugin : public Qt3DRender::Render::QRendererPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QRendererPluginFactoryInterface_iid FILE "openglrenderer.json")
 
-    Qt3DRender::Render::AbstractRenderer *create(const QString &key,  Qt3DRender::QRenderAspect::RenderType renderMode) override
+    Qt3DRender::Render::AbstractRenderer *create(const QString &key) override
     {
         Q_UNUSED(key)
-        return new Qt3DRender::Render::OpenGL::Renderer(renderMode);
+        return new Qt3DRender::Render::OpenGL::Renderer();
     }
 };
 

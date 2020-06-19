@@ -74,7 +74,7 @@ public:
     explicit QRendererPlugin(QObject *parent = nullptr);
     ~QRendererPlugin();
 
-    virtual AbstractRenderer *create(const QString &key, QRenderAspect::RenderType renderMode);
+    virtual AbstractRenderer *create(const QString &key);
 };
 
 } // Render

@@ -69,13 +69,13 @@ class Q_3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:
-    enum RenderType {
-        Synchronous,
-        Threaded
+    enum SubmissionType {
+        Automatic = 0,
+        Manual
     };
 
     explicit QRenderAspect(QObject *parent = nullptr);
-    explicit QRenderAspect(RenderType type, QObject *parent = nullptr);
+    explicit QRenderAspect(SubmissionType submissionType, QObject *parent = nullptr);
     ~QRenderAspect();
 
 protected:

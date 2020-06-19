@@ -67,7 +67,7 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT QRendererPluginFactory
 {
 public:
     static QStringList keys(const QString &pluginPath = QString());
-    static AbstractRenderer *create(const QString &name, QRenderAspect::RenderType renderMode, const QString &pluginPath = QString());
+    static AbstractRenderer *create(const QString &name, const QString &pluginPath = QString());
 };
 
 } // Render

@@ -68,7 +68,7 @@ class ManualRenderer
 public:
     ManualRenderer()
         : m_aspectEngine(new Qt3DCore::QAspectEngine())
-        , m_renderAspect(new Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous))
+        , m_renderAspect(new Qt3DRender::QRenderAspect())
     {
     }
 

@@ -1,7 +1,6 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/renderthread_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/attachmentpack_p.h \
@@ -38,7 +37,6 @@ HEADERS += \
     $$PWD/apishadermanager_p.h
 
 SOURCES += \
-    $$PWD/renderthread.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/managers.cpp \
