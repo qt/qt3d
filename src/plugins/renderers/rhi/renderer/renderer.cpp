@@ -123,6 +123,8 @@
 #include <QtGui/private/qopenglcontext_p.h>
 #include <QGuiApplication>
 
+#include <optional>
+
 QT_BEGIN_NAMESPACE
 
 // Crashes on AMD Radeon drivers on Windows. Disable for now.
@@ -538,7 +540,7 @@ void Renderer::releaseGraphicsResources()
     QMutexLocker locker(&m_offscreenSurfaceMutex);
     QOffscreenSurface *offscreenSurface = m_offscreenHelper->offscreenSurface();
     if (!offscreenSurface) {
-        qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+        qCWarning(Backend) << "Failed to make context current: OpenGL resources will not be destroyed";
         // We still need to delete the submission context
         m_submissionContext.reset(nullptr);
         return;
@@ -574,7 +576,7 @@ void Renderer::releaseGraphicsResources()
     //*
     //*     context->doneCurrent();
     //* } else {
-    //*     qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+    //*     qCWarning(Backend) << "Failed to make context current: OpenGL resources will not be destroyed";
     //* }
     //*
     //* if (m_ownedContext)
@@ -883,7 +885,8 @@ QSurfaceFormat Renderer::format()
     return m_submissionContext->format();
 }
 
-QRhiVertexInputAttribute::Format rhiAttributeType(Attribute *attr) {
+namespace {
+std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr) {
     switch (attr->vertexBaseType()) {
     case QAttribute::Byte:
     case QAttribute::UnsignedByte: {
@@ -918,9 +921,10 @@ QRhiVertexInputAttribute::Format rhiAttributeType(Attribute *attr) {
         break;
     }
     default:
-        qWarning() << "Attribute type not handles by RHI";
-        Q_UNREACHABLE();
+        break;
     }
+    return std::nullopt;
+}
 }
 
 void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int renderViewIndex)
@@ -985,16 +989,23 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
         if (!swapchain || !swapchain->swapChain || !swapchain->renderPassDescriptor)
             return;
 
+        auto onFailure = [&] { graphicsPipeline->cleanup(); };
+
         // TO DO: Find a way to recycle those
         // Create Per Command UBO
         QRhiBuffer *commandUBO = m_submissionContext->rhi()->newBuffer(
                 QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(CommandUBO));
+        graphicsPipeline->setCommandUBO(commandUBO);
+        if (!commandUBO->create()) {
+            return onFailure();
+        }
+
         QRhiBuffer *rvUBO = m_submissionContext->rhi()->newBuffer(
                 QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(RenderViewUBO));
-        commandUBO->create();
-        rvUBO->create();
-        graphicsPipeline->setCommandUBO(commandUBO);
         graphicsPipeline->setRenderViewUBO(rvUBO);
+        if (!rvUBO->create()) {
+            return onFailure();
+        }
 
         QVector<QRhiShaderResourceBinding> uboBindings;
         uboBindings << QRhiShaderResourceBinding::uniformBuffer(
@@ -1050,28 +1061,32 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
 
         QRhiShaderResourceBindings *shaderResourceBindings =
                 m_submissionContext->rhi()->newShaderResourceBindings();
-        assert(shaderResourceBindings);
+        graphicsPipeline->setShaderResourceBindings(shaderResourceBindings);
 
         shaderResourceBindings->setBindings(uboBindings.cbegin(), uboBindings.cend());
-        ok = shaderResourceBindings->create();
-        assert(ok);
+        if (!shaderResourceBindings->create()) {
+            return onFailure();
+        }
 
         // Create pipeline
         QRhiGraphicsPipeline *pipeline = m_submissionContext->rhi()->newGraphicsPipeline();
-        graphicsPipeline->setShaderResourceBindings(shaderResourceBindings);
         graphicsPipeline->setPipeline(pipeline);
 
-        assert(pipeline);
+        // Setup shaders
+        const QShader& vertexShader = cmd.m_rhiShader->shaderStage(QShader::VertexStage);
+        if (!vertexShader.isValid()) {
+            return onFailure();
+        }
 
-        const QShader vertexShader = cmd.m_rhiShader->shaderStage(QShader::VertexStage);
-        const QShader fragmentShader = cmd.m_rhiShader->shaderStage(QShader::FragmentStage);
-
-        assert(vertexShader.isValid());
-        assert(fragmentShader.isValid());
+        const QShader& fragmentShader = cmd.m_rhiShader->shaderStage(QShader::FragmentStage);
+        if (!fragmentShader.isValid()) {
+            return onFailure();
+        }
 
         pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertexShader },
                                     { QRhiShaderStage::Fragment, fragmentShader } });
 
+        // Setup attributes
         QVarLengthArray<QRhiVertexInputBinding, 8> inputBindings;
         QVarLengthArray<QRhiVertexInputAttribute, 8> rhiAttributes;
 
@@ -1106,6 +1121,12 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
                                               classification,
                                               isPerInstanceAttr ? attrib->divisor() : 1U };
 
+                const int location = locationForAttribute(attrib, cmd.m_rhiShader);
+                if (location == -1) {
+                    qCWarning(Backend) << "An attribute has no location";
+                    return onFailure();
+                }
+
                 const auto it =
                         std::find_if(uniqueBindings.begin(), uniqueBindings.end(),
                                      [binding](const BufferBinding &a) {
@@ -1121,23 +1142,37 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
                 else
                     bindingIndex = std::distance(uniqueBindings.begin(), it);
 
+                const auto attributeType = rhiAttributeType(attrib);
+                if (!attributeType) {
+                    qCWarning(Backend) << "An attribute type is not supported";
+                    return onFailure();
+                }
+
                 rhiAttributes.push_back({ bindingIndex,
-                                          locationForAttribute(attrib, cmd.m_rhiShader),
-                                          rhiAttributeType(attrib), attrib->byteOffset() });
+                                          location,
+                                          *attributeType,
+                                          attrib->byteOffset() });
 
                 attributeNameToBinding.insert(attrib->nameId(), bindingIndex);
             }
         }
 
+        if (uniqueBindings.empty() || rhiAttributes.empty()) {
+            return onFailure();
+        }
+
         inputBindings.resize(uniqueBindings.size());
         for (int i = 0, m = uniqueBindings.size(); i < m; ++i) {
             const BufferBinding binding = uniqueBindings.at(i);
+
             /*
-            qDebug() << binding.bufferId
+            qDebug() << "binding"
+                     << binding.bufferId
                      << binding.stride
                      << binding.classification
                      << binding.attributeDivisor;
             */
+
             inputBindings[i] = QRhiVertexInputBinding { binding.stride, binding.classification,
                                                         int(binding.attributeDivisor) };
         }
@@ -1157,10 +1192,12 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
         m_submissionContext->applyStateSet(renderState, pipeline);
 
         // Render target
-        setupRenderTarget(rv, graphicsPipeline, swapchain->swapChain);
+        const bool renderTargetIsSet = setupRenderTarget(rv, graphicsPipeline, swapchain->swapChain);
+        if (!renderTargetIsSet)
+            return onFailure();
 
-        ok = pipeline->create();
-        assert(ok);
+        if (!pipeline->create())
+            return onFailure();
     }
 
     // Record RHIGraphicsPipeline into command for later use
@@ -1730,7 +1767,7 @@ void Renderer::updateTexture(Texture *texture)
     // Check that the current texture images are still in place, if not, do not update
     const bool isValid = texture->isValid(m_nodesManager->textureImageManager());
     if (!isValid) {
-        qWarning() << Q_FUNC_INFO << "QTexture referencing invalid QTextureImages";
+        qCWarning(Backend) << "QTexture referencing invalid QTextureImages";
         return;
     }
 
@@ -1768,7 +1805,7 @@ void Renderer::updateTexture(Texture *texture)
             const TextureImage *img =
                     m_nodesManager->textureImageManager()->lookupResource(textureImageId);
             if (img == nullptr) {
-                qWarning() << Q_FUNC_INFO << "invalid TextureImage handle";
+                qCWarning(Backend) << "invalid TextureImage handle";
             } else {
                 RHITexture::Image glImg { img->dataGenerator(), img->layer(), img->mipLevel(),
                                           img->face() };
@@ -1904,7 +1941,7 @@ Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
             // If we can't make the context current on the surface, skip to the
             // next RenderView. We won't get the full frame but we may get something
             if (!m_submissionContext->beginDrawing(surface)) {
-                qWarning() << "Failed to make OpenGL context current on surface";
+                qCWarning(Backend) << "Failed to make OpenGL context current on surface";
                 m_lastFrameCorrect.storeRelaxed(0);
                 continue;
             }
@@ -1914,7 +1951,7 @@ Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
 
         // Apply Memory Barrier if needed
         //        if (renderView->memoryBarrier() != QMemoryBarrier::None)
-        //            qWarning() << "RHI Doesn't support MemoryBarrier";
+        //            qCWarning(Backend) << "RHI Doesn't support MemoryBarrier";
 
         // Execute the render commands
         if (!executeCommandsSubmission(rhiPassInfo))
@@ -1939,7 +1976,7 @@ Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
         //GraphicsHelperInterface::FBORead);
         //*                image = m_submissionContext->readFramebuffer(rect);
         //*            } else {
-        //*                qWarning() << "Requested capture rectangle is outside framebuffer";
+        //*                qCWarning(Backend) << "Requested capture rectangle is outside framebuffer";
         //*            }
         //*            Render::RenderCapture *renderCapture =
         //*
@@ -2322,7 +2359,12 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
             // We need to reference a binding, a buffer and an offset which is always = 0
             // as Qt3D only assumes interleaved or continuous data but not
             // buffer where first half of it is attribute1 and second half attribute2
-            command.vertex_input[bindingIndex] = { hbuf->rhiBuffer(), 0 };
+            if (bindingIndex != -1) {
+                command.vertex_input[bindingIndex] = { hbuf->rhiBuffer(), 0 };
+            } else {
+                qCWarning(Backend) << "Binding with an index of -1";
+                return false;
+            }
             break;
         }
         case QAttribute::IndexAttribute: {
@@ -2527,6 +2569,9 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         // Render drawing commands
 
         rv->forEachCommand([&] (RenderCommand &command) {
+            if (!command.pipeline)
+                return;
+
             if (command.m_type == RenderCommand::Draw) {
                 uploadBuffersForCommand(cb, rv, command);
                 uploadUBOsForCommand(cb, rv, command);
@@ -2610,6 +2655,9 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 
         // Render drawing commands
         rv->forEachCommand([&] (const RenderCommand &command) {
+            if (!command.pipeline)
+                return;
+
             if (command.m_type == RenderCommand::Draw) {
                 performDraw(cb, vp, hasScissor ? &scissor : nullptr, command);
             }
