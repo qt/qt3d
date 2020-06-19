@@ -2,110 +2,108 @@ TEMPLATE = subdirs
 
 qtConfig(private_tests) {
     SUBDIRS += \
+        armature \
         aspect \
-        entity \
-        renderpass \
-        shader \
-        shaderbuilder \
-        texture \
-        material \
-        vsyncframeadvanceservice \
-        meshfunctors \
-        qattribute \
-        qbuffer \
-        qgeometry \
-        qgeometryrenderer \
-        qlevelofdetail \
-        levelofdetail \
-        buffer \
         attribute \
+        blitframebuffer \
+        buffer \
+        computecommand \
+        coordinatereader \
+        ddstextures \
+        effect \
+        entity \
+        filterentitybycomponent \
+        filterkey \
+        framegraphnode \
+        framegraphvisitor \
+        genericlambdajob \
         geometry \
         geometryrenderer \
-        qcameraselector \
-        qclearbuffers \
-        qframegraphnode \
-        qlayerfilter \
-        qabstractlight \
-        qenvironmentlight \
-        qrenderpassfilter \
-        qrenderstate \
-        qrendertargetselector \
-        qsortpolicy \
-        qrenderstateset \
-        qtechniquefilter \
-        qtextureimagedata \
-        qviewport \
-        framegraphnode \
-        qobjectpicker \
-        objectpicker \
-#        qboundingvolumedebug \
-#        boundingvolumedebug \
-        ddstextures \
+        joint \
         ktxtextures \
         layerfiltering \
-        filterentitybycomponent \
-        genericlambdajob \
-        qgraphicsapifilter \
-        qrendersurfaceselector \
-        sortpolicy \
-        sceneloader \
-        qsceneloader \
-        qrendertargetoutput \
-        qcameralens \
-        qcomputecommand \
+        levelofdetail \
         loadscenejob \
-        qrendercapture \
-        uniform \
-        qparameter \
-        parameter \
-        qtextureloader \
-        qsharedgltexture \
-        qtextureimage \
-        qabstracttexture \
-        qabstracttextureimage \
-        qrendersettings \
-        rendertarget \
-        transform \
-        computecommand \
-        qrendertarget \
-        qdispatchcompute \
-        qtechnique \
-        qeffect \
-        qrenderpass \
-        qfilterkey \
-        effect \
-        filterkey \
-        qmesh \
-        technique \
-        rendercapture \
-        segmentvisitor \
-        trianglevisitor \
-        qmemorybarrier \
+        material \
         memorybarrier \
-        qshaderprogram \
-        qshaderprogrambuilder \
-        coordinatereader \
-        framegraphvisitor \
-        armature \
-        skeleton \
-        joint \
-        qproximityfilter \
+        meshfunctors \
+        objectpicker \
+        parameter \
         proximityfilter \
         proximityfiltering \
+        qabstractlight \
+        qabstracttexture \
+        qabstracttextureimage \
+        qattribute \
         qblitframebuffer \
-        blitframebuffer \
-        qraycaster \
-        raycaster \
-        qscreenraycaster \
+        qbuffer \
         qcamera \
+        qcameralens \
+        qcameraselector \
+        qclearbuffers \
+        qcomputecommand \
+        qdispatchcompute \
+        qeffect \
+        qenvironmentlight \
+        qfilterkey \
+        qframegraphnode \
+        qgeometry \
+        qgeometryrenderer \
+        qgraphicsapifilter \
+        qlayerfilter \
+        qlevelofdetail \
+        qmemorybarrier \
+        qmesh \
+        qobjectpicker \
+        qparameter \
+        qproximityfilter \
+        qraycaster \
+        qrendercapture \
+        qrenderpass \
+        qrenderpassfilter \
+        qrendersettings \
+        qrenderstate \
+        qrenderstateset \
+        qrendersurfaceselector \
+        qrendertarget \
+        qrendertargetoutput \
+        qrendertargetselector \
+        qsceneloader \
+        qscreenraycaster \
         qsetfence \
-        qwaitfence \
-        setfence \
-        waitfence \
-        qtexturedataupdate \
         qshaderimage \
+        qshaderprogram \
+        qshaderprogrambuilder \
+        qsharedgltexture \
+        qsortpolicy \
+        qtechnique \
+        qtechniquefilter \
+        qtexturedataupdate \
+        qtextureimage \
+        qtextureimagedata \
+        qtextureloader \
+        qviewport \
+        qwaitfence \
+        raycaster \
+        rendercapture \
+        renderpass \
+        rendertarget \
+        sceneloader \
+        segmentvisitor \
+        setfence \
+        shader \
+        shaderbuilder \
+        shadergraph \
         shaderimage \
-        shadergraph
+        skeleton \
+        sortpolicy \
+        technique \
+        texture \
+        transform \
+        trianglevisitor \
+        uniform \
+        vsyncframeadvanceservice \
+        waitfence
 
     QT_FOR_CONFIG = 3dcore-private
     # TO DO: These could be restored to be executed in all cases

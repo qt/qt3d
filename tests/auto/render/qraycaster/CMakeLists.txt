@@ -7,8 +7,6 @@
 qt_add_test(tst_qraycaster
     SOURCES
         tst_qraycaster.cpp
-    INCLUDE_DIRECTORIES
-        ../../core/common
     PUBLIC_LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
@@ -24,8 +22,5 @@ qt_add_test(tst_qraycaster
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_qraycaster CONDITION QT_FEATURE_private_tests
-    SOURCES
-        ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
-        ../../core/common/testarbiter.h
-)
+include(../commons/commons.cmake)
+qt3d_setup_common_render_test(tst_qraycaster USE_TEST_ASPECT)

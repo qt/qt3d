@@ -26,13 +26,5 @@ qt_add_test(tst_blitframebuffer
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_blitframebuffer CONDITION QT_FEATURE_private_tests
-    SOURCES
-        ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
-        ../../core/common/testarbiter.h
-)
-
-qt_extend_target(tst_blitframebuffer CONDITION useCommonTestAspect
-    SOURCES
-        ../commons/testaspect.cpp ../commons/testaspect.h
-)
+include(../commons/commons.cmake)
+qt3d_setup_common_render_test(tst_blitframebuffer USE_TEST_ASPECT)

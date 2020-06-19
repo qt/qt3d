@@ -4,7 +4,7 @@
 ## tst_renderviews Test:
 #####################################################################
 
-qt_add_test(tst_renderviews
+qt_add_test(tst_meshfunctors
     SOURCES
         tst_meshfunctors.cpp
     PUBLIC_LIBRARIES

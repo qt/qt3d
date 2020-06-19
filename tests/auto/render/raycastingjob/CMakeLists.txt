@@ -6,12 +6,9 @@
 
 qt_add_test(tst_raycastingjob
     SOURCES
-        ../commons/testrenderer.cpp ../commons/testrenderer.h
         ../qmlscenereader/qmlscenereader.cpp ../qmlscenereader/qmlscenereader.h
         tst_raycastingjob.cpp
     INCLUDE_DIRECTORIES
-        ../../core/common
-        ../commons
         ../qmlscenereader
     PUBLIC_LIBRARIES
         Qt::3DCore
@@ -51,13 +48,5 @@ qt_add_resource(tst_raycastingjob "raycastingjob"
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_raycastingjob CONDITION useCommonTestAspect
-    SOURCES
-        ../commons/testaspect.cpp ../commons/testaspect.h
-)
-
-qt_extend_target(tst_raycastingjob CONDITION QT_FEATURE_private_tests
-    SOURCES
-        ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
-        ../../core/common/testarbiter.h
-)
+include(../commons/commons.cmake)
+qt3d_setup_common_render_test(tst_raycastingjob)

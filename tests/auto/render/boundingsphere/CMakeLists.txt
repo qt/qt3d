@@ -6,12 +6,9 @@
 
 qt_add_test(tst_boundingsphere
     SOURCES
-        ../commons/testrenderer.cpp ../commons/testrenderer.h
         ../qmlscenereader/qmlscenereader.cpp ../qmlscenereader/qmlscenereader.h
         tst_boundingsphere.cpp
     INCLUDE_DIRECTORIES
-        ../../core/common
-        ../commons
         ../qmlscenereader
     PUBLIC_LIBRARIES
         Qt::3DCore
@@ -48,13 +45,5 @@ qt_add_resource(tst_boundingsphere "boundingsphere"
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_boundingsphere CONDITION useCommonTestAspect
-    SOURCES
-        ../commons/testaspect.cpp ../commons/testaspect.h
-)
-
-qt_extend_target(tst_boundingsphere CONDITION QT_FEATURE_private_tests
-    SOURCES
-        ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
-        ../../core/common/testarbiter.h
-)
+include(../commons/commons.cmake)
+qt3d_setup_common_render_test(tst_boundingsphere)

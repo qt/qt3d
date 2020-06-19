@@ -4,13 +4,9 @@
 ## segmentvisitor Test:
 #####################################################################
 
-qt_add_test(segmentvisitor
+qt_add_test(tst_segmentvisitor
     SOURCES
-        ../commons/testrenderer.cpp ../commons/testrenderer.h
         tst_segmentvisitor.cpp
-    INCLUDE_DIRECTORIES
-        ../../core/common
-        ../commons
     PUBLIC_LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
@@ -26,13 +22,5 @@ qt_add_test(segmentvisitor
 ## Scopes:
 #####################################################################
 
-qt_extend_target(segmentvisitor CONDITION QT_FEATURE_private_tests
-    SOURCES
-        ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
-        ../../core/common/testarbiter.h
-)
-
-qt_extend_target(segmentvisitor CONDITION useCommonTestAspect
-    SOURCES
-        ../commons/testaspect.cpp ../commons/testaspect.h
-)
+include(../commons/commons.cmake)
+qt3d_setup_common_render_test(tst_segmentvisitor)

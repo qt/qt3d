@@ -22,5 +22,5 @@ qt_add_test(tst_computecommand
 ## Scopes:
 #####################################################################
 
-include(../../commons/commons.cmake)
+include(../commons/commons.cmake)
 qt3d_setup_common_render_test(tst_computecommand USE_TEST_ASPECT)

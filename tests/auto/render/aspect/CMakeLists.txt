@@ -19,5 +19,8 @@ qt_add_test(tst_aspect
 #### Keys ignored in scope 1:.:.:aspect.pro:<TRUE>:
 # TEMPLATE = "app"
 
+## Scopes:
+#####################################################################
+
 include(../commons/commons.cmake)
 qt3d_setup_common_render_test(tst_aspect USE_TEST_ASPECT)
