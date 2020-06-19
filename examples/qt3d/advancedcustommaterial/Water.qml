@@ -109,14 +109,14 @@ import QtQuick 2.0 as QQ2
             property: "waveRandomAnim"
             to: 3.0
             duration: 4000
-            easing.type: Easing.Linear
+//            easing.type: Easing.Linear
         }
         QQ2.NumberAnimation {
             target: watermaterial
             property: "waveRandomAnim"
             to: 1.0
             duration: 4000
-            easing.type: Easing.Linear
+//            easing.type: Easing.Linear
         }
     }
 
@@ -161,14 +161,14 @@ import QtQuick 2.0 as QQ2
             property: "vertY"
             to: 200
             duration: 200000
-            easing.type: Easing.Linear
+//            easing.type: Easing.Linear
         }
         QQ2.NumberAnimation {
             target: watermaterial
             property: "vertY"
             to: 2
             duration: 200000
-            easing.type: Easing.Linear
+//            easing.type: Easing.Linear
         }
     }
 }

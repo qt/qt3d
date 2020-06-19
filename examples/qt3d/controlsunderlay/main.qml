@@ -50,7 +50,7 @@
 
 import QtQuick 2.14
 import QtQuick.Scene3D 2.14
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
 
 Item {
@@ -74,8 +74,8 @@ Item {
             Slider {
                 id: color_r
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 255
+                from: 0
+                to: 255
                 value: 128
             }
         }
@@ -84,8 +84,8 @@ Item {
             Slider {
                 id: color_g
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 255
+                from: 0
+                to: 255
                 value: 195
             }
         }
@@ -94,8 +94,8 @@ Item {
             Slider {
                 id: color_b
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 255
+                from: 0
+                to: 255
                 value: 66
             }
         }
@@ -103,8 +103,8 @@ Item {
         Slider {
             id: shining
             Layout.fillWidth: true
-            minimumValue: 30
-            maximumValue: 90
+            from: 30
+            to: 90
             value: 50
         }
     }
@@ -125,8 +125,8 @@ Item {
             Slider {
                 id: rotation_x
                 Layout.fillWidth: true
-                minimumValue: -45
-                maximumValue: 45
+                from: -45
+                to: 45
                 value: rotationValue
             }
         }
@@ -135,8 +135,8 @@ Item {
             Slider {
                 id: rotation_y
                 Layout.fillWidth: true
-                minimumValue: -45
-                maximumValue: 45
+                from: -45
+                to: 45
                 value: rotationValue
             }
         }
@@ -145,8 +145,8 @@ Item {
             Slider {
                 id: rotation_z
                 Layout.fillWidth: true
-                minimumValue: -45
-                maximumValue: 45
+                from: -45
+                to: 45
                 value: rotationValue
             }
         }
@@ -170,8 +170,8 @@ Item {
         Slider {
             id: viewCenter_z
             Layout.fillWidth: true
-            minimumValue: 4
-            maximumValue: 12
+            from: 4
+            to: 12
             value: 7.5
             onValueChanged: watch.setPositionZ(value)
         }

@@ -40,6 +40,7 @@ qt6_add_resources(controls "controls"
     FILES
         ${controls_resource_files}
 )
+target_sources(controls PRIVATE ${controls_resources_files}) # just to show qml files in creator
 
 install(TARGETS controls
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"

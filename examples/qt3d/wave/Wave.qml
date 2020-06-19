@@ -48,9 +48,9 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
-import Qt3D.Extras 2.0
+import Qt3D.Core 2.16
+import Qt3D.Render 2.16
+import Qt3D.Extras 2.15
 
 Entity {
     id: root
@@ -71,7 +71,7 @@ Entity {
     Transform {
         id: transform
         translation: Qt.vector3d(root.x, root.y, root.z);
-        rotation: fromEulerAngles(root.theta, root.phi)
+        rotation: fromEulerAngles(root.theta, root.phi, 0)
         scale: root.scale
     }
 
@@ -81,7 +81,7 @@ Entity {
         diffuse: Qt.rgba( root.intensity, root.intensity, root.intensity, 1.0 ) // Set how bright the wave is
     }
 
-    GeometryView {
+    GeometryRenderer {
         id: mesh
         view: PlaneMesh {
             width: 25.0

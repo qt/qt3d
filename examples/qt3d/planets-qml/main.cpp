@@ -69,6 +69,7 @@ int main(int argc, char **argv)
 
     NetworkController networkController;
 
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGLRhi);
     QQuickView view;
     view.setFormat(format);
     view.rootContext()->setContextProperty("networkController", &networkController);

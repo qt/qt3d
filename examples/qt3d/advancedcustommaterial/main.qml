@@ -51,7 +51,7 @@
 import QtQuick 2.0
 import QtQuick.Scene3D 2.0
 import Qt3D.Render 2.0
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.0
 
 
 Item {
@@ -105,7 +105,7 @@ Item {
                         anchors.rightMargin: 10
                         anchors.leftMargin: 10
                         value: 1.0
-                        minimumValue: 0.3
+                        from: 0.3
                     }
                 }
                 Rectangle {
@@ -130,8 +130,8 @@ Item {
                         anchors.rightMargin: 10
                         anchors.leftMargin: 10
                         value: 1.1
-                        maximumValue: 4.0
-                        minimumValue: 0.0
+                        to: 4.0
+                        from: 0.0
                     }
                 }
                 Rectangle {
@@ -156,8 +156,8 @@ Item {
                         anchors.rightMargin: 10
                         anchors.leftMargin: 10
                         value: 1.0
-                        maximumValue: 3.0
-                        minimumValue: 0.0
+                        to: 3.0
+                        from: 0.0
                     }
                 }
                 Rectangle {
@@ -182,8 +182,8 @@ Item {
                         anchors.rightMargin: 10
                         anchors.leftMargin: 10
                         value: 0.015
-                        maximumValue: 0.1
-                        minimumValue: 0.0
+                        to: 0.1
+                        from: 0.0
                     }
                 }
                 Rectangle {
@@ -208,8 +208,8 @@ Item {
                         anchors.rightMargin: 10
                         anchors.leftMargin: 10
                         value: 2.2
-                        maximumValue: 4.0
-                        minimumValue: 0.0
+                        to: 4.0
+                        from: 0.0
                     }
                 }
                 Rectangle {
@@ -229,14 +229,14 @@ Item {
                     }
                     Slider {
                         id: slider2
-                        updateValueWhileDragging: false
+                        live: false
                         anchors.fill: parent
                         anchors.topMargin: 30
                         anchors.rightMargin: 10
                         anchors.leftMargin: 10
                         value: 0.75
-                        maximumValue: 4.0
-                        minimumValue: 0.1
+                        to: 4.0
+                        from: 0.1
                     }
                 }
                 Rectangle {
@@ -261,8 +261,8 @@ Item {
                         anchors.rightMargin: 10
                         anchors.leftMargin: 10
                         value: 0.2
-                        maximumValue: 0.5
-                        minimumValue: 0.02
+                        to: 0.5
+                        from: 0.02
                     }
                 }
                 Rectangle {
@@ -287,8 +287,8 @@ Item {
                         anchors.rightMargin: 10
                         anchors.leftMargin: 10
                         value: 35.0
-                        maximumValue: 360.0
-                        minimumValue: 0.0
+                        to: 360.0
+                        from: 0.0
                     }
                 }
             }

@@ -227,7 +227,7 @@ Entity {
         target: sceneRoot
         properties: "xLookAtOffset, yLookAtOffset, zLookAtOffset"
         to: 0
-        easing.type: Easing.InOutQuint
+//        easing.type: Easing.InOutQuint
         duration: 1250
     }
 
@@ -236,14 +236,14 @@ Entity {
         target: sceneRoot
         properties: "xCameraOffset, yCameraOffset, zCameraOffset"
         to: 0
-        easing.type: Easing.InOutQuint
+//        easing.type: Easing.InOutQuint
         duration: 2500
     }
     //! [0]
 
     QQ2.Behavior on cameraNear {
         QQ2.PropertyAnimation {
-            easing.type: Easing.InOutQuint
+//            easing.type: Easing.InOutQuint
             duration: 2500
         }
     }
