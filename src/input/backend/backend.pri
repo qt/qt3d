@@ -31,7 +31,6 @@ HEADERS += \
     $$PWD/inputchord_p.h \
     $$PWD/inputsequence_p.h \
     $$PWD/inputsettings_p.h \
-    $$PWD/eventsourcesetterhelper_p.h \
     $$PWD/job_common_p.h \
     $$PWD/physicaldeviceproxy_p.h \
     $$PWD/loadproxydevicejob_p.h \
@@ -68,7 +67,6 @@ SOURCES += \
     $$PWD/inputchord.cpp \
     $$PWD/inputsequence.cpp \
     $$PWD/inputsettings.cpp \
-    $$PWD/eventsourcesetterhelper.cpp \
     $$PWD/physicaldeviceproxy.cpp \
     $$PWD/loadproxydevicejob.cpp \
     $$PWD/axisaccumulator.cpp \

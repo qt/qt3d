@@ -71,7 +71,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
-#include <Qt3DRender/private/platformsurfacefilter_p.h>
+#include <Qt3DRender/private/platformsurfacefilter_p.h> // for SurfaceLocker
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/updatelevelofdetailjob_p.h>
 #include <Qt3DRender/private/buffercapture_p.h>
@@ -1692,7 +1692,6 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             }
 
             {
-                QMutexLocker l(&m_frameEventsMutex);
                 for (auto &keyEvent: m_frameKeyEvents)
                     m_imGuiRenderer->processEvent(&keyEvent);
                 for (auto &mouseEvent: m_frameMouseEvents)
@@ -1794,7 +1793,6 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
 
 void Renderer::setPendingEvents(const QList<QPair<QObject *, QMouseEvent> > &mouseEvents, const QList<QKeyEvent> &keyEvents)
 {
-    QMutexLocker l(&m_frameEventsMutex);
     m_frameMouseEvents = mouseEvents;
     m_frameKeyEvents = keyEvents;
 }

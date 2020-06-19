@@ -49,7 +49,6 @@
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qscene_p.h>

@@ -69,7 +69,6 @@
 #include <Qt3DInput/private/axisaccumulatorjob_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
 #include <Qt3DInput/private/buttonaxisinput_p.h>
-#include <Qt3DInput/private/eventsourcesetterhelper_p.h>
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
 #include <Qt3DInput/private/inputbackendnodefunctor_p.h>
 #include <Qt3DInput/private/inputchord_p.h>
@@ -290,7 +289,7 @@ void QInputAspect::onRegistered()
     Q_ASSERT(eventService);
 
     // Set it on the input handler which will also handle its lifetime
-    d->m_inputHandler->eventSourceHelper()->setEventFilterService(eventService);
+    d->m_inputHandler->setEventFilterService(eventService);
 }
 
 /*!

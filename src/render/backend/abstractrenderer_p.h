@@ -72,7 +72,6 @@ class QKeyEvent;
 
 namespace Qt3DCore {
 class QAbstractFrameAdvanceService;
-class QEventFilterService;
 class QAbstractAspectJobManager;
 class QServiceLocator;
 class QAspectManager;

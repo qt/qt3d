@@ -40,7 +40,6 @@
 #include "inputhandler_p.h"
 
 #include <Qt3DInput/private/assignkeyboardfocusjob_p.h>
-#include <Qt3DInput/private/eventsourcesetterhelper_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/inputsettings_p.h>
 #include <Qt3DInput/private/keyboardeventfilter_p.h>
@@ -77,13 +76,11 @@ InputHandler::InputHandler()
     , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
     , m_physicalDeviceProxyManager(new PhysicalDeviceProxyManager())
     , m_settings(nullptr)
-    , m_eventSourceSetter(new Qt3DInput::Input::EventSourceSetterHelper(this))
+    , m_service(nullptr)
+    , m_lastEventSource(nullptr)
 {
     m_keyboardEventFilter->setInputHandler(this);
     m_mouseEventFilter->setInputHandler(this);
-
-    // Created in the main thread
-    // m_eventSourceSetter needs to be in the main thread
 }
 
 InputHandler::~InputHandler()
@@ -109,19 +106,56 @@ InputHandler::~InputHandler()
 }
 
 // Called in MainThread (by the EventSourceHelperSetter)
-void InputHandler::registerEventFilters(QEventFilterService *service)
+void InputHandler::registerEventFilters()
 {
     clearPendingKeyEvents();
     clearPendingMouseEvents();
 
-    service->registerEventFilter(m_keyboardEventFilter, 512);
-    service->registerEventFilter(m_mouseEventFilter, 513);
+    if (m_service) {
+        m_service->registerEventFilter(m_keyboardEventFilter, 512);
+        m_service->registerEventFilter(m_mouseEventFilter, 513);
+    }
 }
 
-void InputHandler::unregisterEventFilters(Qt3DCore::QEventFilterService *service)
+void InputHandler::unregisterEventFilters()
 {
-    service->unregisterEventFilter(m_keyboardEventFilter);
-    service->unregisterEventFilter(m_mouseEventFilter);
+    if (m_service) {
+        m_service->unregisterEventFilter(m_keyboardEventFilter);
+        m_service->unregisterEventFilter(m_mouseEventFilter);
+    }
+}
+
+void InputHandler::setInputSettings(InputSettings *settings)
+{
+    if (m_settings && settings == nullptr) {
+        unregisterEventFilters();
+        m_lastEventSource = nullptr;
+        if (m_settings->eventSource() && m_service)
+            m_service->shutdown(m_settings->eventSource());
+    }
+    if (m_service) {
+        unregisterEventFilters();
+        if (m_settings && m_settings->eventSource())
+            m_service->shutdown(m_settings->eventSource());
+    }
+    m_settings = settings;
+}
+
+void InputHandler::updateEventSource()
+{
+    // Called every frame from input aspect
+    // Should probably just listen to changes in source property on settings object
+    if (!m_settings || !m_service)
+        return;
+
+    // Will be updated only if eventSource is different than
+    // what was set last
+    QObject *eventSource = m_settings->eventSource();
+    if (eventSource && m_lastEventSource != eventSource) {
+        m_service->initialize(eventSource);
+        registerEventFilters();
+        m_lastEventSource = eventSource;
+    }
 }
 
 // Called by the keyboardEventFilter in the main thread
@@ -297,23 +331,6 @@ void InputHandler::addInputDeviceIntegration(QInputDeviceIntegration *inputInteg
     m_inputDeviceIntegrations.push_back(inputIntegration);
 }
 
-void InputHandler::setInputSettings(InputSettings *settings)
-{
-    if (m_settings && settings == nullptr)
-        m_eventSourceSetter->unsetEventSource(m_settings->eventSource());
-    m_settings = settings;
-}
-
-void InputHandler::setEventSourceHelper(EventSourceSetterHelper *helper)
-{
-    m_eventSourceSetter.reset(helper);
-}
-
-EventSourceSetterHelper *InputHandler::eventSourceHelper() const
-{
-    return m_eventSourceSetter.data();
-}
-
 QAbstractPhysicalDevice *Qt3DInput::Input::InputHandler::createPhysicalDevice(const QString &name)
 {
     QAbstractPhysicalDevice *device = nullptr;
@@ -324,14 +341,9 @@ QAbstractPhysicalDevice *Qt3DInput::Input::InputHandler::createPhysicalDevice(co
     return device;
 }
 
-void InputHandler::updateEventSource()
+void Qt3DInput::Input::InputHandler::setEventFilterService(QEventFilterService *service)
 {
-    if (m_settings != nullptr) {
-        // Will be updated only if eventSource is different than
-        // what was set last
-        QObject *eventSource = m_settings->eventSource();
-        m_eventSourceSetter->setEventSource(eventSource);
-    }
+    m_service = service;
 }
 
 AbstractActionInput *InputHandler::lookupActionInput(Qt3DCore::QNodeId id) const

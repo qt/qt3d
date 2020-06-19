@@ -93,7 +93,6 @@ class GenericPhysicalDeviceManager;
 class GenericDeviceBackendNodeManager;
 class PhysicalDeviceProxyManager;
 class InputSettings;
-class EventSourceSetterHelper;
 
 class Q_AUTOTEST_EXPORT InputHandler
 {
@@ -149,12 +148,11 @@ public:
     void addInputDeviceIntegration(QInputDeviceIntegration *inputIntegration);
 
     void setInputSettings(InputSettings *settings);
-    void setEventSourceHelper(EventSourceSetterHelper *helper);
-    EventSourceSetterHelper *eventSourceHelper() const;
 
     QAbstractPhysicalDevice *createPhysicalDevice(const QString &name);
 
     void updateEventSource();
+    void setEventFilterService(Qt3DCore::QEventFilterService *service);
 
     AbstractActionInput *lookupActionInput(Qt3DCore::QNodeId id) const;
 
@@ -191,11 +189,11 @@ private:
     PhysicalDeviceProxyManager *m_physicalDeviceProxyManager;
     QVector<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;
     InputSettings *m_settings;
-    QScopedPointer<EventSourceSetterHelper> m_eventSourceSetter;
+    Qt3DCore::QEventFilterService *m_service;
+    QObject *m_lastEventSource;
 
-    void registerEventFilters(Qt3DCore::QEventFilterService *service);
-    void unregisterEventFilters(Qt3DCore::QEventFilterService *service);
-    friend class EventSourceSetterHelper;
+    void registerEventFilters();
+    void unregisterEventFilters();
 };
 
 } // namespace Input

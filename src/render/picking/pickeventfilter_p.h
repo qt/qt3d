@@ -79,7 +79,6 @@ protected:
 private:
     QList<QPair<QObject*, QMouseEvent>> m_pendingMouseEvents;
     QList<QKeyEvent> m_pendingKeyEvents;
-    QMutex m_mutex;
 };
 
 } // Render

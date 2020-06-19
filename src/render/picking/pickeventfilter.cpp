@@ -39,7 +39,6 @@
 
 #include "pickeventfilter_p.h"
 
-#include <QtCore/QMutexLocker>
 #include <QtGui/QHoverEvent>
 
 QT_BEGIN_NAMESPACE
@@ -64,7 +63,6 @@ PickEventFilter::~PickEventFilter()
 */
 QList<QPair<QObject *, QMouseEvent> > PickEventFilter::pendingMouseEvents()
 {
-    QMutexLocker locker(&m_mutex);
     QList<QPair<QObject*, QMouseEvent>> pendingEvents(m_pendingMouseEvents);
     m_pendingMouseEvents.clear();
     return pendingEvents;
@@ -72,7 +70,6 @@ QList<QPair<QObject *, QMouseEvent> > PickEventFilter::pendingMouseEvents()
 
 QList<QKeyEvent> PickEventFilter::pendingKeyEvents()
 {
-    QMutexLocker locker(&m_mutex);
     QList<QKeyEvent> pendingEvents(m_pendingKeyEvents);
     m_pendingKeyEvents.clear();
     return pendingEvents;
@@ -88,22 +85,19 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
     switch (e->type()) {
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
-    case QEvent::MouseMove: {
-        QMutexLocker locker(&m_mutex);
+    case QEvent::MouseMove:
         m_pendingMouseEvents.push_back({obj, QMouseEvent(*static_cast<QMouseEvent *>(e))});
-    } break;
+        break;
     case QEvent::HoverMove: {
-        QMutexLocker locker(&m_mutex);
         QHoverEvent *he = static_cast<QHoverEvent *>(e);
         m_pendingMouseEvents.push_back({obj, QMouseEvent(QEvent::MouseMove,
                                                    he->position(), Qt::NoButton, Qt::NoButton,
                                                    he->modifiers())});
-    } break;
+        } break;
     case QEvent::KeyPress:
-    case QEvent::KeyRelease: {
-        QMutexLocker locker(&m_mutex);
+    case QEvent::KeyRelease:
         m_pendingKeyEvents.push_back(QKeyEvent(*static_cast<QKeyEvent *>(e)));
-    }
+        break;
     default:
         break;
     }

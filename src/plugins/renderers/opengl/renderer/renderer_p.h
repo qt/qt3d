@@ -61,7 +61,6 @@
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/updateshaderdatatransformjob_p.h>
 #include <Qt3DRender/private/framecleanupjob_p.h>
-#include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/sendbuffercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
 #include <Qt3DRender/private/shaderbuilder_p.h>
@@ -104,7 +103,6 @@ class QScreen;
 
 namespace Qt3DCore {
 class QEntity;
-class QEventFilterService;
 }
 
 namespace Qt3DRender {
@@ -421,7 +419,6 @@ private:
     Debug::ImGuiRenderer *m_imGuiRenderer;
     QList<QPair<QObject *, QMouseEvent>> m_frameMouseEvents;
     QList<QKeyEvent> m_frameKeyEvents;
-    QMutex m_frameEventsMutex;
     int m_jobsInLastFrame;
 };
 

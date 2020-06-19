@@ -19,7 +19,6 @@ qt_add_module(3DInput
         backend/axissetting.cpp backend/axissetting_p.h
         backend/backendnode.cpp backend/backendnode_p.h
         backend/buttonaxisinput.cpp backend/buttonaxisinput_p.h
-        backend/eventsourcesetterhelper.cpp backend/eventsourcesetterhelper_p.h
         backend/genericdevicebackendnode.cpp backend/genericdevicebackendnode_p.h
         backend/handle_types_p.h
         backend/inputbackendnodefunctor_p.h
