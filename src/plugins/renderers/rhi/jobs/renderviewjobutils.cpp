@@ -297,6 +297,10 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Nothing to do RenderView wise for NoPicking
                 break;
 
+            case FrameGraphNode::DebugOverlay:
+                // Not supported yet with RHI
+                break;
+
             default:
                 // Should never get here
                 qCWarning(Backend) << "Unhandled FrameGraphNode type";
