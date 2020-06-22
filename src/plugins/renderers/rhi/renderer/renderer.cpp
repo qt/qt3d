@@ -62,7 +62,6 @@
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/technique_p.h>
-#include <Qt3DRender/private/renderthread_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/techniquefilternode_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
@@ -230,7 +229,7 @@ int locationForAttribute(Attribute *attr, RHIShader *shader) noexcept
     a short while after.
  */
 
-Renderer::Renderer(QRenderAspect::RenderType type)
+Renderer::Renderer()
     : m_services(nullptr),
       m_aspect(nullptr),
       m_nodesManager(nullptr),
@@ -238,8 +237,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
       m_defaultRenderStateSet(nullptr),
       m_submissionContext(nullptr),
       m_renderQueue(new RenderQueue()),
-      m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : nullptr),
-      m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(m_renderThread != nullptr)),
+      m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(false)),
       m_waitForInitializationToBeCompleted(0),
       m_hasBeenInitializedMutex(),
       m_exposed(0),
@@ -273,8 +271,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
     m_running.fetchAndStoreOrdered(1);
-    if (m_renderThread)
-        m_renderThread->waitForStart();
 
     m_introspectShaderJob->addDependency(m_filterCompatibleTechniqueJob);
 
@@ -289,8 +285,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 Renderer::~Renderer()
 {
     Q_ASSERT(m_running.fetchAndStoreOrdered(0) == 0);
-    if (m_renderThread)
-        Q_ASSERT(m_renderThread->isFinished());
 
     delete m_renderQueue;
     delete m_defaultRenderStateSet;
@@ -510,15 +504,7 @@ void Renderer::shutdown()
     m_renderQueue->reset();
     lockRenderQueue.unlock();
 
-    if (!m_renderThread) {
-        releaseGraphicsResources();
-    } else {
-        // Wake up the render thread in case it is waiting for some renderviews
-        // to be ready. The isReadyToSubmit() function checks for a shutdown
-        // having been requested.
-        m_submitRenderViewsSemaphore.release(1);
-        m_renderThread->wait();
-    }
+    releaseGraphicsResources();
 
     // Destroy internal managers
     // This needs to be done before the nodeManager is destroy
@@ -840,20 +826,12 @@ void Renderer::enqueueRenderView(RenderView *renderView, int submitOrder)
     const bool isQueueComplete = m_renderQueue->queueRenderView(renderView, submitOrder);
     locker.unlock(); // We're done protecting the queue at this point
     if (isQueueComplete) {
-        if (m_renderThread && m_running.loadRelaxed())
-            Q_ASSERT(m_submitRenderViewsSemaphore.available() == 0);
         m_submitRenderViewsSemaphore.release(1);
     }
 }
 
 bool Renderer::canRender() const
-
 {
-    // Make sure that we've not been told to terminate
-    if (m_renderThread && !m_running.loadRelaxed()) {
-        qCDebug(Rendering) << "RenderThread termination requested whilst waiting";
-        return false;
-    }
 
     // TO DO: Check if all surfaces have been destroyed...
     // It may be better if the last window to be closed trigger a call to shutdown

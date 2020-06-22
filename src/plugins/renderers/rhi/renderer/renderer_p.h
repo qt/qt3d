@@ -134,7 +134,6 @@ class Shader;
 class Entity;
 class Effect;
 class RenderPass;
-class RenderThread;
 class RenderStateSet;
 class VSyncFrameAdvanceService;
 class NodeManagers;
@@ -164,7 +163,7 @@ class RHIResourceManagers;
 class Q_AUTOTEST_EXPORT Renderer : public AbstractRenderer
 {
 public:
-    explicit Renderer(QRenderAspect::RenderType type);
+    explicit Renderer();
     ~Renderer();
 
     void dumpInfo() const override;
@@ -330,7 +329,6 @@ private:
     QScopedPointer<SubmissionContext> m_submissionContext;
 
     RenderQueue *m_renderQueue;
-    QScopedPointer<RenderThread> m_renderThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     QSemaphore m_submitRenderViewsSemaphore;
