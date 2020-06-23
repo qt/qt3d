@@ -251,9 +251,10 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, E
     int drawVertexCount = res.renderer->vertexCount(); // may be 0, gets changed below if so
 
     Qt3DRender::Render::Attribute *positionAttribute = manager->lookupResource<Attribute, AttributeManager>(res.geometry->boundingPositionAttribute());
+    bool hasBoundingVolumePositionAttribute = positionAttribute != nullptr;
 
     // Use the default position attribute if attribute is null
-    if (!positionAttribute) {
+    if (!hasBoundingVolumePositionAttribute) {
         const auto attrIds = res.geometry->attributes();
         for (const Qt3DCore::QNodeId &attrId : attrIds) {
             positionAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
@@ -281,37 +282,40 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, E
     // Check if there is an index attribute.
     Qt3DRender::Render::Attribute *indexAttribute = nullptr;
     Buffer *indexBuf = nullptr;
-    const QVector<Qt3DCore::QNodeId> attributes = res.geometry->attributes();
 
-    for (Qt3DCore::QNodeId attrNodeId : attributes) {
-        Qt3DRender::Render::Attribute *attr = manager->lookupResource<Attribute, AttributeManager>(attrNodeId);
-        if (attr && attr->attributeType() == QAttribute::IndexAttribute) {
-            indexBuf = manager->lookupResource<Buffer, BufferManager>(attr->bufferId());
-            if (indexBuf) {
-                indexAttribute = attr;
+    if (!hasBoundingVolumePositionAttribute) {
+        const QVector<Qt3DCore::QNodeId> attributes = res.geometry->attributes();
 
-                if (!drawVertexCount)
-                    drawVertexCount = indexAttribute->count();
+        for (Qt3DCore::QNodeId attrNodeId : attributes) {
+            Qt3DRender::Render::Attribute *attr = manager->lookupResource<Attribute, AttributeManager>(attrNodeId);
+            if (attr && attr->attributeType() == QAttribute::IndexAttribute) {
+                indexBuf = manager->lookupResource<Buffer, BufferManager>(attr->bufferId());
+                if (indexBuf) {
+                    indexAttribute = attr;
 
-                const QAttribute::VertexBaseType validIndexTypes[] = {
-                    QAttribute::UnsignedShort,
-                    QAttribute::UnsignedInt,
-                    QAttribute::UnsignedByte
-                };
+                    if (!drawVertexCount)
+                        drawVertexCount = indexAttribute->count();
 
-                if (std::find(std::begin(validIndexTypes),
-                              std::end(validIndexTypes),
-                              indexAttribute->vertexBaseType()) == std::end(validIndexTypes)) {
-                    qWarning() << "findBoundingVolumeComputeData: Unsupported index attribute type" << indexAttribute->name() << indexAttribute->vertexBaseType();
-                    return res;
+                    const QAttribute::VertexBaseType validIndexTypes[] = {
+                        QAttribute::UnsignedShort,
+                        QAttribute::UnsignedInt,
+                        QAttribute::UnsignedByte
+                    };
+
+                    if (std::find(std::begin(validIndexTypes),
+                                  std::end(validIndexTypes),
+                                  indexAttribute->vertexBaseType()) == std::end(validIndexTypes)) {
+                        qWarning() << "findBoundingVolumeComputeData: Unsupported index attribute type" << indexAttribute->name() << indexAttribute->vertexBaseType();
+                        return res;
+                    }
+
+                    break;
                 }
-
-                break;
             }
         }
     }
 
-    if (!indexAttribute && !drawVertexCount)
+    if (hasBoundingVolumePositionAttribute || (!indexAttribute && !drawVertexCount))
         drawVertexCount = positionAttribute->count();
 
     // Buf will be set to not dirty once it's loaded
