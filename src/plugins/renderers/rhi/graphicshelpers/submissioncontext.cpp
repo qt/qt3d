@@ -1122,9 +1122,41 @@ void SubmissionContext::applyStateSet(const RenderStateSet *ss,
                                       QRhiGraphicsPipeline *graphicsPipeline)
 {
     // Set default state values on graphicsPipeline
+    QRhiGraphicsPipeline::Flags flags{};
+    graphicsPipeline->setFlags(flags);
+
     graphicsPipeline->setDepthWrite(true);
-    graphicsPipeline->setDepthTest(false);
+    graphicsPipeline->setDepthTest(true);
+    graphicsPipeline->setDepthOp(QRhiGraphicsPipeline::Less);
+
+    graphicsPipeline->setCullMode(QRhiGraphicsPipeline::Back);
+
     graphicsPipeline->setSampleCount(format().samples());
+
+    graphicsPipeline->setStencilTest(false);
+    graphicsPipeline->setStencilReadMask(0xff);
+    graphicsPipeline->setStencilWriteMask(0xff);
+
+    QRhiGraphicsPipeline::StencilOpState stencilOp;
+    stencilOp.failOp = QRhiGraphicsPipeline::Keep;
+    stencilOp.depthFailOp = QRhiGraphicsPipeline::Keep;
+    stencilOp.passOp = QRhiGraphicsPipeline::Keep;
+    stencilOp.compareOp = QRhiGraphicsPipeline::Always;
+
+    graphicsPipeline->setStencilFront(stencilOp);
+    graphicsPipeline->setStencilBack(stencilOp);
+
+
+    QRhiGraphicsPipeline::TargetBlend blend;
+    blend.colorWrite = QRhiGraphicsPipeline::ColorMask(0xF); // R | G | B | A
+    blend.enable = false;
+    blend.srcColor = QRhiGraphicsPipeline::One;
+    blend.dstColor = QRhiGraphicsPipeline::Zero;
+    blend.srcAlpha = QRhiGraphicsPipeline::One;
+    blend.dstAlpha = QRhiGraphicsPipeline::Zero;
+
+    graphicsPipeline->setTargetBlends({blend});
+
 
     const QVector<StateVariant> statesToSet = ss->states();
     for (const StateVariant &ds : statesToSet)
