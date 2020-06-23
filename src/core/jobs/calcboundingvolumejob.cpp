@@ -53,6 +53,7 @@
 #include <Qt3DCore/private/qgeometry_p.h>
 #include <Qt3DCore/private/qgeometryview_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qthreadpooler_p.h>
 
 #include <QtCore/qmath.h>
 #if QT_CONFIG(concurrent)
@@ -264,7 +265,7 @@ void CalculateBoundingVolumeJob::run()
     });
 
 #if QT_CONFIG(concurrent)
-    if (dirtyEntities.size() > 1) {
+    if (dirtyEntities.size() > 1 && QThreadPooler::maxThreadCount() > 1) {
         UpdateBoundFunctor functor;
         ReduceUpdateBoundFunctor reduceFunctor;
         m_results = QtConcurrent::blockingMappedReduced<decltype(m_results)>(dirtyEntities, functor, reduceFunctor);
