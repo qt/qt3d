@@ -34,6 +34,7 @@
 
     \ingroup modules
     \ingroup qt3d-modules
+    \qtcmakepackage 3dinput
     \qtvariable 3dinput
 
     To use classes from this module, add this directive into the C++ files:

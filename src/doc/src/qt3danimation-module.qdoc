@@ -40,6 +40,7 @@
 
     \ingroup modules
     \ingroup qt3d-modules-preliminary
+    \qtcmakepackage 3danimation
     \qtvariable 3danimation
 
     \code

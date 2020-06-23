@@ -39,6 +39,7 @@
 
     \ingroup modules
     \ingroup qt3d-modules-preliminary
+    \qtcmakepackage 3dquickscene2d
     \qtvariable 3dquickscene2d
 
     \code

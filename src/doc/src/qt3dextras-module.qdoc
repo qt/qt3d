@@ -39,6 +39,7 @@
 
     \ingroup modules
     \ingroup qt3d-modules-preliminary
+    \qtcmakepackage 3dextras
     \qtvariable 3dextras
 
     \code
