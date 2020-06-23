@@ -776,7 +776,7 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
 void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subView)
 {
     // Update RenderViewUBO (Qt3D standard uniforms)
-    const bool yIsUp = m_renderer->submissionContext()->rhi()->isYUpInFramebuffer();
+    const bool yIsUp = m_renderer->submissionContext()->rhi()->isYUpInNDC();
     const Matrix4x4 projectionMatrix = getProjectionMatrix(m_renderCameraLens, yIsUp);
     const Matrix4x4 inverseViewMatrix = m_viewMatrix.inverted();
     const Matrix4x4 inversedProjectionMatrix = projectionMatrix.inverted();
