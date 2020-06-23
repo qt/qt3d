@@ -50,8 +50,8 @@ class AssimpSceneImportPlugin : public Qt3DRender::QSceneImportPlugin
 
     Qt3DRender::QSceneImporter *create(const QString &key, const QStringList &paramList) override
     {
-        Q_UNUSED(key)
-        Q_UNUSED(paramList)
+        Q_UNUSED(key);
+        Q_UNUSED(paramList);
         return new Qt3DRender::AssimpImporter();
     }
 };

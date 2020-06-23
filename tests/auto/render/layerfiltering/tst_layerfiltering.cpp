@@ -148,7 +148,7 @@ private Q_SLOTS:
             Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
             Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
 
-            Q_UNUSED(childEntity1)
+            Q_UNUSED(childEntity1);
 
             Qt3DRender::QLayer *layer = new Qt3DRender::QLayer(rootEntity);
             Qt3DRender::QLayer *layer2 = new Qt3DRender::QLayer(rootEntity);

@@ -43,16 +43,16 @@ public:
     void dumpInfo() const override {}
     Qt3DRender::API api() const override { return Qt3DRender::API::OpenGL; }
     qint64 time() const override { return 0; }
-    void setTime(qint64 time) override { Q_UNUSED(time) }
+    void setTime(qint64 time) override { Q_UNUSED(time); }
     void setAspect(Qt3DRender::QRenderAspect *aspect) override { m_aspect = aspect; }
     void setNodeManagers(Qt3DRender::Render::NodeManagers *m) override
     {
         m_managers = m;
         m_resourceAccessor.reset(new Qt3DRender::Render::ResourceAccessor(this, m_managers));
     }
-    void setServices(Qt3DCore::QServiceLocator *services) override { Q_UNUSED(services) }
-    void setSurfaceExposed(bool exposed) override { Q_UNUSED(exposed) }
-    void setJobsInLastFrame(int jobsInLastFrame) override { Q_UNUSED(jobsInLastFrame) }
+    void setServices(Qt3DCore::QServiceLocator *services) override { Q_UNUSED(services); }
+    void setSurfaceExposed(bool exposed) override { Q_UNUSED(exposed); }
+    void setJobsInLastFrame(int jobsInLastFrame) override { Q_UNUSED(jobsInLastFrame); }
     Qt3DRender::QRenderAspect *aspect() const override { return m_aspect; }
     Qt3DRender::Render::NodeManagers *nodeManagers() const override { return m_managers; }
     Qt3DCore::QServiceLocator *services() const override { return nullptr; }
@@ -60,15 +60,15 @@ public:
     void shutdown() override {}
     void releaseGraphicsResources() override {}
     void render() override {}
-    void doRender(bool swapBuffers) override { Q_UNUSED(swapBuffers) }
+    void doRender(bool swapBuffers) override { Q_UNUSED(swapBuffers); }
     void cleanGraphicsResources() override {}
     bool isRunning() const override { return true; }
     bool shouldRender() const override { return true; }
     void skipNextFrame() override {}
-    void jobsDone(Qt3DCore::QAspectManager *manager) override { Q_UNUSED(manager) }
+    void jobsDone(Qt3DCore::QAspectManager *manager) override { Q_UNUSED(manager); }
     QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
-    void setSceneRoot(Qt3DRender::Render::Entity *root) override { Q_UNUSED(root) }
+    void setSceneRoot(Qt3DRender::Render::Entity *root) override { Q_UNUSED(root); }
     Qt3DRender::Render::Entity *sceneRoot() const override { return nullptr; }
     Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const override { return nullptr; }
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override { return nullptr; }

@@ -75,7 +75,7 @@ bool RenderViewCommandUpdaterJobPrivate::isRequired() const
 
 void RenderViewCommandUpdaterJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    Q_UNUSED(manager)
+    Q_UNUSED(manager);
 
     // reset to 0 after every frame, stops the number growing indefinitely
     renderViewInstanceCounter = 0;

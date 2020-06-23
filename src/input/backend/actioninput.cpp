@@ -77,7 +77,7 @@ void ActionInput::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTi
 
 bool ActionInput::process(InputHandler *inputHandler, qint64 currentTime)
 {
-    Q_UNUSED(currentTime)
+    Q_UNUSED(currentTime);
 
     if (!isEnabled())
         return false;

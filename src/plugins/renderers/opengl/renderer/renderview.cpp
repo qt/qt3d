@@ -331,9 +331,9 @@ struct SubRangeSorter
 {
     static void sortSubRange(EntityRenderCommandDataView *view, size_t begin, const size_t end)
     {
-        Q_UNUSED(view)
-        Q_UNUSED(begin)
-        Q_UNUSED(end)
+        Q_UNUSED(view);
+        Q_UNUSED(begin);
+        Q_UNUSED(end);
         Q_UNREACHABLE();
     }
 };

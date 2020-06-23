@@ -75,22 +75,22 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
 
 void QBackendNodePrivate::addedToEntity(QNode *frontend)
 {
-    Q_UNUSED(frontend)
+    Q_UNUSED(frontend);
 }
 
 void QBackendNodePrivate::removedFromEntity(QNode *frontend)
 {
-    Q_UNUSED(frontend)
+    Q_UNUSED(frontend);
 }
 
 void QBackendNodePrivate::componentAdded(QNode *frontend)
 {
-    Q_UNUSED(frontend)
+    Q_UNUSED(frontend);
 }
 
 void QBackendNodePrivate::componentRemoved(QNode *frontend)
 {
-    Q_UNUSED(frontend)
+    Q_UNUSED(frontend);
 }
 
 /*!
@@ -199,8 +199,8 @@ QBackendNode::Mode QBackendNode::mode() const Q_DECL_NOTHROW
  */
 void QBackendNode::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 {
-    Q_UNUSED(frontEnd)
-    Q_UNUSED(firstTime)
+    Q_UNUSED(frontEnd);
+    Q_UNUSED(firstTime);
 }
 
 /*!

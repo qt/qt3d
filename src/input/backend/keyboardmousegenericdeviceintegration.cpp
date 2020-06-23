@@ -64,13 +64,13 @@ void KeyboardMouseGenericDeviceIntegration::onInitialize()
 
 QVector<Qt3DCore::QAspectJobPtr> KeyboardMouseGenericDeviceIntegration::jobsToExecute(qint64 time)
 {
-    Q_UNUSED(time)
+    Q_UNUSED(time);
     return QVector<Qt3DCore::QAspectJobPtr>();
 }
 
 QAbstractPhysicalDevice *KeyboardMouseGenericDeviceIntegration::createPhysicalDevice(const QString &name)
 {
-    Q_UNUSED(name)
+    Q_UNUSED(name);
     return nullptr;
 }
 

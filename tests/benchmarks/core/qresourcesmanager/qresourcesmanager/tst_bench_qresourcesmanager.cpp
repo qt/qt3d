@@ -78,7 +78,7 @@ void benchmarkAllocateResources()
         for (int i = 0; i < max; i++)
             c = manager.getOrCreateResource(i);
     }
-    Q_UNUSED(c)
+    Q_UNUSED(c);
 }
 
 template<typename Resource>
@@ -95,7 +95,7 @@ void benchmarkAccessResources()
         for (int i = 0; i < max; i++)
             c = manager.data(handles[i]);
     }
-    Q_UNUSED(c)
+    Q_UNUSED(c);
 }
 
 template<typename Resource>
@@ -115,7 +115,7 @@ void benchmarkRandomAccessResource() {
         for (int i = 0; i < max; i++)
             c = manager.data(handles[i]);
     }
-    Q_UNUSED(c)
+    Q_UNUSED(c);
 }
 
 template<typename Resource>
@@ -131,7 +131,7 @@ void benchmarkLookupResources()
         for (int i = 0; i < max; i++)
             c = manager.lookupResource(i);
     }
-    Q_UNUSED(c)
+    Q_UNUSED(c);
 }
 
 template<typename Resource>
@@ -154,7 +154,7 @@ void benchmarkRandomLookupResources()
         for (int i = 0; i < max; i++)
             c = manager.lookupResource(resourcesIndices[i]);
     }
-    Q_UNUSED(c)
+    Q_UNUSED(c);
 }
 
 template<typename Resource>

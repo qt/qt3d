@@ -272,7 +272,7 @@ int main(int argc, char* argv[])
         clearBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
         clearBuffer->setClearColor(QColor::fromRgbF(0.1, 0.5, 0.0, 1.0));
         auto *noDraw = new Qt3DRender::QNoDraw(clearBuffer);
-        Q_UNUSED(noDraw)
+        Q_UNUSED(noDraw);
 
         // RV 2
         auto *cameraSelector1 = new Qt3DRender::QCameraSelector(surfaceSelector);

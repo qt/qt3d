@@ -74,7 +74,7 @@ public:
         QSphereGeometry *g = static_cast<QSphereGeometry *>(mesh->geometry());
         QAttribute *positionAttr = static_cast<QAttribute *>(g->attributes().first());
         Qt3DCore::QBuffer *vertexBuffer = static_cast<Qt3DCore::QBuffer *>(positionAttr->buffer());
-        Q_UNUSED(vertexBuffer)
+        Q_UNUSED(vertexBuffer);
 
         transform->setTranslation(position);
 

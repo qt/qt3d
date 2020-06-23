@@ -55,8 +55,8 @@ QSceneExportPlugin::~QSceneExportPlugin()
 
 QSceneExporter *QSceneExportPlugin::create(const QString &key, const QStringList &paramList)
 {
-    Q_UNUSED(key)
-    Q_UNUSED(paramList)
+    Q_UNUSED(key);
+    Q_UNUSED(paramList);
     return nullptr;
 }
 

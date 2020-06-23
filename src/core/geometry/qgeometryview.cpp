@@ -114,7 +114,7 @@ public:
 
     void visit(uint ndx, float x, float y, float z) override
     {
-        Q_UNUSED(ndx)
+        Q_UNUSED(ndx);
         const Vector3D p = Vector3D(x, y, z);
 
         if (hasNoPoints && setReferencePoint) {

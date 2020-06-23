@@ -79,7 +79,7 @@ bool MaterialParameterGathererJobPrivate::isRequired() const
 
 void MaterialParameterGathererJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    Q_UNUSED(manager)
+    Q_UNUSED(manager);
     materialParameterGathererCounter = 0;
 }
 

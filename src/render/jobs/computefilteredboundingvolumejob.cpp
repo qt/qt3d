@@ -143,8 +143,8 @@ void ComputeFilteredBoundingVolumeJob::run()
 
 void ComputeFilteredBoundingVolumeJob::finished(Qt3DCore::QAspectManager *aspectManager, const Qt3DRender::Render::Sphere &sphere)
 {
-    Q_UNUSED(aspectManager)
-    Q_UNUSED(sphere)
+    Q_UNUSED(aspectManager);
+    Q_UNUSED(sphere);
 }
 
 void ComputeFilteredBoundingVolumeJobPrivate::postFrame(Qt3DCore::QAspectManager *aspectManager)

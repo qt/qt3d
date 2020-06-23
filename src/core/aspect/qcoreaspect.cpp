@@ -88,7 +88,7 @@ QAspectJobPtr QCoreAspect::calculateBoundingVolumeJob() const
 QVector<QAspectJobPtr> QCoreAspect::jobsToExecute(qint64 time)
 {
     Q_D(QCoreAspect);
-    Q_UNUSED(time)
+    Q_UNUSED(time);
 
     QVector<QAspectJobPtr> jobs;
 
@@ -105,7 +105,7 @@ QVector<QAspectJobPtr> QCoreAspect::jobsToExecute(qint64 time)
 
 QVariant QCoreAspect::executeCommand(const QStringList &args)
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
     return {};
 }
 

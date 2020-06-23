@@ -63,7 +63,7 @@ BackendNode::~BackendNode()
 
 void BackendNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    Q_UNUSED(firstTime)
+    Q_UNUSED(firstTime);
 
     d_ptr->setEnabled(frontEnd->isEnabled());
 }

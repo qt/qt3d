@@ -69,16 +69,16 @@ public:
     virtual ~BufferVisitor() = default;
 
     virtual void visit(uint ndx, ValueType x) {
-        Q_UNUSED(ndx) Q_UNUSED(x)
+        Q_UNUSED(ndx); Q_UNUSED(x);
     }
     virtual void visit(uint ndx, ValueType x, ValueType y) {
-        Q_UNUSED(ndx) Q_UNUSED(x) Q_UNUSED(y)
+        Q_UNUSED(ndx); Q_UNUSED(x); Q_UNUSED(y);
     }
     virtual void visit(uint ndx, ValueType x, ValueType y, ValueType z) {
-        Q_UNUSED(ndx) Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z)
+        Q_UNUSED(ndx); Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z);
     }
     virtual void visit(uint ndx, ValueType x, ValueType y, ValueType z, ValueType w) {
-        Q_UNUSED(ndx) Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(w)
+        Q_UNUSED(ndx); Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z); Q_UNUSED(w);
     }
 
     bool apply(QAttribute *attribute,

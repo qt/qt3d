@@ -50,8 +50,8 @@ class GLTFSceneExportPlugin : public Qt3DRender::QSceneExportPlugin
 
     Qt3DRender::QSceneExporter *create(const QString &key, const QStringList &paramList) override
     {
-        Q_UNUSED(key)
-        Q_UNUSED(paramList)
+        Q_UNUSED(key);
+        Q_UNUSED(paramList);
         return new Qt3DRender::GLTFExporter();
     }
 };

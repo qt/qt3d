@@ -153,7 +153,7 @@ class Quick3DValueTypeProvider : public QQmlValueTypeProvider
 public:
 
 #if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
-    #define ASSERT_VALID_SIZE(size, min) Q_UNUSED(size)
+    #define ASSERT_VALID_SIZE(size, min) Q_UNUSED(size);
 #else
     #define ASSERT_VALID_SIZE(size, min) Q_ASSERT(size >= min)
 #endif

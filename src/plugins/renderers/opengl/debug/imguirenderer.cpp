@@ -147,11 +147,11 @@ ImGuiRenderer::ImGuiRenderer(Qt3DRender::Render::OpenGL::Renderer *renderer)
 
 #ifndef QT_NO_CLIPBOARD
     io.SetClipboardTextFn = [](void *user_data, const char *text) {
-        Q_UNUSED(user_data)
+        Q_UNUSED(user_data);
         QGuiApplication::clipboard()->setText(QString::fromLatin1(text));
     };
     io.GetClipboardTextFn = [](void *user_data) {
-        Q_UNUSED(user_data)
+        Q_UNUSED(user_data);
         g_currentClipboardText = QGuiApplication::clipboard()->text().toUtf8();
         return static_cast<const char *>(g_currentClipboardText.data());
     };

@@ -56,7 +56,7 @@ QRendererPlugin::~QRendererPlugin()
 
 AbstractRenderer *QRendererPlugin::create(const QString &key)
 {
-    Q_UNUSED(key)
+    Q_UNUSED(key);
     return nullptr;
 }
 

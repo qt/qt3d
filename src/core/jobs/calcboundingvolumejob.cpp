@@ -281,7 +281,7 @@ void CalculateBoundingVolumeJob::run()
 
 void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
 {
-    Q_UNUSED(aspectEngine)
+    Q_UNUSED(aspectEngine);
 
     for (auto result: qAsConst(m_results)) {
         // set the results

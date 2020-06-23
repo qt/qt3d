@@ -360,7 +360,7 @@ void QNodePrivate::unregisterNotifiedProperties()
 
 void QNodePrivate::propertyChanged(int propertyIndex)
 {
-    Q_UNUSED(propertyIndex)
+    Q_UNUSED(propertyIndex);
 
     // Bail out early if we can to avoid the cost below
     if (m_blockNotifications)
@@ -523,8 +523,8 @@ QScene *QNodePrivate::scene() const
  */
 void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 {
-    Q_UNUSED(name)
-    Q_UNUSED(value)
+    Q_UNUSED(name);
+    Q_UNUSED(value);
 
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)
@@ -535,8 +535,8 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 
 void QNodePrivate::notifyDynamicPropertyChange(const QByteArray &name, const QVariant &value)
 {
-    Q_UNUSED(name)
-    Q_UNUSED(value)
+    Q_UNUSED(name);
+    Q_UNUSED(value);
 
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)

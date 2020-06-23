@@ -1735,7 +1735,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
 void Renderer::markDirty(BackendNodeDirtySet changes, BackendNode *node)
 {
-    Q_UNUSED(node)
+    Q_UNUSED(node);
     m_dirtyBits.marked |= changes;
 }
 

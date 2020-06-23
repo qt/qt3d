@@ -261,9 +261,9 @@ struct SubRangeSorter
 {
     static void sortSubRange(EntityRenderCommandDataView *view, size_t begin, const size_t end)
     {
-        Q_UNUSED(view)
-        Q_UNUSED(begin)
-        Q_UNUSED(end)
+        Q_UNUSED(view);
+        Q_UNUSED(begin);
+        Q_UNUSED(end);
         Q_UNREACHABLE();
     }
 };
@@ -966,7 +966,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack, const RH
                                       const ShaderUniformBlock &block,
                                       const UniformValue &value) const
 {
-    Q_UNUSED(shader)
+    Q_UNUSED(shader);
 
     if (value.valueType() == UniformValue::NodeId) {
 
@@ -988,7 +988,7 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack, const R
                                        const ShaderStorageBlock &block,
                                        const UniformValue &value) const
 {
-    Q_UNUSED(shader)
+    Q_UNUSED(shader);
     if (value.valueType() == UniformValue::NodeId) {
         Buffer *buffer = nullptr;
         if ((buffer = m_manager->bufferManager()->lookupResource(
@@ -1070,7 +1070,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
                                       const QVector<LightSource> &activeLightSources,
                                       EnvironmentLight *environmentLight) const
 {
-    Q_UNUSED(entity)
+    Q_UNUSED(entity);
 
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex
     // here Set shader, technique, and effect by basically doing :

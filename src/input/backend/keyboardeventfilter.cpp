@@ -65,7 +65,7 @@ void KeyboardEventFilter::setInputHandler(InputHandler *handler)
 // Triggered in the view thread (usually the main thread)
 bool KeyboardEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
-    Q_UNUSED(obj)
+    Q_UNUSED(obj);
     if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
         // Store event to be processed later on in an InputAspect job
         m_inputHandler->appendKeyEvent(QT_PREPEND_NAMESPACE(QKeyEvent)(*static_cast<QT_PREPEND_NAMESPACE(QKeyEvent) *>(e)));

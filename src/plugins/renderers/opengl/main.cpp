@@ -49,7 +49,7 @@ class OpenGLRendererPlugin : public Qt3DRender::Render::QRendererPlugin
 
     Qt3DRender::Render::AbstractRenderer *create(const QString &key) override
     {
-        Q_UNUSED(key)
+        Q_UNUSED(key);
         return new Qt3DRender::Render::OpenGL::Renderer();
     }
 };

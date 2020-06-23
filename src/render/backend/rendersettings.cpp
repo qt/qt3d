@@ -124,13 +124,13 @@ Qt3DCore::QBackendNode *RenderSettingsFunctor::create(Qt3DCore::QNodeId) const
 
 Qt3DCore::QBackendNode *RenderSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
-    Q_UNUSED(id)
+    Q_UNUSED(id);
     return m_renderer->settings();
 }
 
 void RenderSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
-    Q_UNUSED(id)
+    Q_UNUSED(id);
     // Deletes the old settings object
     auto settings = m_renderer->settings();
     if (settings && settings->peerId() == id) {

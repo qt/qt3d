@@ -51,8 +51,8 @@ public:
 
     void setData(const QByteArray& data, const QString &basePath) override
     {
-        Q_UNUSED(data)
-        Q_UNUSED(basePath)
+        Q_UNUSED(data);
+        Q_UNUSED(basePath);
     }
 
     bool areFileTypesSupported(const QStringList &extensions) const override

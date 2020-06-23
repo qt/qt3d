@@ -56,7 +56,7 @@ Handler::Handler()
 
 void Handler::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
 {
-    Q_UNUSED(frontEnd)
+    Q_UNUSED(frontEnd);
     if (firstTime)
         m_logicManager->appendHandler(this);
 }

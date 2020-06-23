@@ -164,8 +164,8 @@ namespace {
 template<typename GenericState>
 void applyStateHelper(const GenericState *state, QRhiGraphicsPipeline *gp) noexcept
 {
-    Q_UNUSED(state)
-    Q_UNUSED(gp)
+    Q_UNUSED(state);
+    Q_UNUSED(gp);
     qWarning() << "RHI Unhandled render state" << typeid(GenericState).name();
 }
 
@@ -270,7 +270,7 @@ void applyStateHelper(const BlendEquation *state, QRhiGraphicsPipeline *gp) noex
 void applyStateHelper(const MSAAEnabled *state, QRhiGraphicsPipeline *gp,
                       const QSurfaceFormat &format) noexcept
 {
-    Q_UNUSED(state)
+    Q_UNUSED(state);
     gp->setSampleCount(format.samples());
 }
 
@@ -690,7 +690,7 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
 void SubmissionContext::endDrawing(bool swapBuffers)
 {
-    Q_UNUSED(swapBuffers)
+    Q_UNUSED(swapBuffers);
     m_rhi->endFrame(m_currentSwapChain, {});
 
     RHI_UNIMPLEMENTED;
@@ -734,8 +734,8 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
 GLuint SubmissionContext::createRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
                                              const AttachmentPack &attachments)
 {
-    Q_UNUSED(renderTargetNodeId)
-    Q_UNUSED(attachments)
+    Q_UNUSED(renderTargetNodeId);
+    Q_UNUSED(attachments);
     RHI_UNIMPLEMENTED;
     return 0;
     //*    const GLuint fboId = m_glHelper->createFrameBufferObject();
@@ -756,9 +756,9 @@ GLuint SubmissionContext::updateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
                                              const AttachmentPack &attachments,
                                              bool isActiveRenderTarget)
 {
-    Q_UNUSED(renderTargetNodeId)
-    Q_UNUSED(attachments)
-    Q_UNUSED(isActiveRenderTarget)
+    Q_UNUSED(renderTargetNodeId);
+    Q_UNUSED(attachments);
+    Q_UNUSED(isActiveRenderTarget);
     RHI_UNIMPLEMENTED;
     return 0;
     //*    const GLuint fboId = m_renderTargets.value(renderTargetNodeId);
@@ -842,7 +842,7 @@ QSize SubmissionContext::renderTargetSize(const QSize &surfaceSize) const
 
 QImage SubmissionContext::readFramebuffer(const QRect &rect)
 {
-    Q_UNUSED(rect)
+    Q_UNUSED(rect);
     RHI_UNIMPLEMENTED;
     return {};
     //*    QImage img;
@@ -1030,7 +1030,7 @@ void SubmissionContext::releaseResources()
 // Called only from RenderThread
 bool SubmissionContext::activateShader(RHIShader *shader)
 {
-    Q_UNUSED(shader)
+    Q_UNUSED(shader);
     RHI_UNIMPLEMENTED;
     //* if (shader->shaderProgram() != m_activeShader) {
     //*     // Ensure material uniforms are re-applied
@@ -1051,8 +1051,8 @@ bool SubmissionContext::activateShader(RHIShader *shader)
 void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId,
                                                         const AttachmentPack &attachments)
 {
-    Q_UNUSED(fboId)
-    Q_UNUSED(attachments)
+    Q_UNUSED(fboId);
+    Q_UNUSED(attachments);
     RHI_UNIMPLEMENTED;
     // Set FBO attachments. These are normally textures, except that on Open GL
     // ES <= 3.1 we must use a renderbuffer if a combined depth+stencil is
@@ -1095,7 +1095,7 @@ void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId,
 
 void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
-    Q_UNUSED(attachments)
+    Q_UNUSED(attachments);
     RHI_UNIMPLEMENTED;
     //* const QVector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
     //*
@@ -1578,14 +1578,14 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
                                         QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
                                         QBlitFramebuffer::InterpolationMethod interpolationMethod)
 {
-    Q_UNUSED(inputRenderTargetId)
-    Q_UNUSED(outputRenderTargetId)
-    Q_UNUSED(inputRect)
-    Q_UNUSED(outputRect)
-    Q_UNUSED(defaultFboId)
-    Q_UNUSED(inputAttachmentPoint)
-    Q_UNUSED(outputAttachmentPoint)
-    Q_UNUSED(interpolationMethod)
+    Q_UNUSED(inputRenderTargetId);
+    Q_UNUSED(outputRenderTargetId);
+    Q_UNUSED(inputRect);
+    Q_UNUSED(outputRect);
+    Q_UNUSED(defaultFboId);
+    Q_UNUSED(inputAttachmentPoint);
+    Q_UNUSED(outputAttachmentPoint);
+    Q_UNUSED(interpolationMethod);
     RHI_UNIMPLEMENTED;
     //*    GLuint inputFboId = defaultFboId;
     //*    bool inputBufferIsDefault = true;

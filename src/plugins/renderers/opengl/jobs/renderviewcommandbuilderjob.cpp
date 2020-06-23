@@ -73,7 +73,7 @@ bool RenderViewCommandBuilderJobPrivate::isRequired() const
 
 void RenderViewCommandBuilderJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    Q_UNUSED(manager)
+    Q_UNUSED(manager);
     renderViewInstanceCounter = 0;
 }
 

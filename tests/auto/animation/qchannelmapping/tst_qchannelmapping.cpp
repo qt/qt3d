@@ -257,8 +257,8 @@ private Q_SLOTS:
         QFETCH(int, expectedType);
         QFETCH(int, expectedComponentCount);
 
-        Q_UNUSED(expectedType)
-        Q_UNUSED(expectedComponentCount)
+        Q_UNUSED(expectedType);
+        Q_UNUSED(expectedComponentCount);
 
         TestArbiter arbiter;
         Qt3DAnimation::QChannelMapping mapping;

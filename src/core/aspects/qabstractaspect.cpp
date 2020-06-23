@@ -185,13 +185,13 @@ void QAbstractAspect::unregisterBackendType(const QMetaObject &obj)
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
     return QVariant();
 }
 
 QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
 {
-    Q_UNUSED(time)
+    Q_UNUSED(time);
     return QVector<QAspectJobPtr>();
 }
 

@@ -52,8 +52,8 @@ class Scene2DPlugin : public Qt3DRender::Render::QRenderPluginFactoryIf
     Qt3DRender::Render::QRenderPlugin *create(const QString &key,
                                               const QStringList &paramList) override
     {
-        Q_UNUSED(key)
-        Q_UNUSED(paramList)
+        Q_UNUSED(key);
+        Q_UNUSED(paramList);
         return new Qt3DRender::Render::Scene2DPlugin();
     }
 };

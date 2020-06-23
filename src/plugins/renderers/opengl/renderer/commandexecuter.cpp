@@ -67,7 +67,7 @@ QJsonObject typeToJsonObj(const Type &)
 template<typename Type>
 QJsonValue typeToJsonValue(const Type &t)
 {
-    Q_UNUSED(t)
+    Q_UNUSED(t);
     return QJsonValue();
 }
 

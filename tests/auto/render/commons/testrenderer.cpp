@@ -38,7 +38,7 @@ TestRenderer::~TestRenderer()
 
 void TestRenderer::markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node)
 {
-    Q_UNUSED(node)
+    Q_UNUSED(node);
     m_changes |= changes;
 }
 
@@ -61,13 +61,13 @@ void TestRenderer::resetDirty()
 
 QVariant TestRenderer::executeCommand(const QStringList &args)
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
     return QVariant();
 }
 
 void TestRenderer::setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper)
 {
-    Q_UNUSED(helper)
+    Q_UNUSED(helper);
 }
 
 QSurfaceFormat TestRenderer::format()

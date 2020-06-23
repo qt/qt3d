@@ -87,7 +87,7 @@ public:
     ~RequestFrameAnimation() override;
 
     int duration() const override { return 1; }
-    void updateCurrentTime(int currentTime) override { Q_UNUSED(currentTime) }
+    void updateCurrentTime(int currentTime) override { Q_UNUSED(currentTime); }
 };
 
 RequestFrameAnimation::~RequestFrameAnimation() = default;

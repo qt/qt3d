@@ -470,7 +470,7 @@ void CalculateBoundingVolumeJob::run()
 
 void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
 {
-    Q_UNUSED(aspectEngine)
+    Q_UNUSED(aspectEngine);
     for (Geometry *backend : qAsConst(m_updatedGeometries)) {
         Qt3DCore::QGeometry *node = qobject_cast<Qt3DCore::QGeometry *>(m_frontEndNodeManager->lookupNode(backend->peerId()));
         if (!node)

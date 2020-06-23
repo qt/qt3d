@@ -81,7 +81,7 @@ QList<QKeyEvent> PickEventFilter::pendingKeyEvents()
 */
 bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
-    Q_UNUSED(obj)
+    Q_UNUSED(obj);
     switch (e->type()) {
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:

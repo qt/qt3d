@@ -77,7 +77,7 @@ bool QAspectJobPrivate::isRequired() const
 
 void QAspectJobPrivate::postFrame(QAspectManager *aspectManager)
 {
-    Q_UNUSED(aspectManager)
+    Q_UNUSED(aspectManager);
 }
 
 QAspectJob::QAspectJob()

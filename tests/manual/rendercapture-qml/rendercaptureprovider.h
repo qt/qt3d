@@ -72,8 +72,8 @@ public:
 
     virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize)
     {
-        Q_UNUSED(id)
-        Q_UNUSED(requestedSize)
+        Q_UNUSED(id);
+        Q_UNUSED(requestedSize);
         *size = m_image.size();
         return m_image;
     }

@@ -302,7 +302,7 @@ void GraphicsHelperES2::vertexAttributePointer(GLenum shaderDataType,
 
 void GraphicsHelperES2::readBuffer(GLenum mode)
 {
-    Q_UNUSED(mode)
+    Q_UNUSED(mode);
     static bool showWarning = true;
     if (!showWarning)
         return;
@@ -443,7 +443,7 @@ void GraphicsHelperES2::releaseFrameBufferObject(GLuint frameBufferId)
 
 void GraphicsHelperES2::bindFrameBufferObject(GLuint frameBufferId, FBOBindMode mode)
 {
-    Q_UNUSED(mode)
+    Q_UNUSED(mode);
     // For ES2 the spec states for target: The symbolic constant must be GL_FRAMEBUFFER
     // so mode is ignored and is always set to GL_FRAMEBUFFER
     m_funcs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
@@ -453,13 +453,13 @@ void GraphicsHelperES2::bindImageTexture(GLuint imageUnit, GLuint texture,
                                          GLint mipLevel, GLboolean layered,
                                          GLint layer, GLenum access, GLenum format)
 {
-    Q_UNUSED(imageUnit)
-    Q_UNUSED(texture)
-    Q_UNUSED(mipLevel)
-    Q_UNUSED(layered)
-    Q_UNUSED(layer)
-    Q_UNUSED(access)
-    Q_UNUSED(format)
+    Q_UNUSED(imageUnit);
+    Q_UNUSED(texture);
+    Q_UNUSED(mipLevel);
+    Q_UNUSED(layered);
+    Q_UNUSED(layer);
+    Q_UNUSED(access);
+    Q_UNUSED(format);
     qWarning() << "Shader Images are not supported by ES 2.0 (since ES 3.1)";
 
 }

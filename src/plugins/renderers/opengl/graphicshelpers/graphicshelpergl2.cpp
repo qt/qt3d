@@ -470,13 +470,13 @@ void GraphicsHelperGL2::bindImageTexture(GLuint imageUnit, GLuint texture,
                                          GLint mipLevel, GLboolean layered,
                                          GLint layer, GLenum access, GLenum format)
 {
-    Q_UNUSED(imageUnit)
-    Q_UNUSED(texture)
-    Q_UNUSED(mipLevel)
-    Q_UNUSED(layered)
-    Q_UNUSED(layer)
-    Q_UNUSED(access)
-    Q_UNUSED(format)
+    Q_UNUSED(imageUnit);
+    Q_UNUSED(texture);
+    Q_UNUSED(mipLevel);
+    Q_UNUSED(layered);
+    Q_UNUSED(layer);
+    Q_UNUSED(access);
+    Q_UNUSED(format);
     qWarning() << "Shader Images are not supported by OpenGL 2.0 (since OpenGL 4.2)";
 
 }

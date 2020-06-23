@@ -735,7 +735,7 @@ GLTFImporter::AccessorData::AccessorData(const QJsonObject &json, int major, int
       offset(0),
       stride(0)
 {
-    Q_UNUSED(minor)
+    Q_UNUSED(minor);
 
     if (major > 1) {
         bufferViewName = QString::number(json.value(KEY_BUFFER_VIEW).toInt());

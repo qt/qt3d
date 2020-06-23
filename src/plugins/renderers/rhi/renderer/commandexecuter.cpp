@@ -303,7 +303,7 @@ CommandExecuter::CommandExecuter(Render::Rhi::Renderer *renderer) : m_renderer(r
 void CommandExecuter::performAsynchronousCommandExecution(
         const QVector<Render::Rhi::RenderView *> &views)
 {
-    Q_UNUSED(views)
+    Q_UNUSED(views);
     RHI_UNIMPLEMENTED;
     //*    QMutexLocker lock(&m_pendingCommandsMutex);
     //*    const QVector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands =
@@ -381,7 +381,7 @@ void CommandExecuter::performAsynchronousCommandExecution(
 // Main thread
 QVariant CommandExecuter::executeCommand(const QStringList &args)
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
     RHI_UNIMPLEMENTED;
     //*    // Note: The replies will be deleted by the AspectCommandDebugger
     //*    if (args.length() > 0 &&

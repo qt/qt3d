@@ -47,8 +47,8 @@ public:
     int buttonCount() const final { return 0; }
     QStringList axisNames() const final { return QStringList(); }
     QStringList buttonNames() const final { return QStringList(); }
-    int axisIdentifier(const QString &name) const final { Q_UNUSED(name) return 0; }
-    int buttonIdentifier(const QString &name) const final { Q_UNUSED(name) return 0; }
+    int axisIdentifier(const QString &name) const final { Q_UNUSED(name); return 0; }
+    int buttonIdentifier(const QString &name) const final { Q_UNUSED(name); return 0; }
 
 private:
     friend class TestDeviceBackendNode;
