@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DRender/qt3drender_global.h>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
