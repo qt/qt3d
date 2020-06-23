@@ -1232,18 +1232,23 @@ void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
         RHITexture *tex = texman.lookupResource(attachment.m_textureUuid);
         if (tex && tex->getRhiTexture())
         {
-            switch (tex->getRhiTexture()->format())
+            auto rhiTex = tex->getRhiTexture();
+            if (!rhiTex->flags().testFlag(QRhiTexture::RenderTarget)) {
+                rhiTex->setFlags(rhiTex->flags() | QRhiTexture::RenderTarget);
+                rhiTex->create();
+            }
+            switch (rhiTex->format())
             {
             case QRhiTexture::Format::D16:
             case QRhiTexture::Format::D32F:
             {
-                desc.setDepthTexture(tex->getRhiTexture());
+                desc.setDepthTexture(rhiTex);
                 hasDepthTexture = true;
                 break;
             }
             default:
             {
-                QRhiColorAttachment rhiAtt{tex->getRhiTexture()};
+                QRhiColorAttachment rhiAtt{rhiTex};
                 // TODO handle cubemap face
                 rhiAtt.setLayer(attachment.m_layer);
                 rhiAtt.setLevel(attachment.m_mipLevel);

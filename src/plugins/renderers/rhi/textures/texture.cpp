@@ -139,10 +139,13 @@ QRhiSampler::Filter rhiMipMapFilterFromTextureFilter(QAbstractTexture::Filter fi
 {
     switch (filter) {
     case QAbstractTexture::Nearest:
+    case QAbstractTexture::Linear:
+        return QRhiSampler::None;
+
     case QAbstractTexture::NearestMipMapNearest:
     case QAbstractTexture::LinearMipMapNearest:
         return QRhiSampler::Nearest;
-    case QAbstractTexture::Linear:
+
     case QAbstractTexture::NearestMipMapLinear:
     case QAbstractTexture::LinearMipMapLinear:
         return QRhiSampler::Linear;
@@ -651,9 +654,6 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
     }
     }
 
-    // TODO how to detect when that is the case ?
-    rhiFlags |= QRhiTexture::RenderTarget;
-
     QRhiTexture *rhiTexture = ctx->rhi()->newTexture(rhiFormat, pixelSize, sampleCount, rhiFlags);
 
     if (!rhiTexture->create()) {
@@ -770,8 +770,11 @@ void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
             rhiMipMapFilterFromTextureFilter(m_parameters.magnificationFilter);
     const auto wrapMode = rhiWrapModeFromTextureWrapMode(
             m_parameters.wrapModeX, m_parameters.wrapModeY, m_parameters.wrapModeZ);
-    const QRhiSampler::CompareOp compareOp =
-            rhiCompareOpFromTextureCompareOp(m_parameters.comparisonFunction);
+    const QRhiSampler::CompareOp compareOp
+            = m_parameters.comparisonMode == QAbstractTexture::CompareNone
+            ? QRhiSampler::CompareOp::Never
+            : rhiCompareOpFromTextureCompareOp(m_parameters.comparisonFunction);
+
     m_rhiSampler = ctx->rhi()->newSampler(magFilter, minFilter, mipMapFilter, std::get<0>(wrapMode),
                                           std::get<1>(wrapMode), std::get<2>(wrapMode));
 
