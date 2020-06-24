@@ -411,7 +411,7 @@ public:
                 entity->localBoundingVolume()->setRadius(diagonal.length() * .5f);
             } else {
                 entity->localBoundingVolume()->setCenter(Vector3D(dFrontEndBV->m_implicitCenter));
-                entity->localBoundingVolume()->setRadius(dFrontEndBV->m_implicitRadius);
+                entity->localBoundingVolume()->setRadius(std::max(dFrontEndBV->m_implicitRadius, 0.0f));
                 entity->unsetBoundingVolumeDirty();
                 // copy the data to the geometry
                 data.geometry->updateExtent(dFrontEndBV->m_implicitMinPoint, dFrontEndBV->m_implicitMaxPoint);
