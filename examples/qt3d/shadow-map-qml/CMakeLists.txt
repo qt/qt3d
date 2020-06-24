@@ -48,6 +48,10 @@ set(shadow-map-qml_resource_files
     "shaders/es3/ads.vert"
     "shaders/es3/shadowmap.frag"
     "shaders/es3/shadowmap.vert"
+    "shaders/rhi/ads.frag"
+    "shaders/rhi/ads.vert"
+    "shaders/rhi/shadowmap.frag"
+    "shaders/rhi/shadowmap.vert"
     "shaders/shadowmap.frag"
     "shaders/shadowmap.vert"
 )

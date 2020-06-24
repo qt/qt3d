@@ -58,7 +58,7 @@ Entity {
 
     Mesh {
         id: toyplaneMesh
-        source: "assets/obj/toyplane.obj"
+        source: "qrc:///assets/obj/toyplane.obj"
     }
 
     Transform {

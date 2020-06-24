@@ -139,6 +139,38 @@ Effect {
                     }
                 }
             ]
+        },
+        Technique {
+            graphicsApiFilter {
+                api: GraphicsApiFilter.RHI
+                majorVersion: 1
+                minorVersion: 0
+            }
+
+            renderPasses: [
+                RenderPass {
+                    filterKeys: [ FilterKey { name: "pass"; value: "shadowmap" } ]
+
+                    shaderProgram: ShaderProgram {
+                        vertexShaderCode:   loadSource("qrc:/shaders/rhi/shadowmap.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/rhi/shadowmap.frag")
+                    }
+
+                    renderStates: [
+                        PolygonOffset { scaleFactor: 4; depthSteps: 4 },
+                        DepthTest { depthFunction: DepthTest.Less }
+                    ]
+                },
+
+                RenderPass {
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
+
+                    shaderProgram: ShaderProgram {
+                        vertexShaderCode:   loadSource("qrc:/shaders/rhi/ads.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/rhi/ads.frag")
+                    }
+                }
+            ]
         }
     ]
 }

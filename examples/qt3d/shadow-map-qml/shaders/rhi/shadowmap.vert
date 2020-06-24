@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -48,40 +48,22 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1 as QQ2
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#version 450
 
-Entity {
-    id: root
-    property Material material
+layout(location = 0) in vec3 vertexPosition;
 
-    Mesh {
-        id: trefoilMesh
-        source: "qrc:///assets/obj/trefoil.obj"
-    }
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+  mat4 modelMatrix;
+  mat4 inverseModelMatrix;
+  mat4 modelView;
+  mat3 modelNormalMatrix;
+  mat4 inverseModelViewMatrix;
+  mat4 mvp;
+  mat4 inverseModelViewProjectionMatrix;
+  mat3 modelViewNormal;
+};
 
-    Transform {
-        id: trefoilMeshTransform
-        property real userAngle: 0.0
-        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
-    }
-
-    QQ2.NumberAnimation {
-        target: trefoilMeshTransform
-
-        running: true
-        loops: QQ2.Animation.Infinite
-
-        property: "userAngle"
-        duration: 5000
-        from: 360
-        to: 0
-    }
-
-    components: [
-        trefoilMesh,
-        trefoilMeshTransform,
-        material
-    ]
+void main()
+{
+    gl_Position = mvp * vec4(vertexPosition, 1.0);
 }

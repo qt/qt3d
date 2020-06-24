@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -48,40 +48,89 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1 as QQ2
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#version 450
 
-Entity {
-    id: root
-    property Material material
+layout(location = 0) in vec4 positionInLightSpace;
+layout(location = 1) in vec3 position;
+layout(location = 2) in vec3 normal;
 
-    Mesh {
-        id: trefoilMesh
-        source: "qrc:///assets/obj/trefoil.obj"
-    }
+layout(location = 0) out vec4 fragColor;
 
-    Transform {
-        id: trefoilMeshTransform
-        property real userAngle: 0.0
-        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
-    }
+layout(std140, binding = 0) uniform qt3d_render_view_uniforms {
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  mat4 viewProjectionMatrix;
+  mat4 inverseViewMatrix;
+  mat4 inverseProjectionMatrix;
+  mat4 inverseViewProjectionMatrix;
+  mat4 viewportMatrix;
+  mat4 inverseViewportMatrix;
+  vec4 textureTransformMatrix;
+  vec3 eyePosition;
+  float aspectRatio;
+  float gamma;
+  float exposure;
+  float time;
+};
 
-    QQ2.NumberAnimation {
-        target: trefoilMeshTransform
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+  mat4 modelMatrix;
+  mat4 inverseModelMatrix;
+  mat4 modelView;
+  mat3 modelNormalMatrix;
+  mat4 inverseModelViewMatrix;
+  mat4 mvp;
+  mat4 inverseModelViewProjectionMatrix;
+  mat3 modelViewNormal;
+};
 
-        running: true
-        loops: QQ2.Animation.Infinite
+layout(std140, binding = 2) uniform qt3d_custom_uniforms {
+ mat4 lightViewProjection;
+ vec3 lightPosition;
+ vec3 lightIntensity;
 
-        property: "userAngle"
-        duration: 5000
-        from: 360
-        to: 0
-    }
+ vec3 ka;            // Ambient reflectivity
+ vec3 kd;            // Diffuse reflectivity
+ vec3 ks;            // Specular reflectivity
+ float shininess;    // Specular shininess factor
+};
 
-    components: [
-        trefoilMesh,
-        trefoilMeshTransform,
-        material
-    ]
+layout(binding = 3) uniform sampler2DShadow shadowMapTexture;
+
+
+vec3 dsModel(const in vec3 pos, const in vec3 n)
+{
+    // Calculate the vector from the light to the fragment
+    vec3 s = normalize(vec3(viewMatrix * vec4(lightPosition, 1.0)) - pos);
+
+    // Calculate the vector from the fragment to the eye position
+    // (origin since this is in "eye" or "camera" space)
+    vec3 v = normalize(-pos);
+
+    // Reflect the light beam using the normal at this fragment
+    vec3 r = reflect(-s, n);
+
+    // Calculate the diffuse component
+    float diffuse = max(dot(s, n), 0.0);
+
+    // Calculate the specular component
+    float specular = 0.0;
+    if (dot(s, n) > 0.0)
+        specular = pow(max(dot(r, v), 0.0), shininess);
+
+    // Combine the diffuse and specular contributions (ambient is taken into account by the caller)
+    return lightIntensity * (kd * diffuse + ks * specular);
+}
+
+void main()
+{
+    float shadowMapSample = textureProj(shadowMapTexture, positionInLightSpace);
+
+    vec3 ambient = lightIntensity * ka;
+
+    vec3 result = ambient;
+    if (shadowMapSample > 0)
+        result += dsModel(position, normalize(normal));
+
+    fragColor = vec4(result, 1.0);
 }

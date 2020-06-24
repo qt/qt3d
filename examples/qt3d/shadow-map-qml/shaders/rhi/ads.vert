@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -48,40 +48,67 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1 as QQ2
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#version 450
 
-Entity {
-    id: root
-    property Material material
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec3 vertexNormal;
 
-    Mesh {
-        id: trefoilMesh
-        source: "qrc:///assets/obj/trefoil.obj"
-    }
+layout(location = 0) out vec4 positionInLightSpace;
+layout(location = 1) out vec3 position;
+layout(location = 2) out vec3 normal;
 
-    Transform {
-        id: trefoilMeshTransform
-        property real userAngle: 0.0
-        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
-    }
 
-    QQ2.NumberAnimation {
-        target: trefoilMeshTransform
+layout(std140, binding = 0) uniform qt3d_render_view_uniforms {
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  mat4 viewProjectionMatrix;
+  mat4 inverseViewMatrix;
+  mat4 inverseProjectionMatrix;
+  mat4 inverseViewProjectionMatrix;
+  mat4 viewportMatrix;
+  mat4 inverseViewportMatrix;
+  vec4 textureTransformMatrix;
+  vec3 eyePosition;
+  float aspectRatio;
+  float gamma;
+  float exposure;
+  float time;
+};
 
-        running: true
-        loops: QQ2.Animation.Infinite
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+  mat4 modelMatrix;
+  mat4 inverseModelMatrix;
+  mat4 modelView;
+  mat3 modelNormalMatrix;
+  mat4 inverseModelViewMatrix;
+  mat4 mvp;
+  mat4 inverseModelViewProjectionMatrix;
+  mat3 modelViewNormal;
+};
 
-        property: "userAngle"
-        duration: 5000
-        from: 360
-        to: 0
-    }
+layout(std140, binding = 2) uniform qt3d_custom_uniforms {
+ mat4 lightViewProjection;
+ vec3 lightPosition;
+ vec3 lightIntensity;
 
-    components: [
-        trefoilMesh,
-        trefoilMeshTransform,
-        material
-    ]
+ vec3 ka;            // Ambient reflectivity
+ vec3 kd;            // Diffuse reflectivity
+ vec3 ks;            // Specular reflectivity
+ float shininess;    // Specular shininess factor
+};
+
+void main()
+{
+    // positionInLightSpace = lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
+    const mat4 shadowMatrix = mat4(0.5, 0.0, 0.0, 0.0,
+                                   0.0, 0.5, 0.0, 0.0,
+                                   0.0, 0.0, 0.5, 0.0,
+                                   0.5, 0.5, 0.5, 1.0);
+
+    positionInLightSpace = shadowMatrix * lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
+
+    normal = normalize(modelViewNormal * vertexNormal);
+    position = vec3(modelView * vec4(vertexPosition, 1.0));
+
+    gl_Position = mvp * vec4(vertexPosition, 1.0);
 }
