@@ -98,8 +98,9 @@ struct CommandUBO
     float inverseModelViewMatrix[16];
     float mvp[16];
     float inverseModelViewProjectionMatrix[16];
+    float modelViewNormalMatrix[12];
 };
-static_assert(sizeof(CommandUBO) == 6 * (16 * sizeof(float)) + 1 * (12 * sizeof(float)),
+static_assert(sizeof(CommandUBO) == 6 * (16 * sizeof(float)) + 2 * (12 * sizeof(float)),
               "UBO doesn't match std140");
 
 class Q_AUTOTEST_EXPORT RenderCommand

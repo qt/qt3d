@@ -773,6 +773,23 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
     return commands;
 }
 
+namespace
+{
+void copyNormalMatrix(float(&destination)[12], const float* src) noexcept {
+    destination[0] = src[0 * 3 + 0];
+    destination[1] = src[0 * 3 + 1];
+    destination[2] = src[0 * 3 + 2];
+
+    destination[4] = src[1 * 3 + 0];
+    destination[5] = src[1 * 3 + 1];
+    destination[6] = src[1 * 3 + 2];
+
+    destination[8] = src[2 * 3 + 0];
+    destination[9] = src[2 * 3 + 1];
+    destination[10] = src[2 * 3 + 2];
+}
+}
+
 void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subView)
 {
     // Update RenderViewUBO (Qt3D standard uniforms)
@@ -869,6 +886,7 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
         const Matrix4x4 inverseWorldTransform = worldTransform.inverted();
         const QMatrix3x3 modelNormalMatrix = convertToQMatrix4x4(worldTransform).normalMatrix();
         const Matrix4x4 modelViewMatrix = m_viewMatrix * worldTransform;
+        const QMatrix3x3 modelViewNormalMatrix = convertToQMatrix4x4(modelViewMatrix).normalMatrix();
         const Matrix4x4 inverseModelViewMatrix = modelViewMatrix.inverted();
         const Matrix4x4 mvp = projectionMatrix * modelViewMatrix;
         const Matrix4x4 inverseModelViewProjection = mvp.inverted();
@@ -877,25 +895,13 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
             memcpy(&command.m_commandUBO.inverseModelMatrix, &inverseWorldTransform,
                    sizeof(Matrix4x4));
             memcpy(&command.m_commandUBO.modelViewMatrix, &modelViewMatrix, sizeof(Matrix4x4));
-            {
-                float(&normal)[12] = command.m_commandUBO.modelNormalMatrix;
-                normal[0] = modelNormalMatrix.constData()[0 * 3 + 0];
-                normal[1] = modelNormalMatrix.constData()[0 * 3 + 1];
-                normal[2] = modelNormalMatrix.constData()[0 * 3 + 2];
-
-                normal[4] = modelNormalMatrix.constData()[1 * 3 + 0];
-                normal[5] = modelNormalMatrix.constData()[1 * 3 + 1];
-                normal[6] = modelNormalMatrix.constData()[1 * 3 + 2];
-
-                normal[8] = modelNormalMatrix.constData()[2 * 3 + 0];
-                normal[9] = modelNormalMatrix.constData()[2 * 3 + 1];
-                normal[10] = modelNormalMatrix.constData()[2 * 3 + 2];
-            }
+            copyNormalMatrix(command.m_commandUBO.modelNormalMatrix, modelNormalMatrix.constData());
             memcpy(&command.m_commandUBO.inverseModelViewMatrix, &inverseModelViewMatrix,
                    sizeof(Matrix4x4));
             memcpy(&command.m_commandUBO.mvp, &mvp, sizeof(Matrix4x4));
             memcpy(&command.m_commandUBO.inverseModelViewProjectionMatrix,
                    &inverseModelViewProjection, sizeof(Matrix4x4));
+            copyNormalMatrix(command.m_commandUBO.modelViewNormalMatrix, modelViewNormalMatrix.constData());
         }
     });
 }
