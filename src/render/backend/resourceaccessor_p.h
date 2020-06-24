@@ -70,7 +70,7 @@ class EntityManager;
 class NodeManagers;
 class AbstractRenderer;
 
-class RenderBackendResourceAccessor
+class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderBackendResourceAccessor
 {
 public:
     enum ResourceType {
