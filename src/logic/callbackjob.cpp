@@ -48,7 +48,7 @@ namespace Qt3DLogic {
 namespace Logic {
 
 CallbackJob::CallbackJob()
-    : QAspectJob()
+    : QAspectJob(*new CallbackJobPrivate(this))
     , m_logicManager(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::Callback, 0)
@@ -61,8 +61,24 @@ void CallbackJob::setManager(Manager *manager)
 
 void CallbackJob::run()
 {
-    Q_ASSERT(m_logicManager);
-    m_logicManager->triggerLogicFrameUpdates();
+}
+
+CallbackJobPrivate::CallbackJobPrivate(CallbackJob *q)
+    : q_ptr(q)
+{
+}
+
+bool CallbackJobPrivate::isRequired() const
+{
+    return false;
+}
+
+void CallbackJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
+{
+    Q_UNUSED(manager)
+    Q_Q(CallbackJob);
+    Q_ASSERT(q->m_logicManager);
+    q->m_logicManager->triggerLogicFrameUpdates();
 }
 
 } // namespace Logic

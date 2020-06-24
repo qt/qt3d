@@ -81,9 +81,6 @@ QLogicAspectPrivate::QLogicAspectPrivate()
 
 void QLogicAspectPrivate::onEngineAboutToShutdown()
 {
-    // Throw away any pending work that may deadlock during the shutdown procedure
-    // when the main thread waits for any queued jobs to finish.
-    m_executor->clearQueueAndProceed();
     m_executor->setScene(nullptr);
 }
 

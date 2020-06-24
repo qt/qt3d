@@ -66,20 +66,6 @@ class QScene;
 namespace Qt3DLogic {
 namespace Logic {
 
-class FrameUpdateEvent : public QEvent
-{
-public:
-    FrameUpdateEvent(float dt)
-        : QEvent(QEvent::User)
-        , m_dt(dt)
-    {}
-
-    float deltaTime() const { return m_dt; }
-
-private:
-    float m_dt;
-};
-
 class Executor : public QObject
 {
     Q_OBJECT
@@ -87,17 +73,11 @@ public:
     explicit Executor(QObject *parent = 0);
 
     void setScene(Qt3DCore::QScene *scene) { m_scene = scene; }
-    void clearQueueAndProceed();
 
 public Q_SLOTS:
-    void enqueueLogicFrameUpdates(const QVector<Qt3DCore::QNodeId> &nodeIds);
-
-protected:
-    bool event(QEvent *e) override;
-    void processLogicFrameUpdates(float dt);
+    void processLogicFrameUpdates(const QVector<Qt3DCore::QNodeId> &nodeIds, float dt);
 
 private:
-    QVector<Qt3DCore::QNodeId> m_nodeIds;
     Qt3DCore::QScene *m_scene;
 };
 

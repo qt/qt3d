@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/private/qaspectjob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,6 +60,21 @@ namespace Qt3DLogic {
 namespace Logic {
 
 class Manager;
+
+class CallbackJob;
+
+class CallbackJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    explicit CallbackJobPrivate(CallbackJob *q);
+
+    bool isRequired() const override;
+    void postFrame(Qt3DCore::QAspectManager *manager) override;
+
+    Q_DECLARE_PUBLIC(CallbackJob)
+private:
+    CallbackJob *q_ptr;
+};
 
 class CallbackJob : public Qt3DCore::QAspectJob
 {
@@ -70,6 +86,7 @@ public:
 
 private:
     Manager *m_logicManager;
+    Q_DECLARE_PRIVATE(CallbackJob)
 };
 
 } // namespace Logic
