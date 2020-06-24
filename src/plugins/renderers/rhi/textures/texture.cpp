@@ -95,6 +95,10 @@ QRhiTexture::Format rhiFormatFromTextureFormat(QAbstractTexture::TextureFormat f
         return QRhiTexture::R32F;
     case QAbstractTexture::D16:
         return QRhiTexture::D16;
+    case QAbstractTexture::D24:
+        return QRhiTexture::D24;
+    case QAbstractTexture::D24S8:
+        return QRhiTexture::D24S8;
     case QAbstractTexture::D32F:
         return QRhiTexture::D32F;
     case QAbstractTexture::RGB_DXT1:
@@ -112,7 +116,10 @@ QRhiTexture::Format rhiFormatFromTextureFormat(QAbstractTexture::TextureFormat f
         return QRhiTexture::ETC2_RGB8A1;
     case QAbstractTexture::RGBA8_ETC2_EAC:
         return QRhiTexture::ETC2_RGBA8;
+    case QAbstractTexture::DepthFormat:
+        return QRhiTexture::D24;
     default:
+        qDebug() << "Unhandled texture format:" << format;
         Q_UNREACHABLE();
         return QRhiTexture::UnknownFormat;
     }

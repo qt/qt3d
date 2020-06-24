@@ -1241,9 +1241,12 @@ void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
             switch (rhiTex->format())
             {
             case QRhiTexture::Format::D16:
+            case QRhiTexture::Format::D24:
+            case QRhiTexture::Format::D24S8:
             case QRhiTexture::Format::D32F:
             {
                 desc.setDepthTexture(rhiTex);
+                targetSize = tex->size();
                 hasDepthTexture = true;
                 break;
             }
