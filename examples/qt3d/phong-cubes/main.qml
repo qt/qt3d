@@ -91,15 +91,15 @@ Entity {
     CubeEntity {
         position: Qt.vector3d(0, 1, 0)
         material: DiffuseSpecularMaterial {
-            diffuse: TextureLoader { source: "qrc:/assets/textures/pattern_09/diffuse.webp" }
+            diffuse: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png" }
         }
     }
 
     CubeEntity {
         position: Qt.vector3d(1, 1, 0)
         material: DiffuseSpecularMaterial {
-            diffuse: TextureLoader { source: "qrc:/assets/textures/pattern_09/diffuse.webp" }
-            specular: TextureLoader { source: "qrc:/assets/textures/pattern_09/specular.webp" }
+            diffuse: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png" }
+            specular: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png" }
         }
     }
 
@@ -114,8 +114,8 @@ Entity {
     CubeEntity {
         position: Qt.vector3d(0, 0, 0)
         material: DiffuseSpecularMaterial {
-            normal: TextureLoader { source: "qrc:/assets/textures/pattern_09/normal.webp" }
-            diffuse: TextureLoader { source: "qrc:/assets/textures/pattern_09/diffuse.webp" }
+            normal: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png" }
+            diffuse: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png" }
         }
     }
 
@@ -123,35 +123,35 @@ Entity {
         position: Qt.vector3d(1, 0, 0)
         material: DiffuseSpecularMaterial {
             alphaBlending: true
-            normal: TextureLoader { source: "qrc:/assets/textures/pattern_09/normal.webp" }
-            diffuse: TextureLoader { source: "qrc:/assets/textures/pattern_09/diffuse.webp" }
+            normal: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png" }
+            diffuse: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png" }
         }
     }
 
     CubeEntity {
         position: Qt.vector3d(-1, -1, 0)
         material: DiffuseSpecularMaterial {
-            normal: TextureLoader { source: "qrc:/assets/textures/pattern_09/normal.webp" }
-            diffuse: TextureLoader { source: "qrc:/assets/textures/pattern_09/diffuse.webp" }
-            specular: TextureLoader { source: "qrc:/assets/textures/pattern_09/specular.webp" }
+            normal: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_normal.png" }
+            diffuse: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_basecolor.png" }
+            specular: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_metallic.png" }
         }
     }
 
     CubeEntity {
         position: Qt.vector3d(0, -1, 0)
         material: DiffuseSpecularMaterial {
-            normal: TextureLoader { source: "qrc:/assets/textures/pattern_09/normal.webp" }
-            diffuse: TextureLoader { source: "qrc:/assets/textures/pattern_09/diffuse.webp" }
-            specular: TextureLoader { source: "qrc:/assets/textures/pattern_09/specular.webp" }
+            normal: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_normal.png" }
+            diffuse: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_basecolor.png" }
+            specular: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_metallic.png" }
         }
     }
 
     CubeEntity {
         position: Qt.vector3d(1, -1, 0)
         material: DiffuseSpecularMaterial {
-            normal: TextureLoader { source: "qrc:/assets/textures/pattern_09/normal.webp" }
-            diffuse: TextureLoader { source: "qrc:/assets/textures/pattern_09/diffuse.webp" }
-            specular: TextureLoader { source: "qrc:/assets/textures/pattern_09/specular.webp" }
+            normal: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_normal.png" }
+            diffuse: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_basecolor.png" }
+            specular: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_metallic.png" }
         }
     }
 }
