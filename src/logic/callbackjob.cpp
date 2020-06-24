@@ -61,6 +61,11 @@ void CallbackJob::setManager(Manager *manager)
 
 void CallbackJob::run()
 {
+}
+
+void CallbackJob::postFrame(Qt3DCore::QAspectEngine *aspectEngine)
+{
+    Q_UNUSED(aspectEngine);
     Q_ASSERT(m_logicManager);
     m_logicManager->triggerLogicFrameUpdates();
 }
