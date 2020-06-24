@@ -128,35 +128,9 @@ public:
         RenderView *rv = m_renderViewJob->renderView();
 
         if (!rv->noDraw()) {
-            RendererCache *cache = m_renderer->cache();
-            RendererCache::LeafNodeData &writableCacheForLeaf = cache->leafNodeCache[m_leafNode];
-
             // Sort command on RenderView
             rv->sort();
-
-            // Flip between the 2 EntityRenderCommandDataView on the leaf node case
-            {
-                const int currentViewIdx = writableCacheForLeaf.viewIdx;
-                const int nextViewIdx = 1 - currentViewIdx;
-                EntityRenderCommandDataViewPtr currentDataView = writableCacheForLeaf.filteredRenderCommandDataViews[currentViewIdx];
-
-                // In case the next view has yet to be initialized, we make a copy of the current
-                // view
-                if (writableCacheForLeaf.filteredRenderCommandDataViews[nextViewIdx].isNull()) {
-                    EntityRenderCommandDataViewPtr nextDataView = EntityRenderCommandDataViewPtr::create();
-                    nextDataView->data = currentDataView->data;
-                    nextDataView->indices = currentDataView->indices;
-                    writableCacheForLeaf.filteredRenderCommandDataViews[nextViewIdx] = nextDataView;
-                }
-                // Flip index for next frame
-                writableCacheForLeaf.viewIdx = nextViewIdx;
-            }
         }
-
-        // TO DO: Record the commandData information with the idea of being to
-        // reuse it next frame without having to allocate everything again and
-        // minimizing the uniform updates we need to make
-
         // Enqueue our fully populated RenderView with the RenderThread
         m_renderer->enqueueRenderView(rv, m_renderViewJob->submitOrderIndex());
     }
@@ -303,15 +277,11 @@ public:
                     layerFilteringRebuild ||
                     lightsCacheRebuild ||
                     cameraDirty ||
-                    hasProximityFilter ||
-                    cacheForLeaf.requestFilteringAtNextFrame;
-
-            // Reset flag on leaf
-            cacheForLeaf.requestFilteringAtNextFrame = false;
+                    hasProximityFilter;
 
             // If we have no filteredRenderCommandDataViews then we should have fullRebuild set to true
             // otherwise something is wrong
-            Q_ASSERT(fullRebuild || cacheForLeaf.filteredRenderCommandDataViews[cacheForLeaf.viewIdx]);
+            Q_ASSERT(fullRebuild || cacheForLeaf.filteredRenderCommandDataViews);
 
             // Rebuild RenderCommands if required
             // This should happen fairly infrequently (FrameGraph Change, Geometry/Material change)
@@ -332,9 +302,7 @@ public:
                 EntityRenderCommandDataViewPtr dataView = EntityRenderCommandDataViewPtr::create();
                 dataView->data = std::move(commandData);
                 // Store the update dataView
-                cacheForLeaf.filteredRenderCommandDataViews[cacheForLeaf.viewIdx] = dataView;
-                // Clear the other dataView
-                cacheForLeaf.filteredRenderCommandDataViews[1 - cacheForLeaf.viewIdx].clear();
+                cacheForLeaf.filteredRenderCommandDataViews = dataView;
             }
 
 
@@ -394,7 +362,7 @@ public:
                                                                              m_filterProximityJob->filteredEntities());
             }
 
-            EntityRenderCommandDataViewPtr filteredCommandData = cacheForLeaf.filteredRenderCommandDataViews[cacheForLeaf.viewIdx];
+            EntityRenderCommandDataViewPtr filteredCommandData = cacheForLeaf.filteredRenderCommandDataViews;
 
             // Set RenderCommandDataView on RV (will be used later on to sort commands ...)
             rv->setRenderCommandDataView(filteredCommandData);
@@ -430,12 +398,7 @@ public:
                 }
 
                 // Store result in cache
-                cacheForLeaf.filteredRenderCommandDataViews[cacheForLeaf.viewIdx]->indices = std::move(filteredCommandIndices);
-
-                // Request filtering at next frame (indices for view0 and view1
-                // could mistmatch if something is dirty for frame 0 and not at
-                // frame 1 (given we have 2 views we alternate with)
-                cacheForLeaf.requestFilteringAtNextFrame = true;
+                cacheForLeaf.filteredRenderCommandDataViews->indices = std::move(filteredCommandIndices);
             }
 
             // Split among the number of command updaters

@@ -696,8 +696,8 @@ void Renderer::render()
     }
 }
 
-// Either called by render if Qt3D is in charge of the RenderThread
-// or by QRenderAspectPrivate::renderSynchronous (for Scene3D)
+// Either called by render if Qt3D is in charge of rendering (in the mainthread)
+// or by QRenderAspectPrivate::renderSynchronous (for Scene3D, potentially from a RenderThread)
 void Renderer::doRender(bool swapBuffers)
 {
     Renderer::ViewSubmissionResultData submissionData;
@@ -706,7 +706,7 @@ void Renderer::doRender(bool swapBuffers)
     bool beganDrawing = false;
 
     // Blocking until RenderQueue is full
-    const bool canSubmit = isReadyToSubmit();
+    const bool canSubmit = waitUntilReadyToSubmit();
     m_shouldSwapBuffers = swapBuffers;
 
     // Lock the mutex to protect access to the renderQueue while we look for its state
@@ -762,10 +762,8 @@ void Renderer::doRender(bool swapBuffers)
                     }
                 }
             }
-            // 2) Proceed to next frame and start preparing frame n + 1
+
             m_renderQueue->reset();
-            locker.unlock(); // Done protecting RenderQueue
-            m_vsyncFrameAdvanceService->proceedToNextFrame();
             hasCleanedQueueAndProceeded = true;
 
             // Only try to submit the RenderViews if the preprocessing was successful
@@ -798,24 +796,13 @@ void Renderer::doRender(bool swapBuffers)
     // or alternatively it could be complete but empty (RenderQueue of size 0)
 
     if (!hasCleanedQueueAndProceeded) {
-        // RenderQueue was full but something bad happened when
-        // trying to render it and therefore proceedToNextFrame was not called
-        // Note: in this case the renderQueue mutex is still locked
-
         // Reset the m_renderQueue so that we won't try to render
         // with a queue used by a previous frame with corrupted content
         // if the current queue was correctly submitted
         m_renderQueue->reset();
-
-        // We allow the RenderTickClock service to proceed to the next frame
-        // In turn this will allow the aspect manager to request a new set of jobs
-        // to be performed for each aspect
-        m_vsyncFrameAdvanceService->proceedToNextFrame();
     }
 
-    // Perform the last swapBuffers calls after the proceedToNextFrame
-    // as this allows us to gain a bit of time for the preparation of the
-    // next frame
+    // Perform the last swapBuffers calls
     // Finish up with last surface used in the list of RenderViews
     if (beganDrawing) {
         SurfaceLocker surfaceLock(submissionData.surface);
@@ -825,6 +812,9 @@ void Renderer::doRender(bool swapBuffers)
                 && m_shouldSwapBuffers;
         m_submissionContext->endDrawing(swapBuffers);
     }
+
+    // Allow next frame to be built once we are done doing all rendering
+    m_vsyncFrameAdvanceService->proceedToNextFrame();
 }
 
 // Called by RenderViewJobs
@@ -868,7 +858,7 @@ Profiling::FrameProfiler *Renderer::activeProfiler() const
     return nullptr;
 }
 
-bool Renderer::isReadyToSubmit()
+bool Renderer::waitUntilReadyToSubmit()
 {
     // Make sure that we've been told to render before rendering
     // Prevent ouf of order execution

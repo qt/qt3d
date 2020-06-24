@@ -85,11 +85,8 @@ struct RendererCache
         QVector<Entity *> filteredAndCulledRenderables; // Changes if camera is modified
         QVector<LightSource> layeredFilteredLightSources;
 
-        // We keep two sets of filtered render commands
-        // and we flip in between them every frame
-        int viewIdx = 0;
-        bool requestFilteringAtNextFrame = false;
-        EntityRenderCommandDataViewPtr filteredRenderCommandDataViews[2];
+        // Cache of RenderCommands
+        EntityRenderCommandDataViewPtr filteredRenderCommandDataViews;
     };
 
     // Variabled below are shared amongst all RV

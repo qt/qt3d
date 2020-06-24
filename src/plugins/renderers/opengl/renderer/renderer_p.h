@@ -273,7 +273,7 @@ public:
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
-    bool isReadyToSubmit();
+    bool waitUntilReadyToSubmit();
 
     QVariant executeCommand(const QStringList &args) override;
     void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) override;
