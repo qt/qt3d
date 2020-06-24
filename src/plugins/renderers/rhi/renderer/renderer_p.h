@@ -83,9 +83,7 @@
 #include <QMatrix4x4>
 #include <QObject>
 
-#include <QOpenGLShaderProgram>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLBuffer>
+#include <QOffscreenSurface>
 #include <QMutex>
 #include <QWaitCondition>
 #include <QAtomicInt>
