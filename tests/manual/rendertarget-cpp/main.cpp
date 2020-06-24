@@ -76,7 +76,6 @@
 #include <QCameraSelector>
 #include <QCuboidMesh>
 #include <QDebugOverlay>
-#include <QFile>
 #include <QFilterKey>
 #include <QFrustumCulling>
 #include <QPropertyAnimation>
