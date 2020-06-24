@@ -350,6 +350,15 @@ void applyStateHelper(const FrontFace *state, QRhiGraphicsPipeline *gp) noexcept
     }
 }
 
+void applyStateHelper(const PolygonOffset *state, QRhiGraphicsPipeline *gp)
+{
+    const auto values = state->values();
+    auto slopeScaledDepthBias = std::get<0>(values);
+    auto depthBias = std::get<1>(values);
+    gp->setSlopeScaledDepthBias(slopeScaledDepthBias);
+    gp->setDepthBias(depthBias);
+}
+
 void applyStateHelper(const StencilTest *state, QRhiGraphicsPipeline *gp) noexcept
 {
     const auto values = state->values();
