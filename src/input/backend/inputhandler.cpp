@@ -39,15 +39,17 @@
 
 #include "inputhandler_p.h"
 
+#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DInput/qmousehandler.h>
+#include <Qt3DInput/qkeyboardhandler.h>
 #include <Qt3DInput/private/assignkeyboardfocusjob_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/inputsettings_p.h>
-#include <Qt3DInput/private/keyboardeventfilter_p.h>
-#include <Qt3DInput/private/keyeventdispatcherjob_p.h>
-#include <Qt3DInput/private/mouseeventdispatcherjob_p.h>
-#include <Qt3DInput/private/mouseeventfilter_p.h>
 #include <Qt3DInput/private/qinputdeviceintegration_p.h>
+#include <Qt3DInput/private/qmousehandler_p.h>
+#include <Qt3DInput/private/qkeyboardhandler_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
+
 
 QT_BEGIN_NAMESPACE
 
@@ -56,13 +58,50 @@ using namespace Qt3DCore;
 namespace Qt3DInput {
 namespace Input {
 
+class InternalEventFilter : public QObject
+{
+public:
+    explicit InternalEventFilter(QObject *parent = nullptr) : QObject(parent), m_inputHandler(nullptr) { }
+    ~InternalEventFilter() override;
+
+    void setInputHandler(Qt3DInput::Input::InputHandler *handler) { m_inputHandler = handler; }
+    inline Qt3DInput::Input::InputHandler *inputHandler() const { return m_inputHandler; }
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *e) override {
+        switch (e->type()) {
+        case QEvent::MouseMove:
+            return processMouseEvent(obj, static_cast<QT_PREPEND_NAMESPACE(QMouseEvent) *>(e));
+#if QT_CONFIG(wheelevent)
+        case QEvent::Wheel:
+            return processWheelEvent(obj, static_cast<QT_PREPEND_NAMESPACE(QWheelEvent) *>(e));
+#endif
+        case QEvent::KeyPress:
+        case QEvent::KeyRelease:
+            return processKeyEvent(obj, static_cast<QT_PREPEND_NAMESPACE(QKeyEvent) *>(e));
+        default:
+            break;
+        }
+        return false;
+    }
+
+    bool processMouseEvent(QObject *obj, QT_PREPEND_NAMESPACE(QMouseEvent) *event);
+#if QT_CONFIG(wheelevent)
+    bool processWheelEvent(QObject *obj, QT_PREPEND_NAMESPACE(QWheelEvent) *event);
+#endif
+    bool processKeyEvent(QObject *obj, QT_PREPEND_NAMESPACE(QKeyEvent) *event);
+
+private:
+    Qt3DInput::Input::InputHandler *m_inputHandler;
+};
+
+
 InputHandler::InputHandler()
     : m_keyboardDeviceManager(new KeyboardDeviceManager())
     , m_keyboardInputManager(new KeyboardInputManager())
     , m_mouseDeviceManager(new MouseDeviceManager())
     , m_mouseInputManager(new MouseInputManager())
-    , m_keyboardEventFilter(new KeyboardEventFilter())
-    , m_mouseEventFilter(new MouseEventFilter())
+    , m_eventFilter(new InternalEventFilter())
     , m_axisManager(new AxisManager())
     , m_axisAccumulatorManager(new AxisAccumulatorManager())
     , m_actionManager(new ActionManager())
@@ -79,8 +118,7 @@ InputHandler::InputHandler()
     , m_service(nullptr)
     , m_lastEventSource(nullptr)
 {
-    m_keyboardEventFilter->setInputHandler(this);
-    m_mouseEventFilter->setInputHandler(this);
+    m_eventFilter->setInputHandler(this);
 }
 
 InputHandler::~InputHandler()
@@ -89,8 +127,7 @@ InputHandler::~InputHandler()
     delete m_keyboardInputManager;
     delete m_mouseDeviceManager;
     delete m_mouseInputManager;
-    delete m_keyboardEventFilter;
-    delete m_mouseEventFilter;
+    delete m_eventFilter;
     delete m_axisManager;
     delete m_axisAccumulatorManager;
     delete m_actionManager;
@@ -108,21 +145,14 @@ InputHandler::~InputHandler()
 // Called in MainThread (by the EventSourceHelperSetter)
 void InputHandler::registerEventFilters()
 {
-    clearPendingKeyEvents();
-    clearPendingMouseEvents();
-
-    if (m_service) {
-        m_service->registerEventFilter(m_keyboardEventFilter, 512);
-        m_service->registerEventFilter(m_mouseEventFilter, 513);
-    }
+    if (m_service)
+        m_service->registerEventFilter(m_eventFilter, 512);
 }
 
 void InputHandler::unregisterEventFilters()
 {
-    if (m_service) {
-        m_service->unregisterEventFilter(m_keyboardEventFilter);
-        m_service->unregisterEventFilter(m_mouseEventFilter);
-    }
+    if (m_service)
+        m_service->unregisterEventFilter(m_eventFilter);
 }
 
 void InputHandler::setInputSettings(InputSettings *settings)
@@ -158,62 +188,6 @@ void InputHandler::updateEventSource()
     }
 }
 
-// Called by the keyboardEventFilter in the main thread
-void InputHandler::appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event)
-{
-    m_pendingKeyEvents.append(event);
-}
-
-// Called by QInputASpect::jobsToExecute (Main Thread)
-QList<QT_PREPEND_NAMESPACE(QKeyEvent)> InputHandler::pendingKeyEvents()
-{
-    return std::move(m_pendingKeyEvents);
-}
-
-// Called by QInputASpect::jobsToExecute (Main Thread)
-void InputHandler::clearPendingKeyEvents()
-{
-    m_pendingKeyEvents.clear();
-}
-
-// Main Thread
-void InputHandler::appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &event)
-{
-    m_pendingMouseEvents.append(event);
-}
-
-// Main Thread
-QList<QT_PREPEND_NAMESPACE(QMouseEvent)> InputHandler::pendingMouseEvents()
-{
-    return std::move(m_pendingMouseEvents);
-}
-
-// Main Thread
-void InputHandler::clearPendingMouseEvents()
-{
-    m_pendingMouseEvents.clear();
-}
-
-#if QT_CONFIG(wheelevent)
-// Main Thread
-void InputHandler::appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event)
-{
-    m_pendingWheelEvents.append(event);
-}
-
-// Main Thread
-QList<QT_PREPEND_NAMESPACE (QWheelEvent)> Qt3DInput::Input::InputHandler::pendingWheelEvents()
-{
-    return std::move(m_pendingWheelEvents);
-}
-
-// Main Thread
-void InputHandler::clearPendingWheelEvents()
-{
-    m_pendingWheelEvents.clear();
-}
-#endif
-
 void InputHandler::appendKeyboardDevice(HKeyboardDevice device)
 {
     m_activeKeyboardDevices.append(device);
@@ -244,81 +218,13 @@ void Qt3DInput::Input::InputHandler::removeGenericDevice(HGenericDeviceBackendNo
     m_activeGenericPhysicalDevices.removeAll(device);
 }
 
-// Return a vector of jobs to be performed for keyboard events
-// Handles all dependencies between jobs
-QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
+// called every frame to reset the
+void Qt3DInput::Input::InputHandler::resetMouseAxisState()
 {
-    // One job for Keyboard focus change event per Keyboard device
-    QVector<QAspectJobPtr> jobs;
-    const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> events = pendingKeyEvents();
-
-    for (const HKeyboardDevice &cHandle : qAsConst(m_activeKeyboardDevices)) {
-        KeyboardDevice *keyboardDevice = m_keyboardDeviceManager->data(cHandle);
-        if (keyboardDevice) {
-            keyboardDevice->updateKeyEvents(events);
-            bool haveFocusChangeJob = false;
-            if (keyboardDevice->lastKeyboardInputRequester() != keyboardDevice->currentFocusItem()) {
-                auto job = QSharedPointer<AssignKeyboardFocusJob>::create(keyboardDevice->peerId());
-                job->setInputHandler(this);
-                haveFocusChangeJob= true;
-                jobs.append(std::move(job));
-                // One job for Keyboard events (depends on the focus change job if there was one)
-            }
-            // Event dispacthing job
-            if (!events.isEmpty()) {
-                auto job = QSharedPointer<KeyEventDispatcherJob>::create(keyboardDevice->currentFocusItem(), events);
-                job->setInputHandler(this);
-                if (haveFocusChangeJob)
-                    job->addDependency(qAsConst(jobs).back());
-                jobs.append(std::move(job));
-            }
-        }
-    }
-    return jobs;
-}
-
-QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
-{
-    QVector<QAspectJobPtr> jobs;
-    const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> mouseEvents = pendingMouseEvents();
-#if QT_CONFIG(wheelevent)
-    const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> wheelEvents = pendingWheelEvents();
-#endif
     for (const HMouseDevice &cHandle : qAsConst(m_activeMouseDevices)) {
         MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
-
-        controller->updateMouseEvents(mouseEvents);
-#if QT_CONFIG(wheelevent)
-        controller->updateWheelEvents(wheelEvents);
-#endif
-        // Event dispacthing job
-        if (!mouseEvents.isEmpty()
-#if QT_CONFIG(wheelevent)
-            || !wheelEvents.empty()
-#endif
-                                    ) {
-            // Send the events to the mouse handlers that have for sourceDevice controller
-            const std::vector<HMouseHandler> &activeMouseHandlers = m_mouseInputManager->activeHandles();
-            for (const HMouseHandler &mouseHandlerHandle : activeMouseHandlers) {
-
-                MouseHandler *mouseHandler = m_mouseInputManager->data(mouseHandlerHandle);
-                Q_ASSERT(mouseHandler);
-
-                if (mouseHandler->mouseDevice() == controller->peerId()) {
-                    MouseEventDispatcherJob *job = new MouseEventDispatcherJob(mouseHandler->peerId(),
-                                                                               mouseEvents
-#if QT_CONFIG(wheelevent)
-                                                                             , wheelEvents
-#endif
-                                                                                           );
-                    job->setInputHandler(this);
-                    jobs.append(QAspectJobPtr(job));
-                }
-            }
-        }
+        controller->resetMouseAxisState();
     }
-
-    return jobs;
 }
 
 QVector<QInputDeviceIntegration *> InputHandler::inputDeviceIntegrations() const
@@ -355,6 +261,116 @@ AbstractActionInput *InputHandler::lookupActionInput(Qt3DCore::QNodeId id) const
         return input;
     return inputChordManager()->lookupResource(id); // nullptr if not found
 }
+
+InternalEventFilter::~InternalEventFilter() = default;
+
+bool InternalEventFilter::processMouseEvent(QObject *obj, QT_PREPEND_NAMESPACE(QMouseEvent) *event)
+{
+    Q_UNUSED(obj);
+    Q_ASSERT(m_inputHandler);
+    if (!m_inputHandler->m_scene)
+        return false;
+
+    for (const HMouseDevice &cHandle : qAsConst(m_inputHandler->m_activeMouseDevices)) {
+        MouseDevice *controller = m_inputHandler->m_mouseDeviceManager->data(cHandle);
+
+        controller->updateMouseEvent(event);
+
+        // Send the events to the mouse handlers that have for sourceDevice controller
+        const std::vector<HMouseHandler> &activeMouseHandlers = m_inputHandler->m_mouseInputManager->activeHandles();
+        for (const HMouseHandler &mouseHandlerHandle : activeMouseHandlers) {
+            MouseHandler *mouseHandler = m_inputHandler->m_mouseInputManager->data(mouseHandlerHandle);
+            Q_ASSERT(mouseHandler);
+
+            if (mouseHandler->mouseDevice() == controller->peerId()) {
+                QMouseHandler *node = qobject_cast<QMouseHandler *>(m_inputHandler->m_scene->lookupNode(mouseHandler->peerId()));
+                QMouseHandlerPrivate *dnode = static_cast<QMouseHandlerPrivate *>(QMouseHandlerPrivate::get(node));
+                dnode->mouseEvent(QMouseEventPtr::create(*event));  // Do we really need Qt3D specific events?
+            }
+        }
+    }
+
+    return false;
+}
+
+#if QT_CONFIG(wheelevent)
+bool InternalEventFilter::processWheelEvent(QObject *obj, QT_PREPEND_NAMESPACE(QWheelEvent) *event)
+{
+    Q_UNUSED(obj);
+    Q_ASSERT(m_inputHandler);
+    if (!m_inputHandler->m_scene)
+        return false;
+
+    for (const HMouseDevice &cHandle : qAsConst(m_inputHandler->m_activeMouseDevices)) {
+        MouseDevice *controller = m_inputHandler->m_mouseDeviceManager->data(cHandle);
+
+        controller->updateWheelEvent(event);
+
+        // Send the events to the mouse handlers that have for sourceDevice controller
+        const std::vector<HMouseHandler> &activeMouseHandlers = m_inputHandler->m_mouseInputManager->activeHandles();
+        for (const HMouseHandler &mouseHandlerHandle : activeMouseHandlers) {
+            MouseHandler *mouseHandler = m_inputHandler->m_mouseInputManager->data(mouseHandlerHandle);
+            Q_ASSERT(mouseHandler);
+
+            if (mouseHandler->mouseDevice() == controller->peerId()) {
+                QMouseHandler *node = qobject_cast<QMouseHandler *>(m_inputHandler->m_scene->lookupNode(mouseHandler->peerId()));
+                QWheelEvent we(*event);
+                node->wheel(&we);  // Do we really need Qt3D specific events?
+            }
+        }
+    }
+
+    return false;
+}
+#endif
+
+bool InternalEventFilter::processKeyEvent(QObject *obj, QT_PREPEND_NAMESPACE(QKeyEvent) *event)
+{
+    Q_UNUSED(obj);
+    Q_ASSERT(m_inputHandler);
+    if (!m_inputHandler->m_scene)
+        return false;
+
+    for (const HKeyboardDevice &cHandle : qAsConst(m_inputHandler->m_activeKeyboardDevices)) {
+        KeyboardDevice *keyboardDevice = m_inputHandler->m_keyboardDeviceManager->data(cHandle);
+        if (keyboardDevice) {
+            keyboardDevice->updateKeyEvent(event);
+
+            // update the focus
+            if (keyboardDevice->lastKeyboardInputRequester() != keyboardDevice->currentFocusItem()) {
+                const auto handles = m_inputHandler->keyboardInputManager()->activeHandles();
+                for (const HKeyboardHandler &handle : handles) {
+                    KeyboardHandler *input = m_inputHandler->keyboardInputManager()->data(handle);
+                    Q_ASSERT(input);
+                    if (input->keyboardDevice() == keyboardDevice->peerId()) {
+                        bool hasFocus = input->peerId() == keyboardDevice->lastKeyboardInputRequester();
+                        input->setFocus(hasFocus);
+                        QKeyboardHandler *node = qobject_cast<QKeyboardHandler *>(m_inputHandler->m_scene->lookupNode(input->peerId()));
+                        if (node) {
+                            const bool b = node->blockNotifications(true);
+                            node->setFocus(hasFocus);
+                            node->blockNotifications(b);
+                        }
+                        if (hasFocus)
+                            keyboardDevice->setCurrentFocusItem(input->peerId());
+                    }
+                }
+            }
+
+            // deliver the event
+            QKeyboardHandler *node = qobject_cast<QKeyboardHandler *>(m_inputHandler->m_scene->lookupNode(keyboardDevice->currentFocusItem()));
+            if (node) {
+                QKeyboardHandlerPrivate *dnode = static_cast<QKeyboardHandlerPrivate *>(QKeyboardHandlerPrivate::get(node));
+
+                QKeyEvent ke(*event);
+                dnode->keyEvent(&ke);  // Do we really need Qt3D specific events?
+            }
+        }
+    }
+
+    return false;
+}
+
 
 } // namespace Input
 } // namespace Qt3DInput

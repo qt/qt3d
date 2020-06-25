@@ -98,10 +98,11 @@ public:
     float axisValue(int axisIdentifier) const override;
     bool isButtonPressed(int buttonIdentifier) const override;
 
-    void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
+    void updateMouseEvent(QT_PREPEND_NAMESPACE(QMouseEvent) *events);
 #if QT_CONFIG(wheelevent)
-    void updateWheelEvents(const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> &events);
+    void updateWheelEvent(QT_PREPEND_NAMESPACE(QWheelEvent) *events);
 #endif
+    void resetMouseAxisState();
 
     MouseState mouseState() const;
     QPointF previousPos() const;

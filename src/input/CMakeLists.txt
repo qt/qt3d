@@ -29,15 +29,11 @@ qt_add_module(3DInput
         backend/inputsettings.cpp backend/inputsettings_p.h
         backend/job_common_p.h
         backend/keyboarddevice.cpp backend/keyboarddevice_p.h
-        backend/keyboardeventfilter.cpp backend/keyboardeventfilter_p.h
         backend/keyboardhandler.cpp backend/keyboardhandler_p.h
         backend/keyboardmousegenericdeviceintegration.cpp backend/keyboardmousegenericdeviceintegration_p.h
-        backend/keyeventdispatcherjob.cpp backend/keyeventdispatcherjob_p.h
         backend/loadproxydevicejob.cpp backend/loadproxydevicejob_p.h
         backend/logicaldevice.cpp backend/logicaldevice_p.h
         backend/mousedevice.cpp backend/mousedevice_p.h
-        backend/mouseeventdispatcherjob.cpp backend/mouseeventdispatcherjob_p.h
-        backend/mouseeventfilter.cpp backend/mouseeventfilter_p.h
         backend/mousehandler.cpp backend/mousehandler_p.h
         backend/movingaverage.cpp backend/movingaverage_p.h
         backend/physicaldeviceproxy.cpp backend/physicaldeviceproxy_p.h

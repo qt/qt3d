@@ -421,10 +421,9 @@ void KeyboardDevice::setButtonValue(int key, bool value)
     }
 }
 
-void KeyboardDevice::updateKeyEvents(const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
+void KeyboardDevice::updateKeyEvent(QT_PREPEND_NAMESPACE(QKeyEvent) *event)
 {
-    for (const QT_PREPEND_NAMESPACE(QKeyEvent) &e : events)
-        setButtonValue(e.key(), e.type() == QT_PREPEND_NAMESPACE(QKeyEvent)::KeyPress ? true : false);
+    setButtonValue(event->key(), event->type() == QT_PREPEND_NAMESPACE(QKeyEvent)::KeyPress ? true : false);
 }
 
 KeyboardDeviceFunctor::KeyboardDeviceFunctor(QInputAspect *inputaspect, InputHandler *handler)

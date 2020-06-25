@@ -63,6 +63,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 class QEventFilterService;
 class QNodeId;
+class QScene;
 }
 
 namespace Qt3DInput {
@@ -75,10 +76,9 @@ namespace Input {
 class AbstractActionInput;
 class KeyboardInputManager;
 class KeyboardDeviceManager;
-class KeyboardEventFilter;
 class MouseDeviceManager;
 class MouseInputManager;
-class MouseEventFilter;
+class InternalEventFilter;
 class AxisManager;
 class AxisAccumulatorManager;
 class ActionManager;
@@ -100,6 +100,8 @@ public:
     InputHandler();
     ~InputHandler();
 
+    void setScene(Qt3DCore::QScene *scene) { m_scene = scene; }
+
     inline KeyboardDeviceManager *keyboardDeviceManager() const { return m_keyboardDeviceManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
     inline MouseDeviceManager *mouseDeviceManager() const { return m_mouseDeviceManager; }
@@ -118,20 +120,6 @@ public:
     inline PhysicalDeviceProxyManager *physicalDeviceProxyManager() const { return m_physicalDeviceProxyManager; }
     inline InputSettings *inputSettings() const { return m_settings; }
 
-    void appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event);
-    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingKeyEvents();
-    void clearPendingKeyEvents();
-
-    void appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &event);
-    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> pendingMouseEvents();
-    void clearPendingMouseEvents();
-
-#if QT_CONFIG(wheelevent)
-    void appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event);
-    QList<QT_PREPEND_NAMESPACE(QWheelEvent)> pendingWheelEvents();
-    void clearPendingWheelEvents();
-#endif
-
     void appendKeyboardDevice(HKeyboardDevice device);
     void removeKeyboardDevice(HKeyboardDevice device);
 
@@ -141,8 +129,7 @@ public:
     void appendGenericDevice(HGenericDeviceBackendNode device);
     void removeGenericDevice(HGenericDeviceBackendNode device);
 
-    QVector<Qt3DCore::QAspectJobPtr> keyboardJobs();
-    QVector<Qt3DCore::QAspectJobPtr> mouseJobs();
+    void resetMouseAxisState();
 
     QVector<Qt3DInput::QInputDeviceIntegration *> inputDeviceIntegrations() const;
     void addInputDeviceIntegration(QInputDeviceIntegration *inputIntegration);
@@ -157,6 +144,9 @@ public:
     AbstractActionInput *lookupActionInput(Qt3DCore::QNodeId id) const;
 
 private:
+    friend class InternalEventFilter;
+
+    Qt3DCore::QScene *m_scene;
     KeyboardDeviceManager *m_keyboardDeviceManager;
     KeyboardInputManager *m_keyboardInputManager;
     MouseDeviceManager *m_mouseDeviceManager;
@@ -165,15 +155,7 @@ private:
     QVector<HKeyboardDevice> m_activeKeyboardDevices;
     QVector<HMouseDevice> m_activeMouseDevices;
     QVector<HGenericDeviceBackendNode> m_activeGenericPhysicalDevices;
-    KeyboardEventFilter *m_keyboardEventFilter;
-    MouseEventFilter *m_mouseEventFilter;
-
-    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingKeyEvents;
-    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> m_pendingMouseEvents;
-#if QT_CONFIG(wheelevent)
-    QList<QT_PREPEND_NAMESPACE(QWheelEvent)> m_pendingWheelEvents;
-#endif
-    mutable QMutex m_mutex;
+    InternalEventFilter *m_eventFilter;
 
     AxisManager *m_axisManager;
     AxisAccumulatorManager *m_axisAccumulatorManager;

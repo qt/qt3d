@@ -40,6 +40,7 @@
 #include "qeventfilterservice_p.h"
 
 #include <QtCore/QObject>
+#include <QtGui/QHoverEvent>
 
 #include <Qt3DCore/private/qabstractserviceprovider_p.h>
 
@@ -108,8 +109,13 @@ public:
         }
     }
 
-    QScopedPointer<InternalEventListener> m_eventDispatcher;
+    std::unique_ptr<InternalEventListener> m_eventDispatcher;
     std::vector<FilterPriorityPair> m_eventFilters;
+    std::vector<std::pair<QObject*, QMouseEvent>> m_pendingMouseEvents;
+    std::vector<std::pair<QObject*, QKeyEvent>> m_pendingKeyEvents;
+#if QT_CONFIG(wheelevent)
+    std::vector<std::pair<QObject*, QWheelEvent>> m_pendingWheelEvents;
+#endif
 };
 
 /* !\internal
@@ -141,15 +147,15 @@ void QEventFilterService::initialize(QObject *eventSource)
         d->m_eventDispatcher.reset();
     } else {
         d->m_eventDispatcher.reset(new InternalEventListener(d));
-        eventSource->installEventFilter(d->m_eventDispatcher.data());
+        eventSource->installEventFilter(d->m_eventDispatcher.get());
     }
 }
 
 void QEventFilterService::shutdown(QObject *eventSource)
 {
     Q_D(QEventFilterService);
-    if (eventSource && d->m_eventDispatcher.data())
-        eventSource->removeEventFilter(d->m_eventDispatcher.data());
+    if (eventSource && d->m_eventDispatcher.get())
+        eventSource->removeEventFilter(d->m_eventDispatcher.get());
 }
 
 void QEventFilterService::registerEventFilter(QObject *eventFilter, int priority)
@@ -164,11 +170,11 @@ void QEventFilterService::unregisterEventFilter(QObject *eventFilter)
     d->unregisterEventFilter(eventFilter);
 }
 
-namespace{
+namespace {
 
 InternalEventListener::InternalEventListener(QEventFilterServicePrivate *filterService, QObject *parent)
-    : QObject(parent),
-      m_filterService(filterService)
+    : QObject(parent)
+    , m_filterService(filterService)
 {
 }
 
@@ -181,7 +187,8 @@ bool InternalEventListener::eventFilter(QObject *obj, QEvent *e)
     }
     return false;
 }
-}
+
+} // namespace
 
 } // Qt3DCore
 

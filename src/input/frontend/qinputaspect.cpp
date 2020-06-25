@@ -91,6 +91,8 @@
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
 
+#include <Qt3DCore/private/qaspectmanager_p.h>
+
 #ifdef HAVE_QGAMEPAD
 # include <Qt3DInput/private/qgamepadinput_p.h>
 #endif
@@ -223,16 +225,16 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 {
     Q_D(QInputAspect);
     const qint64 deltaTime = time - d->m_time;
-    const float dt = static_cast<float>(deltaTime) / 1.0e9;
+    const float dt = static_cast<float>(deltaTime) / 1.0e9f;
     d->m_time = time;
 
     QVector<QAspectJobPtr> jobs;
 
     d->m_inputHandler->updateEventSource();
 
-    jobs.append(d->m_inputHandler->keyboardJobs());
-    jobs.append(d->m_inputHandler->mouseJobs());
-
+    // Mouse and keyboard handlers will have seen the events already.
+    // All we need now is to update the axis and the accumulators since
+    // they depend on time, and other bookkeeping.
     const auto integrations = d->m_inputHandler->inputDeviceIntegrations();
     for (QInputDeviceIntegration *integration : integrations)
         jobs += integration->jobsToExecute(time);
@@ -301,6 +303,18 @@ void QInputAspect::onUnregistered()
     // At this point it is too late to call removeEventFilter as the eventSource (Window)
     // may already be destroyed
     d->m_inputHandler.reset(nullptr);
+}
+
+void QInputAspect::onEngineStartup()
+{
+    Q_D(QInputAspect);
+    d->m_inputHandler->setScene(d->m_aspectManager->scene());
+}
+
+void QInputAspect::jobsDone()
+{
+    Q_D(QInputAspect);
+    d->m_inputHandler->resetMouseAxisState();
 }
 
 } // namespace Qt3DInput

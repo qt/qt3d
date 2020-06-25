@@ -5,13 +5,9 @@ HEADERS += \
     $$PWD/inputhandler_p.h \
     $$PWD/inputmanagers_p.h \
     $$PWD/handle_types_p.h \
-    $$PWD/keyboardeventfilter_p.h \
     $$PWD/assignkeyboardfocusjob_p.h \
-    $$PWD/keyeventdispatcherjob_p.h \
     $$PWD/mousehandler_p.h \
     $$PWD/mousedevice_p.h \
-    $$PWD/mouseeventdispatcherjob_p.h \
-    $$PWD/mouseeventfilter_p.h \
     $$PWD/abstractactioninput_p.h \
     $$PWD/abstractaxisinput_p.h \
     $$PWD/actioninput_p.h \
@@ -43,13 +39,9 @@ SOURCES += \
     $$PWD/keyboarddevice.cpp \
     $$PWD/keyboardhandler.cpp \
     $$PWD/inputhandler.cpp \
-    $$PWD/keyboardeventfilter.cpp \
     $$PWD/assignkeyboardfocusjob.cpp \
-    $$PWD/keyeventdispatcherjob.cpp \
     $$PWD/mousehandler.cpp \
     $$PWD/mousedevice.cpp \
-    $$PWD/mouseeventfilter.cpp \
-    $$PWD/mouseeventdispatcherjob.cpp \
     $$PWD/abstractactioninput.cpp \
     $$PWD/abstractaxisinput.cpp \
     $$PWD/actioninput.cpp \

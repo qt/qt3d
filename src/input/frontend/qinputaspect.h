@@ -66,6 +66,8 @@ private:
 
     void onRegistered() override;
     void onUnregistered() override;
+    void onEngineStartup() override;
+    void jobsDone() override;
 
     Q_DECLARE_PRIVATE(QInputAspect)
     explicit QInputAspect(QInputAspectPrivate &dd, QObject *parent);
