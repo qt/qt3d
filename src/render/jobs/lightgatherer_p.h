@@ -70,14 +70,14 @@ public:
     LightGatherer();
 
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
-    inline QVector<LightSource> &lights() { return m_lights; }
+    inline std::vector<LightSource> &lights() { return m_lights; }
     inline EnvironmentLight *environmentLight() const { return m_environmentLight; }
 
     void run() override;
 
 private:
     EntityManager *m_manager;
-    QVector<LightSource> m_lights;
+    std::vector<LightSource> m_lights;
     EnvironmentLight *m_environmentLight;
 };
 

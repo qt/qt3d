@@ -60,7 +60,7 @@ void FilterProximityDistanceJob::run()
 
     if (hasProximityFilter()) {
         selectAllEntities();
-        QVector<Entity *> entitiesToFilter = std::move(m_filteredEntities);
+        std::vector<Entity *> entitiesToFilter = std::move(m_filteredEntities);
         FrameGraphManager *frameGraphManager = m_manager->frameGraphManager();
         EntityManager *entityManager = m_manager->renderNodesManager();
 
@@ -101,7 +101,7 @@ void FilterProximityDistanceJob::selectAllEntities()
     }
 }
 
-void FilterProximityDistanceJob::filterEntities(const QVector<Entity *> &entitiesToFilter)
+void FilterProximityDistanceJob::filterEntities(const std::vector<Entity *> &entitiesToFilter)
 {
     const Sphere *target = m_targetEntity->worldBoundingVolumeWithChildren();
 

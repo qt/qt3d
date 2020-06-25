@@ -72,7 +72,7 @@ public:
 
     inline void setManager(NodeManagers *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
     inline void setLayerFilters(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOEXCEPT { m_layerFilterIds = layerIds; }
-    inline QVector<Entity *> filteredEntities() const Q_DECL_NOEXCEPT { return m_filteredEntities; }
+    inline std::vector<Entity *> &filteredEntities() Q_DECL_NOEXCEPT { return m_filteredEntities; }
 
     inline bool hasLayerFilter() const Q_DECL_NOTHROW { return !m_layerFilterIds.isEmpty(); }
     inline Qt3DCore::QNodeIdVector layerFilters() const { return m_layerFilterIds; }
@@ -91,7 +91,7 @@ private:
 
     NodeManagers *m_manager;
     Qt3DCore::QNodeIdVector m_layerFilterIds;
-    QVector<Entity *> m_filteredEntities;
+    std::vector<Entity *> m_filteredEntities;
 };
 
 typedef QSharedPointer<FilterLayerEntityJob> FilterLayerEntityJobPtr;

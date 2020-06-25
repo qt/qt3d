@@ -631,7 +631,7 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
 }
 
 // If we are there, we know that entity had a GeometryRenderer + Material
-EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities,
+EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entities,
                                                             int offset, int count) const
 {
     GLShaderManager *glShaderManager = m_renderer->glResourceManagers()->glShaderManager();
@@ -641,7 +641,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
 
     for (int i = 0; i < count; ++i) {
         const int idx = offset + i;
-        Entity *entity = entities.at(idx);
+        const Entity *entity = entities[idx];
         GeometryRenderer *geometryRenderer = nullptr;
         HGeometryRenderer geometryRendererHandle = entity->componentHandle<GeometryRenderer>();
 
@@ -760,7 +760,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
     return commands;
 }
 
-EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities,
+EntityRenderCommandData RenderView::buildComputeRenderCommands(const Entity **entities,
                                                                int offset, int count) const
 {
     // If the RenderView contains only a ComputeDispatch then it cares about
@@ -775,7 +775,7 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
 
     for (int i = 0; i < count; ++i) {
         const int idx = offset + i;
-        Entity *entity = entities.at(idx);
+        const Entity *entity = entities[idx];
         ComputeCommand *computeJob = nullptr;
         HComputeCommand computeCommandHandle = entity->componentHandle<ComputeCommand>();
         if ((computeJob = nodeManagers()->computeJobManager()->data(computeCommandHandle)) != nullptr
@@ -1102,7 +1102,7 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
         // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
         // Replace with more sophisticated mechanisms later.
         // Copy vector so that we can sort it concurrently and we only want to sort the one for the current command
-        QVector<LightSource> lightSources = m_lightSources;
+        std::vector<LightSource> lightSources = m_lightSources;
 
         if (lightSources.size() > 1) {
             const Vector3D entityCenter = entity->worldBoundingVolume()->center();
@@ -1112,14 +1112,14 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
                 const float distB = entityCenter.distanceToPoint(b.entity->worldBoundingVolume()->center());
                 return distA < distB;
             });
+            m_lightSources = {lightSources.begin(), lightSources.begin() + std::min(lightSources.size(), size_t(MAX_LIGHTS)) };
         }
-        m_lightSources = lightSources.mid(0, std::min(lightSources.size(), MAX_LIGHTS));
 
         int lightIdx = 0;
-        for (const LightSource &lightSource : qAsConst(m_lightSources)) {
+        for (const LightSource &lightSource : m_lightSources) {
             if (lightIdx == MAX_LIGHTS)
                 break;
-            Entity *lightEntity = lightSource.entity;
+            const Entity *lightEntity = lightSource.entity;
             const Matrix4x4 lightWorldTransform = *(lightEntity->worldTransform());
             const Vector3D worldPos = lightWorldTransform * Vector3D(0.0f, 0.0f, 0.0f);
             for (Light *light : lightSource.lights) {
@@ -1149,7 +1149,7 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
                 // There is no risk in doing that even if multithreaded
                 // since we are sure that a shaderData is unique for a given light
                 // and won't ever be referenced as a Component either
-                Matrix4x4 *worldTransform = lightEntity->worldTransform();
+                const Matrix4x4 *worldTransform = lightEntity->worldTransform();
                 if (worldTransform)
                     shaderData->updateWorldTransform(*worldTransform);
 
@@ -1162,7 +1162,7 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
         setUniformValue(command->m_parameterPack, GLLights::LIGHT_COUNT_NAME_ID, UniformValue(qMax((m_environmentLight ? 0 : 1), lightIdx)));
 
         // If no active light sources and no environment light, add a default light
-        if (m_lightSources.isEmpty() && !m_environmentLight) {
+        if (m_lightSources.empty() && !m_environmentLight) {
             // Note: implicit conversion of values to UniformValue
             if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_NAMES[0])) {
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));

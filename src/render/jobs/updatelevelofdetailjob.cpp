@@ -80,7 +80,7 @@ public:
         if (!entity->isEnabled())
             return Prune; // skip disabled sub-trees, since their bounding box is probably not valid anyway
 
-        QVector<LevelOfDetail *> lods = entity->renderComponents<LevelOfDetail>();
+        const std::vector<LevelOfDetail *> &lods = entity->renderComponents<LevelOfDetail>();
         if (!lods.empty()) {
             LevelOfDetail* lod = lods.front();  // other lods are ignored
 

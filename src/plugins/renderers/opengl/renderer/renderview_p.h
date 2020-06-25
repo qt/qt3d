@@ -209,8 +209,8 @@ public:
     // color ClearBuffers are collected, as there may be multiple
     // color buffers to be cleared. we need to apply all these at rendering
     void addClearBuffers(const ClearBuffers *cb);
-    inline QVector<ClearBufferInfo> specificClearColorBufferInfo() const { return m_specificClearColorBuffers; }
-    inline QVector<ClearBufferInfo> &specificClearColorBufferInfo() { return m_specificClearColorBuffers; }
+    inline const std::vector<ClearBufferInfo> &specificClearColorBufferInfo() const { return m_specificClearColorBuffers; }
+    inline std::vector<ClearBufferInfo> &specificClearColorBufferInfo() { return m_specificClearColorBuffers; }
     inline ClearBufferInfo globalClearColorBufferInfo() const { return m_globalClearColorBuffer; }
 
     inline QClearBuffers::BufferTypeFlags clearTypes() const { return m_clearBuffer; }
@@ -219,9 +219,9 @@ public:
 
     RenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
-    EntityRenderCommandData buildDrawRenderCommands(const QVector<Entity *> &entities,
+    EntityRenderCommandData buildDrawRenderCommands(const Entity **entities,
                                                     int offset, int count) const;
-    EntityRenderCommandData buildComputeRenderCommands(const QVector<Entity *> &entities,
+    EntityRenderCommandData buildComputeRenderCommands(const Entity **entities,
                                                        int offset, int count) const;
 
     void updateRenderCommand(const EntityRenderCommandDataSubView &subView);
@@ -237,7 +237,7 @@ public:
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }
 
-    void setLightSources(const QVector<LightSource> &lightSources) Q_DECL_NOTHROW { m_lightSources = lightSources; }
+    void setLightSources(const std::vector<LightSource> &lightSources) Q_DECL_NOTHROW { m_lightSources = lightSources; }
     void setEnvironmentLight(EnvironmentLight *environmentLight) Q_DECL_NOTHROW { m_environmentLight = environmentLight; }
 
     void updateMatrices();
@@ -310,7 +310,7 @@ private:
     float m_clearDepthValue = 1.0f;
     int m_clearStencilValue = 0;
     ClearBufferInfo m_globalClearColorBuffer;               // global ClearColor
-    QVector<ClearBufferInfo> m_specificClearColorBuffers;   // different draw buffers with distinct colors
+    std::vector<ClearBufferInfo> m_specificClearColorBuffers;   // different draw buffers with distinct colors
 
     QScopedPointer<RenderStateSet> m_stateSet;
     CameraLens *m_renderCameraLens = nullptr;
@@ -334,7 +334,7 @@ private:
     Vector3D m_eyeViewDir;
 
     MaterialParameterGathererData m_parameters;
-    mutable QVector<LightSource> m_lightSources;
+    mutable std::vector<LightSource> m_lightSources;
     EnvironmentLight *m_environmentLight = nullptr;
 
     enum StandardUniform

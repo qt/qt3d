@@ -150,7 +150,12 @@ public:
     {
         LightGatherer::run();
 
-        m_cache->gatheredLights = lights();
+        m_cache->gatheredLights = std::move(lights());
+        std::sort(m_cache->gatheredLights.begin(), m_cache->gatheredLights.end(),
+                  [] (const LightSource &a, const LightSource &b) {
+            return a.entity < b.entity;
+        });
+
         m_cache->environmentLight = environmentLight();
     }
 
@@ -171,10 +176,10 @@ public:
     {
         RenderableEntityFilter::run();
 
-        QVector<Entity *> selectedEntities = filteredEntities();
+        std::vector<Entity *> selectedEntities = std::move(filteredEntities());
         std::sort(selectedEntities.begin(), selectedEntities.end());
 
-        m_cache->renderableEntities = selectedEntities;
+        m_cache->renderableEntities = std::move(selectedEntities);
     }
 
 private:
@@ -194,10 +199,10 @@ public:
     {
         ComputableEntityFilter::run();
 
-        QVector<Entity *> selectedEntities = filteredEntities();
+        std::vector<Entity *> selectedEntities = std::move(filteredEntities());
         std::sort(selectedEntities.begin(), selectedEntities.end());
 
-        m_cache->computeEntities = selectedEntities;
+        m_cache->computeEntities = std::move(selectedEntities);
     }
 
 private:
@@ -1618,7 +1623,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
             // if there are ClearColors set for different draw buffers,
             // clear each of these draw buffers individually now
-            const QVector<ClearBufferInfo> clearDrawBuffers = renderView->specificClearColorBufferInfo();
+            const std::vector<ClearBufferInfo> &clearDrawBuffers = renderView->specificClearColorBufferInfo();
             for (const ClearBufferInfo &clearBuffer : clearDrawBuffers)
                 m_submissionContext->clearBufferf(clearBuffer.drawBufferIndex, clearBuffer.clearColor);
         }

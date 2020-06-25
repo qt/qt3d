@@ -82,6 +82,7 @@ RenderViewCommandBuilderJob::RenderViewCommandBuilderJob()
     , m_offset(0)
     , m_count(0)
     , m_renderView(nullptr)
+    , m_entities(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderViewCommandBuilder, renderViewInstanceCounter++)
 }

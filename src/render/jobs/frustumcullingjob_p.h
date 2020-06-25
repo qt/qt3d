@@ -83,7 +83,7 @@ public:
     inline void setViewProjection(const Matrix4x4 &viewProjection) Q_DECL_NOTHROW { m_viewProjection = viewProjection; }
     inline Matrix4x4 viewProjection() const Q_DECL_NOTHROW { return m_viewProjection; }
 
-    QVector<Entity *> visibleEntities() const Q_DECL_NOTHROW { return m_visibleEntities; }
+    const std::vector<Entity *> &visibleEntities() const Q_DECL_NOTHROW { return m_visibleEntities; }
 
     void run() final;
 
@@ -105,7 +105,7 @@ private:
     Matrix4x4 m_viewProjection;
     Entity *m_root;
     NodeManagers *m_manager;
-    QVector<Entity *> m_visibleEntities;
+    std::vector<Entity *> m_visibleEntities;
     bool m_active;
 };
 

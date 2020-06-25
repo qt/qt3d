@@ -154,7 +154,7 @@ void FilterLayerEntityJob::filterLayerAndEntity()
     EntityManager *entityManager = m_manager->renderNodesManager();
     const std::vector<HEntity> &handles = entityManager->activeHandles();
 
-    QVector<Entity *> entitiesToFilter;
+    std::vector<Entity *> entitiesToFilter;
     entitiesToFilter.reserve(handles.size());
 
     for (const HEntity &handle : handles) {

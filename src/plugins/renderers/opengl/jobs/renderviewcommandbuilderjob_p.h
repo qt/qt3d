@@ -71,7 +71,7 @@ public:
     RenderViewCommandBuilderJob();
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
-    inline void setEntities(const QVector<Entity *> &entities, int offset, int count)
+    inline void setEntities(const Entity **entities, int offset, int count)
     {
         m_offset = offset;
         m_count = count;
@@ -85,7 +85,7 @@ private:
     int m_offset;
     int m_count;
     RenderView *m_renderView;
-    QVector<Entity *> m_entities;
+    const Entity **m_entities;
     EntityRenderCommandData m_commandData;
 
     Q_DECLARE_PRIVATE(RenderViewCommandBuilderJob)

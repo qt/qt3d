@@ -146,9 +146,12 @@ public:
     }
 
     template<class Backend>
-    QVector<Backend *> renderComponents() const
+    std::vector<Backend *> renderComponents() const
     {
-        return QVector<Backend *>();
+        // We should never reach this, we expect specialization to have been
+        // specified
+        Q_UNREACHABLE();
+        return {};
     }
 
     template<class Backend>
@@ -233,7 +236,7 @@ private:
     Q_3DRENDERSHARED_PRIVATE_EXPORT QVector<Handle> Entity::componentsHandle<Type>() const; \
     /* Component */ \
     template<> \
-    Q_3DRENDERSHARED_PRIVATE_EXPORT QVector<Type *> Entity::renderComponents<Type>() const; \
+    Q_3DRENDERSHARED_PRIVATE_EXPORT std::vector<Type *> Entity::renderComponents<Type>() const; \
     /* Uuid */ \
     template<> \
     Q_3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeIdVector Entity::componentsUuid<Type>() const;
@@ -272,10 +275,10 @@ private:
         } \
     /* Component */ \
     template<> \
-    QVector<Type *> Entity::renderComponents<Type>() const \
+    std::vector<Type *> Entity::renderComponents<Type>() const \
     { \
         Manager *manager = m_nodeManagers->manager<Type, Manager>(); \
-        QVector<Type *> entries; \
+        std::vector<Type *> entries; \
         entries.reserve(variable.size()); \
         for (const QNodeId id : variable) \
             entries.push_back(manager->lookupResource(id)); \

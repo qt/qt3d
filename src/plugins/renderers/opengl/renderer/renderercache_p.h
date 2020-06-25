@@ -73,7 +73,7 @@ struct RendererCache
         Matrix4x4 viewProjectionMatrix;
         // Set by the FilterLayerJob
         // Contains all Entities that satisfy the layer filtering for the RV
-        QVector<Entity *> filterEntitiesByLayer;
+        std::vector<Entity *> filterEntitiesByLayer;
 
         // Set by the MaterialParameterGatherJob
         MaterialParameterGathererData materialParameterGatherer;
@@ -81,9 +81,9 @@ struct RendererCache
         // Set by the SyncRenderViewPreCommandUpdateJob
         // Contains caches of different filtering stages that can
         // be cached across frame
-        QVector<Entity *> layeredFilteredRenderables; // Changes rarely
-        QVector<Entity *> filteredAndCulledRenderables; // Changes if camera is modified
-        QVector<LightSource> layeredFilteredLightSources;
+        std::vector<Entity *> layeredFilteredRenderables; // Changes rarely
+        std::vector<Entity *> filteredAndCulledRenderables; // Changes if camera is modified
+        std::vector<LightSource> layeredFilteredLightSources;
 
         // Cache of RenderCommands
         EntityRenderCommandDataViewPtr filteredRenderCommandDataViews;
@@ -92,13 +92,13 @@ struct RendererCache
     // Variabled below are shared amongst all RV
 
     // Set by CachingRenderableEntityFilterJob
-    QVector<Entity *> renderableEntities;
+    std::vector<Entity *> renderableEntities;
 
     // Set by CachingComputableEntityFilterJob
-    QVector<Entity *> computeEntities;
+    std::vector<Entity *> computeEntities;
 
     // Set by CachingLightGathererJob
-    QVector<LightSource> gatheredLights;
+    std::vector<LightSource> gatheredLights;
 
     EnvironmentLight* environmentLight;
 

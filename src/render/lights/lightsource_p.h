@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DRender/private/qt3drender_global_p.h>
-#include <QVector>
+#include <vector>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,10 +65,10 @@ class Light;
 
 struct Q_3DRENDERSHARED_PRIVATE_EXPORT LightSource {
     LightSource();
-    LightSource(Entity *entity, const QVector<Light *> &lights);
+    LightSource(const Entity *entity, const std::vector<Light *> &lights);
 
-    Entity *entity;
-    QVector<Light *> lights;
+    const Entity *entity;
+    std::vector<Light *> lights;
 };
 
 } // Render

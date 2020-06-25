@@ -85,9 +85,9 @@ public:
     RenderViewInitializerJobPtr renderViewJob() const;
     FilterLayerEntityJobPtr filterEntityByLayerJob() const;
     FrustumCullingJobPtr frustumCullingJob() const;
-    QVector<RenderViewCommandBuilderJobPtr> renderViewCommandBuilderJobs() const;
-    QVector<RenderViewCommandUpdaterJobPtr> renderViewCommandUpdaterJobs() const;
-    QVector<MaterialParameterGathererJobPtr> materialGathererJobs() const;
+    const std::vector<RenderViewCommandBuilderJobPtr> &renderViewCommandBuilderJobs() const;
+    const std::vector<RenderViewCommandUpdaterJobPtr> &renderViewCommandUpdaterJobs() const;
+    const std::vector<MaterialParameterGathererJobPtr> &materialGathererJobs() const;
     SynchronizerJobPtr syncRenderViewPostInitializationJob() const;
     SynchronizerJobPtr syncPreFrustumCullingJob() const;
     SynchronizerJobPtr syncRenderViewPreCommandBuildingJob() const;
@@ -117,7 +117,8 @@ public:
     int optimalJobCount() const;
     void setOptimalJobCount(int v);
 
-    static QVector<Entity *> entitiesInSubset(const QVector<Entity *> &entities, const QVector<Entity *> &subset);
+    static std::vector<Entity *> entitiesInSubset(const std::vector<Entity *> &entities,
+                                                  const std::vector<Entity *> &subset);
 
 private:
     Render::FrameGraphNode *m_leafNode;
@@ -128,9 +129,9 @@ private:
     RenderViewInitializerJobPtr m_renderViewJob;
     FilterLayerEntityJobPtr m_filterEntityByLayerJob;
     FrustumCullingJobPtr m_frustumCullingJob;
-    QVector<RenderViewCommandBuilderJobPtr> m_renderViewCommandBuilderJobs;
-    QVector<RenderViewCommandUpdaterJobPtr> m_renderViewCommandUpdaterJobs;
-    QVector<MaterialParameterGathererJobPtr> m_materialGathererJobs;
+    std::vector<RenderViewCommandBuilderJobPtr> m_renderViewCommandBuilderJobs;
+    std::vector<RenderViewCommandUpdaterJobPtr> m_renderViewCommandUpdaterJobs;
+    std::vector<MaterialParameterGathererJobPtr> m_materialGathererJobs;
 
     SynchronizerJobPtr m_syncRenderViewPostInitializationJob;
     SynchronizerJobPtr m_syncPreFrustumCullingJob;

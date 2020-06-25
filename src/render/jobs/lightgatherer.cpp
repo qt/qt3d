@@ -63,17 +63,17 @@ void LightGatherer::run()
     m_environmentLight = nullptr;
 
     const std::vector<HEntity> &handles = m_manager->activeHandles();
-    int envLightCount = 0;
+    size_t envLightCount = 0;
 
     for (const HEntity &handle : handles) {
         Entity *node = m_manager->data(handle);
-        const QVector<Light *> lights = node->renderComponents<Light>();
-        if (!lights.isEmpty())
-            m_lights.push_back(LightSource(node, lights));
-        const QVector<EnvironmentLight *> envLights = node->renderComponents<EnvironmentLight>();
+        std::vector<Light *> lights = node->renderComponents<Light>();
+        if (!lights.empty())
+            m_lights.push_back(LightSource(node, std::move(lights)));
+        const std::vector<EnvironmentLight *> &envLights = node->renderComponents<EnvironmentLight>();
         envLightCount += envLights.size();
-        if (!envLights.isEmpty() && !m_environmentLight)
-            m_environmentLight = envLights.first();
+        if (!envLights.empty() && !m_environmentLight)
+            m_environmentLight = envLights.front();
     }
 
     if (envLightCount > 1)

@@ -146,7 +146,7 @@ inline bool operator!=(const RenderCommand &lhs, const RenderCommand &rhs) noexc
 
 struct EntityRenderCommandData
 {
-    std::vector<Entity *> entities;
+    std::vector<const Entity *> entities;
     std::vector<RenderCommand> commands;
     std::vector<RenderPassParameterData> passesData;
 
@@ -159,14 +159,14 @@ struct EntityRenderCommandData
 
     inline size_t size() const { return entities.size(); }
 
-    inline void push_back(Entity *e, const RenderCommand &c, const RenderPassParameterData &p)
+    inline void push_back(const Entity *e, const RenderCommand &c, const RenderPassParameterData &p)
     {
         entities.push_back(e);
         commands.push_back(c);
         passesData.push_back(p);
     }
 
-    inline void push_back(Entity *e, RenderCommand &&c, RenderPassParameterData &&p)
+    inline void push_back(const Entity *e, RenderCommand &&c, RenderPassParameterData &&p)
     {
         entities.push_back(e);
         commands.push_back(std::move(c));

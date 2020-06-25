@@ -64,7 +64,7 @@ public:
 
     // QAspectJob interface
     void run() final;
-    QVector<Entity *> filteredEntities() const { return m_filteredEntities; }
+    const std::vector<Entity *> &filteredEntities() const { return m_filteredEntities; }
 
 #if defined (QT_BUILD_INTERNAL)
     // For unit testing
@@ -74,13 +74,13 @@ public:
 
 private:
     void selectAllEntities();
-    void filterEntities(const QVector<Entity *> &entitiesToFilter);
+    void filterEntities(const std::vector<Entity *> &entitiesToFilter);
 
     NodeManagers *m_manager;
     Qt3DCore::QNodeIdVector m_proximityFilterIds;
     Entity *m_targetEntity;
     float m_distanceThresholdSquared;
-    QVector<Entity *> m_filteredEntities;
+    std::vector<Entity *> m_filteredEntities;
 };
 
 typedef QSharedPointer<FilterProximityDistanceJob> FilterProximityDistanceJobPtr;

@@ -650,10 +650,10 @@ private Q_SLOTS:
         filterJob.run();
 
         // THEN
-        const QVector<Qt3DRender::Render::Entity *> filterEntities = filterJob.filteredEntities();
-        QCOMPARE(filterEntities.size(), expectedSelectedEntities.size());
-        for (auto i = 0, m = expectedSelectedEntities.size(); i < m; ++i)
-            QCOMPARE(filterEntities.at(i)->peerId(), expectedSelectedEntities.at(i));
+        const std::vector<Qt3DRender::Render::Entity *> filterEntities = std::move(filterJob.filteredEntities());
+        QCOMPARE(filterEntities.size(), size_t(expectedSelectedEntities.size()));
+        for (size_t i = 0, m = expectedSelectedEntities.size(); i < m; ++i)
+            QCOMPARE(filterEntities[i]->peerId(), expectedSelectedEntities[i]);
     }
 };
 

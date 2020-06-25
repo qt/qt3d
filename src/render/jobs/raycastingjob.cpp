@@ -70,8 +70,8 @@ public:
     explicit EntityCasterGatherer(NodeManagers *manager) : EntityVisitor(manager) { setPruneDisabled(true); }
 
     Operation visit(Entity *entity) override {
-        QVector<RayCaster *> components = entity->renderComponents<RayCaster>();
-        for (const auto c: qAsConst(components)) {
+        const std::vector<RayCaster *> &components = entity->renderComponents<RayCaster>();
+        for (const auto c: components) {
             if (c->isEnabled())
                 m_result.push_back(qMakePair(entity, c));
         }

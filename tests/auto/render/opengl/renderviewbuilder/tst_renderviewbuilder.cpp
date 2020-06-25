@@ -476,8 +476,9 @@ private Q_SLOTS:
         renderer->lightGathererJob()->run();
 
         // THEN
-        QCOMPARE(renderer->lightGathererJob()->lights().size(), 2);
-        QVERIFY(renderer->lightGathererJob()->environmentLight() != nullptr);
+        Qt3DRender::Render::OpenGL::RendererCache *cache = renderer->cache();
+        QCOMPARE(cache->gatheredLights.size(), 2);
+        QVERIFY(cache->environmentLight != nullptr);
     }
 
     void checkRenderableEntitiesFilteringExecution()
@@ -496,7 +497,8 @@ private Q_SLOTS:
         renderer->renderableEntityFilterJob()->run();
 
         // THEN
-        QCOMPARE(renderer->renderableEntityFilterJob()->filteredEntities().size(), 1);
+        Qt3DRender::Render::OpenGL::RendererCache *cache = renderer->cache();
+        QCOMPARE(cache->renderableEntities.size(), 1);
     }
 
     void checkComputableEntitiesFilteringExecution()
@@ -515,7 +517,8 @@ private Q_SLOTS:
         renderer->computableEntityFilterJob()->run();
 
         // THEN
-        QCOMPARE(renderer->computableEntityFilterJob()->filteredEntities().size(), 1);
+        Qt3DRender::Render::OpenGL::RendererCache *cache = renderer->cache();
+        QCOMPARE(cache->computeEntities.size(), 1);
     }
 
     void checkSyncRenderViewInitializationExecution()
@@ -653,8 +656,9 @@ private Q_SLOTS:
         renderViewBuilder.syncRenderViewPostInitializationJob()->run();
         renderViewBuilder.filterEntityByLayerJob()->run();
 
-        QVector<Qt3DRender::Render::Entity *> renderableEntity = renderer->renderableEntityFilterJob()->filteredEntities();
-        QVector<Qt3DRender::Render::Entity *> filteredEntity = renderViewBuilder.filterEntityByLayerJob()->filteredEntities();
+        Qt3DRender::Render::OpenGL::RendererCache *cache = renderer->cache();
+        std::vector<Qt3DRender::Render::Entity *> renderableEntity = cache->renderableEntities;
+        std::vector<Qt3DRender::Render::Entity *> filteredEntity = renderViewBuilder.filterEntityByLayerJob()->filteredEntities();
 
         // THEN
         QCOMPARE(renderableEntity.size(), 200);
@@ -668,7 +672,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderableEntity.size(), 100);
         for (const auto entity : renderableEntity) {
-            QVERIFY(filteredEntity.contains(entity));
+            QVERIFY(std::find(filteredEntity.begin(),
+                              filteredEntity.end(),
+                              entity) != filteredEntity.end());
         }
     }
 

@@ -51,7 +51,7 @@ LightSource::LightSource() : entity(nullptr)
 {
 }
 
-LightSource::LightSource(Entity *entity, const QVector<Light *> &lights)
+LightSource::LightSource(const Entity *entity, const std::vector<Light *> &lights)
     : entity(entity)
     , lights(lights)
 {

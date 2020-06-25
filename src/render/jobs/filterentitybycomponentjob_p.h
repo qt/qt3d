@@ -78,7 +78,7 @@ public:
     }
 
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
-    inline QVector<Entity *> &filteredEntities() Q_DECL_NOTHROW { return m_filteredEntities; }
+    inline std::vector<Entity *> &filteredEntities() Q_DECL_NOTHROW { return m_filteredEntities; }
 
     void run() override
     {
@@ -94,7 +94,7 @@ public:
 
 private:
     EntityManager *m_manager;
-    QVector<Entity *> m_filteredEntities;
+    std::vector<Entity *> m_filteredEntities;
 };
 
 template<typename T, typename ... Ts>
