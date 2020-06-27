@@ -155,7 +155,7 @@ void tst_RenderShader::dealWithPropertyChanges()
     backend.syncFromFrontEnd(&shader, false);
 
     // THEN
-    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
+    QCOMPARE(backend.shaderCode().at(type), QByteArrayLiteral("foo"));
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     QCOMPARE(backend.isDirty(), true);
 
@@ -259,7 +259,7 @@ void tst_RenderShader::allowToChangeShaderCode()
     backend.setShaderCode(type, QByteArrayLiteral("foo"));
 
     // THEN
-    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
+    QCOMPARE(backend.shaderCode().at(type), QByteArrayLiteral("foo"));
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
 
@@ -267,7 +267,7 @@ void tst_RenderShader::allowToChangeShaderCode()
     backend.setShaderCode(type, QByteArrayLiteral("foo"));
 
     // THEN
-    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
+    QCOMPARE(backend.shaderCode().at(type), QByteArrayLiteral("foo"));
     QCOMPARE(renderer.dirtyBits(), 0);
     renderer.resetDirty();
 
@@ -275,7 +275,7 @@ void tst_RenderShader::allowToChangeShaderCode()
     backend.setShaderCode(type, QByteArrayLiteral("bar"));
 
     // THEN
-    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("bar"));
+    QCOMPARE(backend.shaderCode().at(type), QByteArrayLiteral("bar"));
     QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
 }

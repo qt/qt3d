@@ -36,6 +36,8 @@
 #include "testrenderer.h"
 #include "testpostmanarbiter.h"
 
+#include <QByteArray>
+
 Q_DECLARE_METATYPE(Qt3DRender::QShaderProgram::ShaderType)
 
 class tst_ShaderBuilder : public Qt3DCore::QBackendNodeTester
@@ -489,7 +491,7 @@ private slots:
             return api;
         }();
 
-        const auto readCode = [](const QString &suffix) -> QString {
+        const auto readCode = [](const QString &suffix) -> QByteArray {
             const auto filePath = QStringLiteral(":/output.") + suffix;
             QFile file(filePath);
             if (!file.open(QFile::ReadOnly | QFile::Text))
@@ -571,7 +573,7 @@ private slots:
             return api;
         }();
 
-        const auto readCode = [](const QString &suffix) -> QString {
+        const auto readCode = [](const QString &suffix) -> QByteArray {
             const auto filePath = QStringLiteral(":/output.") + suffix;
             QFile file(filePath);
             if (!file.open(QFile::ReadOnly | QFile::Text))
