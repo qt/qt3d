@@ -119,7 +119,6 @@ public:
         : m_renderViewJob(renderViewJob)
         , m_renderViewCommandUpdaterJobs(renderViewCommandUpdateJobs)
         , m_renderer(renderer)
-        , m_leafNode(leafNode)
     {}
 
     void operator()()
@@ -139,7 +138,6 @@ private:
     RenderViewInitializerJobPtr m_renderViewJob;
     QVector<RenderViewCommandUpdaterJobPtr> m_renderViewCommandUpdaterJobs;
     Renderer *m_renderer;
-    FrameGraphNode *m_leafNode;
 };
 
 class SyncPreFrustumCulling

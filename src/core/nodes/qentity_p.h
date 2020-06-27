@@ -93,13 +93,6 @@ public :
     bool m_dirty;
 };
 
-struct QEntityData
-{
-    Qt3DCore::QNodeId parentEntityId;
-    QVector<QNodeIdTypePair> componentIdsAndTypes;
-    Qt3DCore::QNodeIdVector childEntityIds;
-};
-
 }
 
 QT_END_NAMESPACE
