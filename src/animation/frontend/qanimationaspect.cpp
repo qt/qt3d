@@ -138,7 +138,7 @@ QAnimationAspect::~QAnimationAspect()
 /*!
     \internal
  */
-QVector<QAspectJobPtr> QAnimationAspect::jobsToExecute(qint64 time)
+std::vector<QAspectJobPtr> QAnimationAspect::jobsToExecute(qint64 time)
 {
     Q_D(QAnimationAspect);
     Q_ASSERT(d->m_handler);

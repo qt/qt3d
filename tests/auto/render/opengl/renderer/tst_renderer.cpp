@@ -73,7 +73,7 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // WHEN (nothing dirty, no buffers, no layers to be rebuilt, no materials to be rebuilt)
-        QVector<Qt3DCore::QAspectJobPtr> jobs = renderer.preRenderingJobs();
+        std::vector<Qt3DCore::QAspectJobPtr> jobs = renderer.preRenderingJobs();
 
         // THEN
         QCOMPARE(jobs.size(), 0);
@@ -154,7 +154,7 @@ private Q_SLOTS:
         //                   n * (RenderViewCommandBuildJobs)
 
         // WHEN
-        QVector<Qt3DCore::QAspectJobPtr> jobs = renderer.renderBinJobs();
+        std::vector<Qt3DCore::QAspectJobPtr> jobs = renderer.renderBinJobs();
 
         // THEN -> AllDirty
         // (Renderer is not initialized so FilterCompatibleTechniqueJob

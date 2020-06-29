@@ -62,7 +62,7 @@ public:
     QStringList availablePhysicalDevices() const;
 
 private:
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
+    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
 
     void onRegistered() override;
     void onUnregistered() override;

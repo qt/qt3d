@@ -119,7 +119,7 @@ public:
     ClipBlendNodeManager *clipBlendNodeManager() const Q_DECL_NOTHROW { return m_clipBlendNodeManager.data(); }
     SkeletonManager *skeletonManager() const Q_DECL_NOTHROW { return m_skeletonManager.data(); }
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
+    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
     void cleanupHandleList(QVector<HAnimationClip> *clips);
     void cleanupHandleList(QVector<HClipAnimator> *animators);

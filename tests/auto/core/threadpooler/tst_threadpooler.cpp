@@ -209,7 +209,7 @@ void tst_ThreadPooler::defaultAspectQueue()
     // GIVEN
     QAtomicInt callCounter;
     int value = 0; // Not used in this test
-    QVector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
+    std::vector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
     callCounter.storeRelaxed(0);
     const int jobCount = 5;
 
@@ -217,7 +217,7 @@ void tst_ThreadPooler::defaultAspectQueue()
     for (int i = 0; i < jobCount; i++) {
         QSharedPointer<TestAspectJob> job(new TestAspectJob(incrementFunctionCallCounter,
                                                             &callCounter, &value));
-        jobList.append(job);
+        jobList.push_back(job);
     }
     m_jobManager->enqueueJobs(jobList);
     m_jobManager->waitForAllJobs();
@@ -235,7 +235,7 @@ void tst_ThreadPooler::doubleAspectQueue()
     // GIVEN
     QAtomicInt callCounter;
     int value = 0; // Not used in this test
-    QVector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
+    std::vector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
     callCounter.storeRelaxed(0);
     const int jobCount = 3;
 
@@ -243,15 +243,15 @@ void tst_ThreadPooler::doubleAspectQueue()
     for (int i = 0; i < jobCount; i++) {
         QSharedPointer<TestAspectJob> job(new TestAspectJob(incrementFunctionCallCounter,
                                                             &callCounter, &value));
-        jobList.append(job);
+        jobList.push_back(job);
     }
     m_jobManager->enqueueJobs(jobList);
 
-    QVector<QSharedPointer<Qt3DCore::QAspectJob> > jobList2;
+    std::vector<QSharedPointer<Qt3DCore::QAspectJob> > jobList2;
     for (int i = 0; i < jobCount; i++) {
         QSharedPointer<TestAspectJob> job(new TestAspectJob(incrementFunctionCallCounter,
                                                             &callCounter, &value));
-        jobList2.append(job);
+        jobList2.push_back(job);
     }
     m_jobManager->enqueueJobs(jobList2);
 
@@ -269,14 +269,14 @@ void tst_ThreadPooler::dependencyAspectQueue()
     // GIVEN
     QAtomicInt callCounter; // Not used in this test
     int value = 2;
-    QVector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
+    std::vector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
 
     // WHEN
     QSharedPointer<TestAspectJob> job1(new TestAspectJob(add2, &callCounter, &value));
-    jobList.append(job1);
+    jobList.push_back(job1);
     QSharedPointer<TestAspectJob> job2(new TestAspectJob(multiplyBy2, &callCounter, &value));
     job2->addDependency(job1);
-    jobList.append(job2);
+    jobList.push_back(job2);
     m_jobManager->enqueueJobs(jobList);
     m_jobManager->waitForAllJobs();
 
@@ -289,7 +289,7 @@ void tst_ThreadPooler::massTest()
 {
     // GIVEN
     const int mass = 600; // 600
-    QVector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
+    std::vector<QSharedPointer<Qt3DCore::QAspectJob> > jobList;
     QVector3D data[3 * mass];
 
     // WHEN
@@ -298,13 +298,13 @@ void tst_ThreadPooler::massTest()
 
     for (int i = 0; i < mass; i++) {
         QSharedPointer<MassAspectJob> job1(new MassAspectJob(massTestFunction, &(data[i * 3 + 0])));
-        jobList.append(job1);
+        jobList.push_back(job1);
         QSharedPointer<MassAspectJob> job2(new MassAspectJob(massTestFunction, &(data[i * 3 + 1])));
         job2->addDependency(job1);
-        jobList.append(job2);
+        jobList.push_back(job2);
         QSharedPointer<MassAspectJob> job3(new MassAspectJob(massTestFunction, &(data[i * 3 + 2])));
         job3->addDependency(job2);
-        jobList.append(job3);
+        jobList.push_back(job3);
     }
 
     m_jobManager->enqueueJobs(jobList);

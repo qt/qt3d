@@ -653,7 +653,7 @@ void QRenderAspectPrivate::renderShutdown()
     m_renderer->shutdown();
 }
 
-QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
+std::vector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 {
     using namespace Render;
 
@@ -665,7 +665,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 #endif
 
     // Create jobs that will get executed by the threadpool
-    QVector<QAspectJobPtr> jobs;
+    std::vector<QAspectJobPtr> jobs;
 
     // 1 GeometryJobs, SceneLoaderJobs, LoadTextureJobs
     // 2 CalculateBoundingVolumeJob (depends on LoadBuffer)
@@ -692,24 +692,24 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             auto loadSkeletonJob = Render::LoadSkeletonJobPtr::create(skeletonHandle);
             loadSkeletonJob->setNodeManagers(manager);
             d->m_syncLoadingJobs->addDependency(loadSkeletonJob);
-            jobs.append(loadSkeletonJob);
+            jobs.push_back(loadSkeletonJob);
         }
 
         // TO DO: Have 2 jobs queue
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
-        const QVector<Render::LoadSceneJobPtr> sceneJobs = manager->sceneManager()->takePendingSceneLoaderJobs();
+        const std::vector<Render::LoadSceneJobPtr> sceneJobs = manager->sceneManager()->takePendingSceneLoaderJobs();
         for (const Render::LoadSceneJobPtr &job : sceneJobs) {
             job->setNodeManagers(d->m_nodeManagers);
             job->setSceneImporters(d->m_sceneImporter);
-            jobs.append(job);
+            jobs.push_back(job);
         }
 
-        const QVector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
-        jobs.append(geometryJobs);
+        const std::vector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
+        jobs.insert(jobs.end(), std::make_move_iterator(geometryJobs.begin()), std::make_move_iterator(geometryJobs.end()));
 
-        const QVector<QAspectJobPtr> preRenderingJobs = d->createPreRendererJobs();
-        jobs.append(preRenderingJobs);
+        const std::vector<QAspectJobPtr> preRenderingJobs = d->createPreRendererJobs();
+        jobs.insert(jobs.end(), std::make_move_iterator(preRenderingJobs.begin()), std::make_move_iterator(preRenderingJobs.end()));
 
         // Don't spawn any rendering jobs, if the renderer decides to skip this frame
         // Note: this only affects rendering jobs (jobs that load buffers,
@@ -758,8 +758,8 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         if (layersDirty)
             jobs.push_back(d->m_updateEntityLayersJob);
 
-        const QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
-        jobs.append(renderBinJobs);
+        const std::vector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
+        jobs.insert(jobs.end(), std::make_move_iterator(renderBinJobs.begin()), std::make_move_iterator(renderBinJobs.end()));
     }
 
     return jobs;
@@ -876,11 +876,11 @@ void QRenderAspect::onUnregistered()
     d->m_offscreenHelper = nullptr;
 }
 
-QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs() const
+std::vector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs() const
 {
     Render::GeometryRendererManager *geomRendererManager = m_nodeManagers->geometryRendererManager();
     const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
-    QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
+    std::vector<QAspectJobPtr> dirtyGeometryRendererJobs;
     dirtyGeometryRendererJobs.reserve(dirtyGeometryRenderers.size());
 
     for (const QNodeId &geoRendererId : dirtyGeometryRenderers) {
@@ -895,7 +895,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
     return dirtyGeometryRendererJobs;
 }
 
-QVector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
+std::vector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
 {
     if (!m_renderer)
         return {};
@@ -912,8 +912,8 @@ QVector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
         m_rayCastingJob->setFrameGraphRoot(m_renderer->frameGraphRoot());
     }
 
-    jobs.append(m_pickBoundingVolumeJob);
-    jobs.append(m_rayCastingJob);
+    jobs.push_back(m_pickBoundingVolumeJob);
+    jobs.push_back(m_rayCastingJob);
 
     return jobs;
 }

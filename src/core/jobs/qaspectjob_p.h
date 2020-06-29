@@ -77,7 +77,7 @@ public:
 
     void clearDependencies() { m_dependencies.clear(); }
 
-    QVector<QWeakPointer<QAspectJob> > m_dependencies;
+    std::vector<QWeakPointer<QAspectJob> > m_dependencies;
     JobId m_jobId;
     QString m_jobName;
 };

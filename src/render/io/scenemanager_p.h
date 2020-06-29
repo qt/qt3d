@@ -95,15 +95,15 @@ public:
 
     void addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid,
                       const QByteArray &data = QByteArray());
-    QVector<LoadSceneJobPtr> takePendingSceneLoaderJobs();
+    std::vector<LoadSceneJobPtr> &&takePendingSceneLoaderJobs();
 
     void startSceneDownload(const QUrl &source, Qt3DCore::QNodeId sceneUuid);
     void clearSceneDownload(SceneDownloader *downloader);
 
 private:
     Qt3DCore::QDownloadHelperService *m_service;
-    QVector<LoadSceneJobPtr> m_pendingJobs;
-    QVector<SceneDownloaderPtr> m_pendingDownloads;
+    std::vector<LoadSceneJobPtr> m_pendingJobs;
+    std::vector<SceneDownloaderPtr> m_pendingDownloads;
 };
 
 } // namespace Render

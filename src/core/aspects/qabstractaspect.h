@@ -86,7 +86,7 @@ protected:
 private:
     virtual QVariant executeCommand(const QStringList &args);
 
-    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time);
+    virtual std::vector<QAspectJobPtr> jobsToExecute(qint64 time);
 
     virtual void onRegistered();
     virtual void onUnregistered();

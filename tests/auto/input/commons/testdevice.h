@@ -103,10 +103,10 @@ public:
         qDeleteAll(m_deviceBackendNodes);
     }
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) final
+    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) final
     {
         Q_UNUSED(time);
-        return QVector<Qt3DCore::QAspectJobPtr>();
+        return std::vector<Qt3DCore::QAspectJobPtr>();
     }
 
     TestDevice *createPhysicalDevice(const QString &name) final

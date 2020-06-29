@@ -189,10 +189,10 @@ QVariant QAbstractAspect::executeCommand(const QStringList &args)
     return QVariant();
 }
 
-QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
+std::vector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
 {
     Q_UNUSED(time);
-    return QVector<QAspectJobPtr>();
+    return {};
 }
 
 QBackendNodeMapperPtr QAbstractAspectPrivate::mapperForNode(const QMetaObject *metaObj) const
@@ -332,14 +332,16 @@ QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const
     return m_jobManager;
 }
 
-QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
+std::vector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
 {
     Q_Q(QAbstractAspect);
     auto res = q->jobsToExecute(time);
 
     {
         QMutexLocker lock(&m_singleShotMutex);
-        res << m_singleShotJobs;
+        res.insert(res.end(),
+                   std::make_move_iterator(m_singleShotJobs.begin()),
+                   std::make_move_iterator(m_singleShotJobs.end()));
         m_singleShotJobs.clear();
     }
 

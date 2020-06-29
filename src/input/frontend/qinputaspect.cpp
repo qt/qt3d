@@ -221,23 +221,26 @@ QStringList QInputAspect::availablePhysicalDevices() const
 /*!
     \internal
  */
-QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
+std::vector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 {
     Q_D(QInputAspect);
     const qint64 deltaTime = time - d->m_time;
     const float dt = static_cast<float>(deltaTime) / 1.0e9f;
     d->m_time = time;
 
-    QVector<QAspectJobPtr> jobs;
+    std::vector<QAspectJobPtr> jobs;
 
     d->m_inputHandler->updateEventSource();
 
     // Mouse and keyboard handlers will have seen the events already.
     // All we need now is to update the axis and the accumulators since
     // they depend on time, and other bookkeeping.
+
     const auto integrations = d->m_inputHandler->inputDeviceIntegrations();
-    for (QInputDeviceIntegration *integration : integrations)
-        jobs += integration->jobsToExecute(time);
+    for (QInputDeviceIntegration *integration : integrations) {
+        const std::vector<QAspectJobPtr> integrationJobs = integration->jobsToExecute(time);
+        jobs.insert(jobs.end(), std::make_move_iterator(integrationJobs.begin()), std::make_move_iterator(integrationJobs.end()));
+    }
 
     const QVector<Qt3DCore::QNodeId> proxiesToLoad = d->m_inputHandler->physicalDeviceProxyManager()->takePendingProxiesToLoad();
     if (!proxiesToLoad.isEmpty()) {
@@ -251,11 +254,11 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 
     // All the jobs added up until this point are independents
     // but the axis action jobs will be dependent on these
-    const QVector<QAspectJobPtr> dependsOnJobs = jobs;
+    const std::vector<QAspectJobPtr> dependsOnJobs = jobs;
 
     // Jobs that update Axis/Action (store combined axis/action value)
     const auto devHandles = d->m_inputHandler->logicalDeviceManager()->activeDevices();
-    QVector<QAspectJobPtr> axisActionJobs;
+    std::vector<QAspectJobPtr> axisActionJobs;
     axisActionJobs.reserve(devHandles.size());
     for (const Input::HLogicalDevice &devHandle : devHandles) {
         const auto device = d->m_inputHandler->logicalDeviceManager()->data(devHandle);
@@ -263,7 +266,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
             continue;
 
         QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(time, d->m_inputHandler.data(), devHandle));
-        jobs += updateAxisActionJob;
+        jobs.push_back(updateAxisActionJob);
         axisActionJobs.push_back(updateAxisActionJob);
         for (const QAspectJobPtr &job : dependsOnJobs)
             updateAxisActionJob->addDependency(job);

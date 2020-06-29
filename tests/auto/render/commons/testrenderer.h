@@ -66,8 +66,8 @@ public:
     bool shouldRender() const override { return true; }
     void skipNextFrame() override {}
     void jobsDone(Qt3DCore::QAspectManager *manager) override { Q_UNUSED(manager); }
-    QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
-    QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override { return QVector<Qt3DCore::QAspectJobPtr>(); }
+    std::vector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override { return {}; }
+    std::vector<Qt3DCore::QAspectJobPtr> renderBinJobs() override { return {}; }
     void setSceneRoot(Qt3DRender::Render::Entity *root) override { Q_UNUSED(root); }
     Qt3DRender::Render::Entity *sceneRoot() const override { return nullptr; }
     Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const override { return nullptr; }

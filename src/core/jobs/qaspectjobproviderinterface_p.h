@@ -68,7 +68,7 @@ public:
     virtual ~QAspectJobProviderInterface() {}
 
 private:
-    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
+    virtual std::vector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
     virtual void jobsDone() = 0;
     virtual void frameDone() = 0;
 

@@ -74,7 +74,7 @@ public:
 
     void initialize() override;
 
-    void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) override;
+    void enqueueJobs(const std::vector<QAspectJobPtr> &jobQueue) override;
 
     int waitForAllJobs() override;
 

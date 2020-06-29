@@ -46,9 +46,9 @@ public:
         , m_name(name)
     {}
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64) override
+    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64) override
     {
-        return QVector<Qt3DCore::QAspectJobPtr>();
+        return std::vector<Qt3DCore::QAspectJobPtr>();
     }
 
     Qt3DInput::QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) override

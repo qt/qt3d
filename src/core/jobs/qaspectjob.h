@@ -60,7 +60,7 @@ public:
     void addDependency(QWeakPointer<QAspectJob> dependency);
     void removeDependency(QWeakPointer<QAspectJob> dependency);
 
-    QVector<QWeakPointer<QAspectJob> > dependencies() const;
+    const std::vector<QWeakPointer<QAspectJob>> &dependencies() const;
 
     virtual void run() = 0;
     virtual void postFrame(QAspectEngine *aspectEngine);

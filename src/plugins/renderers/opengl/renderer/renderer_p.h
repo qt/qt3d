@@ -214,8 +214,8 @@ public:
     bool processMouseEvent(QObject *object, QMouseEvent *event) override;
     bool processKeyEvent(QObject *object, QKeyEvent *event) override;
 
-    QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
-    QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
+    std::vector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
+    std::vector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
     inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }

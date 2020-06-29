@@ -68,7 +68,7 @@ void QAspectJobManager::initialize()
 }
 
 // Adds all Aspect Jobs to be processed for a frame
-void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
+void QAspectJobManager::enqueueJobs(const std::vector<QAspectJobPtr> &jobQueue)
 {
     auto systemService = m_aspectManager ? m_aspectManager->serviceLocator()->systemInformation() : nullptr;
     if (systemService)
@@ -87,7 +87,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     }
 
     for (const QAspectJobPtr &job : jobQueue) {
-        const QVector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
+        const std::vector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
         AspectTaskRunnable *taskDepender = tasksMap.value(job.data());
 
         int dependerCount = 0;

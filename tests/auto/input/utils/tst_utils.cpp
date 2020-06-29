@@ -55,7 +55,7 @@ public:
         , m_device(device)
     {}
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64) override { return QVector<Qt3DCore::QAspectJobPtr>(); }
+    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64) override { return std::vector<Qt3DCore::QAspectJobPtr>(); }
     Qt3DInput::QAbstractPhysicalDevice *createPhysicalDevice(const QString &) override { return nullptr; }
     QVector<Qt3DCore::QNodeId> physicalDevices() const override { return QVector<Qt3DCore::QNodeId>(); }
     QStringList deviceNames() const override { return QStringList(); }

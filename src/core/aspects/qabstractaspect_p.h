@@ -124,7 +124,7 @@ public:
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 
-    QVector<QAspectJobPtr> jobsToExecute(qint64 time) override;
+    std::vector<QAspectJobPtr> jobsToExecute(qint64 time) override;
     void jobsDone() override;      // called when all the jobs are completed
     void frameDone() override;     // called when frame is completed (after the jobs), safe to wait until next frame here
 
@@ -153,7 +153,7 @@ public:
     QChangeArbiter *m_arbiter;
     QHash<const QMetaObject*, QBackendNodeMapperPtr> m_backendCreatorFunctors;
     QMutex m_singleShotMutex;
-    QVector<QAspectJobPtr> m_singleShotJobs;
+    std::vector<QAspectJobPtr> m_singleShotJobs;
 
     static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
 };

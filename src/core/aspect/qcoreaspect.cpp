@@ -85,12 +85,12 @@ QAspectJobPtr QCoreAspect::calculateBoundingVolumeJob() const
     return d->m_calculateBoundingVolumeJob;
 }
 
-QVector<QAspectJobPtr> QCoreAspect::jobsToExecute(qint64 time)
+std::vector<QAspectJobPtr> QCoreAspect::jobsToExecute(qint64 time)
 {
     Q_D(QCoreAspect);
     Q_UNUSED(time);
 
-    QVector<QAspectJobPtr> jobs;
+    std::vector<QAspectJobPtr> jobs;
 
     auto scene = d->m_aspectManager->scene();
     auto dirtyBits = scene->dirtyBits();

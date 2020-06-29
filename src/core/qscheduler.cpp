@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 namespace {
 
 // Creates a graphviz dot file. To view online: https://dreampuf.github.io/GraphvizOnline/
-void dumpJobs(QVector<Qt3DCore::QAspectJobPtr> jobs) {
+void dumpJobs(const std::vector<Qt3DCore::QAspectJobPtr> &jobs) {
     const QString fileName = QStringLiteral("qt3djobs_") + QCoreApplication::applicationName() +
         QDateTime::currentDateTime().toString(QStringLiteral("_yyMMdd-hhmmss")) + QStringLiteral(".dot");
 
@@ -112,7 +112,7 @@ QAspectManager *QScheduler::aspectManager() const
 
 int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
 {
-    QVector<QAspectJobPtr> jobQueue;
+    std::vector<QAspectJobPtr> jobQueue;
 
     // TODO: Allow clocks with custom scale factors and independent control
     //       over running / paused / stopped status
@@ -122,8 +122,10 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
     // For now just queue them up as they are
     const QVector<QAbstractAspect *> &aspects = m_aspectManager->aspects();
     for (QAbstractAspect *aspect : aspects) {
-        const QVector<QAspectJobPtr> aspectJobs = QAbstractAspectPrivate::get(aspect)->jobsToExecute(time);
-        jobQueue << aspectJobs;
+        const std::vector<QAspectJobPtr> aspectJobs = QAbstractAspectPrivate::get(aspect)->jobsToExecute(time);
+        jobQueue.insert(jobQueue.end(),
+                        std::make_move_iterator(aspectJobs.begin()),
+                        std::make_move_iterator(aspectJobs.end()));
     }
 
     if (dumpJobs)
@@ -134,7 +136,7 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
     // Do any other work here that the aspect thread can usefully be doing
     // whilst the threadpool works its way through the jobs
 
-    int totalJobs = m_aspectManager->jobManager()->waitForAllJobs();
+    const int totalJobs = m_aspectManager->jobManager()->waitForAllJobs();
 
     {
         QTaskLogger logger(m_aspectManager->serviceLocator()->systemInformation(), 4097, 0, QTaskLogger::AspectJob);

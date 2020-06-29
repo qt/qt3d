@@ -117,9 +117,9 @@ public:
     void renderSynchronous(bool swapBuffers = true);
     void renderShutdown();
     void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs() const;
-    QVector<Qt3DCore::QAspectJobPtr> createPreRendererJobs() const;
-    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
+    std::vector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs() const;
+    std::vector<Qt3DCore::QAspectJobPtr> createPreRendererJobs() const;
+    std::vector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
     Render::AbstractRenderer *loadRendererPlugin();
 
     bool processMouseEvent(QObject *obj, QMouseEvent *event);

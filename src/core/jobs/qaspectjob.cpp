@@ -116,7 +116,7 @@ QAspectJob::~QAspectJob()
 void QAspectJob::addDependency(QWeakPointer<QAspectJob> dependency)
 {
     Q_D(QAspectJob);
-    d->m_dependencies.append(dependency);
+    d->m_dependencies.push_back(dependency);
 #ifdef QT3DCORE_ASPECT_JOB_DEBUG
     static int threshold = qMax(1, qgetenv("QT3DCORE_ASPECT_JOB_DEPENDENCY_THRESHOLD").toInt());
     if (d->m_dependencies.count() > threshold)
@@ -131,7 +131,10 @@ void QAspectJob::removeDependency(QWeakPointer<QAspectJob> dependency)
 {
     Q_D(QAspectJob);
     if (!dependency.isNull()) {
-        d->m_dependencies.removeAll(dependency);
+        d->m_dependencies.erase(std::remove(d->m_dependencies.begin(),
+                                            d->m_dependencies.end(),
+                                            dependency),
+                                d->m_dependencies.end());
     } else {
         d->m_dependencies.erase(std::remove_if(d->m_dependencies.begin(),
                                                d->m_dependencies.end(),
@@ -143,7 +146,7 @@ void QAspectJob::removeDependency(QWeakPointer<QAspectJob> dependency)
 /*!
  * \return the dependencies of the aspect job.
  */
-QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
+const std::vector<QWeakPointer<QAspectJob> > &QAspectJob::dependencies() const
 {
     Q_D(const QAspectJob);
     return d->m_dependencies;

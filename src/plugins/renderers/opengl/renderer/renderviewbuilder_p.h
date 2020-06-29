@@ -99,7 +99,7 @@ public:
     SynchronizerJobPtr syncMaterialGathererJob() const;
 
     void prepareJobs();
-    QVector<Qt3DCore::QAspectJobPtr> buildJobHierachy() const;
+    std::vector<Qt3DCore::QAspectJobPtr> buildJobHierachy() const;
 
     Renderer *renderer() const;
     int renderViewIndex() const;

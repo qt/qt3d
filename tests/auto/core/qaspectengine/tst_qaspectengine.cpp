@@ -62,11 +62,11 @@ private:
         qDebug() << Q_FUNC_INFO;
     }
 
-    QVector<QAspectJobPtr> jobsToExecute(qint64) override \
+    std::vector<QAspectJobPtr> jobsToExecute(qint64) override \
     {
         if (m_rootEntityId)
             qDebug() << Q_FUNC_INFO << m_rootEntityId;
-        return QVector<QAspectJobPtr>();
+        return {};
     }
 
     QNodeId m_rootEntityId;
@@ -85,9 +85,9 @@ private: \
     void onEngineStartup() override {} \
     void onEngineShutdown() override {} \
     \
-    QVector<QAspectJobPtr> jobsToExecute(qint64) override \
+    std::vector<QAspectJobPtr> jobsToExecute(qint64) override \
     { \
-        return QVector<QAspectJobPtr>(); \
+        return std::vector<QAspectJobPtr>(); \
     } \
     \
     QVariant executeCommand(const QStringList &args) override \

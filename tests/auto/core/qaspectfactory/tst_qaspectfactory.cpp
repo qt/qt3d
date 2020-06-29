@@ -45,9 +45,9 @@ private: \
     void onEngineStartup() override {} \
     void onEngineShutdown() override {} \
 \
-    QVector<QAspectJobPtr> jobsToExecute(qint64) override \
+    std::vector<QAspectJobPtr> jobsToExecute(qint64) override \
     { \
-        return QVector<QAspectJobPtr>(); \
+        return std::vector<QAspectJobPtr>(); \
     } \
 };
 

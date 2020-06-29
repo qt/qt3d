@@ -710,9 +710,9 @@ void RenderViewBuilder::prepareJobs()
                                                                      JobTypes::SyncRenderViewInitialization);
 }
 
-QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
+std::vector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
 {
-    QVector<Qt3DCore::QAspectJobPtr> jobs;
+    std::vector<Qt3DCore::QAspectJobPtr> jobs;
     auto daspect = QRenderAspectPrivate::get(m_renderer->aspect());
     auto expandBVJob = daspect->m_expandBoundingVolumeJob;
     auto wordTransformJob = daspect->m_worldTransformJob;

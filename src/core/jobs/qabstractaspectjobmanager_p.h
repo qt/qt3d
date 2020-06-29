@@ -65,7 +65,7 @@ public:
     explicit QAbstractAspectJobManager(QObject *p = nullptr);
 
     virtual void initialize() {}
-    virtual void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) = 0;
+    virtual void enqueueJobs(const std::vector<QAspectJobPtr> &jobQueue) = 0;
     virtual int waitForAllJobs() = 0;
 
     // Callback signature for running SynchronizedJobs

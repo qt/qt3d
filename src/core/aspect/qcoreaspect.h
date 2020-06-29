@@ -61,7 +61,7 @@ protected:
     Q_DECLARE_PRIVATE(QCoreAspect)
 
 private:
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
+    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
     QVariant executeCommand(const QStringList &args) override;
     void onRegistered() override;
     void onEngineStartup() override;

@@ -197,6 +197,14 @@ Qt3DCore::QEntity *buildEntityFilterTestScene(Qt3DRender::QFrameGraphNode *fg, Q
     return root;
 }
 
+bool containsDependency(const std::vector<QWeakPointer<Qt3DCore::QAspectJob>> &dependencies,
+                        const Qt3DCore::QAspectJobPtr &dependency)
+{
+    return std::find(dependencies.begin(),
+                     dependencies.end(),
+                     dependency) != dependencies.end();
+}
+
 } // anonymous
 
 
@@ -318,7 +326,7 @@ private Q_SLOTS:
 
             // Step 2
             QCOMPARE(renderViewBuilder.syncRenderViewPostInitializationJob()->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilder.syncRenderViewPostInitializationJob()->dependencies().constFirst().toStrongRef().data(),
+            QCOMPARE(renderViewBuilder.syncRenderViewPostInitializationJob()->dependencies().front().toStrongRef().data(),
                      renderViewBuilder.renderViewJob().data());
 
             // Step 3
@@ -326,43 +334,43 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob().isNull());
 
             QCOMPARE(renderViewBuilder.filterProximityJob()->dependencies().size(), 2);
-            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(expandBVJob));
+            QVERIFY(containsDependency(renderViewBuilder.filterProximityJob()->dependencies(), renderViewBuilder.syncRenderViewPostInitializationJob()));
+            QVERIFY(containsDependency(renderViewBuilder.filterProximityJob()->dependencies(), expandBVJob));
 
             QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().constFirst().toStrongRef().data(),
+            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().front().toStrongRef().data(),
                      renderViewBuilder.syncRenderViewPostInitializationJob().data());
 
             QCOMPARE(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().size(), 3);
-            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(wordTransformJob));
-            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncPreFrustumCullingJob()->dependencies(), renderViewBuilder.syncRenderViewPostInitializationJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncPreFrustumCullingJob()->dependencies(), wordTransformJob));
+            QVERIFY(containsDependency(renderViewBuilder.syncPreFrustumCullingJob()->dependencies(), testAspect.renderer()->updateShaderDataTransformJob()));
 
             // Step 4
             QCOMPARE(renderViewBuilder.frustumCullingJob()->dependencies().size(), 2);
-            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(renderViewBuilder.syncPreFrustumCullingJob()));
-            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(expandBVJob));
+            QVERIFY(containsDependency(renderViewBuilder.frustumCullingJob()->dependencies(), renderViewBuilder.syncPreFrustumCullingJob()));
+            QVERIFY(containsDependency(renderViewBuilder.frustumCullingJob()->dependencies(), expandBVJob));
 
             QCOMPARE(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().size(), renderViewBuilder.materialGathererJobs().size() + 7);
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.filterProximityJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.frustumCullingJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->bufferGathererJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->textureGathererJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->lightGathererJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), renderViewBuilder.syncRenderViewPostInitializationJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), renderViewBuilder.filterProximityJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), renderViewBuilder.frustumCullingJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), testAspect.renderer()->introspectShadersJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), testAspect.renderer()->bufferGathererJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), testAspect.renderer()->textureGathererJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), testAspect.renderer()->lightGathererJob()));
 
             // Step 5
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewCommandUpdaterJobs()) {
                 QCOMPARE(renderViewBuilderJob->dependencies().size(), 1);
-                QCOMPARE(renderViewBuilderJob->dependencies().constFirst().toStrongRef().data(),
+                QCOMPARE(renderViewBuilderJob->dependencies().front().toStrongRef().data(),
                          renderViewBuilder.syncRenderViewPreCommandUpdateJob().data());
             }
 
             // Step 6
             QCOMPARE(renderViewBuilder.syncRenderViewPostCommandUpdateJob()->dependencies().size(), renderViewBuilder.renderViewCommandUpdaterJobs().size());
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewCommandUpdaterJobs()) {
-                QVERIFY(renderViewBuilder.syncRenderViewPostCommandUpdateJob()->dependencies().contains(renderViewBuilderJob));
+                QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPostCommandUpdateJob()->dependencies(), renderViewBuilderJob));
             }
         }
         {
@@ -379,62 +387,62 @@ private Q_SLOTS:
 
             // Step 2
             QCOMPARE(renderViewBuilder.syncRenderViewPostInitializationJob()->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilder.syncRenderViewPostInitializationJob()->dependencies().constFirst().toStrongRef().data(),
+            QCOMPARE(renderViewBuilder.syncRenderViewPostInitializationJob()->dependencies().front().toStrongRef().data(),
                      renderViewBuilder.renderViewJob().data());
 
             // Step 3
             QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->dependencies().size(), 3);
-            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(updateEntityLayerJob));
-            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(updateTreeEnabledJob));
+            QVERIFY(containsDependency(renderViewBuilder.filterEntityByLayerJob()->dependencies(), updateEntityLayerJob));
+            QVERIFY(containsDependency(renderViewBuilder.filterEntityByLayerJob()->dependencies(), renderViewBuilder.syncRenderViewPostInitializationJob()));
+            QVERIFY(containsDependency(renderViewBuilder.filterEntityByLayerJob()->dependencies(), updateTreeEnabledJob));
 
             QCOMPARE(renderViewBuilder.syncFilterEntityByLayerJob()->dependencies().size(), 1);
-            QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob()->dependencies().contains(renderViewBuilder.filterEntityByLayerJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncFilterEntityByLayerJob()->dependencies(), renderViewBuilder.filterEntityByLayerJob()));
 
             QCOMPARE(renderViewBuilder.filterProximityJob()->dependencies().size(), 2);
-            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.filterProximityJob()->dependencies().contains(expandBVJob));
+            QVERIFY(containsDependency(renderViewBuilder.filterProximityJob()->dependencies(), renderViewBuilder.syncRenderViewPostInitializationJob()));
+            QVERIFY(containsDependency(renderViewBuilder.filterProximityJob()->dependencies(), expandBVJob));
 
             QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
-            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().constFirst().toStrongRef().data(),
+            QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().front().toStrongRef().data(),
                      renderViewBuilder.syncRenderViewPostInitializationJob().data());
 
             QCOMPARE(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().size(), 3);
-            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(wordTransformJob));
-            QVERIFY(renderViewBuilder.syncPreFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncPreFrustumCullingJob()->dependencies(), renderViewBuilder.syncRenderViewPostInitializationJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncPreFrustumCullingJob()->dependencies(), wordTransformJob));
+            QVERIFY(containsDependency(renderViewBuilder.syncPreFrustumCullingJob()->dependencies(), testAspect.renderer()->updateShaderDataTransformJob()));
 
             for (const auto &materialGatherer : renderViewBuilder.materialGathererJobs()) {
                 QCOMPARE(materialGatherer->dependencies().size(), 3);
-                QVERIFY(materialGatherer->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-                QVERIFY(materialGatherer->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
-                QVERIFY(materialGatherer->dependencies().contains(testAspect.renderer()->filterCompatibleTechniqueJob()));
+                QVERIFY(containsDependency(materialGatherer->dependencies(), renderViewBuilder.syncRenderViewPostInitializationJob()));
+                QVERIFY(containsDependency(materialGatherer->dependencies(), testAspect.renderer()->introspectShadersJob()));
+                QVERIFY(containsDependency(materialGatherer->dependencies(), testAspect.renderer()->filterCompatibleTechniqueJob()));
             }
 
             // Step 4
             QCOMPARE(renderViewBuilder.frustumCullingJob()->dependencies().size(), 2);
-            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(renderViewBuilder.syncPreFrustumCullingJob()));
-            QVERIFY(renderViewBuilder.frustumCullingJob()->dependencies().contains(expandBVJob));
+            QVERIFY(containsDependency(renderViewBuilder.frustumCullingJob()->dependencies(), renderViewBuilder.syncPreFrustumCullingJob()));
+            QVERIFY(containsDependency(renderViewBuilder.frustumCullingJob()->dependencies(), expandBVJob));
 
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.syncRenderViewPostInitializationJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.syncFilterEntityByLayerJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.frustumCullingJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(renderViewBuilder.filterProximityJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->introspectShadersJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->bufferGathererJob()));
-            QVERIFY(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies().contains(testAspect.renderer()->textureGathererJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), renderViewBuilder.syncRenderViewPostInitializationJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), renderViewBuilder.syncFilterEntityByLayerJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), renderViewBuilder.frustumCullingJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), renderViewBuilder.filterProximityJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), testAspect.renderer()->introspectShadersJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), testAspect.renderer()->bufferGathererJob()));
+            QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPreCommandUpdateJob()->dependencies(), testAspect.renderer()->textureGathererJob()));
 
             // Step 5
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewCommandUpdaterJobs()) {
                 QCOMPARE(renderViewBuilderJob->dependencies().size(), 1);
-                QCOMPARE(renderViewBuilderJob->dependencies().constFirst().toStrongRef().data(),
+                QCOMPARE(renderViewBuilderJob->dependencies().front().toStrongRef().data(),
                          renderViewBuilder.syncRenderViewPreCommandUpdateJob().data());
             }
 
             // Step 6
             QCOMPARE(renderViewBuilder.syncRenderViewPostCommandUpdateJob()->dependencies().size(), renderViewBuilder.renderViewCommandUpdaterJobs().size());
             for (const auto &renderViewBuilderJob : renderViewBuilder.renderViewCommandUpdaterJobs()) {
-                QVERIFY(renderViewBuilder.syncRenderViewPostCommandUpdateJob()->dependencies().contains(renderViewBuilderJob));
+                QVERIFY(containsDependency(renderViewBuilder.syncRenderViewPostCommandUpdateJob()->dependencies(), renderViewBuilderJob));
             }
         }
     }

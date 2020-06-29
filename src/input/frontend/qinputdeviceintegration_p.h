@@ -90,7 +90,7 @@ protected:
 public:
     void initialize(Qt3DInput::QInputAspect *aspect);
 
-    virtual QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) = 0;
+    virtual std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) = 0;
     virtual QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) = 0;
     virtual QVector<Qt3DCore::QNodeId> physicalDevices() const = 0;
     virtual QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const = 0;

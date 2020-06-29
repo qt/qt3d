@@ -1815,23 +1815,20 @@ bool Renderer::processKeyEvent(QObject *object, QKeyEvent *event)
 }
 
 // Jobs we may have to run even if no rendering will happen
-QVector<QAspectJobPtr> Renderer::preRenderingJobs()
+std::vector<QAspectJobPtr> Renderer::preRenderingJobs()
 {
-    QVector<QAspectJobPtr> jobs;
-
     if (m_sendBufferCaptureJob->hasRequests())
-        jobs.push_back(m_sendBufferCaptureJob);
-
-    return jobs;
+        return {m_sendBufferCaptureJob};
+    return {};
 }
 
 // Waits to be told to create jobs for the next frame
 // Called by QRenderAspect jobsToExecute context of QAspectThread
 // Returns all the jobs (and with proper dependency chain) required
 // for the rendering of the scene
-QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
+std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
-    QVector<QAspectJobPtr> renderBinJobs;
+    std::vector<QAspectJobPtr> renderBinJobs;
 
     // Remove previous dependencies
     m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
@@ -1936,7 +1933,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             }
 
             builder.prepareJobs();
-            renderBinJobs.append(builder.buildJobHierachy());
+            const std::vector<QAspectJobPtr> builderJobs = builder.buildJobHierachy();
+            renderBinJobs.insert(renderBinJobs.end(),
+                                 std::make_move_iterator(builderJobs.begin()),
+                                 std::make_move_iterator(builderJobs.end()));
         }
 
         // Set target number of RenderViews

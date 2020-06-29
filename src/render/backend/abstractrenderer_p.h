@@ -160,8 +160,8 @@ public:
     virtual bool processMouseEvent(QObject *object, QMouseEvent *event) = 0;
     virtual bool processKeyEvent(QObject *object, QKeyEvent *event) = 0;
 
-    virtual QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() = 0;
-    virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
+    virtual std::vector<Qt3DCore::QAspectJobPtr> preRenderingJobs() = 0;
+    virtual std::vector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
 
     virtual void setSceneRoot(Entity *root) = 0;
 

@@ -112,7 +112,7 @@ QLogicAspect::~QLogicAspect()
 }
 
 /*! \internal */
-QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
+std::vector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
 {
     Q_D(QLogicAspect);
     const qint64 deltaTime = time - d->m_time;
@@ -121,11 +121,10 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     d->m_time = time;
 
     // Create jobs that will get executed by the threadpool
-    QVector<QAspectJobPtr> jobs;
     if (d->m_manager->hasFrameActions())
-        jobs.append(d->m_callbackJob);
+        return {d->m_callbackJob};
 
-    return jobs;
+    return {};
 }
 
 /*! \internal */

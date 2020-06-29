@@ -72,13 +72,13 @@ void SceneManager::addSceneData(const QUrl &source,
 
     // We cannot run two jobs that use the same scene loader plugin
     // in two different threads at the same time
-    if (!m_pendingJobs.isEmpty())
-        newJob->addDependency(m_pendingJobs.last());
+    if (!m_pendingJobs.empty())
+        newJob->addDependency(m_pendingJobs.back());
 
     m_pendingJobs.push_back(newJob);
 }
 
-QVector<LoadSceneJobPtr> SceneManager::takePendingSceneLoaderJobs()
+std::vector<LoadSceneJobPtr> &&SceneManager::takePendingSceneLoaderJobs()
 {
     // Explicitly use std::move to clear the m_pendingJobs vector
     return std::move(m_pendingJobs);
@@ -89,7 +89,7 @@ void SceneManager::startSceneDownload(const QUrl &source, Qt3DCore::QNodeId scen
     if (!m_service)
         return;
     SceneDownloaderPtr request = SceneDownloaderPtr::create(source, sceneUuid, this);
-    m_pendingDownloads << request;
+    m_pendingDownloads.push_back(request);
     m_service->submitRequest(request);
 }
 

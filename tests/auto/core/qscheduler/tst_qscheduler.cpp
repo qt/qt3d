@@ -129,7 +129,7 @@ public:
 
 private:
     // QAbstractAspect interface
-    QVector<QAspectJobPtr> jobsToExecute(qint64)
+    std::vector<QAspectJobPtr> jobsToExecute(qint64)
     {
         return { m_first, m_second };
     }

@@ -173,14 +173,14 @@ void Handler::cleanupHandleList(QVector<HBlendedClipAnimator> *animators)
     }
 }
 
-QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
+std::vector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
 {
     // Store the simulation time so we can mark the start time of
     // animators which will allow us to calculate the local time of
     // animation clips.
     m_simulationTime = time;
 
-    QVector<Qt3DCore::QAspectJobPtr> jobs;
+    std::vector<Qt3DCore::QAspectJobPtr> jobs;
 
     QMutexLocker lock(&m_mutex);
 
