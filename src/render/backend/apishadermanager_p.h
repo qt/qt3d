@@ -76,10 +76,19 @@ public:
     {
     }
 
-    QVector<APIShader *> takeActiveResources() const
+    std::vector<APIShader *> takeActiveResources() const
     {
         QReadLocker lock(&m_readWriteLock);
-        return m_apiShaders.keys().toVector() + m_abandonedShaders;
+
+        std::vector<APIShader *> keysV;
+        const QVector<APIShader *> tmp = m_apiShaders.keys();
+
+        std::copy(tmp.cbegin(), tmp.cend(), std::back_insert_iterator(keysV));
+        keysV.insert(keysV.end(),
+                     m_abandonedShaders.begin(),
+                     m_abandonedShaders.end());
+
+        return keysV;
     }
 
     APIShader *lookupResource(Qt3DCore::QNodeId shaderId)
@@ -136,8 +145,12 @@ public:
     void adopt(APIShader *apiShader, const Shader *shader)
     {
         QWriteLocker lock(&m_readWriteLock);
-        if (!m_apiShaders[apiShader].contains(shader->peerId())) {
-            m_apiShaders[apiShader].push_back(shader->peerId());
+        auto &shaderIds = m_apiShaders[apiShader];
+
+        if (std::find(shaderIds.begin(),
+                      shaderIds.end(),
+                      shader->peerId()) == shaderIds.end()) {
+            shaderIds.push_back(shader->peerId());
             m_nodeIdToAPIShader.insert(shader->peerId(), apiShader);
         }
     }
@@ -148,8 +161,11 @@ public:
         APIShader *storedApiShader = m_nodeIdToAPIShader.take(shader->peerId());
         Q_ASSERT(apiShader != nullptr && apiShader == storedApiShader);
 
-        QVector<Qt3DCore::QNodeId> &referencedShaderNodes = m_apiShaders[apiShader];
-        referencedShaderNodes.removeAll(shader->peerId());
+        std::vector<Qt3DCore::QNodeId> &referencedShaderNodes = m_apiShaders[apiShader];
+        referencedShaderNodes.erase(std::remove(referencedShaderNodes.begin(),
+                                                referencedShaderNodes.end(),
+                                                shader->peerId()),
+                                    referencedShaderNodes.end());
 
         if (referencedShaderNodes.empty()) {
             m_abandonedShaders.push_back(apiShader);
@@ -157,19 +173,19 @@ public:
         }
     }
 
-    QVector<APIShader *> takeAbandonned()
+    std::vector<APIShader *> takeAbandonned()
     {
         QWriteLocker lock(&m_readWriteLock);
         return std::move(m_abandonedShaders);
     }
 
-    QVector<APIShader *> takeUpdated()
+    std::vector<APIShader *> takeUpdated()
     {
         QWriteLocker lock(&m_readWriteLock);
         return std::move(m_updatedShaders);
     }
 
-    QVector<Qt3DCore::QNodeId> shaderIdsForProgram(APIShader *glShader) const
+    std::vector<Qt3DCore::QNodeId> shaderIdsForProgram(APIShader *glShader) const
     {
         QReadLocker lock(&m_readWriteLock);
         return m_apiShaders.value(glShader);
@@ -207,10 +223,10 @@ private:
 
 
     QHash<Qt3DCore::QNodeId, APIShader *> m_nodeIdToAPIShader;
-    QHash<APIShader *, QVector<Qt3DCore::QNodeId>> m_apiShaders;
+    QHash<APIShader *, std::vector<Qt3DCore::QNodeId>> m_apiShaders;
 
-    QVector<APIShader *> m_abandonedShaders;
-    QVector<APIShader *> m_updatedShaders;
+    std::vector<APIShader *> m_abandonedShaders;
+    std::vector<APIShader *> m_updatedShaders;
 
     mutable QReadWriteLock m_readWriteLock;
 };

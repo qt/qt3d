@@ -306,7 +306,7 @@ void GraphicsContext::loadShader(Shader *shaderNode,
     // We create or adopt an already created glShader
     glShader = glShaderManager->createOrAdoptExisting(shaderNode);
 
-    const QVector<Qt3DCore::QNodeId> sharedShaderIds = glShaderManager->shaderIdsForProgram(glShader);
+    const std::vector<Qt3DCore::QNodeId> sharedShaderIds = glShaderManager->shaderIdsForProgram(glShader);
     if (sharedShaderIds.size() == 1) {
         // The Shader could already be loaded if we retrieved one
         // that had been marked for destruction

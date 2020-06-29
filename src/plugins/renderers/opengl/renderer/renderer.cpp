@@ -601,7 +601,7 @@ void Renderer::releaseGraphicsResources()
         }
 
         // Do the same thing with shaders
-        const QVector<GLShader *> shaders = m_glResourceManagers->glShaderManager()->takeActiveResources();
+        const std::vector<GLShader *> shaders = m_glResourceManagers->glShaderManager()->takeActiveResources();
         qDeleteAll(shaders);
 
         // Do the same thing with VAOs
