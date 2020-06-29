@@ -281,7 +281,7 @@ bool PickBoundingVolumeJob::runHelper()
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
-    const QVector<PickingUtils::ViewportCameraAreaDetails> vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
+    const std::vector<PickingUtils::ViewportCameraAreaDetails> &vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
 
     // If we have no viewport / camera or area, return early
     if (vcaDetails.empty())
@@ -334,7 +334,10 @@ bool PickBoundingVolumeJob::runHelper()
                     gathererFunctor.m_manager = m_manager;
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
+                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
+                    sphereHits.insert(sphereHits.end(),
+                                      std::make_move_iterator(hits.begin()),
+                                      std::make_move_iterator(hits.end()));
                 }
                 if (edgePickingRequested) {
                     PickingUtils::LineCollisionGathererFunctor gathererFunctor;
@@ -342,7 +345,10 @@ bool PickBoundingVolumeJob::runHelper()
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
                     gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
+                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
+                    sphereHits.insert(sphereHits.end(),
+                                      std::make_move_iterator(hits.begin()),
+                                      std::make_move_iterator(hits.end()));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
                 if (pointPickingRequested) {
@@ -351,11 +357,17 @@ bool PickBoundingVolumeJob::runHelper()
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
                     gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
+                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
+                    sphereHits.insert(sphereHits.end(),
+                                      std::make_move_iterator(hits.begin()),
+                                      std::make_move_iterator(hits.end()));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
                 if (!primitivePickingRequested) {
-                    sphereHits << entityPicker.hits();
+                    const PickingUtils::HitList &hits = entityPicker.hits();
+                    sphereHits.insert(sphereHits.end(),
+                                      std::make_move_iterator(hits.begin()),
+                                      std::make_move_iterator(hits.end()));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                     if (m_renderSettings->pickResultMode() != QPickingSettings::AllPicks)
                         sphereHits = { sphereHits.front() };
@@ -388,7 +400,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
     // If we have hits
-    if (!sphereHits.isEmpty()) {
+    if (!sphereHits.empty()) {
         // Note: how can we control that we want the first/last/all elements along the ray to be picked
 
         // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having

@@ -319,11 +319,11 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::PickingUtils::ViewportCameraAreaGatherer gatherer;
-        QVector<Qt3DRender::Render::PickingUtils::ViewportCameraAreaDetails> results = gatherer.gather(test->frameGraphRoot());
+        const std::vector<Qt3DRender::Render::PickingUtils::ViewportCameraAreaDetails> &results = gatherer.gather(test->frameGraphRoot());
 
         // THEN
         QCOMPARE(results.size(), 1);
-        auto vca = results.first();
+        auto vca = results.front();
         QCOMPARE(vca.area, QSize(600, 600));
         QCOMPARE(vca.cameraId, camera->id());
         QCOMPARE(vca.viewport, QRectF(0., 0., 1., 1.));
@@ -1823,7 +1823,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::PickingUtils::ViewportCameraAreaGatherer gatherer;
-        QVector<Qt3DRender::Render::PickingUtils::ViewportCameraAreaDetails> results = gatherer.gather(test->frameGraphRoot());
+        std::vector<Qt3DRender::Render::PickingUtils::ViewportCameraAreaDetails> results = gatherer.gather(test->frameGraphRoot());
 
         // THEN
         QCOMPARE(results.size(), 0);
@@ -1843,7 +1843,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(results.size(), 1);
-        auto vca = results.first();
+        auto vca = results.front();
         QCOMPARE(vca.area, QSize(600, 600));
         QCOMPARE(vca.cameraId, camera->id());
         QCOMPARE(vca.viewport, QRectF(0., 0., 1., 1.));

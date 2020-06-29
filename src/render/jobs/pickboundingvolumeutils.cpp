@@ -114,15 +114,15 @@ ViewportCameraAreaDetails ViewportCameraAreaGatherer::gatherUpViewportCameraArea
     return vca;
 }
 
-QVector<ViewportCameraAreaDetails> ViewportCameraAreaGatherer::gather(FrameGraphNode *root)
+std::vector<ViewportCameraAreaDetails> ViewportCameraAreaGatherer::gather(FrameGraphNode *root)
 {
     // Retrieve all leaves
     visit(root);
-    QVector<ViewportCameraAreaDetails> vcaTriplets;
-    vcaTriplets.reserve(m_leaves.count());
+    std::vector<ViewportCameraAreaDetails> vcaTriplets;
+    vcaTriplets.reserve(m_leaves.size());
 
     // Find all viewport/camera pairs by traversing from leaf to root
-    for (Render::FrameGraphNode *leaf : qAsConst(m_leaves)) {
+    for (Render::FrameGraphNode *leaf : m_leaves) {
         ViewportCameraAreaDetails vcaDetails = gatherUpViewportCameraAreas(leaf);
         if (!m_targetCamera.isNull() && vcaDetails.cameraId != m_targetCamera)
             continue;
@@ -132,7 +132,7 @@ QVector<ViewportCameraAreaDetails> ViewportCameraAreaGatherer::gather(FrameGraph
     return vcaTriplets;
 }
 
-bool ViewportCameraAreaGatherer::isUnique(const QVector<ViewportCameraAreaDetails> &vcaList,
+bool ViewportCameraAreaGatherer::isUnique(const std::vector<ViewportCameraAreaDetails> &vcaList,
                                           const ViewportCameraAreaDetails &vca) const
 {
     for (const ViewportCameraAreaDetails &listItem : vcaList) {
@@ -390,7 +390,7 @@ HitList reduceToFirstHit(HitList &result, const HitList &intermediate)
         float closest = result.front().m_distance;
         for (const auto &v : intermediate) {
             if (v.m_distance < closest) {
-                result.push_front(v);
+                result.insert(result.begin(), v);
                 closest = v.m_distance;
             }
         }
@@ -422,12 +422,12 @@ struct HighestPriorityHitReducer
             for (const auto &v : intermediate) {
                 const int newEntryPriority = entityToPriorityTable.value(v.m_entityId, 0);
                 if (newEntryPriority > currentPriority) {
-                    result.push_front(v);
+                    result.insert(result.begin(), v);
                     currentPriority = newEntryPriority;
                     closest = v.m_distance;
                 } else if (newEntryPriority == currentPriority) {
                     if (v.m_distance < closest) {
-                        result.push_front(v);
+                        result.insert(result.begin(), v);
                         closest = v.m_distance;
                         currentPriority = newEntryPriority;
                     }
@@ -444,7 +444,9 @@ struct HighestPriorityHitReducer
 HitList reduceToAllHits(HitList &results, const HitList &intermediate)
 {
     if (!intermediate.empty())
-        results << intermediate;
+        results.insert(results.end(),
+                       std::make_move_iterator(intermediate.begin()),
+                       std::make_move_iterator(intermediate.end()));
     return results;
 }
 
@@ -515,7 +517,7 @@ struct MapFunctorHolder
 
 } // anonymous
 
-HitList EntityCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities,
+HitList EntityCollisionGathererFunctor::computeHits(const std::vector<Entity *> &entities,
                                                     Qt3DRender::QPickingSettings::PickResultMode mode)
 {
     std::function<HitList (HitList &, const HitList &)> reducerOp;
@@ -555,7 +557,7 @@ HitList EntityCollisionGathererFunctor::pick(const Entity *entity) const
     return result;
 }
 
-HitList TriangleCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities,
+HitList TriangleCollisionGathererFunctor::computeHits(const std::vector<Entity *> &entities,
                                                       Qt3DRender::QPickingSettings::PickResultMode mode)
 {
     std::function<HitList (HitList &, const HitList &)> reducerOp;
@@ -613,7 +615,7 @@ HitList TriangleCollisionGathererFunctor::pick(const Entity *entity) const
     return result;
 }
 
-HitList LineCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities,
+HitList LineCollisionGathererFunctor::computeHits(const std::vector<Entity *> &entities,
                                                   Qt3DRender::QPickingSettings::PickResultMode mode)
 {
     std::function<HitList (HitList &, const HitList &)> reducerOp;
@@ -670,7 +672,7 @@ HitList LineCollisionGathererFunctor::pick(const Entity *entity) const
     return result;
 }
 
-HitList PointCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities,
+HitList PointCollisionGathererFunctor::computeHits(const std::vector<Entity *> &entities,
                                                    Qt3DRender::QPickingSettings::PickResultMode mode)
 {
     std::function<HitList (HitList &, const HitList &)> reducerOp;

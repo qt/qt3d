@@ -76,7 +76,7 @@ namespace Render {
 class PickBoundingVolumeJobPrivate;
 
 namespace PickingUtils {
-typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
+typedef std::vector<RayCasting::QCollisionQueryResult::Hit> HitList;
 }
 
 class Q_3DRENDERSHARED_PRIVATE_EXPORT PickBoundingVolumeJob : public AbstractPickingJob

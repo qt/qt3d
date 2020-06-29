@@ -66,7 +66,7 @@ namespace Qt3DRender {
 namespace Render {
 
 namespace PickingUtils {
-typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
+typedef std::vector<RayCasting::QCollisionQueryResult::Hit> HitList;
 }
 
 class RayCastingJobPrivate;

@@ -122,8 +122,8 @@ public:
     }
 
     QQueryHandle handle() const;
-    QVector<Hit> hits() const;
-    QVector<Qt3DCore::QNodeId> entitiesHit() const;
+    const std::vector<Hit> &hits() const;
+    std::vector<Qt3DCore::QNodeId> entitiesHit() const;
 
 private:
     friend class QAbstractCollisionQueryService;
@@ -152,7 +152,7 @@ public:
                       const Vector3D& uvw);
 
     QQueryHandle m_handle;
-    QVector<QCollisionQueryResult::Hit> m_hits;
+    std::vector<QCollisionQueryResult::Hit> m_hits;
 };
 
 inline bool operator==(const QCollisionQueryResult::Hit& left, const QCollisionQueryResult::Hit& right)

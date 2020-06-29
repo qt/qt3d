@@ -152,8 +152,8 @@ private:
             return;
 
         PickingUtils::ViewportCameraAreaGatherer vcaGatherer(lod->camera());
-        const QVector<PickingUtils::ViewportCameraAreaDetails> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
-        if (vcaTriplets.isEmpty())
+        const std::vector<PickingUtils::ViewportCameraAreaDetails> &vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+        if (vcaTriplets.empty())
             return;
 
         const PickingUtils::ViewportCameraAreaDetails &vca = vcaTriplets.front();

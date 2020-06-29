@@ -174,25 +174,25 @@ bool RayCastingJob::runHelper()
     const EntityCasterGatherer::EntityCasterList &entities = gatherer.m_result;
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
-    const QVector<PickingUtils::ViewportCameraAreaDetails> vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
+    const std::vector<PickingUtils::ViewportCameraAreaDetails> &vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
 
     const float sceneRayLength = m_node->worldBoundingVolumeWithChildren()->radius() * 3.f;
 
     for (const EntityCasterGatherer::EntityCasterList::value_type &pair: entities) {
-        QVector<QRay3D> rays;
+        std::vector<QRay3D> rays;
 
         switch (pair.second->type()) {
         case QAbstractRayCasterPrivate::WorldSpaceRayCaster:
-            rays << QRay3D(Vector3D(pair.second->origin()),
-                           Vector3D(pair.second->direction()),
-                           pair.second->length() > 0.f ? pair.second->length() : sceneRayLength);
+            rays.emplace_back(Vector3D(pair.second->origin()),
+                              Vector3D(pair.second->direction()),
+                              pair.second->length() > 0.f ? pair.second->length() : sceneRayLength);
             rays.back().transform(*pair.first->worldTransform());
             break;
         case QAbstractRayCasterPrivate::ScreenScapeRayCaster:
             for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails) {
-                auto ray = rayForViewportAndCamera(vca, nullptr, pair.second->position());
+                const auto ray = rayForViewportAndCamera(vca, nullptr, pair.second->position());
                 if (ray.isValid())
-                    rays << ray;
+                    rays.push_back(ray);
             }
             break;
         default:
@@ -211,7 +211,10 @@ bool RayCastingJob::runHelper()
                     gathererFunctor.m_manager = m_manager;
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_objectPickersRequired = false;
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    sphereHits.insert(sphereHits.end(),
+                                      std::make_move_iterator(hits.begin()),
+                                      std::make_move_iterator(hits.end()));
                 }
                 if (edgePickingRequested) {
                     PickingUtils::LineCollisionGathererFunctor gathererFunctor;
@@ -219,7 +222,10 @@ bool RayCastingJob::runHelper()
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
                     gathererFunctor.m_objectPickersRequired = false;
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    sphereHits.insert(sphereHits.end(),
+                                      std::make_move_iterator(hits.begin()),
+                                      std::make_move_iterator(hits.end()));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
                 if (pointPickingRequested) {
@@ -228,11 +234,17 @@ bool RayCastingJob::runHelper()
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
                     gathererFunctor.m_objectPickersRequired = false;
-                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    sphereHits.insert(sphereHits.end(),
+                                      std::make_move_iterator(hits.begin()),
+                                      std::make_move_iterator(hits.end()));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
                 if (!primitivePickingRequested) {
-                    sphereHits << entityPicker.hits();
+                    const PickingUtils::HitList &hits = entityPicker.hits();
+                    sphereHits.insert(sphereHits.end(),
+                                      std::make_move_iterator(hits.begin()),
+                                      std::make_move_iterator(hits.end()));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
             }
