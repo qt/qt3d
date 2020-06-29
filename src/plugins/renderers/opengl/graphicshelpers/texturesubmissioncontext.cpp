@@ -101,7 +101,7 @@ void TextureSubmissionContext::initialize(GraphicsContext *context)
 void TextureSubmissionContext::endDrawing()
 {
     decayTextureScores();
-    for (int i = 0; i < m_activeTextures.size(); ++i)
+    for (size_t i = 0; i < m_activeTextures.size(); ++i)
         if (m_activeTextures[i].texture)
             TextureExtRendererLocker::unlock(m_activeTextures[i].texture);
 }
@@ -156,7 +156,7 @@ int TextureSubmissionContext::activateTexture(TextureSubmissionContext::TextureS
 
 void TextureSubmissionContext::deactivateTexturesWithScope(TextureSubmissionContext::TextureScope ts)
 {
-    for (int u=0; u<m_activeTextures.size(); ++u) {
+    for (size_t u=0; u<m_activeTextures.size(); ++u) {
         if (!m_activeTextures[u].pinned)
             continue; // inactive, ignore
 
@@ -169,7 +169,7 @@ void TextureSubmissionContext::deactivateTexturesWithScope(TextureSubmissionCont
 
 void TextureSubmissionContext::deactivateTexture(GLTexture* tex)
 {
-    for (int u=0; u<m_activeTextures.size(); ++u) {
+    for (size_t u=0; u<m_activeTextures.size(); ++u) {
         if (m_activeTextures[u].texture == tex) {
             Q_ASSERT(m_activeTextures[u].pinned);
             m_activeTextures[u].pinned = false;
@@ -191,12 +191,12 @@ int TextureSubmissionContext::assignUnitForTexture(GLTexture *tex)
     int lowestScoredUnit = -1;
     int lowestScore = 0xfffffff;
 
-    for (int u=0; u<m_activeTextures.size(); ++u) {
+    for (size_t u=0; u<m_activeTextures.size(); ++u) {
         if (m_activeTextures[u].texture == tex)
             return u;
     }
 
-    for (int u=0; u<m_activeTextures.size(); ++u) {
+    for (size_t u=0; u<m_activeTextures.size(); ++u) {
         // No texture is currently active on the texture unit
         // we save the texture unit with the texture that has been on there
         // the longest time while not being used
@@ -217,7 +217,7 @@ int TextureSubmissionContext::assignUnitForTexture(GLTexture *tex)
 
 void TextureSubmissionContext::decayTextureScores()
 {
-    for (int u = 0; u < m_activeTextures.size(); u++)
+    for (size_t u = 0; u < m_activeTextures.size(); u++)
         m_activeTextures[u].score = qMax(m_activeTextures[u].score - 1, 0);
 }
 

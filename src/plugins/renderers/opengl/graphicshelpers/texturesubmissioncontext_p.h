@@ -53,7 +53,7 @@
 
 
 #include <qglobal.h>
-#include <QVector>
+#include <vector>
 
 QT_BEGIN_NAMESPACE
 
@@ -96,7 +96,7 @@ private:
         TextureScope scope = TextureScopeMaterial;
         bool pinned = false;
     };
-    QVector<ActiveTexture> m_activeTextures;
+    std::vector<ActiveTexture> m_activeTextures;
 };
 
 } // namespace OpenGL
