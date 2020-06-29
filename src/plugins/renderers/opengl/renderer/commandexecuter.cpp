@@ -232,7 +232,7 @@ CommandExecuter::CommandExecuter(Render::OpenGL::Renderer *renderer)
 }
 
 // Render thread
-void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::OpenGL::RenderView *> &views)
+void CommandExecuter::performAsynchronousCommandExecution(const std::vector<Render::OpenGL::RenderView *> &views)
 {
     QMutexLocker lock(&m_pendingCommandsMutex);
     const QVector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands = std::move(m_pendingCommands);

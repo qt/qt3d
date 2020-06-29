@@ -111,7 +111,7 @@ void tst_RenderQueue::checkOrder()
     }
 
     // THEN
-    QVector<Qt3DRender::Render::OpenGL::RenderView *> frame = renderQueue.nextFrameQueue();
+    const std::vector<Qt3DRender::Render::OpenGL::RenderView *> &frame = renderQueue.nextFrameQueue();
     for (int i = 0; i < 7; ++i) {
         QVERIFY(frame[i] == renderViews[i]);
     }

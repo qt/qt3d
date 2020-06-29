@@ -87,7 +87,7 @@ public:
     ~ImGuiRenderer();
 
     void processEvent(QEvent *event);
-    void renderDebugOverlay(const QVector<Render::OpenGL::RenderView *> &renderViews, const Render::OpenGL::RenderView *renderView, int jobsInLastFrame);
+    void renderDebugOverlay(const std::vector<Render::OpenGL::RenderView *> &renderViews, const Render::OpenGL::RenderView *renderView, int jobsInLastFrame);
 
     void setCapabilities(const QString &capabilities);
 
@@ -98,7 +98,7 @@ private:
     void onWheel(QWheelEvent *event);
     void onKeyPressRelease(QKeyEvent *event);
     void showGLInfo();
-    void showRenderDetails(const QVector<Render::OpenGL::RenderView *> &renderViews);
+    void showRenderDetails(const std::vector<Render::OpenGL::RenderView *> &renderViews);
 
     bool createFontsTexture();
     bool createDeviceObjects();

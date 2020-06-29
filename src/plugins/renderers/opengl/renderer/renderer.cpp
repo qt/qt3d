@@ -678,133 +678,83 @@ RenderSettings *Renderer::settings() const
     return m_settings;
 }
 
-void Renderer::render()
-{
-    // Traversing the framegraph tree from root to lead node
-    // Allows us to define the rendering set up
-    // Camera, RenderTarget ...
-
-    // Utimately the renderer should be a framework
-    // For the processing of the list of renderviews
-
-    // Matrice update, bounding volumes computation ...
-    // Should be jobs
-
-    // namespace Qt3DCore has 2 distincts node trees
-    // One scene description
-    // One framegraph description
-
-    while (m_running.loadRelaxed() > 0) {
-        doRender();
-        // TO DO: Restore windows exposed detection
-        // Probably needs to happens some place else though
-    }
-}
-
 // Either called by render if Qt3D is in charge of rendering (in the mainthread)
-// or by QRenderAspectPrivate::renderSynchronous (for Scene3D, potentially from a RenderThread)
-void Renderer::doRender(bool swapBuffers)
+// or by QRenderAspectPrivate::render (for Scene3D, potentially from a RenderThread)
+// This will wait until renderQueue is ready or shutdown was requested
+void Renderer::render(bool swapBuffers)
 {
     Renderer::ViewSubmissionResultData submissionData;
-    bool hasCleanedQueueAndProceeded = false;
     bool preprocessingComplete = false;
     bool beganDrawing = false;
 
     // Blocking until RenderQueue is full
     const bool canSubmit = waitUntilReadyToSubmit();
-    m_shouldSwapBuffers = swapBuffers;
 
-    // Lock the mutex to protect access to the renderQueue while we look for its state
-    QMutexLocker locker(m_renderQueue->mutex());
-    const bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
+    // If it returns false -> we are shutting down
+    if (!canSubmit)
+        return;
+
+    m_shouldSwapBuffers = swapBuffers;
+    const std::vector<Render::OpenGL::RenderView *> &renderViews = m_renderQueue->nextFrameQueue();
     const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
 
-    // When using synchronous rendering (QtQuick)
-    // We are not sure that the frame queue is actually complete
-    // Since a call to render may not be synched with the completions
-    // of the RenderViewJobs
-    // In such a case we return early, waiting for a next call with
-    // the frame queue complete at this point
-
     // RenderQueue is complete (but that means it may be of size 0)
-    if (canSubmit && (queueIsComplete && !queueIsEmpty)) {
-        const QVector<Render::OpenGL::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
+    if (!queueIsEmpty) {
         QTaskLogger submissionStatsPart1(m_services->systemInformation(),
                                          {JobTypes::FrameSubmissionPart1, 0},
                                          QTaskLogger::Submission);
         QTaskLogger submissionStatsPart2(m_services->systemInformation(),
                                          {JobTypes::FrameSubmissionPart2, 0},
                                          QTaskLogger::Submission);
-        if (canRender()) {
-            { // Scoped to destroy surfaceLock
-                QSurface *surface = nullptr;
-                for (const RenderView *rv: renderViews) {
-                    surface = rv->surface();
-                    if (surface)
-                        break;
-                }
-
-                SurfaceLocker surfaceLock(surface);
-                const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
-                if (surfaceIsValid) {
-                    // Reset state for each draw if we don't have complete control of the context
-                    if (!m_ownedContext)
-                        m_submissionContext->setCurrentStateSet(nullptr);
-                    beganDrawing = m_submissionContext->beginDrawing(surface);
-                    if (beganDrawing) {
-                        // 1) Execute commands for buffer uploads, texture updates, shader loading first
-                        updateGLResources();
-                        // 2) Update VAO and copy data into commands to allow concurrent submission
-                        prepareCommandsSubmission(renderViews);
-                        preprocessingComplete = true;
-
-                        // Purge shader which aren't used any longer
-                        static int callCount = 0;
-                        ++callCount;
-                        const int shaderPurgePeriod = 600;
-                        if (callCount % shaderPurgePeriod == 0)
-                            m_glResourceManagers->glShaderManager()->purge();
-                    }
-                }
+        { // Scoped to destroy surfaceLock
+            QSurface *surface = nullptr;
+            for (const RenderView *rv: renderViews) {
+                surface = rv->surface();
+                if (surface)
+                    break;
             }
 
-            m_renderQueue->reset();
-            hasCleanedQueueAndProceeded = true;
+            SurfaceLocker surfaceLock(surface);
+            const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
+            if (surfaceIsValid) {
+                // Reset state for each draw if we don't have complete control of the context
+                if (!m_ownedContext)
+                    m_submissionContext->setCurrentStateSet(nullptr);
+                beganDrawing = m_submissionContext->beginDrawing(surface);
+                if (beganDrawing) {
+                    // 1) Execute commands for buffer uploads, texture updates, shader loading first
+                    updateGLResources();
+                    // 2) Update VAO and copy data into commands to allow concurrent submission
+                    prepareCommandsSubmission(renderViews);
+                    preprocessingComplete = true;
 
-            // Only try to submit the RenderViews if the preprocessing was successful
-            // This part of the submission is happening in parallel to the RV building for the next frame
-            if (preprocessingComplete) {
-                submissionStatsPart1.end(submissionStatsPart2.restart());
-
-                // 3) Submit the render commands for frame n (making sure we never reference something that could be changing)
-                // Render using current device state and renderer configuration
-                submissionData = submitRenderViews(renderViews);
-
-                // Perform any required cleanup of the Graphics resources (Buffers deleted, Shader deleted...)
-                cleanGraphicsResources();
+                    // Purge shader which aren't used any longer
+                    static int callCount = 0;
+                    ++callCount;
+                    const int shaderPurgePeriod = 600;
+                    if (callCount % shaderPurgePeriod == 0)
+                        m_glResourceManagers->glShaderManager()->purge();
+                }
             }
+        }
+
+        // Only try to submit the RenderViews if the preprocessing was successful
+        if (preprocessingComplete) {
+            submissionStatsPart1.end(submissionStatsPart2.restart());
+
+            // 3) Submit the render commands for frame n (making sure we never reference something that could be changing)
+            // Render using current device state and renderer configuration
+            submissionData = submitRenderViews(renderViews);
+
+            // Perform any required cleanup of the Graphics resources (Buffers deleted, Shader deleted...)
+            cleanGraphicsResources();
         }
 
         // Execute the pending shell commands
         m_commandExecuter->performAsynchronousCommandExecution(renderViews);
 
-        // Delete all the RenderViews which will clear the allocators
-        // that were used for their allocation
-        qDeleteAll(renderViews);
-
         if (preprocessingComplete && activeProfiler())
             m_frameProfiler->writeResults();
-    }
-
-    // If hasCleanedQueueAndProceeded isn't true this implies that something went wrong
-    // with the rendering and/or the renderqueue is incomplete from some reason
-    // or alternatively it could be complete but empty (RenderQueue of size 0)
-
-    if (!hasCleanedQueueAndProceeded) {
-        // Reset the m_renderQueue so that we won't try to render
-        // with a queue used by a previous frame with corrupted content
-        // if the current queue was correctly submitted
-        m_renderQueue->reset();
     }
 
     // Perform the last swapBuffers calls
@@ -817,6 +767,10 @@ void Renderer::doRender(bool swapBuffers)
                 && m_shouldSwapBuffers;
         m_submissionContext->endDrawing(swapBuffers);
     }
+
+    // Reset RenderQueue and destroy the renderViews
+    m_renderQueue->reset();
+    qDeleteAll(renderViews);
 
     // Allow next frame to be built once we are done doing all rendering
     m_vsyncFrameAdvanceService->proceedToNextFrame();
@@ -841,14 +795,6 @@ void Renderer::enqueueRenderView(RenderView *renderView, int submitOrder)
             Q_ASSERT(m_submitRenderViewsSemaphore.available() == 0);
         m_submitRenderViewsSemaphore.release(1);
     }
-}
-
-bool Renderer::canRender() const
-{
-    // TO DO: Check if all surfaces have been destroyed...
-    // It may be better if the last window to be closed trigger a call to shutdown
-    // Rather than having checks for the surface everywhere
-    return true;
 }
 
 Profiling::FrameProfiler *Renderer::activeProfiler() const
@@ -903,7 +849,7 @@ QSurfaceFormat Renderer::format()
 }
 
 // When this function is called, we must not be processing the commands for frame n+1
-void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
+void Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews)
 {
     OpenGLVertexArrayObject *vao = nullptr;
     QHash<HVao, bool> updatedTable;
@@ -1472,13 +1418,13 @@ void Renderer::downloadGLBuffers()
 
 // Happens in RenderThread context when all RenderViewJobs are done
 // Returns the id of the last bound FBO
-Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<RenderView *> &renderViews)
+Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const std::vector<RenderView *> &renderViews)
 {
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
     timer.start();
 
-    const int renderViewsCount = renderViews.size();
+    const size_t renderViewsCount = renderViews.size();
     quint64 frameElapsed = queueElapsed;
     m_lastFrameCorrect.storeRelaxed(1);    // everything fine until now.....
 
@@ -1496,7 +1442,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     QSurface *lastUsedSurface = nullptr;
 
     bool imGuiOverlayShown = false;
-    for (int i = 0; i < renderViewsCount; ++i) {
+    for (size_t i = 0; i < renderViewsCount; ++i) {
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
         RenderView *renderView = renderViews.at(i);
@@ -1877,77 +1823,71 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     if (lightsDirty)
         renderBinJobs.push_back(m_lightGathererJob);
 
-    QMutexLocker lock(m_renderQueue->mutex());
-    if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
-        // Traverse the current framegraph. For each leaf node create a
-        // RenderView and set its configuration then create a job to
-        // populate the RenderView with a set of RenderCommands that get
-        // their details from the RenderNodes that are visible to the
-        // Camera selected by the framegraph configuration
-        if (frameGraphDirty) {
-            FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
-            m_frameGraphLeaves = visitor.traverse(frameGraphRoot());
-            // Remove leaf nodes that no longer exist from cache
-            const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
-            for (FrameGraphNode *leafNode : keys) {
-                if (std::find(m_frameGraphLeaves.begin(),
-                              m_frameGraphLeaves.end(),
-                              leafNode) == m_frameGraphLeaves.end())
-                    m_cache.leafNodeCache.remove(leafNode);
-            }
-
-            // Handle single shot subtree enablers
-            const auto subtreeEnablers = visitor.takeEnablersToDisable();
-            for (auto *node : subtreeEnablers)
-                m_updatedDisableSubtreeEnablers.push_back(node->peerId());
+    // Sync rendering is synchronous, queue should always be reset
+    // when this is called
+    Q_ASSERT(m_renderQueue->wasReset());
+    // Traverse the current framegraph. For each leaf node create a
+    // RenderView and set its configuration then create a job to
+    // populate the RenderView with a set of RenderCommands that get
+    // their details from the RenderNodes that are visible to the
+    // Camera selected by the framegraph configuration
+    if (frameGraphDirty) {
+        FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
+        m_frameGraphLeaves = visitor.traverse(frameGraphRoot());
+        // Remove leaf nodes that no longer exist from cache
+        const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
+        for (FrameGraphNode *leafNode : keys) {
+            if (std::find(m_frameGraphLeaves.begin(),
+                          m_frameGraphLeaves.end(),
+                          leafNode) == m_frameGraphLeaves.end())
+                m_cache.leafNodeCache.remove(leafNode);
         }
 
-        int idealThreadCount = QThreadPooler::maxThreadCount();
-
-        const size_t fgBranchCount = m_frameGraphLeaves.size();
-        if (fgBranchCount > 1) {
-            int workBranches = fgBranchCount;
-            for (auto leaf: m_frameGraphLeaves)
-                if (leaf->nodeType() == FrameGraphNode::NoDraw)
-                    --workBranches;
-
-            if (idealThreadCount > 4 && workBranches)
-                idealThreadCount = qMax(4, idealThreadCount / workBranches);
-        }
-
-        for (size_t i = 0; i < fgBranchCount; ++i) {
-            FrameGraphNode *leaf = m_frameGraphLeaves[i];
-            RenderViewBuilder builder(leaf, i, this);
-            builder.setOptimalJobCount(leaf->nodeType() == FrameGraphNode::NoDraw ? 1 : idealThreadCount);
-
-            // If we have a new RV (wasn't in the cache before, then it contains no cached data)
-            const bool isNewRV = !m_cache.leafNodeCache.contains(leaf);
-            builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt || isNewRV);
-            builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt || isNewRV);
-            builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty || isNewRV);
-            builder.setLightCacheNeedsToBeRebuilt(lightsDirty);
-
-            // Insert leaf into cache
-            if (isNewRV) {
-                m_cache.leafNodeCache[leaf] = {};
-            }
-
-            builder.prepareJobs();
-            const std::vector<QAspectJobPtr> builderJobs = builder.buildJobHierachy();
-            renderBinJobs.insert(renderBinJobs.end(),
-                                 std::make_move_iterator(builderJobs.begin()),
-                                 std::make_move_iterator(builderJobs.end()));
-        }
-
-        // Set target number of RenderViews
-        m_renderQueue->setTargetRenderViewCount(fgBranchCount);
-    } else {
-        // FilterLayerEntityJob is part of the RenderViewBuilder jobs and must be run later
-        // if none of those jobs are started this frame
-        notCleared |= AbstractRenderer::EntityEnabledDirty;
-        notCleared |= AbstractRenderer::LayersDirty;
-        notCleared |= AbstractRenderer::FrameGraphDirty;
+        // Handle single shot subtree enablers
+        const auto subtreeEnablers = visitor.takeEnablersToDisable();
+        for (auto *node : subtreeEnablers)
+            m_updatedDisableSubtreeEnablers.push_back(node->peerId());
     }
+
+    int idealThreadCount = QThreadPooler::maxThreadCount();
+
+    const size_t fgBranchCount = m_frameGraphLeaves.size();
+    if (fgBranchCount > 1) {
+        int workBranches = fgBranchCount;
+        for (auto leaf: m_frameGraphLeaves)
+            if (leaf->nodeType() == FrameGraphNode::NoDraw)
+                --workBranches;
+
+        if (idealThreadCount > 4 && workBranches)
+            idealThreadCount = qMax(4, idealThreadCount / workBranches);
+    }
+
+    for (size_t i = 0; i < fgBranchCount; ++i) {
+        FrameGraphNode *leaf = m_frameGraphLeaves[i];
+        RenderViewBuilder builder(leaf, i, this);
+        builder.setOptimalJobCount(leaf->nodeType() == FrameGraphNode::NoDraw ? 1 : idealThreadCount);
+
+        // If we have a new RV (wasn't in the cache before, then it contains no cached data)
+        const bool isNewRV = !m_cache.leafNodeCache.contains(leaf);
+        builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt || isNewRV);
+        builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt || isNewRV);
+        builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty || isNewRV);
+        builder.setLightCacheNeedsToBeRebuilt(lightsDirty);
+
+        // Insert leaf into cache
+        if (isNewRV) {
+            m_cache.leafNodeCache[leaf] = {};
+        }
+
+        builder.prepareJobs();
+        const std::vector<QAspectJobPtr> builderJobs = builder.buildJobHierachy();
+        renderBinJobs.insert(renderBinJobs.end(),
+                             std::make_move_iterator(builderJobs.begin()),
+                             std::make_move_iterator(builderJobs.end()));
+    }
+
+    // Set target number of RenderViews
+    m_renderQueue->setTargetRenderViewCount(fgBranchCount);
 
     if (isRunning() && m_submissionContext->isInitialized()) {
         if (dirtyBitsForFrame & AbstractRenderer::TechniquesDirty )

@@ -114,7 +114,7 @@ public:
     void loadSceneParsers();
     void loadRenderPlugin(const QString &pluginName);
     void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous(bool swapBuffers = true);
+    void render(bool swapBuffers = true);
     void renderShutdown();
     void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
     std::vector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs() const;

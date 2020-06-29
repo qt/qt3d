@@ -102,7 +102,7 @@ public:
         // Submit Render Queues
         Qt3DRender::QRenderAspectPrivate *dRenderAspect = static_cast<decltype(dRenderAspect)>
                 (Qt3DRender::QRenderAspectPrivate::get(m_renderAspect));
-        dRenderAspect->renderSynchronous(true);
+        dRenderAspect->render(true);
     }
 
 private:

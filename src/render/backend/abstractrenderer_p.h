@@ -139,10 +139,7 @@ public:
     virtual void shutdown() = 0;
     virtual void releaseGraphicsResources() = 0;
 
-    // Threaded renderer
-    virtual void render() = 0;
-    // Synchronous renderer
-    virtual void doRender(bool swapBuffers) = 0;
+    virtual void render(bool swapBuffers) = 0;
 
     virtual void cleanGraphicsResources() = 0;
 

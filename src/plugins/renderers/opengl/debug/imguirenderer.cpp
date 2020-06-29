@@ -165,7 +165,7 @@ ImGuiRenderer::ImGuiRenderer(Qt3DRender::Render::OpenGL::Renderer *renderer)
 
 ImGuiRenderer::~ImGuiRenderer() = default;
 
-void ImGuiRenderer::renderDebugOverlay(const QVector<RenderView *> &renderViews, const RenderView *renderView, int jobsInLastFrame)
+void ImGuiRenderer::renderDebugOverlay(const std::vector<RenderView *> &renderViews, const RenderView *renderView, int jobsInLastFrame)
 {
     if (!newFrame(renderView))
         return;
@@ -323,7 +323,7 @@ void ImGuiRenderer::showGLInfo()
     ImGui::End();
 }
 
-void ImGuiRenderer::showRenderDetails(const QVector<RenderView *> &renderViews)
+void ImGuiRenderer::showRenderDetails(const std::vector<RenderView *> &renderViews)
 {
     ImGui::Begin("Render Views", &m_showRenderDetailsWindow);
 

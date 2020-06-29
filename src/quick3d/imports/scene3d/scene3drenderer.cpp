@@ -296,7 +296,7 @@ void Scene3DRenderer::beforeSynchronize()
         if (m_skipFrame) {
             m_skipFrame = false;
             ContextSaver saver;
-            static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(false);
+            static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->render(false);
             return;
         }
 
@@ -423,7 +423,7 @@ void Scene3DRenderer::render()
 
     // Render Qt3D Scene
     // Qt3D takes care of resetting the GL state to default values
-    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(usesFBO);
+    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->render(usesFBO);
 
     // We may have called doneCurrent() so restore the context if the rendering surface was changed
     // Note: keep in mind that the ContextSave also restores the surface when destroyed

@@ -59,8 +59,7 @@ public:
     void initialize() override {}
     void shutdown() override {}
     void releaseGraphicsResources() override {}
-    void render() override {}
-    void doRender(bool swapBuffers) override { Q_UNUSED(swapBuffers); }
+    void render(bool swapBuffers) override { Q_UNUSED(swapBuffers); }
     void cleanGraphicsResources() override {}
     bool isRunning() const override { return true; }
     bool shouldRender() const override { return true; }

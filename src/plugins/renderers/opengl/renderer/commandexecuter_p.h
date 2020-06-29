@@ -78,7 +78,7 @@ class CommandExecuter
 public:
     explicit CommandExecuter(Render::OpenGL::Renderer *renderer);
 
-    void performAsynchronousCommandExecution(const QVector<Render::OpenGL::RenderView *> &views);
+    void performAsynchronousCommandExecution(const std::vector<Render::OpenGL::RenderView *> &views);
 
     QVariant executeCommand(const QStringList &args);
 

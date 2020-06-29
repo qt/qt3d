@@ -358,7 +358,7 @@ void QRenderAspectPrivate::frameDone()
 {
     m_renderer->setJobsInLastFrame(m_aspectManager->jobsInLastFrame());
     if (m_renderAfterJobs)
-        m_renderer->doRender(true);
+        m_renderer->render(true);
 }
 
 void QRenderAspectPrivate::createNodeManagers()
@@ -639,9 +639,9 @@ void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 }
 
 /*! \internal */
-void QRenderAspectPrivate::renderSynchronous(bool swapBuffers)
+void QRenderAspectPrivate::render(bool swapBuffers)
 {
-    m_renderer->doRender(swapBuffers);
+    m_renderer->render(swapBuffers);
 }
 
 /*

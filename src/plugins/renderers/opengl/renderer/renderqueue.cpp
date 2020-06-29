@@ -101,7 +101,7 @@ bool RenderQueue::queueRenderView(RenderView *renderView, uint submissionOrderIn
  * A call to reset is required after rendering of the frame. Otherwise under some
  * conditions the current but then invalidated frame queue could be reused.
  */
-QVector<RenderView *> RenderQueue::nextFrameQueue()
+const std::vector<RenderView *> &RenderQueue::nextFrameQueue() const
 {
     return m_currentWorkQueue;
 }

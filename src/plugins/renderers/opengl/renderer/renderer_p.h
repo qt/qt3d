@@ -189,8 +189,7 @@ public:
     void shutdown() override;
     void releaseGraphicsResources() override;
 
-    void render() override;
-    void doRender(bool swapBuffers = true) override;
+    void render(bool swapBuffers = true) override;
     void cleanGraphicsResources() override;
 
     bool isRunning() const override { return m_running.loadRelaxed(); }
@@ -249,7 +248,7 @@ public:
                          QRect outputRect,
                          GLuint defaultFramebuffer);
 
-    void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
+    void prepareCommandsSubmission(const std::vector<RenderView *> &renderViews);
     bool executeCommandsSubmission(RenderView *rv);
     bool updateVAOWithAttributes(Geometry *geometry,
                                  const RenderCommand *command,
@@ -291,7 +290,7 @@ public:
         QSurface *surface;
     };
 
-    ViewSubmissionResultData submitRenderViews(const QVector<RenderView *> &renderViews);
+    ViewSubmissionResultData submitRenderViews(const std::vector<RenderView *> &renderViews);
 
     RendererCache *cache() { return &m_cache; }
     void setScreen(QScreen *scr) override;
@@ -303,7 +302,6 @@ public:
 
 private:
 #endif
-    bool canRender() const;
     Profiling::FrameProfiler *activeProfiler() const;
 
     Qt3DCore::QServiceLocator *m_services;
