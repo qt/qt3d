@@ -87,17 +87,17 @@ public:
     AttachmentPack();
     AttachmentPack(const RenderTarget *target,
                    AttachmentManager *attachmentManager,
-                   const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers = QVector<QRenderTargetOutput::AttachmentPoint>());
+                   const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers = {});
 
-    QVector<Attachment> attachments() const { return m_attachments; }
-    QVector<int> getGlDrawBuffers() const { return m_drawBuffers; }
+    const std::vector<Attachment> &attachments() const { return m_attachments; }
+    const std::vector<int> &getGlDrawBuffers() const { return m_drawBuffers; }
 
     // return index of given attachment within actual draw buffers list
     int getDrawBufferIndex(QRenderTargetOutput::AttachmentPoint attachmentPoint) const;
 
 private:
-    QVector<Attachment> m_attachments;
-    QVector<int> m_drawBuffers;
+    std::vector<Attachment> m_attachments;
+    std::vector<int> m_drawBuffers;
 };
 
 Q_3DRENDERSHARED_PRIVATE_EXPORT bool operator ==(const Attachment &a, const Attachment &b);

@@ -880,7 +880,7 @@ SubmissionContext::RenderTargetInfo SubmissionContext::bindFrameBufferAttachment
 
 void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
-    const QVector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
+    const std::vector<int> &activeDrawBuffers = attachments.getGlDrawBuffers();
 
     if (m_glHelper->checkFrameBufferComplete()) {
         if (activeDrawBuffers.size() > 1) {// We need MRT
