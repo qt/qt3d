@@ -305,7 +305,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::SubmissionType submiss
     , m_syncLoadingJobs(CreateSynchronizerJobPtr([] {}, Render::JobTypes::SyncLoadingJobs))
     , m_pickBoundingVolumeJob(Render::PickBoundingVolumeJobPtr::create())
     , m_rayCastingJob(Render::RayCastingJobPtr::create())
-    , m_pickEventFilter(new Render::PickEventFilter())
+    , m_pickEventFilter(new Render::PickEventFilter(this))
     , m_submissionType(submissionType)
 {
     m_instances.append(this);
@@ -900,10 +900,6 @@ QVector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
     if (!m_renderer)
         return {};
 
-    const auto frameMouseEvents = m_pickEventFilter->pendingMouseEvents();
-    const auto frameKeyEvents = m_pickEventFilter->pendingKeyEvents();
-    m_renderer->setPendingEvents(frameMouseEvents, frameKeyEvents);
-
     auto jobs = m_renderer->preRenderingJobs();
 
     // Set values on picking jobs
@@ -911,8 +907,6 @@ QVector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
     if (renderSetting != nullptr) {
         m_pickBoundingVolumeJob->setRenderSettings(renderSetting);
         m_pickBoundingVolumeJob->setFrameGraphRoot(m_renderer->frameGraphRoot());
-        m_pickBoundingVolumeJob->setMouseEvents(frameMouseEvents);
-        m_pickBoundingVolumeJob->setKeyEvents(frameKeyEvents);
 
         m_rayCastingJob->setRenderSettings(renderSetting);
         m_rayCastingJob->setFrameGraphRoot(m_renderer->frameGraphRoot());
@@ -953,6 +947,29 @@ Render::AbstractRenderer *QRenderAspectPrivate::loadRendererPlugin()
     const QByteArray targetKeyName = targetKey.toLatin1();
     qFatal("Unable to find renderer plugin for %s", targetKeyName.constData());
     return nullptr;
+}
+
+bool QRenderAspectPrivate::processMouseEvent(QObject *obj, QMouseEvent *event)
+{
+    Render::RenderSettings *renderSetting = m_renderer->settings();
+    if (!renderSetting)
+        return false;
+
+    if (m_renderer->processMouseEvent(obj, event))
+        return true;
+    m_pickBoundingVolumeJob->processMouseEvent(obj, event);
+
+    return false;
+}
+
+bool QRenderAspectPrivate::processKeyEvent(QObject *obj, QKeyEvent *event)
+{
+    Q_UNUSED(obj);
+
+    if (m_renderer->processKeyEvent(obj, event))
+        return true;
+
+    return false;
 }
 
 void QRenderAspectPrivate::loadRenderPlugin(const QString &pluginName)

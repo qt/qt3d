@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "pickeventfilter_p.h"
+#include <Qt3DRender/private/qrenderaspect_p.h>
 
 #include <QtGui/QHoverEvent>
 
@@ -47,8 +48,9 @@ namespace Qt3DRender {
 
 namespace Render {
 
-PickEventFilter::PickEventFilter(QObject *parent)
+PickEventFilter::PickEventFilter(QRenderAspectPrivate *aspect, QObject *parent)
     : QObject(parent)
+    , m_aspect(aspect)
 {
 }
 
@@ -87,20 +89,23 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove:
         m_pendingMouseEvents.push_back({obj, QMouseEvent(*static_cast<QMouseEvent *>(e))});
-        break;
+        return m_aspect->processMouseEvent(obj, static_cast<QMouseEvent *>(e));
     case QEvent::HoverMove: {
         QHoverEvent *he = static_cast<QHoverEvent *>(e);
-        m_pendingMouseEvents.push_back({obj, QMouseEvent(QEvent::MouseMove,
-                                                   he->position(), Qt::NoButton, Qt::NoButton,
-                                                   he->modifiers())});
-        } break;
+        auto mouseEvent = QMouseEvent(QEvent::MouseMove,
+                                      he->position(), Qt::NoButton, Qt::NoButton,
+                                      he->modifiers());
+        m_pendingMouseEvents.push_back({obj, mouseEvent});
+        return m_aspect->processMouseEvent(obj, &mouseEvent);
+        }
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
         m_pendingKeyEvents.push_back(QKeyEvent(*static_cast<QKeyEvent *>(e)));
-        break;
+        return m_aspect->processKeyEvent(obj, static_cast<QKeyEvent *>(e));
     default:
         break;
     }
+
     return false;
 }
 

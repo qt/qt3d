@@ -97,7 +97,7 @@ public:
 bool PickBoundingVolumeJobPrivate::isRequired() const
 {
     Q_Q(const PickBoundingVolumeJob);
-    return !q->m_pendingMouseEvents.isEmpty() || q->m_pickersDirty || q->m_oneEnabledAtLeast;
+    return !q->m_pendingMouseEvents.empty() || q->m_pickersDirty || q->m_oneEnabledAtLeast;
 }
 
 void PickBoundingVolumeJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
@@ -208,14 +208,10 @@ void PickBoundingVolumeJob::setRoot(Entity *root)
     m_node = root;
 }
 
-void PickBoundingVolumeJob::setMouseEvents(const QList<QPair<QObject*, QMouseEvent>> &pendingEvents)
+bool PickBoundingVolumeJob::processMouseEvent(QObject* object, QMouseEvent *event)
 {
-    m_pendingMouseEvents.append(pendingEvents);
-}
-
-void PickBoundingVolumeJob::setKeyEvents(const QList<QKeyEvent> &pendingEvents)
-{
-    m_pendingKeyEvents.append(pendingEvents);
+    m_pendingMouseEvents.emplace_back(object, QMouseEvent(*event));
+    return false;
 }
 
 void PickBoundingVolumeJob::markPickersDirty()

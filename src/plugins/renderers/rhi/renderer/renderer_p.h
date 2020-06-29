@@ -207,8 +207,8 @@ public:
     void skipNextFrame() override;
     void jobsDone(Qt3DCore::QAspectManager *manager) override;
 
-    void setPendingEvents(const QList<QPair<QObject *, QMouseEvent>> &mouseEvents,
-                          const QList<QKeyEvent> &keyEvents) override;
+    bool processMouseEvent(QObject *object, QMouseEvent *event) override;
+    bool processKeyEvent(QObject *object, QKeyEvent *event) override;
 
     QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
@@ -412,9 +412,6 @@ private:
 
     bool m_hasSwapChain = false;
 
-    QList<QPair<QObject *, QMouseEvent>> m_frameMouseEvents;
-    QList<QKeyEvent> m_frameKeyEvents;
-    QMutex m_frameEventsMutex;
     int m_jobsInLastFrame = 0;
 
     float m_textureTransform[4];

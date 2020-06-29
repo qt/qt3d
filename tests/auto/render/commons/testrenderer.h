@@ -74,7 +74,8 @@ public:
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const override { return nullptr; }
     void setSettings(Qt3DRender::Render::RenderSettings *settings) override { m_settings = settings; }
     Qt3DRender::Render::RenderSettings *settings() const override { return m_settings; }
-    void setPendingEvents(const QList<QPair<QObject *, QMouseEvent> > &, const QList<QKeyEvent> &) override { }
+    bool processMouseEvent(QObject *, QMouseEvent *) override { return false; }
+    bool processKeyEvent(QObject *, QKeyEvent *) override { return false; }
 
     void markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) override;
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet dirtyBits() override;

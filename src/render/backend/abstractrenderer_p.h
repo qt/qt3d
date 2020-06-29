@@ -157,7 +157,8 @@ public:
     virtual void skipNextFrame() = 0;
     virtual void jobsDone(Qt3DCore::QAspectManager *manager) = 0;
 
-    virtual void setPendingEvents(const QList<QPair<QObject *, QMouseEvent>> &mouseEvents, const QList<QKeyEvent> &keyEvents) = 0;
+    virtual bool processMouseEvent(QObject *object, QMouseEvent *event) = 0;
+    virtual bool processKeyEvent(QObject *object, QKeyEvent *event) = 0;
 
     virtual QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() = 0;
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;

@@ -64,6 +64,8 @@
 #include <QKeyEvent>
 #include <QSharedPointer>
 
+#include <vector>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -83,8 +85,7 @@ public:
     PickBoundingVolumeJob();
 
     void setRoot(Entity *root);
-    void setMouseEvents(const QList<QPair<QObject*, QMouseEvent>> &pendingEvents);
-    void setKeyEvents(const QList<QKeyEvent> &pendingEvents);
+    bool processMouseEvent(QObject* object, QMouseEvent *event);
     void markPickersDirty();
     bool pickersDirty() const { return m_pickersDirty; }
 
@@ -107,8 +108,7 @@ private:
 
     void clearPreviouslyHoveredPickers();
 
-    QList<QPair<QObject*, QMouseEvent>> m_pendingMouseEvents;
-    QList<QKeyEvent> m_pendingKeyEvents;
+    std::vector<std::pair<QObject*, QMouseEvent>> m_pendingMouseEvents;
     bool m_pickersDirty;
     bool m_oneHoverAtLeast;
     HObjectPicker m_currentPicker;

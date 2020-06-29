@@ -122,6 +122,9 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
     Render::AbstractRenderer *loadRendererPlugin();
 
+    bool processMouseEvent(QObject *obj, QMouseEvent *event);
+    bool processKeyEvent(QObject *obj, QKeyEvent *event);
+
     Render::NodeManagers *m_nodeManagers;
     Render::AbstractRenderer *m_renderer;
 

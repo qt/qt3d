@@ -1786,10 +1786,26 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
     sendSetFenceHandlesToFrontend(manager);
 }
 
-void Renderer::setPendingEvents(const QList<QPair<QObject *, QMouseEvent> > &mouseEvents, const QList<QKeyEvent> &keyEvents)
+bool Renderer::processMouseEvent(QObject *object, QMouseEvent *event)
 {
-    m_frameMouseEvents = mouseEvents;
-    m_frameKeyEvents = keyEvents;
+    Q_UNUSED(object);
+
+#ifndef Q_OS_INTEGRITY
+    if (m_imGuiRenderer)
+        m_imGuiRenderer->processEvent(event);
+#endif
+    return false;
+}
+
+bool Renderer::processKeyEvent(QObject *object, QKeyEvent *event)
+{
+    Q_UNUSED(object);
+
+#ifndef Q_OS_INTEGRITY
+    if (m_imGuiRenderer)
+        m_imGuiRenderer->processEvent(event);
+#endif
+    return false;
 }
 
 // Jobs we may have to run even if no rendering will happen
