@@ -179,6 +179,8 @@ Scene3DItem::~Scene3DItem()
     // Scene3DSGNode still exist and will perform their cleanup on their own.
     m_aspectEngine->deleteLater();
     m_renderer->deleteLater();
+    if (m_dummySurface)
+        m_dummySurface->deleteLater();
 }
 
 /*!
