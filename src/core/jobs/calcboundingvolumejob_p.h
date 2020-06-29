@@ -105,7 +105,7 @@ public:
 private:
     Q_DECLARE_PRIVATE(CalculateBoundingVolumeJob)
     QEntity *m_root;
-    QVector<BoundingVolumeComputeResult> m_results;
+    std::vector<BoundingVolumeComputeResult> m_results;
 };
 
 typedef QSharedPointer<CalculateBoundingVolumeJob> CalculateBoundingVolumeJobPtr;

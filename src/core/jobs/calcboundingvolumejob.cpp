@@ -163,7 +163,7 @@ bool isTreeEnabled(QEntity *entity) {
 struct UpdateBoundFunctor
 {
     // This define is required to work with QtConcurrent
-    typedef QVector<BoundingVolumeComputeResult> result_type;
+    typedef std::vector<BoundingVolumeComputeResult> result_type;
     result_type operator ()(const BoundingVolumeComputeData &data)
     {
         return { data.compute() };
@@ -172,9 +172,11 @@ struct UpdateBoundFunctor
 
 struct ReduceUpdateBoundFunctor
 {
-    void operator ()(QVector<BoundingVolumeComputeResult> &result, const QVector<BoundingVolumeComputeResult> &values)
+    void operator ()(std::vector<BoundingVolumeComputeResult> &result, const std::vector<BoundingVolumeComputeResult> &values)
     {
-        result += values;
+        result.insert(result.end(),
+                      std::make_move_iterator(values.begin()),
+                      std::make_move_iterator(values.end()));
     }
 };
 
@@ -284,7 +286,7 @@ void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
 {
     Q_UNUSED(aspectEngine);
 
-    for (auto result: qAsConst(m_results)) {
+    for (auto result: m_results) {
         // set the results
         QBoundingVolumePrivate::get(result.provider)->setImplicitBounds(result.m_min, result.m_max, result.m_center, result.m_radius);
 
