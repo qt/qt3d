@@ -72,6 +72,7 @@ namespace Render {
 class Entity;
 class Renderer;
 class FrameGraphNode;
+class RenderSettings;
 class NodeManagers;
 
 namespace PickingUtils {
@@ -85,6 +86,19 @@ struct Q_AUTOTEST_EXPORT ViewportCameraAreaDetails
     QSurface *surface = nullptr;
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaDetails, Q_PRIMITIVE_TYPE)
+
+struct PickConfiguration {
+    std::vector<ViewportCameraAreaDetails> vcaDetails;
+    bool trianglePickingRequested = false;
+    bool edgePickingRequested = false;
+    bool pointPickingRequested = false;
+    bool primitivePickingRequested = false;
+    bool frontFaceRequested = false;
+    bool backFaceRequested = false;
+    float pickWorldSpaceTolerance = -1.f;
+
+    PickConfiguration(FrameGraphNode *frameGraphRoot, RenderSettings *renderSettings);
+};
 
 class Q_AUTOTEST_EXPORT ViewportCameraAreaGatherer
 {

@@ -95,7 +95,8 @@ public:
     bool runHelper() override;
 
 protected:
-    void dispatchPickEvents(const QMouseEvent &event,
+    void processPickEvent(const PickingUtils::PickConfiguration &pickConfiguration, QObject *object, const QMouseEvent *event);
+    void dispatchPickEvents(const QMouseEvent *event,
                             const PickingUtils::HitList &sphereHits,
                             QPickEvent::Buttons eventButton,
                             int eventButtons,

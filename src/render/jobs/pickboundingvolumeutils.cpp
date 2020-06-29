@@ -52,6 +52,7 @@
 #include <Qt3DRender/private/segmentsvisitor_p.h>
 #include <Qt3DRender/private/pointsvisitor_p.h>
 #include <Qt3DRender/private/layer_p.h>
+#include <Qt3DRender/private/rendersettings_p.h>
 
 #include <vector>
 #include <algorithm>
@@ -66,6 +67,31 @@ namespace Render {
 
 namespace PickingUtils {
 
+
+PickConfiguration::PickConfiguration(FrameGraphNode *frameGraphRoot, RenderSettings *renderSettings)
+{
+    ViewportCameraAreaGatherer vcaGatherer;
+    // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
+    vcaDetails = vcaGatherer.gather(frameGraphRoot);
+
+    // If we have no viewport / camera or area, return early
+    if (vcaDetails.empty())
+        return;
+
+    // TO DO:
+    // If we have move or hover move events that someone cares about, we try to avoid expensive computations
+    // by compressing them into a single one
+
+    trianglePickingRequested = (renderSettings->pickMethod() & QPickingSettings::TrianglePicking);
+    edgePickingRequested = (renderSettings->pickMethod() & QPickingSettings::LinePicking);
+    pointPickingRequested = (renderSettings->pickMethod() & QPickingSettings::PointPicking);
+    primitivePickingRequested = pointPickingRequested | edgePickingRequested | trianglePickingRequested;
+    frontFaceRequested = renderSettings->faceOrientationPickingMode() != QPickingSettings::BackFace;
+    backFaceRequested = renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
+    pickWorldSpaceTolerance = renderSettings->pickWorldSpaceTolerance();
+}
+
+
 void ViewportCameraAreaGatherer::visit(FrameGraphNode *node)
 {
     const auto children = node->children();
@@ -78,7 +104,7 @@ void ViewportCameraAreaGatherer::visit(FrameGraphNode *node)
 ViewportCameraAreaDetails ViewportCameraAreaGatherer::gatherUpViewportCameraAreas(Render::FrameGraphNode *node) const
 {
     ViewportCameraAreaDetails vca;
-    vca.viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
+    vca.viewport = QRectF(0., 0., 1., 1.);
 
     while (node) {
         if (node->isEnabled()) {

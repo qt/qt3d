@@ -42,6 +42,7 @@
 #include "qpicklineevent.h"
 #include "qpickpointevent.h"
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qgeometryrenderer.h>
@@ -155,9 +156,9 @@ void PickBoundingVolumeJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 
 namespace {
 
-void setEventButtonAndModifiers(const QMouseEvent &event, QPickEvent::Buttons &eventButton, int &eventButtons, int &eventModifiers)
+void setEventButtonAndModifiers(const QMouseEvent *event, QPickEvent::Buttons &eventButton, int &eventButtons, int &eventModifiers)
 {
-    switch (event.button()) {
+    switch (event->button()) {
     case Qt::LeftButton:
         eventButton = QPickEvent::LeftButton;
         break;
@@ -174,23 +175,23 @@ void setEventButtonAndModifiers(const QMouseEvent &event, QPickEvent::Buttons &e
         break;
     }
 
-    if (event.buttons() & Qt::LeftButton)
+    if (event->buttons() & Qt::LeftButton)
         eventButtons |= QPickEvent::LeftButton;
-    if (event.buttons() & Qt::RightButton)
+    if (event->buttons() & Qt::RightButton)
         eventButtons |= QPickEvent::RightButton;
-    if (event.buttons() & Qt::MiddleButton)
+    if (event->buttons() & Qt::MiddleButton)
         eventButtons |= QPickEvent::MiddleButton;
-    if (event.buttons() & Qt::BackButton)
+    if (event->buttons() & Qt::BackButton)
         eventButtons |= QPickEvent::BackButton;
-    if (event.modifiers() & Qt::ShiftModifier)
+    if (event->modifiers() & Qt::ShiftModifier)
         eventModifiers |= QPickEvent::ShiftModifier;
-    if (event.modifiers() & Qt::ControlModifier)
+    if (event->modifiers() & Qt::ControlModifier)
         eventModifiers |= QPickEvent::ControlModifier;
-    if (event.modifiers() & Qt::AltModifier)
+    if (event->modifiers() & Qt::AltModifier)
         eventModifiers |= QPickEvent::AltModifier;
-    if (event.modifiers() & Qt::MetaModifier)
+    if (event->modifiers() & Qt::MetaModifier)
         eventModifiers |= QPickEvent::MetaModifier;
-    if (event.modifiers() & Qt::KeypadModifier)
+    if (event->modifiers() & Qt::KeypadModifier)
         eventModifiers |= QPickEvent::KeypadModifier;
 }
 
@@ -279,106 +280,17 @@ bool PickBoundingVolumeJob::runHelper()
             return false;
     }
 
-    PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
-    // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
-    const std::vector<PickingUtils::ViewportCameraAreaDetails> &vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
-
-    // If we have no viewport / camera or area, return early
-    if (vcaDetails.empty())
+    const PickingUtils::PickConfiguration pickConfiguration(m_frameGraphRoot, m_renderSettings);
+    if (pickConfiguration.vcaDetails.empty())
         return false;
 
     // TO DO:
     // If we have move or hover move events that someone cares about, we try to avoid expensive computations
     // by compressing them into a single one
 
-    const bool trianglePickingRequested = (m_renderSettings->pickMethod() & QPickingSettings::TrianglePicking);
-    const bool edgePickingRequested = (m_renderSettings->pickMethod() & QPickingSettings::LinePicking);
-    const bool pointPickingRequested = (m_renderSettings->pickMethod() & QPickingSettings::PointPicking);
-    const bool primitivePickingRequested = pointPickingRequested | edgePickingRequested | trianglePickingRequested;
-    const bool frontFaceRequested =
-            m_renderSettings->faceOrientationPickingMode() != QPickingSettings::BackFace;
-    const bool backFaceRequested =
-            m_renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
-    const float pickWorldSpaceTolerance = m_renderSettings->pickWorldSpaceTolerance();
-
     // For each mouse event
-    for (const auto &event : mouseEvents) {
-        m_hoveredPickersToClear = m_hoveredPickers;
-
-        QPickEvent::Buttons eventButton = QPickEvent::NoButton;
-        int eventButtons = 0;
-        int eventModifiers = QPickEvent::NoModifier;
-
-        setEventButtonAndModifiers(event.second, eventButton, eventButtons, eventModifiers);
-
-        // For each Viewport / Camera and Area entry
-        for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails) {
-            PickingUtils::HitList sphereHits;
-            QRay3D ray = rayForViewportAndCamera(vca, event.first, event.second.pos());
-            if (!ray.isValid()) {
-                // An invalid rays is when we've lost our surface or the mouse
-                // has moved out of the viewport In case of a button released
-                // outside of the viewport, we still want to notify the
-                // lastCurrent entity about this.
-                dispatchPickEvents(event.second, PickingUtils::HitList(), eventButton, eventButtons, eventModifiers, m_renderSettings->pickResultMode(),
-                                   vca.viewportNodeId);
-                continue;
-            }
-
-            PickingUtils::HierarchicalEntityPicker entityPicker(ray);
-            if (entityPicker.collectHits(m_manager, m_node)) {
-                if (trianglePickingRequested) {
-                    PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
-                    gathererFunctor.m_frontFaceRequested = frontFaceRequested;
-                    gathererFunctor.m_backFaceRequested = backFaceRequested;
-                    gathererFunctor.m_manager = m_manager;
-                    gathererFunctor.m_ray = ray;
-                    gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
-                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
-                    sphereHits.insert(sphereHits.end(),
-                                      std::make_move_iterator(hits.begin()),
-                                      std::make_move_iterator(hits.end()));
-                }
-                if (edgePickingRequested) {
-                    PickingUtils::LineCollisionGathererFunctor gathererFunctor;
-                    gathererFunctor.m_manager = m_manager;
-                    gathererFunctor.m_ray = ray;
-                    gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
-                    gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
-                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
-                    sphereHits.insert(sphereHits.end(),
-                                      std::make_move_iterator(hits.begin()),
-                                      std::make_move_iterator(hits.end()));
-                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
-                }
-                if (pointPickingRequested) {
-                    PickingUtils::PointCollisionGathererFunctor gathererFunctor;
-                    gathererFunctor.m_manager = m_manager;
-                    gathererFunctor.m_ray = ray;
-                    gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
-                    gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
-                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode());
-                    sphereHits.insert(sphereHits.end(),
-                                      std::make_move_iterator(hits.begin()),
-                                      std::make_move_iterator(hits.end()));
-                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
-                }
-                if (!primitivePickingRequested) {
-                    const PickingUtils::HitList &hits = entityPicker.hits();
-                    sphereHits.insert(sphereHits.end(),
-                                      std::make_move_iterator(hits.begin()),
-                                      std::make_move_iterator(hits.end()));
-                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
-                    if (m_renderSettings->pickResultMode() != QPickingSettings::AllPicks)
-                        sphereHits = { sphereHits.front() };
-                }
-            }
-
-            // Dispatch events based on hit results
-            dispatchPickEvents(event.second, sphereHits, eventButton, eventButtons, eventModifiers, m_renderSettings->pickResultMode(),
-                               vca.viewportNodeId);
-        }
-    }
+    for (const auto &event : mouseEvents)
+        processPickEvent(pickConfiguration, event.first, &event.second);
 
     // Clear Hovered elements that needs to be cleared
     // Send exit event to object pickers on which we
@@ -388,7 +300,74 @@ bool PickBoundingVolumeJob::runHelper()
     return true;
 }
 
-void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
+void PickBoundingVolumeJob::processPickEvent(const PickingUtils::PickConfiguration &pickConfiguration, QObject *object, const QMouseEvent *event)
+{
+    m_hoveredPickersToClear = m_hoveredPickers;
+
+    QPickEvent::Buttons eventButton = QPickEvent::NoButton;
+    int eventButtons = 0;
+    int eventModifiers = QPickEvent::NoModifier;
+
+    setEventButtonAndModifiers(event, eventButton, eventButtons, eventModifiers);
+
+    // For each Viewport / Camera and Area entry
+    for (const PickingUtils::ViewportCameraAreaDetails &vca : pickConfiguration.vcaDetails) {
+        PickingUtils::HitList sphereHits;
+        QRay3D ray = rayForViewportAndCamera(vca, object, event->pos());
+        if (!ray.isValid()) {
+            // An invalid rays is when we've lost our surface or the mouse
+            // has moved out of the viewport In case of a button released
+            // outside of the viewport, we still want to notify the
+            // lastCurrent entity about this.
+            dispatchPickEvents(event, PickingUtils::HitList(), eventButton, eventButtons, eventModifiers, m_renderSettings->pickResultMode(),
+                               vca.viewportNodeId);
+            continue;
+        }
+
+        PickingUtils::HierarchicalEntityPicker entityPicker(ray);
+        if (entityPicker.collectHits(m_manager, m_node)) {
+            if (pickConfiguration.trianglePickingRequested) {
+                PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
+                gathererFunctor.m_frontFaceRequested = pickConfiguration.frontFaceRequested;
+                gathererFunctor.m_backFaceRequested = pickConfiguration.backFaceRequested;
+                gathererFunctor.m_manager = m_manager;
+                gathererFunctor.m_ray = ray;
+                gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
+                Qt3DCore::moveAtEnd(sphereHits, gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode()));
+            }
+            if (pickConfiguration.edgePickingRequested) {
+                PickingUtils::LineCollisionGathererFunctor gathererFunctor;
+                gathererFunctor.m_manager = m_manager;
+                gathererFunctor.m_ray = ray;
+                gathererFunctor.m_pickWorldSpaceTolerance = pickConfiguration.pickWorldSpaceTolerance;
+                gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
+                Qt3DCore::moveAtEnd(sphereHits, gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode()));
+                PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+            }
+            if (pickConfiguration.pointPickingRequested) {
+                PickingUtils::PointCollisionGathererFunctor gathererFunctor;
+                gathererFunctor.m_manager = m_manager;
+                gathererFunctor.m_ray = ray;
+                gathererFunctor.m_pickWorldSpaceTolerance = pickConfiguration.pickWorldSpaceTolerance;
+                gathererFunctor.m_entityToPriorityTable = entityPicker.entityToPriorityTable();
+                Qt3DCore::moveAtEnd(sphereHits, gathererFunctor.computeHits(entityPicker.entities(), m_renderSettings->pickResultMode()));
+                PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+            }
+            if (!pickConfiguration.primitivePickingRequested) {
+                Qt3DCore::moveAtEnd(sphereHits, entityPicker.hits());
+                PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+                if (m_renderSettings->pickResultMode() != QPickingSettings::AllPicks)
+                    sphereHits = { sphereHits.front() };
+            }
+        }
+
+        // Dispatch events based on hit results
+        dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, m_renderSettings->pickResultMode(),
+                           vca.viewportNodeId);
+    }
+}
+
+void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                                                const PickingUtils::HitList &sphereHits,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
@@ -436,7 +415,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 QPickEventPtr pickEvent;
                 switch (hit.m_type) {
                 case QCollisionQueryResult::Hit::Triangle:
-                    pickEvent.reset(new QPickTriangleEvent(event.position(),
+                    pickEvent.reset(new QPickTriangleEvent(event->position(),
                                                            convertToQVector3D(hit.m_intersection),
                                                            convertToQVector3D(localIntersection),
                                                            hit.m_distance,
@@ -449,7 +428,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                            convertToQVector3D(hit.m_uvw)));
                     break;
                 case QCollisionQueryResult::Hit::Edge:
-                    pickEvent.reset(new QPickLineEvent(event.position(),
+                    pickEvent.reset(new QPickLineEvent(event->position(),
                                                        convertToQVector3D(hit.m_intersection),
                                                        convertToQVector3D(localIntersection),
                                                        hit.m_distance,
@@ -458,7 +437,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                        eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Point:
-                    pickEvent.reset(new QPickPointEvent(event.position(),
+                    pickEvent.reset(new QPickPointEvent(event->position(),
                                                         convertToQVector3D(hit.m_intersection),
                                                         convertToQVector3D(localIntersection),
                                                         hit.m_distance,
@@ -466,7 +445,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                         eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Entity:
-                    pickEvent.reset(new QPickEvent(event.position(),
+                    pickEvent.reset(new QPickEvent(event->position(),
                                                    convertToQVector3D(hit.m_intersection),
                                                    convertToQVector3D(localIntersection),
                                                    hit.m_distance,
@@ -476,12 +455,12 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                     Q_UNREACHABLE();
                 }
                 Qt3DRender::QPickEventPrivate::get(pickEvent.data())->m_entity = hit.m_entityId;
-                switch (event.type()) {
+                switch (event->type()) {
                 case QEvent::MouseButtonPress: {
                     // Store pressed object handle
                     m_currentPicker = objectPickerHandle;
                     // Send pressed event to m_currentPicker
-                    d->dispatches.push_back({objectPicker->peerId(), event.type(), pickEvent, viewportNodeId});
+                    d->dispatches.push_back({objectPicker->peerId(), event->type(), pickEvent, viewportNodeId});
                     objectPicker->setPressed(true);
                     break;
                 }
@@ -489,7 +468,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 case QEvent::MouseButtonRelease: {
                     // Only send the release event if it was pressed
                     if (objectPicker->isPressed()) {
-                        d->dispatches.push_back({objectPicker->peerId(), event.type(), pickEvent, viewportNodeId});
+                        d->dispatches.push_back({objectPicker->peerId(), event->type(), pickEvent, viewportNodeId});
                         objectPicker->setPressed(false);
                     }
                     if (lastCurrentPicker != nullptr && m_currentPicker == objectPickerHandle) {
@@ -510,7 +489,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 #endif
                 case QEvent::MouseMove: {
                     if ((objectPicker->isPressed() || objectPicker->isHoverEnabled()) && objectPicker->isDragEnabled())
-                        d->dispatches.push_back({objectPicker->peerId(), event.type(), pickEvent, viewportNodeId});
+                        d->dispatches.push_back({objectPicker->peerId(), event->type(), pickEvent, viewportNodeId});
                     Q_FALLTHROUGH(); // fallthrough
                 }
                 case QEvent::HoverMove: {
@@ -538,14 +517,14 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
         // Otherwise no hits
     } else {
-        switch (event.type()) {
+        switch (event->type()) {
         case QEvent::MouseButtonRelease: {
             // Send release event to m_currentPicker
             if (lastCurrentPicker != nullptr) {
                 m_currentPicker = HObjectPicker();
                 QPickEventPtr pickEvent(new QPickEvent);
                 lastCurrentPicker->setPressed(false);
-                d->dispatches.push_back({lastCurrentPicker->peerId(), event.type(), pickEvent, viewportNodeId});
+                d->dispatches.push_back({lastCurrentPicker->peerId(), event->type(), pickEvent, viewportNodeId});
             }
             break;
         }

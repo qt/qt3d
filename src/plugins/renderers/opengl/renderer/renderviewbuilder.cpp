@@ -121,7 +121,8 @@ public:
         : m_renderViewJob(renderViewJob)
         , m_renderViewCommandUpdaterJobs(renderViewCommandUpdateJobs)
         , m_renderer(renderer)
-    {}
+    {
+    }
 
     void operator()()
     {
