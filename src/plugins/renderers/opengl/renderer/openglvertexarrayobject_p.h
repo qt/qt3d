@@ -102,7 +102,7 @@ private:
     void saveVertexAttribute(const SubmissionContext::VAOVertexAttribute &attr);
     inline void saveIndexAttribute(HGLBuffer glBufferHandle) { m_indexAttribute = glBufferHandle; }
 
-    QVector<SubmissionContext::VAOVertexAttribute> m_vertexAttributes;
+    std::vector<SubmissionContext::VAOVertexAttribute> m_vertexAttributes;
     SubmissionContext::VAOIndexAttribute m_indexAttribute;
 };
 

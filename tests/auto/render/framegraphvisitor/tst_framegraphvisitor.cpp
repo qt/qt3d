@@ -145,7 +145,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::FrameGraphVisitor visitor(fgManager);
-        const QVector<Qt3DRender::Render::FrameGraphNode *> fgNodes = visitor.traverse(backendFGRoot);
+        const std::vector<Qt3DRender::Render::FrameGraphNode *> fgNodes = visitor.traverse(backendFGRoot);
 
         // THEN
         QCOMPARE(fgNodeIdsPerBranch.size(), fgNodes.size());

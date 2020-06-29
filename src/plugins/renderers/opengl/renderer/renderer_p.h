@@ -332,8 +332,8 @@ private:
 
     QAtomicInt m_running;
 
-    QVector<Attribute *> m_dirtyAttributes;
-    QVector<Geometry *> m_dirtyGeometry;
+    std::vector<Attribute *> m_dirtyAttributes;
+    std::vector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
 
     struct DirtyBits {
@@ -359,7 +359,7 @@ private:
     RenderableEntityFilterPtr m_renderableEntityFilterJob;
     ComputableEntityFilterPtr m_computableEntityFilterJob;
 
-    QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
+    std::vector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
     void performDraw(const RenderCommand *command);
     void performCompute(const RenderView *rv, RenderCommand *command);
@@ -383,17 +383,17 @@ private:
     void sendDisablesToFrontend(Qt3DCore::QAspectManager *manager);
 
     QMutex m_abandonedVaosMutex;
-    QVector<HVao> m_abandonedVaos;
+    std::vector<HVao> m_abandonedVaos;
 
-    QVector<HBuffer> m_dirtyBuffers;
-    QVector<Qt3DCore::QNodeId> m_downloadableBuffers;
-    QVector<HShader> m_dirtyShaders;
-    QVector<HTexture> m_dirtyTextures;
-    QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
-    QVector<QPair<Qt3DCore::QNodeId, GLFence>> m_updatedSetFences;
-    QVector<Qt3DCore::QNodeId> m_updatedDisableSubtreeEnablers;
+    std::vector<HBuffer> m_dirtyBuffers;
+    std::vector<Qt3DCore::QNodeId> m_downloadableBuffers;
+    std::vector<HShader> m_dirtyShaders;
+    std::vector<HTexture> m_dirtyTextures;
+    std::vector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
+    std::vector<QPair<Qt3DCore::QNodeId, GLFence>> m_updatedSetFences;
+    std::vector<Qt3DCore::QNodeId> m_updatedDisableSubtreeEnablers;
     Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
-    QVector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
+    std::vector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
 
     bool m_ownedContext;
 
@@ -413,7 +413,7 @@ private:
     RendererCache m_cache;
     bool m_shouldSwapBuffers;
 
-    QVector<FrameGraphNode *> m_frameGraphLeaves;
+    std::vector<FrameGraphNode *> m_frameGraphLeaves;
     QScreen *m_screen = nullptr;
     QSharedPointer<ResourceAccessor> m_scene2DResourceAccessor;
 

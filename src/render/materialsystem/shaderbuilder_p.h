@@ -95,7 +95,7 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    QVector<ShaderBuilderUpdate> takePendingUpdates() { return std::move(m_pendingUpdates); }
+    std::vector<ShaderBuilderUpdate> &&takePendingUpdates() { return std::move(m_pendingUpdates); }
 
 private:
     void setEnabledLayers(const QStringList &layers);
@@ -106,7 +106,7 @@ private:
     QHash<QShaderProgram::ShaderType, QUrl> m_graphs;
     QHash<QShaderProgram::ShaderType, QByteArray> m_codes;
     QSet<QShaderProgram::ShaderType> m_dirtyTypes;
-    QVector<ShaderBuilderUpdate> m_pendingUpdates;
+    std::vector<ShaderBuilderUpdate> m_pendingUpdates;
 };
 
 } // namespace Render

@@ -69,7 +69,7 @@ void OpenGLVertexArrayObject::bind()
 
         m_ctx->m_currentVAO = this;
         // We need to specify array and vertex attributes
-        for (const SubmissionContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
+        for (const SubmissionContext::VAOVertexAttribute &attr : m_vertexAttributes)
             m_ctx->enableAttribute(attr);
         if (!m_indexAttribute.isNull())
             m_ctx->bindGLBuffer(m_ctx->m_renderer->glResourceManagers()->glBufferManager()->data(m_indexAttribute),
@@ -86,7 +86,7 @@ void OpenGLVertexArrayObject::release()
         m_vao->release();
     } else {
         if (m_ctx->m_currentVAO == this) {
-            for (const SubmissionContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
+            for (const SubmissionContext::VAOVertexAttribute &attr : m_vertexAttributes)
                 m_ctx->disableAttribute(attr);
             m_ctx->m_currentVAO = nullptr;
         }
@@ -150,12 +150,11 @@ bool OpenGLVertexArrayObject::isAbandoned(GeometryManager *geomMgr, GLShaderMana
 void OpenGLVertexArrayObject::saveVertexAttribute(const SubmissionContext::VAOVertexAttribute &attr)
 {
     // Remove any vertexAttribute already at location
-    for (auto i = m_vertexAttributes.size() - 1; i >= 0; --i) {
-        if (m_vertexAttributes.at(i).location == attr.location) {
-            m_vertexAttributes.removeAt(i);
-            break;
-        }
-    }
+    m_vertexAttributes.erase(std::remove_if(m_vertexAttributes.begin(),
+                                            m_vertexAttributes.end(),
+                                            [attr] (const SubmissionContext::VAOVertexAttribute &a) {
+        return a.location == attr.location;
+    }));
     m_vertexAttributes.push_back(attr);
 }
 

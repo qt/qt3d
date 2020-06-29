@@ -194,7 +194,7 @@ private Q_SLOTS:
 
         // WHEN (nothing dirty, no buffers, no layers to be rebuilt, no materials to be rebuilt) (RV leaf in cache)
         renderer.markDirty(Qt3DRender::Render::AbstractRenderer::FrameGraphDirty, nullptr);
-        renderer.cache()->leafNodeCache[renderer.m_frameGraphLeaves.first()] = {};
+        renderer.cache()->leafNodeCache[renderer.m_frameGraphLeaves.front()] = {};
         jobs = renderer.renderBinJobs();
 
         // THEN (level

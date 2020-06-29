@@ -196,15 +196,15 @@ public:
         m_filterProximityJob->setProximityFilterIds(rv->proximityFilterIds());
 
         // Material Parameter building
-        for (const auto &materialGatherer : qAsConst(m_materialGathererJobs)) {
+        for (const auto &materialGatherer : m_materialGathererJobs) {
             materialGatherer->setRenderPassFilter(const_cast<RenderPassFilter *>(rv->renderPassFilter()));
             materialGatherer->setTechniqueFilter(const_cast<TechniqueFilter *>(rv->techniqueFilter()));
         }
 
         // Command builders and updates
-        for (const auto &renderViewCommandUpdater : qAsConst(m_renderViewCommandUpdaterJobs))
+        for (const auto &renderViewCommandUpdater : m_renderViewCommandUpdaterJobs)
             renderViewCommandUpdater->setRenderView(rv);
-        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
+        for (const auto &renderViewCommandBuilder : m_renderViewCommandBuilderJobs)
             renderViewCommandBuilder->setRenderView(rv);
 
         // Set whether frustum culling is enabled or not
@@ -504,7 +504,7 @@ public:
         RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
         dataCacheForLeaf.materialParameterGatherer.clear();
 
-        for (const auto &materialGatherer : qAsConst(m_materialParameterGathererJobs)) {
+        for (const auto &materialGatherer : m_materialParameterGathererJobs) {
             const MaterialParameterGathererData &source = materialGatherer->materialToPassAndParameter();
             for (auto it = std::begin(source); it != std::end(source); ++it) {
                 Q_ASSERT(!dataCacheForLeaf.materialParameterGatherer.contains(it.key()));
@@ -753,7 +753,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->textureGathererJob());
     m_syncRenderViewPreCommandUpdateJob->addDependency(m_renderer->lightGathererJob());
 
-    for (const auto &renderViewCommandUpdater : qAsConst(m_renderViewCommandUpdaterJobs)) {
+    for (const auto &renderViewCommandUpdater : m_renderViewCommandUpdaterJobs) {
         renderViewCommandUpdater->addDependency(m_syncRenderViewPreCommandUpdateJob);
         m_syncRenderViewPostCommandUpdateJob->addDependency(renderViewCommandUpdater);
     }
@@ -780,7 +780,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
 
         jobs.push_back(m_syncRenderViewPreCommandBuildingJob);
 
-        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs)) {
+        for (const auto &renderViewCommandBuilder : m_renderViewCommandBuilderJobs) {
             renderViewCommandBuilder->addDependency(m_syncRenderViewPreCommandBuildingJob);
             m_syncRenderViewPreCommandUpdateJob->addDependency(renderViewCommandBuilder);
             jobs.push_back(renderViewCommandBuilder);
@@ -819,7 +819,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     jobs.push_back(m_syncRenderViewPreCommandUpdateJob); // Step 5
 
     // Build RenderCommands or Update RenderCommand Uniforms
-    for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewCommandUpdaterJobs)) // Step 6
+    for (const auto &renderViewCommandBuilder : m_renderViewCommandUpdaterJobs) // Step 6
         jobs.push_back(renderViewCommandBuilder);
 
     jobs.push_back(m_syncRenderViewPostCommandUpdateJob); // Step 7

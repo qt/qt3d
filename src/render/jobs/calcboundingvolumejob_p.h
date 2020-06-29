@@ -86,7 +86,7 @@ private:
     NodeManagers *m_manager;
     Entity *m_node;
     Qt3DCore::QAbstractFrontEndNodeManager *m_frontEndNodeManager;
-    QVector<Geometry *> m_updatedGeometries;
+    std::vector<Geometry *> m_updatedGeometries;
 };
 
 typedef QSharedPointer<CalculateBoundingVolumeJob> CalculateBoundingVolumeJobPtr;

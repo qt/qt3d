@@ -388,7 +388,7 @@ QOpenGLContext *Renderer::shareContext() const
 void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
     Q_UNUSED(shader);
-    if (!m_dirtyShaders.contains(shaderHandle))
+    if (std::find(m_dirtyShaders.begin(), m_dirtyShaders.end(), shaderHandle) == m_dirtyShaders.end())
         m_dirtyShaders.push_back(shaderHandle);
 }
 
@@ -978,11 +978,11 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
     // Unset dirtiness on Geometry and Attributes
     // Note: we cannot do it in the loop above as we want to be sure that all
     // the VAO which reference the geometry/attributes are properly updated
-    for (Attribute *attribute : qAsConst(m_dirtyAttributes))
+    for (Attribute *attribute : m_dirtyAttributes)
         attribute->unsetDirty();
     m_dirtyAttributes.clear();
 
-    for (Geometry *geometry : qAsConst(m_dirtyGeometry))
+    for (Geometry *geometry : m_dirtyGeometry)
         geometry->unsetDirty();
     m_dirtyGeometry.clear();
 }
@@ -1108,7 +1108,10 @@ void Renderer::reloadDirtyShaders()
 
                         if (shaderBuilder->isShaderCodeDirty(shaderType)) {
                             shaderBuilder->generateCode(shaderType);
-                            m_shaderBuilderUpdates.append(shaderBuilder->takePendingUpdates());
+                            const std::vector<ShaderBuilderUpdate> &updates = shaderBuilder->takePendingUpdates();
+                            m_shaderBuilderUpdates.insert(m_shaderBuilderUpdates.end(),
+                                                          std::make_move_iterator(updates.begin()),
+                                                          std::make_move_iterator(updates.end()));
                         }
 
                         const auto code = shaderBuilder->shaderCode(shaderType);
@@ -1146,7 +1149,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     }
 
     // Sync ShaderBuilder
-    const QVector<ShaderBuilderUpdate> shaderBuilderUpdates = std::move(m_shaderBuilderUpdates);
+    const std::vector<ShaderBuilderUpdate> shaderBuilderUpdates = std::move(m_shaderBuilderUpdates);
     for (const ShaderBuilderUpdate &update : shaderBuilderUpdates) {
         QShaderProgramBuilder *builder = static_cast<decltype(builder)>(manager->lookupNode(update.builderId));
         QShaderProgramBuilderPrivate *dBuilder = static_cast<decltype(dBuilder)>(QNodePrivate::get(builder));
@@ -1157,7 +1160,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
 // Executed in a job (in main thread when jobs are done)
 void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
-    const QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
+    const std::vector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
     for (const auto &pair : updateTextureProperties) {
         const Qt3DCore::QNodeIdVector targetIds = pair.second;
         for (const Qt3DCore::QNodeId &targetId: targetIds) {
@@ -1193,7 +1196,7 @@ void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 // Executed in main thread when jobs done
 void Renderer::sendSetFenceHandlesToFrontend(Qt3DCore::QAspectManager *manager)
 {
-    const QVector<QPair<Qt3DCore::QNodeId, GLFence>> updatedSetFence = std::move(m_updatedSetFences);
+    const std::vector<QPair<Qt3DCore::QNodeId, GLFence>> updatedSetFence = std::move(m_updatedSetFences);
     FrameGraphManager *fgManager = m_nodesManager->frameGraphManager();
     for (const auto &pair : updatedSetFence) {
         FrameGraphNode *fgNode = fgManager->lookupNode(pair.first);
@@ -1262,7 +1265,7 @@ void Renderer::updateGLResources()
 
     {
         Profiling::GLTimeRecorder recorder(Profiling::BufferUpload, activeProfiler());
-        const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
+        const std::vector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
         for (const HBuffer &handle: dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
 
@@ -1283,7 +1286,7 @@ void Renderer::updateGLResources()
 #ifndef SHADER_LOADING_IN_COMMAND_THREAD
     {
         Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload, activeProfiler());
-        const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+        const std::vector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
         for (const HShader &handle: dirtyShaderHandles) {
             Shader *shader = shaderManager->data(handle);
@@ -1300,7 +1303,7 @@ void Renderer::updateGLResources()
 
     {
         Profiling::GLTimeRecorder recorder(Profiling::TextureUpload, activeProfiler());
-        const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
+        const std::vector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
         for (const HTexture &handle: activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
 
@@ -1452,7 +1455,7 @@ void Renderer::cleanupShader(const Shader *shader)
 // Called by SubmitRenderView
 void Renderer::downloadGLBuffers()
 {
-    const QVector<Qt3DCore::QNodeId> downloadableHandles = std::move(m_downloadableBuffers);
+    const std::vector<Qt3DCore::QNodeId> downloadableHandles = std::move(m_downloadableBuffers);
     for (const Qt3DCore::QNodeId &bufferId : downloadableHandles) {
         BufferManager *bufferManager = m_nodesManager->bufferManager();
         BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
@@ -1655,7 +1658,10 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             Render::RenderCapture *renderCapture =
                     static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderView->renderCaptureNodeId()));
             renderCapture->addRenderCapture(request.captureId, image);
-            if (!m_pendingRenderCaptureSendRequests.contains(renderView->renderCaptureNodeId()))
+            const QNodeId renderCaptureId = renderView->renderCaptureNodeId();
+            if (std::find(m_pendingRenderCaptureSendRequests.begin(),
+                          m_pendingRenderCaptureSendRequests.end(),
+                          renderCaptureId) == m_pendingRenderCaptureSendRequests.end())
                 m_pendingRenderCaptureSendRequests.push_back(renderView->renderCaptureNodeId());
         }
 
@@ -1771,8 +1777,8 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
     // called in main thread once all jobs are done running
 
     // sync captured renders to frontend
-    const QVector<Qt3DCore::QNodeId> pendingCaptureIds = std::move(m_pendingRenderCaptureSendRequests);
-    for (const Qt3DCore::QNodeId &id : qAsConst(pendingCaptureIds)) {
+    const std::vector<Qt3DCore::QNodeId> pendingCaptureIds = std::move(m_pendingRenderCaptureSendRequests);
+    for (const Qt3DCore::QNodeId &id : pendingCaptureIds) {
         auto *backend = static_cast<Qt3DRender::Render::RenderCapture *>
             (m_nodesManager->frameGraphManager()->lookupNode(id));
         backend->syncRenderCapturesToFrontend(manager);
@@ -1887,7 +1893,9 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             // Remove leaf nodes that no longer exist from cache
             const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
             for (FrameGraphNode *leafNode : keys) {
-                if (!m_frameGraphLeaves.contains(leafNode))
+                if (std::find(m_frameGraphLeaves.begin(),
+                              m_frameGraphLeaves.end(),
+                              leafNode) == m_frameGraphLeaves.end())
                     m_cache.leafNodeCache.remove(leafNode);
             }
 
@@ -1899,10 +1907,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
         int idealThreadCount = QThreadPooler::maxThreadCount();
 
-        const int fgBranchCount = m_frameGraphLeaves.size();
+        const size_t fgBranchCount = m_frameGraphLeaves.size();
         if (fgBranchCount > 1) {
             int workBranches = fgBranchCount;
-            for (auto leaf: qAsConst(m_frameGraphLeaves))
+            for (auto leaf: m_frameGraphLeaves)
                 if (leaf->nodeType() == FrameGraphNode::NoDraw)
                     --workBranches;
 
@@ -1910,8 +1918,8 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
                 idealThreadCount = qMax(4, idealThreadCount / workBranches);
         }
 
-        for (int i = 0; i < fgBranchCount; ++i) {
-            FrameGraphNode *leaf = m_frameGraphLeaves.at(i);
+        for (size_t i = 0; i < fgBranchCount; ++i) {
+            FrameGraphNode *leaf = m_frameGraphLeaves[i];
             RenderViewBuilder builder(leaf, i, this);
             builder.setOptimalJobCount(leaf->nodeType() == FrameGraphNode::NoDraw ? 1 : idealThreadCount);
 
@@ -2279,7 +2287,7 @@ void Renderer::cleanGraphicsResources()
 
     // Delete abandoned VAOs
     m_abandonedVaosMutex.lock();
-    const QVector<HVao> abandonedVaos = std::move(m_abandonedVaos);
+    const std::vector<HVao> abandonedVaos = std::move(m_abandonedVaos);
     m_abandonedVaosMutex.unlock();
     for (const HVao &vaoHandle : abandonedVaos) {
         // might have already been destroyed last frame, but added by the cleanup job before, so

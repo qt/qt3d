@@ -72,15 +72,15 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT FrameGraphVisitor
 public:
     explicit FrameGraphVisitor(const FrameGraphManager *nodeManager);
 
-    QVector<FrameGraphNode *> traverse(FrameGraphNode *root);
-    QVector<FrameGraphNode *> &&takeEnablersToDisable();
+    std::vector<FrameGraphNode *> &&traverse(FrameGraphNode *root);
+    std::vector<FrameGraphNode *> &&takeEnablersToDisable();
 
 private:
     void visit(Render::FrameGraphNode *node);
 
     const FrameGraphManager *m_manager;
-    QVector<FrameGraphNode *> m_leaves;
-    QVector<FrameGraphNode *> m_enablersToDisable;
+    std::vector<FrameGraphNode *> m_leaves;
+    std::vector<FrameGraphNode *> m_enablersToDisable;
 };
 
 } // namespace Render

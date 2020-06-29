@@ -75,7 +75,7 @@ namespace {
 class BoundingVolumeCalculator
 {
 public:
-    BoundingVolumeCalculator(NodeManagers *manager) : m_manager(manager) { }
+    explicit BoundingVolumeCalculator(NodeManagers *manager) : m_manager(manager) { }
 
     const Sphere& result() { return m_volume; }
     const QVector3D min() const { return m_min; }
@@ -144,7 +144,7 @@ private:
     class FindExtremePoints : public Buffer3fVisitor
     {
     public:
-        FindExtremePoints(NodeManagers *manager)
+        explicit FindExtremePoints(NodeManagers *manager)
             : Buffer3fVisitor(manager)
             , xMin(0.0f), xMax(0.0f), yMin(0.0f), yMax(0.0f), zMin(0.0f), zMax(0.0f)
         { }
@@ -191,7 +191,7 @@ private:
     class FindMaxDistantPoint : public Buffer3fVisitor
     {
     public:
-        FindMaxDistantPoint(NodeManagers *manager)
+        explicit FindMaxDistantPoint(NodeManagers *manager)
             : Buffer3fVisitor(manager)
         { }
 
@@ -337,12 +337,12 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, E
     return res;
 }
 
-QVector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, const BoundingVolumeComputeData &data)
+std::vector<Geometry *> calculateLocalBoundingVolume(NodeManagers *manager, const BoundingVolumeComputeData &data)
 {
     // The Bounding volume will only be computed if the position Buffer
     // isDirty
 
-    QVector<Geometry *> updatedGeometries;
+    std::vector<Geometry *> updatedGeometries;
 
     BoundingVolumeCalculator reader(manager);
     if (reader.apply(data.positionAttribute, data.indexAttribute, data.vertexCount,
@@ -365,8 +365,8 @@ struct UpdateBoundFunctor
     NodeManagers *manager;
 
     // This define is required to work with QtConcurrent
-    typedef QVector<Geometry *> result_type;
-    QVector<Geometry *> operator ()(const BoundingVolumeComputeData &data)
+    typedef std::vector<Geometry *> result_type;
+    std::vector<Geometry *> operator ()(const BoundingVolumeComputeData &data)
     {
         return calculateLocalBoundingVolume(manager, data);
     }
@@ -374,16 +374,18 @@ struct UpdateBoundFunctor
 
 struct ReduceUpdateBoundFunctor
 {
-    void operator ()(QVector<Geometry *> &result, const QVector<Geometry *> &values)
+    void operator ()(std::vector<Geometry *> &result, const std::vector<Geometry *> &values)
     {
-        result += values;
+        result.insert(result.end(),
+                      values.begin(),
+                      values.end());
     }
 };
 
 class DirtyEntityAccumulator : public EntityVisitor
 {
 public:
-    DirtyEntityAccumulator(NodeManagers *manager)
+    explicit DirtyEntityAccumulator(NodeManagers *manager)
         : EntityVisitor(manager)
     {
     }
@@ -425,7 +427,6 @@ public:
         return Continue;
     }
 
-    NodeManagers *m_nodeNanager;
     Qt3DCore::QAbstractFrontEndNodeManager *m_frontEndNodeManager = nullptr;
     std::vector<BoundingVolumeComputeData> m_entities;
 };
@@ -448,12 +449,11 @@ void CalculateBoundingVolumeJob::run()
 
     DirtyEntityAccumulator accumulator(m_manager);
     accumulator.m_frontEndNodeManager = m_frontEndNodeManager;
-    accumulator.m_nodeNanager = m_manager;
     accumulator.apply(m_node);
 
-    std::vector<BoundingVolumeComputeData> entities = std::move(accumulator.m_entities);
+    const std::vector<BoundingVolumeComputeData> entities = std::move(accumulator.m_entities);
 
-    QVector<Geometry *> updatedGeometries;
+    std::vector<Geometry *> updatedGeometries;
     updatedGeometries.reserve(entities.size());
 
 #if QT_CONFIG(concurrent)
@@ -461,12 +461,19 @@ void CalculateBoundingVolumeJob::run()
         UpdateBoundFunctor functor;
         functor.manager = m_manager;
         ReduceUpdateBoundFunctor reduceFunctor;
-        updatedGeometries += QtConcurrent::blockingMappedReduced<decltype(updatedGeometries)>(entities, functor, reduceFunctor);
+        const std::vector<Geometry *> &newGeometries = QtConcurrent::blockingMappedReduced<decltype(updatedGeometries)>(entities, functor, reduceFunctor);
+        updatedGeometries.insert(updatedGeometries.end(),
+                                 newGeometries.begin(),
+                                 newGeometries.end());
     } else
 #endif
     {
-        for (const auto &data: entities)
-            updatedGeometries += calculateLocalBoundingVolume(m_manager, data);
+        for (const auto &data: entities) {
+            const std::vector<Geometry *> &newGeometries = calculateLocalBoundingVolume(m_manager, data);
+            updatedGeometries.insert(updatedGeometries.end(),
+                                     newGeometries.begin(),
+                                     newGeometries.end());
+        }
     }
 
     m_updatedGeometries = std::move(updatedGeometries);
@@ -475,7 +482,7 @@ void CalculateBoundingVolumeJob::run()
 void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
 {
     Q_UNUSED(aspectEngine);
-    for (Geometry *backend : qAsConst(m_updatedGeometries)) {
+    for (Geometry *backend : m_updatedGeometries) {
         Qt3DCore::QGeometry *node = qobject_cast<Qt3DCore::QGeometry *>(m_frontEndNodeManager->lookupNode(backend->peerId()));
         if (!node)
             continue;
