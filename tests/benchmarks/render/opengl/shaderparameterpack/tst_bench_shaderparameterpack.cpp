@@ -63,11 +63,11 @@ private Q_SLOTS:
     {
         // GIVEN
         GLShader shader;
-        QVector<ShaderUniform> uniformDescriptions;
+        std::vector<ShaderUniform> uniformDescriptions;
         for (int i = 0; i < 30; i++) {
             ShaderUniform u;
             u.m_name = QString::number(i);
-            uniformDescriptions << u;
+            uniformDescriptions.push_back(u);
         }
         shader.initializeUniforms(uniformDescriptions);
 
@@ -75,13 +75,13 @@ private Q_SLOTS:
         QCOMPARE(shader.uniforms().size(), 30);
 
         // WHEN
-        QVector<int> testNames;
+        std::vector<int> testNames;
         for (int i = 0; i < 10; ++i)
-            testNames << shader.uniforms()[i * 3].m_nameId;
+            testNames.push_back(shader.uniforms()[i * 3].m_nameId);
 
         // WHEN
         ShaderParameterPack pack;
-        for (const int nameId : qAsConst(testNames))
+        for (const int nameId : testNames)
             pack.setUniform(nameId, UniformValue(nameId));
 
         QBENCHMARK {

@@ -63,7 +63,7 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.usage(), buffer.usage());
         QCOMPARE(renderBuffer.data(), buffer.data());
         QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1);
-        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, -1);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().front().offset, -1);
     }
 
     void checkInitialAndCleanedUpState()
@@ -146,7 +146,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
-        Qt3DCore::QBufferUpdate fullUpdate = backendBuffer.pendingBufferUpdates().first();
+        Qt3DCore::QBufferUpdate fullUpdate = backendBuffer.pendingBufferUpdates().front();
         QCOMPARE(fullUpdate.offset, -1);
         QVERIFY(fullUpdate.data.isEmpty());
         QCOMPARE(frontendBuffer.data(), backendBuffer.data());
@@ -160,7 +160,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(frontendBuffer.data(), QByteArray("100456789\0"));
         QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
-        fullUpdate = backendBuffer.pendingBufferUpdates().first();
+        fullUpdate = backendBuffer.pendingBufferUpdates().front();
         QCOMPARE(fullUpdate.offset, 1);
         QCOMPARE(fullUpdate.data, QByteArray("00\0"));
         QCOMPARE(frontendBuffer.data(), backendBuffer.data());
@@ -171,7 +171,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(frontendBuffer.data(), QByteArray("122456789\0"));
-        fullUpdate = backendBuffer.pendingBufferUpdates().first();
+        fullUpdate = backendBuffer.pendingBufferUpdates().front();
         QCOMPARE(fullUpdate.offset, -1);
         QVERIFY(fullUpdate.data.isEmpty());
         QCOMPARE(frontendBuffer.data(), backendBuffer.data());
@@ -215,7 +215,7 @@ private Q_SLOTS:
         QCOMPARE(backendBuffer.data(), QByteArrayLiteral("LS9SL"));
         QVERIFY(backendBuffer.isDirty());
         QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
-        QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, -1);
+        QCOMPARE(backendBuffer.pendingBufferUpdates().front().offset, -1);
 
         backendBuffer.pendingBufferUpdates().clear();
 
@@ -231,7 +231,7 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(!backendBuffer.pendingBufferUpdates().empty());
-        QCOMPARE(backendBuffer.pendingBufferUpdates().first().offset, 2);
+        QCOMPARE(backendBuffer.pendingBufferUpdates().front().offset, 2);
         QVERIFY(backendBuffer.isDirty());
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
@@ -315,10 +315,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 2);
-        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, 0);
-        QCOMPARE(renderBuffer.pendingBufferUpdates().first().data, QByteArray("012"));
-        QCOMPARE(renderBuffer.pendingBufferUpdates().last().offset, 3);
-        QCOMPARE(renderBuffer.pendingBufferUpdates().last().data, QByteArray("345"));
+        QCOMPARE(renderBuffer.pendingBufferUpdates().front().offset, 0);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().front().data, QByteArray("012"));
+        QCOMPARE(renderBuffer.pendingBufferUpdates().back().offset, 3);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().back().data, QByteArray("345"));
         QCOMPARE(renderBuffer.data(), QByteArray("012345"));
     }
 };

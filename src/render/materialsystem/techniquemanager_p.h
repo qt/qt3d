@@ -69,10 +69,10 @@ public:
     TechniqueManager();
 
     void addDirtyTechnique(Qt3DCore::QNodeId techniqueId);
-    QVector<Qt3DCore::QNodeId> takeDirtyTechniques();
+    std::vector<Qt3DCore::QNodeId> takeDirtyTechniques();
 
 private:
-    QVector<Qt3DCore::QNodeId> m_dirtyTechniques;
+    std::vector<Qt3DCore::QNodeId> m_dirtyTechniques;
 };
 
 } // Render

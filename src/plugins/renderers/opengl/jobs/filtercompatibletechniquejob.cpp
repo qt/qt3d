@@ -82,7 +82,7 @@ void FilterCompatibleTechniqueJob::run()
     Q_ASSERT(m_manager != nullptr && m_renderer != nullptr);
     Q_ASSERT(m_renderer->isRunning() && m_renderer->submissionContext()->isInitialized());
 
-    const QVector<Qt3DCore::QNodeId> dirtyTechniqueIds = m_manager->takeDirtyTechniques();
+    const std::vector<Qt3DCore::QNodeId> dirtyTechniqueIds = m_manager->takeDirtyTechniques();
     for (const Qt3DCore::QNodeId techniqueId : dirtyTechniqueIds) {
         Technique *technique = m_manager->lookupResource(techniqueId);
         if (Q_LIKELY(technique != nullptr))

@@ -1065,7 +1065,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
     }
 
     if (shader->hasActiveVariables()) {
-        const QVector<int> &standardUniformNamesIds = shader->standardUniformNameIds();
+        const std::vector<int> &standardUniformNamesIds = shader->standardUniformNameIds();
 
         // It only makes sense to update the standard uniforms if:
         // - Camera changed
@@ -1096,7 +1096,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
 void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entity) const
 {
     GLShader *shader = command->m_glShader;
-    const QVector<int> &lightUniformNamesIds = shader->lightUniformsNamesIds();
+    const std::vector<int> &lightUniformNamesIds = shader->lightUniformsNamesIds();
     if (!lightUniformNamesIds.empty()) {
         // Pick which lights to take in to account.
         // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
@@ -1134,12 +1134,12 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
                     break;
 
                 // Note: implicit conversion of values to UniformValue
-                if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_NAMES[lightIdx])) {
+                if (std::find(lightUniformNamesIds.begin(), lightUniformNamesIds.end(), GLLights::LIGHT_TYPE_NAMES[lightIdx]) != lightUniformNamesIds.end()) {
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[lightIdx], worldPos);
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
-                } else if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx])) {
+                } else if (std::find(lightUniformNamesIds.begin(), lightUniformNamesIds.end(), GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx]) != lightUniformNamesIds.end()) {
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_UNROLL_NAMES[lightIdx], worldPos);
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx], int(QAbstractLight::PointLight));
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_UNROLL_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
@@ -1164,12 +1164,12 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
         // If no active light sources and no environment light, add a default light
         if (m_lightSources.empty() && !m_environmentLight) {
             // Note: implicit conversion of values to UniformValue
-            if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_NAMES[0])) {
+            if (std::find(lightUniformNamesIds.begin(), lightUniformNamesIds.end(), GLLights::LIGHT_TYPE_NAMES[lightIdx]) != lightUniformNamesIds.end()) {
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_NAMES[0], 0.5f);
-            } else if (lightUniformNamesIds.contains(GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx])) {
+            } else if (std::find(lightUniformNamesIds.begin(), lightUniformNamesIds.end(), GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx]) != lightUniformNamesIds.end()) {
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_UNROLL_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_UNROLL_NAMES[0], int(QAbstractLight::PointLight));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_UNROLL_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));

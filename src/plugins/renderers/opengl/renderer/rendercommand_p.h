@@ -108,7 +108,7 @@ public:
 
     // A QAttribute pack might be interesting
     // This is a temporary fix in the meantime, to remove the hacked methods in Technique
-    QVector<int> m_activeAttributes;
+    std::vector<int> m_activeAttributes;
 
     float m_depth;
     int m_changeCost;

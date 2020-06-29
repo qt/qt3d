@@ -91,8 +91,8 @@ public:
     StateMaskSet stateMask() const;
     void merge(const RenderStateSet *other);
 
-    const QVector<StateVariant>& states() const noexcept { return m_states; }
-    QVector<StateVariant>& states() noexcept { return m_states; }
+    const std::vector<StateVariant>& states() const noexcept { return m_states; }
+    std::vector<StateVariant>& states() noexcept { return m_states; }
 
     bool canAddStateOfType(StateMask type) const;
 
@@ -109,7 +109,7 @@ private:
 
 private:
     StateMaskSet m_stateMask;
-    QVector<StateVariant> m_states;
+    std::vector<StateVariant> m_states;
 };
 
 template<>

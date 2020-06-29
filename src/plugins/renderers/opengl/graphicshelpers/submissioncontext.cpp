@@ -1150,7 +1150,7 @@ void SubmissionContext::applyStateSet(RenderStateSet *ss)
 
     // Apply states that weren't in the previous state or that have
     // different values
-    const QVector<StateVariant> statesToSet = ss->states();
+    const std::vector<StateVariant> statesToSet = ss->states();
     for (const StateVariant &ds : statesToSet) {
         if (previousStates && previousStates->contains(ds))
             continue;
@@ -1321,7 +1321,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
     // Update uniforms in the Default Uniform Block
     const PackUniformHash& values = parameterPack.uniforms();
     const auto &activeUniformsIndices = parameterPack.submissionUniformIndices();
-    const QVector<ShaderUniform> &shaderUniforms = shader->uniforms();
+    const std::vector<ShaderUniform> &shaderUniforms = shader->uniforms();
 
     for (const int shaderUniformIndex : activeUniformsIndices) {
         const ShaderUniform &uniform = shaderUniforms[shaderUniformIndex];
@@ -1512,7 +1512,7 @@ void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool r
     // * partial buffer updates where received
 
     // TO DO: Handle usage pattern
-    QVector<Qt3DCore::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
+    std::vector<Qt3DCore::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
     for (auto it = updates.begin(); it != updates.end(); ++it) {
         auto update = it;
         // We have a partial update

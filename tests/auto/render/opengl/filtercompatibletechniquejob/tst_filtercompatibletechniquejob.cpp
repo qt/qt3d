@@ -247,7 +247,7 @@ private Q_SLOTS:
         backendFilterCompatibleTechniqueJob.run();
 
         // THEN -> empty if job ran properly
-        const QVector<Qt3DCore::QNodeId> dirtyTechniquesId = testAspect.nodeManagers()->techniqueManager()->takeDirtyTechniques();
+        const std::vector<Qt3DCore::QNodeId> dirtyTechniquesId = testAspect.nodeManagers()->techniqueManager()->takeDirtyTechniques();
         QCOMPARE(dirtyTechniquesId.size(), 0);
 
         // Check at least one technique is valid

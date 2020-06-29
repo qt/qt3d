@@ -264,9 +264,9 @@ void GraphicsHelperGL4::useProgram(GLuint programId)
     m_funcs->glUseProgram(programId);
 }
 
-QVector<ShaderUniform> GraphicsHelperGL4::programUniformsAndLocations(GLuint programId)
+std::vector<ShaderUniform> GraphicsHelperGL4::programUniformsAndLocations(GLuint programId)
 {
-    QVector<ShaderUniform> uniforms;
+    std::vector<ShaderUniform> uniforms;
 
     GLint nbrActiveUniforms = 0;
     m_funcs->glGetProgramInterfaceiv(programId, GL_UNIFORM, GL_ACTIVE_RESOURCES, &nbrActiveUniforms);
@@ -290,7 +290,7 @@ QVector<ShaderUniform> GraphicsHelperGL4::programUniformsAndLocations(GLuint pro
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_ARRAY_STRIDE, &uniform.m_arrayStride);
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_MATRIX_STRIDE, &uniform.m_matrixStride);
         uniform.m_rawByteSize = uniformByteSize(uniform);
-        uniforms.append(uniform);
+        uniforms.push_back(uniform);
         qCDebug(Rendering) << uniform.m_name << "size" << uniform.m_size
                            << " offset" << uniform.m_offset
                            << " rawSize" << uniform.m_rawByteSize;
@@ -299,9 +299,9 @@ QVector<ShaderUniform> GraphicsHelperGL4::programUniformsAndLocations(GLuint pro
     return uniforms;
 }
 
-QVector<ShaderAttribute> GraphicsHelperGL4::programAttributesAndLocations(GLuint programId)
+std::vector<ShaderAttribute> GraphicsHelperGL4::programAttributesAndLocations(GLuint programId)
 {
-    QVector<ShaderAttribute> attributes;
+    std::vector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
     attributes.reserve(nbrActiveAttributes);
@@ -316,14 +316,14 @@ QVector<ShaderAttribute> GraphicsHelperGL4::programAttributesAndLocations(GLuint
         attributeName[sizeof(attributeName) - 1] = '\0';
         attribute.m_location = m_funcs->glGetAttribLocation(programId, attributeName);
         attribute.m_name = QString::fromUtf8(attributeName, attributeNameLength);
-        attributes.append(attribute);
+        attributes.push_back(attribute);
     }
     return attributes;
 }
 
-QVector<ShaderUniformBlock> GraphicsHelperGL4::programUniformBlocks(GLuint programId)
+std::vector<ShaderUniformBlock> GraphicsHelperGL4::programUniformBlocks(GLuint programId)
 {
-    QVector<ShaderUniformBlock> blocks;
+    std::vector<ShaderUniformBlock> blocks;
     GLint nbrActiveUniformsBlocks = 0;
     m_funcs->glGetProgramInterfaceiv(programId, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &nbrActiveUniformsBlocks);
     blocks.reserve(nbrActiveUniformsBlocks);
@@ -340,14 +340,14 @@ QVector<ShaderUniformBlock> GraphicsHelperGL4::programUniformBlocks(GLuint progr
         m_funcs->glGetProgramResourceiv(programId, GL_UNIFORM_BLOCK, i, 1, &prop, 4, NULL, &uniformBlock.m_size);
         prop = GL_NUM_ACTIVE_VARIABLES;
         m_funcs->glGetProgramResourceiv(programId, GL_UNIFORM_BLOCK, i, 1, &prop, 4, NULL, &uniformBlock.m_activeUniformsCount);
-        blocks.append(uniformBlock);
+        blocks.push_back(uniformBlock);
     }
     return blocks;
 }
 
-QVector<ShaderStorageBlock> GraphicsHelperGL4::programShaderStorageBlocks(GLuint programId)
+std::vector<ShaderStorageBlock> GraphicsHelperGL4::programShaderStorageBlocks(GLuint programId)
 {
-    QVector<ShaderStorageBlock> blocks;
+    std::vector<ShaderStorageBlock> blocks;
     GLint nbrActiveShaderStorageBlocks = 0;
     m_funcs->glGetProgramInterfaceiv(programId, GL_SHADER_STORAGE_BLOCK, GL_ACTIVE_RESOURCES, &nbrActiveShaderStorageBlocks);
     blocks.reserve(nbrActiveShaderStorageBlocks);

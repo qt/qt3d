@@ -946,7 +946,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                     if (rGeometry->isDirty())
                         m_dirtyGeometry.push_back(rGeometry);
 
-                    if (!command.m_activeAttributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
+                    if (!command.m_activeAttributes.empty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
                         Profiling::GLTimeRecorder recorder(Profiling::VAOUpload, activeProfiler());
                         // Activate shader
                         m_submissionContext->activateShader(shader);
@@ -2220,10 +2220,12 @@ bool Renderer::updateVAOWithAttributes(Geometry *geometry,
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate)
                 m_submissionContext->specifyIndices(buffer);
             // Vertex Attribute
-        } else if (command->m_activeAttributes.contains(attribute->nameId())) {
+        } else if (std::find(command->m_activeAttributes.begin(),
+                             command->m_activeAttributes.end(),
+                             attribute->nameId()) != command->m_activeAttributes.end()) {
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate) {
                 // Find the location for the attribute
-                const QVector<ShaderAttribute> shaderAttributes = shader->attributes();
+                const std::vector<ShaderAttribute> &shaderAttributes = shader->attributes();
                 const ShaderAttribute *attributeDescription = nullptr;
                 for (const ShaderAttribute &shaderAttribute : shaderAttributes) {
                     if (shaderAttribute.m_nameId == attribute->nameId()) {
@@ -2265,7 +2267,10 @@ bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
             continue;
 
         if ((attribute->attributeType() == QAttribute::IndexAttribute && attribute->isDirty()) ||
-                (command->m_activeAttributes.contains(attribute->nameId()) && attribute->isDirty()))
+                (std::find(command->m_activeAttributes.begin(),
+                           command->m_activeAttributes.end(),
+                           attribute->nameId()) != command->m_activeAttributes.end() &&
+                 attribute->isDirty()))
             return true;
     }
     return false;

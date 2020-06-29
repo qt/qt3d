@@ -81,8 +81,8 @@ public:
     void drawBuffer(GLenum mode) override;
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) override;
     char *mapBuffer(GLenum target, GLsizeiptr size) override;
-    QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) override;
-    QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) override;
+    std::vector<ShaderUniform> programUniformsAndLocations(GLuint programId) override;
+    std::vector<ShaderUniformBlock> programUniformBlocks(GLuint programId) override;
     bool supportsFeature(Feature feature) const override;
     GLboolean unmapBuffer(GLenum target) override;
     void vertexAttribDivisor(GLuint index, GLuint divisor) override;

@@ -175,9 +175,9 @@ void GraphicsHelperGL3_2::useProgram(GLuint programId)
     m_funcs->glUseProgram(programId);
 }
 
-QVector<ShaderUniform> GraphicsHelperGL3_2::programUniformsAndLocations(GLuint programId)
+std::vector<ShaderUniform> GraphicsHelperGL3_2::programUniformsAndLocations(GLuint programId)
 {
-    QVector<ShaderUniform> uniforms;
+    std::vector<ShaderUniform> uniforms;
 
     GLint nbrActiveUniforms = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
@@ -201,7 +201,7 @@ QVector<ShaderUniform> GraphicsHelperGL3_2::programUniformsAndLocations(GLuint p
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_ARRAY_STRIDE, &uniform.m_arrayStride);
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_MATRIX_STRIDE, &uniform.m_matrixStride);
         uniform.m_rawByteSize = uniformByteSize(uniform);
-        uniforms.append(uniform);
+        uniforms.push_back(uniform);
         qCDebug(Rendering) << uniform.m_name << "size" << uniform.m_size
                            << " offset" << uniform.m_offset
                            << " rawSize" << uniform.m_rawByteSize;
@@ -210,9 +210,9 @@ QVector<ShaderUniform> GraphicsHelperGL3_2::programUniformsAndLocations(GLuint p
     return uniforms;
 }
 
-QVector<ShaderAttribute> GraphicsHelperGL3_2::programAttributesAndLocations(GLuint programId)
+std::vector<ShaderAttribute> GraphicsHelperGL3_2::programAttributesAndLocations(GLuint programId)
 {
-    QVector<ShaderAttribute> attributes;
+    std::vector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
     attributes.reserve(nbrActiveAttributes);
@@ -227,14 +227,14 @@ QVector<ShaderAttribute> GraphicsHelperGL3_2::programAttributesAndLocations(GLui
         attributeName[sizeof(attributeName) - 1] = '\0';
         attribute.m_location = m_funcs->glGetAttribLocation(programId, attributeName);
         attribute.m_name = QString::fromUtf8(attributeName, attributeNameLength);
-        attributes.append(attribute);
+        attributes.push_back(attribute);
     }
     return attributes;
 }
 
-QVector<ShaderUniformBlock> GraphicsHelperGL3_2::programUniformBlocks(GLuint programId)
+std::vector<ShaderUniformBlock> GraphicsHelperGL3_2::programUniformBlocks(GLuint programId)
 {
-    QVector<ShaderUniformBlock> blocks;
+    std::vector<ShaderUniformBlock> blocks;
     GLint nbrActiveUniformsBlocks = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORM_BLOCKS, &nbrActiveUniformsBlocks);
     blocks.reserve(nbrActiveUniformsBlocks);
@@ -248,17 +248,16 @@ QVector<ShaderUniformBlock> GraphicsHelperGL3_2::programUniformBlocks(GLuint pro
         m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformBlock.m_activeUniformsCount);
         m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_BINDING, &uniformBlock.m_binding);
         m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlock.m_size);
-        blocks.append(uniformBlock);
+        blocks.push_back(uniformBlock);
     }
     return blocks;
 }
 
-QVector<ShaderStorageBlock> GraphicsHelperGL3_2::programShaderStorageBlocks(GLuint programId)
+std::vector<ShaderStorageBlock> GraphicsHelperGL3_2::programShaderStorageBlocks(GLuint programId)
 {
     Q_UNUSED(programId);
-    QVector<ShaderStorageBlock> blocks;
     qWarning() << "SSBO are not supported by OpenGL 3.2 (since OpenGL 4.3)";
-    return blocks;
+    return {};
 }
 
 void GraphicsHelperGL3_2::vertexAttribDivisor(GLuint index, GLuint divisor)

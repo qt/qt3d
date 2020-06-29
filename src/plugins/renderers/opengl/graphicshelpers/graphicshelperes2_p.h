@@ -117,10 +117,10 @@ public:
     void pointSize(bool programmable, GLfloat value) override;
     GLint maxClipPlaneCount() override;
     void memoryBarrier(QMemoryBarrier::Operations barriers) override;
-    QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) override;
-    QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) override;
-    QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) override;
-    QVector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) override;
+    std::vector<ShaderUniformBlock> programUniformBlocks(GLuint programId) override;
+    std::vector<ShaderAttribute> programAttributesAndLocations(GLuint programId) override;
+    std::vector<ShaderUniform> programUniformsAndLocations(GLuint programId) override;
+    std::vector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) override;
     void releaseFrameBufferObject(GLuint frameBufferId) override;
     void setMSAAEnabled(bool enable) override;
     void setAlphaCoverageEnabled(bool enable) override;

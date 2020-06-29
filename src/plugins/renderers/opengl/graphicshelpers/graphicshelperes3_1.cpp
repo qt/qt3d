@@ -260,9 +260,9 @@ void GraphicsHelperES3_1::bindShaderStorageBlock(GLuint , GLuint , GLuint )
     qWarning() << "ES 3.1 has no bindShaderStorageBlock API, it uses binding declaration from the shader storage block";
 }
 
-QVector<ShaderStorageBlock> GraphicsHelperES3_1::programShaderStorageBlocks(GLuint programId)
+std::vector<ShaderStorageBlock> GraphicsHelperES3_1::programShaderStorageBlocks(GLuint programId)
 {
-    QVector<ShaderStorageBlock> blocks;
+    std::vector<ShaderStorageBlock> blocks;
     GLint nbrActiveShaderStorageBlocks = 0;
     m_extraFuncs->glGetProgramInterfaceiv(programId, GL_SHADER_STORAGE_BLOCK, GL_ACTIVE_RESOURCES, &nbrActiveShaderStorageBlocks);
     blocks.reserve(nbrActiveShaderStorageBlocks);

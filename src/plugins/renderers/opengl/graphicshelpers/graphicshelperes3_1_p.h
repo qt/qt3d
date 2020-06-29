@@ -72,7 +72,7 @@ public:
     void drawArraysIndirect(GLenum mode,void *indirect) override;
     void drawElementsIndirect(GLenum mode, GLenum type, void *indirect) override;
     void bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) override;
-    QVector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) override;
+    std::vector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) override;
 
     // QGraphicHelperInterface interface
     UniformType uniformTypeFromGLType(GLenum glType) override;

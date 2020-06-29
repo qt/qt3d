@@ -52,12 +52,14 @@ TechniqueManager::TechniqueManager()
 // AspectThread
 void TechniqueManager::addDirtyTechnique(Qt3DCore::QNodeId techniqueId)
 {
-    if (!m_dirtyTechniques.contains(techniqueId))
+    if (std::find(m_dirtyTechniques.begin(),
+                  m_dirtyTechniques.end(),
+                  techniqueId) == m_dirtyTechniques.end())
         m_dirtyTechniques.push_back(techniqueId);
 }
 
 // AspectThread
-QVector<Qt3DCore::QNodeId> TechniqueManager::takeDirtyTechniques()
+std::vector<Qt3DCore::QNodeId> TechniqueManager::takeDirtyTechniques()
 {
     return std::move(m_dirtyTechniques);
 }

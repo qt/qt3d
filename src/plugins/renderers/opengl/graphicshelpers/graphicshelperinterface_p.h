@@ -145,10 +145,10 @@ public:
     virtual GLint   maxClipPlaneCount() = 0;
     virtual void    memoryBarrier(QMemoryBarrier::Operations barriers) = 0;
     virtual void    pointSize(bool programmable, GLfloat value) = 0;
-    virtual QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) = 0;
-    virtual QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) = 0;
-    virtual QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) = 0;
-    virtual QVector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) = 0;
+    virtual std::vector<ShaderAttribute> programAttributesAndLocations(GLuint programId) = 0;
+    virtual std::vector<ShaderUniform> programUniformsAndLocations(GLuint programId) = 0;
+    virtual std::vector<ShaderUniformBlock> programUniformBlocks(GLuint programId) = 0;
+    virtual std::vector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) = 0;
     virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
     virtual void    setAlphaCoverageEnabled(bool enable) = 0;
     virtual void    setClipPlane(int clipPlane, const QVector3D &normal, float distance) = 0;

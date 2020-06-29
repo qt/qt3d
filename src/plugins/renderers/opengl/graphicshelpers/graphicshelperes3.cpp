@@ -710,9 +710,9 @@ GLboolean GraphicsHelperES3::unmapBuffer(GLenum target)
     return m_extraFuncs->glUnmapBuffer(target);
 }
 
-QVector<ShaderUniform> GraphicsHelperES3::programUniformsAndLocations(GLuint programId)
+std::vector<ShaderUniform> GraphicsHelperES3::programUniformsAndLocations(GLuint programId)
 {
-    QVector<ShaderUniform> uniforms;
+    std::vector<ShaderUniform> uniforms;
 
     GLint nbrActiveUniforms = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
@@ -733,7 +733,7 @@ QVector<ShaderUniform> GraphicsHelperES3::programUniformsAndLocations(GLuint pro
         m_extraFuncs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_ARRAY_STRIDE, &uniform.m_arrayStride);
         m_extraFuncs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_MATRIX_STRIDE, &uniform.m_matrixStride);
         uniform.m_rawByteSize = uniformByteSize(uniform);
-        uniforms.append(uniform);
+        uniforms.push_back(uniform);
         qCDebug(Rendering) << uniform.m_name << "size" << uniform.m_size
                                    << " offset" << uniform.m_offset
                                    << " rawSize" << uniform.m_rawByteSize;
@@ -742,9 +742,9 @@ QVector<ShaderUniform> GraphicsHelperES3::programUniformsAndLocations(GLuint pro
     return uniforms;
 }
 
-QVector<ShaderUniformBlock> GraphicsHelperES3::programUniformBlocks(GLuint programId)
+std::vector<ShaderUniformBlock> GraphicsHelperES3::programUniformBlocks(GLuint programId)
 {
-    QVector<ShaderUniformBlock> blocks;
+    std::vector<ShaderUniformBlock> blocks;
     GLint nbrActiveUniformsBlocks = 0;
     m_extraFuncs->glGetProgramiv(programId, GL_ACTIVE_UNIFORM_BLOCKS, &nbrActiveUniformsBlocks);
     blocks.reserve(nbrActiveUniformsBlocks);
@@ -758,7 +758,7 @@ QVector<ShaderUniformBlock> GraphicsHelperES3::programUniformBlocks(GLuint progr
         m_extraFuncs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformBlock.m_activeUniformsCount);
         m_extraFuncs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_BINDING, &uniformBlock.m_binding);
         m_extraFuncs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlock.m_size);
-        blocks.append(uniformBlock);
+        blocks.push_back(uniformBlock);
     }
     return blocks;
 }

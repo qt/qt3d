@@ -120,7 +120,7 @@ void Shader::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         const QShaderProgram::ShaderType shaderType = static_cast<QShaderProgram::ShaderType>(i);
         const QByteArray code = node->shaderCode(shaderType);
-        if (code != m_shaderCode.value(shaderType))
+        if (code != m_shaderCode[shaderType])
             setShaderCode(shaderType, code);
     }
     setFormat(node->format());
@@ -148,7 +148,7 @@ void Shader::setFormat(QShaderProgram::Format format)
     markDirty(AbstractRenderer::ShadersDirty);
 }
 
-QVector<QByteArray> Shader::shaderCode() const
+const std::vector<QByteArray> &Shader::shaderCode() const
 {
     return m_shaderCode;
 }

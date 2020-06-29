@@ -721,7 +721,7 @@ private Q_SLOTS:
         QVERIFY(shaderProgram.link());
 
         // WHEN
-        QVector<ShaderAttribute> activeAttributes = m_glHelper.programAttributesAndLocations(shaderProgram.programId());
+        std::vector<ShaderAttribute> activeAttributes = m_glHelper.programAttributesAndLocations(shaderProgram.programId());
 
         // THEN
         QCOMPARE(activeAttributes.size(), 2);
@@ -752,7 +752,7 @@ private Q_SLOTS:
         QVERIFY(shaderProgram.link());
 
         // WHEN
-        QVector<ShaderUniform> activeUniforms = m_glHelper.programUniformsAndLocations(shaderProgram.programId());
+        std::vector<ShaderUniform> activeUniforms = m_glHelper.programUniformsAndLocations(shaderProgram.programId());
 
         // THEN
         QCOMPARE(activeUniforms.size(), 4);
@@ -970,7 +970,7 @@ private Q_SLOTS:
 
         GLint location = shaderProgram.uniformLocation(name);
         // WHEN
-        const QVector<ShaderUniform> activeUniforms = m_glHelper.programUniformsAndLocations(shaderProgram.programId());
+        const std::vector<ShaderUniform> activeUniforms = m_glHelper.programUniformsAndLocations(shaderProgram.programId());
         ShaderUniform matchingUniform;
         for (const ShaderUniform &u : activeUniforms) {
             if (u.m_location == location) {

@@ -156,9 +156,9 @@ void GraphicsHelperGL2::useProgram(GLuint programId)
     m_funcs->glUseProgram(programId);
 }
 
-QVector<ShaderUniform> GraphicsHelperGL2::programUniformsAndLocations(GLuint programId)
+std::vector<ShaderUniform> GraphicsHelperGL2::programUniformsAndLocations(GLuint programId)
 {
-    QVector<ShaderUniform> uniforms;
+    std::vector<ShaderUniform> uniforms;
 
     GLint nbrActiveUniforms = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
@@ -178,14 +178,14 @@ QVector<ShaderUniform> GraphicsHelperGL2::programUniformsAndLocations(GLuint pro
         if (uniform.m_size > 1 && !uniform.m_name.endsWith(QLatin1String("[0]")))
             uniform.m_name.append(QLatin1String("[0]"));
         uniform.m_rawByteSize = uniformByteSize(uniform);
-        uniforms.append(uniform);
+        uniforms.push_back(uniform);
     }
     return uniforms;
 }
 
-QVector<ShaderAttribute> GraphicsHelperGL2::programAttributesAndLocations(GLuint programId)
+std::vector<ShaderAttribute> GraphicsHelperGL2::programAttributesAndLocations(GLuint programId)
 {
-    QVector<ShaderAttribute> attributes;
+    std::vector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
     attributes.reserve(nbrActiveAttributes);
@@ -200,24 +200,23 @@ QVector<ShaderAttribute> GraphicsHelperGL2::programAttributesAndLocations(GLuint
         attributeName[sizeof(attributeName) - 1] = '\0';
         attribute.m_location = m_funcs->glGetAttribLocation(programId, attributeName);
         attribute.m_name = QString::fromUtf8(attributeName, attributeNameLength);
-        attributes.append(attribute);
+        attributes.push_back(attribute);
     }
     return attributes;
 }
 
-QVector<ShaderUniformBlock> GraphicsHelperGL2::programUniformBlocks(GLuint programId)
+std::vector<ShaderUniformBlock> GraphicsHelperGL2::programUniformBlocks(GLuint programId)
 {
     Q_UNUSED(programId);
-    QVector<ShaderUniformBlock> blocks;
     qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
-    return blocks;
+    return {};
 }
 
-QVector<ShaderStorageBlock> GraphicsHelperGL2::programShaderStorageBlocks(GLuint programId)
+std::vector<ShaderStorageBlock> GraphicsHelperGL2::programShaderStorageBlocks(GLuint programId)
 {
     Q_UNUSED(programId);
     qWarning() << "SSBO are not supported by OpenGL 2.0 (since OpenGL 4.3)";
-    return QVector<ShaderStorageBlock>();
+    return {};
 }
 
 void GraphicsHelperGL2::vertexAttribDivisor(GLuint index,

@@ -99,7 +99,7 @@ public:
 
     void cleanup();
 
-    QVector<QByteArray> shaderCode() const;
+    const std::vector<QByteArray> &shaderCode() const;
     void setShaderCode(QShaderProgram::ShaderType type, const QByteArray &code);
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
@@ -123,7 +123,7 @@ public:
     void requestCacheRebuild();
 
 private:
-    QVector<QByteArray> m_shaderCode;
+    std::vector<QByteArray> m_shaderCode;
 
     QString m_log;
     bool m_requiresFrontendSync;

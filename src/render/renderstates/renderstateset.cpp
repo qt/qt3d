@@ -105,7 +105,7 @@ StateMaskSet RenderStateSet::stateMask() const
 void RenderStateSet::merge(const RenderStateSet *other)
 {
     m_stateMask |= other->stateMask();
-    const QVector<StateVariant> otherStates = other->states();
+    const std::vector<StateVariant> &otherStates = other->states();
 
     // We only add states which are new (different type)
     for (const StateVariant &otherState : otherStates) {

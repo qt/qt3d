@@ -86,7 +86,7 @@ private:
         int score = 0;
         bool pinned = false;
     };
-    QVector<ActiveImage> m_activeImages;
+    std::vector<ActiveImage> m_activeImages;
     GraphicsContext *m_ctx;
 };
 

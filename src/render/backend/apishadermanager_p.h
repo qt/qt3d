@@ -200,15 +200,15 @@ private:
 
     bool isSameShader(const APIShader *apiShader, const Shader *shaderNode)
     {
-        const QVector<QByteArray> nodeShaderCode = shaderNode->shaderCode();
-        const QVector<QByteArray> apiShaderCode = apiShader->shaderCode();
+        const std::vector<QByteArray> &nodeShaderCode = shaderNode->shaderCode();
+        const std::vector<QByteArray> &apiShaderCode = apiShader->shaderCode();
 
-        const int s = nodeShaderCode.size();
+        const size_t s = nodeShaderCode.size();
 
         Q_ASSERT(s == apiShaderCode.size());
 
-        for (int i = 0; i < s; ++i)
-            if (nodeShaderCode.at(i) != apiShaderCode.at(i))
+        for (size_t i = 0; i < s; ++i)
+            if (nodeShaderCode[i] != apiShaderCode[i])
                 return false;
 
         return true;

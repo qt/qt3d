@@ -79,7 +79,7 @@ public:
     void updateDataFromGPUToCPU(QByteArray data);
     inline Qt3DCore::QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
-    inline QVector<Qt3DCore::QBufferUpdate> &pendingBufferUpdates() { return m_bufferUpdates; }
+    inline std::vector<Qt3DCore::QBufferUpdate> &pendingBufferUpdates() { return m_bufferUpdates; }
     inline bool isDirty() const { return m_bufferDirty; }
     inline Qt3DCore::QBuffer::AccessType access() const { return m_access; }
     void unsetDirty();
@@ -89,7 +89,7 @@ private:
 
     Qt3DCore::QBuffer::UsageType m_usage;
     QByteArray m_data;
-    QVector<Qt3DCore::QBufferUpdate> m_bufferUpdates;
+    std::vector<Qt3DCore::QBufferUpdate> m_bufferUpdates;
     bool m_bufferDirty;
     Qt3DCore::QBuffer::AccessType m_access;
     BufferManager *m_manager;

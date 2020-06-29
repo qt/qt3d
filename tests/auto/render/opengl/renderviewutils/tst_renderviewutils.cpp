@@ -117,9 +117,9 @@ public:
         return uniforms;
     }
 
-    QVector<int> buildUniformMapNameIds(const QString &blockName) const
+    std::vector<int> buildUniformMapNameIds(const QString &blockName) const
     {
-        QVector<int> ids;
+        std::vector<int> ids;
 
         ids.push_back(Qt3DRender::Render::StringToInt::lookupId(blockName + QStringLiteral(".scalar")));
 
@@ -168,9 +168,9 @@ public:
         return uniforms;
     }
 
-    QVector<int> buildUniformMapNameIds(const QString &blockName) const
+    std::vector<int> buildUniformMapNameIds(const QString &blockName) const
     {
-        QVector<int> ids;
+        std::vector<int> ids;
 
         ids.push_back(Qt3DRender::Render::StringToInt::lookupId(blockName + QStringLiteral(".texture")));
 
@@ -218,9 +218,9 @@ public:
         return uniforms;
     }
 
-    QVector<int> buildUniformMapNameIds(const QString &blockName) const
+    std::vector<int> buildUniformMapNameIds(const QString &blockName) const
     {
-        QVector<int> ids;
+        std::vector<int> ids;
 
         ids.push_back(Qt3DRender::Render::StringToInt::lookupId(blockName + QStringLiteral(".array[0]")));
 
@@ -293,9 +293,9 @@ public:
         return uniforms;
     }
 
-    QVector<int> buildUniformMapNameIds(const QString &blockName) const
+    std::vector<int> buildUniformMapNameIds(const QString &blockName) const
     {
-        QVector<int> ids;
+        std::vector<int> ids;
 
         ids.push_back(Qt3DRender::Render::StringToInt::lookupId(blockName + QStringLiteral(".scalar")));
         ids.push_back(Qt3DRender::Render::StringToInt::lookupId(blockName + QStringLiteral(".array[0]")));
@@ -377,9 +377,9 @@ public:
         return uniformsValues;
     }
 
-    QVector<int> buildUniformMapNameIds(const QString &blockName) const
+    std::vector<int> buildUniformMapNameIds(const QString &blockName) const
     {
-        QVector<int> ids;
+        std::vector<int> ids;
         QHash<QString, Qt3DRender::Render::OpenGL::ShaderUniform> innerUniforms;
 
         StructShaderData *innerData = nullptr;
@@ -631,7 +631,7 @@ void tst_RenderViewUtils::nestedShaderDataValue()
 
     // WHEN
     const Matrix4x4 v;
-    const QVector<int> nameIds = {
+    const std::vector<int> nameIds = {
         Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("MyBlock.array[0].scalar")),
         Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("MyBlock.array[1].scalar")),
         Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("MyBlock.array[2].scalar")),
@@ -756,7 +756,7 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
 
     // WHEN
     const Matrix4x4 v;
-    const QVector<int> nameIds = {
+    const std::vector<int> nameIds = {
         Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("MyBlock.scalar")),
         Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("MyBlock.array[0]")),
         Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("MyBlock.texture")),
