@@ -210,8 +210,8 @@ public:
     bool processMouseEvent(QObject *object, QMouseEvent *event) override;
     bool processKeyEvent(QObject *object, QKeyEvent *event) override;
 
-    QVector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
-    QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
+    std::vector<Qt3DCore::QAspectJobPtr> preRenderingJobs() override;
+    std::vector<Qt3DCore::QAspectJobPtr> renderBinJobs() override;
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
     inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const
@@ -386,7 +386,7 @@ private:
     QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
     QVector<Qt3DCore::QNodeId> m_updatedDisableSubtreeEnablers;
     Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
-    QVector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
+    std::vector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
 
     bool m_ownedContext;
 
@@ -404,7 +404,7 @@ private:
     RendererCache m_cache;
     bool m_shouldSwapBuffers;
 
-    QVector<FrameGraphNode *> m_frameGraphLeaves;
+    std::vector<FrameGraphNode *> m_frameGraphLeaves;
     QScreen *m_screen = nullptr;
     QSharedPointer<ResourceAccessor> m_scene2DResourceAccessor;
 

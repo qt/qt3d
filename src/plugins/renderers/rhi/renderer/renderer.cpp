@@ -42,6 +42,7 @@
 #include "rhirendertarget_p.h"
 
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
@@ -166,11 +167,11 @@ public:
     {
         RenderableEntityFilter::run();
 
-        QVector<Entity *> selectedEntities = filteredEntities();
+        std::vector<Entity *> selectedEntities = filteredEntities();
         std::sort(selectedEntities.begin(), selectedEntities.end());
 
         QMutexLocker lock(m_cache->mutex());
-        m_cache->renderableEntities = selectedEntities;
+        m_cache->renderableEntities = std::move(selectedEntities);
     }
 
 private:
@@ -188,11 +189,11 @@ public:
     {
         ComputableEntityFilter::run();
 
-        QVector<Entity *> selectedEntities = filteredEntities();
+        std::vector<Entity *> selectedEntities = filteredEntities();
         std::sort(selectedEntities.begin(), selectedEntities.end());
 
         QMutexLocker lock(m_cache->mutex());
-        m_cache->computeEntities = selectedEntities;
+        m_cache->computeEntities = std::move(selectedEntities);
     }
 
 private:
@@ -1552,7 +1553,7 @@ void Renderer::reloadDirtyShaders()
 
                         if (shaderBuilder->isShaderCodeDirty(shaderType)) {
                             shaderBuilder->generateCode(shaderType);
-                            m_shaderBuilderUpdates.append(shaderBuilder->takePendingUpdates());
+                            Qt3DCore::moveAtEnd(m_shaderBuilderUpdates, shaderBuilder->takePendingUpdates());
                         }
 
                         const auto code = shaderBuilder->shaderCode(shaderType);
@@ -1588,14 +1589,14 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     }
 
     // Sync ShaderBuilder
-    const QVector<ShaderBuilderUpdate> shaderBuilderUpdates = std::move(m_shaderBuilderUpdates);
-    for (const ShaderBuilderUpdate &update : shaderBuilderUpdates) {
+    for (const ShaderBuilderUpdate &update : m_shaderBuilderUpdates) {
         QShaderProgramBuilder *builder =
                 static_cast<decltype(builder)>(manager->lookupNode(update.builderId));
         QShaderProgramBuilderPrivate *dBuilder =
                 static_cast<decltype(dBuilder)>(QNodePrivate::get(builder));
         dBuilder->setShaderCode(update.shaderCode, update.shaderType);
     }
+    m_shaderBuilderUpdates.clear();
 }
 
 // Executed in a job (in main thread when jobs are done)
@@ -2117,7 +2118,7 @@ bool Renderer::processKeyEvent(QObject *object, QKeyEvent *event)
 }
 
 // Jobs we may have to run even if no rendering will happen
-QVector<QAspectJobPtr> Renderer::preRenderingJobs()
+std::vector<QAspectJobPtr> Renderer::preRenderingJobs()
 {
     if (m_sendBufferCaptureJob->hasRequests())
         return { m_sendBufferCaptureJob };
@@ -2129,9 +2130,9 @@ QVector<QAspectJobPtr> Renderer::preRenderingJobs()
 // Called by QRenderAspect jobsToExecute context of QAspectThread
 // Returns all the jobs (and with proper dependency chain) required
 // for the rendering of the scene
-QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
+std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
-    QVector<QAspectJobPtr> renderBinJobs;
+    std::vector<QAspectJobPtr> renderBinJobs;
 
     // Remove previous dependencies
     m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
@@ -2195,7 +2196,9 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             // Remove leaf nodes that no longer exist from cache
             const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
             for (FrameGraphNode *leafNode : keys) {
-                if (!m_frameGraphLeaves.contains(leafNode))
+                if (std::find(m_frameGraphLeaves.begin(),
+                              m_frameGraphLeaves.end(),
+                              leafNode) == m_frameGraphLeaves.end())
                     m_cache.leafNodeCache.remove(leafNode);
             }
 
@@ -2222,7 +2225,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             }
 
             builder.prepareJobs();
-            renderBinJobs.append(builder.buildJobHierachy());
+            Qt3DCore::moveAtEnd(renderBinJobs, builder.buildJobHierachy());
         }
 
         // Set target number of RenderViews

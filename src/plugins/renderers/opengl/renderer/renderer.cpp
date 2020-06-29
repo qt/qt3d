@@ -41,6 +41,7 @@
 #include "renderer_p.h"
 
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
@@ -1054,10 +1055,7 @@ void Renderer::reloadDirtyShaders()
 
                         if (shaderBuilder->isShaderCodeDirty(shaderType)) {
                             shaderBuilder->generateCode(shaderType);
-                            const std::vector<ShaderBuilderUpdate> &updates = shaderBuilder->takePendingUpdates();
-                            m_shaderBuilderUpdates.insert(m_shaderBuilderUpdates.end(),
-                                                          std::make_move_iterator(updates.begin()),
-                                                          std::make_move_iterator(updates.end()));
+                            Qt3DCore::moveAtEnd(m_shaderBuilderUpdates, shaderBuilder->takePendingUpdates());
                         }
 
                         const auto code = shaderBuilder->shaderCode(shaderType);
@@ -1878,12 +1876,8 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         if (isNewRV) {
             m_cache.leafNodeCache[leaf] = {};
         }
-
         builder.prepareJobs();
-        const std::vector<QAspectJobPtr> builderJobs = builder.buildJobHierachy();
-        renderBinJobs.insert(renderBinJobs.end(),
-                             std::make_move_iterator(builderJobs.begin()),
-                             std::make_move_iterator(builderJobs.end()));
+        Qt3DCore::moveAtEnd(renderBinJobs, builder.buildJobHierachy());
     }
 
     // Set target number of RenderViews

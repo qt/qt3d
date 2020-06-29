@@ -563,7 +563,7 @@ void RenderView::addClearBuffers(const ClearBuffers *cb)
 }
 
 // If we are there, we know that entity had a GeometryRenderer + Material
-EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities,
+EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entities,
                                                             int offset, int count) const
 {
     EntityRenderCommandData commands;
@@ -573,7 +573,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
 
     for (int i = 0; i < count; ++i) {
         const int idx = offset + i;
-        Entity *entity = entities.at(idx);
+        const Entity *entity = entities[idx];
         GeometryRenderer *geometryRenderer = nullptr;
         HGeometryRenderer geometryRendererHandle = entity->componentHandle<GeometryRenderer>();
 
@@ -706,7 +706,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const QVector<Entity
     return commands;
 }
 
-EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities,
+EntityRenderCommandData RenderView::buildComputeRenderCommands(const Entity **entities,
                                                                int offset, int count) const
 {
     // If the RenderView contains only a ComputeDispatch then it cares about
@@ -721,7 +721,7 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const QVector<Ent
 
     for (int i = 0; i < count; ++i) {
         const int idx = offset + i;
-        Entity *entity = entities.at(idx);
+        const Entity *entity = entities[idx];
         ComputeCommand *computeJob = nullptr;
         HComputeCommand computeCommandHandle = entity->componentHandle<ComputeCommand>();
         if ((computeJob = nodeManagers()->computeJobManager()->data(computeCommandHandle))
@@ -841,7 +841,7 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
         // Replace with more sophisticated mechanisms later.
         // Copy vector so that we can sort it concurrently and we only want to sort the one for the
         // current command
-        QVector<LightSource> lightSources;
+        std::vector<LightSource> lightSources;
         EnvironmentLight *environmentLight = nullptr;
 
         if (command.m_type == RenderCommand::Draw) {
@@ -864,8 +864,8 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
                                       b.entity->worldBoundingVolume()->center());
                               return distA < distB;
                           });
+                m_lightSources = {lightSources.begin(), lightSources.begin() + std::min(lightSources.size(), size_t(MAX_LIGHTS)) };
             }
-            lightSources = lightSources.mid(0, std::max(lightSources.size(), MAX_LIGHTS));
         } else { // Compute
             // Note: if frameCount has reached 0 in the previous frame, isEnabled
             // would be false
@@ -1073,7 +1073,7 @@ void RenderView::applyParameter(const Parameter *param, RenderCommand *command,
 
 void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList &parameters,
                                       const Entity *entity,
-                                      const QVector<LightSource> &activeLightSources,
+                                      const std::vector<LightSource> &activeLightSources,
                                       EnvironmentLight *environmentLight) const
 {
     Q_UNUSED(entity);
@@ -1152,7 +1152,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
         for (const LightSource &lightSource : activeLightSources) {
             if (lightIdx == MAX_LIGHTS)
                 break;
-            Entity *lightEntity = lightSource.entity;
+            const Entity *lightEntity = lightSource.entity;
             const Matrix4x4 lightWorldTransform = *(lightEntity->worldTransform());
             const Vector3D worldPos = lightWorldTransform * Vector3D(0.0f, 0.0f, 0.0f);
             for (Light *light : lightSource.lights) {
@@ -1180,7 +1180,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
                 // There is no risk in doing that even if multithreaded
                 // since we are sure that a shaderData is unique for a given light
                 // and won't ever be referenced as a Component either
-                Matrix4x4 *worldTransform = lightEntity->worldTransform();
+                const Matrix4x4 *worldTransform = lightEntity->worldTransform();
                 if (worldTransform)
                     shaderData->updateWorldTransform(*worldTransform);
 
@@ -1195,7 +1195,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
                             UniformValue(qMax((environmentLight ? 0 : 1), lightIdx)));
 
         // If no active light sources and no environment light, add a default light
-        if (activeLightSources.isEmpty() && !environmentLight) {
+        if (activeLightSources.empty() && !environmentLight) {
             // Note: implicit conversion of values to UniformValue
             setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[0],
                     Vector3D(10.0f, 10.0f, 0.0f));

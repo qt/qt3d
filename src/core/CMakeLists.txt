@@ -160,6 +160,7 @@ if(QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2)
             transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
             transforms/vector4d_sse.cpp transforms/vector4d_sse_p.h
             aligned_malloc_p.h
+            vector_helper_p.h
             resources/qresourcemanager.cpp resources/qresourcemanager_p.h
     )
 endif()

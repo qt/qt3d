@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H
-#define QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#ifndef QT3DCORE_VECTOR_HELPER_P_H
+#define QT3DCORE_VECTOR_HELPER_P_H
 
 //
 //  W A R N I N G
@@ -51,54 +51,23 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRender/private/handle_types_p.h>
-#include <rendercommand_p.h>
+#include <Qt3DCore/private/qt3dcore-config_p.h>
+#include <qobjectdefs.h>
+#include <vector>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-namespace Render {
-
-namespace Rhi {
-
-class RenderViewCommandBuilderJobPrivate;
-
-class Q_AUTOTEST_EXPORT RenderViewCommandBuilderJob : public Qt3DCore::QAspectJob
+template<typename T, typename U>
+void moveAtEnd(std::vector<T>& destination, std::vector<U>&& source)
 {
-public:
-    RenderViewCommandBuilderJob();
+    destination.insert(destination.end(),
+                       std::make_move_iterator(source.begin()),
+                       std::make_move_iterator(source.end()));
+}
 
-    inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
-    inline void setEntities(const Entity **entities, int offset, int count)
-    {
-        m_offset = offset;
-        m_count = count;
-        m_entities = entities;
-    }
-    inline EntityRenderCommandData &commandData() { return m_commandData; }
-
-    void run() final;
-
-private:
-    int m_offset;
-    int m_count;
-    RenderView *m_renderView;
-    const Entity **m_entities;
-    EntityRenderCommandData m_commandData;
-
-    Q_DECLARE_PRIVATE(RenderViewCommandBuilderJob)
-};
-
-typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobPtr;
-
-} // Rhi
-
-} // Render
-
-} // Qt3DRender
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#endif // QT3DCORE_VECTOR_HELPER_P_H

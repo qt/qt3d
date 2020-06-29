@@ -56,6 +56,7 @@
 #include <shaderparameterpack_p.h>
 #include <gl_handle_types_p.h>
 #include <renderviewjobutils_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <QOpenGLShaderProgram>
@@ -175,15 +176,9 @@ struct EntityRenderCommandData
 
     EntityRenderCommandData &operator+=(EntityRenderCommandData &&t)
     {
-        entities.insert(entities.cend(),
-                        std::make_move_iterator(t.entities.begin()),
-                        std::make_move_iterator(t.entities.end()));
-        commands.insert(commands.cend(),
-                        std::make_move_iterator(t.commands.begin()),
-                        std::make_move_iterator(t.commands.end()));
-        passesData.insert(passesData.cend(),
-                          std::make_move_iterator(t.passesData.begin()),
-                          std::make_move_iterator(t.passesData.end()));
+        Qt3DCore::moveAtEnd(entities, std::move(t.entities));
+        Qt3DCore::moveAtEnd(commands, std::move(t.commands));
+        Qt3DCore::moveAtEnd(passesData, std::move(t.passesData));
         return *this;
     }
 

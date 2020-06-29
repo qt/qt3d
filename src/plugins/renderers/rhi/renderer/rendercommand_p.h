@@ -56,6 +56,7 @@
 #include <shaderparameterpack_p.h>
 #include <rhihandle_types_p.h>
 #include <renderviewjobutils_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <QOpenGLShaderProgram>
@@ -172,7 +173,7 @@ inline bool operator!=(const RenderCommand &lhs, const RenderCommand &rhs) noexc
 
 struct EntityRenderCommandData
 {
-    std::vector<Entity *> entities;
+    std::vector<const Entity *> entities;
     std::vector<RenderCommand> commands;
     std::vector<RenderPassParameterData> passesData;
 
@@ -185,14 +186,14 @@ struct EntityRenderCommandData
 
     inline size_t size() const { return entities.size(); }
 
-    inline void push_back(Entity *e, const RenderCommand &c, const RenderPassParameterData &p)
+    inline void push_back(const Entity *e, const RenderCommand &c, const RenderPassParameterData &p)
     {
         entities.push_back(e);
         commands.push_back(c);
         passesData.push_back(p);
     }
 
-    inline void push_back(Entity *e, RenderCommand &&c, RenderPassParameterData &&p)
+    inline void push_back(const Entity *e, RenderCommand &&c, RenderPassParameterData &&p)
     {
         entities.push_back(e);
         commands.push_back(std::move(c));
@@ -201,15 +202,9 @@ struct EntityRenderCommandData
 
     EntityRenderCommandData &operator+=(EntityRenderCommandData &&t)
     {
-        entities.insert(entities.cend(),
-                        std::make_move_iterator(t.entities.begin()),
-                        std::make_move_iterator(t.entities.end()));
-        commands.insert(commands.cend(),
-                        std::make_move_iterator(t.commands.begin()),
-                        std::make_move_iterator(t.commands.end()));
-        passesData.insert(passesData.cend(),
-                          std::make_move_iterator(t.passesData.begin()),
-                          std::make_move_iterator(t.passesData.end()));
+        Qt3DCore::moveAtEnd(entities, std::move(t.entities));
+        Qt3DCore::moveAtEnd(commands, std::move(t.commands));
+        Qt3DCore::moveAtEnd(passesData, std::move(t.passesData));
         return *this;
     }
 
