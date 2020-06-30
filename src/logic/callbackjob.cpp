@@ -63,6 +63,11 @@ void CallbackJob::run()
 {
 }
 
+bool CallbackJob::isRequired()
+{
+    return false;
+}
+
 void CallbackJob::postFrame(Qt3DCore::QAspectEngine *aspectEngine)
 {
     Q_UNUSED(aspectEngine);

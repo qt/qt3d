@@ -67,6 +67,7 @@ public:
     void setManager(Manager *manager);
 
     void run() override;
+    bool isRequired() override;
     void postFrame(Qt3DCore::QAspectEngine *aspectEngine) override;
 
 private:
