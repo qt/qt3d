@@ -163,7 +163,7 @@ void Handler::cleanupHandleList(QVector<HAnimationClip> *clips)
 {
     for (auto it = clips->begin(); it != clips->end(); ) {
         if (!m_animationClipLoaderManager->data(*it))
-            clips->erase(it);
+            it = clips->erase(it);
         else
             ++it;
     }
@@ -173,7 +173,7 @@ void Handler::cleanupHandleList(QVector<HClipAnimator> *animators)
 {
     for (auto it = animators->begin(); it != animators->end(); ) {
         if (!m_clipAnimatorManager->data(*it))
-            animators->erase(it);
+            it = animators->erase(it);
         else
             ++it;
     }
@@ -183,7 +183,7 @@ void Handler::cleanupHandleList(QVector<HBlendedClipAnimator> *animators)
 {
     for (auto it = animators->begin(); it != animators->end(); ) {
         if (!m_blendedClipAnimatorManager->data(*it))
-            animators->erase(it);
+            it = animators->erase(it);
         else
             ++it;
     }
