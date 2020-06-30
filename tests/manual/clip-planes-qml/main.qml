@@ -107,7 +107,7 @@ Entity {
         }
 
         property Mesh mesh: Mesh {
-            source: "assets/obj/trefoil.obj"
+            source: "qrc:/assets/obj/trefoil.obj"
         }
 
         property Transform transform: Transform {

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -48,59 +48,27 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#version 150 core
 
-Material {
-    id:root
-    property color ambient:  Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
-    property color diffuse:  Qt.rgba( 0.7, 0.7, 0.7, 1.0 )
-    property color specular: Qt.rgba( 0.95, 0.95, 0.95, 1.0 )
-    property real shininess: 150.0
-    property real alpha: 0.5
+// TODO: Replace with a struct
+uniform vec3 ka;            // Ambient reflectivity
+uniform vec3 kd;            // Diffuse reflectivity
+uniform vec3 ks;            // Specular reflectivity
+uniform float shininess;    // Specular shininess factor
+uniform float alpha;
 
+uniform vec3 eyePosition;
 
-    ShaderProgram {
-        id: gl3PhongAlphaShader
-        vertexShaderCode: loadSource("qrc:/default.vert")
-        fragmentShaderCode: loadSource("qrc:/phongalpha.frag")
-    }
+in vec3 worldPosition;
+in vec3 worldNormal;
 
-    effect: Effect {
+out vec4 fragColor;
 
-        parameters: [
-            Parameter { name: "alpha";  value: root.alpha },
-            Parameter { name: "ka";   value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
-            Parameter { name: "kd";   value: Qt.vector3d(root.diffuse.r, root.diffuse.g, root.diffuse.b) },
-            Parameter { name: "ks";  value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },
-            Parameter { name: "shininess"; value: root.shininess },
-            Parameter { name: "lightPosition"; value: Qt.vector4d(1.0, 1.0, 0.0, 1.0) },
-            Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 1.0, 1.0) }
-        ]
+#pragma include light.inc.frag
 
-        techniques: [
-            // GL 3 Technique
-            Technique {
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    majorVersion: 3
-                    minorVersion: 1
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl3PhongAlphaShader
-                    renderStates: [
-                        NoDepthMask { },
-                        BlendEquationArguments {
-                            sourceRgb: BlendEquationArguments.SourceAlpha
-                            destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
-                        },
-                        BlendEquation {blendFunction: BlendEquation.Add}
-                    ]
-                    filterKeys: FilterKey { name: "pass"; value: "material" }
-                }
-            }
-        ]
-    }
+void main()
+{
+    vec3 diffuseColor, specularColor;
+    adsModel(worldPosition, worldNormal, eyePosition, shininess, diffuseColor, specularColor);
+    fragColor = vec4( ka + kd * diffuseColor + ks * specularColor, alpha );
 }
-

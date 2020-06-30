@@ -34,6 +34,9 @@ set(clip-planes-qml_resource_files
     "passthrough.frag"
     "phong-clip.frag"
     "phong-clip.vert"
+    "default.vert"
+    "phongalpha.frag"
+    "light.inc.frag"
 )
 
 qt_add_resource(clip-planes-qml "clip-planes-qml"
