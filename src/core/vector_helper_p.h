@@ -54,6 +54,7 @@
 #include <Qt3DCore/private/qt3dcore-config_p.h>
 #include <qobjectdefs.h>
 #include <vector>
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +68,19 @@ void moveAtEnd(std::vector<T>& destination, std::vector<U>&& source)
                        std::make_move_iterator(source.end()));
 }
 
+template<typename T, typename U>
+void append(std::vector<T>& destination, const U& source)
+{
+    destination.insert(destination.end(),
+                       source.cbegin(),
+                       source.cend());
+}
+
+template<typename T, typename U>
+bool contains(const std::vector<T>& destination, const U& element) noexcept
+{
+    return std::find(destination.begin(), destination.end(), element) != destination.end();
+}
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

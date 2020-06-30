@@ -122,7 +122,7 @@ struct ParameterInfo
     bool operator<(const int otherNameId) const Q_DECL_NOEXCEPT;
     bool operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT;
 };
-typedef QVector<ParameterInfo> ParameterInfoList;
+typedef std::vector<ParameterInfo> ParameterInfoList;
 
 struct RenderPassParameterData
 {
@@ -131,7 +131,7 @@ struct RenderPassParameterData
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, RenderPassParameterData, Q_MOVABLE_TYPE)
 
-using MaterialParameterGathererData = QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>>;
+using MaterialParameterGathererData = QHash<Qt3DCore::QNodeId, std::vector<RenderPassParameterData>>;
 
 Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                                              ParameterManager *manager,
@@ -159,7 +159,7 @@ typedef QHash<int, QVariant> UniformBlockValueBuilderHash;
 
 struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 {
-    explicit UniformBlockValueBuilder(const QVector<int> &uniformNamesIds,
+    explicit UniformBlockValueBuilder(const std::vector<int> &uniformNamesIds,
                                       ShaderDataManager *shaderDataManager,
                                       TextureManager *textureManager,
                                       const Matrix4x4 &matrix);
@@ -177,7 +177,7 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     UniformBlockValueBuilderHash activeUniformNamesToValue;
 
 private:
-    const QVector<int> &m_uniformNamesIds;
+    const std::vector<int> &m_uniformNamesIds;
     ShaderDataManager *m_shaderDataManager = nullptr;
     TextureManager *m_textureManager = nullptr;
     const Matrix4x4 &m_viewMatrix;

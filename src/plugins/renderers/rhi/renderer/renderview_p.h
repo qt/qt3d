@@ -73,7 +73,7 @@
 // TODO: Move out once this is all refactored
 #include <renderviewjobutils_p.h>
 
-#include <QVector>
+#include <vector>
 #include <QSurface>
 #include <QMutex>
 #include <QColor>
@@ -185,10 +185,6 @@ public:
     inline void appendProximityFilterId(const Qt3DCore::QNodeId proximityFilterId) { m_proximityFilterIds.push_back(proximityFilterId); }
     inline Qt3DCore::QNodeIdVector proximityFilterIds() const { return m_proximityFilterIds; }
 
-    inline void appendInsertFenceId(const Qt3DCore::QNodeId setFenceId) { m_insertFenceIds.push_back(setFenceId); }
-    // We prefix with get to avoid confusion when it is called
-    inline Qt3DCore::QNodeIdVector insertFenceIds() const { return m_insertFenceIds; }
-
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_passFilter; }
 
@@ -252,7 +248,7 @@ public:
     void setRenderTargetId(Qt3DCore::QNodeId renderTargetId) Q_DECL_NOTHROW { m_renderTarget = renderTargetId; }
     Qt3DCore::QNodeId renderTargetId() const Q_DECL_NOTHROW { return m_renderTarget; }
 
-    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_sortingTypes.append(sortTypes); }
+    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { Qt3DCore::append(m_sortingTypes, sortTypes); }
 
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }
@@ -267,8 +263,6 @@ public:
     inline void setRenderCaptureRequest(const QRenderCaptureRequest& request) Q_DECL_NOTHROW { m_renderCaptureRequest = request; }
     inline const QRenderCaptureRequest renderCaptureRequest() const Q_DECL_NOTHROW { return m_renderCaptureRequest; }
 
-    void setMemoryBarrier(QMemoryBarrier::Operations barrier) Q_DECL_NOTHROW { m_memoryBarrier = barrier; }
-    QMemoryBarrier::Operations memoryBarrier() const Q_DECL_NOTHROW { return m_memoryBarrier; }
 
     bool isDownloadBuffersEnable() const;
     void setIsDownloadBuffersEnable(bool isDownloadBuffersEnable);
@@ -341,9 +335,7 @@ private:
     bool m_frustumCulling = false;
     bool m_showDebugOverlay = false;
     int m_workGroups[3] = { 1, 1, 1};
-    QMemoryBarrier::Operations m_memoryBarrier = QMemoryBarrier::None;
-    QVector<Qt3DCore::QNodeId> m_insertFenceIds;
-    QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
+    std::vector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
     Qt3DCore::QNodeIdVector m_proximityFilterIds;
     Qt3DCore::QNodeIdVector m_layerFilterIds;
     Matrix4x4 m_viewMatrix;

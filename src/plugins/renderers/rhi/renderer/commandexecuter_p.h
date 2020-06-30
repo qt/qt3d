@@ -49,7 +49,7 @@
 // We mean it.
 //
 
-#include <QVector>
+#include <vector>
 #include <QVariant>
 #include <QMutex>
 
@@ -79,13 +79,13 @@ class CommandExecuter
 public:
     explicit CommandExecuter(Render::Rhi::Renderer *renderer);
 
-    void performAsynchronousCommandExecution(const QVector<Render::Rhi::RenderView *> &views);
+    void performAsynchronousCommandExecution(const std::vector<Render::Rhi::RenderView *> &views);
 
     QVariant executeCommand(const QStringList &args);
 
 private:
     Render::Rhi::Renderer *m_renderer;
-    QVector<Qt3DCore::Debug::AsynchronousCommandReply *> m_pendingCommands;
+    std::vector<Qt3DCore::Debug::AsynchronousCommandReply *> m_pendingCommands;
     QMutex m_pendingCommandsMutex;
 };
 

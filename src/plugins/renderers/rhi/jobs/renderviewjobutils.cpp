@@ -320,7 +320,7 @@ Technique *findTechniqueForEffect(NodeManagers *manager, const TechniqueFilter *
     if (!effect)
         return nullptr;
 
-    QVector<Technique *> matchingTechniques;
+    std::vector<Technique *> matchingTechniques;
     const bool hasInvalidTechniqueFilter =
             (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
 
@@ -337,17 +337,17 @@ Technique *findTechniqueForEffect(NodeManagers *manager, const TechniqueFilter *
         if (technique->isCompatibleWithRenderer()
             && (hasInvalidTechniqueFilter
                 || technique->isCompatibleWithFilters(techniqueFilter->filters())))
-            matchingTechniques.append(technique);
+            matchingTechniques.push_back(technique);
     }
 
     if (matchingTechniques.size() == 0) // We failed to find a suitable technique to use :(
         return nullptr;
 
     if (matchingTechniques.size() == 1)
-        return matchingTechniques.first();
+        return matchingTechniques.front();
 
     // Several compatible techniques, return technique with highest major and minor version
-    Technique *highest = matchingTechniques.first();
+    Technique *highest = matchingTechniques.front();
     GraphicsApiFilterData filter = *highest->graphicsApiFilter();
     for (auto it = matchingTechniques.cbegin() + 1; it < matchingTechniques.cend(); ++it) {
         if (filter < *(*it)->graphicsApiFilter()) {
@@ -467,7 +467,7 @@ const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
 }
 
 UniformBlockValueBuilder::UniformBlockValueBuilder(
-        const QVector<int> &uniformNamesIds,
+        const std::vector<int> &uniformNamesIds,
         ShaderDataManager *shaderDataManager,
         TextureManager *textureManager,
         const Matrix4x4 &matrix)
@@ -505,7 +505,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(
                 }
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
-            if (m_uniformNamesIds.contains(propertyInBlockNameId)) {
+            if (Qt3DCore::contains(m_uniformNamesIds, propertyInBlockNameId)) {
                 activeUniformNamesToValue.insert(propertyInBlockNameId, value->value);
             }
         }
@@ -520,7 +520,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(
             activeUniformNamesToValue.insert(propertyInBlockNameId, value->value);
         }
     } else { // Scalar / Vec
-        if (m_uniformNamesIds.contains(propertyInBlockNameId)) {
+        if (Qt3DCore::contains(m_uniformNamesIds, propertyInBlockNameId)) {
             // If the property needs to be transformed, we transform it here as
             // the shaderdata cannot hold transformed properties for multiple
             // thread contexts at once

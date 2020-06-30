@@ -85,25 +85,25 @@ public:
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
     const QHash<QString, int> fragOutputs() const;
 
-    inline QVector<int> uniformsNamesIds() const { return m_uniformsNamesIds; }
-    inline QVector<int> standardUniformNameIds() const { return m_standardUniformNamesIds; }
-    inline QVector<int> uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
-    inline QVector<int> storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
-    inline QVector<int> attributeNamesIds() const { return m_attributeNamesIds; }
+    inline const std::vector<int> &uniformsNamesIds() const { return m_uniformsNamesIds; }
+    inline const std::vector<int> &standardUniformNameIds() const { return m_standardUniformNamesIds; }
+    inline const std::vector<int> &uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
+    inline const std::vector<int> &storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
+    inline const std::vector<int> &attributeNamesIds() const { return m_attributeNamesIds; }
 
-    QVector<QString> uniformsNames() const;
-    QVector<QString> attributesNames() const;
-    QVector<QString> uniformBlockNames() const;
-    QVector<QString> storageBlockNames() const;
-    QVector<QString> samplerNames() const;
-    QVector<QString> imagesNames() const;
+    const std::vector<QString> &uniformsNames() const;
+    const std::vector<QString> &attributesNames() const;
+    const std::vector<QString> &uniformBlockNames() const;
+    const std::vector<QString> &storageBlockNames() const;
+    const std::vector<QString> &samplerNames() const;
+    const std::vector<QString> &imagesNames() const;
 
-    inline QVector<ShaderUniform> uniforms() const { return m_uniforms; }
-    inline QVector<ShaderAttribute> attributes() const { return m_attributes; }
-    inline QVector<ShaderUniformBlock> uniformBlocks() const { return m_uniformBlocks; }
-    inline QVector<ShaderStorageBlock> storageBlocks() const { return m_shaderStorageBlocks; }
-    inline QVector<ShaderAttribute> samplers() const { return m_samplers; }
-    inline QVector<ShaderAttribute> images() const { return m_images; }
+    inline const std::vector<ShaderUniform> &uniforms() const { return m_uniforms; }
+    inline const std::vector<ShaderAttribute> &attributes() const { return m_attributes; }
+    inline const std::vector<ShaderUniformBlock> &uniformBlocks() const { return m_uniformBlocks; }
+    inline const std::vector<ShaderStorageBlock> &storageBlocks() const { return m_shaderStorageBlocks; }
+    inline const std::vector<ShaderAttribute> &samplers() const { return m_samplers; }
+    inline const std::vector<ShaderAttribute> &images() const { return m_images; }
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
 
@@ -121,11 +121,11 @@ public:
     bool hasUniform(int nameId) const noexcept;
     bool hasActiveVariables() const noexcept;
 
-    void setShaderCode(const QVector<QByteArray> shaderCode) { m_shaderCode = shaderCode; }
-    QVector<QByteArray> shaderCode() const;
+    void setShaderCode(const std::vector<QByteArray> &shaderCode);
+    const std::vector<QByteArray> &shaderCode() const;
 
     const QShader &shaderStage(QShader::Stage stage) const noexcept { return m_stages[stage]; }
-    QVector<UBO_Member> uboMembers() const { return m_uboMembers; }
+    std::vector<UBO_Member> uboMembers() const { return m_uboMembers; }
 
     const QSet<QString> &unqualifiedUniformNames() const noexcept
     {
@@ -138,50 +138,50 @@ private:
     bool m_isLoaded;
     QShader m_stages[6];
 
-    QVector<QString> m_uniformsNames;
-    QVector<int> m_uniformsNamesIds;
-    QVector<int> m_standardUniformNamesIds;
-    QVector<ShaderUniform> m_uniforms;
+    std::vector<QString> m_uniformsNames;
+    std::vector<int> m_uniformsNamesIds;
+    std::vector<int> m_standardUniformNamesIds;
+    std::vector<ShaderUniform> m_uniforms;
 
-    QVector<QString> m_attributesNames;
-    QVector<int> m_attributeNamesIds;
-    QVector<ShaderAttribute> m_attributes;
+    std::vector<QString> m_attributesNames;
+    std::vector<int> m_attributeNamesIds;
+    std::vector<ShaderAttribute> m_attributes;
 
-    QVector<QString> m_uniformBlockNames;
-    QVector<int> m_uniformBlockNamesIds;
-    QVector<ShaderUniformBlock> m_uniformBlocks;
+    std::vector<QString> m_uniformBlockNames;
+    std::vector<int> m_uniformBlockNamesIds;
+    std::vector<ShaderUniformBlock> m_uniformBlocks;
     QHash<int, QHash<QString, ShaderUniform>> m_uniformBlockIndexToShaderUniforms;
     QSet<QString> m_unqualifiedUniformNames;
 
-    QVector<QString> m_shaderStorageBlockNames;
-    QVector<int> m_shaderStorageBlockNamesIds;
-    QVector<ShaderStorageBlock> m_shaderStorageBlocks;
+    std::vector<QString> m_shaderStorageBlockNames;
+    std::vector<int> m_shaderStorageBlockNamesIds;
+    std::vector<ShaderStorageBlock> m_shaderStorageBlocks;
 
-    QVector<QString> m_samplerNames;
-    QVector<int> m_samplerIds;
-    QVector<ShaderAttribute> m_samplers;
+    std::vector<QString> m_samplerNames;
+    std::vector<int> m_samplerIds;
+    std::vector<ShaderAttribute> m_samplers;
 
-    QVector<QString> m_imageNames;
-    QVector<int> m_imageIds;
-    QVector<ShaderAttribute> m_images;
+    std::vector<QString> m_imageNames;
+    std::vector<int> m_imageIds;
+    std::vector<ShaderAttribute> m_images;
 
-    QVector<QString> m_structNames;
-    QVector<int> m_structNamesIds;
+    std::vector<QString> m_structNames;
+    std::vector<int> m_structNamesIds;
 
     QHash<QString, int> m_fragOutputs;
-    QVector<QByteArray> m_shaderCode;
+    std::vector<QByteArray> m_shaderCode;
 
     // Private so that only SubmissionContext can call it
     friend class SubmissionContext;
-    void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
-    void initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription);
+    void initializeAttributes(const std::vector<ShaderAttribute> &attributesDescription);
+    void initializeUniformBlocks(const std::vector<ShaderUniformBlock> &uniformBlockDescription);
     void
-    initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
-    void initializeSamplers(const QVector<ShaderAttribute> &samplerDescription);
-    void initializeImages(const QVector<ShaderAttribute> &imageDescription);
+    initializeShaderStorageBlocks(const std::vector<ShaderStorageBlock> &shaderStorageBlockDescription);
+    void initializeSamplers(const std::vector<ShaderAttribute> &samplerDescription);
+    void initializeImages(const std::vector<ShaderAttribute> &imageDescription);
     void recordAllUniforms(const QShaderDescription::BlockVariable &ubo, QString parentName);
 
-    QVector<UBO_Member> m_uboMembers;
+    std::vector<UBO_Member> m_uboMembers;
 
     mutable QMutex m_mutex;
     QMetaObject::Connection m_contextConnection;

@@ -202,7 +202,7 @@ private:
 
 int locationForAttribute(Attribute *attr, RHIShader *shader) noexcept
 {
-    const QVector<ShaderAttribute> attribInfo = shader->attributes();
+    const std::vector<ShaderAttribute> &attribInfo = shader->attributes();
     const auto it = std::find_if(
             attribInfo.begin(), attribInfo.end(),
             [attr](const ShaderAttribute &sAttr) { return attr->nameId() == sAttr.m_nameId; });
@@ -389,7 +389,7 @@ QOpenGLContext *Renderer::shareContext() const
 void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
     Q_UNUSED(shader);
-    if (!m_dirtyShaders.contains(shaderHandle))
+    if (!Qt3DCore::contains(m_dirtyShaders, shaderHandle))
         m_dirtyShaders.push_back(shaderHandle);
 }
 
@@ -554,7 +554,7 @@ void Renderer::releaseGraphicsResources()
     //{
     //*
     //*     // Clean up the graphics context and any resources
-    //*     const QVector<HRHITexture> activeTexturesHandles =
+    //*     const std::vector<HRHITexture> activeTexturesHandles =
     //m_RHIResourceManagers->rhiTextureManager()->activeHandles();
     //*     for (const HRHITexture &textureHandle : activeTexturesHandles) {
     //*         RHITexture *tex = m_RHIResourceManagers->rhiTextureManager()->data(textureHandle);
@@ -562,7 +562,7 @@ void Renderer::releaseGraphicsResources()
     //*     }
     //*
     //*     // Do the same thing with buffers
-    //*     const QVector<HRHIBuffer> activeBuffers =
+    //*     const std::vector<HRHIBuffer> activeBuffers =
     //m_RHIResourceManagers->rhiBufferManager()->activeHandles();
     //*     for (const HRHIBuffer &bufferHandle : activeBuffers) {
     //*         RHIBuffer *buffer = m_RHIResourceManagers->rhiBufferManager()->data(bufferHandle);
@@ -570,7 +570,7 @@ void Renderer::releaseGraphicsResources()
     //*     }
     //*
     //*     // Do the same thing with shaders
-    //*     const QVector<RHIShader *> shaders =
+    //*     const std::vector<RHIShader *> shaders =
     //m_RHIResourceManagers->rhiShaderManager()->takeActiveResources();
     //*     qDeleteAll(shaders);
     //*
@@ -638,60 +638,29 @@ RenderSettings *Renderer::settings() const
     return m_settings;
 }
 
-void Renderer::render()
-{
-    // Traversing the framegraph tree from root to lead node
-    // Allows us to define the rendering set up
-    // Camera, RenderTarget ...
-
-    // Utimately the renderer should be a framework
-    // For the processing of the list of renderviews
-
-    // Matrice update, bounding volumes computation ...
-    // Should be jobs
-
-    // namespace Qt3DCore has 2 distincts node trees
-    // One scene description
-    // One framegraph description
-
-    while (m_running.loadRelaxed() > 0) {
-        doRender();
-        // TO DO: Restore windows exposed detection
-        // Probably needs to happens some place else though
-    }
-}
-
-// Either called by render if Qt3D is in charge of the RenderThread
-// or by QRenderAspectPrivate::renderSynchronous (for Scene3D)
-void Renderer::doRender(bool swapBuffers)
+// Either called by render if Qt3D is in charge of rendering (in the mainthread)
+// or by QRenderAspectPrivate::render (for Scene3D, potentially from a RenderThread)
+// This will wait until renderQueue is ready or shutdown was requested
+void Renderer::render(bool swapBuffers)
 {
     Renderer::ViewSubmissionResultData submissionData;
-    bool hasCleanedQueueAndProceeded = false;
-    bool preprocessingComplete = false;
     bool beganDrawing = false;
 
     // Blocking until RenderQueue is full
-    const bool canSubmit = isReadyToSubmit();
-    m_shouldSwapBuffers = swapBuffers;
+    const bool canSubmit = waitUntilReadyToSubmit();
 
-    // Lock the mutex to protect access to the renderQueue while we look for its state
-    QMutexLocker locker(m_renderQueue->mutex());
-    const bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
+    // If it returns false -> we are shutting down
+    if (!canSubmit)
+        return;
+
+    m_shouldSwapBuffers = swapBuffers;
+    const std::vector<Render::Rhi::RenderView *> &renderViews = m_renderQueue->nextFrameQueue();
     const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
 
     bool mustCleanResources = false;
 
-    // When using synchronous rendering (QtQuick)
-    // We are not sure that the frame queue is actually complete
-    // Since a call to render may not be synched with the completions
-    // of the RenderViewJobs
-    // In such a case we return early, waiting for a next call with
-    // the frame queue complete at this point
-
     // RenderQueue is complete (but that means it may be of size 0)
-    if (canSubmit && (queueIsComplete && !queueIsEmpty)) {
-        const QVector<Render::Rhi::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
-
+    if (!queueIsEmpty) {
         QTaskLogger submissionStatsPart1(m_services->systemInformation(),
                                          { JobTypes::FrameSubmissionPart1, 0 },
                                          QTaskLogger::Submission);
@@ -699,77 +668,69 @@ void Renderer::doRender(bool swapBuffers)
                                          { JobTypes::FrameSubmissionPart2, 0 },
                                          QTaskLogger::Submission);
 
-        QVector<RHIPassInfo> rhiPassesInfo;
+        std::vector<RHIPassInfo> rhiPassesInfo;
 
-        if (canRender()) {
-            QSurface *surface = nullptr;
-            for (const RenderView *rv : renderViews) {
-                surface = rv->surface();
-                if (surface)
-                    break;
-            }
+        QSurface *surface = nullptr;
+        for (const RenderView *rv : renderViews) {
+            surface = rv->surface();
+            if (surface)
+                break;
+        }
 
-            // In case we did not draw because e.g. there wase no swapchain,
-            // we keep the resource updates from the previous frame.
-            if (!m_submissionContext->m_currentUpdates) {
-                m_submissionContext->m_currentUpdates =
-                        m_submissionContext->rhi()->nextResourceUpdateBatch();
-            }
+        // In case we did not draw because e.g. there wase no swapchain,
+        // we keep the resource updates from the previous frame.
+        if (!m_submissionContext->m_currentUpdates) {
+            m_submissionContext->m_currentUpdates =
+                    m_submissionContext->rhi()->nextResourceUpdateBatch();
+        }
 
-            // 1) Execute commands for buffer uploads, texture updates, shader loading first
-            updateResources();
+        // 1) Execute commands for buffer uploads, texture updates, shader loading first
+        updateResources();
 
-            rhiPassesInfo = prepareCommandsSubmission(renderViews);
-            // 2) Update Pipelines and copy data into commands to allow concurrent submission
-            preprocessingComplete = true;
+        rhiPassesInfo = prepareCommandsSubmission(renderViews);
+        // 2) Update Pipelines and copy data into commands to allow concurrent submission
 
-            bool hasCommands = false;
-            for (const RenderView *rv : renderViews) {
-                // TODO find a way to break earlier with this pattern.
-                rv->forEachCommand([&] (const RenderCommand &cmd) {
-                    hasCommands |= cmd.isValid();
-                });
-                if (hasCommands)
-                    break;
-            }
+        bool hasCommands = false;
+        for (const RenderView *rv : renderViews) {
+            // TODO find a way to break earlier with this pattern.
+            rv->forEachCommand([&] (const RenderCommand &cmd) {
+                hasCommands |= cmd.isValid();
+            });
+            if (hasCommands)
+                break;
+        }
 
-            if (hasCommands) {
-                // Scoped to destroy surfaceLock
-                SurfaceLocker surfaceLock(surface);
-                const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
-                if (surfaceIsValid) {
-                    beganDrawing = m_submissionContext->beginDrawing(surface);
-                    if (beganDrawing) {
-                        // Purge shader which aren't used any longer
-                        static int callCount = 0;
-                        ++callCount;
-                        const int shaderPurgePeriod = 600;
-                        if (callCount % shaderPurgePeriod == 0)
-                            m_RHIResourceManagers->rhiShaderManager()->purge();
-                    }
+        if (hasCommands) {
+            // Scoped to destroy surfaceLock
+            SurfaceLocker surfaceLock(surface);
+            const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
+            if (surfaceIsValid) {
+                beganDrawing = m_submissionContext->beginDrawing(surface);
+                if (beganDrawing) {
+                    // Purge shader which aren't used any longer
+                    static int callCount = 0;
+                    ++callCount;
+                    const int shaderPurgePeriod = 600;
+                    if (callCount % shaderPurgePeriod == 0)
+                        m_RHIResourceManagers->rhiShaderManager()->purge();
                 }
             }
-            // 2) Proceed to next frame and start preparing frame n + 1
-            m_renderQueue->reset();
-            locker.unlock(); // Done protecting RenderQueue
-            m_vsyncFrameAdvanceService->proceedToNextFrame();
-            hasCleanedQueueAndProceeded = true;
+        }
 
-            // Only try to submit the RenderViews if the preprocessing was successful
-            // This part of the submission is happening in parallel to the RV building for the next
-            // frame
-            if (beganDrawing) {
-                submissionStatsPart1.end(submissionStatsPart2.restart());
+        // Only try to submit the RenderViews if the preprocessing was successful
+        // This part of the submission is happening in parallel to the RV building for the next
+        // frame
+        if (beganDrawing) {
+            submissionStatsPart1.end(submissionStatsPart2.restart());
 
-                // 3) Submit the render commands for frame n (making sure we never reference
-                // something that could be changing) Render using current device state and renderer
-                // configuration
-                submissionData = submitRenderViews(rhiPassesInfo);
+            // 3) Submit the render commands for frame n (making sure we never reference
+            // something that could be changing) Render using current device state and renderer
+            // configuration
+            submissionData = submitRenderViews(rhiPassesInfo);
 
-                // Perform any required cleanup of the Graphics resources (Buffers deleted, Shader
-                // deleted...)
-                mustCleanResources = true;
-            }
+            // Perform any required cleanup of the Graphics resources (Buffers deleted, Shader
+            // deleted...)
+            mustCleanResources = true;
         }
 
         // Execute the pending shell commands
@@ -777,27 +738,6 @@ void Renderer::doRender(bool swapBuffers)
 
         // Delete all the RenderViews which will clear the allocators
         // that were used for their allocation
-        qDeleteAll(renderViews);
-    }
-
-    // If hasCleanedQueueAndProceeded isn't true this implies that something went wrong
-    // with the rendering and/or the renderqueue is incomplete from some reason
-    // or alternatively it could be complete but empty (RenderQueue of size 0)
-
-    if (!hasCleanedQueueAndProceeded) {
-        // RenderQueue was full but something bad happened when
-        // trying to render it and therefore proceedToNextFrame was not called
-        // Note: in this case the renderQueue mutex is still locked
-
-        // Reset the m_renderQueue so that we won't try to render
-        // with a queue used by a previous frame with corrupted content
-        // if the current queue was correctly submitted
-        m_renderQueue->reset();
-
-        // We allow the RenderTickClock service to proceed to the next frame
-        // In turn this will allow the aspect manager to request a new set of jobs
-        // to be performed for each aspect
-        m_vsyncFrameAdvanceService->proceedToNextFrame();
     }
 
     // Perform the last swapBuffers calls after the proceedToNextFrame
@@ -816,6 +756,15 @@ void Renderer::doRender(bool swapBuffers)
         if (mustCleanResources)
             cleanGraphicsResources();
     }
+
+    // Reset RenderQueue and destroy the renderViews
+    m_renderQueue->reset();
+    qDeleteAll(renderViews);
+
+    // We allow the RenderTickClock service to proceed to the next frame
+    // In turn this will allow the aspect manager to request a new set of jobs
+    // to be performed for each aspect
+    m_vsyncFrameAdvanceService->proceedToNextFrame();
 }
 
 // Called by RenderViewJobs
@@ -825,7 +774,7 @@ void Renderer::enqueueRenderView(RenderView *renderView, int submitOrder)
 {
     QMutexLocker locker(m_renderQueue->mutex()); // Prevent out of order execution
     // We cannot use a lock free primitive here because:
-    // - QVector is not thread safe
+    // - std::vector is not thread safe
     // - Even if the insert is made correctly, the isFrameComplete call
     //   could be invalid since depending on the order of execution
     //   the counter could be complete but the renderview not yet added to the
@@ -837,17 +786,7 @@ void Renderer::enqueueRenderView(RenderView *renderView, int submitOrder)
     }
 }
 
-bool Renderer::canRender() const
-{
-
-    // TO DO: Check if all surfaces have been destroyed...
-    // It may be better if the last window to be closed trigger a call to shutdown
-    // Rather than having checks for the surface everywhere
-
-    return true;
-}
-
-bool Renderer::isReadyToSubmit()
+bool Renderer::waitUntilReadyToSubmit()
 {
     // Make sure that we've been told to render before rendering
     // Prevent ouf of order execution
@@ -1008,20 +947,22 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
             return onFailure();
         }
 
-        QVector<QRhiShaderResourceBinding> uboBindings;
-        uboBindings << QRhiShaderResourceBinding::uniformBuffer(
-                0,
-                QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage,
-                rvUBO)
-                    << QRhiShaderResourceBinding::uniformBuffer(
-                               1,
-                               QRhiShaderResourceBinding::VertexStage
-                                       | QRhiShaderResourceBinding::FragmentStage,
-                               commandUBO);
+        std::vector<QRhiShaderResourceBinding> uboBindings;
+        uboBindings.push_back(
+                    QRhiShaderResourceBinding::uniformBuffer(
+                        0,
+                        QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage,
+                        rvUBO));
+
+        uboBindings.push_back(
+                    QRhiShaderResourceBinding::uniformBuffer(
+                        1,
+                        QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage,
+                        commandUBO));
 
         // Create additional empty UBO Buffer for UBO with binding point > 1 (since we assume 0 and
         // 1 and for Qt3D standard values)
-        const QVector<ShaderUniformBlock> uniformBlocks = cmd.m_rhiShader->uniformBlocks();
+        const std::vector<ShaderUniformBlock> &uniformBlocks = cmd.m_rhiShader->uniformBlocks();
         QHash<int, RHIGraphicsPipeline::UBOBuffer> uboBuffers;
         for (const ShaderUniformBlock &block : uniformBlocks) {
             if (block.m_binding > 1) {
@@ -1032,11 +973,11 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
                 ubo->allocate(m_submissionContext.data(), rawData, true);
                 ok = ubo->bind(m_submissionContext.data(), RHIBuffer::UniformBuffer);
                 uboBuffers[block.m_binding] = { handle, ubo };
-                uboBindings << QRhiShaderResourceBinding::uniformBuffer(
+                uboBindings.push_back(QRhiShaderResourceBinding::uniformBuffer(
                         block.m_binding,
                         QRhiShaderResourceBinding::VertexStage
                                 | QRhiShaderResourceBinding::FragmentStage,
-                        ubo->rhiBuffer());
+                        ubo->rhiBuffer()));
             }
         }
         graphicsPipeline->setUBOs(uboBuffers);
@@ -1101,7 +1042,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
             QRhiVertexInputBinding::Classification classification;
             uint attributeDivisor;
         };
-        QVector<BufferBinding> uniqueBindings;
+        std::vector<BufferBinding> uniqueBindings;
 
 
         // QRhiVertexInputBinding -> specifies the stride of an attribute, whether it's per vertex
@@ -1355,8 +1296,8 @@ bool Renderer::setupRenderTarget(RenderView *rv, RHIGraphicsPipeline *graphicsPi
     }
 }
 // When this function is called, we must not be processing the commands for frame n+1
-QVector<Renderer::RHIPassInfo>
-Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
+std::vector<Renderer::RHIPassInfo>
+Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews)
 {
     // TO DO: Find a central place to initialize RHI resources
     const int renderViewCount = renderViews.size();
@@ -1365,11 +1306,11 @@ Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
     // as creating the pass clears the buffers
     // 1) We need to find all adjacents RenderViews that have the same renderTarget
     // and submit all of these as part of the same RHI pass
-    QVector<RHIPassInfo> rhiPassesInfo;
+    std::vector<RHIPassInfo> rhiPassesInfo;
 
     for (int i = 0; i < renderViewCount;) {
-        QVector<RenderView *> sameRenderTargetRVs;
-        QVector<QRhiBuffer *> rvUbos;
+        std::vector<RenderView *> sameRenderTargetRVs;
+        std::vector<QRhiBuffer *> rvUbos;
         RenderView *refRV = renderViews.at(i);
         sameRenderTargetRVs.push_back(refRV);
 
@@ -1605,7 +1546,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
 // Executed in a job (in main thread when jobs are done)
 void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
-    const QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>>
+    const std::vector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>>
             updateTextureProperties = std::move(m_updatedTextureProperties);
     for (const auto &pair : updateTextureProperties) {
         const Qt3DCore::QNodeIdVector targetIds = pair.second;
@@ -1678,7 +1619,7 @@ void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
 void Renderer::updateResources()
 {
     {
-        const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
+        const std::vector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
         for (const HBuffer &handle : dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
 
@@ -1698,7 +1639,7 @@ void Renderer::updateResources()
 
 #ifndef SHADER_LOADING_IN_COMMAND_THREAD
     {
-        const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+        const std::vector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
         for (const HShader &handle : dirtyShaderHandles) {
             Shader *shader = shaderManager->data(handle);
@@ -1715,7 +1656,7 @@ void Renderer::updateResources()
 #endif
 
     {
-        const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
+        const std::vector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
         for (const HTexture &handle : activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
 
@@ -1807,7 +1748,7 @@ void Renderer::updateTexture(Texture *texture)
     // Will make the texture requestUpload
     if (dirtyFlags.testFlag(Texture::DirtyImageGenerators)) {
         const QNodeIdVector textureImageIds = texture->textureImageIds();
-        QVector<RHITexture::Image> images;
+        std::vector<RHITexture::Image> images;
         images.reserve(textureImageIds.size());
         // TODO: Move this into RHITexture directly
         for (const QNodeId textureImageId : textureImageIds) {
@@ -1869,7 +1810,7 @@ void Renderer::cleanupRenderTarget(const RenderTarget *renderTarget)
 // Called by SubmitRenderView
 void Renderer::downloadGLBuffers()
 {
-    const QVector<Qt3DCore::QNodeId> downloadableHandles = std::move(m_downloadableBuffers);
+    const std::vector<Qt3DCore::QNodeId> downloadableHandles = std::move(m_downloadableBuffers);
     for (const Qt3DCore::QNodeId &bufferId : downloadableHandles) {
         BufferManager *bufferManager = m_nodesManager->bufferManager();
         BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
@@ -1887,7 +1828,7 @@ void Renderer::downloadGLBuffers()
 // Happens in RenderThread context when all RenderViewJobs are done
 // Returns the id of the last bound FBO
 Renderer::ViewSubmissionResultData
-Renderer::submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo)
+Renderer::submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo)
 {
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
@@ -2091,7 +2032,7 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
     // called in main thread once all jobs are done running
 
     // sync captured renders to frontend
-    const QVector<Qt3DCore::QNodeId> pendingCaptureIds =
+    const std::vector<Qt3DCore::QNodeId> pendingCaptureIds =
             std::move(m_pendingRenderCaptureSendRequests);
     for (const Qt3DCore::QNodeId &id : qAsConst(pendingCaptureIds)) {
         auto *backend = static_cast<Qt3DRender::Render::RenderCapture *>(
@@ -2498,7 +2439,7 @@ bool Renderer::uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
         if (!shader)
             return true;
 
-        const QVector<RHIShader::UBO_Member> &uboMembers = shader->uboMembers();
+        const std::vector<RHIShader::UBO_Member> &uboMembers = shader->uboMembers();
         const QHash<int, RHIGraphicsPipeline::UBOBuffer> &uboBuffers = pipeline->ubos();
         const ShaderParameterPack &parameterPack = command.m_parameterPack;
         const PackUniformHash &uniforms = parameterPack.uniforms();
@@ -2574,7 +2515,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 {
     bool allCommandsIssued = true;
 
-    const QVector<RenderView *> &renderViews = passInfo.rvs;
+    const std::vector<RenderView *> &renderViews = passInfo.rvs;
     QColor clearColor;
     QRhiDepthStencilClearValue clearDepthStencil;
 

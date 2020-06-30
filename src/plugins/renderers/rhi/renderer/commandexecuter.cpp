@@ -301,12 +301,12 @@ CommandExecuter::CommandExecuter(Render::Rhi::Renderer *renderer) : m_renderer(r
 
 // Render thread
 void CommandExecuter::performAsynchronousCommandExecution(
-        const QVector<Render::Rhi::RenderView *> &views)
+        const std::vector<Render::Rhi::RenderView *> &views)
 {
     Q_UNUSED(views);
     RHI_UNIMPLEMENTED;
     //*    QMutexLocker lock(&m_pendingCommandsMutex);
-    //*    const QVector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands =
+    //*    const std::vector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands =
     //std::move(m_pendingCommands);
     //*    lock.unlock();
     //*

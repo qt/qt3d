@@ -39,6 +39,7 @@
 
 #include "rhishader_p.h"
 #include <QMutexLocker>
+#include <Qt3DCore/private/vector_helper_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <submissioncontext_p.h>
 #include <logging_p.h>
@@ -57,37 +58,37 @@ RHIShader::RHIShader() : m_isLoaded(false)
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
 
-QVector<QString> RHIShader::uniformsNames() const
+const std::vector<QString> &RHIShader::uniformsNames() const
 {
     return m_uniformsNames;
 }
 
-QVector<QString> RHIShader::attributesNames() const
+const std::vector<QString> &RHIShader::attributesNames() const
 {
     return m_attributesNames;
 }
 
-QVector<QString> RHIShader::uniformBlockNames() const
+const std::vector<QString> &RHIShader::uniformBlockNames() const
 {
     return m_uniformBlockNames;
 }
 
-QVector<QString> RHIShader::storageBlockNames() const
+const std::vector<QString> &RHIShader::storageBlockNames() const
 {
     return m_shaderStorageBlockNames;
 }
 
-QVector<QString> RHIShader::samplerNames() const
+const std::vector<QString> &RHIShader::samplerNames() const
 {
     return m_samplerNames;
 }
 
-QVector<QString> RHIShader::imagesNames() const
+const std::vector<QString> &RHIShader::imagesNames() const
 {
     return m_imageNames;
 }
 
-QVector<QByteArray> RHIShader::shaderCode() const
+const std::vector<QByteArray> &RHIShader::shaderCode() const
 {
     return m_shaderCode;
 }
@@ -258,9 +259,9 @@ static constexpr int rhiTypeSize(QShaderDescription::VariableType type)
 }
 
 template<typename T, typename Pred>
-QVector<T> stableRemoveDuplicates(QVector<T> in, Pred predicate)
+std::vector<T> stableRemoveDuplicates(std::vector<T> in, Pred predicate)
 {
-    QVector<T> out;
+    std::vector<T> out;
     for (const auto &element : in) {
         if (std::none_of(out.begin(), out.end(),
                          [&](T &other) { return predicate(element, other); }))
@@ -335,8 +336,8 @@ void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable &membe
     m_unqualifiedUniformNames << fullMemberName;
 
     if (isStruct && !isArray) {
-        m_structNames << fullMemberName;
-        m_structNamesIds << StringToInt::lookupId(fullMemberName);
+        m_structNames.push_back(fullMemberName);
+        m_structNamesIds.push_back(StringToInt::lookupId(fullMemberName));
 
         for (const QShaderDescription::BlockVariable& bv : member.structMembers) {
             // recordAllUniforms("baz", "foo.bar.")
@@ -354,8 +355,8 @@ void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable &membe
     else if (isStruct && isArray) {
         // Record the struct names
         forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
-            m_structNames << (fullMemberName + str);
-            m_structNamesIds << StringToInt::lookupId(m_structNames.back());
+            m_structNames.push_back(fullMemberName + str);
+            m_structNamesIds.push_back(StringToInt::lookupId(m_structNames.back()));
         });
 
         // Record the struct members
@@ -387,14 +388,14 @@ bool isGeneratedUBOName(const QByteArray& arr)
 
 void RHIShader::introspect()
 {
-    QVector<QShaderDescription::UniformBlock> rhiUBO;
-    QVector<QShaderDescription::StorageBlock> rhiSSBO;
+    std::vector<QShaderDescription::UniformBlock> rhiUBO;
+    std::vector<QShaderDescription::StorageBlock> rhiSSBO;
 
-    QVector<ShaderUniformBlock> uniformBlocks;
-    QVector<ShaderStorageBlock> storageBlocks;
-    QVector<ShaderAttribute> attributes;
-    QVector<ShaderAttribute> samplers;
-    QVector<ShaderAttribute> images;
+    std::vector<ShaderUniformBlock> uniformBlocks;
+    std::vector<ShaderStorageBlock> storageBlocks;
+    std::vector<ShaderAttribute> attributes;
+    std::vector<ShaderAttribute> samplers;
+    std::vector<ShaderAttribute> images;
 
     // Introspect shader vertex input
     if (m_stages[QShader::VertexStage].isValid()) {
@@ -406,8 +407,8 @@ void RHIShader::introspect()
                                                    input.location });
         }
 
-        rhiUBO += vtx.uniformBlocks();
-        rhiSSBO += vtx.storageBlocks();
+        Qt3DCore::append(rhiUBO, vtx.uniformBlocks());
+        Qt3DCore::append(rhiSSBO, vtx.storageBlocks());
     }
 
     // Introspect shader uniforms
@@ -425,8 +426,8 @@ void RHIShader::introspect()
                                                image.binding });
         }
 
-        rhiUBO += frag.uniformBlocks();
-        rhiSSBO += frag.storageBlocks();
+        Qt3DCore::append(rhiUBO, frag.uniformBlocks());
+        Qt3DCore::append(rhiSSBO, frag.storageBlocks());
     }
 
     rhiUBO = stableRemoveDuplicates(rhiUBO,
@@ -448,19 +449,15 @@ void RHIShader::introspect()
 
         // Parse Uniform Block members so that we can later on map a Parameter name to an actual
         // member
-        const QVector<QShaderDescription::BlockVariable> members = ubo.members;
+        m_uniformsNamesIds.reserve(m_uniformsNamesIds.size() + ubo.members.size());
 
-        QVector<int> namesIds;
-        namesIds.reserve(members.size());
-
-        for (const QShaderDescription::BlockVariable &member : members) {
-            namesIds << StringToInt::lookupId(member.name);
+        for (const QShaderDescription::BlockVariable &member : qAsConst(ubo.members)) {
+            m_uniformsNamesIds.push_back(StringToInt::lookupId(member.name));
             if (addUnqualifiedUniforms) {
                 recordAllUniforms(member, QStringLiteral(""));
             }
         }
-        m_uniformsNamesIds += namesIds;
-        m_uboMembers.push_back({ uniformBlocks.last(), members });
+        m_uboMembers.push_back(UBO_Member{ uniformBlocks.back(), ubo.members });
     }
 
     for (const QShaderDescription::StorageBlock &ssbo : rhiSSBO) {
@@ -538,20 +535,20 @@ ShaderStorageBlock RHIShader::storageBlockForBlockName(const QString &blockName)
 
 RHIShader::ParameterKind RHIShader::categorizeVariable(int nameId) const noexcept
 {
-    if (m_uniformsNamesIds.contains(nameId))
+    if (Qt3DCore::contains(m_uniformsNamesIds, nameId))
         return ParameterKind::Uniform;
-    else if (m_uniformBlockNamesIds.contains(nameId))
+    else if (Qt3DCore::contains(m_uniformBlockNamesIds, nameId))
         return ParameterKind::UBO;
-    else if (m_shaderStorageBlockNamesIds.contains(nameId))
+    else if (Qt3DCore::contains(m_shaderStorageBlockNamesIds, nameId))
         return ParameterKind::SSBO;
-    else if (m_structNamesIds.contains(nameId))
+    else if (Qt3DCore::contains(m_structNamesIds, nameId))
         return ParameterKind::Struct;
     return ParameterKind::Uniform;
 }
 
 bool RHIShader::hasUniform(int nameId) const noexcept
 {
-    return m_uniformsNamesIds.contains(nameId);
+    return Qt3DCore::contains(m_uniformsNamesIds, nameId);
 }
 
 bool RHIShader::hasActiveVariables() const noexcept
@@ -560,8 +557,15 @@ bool RHIShader::hasActiveVariables() const noexcept
             || !m_uniformBlockNamesIds.empty() || !m_shaderStorageBlockNamesIds.empty();
 }
 
+void RHIShader::setShaderCode(const std::vector<QByteArray> &shaderCode)
+{
+    m_shaderCode.clear();
+    Qt3DCore::append(m_shaderCode, shaderCode);
+}
+
 void RHIShader::prepareUniforms(ShaderParameterPack &pack)
 {
+
     const PackUniformHash &values = pack.uniforms();
 
     auto it = values.keys.cbegin();
@@ -600,7 +604,7 @@ const QHash<QString, int> RHIShader::fragOutputs() const
     return m_fragOutputs;
 }
 
-void RHIShader::initializeAttributes(const QVector<ShaderAttribute> &attributesDescription)
+void RHIShader::initializeAttributes(const std::vector<ShaderAttribute> &attributesDescription)
 {
     m_attributes = attributesDescription;
     m_attributesNames.resize(attributesDescription.size());
@@ -613,7 +617,7 @@ void RHIShader::initializeAttributes(const QVector<ShaderAttribute> &attributesD
     }
 }
 
-void RHIShader::initializeSamplers(const QVector<ShaderAttribute> &samplersDescription)
+void RHIShader::initializeSamplers(const std::vector<ShaderAttribute> &samplersDescription)
 {
     m_samplers = samplersDescription;
     m_samplerNames.resize(samplersDescription.size());
@@ -626,7 +630,7 @@ void RHIShader::initializeSamplers(const QVector<ShaderAttribute> &samplersDescr
     }
 }
 
-void RHIShader::initializeImages(const QVector<ShaderAttribute> &imagesDescription)
+void RHIShader::initializeImages(const std::vector<ShaderAttribute> &imagesDescription)
 {
     m_images = imagesDescription;
     m_imageNames.resize(imagesDescription.size());
@@ -639,7 +643,7 @@ void RHIShader::initializeImages(const QVector<ShaderAttribute> &imagesDescripti
     }
 }
 
-void RHIShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription)
+void RHIShader::initializeUniformBlocks(const std::vector<ShaderUniformBlock> &uniformBlockDescription)
 {
     m_uniformBlocks = uniformBlockDescription;
     m_uniformBlockNames.resize(uniformBlockDescription.size());
@@ -651,11 +655,11 @@ void RHIShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &unifo
         qCDebug(Shaders) << "Initializing Uniform Block {" << m_uniformBlockNames[i] << "}";
 
         // Find all active uniforms for the shader block
-        QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.cbegin();
-        const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.cend();
+        std::vector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.cbegin();
+        const std::vector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.cend();
 
-        QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.cbegin();
-        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.cend();
+        std::vector<QString>::const_iterator uniformNamesIt = m_uniformsNames.cbegin();
+        const std::vector<QString>::const_iterator uniformNamesEnd = m_attributesNames.cend();
 
         QHash<QString, ShaderUniform> activeUniformsInBlock;
 
@@ -679,7 +683,7 @@ void RHIShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &unifo
 }
 
 void RHIShader::initializeShaderStorageBlocks(
-        const QVector<ShaderStorageBlock> &shaderStorageBlockDescription)
+        const std::vector<ShaderStorageBlock> &shaderStorageBlockDescription)
 {
     m_shaderStorageBlocks = shaderStorageBlockDescription;
     m_shaderStorageBlockNames.resize(shaderStorageBlockDescription.size());

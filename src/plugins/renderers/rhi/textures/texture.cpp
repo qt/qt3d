@@ -43,6 +43,7 @@
 #include <private/qdebug_p.h>
 #include <private/qrhi_p.h>
 #include <QDebug>
+#include <Qt3DCore/private/vector_helper_p.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qtextureimagedata.h>
@@ -355,7 +356,7 @@ bool RHITexture::loadTextureDataFromGenerator()
         m_properties.layers = m_textureData->layers();
         m_properties.format = m_textureData->format();
 
-        const QVector<QTextureImageDataPtr> imageData = m_textureData->imageData();
+        const QVector<QTextureImageDataPtr> &imageData = m_textureData->imageData();
 
         if (!imageData.empty()) {
             // Set the mips level based on the first image if autoMipMapGeneration is disabled
@@ -581,7 +582,7 @@ void RHITexture::setProperties(const TextureProperties &props)
     }
 }
 
-void RHITexture::setImages(const QVector<Image> &images)
+void RHITexture::setImages(const std::vector<Image> &images)
 {
     // check if something has changed at all
     bool same = (images.size() == m_images.size());
@@ -618,7 +619,7 @@ void RHITexture::setSharedTextureId(int textureId)
 
 void RHITexture::addTextureDataUpdates(const QVector<QTextureDataUpdate> &updates)
 {
-    m_pendingTextureDataUpdates += updates;
+    Qt3DCore::append(m_pendingTextureDataUpdates, updates);
     requestUpload();
 }
 
@@ -685,7 +686,7 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
 
     // Upload all QTexImageData set by the QTextureGenerator
     if (m_textureData) {
-        const QVector<QTextureImageDataPtr> &imgData = m_textureData->imageData();
+        const auto &imgData = m_textureData->imageData();
 
         for (const QTextureImageDataPtr &data : imgData) {
             const int mipLevels = data->mipLevels();
@@ -722,7 +723,7 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
     m_imageData.clear();
 
     // Update data from TextureUpdates
-    const QVector<QTextureDataUpdate> textureDataUpdates = std::move(m_pendingTextureDataUpdates);
+    const std::vector<QTextureDataUpdate> textureDataUpdates = std::move(m_pendingTextureDataUpdates);
     for (const QTextureDataUpdate &update : textureDataUpdates) {
         const QTextureImageDataPtr imgData = update.data();
 

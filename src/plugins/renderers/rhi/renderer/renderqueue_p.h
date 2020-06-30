@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <QVector>
+#include <vector>
 #include <QtGlobal>
 #include <QMutex>
 
@@ -76,7 +76,7 @@ public:
     bool isFrameQueueComplete() const;
 
     bool queueRenderView(RenderView *renderView, uint submissionOrderIndex);
-    QVector<RenderView *> nextFrameQueue();
+    const std::vector<RenderView *> &nextFrameQueue();
     void reset();
 
     void setNoRender();
@@ -91,7 +91,7 @@ private:
     bool m_wasReset;
     int m_targetRenderViewCount;
     int m_currentRenderViewCount;
-    QVector<RenderView *> m_currentWorkQueue;
+    std::vector<RenderView *> m_currentWorkQueue;
     QMutex m_mutex;
 };
 

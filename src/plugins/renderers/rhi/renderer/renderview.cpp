@@ -408,7 +408,7 @@ void sortByMaterial(EntityRenderCommandDataView *view, int begin, const int end)
 }
 
 void sortCommandRange(EntityRenderCommandDataView *view, int begin, int end, const int level,
-                      const QVector<Qt3DRender::QSortPolicy::SortType> &sortingTypes)
+                      const std::vector<Qt3DRender::QSortPolicy::SortType> &sortingTypes)
 {
     if (level >= sortingTypes.size())
         return;
@@ -461,7 +461,7 @@ void RenderView::sort()
     // We compute the adjacent change cost
 
      // Only perform uniform minimization if we explicitly asked for it
-     if (!m_sortingTypes.contains(QSortPolicy::Uniform))
+     if (!Qt3DCore::contains(m_sortingTypes, QSortPolicy::Uniform))
         return;
 
     // Minimize uniform changes
@@ -584,7 +584,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
 
             const Qt3DCore::QNodeId materialComponentId = entity->componentUuid<Material>();
             const HMaterial materialHandle = entity->componentHandle<Material>();
-            const QVector<RenderPassParameterData> renderPassData =
+            const std::vector<RenderPassParameterData> renderPassData =
                     m_parameters.value(materialComponentId);
 
             HGeometry geometryHandle =
@@ -729,7 +729,7 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const Entity **en
             && computeJob->isEnabled()) {
 
             const Qt3DCore::QNodeId materialComponentId = entity->componentUuid<Material>();
-            const QVector<RenderPassParameterData> &renderPassData =
+            const std::vector<RenderPassParameterData> &renderPassData =
                     m_parameters.value(materialComponentId);
 
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh

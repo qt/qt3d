@@ -86,12 +86,12 @@ public:
     {
         m_renderPassFilter = renderPassFilter;
     }
-    inline const QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &
+    inline const QHash<Qt3DCore::QNodeId, std::vector<RenderPassParameterData>> &
     materialToPassAndParameter() Q_DECL_NOTHROW
     {
         return m_parameters;
     }
-    inline void setHandles(const QVector<HMaterial> &handles) Q_DECL_NOTHROW
+    inline void setHandles(const std::vector<HMaterial> &handles) Q_DECL_NOTHROW
     {
         m_handles = handles;
     }
@@ -108,7 +108,7 @@ private:
 
     // Material id to array of RenderPasse with parameters
     MaterialParameterGathererData m_parameters;
-    QVector<HMaterial> m_handles;
+    std::vector<HMaterial> m_handles;
 };
 
 typedef QSharedPointer<MaterialParameterGathererJob> MaterialParameterGathererJobPtr;

@@ -967,7 +967,7 @@ void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
     Q_UNUSED(attachments);
     RHI_UNIMPLEMENTED;
-    //* const QVector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
+    //* const std::vector<int> activeDrawBuffers = attachments.getGlDrawBuffers();
     //*
     //* if (m_glHelper->checkFrameBufferComplete()) {
     //*     if (activeDrawBuffers.size() > 1) {// We need MRT
@@ -1167,18 +1167,18 @@ void SubmissionContext::applyStateSet(const RenderStateSet *ss,
     graphicsPipeline->setTargetBlends({blend});
 
 
-    const QVector<StateVariant> statesToSet = ss->states();
+    const auto &statesToSet = ss->states();
     for (const StateVariant &ds : statesToSet)
         applyState(ds, graphicsPipeline);
 }
 
 StateVariant *SubmissionContext::getState(RenderStateSet *ss, StateMask type) const
 {
-    const QVector<StateVariant> &statesToSet = ss->states();
+    const auto &statesToSet = ss->states();
     for (int i = 0, m = statesToSet.size(); i < m; ++i) {
         const StateVariant &ds = statesToSet.at(i);
         if (ds.type == type)
-            return ss->states().begin() + i;
+            return ss->states().data() + i;
     }
     return nullptr;
 }
@@ -1337,7 +1337,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, RHISha
     // Update uniforms in the Default Uniform Block
     const PackUniformHash& values = parameterPack.uniforms();
     const auto &activeUniformsIndices = parameterPack.submissionUniformIndices();
-    const QVector<ShaderUniform> &shaderUniforms = shader->uniforms();
+    const std::vector<ShaderUniform> &shaderUniforms = shader->uniforms();
 
     for (const int shaderUniformIndex : activeUniformsIndices) {
         const ShaderUniform &uniform = shaderUniforms[shaderUniformIndex];
@@ -1428,7 +1428,7 @@ void SubmissionContext::uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b, bool
     // Note: we are only storing the updates data CPU side at this point
     // actually upload will be performed when the buffer will be bound
     // as we would otherwise need to know the usage type of the buffer
-    QVector<Qt3DCore::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
+    auto updates = std::move(buffer->pendingBufferUpdates());
     for (auto it = updates.begin(); it != updates.end(); ++it) {
         auto update = it;
         // We have a partial update
@@ -1583,7 +1583,7 @@ constexpr int getFirstAvailableBit(const std::bitset<N> &bits)
     return -1;
 }
 // This function ensures that the shader stages all have the same bindings
-void preprocessRHIShader(QVector<QByteArray> &shaderCodes)
+void preprocessRHIShader(std::vector<QByteArray> &shaderCodes)
 {
     // Map the variable names to bindings
     std::map<QByteArray, int> bindings;
@@ -1750,11 +1750,13 @@ void SubmissionContext::loadShader(Shader *shaderNode, ShaderManager *shaderMana
     // We create or adopt an already created rhiShader
     rhiShader = rhiShaderManager->createOrAdoptExisting(shaderNode);
 
-    const QVector<Qt3DCore::QNodeId> sharedShaderIds =
+    const std::vector<Qt3DCore::QNodeId> &sharedShaderIds =
             rhiShaderManager->shaderIdsForProgram(rhiShader);
     if (sharedShaderIds.size() == 1) {
         // Shader in the cache hasn't been loaded yet
-        QVector<QByteArray> shaderCodes = shaderNode->shaderCode();
+        // We want a copy of the QByteArray as preprocessRHIShader will
+        // modify them
+        std::vector<QByteArray> shaderCodes = shaderNode->shaderCode();
         preprocessRHIShader(shaderCodes);
         rhiShader->setShaderCode(shaderCodes);
 

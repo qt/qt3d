@@ -185,8 +185,7 @@ public:
     void shutdown() override;
     void releaseGraphicsResources() override;
 
-    void render() override;
-    void doRender(bool swapBuffers = true) override;
+    void render(bool swapBuffers = true) override;
     void cleanGraphicsResources() override;
 
     bool isRunning() const override { return m_running.loadRelaxed(); }
@@ -257,13 +256,13 @@ public:
 
     struct RHIPassInfo
     {
-        QVector<RenderView *> rvs;
+        std::vector<RenderView *> rvs;
         QSurface *surface = nullptr;
         Qt3DCore::QNodeId renderTargetId;
         AttachmentPack attachmentPack;
     };
 
-    QVector<RHIPassInfo> prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
+    std::vector<RHIPassInfo> prepareCommandsSubmission(const std::vector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RHIPassInfo &passInfo);
 
     // For Scene2D rendering
@@ -281,7 +280,7 @@ public:
     QList<QKeyEvent> pendingKeyEvents() const;
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
-    bool isReadyToSubmit();
+    bool waitUntilReadyToSubmit();
 
     QVariant executeCommand(const QStringList &args) override;
     void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) override;
@@ -294,7 +293,7 @@ public:
         QSurface *surface;
     };
 
-    ViewSubmissionResultData submitRenderViews(const QVector<RHIPassInfo> &rhiPassesInfo);
+    ViewSubmissionResultData submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo);
 
     RendererCache *cache() { return &m_cache; }
     void setScreen(QScreen *scr) override;
@@ -308,8 +307,6 @@ public:
 
 private:
 #endif
-    bool canRender() const;
-
     Qt3DCore::QServiceLocator *m_services;
     QRenderAspect *m_aspect;
     NodeManagers *m_nodesManager;
@@ -335,8 +332,8 @@ private:
 
     QAtomicInt m_running;
 
-    QVector<Attribute *> m_dirtyAttributes;
-    QVector<Geometry *> m_dirtyGeometry;
+    std::vector<Attribute *> m_dirtyAttributes;
+    std::vector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
 
     struct DirtyBits
@@ -361,7 +358,7 @@ private:
     RenderableEntityFilterPtr m_renderableEntityFilterJob;
     ComputableEntityFilterPtr m_computableEntityFilterJob;
 
-    QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
+    std::vector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
     void performDraw(RenderCommand *command);
     void performCompute(const RenderView *rv, RenderCommand *command);
@@ -379,12 +376,12 @@ private:
     void sendSetFenceHandlesToFrontend();
     void sendDisablesToFrontend(Qt3DCore::QAspectManager *manager);
 
-    QVector<HBuffer> m_dirtyBuffers;
-    QVector<Qt3DCore::QNodeId> m_downloadableBuffers;
-    QVector<HShader> m_dirtyShaders;
-    QVector<HTexture> m_dirtyTextures;
-    QVector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
-    QVector<Qt3DCore::QNodeId> m_updatedDisableSubtreeEnablers;
+    std::vector<HBuffer> m_dirtyBuffers;
+    std::vector<Qt3DCore::QNodeId> m_downloadableBuffers;
+    std::vector<HShader> m_dirtyShaders;
+    std::vector<HTexture> m_dirtyTextures;
+    std::vector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> m_updatedTextureProperties;
+    std::vector<Qt3DCore::QNodeId> m_updatedDisableSubtreeEnablers;
     Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
     std::vector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
 
