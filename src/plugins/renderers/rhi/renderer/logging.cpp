@@ -47,18 +47,18 @@ namespace Render {
 
 namespace Rhi {
 
-Q_LOGGING_CATEGORY(Backend, "Qt3D.Renderer.OpenGL.Backend", QtWarningMsg)
-Q_LOGGING_CATEGORY(Frontend, "Qt3D.Renderer.OpenGL.Frontend", QtWarningMsg)
-Q_LOGGING_CATEGORY(Io, "Qt3D.Renderer.OpenGL.IO", QtWarningMsg)
-Q_LOGGING_CATEGORY(Jobs, "Qt3D.Renderer.OpenGL.Jobs", QtWarningMsg)
-Q_LOGGING_CATEGORY(SceneLoaders, "Qt3D.Renderer.OpenGL.SceneLoaders", QtWarningMsg)
-Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Renderer.OpenGL.Framegraph", QtWarningMsg)
-Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Renderer.OpenGL.RenderNodes", QtWarningMsg)
-Q_LOGGING_CATEGORY(Rendering, "Qt3D.Renderer.OpenGL.Rendering", QtWarningMsg)
-Q_LOGGING_CATEGORY(Memory, "Qt3D.Renderer.OpenGL.Memory", QtWarningMsg)
-Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.OpenGL.Shaders", QtWarningMsg)
-Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.OpenGL.RenderStates", QtWarningMsg)
-Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.OpenGL.VsyncAdvanceService", QtWarningMsg)
+Q_LOGGING_CATEGORY(Backend, "Qt3D.Renderer.RHI.Backend", QtWarningMsg)
+Q_LOGGING_CATEGORY(Frontend, "Qt3D.Renderer.RHI.Frontend", QtWarningMsg)
+Q_LOGGING_CATEGORY(Io, "Qt3D.Renderer.RHI.IO", QtWarningMsg)
+Q_LOGGING_CATEGORY(Jobs, "Qt3D.Renderer.RHI.Jobs", QtWarningMsg)
+Q_LOGGING_CATEGORY(SceneLoaders, "Qt3D.Renderer.RHI.SceneLoaders", QtWarningMsg)
+Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Renderer.RHI.Framegraph", QtWarningMsg)
+Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Renderer.RHI.RenderNodes", QtWarningMsg)
+Q_LOGGING_CATEGORY(Rendering, "Qt3D.Renderer.RHI.Rendering", QtWarningMsg)
+Q_LOGGING_CATEGORY(Memory, "Qt3D.Renderer.RHI.Memory", QtWarningMsg)
+Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.RHI.Shaders", QtWarningMsg)
+Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.RHI.RenderStates", QtWarningMsg)
+Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.RHI.VsyncAdvanceService", QtWarningMsg)
 
 } // namespace Rhi
 
