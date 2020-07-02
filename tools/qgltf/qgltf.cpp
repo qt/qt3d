@@ -1847,7 +1847,7 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
             if (vals.contains(it.key()))
                 continue;
             // alpha is supported for the diffuse color. < 1 will enable blending.
-            const bool alpha = it.key() == QStringLiteral("diffuse");
+            const bool alpha = it.key() == QByteArrayLiteral("diffuse");
             if (alpha && it.value()[3] < 1.0f)
                 opaque = false;
             vals[it.key()] = col2jsvec(it.value(), alpha);
