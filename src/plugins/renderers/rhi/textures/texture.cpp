@@ -210,6 +210,7 @@ QRhiTextureUploadEntry createUploadEntry(int level, int layer, const QByteArray 
     return QRhiTextureUploadEntry(layer, level, description);
 }
 
+// For Multiple Texture Image uploads from within a QTextureImageData
 template<typename F>
 void filterLayersAndFaces(const QTextureImageData &data, F f)
 {
@@ -240,6 +241,7 @@ void filterLayersAndFaces(const QTextureImageData &data, F f)
     }
 }
 
+// For a Single Texture Image Upload
 template<typename F>
 void filterLayerAndFace(int layer, int face, F f)
 {
@@ -288,8 +290,12 @@ RHITexture::~RHITexture() { }
 // Must be called from RenderThread with active GL context
 void RHITexture::destroy()
 {
+    if (m_rhi)
+        m_rhi->destroy();
     delete m_rhi;
     m_rhi = nullptr;
+    if (m_rhiSampler)
+        m_rhiSampler->destroy();
     delete m_rhiSampler;
     m_rhiSampler = nullptr;
     delete m_renderBuffer;
@@ -451,6 +457,8 @@ RHITexture::TextureUpdateInfo RHITexture::createOrUpdateRhiTexture(SubmissionCon
     // If the properties changed or texture has become a shared texture from a
     // 3rd party engine, we need to destroy and maybe re-allocate the texture
     if (testDirtyFlag(Properties) || testDirtyFlag(SharedTextureId)) {
+        if (m_rhi)
+            m_rhi->destroy();
         delete m_rhi;
         m_rhi = nullptr;
         textureInfo.wasUpdated = true;
@@ -571,7 +579,7 @@ void RHITexture::setImages(const QVector<Image> &images)
     // check if something has changed at all
     bool same = (images.size() == m_images.size());
     if (same) {
-        for (int i = 0; i < images.size(); i++) {
+        for (size_t i = 0; i < images.size(); i++) {
             if (images[i] != m_images[i]) {
                 same = false;
                 break;
@@ -683,14 +691,20 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
     }
 
     // Upload all QTexImageData references by the TextureImages
-    for (int i = 0; i < std::min(m_images.size(), m_imageData.size()); i++) {
+    for (size_t i = 0; i < std::min(m_images.size(), m_imageData.size()); i++) {
         const QTextureImageDataPtr &imgData = m_imageData.at(i);
         // Here the bytes in the QTextureImageData contain data for a single
         // layer, face or mip level, unlike the QTextureGenerator case where
         // they are in a single blob. Hence QTextureImageData::data() is not suitable.
         const QByteArray bytes(QTextureImageDataPrivate::get(imgData.get())->m_data);
+
+        // Find RHI face index for matching face enum
+        // Note: Default value for face on a QAbstractTextureImage is
+        // CubeMapPositiveX which results in index 0, therefore we don't need
+        // special handling for CubeMap vs 2D textures
+        const int face = int(m_images[i].face) - QAbstractTexture::CubeMapPositiveX;
         const int layer = m_images[i].layer;
-        const int face = m_images[i].face;
+
         filterLayerAndFace(layer, face, [&](int rhiLayer) {
             uploadEntries.push_back(createUploadEntry(m_images[i].mipLevel, rhiLayer, bytes));
         });
@@ -737,10 +751,11 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
         });
     }
 
-    QRhiTextureUploadDescription uploadDescription;
-    uploadDescription.setEntries(uploadEntries.begin(), uploadEntries.end());
-
-    ctx->m_currentUpdates->uploadTexture(m_rhi, uploadDescription);
+    if (uploadEntries.size() > 0) {
+        QRhiTextureUploadDescription uploadDescription;
+        uploadDescription.setEntries(uploadEntries.begin(), uploadEntries.end());
+        ctx->m_currentUpdates->uploadTexture(m_rhi, uploadDescription);
+    }
     if (m_properties.generateMipMaps)
         ctx->m_currentUpdates->generateMips(m_rhi);
 }
@@ -758,6 +773,7 @@ void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
 
     // TO DO:
     if (m_rhiSampler) {
+        m_rhiSampler->destroy();
         delete m_rhiSampler;
         m_rhiSampler = nullptr;
     }
