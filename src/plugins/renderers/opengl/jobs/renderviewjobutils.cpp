@@ -494,7 +494,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const Shader
                 }
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
-            if (std::find(m_uniformNamesIds.begin(), m_uniformNamesIds.end(), propertyInBlockNameId) != m_uniformNamesIds.end()) {
+            if (Qt3DCore::contains(m_uniformNamesIds, propertyInBlockNameId)) {
                 activeUniformNamesToValue.insert(propertyInBlockNameId, value->value);
             }
         }
@@ -509,7 +509,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const Shader
             activeUniformNamesToValue.insert(propertyInBlockNameId, value->value);
         }
     } else { // Scalar / Vec
-        if (std::find(m_uniformNamesIds.begin(), m_uniformNamesIds.end(), propertyInBlockNameId) != m_uniformNamesIds.end()) {
+        if (Qt3DCore::contains(m_uniformNamesIds, propertyInBlockNameId)) {
             // If the property needs to be transformed, we transform it here as
             // the shaderdata cannot hold transformed properties for multiple
             // thread contexts at once

@@ -1134,12 +1134,12 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
                     break;
 
                 // Note: implicit conversion of values to UniformValue
-                if (std::find(lightUniformNamesIds.begin(), lightUniformNamesIds.end(), GLLights::LIGHT_TYPE_NAMES[lightIdx]) != lightUniformNamesIds.end()) {
+                if (Qt3DCore::contains(lightUniformNamesIds, GLLights::LIGHT_TYPE_NAMES[lightIdx])) {
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[lightIdx], worldPos);
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
-                } else if (std::find(lightUniformNamesIds.begin(), lightUniformNamesIds.end(), GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx]) != lightUniformNamesIds.end()) {
+                } else if (Qt3DCore::contains(lightUniformNamesIds, GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx])) {
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_UNROLL_NAMES[lightIdx], worldPos);
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx], int(QAbstractLight::PointLight));
                     setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_UNROLL_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
@@ -1164,12 +1164,12 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
         // If no active light sources and no environment light, add a default light
         if (m_lightSources.empty() && !m_environmentLight) {
             // Note: implicit conversion of values to UniformValue
-            if (std::find(lightUniformNamesIds.begin(), lightUniformNamesIds.end(), GLLights::LIGHT_TYPE_NAMES[lightIdx]) != lightUniformNamesIds.end()) {
+            if (Qt3DCore::contains(lightUniformNamesIds, GLLights::LIGHT_TYPE_NAMES[lightIdx])) {
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_INTENSITY_NAMES[0], 0.5f);
-            } else if (std::find(lightUniformNamesIds.begin(), lightUniformNamesIds.end(), GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx]) != lightUniformNamesIds.end()) {
+            } else if (Qt3DCore::contains(lightUniformNamesIds, GLLights::LIGHT_TYPE_UNROLL_NAMES[lightIdx])) {
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_POSITION_UNROLL_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_TYPE_UNROLL_NAMES[0], int(QAbstractLight::PointLight));
                 setUniformValue(command->m_parameterPack, GLLights::LIGHT_COLOR_UNROLL_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));

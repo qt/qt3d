@@ -55,6 +55,7 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <QtCore/QReadLocker>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -147,9 +148,7 @@ public:
         QWriteLocker lock(&m_readWriteLock);
         auto &shaderIds = m_apiShaders[apiShader];
 
-        if (std::find(shaderIds.begin(),
-                      shaderIds.end(),
-                      shader->peerId()) == shaderIds.end()) {
+        if (!Qt3DCore::contains(shaderIds, shader->peerId())) {
             shaderIds.push_back(shader->peerId());
             m_nodeIdToAPIShader.insert(shader->peerId(), apiShader);
         }

@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "techniquemanager_p.h"
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,9 +53,7 @@ TechniqueManager::TechniqueManager()
 // AspectThread
 void TechniqueManager::addDirtyTechnique(Qt3DCore::QNodeId techniqueId)
 {
-    if (std::find(m_dirtyTechniques.begin(),
-                  m_dirtyTechniques.end(),
-                  techniqueId) == m_dirtyTechniques.end())
+    if (!Qt3DCore::contains(m_dirtyTechniques, techniqueId))
         m_dirtyTechniques.push_back(techniqueId);
 }
 

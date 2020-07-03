@@ -43,6 +43,7 @@
 #include <graphicscontext_p.h>
 #include <logging_p.h>
 #include <gllights_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -225,9 +226,7 @@ GLShader::ParameterKind GLShader::categorizeVariable(int nameId) const noexcept
 
 bool GLShader::hasUniform(int nameId) const noexcept
 {
-    return std::find(m_uniformsNamesIds.begin(),
-                     m_uniformsNamesIds.end(),
-                     nameId) != m_uniformsNamesIds.end();
+    return Qt3DCore::contains(m_uniformsNamesIds, nameId);
 }
 
 void GLShader::prepareUniforms(ShaderParameterPack &pack)
@@ -312,9 +311,9 @@ void GLShader::initializeUniforms(const std::vector<ShaderUniform> &uniformsDesc
         m_uniforms[i].m_nameId = nameId;
 
         // Is the uniform a Qt3D "Standard" uniform, a light uniform or a user defined one?
-        if (std::find(standardUniformNameIds.begin(), standardUniformNameIds.end(), nameId) != standardUniformNameIds.end())
+        if (Qt3DCore::contains(standardUniformNameIds, nameId))
             m_standardUniformNamesIds.push_back(nameId);
-        else if (std::find(lightUniformNameIds.begin(), lightUniformNameIds.end(), nameId) != lightUniformNameIds.end())
+        else if (Qt3DCore::contains(lightUniformNameIds, nameId))
             m_lightUniformsNamesIds.push_back(nameId);
         else
             m_uniformsNamesIds.push_back(nameId);

@@ -389,7 +389,7 @@ QOpenGLContext *Renderer::shareContext() const
 void Renderer::loadShader(Shader *shader, HShader shaderHandle)
 {
     Q_UNUSED(shader);
-    if (std::find(m_dirtyShaders.begin(), m_dirtyShaders.end(), shaderHandle) == m_dirtyShaders.end())
+    if (!Qt3DCore::contains(m_dirtyShaders, shaderHandle))
         m_dirtyShaders.push_back(shaderHandle);
 }
 
@@ -1603,9 +1603,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const std::vector
                     static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderView->renderCaptureNodeId()));
             renderCapture->addRenderCapture(request.captureId, image);
             const QNodeId renderCaptureId = renderView->renderCaptureNodeId();
-            if (std::find(m_pendingRenderCaptureSendRequests.begin(),
-                          m_pendingRenderCaptureSendRequests.end(),
-                          renderCaptureId) == m_pendingRenderCaptureSendRequests.end())
+            if (!Qt3DCore::contains(m_pendingRenderCaptureSendRequests, renderCaptureId))
                 m_pendingRenderCaptureSendRequests.push_back(renderView->renderCaptureNodeId());
         }
 
@@ -1835,9 +1833,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         // Remove leaf nodes that no longer exist from cache
         const QList<FrameGraphNode *> keys = m_cache.leafNodeCache.keys();
         for (FrameGraphNode *leafNode : keys) {
-            if (std::find(m_frameGraphLeaves.begin(),
-                          m_frameGraphLeaves.end(),
-                          leafNode) == m_frameGraphLeaves.end())
+            if (!Qt3DCore::contains(m_frameGraphLeaves, leafNode))
                 m_cache.leafNodeCache.remove(leafNode);
         }
 
@@ -2154,9 +2150,7 @@ bool Renderer::updateVAOWithAttributes(Geometry *geometry,
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate)
                 m_submissionContext->specifyIndices(buffer);
             // Vertex Attribute
-        } else if (std::find(command->m_activeAttributes.begin(),
-                             command->m_activeAttributes.end(),
-                             attribute->nameId()) != command->m_activeAttributes.end()) {
+        } else if (Qt3DCore::contains(command->m_activeAttributes, attribute->nameId())) {
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate) {
                 // Find the location for the attribute
                 const std::vector<ShaderAttribute> &shaderAttributes = shader->attributes();
@@ -2201,9 +2195,7 @@ bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
             continue;
 
         if ((attribute->attributeType() == QAttribute::IndexAttribute && attribute->isDirty()) ||
-                (std::find(command->m_activeAttributes.begin(),
-                           command->m_activeAttributes.end(),
-                           attribute->nameId()) != command->m_activeAttributes.end() &&
+                (Qt3DCore::contains(command->m_activeAttributes, attribute->nameId()) &&
                  attribute->isDirty()))
             return true;
     }
