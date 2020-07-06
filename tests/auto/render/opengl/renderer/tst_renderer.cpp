@@ -33,7 +33,7 @@
 #include <renderer_p.h>
 #include <renderview_p.h>
 #include <renderviewbuilder_p.h>
-#include <renderqueue_p.h>
+#include <Qt3DRender/private/renderqueue_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
@@ -108,7 +108,7 @@ private Q_SLOTS:
 
         Qt3DRender::Render::NodeManagers nodeManagers;
         auto &renderer = *(static_cast<Qt3DRender::Render::OpenGL::Renderer *>(daspect->m_renderer));
-        Qt3DRender::Render::OpenGL::RenderQueue *renderQueue = renderer.renderQueue();
+        Qt3DRender::Render::RenderQueue<Qt3DRender::Render::OpenGL::RenderView> *renderQueue = renderer.renderQueue();
         Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
         Qt3DRender::Render::RenderSettings settings;
         // owned by FG manager

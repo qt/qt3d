@@ -69,6 +69,7 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
+#include <Qt3DRender/private/renderqueue_p.h>
 
 #include <QtGui/private/qrhi_p.h>
 
@@ -78,6 +79,7 @@
 #include <logging_p.h>
 #include <rhihandle_types_p.h>
 #include <renderercache_p.h>
+#include <renderview_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -153,8 +155,6 @@ namespace Rhi {
 class CommandThread;
 class SubmissionContext;
 class RenderCommand;
-class RenderQueue;
-class RenderView;
 struct RHIRenderTarget;
 class RHIShader;
 class RHIResourceManagers;
@@ -194,7 +194,7 @@ public:
     Entity *sceneRoot() const override { return m_renderSceneRoot; }
 
     FrameGraphNode *frameGraphRoot() const override;
-    RenderQueue *renderQueue() const { return m_renderQueue; }
+    RenderQueue<RenderView> *renderQueue() { return &m_renderQueue; }
 
     void markDirty(BackendNodeDirtySet changes, BackendNode *node) override;
     BackendNodeDirtySet dirtyBits() override;
@@ -323,7 +323,7 @@ private:
 
     QScopedPointer<SubmissionContext> m_submissionContext;
 
-    RenderQueue *m_renderQueue;
+    RenderQueue<RenderView> m_renderQueue;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     QSemaphore m_submitRenderViewsSemaphore;

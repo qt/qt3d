@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RHI_RENDERQUEUE_H
-#define QT3DRENDER_RENDER_RHI_RENDERQUEUE_H
+#ifndef QT3DRENDER_RENDER_RENDERQUEUE_H
+#define QT3DRENDER_RENDER_RENDERQUEUE_H
 
 //
 //  W A R N I N G
@@ -52,7 +52,6 @@
 //
 
 #include <vector>
-#include <QtGlobal>
 #include <QMutex>
 
 QT_BEGIN_NAMESPACE
@@ -61,25 +60,83 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace Rhi {
-
-class RenderView;
-
-class Q_AUTOTEST_EXPORT RenderQueue
+template<class RenderView>
+class RenderQueue
 {
 public:
-    RenderQueue();
+    RenderQueue()
+        : m_noRender(false)
+        , m_wasReset(true)
+        , m_targetRenderViewCount(0)
+        , m_currentRenderViewCount(0)
+        , m_currentWorkQueue(1)
+    {}
 
-    void setTargetRenderViewCount(int targetRenderViewCount);
-    int targetRenderViewCount() const { return m_targetRenderViewCount; }
-    int currentRenderViewCount() const;
-    bool isFrameQueueComplete() const;
+    /*
+     Sets the number \a targetRenderViewCount of RenderView objects that make
+     up a frame.
+     */
+    void setTargetRenderViewCount(int targetRenderViewCount)
+    {
+        Q_ASSERT(!m_noRender);
+        m_targetRenderViewCount = targetRenderViewCount;
+        m_currentWorkQueue.resize(targetRenderViewCount);
+        m_wasReset = false;
+    }
 
-    bool queueRenderView(RenderView *renderView, uint submissionOrderIndex);
-    const std::vector<RenderView *> &nextFrameQueue();
-    void reset();
+    inline int targetRenderViewCount() const { return m_targetRenderViewCount; }
+    inline int currentRenderViewCount() const { return m_currentRenderViewCount; }
 
-    void setNoRender();
+    /*
+     Returns true if all the RenderView objects making up the current frame
+     have been queued. Returns false otherwise.
+     \note a frameQueue or size 0 is considered incomplete.
+     */
+    inline bool isFrameQueueComplete() const
+    {
+        return (m_noRender
+                || (m_targetRenderViewCount > 0 && m_targetRenderViewCount == m_currentRenderViewCount));
+    }
+
+    /*
+     Queue up a RenderView for the frame being built.
+     Thread safe as this is called from the renderer which is locked.
+     Returns true if the renderView is complete
+     */
+    bool queueRenderView(RenderView *renderView, uint submissionOrderIndex)
+    {
+        Q_ASSERT(!m_noRender);
+        m_currentWorkQueue[submissionOrderIndex] = renderView;
+        ++m_currentRenderViewCount;
+        Q_ASSERT(m_currentRenderViewCount <= m_targetRenderViewCount);
+        return isFrameQueueComplete();
+    }
+
+    /*
+     Called by the Rendering Thread to retrieve the a frame queue to render.
+     A call to reset is required after rendering of the frame. Otherwise under some
+     conditions the current but then invalidated frame queue could be reused.
+     */
+    inline const std::vector<RenderView *> &nextFrameQueue() const { return m_currentWorkQueue; }
+
+    /*
+     In case the framegraph changed or when the current number of render queue
+     needs to be reset.
+     */
+    void reset()
+    {
+        m_currentRenderViewCount = 0;
+        m_targetRenderViewCount = 0;
+        m_currentWorkQueue.clear();
+        m_noRender = false;
+        m_wasReset = true;
+    }
+
+    void setNoRender()
+    {
+        Q_ASSERT(m_targetRenderViewCount == 0);
+        m_noRender = true;
+    }
     inline bool isNoRender() const { return m_noRender; }
 
     inline bool wasReset() const { return m_wasReset; }
@@ -95,12 +152,10 @@ private:
     QMutex m_mutex;
 };
 
-} // namespace Rhi
-
 } // namespace Render
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RHI_RENDERQUEUE_H
+#endif // QT3DRENDER_RENDER_RENDERQUEUE_H

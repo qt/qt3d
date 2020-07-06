@@ -96,11 +96,11 @@
 #include <Qt3DRender/private/setfence_p.h>
 #include <Qt3DRender/private/qsetfence_p.h>
 #include <Qt3DRender/private/waitfence_p.h>
+#include <Qt3DRender/private/renderqueue_p.h>
 
 #include <glbuffer_p.h>
 #include <graphicscontext_p.h>
 #include <rendercommand_p.h>
-#include <renderqueue_p.h>
 #include <renderview_p.h>
 #include <gltexture_p.h>
 #include <openglvertexarrayobject_p.h>
@@ -239,7 +239,6 @@ Renderer::Renderer()
     , m_renderSceneRoot(nullptr)
     , m_defaultRenderStateSet(nullptr)
     , m_submissionContext(nullptr)
-    , m_renderQueue(new RenderQueue())
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(false))
     , m_waitForInitializationToBeCompleted(0)
     , m_hasBeenInitializedMutex()
@@ -288,7 +287,6 @@ Renderer::~Renderer()
 {
     Q_ASSERT(m_running.fetchAndStoreOrdered(0) == 0);
 
-    delete m_renderQueue;
     delete m_defaultRenderStateSet;
     delete m_glResourceManagers;
 
@@ -538,9 +536,9 @@ void Renderer::shutdown()
 
     // We delete any renderqueue that we may not have had time to render
     // before the surface was destroyed
-    QMutexLocker lockRenderQueue(m_renderQueue->mutex());
-    qDeleteAll(m_renderQueue->nextFrameQueue());
-    m_renderQueue->reset();
+    QMutexLocker lockRenderQueue(m_renderQueue.mutex());
+    qDeleteAll(m_renderQueue.nextFrameQueue());
+    m_renderQueue.reset();
     lockRenderQueue.unlock();
 
     releaseGraphicsResources();
@@ -696,8 +694,8 @@ void Renderer::render(bool swapBuffers)
         return;
 
     m_shouldSwapBuffers = swapBuffers;
-    const std::vector<Render::OpenGL::RenderView *> &renderViews = m_renderQueue->nextFrameQueue();
-    const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
+    const std::vector<Render::OpenGL::RenderView *> &renderViews = m_renderQueue.nextFrameQueue();
+    const bool queueIsEmpty = m_renderQueue.targetRenderViewCount() == 0;
 
     // RenderQueue is complete (but that means it may be of size 0)
     if (!queueIsEmpty) {
@@ -770,7 +768,7 @@ void Renderer::render(bool swapBuffers)
     }
 
     // Reset RenderQueue and destroy the renderViews
-    m_renderQueue->reset();
+    m_renderQueue.reset();
     qDeleteAll(renderViews);
 
     // Allow next frame to be built once we are done doing all rendering
@@ -782,14 +780,14 @@ void Renderer::render(bool swapBuffers)
 // we allow the render thread to proceed
 void Renderer::enqueueRenderView(RenderView *renderView, int submitOrder)
 {
-    QMutexLocker locker(m_renderQueue->mutex()); // Prevent out of order execution
+    QMutexLocker locker(m_renderQueue.mutex()); // Prevent out of order execution
     // We cannot use a lock free primitive here because:
     // - QVector is not thread safe
     // - Even if the insert is made correctly, the isFrameComplete call
     //   could be invalid since depending on the order of execution
     //   the counter could be complete but the renderview not yet added to the
     //   buffer depending on whichever order the cpu decides to process this
-    const bool isQueueComplete = m_renderQueue->queueRenderView(renderView, submitOrder);
+    const bool isQueueComplete = m_renderQueue.queueRenderView(renderView, submitOrder);
     locker.unlock(); // We're done protecting the queue at this point
     if (isQueueComplete) {
         if (m_running.loadRelaxed())
@@ -824,7 +822,7 @@ bool Renderer::waitUntilReadyToSubmit()
     // be released when the frame queue is complete and there's
     // something to render
     // The case of shutdown should have been handled just before
-    Q_ASSERT(m_renderQueue->isFrameQueueComplete());
+    Q_ASSERT(m_renderQueue.isFrameQueueComplete());
     return true;
 }
 
@@ -1710,7 +1708,7 @@ void Renderer::skipNextFrame()
     Q_ASSERT(m_settings->renderPolicy() != QRenderSettings::Always);
 
     // make submitRenderViews() actually run
-    m_renderQueue->setNoRender();
+    m_renderQueue.setNoRender();
     m_submitRenderViewsSemaphore.release(1);
 }
 
@@ -1821,7 +1819,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     // Sync rendering is synchronous, queue should always be reset
     // when this is called
-    Q_ASSERT(m_renderQueue->wasReset());
+    Q_ASSERT(m_renderQueue.wasReset());
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
     // populate the RenderView with a set of RenderCommands that get
@@ -1877,7 +1875,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
     // Set target number of RenderViews
-    m_renderQueue->setTargetRenderViewCount(fgBranchCount);
+    m_renderQueue.setTargetRenderViewCount(fgBranchCount);
 
     if (isRunning() && m_submissionContext->isInitialized()) {
         if (dirtyBitsForFrame & AbstractRenderer::TechniquesDirty )

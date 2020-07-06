@@ -30,7 +30,6 @@ set(openGLRendererSources graphicshelpers/graphicscontext.cpp graphicshelpers/gr
     renderer/rendercommand.cpp renderer/rendercommand_p.h
     renderer/renderer.cpp renderer/renderer_p.h
     renderer/renderercache_p.h
-    renderer/renderqueue.cpp renderer/renderqueue_p.h
     renderer/renderview.cpp renderer/renderview_p.h
     renderer/renderviewbuilder.cpp renderer/renderviewbuilder_p.h
     renderer/shaderparameterpack.cpp renderer/shaderparameterpack_p.h

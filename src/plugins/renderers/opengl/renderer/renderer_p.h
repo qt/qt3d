@@ -68,6 +68,7 @@
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
+#include <Qt3DRender/private/renderqueue_p.h>
 #include <shaderparameterpack_p.h>
 #include <renderviewinitializerjob_p.h>
 #include <renderercache_p.h>
@@ -158,8 +159,6 @@ namespace OpenGL {
 class CommandThread;
 class SubmissionContext;
 class RenderCommand;
-class RenderQueue;
-class RenderView;
 class GLShader;
 class GLResourceManagers;
 
@@ -198,7 +197,7 @@ public:
     Entity *sceneRoot() const override { return m_renderSceneRoot; }
 
     FrameGraphNode *frameGraphRoot() const override;
-    RenderQueue *renderQueue() const { return m_renderQueue; }
+    RenderQueue<RenderView> *renderQueue() { return &m_renderQueue; }
 
     void markDirty(BackendNodeDirtySet changes, BackendNode *node) override;
     BackendNodeDirtySet dirtyBits() override;
@@ -321,7 +320,7 @@ private:
     QScopedPointer<SubmissionContext> m_submissionContext;
     QSurfaceFormat m_format;
 
-    RenderQueue *m_renderQueue;
+    RenderQueue<RenderView> m_renderQueue;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     QSemaphore m_submitRenderViewsSemaphore;

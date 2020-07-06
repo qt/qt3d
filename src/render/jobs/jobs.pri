@@ -30,7 +30,8 @@ HEADERS += \
     $$PWD/filtercompatibletechniquejob_p.h \
     $$PWD/jobs/materialparametergathererjob_p.h \
     $$PWD/renderviewjobutils_p.h \
-    $$PWD/uniformblockbuilder_p.h
+    $$PWD/uniformblockbuilder_p.h \
+    $$PWD/renderqueue_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
