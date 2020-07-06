@@ -74,6 +74,9 @@ public:
     RenderViewInitializerJob();
     ~RenderViewInitializerJob();
 
+    static void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
+                                                          const FrameGraphNode *fgLeaf);
+
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
     inline RenderView *renderView() const Q_DECL_NOTHROW { return m_renderView; }
 

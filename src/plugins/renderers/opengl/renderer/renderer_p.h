@@ -67,9 +67,9 @@
 #include <Qt3DRender/private/lightgatherer_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/filterentitybycomponentjob_p.h>
+#include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <shaderparameterpack_p.h>
 #include <renderviewinitializerjob_p.h>
-#include <filtercompatibletechniquejob_p.h>
 #include <renderercache_p.h>
 #include <logging_p.h>
 #include <gl_handle_types_p.h>

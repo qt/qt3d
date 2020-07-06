@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RHI_FILTERCOMPATIBLETECHNIQUEJOB_H
-#define QT3DRENDER_RENDER_RHI_FILTERCOMPATIBLETECHNIQUEJOB_H
+#ifndef QT3DRENDER_RENDER_FILTERCOMPATIBLETECHNIQUEJOB_H
+#define QT3DRENDER_RENDER_FILTERCOMPATIBLETECHNIQUEJOB_H
 
 //
 //  W A R N I N G
@@ -62,12 +62,9 @@ namespace Qt3DRender {
 namespace Render {
 
 class TechniqueManager;
+class AbstractRenderer;
 
-namespace Rhi {
-
-class Renderer;
-
-class Q_AUTOTEST_EXPORT FilterCompatibleTechniqueJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT FilterCompatibleTechniqueJob : public Qt3DCore::QAspectJob
 {
 public:
     FilterCompatibleTechniqueJob();
@@ -75,22 +72,21 @@ public:
     void setManager(TechniqueManager *managers);
     TechniqueManager *manager() const;
 
-    void setRenderer(Renderer *renderer);
-    Renderer *renderer() const;
+    void setRenderer(AbstractRenderer *renderer);
+    AbstractRenderer *renderer() const;
 
     void run() override;
 
 private:
     TechniqueManager *m_manager;
-    Renderer *m_renderer;
+    AbstractRenderer *m_renderer;
 };
 
 typedef QSharedPointer<FilterCompatibleTechniqueJob> FilterCompatibleTechniqueJobPtr;
 
-} // namespace Rhi
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RHI_FILTERCOMPATIBLETECHNIQUEJOB_H
+#endif // QT3DRENDER_RENDER_FILTERCOMPATIBLETECHNIQUEJOB_H

@@ -161,6 +161,10 @@ qt_add_module(3DRender
         jobs/updatetreeenabledjob.cpp jobs/updatetreeenabledjob_p.h
         jobs/updateworldboundingvolumejob.cpp jobs/updateworldboundingvolumejob_p.h
         jobs/updateworldtransformjob.cpp jobs/updateworldtransformjob_p.h
+        jobs/filtercompatibletechniquejob.cpp jobs/filtercompatibletechniquejob_p.h
+        jobs/materialparametergathererjob.cpp jobs/materialparametergathererjob_p.h
+        jobs/renderviewjobutils.cpp jobs/renderviewjobutils_p.h
+        jobs/uniformblockbuilder.cpp jobs/uniformblockbuilder_p.h
         lights/environmentlight.cpp lights/environmentlight_p.h
         lights/light.cpp lights/light_p.h
         lights/lightsource.cpp lights/lightsource_p.h

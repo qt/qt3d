@@ -38,9 +38,9 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
+#include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <renderer_p.h>
 #include <submissioncontext_p.h>
-#include <filtercompatibletechniquejob_p.h>
 
 #include "qbackendnodetester.h"
 
@@ -198,7 +198,7 @@ private Q_SLOTS:
     void checkInitialState()
     {
         // GIVEN
-        Qt3DRender::Render::OpenGL::FilterCompatibleTechniqueJob backendFilterCompatibleTechniqueJob;
+        Qt3DRender::Render::FilterCompatibleTechniqueJob backendFilterCompatibleTechniqueJob;
 
         // THEN
         QVERIFY(backendFilterCompatibleTechniqueJob.manager() == nullptr);
@@ -220,7 +220,7 @@ private Q_SLOTS:
     void checkRunRendererRunning()
     {
         // GIVEN
-        Qt3DRender::Render::OpenGL::FilterCompatibleTechniqueJob backendFilterCompatibleTechniqueJob;
+        Qt3DRender::Render::FilterCompatibleTechniqueJob backendFilterCompatibleTechniqueJob;
         Qt3DRender::TestAspect testAspect(buildTestScene());
 
         const bool unableToCreateContext = !testAspect.contextCreationSuccessful();

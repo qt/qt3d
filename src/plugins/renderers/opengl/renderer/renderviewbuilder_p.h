@@ -58,9 +58,9 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/frustumcullingjob_p.h>
 #include <Qt3DRender/private/filterproximitydistancejob_p.h>
+#include <Qt3DRender/private/materialparametergathererjob_p.h>
 #include <renderviewcommandbuilderjob_p.h>
 #include <renderviewcommandupdaterjob_p.h>
-#include <materialparametergathererjob_p.h>
 #include <renderview_p.h>
 
 QT_BEGIN_NAMESPACE

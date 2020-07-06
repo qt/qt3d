@@ -34,7 +34,7 @@
 #include <private/shader_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <renderview_p.h>
-#include <renderviewjobutils_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <rendercommand_p.h>
 #include <renderer_p.h>
 #include <glresourcemanagers_p.h>
@@ -126,7 +126,7 @@ private Q_SLOTS:
             QCOMPARE(backendBarrier.waitOperations(), barriers);
 
             // WHEN
-            Qt3DRender::Render::OpenGL::setRenderViewConfigFromFrameGraphLeafNode(&renderView, &backendBarrier);
+            Qt3DRender::Render::OpenGL::RenderViewInitializerJob::setRenderViewConfigFromFrameGraphLeafNode(&renderView, &backendBarrier);
 
             // THEN
             QCOMPARE(backendBarrier.waitOperations(), renderView.memoryBarrier());

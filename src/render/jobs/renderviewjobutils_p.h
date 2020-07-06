@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_OPENGL_RENDERVIEWJOBUTILS_P_H
-#define QT3DRENDER_RENDER_OPENGL_RENDERVIEWJOBUTILS_P_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEWJOBUTILS_P_H
+#define QT3DRENDER_RENDER_RENDERVIEWJOBUTILS_P_H
 
 //
 //  W A R N I N G
@@ -52,14 +52,13 @@
 //
 
 #include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>
-#include <QMatrix4x4>
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
-#include  <shadervariables_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,22 +81,14 @@ class RenderStateManager;
 class RenderStateCollection;
 class RenderStateSet;
 
-namespace OpenGL {
-class Renderer;
-class RenderView;
-struct ShaderUniform;
-
-Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
-                                                                 const FrameGraphNode *fgLeaf);
-
-Q_AUTOTEST_EXPORT Technique *findTechniqueForEffect(NodeManagers *manager,
-                                                    const TechniqueFilter *techniqueFilter,
-                                                    Effect *effect);
+Q_3DRENDERSHARED_PRIVATE_EXPORT Technique *findTechniqueForEffect(NodeManagers *manager,
+                                                                  const TechniqueFilter *techniqueFilter,
+                                                                  Effect *effect);
 
 typedef QVarLengthArray<RenderPass*, 4> RenderPassList;
-Q_AUTOTEST_EXPORT RenderPassList findRenderPassesForTechnique(NodeManagers *manager,
-                                                              const RenderPassFilter *passFilter,
-                                                              Technique *technique);
+Q_3DRENDERSHARED_PRIVATE_EXPORT RenderPassList findRenderPassesForTechnique(NodeManagers *manager,
+                                                                            const RenderPassFilter *passFilter,
+                                                                            Technique *technique);
 
 // Extracts the type T from a QVariant v without using QVariant::value which is slow
 // Note: Assumes you are 100% sure about the type you requested
@@ -124,18 +115,18 @@ struct RenderPassParameterData
     RenderPass *pass;
     ParameterInfoList parameterInfo;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, RenderPassParameterData, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, RenderPassParameterData, Q_MOVABLE_TYPE)
 
-using MaterialParameterGathererData = QMultiHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>>;
+using MaterialParameterGathererData = QMultiHash<Qt3DCore::QNodeId, std::vector<RenderPassParameterData>>;
 
-Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
-                                                             ParameterManager *manager,
-                                                             Material *material,
-                                                             Effect *effect,
-                                                             Technique *technique);
+Q_3DRENDERSHARED_PRIVATE_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
+                                             ParameterManager *manager,
+                                             Material *material,
+                                             Effect *effect,
+                                             Technique *technique);
 
-Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                                           const QVector<Qt3DCore::QNodeId> &parameterIds);
+Q_3DRENDERSHARED_PRIVATE_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
+                                                         const QVector<Qt3DCore::QNodeId> &parameterIds);
 
 template<class T>
 void parametersFromParametersProvider(ParameterInfoList *infoList,
@@ -145,41 +136,13 @@ void parametersFromParametersProvider(ParameterInfoList *infoList,
     addParametersForIds(infoList, manager, provider->parameters());
 }
 
-Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *infoList,
-                                                                  const int nameId);
+Q_3DRENDERSHARED_PRIVATE_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *infoList,
+                                                                                const int nameId);
 
-Q_AUTOTEST_EXPORT void addStatesToRenderStateSet(RenderStateSet *stateSet,
-                                                 const QVector<Qt3DCore::QNodeId> stateIds,
-                                                 RenderStateManager *manager);
+Q_3DRENDERSHARED_PRIVATE_EXPORT void addStatesToRenderStateSet(RenderStateSet *stateSet,
+                                                               const QVector<Qt3DCore::QNodeId> stateIds,
+                                                               RenderStateManager *manager);
 
-typedef QHash<int, QVariant> UniformBlockValueBuilderHash;
-
-struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
-{
-    explicit UniformBlockValueBuilder(const std::vector<int> &uniformNamesIds,
-                                      ShaderDataManager *shaderDataManager,
-                                      TextureManager *textureManager,
-                                      const Matrix4x4 &matrix);
-
-    void buildActiveUniformNameValueMapHelper(const ShaderData *currentShaderData,
-                                              const QString &blockName,
-                                              const int propertyInBlockNameId,
-                                              const int propertyNameId,
-                                              const ShaderData::PropertyValue *value);
-    void buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData,
-                                                    const QString &blockName,
-                                                    const QString &qmlPropertyName = QString());
-
-    UniformBlockValueBuilderHash activeUniformNamesToValue;
-
-private:
-    const std::vector<int> &m_uniformNamesIds;
-    ShaderDataManager *m_shaderDataManager = nullptr;
-    TextureManager *m_textureManager = nullptr;
-    const Matrix4x4 &m_viewMatrix;
-};
-
-} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 

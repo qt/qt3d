@@ -71,7 +71,7 @@
 
 #include <renderer_p.h>
 // TODO: Move out once this is all refactored
-#include <renderviewjobutils_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 
 #include <vector>
 #include <QSurface>

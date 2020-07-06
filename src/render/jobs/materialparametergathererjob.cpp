@@ -50,8 +50,6 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace OpenGL {
-
 namespace {
 
 int materialParameterGathererCounter = 0;
@@ -153,8 +151,6 @@ void MaterialParameterGathererJob::run()
         }
     }
 }
-
-} // OpenGL
 
 } // Render
 

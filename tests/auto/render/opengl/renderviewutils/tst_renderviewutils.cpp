@@ -28,11 +28,12 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
-#include <renderviewjobutils_p.h>
 #include <shadervariables_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DRender/private/uniformblockbuilder_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <QVariant>
 #include "testrenderer.h"
@@ -422,10 +423,10 @@ void tst_RenderViewUtils::topLevelScalarValueNoUniforms()
 
     // WHEB
     const Matrix4x4 v;
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder({},
-                                                                      manager.data(),
-                                                                      textureManager.data(),
-                                                                      v);
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder({},
+                                                              manager.data(),
+                                                              textureManager.data(),
+                                                              v);
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral(""));
 
@@ -453,10 +454,10 @@ void tst_RenderViewUtils::topLevelScalarValue()
     // WHEN
     const Matrix4x4 v;
     const auto nameIds = shaderData->buildUniformMapNameIds(QStringLiteral("MyBlock"));
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder(nameIds,
-                                                                      manager.data(),
-                                                                      textureManager.data(),
-                                                                      v);
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder(nameIds,
+                                                              manager.data(),
+                                                              textureManager.data(),
+                                                              v);
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
 
@@ -464,8 +465,8 @@ void tst_RenderViewUtils::topLevelScalarValue()
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
     // WHEN
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
         // THEN
@@ -493,10 +494,10 @@ void tst_RenderViewUtils::topLevelTextureValueNoUniforms()
 
     // WHEN
     const Matrix4x4 v;
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder({},
-                                                                      manager.data(),
-                                                                      textureManager.data(),
-                                                                      v);
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder({},
+                                                              manager.data(),
+                                                              textureManager.data(),
+                                                              v);
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral(""));
 
@@ -525,10 +526,10 @@ void tst_RenderViewUtils::topLevelTextureValue()
 
     // WHEN
     const Matrix4x4 v;
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder(shaderData->buildUniformMapNameIds(QStringLiteral("MyBlock")),
-                                                                      manager.data(),
-                                                                      textureManager.data(),
-                                                                      v);
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder(shaderData->buildUniformMapNameIds(QStringLiteral("MyBlock")),
+                                                              manager.data(),
+                                                              textureManager.data(),
+                                                              v);
 
 
     // build name-value map
@@ -538,8 +539,8 @@ void tst_RenderViewUtils::topLevelTextureValue()
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
     // WHEN
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
         // THEN
@@ -568,7 +569,7 @@ void tst_RenderViewUtils::topLevelArrayValue()
     // WHEN
     const Matrix4x4 v;
     const auto nameIds = shaderData->buildUniformMapNameIds(QStringLiteral("MyBlock"));
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder(nameIds,
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder(nameIds,
                                                                       manager.data(),
                                                                       textureManager.data(),
                                                                       v);
@@ -579,8 +580,8 @@ void tst_RenderViewUtils::topLevelArrayValue()
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
     // WHEN
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
         // THEN
@@ -637,10 +638,10 @@ void tst_RenderViewUtils::nestedShaderDataValue()
         Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("MyBlock.array[2].scalar")),
     };
 
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder(nameIds,
-                                                                      manager.data(),
-                                                                      textureManager.data(),
-                                                                      v);
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder(nameIds,
+                                                              manager.data(),
+                                                              textureManager.data(),
+                                                              v);
 
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendArrayShaderData, QStringLiteral("MyBlock"));
@@ -710,10 +711,10 @@ void tst_RenderViewUtils::topLevelStructValue()
     // WHEN
     const Matrix4x4 v;
     const auto nameIds = shaderData->buildUniformMapNameIds(blockName);
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder(nameIds,
-                                                                      manager.data(),
-                                                                      textureManager.data(),
-                                                                      v);
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder(nameIds,
+                                                              manager.data(),
+                                                              textureManager.data(),
+                                                              v);
 
     const QHash<QString, QVariant> expectedValues = shaderData->buildUniformMapValues(blockName);
     // build name-value map
@@ -723,8 +724,8 @@ void tst_RenderViewUtils::topLevelStructValue()
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), shaderData->buildUniformMapNameIds(blockName).size());
 
     // WHEN
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const Qt3DRender::Render::OpenGL::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
         // THEN
@@ -762,10 +763,10 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
         Qt3DRender::Render::StringToInt::lookupId(QStringLiteral("MyBlock.texture")),
     };
 
-    Qt3DRender::Render::OpenGL::UniformBlockValueBuilder blockBuilder(nameIds,
-                                                                      manager.data(),
-                                                                      textureManager.data(),
-                                                                      v);
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder(nameIds,
+                                                              manager.data(),
+                                                              textureManager.data(),
+                                                              v);
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
     // THEN

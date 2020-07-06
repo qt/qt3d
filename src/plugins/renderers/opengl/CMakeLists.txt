@@ -15,12 +15,9 @@ set(openGLRendererSources graphicshelpers/graphicscontext.cpp graphicshelpers/gr
     graphicshelpers/submissioncontext.cpp graphicshelpers/submissioncontext_p.h
     graphicshelpers/texturesubmissioncontext.cpp graphicshelpers/texturesubmissioncontext_p.h
     io/glbuffer.cpp io/glbuffer_p.h
-    jobs/filtercompatibletechniquejob.cpp jobs/filtercompatibletechniquejob_p.h
-    jobs/materialparametergathererjob.cpp jobs/materialparametergathererjob_p.h
     jobs/renderviewcommandbuilderjob.cpp jobs/renderviewcommandbuilderjob_p.h
     jobs/renderviewcommandupdaterjob.cpp jobs/renderviewcommandupdaterjob_p.h
     jobs/renderviewinitializerjob.cpp jobs/renderviewinitializerjob_p.h
-    jobs/renderviewjobutils.cpp jobs/renderviewjobutils_p.h
     managers/gl_handle_types_p.h
     managers/glresourcemanagers.cpp managers/glresourcemanagers_p.h
     renderer/commandexecuter.cpp renderer/commandexecuter_p.h

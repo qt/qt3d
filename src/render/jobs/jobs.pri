@@ -26,7 +26,11 @@ HEADERS += \
     $$PWD/filterproximitydistancejob_p.h \
     $$PWD/abstractpickingjob_p.h \
     $$PWD/raycastingjob_p.h \
-    $$PWD/updateentitylayersjob_p.h
+    $$PWD/updateentitylayersjob_p.h \
+    $$PWD/filtercompatibletechniquejob_p.h \
+    $$PWD/jobs/materialparametergathererjob_p.h \
+    $$PWD/renderviewjobutils_p.h \
+    $$PWD/uniformblockbuilder_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -51,5 +55,9 @@ SOURCES += \
     $$PWD/filterproximitydistancejob.cpp \
     $$PWD/abstractpickingjob.cpp \
     $$PWD/raycastingjob.cpp \
-    $$PWD/updateentitylayersjob.cpp
+    $$PWD/updateentitylayersjob.cpp \
+    $$PWD/filtercompatibletechniquejob.cpp \
+    $$PWD/materialparametergathererjob.cpp \
+    $$PWD/renderviewjobutils.cpp \
+    $$PWD/uniformblockbuilder.cpp
 

@@ -67,6 +67,7 @@
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
+#include <Qt3DRender/private/uniformblockbuilder_p.h>
 #include <rendercommand_p.h>
 #include <renderer_p.h>
 #include <submissioncontext_p.h>
@@ -407,7 +408,7 @@ void sortByMaterial(EntityRenderCommandDataView *view, int begin, const int end)
     }
 }
 
-void sortCommandRange(EntityRenderCommandDataView *view, int begin, int end, const int level,
+void sortCommandRange(EntityRenderCommandDataView *view, int begin, int end, const size_t level,
                       const std::vector<Qt3DRender::QSortPolicy::SortType> &sortingTypes)
 {
     if (level >= sortingTypes.size())

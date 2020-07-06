@@ -67,12 +67,13 @@
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
+#include <Qt3DRender/private/uniformblockbuilder_p.h>
 #include <rendercommand_p.h>
 #include <renderer_p.h>
 #include <graphicscontext_p.h>
 #include <submissioncontext_p.h>
 #include <glresourcemanagers_p.h>
-#include <renderviewjobutils_p.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
 #include <algorithm>
@@ -652,7 +653,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
 
             const Qt3DCore::QNodeId materialComponentId = entity->componentUuid<Material>();
             const HMaterial materialHandle = entity->componentHandle<Material>();
-            const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
+            const  std::vector<RenderPassParameterData> &renderPassData = m_parameters.value(materialComponentId);
 
             HGeometry geometryHandle = m_manager->geometryManager()->lookupHandle(geometryRenderer->geometryId());
             Geometry *geometry = m_manager->geometryManager()->data(geometryHandle);
@@ -782,7 +783,7 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const Entity **en
                 && computeJob->isEnabled()) {
 
             const Qt3DCore::QNodeId materialComponentId = entity->componentUuid<Material>();
-            const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
+            const  std::vector<RenderPassParameterData> &renderPassData = m_parameters.value(materialComponentId);
 
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
             for (const RenderPassParameterData &passData : renderPassData) {

@@ -99,9 +99,9 @@ public:
         return static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer);
     }
 
-    Render::OpenGL::MaterialParameterGathererJobPtr materialGathererJob() const
+    Render::MaterialParameterGathererJobPtr materialGathererJob() const
     {
-        Render::OpenGL::MaterialParameterGathererJobPtr job = Render::OpenGL::MaterialParameterGathererJobPtr::create();
+        Render::MaterialParameterGathererJobPtr job = Render::MaterialParameterGathererJobPtr::create();
         job->setNodeManagers(nodeManagers());
         return job;
     }

@@ -63,6 +63,7 @@ namespace Render {
 
 namespace Rhi {
 
+class RenderView;
 class RenderViewCommandBuilderJobPrivate;
 
 class Q_AUTOTEST_EXPORT RenderViewCommandBuilderJob : public Qt3DCore::QAspectJob

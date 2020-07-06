@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,60 +37,74 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_OPENGL_FILTERCOMPATIBLETECHNIQUEJOB_H
-#define QT3DRENDER_RENDER_OPENGL_FILTERCOMPATIBLETECHNIQUEJOB_H
+#ifndef QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
+#define QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
-
-#include <QSharedPointer>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
 namespace Render {
 
-class TechniqueManager;
+class NodeManagers;
+class TechniqueFilter;
+class RenderPassFilter;
 
-namespace OpenGL {
+// TO be executed for each FrameGraph branch with a given RenderPassFilter/TechniqueFilter
+class MaterialParameterGathererJobPrivate;
 
-class Renderer;
-
-class Q_AUTOTEST_EXPORT FilterCompatibleTechniqueJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
 {
 public:
-    FilterCompatibleTechniqueJob();
+    MaterialParameterGathererJob();
 
-    void setManager(TechniqueManager *managers);
-    TechniqueManager *manager() const;
+    inline void setNodeManagers(NodeManagers *manager) Q_DECL_NOTHROW { m_manager = manager; }
+    inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOTHROW { m_techniqueFilter = techniqueFilter; }
+    inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOTHROW { m_renderPassFilter = renderPassFilter; }
+    inline const MaterialParameterGathererData &materialToPassAndParameter() Q_DECL_NOTHROW { return m_parameters; }
+    inline void setHandles(std::vector<HMaterial> &&handles) Q_DECL_NOTHROW { m_handles = std::move(handles); }
+    inline void setHandles(const std::vector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
 
-    void setRenderer(Renderer *renderer);
-    Renderer *renderer() const;
+    inline TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_techniqueFilter; }
+    inline RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_renderPassFilter; }
 
-    void run() override;
+    void run() final;
 
 private:
-    TechniqueManager *m_manager;
-    Renderer *m_renderer;
+    NodeManagers *m_manager;
+    TechniqueFilter *m_techniqueFilter;
+    RenderPassFilter *m_renderPassFilter;
+
+    // Material id to array of RenderPasse with parameters
+    MaterialParameterGathererData m_parameters;
+    std::vector<HMaterial> m_handles;
+
+    Q_DECLARE_PRIVATE(MaterialParameterGathererJob)
 };
 
-typedef QSharedPointer<FilterCompatibleTechniqueJob> FilterCompatibleTechniqueJobPtr;
+typedef QSharedPointer<MaterialParameterGathererJob> MaterialParameterGathererJobPtr;
 
-} // namespace OpenGL
-} // namespace Render
-} // namespace Qt3DRender
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_OPENGL_FILTERCOMPATIBLETECHNIQUEJOB_H
+#endif // QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H

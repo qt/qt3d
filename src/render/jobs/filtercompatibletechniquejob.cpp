@@ -41,14 +41,11 @@
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/job_common_p.h>
-#include <renderer_p.h>
-#include <submissioncontext_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
-namespace OpenGL {
 
 FilterCompatibleTechniqueJob::FilterCompatibleTechniqueJob()
     : m_manager(nullptr)
@@ -67,12 +64,12 @@ TechniqueManager *FilterCompatibleTechniqueJob::manager() const
     return m_manager;
 }
 
-void FilterCompatibleTechniqueJob::setRenderer(Renderer *renderer)
+void FilterCompatibleTechniqueJob::setRenderer(AbstractRenderer *renderer)
 {
     m_renderer = renderer;
 }
 
-Renderer *FilterCompatibleTechniqueJob::renderer() const
+AbstractRenderer *FilterCompatibleTechniqueJob::renderer() const
 {
     return m_renderer;
 }
@@ -80,7 +77,7 @@ Renderer *FilterCompatibleTechniqueJob::renderer() const
 void FilterCompatibleTechniqueJob::run()
 {
     Q_ASSERT(m_manager != nullptr && m_renderer != nullptr);
-    Q_ASSERT(m_renderer->isRunning() && m_renderer->submissionContext()->isInitialized());
+    Q_ASSERT(m_renderer->isRunning());
 
     const std::vector<Qt3DCore::QNodeId> dirtyTechniqueIds = m_manager->takeDirtyTechniques();
     for (const Qt3DCore::QNodeId techniqueId : dirtyTechniqueIds) {
@@ -90,7 +87,6 @@ void FilterCompatibleTechniqueJob::run()
     }
 }
 
-} // namespace OpenGL
 } // namespace Render
 } // namespace Qt3DRender
 
