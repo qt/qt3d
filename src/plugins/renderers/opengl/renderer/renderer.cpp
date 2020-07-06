@@ -1342,7 +1342,7 @@ void Renderer::updateTexture(Texture *texture)
     // Will make the texture requestUpload
     if (dirtyFlags.testFlag(Texture::DirtyImageGenerators)) {
         const QNodeIdVector textureImageIds = texture->textureImageIds();
-        QVector<GLTexture::Image> images;
+        std::vector<GLTexture::Image> images;
         images.reserve(textureImageIds.size());
         // TODO: Move this into GLTexture directly
         for (const QNodeId textureImageId : textureImageIds) {
@@ -1354,7 +1354,7 @@ void Renderer::updateTexture(Texture *texture)
                 images.push_back(glImg);
             }
         }
-        glTexture->setImages(images);
+        glTexture->setImages(std::move(images));
     }
 
     // Will make the texture requestUpload

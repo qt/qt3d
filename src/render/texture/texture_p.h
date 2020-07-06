@@ -159,7 +159,7 @@ public:
     void cleanup();
 
     void addTextureDataUpdate(const QTextureDataUpdate &update);
-    QVector<QTextureDataUpdate> takePendingTextureDataUpdates() { return std::move(m_pendingTextureDataUpdates); }
+    std::vector<QTextureDataUpdate> &&takePendingTextureDataUpdates() { return std::move(m_pendingTextureDataUpdates); }
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
@@ -181,7 +181,7 @@ private:
     Qt3DCore::QNodeIdVector m_textureImageIds;
 
     QMutex m_flagsMutex;
-    QVector<QTextureDataUpdate> m_pendingTextureDataUpdates;
+    std::vector<QTextureDataUpdate> m_pendingTextureDataUpdates;
 };
 
 class Q_AUTOTEST_EXPORT TextureFunctor : public Qt3DCore::QBackendNodeMapper

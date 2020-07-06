@@ -617,7 +617,7 @@ void RHITexture::setSharedTextureId(int textureId)
     }
 }
 
-void RHITexture::addTextureDataUpdates(const QVector<QTextureDataUpdate> &updates)
+void RHITexture::addTextureDataUpdates(const std::vector<QTextureDataUpdate> &updates)
 {
     Qt3DCore::append(m_pendingTextureDataUpdates, updates);
     requestUpload();

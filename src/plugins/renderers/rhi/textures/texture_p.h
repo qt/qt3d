@@ -194,7 +194,7 @@ public:
     void setImages(const std::vector<Image> &images);
     void setGenerator(const QTextureGeneratorPtr &generator);
     void setSharedTextureId(int textureId);
-    void addTextureDataUpdates(const QVector<QTextureDataUpdate> &updates);
+    void addTextureDataUpdates(const std::vector<QTextureDataUpdate> &updates);
 
     const std::vector<QTextureDataUpdate> &textureDataUpdates() const { return m_pendingTextureDataUpdates; }
     QTextureGeneratorPtr dataGenerator() const { return m_dataFunctor; }

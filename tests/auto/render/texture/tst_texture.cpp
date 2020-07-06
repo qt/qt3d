@@ -459,9 +459,9 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.syncFromFrontEnd(&frontend, false);
 
     // THEN
-    const QVector<Qt3DRender::QTextureDataUpdate> pendingUpdates = backend.takePendingTextureDataUpdates();
+    const std::vector<Qt3DRender::QTextureDataUpdate> pendingUpdates = backend.takePendingTextureDataUpdates();
     QCOMPARE(pendingUpdates.size(), 1);
-    QCOMPARE(pendingUpdates.first(), updateData);
+    QCOMPARE(pendingUpdates.front(), updateData);
     QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
     QVERIFY(backend.dirtyFlags() == Qt3DRender::Render::Texture::DirtyPendingDataUpdates);
     renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -512,9 +512,9 @@ void tst_RenderTexture::checkInitialUpdateData()
     simulateInitializationSync(&frontend, &backend);
 
     // THEN -> should have received the update as part of the initial data
-    const QVector<Qt3DRender::QTextureDataUpdate> pendingUpdates = backend.takePendingTextureDataUpdates();
+    const std::vector<Qt3DRender::QTextureDataUpdate> pendingUpdates = backend.takePendingTextureDataUpdates();
     QCOMPARE(pendingUpdates.size(), 1);
-    QCOMPARE(pendingUpdates.first(), updateData);
+    QCOMPARE(pendingUpdates.front(), updateData);
     QVERIFY(backend.dirtyFlags() & Qt3DRender::Render::Texture::DirtyPendingDataUpdates);
 }
 
