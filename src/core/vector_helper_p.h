@@ -81,6 +81,22 @@ bool contains(const std::vector<T>& destination, const U& element) noexcept
 {
     return std::find(destination.begin(), destination.end(), element) != destination.end();
 }
+
+template <typename ForwardIterator>
+void deleteAll(ForwardIterator begin, ForwardIterator end)
+{
+    while (begin != end) {
+        delete *begin;
+        ++begin;
+    }
+}
+
+template <typename Container>
+inline void deleteAll(const Container &c)
+{
+    qDeleteAll(c.begin(), c.end());
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

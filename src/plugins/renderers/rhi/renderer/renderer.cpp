@@ -501,7 +501,6 @@ void Renderer::shutdown()
     // We delete any renderqueue that we may not have had time to render
     // before the surface was destroyed
     QMutexLocker lockRenderQueue(m_renderQueue.mutex());
-    qDeleteAll(m_renderQueue.nextFrameQueue());
     m_renderQueue.reset();
     lockRenderQueue.unlock();
 
@@ -756,7 +755,6 @@ void Renderer::render(bool swapBuffers)
 
     // Reset RenderQueue and destroy the renderViews
     m_renderQueue.reset();
-    qDeleteAll(renderViews);
 
     // We allow the RenderTickClock service to proceed to the next frame
     // In turn this will allow the aspect manager to request a new set of jobs

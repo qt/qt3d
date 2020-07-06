@@ -53,6 +53,7 @@
 
 #include <vector>
 #include <QMutex>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -127,6 +128,7 @@ public:
     {
         m_currentRenderViewCount = 0;
         m_targetRenderViewCount = 0;
+        Qt3DCore::deleteAll(m_currentWorkQueue);
         m_currentWorkQueue.clear();
         m_noRender = false;
         m_wasReset = true;
