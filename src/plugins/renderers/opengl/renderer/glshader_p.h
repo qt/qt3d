@@ -95,10 +95,10 @@ public:
     inline const std::vector<int> &storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
     inline const std::vector<int> &attributeNamesIds() const { return m_attributeNamesIds; }
 
-    std::vector<QString> uniformsNames() const;
-    std::vector<QString> attributesNames() const;
-    std::vector<QString> uniformBlockNames() const;
-    std::vector<QString> storageBlockNames() const;
+    const std::vector<QString> &uniformsNames() const;
+    const std::vector<QString> &attributesNames() const;
+    const std::vector<QString> &uniformBlockNames() const;
+    const std::vector<QString> &storageBlockNames() const;
 
     inline const std::vector<ShaderUniform> &uniforms() const { return m_uniforms; }
     inline const std::vector<ShaderAttribute> &attributes() const { return m_attributes; }
@@ -130,7 +130,7 @@ public:
     QOpenGLShaderProgram *shaderProgram() { return &m_shader; }
 
     void setShaderCode(const std::vector<QByteArray> shaderCode) { m_shaderCode = shaderCode; }
-    std::vector<QByteArray> shaderCode() const;
+    const std::vector<QByteArray> &shaderCode() const;
 
 private:
     bool m_isLoaded;

@@ -126,27 +126,27 @@ GraphicsContext *GLShader::graphicsContext()
 }
 
 
-std::vector<QString> GLShader::uniformsNames() const
+const std::vector<QString> &GLShader::uniformsNames() const
 {
     return m_uniformsNames;
 }
 
-std::vector<QString> GLShader::attributesNames() const
+const std::vector<QString> &GLShader::attributesNames() const
 {
     return m_attributesNames;
 }
 
-std::vector<QString> GLShader::uniformBlockNames() const
+const std::vector<QString> &GLShader::uniformBlockNames() const
 {
     return m_uniformBlockNames;
 }
 
-std::vector<QString> GLShader::storageBlockNames() const
+const std::vector<QString> &GLShader::storageBlockNames() const
 {
     return m_shaderStorageBlockNames;
 }
 
-std::vector<QByteArray> GLShader::shaderCode() const
+const std::vector<QByteArray> &GLShader::shaderCode() const
 {
     return m_shaderCode;
 }
