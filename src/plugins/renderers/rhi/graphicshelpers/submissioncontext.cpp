@@ -259,6 +259,8 @@ void applyStateHelper(const BlendEquation *state, QRhiGraphicsPipeline *gp) noex
             return QRhiGraphicsPipeline::Min;
         case QBlendEquation::Max:
             return QRhiGraphicsPipeline::Max;
+        default:
+            return QRhiGraphicsPipeline::Add;
         }
     };
 
@@ -1268,7 +1270,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, RHISha
 
     // Fill Texture Uniform Value with proper texture units
     // so that they can be applied as regular uniforms in a second step
-    for (int i = 0; i < parameterPack.textures().size(); ++i) {
+    for (size_t i = 0; i < parameterPack.textures().size(); ++i) {
         RHI_UNIMPLEMENTED;
         //* const ShaderParameterPack::NamedResource &namedTex = parameterPack.textures().at(i);
         //* // Given a Texture QNodeId, we retrieve the associated shared RHITexture
