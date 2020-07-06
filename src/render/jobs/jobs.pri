@@ -31,7 +31,8 @@ HEADERS += \
     $$PWD/jobs/materialparametergathererjob_p.h \
     $$PWD/renderviewjobutils_p.h \
     $$PWD/uniformblockbuilder_p.h \
-    $$PWD/renderqueue_p.h
+    $$PWD/renderqueue_p.h \
+    $$PWD/renderercache_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \

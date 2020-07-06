@@ -65,6 +65,7 @@
 #include <Qt3DRender/private/qrendercapture_p.h>
 #include <Qt3DRender/private/qblitframebuffer_p.h>
 #include <Qt3DRender/private/waitfence_p.h>
+#include <Qt3DRender/private/renderercache_p.h>
 
 #include <Qt3DCore/private/aligned_malloc_p.h>
 
@@ -97,6 +98,11 @@ class RenderCommand;
 
 typedef QPair<ShaderUniform, QVariant> ActivePropertyContent;
 typedef QPair<QString, ActivePropertyContent > ActiveProperty;
+
+using EntityRenderCommandData = Render::EntityRenderCommandData<RenderCommand>;
+using EntityRenderCommandDataView = Render::EntityRenderCommandDataView<RenderCommand>;
+using EntityRenderCommandDataViewPtr = Render::EntityRenderCommandDataViewPtr<RenderCommand>;
+using EntityRenderCommandDataSubView = Render::EntityRenderCommandDataSubView<RenderCommand>;
 
 struct Q_AUTOTEST_EXPORT ClearBufferInfo
 {

@@ -49,6 +49,8 @@ namespace Qt3DRender {
 namespace Render {
 namespace OpenGL {
 
+using RendererCache = Render::RendererCache<RenderCommand>;
+
 namespace {
 
 int findIdealNumberOfWorkers(int elementCount, int packetSize = 100, int maxJobCount = 1)

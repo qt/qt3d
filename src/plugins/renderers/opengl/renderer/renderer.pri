@@ -15,7 +15,6 @@ SOURCES += \
 HEADERS += \
     $$PWD/gllights_p.h \
     $$PWD/openglvertexarrayobject_p.h \
-    $$PWD/renderercache_p.h \
     $$PWD/rendercommand_p.h \
     $$PWD/renderer_p.h \
     $$PWD/renderview_p.h \

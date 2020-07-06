@@ -101,6 +101,11 @@ class RenderCommand;
 typedef QPair<ShaderUniform, QVariant> ActivePropertyContent;
 typedef QPair<QString, ActivePropertyContent> ActiveProperty;
 
+using EntityRenderCommandData = Render::EntityRenderCommandData<RenderCommand>;
+using EntityRenderCommandDataView = Render::EntityRenderCommandDataView<RenderCommand>;
+using EntityRenderCommandDataViewPtr = Render::EntityRenderCommandDataViewPtr<RenderCommand>;
+using EntityRenderCommandDataSubView = Render::EntityRenderCommandDataSubView<RenderCommand>;
+
 struct Q_AUTOTEST_EXPORT ClearBufferInfo
 {
     int drawBufferIndex = 0;

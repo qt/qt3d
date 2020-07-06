@@ -135,6 +135,8 @@ namespace Qt3DRender {
 namespace Render {
 namespace Rhi {
 
+using RendererCache = Render::RendererCache<RenderCommand>;
+
 namespace {
 
 class CachingLightGatherer : public LightGatherer

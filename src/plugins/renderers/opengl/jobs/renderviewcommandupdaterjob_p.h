@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/renderercache_p.h>
 #include <rendercommand_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -66,6 +67,7 @@ namespace OpenGL {
 class RenderView;
 class Renderer;
 class RenderViewCommandUpdaterJobPrivate;
+using EntityRenderCommandDataSubView = Render::EntityRenderCommandDataSubView<RenderCommand>;
 
 class Q_AUTOTEST_EXPORT RenderViewCommandUpdaterJob : public Qt3DCore::QAspectJob
 {

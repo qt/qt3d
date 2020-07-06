@@ -20,7 +20,6 @@ qt_internal_add_plugin(RhiRendererPlugin
         renderer/logging.cpp renderer/logging_p.h
         renderer/rendercommand.cpp renderer/rendercommand_p.h
         renderer/renderer.cpp renderer/renderer_p.h
-        renderer/renderercache_p.h
         renderer/renderview.cpp renderer/renderview_p.h
         renderer/renderviewbuilder.cpp renderer/renderviewbuilder_p.h
         renderer/rhigraphicspipeline.cpp renderer/rhigraphicspipeline_p.h

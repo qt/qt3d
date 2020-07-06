@@ -12,7 +12,6 @@ SOURCES += \
     $$PWD/commandexecuter.cpp
 
 HEADERS += \
-    $$PWD/renderercache_p.h \
     $$PWD/rendercommand_p.h \
     $$PWD/renderer_p.h \
     $$PWD/renderview_p.h \

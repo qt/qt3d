@@ -29,7 +29,6 @@ set(openGLRendererSources graphicshelpers/graphicscontext.cpp graphicshelpers/gr
     renderer/openglvertexarrayobject.cpp renderer/openglvertexarrayobject_p.h
     renderer/rendercommand.cpp renderer/rendercommand_p.h
     renderer/renderer.cpp renderer/renderer_p.h
-    renderer/renderercache_p.h
     renderer/renderview.cpp renderer/renderview_p.h
     renderer/renderviewbuilder.cpp renderer/renderviewbuilder_p.h
     renderer/shaderparameterpack.cpp renderer/shaderparameterpack_p.h

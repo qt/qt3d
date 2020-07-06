@@ -70,15 +70,14 @@
 #include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <Qt3DRender/private/renderqueue_p.h>
+#include <Qt3DRender/private/renderercache_p.h>
 
 #include <QtGui/private/qrhi_p.h>
 
 #include <shaderparameterpack_p.h>
 #include <renderviewinitializerjob_p.h>
-#include <renderercache_p.h>
 #include <logging_p.h>
 #include <rhihandle_types_p.h>
-#include <renderercache_p.h>
 #include <renderview_p.h>
 
 #include <QHash>
@@ -295,7 +294,7 @@ public:
 
     ViewSubmissionResultData submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo);
 
-    RendererCache *cache() { return &m_cache; }
+    RendererCache<RenderCommand> *cache() { return &m_cache; }
     void setScreen(QScreen *scr) override;
     QScreen *screen() const override;
 
@@ -398,7 +397,7 @@ private:
 #endif
 
     QMetaObject::Connection m_contextConnection;
-    RendererCache m_cache;
+    RendererCache<RenderCommand> m_cache;
     bool m_shouldSwapBuffers;
 
     std::vector<FrameGraphNode *> m_frameGraphLeaves;

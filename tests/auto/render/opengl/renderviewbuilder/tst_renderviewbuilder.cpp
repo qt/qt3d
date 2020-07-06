@@ -484,7 +484,7 @@ private Q_SLOTS:
         renderer->lightGathererJob()->run();
 
         // THEN
-        Qt3DRender::Render::OpenGL::RendererCache *cache = renderer->cache();
+        Qt3DRender::Render::RendererCache<Qt3DRender::Render::OpenGL::RenderCommand> *cache = renderer->cache();
         QCOMPARE(cache->gatheredLights.size(), 2);
         QVERIFY(cache->environmentLight != nullptr);
     }
@@ -505,7 +505,7 @@ private Q_SLOTS:
         renderer->renderableEntityFilterJob()->run();
 
         // THEN
-        Qt3DRender::Render::OpenGL::RendererCache *cache = renderer->cache();
+        Qt3DRender::Render::RendererCache<Qt3DRender::Render::OpenGL::RenderCommand> *cache = renderer->cache();
         QCOMPARE(cache->renderableEntities.size(), 1);
     }
 
@@ -525,7 +525,7 @@ private Q_SLOTS:
         renderer->computableEntityFilterJob()->run();
 
         // THEN
-        Qt3DRender::Render::OpenGL::RendererCache *cache = renderer->cache();
+        Qt3DRender::Render::RendererCache<Qt3DRender::Render::OpenGL::RenderCommand> *cache = renderer->cache();
         QCOMPARE(cache->computeEntities.size(), 1);
     }
 
@@ -664,7 +664,7 @@ private Q_SLOTS:
         renderViewBuilder.syncRenderViewPostInitializationJob()->run();
         renderViewBuilder.filterEntityByLayerJob()->run();
 
-        Qt3DRender::Render::OpenGL::RendererCache *cache = renderer->cache();
+        Qt3DRender::Render::RendererCache<Qt3DRender::Render::OpenGL::RenderCommand> *cache = renderer->cache();
         std::vector<Qt3DRender::Render::Entity *> renderableEntity = cache->renderableEntities;
         std::vector<Qt3DRender::Render::Entity *> filteredEntity = renderViewBuilder.filterEntityByLayerJob()->filteredEntities();
 
