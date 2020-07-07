@@ -1361,15 +1361,9 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                 updateGraphicsPipeline(command, rv, i);
 
             } else if (command.m_type == RenderCommand::Compute) {
-                RHI_UNIMPLEMENTED;
                 // By this time shaders have been loaded
-                RHIShader *shader = m_RHIResourceManagers->rhiShaderManager()->lookupResource(
-                        command.m_shaderId);
-                command.m_rhiShader = shader;
+                RHIShader *shader = command.m_rhiShader;
                 Q_ASSERT(shader);
-
-                // Prepare the ShaderParameterPack based on the active uniforms of the shader
-                // shader->prepareUniforms(command.m_parameterPack);
             }
         });
     }
