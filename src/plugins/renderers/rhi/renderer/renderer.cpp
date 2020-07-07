@@ -2307,7 +2307,8 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
                 m_RHIResourceManagers->rhiBufferManager()->lookupResource(buffer->peerId());
         switch (attrib->attributeType()) {
         case QAttribute::VertexAttribute: {
-            hbuf->bind(&*m_submissionContext, RHIBuffer::Type::ArrayBuffer);
+            if (!hbuf->bind(&*m_submissionContext, RHIBuffer::Type::ArrayBuffer))
+                return false;
             assert(hbuf->rhiBuffer());
             // Find Binding for Attribute
             const int bindingIndex = graphicsPipeline->bindingIndexForAttribute(attrib->nameId());
@@ -2323,7 +2324,8 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
             break;
         }
         case QAttribute::IndexAttribute: {
-            hbuf->bind(&*m_submissionContext, RHIBuffer::Type::IndexBuffer);
+            if (!hbuf->bind(&*m_submissionContext, RHIBuffer::Type::IndexBuffer))
+                return false;
             assert(hbuf->rhiBuffer());
 
             command.indexBuffer = hbuf->rhiBuffer();
@@ -2339,7 +2341,8 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
     for (const BlockToUBO &pack : command.m_parameterPack.uniformBuffers()) {
         Buffer *cpuBuffer = nodeManagers()->bufferManager()->lookupResource(pack.m_bufferID);
         RHIBuffer *ubo = m_submissionContext->rhiBufferForRenderBuffer(cpuBuffer);
-        ubo->bind(&*m_submissionContext, RHIBuffer::UniformBuffer);
+        if (!ubo->bind(&*m_submissionContext, RHIBuffer::UniformBuffer))
+            return false;
     }
 
     return true;
