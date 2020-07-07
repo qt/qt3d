@@ -81,7 +81,7 @@ RenderCommand::RenderCommand()
 
 bool RenderCommand::isValid() const noexcept
 {
-    return m_rhiShader && pipeline && pipeline->pipeline();
+    return m_isValid && m_rhiShader && pipeline && pipeline->pipeline();
 }
 
 bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept

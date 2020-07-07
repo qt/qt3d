@@ -2521,11 +2521,17 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         // Render drawing commands
 
         rv->forEachCommand([&] (RenderCommand &command) {
-            if (!command.pipeline)
+            if (Q_UNLIKELY(!command.isValid()))
                 return;
 
             if (command.m_type == RenderCommand::Draw) {
-                uploadBuffersForCommand(cb, rv, command);
+                if (!uploadBuffersForCommand(cb, rv, command)) {
+                    // Something went wrong trying to upload buffers
+                    // -> likely that frontend buffer has no initial data
+                    qCWarning(Backend) << "Failed to upload buffers";
+                    // Prevents further processing which could be catastrophic
+                    command.m_isValid = false;
+                }
                 uploadUBOsForCommand(cb, rv, command);
             }
         });
@@ -2607,7 +2613,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 
         // Render drawing commands
         rv->forEachCommand([&] (const RenderCommand &command) {
-            if (!command.pipeline)
+            if (Q_UNLIKELY(!command.isValid()))
                 return;
 
             if (command.m_type == RenderCommand::Draw) {

@@ -1354,6 +1354,10 @@ void SubmissionContext::uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b, bool
     // actually upload will be performed when the buffer will be bound
     // as we would otherwise need to know the usage type of the buffer
     auto updates = std::move(buffer->pendingBufferUpdates());
+
+    if (updates.empty())
+        qCWarning(Backend) << "Buffer has no data to upload";
+
     for (auto it = updates.begin(); it != updates.end(); ++it) {
         auto update = it;
         // We have a partial update

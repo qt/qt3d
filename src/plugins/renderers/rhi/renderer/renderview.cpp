@@ -1003,7 +1003,6 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const Entity **en
 
                 // It takes two frames to have a valid command as we can only
                 // reference a glShader at frame n if it has been loaded at frame n - 1
-                assert(command.m_rhiShader);
                 if (!command.m_rhiShader)
                     continue;
 
