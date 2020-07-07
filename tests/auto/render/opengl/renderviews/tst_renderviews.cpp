@@ -126,7 +126,7 @@ private Q_SLOTS:
             QCOMPARE(backendBarrier.waitOperations(), barriers);
 
             // WHEN
-            Qt3DRender::Render::OpenGL::RenderViewInitializerJob::setRenderViewConfigFromFrameGraphLeafNode(&renderView, &backendBarrier);
+            Qt3DRender::Render::OpenGL::RenderView::setRenderViewConfigFromFrameGraphLeafNode(&renderView, &backendBarrier);
 
             // THEN
             QCOMPARE(backendBarrier.waitOperations(), renderView.memoryBarrier());

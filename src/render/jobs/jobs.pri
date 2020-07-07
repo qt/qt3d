@@ -28,11 +28,14 @@ HEADERS += \
     $$PWD/raycastingjob_p.h \
     $$PWD/updateentitylayersjob_p.h \
     $$PWD/filtercompatibletechniquejob_p.h \
-    $$PWD/jobs/materialparametergathererjob_p.h \
+    $$PWD/materialparametergathererjob_p.h \
     $$PWD/renderviewjobutils_p.h \
     $$PWD/uniformblockbuilder_p.h \
     $$PWD/renderqueue_p.h \
-    $$PWD/renderercache_p.h
+    $$PWD/renderercache_p.h \
+    $$PWD/renderviewcommandbuilderjob_p.h \
+    $$PWD/renderviewcommandupdaterjob_p.h \
+    $$PWD/renderviewinitializerjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -62,4 +65,5 @@ SOURCES += \
     $$PWD/materialparametergathererjob.cpp \
     $$PWD/renderviewjobutils.cpp \
     $$PWD/uniformblockbuilder.cpp
+
 

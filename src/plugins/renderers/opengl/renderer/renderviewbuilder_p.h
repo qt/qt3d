@@ -59,8 +59,8 @@
 #include <Qt3DRender/private/frustumcullingjob_p.h>
 #include <Qt3DRender/private/filterproximitydistancejob_p.h>
 #include <Qt3DRender/private/materialparametergathererjob_p.h>
-#include <renderviewcommandbuilderjob_p.h>
-#include <renderviewcommandupdaterjob_p.h>
+#include <Qt3DRender/private/renderviewcommandbuilderjob_p.h>
+#include <Qt3DRender/private/renderviewcommandupdaterjob_p.h>
 #include <renderview_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -76,6 +76,10 @@ class Renderer;
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 #define CreateSynchronizerJobPtr(lambda, type) \
     SynchronizerJobPtr::create(lambda, type, #type)
+
+using RenderViewCommandBuilderJobPtr = Render::RenderViewCommandBuilderJobPtr<RenderView, RenderCommand>;
+using RenderViewCommandUpdaterJobPtr = Render::RenderViewCommandUpdaterJobPtr<RenderView, RenderCommand>;
+using RenderViewInitializerJobPtr = Render::RenderViewInitializerJobPtr<RenderView, Renderer>;
 
 class Q_AUTOTEST_EXPORT RenderViewBuilder
 {

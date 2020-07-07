@@ -71,11 +71,11 @@
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <Qt3DRender/private/renderqueue_p.h>
 #include <Qt3DRender/private/renderercache_p.h>
+#include <Qt3DRender/private/renderviewinitializerjob_p.h>
 
 #include <QtGui/private/qrhi_p.h>
 
 #include <shaderparameterpack_p.h>
-#include <renderviewinitializerjob_p.h>
 #include <logging_p.h>
 #include <rhihandle_types_p.h>
 #include <renderview_p.h>
@@ -157,6 +157,7 @@ class RenderCommand;
 struct RHIRenderTarget;
 class RHIShader;
 class RHIResourceManagers;
+class RenderView;
 
 class Q_AUTOTEST_EXPORT Renderer : public AbstractRenderer
 {

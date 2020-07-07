@@ -70,8 +70,8 @@
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 #include <Qt3DRender/private/renderqueue_p.h>
 #include <Qt3DRender/private/renderercache_p.h>
+#include <Qt3DRender/private/renderviewinitializerjob_p.h>
 #include <shaderparameterpack_p.h>
-#include <renderviewinitializerjob_p.h>
 #include <logging_p.h>
 #include <gl_handle_types_p.h>
 #include <glfence_p.h>
@@ -160,6 +160,7 @@ class SubmissionContext;
 class RenderCommand;
 class GLShader;
 class GLResourceManagers;
+class RenderView;
 
 class Q_AUTOTEST_EXPORT Renderer : public AbstractRenderer
 {

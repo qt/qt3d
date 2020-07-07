@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H
-#define QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#define QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H
 
 //
 //  W A R N I N G
@@ -54,7 +54,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/renderercache_p.h>
-#include <rendercommand_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,16 +62,14 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace Rhi {
-
-class RenderView;
-class RenderViewCommandBuilderJobPrivate;
-using EntityRenderCommandData = Render::EntityRenderCommandData<RenderCommand>;
-
-class Q_AUTOTEST_EXPORT RenderViewCommandBuilderJob : public Qt3DCore::QAspectJob
+template<class RenderView, class RenderCommand>
+class RenderViewCommandBuilderJob : public Qt3DCore::QAspectJob
 {
 public:
-    RenderViewCommandBuilderJob();
+    RenderViewCommandBuilderJob()
+    {
+        SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderViewCommandBuilder, RenderViewCommandBuilderJob::renderViewInstanceCounter++)
+    }
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
     inline void setEntities(const Entity **entities, int offset, int count)
@@ -80,23 +78,42 @@ public:
         m_count = count;
         m_entities = entities;
     }
-    inline EntityRenderCommandData &commandData() { return m_commandData; }
+    inline EntityRenderCommandData<RenderCommand> &commandData() { return m_commandData; }
 
-    void run() final;
+    void run() final
+    {
+        const bool isDraw = !m_renderView->isCompute();
+        if (isDraw)
+            m_commandData = m_renderView->buildDrawRenderCommands(m_entities, m_offset, m_count);
+        else
+            m_commandData = m_renderView->buildComputeRenderCommands(m_entities, m_offset, m_count);
+    }
+
+    bool isRequired() override
+    {
+        return m_renderView && !m_renderView->noDraw() && m_count > 0;
+    }
+
+    void postFrame(Qt3DCore::QAspectEngine *engine) override
+    {
+        Q_UNUSED(engine);
+        RenderViewCommandBuilderJob::renderViewInstanceCounter = 0;
+    }
 
 private:
-    int m_offset;
-    int m_count;
-    RenderView *m_renderView;
-    const Entity **m_entities;
-    EntityRenderCommandData m_commandData;
-
-    Q_DECLARE_PRIVATE(RenderViewCommandBuilderJob)
+    RenderView *m_renderView = nullptr;
+    const Entity **m_entities = nullptr;
+    EntityRenderCommandData<RenderCommand> m_commandData;
+    int m_offset = 0;
+    int m_count = 0;
+    static int renderViewInstanceCounter;
 };
 
-typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobPtr;
+template<class RenderView, class RenderCommand>
+int RenderViewCommandBuilderJob<RenderView, RenderCommand>::renderViewInstanceCounter = 0;
 
-} // Rhi
+template<class RenderView, class RenderCommand>
+using RenderViewCommandBuilderJobPtr = QSharedPointer<RenderViewCommandBuilderJob<RenderView, RenderCommand>>;
 
 } // Render
 
@@ -104,4 +121,4 @@ typedef QSharedPointer<RenderViewCommandBuilderJob> RenderViewCommandBuilderJobP
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RHI_RENDERVIEWCOMMANDBUILDERJOB_P_H
+#endif // QT3DRENDER_RENDER_RENDERVIEWCOMMANDBUILDERJOB_P_H

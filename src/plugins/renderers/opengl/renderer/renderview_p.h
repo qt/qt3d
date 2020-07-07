@@ -133,6 +133,9 @@ public:
 
     QT3D_ALIGNED_MALLOC_AND_FREE()
 
+    static void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
+                                                          const FrameGraphNode *fgLeaf);
+
     // TODO: Add a way to specify a sort predicate for the RenderCommands
     void sort();
 

@@ -10,9 +10,6 @@ qt_internal_add_plugin(RhiRendererPlugin
     SOURCES
         graphicshelpers/submissioncontext.cpp graphicshelpers/submissioncontext_p.h
         io/rhibuffer.cpp io/rhibuffer_p.h
-        jobs/renderviewcommandbuilderjob.cpp jobs/renderviewcommandbuilderjob_p.h
-        jobs/renderviewcommandupdaterjob.cpp jobs/renderviewcommandupdaterjob_p.h
-        jobs/renderviewinitializerjob.cpp jobs/renderviewinitializerjob_p.h
         main.cpp
         managers/rhihandle_types_p.h
         managers/rhiresourcemanagers.cpp managers/rhiresourcemanagers_p.h

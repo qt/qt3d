@@ -11,7 +11,6 @@ DISTFILES += \
     openglrenderer.json
 
 include (renderer/renderer.pri)
-include (jobs/jobs.pri)
 include (io/io.pri)
 include (textures/textures.pri)
 include (graphicshelpers/graphicshelpers.pri)

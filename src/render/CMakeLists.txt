@@ -167,6 +167,9 @@ qt_add_module(3DRender
         jobs/uniformblockbuilder.cpp jobs/uniformblockbuilder_p.h
         jobs/renderqueue_p.h
         jobs/renderercache_p.h
+        jobs/renderviewcommandbuilderjob_p.h
+        jobs/renderviewcommandupdaterjob_p.h
+        jobs/renderviewinitializerjob_p.h
         lights/environmentlight.cpp lights/environmentlight_p.h
         lights/light.cpp lights/light_p.h
         lights/lightsource.cpp lights/lightsource_p.h

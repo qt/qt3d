@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDUPDATEJOB_P_H
-#define QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDUPDATEJOB_P_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H
+#define QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H
 
 //
 //  W A R N I N G
@@ -54,7 +54,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/renderercache_p.h>
-#include <rendercommand_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,41 +62,62 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace OpenGL {
-
-class RenderView;
-class Renderer;
-class RenderViewCommandUpdaterJobPrivate;
-using EntityRenderCommandDataSubView = Render::EntityRenderCommandDataSubView<RenderCommand>;
-
-class Q_AUTOTEST_EXPORT RenderViewCommandUpdaterJob : public Qt3DCore::QAspectJob
+template<class RenderView, class RenderCommand>
+class RenderViewCommandUpdaterJob : public Qt3DCore::QAspectJob
 {
 public:
-    RenderViewCommandUpdaterJob();
+    RenderViewCommandUpdaterJob()
+        : Qt3DCore::QAspectJob()
+    {
+        SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderCommandUpdater, renderViewInstanceCounter++)
+    }
+
+    ~RenderViewCommandUpdaterJob()
+    {
+    }
 
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
-    inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
-    inline void setRenderablesSubView(const EntityRenderCommandDataSubView &renderablesSubView) Q_DECL_NOTHROW
+    inline void setRenderablesSubView(const EntityRenderCommandDataSubView<RenderCommand> &renderablesSubView) Q_DECL_NOTHROW
     {
         m_renderablesSubView = renderablesSubView;
     }
-    EntityRenderCommandDataSubView renderablesSubView() const { return m_renderablesSubView; }
+    EntityRenderCommandDataSubView<RenderCommand> renderablesSubView() const { return m_renderablesSubView; }
 
-    inline void setRebuildFlags(RebuildFlagSet rebuildFlags) { m_rebuildFlags = rebuildFlags; }
-    void run() final;
+    void run() final
+    {
+        // Build RenderCommand should perform the culling as we have no way to determine
+        // if a child has a mesh in the view frustum while its parent isn't contained in it.
+        if (!m_renderView->noDraw()) {
+            if (m_renderablesSubView.count == 0)
+                return;
+            // Update Render Commands (Uniform Change, Depth Change)
+            m_renderView->updateRenderCommand(m_renderablesSubView);
+        }
+    }
+
+    void postFrame(Qt3DCore::QAspectEngine *aspectEngine) override
+    {
+        Q_UNUSED(aspectEngine);
+        // reset to 0 after every frame, stops the number growing indefinitely
+        renderViewInstanceCounter = 0;
+    }
+
+    bool isRequired() override
+    {
+        return m_renderView && !m_renderView->noDraw() && m_renderablesSubView.count > 0;
+    }
 
 private:
-    RebuildFlagSet m_rebuildFlags;
-    RenderView *m_renderView;
-    Renderer *m_renderer;
-    EntityRenderCommandDataSubView m_renderablesSubView;
-
-    Q_DECLARE_PRIVATE(RenderViewCommandUpdaterJob)
+    RenderView *m_renderView = nullptr;
+    EntityRenderCommandDataSubView<RenderCommand> m_renderablesSubView;
+    static int renderViewInstanceCounter;
 };
 
-typedef QSharedPointer<RenderViewCommandUpdaterJob> RenderViewCommandUpdaterJobPtr;
+template<class RenderView, class RenderCommand>
+int RenderViewCommandUpdaterJob<RenderView, RenderCommand>::renderViewInstanceCounter = 0;
 
-} // OpenGL
+template<class RenderView, class RenderCommand>
+using RenderViewCommandUpdaterJobPtr = QSharedPointer<RenderViewCommandUpdaterJob<RenderView, RenderCommand>>;
 
 } // Render
 
@@ -104,4 +125,4 @@ typedef QSharedPointer<RenderViewCommandUpdaterJob> RenderViewCommandUpdaterJobP
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_OPENGL_RENDERVIEWCOMMANDUPDATEJOB_P_H
+#endif // QT3DRENDER_RENDER_RENDERVIEWCOMMANDUPDATEJOB_P_H

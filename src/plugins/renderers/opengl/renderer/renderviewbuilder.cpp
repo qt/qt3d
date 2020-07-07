@@ -645,9 +645,7 @@ void RenderViewBuilder::prepareJobs()
     // Estimate the number of jobs to create based on the number of entities
     m_renderViewCommandUpdaterJobs.reserve(m_optimalParallelJobCount);
     for (auto i = 0; i < m_optimalParallelJobCount; ++i) {
-        auto renderViewCommandUpdater = Render::OpenGL::RenderViewCommandUpdaterJobPtr::create();
-        renderViewCommandUpdater->setRenderer(m_renderer);
-        renderViewCommandUpdater->setRebuildFlags(m_rebuildFlags);
+        auto renderViewCommandUpdater = RenderViewCommandUpdaterJobPtr::create();
         m_renderViewCommandUpdaterJobs.push_back(renderViewCommandUpdater);
     }
 
