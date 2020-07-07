@@ -1297,7 +1297,7 @@ std::vector<Renderer::RHIPassInfo>
 Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews)
 {
     // TO DO: Find a central place to initialize RHI resources
-    const int renderViewCount = renderViews.size();
+    const size_t renderViewCount = renderViews.size();
 
     // We need to have a single RHI RenderPass per RenderTarget
     // as creating the pass clears the buffers
@@ -1305,14 +1305,14 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
     // and submit all of these as part of the same RHI pass
     std::vector<RHIPassInfo> rhiPassesInfo;
 
-    for (int i = 0; i < renderViewCount;) {
+    for (size_t i = 0; i < renderViewCount;) {
         std::vector<RenderView *> sameRenderTargetRVs;
         std::vector<QRhiBuffer *> rvUbos;
         RenderView *refRV = renderViews.at(i);
         sameRenderTargetRVs.push_back(refRV);
 
         for (i = i + 1; i < renderViewCount; ++i) {
-            RenderView *curRV = renderViews.at(i);
+            RenderView *curRV = renderViews[i];
             if (refRV->renderTargetId() == curRV->renderTargetId()) {
                 sameRenderTargetRVs.push_back(curRV);
             } else
@@ -1327,8 +1327,8 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
         rhiPassesInfo.push_back(bucket);
     }
 
-    for (int i = 0; i < renderViewCount; ++i) {
-        RenderView *rv = renderViews.at(i);
+    for (size_t i = 0; i < renderViewCount; ++i) {
+        RenderView *rv = renderViews[i];
         rv->forEachCommand([&] (RenderCommand &command) {
             // Update/Create GraphicsPipelines
             if (command.m_type == RenderCommand::Draw) {
