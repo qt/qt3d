@@ -52,7 +52,7 @@ class QVertexBlendAnimationPrivate;
 class Q_3DANIMATIONSHARED_EXPORT QVertexBlendAnimation : public QAbstractAnimation
 {
     Q_OBJECT
-    Q_PROPERTY(QVector<float> targetPositions READ targetPositions WRITE setTargetPositions NOTIFY targetPositionsChanged)
+    Q_PROPERTY(QList<float> targetPositions READ targetPositions WRITE setTargetPositions NOTIFY targetPositionsChanged)
     Q_PROPERTY(float interpolator READ interpolator NOTIFY interpolatorChanged)
     Q_PROPERTY(Qt3DRender::QGeometryRenderer *target READ target WRITE setTarget NOTIFY targetChanged)
     Q_PROPERTY(QString targetName READ targetName WRITE setTargetName NOTIFY targetNameChanged)
@@ -60,24 +60,24 @@ class Q_3DANIMATIONSHARED_EXPORT QVertexBlendAnimation : public QAbstractAnimati
 public:
     explicit QVertexBlendAnimation(QObject *parent = nullptr);
 
-    QVector<float> targetPositions() const;
+    QList<float> targetPositions() const;
     float interpolator() const;
     Qt3DRender::QGeometryRenderer *target() const;
     QString targetName() const;
 
-    void setMorphTargets(const QVector<Qt3DAnimation::QMorphTarget *> &targets);
+    void setMorphTargets(const QList<Qt3DAnimation::QMorphTarget *> &targets);
     void addMorphTarget(Qt3DAnimation::QMorphTarget *target);
     void removeMorphTarget(Qt3DAnimation::QMorphTarget *target);
 
-    QVector<Qt3DAnimation::QMorphTarget *> morphTargetList();
+    QList<Qt3DAnimation::QMorphTarget *> morphTargetList();
 
 public Q_SLOTS:
-    void setTargetPositions(const QVector<float> &targetPositions);
+    void setTargetPositions(const QList<float> &targetPositions);
     void setTarget(Qt3DRender::QGeometryRenderer *target);
     void setTargetName(const QString name);
 
 Q_SIGNALS:
-    void targetPositionsChanged(const QVector<float> &targetPositions);
+    void targetPositionsChanged(const QList<float> &targetPositions);
     void interpolatorChanged(float interpolator);
     void targetChanged(Qt3DRender::QGeometryRenderer *target);
     void targetNameChanged(const QString &name);

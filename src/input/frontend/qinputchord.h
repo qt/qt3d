@@ -64,7 +64,7 @@ public:
 
     void addChord(QAbstractActionInput *input);
     void removeChord(QAbstractActionInput *input);
-    QVector<QAbstractActionInput *> chords() const;
+    QList<QAbstractActionInput *> chords() const;
 
 public Q_SLOTS:
     void setTimeout(int timeout);

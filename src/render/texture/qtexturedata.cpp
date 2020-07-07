@@ -71,7 +71,7 @@ public:
     QTextureWrapMode::WrapMode m_wrapModeZ;
     QAbstractTexture::ComparisonFunction m_comparisonFunction;
     QAbstractTexture::ComparisonMode m_comparisonMode;
-    QVector<QTextureImageDataPtr> m_imagesData;
+    QList<QTextureImageDataPtr> m_imagesData;
 
 };
 
@@ -365,7 +365,7 @@ void QTextureData::setComparisonMode(QAbstractTexture::ComparisonMode comparison
 /*!
  * Returns the data of the images used by this texture.
  */
-QVector<QTextureImageDataPtr> QTextureData::imageData() const
+QList<QTextureImageDataPtr> QTextureData::imageData() const
 {
     Q_D(const QTextureData);
     return d->m_imagesData;

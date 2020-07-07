@@ -60,11 +60,11 @@ public:
     explicit QAnimationGroup(QObject *parent = nullptr);
 
     QString name() const;
-    QVector<Qt3DAnimation::QAbstractAnimation *> animationList();
+    QList<Qt3DAnimation::QAbstractAnimation *> animationList();
     float position() const;
     float duration() const;
 
-    void setAnimations(const QVector<Qt3DAnimation::QAbstractAnimation *> &animations);
+    void setAnimations(const QList<Qt3DAnimation::QAbstractAnimation *> &animations);
     void addAnimation(Qt3DAnimation::QAbstractAnimation *animation);
     void removeAnimation(Qt3DAnimation::QAbstractAnimation *animation);
 

@@ -280,7 +280,7 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
     Returns the list of Qt3DCore::QFilterKey key objects making up the filter keys
     of the Qt3DRender::QTechnique.
  */
-QVector<QFilterKey *> QTechnique::filterKeys() const
+QList<QFilterKey *> QTechnique::filterKeys() const
 {
     Q_D(const QTechnique);
     return d->m_filterKeys;
@@ -365,7 +365,7 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
 /*!
     Returns the list of render passes contained in the technique.
  */
-QVector<QRenderPass *> QTechnique::renderPasses() const
+QList<QRenderPass *> QTechnique::renderPasses() const
 {
     Q_D(const QTechnique);
     return d->m_renderPasses;
@@ -374,7 +374,7 @@ QVector<QRenderPass *> QTechnique::renderPasses() const
 /*!
     Returns a vector of the techniques current parameters
  */
-QVector<QParameter *> QTechnique::parameters() const
+QList<QParameter *> QTechnique::parameters() const
 {
     Q_D(const QTechnique);
     return d->m_parameters;

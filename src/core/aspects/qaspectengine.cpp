@@ -60,11 +60,11 @@ QT_BEGIN_NAMESPACE
 
 namespace{
 
-QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
+QList<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
 {
     using namespace Qt3DCore;
 
-    QVector<QNode *> nodes;
+    QList<QNode *> nodes;
     QNodeVisitor visitor;
     visitor.traverse(root, [&nodes](QNode *node) {
         nodes.append(node);
@@ -84,11 +84,11 @@ QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
     return nodes;
 }
 
-QVector<Qt3DCore::QNode *> getNodesForRemoval(Qt3DCore::QNode *root)
+QList<Qt3DCore::QNode *> getNodesForRemoval(Qt3DCore::QNode *root)
 {
     using namespace Qt3DCore;
 
-    QVector<QNode *> nodes;
+    QList<QNode *> nodes;
     QNodeVisitor visitor;
     visitor.traverse(root, [&nodes](QNode *node) {
         nodes.append(node);
@@ -373,7 +373,7 @@ void QAspectEngine::unregisterAspect(const QString &name)
 /*!
  * \return the aspects owned by the aspect engine.
  */
-QVector<QAbstractAspect *> QAspectEngine::aspects() const
+QList<QAbstractAspect *> QAspectEngine::aspects() const
 {
     Q_D(const QAspectEngine);
     return d->m_aspects;
@@ -444,10 +444,10 @@ QNode *QAspectEngine::lookupNode(QNodeId id) const
     return d->m_scene ? d->m_scene->lookupNode(id) : nullptr;
 }
 
-QVector<QNode *> QAspectEngine::lookupNodes(const QVector<QNodeId> &ids) const
+QList<QNode *> QAspectEngine::lookupNodes(const QList<QNodeId> &ids) const
 {
     Q_D(const QAspectEngine);
-    return d->m_scene ? d->m_scene->lookupNodes(ids) : QVector<QNode *>{};
+    return d->m_scene ? d->m_scene->lookupNodes(ids) : QList<QNode *>{};
 }
 
 /*!
@@ -487,7 +487,7 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // deregister the nodes from the scene
     d->initNodeTree(root.data());
 
-    const QVector<QNode *> nodes = getNodesForCreation(root.data());
+    const QList<QNode *> nodes = getNodesForCreation(root.data());
 
     // Specify if the AspectManager should be driving the simulation loop or not
     d->m_aspectManager->setRunMode(d->m_runMode);

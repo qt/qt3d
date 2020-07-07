@@ -131,7 +131,7 @@ QString QAnimationGroup::name() const
 /*!
     Returns the list of animations in the group.
  */
-QVector<Qt3DAnimation::QAbstractAnimation *> QAnimationGroup::animationList()
+QList<Qt3DAnimation::QAbstractAnimation *> QAnimationGroup::animationList()
 {
     Q_D(QAnimationGroup);
     return d->m_animations;
@@ -161,7 +161,7 @@ void QAnimationGroup::setName(const QString &name)
 /*!
     Sets the \a animations to the group. Old animations are removed.
  */
-void QAnimationGroup::setAnimations(const QVector<Qt3DAnimation::QAbstractAnimation *> &animations)
+void QAnimationGroup::setAnimations(const QList<Qt3DAnimation::QAbstractAnimation *> &animations)
 {
     Q_D(QAnimationGroup);
     d->m_animations = animations;

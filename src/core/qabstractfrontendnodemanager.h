@@ -43,7 +43,7 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
 
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,7 +67,7 @@ public:
     virtual ~QAbstractFrontEndNodeManager();
 
     virtual QNode *lookupNode(QNodeId id) const = 0;
-    virtual QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const = 0;
+    virtual QList<QNode *> lookupNodes(const QList<QNodeId> &ids) const = 0;
 
 protected:
     QAbstractFrontEndNodeManager();

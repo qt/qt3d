@@ -117,7 +117,7 @@ QSpriteSheet::~QSpriteSheet()
 {
 }
 
-QVector<QSpriteSheetItem *> QSpriteSheet::sprites() const
+QList<QSpriteSheetItem *> QSpriteSheet::sprites() const
 {
     Q_D(const QSpriteSheet);
     return d->m_sprites;
@@ -160,7 +160,7 @@ void QSpriteSheet::removeSprite(QSpriteSheetItem *sprite)
     d->unregisterDestructionHelper(sprite);
 }
 
-void QSpriteSheet::setSprites(QVector<QSpriteSheetItem *> sprites)
+void QSpriteSheet::setSprites(QList<QSpriteSheetItem *> sprites)
 {
     Q_D(QSpriteSheet);
     d->m_sprites = sprites;

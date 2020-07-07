@@ -51,7 +51,7 @@ class QSortPolicyPrivate;
 class Q_3DRENDERSHARED_EXPORT QSortPolicy : public QFrameGraphNode
 {
     Q_OBJECT
-    Q_PROPERTY(QVector<int> sortTypes READ sortTypesInt WRITE setSortTypes NOTIFY sortTypesChanged)
+    Q_PROPERTY(QList<int> sortTypes READ sortTypesInt WRITE setSortTypes NOTIFY sortTypesChanged)
 public:
     explicit QSortPolicy(Qt3DCore::QNode *parent = nullptr);
     ~QSortPolicy();
@@ -66,16 +66,16 @@ public:
     };
     Q_ENUM(SortType) // LCOV_EXCL_LINE
 
-    QVector<SortType> sortTypes() const;
-    QVector<int> sortTypesInt() const;
+    QList<SortType> sortTypes() const;
+    QList<int> sortTypesInt() const;
 
 public Q_SLOTS:
-    void setSortTypes(const QVector<SortType> &sortTypes);
-    void setSortTypes(const QVector<int> &sortTypesInt);
+    void setSortTypes(const QList<SortType> &sortTypes);
+    void setSortTypes(const QList<int> &sortTypesInt);
 
 Q_SIGNALS:
-    void sortTypesChanged(const QVector<SortType> &sortTypes);
-    void sortTypesChanged(const QVector<int> &sortTypes);
+    void sortTypesChanged(const QList<SortType> &sortTypes);
+    void sortTypesChanged(const QList<int> &sortTypes);
 
 protected:
     explicit QSortPolicy(QSortPolicyPrivate &dd, Qt3DCore::QNode *parent = nullptr);

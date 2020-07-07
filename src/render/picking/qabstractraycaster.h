@@ -74,7 +74,7 @@ public:
     };
     Q_ENUM(FilterMode) // LOVC_EXLC_LINE
 
-    using Hits = QVector<QRayCasterHit>;
+    using Hits = QList<QRayCasterHit>;
 
     explicit QAbstractRayCaster(QNode *parent = nullptr);
     ~QAbstractRayCaster();
@@ -85,7 +85,7 @@ public:
 
     void addLayer(QLayer *layer);
     void removeLayer(QLayer *layer);
-    QVector<QLayer *> layers() const;
+    QList<QLayer *> layers() const;
 
 public Q_SLOTS:
     void setRunMode(RunMode runMode);

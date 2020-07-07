@@ -117,7 +117,7 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 /*!
     Returns a vector of the current keys for the filter.
  */
-QVector<QFilterKey *> QTechniqueFilter::matchAll() const
+QList<QFilterKey *> QTechniqueFilter::matchAll() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_matchList;
@@ -202,7 +202,7 @@ void QTechniqueFilter::removeParameter(QParameter *parameter)
 /*!
     Returns the current vector of parameters.
  */
-QVector<QParameter *> QTechniqueFilter::parameters() const
+QList<QParameter *> QTechniqueFilter::parameters() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_parameters;

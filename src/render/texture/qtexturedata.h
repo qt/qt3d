@@ -102,7 +102,7 @@ public:
     QAbstractTexture::ComparisonMode comparisonMode() const;
     void setComparisonMode(QAbstractTexture::ComparisonMode comparisonMode);
 
-    QVector<QTextureImageDataPtr> imageData() const;
+    QList<QTextureImageDataPtr> imageData() const;
     void addImageData(const QTextureImageDataPtr &imageData);
 
 private:

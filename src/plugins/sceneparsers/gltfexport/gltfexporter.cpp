@@ -132,7 +132,7 @@ inline QJsonArray col2jsvec(const QColor &color, bool alpha = false)
 }
 
 template <typename T>
-inline QJsonArray vec2jsvec(const QVector<T> &v)
+inline QJsonArray vec2jsvec(const QList<T> &v)
 {
     QJsonArray arr;
     for (int i = 0; i < v.count(); ++i)
@@ -477,7 +477,7 @@ void GLTFExporter::cacheDefaultProperties(GLTFExporter::PropertyCacheType type)
 
     // Cache metaproperties of supported types (but not their parent class types)
     const QMetaObject *meta = defaultObject->metaObject();
-    QVector<QMetaProperty> properties;
+    QList<QMetaProperty> properties;
     properties.reserve(meta->propertyCount() - meta->propertyOffset());
     for (int i = meta->propertyOffset(); i < meta->propertyCount(); ++i) {
         if (meta->property(i).isWritable())
@@ -660,7 +660,7 @@ void GLTFExporter::parseMaterials()
             // Default materials do not have separate effect, all effect parameters are stored as
             // material values.
             if (material->effect()) {
-                QVector<QParameter *> parameters = material->effect()->parameters();
+                QList<QParameter *> parameters = material->effect()->parameters();
                 for (auto param : parameters) {
                     if (param->value().type() == QVariant::Color) {
                         QColor color = param->value().value<QColor>();
@@ -799,7 +799,7 @@ void GLTFExporter::parseMeshes()
                 int index;
             };
 
-            QVector<VertexAttrib> vAttribs;
+            QList<VertexAttrib> vAttribs;
             vAttribs.reserve(meshGeometry->attributes().size());
 
             uint stride(0);
@@ -1012,7 +1012,7 @@ void GLTFExporter::parseCameras()
         // GLTF cameras point in -Z by default, the rest is in the
         // node matrix, so no separate look-at params given here, unless it's actually QCamera.
         QCamera *cameraEntity = nullptr;
-        const QVector<QEntity *> entities = camera->entities();
+        const QList<QEntity *> entities = camera->entities();
         if (entities.size() == 1)
             cameraEntity = qobject_cast<QCamera *>(entities.at(0));
         c.cameraEntity = cameraEntity;
@@ -1176,8 +1176,8 @@ bool GLTFExporter::saveScene()
 {
     qCDebug(GLTFExporterLog, "Saving scene...");
 
-    QVector<MeshInfo::BufferView> bvList;
-    QVector<MeshInfo::Accessor> accList;
+    QList<MeshInfo::BufferView> bvList;
+    QList<MeshInfo::Accessor> accList;
     for (auto it = m_meshInfo.begin(); it != m_meshInfo.end(); ++it) {
         auto &mi = it.value();
         for (auto &v : mi.views)
@@ -1663,7 +1663,7 @@ void GLTFExporter::exportMaterials(QJsonObject &materials)
         materialObj["name"] = matInfo.originalName;
 
         if (matInfo.type == MaterialInfo::TypeCustom) {
-            QVector<QParameter *> parameters = material->parameters();
+            QList<QParameter *> parameters = material->parameters();
             QJsonObject paramObj;
             for (auto param : parameters)
                 exportParameter(paramObj, param->name(), param->value());
@@ -1755,7 +1755,7 @@ void GLTFExporter::exportMaterials(QJsonObject &materials)
 void GLTFExporter::exportGenericProperties(QJsonObject &jsonObj, PropertyCacheType type,
                                            QObject *obj)
 {
-    QVector<QMetaProperty> properties = m_propertyCache.value(type);
+    QList<QMetaProperty> properties = m_propertyCache.value(type);
     QObject *defaultObject = m_defaultObjectCache.value(type);
     for (const QMetaProperty &property : properties) {
         // Only output property if it is different from default

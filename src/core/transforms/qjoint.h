@@ -80,7 +80,7 @@ public:
 
     void addChildJoint(QJoint *joint);
     void removeChildJoint(QJoint *joint);
-    QVector<QJoint *> childJoints() const;
+    QList<QJoint *> childJoints() const;
 
 public Q_SLOTS:
     void setScale(const QVector3D &scale);

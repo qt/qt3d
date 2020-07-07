@@ -51,7 +51,7 @@ namespace Qt3DCore {
 class QComponent;
 class QEntityPrivate;
 
-typedef QVector<QComponent*> QComponentVector;
+using QComponentVector = QList<QComponent*>;
 
 class Q_3DCORESHARED_EXPORT QEntity : public QNode
 {
@@ -63,9 +63,9 @@ public:
     QComponentVector components() const;
 
     template<class T>
-    QVector<T *> componentsOfType() const
+    QList<T *> componentsOfType() const
     {
-        QVector<T*> matchComponents;
+        QList<T*> matchComponents;
         const QComponentVector comps = this->components();
         for (QComponent *component : comps) {
             T *typedComponent = qobject_cast<T*>(component);

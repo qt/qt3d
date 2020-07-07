@@ -296,7 +296,7 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
     Returns the list of Qt3DRender::QFilterKey key objects making up the filter keys
     of the Qt3DRender::QRenderPass.
  */
-QVector<QFilterKey *> QRenderPass::filterKeys() const
+QList<QFilterKey *> QRenderPass::filterKeys() const
 {
     Q_D(const QRenderPass);
     return d->m_filterKeyList;
@@ -345,7 +345,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
     Returns the list of Qt3DRender::QRenderState state objects making up the render
     state of the Qt3DRender::QRenderPass.
  */
-QVector<QRenderState *> QRenderPass::renderStates() const
+QList<QRenderState *> QRenderPass::renderStates() const
 {
     Q_D(const QRenderPass);
     return d->m_renderStates;

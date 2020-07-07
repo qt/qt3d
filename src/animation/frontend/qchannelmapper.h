@@ -57,7 +57,7 @@ public:
 
     void addMapping(QAbstractChannelMapping *mapping);
     void removeMapping(QAbstractChannelMapping *mapping);
-    QVector<QAbstractChannelMapping *> mappings() const;
+    QList<QAbstractChannelMapping *> mappings() const;
 
 protected:
     explicit QChannelMapper(QChannelMapperPrivate &dd, Qt3DCore::QNode *parent = nullptr);

@@ -119,7 +119,7 @@ namespace Qt3DCore {
  */
 
 /*!
-    \fn template<typename T> QVector<T *> Qt3DCore::QEntity::componentsOfType() const
+    \fn template<typename T> QList<T *> Qt3DCore::QEntity::componentsOfType() const
 
     Returns all the components added to this entity that can be cast to
     type T or an empty vector if there are no such components.

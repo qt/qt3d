@@ -55,7 +55,7 @@ namespace Qt3DRender {
 
 class QParameter;
 class QRenderState;
-typedef QVector<QParameter*> ParameterList;
+using ParameterList = QList<QParameter *>;
 
 class QRenderPassPrivate;
 
@@ -72,15 +72,15 @@ public:
 
     void addFilterKey(QFilterKey *filterKey);
     void removeFilterKey(QFilterKey *filterKey);
-    QVector<QFilterKey*> filterKeys() const;
+    QList<QFilterKey *> filterKeys() const;
 
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);
-    QVector<QRenderState *> renderStates() const;
+    QList<QRenderState *> renderStates() const;
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
-    QVector<QParameter *> parameters() const;
+    QList<QParameter *> parameters() const;
 
 public Q_SLOTS:
     void setShaderProgram(QShaderProgram *shaderProgram);

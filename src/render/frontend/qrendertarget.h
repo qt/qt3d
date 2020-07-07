@@ -59,7 +59,7 @@ public:
 
     void addOutput(QRenderTargetOutput *output);
     void removeOutput(QRenderTargetOutput *output);
-    QVector<QRenderTargetOutput *> outputs() const;
+    QList<QRenderTargetOutput *> outputs() const;
 
 protected:
     explicit QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = nullptr);

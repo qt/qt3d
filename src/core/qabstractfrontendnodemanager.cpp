@@ -55,7 +55,7 @@ Returns the node instance matching the id, or nullptr if not found.
 */
 
 /*
-\fn QVector<QNode *> Qt3DCore::QAbstractFrontEndNodeManager::lookupNodes(const QVector<QNodeId> &ids) const
+\fn QList<QNode *> Qt3DCore::QAbstractFrontEndNodeManager::lookupNodes(const QList<QNodeId> &ids) const
 
 Returns the vector of node instance matching the ids.
 

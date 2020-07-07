@@ -60,11 +60,11 @@ public:
 
     void addAction(QAction *action);
     void removeAction(QAction *action);
-    QVector<QAction *> actions() const;
+    QList<QAction *> actions() const;
 
     void addAxis(QAxis *axis);
     void removeAxis(QAxis *axis);
-    QVector<QAxis *> axes() const;
+    QList<QAxis *> axes() const;
 
 private:
     Q_DECLARE_PRIVATE(QLogicalDevice)

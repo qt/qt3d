@@ -141,7 +141,7 @@ void QAction::removeInput(QAbstractActionInput *input)
 /*!
     Returns the list of inputs that can trigger this action.
  */
-QVector<QAbstractActionInput *> QAction::inputs() const
+QList<QAbstractActionInput *> QAction::inputs() const
 {
     Q_D(const QAction);
     return d->m_inputs;

@@ -66,7 +66,7 @@ public:
 
     void addSequence(QAbstractActionInput *input);
     void removeSequence(QAbstractActionInput *input);
-    QVector<QAbstractActionInput *> sequences() const;
+    QList<QAbstractActionInput *> sequences() const;
 
 public Q_SLOTS:
     void setTimeout(int timeout);

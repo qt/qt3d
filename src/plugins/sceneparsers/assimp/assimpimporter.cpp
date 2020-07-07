@@ -472,7 +472,7 @@ Qt3DCore::QEntity *AssimpImporter::node(const QString &id)
 }
 
 template <typename T>
-void findAnimationsForNode(QVector<T *> &animations, QVector<T *> &result, const QString &name)
+void findAnimationsForNode(QList<T *> &animations, QList<T *> &result, const QString &name)
 {
     for (T *anim : animations) {
         if (anim->targetName() == name) {
@@ -505,7 +505,7 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
         if (morphingAnimations.size() > 0) {
             material = new Qt3DExtras::QMorphPhongMaterial(entityNode);
 
-            QVector<Qt3DAnimation::QMorphingAnimation *> animations;
+            QList<Qt3DAnimation::QMorphingAnimation *> animations;
             findAnimationsForNode<Qt3DAnimation::QMorphingAnimation>(m_scene->m_morphAnimations,
                                                                   animations,
                                                                   aiStringToQString(node->mName));
@@ -562,7 +562,7 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
     transform->setMatrix(qTransformMatrix);
     entityNode->addComponent(transform);
 
-    QVector<Qt3DAnimation::QKeyframeAnimation *> animations;
+    QList<Qt3DAnimation::QKeyframeAnimation *> animations;
     findAnimationsForNode<Qt3DAnimation::QKeyframeAnimation>(m_scene->m_animations,
                                                           animations,
                                                           aiStringToQString(node->mName));
@@ -844,8 +844,8 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
 
         Qt3DAnimation::QMorphingAnimation *morphingAnimation
                 = new Qt3DAnimation::QMorphingAnimation(geometryRenderer);
-        QVector<QString> names;
-        QVector<Qt3DAnimation::QMorphTarget *> targets;
+        QList<QString> names;
+        QList<Qt3DAnimation::QMorphTarget *> targets;
         uint voff = 0;
         uint noff = 0;
         uint tanoff = 0;
@@ -887,7 +887,7 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
             aiAnimMesh *animesh = mesh->mAnimMeshes[i];
             Qt3DAnimation::QMorphTarget *target = new Qt3DAnimation::QMorphTarget(geometryRenderer);
             targets.push_back(target);
-            QVector<QAttribute *> attributes;
+            QList<QAttribute *> attributes;
             QByteArray targetBufferArray;
             targetBufferArray.resize(clumpSize * mesh->mNumVertices * sizeof(float));
             float *dst = reinterpret_cast<float *>(targetBufferArray.data());
@@ -1049,7 +1049,7 @@ Qt3DCore::QEntity *AssimpImporter::loadCamera(aiNode *node)
     return camera;
 }
 
-int findTimeIndex(const QVector<float> &times, float time) {
+int findTimeIndex(const QList<float> &times, float time) {
     for (int i = 0; i < times.size(); i++) {
         if (qFuzzyCompare(times[i], time))
             return i;
@@ -1057,7 +1057,7 @@ int findTimeIndex(const QVector<float> &times, float time) {
     return -1;
 }
 
-void insertAtTime(QVector<float> &positions, QVector<Qt3DCore::QTransform *> &tranforms,
+void insertAtTime(QList<float> &positions, QList<Qt3DCore::QTransform *> &tranforms,
                   Qt3DCore::QTransform *t, float time)
 {
     if (positions.size() == 0) {
@@ -1089,8 +1089,8 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         aiNode *targetNode = m_scene->m_aiScene->mRootNode->FindNode(nodeAnim->mNodeName);
 
         Qt3DAnimation::QKeyframeAnimation *kfa = new Qt3DAnimation::QKeyframeAnimation();
-        QVector<float> positions;
-        QVector<Qt3DCore::QTransform*> transforms;
+        QList<float> positions;
+        QList<Qt3DCore::QTransform *> transforms;
         if ((nodeAnim->mNumPositionKeys > 1)
                 || !(nodeAnim->mNumPositionKeys == 1 && nodeAnim->mPositionKeys[0].mValue.x == 0
                     && nodeAnim->mPositionKeys[0].mValue.y == 0
@@ -1162,7 +1162,7 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         aiMesh *mesh = m_scene->m_aiScene->mMeshes[targetNode->mMeshes[0]];
 
         Qt3DAnimation::QMorphingAnimation *morphingAnimation = new Qt3DAnimation::QMorphingAnimation;
-        QVector<float> positions;
+        QList<float> positions;
         positions.resize(morphAnim->mNumKeys);
         // set so that weights array is allocated to correct size in morphingAnimation
         morphingAnimation->setTargetPositions(positions);
@@ -1170,7 +1170,7 @@ void AssimpImporter::loadAnimation(uint animationIndex)
             aiMeshMorphKey &key = morphAnim->mKeys[j];
             positions[j] = key.mTime * tickScale;
 
-            QVector<float> weights;
+            QList<float> weights;
             weights.resize(key.mNumValuesAndWeights);
             for (int k = 0; k < weights.size(); k++) {
                 const unsigned int value = key.mValues[k];

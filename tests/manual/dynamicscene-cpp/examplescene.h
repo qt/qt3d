@@ -72,7 +72,7 @@ private Q_SLOTS:
     void buildScene();
 
 private:
-    QVector<BoxEntity *> m_entities;
+    QList<BoxEntity *> m_entities;
     QTimer *m_timer;
     bool m_even;
 };

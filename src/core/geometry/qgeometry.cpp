@@ -279,7 +279,7 @@ QVector3D QGeometry::maxExtent() const
 /*!
     Returns the list of attributes in this geometry.
  */
-QVector<QAttribute *> QGeometry::attributes() const
+QList<QAttribute *> QGeometry::attributes() const
 {
     Q_D(const QGeometry);
     return d->m_attributes;

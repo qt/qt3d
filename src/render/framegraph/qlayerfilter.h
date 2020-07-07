@@ -69,7 +69,7 @@ public:
 
     void addLayer(QLayer *layer);
     void removeLayer(QLayer *layer);
-    QVector<QLayer *> layers() const;
+    QList<QLayer *> layers() const;
 
     FilterMode filterMode() const;
     void setFilterMode(FilterMode filterMode);

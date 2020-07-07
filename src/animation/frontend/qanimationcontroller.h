@@ -62,7 +62,7 @@ class Q_3DANIMATIONSHARED_EXPORT QAnimationController : public QObject
 public:
     QAnimationController(QObject *parent = nullptr);
 
-    QVector<Qt3DAnimation::QAnimationGroup *> animationGroupList();
+    QList<Qt3DAnimation::QAnimationGroup *> animationGroupList();
 
     int activeAnimationGroup() const;
     float position() const;
@@ -71,7 +71,7 @@ public:
     Qt3DCore::QEntity *entity() const;
     bool recursive() const;
 
-    void setAnimationGroups(const QVector<Qt3DAnimation::QAnimationGroup *> &animationGroups);
+    void setAnimationGroups(const QList<Qt3DAnimation::QAnimationGroup *> &animationGroups);
     void addAnimationGroup(Qt3DAnimation::QAnimationGroup *animationGroups);
     void removeAnimationGroup(Qt3DAnimation::QAnimationGroup *animationGroups);
 

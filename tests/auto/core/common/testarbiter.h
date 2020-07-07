@@ -51,8 +51,8 @@ public:
             setArbiterOnNode(n);
     }
 
-    QVector<Qt3DCore::QNode *> dirtyNodes() const { return m_dirtyFrontEndNodes; }
-    QVector<Qt3DCore::ComponentRelationshipChange> dirtyComponents() const { return m_dirtyEntityComponentNodeChanges; }
+    QList<Qt3DCore::QNode *> dirtyNodes() const { return m_dirtyFrontEndNodes; }
+    QList<Qt3DCore::ComponentRelationshipChange> dirtyComponents() const { return m_dirtyEntityComponentNodeChanges; }
 
     void clear()
     {

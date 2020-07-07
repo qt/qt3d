@@ -60,7 +60,7 @@ PointLightBlock::~PointLightBlock()
 {
 }
 
-QVector<Qt3DRender::QAbstractLight *> PointLightBlock::lights() const
+QList<Qt3DRender::QAbstractLight *> PointLightBlock::lights() const
 {
     return m_lights;
 }

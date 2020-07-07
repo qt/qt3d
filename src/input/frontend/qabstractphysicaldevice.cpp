@@ -184,7 +184,7 @@ void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 /*!
     Returns the axisSettings associated with this device.
  */
-QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
+QList<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
 {
     Q_D(const QAbstractPhysicalDevice);
     return d->m_axisSettings;

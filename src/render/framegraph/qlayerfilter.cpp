@@ -223,7 +223,7 @@ void QLayerFilter::removeLayer(QLayer *layer)
 /*!
     \return the current list of layers
  */
-QVector<QLayer *> QLayerFilter::layers() const
+QList<QLayer *> QLayerFilter::layers() const
 {
     Q_D(const QLayerFilter);
     return d->m_layers;

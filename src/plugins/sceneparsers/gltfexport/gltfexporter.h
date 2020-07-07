@@ -118,7 +118,7 @@ private:
             uint componentType;
             uint target;
         };
-        QVector<BufferView> views;
+        QList<BufferView> views;
         struct Accessor {
             Accessor() : offset(0), stride(0), count(0), componentType(0) { }
             QString name;
@@ -130,7 +130,7 @@ private:
             uint componentType;
             QString type;
         };
-        QVector<Accessor> accessors;
+        QList<Accessor> accessors;
         QString name; // generated
         QString originalName; // may be empty
         QString materialName;
@@ -161,8 +161,8 @@ private:
         QHash<QString, QColor> colors;
         QHash<QString, QString> textures;
         QHash<QString, QVariant> values;
-        QVector<int> blendArguments;
-        QVector<int> blendEquations;
+        QList<int> blendArguments;
+        QList<int> blendEquations;
     };
 
     struct ProgramInfo {
@@ -214,7 +214,7 @@ private:
     struct Node {
         QString name;
         QString uniqueName; // generated
-        QVector<Node *> children;
+        QList<Node *> children;
     };
 
     void cacheDefaultProperties(PropertyCacheType type);
@@ -293,14 +293,14 @@ private:
     QHash<Qt3DRender::QEffect *, QString> m_effectIdMap;
     QHash<Qt3DRender::QTechnique *, QString> m_techniqueIdMap;
     QHash<PropertyCacheType, QObject *> m_defaultObjectCache;
-    QHash<PropertyCacheType, QVector<QMetaProperty> > m_propertyCache;
+    QHash<PropertyCacheType, QList<QMetaProperty>> m_propertyCache;
 
     QHash<Qt3DRender::QGeometryRenderer *, MeshInfo> m_meshInfo;
     QHash<Qt3DRender::QMaterial *, MaterialInfo> m_materialInfo;
     QHash<Qt3DRender::QCameraLens *, CameraInfo> m_cameraInfo;
     QHash<Qt3DRender::QAbstractLight *, LightInfo> m_lightInfo;
     QHash<Qt3DRender::QShaderProgram *, ProgramInfo> m_programInfo;
-    QVector<ShaderInfo> m_shaderInfo;
+    QList<ShaderInfo> m_shaderInfo;
 
     Node *m_rootNode;
     bool m_rootNodeEmpty;

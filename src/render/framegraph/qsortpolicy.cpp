@@ -152,21 +152,21 @@ QSortPolicy::QSortPolicy(QSortPolicyPrivate &dd, QNode *parent)
 /*!
     \return the current sort types in use
  */
-QVector<QSortPolicy::SortType> QSortPolicy::sortTypes() const
+QList<QSortPolicy::SortType> QSortPolicy::sortTypes() const
 {
     Q_D(const QSortPolicy);
     return d->m_sortTypes;
 }
 
-QVector<int> QSortPolicy::sortTypesInt() const
+QList<int> QSortPolicy::sortTypesInt() const
 {
     Q_D(const QSortPolicy);
-    QVector<int> sortTypesInt;
+    QList<int> sortTypesInt;
     transformVector(d->m_sortTypes, sortTypesInt);
     return sortTypesInt;
 }
 
-void QSortPolicy::setSortTypes(const QVector<SortType> &sortTypes)
+void QSortPolicy::setSortTypes(const QList<SortType> &sortTypes)
 {
     Q_D(QSortPolicy);
     if (sortTypes != d->m_sortTypes) {
@@ -179,9 +179,9 @@ void QSortPolicy::setSortTypes(const QVector<SortType> &sortTypes)
     }
 }
 
-void QSortPolicy::setSortTypes(const QVector<int> &sortTypesInt)
+void QSortPolicy::setSortTypes(const QList<int> &sortTypesInt)
 {
-    QVector<SortType> sortTypes;
+    QList<SortType> sortTypes;
     transformVector(sortTypesInt, sortTypes);
     setSortTypes(sortTypes);
 }

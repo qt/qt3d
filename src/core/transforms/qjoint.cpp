@@ -373,7 +373,7 @@ void QJoint::removeChildJoint(QJoint *joint)
 /*!
     The vector of joints this joint has as children.
 */
-QVector<QJoint *> QJoint::childJoints() const
+QList<QJoint *> QJoint::childJoints() const
 {
     Q_D(const QJoint);
     return d->m_childJoints;

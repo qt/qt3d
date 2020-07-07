@@ -42,8 +42,8 @@
 
 #include <Qt3DExtras/qabstractspritesheet.h>
 #include <Qt3DExtras/qspritesheetitem.h>
+#include <QtCore/QList>
 #include <QtCore/QRect>
-#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,21 +54,21 @@ class QSpriteSheetPrivate;
 class Q_3DEXTRASSHARED_EXPORT QSpriteSheet : public QAbstractSpriteSheet
 {
     Q_OBJECT
-    Q_PROPERTY(QVector<QSpriteSheetItem *> sprites READ sprites WRITE setSprites NOTIFY spritesChanged)
+    Q_PROPERTY(QList<QSpriteSheetItem *> sprites READ sprites WRITE setSprites NOTIFY spritesChanged)
 public:
     explicit QSpriteSheet(Qt3DCore::QNode *parent = nullptr);
     ~QSpriteSheet();
 
-    QVector<QSpriteSheetItem *> sprites() const;
+    QList<QSpriteSheetItem *> sprites() const;
     QSpriteSheetItem *addSprite(int x, int y, int width, int height);
     void addSprite(QSpriteSheetItem *sprite);
     void removeSprite(QSpriteSheetItem *sprite);
 
 public Q_SLOTS:
-    void setSprites(QVector<QSpriteSheetItem *> sprites);
+    void setSprites(QList<QSpriteSheetItem *> sprites);
 
 Q_SIGNALS:
-    void spritesChanged(QVector<QSpriteSheetItem *> sprites);
+    void spritesChanged(QList<QSpriteSheetItem *> sprites);
 
 private:
     Q_DECLARE_PRIVATE(QSpriteSheet)

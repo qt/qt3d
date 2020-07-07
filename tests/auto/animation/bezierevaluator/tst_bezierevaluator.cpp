@@ -29,7 +29,7 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/bezierevaluator_p.h>
 #include <Qt3DAnimation/private/keyframe_p.h>
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 #include <cmath>
 

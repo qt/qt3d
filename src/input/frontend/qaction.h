@@ -62,7 +62,7 @@ public:
 
     void addInput(QAbstractActionInput *input);
     void removeInput(QAbstractActionInput *input);
-    QVector<QAbstractActionInput *> inputs() const;
+    QList<QAbstractActionInput *> inputs() const;
 
 Q_SIGNALS:
     void activeChanged(bool isActive);

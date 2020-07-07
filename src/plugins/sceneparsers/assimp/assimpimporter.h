@@ -58,8 +58,8 @@
 #include <assimp/DefaultLogger.hpp>
 
 #include <QtCore/QDir>
+#include <QtCore/QList>
 #include <QtCore/QLoggingCategory>
-#include <QtCore/QVector>
 
 #include "assimphelpers.h"
 
@@ -139,8 +139,8 @@ private:
         mutable const aiScene *m_aiScene;
 
         QHash<aiTextureType, QString> m_textureToParameterName;
-        QVector<Qt3DAnimation::QKeyframeAnimation *> m_animations;
-        QVector<Qt3DAnimation::QMorphingAnimation *> m_morphAnimations;
+        QList<Qt3DAnimation::QKeyframeAnimation *> m_animations;
+        QList<Qt3DAnimation::QMorphingAnimation *> m_morphAnimations;
     };
 
     QDir     m_sceneDir;

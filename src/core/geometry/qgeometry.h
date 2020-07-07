@@ -60,7 +60,7 @@ public:
     explicit QGeometry(Qt3DCore::QNode *parent = nullptr);
     ~QGeometry();
 
-    QVector<QAttribute *> attributes() const;
+    QList<QAttribute *> attributes() const;
     Q_INVOKABLE void addAttribute(Qt3DCore::QAttribute *attribute);
     Q_INVOKABLE void removeAttribute(Qt3DCore::QAttribute *attribute);
 

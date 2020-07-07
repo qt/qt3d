@@ -100,7 +100,7 @@ private:
 };
 QT3D_DECLARE_TYPEINFO(Qt3DCore, QNodeId, Q_PRIMITIVE_TYPE)
 
-typedef QVector<QNodeId> QNodeIdVector;
+using QNodeIdVector = QList<QNodeId>;
 
 #ifndef QT_NO_DEBUG_STREAM
 Q_3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);

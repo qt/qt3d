@@ -61,7 +61,7 @@ public:
 
     bool isShareable() const;
 
-    QVector<QEntity *> entities() const;
+    QList<QEntity *> entities() const;
 
 public Q_SLOTS:
     void setShareable(bool isShareable);

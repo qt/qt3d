@@ -149,7 +149,7 @@ void QAxis::removeInput(QAbstractAxisInput *input)
 
     \return vector of all inputs added to the axis.
  */
-QVector<QAbstractAxisInput *> QAxis::inputs() const
+QList<QAbstractAxisInput *> QAxis::inputs() const
 {
     Q_D(const QAxis);
     return d->m_inputs;

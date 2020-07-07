@@ -105,7 +105,7 @@ QActionInput::~QActionInput()
 
     Holds the buttons that can trigger this Action.
  */
-QVector<int> QActionInput::buttons() const
+QList<int> QActionInput::buttons() const
 {
     Q_D(const QActionInput);
     return d->m_buttons;
@@ -165,7 +165,7 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 }
 
 /*!
-  \fn Qt3DInput::QActionInput::buttonsChanged(const QVector<int> &buttons)
+  \fn Qt3DInput::QActionInput::buttonsChanged(const QList<int> &buttons)
 
   This signal is emitted when the buttons associated with the action input is changed.
   The buttons changed are \a buttons
@@ -178,7 +178,7 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 */
 
 /*!
-    \qmlsignal Qt3D.Input::ActionInput::buttonsChanged(const QVector<int> &buttons)
+    \qmlsignal Qt3D.Input::ActionInput::buttonsChanged(const QList<int> &buttons)
 
     This signal is emitted when the \a buttons associated with the action input is changed.
 
@@ -188,7 +188,7 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 /*!
     Set the buttons to trigger the QActionInput instance to \a buttons.
  */
-void QActionInput::setButtons(const QVector<int> &buttons)
+void QActionInput::setButtons(const QList<int> &buttons)
 {
     Q_D(QActionInput);
     if (buttons != d->m_buttons) {

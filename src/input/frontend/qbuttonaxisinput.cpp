@@ -123,7 +123,7 @@ float QButtonAxisInput::scale() const
     \property QButtonAxisInput::buttons
     Specifies the buttons which control the axis
  */
-void QButtonAxisInput::setButtons(const QVector<int> &buttons)
+void QButtonAxisInput::setButtons(const QList<int> &buttons)
 {
     Q_D(QButtonAxisInput);
     if (buttons != d->m_buttons) {
@@ -132,7 +132,7 @@ void QButtonAxisInput::setButtons(const QVector<int> &buttons)
     }
 }
 
-QVector<int> QButtonAxisInput::buttons() const
+QList<int> QButtonAxisInput::buttons() const
 {
     Q_D(const QButtonAxisInput);
     return d->m_buttons;

@@ -229,7 +229,7 @@ QAnimationController::QAnimationController(QObject *parent)
 /*!
     Returns the list of animation groups the conroller is currently holding.
  */
-QVector<QAnimationGroup *> QAnimationController::animationGroupList()
+QList<QAnimationGroup *> QAnimationController::animationGroupList()
 {
     Q_D(QAnimationController);
     return d->m_animationGroups;
@@ -274,7 +274,7 @@ bool QAnimationController::recursive() const
 /*!
     Sets the \a animationGroups for the controller. Old groups are cleared.
  */
-void QAnimationController::setAnimationGroups(const QVector<Qt3DAnimation::QAnimationGroup *> &animationGroups)
+void QAnimationController::setAnimationGroups(const QList<Qt3DAnimation::QAnimationGroup *> &animationGroups)
 {
     Q_D(QAnimationController);
     d->m_animationGroups = animationGroups;

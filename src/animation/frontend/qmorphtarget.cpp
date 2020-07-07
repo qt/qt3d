@@ -115,7 +115,7 @@ QMorphTarget::QMorphTarget(QObject *parent)
 /*!
     Returns a list of attributes contained in the morph target.
 */
-QVector<Qt3DCore::QAttribute *> QMorphTarget::attributeList() const
+QList<Qt3DCore::QAttribute *> QMorphTarget::attributeList() const
 {
     Q_D(const QMorphTarget);
     return d->m_targetAttributes;
@@ -130,7 +130,7 @@ QStringList QMorphTarget::attributeNames() const
 /*!
     Sets \a attributes to the morph target. Old attributes are cleared.
 */
-void QMorphTarget::setAttributes(const QVector<Qt3DCore::QAttribute *> &attributes)
+void QMorphTarget::setAttributes(const QList<Qt3DCore::QAttribute *> &attributes)
 {
     Q_D(QMorphTarget);
     d->m_targetAttributes = attributes;

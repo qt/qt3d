@@ -355,7 +355,7 @@ void QAbstractRayCaster::removeLayer(QLayer *layer)
 /*!
     \return the current list of layers
  */
-QVector<QLayer *> QAbstractRayCaster::layers() const
+QList<QLayer *> QAbstractRayCaster::layers() const
 {
     Q_D(const QAbstractRayCaster);
     return d->m_layers;

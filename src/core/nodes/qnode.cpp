@@ -383,7 +383,7 @@ void QNodePrivate::setSceneHelper(QNode *root)
 
     // We also need to handle QEntity <-> QComponent relationships
     if (QComponent *c = qobject_cast<QComponent *>(root)) {
-        const QVector<QEntity *> entities = c->entities();
+        const QList<QEntity *> entities = c->entities();
         for (QEntity *entity : entities) {
             if (!m_scene->hasEntityForComponent(c->id(), entity->id())) {
                 if (!c->isShareable() && !m_scene->entitiesForComponent(c->id()).isEmpty())
@@ -406,7 +406,7 @@ void QNodePrivate::unsetSceneHelper(QNode *node)
 
     // We also need to handle QEntity <-> QComponent relationships removal
     if (QComponent *c = qobject_cast<QComponent *>(node)) {
-        const QVector<QEntity *> entities = c->entities();
+        const QList<QEntity *> entities = c->entities();
         for (QEntity *entity : entities) {
             if (nodePrivate->m_scene)
                 nodePrivate->m_scene->removeEntityForComponent(c->id(), entity->id());

@@ -158,9 +158,9 @@ void QComponent::setShareable(bool shareable)
 }
 
 /*!
-    Returns a QVector containing all the entities that reference this component.
+    Returns a QList containing all the entities that reference this component.
 */
-QVector<QEntity *> QComponent::entities() const
+QList<QEntity *> QComponent::entities() const
 {
     Q_D(const QComponent);
     return d->m_entities;

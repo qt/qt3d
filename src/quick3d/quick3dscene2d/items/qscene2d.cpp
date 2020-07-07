@@ -289,7 +289,7 @@ bool QScene2D::isMouseEnabled() const
 /*!
     Retrieve entities associated with the QScene2D.
  */
-QVector<Qt3DCore::QEntity*> QScene2D::entities() const
+QList<Qt3DCore::QEntity *> QScene2D::entities() const
 {
     Q_D(const QScene2D);
     return d->m_entities;

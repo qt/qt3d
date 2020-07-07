@@ -178,7 +178,7 @@ QKeyframeAnimation::QKeyframeAnimation(QObject *parent)
 }
 
 
-void QKeyframeAnimation::setFramePositions(const QVector<float> &positions)
+void QKeyframeAnimation::setFramePositions(const QList<float> &positions)
 {
     Q_D(QKeyframeAnimation);
     d->m_framePositions = positions;
@@ -201,7 +201,7 @@ void QKeyframeAnimation::setFramePositions(const QVector<float> &positions)
 /*!
     Sets the \a keyframes of the animation. Old keyframes are cleared.
  */
-void QKeyframeAnimation::setKeyframes(const QVector<Qt3DCore::QTransform *> &keyframes)
+void QKeyframeAnimation::setKeyframes(const QList<Qt3DCore::QTransform *> &keyframes)
 {
     Q_D(QKeyframeAnimation);
     d->m_keyframes = keyframes;
@@ -293,7 +293,7 @@ void QKeyframeAnimation::updateAnimation(float position)
     d->calculateFrame(position);
 }
 
-QVector<float> QKeyframeAnimation::framePositions() const
+QList<float> QKeyframeAnimation::framePositions() const
 {
     Q_D(const QKeyframeAnimation);
     return d->m_framePositions;
@@ -302,7 +302,7 @@ QVector<float> QKeyframeAnimation::framePositions() const
 /*!
     Returns the list of keyframes.
  */
-QVector<Qt3DCore::QTransform *> QKeyframeAnimation::keyframeList() const
+QList<Qt3DCore::QTransform *> QKeyframeAnimation::keyframeList() const
 {
     Q_D(const QKeyframeAnimation);
     return d->m_keyframes;

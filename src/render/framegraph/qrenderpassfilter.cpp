@@ -112,7 +112,7 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 /*!
     Returns a vector of the current keys for the filter.
  */
-QVector<QFilterKey *> QRenderPassFilter::matchAny() const
+QList<QFilterKey *> QRenderPassFilter::matchAny() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_matchList;
@@ -199,7 +199,7 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
 /*!
     Returns the current vector of parameters.
  */
-QVector<QParameter *> QRenderPassFilter::parameters() const
+QList<QParameter *> QRenderPassFilter::parameters() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_parameters;

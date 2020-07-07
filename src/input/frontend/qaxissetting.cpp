@@ -90,7 +90,7 @@ QAxisSetting::~QAxisSetting()
  * \brief QAxisSetting::axes
  * \return the current list of Axis these settings apply to.
  */
-QVector<int> QAxisSetting::axes() const
+QList<int> QAxisSetting::axes() const
 {
     Q_D(const QAxisSetting);
     return d->m_axes;
@@ -159,7 +159,7 @@ void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
 }
 
 /*!
-  \fn Qt3DInput::QAxisSetting::axesChanged(const QVector<int> &axes)
+  \fn Qt3DInput::QAxisSetting::axesChanged(const QList<int> &axes)
 
   This signal is emitted when the axes associated with the axis setting is changed to \a axes.
 */
@@ -181,7 +181,7 @@ void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
 /*!
     Set the current axes of the QAxisSetting instance to \a axes.
  */
-void QAxisSetting::setAxes(const QVector<int> &axes)
+void QAxisSetting::setAxes(const QList<int> &axes)
 {
     Q_D(QAxisSetting);
     if (d->m_axes == axes)

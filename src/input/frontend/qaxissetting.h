@@ -42,7 +42,7 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ class Q_3DINPUTSHARED_EXPORT QAxisSetting : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(float deadZoneRadius READ deadZoneRadius WRITE setDeadZoneRadius NOTIFY deadZoneRadiusChanged)
-    Q_PROPERTY(QVector<int> axes READ axes WRITE setAxes NOTIFY axesChanged)
+    Q_PROPERTY(QList<int> axes READ axes WRITE setAxes NOTIFY axesChanged)
     Q_PROPERTY(bool smooth READ isSmoothEnabled WRITE setSmoothEnabled NOTIFY smoothChanged)
 
 public:
@@ -62,17 +62,17 @@ public:
     ~QAxisSetting();
 
     float deadZoneRadius() const;
-    QVector<int> axes() const;
+    QList<int> axes() const;
     bool isSmoothEnabled() const;
 
 public Q_SLOTS:
     void setDeadZoneRadius(float deadZoneRadius);
-    void setAxes(const QVector<int> &axes);
+    void setAxes(const QList<int> &axes);
     void setSmoothEnabled(bool enabled);
 
 Q_SIGNALS:
     void deadZoneRadiusChanged(float deadZoneRadius);
-    void axesChanged(const QVector<int> &axes);
+    void axesChanged(const QList<int> &axes);
     void smoothChanged(bool smooth);
 
 private:

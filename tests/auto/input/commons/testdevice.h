@@ -119,9 +119,9 @@ public:
         return device;
     }
 
-    QVector<Qt3DCore::QNodeId> physicalDevices() const final
+    QList<Qt3DCore::QNodeId> physicalDevices() const final
     {
-        QVector<Qt3DCore::QNodeId> ids;
+        QList<Qt3DCore::QNodeId> ids;
         std::transform(m_devices.constBegin(), m_devices.constEnd(),
                        std::back_inserter(ids),
                        [] (TestDevice *device) { return device->id(); });
@@ -151,8 +151,8 @@ private:
     void onInitialize() final {}
 
     QScopedPointer<Qt3DCore::QNode> m_devicesParent;
-    QVector<TestDevice*> m_devices;
-    QVector<TestDeviceBackendNode*> m_deviceBackendNodes;
+    QList<TestDevice *> m_devices;
+    QList<TestDeviceBackendNode *> m_deviceBackendNodes;
 };
 
 #endif // TESTDEVICE_H

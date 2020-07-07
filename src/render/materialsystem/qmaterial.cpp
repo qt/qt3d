@@ -291,7 +291,7 @@ void QMaterial::removeParameter(QParameter *parameter)
 /*!
  * Returns a vector of the material's current parameters
  */
-QVector<QParameter *> QMaterial::parameters() const
+QList<QParameter *> QMaterial::parameters() const
 {
     Q_D(const QMaterial);
     return d->m_parameters;

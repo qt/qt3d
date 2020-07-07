@@ -231,7 +231,7 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
 /*!
     Returns the QInputSequence's sequence vector.
  */
-QVector<QAbstractActionInput *> QInputSequence::sequences() const
+QList<QAbstractActionInput *> QInputSequence::sequences() const
 {
     Q_D(const QInputSequence);
     return d->m_sequences;

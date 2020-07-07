@@ -43,11 +43,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
+QList<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
 {
     using namespace Qt3DCore;
 
-    QVector<QNode *> nodes;
+    QList<QNode *> nodes;
     Qt3DCore::QNodeVisitor visitor;
     visitor.traverse(root, [&nodes](QNode *node) {
         nodes.append(node);
@@ -74,7 +74,7 @@ TestAspect::TestAspect(Qt3DCore::QNode *root)
     Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
     QRenderAspect::onRegistered();
 
-    const QVector<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
+    const QList<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
 
     for (Qt3DCore::QNode *node : nodes)
         d_func()->createBackendNode({

@@ -37,8 +37,8 @@
 #ifndef QT3DANIMATION_QABSTRACTANIMATION_H
 #define QT3DANIMATION_QABSTRACTANIMATION_H
 
+#include <QtCore/qlist.h>
 #include <QtCore/qobject.h>
-#include <QtCore/qvector.h>
 
 #include <Qt3DAnimation/qt3danimation_global.h>
 

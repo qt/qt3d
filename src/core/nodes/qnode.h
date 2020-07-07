@@ -58,8 +58,8 @@ class QAspectEngine;
 class QBackendNodeTester;
 #endif
 
-typedef QVector<QNode *> QNodeVector;
-typedef QSharedPointer<QNode> QNodePtr;
+using QNodeVector = QList<QNode *>;
+using QNodePtr = QSharedPointer<QNode>;
 
 class Q_3DCORESHARED_EXPORT QNode : public QObject
 {

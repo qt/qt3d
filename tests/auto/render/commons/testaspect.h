@@ -74,8 +74,8 @@ public:
             });
     }
     Qt3DCore::QNode *lookupNode(Qt3DCore::QNodeId id) const override { return  m_frontEndNodes.value(id, nullptr); }
-    QVector<Qt3DCore::QNode *> lookupNodes(const QVector<Qt3DCore::QNodeId> &ids) const override {
-        QVector<Qt3DCore::QNode *> res;
+    QList<Qt3DCore::QNode *> lookupNodes(const QList<Qt3DCore::QNodeId> &ids) const override {
+        QList<Qt3DCore::QNode *> res;
         for (const auto &id: ids) {
             auto node = m_frontEndNodes.value(id, nullptr);
             if (node)

@@ -43,8 +43,8 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qabstractfrontendnodemanager.h>
 #include <Qt3DCore/qnodeid.h>
+#include <QtCore/QList>
 #include <QtCore/QObject>
-#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,7 +82,7 @@ public:
     void unregisterAspect(QAbstractAspect *aspect);
     void unregisterAspect(const QString &name);
 
-    QVector<QAbstractAspect*> aspects() const;
+    QList<QAbstractAspect*> aspects() const;
     QAbstractAspect *aspect(const QString &name) const;
 
     QVariant executeCommand(const QString &command);
@@ -90,7 +90,7 @@ public:
     void processFrame();
 
     QNode *lookupNode(QNodeId id) const override;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const override;
+    QList<QNode *> lookupNodes(const QList<QNodeId> &ids) const override;
 
 private:
     Q_DECLARE_PRIVATE(QAspectEngine)

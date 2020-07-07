@@ -146,7 +146,7 @@ QRenderTarget *QRenderTargetSelector::target() const
     \note At render time, if no draw buffer has been specified, the renderer will
     default to using all the attachments' draw buffers.
  */
-void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::AttachmentPoint> &buffers)
+void QRenderTargetSelector::setOutputs(const QList<QRenderTargetOutput::AttachmentPoint> &buffers)
 {
     Q_D(QRenderTargetSelector);
     if (buffers != d->m_outputs) {
@@ -158,7 +158,7 @@ void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::Attach
 /*!
     \return the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
  */
-QVector<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() const
+QList<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() const
 {
     Q_D(const QRenderTargetSelector);
     return d->m_outputs;

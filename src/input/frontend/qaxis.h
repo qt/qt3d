@@ -59,7 +59,7 @@ public:
 
     void addInput(QAbstractAxisInput *input);
     void removeInput(QAbstractAxisInput *input);
-    QVector<QAbstractAxisInput *> inputs() const;
+    QList<QAbstractAxisInput *> inputs() const;
 
     float value() const;
 

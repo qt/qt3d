@@ -62,8 +62,8 @@ public:
 
     QRenderTarget *target() const;
 
-    void setOutputs(const QVector<QRenderTargetOutput::AttachmentPoint> &buffers);
-    QVector<QRenderTargetOutput::AttachmentPoint> outputs() const;
+    void setOutputs(const QList<QRenderTargetOutput::AttachmentPoint> &buffers);
+    QList<QRenderTargetOutput::AttachmentPoint> outputs() const;
 
 public Q_SLOTS:
     void setTarget(QRenderTarget *target);
@@ -82,6 +82,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QRENDERTARGETSELECTOR_H

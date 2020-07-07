@@ -178,7 +178,7 @@ void QInputChord::removeChord(QAbstractActionInput *input)
 /*!
     Returns the QInputChord's chord vector.
  */
-QVector<QAbstractActionInput *> QInputChord::chords() const
+QList<QAbstractActionInput *> QInputChord::chords() const
 {
     Q_D(const QInputChord);
     return d->m_chords;

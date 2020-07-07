@@ -100,7 +100,7 @@ void QChannelMapper::removeMapping(QAbstractChannelMapping *mapping)
     d->unregisterDestructionHelper(mapping);
 }
 
-QVector<QAbstractChannelMapping *> QChannelMapper::mappings() const
+QList<QAbstractChannelMapping *> QChannelMapper::mappings() const
 {
     Q_D(const QChannelMapper);
     return d->m_mappings;

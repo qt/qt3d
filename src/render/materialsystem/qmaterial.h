@@ -67,7 +67,7 @@ public:
 
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
-    QVector<QParameter *> parameters() const;
+    QList<QParameter *> parameters() const;
 
 public Q_SLOTS:
     void setEffect(QEffect *effect);

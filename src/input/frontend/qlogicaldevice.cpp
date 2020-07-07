@@ -195,7 +195,7 @@ void QLogicalDevice::removeAction(QAction *action)
 /*!
     Returns the list of actions.
  */
-QVector<QAction *> QLogicalDevice::actions() const
+QList<QAction *> QLogicalDevice::actions() const
 {
     Q_D(const QLogicalDevice);
     return d->m_actions;
@@ -246,7 +246,7 @@ void QLogicalDevice::removeAxis(QAxis *axis)
 /*!
     Returns the list of axis.
  */
-QVector<QAxis *> QLogicalDevice::axes() const
+QList<QAxis *> QLogicalDevice::axes() const
 {
     Q_D(const QLogicalDevice);
     return d->m_axes;

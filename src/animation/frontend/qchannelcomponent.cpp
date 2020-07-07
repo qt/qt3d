@@ -39,7 +39,7 @@
 
 #include "qchannelcomponent.h"
 
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -42,7 +42,6 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/QSharedPointer>
-#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 

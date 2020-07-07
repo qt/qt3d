@@ -194,16 +194,16 @@ void QVertexBlendAnimationPrivate::updateAnimation(float position)
     // remove attributes from previous frame
     if (m_currentBase && m_currentTarget &&
         (base != m_currentBase || target != m_currentTarget)) {
-        const QVector<Qt3DCore::QAttribute *> baseAttributes = m_currentBase->attributeList();
-        const QVector<Qt3DCore::QAttribute *> targetAttributes = m_currentTarget->attributeList();
+        const QList<Qt3DCore::QAttribute *> baseAttributes = m_currentBase->attributeList();
+        const QList<Qt3DCore::QAttribute *> targetAttributes = m_currentTarget->attributeList();
         for (int i = 0; i < baseAttributes.size(); ++i) {
             geometry->removeAttribute(baseAttributes.at(i));
             geometry->removeAttribute(targetAttributes.at(i));
         }
     }
 
-    const QVector<Qt3DCore::QAttribute *> baseAttributes = base->attributeList();
-    const QVector<Qt3DCore::QAttribute *> targetAttributes = target->attributeList();
+    const QList<Qt3DCore::QAttribute *> baseAttributes = base->attributeList();
+    const QList<Qt3DCore::QAttribute *> targetAttributes = target->attributeList();
     const QStringList attributeNames = base->attributeNames();
 
     // add attributes from current frame to the geometry
@@ -239,7 +239,7 @@ QVertexBlendAnimation::QVertexBlendAnimation(QObject *parent)
                                                this, &QVertexBlendAnimation::updateAnimation);
 }
 
-QVector<float> QVertexBlendAnimation::targetPositions() const
+QList<float> QVertexBlendAnimation::targetPositions() const
 {
     Q_D(const QVertexBlendAnimation);
     return d->m_targetPositions;
@@ -266,7 +266,7 @@ QString QVertexBlendAnimation::targetName() const
 /*!
     Set morph \a targets to animation. Old targets are cleared.
 */
-void QVertexBlendAnimation::setMorphTargets(const QVector<Qt3DAnimation::QMorphTarget *> &targets)
+void QVertexBlendAnimation::setMorphTargets(const QList<Qt3DAnimation::QMorphTarget *> &targets)
 {
     Q_D(QVertexBlendAnimation);
     d->m_morphTargets = targets;
@@ -291,7 +291,7 @@ void QVertexBlendAnimation::removeMorphTarget(Qt3DAnimation::QMorphTarget *targe
     d->m_morphTargets.removeAll(target);
 }
 
-void QVertexBlendAnimation::setTargetPositions(const QVector<float> &targetPositions)
+void QVertexBlendAnimation::setTargetPositions(const QList<float> &targetPositions)
 {
     Q_D(QVertexBlendAnimation);
     if (d->m_targetPositions == targetPositions)
@@ -313,7 +313,7 @@ void QVertexBlendAnimation::setTarget(Qt3DRender::QGeometryRenderer *target)
 /*!
     Return morph target list.
 */
-QVector<Qt3DAnimation::QMorphTarget *> QVertexBlendAnimation::morphTargetList()
+QList<Qt3DAnimation::QMorphTarget *> QVertexBlendAnimation::morphTargetList()
 {
     Q_D(QVertexBlendAnimation);
     return d->m_morphTargets;

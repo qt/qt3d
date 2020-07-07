@@ -58,10 +58,10 @@ class Q_3DANIMATIONSHARED_EXPORT QMorphTarget : public QObject
 public:
     explicit QMorphTarget(QObject *parent = nullptr);
 
-    QVector<Qt3DCore::QAttribute *> attributeList() const;
+    QList<Qt3DCore::QAttribute *> attributeList() const;
     QStringList attributeNames() const;
 
-    void setAttributes(const QVector<Qt3DCore::QAttribute *> &attributes);
+    void setAttributes(const QList<Qt3DCore::QAttribute *> &attributes);
     void addAttribute(Qt3DCore::QAttribute *attribute);
     void removeAttribute(Qt3DCore::QAttribute *attribute);
 
