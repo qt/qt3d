@@ -39,7 +39,7 @@ private Q_SLOTS:
     void checkDefaultConstruction()
     {
         // GIVEN
-        QVector<float> data;
+        QList<float> data;
 
         // WHEN
         FunctionRangeFinder finder(data);
@@ -52,11 +52,11 @@ private Q_SLOTS:
 
     void checkConstructionWithData_data()
     {
-        QTest::addColumn<QVector<float>>("x");
+        QTest::addColumn<QList<float>>("x");
         QTest::addColumn<int>("correlationThreshold");
         QTest::addColumn<bool>("ascending");
 
-        QVector<float> data = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
+        QList<float> data = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
         int correlationThreshold = 1;
         bool ascending = true;
         QTest::newRow("10 entries, ascending") << data << correlationThreshold << ascending;
@@ -82,7 +82,7 @@ private Q_SLOTS:
     void checkConstructionWithData()
     {
         // GIVEN
-        QFETCH(QVector<float>, x);
+        QFETCH(QList<float>, x);
         QFETCH(int, correlationThreshold);
         QFETCH(bool, ascending);
 
@@ -97,13 +97,13 @@ private Q_SLOTS:
 
     void checkFindLowerBound_data()
     {
-        QTest::addColumn<QVector<float>>("x");
-        QTest::addColumn<QVector<float>>("needles");
-        QTest::addColumn<QVector<int>>("lowerBounds");
+        QTest::addColumn<QList<float>>("x");
+        QTest::addColumn<QList<float>>("needles");
+        QTest::addColumn<QList<int>>("lowerBounds");
 
-        QVector<float> data = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
-        QVector<float> needles = { 2.5f };
-        QVector<int> lowerBounds = { 1 };
+        QList<float> data = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
+        QList<float> needles = { 2.5f };
+        QList<int> lowerBounds = { 1 };
         QTest::newRow("10 entries, ascending") << data << needles << lowerBounds;
         data.clear();
         needles.clear();
@@ -153,9 +153,9 @@ private Q_SLOTS:
     void checkFindLowerBound()
     {
         // GIVEN
-        QFETCH(QVector<float>, x);
-        QFETCH(QVector<float>, needles);
-        QFETCH(QVector<int>, lowerBounds);
+        QFETCH(QList<float>, x);
+        QFETCH(QList<float>, needles);
+        QFETCH(QList<int>, lowerBounds);
         FunctionRangeFinder finder(x);
 
         for (int i = 0; i < needles.size(); ++i) {

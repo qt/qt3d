@@ -54,7 +54,7 @@ namespace
         return port;
     }
 
-    QShaderNode createNode(const QVector<QShaderNodePort> &ports, const QStringList &layers = QStringList())
+    QShaderNode createNode(const QList<QShaderNodePort> &ports, const QStringList &layers = QStringList())
     {
         auto node = QShaderNode();
         node.setUuid(QUuid::createUuid());

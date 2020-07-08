@@ -167,11 +167,10 @@ int main(int argc, char* argv[])
     QVector3D blue(0.0f, 0.0f, 1.0f);
     QVector3D white(1.0f, 1.0f, 1.0f);
 
-    const QVector<QVector3D> vertices = QVector<QVector3D>()
-            << v0 << n0 << red
-            << v1 << n1 << blue
-            << v2 << n2 << green
-            << v3 << n3 << white;
+    const QList<QVector3D> vertices = { v0, n0, red,
+                                        v1, n1, blue,
+                                        v2, n2, green,
+                                        v3, n3, white };
 
     float *rawVertexArray = reinterpret_cast<float *>(vertexBufferData.data());
     int idx = 0;
@@ -284,7 +283,7 @@ void TimerObject::timeout()
     QVector3D c2(qFabs(qSin(angle)), qFabs(qCos(angle + M_PI_4)), qFabs(qSin(angle + M_PI_4)));
     QVector3D c3(qFabs(qSin(angle + M_PI_4)), qFabs(qSin(angle)), qFabs(qCos(angle)));
 
-    const QVector<QVector3D> colors = QVector<QVector3D>() << c1 << c2 << c3;
+    const QList<QVector3D> colors = { c1, c2, c3 };
 
     float *rawVertexArray = reinterpret_cast<float *>(updateData.data());
 

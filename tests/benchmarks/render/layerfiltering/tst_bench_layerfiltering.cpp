@@ -55,7 +55,7 @@ public:
         Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
         QRenderAspect::onRegistered();
 
-        QVector<Qt3DCore::NodeTreeChange> nodes;
+        QList<Qt3DCore::NodeTreeChange> nodes;
         Qt3DCore::QNodeVisitor v;
         v.traverse(root, [&nodes](Qt3DCore::QNode *node) {
             Qt3DCore::QNodePrivate *d = Qt3DCore::QNodePrivate::get(node);
@@ -98,16 +98,15 @@ namespace {
 
 Qt3DCore::QEntity *buildTestScene(int layersCount,
                                   int entityCount,
-                                  QVector<Qt3DCore::QNodeId> &layerFilterIds,
+                                  QList<Qt3DCore::QNodeId> &layerFilterIds,
                                   bool alwaysEnabled = true)
 {
     Qt3DCore::QEntity *root = new Qt3DCore::QEntity();
     Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter(root);
     layerFilterIds.push_back(layerFilter->id());
 
-    QVector<Qt3DRender::QLayer *> layers;
+    QList<Qt3DRender::QLayer *> layers;
     layers.reserve(layersCount);
-
 
     for (int i = 0; i < layersCount; ++i) {
         Qt3DRender::QLayer *layer = new Qt3DRender::QLayer(root);

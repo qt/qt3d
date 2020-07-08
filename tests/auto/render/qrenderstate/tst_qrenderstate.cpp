@@ -225,7 +225,7 @@ private Q_SLOTS:
         qRegisterMetaType<QStencilOperationArguments*>("QStencilOperationArguments*");
         qRegisterMetaType<QStencilTestArguments*>("QStencilTestArguments*");
 
-        for (bool front : QVector<bool>{false, true}) {
+        for (bool front : QList<bool> { false, true }) {
             const char *argsProperty = front ? "front" : "back";
 
             addStencilTestCase<QStencilOperation, QStencilOperationArguments>(

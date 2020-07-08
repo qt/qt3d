@@ -88,8 +88,8 @@ public:
     }
 
 private:
-    QVector<QEvent::Type> m_eventTypes;
-    QVector<QPointF> m_mousePoints;
+    QList<QEvent::Type> m_eventTypes;
+    QList<QPointF> m_mousePoints;
 };
 
 class tst_Scene2D : public Qt3DCore::QBackendNodeTester

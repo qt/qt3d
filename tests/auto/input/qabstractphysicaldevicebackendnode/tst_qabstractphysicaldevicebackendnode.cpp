@@ -180,8 +180,8 @@ private Q_SLOTS:
             Qt3DInput::QAxisSetting settings1;
             Qt3DInput::QAxisSetting settings2;
 
-            settings1.setAxes(QVector<int>() << 883);
-            settings2.setAxes(QVector<int>() << 454);
+            settings1.setAxes(QList<int> { 883 });
+            settings2.setAxes(QList<int> { 454 });
             Qt3DInput::QAbstractPhysicalDeviceBackendNodePrivate *priv = static_cast<Qt3DInput::QAbstractPhysicalDeviceBackendNodePrivate *>(
                         Qt3DCore::QBackendNodePrivate::get(&backendQAbstractPhysicalDeviceBackendNode));
 

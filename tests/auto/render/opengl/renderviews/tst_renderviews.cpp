@@ -144,11 +144,8 @@ private Q_SLOTS:
         renderer.setNodeManagers(&nodeManagers);
         renderView.setRenderer(&renderer);
 
-        QVector<QSortPolicy::SortType> sortTypes;
-        sortTypes.push_back(QSortPolicy::BackToFront);
-
         // WHEN
-        renderView.addSortType(sortTypes);
+        renderView.addSortType(QList<QSortPolicy::SortType> { QSortPolicy::BackToFront });
 
         EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
         renderView.setRenderCommandDataView(view);
@@ -168,12 +165,8 @@ private Q_SLOTS:
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
-        QVector<QSortPolicy::SortType> sortTypes;
-
         renderer.setNodeManagers(&nodeManagers);
         renderView.setRenderer(&renderer);
-
-        sortTypes.push_back(QSortPolicy::BackToFront);
 
         for (int i = 0; i < 200; ++i) {
             RenderCommand c;
@@ -182,7 +175,7 @@ private Q_SLOTS:
         }
 
         // WHEN
-        renderView.addSortType(sortTypes);
+        renderView.addSortType(QList<QSortPolicy::SortType> { QSortPolicy::BackToFront });
 
         EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
         view->data.commands = rawCommands;
@@ -215,12 +208,8 @@ private Q_SLOTS:
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
-        QVector<QSortPolicy::SortType> sortTypes;
-
         renderer.setNodeManagers(&nodeManagers);
         renderView.setRenderer(&renderer);
-
-        sortTypes.push_back(QSortPolicy::Material);
 
         GLShader *dnas[5] = {
             reinterpret_cast<GLShader *>(0x250),
@@ -237,7 +226,7 @@ private Q_SLOTS:
         }
 
         // WHEN
-        renderView.addSortType(sortTypes);
+        renderView.addSortType(QList<QSortPolicy::SortType> { QSortPolicy::Material });
 
         EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
         view->data.commands = rawCommands;
@@ -270,9 +259,9 @@ private Q_SLOTS:
 
     void checkRenderViewUniformMinification_data()
     {
-        QTest::addColumn<QVector<QShaderProgram*>>("shaders");
-        QTest::addColumn<QVector<ShaderParameterPack>>("rawParameters");
-        QTest::addColumn<QVector<ShaderParameterPack>>("expectedMinimizedParameters");
+        QTest::addColumn<QList<QShaderProgram*>>("shaders");
+        QTest::addColumn<QList<ShaderParameterPack>>("rawParameters");
+        QTest::addColumn<QList<ShaderParameterPack>>("expectedMinimizedParameters");
 
         Qt3DCore::QNodeId fakeTextureNodeId = Qt3DCore::QNodeId::createId();
 
@@ -290,26 +279,26 @@ private Q_SLOTS:
         ShaderParameterPack minifiedPack1;
 
         QTest::newRow("NoMinification")
-                << (QVector<QShaderProgram*>() << shader1 << shader2)
-                << (QVector<ShaderParameterPack>() << pack1 << pack1)
-                << (QVector<ShaderParameterPack>() << pack1 << pack1);
+                << QList<QShaderProgram *> { shader1, shader2 }
+                << QList<ShaderParameterPack> { pack1, pack1 }
+                << QList<ShaderParameterPack> { pack1, pack1 };
 
         QTest::newRow("SingleShaderMinified")
-                << (QVector<QShaderProgram*>() << shader1 << shader1 << shader1)
-                << (QVector<ShaderParameterPack>() << pack1 << pack1 << pack1)
-                << (QVector<ShaderParameterPack>() << pack1 << minifiedPack1 << minifiedPack1);
+                << QList<QShaderProgram *> { shader1, shader1, shader1 }
+                << QList<ShaderParameterPack> { pack1, pack1, pack1 }
+                << QList<ShaderParameterPack> { pack1, minifiedPack1, minifiedPack1 };
 
         QTest::newRow("MultipleShadersMinified")
-                << (QVector<QShaderProgram*>() << shader1 << shader1 << shader1 << shader2 << shader2 << shader2)
-                << (QVector<ShaderParameterPack>() << pack1 << pack1 << pack1 << pack1 << pack1 << pack1)
-                << (QVector<ShaderParameterPack>() << pack1 << minifiedPack1 << minifiedPack1 << pack1 << minifiedPack1 << minifiedPack1);
+                << QList<QShaderProgram *> { shader1, shader1, shader1, shader2, shader2, shader2 }
+                << QList<ShaderParameterPack> { pack1, pack1, pack1, pack1, pack1, pack1 }
+                << QList<ShaderParameterPack> { pack1, minifiedPack1, minifiedPack1, pack1, minifiedPack1, minifiedPack1 };
     }
 
     void checkRenderViewUniformMinification()
     {
-        QFETCH(QVector<QShaderProgram*>, shaders);
-        QFETCH(QVector<ShaderParameterPack>, rawParameters);
-        QFETCH(QVector<ShaderParameterPack>, expectedMinimizedParameters);
+        QFETCH(QList<QShaderProgram*>, shaders);
+        QFETCH(QList<ShaderParameterPack>, rawParameters);
+        QFETCH(QList<ShaderParameterPack>, expectedMinimizedParameters);
 
         Qt3DRender::Render::NodeManagers nodeManagers;
         Renderer renderer;
@@ -337,7 +326,7 @@ private Q_SLOTS:
         }
 
         // WHEN
-        renderView.addSortType((QVector<QSortPolicy::SortType>() << QSortPolicy::Uniform));
+        renderView.addSortType(QList<QSortPolicy::SortType> { QSortPolicy::Uniform });
 
         EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
         view->data.commands = rawCommands;
@@ -368,12 +357,8 @@ private Q_SLOTS:
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
-        QVector<QSortPolicy::SortType> sortTypes;
-
         renderer.setNodeManagers(&nodeManagers);
         renderView.setRenderer(&renderer);
-
-        sortTypes.push_back(QSortPolicy::FrontToBack);
 
         for (int i = 0; i < 200; ++i) {
             RenderCommand c;
@@ -382,7 +367,7 @@ private Q_SLOTS:
         }
 
         // WHEN
-        renderView.addSortType(sortTypes);
+        renderView.addSortType(QList<QSortPolicy::SortType> { QSortPolicy::FrontToBack });
 
         EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
         view->data.commands = rawCommands;
@@ -415,12 +400,8 @@ private Q_SLOTS:
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
-        QVector<QSortPolicy::SortType> sortTypes;
-
         renderer.setNodeManagers(&nodeManagers);
         renderView.setRenderer(&renderer);
-
-        sortTypes.push_back(QSortPolicy::StateChangeCost);
 
         for (int i = 0; i < 200; ++i) {
             RenderCommand c;
@@ -429,7 +410,7 @@ private Q_SLOTS:
         }
 
         // WHEN
-        renderView.addSortType(sortTypes);
+        renderView.addSortType(QList<QSortPolicy::SortType> { QSortPolicy::StateChangeCost });
 
         EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
         view->data.commands = rawCommands;
@@ -463,14 +444,8 @@ private Q_SLOTS:
         RenderView renderView;
         std::vector<RenderCommand> rawCommands;
 
-        QVector<QSortPolicy::SortType> sortTypes;
-
         renderer.setNodeManagers(&nodeManagers);
         renderView.setRenderer(&renderer);
-
-        sortTypes.push_back(QSortPolicy::StateChangeCost);
-        sortTypes.push_back(QSortPolicy::Material);
-        sortTypes.push_back(QSortPolicy::BackToFront);
 
         GLShader *dna[5] = {
             reinterpret_cast<GLShader *>(0x250),
@@ -514,7 +489,10 @@ private Q_SLOTS:
         rawCommands = { c0, c1, c2, c3, c4, c5, c6, c7, c8, c9 };
 
         // WHEN
-        renderView.addSortType(sortTypes);
+        renderView.addSortType(QList<QSortPolicy::SortType>
+                               { QSortPolicy::StateChangeCost,
+                                 QSortPolicy::Material,
+                                 QSortPolicy::BackToFront });
 
         EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
         view->data.commands = rawCommands;
@@ -552,10 +530,6 @@ private Q_SLOTS:
     {
         // GIVEN
         RenderView renderView;
-        QVector<QSortPolicy::SortType> sortTypes;
-
-        sortTypes.push_back(QSortPolicy::Texture);
-
 
         Qt3DCore::QNodeId tex1 = Qt3DCore::QNodeId::createId();
         Qt3DCore::QNodeId tex2 = Qt3DCore::QNodeId::createId();
@@ -610,7 +584,7 @@ private Q_SLOTS:
 
         // WHEN
         std::vector<RenderCommand> rawCommands = {a, b, c, d, e, f, g};
-        renderView.addSortType(sortTypes);
+        renderView.addSortType(QList<QSortPolicy::SortType> { QSortPolicy::Texture });
 
         EntityRenderCommandDataViewPtr view = EntityRenderCommandDataViewPtr::create();
         view->data.commands = rawCommands;

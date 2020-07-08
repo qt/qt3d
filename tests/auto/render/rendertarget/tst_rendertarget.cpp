@@ -86,7 +86,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendRenderTarget.isEnabled(), true);
             QCOMPARE(backendRenderTarget.peerId(), renderTarget.id());
-            QCOMPARE(backendRenderTarget.renderOutputs(), QVector<Qt3DCore::QNodeId>() << renderTargetOuput.id());
+            QCOMPARE(backendRenderTarget.renderOutputs(), (QList<Qt3DCore::QNodeId> { renderTargetOuput.id() }));
         }
         {
             // WHEN

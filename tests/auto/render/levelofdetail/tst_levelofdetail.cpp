@@ -113,7 +113,7 @@ private Q_SLOTS:
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);        }
 
         {
-            const QVector<qreal> thresholds = {20.f, 30.f, 40.f};
+            const QList<qreal> thresholds = { 20.f, 30.f, 40.f };
 
             // WHEN
             lod.setThresholds(thresholds);

@@ -49,7 +49,7 @@ private Q_SLOTS:
         Qt3DInput::QButtonAxisInput axisInput;
         TestDevice sourceDevice;
 
-        axisInput.setButtons(QVector<int>() << (1 << 8));
+        axisInput.setButtons(QList<int> { 1 << 8 });
         axisInput.setScale(0.5f);
         axisInput.setAcceleration(0.42f);
         axisInput.setDeceleration(0.43f);
@@ -91,7 +91,7 @@ private Q_SLOTS:
         Qt3DInput::QButtonAxisInput axisInput;
         TestDevice sourceDevice;
 
-        axisInput.setButtons(QVector<int>() << (1 << 8));
+        axisInput.setButtons(QList<int> { 1 << 8 });
         axisInput.setScale(0.5f);
         axisInput.setSourceDevice(&sourceDevice);
 
@@ -118,11 +118,11 @@ private Q_SLOTS:
         simulateInitializationSync(&axisInput, &backendAxisInput);
 
         // WHEN
-        axisInput.setButtons(QVector<int>() << 64);
+        axisInput.setButtons(QList<int> { 64 });
         backendAxisInput.syncFromFrontEnd(&axisInput, false);
 
         // THEN
-        QCOMPARE(backendAxisInput.buttons(), QVector<int>() << 64);
+        QCOMPARE(backendAxisInput.buttons(), QList<int> { 64 });
 
         // WHEN
         axisInput.setScale(0.5f);
@@ -189,7 +189,7 @@ private Q_SLOTS:
         Qt3DInput::Input::ButtonAxisInput backendAxisInput;
         Qt3DInput::QButtonAxisInput axisInput;
         axisInput.setEnabled(true);
-        axisInput.setButtons(QVector<int>() << Qt::Key_Space);
+        axisInput.setButtons(QList<int> { Qt::Key_Space });
         axisInput.setScale(-1.0f);
         axisInput.setAcceleration(0.15f);
         axisInput.setDeceleration(0.3f);
@@ -290,7 +290,7 @@ private Q_SLOTS:
         Qt3DInput::Input::ButtonAxisInput backendAxisInput;
         Qt3DInput::QButtonAxisInput axisInput;
         axisInput.setEnabled(false);
-        axisInput.setButtons(QVector<int>() << Qt::Key_Space);
+        axisInput.setButtons(QList<int> { Qt::Key_Space });
         axisInput.setScale(-1.0f);
         axisInput.setAcceleration(0.15f);
         axisInput.setDeceleration(0.3f);

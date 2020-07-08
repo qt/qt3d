@@ -101,7 +101,7 @@ private:
             abc[1] = b;
         }
     };
-    QVector<TestSegment> m_segments;
+    QList<TestSegment> m_segments;
 };
 
 class tst_SegmentVisitor : public Qt3DCore::QBackendNodeTester

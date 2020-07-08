@@ -63,9 +63,9 @@ public:
         return nullptr;
     }
 
-    QVector<Qt3DCore::QNodeId> physicalDevices() const override
+    QList<Qt3DCore::QNodeId> physicalDevices() const override
     {
-        return QVector<Qt3DCore::QNodeId>();
+        return {};
     }
 
     QStringList deviceNames() const override
@@ -125,7 +125,7 @@ private Q_SLOTS:
             QCOMPARE(backendProxy->deviceName(), QStringLiteral("TestProxy"));
             QVERIFY(backendProxy->physicalDeviceId().isNull());
 
-            const QVector<Qt3DCore::QNodeId> pendingProxies = manager->takePendingProxiesToLoad();
+            const QList<Qt3DCore::QNodeId> pendingProxies = manager->takePendingProxiesToLoad();
             QCOMPARE(pendingProxies.size(), 1);
             QCOMPARE(pendingProxies.first(), backendProxy->peerId());
 
@@ -157,7 +157,7 @@ private Q_SLOTS:
             QCOMPARE(manager->lookupResource(proxy.id()), backendProxy);
             QCOMPARE(backendProxy->deviceName(), QStringLiteral("NonExisting"));
 
-            const QVector<Qt3DCore::QNodeId> pendingProxies = manager->takePendingProxiesToLoad();
+            const QList<Qt3DCore::QNodeId> pendingProxies = manager->takePendingProxiesToLoad();
             QCOMPARE(pendingProxies.size(), 1);
             QCOMPARE(pendingProxies.first(), backendProxy->peerId());
 

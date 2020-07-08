@@ -149,11 +149,10 @@ int main(int argc, char* argv[])
     QVector3D blue(0.0f, 0.0f, 1.0f);
     QVector3D white(1.0f, 1.0f, 1.0f);
 
-    const QVector<QVector3D> vertices = QVector<QVector3D>()
-            << v0 << n0 << red
-            << v1 << n1 << blue
-            << v2 << n2 << green
-            << v3 << n3 << white;
+    const QList<QVector3D> vertices = { v0, n0, red,
+                                        v1, n1, blue,
+                                        v2, n2, green,
+                                        v3, n3, white };
 
     //     DrawElementIndirect
     {
@@ -304,7 +303,7 @@ int main(int argc, char* argv[])
         Qt3DCore::QBuffer *indirectDrawDataBuffer = new Qt3DCore::QBuffer(customGeometry);
 
 
-        QVector<QVector3D> orderedPositionVertices;
+        QList<QVector3D> orderedPositionVertices;
         // 12 vertices with position, normal, color
         orderedPositionVertices.reserve(12 * (1 + 1 + 1));
 

@@ -522,8 +522,8 @@ void tst_Entity::retrieveSingleComponent()
     entity1->addComponent(comp2);
 
     // WHEN
-    QVector<MyQComponent*> myQComponentsInEntity = entity1->componentsOfType<MyQComponent>();
-    QVector<MyQ2Component*> myQ2ComponentsInEntity = entity1->componentsOfType<MyQ2Component>();
+    const QList<MyQComponent *> myQComponentsInEntity = entity1->componentsOfType<MyQComponent>();
+    const QList<MyQ2Component *> myQ2ComponentsInEntity = entity1->componentsOfType<MyQ2Component>();
 
     // THEN
     QVERIFY(myQComponentsInEntity.size() == 2);

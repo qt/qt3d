@@ -177,7 +177,7 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
     Q_OBJECT
 
     Qt3DRender::QAbstractTexture *createQTexture(int genId,
-                                                 const QVector<int> &imgGenIds,
+                                                 const QList<int> &imgGenIds,
                                                  bool genMipMaps)
     {
         TestTexture *tex = new TestTexture(genId);
@@ -254,16 +254,16 @@ private Q_SLOTS:
         renderer.setNodeManagers(mgrs.data());
 
         // GIVEN
-        QVector<Qt3DRender::QAbstractTexture*> textures;
-        textures << createQTexture(-1, {1,2}, true);
-        textures << createQTexture(-1, {1,2}, false);
-        textures << createQTexture(1, {1,2}, true);
-        textures << createQTexture(1, {1,2}, false);
-        textures << createQTexture(1, {1,2,3}, true);
-        textures << createQTexture(1, {1,2,3}, false);
+        const QList<Qt3DRender::QAbstractTexture*> textures
+                = { createQTexture(-1, {1,2}, true),
+                    createQTexture(-1, {1,2}, false),
+                    createQTexture(1, {1,2}, true),
+                    createQTexture(1, {1,2}, false),
+                    createQTexture(1, {1,2,3}, true),
+                    createQTexture(1, {1,2,3}, false) };
 
         // WHEN
-        QVector<Qt3DRender::Render::Texture*> backend;
+        QList<Qt3DRender::Render::Texture *> backend;
         for (auto *t : textures) {
             Qt3DRender::Render::Texture *backendTexture = createBackendTexture(t,
                                                                                mgrs->textureManager(),
@@ -281,7 +281,7 @@ private Q_SLOTS:
                 QVERIFY(renderer.glResourceManagers()->glTextureManager()->lookupResource(backend[i]->peerId()) !=
                         renderer.glResourceManagers()->glTextureManager()->lookupResource(backend[k]->peerId()));
 
-        QVector<Qt3DRender::Render::OpenGL::GLTexture *> glTextures;
+        QList<Qt3DRender::Render::OpenGL::GLTexture *> glTextures;
         for (Qt3DRender::Render::Texture *t : backend)
             glTextures.push_back(renderer.glResourceManagers()->glTextureManager()->lookupResource(t->peerId()));
 
@@ -383,13 +383,13 @@ private Q_SLOTS:
         renderer.setNodeManagers(mgrs.data());
 
         // GIVEN
-        QVector<Qt3DRender::QAbstractTexture*> textures;
-        textures << createQTexture(1, {1}, true);
-        textures << createQTexture(2, {1,2}, true);
-        textures << createQTexture(1, {1,2}, true);
+        const QList<Qt3DRender::QAbstractTexture*> textures
+                = { createQTexture(1, {1}, true),
+                    createQTexture(2, {1,2}, true),
+                    createQTexture(1, {1,2}, true) };
 
         // WHEN
-        QVector<Qt3DRender::Render::Texture*> backend;
+        QList<Qt3DRender::Render::Texture*> backend;
         for (auto *t : textures) {
             Qt3DRender::Render::Texture *backendTexture = createBackendTexture(t,
                                                                                mgrs->textureManager(),

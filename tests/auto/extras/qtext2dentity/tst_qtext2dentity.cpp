@@ -54,10 +54,10 @@
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <Qt3DCore/private/qnode_p.h>
 
-QVector<Qt3DCore::QNode *>lookupNodeByClassName(Qt3DCore::QNode *root, const QString &className)
+QList<Qt3DCore::QNode *>lookupNodeByClassName(Qt3DCore::QNode *root, const QString &className)
 {
     auto children = root->childNodes();
-    QVector<Qt3DCore::QNode *> childrenList;
+    QList<Qt3DCore::QNode *> childrenList;
     for (auto i : children) {
         if (i->metaObject()->className() == className)
             childrenList << i;

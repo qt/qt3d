@@ -243,8 +243,7 @@ void tst_quick3dnodeinstantiator::createAndRemove()
         qobject_cast<Quick3DNodeInstantiator*>(rootObject->findChild<QObject*>("instantiator1"));
     QVERIFY(instantiator != 0);
     model->drop(1);
-    QVector<QString> names;
-    names << "Beta" << "Gamma" << "Delta";
+    const QList<QString> names = { "Beta", "Gamma", "Delta" };
     for (int i = 0; i < 3; i++) {
         QObject *object = instantiator->objectAt(i);
         QVERIFY(object);

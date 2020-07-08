@@ -65,11 +65,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
+QList<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
 {
     using namespace Qt3DCore;
 
-    QVector<QNode *> nodes;
+    QList<QNode *> nodes;
     Qt3DCore::QNodeVisitor visitor;
     visitor.traverse(root, [&nodes](QNode *node) {
         nodes.append(node);
@@ -89,9 +89,9 @@ QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
     return nodes;
 }
 
-QVector<Qt3DCore::NodeTreeChange> nodeTreeChangesForNodes(const QVector<Qt3DCore::QNode *> nodes)
+QList<Qt3DCore::NodeTreeChange> nodeTreeChangesForNodes(const QList<Qt3DCore::QNode *> nodes)
 {
-    QVector<Qt3DCore::NodeTreeChange> nodeTreeChanges;
+    QList<Qt3DCore::NodeTreeChange> nodeTreeChanges;
     nodeTreeChanges.reserve(nodes.size());
 
     for (Qt3DCore::QNode *n : nodes) {
@@ -124,7 +124,7 @@ public:
         aed->m_root = proot;
         aed->initialize();
         aed->initNodeTree(root);
-        const QVector<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
+        const QList<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
         aed->m_aspectManager->setRootEntity(proot.data(), nodes);
 
         Render::Entity *rootEntity = nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
@@ -173,8 +173,8 @@ public:
             });
     }
     Qt3DCore::QNode *lookupNode(Qt3DCore::QNodeId id) const override { return  m_frontEndNodes.value(id, nullptr); }
-    QVector<Qt3DCore::QNode *> lookupNodes(const QVector<Qt3DCore::QNodeId> &ids) const override {
-        QVector<Qt3DCore::QNode *> res;
+    QList<Qt3DCore::QNode *> lookupNodes(const QList<Qt3DCore::QNodeId> &ids) const override {
+        QList<Qt3DCore::QNode *> res;
         for (const auto &id: ids) {
             auto node = m_frontEndNodes.value(id, nullptr);
             if (node)

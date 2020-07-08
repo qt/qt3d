@@ -45,7 +45,7 @@ private Q_SLOTS:
         Qt3DInput::QActionInput actionInput;
         TestDevice sourceDevice;
 
-        actionInput.setButtons(QVector<int>() << (1 << 8));
+        actionInput.setButtons(QList<int> { 1 << 8 });
         actionInput.setSourceDevice(&sourceDevice);
 
         // WHEN
@@ -73,7 +73,7 @@ private Q_SLOTS:
         Qt3DInput::QActionInput actionInput;
         TestDevice sourceDevice;
 
-        actionInput.setButtons(QVector<int>() << (1 << 8));
+        actionInput.setButtons(QList<int> { 1 << 8 });
         actionInput.setSourceDevice(&sourceDevice);
 
         // WHEN
@@ -94,11 +94,11 @@ private Q_SLOTS:
         simulateInitializationSync(&actionInput, &backendActionInput);
 
         // WHEN
-        actionInput.setButtons(QVector<int>() << 64);
+        actionInput.setButtons(QList<int> { 64 });
         backendActionInput.syncFromFrontEnd(&actionInput, false);
 
         // THEN
-        QCOMPARE(backendActionInput.buttons(), QVector<int>() << 64);
+        QCOMPARE(backendActionInput.buttons(), QList<int> { 64 });
 
         // WHEN
         actionInput.setEnabled(false);
@@ -128,7 +128,7 @@ private Q_SLOTS:
         Qt3DInput::Input::ActionInput backendActionInput;
         Qt3DInput::QActionInput actionInput;
         actionInput.setEnabled(true);
-        actionInput.setButtons(QVector<int>() << Qt::Key_Space << Qt::Key_Return);
+        actionInput.setButtons(QList<int> { Qt::Key_Space, Qt::Key_Return });
         actionInput.setSourceDevice(device);
         simulateInitializationSync(&actionInput, &backendActionInput);
 
@@ -181,7 +181,7 @@ private Q_SLOTS:
         Qt3DInput::Input::ActionInput backendActionInput;
         Qt3DInput::QActionInput actionInput;
         actionInput.setEnabled(false);
-        actionInput.setButtons(QVector<int>() << Qt::Key_Space << Qt::Key_Return);
+        actionInput.setButtons(QList<int> { Qt::Key_Space, Qt::Key_Return });
         actionInput.setSourceDevice(device);
         simulateInitializationSync(&actionInput, &backendActionInput);
 

@@ -80,7 +80,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(backendMapper.peerId().isNull());
         QCOMPARE(backendMapper.isEnabled(), false);
-        QCOMPARE(backendMapper.mappingIds(), QVector<Qt3DCore::QNodeId>());
+        QCOMPARE(backendMapper.mappingIds(), QList<Qt3DCore::QNodeId>());
 
         // GIVEN
         Qt3DAnimation::QChannelMapper mapper;
@@ -92,7 +92,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendMapper.isEnabled(), false);
-        QCOMPARE(backendMapper.mappingIds(), QVector<Qt3DCore::QNodeId>());
+        QCOMPARE(backendMapper.mappingIds(), QList<Qt3DCore::QNodeId>());
     }
 
     void checkPropertyChanges()

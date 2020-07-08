@@ -356,12 +356,11 @@ int main(int argc, char* argv[])
     QVector3D white(1.0f, 1.0f, 1.0f);
     QVector3D grey(0.5f, 0.5f, 0.5f);
 
-    const QVector<QVector3D> vertices = QVector<QVector3D>()
-            << v0 << red
-            << v1 << green
-            << v2 << blue
-            << v3 << grey
-            << v4 << white;
+    const QList<QVector3D> vertices = { v0, red,
+                                        v1, green,
+                                        v2, blue,
+                                        v3, grey,
+                                        v4, white };
 
     memcpy(vertexBufferData.data(), vertices.constData(), vertices.size() * sizeof(QVector3D));
     vertexDataBuffer->setData(vertexBufferData);

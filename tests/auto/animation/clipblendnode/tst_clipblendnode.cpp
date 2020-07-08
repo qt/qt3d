@@ -50,14 +50,14 @@ public:
         , m_clipResults(clipResults)
     {}
 
-    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const override
+    inline QList<Qt3DCore::QNodeId> allDependencyIds() const override
     {
         return currentDependencyIds();
     }
 
-    QVector<Qt3DCore::QNodeId> currentDependencyIds() const final
+    QList<Qt3DCore::QNodeId> currentDependencyIds() const final
     {
-        return QVector<Qt3DCore::QNodeId>();
+        return {};
     }
 
     using ClipBlendNode::setClipResults;
@@ -65,7 +65,7 @@ public:
     double duration() const final { return 0.0f; }
 
 protected:
-    ClipResults doBlend(const QVector<ClipResults> &) const final
+    ClipResults doBlend(const QList<ClipResults> &) const final
     {
         return m_clipResults;
     }
@@ -157,15 +157,15 @@ private Q_SLOTS:
     void checkClipResults_data()
     {
         QTest::addColumn<TestClipBlendNode *>("blendNode");
-        QTest::addColumn<QVector<int>>("indexes");
-        QTest::addColumn<QVector<Qt3DCore::QNodeId>>("animatorIds");
-        QTest::addColumn<QVector<ClipResults>>("expectedClipResults");
+        QTest::addColumn<QList<int>>("indexes");
+        QTest::addColumn<QList<Qt3DCore::QNodeId>>("animatorIds");
+        QTest::addColumn<QList<ClipResults>>("expectedClipResults");
 
         // Single entry
         {
             auto blendNode = new TestClipBlendNode;
-            QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ClipResults> expectedClipResults;
+            QList<Qt3DCore::QNodeId> animatorIds;
+            QList<ClipResults> expectedClipResults;
 
             const auto animatorId = Qt3DCore::QNodeId::createId();
             animatorIds.push_back(animatorId);
@@ -177,7 +177,7 @@ private Q_SLOTS:
 
             // Set data and indexes
             blendNode->setClipResults(animatorId, clipResults);
-            QVector<int> indexes = QVector<int>() << 0;
+            const QList<int> indexes = { 0 };
 
             QTest::newRow("single entry")
                     << blendNode << indexes << animatorIds << expectedClipResults;
@@ -186,8 +186,8 @@ private Q_SLOTS:
         // No data
         {
             auto blendNode = new TestClipBlendNode;
-            QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ClipResults> expectedClipResults;
+            QList<Qt3DCore::QNodeId> animatorIds;
+            QList<ClipResults> expectedClipResults;
 
             auto animatorId = Qt3DCore::QNodeId::createId();
             animatorIds.push_back(animatorId);
@@ -196,7 +196,7 @@ private Q_SLOTS:
             expectedClipResults.push_back(clipResults);
 
             // Don't set any data
-            QVector<int> indexes = QVector<int>() << 0;
+            const QList<int> indexes = { 0 };
 
             QTest::newRow("no entries")
                     << blendNode << indexes << animatorIds << expectedClipResults;
@@ -205,8 +205,8 @@ private Q_SLOTS:
         // Multiple entries, ordered
         {
             auto blendNode = new TestClipBlendNode;
-            QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ClipResults> expectedClipResults;
+            QList<Qt3DCore::QNodeId> animatorIds;
+            QList<ClipResults> expectedClipResults;
 
             const int animatorCount = 10;
             for (int j = 0; j < animatorCount; ++j) {
@@ -221,7 +221,7 @@ private Q_SLOTS:
                 blendNode->setClipResults(animatorId, clipResults);
             }
 
-            QVector<int> indexes(animatorCount);
+            QList<int> indexes(animatorCount);
             std::iota(indexes.begin(), indexes.end(), 0);
 
             QTest::newRow("multiple entries, ordered")
@@ -231,8 +231,8 @@ private Q_SLOTS:
         // Multiple entries, unordered
         {
             auto blendNode = new TestClipBlendNode;
-            QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<ClipResults> expectedClipResults;
+            QList<Qt3DCore::QNodeId> animatorIds;
+            QList<ClipResults> expectedClipResults;
 
             const int animatorCount = 10;
             for (int j = 0; j < animatorCount; ++j) {
@@ -248,7 +248,7 @@ private Q_SLOTS:
             }
 
             // Shuffle the animatorIds to randomise the lookups
-            QVector<int> indexes(animatorCount);
+            QList<int> indexes(animatorCount);
             std::iota(indexes.begin(), indexes.end(), 0);
             std::random_device rd;
             std::mt19937 generator(rd());
@@ -263,9 +263,9 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(TestClipBlendNode *, blendNode);
-        QFETCH(QVector<int>, indexes);
-        QFETCH(QVector<Qt3DCore::QNodeId>, animatorIds);
-        QFETCH(QVector<ClipResults>, expectedClipResults);
+        QFETCH(QList<int>, indexes);
+        QFETCH(QList<Qt3DCore::QNodeId>, animatorIds);
+        QFETCH(QList<ClipResults>, expectedClipResults);
 
         for (int i = 0; i < indexes.size(); ++i) {
             // WHEN

@@ -49,14 +49,14 @@ public:
         , m_duration(duration)
     {}
 
-    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const override
+    inline QList<Qt3DCore::QNodeId> allDependencyIds() const override
     {
         return currentDependencyIds();
     }
 
-    QVector<Qt3DCore::QNodeId> currentDependencyIds() const final
+    QList<Qt3DCore::QNodeId> currentDependencyIds() const final
     {
-        return QVector<Qt3DCore::QNodeId>();
+        return {};
     }
 
     using ClipBlendNode::setClipResults;
@@ -64,7 +64,7 @@ public:
     double duration() const final { return m_duration; }
 
 protected:
-    ClipResults doBlend(const QVector<ClipResults> &) const final { return ClipResults(); }
+    ClipResults doBlend(const QList<ClipResults> &) const final { return ClipResults(); }
 
 private:
     double m_duration;
@@ -217,7 +217,7 @@ private Q_SLOTS:
         // WHEN
         addBlend.setBaseClipId(baseClipId);
         addBlend.setAdditiveClipId(additiveClipId);
-        QVector<Qt3DCore::QNodeId> actualIds = addBlend.currentDependencyIds();
+        QList<Qt3DCore::QNodeId> actualIds = addBlend.currentDependencyIds();
 
         // THEN
         QCOMPARE(actualIds.size(), 2);

@@ -69,7 +69,7 @@ QObject *SceneHelper::findEntity(Qt3DRender::QSceneLoader *loader, const QString
 {
     // The QSceneLoader instance is a component of an entity. The loaded scene
     // tree is added under this entity.
-    QVector<Qt3DCore::QEntity *> entities = loader->entities();
+    QList<Qt3DCore::QEntity *> entities = loader->entities();
 
     if (entities.isEmpty())
         return 0;

@@ -65,7 +65,7 @@ private Q_SLOTS:
 
         // Hook up a bunch of accumulators to this axis
         Qt3DInput::Input::AxisAccumulatorManager axisAccumulatorManager;
-        QVector<Qt3DInput::Input::AxisAccumulator *> accumulators;
+        QList<Qt3DInput::Input::AxisAccumulator *> accumulators;
         for (int i = 0; i < 10; ++i) {
             auto axisAccumulator = new Qt3DInput::QAxisAccumulator;
             Qt3DInput::Input::AxisAccumulator *backendAxisAccumulator

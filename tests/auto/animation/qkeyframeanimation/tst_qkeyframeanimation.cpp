@@ -185,15 +185,9 @@ private Q_SLOTS:
         keyframes[1].setRotationY(45.0f);
         keyframes[2].setRotationZ(90.0f);
 
-        QVector<float> framePositions;
-        framePositions.push_back(positions[0]);
-        framePositions.push_back(positions[1]);
-        framePositions.push_back(positions[2]);
+        const QList<float> framePositions = { positions[0], positions[1], positions[2] };
 
-        QVector<Qt3DCore::QTransform*> frames;
-        frames.push_back(&keyframes[0]);
-        frames.push_back(&keyframes[1]);
-        frames.push_back(&keyframes[2]);
+        const QList<Qt3DCore::QTransform*> frames = { &keyframes[0], &keyframes[1], &keyframes[2] };
 
         keyframeAnimation.setFramePositions(framePositions);
         keyframeAnimation.setKeyframes(frames);

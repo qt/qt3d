@@ -67,9 +67,8 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DCore::Quick::Quick3DBuffer buf;
-        QVector<QVector3D> dataArray = QVector<QVector3D>()
-                << QVector3D(327.0f, 350.0f, 355.0f)
-                << QVector3D(383.0f, 427.0f, 454.0f);
+        const QList<QVector3D> dataArray = { QVector3D(327.0f, 350.0f, 355.0f),
+                                             QVector3D(383.0f, 427.0f, 454.0f) };
 
         const int bufferByteSize = dataArray.size() * sizeof(QVector3D);
         const QLatin1String filePath("binary_data.bin");

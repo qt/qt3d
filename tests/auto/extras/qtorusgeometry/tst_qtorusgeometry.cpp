@@ -157,11 +157,11 @@ private Q_SLOTS:
         QTest::addColumn<float>("radius");
         QTest::addColumn<float>("minorRadius");
         QTest::addColumn<int>("triangleIndex");
-        QTest::addColumn<QVector<quint16>>("indices");
-        QTest::addColumn<QVector<QVector3D>>("positions");
-        QTest::addColumn<QVector<QVector3D>>("normals");
-        QTest::addColumn<QVector<QVector2D>>("texCoords");
-        QTest::addColumn<QVector<QVector4D>>("tangents");
+        QTest::addColumn<QList<quint16>>("indices");
+        QTest::addColumn<QList<QVector3D>>("positions");
+        QTest::addColumn<QList<QVector3D>>("normals");
+        QTest::addColumn<QList<QVector2D>>("texCoords");
+        QTest::addColumn<QList<QVector4D>>("tangents");
 
         {
             // Torus properties
@@ -192,7 +192,7 @@ private Q_SLOTS:
 
             // The triangle and indices
             const int triangleIndex = 0;
-            const auto indices = (QVector<quint16>() << 0 << 1 << 9);
+            const QList<quint16> indices = { 0, 1, 9 };
 
             // Calculate attributes for vertices A, B, and C of the triangle
             const float rA = radius + minorRadius * cosv0;
@@ -202,22 +202,22 @@ private Q_SLOTS:
             const auto posA = QVector3D(rA * cosu0, rA * sinu0, minorRadius * sinv0);
             const auto posB = QVector3D(rB * cosu0, rB * sinu0, minorRadius * sinv1);
             const auto posC = QVector3D(rC * cosu1, rC * sinu1, minorRadius * sinv0);
-            const auto positions = (QVector<QVector3D>() << posA << posB << posC);
+            const QList<QVector3D> positions = { posA, posB, posC };
 
             const auto nA = QVector3D(cosv0 * cosu0, cosv0 * sinu0, sinv0).normalized();
             const auto nB = QVector3D(cosv1 * cosu0, cosv1 * sinu0, sinv1).normalized();
             const auto nC = QVector3D(cosv0 * cosu1, cosv0 * sinu1, sinv0).normalized();
-            const auto normals = (QVector<QVector3D>() << nA << nB << nC);
+            const QList<QVector3D> normals = { nA, nB, nC };
 
             const auto tcA = QVector2D(u0, v0) / float(2.0 * M_PI);
             const auto tcB = QVector2D(u0, v1) / float(2.0 * M_PI);
             const auto tcC = QVector2D(u1, v0) / float(2.0 * M_PI);
-            const auto texCoords = (QVector<QVector2D>() << tcA << tcB << tcC);
+            const QList<QVector2D> texCoords = { tcA, tcB, tcC };
 
             const auto tA = QVector4D(-sinu0, cosu0, 0.0f, 1.0f);
             const auto tB = QVector4D(-sinu0, cosu0, 0.0f, 1.0f);
             const auto tC = QVector4D(-sinu1, cosu1, 0.0f, 1.0f);
-            const auto tangents = (QVector<QVector4D>() << tA << tB << tC);
+            const QList<QVector4D> tangents = { tA, tB, tC };
 
             // Add the row
             QTest::newRow("8rings_8slices_firstTriangle")
@@ -260,7 +260,7 @@ private Q_SLOTS:
 
             // The triangle and indices
             const int triangleIndex = 127;
-            const auto indices = (QVector<quint16>() << 71 << 80 << 79);
+            const QList<quint16> indices = { 71, 80, 79 };
 
             // Calculate attributes for vertices A, B, and C of the triangle
             const float rA = radius + minorRadius * cosv1;
@@ -270,22 +270,22 @@ private Q_SLOTS:
             const auto posA = QVector3D(rA * cosu0, rA * sinu0, minorRadius * sinv1);
             const auto posB = QVector3D(rB * cosu1, rB * sinu1, minorRadius * sinv1);
             const auto posC = QVector3D(rC * cosu1, rC * sinu1, minorRadius * sinv0);
-            const auto positions = (QVector<QVector3D>() << posA << posB << posC);
+            const QList<QVector3D> positions = { posA, posB, posC };
 
             const auto nA = QVector3D(cosv1 * cosu0, cosv1 * sinu0, sinv1).normalized();
             const auto nB = QVector3D(cosv1 * cosu1, cosv1 * sinu1, sinv1).normalized();
             const auto nC = QVector3D(cosv0 * cosu1, cosv0 * sinu1, sinv0).normalized();
-            const auto normals = (QVector<QVector3D>() << nA << nB << nC);
+            const QList<QVector3D> normals = { nA, nB, nC };
 
             const auto tcA = QVector2D(u0, v1) / float(2.0 * M_PI);
             const auto tcB = QVector2D(u1, v1) / float(2.0 * M_PI);
             const auto tcC = QVector2D(u1, v0) / float(2.0 * M_PI);
-            const auto texCoords = (QVector<QVector2D>() << tcA << tcB << tcC);
+            const QList<QVector2D> texCoords = { tcA, tcB, tcC };
 
             const auto tA = QVector4D(-sinu0, cosu1, 0.0f, 1.0f);
             const auto tB = QVector4D(-sinu1, cosu1, 0.0f, 1.0f);
             const auto tC = QVector4D(-sinu1, cosu1, 0.0f, 1.0f);
-            const auto tangents = (QVector<QVector4D>() << tA << tB << tC);
+            const QList<QVector4D> tangents = { tA, tB, tC };
 
             // Add the row
             QTest::newRow("8rings_8slices_lastTriangle")
@@ -299,7 +299,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DExtras::QTorusGeometry geometry;
-        const QVector<Qt3DCore::QAttribute *> attributes = geometry.attributes();
+        const QList<Qt3DCore::QAttribute *> attributes = geometry.attributes();
         Qt3DCore::QAttribute *positionAttribute = geometry.positionAttribute();
         Qt3DCore::QAttribute *normalAttribute = geometry.normalAttribute();
         Qt3DCore::QAttribute *texCoordAttribute = geometry.texCoordAttribute();
@@ -329,11 +329,11 @@ private Q_SLOTS:
 
         // Check specific indices and vertex attributes of triangle under test
         QFETCH(int, triangleIndex);
-        QFETCH(QVector<quint16>, indices);
-        QFETCH(QVector<QVector3D>, positions);
-        QFETCH(QVector<QVector3D>, normals);
-        QFETCH(QVector<QVector2D>, texCoords);
-//        QFETCH(QVector<QVector4D>, tangents);
+        QFETCH(QList<quint16>, indices);
+        QFETCH(QList<QVector3D>, positions);
+        QFETCH(QList<QVector3D>, normals);
+        QFETCH(QList<QVector2D>, texCoords);
+//        QFETCH(QList<QVector4D>, tangents);
 
         int i = 0;
         for (auto index : indices) {

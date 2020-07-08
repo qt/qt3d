@@ -67,7 +67,7 @@ private Q_SLOTS:
         arbiter.setArbiterOnNode(axisInput.data());
 
         // WHEN
-        QVector<int> buttons = QVector<int>() << 555;
+        const QList<int> buttons = { 555 };
         axisInput->setButtons(buttons);
 
         // THEN

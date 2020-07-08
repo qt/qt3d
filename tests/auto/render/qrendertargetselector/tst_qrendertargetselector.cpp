@@ -86,7 +86,7 @@ private Q_SLOTS:
         arbiter.clear();
 
         // WHEN
-        QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> outputs;
+        QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> outputs;
         outputs << Qt3DRender::QRenderTargetOutput::Color0 << Qt3DRender::QRenderTargetOutput::Depth;
         renderTargetSelector->setOutputs(outputs);
         QCoreApplication::processEvents();
@@ -105,7 +105,7 @@ private Q_SLOTS:
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
         // WHEN
-        renderTargetSelector->setOutputs(QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());
+        renderTargetSelector->setOutputs(QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());
         QCoreApplication::processEvents();
 
         // THEN

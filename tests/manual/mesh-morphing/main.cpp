@@ -111,18 +111,14 @@ int main(int argc, char **argv)
     attributes.push_back(Qt3DCore::QAttribute::defaultPositionAttributeName());
     attributes.push_back(Qt3DCore::QAttribute::defaultNormalAttributeName());
 
-    QVector<Qt3DAnimation::QMorphTarget*> morphTargets;
-    morphTargets.push_back(Qt3DAnimation::QMorphTarget::fromGeometry(cylinder1, attributes));
-    morphTargets.push_back(Qt3DAnimation::QMorphTarget::fromGeometry(cylinder2, attributes));
-    morphTargets.push_back(Qt3DAnimation::QMorphTarget::fromGeometry(cylinder3, attributes));
-    morphTargets.push_back(morphTargets.first());
+    const QList<Qt3DAnimation::QMorphTarget*> morphTargets
+            = { Qt3DAnimation::QMorphTarget::fromGeometry(cylinder1, attributes),
+                Qt3DAnimation::QMorphTarget::fromGeometry(cylinder2, attributes),
+                Qt3DAnimation::QMorphTarget::fromGeometry(cylinder3, attributes),
+                Qt3DAnimation::QMorphTarget::fromGeometry(cylinder1, attributes) };
 
     Qt3DAnimation::QVertexBlendAnimation *animation = new Qt3DAnimation::QVertexBlendAnimation;
-    QVector<float> times;
-    times.push_back(0.0f);
-    times.push_back(5.0f);
-    times.push_back(8.0f);
-    times.push_back(12.0f);
+    const QList<float> times = { 0.0f, 5.0f, 8.0f, 12.0f };
 
     auto renderer = new Qt3DRender::QGeometryRenderer;
     renderer->setView(mesh);

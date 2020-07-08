@@ -89,7 +89,7 @@ public:
 
     QList<Qt3DCore::QNodeId> currentDependencyIds() const final
     {
-        return QList<Qt3DCore::QNodeId> { m_value1Id, m_value2Id };
+        return { m_value1Id, m_value2Id };
     }
 
     using ClipBlendNode::setClipResults;

@@ -144,13 +144,13 @@ private Q_SLOTS:
         handler.addInputDeviceIntegration(&deviceIntegration);
 
         auto firstInput = new Qt3DInput::QActionInput;
-        firstInput->setButtons(QVector<int>() << Qt::Key_Q << Qt::Key_W);
+        firstInput->setButtons(QList<int> { Qt::Key_Q, Qt::Key_W });
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
         simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
-        secondInput->setButtons(QVector<int>() << Qt::Key_A << Qt::Key_S);
+        secondInput->setButtons(QList<int> { Qt::Key_A, Qt::Key_S });
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
         simulateInitializationSync(secondInput, backendSecondInput);
@@ -232,13 +232,13 @@ private Q_SLOTS:
         handler.addInputDeviceIntegration(&deviceIntegration);
 
         auto firstInput = new Qt3DInput::QActionInput;
-        firstInput->setButtons(QVector<int>() << Qt::Key_Q);
+        firstInput->setButtons(QList<int> { Qt::Key_Q });
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
         simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
-        secondInput->setButtons(QVector<int>() << Qt::Key_W);
+        secondInput->setButtons(QList<int> { Qt::Key_W });
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
         simulateInitializationSync(secondInput, backendSecondInput);
@@ -280,13 +280,13 @@ private Q_SLOTS:
         handler.addInputDeviceIntegration(&deviceIntegration);
 
         auto firstInput = new Qt3DInput::QActionInput;
-        firstInput->setButtons(QVector<int>() << Qt::Key_Q);
+        firstInput->setButtons(QList<int> { Qt::Key_Q });
         firstInput->setSourceDevice(device);
         auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
         simulateInitializationSync(firstInput, backendFirstInput);
 
         auto secondInput = new Qt3DInput::QActionInput;
-        secondInput->setButtons(QVector<int>() << Qt::Key_W);
+        secondInput->setButtons(QList<int> { Qt::Key_W });
         secondInput->setSourceDevice(device);
         auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
         simulateInitializationSync(secondInput, backendSecondInput);

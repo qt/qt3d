@@ -62,9 +62,9 @@ namespace {
 } // anonymous
 
 using FGIdType = QPair<Qt3DCore::QNodeId, Qt3DRender::Render::FrameGraphNode::FrameGraphNodeType>;
-using BranchIdsAndTypes = QVector<FGIdType>;
+using BranchIdsAndTypes = QList<FGIdType>;
 
-Q_DECLARE_METATYPE(QVector<BranchIdsAndTypes>)
+Q_DECLARE_METATYPE(QList<BranchIdsAndTypes>)
 
 class tst_FrameGraphVisitor : public QObject
 {
@@ -75,7 +75,7 @@ private Q_SLOTS:
     {
         QTest::addColumn<Qt3DCore::QEntity *>("rootEntity");
         QTest::addColumn<Qt3DRender::QFrameGraphNode *>("fgRoot");
-        QTest::addColumn<QVector<BranchIdsAndTypes>>("fgNodeIdsPerBranch");
+        QTest::addColumn<QList<BranchIdsAndTypes>>("fgNodeIdsPerBranch");
 
         {
             Qt3DCore::QEntity *entity = new Qt3DCore::QEntity();
@@ -83,7 +83,7 @@ private Q_SLOTS:
 
             QTest::newRow("singleNode") << entity
                                         << static_cast<Qt3DRender::QFrameGraphNode *>(techniqueFilter)
-                                        << (QVector<BranchIdsAndTypes>()
+                                        << (QList<BranchIdsAndTypes>()
                                             << (BranchIdsAndTypes() << FGIdType(techniqueFilter->id(), Qt3DRender::Render::FrameGraphNode::TechniqueFilter))
                                             );
         }
@@ -96,7 +96,7 @@ private Q_SLOTS:
 
             QTest::newRow("singleBranch") << entity
                                         << static_cast<Qt3DRender::QFrameGraphNode *>(techniqueFilter)
-                                        << (QVector<BranchIdsAndTypes>()
+                                        << (QList<BranchIdsAndTypes>()
                                             << (BranchIdsAndTypes()
                                                 << FGIdType(noDraw->id(), Qt3DRender::Render::FrameGraphNode::NoDraw)
                                                 << FGIdType(frustumCulling->id(), Qt3DRender::Render::FrameGraphNode::FrustumCulling)
@@ -113,7 +113,7 @@ private Q_SLOTS:
 
             QTest::newRow("dualBranch") << entity
                                           << static_cast<Qt3DRender::QFrameGraphNode *>(techniqueFilter)
-                                          << (QVector<BranchIdsAndTypes>()
+                                          << (QList<BranchIdsAndTypes>()
                                               << (BranchIdsAndTypes()
                                                   << FGIdType(noDraw->id(), Qt3DRender::Render::FrameGraphNode::NoDraw)
                                                   << FGIdType(frustumCulling->id(), Qt3DRender::Render::FrameGraphNode::FrustumCulling)
@@ -134,7 +134,7 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(Qt3DCore::QEntity *, rootEntity);
         QFETCH(Qt3DRender::QFrameGraphNode *, fgRoot);
-        QFETCH(QVector<BranchIdsAndTypes>, fgNodeIdsPerBranch);
+        QFETCH(QList<BranchIdsAndTypes>, fgNodeIdsPerBranch);
         QScopedPointer<Qt3DRender::TestAspect> aspect(new Qt3DRender::TestAspect(rootEntity));
 
         // THEN

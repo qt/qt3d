@@ -59,11 +59,11 @@ private Q_SLOTS:
         arbiter.setArbiterOnNode(sortPolicy.data());
 
         // WHEN
-        auto sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>() << Qt3DRender::QSortPolicy::BackToFront
-                                                                      << Qt3DRender::QSortPolicy::Material
-                                                                      << Qt3DRender::QSortPolicy::Material
-                                                                      << Qt3DRender::QSortPolicy::FrontToBack;
-        auto sortTypesInt = QVector<int>();
+        const QList<Qt3DRender::QSortPolicy::SortType> sortTypes = { Qt3DRender::QSortPolicy::BackToFront,
+                                                                     Qt3DRender::QSortPolicy::Material,
+                                                                     Qt3DRender::QSortPolicy::Material,
+                                                                     Qt3DRender::QSortPolicy::FrontToBack };
+        auto sortTypesInt = QList<int>();
         transformVector(sortTypes, sortTypesInt);
         sortPolicy->setSortTypes(sortTypes);
         QCoreApplication::processEvents();

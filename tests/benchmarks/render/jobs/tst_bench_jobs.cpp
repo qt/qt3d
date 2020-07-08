@@ -130,7 +130,7 @@ namespace Qt3DRender {
         void onRootEntityChanged(Qt3DCore::QEntity *root)
         {
             if (!m_window) {
-                QVector<Qt3DCore::NodeTreeChange> nodes;
+                QList<Qt3DCore::NodeTreeChange> nodes;
                 Qt3DCore::QNodeVisitor v;
                 v.traverse(root, [&nodes](Qt3DCore::QNode *node) {
                     Qt3DCore::QNodePrivate *d = Qt3DCore::QNodePrivate::get(node);
@@ -385,7 +385,7 @@ private Q_SLOTS:
         qDebug() << 2;
 
         // WHEN
-        QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.renderBinJobs();
+        QList<Qt3DCore::QAspectJobPtr> jobs = aspect.renderBinJobs();
         qDebug() << 3;
         QBENCHMARK {
             qDebug() << 4;

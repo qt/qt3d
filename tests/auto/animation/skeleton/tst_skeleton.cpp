@@ -75,7 +75,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Skeleton backendSkeleton;
-        const QVector<QString> jointNames = { QLatin1String("rootJoint"),
+        const QList<QString> jointNames = { QLatin1String("rootJoint"),
                                               QLatin1String("child1Joint"),
                                               QLatin1String("child2Joint") };
 
@@ -103,11 +103,10 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.jointLocalPoses().size(), 0);
 
         // GIVEN
-        const QVector<QString> names = (QVector<QString>()
-                                        << QLatin1String("root")
-                                        << QLatin1String("child1")
-                                        << QLatin1String("child2"));
-        const QVector<Sqt> localPoses = (QVector<Sqt>() << Sqt() << Sqt() << Sqt());
+        const QList<QString> names = { QLatin1String("root"),
+                                       QLatin1String("child1"),
+                                       QLatin1String("child2") };
+        const QList<Sqt> localPoses = { Sqt(), Sqt(), Sqt() };
 
         // WHEN
         backendSkeleton.setJointNames(names);
@@ -140,12 +139,12 @@ private Q_SLOTS:
     void checkJointTransforms_data()
     {
         QTest::addColumn<Skeleton*>("skeleton");
-        QTest::addColumn<QVector<Sqt>>("jointTransforms");
+        QTest::addColumn<QList<Sqt>>("jointTransforms");
 
         const int count = 5;
         auto skeleton = new Skeleton;
         skeleton->setJointCount(count);
-        QVector<Sqt> jointTransforms;
+        QList<Sqt> jointTransforms;
         jointTransforms.reserve(count);
         for (int i = 0; i < count; ++i) {
             const float f = float(i);
@@ -166,7 +165,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Skeleton*, skeleton);
-        QFETCH(QVector<Sqt>, jointTransforms);
+        QFETCH(QList<Sqt>, jointTransforms);
 
         const int count = skeleton->jointCount();
         for (int i = 0; i < count; ++i) {

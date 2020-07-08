@@ -82,7 +82,7 @@ void SceneWalker::onStatusChanged()
 
     // The QSceneLoader instance is a component of an entity. The loaded scene
     // tree is added under this entity.
-    QVector<Qt3DCore::QEntity *> entities = m_loader->entities();
+    QList<Qt3DCore::QEntity *> entities = m_loader->entities();
 
     // Technically there could be multiple entities referencing the scene loader
     // but sharing is discouraged, and in our case there will be one anyhow.

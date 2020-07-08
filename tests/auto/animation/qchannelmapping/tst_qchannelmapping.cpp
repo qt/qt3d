@@ -48,7 +48,7 @@ class tst_QTargetEntity : public Qt3DCore::QEntity
     Q_PROPERTY(QVector4D vec4Property MEMBER m_vec4Property NOTIFY vec4PropertyChanged)
     Q_PROPERTY(QQuaternion quaternionProperty MEMBER m_quaternionProperty NOTIFY quaternionPropertyChanged)
     Q_PROPERTY(QVariantList listProperty MEMBER m_listProperty NOTIFY listPropertyChanged)
-    Q_PROPERTY(QVector<float> vecProperty MEMBER m_vecProperty NOTIFY vecPropertyChanged)
+    Q_PROPERTY(QList<float> vecProperty MEMBER m_vecProperty NOTIFY vecPropertyChanged)
 
 signals:
     void rotationChanged();
@@ -72,7 +72,7 @@ private:
     QVector4D m_vec4Property;
     QQuaternion m_quaternionProperty;
     QVariantList m_listProperty;
-    QVector<float> m_vecProperty;
+    QList<float> m_vecProperty;
 };
 
 
@@ -245,7 +245,7 @@ private Q_SLOTS:
         QVariantList list = QVariantList() << QVariant(1.0f) << QVariant(1.0) << QVariant(1.0f) << QVariant(1.0f) << QVariant(1.0f);
         QTest::newRow("variantlist") << QByteArrayLiteral("listProperty") << QVariant::fromValue(list) << static_cast<int>(QVariant::List) << 5;
 
-        QVector<float> vec(8);
+        QList<float> vec(8);
         QTest::newRow("vector") << QByteArrayLiteral("vecProperty") << QVariant::fromValue(vec) << qMetaTypeId<decltype(vec)>() << 8;
     }
 

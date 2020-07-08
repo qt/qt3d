@@ -138,7 +138,7 @@ private:
         }
     }
 
-    void compareFilterKeys(const QVector<Qt3DRender::QFilterKey *> &original, const QVector<Qt3DRender::QFilterKey *> &clone)
+    void compareFilterKeys(const QList<Qt3DRender::QFilterKey *> &original, const QList<Qt3DRender::QFilterKey *> &clone)
     {
         const int annotationsCount = original.size();
         QCOMPARE(annotationsCount, clone.size());
@@ -152,7 +152,7 @@ private:
         }
     }
 
-    void compareRenderStates(const QVector<Qt3DRender::QRenderState *> &original, const QVector<Qt3DRender::QRenderState *> &clone)
+    void compareRenderStates(const QList<Qt3DRender::QRenderState *> &original, const QList<Qt3DRender::QRenderState *> &clone)
     {
         const int renderStatesCount = original.size();
         QCOMPARE(renderStatesCount, clone.size());

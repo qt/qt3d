@@ -817,7 +817,7 @@ private Q_SLOTS:
         QVERIFY(error == 0);
 
         // THEN
-        QVector<QVector4D> colors(512 * 512);
+        QList<QVector4D> colors(512 * 512);
         textures[3]->bind();
         m_func->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, colors.data());
         textures[3]->release();

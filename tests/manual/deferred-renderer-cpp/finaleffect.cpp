@@ -99,7 +99,7 @@ FinalEffect::FinalEffect(Qt3DCore::QNode *parent)
 
 QList<Qt3DRender::QFilterKey *> FinalEffect::passCriteria() const
 {
-    return QList<Qt3DRender::QFilterKey *>() << m_passCriterion;
+    return { m_passCriterion };
 }
 
 QT_END_NAMESPACE

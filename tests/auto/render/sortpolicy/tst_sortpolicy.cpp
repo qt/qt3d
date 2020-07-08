@@ -60,8 +60,9 @@ private Q_SLOTS:
         Qt3DRender::Render::FrameGraphManager manager;
         manager.appendNode(parent.id(), parentBackend);
 
-        const auto sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>() << Qt3DRender::QSortPolicy::BackToFront
-                                                                            << Qt3DRender::QSortPolicy::Material;
+        const QList<Qt3DRender::QSortPolicy::SortType> sortTypes
+                = { Qt3DRender::QSortPolicy::BackToFront,
+                    Qt3DRender::QSortPolicy::Material };
         Qt3DRender::Render::SortPolicy backendNode;
         backendNode.setFrameGraphManager(&manager);
         Qt3DRender::QSortPolicy sortPolicy(&parent);
@@ -81,8 +82,9 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        const auto sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>() << Qt3DRender::QSortPolicy::BackToFront
-                                                                            << Qt3DRender::QSortPolicy::Material;
+        const QList<Qt3DRender::QSortPolicy::SortType> sortTypes
+                = { Qt3DRender::QSortPolicy::BackToFront,
+                    Qt3DRender::QSortPolicy::Material };
         TestRenderer renderer;
         Qt3DRender::Render::SortPolicy backendNode;
         backendNode.setRenderer(&renderer);

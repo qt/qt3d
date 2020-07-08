@@ -105,7 +105,7 @@ private:
             abc[2] = c;
         }
     };
-    QVector<TestTriangle> m_triangles;
+    QList<TestTriangle> m_triangles;
 };
 
 class tst_TriangleVisitor : public Qt3DCore::QBackendNodeTester

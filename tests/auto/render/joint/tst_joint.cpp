@@ -66,7 +66,7 @@ private Q_SLOTS:
         inverseBind.rotate(-45.0f, 1.0f, 0.0, 0.0f);
         joint.setInverseBindMatrix(inverseBind);
 
-        QVector<QJoint *> childJoints;
+        QList<QJoint *> childJoints;
         for (int i = 0; i < 10; ++i) {
             const auto childJoint = new QJoint();
             joint.addChildJoint(childJoint);
@@ -118,7 +118,7 @@ private Q_SLOTS:
         inverseBind.rotate(-45.0f, 1.0f, 0.0, 0.0f);
         joint.setInverseBindMatrix(inverseBind);
 
-        QVector<QJoint *> childJoints;
+        QList<QJoint *> childJoints;
         for (int i = 0; i < 10; ++i) {
             const auto childJoint = new QJoint();
             joint.addChildJoint(childJoint);
@@ -193,7 +193,7 @@ private Q_SLOTS:
         QCOMPARE(backendJoint.inverseBindMatrix(), newInverseBind);
 
         // WHEN
-        QVector<QJoint *> childJoints;
+        QList<QJoint *> childJoints;
         for (int i = 0; i < 10; ++i) {
             const auto childJoint = new QJoint();
             childJoints.push_back(childJoint);
@@ -272,7 +272,7 @@ private Q_SLOTS:
         QCOMPARE(backendJoint.inverseBindMatrix(), newInverseBind);
 
         // WHEN
-        QVector<QJoint *> childJoints;
+        QList<QJoint *> childJoints;
         for (int i = 0; i < 10; ++i) {
             const auto childJoint = new QJoint();
             joint.addChildJoint(childJoint);

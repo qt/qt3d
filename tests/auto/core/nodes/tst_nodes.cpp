@@ -207,7 +207,7 @@ signals:
 protected:
     QString m_customProperty;
     MyQNode *m_nodeProperty;
-    QVector<MyQNode *> m_attributes;
+    QList<MyQNode *> m_attributes;
 };
 
 class MyQEntity : public Qt3DCore::QEntity
@@ -304,7 +304,7 @@ signals:
 
 private:
     MyQNode *m_nodeProperty;
-    QVector<MyQNode *> m_attributes;
+    QList<MyQNode *> m_attributes;
 };
 
 class MyQComponent : public Qt3DCore::QComponent
@@ -363,9 +363,9 @@ public:
         events.push_back(Event{ change, id});
     }
 
-    QVector<Qt3DCore::QNodeId> filteredEvents(ChangeType change) const
+    QList<Qt3DCore::QNodeId> filteredEvents(ChangeType change) const
     {
-        QVector<Qt3DCore::QNodeId> result;
+        QList<Qt3DCore::QNodeId> result;
         for (const auto &event : events) {
             if (event.type == change)
                 result.push_back(event.nodeId);
@@ -378,7 +378,7 @@ public:
         Qt3DCore::QNodeId nodeId;
     };
 
-    mutable QVector<Event> events;
+    mutable QList<Event> events;
     mutable QHash<Qt3DCore::QNodeId, Qt3DCore::QNode *> allNodes;
 
 private:
@@ -1263,8 +1263,8 @@ void tst_Nodes::checkSceneIsSetOnConstructionWithParent()
     // WHEN
     Qt3DCore::QEntity *subTreeRoot = new Qt3DCore::QEntity(root.data());
 
-    QVector<Qt3DCore::QEntity *> children;
-    QVector<Qt3DCore::QComponent *> cmps;
+    QList<Qt3DCore::QEntity *> children;
+    QList<Qt3DCore::QComponent *> cmps;
     children.reserve(5);
     cmps.reserve(5);
     for (int i = 0; i < 5; ++i) {

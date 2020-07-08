@@ -129,12 +129,12 @@ private:
                                           Qt3DCore::QAttribute::AttributeType type,
                                           Qt3DCore::QGeometry *geometry);
     void compareAttributes(Qt3DCore::QAttribute *a1, Qt3DCore::QAttribute *a2);
-    void compareParameters(const QVector<Qt3DRender::QParameter *> &params1,
-                           const QVector<Qt3DRender::QParameter *> &params2);
-    void compareRenderPasses(const QVector<Qt3DRender::QRenderPass *> &passes1,
-                             const QVector<Qt3DRender::QRenderPass *> &passes2);
-    void compareFilterKeys(const QVector<Qt3DRender::QFilterKey *> &keys1,
-                           const QVector<Qt3DRender::QFilterKey *> &keys2);
+    void compareParameters(const QList<Qt3DRender::QParameter *> &params1,
+                           const QList<Qt3DRender::QParameter *> &params2);
+    void compareRenderPasses(const QList<Qt3DRender::QRenderPass *> &passes1,
+                             const QList<Qt3DRender::QRenderPass *> &passes2);
+    void compareFilterKeys(const QList<Qt3DRender::QFilterKey *> &keys1,
+                           const QList<Qt3DRender::QFilterKey *> &keys2);
     QUrl getTextureUrl(Qt3DRender::QAbstractTexture *tex);
     Qt3DRender::QGeometryRenderer *createCustomCube();
     Qt3DRender::QEffect *createOnTopEffect();
@@ -883,8 +883,8 @@ void tst_gltfPlugins::compareAttributes(Qt3DCore::QAttribute *a1, Qt3DCore::QAtt
     }
 }
 
-void tst_gltfPlugins::compareParameters(const QVector<Qt3DRender::QParameter *> &params1,
-                                        const QVector<Qt3DRender::QParameter *> &params2)
+void tst_gltfPlugins::compareParameters(const QList<Qt3DRender::QParameter *> &params1,
+                                        const QList<Qt3DRender::QParameter *> &params2)
 {
     QCOMPARE(params1.size(), params2.size());
     for (auto p1 : params1) {
@@ -913,8 +913,8 @@ void tst_gltfPlugins::compareParameters(const QVector<Qt3DRender::QParameter *> 
     }
 }
 
-void tst_gltfPlugins::compareRenderPasses(const QVector<Qt3DRender::QRenderPass *> &passes1,
-                                          const QVector<Qt3DRender::QRenderPass *> &passes2)
+void tst_gltfPlugins::compareRenderPasses(const QList<Qt3DRender::QRenderPass *> &passes1,
+                                          const QList<Qt3DRender::QRenderPass *> &passes2)
 {
     QCOMPARE(passes1.size(), passes2.size());
     for (auto pass1 : passes1) {
@@ -925,8 +925,8 @@ void tst_gltfPlugins::compareRenderPasses(const QVector<Qt3DRender::QRenderPass 
                 compareFilterKeys(pass1->filterKeys(), pass2->filterKeys());
                 compareParameters(pass1->parameters(), pass2->parameters());
 
-                QVector<Qt3DRender::QRenderState *> states1 = pass1->renderStates();
-                QVector<Qt3DRender::QRenderState *> states2 = pass2->renderStates();
+                const QList<Qt3DRender::QRenderState *> states1 = pass1->renderStates();
+                const QList<Qt3DRender::QRenderState *> states2 = pass2->renderStates();
                 QCOMPARE(states1.size(), states2.size());
                 for (auto state1 : states1) {
                     bool stateMatch = false;
@@ -949,8 +949,8 @@ void tst_gltfPlugins::compareRenderPasses(const QVector<Qt3DRender::QRenderPass 
     }
 }
 
-void tst_gltfPlugins::compareFilterKeys(const QVector<Qt3DRender::QFilterKey *> &keys1,
-                                        const QVector<Qt3DRender::QFilterKey *> &keys2)
+void tst_gltfPlugins::compareFilterKeys(const QList<Qt3DRender::QFilterKey *> &keys1,
+                                        const QList<Qt3DRender::QFilterKey *> &keys2)
 {
     QCOMPARE(keys1.size(), keys2.size());
     for (auto k1 : keys1) {

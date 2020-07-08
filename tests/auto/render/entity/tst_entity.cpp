@@ -50,7 +50,7 @@
 #include "testrenderer.h"
 
 typedef Qt3DCore::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
-typedef QVector<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
+typedef QList<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
@@ -64,9 +64,9 @@ QNodeId objectPickerUuid(Entity *entity) { return entity->componentUuid<ObjectPi
 QNodeId computeJobUuid(Entity *entity) { return entity->componentUuid<ComputeCommand>(); }
 QNodeId armatureUuid(Entity *entity) { return entity->componentUuid<Armature>(); }
 
-QVector<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
-QVector<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
-QVector<QNodeId> environmentLightsUuid(Entity *entity) { return entity->componentsUuid<EnvironmentLight>(); }
+QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
+QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
+QList<QNodeId> environmentLightsUuid(Entity *entity) { return entity->componentsUuid<EnvironmentLight>(); }
 
 class CompleteVisitor : public EntityVisitor
 {

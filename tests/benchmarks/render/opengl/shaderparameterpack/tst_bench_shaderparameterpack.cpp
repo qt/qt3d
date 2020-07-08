@@ -47,7 +47,7 @@ private Q_SLOTS:
         // GIVEN
         PackUniformHash pack;
 
-        QVector<int> randKeys(64);
+        QList<int> randKeys(64);
         QRandomGenerator gen;
 
         for (int i = 0; i < 64; ++i)

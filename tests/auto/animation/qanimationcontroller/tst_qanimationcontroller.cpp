@@ -199,7 +199,7 @@ private Q_SLOTS:
             animationController.setEntity(entity.data());
 
             // THEN
-            QVector<Qt3DAnimation::QAnimationGroup *> list = animationController.animationGroupList();
+            const QList<Qt3DAnimation::QAnimationGroup *> list = animationController.animationGroupList();
             QCOMPARE(list.size(), 2);
 
             QCOMPARE(list.at(0)->name(), animName1);
@@ -233,7 +233,7 @@ private Q_SLOTS:
             animationController.setEntity(entity.data());
 
             // THEN
-            QVector<Qt3DAnimation::QAnimationGroup *> list = animationController.animationGroupList();
+            const QList<Qt3DAnimation::QAnimationGroup *> list = animationController.animationGroupList();
             QCOMPARE(list.size(), 2);
 
             QCOMPARE(list.at(0)->name(), animName1);
@@ -251,7 +251,7 @@ private Q_SLOTS:
             animationController.setEntity(entity.data());
 
             // THEN
-            QVector<Qt3DAnimation::QAnimationGroup *> list = animationController.animationGroupList();
+            const QList<Qt3DAnimation::QAnimationGroup *> list = animationController.animationGroupList();
             QCOMPARE(list.size(), 1);
 
             QCOMPARE(list.at(0)->name(), animName1);

@@ -102,7 +102,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendPhysicalDeviceProxy.deviceName(), QStringLiteral("TestProxy"));
-        const QVector<Qt3DCore::QNodeId> pendingWrappers = manager.takePendingProxiesToLoad();
+        const QList<Qt3DCore::QNodeId> pendingWrappers = manager.takePendingProxiesToLoad();
         QCOMPARE(pendingWrappers.size(), 1);
         QCOMPARE(pendingWrappers.first(), deviceProxy.id());
     }

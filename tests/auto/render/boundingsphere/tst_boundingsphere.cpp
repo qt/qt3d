@@ -63,11 +63,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
+QList<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
 {
     using namespace Qt3DCore;
 
-    QVector<QNode *> nodes;
+    QList<QNode *> nodes;
     Qt3DCore::QNodeVisitor visitor;
     visitor.traverse(root, [&nodes](QNode *node) {
         nodes.append(node);
@@ -87,9 +87,9 @@ QVector<Qt3DCore::QNode *> getNodesForCreation(Qt3DCore::QNode *root)
     return nodes;
 }
 
-QVector<Qt3DCore::NodeTreeChange> nodeTreeChangesForNodes(const QVector<Qt3DCore::QNode *> nodes)
+QList<Qt3DCore::NodeTreeChange> nodeTreeChangesForNodes(const QList<Qt3DCore::QNode *> nodes)
 {
-    QVector<Qt3DCore::NodeTreeChange> nodeTreeChanges;
+    QList<Qt3DCore::NodeTreeChange> nodeTreeChanges;
     nodeTreeChanges.reserve(nodes.size());
 
     for (Qt3DCore::QNode *n : nodes) {
@@ -114,8 +114,8 @@ public:
         QRenderAspect::onRegistered();
         m_root = qobject_cast<Qt3DCore::QEntity *>(root);
 
-        const QVector<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
-        const QVector<Qt3DCore::NodeTreeChange> nodeTreeChanges = nodeTreeChangesForNodes(nodes);
+        const QList<Qt3DCore::QNode *> nodes = getNodesForCreation(root);
+        const QList<Qt3DCore::NodeTreeChange> nodeTreeChanges = nodeTreeChangesForNodes(nodes);
         d_func()->setRootAndCreateNodes(m_root, nodeTreeChanges);
 
         Render::Entity *rootEntity = nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
@@ -150,8 +150,8 @@ public:
             });
     }
     Qt3DCore::QNode *lookupNode(Qt3DCore::QNodeId id) const override { return  m_frontEndNodes.value(id, nullptr); }
-    QVector<Qt3DCore::QNode *> lookupNodes(const QVector<Qt3DCore::QNodeId> &ids) const override {
-        QVector<Qt3DCore::QNode *> res;
+    QList<Qt3DCore::QNode *> lookupNodes(const QList<Qt3DCore::QNodeId> &ids) const override {
+        QList<Qt3DCore::QNode *> res;
         for (const auto &id: ids) {
             auto node = m_frontEndNodes.value(id, nullptr);
             if (node)
@@ -293,7 +293,7 @@ private Q_SLOTS:
     }
 
     void ritterSphereCubePoints() {
-        QVector<Vector3D> cubePts={
+        QList<Vector3D> cubePts={
             Vector3D(-0.5, -0.5,  0.5),
             Vector3D( 0.5, -0.5, -0.5),
             Vector3D(-0.5,  0.5, -0.5),
@@ -312,7 +312,7 @@ private Q_SLOTS:
     }
 
     void ritterSphereRandomPoints() {
-        QVector<Vector3D> randomPts={
+        QList<Vector3D> randomPts={
             Vector3D(-81, 55, 46),
             Vector3D(-91, -73, -42),
             Vector3D(-50, -76, -77),
@@ -334,7 +334,7 @@ private Q_SLOTS:
     }
 
     void ritterSphereOnePoint() {
-        QVector<Vector3D> singlePt={
+        QList<Vector3D> singlePt={
             Vector3D(-0.5, -0.5, -0.5),
         };
         auto ritterSphere = Qt3DRender::Render::Sphere::fromPoints(singlePt);
@@ -464,7 +464,7 @@ private Q_SLOTS:
         for (int i = 0; i < 2; ++i)
             g->addAttribute(new Qt3DCore::QAttribute);
 
-        const QVector<Qt3DCore::QAttribute *> attrs = g->attributes();
+        const QList<Qt3DCore::QAttribute *> attrs = g->attributes();
         Qt3DCore::QAttribute *attr = attrs[0];
         attr->setBuffer(vbuffer);
         attr->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
@@ -576,7 +576,7 @@ private Q_SLOTS:
         Qt3DCore::QGeometry *g = new Qt3DCore::QGeometry;
         g->addAttribute(new Qt3DCore::QAttribute);
 
-        const QVector<Qt3DCore::QAttribute *> attrs = g->attributes();
+        const QList<Qt3DCore::QAttribute *> attrs = g->attributes();
         Qt3DCore::QAttribute *attr = attrs[0];
         attr->setBuffer(vbuffer);
         attr->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());

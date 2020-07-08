@@ -38,7 +38,7 @@ class tst_QMorphingAnimation : public QObject
     bool verifyAttribute(Qt3DCore::QGeometry *geometry, QString name,
                          Qt3DCore::QAttribute *attribute)
     {
-        const QVector<Qt3DCore::QAttribute *> attributes = geometry->attributes();
+        const QList<Qt3DCore::QAttribute *> attributes = geometry->attributes();
         for (const Qt3DCore::QAttribute *attr : attributes) {
             if (attr->name() == name) {
                 if (attr == attribute)
@@ -186,37 +186,14 @@ private Q_SLOTS:
         morphingAnimation.addMorphTarget(mt2);
         morphingAnimation.addMorphTarget(mt3);
 
-        QVector<float> positions;
-        QVector<float> weights;
-        positions.push_back(0.0f);
-        positions.push_back(1.0f);
-        positions.push_back(2.0f);
-        positions.push_back(3.0f);
-        positions.push_back(4.0f);
+        const QList<float> positions = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f };
         morphingAnimation.setTargetPositions(positions);
 
-        weights.resize(3);
-
-        weights[0] = 1.0f;
-        weights[1] = 0.0f;
-        weights[2] = 0.0f;
-        morphingAnimation.setWeights(0, weights);
-        weights[0] = 0.0f;
-        weights[1] = 0.0f;
-        weights[2] = 0.0f;
-        morphingAnimation.setWeights(1, weights);
-        weights[0] = 0.0f;
-        weights[1] = 1.0f;
-        weights[2] = 0.0f;
-        morphingAnimation.setWeights(2, weights);
-        weights[0] = 0.0f;
-        weights[1] = 0.0f;
-        weights[2] = 0.0f;
-        morphingAnimation.setWeights(3, weights);
-        weights[0] = 0.0f;
-        weights[1] = 0.0f;
-        weights[2] = 1.0f;
-        morphingAnimation.setWeights(4, weights);
+        morphingAnimation.setWeights(0, QList<float> { 1.0f, 0.0f, 0.0f });
+        morphingAnimation.setWeights(1, QList<float> { 0.0f, 0.0f, 0.0f });
+        morphingAnimation.setWeights(2, QList<float> { 0.0f, 1.0f, 0.0f });
+        morphingAnimation.setWeights(3, QList<float> { 0.0f, 0.0f, 0.0f });
+        morphingAnimation.setWeights(4, QList<float> { 0.0f, 0.0f, 1.0f });
 
         morphingAnimation.setMethod(Qt3DAnimation::QMorphingAnimation::Relative);
         {

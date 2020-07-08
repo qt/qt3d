@@ -49,20 +49,20 @@ public:
         deadCount += 1;
     }
 
-    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const override
+    inline QList<Qt3DCore::QNodeId> allDependencyIds() const override
     {
         return currentDependencyIds();
     }
 
-    QVector<Qt3DCore::QNodeId> currentDependencyIds() const final
+    QList<Qt3DCore::QNodeId> currentDependencyIds() const final
     {
-        return QVector<Qt3DCore::QNodeId>();
+        return {};
     }
 
     double duration() const final { return 0.0f; }
 
 protected:
-    Qt3DAnimation::Animation::ClipResults doBlend(const QVector<Qt3DAnimation::Animation::ClipResults> &) const final
+    Qt3DAnimation::Animation::ClipResults doBlend(const QList<Qt3DAnimation::Animation::ClipResults> &) const final
     {
         return Qt3DAnimation::Animation::ClipResults();
     }

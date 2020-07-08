@@ -86,7 +86,7 @@ void benchmarkAccessResources()
 {
     Qt3DCore::QResourceManager<Resource, int> manager;
     const int max = (1 << 16) - 1;
-    QVector<Qt3DCore::QHandle<Resource> > handles(max);
+    QList<Qt3DCore::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
         handles[i] = manager.acquire();
 
@@ -102,7 +102,7 @@ template<typename Resource>
 void benchmarkRandomAccessResource() {
     Qt3DCore::QResourceManager<Resource, int> manager;
     const int max = (1 << 16) - 1;
-    QVector<Qt3DCore::QHandle<Resource> > handles(max);
+    QList<Qt3DCore::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
         handles[i] = manager.acquire();
 
@@ -139,7 +139,7 @@ void benchmarkRandomLookupResources()
 {
     Qt3DCore::QResourceManager<Resource, int> manager;
     const int max = (1 << 16) - 1;
-    QVector<int> resourcesIndices(max);
+    QList<int> resourcesIndices(max);
     for (int i = 0; i < max; i++) {
         manager.getOrCreateResource(i);
         resourcesIndices[i] = i;
@@ -162,7 +162,7 @@ void benchmarkReleaseResources()
 {
     Qt3DCore::QResourceManager<Resource, int> manager;
     const int max = (1 << 16) - 1;
-    QVector<Qt3DCore::QHandle<Resource> > handles(max);
+    QList<Qt3DCore::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
         handles[i] = manager.acquire();
     for (int i = 0; i < max; i++)

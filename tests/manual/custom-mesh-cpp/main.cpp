@@ -149,11 +149,10 @@ int main(int argc, char* argv[])
     QVector3D blue(0.0f, 0.0f, 1.0f);
     QVector3D white(1.0f, 1.0f, 1.0f);
 
-    const QVector<QVector3D> vertices = QVector<QVector3D>()
-            << v0 << n0 << red
-            << v1 << n1 << blue
-            << v2 << n2 << green
-            << v3 << n3 << white;
+    const QList<QVector3D> vertices = { v0, n0, red,
+                                        v1, n1, blue,
+                                        v2, n2, green,
+                                        v3, n3, white };
 
     float *rawVertexArray = reinterpret_cast<float *>(vertexBufferData.data());
     int idx = 0;

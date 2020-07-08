@@ -638,7 +638,7 @@ private Q_SLOTS:
         // WHEN
         texture.createOrUpdateGLTexture();
         texture.setGenerator(QSharedPointer<FakeTexture2DGenerator>::create());
-        QVector<GLTexture::Image> images;
+        QList<GLTexture::Image> images;
         QImageTextureDataFunctorPtr gen = QImageTextureDataFunctorPtr::create(QUrl("qrc:/image.jpg"), true);
         images.push_back({gen, 1, 0, QAbstractTexture::CubeMapPositiveX});
         texture.setImages(images);
@@ -684,7 +684,7 @@ private Q_SLOTS:
 
         // WHEN
         texture.setGenerator(QSharedPointer<FakeTexture2DGenerator>::create());
-        QVector<GLTexture::Image> images;
+        QList<GLTexture::Image> images;
         // Test image has a size of 512/512
         QImageTextureDataFunctorPtr gen = QImageTextureDataFunctorPtr::create(QUrl("qrc:/image.jpg"), true);
         images.push_back({gen, 1, 0, QAbstractTexture::CubeMapPositiveX});
@@ -879,7 +879,7 @@ private Q_SLOTS:
         props.width = 1;
         props.height = 1;
         texture.setProperties(props);
-        QVector<GLTexture::Image> images;
+        QList<GLTexture::Image> images;
         // test a image texture data generator whose url is invalid
         QImageTextureDataFunctorPtr gen = QImageTextureDataFunctorPtr::create(QUrl(), true);
         images.push_back({gen, 0, 0, QAbstractTexture::CubeMapPositiveX});

@@ -101,7 +101,7 @@ SceneEffect::SceneEffect(Qt3DCore::QNode *parent)
 
 QList<Qt3DRender::QFilterKey *> SceneEffect::passCriteria() const
 {
-    return QList<Qt3DRender::QFilterKey *>() << m_passCriterion;
+    return { m_passCriterion };
 }
 
 QT_END_NAMESPACE

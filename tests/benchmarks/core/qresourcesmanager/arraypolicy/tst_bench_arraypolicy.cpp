@@ -69,7 +69,7 @@ void benchmarkReleaseResources()
     Qt3DCore::ArrayAllocatingPolicy<T> allocator;
 
     const int max = (1 << 16) - 1;
-    QVector<Qt3DCore::QHandle<T>> resources(max);
+    QList<Qt3DCore::QHandle<T>> resources(max);
     for (int i = 0; i < max; i++) {
         resources[i] = allocator.allocateResource();
     }
