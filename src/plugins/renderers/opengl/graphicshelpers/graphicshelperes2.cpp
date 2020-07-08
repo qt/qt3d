@@ -419,8 +419,10 @@ void GraphicsHelperES2::setMSAAEnabled(bool enabled)
     static bool showWarning = true;
     if (!showWarning)
         return;
-    showWarning = false;
-    qWarning() << "MSAA not available with OpenGL ES 2.0";
+    if (!enabled) {
+        showWarning = false;
+        qWarning() << "MSAA cannot be disabled with OpenGL ES 2.0";
+    }
 }
 
 void GraphicsHelperES2::setAlphaCoverageEnabled(bool enabled)
