@@ -69,7 +69,7 @@ public:
 
     Q_DECLARE_PUBLIC(QAxis)
 
-    QVector<QAbstractAxisInput *> m_inputs;
+    QList<QAbstractAxisInput *> m_inputs;
     float m_value;
 
     void setValue(float value)
@@ -83,7 +83,7 @@ public:
 
 struct QAxisData
 {
-    QVector<Qt3DCore::QNodeId> inputIds;
+    QList<Qt3DCore::QNodeId> inputIds;
 };
 
 } // Qt3DInput

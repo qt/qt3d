@@ -67,7 +67,7 @@ public:
     InputSequence();
     void cleanup();
 
-    inline QVector<Qt3DCore::QNodeId> sequences() const { return m_sequences; }
+    inline QList<Qt3DCore::QNodeId> sequences() const { return m_sequences; }
     inline qint64 timeout() const { return m_timeout; }
     inline qint64 buttonInterval() const { return m_buttonInterval; }
     inline qint64 startTime() const { return m_startTime; }
@@ -80,8 +80,8 @@ public:
     bool process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_sequences;
-    QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
+    QList<Qt3DCore::QNodeId> m_sequences;
+    QList<Qt3DCore::QNodeId> m_inputsToTrigger;
     qint64 m_timeout;
     qint64 m_buttonInterval;
     qint64 m_startTime;

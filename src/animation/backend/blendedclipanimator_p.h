@@ -89,8 +89,8 @@ public:
     int currentLoop() const { return m_currentLoop; }
     void setCurrentLoop(int currentLoop) { m_currentLoop = currentLoop; }
 
-    void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
-    QVector<MappingData> mappingData() const { return m_mappingData; }
+    void setMappingData(const QList<MappingData> &mappingData) { m_mappingData = mappingData; }
+    QList<MappingData> mappingData() const { return m_mappingData; }
 
     void animationClipMarkedDirty() { setDirty(Handler::BlendedClipAnimatorDirty); }
 
@@ -123,7 +123,7 @@ private:
     float m_normalizedLocalTime;
     float m_lastNormalizedLocalTime;
 
-    QVector<MappingData> m_mappingData;
+    QList<MappingData> m_mappingData;
 };
 
 } // namespace Animation

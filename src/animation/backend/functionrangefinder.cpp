@@ -69,7 +69,7 @@ namespace Animation {
     If the previous results are uncorrelated, a simple bisection is used.
  */
 
-FunctionRangeFinder::FunctionRangeFinder(const QVector<float> &x)
+FunctionRangeFinder::FunctionRangeFinder(const QList<float> &x)
     : m_x(x)
     , m_previousLowerBound(0)
     , m_correlated(0)

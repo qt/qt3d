@@ -72,7 +72,7 @@ public:
     explicit QThreadPooler(QObject *parent = nullptr);
     ~QThreadPooler();
 
-    QFuture<void> mapDependables(QVector<RunnableInterface *> &taskQueue);
+    QFuture<void> mapDependables(QList<RunnableInterface *> &taskQueue);
     int waitForAllJobs();
     void taskFinished(RunnableInterface *task);
     QFuture<void> future();
@@ -80,7 +80,7 @@ public:
     static int maxThreadCount();
 
 private:
-    void enqueueTasks(const QVector<RunnableInterface *> &tasks);
+    void enqueueTasks(const QList<RunnableInterface *> &tasks);
     void skipTask(RunnableInterface *task);
     void enqueueDepencies(RunnableInterface *task);
     void acquire(int add);

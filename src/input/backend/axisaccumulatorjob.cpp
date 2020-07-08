@@ -58,7 +58,7 @@ public:
 
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    QVector<AxisAccumulator *> updates;
+    QList<AxisAccumulator *> updates;
 };
 
 AxisAccumulatorJob::AxisAccumulatorJob(AxisAccumulatorManager *axisAccumulatormanager,

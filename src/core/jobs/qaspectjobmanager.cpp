@@ -76,7 +76,7 @@ void QAspectJobManager::enqueueJobs(const std::vector<QAspectJobPtr> &jobQueue)
 
     // Convert QJobs to Tasks
     QHash<QAspectJob *, AspectTaskRunnable *> tasksMap;
-    QVector<RunnableInterface *> taskList;
+    QList<RunnableInterface *> taskList;
     taskList.reserve(jobQueue.size());
     for (const QAspectJobPtr &job : jobQueue) {
         AspectTaskRunnable *task = new AspectTaskRunnable(systemService);
@@ -118,7 +118,7 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
     const int threadCount = m_threadPooler->maxThreadCount();
     QAtomicInt atomicCount(threadCount);
 
-    QVector<RunnableInterface *> taskList;
+    QList<RunnableInterface *> taskList;
     for (int i = 0; i < threadCount; ++i) {
         SyncTaskRunnable *syncTask = new SyncTaskRunnable(func, arg, &atomicCount);
         taskList << syncTask;

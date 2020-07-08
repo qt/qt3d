@@ -79,37 +79,31 @@ void QAbstractPhysicalDeviceBackendNodePrivate::addAxisSetting(int axisIdentifie
     axisIdSetting.m_axisSettingsId = axisSettingsId;
 
     // Replace if already present, otherwise append
-    bool replaced = false;
-    QVector<Input::AxisIdSetting>::iterator it;
-    QVector<Input::AxisIdSetting>::iterator end = m_axisSettings.end();
-    for (it = m_axisSettings.begin(); it != end; ++it) {
+    const auto end = m_axisSettings.end();
+    for (auto it = m_axisSettings.begin(); it != end; ++it) {
         if (it->m_axisIdentifier == axisIdentifier) {
             *it = axisIdSetting;
-            replaced = true;
-            break;
+            return;
         }
     }
-
-    if (!replaced)
-        m_axisSettings.push_back(axisIdSetting);
+    m_axisSettings.push_back(axisIdSetting);
 }
 
 void QAbstractPhysicalDeviceBackendNodePrivate::removeAxisSetting(Qt3DCore::QNodeId axisSettingsId)
 {
-    QVector<Input::AxisIdSetting>::iterator it;
-    for (it = m_axisSettings.begin(); it != m_axisSettings.end(); ++it) {
+    const auto end = m_axisSettings.end();
+    for (auto it = m_axisSettings.begin(); it != end; ++it) {
         if (it->m_axisSettingsId == axisSettingsId) {
             m_axisSettings.erase(it);
-            break;
+            return;
         }
     }
 }
 
 Input::MovingAverage &QAbstractPhysicalDeviceBackendNodePrivate::getOrCreateFilter(int axisIdentifier)
 {
-    QVector<Input::AxisIdFilter>::iterator it;
-    QVector<Input::AxisIdFilter>::iterator end = m_axisFilters.end();
-    for (it = m_axisFilters.begin(); it != end; ++it) {
+    const auto end = m_axisFilters.end();
+    for (auto it = m_axisFilters.begin(); it != end; ++it) {
         if (it->m_axisIdentifier == axisIdentifier)
             return it->m_filter;
     }
@@ -196,9 +190,8 @@ float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier)
 
     // Find axis settings for this axis (if any)
     Qt3DCore::QNodeId axisSettingId;
-    QVector<Input::AxisIdSetting>::const_iterator it;
-    QVector<Input::AxisIdSetting>::const_iterator end = d->m_axisSettings.cend();
-    for (it = d->m_axisSettings.cbegin(); it != end; ++it) {
+    const auto end = d->m_axisSettings.cend();
+    for (auto it = d->m_axisSettings.cbegin(); it != end; ++it) {
         if (it->m_axisIdentifier == axisIdentifier) {
             axisSettingId = it->m_axisSettingsId;
             break;

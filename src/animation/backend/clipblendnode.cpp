@@ -86,7 +86,7 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
 }
 
 /*
-    \fn QVector<Qt3DCore::QNodeId> ClipBlendNode::currentDependencyIds() const
+    \fn QList<Qt3DCore::QNodeId> ClipBlendNode::currentDependencyIds() const
     \internal
 
     Each subclass of ClipBlendNode must implement this function such that it
@@ -108,7 +108,7 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
 */
 
 /*
-    \fn QVector<Qt3DCore::QNodeId> ClipBlendNode::allDependencyIds() const
+    \fn QList<Qt3DCore::QNodeId> ClipBlendNode::allDependencyIds() const
     \internal
 
     Similar to currentDependencyIds() but returns the ids of all potential
@@ -130,9 +130,9 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
 void ClipBlendNode::blend(Qt3DCore::QNodeId animatorId)
 {
     // Obtain the clip results from each of the dependencies
-    const QVector<Qt3DCore::QNodeId> dependencyNodeIds = currentDependencyIds();
+    const QList<Qt3DCore::QNodeId> dependencyNodeIds = currentDependencyIds();
     const int dependencyCount = dependencyNodeIds.size();
-    QVector<ClipResults> blendData;
+    QList<ClipResults> blendData;
     blendData.reserve(dependencyCount);
     for (const auto dependencyId : dependencyNodeIds) {
         ClipBlendNode *dependencyNode = clipBlendNodeManager()->lookupNode(dependencyId);

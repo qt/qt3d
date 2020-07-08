@@ -71,7 +71,7 @@ void QTextureAtlasData::addImage(const AtlasTexture &texture, const QImage &imag
 QByteArray QTextureAtlasData::createUpdatedImageData()
 {
     m_mutex.lock();
-    const QVector<Update> updates = std::move(m_updates);
+    const QList<Update> updates = std::move(m_updates);
     m_mutex.unlock();
 
     // copy sub-images into the actual texture image

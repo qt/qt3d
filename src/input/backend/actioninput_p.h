@@ -67,14 +67,14 @@ public:
     ActionInput();
     void cleanup();
 
-    inline QVector<int> buttons() const { return m_buttons; }
+    inline QList<int> buttons() const { return m_buttons; }
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     bool process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
-    QVector<int> m_buttons;
+    QList<int> m_buttons;
     Qt3DCore::QNodeId m_sourceDevice;
 };
 

@@ -101,7 +101,7 @@ private:
 private:
     uint m_blockSize;
     uchar m_nbrBlock;
-    QVector<QFrameChunk> m_chunks;
+    QList<QFrameChunk> m_chunks;
     QFrameChunk *m_lastAllocatedChunck;
     QFrameChunk *m_lastFreedChunck;
 };
@@ -128,7 +128,7 @@ public:
 
     uint m_maxObjectSize;
     uint m_alignment;
-    QVector<QFixedFrameAllocator> m_allocatorPool;
+    QList<QFixedFrameAllocator> m_allocatorPool;
 };
 
 } // Qt3D

@@ -242,7 +242,7 @@ std::vector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
         jobs.insert(jobs.end(), std::make_move_iterator(integrationJobs.begin()), std::make_move_iterator(integrationJobs.end()));
     }
 
-    const QVector<Qt3DCore::QNodeId> proxiesToLoad = d->m_inputHandler->physicalDeviceProxyManager()->takePendingProxiesToLoad();
+    const QList<Qt3DCore::QNodeId> proxiesToLoad = d->m_inputHandler->physicalDeviceProxyManager()->takePendingProxiesToLoad();
     if (!proxiesToLoad.isEmpty()) {
         // Since loading wrappers occurs quite rarely, no point in keeping the job in a
         // member variable

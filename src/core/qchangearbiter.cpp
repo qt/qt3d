@@ -99,12 +99,12 @@ void QChangeArbiter::removeDirtyFrontEndNode(QNode *node)
                                 }), m_dirtyEntityComponentNodeChanges.end());
 }
 
-QVector<QNode *> QChangeArbiter::takeDirtyFrontEndNodes()
+QList<QNode *> QChangeArbiter::takeDirtyFrontEndNodes()
 {
     return std::move(m_dirtyFrontEndNodes);
 }
 
-QVector<ComponentRelationshipChange> QChangeArbiter::takeDirtyEntityComponentNodes()
+QList<ComponentRelationshipChange> QChangeArbiter::takeDirtyEntityComponentNodes()
 {
     return std::move(m_dirtyEntityComponentNodeChanges);
 }

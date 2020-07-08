@@ -72,7 +72,7 @@ public:
     struct UBO_Member
     {
         ShaderUniformBlock block;
-        QVector<QShaderDescription::BlockVariable> members;
+        QList<QShaderDescription::BlockVariable> members;
     };
 
     RHIShader();

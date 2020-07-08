@@ -70,14 +70,14 @@ class QActionInputPrivate : public QAbstractActionInputPrivate
 public:
     QActionInputPrivate();
 
-    QVector<int> m_buttons;
+    QList<int> m_buttons;
     QAbstractPhysicalDevice *m_sourceDevice;
 };
 
 struct QActionInputData
 {
     Qt3DCore::QNodeId sourceDeviceId;
-    QVector<int> buttons;
+    QList<int> buttons;
 };
 
 } // Qt3DInput

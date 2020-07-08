@@ -71,7 +71,7 @@ public:
     void cleanup() final;
 
     inline float scale() const { return m_scale; }
-    inline QVector<int> buttons() const { return m_buttons; }
+    inline QList<int> buttons() const { return m_buttons; }
 
     inline float acceleration() const { return m_acceleration < 0.0f ? qInf() : m_acceleration; }
     inline float deceleration() const { return m_deceleration < 0.0f ? qInf() : m_deceleration; }
@@ -85,7 +85,7 @@ public:
 private:
     void updateSpeedRatio(qint64 currentTime, UpdateType type);
 
-    QVector<int> m_buttons;
+    QList<int> m_buttons;
     float m_scale;
     float m_acceleration;
     float m_deceleration;

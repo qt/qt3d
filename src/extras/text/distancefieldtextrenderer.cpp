@@ -129,8 +129,8 @@ DistanceFieldTextRenderer::~DistanceFieldTextRenderer()
 }
 
 void DistanceFieldTextRenderer::setGlyphData(Qt3DRender::QAbstractTexture *glyphTexture,
-                                             const QVector<float> &vertexData,
-                                             const QVector<quint16> &indexData)
+                                             const QList<float> &vertexData,
+                                             const QList<quint16> &indexData)
 {
     Q_D(DistanceFieldTextRenderer);
 

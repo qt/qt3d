@@ -79,7 +79,7 @@ public:
     QAspectManager *m_aspectManager;
     QScene *m_scene;
     QSharedPointer<QEntity> m_root;
-    QVector<QAbstractAspect*> m_aspects;
+    QList<QAbstractAspect*> m_aspects;
     QHash<QString, QAbstractAspect *> m_namedAspects;
     bool m_initialized;
     QAspectEngine::RunMode m_runMode;

@@ -67,7 +67,7 @@ public:
         , m_deceleration(-1.0f)
     {}
 
-    QVector<int> m_buttons;
+    QList<int> m_buttons;
     float m_scale;
     float m_acceleration;
     float m_deceleration;
@@ -75,7 +75,7 @@ public:
 
 struct QButtonAxisInputData : public QAbstractAxisInputData
 {
-    QVector<int> buttons;
+    QList<int> buttons;
     float scale;
     float acceleration;
     float deceleration;

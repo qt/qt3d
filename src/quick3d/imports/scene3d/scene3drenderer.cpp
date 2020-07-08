@@ -389,7 +389,7 @@ void Scene3DRenderer::setSkipFrame(bool skip)
 }
 
 // Main Thread, Render Thread locked
-void Scene3DRenderer::setScene3DViews(const QVector<Scene3DView *> views)
+void Scene3DRenderer::setScene3DViews(const QList<Scene3DView *> &views)
 {
     m_views = views;
     m_dirtyViews = true;

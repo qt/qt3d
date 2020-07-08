@@ -86,7 +86,7 @@ public:
     void allowRender();
     void setCompositingMode(Scene3DItem::CompositingMode mode);
     void setSkipFrame(bool skip);
-    void setScene3DViews(const QVector<Scene3DView *> views);
+    void setScene3DViews(const QList<Scene3DView *> &views);
     void init(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEngine, QRenderAspect *renderAspect);
 
     QRenderAspect *renderAspect() const
@@ -124,7 +124,7 @@ private:
     bool m_skipFrame;
     QSemaphore m_allowRendering;
     Scene3DItem::CompositingMode m_compositingMode;
-    QVector<Scene3DView *> m_views;
+    QList<Scene3DView *> m_views;
     bool m_resetRequested = false;
     quint32 m_textureId;
 

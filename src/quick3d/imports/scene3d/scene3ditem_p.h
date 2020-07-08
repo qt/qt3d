@@ -163,7 +163,7 @@ private:
     CameraAspectRatioMode m_cameraAspectRatioMode;
     CompositingMode m_compositingMode;
     QOffscreenSurface *m_dummySurface;
-    QVector<Scene3DView *> m_views;
+    QList<Scene3DView *> m_views;
     QMetaObject::Connection m_windowConnection;
 };
 

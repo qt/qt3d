@@ -70,7 +70,7 @@ public:
 
     Q_DECLARE_PUBLIC(QComponent)
     bool m_shareable;
-    QVector<QEntity *> m_entities;
+    QList<QEntity *> m_entities;
 };
 
 }

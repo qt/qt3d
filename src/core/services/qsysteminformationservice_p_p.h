@@ -111,10 +111,10 @@ public:
     bool m_graphicsTraceEnabled;
 
     QElapsedTimer m_jobsStatTimer;
-    QThreadStorage<QVector<JobRunStats> *> m_jobStatsCached;
+    QThreadStorage<QList<JobRunStats> *> m_jobStatsCached;
 
-    QVector<QVector<JobRunStats> *> m_localStorages;
-    QVector<JobRunStats> *m_submissionStorage;
+    QList<QList<JobRunStats> *> m_localStorages;
+    QList<JobRunStats> *m_submissionStorage;
 
     QMutex m_localStoragesMutex;
 

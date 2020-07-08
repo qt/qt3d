@@ -83,7 +83,7 @@ void QQuick3DAnimationController::clearAnimationGroups(QQmlListProperty<QAnimati
 {
     QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
     if (controller) {
-        QVector<QAnimationGroup *> emptyList;
+        QList<QAnimationGroup *> emptyList;
         controller->parentAnimationController()->setAnimationGroups(emptyList);
     }
 }

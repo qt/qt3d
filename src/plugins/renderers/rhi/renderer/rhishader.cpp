@@ -275,7 +275,7 @@ std::vector<T> stableRemoveDuplicates(std::vector<T> in, Pred predicate)
 // changes dims into [0, 3, 3]
 // Given dims == [0, 3, 3] and maxs == [4, 4, 4]
 // changes dims into [1, 0, 0]
-bool incrementArray(QVarLengthArray<int> &dims, const QVector<int> &maxs)
+bool incrementArray(QVarLengthArray<int> &dims, const QList<int> &maxs)
 {
     const int n = dims.size();
     int i = n;
@@ -302,7 +302,7 @@ bool incrementArray(QVarLengthArray<int> &dims, const QVector<int> &maxs)
 // for all valable array values, given an array of dimension sizes.
 // Dimensions must all be >= 1
 template<typename F>
-void forEachArrayAccessor(const QVector<int> &maxs, F f)
+void forEachArrayAccessor(const QList<int> &maxs, F f)
 {
     if (std::any_of(maxs.begin(), maxs.end(), [](int v) { return v <= 0; }))
         return;

@@ -118,7 +118,7 @@ void QSystemInformationServicePrivate::addJobLogStatsEntry(QSystemInformationSer
         return;
 
     if (!m_jobStatsCached.hasLocalData()) {
-        auto jobVector = new QVector<JobRunStats>;
+        auto jobVector = new QList<JobRunStats>;
         m_jobStatsCached.setLocalData(jobVector);
         QMutexLocker lock(&m_localStoragesMutex);
         m_localStorages.push_back(jobVector);
@@ -134,13 +134,13 @@ void QSystemInformationServicePrivate::addSubmissionLogStatsEntry(QSystemInforma
 
     QMutexLocker lock(&m_localStoragesMutex);
     if (!m_jobStatsCached.hasLocalData()) {
-        m_submissionStorage = new QVector<JobRunStats>;
+        m_submissionStorage = new QList<JobRunStats>;
         m_jobStatsCached.setLocalData(m_submissionStorage);
     }
 
     // Handle the case where submission thread is also the main thread (Scene/Manual drive modes with no RenderThread)
     if (m_submissionStorage == nullptr && m_jobStatsCached.hasLocalData())
-        m_submissionStorage = new QVector<JobRunStats>;
+        m_submissionStorage = new QList<JobRunStats>;
 
     // When having no submission thread this can be null
     m_submissionStorage->push_back(stats);
@@ -174,12 +174,12 @@ void QSystemInformationServicePrivate::writeFrameJobLogStats()
         header.frameId = m_frameId;
         header.jobCount = 0;
 
-        for (const QVector<JobRunStats> *storage : qAsConst(m_localStorages))
+        for (const QList<JobRunStats> *storage : qAsConst(m_localStorages))
             header.jobCount += storage->size();
 
         m_traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
 
-        for (QVector<JobRunStats> *storage : qAsConst(m_localStorages)) {
+        for (QList<JobRunStats> *storage : qAsConst(m_localStorages)) {
             for (const JobRunStats &stat : *storage)
                 m_traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
             storage->clear();

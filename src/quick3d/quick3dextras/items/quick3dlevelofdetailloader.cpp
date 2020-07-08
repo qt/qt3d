@@ -144,13 +144,13 @@ void Quick3DLevelOfDetailLoader::setThresholdType(Qt3DRender::QLevelOfDetail::Th
     d->m_lod->setThresholdType(thresholdType);
 }
 
-QVector<qreal> Quick3DLevelOfDetailLoader::thresholds() const
+QList<qreal> Quick3DLevelOfDetailLoader::thresholds() const
 {
     Q_D(const Quick3DLevelOfDetailLoader);
     return d->m_lod->thresholds();
 }
 
-void Quick3DLevelOfDetailLoader::setThresholds(const QVector<qreal> &thresholds)
+void Quick3DLevelOfDetailLoader::setThresholds(const QList<qreal> &thresholds)
 {
     Q_D(Quick3DLevelOfDetailLoader);
     d->m_lod->setThresholds(thresholds);

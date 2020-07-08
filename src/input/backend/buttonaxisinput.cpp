@@ -104,7 +104,7 @@ void ButtonAxisInput::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool fir
 
 namespace {
 
-bool anyOfRequiredButtonsPressed(const QVector<int> &buttons, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
+bool anyOfRequiredButtonsPressed(const QList<int> &buttons, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
 {
     bool validButtonWasPressed = false;
     for (int button : buttons) {

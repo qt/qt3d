@@ -68,7 +68,7 @@ void LerpClipBlend::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool first
     m_endClipId = Qt3DCore::qIdForNode(node->endClip());
 }
 
-ClipResults LerpClipBlend::doBlend(const QVector<ClipResults> &blendData) const
+ClipResults LerpClipBlend::doBlend(const QList<ClipResults> &blendData) const
 {
     Q_ASSERT(blendData.size() == 2);
     Q_ASSERT(blendData[0].size() == blendData[1].size());

@@ -49,8 +49,8 @@ namespace Qt3DRender {
 Q_LOGGING_CATEGORY(ObjGeometryLoaderLog, "Qt3D.ObjGeometryLoader", QtWarningMsg)
 
 static void addFaceVertex(const FaceIndices &faceIndices,
-                          QVector<FaceIndices>& faceIndexVector,
-                          QHash<FaceIndices, unsigned int>& faceIndexMap);
+                          QList<FaceIndices> &faceIndexVector,
+                          QHash<FaceIndices, unsigned int> &faceIndexMap);
 
 inline uint qHash(const FaceIndices &faceIndices)
 {
@@ -65,11 +65,11 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
     // for the positions, normals and texture coords;
     // Generate unique vertices (in OpenGL parlance) and output to points, texCoords,
     // normals and calculate mapping from faces to unique indices
-    QVector<QVector3D> positions;
-    QVector<QVector3D> normals;
-    QVector<QVector2D> texCoords;
+    QList<QVector3D> positions;
+    QList<QVector3D> normals;
+    QList<QVector2D> texCoords;
     QHash<FaceIndices, unsigned int> faceIndexMap;
-    QVector<FaceIndices> faceIndexVector;
+    QList<FaceIndices> faceIndexVector;
 
     bool skipping = false;
     int positionsOffset = 0;
@@ -246,8 +246,8 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
 }
 
 static void addFaceVertex(const FaceIndices &faceIndices,
-                          QVector<FaceIndices>& faceIndexVector,
-                          QHash<FaceIndices, unsigned int>&faceIndexMap)
+                          QList<FaceIndices> &faceIndexVector,
+                          QHash<FaceIndices, unsigned int> &faceIndexMap)
 {
     if (faceIndices.positionIndex != std::numeric_limits<unsigned int>::max()) {
         faceIndexVector.append(faceIndices);

@@ -65,13 +65,13 @@ class Q_AUTOTEST_EXPORT Action : public BackendNode
 public:
     Action();
     void cleanup();
-    inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
+    inline QList<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline bool actionTriggered() const { return m_actionTriggered; }
     void setActionTriggered(bool actionTriggered);
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_inputs;
+    QList<Qt3DCore::QNodeId> m_inputs;
     bool m_actionTriggered;
 };
 

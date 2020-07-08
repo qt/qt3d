@@ -89,7 +89,7 @@ public:
     void removeObservable(QNode *observable);
 
     QNode *lookupNode(QNodeId id) const override;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const override;
+    QList<QNode *> lookupNodes(const QList<QNodeId> &ids) const override;
 
     QNode *rootNode() const;
 
@@ -97,7 +97,7 @@ public:
     QChangeArbiter *arbiter() const;
 
     // Component -> Entities
-    QVector<QNodeId> entitiesForComponent(QNodeId id) const;
+    QList<QNodeId> entitiesForComponent(QNodeId id) const;
     void addEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
     void removeEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
     bool hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);

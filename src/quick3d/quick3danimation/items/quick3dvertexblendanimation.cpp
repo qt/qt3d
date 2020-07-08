@@ -93,7 +93,7 @@ void QQuick3DVertexBlendAnimation::clearMorphTargets(QQmlListProperty<Qt3DAnimat
     QQuick3DVertexBlendAnimation *animation
             = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
     if (animation) {
-        QVector<Qt3DAnimation::QMorphTarget *> emptyList;
+        QList<Qt3DAnimation::QMorphTarget *> emptyList;
         animation->parentVertexBlendAnimation()->setMorphTargets(emptyList);
     }
 }

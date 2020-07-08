@@ -64,13 +64,13 @@ QThreadPooler::~QThreadPooler()
     locker.unlock();
 }
 
-void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
+void QThreadPooler::enqueueTasks(const QList<RunnableInterface *> &tasks)
 {
     // The caller have to set the mutex
-    const QVector<RunnableInterface *>::const_iterator end = tasks.cend();
+    const QList<RunnableInterface *>::const_iterator end = tasks.cend();
 
     m_totalRunJobs = 0;
-    for (QVector<RunnableInterface *>::const_iterator it = tasks.cbegin();
+    for (QList<RunnableInterface *>::const_iterator it = tasks.cbegin();
          it != end; ++it) {
 
         // Only AspectTaskRunnables are checked for dependencies.
@@ -147,7 +147,7 @@ void QThreadPooler::taskFinished(RunnableInterface *task)
     }
 }
 
-QFuture<void> QThreadPooler::mapDependables(QVector<RunnableInterface *> &taskQueue)
+QFuture<void> QThreadPooler::mapDependables(QList<RunnableInterface *> &taskQueue)
 {
     const QMutexLocker locker(&m_mutex);
 

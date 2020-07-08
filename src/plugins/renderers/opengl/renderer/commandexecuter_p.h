@@ -48,9 +48,9 @@
 // We mean it.
 //
 
-#include <QVector>
-#include <QVariant>
+#include <QList>
 #include <QMutex>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
@@ -84,7 +84,7 @@ public:
 
 private:
     Render::OpenGL::Renderer *m_renderer;
-    QVector<Qt3DCore::Debug::AsynchronousCommandReply *> m_pendingCommands;
+    QList<Qt3DCore::Debug::AsynchronousCommandReply *> m_pendingCommands;
     QMutex m_pendingCommandsMutex;
 };
 

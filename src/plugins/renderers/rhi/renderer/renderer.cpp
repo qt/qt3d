@@ -2645,21 +2645,21 @@ void Renderer::cleanGraphicsResources()
     }
 
     // Clean buffers
-    const QVector<Qt3DCore::QNodeId> buffersToRelease =
+    const QList<Qt3DCore::QNodeId> buffersToRelease =
             m_nodesManager->bufferManager()->takeBuffersToRelease();
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_submissionContext->releaseBuffer(bufferId);
 
     // When Textures are cleaned up, their id is saved so that they can be
     // cleaned up in the render thread
-    const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
+    const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
     for (const Qt3DCore::QNodeId textureCleanedUpId : cleanedUpTextureIds)
         cleanupTexture(textureCleanedUpId);
 
     // Abandon GL shaders when a Shader node is destroyed Note: We are sure
     // that when this gets executed, all scene changes have been received and
     // shader nodes updated
-    const QVector<Qt3DCore::QNodeId> cleanedUpShaderIds =
+    const QList<Qt3DCore::QNodeId> cleanedUpShaderIds =
             m_nodesManager->shaderManager()->takeShaderIdsToCleanup();
     for (const Qt3DCore::QNodeId shaderCleanedUpId : cleanedUpShaderIds) {
         cleanupShader(m_nodesManager->shaderManager()->lookupResource(shaderCleanedUpId));
@@ -2667,7 +2667,7 @@ void Renderer::cleanGraphicsResources()
         m_nodesManager->shaderManager()->releaseResource(shaderCleanedUpId);
     }
 
-    const QVector<Qt3DCore::QNodeId> cleanedUpRenderTargetIds =
+    const QList<Qt3DCore::QNodeId> cleanedUpRenderTargetIds =
             m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
     for (const Qt3DCore::QNodeId renderTargetCleanedUpId : cleanedUpRenderTargetIds) {
         cleanupRenderTarget(m_nodesManager->renderTargetManager()->lookupResource(renderTargetCleanedUpId));

@@ -48,7 +48,7 @@ namespace Qt3DAnimation {
 class QChannelComponentPrivate
 {
 public:
-    QVector<QKeyFrame> m_keyFrames;
+    QList<QKeyFrame> m_keyFrames;
     QString m_name;
 };
 

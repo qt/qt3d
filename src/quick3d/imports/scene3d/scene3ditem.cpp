@@ -362,7 +362,7 @@ void Scene3DItem::addView(Scene3DView *view)
         surfaceSelector->setSurface(window());
 
         // Copy setting properties from first View
-        QVector<Qt3DRender::QRenderSettings *> viewRenderSettings = subtreeRoot->componentsOfType<Qt3DRender::QRenderSettings>();
+        const QList<Qt3DRender::QRenderSettings *> viewRenderSettings = subtreeRoot->componentsOfType<Qt3DRender::QRenderSettings>();
         if (viewRenderSettings.size() > 0) {
             Qt3DRender::QRenderSettings *viewRenderSetting = viewRenderSettings.first();
             settings->setRenderPolicy(viewRenderSetting->renderPolicy());

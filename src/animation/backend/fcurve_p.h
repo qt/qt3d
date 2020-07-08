@@ -54,7 +54,7 @@
 #include <Qt3DAnimation/qchannel.h>
 #include <Qt3DAnimation/qchannelcomponent.h>
 #include <Qt3DAnimation/qkeyframe.h>
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 #ifndef QT_NO_DEBUG_STREAM
 #include <QtCore/qdebug.h>
@@ -91,8 +91,8 @@ public:
     void setFromQChannelComponent(const QChannelComponent &qcc);
 
 private:
-    QVector<float> m_localTimes;
-    QVector<Keyframe> m_keyframes;
+    QList<float> m_localTimes;
+    QList<Keyframe> m_keyframes;
 
     FunctionRangeFinder m_rangeFinder;
 };
@@ -149,7 +149,7 @@ struct Channel
 {
     QString name;
     int jointIndex = -1;
-    QVector<ChannelComponent> channelComponents;
+    QList<ChannelComponent> channelComponents;
 
     void read(const QJsonObject &json);
     void setFromQChannel(const QChannel &qch);

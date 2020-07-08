@@ -112,7 +112,7 @@ public:
 
 public:
     QSharedPointer<QAspectJob> m_job;
-    QVector<AspectTaskRunnable *> m_dependers;
+    QList<AspectTaskRunnable *> m_dependers;
     int m_dependerCount = 0;
 
 private:

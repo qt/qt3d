@@ -68,18 +68,18 @@ public:
     LoadProxyDeviceJob();
     ~LoadProxyDeviceJob();
 
-    void setProxiesToLoad(const QVector<Qt3DCore::QNodeId> &proxies);
+    void setProxiesToLoad(const QList<Qt3DCore::QNodeId> &proxies);
     void setInputHandler(InputHandler *handler);
 
     InputHandler *inputHandler() const;
-    QVector<Qt3DCore::QNodeId> proxies() const;
+    QList<Qt3DCore::QNodeId> proxies() const;
 
     void run() final;
 private:
     Q_DECLARE_PRIVATE(LoadProxyDeviceJob)
 
     InputHandler *m_inputHandler;
-    QVector<Qt3DCore::QNodeId> m_proxies;
+    QList<Qt3DCore::QNodeId> m_proxies;
 };
 
 typedef QSharedPointer<LoadProxyDeviceJob> LoadProxyDeviceJobPtr;

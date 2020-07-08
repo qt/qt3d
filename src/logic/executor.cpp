@@ -61,12 +61,12 @@ Executor::Executor(QObject *parent)
 /*!
    Called from context of main thread
 */
-void Executor::processLogicFrameUpdates(const QVector<QNodeId> &nodeIds, float dt)
+void Executor::processLogicFrameUpdates(const QList<QNodeId> &nodeIds, float dt)
 {
     if (!m_scene || nodeIds.isEmpty())
         return;
 
-    const QVector<QNode *> nodes = m_scene->lookupNodes(nodeIds);
+    const QList<QNode *> nodes = m_scene->lookupNodes(nodeIds);
     for (QNode *node : nodes) {
         QFrameAction *frameAction = qobject_cast<QFrameAction *>(node);
         if (frameAction && frameAction->isEnabled())

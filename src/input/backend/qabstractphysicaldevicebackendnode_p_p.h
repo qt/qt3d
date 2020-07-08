@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 #include <Qt3DCore/qnodeid.h>
 
 #include <Qt3DInput/private/movingaverage_p.h>
@@ -98,8 +98,8 @@ public:
     Input::AxisSetting *getAxisSetting(Qt3DCore::QNodeId axisSettingId) const;
 
     Qt3DCore::QNodeIdVector m_currentAxisSettingIds;
-    QVector<Input::AxisIdSetting> m_axisSettings;
-    QVector<Input::AxisIdFilter> m_axisFilters;
+    QList<Input::AxisIdSetting> m_axisSettings;
+    QList<Input::AxisIdFilter> m_axisFilters;
     QInputAspect *m_inputAspect;
 };
 

@@ -70,7 +70,7 @@ void Quick3DRenderTargetSelector::setDrawBuffers(const QVariantList &buffers)
     if (buffers != drawBuffers()) {
 
         // Converts int to RenderAttachmentType
-        QVector<QRenderTargetOutput::AttachmentPoint> drawBuffersList;
+        QList<QRenderTargetOutput::AttachmentPoint> drawBuffersList;
         drawBuffersList.reserve(buffers.size());
         for (const QVariant &buf : buffers)
             drawBuffersList.append(static_cast<QRenderTargetOutput::AttachmentPoint>(buf.toInt()));

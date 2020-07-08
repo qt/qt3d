@@ -91,8 +91,8 @@ public:
 
 private:
     QScopedPointer<HandlerManager> m_logicHandlerManager;
-    QVector<HHandler> m_logicHandlers;
-    QVector<Qt3DCore::QNodeId> m_logicComponentIds;
+    QList<HHandler> m_logicHandlers;
+    QList<Qt3DCore::QNodeId> m_logicComponentIds;
     QLogicAspect *m_logicAspect;
     Executor *m_executor;
     float m_dt;

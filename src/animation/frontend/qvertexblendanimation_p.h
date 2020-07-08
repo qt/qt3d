@@ -66,8 +66,8 @@ public:
     void getAttributesInPosition(float position, int *target0, int *target1, float *interpolator);
     void updateAnimation(float position);
 
-    QVector<float> m_targetPositions;
-    QVector<Qt3DAnimation::QMorphTarget *> m_morphTargets;
+    QList<float> m_targetPositions;
+    QList<Qt3DAnimation::QMorphTarget *> m_morphTargets;
     float m_interpolator;
     Qt3DRender::QGeometryRenderer *m_target;
     QString m_targetName;

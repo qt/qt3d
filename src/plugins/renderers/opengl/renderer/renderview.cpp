@@ -721,7 +721,7 @@ void sortByMaterial(EntityRenderCommandDataView *view, int begin, const int end)
 }
 
 void sortCommandRange(EntityRenderCommandDataView *view, int begin, int end, const int level,
-                      const QVector<Qt3DRender::QSortPolicy::SortType> &sortingTypes)
+                      const QList<Qt3DRender::QSortPolicy::SortType> &sortingTypes)
 {
     if (level >= sortingTypes.size())
         return;
@@ -936,7 +936,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                     Attribute *indexAttribute = nullptr;
                     Attribute *indirectAttribute = nullptr;
 
-                    const QVector<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
+                    const QList<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
                     for (Qt3DCore::QNodeId attributeId : attributeIds) {
                         Attribute *attribute = m_manager->attributeManager()->lookupResource(attributeId);
                         switch (attribute->attributeType()) {

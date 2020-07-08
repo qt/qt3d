@@ -55,7 +55,7 @@ BuildBlendTreesJob::BuildBlendTreesJob()
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::BuildBlendTree, 0)
 }
 
-void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnimator> &blendedClipAnimatorHandles)
+void BuildBlendTreesJob::setBlendedClipAnimators(const QList<HBlendedClipAnimator> &blendedClipAnimatorHandles)
 {
     m_blendedClipAnimatorHandles = blendedClipAnimatorHandles;
     BlendedClipAnimatorManager *blendedClipAnimatorManager = m_handler->blendedClipAnimatorManager();
@@ -89,23 +89,23 @@ void BuildBlendTreesJob::run()
         const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(blendClipAnimator->mapperId());
         if (!mapper)
             continue;
-        const QVector<ChannelNameAndType> channelNamesAndTypes
+        const QList<ChannelNameAndType> channelNamesAndTypes
                 = buildRequiredChannelsAndTypes(m_handler, mapper);
-        const QVector<ComponentIndices> channelComponentIndices
+        const QList<ComponentIndices> channelComponentIndices
                 = assignChannelComponentIndices(channelNamesAndTypes);
 
         // Find the leaf value nodes of the blend tree and for each of them
         // create a set of format indices that can later be used to map the
         // raw ClipResults resulting from evaluating an animation clip to the
         // layout used by the blend tree for this animator
-        QVector<QBitArray> blendTreeChannelMask;
-        const QVector<Qt3DCore::QNodeId> valueNodeIds
+        QList<QBitArray> blendTreeChannelMask;
+        const QList<Qt3DCore::QNodeId> valueNodeIds
                 = gatherValueNodesToEvaluate(m_handler, blendClipAnimator->blendTreeRootId());
 
         // Store the clip value nodes to avoid further lookups below.
         // TODO: Refactor this next block into a function in animationutils.cpp that takes
-        // a QVector<QClipBlendValue*> as input.
-        QVector<ClipBlendValue *> valueNodes;
+        // a QList<QClipBlendValue*> as input.
+        QList<ClipBlendValue *> valueNodes;
         valueNodes.reserve(valueNodeIds.size());
         for (const auto valueNodeId : valueNodeIds) {
             ClipBlendValue *valueNode
@@ -166,8 +166,8 @@ void BuildBlendTreesJob::run()
                 // If we get to here then we need to obtain a default value
                 // for this channel and store it for later application to any
                 // missing components of this channel.
-                const QVector<float> defaultValue = defaultValueForChannel(m_handler,
-                                                                           f.namesAndTypes[i]);
+                const QList<float> defaultValue = defaultValueForChannel(m_handler,
+                                                                         f.namesAndTypes[i]);
 
                 // Find the indices where we later need to inject these default
                 // values and store them in the format.
@@ -181,8 +181,8 @@ void BuildBlendTreesJob::run()
         // Finally, build the mapping data vector for this blended clip animator. This
         // gets used during the final stage of evaluation when sending the property changes
         // out to the targets of the animation. We do the costly work once up front.
-        const QVector<Qt3DCore::QNodeId> channelMappingIds = mapper->mappingIds();
-        QVector<ChannelMapping *> channelMappings;
+        const QList<Qt3DCore::QNodeId> channelMappingIds = mapper->mappingIds();
+        QList<ChannelMapping *> channelMappings;
         channelMappings.reserve(channelMappingIds.size());
         for (const auto mappingId : channelMappingIds) {
             ChannelMapping *mapping = m_handler->channelMappingManager()->lookupResource(mappingId);
@@ -190,7 +190,7 @@ void BuildBlendTreesJob::run()
             channelMappings.push_back(mapping);
         }
 
-        const QVector<MappingData> mappingDataVec
+        const QList<MappingData> mappingDataVec
                 = buildPropertyMappings(channelMappings,
                                         channelNamesAndTypes,
                                         channelComponentIndices,

@@ -60,12 +60,12 @@ const auto slerpThreshold = 0.01f;
 namespace Qt3DAnimation {
 namespace Animation {
 
-inline QVector<float> valueToVector(const QVector3D &value)
+inline QList<float> valueToVector(const QVector3D &value)
 {
     return { value.x(), value.y(), value.z() };
 }
 
-inline QVector<float> valueToVector(const QQuaternion &value)
+inline QList<float> valueToVector(const QQuaternion &value)
 {
     return { value.scalar(), value.x(), value.y(), value.z() };
 }
@@ -157,17 +157,10 @@ ComponentIndices channelComponentsToIndices(const Channel &channel,
                                             int expectedComponentCount,
                                             int offset)
 {
-#if defined Q_COMPILER_UNIFORM_INIT
-    static const QVector<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
-    static const QVector<char> quaternionSuffixes = { 'W', 'X', 'Y', 'Z' };
-    static const QVector<char> colorSuffixesRGB = { 'R', 'G', 'B' };
-    static const QVector<char> colorSuffixesRGBA = { 'R', 'G', 'B', 'A' };
-#else
-    static const QVector<char> standardSuffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
-    static const QVector<char> quaternionSuffixes = (QVector<char>() << 'W' << 'X' << 'Y' << 'Z');
-    static const QVector<char> colorSuffixesRGB = (QVector<char>() << 'R' << 'G' << 'B');
-    static const QVector<char> colorSuffixesRGBA = (QVector<char>() << 'R' << 'G' << 'B' << 'A');
-#endif
+    static const QList<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
+    static const QList<char> quaternionSuffixes = { 'W', 'X', 'Y', 'Z' };
+    static const QList<char> colorSuffixesRGB = { 'R', 'G', 'B' };
+    static const QList<char> colorSuffixesRGBA = { 'R', 'G', 'B', 'A' };
 
     switch (dataType) {
     case QVariant::Quaternion:
@@ -189,7 +182,7 @@ ComponentIndices channelComponentsToIndices(const Channel &channel,
 ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
                                                   int expectedComponentCount,
                                                   int offset,
-                                                  const QVector<char> &suffixes)
+                                                  const QList<char> &suffixes)
 {
     const int actualComponentCount = channel.channelComponents.size();
     if (actualComponentCount != expectedComponentCount) {
@@ -200,7 +193,7 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
     ComponentIndices indices(expectedComponentCount);
 
     // Generate the set of channel suffixes
-    QVector<char> channelSuffixes;
+    QList<char> channelSuffixes;
     channelSuffixes.reserve(expectedComponentCount);
     for (int i = 0; i < expectedComponentCount; ++i) {
         const QString &componentName = channel.channelComponents[i].name;
@@ -234,14 +227,14 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
 
 ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
 {
-    QVector<float> channelResults;
+    QList<float> channelResults;
     Q_ASSERT(clip);
 
     // Ensure we have enough storage to hold the evaluations
     channelResults.resize(clip->channelCount());
 
     // Iterate over channels and evaluate the fcurves
-    const QVector<Channel> &channels = clip->channels();
+    const QList<Channel> &channels = clip->channels();
     int i = 0;
     for (const Channel &channel : channels) {
         if (channel.name.contains(QStringLiteral("Rotation")) &&
@@ -337,7 +330,7 @@ ClipResults evaluateClipAtPhase(AnimationClip *clip, float phase)
 
 template<typename Container>
 Container mapChannelResultsToContainer(const MappingData &mappingData,
-                                       const QVector<float> &channelResults)
+                                       const QList<float> &channelResults)
 {
     Container r;
     r.reserve(channelResults.size());
@@ -349,9 +342,9 @@ Container mapChannelResultsToContainer(const MappingData &mappingData,
     return r;
 }
 
-QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float> &channelResults)
+QVariant buildPropertyValue(const MappingData &mappingData, const QList<float> &channelResults)
 {
-    const int vectorOfFloatType = qMetaTypeId<QVector<float>>();
+    const int vectorOfFloatType = qMetaTypeId<QList<float>>();
 
     if (mappingData.type == vectorOfFloatType)
         return QVariant::fromValue(channelResults);
@@ -416,8 +409,8 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float>
 }
 
 AnimationRecord prepareAnimationRecord(Qt3DCore::QNodeId animatorId,
-                                       const QVector<MappingData> &mappingDataVec,
-                                       const QVector<float> &channelResults,
+                                       const QList<MappingData> &mappingDataVec,
+                                       const QList<float> &channelResults,
                                        bool finalFrame,
                                        float normalizedLocalTime)
 {
@@ -475,10 +468,10 @@ AnimationRecord prepareAnimationRecord(Qt3DCore::QNodeId animatorId,
     return record;
 }
 
-QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &mappingDataVec,
-                                                    const QVector<float> &channelResults)
+QList<AnimationCallbackAndValue> prepareCallbacks(const QList<MappingData> &mappingDataVec,
+                                                  const QList<float> &channelResults)
 {
-    QVector<AnimationCallbackAndValue> callbacks;
+    QList<AnimationCallbackAndValue> callbacks;
     for (const MappingData &mappingData : mappingDataVec) {
         if (!mappingData.callback)
             continue;
@@ -498,10 +491,10 @@ QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &
 // buildRequiredChannelsAndTypes() and assignChannelComponentIndices(). We are
 // currently repeating the iteration over mappings and extracting/generating
 // channel names, types and joint indices.
-QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &channelMappings,
-                                           const QVector<ChannelNameAndType> &channelNamesAndTypes,
-                                           const QVector<ComponentIndices> &channelComponentIndices,
-                                           const QVector<QBitArray> &sourceClipMask)
+QList<MappingData> buildPropertyMappings(const QList<ChannelMapping*> &channelMappings,
+                                         const QList<ChannelNameAndType> &channelNamesAndTypes,
+                                         const QList<ComponentIndices> &channelComponentIndices,
+                                         const QList<QBitArray> &sourceClipMask)
 {
     // Accumulate the required number of mappings
     int maxMappingDatas = 0;
@@ -519,7 +512,7 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
         }
         }
     }
-    QVector<MappingData> mappingDataVec;
+    QList<MappingData> mappingDataVec;
     mappingDataVec.reserve(maxMappingDatas);
 
     // Iterate over the mappings
@@ -564,7 +557,7 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
         }
 
         case ChannelMapping::SkeletonMappingType: {
-            const QVector<ChannelNameAndType> jointProperties
+            const QList<ChannelNameAndType> jointProperties
                     = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), Translation },
                         { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), Rotation },
                         { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), Scale } };
@@ -628,15 +621,15 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &chann
     return mappingDataVec;
 }
 
-QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
+QList<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
                                                           const ChannelMapper *mapper)
 {
     ChannelMappingManager *mappingManager = handler->channelMappingManager();
-    const QVector<Qt3DCore::QNodeId> mappingIds = mapper->mappingIds();
+    const QList<Qt3DCore::QNodeId> mappingIds = mapper->mappingIds();
 
     // Reserve enough storage assuming each mapping is for a different channel.
     // May be overkill but avoids potential for multiple allocations
-    QVector<ChannelNameAndType> namesAndTypes;
+    QList<ChannelNameAndType> namesAndTypes;
     namesAndTypes.reserve(mappingIds.size());
 
     // Iterate through the mappings and add ones not already used by an earlier mapping.
@@ -667,7 +660,7 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
         case ChannelMapping::SkeletonMappingType: {
             // Add an entry for each scale/rotation/translation property of each joint index
             // of the target skeleton.
-            const QVector<ChannelNameAndType> jointProperties
+            const QList<ChannelNameAndType> jointProperties
                     = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), Translation },
                         { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), Rotation },
                         { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), Scale } };
@@ -696,9 +689,9 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
     return namesAndTypes;
 }
 
-QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNameAndType> &namesAndTypes)
+QList<ComponentIndices> assignChannelComponentIndices(const QList<ChannelNameAndType> &namesAndTypes)
 {
-    QVector<ComponentIndices> channelComponentIndices;
+    QList<ComponentIndices> channelComponentIndices;
     channelComponentIndices.reserve(namesAndTypes.size());
 
     int baseIndex = 0;
@@ -718,7 +711,7 @@ QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNam
     return channelComponentIndices;
 }
 
-QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
+QList<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                                       Qt3DCore::QNodeId blendTreeRootId)
 {
     Q_ASSERT(handler);
@@ -728,7 +721,7 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
     ClipBlendNodeManager *nodeManager = handler->clipBlendNodeManager();
 
     // Visit the tree in a pre-order manner and collect the dependencies
-    QVector<Qt3DCore::QNodeId> clipIds;
+    QList<Qt3DCore::QNodeId> clipIds;
     ClipBlendNodeVisitor visitor(nodeManager,
                                  ClipBlendNodeVisitor::PreOrder,
                                  ClipBlendNodeVisitor::VisitOnlyDependencies);
@@ -756,8 +749,8 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
     return clipIds;
 }
 
-ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
-                                     const QVector<ComponentIndices> &targetIndices,
+ClipFormat generateClipFormatIndices(const QList<ChannelNameAndType> &targetChannels,
+                                     const QList<ComponentIndices> &targetIndices,
                                      const AnimationClip *clip)
 {
     Q_ASSERT(targetChannels.size() == targetIndices.size());
@@ -871,10 +864,10 @@ ClipResults evaluateBlendTree(Handler *handler,
     return blendTreeRootNode->clipResults(animatorId);
 }
 
-QVector<float> defaultValueForChannel(Handler *handler,
+QList<float> defaultValueForChannel(Handler *handler,
                                       const ChannelNameAndType &channelDescription)
 {
-    QVector<float> result;
+    QList<float> result;
 
     // Does the channel repesent a joint in a skeleton or is it a general channel?
     ChannelMappingManager *mappingManager = handler->channelMappingManager();
@@ -921,7 +914,7 @@ QVector<float> defaultValueForChannel(Handler *handler,
 
         // Everything else gets all zeros
         const int componentCount = mapping->componentCount();
-        result = QVector<float>(componentCount, 0.0f);
+        result = QList<float>(componentCount, 0.0f);
         break;
     }
 
@@ -930,7 +923,7 @@ QVector<float> defaultValueForChannel(Handler *handler,
     return result;
 }
 
-void applyComponentDefaultValues(const QVector<ComponentValue> &componentDefaults,
+void applyComponentDefaultValues(const QList<ComponentValue> &componentDefaults,
                                  ClipResults &formattedClipResults)
 {
     for (const auto &componentDefault : componentDefaults)

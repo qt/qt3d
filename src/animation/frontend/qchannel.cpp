@@ -48,7 +48,7 @@ namespace Qt3DAnimation {
 class QChannelPrivate
 {
 public:
-    QVector<QChannelComponent> m_channelComponents;
+    QList<QChannelComponent> m_channelComponents;
     QString m_name;
     int m_jointIndex = -1;
 };

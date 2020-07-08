@@ -159,10 +159,10 @@ circ.insert(2, 5, 0);
 
 
 //! [13]
-QVector<double> vector;
-vector << 2.718 << 1.442 << 0.4342;
-vector.insert(1, 3, 9.9);
-// vector: [2.718, 9.9, 9.9, 9.9, 1.442, 0.4342]
+QList<double> list;
+list << 2.718 << 1.442 << 0.4342;
+list.insert(1, 3, 9.9);
+// list: [2.718, 9.9, 9.9, 9.9, 1.442, 0.4342]
 //! [13]
 
 

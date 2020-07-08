@@ -68,14 +68,14 @@ public:
     {}
 
     float m_deadZoneRadius;
-    QVector<int> m_axes;
+    QList<int> m_axes;
     bool m_smooth;
 };
 
 struct QAxisSettingData
 {
     float deadZoneRadius;
-    QVector<int> axes;
+    QList<int> axes;
     bool smooth;
 };
 

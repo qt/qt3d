@@ -39,8 +39,7 @@
 
 #ifndef QT3DEXTRAS_QSPRITESHEET_P_H
 #define QT3DEXTRAS_QSPRITESHEET_P_H
-#include <QRect>
-#include <QVector>
+#include <QList>
 
 //
 //  W A R N I N G
@@ -70,7 +69,7 @@ class QSpriteSheetPrivate : public QAbstractSpriteSheetPrivate
     void updateSizes() override;
     void updateTransform() override;
 
-    QVector<QSpriteSheetItem *> m_sprites;
+    QList<QSpriteSheetItem *> m_sprites;
 
     Q_DECLARE_PUBLIC(QSpriteSheet)
 };

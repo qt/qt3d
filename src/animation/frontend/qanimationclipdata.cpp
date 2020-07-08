@@ -48,7 +48,7 @@ namespace Qt3DAnimation {
 class QAnimationClipDataPrivate
 {
 public:
-    QVector<QChannel> m_channels;
+    QList<QChannel> m_channels;
     QString m_name;
 };
 

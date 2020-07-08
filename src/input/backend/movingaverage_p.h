@@ -52,7 +52,7 @@
 //
 
 #include <QtCore/qglobal.h>
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,7 +73,7 @@ private:
     unsigned int m_sampleCount;
     unsigned int m_currentSample;
     float m_total;
-    QVector<float> m_samples;
+    QList<float> m_samples;
 };
 
 } // Input

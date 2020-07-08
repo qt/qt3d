@@ -65,7 +65,7 @@ public:
     void cleanup();
 
     inline float deadZoneRadius() const { return m_deadZoneRadius; }
-    inline QVector<int> axes() const { return m_axes; }
+    inline QList<int> axes() const { return m_axes; }
     inline bool isSmoothEnabled() const { return m_smooth; }
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
@@ -73,7 +73,7 @@ public:
 private:
 
     float m_deadZoneRadius;
-    QVector<int> m_axes;
+    QList<int> m_axes;
     bool m_smooth;
 };
 

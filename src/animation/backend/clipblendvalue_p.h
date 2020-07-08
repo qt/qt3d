@@ -66,12 +66,12 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const override
+    inline QList<Qt3DCore::QNodeId> allDependencyIds() const override
     {
         return currentDependencyIds();
     }
 
-    inline QVector<Qt3DCore::QNodeId> currentDependencyIds() const override
+    inline QList<Qt3DCore::QNodeId> currentDependencyIds() const override
     {
         return {};
     }
@@ -83,13 +83,13 @@ public:
     const ClipFormat &clipFormat(Qt3DCore::QNodeId animatorId) const;
 
 protected:
-    ClipResults doBlend(const QVector<ClipResults> &blendData) const override;
+    ClipResults doBlend(const QList<ClipResults> &blendData) const override;
 
 private:
     Qt3DCore::QNodeId m_clipId;
 
-    QVector<Qt3DCore::QNodeId> m_animatorIds;
-    QVector<ClipFormat> m_clipFormats;
+    QList<Qt3DCore::QNodeId> m_animatorIds;
+    QList<ClipFormat> m_clipFormats;
 };
 
 } // namespace Animation

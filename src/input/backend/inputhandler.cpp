@@ -227,7 +227,7 @@ void Qt3DInput::Input::InputHandler::resetMouseAxisState()
     }
 }
 
-QVector<QInputDeviceIntegration *> InputHandler::inputDeviceIntegrations() const
+QList<QInputDeviceIntegration *> InputHandler::inputDeviceIntegrations() const
 {
     return m_inputDeviceIntegrations;
 }

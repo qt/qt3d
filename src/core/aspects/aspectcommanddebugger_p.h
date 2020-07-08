@@ -92,7 +92,7 @@ private:
     void onCommandReceived(QTcpSocket *socket);
     void executeCommand(const QString &command, QTcpSocket *socket);
 
-    QVector<QTcpSocket *> m_connections;
+    QList<QTcpSocket *> m_connections;
     QSystemInformationService *m_service;
 
     ReadBuffer m_readBuffer;

@@ -72,7 +72,7 @@ public:
 
     int m_timeout;
     int m_buttonInterval;
-    QVector<QAbstractActionInput *> m_sequences;
+    QList<QAbstractActionInput *> m_sequences;
 };
 
 struct QInputSequenceData

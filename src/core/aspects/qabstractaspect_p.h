@@ -60,7 +60,7 @@
 #include <QtCore/private/qobject_p.h>
 
 #include <QMutex>
-#include <QVector>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -119,7 +119,7 @@ public:
     QAbstractAspectPrivate();
     ~QAbstractAspectPrivate();
 
-    void setRootAndCreateNodes(QEntity *rootObject, const QVector<NodeTreeChange> &nodesTreeChanges);
+    void setRootAndCreateNodes(QEntity *rootObject, const QList<NodeTreeChange> &nodesTreeChanges);
 
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
@@ -130,8 +130,8 @@ public:
 
     QBackendNode *createBackendNode(const NodeTreeChange &change) const;
     void clearBackendNode(const NodeTreeChange &change) const;
-    void syncDirtyFrontEndNodes(const QVector<QNode *> &nodes);
-    void syncDirtyEntityComponentNodes(const QVector<ComponentRelationshipChange> &nodes);
+    void syncDirtyFrontEndNodes(const QList<QNode *> &nodes);
+    void syncDirtyEntityComponentNodes(const QList<ComponentRelationshipChange> &nodes);
     virtual void syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const;
     void sendPropertyMessages(QNode *node, QBackendNode *backend) const;
 

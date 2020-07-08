@@ -63,12 +63,12 @@ public:
 
     Q_DECLARE_PUBLIC(QChannelMapper)
 
-    QVector<QAbstractChannelMapping *> m_mappings;
+    QList<QAbstractChannelMapping *> m_mappings;
 };
 
 struct QChannelMapperData
 {
-    QVector<Qt3DCore::QNodeId> mappingIds;
+    QList<Qt3DCore::QNodeId> mappingIds;
 };
 
 } // namespace Qt3DAnimation

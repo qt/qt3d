@@ -90,7 +90,7 @@ public:
 
     bool doubleGlyphResolution(const QRawFont &font);
 
-    QVector<Glyph> refGlyphs(const QGlyphRun &run);
+    QList<Glyph> refGlyphs(const QGlyphRun &run);
     Glyph refGlyph(const QRawFont &font, quint32 glyph);
 
     void derefGlyphs(const QGlyphRun &run);

@@ -62,7 +62,7 @@ void ClipBlendValue::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
     m_clipId = Qt3DCore::qIdForNode(node->clip());
 }
 
-ClipResults ClipBlendValue::doBlend(const QVector<ClipResults> &blendData) const
+ClipResults ClipBlendValue::doBlend(const QList<ClipResults> &blendData) const
 {
     // Should never be called for the value node
     Q_UNUSED(blendData);

@@ -141,7 +141,7 @@ public:
     {
 #ifdef QT3D_SUPPORTS_GL_MONITOR
         if (m_monitor.isResultAvailable()) {
-            const QVector<GLuint64> samples = m_monitor.waitForSamples();
+            const QList<GLuint64> samples = m_monitor.waitForSamples();
             Q_ASSERT(samples.count() >= 2 * m_recordings.count());
 
             Qt3DCore::QSystemInformationServicePrivate *dservice = Qt3DCore::QSystemInformationServicePrivate::get(m_service);
@@ -179,7 +179,7 @@ private:
 #ifdef QT3D_SUPPORTS_GL_MONITOR
     QOpenGLTimeMonitor m_monitor;
 #endif
-    QVector<GLRecording> m_recordings;
+    QList<GLRecording> m_recordings;
     int m_remainingEvents = 0;
 };
 
@@ -232,9 +232,9 @@ public:
 
 private:
     Qt3DCore::QSystemInformationService *m_service;
-    QVector<FrameTimeRecorder *> m_recorders;
-    QVector<FrameTimeRecorder *> m_availableRecorders;
-    QVector<FrameTimeRecorder *> m_busyRecorders;
+    QList<FrameTimeRecorder *> m_recorders;
+    QList<FrameTimeRecorder *> m_availableRecorders;
+    QList<FrameTimeRecorder *> m_busyRecorders;
     FrameTimeRecorder *m_currentRecorder;
 };
 

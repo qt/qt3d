@@ -66,13 +66,13 @@ public:
     void setHandler(Handler *handler) { m_handler = handler; }
     Handler *handler() const { return m_handler; }
 
-    void setBlendedClipAnimators(const QVector<HBlendedClipAnimator> &blendedClipAnimatorHandles);
+    void setBlendedClipAnimators(const QList<HBlendedClipAnimator> &blendedClipAnimatorHandles);
 
 protected:
     void run() override;
 
 private:
-    QVector<HBlendedClipAnimator> m_blendedClipAnimatorHandles;
+    QList<HBlendedClipAnimator> m_blendedClipAnimatorHandles;
     Handler *m_handler;
 };
 

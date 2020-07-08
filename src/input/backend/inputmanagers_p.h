@@ -180,12 +180,12 @@ class LogicalDeviceManager : public Qt3DCore::QResourceManager<
 public:
     LogicalDeviceManager() {}
 
-    QVector<HLogicalDevice> activeDevices() const { return m_activeDevices; }
+    QList<HLogicalDevice> activeDevices() const { return m_activeDevices; }
     void addActiveDevice(HLogicalDevice device) { m_activeDevices.push_back(device); }
     void removeActiveDevice(HLogicalDevice device) { m_activeDevices.removeOne(device); }
 
 private:
-    QVector<HLogicalDevice> m_activeDevices;
+    QList<HLogicalDevice> m_activeDevices;
 };
 
 class GenericDeviceBackendNodeManager : public Qt3DCore::QResourceManager<
@@ -204,10 +204,10 @@ public:
     PhysicalDeviceProxyManager() {}
 
     void addPendingProxyToLoad(Qt3DCore::QNodeId id) { m_pendingProxies.push_back(id); }
-    QVector<Qt3DCore::QNodeId> takePendingProxiesToLoad() { return std::move(m_pendingProxies); }
+    QList<Qt3DCore::QNodeId> takePendingProxiesToLoad() { return std::move(m_pendingProxies); }
 
 private:
-    QVector<Qt3DCore::QNodeId> m_pendingProxies;
+    QList<Qt3DCore::QNodeId> m_pendingProxies;
 };
 
 class AxisAccumulatorManager : public Qt3DCore::QResourceManager<

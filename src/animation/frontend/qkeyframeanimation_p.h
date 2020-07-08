@@ -63,8 +63,8 @@ public:
 
     void calculateFrame(float position);
 
-    QVector<float> m_framePositions;
-    QVector<Qt3DCore::QTransform *> m_keyframes;
+    QList<float> m_framePositions;
+    QList<Qt3DCore::QTransform *> m_keyframes;
     Qt3DCore::QTransform *m_target;
     QEasingCurve m_easing;
     QString m_animationName;

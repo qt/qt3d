@@ -70,7 +70,7 @@ public:
 
     std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) final;
     QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) final;
-    QVector<Qt3DCore::QNodeId> physicalDevices() const final;
+    QList<Qt3DCore::QNodeId> physicalDevices() const final;
     QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const final;
     QStringList deviceNames() const final;
 

@@ -488,7 +488,7 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
     nameAndChannels.name = animation.name;
 
     // Create node index to joint index lookup tables for each skin
-    QVector<QHash<int, int>> nodeIndexToJointIndexMaps;
+    QList<QHash<int, int>> nodeIndexToJointIndexMaps;
     nodeIndexToJointIndexMaps.reserve(m_skins.size());
     for (const auto &skin : m_skins)
         nodeIndexToJointIndexMaps.push_back(createNodeIndexToJointIndexMap(skin));
@@ -546,7 +546,7 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
         // Get the key frame times first as these are common to all components of the
         // key frame values.
         const int keyFrameCount = inputAccessor.count;
-        QVector<float> keyframeTimes(keyFrameCount);
+        QList<float> keyframeTimes(keyFrameCount);
         for (int i = 0; i < keyFrameCount; ++i) {
             const auto rawTimestamp = accessorData(sampler.inputAccessorIndex, i);
             keyframeTimes[i] = *reinterpret_cast<const float*>(rawTimestamp.data);
@@ -827,7 +827,7 @@ void GLTFImporter::setupNodeParentLinks()
     const int nodeCount = m_nodes.size();
     for (int i = 0; i < nodeCount; ++i) {
         const Node &node = m_nodes[i];
-        const QVector<int> &childNodeIndices = node.childNodeIndices;
+        const QList<int> &childNodeIndices = node.childNodeIndices;
         for (const auto childNodeIndex : childNodeIndices) {
             Q_ASSERT(childNodeIndex < m_nodes.size());
             Node &childNode = m_nodes[childNodeIndex];

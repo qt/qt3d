@@ -235,7 +235,7 @@ CommandExecuter::CommandExecuter(Render::OpenGL::Renderer *renderer)
 void CommandExecuter::performAsynchronousCommandExecution(const std::vector<Render::OpenGL::RenderView *> &views)
 {
     QMutexLocker lock(&m_pendingCommandsMutex);
-    const QVector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands = std::move(m_pendingCommands);
+    const QList<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands = std::move(m_pendingCommands);
     lock.unlock();
 
     for (auto *reply : shellCommands) {

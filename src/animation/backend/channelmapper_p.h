@@ -53,7 +53,7 @@
 
 #include <Qt3DCore/qnodeid.h>
 
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,10 +71,10 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    void setMappingIds(const QVector<Qt3DCore::QNodeId> &mappingIds) { m_mappingIds = mappingIds; }
-    QVector<Qt3DCore::QNodeId> mappingIds() const { return m_mappingIds; }
+    void setMappingIds(const QList<Qt3DCore::QNodeId> &mappingIds) { m_mappingIds = mappingIds; }
+    QList<Qt3DCore::QNodeId> mappingIds() const { return m_mappingIds; }
 
-    QVector<ChannelMapping*> mappings() const
+    QList<ChannelMapping*> mappings() const
     {
         if (m_isDirty)
             updateMappings();
@@ -84,10 +84,10 @@ public:
 private:
     void updateMappings() const;
 
-    QVector<Qt3DCore::QNodeId> m_mappingIds;
+    QList<Qt3DCore::QNodeId> m_mappingIds;
 
     // Cached data
-    mutable QVector<ChannelMapping*> m_mappings;
+    mutable QList<ChannelMapping*> m_mappings;
     mutable bool m_isDirty;
 };
 

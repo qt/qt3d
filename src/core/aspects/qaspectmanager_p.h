@@ -55,11 +55,11 @@
 #include <Qt3DCore/qabstractfrontendnodemanager.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qnodeid.h>
+#include <QtCore/QList>
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
 #include <QtCore/QSemaphore>
 #include <QtCore/QVariant>
-#include <QtCore/QVector>
 
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 
@@ -104,14 +104,14 @@ public Q_SLOTS:
     void shutdown();
     void processFrame();
 
-    void setRootEntity(Qt3DCore::QEntity *root, const QVector<QNode *> &nodes);
-    void addNodes(const QVector<QNode *> &nodes);
-    void removeNodes(const QVector<QNode *> &nodes);
+    void setRootEntity(Qt3DCore::QEntity *root, const QList<QNode *> &nodes);
+    void addNodes(const QList<QNode *> &nodes);
+    void removeNodes(const QList<QNode *> &nodes);
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
     void unregisterAspect(Qt3DCore::QAbstractAspect *aspect);
 
 public:
-    const QVector<QAbstractAspect *> &aspects() const;
+    const QList<QAbstractAspect *> &aspects() const;
     QAbstractAspect *aspect(const QString &name) const;
     QAbstractAspect *aspect(const QMetaObject *metaType) const;
     QAbstractAspectJobManager *jobManager() const;
@@ -120,7 +120,7 @@ public:
     void setPostConstructorInit(NodePostConstructorInit *postConstructorInit);
 
     QNode *lookupNode(QNodeId id) const override;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const override;
+    QList<QNode *> lookupNodes(const QList<QNodeId> &ids) const override;
     QScene *scene() const;
 
     int jobsInLastFrame() const { return m_jobsInLastFrame; }
@@ -133,7 +133,7 @@ private:
     void requestNextFrame();
 
     QAspectEngine *m_engine;
-    QVector<QAbstractAspect *> m_aspects;
+    QList<QAbstractAspect *> m_aspects;
     QEntity *m_root;
     QVariantMap m_data;
     QScheduler *m_scheduler;
@@ -142,7 +142,7 @@ private:
     QScopedPointer<QServiceLocator> m_serviceLocator;
     bool m_simulationLoopRunning;
     QAspectEngine::RunMode m_driveMode;
-    QVector<NodeTreeChange> m_nodeTreeChanges;
+    QList<NodeTreeChange> m_nodeTreeChanges;
     NodePostConstructorInit* m_postConstructorInit;
 
 #if QT_CONFIG(animation)

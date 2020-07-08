@@ -90,7 +90,7 @@ void QQuick3DKeyframeAnimation::clearKeyframes(QQmlListProperty<Qt3DCore::QTrans
     QQuick3DKeyframeAnimation *keyframeAnimation
             = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
     if (keyframeAnimation) {
-        QVector<Qt3DCore::QTransform *> emptyList;
+        QList<Qt3DCore::QTransform *> emptyList;
         keyframeAnimation->parentKeyframeAnimation()->setKeyframes(emptyList);
     }
 }

@@ -53,13 +53,13 @@
 
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/QFlags>
+#include <QtCore/QList>
 #include <QtCore/QMutex>
 #include <QtCore/QObject>
 #include <QtCore/QPair>
 #include <QtCore/QReadWriteLock>
 #include <QtCore/QThreadStorage>
 #include <QtCore/QVariant>
-#include <QtCore/QVector>
 
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 
@@ -101,8 +101,8 @@ public:
                                       ComponentRelationshipChange::RelationShip change);
 
     void removeDirtyFrontEndNode(QNode *node);
-    QVector<QNode *> takeDirtyFrontEndNodes();
-    QVector<ComponentRelationshipChange> takeDirtyEntityComponentNodes();
+    QList<QNode *> takeDirtyFrontEndNodes();
+    QList<ComponentRelationshipChange> takeDirtyEntityComponentNodes();
 
     void setScene(Qt3DCore::QScene *scene);
 
@@ -113,8 +113,8 @@ Q_SIGNALS:
 
 protected:
     QScene *m_scene;
-    QVector<QNode *> m_dirtyFrontEndNodes;
-    QVector<ComponentRelationshipChange> m_dirtyEntityComponentNodeChanges;
+    QList<QNode *> m_dirtyFrontEndNodes;
+    QList<ComponentRelationshipChange> m_dirtyEntityComponentNodeChanges;
 };
 
 } // namespace Qt3DCore

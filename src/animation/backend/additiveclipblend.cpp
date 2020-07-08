@@ -68,7 +68,7 @@ void AdditiveClipBlend::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool f
     m_additiveClipId = Qt3DCore::qIdForNode(node->additiveClip());
 }
 
-ClipResults AdditiveClipBlend::doBlend(const QVector<ClipResults> &blendData) const
+ClipResults AdditiveClipBlend::doBlend(const QList<ClipResults> &blendData) const
 {
     Q_ASSERT(blendData.size() == 2);
     Q_ASSERT(blendData[0].size() == blendData[1].size());

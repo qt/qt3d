@@ -58,7 +58,7 @@ public:
 
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    QVector<QPair<Qt3DCore::QNodeId, QAbstractPhysicalDevice *>> updates;
+    QList<QPair<Qt3DCore::QNodeId, QAbstractPhysicalDevice *>> updates;
 };
 
 LoadProxyDeviceJob::LoadProxyDeviceJob()
@@ -72,7 +72,7 @@ LoadProxyDeviceJob::~LoadProxyDeviceJob()
 {
 }
 
-void LoadProxyDeviceJob::setProxiesToLoad(const QVector<Qt3DCore::QNodeId> &wrappers)
+void LoadProxyDeviceJob::setProxiesToLoad(const QList<Qt3DCore::QNodeId> &wrappers)
 {
     m_proxies = wrappers;
 }
@@ -87,7 +87,7 @@ InputHandler *LoadProxyDeviceJob::inputHandler() const
     return m_inputHandler;
 }
 
-QVector<Qt3DCore::QNodeId> LoadProxyDeviceJob::proxies() const
+QList<Qt3DCore::QNodeId> LoadProxyDeviceJob::proxies() const
 {
     return m_proxies;
 }

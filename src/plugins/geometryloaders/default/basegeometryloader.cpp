@@ -93,9 +93,9 @@ bool BaseGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
     return true;
 }
 
-void BaseGeometryLoader::generateAveragedNormals(const QVector<QVector3D>& points,
-                                                 QVector<QVector3D>& normals,
-                                                 const QVector<unsigned int>& faces) const
+void BaseGeometryLoader::generateAveragedNormals(const QList<QVector3D> &points,
+                                                 QList<QVector3D> &normals,
+                                                 const QList<unsigned int> &faces) const
 {
     for (int i = 0; i < points.size(); ++i)
         normals.append(QVector3D());
@@ -206,15 +206,15 @@ void BaseGeometryLoader::generateGeometry()
     m_geometry->addAttribute(indexAttribute);
 }
 
-void BaseGeometryLoader::generateTangents(const QVector<QVector3D>& points,
-                                          const QVector<QVector3D>& normals,
-                                          const QVector<unsigned  int>& faces,
-                                          const QVector<QVector2D>& texCoords,
-                                          QVector<QVector4D>& tangents) const
+void BaseGeometryLoader::generateTangents(const QList<QVector3D> &points,
+                                          const QList<QVector3D> &normals,
+                                          const QList<unsigned  int> &faces,
+                                          const QList<QVector2D> &texCoords,
+                                          QList<QVector4D> &tangents) const
 {
     tangents.clear();
-    QVector<QVector3D> tan1Accum;
-    QVector<QVector3D> tan2Accum;
+    QList<QVector3D> tan1Accum;
+    QList<QVector3D> tan2Accum;
 
     tan1Accum.resize(points.size());
     tan2Accum.resize(points.size());
@@ -262,7 +262,7 @@ void BaseGeometryLoader::generateTangents(const QVector<QVector3D>& points,
     }
 }
 
-void BaseGeometryLoader::center(QVector<QVector3D>& points)
+void BaseGeometryLoader::center(QList<QVector3D> &points)
 {
     if (points.isEmpty())
         return;

@@ -91,7 +91,7 @@ private:
 
     QMutex m_mutex;
     QImage m_image;
-    QVector<Update> m_updates;
+    QList<Update> m_updates;
 };
 
 typedef QSharedPointer<QTextureAtlasData> QTextureAtlasDataPtr;

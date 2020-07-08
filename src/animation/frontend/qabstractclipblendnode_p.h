@@ -63,7 +63,7 @@ public:
     QAbstractClipBlendNodePrivate();
 
     Q_DECLARE_PUBLIC(QAbstractClipBlendNode)
-    QVector<QAbstractAnimationClip *> m_clips;
+    QList<QAbstractAnimationClip *> m_clips;
 };
 
 } // namespace Qt3DAnimation

@@ -61,8 +61,8 @@ public:
 
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    QVector<QPair<Qt3DCore::QNodeId, bool>> m_triggeredActions;
-    QVector<QPair<Qt3DCore::QNodeId, float>> m_triggeredAxis;
+    QList<QPair<Qt3DCore::QNodeId, bool>> m_triggeredActions;
+    QList<QPair<Qt3DCore::QNodeId, float>> m_triggeredAxis;
 };
 
 UpdateAxisActionJob::UpdateAxisActionJob(qint64 currentTime, InputHandler *handler, HLogicalDevice handle)

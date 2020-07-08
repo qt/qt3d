@@ -82,7 +82,7 @@ void QQuick3DMorphTarget::clearAttributes(QQmlListProperty<Qt3DCore::QAttribute>
 {
     QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
     if (target) {
-        QVector<Qt3DCore::QAttribute *> emptyList;
+        QList<Qt3DCore::QAttribute *> emptyList;
         target->parentMorphTarget()->setAttributes(emptyList);
     }
 }

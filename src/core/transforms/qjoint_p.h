@@ -68,7 +68,7 @@ public:
     Q_DECLARE_PUBLIC(QJoint)
 
     QMatrix4x4 m_inverseBindMatrix;
-    QVector<QJoint *> m_childJoints;
+    QList<QJoint *> m_childJoints;
     QQuaternion m_rotation;
     QVector3D m_translation;
     QVector3D m_scale;

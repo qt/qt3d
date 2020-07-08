@@ -82,7 +82,7 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(QGeometryView *node)
     int drawVertexCount = node->vertexCount(); // may be 0, gets changed below if so
 
     QAttribute *positionAttribute = dgeom->m_boundingVolumePositionAttribute;
-    const QVector<Qt3DCore::QAttribute *> attributes = geom->attributes();
+    const QList<Qt3DCore::QAttribute *> attributes = geom->attributes();
 
     // Use the default position attribute if attribute is null
     if (!positionAttribute) {

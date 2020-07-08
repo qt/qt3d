@@ -64,7 +64,7 @@ public:
     void cleanup();
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    QVector<Qt3DCore::Sqt> joints() const { return  m_jointLocalPoses; }
+    QList<Qt3DCore::Sqt> joints() const { return  m_jointLocalPoses; }
     int jointCount() const { return m_jointLocalPoses.size(); }
     QString jointName(int jointIndex) const { return m_jointNames.at(jointIndex); }
 
@@ -104,15 +104,15 @@ public:
         m_jointNames.resize(jointCount);
         m_jointLocalPoses.resize(jointCount);
     }
-    void setJointNames(const QVector<QString> &names) { m_jointNames = names; }
-    QVector<QString> jointNames() const { return m_jointNames; }
-    void setJointLocalPoses(const QVector<Qt3DCore::Sqt> &localPoses) { m_jointLocalPoses = localPoses; }
-    QVector<Qt3DCore::Sqt> jointLocalPoses() const { return m_jointLocalPoses; }
+    void setJointNames(const QList<QString> &names) { m_jointNames = names; }
+    QList<QString> jointNames() const { return m_jointNames; }
+    void setJointLocalPoses(const QList<Qt3DCore::Sqt> &localPoses) { m_jointLocalPoses = localPoses; }
+    QList<Qt3DCore::Sqt> jointLocalPoses() const { return m_jointLocalPoses; }
 #endif
 
 private:
-    QVector<QString> m_jointNames;
-    QVector<Qt3DCore::Sqt> m_jointLocalPoses;
+    QList<QString> m_jointNames;
+    QList<Qt3DCore::Sqt> m_jointLocalPoses;
 };
 
 } // namespace Animation

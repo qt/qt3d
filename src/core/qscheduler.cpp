@@ -120,7 +120,7 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
 
     // TODO: Set up dependencies between jobs as needed
     // For now just queue them up as they are
-    const QVector<QAbstractAspect *> &aspects = m_aspectManager->aspects();
+    const QList<QAbstractAspect *> &aspects = m_aspectManager->aspects();
     for (QAbstractAspect *aspect : aspects) {
         const std::vector<QAspectJobPtr> aspectJobs = QAbstractAspectPrivate::get(aspect)->jobsToExecute(time);
         jobQueue.insert(jobQueue.end(),

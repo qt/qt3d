@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 #include <cmath>
 #include <cstdlib>
@@ -61,7 +61,7 @@ namespace Animation {
 class Q_AUTOTEST_EXPORT FunctionRangeFinder
 {
 public:
-    FunctionRangeFinder(const QVector<float> &x);
+    FunctionRangeFinder(const QList<float> &x);
 
     inline int findLowerBound(float x) const { return m_correlated ? hunt(x) : locate(x); }
 
@@ -81,7 +81,7 @@ private:
     int locate(float x) const;
     int hunt(float x) const;
 
-    const QVector<float> &m_x;
+    const QList<float> &m_x;
     mutable int m_previousLowerBound;
     mutable bool m_correlated;
     int m_rangeSize;

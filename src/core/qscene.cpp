@@ -119,11 +119,11 @@ QNode *QScene::lookupNode(QNodeId id) const
     return d->m_nodeLookupTable.value(id);
 }
 
-QVector<QNode *> QScene::lookupNodes(const QVector<QNodeId> &ids) const
+QList<QNode *> QScene::lookupNodes(const QList<QNodeId> &ids) const
 {
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
-    QVector<QNode *> nodes(ids.size());
+    QList<QNode *> nodes(ids.size());
     int index = 0;
     for (QNodeId id : ids)
         nodes[index++] = d->m_nodeLookupTable.value(id);
@@ -148,11 +148,11 @@ QChangeArbiter *QScene::arbiter() const
     return d->m_arbiter;
 }
 
-QVector<QNodeId> QScene::entitiesForComponent(QNodeId id) const
+QList<QNodeId> QScene::entitiesForComponent(QNodeId id) const
 {
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
-    QVector<QNodeId> result;
+    QList<QNodeId> result;
     const auto p = d->m_componentToEntities.equal_range(id);
     for (auto it = p.first; it != p.second; ++it)
         result.push_back(*it);

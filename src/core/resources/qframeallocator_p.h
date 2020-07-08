@@ -58,7 +58,6 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QScopedPointer>
-#include <QtCore/QVector>
 
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 

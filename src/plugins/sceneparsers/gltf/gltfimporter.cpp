@@ -475,7 +475,7 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
     // So if the node has only 1 mesh, we only create 1 QEntity
     // Otherwise if there are n meshes, there is 1 QEntity, with n children for each mesh/material combo
     {
-        QVector<QEntity *> entities;
+        QList<QEntity *> entities;
         const QJsonValue meshesValue = jsonObj.value(KEY_MESHES);
 
         if (meshesValue.isUndefined()) {
@@ -2140,8 +2140,8 @@ QVariant GLTFImporter::parameterValueFromJSON(int type, const QJsonValue &value)
         QVector2D vector2D;
         QVector3D vector3D;
         QVector4D vector4D;
-        QVector<float> dataMat2(4, 0.0f);
-        QVector<float> dataMat3(9, 0.0f);
+        QList<float> dataMat2(4, 0.0f);
+        QList<float> dataMat3(9, 0.0f);
 
         switch (type) {
         case GL_BYTE:
@@ -2518,7 +2518,7 @@ void GLTFImporter::populateRenderStates(QRenderPass *pass, const QJsonObject &st
 {
     // Process states to enable
     const QJsonArray enableStatesArray = states.value(KEY_ENABLE).toArray();
-    QVector<int> enableStates;
+    QList<int> enableStates;
     for (const QJsonValue &enableValue : enableStatesArray)
         enableStates.append(enableValue.toInt());
 

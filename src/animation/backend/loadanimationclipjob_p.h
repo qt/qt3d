@@ -50,7 +50,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DAnimation/private/handle_types_p.h>
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,7 +69,7 @@ public:
     void setHandler(Handler *handler) { m_handler = handler; }
     Handler *handler() const { return m_handler; }
 
-    void addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles);
+    void addDirtyAnimationClips(const QList<HAnimationClip> &animationClipHandles);
     void clearDirtyAnimationClips();
 
 protected:
@@ -78,7 +78,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(LoadAnimationClipJob)
 
-    QVector<HAnimationClip> m_animationClipHandles;
+    QList<HAnimationClip> m_animationClipHandles;
     Handler *m_handler;
 };
 

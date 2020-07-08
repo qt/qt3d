@@ -82,21 +82,21 @@ public:
     void setClipResults(Qt3DCore::QNodeId animatorId, const ClipResults &clipResults);
     ClipResults clipResults(Qt3DCore::QNodeId animatorId) const;
 
-    virtual QVector<Qt3DCore::QNodeId> allDependencyIds() const = 0;
-    virtual QVector<Qt3DCore::QNodeId> currentDependencyIds() const = 0;
+    virtual QList<Qt3DCore::QNodeId> allDependencyIds() const = 0;
+    virtual QList<Qt3DCore::QNodeId> currentDependencyIds() const = 0;
     virtual double duration() const = 0;
 
 protected:
     explicit ClipBlendNode(BlendType blendType);
-    virtual ClipResults doBlend(const QVector<ClipResults> &blendData) const = 0;
+    virtual ClipResults doBlend(const QList<ClipResults> &blendData) const = 0;
 
 private:
     ClipBlendNodeManager *m_manager;
     BlendType m_blendType;
 
     // Store the results of evaluations indexed by animator id
-    QVector<Qt3DCore::QNodeId> m_animatorIds;
-    QVector<ClipResults> m_clipResults;
+    QList<Qt3DCore::QNodeId> m_animatorIds;
+    QList<ClipResults> m_clipResults;
 };
 
 template<typename Backend, typename Frontend>

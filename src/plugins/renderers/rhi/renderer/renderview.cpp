@@ -881,7 +881,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                     Attribute *indexAttribute = nullptr;
                     Attribute *indirectAttribute = nullptr;
 
-                    const QVector<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
+                    const QList<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
                     for (Qt3DCore::QNodeId attributeId : attributeIds) {
                         using namespace Qt3DCore;
 

@@ -53,7 +53,6 @@
 
 #include <QVariant>
 #include <QByteArray>
-#include <QVector>
 #include <QOpenGLShaderProgram>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/private/renderlogging_p.h>

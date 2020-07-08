@@ -61,7 +61,7 @@ public:
     QAnimationGroupPrivate();
 
     QString m_name;
-    QVector<Qt3DAnimation::QAbstractAnimation *> m_animations;
+    QList<Qt3DAnimation::QAbstractAnimation *> m_animations;
     float m_position;
     float m_duration;
 

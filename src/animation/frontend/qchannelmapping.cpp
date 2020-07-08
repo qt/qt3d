@@ -53,7 +53,7 @@ int componentCountForValue(const T &)
 }
 
 template<>
-int componentCountForValue<QVector<float>>(const QVector<float> &v)
+int componentCountForValue<QList<float>>(const QList<float> &v)
 {
     return v.size();
 }
@@ -67,10 +67,10 @@ int componentCountForValue<QVariantList>(const QVariantList &v)
 
 int componentCountForType(int type, const QVariant &value)
 {
-    const int vectorOfFloatTypeId = qMetaTypeId<QVector<float>>();
+    const int vectorOfFloatTypeId = qMetaTypeId<QList<float>>();
 
     if (type == vectorOfFloatTypeId)
-        return componentCountForValue<QVector<float>>(value.value<QVector<float>>());
+        return componentCountForValue<QList<float>>(value.value<QList<float>>());
 
     switch (type) {
     case QMetaType::Float:

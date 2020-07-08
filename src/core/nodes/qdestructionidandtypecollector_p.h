@@ -60,7 +60,7 @@ class QDestructionIdAndTypeCollector
 public:
     QDestructionIdAndTypeCollector(QNode *rootNode);
 
-    QVector<QNodeIdTypePair> subtreeIdsAndTypes() const { return m_subtreeIdsAndTypes; }
+    QList<QNodeIdTypePair> subtreeIdsAndTypes() const { return m_subtreeIdsAndTypes; }
 
 private:
     void collectIdAndType(QNode *node)
@@ -73,7 +73,7 @@ private:
         QNodePrivate::get(node)->m_hasBackendNode = false;
     }
 
-    QVector<QNodeIdTypePair> m_subtreeIdsAndTypes;
+    QList<QNodeIdTypePair> m_subtreeIdsAndTypes;
 };
 
 } // namespace Qt3DCore

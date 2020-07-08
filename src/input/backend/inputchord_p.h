@@ -67,7 +67,7 @@ public:
     InputChord();
     void cleanup();
 
-    inline QVector<Qt3DCore::QNodeId> chords() const { return m_chords; }
+    inline QList<Qt3DCore::QNodeId> chords() const { return m_chords; }
     inline qint64 timeout() const { return m_timeout; }
     inline qint64 startTime() const { return m_startTime; }
     void setStartTime(qint64 time);
@@ -78,8 +78,8 @@ public:
     bool process(InputHandler *inputHandler, qint64 currentTime) override;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_chords;
-    QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
+    QList<Qt3DCore::QNodeId> m_chords;
+    QList<Qt3DCore::QNodeId> m_inputsToTrigger;
     qint64 m_timeout;
     qint64 m_startTime;
 };

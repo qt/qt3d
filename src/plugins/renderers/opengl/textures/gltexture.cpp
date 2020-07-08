@@ -180,7 +180,7 @@ bool GLTexture::loadTextureDataFromGenerator()
         m_properties.layers = m_textureData->layers();
         m_properties.format = m_textureData->format();
 
-        const QVector<QTextureImageDataPtr> imageData = m_textureData->imageData();
+        const QList<QTextureImageDataPtr> imageData = m_textureData->imageData();
 
         if (imageData.size() > 0) {
             // Set the mips level based on the first image if autoMipMapGeneration is disabled
@@ -532,7 +532,7 @@ void GLTexture::uploadGLTextureData()
 {
     // Upload all QTexImageData set by the QTextureGenerator
     if (m_textureData) {
-        const QVector<QTextureImageDataPtr> imgData = m_textureData->imageData();
+        const QList<QTextureImageDataPtr> imgData = m_textureData->imageData();
 
         for (const QTextureImageDataPtr &data : imgData) {
             const int mipLevels = m_properties.generateMipMaps ? 1 : data->mipLevels();

@@ -53,8 +53,8 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <QtCore/qhash.h>
+#include <QtCore/qlist.h>
 #include <QtCore/qmutex.h>
-#include <QtCore/qvector.h>
 
 #include <Qt3DInput/private/qt3dinput_global_p.h>
 #include <Qt3DCore/private/qnode_p.h>
@@ -72,12 +72,12 @@ public:
     ~QAbstractPhysicalDevicePrivate();
 
     Q_DECLARE_PUBLIC(QAbstractPhysicalDevice)
-    QVector<QAxisSetting *> m_axisSettings;
+    QList<QAxisSetting *> m_axisSettings;
     QHash<QString, int> m_axesHash;
     QHash<QString, int> m_buttonsHash;
 
-    QVector<QPair<int, qreal>> m_pendingAxisEvents;
-    QVector<QPair<int, qreal>> m_pendingButtonsEvents;
+    QList<QPair<int, qreal>> m_pendingAxisEvents;
+    QList<QPair<int, qreal>> m_pendingButtonsEvents;
 
     void postAxisEvent(int axis, qreal value);
     void postButtonEvent(int button, qreal value);

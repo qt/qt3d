@@ -88,7 +88,7 @@ void QQuick3DAnimationGroup::clearAnimation(QQmlListProperty<Qt3DAnimation::QAbs
 {
     QQuick3DAnimationGroup *animationGroup = qobject_cast<QQuick3DAnimationGroup *>(list->object);
     if (animationGroup) {
-        QVector<Qt3DAnimation::QAbstractAnimation *> emptyList;
+        QList<Qt3DAnimation::QAbstractAnimation *> emptyList;
         animationGroup->parentAnimationGroup()->setAnimations(emptyList);
     }
 }

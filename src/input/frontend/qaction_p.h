@@ -71,7 +71,7 @@ public:
 
     Q_DECLARE_PUBLIC(QAction)
 
-    QVector<QAbstractActionInput *> m_inputs;
+    QList<QAbstractActionInput *> m_inputs;
     bool m_active;
 
     void setActive(bool active)
@@ -85,7 +85,7 @@ public:
 
 struct QActionData
 {
-    QVector<Qt3DCore::QNodeId> inputIds;
+    QList<Qt3DCore::QNodeId> inputIds;
 };
 
 } // namespace Qt3DInput

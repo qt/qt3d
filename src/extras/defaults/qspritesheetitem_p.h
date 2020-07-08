@@ -39,8 +39,6 @@
 
 #ifndef QT3DEXTRAS_QSPRITESHEET_P_H
 #define QT3DEXTRAS_QSPRITESHEET_P_H
-#include <QRect>
-#include <QVector>
 
 //
 //  W A R N I N G

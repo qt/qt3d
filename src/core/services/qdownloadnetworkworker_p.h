@@ -90,7 +90,7 @@ private Q_SLOTS:
 
 private:
     QNetworkAccessManager *m_networkManager;
-    QVector< QPair<QDownloadRequestPtr, QNetworkReply *> > m_requests;
+    QList< QPair<QDownloadRequestPtr, QNetworkReply *> > m_requests;
     QMutex m_mutex;
 };
 

@@ -62,7 +62,7 @@ public:
 
     QString m_name;
     int m_activeAnimationGroup;
-    QVector<QAnimationGroup *> m_animationGroups;
+    QList<QAnimationGroup *> m_animationGroups;
     float m_position;
     float m_scaledPosition;
     float m_positionScale;

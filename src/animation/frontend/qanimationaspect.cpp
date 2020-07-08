@@ -95,7 +95,7 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     Q_D(QAnimationAspect);
     qRegisterMetaType<Qt3DAnimation::QAnimationClipLoader*>();
     qRegisterMetaType<Qt3DAnimation::QChannelMapper*>();
-    qRegisterMetaType<QVector<Qt3DCore::Sqt>>();
+    qRegisterMetaType<QList<Qt3DCore::Sqt>>();
     qRegisterMetaType<Qt3DAnimation::QAbstractAnimationClip*>();
 
     registerBackendType<QAbstractAnimationClip>(

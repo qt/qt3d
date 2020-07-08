@@ -58,7 +58,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
-#include <QVector>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -117,7 +117,7 @@ public:
 
         QString name;
         int inverseBindAccessorIndex;
-        QVector<int> jointNodeIndices;
+        QList<int> jointNodeIndices;
     };
 
     class Channel
@@ -158,8 +158,8 @@ public:
         explicit Animation(const QJsonObject &json);
 
         QString name;
-        QVector<Channel> channels;
-        QVector<Sampler> samplers;
+        QList<Channel> channels;
+        QList<Sampler> samplers;
     };
 
     class Node
@@ -169,7 +169,7 @@ public:
         explicit Node(const QJsonObject &json);
 
         Qt3DCore::Sqt localTransform;
-        QVector<int> childNodeIndices;
+        QList<int> childNodeIndices;
         QString name;
         int parentNodeIndex;
         int cameraIndex;
@@ -180,12 +180,12 @@ public:
     GLTFImporter();
 
     bool load(QIODevice *ioDev);
-    const QVector<Animation> animations() const { return m_animations; }
+    const QList<Animation> animations() const { return m_animations; }
 
     struct AnimationNameAndChannels
     {
         QString name;
-        QVector<Qt3DAnimation::Animation::Channel> channels;
+        QList<Qt3DAnimation::Animation::Channel> channels;
     };
     AnimationNameAndChannels createAnimationData(int animationIndex, const QString &animationName = QString()) const;
 
@@ -221,12 +221,12 @@ private:
 
     QJsonDocument m_json;
     QString m_basePath;
-    QVector<BufferData> m_bufferDatas;
-    QVector<BufferView> m_bufferViews;
-    QVector<AccessorData> m_accessors;
-    QVector<Skin> m_skins;
-    QVector<Animation> m_animations;
-    QVector<Node> m_nodes;
+    QList<BufferData> m_bufferDatas;
+    QList<BufferView> m_bufferViews;
+    QList<AccessorData> m_accessors;
+    QList<Skin> m_skins;
+    QList<Animation> m_animations;
+    QList<Node> m_nodes;
 };
 
 } // namespace Animation

@@ -59,7 +59,7 @@ public:
 
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    QVector<QPair<Qt3DCore::QNodeId, bool>> updates;
+    QList<QPair<Qt3DCore::QNodeId, bool>> updates;
 };
 
 AssignKeyboardFocusJob::AssignKeyboardFocusJob(Qt3DCore::QNodeId keyboardDevice)

@@ -50,7 +50,7 @@
 
 #include <Qt3DAnimation/private/qabstractchannelmapping_p.h>
 #include <Qt3DAnimation/qanimationcallback.h>
-#include <QVector>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,6 +88,6 @@ struct QChannelMappingData
 QT_END_NAMESPACE
 
 // Used to define the meta type id
-Q_DECLARE_METATYPE(QVector<float>) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(QList<float>) // LCOV_EXCL_LINE
 
 #endif // QT3DANIMATION_QCHANNELMAPPING_P_H

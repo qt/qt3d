@@ -78,8 +78,8 @@ public:
     SkeletonType m_type;
 
     int m_jointCount;
-    QVector<Sqt> m_localPoses;
-    QVector<QString> m_jointNames;
+    QList<Sqt> m_localPoses;
+    QList<QString> m_jointNames;
 };
 
 } // namespace Qt3DCore

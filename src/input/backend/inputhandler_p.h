@@ -131,7 +131,7 @@ public:
 
     void resetMouseAxisState();
 
-    QVector<Qt3DInput::QInputDeviceIntegration *> inputDeviceIntegrations() const;
+    QList<Qt3DInput::QInputDeviceIntegration *> inputDeviceIntegrations() const;
     void addInputDeviceIntegration(QInputDeviceIntegration *inputIntegration);
 
     void setInputSettings(InputSettings *settings);
@@ -152,9 +152,9 @@ private:
     MouseDeviceManager *m_mouseDeviceManager;
     MouseInputManager *m_mouseInputManager;
 
-    QVector<HKeyboardDevice> m_activeKeyboardDevices;
-    QVector<HMouseDevice> m_activeMouseDevices;
-    QVector<HGenericDeviceBackendNode> m_activeGenericPhysicalDevices;
+    QList<HKeyboardDevice> m_activeKeyboardDevices;
+    QList<HMouseDevice> m_activeMouseDevices;
+    QList<HGenericDeviceBackendNode> m_activeGenericPhysicalDevices;
     InternalEventFilter *m_eventFilter;
 
     AxisManager *m_axisManager;
@@ -169,7 +169,7 @@ private:
     LogicalDeviceManager *m_logicalDeviceManager;
     GenericDeviceBackendNodeManager *m_genericPhysicalDeviceBackendNodeManager;
     PhysicalDeviceProxyManager *m_physicalDeviceProxyManager;
-    QVector<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;
+    QList<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;
     InputSettings *m_settings;
     Qt3DCore::QEventFilterService *m_service;
     QObject *m_lastEventSource;

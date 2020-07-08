@@ -87,7 +87,7 @@ void QQuick3DScene2D::clearEntities(QQmlListProperty<Qt3DCore::QEntity> *list)
 {
     QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
     if (scene2d) {
-        QVector<Qt3DCore::QEntity*> entities = scene2d->parentScene2D()->entities();
+        QList<Qt3DCore::QEntity*> entities = scene2d->parentScene2D()->entities();
         for (Qt3DCore::QEntity *e : entities)
             scene2d->parentScene2D()->removeEntity(e);
     }

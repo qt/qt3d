@@ -65,13 +65,13 @@ class Q_AUTOTEST_EXPORT Axis : public BackendNode
 public:
     Axis();
     void cleanup();
-    inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
+    inline QList<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline float axisValue() const { return m_axisValue; }
     void setAxisValue(float axisValue);
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_inputs;
+    QList<Qt3DCore::QNodeId> m_inputs;
     float m_axisValue;
 };
 

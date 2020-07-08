@@ -71,7 +71,7 @@ public:
     QInputChordPrivate();
 
     int m_timeout;
-    QVector<QAbstractActionInput *> m_chords;
+    QList<QAbstractActionInput *> m_chords;
 };
 
 struct QInputChordData

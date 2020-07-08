@@ -77,7 +77,7 @@ public:
     Scene2DManager *m_renderManager;
     QMetaObject::Connection m_textureDestroyedConnection;
     Qt3DRender::QRenderTargetOutput *m_output;
-    QVector<Qt3DCore::QEntity *> m_entities;
+    QList<Qt3DCore::QEntity *> m_entities;
 };
 
 struct QScene2DData
@@ -85,7 +85,7 @@ struct QScene2DData
     QScene2D::RenderPolicy renderPolicy;
     Scene2DSharedObjectPtr sharedObject;
     Qt3DCore::QNodeId output;
-    QVector<Qt3DCore::QNodeId> entityIds;
+    QList<Qt3DCore::QNodeId> entityIds;
     bool mouseEnabled;
 };
 

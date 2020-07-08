@@ -207,7 +207,7 @@ QBackendNodeMapperPtr QAbstractAspectPrivate::mapperForNode(const QMetaObject *m
     return mapper;
 }
 
-void QAbstractAspectPrivate::syncDirtyFrontEndNodes(const QVector<QNode *> &nodes)
+void QAbstractAspectPrivate::syncDirtyFrontEndNodes(const QList<QNode *> &nodes)
 {
     for (auto node: qAsConst(nodes)) {
         const QMetaObject *metaObj = QNodePrivate::get(node)->m_typeInfo;
@@ -229,7 +229,7 @@ void QAbstractAspectPrivate::syncDirtyFrontEndNode(QNode *node, QBackendNode *ba
     backend->syncFromFrontEnd(node, firstTime);
 }
 
-void QAbstractAspectPrivate::syncDirtyEntityComponentNodes(const QVector<ComponentRelationshipChange> &changes)
+void QAbstractAspectPrivate::syncDirtyEntityComponentNodes(const QList<ComponentRelationshipChange> &changes)
 {
     auto getBackend = [this] (QNode *node) -> QBackendNode* {
         const QMetaObject *metaObj = QNodePrivate::get(node)->m_typeInfo;
@@ -308,7 +308,7 @@ void QAbstractAspectPrivate::clearBackendNode(const NodeTreeChange &change) cons
     backendNodeMapper->destroy(change.id);
 }
 
-void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QVector<NodeTreeChange> &nodesChanges)
+void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QList<NodeTreeChange> &nodesChanges)
 {
     qCDebug(Aspects) << Q_FUNC_INFO << "rootObject =" << rootObject;
     if (rootObject == m_root)

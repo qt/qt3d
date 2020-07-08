@@ -86,7 +86,7 @@ public:
     // keep track of the glyphs currently being displayed,
     // to guarantee proper glyph ref-counting in the
     // QDistanceFieldGlyphCache
-    QVector<QGlyphRun> m_currentGlyphRuns;
+    QList<QGlyphRun> m_currentGlyphRuns;
     QDistanceFieldGlyphCache *m_glyphCache;
 
     void setScene(Qt3DCore::QScene *scene) override;
@@ -99,11 +99,11 @@ public:
     float m_width;
     float m_height;
 
-    QVector<DistanceFieldTextRenderer*> m_renderers;
+    QList<DistanceFieldTextRenderer*> m_renderers;
 
     float computeActualScale() const;
 
-    void setCurrentGlyphRuns(const QVector<QGlyphRun> &runs);
+    void setCurrentGlyphRuns(const QList<QGlyphRun> &runs);
     void clearCurrentGlyphRuns();
     void updateGlyphs();
 

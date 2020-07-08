@@ -356,7 +356,7 @@ bool RHITexture::loadTextureDataFromGenerator()
         m_properties.layers = m_textureData->layers();
         m_properties.format = m_textureData->format();
 
-        const QVector<QTextureImageDataPtr> &imageData = m_textureData->imageData();
+        const QList<QTextureImageDataPtr> &imageData = m_textureData->imageData();
 
         if (!imageData.empty()) {
             // Set the mips level based on the first image if autoMipMapGeneration is disabled

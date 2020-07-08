@@ -84,7 +84,7 @@ public:
     QVariant m_model;
     QQmlInstanceModel *m_instanceModel;
     QQmlComponent *m_delegate;
-    QVector<QPointer<QObject> > m_objects;
+    QList<QPointer<QObject>> m_objects;
 };
 
 /*!
@@ -183,7 +183,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
     }
 
     int difference = 0;
-    QHash<int, QVector<QPointer<QObject> > > moved;
+    QHash<int, QList<QPointer<QObject>>> moved;
     const auto removes = changeSet.removes();
     for (const QQmlChangeSet::Change &remove : removes) {
         int index = qMin(remove.index, m_objects.count());
@@ -210,7 +210,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
     for (const QQmlChangeSet::Change &insert : inserts) {
         int index = qMin(insert.index, m_objects.count());
         if (insert.isMove()) {
-            QVector<QPointer<QObject> > movedObjects = moved.value(insert.moveId);
+            QList<QPointer<QObject>> movedObjects = moved.value(insert.moveId);
             m_objects = m_objects.mid(0, index) + movedObjects + m_objects.mid(index);
         } else for (int i = 0; i < insert.count; ++i) {
             int modelIndex = index + i;

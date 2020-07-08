@@ -69,11 +69,11 @@ public:
 
     float m_minposition;
     float m_maxposition;
-    QVector<float> m_targetPositions;
-    QVector<QVector<float>*> m_weights;
-    QVector<float> m_morphKey;
+    QList<float> m_targetPositions;
+    QList<QList<float>*> m_weights;
+    QList<float> m_morphKey;
     QStringList m_attributeNames;
-    QVector<Qt3DAnimation::QMorphTarget *> m_morphTargets;
+    QList<Qt3DAnimation::QMorphTarget *> m_morphTargets;
     QMorphTarget *m_flattened;
     QMorphingAnimation::Method m_method;
     QEasingCurve m_easing;

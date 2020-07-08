@@ -85,8 +85,8 @@ public:
 
     // Called by jobs
     bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull(); }
-    void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
-    QVector<MappingData> mappingData() const { return m_mappingData; }
+    void setMappingData(const QList<MappingData> &mappingData) { m_mappingData = mappingData; }
+    QList<MappingData> mappingData() const { return m_mappingData; }
 
     void setStartTime(qint64 globalTime) { m_lastGlobalTimeNS = globalTime; }
 
@@ -122,7 +122,7 @@ private:
     // Working state
     qint64 m_lastGlobalTimeNS;
     double m_lastLocalTime;
-    QVector<MappingData> m_mappingData;
+    QList<MappingData> m_mappingData;
 
     int m_currentLoop;
     ClipFormat m_clipFormat;

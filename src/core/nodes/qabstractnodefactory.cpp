@@ -60,7 +60,7 @@ QAbstractNodeFactory::~QAbstractNodeFactory()
 {
 }
 
-QVector<QAbstractNodeFactory *> node_factories;
+QList<QAbstractNodeFactory *> node_factories;
 
 /*
  * Registers the given \a factory
@@ -73,7 +73,7 @@ void QAbstractNodeFactory::registerNodeFactory(QAbstractNodeFactory *factory)
 /*
  * \return the node factories.
  */
-QVector<QAbstractNodeFactory *> QAbstractNodeFactory::nodeFactories()
+QList<QAbstractNodeFactory *> QAbstractNodeFactory::nodeFactories()
 {
     return node_factories;
 }

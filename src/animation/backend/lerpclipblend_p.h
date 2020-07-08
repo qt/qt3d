@@ -73,12 +73,12 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) final;
 
-    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const override
+    inline QList<Qt3DCore::QNodeId> allDependencyIds() const override
     {
         return currentDependencyIds();
     }
 
-    inline QVector<Qt3DCore::QNodeId> currentDependencyIds() const override
+    inline QList<Qt3DCore::QNodeId> currentDependencyIds() const override
     {
         return { m_startClipId, m_endClipId };
     }
@@ -86,7 +86,7 @@ public:
     double duration() const override;
 
 protected:
-    ClipResults doBlend(const QVector<ClipResults> &blendData) const final;
+    ClipResults doBlend(const QList<ClipResults> &blendData) const final;
 
 private:
     Qt3DCore::QNodeId m_startClipId;

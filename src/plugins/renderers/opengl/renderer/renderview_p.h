@@ -71,10 +71,10 @@
 
 #include <renderer_p.h>
 
-#include <QVector>
-#include <QSurface>
-#include <QMutex>
 #include <QColor>
+#include <QList>
+#include <QMutex>
+#include <QSurface>
 
 QT_BEGIN_NAMESPACE
 
@@ -176,7 +176,7 @@ public:
     inline Qt3DCore::QNodeIdVector insertFenceIds() const { return m_insertFenceIds; }
 
     inline void appendWaitFence(const WaitFence::Data &data) { m_waitFences.push_back(data); }
-    inline QVector<WaitFence::Data> waitFences() const { return m_waitFences; }
+    inline QList<WaitFence::Data> waitFences() const { return m_waitFences; }
 
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_passFilter; }
@@ -241,7 +241,7 @@ public:
     void setRenderTargetId(Qt3DCore::QNodeId renderTargetId) Q_DECL_NOTHROW { m_renderTarget = renderTargetId; }
     Qt3DCore::QNodeId renderTargetId() const Q_DECL_NOTHROW { return m_renderTarget; }
 
-    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_sortingTypes.append(sortTypes); }
+    void addSortType(const QList<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_sortingTypes.append(sortTypes); }
 
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }
@@ -332,9 +332,9 @@ private:
     bool m_showDebugOverlay = false;
     int m_workGroups[3] = { 1, 1, 1};
     QMemoryBarrier::Operations m_memoryBarrier = QMemoryBarrier::None;
-    QVector<Qt3DCore::QNodeId> m_insertFenceIds;
-    QVector<WaitFence::Data> m_waitFences;
-    QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
+    QList<Qt3DCore::QNodeId> m_insertFenceIds;
+    QList<WaitFence::Data> m_waitFences;
+    QList<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
     Qt3DCore::QNodeIdVector m_proximityFilterIds;
     Qt3DCore::QNodeIdVector m_layerFilterIds;
     Matrix4x4 m_viewMatrix;

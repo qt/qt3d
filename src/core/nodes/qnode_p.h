@@ -125,7 +125,7 @@ public:
     }
 
     template<typename Caller, typename NodeType>
-    void registerDestructionHelper(NodeType *node, DestructionFunctionPointer<Caller, NodeType> func, QVector<NodeType*> &)
+    void registerDestructionHelper(NodeType *node, DestructionFunctionPointer<Caller, NodeType> func, QList<NodeType*> &)
     {
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
@@ -190,7 +190,7 @@ private:
     friend class PropertyChangeHandler<QNodePrivate>;
     bool m_propertyChangesSetup;
     PropertyChangeHandler<QNodePrivate> m_signals;
-    QVector<QPair<QNode *, QMetaObject::Connection>> m_destructionConnections;
+    QList<QPair<QNode *, QMetaObject::Connection>> m_destructionConnections;
 };
 
 class NodePostConstructorInit : public QObject

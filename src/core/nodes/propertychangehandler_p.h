@@ -56,7 +56,6 @@
 #include <QtCore/QHash>
 #include <QtCore/QMetaMethod>
 #include <QtCore/QObject>
-#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 

@@ -90,7 +90,7 @@ private:
     void setButtonValue(int key, bool value);
 
     InputHandler *m_inputHandler;
-    QVector<Qt3DCore::QNodeId> m_keyboardInputs;
+    QList<Qt3DCore::QNodeId> m_keyboardInputs;
     Qt3DCore::QNodeId m_lastRequester;
     Qt3DCore::QNodeId m_currentFocusItem;
 

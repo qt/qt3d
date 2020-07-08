@@ -68,14 +68,14 @@ public:
     QLogicalDevicePrivate();
     ~QLogicalDevicePrivate();
 
-    QVector<QAction *> m_actions;
-    QVector<QAxis *> m_axes;
+    QList<QAction *> m_actions;
+    QList<QAxis *> m_axes;
 };
 
 struct QLogicalDeviceData
 {
-    QVector<Qt3DCore::QNodeId> actionIds;
-    QVector<Qt3DCore::QNodeId> axisIds;
+    QList<Qt3DCore::QNodeId> actionIds;
+    QList<Qt3DCore::QNodeId> axisIds;
 };
 
 } // namespace Qt3DInput

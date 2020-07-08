@@ -79,7 +79,7 @@ private:
     static int attributesCount(QQmlListProperty<Qt3DCore::QAttribute> *list);
     static void clearAttributes(QQmlListProperty<Qt3DCore::QAttribute> *list);
 
-    QVector<Qt3DCore::QAttribute *> m_managedAttributes;
+    QList<Qt3DCore::QAttribute *> m_managedAttributes;
 };
 
 } // namespace Quick

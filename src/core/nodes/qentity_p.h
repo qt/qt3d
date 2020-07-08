@@ -74,9 +74,9 @@ public :
     void updateComponentRelationShip(QComponent *component, ComponentRelationshipChange::RelationShip change);
 
     template<class T>
-    QVector<T*> componentsOfType() const
+    QList<T*> componentsOfType() const
     {
-        QVector<T*> typedComponents;
+        QList<T*> typedComponents;
         for (QComponent *comp : m_components) {
             T *typedComponent = qobject_cast<T*>(comp);
             if (typedComponent != nullptr)

@@ -266,7 +266,7 @@ void QAspectManager::shutdown()
 }
 
 // MainThread called by QAspectEngine::setRootEntity
-void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<QNode *> &nodes)
+void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QList<QNode *> &nodes)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
@@ -282,7 +282,7 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<QNode 
 
     if (m_root) {
 
-        QVector<NodeTreeChange> nodeTreeChanges;
+        QList<NodeTreeChange> nodeTreeChanges;
         nodeTreeChanges.reserve(nodes.size());
 
         for (QNode *n : nodes) {
@@ -301,14 +301,14 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<QNode 
 
 
 // Main Thread -> immediately following node insertion
-void QAspectManager::addNodes(const QVector<QNode *> &nodes)
+void QAspectManager::addNodes(const QList<QNode *> &nodes)
 {
     // We record the nodes added information, which we will actually use when
     // processFrame is called (later but within the same loop of the even loop
     // as this call) The idea is we want to avoid modifying the backend tree if
     // the Renderer hasn't allowed processFrame to continue yet
 
-    QVector<NodeTreeChange> treeChanges;
+    QList<NodeTreeChange> treeChanges;
     treeChanges.reserve(nodes.size());
 
     for (QNode *node : nodes) {
@@ -322,7 +322,7 @@ void QAspectManager::addNodes(const QVector<QNode *> &nodes)
 }
 
 // Main Thread -> immediately following node destruction (call from QNode dtor)
-void QAspectManager::removeNodes(const QVector<QNode *> &nodes)
+void QAspectManager::removeNodes(const QList<QNode *> &nodes)
 {
     // We record the nodes removed information, which we will actually use when
     // processFrame is called (later but within the same loop of the even loop
@@ -391,7 +391,7 @@ void QAspectManager::unregisterAspect(Qt3DCore::QAbstractAspect *aspect)
     qCDebug(Aspects) << "Completed unregistering aspect";
 }
 
-const QVector<QAbstractAspect *> &QAspectManager::aspects() const
+const QList<QAbstractAspect *> &QAspectManager::aspects() const
 {
     return m_aspects;
 }
@@ -440,13 +440,13 @@ QNode *QAspectManager::lookupNode(QNodeId id) const
     return d->m_scene ? d->m_scene->lookupNode(id) : nullptr;
 }
 
-QVector<QNode *> QAspectManager::lookupNodes(const QVector<QNodeId> &ids) const
+QList<QNode *> QAspectManager::lookupNodes(const QList<QNodeId> &ids) const
 {
     if (!m_root)
         return {};
 
     QNodePrivate *d = QNodePrivate::get(m_root);
-    return d->m_scene ? d->m_scene->lookupNodes(ids) : QVector<QNode *>{};
+    return d->m_scene ? d->m_scene->lookupNodes(ids) : QList<QNode *>{};
 }
 
 QScene *QAspectManager::scene() const
@@ -528,7 +528,7 @@ void QAspectManager::processFrame()
         m_postConstructorInit->processNodes();
 
         // Add and Remove Nodes
-        const QVector<NodeTreeChange> nodeTreeChanges = std::move(m_nodeTreeChanges);
+        const QList<NodeTreeChange> nodeTreeChanges = std::move(m_nodeTreeChanges);
         for (const NodeTreeChange &change : nodeTreeChanges) {
             // Buckets ensure that even if we have intermingled node added / removed
             // buckets, we preserve the order of the sequences

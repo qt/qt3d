@@ -54,7 +54,7 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtGui/qquaternion.h>
 #include <QtGui/qvector3d.h>
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -95,15 +95,15 @@ struct Sqt
 
 struct JointNamesAndLocalPoses
 {
-    QVector<QString> names;
-    QVector<Sqt> localPoses;
+    QList<QString> names;
+    QList<Sqt> localPoses;
 };
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QVector<Qt3DCore::Sqt>)
+Q_DECLARE_METATYPE(QList<Qt3DCore::Sqt>)
 Q_DECLARE_METATYPE(Qt3DCore::JointNamesAndLocalPoses)
 
 #endif // QT3DCORE_SQT_P_H

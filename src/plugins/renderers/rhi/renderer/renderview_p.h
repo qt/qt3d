@@ -256,7 +256,7 @@ public:
     void setRenderTargetId(Qt3DCore::QNodeId renderTargetId) Q_DECL_NOTHROW { m_renderTarget = renderTargetId; }
     Qt3DCore::QNodeId renderTargetId() const Q_DECL_NOTHROW { return m_renderTarget; }
 
-    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { Qt3DCore::append(m_sortingTypes, sortTypes); }
+    void addSortType(const QList<Qt3DRender::QSortPolicy::SortType> &sortTypes) { Qt3DCore::append(m_sortingTypes, sortTypes); }
 
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }

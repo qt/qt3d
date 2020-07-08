@@ -370,7 +370,7 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
             QVector3D normal;
             QVector2D texCoord;
 
-            QVector<unsigned int> faceIndices;
+            QList<unsigned int> faceIndices;
 
             for (auto &property : element.properties) {
                 if (property.dataType == TypeList) {

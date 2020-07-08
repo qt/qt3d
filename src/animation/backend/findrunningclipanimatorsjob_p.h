@@ -50,7 +50,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DAnimation/private/handle_types_p.h>
-#include <QtCore/qvector.h>
+#include <QtCore/qlist.h>
 
 #if defined(QT_BUILD_INTERNAL)
 class tst_FindRunningClipAnimatorsJob;
@@ -71,13 +71,13 @@ public:
     void setHandler(Handler *handler) { m_handler = handler; }
     Handler *handler() const { return m_handler; }
 
-    void setDirtyClipAnimators(const QVector<HClipAnimator> &animationClipHandles);
+    void setDirtyClipAnimators(const QList<HClipAnimator> &animationClipHandles);
 
 protected:
     void run() override;
 
 private:
-    QVector<HClipAnimator> m_clipAnimatorHandles;
+    QList<HClipAnimator> m_clipAnimatorHandles;
     Handler *m_handler;
 
 #if defined(QT_BUILD_INTERNAL)

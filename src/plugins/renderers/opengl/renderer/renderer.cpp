@@ -782,7 +782,7 @@ void Renderer::enqueueRenderView(RenderView *renderView, int submitOrder)
 {
     QMutexLocker locker(m_renderQueue.mutex()); // Prevent out of order execution
     // We cannot use a lock free primitive here because:
-    // - QVector is not thread safe
+    // - QList is not thread safe
     // - Even if the insert is made correctly, the isFrameComplete call
     //   could be invalid since depending on the order of execution
     //   the counter could be complete but the renderview not yet added to the
@@ -1511,7 +1511,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const std::vector
         }
 
         // Wait for fences if needed
-        const QVector<WaitFence::Data> waitFences = renderView->waitFences();
+        const QList<WaitFence::Data> waitFences = renderView->waitFences();
         for (const auto &waitFence : waitFences) {
             // TO DO
             if (waitFence.handleType != QWaitFence::OpenGLFenceId) {
@@ -2204,13 +2204,13 @@ bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
 void Renderer::cleanGraphicsResources()
 {
     // Clean buffers
-    const QVector<Qt3DCore::QNodeId> buffersToRelease = m_nodesManager->bufferManager()->takeBuffersToRelease();
+    const QList<Qt3DCore::QNodeId> buffersToRelease = m_nodesManager->bufferManager()->takeBuffersToRelease();
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_submissionContext->releaseBuffer(bufferId);
 
     // When Textures are cleaned up, their id is saved so that they can be
     // cleaned up in the render thread
-    const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
+    const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
     for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds)
         cleanupTexture(textureCleanedUpId);
 
@@ -2232,7 +2232,7 @@ void Renderer::cleanGraphicsResources()
     // Abandon GL shaders when a Shader node is destroyed Note: We are sure
     // that when this gets executed, all scene changes have been received and
     // shader nodes updated
-    const QVector<Qt3DCore::QNodeId> cleanedUpShaderIds = m_nodesManager->shaderManager()->takeShaderIdsToCleanup();
+    const QList<Qt3DCore::QNodeId> cleanedUpShaderIds = m_nodesManager->shaderManager()->takeShaderIdsToCleanup();
     for (const Qt3DCore::QNodeId shaderCleanedUpId: cleanedUpShaderIds) {
         cleanupShader(m_nodesManager->shaderManager()->lookupResource(shaderCleanedUpId));
         // We can really release the texture at this point

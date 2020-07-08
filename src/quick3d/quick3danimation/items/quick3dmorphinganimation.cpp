@@ -86,7 +86,7 @@ void QQuick3DMorphingAnimation::clearMorphTargets(QQmlListProperty<Qt3DAnimation
 {
     QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
     if (animation) {
-        QVector<Qt3DAnimation::QMorphTarget *> emptyList;
+        QList<Qt3DAnimation::QMorphTarget *> emptyList;
         animation->parentMorphingAnimation()->setMorphTargets(emptyList);
     }
 }

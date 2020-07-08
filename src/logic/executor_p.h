@@ -75,7 +75,7 @@ public:
     void setScene(Qt3DCore::QScene *scene) { m_scene = scene; }
 
 public Q_SLOTS:
-    void processLogicFrameUpdates(const QVector<Qt3DCore::QNodeId> &nodeIds, float dt);
+    void processLogicFrameUpdates(const QList<Qt3DCore::QNodeId> &nodeIds, float dt);
 
 private:
     Qt3DCore::QScene *m_scene;
