@@ -86,10 +86,6 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
         const auto kind = m_dynamic ? QRhiBuffer::Dynamic : QRhiBuffer::Static;
         const auto usage = bufferTypeToRhi(t);
 
-        // RHI does not seem to support using the same buffer with different types
-        if (m_rhiBuffer)
-            assert(m_rhiBuffer->usage() == usage);
-
         if (!m_rhiBuffer)
             m_rhiBuffer = ctx->rhi()->newBuffer(kind, usage, m_allocSize);
         assert(m_rhiBuffer);
