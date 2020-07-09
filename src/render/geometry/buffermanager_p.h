@@ -71,17 +71,17 @@ public:
 
     // Aspect Thread
     void addDirtyBuffer(Qt3DCore::QNodeId bufferId);
-    QVector<Qt3DCore::QNodeId> takeDirtyBuffers();
+    QList<Qt3DCore::QNodeId> takeDirtyBuffers();
 
     // Aspect Thread
     void addBufferReference(Qt3DCore::QNodeId bufferId);
     void removeBufferReference(Qt3DCore::QNodeId bufferId);
 
     // Render Thread (no concurrent access)
-    QVector<Qt3DCore::QNodeId> takeBuffersToRelease();
+    QList<Qt3DCore::QNodeId> takeBuffersToRelease();
 
 private:
-    QVector<Qt3DCore::QNodeId> m_dirtyBuffers;
+    QList<Qt3DCore::QNodeId> m_dirtyBuffers;
     QHash<Qt3DCore::QNodeId, int> m_bufferReferences;
     QMutex m_mutex;
 };

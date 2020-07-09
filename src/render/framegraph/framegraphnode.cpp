@@ -96,7 +96,7 @@ Qt3DCore::QNodeId FrameGraphNode::parentId() const
     return m_parentId;
 }
 
-QVector<Qt3DCore::QNodeId> FrameGraphNode::childrenIds() const
+QList<Qt3DCore::QNodeId> FrameGraphNode::childrenIds() const
 {
     return m_childrenIds;
 }
@@ -106,9 +106,9 @@ FrameGraphNode *FrameGraphNode::parent() const
     return m_manager->lookupNode(m_parentId);
 }
 
-QVector<FrameGraphNode *> FrameGraphNode::children() const
+QList<FrameGraphNode *> FrameGraphNode::children() const
 {
-    QVector<FrameGraphNode *> children;
+    QList<FrameGraphNode *> children;
     children.reserve(m_childrenIds.size());
 
     for (Qt3DCore::QNodeId id : m_childrenIds) {

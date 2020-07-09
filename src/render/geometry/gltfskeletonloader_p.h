@@ -113,7 +113,7 @@ class GLTFSkeletonLoader
 
         QString name;
         int inverseBindAccessorIndex;
-        QVector<int> jointNodeIndices;
+        QList<int> jointNodeIndices;
     };
 
     class Node
@@ -123,7 +123,7 @@ class GLTFSkeletonLoader
         explicit Node(const QJsonObject &json);
 
         Qt3DCore::Sqt localTransform;
-        QVector<int> childNodeIndices;
+        QList<int> childNodeIndices;
         QString name;
         int parentNodeIndex;
         int cameraIndex;
@@ -170,11 +170,11 @@ private:
 
     QJsonDocument m_json;
     QString m_basePath;
-    QVector<BufferData> m_bufferDatas;
-    QVector<BufferView> m_bufferViews;
-    QVector<AccessorData> m_accessors;
-    QVector<Skin> m_skins;
-    QVector<Node> m_nodes;
+    QList<BufferData> m_bufferDatas;
+    QList<BufferView> m_bufferViews;
+    QList<AccessorData> m_accessors;
+    QList<Skin> m_skins;
+    QList<Node> m_nodes;
 };
 
 } // namespace Render

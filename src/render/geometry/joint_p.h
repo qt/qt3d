@@ -74,7 +74,7 @@ public:
     Qt3DCore::Sqt localPose() const { return m_localPose; }
     QMatrix4x4 inverseBindMatrix() const { return m_inverseBindMatrix; }
     QString name() const { return m_name; }
-    QVector<Qt3DCore::QNodeId> childJointIds() const { return m_childJointIds; }
+    QList<Qt3DCore::QNodeId> childJointIds() const { return m_childJointIds; }
 
     QVector3D translation() const { return m_localPose.translation; }
     QQuaternion rotation() const { return m_localPose.rotation; }
@@ -92,7 +92,7 @@ public:
 private:
     QMatrix4x4 m_inverseBindMatrix;
     Qt3DCore::Sqt m_localPose;
-    QVector<Qt3DCore::QNodeId> m_childJointIds;
+    QList<Qt3DCore::QNodeId> m_childJointIds;
     QString m_name;
     JointManager *m_jointManager;
     SkeletonManager *m_skeletonManager;

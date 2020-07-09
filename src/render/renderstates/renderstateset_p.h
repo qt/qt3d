@@ -55,7 +55,6 @@
 #include <Qt3DRender/private/genericstate_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/statevariant_p.h>
-#include <QVector>
 
 QT_BEGIN_NAMESPACE
 

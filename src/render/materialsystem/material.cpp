@@ -95,7 +95,7 @@ void Material::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         markDirty(dirty);
 }
 
-QVector<Qt3DCore::QNodeId> Material::parameters() const
+QList<Qt3DCore::QNodeId> Material::parameters() const
 {
     return m_parameterPack.parameters();
 }

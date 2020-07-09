@@ -64,7 +64,7 @@ namespace {
 class EntityCasterGatherer : public EntityVisitor
 {
 public:
-    using EntityCasterList = QVector<QPair<Entity *, RayCaster*>>;
+    using EntityCasterList = QList<QPair<Entity *, RayCaster *>>;
     EntityCasterList m_result;
 
     explicit EntityCasterGatherer(NodeManagers *manager) : EntityVisitor(manager) { setPruneDisabled(true); }
@@ -92,7 +92,7 @@ public:
     bool isRequired() const override;
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    QVector<QPair<RayCaster *, QAbstractRayCaster::Hits>> dispatches;
+    QList<QPair<RayCaster *, QAbstractRayCaster::Hits>> dispatches;
 
     RayCastingJob *q_ptr;
     Q_DECLARE_PUBLIC(RayCastingJob)

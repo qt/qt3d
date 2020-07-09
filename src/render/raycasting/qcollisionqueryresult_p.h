@@ -54,7 +54,6 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/vector3d_p.h>
-#include <QVector>
 #include <QSharedData>
 
 QT_BEGIN_NAMESPACE

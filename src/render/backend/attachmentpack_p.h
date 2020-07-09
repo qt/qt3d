@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/qrendertargetoutput.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
-#include <QVector>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,7 +87,7 @@ public:
     AttachmentPack();
     AttachmentPack(const RenderTarget *target,
                    AttachmentManager *attachmentManager,
-                   const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers = {});
+                   const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers = {});
 
     const std::vector<Attachment> &attachments() const { return m_attachments; }
     const std::vector<int> &getGlDrawBuffers() const { return m_drawBuffers; }

@@ -564,7 +564,7 @@ HitList EntityCollisionGathererFunctor::computeHits(const std::vector<Entity *> 
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
 #else
     HitList sphereHits;
-    QVector<PickingUtils::EntityCollisionGathererFunctor::result_type> results;
+    QList<PickingUtils::EntityCollisionGathererFunctor::result_type> results;
     for (const Entity *entity : entities)
         sphereHits = reducerOp(sphereHits, holder(entity));
     return sphereHits;
@@ -604,7 +604,7 @@ HitList TriangleCollisionGathererFunctor::computeHits(const std::vector<Entity *
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
 #else
     HitList sphereHits;
-    QVector<PickingUtils::TriangleCollisionGathererFunctor::result_type> results;
+    QList<PickingUtils::TriangleCollisionGathererFunctor::result_type> results;
     for (const Entity *entity : entities)
         sphereHits = reducerOp(sphereHits, holder(entity));
         return sphereHits;
@@ -662,7 +662,7 @@ HitList LineCollisionGathererFunctor::computeHits(const std::vector<Entity *> &e
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
 #else
     HitList sphereHits;
-    QVector<PickingUtils::LineCollisionGathererFunctor::result_type> results;
+    QList<PickingUtils::LineCollisionGathererFunctor::result_type> results;
     for (const Entity *entity : entities)
         sphereHits = reducerOp(sphereHits, holder(entity));
     return sphereHits;
@@ -719,7 +719,7 @@ HitList PointCollisionGathererFunctor::computeHits(const std::vector<Entity *> &
     return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
 #else
     HitList sphereHits;
-    QVector<PickingUtils::PointCollisionGathererFunctor::result_type> results;
+    QList<PickingUtils::PointCollisionGathererFunctor::result_type> results;
     for (const Entity *entity : entities)
         sphereHits = reducerOp(sphereHits, holder(entity));
     return sphereHits;

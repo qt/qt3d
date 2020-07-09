@@ -61,7 +61,7 @@ StateSetNode::~StateSetNode()
 {
 }
 
-QVector<QNodeId> StateSetNode::renderStates() const
+QList<QNodeId> StateSetNode::renderStates() const
 {
     return m_renderStates;
 }

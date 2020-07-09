@@ -65,7 +65,7 @@ class QFrameGraphNodePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QFrameGraphNodePrivate();
-    QVector<QFrameGraphNode *> childFrameGraphNodes() const;
+    QList<QFrameGraphNode *> childFrameGraphNodes() const;
 
     static QFrameGraphNodePrivate *get(QFrameGraphNode *node) { return node->d_func(); }
     static const QFrameGraphNodePrivate *get(const QFrameGraphNode *node) { return node->d_func(); }

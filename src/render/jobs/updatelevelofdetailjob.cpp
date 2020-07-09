@@ -71,7 +71,7 @@ public:
     }
 
     double filterValue() const { return m_filterValue; }
-    const QVector<QPair<Qt3DCore::QNodeId, int>> &updatedIndices() const { return m_updatedIndices; }
+    const QList<QPair<Qt3DCore::QNodeId, int>> &updatedIndices() const { return m_updatedIndices; }
 
     Operation visit(Qt3DRender::Render::Entity *entity = nullptr) override {
         using namespace Qt3DRender;
@@ -105,7 +105,7 @@ public:
 private:
     double m_filterValue = 0.;
     Qt3DRender::Render::FrameGraphNode *m_frameGraphRoot;
-    QVector<QPair<Qt3DCore::QNodeId, int>> m_updatedIndices;
+    QList<QPair<Qt3DCore::QNodeId, int>> m_updatedIndices;
 
     void updateEntityLodByDistance(Qt3DRender::Render::Entity *entity, Qt3DRender::Render::LevelOfDetail *lod)
     {
@@ -117,7 +117,7 @@ private:
         if (!Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), lod->camera(), viewMatrix, projectionMatrix))
             return;
 
-        const QVector<qreal> thresholds = lod->thresholds();
+        const QList<qreal> thresholds = lod->thresholds();
         Vector3D center(lod->center());
         if (lod->hasBoundingVolumeOverride() || entity->worldBoundingVolume() == nullptr) {
             center = *entity->worldTransform() * center;
@@ -158,7 +158,7 @@ private:
 
         const PickingUtils::ViewportCameraAreaDetails &vca = vcaTriplets.front();
 
-        const QVector<qreal> thresholds = lod->thresholds();
+        const QList<qreal> thresholds = lod->thresholds();
         Sphere bv(Vector3D(lod->center()), lod->radius());
         if (!lod->hasBoundingVolumeOverride() && entity->worldBoundingVolume() != nullptr) {
             bv = *(entity->worldBoundingVolume());
@@ -215,7 +215,7 @@ public:
     bool isRequired() const override;
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    QVector<QPair<Qt3DCore::QNodeId, int>> m_updatedIndices;
+    QList<QPair<Qt3DCore::QNodeId, int>> m_updatedIndices;
 
     UpdateLevelOfDetailJob *q_ptr;
     Q_DECLARE_PUBLIC(UpdateLevelOfDetailJob)

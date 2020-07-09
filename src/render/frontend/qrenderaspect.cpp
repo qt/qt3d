@@ -208,7 +208,7 @@ QString dumpNode(const Qt3DCore::QEntity *n) {
     return formatNode(n);
 }
 
-QString dumpNodeFilters(const QString &filterType, const QVector<Qt3DRender::QFilterKey*> &filters) {
+QString dumpNodeFilters(const QString &filterType, const QList<Qt3DRender::QFilterKey *> &filters) {
     QString res;
 
     QStringList kv;
@@ -335,7 +335,7 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
 
 QRenderAspectPrivate *QRenderAspectPrivate::findPrivate(Qt3DCore::QAspectEngine *engine)
 {
-    const QVector<QAbstractAspect*> aspects = engine->aspects();
+    const QList<QAbstractAspect *> aspects = engine->aspects();
     for (QAbstractAspect* aspect : aspects) {
         QRenderAspect *renderAspect = qobject_cast<QRenderAspect *>(aspect);
         if (renderAspect)
@@ -686,7 +686,7 @@ std::vector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         d->m_updateLevelOfDetailJob->setFrameGraphRoot(d->m_renderer->frameGraphRoot());
 
         // Launch skeleton loader jobs once all loading jobs have completed.
-        const QVector<Render::HSkeleton> skeletonsToLoad =
+        const QList<Render::HSkeleton> skeletonsToLoad =
                 manager->skeletonManager()->takeDirtySkeletons(Render::SkeletonManager::SkeletonDataDirty);
         for (const auto &skeletonHandle : skeletonsToLoad) {
             auto loadSkeletonJob = Render::LoadSkeletonJobPtr::create(skeletonHandle);
@@ -879,7 +879,7 @@ void QRenderAspect::onUnregistered()
 std::vector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs() const
 {
     Render::GeometryRendererManager *geomRendererManager = m_nodeManagers->geometryRendererManager();
-    const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
+    const QList<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
     std::vector<QAspectJobPtr> dirtyGeometryRendererJobs;
     dirtyGeometryRendererJobs.reserve(dirtyGeometryRenderers.size());
 
@@ -990,9 +990,9 @@ void QRenderAspectPrivate::loadRenderPlugin(const QString &pluginName)
     }
 }
 
-QVector<QString> QRenderAspectPrivate::m_pluginConfig;
+QList<QString> QRenderAspectPrivate::m_pluginConfig;
 QMutex QRenderAspectPrivate::m_pluginLock;
-QVector<QRenderAspectPrivate *> QRenderAspectPrivate::m_instances;
+QList<QRenderAspectPrivate *> QRenderAspectPrivate::m_instances;
 
 void QRenderAspectPrivate::configurePlugin(const QString &plugin)
 {

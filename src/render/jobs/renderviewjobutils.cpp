@@ -199,7 +199,7 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
 
 // Only add states with types we don't already have
 void addStatesToRenderStateSet(RenderStateSet *stateSet,
-                               const QVector<Qt3DCore::QNodeId> stateIds,
+                               const QList<Qt3DCore::QNodeId> stateIds,
                                RenderStateManager *manager)
 {
     for (const Qt3DCore::QNodeId &stateId : stateIds) {

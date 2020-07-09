@@ -61,8 +61,8 @@ public:
     void postFrame(Qt3DCore::QAspectManager *aspectManager) override;
 
     mutable QMutex m_mutex;
-    QVector<QPair<Qt3DCore::QNodeId, QByteArray>> m_buffersToCapture;
-    QVector<QPair<Qt3DCore::QNodeId, QByteArray>> m_buffersToNotify;
+    QList<QPair<Qt3DCore::QNodeId, QByteArray>> m_buffersToCapture;
+    QList<QPair<Qt3DCore::QNodeId, QByteArray>> m_buffersToNotify;
 };
 
 SendBufferCaptureJob::SendBufferCaptureJob()
@@ -110,7 +110,7 @@ void SendBufferCaptureJob::run()
 void SendBufferCaptureJobPrivate::postFrame(Qt3DCore::QAspectManager *aspectManager)
 {
     QMutexLocker locker(&m_mutex);
-    const QVector<QPair<Qt3DCore::QNodeId, QByteArray>> pendingSendBufferCaptures = std::move(m_buffersToNotify);
+    const QList<QPair<Qt3DCore::QNodeId, QByteArray>> pendingSendBufferCaptures = std::move(m_buffersToNotify);
     for (const auto &bufferDataPair : pendingSendBufferCaptures) {
         Qt3DCore::QBuffer *frontendBuffer = static_cast<decltype(frontendBuffer)>(aspectManager->lookupNode(bufferDataPair.first));
         if (!frontendBuffer)

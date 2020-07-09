@@ -67,10 +67,10 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    QVector<Qt3DRender::QSortPolicy::SortType> sortTypes() const;
+    QList<Qt3DRender::QSortPolicy::SortType> sortTypes() const;
 
 private:
-    QVector<Qt3DRender::QSortPolicy::SortType> m_sortTypes;
+    QList<Qt3DRender::QSortPolicy::SortType> m_sortTypes;
 };
 
 } // namespace Render

@@ -91,7 +91,7 @@ void ShaderData::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
         // Dynamic properties names
         const auto dynamicPropertyNames = node->dynamicPropertyNames();
 
-        QVector<QString> propertyNames;
+        QList<QString> propertyNames;
         propertyNames.reserve(propertyCount - propertyOffset + dynamicPropertyNames.size());
 
         // Statiically defined properties
@@ -117,7 +117,7 @@ void ShaderData::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 
             // We check if the property is a QNodeId
             isNode = (propertyValue.userType() == qNodeIdTypeId);
-            // We check if QVector<QNodeId>
+            // We check if QList<QNodeId>
             if (propertyValue.userType() == QMetaType::QVariantList) {
                 isArray = true;
                 QVariantList list = propertyValue.value<QVariantList>();

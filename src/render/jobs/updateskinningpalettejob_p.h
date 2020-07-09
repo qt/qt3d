@@ -71,14 +71,14 @@ public:
     void setRoot(Entity *root) { m_root = root; }
     void setManagers(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
 
-    void setDirtyJoints(const QVector<HJoint> dirtyJoints) { m_dirtyJoints = dirtyJoints; }
+    void setDirtyJoints(const QList<HJoint> dirtyJoints) { m_dirtyJoints = dirtyJoints; }
     void clearDirtyJoints() { m_dirtyJoints.clear(); }
 
 protected:
     void run() override;
     NodeManagers *m_nodeManagers;
     Entity *m_root;
-    QVector<HJoint> m_dirtyJoints;
+    QList<HJoint> m_dirtyJoints;
 };
 
 typedef QSharedPointer<UpdateSkinningPaletteJob> UpdateSkinningPaletteJobPtr;

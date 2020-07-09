@@ -108,7 +108,7 @@ struct ParameterInfo
     bool operator<(const int otherNameId) const Q_DECL_NOEXCEPT;
     bool operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT;
 };
-typedef QVector<ParameterInfo> ParameterInfoList;
+using ParameterInfoList = QList<ParameterInfo>;
 
 struct RenderPassParameterData
 {
@@ -126,7 +126,7 @@ Q_3DRENDERSHARED_PRIVATE_EXPORT void parametersFromMaterialEffectTechnique(Param
                                              Technique *technique);
 
 Q_3DRENDERSHARED_PRIVATE_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                                                         const QVector<Qt3DCore::QNodeId> &parameterIds);
+                                                         const QList<Qt3DCore::QNodeId> &parameterIds);
 
 template<class T>
 void parametersFromParametersProvider(ParameterInfoList *infoList,
@@ -140,7 +140,7 @@ Q_3DRENDERSHARED_PRIVATE_EXPORT ParameterInfoList::const_iterator findParamInfo(
                                                                                 const int nameId);
 
 Q_3DRENDERSHARED_PRIVATE_EXPORT void addStatesToRenderStateSet(RenderStateSet *stateSet,
-                                                               const QVector<Qt3DCore::QNodeId> stateIds,
+                                                               const QList<Qt3DCore::QNodeId> stateIds,
                                                                RenderStateManager *manager);
 
 } // namespace Render

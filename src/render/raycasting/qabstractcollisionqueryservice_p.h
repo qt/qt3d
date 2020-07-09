@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <QVector>
+#include <QList>
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
@@ -90,7 +90,7 @@ public:
     virtual QCollisionQueryResult::Hit query(const QRay3D &ray, const QBoundingVolume* volume) = 0;
 
     virtual QCollisionQueryResult fetchResult(const QQueryHandle &handle) = 0;
-    virtual QVector<QCollisionQueryResult> fetchAllResults() const = 0;
+    virtual QList<QCollisionQueryResult> fetchAllResults() const = 0;
 
 protected:
     QAbstractCollisionQueryService(const QString &description = QString());

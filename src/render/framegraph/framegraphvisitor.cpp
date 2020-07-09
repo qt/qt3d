@@ -94,7 +94,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
     // Recurse to children (if we have any), otherwise if this is a leaf node,
     // initiate a rendering from the current camera
-    const QVector<Qt3DCore::QNodeId> fgChildIds = node->childrenIds();
+    const QList<Qt3DCore::QNodeId> fgChildIds = node->childrenIds();
 
     for (const Qt3DCore::QNodeId fgChildId : fgChildIds)
         visit(m_manager->lookupNode(fgChildId));

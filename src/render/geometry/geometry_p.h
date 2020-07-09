@@ -70,7 +70,7 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    inline QVector<Qt3DCore::QNodeId> attributes() const { return m_attributes; }
+    inline QList<Qt3DCore::QNodeId> attributes() const { return m_attributes; }
     inline bool isDirty() const { return m_geometryDirty; }
     inline Qt3DCore::QNodeId boundingPositionAttribute() const { return m_boundingPositionAttribute; }
     void unsetDirty();
@@ -81,7 +81,7 @@ public:
     void updateExtent(const QVector3D &min, const QVector3D &max);
 
 private:
-    QVector<Qt3DCore::QNodeId> m_attributes;
+    QList<Qt3DCore::QNodeId> m_attributes;
     bool m_geometryDirty;
     Qt3DCore::QNodeId m_boundingPositionAttribute;
     QVector3D m_min;

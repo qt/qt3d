@@ -58,7 +58,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <qglobal.h>
-#include <QVector>
+#include <QList>
 
 // Windows had the smart idea of using a #define MemoryBarrier
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms684208(v=vs.85).aspx
@@ -115,10 +115,10 @@ public:
     void setParentId(Qt3DCore::QNodeId parentId);
 
     Qt3DCore::QNodeId parentId() const;
-    QVector<Qt3DCore::QNodeId> childrenIds() const;
+    QList<Qt3DCore::QNodeId> childrenIds() const;
 
     FrameGraphNode *parent() const;
-    QVector<FrameGraphNode *> children() const;
+    QList<FrameGraphNode *> children() const;
 
     void cleanup();
 
@@ -130,7 +130,7 @@ protected:
 private:
     FrameGraphNodeType m_nodeType;
     Qt3DCore::QNodeId m_parentId;
-    QVector<Qt3DCore::QNodeId> m_childrenIds;
+    QList<Qt3DCore::QNodeId> m_childrenIds;
     FrameGraphManager *m_manager;
 
     friend class FrameGraphVisitor;

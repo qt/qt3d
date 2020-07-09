@@ -86,9 +86,9 @@ public:
     float radius() const override;
 
     void clear();
-    void initializeFromPoints(const QVector<Vector3D> &points);
+    void initializeFromPoints(const QList<Vector3D> &points);
     void expandToContain(const Vector3D &point);
-    inline void expandToContain(const QVector<Vector3D> &points)
+    inline void expandToContain(const QList<Vector3D> &points)
     {
         for (const Vector3D &p : points)
             expandToContain(p);
@@ -107,7 +107,7 @@ public:
     bool intersects(const RayCasting::QRay3D &ray, Vector3D *q, Vector3D *uvw = nullptr) const final;
     Type type() const final;
 
-    static Sphere fromPoints(const QVector<Vector3D> &points);
+    static Sphere fromPoints(const QList<Vector3D> &points);
 
 private:
     Vector3D m_center;

@@ -70,9 +70,9 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderPass)
 
-    QVector<QFilterKey *> m_filterKeyList;
-    QVector<QRenderState *> m_renderStates;
-    QVector<QParameter *> m_parameters;
+    QList<QFilterKey *> m_filterKeyList;
+    QList<QRenderState *> m_renderStates;
+    QList<QParameter *> m_parameters;
     QShaderProgram *m_shader;
 };
 

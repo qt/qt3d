@@ -50,8 +50,8 @@
 
 #include <Qt3DCore/qnodeid.h>
 #include <QtGui/qmatrix4x4.h>
+#include <QtCore/qlist.h>
 #include <QtCore/qstring.h>
-#include <QtCore/qvector.h>
 #include <Qt3DCore/private/sqt_p.h>
 
 #include <Qt3DRender/private/handle_types_p.h>
@@ -86,9 +86,9 @@ struct Q_AUTOTEST_EXPORT SkeletonData
 
     void reserve(int size);
 
-    QVector<JointInfo> joints;
-    QVector<Qt3DCore::Sqt> localPoses;
-    QVector<QString> jointNames;
+    QList<JointInfo> joints;
+    QList<Qt3DCore::Sqt> localPoses;
+    QList<QString> jointNames;
     QHash<HJoint, int> jointIndices;
 };
 

@@ -78,7 +78,7 @@ public:
     QCollisionQueryResult::Hit query(const QRay3D &ray, const QBoundingVolume *volume) override;
 
     QCollisionQueryResult fetchResult(const QQueryHandle &handle) override;
-    QVector<QCollisionQueryResult> fetchAllResults() const override;
+    QList<QCollisionQueryResult> fetchAllResults() const override;
 
 protected:
     QRayCastingService(QRayCastingServicePrivate &dd);

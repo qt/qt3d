@@ -64,7 +64,7 @@ struct TransformUpdate
     QMatrix4x4 worldTransformMatrix;
 };
 
-void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform, QVector<TransformUpdate> &updatedTransforms)
+void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform, QList<TransformUpdate> &updatedTransforms)
 {
     if (!node->isEnabled())
         return;
@@ -100,7 +100,7 @@ public:
 
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    QVector<TransformUpdate> m_updatedTransforms;
+    QList<TransformUpdate> m_updatedTransforms;
 };
 
 UpdateWorldTransformJob::UpdateWorldTransformJob()
@@ -144,7 +144,7 @@ void UpdateWorldTransformJob::run()
 
 void UpdateWorldTransformJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    const QVector<TransformUpdate> updatedTransforms = std::move(m_updatedTransforms);
+    const QList<TransformUpdate> updatedTransforms = std::move(m_updatedTransforms);
     for (const TransformUpdate &t : updatedTransforms) {
         Qt3DCore::QTransform *node =
                 qobject_cast<Qt3DCore::QTransform *>(manager->lookupNode(t.peerId));

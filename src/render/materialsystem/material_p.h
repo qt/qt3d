@@ -80,7 +80,7 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    QVector<Qt3DCore::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
     Qt3DCore::QNodeId effect() const;
 
 private:

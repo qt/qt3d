@@ -89,7 +89,7 @@ public:
         Qt3DCore::QNodeId viewportNodeId;
     };
 
-    QVector<EventDetails> dispatches;
+    QList<EventDetails> dispatches;
     PickBoundingVolumeJob *q_ptr;
     Q_DECLARE_PUBLIC(PickBoundingVolumeJob)
 };

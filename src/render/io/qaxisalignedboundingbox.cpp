@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-void QAxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
+void QAxisAlignedBoundingBox::update(const QList<QVector3D> &points)
 {
     if (points.isEmpty()) {
         m_center = QVector3D();

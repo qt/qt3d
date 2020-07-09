@@ -67,7 +67,7 @@ public:
     QRenderTargetPrivate();
 
     Q_DECLARE_PUBLIC(QRenderTarget)
-    QVector<QRenderTargetOutput *> m_outputs;
+    QList<QRenderTargetOutput *> m_outputs;
 };
 
 struct QRenderTargetData

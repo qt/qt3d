@@ -69,11 +69,11 @@ public:
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     Qt3DCore::QNodeId renderTargetUuid() const { return m_renderTargetUuid; }
-    QVector<QRenderTargetOutput::AttachmentPoint> outputs() const { return m_outputs; }
+    QList<QRenderTargetOutput::AttachmentPoint> outputs() const { return m_outputs; }
 
 private:
     Qt3DCore::QNodeId m_renderTargetUuid;
-    QVector<QRenderTargetOutput::AttachmentPoint> m_outputs;
+    QList<QRenderTargetOutput::AttachmentPoint> m_outputs;
 };
 
 } // namespace Render

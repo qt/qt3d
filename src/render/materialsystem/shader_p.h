@@ -53,7 +53,6 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qshaderprogram.h>
-#include <QVector>
 
 QT_BEGIN_NAMESPACE
 

@@ -82,7 +82,7 @@ public:
         QReadLocker lock(&m_readWriteLock);
 
         std::vector<APIShader *> keysV;
-        const QVector<APIShader *> tmp = m_apiShaders.keys();
+        const QList<APIShader *> tmp = m_apiShaders.keys();
 
         std::copy(tmp.cbegin(), tmp.cend(), std::back_insert_iterator(keysV));
         keysV.insert(keysV.end(),

@@ -52,8 +52,8 @@
 #include <Qt3DRender/private/shader_p.h>
 
 #include <QtCore/qhash.h>
+#include <QtCore/qlist.h>
 #include <QtCore/qmutex.h>
-#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,15 +79,15 @@ public:
 
     // Only ever used from the OpenGL submission thread
     QOpenGLShaderProgram *getShaderProgramForDNA(ProgramDNA dna) const;
-    QVector<Qt3DCore::QNodeId> shaderIdsForProgram(ProgramDNA dna) const;
+    QList<Qt3DCore::QNodeId> shaderIdsForProgram(ProgramDNA dna) const;
 
 private:
     // Only ever used from the OpenGL submission thread
     QHash<ProgramDNA, QOpenGLShaderProgram *> m_programHash;
 
     // Accessed from both the OpenGL submission thread and the aspect thread
-    QHash<ProgramDNA, QVector<Qt3DCore::QNodeId>> m_programRefs;
-    QVector<ProgramDNA> m_pendingRemoval;
+    QHash<ProgramDNA, QList<Qt3DCore::QNodeId>> m_programRefs;
+    QList<ProgramDNA> m_pendingRemoval;
     QMutex m_refsMutex;
 
 #if defined(QT_BUILD_INTERNAL)

@@ -72,8 +72,8 @@ public:
 
 private:
 
-    QVector<QRenderCaptureRequest> m_requestedCaptures;
-    QVector<RenderCaptureDataPtr> m_renderCaptureData;
+    QList<QRenderCaptureRequest> m_requestedCaptures;
+    QList<RenderCaptureDataPtr> m_renderCaptureData;
     mutable QMutex m_mutex;
 };
 

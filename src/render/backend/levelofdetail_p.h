@@ -78,7 +78,7 @@ public:
     Qt3DCore::QNodeId camera() const { return m_camera; }
     int currentIndex() const { return m_currentIndex; }
     QLevelOfDetail::ThresholdType thresholdType() const { return m_thresholdType; }
-    QVector<qreal> thresholds() const { return m_thresholds; }
+    QList<qreal> thresholds() const { return m_thresholds; }
     float radius() const { return m_volumeOverride.radius(); }
     QVector3D center() const { return m_volumeOverride.center(); }
     bool hasBoundingVolumeOverride() const { return !m_volumeOverride.isEmpty(); }
@@ -89,7 +89,7 @@ private:
     Qt3DCore::QNodeId m_camera;
     int m_currentIndex;
     QLevelOfDetail::ThresholdType m_thresholdType;
-    QVector<qreal> m_thresholds;
+    QList<qreal> m_thresholds;
     QLevelOfDetailBoundingSphere m_volumeOverride;
 };
 

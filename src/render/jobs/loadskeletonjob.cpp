@@ -208,7 +208,7 @@ Qt3DCore::QJoint *LoadSkeletonJob::createFrontendJoints(const SkeletonData &skel
         return nullptr;
 
     // Create frontend joints from the joint info objects
-    QVector<Qt3DCore::QJoint *> frontendJoints;
+    QList<Qt3DCore::QJoint *> frontendJoints;
     const int jointCount = skeletonData.joints.size();
     frontendJoints.reserve(jointCount);
     for (int i = 0; i < jointCount; ++i) {

@@ -76,16 +76,16 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT TechniqueFilter
 public:
     TechniqueFilter();
 
-    QVector<Qt3DCore::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
 
-    QVector<Qt3DCore::QNodeId> filters() const;
+    QList<Qt3DCore::QNodeId> filters() const;
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
     void appendFilter(Qt3DCore::QNodeId criterionId);
     void removeFilter(Qt3DCore::QNodeId criterionId);
 
-    QVector<Qt3DCore::QNodeId> m_filters;
+    QList<Qt3DCore::QNodeId> m_filters;
     ParameterPack m_parameterPack;
 };
 

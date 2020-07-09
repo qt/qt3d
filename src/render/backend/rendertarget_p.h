@@ -74,12 +74,12 @@ public:
     void appendRenderOutput(Qt3DCore::QNodeId outputId);
     void removeRenderOutput(Qt3DCore::QNodeId outputId);
 
-    QVector<Qt3DCore::QNodeId> renderOutputs() const;
+    QList<Qt3DCore::QNodeId> renderOutputs() const;
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_renderOutputs;
+    QList<Qt3DCore::QNodeId> m_renderOutputs;
 };
 
 class Q_AUTOTEST_EXPORT RenderTargetFunctor : public Qt3DCore::QBackendNodeMapper

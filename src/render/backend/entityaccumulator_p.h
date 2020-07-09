@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
-#include <QVector>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,7 +68,7 @@ public:
     EntityAccumulator(NodeManagers *manager);
     EntityAccumulator(std::function<bool(Entity*)> predicate, NodeManagers *manager);
 
-    QVector<Entity *> apply(Entity *root) const;
+    QList<Entity *> apply(Entity *root) const;
 
 private:
     NodeManagers *m_manager;

@@ -66,7 +66,7 @@ public:
     QRenderStateSetPrivate();
 
     Q_DECLARE_PUBLIC(QRenderStateSet)
-    QVector<QRenderState *> m_renderStates;
+    QList<QRenderState *> m_renderStates;
 };
 
 } // namespace Qt3DRender

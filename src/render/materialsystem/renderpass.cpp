@@ -109,17 +109,17 @@ Qt3DCore::QNodeId RenderPass::shaderProgram() const
     return m_shaderUuid;
 }
 
-QVector<Qt3DCore::QNodeId> RenderPass::filterKeys() const
+QList<Qt3DCore::QNodeId> RenderPass::filterKeys() const
 {
     return m_filterKeyList;
 }
 
-QVector<Qt3DCore::QNodeId> RenderPass::parameters() const
+QList<Qt3DCore::QNodeId> RenderPass::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-QVector<QNodeId> RenderPass::renderStates() const
+QList<QNodeId> RenderPass::renderStates() const
 {
     return m_renderStates;
 }

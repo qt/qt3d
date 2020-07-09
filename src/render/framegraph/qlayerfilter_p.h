@@ -66,7 +66,7 @@ public:
     QLayerFilterPrivate();
 
     Q_DECLARE_PUBLIC(QLayerFilter)
-    QVector<QLayer*> m_layers;
+    QList<QLayer *> m_layers;
     QLayerFilter::FilterMode m_filterMode;
 };
 

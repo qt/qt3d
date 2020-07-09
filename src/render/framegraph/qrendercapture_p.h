@@ -68,9 +68,9 @@ class QRenderCapturePrivate : public QFrameGraphNodePrivate
 public:
     QRenderCapturePrivate();
     ~QRenderCapturePrivate();
-    QVector<QRenderCaptureReply *> m_waitingReplies;
+    QList<QRenderCaptureReply *> m_waitingReplies;
     QMutex m_mutex;
-    mutable QVector<QRenderCaptureRequest> m_pendingRequests;
+    mutable QList<QRenderCaptureRequest> m_pendingRequests;
 
     QRenderCaptureReply *createReply(int captureId);
     QRenderCaptureReply *takeReply(int captureId);

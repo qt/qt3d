@@ -93,7 +93,7 @@ bool intersectRaySphere(const Qt3DRender::RayCasting::QRay3D &ray, const Qt3DRen
     return true;
 }
 
-inline void constructRitterSphere(Qt3DRender::Render::Sphere &s, const QVector<Vector3D> &points)
+inline void constructRitterSphere(Qt3DRender::Render::Sphere &s, const QList<Vector3D> &points)
 {
     //def bounding_sphere(points):
     //  dist = lambda a,b: ((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)**0.5
@@ -130,14 +130,14 @@ namespace Render {
 
 const float Sphere::ms_epsilon = 1.0e-7f;
 
-Sphere Sphere::fromPoints(const QVector<Vector3D> &points)
+Sphere Sphere::fromPoints(const QList<Vector3D> &points)
 {
     Sphere s;
     s.initializeFromPoints(points);
     return s;
 }
 
-void Sphere::initializeFromPoints(const QVector<Vector3D> &points)
+void Sphere::initializeFromPoints(const QList<Vector3D> &points)
 {
     if (!points.isEmpty())
         constructRitterSphere(*this, points);

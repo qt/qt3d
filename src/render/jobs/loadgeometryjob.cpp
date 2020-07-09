@@ -58,7 +58,7 @@ public:
 
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    QVector<std::pair<Qt3DCore::QNodeId, GeometryFunctorResult>> m_updates;
+    QList<std::pair<Qt3DCore::QNodeId, GeometryFunctorResult>> m_updates;
 };
 
 LoadGeometryJob::LoadGeometryJob(const HGeometryRenderer &handle)

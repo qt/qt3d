@@ -67,7 +67,7 @@ void SortPolicy::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     }
 }
 
-QVector<QSortPolicy::SortType> SortPolicy::sortTypes() const
+QList<QSortPolicy::SortType> SortPolicy::sortTypes() const
 {
     return m_sortTypes;
 }

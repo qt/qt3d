@@ -97,12 +97,12 @@ void Effect::appendRenderTechnique(Qt3DCore::QNodeId technique)
         m_techniques.append(technique);
 }
 
-QVector<Qt3DCore::QNodeId> Effect::techniques() const
+QList<Qt3DCore::QNodeId> Effect::techniques() const
 {
     return m_techniques;
 }
 
-QVector<Qt3DCore::QNodeId> Effect::parameters() const
+QList<Qt3DCore::QNodeId> Effect::parameters() const
 {
     return m_parameterPack.parameters();
 }

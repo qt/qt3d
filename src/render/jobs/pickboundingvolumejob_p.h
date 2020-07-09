@@ -91,7 +91,7 @@ public:
 
     // For unit tests
     inline HObjectPicker currentPicker() const { return m_currentPicker; }
-    inline QVector<HObjectPicker> hoveredPickers() const { return m_hoveredPickers; }
+    inline QList<HObjectPicker> hoveredPickers() const { return m_hoveredPickers; }
     bool runHelper() override;
 
 protected:
@@ -113,8 +113,8 @@ private:
     bool m_pickersDirty;
     bool m_oneHoverAtLeast;
     HObjectPicker m_currentPicker;
-    QVector<HObjectPicker> m_hoveredPickers;
-    QVector<HObjectPicker> m_hoveredPickersToClear;
+    QList<HObjectPicker> m_hoveredPickers;
+    QList<HObjectPicker> m_hoveredPickersToClear;
 };
 
 typedef QSharedPointer<PickBoundingVolumeJob> PickBoundingVolumeJobPtr;

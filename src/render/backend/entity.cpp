@@ -269,9 +269,9 @@ void Entity::removeFromParentChildHandles()
         p->removeChildHandle(m_handle);
 }
 
-QVector<Entity *> Entity::children() const
+QList<Entity *> Entity::children() const
 {
-    QVector<Entity *> childrenVector;
+    QList<Entity *> childrenVector;
     childrenVector.reserve(m_childrenHandles.size());
     for (const HEntity &handle : m_childrenHandles) {
         Entity *child = m_nodeManagers->renderNodesManager()->data(handle);

@@ -44,7 +44,7 @@
 #include <Qt3DRender/qrenderpassfilter.h>
 
 #include <Qt3DCore/QNode>
-#include <QVector>
+#include <QList>
 #include <QQueue>
 
 using namespace Qt3DCore;
@@ -62,7 +62,7 @@ QString dumpNode(const Qt3DRender::QFrameGraphNode *n) {
     return res;
 }
 
-QString dumpNodeFilters(const Qt3DRender::QFrameGraphNode *n, const QVector<Qt3DRender::QFilterKey*> &filters) {
+QString dumpNodeFilters(const Qt3DRender::QFrameGraphNode *n, const QList<Qt3DRender::QFilterKey *> &filters) {
     QString res = QLatin1String(n->metaObject()->className());
     if (!n->objectName().isEmpty())
         res += QString(QLatin1String(" (%1)")).arg(n->objectName());
@@ -100,7 +100,7 @@ QStringList dumpFG(const Qt3DCore::QNode *n, int level = 0)
 struct HierarchyFGNode
 {
     const Qt3DRender::QFrameGraphNode *root;
-    QVector<QSharedPointer<HierarchyFGNode>> children;
+    QList<QSharedPointer<HierarchyFGNode>> children;
 };
 using HierarchyFGNodePtr = QSharedPointer<HierarchyFGNode>;
 
@@ -129,7 +129,7 @@ HierarchyFGNodePtr buildFGHierarchy(const Qt3DCore::QNode *n, HierarchyFGNodePtr
     return lastFGParent;
 }
 
-void findFGLeaves(const HierarchyFGNodePtr root, QVector<const Qt3DRender::QFrameGraphNode *> &fgLeaves)
+void findFGLeaves(const HierarchyFGNodePtr root, QList<const Qt3DRender::QFrameGraphNode *> &fgLeaves)
 {
     const auto children = root->children;
     for (const auto &child : children)
@@ -145,7 +145,7 @@ void dumpFGPaths(const Qt3DRender::QFrameGraphNode *n, QStringList &result)
     const HierarchyFGNodePtr rootHFg = buildFGHierarchy(n);
 
     // Gather FG leaves
-    QVector<const Qt3DRender::QFrameGraphNode *> fgLeaves;
+    QList<const Qt3DRender::QFrameGraphNode *> fgLeaves;
     findFGLeaves(rootHFg, fgLeaves);
 
     // Traverse back to root
@@ -169,7 +169,7 @@ void dumpFGFilterState(const Qt3DRender::QFrameGraphNode *n, QStringList &result
     const HierarchyFGNodePtr rootHFg = buildFGHierarchy(n);
 
     // Gather FG leaves
-    QVector<const Qt3DRender::QFrameGraphNode *> fgLeaves;
+    QList<const Qt3DRender::QFrameGraphNode *> fgLeaves;
     findFGLeaves(rootHFg, fgLeaves);
 
     // Traverse back to root
@@ -374,10 +374,10 @@ QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
  * If any of these are not frame graph nodes, they will be further searched as
  * if they were direct children of this node.
  */
-QVector<QFrameGraphNode *> QFrameGraphNodePrivate::childFrameGraphNodes() const
+QList<QFrameGraphNode *> QFrameGraphNodePrivate::childFrameGraphNodes() const
 {
     Q_Q(const QFrameGraphNode);
-    QVector<QFrameGraphNode *> result;
+    QList<QFrameGraphNode *> result;
     QQueue<QNode *> queue;
     queue.append(q->childNodes().toList());
     result.reserve(queue.size());

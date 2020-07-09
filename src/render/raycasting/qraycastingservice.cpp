@@ -97,7 +97,7 @@ Hit reduceToFirstHit(Hit &result, const Hit &intermediate)
 }
 
 // Unordered
-QVector<Hit> reduceToAllHits(QVector<Hit> &results, const Hit &intermediate)
+QList<Hit> reduceToAllHits(QList<Hit> &results, const Hit &intermediate)
 {
     if (intermediate.intersects)
         results.push_back(intermediate);
@@ -124,7 +124,7 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBo
 {
     Q_Q(QRayCastingService);
 
-    const QVector<QBoundingVolume *> volumes(provider->boundingVolumes());
+    const QList<QBoundingVolume *> volumes(provider->boundingVolumes());
     QCollisionQueryResult result;
     q->setResultHandle(result, handle);
 
@@ -143,9 +143,9 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBo
             q->addEntityHit(result, firstHit.id, firstHit.intersection, firstHit.distance, firstHit.uvw);
     } else {
 #if QT_CONFIG(concurrent)
-        QVector<Hit> hits = QtConcurrent::blockingMappedReduced<QVector<Hit> >(volumes, gathererFunctor, reduceToAllHits);
+        QList<Hit> hits = QtConcurrent::blockingMappedReduced<QList<Hit>>(volumes, gathererFunctor, reduceToAllHits);
 #else
-        QVector<Hit> hits;
+        QList<Hit> hits;
         for (const QBoundingVolume *volume : volumes)
             hits = reduceToAllHits(hits, gathererFunctor(volume));
 #endif
@@ -223,11 +223,11 @@ QCollisionQueryResult QRayCastingService::fetchResult(const QQueryHandle &handle
 #endif
 }
 
-QVector<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
+QList<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
 {
     Q_D(const QRayCastingService);
 
-    QVector<QCollisionQueryResult> results;
+    QList<QCollisionQueryResult> results;
     results.reserve(d->m_results.size());
 
 #if QT_CONFIG(concurrent)

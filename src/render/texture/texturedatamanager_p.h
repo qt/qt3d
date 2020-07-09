@@ -144,11 +144,11 @@ public:
     /*!
      * Returns all generators that were not yet executed
      */
-    QVector<GeneratorPtr> pendingGenerators()
+    QList<GeneratorPtr> pendingGenerators()
     {
         QMutexLocker lock(&m_mutex);
 
-        QVector<GeneratorPtr> ret;
+        QList<GeneratorPtr> ret;
         for (const Entry &entry : m_data)
             if (!entry.data && !ret.contains(entry.generator))
                 ret.push_back(entry.generator);
@@ -180,7 +180,7 @@ private:
 
     struct Entry {
         GeneratorPtr generator;
-        QVector<ReferencedType> referencingObjects;
+        QList<ReferencedType> referencingObjects;
         DataPtr data;
     };
 
@@ -206,7 +206,7 @@ private:
     }
 
     QMutex m_mutex;
-    QVector<Entry> m_data;
+    QList<Entry> m_data;
 };
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT TextureDataManager

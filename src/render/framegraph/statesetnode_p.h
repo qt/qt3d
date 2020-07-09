@@ -66,7 +66,7 @@ public:
     ~StateSetNode();
 
     inline bool hasRenderStates() const { return !m_renderStates.empty(); }
-    QVector<Qt3DCore::QNodeId> renderStates() const;
+    QList<Qt3DCore::QNodeId> renderStates() const;
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
@@ -75,7 +75,7 @@ protected:
     void removeRenderState(Qt3DCore::QNodeId renderStateId);
 
 private:
-    QVector<Qt3DCore::QNodeId> m_renderStates;
+    QList<Qt3DCore::QNodeId> m_renderStates;
 };
 
 } // namespace Render

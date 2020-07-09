@@ -274,7 +274,7 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
 }
 
 template<>
-void UniformValue::setData<QMatrix4x4>(const QVector<QMatrix4x4> &v)
+void UniformValue::setData<QMatrix4x4>(const QList<QMatrix4x4> &v)
 {
     m_data.resize(16 * v.size());
     m_valueType = ScalarValue;

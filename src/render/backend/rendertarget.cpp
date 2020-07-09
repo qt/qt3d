@@ -90,7 +90,7 @@ void RenderTarget::removeRenderOutput(QNodeId outputId)
     m_renderOutputs.removeOne(outputId);
 }
 
-QVector<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
+QList<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
 {
     return m_renderOutputs;
 }

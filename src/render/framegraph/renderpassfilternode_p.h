@@ -72,14 +72,14 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT RenderPassFilter : public Render::FrameGra
 public:
     RenderPassFilter();
 
-    QVector<Qt3DCore::QNodeId> filters() const;
-    QVector<Qt3DCore::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> filters() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
     void appendFilter(Qt3DCore::QNodeId criterionId);
     void removeFilter(Qt3DCore::QNodeId criterionId);
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_filters;
+    QList<Qt3DCore::QNodeId> m_filters;
     ParameterPack m_parameterPack;
 };
 

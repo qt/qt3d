@@ -82,9 +82,9 @@ public:
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     Qt3DCore::QNodeId shaderProgram() const;
-    QVector<Qt3DCore::QNodeId> filterKeys() const;
-    QVector<Qt3DCore::QNodeId> parameters() const;
-    QVector<Qt3DCore::QNodeId> renderStates() const;
+    QList<Qt3DCore::QNodeId> filterKeys() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> renderStates() const;
 
     inline bool hasRenderStates() const { return !m_renderStates.empty(); }
 
@@ -96,9 +96,9 @@ private:
     void removeRenderState(Qt3DCore::QNodeId renderStateId);
 
     Qt3DCore::QNodeId m_shaderUuid;
-    QVector<Qt3DCore::QNodeId> m_filterKeyList;
+    QList<Qt3DCore::QNodeId> m_filterKeyList;
     ParameterPack m_parameterPack;
-    QVector<Qt3DCore::QNodeId> m_renderStates;
+    QList<Qt3DCore::QNodeId> m_renderStates;
 };
 
 } // namespace Render

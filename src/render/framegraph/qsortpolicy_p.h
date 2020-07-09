@@ -64,7 +64,7 @@ class QSortPolicyPrivate : public QFrameGraphNodePrivate
 public:
     QSortPolicyPrivate();
     Q_DECLARE_PUBLIC(QSortPolicy)
-    QVector<QSortPolicy::SortType> m_sortTypes;
+    QList<QSortPolicy::SortType> m_sortTypes;
 };
 
 } // namespace Qt3DRender
@@ -77,7 +77,7 @@ namespace {
     }
 
     template<class From, class To>
-    void transformVector(const QVector<From> &input, QVector<To> &output)
+    void transformVector(const QList<From> &input, QList<To> &output)
     {
         Q_ASSERT(output.isEmpty());
 

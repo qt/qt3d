@@ -69,8 +69,8 @@ public :
     QEffectPrivate();
 
     Q_DECLARE_PUBLIC(QEffect)
-    QVector<QParameter *> m_parameters;
-    QVector<QTechnique *> m_techniques;
+    QList<QParameter *> m_parameters;
+    QList<QTechnique *> m_techniques;
 };
 
 } // namespace Qt3DRender

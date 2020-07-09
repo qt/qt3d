@@ -60,7 +60,7 @@ public:
         return Continue;
     }
 
-    QVector<Entity *> m_entities;
+    QList<Entity *> m_entities;
 
 private:
     std::function<bool(Entity *)> m_predicate;
@@ -91,7 +91,7 @@ EntityAccumulator::EntityAccumulator(std::function<bool (Entity *)> predicate, N
  * Can be useful to get all the entities that contain a specific type
  * of component.
  */
-QVector<Entity *> EntityAccumulator::apply(Entity *root) const
+QList<Entity *> EntityAccumulator::apply(Entity *root) const
 {
     Accumulator a(m_predicate, m_manager);
     a.apply(root);

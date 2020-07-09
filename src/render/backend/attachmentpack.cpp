@@ -52,7 +52,7 @@ AttachmentPack::AttachmentPack()
 
 AttachmentPack::AttachmentPack(const RenderTarget *target,
                                AttachmentManager *attachmentManager,
-                               const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers)
+                               const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers)
 {
     // Copy attachments
     const auto outputIds = target->renderOutputs();

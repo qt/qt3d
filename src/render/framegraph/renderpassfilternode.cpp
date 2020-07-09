@@ -82,7 +82,7 @@ void RenderPassFilter::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 }
 
 
-QVector<Qt3DCore::QNodeId> RenderPassFilter::filters() const
+QList<Qt3DCore::QNodeId> RenderPassFilter::filters() const
 {
     return m_filters;
 }
@@ -98,7 +98,7 @@ void RenderPassFilter::removeFilter(Qt3DCore::QNodeId criterionId)
     m_filters.removeOne(criterionId);
 }
 
-QVector<Qt3DCore::QNodeId> RenderPassFilter::parameters() const
+QList<Qt3DCore::QNodeId> RenderPassFilter::parameters() const
 {
     return m_parameterPack.parameters();
 }

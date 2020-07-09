@@ -86,7 +86,7 @@ public:
     QVector3D m_direction = QVector3D(0., 0., 1.f);
     float m_length = 1.f;
     QAbstractRayCaster::FilterMode m_filterMode = QAbstractRayCaster::AcceptAnyMatchingLayers;
-    QVector<QLayer*> m_layers;
+    QList<QLayer *> m_layers;
 
     virtual void dispatchHits(const QAbstractRayCaster::Hits &hits);
 

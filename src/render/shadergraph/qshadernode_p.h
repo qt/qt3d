@@ -89,7 +89,7 @@ public:
     Q_3DRENDERSHARED_PRIVATE_EXPORT QStringList layers() const noexcept;
     Q_3DRENDERSHARED_PRIVATE_EXPORT void setLayers(const QStringList &layers) noexcept;
 
-    Q_3DRENDERSHARED_PRIVATE_EXPORT QVector<QShaderNodePort> ports() const noexcept;
+    Q_3DRENDERSHARED_PRIVATE_EXPORT QList<QShaderNodePort> ports() const noexcept;
     Q_3DRENDERSHARED_PRIVATE_EXPORT void addPort(const QShaderNodePort &port);
     Q_3DRENDERSHARED_PRIVATE_EXPORT void removePort(const QShaderNodePort &port);
 
@@ -101,15 +101,15 @@ public:
     Q_3DRENDERSHARED_PRIVATE_EXPORT void addRule(const QShaderFormat &format, const Rule &rule);
     Q_3DRENDERSHARED_PRIVATE_EXPORT void removeRule(const QShaderFormat &format);
 
-    Q_3DRENDERSHARED_PRIVATE_EXPORT QVector<QShaderFormat> availableFormats() const;
+    Q_3DRENDERSHARED_PRIVATE_EXPORT QList<QShaderFormat> availableFormats() const;
     Q_3DRENDERSHARED_PRIVATE_EXPORT Rule rule(const QShaderFormat &format) const;
 
 private:
     QUuid m_uuid;
     QStringList m_layers;
-    QVector<QShaderNodePort> m_ports;
+    QList<QShaderNodePort> m_ports;
     QHash<QString, QVariant> m_parameters;
-    QVector<QPair<QShaderFormat, QShaderNode::Rule>> m_rules;
+    QList<QPair<QShaderFormat, QShaderNode::Rule>> m_rules;
 };
 
 Q_3DRENDERSHARED_PRIVATE_EXPORT bool operator==(const QShaderNode::Rule &lhs, const QShaderNode::Rule &rhs) noexcept;

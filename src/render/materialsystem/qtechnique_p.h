@@ -71,9 +71,9 @@ public:
     ~QTechniquePrivate();
 
     Q_DECLARE_PUBLIC(QTechnique)
-    QVector<QFilterKey *> m_filterKeys;
-    QVector<QParameter *> m_parameters;
-    QVector<QRenderPass*> m_renderPasses;
+    QList<QFilterKey *> m_filterKeys;
+    QList<QParameter *> m_parameters;
+    QList<QRenderPass *> m_renderPasses;
     QGraphicsApiFilter m_graphicsApiFilter;
 
 private:

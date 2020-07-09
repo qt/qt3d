@@ -56,7 +56,7 @@
 #include <Qt3DRender/private/parameterpack_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
 #include <Qt3DRender/qfilterkey.h>
-#include <QVector>
+#include <QList>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE
@@ -82,7 +82,7 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    QVector<Qt3DCore::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
 
     void appendRenderPass(Qt3DCore::QNodeId renderPassId);
     void removeRenderPass(Qt3DCore::QNodeId renderPassId);
@@ -90,8 +90,8 @@ public:
     void appendFilterKey(Qt3DCore::QNodeId criterionId);
     void removeFilterKey(Qt3DCore::QNodeId criterionId);
 
-    QVector<Qt3DCore::QNodeId> filterKeys() const;
-    QVector<Qt3DCore::QNodeId> renderPasses() const;
+    QList<Qt3DCore::QNodeId> filterKeys() const;
+    QList<Qt3DCore::QNodeId> renderPasses() const;
     const GraphicsApiFilterData *graphicsApiFilter() const;
 
     bool isCompatibleWithRenderer() const;
@@ -106,8 +106,8 @@ private:
 
     GraphicsApiFilterData m_graphicsApiFilterData;
     ParameterPack m_parameterPack;
-    QVector<Qt3DCore::QNodeId> m_filterKeyList;
-    QVector<Qt3DCore::QNodeId> m_renderPasses;
+    QList<Qt3DCore::QNodeId> m_filterKeyList;
+    QList<Qt3DCore::QNodeId> m_renderPasses;
     bool m_isCompatibleWithRenderer;
     NodeManagers *m_nodeManager;
 };

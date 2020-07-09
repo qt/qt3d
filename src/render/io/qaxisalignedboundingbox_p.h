@@ -51,8 +51,8 @@
 // We mean it.
 //
 
+#include <QList>
 #include <QMatrix4x4>
-#include <QVector>
 #include <QVector3D>
 
 #include <Qt3DRender/private/qt3drender_global_p.h>
@@ -71,7 +71,7 @@ public:
           m_radii()
     {}
 
-    inline explicit QAxisAlignedBoundingBox(const QVector<QVector3D> &points)
+    inline explicit QAxisAlignedBoundingBox(const QList<QVector3D> &points)
         : m_center(),
           m_radii()
     {
@@ -86,7 +86,7 @@ public:
 
     bool isNull() const { return m_center.isNull() && m_radii.isNull(); }
 
-    void Q_3DRENDERSHARED_PRIVATE_EXPORT update(const QVector<QVector3D> &points);
+    void Q_3DRENDERSHARED_PRIVATE_EXPORT update(const QList<QVector3D> &points);
 
     inline QVector3D center() const { return m_center; }
     inline QVector3D radii() const { return m_radii; }
@@ -115,14 +115,12 @@ public:
 
     inline void expandToContain(const QVector3D &pt)
     {
-        QVector<QVector3D> pts = QVector<QVector3D>() << pt;
-        update(pts);
+        update(QList<QVector3D> { pt });
     }
 
     inline void expandToContain(const QAxisAlignedBoundingBox &other)
     {
-        QVector<QVector3D> pts = QVector<QVector3D>() << other.minPoint() << other.maxPoint();
-        update(pts);
+        update(QList<QVector3D> { other.minPoint(), other.maxPoint() });
     }
 
     inline QAxisAlignedBoundingBox transformBy(const QMatrix4x4 &mat) const

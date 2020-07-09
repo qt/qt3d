@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DRender/qt3drender_global.h>
-#include <QVector>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +65,7 @@ class Q_3DRENDERSHARED_EXPORT QBoundingVolumeProvider
 {
 public:
     virtual ~QBoundingVolumeProvider();
-    virtual QVector<QBoundingVolume *> boundingVolumes() const = 0;
+    virtual QList<QBoundingVolume *> boundingVolumes() const = 0;
 };
 
 } // namespace RayCasting

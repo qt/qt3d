@@ -58,7 +58,7 @@ void BufferManager::addDirtyBuffer(Qt3DCore::QNodeId bufferId)
         m_dirtyBuffers.push_back(bufferId);
 }
 
-QVector<Qt3DCore::QNodeId> BufferManager::takeDirtyBuffers()
+QList<Qt3DCore::QNodeId> BufferManager::takeDirtyBuffers()
 {
     return qMove(m_dirtyBuffers);
 }
@@ -79,10 +79,10 @@ void BufferManager::addBufferReference(Qt3DCore::QNodeId bufferId)
 }
 
 // Called in Render thread
-QVector<Qt3DCore::QNodeId> BufferManager::takeBuffersToRelease()
+QList<Qt3DCore::QNodeId> BufferManager::takeBuffersToRelease()
 {
     QMutexLocker lock(&m_mutex);
-    QVector<Qt3DCore::QNodeId> buffersToRelease;
+    QList<Qt3DCore::QNodeId> buffersToRelease;
     for (auto it = m_bufferReferences.begin(), end = m_bufferReferences.end(); it != end; /*erasing*/) {
         if (it.value() == 0) {
             buffersToRelease.append(it.key());

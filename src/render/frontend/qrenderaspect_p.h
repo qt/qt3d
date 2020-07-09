@@ -131,8 +131,8 @@ public:
     bool m_initialized;
     const bool m_renderAfterJobs;
     QList<QSceneImporter *> m_sceneImporter;
-    QVector<QString> m_loadedPlugins;
-    QVector<Render::QRenderPlugin *> m_renderPlugins;
+    QList<QString> m_loadedPlugins;
+    QList<Render::QRenderPlugin *> m_renderPlugins;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;
     QScreen *m_screen = nullptr;
 
@@ -152,8 +152,8 @@ public:
     QRenderAspect::SubmissionType m_submissionType;
 
     static QMutex m_pluginLock;
-    static QVector<QString> m_pluginConfig;
-    static QVector<QRenderAspectPrivate *> m_instances;
+    static QList<QString> m_pluginConfig;
+    static QList<QRenderAspectPrivate *> m_instances;
     static void configurePlugin(const QString &plugin);
 };
 

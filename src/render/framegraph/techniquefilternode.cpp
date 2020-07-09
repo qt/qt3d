@@ -82,12 +82,12 @@ void TechniqueFilter::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     }
 }
 
-QVector<Qt3DCore::QNodeId> TechniqueFilter::parameters() const
+QList<Qt3DCore::QNodeId> TechniqueFilter::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-QVector<Qt3DCore::QNodeId> TechniqueFilter::filters() const
+QList<Qt3DCore::QNodeId> TechniqueFilter::filters() const
 {
     return m_filters;
 }

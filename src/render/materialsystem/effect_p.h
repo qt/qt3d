@@ -73,11 +73,11 @@ public:
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
     void appendRenderTechnique(Qt3DCore::QNodeId t);
 
-    QVector<Qt3DCore::QNodeId> techniques() const;
-    QVector<Qt3DCore::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> techniques() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_techniques;
+    QList<Qt3DCore::QNodeId> m_techniques;
     ParameterPack m_parameterPack;
 };
 

@@ -162,7 +162,7 @@ public:
     }
 #endif
 
-    UniformValue(const QVector<QMatrix4x4> &v)
+    UniformValue(const QList<QMatrix4x4> &v)
         : m_data(16 * v.size())
     {
         int offset = 0;
@@ -193,7 +193,7 @@ public:
     UniformType storedType() const { return m_storedType; }
 
     template<typename T>
-    void setData(const QVector<T> &v)
+    void setData(const QList<T> &v)
     {
         m_data.resize(v.size() * sizeof(T) / sizeof(float));
         m_valueType = ScalarValue;
@@ -238,7 +238,7 @@ private:
 };
 
 template<>
-Q_3DRENDERSHARED_PRIVATE_EXPORT void UniformValue::setData<QMatrix4x4>(const QVector<QMatrix4x4> &v);
+Q_3DRENDERSHARED_PRIVATE_EXPORT void UniformValue::setData<QMatrix4x4>(const QList<QMatrix4x4> &v);
 
 } // namespace Render
 } // namespace Qt3DRender

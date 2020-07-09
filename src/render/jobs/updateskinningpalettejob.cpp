@@ -78,7 +78,7 @@ void UpdateSkinningPaletteJob::run()
     }
 
     // Find all the armature components and update their skinning palettes
-    QVector<HArmature> dirtyArmatures;
+    QList<HArmature> dirtyArmatures;
     m_root->traverse([&dirtyArmatures](Entity *entity) {
         const auto armatureHandle = entity->componentHandle<Armature>();
         if (!armatureHandle.isNull() && !dirtyArmatures.contains(armatureHandle))
@@ -95,7 +95,7 @@ void UpdateSkinningPaletteJob::run()
         auto skeleton = skeletonManager->lookupResource(skeletonId);
         Q_ASSERT(skeleton);
 
-        const QVector<QMatrix4x4> skinningPalette = skeleton->calculateSkinningMatrixPalette();
+        const QList<QMatrix4x4> skinningPalette = skeleton->calculateSkinningMatrixPalette();
         armature->skinningPaletteUniform().setData(skinningPalette);
     }
 }

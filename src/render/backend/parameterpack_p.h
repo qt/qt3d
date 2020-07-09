@@ -68,7 +68,7 @@ public:
     void clear();
     void appendParameter(Qt3DCore::QNodeId parameterId);
     void removeParameter(Qt3DCore::QNodeId parameterId);
-    QVector<Qt3DCore::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
 
     void setParameters(const Qt3DCore::QNodeIdVector &parameterIds)
     {
@@ -76,7 +76,7 @@ public:
     }
 
 private:
-    QVector<Qt3DCore::QNodeId> m_peers;
+    QList<Qt3DCore::QNodeId> m_peers;
 };
 
 } // namespace Render

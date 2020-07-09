@@ -58,9 +58,9 @@ void GeometryRendererManager::addDirtyGeometryRenderer(Qt3DCore::QNodeId bufferI
         m_dirtyGeometryRenderers.push_back(bufferId);
 }
 
-QVector<Qt3DCore::QNodeId> GeometryRendererManager::dirtyGeometryRenderers()
+QList<Qt3DCore::QNodeId> GeometryRendererManager::dirtyGeometryRenderers()
 {
-    QVector<Qt3DCore::QNodeId> vector(m_dirtyGeometryRenderers);
+    QList<Qt3DCore::QNodeId> vector(m_dirtyGeometryRenderers);
     m_dirtyGeometryRenderers.clear();
     return vector;
 }

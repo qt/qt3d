@@ -171,10 +171,10 @@ void Skeleton::setLocalPose(HJoint jointHandle, const Qt3DCore::Sqt &localPose)
     m_skeletonData.localPoses[jointIndex] = localPose;
 }
 
-QVector<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()
+QList<QMatrix4x4> Skeleton::calculateSkinningMatrixPalette()
 {
-    const QVector<Sqt> &localPoses = m_skeletonData.localPoses;
-    QVector<JointInfo> &joints = m_skeletonData.joints;
+    const QList<Sqt> &localPoses = m_skeletonData.localPoses;
+    QList<JointInfo> &joints = m_skeletonData.joints;
     for (int i = 0; i < m_skeletonData.joints.size(); ++i) {
         // Calculate the global pose of this joint
         JointInfo &joint = joints[i];

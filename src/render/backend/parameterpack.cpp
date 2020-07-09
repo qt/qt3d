@@ -69,7 +69,7 @@ void ParameterPack::removeParameter(Qt3DCore::QNodeId parameterId)
     m_peers.removeOne(parameterId);
 }
 
-QVector<Qt3DCore::QNodeId> ParameterPack::parameters() const
+QList<Qt3DCore::QNodeId> ParameterPack::parameters() const
 {
     return m_peers;
 }

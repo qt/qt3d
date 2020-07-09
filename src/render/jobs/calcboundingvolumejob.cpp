@@ -284,7 +284,7 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, E
     Buffer *indexBuf = nullptr;
 
     if (!hasBoundingVolumePositionAttribute) {
-        const QVector<Qt3DCore::QNodeId> attributes = res.geometry->attributes();
+        const QList<Qt3DCore::QNodeId> attributes = res.geometry->attributes();
 
         for (Qt3DCore::QNodeId attrNodeId : attributes) {
             Qt3DRender::Render::Attribute *attr = manager->lookupResource<Attribute, AttributeManager>(attrNodeId);

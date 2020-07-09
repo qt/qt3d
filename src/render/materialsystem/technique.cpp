@@ -125,7 +125,7 @@ void Technique::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     }
 }
 
-QVector<Qt3DCore::QNodeId> Technique::parameters() const
+QList<Qt3DCore::QNodeId> Technique::parameters() const
 {
     return m_parameterPack.parameters();
 }
@@ -141,12 +141,12 @@ void Technique::removeRenderPass(Qt3DCore::QNodeId renderPassId)
     m_renderPasses.removeOne(renderPassId);
 }
 
-QVector<Qt3DCore::QNodeId> Technique::filterKeys() const
+QList<Qt3DCore::QNodeId> Technique::filterKeys() const
 {
     return m_filterKeyList;
 }
 
-QVector<Qt3DCore::QNodeId> Technique::renderPasses() const
+QList<Qt3DCore::QNodeId> Technique::renderPasses() const
 {
     return m_renderPasses;
 }
